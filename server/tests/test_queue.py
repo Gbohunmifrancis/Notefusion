@@ -122,15 +122,20 @@ def test_get_unknown_job_returns_none():
 
 def test_expired_jobs_are_purged(monkeypatch):
     monkeypatch.setattr("app.jobs.queue.transcribe", lambda *a, **k: _result())
-    # Force an immediate TTL so the finished job is purged on the next access.
-    monkeypatch.setattr("app.jobs.queue.settings.job_ttl_seconds", 0.0)
     queue = JobQueue(workers=1)
     try:
         audio = _temp_audio()
         jid = queue.submit(audio, mode="melody", key=None, tempo=None)
+        # Let the job finish under the normal TTL first: with a 0.0 TTL from the
+        # start, the purge-on-get() inside _await_status would race the worker and
+        # could evict the job before we ever observe "done" (flaky on slow CI).
         _await_status(queue, jid, STATUS_DONE)
-        time.sleep(0.05)
-        # A subsequent get() runs _purge_expired first, evicting the done job.
+        # Now expire the job unconditionally. A negative TTL is deliberate: the purge
+        # test is `now - finished_at > ttl`, and with ttl == 0.0 a coarse monotonic
+        # clock (Windows resolution is ~15 ms) can read the same tick as finished_at,
+        # making the delta exactly 0.0 — not > 0.0 — so the job survives. A negative
+        # TTL means "already expired" and purges deterministically on the next get().
+        monkeypatch.setattr("app.jobs.queue.settings.job_ttl_seconds", -1.0)
         assert queue.get(jid) is None
     finally:
         queue.shutdown(wait=True)
