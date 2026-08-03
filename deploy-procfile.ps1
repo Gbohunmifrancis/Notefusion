@@ -4,8 +4,8 @@
 #>
 
 $ApiKey = "REDACTED-USE-ENV-HEROKU_API_KEY"
-$TranscriberApp = "notefusion-transcriber"
-$ApiApp = "notefusion-api"
+$TranscriberApp = "notefusion-transcriber-ef80c63d506f"
+$ApiApp = "notefusion-api-3c2513a1e974"
 
 $env:HEROKU_API_KEY = $ApiKey
 [System.Environment]::SetEnvironmentVariable("HEROKU_API_KEY", $ApiKey, "Process")
@@ -26,6 +26,7 @@ git subtree push --prefix server $transcriberGitUrl main
 # 3. Deploy C# Web API
 Write-Host "Deploying C# Web API ($ApiApp)..." -ForegroundColor Yellow
 heroku stack:set heroku-24 -a $ApiApp
+heroku config:set TranscriptionApi__BaseUrl="https://${TranscriberApp}.herokuapp.com" -a $ApiApp
 
 $apiGitUrl = "https://_:${ApiKey}@git.heroku.com/${ApiApp}.git"
 git push $apiGitUrl HEAD:refs/heads/main --force

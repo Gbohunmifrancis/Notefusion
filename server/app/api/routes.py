@@ -50,21 +50,22 @@ async def submit_transcription(
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
 
     if key is not None:
-        # Fail fast on a bad override so the client gets a synchronous 422 instead of
-        # a deferred job failure. Reuses the exact parser the worker will use.
-        from app.pipeline.transcriber import _parse_key_override
-        try:
-            _parse_key_override(key)
-        except Exception:  # noqa: BLE001 - any parse failure is a client input error
-            raise HTTPException(422, f"Unparseable key override: {key!r}")
+        key = key.strip()
+        if not key or key.lower() in ("auto", "null", "none"):
+            key = None
+        else:
+            from app.pipeline.transcriber import _parse_key_override
+            try:
+                _parse_key_override(key)
+            except Exception:  # noqa: BLE001 - any parse failure is a client input error
+                raise HTTPException(422, f"Unparseable key override: {key!r}")
 
     suffix = Path(audio.filename or "clip.wav").suffix.lower()
     if suffix not in ACCEPTED_SUFFIXES:
         raise HTTPException(415, f"Unsupported audio format '{suffix}'. "
                                  f"Accepted: {', '.join(sorted(ACCEPTED_SUFFIXES))}")
 
-    # Stream to a temp file with a hard size cap (max-duration/rate limits also sit
-    # in front of this at Nginx, TRD par. 9)
+    # Stream to a temp file with a hard size cap
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
         tmp_path = Path(tmp.name)
         written = 0

@@ -24,7 +24,7 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
             using var form = new MultipartFormDataContent();
             form.Add(new StreamContent(audio), "audio", fileName);
             form.Add(new StringContent(options.Mode == TranscriptionMode.Melody ? "melody" : "poly"), "mode");
-            if (options.Key is not null)
+            if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 form.Add(new StringContent(options.Key), "key");
             if (options.Tempo is not null)
                 form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");

@@ -43,7 +43,7 @@
       "expo-asset"
     ],
     "extra": {
-      "apiBaseUrl": "https://notefusion-api.herokuapp.com",
+      "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",
       "eas": {
         "projectId": "a83ae670-e248-485e-95f7-686608f515ad"
       }
