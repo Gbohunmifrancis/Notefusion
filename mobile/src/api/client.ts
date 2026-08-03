@@ -13,7 +13,12 @@ import type { ApiError, TokenPairResponse } from './types';
  *    Concurrent 401s share a single in-flight refresh so we never rotate twice.
  */
 
+// Base URL resolution, in priority order:
+//  1. EXPO_PUBLIC_API_URL — set at `expo start` time to point a physical device
+//     (Expo Go) at the dev machine's LAN IP without editing the checked-in default.
+//  2. app.json extra.apiBaseUrl — the committed default (10.0.2.2 = Android emulator host).
 const baseURL: string =
+  process.env.EXPO_PUBLIC_API_URL ??
   (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)?.apiBaseUrl ??
   'http://10.0.2.2:5080';
 

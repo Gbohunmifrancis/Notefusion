@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as Notifications from 'expo-notifications';
 import { useAuth } from '../lib/auth';
+import { isExpoGo } from '../lib/env';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
@@ -34,7 +34,10 @@ export function RootNavigator() {
 
   // Tapping a "transcription ready" push could deep-link here later; for now we
   // just ensure the handler is installed so foreground notifications present.
+  // Skipped in Expo Go (SDK 53+ dropped remote push; importing the module throws).
   useEffect(() => {
+    if (isExpoGo) return;
+    const Notifications = require('expo-notifications') as typeof import('expo-notifications');
     const sub = Notifications.addNotificationResponseReceivedListener(() => {
       /* deep-link handling hook — no-op for MVP */
     });

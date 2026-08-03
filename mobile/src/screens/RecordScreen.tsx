@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Audio } from 'expo-av';
+import {
+  useAudioRecorder,
+  RecordingPresets,
+  setAudioModeAsync,
+  requestRecordingPermissionsAsync,
+  type RecordingOptions,
+} from 'expo-audio';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -13,6 +19,14 @@ import type { RootStackParams } from '../navigation/types';
 
 type Mode = 'melody' | 'poly';
 type Phase = 'ready' | 'recording' | 'uploading';
+
+// 22.05 kHz mono matches the pipeline's expected input. Start from the m4a/AAC
+// HIGH_QUALITY preset and override the top-level rate/channels.
+const RECORDING_OPTIONS: RecordingOptions = {
+  ...RecordingPresets.HIGH_QUALITY,
+  sampleRate: 22050,
+  numberOfChannels: 1,
+};
 
 /**
  * Capture → submit → poll. Records 22.05 kHz mono (matches the pipeline's expected
@@ -28,7 +42,7 @@ export function RecordScreen() {
   const [elapsed, setElapsed] = useState(0);
   const [permError, setPermError] = useState<string | null>(null);
 
-  const recording = useRef<Audio.Recording | null>(null);
+  const recorder = useAudioRecorder(RECORDING_OPTIONS);
   const pulse = useRef(new Animated.Value(1)).current;
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -61,29 +75,15 @@ export function RecordScreen() {
   async function startRecording() {
     setPermError(null);
     try {
-      const perm = await Audio.requestPermissionsAsync();
+      const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
         setPermError('Microphone permission is needed to record.');
         return;
       }
-      await Audio.setAudioModeAsync({ allowsRecordingIOS: true, playsInSilentModeIOS: true });
+      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
 
-      const rec = new Audio.Recording();
-      await rec.prepareToRecordAsync({
-        ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
-        android: {
-          ...Audio.RecordingOptionsPresets.HIGH_QUALITY.android,
-          sampleRate: 22050,
-          numberOfChannels: 1,
-        },
-        ios: {
-          ...Audio.RecordingOptionsPresets.HIGH_QUALITY.ios,
-          sampleRate: 22050,
-          numberOfChannels: 1,
-        },
-      });
-      await rec.startAsync();
-      recording.current = rec;
+      await recorder.prepareToRecordAsync();
+      recorder.record();
       setPhase('recording');
       setElapsed(0);
       tick.current = setInterval(() => setElapsed((e) => e + 1), 1000);
@@ -94,13 +94,11 @@ export function RecordScreen() {
 
   async function stopAndSubmit() {
     if (tick.current) clearInterval(tick.current);
-    const rec = recording.current;
-    if (!rec) return;
+    if (!recorder.isRecording) return;
     setPhase('uploading');
     try {
-      await rec.stopAndUnloadAsync();
-      const uri = rec.getURI();
-      recording.current = null;
+      await recorder.stop();
+      const uri = recorder.uri;
       if (!uri) {
         setPhase('ready');
         return;

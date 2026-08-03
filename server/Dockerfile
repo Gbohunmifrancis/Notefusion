@@ -26,6 +26,8 @@ RUN pip install --no-deps basic-pitch==0.4.0
 
 # Fetch the Basic Pitch model weights at build time so inference can start
 # immediately in a cold container ( Basic Pitch downloads on first use otherwise ).
+# Import first so a missing runtime dep fails the build loudly instead of at
+# container start.
 RUN python - <<'PY'
 from basic_pitch.inference import Model
 from basic_pitch import ICASSP_2022_MODEL_PATH
