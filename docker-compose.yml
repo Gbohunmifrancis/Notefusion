@@ -1,0 +1,83 @@
+# NoteFusion backend stack — one command brings up the whole server side:
+#   docker compose up --build
+# Then hit the API at http://localhost:5080 (Swagger at /swagger) with the mobile
+# app pointed at http://10.0.2.2:5080 (emulator) or your machine's LAN IP (device).
+#
+# Three services, one job each:
+#   api       C# .NET 10 Web API   — the only gateway the clients talk to
+#   db        PostgreSQL 16         — EF Core persistence (migrations auto-run at startup)
+#   transcriber Python FastAPI      — internal ML worker, reached ONLY by the api service
+
+name: notefusion
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: notefusion
+      POSTGRES_USER: notefusion
+      # Dev-only credential. Override in production (e.g. via .env, which is gitignored).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-notefusion_dev}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # exposed for local tooling (pgAdmin, dotnet ef); not needed by clients
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notefusion -d notefusion"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  transcriber:
+    build:
+      context: ./server
+    environment:
+      NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-180}
+      NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-20971520}
+      NF_JOB_TTL_SECONDS: ${NF_JOB_TTL_SECONDS:-900}
+    ports:
+      - "8000:8000" # exposed for curl/dev; in production, drop this and let the api reach it internally
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s # model load on first boot is slow (CPU ONNX)
+
+  api:
+    build:
+      context: .
+      dockerfile: src/NoteFusion.Api/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      # EF Core database — the container name resolves via the compose network.
+      Database__Host: db
+      Database__Port: "5432"
+      Database__Database: notefusion
+      Database__Username: notefusion
+      Database__Password: ${POSTGRES_PASSWORD:-notefusion_dev}
+      Database__ApplyMigrationsAtStartup: "true"
+      # The internal ML worker — the only outbound call the API makes.
+      TranscriptionApi__BaseUrl: http://transcriber:8000
+      # Stable signing key across restarts. Generate one for real deploys:
+      #   openssl genpkey -algorithm RSA -out jwt-key.pem -pkeyopt rsa_keygen_bits:2048
+      # then mount/secret it. When unset the API generates an ephemeral key (dev only).
+      # Jwt__PrivateKeyPem:
+      Seed__AdminFullName: NoteFusion Admin
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@notefusion.app}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-ChangeMe!123}
+      Push__UseExpo: "false"
+    ports:
+      - "5080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      transcriber:
+        condition: service_healthy
+    # No container healthcheck: the aspnet runtime image ships no curl/wget, and nothing
+    # in this stack gates on the api being healthy. Liveness is the /health endpoint
+    # (anonymous) that an external orchestrator/load balancer can probe.
+
+volumes:
+  db-data:

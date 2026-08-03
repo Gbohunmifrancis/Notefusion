@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NoteFusion.Api/NoteFusion.Api.csproj" />
+    <Project Path="src/NoteFusion.Application/NoteFusion.Application.csproj" />
+    <Project Path="src/NoteFusion.Core/NoteFusion.Core.csproj" />
+    <Project Path="src/NoteFusion.Infrastructure/NoteFusion.Infrastructure.csproj" />
+    <Project Path="src/NoteFusion.Shared/NoteFusion.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NoteFusion.Tests/NoteFusion.Tests.csproj" />
+  </Folder>
+</Solution>

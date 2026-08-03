@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  dotnet:
+    name: .NET build & tests
+    runs-on: windows-latest # mirrors the Windows dev environment
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore NoteFusion.slnx
+
+      - name: Build
+        run: dotnet build NoteFusion.slnx -c Release --no-restore
+
+      - name: Test
+        run: dotnet test NoteFusion.slnx -c Release --no-build --verbosity minimal
+
+  python:
+    name: Python transcription API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # basic-pitch pins tensorflow (no 3.12 wheels); install without deps as in the Dockerfile
+          pip install --no-deps basic-pitch==0.4.0
+
+      - name: Type-check
+        run: python -m compileall -q app tests
+
+      - name: Test
+        run: python -m pytest -q
+
+  mobile:
+    name: Mobile type-check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check (strict)
+        run: npm run lint # tsc --noEmit

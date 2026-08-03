@@ -1,0 +1,16 @@
+<Project>
+
+  <!--
+    Shared compile settings for the library projects in this repo.
+    NOTE: this file is intentionally NOT applied to Web SDK projects (NoteFusion.Api):
+    Directory.Build.props is auto-imported by Microsoft.NET.Sdk.Web, and re-importing the
+    base Sdk.props inside it breaks Web project evaluation on .NET 10. The API project
+    sets these properties itself (see src/NoteFusion.Api/NoteFusion.Api.csproj).
+  -->
+  <PropertyGroup Condition="'$(UsingMicrosoftNETSdk)' != 'true' or '$(OutputType)' == 'Library'">
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

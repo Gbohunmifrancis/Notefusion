@@ -1,0 +1,23 @@
+# Build context for the C# API is the repo root. Keep the context small and avoid
+# leaking build outputs / secrets / the other stacks into the image layer.
+
+**/bin/
+**/obj/
+**/.vs/
+**/.git/
+
+# Other stacks — not part of the API image.
+mobile/
+server/
+spike/
+docs/
+
+# Local env / secrets
+**/.env
+**/*.env
+**/*.pfx
+**/*.pem
+
+# Editor / OS cruft
+**/.DS_Store
+**/*.user

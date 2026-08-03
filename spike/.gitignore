@@ -1,0 +1,8 @@
+.venv/
+output/
+__pycache__/
+# real phone recordings may be large; commit only the ones worth keeping
+recordings/*.wav
+recordings/*.mp3
+recordings/*.m4a
+!recordings/*.truth.json

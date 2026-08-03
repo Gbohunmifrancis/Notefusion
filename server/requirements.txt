@@ -1,0 +1,23 @@
+# NoteFusion transcription API runtime dependencies.
+# Pin versions from the validated Phase 0 spike (spike/.venv).
+# Note: basic-pitch 0.4.0 pins tensorflow on PyPI; install it separately with
+# `pip install --no-deps basic-pitch==0.4.0` and provide onnxruntime manually
+# (Basic Pitch auto-detects ONNX when TensorFlow is absent).
+
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+python-multipart==0.0.20
+
+onnxruntime==1.27.0
+librosa==0.11.0
+resampy==0.4.2
+pretty_midi==0.2.11
+music21==10.5.0
+soundfile==0.14.0
+scikit-learn==1.9.0
+scipy==1.18.0
+numpy==2.4.6
+
+# Development / test
+pytest==8.3.4

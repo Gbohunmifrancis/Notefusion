@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "NoteFusion",
+    "slug": "notefusion",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "notefusion",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#0B1020",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.notefusion",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "NoteFusion records short clips to transcribe them into solfa and staff notation."
+      }
+    },
+    "android": {
+      "package": "app.notefusion",
+      "adaptiveIcon": {
+        "backgroundColor": "#0B1020"
+      },
+      "permissions": ["RECORD_AUDIO"]
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-notifications",
+      [
+        "expo-av",
+        {
+          "microphonePermission": "NoteFusion records short clips to transcribe them into solfa and staff notation."
+        }
+      ]
+    ],
+    "extra": {
+      "apiBaseUrl": "http://10.0.2.2:5080"
+    }
+  }
+}

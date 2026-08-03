@@ -1,0 +1,64 @@
+import React, { useEffect } from 'react';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Notifications from 'expo-notifications';
+import { useAuth } from '../lib/auth';
+import { SplashScreen } from '../screens/SplashScreen';
+import { AuthNavigator } from './AuthNavigator';
+import { TabNavigator } from './TabNavigator';
+import { ResultScreen } from '../screens/ResultScreen';
+import { colors } from '../design/theme';
+import type { RootStackParams } from './types';
+
+const Stack = createNativeStackNavigator<RootStackParams>();
+
+// A dark navigation theme so there's never a white flash between screens.
+const navTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.bg,
+    card: colors.bgElevated,
+    text: colors.text,
+    border: colors.border,
+    primary: colors.accent,
+  },
+};
+
+/**
+ * Top-level router. Switches between the auth flow and the authenticated app
+ * based on session state, showing the branded splash while the session restores.
+ */
+export function RootNavigator() {
+  const { user, initializing } = useAuth();
+
+  // Tapping a "transcription ready" push could deep-link here later; for now we
+  // just ensure the handler is installed so foreground notifications present.
+  useEffect(() => {
+    const sub = Notifications.addNotificationResponseReceivedListener(() => {
+      /* deep-link handling hook — no-op for MVP */
+    });
+    return () => sub.remove();
+  }, []);
+
+  if (initializing) return <SplashScreen />;
+
+  return (
+    <NavigationContainer theme={navTheme}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {user ? (
+          <>
+            <Stack.Screen name="Tabs" component={TabNavigator} />
+            <Stack.Screen
+              name="Result"
+              component={ResultScreen}
+              options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+          </>
+        ) : (
+          <Stack.Screen name="Tabs" component={AuthNavigator} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
