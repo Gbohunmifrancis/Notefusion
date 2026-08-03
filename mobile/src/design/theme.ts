@@ -1,46 +1,57 @@
 /**
  * NoteFusion design tokens — single source of visual truth.
  *
- * A refined, ultra-clean minimalist studio palette inspired by Athena Mobile
- * and Shazam: deep charcoal canvas (#111111), subtle card surfaces (#1A1A1A / #222222),
- * crisp typography (#F5F5F5), and a signature Shazam listening blue (#0088FF) accent.
+ * A calm, light, restrained studio palette inspired by the reference mood-app kit:
+ * soft mint canvas (#EAF6F3), crisp white card surfaces, near-black ink for primary
+ * actions and type, and two soft pastel accents (sky-cyan + blush pink) used sparingly.
+ * The old dark-charcoal / electric-blue theme was retired in the light-pastel redesign.
  */
 
 export const colors = {
-  // Canvas & Surfaces (Minimalist dark palette)
-  bg: '#111111',
-  bgElevated: '#1A1A1A',
-  surface: '#222222',
-  surfaceAlt: '#2A2A2A',
-  border: '#2E2E2E',
-  borderLight: '#1F1F1F',
+  // Canvas & Surfaces (light pastel palette)
+  bg: '#EAF6F3',
+  bgElevated: '#FFFFFF',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F2F4F5',
+  border: '#E4E9EA',
+  borderLight: '#EFF3F3',
 
-  // Shazam-inspired signature accent
-  accent: '#0088FF',
-  accentAlt: '#0055FF',
-  accentSoft: 'rgba(0, 136, 255, 0.12)',
-  accentGlow: 'rgba(0, 136, 255, 0.25)',
+  // Primary ink — used for buttons, active chips, key type
+  ink: '#141718',
 
-  // Text
-  text: '#F5F5F5',
-  textMuted: '#AAAAAA',
-  textFaint: '#666666',
+  // Soft pastel accents (used sparingly)
+  accent: '#7FD8E8', // sky-cyan
+  accentAlt: '#5FC6DA',
+  accentSoft: 'rgba(127, 216, 232, 0.18)',
+  accentGlow: 'rgba(127, 216, 232, 0.35)',
+  pink: '#F3A9D6',
+  pinkSoft: 'rgba(243, 169, 214, 0.20)',
+
+  // Text (ink on light)
+  text: '#141718',
+  textMuted: '#5B6566',
+  textFaint: '#9AA5A6',
 
   // Signals
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
+  success: '#12B886',
+  warning: '#F0A020',
+  danger: '#F0576B',
 
   // Confidence scale (PRD: surface confidence honestly)
-  confHigh: '#10B981',
-  confMed: '#F59E0B',
-  confLow: '#EF4444',
+  confHigh: '#12B886',
+  confMed: '#F0A020',
+  confLow: '#F0576B',
+
+  // On-accent / on-ink foreground
+  onInk: '#FFFFFF',
+  onAccent: '#0E3B44',
 } as const;
 
 export const gradients = {
-  brand: ['#1A1A1A', '#222222'] as const,
-  brandDim: ['#141414', '#1F1F1F'] as const,
-  record: ['#0088FF', '#0055FF'] as const,
+  brand: ['#7FD8E8', '#B9EAF2'] as const,
+  brandDim: ['#F2F4F5', '#FFFFFF'] as const,
+  record: ['#7FD8E8', '#5FC6DA'] as const,
+  pink: ['#F3A9D6', '#F7C7E5'] as const,
 } as const;
 
 export const spacing = {
@@ -55,9 +66,9 @@ export const spacing = {
 
 export const radii = {
   sm: 8,
-  md: 12,
-  lg: 18,
-  xl: 26,
+  md: 14,
+  lg: 20,
+  xl: 28,
   pill: 999,
 } as const;
 
@@ -73,17 +84,17 @@ export const typography = {
 
 export const shadow = {
   card: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowColor: '#5B6566',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 3,
   },
   glow: {
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 20,
     elevation: 6,
   },
 } as const;

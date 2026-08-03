@@ -12,7 +12,7 @@ import type { RootStackParams } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
-// A dark navigation theme so there's never a white flash between screens.
+// A light navigation theme so there's never a dark flash between screens.
 const navTheme = {
   ...DefaultTheme,
   colors: {
@@ -21,7 +21,7 @@ const navTheme = {
     card: colors.bgElevated,
     text: colors.text,
     border: colors.border,
-    primary: colors.accent,
+    primary: colors.ink,
   },
 };
 

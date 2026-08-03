@@ -5,10 +5,10 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "notefusion",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "backgroundColor": "#0B1020",
+      "backgroundColor": "#EAF6F3",
       "resizeMode": "contain"
     },
     "assetBundlePatterns": [
@@ -24,7 +24,7 @@
     "android": {
       "package": "app.notefusion",
       "adaptiveIcon": {
-        "backgroundColor": "#0B1020"
+        "backgroundColor": "#EAF6F3"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO",

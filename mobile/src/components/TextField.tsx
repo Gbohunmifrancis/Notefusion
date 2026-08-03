@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   wrap: { marginBottom: spacing.lg },
   label: { ...typography.label, color: colors.textMuted, marginBottom: spacing.sm },
   input: {
-    backgroundColor: colors.bgElevated,
+    backgroundColor: colors.surfaceAlt,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: radii.md,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 16,
   },
-  focused: { borderColor: colors.accent },
+  focused: { borderColor: colors.ink },
   inputError: { borderColor: colors.danger },
   error: { ...typography.caption, color: colors.danger, marginTop: spacing.xs },
 });

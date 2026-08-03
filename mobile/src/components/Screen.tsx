@@ -22,7 +22,7 @@ export function Screen({
 }) {
   return (
     <SafeAreaView style={styles.safe} edges={edges ?? ['top', 'bottom']}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       {scroll ? (
         <ScrollView
           contentContainerStyle={[styles.content, contentStyle]}

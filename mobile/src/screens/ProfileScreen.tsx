@@ -59,7 +59,7 @@ export function ProfileScreen() {
     .toUpperCase();
 
   return (
-    <Screen scroll>
+    <Screen scroll contentStyle={styles.screen}>
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>{initials}</Text>
       </View>
@@ -86,23 +86,24 @@ export function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  screen: { paddingBottom: 120 },
   avatar: {
     alignSelf: 'center',
     width: 84,
     height: 84,
     borderRadius: 42,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.ink,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: spacing.lg,
   },
-  avatarText: { ...typography.title, color: colors.text },
+  avatarText: { ...typography.title, color: colors.onInk },
   name: { ...typography.heading, color: colors.text, textAlign: 'center', marginTop: spacing.md },
   email: { ...typography.body, color: colors.textMuted, textAlign: 'center', marginTop: 2 },
   role: {
     alignSelf: 'center',
     ...typography.caption,
-    color: colors.accent,
+    color: colors.onAccent,
     backgroundColor: colors.accentSoft,
     borderRadius: radii.pill,
     paddingVertical: 4,

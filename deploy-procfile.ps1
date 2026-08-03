@@ -3,12 +3,15 @@
     Deploy NoteFusion backend services to Heroku via Git Procfile.
 #>
 
-$ApiKey = "REDACTED-USE-ENV-HEROKU_API_KEY"
-$TranscriberApp = "notefusion-transcriber-ef80c63d506f"
-$ApiApp = "notefusion-api-3c2513a1e974"
+# Never hardcode credentials. Provide the key via the HEROKU_API_KEY environment
+# variable before running. Get one with: heroku authorizations:create
+$ApiKey = $env:HEROKU_API_KEY
+$TranscriberApp = "notefusion-transcriber"
+$ApiApp = "notefusion-api"
 
-$env:HEROKU_API_KEY = $ApiKey
-[System.Environment]::SetEnvironmentVariable("HEROKU_API_KEY", $ApiKey, "Process")
+if ([string]::IsNullOrWhiteSpace($ApiKey)) {
+    throw "HEROKU_API_KEY is not set. Set the env var before running. See heroku authorizations:create."
+}
 
 Write-Host "=== Deploying NoteFusion to Heroku via Procfile / Buildpacks ===" -ForegroundColor Cyan
 
@@ -26,7 +29,11 @@ git subtree push --prefix server $transcriberGitUrl main
 # 3. Deploy C# Web API
 Write-Host "Deploying C# Web API ($ApiApp)..." -ForegroundColor Yellow
 heroku stack:set heroku-24 -a $ApiApp
-heroku config:set TranscriptionApi__BaseUrl="https://${TranscriberApp}.herokuapp.com" -a $ApiApp
+# Newer Heroku apps no longer route the bare <name>.herokuapp.com host — the real
+# web URL carries a random suffix. Derive it so the API always points at a live host.
+$TranscriberUrl = ((heroku apps:info -a $TranscriberApp --json | ConvertFrom-Json).app.web_url).TrimEnd('/')
+Write-Host "Transcriber URL resolved to: $TranscriberUrl" -ForegroundColor Gray
+heroku config:set TranscriptionApi__BaseUrl="$TranscriberUrl" -a $ApiApp
 
 $apiGitUrl = "https://_:${ApiKey}@git.heroku.com/${ApiApp}.git"
 git push $apiGitUrl HEAD:refs/heads/main --force

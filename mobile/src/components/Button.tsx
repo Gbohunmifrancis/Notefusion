@@ -42,15 +42,15 @@ export function Button({
     Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 6 }).start();
 
   const getTextColor = () => {
-    if (variant === 'primary') return '#FFFFFF';
+    if (variant === 'primary') return colors.onInk;
     if (variant === 'danger') return colors.danger;
     return colors.text;
   };
 
   const getIconColor = () => {
-    if (variant === 'primary') return '#FFFFFF';
+    if (variant === 'primary') return colors.onInk;
     if (variant === 'danger') return colors.danger;
-    return colors.accent;
+    return colors.ink;
   };
 
   const content = (
@@ -105,15 +105,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50,
+    height: 54,
     paddingHorizontal: spacing.xl,
-    borderRadius: radii.md,
+    borderRadius: radii.pill,
   },
   primary: {
-    backgroundColor: colors.accent,
+    backgroundColor: colors.ink,
   },
   secondary: {
-    backgroundColor: colors.bgElevated,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -121,11 +121,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   danger: {
-    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+    backgroundColor: 'rgba(240, 87, 107, 0.10)',
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderColor: 'rgba(240, 87, 107, 0.28)',
   },
-  disabled: { opacity: 0.5 },
+  disabled: { opacity: 0.45 },
   label: { ...typography.label, fontSize: 15, fontWeight: '600' },
   icon: { marginRight: spacing.sm },
 });

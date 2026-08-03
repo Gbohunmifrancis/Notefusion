@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.border,
     marginHorizontal: 5,
   },
-  dotActive: { backgroundColor: colors.accent, width: 22 },
+  dotActive: { backgroundColor: colors.ink, width: 22 },
   secondaryCta: { marginTop: spacing.sm },
 });

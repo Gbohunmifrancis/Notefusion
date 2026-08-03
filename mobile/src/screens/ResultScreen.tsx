@@ -129,7 +129,7 @@ export function ResultScreen({ route, navigation }: Props) {
 function Summary({ icon, label, value }: { icon: keyof typeof Ionicons.glyphMap; label: string; value: string }) {
   return (
     <View style={styles.summaryItem}>
-      <Ionicons name={icon} size={18} color={colors.accent} />
+      <Ionicons name={icon} size={18} color={colors.ink} />
       <Text style={styles.summaryValue}>{value}</Text>
       <Text style={styles.summaryLabel}>{label}</Text>
     </View>
@@ -149,9 +149,9 @@ const styles = StyleSheet.create({
   warnRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: spacing.md },
   warnText: { ...typography.caption, color: colors.warning, marginLeft: spacing.xs },
   sectionTitle: { ...typography.heading, color: colors.text, marginTop: spacing.xxl, marginBottom: spacing.md },
-  solfaCard: { backgroundColor: colors.bgElevated, borderColor: colors.border },
+  solfaCard: { backgroundColor: colors.surface, borderColor: colors.border },
   solfaLine: { ...typography.mono, color: colors.text, marginVertical: 3 },
-  solfaHeader: { color: colors.accent, fontWeight: '700' },
+  solfaHeader: { color: colors.ink, fontWeight: '700' },
   muted: { ...typography.body, color: colors.textFaint },
   notesScroll: { marginHorizontal: -spacing.xl, paddingHorizontal: spacing.xl },
   notesRow: { flexDirection: 'row', gap: spacing.sm, paddingVertical: spacing.xs },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     width: 58,
     borderWidth: 1.5,
     borderRadius: radii.md,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     paddingTop: spacing.sm,
     overflow: 'hidden',

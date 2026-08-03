@@ -87,7 +87,7 @@ export function LibraryScreen() {
         data={items}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={items.length === 0 && styles.emptyContainer}
+        contentContainerStyle={items.length === 0 ? styles.emptyContainer : styles.listContent}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -103,7 +103,7 @@ export function LibraryScreen() {
             <Card style={styles.card} padded={false}>
               <View style={styles.row}>
                 <View style={styles.iconWrap}>
-                  <Ionicons name="disc-outline" size={20} color={colors.accent} />
+                  <Ionicons name="musical-note" size={20} color={colors.ink} />
                 </View>
                 <View style={styles.info}>
                   <Text style={styles.name} numberOfLines={1}>
@@ -134,13 +134,14 @@ export function LibraryScreen() {
 
 const styles = StyleSheet.create({
   title: { ...typography.title, color: colors.text, marginTop: spacing.xs, marginBottom: spacing.md },
-  card: { marginBottom: spacing.sm, backgroundColor: colors.bgElevated },
+  listContent: { paddingBottom: 120 },
+  card: { marginBottom: spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', padding: spacing.md },
   iconWrap: {
     width: 40,
     height: 40,
     borderRadius: radii.md,
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: colors.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },

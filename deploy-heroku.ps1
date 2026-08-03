@@ -4,10 +4,16 @@
 #>
 
 param (
-    [string]$ApiKey = "REDACTED-USE-ENV-HEROKU_API_KEY",
+    # Never hardcode credentials. Provide the key via the HEROKU_API_KEY environment
+    # variable (or pass -ApiKey at call time). Get one with: heroku authorizations:create
+    [string]$ApiKey = $env:HEROKU_API_KEY,
     [string]$TranscriberAppName = "notefusion-transcriber",
     [string]$ApiAppName = "notefusion-api"
 )
+
+if ([string]::IsNullOrWhiteSpace($ApiKey)) {
+    throw "HEROKU_API_KEY is not set. Set the env var or pass -ApiKey. See heroku authorizations:create."
+}
 
 $ErrorActionPreference = "Stop"
 
@@ -52,7 +58,11 @@ if ($existingAddons -notmatch "heroku-postgresql") {
     Write-Host "Heroku Postgres database already attached." -ForegroundColor Gray
 }
 
-heroku config:set TranscriptionApi__BaseUrl="https://${TranscriberAppName}.herokuapp.com" Database__ApplyMigrationsAtStartup=true -a $ApiAppName
+# Newer Heroku apps no longer route the bare <name>.herokuapp.com host — the real
+# web URL carries a random suffix. Derive it so the API always points at a live host.
+$TranscriberUrl = ((heroku apps:info -a $TranscriberAppName --json | ConvertFrom-Json).app.web_url).TrimEnd('/')
+Write-Host "Transcriber URL resolved to: $TranscriberUrl" -ForegroundColor Gray
+heroku config:set TranscriptionApi__BaseUrl="$TranscriberUrl" Database__ApplyMigrationsAtStartup=true -a $ApiAppName
 
 Write-Host "Building C# Web API container image..." -ForegroundColor Yellow
 docker build -f src/NoteFusion.Api/Dockerfile -t registry.heroku.com/${ApiAppName}/web .

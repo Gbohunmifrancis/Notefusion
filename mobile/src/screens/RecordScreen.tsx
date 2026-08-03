@@ -205,9 +205,9 @@ export function RecordScreen() {
             ]}
           >
             <Ionicons
-              name={uploading ? 'cloud-upload' : phase === 'recording' ? 'stop' : 'musical-notes'}
+              name={uploading ? 'cloud-upload' : phase === 'recording' ? 'stop' : 'radio'}
               size={52}
-              color="#FFFFFF"
+              color={uploading ? colors.ink : colors.onInk}
             />
           </TouchableOpacity>
         </View>
@@ -260,12 +260,12 @@ export function RecordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.xs },
+  container: { flex: 1, alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.xs, paddingBottom: 96 },
   header: { width: '100%', alignItems: 'center', marginTop: spacing.xs },
   headerTitle: { ...typography.title, color: colors.text, marginBottom: spacing.sm, fontSize: 22 },
   modeToggleContainer: {
     flexDirection: 'row',
-    backgroundColor: colors.bgElevated,
+    backgroundColor: colors.surfaceAlt,
     borderRadius: radii.pill,
     padding: 3,
     borderWidth: 1,
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.pill,
   },
   modeButtonActive: {
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: colors.ink,
   },
   modeButtonText: {
     ...typography.label,
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
   },
   modeButtonTextActive: {
-    color: colors.text,
+    color: colors.onInk,
     fontWeight: '700',
   },
   keyPickerArea: {
@@ -303,17 +303,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   keyChip: {
-    paddingVertical: 4,
+    paddingVertical: 6,
     paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
-    backgroundColor: colors.bgElevated,
+    backgroundColor: colors.surfaceAlt,
     borderWidth: 1,
     borderColor: colors.border,
     marginRight: spacing.xs,
   },
   keyChipActive: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
+    backgroundColor: colors.ink,
+    borderColor: colors.ink,
   },
   keyChipText: {
     ...typography.caption,
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   keyChipTextActive: {
-    color: '#FFFFFF',
+    color: colors.onInk,
     fontWeight: '700',
   },
   shazamArea: {
@@ -340,24 +340,24 @@ const styles = StyleSheet.create({
   rippleInner: {
     width: 160,
     height: 160,
-    backgroundColor: 'rgba(0, 136, 255, 0.08)',
+    backgroundColor: 'rgba(127, 216, 232, 0.18)',
   },
   rippleOuter: {
     width: 200,
     height: 200,
-    backgroundColor: 'rgba(0, 136, 255, 0.04)',
+    backgroundColor: 'rgba(127, 216, 232, 0.10)',
   },
   shazamButton: {
     width: 130,
     height: 130,
     borderRadius: 65,
-    backgroundColor: colors.accent,
+    backgroundColor: colors.ink,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
+    shadowColor: colors.ink,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.22,
+    shadowRadius: 20,
     elevation: 8,
   },
   shazamButtonRecording: {
@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
   shazamButtonUploading: {
     backgroundColor: colors.surfaceAlt,
     borderWidth: 2,
-    borderColor: colors.accent,
+    borderColor: colors.ink,
   },
   statusArea: { alignItems: 'center', width: '100%', paddingHorizontal: spacing.lg, marginBottom: spacing.xs },
   statusTitle: { ...typography.heading, color: colors.text, fontSize: 18, marginBottom: spacing.xs },
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     overflow: 'hidden',
   },
-  progressFill: { height: '100%', backgroundColor: colors.accent, borderRadius: 2 },
+  progressFill: { height: '100%', backgroundColor: colors.ink, borderRadius: 2 },
   errCard: { marginTop: spacing.sm, width: '100%' },
   errText: { ...typography.body, color: colors.danger, textAlign: 'center', fontSize: 13 },
 });

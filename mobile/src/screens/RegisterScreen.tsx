@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   errorBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(248,113,113,0.1)',
+    backgroundColor: 'rgba(240, 87, 107, 0.1)',
     borderRadius: radii.md,
     padding: spacing.md,
     marginBottom: spacing.lg,
