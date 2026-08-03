@@ -1,1 +1,1 @@
-web: dotnet run --project src/NoteFusion.Api/NoteFusion.Api.csproj -c Release
+web: bash -c "cd src/NoteFusion.Api/bin/publish && ./NoteFusion.Api --urls http://*:$PORT"
