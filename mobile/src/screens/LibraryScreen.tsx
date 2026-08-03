@@ -13,9 +13,7 @@ import type { SavedTranscription } from '../api/types';
 import type { RootStackParams } from '../navigation/types';
 
 /**
- * The saved library (F-08). Pull-to-refresh, tap to open the full result,
- * long-press to delete. Opening an item fetches its notes (the list endpoint
- * omits them) before navigating to Result.
+ * Saved Library screen: Minimalist list layout with pull-to-refresh and tap-to-open.
  */
 export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -27,7 +25,7 @@ export function LibraryScreen() {
     try {
       setItems(await libraryApi.list());
     } catch {
-      /* toApiError surfaces on explicit actions; a silent list failure just shows empty */
+      /* silent load handling */
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -64,13 +62,13 @@ export function LibraryScreen() {
   }
 
   function confirmDelete(item: SavedTranscription) {
-    Alert.alert('Delete transcription', `Remove “${item.title}”? This cannot be undone.`, [
+    Alert.alert('Delete transcription', `Remove "${item.title}"? This action cannot be undone.`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
         style: 'destructive',
         onPress: async () => {
-          setItems((prev) => prev.filter((t) => t.id !== item.id)); // optimistic
+          setItems((prev) => prev.filter((t) => t.id !== item.id));
           try {
             await libraryApi.remove(item.id);
           } catch (e) {
@@ -105,7 +103,7 @@ export function LibraryScreen() {
             <Card style={styles.card} padded={false}>
               <View style={styles.row}>
                 <View style={styles.iconWrap}>
-                  <Ionicons name="musical-notes" size={20} color={colors.accent} />
+                  <Ionicons name="disc-outline" size={20} color={colors.accent} />
                 </View>
                 <View style={styles.info}>
                   <Text style={styles.name} numberOfLines={1}>
@@ -123,9 +121,9 @@ export function LibraryScreen() {
         ListEmptyComponent={
           !loading ? (
             <View style={styles.empty}>
-              <Ionicons name="folder-open-outline" size={44} color={colors.textFaint} />
+              <Ionicons name="folder-open-outline" size={40} color={colors.textFaint} />
               <Text style={styles.emptyTitle}>Nothing saved yet</Text>
-              <Text style={styles.emptyBody}>Record a melody and save it to see it here.</Text>
+              <Text style={styles.emptyBody}>Transcribe audio to start building your library.</Text>
             </View>
           ) : null
         }
@@ -135,22 +133,22 @@ export function LibraryScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: { ...typography.title, color: colors.text, marginTop: spacing.sm, marginBottom: spacing.lg },
-  card: { marginBottom: spacing.md },
-  row: { flexDirection: 'row', alignItems: 'center', padding: spacing.lg },
+  title: { ...typography.title, color: colors.text, marginTop: spacing.xs, marginBottom: spacing.md },
+  card: { marginBottom: spacing.sm, backgroundColor: colors.bgElevated },
+  row: { flexDirection: 'row', alignItems: 'center', padding: spacing.md },
   iconWrap: {
-    width: 42,
-    height: 42,
-    borderRadius: radii.sm,
-    backgroundColor: colors.accentSoft,
+    width: 40,
+    height: 40,
+    borderRadius: radii.md,
+    backgroundColor: colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
   },
   info: { flex: 1, marginHorizontal: spacing.md },
   name: { ...typography.label, color: colors.text, fontSize: 15 },
-  meta: { ...typography.caption, color: colors.textFaint, marginTop: 3 },
+  meta: { ...typography.caption, color: colors.textFaint, marginTop: 2 },
   emptyContainer: { flexGrow: 1, justifyContent: 'center' },
   empty: { alignItems: 'center', paddingVertical: spacing.xxxl },
-  emptyTitle: { ...typography.heading, color: colors.textMuted, marginTop: spacing.lg },
-  emptyBody: { ...typography.body, color: colors.textFaint, marginTop: spacing.sm, textAlign: 'center' },
+  emptyTitle: { ...typography.heading, color: colors.textMuted, marginTop: spacing.md, fontSize: 16 },
+  emptyBody: { ...typography.body, color: colors.textFaint, marginTop: spacing.xs, textAlign: 'center', fontSize: 13 },
 });

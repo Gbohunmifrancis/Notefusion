@@ -20,13 +20,8 @@ RUN dotnet restore src/NoteFusion.Api/NoteFusion.Api.csproj
 COPY src/ src/
 RUN dotnet publish src/NoteFusion.Api/NoteFusion.Api.csproj -c Release -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
 WORKDIR /app
 
 # Kestrel listens on 8080 inside the container; compose maps it to the host.
-ENV ASPNETCORE_URLS=http://+:8080 \
-    ASPNETCORE_ENVIRONMENT=Production
-EXPOSE 8080
-
-COPY --from=build /app/publish ./
-ENTRYPOINT ["dotnet", "NoteFusion.Api.dll"]
+CMD sh -c "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet NoteFusion.Api.dll"

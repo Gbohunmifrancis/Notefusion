@@ -7,9 +7,8 @@ import {
   Text,
   ViewStyle,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, gradients, radii, spacing, typography } from '../design/theme';
+import { colors, radii, spacing, typography } from '../design/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -24,9 +23,8 @@ interface Props {
 }
 
 /**
- * The app's one button. A press animates a subtle scale so every tap feels
- * responsive (PRD: responsive buttons/navigation). Primary uses the brand
- * gradient; the rest are flat surfaces so the primary action always wins the eye.
+ * Minimalist responsive button component.
+ * Features tactile spring scaling on press and clean solid contrast colors.
  */
 export function Button({
   label,
@@ -43,21 +41,33 @@ export function Button({
   const animate = (to: number) =>
     Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 6 }).start();
 
+  const getTextColor = () => {
+    if (variant === 'primary') return '#FFFFFF';
+    if (variant === 'danger') return colors.danger;
+    return colors.text;
+  };
+
+  const getIconColor = () => {
+    if (variant === 'primary') return '#FFFFFF';
+    if (variant === 'danger') return colors.danger;
+    return colors.accent;
+  };
+
   const content = (
     <>
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.text : colors.accent} />
+        <ActivityIndicator color={getTextColor()} />
       ) : (
         <>
           {icon && (
             <Ionicons
               name={icon}
               size={18}
-              color={variant === 'primary' ? colors.text : colors.accent}
+              color={getIconColor()}
               style={styles.icon}
             />
           )}
-          <Text style={[styles.label, variant !== 'primary' && { color: colors.accent }]}>
+          <Text style={[styles.label, { color: getTextColor() }]}>
             {label}
           </Text>
         </>
@@ -69,31 +79,22 @@ export function Button({
     <Animated.View style={[{ transform: [{ scale }] }, style, isDisabled && styles.disabled]}>
       <Pressable
         onPress={isDisabled ? undefined : onPress}
-        onPressIn={() => !isDisabled && animate(0.96)}
+        onPressIn={() => !isDisabled && animate(0.97)}
         onPressOut={() => animate(1)}
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
       >
-        {variant === 'primary' ? (
-          <LinearGradient
-            colors={gradients.brand}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.base}
-          >
-            {content}
-          </LinearGradient>
-        ) : (
-          <Animated.View
-            style={[
-              styles.base,
-              variant === 'ghost' ? styles.ghost : styles.secondary,
-              variant === 'danger' && styles.danger,
-            ]}
-          >
-            {content}
-          </Animated.View>
-        )}
+        <Animated.View
+          style={[
+            styles.base,
+            variant === 'primary' && styles.primary,
+            variant === 'secondary' && styles.secondary,
+            variant === 'ghost' && styles.ghost,
+            variant === 'danger' && styles.danger,
+          ]}
+        >
+          {content}
+        </Animated.View>
       </Pressable>
     </Animated.View>
   );
@@ -104,12 +105,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 54,
+    height: 50,
     paddingHorizontal: spacing.xl,
-    borderRadius: radii.lg,
+    borderRadius: radii.md,
+  },
+  primary: {
+    backgroundColor: colors.accent,
   },
   secondary: {
-    backgroundColor: colors.surface,
+    backgroundColor: colors.bgElevated,
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -117,10 +121,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   danger: {
-    backgroundColor: 'rgba(248, 113, 113, 0.12)',
-    borderColor: 'rgba(248, 113, 113, 0.4)',
+    backgroundColor: 'rgba(239, 68, 68, 0.12)',
+    borderWidth: 1,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
   },
   disabled: { opacity: 0.5 },
-  label: { ...typography.label, color: colors.text, fontSize: 16 },
+  label: { ...typography.label, fontSize: 15, fontWeight: '600' },
   icon: { marginRight: spacing.sm },
 });

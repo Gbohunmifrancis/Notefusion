@@ -14,13 +14,28 @@ import type { ApiError, TokenPairResponse } from './types';
  */
 
 // Base URL resolution, in priority order:
-//  1. EXPO_PUBLIC_API_URL — set at `expo start` time to point a physical device
-//     (Expo Go) at the dev machine's LAN IP without editing the checked-in default.
-//  2. app.json extra.apiBaseUrl — the committed default (10.0.2.2 = Android emulator host).
-const baseURL: string =
-  process.env.EXPO_PUBLIC_API_URL ??
-  (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)?.apiBaseUrl ??
-  'http://10.0.2.2:5080';
+//  1. EXPO_PUBLIC_API_URL — explicit environment variable override.
+//  2. Expo Go dynamic host IP — auto-detect dev machine LAN IP from Constants.expoConfig.hostUri.
+//  3. app.json extra.apiBaseUrl — default fallback (10.0.2.2 for Android emulator).
+function getBaseUrl(): string {
+  if (process.env.EXPO_PUBLIC_API_URL) {
+    return process.env.EXPO_PUBLIC_API_URL;
+  }
+  const extraUrl = (Constants.expoConfig?.extra as { apiBaseUrl?: string } | undefined)?.apiBaseUrl;
+  if (extraUrl && (extraUrl.startsWith('https://') || extraUrl.includes('herokuapp.com'))) {
+    return extraUrl;
+  }
+  const hostUri = Constants.expoConfig?.hostUri;
+  if (hostUri) {
+    const ip = hostUri.split(':')[0];
+    if (ip && ip !== 'localhost' && ip !== '127.0.0.1') {
+      return `http://${ip}:5080`;
+    }
+  }
+  return extraUrl ?? 'http://10.0.2.2:5080';
+}
+
+const baseURL: string = getBaseUrl();
 
 export const api: AxiosInstance = axios.create({
   baseURL,

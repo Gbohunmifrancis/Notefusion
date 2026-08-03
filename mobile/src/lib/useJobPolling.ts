@@ -12,6 +12,13 @@ export interface JobState {
 
 const TERMINAL: TranscriptionStatus[] = ['done', 'failed'];
 
+function normalizeStatus(status: unknown): TranscriptionStatus {
+  if (status === 2 || status === 'done' || status === 'Done') return 'done';
+  if (status === 3 || status === 'failed' || status === 'Failed') return 'failed';
+  if (status === 1 || status === 'processing' || status === 'Processing') return 'processing';
+  return 'pending';
+}
+
 /**
  * Polls GET /api/transcriptions/jobs/{id} until the job reaches a terminal state.
  * Backend transcription is async (queued single-worker inference), so the client
@@ -41,13 +48,14 @@ export function useJobPolling(intervalMs = 1000) {
         .getJob(jobId)
         .then((job) => {
           if (!active.current) return;
+          const status = normalizeStatus(job.status);
           setState({
-            status: job.status,
+            status,
             progress: job.progress,
             result: job.result ?? null,
-            error: job.status === 'failed' ? 'Transcription failed. Try a cleaner clip.' : null,
+            error: status === 'failed' ? 'Transcription failed. Try a cleaner clip.' : null,
           });
-          if (!TERMINAL.includes(job.status)) {
+          if (!TERMINAL.includes(status)) {
             timer.current = setTimeout(() => poll(jobId), intervalMs);
           }
         })
@@ -64,13 +72,18 @@ export function useJobPolling(intervalMs = 1000) {
     async (fileUri: string, fileName: string, opts: { mode: 'melody' | 'poly'; key?: string; tempo?: number }) => {
       setState({ status: 'pending', progress: 0, result: null, error: null });
       try {
-        const job = await transcriptionsApi.submit(fileUri, fileName, opts);
-        if (job.status === 'done' && job.result) {
-          setState({ status: 'done', progress: 1, result: job.result, error: null });
-        } else {
-          poll(job.jobId);
+        const res = await transcriptionsApi.submit(fileUri, fileName, opts);
+        const jobId = typeof res === 'string' ? res : (res?.jobId || (res as any)?.value);
+        if (!jobId) {
+          throw new Error('Invalid transcription response from server');
         }
-        return job.jobId;
+        const status = typeof res !== 'string' ? normalizeStatus(res.status) : 'pending';
+        if (typeof res !== 'string' && status === 'done' && res.result) {
+          setState({ status: 'done', progress: 1, result: res.result, error: null });
+        } else {
+          poll(jobId);
+        }
+        return jobId;
       } catch (e) {
         setState({ status: 'failed', progress: 0, result: null, error: toApiError(e).message });
         return null;

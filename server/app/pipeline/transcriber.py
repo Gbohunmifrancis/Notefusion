@@ -14,8 +14,9 @@ import numpy as np
 from app.pipeline import solfa
 
 # Post-processing thresholds (TRD par. 5: confidence filter, ghost-note suppression)
-MIN_AMPLITUDE = 0.15
-MIN_NOTE_SEC = 0.05
+MIN_AMPLITUDE_MELODY = 0.20
+MIN_AMPLITUDE_POLY = 0.15
+MIN_NOTE_SEC = 0.06
 
 
 @dataclass
@@ -95,21 +96,53 @@ def transcribe(audio_path: Path, mode: str = "melody",
 
     progress(0.1)
 
-    # 1. AMT model: audio -> note events
-    _, midi_data, note_events = predict(str(audio_path), ICASSP_2022_MODEL_PATH)
+    # 1. AMT model: tuned parameters for singing / instrumental accuracy
+    onset_thresh = 0.35 if mode == "melody" else 0.45
+    frame_thresh = 0.25 if mode == "melody" else 0.30
+    min_note_len = 80 if mode == "melody" else 60
+
+    _, midi_data, note_events = predict(
+        str(audio_path),
+        ICASSP_2022_MODEL_PATH,
+        onset_threshold=onset_thresh,
+        frame_threshold=frame_thresh,
+        minimum_note_length=min_note_len,
+        maximum_frequency=1200.0,  # Cap at ~D6 to filter high-frequency noise
+    )
     progress(0.5)
 
     # 2. Confidence filter + ghost-note suppression
+    min_amp = MIN_AMPLITUDE_MELODY if mode == "melody" else MIN_AMPLITUDE_POLY
     events = sorted(
-        (
+        [
             (start, end, int(pitch), float(amp))
             for start, end, pitch, amp, _bends in note_events
-            if amp >= MIN_AMPLITUDE and (end - start) >= MIN_NOTE_SEC
-        ),
+            if amp >= min_amp and (end - start) >= MIN_NOTE_SEC
+        ],
         key=lambda e: e[0],
     )
+
+    # In melody mode, clean up overlapping note artifacts to ensure a clean single voice line
+    if mode == "melody" and events:
+        cleaned_events = []
+        for evt in events:
+            if not cleaned_events:
+                cleaned_events.append(evt)
+            else:
+                prev_start, prev_end, prev_pitch, prev_amp = cleaned_events[-1]
+                curr_start, curr_end, curr_pitch, curr_amp = evt
+                if curr_start < prev_end:
+                    if curr_amp > prev_amp and (curr_start - prev_start) < 0.12:
+                        cleaned_events[-1] = evt
+                    elif curr_start < prev_end:
+                        cleaned_events[-1] = (prev_start, curr_start, prev_pitch, prev_amp)
+                        cleaned_events.append(evt)
+                else:
+                    cleaned_events.append(evt)
+        events = [e for e in cleaned_events if (e[1] - e[0]) >= 0.04]
+
     if not events:
-        raise LowConfidenceError("No confident notes detected in the recording.")
+        raise LowConfidenceError("No confident notes detected in the recording. Try singing or playing closer to the microphone.")
 
     # 3. Tempo: user tap-in override wins (TRD par. 5), else librosa beat tracking
     if tempo_override:
@@ -174,8 +207,6 @@ def transcribe(audio_path: Path, mode: str = "melody",
 
     if not notes:
         # Everything survived the amplitude filter but nothing survived quantization
-        # (e.g. a cluster of sub-grid blips). Fail honestly rather than emit an empty
-        # score with a NaN confidence (PRD reliability NFR).
         raise LowConfidenceError("No notes survived quantization; recording too noisy.")
 
     # 7. MusicXML + MIDI (base64) for the client's Verovio view, playback, and export

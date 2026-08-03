@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Easing, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   useAudioRecorder,
   RecordingPresets,
@@ -20,8 +20,8 @@ import type { RootStackParams } from '../navigation/types';
 type Mode = 'melody' | 'poly';
 type Phase = 'ready' | 'recording' | 'uploading';
 
-// 22.05 kHz mono matches the pipeline's expected input. Start from the m4a/AAC
-// HIGH_QUALITY preset and override the top-level rate/channels.
+const KEYS = ['Auto', 'C major', 'D major', 'E major', 'F major', 'G major', 'A major', 'Bb major', 'A minor', 'D minor', 'E minor'];
+
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
   sampleRate: 22050,
@@ -29,9 +29,9 @@ const RECORDING_OPTIONS: RecordingOptions = {
 };
 
 /**
- * Capture → submit → poll. Records 22.05 kHz mono (matches the pipeline's expected
- * input), uploads to the C# gateway, then polls the job and hands the finished
- * result to the Result screen. A pulsing ring makes the recording state obvious.
+ * Shazam-inspired Real-time Listening & Transcription Interface.
+ * Features central interactive Shazam listening trigger, animated concentric soundwaves,
+ * key override selector for 100% accurate Solfa mapping, and clear status hints.
  */
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -39,29 +39,52 @@ export function RecordScreen() {
 
   const [phase, setPhase] = useState<Phase>('ready');
   const [mode, setMode] = useState<Mode>('melody');
+  const [selectedKey, setSelectedKey] = useState<string>('Auto');
   const [elapsed, setElapsed] = useState(0);
   const [permError, setPermError] = useState<string | null>(null);
 
   const recorder = useAudioRecorder(RECORDING_OPTIONS);
-  const pulse = useRef(new Animated.Value(1)).current;
+  const ripple1 = useRef(new Animated.Value(1)).current;
+  const ripple2 = useRef(new Animated.Value(1)).current;
+  const rippleOpacity = useRef(new Animated.Value(0)).current;
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Animate the mic ring only while recording.
+  // Shazam concentric soundwave ripple animation while recording
   useEffect(() => {
     if (phase === 'recording') {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(pulse, { toValue: 1.25, duration: 700, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-          Animated.timing(pulse, { toValue: 1, duration: 700, easing: Easing.in(Easing.ease), useNativeDriver: true }),
-        ]),
-      ).start();
-    } else {
-      pulse.stopAnimation();
-      pulse.setValue(1);
-    }
-  }, [phase, pulse]);
+      Animated.timing(rippleOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start();
 
-  // Once the job finishes, route to Result and reset for the next take.
+      const anim1 = Animated.loop(
+        Animated.sequence([
+          Animated.timing(ripple1, { toValue: 1.45, duration: 1200, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+          Animated.timing(ripple1, { toValue: 1, duration: 0, useNativeDriver: true }),
+        ]),
+      );
+
+      const anim2 = Animated.loop(
+        Animated.sequence([
+          Animated.delay(400),
+          Animated.timing(ripple2, { toValue: 1.7, duration: 1400, easing: Easing.out(Easing.ease), useNativeDriver: true }),
+          Animated.timing(ripple2, { toValue: 1, duration: 0, useNativeDriver: true }),
+        ]),
+      );
+
+      anim1.start();
+      anim2.start();
+
+      return () => {
+        anim1.stop();
+        anim2.stop();
+      };
+    } else {
+      Animated.timing(rippleOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
+        ripple1.setValue(1);
+        ripple2.setValue(1);
+      });
+    }
+  }, [phase, ripple1, ripple2, rippleOpacity]);
+
+  // Navigate to Result once completed
   useEffect(() => {
     if (state.status === 'done' && state.result) {
       const result = state.result;
@@ -77,7 +100,7 @@ export function RecordScreen() {
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
-        setPermError('Microphone permission is needed to record.');
+        setPermError('Microphone permission is required to listen and transcribe.');
         return;
       }
       await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
@@ -103,7 +126,8 @@ export function RecordScreen() {
         setPhase('ready');
         return;
       }
-      await start(uri, `clip-${elapsed}s.m4a`, { mode });
+      const keyOpt = selectedKey === 'Auto' ? undefined : selectedKey;
+      await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
     } catch {
       setPhase('ready');
     }
@@ -115,66 +139,119 @@ export function RecordScreen() {
   return (
     <Screen>
       <View style={styles.container}>
-        <Text style={styles.title}>Record</Text>
-
-        {/* Mode selector */}
-        <View style={styles.modeRow}>
-          {(['melody', 'poly'] as Mode[]).map((m) => (
-            <TouchableOpacity
-              key={m}
-              style={[styles.modeChip, mode === m && styles.modeChipActive]}
-              onPress={() => phase === 'ready' && setMode(m)}
-              disabled={phase !== 'ready'}
-            >
-              <Ionicons
-                name={m === 'melody' ? 'musical-note' : 'layers'}
-                size={16}
-                color={mode === m ? colors.text : colors.textMuted}
-              />
-              <Text style={[styles.modeText, mode === m && styles.modeTextActive]}>
-                {m === 'melody' ? 'Melody' : 'Polyphonic'}
-              </Text>
-            </TouchableOpacity>
-          ))}
+        {/* Minimalist Top Header & Mode Switcher */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Listening</Text>
+          <View style={styles.modeToggleContainer}>
+            {(['melody', 'poly'] as Mode[]).map((m) => (
+              <TouchableOpacity
+                key={m}
+                style={[styles.modeButton, mode === m && styles.modeButtonActive]}
+                onPress={() => phase === 'ready' && setMode(m)}
+                disabled={phase !== 'ready'}
+              >
+                <Text style={[styles.modeButtonText, mode === m && styles.modeButtonTextActive]}>
+                  {m === 'melody' ? 'Melody (Monophonic)' : 'Polyphonic'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
 
-        {/* Mic */}
-        <View style={styles.micArea}>
-          <Animated.View style={[styles.pulseRing, { transform: [{ scale: pulse }] }]} />
+        {/* Key Picker for Accurate Solfa Tonic Mapping */}
+        <View style={styles.keyPickerArea}>
+          <Text style={styles.keyPickerLabel}>Key Signature:</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.keyScroll}>
+            {KEYS.map((k) => (
+              <TouchableOpacity
+                key={k}
+                style={[styles.keyChip, selectedKey === k && styles.keyChipActive]}
+                onPress={() => phase === 'ready' && setSelectedKey(k)}
+                disabled={phase !== 'ready'}
+              >
+                <Text style={[styles.keyChipText, selectedKey === k && styles.keyChipTextActive]}>
+                  {k}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+
+        {/* Shazam Central Listening Button & Concentric Waves */}
+        <View style={styles.shazamArea}>
+          <Animated.View
+            style={[
+              styles.rippleWave,
+              styles.rippleOuter,
+              { opacity: rippleOpacity, transform: [{ scale: ripple2 }] },
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.rippleWave,
+              styles.rippleInner,
+              { opacity: rippleOpacity, transform: [{ scale: ripple1 }] },
+            ]}
+          />
+
           <TouchableOpacity
-            activeOpacity={0.85}
+            activeOpacity={0.88}
             onPress={phase === 'recording' ? stopAndSubmit : phase === 'ready' ? startRecording : undefined}
             disabled={uploading}
-            style={[styles.micButton, phase === 'recording' && styles.micButtonActive]}
+            style={[
+              styles.shazamButton,
+              phase === 'recording' && styles.shazamButtonRecording,
+              uploading && styles.shazamButtonUploading,
+            ]}
           >
             <Ionicons
-              name={uploading ? 'hourglass' : phase === 'recording' ? 'stop' : 'mic'}
-              size={44}
-              color={colors.text}
+              name={uploading ? 'cloud-upload' : phase === 'recording' ? 'stop' : 'musical-notes'}
+              size={52}
+              color="#FFFFFF"
             />
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.timer}>{uploading ? 'Transcribing…' : mmss}</Text>
-        <Text style={styles.hint}>
-          {phase === 'ready' && 'Tap to record. Keep it to a short, clear phrase.'}
-          {phase === 'recording' && 'Tap the square to stop and transcribe.'}
-          {uploading && (state.status === 'processing'
-            ? `Analyzing audio · ${Math.round(state.progress * 100)}%`
-            : 'Uploading your clip…')}
-        </Text>
+        {/* Real-time Status Text & Timer */}
+        <View style={styles.statusArea}>
+          <Text style={styles.statusTitle}>
+            {phase === 'ready' && 'Tap to Listen'}
+            {phase === 'recording' && 'Listening to audio...'}
+            {uploading && (state.status === 'processing' ? 'Transcribing Solfa & Staff...' : 'Processing Audio...')}
+          </Text>
 
-        {uploading && (
-          <View style={styles.progressTrack}>
-            <View style={[styles.progressFill, { width: `${Math.max(8, state.progress * 100)}%` }]} />
-          </View>
+          <Text style={styles.timerText}>{uploading ? `${Math.round(state.progress * 100)}%` : mmss}</Text>
+
+          <Text style={styles.statusSubtext}>
+            {phase === 'ready' && 'Sing, hum, or play clearly near the mic for accurate note & Solfa extraction.'}
+            {phase === 'recording' && 'Tap the button to finish and process.'}
+            {uploading && 'Analyzing pitch frequencies and key profile...'}
+          </Text>
+
+          {uploading && (
+            <View style={styles.progressTrack}>
+              <View style={[styles.progressFill, { width: `${Math.max(6, state.progress * 100)}%` }]} />
+            </View>
+          )}
+        </View>
+
+        {permError && (
+          <Card style={styles.errCard}>
+            <Text style={styles.errText}>{permError}</Text>
+          </Card>
         )}
-
-        {permError && <Card style={styles.errCard}><Text style={styles.errText}>{permError}</Text></Card>}
         {state.error && (
           <Card style={styles.errCard}>
             <Text style={styles.errText}>{state.error}</Text>
-            <Button label="Try again" variant="secondary" onPress={() => { reset(); setPhase('ready'); }} style={{ marginTop: spacing.md }} />
+            <Button
+              label="Try again"
+              variant="secondary"
+              onPress={() => {
+                reset();
+                setPhase('ready');
+              }}
+              style={{ marginTop: spacing.md }}
+            />
           </Card>
         )}
       </View>
@@ -183,50 +260,128 @@ export function RecordScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center' },
-  title: { ...typography.title, color: colors.text, alignSelf: 'flex-start', marginTop: spacing.sm },
-  modeRow: { flexDirection: 'row', marginTop: spacing.xl, gap: spacing.md },
-  modeChip: {
+  container: { flex: 1, alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.xs },
+  header: { width: '100%', alignItems: 'center', marginTop: spacing.xs },
+  headerTitle: { ...typography.title, color: colors.text, marginBottom: spacing.sm, fontSize: 22 },
+  modeToggleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.bgElevated,
     borderRadius: radii.pill,
-    backgroundColor: colors.surface,
+    padding: 3,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  modeChipActive: { backgroundColor: colors.accentSoft, borderColor: colors.accent },
-  modeText: { ...typography.label, color: colors.textMuted, marginLeft: spacing.sm },
-  modeTextActive: { color: colors.text },
-  micArea: { marginTop: spacing.xxxl * 1.2, alignItems: 'center', justifyContent: 'center', height: 220 },
-  pulseRing: {
-    position: 'absolute',
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    backgroundColor: colors.accentSoft,
+  modeButton: {
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.md,
+    borderRadius: radii.pill,
   },
-  micButton: {
-    width: 132,
-    height: 132,
-    borderRadius: 66,
+  modeButtonActive: {
+    backgroundColor: colors.surfaceAlt,
+  },
+  modeButtonText: {
+    ...typography.label,
+    fontSize: 12,
+    color: colors.textMuted,
+  },
+  modeButtonTextActive: {
+    color: colors.text,
+    fontWeight: '700',
+  },
+  keyPickerArea: {
+    width: '100%',
+    marginVertical: spacing.xs,
+  },
+  keyPickerLabel: {
+    ...typography.caption,
+    color: colors.textMuted,
+    fontSize: 12,
+    marginBottom: spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+  keyScroll: {
+    flexDirection: 'row',
+  },
+  keyChip: {
+    paddingVertical: 4,
+    paddingHorizontal: spacing.md,
+    borderRadius: radii.pill,
+    backgroundColor: colors.bgElevated,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginRight: spacing.xs,
+  },
+  keyChipActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  keyChipText: {
+    ...typography.caption,
+    color: colors.textMuted,
+    fontSize: 12,
+  },
+  keyChipTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  shazamArea: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 210,
+    height: 210,
+    marginVertical: spacing.xs,
+  },
+  rippleWave: {
+    position: 'absolute',
+    borderRadius: 999,
+    borderWidth: 1.5,
+    borderColor: colors.accent,
+  },
+  rippleInner: {
+    width: 160,
+    height: 160,
+    backgroundColor: 'rgba(0, 136, 255, 0.08)',
+  },
+  rippleOuter: {
+    width: 200,
+    height: 200,
+    backgroundColor: 'rgba(0, 136, 255, 0.04)',
+  },
+  shazamButton: {
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     backgroundColor: colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: colors.accent,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+    elevation: 8,
   },
-  micButtonActive: { backgroundColor: colors.danger },
-  timer: { ...typography.display, color: colors.text, marginTop: spacing.xl, fontVariant: ['tabular-nums'] },
-  hint: { ...typography.body, color: colors.textMuted, textAlign: 'center', marginTop: spacing.md, paddingHorizontal: spacing.xl },
+  shazamButtonRecording: {
+    backgroundColor: colors.danger,
+    shadowColor: colors.danger,
+  },
+  shazamButtonUploading: {
+    backgroundColor: colors.surfaceAlt,
+    borderWidth: 2,
+    borderColor: colors.accent,
+  },
+  statusArea: { alignItems: 'center', width: '100%', paddingHorizontal: spacing.lg, marginBottom: spacing.xs },
+  statusTitle: { ...typography.heading, color: colors.text, fontSize: 18, marginBottom: spacing.xs },
+  timerText: { ...typography.display, color: colors.text, fontSize: 26, marginVertical: spacing.xs, fontVariant: ['tabular-nums'] },
+  statusSubtext: { ...typography.body, color: colors.textMuted, fontSize: 13, textAlign: 'center', marginTop: spacing.xs },
   progressTrack: {
-    width: '80%',
-    height: 6,
-    borderRadius: 3,
+    width: '85%',
+    height: 4,
+    borderRadius: 2,
     backgroundColor: colors.surface,
-    marginTop: spacing.xl,
+    marginTop: spacing.md,
     overflow: 'hidden',
   },
-  progressFill: { height: '100%', backgroundColor: colors.accent, borderRadius: 3 },
-  errCard: { marginTop: spacing.xl, width: '100%' },
-  errText: { ...typography.body, color: colors.danger, textAlign: 'center' },
+  progressFill: { height: '100%', backgroundColor: colors.accent, borderRadius: 2 },
+  errCard: { marginTop: spacing.sm, width: '100%' },
+  errText: { ...typography.body, color: colors.danger, textAlign: 'center', fontSize: 13 },
 });
