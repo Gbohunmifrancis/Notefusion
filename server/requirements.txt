@@ -21,3 +21,4 @@ numpy==2.4.6
 
 # Development / test
 pytest==8.3.4
+httpx==0.28.1   # required by starlette.testclient (TestClient) in tests/test_api.py
