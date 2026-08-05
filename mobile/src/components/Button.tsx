@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -6,11 +6,12 @@ import {
   StyleSheet,
   Text,
   ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, radii, spacing, typography } from '../design/theme';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, gradients, radii, spacing, typography } from "../design/theme";
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 interface Props {
   label: string;
@@ -23,13 +24,21 @@ interface Props {
 }
 
 /**
- * Minimalist responsive button component.
- * Features tactile spring scaling on press and clean solid contrast colors.
+ * Unified button component for the luxury dark-mode design system.
+ *
+ * primary   — "The Fusion" gradient (Electric Purple → Warm Gold), bold white
+ *             label, tactile spring-scale on press.
+ * secondary — Glass surface (8 % white) + 14 % white border; muted label.
+ * ghost     — Transparent; Soft Ash label for low-hierarchy actions.
+ * danger    — Red-tinted glass; danger-red label for destructive actions.
+ *
+ * All variants share the same spring-scale press animation powered by
+ * React Native's built-in Animated API (no extra dependencies needed).
  */
 export function Button({
   label,
   onPress,
-  variant = 'primary',
+  variant = "primary",
   icon,
   loading = false,
   disabled = false,
@@ -38,94 +47,144 @@ export function Button({
   const scale = useRef(new Animated.Value(1)).current;
   const isDisabled = disabled || loading;
 
+  /** Spring-snap on press-in, snap back on release. */
   const animate = (to: number) =>
-    Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 6 }).start();
+    Animated.spring(scale, {
+      toValue: to,
+      useNativeDriver: true,
+      speed: 40,
+      bounciness: 6,
+    }).start();
 
-  const getTextColor = () => {
-    if (variant === 'primary') return colors.onInk;
-    if (variant === 'danger') return colors.danger;
-    return colors.text;
+  // ── Label / icon colour per variant ───────────────────────────────────────
+  const getTextColor = (): string => {
+    switch (variant) {
+      case "primary":
+        return "#FFFFFF";
+      case "danger":
+        return colors.danger;
+      case "ghost":
+        return colors.textMuted;
+      default:
+        return colors.text;
+    }
   };
 
-  const getIconColor = () => {
-    if (variant === 'primary') return colors.onInk;
-    if (variant === 'danger') return colors.danger;
-    return colors.ink;
-  };
+  const textColor = getTextColor();
 
-  const content = (
+  // ── Inner content (shared across variants) ────────────────────────────────
+  const content = loading ? (
+    <ActivityIndicator color={textColor} size="small" />
+  ) : (
     <>
-      {loading ? (
-        <ActivityIndicator color={getTextColor()} />
-      ) : (
-        <>
-          {icon && (
-            <Ionicons
-              name={icon}
-              size={18}
-              color={getIconColor()}
-              style={styles.icon}
-            />
-          )}
-          <Text style={[styles.label, { color: getTextColor() }]}>
-            {label}
-          </Text>
-        </>
+      {icon && (
+        <Ionicons name={icon} size={18} color={textColor} style={styles.icon} />
       )}
+      <Text style={[styles.label, { color: textColor }]}>{label}</Text>
     </>
   );
 
+  // ── Primary — LinearGradient background ───────────────────────────────────
+  const primaryInner = (
+    <LinearGradient
+      colors={gradients.brand} // #A855F7 → #F59E0B
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={styles.base}
+    >
+      {content}
+    </LinearGradient>
+  );
+
+  // ── All other variants — plain View background ─────────────────────────────
+  const otherInner = (
+    <Animated.View
+      style={[
+        styles.base,
+        variant === "secondary" && styles.secondary,
+        variant === "ghost" && styles.ghost,
+        variant === "danger" && styles.danger,
+      ]}
+    >
+      {content}
+    </Animated.View>
+  );
+
   return (
-    <Animated.View style={[{ transform: [{ scale }] }, style, isDisabled && styles.disabled]}>
+    <Animated.View
+      style={[{ transform: [{ scale }] }, style, isDisabled && styles.disabled]}
+    >
       <Pressable
         onPress={isDisabled ? undefined : onPress}
-        onPressIn={() => !isDisabled && animate(0.97)}
+        onPressIn={() => !isDisabled && animate(0.96)}
         onPressOut={() => animate(1)}
         accessibilityRole="button"
+        accessibilityLabel={label}
         accessibilityState={{ disabled: isDisabled, busy: loading }}
+        // overflow:hidden clips the gradient to the pill shape on Android
+        style={styles.pressable}
       >
-        <Animated.View
-          style={[
-            styles.base,
-            variant === 'primary' && styles.primary,
-            variant === 'secondary' && styles.secondary,
-            variant === 'ghost' && styles.ghost,
-            variant === 'danger' && styles.danger,
-          ]}
-        >
-          {content}
-        </Animated.View>
+        {variant === "primary" ? primaryInner : otherInner}
       </Pressable>
     </Animated.View>
   );
 }
 
+// ─── Standalone GradientButton ────────────────────────────────────────────────
+// Convenience alias — keeps the sample-prompt API and is re-exported so screens
+// can import either name without changing existing usages of <Button>.
+export { Button as GradientButton };
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
+
 const styles = StyleSheet.create({
+  /** Clips the LinearGradient to the pill shape on Android & iOS. */
+  pressable: {
+    borderRadius: radii.pill,
+    overflow: "hidden",
+  },
+
+  /** Shared geometry — all variants render at this size. */
   base: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     height: 54,
     paddingHorizontal: spacing.xl,
     borderRadius: radii.pill,
   },
-  primary: {
-    backgroundColor: colors.ink,
-  },
+
+  /** Glass surface — 8 % white fill, 14 % white border. */
   secondary: {
-    backgroundColor: colors.surface,
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: "rgba(255, 255, 255, 0.14)",
   },
+
+  /** Transparent — for low-hierarchy / skip actions. */
   ghost: {
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
+
+  /** Red-tinted glass — destructive / sign-out actions. */
   danger: {
-    backgroundColor: 'rgba(240, 87, 107, 0.10)',
+    backgroundColor: "rgba(239, 68, 68, 0.12)",
     borderWidth: 1,
-    borderColor: 'rgba(240, 87, 107, 0.28)',
+    borderColor: "rgba(239, 68, 68, 0.30)",
   },
-  disabled: { opacity: 0.45 },
-  label: { ...typography.label, fontSize: 15, fontWeight: '600' },
-  icon: { marginRight: spacing.sm },
+
+  /** Applied when disabled or loading — preserves layout, fades visually. */
+  disabled: {
+    opacity: 0.4,
+  },
+
+  label: {
+    ...typography.label,
+    fontSize: 15,
+    fontWeight: "600",
+  },
+
+  icon: {
+    marginRight: spacing.sm,
+  },
 });

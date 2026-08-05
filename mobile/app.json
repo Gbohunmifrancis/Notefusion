@@ -5,15 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "notefusion",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "backgroundColor": "#EAF6F3",
-      "resizeMode": "contain"
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "userInterfaceStyle": "dark",
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.notefusion",
@@ -24,7 +17,7 @@
     "android": {
       "package": "app.notefusion",
       "adaptiveIcon": {
-        "backgroundColor": "#EAF6F3"
+        "backgroundColor": "#000000"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -40,7 +33,8 @@
           "microphonePermission": "NoteFusion records short clips to transcribe them into solfa and staff notation."
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-splash-screen"
     ],
     "extra": {
       "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",

@@ -1,6 +1,10 @@
-"""Wire contract (TRD par. 6). Must stay in sync with the Android client:
+"""Wire contract (TRD par. 6). Must stay in sync with the C# client:
 NoteFusion.Infrastructure/Api/TranscriptionApiContracts.cs (camelCase; the staff
 XML field is 'musicxml', all lowercase, matching the TRD).
+
+audio_preview_base64 carries a base64-encoded 16-bit PCM WAV synthesised from the
+note list by _synthesize_audio_preview().  The mobile client writes it to a temp
+file and plays it with expo-av so users can hear their transcription immediately.
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -35,6 +39,10 @@ class ResultDto(ApiModel):
     notes: list[NoteEventDto]
     solfa_lines: list[str]
     overall_confidence: float
+    # Base64-encoded 16-bit PCM WAV preview synthesised server-side from the note list.
+    # Empty string when synthesis produced no output (e.g. no notes survived the pipeline).
+    # The camelCase alias "audioPreviewBase64" is emitted automatically by to_camel.
+    audio_preview_base64: str = ""
 
 
 class JobResponse(ApiModel):

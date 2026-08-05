@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
@@ -23,7 +24,7 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
         {
             using var form = new MultipartFormDataContent();
             form.Add(new StreamContent(audio), "audio", fileName);
-            form.Add(new StringContent(options.Mode == TranscriptionMode.Melody ? "melody" : "poly"), "mode");
+            form.Add(new StringContent(options.Mode == TranscriptionMode.Poly ? "poly" : "melody"), "mode");
             if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 form.Add(new StringContent(options.Key), "key");
             if (options.Tempo is not null)
@@ -91,8 +92,9 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
                 .Select(n => new NoteEventDto(n.PitchMidi, n.StartBeat, n.DurBeats, n.Degree, n.Solfa, n.OctaveMark, n.Conf))
                 .ToList(),
             wire.Result.SolfaLines,
-            wire.Result.OverallConfidence);
+            wire.Result.OverallConfidence,
+            wire.Result.AudioPreviewBase64);
 
-        return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result);
+        return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error);
     }
 }

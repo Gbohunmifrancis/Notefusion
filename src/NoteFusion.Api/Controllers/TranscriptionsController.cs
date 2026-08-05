@@ -1,6 +1,8 @@
 using MediatR;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -18,7 +20,7 @@ public sealed class SubmitTranscriptionRequest
     /// <summary>Audio clip file to transcribe (e.g. m4a, wav, mp3).</summary>
     public required IFormFile Audio { get; init; }
 
-    /// <summary>Transcription mode: Melody (monophonic) or Poly (polyphonic).</summary>
+    /// <summary>Transcription mode: Melody (monophonic) or Poly (polyphonic). Wire values: "melody" / "poly".</summary>
     public TranscriptionMode Mode { get; init; } = TranscriptionMode.Melody;
 
     /// <summary>Optional key override (e.g. 'C major', 'A minor').</summary>

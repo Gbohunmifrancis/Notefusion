@@ -1,13 +1,13 @@
-import React from 'react';
-import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import { colors, spacing } from '../design/theme';
+import React from "react";
+import { ScrollView, StyleSheet, View, ViewStyle } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { colors, spacing } from "../design/theme";
 
 /**
- * Every screen's outer shell: safe-area aware, dark status bar, consistent
- * horizontal padding. `scroll` wraps the content in a ScrollView for form-heavy
- * screens; leave it off for screens that own their own list/scroll.
+ * Every screen's outer shell: safe-area aware, pitch-black background,
+ * light status bar text (for dark theme), consistent horizontal padding.
+ * `scroll` wraps the content in a ScrollView for form-heavy screens.
  */
 export function Screen({
   children,
@@ -18,11 +18,11 @@ export function Screen({
   children: React.ReactNode;
   scroll?: boolean;
   contentStyle?: ViewStyle;
-  edges?: ('top' | 'bottom' | 'left' | 'right')[];
+  edges?: ("top" | "bottom" | "left" | "right")[];
 }) {
   return (
-    <SafeAreaView style={styles.safe} edges={edges ?? ['top', 'bottom']}>
-      <StatusBar style="dark" />
+    <SafeAreaView style={styles.safe} edges={edges ?? ["top", "bottom"]}>
+      <StatusBar style="light" />
       {scroll ? (
         <ScrollView
           contentContainerStyle={[styles.content, contentStyle]}
@@ -32,7 +32,9 @@ export function Screen({
           {children}
         </ScrollView>
       ) : (
-        <View style={[styles.content, styles.flex, contentStyle]}>{children}</View>
+        <View style={[styles.content, styles.flex, contentStyle]}>
+          {children}
+        </View>
       )}
     </SafeAreaView>
   );

@@ -1,71 +1,224 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Easing,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import {
   useAudioRecorder,
+  useAudioRecorderState,
   RecordingPresets,
   setAudioModeAsync,
   requestRecordingPermissionsAsync,
   type RecordingOptions,
-} from 'expo-audio';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Screen } from '../components/Screen';
-import { Button } from '../components/Button';
-import { Card } from '../components/Card';
-import { useJobPolling } from '../lib/useJobPolling';
-import { colors, radii, spacing, typography } from '../design/theme';
-import type { RootStackParams } from '../navigation/types';
+} from "expo-audio";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Screen } from "../components/Screen";
+import { Button } from "../components/Button";
+import { Card } from "../components/Card";
+import { useJobPolling } from "../lib/useJobPolling";
+import { colors, gradients, radii, spacing, typography } from "../design/theme";
+import type { RootStackParams } from "../navigation/types";
 
-type Mode = 'melody' | 'poly';
-type Phase = 'ready' | 'recording' | 'uploading';
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-const KEYS = ['Auto', 'C major', 'D major', 'E major', 'F major', 'G major', 'A major', 'Bb major', 'A minor', 'D minor', 'E minor'];
+type Mode = "melody" | "poly";
+type Phase = "ready" | "recording" | "uploading";
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const KEYS = [
+  "Auto",
+  "C major",
+  "D major",
+  "E major",
+  "F major",
+  "G major",
+  "A major",
+  "Bb major",
+  "A minor",
+  "D minor",
+  "E minor",
+];
+
+const WAVE_BARS = 28; // number of soundwave visualiser bars
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
   sampleRate: 22050,
   numberOfChannels: 1,
+  isMeteringEnabled: true,
 };
 
+// ── Voice-level guidance thresholds (dBFS, 0 = loudest, -160 = silence) ───────
+//
+// expo-audio's metering value is an averaged power level in dBFS. Typical
+// speaking/singing voice close to a phone mic sits around -20 to -6 dBFS;
+// a quiet or distant voice drops below about -40 dBFS. These thresholds were
+// chosen empirically against the Phase 0 spike recordings (spike/README.md)
+// and err on the side of nudging the user rather than staying silent.
+const LEVEL_SILENCE_DBFS = -50; // effectively nothing reaching the mic
+const LEVEL_QUIET_DBFS = -34; // audible but too soft for confident transcription
+const LEVEL_GOOD_DBFS = -18; // comfortably loud — meter reads "good" from here up
+
+// How long the level must stay below LEVEL_QUIET_DBFS before the guidance
+// banner appears. Short dips (breaths, pauses between phrases) shouldn't
+// trigger a nag — only a sustained quiet stretch should.
+const QUIET_GUIDANCE_DELAY_MS = 1200;
+
+/** Maps a dBFS metering value to a 0..1 fraction for the level-meter bar. */
+function meteringToFraction(dbfs: number): number {
+  const clamped = Math.max(LEVEL_SILENCE_DBFS, Math.min(0, dbfs));
+  return (clamped - LEVEL_SILENCE_DBFS) / (0 - LEVEL_SILENCE_DBFS);
+}
+
+/** Traffic-light colour for the current metering level. */
+function meteringToColor(dbfs: number): string {
+  if (dbfs >= LEVEL_GOOD_DBFS) return "#22C55E"; // green — comfortably loud
+  if (dbfs >= LEVEL_QUIET_DBFS) return "#F59E0B"; // amber — audible but soft
+  return "#EF4444"; // red — too quiet / far from the mic
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
 /**
- * Shazam-inspired Real-time Listening & Transcription Interface.
- * Features central interactive Shazam listening trigger, animated concentric soundwaves,
- * key override selector for 100% accurate Solfa mapping, and clear status hints.
+ * RecordScreen — luxury dark-mode audio capture & transcription trigger.
+ *
+ * The central gradient record button (Electric Purple → Warm Gold ring +
+ * dark glass disc) is the hero.
+ *
+ *   • Ready state    : static gradient ring, pulsing ambient glow orb.
+ *   • Recording      : two concentric purple ripple waves; animated
+ *                      soundwave bars below the button.
+ *   • Uploading      : gradient progress bar; percentage inside the button.
+ *   • Mode toggle    : dark glass pill — active segment uses gradient fill.
+ *   • Key picker     : horizontal scroll of glass chips; active chip gradient.
+ *   • Error cards    : red-tinted glass surface consistent with the system.
  */
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { state, start, reset } = useJobPolling();
 
-  const [phase, setPhase] = useState<Phase>('ready');
-  const [mode, setMode] = useState<Mode>('melody');
-  const [selectedKey, setSelectedKey] = useState<string>('Auto');
+  const [phase, setPhase] = useState<Phase>("ready");
+  const [mode, setMode] = useState<Mode>("melody");
+  const [selectedKey, setSelectedKey] = useState<string>("Auto");
   const [elapsed, setElapsed] = useState(0);
   const [permError, setPermError] = useState<string | null>(null);
 
   const recorder = useAudioRecorder(RECORDING_OPTIONS);
+  // Polls the native recorder ~6x/sec for status + metering while recording;
+  // expo-audio only reports metering through this hook, not on `recorder` itself.
+  const recorderState = useAudioRecorderState(recorder, 150);
+
+  // ── Animation values ──────────────────────────────────────────────────────
   const ripple1 = useRef(new Animated.Value(1)).current;
   const ripple2 = useRef(new Animated.Value(1)).current;
-  const rippleOpacity = useRef(new Animated.Value(0)).current;
+  const rippleOpacity1 = useRef(new Animated.Value(0)).current;
+  const rippleOpacity2 = useRef(new Animated.Value(0)).current;
+  const ambientGlow = useRef(new Animated.Value(0.3)).current;
+  const barAnims = useRef(
+    Array.from({ length: WAVE_BARS }, () => new Animated.Value(0.15)),
+  ).current;
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Shazam concentric soundwave ripple animation while recording
-  useEffect(() => {
-    if (phase === 'recording') {
-      Animated.timing(rippleOpacity, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+  // ── Voice-level guidance state ────────────────────────────────────────────
+  const [showQuietGuidance, setShowQuietGuidance] = useState(false);
+  const quietSinceRef = useRef<number | null>(null);
+  const meterAnim = useRef(new Animated.Value(0)).current;
+  const guidanceOpacity = useRef(new Animated.Value(0)).current;
 
+  // ── Ambient glow pulse (always on) ───────────────────────────────────────
+  useEffect(() => {
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(ambientGlow, {
+          toValue: 0.65,
+          duration: 1800,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(ambientGlow, {
+          toValue: 0.25,
+          duration: 1800,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, [ambientGlow]);
+
+  // ── Ripple waves ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (phase === "recording") {
       const anim1 = Animated.loop(
         Animated.sequence([
-          Animated.timing(ripple1, { toValue: 1.45, duration: 1200, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-          Animated.timing(ripple1, { toValue: 1, duration: 0, useNativeDriver: true }),
+          Animated.parallel([
+            Animated.timing(ripple1, {
+              toValue: 1.6,
+              duration: 1100,
+              easing: Easing.out(Easing.ease),
+              useNativeDriver: true,
+            }),
+            Animated.timing(rippleOpacity1, {
+              toValue: 0,
+              duration: 1100,
+              easing: Easing.out(Easing.ease),
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.parallel([
+            Animated.timing(ripple1, {
+              toValue: 1,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+            Animated.timing(rippleOpacity1, {
+              toValue: 0.7,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
         ]),
       );
 
       const anim2 = Animated.loop(
         Animated.sequence([
-          Animated.delay(400),
-          Animated.timing(ripple2, { toValue: 1.7, duration: 1400, easing: Easing.out(Easing.ease), useNativeDriver: true }),
-          Animated.timing(ripple2, { toValue: 1, duration: 0, useNativeDriver: true }),
+          Animated.delay(420),
+          Animated.parallel([
+            Animated.timing(ripple2, {
+              toValue: 1.95,
+              duration: 1400,
+              easing: Easing.out(Easing.ease),
+              useNativeDriver: true,
+            }),
+            Animated.timing(rippleOpacity2, {
+              toValue: 0,
+              duration: 1400,
+              easing: Easing.out(Easing.ease),
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.parallel([
+            Animated.timing(ripple2, {
+              toValue: 1,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+            Animated.timing(rippleOpacity2, {
+              toValue: 0.45,
+              duration: 0,
+              useNativeDriver: true,
+            }),
+          ]),
         ]),
       );
 
@@ -75,180 +228,477 @@ export function RecordScreen() {
       return () => {
         anim1.stop();
         anim2.stop();
-      };
-    } else {
-      Animated.timing(rippleOpacity, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
         ripple1.setValue(1);
         ripple2.setValue(1);
-      });
+        rippleOpacity1.setValue(0);
+        rippleOpacity2.setValue(0);
+      };
     }
-  }, [phase, ripple1, ripple2, rippleOpacity]);
+  }, [phase, ripple1, ripple2, rippleOpacity1, rippleOpacity2]);
 
-  // Navigate to Result once completed
+  // ── Soundwave bars ────────────────────────────────────────────────────────
   useEffect(() => {
-    if (state.status === 'done' && state.result) {
+    if (phase === "recording") {
+      const anims = barAnims.map((bar, i) => {
+        const targetHigh = 0.5 + Math.random() * 0.5;
+        const targetLow = 0.1 + Math.random() * 0.2;
+        const dur = 180 + Math.random() * 220;
+        const loop = Animated.loop(
+          Animated.sequence([
+            Animated.timing(bar, {
+              toValue: targetHigh,
+              duration: dur,
+              easing: Easing.inOut(Easing.ease),
+              useNativeDriver: true,
+            }),
+            Animated.timing(bar, {
+              toValue: targetLow,
+              duration: dur * 0.8,
+              easing: Easing.inOut(Easing.ease),
+              useNativeDriver: true,
+            }),
+          ]),
+        );
+        return Animated.sequence([Animated.delay(i * 18), loop]);
+      });
+
+      const all = Animated.parallel(anims);
+      all.start();
+      return () => {
+        all.stop();
+        barAnims.forEach((b) => b.setValue(0.15));
+      };
+    } else {
+      Animated.parallel(
+        barAnims.map((b) =>
+          Animated.timing(b, {
+            toValue: 0.12,
+            duration: 400,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ),
+      ).start();
+    }
+  }, [phase, barAnims]);
+
+  // ── Navigate to Result ────────────────────────────────────────────────────
+  useEffect(() => {
+    if (state.status === "done" && state.result) {
       const result = state.result;
       reset();
-      setPhase('ready');
+      setPhase("ready");
       setElapsed(0);
-      nav.navigate('Result', { result });
+      nav.navigate("Result", { result });
     }
   }, [state.status, state.result, nav, reset]);
+
+  // ── Voice-level metering & "sing louder" guidance ─────────────────────────
+  //
+  // recorderState.metering is only meaningful while phase === "recording";
+  // expo-audio reports a stale/undefined value otherwise. The meter bar
+  // animates smoothly toward each new reading rather than snapping, and the
+  // guidance banner only appears after QUIET_GUIDANCE_DELAY_MS of sustained
+  // quiet — not on every brief dip — so pauses for breath don't trigger it.
+  useEffect(() => {
+    if (phase !== "recording") {
+      quietSinceRef.current = null;
+      if (showQuietGuidance) setShowQuietGuidance(false);
+      Animated.timing(meterAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false,
+      }).start();
+      return;
+    }
+
+    const dbfs = recorderState.metering ?? LEVEL_SILENCE_DBFS;
+
+    Animated.timing(meterAnim, {
+      toValue: meteringToFraction(dbfs),
+      duration: 150,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }).start();
+
+    const now = Date.now();
+    if (dbfs < LEVEL_QUIET_DBFS) {
+      if (quietSinceRef.current === null) {
+        quietSinceRef.current = now;
+      } else if (
+        !showQuietGuidance &&
+        now - quietSinceRef.current >= QUIET_GUIDANCE_DELAY_MS
+      ) {
+        setShowQuietGuidance(true);
+      }
+    } else {
+      quietSinceRef.current = null;
+      if (showQuietGuidance) setShowQuietGuidance(false);
+    }
+  }, [phase, recorderState.metering, meterAnim, showQuietGuidance]);
+
+  // Fade the guidance banner in/out rather than popping it, so it reads as a
+  // gentle nudge rather than an alarming error state.
+  useEffect(() => {
+    Animated.timing(guidanceOpacity, {
+      toValue: showQuietGuidance ? 1 : 0,
+      duration: 250,
+      useNativeDriver: true,
+    }).start();
+  }, [showQuietGuidance, guidanceOpacity]);
+
+  const currentMeterDbfs =
+    phase === "recording"
+      ? (recorderState.metering ?? LEVEL_SILENCE_DBFS)
+      : LEVEL_SILENCE_DBFS;
+  const meterColor = meteringToColor(currentMeterDbfs);
+
+  // ── Recording controls ────────────────────────────────────────────────────
 
   async function startRecording() {
     setPermError(null);
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
-        setPermError('Microphone permission is required to listen and transcribe.');
+        setPermError(
+          "Microphone permission is required to listen and transcribe.",
+        );
         return;
       }
-      await setAudioModeAsync({ allowsRecording: true, playsInSilentMode: true });
-
+      await setAudioModeAsync({
+        allowsRecording: true,
+        playsInSilentMode: true,
+      });
       await recorder.prepareToRecordAsync();
       recorder.record();
-      setPhase('recording');
+      setPhase("recording");
       setElapsed(0);
       tick.current = setInterval(() => setElapsed((e) => e + 1), 1000);
     } catch {
-      setPermError('Could not start recording. Please try again.');
+      setPermError("Could not start recording. Please try again.");
     }
   }
 
   async function stopAndSubmit() {
     if (tick.current) clearInterval(tick.current);
+    quietSinceRef.current = null;
+    setShowQuietGuidance(false);
     if (!recorder.isRecording) return;
-    setPhase('uploading');
+    setPhase("uploading");
     try {
       await recorder.stop();
       const uri = recorder.uri;
       if (!uri) {
-        setPhase('ready');
+        setPhase("ready");
         return;
       }
-      const keyOpt = selectedKey === 'Auto' ? undefined : selectedKey;
+      const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
       await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
     } catch {
-      setPhase('ready');
+      setPhase("ready");
     }
   }
 
-  const mmss = `${String(Math.floor(elapsed / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`;
-  const uploading = phase === 'uploading';
+  const handleButtonPress = () => {
+    if (phase === "ready") startRecording();
+    else if (phase === "recording") stopAndSubmit();
+  };
+
+  const mmss = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(
+    elapsed % 60,
+  ).padStart(2, "0")}`;
+
+  const isUploading = phase === "uploading";
 
   return (
-    <Screen>
+    <Screen edges={["top"]}>
       <View style={styles.container}>
-        {/* Minimalist Top Header & Mode Switcher */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Listening</Text>
-          <View style={styles.modeToggleContainer}>
-            {(['melody', 'poly'] as Mode[]).map((m) => (
-              <TouchableOpacity
-                key={m}
-                style={[styles.modeButton, mode === m && styles.modeButtonActive]}
-                onPress={() => phase === 'ready' && setMode(m)}
-                disabled={phase !== 'ready'}
-              >
-                <Text style={[styles.modeButtonText, mode === m && styles.modeButtonTextActive]}>
-                  {m === 'melody' ? 'Melody (Monophonic)' : 'Polyphonic'}
-                </Text>
-              </TouchableOpacity>
+        {/* ── Top controls ────────────────────────────────────────────────── */}
+        <View style={styles.top}>
+          <Text style={styles.screenTitle}>Listening</Text>
+
+          {/* Mode toggle */}
+          <View style={styles.modeToggle}>
+            {(["melody", "poly"] as Mode[]).map((m) => {
+              const active = mode === m;
+              return active ? (
+                <LinearGradient
+                  key={m}
+                  colors={gradients.brand}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.modeSegment, styles.modeSegmentActive]}
+                >
+                  <Text style={styles.modeTextActive}>
+                    {m === "melody" ? "Melody" : "Polyphonic"}
+                  </Text>
+                </LinearGradient>
+              ) : (
+                <TouchableOpacity
+                  key={m}
+                  style={styles.modeSegment}
+                  onPress={() => phase === "ready" && setMode(m)}
+                  disabled={phase !== "ready"}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.modeTextInactive}>
+                    {m === "melody" ? "Melody" : "Polyphonic"}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Key picker */}
+          <View style={styles.keyRow}>
+            <Text style={styles.keyLabel}>Key Signature</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.keyScroll}
+            >
+              {KEYS.map((k) => {
+                const active = selectedKey === k;
+                return active ? (
+                  <LinearGradient
+                    key={k}
+                    colors={gradients.brand}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={[styles.keyChip, styles.keyChipActive]}
+                  >
+                    <Text style={styles.keyChipTextActive}>{k}</Text>
+                  </LinearGradient>
+                ) : (
+                  <TouchableOpacity
+                    key={k}
+                    style={styles.keyChip}
+                    onPress={() => phase === "ready" && setSelectedKey(k)}
+                    disabled={phase !== "ready"}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.keyChipText}>{k}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          </View>
+        </View>
+
+        {/* ── Central record zone ─────────────────────────────────────────── */}
+        <View style={styles.centerZone}>
+          {/* Ambient glow orb */}
+          <Animated.View
+            style={[styles.ambientOrb, { opacity: ambientGlow }]}
+          />
+
+          {/* Ripple 2 — outermost */}
+          <Animated.View
+            style={[
+              styles.rippleRing,
+              styles.rippleOuter,
+              { opacity: rippleOpacity2, transform: [{ scale: ripple2 }] },
+            ]}
+          />
+
+          {/* "Sing louder / move closer" guidance banner — fades in after a
+              sustained quiet stretch while recording. Positioned above the
+              button so it doesn't obscure the record/stop control itself. */}
+          <Animated.View
+            style={[styles.guidanceBanner, { opacity: guidanceOpacity }]}
+            pointerEvents="none"
+          >
+            <View style={styles.guidanceDot} />
+            <Text style={styles.guidanceText}>
+              Sing louder or hold closer to the mic
+            </Text>
+          </Animated.View>
+
+          {/* Ripple 1 — inner */}
+          <Animated.View
+            style={[
+              styles.rippleRing,
+              styles.rippleInner,
+              { opacity: rippleOpacity1, transform: [{ scale: ripple1 }] },
+            ]}
+          />
+
+          {/* Record button */}
+          <TouchableOpacity
+            activeOpacity={0.88}
+            onPress={isUploading ? undefined : handleButtonPress}
+            disabled={isUploading}
+            style={styles.btnOuter}
+          >
+            <LinearGradient
+              colors={
+                phase === "recording"
+                  ? (["#EF4444", "#DC2626"] as const)
+                  : isUploading
+                    ? ([
+                        "rgba(168,85,247,0.4)",
+                        "rgba(245,158,11,0.4)",
+                      ] as const)
+                    : gradients.brand
+              }
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.btnRing}
+            >
+              <View style={styles.btnGlassDisc}>
+                {isUploading ? (
+                  <View style={styles.btnIconWrap}>
+                    <Text style={styles.progressPct}>
+                      {Math.round(state.progress * 100)}%
+                    </Text>
+                    <Text style={styles.progressLabel}>analysing</Text>
+                  </View>
+                ) : phase === "recording" ? (
+                  <View style={styles.btnIconWrap}>
+                    <View style={styles.stopSquare} />
+                  </View>
+                ) : (
+                  <View style={styles.btnIconWrap}>
+                    <Ionicons name="mic" size={44} color="#FFFFFF" />
+                  </View>
+                )}
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          {/* Soundwave bars */}
+          <View style={styles.waveContainer}>
+            {barAnims.map((anim, i) => (
+              <Animated.View
+                key={i}
+                style={[
+                  styles.waveBar,
+                  {
+                    transform: [{ scaleY: anim }],
+                    backgroundColor:
+                      i < WAVE_BARS / 2
+                        ? `rgba(168, 85, 247, ${0.4 + (i / WAVE_BARS) * 0.6})`
+                        : `rgba(245, 158, 11, ${0.4 + ((WAVE_BARS - i) / WAVE_BARS) * 0.6})`,
+                  },
+                ]}
+              />
             ))}
           </View>
         </View>
 
-        {/* Key Picker for Accurate Solfa Tonic Mapping */}
-        <View style={styles.keyPickerArea}>
-          <Text style={styles.keyPickerLabel}>Key Signature:</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.keyScroll}>
-            {KEYS.map((k) => (
-              <TouchableOpacity
-                key={k}
-                style={[styles.keyChip, selectedKey === k && styles.keyChipActive]}
-                onPress={() => phase === 'ready' && setSelectedKey(k)}
-                disabled={phase !== 'ready'}
-              >
-                <Text style={[styles.keyChipText, selectedKey === k && styles.keyChipTextActive]}>
-                  {k}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Shazam Central Listening Button & Concentric Waves */}
-        <View style={styles.shazamArea}>
-          <Animated.View
-            style={[
-              styles.rippleWave,
-              styles.rippleOuter,
-              { opacity: rippleOpacity, transform: [{ scale: ripple2 }] },
-            ]}
-          />
-          <Animated.View
-            style={[
-              styles.rippleWave,
-              styles.rippleInner,
-              { opacity: rippleOpacity, transform: [{ scale: ripple1 }] },
-            ]}
-          />
-
-          <TouchableOpacity
-            activeOpacity={0.88}
-            onPress={phase === 'recording' ? stopAndSubmit : phase === 'ready' ? startRecording : undefined}
-            disabled={uploading}
-            style={[
-              styles.shazamButton,
-              phase === 'recording' && styles.shazamButtonRecording,
-              uploading && styles.shazamButtonUploading,
-            ]}
-          >
+        {/* ── Voice-level meter ────────────────────────────────────────────── */}
+        {/* Only shown while recording — a live traffic-light bar (red → amber →
+            green) so users get instant, glanceable feedback on mic level
+            without needing to read the guidance banner text. */}
+        {phase === "recording" && (
+          <View style={styles.meterArea}>
             <Ionicons
-              name={uploading ? 'cloud-upload' : phase === 'recording' ? 'stop' : 'radio'}
-              size={52}
-              color={uploading ? colors.ink : colors.onInk}
+              name={
+                currentMeterDbfs < LEVEL_QUIET_DBFS
+                  ? "mic-off-outline"
+                  : "mic-outline"
+              }
+              size={14}
+              color={meterColor}
+              style={styles.meterIcon}
             />
-          </TouchableOpacity>
-        </View>
+            <View style={styles.meterTrack}>
+              <Animated.View
+                style={[
+                  styles.meterFill,
+                  {
+                    backgroundColor: meterColor,
+                    width: meterAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["0%", "100%"],
+                    }),
+                  },
+                ]}
+              />
+            </View>
+          </View>
+        )}
 
-        {/* Real-time Status Text & Timer */}
+        {/* ── Status area ─────────────────────────────────────────────────── */}
         <View style={styles.statusArea}>
           <Text style={styles.statusTitle}>
-            {phase === 'ready' && 'Tap to Listen'}
-            {phase === 'recording' && 'Listening to audio...'}
-            {uploading && (state.status === 'processing' ? 'Transcribing Solfa & Staff...' : 'Processing Audio...')}
+            {phase === "ready" && "Tap to record"}
+            {phase === "recording" && "Listening…"}
+            {isUploading &&
+              (state.status === "processing"
+                ? "Transcribing Solfa & Staff…"
+                : "Processing audio…")}
           </Text>
 
-          <Text style={styles.timerText}>{uploading ? `${Math.round(state.progress * 100)}%` : mmss}</Text>
-
-          <Text style={styles.statusSubtext}>
-            {phase === 'ready' && 'Sing, hum, or play clearly near the mic for accurate note & Solfa extraction.'}
-            {phase === 'recording' && 'Tap the button to finish and process.'}
-            {uploading && 'Analyzing pitch frequencies and key profile...'}
+          <Text style={styles.timerText}>
+            {isUploading ? `${Math.round(state.progress * 100)}%` : mmss}
           </Text>
 
-          {uploading && (
+          <Text style={styles.statusSub}>
+            {phase === "ready" &&
+              "Sing, hum, or play near the mic for accurate Solfa extraction."}
+            {phase === "recording" && "Tap the button again when you're done."}
+            {isUploading && "Analysing pitch frequencies and key profile…"}
+          </Text>
+
+          {isUploading && (
             <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: `${Math.max(6, state.progress * 100)}%` }]} />
+              <LinearGradient
+                colors={gradients.brand}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[
+                  styles.progressFill,
+                  { width: `${Math.max(5, state.progress * 100)}%` },
+                ]}
+              />
             </View>
           )}
         </View>
 
+        {/* ── Bottom action ────────────────────────────────────────────────── */}
+        {(phase === "recording" || isUploading) && (
+          <View style={styles.bottomAction}>
+            {phase === "recording" && (
+              <Button
+                label="Stop & Transcribe"
+                onPress={stopAndSubmit}
+                icon="stop-circle-outline"
+              />
+            )}
+            {isUploading && (
+              <Button
+                label="Processing…"
+                variant="secondary"
+                disabled
+                loading
+              />
+            )}
+          </View>
+        )}
+
+        {/* ── Error cards ──────────────────────────────────────────────────── */}
         {permError && (
           <Card style={styles.errCard}>
-            <Text style={styles.errText}>{permError}</Text>
+            <View style={styles.errRow}>
+              <View style={styles.errDot} />
+              <Text style={styles.errText}>{permError}</Text>
+            </View>
           </Card>
         )}
+
         {state.error && (
           <Card style={styles.errCard}>
-            <Text style={styles.errText}>{state.error}</Text>
+            <View style={styles.errRow}>
+              <View style={styles.errDot} />
+              <Text style={styles.errText}>{state.error}</Text>
+            </View>
             <Button
               label="Try again"
               variant="secondary"
               onPress={() => {
                 reset();
-                setPhase('ready');
+                setPhase("ready");
               }}
               style={{ marginTop: spacing.md }}
             />
@@ -259,129 +709,403 @@ export function RecordScreen() {
   );
 }
 
+// ─── Styles ──────────────────────────────────────────────────────────────────
+
+const BTN_SIZE = 148;
+const DISC_SIZE = 116;
+const METER_TRACK_WIDTH = 220;
+
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.xs, paddingBottom: 96 },
-  header: { width: '100%', alignItems: 'center', marginTop: spacing.xs },
-  headerTitle: { ...typography.title, color: colors.text, marginBottom: spacing.sm, fontSize: 22 },
-  modeToggleContainer: {
-    flexDirection: 'row',
-    backgroundColor: colors.surfaceAlt,
-    borderRadius: radii.pill,
-    padding: 3,
-    borderWidth: 1,
-    borderColor: colors.border,
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingBottom: 100,
   },
-  modeButton: {
-    paddingVertical: spacing.xs,
+
+  // ── Top ──────────────────────────────────────────────────────────────────
+
+  top: {
+    width: "100%",
+    alignItems: "center",
+    paddingTop: spacing.sm,
+    gap: spacing.md,
+  },
+
+  screenTitle: {
+    ...typography.title,
+    color: colors.text,
+    fontSize: 22,
+    letterSpacing: -0.3,
+  },
+
+  // ── Mode toggle ───────────────────────────────────────────────────────────
+
+  modeToggle: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: radii.pill,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.10)",
+    padding: 3,
+  },
+
+  modeSegment: {
+    paddingVertical: spacing.xs + 2,
     paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  modeButtonActive: {
-    backgroundColor: colors.ink,
+
+  modeSegmentActive: {
+    overflow: "hidden",
+    shadowColor: colors.purple,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 4,
   },
-  modeButtonText: {
+
+  modeTextActive: {
     ...typography.label,
+    color: "#FFFFFF",
     fontSize: 12,
-    color: colors.textMuted,
+    fontWeight: "700",
   },
-  modeButtonTextActive: {
-    color: colors.onInk,
-    fontWeight: '700',
+
+  modeTextInactive: {
+    ...typography.label,
+    color: colors.textFaint,
+    fontSize: 12,
   },
-  keyPickerArea: {
-    width: '100%',
-    marginVertical: spacing.xs,
+
+  // ── Key picker ────────────────────────────────────────────────────────────
+
+  keyRow: {
+    width: "100%",
   },
-  keyPickerLabel: {
+
+  keyLabel: {
     ...typography.caption,
-    color: colors.textMuted,
-    fontSize: 12,
+    color: colors.textFaint,
+    fontSize: 11,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
     marginBottom: spacing.xs,
     paddingHorizontal: spacing.sm,
   },
+
   keyScroll: {
-    flexDirection: 'row',
+    paddingHorizontal: spacing.sm,
+    gap: spacing.xs,
   },
+
   keyChip: {
-    paddingVertical: 6,
+    paddingVertical: 7,
     paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
-    backgroundColor: colors.surfaceAlt,
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 1,
-    borderColor: colors.border,
-    marginRight: spacing.xs,
+    borderColor: "rgba(255,255,255,0.10)",
   },
+
   keyChipActive: {
-    backgroundColor: colors.ink,
-    borderColor: colors.ink,
+    overflow: "hidden",
+    borderWidth: 0,
+    shadowColor: colors.purple,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 4,
   },
+
   keyChipText: {
     ...typography.caption,
     color: colors.textMuted,
     fontSize: 12,
   },
+
   keyChipTextActive: {
-    color: colors.onInk,
-    fontWeight: '700',
+    ...typography.caption,
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "700",
   },
-  shazamArea: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 210,
-    height: 210,
-    marginVertical: spacing.xs,
+
+  // ── Centre zone ───────────────────────────────────────────────────────────
+
+  centerZone: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 280,
+    height: 280,
   },
-  rippleWave: {
-    position: 'absolute',
+
+  ambientOrb: {
+    position: "absolute",
+    width: 240,
+    height: 240,
+    borderRadius: 120,
+    backgroundColor: "rgba(168, 85, 247, 0.18)",
+  },
+
+  // ── Voice-level guidance banner ───────────────────────────────────────────
+
+  guidanceBanner: {
+    position: "absolute",
+    top: -8,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(239, 68, 68, 0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(239, 68, 68, 0.35)",
+    borderRadius: radii.pill,
+    paddingVertical: 8,
+    paddingHorizontal: spacing.md,
+    zIndex: 10,
+  },
+
+  guidanceDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: "#EF4444",
+    marginRight: spacing.sm,
+    shadowColor: "#EF4444",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.85,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  guidanceText: {
+    ...typography.caption,
+    color: "#FCA5A5",
+    fontSize: 12,
+    fontWeight: "700",
+  },
+
+  // ── Voice-level meter bar ──────────────────────────────────────────────────
+
+  meterArea: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: -spacing.sm,
+    marginBottom: spacing.xs,
+  },
+
+  meterIcon: {
+    marginRight: spacing.sm,
+  },
+
+  meterTrack: {
+    width: METER_TRACK_WIDTH,
+    height: 5,
+    borderRadius: radii.pill,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    overflow: "hidden",
+  },
+
+  meterFill: {
+    height: "100%",
+    borderRadius: radii.pill,
+  },
+
+  rippleRing: {
+    position: "absolute",
     borderRadius: 999,
     borderWidth: 1.5,
-    borderColor: colors.accent,
   },
+
   rippleInner: {
-    width: 160,
-    height: 160,
-    backgroundColor: 'rgba(127, 216, 232, 0.18)',
+    width: 176,
+    height: 176,
+    borderColor: "rgba(168, 85, 247, 0.7)",
+    backgroundColor: "rgba(168, 85, 247, 0.06)",
   },
+
   rippleOuter: {
-    width: 200,
-    height: 200,
-    backgroundColor: 'rgba(127, 216, 232, 0.10)',
+    width: 232,
+    height: 232,
+    borderColor: "rgba(168, 85, 247, 0.45)",
+    backgroundColor: "rgba(168, 85, 247, 0.03)",
   },
-  shazamButton: {
-    width: 130,
-    height: 130,
-    borderRadius: 65,
-    backgroundColor: colors.ink,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: colors.ink,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.22,
-    shadowRadius: 20,
-    elevation: 8,
+
+  // ── Record button ─────────────────────────────────────────────────────────
+
+  btnOuter: {
+    shadowColor: colors.purple,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 28,
+    elevation: 14,
+    borderRadius: BTN_SIZE / 2,
   },
-  shazamButtonRecording: {
-    backgroundColor: colors.danger,
-    shadowColor: colors.danger,
+
+  btnRing: {
+    width: BTN_SIZE,
+    height: BTN_SIZE,
+    borderRadius: BTN_SIZE / 2,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  shazamButtonUploading: {
-    backgroundColor: colors.surfaceAlt,
-    borderWidth: 2,
-    borderColor: colors.ink,
+
+  btnGlassDisc: {
+    width: DISC_SIZE,
+    height: DISC_SIZE,
+    borderRadius: DISC_SIZE / 2,
+    backgroundColor: "rgba(10, 10, 12, 0.85)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  statusArea: { alignItems: 'center', width: '100%', paddingHorizontal: spacing.lg, marginBottom: spacing.xs },
-  statusTitle: { ...typography.heading, color: colors.text, fontSize: 18, marginBottom: spacing.xs },
-  timerText: { ...typography.display, color: colors.text, fontSize: 26, marginVertical: spacing.xs, fontVariant: ['tabular-nums'] },
-  statusSubtext: { ...typography.body, color: colors.textMuted, fontSize: 13, textAlign: 'center', marginTop: spacing.xs },
+
+  btnIconWrap: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  stopSquare: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: "#EF4444",
+    shadowColor: "#EF4444",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.7,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+
+  progressPct: {
+    fontSize: 26,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    letterSpacing: -0.5,
+  },
+
+  progressLabel: {
+    ...typography.caption,
+    color: colors.textFaint,
+    fontSize: 10,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    marginTop: 2,
+  },
+
+  // ── Soundwave ─────────────────────────────────────────────────────────────
+
+  waveContainer: {
+    position: "absolute",
+    bottom: -50,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 40,
+    gap: 2.5,
+  },
+
+  waveBar: {
+    width: 3,
+    height: 36,
+    borderRadius: radii.pill,
+  },
+
+  // ── Status ────────────────────────────────────────────────────────────────
+
+  statusArea: {
+    alignItems: "center",
+    width: "100%",
+    paddingHorizontal: spacing.xl,
+    marginTop: spacing.xxxl + spacing.xl,
+  },
+
+  statusTitle: {
+    ...typography.heading,
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: spacing.xs,
+  },
+
+  timerText: {
+    fontSize: 42,
+    fontWeight: "700",
+    color: colors.text,
+    letterSpacing: -1,
+    textShadowColor: "rgba(168, 85, 247, 0.55)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
+    fontVariant: ["tabular-nums"],
+    marginVertical: spacing.xs,
+  },
+
+  statusSub: {
+    ...typography.body,
+    color: colors.textMuted,
+    fontSize: 13,
+    textAlign: "center",
+    lineHeight: 20,
+    marginTop: spacing.xs,
+    paddingHorizontal: spacing.md,
+  },
+
   progressTrack: {
-    width: '85%',
+    width: "80%",
     height: 4,
-    borderRadius: 2,
-    backgroundColor: colors.surface,
-    marginTop: spacing.md,
-    overflow: 'hidden',
+    borderRadius: radii.pill,
+    backgroundColor: "rgba(255,255,255,0.08)",
+    marginTop: spacing.lg,
+    overflow: "hidden",
   },
-  progressFill: { height: '100%', backgroundColor: colors.ink, borderRadius: 2 },
-  errCard: { marginTop: spacing.sm, width: '100%' },
-  errText: { ...typography.body, color: colors.danger, textAlign: 'center', fontSize: 13 },
+
+  progressFill: {
+    height: "100%",
+    borderRadius: radii.pill,
+  },
+
+  // ── Bottom action ─────────────────────────────────────────────────────────
+
+  bottomAction: {
+    width: "100%",
+    paddingHorizontal: spacing.xl,
+  },
+
+  // ── Error card ────────────────────────────────────────────────────────────
+
+  errCard: {
+    width: "100%",
+    marginTop: spacing.sm,
+    backgroundColor: "rgba(239, 68, 68, 0.08)",
+    borderColor: "rgba(239, 68, 68, 0.22)",
+  },
+
+  errRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+
+  errDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.danger,
+    marginRight: spacing.sm,
+    marginTop: 3,
+    shadowColor: colors.danger,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  errText: {
+    ...typography.body,
+    color: colors.danger,
+    fontSize: 13,
+    flex: 1,
+    lineHeight: 20,
+  },
 });

@@ -8,11 +8,10 @@ from pathlib import Path
 import numpy as np
 import pytest
 import soundfile as sf
-from fastapi.testclient import TestClient
-
 from app.api.schemas import SubmitResponse
 from app.jobs.queue import STATUS_DONE, STATUS_PENDING, JobQueue
 from app.main import app
+from fastapi.testclient import TestClient
 
 
 def _make_wav(duration_sec: float = 0.5, sr: int = 22050) -> bytes:
@@ -24,8 +23,9 @@ def _make_wav(duration_sec: float = 0.5, sr: int = 22050) -> bytes:
     return buffer.getvalue()
 
 
-def _wait_for_status(client: TestClient, job_id: str,
-                     target: str, timeout: float = 5.0) -> dict:
+def _wait_for_status(
+    client: TestClient, job_id: str, target: str, timeout: float = 5.0
+) -> dict:
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         r = client.get(f"/v1/jobs/{job_id}")
@@ -50,6 +50,7 @@ def test_submit_returns_202_and_polls_done(monkeypatch):
 
     def fake_transcribe(audio_path, mode="melody", **kwargs):
         from app.pipeline.transcriber import TranscriptionResult
+
         return TranscriptionResult(
             key="C",
             key_confidence=1.0,
@@ -142,10 +143,16 @@ def test_submit_rejects_out_of_range_tempo():
             assert r.status_code == 422, f"tempo={bad} should be rejected"
 
 
-def test_submit_rejects_unparseable_key_synchronously():
+def test_submit_rejects_genuinely_unparseable_keys():
+    """Keys that are not valid note names must return 422.
+
+    Note: pure-whitespace ("   ") is now sanitised to None by the route layer
+    (same as "Auto"/"null"), so it is NOT in this list — a blank key simply
+    means "no override" rather than an error.
+    """
     with TestClient(app) as client:
         data = _make_wav(duration_sec=0.1)
-        for bad in ("H", "Cx", "123", "   ", "m"):
+        for bad in ("H", "Cx", "123", "m", "#", "Zb"):
             r = client.post(
                 "/v1/transcribe",
                 files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
@@ -153,6 +160,62 @@ def test_submit_rejects_unparseable_key_synchronously():
             )
             assert r.status_code == 422, f"key={bad!r} should be rejected"
             assert "key" in r.json()["detail"].lower()
+
+
+def test_submit_accepts_sanitisable_key_values():
+    """Values that the route sanitises to None (no override) must return 202."""
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.5)
+        for neutral in ("Auto", "auto", "AUTO", "null", "none", "   "):
+            r = client.post(
+                "/v1/transcribe",
+                files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
+                data={"mode": "melody", "key": neutral},
+            )
+            assert r.status_code == 202, (
+                f"key={neutral!r} should be accepted (sanitised to no override)"
+            )
+
+
+def test_submit_accepts_music21_dash_flat_key():
+    """music21 flat notation ("B- major") must be accepted and forwarded to the queue."""
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.5)
+        for valid in ("B- major", "E- minor", "A- major", "b-", "e-"):
+            r = client.post(
+                "/v1/transcribe",
+                files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
+                data={"mode": "melody", "key": valid},
+            )
+            assert r.status_code == 202, (
+                f"key={valid!r} should be accepted (music21 dash-flat)"
+            )
+
+
+def test_failed_job_exposes_error_field(monkeypatch):
+    """When a job fails the JSON response must include an 'error' field with the
+    worker's reason — not null. Previously the C# JobResponse record was missing
+    the error field so Python error messages were silently dropped."""
+    from app.jobs import queue as queue_mod
+    from app.pipeline.transcriber import LowConfidenceError
+
+    def _low_conf(*a, **k):
+        raise LowConfidenceError("No confident notes detected in the recording.")
+
+    monkeypatch.setattr(queue_mod, "transcribe", _low_conf)
+
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.5)
+        r = client.post(
+            "/v1/transcribe",
+            files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
+            data={"mode": "melody"},
+        )
+        assert r.status_code == 202
+        job_id = r.json()["jobId"]
+        body = _wait_for_status(client, job_id, STATUS_FAILED)
+        assert body.get("error"), "error field must be non-empty on a failed job"
+        assert "confident" in body["error"].lower()
 
 
 def test_submit_rejects_unsupported_format():

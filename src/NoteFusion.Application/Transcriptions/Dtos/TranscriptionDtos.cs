@@ -24,7 +24,19 @@ public sealed record NoteEventDto(
     string OctaveMark,
     double Conf);
 
-/// <summary>Completed result of GET /v1/jobs/{jobId} (TRD §6).</summary>
+/// <summary>
+/// Completed result of GET /v1/jobs/{jobId} (TRD §6).
+///
+/// <para>
+/// <c>AudioPreviewBase64</c> carries a base64-encoded 16-bit PCM WAV file
+/// synthesised server-side by the Python worker from the transcribed note list
+/// (using numpy + soundfile — no system audio libraries required).  The mobile
+/// client writes this to a temporary cache file with expo-file-system and plays
+/// it through expo-av, giving the user instant audio feedback without any extra
+/// network round-trip.  The field is an empty string when synthesis produced no
+/// output (e.g. an empty note list survived the pipeline).
+/// </para>
+/// </summary>
 public sealed record TranscriptionResultDto(
     string Key,
     double KeyConfidence,
@@ -34,11 +46,22 @@ public sealed record TranscriptionResultDto(
     string MidiBase64,
     IReadOnlyList<NoteEventDto> Notes,
     IReadOnlyList<string> SolfaLines,
-    double OverallConfidence);
+    double OverallConfidence,
+    string AudioPreviewBase64 = "");
 
-/// <summary>Polling envelope for a transcription job.</summary>
+/// <summary>
+/// Polling envelope for a transcription job.
+///
+/// <para>
+/// <c>Error</c> carries the human-readable failure reason from the Python worker
+/// (e.g. "No confident notes detected in the recording").  It is non-null only
+/// when <c>Status == Failed</c>; the mobile should surface it directly instead
+/// of showing a hardcoded fallback string.
+/// </para>
+/// </summary>
 public sealed record TranscriptionJobDto(
     string JobId,
     TranscriptionStatus Status,
     double Progress,
-    TranscriptionResultDto? Result);
+    TranscriptionResultDto? Result,
+    string? Error = null);

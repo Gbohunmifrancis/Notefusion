@@ -32,7 +32,7 @@ export interface MyProfile {
 
 // --- Transcriptions -----------------------------------------------------
 
-export type TranscriptionStatus = 'pending' | 'processing' | 'done' | 'failed';
+export type TranscriptionStatus = "pending" | "processing" | "done" | "failed";
 
 export interface NoteEvent {
   pitchMidi: number;
@@ -54,6 +54,13 @@ export interface TranscriptionResult {
   notes: NoteEvent[];
   solfaLines: string[];
   overallConfidence: number;
+  /**
+   * Base64-encoded 16-bit PCM WAV audio preview synthesised server-side from
+   * the note list (numpy + soundfile — no system audio libraries required).
+   * Empty string when synthesis produced no output.
+   * Written to a cache file with expo-file-system and played via expo-av.
+   */
+  audioPreviewBase64?: string;
 }
 
 export interface TranscriptionJob {
@@ -61,6 +68,14 @@ export interface TranscriptionJob {
   status: TranscriptionStatus;
   progress: number;
   result?: TranscriptionResult | null;
+  /**
+   * Human-readable failure reason from the Python worker
+   * (e.g. "No confident notes detected in the recording").
+   * Non-null only when status === 'failed'.
+   * Previously this field was absent from the C# DTO so Python error
+   * messages were silently dropped and the mobile showed a hardcoded string.
+   */
+  error?: string | null;
 }
 
 // --- Library ------------------------------------------------------------
