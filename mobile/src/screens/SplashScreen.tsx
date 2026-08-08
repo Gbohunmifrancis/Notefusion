@@ -1,20 +1,27 @@
 import React, { useEffect, useRef } from "react";
 import { Animated, Easing, StyleSheet, Text, View } from "react-native";
+import { type Palette } from "../design/theme";
+import { useThemedStyles } from "../lib/theme";
 
 /**
- * SplashScreen — the brand identity card on a pitch-black stage.
+ * SplashScreen — the brand identity card on the app canvas.
  *
  * Inspired by the NoteFusion logo card:
- *   • Pure black (#000000) canvas — no gradients, no distractions.
- *   • "Note"   rendered in Electric Pink  (#D946EF) with a pink text-shadow glow.
- *   • "Fusion" rendered in Electric Purple (#A855F7) with a purple text-shadow glow.
+ *   • Plain canvas — no gradients, no distractions.
+ *   • "Note"   rendered in Sky (#0EA5E9) with a sky text-shadow glow.
+ *   • "Fusion" rendered in Primary Blue (#2563EB) with a blue text-shadow glow.
  *   • A pulsing ambient orb behind the wordmark simulates the halo in the logo card.
  *   • Tagline fades in after the wordmark for a staged, cinematic entrance.
+ *
+ * The wordmark and orbs keep their literal brand hues in both modes — they are
+ * the logo, not themed chrome; only the canvas and tagline follow the palette.
  *
  * No masked-view or native gradient-text libraries are required — the split-word
  * technique plus React Native textShadow achieves the glowing gradient look.
  */
 export function SplashScreen() {
+  const styles = useThemedStyles(makeStyles);
+
   // ── Animation values ────────────────────────────────────────────────────────
   const orbScale = useRef(new Animated.Value(0.8)).current;
   const orbOpacity = useRef(new Animated.Value(0.3)).current;
@@ -135,9 +142,9 @@ export function SplashScreen() {
           },
         ]}
       >
-        {/* "Note" — Electric Pink with pink glow */}
+        {/* "Note" — Sky with sky glow */}
         <Text style={styles.wordNote}>Note</Text>
-        {/* "Fusion" — Electric Purple with purple glow */}
+        {/* "Fusion" — Primary Blue with blue glow */}
         <Text style={styles.wordFusion}>Fusion</Text>
       </Animated.View>
 
@@ -157,80 +164,81 @@ export function SplashScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#000000", // Pitch Black — no gradients, the logo IS the colour
-    alignItems: "center",
-    justifyContent: "center",
-  },
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: c.bg, // no gradients, the logo IS the colour
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  // ── Ambient orbs ────────────────────────────────────────────────────────────
+    // ── Ambient orbs ────────────────────────────────────────────────────────────
 
-  /** Pink halo — positioned slightly left of centre to mirror the gradient start. */
-  orbPink: {
-    position: "absolute",
-    width: 320,
-    height: 320,
-    borderRadius: 160,
-    backgroundColor: "rgba(217, 70, 239, 0.18)", // Electric Pink at low opacity
-  },
+    /** Pink halo — positioned slightly left of centre to mirror the gradient start. */
+    orbPink: {
+      position: "absolute",
+      width: 320,
+      height: 320,
+      borderRadius: 160,
+      backgroundColor: "rgba(14, 165, 233, 0.18)", // Sky at low opacity
+    },
 
-  /** Purple halo — centred, smaller, layered on top of the pink orb. */
-  orbPurple: {
-    position: "absolute",
-    width: 280,
-    height: 280,
-    borderRadius: 140,
-    backgroundColor: "rgba(168, 85, 247, 0.22)", // Electric Purple at low opacity
-  },
+    /** Blue halo — centred, smaller, layered on top of the pink orb. */
+    orbPurple: {
+      position: "absolute",
+      width: 280,
+      height: 280,
+      borderRadius: 140,
+      backgroundColor: "rgba(37, 99, 235, 0.22)", // Primary Blue at low opacity
+    },
 
-  // ── Wordmark ─────────────────────────────────────────────────────────────────
+    // ── Wordmark ─────────────────────────────────────────────────────────────────
 
-  wordmarkRow: {
-    flexDirection: "row",
-    alignItems: "baseline",
-  },
+    wordmarkRow: {
+      flexDirection: "row",
+      alignItems: "baseline",
+    },
 
-  /**
-   * "Note" — Electric Pink (#D946EF).
-   * textShadow with a large radius and high opacity creates the bloom / glow
-   * effect visible in the brand identity card on a dark background.
-   */
-  wordNote: {
-    fontSize: 52,
-    fontWeight: "800",
-    color: "#D946EF",
-    letterSpacing: -1.5,
-    // Glow layer 1 — tight hot-pink core
-    textShadowColor: "rgba(217, 70, 239, 0.95)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 18,
-  },
+    /**
+     * "Note" — Sky (#0EA5E9).
+     * textShadow with a large radius and high opacity creates the bloom / glow
+     * effect visible in the brand identity card.
+     */
+    wordNote: {
+      fontSize: 52,
+      fontWeight: "800",
+      color: "#0EA5E9",
+      letterSpacing: -1.5,
+      // Glow layer 1 — tight sky core
+      textShadowColor: "rgba(14, 165, 233, 0.95)",
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 18,
+    },
 
-  /**
-   * "Fusion" — Electric Purple (#A855F7).
-   * Matching glow technique so the two halves read as one glowing wordmark.
-   */
-  wordFusion: {
-    fontSize: 52,
-    fontWeight: "800",
-    color: "#A855F7",
-    letterSpacing: -1.5,
-    // Glow layer 1 — tight purple core
-    textShadowColor: "rgba(168, 85, 247, 0.95)",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 18,
-  },
+    /**
+     * "Fusion" — Primary Blue (#2563EB).
+     * Matching glow technique so the two halves read as one glowing wordmark.
+     */
+    wordFusion: {
+      fontSize: 52,
+      fontWeight: "800",
+      color: "#2563EB",
+      letterSpacing: -1.5,
+      // Glow layer 1 — tight blue core
+      textShadowColor: "rgba(37, 99, 235, 0.95)",
+      textShadowOffset: { width: 0, height: 0 },
+      textShadowRadius: 18,
+    },
 
-  // ── Tagline ──────────────────────────────────────────────────────────────────
+    // ── Tagline ──────────────────────────────────────────────────────────────────
 
-  tagline: {
-    marginTop: 14,
-    fontSize: 14,
-    fontWeight: "400",
-    color: "#A1A1AA", // Soft Ash — readable but clearly secondary
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-  },
-});
+    tagline: {
+      marginTop: 14,
+      fontSize: 14,
+      fontWeight: "400",
+      color: c.textMuted, // readable but clearly secondary
+      letterSpacing: 1.2,
+      textTransform: "uppercase",
+    },
+  });

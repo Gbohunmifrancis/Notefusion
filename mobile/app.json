@@ -5,8 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "notefusion",
-    "userInterfaceStyle": "dark",
-    "assetBundlePatterns": ["**/*"],
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F4F7FC",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.notefusion",
@@ -17,7 +20,7 @@
     "android": {
       "package": "app.notefusion",
       "adaptiveIcon": {
-        "backgroundColor": "#000000"
+        "backgroundColor": "#F4F7FC"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -34,7 +37,8 @@
         }
       ],
       "expo-asset",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      "expo-sharing"
     ],
     "extra": {
       "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",

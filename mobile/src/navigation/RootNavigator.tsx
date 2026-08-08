@@ -1,29 +1,18 @@
-import React, { useEffect } from 'react';
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import React, { useEffect, useMemo } from 'react';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
+import { useTheme } from '../lib/theme';
 import { isExpoGo } from '../lib/env';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
 import { ResultScreen } from '../screens/ResultScreen';
-import { colors } from '../design/theme';
+import { SettingsScreen } from '../screens/SettingsScreen';
+import { HelpScreen } from '../screens/HelpScreen';
 import type { RootStackParams } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
-
-// A light navigation theme so there's never a dark flash between screens.
-const navTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: colors.bg,
-    card: colors.bgElevated,
-    text: colors.text,
-    border: colors.border,
-    primary: colors.ink,
-  },
-};
 
 /**
  * Top-level router. Switches between the auth flow and the authenticated app
@@ -31,6 +20,25 @@ const navTheme = {
  */
 export function RootNavigator() {
   const { user, initializing } = useAuth();
+  const { palette, mode, loading: themeLoading } = useTheme();
+
+  // React Navigation paints the gap between screens itself, so it needs the
+  // palette too — otherwise every push flashes the wrong canvas colour. Its
+  // dark base also flips the built-in header/back-gesture defaults.
+  const navTheme = useMemo(() => {
+    const base = mode === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        background: palette.bg,
+        card: palette.bgElevated,
+        text: palette.text,
+        border: palette.border,
+        primary: palette.ink,
+      },
+    };
+  }, [mode, palette]);
 
   // Tapping a "transcription ready" push could deep-link here later; for now we
   // just ensure the handler is installed so foreground notifications present.
@@ -44,7 +52,10 @@ export function RootNavigator() {
     return () => sub.remove();
   }, []);
 
-  if (initializing) return <SplashScreen />;
+  // Hold the splash for the stored theme as well as the session: mounting the
+  // navigator light and repainting it dark a frame later is the flash the
+  // preference exists to avoid.
+  if (initializing || themeLoading) return <SplashScreen />;
 
   return (
     <NavigationContainer theme={navTheme}>
@@ -56,6 +67,16 @@ export function RootNavigator() {
               name="Result"
               component={ResultScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Help"
+              component={HelpScreen}
+              options={{ animation: 'slide_from_right' }}
             />
           </>
         ) : (

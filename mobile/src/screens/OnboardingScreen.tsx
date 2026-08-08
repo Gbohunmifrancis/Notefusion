@@ -11,45 +11,46 @@ import {
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
+import LottieView from "lottie-react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "../components/Button";
-import { gradients, colors, radii, spacing, typography } from "../design/theme";
+import { gradients, radii, spacing, typography, type Palette } from "../design/theme";
+import { useTheme, useThemedStyles } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 const { width } = Dimensions.get("window");
 
+/** What `require()` on a bundled .json asset resolves to. */
+type AnimationSource = React.ComponentProps<typeof LottieView>["source"];
+
 // ─── Slide data ───────────────────────────────────────────────────────────────
 
 const SLIDES: {
-  icon: keyof typeof Ionicons.glyphMap;
-  gradient: readonly [string, string];
+  animation: AnimationSource;
   title: string;
   body: string;
-  accent: string;
+  /** Palette token, resolved at render — a literal here would freeze the light hue. */
+  accent: keyof Palette;
 }[] = [
   {
-    icon: "mic",
-    gradient: ["#D946EF", "#A855F7"], // Pink → Purple
+    animation: require("../../assets/animations/record.json"),
     title: "Record a melody",
     body: "Capture a live tune or hum — a few bars is all it takes. Sing, hum, or play near the mic.",
-    accent: "#D946EF",
+    accent: "pink",
   },
   {
-    icon: "sparkles",
-    gradient: ["#A855F7", "#F59E0B"], // Purple → Gold  ("The Fusion")
+    animation: require("../../assets/animations/transcribe.json"),
     title: "Instant transcription",
     body: "We turn your audio into Tonic Solfa and staff notation, perfectly on-key every time.",
-    accent: "#A855F7",
+    accent: "accent",
   },
   {
-    icon: "library",
-    gradient: ["#F59E0B", "#D97706"], // Gold → Amber
+    animation: require("../../assets/animations/rekey.json"),
     title: "Save & re-key",
     body: "Build a personal library and change the Doh anytime — your notes never shift, only the labels do.",
-    accent: "#F59E0B",
+    accent: "accentAlt",
   },
 ];
 
@@ -58,11 +59,11 @@ type Props = NativeStackScreenProps<AuthStackParams, "Onboarding">;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * OnboardingScreen — dark luxury three-slide intro.
+ * OnboardingScreen — light blue three-slide intro.
  *
  * Design language:
- *   • Pitch Black canvas with no competing backgrounds.
- *   • Each slide has a large gradient "bubble" icon (using its own accent gradient).
+ *   • Mist canvas with no competing backgrounds.
+ *   • Each slide plays a looping Lottie illustration on a soft tinted disc.
  *   • Dot indicators: active dot expands into a pill and glows in the slide accent.
  *   • "Next" uses the GradientButton (The Fusion); "I already have an account" is ghost.
  *   • Subtle slide-in animation on mount so the first slide doesn't just snap into view.
@@ -70,6 +71,8 @@ type Props = NativeStackScreenProps<AuthStackParams, "Onboarding">;
 export function OnboardingScreen({ navigation }: Props) {
   const [index, setIndex] = useState(0);
   const listRef = useRef<FlatList>(null);
+  const { palette, mode } = useTheme();
+  const styles = useThemedStyles(makeStyles);
 
   // Per-slide fade + slide-up animation
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -102,11 +105,12 @@ export function OnboardingScreen({ navigation }: Props) {
     }
   };
 
-  const currentAccent = SLIDES[index]?.accent ?? colors.purple;
+  const slide = SLIDES[index];
+  const currentAccent = slide ? palette[slide.accent] : palette.purple;
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar style="light" />
+      <StatusBar style={mode === "dark" ? "light" : "dark"} />
 
       {/* ── Ambient glow orb — changes hue with the active slide ────────── */}
       <Animated.View
@@ -130,19 +134,21 @@ export function OnboardingScreen({ navigation }: Props) {
         style={styles.list}
         renderItem={({ item }) => (
           <View style={[styles.slide, { width }]}>
-            {/* Gradient icon bubble */}
-            <View style={styles.bubbleWrap}>
+            {/* Animated illustration on a soft radial-style wash */}
+            <View style={styles.stage}>
               <LinearGradient
-                colors={item.gradient}
+                colors={gradients.brandDim}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={styles.bubble}
-              >
-                {/* Inner glass ring */}
-                <View style={styles.bubbleRing}>
-                  <Ionicons name={item.icon} size={64} color="#FFFFFF" />
-                </View>
-              </LinearGradient>
+                style={styles.stageWash}
+              />
+              <LottieView
+                source={item.animation}
+                autoPlay
+                loop
+                resizeMode="contain"
+                style={styles.animation}
+              />
             </View>
 
             {/* Text block */}
@@ -202,119 +208,111 @@ export function OnboardingScreen({ navigation }: Props) {
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: "#000000",
-    alignItems: "center",
-  },
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    safe: {
+      flex: 1,
+      backgroundColor: c.bg,
+      alignItems: "center",
+    },
 
-  // Ambient orb behind everything — transitions with slide accent colour
-  ambientOrb: {
-    position: "absolute",
-    top: -60,
-    width: 420,
-    height: 420,
-    borderRadius: 210,
-    alignSelf: "center",
-  },
+    // Ambient orb behind everything — transitions with slide accent colour
+    ambientOrb: {
+      position: "absolute",
+      top: -60,
+      width: 420,
+      height: 420,
+      borderRadius: 210,
+      alignSelf: "center",
+    },
 
-  list: {
-    flexGrow: 0,
-    marginTop: spacing.xxxl,
-  },
+    list: {
+      flexGrow: 0,
+      marginTop: spacing.xxxl,
+    },
 
-  slide: {
-    alignItems: "center",
-    paddingHorizontal: spacing.xl,
-  },
+    slide: {
+      alignItems: "center",
+      paddingHorizontal: spacing.xl,
+    },
 
-  // ── Bubble icon ──────────────────────────────────────────────────────────────
+    // ── Animated illustration ────────────────────────────────────────────────────
 
-  bubbleWrap: {
-    // Outer shadow ring
-    shadowColor: colors.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.45,
-    shadowRadius: 32,
-    elevation: 12,
-  },
+    stage: {
+      width: 280,
+      height: 280,
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  bubble: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    /** Soft tinted disc behind the animation, standing in for a radial glow. */
+    stageWash: {
+      position: "absolute",
+      width: 260,
+      height: 260,
+      borderRadius: 130,
+    },
 
-  /** Frosted inner ring — simulates depth inside the bubble. */
-  bubbleRing: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.12)",
-    borderWidth: 1.5,
-    borderColor: "rgba(255, 255, 255, 0.25)",
-  },
+    animation: {
+      width: 280,
+      height: 280,
+    },
 
-  // ── Text ──────────────────────────────────────────────────────────────────────
+    // ── Text ──────────────────────────────────────────────────────────────────────
 
-  textBlock: {
-    marginTop: spacing.xxxl,
-    alignItems: "center",
-    paddingHorizontal: spacing.md,
-  },
+    textBlock: {
+      marginTop: spacing.xxxl,
+      alignItems: "center",
+      paddingHorizontal: spacing.md,
+    },
 
-  title: {
-    ...typography.title,
-    color: colors.text, // Crisp White
-    textAlign: "center",
-    fontSize: 28,
-    fontWeight: "700",
-    letterSpacing: -0.5,
-    marginBottom: spacing.md,
-  },
+    title: {
+      ...typography.title,
+      color: c.text,
+      textAlign: "center",
+      fontSize: 28,
+      fontWeight: "700",
+      letterSpacing: -0.5,
+      marginBottom: spacing.md,
+    },
 
-  body: {
-    ...typography.body,
-    color: colors.textMuted, // Soft Ash
-    textAlign: "center",
-    lineHeight: 26,
-    fontSize: 16,
-    paddingHorizontal: spacing.sm,
-  },
+    body: {
+      ...typography.body,
+      color: c.textMuted,
+      textAlign: "center",
+      lineHeight: 26,
+      fontSize: 16,
+      paddingHorizontal: spacing.sm,
+    },
 
-  // ── Dots ──────────────────────────────────────────────────────────────────────
+    // ── Dots ──────────────────────────────────────────────────────────────────────
 
-  dots: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: spacing.xxl,
-    marginBottom: spacing.lg,
-    gap: spacing.sm,
-  },
+    dots: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: spacing.xxl,
+      marginBottom: spacing.lg,
+      gap: spacing.sm,
+    },
 
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: radii.pill,
-    backgroundColor: "rgba(255, 255, 255, 0.20)", // Dim inactive
-  },
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: radii.pill,
+      backgroundColor: c.border, // Dim inactive
+    },
 
-  // ── Actions ───────────────────────────────────────────────────────────────────
+    // ── Actions ───────────────────────────────────────────────────────────────────
 
-  actions: {
-    width: "100%",
-    paddingHorizontal: spacing.xl,
-    paddingBottom: spacing.xl,
-    gap: spacing.xs,
-  },
+    actions: {
+      width: "100%",
+      paddingHorizontal: spacing.xl,
+      paddingBottom: spacing.xl,
+      gap: spacing.xs,
+    },
 
-  ghostBtn: {
-    marginTop: spacing.xs,
-  },
-});
+    ghostBtn: {
+      marginTop: spacing.xs,
+    },
+  });

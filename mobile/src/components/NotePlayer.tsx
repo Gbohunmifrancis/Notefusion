@@ -4,7 +4,7 @@
  * Playback control for a transcribed melody: a gradient play/pause button,
  * a seekable progress bar, and a horizontally-scrolling strip of tonic-solfa
  * syllable chips. The chip matching the audio's current playback position is
- * highlighted with "The Fusion" gradient (Electric Purple → Warm Gold) and a
+ * highlighted with "The Fusion" gradient (Deep Blue → Bright Blue) and a
  * light spring "pop", and the strip auto-scrolls to keep it centred.
  *
  * This component is intentionally *purely presentational*. All audio
@@ -25,7 +25,13 @@
  * `Audio.Sound` per rendered preview, owned by the hook.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -42,7 +48,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
-import { colors } from "../design/theme";
+import { type Palette } from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
 import { useNotePlayer } from "../lib/useNotePlayer";
 import type { NoteEvent } from "../api/types";
 
@@ -90,7 +97,10 @@ function formatTime(totalSeconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
-const FUSION_GRADIENT = [colors.purple, colors.gold] as const;
+/** "The Fusion" in the active palette — its blues lighten a step in dark mode. */
+function fusionGradient(c: Palette): readonly [string, string] {
+  return [c.purple, c.gold];
+}
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -102,6 +112,10 @@ export function NotePlayer({
   onPlaybackComplete,
   style,
 }: NotePlayerProps) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+  const FUSION_GRADIENT = useMemo(() => fusionGradient(colors), [colors]);
+
   // Single source of truth for everything playback-related — loading state,
   // transport state, position/duration, the currently-sounding note index,
   // and any load/playback error message.
@@ -290,7 +304,7 @@ export function NotePlayer({
               <Ionicons
                 name={isPlaying ? "pause" : "play"}
                 size={22}
-                color={ready ? "#FFFFFF" : "rgba(255,255,255,0.4)"}
+                color={ready ? "#FFFFFF" : colors.textFaint}
               />
             )}
           </LinearGradient>
@@ -392,173 +406,175 @@ export default NotePlayer;
 
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: 16,
-  },
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    card: {
+      backgroundColor: c.surface,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: 16,
+    },
 
-  title: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: "rgba(255,255,255,0.5)",
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    marginBottom: 12,
-  },
+    title: {
+      fontSize: 12,
+      fontWeight: "700",
+      color: c.textMuted,
+      textTransform: "uppercase",
+      letterSpacing: 1,
+      marginBottom: 12,
+    },
 
-  // ── Transport row ─────────────────────────────────────────────────────────
+    // ── Transport row ─────────────────────────────────────────────────────────
 
-  transportRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+    transportRow: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
 
-  playButtonWrapper: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    overflow: "hidden",
-    marginRight: 14,
-    shadowColor: colors.purple,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 6,
-  },
+    playButtonWrapper: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      overflow: "hidden",
+      marginRight: 14,
+      shadowColor: c.purple,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.4,
+      shadowRadius: 8,
+      elevation: 6,
+    },
 
-  playButtonPressed: {
-    opacity: 0.85,
-  },
+    playButtonPressed: {
+      opacity: 0.85,
+    },
 
-  playButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    playButton: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  progressColumn: {
-    flex: 1,
-    justifyContent: "center",
-  },
+    progressColumn: {
+      flex: 1,
+      justifyContent: "center",
+    },
 
-  // ── Progress / scrub bar ───────────────────────────────────────────────────
+    // ── Progress / scrub bar ───────────────────────────────────────────────────
 
-  track: {
-    height: 28,
-    justifyContent: "center",
-  },
+    track: {
+      height: 28,
+      justifyContent: "center",
+    },
 
-  trackVisual: {
-    height: 6,
-    width: "100%",
-    borderRadius: 3,
-    backgroundColor: "rgba(255,255,255,0.12)",
-    overflow: "hidden",
-  },
+    trackVisual: {
+      height: 6,
+      width: "100%",
+      borderRadius: 3,
+      backgroundColor: c.surfaceAlt,
+      overflow: "hidden",
+    },
 
-  trackFill: {
-    height: "100%",
-    borderRadius: 3,
-  },
+    trackFill: {
+      height: "100%",
+      borderRadius: 3,
+    },
 
-  thumb: {
-    position: "absolute",
-    top: "50%",
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    marginTop: -7,
-    marginLeft: -7,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 2,
-    borderColor: colors.purple,
-    shadowColor: colors.purple,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.6,
-    shadowRadius: 4,
-    elevation: 4,
-  },
+    thumb: {
+      position: "absolute",
+      top: "50%",
+      width: 14,
+      height: 14,
+      borderRadius: 7,
+      marginTop: -7,
+      marginLeft: -7,
+      // Reads as the knob against the filled track in either mode.
+      backgroundColor: c.surface,
+      borderWidth: 2,
+      borderColor: c.purple,
+      shadowColor: c.purple,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.6,
+      shadowRadius: 4,
+      elevation: 4,
+    },
 
-  timeRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 6,
-  },
+    timeRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 6,
+    },
 
-  timeText: {
-    fontSize: 11,
-    color: "rgba(255,255,255,0.45)",
-    fontVariant: ["tabular-nums"],
-  },
+    timeText: {
+      fontSize: 11,
+      color: c.textMuted,
+      fontVariant: ["tabular-nums"],
+    },
 
-  errorText: {
-    fontSize: 12,
-    color: "#F87171",
-    marginTop: 10,
-  },
+    errorText: {
+      fontSize: 12,
+      color: c.danger,
+      marginTop: 10,
+    },
 
-  // ── Solfa strip ────────────────────────────────────────────────────────────
+    // ── Solfa strip ────────────────────────────────────────────────────────────
 
-  solfaStrip: {
-    marginTop: 18,
-  },
+    solfaStrip: {
+      marginTop: 18,
+    },
 
-  solfaStripContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 2,
-  },
+    solfaStripContent: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingHorizontal: 2,
+    },
 
-  chipWrapper: {
-    marginRight: 8,
-  },
+    chipWrapper: {
+      marginRight: 8,
+    },
 
-  chipInactive: {
-    minWidth: 40,
-    alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 14,
-    backgroundColor: colors.surfaceAlt,
-    borderWidth: 1,
-    borderColor: colors.borderLight,
-  },
+    chipInactive: {
+      minWidth: 40,
+      alignItems: "center",
+      paddingHorizontal: 14,
+      paddingVertical: 8,
+      borderRadius: 14,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.borderLight,
+    },
 
-  chipTextInactive: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.5)",
-  },
+    chipTextInactive: {
+      fontSize: 14,
+      fontWeight: "600",
+      color: c.textMuted,
+    },
 
-  chipActive: {
-    minWidth: 44,
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 9,
-    borderRadius: 14,
-    shadowColor: colors.purple,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 6,
-  },
+    chipActive: {
+      minWidth: 44,
+      alignItems: "center",
+      paddingHorizontal: 16,
+      paddingVertical: 9,
+      borderRadius: 14,
+      shadowColor: c.purple,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.5,
+      shadowRadius: 8,
+      elevation: 6,
+    },
 
-  chipTextActive: {
-    fontSize: 15,
-    fontWeight: "800",
-    color: "#FFFFFF",
-    letterSpacing: 0.3,
-  },
+    chipTextActive: {
+      fontSize: 15,
+      fontWeight: "800",
+      color: "#FFFFFF",
+      letterSpacing: 0.3,
+    },
 
-  emptyText: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.4)",
-    fontStyle: "italic",
-    textAlign: "center",
-    marginTop: 16,
-  },
-});
+    emptyText: {
+      fontSize: 13,
+      color: c.textMuted,
+      fontStyle: "italic",
+      textAlign: "center",
+      marginTop: 16,
+    },
+  });

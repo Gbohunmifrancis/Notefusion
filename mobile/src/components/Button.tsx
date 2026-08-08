@@ -9,7 +9,14 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { colors, gradients, radii, spacing, typography } from "../design/theme";
+import {
+  gradients,
+  radii,
+  spacing,
+  typography,
+  type Palette,
+} from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
@@ -24,12 +31,12 @@ interface Props {
 }
 
 /**
- * Unified button component for the luxury dark-mode design system.
+ * Unified button component for the light blue design system.
  *
- * primary   — "The Fusion" gradient (Electric Purple → Warm Gold), bold white
+ * primary   — "The Fusion" gradient (Deep Blue → Bright Blue), bold white
  *             label, tactile spring-scale on press.
  * secondary — Glass surface (8 % white) + 14 % white border; muted label.
- * ghost     — Transparent; Soft Ash label for low-hierarchy actions.
+ * ghost     — Transparent; Slate label for low-hierarchy actions.
  * danger    — Red-tinted glass; danger-red label for destructive actions.
  *
  * All variants share the same spring-scale press animation powered by
@@ -46,6 +53,8 @@ export function Button({
 }: Props) {
   const scale = useRef(new Animated.Value(1)).current;
   const isDisabled = disabled || loading;
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
 
   /** Spring-snap on press-in, snap back on release. */
   const animate = (to: number) =>
@@ -60,7 +69,7 @@ export function Button({
   const getTextColor = (): string => {
     switch (variant) {
       case "primary":
-        return "#FFFFFF";
+        return colors.onAccent;
       case "danger":
         return colors.danger;
       case "ghost":
@@ -87,7 +96,7 @@ export function Button({
   // ── Primary — LinearGradient background ───────────────────────────────────
   const primaryInner = (
     <LinearGradient
-      colors={gradients.brand} // #A855F7 → #F59E0B
+      colors={gradients.brand} // #2563EB → #3B82F6
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.base}
@@ -137,54 +146,57 @@ export { Button as GradientButton };
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
-  /** Clips the LinearGradient to the pill shape on Android & iOS. */
-  pressable: {
-    borderRadius: radii.pill,
-    overflow: "hidden",
-  },
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    /** Clips the LinearGradient to the pill shape on Android & iOS. */
+    pressable: {
+      borderRadius: radii.pill,
+      overflow: "hidden",
+    },
 
-  /** Shared geometry — all variants render at this size. */
-  base: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 54,
-    paddingHorizontal: spacing.xl,
-    borderRadius: radii.pill,
-  },
+    /** Shared geometry — all variants render at this size. */
+    base: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      height: 54,
+      paddingHorizontal: spacing.xl,
+      borderRadius: radii.pill,
+    },
 
-  /** Glass surface — 8 % white fill, 14 % white border. */
-  secondary: {
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.14)",
-  },
+    /** Raised surface + hairline border. */
+    secondary: {
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
 
-  /** Transparent — for low-hierarchy / skip actions. */
-  ghost: {
-    backgroundColor: "transparent",
-  },
+    /** Transparent — for low-hierarchy / skip actions. */
+    ghost: {
+      backgroundColor: "transparent",
+    },
 
-  /** Red-tinted glass — destructive / sign-out actions. */
-  danger: {
-    backgroundColor: "rgba(239, 68, 68, 0.12)",
-    borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.30)",
-  },
+    /** Red-tinted wash — destructive / sign-out actions. The tint stays a fixed
+     *  rgba rather than the palette's danger hue so it reads as a wash over both
+     *  canvases; the label itself uses c.danger, which does lighten in dark mode. */
+    danger: {
+      backgroundColor: "rgba(220, 38, 38, 0.12)",
+      borderWidth: 1,
+      borderColor: "rgba(220, 38, 38, 0.30)",
+    },
 
-  /** Applied when disabled or loading — preserves layout, fades visually. */
-  disabled: {
-    opacity: 0.4,
-  },
+    /** Applied when disabled or loading — preserves layout, fades visually. */
+    disabled: {
+      opacity: 0.4,
+    },
 
-  label: {
-    ...typography.label,
-    fontSize: 15,
-    fontWeight: "600",
-  },
+    label: {
+      ...typography.label,
+      fontSize: 15,
+      fontWeight: "600",
+    },
 
-  icon: {
-    marginRight: spacing.sm,
-  },
-});
+    icon: {
+      marginRight: spacing.sm,
+    },
+  });

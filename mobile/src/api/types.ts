@@ -89,6 +89,11 @@ export interface SavedTranscription {
   overallConfidence: number;
   createdAtUtc: string;
   notes?: NoteEvent[] | null;
+  /**
+   * MusicXML for export. Detail reads only (GET /api/library/{id}) — the list
+   * route omits it so a library page doesn't download every score.
+   */
+  musicXml?: string | null;
 }
 
 // --- API errors ---------------------------------------------------------

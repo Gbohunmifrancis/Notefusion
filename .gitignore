@@ -496,3 +496,7 @@ web-build/
 # ── NoteFusion: local secrets ────────────────────────────────
 .env.local
 .env.*.local
+
+# ── Scratch tooling: design previews, palette audits, verification scripts ──
+.preview/
+.claude/launch.json
