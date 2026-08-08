@@ -1,14 +1,15 @@
 import React from "react";
 import { StyleSheet, View, ViewStyle } from "react-native";
-import { colors, radii, shadow, spacing } from "../design/theme";
+import { radii, spacing, type Palette, type Shadows } from "../design/theme";
+import { useThemedStyles } from "../lib/theme";
 
 /**
- * Glassmorphism card surface.
+ * Card surface.
  *
- * In the luxury dark-mode theme every "raised" block sits on a
- * semi-transparent white fill (5 %) framed by a 10 % white border —
- * the standard glassmorphism recipe — with a faint purple shadow for
- * depth.  No solid white backgrounds anywhere.
+ * In the light blue theme every "raised" block sits on a solid white fill
+ * framed by a slate hairline border, with a faint blue shadow for depth
+ * against the Mist canvas. In dark mode the same structure holds — a lighter
+ * navy fill over the deep navy canvas.
  */
 export function Card({
   children,
@@ -19,6 +20,7 @@ export function Card({
   style?: ViewStyle;
   padded?: boolean;
 }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={[styles.card, padded && styles.padded, style]}>
       {children}
@@ -26,16 +28,17 @@ export function Card({
   );
 }
 
-const styles = StyleSheet.create({
-  card: {
-    // Glass fill — 5 % white over the black canvas
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
-    // 10 % white border — the "glass edge"
-    borderWidth: 1,
-    borderColor: colors.border,
-    // Subtle purple halo lifts the card off the black background
-    ...shadow.card,
-  },
-  padded: { padding: spacing.lg },
-});
+const makeStyles = (c: Palette, s: Shadows) =>
+  StyleSheet.create({
+    card: {
+      // Raised fill over the canvas
+      backgroundColor: c.surface,
+      borderRadius: radii.lg,
+      // Hairline border
+      borderWidth: 1,
+      borderColor: c.border,
+      // Subtle halo lifts the card off the canvas
+      ...s.card,
+    },
+    padded: { padding: spacing.lg },
+  });

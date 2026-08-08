@@ -81,4 +81,71 @@ public class SolfaMapperTests
         Assert.Equal("s", inC.Text);
         Assert.Equal("d", inG.Text);
     }
+
+    // ── Wire format ───────────────────────────────────────────────────────────
+    // OctaveMark is what crosses the API boundary; ToString's '₁' is a display
+    // convention. The Python worker emits ',' below, so a note it labelled and the
+    // same note re-labelled here must produce the identical string.
+
+    [Theory]
+    [InlineData(72, "'")]    // C5 — one above
+    [InlineData(84, "''")]   // C6 — two above
+    [InlineData(60, "")]     // C4 — the unmarked register
+    [InlineData(59, ",")]    // B3 — one below
+    [InlineData(47, ",,")]   // B2 — two below
+    public void Octave_mark_uses_the_python_wire_format(int midi, string expected)
+    {
+        Assert.Equal(expected, SolfaMapper.Map(midi, CMajor, MiddleCDoh).OctaveMark);
+    }
+
+    // ── ReferenceDoh ──────────────────────────────────────────────────────────
+    // Expected values taken from solfa.reference_doh in server/app/pipeline/solfa.py.
+
+    [Theory]
+    [InlineData(new[] { 60, 64, 67 }, 0, 60)]
+    [InlineData(new[] { 48, 55, 60, 67, 72, 79 }, 0, 60)]
+    [InlineData(new[] { 36, 38, 40 }, 0, 36)]
+    [InlineData(new[] { 84, 86, 88 }, 0, 84)]
+    [InlineData(new[] { 60 }, 5, 65)] // 65 is nearer to 60 than 53 is
+    public void Reference_doh_matches_the_python_engine(int[] pitches, int dohPitchClass, int expected)
+    {
+        Assert.Equal(expected, SolfaMapper.ReferenceDoh(pitches, dohPitchClass));
+    }
+
+    [Fact]
+    public void Reference_doh_falls_back_to_the_doh_nearest_middle_c_when_there_are_no_pitches()
+    {
+        // Python takes a NaN median here and returns the first candidate by accident;
+        // an empty note list never reaches its solfa stage. This path does get hit —
+        // an empty saved transcription is mapped on every read — so it is defined.
+        Assert.Equal(60, SolfaMapper.ReferenceDoh([], 0));
+        Assert.Equal(65, SolfaMapper.ReferenceDoh([], 5));
+    }
+
+    // ── Degree ────────────────────────────────────────────────────────────────
+
+    [Theory]
+    [InlineData(60, 1)] // d
+    [InlineData(61, 1)] // de — a raised first is still degree 1
+    [InlineData(62, 2)]
+    [InlineData(64, 3)]
+    [InlineData(65, 4)]
+    [InlineData(66, 4)] // fe
+    [InlineData(67, 5)]
+    [InlineData(69, 6)]
+    [InlineData(71, 7)]
+    [InlineData(72, 1)] // d' — octave-invariant
+    public void Degree_matches_the_python_semitone_table(int midi, int expected)
+    {
+        Assert.Equal(expected, SolfaMapper.Degree(midi, CMajor));
+    }
+
+    [Fact]
+    public void Degree_is_measured_from_doh_not_the_minor_tonic()
+    {
+        var aMinor = new MusicalKey(9, KeyMode.Minor); // doh is C
+
+        Assert.Equal(6, SolfaMapper.Degree(69, aMinor)); // A4 is la — the sixth
+        Assert.Equal(1, SolfaMapper.Degree(60, aMinor)); // C4 is doh
+    }
 }

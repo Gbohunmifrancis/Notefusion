@@ -7,13 +7,16 @@ import { Button } from '../components/Button';
 import { TextField } from '../components/TextField';
 import { useAuth } from '../lib/auth';
 import { toApiError } from '../api/client';
-import { colors, radii, spacing, typography } from '../design/theme';
+import { radii, spacing, typography, type Palette } from '../design/theme';
+import { useColors, useThemedStyles } from '../lib/theme';
 import type { AuthStackParams } from '../navigation/types';
 
 type Props = NativeStackScreenProps<AuthStackParams, 'Register'>;
 
 export function RegisterScreen({ navigation }: Props) {
   const { signUp } = useAuth();
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -89,18 +92,19 @@ export function RegisterScreen({ navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  title: { ...typography.title, color: colors.text, marginTop: spacing.xxl },
-  subtitle: { ...typography.body, color: colors.textMuted, marginTop: spacing.xs },
-  form: { marginTop: spacing.xl },
-  errorBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(240, 87, 107, 0.1)',
-    borderRadius: radii.md,
-    padding: spacing.md,
-    marginBottom: spacing.lg,
-  },
-  errorText: { ...typography.caption, color: colors.danger, marginLeft: spacing.sm, flex: 1 },
-  secondary: { marginTop: spacing.sm },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    title: { ...typography.title, color: c.text, marginTop: spacing.xxl },
+    subtitle: { ...typography.body, color: c.textMuted, marginTop: spacing.xs },
+    form: { marginTop: spacing.xl },
+    errorBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: 'rgba(220, 38, 38, 0.1)',
+      borderRadius: radii.md,
+      padding: spacing.md,
+      marginBottom: spacing.lg,
+    },
+    errorText: { ...typography.caption, color: c.danger, marginLeft: spacing.sm, flex: 1 },
+    secondary: { marginTop: spacing.sm },
+  });

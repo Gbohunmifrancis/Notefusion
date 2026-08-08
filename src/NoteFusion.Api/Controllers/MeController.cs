@@ -25,4 +25,12 @@ public sealed class MeController : ApiControllerBase
     [HttpPut]
     public async Task<IActionResult> Update(UpdateMyProfileCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
+
+    /// <summary>
+    /// Closes the authenticated user's account, taking their library with it. Irreversible;
+    /// the current password is re-checked in the handler before anything is removed.
+    /// </summary>
+    [HttpDelete]
+    public async Task<IActionResult> Delete(DeleteMyAccountCommand command, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(command, ct));
 }

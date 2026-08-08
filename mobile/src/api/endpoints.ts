@@ -32,6 +32,10 @@ export const meApi = {
   get: () => api.get<MyProfile>("/api/me").then((r) => r.data),
   update: (fullName: string) =>
     api.put<MyProfile>("/api/me", { fullName }).then((r) => r.data),
+
+  /** Closes the account and deletes its library. The password is re-checked server-side. */
+  remove: (password: string) =>
+    api.delete("/api/me", { data: { password } }).then(() => undefined),
 };
 
 export const devicesApi = {

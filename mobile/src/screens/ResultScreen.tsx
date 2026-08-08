@@ -18,14 +18,17 @@ import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
+import { exportMusicXml } from "../lib/export";
 import {
-  colors,
   confidenceColor,
   gradients,
   radii,
   spacing,
   typography,
+  type Palette,
 } from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParams, "Result">;
@@ -33,19 +36,20 @@ type Props = NativeStackScreenProps<RootStackParams, "Result">;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * ResultScreen — luxury dark-mode transcription result.
+ * ResultScreen — light blue transcription result.
  *
  * Layout (top → bottom):
  *   • Back arrow + "Transcription Complete" title row.
  *   • Summary glass card: Key, Tempo, Meter chips + ConfidenceBadge + warn row.
- *   • Hero Solfa glassmorphism card:
+ *   • Hero Solfa white card:
  *       – Gradient header bar ("TONIC SOLFA" label).
- *       – Large monospace solfa lines in Crisp White.
+ *       – Large monospace solfa lines in Ink Navy.
  *       – Confidence pill badge (green / amber / red) inside the card.
  *   • Horizontal notes grid: each chip shows the solfa symbol, MIDI number,
  *     and a coloured confidence bar at the bottom.
+ *   • Export row: hands the engraved MusicXML to the OS share sheet.
  *   • Save block: TextField + gradient "Save to Library" button.
- *   • Saved state: gold-glowing checkmark row.
+ *   • Saved state: blue-glowing checkmark row.
  *
  * PRD honesty rule: overall-confidence banner is always visible; low-confidence
  * notes are outlined in red so users know to double-check.
@@ -58,31 +62,57 @@ export function ResultScreen({ route, navigation }: Props) {
     title: initialTitle,
   } = route.params;
 
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+
   const [title, setTitle] = useState(
     initialTitle ?? `${result.key} · ${new Date().toLocaleDateString()}`,
   );
+  const [committedTitle, setCommittedTitle] = useState(initialTitle);
   const [savedId, setSavedId] = useState<string | undefined>(initialSavedId);
   const [saving, setSaving] = useState(false);
+  const [renaming, setRenaming] = useState(false);
+  const [exporting, setExporting] = useState(false);
+
+  // ── Key override (F-03) ────────────────────────────────────────────────────
+  // Solfa is movable-do, so a key change re-labels the existing notes — it
+  // never re-transcribes. The syllables update locally the instant the user
+  // taps, and the choice is persisted only for transcriptions already saved.
+  const [key, setKey] = useState(result.key);
+  const [pickingKey, setPickingKey] = useState(false);
+  const [rekeying, setRekeying] = useState(false);
+
+  // The server already labelled the original key, so trust its output until
+  // the user actually overrides — that keeps the fresh-transcription path
+  // byte-identical to what the worker produced.
+  const view = useMemo(
+    () =>
+      key === result.key
+        ? { notes: result.notes, solfaLines: result.solfaLines }
+        : deriveSolfa(result.notes, key, result.timeSignature),
+    [key, result.key, result.notes, result.solfaLines, result.timeSignature],
+  );
 
   const lowCount = useMemo(
-    () => result.notes.filter((n) => n.conf < 0.5).length,
-    [result.notes],
+    () => view.notes.filter((n) => n.conf < 0.5).length,
+    [view.notes],
   );
 
   async function save() {
     setSaving(true);
     try {
       const saved = await libraryApi.save({
-        title: title.trim() || `${result.key} transcription`,
-        key: result.key,
+        title: title.trim() || `${key} transcription`,
+        key,
         tempoBpm: result.tempo,
         timeSignature: result.timeSignature,
         musicXml: result.musicXml,
-        notes: result.notes,
+        notes: view.notes,
         overallConfidence: result.overallConfidence,
         sourceJobId,
       });
       setSavedId(saved.id);
+      setCommittedTitle(saved.title);
       Alert.alert("Saved ✓", "Added to your library.");
     } catch (e) {
       Alert.alert("Could not save", toApiError(e).message);
@@ -91,7 +121,57 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
-  const confColor = confidenceColor(result.overallConfidence);
+  async function applyKey(next: string) {
+    setPickingKey(false);
+    if (sameKey(next, key)) return;
+
+    const previous = key;
+    setKey(next); // re-label immediately — no round-trip needed to read solfa
+
+    if (!savedId) return; // unsaved: the key travels with the save payload
+    setRekeying(true);
+    try {
+      await libraryApi.updateKey(savedId, next);
+    } catch (e) {
+      setKey(previous); // the label would otherwise disagree with the server
+      Alert.alert("Could not change key", toApiError(e).message);
+    } finally {
+      setRekeying(false);
+    }
+  }
+
+  async function rename() {
+    if (!savedId) return;
+    setRenaming(true);
+    try {
+      const updated = await libraryApi.rename(savedId, title.trim());
+      setCommittedTitle(updated.title);
+      Alert.alert("Renamed ✓", "The title has been updated.");
+    } catch (e) {
+      Alert.alert("Could not rename", toApiError(e).message);
+    } finally {
+      setRenaming(false);
+    }
+  }
+
+  // ── Export (MusicXML) ──────────────────────────────────────────────────────
+  // The worker engraved a full score, so this screen owns the "send it to
+  // Sibelius / MuseScore" moment; library items reach the same button with the
+  // score fetched in the detail read. No success alert — the OS share sheet is
+  // its own confirmation, and it has already closed by the time this resolves.
+  async function exportScore() {
+    setExporting(true);
+    try {
+      const outcome = await exportMusicXml(result.musicXml, title);
+      if (!outcome.ok) Alert.alert("Could not export", outcome.message);
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  const hasScore = Boolean(result.musicXml?.trim());
+
+  const confColor = confidenceColor(result.overallConfidence, colors);
   const confPct = Math.round(result.overallConfidence * 100);
 
   return (
@@ -146,9 +226,10 @@ export function ResultScreen({ route, navigation }: Props) {
         <View style={styles.summaryRow}>
           <SummaryStat
             icon="key-outline"
-            label="Key"
-            value={result.key}
+            label={rekeying ? "Saving…" : "Key · tap to change"}
+            value={key}
             accent={colors.purple}
+            onPress={() => setPickingKey((p) => !p)}
           />
           <View style={styles.summaryDivider} />
           <SummaryStat
@@ -162,9 +243,49 @@ export function ResultScreen({ route, navigation }: Props) {
             icon="grid-outline"
             label="Meter"
             value={result.timeSignature}
-            accent="#22C55E"
+            accent={colors.success}
           />
         </View>
+
+        {/* ── Key picker (F-03) ────────────────────────────────────────────
+            Movable-do means this is a re-labelling, not a re-transcription:
+            the notes never move, only the syllables above them. */}
+        {pickingKey && (
+          <View style={styles.keyPicker}>
+            <Text style={styles.keyPickerHint}>
+              Change the Doh — your notes stay put, only the labels move.
+            </Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.keyPickerScroll}
+            >
+              {KEY_CHOICES.map((k) =>
+                sameKey(k, key) ? (
+                  <LinearGradient
+                    key={k}
+                    colors={gradients.brand}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={[styles.keyChip, styles.keyChipActive]}
+                  >
+                    <Text style={styles.keyChipTextActive}>{k}</Text>
+                  </LinearGradient>
+                ) : (
+                  <TouchableOpacity
+                    key={k}
+                    style={styles.keyChip}
+                    onPress={() => applyKey(k)}
+                    disabled={rekeying}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.keyChipText}>{k}</Text>
+                  </TouchableOpacity>
+                ),
+              )}
+            </ScrollView>
+          </View>
+        )}
 
         {/* Full confidence badge */}
         <View style={styles.confRow}>
@@ -203,13 +324,13 @@ export function ResultScreen({ route, navigation }: Props) {
 
         {/* Glass card body */}
         <View style={styles.solfaBody}>
-          {result.solfaLines.length === 0 ? (
+          {view.solfaLines.length === 0 ? (
             <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
           ) : (
-            result.solfaLines.map((line, i) => (
+            view.solfaLines.map((line, i) => (
               <View key={i} style={styles.solfaLineWrap}>
                 {/* Line number chip */}
-                {result.solfaLines.length > 1 && (
+                {view.solfaLines.length > 1 && (
                   <Text style={styles.solfaLineNum}>{i + 1}</Text>
                 )}
                 <Text
@@ -230,7 +351,7 @@ export function ResultScreen({ route, navigation }: Props) {
       {result.audioPreviewBase64 ? (
         <NotePlayer
           audioPreviewBase64={result.audioPreviewBase64}
-          notes={result.notes}
+          notes={view.notes}
           tempoBpm={result.tempo}
           title="Play back"
           style={styles.playerCard}
@@ -240,7 +361,7 @@ export function ResultScreen({ route, navigation }: Props) {
       {/* ── Notes grid ───────────────────────────────────────────────────── */}
       <View style={styles.sectionRow}>
         <Text style={styles.sectionTitle}>
-          Notes <Text style={styles.sectionCount}>({result.notes.length})</Text>
+          Notes <Text style={styles.sectionCount}>({view.notes.length})</Text>
         </Text>
       </View>
 
@@ -250,8 +371,8 @@ export function ResultScreen({ route, navigation }: Props) {
         style={styles.notesScroll}
         contentContainerStyle={styles.notesContent}
       >
-        {result.notes.map((n, i) => {
-          const cc = confidenceColor(n.conf);
+        {view.notes.map((n, i) => {
+          const cc = confidenceColor(n.conf, colors);
           return (
             <View
               key={i}
@@ -288,6 +409,33 @@ export function ResultScreen({ route, navigation }: Props) {
         })}
       </ScrollView>
 
+      {/* ── Export ───────────────────────────────────────────────────────── */}
+      {/* Offered whether or not the transcription is saved — the score exists
+          as soon as the worker engraves it, and saving is a separate choice. */}
+      <View style={styles.exportBlock}>
+        <View style={styles.exportHeaderRow}>
+          <Ionicons
+            name="document-text-outline"
+            size={16}
+            color={colors.textMuted}
+          />
+          <Text style={styles.exportTitle}>Sheet music</Text>
+        </View>
+        <Text style={styles.exportHint}>
+          {hasScore
+            ? "Export as MusicXML to open in Sibelius, MuseScore, or Finale."
+            : "No score is attached to this transcription."}
+        </Text>
+        <Button
+          label="Export MusicXML"
+          variant="secondary"
+          icon="share-outline"
+          onPress={exportScore}
+          loading={exporting}
+          disabled={!hasScore}
+        />
+      </View>
+
       {/* ── Save block ───────────────────────────────────────────────────── */}
       {!savedId ? (
         <View style={styles.saveBlock}>
@@ -314,32 +462,41 @@ export function ResultScreen({ route, navigation }: Props) {
             loading={saving}
             disabled={!title.trim()}
           />
-
-          {/* Ghost edit notes — placeholder for future edit flow */}
-          <Button
-            label="Edit Notes"
-            variant="ghost"
-            icon="create-outline"
-            style={styles.editBtn}
-          />
         </View>
       ) : (
         /* ── Saved state ─────────────────────────────────────────────────── */
-        <View style={styles.savedRow}>
-          <LinearGradient
-            colors={gradients.gold}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.savedIconCircle}
-          >
-            <Ionicons name="checkmark" size={18} color="#FFFFFF" />
-          </LinearGradient>
-          <View style={styles.savedTextBlock}>
-            <Text style={styles.savedTitle}>Saved to Library</Text>
-            <Text style={styles.savedSub}>
-              You can find it in the Library tab.
-            </Text>
+        <View style={styles.saveBlock}>
+          <View style={styles.savedRow}>
+            <LinearGradient
+              colors={gradients.gold}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.savedIconCircle}
+            >
+              <Ionicons name="checkmark" size={18} color="#FFFFFF" />
+            </LinearGradient>
+            <View style={styles.savedTextBlock}>
+              <Text style={styles.savedTitle}>Saved to Library</Text>
+              <Text style={styles.savedSub}>
+                You can find it in the Library tab.
+              </Text>
+            </View>
           </View>
+
+          {/* Rename — the title is the only field editable after saving. */}
+          <TextField
+            label="Title"
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Name this transcription…"
+          />
+          <Button
+            label="Rename"
+            variant="secondary"
+            onPress={rename}
+            loading={renaming}
+            disabled={!title.trim() || title.trim() === committedTitle}
+          />
         </View>
       )}
     </Screen>
@@ -353,27 +510,46 @@ function SummaryStat({
   label,
   value,
   accent,
+  onPress,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   value: string;
   accent: string;
+  onPress?: () => void;
 }) {
-  return (
-    <View style={styles.statItem}>
+  const styles = useThemedStyles(makeStyles);
+
+  const body = (
+    <>
       {/* Tinted icon circle */}
       <View style={[styles.statIconCircle, { backgroundColor: `${accent}18` }]}>
         <Ionicons name={icon} size={14} color={accent} />
       </View>
       <Text style={styles.statValue}>{value}</Text>
       <Text style={styles.statLabel}>{label}</Text>
-    </View>
+    </>
+  );
+
+  // Only the interactive stat (Key) gets a touch target, so the other two
+  // don't advertise an affordance they don't have.
+  return onPress ? (
+    <TouchableOpacity
+      style={styles.statItem}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      {body}
+    </TouchableOpacity>
+  ) : (
+    <View style={styles.statItem}>{body}</View>
   );
 }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
   // ── Header ────────────────────────────────────────────────────────────────
 
   headerRow: {
@@ -393,9 +569,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
+    borderColor: c.border,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -407,7 +583,7 @@ const styles = StyleSheet.create({
 
   titleLabel: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     textTransform: "uppercase",
     letterSpacing: 1,
     fontSize: 10,
@@ -415,7 +591,7 @@ const styles = StyleSheet.create({
 
   titleMain: {
     ...typography.title,
-    color: colors.text,
+    color: c.text,
     fontSize: 22,
     fontWeight: "700",
     letterSpacing: -0.4,
@@ -466,14 +642,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.06)",
+    borderBottomColor: c.border,
   },
 
   /** Vertical divider between stat chips. */
   summaryDivider: {
     width: 1,
     height: 40,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: c.surface,
   },
 
   statItem: {
@@ -492,7 +668,7 @@ const styles = StyleSheet.create({
 
   statValue: {
     ...typography.label,
-    color: colors.text,
+    color: c.text,
     fontSize: 14,
     fontWeight: "700",
     textAlign: "center",
@@ -500,7 +676,7 @@ const styles = StyleSheet.create({
 
   statLabel: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 10,
     textAlign: "center",
   },
@@ -510,6 +686,60 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
+  // ── Key picker (F-03 re-key) ───────────────────────────────────────────────
+
+  keyPicker: {
+    paddingTop: spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: c.border,
+    paddingBottom: spacing.md,
+  },
+
+  keyPickerHint: {
+    ...typography.caption,
+    color: c.textMuted,
+    fontSize: 12,
+    lineHeight: 18,
+    marginBottom: spacing.sm,
+  },
+
+  keyPickerScroll: {
+    gap: spacing.xs,
+    paddingRight: spacing.md,
+  },
+
+  keyChip: {
+    paddingVertical: 7,
+    paddingHorizontal: spacing.md,
+    borderRadius: radii.pill,
+    backgroundColor: c.surface,
+    borderWidth: 1,
+    borderColor: c.border,
+  },
+
+  keyChipActive: {
+    overflow: "hidden",
+    borderWidth: 0,
+    shadowColor: c.purple,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+
+  keyChipText: {
+    ...typography.caption,
+    color: c.textMuted,
+    fontSize: 12,
+  },
+
+  keyChipTextActive: {
+    ...typography.caption,
+    color: "#FFFFFF", // sits on the brand gradient
+    fontSize: 12,
+    fontWeight: "700",
+  },
+
   /** Warning row — shown when some notes are < 50 % confidence. */
   warnRow: {
     flexDirection: "row",
@@ -517,17 +747,17 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     paddingTop: spacing.md,
     borderTopWidth: 1,
-    borderTopColor: "rgba(245,158,11,0.15)",
+    borderTopColor: c.accentGlow,
   },
 
   warnDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.warning,
+    backgroundColor: c.warning,
     marginRight: spacing.sm,
     marginTop: 3,
-    shadowColor: colors.warning,
+    shadowColor: c.warning,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
@@ -536,7 +766,7 @@ const styles = StyleSheet.create({
 
   warnText: {
     ...typography.caption,
-    color: colors.warning,
+    color: c.warning,
     flex: 1,
     lineHeight: 18,
     fontSize: 12,
@@ -548,10 +778,10 @@ const styles = StyleSheet.create({
     borderRadius: radii.lg,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderColor: c.border,
     marginBottom: spacing.xl,
-    // Purple glow
-    shadowColor: colors.purple,
+    // Blue glow
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
     shadowRadius: 20,
@@ -567,6 +797,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
 
+  // The header strip and its badge sit on the brand gradient — white in both modes.
   solfaHeaderLabel: {
     ...typography.caption,
     color: "#FFFFFF",
@@ -596,7 +827,7 @@ const styles = StyleSheet.create({
 
   /** Glass card body — the main solfa display area. */
   solfaBody: {
-    backgroundColor: "rgba(168, 85, 247, 0.06)",
+    backgroundColor: c.accentSoft,
     padding: spacing.xl,
     minHeight: 120,
     position: "relative",
@@ -612,7 +843,7 @@ const styles = StyleSheet.create({
   /** Optional line-number prefix for multi-line results. */
   solfaLineNum: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 11,
     marginRight: spacing.sm,
     marginTop: 3,
@@ -622,29 +853,29 @@ const styles = StyleSheet.create({
 
   solfaLine: {
     ...typography.mono,
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 16,
     lineHeight: 26,
     flex: 1,
     letterSpacing: 1,
   },
 
-  /** First line gets full Crisp White — it's the primary solfa sequence. */
+  /** First line gets full Ink Navy — it's the primary solfa sequence. */
   solfaLineFirst: {
-    color: colors.text,
+    color: c.text,
     fontSize: 20,
     fontWeight: "700",
     letterSpacing: 2,
     lineHeight: 30,
-    // Subtle purple text-shadow glow
-    textShadowColor: "rgba(168, 85, 247, 0.6)",
+    // Subtle blue text-shadow glow
+    textShadowColor: "rgba(37, 99, 235, 0.6)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
 
   solfaMuted: {
     ...typography.body,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontStyle: "italic",
   },
 
@@ -654,7 +885,7 @@ const styles = StyleSheet.create({
     right: spacing.xl,
     bottom: -8,
     fontSize: 80,
-    color: "rgba(168, 85, 247, 0.06)",
+    color: c.accentSoft,
     fontWeight: "700",
     lineHeight: 90,
   },
@@ -669,13 +900,13 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     ...typography.heading,
-    color: colors.text,
+    color: c.text,
     fontSize: 16,
     fontWeight: "700",
   },
 
   sectionCount: {
-    color: colors.textFaint,
+    color: c.textFaint,
     fontWeight: "400",
     fontSize: 14,
   },
@@ -697,7 +928,7 @@ const styles = StyleSheet.create({
   noteChip: {
     width: 60,
     borderRadius: radii.md,
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: c.surface,
     alignItems: "center",
     paddingTop: spacing.sm,
     paddingBottom: 0,
@@ -706,14 +937,14 @@ const styles = StyleSheet.create({
 
   noteSolfa: {
     ...typography.label,
-    color: colors.text,
+    color: c.text,
     fontSize: 15,
     fontWeight: "700",
   },
 
   noteMidi: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     marginVertical: spacing.xs,
     fontSize: 10,
   },
@@ -729,6 +960,34 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 
+  // ── Export block ───────────────────────────────────────────────────────────
+
+  exportBlock: {
+    marginBottom: spacing.xl,
+    gap: spacing.xs,
+  },
+
+  exportHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+  },
+
+  exportTitle: {
+    ...typography.heading,
+    color: c.text,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  exportHint: {
+    ...typography.body,
+    color: c.textMuted,
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: spacing.sm,
+  },
+
   // ── Save block ─────────────────────────────────────────────────────────────
 
   saveBlock: {
@@ -738,13 +997,13 @@ const styles = StyleSheet.create({
 
   divider: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.07)",
+    backgroundColor: c.surface,
     marginBottom: spacing.xl,
   },
 
   saveLabel: {
     ...typography.heading,
-    color: colors.text,
+    color: c.text,
     fontSize: 18,
     fontWeight: "700",
     marginBottom: spacing.xs,
@@ -752,14 +1011,10 @@ const styles = StyleSheet.create({
 
   saveHint: {
     ...typography.body,
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 13,
     lineHeight: 20,
     marginBottom: spacing.lg,
-  },
-
-  editBtn: {
-    marginTop: spacing.xs,
   },
 
   // ── Saved state ────────────────────────────────────────────────────────────
@@ -767,11 +1022,10 @@ const styles = StyleSheet.create({
   savedRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: spacing.xxl,
-    marginBottom: spacing.xxl,
-    backgroundColor: "rgba(245, 158, 11, 0.07)",
+    marginBottom: spacing.xl,
+    backgroundColor: c.accentSoft,
     borderWidth: 1,
-    borderColor: "rgba(245, 158, 11, 0.20)",
+    borderColor: c.accentGlow,
     borderRadius: radii.lg,
     padding: spacing.lg,
   },
@@ -783,8 +1037,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginRight: spacing.md,
-    // Gold glow
-    shadowColor: colors.gold,
+    // Light-blue glow
+    shadowColor: c.gold,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.6,
     shadowRadius: 12,
@@ -797,14 +1051,14 @@ const styles = StyleSheet.create({
 
   savedTitle: {
     ...typography.label,
-    color: colors.gold,
+    color: c.gold,
     fontSize: 15,
     fontWeight: "700",
   },
 
   savedSub: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: c.textMuted,
     marginTop: 2,
     fontSize: 12,
   },

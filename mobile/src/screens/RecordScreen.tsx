@@ -24,7 +24,14 @@ import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { useJobPolling } from "../lib/useJobPolling";
-import { colors, gradients, radii, spacing, typography } from "../design/theme";
+import {
+  gradients,
+  radii,
+  spacing,
+  typography,
+  type Palette,
+} from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -80,31 +87,33 @@ function meteringToFraction(dbfs: number): number {
 }
 
 /** Traffic-light colour for the current metering level. */
-function meteringToColor(dbfs: number): string {
-  if (dbfs >= LEVEL_GOOD_DBFS) return "#22C55E"; // green — comfortably loud
-  if (dbfs >= LEVEL_QUIET_DBFS) return "#F59E0B"; // amber — audible but soft
-  return "#EF4444"; // red — too quiet / far from the mic
+function meteringToColor(dbfs: number, c: Palette): string {
+  if (dbfs >= LEVEL_GOOD_DBFS) return c.success; // comfortably loud
+  if (dbfs >= LEVEL_QUIET_DBFS) return c.warning; // audible but soft
+  return c.danger; // too quiet / far from the mic
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * RecordScreen — luxury dark-mode audio capture & transcription trigger.
+ * RecordScreen — light blue audio capture & transcription trigger.
  *
- * The central gradient record button (Electric Purple → Warm Gold ring +
- * dark glass disc) is the hero.
+ * The central gradient record button (Deep Blue → Bright Blue ring +
+ * white disc) is the hero.
  *
  *   • Ready state    : static gradient ring, pulsing ambient glow orb.
- *   • Recording      : two concentric purple ripple waves; animated
+ *   • Recording      : two concentric blue ripple waves; animated
  *                      soundwave bars below the button.
  *   • Uploading      : gradient progress bar; percentage inside the button.
- *   • Mode toggle    : dark glass pill — active segment uses gradient fill.
+ *   • Mode toggle    : white pill — active segment uses gradient fill.
  *   • Key picker     : horizontal scroll of glass chips; active chip gradient.
  *   • Error cards    : red-tinted glass surface consistent with the system.
  */
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { state, start, reset } = useJobPolling();
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
 
   const [phase, setPhase] = useState<Phase>("ready");
   const [mode, setMode] = useState<Mode>("melody");
@@ -351,7 +360,7 @@ export function RecordScreen() {
     phase === "recording"
       ? (recorderState.metering ?? LEVEL_SILENCE_DBFS)
       : LEVEL_SILENCE_DBFS;
-  const meterColor = meteringToColor(currentMeterDbfs);
+  const meterColor = meteringToColor(currentMeterDbfs, colors);
 
   // ── Recording controls ────────────────────────────────────────────────────
 
@@ -533,11 +542,11 @@ export function RecordScreen() {
             <LinearGradient
               colors={
                 phase === "recording"
-                  ? (["#EF4444", "#DC2626"] as const)
+                  ? (["#DC2626", "#B91C1C"] as const)
                   : isUploading
                     ? ([
-                        "rgba(168,85,247,0.4)",
-                        "rgba(245,158,11,0.4)",
+                        "rgba(37,99,235,0.4)",
+                        "rgba(59,130,246,0.4)",
                       ] as const)
                     : gradients.brand
               }
@@ -559,7 +568,7 @@ export function RecordScreen() {
                   </View>
                 ) : (
                   <View style={styles.btnIconWrap}>
-                    <Ionicons name="mic" size={44} color="#FFFFFF" />
+                    <Ionicons name="mic" size={44} color={colors.accent} />
                   </View>
                 )}
               </View>
@@ -577,8 +586,8 @@ export function RecordScreen() {
                     transform: [{ scaleY: anim }],
                     backgroundColor:
                       i < WAVE_BARS / 2
-                        ? `rgba(168, 85, 247, ${0.4 + (i / WAVE_BARS) * 0.6})`
-                        : `rgba(245, 158, 11, ${0.4 + ((WAVE_BARS - i) / WAVE_BARS) * 0.6})`,
+                        ? `rgba(37, 99, 235, ${0.4 + (i / WAVE_BARS) * 0.6})`
+                        : `rgba(59, 130, 246, ${0.4 + ((WAVE_BARS - i) / WAVE_BARS) * 0.6})`,
                   },
                 ]}
               />
@@ -715,7 +724,8 @@ const BTN_SIZE = 148;
 const DISC_SIZE = 116;
 const METER_TRACK_WIDTH = 220;
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
@@ -734,7 +744,7 @@ const styles = StyleSheet.create({
 
   screenTitle: {
     ...typography.title,
-    color: colors.text,
+    color: c.text,
     fontSize: 22,
     letterSpacing: -0.3,
   },
@@ -743,10 +753,10 @@ const styles = StyleSheet.create({
 
   modeToggle: {
     flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: c.surface,
     borderRadius: radii.pill,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderColor: c.border,
     padding: 3,
   },
 
@@ -760,7 +770,7 @@ const styles = StyleSheet.create({
 
   modeSegmentActive: {
     overflow: "hidden",
-    shadowColor: colors.purple,
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
@@ -769,14 +779,14 @@ const styles = StyleSheet.create({
 
   modeTextActive: {
     ...typography.label,
-    color: "#FFFFFF",
+    color: "#FFFFFF", // sits on the brand gradient — blue in both modes
     fontSize: 12,
     fontWeight: "700",
   },
 
   modeTextInactive: {
     ...typography.label,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 12,
   },
 
@@ -788,7 +798,7 @@ const styles = StyleSheet.create({
 
   keyLabel: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 11,
     textTransform: "uppercase",
     letterSpacing: 0.8,
@@ -805,15 +815,15 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
+    borderColor: c.border,
   },
 
   keyChipActive: {
     overflow: "hidden",
     borderWidth: 0,
-    shadowColor: colors.purple,
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 8,
@@ -822,13 +832,13 @@ const styles = StyleSheet.create({
 
   keyChipText: {
     ...typography.caption,
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 12,
   },
 
   keyChipTextActive: {
     ...typography.caption,
-    color: "#FFFFFF",
+    color: "#FFFFFF", // sits on the brand gradient
     fontSize: 12,
     fontWeight: "700",
   },
@@ -847,19 +857,21 @@ const styles = StyleSheet.create({
     width: 240,
     height: 240,
     borderRadius: 120,
-    backgroundColor: "rgba(168, 85, 247, 0.18)",
+    backgroundColor: c.accentGlow,
   },
 
   // ── Voice-level guidance banner ───────────────────────────────────────────
 
+  /** The wash stays a fixed rgba rather than the palette's danger hue so it
+   *  reads as a tint over both canvases; the dot and label use c.danger. */
   guidanceBanner: {
     position: "absolute",
     top: -8,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(239, 68, 68, 0.16)",
+    backgroundColor: "rgba(220, 38, 38, 0.16)",
     borderWidth: 1,
-    borderColor: "rgba(239, 68, 68, 0.35)",
+    borderColor: "rgba(220, 38, 38, 0.35)",
     borderRadius: radii.pill,
     paddingVertical: 8,
     paddingHorizontal: spacing.md,
@@ -870,9 +882,9 @@ const styles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: "#EF4444",
+    backgroundColor: c.danger,
     marginRight: spacing.sm,
-    shadowColor: "#EF4444",
+    shadowColor: c.danger,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.85,
     shadowRadius: 5,
@@ -881,7 +893,7 @@ const styles = StyleSheet.create({
 
   guidanceText: {
     ...typography.caption,
-    color: "#FCA5A5",
+    color: c.danger,
     fontSize: 12,
     fontWeight: "700",
   },
@@ -904,7 +916,7 @@ const styles = StyleSheet.create({
     width: METER_TRACK_WIDTH,
     height: 5,
     borderRadius: radii.pill,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: c.surfaceAlt,
     overflow: "hidden",
   },
 
@@ -922,21 +934,21 @@ const styles = StyleSheet.create({
   rippleInner: {
     width: 176,
     height: 176,
-    borderColor: "rgba(168, 85, 247, 0.7)",
-    backgroundColor: "rgba(168, 85, 247, 0.06)",
+    borderColor: "rgba(37, 99, 235, 0.7)",
+    backgroundColor: "rgba(37, 99, 235, 0.06)",
   },
 
   rippleOuter: {
     width: 232,
     height: 232,
-    borderColor: "rgba(168, 85, 247, 0.45)",
-    backgroundColor: "rgba(168, 85, 247, 0.03)",
+    borderColor: "rgba(37, 99, 235, 0.45)",
+    backgroundColor: "rgba(37, 99, 235, 0.03)",
   },
 
   // ── Record button ─────────────────────────────────────────────────────────
 
   btnOuter: {
-    shadowColor: colors.purple,
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.5,
     shadowRadius: 28,
@@ -952,13 +964,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  /** The disc inside the gradient ring — surface-coloured so it reads as a
+   *  raised face rather than punching a white hole in the dark canvas. */
   btnGlassDisc: {
     width: DISC_SIZE,
     height: DISC_SIZE,
     borderRadius: DISC_SIZE / 2,
-    backgroundColor: "rgba(10, 10, 12, 0.85)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.12)",
+    borderColor: c.border,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -972,8 +986,8 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 8,
-    backgroundColor: "#EF4444",
-    shadowColor: "#EF4444",
+    backgroundColor: c.danger,
+    shadowColor: c.danger,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.7,
     shadowRadius: 12,
@@ -983,13 +997,13 @@ const styles = StyleSheet.create({
   progressPct: {
     fontSize: 26,
     fontWeight: "700",
-    color: "#FFFFFF",
+    color: c.accent,
     letterSpacing: -0.5,
   },
 
   progressLabel: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 10,
     textTransform: "uppercase",
     letterSpacing: 0.8,
@@ -1024,7 +1038,7 @@ const styles = StyleSheet.create({
 
   statusTitle: {
     ...typography.heading,
-    color: colors.text,
+    color: c.text,
     fontSize: 18,
     fontWeight: "600",
     marginBottom: spacing.xs,
@@ -1033,9 +1047,9 @@ const styles = StyleSheet.create({
   timerText: {
     fontSize: 42,
     fontWeight: "700",
-    color: colors.text,
+    color: c.text,
     letterSpacing: -1,
-    textShadowColor: "rgba(168, 85, 247, 0.55)",
+    textShadowColor: "rgba(37, 99, 235, 0.55)",
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
     fontVariant: ["tabular-nums"],
@@ -1044,7 +1058,7 @@ const styles = StyleSheet.create({
 
   statusSub: {
     ...typography.body,
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 13,
     textAlign: "center",
     lineHeight: 20,
@@ -1056,7 +1070,7 @@ const styles = StyleSheet.create({
     width: "80%",
     height: 4,
     borderRadius: radii.pill,
-    backgroundColor: "rgba(255,255,255,0.08)",
+    backgroundColor: c.surfaceAlt,
     marginTop: spacing.lg,
     overflow: "hidden",
   },
@@ -1078,8 +1092,8 @@ const styles = StyleSheet.create({
   errCard: {
     width: "100%",
     marginTop: spacing.sm,
-    backgroundColor: "rgba(239, 68, 68, 0.08)",
-    borderColor: "rgba(239, 68, 68, 0.22)",
+    backgroundColor: "rgba(220, 38, 38, 0.08)",
+    borderColor: "rgba(220, 38, 38, 0.22)",
   },
 
   errRow: {
@@ -1091,10 +1105,10 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: colors.danger,
+    backgroundColor: c.danger,
     marginRight: spacing.sm,
     marginTop: 3,
-    shadowColor: colors.danger,
+    shadowColor: c.danger,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 5,
@@ -1103,7 +1117,7 @@ const styles = StyleSheet.create({
 
   errText: {
     ...typography.body,
-    color: colors.danger,
+    color: c.danger,
     fontSize: 13,
     flex: 1,
     lineHeight: 20,

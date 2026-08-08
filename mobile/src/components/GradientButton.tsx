@@ -22,15 +22,15 @@ interface Props {
   loading?: boolean;
   disabled?: boolean;
   style?: ViewStyle;
-  /** Override gradient colours — defaults to "The Fusion" (purple → gold). */
+  /** Override gradient colours — defaults to "The Fusion" (deep blue → bright blue). */
   colors?: readonly [string, string, ...string[]];
 }
 
 /**
- * GradientButton — the primary CTA component in the luxury dark-mode system.
+ * GradientButton — the primary CTA component in the light blue system.
  *
  * Features:
- *  • "The Fusion" gradient (Electric Purple #A855F7 → Warm Gold #F59E0B) by default.
+ *  • "The Fusion" gradient (Deep Blue #1D4ED8 → Bright Blue #3B82F6) by default.
  *  • Tactile spring-scale animation via react-native-reanimated (no JS thread).
  *  • Leading icon slot using @expo/vector-icons Ionicons.
  *  • Loading state replaces content with an ActivityIndicator.
@@ -38,7 +38,7 @@ interface Props {
  *
  * Usage:
  *   <GradientButton label="Save to Library" icon="bookmark" onPress={save} />
- *   <GradientButton label="Record" colors={['#D946EF', '#A855F7']} onPress={start} />
+ *   <GradientButton label="Record" colors={['#0EA5E9', '#2563EB']} onPress={start} />
  */
 export function GradientButton({
   label,

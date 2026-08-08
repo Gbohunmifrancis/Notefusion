@@ -7,11 +7,12 @@ import {
   spacing,
   typography,
 } from "../design/theme";
+import { useColors } from "../lib/theme";
 
 /**
  * Confidence chip — PRD requires honest visibility of low confidence,
  * never hiding it. The colour-coded dot + border make the trust level
- * immediately legible on dark glassmorphism surfaces.
+ * immediately legible on white card surfaces.
  *
  *  ≥ 75 %  →  green  (High confidence)
  *  ≥ 50 %  →  amber  (Fair — worth a review)
@@ -24,7 +25,8 @@ export function ConfidenceBadge({
   value: number;
   compact?: boolean;
 }) {
-  const color = confidenceColor(value);
+  const colors = useColors();
+  const color = confidenceColor(value, colors);
   const pct = Math.round(value * 100);
 
   return (

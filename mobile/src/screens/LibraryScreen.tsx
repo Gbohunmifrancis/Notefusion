@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import {
   Alert,
   FlatList,
+  Image,
   RefreshControl,
   StyleSheet,
   Text,
@@ -16,25 +17,34 @@ import { Screen } from "../components/Screen";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import { colors, gradients, radii, spacing, typography } from "../design/theme";
+import { deriveSolfa } from "../lib/solfa";
+import {
+  gradients,
+  radii,
+  spacing,
+  typography,
+  type Palette,
+} from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
+import { appIcons } from "../design/icons";
 import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * LibraryScreen — luxury dark-mode saved transcriptions list.
+ * LibraryScreen — light blue saved transcriptions list.
  *
  * Design language:
- *   • Pitch Black canvas with ambient purple glow orb behind the title.
- *   • Each transcription row is a glassmorphism card:
+ *   • Mist canvas with ambient blue glow orb behind the title.
+ *   • Each transcription row is a white card:
  *       – Gradient note icon bubble (purple → gold, varying per item).
- *       – Title in Crisp White, metadata in Soft Ash.
+ *       – Title in Ink Navy, metadata in Slate.
  *       – Confidence badge (traffic-light coloured).
  *       – Right chevron as a subtle navigation affordance.
- *   • Pull-to-refresh with a purple tint color.
+ *   • Pull-to-refresh with a blue tint colour.
  *   • Long-press to delete (with confirmation alert).
- *   • Empty state: ambient orb + ghost icon + Soft Ash copy.
+ *   • Empty state: ambient orb + ghost icon + Slate copy.
  *   • Section count chip below the title.
  */
 export function LibraryScreen() {
@@ -42,6 +52,8 @@ export function LibraryScreen() {
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
 
   // ── Data loading ────────────────────────────────────────────────────────────
 
@@ -67,16 +79,25 @@ export function LibraryScreen() {
   async function open(item: SavedTranscription) {
     try {
       const full = await libraryApi.get(item.id);
+      // The library DTO carries pitches but no syllables, so solfa is
+      // re-derived here rather than shipped — same engine, movable do.
+      const derived = deriveSolfa(
+        full.notes ?? [],
+        full.key,
+        full.timeSignature,
+      );
       nav.navigate("Result", {
         result: {
           key: full.key,
           keyConfidence: 1,
           tempo: full.tempoBpm,
           timeSignature: full.timeSignature,
-          musicXml: "",
+          // The detail read carries the engraved score, so a saved item is
+          // exportable; the list read omits it, hence the detail fetch above.
+          musicXml: full.musicXml ?? "",
           midiBase64: "",
-          notes: full.notes ?? [],
-          solfaLines: [],
+          notes: derived.notes,
+          solfaLines: derived.solfaLines,
           overallConfidence: full.overallConfidence,
         },
         savedId: full.id,
@@ -116,11 +137,11 @@ export function LibraryScreen() {
   // ── Gradient cycle for note icons (each item gets a different accent) ───────
 
   const ICON_GRADIENTS: readonly (readonly [string, string])[] = [
-    ["#A855F7", "#F59E0B"], // purple → gold  (The Fusion)
-    ["#D946EF", "#A855F7"], // pink → purple
-    ["#A855F7", "#7C3AED"], // purple → deep violet
-    ["#F59E0B", "#D97706"], // gold → amber
-    ["#22C55E", "#16A34A"], // green (high confidence vibe)
+    ["#2563EB", "#3B82F6"], // deep blue → bright blue  (The Fusion)
+    ["#0EA5E9", "#2563EB"], // sky → blue
+    ["#2563EB", "#1D4ED8"], // blue → deep blue
+    ["#3B82F6", "#60A5FA"], // bright blue → light blue
+    ["#16A34A", "#16A34A"], // green (high confidence vibe)
   ] as const;
 
   // ── List header ─────────────────────────────────────────────────────────────
@@ -151,7 +172,7 @@ export function LibraryScreen() {
       {/* Gradient divider */}
       {items.length > 0 && (
         <LinearGradient
-          colors={["transparent", "rgba(168,85,247,0.35)", "transparent"]}
+          colors={["transparent", "rgba(37,99,235,0.35)", "transparent"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.headerDivider}
@@ -173,11 +194,7 @@ export function LibraryScreen() {
           style={styles.emptyBubble}
         >
           <View style={styles.emptyBubbleInner}>
-            <Ionicons
-              name="folder-open-outline"
-              size={36}
-              color={colors.textFaint}
-            />
+            <Image source={appIcons.songbook} style={styles.emptyBubbleImg} />
           </View>
         </LinearGradient>
       </View>
@@ -237,7 +254,7 @@ export function LibraryScreen() {
                   style={styles.noteIconBubble}
                 >
                   <View style={styles.noteIconInner}>
-                    <Ionicons name="musical-note" size={18} color="#FFFFFF" />
+                    <Image source={appIcons.music} style={styles.noteIconImg} />
                   </View>
                 </LinearGradient>
 
@@ -287,6 +304,8 @@ function MetaChip({
   icon: keyof typeof Ionicons.glyphMap;
   text: string;
 }) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.metaChip}>
       <Ionicons name={icon} size={10} color={colors.textFaint} />
@@ -297,7 +316,8 @@ function MetaChip({
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
   listContent: {
     paddingBottom: 120, // clear the floating tab bar
   },
@@ -315,7 +335,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
 
-  /** Soft purple glow orb — bleeds behind the title from the top-left. */
+  /** Soft blue glow orb — bleeds behind the title from the top-left. */
   ambientOrb: {
     position: "absolute",
     top: -40,
@@ -323,7 +343,7 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     borderRadius: 110,
-    backgroundColor: "rgba(168, 85, 247, 0.10)",
+    backgroundColor: c.accentSoft,
   },
 
   titleRow: {
@@ -335,22 +355,22 @@ const styles = StyleSheet.create({
 
   title: {
     ...typography.display,
-    color: colors.text,
+    color: c.text,
     fontSize: 30,
     fontWeight: "700",
     letterSpacing: -0.5,
   },
 
-  /** Glass count chip — shows the total number of saved items. */
+  /** Tinted count chip — shows the total number of saved items. */
   countChip: {
-    backgroundColor: "rgba(168, 85, 247, 0.18)",
+    backgroundColor: c.accentSoft,
     borderWidth: 1,
-    borderColor: "rgba(168, 85, 247, 0.35)",
+    borderColor: c.accentGlow,
     borderRadius: radii.pill,
     paddingVertical: 3,
     paddingHorizontal: spacing.sm + 2,
-    // Purple glow
-    shadowColor: colors.purple,
+    // Blue glow
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 6,
@@ -359,14 +379,14 @@ const styles = StyleSheet.create({
 
   countText: {
     ...typography.caption,
-    color: colors.purple,
+    color: c.purple,
     fontSize: 12,
     fontWeight: "700",
   },
 
   subtitle: {
     ...typography.body,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 13,
     marginBottom: spacing.lg,
   },
@@ -382,14 +402,14 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: c.border,
     borderRadius: radii.lg,
     padding: spacing.md,
     marginBottom: spacing.sm,
-    // Faint purple shadow per card
-    shadowColor: colors.purple,
+    // Faint blue shadow per card
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
@@ -407,7 +427,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: spacing.md,
     // Glow
-    shadowColor: colors.purple,
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.35,
     shadowRadius: 8,
@@ -415,15 +435,17 @@ const styles = StyleSheet.create({
   },
 
   /** Frosted inner disc inside the bubble. */
+  noteIconImg: { width: 22, height: 22 },
+
   noteIconInner: {
     width: 34,
     height: 34,
     borderRadius: radii.sm,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    backgroundColor: c.surfaceAlt,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.20)",
+    borderColor: c.border,
   },
 
   // ── Card text ───────────────────────────────────────────────────────────────
@@ -435,7 +457,7 @@ const styles = StyleSheet.create({
 
   cardTitle: {
     ...typography.label,
-    color: colors.text,
+    color: c.text,
     fontSize: 14,
     fontWeight: "600",
     marginBottom: 5,
@@ -455,7 +477,7 @@ const styles = StyleSheet.create({
 
   metaText: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 11,
   },
 
@@ -483,8 +505,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
     borderRadius: radii.xl + spacing.md,
     overflow: "hidden",
-    // Purple glow
-    shadowColor: colors.purple,
+    // Blue glow
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
     shadowRadius: 20,
@@ -499,20 +521,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
+  emptyBubbleImg: { width: 34, height: 34 },
+
   emptyBubbleInner: {
     width: 76,
     height: 76,
     borderRadius: radii.xl,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.07)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
+    borderColor: c.border,
   },
 
   emptyTitle: {
     ...typography.heading,
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 18,
     fontWeight: "700",
     textAlign: "center",
@@ -521,7 +545,7 @@ const styles = StyleSheet.create({
 
   emptyBody: {
     ...typography.body,
-    color: colors.textFaint,
+    color: c.textFaint,
     textAlign: "center",
     fontSize: 14,
     lineHeight: 22,

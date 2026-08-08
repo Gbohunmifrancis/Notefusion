@@ -2,36 +2,45 @@ import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
-import { meApi, authApi } from "../api/endpoints";
+import { meApi, authApi, libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import { colors, gradients, radii, spacing, typography } from "../design/theme";
+import { gradients, radii, spacing, typography, type Palette } from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
 import type { MyProfile } from "../api/types";
+import type { RootStackParams } from "../navigation/types";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * ProfileScreen — luxury dark-mode account overview.
+ * ProfileScreen — light blue account overview.
  *
  * Layout (top → bottom):
- *   • Ambient purple/gold glow orb behind the avatar area.
- *   • Gradient ring avatar — initials on a dark glass disc, framed by
+ *   • Ambient blue glow orb behind the avatar area.
+ *   • Gradient ring avatar — initials on a white disc, framed by
  *     "The Fusion" gradient ring.
  *   • Name, email, and role pill below the avatar.
  *   • Stat row: transcription count + member since date (from profile).
  *   • "Profile" glass card: inline name field + secondary save button.
  *   • "Security" glass card: current + new password fields + secondary button.
- *   • Quick-settings rows (Settings, Language, FAQ) — placeholder tappables.
+ *   • Quick-settings rows (Settings, FAQ) — push their own screens.
  *   • "Sign out" danger ghost button at the bottom.
  */
 export function ProfileScreen() {
   const { user, setUser, signOut } = useAuth();
+  const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
   const [profile, setProfile] = useState<MyProfile | null>(null);
   const [name, setName] = useState(user?.fullName ?? "");
+  // Dash until the count loads — the library list is the only source for it.
+  const [savedCount, setSavedCount] = useState("—");
 
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
@@ -41,6 +50,10 @@ export function ProfileScreen() {
     meApi
       .get()
       .then(setProfile)
+      .catch(() => undefined);
+    libraryApi
+      .list()
+      .then((items) => setSavedCount(String(items.length)))
       .catch(() => undefined);
   }, []);
 
@@ -98,11 +111,11 @@ export function ProfileScreen() {
         <View style={styles.orbPurple} />
         <View style={styles.orbGold} />
 
-        {/* ── Avatar: gradient ring + dark glass disc + initials ─────────── */}
+        {/* ── Avatar: gradient ring + white disc + initials ───────────────── */}
         <View style={styles.avatarWrap}>
           {/* Outer gradient ring */}
           <LinearGradient
-            colors={gradients.brand} // #A855F7 → #F59E0B
+            colors={gradients.brand} // #2563EB → #3B82F6
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.avatarRing}
@@ -137,7 +150,7 @@ export function ProfileScreen() {
       <View style={styles.statsRow}>
         <StatChip
           icon="musical-notes-outline"
-          value={"—"}
+          value={savedCount}
           label="Transcriptions"
           accent={colors.purple}
         />
@@ -160,7 +173,7 @@ export function ProfileScreen() {
           icon="person-outline"
           value={roleLabel}
           label="Role"
-          accent="#22C55E"
+          accent={colors.success}
         />
       </View>
 
@@ -220,18 +233,14 @@ export function ProfileScreen() {
           icon="settings-outline"
           label="Settings"
           accent={colors.purple}
-        />
-        <View style={styles.settingsRowDivider} />
-        <SettingsRow
-          icon="language-outline"
-          label="Language"
-          accent={colors.gold}
+          onPress={() => nav.navigate("Settings")}
         />
         <View style={styles.settingsRowDivider} />
         <SettingsRow
           icon="help-circle-outline"
           label="FAQ & Help"
-          accent="#22C55E"
+          accent={colors.success}
+          onPress={() => nav.navigate("Help")}
           isLast
         />
       </View>
@@ -260,6 +269,8 @@ function SectionHeader({
   icon: keyof typeof Ionicons.glyphMap;
   title: string;
 }) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.sectionHeader}>
       <Ionicons name={icon} size={14} color={colors.purple} />
@@ -279,6 +290,7 @@ function StatChip({
   label: string;
   accent: string;
 }) {
+  const styles = useThemedStyles(makeStyles);
   return (
     <View style={styles.statChip}>
       <View style={[styles.statIconCircle, { backgroundColor: `${accent}18` }]}>
@@ -296,16 +308,21 @@ function SettingsRow({
   icon,
   label,
   accent,
+  onPress,
   isLast = false,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
   accent: string;
+  onPress: () => void;
   isLast?: boolean;
 }) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
   return (
     <TouchableOpacity
       style={[styles.settingsRow, isLast && styles.settingsRowLast]}
+      onPress={onPress}
       activeOpacity={0.7}
     >
       {/* Tinted icon circle */}
@@ -325,7 +342,8 @@ function SettingsRow({
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const styles = StyleSheet.create({
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
   screen: {
     paddingBottom: 120,
   },
@@ -339,7 +357,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
 
-  /** Soft purple glow — upper-left of hero area. */
+  /** Soft blue glow — upper-left of hero area. */
   orbPurple: {
     position: "absolute",
     top: -30,
@@ -347,10 +365,10 @@ const styles = StyleSheet.create({
     width: 220,
     height: 220,
     borderRadius: 110,
-    backgroundColor: "rgba(168, 85, 247, 0.12)",
+    backgroundColor: "rgba(37, 99, 235, 0.12)",
   },
 
-  /** Soft gold glow — upper-right of hero area. */
+  /** Soft light-blue glow — upper-right of hero area. */
   orbGold: {
     position: "absolute",
     top: -10,
@@ -358,7 +376,7 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     borderRadius: 90,
-    backgroundColor: "rgba(245, 158, 11, 0.08)",
+    backgroundColor: "rgba(59, 130, 246, 0.08)",
   },
 
   // ── Avatar ────────────────────────────────────────────────────────────────
@@ -370,8 +388,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: spacing.lg,
-    // Purple glow behind the ring
-    shadowColor: colors.purple,
+    // Blue glow behind the ring
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.45,
     shadowRadius: 28,
@@ -387,27 +405,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  /** Dark glass disc — sits inside the gradient ring. */
+  /** Disc inside the gradient ring — surface-coloured so it reads as a raised
+   *  face rather than punching a white hole in the dark canvas. */
   avatarDisc: {
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: "#0A0A0C",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
+    borderColor: c.border,
     alignItems: "center",
     justifyContent: "center",
   },
 
   avatarInitials: {
     ...typography.title,
-    color: "#FFFFFF",
+    color: c.accent,
     fontSize: 30,
     fontWeight: "700",
     letterSpacing: -0.5,
   },
 
-  /** Green presence dot — bottom-right corner of the avatar ring. */
+  /** Green presence dot — bottom-right corner of the avatar ring. The border
+   *  fakes a cut-out of the canvas, so it has to track the canvas colour. */
   onlineDot: {
     position: "absolute",
     bottom: 4,
@@ -415,11 +435,11 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: "#22C55E",
+    backgroundColor: c.success,
     borderWidth: 2.5,
-    borderColor: "#000000",
+    borderColor: c.bg,
     // Green glow
-    shadowColor: "#22C55E",
+    shadowColor: c.success,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 6,
@@ -430,7 +450,7 @@ const styles = StyleSheet.create({
 
   displayName: {
     ...typography.title,
-    color: colors.text,
+    color: c.text,
     fontSize: 24,
     fontWeight: "700",
     letterSpacing: -0.4,
@@ -440,24 +460,24 @@ const styles = StyleSheet.create({
 
   email: {
     ...typography.body,
-    color: colors.textMuted,
+    color: c.textMuted,
     textAlign: "center",
     fontSize: 14,
     marginBottom: spacing.md,
   },
 
-  /** Glass role pill — purple-tinted border + fill. */
+  /** Role pill — blue-tinted border + fill. */
   rolePill: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(168, 85, 247, 0.12)",
+    backgroundColor: c.accentSoft,
     borderWidth: 1,
-    borderColor: "rgba(168, 85, 247, 0.30)",
+    borderColor: c.accentGlow,
     borderRadius: radii.pill,
     paddingVertical: 5,
     paddingHorizontal: spacing.md,
-    // Purple glow
-    shadowColor: colors.purple,
+    // Blue glow
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.35,
     shadowRadius: 8,
@@ -466,7 +486,7 @@ const styles = StyleSheet.create({
 
   roleText: {
     ...typography.caption,
-    color: colors.purple,
+    color: c.purple,
     fontSize: 12,
     fontWeight: "700",
   },
@@ -476,9 +496,9 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: c.border,
     borderRadius: radii.lg,
     paddingVertical: spacing.md,
     marginBottom: spacing.xxl,
@@ -501,7 +521,7 @@ const styles = StyleSheet.create({
 
   statValue: {
     ...typography.label,
-    color: colors.text,
+    color: c.text,
     fontSize: 13,
     fontWeight: "700",
     textAlign: "center",
@@ -509,7 +529,7 @@ const styles = StyleSheet.create({
 
   statLabel: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     fontSize: 10,
     textAlign: "center",
   },
@@ -518,7 +538,7 @@ const styles = StyleSheet.create({
   statDivider: {
     width: 1,
     height: 40,
-    backgroundColor: "rgba(255, 255, 255, 0.07)",
+    backgroundColor: c.surface,
   },
 
   // ── Section header ─────────────────────────────────────────────────────────
@@ -533,7 +553,7 @@ const styles = StyleSheet.create({
 
   sectionTitle: {
     ...typography.label,
-    color: colors.textMuted,
+    color: c.textMuted,
     fontSize: 12,
     fontWeight: "700",
     textTransform: "uppercase",
@@ -552,14 +572,14 @@ const styles = StyleSheet.create({
   /** Custom settings card — uses individual rows instead of Card component
    *  so dividers can be placed between rows without outer padding issues. */
   settingsCard: {
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backgroundColor: c.surface,
     borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.08)",
+    borderColor: c.border,
     borderRadius: radii.lg,
     marginBottom: spacing.xl,
     overflow: "hidden",
-    // Purple shadow
-    shadowColor: colors.purple,
+    // Blue shadow
+    shadowColor: c.purple,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 12,
@@ -581,7 +601,7 @@ const styles = StyleSheet.create({
   settingsRowDivider: {
     height: 1,
     marginHorizontal: spacing.lg,
-    backgroundColor: "rgba(255, 255, 255, 0.06)",
+    backgroundColor: c.surface,
   },
 
   settingsIconCircle: {
@@ -595,7 +615,7 @@ const styles = StyleSheet.create({
 
   settingsLabel: {
     ...typography.body,
-    color: colors.text,
+    color: c.text,
     flex: 1,
     fontSize: 15,
   },
@@ -611,7 +631,7 @@ const styles = StyleSheet.create({
 
   version: {
     ...typography.caption,
-    color: colors.textFaint,
+    color: c.textFaint,
     textAlign: "center",
     fontSize: 11,
     marginBottom: spacing.md,

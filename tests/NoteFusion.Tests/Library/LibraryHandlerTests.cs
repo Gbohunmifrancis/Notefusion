@@ -69,6 +69,89 @@ public class LibraryHandlerTests
         Assert.Equal(notesBefore, result.Value.Notes!.Select(n => n.PitchMidi).ToArray());
     }
 
+    // ── Solfa on the wire ─────────────────────────────────────────────────────
+    // Solfa is never persisted, so every read has to derive it. These expectations
+    // come from server/app/pipeline/solfa.py run over the same three pitches — the
+    // worker's output and a library read must agree character for character.
+
+    [Fact]
+    public async Task Saved_notes_carry_solfa_derived_from_the_current_key()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(key: "C"), default);
+
+        var notes = saved.Value.Notes!;
+        Assert.Equal(["d", "m", "s"], notes.Select(n => n.Solfa));
+        Assert.Equal([1, 3, 5], notes.Select(n => n.Degree));
+        Assert.All(notes, n => Assert.Equal("", n.OctaveMark)); // all in the unmarked register
+    }
+
+    [Fact]
+    public async Task Key_override_moves_the_reference_octave_with_the_doh()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(key: "C"), default);
+
+        var result = await new UpdateTranscriptionKeyCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(new UpdateTranscriptionKeyCommand(saved.Value.Id, "G major"), default);
+
+        // Doh moves to G, so the reference doh becomes G4 (67) and C4/E4 drop below it.
+        var notes = result.Value.Notes!;
+        Assert.Equal(["f", "l", "d"], notes.Select(n => n.Solfa));
+        Assert.Equal([4, 6, 1], notes.Select(n => n.Degree));
+        Assert.Equal([",", ",", ""], notes.Select(n => n.OctaveMark));
+    }
+
+    [Fact]
+    public async Task Minor_keys_label_notes_against_the_relative_major_doh()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(key: "A minor"), default);
+
+        // La-based minor: A minor's doh is C, so the labels match C major's.
+        Assert.Equal(["d", "m", "s"], saved.Value.Notes!.Select(n => n.Solfa));
+    }
+
+    // ── MusicXML for export ───────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Detail_read_returns_music_xml_for_export()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var result = await new NoteFusion.Application.Library.Queries.GetTranscriptionQueryHandler(
+                h.Db, new StubCurrentUser(userId))
+            .Handle(new NoteFusion.Application.Library.Queries.GetTranscriptionQuery(saved.Value.Id), default);
+
+        Assert.Equal("<score/>", result.Value.MusicXml);
+    }
+
+    [Fact]
+    public async Task List_read_omits_music_xml()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var result = await new NoteFusion.Application.Library.Queries.GetLibraryQueryHandler(
+            h.Db, new StubCurrentUser(userId)).Handle(new NoteFusion.Application.Library.Queries.GetLibraryQuery(), default);
+
+        // A list of full scores would dominate the payload; export reads the detail route.
+        Assert.Null(Assert.Single(result.Value).MusicXml);
+    }
+
     [Fact]
     public async Task Key_override_rejects_an_unparseable_key()
     {
@@ -86,7 +169,6 @@ public class LibraryHandlerTests
 
     private static SaveTranscriptionCommand SaveCommand(string key = "C") =>
         new("My Song", key, 120, "4/4", "<score/>", SampleNotes, 0.95, SourceJobId: "job-1");
-
     private static async Task<Guid> SeedUser(TestHarness h, string email = "user@example.com")
     {
         var user = User.Create("Test User", email, h.Hasher.Hash("password123"), h.Clock.UtcNow);

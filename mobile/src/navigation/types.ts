@@ -25,4 +25,6 @@ export type RootStackParams = {
     savedId?: string;
     title?: string;
   };
+  Settings: undefined;
+  Help: undefined;
 };

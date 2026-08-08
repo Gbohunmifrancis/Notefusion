@@ -2,11 +2,12 @@ import React from "react";
 import { ScrollView, StyleSheet, View, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { colors, spacing } from "../design/theme";
+import { spacing, type Palette } from "../design/theme";
+import { useTheme, useThemedStyles } from "../lib/theme";
 
 /**
- * Every screen's outer shell: safe-area aware, pitch-black background,
- * light status bar text (for dark theme), consistent horizontal padding.
+ * Every screen's outer shell: safe-area aware, canvas background, status-bar
+ * text that follows the active mode, consistent horizontal padding.
  * `scroll` wraps the content in a ScrollView for form-heavy screens.
  */
 export function Screen({
@@ -20,9 +21,12 @@ export function Screen({
   contentStyle?: ViewStyle;
   edges?: ("top" | "bottom" | "left" | "right")[];
 }) {
+  const { mode } = useTheme();
+  const styles = useThemedStyles(makeStyles);
+
   return (
     <SafeAreaView style={styles.safe} edges={edges ?? ["top", "bottom"]}>
-      <StatusBar style="light" />
+      <StatusBar style={mode === "dark" ? "light" : "dark"} />
       {scroll ? (
         <ScrollView
           contentContainerStyle={[styles.content, contentStyle]}
@@ -40,8 +44,9 @@ export function Screen({
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.bg },
-  content: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xl },
-  flex: { flex: 1 },
-});
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    safe: { flex: 1, backgroundColor: c.bg },
+    content: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xl },
+    flex: { flex: 1 },
+  });

@@ -11,7 +11,8 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
-import { colors, gradients, radii, spacing, typography } from "../design/theme";
+import { gradients, radii, spacing, typography, type Palette } from "../design/theme";
+import { useColors, useThemedStyles } from "../lib/theme";
 import type { TabParams } from "./types";
 
 const Tab = createBottomTabNavigator<TabParams>();
@@ -46,16 +47,18 @@ const TABS: {
 /**
  * Floating dark-glass tab bar.
  *
- * The bar sits on a Pitch Black canvas inside a glass pill:
- *   • Resting tabs  — muted Zinc (#52525B) icon, no label.
- *   • Active tab    — "The Fusion" gradient chip (Electric Purple → Warm Gold)
- *                     with a filled icon + label in Crisp White.
+ * The bar sits on a Mist canvas inside a glass pill:
+ *   • Resting tabs  — muted Zinc (#94A3B8) icon, no label.
+ *   • Active tab    — "The Fusion" gradient chip (Deep Blue → Bright Blue)
+ *                     with a filled icon + label in Ink Navy.
  *
- * The pill itself uses the same glassmorphism recipe as every Card:
- * 8 % white fill, 10 % white border, faint purple shadow.
+ * The pill itself uses the same recipe as every Card:
+ * White fill, slate hairline border, faint blue shadow.
  */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
 
   return (
     <View
@@ -94,7 +97,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               {focused ? (
                 // ── Active — gradient chip ─────────────────────────────────
                 <LinearGradient
-                  colors={gradients.brand} // #A855F7 → #F59E0B
+                  colors={gradients.brand} // #2563EB → #3B82F6
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={styles.itemActive}
@@ -135,79 +138,80 @@ export function TabNavigator() {
   );
 }
 
-const styles = StyleSheet.create({
-  /** Full-width absolute footer — sits above all screen content. */
-  wrap: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: "center",
-  },
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    /** Full-width absolute footer — sits above all screen content. */
+    wrap: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: "center",
+    },
 
-  /**
-   * The glass pill container.
-   * 8 % white fill + 10 % white border = glassmorphism recipe.
-   * Purple shadow lifts it off the black canvas.
-   */
-  bar: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "rgba(255, 255, 255, 0.08)",
-    borderRadius: radii.pill,
-    paddingHorizontal: spacing.xs,
-    paddingVertical: spacing.xs,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.10)",
-    // Purple halo
-    shadowColor: colors.purple,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 12,
-  },
+    /**
+     * The pill container.
+     * Raised fill + hairline border.
+     * Blue shadow lifts it off the canvas.
+     */
+    bar: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: c.surface,
+      borderRadius: radii.pill,
+      paddingHorizontal: spacing.xs,
+      paddingVertical: spacing.xs,
+      borderWidth: 1,
+      borderColor: c.border,
+      // Blue halo
+      shadowColor: c.purple,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 20,
+      elevation: 12,
+    },
 
-  /** Outer touch target — same size for active and inactive. */
-  itemWrap: {
-    alignItems: "center",
-    justifyContent: "center",
-    minWidth: 52,
-  },
+    /** Outer touch target — same size for active and inactive. */
+    itemWrap: {
+      alignItems: "center",
+      justifyContent: "center",
+      minWidth: 52,
+    },
 
-  /**
-   * Active — gradient pill chip.
-   * overflow:hidden clips the gradient to the pill radius on Android.
-   */
-  itemActive: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 46,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radii.pill,
-    overflow: "hidden",
-    // Gradient glow
-    shadowColor: colors.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 6,
-  },
+    /**
+     * Active — gradient pill chip.
+     * overflow:hidden clips the gradient to the pill radius on Android.
+     */
+    itemActive: {
+      flexDirection: "row",
+      alignItems: "center",
+      height: 46,
+      paddingHorizontal: spacing.lg,
+      borderRadius: radii.pill,
+      overflow: "hidden",
+      // Gradient glow
+      shadowColor: c.purple,
+      shadowOffset: { width: 0, height: 0 },
+      shadowOpacity: 0.5,
+      shadowRadius: 12,
+      elevation: 6,
+    },
 
-  /** Active tab label — Crisp White, compact. */
-  itemLabel: {
-    ...typography.label,
-    color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "700",
-    marginLeft: spacing.sm,
-  },
+    /** Active tab label — sits on the brand gradient, so always white. */
+    itemLabel: {
+      ...typography.label,
+      color: "#FFFFFF",
+      fontSize: 13,
+      fontWeight: "700",
+      marginLeft: spacing.sm,
+    },
 
-  /** Inactive — just the muted icon, centred in a square hit area. */
-  itemInactive: {
-    width: 46,
-    height: 46,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: radii.pill,
-  },
-});
+    /** Inactive — just the muted icon, centred in a square hit area. */
+    itemInactive: {
+      width: 46,
+      height: 46,
+      alignItems: "center",
+      justifyContent: "center",
+      borderRadius: radii.pill,
+    },
+  });
