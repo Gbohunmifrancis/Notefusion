@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
   Dimensions,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -84,10 +82,6 @@ export function LoginScreen({ navigation }: Props) {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
 
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
@@ -176,7 +170,6 @@ export function LoginScreen({ navigation }: Props) {
             </Pressable>
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
 
       {/* ── Decorative staff ─────────────────────────────────────────────── */}
       {/* Outside the ScrollView so it stays pinned to the bottom edge and never

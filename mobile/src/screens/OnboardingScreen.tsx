@@ -117,7 +117,7 @@ export function OnboardingScreen({ navigation }: Props) {
         </Pressable>
       </View>
 
-      {/* ── Centre column: slides + dots + button ────────────────────────── */}
+      {/* ── Centre column: slides + dots ────────────────────────────────── */}
       <View style={styles.centre}>
         {/* Slides */}
         <FlatList
@@ -176,16 +176,16 @@ export function OnboardingScreen({ navigation }: Props) {
             />
           ))}
         </View>
+      </View>
 
-        {/* ── Button ─────────────────────────────────────────────────────── */}
-        <View style={styles.actions}>
-          <Button
-            label={isLast ? "Get started" : "Next"}
-            onPress={next}
-            icon="arrow-forward"
-            iconPosition="right"
-          />
-        </View>
+      {/* ── Footer: CTA button pinned to bottom ─────────────────────────── */}
+      <View style={styles.footer}>
+        <Button
+          label={isLast ? "Get started" : "Next"}
+          onPress={next}
+          icon="arrow-forward"
+          iconPosition="right"
+        />
       </View>
 
       {/* ── Decorative staff ─────────────────────────────────────────────── */}
@@ -221,9 +221,7 @@ const makeStyles = (c: Palette) =>
 
     // ── Centre column ─────────────────────────────────────────────────────────
 
-    /** Takes all remaining space and centres its children both axes so the
-     *  illustration, text, dots and button form one compact group in the
-     *  exact middle of the screen. */
+    /** Takes all remaining space and centres slides + dots in the middle. */
     centre: {
       flex: 1,
       justifyContent: "center",
@@ -309,6 +307,13 @@ const makeStyles = (c: Palette) =>
       marginTop: spacing.xl,
       paddingHorizontal: spacing.xl,
       width: "100%",
+    },
+
+    /** CTA button pinned to the bottom of the screen, full-width with side padding. */
+    footer: {
+      paddingHorizontal: spacing.xl,
+      paddingBottom: spacing.lg,
+      paddingTop: spacing.md,
     },
 
     ribbon: {
