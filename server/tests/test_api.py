@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 import soundfile as sf
 from app.api.schemas import SubmitResponse
-from app.jobs.queue import STATUS_DONE, STATUS_PENDING, JobQueue
+from app.jobs.queue import STATUS_DONE, STATUS_FAILED, STATUS_PENDING, JobQueue
 from app.main import app
 from fastapi.testclient import TestClient
 

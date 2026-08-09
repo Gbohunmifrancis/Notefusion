@@ -255,7 +255,10 @@ def _normalise_key_name(name: str) -> str:
     """
     parts = name.strip().split(None, 1)
     if not parts:
-        return name
+        # Empty or whitespace-only: return "" rather than echoing the blanks
+        # back, mirroring C# KeyParser.Parse, which folds both into the same
+        # IsNullOrWhiteSpace branch.
+        return ""
 
     raw_tonic = parts[0]
     mode_str = parts[1].strip().lower() if len(parts) > 1 else ""
