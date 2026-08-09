@@ -11,7 +11,14 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
-import { gradients, radii, spacing, typography, type Palette } from "../design/theme";
+import {
+  fonts,
+  gradients,
+  radii,
+  spacing,
+  typography,
+  type Palette,
+} from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { TabParams } from "./types";
 
@@ -26,7 +33,7 @@ const TABS: {
   { name: "Home", label: "Home", icon: "home-outline", iconActive: "home" },
   {
     name: "Record",
-    label: "Listen",
+    label: "Record",
     icon: "radio-outline",
     iconActive: "radio",
   },
@@ -202,7 +209,7 @@ const makeStyles = (c: Palette) =>
       ...typography.label,
       color: "#FFFFFF",
       fontSize: 13,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       marginLeft: spacing.sm,
     },
 
