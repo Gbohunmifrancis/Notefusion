@@ -181,13 +181,40 @@ export const radii = {
 
 // ─── Typography ─────────────────────────────────────────────────────────────
 
+/**
+ * Poppins families, loaded in App.tsx via `useFonts`.
+ *
+ * These are family names, not weights, and that distinction matters: once a
+ * custom `fontFamily` is set, React Native stops honouring `fontWeight` —
+ * iOS resolves the exact PostScript face and ignores the weight, while Android
+ * looks for a variant that isn't registered and silently falls back. So weight
+ * is selected by *picking a family*, and no style in this app should pair the
+ * two. Every token below therefore carries `fontFamily` and no `fontWeight`.
+ */
+export const fonts = {
+  regular: "Poppins_400Regular",
+  medium: "Poppins_500Medium",
+  semibold: "Poppins_600SemiBold",
+  bold: "Poppins_700Bold",
+} as const;
+
+/**
+ * The type scale from the design sheet. `hero`/`screenTitle` cover the large
+ * centred headings on splash, login, and onboarding; the rest are the everyday
+ * in-app sizes.
+ */
 export const typography = {
-  display: { fontSize: 34, fontWeight: "700" as const, letterSpacing: -0.5 },
-  title: { fontSize: 24, fontWeight: "700" as const, letterSpacing: -0.3 },
-  heading: { fontSize: 18, fontWeight: "600" as const },
-  body: { fontSize: 15, fontWeight: "400" as const },
-  label: { fontSize: 14, fontWeight: "600" as const },
-  caption: { fontSize: 12, fontWeight: "500" as const, letterSpacing: 0.2 },
+  /** Splash + login wordmark. */
+  hero: { fontSize: 40, fontFamily: fonts.bold, letterSpacing: -1 },
+  display: { fontSize: 34, fontFamily: fonts.bold, letterSpacing: -0.5 },
+  /** Onboarding slide titles, "Welcome back!". */
+  screenTitle: { fontSize: 26, fontFamily: fonts.bold, letterSpacing: -0.5 },
+  title: { fontSize: 24, fontFamily: fonts.bold, letterSpacing: -0.3 },
+  heading: { fontSize: 18, fontFamily: fonts.semibold },
+  body: { fontSize: 15, fontFamily: fonts.regular },
+  label: { fontSize: 14, fontFamily: fonts.semibold },
+  caption: { fontSize: 12, fontFamily: fonts.medium, letterSpacing: 0.2 },
+  /** Solfa syllables and note names — stays monospaced so columns line up. */
   mono: {
     fontSize: 17,
     fontWeight: "600" as const,
@@ -319,6 +346,7 @@ export const theme = {
   gradients,
   spacing,
   radii,
+  fonts,
   typography,
   shadow,
 } as const;

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import {
   confidenceColor,
   confidenceLabel,
+  fonts,
   radii,
   spacing,
   typography,
@@ -81,6 +82,6 @@ const styles = StyleSheet.create({
   },
   text: {
     ...typography.caption,
-    fontWeight: "600",
+    fontFamily: fonts.semibold,
   },
 });

@@ -2,9 +2,15 @@ import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import * as NativeSplash from 'expo-splash-screen';
 import { AuthProvider } from './src/lib/auth';
 import { ThemeProvider, useTheme } from './src/lib/theme';
+import { useAppReady } from './src/lib/appReady';
 import { RootNavigator } from './src/navigation/RootNavigator';
+import { SplashScreen } from './src/screens/SplashScreen';
+
+// Keep the native splash up until fonts are ready; hide is called in useAppReady.
+NativeSplash.preventAutoHideAsync().catch(() => undefined);
 
 /**
  * App root. The provider order matters: SafeAreaProvider must wrap everything
@@ -13,6 +19,11 @@ import { RootNavigator } from './src/navigation/RootNavigator';
  * below it reads the active palette.
  */
 export default function App() {
+  const { ready } = useAppReady();
+
+  // Hold the branded splash until fonts are loaded and the minimum time has passed.
+  if (!ready) return <SplashScreen />;
+
   return (
     <ThemeProvider>
       <SafeAreaProvider>

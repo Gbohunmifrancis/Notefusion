@@ -13,7 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { gradients, radii, spacing, typography } from "../design/theme";
+import { fonts, gradients, radii, spacing, typography } from "../design/theme";
 
 interface Props {
   label: string;
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   label: {
     ...typography.label,
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     color: "#FFFFFF",
     letterSpacing: 0.2,
   },

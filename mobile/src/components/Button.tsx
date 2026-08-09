@@ -25,6 +25,8 @@ interface Props {
   onPress?: () => void;
   variant?: Variant;
   icon?: keyof typeof Ionicons.glyphMap;
+  /** Which side of the label the icon sits on. Defaults to leading. */
+  iconPosition?: "left" | "right";
   loading?: boolean;
   disabled?: boolean;
   style?: ViewStyle;
@@ -47,6 +49,7 @@ export function Button({
   onPress,
   variant = "primary",
   icon,
+  iconPosition = "left",
   loading = false,
   disabled = false,
   style,
@@ -82,14 +85,22 @@ export function Button({
   const textColor = getTextColor();
 
   // ── Inner content (shared across variants) ────────────────────────────────
+  const glyph = icon && (
+    <Ionicons
+      name={icon}
+      size={18}
+      color={textColor}
+      style={iconPosition === "right" ? styles.iconRight : styles.icon}
+    />
+  );
+
   const content = loading ? (
     <ActivityIndicator color={textColor} size="small" />
   ) : (
     <>
-      {icon && (
-        <Ionicons name={icon} size={18} color={textColor} style={styles.icon} />
-      )}
+      {iconPosition === "left" && glyph}
       <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+      {iconPosition === "right" && glyph}
     </>
   );
 
@@ -192,11 +203,14 @@ const makeStyles = (c: Palette) =>
 
     label: {
       ...typography.label,
-      fontSize: 15,
-      fontWeight: "600",
+      fontSize: 17,
     },
 
     icon: {
       marginRight: spacing.sm,
+    },
+
+    iconRight: {
+      marginLeft: spacing.md,
     },
   });

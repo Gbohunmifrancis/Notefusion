@@ -48,7 +48,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 
-import { type Palette } from "../design/theme";
+import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { useNotePlayer } from "../lib/useNotePlayer";
 import type { NoteEvent } from "../api/types";
@@ -418,7 +418,7 @@ const makeStyles = (c: Palette) =>
 
     title: {
       fontSize: 12,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       color: c.textMuted,
       textTransform: "uppercase",
       letterSpacing: 1,
@@ -546,7 +546,7 @@ const makeStyles = (c: Palette) =>
 
     chipTextInactive: {
       fontSize: 14,
-      fontWeight: "600",
+      fontFamily: fonts.semibold,
       color: c.textMuted,
     },
 
@@ -565,7 +565,7 @@ const makeStyles = (c: Palette) =>
 
     chipTextActive: {
       fontSize: 15,
-      fontWeight: "800",
+      fontFamily: fonts.bold,
       color: "#FFFFFF",
       letterSpacing: 0.3,
     },
