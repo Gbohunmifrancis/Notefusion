@@ -61,7 +61,7 @@ export function SettingsScreen({ navigation }: Props) {
   async function deleteAccount() {
     setDeleting(true);
     try {
-      await meApi.remove(password);
+      await meApi.remove({ password });
       // The session is dead server-side; signOut clears the local tokens, which
       // swaps the root navigator back to the auth flow and unmounts this screen.
       await signOut();

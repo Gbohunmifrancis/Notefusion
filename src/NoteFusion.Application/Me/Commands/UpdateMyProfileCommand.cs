@@ -44,6 +44,13 @@ public sealed class UpdateMyProfileCommandHandler : IRequestHandler<UpdateMyProf
         user.UpdateProfile(request.FullName.Trim(), request.PhoneNumber?.Trim());
         await _db.SaveChangesAsync(cancellationToken);
 
-        return new MyProfileDto(user.Id, user.FullName, user.Email, user.Role.ToString(), user.CreatedAt);
+        return new MyProfileDto(
+            user.Id,
+            user.FullName,
+            user.Email,
+            user.Role.ToString(),
+            user.ProfilePictureUrl,
+            user.PasswordHash is not null,
+            user.CreatedAt);
     }
 }

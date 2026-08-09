@@ -22,11 +22,20 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.FullName).HasMaxLength(100).IsRequired();
         builder.Property(u => u.Email).HasMaxLength(254).IsRequired();
         builder.Property(u => u.PhoneNumber).HasMaxLength(30);
-        builder.Property(u => u.PasswordHash).HasMaxLength(200).IsRequired();
+        // Nullable: Google-created accounts have no password (see User.PasswordHash).
+        builder.Property(u => u.PasswordHash).HasMaxLength(200);
+        builder.Property(u => u.GoogleId).HasMaxLength(64);
+        builder.Property(u => u.ProfilePictureUrl).HasMaxLength(500);
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(u => u.CreatedAt).IsRequired();
 
         builder.HasIndex(u => u.Email).IsUnique();
+
+        // Filtered unique index: one account per Google subject, while the many
+        // password-only users (all null) stay exempt from the uniqueness rule.
+        builder.HasIndex(u => u.GoogleId)
+            .IsUnique()
+            .HasFilter("\"GoogleId\" IS NOT NULL");
 
         // Cascade delete is intentional: a user's refresh tokens and push devices are
         // useless (and a liability) once the account is gone.

@@ -54,10 +54,18 @@ public static class DependencyInjection
         services.AddSingleton(jwt);
         services.AddSingleton<RsaKeyProvider>();
 
+        var google = configuration.GetSection("Google").Get<GoogleSettings>() ?? new GoogleSettings();
+        services.AddSingleton(google);
+
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddSingleton<ISecureTokenGenerator, SecureTokenGenerator>();
         services.AddSingleton<IJwtTokenService, JwtTokenService>();
+
+        // Singleton so the cached Google signing keys are shared: the validator's
+        // ConfigurationManager refreshes the JWKS on its own schedule, and a per-request
+        // instance would re-fetch the discovery document on every sign-in.
+        services.AddSingleton<IGoogleTokenValidator, GoogleTokenValidator>();
     }
 
     private static void AddPush(this IServiceCollection services, IConfiguration configuration)

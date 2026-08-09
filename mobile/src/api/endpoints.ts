@@ -19,6 +19,15 @@ export const authApi = {
       .post<LoginResponse>("/api/auth/login", { email, password })
       .then((r) => r.data),
 
+  /**
+   * Signs in with a Google ID token. Serves sign-up and sign-in alike — the server
+   * creates the account the first time it sees the Google subject.
+   */
+  google: (idToken: string) =>
+    api
+      .post<LoginResponse>("/api/auth/google", { idToken })
+      .then((r) => r.data),
+
   logout: (refreshToken: string) =>
     api.post("/api/auth/logout", { refreshToken }).then(() => undefined),
 
@@ -33,9 +42,13 @@ export const meApi = {
   update: (fullName: string) =>
     api.put<MyProfile>("/api/me", { fullName }).then((r) => r.data),
 
-  /** Closes the account and deletes its library. The password is re-checked server-side. */
-  remove: (password: string) =>
-    api.delete("/api/me", { data: { password } }).then(() => undefined),
+  /**
+   * Closes the account and deletes its library. The server re-checks the proof rather
+   * than trusting the access token: pass a password, or — for Google accounts, which
+   * have none — a freshly obtained Google ID token.
+   */
+  remove: (proof: { password: string } | { googleIdToken: string }) =>
+    api.delete("/api/me", { data: proof }).then(() => undefined),
 };
 
 export const devicesApi = {

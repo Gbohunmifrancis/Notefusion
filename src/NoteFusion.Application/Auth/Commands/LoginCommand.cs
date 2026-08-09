@@ -47,6 +47,12 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
         if (user.IsLockedOut(now))
             return AuthErrors.AccountLocked(user.LockoutEndAt!.Value);
 
+        // Google-created accounts have no password. Report the generic credential error
+        // rather than PasswordNotSet: at this point the caller is unauthenticated, and a
+        // distinct message would confirm the address is registered.
+        if (user.PasswordHash is null)
+            return AuthErrors.InvalidCredentials;
+
         if (!_hasher.Verify(request.Password, user.PasswordHash))
         {
             user.RecordFailedLogin(now);

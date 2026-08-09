@@ -27,6 +27,9 @@ export interface MyProfile {
   fullName: string;
   email: string;
   role: string;
+  profilePictureUrl: string | null;
+  /** False for Google-only accounts, which never set a password. */
+  hasPassword: boolean;
   createdAt: string;
 }
 

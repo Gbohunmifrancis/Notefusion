@@ -45,7 +45,15 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
             return AuthErrors.InvalidCredentials;
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
-        if (user is null || !_hasher.Verify(request.CurrentPassword, user.PasswordHash))
+        if (user is null)
+            return AuthErrors.CurrentPasswordIncorrect;
+
+        // The caller is already authenticated as this user, so naming the real reason
+        // leaks nothing and lets the client offer "set a password" instead.
+        if (user.PasswordHash is null)
+            return AuthErrors.PasswordNotSet;
+
+        if (!_hasher.Verify(request.CurrentPassword, user.PasswordHash))
             return AuthErrors.CurrentPasswordIncorrect;
 
         user.ChangePassword(_hasher.Hash(request.NewPassword), _clock.UtcNow);
