@@ -157,6 +157,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("GoogleId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
@@ -170,13 +174,16 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(30)
                         .HasColumnType("character varying(30)");
+
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -187,6 +194,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("GoogleId")
+                        .IsUnique()
+                        .HasFilter("\"GoogleId\" IS NOT NULL");
 
                     b.ToTable("users", (string)null);
                 });

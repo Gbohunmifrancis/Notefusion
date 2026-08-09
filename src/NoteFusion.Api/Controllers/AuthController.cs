@@ -25,6 +25,15 @@ public sealed class AuthController : ApiControllerBase
     public async Task<IActionResult> Login(LoginCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
+    /// <summary>
+    /// Signs in with a Google ID token, creating the account on first use.
+    /// Serves both sign-up and sign-in — the client cannot tell them apart.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("google")]
+    public async Task<IActionResult> Google(GoogleSignInCommand command, CancellationToken ct)
+        => HandleResult(await _sender.Send(command, ct));
+
     /// <summary>Rotates the refresh token and issues a fresh access token.</summary>
     [AllowAnonymous]
     [HttpPost("refresh")]

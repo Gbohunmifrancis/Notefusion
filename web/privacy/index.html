@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — NoteFusion</title>
+<meta name="description" content="How NoteFusion handles your recordings, transcriptions, and account data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2563EB;
+    --blue-dark: #1D4EDB;
+    --blue-soft: #E0E7FF;
+    --ink: #0F172A;
+    --muted: #64748B;
+    --bg: #F8FAFC;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+  }
+  header {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    color: #fff;
+    padding: 56px 24px 44px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .brand { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em; }
+  .brand span { opacity: .8; font-weight: 500; }
+  header h1 { font-size: 2rem; margin: 20px 0 8px; letter-spacing: -0.02em; }
+  header p { margin: 0; opacity: .85; font-size: .95rem; }
+  main { padding: 40px 24px 72px; }
+  .card {
+    background: #fff;
+    border: 1px solid var(--blue-soft);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 12px;
+    color: var(--blue-dark);
+  }
+  h3 { font-size: 1rem; font-weight: 600; margin: 22px 0 6px; }
+  p, li { font-size: .95rem; }
+  p { margin: 0 0 14px; }
+  ul { margin: 0 0 14px; padding-left: 22px; }
+  li { margin-bottom: 7px; }
+  a { color: var(--blue); }
+  strong { font-weight: 600; }
+  .callout {
+    background: var(--blue-soft);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 0 0 14px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  footer {
+    border-top: 1px solid var(--blue-soft);
+    padding: 28px 24px 48px;
+    color: var(--muted);
+    font-size: .875rem;
+  }
+  footer a { color: var(--muted); }
+  @media (max-width: 560px) {
+    header { padding: 40px 20px 32px; }
+    header h1 { font-size: 1.6rem; }
+    .card { padding: 22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">Note<span>fusion</span></div>
+    <h1>Privacy Policy</h1>
+    <p>Last updated 9 August 2026</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="card">
+    <h2>The short version</h2>
+    <div class="callout">
+      <p><strong>Your recordings are not kept.</strong> Audio you submit is transcribed
+      and then deleted from our servers &mdash; usually within seconds, and always as
+      soon as the job finishes. We keep the resulting notation, not the sound.</p>
+    </div>
+    <p>We do not sell your data, we do not run advertising, and we do not use your
+    recordings or transcriptions to train machine-learning models.</p>
+  </div>
+
+  <div class="card">
+    <h2>Who we are</h2>
+    <p>NoteFusion (&ldquo;we&rdquo;, &ldquo;us&rdquo;) provides a mobile app that listens
+    to music and writes it out as Tonic Solfa and staff notation. This policy explains
+    what we collect, why, and what you can do about it.</p>
+    <p>Questions or requests: <a href="mailto:privacy@notefusion.app">privacy@notefusion.app</a>.</p>
+  </div>
+
+  <div class="card">
+    <h2>What we collect</h2>
+
+    <h3>Account information</h3>
+    <ul>
+      <li>Your name and email address.</li>
+      <li>A phone number, only if you choose to add one.</li>
+      <li>A password, stored only as a bcrypt hash. We never store, log, or transmit
+      the password itself, and we cannot recover it.</li>
+    </ul>
+
+    <h3>If you sign in with Google</h3>
+    <p>Google sends us your name, email address, profile picture URL, and a stable
+    account identifier. We store these to create and recognise your account. We receive
+    nothing else from your Google account &mdash; no contacts, no files, no calendar.
+    Google&rsquo;s own handling of the sign-in is covered by
+    <a href="https://policies.google.com/privacy">Google&rsquo;s Privacy Policy</a>.</p>
+    <p>Accounts created this way have no password on our side.</p>
+
+    <h3>Audio you record or upload</h3>
+    <p>Audio is sent to our servers, passed to our transcription engine, and
+    <strong>deleted once the job completes</strong>. It is not archived, not backed up,
+    and not reviewed by a person. Transcription runs on our own infrastructure; your
+    audio is not sent to a third-party AI service.</p>
+
+    <h3>Transcriptions you save</h3>
+    <p>When you save a result to your library we keep the musical data &mdash; note
+    events, detected key, tempo, time signature, solfa labels, MusicXML, and the title
+    you gave it. This is what lets your library persist across devices.</p>
+
+    <h3>Profile picture</h3>
+    <p>If you upload one, the image file is stored with our media host,
+    <a href="https://cloudinary.com/privacy">Cloudinary</a>, and we keep the resulting
+    URL against your account.</p>
+
+    <h3>Device and technical data</h3>
+    <ul>
+      <li>A push-notification token per device, if you allow notifications. It tells us
+      where to send a &ldquo;transcription ready&rdquo; alert, and nothing more.</li>
+      <li>Sign-in session tokens, so you stay logged in without re-entering credentials.</li>
+      <li>Ordinary server logs, including IP address and error diagnostics, used to keep
+      the service running and to investigate abuse.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Why we are allowed to hold it</h2>
+    <p>Where the UK/EU GDPR applies, our lawful bases are:</p>
+    <ul>
+      <li><strong>Performance of a contract</strong> &mdash; account data, saved
+      transcriptions, and the processing of audio you submit. Without these the app
+      cannot do what you asked it to do.</li>
+      <li><strong>Consent</strong> &mdash; push notifications, microphone access, and
+      your profile picture. Each is optional and each can be withdrawn.</li>
+      <li><strong>Legitimate interests</strong> &mdash; security logging and abuse
+      prevention, balanced against your rights.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Who else sees it</h2>
+    <p>We share data only with the providers that run the service:</p>
+    <ul>
+      <li><strong>Heroku (Salesforce)</strong> &mdash; application hosting and database.</li>
+      <li><strong>Cloudinary</strong> &mdash; profile picture storage.</li>
+      <li><strong>Expo</strong> &mdash; delivery of push notifications.</li>
+      <li><strong>Google</strong> &mdash; only if you choose Google sign-in.</li>
+    </ul>
+    <p>Each processes data on our instructions. We do not sell personal data, and we do
+    not share it for advertising. We may disclose data if the law requires it.</p>
+  </div>
+
+  <div class="card">
+    <h2>How long we keep it</h2>
+    <ul>
+      <li><strong>Audio recordings</strong> &mdash; deleted as soon as the transcription
+      job finishes.</li>
+      <li><strong>Saved transcriptions and account data</strong> &mdash; until you delete
+      them or close your account.</li>
+      <li><strong>Session tokens</strong> &mdash; until they expire, you sign out, or you
+      change your password.</li>
+      <li><strong>Server logs</strong> &mdash; a short rolling window for diagnostics.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Your choices</h2>
+    <p>In the app you can edit your profile, delete individual transcriptions, revoke
+    microphone or notification permission at any time through your device settings, and
+    close your account outright.</p>
+    <div class="callout">
+      <p><strong>Closing your account erases it.</strong> Your profile, your entire
+      library, your sessions, and your registered devices are deleted. This cannot be
+      undone. Because it is irreversible, we ask you to confirm it is really you first
+      &mdash; by re-entering your password, or by signing in with Google again if that is
+      how you use NoteFusion.</p>
+    </div>
+    <p>Depending on where you live you may also have the right to access, correct, export,
+    or restrict the processing of your data, and to complain to your data protection
+    authority. Write to <a href="mailto:privacy@notefusion.app">privacy@notefusion.app</a>
+    and we will respond within 30 days.</p>
+  </div>
+
+  <div class="card">
+    <h2>Security</h2>
+    <p>Traffic runs over HTTPS. Passwords are hashed with bcrypt. Access tokens are
+    short-lived and refresh tokens rotate on every use, so a stolen token has a narrow
+    window. Closing your account or changing your password invalidates existing sessions.</p>
+    <p>No system is perfectly secure, and we do not claim otherwise. If you believe you
+    have found a vulnerability, please tell us at
+    <a href="mailto:security@notefusion.app">security@notefusion.app</a> before disclosing
+    it publicly.</p>
+  </div>
+
+  <div class="card">
+    <h2>Children</h2>
+    <p>NoteFusion is not directed at children under 13, and we do not knowingly collect
+    their data. If you believe a child has given us personal information, contact us and
+    we will delete it.</p>
+  </div>
+
+  <div class="card">
+    <h2>International transfers</h2>
+    <p>Our providers may process data outside your country, including in the United
+    States. Where required, transfers rely on Standard Contractual Clauses or an
+    equivalent safeguard.</p>
+  </div>
+
+  <div class="card">
+    <h2>Changes to this policy</h2>
+    <p>If we make a material change we will update the date at the top of this page and,
+    where the change is significant, notify you in the app. Continuing to use NoteFusion
+    after a change means you accept the revised policy.</p>
+  </div>
+
+</main>
+
+<footer class="wrap">
+  <p>NoteFusion &mdash; Hear it. See it. Notate it.<br>
+  <a href="mailto:privacy@notefusion.app">privacy@notefusion.app</a></p>
+</footer>
+
+</body>
+</html>

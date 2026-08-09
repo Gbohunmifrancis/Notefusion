@@ -22,7 +22,20 @@ public class User : BaseEntity
     public string FullName { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
     public string? PhoneNumber { get; private set; }
-    public string PasswordHash { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// Null for accounts created through Google — those users never set a password,
+    /// and a placeholder hash would misrepresent that as "password login available".
+    /// Callers must treat null as "password sign-in is not possible for this account".
+    /// </summary>
+    public string? PasswordHash { get; private set; }
+
+    /// <summary>The Google <c>sub</c> claim, set once a Google account is linked. Null for password-only users.</summary>
+    public string? GoogleId { get; private set; }
+
+    /// <summary>Avatar URL — Cloudinary for uploads, or Google's <c>picture</c> claim on first Google sign-in.</summary>
+    public string? ProfilePictureUrl { get; private set; }
+
     public UserRole Role { get; private set; } = UserRole.User;
     public bool IsActive { get; private set; } = true;
     public bool IsFirstLogin { get; private set; }
@@ -70,6 +83,47 @@ public class User : BaseEntity
             IsFirstLogin = false,
             CreatedAt = utcNow
         };
+
+    /// <summary>
+    /// Creates a user from a validated Google identity. No password is set, so
+    /// <see cref="PasswordHash"/> stays null until the user explicitly sets one.
+    /// </summary>
+    public static User CreateFromGoogle(
+        string fullName, string email, string googleId, string? profilePictureUrl, DateTime utcNow)
+        => new()
+        {
+            Id = GenerateDeterministicId(email),
+            FullName = Guard.NotNullOrWhiteSpace(fullName),
+            Email = NormalizeEmail(email),
+            GoogleId = Guard.NotNullOrWhiteSpace(googleId),
+            ProfilePictureUrl = profilePictureUrl,
+            Role = UserRole.User,
+            IsActive = true,
+            IsFirstLogin = false,
+            CreatedAt = utcNow
+        };
+
+    /// <summary>
+    /// Links a Google account to an existing password account, so both routes reach the
+    /// same user. Callers must have confirmed Google verified the email first — linking on
+    /// an unverified email would let anyone claiming that address take over the account.
+    /// </summary>
+    public void LinkGoogleAccount(string googleId)
+    {
+        GoogleId = Guard.NotNullOrWhiteSpace(googleId);
+    }
+
+    /// <summary>Adopts Google's avatar only when the user has no picture of their own to lose.</summary>
+    public void SetProfilePictureIfMissing(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(ProfilePictureUrl))
+        {
+            ProfilePictureUrl = url;
+        }
+    }
+
+    /// <summary>Replaces the avatar (Cloudinary upload, or null to clear it).</summary>
+    public void SetProfilePicture(string? url) => ProfilePictureUrl = url;
 
     public bool IsLockedOut(DateTime utcNow) => LockoutEndAt.HasValue && LockoutEndAt.Value > utcNow;
 
