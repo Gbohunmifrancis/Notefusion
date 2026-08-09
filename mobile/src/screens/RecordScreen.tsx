@@ -25,6 +25,7 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { useJobPolling } from "../lib/useJobPolling";
 import {
+  fonts,
   gradients,
   radii,
   spacing,
@@ -383,10 +384,18 @@ export function RecordScreen() {
       setPhase("recording");
       setElapsed(0);
       tick.current = setInterval(() => setElapsed((e) => e + 1), 1000);
+
+      // Pre-warm the transcriber dyno (Heroku Eco dynos sleep after inactivity).
+      // Fire-and-forget: this runs during recording so the dyno is ready by the
+      // time the audio file is submitted. Errors are intentionally swallowed.
+      fetch("https://notefusion-transcriber-ef80c63d506f.herokuapp.com/docs", {
+        method: "GET",
+      }).catch(() => undefined);
     } catch {
       setPermError("Could not start recording. Please try again.");
     }
   }
+
 
   async function stopAndSubmit() {
     if (tick.current) clearInterval(tick.current);
@@ -781,7 +790,7 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: "#FFFFFF", // sits on the brand gradient — blue in both modes
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   modeTextInactive: {
@@ -840,7 +849,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: "#FFFFFF", // sits on the brand gradient
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   // ── Centre zone ───────────────────────────────────────────────────────────
@@ -895,7 +904,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: c.danger,
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   // ── Voice-level meter bar ──────────────────────────────────────────────────
@@ -996,7 +1005,7 @@ const makeStyles = (c: Palette) =>
 
   progressPct: {
     fontSize: 26,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     color: c.accent,
     letterSpacing: -0.5,
   },
@@ -1040,13 +1049,12 @@ const makeStyles = (c: Palette) =>
     ...typography.heading,
     color: c.text,
     fontSize: 18,
-    fontWeight: "600",
     marginBottom: spacing.xs,
   },
 
   timerText: {
     fontSize: 42,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     color: c.text,
     letterSpacing: -1,
     textShadowColor: "rgba(37, 99, 235, 0.55)",

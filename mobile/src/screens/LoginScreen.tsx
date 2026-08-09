@@ -1,52 +1,57 @@
 import React, { useState } from "react";
 import {
-  Image,
+  Dimensions,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
+import { BrandMark } from "../components/BrandMark";
+import { GoogleButton } from "../components/GoogleButton";
+import { OrDivider } from "../components/OrDivider";
+import { StaffRibbon } from "../components/StaffRibbon";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import {
-  gradients,
-  radii,
-  spacing,
-  typography,
-  type Palette,
-} from "../design/theme";
-import { useThemedStyles } from "../lib/theme";
-import { appIcons } from "../design/icons";
+import { googleAuthConfigured } from "../lib/env";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import { useTheme, useThemedStyles } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
+
+const { width } = Dimensions.get("window");
 
 type Props = NativeStackScreenProps<AuthStackParams, "Login">;
 
 /**
- * LoginScreen — light blue auth entry point.
+ * LoginScreen — the email/password entry point, with Google as the alternative.
  *
- * Layout (top → bottom):
- *   • Ambient blue glow orb behind the brand mark.
- *   • "Note"(sky) + "Fusion"(blue) glowing wordmark — same treatment as SplashScreen.
- *   • Subtitle in Slate.
- *   • Glass input fields for email + password.
- *   • Inline error chip (red-tinted glass) if sign-in fails.
- *   • Primary "Sign in" button — "The Fusion" gradient.
- *   • Ghost CTA to navigate to Register.
+ * Follows the design sheet top to bottom: back arrow, brand mark with its
+ * waveform flanks, wordmark and tagline, the "Welcome back!" heading, the two
+ * fields, a forgot-password link, the primary Login button, the "or" break,
+ * Continue with Google, the sign-up line, and the staff ribbon at the foot.
+ *
+ * The Google button is only rendered when client IDs are actually configured
+ * (see `googleAuthConfigured`) — a button that opens a broken consent screen is
+ * worse than one that isn't there, and email sign-in covers the same ground.
  */
 export function LoginScreen({ navigation }: Props) {
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
+  const { mode } = useTheme();
   const styles = useThemedStyles(makeStyles);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
 
   const canSubmit = email.trim().length > 3 && password.length > 0;
 
@@ -63,88 +68,125 @@ export function LoginScreen({ navigation }: Props) {
     }
   }
 
+  async function google() {
+    setError(null);
+    setGoogleBusy(true);
+    try {
+      await signInWithGoogle();
+    } catch (e) {
+      setError(toApiError(e).message);
+    } finally {
+      setGoogleBusy(false);
+    }
+  }
+
   return (
-    <Screen scroll>
+    <SafeAreaView style={styles.safe} edges={["top"]}>
+      <StatusBar style={mode === "dark" ? "light" : "dark"} />
+
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "android" ? 0 : 0}
       >
-        {/* ── Brand header ─────────────────────────────────────────────────── */}
-        <View style={styles.header}>
-          {/* Ambient glow orb behind the mark */}
-          <View style={styles.orbWrap}>
-            <View style={styles.orbPink} />
-            <View style={styles.orbPurple} />
-
-            {/* Gradient ring mark */}
-            <LinearGradient
-              colors={gradients.brandStart} // #0EA5E9 → #2563EB
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.mark}
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="none"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* ── Back ───────────────────────────────────────────────────────── */}
+          {navigation.canGoBack() && (
+            <Pressable
+              onPress={() => navigation.goBack()}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel="Go back"
+              style={styles.back}
             >
-              {/* Inner glass disc */}
-              <View style={styles.markInner}>
-                <Image source={appIcons.music} style={styles.markImg} />
-              </View>
-            </LinearGradient>
+              <Ionicons name="arrow-back" size={26} color="#2563EB" />
+            </Pressable>
+          )}
+
+          {/* ── Brand ──────────────────────────────────────────────────────── */}
+          <View style={styles.brand}>
+            <BrandMark size={104} color="#2563EB" waveColor="#BFD4FE" showWaves />
+            <Text style={styles.wordmark}>Notefusion</Text>
+            <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
           </View>
 
-          {/* "Note" (pink) + "Fusion" (purple) glowing wordmark */}
-          <View style={styles.wordmarkRow}>
-            <Text style={styles.wordNote}>Note</Text>
-            <Text style={styles.wordFusion}>Fusion</Text>
+          {/* ── Heading ────────────────────────────────────────────────────── */}
+          <Text style={styles.title}>Welcome back!</Text>
+          <Text style={styles.subtitle}>Login to continue to your account</Text>
+
+          {/* ── Fields ─────────────────────────────────────────────────────── */}
+          <View style={styles.form}>
+            <TextField
+              label="Email"
+              icon="mail-outline"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoComplete="email"
+              placeholder="Enter your email"
+            />
+            <TextField
+              label="Password"
+              icon="lock-closed-outline"
+              value={password}
+              onChangeText={setPassword}
+              secure
+              autoComplete="current-password"
+              placeholder="Enter your password"
+              style={styles.lastField}
+            />
           </View>
 
-          <Text style={styles.subtitle}>
-            Welcome back — sign in to continue.
-          </Text>
-        </View>
+          {/* ── Inline error ───────────────────────────────────────────────── */}
+          {error && (
+            <View style={styles.errorBox}>
+              <View style={styles.errorDot} />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
 
-        {/* ── Form fields ──────────────────────────────────────────────────── */}
-        <View style={styles.form}>
-          <TextField
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoComplete="email"
-            placeholder="you@example.com"
-          />
-          <TextField
-            label="Password"
-            value={password}
-            onChangeText={setPassword}
-            secure
-            placeholder="••••••••"
-          />
-        </View>
-
-        {/* ── Inline error ─────────────────────────────────────────────────── */}
-        {error && (
-          <View style={styles.errorBox}>
-            {/* Danger dot */}
-            <View style={styles.errorDot} />
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        )}
-
-        {/* ── Actions ──────────────────────────────────────────────────────── */}
-        <View style={styles.actions}>
+          {/* ── Actions ────────────────────────────────────────────────────── */}
           <Button
-            label="Sign in"
+            label="Login"
             onPress={submit}
             loading={busy}
             disabled={!canSubmit}
+            icon="arrow-forward"
+            iconPosition="right"
           />
-          <Button
-            label="Create an account"
-            variant="ghost"
-            onPress={() => navigation.navigate("Register")}
-            style={styles.ghostBtn}
-          />
-        </View>
+
+          {googleAuthConfigured && (
+            <>
+              <OrDivider />
+              <GoogleButton onPress={google} loading={googleBusy} />
+            </>
+          )}
+
+          <View style={styles.signupRow}>
+            <Text style={styles.signupText}>Don't have an account? </Text>
+            <Pressable
+              onPress={() => navigation.navigate("Register")}
+              hitSlop={8}
+              accessibilityRole="button"
+            >
+              <Text style={styles.signupLink}>Sign up</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
-    </Screen>
+
+      {/* ── Decorative staff ─────────────────────────────────────────────── */}
+      {/* Outside the ScrollView so it stays pinned to the bottom edge and never
+          scrolls up over the form. */}
+      <View style={styles.ribbon} pointerEvents="none">
+        <StaffRibbon width={width} height={120} color="#2563EB" opacity={0.2} />
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -152,113 +194,75 @@ export function LoginScreen({ navigation }: Props) {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    // ── Header ────────────────────────────────────────────────────────────────
+    safe: {
+      flex: 1,
+      backgroundColor: c.bg,
+    },
 
-    header: {
+    flex: {
+      flex: 1,
+    },
+
+    scroll: {
+      paddingHorizontal: spacing.xl,
+      // Bottom padding clears the staff ribbon so the sign-up line is never
+      // sitting on top of the artwork.
+      paddingBottom: 130,
+    },
+
+    back: {
+      alignSelf: "flex-start",
+      paddingVertical: spacing.md,
+    },
+
+    // ── Brand ─────────────────────────────────────────────────────────────────
+
+    brand: {
       alignItems: "center",
+      marginTop: spacing.sm,
+    },
+
+    /** One colour, not the old two-tone split: the design sets the wordmark
+     *  solid in Ink Navy and lets the mark above carry the blue. */
+    wordmark: {
+      ...typography.hero,
+      color: c.text,
+      marginTop: spacing.md,
+    },
+
+    tagline: {
+      fontSize: 16,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      marginTop: spacing.xs,
+    },
+
+    // ── Heading ───────────────────────────────────────────────────────────────
+
+    title: {
+      ...typography.screenTitle,
+      color: c.text,
       marginTop: spacing.xxxl,
-      marginBottom: spacing.xxl,
-    },
-
-    /** Wrapper that stacks the glow orbs + mark in a single positioned group. */
-    orbWrap: {
-      width: 120,
-      height: 120,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: spacing.xl,
-    },
-
-    orbPink: {
-      position: "absolute",
-      width: 130,
-      height: 130,
-      borderRadius: 65,
-      backgroundColor: "rgba(14, 165, 233, 0.18)",
-    },
-
-    orbPurple: {
-      position: "absolute",
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      backgroundColor: "rgba(37, 99, 235, 0.22)",
-    },
-
-    /** Gradient ring — 80 × 80 pill with an inner disc. */
-    mark: {
-      width: 80,
-      height: 80,
-      borderRadius: 24,
-      alignItems: "center",
-      justifyContent: "center",
-      // Blue glow
-      shadowColor: "#2563EB",
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.6,
-      shadowRadius: 20,
-      elevation: 10,
-    },
-
-    /** The disc the brand icon sits on — surface-coloured so the icon reads
-     *  in both modes rather than punching a white hole in the dark canvas. */
-    markInner: {
-      width: 60,
-      height: 60,
-      borderRadius: 18,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.borderLight,
-    },
-
-    markImg: {
-      width: 34,
-      height: 34,
-    },
-
-    // ── Wordmark ──────────────────────────────────────────────────────────────
-    // Brand hues, literal in both modes — this is the logo, not themed chrome.
-
-    wordmarkRow: {
-      flexDirection: "row",
-      alignItems: "baseline",
-      marginBottom: spacing.sm,
-    },
-
-    wordNote: {
-      fontSize: 32,
-      fontWeight: "800",
-      color: "#0EA5E9",
-      letterSpacing: -1,
-      textShadowColor: "rgba(14, 165, 233, 0.9)",
-      textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 14,
-    },
-
-    wordFusion: {
-      fontSize: 32,
-      fontWeight: "800",
-      color: "#2563EB",
-      letterSpacing: -1,
-      textShadowColor: "rgba(37, 99, 235, 0.9)",
-      textShadowOffset: { width: 0, height: 0 },
-      textShadowRadius: 14,
     },
 
     subtitle: {
-      ...typography.body,
+      fontSize: 16,
+      fontFamily: fonts.regular,
       color: c.textMuted,
-      textAlign: "center",
       marginTop: spacing.xs,
-      fontSize: 15,
     },
 
     // ── Form ──────────────────────────────────────────────────────────────────
 
     form: {
-      marginBottom: spacing.sm,
+      marginTop: spacing.xl,
+      marginBottom: spacing.xl,
+    },
+
+    /** Pull the bottom margin off the last field so the form → button gap
+     *  matches the top. */
+    lastField: {
+      marginBottom: 0,
     },
 
     // ── Error chip ────────────────────────────────────────────────────────────
@@ -280,12 +284,6 @@ const makeStyles = (c: Palette) =>
       borderRadius: 4,
       backgroundColor: c.danger,
       marginRight: spacing.sm,
-      // Glow
-      shadowColor: c.danger,
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.8,
-      shadowRadius: 6,
-      elevation: 3,
     },
 
     errorText: {
@@ -296,13 +294,31 @@ const makeStyles = (c: Palette) =>
       lineHeight: 18,
     },
 
-    // ── Actions ───────────────────────────────────────────────────────────────
+    // ── Sign-up line ──────────────────────────────────────────────────────────
 
-    actions: {
-      gap: spacing.xs,
+    signupRow: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: spacing.xl,
     },
 
-    ghostBtn: {
-      marginTop: spacing.xs,
+    signupText: {
+      fontSize: 15,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+    },
+
+    signupLink: {
+      fontSize: 15,
+      fontFamily: fonts.bold,
+      color: c.accent,
+    },
+
+    ribbon: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
   });
