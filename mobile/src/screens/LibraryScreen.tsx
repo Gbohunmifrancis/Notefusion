@@ -6,6 +6,7 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -19,6 +20,7 @@ import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { deriveSolfa } from "../lib/solfa";
 import {
+  fonts,
   gradients,
   radii,
   spacing,
@@ -54,6 +56,24 @@ export function LibraryScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"All" | "Tonic Solfa" | "Staff">("All");
+
+  const FILTERS = ["All", "Tonic Solfa", "Staff"] as const;
+
+  const filteredItems = items.filter((item) => {
+    const matchesQuery =
+      query.trim() === "" ||
+      item.title.toLowerCase().includes(query.trim().toLowerCase());
+    const matchesFilter =
+      filter === "All"
+        ? true
+        : filter === "Tonic Solfa"
+        ? (item.notes?.length ?? 0) > 0
+        : Boolean(item.musicXml);
+    return matchesQuery && matchesFilter;
+  });
 
   // ── Data loading ────────────────────────────────────────────────────────────
 
@@ -169,6 +189,33 @@ export function LibraryScreen() {
           : "Tap to open · Long-press to delete"}
       </Text>
 
+      {/* Search bar */}
+      <View style={styles.searchBar}>
+        <Ionicons name="search-outline" size={18} color={colors.textFaint} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search your notes"
+          placeholderTextColor={colors.textFaint}
+          value={query}
+          onChangeText={setQuery}
+          returnKeyType="search"
+          clearButtonMode="while-editing"
+        />
+      </View>
+
+      {/* Filter tabs */}
+      <View style={styles.filterRow}>
+        {FILTERS.map((f) => (
+          <TouchableOpacity
+            key={f}
+            style={[styles.filterTab, filter === f && styles.filterTabActive]}
+            onPress={() => setFilter(f as typeof filter)}
+          >
+            <Text style={[styles.filterTabText, filter === f && styles.filterTabTextActive]}>{f}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       {/* Gradient divider */}
       {items.length > 0 && (
         <LinearGradient
@@ -212,7 +259,7 @@ export function LibraryScreen() {
   return (
     <Screen edges={["top"]}>
       <FlatList
-        data={items}
+        data={filteredItems}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={
@@ -357,7 +404,6 @@ const makeStyles = (c: Palette) =>
     ...typography.display,
     color: c.text,
     fontSize: 30,
-    fontWeight: "700",
     letterSpacing: -0.5,
   },
 
@@ -381,7 +427,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: c.purple,
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   subtitle: {
@@ -459,7 +505,6 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: c.text,
     fontSize: 14,
-    fontWeight: "600",
     marginBottom: 5,
   },
 
@@ -538,7 +583,7 @@ const makeStyles = (c: Palette) =>
     ...typography.heading,
     color: c.textMuted,
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     textAlign: "center",
     marginBottom: spacing.sm,
   },
@@ -550,5 +595,52 @@ const makeStyles = (c: Palette) =>
     fontSize: 14,
     lineHeight: 22,
     maxWidth: 280,
+  },
+
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: c.surface,
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    borderColor: c.border,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    gap: spacing.sm,
+    marginTop: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  searchInput: {
+    flex: 1,
+    fontFamily: fonts.regular,
+    fontSize: 15,
+    color: c.text,
+    paddingVertical: 0,
+  },
+  filterRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginBottom: spacing.md,
+    flexWrap: 'wrap',
+  },
+  filterTab: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+    borderRadius: radii.pill,
+    backgroundColor: c.surface,
+    borderWidth: 1,
+    borderColor: c.border,
+  },
+  filterTabActive: {
+    backgroundColor: c.accent,
+    borderColor: c.accent,
+  },
+  filterTabText: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: c.textMuted,
+  },
+  filterTabTextActive: {
+    color: '#fff',
   },
 });

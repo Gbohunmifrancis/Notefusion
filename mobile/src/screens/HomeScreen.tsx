@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { Screen } from '../components/Screen';
 import { Card } from '../components/Card';
 import { ConfidenceBadge } from '../components/ConfidenceBadge';
 import { libraryApi } from '../api/endpoints';
 import { useAuth } from '../lib/auth';
-import { radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
-import { useThemedStyles } from '../lib/theme';
+import { radii, spacing, typography, gradients, type Palette, type Shadows } from '../design/theme';
+import { useThemedStyles, useColors } from '../lib/theme';
 import { appIcons } from '../design/icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import type { SavedTranscription } from '../api/types';
 import type { TabParams } from '../navigation/types';
 
@@ -20,6 +22,7 @@ export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const styles = useThemedStyles(makeStyles);
+  const colors = useColors();
 
   useFocusEffect(
     useCallback(() => {
@@ -45,24 +48,35 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            <Text style={styles.greeting}>Hi, {firstName} 👋</Text>
-            <Text style={styles.sub}>What are we listening to today?</Text>
+            <Text style={styles.greeting}>Good morning, {firstName} 🎵</Text>
+            <Text style={styles.sub}>What will you transcribe today?</Text>
 
-            {/* Listening trigger — deep blue hero card with a bright blue action circle */}
+            {/* Hero record CTA — centred mic ring on a gradient card */}
             <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Record')}>
-              <View style={styles.shazamCard}>
-                <View style={styles.shazamText}>
-                  <Text style={styles.shazamTitle}>Tap to Listen & Transcribe</Text>
-                  <Text style={styles.shazamSub}>Identify notes and Solfa in real time</Text>
+              <LinearGradient colors={gradients.brand} style={styles.recordCard} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+                <View style={styles.micRing}>
+                  <Ionicons name="mic" size={36} color="#fff" />
                 </View>
-                <View style={styles.shazamIconBg}>
-                  <Image source={appIcons.microphoneOnBlue} style={styles.shazamIcon} />
-                </View>
-              </View>
+                <Text style={styles.recordTitle}>Tap to start recording</Text>
+                <Text style={styles.recordSub}>or import audio file</Text>
+              </LinearGradient>
             </TouchableOpacity>
 
+            {/* Quick action row */}
+            <View style={styles.quickRow}>
+              <TouchableOpacity style={styles.quickBtn}>
+                <Ionicons name="folder-open-outline" size={20} color={colors.accent} />
+                <Text style={styles.quickLabel}>Import</Text>
+              </TouchableOpacity>
+              <View style={styles.quickDivider} />
+              <TouchableOpacity style={styles.quickBtn}>
+                <Ionicons name="link-outline" size={20} color={colors.accent} />
+                <Text style={styles.quickLabel}>Paste URL</Text>
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.recentHeader}>
-              <Text style={styles.sectionTitle}>Recent Transcriptions</Text>
+              <Text style={styles.sectionTitle}>Recent</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Library')}>
                 <Text style={styles.link}>See all</Text>
               </TouchableOpacity>
@@ -104,29 +118,69 @@ const makeStyles = (c: Palette, s: Shadows) =>
   StyleSheet.create({
     headerArea: { paddingTop: spacing.xs },
     listContent: { paddingBottom: 120 },
-    greeting: { ...typography.display, color: c.text, fontSize: 30 },
+
+    greeting: { ...typography.display, color: c.text, fontSize: 26 },
     sub: { ...typography.body, color: c.textMuted, marginTop: 4, marginBottom: spacing.xl },
-    shazamCard: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: c.ink,
+
+    // ── Hero record card ──────────────────────────────────────────────────────
+    recordCard: {
       borderRadius: radii.xl,
-      padding: spacing.xl,
+      paddingVertical: spacing.xxl,
+      alignItems: 'center',
       ...s.glow,
     },
-    shazamIconBg: {
-      width: 52,
-      height: 52,
-      borderRadius: radii.pill,
-      backgroundColor: c.accent,
+    micRing: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+      backgroundColor: 'rgba(255,255,255,0.22)',
+      borderWidth: 2,
+      borderColor: 'rgba(255,255,255,0.45)',
       alignItems: 'center',
       justifyContent: 'center',
+      marginBottom: spacing.lg,
     },
-    // White-ink mic — the blue variant would vanish on the accent disc
-    shazamIcon: { width: 28, height: 28 },
-    shazamText: { flex: 1, marginRight: spacing.lg },
-    shazamTitle: { ...typography.heading, color: c.onInk, fontSize: 17 },
-    shazamSub: { ...typography.caption, color: 'rgba(255,255,255,0.7)', marginTop: 4 },
+    recordTitle: {
+      ...typography.heading,
+      color: '#fff',
+      fontSize: 17,
+    },
+    recordSub: {
+      ...typography.caption,
+      color: 'rgba(255,255,255,0.72)',
+      marginTop: spacing.xs,
+    },
+
+    // ── Quick actions ─────────────────────────────────────────────────────────
+    quickRow: {
+      flexDirection: 'row',
+      marginTop: spacing.lg,
+      backgroundColor: c.surface,
+      borderRadius: radii.lg,
+      borderWidth: 1,
+      borderColor: c.border,
+      overflow: 'hidden',
+    },
+    quickBtn: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing.sm,
+      paddingVertical: spacing.md,
+    },
+    quickDivider: {
+      width: 1,
+      backgroundColor: c.border,
+      marginVertical: spacing.sm,
+    },
+    quickLabel: {
+      ...typography.label,
+      color: c.accent,
+      fontSize: 14,
+    },
+
+    // ── Recent section ────────────────────────────────────────────────────────
     recentHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',

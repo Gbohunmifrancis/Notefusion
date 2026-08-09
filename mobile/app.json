@@ -6,7 +6,8 @@
     "orientation": "portrait",
     "scheme": "notefusion",
     "userInterfaceStyle": "light",
-    "backgroundColor": "#F4F7FC",
+    "backgroundColor": "#F8FAFC",
+    "icon": "./assets/icon.png",
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -19,8 +20,10 @@
     },
     "android": {
       "package": "app.notefusion",
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
-        "backgroundColor": "#F4F7FC"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2563EB"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO",
@@ -37,11 +40,23 @@
         }
       ],
       "expo-asset",
-      "expo-splash-screen",
-      "expo-sharing"
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#1D6FF2"
+        }
+      ],
+      "expo-sharing",
+      "expo-web-browser"
     ],
     "extra": {
       "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",
+      "googleIosClientId": "",
+      "googleAndroidClientId": "21738378819-phjudqm26h6sthgfj0e2eg0l0vnid8ca.apps.googleusercontent.com",
+      "googleWebClientId": "21738378819-phjudqm26h6sthgfj0e2eg0l0vnid8ca.apps.googleusercontent.com",
       "eas": {
         "projectId": "a83ae670-e248-485e-95f7-686608f515ad"
       }
