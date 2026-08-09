@@ -6,17 +6,18 @@ import {
   FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import LottieView from "lottie-react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "../components/Button";
-import { gradients, radii, spacing, typography, type Palette } from "../design/theme";
+import { StaffRibbon } from "../components/StaffRibbon";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
 
@@ -27,30 +28,21 @@ type AnimationSource = React.ComponentProps<typeof LottieView>["source"];
 
 // ─── Slide data ───────────────────────────────────────────────────────────────
 
-const SLIDES: {
-  animation: AnimationSource;
-  title: string;
-  body: string;
-  /** Palette token, resolved at render — a literal here would freeze the light hue. */
-  accent: keyof Palette;
-}[] = [
+const SLIDES: { animation: AnimationSource; title: string; body: string }[] = [
   {
     animation: require("../../assets/animations/record.json"),
     title: "Record a melody",
     body: "Capture a live tune or hum — a few bars is all it takes. Sing, hum, or play near the mic.",
-    accent: "pink",
   },
   {
     animation: require("../../assets/animations/transcribe.json"),
     title: "Instant transcription",
     body: "We turn your audio into Tonic Solfa and staff notation, perfectly on-key every time.",
-    accent: "accent",
   },
   {
     animation: require("../../assets/animations/rekey.json"),
     title: "Save & re-key",
-    body: "Build a personal library and change the Doh anytime — your notes never shift, only the labels do.",
-    accent: "accentAlt",
+    body: "Build a personal library and change the key anytime — your notes never shift, only the labels do.",
   },
 ];
 
@@ -59,22 +51,24 @@ type Props = NativeStackScreenProps<AuthStackParams, "Onboarding">;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * OnboardingScreen — light blue three-slide intro.
+ * OnboardingScreen — the three-slide intro, following the design sheet.
  *
- * Design language:
- *   • Mist canvas with no competing backgrounds.
- *   • Each slide plays a looping Lottie illustration on a soft tinted disc.
- *   • Dot indicators: active dot expands into a pill and glows in the slide accent.
- *   • "Next" uses the GradientButton (The Fusion); "I already have an account" is ghost.
- *   • Subtle slide-in animation on mount so the first slide doesn't just snap into view.
+ * Each slide is the same frame: a Skip link in the top-right, the illustration
+ * on a pale blue disc, the heading and body, three dots, then the actions. Only
+ * the disc and the text change as you page, so the buttons never move under the
+ * thumb between slides.
+ *
+ * Google sits here as well as on Login because the design offers it on every
+ * slide — someone who already has an account shouldn't have to page to the end
+ * to get in. It is gated on `googleAuthConfigured` exactly as Login is.
  */
 export function OnboardingScreen({ navigation }: Props) {
   const [index, setIndex] = useState(0);
   const listRef = useRef<FlatList>(null);
-  const { palette, mode } = useTheme();
+  const { mode } = useTheme();
   const styles = useThemedStyles(makeStyles);
 
-  // Per-slide fade + slide-up animation
+  // Per-slide fade + rise, so a paged slide arrives rather than snapping in.
   const slideAnim = useRef(new Animated.Value(0)).current;
 
   const animateSlide = () => {
@@ -95,8 +89,10 @@ export function OnboardingScreen({ navigation }: Props) {
     }
   };
 
+  const isLast = index === SLIDES.length - 1;
+
   const next = () => {
-    if (index < SLIDES.length - 1) {
+    if (!isLast) {
       listRef.current?.scrollToIndex({ index: index + 1, animated: true });
       setIndex(index + 1);
       animateSlide();
@@ -105,102 +101,96 @@ export function OnboardingScreen({ navigation }: Props) {
     }
   };
 
-  const slide = SLIDES[index];
-  const currentAccent = slide ? palette[slide.accent] : palette.purple;
-
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
 
-      {/* ── Ambient glow orb — changes hue with the active slide ────────── */}
-      <Animated.View
-        style={[
-          styles.ambientOrb,
-          {
-            backgroundColor: `${currentAccent}1A`, // 10 % opacity
-          },
-        ]}
-      />
-
-      {/* ── Slide list ───────────────────────────────────────────────────── */}
-      <FlatList
-        ref={listRef}
-        data={SLIDES}
-        keyExtractor={(s) => s.title}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={onScroll}
-        style={styles.list}
-        renderItem={({ item }) => (
-          <View style={[styles.slide, { width }]}>
-            {/* Animated illustration on a soft radial-style wash */}
-            <View style={styles.stage}>
-              <LinearGradient
-                colors={gradients.brandDim}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.stageWash}
-              />
-              <LottieView
-                source={item.animation}
-                autoPlay
-                loop
-                resizeMode="contain"
-                style={styles.animation}
-              />
-            </View>
-
-            {/* Text block */}
-            <View style={styles.textBlock}>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.body}>{item.body}</Text>
-            </View>
-          </View>
-        )}
-      />
-
-      {/* ── Dot indicators ───────────────────────────────────────────────── */}
-      <View style={styles.dots}>
-        {SLIDES.map((s, i) => {
-          const isActive = i === index;
-          return (
-            <View
-              key={s.title}
-              style={[
-                styles.dot,
-                isActive && {
-                  // Active dot: wider pill, coloured with the current slide's accent
-                  width: 28,
-                  backgroundColor: currentAccent,
-                  // Soft glow
-                  shadowColor: currentAccent,
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: 0.8,
-                  shadowRadius: 6,
-                  elevation: 4,
-                },
-              ]}
-            />
-          );
-        })}
+      {/* ── Skip ─────────────────────────────────────────────────────────── */}
+      <View style={styles.topBar}>
+        <Pressable
+          onPress={() => navigation.navigate("Login")}
+          hitSlop={12}
+          accessibilityRole="button"
+          accessibilityLabel="Skip onboarding and sign in"
+        >
+          <Text style={styles.skip}>Skip</Text>
+        </Pressable>
       </View>
 
-      {/* ── CTA buttons ──────────────────────────────────────────────────── */}
-      <View style={styles.actions}>
-        <Button
-          label={index === SLIDES.length - 1 ? "Get started" : "Next"}
-          onPress={next}
-          icon={
-            index === SLIDES.length - 1 ? "arrow-forward" : "chevron-forward"
-          }
+      {/* ── Centre column: slides + dots + button ────────────────────────── */}
+      <View style={styles.centre}>
+        {/* Slides */}
+        <FlatList
+          ref={listRef}
+          data={SLIDES}
+          keyExtractor={(s) => s.title}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={onScroll}
+          style={styles.list}
+          renderItem={({ item }) => (
+            <Animated.View
+              style={[
+                styles.slide,
+                {
+                  width,
+                  opacity: slideAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.3],
+                  }),
+                  transform: [
+                    {
+                      translateY: slideAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0, 14],
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
+              <View style={styles.stage}>
+                <View style={styles.disc} />
+                <LottieView
+                  source={item.animation}
+                  autoPlay
+                  loop
+                  resizeMode="contain"
+                  style={styles.animation}
+                />
+              </View>
+
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.body}>{item.body}</Text>
+            </Animated.View>
+          )}
         />
-        <Button
-          label="I already have an account"
-          variant="ghost"
-          onPress={() => navigation.navigate("Login")}
-          style={styles.ghostBtn}
-        />
+
+        {/* ── Dots ───────────────────────────────────────────────────────── */}
+        <View style={styles.dots}>
+          {SLIDES.map((s, i) => (
+            <View
+              key={s.title}
+              style={[styles.dot, i === index && styles.dotActive]}
+            />
+          ))}
+        </View>
+
+        {/* ── Button ─────────────────────────────────────────────────────── */}
+        <View style={styles.actions}>
+          <Button
+            label={isLast ? "Get started" : "Next"}
+            onPress={next}
+            icon="arrow-forward"
+            iconPosition="right"
+          />
+        </View>
+      </View>
+
+      {/* ── Decorative staff ─────────────────────────────────────────────── */}
+      <View style={styles.ribbon} pointerEvents="none">
+        <StaffRibbon width={width} height={110} color="#2563EB" opacity={0.18} />
       </View>
     </SafeAreaView>
   );
@@ -213,22 +203,39 @@ const makeStyles = (c: Palette) =>
     safe: {
       flex: 1,
       backgroundColor: c.bg,
+    },
+
+    // ── Skip ──────────────────────────────────────────────────────────────────
+
+    topBar: {
+      alignItems: "flex-end",
+      paddingHorizontal: spacing.xl,
+      paddingTop: spacing.sm,
+    },
+
+    skip: {
+      fontSize: 16,
+      fontFamily: fonts.semibold,
+      color: c.accent,
+    },
+
+    // ── Centre column ─────────────────────────────────────────────────────────
+
+    /** Takes all remaining space and centres its children both axes so the
+     *  illustration, text, dots and button form one compact group in the
+     *  exact middle of the screen. */
+    centre: {
+      flex: 1,
+      justifyContent: "center",
       alignItems: "center",
     },
 
-    // Ambient orb behind everything — transitions with slide accent colour
-    ambientOrb: {
-      position: "absolute",
-      top: -60,
-      width: 420,
-      height: 420,
-      borderRadius: 210,
-      alignSelf: "center",
-    },
+    // ── Slides ────────────────────────────────────────────────────────────────
 
+    /** flexGrow:0 keeps the list at its natural content height so it does not
+     *  expand and push the dots / button out of the centred group. */
     list: {
       flexGrow: 0,
-      marginTop: spacing.xxxl,
     },
 
     slide: {
@@ -236,83 +243,79 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: spacing.xl,
     },
 
-    // ── Animated illustration ────────────────────────────────────────────────────
-
     stage: {
-      width: 280,
-      height: 280,
+      width: 260,
+      height: 260,
       alignItems: "center",
       justifyContent: "center",
     },
 
-    /** Soft tinted disc behind the animation, standing in for a radial glow. */
-    stageWash: {
+    disc: {
       position: "absolute",
-      width: 260,
-      height: 260,
-      borderRadius: 130,
+      width: 250,
+      height: 250,
+      borderRadius: 125,
+      backgroundColor: c.accentSoft,
     },
 
     animation: {
-      width: 280,
-      height: 280,
-    },
-
-    // ── Text ──────────────────────────────────────────────────────────────────────
-
-    textBlock: {
-      marginTop: spacing.xxxl,
-      alignItems: "center",
-      paddingHorizontal: spacing.md,
+      width: 230,
+      height: 230,
     },
 
     title: {
-      ...typography.title,
+      ...typography.screenTitle,
+      fontSize: 28,
       color: c.text,
       textAlign: "center",
-      fontSize: 28,
-      fontWeight: "700",
-      letterSpacing: -0.5,
-      marginBottom: spacing.md,
+      marginTop: spacing.xl,
     },
 
     body: {
       ...typography.body,
+      fontSize: 16,
+      lineHeight: 26,
       color: c.textMuted,
       textAlign: "center",
-      lineHeight: 26,
-      fontSize: 16,
+      marginTop: spacing.md,
       paddingHorizontal: spacing.sm,
     },
 
-    // ── Dots ──────────────────────────────────────────────────────────────────────
+    // ── Dots ──────────────────────────────────────────────────────────────────
 
     dots: {
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
-      marginTop: spacing.xxl,
-      marginBottom: spacing.lg,
+      marginTop: spacing.xl,
       gap: spacing.sm,
     },
 
     dot: {
-      width: 8,
-      height: 8,
+      width: 9,
+      height: 9,
       borderRadius: radii.pill,
-      backgroundColor: c.border, // Dim inactive
+      backgroundColor: c.border,
     },
 
-    // ── Actions ───────────────────────────────────────────────────────────────────
+    dotActive: {
+      backgroundColor: c.accent,
+    },
 
+    // ── Actions ───────────────────────────────────────────────────────────────
+
+    /** Sits directly below the dots inside the centred group. */
     actions: {
-      width: "100%",
+      marginTop: spacing.xl,
       paddingHorizontal: spacing.xl,
-      paddingBottom: spacing.xl,
-      gap: spacing.xs,
+      width: "100%",
     },
 
-    ghostBtn: {
-      marginTop: spacing.xs,
+    ribbon: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: 0,
+      zIndex: -1,
     },
   });
