@@ -20,6 +20,7 @@
     },
     "android": {
       "package": "app.notefusion",
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2563EB"

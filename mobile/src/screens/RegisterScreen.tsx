@@ -92,13 +92,11 @@ export function RegisterScreen({ navigation }: Props) {
 
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "android" ? 0 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="none"
           showsVerticalScrollIndicator={false}
         >
           {/* ── Back ───────────────────────────────────────────────────────── */}
