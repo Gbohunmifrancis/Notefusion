@@ -22,6 +22,7 @@ import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
 import { exportMusicXml } from "../lib/export";
 import {
   confidenceColor,
+  fonts,
   gradients,
   radii,
   spacing,
@@ -593,7 +594,6 @@ const makeStyles = (c: Palette) =>
     ...typography.title,
     color: c.text,
     fontSize: 22,
-    fontWeight: "700",
     letterSpacing: -0.4,
     marginTop: 1,
   },
@@ -623,7 +623,7 @@ const makeStyles = (c: Palette) =>
   confPillText: {
     ...typography.caption,
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   // ── Summary card ──────────────────────────────────────────────────────────
@@ -670,7 +670,7 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: c.text,
     fontSize: 14,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     textAlign: "center",
   },
 
@@ -737,7 +737,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: "#FFFFFF", // sits on the brand gradient
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   /** Warning row — shown when some notes are < 50 % confidence. */
@@ -802,7 +802,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: "#FFFFFF",
     fontSize: 11,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     letterSpacing: 1.5,
     flex: 1,
     marginLeft: 2,
@@ -822,7 +822,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: "#FFFFFF",
     fontSize: 11,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   /** Glass card body — the main solfa display area. */
@@ -860,7 +860,12 @@ const makeStyles = (c: Palette) =>
     letterSpacing: 1,
   },
 
-  /** First line gets full Ink Navy — it's the primary solfa sequence. */
+  /** First line gets full Ink Navy — it's the primary solfa sequence.
+   *
+   *  Keeps `fontWeight` rather than a Poppins family: this overlays `solfaLine`,
+   *  which is monospaced so the syllables stay in columns. A proportional face
+   *  here would break that alignment, and monospace has no Poppins equivalent —
+   *  so the weight is still the only way to bold it, and still honoured. */
   solfaLineFirst: {
     color: c.text,
     fontSize: 20,
@@ -879,7 +884,11 @@ const makeStyles = (c: Palette) =>
     fontStyle: "italic",
   },
 
-  /** Decorative ghost note — bottom-right watermark inside the card. */
+  /** Decorative ghost note — bottom-right watermark inside the card.
+   *
+   *  Left on the system font: the glyph is ♪, which Poppins doesn't carry, so
+   *  naming a family would only force a silent fallback. No family means the
+   *  weight below is honoured. */
   solfaWatermark: {
     position: "absolute",
     right: spacing.xl,
@@ -902,12 +911,14 @@ const makeStyles = (c: Palette) =>
     ...typography.heading,
     color: c.text,
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
+  /** The "(12)" nested inside sectionTitle. It inherits the parent's family, so
+   *  lightening it takes an explicit regular face — a weight alone was dropped. */
   sectionCount: {
     color: c.textFaint,
-    fontWeight: "400",
+    fontFamily: fonts.regular,
     fontSize: 14,
   },
 
@@ -939,7 +950,7 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: c.text,
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   noteMidi: {
@@ -977,7 +988,7 @@ const makeStyles = (c: Palette) =>
     ...typography.heading,
     color: c.text,
     fontSize: 16,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   exportHint: {
@@ -1005,7 +1016,7 @@ const makeStyles = (c: Palette) =>
     ...typography.heading,
     color: c.text,
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     marginBottom: spacing.xs,
   },
 
@@ -1053,7 +1064,7 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: c.gold,
     fontSize: 15,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   savedSub: {

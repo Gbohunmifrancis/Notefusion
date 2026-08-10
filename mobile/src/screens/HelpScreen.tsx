@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
-import { radii, spacing, typography, type Palette } from "../design/theme";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
@@ -136,7 +136,6 @@ const makeStyles = (c: Palette) =>
       ...typography.title,
       color: c.text,
       fontSize: 22,
-      fontWeight: "700",
       letterSpacing: -0.4,
       marginTop: 1,
     },
@@ -167,7 +166,7 @@ const makeStyles = (c: Palette) =>
       color: c.text,
       flex: 1,
       fontSize: 15,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
     },
 
     answer: {

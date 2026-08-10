@@ -1,0 +1,5 @@
+.vercel
+
+# Scratch copy assembled by hand for a one-off Vercel deploy — the real site is
+# the tracked files beside it.
+deploy_temp/

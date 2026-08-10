@@ -2,6 +2,7 @@ import React from "react";
 import { ScrollView, StyleSheet, View, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import { KeyboardAvoider } from "./KeyboardAvoider";
 import { spacing, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles } from "../lib/theme";
 
@@ -28,13 +29,15 @@ export function Screen({
     <SafeAreaView style={styles.safe} edges={edges ?? ["top", "bottom"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
       {scroll ? (
-        <ScrollView
-          contentContainerStyle={[styles.content, contentStyle]}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {children}
-        </ScrollView>
+        <KeyboardAvoider>
+          <ScrollView
+            contentContainerStyle={[styles.content, contentStyle]}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {children}
+          </ScrollView>
+        </KeyboardAvoider>
       ) : (
         <View style={[styles.content, styles.flex, contentStyle]}>
           {children}

@@ -155,9 +155,13 @@ class TestMergeOnsets:
         assert result[0][3] == pytest.approx(0.9)
 
     def test_gap_exactly_at_threshold_is_not_merged(self):
-        # gap = 0.08 is NOT less than gap_sec=0.08 → no merge
-        events = [(0.0, 0.10, 60, 0.8), (0.18, 0.28, 60, 0.7)]
-        result = _merge_onsets(events, gap_sec=0.08)
+        # The comparison is `gap < gap_sec`, so a gap equal to the threshold
+        # must NOT merge. Testing that boundary needs values whose subtraction
+        # is exact in binary floating point: 0.18 - 0.10 is 0.0799999...,
+        # which slips under a 0.08 threshold and merges. 0.25/0.375/0.125 are
+        # all powers-of-two fractions, so gap == gap_sec exactly.
+        events = [(0.0, 0.25, 60, 0.8), (0.375, 0.475, 60, 0.7)]
+        result = _merge_onsets(events, gap_sec=0.125)
         assert len(result) == 2
 
     def test_gap_larger_than_threshold_is_not_merged(self):

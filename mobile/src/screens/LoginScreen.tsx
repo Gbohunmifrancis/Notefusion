@@ -14,6 +14,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "../components/Button";
 import { BrandMark } from "../components/BrandMark";
 import { GoogleButton } from "../components/GoogleButton";
+import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { OrDivider } from "../components/OrDivider";
 import { StaffRibbon } from "../components/StaffRibbon";
 import { TextField } from "../components/TextField";
@@ -82,6 +83,7 @@ export function LoginScreen({ navigation }: Props) {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
 
+      <KeyboardAvoider>
         <ScrollView
           contentContainerStyle={styles.scroll}
           keyboardShouldPersistTaps="handled"
@@ -170,6 +172,7 @@ export function LoginScreen({ navigation }: Props) {
             </Pressable>
           </View>
         </ScrollView>
+      </KeyboardAvoider>
 
       {/* ── Decorative staff ─────────────────────────────────────────────── */}
       {/* Outside the ScrollView so it stays pinned to the bottom edge and never

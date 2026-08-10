@@ -16,7 +16,7 @@ import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import { radii, spacing, typography, type Palette } from "../design/theme";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useTheme, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
@@ -204,7 +204,6 @@ const makeStyles = (c: Palette) =>
       ...typography.title,
       color: c.text,
       fontSize: 22,
-      fontWeight: "700",
       letterSpacing: -0.4,
       marginTop: 1,
     },
@@ -223,7 +222,7 @@ const makeStyles = (c: Palette) =>
       ...typography.label,
       color: c.textMuted,
       fontSize: 12,
-      fontWeight: "700",
+      fontFamily: fonts.bold,
       textTransform: "uppercase",
       letterSpacing: 1,
     },

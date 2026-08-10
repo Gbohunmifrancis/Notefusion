@@ -11,7 +11,14 @@ import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { meApi, authApi, libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import { gradients, radii, spacing, typography, type Palette } from "../design/theme";
+import {
+  fonts,
+  gradients,
+  radii,
+  spacing,
+  typography,
+  type Palette,
+} from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { MyProfile } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
@@ -422,7 +429,6 @@ const makeStyles = (c: Palette) =>
     ...typography.title,
     color: c.accent,
     fontSize: 30,
-    fontWeight: "700",
     letterSpacing: -0.5,
   },
 
@@ -452,7 +458,6 @@ const makeStyles = (c: Palette) =>
     ...typography.title,
     color: c.text,
     fontSize: 24,
-    fontWeight: "700",
     letterSpacing: -0.4,
     textAlign: "center",
     marginBottom: spacing.xs,
@@ -488,7 +493,7 @@ const makeStyles = (c: Palette) =>
     ...typography.caption,
     color: c.purple,
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
   },
 
   // ── Stats row ─────────────────────────────────────────────────────────────
@@ -523,7 +528,7 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: c.text,
     fontSize: 13,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     textAlign: "center",
   },
 
@@ -555,7 +560,7 @@ const makeStyles = (c: Palette) =>
     ...typography.label,
     color: c.textMuted,
     fontSize: 12,
-    fontWeight: "700",
+    fontFamily: fonts.bold,
     textTransform: "uppercase",
     letterSpacing: 1,
   },
