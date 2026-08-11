@@ -1,0 +1,225 @@
+/*
+ * NoteFusion design tokens for the web — the browser half of
+ * `mobile/src/design/theme.ts`. Values are copied, not reinterpreted: the app and
+ * the site have to look like the same product, and a landing page that ships a
+ * slightly different blue undermines the download it is asking for.
+ *
+ * Keep in lock-step with theme.ts. If a token changes there, change it here.
+ */
+
+:root {
+  /* Surfaces */
+  --bg: #f4f7fc; /* Mist — root canvas */
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-alt: #eef3fb; /* Faint blue tint — nested rows, chips */
+
+  /* Borders */
+  --border: #e2e8f0; /* Slate hairline */
+  --border-light: #eff3f9;
+
+  /* "The Fusion" brand palette */
+  --blue: #2563eb; /* Primary   — gradient start */
+  --blue-deep: #1d4ed8; /* Deep      — pressed / darker shade */
+  --blue-bright: #3b82f6; /* Bright    — gradient end */
+  --sky: #0ea5e9; /* Sky       — wordmark accent */
+
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --accent-glow: rgba(37, 99, 235, 0.22);
+
+  /* Typography */
+  --text: #0f172a; /* Ink Navy */
+  --text-muted: #64748b; /* Slate */
+  --text-faint: #94a3b8; /* Light Slate */
+  --on-accent: #ffffff;
+
+  /* Semantic signals */
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+
+  /* Gradients */
+  --fusion: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  --fusion-start: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+
+  /* Radii — radii.sm/md/lg/xl/pill */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* Spacing — spacing.xs … xxxl */
+  --s-xs: 4px;
+  --s-sm: 8px;
+  --s-md: 12px;
+  --s-lg: 16px;
+  --s-xl: 24px;
+  --s-2xl: 32px;
+  --s-3xl: 48px;
+
+  /* Shadows — shadow.card / shadow.glow */
+  --sh-card: 0 2px 10px rgba(15, 23, 42, 0.06);
+  --sh-card-lift: 0 12px 32px rgba(15, 23, 42, 0.1);
+  --sh-glow: 0 8px 20px rgba(37, 99, 235, 0.28);
+
+  /* Layout */
+  --wrap: 1120px;
+  --wrap-narrow: 760px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Visible focus ring on every interactive element. Removing the default outline
+   without replacing it makes the site unusable by keyboard. */
+:focus-visible {
+  outline: 3px solid var(--blue-bright);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--s-xl);
+}
+
+.wrap-narrow {
+  max-width: var(--wrap-narrow);
+}
+
+/* ── Brand mark ──────────────────────────────────────────────────────────────
+ * The artwork ships as a white silhouette with an alpha channel and is recoloured
+ * per surface — `tintColor` in React Native, a CSS mask here. Same one-mark-many-
+ * colours property, same single source of truth (the design render).
+ */
+.mark {
+  display: block;
+  width: 34px;
+  height: 45px; /* artwork is 331 × 438 */
+  background-color: var(--blue);
+  -webkit-mask: url("mark.png") center / contain no-repeat;
+  mask: url("mark.png") center / contain no-repeat;
+  flex: none;
+}
+
+.mark--on-blue {
+  background-color: #ffffff;
+}
+
+.wordmark {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+}
+.wordmark span {
+  color: var(--sky);
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-sm);
+  padding: 14px 26px;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.975rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease,
+    background-color 0.18s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:hover {
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.btn--primary {
+  background: var(--fusion);
+  color: var(--on-accent);
+  box-shadow: var(--sh-glow);
+}
+
+.btn--light {
+  background: #ffffff;
+  color: var(--blue-deep);
+  box-shadow: 0 8px 20px rgba(8, 22, 60, 0.22);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--blue-deep);
+  border-color: var(--border);
+  box-shadow: var(--sh-card);
+}
+.btn--ghost:hover {
+  background: var(--surface);
+}
+
+.btn--on-blue-ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.btn--on-blue-ghost:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn--lg {
+  padding: 17px 32px;
+  font-size: 1.05rem;
+}
