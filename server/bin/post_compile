@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Heroku heroku/python buildpack hook: runs after `pip install -r requirements.txt`.
+#
+# basic-pitch 0.4.0 declares a hard dependency on tensorflow, which has no
+# Python 3.12 Linux wheels and would be ~600 MB we never load — Basic Pitch
+# auto-selects its ONNX backend when TensorFlow is absent. requirements.txt
+# therefore cannot list basic-pitch (pip would resolve tensorflow with it), so
+# it is installed here with --no-deps; its real runtime deps (onnxruntime,
+# librosa, mir_eval, mido, ...) are pinned in requirements.txt alongside.
+#
+# The Dockerfile does the equivalent in its own RUN step. This file is what
+# makes the buildpack deployment (deploy-procfile.ps1) match it — without it
+# `import basic_pitch` fails at inference time even though the service starts
+# and /healthz returns ok.
+set -euo pipefail
+
+echo "-----> Installing basic-pitch (no deps; ONNX backend)"
+pip install --no-deps basic-pitch==0.4.0
+
+# Fail the build loudly here rather than on the first transcription request.
+echo "-----> Verifying basic_pitch imports and model weights load"
+python - <<'PY'
+from basic_pitch import ICASSP_2022_MODEL_PATH
+from basic_pitch.inference import Model
+
+Model(ICASSP_2022_MODEL_PATH)
+print("basic_pitch OK:", ICASSP_2022_MODEL_PATH)
+PY

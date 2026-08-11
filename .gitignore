@@ -487,6 +487,10 @@ server/.pytest_cache/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+# [Bb]in/ above targets .NET build output, but matches at any depth and so also
+# swallowed the Heroku buildpack's hook directory. These are source, not output.
+!server/bin/
+!server/bin/**
 
 # ── NoteFusion: Expo / mobile ────────────────────────────────
 .expo/
