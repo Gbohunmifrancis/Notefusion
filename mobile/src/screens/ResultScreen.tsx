@@ -16,6 +16,7 @@ import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
+import { StaffNotation } from "../components/StaffNotation";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
@@ -82,6 +83,11 @@ export function ResultScreen({ route, navigation }: Props) {
   const [key, setKey] = useState(result.key);
   const [pickingKey, setPickingKey] = useState(false);
   const [rekeying, setRekeying] = useState(false);
+
+  // Solfa is the product's headline output; the stave is the familiar cross-check.
+  // Both read from the same `view.notes`, so a key change relabels one and
+  // re-places the other from the identical data.
+  const [notationView, setNotationView] = useState<"solfa" | "staff">("solfa");
 
   // The server already labelled the original key, so trust its output until
   // the user actually overrides — that keeps the fresh-transcription path
@@ -305,7 +311,7 @@ export function ResultScreen({ route, navigation }: Props) {
         )}
       </Card>
 
-      {/* ── Hero Solfa card ──────────────────────────────────────────────── */}
+      {/* ── Hero notation card ───────────────────────────────────────────── */}
       <View style={styles.solfaCardWrap}>
         {/* Gradient header strip */}
         <LinearGradient
@@ -315,36 +321,69 @@ export function ResultScreen({ route, navigation }: Props) {
           style={styles.solfaHeader}
         >
           <Ionicons name="musical-notes" size={14} color="#FFFFFF" />
-          <Text style={styles.solfaHeaderLabel}>TONIC SOLFA</Text>
+          <Text style={styles.solfaHeaderLabel}>
+            {notationView === "solfa" ? "TONIC SOLFA" : "STAFF NOTATION"}
+          </Text>
 
-          {/* Confidence badge inside header */}
-          <View style={styles.solfaHeaderBadge}>
-            <Text style={styles.solfaHeaderBadgeText}>{confPct}% Match</Text>
+          {/* Solfa / Staff segmented toggle */}
+          <View style={styles.viewToggle}>
+            {(["solfa", "staff"] as const).map((v) => (
+              <TouchableOpacity
+                key={v}
+                onPress={() => setNotationView(v)}
+                activeOpacity={0.8}
+                style={[
+                  styles.viewToggleBtn,
+                  notationView === v && styles.viewToggleBtnActive,
+                ]}
+                accessibilityRole="button"
+                accessibilityState={{ selected: notationView === v }}
+                accessibilityLabel={v === "solfa" ? "Show tonic solfa" : "Show staff notation"}
+              >
+                <Ionicons
+                  name={v === "solfa" ? "text" : "musical-note"}
+                  size={12}
+                  color="#FFFFFF"
+                />
+                <Text style={styles.viewToggleText}>
+                  {v === "solfa" ? "Solfa" : "Staff"}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </LinearGradient>
 
-        {/* Glass card body */}
+        {/* Body — solfa lines or the engraved stave, from the same note data */}
         <View style={styles.solfaBody}>
-          {view.solfaLines.length === 0 ? (
-            <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
-          ) : (
-            view.solfaLines.map((line, i) => (
-              <View key={i} style={styles.solfaLineWrap}>
-                {/* Line number chip */}
-                {view.solfaLines.length > 1 && (
-                  <Text style={styles.solfaLineNum}>{i + 1}</Text>
-                )}
-                <Text
-                  style={[styles.solfaLine, i === 0 && styles.solfaLineFirst]}
-                >
-                  {line}
-                </Text>
-              </View>
-            ))
-          )}
+          {notationView === "solfa" ? (
+            view.solfaLines.length === 0 ? (
+              <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
+            ) : (
+              <>
+                {view.solfaLines.map((line, i) => (
+                  <View key={i} style={styles.solfaLineWrap}>
+                    {/* Line number chip */}
+                    {view.solfaLines.length > 1 && (
+                      <Text style={styles.solfaLineNum}>{i + 1}</Text>
+                    )}
+                    <Text
+                      style={[styles.solfaLine, i === 0 && styles.solfaLineFirst]}
+                    >
+                      {line}
+                    </Text>
+                  </View>
+                ))}
 
-          {/* Decorative watermark */}
-          <Text style={styles.solfaWatermark}>♪</Text>
+                {/* Decorative watermark */}
+                <Text style={styles.solfaWatermark}>♪</Text>
+              </>
+            )
+          ) : (
+            <StaffNotation
+              notes={view.notes}
+              timeSignature={result.timeSignature}
+            />
+          )}
         </View>
       </View>
 
@@ -649,7 +688,7 @@ const makeStyles = (c: Palette) =>
   summaryDivider: {
     width: 1,
     height: 40,
-    backgroundColor: c.surface,
+    backgroundColor: c.border,
   },
 
   statItem: {
@@ -808,17 +847,30 @@ const makeStyles = (c: Palette) =>
     marginLeft: 2,
   },
 
-  /** Small pill badge inside the gradient header. */
-  solfaHeaderBadge: {
-    backgroundColor: "rgba(255,255,255,0.20)",
+  /** Solfa / Staff segmented toggle inside the gradient header. */
+  viewToggle: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255,255,255,0.16)",
     borderRadius: radii.pill,
-    paddingVertical: 3,
-    paddingHorizontal: spacing.sm,
+    padding: 2,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.30)",
+    borderColor: "rgba(255,255,255,0.24)",
   },
 
-  solfaHeaderBadgeText: {
+  viewToggleBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    paddingVertical: 3,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radii.pill,
+  },
+
+  viewToggleBtnActive: {
+    backgroundColor: "rgba(255,255,255,0.28)",
+  },
+
+  viewToggleText: {
     ...typography.caption,
     color: "#FFFFFF",
     fontSize: 11,
@@ -1008,7 +1060,7 @@ const makeStyles = (c: Palette) =>
 
   divider: {
     height: 1,
-    backgroundColor: c.surface,
+    backgroundColor: c.border,
     marginBottom: spacing.xl,
   },
 
@@ -1062,7 +1114,7 @@ const makeStyles = (c: Palette) =>
 
   savedTitle: {
     ...typography.label,
-    color: c.gold,
+    color: c.text,
     fontSize: 15,
     fontFamily: fonts.bold,
   },

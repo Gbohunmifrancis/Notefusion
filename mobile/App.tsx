@@ -8,6 +8,26 @@ import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://04ec041914c6c17614d986cd5526edcb@o4508111757770752.ingest.us.sentry.io/4511889593073664',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 // Keep the native splash up until fonts are ready; hide is called in useAppReady.
 NativeSplash.preventAutoHideAsync().catch(() => undefined);
@@ -18,7 +38,7 @@ NativeSplash.preventAutoHideAsync().catch(() => undefined);
  * switches on session state. ThemeProvider goes outermost because every screen
  * below it reads the active palette.
  */
-export default function App() {
+export default Sentry.wrap(function App() {
   const { ready } = useAppReady();
 
   // Hold the branded splash until fonts are loaded and the minimum time has passed.
@@ -33,7 +53,7 @@ export default function App() {
       </SafeAreaProvider>
     </ThemeProvider>
   );
-}
+});
 
 /**
  * Split out so it sits inside ThemeProvider and can use the hook. The gesture

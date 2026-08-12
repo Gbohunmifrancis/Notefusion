@@ -22,7 +22,7 @@ import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { googleAuthConfigured } from "../lib/env";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
-import { useTheme, useThemedStyles } from "../lib/theme";
+import { useTheme, useThemedStyles, useColors } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 const { width } = Dimensions.get("window");
@@ -44,6 +44,7 @@ type Props = NativeStackScreenProps<AuthStackParams, "Login">;
 export function LoginScreen({ navigation }: Props) {
   const { signIn, signInWithGoogle } = useAuth();
   const { mode } = useTheme();
+  const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
   const [email, setEmail] = useState("");
@@ -98,13 +99,13 @@ export function LoginScreen({ navigation }: Props) {
               accessibilityLabel="Go back"
               style={styles.back}
             >
-              <Ionicons name="arrow-back" size={26} color="#2563EB" />
+              <Ionicons name="arrow-back" size={26} color={colors.accent} />
             </Pressable>
           )}
 
           {/* ── Brand ──────────────────────────────────────────────────────── */}
           <View style={styles.brand}>
-            <BrandMark size={104} color="#2563EB" waveColor="#BFD4FE" showWaves />
+            <BrandMark size={104} color={colors.accent} waveColor={colors.accentAlt} showWaves />
             <Text style={styles.wordmark}>Notefusion</Text>
             <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
           </View>
@@ -178,7 +179,7 @@ export function LoginScreen({ navigation }: Props) {
       {/* Outside the ScrollView so it stays pinned to the bottom edge and never
           scrolls up over the form. */}
       <View style={styles.ribbon} pointerEvents="none">
-        <StaffRibbon width={width} height={120} color="#2563EB" opacity={0.2} />
+        <StaffRibbon width={width} height={120} color={colors.accent} opacity={0.2} />
       </View>
     </SafeAreaView>
   );

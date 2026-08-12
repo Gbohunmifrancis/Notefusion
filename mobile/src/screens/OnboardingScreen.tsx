@@ -18,7 +18,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "../components/Button";
 import { StaffRibbon } from "../components/StaffRibbon";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
-import { useTheme, useThemedStyles } from "../lib/theme";
+import { useTheme, useThemedStyles, useColors } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 const { width } = Dimensions.get("window");
@@ -66,6 +66,7 @@ export function OnboardingScreen({ navigation }: Props) {
   const [index, setIndex] = useState(0);
   const listRef = useRef<FlatList>(null);
   const { mode } = useTheme();
+  const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
   // Per-slide fade + rise, so a paged slide arrives rather than snapping in.
@@ -190,7 +191,7 @@ export function OnboardingScreen({ navigation }: Props) {
 
       {/* ── Decorative staff ─────────────────────────────────────────────── */}
       <View style={styles.ribbon} pointerEvents="none">
-        <StaffRibbon width={width} height={110} color="#2563EB" opacity={0.18} />
+        <StaffRibbon width={width} height={110} color={colors.accent} opacity={0.18} />
       </View>
     </SafeAreaView>
   );

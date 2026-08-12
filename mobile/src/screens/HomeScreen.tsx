@@ -7,6 +7,7 @@ import { Screen } from '../components/Screen';
 import { Card } from '../components/Card';
 import { ConfidenceBadge } from '../components/ConfidenceBadge';
 import { libraryApi } from '../api/endpoints';
+import { toApiError } from '../api/client';
 import { useAuth } from '../lib/auth';
 import { radii, spacing, typography, gradients, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors } from '../lib/theme';
@@ -21,16 +22,36 @@ type Props = BottomTabScreenProps<TabParams, 'Home'>;
 export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
+
+  // A failed fetch must not read as an empty library — that tells the user their
+  // work is gone. Surface it as an error the Recent list shows with a retry, and
+  // keep whatever we last loaded on screen.
+  const reload = useCallback(() => {
+    libraryApi
+      .list()
+      .then((all) => {
+        setRecent(all.slice(0, 3));
+        setLoadError(null);
+      })
+      .catch((e) => setLoadError(toApiError(e).message));
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       let active = true;
       libraryApi
         .list()
-        .then((all) => active && setRecent(all.slice(0, 3)))
-        .catch(() => undefined);
+        .then((all) => {
+          if (!active) return;
+          setRecent(all.slice(0, 3));
+          setLoadError(null);
+        })
+        .catch((e) => {
+          if (active) setLoadError(toApiError(e).message);
+        });
       return () => {
         active = false;
       };
@@ -58,23 +79,11 @@ export function HomeScreen({ navigation }: Props) {
                   <Ionicons name="mic" size={36} color="#fff" />
                 </View>
                 <Text style={styles.recordTitle}>Tap to start recording</Text>
-                <Text style={styles.recordSub}>or import audio file</Text>
+                <Text style={styles.recordSub}>Live capture, transcribed to solfa</Text>
               </LinearGradient>
             </TouchableOpacity>
 
             {/* Quick action row */}
-            <View style={styles.quickRow}>
-              <TouchableOpacity style={styles.quickBtn}>
-                <Ionicons name="folder-open-outline" size={20} color={colors.accent} />
-                <Text style={styles.quickLabel}>Import</Text>
-              </TouchableOpacity>
-              <View style={styles.quickDivider} />
-              <TouchableOpacity style={styles.quickBtn}>
-                <Ionicons name="link-outline" size={20} color={colors.accent} />
-                <Text style={styles.quickLabel}>Paste URL</Text>
-              </TouchableOpacity>
-            </View>
-
             <View style={styles.recentHeader}>
               <Text style={styles.sectionTitle}>Recent</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Library')}>
@@ -102,12 +111,22 @@ export function HomeScreen({ navigation }: Props) {
           </Card>
         )}
         ListEmptyComponent={
-          <Card style={styles.empty}>
-            <Image source={appIcons.songbook} style={styles.emptyIcon} />
-            <Text style={styles.emptyText}>
-              No transcriptions yet. Tap "Tap to Listen & Transcribe" to capture your first melody.
-            </Text>
-          </Card>
+          loadError ? (
+            <Card style={styles.empty}>
+              <Ionicons name="cloud-offline-outline" size={30} color={colors.danger} />
+              <Text style={styles.emptyText}>{loadError}</Text>
+              <TouchableOpacity onPress={reload} style={styles.retryBtn}>
+                <Text style={styles.retryLabel}>Try again</Text>
+              </TouchableOpacity>
+            </Card>
+          ) : (
+            <Card style={styles.empty}>
+              <Image source={appIcons.songbook} style={styles.emptyIcon} />
+              <Text style={styles.emptyText}>
+                No transcriptions yet. Tap "Tap to start recording" to capture your first melody.
+              </Text>
+            </Card>
+          )
         }
       />
     </Screen>
@@ -151,35 +170,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       marginTop: spacing.xs,
     },
 
-    // ── Quick actions ─────────────────────────────────────────────────────────
-    quickRow: {
-      flexDirection: 'row',
-      marginTop: spacing.lg,
-      backgroundColor: c.surface,
-      borderRadius: radii.lg,
-      borderWidth: 1,
-      borderColor: c.border,
-      overflow: 'hidden',
-    },
-    quickBtn: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: spacing.sm,
-      paddingVertical: spacing.md,
-    },
-    quickDivider: {
-      width: 1,
-      backgroundColor: c.border,
-      marginVertical: spacing.sm,
-    },
-    quickLabel: {
-      ...typography.label,
-      color: c.accent,
-      fontSize: 14,
-    },
-
     // ── Recent section ────────────────────────────────────────────────────────
     recentHeader: {
       flexDirection: 'row',
@@ -214,4 +204,12 @@ const makeStyles = (c: Palette, s: Shadows) =>
       lineHeight: 20,
       fontSize: 14,
     },
+    retryBtn: {
+      marginTop: spacing.md,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      borderRadius: radii.pill,
+      backgroundColor: c.accentSoft,
+    },
+    retryLabel: { ...typography.label, color: c.accent, fontSize: 14 },
   });
