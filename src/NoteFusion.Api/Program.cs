@@ -35,7 +35,26 @@ builder.Services.AddControllers()
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options => options.AddNoteFusionPolicies());
+
+// CORS for the admin dashboard, which runs on its own origin. Origins come from config
+// (Cors__AllowedOrigins__0, __1, …) because the dev origin and the deployed one differ. Origins are
+// listed explicitly rather than using AllowAnyOrigin so that a browser on an unknown site cannot
+// read admin analytics; with no origins configured the policy allows nothing, so a misconfigured
+// deploy fails closed. POST is needed for /api/auth/login and /api/auth/refresh, which the
+// dashboard calls before it can read anything.
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(AdminDashboardCorsPolicy, policy =>
+    {
+        if (allowedOrigins.Length == 0) return;
+
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .WithMethods("GET", "POST", "OPTIONS");
+    });
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -82,6 +101,10 @@ app.UseSwaggerUI(options =>
     options.DocumentTitle = "NoteFusion API Documentation";
 });
 
+// CORS sits before auth so a preflight, which carries no Authorization header, gets its headers
+// back instead of a 401 the browser would report as an opaque CORS failure.
+app.UseCors(AdminDashboardCorsPolicy);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -90,4 +113,8 @@ app.MapControllers();
 app.Run();
 
 /// <summary>Exposed so the integration-test host (WebApplicationFactory) can reference the entry point.</summary>
-public partial class Program;
+public partial class Program
+{
+    /// <summary>Name of the CORS policy applied to the whole app for the admin dashboard's origin.</summary>
+    public const string AdminDashboardCorsPolicy = "AdminDashboard";
+}

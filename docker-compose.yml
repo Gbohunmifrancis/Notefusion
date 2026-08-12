@@ -68,6 +68,9 @@ services:
       Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@notefusion.app}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-ChangeMe!123}
       Push__UseExpo: "false"
+      # Origin allowed to call the admin analytics routes from a browser. CORS fails closed when
+      # this is unset, so the dashboard has to be named explicitly; add more as __1, __2, …
+      Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:5173}
     ports:
       - "5080:8080"
     depends_on:
