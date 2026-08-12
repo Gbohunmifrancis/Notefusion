@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoteFusion: Tonic Solfa and staff notation from any sound</title>
+<meta name="description" content="Tonic Solfa and staff notation from anything you record. Built for African choruses, Afrobeat and worship teams. Free to start on Android.">
+<link rel="canonical" href="https://notefusion.studio/">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NoteFusion">
+<meta property="og:locale" content="en_NG">
+<meta property="og:title" content="NoteFusion: Tonic Solfa from any recording">
+<meta property="og:description" content="Record a chorus, get Tonic Solfa and staff notation in seconds. Built for the music that no other transcriber was trained on.">
+<meta property="og:url" content="https://notefusion.studio/">
+<meta property="og:image" content="https://notefusion.studio/assets/og-card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The NoteFusion wordmark above a line of Tonic Solfa notation">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NoteFusion: Tonic Solfa from any recording">
+<meta name="twitter:description" content="Record a chorus, get Tonic Solfa and staff notation in seconds. Built for the music that no other transcriber was trained on.">
+<meta name="twitter:image" content="https://notefusion.studio/assets/og-card.jpg">
+<meta name="twitter:image:alt" content="The NoteFusion wordmark above a line of Tonic Solfa notation">
+<meta name="theme-color" content="#2563EB">
+
+<!-- mark.png is a white silhouette with alpha: as a favicon it is invisible in
+     a light browser tab. These are the same mark on an opaque fusion tile,
+     built by tools/build-assets.py. -->
+<link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/theme.css">
+<link rel="stylesheet" href="/assets/landing.css">
+
+<!-- Marks the document as scripted before first paint, so `.reveal` only hides
+     itself when there is JavaScript around to reveal it again. Without this a
+     visitor with JS off gets a page of invisible sections. Inline and early on
+     purpose, because a deferred file would flash the content. -->
+<script>document.documentElement.classList.add("js");</script>
+
+<!-- No `offers` and no `aggregateRating`: the prices are provisional and there
+     are no real ratings yet. Structured data that outruns the page is what earns
+     a manual action, and an invented rating is worse than no rich result. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "NoteFusion",
+  "url": "https://notefusion.studio/",
+  "operatingSystem": "Android",
+  "applicationCategory": "MultimediaApplication",
+  "applicationSubCategory": "Music",
+  "inLanguage": "en",
+  "description": "Transcribes live and recorded music into movable-do Tonic Solfa and staff notation.",
+  "installUrl": "https://play.google.com/store/apps/details?id=app.notefusion",
+  "screenshot": "https://notefusion.studio/assets/app-home.jpg",
+  "publisher": { "@type": "Organization", "name": "NoteFusion", "url": "https://notefusion.studio/" }
+}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ══ Header ═══════════════════════════════════════════════════════════════ -->
+<header class="site-header" id="siteHeader">
+  <div class="wrap">
+    <a class="brand-row" href="/" aria-label="NoteFusion home">
+      <span class="mark" aria-hidden="true"></span>
+      <span>
+        <!-- "NoteFusion", one word, capital F. It has to match the app name on the
+             Google OAuth consent screen and the Play listing exactly; the inner
+             span is only the colour accent. -->
+        <span class="wordmark">Note<span>Fusion</span></span>
+        <span class="tagline">Hear it. See it. Notate it.</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#african">African Mode</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn--primary" href="#get">Get the app</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ══ Hero ═════════════════════════════════════════════════════════════════
+     The whole fold is tuned so the store badge lands around 320px from the top
+     of the document. That means no eyebrow, a two-line headline, and a lede
+     under 100 characters. `align-items: start` matters more than any of them:
+     with `center`, the taller phone column gives back only half of every pixel
+     saved in this column. -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="wrap">
+    <div class="hero-copy">
+      <h1 id="hero-h">Record the chorus.<br>Get it in <em>Tonic Solfa.</em></h1>
+      <p class="lede">
+        Sing it, play it, or hold your phone up to the choir. NoteFusion writes out
+        the Solfa and the stave.
+      </p>
+
+      <div class="hero-cta">
+        <a class="store-badge" href="https://play.google.com/store/apps/details?id=app.notefusion">
+          <img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play">
+        </a>
+        <a class="btn btn--ghost btn--lg" href="#how">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.53.85l10-6.5a1 1 0 0 0 0-1.7l-10-6.5A1 1 0 0 0 8 5.5Z"/></svg>
+          See how it works
+        </a>
+      </div>
+
+      <ul class="hero-trust">
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Free to start, no card
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Audio deleted when the job finishes
+        </li>
+      </ul>
+
+      <ul class="hero-chips" aria-label="What NoteFusion can transcribe">
+        <li><span aria-hidden="true">🎤</span> Live recording</li>
+        <li><span aria-hidden="true">🎹</span> Piano &amp; guitar</li>
+        <li><span aria-hidden="true">🎶</span> Choir &amp; SATB</li>
+        <li><span aria-hidden="true">🥁</span> Afrobeat</li>
+        <li><span aria-hidden="true">📁</span> Import a file</li>
+      </ul>
+    </div>
+
+    <div class="phone-col">
+      <div class="phone">
+        <!-- Displayed at 276px wide. `sizes` is that fixed width, so a 1x screen
+             takes the 552 (78 KB) and only a 3x screen pays for the 828. -->
+        <img src="/assets/app-home.jpg"
+             srcset="/assets/app-home-552.jpg 552w, /assets/app-home.jpg 828w"
+             sizes="276px"
+             width="828" height="1790"
+             alt="The NoteFusion home screen, showing recent recordings with their keys and durations"
+             loading="eager" fetchpriority="high">
+
+        <!-- Two floating cards naming the two outputs, plus the detected key.
+             Hidden below 940px, where the phone has the column to itself and
+             there is no room beside the bezel. -->
+        <div class="phone-chip phone-chip--solfa" aria-hidden="true">
+          <div class="k">Tonic Solfa</div>
+          <div class="v">d&nbsp;:&nbsp;r&nbsp;|&nbsp;m&nbsp;:&nbsp;f</div>
+        </div>
+        <div class="phone-chip phone-chip--staff" aria-hidden="true">
+          <svg width="34" height="20" viewBox="0 0 34 20" fill="none" stroke="currentColor" stroke-width="1.4"><line x1="0" y1="3" x2="34" y2="3"/><line x1="0" y1="7" x2="34" y2="7"/><line x1="0" y1="11" x2="34" y2="11"/><line x1="0" y1="15" x2="34" y2="15"/><circle cx="11" cy="11" r="2.4" fill="currentColor" stroke="none"/><circle cx="23" cy="7" r="2.4" fill="currentColor" stroke="none"/></svg>
+          <div class="k">Staff notation</div>
+        </div>
+
+        <div class="phone-badge">
+          <div class="k">Detected key</div>
+          <div class="v">Doh is D</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Stat strip ═══════════════════════════════════════════════════════════ -->
+<section class="stats reveal" aria-label="At a glance">
+  <div class="wrap">
+    <div class="stat"><b>Under a minute</b><span>from recording to notation</span></div>
+    <div class="stat"><b>24</b><span>keys, major and minor</span></div>
+    <div class="stat"><b>0</b><span>recordings kept on our servers</span></div>
+    <div class="stat"><b>1 tap</b><span>to change key without re-recording</span></div>
+  </div>
+</section>
+
+<!-- ══ What the app is ══════════════════════════════════════════════════════
+     This section exists for Google's OAuth branding review as much as for
+     visitors. The review requires the home page to state the purpose of the app
+     in plain language, under the same name as the consent screen, and to explain
+     what the app does with a signed-in user's Google account data. If this is
+     ever rewritten, keep three things: the literal name "NoteFusion", the
+     sentence that says what it is for, and the sign-in disclosure below. -->
+<section id="about" class="features" tabindex="-1" aria-labelledby="about-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">About the app</span>
+      <h2 id="about-h">What <em>NoteFusion</em> is for</h2>
+      <p class="lede">
+        NoteFusion is a free-to-start music transcription app for Android. You record a
+        song with your phone, sing or play it yourself, or import an audio file you
+        already have. NoteFusion listens to it and writes the music down for you in two
+        forms: movable-do <strong>Tonic Solfa</strong> (d r m f s l t) and standard
+        <strong>staff notation</strong> you can export as MusicXML or MIDI.
+      </p>
+      <p class="lede">
+        It works out the key, the tempo and the time signature on its own, so you do not
+        need to know them, and it can move a piece into a different key in one tap
+        without recording anything again. It is built first for the music other
+        transcription tools were never trained on: African choruses, worship songs,
+        Afrobeat and highlife. Recordings are analysed on our own servers and deleted as
+        soon as the transcription finishes. We keep the notation, never the audio.
+      </p>
+      <p class="lede">
+        It is for choir masters, worship teams, music teachers and self-taught musicians
+        who need a part written down before the next rehearsal.
+      </p>
+    </div>
+
+    <div class="compare-col compare-col--us disclosure reveal">
+      <h3>Signing in with Google</h3>
+      <p>
+        NoteFusion offers Google Sign-In so you do not have to remember another password.
+        It is optional: you can create an account with an email address and a password
+        instead. When you do choose Google, this is everything we receive and everything
+        we do with it.
+      </p>
+      <ul>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span><strong>Your name</strong> and <strong>profile picture</strong>, shown on your own
+          profile screen in the app.</span>
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span><strong>Your email address</strong>, used as the name of your account and to
+          reach you about the app.</span>
+        </li>
+        <li>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          <span><strong>A Google account identifier</strong>, so that the next time you sign in
+          we can match you to the same transcription library.</span>
+        </li>
+      </ul>
+      <p class="disclosure-scope">
+        That is the whole list. NoteFusion does not ask for your contacts, Gmail, Drive
+        files, photos or calendar, it never posts anything on your behalf, and none of it
+        is sold or shared. The <a href="/privacy">privacy policy</a> has the full detail,
+        including how to delete your account and everything in it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ How it works ═════════════════════════════════════════════════════════ -->
+<section id="how" tabindex="-1" aria-labelledby="how-h">
+  <div class="wrap">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">How it works</span>
+      <h2 id="how-h">From recording to notation in three steps</h2>
+      <p class="lede">
+        You do not need to read a stave or know what key you are in.
+      </p>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step">
+        <h3>Record or import</h3>
+        <p>
+          Tap the mic and sing, or hold the phone up in the rehearsal. If you already
+          have the audio, import a file from your phone.
+        </p>
+      </div>
+      <div class="step">
+        <h3>We work out the music</h3>
+        <p>
+          Pitch, rhythm, tempo, time signature and key, all worked out on our own
+          servers. Each result comes back with a confidence score so you know what to
+          double-check.
+        </p>
+      </div>
+      <div class="step">
+        <h3>Read it and share it</h3>
+        <p>
+          Get Tonic Solfa <em>and</em> staff notation side by side. Play it back,
+          save it, or send it to the team.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ══ Features ═════════════════════════════════════════════════════════════ -->
+<section id="features" class="features" tabindex="-1" aria-labelledby="features-h">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">What you get</span>
+      <h2 id="features-h">What a choir master actually needs</h2>
+      <p class="lede">
+        Built with worship teams, music teachers and self-taught musicians in mind.
+        These are the people who hear a part once and have to teach it to twenty
+        others by Sunday.
+      </p>
+    </div>
+
+    <div class="feature-grid reveal">
+
+      <article class="feature">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/>
+          </svg>
+        </div>
+        <h3>True movable-do</h3>
+        <p>
+          Doh follows the key, minors are la-based, and chromatics get their proper
+          syllables: <em>de, ra, fe, se, ta</em>.
+        </p>
+        <span class="meta">d r m f s l t d′ · octave marks included</span>
+      </article>
+
+      <article class="feature">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="14" x2="21" y2="14"/><line x1="3" y1="18" x2="21" y2="18"/><circle cx="8" cy="14" r="2.2" fill="currentColor" stroke="none"/><circle cx="16" cy="10" r="2.2" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <h3>Staff notation too</h3>
+        <p>
+          The same performance rendered on a stave and exportable as MusicXML, so it
+          opens in MuseScore, Sibelius or Finale without retyping a note.
+        </p>
+        <span class="meta">MusicXML · MIDI</span>
+      </article>
+
+      <article class="feature">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4v16"/><path d="M20 8H9"/><path d="M20 16H9"/><circle cx="14" cy="8" r="2.4"/><circle cx="16" cy="16" r="2.4"/>
+          </svg>
+        </div>
+        <h3>Change key in one tap</h3>
+        <p>
+          Too high for the sopranos? Pick a new key and the solfa re-labels. It does
+          not re-record or re-analyse anything, so it is instant.
+        </p>
+        <span class="meta">Instant · Lossless</span>
+      </article>
+
+      <article class="feature">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v18"/><path d="M8 7v10"/><path d="M4 10v4"/><path d="M16 6v12"/><path d="M20 9v6"/>
+          </svg>
+        </div>
+        <h3>A confidence score on every result</h3>
+        <p>
+          A clean solo voice in a quiet room scores high. A full band in a live room
+          scores lower, and the app tells you which one you have got.
+        </p>
+        <span class="meta">High · Fair · Low</span>
+      </article>
+
+      <article class="feature">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19V5a2 2 0 0 1 2-2h11l3 3v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h3"/>
+          </svg>
+        </div>
+        <h3>Your own library</h3>
+        <p>
+          Everything you save syncs across your devices, titled and searchable, with
+          the key and tempo on the card. Rename, re-key or delete any time.
+        </p>
+        <span class="meta">Synced across devices</span>
+      </article>
+
+      <article class="feature">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+          </svg>
+        </div>
+        <h3>Your audio is deleted</h3>
+        <p>
+          Your recording is transcribed and then deleted. That usually happens within
+          seconds. The notation stays in your library; the audio file is gone.
+        </p>
+        <span class="meta">Deleted on completion</span>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ African Mode, the differentiator ═════════════════════════════════════ -->
+<section id="african" class="african" tabindex="-1" aria-labelledby="african-h">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow eyebrow--on-blue">African Mode</span>
+      <h2 id="african-h">Built for the music <em>nobody else transcribes</em></h2>
+      <p>
+        Every transcription tool on the market was trained on Western classical and
+        pop. Point one at a Yoruba chorus, a highlife guitar line or an Afrobeat log-drum
+        and it falls apart.
+      </p>
+      <p>
+        <strong>African Mode</strong> is tuned for exactly that material: dense
+        percussion, call-and-response, and vocal-led choruses. It is aimed at the songs
+        a congregation already knows and nobody ever wrote down.
+      </p>
+
+      <ul class="african-list">
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Nigerian and pan-African church choruses, in the keys they are actually sung in
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Afrobeat and hip-hop, with the melody lifted clear of the drums
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Viral sounds and local instruments, from talking drum to shekere
+        </li>
+        <li>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          Vetted transcriptions published free under <strong>African Tunes &amp; Choruses</strong>
+        </li>
+      </ul>
+    </div>
+
+    <div class="solfa-panel reveal">
+      <h3 class="title">Sample output</h3>
+      <p class="doh">Doh is D &nbsp;·&nbsp; 4/4 &nbsp;·&nbsp; 100 BPM</p>
+      <!-- The two lines are pipes, colons and single letters. Read out they are
+           noise, so the figure carries the meaning and the lines are hidden from
+           the accessibility tree. tabindex makes the horizontal scroller
+           reachable without a mouse. -->
+      <figure class="solfa-sample" tabindex="0" role="group" aria-label="Sample output: two lines of Tonic Solfa in D, four four time, 100 beats per minute. Bar one, doh doh. Bar two, ray me. Bar three, fah me. Bar four, ray held. Bar five, me fah. Bar six, soh lah. Bar seven, soh fah. Bar eight, me held.">
+        <p class="solfa-line" aria-hidden="true">| d :&nbsp; d&nbsp; | r :&nbsp; m&nbsp; | f :&nbsp; m&nbsp; | r :&nbsp; &mdash;&nbsp; |</p>
+        <p class="solfa-line" aria-hidden="true">| m :&nbsp; f&nbsp; | s :&nbsp; l&nbsp; | s :&nbsp; f&nbsp; | m :&nbsp; &mdash;&nbsp; |</p>
+      </figure>
+      <p class="caption">
+        Movable-do, so the same chorus reads identically whatever key you move it to.
+        That is why choirs learn from solfa rather than from a stave.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Comparison ═══════════════════════════════════════════════════════════ -->
+<section id="why" tabindex="-1" aria-labelledby="why-h">
+  <div class="wrap">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Why bother</span>
+      <h2 id="why-h">By ear, or with the app</h2>
+    </div>
+
+    <div class="compare reveal">
+      <div class="compare-col compare-col--them">
+        <h3>Working it out by ear</h3>
+        <ul>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            An evening at the keyboard hunting for the right notes
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            One person in the team who can write, and everyone waiting on them
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Transposing by hand, and re-copying every part when it is still too high
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            Choruses nobody ever wrote down
+          </li>
+        </ul>
+      </div>
+
+      <div class="compare-col compare-col--us">
+        <h3>With NoteFusion</h3>
+        <ul>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Record it once. Notation before the rehearsal ends.
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Anyone in the team can capture a part, because the phone does the reading
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            New key in one tap, solfa re-labelled, nothing re-recorded
+          </li>
+          <li>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            Saved to the library and shareable with the team
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Pricing ══════════════════════════════════════════════════════════════ -->
+<section id="pricing" class="features" tabindex="-1" aria-labelledby="pricing-h">
+  <div class="wrap">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2 id="pricing-h">Start free, upgrade when you hit the cap</h2>
+      <p class="lede">
+        The free tier gives you the same transcription engine as Pro, capped at five
+        a month and two minutes each.
+      </p>
+    </div>
+
+    <div class="plans reveal">
+
+      <div class="plan">
+        <h3>Free</h3>
+        <div class="price">₦0 <small>/ forever</small></div>
+        <p class="blurb">Enough to transcribe your Sunday chorus and see the thing work.</p>
+        <ul>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>5 transcriptions a month</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Up to 2 minutes per recording</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Tonic Solfa + staff notation</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Key change, playback, library sync</li>
+        </ul>
+        <a class="btn btn--ghost" href="#get">Get the app</a>
+      </div>
+
+      <div class="plan plan--featured">
+        <span class="plan-tag">Most popular</span>
+        <h3>Pro</h3>
+        <div class="price">₦3,500 <small>/ month</small></div>
+        <p class="blurb">For the person who transcribes every week and teaches from it.</p>
+        <ul>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><strong>Unlimited</strong> transcriptions</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Up to 10 minutes per recording</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><strong>African Mode</strong> for Afrobeat, hip-hop and choruses</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Full <strong>African Tunes &amp; Choruses</strong> library</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>MusicXML &amp; MIDI export</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Priority queue</li>
+        </ul>
+        <a class="btn btn--primary" href="#get">Choose Pro</a>
+      </div>
+
+      <div class="plan">
+        <h3>Choir</h3>
+        <div class="price">₦12,000 <small>/ month</small></div>
+        <p class="blurb">One library for the whole music department or worship team.</p>
+        <ul>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Everything in Pro, for up to 10 people</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Shared team library</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Part-by-part SATB capture</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Submit to the public library and get credited</li>
+        </ul>
+        <a class="btn btn--ghost" href="mailto:hello@notefusion.studio?subject=Choir%20plan">Talk to us</a>
+      </div>
+
+    </div>
+
+    <p class="pricing-note">
+      Prices are in Naira and billed through Google Play. You can cancel any time in
+      the Play Store. See the <a href="/terms">terms of service</a>.
+    </p>
+  </div>
+</section>
+
+<!-- ══ FAQ ══════════════════════════════════════════════════════════════════ -->
+<section id="faq" tabindex="-1" aria-labelledby="faq-h">
+  <div class="wrap">
+    <div class="section-head section-head--center reveal">
+      <span class="eyebrow">Frequently asked</span>
+      <h2 id="faq-h">Questions we get asked</h2>
+    </div>
+
+    <div class="faq reveal">
+      <details>
+        <summary><h3>Do I need to read music to use it?</h3></summary>
+        <p>
+          No. That is what Tonic Solfa is for. If you can sing <em>doh re mi</em>, you can
+          read what NoteFusion gives you. The staff notation is there for when you need
+          to hand it to someone who does read.
+        </p>
+      </details>
+
+      <details>
+        <summary><h3>How accurate is it, really?</h3></summary>
+        <p>
+          A clean solo voice or a single instrument in a quiet room transcribes very
+          well. A full band in a live room is harder, and dense polyphony is harder
+          still. Every result carries a confidence score, so check it before you teach
+          from it.
+        </p>
+      </details>
+
+      <details>
+        <summary><h3>What happens to my recordings?</h3></summary>
+        <p>
+          The audio is transcribed and then deleted from our servers: usually within
+          seconds, always as soon as the job finishes. No person listens to it, it is
+          not sold, and it is not used to train anything. See the
+          <a href="/privacy">privacy policy</a>.
+        </p>
+      </details>
+
+      <details>
+        <summary><h3>What exactly is African Mode?</h3></summary>
+        <p>
+          A transcription mode tuned for material the standard models handle badly. It
+          only changes the analysis. The solfa rules are the same in every mode, with
+          doh following the key and minors la-based.
+        </p>
+      </details>
+
+      <details>
+        <summary><h3>Can I change the key after transcribing?</h3></summary>
+        <p>
+          Yes, and it is instant. Changing key re-labels the solfa; it never re-analyses
+          the audio.
+        </p>
+      </details>
+
+      <details>
+        <summary><h3>Is my transcription mine?</h3></summary>
+        <p>
+          Yes. What you record and what you save belongs to you. If you choose to submit
+          a chorus to the public <strong>African Tunes &amp; Choruses</strong> library, it is
+          reviewed for accuracy first, and you are credited. Nothing is published without
+          you asking for it.
+        </p>
+      </details>
+
+      <details>
+        <summary><h3>Is there an iPhone version?</h3></summary>
+        <p>
+          Android first. The app is built cross-platform, so iOS follows. Join the list
+          at <a href="mailto:hello@notefusion.studio?subject=iOS%20waitlist">hello@notefusion.studio</a>
+          and we will tell you when it lands.
+        </p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Final CTA ════════════════════════════════════════════════════════════ -->
+<section id="get" class="cta-band" tabindex="-1" aria-labelledby="get-h">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">Get started</span>
+      <h2 id="get-h">Get your next chorus written down</h2>
+      <p class="lede">
+        Nothing to pay to try it. Record something tonight and see what comes back.
+      </p>
+      <div class="hero-cta">
+        <a class="store-badge" href="https://play.google.com/store/apps/details?id=app.notefusion">
+          <img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play">
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ══ Footer ═══════════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="brand-row" style="margin-bottom:12px">
+          <span class="mark mark--on-blue" aria-hidden="true"></span>
+          <span class="wordmark">Note<span>Fusion</span></span>
+        </div>
+        <p>
+          Transcribing local sounds, music and instruments into accurate Tonic Solfa
+          and staff notation, so everyone else can access them too.
+        </p>
+      </div>
+
+      <nav aria-labelledby="f-product">
+        <h2 class="footer-head" id="f-product">Product</h2>
+        <ul>
+          <li><a href="#how">How it works</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#african">African Mode</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="f-company">
+        <h2 class="footer-head" id="f-company">Company</h2>
+        <ul>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="mailto:hello@notefusion.studio">Contact</a></li>
+          <li><a href="mailto:security@notefusion.studio">Report a vulnerability</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="f-legal">
+        <h2 class="footer-head" id="f-legal">Legal</h2>
+        <ul>
+          <li><a href="/terms">Terms of service</a></li>
+          <li><a href="/privacy">Privacy policy</a></li>
+          <li><a href="/terms#delete-account">Delete your account</a></li>
+          <li><a href="mailto:privacy@notefusion.studio">Data requests</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 NoteFusion. All rights reserved.</span>
+      <span class="footer-trademark">Google Play and the Google Play logo are trademarks of Google LLC.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/landing.js" defer></script>
+</body>
+</html>

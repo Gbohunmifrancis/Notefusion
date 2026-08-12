@@ -1,0 +1,5 @@
+.vercel
+.env*
+
+# Local audit/QA artifacts (fold screenshots, about-page scrapers). Never shipped.
+.audit-*

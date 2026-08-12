@@ -109,7 +109,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                   end={{ x: 1, y: 0 }}
                   style={styles.itemActive}
                 >
-                  <Ionicons name={tab.iconActive} size={18} color="#FFFFFF" />
+                  <Ionicons name={tab.iconActive} size={18} color={colors.onAccent} />
                   <Text style={styles.itemLabel}>{tab.label}</Text>
                 </LinearGradient>
               ) : (
@@ -207,7 +207,7 @@ const makeStyles = (c: Palette) =>
     /** Active tab label — sits on the brand gradient, so always white. */
     itemLabel: {
       ...typography.label,
-      color: "#FFFFFF",
+      color: c.onAccent,
       fontSize: 13,
       fontFamily: fonts.bold,
       marginLeft: spacing.sm,

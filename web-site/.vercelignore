@@ -1,0 +1,8 @@
+# Everything in this directory is served at the domain root, so anything left in
+# here is public. The CLI already skips .env.local and .vercel by default; these
+# are named anyway so the exclusion does not depend on a default that could change.
+README.md
+.gitignore
+.vercelignore
+.env*
+.vercel

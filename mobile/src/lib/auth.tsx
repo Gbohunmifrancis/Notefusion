@@ -19,6 +19,13 @@ interface AuthState {
   signUp: (fullName: string, email: string, password: string) => Promise<void>;
   /** Signs in with Google. Serves both first-time and returning users. */
   signInWithGoogle: () => Promise<void>;
+  /**
+   * Runs the Google consent prompt and returns a fresh ID token WITHOUT touching
+   * the current session. Used to re-prove identity for a destructive action (account
+   * deletion) on a Google-only account, which has no password to re-verify. Resolves
+   * to null if the user backs out of the prompt.
+   */
+  reauthWithGoogle: () => Promise<string | null>;
   signOut: () => Promise<void>;
   setUser: (u: AuthUser) => void;
 }
@@ -104,6 +111,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     registerForPushAsync().catch(() => undefined);
   }
 
+  /**
+   * Runs the Google consent prompt and returns the raw ID token, or null if the
+   * user backs out. Shared by sign-in and by destructive-action re-auth, so the
+   * placeholder-ID and availability guards live in exactly one place.
+   */
+  async function promptGoogleIdToken(): Promise<string | null> {
+    // The request is built from a placeholder ID on an unconfigured build, so it
+    // exists but must never reach Google's servers.
+    if (!googleAuthConfigured) {
+      throw new Error('Google sign-in is not configured in this build.');
+    }
+    if (!googleReq) throw new Error('Google sign-in is not available yet.');
+
+    const res = await googlePrompt();
+    if (res.type !== 'success') return null;
+
+    const idToken = res.params.id_token;
+    if (!idToken) throw new Error('Google did not return an ID token.');
+    return idToken;
+  }
+
   const value = useMemo<AuthState>(
     () => ({
       user,
@@ -126,18 +154,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
        * throwing: backing out of the consent screen is a choice, not an error.
        */
       async signInWithGoogle() {
-        // The request above is built from a placeholder ID on an unconfigured
-        // build, so it exists but must never reach Google's servers.
-        if (!googleAuthConfigured) {
-          throw new Error('Google sign-in is not configured in this build.');
-        }
-        if (!googleReq) throw new Error('Google sign-in is not available yet.');
-
-        const res = await googlePrompt();
-        if (res.type !== 'success') return;
-
-        const idToken = res.params.id_token;
-        if (!idToken) throw new Error('Google did not return an ID token.');
+        const idToken = await promptGoogleIdToken();
+        if (!idToken) return;
 
         const session = await authApi.google(idToken);
         await persistSession(
@@ -145,6 +163,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           session.refreshToken,
           session.user,
         );
+      },
+      async reauthWithGoogle() {
+        return promptGoogleIdToken();
       },
       async signOut() {
         const refresh = await tokenStore.getRefresh();

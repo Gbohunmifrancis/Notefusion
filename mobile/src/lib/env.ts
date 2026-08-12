@@ -57,3 +57,21 @@ const platformClientId =
  * absent one, and every design that shows it also offers email sign-in.
  */
 export const googleAuthConfigured = platformClientId !== '';
+
+/**
+ * The public marketing site. Inlined rather than read from `extra` because,
+ * unlike the Google client IDs, these do not vary by platform or environment:
+ * there is one canonical origin and the store listings, the OAuth consent
+ * screen, and the policy documents themselves all cite it.
+ *
+ * `privacy` and `terms` are the same URLs registered with Google Play and the
+ * Google Cloud OAuth consent screen, so they must stay in step with
+ * `web-site/sitemap.xml`. Both rely on Vercel `cleanUrls`, hence no `.html`.
+ */
+const SITE_ORIGIN = 'https://notefusion.studio';
+
+export const siteUrls = {
+  home: SITE_ORIGIN,
+  privacy: `${SITE_ORIGIN}/privacy`,
+  terms: `${SITE_ORIGIN}/terms`,
+} as const;

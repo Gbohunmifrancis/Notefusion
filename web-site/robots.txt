@@ -1,0 +1,8 @@
+# notefusion.studio — a three-page public site. Nothing here is private, so
+# nothing is disallowed; the file exists to declare the sitemap, which is the
+# only part crawlers cannot infer.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://notefusion.studio/sitemap.xml

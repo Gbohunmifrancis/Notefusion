@@ -372,7 +372,7 @@ const makeStyles = (c: Palette) =>
     width: 220,
     height: 220,
     borderRadius: 110,
-    backgroundColor: "rgba(37, 99, 235, 0.12)",
+    backgroundColor: c.accentSoft,
   },
 
   /** Soft light-blue glow — upper-right of hero area. */
@@ -383,7 +383,7 @@ const makeStyles = (c: Palette) =>
     width: 180,
     height: 180,
     borderRadius: 90,
-    backgroundColor: "rgba(59, 130, 246, 0.08)",
+    backgroundColor: c.pinkSoft,
   },
 
   // ── Avatar ────────────────────────────────────────────────────────────────
@@ -543,7 +543,7 @@ const makeStyles = (c: Palette) =>
   statDivider: {
     width: 1,
     height: 40,
-    backgroundColor: c.surface,
+    backgroundColor: c.border,
   },
 
   // ── Section header ─────────────────────────────────────────────────────────
@@ -606,7 +606,7 @@ const makeStyles = (c: Palette) =>
   settingsRowDivider: {
     height: 1,
     marginHorizontal: spacing.lg,
-    backgroundColor: c.surface,
+    backgroundColor: c.border,
   },
 
   settingsIconCircle: {

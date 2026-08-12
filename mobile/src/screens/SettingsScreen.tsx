@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   StyleSheet,
   Switch,
@@ -15,6 +16,7 @@ import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { meApi } from "../api/endpoints";
+import type { MyProfile } from "../api/types";
 import { toApiError } from "../api/client";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useTheme, useThemedStyles } from "../lib/theme";
@@ -29,21 +31,35 @@ type Props = NativeStackScreenProps<RootStackParams, "Settings">;
  *
  *   • Appearance — light/dark switch. The choice is written to AsyncStorage by
  *     the ThemeProvider, so it survives a relaunch and applies on the first frame.
- *   • Danger zone — permanent account deletion. Guarded twice: the password is
- *     re-verified server-side (DELETE /api/me carries it in the body) and a
+ *   • Danger zone — permanent account deletion. Guarded twice: identity is
+ *     re-proven server-side (DELETE /api/me carries the proof in the body) and a
  *     destructive confirm dialog stands in front of the request, because the
- *     server deletes the user's transcriptions along with the account.
+ *     server deletes the user's transcriptions along with the account. The proof
+ *     is a password for password accounts, and a fresh Google ID token for
+ *     Google-only accounts, which never set one — the profile's hasPassword flag
+ *     decides which control we render.
  */
 export function SettingsScreen({ navigation }: Props) {
   const { mode, setMode } = useTheme();
-  const { signOut } = useAuth();
+  const { signOut, reauthWithGoogle } = useAuth();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
+  const [profile, setProfile] = useState<MyProfile | null>(null);
   const [password, setPassword] = useState("");
   const [deleting, setDeleting] = useState(false);
 
   const isDark = mode === "dark";
+
+  // The delete control depends on whether the account has a password to re-verify.
+  // Until the profile loads we can't tell, so the danger zone shows a spinner
+  // rather than guessing and rendering the wrong proof control.
+  useEffect(() => {
+    meApi
+      .get()
+      .then(setProfile)
+      .catch(() => undefined);
+  }, []);
 
   // ── Account deletion ───────────────────────────────────────────────────────
 
@@ -61,7 +77,18 @@ export function SettingsScreen({ navigation }: Props) {
   async function deleteAccount() {
     setDeleting(true);
     try {
-      await meApi.remove({ password });
+      if (profile?.hasPassword) {
+        await meApi.remove({ password });
+      } else {
+        // Google-only account: re-prove identity through a fresh consent prompt.
+        // A cancelled prompt returns null — abort quietly, the account stands.
+        const googleIdToken = await reauthWithGoogle();
+        if (!googleIdToken) {
+          setDeleting(false);
+          return;
+        }
+        await meApi.remove({ googleIdToken });
+      }
       // The session is dead server-side; signOut clears the local tokens, which
       // swaps the root navigator back to the auth flow and unmounts this screen.
       await signOut();
@@ -78,7 +105,13 @@ export function SettingsScreen({ navigation }: Props) {
     <Screen scroll>
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
           <View style={styles.backCircle}>
             <Ionicons name="chevron-back" size={20} color={colors.text} />
           </View>
@@ -137,27 +170,53 @@ export function SettingsScreen({ navigation }: Props) {
 
       <Card style={styles.card}>
         <Text style={styles.dangerTitle}>Delete account</Text>
-        <Text style={styles.dangerBody}>
-          Permanently removes your account and every saved transcription. Enter
-          your password to confirm — this cannot be undone.
-        </Text>
 
-        <TextField
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          secure
-          placeholder="••••••••"
-        />
+        {profile === null ? (
+          // Proof control depends on hasPassword — wait for it rather than guess.
+          <View style={styles.loadingRow}>
+            <ActivityIndicator color={colors.textFaint} />
+          </View>
+        ) : profile.hasPassword ? (
+          <>
+            <Text style={styles.dangerBody}>
+              Permanently removes your account and every saved transcription.
+              Enter your password to confirm — this cannot be undone.
+            </Text>
 
-        <Button
-          label="Delete my account"
-          variant="danger"
-          icon="trash-outline"
-          onPress={confirmDelete}
-          loading={deleting}
-          disabled={password.length === 0}
-        />
+            <TextField
+              label="Password"
+              value={password}
+              onChangeText={setPassword}
+              secure
+              placeholder="••••••••"
+            />
+
+            <Button
+              label="Delete my account"
+              variant="danger"
+              icon="trash-outline"
+              onPress={confirmDelete}
+              loading={deleting}
+              disabled={password.length === 0}
+            />
+          </>
+        ) : (
+          <>
+            <Text style={styles.dangerBody}>
+              Permanently removes your account and every saved transcription.
+              You'll confirm with Google to prove it's you — this cannot be
+              undone.
+            </Text>
+
+            <Button
+              label="Confirm with Google & delete"
+              variant="danger"
+              icon="logo-google"
+              onPress={confirmDelete}
+              loading={deleting}
+            />
+          </>
+        )}
       </Card>
     </Screen>
   );
@@ -284,5 +343,10 @@ const makeStyles = (c: Palette) =>
       fontSize: 13,
       lineHeight: 19,
       marginBottom: spacing.lg,
+    },
+
+    loadingRow: {
+      paddingVertical: spacing.lg,
+      alignItems: "center",
     },
   });

@@ -1,0 +1,5 @@
+# Heroku buildpack hooks are executed by the Linux dyno's shell. Committed with
+# CRLF (the Windows default here) they fail at startup with
+# `bad interpreter: /usr/bin/env bash^M`, so pin them to LF regardless of platform.
+server/bin/* text eol=lf
+*.sh text eol=lf

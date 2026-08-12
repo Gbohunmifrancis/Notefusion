@@ -303,6 +303,24 @@ export function RecordScreen() {
     }
   }, [state.status, state.result, nav, reset]);
 
+  // A failed job must clear the uploading chrome, or the record button stays
+  // disabled and the "Processing…" spinner renders on top of the error card,
+  // stranding the user until they happen to tap Try again. The error card is
+  // driven by state.error, so it stays visible; only the phase is reset.
+  useEffect(() => {
+    if (state.status === "failed") setPhase("ready");
+  }, [state.status]);
+
+  // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
+  // mid-recording (back gesture, tab switch) never runs that path, leaking the
+  // timer and firing a state update on an unmounted component. Tear it down here.
+  useEffect(
+    () => () => {
+      if (tick.current) clearInterval(tick.current);
+    },
+    [],
+  );
+
   // ── Voice-level metering & "sing louder" guidance ─────────────────────────
   //
   // recorderState.metering is only meaningful while phase === "recording";

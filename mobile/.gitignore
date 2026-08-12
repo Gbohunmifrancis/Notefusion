@@ -6,3 +6,4 @@ web-build/
 .DS_Store
 # Local env overrides
 .env*.local
+.env.local

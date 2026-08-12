@@ -54,34 +54,29 @@ export function LibraryScreen() {
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"All" | "Tonic Solfa" | "Staff">("All");
 
-  const FILTERS = ["All", "Tonic Solfa", "Staff"] as const;
-
-  const filteredItems = items.filter((item) => {
-    const matchesQuery =
+  const filteredItems = items.filter(
+    (item) =>
       query.trim() === "" ||
-      item.title.toLowerCase().includes(query.trim().toLowerCase());
-    const matchesFilter =
-      filter === "All"
-        ? true
-        : filter === "Tonic Solfa"
-        ? (item.notes?.length ?? 0) > 0
-        : Boolean(item.musicXml);
-    return matchesQuery && matchesFilter;
-  });
+      item.title.toLowerCase().includes(query.trim().toLowerCase()),
+  );
 
   // ── Data loading ────────────────────────────────────────────────────────────
 
   const load = useCallback(async () => {
     try {
       setItems(await libraryApi.list());
-    } catch {
-      /* silent — user can pull-to-refresh */
+      setLoadError(null);
+    } catch (e) {
+      // Don't swallow: a failed load looks identical to an empty library, which
+      // tells the user their saved work is gone. Record it so the list can show
+      // the reason with a retry instead of the "Nothing saved yet" empty state.
+      setLoadError(toApiError(e).message);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -203,19 +198,6 @@ export function LibraryScreen() {
         />
       </View>
 
-      {/* Filter tabs */}
-      <View style={styles.filterRow}>
-        {FILTERS.map((f) => (
-          <TouchableOpacity
-            key={f}
-            style={[styles.filterTab, filter === f && styles.filterTabActive]}
-            onPress={() => setFilter(f as typeof filter)}
-          >
-            <Text style={[styles.filterTabText, filter === f && styles.filterTabTextActive]}>{f}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
       {/* Gradient divider */}
       {items.length > 0 && (
         <LinearGradient
@@ -231,27 +213,48 @@ export function LibraryScreen() {
   // ── Empty state ─────────────────────────────────────────────────────────────
 
   const EmptyState = !loading ? (
-    <View style={styles.empty}>
-      {/* Ghost icon bubble */}
-      <View style={styles.emptyBubbleWrap}>
-        <LinearGradient
-          colors={gradients.brandDim}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.emptyBubble}
-        >
-          <View style={styles.emptyBubbleInner}>
-            <Image source={appIcons.songbook} style={styles.emptyBubbleImg} />
+    loadError ? (
+      <View style={styles.empty}>
+        <View style={styles.emptyBubbleWrap}>
+          <View style={styles.errorBubble}>
+            <Ionicons name="cloud-offline-outline" size={34} color={colors.danger} />
           </View>
-        </LinearGradient>
+        </View>
+        <Text style={styles.emptyTitle}>Couldn't load your library</Text>
+        <Text style={styles.emptyBody}>{loadError}</Text>
+        <TouchableOpacity
+          style={styles.retryBtn}
+          onPress={() => {
+            setLoading(true);
+            load();
+          }}
+        >
+          <Text style={styles.retryLabel}>Try again</Text>
+        </TouchableOpacity>
       </View>
+    ) : (
+      <View style={styles.empty}>
+        {/* Ghost icon bubble */}
+        <View style={styles.emptyBubbleWrap}>
+          <LinearGradient
+            colors={gradients.brandDim}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.emptyBubble}
+          >
+            <View style={styles.emptyBubbleInner}>
+              <Image source={appIcons.songbook} style={styles.emptyBubbleImg} />
+            </View>
+          </LinearGradient>
+        </View>
 
-      <Text style={styles.emptyTitle}>Nothing saved yet</Text>
-      <Text style={styles.emptyBody}>
-        Transcribe a melody in the Listen tab and tap "Save to Library" to start
-        building your collection.
-      </Text>
-    </View>
+        <Text style={styles.emptyTitle}>Nothing saved yet</Text>
+        <Text style={styles.emptyBody}>
+          Transcribe a melody in the Listen tab and tap "Save to Library" to start
+          building your collection.
+        </Text>
+      </View>
+    )
   ) : null;
 
   // ── Render ──────────────────────────────────────────────────────────────────
@@ -617,30 +620,24 @@ const makeStyles = (c: Palette) =>
     color: c.text,
     paddingVertical: 0,
   },
-  filterRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
-    marginBottom: spacing.md,
-    flexWrap: 'wrap',
+  errorBubble: {
+    width: 100,
+    height: 100,
+    borderRadius: radii.xl + spacing.md,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: c.surfaceAlt,
   },
-  filterTab: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs + 2,
+  retryBtn: {
+    marginTop: spacing.lg,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.sm + 2,
     borderRadius: radii.pill,
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-  filterTabActive: {
     backgroundColor: c.accent,
-    borderColor: c.accent,
   },
-  filterTabText: {
+  retryLabel: {
     fontFamily: fonts.medium,
-    fontSize: 13,
-    color: c.textMuted,
-  },
-  filterTabTextActive: {
-    color: '#fff',
+    fontSize: 14,
+    color: "#fff",
   },
 });
