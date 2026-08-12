@@ -16,6 +16,24 @@ section {
   padding: 96px 0;
 }
 
+/* First tab stop on every load, so a keyboard user is not walked through six
+   nav links before reaching the page. Off-screen until focused. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  color: var(--blue-deep);
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 0 0 var(--r-md) 0;
+  box-shadow: var(--sh-card-lift);
+}
+.skip-link:focus {
+  left: 0;
+}
+
 .eyebrow {
   display: inline-block;
   font-size: 0.78rem;
@@ -26,7 +44,7 @@ section {
   margin: 0 0 var(--s-md);
 }
 .eyebrow--on-blue {
-  color: rgba(255, 255, 255, 0.75);
+  color: #fff;
 }
 
 h2 {
@@ -136,7 +154,7 @@ h1 em {
 /* ── Hero ────────────────────────────────────────────────────────────────── */
 
 .hero {
-  padding: 72px 0 96px;
+  padding: 48px 0 80px;
   position: relative;
   overflow: hidden;
 }
@@ -158,25 +176,28 @@ h1 em {
   pointer-events: none;
 }
 
+/* `align-items: start`, not `center`. Centring returns only half of every pixel
+   trimmed from this column, because the phone column is taller and the whole
+   row re-centres around it. It was worth ~30px of CTA depth on its own. */
 .hero .wrap {
   position: relative;
   display: grid;
   grid-template-columns: 1.05fr 0.95fr;
   gap: var(--s-3xl);
-  align-items: center;
+  align-items: start;
 }
 
 .hero h1 {
-  font-size: clamp(2.4rem, 5.4vw, 3.9rem);
-  line-height: 1.08;
+  font-size: clamp(2.2rem, 4.8vw, 3.4rem);
+  line-height: 1.05;
   letter-spacing: -0.04em;
   font-weight: 700;
-  margin: 0 0 var(--s-lg);
+  margin: 0 0 var(--s-md);
 }
 
 .hero .lede {
-  font-size: 1.15rem;
-  margin-bottom: var(--s-xl);
+  font-size: 1.075rem;
+  margin-bottom: var(--s-lg);
 }
 
 .hero-cta {
@@ -186,18 +207,52 @@ h1 em {
   align-items: center;
 }
 
-.hero-note {
-  margin: var(--s-lg) 0 0;
-  font-size: 0.875rem;
-  color: var(--text-faint);
+/* The Play badge PNG carries its own transparent margin, which *is* the clear
+   space Google's guidelines require — so it needs no padding of its own, and
+   nothing may be placed inside that margin. Height is left to the aspect ratio
+   of the 646 × 250 artwork. */
+.store-badge {
+  display: inline-block;
+  line-height: 0;
+  transition: transform 0.18s ease;
+}
+.store-badge img {
+  width: 182px;
+  height: auto;
+}
+.store-badge:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
 }
 
-/* Pill listing what the app hears, directly under the CTA. */
+.hero-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-lg);
+  margin: var(--s-lg) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.hero-trust li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-sm);
+}
+.hero-trust svg {
+  color: var(--success);
+  flex: none;
+}
+
+/* Pill listing what the app hears, directly under the CTA. The explicit bottom
+   margin resets the UA's `ul { margin: 1em 0 }`, which otherwise adds 16px of
+   dead space to the tallest column in the hero. */
 .hero-chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-sm);
-  margin-top: var(--s-xl);
+  margin: var(--s-xl) 0 0;
   padding: 0;
   list-style: none;
 }
@@ -216,6 +271,24 @@ h1 em {
  * A real screenshot inside a drawn bezel. Cheaper than a device photo and it
  * stays sharp at any density.
  */
+
+/* Four faint stave lines behind the phone, so the right half of the hero reads
+   as music rather than as an empty gutter. Purely decorative. */
+.phone-col {
+  position: relative;
+}
+.phone-col::before {
+  content: "";
+  position: absolute;
+  inset: 18% -6% auto -6%;
+  height: 64px;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(37, 99, 235, 0.16) 0 1px,
+    transparent 1px 16px
+  );
+  pointer-events: none;
+}
 
 .phone {
   position: relative;
@@ -248,7 +321,7 @@ h1 em {
   font-size: 0.68rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-faint);
+  color: var(--text-muted);
   font-weight: 600;
 }
 .phone-badge .v {
@@ -258,7 +331,48 @@ h1 em {
   color: var(--blue-deep);
 }
 
+/* The two outputs, named beside the screenshot. Decorative duplicates of copy
+   that already appears in the h1 and the feature grid, so they are
+   `aria-hidden` in the markup and dropped entirely once the phone has the
+   column to itself. */
+.phone-chip {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 14px;
+  box-shadow: var(--sh-card-lift);
+  color: var(--blue-deep);
+}
+.phone-chip .k {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+.phone-chip .v {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  color: var(--blue-deep);
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.phone-chip--solfa {
+  left: -58px;
+  top: 56px;
+}
+.phone-chip--staff {
+  right: -54px;
+  top: 210px;
+  display: grid;
+  gap: 4px;
+  justify-items: center;
+}
+
 @media (max-width: 940px) {
+  .hero {
+    padding: 32px 0 64px;
+  }
   .hero .wrap {
     grid-template-columns: 1fr;
     text-align: center;
@@ -268,11 +382,16 @@ h1 em {
     margin-right: auto;
   }
   .hero-cta,
+  .hero-trust,
   .hero-chips {
     justify-content: center;
   }
   .phone-badge {
     left: -12px;
+  }
+  .phone-chip,
+  .phone-col::before {
+    display: none;
   }
 }
 
@@ -338,7 +457,7 @@ h1 em {
   width: 40px;
   height: 40px;
   border-radius: var(--r-pill);
-  background: var(--fusion);
+  background: var(--fusion-contrast);
   color: #fff;
   font-weight: 700;
   font-size: 1rem;
@@ -406,7 +525,7 @@ h1 em {
   display: block;
   margin-top: var(--s-md);
   font-size: 0.8rem;
-  color: var(--text-faint);
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -454,10 +573,12 @@ h1 em {
   max-width: 16ch;
 }
 .african h2 em {
-  color: #bfdbfe;
+  color: #dbeafe;
 }
+/* Solid white, not a translucent white. Over the light end of a 135deg gradient
+   ending in #3B82F6, white at .86 falls to 3.1:1. */
 .african p {
-  color: rgba(255, 255, 255, 0.86);
+  color: #fff;
   font-size: 1.05rem;
 }
 .african-list {
@@ -471,7 +592,7 @@ h1 em {
   display: flex;
   gap: var(--s-md);
   align-items: flex-start;
-  color: rgba(255, 255, 255, 0.92);
+  color: #fff;
   font-size: 0.975rem;
 }
 .african-list svg {
@@ -479,10 +600,13 @@ h1 em {
   margin-top: 3px;
 }
 
-/* Glass panel holding the sample solfa line. */
+/* Dark glass, not light. This panel sits in the right-hand column, which is the
+   *light* end of the gradient; a white 10% fill lifted the background further
+   and left the sample output at ~2.2:1. A 22% ink wash instead puts white text
+   back over 5:1 and reads as a screen rather than a frosted card. */
 .solfa-panel {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(15, 23, 42, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: var(--r-lg);
   padding: var(--s-xl);
   backdrop-filter: blur(6px);
@@ -490,14 +614,20 @@ h1 em {
 }
 .solfa-panel .title {
   font-weight: 600;
+  font-size: 1rem;
   margin: 0 0 var(--s-xs);
   color: #fff;
 }
 .solfa-panel .doh {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: #bfdbfe;
+  color: #fff;
+  font-weight: 500;
   font-size: 0.9rem;
   margin: 0 0 var(--s-lg);
+}
+.solfa-sample {
+  margin: 0;
+  overflow-x: auto;
 }
 .solfa-line {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -508,12 +638,11 @@ h1 em {
   border-radius: var(--r-sm);
   padding: 12px 14px;
   margin: 0 0 var(--s-sm);
-  overflow-x: auto;
   white-space: nowrap;
 }
 .solfa-panel .caption {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.9);
   margin: var(--s-md) 0 0;
 }
 
@@ -574,6 +703,25 @@ h1 em {
   }
 }
 
+/* ── Google sign-in disclosure ───────────────────────────────────────────────
+   Borrows the comparison card shell, but stands alone rather than in the 2-up
+   grid, so it needs its own width cap: a full 1080px measure would run the list
+   items to about 130 characters. */
+
+.disclosure {
+  max-width: var(--wrap-narrow);
+}
+.disclosure p {
+  margin: 0 0 var(--s-lg);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.disclosure .disclosure-scope {
+  margin: var(--s-lg) 0 0;
+  padding-top: var(--s-lg);
+  border-top: 1px solid var(--border);
+}
+
 /* ── Pricing ─────────────────────────────────────────────────────────────── */
 
 .plans {
@@ -600,7 +748,7 @@ h1 em {
   position: absolute;
   top: -13px;
   left: var(--s-xl);
-  background: var(--fusion);
+  background: var(--fusion-contrast);
   color: #fff;
   font-size: 0.72rem;
   font-weight: 600;
@@ -655,7 +803,7 @@ h1 em {
 }
 .pricing-note {
   text-align: center;
-  color: var(--text-faint);
+  color: var(--text-muted);
   font-size: 0.85rem;
   margin: var(--s-xl) 0 0;
 }
@@ -679,30 +827,44 @@ h1 em {
   margin-bottom: var(--s-md);
   overflow: hidden;
 }
+/* `summary` keeps its UA `display: list-item`. Changing it to flex has a long
+   history of breaking the native disclosure behaviour in WebKit, which would
+   leave the whole FAQ dead to mouse and keyboard on iOS. The flex row lives on
+   an inner heading instead. */
 .faq summary {
   cursor: pointer;
   padding: 18px var(--s-xl);
-  font-weight: 600;
-  font-size: 1rem;
   list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--s-lg);
 }
 .faq summary::-webkit-details-marker {
   display: none;
 }
-.faq summary::after {
+.faq summary h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-lg);
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+/* The alt-text syntax gives the glyph an empty accessible name. Without it the
+   question announces as "…? plus" — a second, differently-worded copy of the
+   expanded state the native element already reports. The bare `content` above
+   is the fallback for engines that do not parse the alt form. */
+.faq summary h3::after {
   content: "+";
+  content: "+" / "";
   color: var(--blue);
   font-size: 1.4rem;
   font-weight: 400;
   line-height: 1;
   flex: none;
 }
-.faq details[open] summary::after {
+.faq details[open] summary h3::after {
   content: "\2212"; /* minus */
+  content: "\2212" / "";
 }
 .faq details p {
   margin: 0;
@@ -753,13 +915,17 @@ h1 em {
   color: rgba(255, 255, 255, 0.6);
   max-width: 34ch;
 }
-.site-footer h4 {
+/* An h2, not an h4: the footer columns follow the page's last h2, and jumping
+   two levels breaks heading navigation. The size is set back down here. */
+.site-footer .footer-head {
   color: #fff;
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin: 0 0 var(--s-md);
   font-weight: 600;
+  max-width: none;
+  line-height: 1.65;
 }
 .site-footer ul {
   list-style: none;
@@ -783,6 +949,10 @@ h1 em {
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.85rem;
 }
+/* Required attribution wherever the Play badge appears. */
+.footer-trademark {
+  max-width: 46ch;
+}
 
 @media (max-width: 860px) {
   .footer-grid {
@@ -803,6 +973,12 @@ h1 em {
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+/* Tabbing can reach a link inside a section the observer has not fired for yet,
+   which puts the focus ring on something invisible. */
+.js .reveal:focus-within {
   opacity: 1;
   transform: none;
 }

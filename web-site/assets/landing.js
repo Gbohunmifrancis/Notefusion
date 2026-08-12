@@ -26,8 +26,21 @@
 
   // Without IntersectionObserver — or with reduced motion asked for — show
   // everything immediately rather than leaving it at opacity 0 forever.
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!("IntersectionObserver" in window) || reduced) {
+  var motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // The visitor may flip the OS setting while the page is open (and Chrome
+  // desktops do it at the OS level, which arrives as a change event here). When
+  // they do, everything already revealed stays revealed and everything still
+  // below the fold appears rather than waiting for the observer to fire — the
+  // reveal is a courtesy, not something to sit behind.
+  motion.addEventListener("change", function (ev) {
+    if (!ev.matches) return;
+    revealables.forEach(function (el) {
+      el.classList.add("is-visible");
+    });
+  });
+
+  if (!("IntersectionObserver" in window) || motion.matches) {
     revealables.forEach(function (el) {
       el.classList.add("is-visible");
     });

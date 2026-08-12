@@ -7,20 +7,23 @@ are looking at production.
 ```
 index.html            landing page
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
+terms/index.html      terms of service
+robots.txt            declares sitemap.xml
+sitemap.xml           the three public URLs
 assets/theme.css      design tokens, copied from mobile/src/design/theme.ts
 assets/landing.css    landing page layout
 assets/landing.js     sticky-header border + reveal-on-scroll, nothing else
 assets/mark.png       brand mark, white silhouette recoloured with a CSS mask
-assets/app-home.jpg   hero screenshot          ┐ derived — see build-assets.py
-assets/og-card.jpg    1200×630 social card     ┘
-assets/build-assets.py  regenerates both of the above
+assets/app-home.jpg   hero screenshot          ┐ derived — see
+assets/og-card.jpg    1200×630 social card     ┘   ../tools/build-assets.py
 ```
 
 The two JPEGs are derived from `mobile/assets/` and should be rebuilt, not
-hand-edited:
+hand-edited. The script lives at the repo root, outside the deploy root, so it
+is never served over the network:
 
 ```bash
-python assets/build-assets.py    # needs Pillow
+python tools/build-assets.py    # needs Pillow
 ```
 
 It resizes the hero to 3× its display size (PNG → JPEG takes it from 1.1 MB to
@@ -59,9 +62,9 @@ sets `nosniff`, `DENY` framing, and a strict referrer policy, and caches
 `/assets/*` for a week. There is no `/` redirect any more — the root is the
 landing page.
 
-**GitHub Pages** — Settings → Pages → deploy from a branch, folder `/web-site`.
-`.nojekyll` stops Jekyll from swallowing files. Pages ignores `vercel.json`, so
-clean URLs and the headers do not apply there.
+Everything in this directory is served publicly. Nothing that is not meant to be
+downloaded by a stranger belongs here; that is why the asset build script sits in
+`../tools/` instead.
 
 ## After deploying
 
@@ -79,7 +82,7 @@ the listing is published.
 
 ## Contact addresses
 
-The policy cites `privacy@notefusion.app` and `security@notefusion.app`, and the
-site footer cites `hello@notefusion.app`. All three need to exist and be
+The policy cites `privacy@notefusion.studio` and `security@notefusion.studio`, and the
+site footer cites `hello@notefusion.studio`. All three need to exist and be
 monitored before the policy goes live — GDPR gives a 30-day response window, and
 pointing at a dead mailbox is worse than pointing at a personal one.

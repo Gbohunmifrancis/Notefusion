@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: theme("colors.border");
+  }
+
+  body {
+    @apply bg-bg text-ink antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-pill bg-border;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Visible keyboard focus on every interactive element, including the ones that
+     are styled divs. Removing the default ring without replacing it is how admin
+     tools become keyboard-hostile. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-blue ring-offset-2 ring-offset-bg;
+  }
+}
