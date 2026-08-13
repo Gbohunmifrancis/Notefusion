@@ -1,5 +1,3 @@
 build:
   docker:
-    web:
-      dockerfile: src/NoteFusion.Api/Dockerfile
-      context: .
+    web: Dockerfile
