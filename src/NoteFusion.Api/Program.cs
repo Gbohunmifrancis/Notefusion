@@ -43,13 +43,27 @@ builder.Services.AddAuthorization(options => options.AddNoteFusionPolicies());
 // read admin analytics; with no origins configured the policy allows nothing, so a misconfigured
 // deploy fails closed. POST is needed for /api/auth/login and /api/auth/refresh, which the
 // dashboard calls before it can read anything.
-var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+var allowedOriginsArray = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+var rawAllowedOrigins = builder.Configuration["Cors:AllowedOrigins"]
+    ?? builder.Configuration["Cors__AllowedOrigins"]
+    ?? string.Empty;
+
+var parsedFromRaw = rawAllowedOrigins.Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+var originsSet = new HashSet<string>(allowedOriginsArray.Concat(parsedFromRaw), StringComparer.OrdinalIgnoreCase);
+
+// Always ensure standard dev and deployed origins are included so preflights never fail with 405
+originsSet.Add("http://localhost:5173");
+originsSet.Add("http://127.0.0.1:5173");
+originsSet.Add("https://notefusion.studio");
+originsSet.Add("https://notefusion-admin.vercel.app");
+originsSet.Add("https://notefusion-privacy.vercel.app");
+
+var allowedOrigins = originsSet.ToArray();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(AdminDashboardCorsPolicy, policy =>
     {
-        if (allowedOrigins.Length == 0) return;
-
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
               .AllowAnyMethod();
