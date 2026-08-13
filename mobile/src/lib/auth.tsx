@@ -65,14 +65,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // The response slot is unused: signInWithGoogle awaits the prompt's own result
   // instead, so the token exchange stays inside the call that started it.
   // Redirect URI strategy:
-  // - Expo Go: use the Expo auth proxy (https://auth.expo.io/@fransix66/notefusion).
+  // - Expo Go: use the Expo auth proxy (https://auth.expo.io/@yaw669/notefusion).
   //   This is a stable HTTPS URI registered in Google Cloud Console.
   //   expo-auth-session v5+ dropped `useProxy`; we pass it as `native` to override the
   //   dynamic exp://IP:port URI that Google rejects with Error 400 invalid_request.
   // - Standalone / dev builds: use the notefusion:// native scheme.
   const redirectUri = makeRedirectUri(
     isExpoGo
-      ? { native: 'https://auth.expo.io/@fransix66/notefusion' }
+      ? { native: 'https://auth.expo.io/@yaw669/notefusion' }
       : { scheme: 'notefusion' },
   );
 

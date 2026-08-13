@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Dimensions,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -53,6 +54,11 @@ export function LoginScreen({ navigation }: Props) {
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
 
+  const [forgotVisible, setForgotVisible] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotBusy, setForgotBusy] = useState(false);
+
   const canSubmit = email.trim().length > 3 && password.length > 0;
 
   async function submit() {
@@ -77,6 +83,19 @@ export function LoginScreen({ navigation }: Props) {
       setError(toApiError(e).message);
     } finally {
       setGoogleBusy(false);
+    }
+  }
+
+  async function sendForgot() {
+    if (!forgotEmail.trim()) return;
+    setForgotBusy(true);
+    try {
+      // TODO: wire to POST /api/auth/forgot-password once the endpoint exists.
+      // For now simulate a short delay so the UX feels real.
+      await new Promise((r) => setTimeout(r, 800));
+      setForgotSent(true);
+    } finally {
+      setForgotBusy(false);
     }
   }
 
@@ -135,6 +154,13 @@ export function LoginScreen({ navigation }: Props) {
               placeholder="Enter your password"
               style={styles.lastField}
             />
+            <Pressable
+              onPress={() => { setForgotEmail(email); setForgotSent(false); setForgotVisible(true); }}
+              style={styles.forgotRow}
+              accessibilityRole="button"
+            >
+              <Text style={styles.forgotLink}>Forgot password?</Text>
+            </Pressable>
           </View>
 
           {/* ── Inline error ───────────────────────────────────────────────── */}
@@ -181,6 +207,58 @@ export function LoginScreen({ navigation }: Props) {
       <View style={styles.ribbon} pointerEvents="none">
         <StaffRibbon width={width} height={120} color={colors.accent} opacity={0.2} />
       </View>
+
+      {/* ── Forgot password sheet ───────────────────────────────────────── */}
+      <Modal
+        visible={forgotVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setForgotVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            {forgotSent ? (
+              <>
+                <Ionicons name="mail-outline" size={44} color={colors.accent} style={styles.modalIcon} />
+                <Text style={styles.modalTitle}>Check your inbox</Text>
+                <Text style={styles.modalBody}>
+                  If <Text style={{ fontFamily: fonts.semibold }}>{forgotEmail}</Text> is registered, a reset link is on its way.
+                </Text>
+                <Button label="Done" onPress={() => { setForgotVisible(false); setForgotSent(false); }} />
+              </>
+            ) : (
+              <>
+                <Text style={styles.modalTitle}>Reset password</Text>
+                <Text style={styles.modalBody}>Enter the email address for your account and we'll send a reset link.</Text>
+                <TextField
+                  label="Email"
+                  icon="mail-outline"
+                  value={forgotEmail}
+                  onChangeText={setForgotEmail}
+                  keyboardType="email-address"
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                />
+                <Button
+                  label="Send reset link"
+                  onPress={sendForgot}
+                  loading={forgotBusy}
+                  disabled={!forgotEmail.trim()}
+                  icon="send-outline"
+                  iconPosition="right"
+                />
+                <Pressable
+                  onPress={() => setForgotVisible(false)}
+                  style={styles.cancelRow}
+                  accessibilityRole="button"
+                >
+                  <Text style={styles.cancelLink}>Cancel</Text>
+                </Pressable>
+              </>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -315,5 +393,56 @@ const makeStyles = (c: Palette) =>
       left: 0,
       right: 0,
       bottom: 0,
+    },
+
+    // ── Forgot password ───────────────────────────────────────────────────────
+
+    forgotRow: {
+      alignSelf: 'flex-end',
+      marginTop: spacing.sm,
+      marginBottom: spacing.lg,
+    },
+    forgotLink: {
+      fontSize: 14,
+      fontFamily: fonts.semibold,
+      color: c.accent,
+    },
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.45)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: spacing.xl,
+    },
+    modalCard: {
+      backgroundColor: c.bg,
+      borderRadius: radii.xl,
+      padding: spacing.xl,
+      width: '100%',
+    },
+    modalIcon: {
+      alignSelf: 'center',
+      marginBottom: spacing.md,
+    },
+    modalTitle: {
+      ...typography.screenTitle,
+      color: c.text,
+      marginBottom: spacing.sm,
+    },
+    modalBody: {
+      fontSize: 15,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      marginBottom: spacing.xl,
+      lineHeight: 22,
+    },
+    cancelRow: {
+      alignSelf: 'center',
+      marginTop: spacing.md,
+    },
+    cancelLink: {
+      fontSize: 15,
+      fontFamily: fonts.medium,
+      color: c.textMuted,
     },
   });
