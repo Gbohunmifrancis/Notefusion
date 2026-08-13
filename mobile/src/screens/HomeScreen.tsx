@@ -19,7 +19,7 @@ import { libraryApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { useAuth } from '../lib/auth';
 import { fonts, radii, spacing, typography, gradients, type Palette, type Shadows } from '../design/theme';
-import { useThemedStyles, useColors } from '../lib/theme';
+import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import { appIcons } from '../design/icons';
 import type { SavedTranscription } from '../api/types';
 import type { TabParams } from '../navigation/types';
@@ -39,6 +39,7 @@ export function HomeScreen({ navigation }: Props) {
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [showBackup, setShowBackup] = useState(true);
+  const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
 
@@ -82,7 +83,7 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            {/* ── 1. Header Bar: Logo + Profile avatar ───────────────────── */}
+            {/* ── 1. Header Bar: Logo + Dark Mode & Profile buttons ──────── */}
             <View style={styles.topHeader}>
               <View style={styles.brandRow}>
                 <BrandMark size={42} color={colors.accent} waveColor={colors.accentAlt} showWaves />
@@ -92,14 +93,31 @@ export function HomeScreen({ navigation }: Props) {
                 </View>
               </View>
 
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Profile')}
-                style={styles.avatarBtn}
-                accessibilityRole="button"
-                accessibilityLabel="Go to profile"
-              >
-                <Ionicons name="person-outline" size={20} color={colors.text} />
-              </TouchableOpacity>
+              <View style={styles.headerActions}>
+                {/* Dark Mode Toggle Button */}
+                <TouchableOpacity
+                  onPress={toggle}
+                  style={styles.avatarBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  <Ionicons
+                    name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'}
+                    size={20}
+                    color={colors.text}
+                  />
+                </TouchableOpacity>
+
+                {/* Profile Avatar Button */}
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Profile')}
+                  style={styles.avatarBtn}
+                  accessibilityRole="button"
+                  accessibilityLabel="Go to profile"
+                >
+                  <Ionicons name="person-outline" size={20} color={colors.text} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             {/* ── 2. Hero Gradient Banner ─────────────────────────────────── */}
@@ -294,6 +312,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
       justifyContent: 'space-between',
       alignItems: 'center',
       marginBottom: spacing.lg,
+    },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.xs,
     },
     brandRow: {
       flexDirection: 'row',

@@ -26,7 +26,7 @@ export function Screen({
   const styles = useThemedStyles(makeStyles);
 
   return (
-    <SafeAreaView style={styles.safe} edges={edges ?? ["top", "bottom"]}>
+    <SafeAreaView style={styles.safe} edges={edges ?? ["top"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
       {scroll ? (
         <KeyboardAvoider>

@@ -186,7 +186,7 @@ export function LibraryScreen() {
 
       {/* Search bar */}
       <View style={styles.searchBar}>
-        <Ionicons name="search-outline" size={18} color={colors.textFaint} />
+        <Ionicons name="search-outline" size={19} color={colors.textFaint} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search your notes"
@@ -608,16 +608,19 @@ const makeStyles = (c: Palette) =>
     borderWidth: 1,
     borderColor: c.border,
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    gap: spacing.sm,
+    height: 52,
     marginTop: spacing.lg,
     marginBottom: spacing.md,
+  },
+  searchIcon: {
+    marginRight: spacing.sm,
   },
   searchInput: {
     flex: 1,
     fontFamily: fonts.regular,
     fontSize: 15,
     color: c.text,
+    height: '100%',
     paddingVertical: 0,
   },
   errorBubble: {
