@@ -27,4 +27,5 @@ export type RootStackParams = {
   };
   Settings: undefined;
   Help: undefined;
+  Upgrade: undefined;
 };

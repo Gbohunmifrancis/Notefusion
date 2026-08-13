@@ -99,6 +99,45 @@ export interface SavedTranscription {
   musicXml?: string | null;
 }
 
+// --- Billing ------------------------------------------------------------
+// Mirrors src/NoteFusion.Application/Billing/Dtos/BillingDtos.cs. Enums serialize
+// as camelCase strings (JsonStringEnumConverter + CamelCase policy in Program.cs).
+
+export type BillingInterval = "monthly" | "yearly";
+
+export type PaymentProvider = "paystack" | "flutterwave" | "bachs" | "squad";
+
+export type SubscriptionStatus = "active" | "pastDue" | "canceled" | "expired";
+
+/** A plan shown on the paywall. Amount is in the currency's minor units (cents). */
+export interface Plan {
+  id: string;
+  code: string;
+  name: string;
+  amountMinor: number;
+  currency: string;
+  interval: BillingInterval;
+}
+
+/**
+ * A hosted-checkout session. The app opens {@link checkoutUrl} in an external
+ * browser (Spotify-style) and never collects card details; the result arrives
+ * server-side by webhook, so the app polls my-subscription to learn when Pro unlocks.
+ */
+export interface CheckoutSession {
+  reference: string;
+  checkoutUrl: string;
+  provider: PaymentProvider;
+}
+
+/** The caller's subscription state — the app gates Pro features on this. */
+export interface Subscription {
+  isActive: boolean;
+  planCode: string | null;
+  status: SubscriptionStatus | null;
+  currentPeriodEndUtc: string | null;
+}
+
 // --- API errors ---------------------------------------------------------
 
 /** The ApiError envelope every 4xx/5xx carries (ApiError code/message/details). */

@@ -10,6 +10,7 @@ import { TabNavigator } from './TabNavigator';
 import { ResultScreen } from '../screens/ResultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
+import { UpgradeScreen } from '../screens/UpgradeScreen';
 import type { RootStackParams } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -77,6 +78,11 @@ export function RootNavigator() {
               name="Help"
               component={HelpScreen}
               options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Upgrade"
+              component={UpgradeScreen}
+              options={{ animation: 'slide_from_bottom' }}
             />
           </>
         ) : (
