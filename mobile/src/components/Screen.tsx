@@ -1,7 +1,5 @@
-import React from "react";
-import { ScrollView, StyleSheet, View, ViewStyle } from "react-native";
+import { ScrollView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import { KeyboardAvoider } from "./KeyboardAvoider";
 import { spacing, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles } from "../lib/theme";
@@ -27,7 +25,7 @@ export function Screen({
 
   return (
     <SafeAreaView style={styles.safe} edges={edges ?? ["top", "left", "right"]}>
-      <StatusBar style={mode === "dark" ? "light" : "dark"} />
+      <StatusBar barStyle={mode === "dark" ? "light-content" : "dark-content"} backgroundColor="transparent" translucent />
       {scroll ? (
         <KeyboardAvoider>
           <ScrollView
