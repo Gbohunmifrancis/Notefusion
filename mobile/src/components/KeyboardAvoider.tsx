@@ -4,27 +4,18 @@ import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 /**
  * Lifts its children clear of the software keyboard.
  *
- * Since Expo SDK 52, Android uses edge-to-edge rendering — the app window
- * draws behind the IME (keyboard). There is no longer a system-level resize
- * that shrinks the layout automatically.
- *
  * Platform behavior:
- *  - iOS   → behavior="padding": KAV adds bottom padding equal to the keyboard
- *    height. Correct with SafeAreaView on top.
- *  - Android → behavior="height": KAV reduces its own height by the keyboard
- *    height. Using "padding" on Android with edge-to-edge causes the view to
- *    both shift AND get padded simultaneously — the double-compensation that
- *    produces the keyboard-flashes-and-vanishes shake bug.
- *
- * The app.json softwareKeyboardLayoutMode entry is intentionally absent:
- * it was "resize", which conflicts with KAV's own compensation on SDK 52+ and
- * produces the same double-shift bug from the other direction.
+ *  - iOS   → `behavior="padding"`: iOS does not resize the window automatically,
+ *    so KAV adds bottom padding to keep focused inputs visible.
+ *  - Android → `behavior=undefined`: Android's window resizes natively (softwareKeyboardLayoutMode: resize)
+ *    and the ScrollView inside auto-scrolls focused fields. Adding "padding" or "height" on Android
+ *    causes double-compensation (layout jumps up, loses focus, keyboard dismisses, cycle repeats).
  */
 export function KeyboardAvoider({ children }: { children: React.ReactNode }) {
   return (
     <KeyboardAvoidingView
       style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       {children}
     </KeyboardAvoidingView>

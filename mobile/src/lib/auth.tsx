@@ -77,10 +77,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
-    iosClientId: googleAuth.iosClientId || undefined,
-    androidClientId: googleAuth.androidClientId || undefined,
-    // Falls back to the placeholder so an unconfigured build boots — see above.
+    iosClientId: isExpoGo ? undefined : (googleAuth.iosClientId || undefined),
+    androidClientId: isExpoGo ? undefined : (googleAuth.androidClientId || undefined),
     clientId: googleAuth.webClientId || UNCONFIGURED_CLIENT_ID,
+    webClientId: googleAuth.webClientId || UNCONFIGURED_CLIENT_ID,
     redirectUri,
   });
 
