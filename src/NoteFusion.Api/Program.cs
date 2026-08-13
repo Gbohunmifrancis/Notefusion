@@ -52,7 +52,7 @@ builder.Services.AddCors(options =>
 
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .WithMethods("GET", "POST", "OPTIONS");
+              .AllowAnyMethod();
     });
 });
 
