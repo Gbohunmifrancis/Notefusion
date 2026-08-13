@@ -1,8 +1,11 @@
 import { api } from "./client";
 import type {
+  CheckoutSession,
   LoginResponse,
   MyProfile,
+  Plan,
   SavedTranscription,
+  Subscription,
   TranscriptionJob,
 } from "./types";
 
@@ -125,4 +128,23 @@ export const libraryApi = {
 
   remove: (id: string) =>
     api.delete(`/api/library/${id}`).then(() => undefined),
+};
+
+export const billingApi = {
+  /** Plans shown on the paywall, cheapest first. */
+  plans: () => api.get<Plan[]>("/api/billing/plans").then((r) => r.data),
+
+  /**
+   * Starts a hosted-checkout session for a plan. Returns the provider URL the app
+   * opens in an external browser. Idempotent server-side: an in-flight checkout is
+   * reused, so tapping "Upgrade" twice never opens a second charge.
+   */
+  checkout: (planId: string) =>
+    api
+      .post<CheckoutSession>("/api/billing/checkout", { planId })
+      .then((r) => r.data),
+
+  /** The caller's subscription state — the app gates Pro features on this. */
+  mySubscription: () =>
+    api.get<Subscription>("/api/billing/my-subscription").then((r) => r.data),
 };

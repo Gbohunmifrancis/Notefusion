@@ -31,14 +31,17 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
     private readonly IPasswordHasher _hasher;
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
+    private readonly IEmailSender _email;
 
     public RegisterCommandHandler(
-        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock)
+        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock,
+        IEmailSender email)
     {
         _db = db;
         _hasher = hasher;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
+        _email = email;
     }
 
     public async Task<Result<LoginResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -52,6 +55,10 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
 
         var tokens = _tokenIssuer.Issue(user);
         await _db.SaveChangesAsync(cancellationToken);
+
+        // Welcome the new account. After the commit and best-effort by contract: a mail outage must not
+        // fail a sign-up that has already succeeded and handed back tokens.
+        await _email.SendWelcomeAsync(new EmailRecipient(user.Email, user.FullName), cancellationToken);
 
         return new LoginResponse(
             tokens.AccessToken,

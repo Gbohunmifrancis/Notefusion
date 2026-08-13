@@ -1,0 +1,47 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Billing.Dtos;
+using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Shared.Results;
+
+namespace NoteFusion.Application.Billing.Queries;
+
+/// <summary>
+/// The caller's subscription state — the single source of truth the app uses to gate Pro features.
+/// Returns an inactive placeholder (rather than NotFound) when the user has never subscribed, so the
+/// client has one uniform shape to branch on.
+/// </summary>
+public sealed record GetMySubscriptionQuery : IRequest<Result<SubscriptionDto>>;
+
+public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscriptionQuery, Result<SubscriptionDto>>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUser _currentUser;
+    private readonly IDateTimeProvider _clock;
+
+    public GetMySubscriptionQueryHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock)
+    {
+        _db = db;
+        _currentUser = currentUser;
+        _clock = clock;
+    }
+
+    public async Task<Result<SubscriptionDto>> Handle(GetMySubscriptionQuery request, CancellationToken ct)
+    {
+        if (_currentUser.UserId is not { } userId)
+            return BillingErrors.NotAuthenticated;
+
+        var sub = await _db.Subscriptions
+            .OrderByDescending(s => s.CurrentPeriodEndUtc)
+            .FirstOrDefaultAsync(s => s.UserId == userId, ct);
+
+        if (sub is null)
+            return new SubscriptionDto(IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null);
+
+        var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
+
+        return new SubscriptionDto(
+            sub.IsActiveAt(_clock.UtcNow), plan?.Code, sub.Status, sub.CurrentPeriodEndUtc);
+    }
+}

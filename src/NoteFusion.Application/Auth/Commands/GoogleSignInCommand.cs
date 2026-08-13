@@ -31,17 +31,20 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
     private readonly IGoogleTokenValidator _googleTokenValidator;
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
+    private readonly IEmailSender _email;
 
     public GoogleSignInCommandHandler(
         IApplicationDbContext db,
         IGoogleTokenValidator googleTokenValidator,
         ITokenIssuer tokenIssuer,
-        IDateTimeProvider clock)
+        IDateTimeProvider clock,
+        IEmailSender email)
     {
         _db = db;
         _googleTokenValidator = googleTokenValidator;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
+        _email = email;
     }
 
     public async Task<Result<LoginResponse>> Handle(
@@ -67,6 +70,7 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
             u => u.GoogleId == identity.SubjectId, cancellationToken)
             ?? await _db.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
+        var isNewAccount = user is null;
         if (user is null)
         {
             user = User.CreateFromGoogle(
@@ -91,6 +95,11 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
         user.RecordSuccessfulLogin(now);
         var tokens = _tokenIssuer.Issue(user);
         await _db.SaveChangesAsync(cancellationToken);
+
+        // Only the first Google sign-in creates an account, and only that one earns a welcome —
+        // returning users signing in must not be greeted as new. Post-commit and best-effort.
+        if (isNewAccount)
+            await _email.SendWelcomeAsync(new EmailRecipient(user.Email, user.FullName), cancellationToken);
 
         return new LoginResponse(
             tokens.AccessToken,

@@ -237,6 +237,13 @@ export function ProfileScreen() {
       <SectionHeader icon="settings-outline" title="App Settings" />
       <View style={styles.settingsCard}>
         <SettingsRow
+          icon="sparkles-outline"
+          label="Upgrade to Pro"
+          accent={colors.gold}
+          onPress={() => nav.navigate("Upgrade")}
+        />
+        <View style={styles.settingsRowDivider} />
+        <SettingsRow
           icon="settings-outline"
           label="Settings"
           accent={colors.purple}

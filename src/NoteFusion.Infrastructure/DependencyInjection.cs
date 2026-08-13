@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Infrastructure.Api;
+using NoteFusion.Infrastructure.Billing;
+using NoteFusion.Infrastructure.Email;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Security;
@@ -21,7 +23,9 @@ public static class DependencyInjection
         services.AddPersistence(configuration);
         services.AddSecurity(configuration);
         services.AddPush(configuration);
+        services.AddEmail(configuration);
         services.AddTranscriptionApi(configuration);
+        services.AddBilling(configuration);
 
         return services;
     }
@@ -83,6 +87,29 @@ public static class DependencyInjection
         else
         {
             services.AddScoped<IPushSender, LoggingPushSender>();
+        }
+    }
+
+    private static void AddEmail(this IServiceCollection services, IConfiguration configuration)
+    {
+        var email = configuration.GetSection("Email").Get<EmailSettings>() ?? new EmailSettings();
+        services.AddSingleton(email);
+
+        // The template is pure rendering over the settings, so one shared instance is enough.
+        services.AddSingleton<BrandedEmailTemplate>();
+        services.AddScoped<IEmailSender, EmailSender>();
+
+        // Email provider mirrors the push switch: Resend in production, a logging sink otherwise, so a
+        // local run needs no key and cannot mail a real person while sign-up is being tested. A key set
+        // but UseResend still false stays in the log — turning it on is the deliberate step.
+        if (email.UseResend)
+        {
+            services.AddHttpClient<IEmailTransport, ResendEmailTransport>(client =>
+                client.Timeout = TimeSpan.FromSeconds(15));
+        }
+        else
+        {
+            services.AddScoped<IEmailTransport, LoggingEmailTransport>();
         }
     }
 

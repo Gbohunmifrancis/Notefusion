@@ -27,16 +27,18 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
     private readonly ICurrentUser _currentUser;
+    private readonly IEmailSender _email;
 
     public ChangePasswordCommandHandler(
         IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer,
-        IDateTimeProvider clock, ICurrentUser currentUser)
+        IDateTimeProvider clock, ICurrentUser currentUser, IEmailSender email)
     {
         _db = db;
         _hasher = hasher;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
         _currentUser = currentUser;
+        _email = email;
     }
 
     public async Task<Result<ChangePasswordResponse>> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
@@ -59,6 +61,10 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
         user.ChangePassword(_hasher.Hash(request.NewPassword), _clock.UtcNow);
         var tokens = _tokenIssuer.Issue(user);
         await _db.SaveChangesAsync(cancellationToken);
+
+        // Security notice, sent whether or not the user expected it: if the change was not theirs, this
+        // email is how they find out. Post-commit and best-effort — the password has already changed.
+        await _email.SendPasswordChangedAsync(new EmailRecipient(user.Email, user.FullName), cancellationToken);
 
         return new ChangePasswordResponse(tokens.AccessToken, tokens.RefreshToken, tokens.ExpiresIn);
     }

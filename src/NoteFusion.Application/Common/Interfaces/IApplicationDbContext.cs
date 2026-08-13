@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Entities.Billing;
 
 namespace NoteFusion.Application.Common.Interfaces;
 
@@ -13,6 +14,14 @@ public interface IApplicationDbContext
     DbSet<RefreshToken> RefreshTokens { get; }
     DbSet<DeviceToken> DeviceTokens { get; }
     DbSet<Transcription> Transcriptions { get; }
+
+    // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
+    // no balance column anywhere, so a balance is always summed from LedgerEntries.
+    DbSet<Plan> Plans { get; }
+    DbSet<PaymentTransaction> PaymentTransactions { get; }
+    DbSet<LedgerEntry> LedgerEntries { get; }
+    DbSet<Subscription> Subscriptions { get; }
+    DbSet<WebhookEvent> WebhookEvents { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

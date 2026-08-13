@@ -38,6 +38,7 @@ public sealed class TestHarness : IDisposable
         Keys = new RsaKeyProvider(jwt);
         Jwt = new JwtTokenService(Keys, jwt, auth);
         TokenIssuer = new TokenIssuer(Jwt, new SecureTokenGenerator(), Hasher, Db, Clock, auth);
+        Email = new RecordingEmailSender();
     }
 
     public ApplicationDbContext Db { get; }
@@ -46,6 +47,9 @@ public sealed class TestHarness : IDisposable
     public RsaKeyProvider Keys { get; }
     public JwtTokenService Jwt { get; }
     public TokenIssuer TokenIssuer { get; }
+
+    /// <summary>Records what would have been sent, so a handler test can assert on it without a network.</summary>
+    public RecordingEmailSender Email { get; }
 
     public void Dispose()
     {
@@ -60,4 +64,38 @@ public sealed class FixedClock : IDateTimeProvider
 {
     public FixedClock(DateTime utcNow) => UtcNow = utcNow;
     public DateTime UtcNow { get; set; }
+}
+
+/// <summary>
+/// An <see cref="IEmailSender"/> that records calls instead of sending. The real sender is best-effort
+/// and swallows failures, so a handler test can only observe intent, not delivery — this captures that
+/// intent. Handlers that ignore the result of a send still exercise the call, so a missing send shows up.
+/// </summary>
+public sealed class RecordingEmailSender : IEmailSender
+{
+    public List<(string Kind, EmailRecipient To)> Sent { get; } = [];
+
+    public Task SendWelcomeAsync(EmailRecipient to, CancellationToken ct = default)
+    {
+        Sent.Add(("welcome", to));
+        return Task.CompletedTask;
+    }
+
+    public Task SendPasswordChangedAsync(EmailRecipient to, CancellationToken ct = default)
+    {
+        Sent.Add(("password-changed", to));
+        return Task.CompletedTask;
+    }
+
+    public Task SendSubscriptionReceiptAsync(EmailRecipient to, SubscriptionReceipt receipt, CancellationToken ct = default)
+    {
+        Sent.Add(("receipt", to));
+        return Task.CompletedTask;
+    }
+
+    public Task SendPaymentFailedAsync(EmailRecipient to, string planName, CancellationToken ct = default)
+    {
+        Sent.Add(("payment-failed", to));
+        return Task.CompletedTask;
+    }
 }

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Entities.Billing;
 
 namespace NoteFusion.Infrastructure.Persistence;
 
@@ -16,6 +17,12 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<DeviceToken> DeviceTokens => Set<DeviceToken>();
     public DbSet<Transcription> Transcriptions => Set<Transcription>();
+
+    public DbSet<Plan> Plans => Set<Plan>();
+    public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
+    public DbSet<LedgerEntry> LedgerEntries => Set<LedgerEntry>();
+    public DbSet<Subscription> Subscriptions => Set<Subscription>();
+    public DbSet<WebhookEvent> WebhookEvents => Set<WebhookEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
