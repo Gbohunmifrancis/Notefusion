@@ -26,7 +26,7 @@ export function Screen({
   const styles = useThemedStyles(makeStyles);
 
   return (
-    <SafeAreaView style={styles.safe} edges={edges ?? ["top"]}>
+    <SafeAreaView style={styles.safe} edges={edges ?? ["top", "left", "right"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
       {scroll ? (
         <KeyboardAvoider>
@@ -50,6 +50,6 @@ export function Screen({
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     safe: { flex: 1, backgroundColor: c.bg },
-    content: { paddingHorizontal: spacing.xl, paddingBottom: spacing.xl },
+    content: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xl },
     flex: { flex: 1 },
   });

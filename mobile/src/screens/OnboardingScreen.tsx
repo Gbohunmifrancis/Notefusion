@@ -197,7 +197,7 @@ export function OnboardingScreen({ navigation }: Props) {
         </View>
       </View>
 
-      {/* ── Footer: CTA button & Google button ───────────────────────────── */}
+      {/* ── Footer: CTA button pinned to bottom ─────────────────────────── */}
       <View style={styles.footer}>
         <Button
           label={isLast ? "Get started" : "Next"}
@@ -205,13 +205,6 @@ export function OnboardingScreen({ navigation }: Props) {
           icon="arrow-forward"
           iconPosition="right"
         />
-
-        {googleAuthConfigured && (
-          <>
-            <OrDivider />
-            <GoogleButton onPress={handleGoogle} loading={googleBusy} label="Sign in with Google" />
-          </>
-        )}
       </View>
 
       {/* ── Decorative staff ─────────────────────────────────────────────── */}
