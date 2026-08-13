@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import {
   FlatList,
   Image,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,15 +9,13 @@ import {
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { Screen } from '../components/Screen';
 import { Card } from '../components/Card';
-import { BrandMark } from '../components/BrandMark';
 import { libraryApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { useAuth } from '../lib/auth';
-import { fonts, radii, spacing, typography, gradients, type Palette, type Shadows } from '../design/theme';
+import { fonts, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import { appIcons } from '../design/icons';
 import type { SavedTranscription } from '../api/types';
@@ -27,18 +24,17 @@ import type { TabParams } from '../navigation/types';
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
 /**
- * HomeScreen — matching the design sheet (Image 3):
- * 1. Top bar: BrandMark + Wordmark + Tagline + Profile Avatar button
- * 2. Hero Card: Deep Blue gradient with 3D Mic icon, "Welcome back!", "+ New Recording" button
- * 3. Recent Recordings: List with duration pill tags, key/solfa meta, date, three dots menu
- * 4. Tools Grid: Record Audio, Import Audio, Key Changer, My Library
- * 5. Backup Promo Card: Light blue card with Cloud icon, "Enable Sync" button, Close button
+ * HomeScreen — strictly following row 2 screen 1 ("Home") of the design sheet:
+ * 1. Top bar: Menu (≡) on left, Bell (🔔) + Dark Mode (🌙) on right. NO profile icon in upper right.
+ * 2. Greeting: "Good morning, Francis 👋", "What will you transcribe today?"
+ * 3. Primary Mic Card: Centred blue circular mic button, "Tap to start recording", "or import audio file"
+ * 4. Quick Action Buttons: "Import" and "Paste URL"
+ * 5. Recent Section: "Recent" header with "See all" link and cards
  */
 export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [showBackup, setShowBackup] = useState(true);
   const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
@@ -83,79 +79,81 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            {/* ── 1. Header Bar: Logo + Dark Mode & Profile buttons ──────── */}
+            {/* ── 1. Top Header Bar: Menu (left), Dark Mode & Notifications (right) ─ */}
             <View style={styles.topHeader}>
-              <View style={styles.brandRow}>
-                <BrandMark size={42} color={colors.accent} waveColor={colors.accentAlt} showWaves />
-                <View style={styles.brandTextWrap}>
-                  <Text style={styles.wordmark}>Notefusion</Text>
-                  <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
-                </View>
-              </View>
+              <TouchableOpacity style={styles.headerIconBtn} hitSlop={8}>
+                <Ionicons name="menu-outline" size={24} color={colors.text} />
+              </TouchableOpacity>
 
               <View style={styles.headerActions}>
-                {/* Dark Mode Toggle Button */}
+                {/* Dark Mode Toggle */}
                 <TouchableOpacity
                   onPress={toggle}
-                  style={styles.avatarBtn}
+                  style={styles.headerIconBtn}
+                  hitSlop={8}
                   accessibilityRole="button"
                   accessibilityLabel={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
                   <Ionicons
                     name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'}
-                    size={20}
+                    size={22}
                     color={colors.text}
                   />
                 </TouchableOpacity>
 
-                {/* Profile Avatar Button */}
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Profile')}
-                  style={styles.avatarBtn}
-                  accessibilityRole="button"
-                  accessibilityLabel="Go to profile"
-                >
-                  <Ionicons name="person-outline" size={20} color={colors.text} />
+                {/* Notifications Bell */}
+                <TouchableOpacity style={styles.headerIconBtn} hitSlop={8}>
+                  <Ionicons name="notifications-outline" size={22} color={colors.text} />
                 </TouchableOpacity>
               </View>
             </View>
 
-            {/* ── 2. Hero Gradient Banner ─────────────────────────────────── */}
-            <LinearGradient
-              colors={['#1D4ED8', '#2563EB', '#3B82F6']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.heroCard}
-            >
-              <View style={styles.heroLeft}>
-                <Text style={styles.heroGreeting}>Good morning,</Text>
-                <Text style={styles.heroTitle}>Welcome back!</Text>
-                <Text style={styles.heroSub}>
-                  Record, transcribe and transform your music in seconds.
-                </Text>
+            {/* ── 2. Greeting Header ────────────────────────────────────────── */}
+            <Text style={styles.greetingTitle}>Good morning, {firstName} 👋</Text>
+            <Text style={styles.greetingSub}>What will you transcribe today?</Text>
+
+            {/* ── 3. Centred Mic Recording Stage (Design Sheet) ─────────────── */}
+            <View style={styles.stageCard}>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => navigation.navigate('Record')}
+                style={styles.micCircleWrap}
+              >
+                <View style={styles.micCircle}>
+                  <Ionicons name="mic" size={42} color="#FFFFFF" />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navigation.navigate('Record')}>
+                <Text style={styles.tapText}>Tap to start recording</Text>
+                <Text style={styles.importSubLink}>or import audio file</Text>
+              </TouchableOpacity>
+
+              {/* Quick action buttons row */}
+              <View style={styles.quickActionRow}>
+                <TouchableOpacity
+                  style={styles.quickBtn}
+                  onPress={() => navigation.navigate('Record')}
+                >
+                  <Ionicons name="cloud-upload-outline" size={16} color={colors.text} />
+                  <Text style={styles.quickBtnLabel}>Import</Text>
+                </TouchableOpacity>
 
                 <TouchableOpacity
-                  activeOpacity={0.9}
+                  style={styles.quickBtn}
                   onPress={() => navigation.navigate('Record')}
-                  style={styles.newRecordBtn}
                 >
-                  <Ionicons name="add" size={20} color="#2563EB" />
-                  <Text style={styles.newRecordText}>New Recording</Text>
+                  <Ionicons name="link-outline" size={16} color={colors.text} />
+                  <Text style={styles.quickBtnLabel}>Paste URL</Text>
                 </TouchableOpacity>
               </View>
+            </View>
 
-              <View style={styles.heroRight}>
-                <View style={styles.heroMicDisc}>
-                  <Ionicons name="mic" size={48} color="#FFFFFF" />
-                </View>
-              </View>
-            </LinearGradient>
-
-            {/* ── 3. Recent Recordings Section Header ───────────────────────── */}
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Recent Recordings</Text>
+            {/* ── 4. Recent Recordings Header ───────────────────────────────── */}
+            <View style={styles.recentSectionHeader}>
+              <Text style={styles.recentSectionTitle}>Recent</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Library')}>
-                <Text style={styles.seeAllLink}>See all</Text>
+                <Text style={styles.seeAllText}>See all</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -168,7 +166,7 @@ export function HomeScreen({ navigation }: Props) {
             <Card style={styles.recentCard} padded={false}>
               <View style={styles.recentRow}>
                 <View style={styles.noteIconBadge}>
-                  <Ionicons name="document-text-outline" size={22} color={colors.accent} />
+                  <Ionicons name="document-text-outline" size={20} color={colors.accent} />
                 </View>
 
                 <View style={styles.recentInfo}>
@@ -176,21 +174,11 @@ export function HomeScreen({ navigation }: Props) {
                     {item.title}
                   </Text>
                   <Text style={styles.recentMeta}>
-                    Tonic Solfa · {item.key} Major
-                  </Text>
-                  <Text style={styles.recentDate}>
-                    📅 {new Date(item.createdAtUtc).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    {item.key} Major · {item.tempoBpm} BPM
                   </Text>
                 </View>
 
-                <View style={styles.recentRight}>
-                  <View style={styles.durationPill}>
-                    <Text style={styles.durationText}>02:45</Text>
-                  </View>
-                  <TouchableOpacity hitSlop={8} style={styles.moreBtn}>
-                    <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
-                  </TouchableOpacity>
-                </View>
+                <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
               </View>
             </Card>
           </TouchableOpacity>
@@ -208,89 +196,10 @@ export function HomeScreen({ navigation }: Props) {
             <Card style={styles.emptyCard}>
               <Image source={appIcons.songbook} style={styles.emptyIcon} />
               <Text style={styles.emptyText}>
-                No recordings yet. Tap "+ New Recording" to capture your first melody.
+                No transcriptions yet. Tap the mic button above to start recording.
               </Text>
             </Card>
           )
-        }
-        ListFooterComponent={
-          <View style={styles.footerArea}>
-            {/* ── 4. Tools Grid ────────────────────────────────────────────── */}
-            <Text style={[styles.sectionTitle, styles.toolsTitle]}>Tools</Text>
-            <View style={styles.toolsGrid}>
-              <TouchableOpacity
-                style={styles.toolCard}
-                onPress={() => navigation.navigate('Record')}
-              >
-                <View style={styles.toolIconWrap}>
-                  <Ionicons name="mic-outline" size={24} color="#2563EB" />
-                </View>
-                <Text style={styles.toolLabel}>Record Audio</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.toolCard}
-                onPress={() => navigation.navigate('Record')}
-              >
-                <View style={styles.toolIconWrap}>
-                  <Ionicons name="musical-notes-outline" size={24} color="#2563EB" />
-                </View>
-                <Text style={styles.toolLabel}>Import Audio</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.toolCard}
-                onPress={() => navigation.navigate('Library')}
-              >
-                <View style={styles.toolIconWrap}>
-                  <Ionicons name="options-outline" size={24} color="#2563EB" />
-                </View>
-                <Text style={styles.toolLabel}>Key Changer</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.toolCard}
-                onPress={() => navigation.navigate('Library')}
-              >
-                <View style={styles.toolIconWrap}>
-                  <Ionicons name="book-outline" size={24} color="#2563EB" />
-                </View>
-                <Text style={styles.toolLabel}>My Library</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* ── 5. Backup Promo Card ─────────────────────────────────────── */}
-            {showBackup && (
-              <View style={styles.backupCard}>
-                <TouchableOpacity
-                  style={styles.backupClose}
-                  onPress={() => setShowBackup(false)}
-                  hitSlop={8}
-                >
-                  <Ionicons name="close" size={18} color={colors.textMuted} />
-                </TouchableOpacity>
-
-                <View style={styles.backupRow}>
-                  <View style={styles.cloudIconWrap}>
-                    <Ionicons name="cloud-upload-outline" size={32} color="#2563EB" />
-                  </View>
-                  <View style={styles.backupContent}>
-                    <Text style={styles.backupTitle}>Backup your library</Text>
-                    <Text style={styles.backupSub}>
-                      Sync your recordings and notes across all your devices.
-                    </Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  style={styles.enableSyncBtn}
-                  onPress={() => navigation.navigate('Profile')}
-                >
-                  <Text style={styles.enableSyncText}>Enable Sync</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
         }
       />
     </Screen>
@@ -313,117 +222,106 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: 'center',
       marginBottom: spacing.lg,
     },
+    headerIconBtn: {
+      padding: 4,
+    },
     headerActions: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: spacing.xs,
-    },
-    brandRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.sm,
-    },
-    brandTextWrap: {
-      justifyContent: 'center',
-    },
-    wordmark: {
-      fontSize: 20,
-      fontFamily: fonts.bold,
-      color: c.text,
-      lineHeight: 24,
-    },
-    tagline: {
-      fontSize: 12,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-    },
-    avatarBtn: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: 'center',
-      justifyContent: 'center',
+      gap: spacing.md,
     },
 
-    // ── Hero Banner ───────────────────────────────────────────────────────────
-    heroCard: {
-      borderRadius: radii.xl,
-      padding: spacing.xl,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: spacing.xl,
-      ...s.glow,
-    },
-    heroLeft: {
-      flex: 1,
-      paddingRight: spacing.md,
-    },
-    heroGreeting: {
-      fontSize: 14,
-      fontFamily: fonts.medium,
-      color: 'rgba(255,255,255,0.85)',
-    },
-    heroTitle: {
+    // ── Greeting Header ───────────────────────────────────────────────────────
+    greetingTitle: {
       fontSize: 24,
       fontFamily: fonts.bold,
-      color: '#FFFFFF',
-      marginTop: 2,
-      marginBottom: spacing.xs,
+      color: c.text,
+      marginBottom: 2,
     },
-    heroSub: {
-      fontSize: 13,
+    greetingSub: {
+      fontSize: 14,
       fontFamily: fonts.regular,
-      color: 'rgba(255,255,255,0.82)',
-      lineHeight: 18,
+      color: c.textMuted,
+      marginBottom: spacing.xl,
+    },
+
+    // ── Centred Stage Card ────────────────────────────────────────────────────
+    stageCard: {
+      backgroundColor: c.surface,
+      borderRadius: radii.xl,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: spacing.xl,
+      alignItems: 'center',
+      marginBottom: spacing.xxl,
+      ...s.card,
+    },
+    micCircleWrap: {
+      marginBottom: spacing.md,
+    },
+    micCircle: {
+      width: 88,
+      height: 88,
+      borderRadius: 44,
+      backgroundColor: '#2563EB',
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: '#2563EB',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.35,
+      shadowRadius: 16,
+      elevation: 8,
+    },
+    tapText: {
+      fontSize: 16,
+      fontFamily: fonts.bold,
+      color: c.accent,
+      textAlign: 'center',
+    },
+    importSubLink: {
+      fontSize: 13,
+      fontFamily: fonts.medium,
+      color: c.textFaint,
+      textAlign: 'center',
+      marginTop: 2,
       marginBottom: spacing.lg,
     },
-    newRecordBtn: {
+
+    // Quick Action Row
+    quickActionRow: {
+      flexDirection: 'row',
+      gap: spacing.md,
+    },
+    quickBtn: {
       flexDirection: 'row',
       alignItems: 'center',
-      alignSelf: 'flex-start',
-      backgroundColor: '#FFFFFF',
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.sm + 2,
+      gap: 6,
+      backgroundColor: c.bg,
+      borderWidth: 1,
+      borderColor: c.border,
       borderRadius: radii.pill,
-      gap: 4,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.xs + 3,
     },
-    newRecordText: {
-      fontSize: 14,
-      fontFamily: fonts.bold,
-      color: '#2563EB',
-    },
-    heroRight: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    heroMicDisc: {
-      width: 84,
-      height: 84,
-      borderRadius: 42,
-      backgroundColor: 'rgba(255,255,255,0.20)',
-      borderWidth: 2,
-      borderColor: 'rgba(255,255,255,0.40)',
-      alignItems: 'center',
-      justifyContent: 'center',
+    quickBtnLabel: {
+      fontSize: 13,
+      fontFamily: fonts.semibold,
+      color: c.text,
     },
 
     // ── Recent Section ────────────────────────────────────────────────────────
-    sectionHeader: {
+    recentSectionHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       marginBottom: spacing.md,
     },
-    sectionTitle: {
+    recentSectionTitle: {
       fontSize: 18,
       fontFamily: fonts.bold,
       color: c.text,
     },
-    seeAllLink: {
+    seeAllText: {
       fontSize: 14,
       fontFamily: fonts.semibold,
       color: c.accent,
@@ -438,8 +336,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
       padding: spacing.md,
     },
     noteIconBadge: {
-      width: 44,
-      height: 44,
+      width: 40,
+      height: 40,
       borderRadius: radii.md,
       backgroundColor: '#EFF6FF',
       alignItems: 'center',
@@ -456,34 +354,9 @@ const makeStyles = (c: Palette, s: Shadows) =>
     },
     recentMeta: {
       fontSize: 13,
-      fontFamily: fonts.medium,
+      fontFamily: fonts.regular,
       color: c.textMuted,
       marginTop: 2,
-    },
-    recentDate: {
-      fontSize: 12,
-      fontFamily: fonts.regular,
-      color: c.textFaint,
-      marginTop: 2,
-    },
-    recentRight: {
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      height: 44,
-    },
-    durationPill: {
-      backgroundColor: '#EFF6FF',
-      paddingHorizontal: spacing.sm,
-      paddingVertical: 2,
-      borderRadius: radii.pill,
-    },
-    durationText: {
-      fontSize: 12,
-      fontFamily: fonts.semibold,
-      color: c.accent,
-    },
-    moreBtn: {
-      padding: 2,
     },
 
     emptyCard: {
@@ -513,101 +386,5 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 14,
       fontFamily: fonts.semibold,
       color: c.accent,
-    },
-
-    // ── Tools & Backup ────────────────────────────────────────────────────────
-    footerArea: {
-      marginTop: spacing.xl,
-    },
-    toolsTitle: {
-      marginBottom: spacing.md,
-    },
-    toolsGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: spacing.sm,
-      marginBottom: spacing.xl,
-    },
-    toolCard: {
-      width: '48%',
-      backgroundColor: c.surface,
-      borderRadius: radii.lg,
-      padding: spacing.md,
-      alignItems: 'center',
-      borderWidth: 1,
-      borderColor: c.border,
-    },
-    toolIconWrap: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: '#EFF6FF',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: spacing.sm,
-    },
-    toolLabel: {
-      fontSize: 14,
-      fontFamily: fonts.semibold,
-      color: c.text,
-    },
-
-    backupCard: {
-      backgroundColor: '#EFF6FF',
-      borderRadius: radii.xl,
-      padding: spacing.lg,
-      borderWidth: 1,
-      borderColor: '#DBEAFE',
-      position: 'relative',
-    },
-    backupClose: {
-      position: 'absolute',
-      top: spacing.md,
-      right: spacing.md,
-      zIndex: 10,
-    },
-    backupRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.md,
-      marginBottom: spacing.md,
-    },
-    cloudIconWrap: {
-      width: 48,
-      height: 48,
-      borderRadius: radii.md,
-      backgroundColor: '#FFFFFF',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    backupContent: {
-      flex: 1,
-      paddingRight: spacing.lg,
-    },
-    backupTitle: {
-      fontSize: 15,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
-    backupSub: {
-      fontSize: 13,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: 2,
-      lineHeight: 18,
-    },
-    enableSyncBtn: {
-      alignSelf: 'flex-end',
-      backgroundColor: '#FFFFFF',
-      borderWidth: 1,
-      borderColor: '#2563EB',
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.xs + 3,
-      borderRadius: radii.pill,
-    },
-    enableSyncText: {
-      fontSize: 13,
-      fontFamily: fonts.semibold,
-      color: '#2563EB',
     },
   });
