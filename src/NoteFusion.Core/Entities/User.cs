@@ -44,6 +44,16 @@ public class User : BaseEntity
     public DateTime? LockoutEndAt { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
+    /// <summary>
+    /// Opaque, cryptographically random token issued on a forgot-password request.
+    /// Null when no reset is in flight. The hash is stored, not the plaintext, so
+    /// a database breach cannot be used to trigger resets.
+    /// </summary>
+    public string? PasswordResetTokenHash { get; private set; }
+
+    /// <summary>UTC expiry for the current reset token. Null when no token is set.</summary>
+    public DateTime? PasswordResetTokenExpiry { get; private set; }
+
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     public IReadOnlyCollection<DeviceToken> DeviceTokens => _deviceTokens.AsReadOnly();
 
@@ -163,6 +173,37 @@ public class User : BaseEntity
     {
         PasswordHash = Guard.NotNullOrWhiteSpace(newPasswordHash);
         IsFirstLogin = false;
+    }
+
+    /// <summary>
+    /// Stores a hashed reset token valid for one hour. The caller supplies the hash;
+    /// the plaintext is returned to the user via email and never persisted.
+    /// </summary>
+    public void SetPasswordResetToken(string tokenHash, DateTime utcNow)
+    {
+        PasswordResetTokenHash = Guard.NotNullOrWhiteSpace(tokenHash);
+        PasswordResetTokenExpiry = utcNow.AddHours(1);
+    }
+
+    /// <summary>
+    /// Verifies the token hash, resets the password, and invalidates the token.
+    /// Returns false when the token does not match or has expired.
+    /// </summary>
+    public bool ConsumePasswordResetToken(string tokenHash, string newPasswordHash, DateTime utcNow)
+    {
+        if (PasswordResetTokenHash is null
+            || PasswordResetTokenExpiry is null
+            || PasswordResetTokenExpiry.Value < utcNow
+            || PasswordResetTokenHash != tokenHash)
+        {
+            return false;
+        }
+
+        PasswordHash = Guard.NotNullOrWhiteSpace(newPasswordHash);
+        PasswordResetTokenHash = null;
+        PasswordResetTokenExpiry = null;
+        IsFirstLogin = false;
+        return true;
     }
 
     /// <summary>Self-service profile update (name + optional phone). Email and role are not user-editable.</summary>

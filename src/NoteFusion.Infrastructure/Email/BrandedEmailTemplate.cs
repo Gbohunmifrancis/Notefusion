@@ -102,6 +102,35 @@ public sealed class BrandedEmailTemplate
                 "Signing in again on every device is expected: the change signs the old sessions out."));
     }
 
+    public EmailMessage PasswordReset(EmailRecipient to, string resetUrl)
+    {
+        var name = FirstName(to);
+        var greeting = name is null ? "Hi there," : $"Hi {Encode(name)},";
+        var body = Paragraphs(greeting,
+            "We received a request to reset your NoteFusion password. Click the button below — "
+                + "this link expires in <strong>1 hour</strong>. If you didn't ask for this, you can safely ignore the email.")
+            + Callout(
+                "For your security, this link can only be used once and expires in 60 minutes.",
+                Blue);
+
+        return Compose(
+            to,
+            subject: "Reset your NoteFusion password",
+            preheader: "Use this link to reset your password. It expires in 1 hour.",
+            heading: "Reset your password",
+            bodyHtml: body,
+            cta: new CallToAction("Reset password", resetUrl),
+            textBody: Text(
+                greeting,
+                "",
+                "We received a request to reset your NoteFusion password.",
+                "Use the link below (expires in 1 hour):",
+                "",
+                resetUrl,
+                "",
+                "If you didn't request this, ignore this email."));
+    }
+
     public EmailMessage SubscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt)
     {
         var amount = FormatAmount(receipt.AmountMinor, receipt.Currency);

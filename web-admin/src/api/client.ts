@@ -9,8 +9,11 @@ import { clearSession, getAccessToken, getRefreshToken, setTokens } from "@/lib/
 
 const BASE_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
 
-if (!BASE_URL) {
-  // Failing loudly at boot beats every request failing with a confusing relative-URL 404.
+if (!BASE_URL && import.meta.env.DEV) {
+  // Only fatal in dev: `vite dev` serves the dashboard on its own origin, so a relative
+  // URL would hit the Vite server instead of the API. In a production build the bundle is
+  // served out of the API's wwwroot, where same-origin relative paths are exactly right —
+  // throwing there would blank the page before React ever mounts.
   throw new Error("VITE_API_URL is not set. Copy .env.example to .env.local and set it.");
 }
 

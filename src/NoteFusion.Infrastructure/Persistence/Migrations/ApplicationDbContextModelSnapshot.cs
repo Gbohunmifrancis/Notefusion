@@ -61,10 +61,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.HasIndex("PaymentTransactionId", "Reason")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("ledger_entries", (string)null);
                 });
@@ -445,6 +445,12 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("PasswordResetTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PasswordResetTokenHash")
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(30)

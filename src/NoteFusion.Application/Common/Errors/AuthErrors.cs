@@ -43,4 +43,12 @@ public static class AuthErrors
     public static readonly Error ReauthenticationRequired =
         Error.Unauthorized("AUTH_REAUTHENTICATION_REQUIRED",
             "Confirm it is you: supply your password, or a Google token if you sign in with Google.");
+
+    /// <summary>
+    /// Returned when the supplied reset token is missing, incorrect, or past its 1-hour window.
+    /// Generic phrasing avoids confirming whether the email belongs to any account.
+    /// </summary>
+    public static readonly Error InvalidResetToken =
+        Error.Validation("AUTH_INVALID_RESET_TOKEN",
+            "The password-reset link is invalid or has expired. Request a new one.");
 }
