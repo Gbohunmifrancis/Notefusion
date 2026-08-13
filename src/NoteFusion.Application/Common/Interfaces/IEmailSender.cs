@@ -44,4 +44,10 @@ public interface IEmailSender
     /// did not happen and can retry rather than waiting for a subscription that will never start.
     /// </summary>
     Task SendPaymentFailedAsync(EmailRecipient to, string planName, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sends a password-reset link. The link expires in 1 hour and contains the raw
+    /// token — the caller must have already stored the <em>hash</em> on the user row.
+    /// </summary>
+    Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default);
 }

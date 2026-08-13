@@ -20,7 +20,6 @@
     },
     "android": {
       "package": "app.notefusion",
-      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2563EB"
@@ -44,7 +43,7 @@
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",
-          "imageWidth": 200,
+          "imageWidth": 120,
           "resizeMode": "contain",
           "backgroundColor": "#1D6FF2"
         }

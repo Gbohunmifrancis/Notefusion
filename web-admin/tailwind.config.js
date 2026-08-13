@@ -42,7 +42,7 @@ export default {
         // Text sits on this one, so it stops at the contrast-safe blue.
         "fusion-contrast": "linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)",
       },
-      fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"] },
+      fontFamily: { sans: ["Poppins", "ui-sans-serif", "system-ui", "sans-serif"] },
       keyframes: {
         "fade-in": {
           from: { opacity: "0", transform: "translateY(4px)" },

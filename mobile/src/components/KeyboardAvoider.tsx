@@ -1,34 +1,31 @@
 import React from "react";
-import { KeyboardAvoidingView, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
 
 /**
  * Lifts its children clear of the software keyboard.
  *
- * Android used to do this for free: the system resized the window and a
- * ScrollView inside it simply got shorter. Edge-to-edge display — mandatory on
- * Android since Expo SDK 54 and not something an app can opt out of — ends that.
- * The app now draws behind the IME on both platforms, so the compensation has to
- * happen in JS or the focused field stays under the keyboard.
+ * Since Expo SDK 52, Android uses edge-to-edge rendering — the app window
+ * draws behind the IME (keyboard). There is no longer a system-level resize
+ * that shrinks the layout automatically.
  *
- * `behavior="padding"` on both platforms is deliberate:
+ * Platform behavior:
+ *  - iOS   → behavior="padding": KAV adds bottom padding equal to the keyboard
+ *    height. Correct with SafeAreaView on top.
+ *  - Android → behavior="height": KAV reduces its own height by the keyboard
+ *    height. Using "padding" on Android with edge-to-edge causes the view to
+ *    both shift AND get padded simultaneously — the double-compensation that
+ *    produces the keyboard-flashes-and-vanishes shake bug.
  *
- *  - Leaving Android with no behavior at all (`Platform.OS === 'ios' ? … :
- *    undefined`, the shape these screens used to have) is a no-op, so nothing
- *    compensated.
- *  - Forcing the window to pan instead, via `softwareKeyboardLayoutMode: "pan"`,
- *    is worse than nothing. The native window pans while the ScrollView
- *    independently scrolls the focused input into view; the two disagree about
- *    where the input belongs, focus is dropped, and the keyboard opens and shuts
- *    again in the space of a frame. That is the "keyboard flashes and vanishes"
- *    bug, and it is why app.json now asks for "resize".
- *
- * Wraps rather than configures because three call sites need it — both auth
- * screens and `Screen`'s scrolling variant — and the reasoning above should live
- * in one place, not be re-derived at each of them.
+ * The app.json softwareKeyboardLayoutMode entry is intentionally absent:
+ * it was "resize", which conflicts with KAV's own compensation on SDK 52+ and
+ * produces the same double-shift bug from the other direction.
  */
 export function KeyboardAvoider({ children }: { children: React.ReactNode }) {
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior="padding">
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       {children}
     </KeyboardAvoidingView>
   );
@@ -37,6 +34,5 @@ export function KeyboardAvoider({ children }: { children: React.ReactNode }) {
 export default KeyboardAvoider;
 
 const styles = StyleSheet.create({
-  // Not a themed makeStyles factory: nothing here reads the palette.
   flex: { flex: 1 },
 });

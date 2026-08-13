@@ -66,6 +66,9 @@ Dev credentials (override via environment / a gitignored `.env` for anything rea
 - Postgres password: `notefusion_dev` (`POSTGRES_PASSWORD`)
 - Seed admin: `admin@notefusion.app` / `ChangeMe!123` (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`)
 
+For the production Heroku env vars left out of source — payment-provider keys, Google
+sign-in, and Resend email — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
 ## Build & test each tier
 
 ```bash

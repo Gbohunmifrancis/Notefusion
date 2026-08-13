@@ -98,4 +98,10 @@ public sealed class RecordingEmailSender : IEmailSender
         Sent.Add(("payment-failed", to));
         return Task.CompletedTask;
     }
+
+    public Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default)
+    {
+        Sent.Add(("password-reset", to));
+        return Task.CompletedTask;
+    }
 }

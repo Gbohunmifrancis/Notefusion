@@ -51,4 +51,22 @@ public sealed class AuthController : ApiControllerBase
     [HttpPost("change-password")]
     public async Task<IActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
+
+    /// <summary>
+    /// Initiates a password reset by emailing a one-time link. Always returns 204 regardless
+    /// of whether the address belongs to a registered account.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(command, ct));
+
+    /// <summary>
+    /// Completes the password-reset flow: verifies the token and sets the new password.
+    /// Returns 204 on success; 400 when the token is invalid or expired.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(command, ct));
 }
