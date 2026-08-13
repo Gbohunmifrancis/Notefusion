@@ -101,6 +101,22 @@ app.UseSwaggerUI(options =>
     options.DocumentTitle = "NoteFusion API Documentation";
 });
 
+// The admin dashboard ships inside this image: the Dockerfile builds web-admin/ into
+// wwwroot, which makes the API its web server too. Without this the deployed dashboard
+// answered every non-API path with an empty 404, which is what "the page is blank" was.
+// Guarded on index.html so an API-only build (dotnet run, tests) still starts.
+var webRoot = app.Environment.WebRootPath
+    ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+var dashboardIndex = Path.Combine(webRoot, "index.html");
+var dashboardIsBundled = File.Exists(dashboardIndex);
+
+if (dashboardIsBundled)
+{
+    // Rewrites "/" to "/index.html"; must precede UseStaticFiles to have anything to serve.
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+}
+
 // CORS sits before auth so a preflight, which carries no Authorization header, gets its headers
 // back instead of a 401 the browser would report as an opaque CORS failure.
 app.UseCors(AdminDashboardCorsPolicy);
@@ -109,6 +125,31 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+if (dashboardIsBundled)
+{
+    // Client-side routes (/login, /users) have no server route, so the shell is returned and
+    // React Router resolves the path. /api and /swagger are excluded explicitly: an unknown
+    // API path must still fail as a 404, not hand the caller an HTML page. This is a delegate
+    // rather than MapFallbackToFile with a regex constraint because a route template splits on
+    // "/" before constraints are parsed, so a regex containing "/" corrupts the template.
+    app.MapFallback(async context =>
+    {
+        var path = context.Request.Path.Value ?? string.Empty;
+        if (path.StartsWith("/api", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase))
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            return;
+        }
+
+        context.Response.ContentType = "text/html; charset=utf-8";
+        // The shell must never be cached: it names hashed asset files, so a stale copy points
+        // at bundles that no longer exist after a deploy.
+        context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
+        await context.Response.SendFileAsync(dashboardIndex);
+    });
+}
 
 app.Run();
 

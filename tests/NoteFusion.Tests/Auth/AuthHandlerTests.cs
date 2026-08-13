@@ -12,7 +12,7 @@ public class AuthHandlerTests
     public async Task Register_creates_a_user_and_returns_a_token_pair()
     {
         using var h = new TestHarness();
-        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock);
+        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email);
 
         var result = await handler.Handle(new RegisterCommand("Ada Lovelace", "ada@example.com", "password123"), default);
 
@@ -21,19 +21,22 @@ public class AuthHandlerTests
         Assert.NotEmpty(result.Value.RefreshToken);
         Assert.Equal("ada@example.com", result.Value.User.Email);
         Assert.True(await h.Db.Users.AnyAsync(u => u.Email == "ada@example.com"));
+        Assert.Contains(h.Email.Sent, s => s.Kind == "welcome" && s.To.Email == "ada@example.com");
     }
 
     [Fact]
     public async Task Register_rejects_a_duplicate_email_case_insensitively()
     {
         using var h = new TestHarness();
-        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock);
+        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email);
         await handler.Handle(new RegisterCommand("Ada", "ada@example.com", "password123"), default);
 
         var duplicate = await handler.Handle(new RegisterCommand("Ada Two", "ADA@example.com", "password123"), default);
 
         Assert.True(duplicate.IsFailure);
         Assert.Equal("USER_EMAIL_EXISTS", duplicate.Error.Code);
+        // The rejected sign-up must not send a welcome: exactly one, for the account that was created.
+        Assert.Single(h.Email.Sent, s => s.Kind == "welcome");
     }
 
     [Fact]

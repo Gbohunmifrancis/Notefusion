@@ -104,6 +104,20 @@ public class User : BaseEntity
         };
 
     /// <summary>
+    /// Grants this account the administrator role. Separate from <see cref="CreateAdmin"/>, which only
+    /// covers the account that does not exist yet: an admin is often someone who already signed up as a
+    /// user, and re-creating them would orphan their transcriptions. Returns false when the account was
+    /// already an admin, so the caller can avoid a pointless write.
+    /// </summary>
+    public bool PromoteToAdmin()
+    {
+        if (Role == UserRole.Admin) return false;
+
+        Role = UserRole.Admin;
+        return true;
+    }
+
+    /// <summary>
     /// Links a Google account to an existing password account, so both routes reach the
     /// same user. Callers must have confirmed Google verified the email first — linking on
     /// an unverified email would let anyone claiming that address take over the account.
