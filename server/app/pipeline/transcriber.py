@@ -415,7 +415,25 @@ def _dedup_simultaneous(events: list[tuple]) -> list[tuple]:
     return order
 
 
-# ── Main pipeline ──────────────────────────────────────────────────────────────
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+
+def _find_ffmpeg_cmd() -> str:
+    import shutil
+    found = shutil.which("ffmpeg")
+    if found:
+        return found
+    for cand in (
+        "/app/.apt/usr/bin/ffmpeg",
+        "/app/.apt/bin/ffmpeg",
+        "/usr/bin/ffmpeg",
+        "/usr/local/bin/ffmpeg",
+    ):
+        if Path(cand).is_file():
+            return cand
+    return "ffmpeg"
 
 
 def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
@@ -435,10 +453,11 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
     tmp_wav_path = Path(tmp_wav.name)
     tmp_wav.close()
 
+    ffmpeg_bin = _find_ffmpeg_cmd()
     try:
         res = subprocess.run(
             [
-                "ffmpeg",
+                ffmpeg_bin,
                 "-y",
                 "-i",
                 str(audio_path),
@@ -461,7 +480,9 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
         import soundfile as sf
         import librosa
 
-        y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
         sf.write(str(tmp_wav_path), y, sr, format="WAV", subtype="PCM_16")
         return tmp_wav_path, True
     except Exception:
