@@ -23,7 +23,20 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
         try
         {
             using var form = new MultipartFormDataContent();
-            form.Add(new StreamContent(audio), "audio", fileName);
+            var audioContent = new StreamContent(audio);
+            var safeName = string.IsNullOrWhiteSpace(fileName) || !Path.HasExtension(fileName) ? "clip.m4a" : fileName;
+            var ext = Path.GetExtension(safeName).ToLowerInvariant();
+            var contentType = ext switch
+            {
+                ".mp3" => "audio/mpeg",
+                ".wav" => "audio/wav",
+                ".ogg" => "audio/ogg",
+                ".flac" => "audio/flac",
+                _ => "audio/m4a"
+            };
+            audioContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+            form.Add(audioContent, "audio", safeName);
+
             form.Add(new StringContent(options.Mode == TranscriptionMode.Poly ? "poly" : "melody"), "mode");
             if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 form.Add(new StringContent(options.Key), "key");
@@ -32,7 +45,10 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
 
             using var response = await http.PostAsync("v1/transcribe", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
-                return Error.Failure("Api.Submit", $"Transcription service returned {(int)response.StatusCode}.");
+            {
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return Error.Failure("Api.Submit", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+            }
 
             var payload = await response.Content.ReadFromJsonAsync(
                 ApiJsonContext.Default.SubmitResponse, cancellationToken);
