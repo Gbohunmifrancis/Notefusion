@@ -17,6 +17,7 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { deriveSolfa } from "../lib/solfa";
+import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
@@ -87,6 +88,11 @@ export function LibraryScreen() {
         full.key,
         full.timeSignature
       );
+      const audioPreviewBase64 = synthesizeMelodyWavBase64(
+        derived.notes,
+        full.tempoBpm,
+      );
+
       nav.navigate("Result", {
         result: {
           key: full.key,
@@ -98,6 +104,7 @@ export function LibraryScreen() {
           notes: derived.notes,
           solfaLines: derived.solfaLines,
           overallConfidence: full.overallConfidence,
+          audioPreviewBase64,
         },
         savedId: full.id,
         title: full.title,

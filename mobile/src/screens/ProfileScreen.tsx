@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -109,16 +110,25 @@ export function ProfileScreen() {
 
       {/* ── 2. Avatar & User Information ─────────────────────────────────── */}
       <View style={styles.userHeader}>
-        <View style={styles.avatarCircle}>
-          <Text style={styles.avatarInitials}>{initials}</Text>
-        </View>
+        <LinearGradient
+          colors={["#F59E0B", "#FBBF24", "#D97706", "#B45309"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.avatarGradientRing}
+        >
+          <View style={styles.avatarCircle}>
+            <Text style={styles.avatarInitials}>{initials}</Text>
+          </View>
+        </LinearGradient>
 
         <Text style={styles.userName}>{user?.fullName ?? "Francis Gbohunmi"}</Text>
         <Text style={styles.userEmail}>{user?.email ?? "francis@example.com"}</Text>
 
         {/* Plan Pill Badge */}
         <View style={styles.planBadge}>
-          <Text style={styles.planBadgeText}>Premium Plan</Text>
+          <Text style={styles.planBadgeText}>
+            {profile?.role === "Pro" || profile?.role === "Admin" ? "Pro Member ✨" : "Free Plan"}
+          </Text>
         </View>
       </View>
 
@@ -148,14 +158,6 @@ export function ProfileScreen() {
         <MenuItem
           icon="notifications-outline"
           label="Notifications"
-          onPress={() => nav.navigate("Settings")}
-        />
-        <View style={styles.divider} />
-
-        <MenuItem
-          icon="server-outline"
-          label="Storage"
-          meta="2.4 GB / 10 GB"
           onPress={() => nav.navigate("Settings")}
         />
         <View style={styles.divider} />
@@ -315,21 +317,32 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       marginBottom: spacing.xxl,
     },
-    avatarCircle: {
-      width: 96,
-      height: 96,
-      borderRadius: 48,
-      backgroundColor: "#EFF6FF",
-      borderWidth: 2,
-      borderColor: "#2563EB",
+    avatarGradientRing: {
+      width: 104,
+      height: 104,
+      borderRadius: 52,
+      padding: 3,
       alignItems: "center",
       justifyContent: "center",
       marginBottom: spacing.md,
+      shadowColor: "#F59E0B",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.35,
+      shadowRadius: 8,
+      elevation: 6,
+    },
+    avatarCircle: {
+      width: 98,
+      height: 98,
+      borderRadius: 49,
+      backgroundColor: c.surface,
+      alignItems: "center",
+      justifyContent: "center",
     },
     avatarInitials: {
       fontSize: 34,
       fontFamily: fonts.bold,
-      color: "#2563EB",
+      color: "#F59E0B",
     },
     userName: {
       fontSize: 22,
