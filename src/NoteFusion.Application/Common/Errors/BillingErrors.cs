@@ -29,4 +29,7 @@ public static class BillingErrors
 
     public static readonly Error NotAuthenticated =
         Error.Unauthorized("BILLING_NOT_AUTHENTICATED", "You must be signed in to do that.");
+
+    public static readonly Error FreeTierLimitReached =
+        Error.Forbidden("BILLING_FREE_TIER_LIMIT", "You have reached the limit of 5 free transcriptions. Upgrade to Pro for unlimited transcriptions.");
 }

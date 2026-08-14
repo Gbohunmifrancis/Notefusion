@@ -23,6 +23,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
+import { billingApi, libraryApi } from "../api/endpoints";
 import { useJobPolling } from "../lib/useJobPolling";
 import {
   fonts,
@@ -308,8 +309,18 @@ export function RecordScreen() {
   // stranding the user until they happen to tap Try again. The error card is
   // driven by state.error, so it stays visible; only the phase is reset.
   useEffect(() => {
-    if (state.status === "failed") setPhase("ready");
-  }, [state.status]);
+    if (state.status === "failed") {
+      setPhase("ready");
+      if (
+        state.error?.includes("BILLING_FREE_TIER_LIMIT") ||
+        state.error?.includes("5 free transcriptions") ||
+        state.error?.includes("upgrade to Pro") ||
+        state.error?.includes("Free plan limit")
+      ) {
+        nav.navigate("Upgrade");
+      }
+    }
+  }, [state.status, state.error, nav]);
 
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
@@ -386,6 +397,15 @@ export function RecordScreen() {
   async function startRecording() {
     setPermError(null);
     try {
+      const [sub, items] = await Promise.all([
+        billingApi.mySubscription().catch(() => null),
+        libraryApi.list().catch(() => []),
+      ]);
+      if (sub && !sub.isActive && items.length >= 5) {
+        nav.navigate("Upgrade");
+        return;
+      }
+
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
         setPermError(
