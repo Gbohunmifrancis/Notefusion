@@ -148,6 +148,22 @@ export function NotePlayer({
     durationRef.current = duration;
   }, [duration]);
 
+  // Refs mirroring the transport callbacks so the PanResponder always invokes
+  // the *current* player's functions even when audioPreviewBase64 changes and
+  // expo-audio replaces the native AudioPlayer instance under the hood.
+  const seekToRef = useRef(seekTo);
+  const playRef = useRef(play);
+  const pauseRef = useRef(pause);
+  useEffect(() => {
+    seekToRef.current = seekTo;
+  }, [seekTo]);
+  useEffect(() => {
+    playRef.current = play;
+  }, [play]);
+  useEffect(() => {
+    pauseRef.current = pause;
+  }, [pause]);
+
   // ── Seek-drag bookkeeping ──────────────────────────────────────────────
   // Purely presentational: the drag fraction is used only to render the
   // thumb/fill while dragging. Actual seeking is delegated to the hook's
@@ -202,7 +218,7 @@ export function NotePlayer({
       onPanResponderGrant: (evt) => {
         wasPlayingBeforeSeekRef.current = isPlayingRef.current;
         if (isPlayingRef.current) {
-          void pause();
+          void pauseRef.current();
         }
         setDragFraction(computeFraction(evt.nativeEvent.locationX));
       },
@@ -215,7 +231,7 @@ export function NotePlayer({
         const now = Date.now();
         if (now - lastSeekTsRef.current > 120 && durationRef.current > 0) {
           lastSeekTsRef.current = now;
-          void seekTo(fraction * durationRef.current);
+          void seekToRef.current(fraction * durationRef.current);
         }
       },
       onPanResponderRelease: (evt) => {
@@ -223,9 +239,9 @@ export function NotePlayer({
         setDragFraction(null);
 
         if (durationRef.current > 0) {
-          void seekTo(fraction * durationRef.current).then(() => {
+          void seekToRef.current(fraction * durationRef.current).then(() => {
             if (wasPlayingBeforeSeekRef.current) {
-              return play();
+              return playRef.current();
             }
             return undefined;
           });
