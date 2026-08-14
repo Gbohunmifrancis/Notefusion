@@ -33,13 +33,15 @@ public sealed class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordC
     private readonly IApplicationDbContext _db;
     private readonly IPasswordHasher _hasher;
     private readonly IDateTimeProvider _clock;
+    private readonly IEmailSender _email;
 
     public ResetPasswordCommandHandler(
-        IApplicationDbContext db, IPasswordHasher hasher, IDateTimeProvider clock)
+        IApplicationDbContext db, IPasswordHasher hasher, IDateTimeProvider clock, IEmailSender email)
     {
         _db = db;
         _hasher = hasher;
         _clock = clock;
+        _email = email;
     }
 
     public async Task<Result<Unit>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
@@ -60,6 +62,8 @@ public sealed class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordC
             return AuthErrors.InvalidResetToken;
 
         await _db.SaveChangesAsync(cancellationToken);
+
+        await _email.SendPasswordChangedAsync(new EmailRecipient(user.Email, user.FullName), cancellationToken);
 
         return Unit.Value;
     }
