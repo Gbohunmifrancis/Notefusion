@@ -39,7 +39,7 @@ const baseURL: string = getBaseUrl();
 
 export const api: AxiosInstance = axios.create({
   baseURL,
-  timeout: 20_000,
+  timeout: 60_000,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -48,6 +48,9 @@ export const api: AxiosInstance = axios.create({
 const AUTH_FREE = ['/api/auth/login', '/api/auth/register', '/api/auth/refresh'];
 
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  if (config.data instanceof FormData) {
+    config.headers.delete('Content-Type');
+  }
   if (!AUTH_FREE.some((p) => config.url?.startsWith(p))) {
     const token = await tokenStore.getAccess();
     if (token) config.headers.set('Authorization', `Bearer ${token}`);
@@ -121,11 +124,17 @@ api.interceptors.response.use(
 export function toApiError(err: unknown): ApiError {
   const ax = err as AxiosError<ApiError>;
   if (ax?.response?.data?.message) return ax.response.data;
+  if (ax?.response?.status === 415) {
+    return { code: 'UNSUPPORTED_MEDIA', message: 'Unsupported audio format. Please re-record.' };
+  }
+  if (ax?.response?.status === 422) {
+    return { code: 'INVALID_AUDIO', message: 'No clear notes detected. Sing or play louder.' };
+  }
   if (ax?.code === 'ECONNABORTED') {
     return { code: 'NETWORK_TIMEOUT', message: 'The request timed out. Check your connection.' };
   }
   if (ax?.request && !ax.response) {
     return { code: 'NETWORK_OFFLINE', message: 'Could not reach the server. Are you online?' };
   }
-  return { code: 'UNKNOWN', message: 'Something went wrong. Please try again.' };
+  return { code: 'UNKNOWN', message: ax?.message || 'Something went wrong. Please try again.' };
 }
