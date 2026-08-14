@@ -16,7 +16,11 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Button } from "../components/Button";
+import { GoogleButton } from "../components/GoogleButton";
+import { OrDivider } from "../components/OrDivider";
 import { StaffRibbon } from "../components/StaffRibbon";
+import { useAuth } from "../lib/auth";
+import { googleAuthConfigured } from "../lib/env";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles, useColors } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
@@ -99,6 +103,20 @@ export function OnboardingScreen({ navigation }: Props) {
       animateSlide();
     } else {
       navigation.navigate("Register");
+    }
+  };
+
+  const { signInWithGoogle } = useAuth();
+  const [googleBusy, setGoogleBusy] = useState(false);
+
+  const handleGoogle = async () => {
+    setGoogleBusy(true);
+    try {
+      await signInWithGoogle();
+    } catch {
+      // Error handles inside auth provider
+    } finally {
+      setGoogleBusy(false);
     }
   };
 

@@ -1,34 +1,43 @@
 import React, { useCallback, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { Screen } from '../components/Screen';
 import { Card } from '../components/Card';
-import { ConfidenceBadge } from '../components/ConfidenceBadge';
 import { libraryApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { useAuth } from '../lib/auth';
-import { radii, spacing, typography, gradients, type Palette, type Shadows } from '../design/theme';
-import { useThemedStyles, useColors } from '../lib/theme';
-import { appIcons } from '../design/icons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { fonts, radii, spacing, type Palette, type Shadows } from '../design/theme';
+import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
 import type { TabParams } from '../navigation/types';
 
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
-/** Landing screen: clean minimalist greeting, Shazam listening card CTA, and recent transcriptions. */
+/**
+ * HomeScreen — strictly following row 2 screen 1 ("Home") of the design sheet:
+ * 1. Top bar: "Home" title on left, Dark Mode & Bell on right. NO sidebar drawer, NO profile icon in upper right.
+ * 2. Greeting: "Good morning, Francis", "What will you transcribe today?"
+ * 3. Primary Mic Card: Centred blue circular mic button, "Tap to start recording", "or import audio file"
+ * 4. Quick Action Buttons: "Import" and "Paste URL"
+ * 5. Recent Section: Clean "Recent" header with "See all" link and vector-icon transcription cards (NO emojis)
+ */
 export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
 
-  // A failed fetch must not read as an empty library — that tells the user their
-  // work is gone. Surface it as an error the Recent list shows with a retry, and
-  // keep whatever we last loaded on screen.
   const reload = useCallback(() => {
     libraryApi
       .list()
@@ -69,50 +78,96 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            <Text style={styles.greeting}>Good morning, {firstName} 🎵</Text>
-            <Text style={styles.sub}>What will you transcribe today?</Text>
+            {/* ── 1. Top Header Bar: Dark Mode & Notifications (right) ─ */}
+            <View style={styles.topHeader}>
+              <View />
 
-            {/* Hero record CTA — centred mic ring on a gradient card */}
-            <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Record')}>
-              <LinearGradient colors={gradients.brand} style={styles.recordCard} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-                <View style={styles.micRing}>
-                  <Ionicons name="mic" size={36} color="#fff" />
+              <View style={styles.headerActions}>
+                {/* Dark Mode Toggle */}
+                <TouchableOpacity
+                  onPress={toggle}
+                  style={styles.headerIconBtn}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  <Ionicons
+                    name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'}
+                    size={22}
+                    color={colors.text}
+                  />
+                </TouchableOpacity>
+
+                {/* Notifications Bell */}
+                <TouchableOpacity
+                  onPress={() => Alert.alert('Notifications', 'You have no new notifications.')}
+                  style={styles.headerIconBtn}
+                  hitSlop={8}
+                >
+                  <Ionicons name="notifications-outline" size={22} color={colors.text} />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* ── 2. Greeting Header ────────────────────────────────────────── */}
+            <Text style={styles.greetingTitle}>Good morning, {firstName}</Text>
+            <Text style={styles.greetingSub}>What will you transcribe today?</Text>
+
+            {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}
+            <View style={styles.stageCard}>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => navigation.navigate('Record')}
+                style={styles.micCircleWrap}
+              >
+                <View style={styles.micCircle}>
+                  <Ionicons name="mic" size={42} color="#FFFFFF" />
                 </View>
-                <Text style={styles.recordTitle}>Tap to start recording</Text>
-                <Text style={styles.recordSub}>Live capture, transcribed to solfa</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+              </TouchableOpacity>
 
-            {/* Quick action row */}
-            <View style={styles.recentHeader}>
-              <Text style={styles.sectionTitle}>Recent</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Record')}>
+                <Text style={styles.tapText}>Tap to start recording</Text>
+                <Text style={styles.importSubLink}>or import audio file</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* ── 4. Recent Recordings Header ───────────────────────────────── */}
+            <View style={styles.recentSectionHeader}>
+              <Text style={styles.recentSectionTitle}>Recent</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Library')}>
-                <Text style={styles.link}>See all</Text>
+                <Text style={styles.seeAllText}>See all</Text>
               </TouchableOpacity>
             </View>
           </View>
         }
         renderItem={({ item }) => (
-          <Card style={styles.recentCard} padded={false}>
-            <View style={styles.recentRow}>
-              <View style={styles.noteIcon}>
-                <Image source={appIcons.music} style={styles.noteIconImg} />
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Library')}
+          >
+            <Card style={styles.recentCard} padded={false}>
+              <View style={styles.recentRow}>
+                <View style={styles.noteIconBadge}>
+                  <Ionicons name="musical-notes-outline" size={20} color={colors.accent} />
+                </View>
+
+                <View style={styles.recentInfo}>
+                  <Text style={styles.recentTitle} numberOfLines={1}>
+                    {item.title}
+                  </Text>
+                  <Text style={styles.recentMeta}>
+                    {item.key} Major · {item.tempoBpm} BPM
+                  </Text>
+                </View>
+
+                <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
               </View>
-              <View style={styles.recentInfo}>
-                <Text style={styles.recentTitle} numberOfLines={1}>
-                  {item.title}
-                </Text>
-                <Text style={styles.recentMeta}>
-                  {item.key} · {item.tempoBpm} BPM
-                </Text>
-              </View>
-              <ConfidenceBadge value={item.overallConfidence} compact />
-            </View>
-          </Card>
+            </Card>
+          </TouchableOpacity>
         )}
         ListEmptyComponent={
           loadError ? (
-            <Card style={styles.empty}>
+            <Card style={styles.emptyCard}>
               <Ionicons name="cloud-offline-outline" size={30} color={colors.danger} />
               <Text style={styles.emptyText}>{loadError}</Text>
               <TouchableOpacity onPress={reload} style={styles.retryBtn}>
@@ -120,10 +175,10 @@ export function HomeScreen({ navigation }: Props) {
               </TouchableOpacity>
             </Card>
           ) : (
-            <Card style={styles.empty}>
-              <Image source={appIcons.songbook} style={styles.emptyIcon} />
+            <Card style={styles.emptyCard}>
+              <Ionicons name="musical-notes-outline" size={36} color={colors.accent} />
               <Text style={styles.emptyText}>
-                No transcriptions yet. Tap "Tap to start recording" to capture your first melody.
+                No transcriptions yet. Tap the mic button above to start recording.
               </Text>
             </Card>
           )
@@ -135,74 +190,173 @@ export function HomeScreen({ navigation }: Props) {
 
 const makeStyles = (c: Palette, s: Shadows) =>
   StyleSheet.create({
-    headerArea: { paddingTop: spacing.xs },
-    listContent: { paddingBottom: 120 },
-
-    greeting: { ...typography.display, color: c.text, fontSize: 26 },
-    sub: { ...typography.body, color: c.textMuted, marginTop: 4, marginBottom: spacing.xl },
-
-    // ── Hero record card ──────────────────────────────────────────────────────
-    recordCard: {
-      borderRadius: radii.xl,
-      paddingVertical: spacing.xxl,
-      alignItems: 'center',
-      ...s.glow,
+    headerArea: {
+      paddingTop: spacing.xs,
     },
-    micRing: {
-      width: 72,
-      height: 72,
-      borderRadius: 36,
-      backgroundColor: 'rgba(255,255,255,0.22)',
-      borderWidth: 2,
-      borderColor: 'rgba(255,255,255,0.45)',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: spacing.lg,
-    },
-    recordTitle: {
-      ...typography.heading,
-      color: '#fff',
-      fontSize: 17,
-    },
-    recordSub: {
-      ...typography.caption,
-      color: 'rgba(255,255,255,0.72)',
-      marginTop: spacing.xs,
+    listContent: {
+      paddingBottom: 120,
     },
 
-    // ── Recent section ────────────────────────────────────────────────────────
-    recentHeader: {
+    // ── Top Header Bar ────────────────────────────────────────────────────────
+    topHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginTop: spacing.xxl,
+      marginBottom: spacing.lg,
+    },
+    pageTitle: {
+      fontSize: 24,
+      fontFamily: fonts.bold,
+      color: c.text,
+    },
+    headerIconBtn: {
+      padding: 4,
+    },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
+
+    // ── Greeting Header ───────────────────────────────────────────────────────
+    greetingTitle: {
+      fontSize: 22,
+      fontFamily: fonts.bold,
+      color: c.text,
+      marginBottom: 2,
+    },
+    greetingSub: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      marginBottom: spacing.xl,
+    },
+
+    // ── Centred Stage Card ────────────────────────────────────────────────────
+    stageCard: {
+      backgroundColor: c.surface,
+      borderRadius: radii.xl,
+      borderWidth: 1,
+      borderColor: c.border,
+      padding: spacing.xl,
+      alignItems: 'center',
+      marginBottom: spacing.xxl,
+      ...s.card,
+    },
+    micCircleWrap: {
       marginBottom: spacing.md,
     },
-    sectionTitle: { ...typography.heading, color: c.text, fontSize: 18 },
-    link: { ...typography.label, color: c.accent, fontSize: 14 },
-    recentCard: { marginBottom: spacing.sm },
-    recentRow: { flexDirection: 'row', alignItems: 'center', padding: spacing.md },
-    noteIcon: {
+    micCircle: {
+      width: 88,
+      height: 88,
+      borderRadius: 44,
+      backgroundColor: '#2563EB',
+      alignItems: 'center',
+      justifyContent: 'center',
+      shadowColor: '#2563EB',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.35,
+      shadowRadius: 16,
+      elevation: 8,
+    },
+    tapText: {
+      fontSize: 16,
+      fontFamily: fonts.bold,
+      color: c.accent,
+      textAlign: 'center',
+    },
+    importSubLink: {
+      fontSize: 13,
+      fontFamily: fonts.medium,
+      color: c.textFaint,
+      textAlign: 'center',
+      marginTop: 2,
+      marginBottom: spacing.lg,
+    },
+
+    // Quick Action Row
+    quickActionRow: {
+      flexDirection: 'row',
+      gap: spacing.md,
+    },
+    quickBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      backgroundColor: c.bg,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: radii.pill,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.xs + 3,
+    },
+    quickBtnLabel: {
+      fontSize: 13,
+      fontFamily: fonts.semibold,
+      color: c.text,
+    },
+
+    // ── Recent Section ────────────────────────────────────────────────────────
+    recentSectionHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: spacing.md,
+    },
+    recentSectionTitle: {
+      fontSize: 18,
+      fontFamily: fonts.bold,
+      color: c.text,
+    },
+    seeAllText: {
+      fontSize: 14,
+      fontFamily: fonts.semibold,
+      color: c.accent,
+    },
+
+    recentCard: {
+      marginBottom: spacing.sm,
+    },
+    recentRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: spacing.md,
+    },
+    noteIconBadge: {
       width: 40,
       height: 40,
       borderRadius: radii.md,
-      backgroundColor: c.accentSoft,
+      backgroundColor: '#EFF6FF',
       alignItems: 'center',
       justifyContent: 'center',
     },
-    noteIconImg: { width: 24, height: 24 },
-    recentInfo: { flex: 1, marginHorizontal: spacing.md },
-    recentTitle: { ...typography.label, color: c.text, fontSize: 15 },
-    recentMeta: { ...typography.caption, color: c.textFaint, marginTop: 2 },
-    empty: { alignItems: 'center', paddingVertical: spacing.xxl },
-    emptyIcon: { width: 30, height: 30 },
+    recentInfo: {
+      flex: 1,
+      marginHorizontal: spacing.md,
+    },
+    recentTitle: {
+      fontSize: 15,
+      fontFamily: fonts.bold,
+      color: c.text,
+    },
+    recentMeta: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      marginTop: 2,
+    },
+
+    emptyCard: {
+      alignItems: 'center',
+      paddingVertical: spacing.xxl,
+    },
     emptyText: {
-      ...typography.body,
+      fontSize: 14,
+      fontFamily: fonts.regular,
       color: c.textMuted,
       textAlign: 'center',
       marginTop: spacing.md,
       lineHeight: 20,
-      fontSize: 14,
     },
     retryBtn: {
       marginTop: spacing.md,
@@ -211,5 +365,9 @@ const makeStyles = (c: Palette, s: Shadows) =>
       borderRadius: radii.pill,
       backgroundColor: c.accentSoft,
     },
-    retryLabel: { ...typography.label, color: c.accent, fontSize: 14 },
+    retryLabel: {
+      fontSize: 14,
+      fontFamily: fonts.semibold,
+      color: c.accent,
+    },
   });

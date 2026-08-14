@@ -190,41 +190,18 @@ export function ResultScreen({ route, navigation }: Props) {
           style={styles.backBtn}
           activeOpacity={0.7}
         >
-          {/* Glass back button */}
-          <View style={styles.backCircle}>
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
-          </View>
+          <Ionicons name="arrow-back" size={22} color={colors.text} />
         </TouchableOpacity>
 
-        <View style={styles.titleBlock}>
-          <Text style={styles.titleLabel}>Transcription</Text>
-          <Text style={styles.titleMain}>Complete</Text>
-        </View>
+        <Text style={styles.pageTitle}>Preview</Text>
 
-        {/* Compact confidence pill — top-right */}
-        <View
-          style={[
-            styles.confPill,
-            {
-              backgroundColor: `${confColor}20`,
-              borderColor: `${confColor}50`,
-            },
-          ]}
+        <TouchableOpacity
+          onPress={() => Alert.alert("Options", "Export or delete transcription.")}
+          style={styles.optionsBtn}
+          hitSlop={8}
         >
-          {/* Glowing dot */}
-          <View
-            style={[
-              styles.confDot,
-              {
-                backgroundColor: confColor,
-                shadowColor: confColor,
-              },
-            ]}
-          />
-          <Text style={[styles.confPillText, { color: confColor }]}>
-            {confPct}%
-          </Text>
-        </View>
+          <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
+        </TouchableOpacity>
       </View>
 
       {/* ── Summary card ─────────────────────────────────────────────────── */}
@@ -523,7 +500,7 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           </View>
 
-          {/* Rename — the title is the only field editable after saving. */}
+          {/* Rename */}
           <TextField
             label="Title"
             value={title}
@@ -539,6 +516,31 @@ export function ResultScreen({ route, navigation }: Props) {
           />
         </View>
       )}
+
+      {/* ── 3-Button Action Row (Image 2 Screen 3) ────────────────────── */}
+      <View style={styles.actionRow}>
+        <TouchableOpacity
+          style={styles.actionBtnOutline}
+          onPress={() => setPickingKey((p) => !p)}
+        >
+          <Text style={styles.actionBtnOutlineText}>Re-key</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionBtnOutline}
+          onPress={() => Alert.alert("Edit Notes", "Edit pitches and durations.")}
+        >
+          <Text style={styles.actionBtnOutlineText}>Edit</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionBtnSolid}
+          onPress={save}
+          disabled={saving}
+        >
+          <Text style={styles.actionBtnSolidText}>{saving ? "Saving…" : "Save"}</Text>
+        </TouchableOpacity>
+      </View>
     </Screen>
   );
 }
@@ -600,8 +602,57 @@ const makeStyles = (c: Palette) =>
     marginBottom: spacing.xl,
   },
 
+  pageTitle: {
+    fontSize: 20,
+    fontFamily: fonts.bold,
+    color: c.text,
+  },
+
+  optionsBtn: {
+    padding: spacing.xs,
+  },
+
   backBtn: {
-    // Generous touch target
+    padding: spacing.xs,
+  },
+
+  actionRow: {
+    flexDirection: "row",
+    gap: spacing.md,
+    marginTop: spacing.xl,
+    marginBottom: spacing.xl,
+  },
+
+  actionBtnOutline: {
+    flex: 1,
+    height: 48,
+    borderRadius: radii.pill,
+    backgroundColor: c.surface,
+    borderWidth: 1.5,
+    borderColor: "#2563EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  actionBtnOutlineText: {
+    fontSize: 15,
+    fontFamily: fonts.bold,
+    color: "#2563EB",
+  },
+
+  actionBtnSolid: {
+    flex: 1,
+    height: 48,
+    borderRadius: radii.pill,
+    backgroundColor: "#2563EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  actionBtnSolidText: {
+    fontSize: 15,
+    fontFamily: fonts.bold,
+    color: "#FFFFFF",
   },
 
   /** Glass circle back button. */

@@ -14,6 +14,7 @@ export type TabParams = {
   Record: undefined;
   Library: undefined;
   Profile: undefined;
+  Subscription: undefined;
 };
 
 export type RootStackParams = {

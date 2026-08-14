@@ -53,9 +53,9 @@
     ],
     "extra": {
       "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",
-      "googleIosClientId": "",
+      "googleIosClientId": "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com",
       "googleAndroidClientId": "21738378819-phjudqm26h6sthgfj0e2eg0l0vnid8ca.apps.googleusercontent.com",
-      "googleWebClientId": "21738378819-phjudqm26h6sthgfj0e2eg0l0vnid8ca.apps.googleusercontent.com",
+      "googleWebClientId": "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com",
       "eas": {
         "projectId": "8cc4d615-18ab-4e92-8ae7-77087b84bfab"
       }

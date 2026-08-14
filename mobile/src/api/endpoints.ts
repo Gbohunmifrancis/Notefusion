@@ -38,6 +38,9 @@ export const authApi = {
     api
       .post("/api/auth/change-password", { currentPassword, newPassword })
       .then((r) => r.data),
+
+  forgotPassword: (email: string) =>
+    api.post("/api/auth/forgot-password", { email }).then((r) => r.data),
 };
 
 export const meApi = {

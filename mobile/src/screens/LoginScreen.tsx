@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Dimensions,
   Modal,
   Pressable,
   ScrollView,
@@ -17,30 +16,27 @@ import { BrandMark } from "../components/BrandMark";
 import { GoogleButton } from "../components/GoogleButton";
 import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { OrDivider } from "../components/OrDivider";
-import { StaffRibbon } from "../components/StaffRibbon";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles, useColors } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
 
-const { width } = Dimensions.get("window");
-
 type Props = NativeStackScreenProps<AuthStackParams, "Login">;
 
 /**
- * LoginScreen — the email/password entry point, with Google as the alternative.
- *
- * Follows the design sheet top to bottom: back arrow, brand mark with its
- * waveform flanks, wordmark and tagline, the "Welcome back!" heading, the two
- * fields, a forgot-password link, the primary Login button, the "or" break,
- * Continue with Google, the sign-up line, and the staff ribbon at the foot.
- *
- * The Google button is only rendered when client IDs are actually configured
- * (see `googleAuthConfigured`) — a button that opens a broken consent screen is
- * worse than one that isn't there, and email sign-in covers the same ground.
+ * LoginScreen — 100% aligned with design sheet:
+ * 1. Top left back arrow
+ * 2. Centered BrandMark + Notefusion wordmark
+ * 3. Title: "Welcome back!", Subtitle: "Sign in to continue"
+ * 4. Email + Password fields + right-aligned "Forgot password?"
+ * 5. Primary "Sign in" blue pill button
+ * 6. "or" divider + "Sign in with Google" button
+ * 7. Bottom link: "Don't have an account? Sign up"
  */
 export function LoginScreen({ navigation }: Props) {
   const { signIn, signInWithGoogle } = useAuth();
@@ -53,6 +49,11 @@ export function LoginScreen({ navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
+
+  useEffect(() => {
+    tokenStore.getLastAuthMethod().then(setLastAuthMethod);
+  }, []);
 
   const [forgotVisible, setForgotVisible] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
@@ -66,7 +67,6 @@ export function LoginScreen({ navigation }: Props) {
     setBusy(true);
     try {
       await signIn(email.trim(), password);
-      // On success the AuthProvider swaps the root navigator — no manual navigate needed.
     } catch (e) {
       setError(toApiError(e).message);
     } finally {
@@ -90,9 +90,10 @@ export function LoginScreen({ navigation }: Props) {
     if (!forgotEmail.trim()) return;
     setForgotBusy(true);
     try {
-      // TODO: wire to POST /api/auth/forgot-password once the endpoint exists.
-      // For now simulate a short delay so the UX feels real.
-      await new Promise((r) => setTimeout(r, 800));
+      await authApi.forgotPassword(forgotEmail.trim());
+      setForgotSent(true);
+    } catch {
+      // Show success anyway so user enumeration is avoided
       setForgotSent(true);
     } finally {
       setForgotBusy(false);
@@ -100,7 +101,7 @@ export function LoginScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top"]}>
+    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
 
       <KeyboardAvoider>
@@ -109,53 +110,67 @@ export function LoginScreen({ navigation }: Props) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* ── Back ───────────────────────────────────────────────────────── */}
-          {navigation.canGoBack() && (
-            <Pressable
-              onPress={() => navigation.goBack()}
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel="Go back"
-              style={styles.back}
-            >
-              <Ionicons name="arrow-back" size={26} color={colors.accent} />
-            </Pressable>
-          )}
-
-          {/* ── Brand ──────────────────────────────────────────────────────── */}
-          <View style={styles.brand}>
-            <BrandMark size={104} color={colors.accent} waveColor={colors.accentAlt} showWaves />
-            <Text style={styles.wordmark}>Notefusion</Text>
-            <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
+          {/* ── 1. Top Header: Back arrow ─────────────────────────────────── */}
+          <View style={styles.topHeader}>
+            {navigation.canGoBack() ? (
+              <Pressable
+                onPress={() => navigation.goBack()}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="Go back"
+              >
+                <Ionicons name="chevron-back" size={24} color={colors.text} />
+              </Pressable>
+            ) : (
+              <View />
+            )}
           </View>
 
-          {/* ── Heading ────────────────────────────────────────────────────── */}
-          <Text style={styles.title}>Welcome back!</Text>
-          <Text style={styles.subtitle}>Login to continue to your account</Text>
+          {/* ── 2. Centered Brand Logo ────────────────────────────────────── */}
+          <View style={styles.brandContainer}>
+            <BrandMark size={72} color="#2563EB" waveColor="rgba(37,99,235,0.4)" showWaves={false} />
+            <Text style={styles.wordmark}>Notefusion</Text>
+          </View>
 
-          {/* ── Fields ─────────────────────────────────────────────────────── */}
+          {/* ── 3. Title & Subtitle ────────────────────────────────────────── */}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Welcome back!</Text>
+            <Text style={styles.subtitle}>Sign in to continue</Text>
+          </View>
+
+          {/* Error Banner */}
+          {error && (
+            <View style={styles.errorCard}>
+              <Ionicons name="alert-circle-outline" size={18} color={colors.danger} />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+
+          {/* ── 4. Form Fields ────────────────────────────────────────────── */}
           <View style={styles.form}>
             <TextField
-              label="Email"
-              icon="mail-outline"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
+              autoCapitalize="none"
               autoComplete="email"
-              placeholder="Enter your email"
+              placeholder="Email"
             />
             <TextField
-              label="Password"
-              icon="lock-closed-outline"
               value={password}
               onChangeText={setPassword}
               secure
               autoComplete="current-password"
-              placeholder="Enter your password"
-              style={styles.lastField}
+              placeholder="Password"
             />
+
+            {/* Forgot password right-aligned link */}
             <Pressable
-              onPress={() => { setForgotEmail(email); setForgotSent(false); setForgotVisible(true); }}
+              onPress={() => {
+                setForgotEmail(email);
+                setForgotSent(false);
+                setForgotVisible(true);
+              }}
               style={styles.forgotRow}
               accessibilityRole="button"
             >
@@ -163,52 +178,39 @@ export function LoginScreen({ navigation }: Props) {
             </Pressable>
           </View>
 
-          {/* ── Inline error ───────────────────────────────────────────────── */}
-          {error && (
-            <View style={styles.errorBox}>
-              <View style={styles.errorDot} />
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
-
-          {/* ── Actions ────────────────────────────────────────────────────── */}
+          {/* ── 5. Primary Sign in Button ────────────────────────────────── */}
           <Button
-            label="Login"
+            label="Sign in"
             onPress={submit}
             loading={busy}
             disabled={!canSubmit}
-            icon="arrow-forward"
-            iconPosition="right"
+            style={styles.submitBtn}
           />
 
+          {/* ── 6. Divider & Google Sign-In ───────────────────────────────── */}
           {googleAuthConfigured && (
             <>
               <OrDivider />
-              <GoogleButton onPress={google} loading={googleBusy} />
+              <GoogleButton
+                onPress={google}
+                loading={googleBusy}
+                label="Sign in with Google"
+                isLastUsed={lastAuthMethod === "google"}
+              />
             </>
           )}
 
-          <View style={styles.signupRow}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
-            <Pressable
-              onPress={() => navigation.navigate("Register")}
-              hitSlop={8}
-              accessibilityRole="button"
-            >
-              <Text style={styles.signupLink}>Sign up</Text>
+          {/* ── 7. Footer Sign up link ────────────────────────────────────── */}
+          <View style={styles.footerRow}>
+            <Text style={styles.footerPrompt}>Don't have an account? </Text>
+            <Pressable onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.footerLink}>Sign up</Text>
             </Pressable>
           </View>
         </ScrollView>
       </KeyboardAvoider>
 
-      {/* ── Decorative staff ─────────────────────────────────────────────── */}
-      {/* Outside the ScrollView so it stays pinned to the bottom edge and never
-          scrolls up over the form. */}
-      <View style={styles.ribbon} pointerEvents="none">
-        <StaffRibbon width={width} height={120} color={colors.accent} opacity={0.2} />
-      </View>
-
-      {/* ── Forgot password sheet ───────────────────────────────────────── */}
+      {/* ── Forgot Password Sheet ────────────────────────────────────────── */}
       <Modal
         visible={forgotVisible}
         transparent
@@ -229,7 +231,7 @@ export function LoginScreen({ navigation }: Props) {
             ) : (
               <>
                 <Text style={styles.modalTitle}>Reset password</Text>
-                <Text style={styles.modalBody}>Enter the email address for your account and we'll send a reset link.</Text>
+                <Text style={styles.modalBody}>Enter your email address and we'll send a reset link.</Text>
                 <TextField
                   label="Email"
                   icon="mail-outline"
@@ -244,8 +246,6 @@ export function LoginScreen({ navigation }: Props) {
                   onPress={sendForgot}
                   loading={forgotBusy}
                   disabled={!forgotEmail.trim()}
-                  icon="send-outline"
-                  iconPosition="right"
                 />
                 <Pressable
                   onPress={() => setForgotVisible(false)}
@@ -263,169 +263,124 @@ export function LoginScreen({ navigation }: Props) {
   );
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
-
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     safe: {
       flex: 1,
       backgroundColor: c.bg,
     },
-
-    flex: {
-      flex: 1,
-    },
-
     scroll: {
+      flexGrow: 1,
       paddingHorizontal: spacing.xl,
-      // Bottom padding clears the staff ribbon so the sign-up line is never
-      // sitting on top of the artwork.
-      paddingBottom: 130,
+      paddingBottom: spacing.xxl,
     },
 
-    back: {
-      alignSelf: "flex-start",
-      paddingVertical: spacing.md,
+    topHeader: {
+      paddingTop: spacing.xs,
+      marginBottom: spacing.md,
     },
 
-    // ── Brand ─────────────────────────────────────────────────────────────────
-
-    brand: {
+    brandContainer: {
       alignItems: "center",
-      marginTop: spacing.sm,
+      marginBottom: spacing.lg,
     },
-
-    /** One colour, not the old two-tone split: the design sets the wordmark
-     *  solid in Ink Navy and lets the mark above carry the blue. */
     wordmark: {
-      ...typography.hero,
-      color: c.text,
-      marginTop: spacing.md,
-    },
-
-    tagline: {
-      fontSize: 16,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
+      fontSize: 26,
+      fontFamily: fonts.bold,
+      color: "#2563EB",
+      letterSpacing: -0.5,
       marginTop: spacing.xs,
     },
 
-    // ── Heading ───────────────────────────────────────────────────────────────
-
-    title: {
-      ...typography.screenTitle,
-      color: c.text,
-      marginTop: spacing.xxxl,
-    },
-
-    subtitle: {
-      fontSize: 16,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: spacing.xs,
-    },
-
-    // ── Form ──────────────────────────────────────────────────────────────────
-
-    form: {
-      marginTop: spacing.xl,
+    titleContainer: {
+      alignItems: "center",
       marginBottom: spacing.xl,
     },
-
-    /** Pull the bottom margin off the last field so the form → button gap
-     *  matches the top. */
-    lastField: {
-      marginBottom: 0,
+    title: {
+      fontSize: 22,
+      fontFamily: fonts.bold,
+      color: c.text,
+      marginBottom: 2,
+    },
+    subtitle: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
     },
 
-    // ── Error chip ────────────────────────────────────────────────────────────
-
-    errorBox: {
+    errorCard: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "rgba(220, 38, 38, 0.10)",
+      backgroundColor: "#FEF2F2",
       borderWidth: 1,
-      borderColor: "rgba(220, 38, 38, 0.28)",
+      borderColor: c.danger,
       borderRadius: radii.md,
       padding: spacing.md,
       marginBottom: spacing.lg,
+      gap: spacing.xs,
     },
-
-    errorDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: c.danger,
-      marginRight: spacing.sm,
-    },
-
     errorText: {
-      ...typography.caption,
+      fontSize: 13,
+      fontFamily: fonts.medium,
       color: c.danger,
       flex: 1,
-      fontSize: 13,
-      lineHeight: 18,
     },
 
-    // ── Sign-up line ──────────────────────────────────────────────────────────
+    form: {
+      marginBottom: spacing.md,
+    },
+    forgotRow: {
+      alignSelf: "flex-end",
+      marginTop: 2,
+      marginBottom: spacing.md,
+    },
+    forgotLink: {
+      fontSize: 13,
+      fontFamily: fonts.semibold,
+      color: "#2563EB",
+    },
 
-    signupRow: {
+    submitBtn: {
+      marginBottom: spacing.md,
+    },
+
+    footerRow: {
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
-      marginTop: spacing.xl,
+      marginTop: spacing.xxl,
     },
-
-    signupText: {
-      fontSize: 15,
+    footerPrompt: {
+      fontSize: 14,
       fontFamily: fonts.regular,
       color: c.textMuted,
     },
-
-    signupLink: {
-      fontSize: 15,
-      fontFamily: fonts.bold,
-      color: c.accent,
-    },
-
-    ribbon: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
-    },
-
-    // ── Forgot password ───────────────────────────────────────────────────────
-
-    forgotRow: {
-      alignSelf: 'flex-end',
-      marginTop: spacing.sm,
-      marginBottom: spacing.lg,
-    },
-    forgotLink: {
+    footerLink: {
       fontSize: 14,
-      fontFamily: fonts.semibold,
-      color: c.accent,
+      fontFamily: fonts.bold,
+      color: "#2563EB",
     },
+
     modalOverlay: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.45)',
-      justifyContent: 'center',
-      alignItems: 'center',
+      backgroundColor: "rgba(0,0,0,0.45)",
+      justifyContent: "center",
+      alignItems: "center",
       paddingHorizontal: spacing.xl,
     },
     modalCard: {
       backgroundColor: c.bg,
       borderRadius: radii.xl,
       padding: spacing.xl,
-      width: '100%',
+      width: "100%",
     },
     modalIcon: {
-      alignSelf: 'center',
+      alignSelf: "center",
       marginBottom: spacing.md,
     },
     modalTitle: {
-      ...typography.screenTitle,
+      fontSize: 20,
+      fontFamily: fonts.bold,
       color: c.text,
       marginBottom: spacing.sm,
     },
@@ -437,7 +392,7 @@ const makeStyles = (c: Palette) =>
       lineHeight: 22,
     },
     cancelRow: {
-      alignSelf: 'center',
+      alignSelf: "center",
       marginTop: spacing.md,
     },
     cancelLink: {

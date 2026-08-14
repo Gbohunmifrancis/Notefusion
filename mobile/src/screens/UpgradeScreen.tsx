@@ -14,6 +14,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
+import { BrandMark } from "../components/BrandMark";
 import { billingApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import {
@@ -29,7 +30,7 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import type { Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParams, "Upgrade">;
+type Props = { navigation: any; route?: any };
 
 /**
  * The deep link the provider redirects to when hosted checkout finishes. It has to
@@ -204,11 +205,11 @@ export function UpgradeScreen({ navigation }: Props) {
           end={{ x: 1, y: 1 }}
           style={styles.heroBadge}
         >
-          <Ionicons
-            name={isActive ? "checkmark-circle" : "sparkles"}
-            size={30}
-            color={colors.onAccent}
-          />
+          {isActive ? (
+            <Ionicons name="checkmark-circle" size={32} color={colors.onAccent} />
+          ) : (
+            <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
+          )}
         </LinearGradient>
         <Text style={styles.heroTitle}>
           {isActive ? "You're on Pro" : "Unlock everything"}

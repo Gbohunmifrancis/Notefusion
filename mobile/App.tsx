@@ -1,7 +1,7 @@
 import React from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'react-native';
 import * as NativeSplash from 'expo-splash-screen';
 import { AuthProvider } from './src/lib/auth';
 import { ThemeProvider, useTheme } from './src/lib/theme';
@@ -64,7 +64,7 @@ function Themed() {
   const { palette, mode } = useTheme();
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: palette.bg }}>
-      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <StatusBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} backgroundColor="transparent" translucent />
       <RootNavigator />
     </GestureHandlerRootView>
   );
