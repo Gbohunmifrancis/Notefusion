@@ -152,13 +152,24 @@ export function UpgradeScreen({ navigation }: Props) {
     setBusy(true);
     try {
       const session = await billingApi.checkout(selectedId);
-      // Spotify-style: the provider's hosted page opens outside the app. openAuthSessionAsync
-      // ties the browser to RETURN_URL so it auto-closes when the provider redirects back.
-      await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
+      if (!session || !session.checkoutUrl) {
+        Alert.alert("Checkout Error", "Could not initialize checkout. Please try again.");
+        return;
+      }
+      
+      // Open Paystack hosted checkout in in-app browser sheet
+      try {
+        const result = await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
+        if (result.type === "cancel" || result.type === "dismiss") {
+          // If auth session was dismissed without deep-link redirect, open standard browser sheet
+          await WebBrowser.openBrowserAsync(session.checkoutUrl);
+        }
+      } catch {
+        await WebBrowser.openBrowserAsync(session.checkoutUrl);
+      }
+
       if (!mounted.current) return;
       setBusy(false);
-      // The result type (success/cancel/dismiss) isn't trusted — the user may have paid and
-      // simply closed the tab — so verify against the server regardless.
       await verifyActivation();
     } catch (e) {
       if (!mounted.current) return;
@@ -303,6 +314,7 @@ export function UpgradeScreen({ navigation }: Props) {
 
 /** Status card shown when the caller already has an active subscription. */
 function ActiveState({ subscription }: { subscription: Subscription }) {
+  const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const renews = subscription.currentPeriodEndUtc
     ? new Date(subscription.currentPeriodEndUtc).toLocaleDateString("en", {
@@ -316,24 +328,40 @@ function ActiveState({ subscription }: { subscription: Subscription }) {
   return (
     <Card style={styles.card}>
       <View style={styles.activeRow}>
-        <Text style={styles.activeLabel}>Status</Text>
+        <Text style={styles.activeLabel}>Current Plan</Text>
         <View style={styles.statusPill}>
-          <Text style={styles.statusPillText}>
-            {canceled ? "Cancels at period end" : "Active"}
-          </Text>
+          <Text style={styles.statusPillText}>NoteFusion Pro ✨</Text>
         </View>
+      </View>
+      <View style={styles.activeRow}>
+        <Text style={styles.activeLabel}>Subscription Status</Text>
+        <Text style={styles.activeValue}>
+          {canceled ? "Cancels at period end" : "Active & Paid"}
+        </Text>
       </View>
       {renews && (
         <View style={styles.activeRow}>
           <Text style={styles.activeLabel}>
-            {canceled ? "Access until" : "Renews"}
+            {canceled ? "Access until" : "Next Renewal Date"}
           </Text>
           <Text style={styles.activeValue}>{renews}</Text>
         </View>
       )}
+
+      <View style={{ marginTop: spacing.lg, paddingTop: spacing.md, borderTopWidth: 1, borderColor: colors.border }}>
+        <Text style={{ fontFamily: fonts.bold, fontSize: 14, color: colors.text, marginBottom: spacing.sm }}>
+          🎉 Active Pro Membership Features:
+        </Text>
+        {PRO_FEATURES.map((f) => (
+          <View key={f.text} style={{ flexDirection: "row", alignItems: "center", gap: spacing.sm, marginBottom: 8 }}>
+            <Ionicons name="checkmark-circle" size={16} color={colors.accent} />
+            <Text style={{ fontFamily: fonts.medium, fontSize: 13, color: colors.text }}>{f.text}</Text>
+          </View>
+        ))}
+      </View>
+
       <Text style={styles.manageHint}>
-        Manage or cancel your plan from the receipt email sent by our payment
-        provider.
+        You're all set! Your Pro plan is active. To manage billing or view receipts, check your email inbox.
       </Text>
     </Card>
   );
