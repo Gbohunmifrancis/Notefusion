@@ -429,20 +429,34 @@ def _inject_apt_path() -> None:
     """
     import os
 
-    apt_bin = "/app/.apt/usr/bin"
-    apt_bin2 = "/app/.apt/bin"
-    current = os.environ.get("PATH", "")
-    extra = ":".join(p for p in (apt_bin, apt_bin2) if p not in current)
-    if extra:
-        os.environ["PATH"] = extra + ":" + current
+    for apt_dir in ("/app/.apt/usr/bin", "/app/.apt/bin", "/app/.apt/usr/lib"):
+        current_path = os.environ.get("PATH", "")
+        if apt_dir not in current_path and apt_dir.endswith("bin"):
+            os.environ["PATH"] = apt_dir + ":" + current_path
+        # Also extend LD_LIBRARY_PATH so shared libs (libavcodec etc.) are found
+        current_ld = os.environ.get("LD_LIBRARY_PATH", "")
+        if "lib" in apt_dir and apt_dir not in current_ld:
+            os.environ["LD_LIBRARY_PATH"] = apt_dir + ":" + current_ld
 
 
 _inject_apt_path()
 
 
+def _build_apt_env() -> dict:
+    """Build a subprocess env dict that guarantees APT bin dirs are on PATH."""
+    import os
+    env = os.environ.copy()
+    for apt_dir in ("/app/.apt/usr/bin", "/app/.apt/bin"):
+        if apt_dir not in env.get("PATH", ""):
+            env["PATH"] = apt_dir + ":" + env.get("PATH", "")
+    for lib_dir in ("/app/.apt/usr/lib", "/app/.apt/usr/lib/x86_64-linux-gnu"):
+        if lib_dir not in env.get("LD_LIBRARY_PATH", ""):
+            env["LD_LIBRARY_PATH"] = lib_dir + ":" + env.get("LD_LIBRARY_PATH", "")
+    return env
+
+
 def _find_ffmpeg_cmd() -> str:
     import shutil
-    import logging
 
     for cand in (
         "/app/.apt/usr/bin/ffmpeg",
@@ -451,15 +465,15 @@ def _find_ffmpeg_cmd() -> str:
         "/usr/local/bin/ffmpeg",
     ):
         if Path(cand).is_file():
-            logging.info("ffmpeg found at: %s", cand)
+            print(f"[notefusion] ffmpeg found at: {cand}", flush=True)
             return cand
 
     found = shutil.which("ffmpeg")
     if found:
-        logging.info("ffmpeg found via PATH: %s", found)
+        print(f"[notefusion] ffmpeg found via PATH: {found}", flush=True)
         return found
 
-    logging.warning("ffmpeg not found — audio conversion will fall back to librosa")
+    print("[notefusion] WARNING: ffmpeg not found in any known location", flush=True)
     return "ffmpeg"
 
 
@@ -475,15 +489,15 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
 
     import subprocess
     import tempfile
-    import logging
 
     tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
     tmp_wav_path = Path(tmp_wav.name)
     tmp_wav.close()
 
     ffmpeg_bin = _find_ffmpeg_cmd()
+    apt_env = _build_apt_env()
+    print(f"[notefusion] Converting {audio_path.name} -> WAV via {ffmpeg_bin}", flush=True)
     try:
-        logging.info("Converting %s -> WAV using %s", audio_path, ffmpeg_bin)
         res = subprocess.run(
             [
                 ffmpeg_bin,
@@ -502,12 +516,24 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
             stderr=subprocess.PIPE,
             timeout=60,
             check=False,
+            env=apt_env,
         )
         if res.returncode == 0 and tmp_wav_path.stat().st_size > 0:
+            print(f"[notefusion] ffmpeg OK -> {tmp_wav_path.stat().st_size} bytes", flush=True)
             return tmp_wav_path, True
-    except Exception:
-        pass
+        else:
+            stderr_snippet = res.stderr.decode(errors="replace")[-600:]
+            print(
+                f"[notefusion] ffmpeg FAILED rc={res.returncode}:\n{stderr_snippet}",
+                flush=True,
+            )
+    except FileNotFoundError as exc:
+        print(f"[notefusion] ffmpeg FileNotFoundError: {exc}", flush=True)
+    except Exception as exc:
+        print(f"[notefusion] ffmpeg subprocess error: {exc}", flush=True)
 
+    # ── librosa fallback ──────────────────────────────────────────────────────
+    print("[notefusion] Trying librosa fallback for WAV conversion", flush=True)
     try:
         import soundfile as sf
         import librosa
@@ -516,11 +542,13 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
             warnings.simplefilter("ignore")
             y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
         sf.write(str(tmp_wav_path), y, sr, format="WAV", subtype="PCM_16")
+        print(f"[notefusion] librosa fallback OK -> {tmp_wav_path.stat().st_size} bytes", flush=True)
         return tmp_wav_path, True
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"[notefusion] librosa fallback FAILED: {exc}", flush=True)
 
     tmp_wav_path.unlink(missing_ok=True)
+    print(f"[notefusion] All conversion strategies failed; passing original {audio_path.name} to basic_pitch", flush=True)
     return audio_path, False
 
 
