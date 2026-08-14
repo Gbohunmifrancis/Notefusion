@@ -102,18 +102,9 @@ export function ProfileScreen() {
 
   return (
     <Screen scroll contentStyle={styles.screen}>
-      {/* ── 1. Top Bar: Header & Settings gear ─────────────────────────── */}
+      {/* ── 1. Top Bar: Title ───────────────────────────────────────────── */}
       <View style={styles.topBar}>
         <Text style={styles.pageTitle}>Profile</Text>
-        <TouchableOpacity
-          onPress={() => nav.navigate("Settings")}
-          style={styles.settingsGearBtn}
-          hitSlop={8}
-          accessibilityRole="button"
-          accessibilityLabel="Settings"
-        >
-          <Ionicons name="settings-outline" size={22} color={colors.text} />
-        </TouchableOpacity>
       </View>
 
       {/* ── 2. Avatar & User Information ─────────────────────────────────── */}
@@ -144,6 +135,13 @@ export function ProfileScreen() {
           icon="card-outline"
           label="Subscription"
           onPress={() => nav.navigate("Upgrade")}
+        />
+        <View style={styles.divider} />
+
+        <MenuItem
+          icon="settings-outline"
+          label="Settings"
+          onPress={() => nav.navigate("Settings")}
         />
         <View style={styles.divider} />
 

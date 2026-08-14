@@ -186,7 +186,7 @@ export function LibraryScreen() {
 
       {/* Search bar */}
       <View style={styles.searchBar}>
-        <Ionicons name="search-outline" size={19} color={colors.textFaint} style={styles.searchIcon} />
+        <Ionicons name="search-outline" size={18} color={colors.textFaint} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search your notes"
@@ -195,6 +195,7 @@ export function LibraryScreen() {
           onChangeText={setQuery}
           returnKeyType="search"
           clearButtonMode="while-editing"
+          textAlignVertical="center"
         />
       </View>
 
@@ -608,12 +609,13 @@ const makeStyles = (c: Palette) =>
     borderWidth: 1,
     borderColor: c.border,
     paddingHorizontal: spacing.md,
-    height: 52,
+    height: 48,
     marginTop: spacing.lg,
     marginBottom: spacing.md,
   },
   searchIcon: {
     marginRight: spacing.sm,
+    alignSelf: 'center',
   },
   searchInput: {
     flex: 1,
@@ -622,6 +624,7 @@ const makeStyles = (c: Palette) =>
     color: c.text,
     height: '100%',
     paddingVertical: 0,
+    includeFontPadding: false,
   },
   errorBubble: {
     width: 100,
