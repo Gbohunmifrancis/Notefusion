@@ -443,15 +443,40 @@ _inject_apt_path()
 
 
 def _build_apt_env() -> dict:
-    """Build a subprocess env dict that guarantees APT bin dirs are on PATH."""
+    """Build a subprocess env dict with all APT lib subdirs on LD_LIBRARY_PATH.
+
+    heroku-buildpack-apt installs shared libs under /app/.apt/usr/lib but nested
+    packages (e.g. libpulse0) put their internal .so files in subdirectories like
+    /app/.apt/usr/lib/x86_64-linux-gnu/pulseaudio/.  We walk the tree up to 3
+    levels deep so every such path is included — no matter which Ubuntu version
+    Heroku uses.
+    """
     import os
     env = os.environ.copy()
-    for apt_dir in ("/app/.apt/usr/bin", "/app/.apt/bin"):
-        if apt_dir not in env.get("PATH", ""):
-            env["PATH"] = apt_dir + ":" + env.get("PATH", "")
-    for lib_dir in ("/app/.apt/usr/lib", "/app/.apt/usr/lib/x86_64-linux-gnu"):
-        if lib_dir not in env.get("LD_LIBRARY_PATH", ""):
-            env["LD_LIBRARY_PATH"] = lib_dir + ":" + env.get("LD_LIBRARY_PATH", "")
+
+    # ── PATH: bin dirs ────────────────────────────────────────────────────────
+    for apt_bin in ("/app/.apt/usr/bin", "/app/.apt/bin"):
+        if apt_bin not in env.get("PATH", ""):
+            env["PATH"] = apt_bin + ":" + env.get("PATH", "")
+
+    # ── LD_LIBRARY_PATH: walk /app/.apt/usr/lib up to 3 levels deep ──────────
+    apt_lib_root = Path("/app/.apt/usr/lib")
+    lib_dirs: list[str] = []
+    if apt_lib_root.exists():
+        # level 0
+        lib_dirs.append(str(apt_lib_root))
+        for l1 in apt_lib_root.iterdir():
+            if l1.is_dir():
+                lib_dirs.append(str(l1))          # level 1 (e.g. x86_64-linux-gnu)
+                for l2 in l1.iterdir():
+                    if l2.is_dir():
+                        lib_dirs.append(str(l2))  # level 2 (e.g. pulseaudio, mesa)
+
+    current_ld = env.get("LD_LIBRARY_PATH", "")
+    for d in lib_dirs:
+        if d not in current_ld:
+            current_ld = d + ":" + current_ld
+    env["LD_LIBRARY_PATH"] = current_ld
     return env
 
 
