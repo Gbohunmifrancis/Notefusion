@@ -420,11 +420,30 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
+def _inject_apt_path() -> None:
+    """Ensure Heroku APT-installed binaries (ffmpeg, etc.) are on PATH at runtime.
+
+    heroku-buildpack-apt only sets PATH during the *build* phase; the web dyno
+    starts uvicorn with a clean environment that may not include /app/.apt/usr/bin.
+    Calling this once at module import makes shutil.which('ffmpeg') reliable.
+    """
+    import os
+
+    apt_bin = "/app/.apt/usr/bin"
+    apt_bin2 = "/app/.apt/bin"
+    current = os.environ.get("PATH", "")
+    extra = ":".join(p for p in (apt_bin, apt_bin2) if p not in current)
+    if extra:
+        os.environ["PATH"] = extra + ":" + current
+
+
+_inject_apt_path()
+
+
 def _find_ffmpeg_cmd() -> str:
     import shutil
-    found = shutil.which("ffmpeg")
-    if found:
-        return found
+    import logging
+
     for cand in (
         "/app/.apt/usr/bin/ffmpeg",
         "/app/.apt/bin/ffmpeg",
@@ -432,7 +451,15 @@ def _find_ffmpeg_cmd() -> str:
         "/usr/local/bin/ffmpeg",
     ):
         if Path(cand).is_file():
+            logging.info("ffmpeg found at: %s", cand)
             return cand
+
+    found = shutil.which("ffmpeg")
+    if found:
+        logging.info("ffmpeg found via PATH: %s", found)
+        return found
+
+    logging.warning("ffmpeg not found — audio conversion will fall back to librosa")
     return "ffmpeg"
 
 
@@ -448,6 +475,7 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
 
     import subprocess
     import tempfile
+    import logging
 
     tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
     tmp_wav_path = Path(tmp_wav.name)
@@ -455,6 +483,7 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
 
     ffmpeg_bin = _find_ffmpeg_cmd()
     try:
+        logging.info("Converting %s -> WAV using %s", audio_path, ffmpeg_bin)
         res = subprocess.run(
             [
                 ffmpeg_bin,
@@ -465,10 +494,13 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
                 "22050",
                 "-ac",
                 "1",
+                "-f",
+                "wav",
                 str(tmp_wav_path),
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            timeout=60,
             check=False,
         )
         if res.returncode == 0 and tmp_wav_path.stat().st_size > 0:
