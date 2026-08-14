@@ -1,8 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
-  Image,
   RefreshControl,
   StyleSheet,
   Text,
@@ -10,96 +9,83 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
-import { ConfidenceBadge } from "../components/ConfidenceBadge";
-import { libraryApi } from "../api/endpoints";
+import { useColors, useThemedStyles } from "../lib/theme";
+import { libraryApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { deriveSolfa } from "../lib/solfa";
-import {
-  fonts,
-  gradients,
-  radii,
-  spacing,
-  typography,
-  type Palette,
-} from "../design/theme";
-import { useColors, useThemedStyles } from "../lib/theme";
-import { appIcons } from "../design/icons";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
-// ─── Component ────────────────────────────────────────────────────────────────
+const FILTERS = ["All", "Tonic Solfa", "Staff Notation"] as const;
+type FilterType = typeof FILTERS[number];
 
 /**
- * LibraryScreen — light blue saved transcriptions list.
- *
- * Design language:
- *   • Mist canvas with ambient blue glow orb behind the title.
- *   • Each transcription row is a white card:
- *       – Gradient note icon bubble (purple → gold, varying per item).
- *       – Title in Ink Navy, metadata in Slate.
- *       – Confidence badge (traffic-light coloured).
- *       – Right chevron as a subtle navigation affordance.
- *   • Pull-to-refresh with a blue tint colour.
- *   • Long-press to delete (with confirmation alert).
- *   • Empty state: ambient orb + ghost icon + Slate copy.
- *   • Section count chip below the title.
+ * LibraryScreen — 100% aligned with Image 1 design sheet:
+ * 1. Centered "Library" page header
+ * 2. Rounded pill search input with search icon
+ * 3. Pill filter tabs (All, Tonic Solfa, Staff Notation) + options filter icon
+ * 4. Card items with blue note icon, date/time subtitle, and notation type badge (Tonic Solfa / Staff)
  */
 export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
 
   const [query, setQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("All");
 
-  const filteredItems = items.filter(
-    (item) =>
-      query.trim() === "" ||
-      item.title.toLowerCase().includes(query.trim().toLowerCase()),
-  );
+  function load() {
+    libraryApi
+      .list()
+      .then((data) => {
+        setItems(data);
+        setLoadError(null);
+      })
+      .catch((e) => setLoadError(toApiError(e).message))
+      .finally(() => {
+        setLoading(false);
+        setRefreshing(false);
+      });
+  }
 
-  // ── Data loading ────────────────────────────────────────────────────────────
-
-  const load = useCallback(async () => {
-    try {
-      setItems(await libraryApi.list());
-      setLoadError(null);
-    } catch (e) {
-      // Don't swallow: a failed load looks identical to an empty library, which
-      // tells the user their saved work is gone. Record it so the list can show
-      // the reason with a retry instead of the "Nothing saved yet" empty state.
-      setLoadError(toApiError(e).message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+  useEffect(() => {
+    load();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      load();
-    }, [load]),
-  );
+  // Filter items based on search query & active tab
+  const filteredItems = items.filter((item) => {
+    const matchesQuery =
+      query.trim() === "" ||
+      item.title.toLowerCase().includes(query.trim().toLowerCase());
 
-  // ── Open transcription ──────────────────────────────────────────────────────
+    if (!matchesQuery) return false;
 
-  async function open(item: SavedTranscription) {
+    if (activeFilter === "Tonic Solfa") {
+      return (item.notes?.length ?? 0) > 0;
+    }
+    if (activeFilter === "Staff Notation") {
+      return Boolean(item.musicXml);
+    }
+    return true;
+  });
+
+  async function openItem(item: SavedTranscription) {
     try {
       const full = await libraryApi.get(item.id);
-      // The library DTO carries pitches but no syllables, so solfa is
-      // re-derived here rather than shipped — same engine, movable do.
       const derived = deriveSolfa(
         full.notes ?? [],
         full.key,
-        full.timeSignature,
+        full.timeSignature
       );
       nav.navigate("Result", {
         result: {
@@ -107,8 +93,6 @@ export function LibraryScreen() {
           keyConfidence: 1,
           tempo: full.tempoBpm,
           timeSignature: full.timeSignature,
-          // The detail read carries the engraved score, so a saved item is
-          // exportable; the list read omits it, hence the detail fetch above.
           musicXml: full.musicXml ?? "",
           midiBase64: "",
           notes: derived.notes,
@@ -123,8 +107,6 @@ export function LibraryScreen() {
     }
   }
 
-  // ── Delete ──────────────────────────────────────────────────────────────────
-
   function confirmDelete(item: SavedTranscription) {
     Alert.alert(
       "Delete transcription",
@@ -135,131 +117,18 @@ export function LibraryScreen() {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            // Optimistic removal
             setItems((prev) => prev.filter((t) => t.id !== item.id));
             try {
               await libraryApi.remove(item.id);
             } catch (e) {
               Alert.alert("Could not delete", toApiError(e).message);
-              load(); // re-fetch to restore correct state
+              load();
             }
           },
         },
-      ],
+      ]
     );
   }
-
-  // ── Gradient cycle for note icons (each item gets a different accent) ───────
-
-  const ICON_GRADIENTS: readonly (readonly [string, string])[] = [
-    ["#2563EB", "#3B82F6"], // deep blue → bright blue  (The Fusion)
-    ["#0EA5E9", "#2563EB"], // sky → blue
-    ["#2563EB", "#1D4ED8"], // blue → deep blue
-    ["#3B82F6", "#60A5FA"], // bright blue → light blue
-    ["#16A34A", "#16A34A"], // green (high confidence vibe)
-  ] as const;
-
-  // ── List header ─────────────────────────────────────────────────────────────
-
-  const ListHeader = (
-    <View style={styles.listHeader}>
-      {/* Ambient orb behind title */}
-      <View style={styles.ambientOrb} />
-
-      {/* Title row */}
-      <View style={styles.titleRow}>
-        <Text style={styles.title}>Library</Text>
-
-        {/* Count chip */}
-        {items.length > 0 && (
-          <View style={styles.countChip}>
-            <Text style={styles.countText}>{items.length}</Text>
-          </View>
-        )}
-      </View>
-
-      <Text style={styles.subtitle}>
-        {items.length === 0
-          ? "Your saved transcriptions will appear here."
-          : "Tap to open · Long-press to delete"}
-      </Text>
-
-      {/* Search bar */}
-      <View style={styles.searchBar}>
-        <Ionicons name="search-outline" size={18} color={colors.textFaint} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search your notes"
-          placeholderTextColor={colors.textFaint}
-          value={query}
-          onChangeText={setQuery}
-          returnKeyType="search"
-          clearButtonMode="while-editing"
-          textAlignVertical="center"
-          textAlign="center"
-        />
-      </View>
-
-      {/* Gradient divider */}
-      {items.length > 0 && (
-        <LinearGradient
-          colors={["transparent", "rgba(37,99,235,0.35)", "transparent"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.headerDivider}
-        />
-      )}
-    </View>
-  );
-
-  // ── Empty state ─────────────────────────────────────────────────────────────
-
-  const EmptyState = !loading ? (
-    loadError ? (
-      <View style={styles.empty}>
-        <View style={styles.emptyBubbleWrap}>
-          <View style={styles.errorBubble}>
-            <Ionicons name="cloud-offline-outline" size={34} color={colors.danger} />
-          </View>
-        </View>
-        <Text style={styles.emptyTitle}>Couldn't load your library</Text>
-        <Text style={styles.emptyBody}>{loadError}</Text>
-        <TouchableOpacity
-          style={styles.retryBtn}
-          onPress={() => {
-            setLoading(true);
-            load();
-          }}
-        >
-          <Text style={styles.retryLabel}>Try again</Text>
-        </TouchableOpacity>
-      </View>
-    ) : (
-      <View style={styles.empty}>
-        {/* Ghost icon bubble */}
-        <View style={styles.emptyBubbleWrap}>
-          <LinearGradient
-            colors={gradients.brandDim}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.emptyBubble}
-          >
-            <View style={styles.emptyBubbleInner}>
-              <Image source={appIcons.songbook} style={styles.emptyBubbleImg} />
-            </View>
-          </LinearGradient>
-        </View>
-
-        <Text style={styles.emptyTitle}>Nothing saved yet</Text>
-        <Text style={styles.emptyBody}>
-          Transcribe a melody in the Listen tab and tap "Save to Library" to start
-          building your collection.
-        </Text>
-      </View>
-    )
-  ) : null;
-
-  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <Screen edges={["top"]}>
@@ -267,9 +136,7 @@ export function LibraryScreen() {
         data={filteredItems}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={
-          items.length === 0 ? styles.emptyContainer : styles.listContent
-        }
+        contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -277,374 +144,280 @@ export function LibraryScreen() {
               setRefreshing(true);
               load();
             }}
-            tintColor={colors.purple}
-            colors={[colors.purple]}
+            tintColor={colors.accent}
+            colors={[colors.accent]}
           />
         }
-        ListHeaderComponent={ListHeader}
-        renderItem={({ item, index }) => {
-          const gradPair =
-            ICON_GRADIENTS[index % ICON_GRADIENTS.length] ?? ICON_GRADIENTS[0];
-          const date = new Date(item.createdAtUtc).toLocaleDateString("en", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          });
+        ListHeaderComponent={
+          <View style={styles.headerArea}>
+            {/* Centered Page Title */}
+            <Text style={styles.pageTitle}>Library</Text>
+
+            {/* Pill Search Input */}
+            <View style={styles.searchBar}>
+              <Ionicons
+                name="search-outline"
+                size={18}
+                color={colors.textFaint}
+                style={styles.searchIcon}
+              />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search your notes"
+                placeholderTextColor={colors.textFaint}
+                value={query}
+                onChangeText={setQuery}
+                returnKeyType="search"
+                clearButtonMode="while-editing"
+                textAlignVertical="center"
+              />
+            </View>
+
+            {/* Filter Tabs + Options Icon Row */}
+            <View style={styles.filterRow}>
+              <View style={styles.filterTabs}>
+                {FILTERS.map((f) => {
+                  const isActive = activeFilter === f;
+                  return (
+                    <TouchableOpacity
+                      key={f}
+                      onPress={() => setActiveFilter(f)}
+                      style={[
+                        styles.filterTab,
+                        isActive && styles.filterTabActive,
+                      ]}
+                      activeOpacity={0.8}
+                    >
+                      <Text
+                        style={[
+                          styles.filterTabText,
+                          isActive && styles.filterTabTextActive,
+                        ]}
+                      >
+                        {f}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* Filter controls icon */}
+              <TouchableOpacity style={styles.optionsBtn} hitSlop={8}>
+                <Ionicons
+                  name="options-outline"
+                  size={20}
+                  color={colors.text}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
+        renderItem={({ item }) => {
+          const dateStr = new Date(item.createdAtUtc).toLocaleDateString(
+            "en-US",
+            { month: "short", day: "numeric", year: "numeric" }
+          );
+          const timeStr = new Date(item.createdAtUtc).toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit" }
+          );
+
+          const isStaff = Boolean(item.musicXml);
 
           return (
             <TouchableOpacity
-              activeOpacity={0.82}
-              onPress={() => open(item)}
+              activeOpacity={0.8}
+              onPress={() => openItem(item)}
               onLongPress={() => confirmDelete(item)}
+              style={styles.itemRow}
             >
-              <View style={styles.card}>
-                {/* ── Note icon bubble ─────────────────────────────────── */}
-                <LinearGradient
-                  colors={gradPair}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.noteIconBubble}
-                >
-                  <View style={styles.noteIconInner}>
-                    <Image source={appIcons.music} style={styles.noteIconImg} />
-                  </View>
-                </LinearGradient>
+              {/* Blue note icon badge */}
+              <View style={styles.noteIconBadge}>
+                <Ionicons name="musical-notes-outline" size={22} color="#2563EB" />
+              </View>
 
-                {/* ── Text block ───────────────────────────────────────── */}
-                <View style={styles.cardInfo}>
-                  <Text style={styles.cardTitle} numberOfLines={1}>
-                    {item.title}
-                  </Text>
+              {/* Item Info */}
+              <View style={styles.itemInfo}>
+                <Text style={styles.itemTitle} numberOfLines={1}>
+                  {item.title}
+                </Text>
+                <Text style={styles.itemDate}>
+                  {dateStr} • {timeStr}
+                </Text>
+              </View>
 
-                  {/* Metadata row */}
-                  <View style={styles.metaRow}>
-                    <MetaChip icon="key-outline" text={item.key} />
-                    <MetaChip
-                      icon="speedometer-outline"
-                      text={`${item.tempoBpm} BPM`}
-                    />
-                    <MetaChip icon="calendar-outline" text={date} />
-                  </View>
-                </View>
-
-                {/* ── Right side: badge + chevron ──────────────────────── */}
-                <View style={styles.cardRight}>
-                  <ConfidenceBadge value={item.overallConfidence} compact />
-                  <Ionicons
-                    name="chevron-forward"
-                    size={16}
-                    color={colors.textFaint}
-                    style={styles.chevron}
-                  />
-                </View>
+              {/* Notation Type Pill Badge */}
+              <View style={styles.typeBadge}>
+                <Text style={styles.typeBadgeText}>
+                  {isStaff ? "Staff" : "Tonic Solfa"}
+                </Text>
               </View>
             </TouchableOpacity>
           );
         }}
-        ListEmptyComponent={EmptyState}
+        ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
+        ListEmptyComponent={
+          !loading ? (
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name="folder-open-outline"
+                size={40}
+                color={colors.textFaint}
+              />
+              <Text style={styles.emptyTitle}>
+                {loadError ?? "No saved notes"}
+              </Text>
+              <Text style={styles.emptySub}>
+                {loadError
+                  ? "Couldn't load library"
+                  : "Recorded transcriptions will appear here."}
+              </Text>
+            </View>
+          ) : null
+        }
       />
     </Screen>
   );
 }
 
-// ─── MetaChip sub-component ───────────────────────────────────────────────────
-
-function MetaChip({
-  icon,
-  text,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  text: string;
-}) {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-  return (
-    <View style={styles.metaChip}>
-      <Ionicons name={icon} size={10} color={colors.textFaint} />
-      <Text style={styles.metaText}>{text}</Text>
-    </View>
-  );
-}
-
-// ─── Styles ──────────────────────────────────────────────────────────────────
-
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-  listContent: {
-    paddingBottom: 120, // clear the floating tab bar
-  },
+    listContent: {
+      paddingBottom: 120,
+    },
+    headerArea: {
+      paddingTop: spacing.xs,
+      marginBottom: spacing.md,
+    },
+    pageTitle: {
+      fontSize: 20,
+      fontFamily: fonts.bold,
+      color: c.text,
+      textAlign: "center",
+      marginBottom: spacing.md,
+    },
 
-  emptyContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-  },
+    // ── Search Bar ────────────────────────────────────────────────────────────
+    searchBar: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: c.surface,
+      borderRadius: radii.pill,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: spacing.lg,
+      height: 46,
+      marginBottom: spacing.md,
+    },
+    searchIcon: {
+      marginRight: spacing.sm,
+    },
+    searchInput: {
+      flex: 1,
+      fontFamily: fonts.regular,
+      fontSize: 15,
+      color: c.text,
+      height: "100%",
+      paddingVertical: 0,
+    },
 
-  // ── List header ────────────────────────────────────────────────────────────
+    // ── Filter Row ────────────────────────────────────────────────────────────
+    filterRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: spacing.sm,
+    },
+    filterTabs: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.xs,
+    },
+    filterTab: {
+      paddingHorizontal: spacing.md,
+      paddingVertical: spacing.xs + 2,
+      borderRadius: radii.pill,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    filterTabActive: {
+      backgroundColor: "#2563EB",
+      borderColor: "#2563EB",
+    },
+    filterTabText: {
+      fontSize: 13,
+      fontFamily: fonts.medium,
+      color: c.textMuted,
+    },
+    filterTabTextActive: {
+      color: "#FFFFFF",
+      fontFamily: fonts.bold,
+    },
+    optionsBtn: {
+      padding: spacing.xs,
+    },
 
-  listHeader: {
-    paddingTop: spacing.sm,
-    marginBottom: spacing.lg,
-    position: "relative",
-  },
+    // ── List Item ─────────────────────────────────────────────────────────────
+    itemRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: spacing.md,
+    },
+    noteIconBadge: {
+      width: 44,
+      height: 44,
+      borderRadius: radii.md,
+      backgroundColor: "#EFF6FF",
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: spacing.md,
+    },
+    itemInfo: {
+      flex: 1,
+    },
+    itemTitle: {
+      fontSize: 16,
+      fontFamily: fonts.bold,
+      color: c.text,
+      marginBottom: 2,
+    },
+    itemDate: {
+      fontSize: 13,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+    },
+    typeBadge: {
+      backgroundColor: "#EFF6FF",
+      borderRadius: radii.pill,
+      paddingHorizontal: spacing.md,
+      paddingVertical: 4,
+    },
+    typeBadgeText: {
+      fontSize: 12,
+      fontFamily: fonts.semibold,
+      color: "#2563EB",
+    },
+    itemDivider: {
+      height: 1,
+      backgroundColor: c.border,
+    },
 
-  /** Soft blue glow orb — bleeds behind the title from the top-left. */
-  ambientOrb: {
-    position: "absolute",
-    top: -40,
-    left: -40,
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: c.accentSoft,
-  },
-
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    marginBottom: spacing.xs,
-  },
-
-  title: {
-    ...typography.display,
-    color: c.text,
-    fontSize: 30,
-    letterSpacing: -0.5,
-  },
-
-  /** Tinted count chip — shows the total number of saved items. */
-  countChip: {
-    backgroundColor: c.accentSoft,
-    borderWidth: 1,
-    borderColor: c.accentGlow,
-    borderRadius: radii.pill,
-    paddingVertical: 3,
-    paddingHorizontal: spacing.sm + 2,
-    // Blue glow
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-
-  countText: {
-    ...typography.caption,
-    color: c.purple,
-    fontSize: 12,
-    fontFamily: fonts.bold,
-  },
-
-  subtitle: {
-    ...typography.body,
-    color: c.textFaint,
-    fontSize: 13,
-    marginBottom: spacing.lg,
-  },
-
-  /** Horizontal gradient rule below the header. */
-  headerDivider: {
-    height: 1,
-    marginBottom: spacing.xs,
-  },
-
-  // ── Card ───────────────────────────────────────────────────────────────────
-
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-    borderRadius: radii.lg,
-    padding: spacing.md,
-    marginBottom: spacing.sm,
-    // Faint blue shadow per card
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-
-  // ── Note icon bubble ────────────────────────────────────────────────────────
-
-  /** Gradient outer bubble — provides the coloured accent ring. */
-  noteIconBubble: {
-    width: 46,
-    height: 46,
-    borderRadius: radii.md,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: spacing.md,
-    // Glow
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-
-  /** Frosted inner disc inside the bubble. */
-  noteIconImg: { width: 22, height: 22 },
-
-  noteIconInner: {
-    width: 34,
-    height: 34,
-    borderRadius: radii.sm,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: c.surfaceAlt,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-
-  // ── Card text ───────────────────────────────────────────────────────────────
-
-  cardInfo: {
-    flex: 1,
-    marginRight: spacing.sm,
-  },
-
-  cardTitle: {
-    ...typography.label,
-    color: c.text,
-    fontSize: 14,
-    marginBottom: 5,
-  },
-
-  metaRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: spacing.sm,
-  },
-
-  metaChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-  },
-
-  metaText: {
-    ...typography.caption,
-    color: c.textFaint,
-    fontSize: 11,
-  },
-
-  // ── Card right ──────────────────────────────────────────────────────────────
-
-  cardRight: {
-    alignItems: "flex-end",
-    gap: spacing.xs,
-  },
-
-  chevron: {
-    marginTop: 2,
-    opacity: 0.5,
-  },
-
-  // ── Empty state ─────────────────────────────────────────────────────────────
-
-  empty: {
-    alignItems: "center",
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.xxxl,
-  },
-
-  emptyBubbleWrap: {
-    marginBottom: spacing.xl,
-    borderRadius: radii.xl + spacing.md,
-    overflow: "hidden",
-    // Blue glow
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 6,
-  },
-
-  emptyBubble: {
-    width: 100,
-    height: 100,
-    borderRadius: radii.xl + spacing.md,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  emptyBubbleImg: { width: 34, height: 34 },
-
-  emptyBubbleInner: {
-    width: 76,
-    height: 76,
-    borderRadius: radii.xl,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-
-  emptyTitle: {
-    ...typography.heading,
-    color: c.textMuted,
-    fontSize: 18,
-    fontFamily: fonts.bold,
-    textAlign: "center",
-    marginBottom: spacing.sm,
-  },
-
-  emptyBody: {
-    ...typography.body,
-    color: c.textFaint,
-    textAlign: "center",
-    fontSize: 14,
-    lineHeight: 22,
-    maxWidth: 280,
-  },
-
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: c.surface,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: c.border,
-    paddingHorizontal: spacing.md,
-    height: 48,
-    marginTop: spacing.lg,
-    marginBottom: spacing.md,
-  },
-  searchIcon: {
-    marginRight: spacing.sm,
-    alignSelf: 'center',
-  },
-  searchInput: {
-    flex: 1,
-    fontFamily: fonts.regular,
-    fontSize: 15,
-    color: c.text,
-    height: '100%',
-    paddingVertical: 0,
-    includeFontPadding: false,
-  },
-  errorBubble: {
-    width: 100,
-    height: 100,
-    borderRadius: radii.xl + spacing.md,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: c.surfaceAlt,
-  },
-  retryBtn: {
-    marginTop: spacing.lg,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.sm + 2,
-    borderRadius: radii.pill,
-    backgroundColor: c.accent,
-  },
-  retryLabel: {
-    fontFamily: fonts.medium,
-    fontSize: 14,
-    color: "#fff",
-  },
-});
+    emptyContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: spacing.xxl,
+    },
+    emptyTitle: {
+      fontSize: 16,
+      fontFamily: fonts.bold,
+      color: c.text,
+      marginTop: spacing.md,
+    },
+    emptySub: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      marginTop: 2,
+    },
+  });
