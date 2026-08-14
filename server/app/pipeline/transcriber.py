@@ -705,12 +705,19 @@ def transcribe(
     if tempo_override:
         bpm = float(tempo_override)
     else:
-        y, sr = librosa.load(str(audio_path), sr=22_050, mono=True)
-        raw_est, _ = librosa.beat.beat_track(y=y, sr=sr)
-        raw_bpm = float(np.atleast_1d(raw_est)[0])
-        if np.isfinite(raw_bpm) and 20.0 <= raw_bpm <= 400.0:
-            bpm = raw_bpm
-        else:
+        bpm = 0.0
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                y, sr = librosa.load(str(audio_path), sr=22_050, mono=True)
+            raw_est, _ = librosa.beat.beat_track(y=y, sr=sr)
+            raw_bpm = float(np.atleast_1d(raw_est)[0])
+            if np.isfinite(raw_bpm) and 20.0 <= raw_bpm <= 400.0:
+                bpm = raw_bpm
+        except Exception as exc:
+            print(f"[notefusion] librosa beat_track failed ({exc}); falling back to onsets/default", flush=True)
+
+        if bpm < 20.0 or bpm > 400.0:
             # Attempt a rough onset-based estimate as a secondary strategy
             # before falling back to the safe default.
             onsets = np.array([e[0] for e in events])
