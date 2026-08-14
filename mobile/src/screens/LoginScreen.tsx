@@ -18,6 +18,7 @@ import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { OrDivider } from "../components/OrDivider";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { googleAuthConfigured } from "../lib/env";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
@@ -83,7 +84,10 @@ export function LoginScreen({ navigation }: Props) {
     if (!forgotEmail.trim()) return;
     setForgotBusy(true);
     try {
-      await new Promise((r) => setTimeout(r, 800));
+      await authApi.forgotPassword(forgotEmail.trim());
+      setForgotSent(true);
+    } catch {
+      // Show success anyway so user enumeration is avoided
       setForgotSent(true);
     } finally {
       setForgotBusy(false);
