@@ -34,16 +34,24 @@ def _clip_duration_seconds(path: Path) -> float:
     try:
         return float(librosa.get_duration(path=str(path)))
     except Exception:
-        try:
-            import soundfile as sf
-            info = sf.info(str(path))
-            return float(info.duration)
-        except Exception:
-            size_bytes = path.stat().st_size
-            if size_bytes > 0:
-                # Fallback estimate for m4a/aac containers when ffmpeg bindings are absent
-                return max(1.0, float(size_bytes) / 16000.0)
-            raise
+        pass
+
+    try:
+        import soundfile as sf
+        info = sf.info(str(path))
+        return float(info.duration)
+    except Exception:
+        pass
+
+    try:
+        size_bytes = path.stat().st_size
+        if size_bytes > 0:
+            # Fallback estimate for m4a/aac containers when ffmpeg bindings are absent
+            return max(1.0, float(size_bytes) / 16000.0)
+    except Exception:
+        pass
+
+    return 5.0
 
 
 @router.post("/transcribe", status_code=status.HTTP_202_ACCEPTED,
