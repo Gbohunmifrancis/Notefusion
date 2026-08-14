@@ -418,6 +418,59 @@ def _dedup_simultaneous(events: list[tuple]) -> list[tuple]:
 # ── Main pipeline ──────────────────────────────────────────────────────────────
 
 
+def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
+    """Ensure audio_path is a valid PCM WAV file before AMT inference.
+
+    If audio_path is already a .wav file, returns (audio_path, False).
+    If audio_path is .m4a, .aac, .mp3, etc., converts to a temporary 22 050 Hz PCM .wav file
+    via ffmpeg (or soundfile/librosa fallback) and returns (tmp_wav_path, True).
+    """
+    if audio_path.suffix.lower() == ".wav":
+        return audio_path, False
+
+    import subprocess
+    import tempfile
+
+    tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    tmp_wav_path = Path(tmp_wav.name)
+    tmp_wav.close()
+
+    try:
+        res = subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-i",
+                str(audio_path),
+                "-ar",
+                "22050",
+                "-ac",
+                "1",
+                str(tmp_wav_path),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            check=False,
+        )
+        if res.returncode == 0 and tmp_wav_path.stat().st_size > 0:
+            return tmp_wav_path, True
+    except Exception:
+        pass
+
+    try:
+        import soundfile as sf
+        import librosa
+
+        y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
+        sf.write(str(tmp_wav_path), y, sr, format="WAV", subtype="PCM_16")
+        return tmp_wav_path, True
+    except Exception:
+        pass
+
+    tmp_wav_path.unlink(missing_ok=True)
+    return audio_path, False
+
+
 def transcribe(
     audio_path: Path,
     mode: str = "melody",
@@ -455,14 +508,20 @@ def transcribe(
     min_note_ms = 100 if mode == "melody" else 80
     max_freq_hz = 1050.0
 
-    _, midi_data, note_events = predict(
-        str(audio_path),
-        ICASSP_2022_MODEL_PATH,
-        onset_threshold=onset_thresh,
-        frame_threshold=frame_thresh,
-        minimum_note_length=min_note_ms,
-        maximum_frequency=max_freq_hz,
-    )
+    target_path, is_temp_wav = _ensure_wav_path(audio_path)
+    try:
+        _, midi_data, note_events = predict(
+            str(target_path),
+            ICASSP_2022_MODEL_PATH,
+            onset_threshold=onset_thresh,
+            frame_threshold=frame_thresh,
+            minimum_note_length=min_note_ms,
+            maximum_frequency=max_freq_hz,
+        )
+    finally:
+        if is_temp_wav:
+            target_path.unlink(missing_ok=True)
+
     progress(0.45)
 
     # ── 2. Initial duration filter ────────────────────────────────────────────
