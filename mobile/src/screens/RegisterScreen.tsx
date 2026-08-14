@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  Dimensions,
-  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -17,30 +15,25 @@ import { BrandMark } from "../components/BrandMark";
 import { GoogleButton } from "../components/GoogleButton";
 import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { OrDivider } from "../components/OrDivider";
-import { StaffRibbon } from "../components/StaffRibbon";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { googleAuthConfigured, siteUrls } from "../lib/env";
+import { googleAuthConfigured } from "../lib/env";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles, useColors } from "../lib/theme";
 import type { AuthStackParams } from "../navigation/types";
 
-const { width } = Dimensions.get("window");
-
 type Props = NativeStackScreenProps<AuthStackParams, "Register">;
 
 /**
- * RegisterScreen — the sign-up counterpart to Login.
- *
- * Deliberately the same frame as LoginScreen: brand block, heading pair, fields,
- * primary action, the "or" break, Google, and the staff ribbon at the foot. The
- * two screens are one flow with one difference — the number of fields — so
- * anything that moved between them would read as a different app.
- *
- * Google appears here too because `POST /api/auth/google` creates the account the
- * first time it sees a subject: signing up with Google and signing in with it are
- * the same call, so there is no reason to make someone find the Login screen.
+ * RegisterScreen — 100% aligned with design sheet:
+ * 1. Top left back arrow
+ * 2. Centered BrandMark + Notefusion wordmark
+ * 3. Title: "Create your account", Subtitle: "Start your musical journey"
+ * 4. Full name, Email, Password, and Confirm password fields
+ * 5. Primary "Sign up" blue pill button
+ * 6. "or" divider + "Sign up with Google" button
+ * 7. Bottom link: "Already have an account? Sign in"
  */
 export function RegisterScreen({ navigation }: Props) {
   const { signUp, signInWithGoogle } = useAuth();
@@ -51,22 +44,27 @@ export function RegisterScreen({ navigation }: Props) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
 
-  // Mirror the server's RegisterCommandValidator so users get instant feedback.
   const nameOk = fullName.trim().length >= 2;
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
   const pwOk = password.length >= 8;
-  const canSubmit = nameOk && emailOk && pwOk;
+  const confirmOk = password === confirmPassword;
+
+  const canSubmit = nameOk && emailOk && pwOk && confirmOk;
 
   async function submit() {
+    if (!confirmOk) {
+      setError("Passwords do not match");
+      return;
+    }
     setError(null);
     setBusy(true);
     try {
       await signUp(fullName.trim(), email.trim(), password);
-      // On success the AuthProvider swaps the root navigator — no navigate here.
     } catch (e) {
       setError(toApiError(e).message);
     } finally {
@@ -87,7 +85,7 @@ export function RegisterScreen({ navigation }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top"]}>
+    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
       <StatusBar style={mode === "dark" ? "light" : "dark"} />
 
       <KeyboardAvoider>
@@ -96,146 +94,119 @@ export function RegisterScreen({ navigation }: Props) {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          {/* ── Back ───────────────────────────────────────────────────────── */}
-          {navigation.canGoBack() && (
-            <Pressable
-              onPress={() => navigation.goBack()}
-              hitSlop={12}
-              accessibilityRole="button"
-              accessibilityLabel="Go back"
-              style={styles.back}
-            >
-              <Ionicons name="arrow-back" size={26} color={colors.accent} />
-            </Pressable>
-          )}
-
-          {/* ── Brand ──────────────────────────────────────────────────────── */}
-          <View style={styles.brand}>
-            <BrandMark size={104} color={colors.accent} waveColor={colors.accentAlt} showWaves />
-            <Text style={styles.wordmark}>Notefusion</Text>
-            <Text style={styles.tagline}>Hear it. See it. Notate it.</Text>
+          {/* ── 1. Top Header: Back arrow ─────────────────────────────────── */}
+          <View style={styles.topHeader}>
+            {navigation.canGoBack() ? (
+              <Pressable
+                onPress={() => navigation.goBack()}
+                hitSlop={12}
+                accessibilityRole="button"
+                accessibilityLabel="Go back"
+              >
+                <Ionicons name="chevron-back" size={24} color={colors.text} />
+              </Pressable>
+            ) : (
+              <View />
+            )}
           </View>
 
-          {/* ── Heading ────────────────────────────────────────────────────── */}
-          <Text style={styles.title}>Create your account</Text>
-          <Text style={styles.subtitle}>Start turning melodies into notation</Text>
+          {/* ── 2. Centered Brand Logo ────────────────────────────────────── */}
+          <View style={styles.brandContainer}>
+            <BrandMark size={72} color="#2563EB" waveColor="rgba(37,99,235,0.4)" showWaves={false} />
+            <Text style={styles.wordmark}>Notefusion</Text>
+          </View>
 
-          {/* ── Fields ─────────────────────────────────────────────────────── */}
+          {/* ── 3. Title & Subtitle ────────────────────────────────────────── */}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Create your account</Text>
+            <Text style={styles.subtitle}>Start your musical journey</Text>
+          </View>
+
+          {/* Error Banner */}
+          {error && (
+            <View style={styles.errorCard}>
+              <Ionicons name="alert-circle-outline" size={18} color={colors.danger} />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          )}
+
+          {/* ── 4. Form Fields ────────────────────────────────────────────── */}
           <View style={styles.form}>
             <TextField
-              label="Full name"
-              icon="person-outline"
               value={fullName}
               onChangeText={setFullName}
               autoCapitalize="words"
               autoComplete="name"
-              placeholder="Enter your name"
+              placeholder="Full name"
             />
             <TextField
-              label="Email"
-              icon="mail-outline"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
+              autoCapitalize="none"
               autoComplete="email"
-              placeholder="Enter your email"
+              placeholder="Email"
               error={
                 email.length > 0 && !emailOk ? "Enter a valid email" : undefined
               }
             />
             <TextField
-              label="Password"
-              icon="lock-closed-outline"
               value={password}
               onChangeText={setPassword}
               secure
               autoComplete="new-password"
-              placeholder="At least 8 characters"
+              placeholder="Password"
               error={
                 password.length > 0 && !pwOk ? "Minimum 8 characters" : undefined
               }
-              style={styles.lastField}
+            />
+            <TextField
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secure
+              autoComplete="new-password"
+              placeholder="Confirm password"
+              error={
+                confirmPassword.length > 0 && !confirmOk
+                  ? "Passwords do not match"
+                  : undefined
+              }
             />
           </View>
 
-          {/* ── Inline error ───────────────────────────────────────────────── */}
-          {error && (
-            <View style={styles.errorBox}>
-              <View style={styles.errorDot} />
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
-
-          {/* ── Actions ────────────────────────────────────────────────────── */}
+          {/* ── 5. Primary Sign up Button ────────────────────────────────── */}
           <Button
-            label="Create account"
+            label="Sign up"
             onPress={submit}
             loading={busy}
             disabled={!canSubmit}
-            icon="arrow-forward"
-            iconPosition="right"
+            style={styles.submitBtn}
           />
 
+          {/* ── 6. Divider & Google Sign-Up ───────────────────────────────── */}
           {googleAuthConfigured && (
             <>
               <OrDivider />
               <GoogleButton
-                label="Sign up with Google"
                 onPress={google}
                 loading={googleBusy}
+                label="Sign up with Google"
               />
             </>
           )}
 
-          <View style={styles.signinRow}>
-            <Text style={styles.signinText}>Already have an account? </Text>
-            <Pressable
-              onPress={() => navigation.navigate("Login")}
-              hitSlop={8}
-              accessibilityRole="button"
-            >
-              <Text style={styles.signinLink}>Log in</Text>
+          {/* ── 7. Footer Sign in link ────────────────────────────────────── */}
+          <View style={styles.footerRow}>
+            <Text style={styles.footerPrompt}>Already have an account? </Text>
+            <Pressable onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.footerLink}>Sign in</Text>
             </Pressable>
-          </View>
-
-          {/* ── Legal ──────────────────────────────────────────────────────── */}
-          {/* Two links in one sentence, so each is its own pressable Text span
-              rather than one Pressable wrapping the row: tapping "Terms" has to
-              open the terms, not whichever URL the container happened to hold. */}
-          <View style={styles.privacyRow}>
-            <Text style={styles.privacyText}>
-              By creating an account you agree to our{" "}
-              <Text
-                style={styles.privacyLink}
-                accessibilityRole="link"
-                onPress={() => Linking.openURL(siteUrls.terms)}
-              >
-                Terms of Service
-              </Text>
-              {" and "}
-              <Text
-                style={styles.privacyLink}
-                accessibilityRole="link"
-                onPress={() => Linking.openURL(siteUrls.privacy)}
-              >
-                Privacy Policy
-              </Text>
-            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoider>
-
-      {/* ── Decorative staff ─────────────────────────────────────────────── */}
-      {/* Outside the ScrollView so it stays pinned to the bottom edge and never
-          scrolls up over the form. */}
-      <View style={styles.ribbon} pointerEvents="none">
-        <StaffRibbon width={width} height={120} color={colors.accent} opacity={0.2} />
-      </View>
     </SafeAreaView>
   );
 }
-
-// ─── Styles ──────────────────────────────────────────────────────────────────
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
@@ -243,147 +214,85 @@ const makeStyles = (c: Palette) =>
       flex: 1,
       backgroundColor: c.bg,
     },
-
-    flex: {
-      flex: 1,
-    },
-
     scroll: {
+      flexGrow: 1,
       paddingHorizontal: spacing.xl,
-      // Bottom padding clears the staff ribbon so the sign-in line is never
-      // sitting on top of the artwork.
-      paddingBottom: 130,
+      paddingBottom: spacing.xxl,
     },
 
-    back: {
-      alignSelf: "flex-start",
-      paddingVertical: spacing.md,
+    topHeader: {
+      paddingTop: spacing.xs,
+      marginBottom: spacing.md,
     },
 
-    // ── Brand ─────────────────────────────────────────────────────────────────
-
-    brand: {
+    brandContainer: {
       alignItems: "center",
-      marginTop: spacing.sm,
+      marginBottom: spacing.lg,
     },
-
     wordmark: {
-      ...typography.hero,
-      color: c.text,
-      marginTop: spacing.md,
-    },
-
-    tagline: {
-      fontSize: 16,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
+      fontSize: 26,
+      fontFamily: fonts.bold,
+      color: "#2563EB",
+      letterSpacing: -0.5,
       marginTop: spacing.xs,
     },
 
-    // ── Heading ───────────────────────────────────────────────────────────────
-
-    title: {
-      ...typography.screenTitle,
-      color: c.text,
-      marginTop: spacing.xxl,
-    },
-
-    subtitle: {
-      fontSize: 16,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: spacing.xs,
-    },
-
-    // ── Form ──────────────────────────────────────────────────────────────────
-
-    form: {
-      marginTop: spacing.xl,
+    titleContainer: {
+      alignItems: "center",
       marginBottom: spacing.xl,
     },
-
-    /** Pull the bottom margin off the last field so the form → button gap
-     *  matches the top. */
-    lastField: {
-      marginBottom: 0,
+    title: {
+      fontSize: 22,
+      fontFamily: fonts.bold,
+      color: c.text,
+      marginBottom: 2,
+    },
+    subtitle: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
     },
 
-    // ── Error chip ────────────────────────────────────────────────────────────
-
-    errorBox: {
+    errorCard: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "rgba(220, 38, 38, 0.10)",
+      backgroundColor: "#FEF2F2",
       borderWidth: 1,
-      borderColor: "rgba(220, 38, 38, 0.28)",
+      borderColor: c.danger,
       borderRadius: radii.md,
       padding: spacing.md,
       marginBottom: spacing.lg,
+      gap: spacing.xs,
     },
-
-    errorDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
-      backgroundColor: c.danger,
-      marginRight: spacing.sm,
-    },
-
     errorText: {
-      ...typography.caption,
+      fontSize: 13,
+      fontFamily: fonts.medium,
       color: c.danger,
       flex: 1,
-      fontSize: 13,
-      lineHeight: 18,
     },
 
-    // ── Sign-in line ──────────────────────────────────────────────────────────
+    form: {
+      marginBottom: spacing.md,
+    },
 
-    signinRow: {
+    submitBtn: {
+      marginBottom: spacing.md,
+    },
+
+    footerRow: {
       flexDirection: "row",
       justifyContent: "center",
       alignItems: "center",
-      marginTop: spacing.xl,
+      marginTop: spacing.xxl,
     },
-
-    signinText: {
-      fontSize: 15,
+    footerPrompt: {
+      fontSize: 14,
       fontFamily: fonts.regular,
       color: c.textMuted,
     },
-
-    signinLink: {
-      fontSize: 15,
+    footerLink: {
+      fontSize: 14,
       fontFamily: fonts.bold,
-      color: c.accent,
-    },
-
-    privacyRow: {
-      marginTop: spacing.lg,
-      marginBottom: spacing.sm,
-      alignItems: "center",
-      paddingHorizontal: spacing.md,
-    },
-
-    privacyText: {
-      fontSize: 12,
-      fontFamily: fonts.regular,
-      color: c.textFaint,
-      textAlign: "center",
-      lineHeight: 18,
-    },
-
-    privacyLink: {
-      fontSize: 12,
-      fontFamily: fonts.semibold,
-      color: c.accent,
-      textDecorationLine: "underline",
-    },
-
-    ribbon: {
-      position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: 0,
+      color: "#2563EB",
     },
   });
