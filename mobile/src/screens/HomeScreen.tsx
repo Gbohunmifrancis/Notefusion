@@ -78,9 +78,9 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            {/* ── 1. Top Header Bar: Page title (left), Dark Mode & Notifications (right) ─ */}
+            {/* ── 1. Top Header Bar: Dark Mode & Notifications (right) ─ */}
             <View style={styles.topHeader}>
-              <Text style={styles.pageTitle}>Home</Text>
+              <View />
 
               <View style={styles.headerActions}>
                 {/* Dark Mode Toggle */}
@@ -129,25 +129,6 @@ export function HomeScreen({ navigation }: Props) {
                 <Text style={styles.tapText}>Tap to start recording</Text>
                 <Text style={styles.importSubLink}>or import audio file</Text>
               </TouchableOpacity>
-
-              {/* Quick action buttons row */}
-              <View style={styles.quickActionRow}>
-                <TouchableOpacity
-                  style={styles.quickBtn}
-                  onPress={() => navigation.navigate('Record')}
-                >
-                  <Ionicons name="cloud-upload-outline" size={16} color={colors.text} />
-                  <Text style={styles.quickBtnLabel}>Import</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.quickBtn}
-                  onPress={() => navigation.navigate('Record')}
-                >
-                  <Ionicons name="link-outline" size={16} color={colors.text} />
-                  <Text style={styles.quickBtnLabel}>Paste URL</Text>
-                </TouchableOpacity>
-              </View>
             </View>
 
             {/* ── 4. Recent Recordings Header ───────────────────────────────── */}

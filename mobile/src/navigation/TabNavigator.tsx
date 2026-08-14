@@ -37,7 +37,6 @@ const TABS: {
   { name: "Home", label: "Home", icon: "home-outline", iconActive: "home" },
   { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
   { name: "Record", label: "Record", icon: "mic", iconActive: "mic", isCenter: true },
-  { name: "Library", label: "Transcribe", icon: "stats-chart-outline", iconActive: "stats-chart" },
   { name: "Profile", label: "Profile", icon: "person-outline", iconActive: "person" },
 ];
 
