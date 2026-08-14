@@ -37,6 +37,15 @@ export const tokenStore = {
     return raw ? (JSON.parse(raw) as AuthUser) : null;
   },
 
+  async saveLastAuthMethod(method: 'google' | 'email'): Promise<void> {
+    await SecureStore.setItemAsync('nf.lastAuthMethod', method);
+  },
+
+  async getLastAuthMethod(): Promise<'google' | 'email' | null> {
+    const val = await SecureStore.getItemAsync('nf.lastAuthMethod');
+    return val === 'google' || val === 'email' ? val : null;
+  },
+
   async clear(): Promise<void> {
     await Promise.all([
       SecureStore.deleteItemAsync(ACCESS_KEY),

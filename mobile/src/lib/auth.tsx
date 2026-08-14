@@ -70,9 +70,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   //   expo-auth-session v5+ dropped `useProxy`; we pass it as `native` to override the
   //   dynamic exp://IP:port URI that Google rejects with Error 400 invalid_request.
   // - Standalone / dev builds: use the notefusion:// native scheme.
-  const redirectUri = isExpoGo
-    ? 'https://auth.expo.io/@yaw669/notefusion'
-    : makeRedirectUri({ scheme: 'notefusion' });
+  const redirectUri = makeRedirectUri({
+    scheme: 'notefusion',
+    native: 'https://auth.expo.io/@yaw669/notefusion',
+  });
 
   const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
     iosClientId: isExpoGo ? undefined : (googleAuth.iosClientId || undefined),
@@ -136,10 +137,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       initializing,
       async signIn(email, password) {
         const res = await authApi.login(email, password);
+        await tokenStore.saveLastAuthMethod('email');
         await persistSession(res.accessToken, res.refreshToken, res.user);
       },
       async signUp(fullName, email, password) {
         const res = await authApi.register(fullName, email, password);
+        await tokenStore.saveLastAuthMethod('email');
         await persistSession(res.accessToken, res.refreshToken, res.user);
       },
       /**
@@ -156,6 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!idToken) return;
 
         const session = await authApi.google(idToken);
+        await tokenStore.saveLastAuthMethod('google');
         await persistSession(
           session.accessToken,
           session.refreshToken,

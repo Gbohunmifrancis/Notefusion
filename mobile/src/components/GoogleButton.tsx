@@ -18,6 +18,7 @@ interface Props {
   onPress?: () => void;
   loading?: boolean;
   disabled?: boolean;
+  isLastUsed?: boolean;
   style?: ViewStyle;
 }
 
@@ -65,6 +66,7 @@ export function GoogleButton({
   onPress,
   loading = false,
   disabled = false,
+  isLastUsed = false,
   style,
 }: Props) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -99,6 +101,11 @@ export function GoogleButton({
           <View style={styles.row}>
             <GoogleG />
             <Text style={styles.label}>{label}</Text>
+            {isLastUsed && (
+              <View style={styles.lastUsedPill}>
+                <Text style={styles.lastUsedText}>Last used</Text>
+              </View>
+            )}
           </View>
         )}
       </Pressable>
@@ -128,6 +135,20 @@ const makeStyles = (c: Palette) =>
       fontSize: 16,
       fontFamily: fonts.semibold,
       color: c.text,
+    },
+
+    lastUsedPill: {
+      backgroundColor: "#EFF6FF",
+      borderRadius: radii.pill,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+      marginLeft: spacing.xs,
+    },
+
+    lastUsedText: {
+      fontSize: 11,
+      fontFamily: fonts.bold,
+      color: "#2563EB",
     },
 
     disabled: {

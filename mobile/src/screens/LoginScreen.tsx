@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -20,6 +20,7 @@ import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { tokenStore } from "../lib/tokenStore";
 import { googleAuthConfigured } from "../lib/env";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useTheme, useThemedStyles, useColors } from "../lib/theme";
@@ -48,6 +49,11 @@ export function LoginScreen({ navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [lastAuthMethod, setLastAuthMethod] = useState<"google" | "email" | null>(null);
+
+  useEffect(() => {
+    tokenStore.getLastAuthMethod().then(setLastAuthMethod);
+  }, []);
 
   const [forgotVisible, setForgotVisible] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
@@ -189,6 +195,7 @@ export function LoginScreen({ navigation }: Props) {
                 onPress={google}
                 loading={googleBusy}
                 label="Sign in with Google"
+                isLastUsed={lastAuthMethod === "google"}
               />
             </>
           )}
