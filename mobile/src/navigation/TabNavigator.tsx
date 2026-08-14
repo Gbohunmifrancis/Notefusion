@@ -1,5 +1,12 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Keyboard,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   createBottomTabNavigator,
@@ -12,9 +19,7 @@ import { LibraryScreen } from "../screens/LibraryScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import {
   fonts,
-  radii,
   spacing,
-  typography,
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -38,12 +43,32 @@ const TABS: {
 
 /**
  * Tab bar matching Image 3 design sheet:
- * White bar with 5 items, clean icons + labels, and a prominent central primary blue mic button.
+ * Automatically hides when software keyboard is open so bottom icons never shift up over inputs.
  */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
+    const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
+
+    const showSub = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
+    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
+
+  // Hide bottom tab bar completely when keyboard is open
+  if (keyboardVisible) {
+    return null;
+  }
 
   return (
     <View
@@ -55,7 +80,6 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
     >
       <View style={styles.bar}>
         {TABS.map((tab, index) => {
-          // Map tab to navigation route index (Home=0, Library=1, Record=2, Profile=3)
           let targetRouteName: keyof TabParams = tab.name;
           const routeIndex = state.routes.findIndex((r) => r.name === targetRouteName);
           const focused = state.index === routeIndex;
@@ -122,7 +146,10 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 export function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        tabBarHideOnKeyboard: true,
+      }}
       tabBar={(props) => <FloatingTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
