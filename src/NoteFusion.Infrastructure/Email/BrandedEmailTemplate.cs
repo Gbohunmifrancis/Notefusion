@@ -367,11 +367,12 @@ public sealed class BrandedEmailTemplate
 
     // ── Helpers ──────────────────────────────────────────────────────────────────
 
-    /// <summary>Null when no public origin is configured — better no image than a broken one.</summary>
-    private string? LogoUrl()
+    private string LogoUrl()
     {
         var origin = _settings.AssetBaseUrl.TrimEnd('/');
-        return string.IsNullOrWhiteSpace(origin) ? null : $"{origin}/email/logo.png";
+        return string.IsNullOrWhiteSpace(origin)
+            ? "https://raw.githubusercontent.com/Gbohunmifrancis/Notefusion/main/mobile/assets/icon.png"
+            : $"{origin}/email/logo.png";
     }
 
     private static string Text(params string[] lines) => string.Join("\n", lines);
