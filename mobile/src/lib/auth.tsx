@@ -58,10 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [initializing, setInitializing] = useState(true);
   const mounted = useRef(true);
 
-  // Google OAuth redirect URI with Expo proxy support so the token is passed back smoothly.
-  const redirectUri = isExpoGo
-    ? 'https://auth.expo.io/@yaw669/notefusion'
-    : makeRedirectUri({ scheme: 'notefusion' });
+  // Google OAuth redirect URI using Expo proxy so the token is passed back smoothly without 400 invalid_request.
+  const redirectUri = 'https://auth.expo.io/@yaw669/notefusion';
 
   const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
     responseType: ResponseType.IdToken,
