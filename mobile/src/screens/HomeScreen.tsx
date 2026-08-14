@@ -2,9 +2,6 @@ import React, { useCallback, useState } from 'react';
 import {
   Alert,
   FlatList,
-  Image,
-  Modal,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,13 +12,11 @@ import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { Screen } from '../components/Screen';
 import { Card } from '../components/Card';
-import { BrandMark } from '../components/BrandMark';
 import { libraryApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { useAuth } from '../lib/auth';
-import { fonts, radii, spacing, typography, type Palette, type Shadows } from '../design/theme';
+import { fonts, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors, useTheme } from '../lib/theme';
-import { appIcons } from '../design/icons';
 import type { SavedTranscription } from '../api/types';
 import type { TabParams } from '../navigation/types';
 
@@ -29,17 +24,16 @@ type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
 /**
  * HomeScreen — strictly following row 2 screen 1 ("Home") of the design sheet:
- * 1. Top bar: Menu (≡) on left opens functional slide-out Side Drawer menu. Dark Mode & Bell on right. NO profile icon in upper right.
+ * 1. Top bar: "Home" title on left, Dark Mode & Bell on right. NO sidebar drawer, NO profile icon in upper right.
  * 2. Greeting: "Good morning, Francis", "What will you transcribe today?"
  * 3. Primary Mic Card: Centred blue circular mic button, "Tap to start recording", "or import audio file"
  * 4. Quick Action Buttons: "Import" and "Paste URL"
- * 5. Recent Section: "Recent" header with "See all" link and clean transcription cards
+ * 5. Recent Section: Clean "Recent" header with "See all" link and vector-icon transcription cards (NO emojis)
  */
 export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
@@ -84,17 +78,9 @@ export function HomeScreen({ navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            {/* ── 1. Top Header Bar: Menu (left), Dark Mode & Notifications (right) ─ */}
+            {/* ── 1. Top Header Bar: Page title (left), Dark Mode & Notifications (right) ─ */}
             <View style={styles.topHeader}>
-              <TouchableOpacity
-                onPress={() => setDrawerOpen(true)}
-                style={styles.headerIconBtn}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel="Open side menu"
-              >
-                <Ionicons name="menu-outline" size={24} color={colors.text} />
-              </TouchableOpacity>
+              <Text style={styles.pageTitle}>Home</Text>
 
               <View style={styles.headerActions}>
                 {/* Dark Mode Toggle */}
@@ -127,7 +113,7 @@ export function HomeScreen({ navigation }: Props) {
             <Text style={styles.greetingTitle}>Good morning, {firstName}</Text>
             <Text style={styles.greetingSub}>What will you transcribe today?</Text>
 
-            {/* ── 3. Centred Mic Recording Stage (Design Sheet) ─────────────── */}
+            {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}
             <View style={styles.stageCard}>
               <TouchableOpacity
                 activeOpacity={0.85}
@@ -181,7 +167,7 @@ export function HomeScreen({ navigation }: Props) {
             <Card style={styles.recentCard} padded={false}>
               <View style={styles.recentRow}>
                 <View style={styles.noteIconBadge}>
-                  <Ionicons name="document-text-outline" size={20} color={colors.accent} />
+                  <Ionicons name="musical-notes-outline" size={20} color={colors.accent} />
                 </View>
 
                 <View style={styles.recentInfo}>
@@ -193,7 +179,7 @@ export function HomeScreen({ navigation }: Props) {
                   </Text>
                 </View>
 
-                <Ionicons name="ellipsis-horizontal" size={18} color={colors.textMuted} />
+                <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
               </View>
             </Card>
           </TouchableOpacity>
@@ -209,7 +195,7 @@ export function HomeScreen({ navigation }: Props) {
             </Card>
           ) : (
             <Card style={styles.emptyCard}>
-              <Image source={appIcons.songbook} style={styles.emptyIcon} />
+              <Ionicons name="musical-notes-outline" size={36} color={colors.accent} />
               <Text style={styles.emptyText}>
                 No transcriptions yet. Tap the mic button above to start recording.
               </Text>
@@ -217,97 +203,7 @@ export function HomeScreen({ navigation }: Props) {
           )
         }
       />
-
-      {/* ── Side Menu Drawer Modal ───────────────────────────────────────── */}
-      <Modal
-        visible={drawerOpen}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setDrawerOpen(false)}
-      >
-        <View style={styles.drawerOverlay}>
-          <Pressable style={styles.drawerBackdrop} onPress={() => setDrawerOpen(false)} />
-
-          <View style={styles.drawerContent}>
-            <View style={styles.drawerHeader}>
-              <View style={styles.brandRow}>
-                <BrandMark size={36} color={colors.accent} waveColor={colors.accentAlt} showWaves />
-                <Text style={styles.drawerBrandText}>Notefusion</Text>
-              </View>
-              <TouchableOpacity onPress={() => setDrawerOpen(false)} hitSlop={8}>
-                <Ionicons name="close" size={22} color={colors.textMuted} />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.drawerUserEmail}>{user?.email ?? 'user@notefusion.studio'}</Text>
-
-            <View style={styles.drawerMenu}>
-              <DrawerItem
-                icon="home-outline"
-                label="Home"
-                onPress={() => {
-                  setDrawerOpen(false);
-                  navigation.navigate('Home');
-                }}
-              />
-              <DrawerItem
-                icon="folder-outline"
-                label="Library"
-                onPress={() => {
-                  setDrawerOpen(false);
-                  navigation.navigate('Library');
-                }}
-              />
-              <DrawerItem
-                icon="mic-outline"
-                label="Record"
-                onPress={() => {
-                  setDrawerOpen(false);
-                  navigation.navigate('Record');
-                }}
-              />
-              <DrawerItem
-                icon="person-outline"
-                label="Profile"
-                onPress={() => {
-                  setDrawerOpen(false);
-                  navigation.navigate('Profile');
-                }}
-              />
-              <View style={styles.drawerDivider} />
-              <DrawerItem
-                icon={mode === 'dark' ? 'sunny-outline' : 'moon-outline'}
-                label={mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-                onPress={() => {
-                  toggle();
-                }}
-              />
-            </View>
-          </View>
-        </View>
-      </Modal>
     </Screen>
-  );
-}
-
-function DrawerItem({
-  icon,
-  label,
-  onPress,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  onPress: () => void;
-}) {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-
-  return (
-    <TouchableOpacity style={styles.drawerRow} onPress={onPress} activeOpacity={0.7}>
-      <Ionicons name={icon} size={20} color={colors.text} style={styles.drawerIcon} />
-      <Text style={styles.drawerLabel}>{label}</Text>
-      <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
-    </TouchableOpacity>
   );
 }
 
@@ -327,6 +223,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: 'center',
       marginBottom: spacing.lg,
     },
+    pageTitle: {
+      fontSize: 24,
+      fontFamily: fonts.bold,
+      color: c.text,
+    },
     headerIconBtn: {
       padding: 4,
     },
@@ -338,7 +239,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
 
     // ── Greeting Header ───────────────────────────────────────────────────────
     greetingTitle: {
-      fontSize: 24,
+      fontSize: 22,
       fontFamily: fonts.bold,
       color: c.text,
       marginBottom: 2,
@@ -468,10 +369,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       alignItems: 'center',
       paddingVertical: spacing.xxl,
     },
-    emptyIcon: {
-      width: 36,
-      height: 36,
-    },
     emptyText: {
       fontSize: 14,
       fontFamily: fonts.regular,
@@ -491,66 +388,5 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 14,
       fontFamily: fonts.semibold,
       color: c.accent,
-    },
-
-    // ── Drawer Modal ──────────────────────────────────────────────────────────
-    drawerOverlay: {
-      flex: 1,
-      flexDirection: 'row',
-      backgroundColor: 'rgba(0,0,0,0.5)',
-    },
-    drawerBackdrop: {
-      flex: 1,
-    },
-    drawerContent: {
-      width: 280,
-      backgroundColor: c.bg,
-      paddingTop: spacing.xxl,
-      paddingHorizontal: spacing.lg,
-      paddingBottom: spacing.xl,
-    },
-    drawerHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: spacing.xs,
-    },
-    brandRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: spacing.xs,
-    },
-    drawerBrandText: {
-      fontSize: 18,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
-    drawerUserEmail: {
-      fontSize: 13,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginBottom: spacing.xl,
-    },
-    drawerMenu: {
-      gap: spacing.xs,
-    },
-    drawerRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: spacing.md,
-    },
-    drawerIcon: {
-      marginRight: spacing.md,
-    },
-    drawerLabel: {
-      flex: 1,
-      fontSize: 15,
-      fontFamily: fonts.medium,
-      color: c.text,
-    },
-    drawerDivider: {
-      height: 1,
-      backgroundColor: c.border,
-      marginVertical: spacing.sm,
     },
   });

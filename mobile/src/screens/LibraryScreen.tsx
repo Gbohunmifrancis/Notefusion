@@ -196,6 +196,7 @@ export function LibraryScreen() {
           returnKeyType="search"
           clearButtonMode="while-editing"
           textAlignVertical="center"
+          textAlign="center"
         />
       </View>
 
