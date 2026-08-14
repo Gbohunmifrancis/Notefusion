@@ -30,7 +30,7 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import type { Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
-type Props = NativeStackScreenProps<RootStackParams, "Upgrade">;
+type Props = { navigation: any; route?: any };
 
 /**
  * The deep link the provider redirects to when hosted checkout finishes. It has to

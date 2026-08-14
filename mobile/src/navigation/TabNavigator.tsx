@@ -17,6 +17,7 @@ import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
 import { ProfileScreen } from "../screens/ProfileScreen";
+import { UpgradeScreen } from "../screens/UpgradeScreen";
 import {
   fonts,
   spacing,
@@ -38,6 +39,7 @@ const TABS: {
   { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
   { name: "Record", label: "Record", icon: "mic", iconActive: "mic", isCenter: true },
   { name: "Profile", label: "Profile", icon: "person-outline", iconActive: "person" },
+  { name: "Subscription", label: "Subscription", icon: "card-outline", iconActive: "card" },
 ];
 
 /**
@@ -155,6 +157,7 @@ export function TabNavigator() {
       <Tab.Screen name="Library" component={LibraryScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Subscription" component={UpgradeScreen} />
     </Tab.Navigator>
   );
 }

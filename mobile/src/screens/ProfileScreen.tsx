@@ -176,13 +176,13 @@ export function ProfileScreen() {
       </View>
 
       {/* ── 4. Sign Out Button ───────────────────────────────────────────── */}
-      <TouchableOpacity
+      <Button
+        label="Sign out"
+        variant="danger"
+        icon="log-out-outline"
         onPress={() => signOut()}
         style={styles.signOutBtn}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.signOutText}>Sign out</Text>
-      </TouchableOpacity>
+      />
 
       {/* ── Account Edit Modal ───────────────────────────────────────────── */}
       <Modal
@@ -398,15 +398,8 @@ const makeStyles = (c: Palette) =>
 
     // ── Sign Out ──────────────────────────────────────────────────────────────
     signOutBtn: {
-      alignSelf: "center",
-      paddingVertical: spacing.md,
-      paddingHorizontal: spacing.xl,
-      marginBottom: spacing.xl,
-    },
-    signOutText: {
-      fontSize: 16,
-      fontFamily: fonts.bold,
-      color: c.danger,
+      marginTop: spacing.md,
+      marginBottom: spacing.xxl,
     },
 
     // ── Modal ─────────────────────────────────────────────────────────────────
