@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Google OAuth redirect URI with Expo proxy support so the token is passed back smoothly.
   const redirectUri = isExpoGo
-    ? 'https://auth.expo.io/@yaw669/notefusion'
+    ? 'https://auth.expo.io/@fransix66/notefusion'
     : makeRedirectUri({ scheme: 'notefusion' });
 
   const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
