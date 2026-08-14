@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
+import { makeRedirectUri, ResponseType } from 'expo-auth-session';
 import { onSessionExpired } from '../api/client';
 import { authApi } from '../api/endpoints';
 import { tokenStore } from '../lib/tokenStore';
@@ -58,27 +58,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [initializing, setInitializing] = useState(true);
   const mounted = useRef(true);
 
-  // Google OAuth. We ask for an ID token rather than an access token because
-  // that is what the API validates (POST /api/auth/google → GoogleTokenValidator);
-  // an access token would need a second round-trip to Google's userinfo endpoint.
-  // Client IDs come from app.json extra — see lib/env.
-  // The response slot is unused: signInWithGoogle awaits the prompt's own result
-  // instead, so the token exchange stays inside the call that started it.
-  // Redirect URI strategy:
-  // - Expo Go: use the Expo auth proxy (https://auth.expo.io/@yaw669/notefusion).
-  //   This is a stable HTTPS URI registered in Google Cloud Console.
-  //   expo-auth-session v5+ dropped `useProxy`; we pass it as `native` to override the
-  //   dynamic exp://IP:port URI that Google rejects with Error 400 invalid_request.
-  // - Standalone / dev builds: use the notefusion:// native scheme.
+  // Google OAuth redirect URI with Expo proxy support so the token is passed back smoothly.
   const redirectUri = isExpoGo
-    ? "https://auth.expo.io/@yaw669/notefusion"
-    : makeRedirectUri({ scheme: "notefusion" });
+    ? 'https://auth.expo.io/@yaw669/notefusion'
+    : makeRedirectUri({ scheme: 'notefusion' });
 
   const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
+    responseType: ResponseType.IdToken,
     iosClientId: isExpoGo ? undefined : (googleAuth.iosClientId || undefined),
     androidClientId: isExpoGo ? undefined : (googleAuth.androidClientId || undefined),
     clientId: googleAuth.webClientId || UNCONFIGURED_CLIENT_ID,
     webClientId: googleAuth.webClientId || UNCONFIGURED_CLIENT_ID,
+    selectAccount: true,
     redirectUri,
   });
 
@@ -115,8 +106,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
    * placeholder-ID and availability guards live in exactly one place.
    */
   async function promptGoogleIdToken(): Promise<string | null> {
-    // The request is built from a placeholder ID on an unconfigured build, so it
-    // exists but must never reach Google's servers.
     if (!googleAuthConfigured) {
       throw new Error('Google sign-in is not configured in this build.');
     }
@@ -125,7 +114,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const res = await googlePrompt();
     if (res.type !== 'success') return null;
 
-    const idToken = res.params.id_token;
+    const idToken =
+      res.params?.id_token ||
+      res.authentication?.idToken ||
+      (res as unknown as { authentication?: { idToken?: string } }).authentication?.idToken;
+
     if (!idToken) throw new Error('Google did not return an ID token.');
     return idToken;
   }
