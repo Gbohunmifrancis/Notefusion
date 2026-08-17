@@ -137,6 +137,8 @@ export function SplashScreen() {
         </Animated.View>
 
         <Animated.Text
+          numberOfLines={1}
+          adjustsFontSizeToFit
           style={[
             styles.wordmark,
             {
@@ -147,48 +149,51 @@ export function SplashScreen() {
         >
           Notefusion
         </Animated.Text>
-
-        <Animated.Text style={[styles.tagline, { opacity: tagOpacity }]}>
-          Hear it. See it. Notate it.
-        </Animated.Text>
-      </View>
-
-      <Animated.View style={[styles.ribbon, { opacity: ribbonOpacity }]}>
-        <StaffRibbon width={width} height={200} color="#FFFFFF" opacity={0.22} />
-      </Animated.View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: "#1D6FF2",
-  },
-
-  fill: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-
-  center: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    // Nudged up so the stack sits above the staff ribbon rather than over it.
-    paddingBottom: 120,
-  },
-
-  wordmark: {
-    marginTop: 28,
-    fontSize: 42,
-    fontFamily: fonts.bold,
-    color: "#FFFFFF",
-    letterSpacing: -0.8,
-  },
+ 
+         <Animated.Text style={[styles.tagline, { opacity: tagOpacity }]}>
+           Hear it. See it. Notate it.
+         </Animated.Text>
+       </View>
+ 
+       <Animated.View style={[styles.ribbon, { opacity: ribbonOpacity }]}>
+         <StaffRibbon width={width} height={200} color="#FFFFFF" opacity={0.22} />
+       </Animated.View>
+     </View>
+   );
+ }
+ 
+ const styles = StyleSheet.create({
+   root: {
+     flex: 1,
+     backgroundColor: "#1D6FF2",
+   },
+ 
+   fill: {
+     position: "absolute",
+     top: 0,
+     left: 0,
+     right: 0,
+     bottom: 0,
+   },
+ 
+   center: {
+     flex: 1,
+     alignItems: "center",
+     justifyContent: "center",
+     // Nudged up so the stack sits above the staff ribbon rather than over it.
+     paddingBottom: 120,
+     paddingHorizontal: 20,
+   },
+ 
+   wordmark: {
+     marginTop: 24,
+     fontSize: 36,
+     fontFamily: fonts.bold,
+     color: "#FFFFFF",
+     letterSpacing: -0.2,
+     textAlign: "center",
+     includeFontPadding: false,
+   },
 
   tagline: {
     marginTop: 10,
