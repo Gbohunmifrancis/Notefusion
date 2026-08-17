@@ -9,6 +9,8 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as WebBrowser from "expo-web-browser";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
@@ -50,6 +52,28 @@ export function SettingsScreen({ navigation }: Props) {
   const [deleting, setDeleting] = useState(false);
 
   const isDark = mode === "dark";
+
+  const [pushEnabled, setPushEnabled] = useState(true);
+  const [soundAlerts, setSoundAlerts] = useState(true);
+
+  useEffect(() => {
+    AsyncStorage.getItem("@notefusion_push").then((v) => {
+      if (v !== null) setPushEnabled(v === "true");
+    });
+    AsyncStorage.getItem("@notefusion_sound").then((v) => {
+      if (v !== null) setSoundAlerts(v === "true");
+    });
+  }, []);
+
+  const togglePush = (val: boolean) => {
+    setPushEnabled(val);
+    AsyncStorage.setItem("@notefusion_push", String(val));
+  };
+
+  const toggleSound = (val: boolean) => {
+    setSoundAlerts(val);
+    AsyncStorage.setItem("@notefusion_sound", String(val));
+  };
 
   // The delete control depends on whether the account has a password to re-verify.
   // Until the profile loads we can't tell, so the danger zone shows a spinner
@@ -157,6 +181,99 @@ export function SettingsScreen({ navigation }: Props) {
             thumbColor={isDark ? colors.accent : colors.surface}
             ios_backgroundColor={colors.border}
           />
+        </View>
+      </Card>
+
+      {/* ── Notifications ────────────────────────────────────────────────── */}
+      <View style={styles.sectionHeader}>
+        <Ionicons name="notifications-outline" size={14} color={colors.accent} />
+        <Text style={styles.sectionTitle}>Notifications</Text>
+      </View>
+
+      <Card style={styles.card}>
+        <View style={styles.switchRow}>
+          <View
+            style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}
+          >
+            <Ionicons name="notifications" size={16} color={colors.accent} />
+          </View>
+
+          <View style={styles.switchText}>
+            <Text style={styles.rowLabel}>Push Notifications</Text>
+            <Text style={styles.rowHint}>
+              Notify when transcriptions complete.
+            </Text>
+          </View>
+
+          <Switch
+            value={pushEnabled}
+            onValueChange={togglePush}
+            trackColor={{ false: colors.border, true: colors.accentGlow }}
+            thumbColor={pushEnabled ? colors.accent : colors.surface}
+            ios_backgroundColor={colors.border}
+          />
+        </View>
+
+        <View style={styles.rowDivider} />
+
+        <View style={styles.switchRow}>
+          <View
+            style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}
+          >
+            <Ionicons name="volume-high" size={16} color={colors.accent} />
+          </View>
+
+          <View style={styles.switchText}>
+            <Text style={styles.rowLabel}>Sound Alerts</Text>
+            <Text style={styles.rowHint}>
+              Play audio preview tone on playback.
+            </Text>
+          </View>
+
+          <Switch
+            value={soundAlerts}
+            onValueChange={toggleSound}
+            trackColor={{ false: colors.border, true: colors.accentGlow }}
+            thumbColor={soundAlerts ? colors.accent : colors.surface}
+            ios_backgroundColor={colors.border}
+          />
+        </View>
+      </Card>
+
+      {/* ── Legal & App Info ─────────────────────────────────────────────── */}
+      <View style={styles.sectionHeader}>
+        <Ionicons name="information-circle-outline" size={14} color={colors.gold} />
+        <Text style={styles.sectionTitle}>About & Legal</Text>
+      </View>
+
+      <Card style={styles.card}>
+        <TouchableOpacity
+          style={styles.linkRow}
+          onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
+          <Text style={styles.linkText}>Privacy Policy</Text>
+          <Ionicons name="open-outline" size={14} color={colors.textFaint} />
+        </TouchableOpacity>
+
+        <View style={styles.rowDivider} />
+
+        <TouchableOpacity
+          style={styles.linkRow}
+          onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
+          <Text style={styles.linkText}>Terms of Service</Text>
+          <Ionicons name="open-outline" size={14} color={colors.textFaint} />
+        </TouchableOpacity>
+
+        <View style={styles.rowDivider} />
+
+        <View style={styles.versionRow}>
+          <Text style={styles.versionLabel}>Application Version</Text>
+          <Text style={styles.versionValue}>1.0.0 (Build 2)</Text>
         </View>
       </Card>
 
@@ -326,6 +443,46 @@ const makeStyles = (c: Palette) =>
       color: c.textFaint,
       fontSize: 12,
       marginTop: 2,
+    },
+
+    rowDivider: {
+      height: 1,
+      backgroundColor: c.border,
+      marginVertical: spacing.md,
+    },
+
+    linkRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: spacing.xs,
+    },
+
+    linkText: {
+      ...typography.body,
+      flex: 1,
+      color: c.text,
+      fontSize: 15,
+      marginLeft: spacing.md,
+    },
+
+    versionRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingVertical: spacing.xs,
+    },
+
+    versionLabel: {
+      ...typography.body,
+      color: c.textMuted,
+      fontSize: 14,
+    },
+
+    versionValue: {
+      ...typography.caption,
+      color: c.accent,
+      fontFamily: fonts.bold,
+      fontSize: 14,
     },
 
     // ── Danger zone ─────────────────────────────────────────────────────────
