@@ -58,10 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [initializing, setInitializing] = useState(true);
   const mounted = useRef(true);
 
-  // Google OAuth redirect URI: Expo proxy for Expo Go, native scheme for production standalone builds.
-  const redirectUri = isExpoGo
-    ? 'https://auth.expo.io/@yaw669/notefusion'
-    : makeRedirectUri({ native: 'com.notefusion.app:/oauth2redirect' });
+  // Google OAuth redirect URI: Uses Expo proxy auth URL (valid HTTPS) for both Expo Go & production builds.
+  const redirectUri = 'https://auth.expo.io/@yaw669/notefusion';
 
   const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
     responseType: ResponseType.IdToken,
