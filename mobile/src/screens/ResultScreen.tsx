@@ -196,7 +196,31 @@ export function ResultScreen({ route, navigation }: Props) {
         <Text style={styles.pageTitle}>Preview</Text>
 
         <TouchableOpacity
-          onPress={() => Alert.alert("Options", "Export or delete transcription.")}
+          onPress={() => {
+            const options = [
+              {
+                text: "Export MusicXML",
+                onPress: () => exportMusicXml(result.musicXml, committedTitle || title),
+              },
+            ];
+            if (savedId) {
+              options.push({
+                text: "Delete from Library",
+                style: "destructive" as const,
+                onPress: async () => {
+                  try {
+                    await libraryApi.remove(savedId);
+                    navigation.goBack();
+                  } catch (e) {
+                    Alert.alert("Could not delete", toApiError(e).message);
+                  }
+                },
+              } as any);
+            }
+            options.push({ text: "Cancel", style: "cancel" as const } as any);
+
+            Alert.alert("Transcription Options", "Choose an action:", options);
+          }}
           style={styles.optionsBtn}
           hitSlop={8}
         >

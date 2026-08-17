@@ -44,6 +44,7 @@ export function LibraryScreen() {
 
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
+  const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
   function load() {
     libraryApi
@@ -63,22 +64,27 @@ export function LibraryScreen() {
     load();
   }, []);
 
-  // Filter items based on search query & active tab
+  // Filter & sort items based on search query, active tab, and sort order
   const filteredItems = items.filter((item) => {
     const matchesQuery =
       query.trim() === "" ||
       item.title.toLowerCase().includes(query.trim().toLowerCase());
-
-    if (!matchesQuery) return false;
-
-    if (activeFilter === "Tonic Solfa") {
-      return (item.notes?.length ?? 0) > 0;
-    }
-    if (activeFilter === "Staff Notation") {
-      return Boolean(item.musicXml);
-    }
-    return true;
+    const matchesFilter =
+      activeFilter === "All"
+        ? true
+        : activeFilter === "Tonic Solfa"
+          ? (item.notes?.length ?? 0) > 0
+          : Boolean(item.musicXml);
+    return matchesQuery && matchesFilter;
   });
+
+  const sortedItems = React.useMemo(() => {
+    return [...filteredItems].sort((a, b) => {
+      const tA = new Date(a.createdAtUtc).getTime();
+      const tB = new Date(b.createdAtUtc).getTime();
+      return sortOrder === "newest" ? tB - tA : tA - tB;
+    });
+  }, [filteredItems, sortOrder]);
 
   async function openItem(item: SavedTranscription) {
     try {
@@ -140,7 +146,7 @@ export function LibraryScreen() {
   return (
     <Screen edges={["top"]}>
       <FlatList
-        data={filteredItems}
+        data={sortedItems}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
@@ -157,10 +163,10 @@ export function LibraryScreen() {
         }
         ListHeaderComponent={
           <View style={styles.headerArea}>
-            {/* Centered Page Title */}
+            {/* ── Page Title ────────────────────────────────────────────── */}
             <Text style={styles.pageTitle}>Library</Text>
 
-            {/* Pill Search Input */}
+            {/* ── Search Bar ────────────────────────────────────────────── */}
             <View style={styles.searchBar}>
               <Ionicons
                 name="search-outline"
@@ -170,7 +176,7 @@ export function LibraryScreen() {
               />
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search your notes"
+                placeholder="Search notes..."
                 placeholderTextColor={colors.textFaint}
                 value={query}
                 onChangeText={setQuery}
@@ -209,7 +215,23 @@ export function LibraryScreen() {
               </View>
 
               {/* Filter controls icon */}
-              <TouchableOpacity style={styles.optionsBtn} hitSlop={8}>
+              <TouchableOpacity
+                style={styles.optionsBtn}
+                hitSlop={8}
+                onPress={() => {
+                  Alert.alert("Sort Library", "Select sorting preference:", [
+                    {
+                      text: "Newest First" + (sortOrder === "newest" ? " ✓" : ""),
+                      onPress: () => setSortOrder("newest"),
+                    },
+                    {
+                      text: "Oldest First" + (sortOrder === "oldest" ? " ✓" : ""),
+                      onPress: () => setSortOrder("oldest"),
+                    },
+                    { text: "Cancel", style: "cancel" },
+                  ]);
+                }}
+              >
                 <Ionicons
                   name="options-outline"
                   size={20}

@@ -18,6 +18,7 @@ import {
 } from "expo-audio";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -434,6 +435,31 @@ export function RecordScreen() {
     }
   }
 
+  async function pickAudioFile() {
+    setPermError(null);
+    try {
+      const res = await DocumentPicker.getDocumentAsync({
+        type: ["audio/*", "audio/mpeg", "audio/wav", "audio/x-m4a", "audio/mp4", "audio/aac"],
+        copyToCacheDirectory: true,
+      });
+
+      if (res.canceled || !res.assets || res.assets.length === 0) {
+        return;
+      }
+
+      const asset = res.assets[0];
+      setPhase("uploading");
+      const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
+      await start(asset.uri, asset.name || "imported-audio.m4a", {
+        mode,
+        key: keyOpt,
+      });
+    } catch {
+      setPhase("ready");
+      setPermError("Could not import audio file. Please try again.");
+    }
+  }
+
 
   async function stopAndSubmit() {
     if (tick.current) clearInterval(tick.current);
@@ -696,6 +722,17 @@ export function RecordScreen() {
             {phase === "recording" && "Tap the button again when you're done."}
             {isUploading && "Analysing pitch frequencies and key profile…"}
           </Text>
+
+          {phase === "ready" && (
+            <TouchableOpacity
+              onPress={pickAudioFile}
+              style={styles.importFileBtn}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="folder-open-outline" size={18} color={colors.accent} />
+              <Text style={styles.importFileBtnText}>Import audio file</Text>
+            </TouchableOpacity>
+          )}
 
           {isUploading && (
             <View style={styles.progressTrack}>
@@ -1124,6 +1161,25 @@ const makeStyles = (c: Palette) =>
   progressFill: {
     height: "100%",
     borderRadius: radii.pill,
+  },
+
+  importFileBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs + 2,
+    backgroundColor: c.surface,
+    borderWidth: 1,
+    borderColor: c.border,
+    borderRadius: radii.pill,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    marginTop: spacing.md,
+    alignSelf: "center",
+  },
+  importFileBtnText: {
+    fontSize: 14,
+    fontFamily: fonts.semibold,
+    color: c.accent,
   },
 
   // ── Bottom action ─────────────────────────────────────────────────────────
