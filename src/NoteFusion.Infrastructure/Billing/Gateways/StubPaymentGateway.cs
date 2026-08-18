@@ -27,6 +27,6 @@ internal sealed class StubPaymentGateway : IPaymentGateway
     public Task<Result<GatewayInitiation>> InitiateAsync(GatewayInitiationRequest request, CancellationToken ct)
         => Task.FromResult(Result.Failure<GatewayInitiation>(BillingErrors.ProviderNotConfigured));
 
-    public Task<Result<GatewayVerification>> VerifyAsync(string reference, CancellationToken ct)
+    public Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
         => Task.FromResult(Result.Failure<GatewayVerification>(BillingErrors.ProviderNotConfigured));
 }

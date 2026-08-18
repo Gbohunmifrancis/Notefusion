@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
@@ -23,11 +24,40 @@ public sealed record SubmitTranscriptionCommand(
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
     private readonly ITranscriptionApi _api;
+    private readonly IApplicationDbContext _db;
+    private readonly ICurrentUser _currentUser;
+    private readonly IDateTimeProvider _clock;
 
-    public SubmitTranscriptionCommandHandler(ITranscriptionApi api) => _api = api;
+    public SubmitTranscriptionCommandHandler(
+        ITranscriptionApi api,
+        IApplicationDbContext db,
+        ICurrentUser currentUser,
+        IDateTimeProvider clock)
+    {
+        _api = api;
+        _db = db;
+        _currentUser = currentUser;
+        _clock = clock;
+    }
 
     public async Task<Result<string>> Handle(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
     {
+        if (_currentUser.UserId is { } userId)
+        {
+            var sub = await _db.Subscriptions
+                .OrderByDescending(s => s.CurrentPeriodEndUtc)
+                .FirstOrDefaultAsync(s => s.UserId == userId, cancellationToken);
+
+            bool isPro = sub != null && sub.IsActiveAt(_clock.UtcNow);
+            if (!isPro)
+            {
+                var count = await _db.Transcriptions.CountAsync(t => t.UserId == userId, cancellationToken);
+                if (count >= 5)
+                {
+                    return BillingErrors.FreeTierLimitReached;
+                }
+            }
+        }
         // Normalise the optional key override:
         //   • null / whitespace        → treat as "no override"
         //   • "Auto" / "auto" / "none" → treat as "no override" (mobile UI default)

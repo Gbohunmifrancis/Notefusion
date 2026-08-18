@@ -12,6 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The provider adapters are internal (nothing outside this layer may construct one), but the
+         money-conversion boundary and webhook signature verification are exactly the code that must be
+         unit-tested. Exposing internals to the test assembly keeps them un-public in production. -->
+    <InternalsVisibleTo Include="NoteFusion.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">

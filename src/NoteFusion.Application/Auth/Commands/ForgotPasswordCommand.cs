@@ -21,14 +21,13 @@ public sealed record ForgotPasswordCommand(
     /// <c>https://notefusion.studio/reset-password</c>. The raw token is appended as
     /// <c>?token=&lt;value&gt;</c> by the handler.
     /// </summary>
-    string ResetBaseUrl) : IRequest<Result<Unit>>;
+    string? ResetBaseUrl = null) : IRequest<Result<Unit>>;
 
 public sealed class ForgotPasswordCommandValidator : AbstractValidator<ForgotPasswordCommand>
 {
     public ForgotPasswordCommandValidator()
     {
         RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(254);
-        RuleFor(x => x.ResetBaseUrl).NotEmpty().MaximumLength(2048);
     }
 }
 
@@ -72,9 +71,13 @@ public sealed class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswor
         user.SetPasswordResetToken(tokenHash, _clock.UtcNow);
         await _db.SaveChangesAsync(cancellationToken);
 
+        var baseUrl = string.IsNullOrWhiteSpace(request.ResetBaseUrl)
+            ? "https://notefusion-admin.vercel.app/reset-password"
+            : request.ResetBaseUrl;
+
         // Build the reset link and email it. Best-effort: a mail failure must not expose
         // the token (it would already be saved) or turn a successful initiation into a 500.
-        var resetUrl = $"{request.ResetBaseUrl.TrimEnd('/')}?token={Uri.EscapeDataString(plainToken)}";
+        var resetUrl = $"{baseUrl.TrimEnd('/')}?token={Uri.EscapeDataString(plainToken)}&email={Uri.EscapeDataString(user.Email)}";
         await _email.SendPasswordResetAsync(
             new EmailRecipient(user.Email, user.FullName), resetUrl, cancellationToken);
 

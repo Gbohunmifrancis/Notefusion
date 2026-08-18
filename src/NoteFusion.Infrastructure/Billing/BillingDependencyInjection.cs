@@ -12,10 +12,11 @@ using Polly;
 namespace NoteFusion.Infrastructure.Billing;
 
 /// <summary>
-/// Wires the billing/payments module: settings, provider gateways (Paystack live, others stubbed until
-/// credentialed), webhook validators, the gateway factory, plan seeding, and the two background
-/// workers. Every provider is registered so the factory treats them uniformly; only a provider with a
-/// configured secret gets a live adapter.
+/// Wires the billing/payments module: settings, provider gateways (Paystack and Bachs live, the others
+/// stubbed until credentialed), webhook validators, the gateway factory, plan seeding, and the two
+/// background workers. Every provider is registered so the factory treats them uniformly; only a provider
+/// whose credentials are fully present gets a live adapter, and each live one gets its own NAMED
+/// HttpClient so their base URLs and bearer tokens cannot cross.
 /// </summary>
 public static class BillingDependencyInjection
 {
@@ -31,7 +32,12 @@ public static class BillingDependencyInjection
         if (paystack.IsConfigured)
         {
             services.AddSingleton(paystack);
-            services.AddHttpClient<IPaymentGateway, PaystackPaymentGateway>(client =>
+
+            // Named explicitly. The typed-client overload without a name derives it from TClient, which
+            // is IPaymentGateway for every provider — so two gateways registered that way would share one
+            // HttpClient configuration and the later registration would silently redirect the earlier
+            // provider's traffic to its own base URL, with its own bearer token.
+            services.AddHttpClient<IPaymentGateway, PaystackPaymentGateway>("paystack", client =>
                 {
                     client.BaseAddress = new Uri(paystack.BaseUrl.TrimEnd('/'));
                     client.Timeout = TimeSpan.FromSeconds(30);
@@ -49,11 +55,38 @@ public static class BillingDependencyInjection
             services.AddSingleton<IPaymentWebhookValidator>(new StubWebhookValidator(PaymentProvider.Paystack));
         }
 
+        // Bachs — its own options type, because its webhook signing secret is a separate per-endpoint
+        // credential (not the API key) and its plans map to catalog product ids. See BachsOptions.
+        var bachs = configuration.GetSection("Bachs").Get<BachsOptions>() ?? new BachsOptions();
+
+        if (bachs.IsConfigured)
+        {
+            services.AddSingleton(bachs);
+            services.AddHttpClient<IPaymentGateway, BachsPaymentGateway>("bachs", client =>
+                {
+                    client.BaseAddress = new Uri(bachs.BaseUrl.TrimEnd('/'));
+                    client.Timeout = TimeSpan.FromSeconds(30);
+                    client.DefaultRequestHeaders.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bachs.SecretKey);
+                })
+                .AddResilienceHandler("bachs", BuildResiliencePipeline);
+
+            // Resolved from the container rather than constructed here: the validator needs the clock for
+            // its replay window, and the clock is registered by the persistence/common module.
+            services.AddSingleton<IPaymentWebhookValidator>(sp => new BachsWebhookValidator(
+                bachs, sp.GetRequiredService<IDateTimeProvider>()));
+        }
+        else
+        {
+            services.AddSingleton<IPaymentGateway>(
+                new StubPaymentGateway(PaymentProvider.Bachs, bachs.Currencies));
+            services.AddSingleton<IPaymentWebhookValidator>(new StubWebhookValidator(PaymentProvider.Bachs));
+        }
+
         // The remaining providers are listed in the product plan but not yet integrated. They register
         // as stubs so the factory and webhook routing are uniform; each fails fast until credentialed.
         RegisterStub(services, configuration, PaymentProvider.Flutterwave, "Flutterwave");
         RegisterStub(services, configuration, PaymentProvider.Squad, "Squad");
-        RegisterStub(services, configuration, PaymentProvider.Bachs, "Bachs");
 
         services.AddSingleton<IPaymentGatewayFactory, PaymentGatewayFactory>();
 

@@ -7,18 +7,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { Card } from '../components/Card';
 import { libraryApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
+import { deriveSolfa } from '../lib/solfa';
+import { synthesizeMelodyWavBase64 } from '../lib/synth';
 import { useAuth } from '../lib/auth';
 import { fonts, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
-import type { TabParams } from '../navigation/types';
+import type { RootStackParams, TabParams } from '../navigation/types';
 
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
@@ -31,6 +34,7 @@ type Props = BottomTabScreenProps<TabParams, 'Home'>;
  * 5. Recent Section: Clean "Recent" header with "See all" link and vector-icon transcription cards (NO emojis)
  */
 export function HomeScreen({ navigation }: Props) {
+  const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { user } = useAuth();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -66,6 +70,40 @@ export function HomeScreen({ navigation }: Props) {
       };
     }, []),
   );
+
+  async function openRecent(item: SavedTranscription) {
+    try {
+      const full = await libraryApi.get(item.id);
+      const derived = deriveSolfa(
+        full.notes ?? [],
+        full.key,
+        full.timeSignature,
+      );
+      const audioPreviewBase64 = synthesizeMelodyWavBase64(
+        derived.notes,
+        full.tempoBpm,
+      );
+
+      rootNav.navigate('Result', {
+        result: {
+          key: full.key,
+          keyConfidence: 1,
+          tempo: full.tempoBpm,
+          timeSignature: full.timeSignature,
+          musicXml: full.musicXml ?? '',
+          midiBase64: '',
+          notes: derived.notes,
+          solfaLines: derived.solfaLines,
+          overallConfidence: full.overallConfidence,
+          audioPreviewBase64,
+        },
+        savedId: full.id,
+        title: full.title,
+      });
+    } catch (e) {
+      Alert.alert('Could not open', toApiError(e).message);
+    }
+  }
 
   const firstName = user?.fullName?.split(' ')[0] ?? 'there';
 
@@ -143,7 +181,7 @@ export function HomeScreen({ navigation }: Props) {
         renderItem={({ item }) => (
           <TouchableOpacity
             activeOpacity={0.85}
-            onPress={() => navigation.navigate('Library')}
+            onPress={() => openRecent(item)}
           >
             <Card style={styles.recentCard} padded={false}>
               <View style={styles.recentRow}>

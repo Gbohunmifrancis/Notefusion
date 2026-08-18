@@ -62,7 +62,8 @@ public sealed class ProcessWebhookEventCommandHandler : IRequestHandler<ProcessW
 
         // Authoritative check with the provider. Done BEFORE any entity is mutated, so a failure here
         // never leaves half-applied state to save.
-        var verification = await _gateways.Resolve(tx.Provider).VerifyAsync(tx.Reference, ct);
+        var verification = await _gateways.Resolve(tx.Provider)
+            .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
         if (verification.IsFailure)
             return verification.Error;
         var v = verification.Value;

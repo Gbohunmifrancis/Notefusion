@@ -415,7 +415,166 @@ def _dedup_simultaneous(events: list[tuple]) -> list[tuple]:
     return order
 
 
-# ── Main pipeline ──────────────────────────────────────────────────────────────
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+
+def _inject_apt_path() -> None:
+    """Ensure Heroku APT-installed binaries (ffmpeg, etc.) are on PATH at runtime.
+
+    heroku-buildpack-apt only sets PATH during the *build* phase; the web dyno
+    starts uvicorn with a clean environment that may not include /app/.apt/usr/bin.
+    Calling this once at module import makes shutil.which('ffmpeg') reliable.
+    """
+    import os
+
+    for apt_dir in ("/app/.apt/usr/bin", "/app/.apt/bin", "/app/.apt/usr/lib"):
+        current_path = os.environ.get("PATH", "")
+        if apt_dir not in current_path and apt_dir.endswith("bin"):
+            os.environ["PATH"] = apt_dir + ":" + current_path
+        # Also extend LD_LIBRARY_PATH so shared libs (libavcodec etc.) are found
+        current_ld = os.environ.get("LD_LIBRARY_PATH", "")
+        if "lib" in apt_dir and apt_dir not in current_ld:
+            os.environ["LD_LIBRARY_PATH"] = apt_dir + ":" + current_ld
+
+
+_inject_apt_path()
+
+
+def _build_apt_env() -> dict:
+    """Build a subprocess env dict with all APT lib subdirs on LD_LIBRARY_PATH.
+
+    heroku-buildpack-apt installs shared libs under /app/.apt/usr/lib but nested
+    packages (e.g. libpulse0) put their internal .so files in subdirectories like
+    /app/.apt/usr/lib/x86_64-linux-gnu/pulseaudio/.  We walk the tree up to 3
+    levels deep so every such path is included — no matter which Ubuntu version
+    Heroku uses.
+    """
+    import os
+    env = os.environ.copy()
+
+    # ── PATH: bin dirs ────────────────────────────────────────────────────────
+    for apt_bin in ("/app/.apt/usr/bin", "/app/.apt/bin"):
+        if apt_bin not in env.get("PATH", ""):
+            env["PATH"] = apt_bin + ":" + env.get("PATH", "")
+
+    # ── LD_LIBRARY_PATH: walk /app/.apt/usr/lib up to 3 levels deep ──────────
+    apt_lib_root = Path("/app/.apt/usr/lib")
+    lib_dirs: list[str] = []
+    if apt_lib_root.exists():
+        # level 0
+        lib_dirs.append(str(apt_lib_root))
+        for l1 in apt_lib_root.iterdir():
+            if l1.is_dir():
+                lib_dirs.append(str(l1))          # level 1 (e.g. x86_64-linux-gnu)
+                for l2 in l1.iterdir():
+                    if l2.is_dir():
+                        lib_dirs.append(str(l2))  # level 2 (e.g. pulseaudio, mesa)
+
+    current_ld = env.get("LD_LIBRARY_PATH", "")
+    for d in lib_dirs:
+        if d not in current_ld:
+            current_ld = d + ":" + current_ld
+    env["LD_LIBRARY_PATH"] = current_ld
+    return env
+
+
+def _find_ffmpeg_cmd() -> str:
+    import shutil
+
+    for cand in (
+        "/app/.apt/usr/bin/ffmpeg",
+        "/app/.apt/bin/ffmpeg",
+        "/usr/bin/ffmpeg",
+        "/usr/local/bin/ffmpeg",
+    ):
+        if Path(cand).is_file():
+            print(f"[notefusion] ffmpeg found at: {cand}", flush=True)
+            return cand
+
+    found = shutil.which("ffmpeg")
+    if found:
+        print(f"[notefusion] ffmpeg found via PATH: {found}", flush=True)
+        return found
+
+    print("[notefusion] WARNING: ffmpeg not found in any known location", flush=True)
+    return "ffmpeg"
+
+
+def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
+    """Ensure audio_path is a valid PCM WAV file before AMT inference.
+
+    If audio_path is already a .wav file, returns (audio_path, False).
+    If audio_path is .m4a, .aac, .mp3, etc., converts to a temporary 22 050 Hz PCM .wav file
+    via ffmpeg (or soundfile/librosa fallback) and returns (tmp_wav_path, True).
+    """
+    if audio_path.suffix.lower() == ".wav":
+        return audio_path, False
+
+    import subprocess
+    import tempfile
+
+    tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    tmp_wav_path = Path(tmp_wav.name)
+    tmp_wav.close()
+
+    ffmpeg_bin = _find_ffmpeg_cmd()
+    apt_env = _build_apt_env()
+    print(f"[notefusion] Converting {audio_path.name} -> WAV via {ffmpeg_bin}", flush=True)
+    try:
+        res = subprocess.run(
+            [
+                ffmpeg_bin,
+                "-y",
+                "-i",
+                str(audio_path),
+                "-ar",
+                "22050",
+                "-ac",
+                "1",
+                "-f",
+                "wav",
+                str(tmp_wav_path),
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=60,
+            check=False,
+            env=apt_env,
+        )
+        if res.returncode == 0 and tmp_wav_path.stat().st_size > 0:
+            print(f"[notefusion] ffmpeg OK -> {tmp_wav_path.stat().st_size} bytes", flush=True)
+            return tmp_wav_path, True
+        else:
+            stderr_snippet = res.stderr.decode(errors="replace")[-600:]
+            print(
+                f"[notefusion] ffmpeg FAILED rc={res.returncode}:\n{stderr_snippet}",
+                flush=True,
+            )
+    except FileNotFoundError as exc:
+        print(f"[notefusion] ffmpeg FileNotFoundError: {exc}", flush=True)
+    except Exception as exc:
+        print(f"[notefusion] ffmpeg subprocess error: {exc}", flush=True)
+
+    # ── librosa fallback ──────────────────────────────────────────────────────
+    print("[notefusion] Trying librosa fallback for WAV conversion", flush=True)
+    try:
+        import soundfile as sf
+        import librosa
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
+        sf.write(str(tmp_wav_path), y, sr, format="WAV", subtype="PCM_16")
+        print(f"[notefusion] librosa fallback OK -> {tmp_wav_path.stat().st_size} bytes", flush=True)
+        return tmp_wav_path, True
+    except Exception as exc:
+        print(f"[notefusion] librosa fallback FAILED: {exc}", flush=True)
+
+    tmp_wav_path.unlink(missing_ok=True)
+    print(f"[notefusion] All conversion strategies failed; passing original {audio_path.name} to basic_pitch", flush=True)
+    return audio_path, False
 
 
 def transcribe(
@@ -455,14 +614,20 @@ def transcribe(
     min_note_ms = 100 if mode == "melody" else 80
     max_freq_hz = 1050.0
 
-    _, midi_data, note_events = predict(
-        str(audio_path),
-        ICASSP_2022_MODEL_PATH,
-        onset_threshold=onset_thresh,
-        frame_threshold=frame_thresh,
-        minimum_note_length=min_note_ms,
-        maximum_frequency=max_freq_hz,
-    )
+    target_path, is_temp_wav = _ensure_wav_path(audio_path)
+    try:
+        _, midi_data, note_events = predict(
+            str(target_path),
+            ICASSP_2022_MODEL_PATH,
+            onset_threshold=onset_thresh,
+            frame_threshold=frame_thresh,
+            minimum_note_length=min_note_ms,
+            maximum_frequency=max_freq_hz,
+        )
+    finally:
+        if is_temp_wav:
+            target_path.unlink(missing_ok=True)
+
     progress(0.45)
 
     # ── 2. Initial duration filter ────────────────────────────────────────────
@@ -540,12 +705,19 @@ def transcribe(
     if tempo_override:
         bpm = float(tempo_override)
     else:
-        y, sr = librosa.load(str(audio_path), sr=22_050, mono=True)
-        raw_est, _ = librosa.beat.beat_track(y=y, sr=sr)
-        raw_bpm = float(np.atleast_1d(raw_est)[0])
-        if np.isfinite(raw_bpm) and 20.0 <= raw_bpm <= 400.0:
-            bpm = raw_bpm
-        else:
+        bpm = 0.0
+        try:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                y, sr = librosa.load(str(audio_path), sr=22_050, mono=True)
+            raw_est, _ = librosa.beat.beat_track(y=y, sr=sr)
+            raw_bpm = float(np.atleast_1d(raw_est)[0])
+            if np.isfinite(raw_bpm) and 20.0 <= raw_bpm <= 400.0:
+                bpm = raw_bpm
+        except Exception as exc:
+            print(f"[notefusion] librosa beat_track failed ({exc}); falling back to onsets/default", flush=True)
+
+        if bpm < 20.0 or bpm > 400.0:
             # Attempt a rough onset-based estimate as a secondary strategy
             # before falling back to the safe default.
             onsets = np.array([e[0] for e in events])

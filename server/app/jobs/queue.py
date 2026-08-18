@@ -62,12 +62,17 @@ class JobQueue:
                 progress=lambda fraction: setattr(job, "progress", fraction))
             job.status = STATUS_DONE
             job.progress = 1.0
+            note_count = len(job.result.notes) if job.result else 0
+            conf = job.result.overall_confidence if job.result else 0.0
+            print(f"[notefusion] Job {job.id[:8]} DONE: {note_count} notes, confidence={conf:.3f}", flush=True)
         except LowConfidenceError as ex:
             job.status = STATUS_FAILED
             job.error = str(ex)
+            print(f"[notefusion] Job {job.id[:8]} LOW-CONFIDENCE: {ex}", flush=True)
         except Exception as ex:  # noqa: BLE001 - job boundary; error goes to the client
             job.status = STATUS_FAILED
             job.error = f"Transcription failed: {ex}"
+            print(f"[notefusion] Job {job.id[:8]} EXCEPTION: {type(ex).__name__}: {ex}", flush=True)
         finally:
             job.finished_at = time.monotonic()
             # Privacy by default: the recording never outlives its job (TRD par. 9)
