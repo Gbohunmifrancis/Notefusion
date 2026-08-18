@@ -92,6 +92,27 @@ Bachs, set that too (see the table at the end of this section):
 heroku config:set Billing__DefaultProvider='Bachs' --app <your-heroku-app>
 ```
 
+**Creating the catalog products.** `ProductMap` needs `prod_…` ids, and a fresh Bachs
+account's catalog is empty, so the two products have to exist before the map can point at
+them. Bachs publishes no OpenAPI document and `docs.bachs.io` refuses unauthenticated
+fetches, so the request shape is recorded here — `price` and `billing_cycle` are objects,
+not scalars, and `interval` must be one of `day`, `week`, `month`, `year`:
+
+```bash
+curl -X POST https://api.bachs.io/v1/products \
+  -H "Authorization: Bearer $BACHS_SECRET_KEY" -H 'Content-Type: application/json' \
+  -d '{"name":"NoteFusion Pro (Monthly)",
+       "price":{"currency":"USD","amount":"4.99"},
+       "billing_cycle":{"interval":"month","frequency":1}}'
+```
+
+The yearly product is the same call with `"amount":"49.90"` and `"interval":"year"`. Prices
+are decimal strings in major units and **must** equal the `BillingSeeder` plan price, since
+`BillingSeeder` is insert-only — it never revisits a plan row, so changing a price there
+does nothing to an existing deployment and the drift surfaces only as a blocked
+fulfilment. Omitting `price.amount` is rejected (`amount is required for a fixed price`)
+rather than defaulting to zero, so a malformed call cannot create a free product.
+
 In the Bachs dashboard also enable **subscriptions** for the account — a subscription
 checkout is rejected with `SUBSCRIPTIONS_NOT_ENABLED` (403) otherwise — and subscribe the
 webhook endpoint to `collection.succeeded` (the fulfilment signal) and `checkout.expired`
