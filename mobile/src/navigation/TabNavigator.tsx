@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -24,6 +24,7 @@ import {
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { useSubscription } from "../lib/subscription";
 import type { TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
@@ -45,11 +46,25 @@ const TABS: {
 /**
  * Tab bar matching Image 3 design sheet:
  * Automatically hides when software keyboard is open so bottom icons never shift up over inputs.
+ *
+ * The Subscription tab is dropped for active subscribers — there is nothing to sell
+ * someone who already bought. The screen stays *registered* in the navigator below,
+ * so `navigate("Subscription")` and deep links keep working; only the button goes.
+ * Items are `flex: 1`, so removing one re-flows the row with no gap to patch.
  */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { isPro } = useSubscription();
+
+  // While billing state is still loading `isPro` is false, so the bar renders the
+  // free layout first. Showing a tab and then removing it beats an empty bar or a
+  // late-arriving button pushing the others sideways under the user's thumb.
+  const tabs = useMemo(
+    () => (isPro ? TABS.filter((t) => t.name !== "Subscription") : TABS),
+    [isPro],
+  );
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -80,7 +95,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
       pointerEvents="box-none"
     >
       <View style={styles.bar}>
-        {TABS.map((tab, index) => {
+        {tabs.map((tab, index) => {
           let targetRouteName: keyof TabParams = tab.name;
           const routeIndex = state.routes.findIndex((r) => r.name === targetRouteName);
           const focused = state.index === routeIndex;

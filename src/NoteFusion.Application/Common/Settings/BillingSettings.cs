@@ -10,8 +10,13 @@ public sealed class BillingSettings
     public string DefaultProvider { get; init; } = "Paystack";
 
     /// <summary>
-    /// Where the provider returns the user after hosted checkout. Deep-links back into the app
-    /// (e.g. <c>notefusion://billing/return</c>); the real payment result arrives via webhook.
+    /// Where the provider returns the browser after hosted checkout. **Must be an absolute http(s) URL**:
+    /// Bachs rejects anything else at session creation (<c>success_url must use http:// or https://
+    /// scheme</c>), so the app's deep link cannot go here directly. Point it at the API's own
+    /// <c>GET /api/billing/return</c>, which is the page that hands off to the deep link. The committed
+    /// default is deliberately the deep link and therefore invalid for Bachs — an unconfigured
+    /// deployment fails loudly at checkout, before anyone is charged, rather than paying and landing on
+    /// a dead page. The real payment result arrives via webhook either way.
     /// </summary>
     public string CheckoutCallbackUrl { get; init; } = "notefusion://billing/return";
 

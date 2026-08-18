@@ -76,6 +76,52 @@ public class BachsWebhookValidatorTests
     }
 
     [Fact]
+    public void The_unprefixed_header_spelling_verifies_too()
+    {
+        // Bachs' API reference documents X-Bachs-Signature; its dashboard tells you to verify
+        // "the Bachs-Signature header". Whichever one actually arrives has to work, because the
+        // alternative is a 401 on every genuine delivery.
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Bachs-Signature"] = ValidSignature,
+            ["Bachs-Timestamp"] = Timestamp,
+        };
+
+        Assert.True(Validator().Validate(new WebhookRequest(Body, headers)).IsSuccess);
+    }
+
+    [Fact]
+    public void A_forgery_in_the_unprefixed_header_is_still_rejected()
+    {
+        // The second spelling must not become a way around verification.
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Bachs-Signature"] = new string('a', 64),
+            ["Bachs-Timestamp"] = Timestamp,
+        };
+
+        var result = Validator().Validate(new WebhookRequest(Body, headers));
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.Unauthorized, result.Error.Type);
+    }
+
+    [Fact]
+    public void A_blank_prefixed_header_falls_through_to_the_unprefixed_one()
+    {
+        // A proxy that injects an empty X- header must not mask the real signature.
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["X-Bachs-Signature"] = "",
+            ["X-Bachs-Timestamp"] = "",
+            ["Bachs-Signature"] = ValidSignature,
+            ["Bachs-Timestamp"] = Timestamp,
+        };
+
+        Assert.True(Validator().Validate(new WebhookRequest(Body, headers)).IsSuccess);
+    }
+
+    [Fact]
     public void A_non_canonical_timestamp_still_verifies()
     {
         // The reference implementations parse the header to an integer and re-print it into the signed

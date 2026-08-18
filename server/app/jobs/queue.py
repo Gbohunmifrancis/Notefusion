@@ -57,9 +57,18 @@ class JobQueue:
              key: str | None, tempo: int | None) -> None:
         job.status = STATUS_PROCESSING
         try:
-            job.result = transcribe(
-                audio_path, mode=mode, key_override=key, tempo_override=tempo,
-                progress=lambda fraction: setattr(job, "progress", fraction))
+            try:
+                job.result = transcribe(
+                    audio_path, mode=mode, key_override=key, tempo_override=tempo,
+                    progress=lambda fraction: setattr(job, "progress", fraction))
+            finally:
+                # Stamped on every path out of transcribe() and before any terminal
+                # status is written. _purge_expired ignores a job whose finished_at is
+                # None, so a job that reports "done" while still unstamped can never be
+                # purged in that window - which is exactly what a caller that polls for
+                # a terminal status and then relies on the TTL observes. The window is
+                # not theoretical: the flushing print below releases the GIL.
+                job.finished_at = time.monotonic()
             job.status = STATUS_DONE
             job.progress = 1.0
             note_count = len(job.result.notes) if job.result else 0
@@ -74,7 +83,6 @@ class JobQueue:
             job.error = f"Transcription failed: {ex}"
             print(f"[notefusion] Job {job.id[:8]} EXCEPTION: {type(ex).__name__}: {ex}", flush=True)
         finally:
-            job.finished_at = time.monotonic()
             # Privacy by default: the recording never outlives its job (TRD par. 9)
             audio_path.unlink(missing_ok=True)
 

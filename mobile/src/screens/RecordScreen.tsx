@@ -24,8 +24,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
-import { billingApi, libraryApi } from "../api/endpoints";
+import { libraryApi } from "../api/endpoints";
 import { useJobPolling } from "../lib/useJobPolling";
+import { useSubscription } from "../lib/subscription";
 import {
   fonts,
   gradients,
@@ -115,6 +116,7 @@ function meteringToColor(dbfs: number, c: Palette): string {
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { state, start, reset } = useJobPolling();
+  const { isPro, known } = useSubscription();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -398,11 +400,12 @@ export function RecordScreen() {
   async function startRecording() {
     setPermError(null);
     try {
-      const [sub, items] = await Promise.all([
-        billingApi.mySubscription().catch(() => null),
-        libraryApi.list().catch(() => []),
-      ]);
-      if (sub && !sub.isActive && items.length >= 5) {
+      // Free accounts cap out at 5 saved transcriptions. `known` guards the gate on
+      // purpose: without it a dropped billing request would read as "not subscribed"
+      // and lock a paying customer out of their own microphone. Billing state comes
+      // from the shared provider, so this no longer costs a request per tap.
+      const items = await libraryApi.list().catch(() => []);
+      if (known && !isPro && items.length >= 5) {
         nav.navigate("Upgrade");
         return;
       }

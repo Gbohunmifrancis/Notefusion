@@ -53,6 +53,16 @@ export const colors = {
   accentGlow: "rgba(37, 99, 235, 0.22)",
   pinkSoft: "rgba(14, 165, 233, 0.10)",
 
+  // ── Premium (Pro subscribers) ───────────────────────────────────────────
+  /** Genuine amber. `gold` above is blue — it kept its name through the light
+   *  redesign and only the value changed — so the premium treatment needs its
+   *  own tokens rather than the misleading alias. Used for the Pro avatar ring
+   *  and plan badge, and nowhere a free account can see. */
+  premium: "#F59E0B",
+  premiumDeep: "#B45309",
+  premiumSoft: "rgba(245, 158, 11, 0.12)",
+  premiumBorder: "rgba(245, 158, 11, 0.35)",
+
   // ── Typography ──────────────────────────────────────────────────────────
   text: "#0F172A", // Ink Navy   — primary text
   textMuted: "#64748B", // Slate      — secondary / subtitles
@@ -107,6 +117,12 @@ export const darkColors: Palette = {
   accentGlow: "rgba(59, 130, 246, 0.30)",
   pinkSoft: "rgba(56, 189, 248, 0.16)",
 
+  // Amber lifts a step on navy, same reason the brand blues do.
+  premium: "#FBBF24",
+  premiumDeep: "#D97706",
+  premiumSoft: "rgba(251, 191, 36, 0.16)",
+  premiumBorder: "rgba(251, 191, 36, 0.40)",
+
   text: "#E8EEF9",
   textMuted: "#94A3B8",
   textFaint: "#64748B",
@@ -149,6 +165,10 @@ export const gradients = {
 
   /** Light accent — confidence high, saved state. */
   gold: ["#3B82F6", "#60A5FA"] as const,
+
+  /** Real amber — the Pro avatar ring. Four stops so the ring reads as
+   *  brushed metal rather than a flat band. */
+  premium: ["#FBBF24", "#F59E0B", "#D97706", "#B45309"] as const,
 
   /** Soft wash — subtle top→bottom sheen on cards. */
   glass: ["rgba(255, 255, 255, 0.95)", "rgba(238, 243, 251, 0.95)"] as const,
@@ -261,6 +281,15 @@ export const shadow = {
     shadowRadius: 18,
     elevation: 6,
   },
+
+  /** Amber lift — the Pro avatar ring. */
+  premiumGlow: {
+    shadowColor: "#F59E0B",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 6,
+  },
 } as const;
 
 /** One shadow token. Written out rather than inferred from `shadow`, whose
@@ -308,6 +337,13 @@ export const darkShadow: Shadows = {
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.36,
     shadowRadius: 20,
+    elevation: 6,
+  },
+  premiumGlow: {
+    shadowColor: "#FBBF24",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.45,
+    shadowRadius: 14,
     elevation: 6,
   },
 };

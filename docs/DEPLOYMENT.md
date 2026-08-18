@@ -92,6 +92,27 @@ Bachs, set that too (see the table at the end of this section):
 heroku config:set Billing__DefaultProvider='Bachs' --app <your-heroku-app>
 ```
 
+**Creating the catalog products.** `ProductMap` needs `prod_…` ids, and a fresh Bachs
+account's catalog is empty, so the two products have to exist before the map can point at
+them. Bachs publishes no OpenAPI document and `docs.bachs.io` refuses unauthenticated
+fetches, so the request shape is recorded here — `price` and `billing_cycle` are objects,
+not scalars, and `interval` must be one of `day`, `week`, `month`, `year`:
+
+```bash
+curl -X POST https://api.bachs.io/v1/products \
+  -H "Authorization: Bearer $BACHS_SECRET_KEY" -H 'Content-Type: application/json' \
+  -d '{"name":"NoteFusion Pro (Monthly)",
+       "price":{"currency":"USD","amount":"4.99"},
+       "billing_cycle":{"interval":"month","frequency":1}}'
+```
+
+The yearly product is the same call with `"amount":"49.90"` and `"interval":"year"`. Prices
+are decimal strings in major units and **must** equal the `BillingSeeder` plan price, since
+`BillingSeeder` is insert-only — it never revisits a plan row, so changing a price there
+does nothing to an existing deployment and the drift surfaces only as a blocked
+fulfilment. Omitting `price.amount` is rejected (`amount is required for a fixed price`)
+rather than defaulting to zero, so a malformed call cannot create a free product.
+
 In the Bachs dashboard also enable **subscriptions** for the account — a subscription
 checkout is rejected with `SUBSCRIPTIONS_NOT_ENABLED` (403) otherwise — and subscribe the
 webhook endpoint to `collection.succeeded` (the fulfilment signal) and `checkout.expired`
@@ -124,7 +145,7 @@ providers authenticate by signature, not JWT.
 | Var | Default | Notes |
 |-----|---------|-------|
 | `Billing__DefaultProvider` | `Paystack` | Provider chosen when a currency has more than one candidate. |
-| `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | Deep-link the provider returns the user to after hosted checkout. The real result still arrives via webhook. |
+| `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | **Must be set for Bachs.** Where the provider returns the browser after checkout. Bachs rejects a non-http(s) `success_url` outright (`VALIDATION_ERROR success_url must use http:// or https:// scheme`), so the committed deep-link default fails every Bachs checkout — loudly, before anyone is charged. Point it at the API's own bridge page, which hands off to the app's deep link: `https://<your-heroku-app>.herokuapp.com/api/billing/return`. The real result still arrives via webhook. |
 
 ---
 
@@ -172,7 +193,53 @@ heroku config:set \
 
 ---
 
-## 4. Already required (for reference — do not echo their values)
+## 4. Profile pictures (Cloudflare R2)
+
+Avatar uploads are proxied through the API — `POST /api/me/picture` — so the signing secret
+stays on the server and never ships inside the app binary. Until `R2__UseR2=true` *and* every
+value below is set, uploads are logged rather than stored and the endpoint returns a placeholder
+URL that does not resolve, so a deploy without a bucket is safe.
+
+```bash
+heroku config:set \
+  R2__UseR2='true' \
+  R2__AccountId='<cloudflare-account-id>' \
+  R2__AccessKeyId='<r2-access-key-id>' \
+  R2__SecretAccessKey='<r2-secret-access-key>' \
+  R2__BucketName='<bucket>' \
+  R2__PublicBaseUrl='https://<your-custom-domain>' \
+  --app <your-heroku-app>
+```
+
+| Var | Required? | Notes |
+|-----|-----------|-------|
+| `R2__UseR2` | **yes** | `true` to store uploads; anything else logs them and stores nothing. A half-configured deployment (flag on, value missing) also falls back to logging rather than failing every upload. |
+| `R2__AccountId` | **yes, when UseR2=true** | Cloudflare account id. Also the S3 endpoint host: `https://<account-id>.r2.cloudflarestorage.com`. |
+| `R2__AccessKeyId` | **yes, when UseR2=true** | From an R2 API token. Scope it **Object Read & Write** on this bucket only — nothing wider. |
+| `R2__SecretAccessKey` | **yes, when UseR2=true** | The token secret, shown once at creation. Env-only — a key in `appsettings.json` is a key in git history. |
+| `R2__BucketName` | **yes, when UseR2=true** | The bucket. |
+| `R2__PublicBaseUrl` | **yes, when UseR2=true** | Origin the bucket is served from, no trailing slash. Required, not optional: without it the API would store the object and persist a URL nobody can fetch, which is worse than the logging fallback. |
+| `R2__KeyPrefix` | optional | Key prefix. Defaults to `avatars`. |
+
+**Making the bucket readable.** R2 buckets are private by default, and the API returns URLs the
+app fetches directly, so the bucket needs public read access. Connect a **custom domain** under
+the bucket's Settings → Public access; its zone must already be in the same Cloudflare account.
+Two traps:
+
+- Cloudflare documents the alternative `r2.dev` URL as rate-limited and "should only be used for
+  development purposes" — it gets no caching and no WAF. Don't ship it.
+- If you enable `r2.dev` *and* a custom domain, requests can reach the bucket by the `r2.dev`
+  hostname and **bypass** the WAF and Access rules on your custom domain. Turn `r2.dev` off.
+
+> Uploads are capped at 5 MB and limited to JPEG/PNG/WebP at the controller, then centre-cropped
+> and re-encoded server-side to a single 512×512 JPEG per user, so replacing a photo overwrites
+> the old one instead of accumulating orphans. R2 has no cache purge, so the persisted URL carries
+> a `?v=<timestamp>` stamp — that, not invalidation, is what makes a replacement appear at once.
+> Face-aware cropping does not exist in R2; the client crops square before uploading instead.
+
+---
+
+## 5. Already required (for reference — do not echo their values)
 
 These are set as part of standing up the app and are listed so the checklist is complete;
 they are not part of this task and should not be printed back:

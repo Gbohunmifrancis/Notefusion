@@ -49,6 +49,30 @@ export const meApi = {
     api.put<MyProfile>("/api/me", { fullName }).then((r) => r.data),
 
   /**
+   * Uploads a new avatar. Multipart to our own API, which resizes it and forwards it to
+   * Cloudflare R2 with server-side credentials — the app never holds a storage key.
+   *
+   * Same FormData shape and the same Content-Type caveat as transcriptionsApi.submit:
+   * let React Native set the header so the multipart boundary is included.
+   */
+  uploadPicture: (fileUri: string, fileName: string, mimeType: string) => {
+    const form = new FormData();
+    form.append("image", {
+      uri: fileUri,
+      name: fileName,
+      type: mimeType,
+    } as unknown as Blob);
+
+    return api
+      .post<MyProfile>("/api/me/picture", form, { timeout: 60_000 })
+      .then((r) => r.data);
+  },
+
+  /** Clears the avatar; the app falls back to initials. */
+  removePicture: () =>
+    api.delete<MyProfile>("/api/me/picture").then((r) => r.data),
+
+  /**
    * Closes the account and deletes its library. The server re-checks the proof rather
    * than trusting the access token: pass a password, or — for Google accounts, which
    * have none — a freshly obtained Google ID token.

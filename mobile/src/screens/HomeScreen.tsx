@@ -107,6 +107,12 @@ export function HomeScreen({ navigation }: Props) {
 
   const firstName = user?.fullName?.split(' ')[0] ?? 'there';
 
+  // Read at render rather than memoised: the screen re-renders on every focus, so
+  // the greeting corrects itself if the app sat open from morning into afternoon.
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+
   return (
     <Screen>
       <FlatList
@@ -136,11 +142,15 @@ export function HomeScreen({ navigation }: Props) {
                   />
                 </TouchableOpacity>
 
-                {/* Notifications Bell */}
+                {/* Notifications Bell — opens the notification controls. There is
+                    no server-side notification feed to list, so an inbox would be
+                    an empty screen; the settings are the real destination. */}
                 <TouchableOpacity
-                  onPress={() => Alert.alert('Notifications', 'You have no new notifications.')}
+                  onPress={() => rootNav.navigate('Settings', { focus: 'notifications' })}
                   style={styles.headerIconBtn}
                   hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel="Notification settings"
                 >
                   <Ionicons name="notifications-outline" size={22} color={colors.text} />
                 </TouchableOpacity>
@@ -148,7 +158,7 @@ export function HomeScreen({ navigation }: Props) {
             </View>
 
             {/* ── 2. Greeting Header ────────────────────────────────────────── */}
-            <Text style={styles.greetingTitle}>Good morning, {firstName}</Text>
+            <Text style={styles.greetingTitle}>{greeting}, {firstName}</Text>
             <Text style={styles.greetingSub}>What will you transcribe today?</Text>
 
             {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}

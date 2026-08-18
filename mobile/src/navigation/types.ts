@@ -26,7 +26,13 @@ export type RootStackParams = {
     savedId?: string;
     title?: string;
   };
-  Settings: undefined;
+  /**
+   * `focus` scrolls straight to a section. The Profile menu has separate
+   * "Notifications" and "About Notefusion" rows, and both used to land on a screen
+   * showing something else; anchoring them here keeps each row honest without a
+   * screen apiece.
+   */
+  Settings: { focus?: 'notifications' | 'about' } | undefined;
   Help: undefined;
   Upgrade: undefined;
 };
