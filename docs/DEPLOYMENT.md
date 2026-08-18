@@ -172,7 +172,37 @@ heroku config:set \
 
 ---
 
-## 4. Already required (for reference — do not echo their values)
+## 4. Profile pictures (Cloudinary)
+
+Avatar uploads are proxied through the API — `POST /api/me/picture` — so the signing secret
+stays on the server and never ships inside the app binary. Until `Cloudinary__UseCloudinary=true`
+*and* all three credentials are set, uploads are logged rather than stored and the endpoint
+returns a placeholder URL that does not resolve, so a deploy without an account is safe.
+
+```bash
+heroku config:set \
+  Cloudinary__UseCloudinary='true' \
+  Cloudinary__CloudName='<cloud-name>' \
+  Cloudinary__ApiKey='<cloudinary-api-key>' \
+  Cloudinary__ApiSecret='<cloudinary-api-secret>' \
+  --app <your-heroku-app>
+```
+
+| Var | Required? | Notes |
+|-----|-----------|-------|
+| `Cloudinary__UseCloudinary` | **yes** | `true` to store uploads; anything else logs them and stores nothing. A half-configured deployment (flag on, credential missing) also falls back to logging rather than failing every upload. |
+| `Cloudinary__CloudName` | **yes, when UseCloudinary=true** | Cloud name from the Cloudinary dashboard. |
+| `Cloudinary__ApiKey` | **yes, when UseCloudinary=true** | Cloudinary API key. |
+| `Cloudinary__ApiSecret` | **yes, when UseCloudinary=true** | Cloudinary API secret. Env-only — a key in `appsettings.json` is a key in git history. |
+| `Cloudinary__Folder` | optional | Destination folder. Defaults to `notefusion/avatars`. |
+
+> Uploads are capped at 5 MB and limited to JPEG/PNG/WebP at the controller, then stored as a
+> single 512×512 face-cropped object per user, so replacing a photo overwrites the old one
+> instead of accumulating orphans.
+
+---
+
+## 5. Already required (for reference — do not echo their values)
 
 These are set as part of standing up the app and are listed so the checklist is complete;
 they are not part of this task and should not be printed back:

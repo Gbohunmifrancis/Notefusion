@@ -7,13 +7,14 @@ using NoteFusion.Application.Common.Settings;
 using NoteFusion.Infrastructure.Api;
 using NoteFusion.Infrastructure.Billing;
 using NoteFusion.Infrastructure.Email;
+using NoteFusion.Infrastructure.Media;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Security;
 
 namespace NoteFusion.Infrastructure;
 
-/// <summary>Registers Infrastructure services: persistence, security, push, and the transcription API client.</summary>
+/// <summary>Registers Infrastructure services: persistence, security, push, email, media, and the transcription API client.</summary>
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddSecurity(configuration);
         services.AddPush(configuration);
         services.AddEmail(configuration);
+        services.AddMedia(configuration);
         services.AddTranscriptionApi(configuration);
         services.AddBilling(configuration);
 
@@ -110,6 +112,25 @@ public static class DependencyInjection
         else
         {
             services.AddScoped<IEmailTransport, LoggingEmailTransport>();
+        }
+    }
+
+    private static void AddMedia(this IServiceCollection services, IConfiguration configuration)
+    {
+        var cloudinary = configuration.GetSection("Cloudinary").Get<CloudinarySettings>() ?? new CloudinarySettings();
+        services.AddSingleton(cloudinary);
+
+        // Same switch as email and push: the real provider only when it is turned on *and* fully
+        // credentialled, a logging sink otherwise, so a local run needs no Cloudinary account.
+        // Singleton either way — the Cloudinary client owns an HttpClient, and rebuilding one per
+        // request is the socket-exhaustion mistake AddHttpClient exists to prevent.
+        if (cloudinary.IsConfigured)
+        {
+            services.AddSingleton<IImageStorage, CloudinaryImageStorage>();
+        }
+        else
+        {
+            services.AddSingleton<IImageStorage, LoggingImageStorage>();
         }
     }
 

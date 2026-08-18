@@ -27,6 +27,7 @@ import {
   type Shadows,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { useSubscription } from "../lib/subscription";
 import type { Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
@@ -79,6 +80,7 @@ function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
 export function UpgradeScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { refresh: refreshSubscription } = useSubscription();
 
   const [loading, setLoading] = useState(true);
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -130,6 +132,9 @@ export function UpgradeScreen({ navigation }: Props) {
         if (sub.isActive) {
           setSubscription(sub);
           setVerifying(false);
+          // Tell the shared provider too, so the Subscription tab and the gold
+          // avatar ring update without waiting for a relaunch.
+          refreshSubscription().catch(() => undefined);
           Alert.alert("Welcome to Pro 🎉", "Your subscription is now active.");
           return;
         }

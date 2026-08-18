@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Linking,
+  ScrollView,
   StyleSheet,
   Switch,
   Text,
@@ -9,7 +11,6 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as WebBrowser from "expo-web-browser";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -17,6 +18,16 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import {
+  disablePush,
+  enablePush,
+  getPushPermission,
+  loadNotificationPrefs,
+  pushEnabled,
+  setSoundEnabled,
+  soundEnabled,
+  type PushPermission,
+} from "../lib/push";
 import { meApi } from "../api/endpoints";
 import type { MyProfile } from "../api/types";
 import { toApiError } from "../api/client";
@@ -29,10 +40,14 @@ type Props = NativeStackScreenProps<RootStackParams, "Settings">;
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * SettingsScreen — the two account-level controls that need a surface of their own.
+ * SettingsScreen — the account-level controls that need a surface of their own.
  *
  *   • Appearance — light/dark switch. The choice is written to AsyncStorage by
  *     the ThemeProvider, so it survives a relaunch and applies on the first frame.
+ *   • Notifications — the push switch owns two separate pieces of state: the OS
+ *     permission (which the app can request but not grant) and the user's own
+ *     preference. Both are shown, because a switch that is off because iOS said no
+ *     needs different wording from one the user turned off. See ../lib/push.
  *   • Danger zone — permanent account deletion. Guarded twice: identity is
  *     re-proven server-side (DELETE /api/me carries the proof in the body) and a
  *     destructive confirm dialog stands in front of the request, because the
@@ -40,8 +55,11 @@ type Props = NativeStackScreenProps<RootStackParams, "Settings">;
  *     is a password for password accounts, and a fresh Google ID token for
  *     Google-only accounts, which never set one — the profile's hasPassword flag
  *     decides which control we render.
+ *
+ * Arriving with `route.params.focus` scrolls to that section: the Profile menu's
+ * "Notifications" and "About Notefusion" rows point here.
  */
-export function SettingsScreen({ navigation }: Props) {
+export function SettingsScreen({ navigation, route }: Props) {
   const { mode, setMode } = useTheme();
   const { signOut, reauthWithGoogle } = useAuth();
   const colors = useColors();
@@ -53,27 +71,70 @@ export function SettingsScreen({ navigation }: Props) {
 
   const isDark = mode === "dark";
 
-  const [pushEnabled, setPushEnabled] = useState(true);
-  const [soundAlerts, setSoundAlerts] = useState(true);
+  const [pushOn, setPushOn] = useState(true);
+  const [soundOn, setSoundOn] = useState(true);
+  const [permission, setPermission] = useState<PushPermission | null>(null);
+  const [pushBusy, setPushBusy] = useState(false);
 
-  useEffect(() => {
-    AsyncStorage.getItem("@notefusion_push").then((v) => {
-      if (v !== null) setPushEnabled(v === "true");
-    });
-    AsyncStorage.getItem("@notefusion_sound").then((v) => {
-      if (v !== null) setSoundAlerts(v === "true");
-    });
+  // ── Section anchors ────────────────────────────────────────────────────────
+  const scrollRef = useRef<ScrollView | null>(null);
+  const anchors = useRef<Partial<Record<"notifications" | "about", number>>>({});
+  const focus = route.params?.focus;
+
+  const scrollToFocus = useCallback(() => {
+    if (!focus) return;
+    const y = anchors.current[focus];
+    if (y == null) return; // not laid out yet; onLayout calls back
+    // A little headroom so the section header isn't flush with the status bar.
+    scrollRef.current?.scrollTo({ y: Math.max(0, y - spacing.lg), animated: true });
+  }, [focus]);
+
+  // ── Notification preferences ───────────────────────────────────────────────
+
+  const syncPermission = useCallback(async () => {
+    const [, perm] = await Promise.all([loadNotificationPrefs(), getPushPermission()]);
+    setPermission(perm);
+    setPushOn(pushEnabled());
+    setSoundOn(soundEnabled());
   }, []);
 
-  const togglePush = (val: boolean) => {
-    setPushEnabled(val);
-    AsyncStorage.setItem("@notefusion_push", String(val));
-  };
+  useEffect(() => {
+    syncPermission();
+  }, [syncPermission]);
 
-  const toggleSound = (val: boolean) => {
-    setSoundAlerts(val);
-    AsyncStorage.setItem("@notefusion_sound", String(val));
-  };
+  // The user can revoke permission in system settings while we're backgrounded, so
+  // re-read it whenever this screen comes back into focus rather than trusting the
+  // value we captured on mount.
+  useEffect(
+    () => navigation.addListener("focus", () => void syncPermission()),
+    [navigation, syncPermission],
+  );
+
+  async function togglePush(on: boolean) {
+    setPushBusy(true);
+    try {
+      if (on) {
+        const result = await enablePush();
+        setPermission(result);
+        // Only the granted path actually enables anything — otherwise the switch
+        // stays off and the row explains why.
+        setPushOn(result === "granted" && pushEnabled());
+      } else {
+        await disablePush();
+        setPushOn(false);
+      }
+    } finally {
+      setPushBusy(false);
+    }
+  }
+
+  async function toggleSound(on: boolean) {
+    setSoundOn(on);
+    await setSoundEnabled(on);
+  }
+
+  /** Push state, as one thing the row can render. */
+  const push = describePush(permission, pushOn);
 
   // The delete control depends on whether the account has a password to re-verify.
   // Until the profile loads we can't tell, so the danger zone shows a spinner
@@ -126,7 +187,7 @@ export function SettingsScreen({ navigation }: Props) {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <Screen scroll>
+    <Screen scroll scrollRef={scrollRef}>
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <TouchableOpacity
@@ -185,97 +246,134 @@ export function SettingsScreen({ navigation }: Props) {
       </Card>
 
       {/* ── Notifications ────────────────────────────────────────────────── */}
-      <View style={styles.sectionHeader}>
-        <Ionicons name="notifications-outline" size={14} color={colors.accent} />
-        <Text style={styles.sectionTitle}>Notifications</Text>
+      <View
+        onLayout={(e) => {
+          anchors.current.notifications = e.nativeEvent.layout.y;
+          scrollToFocus();
+        }}
+      >
+        <View style={styles.sectionHeader}>
+          <Ionicons name="notifications-outline" size={14} color={colors.accent} />
+          <Text style={styles.sectionTitle}>Notifications</Text>
+        </View>
+
+        <Card style={styles.card}>
+          <TouchableOpacity
+            style={styles.switchRow}
+            activeOpacity={push.actionable ? 0.7 : 1}
+            disabled={!push.actionable}
+            onPress={() => Linking.openSettings()}
+            accessibilityRole={push.actionable ? "button" : undefined}
+          >
+            <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+              <Ionicons name={push.icon} size={16} color={colors.accent} />
+            </View>
+
+            <View style={styles.switchText}>
+              <Text style={styles.rowLabel}>Push Notifications</Text>
+              <Text style={[styles.rowHint, push.warn && styles.rowHintWarn]}>
+                {push.hint}
+              </Text>
+            </View>
+
+            {pushBusy ? (
+              <ActivityIndicator color={colors.accent} />
+            ) : (
+              <Switch
+                value={pushOn}
+                onValueChange={togglePush}
+                disabled={push.disabled}
+                trackColor={{ false: colors.border, true: colors.accentGlow }}
+                thumbColor={pushOn ? colors.accent : colors.surface}
+                ios_backgroundColor={colors.border}
+              />
+            )}
+          </TouchableOpacity>
+
+          <View style={styles.rowDivider} />
+
+          <View style={styles.switchRow}>
+            <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+              <Ionicons
+                name={soundOn ? "volume-high" : "volume-mute"}
+                size={16}
+                color={colors.accent}
+              />
+            </View>
+
+            <View style={styles.switchText}>
+              <Text style={styles.rowLabel}>Notification sounds</Text>
+              <Text style={styles.rowHint}>
+                {soundOn
+                  ? "Play a sound when a notification arrives."
+                  : "Notifications arrive silently."}
+              </Text>
+            </View>
+
+            <Switch
+              value={soundOn}
+              onValueChange={toggleSound}
+              disabled={!pushOn}
+              trackColor={{ false: colors.border, true: colors.accentGlow }}
+              thumbColor={soundOn ? colors.accent : colors.surface}
+              ios_backgroundColor={colors.border}
+            />
+          </View>
+        </Card>
       </View>
-
-      <Card style={styles.card}>
-        <View style={styles.switchRow}>
-          <View
-            style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}
-          >
-            <Ionicons name="notifications" size={16} color={colors.accent} />
-          </View>
-
-          <View style={styles.switchText}>
-            <Text style={styles.rowLabel}>Push Notifications</Text>
-            <Text style={styles.rowHint}>
-              Notify when transcriptions complete.
-            </Text>
-          </View>
-
-          <Switch
-            value={pushEnabled}
-            onValueChange={togglePush}
-            trackColor={{ false: colors.border, true: colors.accentGlow }}
-            thumbColor={pushEnabled ? colors.accent : colors.surface}
-            ios_backgroundColor={colors.border}
-          />
-        </View>
-
-        <View style={styles.rowDivider} />
-
-        <View style={styles.switchRow}>
-          <View
-            style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}
-          >
-            <Ionicons name="volume-high" size={16} color={colors.accent} />
-          </View>
-
-          <View style={styles.switchText}>
-            <Text style={styles.rowLabel}>Sound Alerts</Text>
-            <Text style={styles.rowHint}>
-              Play audio preview tone on playback.
-            </Text>
-          </View>
-
-          <Switch
-            value={soundAlerts}
-            onValueChange={toggleSound}
-            trackColor={{ false: colors.border, true: colors.accentGlow }}
-            thumbColor={soundAlerts ? colors.accent : colors.surface}
-            ios_backgroundColor={colors.border}
-          />
-        </View>
-      </Card>
 
       {/* ── Legal & App Info ─────────────────────────────────────────────── */}
-      <View style={styles.sectionHeader}>
-        <Ionicons name="information-circle-outline" size={14} color={colors.gold} />
-        <Text style={styles.sectionTitle}>About & Legal</Text>
-      </View>
-
-      <Card style={styles.card}>
-        <TouchableOpacity
-          style={styles.linkRow}
-          onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
-          <Text style={styles.linkText}>Privacy Policy</Text>
-          <Ionicons name="open-outline" size={14} color={colors.textFaint} />
-        </TouchableOpacity>
-
-        <View style={styles.rowDivider} />
-
-        <TouchableOpacity
-          style={styles.linkRow}
-          onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
-          <Text style={styles.linkText}>Terms of Service</Text>
-          <Ionicons name="open-outline" size={14} color={colors.textFaint} />
-        </TouchableOpacity>
-
-        <View style={styles.rowDivider} />
-
-        <View style={styles.versionRow}>
-          <Text style={styles.versionLabel}>Application Version</Text>
-          <Text style={styles.versionValue}>1.0.0 (Build 2)</Text>
+      <View
+        onLayout={(e) => {
+          anchors.current.about = e.nativeEvent.layout.y;
+          scrollToFocus();
+        }}
+      >
+        <View style={styles.sectionHeader}>
+          <Ionicons name="information-circle-outline" size={14} color={colors.accent} />
+          <Text style={styles.sectionTitle}>About & Legal</Text>
         </View>
-      </Card>
+
+        <Card style={styles.card}>
+          <View style={styles.aboutRow}>
+            <Text style={styles.aboutTitle}>Notefusion</Text>
+            <Text style={styles.aboutBody}>
+              Turns what you hum, sing, or play into Tonic Solfa and staff notation.
+            </Text>
+          </View>
+
+          <View style={styles.rowDivider} />
+
+          <TouchableOpacity
+            style={styles.linkRow}
+            onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
+            <Text style={styles.linkText}>Privacy Policy</Text>
+            <Ionicons name="open-outline" size={14} color={colors.textFaint} />
+          </TouchableOpacity>
+
+          <View style={styles.rowDivider} />
+
+          <TouchableOpacity
+            style={styles.linkRow}
+            onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
+            <Text style={styles.linkText}>Terms of Service</Text>
+            <Ionicons name="open-outline" size={14} color={colors.textFaint} />
+          </TouchableOpacity>
+
+          <View style={styles.rowDivider} />
+
+          <View style={styles.versionRow}>
+            <Text style={styles.versionLabel}>Application Version</Text>
+            <Text style={styles.versionValue}>1.0.0 (Build 2)</Text>
+          </View>
+        </Card>
+      </View>
 
       {/* ── Danger zone ──────────────────────────────────────────────────── */}
       <View style={styles.sectionHeader}>
@@ -337,6 +435,58 @@ export function SettingsScreen({ navigation }: Props) {
       </Card>
     </Screen>
   );
+}
+
+// ─── Push row state ──────────────────────────────────────────────────────────
+
+/**
+ * Turns the two independent pieces of push state — what the OS allows and what the
+ * user chose — into the one thing the row renders.
+ *
+ * The distinction is the point: a switch that is off because permission was revoked
+ * cannot be fixed by tapping it, so it says where to go instead of pretending.
+ */
+function describePush(
+  permission: PushPermission | null,
+  on: boolean,
+): {
+  hint: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  disabled: boolean;
+  /** Whether pressing the row does something (opens system settings). */
+  actionable: boolean;
+  warn: boolean;
+} {
+  if (permission === null) {
+    return { hint: "Checking…", icon: "notifications-outline", disabled: true, actionable: false, warn: false };
+  }
+  if (permission === "unsupported") {
+    return {
+      hint: "Not available in Expo Go or on a simulator. Use a dev or release build.",
+      icon: "notifications-off-outline",
+      disabled: true,
+      actionable: false,
+      warn: true,
+    };
+  }
+  if (permission === "denied") {
+    return {
+      hint: "Blocked in system settings. Tap to open Settings ›",
+      icon: "notifications-off",
+      disabled: true,
+      actionable: true,
+      warn: true,
+    };
+  }
+  return {
+    hint: on
+      ? "Notify when transcriptions complete."
+      : "Turned off — you won't be told when a transcription finishes.",
+    icon: on ? "notifications" : "notifications-off-outline",
+    disabled: false,
+    actionable: false,
+    warn: false,
+  };
 }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
@@ -442,6 +592,28 @@ const makeStyles = (c: Palette) =>
       ...typography.caption,
       color: c.textFaint,
       fontSize: 12,
+      marginTop: 2,
+    },
+
+    rowHintWarn: {
+      color: c.warning,
+    },
+
+    aboutRow: {
+      paddingBottom: spacing.xs,
+    },
+
+    aboutTitle: {
+      ...typography.heading,
+      color: c.text,
+      fontSize: 16,
+    },
+
+    aboutBody: {
+      ...typography.caption,
+      color: c.textMuted,
+      fontSize: 12,
+      lineHeight: 18,
       marginTop: 2,
     },
 

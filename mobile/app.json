@@ -40,6 +40,13 @@
       ],
       "expo-asset",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "NoteFusion lets you pick a photo from your library to use as your profile picture.",
+          "cameraPermission": false
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",

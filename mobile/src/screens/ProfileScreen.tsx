@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Alert,
   Modal,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,20 +9,21 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
+import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import { useSubscription } from "../lib/subscription";
 import { meApi, authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { pickProfileImage } from "../lib/imagePicker";
 import {
   fonts,
   radii,
   spacing,
-  typography,
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -33,17 +33,24 @@ import type { RootStackParams } from "../navigation/types";
 /**
  * ProfileScreen — matching Image 4 design sheet:
  * 1. Top bar: Settings gear icon on top right
- * 2. Header: Avatar disc, Name, Email, "Premium Plan" blue pill badge
- * 3. Settings List: Account, Subscription, Notifications, Storage (2.4 GB / 10 GB), Help & Support, About Notefusion
+ * 2. Header: Avatar disc, Name, Email, plan pill badge
+ * 3. Settings List: Account, Subscription, Notifications, Help & Support, About Notefusion
  * 4. Sign Out: Red link centered at bottom
+ *
+ * Premium treatment (gold avatar ring, Pro badge, no Subscription row) is driven
+ * entirely by `useSubscription().isPro` — the billing service's answer. It used to
+ * read `profile.role`, which is an authorisation level and not a payment, and the
+ * ring was unconditional, so free accounts wore the paid look.
  */
 export function ProfileScreen() {
   const { user, setUser, signOut } = useAuth();
+  const { isPro } = useSubscription();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
   const [profile, setProfile] = useState<MyProfile | null>(null);
+  const [avatarBusy, setAvatarBusy] = useState(false);
 
   // Edit modals
   const [accountModal, setAccountModal] = useState(false);
@@ -93,13 +100,61 @@ export function ProfileScreen() {
     }
   }
 
-  // Avatar initials
-  const initials = (user?.fullName ?? "F")
-    .split(" ")
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
+  // ── Profile picture ────────────────────────────────────────────────────────
+
+  /** Picks an image and uploads it. The API proxies to Cloudinary so no
+   *  credentials ship in the binary. */
+  async function changePicture() {
+    const picked = await pickProfileImage();
+    if (!picked) return; // cancelled, or permission refused (the picker explains)
+
+    setAvatarBusy(true);
+    try {
+      const updated = await meApi.uploadPicture(
+        picked.uri,
+        picked.fileName,
+        picked.mimeType,
+      );
+      setProfile(updated);
+    } catch (e) {
+      Alert.alert("Could not update photo", toApiError(e).message);
+    } finally {
+      setAvatarBusy(false);
+    }
+  }
+
+  async function removePicture() {
+    setAvatarBusy(true);
+    try {
+      const updated = await meApi.removePicture();
+      setProfile(updated);
+    } catch (e) {
+      Alert.alert("Could not remove photo", toApiError(e).message);
+    } finally {
+      setAvatarBusy(false);
+    }
+  }
+
+  function onAvatarPress() {
+    const hasPicture = Boolean(profile?.profilePictureUrl);
+    Alert.alert(
+      "Profile photo",
+      hasPicture ? undefined : "Add a photo to personalise your account.",
+      [
+        { text: hasPicture ? "Change photo" : "Choose photo", onPress: changePicture },
+        ...(hasPicture
+          ? [
+              {
+                text: "Remove photo",
+                style: "destructive" as const,
+                onPress: removePicture,
+              },
+            ]
+          : []),
+        { text: "Cancel", style: "cancel" as const },
+      ],
+    );
+  }
 
   return (
     <Screen scroll contentStyle={styles.screen}>
@@ -110,24 +165,24 @@ export function ProfileScreen() {
 
       {/* ── 2. Avatar & User Information ─────────────────────────────────── */}
       <View style={styles.userHeader}>
-        <LinearGradient
-          colors={["#F59E0B", "#FBBF24", "#D97706", "#B45309"]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.avatarGradientRing}
-        >
-          <View style={styles.avatarCircle}>
-            <Text style={styles.avatarInitials}>{initials}</Text>
-          </View>
-        </LinearGradient>
+        <Avatar
+          uri={profile?.profilePictureUrl}
+          name={user?.fullName}
+          size={104}
+          premium={isPro}
+          editable
+          busy={avatarBusy}
+          onPress={onAvatarPress}
+          style={styles.avatar}
+        />
 
-        <Text style={styles.userName}>{user?.fullName ?? "Francis Gbohunmi"}</Text>
-        <Text style={styles.userEmail}>{user?.email ?? "francis@example.com"}</Text>
+        <Text style={styles.userName}>{user?.fullName ?? "Your name"}</Text>
+        <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
 
-        {/* Plan Pill Badge */}
-        <View style={styles.planBadge}>
-          <Text style={styles.planBadgeText}>
-            {profile?.role === "Pro" || profile?.role === "Admin" ? "Pro Member ✨" : "Free Plan"}
+        {/* Plan Pill Badge — reflects billing state, not role. */}
+        <View style={[styles.planBadge, isPro && styles.planBadgePro]}>
+          <Text style={[styles.planBadgeText, isPro && styles.planBadgeTextPro]}>
+            {isPro ? "Pro Member ✨" : "Free Plan"}
           </Text>
         </View>
       </View>
@@ -141,12 +196,17 @@ export function ProfileScreen() {
         />
         <View style={styles.divider} />
 
-        <MenuItem
-          icon="card-outline"
-          label="Subscription"
-          onPress={() => nav.navigate("Upgrade")}
-        />
-        <View style={styles.divider} />
+        {/* Nothing left to sell an active subscriber — same rule hides the tab. */}
+        {!isPro ? (
+          <>
+            <MenuItem
+              icon="card-outline"
+              label="Subscription"
+              onPress={() => nav.navigate("Upgrade")}
+            />
+            <View style={styles.divider} />
+          </>
+        ) : null}
 
         <MenuItem
           icon="settings-outline"
@@ -158,7 +218,7 @@ export function ProfileScreen() {
         <MenuItem
           icon="notifications-outline"
           label="Notifications"
-          onPress={() => nav.navigate("Settings")}
+          onPress={() => nav.navigate("Settings", { focus: "notifications" })}
         />
         <View style={styles.divider} />
 
@@ -172,7 +232,7 @@ export function ProfileScreen() {
         <MenuItem
           icon="information-circle-outline"
           label="About Notefusion"
-          onPress={() => nav.navigate("Help")}
+          onPress={() => nav.navigate("Settings", { focus: "about" })}
           isLast
         />
       </View>
@@ -308,41 +368,14 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.bold,
       color: c.text,
     },
-    settingsGearBtn: {
-      padding: spacing.xs,
-    },
 
     // ── User Header ───────────────────────────────────────────────────────────
     userHeader: {
       alignItems: "center",
       marginBottom: spacing.xxl,
     },
-    avatarGradientRing: {
-      width: 104,
-      height: 104,
-      borderRadius: 52,
-      padding: 3,
-      alignItems: "center",
-      justifyContent: "center",
+    avatar: {
       marginBottom: spacing.md,
-      shadowColor: "#F59E0B",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.35,
-      shadowRadius: 8,
-      elevation: 6,
-    },
-    avatarCircle: {
-      width: 98,
-      height: 98,
-      borderRadius: 49,
-      backgroundColor: c.surface,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    avatarInitials: {
-      fontSize: 34,
-      fontFamily: fonts.bold,
-      color: "#F59E0B",
     },
     userName: {
       fontSize: 22,
@@ -357,17 +390,24 @@ const makeStyles = (c: Palette) =>
       marginBottom: spacing.md,
     },
     planBadge: {
-      backgroundColor: "#EFF6FF",
+      backgroundColor: c.accentSoft,
       borderWidth: 1,
-      borderColor: "#DBEAFE",
+      borderColor: c.accentGlow,
       borderRadius: radii.pill,
       paddingHorizontal: spacing.lg,
       paddingVertical: 5,
     },
+    planBadgePro: {
+      backgroundColor: c.premiumSoft,
+      borderColor: c.premiumBorder,
+    },
     planBadgeText: {
       fontSize: 13,
       fontFamily: fonts.bold,
-      color: "#2563EB",
+      color: c.accent,
+    },
+    planBadgeTextPro: {
+      color: c.premiumDeep,
     },
 
     // ── Menu Card List ────────────────────────────────────────────────────────

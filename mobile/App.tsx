@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
 import * as NativeSplash from 'expo-splash-screen';
 import { AuthProvider } from './src/lib/auth';
+import { SubscriptionProvider } from './src/lib/subscription';
 import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
 import { RootNavigator } from './src/navigation/RootNavigator';
@@ -35,8 +36,10 @@ NativeSplash.preventAutoHideAsync().catch(() => undefined);
 /**
  * App root. The provider order matters: SafeAreaProvider must wrap everything
  * that uses safe-area hooks, and AuthProvider must wrap the navigator that
- * switches on session state. ThemeProvider goes outermost because every screen
- * below it reads the active palette.
+ * switches on session state. SubscriptionProvider sits inside AuthProvider
+ * because it reads the session to decide whose billing state to fetch.
+ * ThemeProvider goes outermost because every screen below it reads the active
+ * palette.
  */
 export default Sentry.wrap(function App() {
   const { ready } = useAppReady();
@@ -48,7 +51,9 @@ export default Sentry.wrap(function App() {
     <ThemeProvider>
       <SafeAreaProvider>
         <AuthProvider>
-          <Themed />
+          <SubscriptionProvider>
+            <Themed />
+          </SubscriptionProvider>
         </AuthProvider>
       </SafeAreaProvider>
     </ThemeProvider>

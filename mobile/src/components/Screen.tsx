@@ -14,11 +14,15 @@ export function Screen({
   scroll = false,
   contentStyle,
   edges,
+  scrollRef,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
   contentStyle?: ViewStyle;
   edges?: ("top" | "bottom" | "left" | "right")[];
+  /** Handle on the inner ScrollView, for screens that need to scroll to a
+   *  section on arrival. Ignored unless `scroll` is set. */
+  scrollRef?: React.RefObject<ScrollView | null>;
 }) {
   const { mode } = useTheme();
   const styles = useThemedStyles(makeStyles);
@@ -29,6 +33,7 @@ export function Screen({
       {scroll ? (
         <KeyboardAvoider>
           <ScrollView
+            ref={scrollRef}
             contentContainerStyle={[styles.content, contentStyle]}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
