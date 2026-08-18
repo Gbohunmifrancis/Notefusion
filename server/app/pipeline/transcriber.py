@@ -13,8 +13,8 @@ Speed & accuracy improvements over v1
                          rather than a fixed constant, so soft or distant recordings
                          are not entirely filtered out while clip-level noise is.
 
-  Key-confidence guard   Fewer than MIN_NOTES_FOR_KEY pitched events makes
-                         Krumhansl-Schmuckler unreliable; the confidence score is capped
+  Key-confidence guard   Fewer than MIN_NOTES_FOR_KEY pitched events is too little data
+                         for any pitch profile; the confidence score is capped
                          at KEY_CONFIDENCE_CAP_LOW so the mobile shows the editable-key
                          prompt (PRD mitigation for short-clip key detection weakness).
 
@@ -33,11 +33,12 @@ Speed & accuracy improvements over v1
 
 import base64
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 import numpy as np
 
+from app.config import settings
 from app.pipeline import solfa
 
 # ── Audio preview synthesis ───────────────────────────────────────────────────
@@ -76,10 +77,36 @@ MIN_NOTE_SEC = 0.06
 MERGE_GAP_MELODY = 0.08  # ~1 sixteenth note at 120 BPM
 MERGE_GAP_POLY = 0.05  # tighter for polyphonic — avoid swallowing trills
 
-# Key detection: fewer than this many note events → Krumhansl-Schmuckler is
-# unreliable; cap the reported confidence so the mobile shows the prompt.
+# Key detection: fewer than this many note events and no pitch profile is
+# reliable; cap the reported confidence so the mobile shows the prompt.
 MIN_NOTES_FOR_KEY = 6
 KEY_CONFIDENCE_CAP_LOW = 0.45
+
+# pyin pitch refinement (defect 6).  fmin is roughly C2, below any sung
+# fundamental; fmax matches the maximum_frequency handed to Basic Pitch so the
+# two stages cannot disagree about what counts as a plausible fundamental.
+PYIN_FMIN_HZ = 65.0
+PYIN_FMAX_HZ = 1050.0
+
+# An event needs at least this many voiced pyin frames before its contour is
+# trusted.  pyin's default hop is 512 samples (23 ms at 22.05 kHz), so three
+# frames is ~70 ms — just under MIN_NOTE_SEC, which means a note long enough to
+# survive the duration filter normally clears this too, and only a genuinely
+# unvoiced span falls short.
+PYIN_MIN_VOICED_FRAMES = 3
+
+# Median voiced probability an event must reach before its pitch is corrected.
+# A floor against noise rather than a discriminator: measured over the accuracy
+# corpus, real notes sit at 0.69-0.76 under heavy vibrato and 0.95-0.98 when
+# clean, so nothing real is anywhere near this.
+PYIN_MIN_VOICED_PROB = 0.5
+
+# How far from a whole number of octaves the pyin/Basic Pitch disagreement may
+# sit and still be read as an octave error.  Measured over the corpus, real
+# octave errors land within 0.01 semitones of exactly 12, so this is generous;
+# it stays under 2 so a genuinely wrong pitch a whole tone from the octave (a
+# +14 ghost does occur) is left alone rather than snapped.
+PYIN_OCTAVE_TOLERANCE = 1.5
 
 # music21 flat letter → "b" convention expected by C#'s KeyParser.
 _M21_FLAT_MAP: dict[str, str] = {
@@ -325,10 +352,185 @@ def _parse_key_override(text: str | None):
     return m21key.Key(tonic, mode)
 
 
+# ── Key detection ensemble (defects 3, 4) ─────────────────────────────────────
+
+# The profiles voted over, in no significant order — each is weighted equally.
+#
+# music21's own documentation gives each of these a *different* known bias, and that
+# is the entire mechanism here: averaging estimators whose errors point in different
+# directions cancels those errors, while averaging one estimator with itself does
+# nothing.  AardenEssen leans on the subdominant, KrumhanslSchmuckler on the
+# dominant, TemperleyKostkaPayne toward the relative major in minor keys, and
+# SimpleWeights is noisiest on short excerpts.  Those pull four different ways.
+#
+# Weights are deliberately equal rather than hand-tuned.  Any per-profile weighting
+# would have to be fitted on the 31-case synthetic corpus, which would tune the
+# constants to this corpus's quirks rather than to key detection — and the measured
+# result does not need it.  BellmanBudge is *not* trusted above the others despite
+# music21 describing it as the least biased: on a plain C-major stream it agrees
+# with AardenEssen on the wrong answer (F major) while three others get it right,
+# which is exactly the kind of assumption an equal vote is robust to.
+KEY_PROFILE_NAMES = (
+    "AardenEssen",
+    "BellmanBudge",
+    "KrumhanslSchmuckler",
+    "SimpleWeights",
+    "TemperleyKostkaPayne",
+)
+
+# Mean-z lead over the runner-up at which the vote is treated as fully confident.
+#
+# Calibrated against the mobile's own cut points, which are what this number is *for*:
+# theme.ts labels below 0.5 "Low confidence" and ResultScreen counts those in its
+# re-record hint, so the property that matters is "every wrong key lands under 0.5".
+# Measured over the 31-case corpus at this value: all 4 wrong keys land in 0.216-0.460
+# (prompt fires on every one) and 23 of 27 correct keys land at or above 0.75 (no
+# needless prompt).  The three correct cases that read low are the hardest in the
+# corpus, where a wasted prompt costs a tap and nothing else.
+#
+# A scale constant, not a threshold — no decision is taken on it, so a mis-set value
+# costs calibration rather than correctness.
+KEY_MARGIN_FULL = 0.75
+
+
+def _profile_z_scores(profile, s) -> dict[tuple[int, str], float]:
+    """One profile's opinion of all 24 keys, standardised to mean 0 / sd 1.
+
+    Raw ``correlationCoefficient`` values are *not* comparable between profiles —
+    each has its own scale and spread, so summing them across profiles would weight
+    whichever profile happens to report the largest numbers most heavily, which is a
+    weighting nobody chose.  Standardising within a profile first makes the sum an
+    average of *opinions* rather than an average of magnitudes.
+
+    Keys are ``(tonic pitch class, mode)`` because that is the identity solfa cares
+    about; enharmonic spellings of one key must not split the vote.
+    """
+    solution = profile.getSolution(s)
+    candidates = [solution, *(solution.alternateInterpretations or [])]
+
+    scored: list[tuple[tuple[int, str], float]] = []
+    for candidate in candidates:
+        cc = float(getattr(candidate, "correlationCoefficient", float("nan")))
+        if np.isnan(cc):
+            continue
+        scored.append(((candidate.tonic.pitchClass, candidate.mode), cc))
+    if not scored:
+        return {}
+
+    values = np.array([cc for _, cc in scored], dtype=float)
+    spread = float(values.std())
+    if spread <= 0.0:  # a profile with no opinion at all must not dominate the sum
+        return {}
+    centre = float(values.mean())
+    return {ident: (cc - centre) / spread for ident, cc in scored}
+
+
+def _key_confidence_from_margin(margin: float, n_events: int) -> float:
+    """Turn the winner's lead over the runner-up into a 0-1 confidence.
+
+    The defect this replaces: ``correlationCoefficient`` measures how well the clip
+    fits the winning profile, not whether the *runner-up* fits just as well.  It
+    therefore sits high on precisely the cases that need a human — measured over the
+    corpus at 0.795 mean with no threshold separating right from wrong answers at all
+    (the least confident correct answer scored below the most confident wrong one).
+    A margin cannot do that: it is low exactly when two keys are hard to tell apart,
+    which is the condition the mobile's editable-key prompt exists for.  Measured over
+    the corpus the change moves mean(correct) - max(wrong) from -0.021 to +0.340 and
+    scores 0.926 AUC over the right x wrong pairs.
+    """
+    confidence = max(0.0, min(1.0, margin / KEY_MARGIN_FULL))
+    if n_events < MIN_NOTES_FOR_KEY:
+        # Unchanged short-clip policy: too few pitch classes for any profile to be
+        # reliable, whatever the margin says.
+        confidence = min(confidence, KEY_CONFIDENCE_CAP_LOW)
+    return confidence
+
+
+def _detect_key(s, n_events: int):
+    """(key, confidence) for a stream, by equal vote over KEY_PROFILE_NAMES.
+
+    Falls back to music21's single-profile default if the ensemble cannot run — a
+    degenerate stream, or a music21 version without these profiles.  The fallback is
+    the pre-existing behaviour, so a failure here can only lose the improvement, not
+    the transcription.
+    """
+    from music21.analysis import discrete
+
+    totals: dict[tuple[int, str], float] = {}
+    exemplars: dict[tuple[int, str], object] = {}
+    voted = 0
+
+    for name in KEY_PROFILE_NAMES:
+        profile_cls = getattr(discrete, name, None)
+        if profile_cls is None:
+            continue
+        try:
+            z_scores = _profile_z_scores(profile_cls(), s)
+        except Exception as exc:  # noqa: BLE001 — one bad profile must not lose the vote
+            print(f"[notefusion] key profile {name} failed ({exc}); skipping it", flush=True)
+            continue
+        if not z_scores:
+            continue
+        voted += 1
+        for ident, z in z_scores.items():
+            totals[ident] = totals.get(ident, 0.0) + z
+
+    if voted == 0 or len(totals) < 2:
+        detected = s.analyze("key")
+        cc = float(detected.correlationCoefficient)
+        confidence = 0.0 if np.isnan(cc) else max(0.0, min(1.0, cc))
+        if n_events < MIN_NOTES_FOR_KEY:
+            confidence = min(confidence, KEY_CONFIDENCE_CAP_LOW)
+        return detected, confidence
+
+    ranked = sorted(totals.items(), key=lambda kv: kv[1], reverse=True)
+    (winner_pc, winner_mode), winner_score = ranked[0]
+    runner_up_score = ranked[1][1]
+    # Divided by the number of voters so the margin means the same thing whether all
+    # five profiles ran or only three did.
+    margin = (winner_score - runner_up_score) / voted
+
+    winner = _key_from_identity(winner_pc, winner_mode)
+    return winner, _key_confidence_from_margin(margin, n_events)
+
+
+def _key_from_identity(pitch_class: int, mode: str):
+    """Build a music21 Key from (pitch class, mode), spelled the way solfa expects.
+
+    Sharp spellings for the pitch classes that have one in common use, flats
+    otherwise — the same convention ``_normalise_key_name`` already emits, so the
+    wire value is unchanged by this function's existence.
+    """
+    from music21 import key as m21key
+
+    names = ["C", "C#", "D", "E-", "E", "F", "F#", "G", "A-", "A", "B-", "B"]
+    return m21key.Key(names[pitch_class % 12], mode)
+
+
 # ── Event post-processing helpers ─────────────────────────────────────────────
 
 
-def _adaptive_amplitude_floor(events: list[tuple], base: float) -> float:
+@dataclass(frozen=True, slots=True)
+class Event:
+    """One detected note event, in the seconds domain, between inference and music21.
+
+    Frozen because every stage below rebuilds rather than mutates — the 4-tuple this
+    replaced could not be mutated either, and keeping that invariant means one stage
+    cannot quietly change an event another stage has already read.  Derive a modified
+    copy with ``dataclasses.replace``.
+
+    Carries exactly the four values Basic Pitch reports and the pipeline consumes.  It
+    is a class rather than the tuple it replaced because five stages read these fields
+    by name where they used to index positionally, not because it holds anything new.
+    """
+
+    start: float
+    end: float
+    pitch: int
+    amp: float
+
+
+def _adaptive_amplitude_floor(events: list[Event], base: float) -> float:
     """Return max(base, ADAPTIVE_FACTOR × p75(amplitudes)).
 
     Using the clip's own amplitude distribution prevents a fixed threshold
@@ -337,15 +539,15 @@ def _adaptive_amplitude_floor(events: list[tuple], base: float) -> float:
     """
     if not events:
         return base
-    amps = np.array([e[3] for e in events], dtype=float)
+    amps = np.array([e.amp for e in events], dtype=float)
     p75 = float(np.percentile(amps, 75))
     return max(base, ADAPTIVE_FACTOR * p75)
 
 
 def _merge_onsets(
-    events: list[tuple],
+    events: list[Event],
     gap_sec: float,
-) -> list[tuple]:
+) -> list[Event]:
     """Fuse consecutive same-pitch events separated by less than *gap_sec*.
 
     Basic Pitch often splits a single sustained note or a clearly-intended
@@ -353,10 +555,10 @@ def _merge_onsets(
     Merging them reduces ghost syllables in the solfa output and improves
     overall confidence scores.
 
-    Input / output: list of (start_sec, end_sec, pitch_midi, amplitude).
-    The merged event inherits the amplitude of the louder fragment and spans
-    from the earliest start to the latest end.  Multiple passes are made
-    until no further merges are possible (handles chains of three or more).
+    The merged event inherits the amplitude — and the pyin-derived fields — of
+    the louder fragment and spans from the earliest start to the latest end.
+    Multiple passes are made until no further merges are possible (handles
+    chains of three or more).
     """
     if len(events) < 2:
         return events
@@ -365,19 +567,20 @@ def _merge_onsets(
     changed = True
     while changed:
         changed = False
-        result: list[tuple] = []
+        result: list[Event] = []
         i = 0
         while i < len(merged):
             curr = merged[i]
             if i + 1 < len(merged):
                 nxt = merged[i + 1]
-                c_start, c_end, c_pitch, c_amp = curr
-                n_start, n_end, n_pitch, n_amp = nxt
-                gap = n_start - c_end
-                if c_pitch == n_pitch and 0.0 <= gap < gap_sec:
-                    # Merge: span from c_start to n_end, amplitude = louder half
-                    fused = (c_start, n_end, c_pitch, max(c_amp, n_amp))
-                    result.append(fused)
+                gap = nxt.start - curr.end
+                if curr.pitch == nxt.pitch and 0.0 <= gap < gap_sec:
+                    # Merge: span from curr.start to nxt.end, keeping the louder
+                    # fragment's amplitude.  Both have the same pitch by the test
+                    # above, so taking the louder half wholesale is equivalent to
+                    # the old max(c_amp, n_amp) on the fields that existed then.
+                    loud = curr if curr.amp >= nxt.amp else nxt
+                    result.append(replace(loud, start=curr.start, end=nxt.end))
                     i += 2
                     changed = True
                     continue
@@ -388,7 +591,7 @@ def _merge_onsets(
     return merged
 
 
-def _dedup_simultaneous(events: list[tuple]) -> list[tuple]:
+def _dedup_simultaneous(events: list[Event]) -> list[Event]:
     """Remove exact duplicate pitch+onset pairs that survive onset merging.
 
     In polyphonic mode, Basic Pitch occasionally emits two identical note
@@ -396,10 +599,10 @@ def _dedup_simultaneous(events: list[tuple]) -> list[tuple]:
     the louder one to avoid double-counting a single physical note.
     """
     seen: dict[tuple, float] = {}  # (pitch, start_rounded) → best_amp
-    order: list[tuple] = []
+    order: list[Event] = []
 
     for evt in events:
-        start, end, pitch, amp = evt
+        start, pitch, amp = evt.start, evt.pitch, evt.amp
         key = (pitch, round(start, 3))
         if key not in seen:
             seen[key] = amp
@@ -408,11 +611,118 @@ def _dedup_simultaneous(events: list[tuple]) -> list[tuple]:
             # Replace with the louder duplicate; preserve original list order
             seen[key] = amp
             order = [
-                evt if (e[2] == pitch and round(e[0], 3) == round(start, 3)) else e
+                evt if (e.pitch == pitch and round(e.start, 3) == round(start, 3)) else e
                 for e in order
             ]
 
     return order
+
+
+# ── pyin pitch refinement (defect 6) ──────────────────────────────────────────
+
+
+def _pyin_contour(wav_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """(frame times, f0 as MIDI with NaN where unvoiced, voiced probability).
+
+    Basic Pitch decides *where* notes are and pyin decides *what pitch* they are:
+    a frame-level f0 tracker has no note segmentation of its own, so it cannot
+    replace inference, but it is a far better pitch estimator inside boundaries
+    that already exist.  That division of labour is the whole point of this stage.
+
+    Returns three empty arrays when the clip is unreadable, too long to refine
+    within the queue's latency budget, or produced no voiced frames at all — which
+    every caller reads as "no refinement available".
+    """
+    import librosa
+
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
+            duration = len(y) / float(sr) if sr else 0.0
+            # Checked after the decode and before pyin because the decode is the
+            # cheap half: pyin is ~0.22x realtime and this is a single-worker queue.
+            if duration > settings.pyin_max_seconds:
+                print(
+                    f"[notefusion] clip is {duration:.0f}s, over the "
+                    f"{settings.pyin_max_seconds:.0f}s pyin budget; skipping refinement",
+                    flush=True,
+                )
+                return np.empty(0), np.empty(0), np.empty(0)
+            f0, _voiced_flag, voiced_prob = librosa.pyin(
+                y, fmin=PYIN_FMIN_HZ, fmax=PYIN_FMAX_HZ, sr=sr
+            )
+    except Exception as exc:
+        print(f"[notefusion] librosa pyin failed ({exc}); keeping Basic Pitch pitches", flush=True)
+        return np.empty(0), np.empty(0), np.empty(0)
+
+    times = librosa.times_like(f0, sr=sr)
+    midi = np.full(f0.shape, np.nan)
+    voiced = ~np.isnan(f0)
+    if not voiced.any():
+        return np.empty(0), np.empty(0), np.empty(0)
+    midi[voiced] = librosa.hz_to_midi(f0[voiced])
+    return times, midi, voiced_prob
+
+
+def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
+    """Correct octave errors against a pyin f0 contour.
+
+    Basic Pitch locks onto the second harmonic often enough to matter: measured on
+    the clean synthetic control case, 9 of 15 detected events were a whole octave
+    above the note that produced them — including notes whose fundamental was never
+    reported at all.  That is why the *clean* case scored worse than the noisy one,
+    since additive noise breaks the fundamental/overtone ambiguity.  pyin's median
+    over the same span was within 0.01 semitones of the truth on every one of them.
+
+    Only whole-octave disagreements are acted on.  Replacing the pitch outright
+    whenever pyin disagrees would be a much larger change with much more to go
+    wrong: a fragment shorter than one vibrato cycle has a median biased toward
+    wherever in the cycle it happens to sit, so on that evidence pyin is *not*
+    reliable to the semitone per fragment — but a bias of at most a semitone or so
+    cannot manufacture or hide a twelve-semitone gap, which is what makes the octave
+    decision safe where a general one is not.
+
+    Runs before ``_merge_onsets`` on purpose: two fragments of one note that were
+    split apart only because Basic Pitch put them an octave apart become the same
+    pitch here, and the existing exact-pitch merge then fuses them with no tolerance
+    of its own and therefore no risk to genuine semitone steps.
+    """
+    times, midi, voiced_prob = _pyin_contour(wav_path)
+    if times.size == 0:
+        return events
+
+    refined: list[Event] = []
+    corrected = 0
+    for evt in events:
+        span = (times >= evt.start) & (times <= evt.end) & ~np.isnan(midi)
+        if int(span.sum()) < PYIN_MIN_VOICED_FRAMES:
+            refined.append(evt)
+            continue
+
+        median_midi = float(np.median(midi[span]))
+        confidence = float(np.median(voiced_prob[span]))
+
+        octaves = round((median_midi - evt.pitch) / 12.0)
+        if octaves == 0 or confidence < PYIN_MIN_VOICED_PROB:
+            refined.append(evt)
+            continue
+
+        offset = median_midi - evt.pitch - 12.0 * octaves
+        candidate = evt.pitch + 12 * octaves
+        if abs(offset) > PYIN_OCTAVE_TOLERANCE or not 0 <= candidate <= 127:
+            refined.append(evt)
+            continue
+
+        refined.append(replace(evt, pitch=candidate))
+        corrected += 1
+
+    if corrected:
+        print(
+            f"[notefusion] pyin corrected the octave of {corrected}/{len(events)} events",
+            flush=True,
+        )
+    return refined
 
 
 import warnings
@@ -584,7 +894,123 @@ def transcribe(
     tempo_override: int | None = None,
     progress=lambda fraction: None,
 ) -> TranscriptionResult:
+    """Decode once, then transcribe the decoded WAV.
+
+    The decoded file has to outlive inference.  Tempo and beat tracking read the
+    same audio Basic Pitch was given, and librosa has no backend for a .m4a on a
+    slim container — pointing it at the original upload is exactly how a clip
+    ends up reported at the 100 BPM fallback.  So the whole pipeline runs inside
+    this ``finally`` and the temporary WAV is deleted once, here.
+
+    A ``.wav`` input is handed back untouched by ``_ensure_wav_path`` and is
+    therefore never deleted here; the caller owns it (``JobQueue._run`` unlinks
+    the upload for privacy, TRD par. 9).
+    """
+    target_path, is_temp_wav = _ensure_wav_path(audio_path)
+    try:
+        return _transcribe_wav(target_path, mode, key_override, tempo_override, progress)
+    finally:
+        if is_temp_wav:
+            target_path.unlink(missing_ok=True)
+
+
+# ── Tempo and beat phase ──────────────────────────────────────────────────────
+
+# Beat tracking is only trusted inside this range: librosa returns NaN on very
+# short or near-silent clips and values well outside it on unusual material.
+_MIN_BPM = 20.0
+_MAX_BPM = 400.0
+_DEFAULT_BPM = 100.0
+
+
+def _onset_bpm(events: list[Event]) -> float:
+    """Rough BPM from the median inter-onset interval; 0.0 when unusable.
+
+    Secondary strategy for when beat tracking gives nothing — it assumes the
+    most common note length *is* the beat, which is wrong often enough that it
+    only runs after librosa has already failed.
+    """
+    onsets = np.array([e.start for e in events])
+    if len(onsets) < 4:
+        return 0.0
+    iois = np.diff(onsets)
+    usable = iois[iois > 0.05]  # ignore glitches
+    if usable.size == 0:
+        return 0.0
+    median_ioi = float(np.median(usable))
+    return 60.0 / median_ioi if median_ioi > 0 else 0.0
+
+
+def _estimate_tempo_and_beats(
+    wav_path: Path, events: list[Event], tempo_override: int | None
+) -> tuple[float, np.ndarray]:
+    """(BPM, detected beat times in seconds) for the decoded WAV.
+
+    A user tap-in override always wins for the BPM (TRD par. 5), but beat
+    tracking still runs — seeded with that BPM — because the override says how
+    fast the piece is, not where its downbeats sit.  Beat times come back empty
+    when tracking fails, which ``_beat_origin`` reads as "no phase information".
+    """
     import librosa
+
+    override_bpm = float(tempo_override) if tempo_override else 0.0
+
+    beat_times = np.empty(0)
+    tracked_bpm = 0.0
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
+        seed = {"start_bpm": override_bpm} if override_bpm else {}
+        raw_est, beats = librosa.beat.beat_track(y=y, sr=sr, units="time", **seed)
+        raw_bpm = float(np.atleast_1d(raw_est)[0])
+        if np.isfinite(raw_bpm) and _MIN_BPM <= raw_bpm <= _MAX_BPM:
+            tracked_bpm = raw_bpm
+        candidates = np.asarray(beats, dtype=float).ravel()
+        beat_times = candidates[np.isfinite(candidates)]
+    except Exception as exc:
+        print(f"[notefusion] librosa beat_track failed ({exc}); falling back to onsets/default", flush=True)
+
+    if override_bpm:
+        return override_bpm, beat_times
+
+    if tracked_bpm > 0.0:
+        return tracked_bpm, beat_times
+
+    onset_bpm = _onset_bpm(events)
+    fallback = onset_bpm if _MIN_BPM <= onset_bpm <= _MAX_BPM else _DEFAULT_BPM
+    return fallback, beat_times
+
+
+def _beat_origin(beat_times: np.ndarray, first_onset: float, bpm: float) -> float:
+    """The instant, in seconds, that should map to beat 0.
+
+    Basic Pitch reports note times relative to the *file*, so a count-in or any
+    leading silence shifts the entire melody off the barline — the largest
+    timing defect in the pipeline, because every bar line and every solfa line
+    is drawn from these offsets.  The fix is to measure from a detected beat
+    instead: the last one at or before the first surviving onset, provided it is
+    within half a beat.  Further back than that and the grid is describing some
+    other beat, not this onset, so the offset would be a guess dressed up as
+    evidence.  With no usable beat at all, anchoring the first note to beat 0 is
+    still strictly better than preserving the silence.
+    """
+    if beat_times.size:
+        earlier = beat_times[beat_times <= first_onset]
+        if earlier.size:
+            candidate = float(earlier[-1])
+            if (first_onset - candidate) <= 30.0 / bpm:  # half a beat period
+                return candidate
+    return first_onset
+
+
+def _transcribe_wav(
+    wav_path: Path,
+    mode: str,
+    key_override: str | None,
+    tempo_override: int | None,
+    progress,
+) -> TranscriptionResult:
     from basic_pitch import ICASSP_2022_MODEL_PATH
     from basic_pitch.inference import predict
     from music21 import key as m21key
@@ -614,19 +1040,14 @@ def transcribe(
     min_note_ms = 100 if mode == "melody" else 80
     max_freq_hz = 1050.0
 
-    target_path, is_temp_wav = _ensure_wav_path(audio_path)
-    try:
-        _, midi_data, note_events = predict(
-            str(target_path),
-            ICASSP_2022_MODEL_PATH,
-            onset_threshold=onset_thresh,
-            frame_threshold=frame_thresh,
-            minimum_note_length=min_note_ms,
-            maximum_frequency=max_freq_hz,
-        )
-    finally:
-        if is_temp_wav:
-            target_path.unlink(missing_ok=True)
+    _, midi_data, note_events = predict(
+        str(wav_path),
+        ICASSP_2022_MODEL_PATH,
+        onset_threshold=onset_thresh,
+        frame_threshold=frame_thresh,
+        minimum_note_length=min_note_ms,
+        maximum_frequency=max_freq_hz,
+    )
 
     progress(0.45)
 
@@ -634,19 +1055,27 @@ def transcribe(
     # Discard events shorter than MIN_NOTE_SEC before computing the adaptive
     # amplitude floor so that very short noise bursts (which tend to be high-
     # amplitude) do not inflate p75 and raise the floor above real notes.
-    raw_events: list[tuple] = sorted(
+    raw_events: list[Event] = sorted(
         [
-            (start, end, int(pitch), float(amp))
+            Event(start, end, int(pitch), float(amp))
             for start, end, pitch, amp, _bends in note_events
             if (end - start) >= MIN_NOTE_SEC
         ],
-        key=lambda e: e[0],
+        key=lambda e: e.start,
     )
 
     # ── 3. Adaptive amplitude floor ───────────────────────────────────────────
     min_amp_base = MIN_AMPLITUDE_MELODY if mode == "melody" else MIN_AMPLITUDE_POLY
     amp_floor = _adaptive_amplitude_floor(raw_events, min_amp_base)
-    events = [e for e in raw_events if e[3] >= amp_floor]
+    events = [e for e in raw_events if e.amp >= amp_floor]
+
+    # ── 3b. pyin pitch refinement ─────────────────────────────────────────────
+    # After the amplitude floor so pyin is not spent on events about to be dropped,
+    # and before merging so an octave correction can let two fragments of one note
+    # fuse on the existing exact-pitch test.
+    if settings.pyin_refine and events:
+        events = _refine_pitches(events, wav_path)
+    progress(0.50)
 
     # ── 4. Onset merging ──────────────────────────────────────────────────────
     # Merge before voice-cleaning so the melody overlap resolver sees clean
@@ -660,25 +1089,23 @@ def transcribe(
 
     # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────────
     if mode == "melody" and events:
-        cleaned: list[tuple] = []
+        cleaned: list[Event] = []
         for evt in events:
             if not cleaned:
                 cleaned.append(evt)
                 continue
 
-            prev_start, prev_end, prev_pitch, prev_amp = cleaned[-1]
-            curr_start, curr_end, curr_pitch, curr_amp = evt
+            prev = cleaned[-1]
 
-            if curr_start < prev_end:  # overlap detected
-                onset_close = (curr_start - prev_start) < 0.12
-                if curr_amp > prev_amp and onset_close:
+            if evt.start < prev.end:  # overlap detected
+                onset_close = (evt.start - prev.start) < 0.12
+                if evt.amp > prev.amp and onset_close:
                     # Current note is louder and nearly co-incident → replace
                     cleaned[-1] = evt
                 else:
                     # Truncate previous to the boundary of the new one
-                    truncated = (prev_start, curr_start, prev_pitch, prev_amp)
-                    if (curr_start - prev_start) >= 0.04:
-                        cleaned[-1] = truncated
+                    if (evt.start - prev.start) >= 0.04:
+                        cleaned[-1] = replace(prev, end=evt.start)
                         cleaned.append(evt)
                     # else: previous becomes too short → drop it, keep current
                     else:
@@ -687,7 +1114,7 @@ def transcribe(
                 cleaned.append(evt)
 
         # Drop any note that was truncated below the absolute minimum duration
-        events = [e for e in cleaned if (e[1] - e[0]) >= 0.04]
+        events = [e for e in cleaned if (e.end - e.start) >= 0.04]
 
     if not events:
         raise LowConfidenceError(
@@ -697,70 +1124,52 @@ def transcribe(
 
     progress(0.55)
 
-    # ── 7. Tempo estimation ───────────────────────────────────────────────────
-    # User tap-in override wins (TRD par. 5); otherwise librosa beat tracking.
-    # Validation: librosa returns NaN for very short or near-silent clips, and
-    # returns values well outside 20–400 BPM on unusual material; fall back to
-    # 100 BPM in any of those cases rather than propagating NaN into music21.
-    if tempo_override:
-        bpm = float(tempo_override)
-    else:
-        bpm = 0.0
-        try:
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                y, sr = librosa.load(str(audio_path), sr=22_050, mono=True)
-            raw_est, _ = librosa.beat.beat_track(y=y, sr=sr)
-            raw_bpm = float(np.atleast_1d(raw_est)[0])
-            if np.isfinite(raw_bpm) and 20.0 <= raw_bpm <= 400.0:
-                bpm = raw_bpm
-        except Exception as exc:
-            print(f"[notefusion] librosa beat_track failed ({exc}); falling back to onsets/default", flush=True)
-
-        if bpm < 20.0 or bpm > 400.0:
-            # Attempt a rough onset-based estimate as a secondary strategy
-            # before falling back to the safe default.
-            onsets = np.array([e[0] for e in events])
-            if len(onsets) >= 4:
-                iois = np.diff(onsets)  # inter-onset intervals
-                median_ioi = float(np.median(iois[iois > 0.05]))  # ignore glitches
-                beat_hz = 1.0 / median_ioi if median_ioi > 0 else 0.0
-                onset_bpm = beat_hz * 60.0
-                bpm = onset_bpm if 20.0 <= onset_bpm <= 400.0 else 100.0
-            else:
-                bpm = 100.0
-
+    # ── 7. Tempo and beat phase ───────────────────────────────────────────────
+    # Both come from the decoded WAV, which is still on disk because transcribe()
+    # owns its lifetime.  bpm converts seconds to beats; beat_origin decides
+    # which instant is beat 0 (see _beat_origin — without it, leading silence
+    # shifts the whole melody off the barline).
+    bpm, beat_times = _estimate_tempo_and_beats(wav_path, events, tempo_override)
     sec_to_beats = bpm / 60.0
+    beat_origin = _beat_origin(beat_times, events[0].start, bpm) if settings.beat_align else 0.0
     progress(0.65)
 
-    # ── 8. music21 stream, quantized to an eighth-note grid ──────────────────
+    # ── 8. music21 stream, quantized to the configured grid ───────────────────
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
     s.insert(0, meter.TimeSignature("4/4"))
-    for start, end, pitch, amp in events:
-        n = m21note.Note(pitch)
-        # Clamp to a quarter note minimum so tiny surviving fragments still
-        # have a well-formed duration in the score.
-        n.duration.quarterLength = max((end - start) * sec_to_beats, 0.25)
-        n.editorial.confidence = amp
-        s.insert(start * sec_to_beats, n)
-    s.quantize((2,), processOffsets=True, processDurations=True, inPlace=True)
+    for evt in events:
+        n = m21note.Note(evt.pitch)
+        # Clamp to a sixteenth minimum so tiny surviving fragments still have a
+        # well-formed duration in the score.  0.25 is one step of the default
+        # grid, so this floor and the quantizer agree.
+        n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
+        n.editorial.confidence = evt.amp
+        # max() is defensive: _beat_origin never returns a value after the first
+        # onset, so nothing should clamp here.
+        s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
+    s.quantize(settings.quantize_divisors, processOffsets=True, processDurations=True, inPlace=True)
 
     # ── 9. Key detection ──────────────────────────────────────────────────────
     # Manual override always wins (TRD par. 4.1).
-    # Without an override, use Krumhansl-Schmuckler from music21.  Two
-    # additional quality controls are applied:
     #
-    #   a) NaN guard — a degenerate stream (all-rests after quantization) can
-    #      cause correlationCoefficient to be NaN; clamp to 0.
+    # Without an override the key comes from an equal vote over five music21 pitch
+    # profiles (see KEY_PROFILE_NAMES).  music21's own Stream.analyze("key") is a
+    # single profile — AardenEssen — whose documented weakness is reading the
+    # subdominant as the tonic, and that is not academic: it calls a plain C-major
+    # stream F major.  A wrong tonic re-labels every solfa syllable, which makes this
+    # the worst available failure for movable-do.
     #
-    #   b) Short-clip penalty — fewer than MIN_NOTES_FOR_KEY events gives
-    #      Krumhansl-Schmuckler too little data to be reliable.  The confidence
-    #      is capped at KEY_CONFIDENCE_CAP_LOW (0.45) so the mobile always
-    #      shows the editable-key field in this case (PRD mitigation).
+    # Confidence is the winner's margin over the runner-up, not the winner's own
+    # correlation, because only the margin falls when two keys are genuinely hard to
+    # separate.  The short-clip cap at KEY_CONFIDENCE_CAP_LOW is unchanged: fewer than
+    # MIN_NOTES_FOR_KEY events is too little data for any profile, so the mobile shows
+    # the editable-key field regardless (PRD mitigation).
     if key_override:
         detected = _parse_key_override(key_override)
         key_confidence = 1.0
+    elif settings.key_ensemble:
+        detected, key_confidence = _detect_key(s, len(events))
     else:
         detected = s.analyze("key")
         cc = float(detected.correlationCoefficient)
@@ -777,7 +1186,7 @@ def transcribe(
     # ── 10. Solfa mapping ─────────────────────────────────────────────────────
     # Derived from the same note list — re-labelling, never re-transcription.
     doh_pc = solfa.doh_pitch_class(detected.tonic.pitchClass, detected.mode)
-    ref_doh = solfa.reference_doh([p for _, _, p, _ in events], doh_pc)
+    ref_doh = solfa.reference_doh([e.pitch for e in events], doh_pc)
 
     notes: list[TranscribedNote] = []
     bars: list[str] = []
