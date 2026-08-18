@@ -145,7 +145,7 @@ providers authenticate by signature, not JWT.
 | Var | Default | Notes |
 |-----|---------|-------|
 | `Billing__DefaultProvider` | `Paystack` | Provider chosen when a currency has more than one candidate. |
-| `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | Deep-link the provider returns the user to after hosted checkout. The real result still arrives via webhook. |
+| `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | **Must be set for Bachs.** Where the provider returns the browser after checkout. Bachs rejects a non-http(s) `success_url` outright (`VALIDATION_ERROR success_url must use http:// or https:// scheme`), so the committed deep-link default fails every Bachs checkout — loudly, before anyone is charged. Point it at the API's own bridge page, which hands off to the app's deep link: `https://<your-heroku-app>.herokuapp.com/api/billing/return`. The real result still arrives via webhook. |
 
 ---
 
