@@ -500,6 +500,24 @@ web-build/
 # ── NoteFusion: local secrets ────────────────────────────────
 .env.local
 .env.*.local
+# Android signing material. These were sitting untracked AND unignored, so any
+# `git add -A` from the repo root would have committed the app signing key and its
+# cleartext passwords — and a Play-listed key cannot be rotated after that.
+*.jks
+*.keystore
+mobile/credentials.json
+mobile/credentials/
+# Same hazard, one step removed: these one-off scripts fetch the keystore password from
+# the Expo API and each hardcodes the API token that authorises it, so committing them
+# leaks the credential that unlocks the signing key above.
+mobile/scripts/fetch-keystore.mjs
+mobile/scripts/test-keys.mjs
+
+# ── NoteFusion: accuracy harness output ──────────────────────
+# Rewritten by every `python -m tests.accuracy.report` run, and a filtered run leaves
+# a partial document behind. baseline.json is deliberately NOT ignored: it is the
+# committed artifact the regression gate reads.
+server/tests/accuracy/report.json
 
 # ── Scratch tooling: design previews, palette audits, verification scripts ──
 .preview/
