@@ -60,22 +60,33 @@ class Settings:
     def quantize_divisors(self) -> tuple[int, ...]:
         """music21 quantize grid, as divisions per quarter note.
 
-        The default 4 is sixteenths, which makes the 0.25 duration floor in the
-        pipeline exactly one grid step instead of contradicting a coarser grid.
+        The default 2 is eighths.  A finer grid is the intuitive choice and was tried
+        as the default; the corpus says no, twice over.
 
-        "4,3" adds eighth-triplets and is deliberately *not* the default: measured
-        over the accuracy corpus it was never better than "4" alone (aggregate
-        notes.f1 0.821 against 0.823) and the triplet case it was added for did
-        not move at all, because that case's tempo is misread as 117 BPM against a
-        true 96 — no triplet grid can align under a wrong beat period.  Retest it
-        once tempo estimation improves.
+        "4" (sixteenths) makes the 0.25 duration floor in the pipeline exactly one
+        grid step rather than contradicting a coarser grid, which is why it was tried.
+        It buys aggregate notes.f1 +0.007 — one case (semitone_steps_c_major) recovers
+        two reference notes, recall 0.833 -> 1.000.  It costs solfa.degree_accuracy
+        -0.032, key.exact -0.032 and key.confidence_auc -0.062, because quantizing to
+        a finer grid changes note *durations*, and music21's key profiles correlate a
+        duration-weighted pitch-class histogram: drift_1_semitone flips C major ->
+        F minor on sixteenths and takes every solfa syllable in the clip with it.
+        Degree accuracy is the headline metric, so eighths win.
+
+        "4,3" adds eighth-triplets and is likewise not the default: it was never
+        better than "4" alone (notes.f1 0.821 against 0.823) and the triplet case it
+        was added for did not move at all, because that case's tempo is misread as
+        117 BPM against a true 96 — no triplet grid can align under a wrong beat
+        period.  (That case reaches degree 1.000 anyway, from beat-phase alignment
+        rather than from any grid change.)  Retest both once tempo estimation
+        improves; the finer grids are one measurement away from being right.
 
         Unparseable entries are dropped rather than raising, so a typo in a deploy
         cannot fail every transcription.
         """
         raw = os.getenv("NF_QUANTIZE_DIVISORS", "")
         parsed = tuple(int(p) for p in raw.split(",") if p.strip().isdigit() and int(p) > 0)
-        return parsed or (4,)
+        return parsed or (2,)
 
 
 settings = Settings()

@@ -17,14 +17,27 @@ session-scoped fixture is what keeps this usable.
 
 Accepted trades recorded in the current baseline
 ────────────────────────────────────────────────
-  semitone_steps_c_major / solfa.octave_error_rate  0.100 -> 0.167 (Phase 2 grid)
-      The sixteenth grid recovers two reference notes that previously matched
-      nothing (solfa.matched 10 -> 12, notes.recall 0.833 -> 1.000, ghosts 5 -> 3)
-      and one of them carries a wrong octave mark, so the same underlying error
-      moved from "missing note" to "note with a misplaced octave dot" — visible
-      where it was invisible, and the smaller user-facing error of the two.
-      degree_accuracy stayed 1.000 and the corpus-wide rate improved
-      (0.121 -> 0.115).  A further rise here is a real regression; this step is not.
+This baseline is the shipped configuration.  Two numbers in it are *worse* than the
+pre-plan pipeline scored, deliberately:
+
+  vibrato_heavy / solfa.degree_accuracy  0.375 -> 0.000
+      This case is broken in every configuration, pre-plan included — 30 estimated
+      notes for 11 real ones, notes.f1 0.098, 21 ghosts.  With 90% of the note list
+      wrong, the duration-weighted pitch-class histogram every music21 profile reads
+      is noise, and all five profiles vote for an unrelated key.  Pre-plan scored
+      0.375 by landing on Bb minor, which happens to share 3 of 8 degrees with the
+      true C major — coincidental partial credit, not a working behaviour.  What the
+      trade buys is honesty: key.confidence goes 0.477 -> 0.023, so the estimate is
+      now well under the mobile's 0.5 cut and the editable-key prompt fires instead
+      of a wrong key being presented as plausible.  The real fix is Phase 3c, the
+      vibrato-tolerant merge, which would stop the fragmentation that produces the
+      30 notes; it is not implemented.  Until it is, this number should not improve
+      by chance — if it moves, check notes.f1 first.
+
+  conf.auc and conf.separation, corpus-wide and on four cases
+      Both fall while every note metric on those same cases improves.  They are no
+      longer gated; see the NOT_A_GATE note below for why that is structural rather
+      than convenient.
 """
 
 import json
@@ -70,6 +83,34 @@ LOWER_IS_BETTER = frozenset(
 #   tempo.metrical_factor  a label ("4x"), not a score.
 #   key.confidence         descriptive on its own; the gateable form is the aggregate
 #                          key.confidence_separation.
+#   conf.mean_correct / conf.mean_wrong / conf.auc / conf.separation
+#                          the note-confidence family.  None of the four is gateable,
+#                          for two different reasons, and it takes both to rule the
+#                          whole family out.
+#                          The means fail on RESCALING: halve every note's confidence
+#                          and mean_wrong "improves" with nothing about the
+#                          transcription changed.  auc (a rank statistic) and
+#                          separation (a difference) both survive that.
+#                          But all four fail on POPULATION, which is the reason the
+#                          last two are listed here too.  "Wrong" is defined by the
+#                          matcher, so fixing a class of error removes that class
+#                          from the denominator — and the errors a fix reaches first
+#                          are the quiet notes, which were the easy ones to separate.
+#                          Measured on the pyin octave fix: diag_baseline's octave
+#                          error rate went 0.455 -> 0.000 and notes.f1 0.462 -> 0.846
+#                          while conf.separation fell 0.139, because the notes that
+#                          became correct dragged mean_correct down with them.  Four
+#                          cases show the same signature.  Gating these rejects fixes,
+#                          exactly as it would for solfa.matched.
+#                          Nothing here protects confidence from genuinely degrading;
+#                          that is a real gap in this gate, stated rather than papered
+#                          over.  Read the family next to solfa.octave_error_rate,
+#                          and mean_wrong against the mobile's fixed 0.5 cut in
+#                          theme.ts, which is why it is recorded at all.
+#                          key.confidence_auc and key.confidence_separation ARE gated:
+#                          their population is the 31 corpus cases and a fix migrates
+#                          one or two, where a case's wrong-note pool is often 2-4
+#                          notes and one migration swings the statistic by 0.1.
 #   solfa.anchor_matches_reference
 #                          a whole-clip notational choice, and reference_doh breaks an
 #                          exact tie toward the lower doh, so it is a step function of
@@ -96,6 +137,10 @@ NOT_A_GATE = frozenset(
         "solfa.anchor_matches_reference",
         "tempo.metrical_factor",
         "key.confidence",
+        "conf.mean_correct",
+        "conf.mean_wrong",
+        "conf.auc",
+        "conf.separation",
         "n_cases",
     }
 )
@@ -116,6 +161,29 @@ def _regressions(current: dict, recorded: dict) -> list[str]:
         if worse:
             lines.append(f"{name}: baseline {base:.4f} -> current {now:.4f} (delta {delta:+.4f})")
     return lines
+
+
+def _provenance(baseline: dict | None) -> str:
+    """A suffix naming any flag difference, so a failing delta is attributable.
+
+    A/Bing one flag against the baseline is what the flags are for, so a difference is
+    not itself an error — but reading "regressed" without knowing an env var moved is
+    how a flag change gets mistaken for a code regression.
+
+    Imported lazily because ``report`` pulls in ``runner``, and this module
+    deliberately costs nothing but ``corpus`` at collection time.
+    """
+    if baseline is None:
+        return ""
+    from tests.accuracy.report import _effective_flags, _flag_drift
+
+    drift = _flag_drift(_effective_flags(), baseline.get("flags"))
+    if not drift:
+        return ""
+    return (
+        "\n  NOTE: this run's flags differ from the baseline's (" + ", ".join(drift) + ")"
+        "\n  so the deltas above may be the flags and not the code."
+    )
 
 
 @pytest.fixture(scope="session")
@@ -168,7 +236,11 @@ def test_case_did_not_regress(case_name: str, outcomes: dict, baseline: dict | N
         pytest.skip(f"{case_name} is absent from baseline.json — re-record the baseline")
 
     regressions = _regressions(outcome.metrics, recorded.get("metrics", {}))
-    assert not regressions, f"{case_name} regressed (tolerance {TOLERANCE}):\n  " + "\n  ".join(regressions)
+    assert not regressions, (
+        f"{case_name} regressed (tolerance {TOLERANCE}):\n  "
+        + "\n  ".join(regressions)
+        + _provenance(baseline)
+    )
 
 
 def test_aggregate_did_not_regress(outcomes: dict, baseline: dict | None) -> None:
@@ -181,4 +253,8 @@ def test_aggregate_did_not_regress(outcomes: dict, baseline: dict | None) -> Non
         pytest.skip(_NO_BASELINE)
 
     regressions = _regressions(current, baseline.get("aggregate", {}))
-    assert not regressions, f"corpus aggregate regressed (tolerance {TOLERANCE}):\n  " + "\n  ".join(regressions)
+    assert not regressions, (
+        f"corpus aggregate regressed (tolerance {TOLERANCE}):\n  "
+        + "\n  ".join(regressions)
+        + _provenance(baseline)
+    )

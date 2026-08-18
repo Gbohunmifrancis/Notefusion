@@ -355,6 +355,35 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     # past the neighbouring semitone bin either way; what changes at 1.2 is that
     # Basic Pitch actually fires in that bin — measured 30 notes with 22
     # semitone-neighbour ghosts (59, 61, 63, 66, 68, 70, 73).
+    #
+    # THIS IS WHY PHASE 3c (the semitone-tolerant merge) WAS STRUCK, NOT DEFERRED.
+    # Read the ghost list above as the proof: 59 and 61 straddle 60, 61 and 63
+    # straddle 62, and so on — Basic Pitch fires at BOTH neighbours of a wobbling
+    # pitch (over the 64 pre-merge events its label is -1 on 24 and +1 on 25), so
+    # consecutive fragments of ONE note alternate low/high and land TWO semitones
+    # apart.  Measured consecutive-pair interval histogram over the 63 adjacencies:
+    # {0: 12, 1: 5, 2: 43, 3: 2, 5: 1}.  A +-1 semitone tolerance can touch 5 pairs,
+    # 4 of them inside the 80 ms gap window, and 2 of those 5 straddle a genuine note
+    # change rather than fragmenting one note.  Simulated end to end, the merge as
+    # planned fired ZERO times and left this case bit-identical (30 notes,
+    # notes.f1 0.098, solfa.ghost_count 21).
+    #
+    # Nor is it a threshold-tuning problem.  The shorter fragment is 116.1 ms in all
+    # four gap-eligible pairs here — and 116.1 ms is also the shorter fragment of
+    # GENUINE legato semitone steps in fast_sixteenths_c_major, because
+    # 2560/22050 = 116.0998 ms is a Basic Pitch quantization constant (10 frame hops
+    # of 11.61 ms), not a tail of a distribution.  The value a duration cap must
+    # admit and the value it must reject are the same number.  The plan's amplitude
+    # condition is worse than useless: "shorter is quieter" measures TRUE on 5 of 7
+    # genuine semitone steps across the corpus and only 1 of these 4 vibrato pairs,
+    # so its sign is inverted.
+    #
+    # What the measurement says the defect actually IS: mislabelling, not
+    # fragmentation.  Basic Pitch's pitch is wrong on 49 of 64 events here while the
+    # pyin median already sits within 0.192 semitone of truth (median; max 1.792).
+    # That is a re-label in _refine_pitches, and it needs its own scouting — the
+    # 1.792 outlier is exactly the unbounded-bias case that function's docstring
+    # declines by design.  Do not fold it into the merge.
     Case(
         name="vibrato_heavy",
         key="C major",
@@ -436,13 +465,41 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
 # ── Rhythm and interval cases ─────────────────────────────────────────────────
 
 # !!! DO NOT DELETE THIS CASE !!!
-# It is the guard for the Phase 3c vibrato-tolerant merge.  That merge is allowed
-# to fuse fragments of ONE note that wander by a semitone; it must NEVER fuse two
-# genuinely adjacent semitone steps.  Every step below is a real, deliberate
-# semitone: mi-fa (64-65) and ti-doh (71-72), each a full beat (625 ms at 96 BPM),
-# alternating so the merge has maximum opportunity to misfire.  If a change makes
-# this case's note count collapse from 12 towards 6, the merge is over-eager and
-# is destroying real music.
+# Every step below is a real, deliberate semitone: mi-fa (64-65) and ti-doh (71-72),
+# each a full beat (625 ms at 96 BPM), alternating so a pitch-merge has maximum
+# opportunity to misfire.  It is a clean instrument in one specific sense: Basic
+# Pitch labels all 24 of its pre-merge events correctly and pyin agrees to within
+# 0.092 semitone, so any wrong pitch in the output is the pipeline's fault and not
+# the model's hearing.
+#
+# BUT IT IS NOT THE GUARD IT WAS WRITTEN TO BE, and the comment that used to stand
+# here said it was.  The claim was: "if a change makes this case's note count
+# collapse from 12 towards 6, the merge is over-eager."  Measured against a merge
+# deliberately built to over-fire, the count does not move at all.  Two reasons,
+# both structural:
+#   - Basic Pitch emits ~2 fragments per note (24 events for these 12 notes), so
+#     fusing a real mi->fa consumes one fragment and the duplicate body fragment
+#     keeps the note alive in the output.
+#   - The melody overlap resolver (transcriber.py, stage 6) truncates the
+#     over-extended survivor back to its original end, erasing the timing evidence.
+# A wrong cross-note merge on ref notes 6->7 was confirmed to fire while the final
+# note count AND pitch sequence stayed byte-identical to baseline.  A gate that
+# cannot see the damage it exists to catch is worse than no gate, because it reads
+# as a pass.
+#
+# Two further blind spots, in case a pitch-merge is ever revived:
+#   - Its shortest note is 625 ms and it has zero vibrato, so it never visits the
+#     short-and-wobbling region any merge condition would actually permit.  The case
+#     that DOES break is fast_sixteenths_c_major, whose genuine legato steps have a
+#     116.1 ms shorter fragment — gate on its notes.recall, not on this case.
+#   - It contains ZERO 2-semitone adjacencies (interval histogram
+#     {0: 12, 1: 6, 3: 1, 4: 1, 5: 1, 6: 1, 8: 1}), so it is blind to any tolerance
+#     wider than 1 semitone.  DIAG_PHRASE's genuine whole-tone steps (60-62, 62-64,
+#     65-67, 67-69, 69-71) have nothing watching them.
+# The right instrument is a unit test on the merge's own decisions over hand-built
+# events.  Keep this case — it earns its place on interval accuracy — but do not
+# trust it to catch an over-eager merge.
+#
 # The leading C major arpeggio is only there to pin the key: {C,E,F,G,B} on its
 # own is thin evidence, and an ambiguous key would muddy the case's real purpose.
 SEMITONE_TEMPO_BPM = 96

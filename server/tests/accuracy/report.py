@@ -27,6 +27,8 @@ from tests.accuracy import synth
 from tests.accuracy.corpus import CASES, corpus_fingerprint
 from tests.accuracy.runner import METRIC_NAMESPACES, CaseOutcome, aggregate, run_all
 
+from app.config import settings
+
 REPORT_PATH = Path(__file__).parent / "report.json"
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
 
@@ -41,10 +43,49 @@ _BOOKKEEPING = ("n_cases", "n_failed")
 # ── Provenance ────────────────────────────────────────────────────────────────
 
 
+def _effective_flags() -> dict:
+    """The accuracy flags this run actually resolved.
+
+    Without this the JSON is unattributable: two reports with different numbers and
+    nothing to say whether the pipeline changed or only an env var did.  That is not a
+    hypothetical — a baseline recorded under one flag set was diffed against runs made
+    under another for long enough to produce a wrong conclusion about which phase
+    helped, and the corpus fingerprint could not catch it because the audio was
+    identical.  Provenance is the other half of what the fingerprint does.
+
+    Read from ``settings`` rather than ``os.environ`` so what lands in the file is the
+    value the pipeline resolved, defaults included, not whichever subset of variables
+    happened to be exported.
+    """
+    return {
+        "beat_align": settings.beat_align,
+        "pyin_refine": settings.pyin_refine,
+        "pyin_max_seconds": settings.pyin_max_seconds,
+        "key_ensemble": settings.key_ensemble,
+        "quantize_divisors": list(settings.quantize_divisors),
+    }
+
+
+def _flag_drift(current: dict, recorded: dict | None) -> list[str]:
+    """Human-readable "name: baseline -> current" for every flag that differs.
+
+    A baseline written before flags were recorded has none, which is reported as such
+    rather than as thirty spurious differences.
+    """
+    if recorded is None:
+        return ["(baseline predates flag provenance - it records none)"]
+    return [
+        f"{name}: {recorded.get(name, '?')} -> {value}"
+        for name, value in current.items()
+        if recorded.get(name) != value
+    ]
+
+
 def _document(outcomes: list[CaseOutcome], name_filter: str) -> dict:
     return {
         "schema": SCHEMA_VERSION,
         "metric_namespaces": list(METRIC_NAMESPACES),
+        "flags": _effective_flags(),
         "corpus": {
             "n_cases": len(CASES),
             "fingerprint": corpus_fingerprint(CASES),
@@ -186,6 +227,14 @@ def main(argv: list[str] | None = None) -> int:
             "compares numbers measured on different audio.  Re-record the baseline."
         )
         print()
+    if baseline is not None:
+        # A flag difference is legitimate — A/Bing one flag against the baseline is what
+        # these exist for — so this is a note, not a warning.  It is printed because the
+        # alternative is reading a delta column without knowing what produced it.
+        drift = _flag_drift(document["flags"], baseline.get("flags"))
+        if drift:
+            print("flags differ from baseline: " + ", ".join(drift))
+            print()
     _print_cases(outcomes, baseline)
     _print_aggregate(document["aggregate"], baseline)
 
