@@ -12,7 +12,8 @@ namespace NoteFusion.Infrastructure.Billing.Webhooks;
 /// Verifies Bachs webhooks. Bachs signs <c>"{timestamp}.{rawBody}"</c> — one ASCII period, no newline —
 /// with HMAC-SHA256 keyed on the webhook endpoint's own <c>whsec_…</c> signing secret, and sends the
 /// lowercase hex digest bare (no <c>t=</c>/<c>v1=</c>/<c>sha256=</c> prefix) in <c>X-Bachs-Signature</c>
-/// alongside the Unix-seconds <c>X-Bachs-Timestamp</c> it signed over.
+/// — or in the unprefixed <c>Bachs-Signature</c>, which is the spelling its dashboard names — alongside
+/// the Unix-seconds <c>X-Bachs-Timestamp</c>/<c>Bachs-Timestamp</c> it signed over.
 /// </summary>
 /// <remarks>
 /// Three details here are load-bearing and easy to get wrong:
@@ -37,8 +38,12 @@ namespace NoteFusion.Infrastructure.Billing.Webhooks;
 /// </remarks>
 internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
 {
-    private const string SignatureHeader = "X-Bachs-Signature";
-    private const string TimestampHeader = "X-Bachs-Timestamp";
+    // Bachs' API reference documents the X- prefixed spelling, but its dashboard tells you to verify
+    // "the Bachs-Signature header". Only one of those is what actually arrives, and guessing wrong is a
+    // 401 on every genuine delivery, so both are accepted. This widens nothing that matters: the digest
+    // still has to verify against the signing secret whichever header carried it.
+    private static readonly string[] SignatureHeaders = ["X-Bachs-Signature", "Bachs-Signature"];
+    private static readonly string[] TimestampHeaders = ["X-Bachs-Timestamp", "Bachs-Timestamp"];
 
     private readonly byte[] _secret;
     private readonly long _toleranceSeconds;
@@ -59,11 +64,13 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
         if (_secret.Length == 0)
             return Error.Unauthorized("Bachs.Webhook", "Webhook signing secret is not configured.");
 
-        if (!request.Headers.TryGetValue(SignatureHeader, out var signature) || string.IsNullOrWhiteSpace(signature))
+        var signature = FirstPresent(request.Headers, SignatureHeaders);
+        if (string.IsNullOrWhiteSpace(signature))
             return Error.Unauthorized("Bachs.Webhook", "Missing signature header.");
 
         // Required because it is part of the signed message: without it there is nothing to verify.
-        if (!request.Headers.TryGetValue(TimestampHeader, out var timestamp) || string.IsNullOrWhiteSpace(timestamp))
+        var timestamp = FirstPresent(request.Headers, TimestampHeaders);
+        if (string.IsNullOrWhiteSpace(timestamp))
             return Error.Unauthorized("Bachs.Webhook", "Missing timestamp header.");
 
         if (!long.TryParse(timestamp.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var sentAtUnix)
@@ -123,6 +130,17 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
         {
             return Error.Validation("Bachs.Webhook", "Webhook body was not valid JSON.");
         }
+    }
+
+    private static string? FirstPresent(IReadOnlyDictionary<string, string> headers, string[] names)
+    {
+        foreach (var name in names)
+        {
+            if (headers.TryGetValue(name, out var value) && !string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return null;
     }
 
     private static string? ReadString(JsonElement element, string property)
