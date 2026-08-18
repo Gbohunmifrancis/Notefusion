@@ -43,7 +43,8 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
         if (tx.Status != PaymentStatus.Processing)
             return Result.Success();
 
-        var verification = await _gateways.Resolve(tx.Provider).VerifyAsync(tx.Reference, ct);
+        var verification = await _gateways.Resolve(tx.Provider)
+            .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
         if (verification.IsFailure)
             return verification.Error;
         var v = verification.Value;

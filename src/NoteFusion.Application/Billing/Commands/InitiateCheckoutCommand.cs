@@ -16,7 +16,8 @@ namespace NoteFusion.Application.Billing.Commands;
 /// currency, not by the client. A <see cref="PaymentTransaction"/> is persisted <c>Pending</c> BEFORE
 /// the provider is called, so a crash mid-initiation still leaves an auditable row; an in-flight
 /// checkout for the same user+plan is reused rather than duplicated, so a double-tap never
-/// double-charges.
+/// double-charges. A retry after a failed initiation resumes the same Pending row — same reference, same
+/// idempotency key — so the provider replays the original session instead of opening a second charge.
 /// </summary>
 public sealed record InitiateCheckoutCommand(Guid PlanId) : IRequest<Result<CheckoutSessionDto>>;
 
@@ -81,24 +82,58 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         var gateway = gatewayResult.Value;
 
         var now = _clock.UtcNow;
-        var reference = $"NF_{Guid.NewGuid():N}";
-        var idempotencyKey = $"{userId:N}:{plan.Id:N}:{Guid.NewGuid():N}";
 
-        var transaction = PaymentTransaction.Create(
-            userId, plan.Id, gateway.Provider, idempotencyKey, reference, plan.AmountMinor, plan.Currency, now);
+        // A row still Pending means a previous attempt persisted its audit trail but never got a checkout
+        // URL back — the provider timed out, the process died, or the network dropped the response. Reusing
+        // that row (and therefore its reference and idempotency key) is what makes the retry safe: the
+        // provider recognises the replayed key and returns the ORIGINAL session, so a user who was already
+        // debited on the invisible first attempt is not charged again. Minting a fresh key here instead
+        // would make every retry a brand-new charge, which is exactly the duplicate we must never create.
+        // Narrowed on provider/amount/currency so a re-priced plan or a re-routed provider starts clean
+        // rather than replaying a key the provider fingerprinted against a different body.
+        var transaction = await _db.PaymentTransactions
+            .Where(t => t.UserId == userId
+                        && t.PlanId == plan.Id
+                        && t.Status == PaymentStatus.Pending
+                        && t.Provider == gateway.Provider
+                        && t.AmountMinor == plan.AmountMinor
+                        && t.Currency == plan.Currency)
+            .OrderByDescending(t => t.CreatedAtUtc)
+            .FirstOrDefaultAsync(ct);
 
-        // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
-        _db.PaymentTransactions.Add(transaction);
-        await _db.SaveChangesAsync(ct);
+        if (transaction is null)
+        {
+            var reference = $"NF_{Guid.NewGuid():N}";
+
+            // Derived from the reference, not from a fresh Guid: the key must be stable across retries of
+            // THIS initiation, and the reference already identifies it uniquely.
+            transaction = PaymentTransaction.Create(
+                userId, plan.Id, gateway.Provider, $"checkout:{reference}", reference,
+                plan.AmountMinor, plan.Currency, now);
+
+            // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
+            _db.PaymentTransactions.Add(transaction);
+            await _db.SaveChangesAsync(ct);
+        }
 
         var initiation = await gateway.InitiateAsync(
             new GatewayInitiationRequest(
-                reference, plan.AmountMinor, plan.Currency, user.Email,
-                _settings.CheckoutCallbackUrl, Recurring: true, idempotencyKey),
+                transaction.Reference, plan.AmountMinor, plan.Currency, user.Email,
+                _settings.CheckoutCallbackUrl, Recurring: true, transaction.IdempotencyKey, plan.Code,
+                user.FullName),
             ct);
 
         if (initiation.IsFailure)
         {
+            // Transient vs permanent, because the two need opposite treatment. A network error carries no
+            // information about whether the provider opened a session, so burning the row to Failed would
+            // strand a possibly-live checkout AND retire the only idempotency key that could reclaim it —
+            // leave it Pending so the next attempt replays the same key. Only a definite refusal (bad
+            // request, unsupported plan, auth failure) is a real terminal outcome worth telling the user
+            // about; the reconciliation worker is what resolves anything left ambiguous.
+            if (initiation.Error.Type == ErrorType.Network)
+                return BillingErrors.GatewayInitiationFailed(initiation.Error.Message);
+
             transaction.MarkFailed(initiation.Error.Message, _clock.UtcNow);
             await _db.SaveChangesAsync(ct);
 

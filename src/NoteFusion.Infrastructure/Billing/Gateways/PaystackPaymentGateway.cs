@@ -92,8 +92,10 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
         }
     }
 
-    public async Task<Result<GatewayVerification>> VerifyAsync(string reference, CancellationToken ct)
+    public async Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
     {
+        // Paystack resolves our own reference directly, so the provider's id is not needed here.
+        var reference = request.Reference;
         try
         {
             using var response = await _http.GetAsync($"/transaction/verify/{Uri.EscapeDataString(reference)}", ct);
