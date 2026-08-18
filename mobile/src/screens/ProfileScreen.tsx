@@ -102,7 +102,7 @@ export function ProfileScreen() {
 
   // ── Profile picture ────────────────────────────────────────────────────────
 
-  /** Picks an image and uploads it. The API proxies to Cloudinary so no
+  /** Picks an image and uploads it. The API proxies to R2 so no
    *  credentials ship in the binary. */
   async function changePicture() {
     const picked = await pickProfileImage();

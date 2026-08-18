@@ -49,8 +49,8 @@ export const meApi = {
     api.put<MyProfile>("/api/me", { fullName }).then((r) => r.data),
 
   /**
-   * Uploads a new avatar. Multipart to our own API, which forwards it to Cloudinary
-   * with server-side credentials — the app never holds a Cloudinary key.
+   * Uploads a new avatar. Multipart to our own API, which resizes it and forwards it to
+   * Cloudflare R2 with server-side credentials — the app never holds a storage key.
    *
    * Same FormData shape and the same Content-Type caveat as transcriptionsApi.submit:
    * let React Native set the header so the multipart boundary is included.

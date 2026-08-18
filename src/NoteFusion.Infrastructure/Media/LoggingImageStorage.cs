@@ -7,7 +7,7 @@ namespace NoteFusion.Infrastructure.Media;
 /// <summary>
 /// Default <see cref="IImageStorage"/> used in development: logs the upload instead of performing it
 /// and hands back a placeholder URL. Mirrors <c>LoggingEmailTransport</c> / <c>LoggingPushSender</c> —
-/// <c>docker compose up</c> needs no Cloudinary account, and nobody burns a real quota while the
+/// <c>docker compose up</c> needs no R2 bucket, and nobody writes to a real one while the
 /// avatar flow is being tested.
 /// </summary>
 /// <remarks>
@@ -28,8 +28,8 @@ internal sealed class LoggingImageStorage : IImageStorage
         var size = content.CanSeek ? $"{content.Length} bytes" : "unknown size";
 
         _logger.LogWarning(
-            "[image] no Cloudinary account configured — avatar for {UserId} was not stored "
-            + "({FileName}, {Size}). Set Cloudinary__UseCloudinary=true plus credentials to enable uploads.",
+            "[image] no R2 bucket configured — avatar for {UserId} was not stored "
+            + "({FileName}, {Size}). Set R2__UseR2=true plus credentials to enable uploads.",
             userId, fileName, size);
 
         return Task.FromResult<Result<string>>($"https://images.invalid/notefusion/avatars/{userId:N}.jpg");

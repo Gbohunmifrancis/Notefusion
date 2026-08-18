@@ -172,33 +172,49 @@ heroku config:set \
 
 ---
 
-## 4. Profile pictures (Cloudinary)
+## 4. Profile pictures (Cloudflare R2)
 
 Avatar uploads are proxied through the API — `POST /api/me/picture` — so the signing secret
-stays on the server and never ships inside the app binary. Until `Cloudinary__UseCloudinary=true`
-*and* all three credentials are set, uploads are logged rather than stored and the endpoint
-returns a placeholder URL that does not resolve, so a deploy without an account is safe.
+stays on the server and never ships inside the app binary. Until `R2__UseR2=true` *and* every
+value below is set, uploads are logged rather than stored and the endpoint returns a placeholder
+URL that does not resolve, so a deploy without a bucket is safe.
 
 ```bash
 heroku config:set \
-  Cloudinary__UseCloudinary='true' \
-  Cloudinary__CloudName='<cloud-name>' \
-  Cloudinary__ApiKey='<cloudinary-api-key>' \
-  Cloudinary__ApiSecret='<cloudinary-api-secret>' \
+  R2__UseR2='true' \
+  R2__AccountId='<cloudflare-account-id>' \
+  R2__AccessKeyId='<r2-access-key-id>' \
+  R2__SecretAccessKey='<r2-secret-access-key>' \
+  R2__BucketName='<bucket>' \
+  R2__PublicBaseUrl='https://<your-custom-domain>' \
   --app <your-heroku-app>
 ```
 
 | Var | Required? | Notes |
 |-----|-----------|-------|
-| `Cloudinary__UseCloudinary` | **yes** | `true` to store uploads; anything else logs them and stores nothing. A half-configured deployment (flag on, credential missing) also falls back to logging rather than failing every upload. |
-| `Cloudinary__CloudName` | **yes, when UseCloudinary=true** | Cloud name from the Cloudinary dashboard. |
-| `Cloudinary__ApiKey` | **yes, when UseCloudinary=true** | Cloudinary API key. |
-| `Cloudinary__ApiSecret` | **yes, when UseCloudinary=true** | Cloudinary API secret. Env-only — a key in `appsettings.json` is a key in git history. |
-| `Cloudinary__Folder` | optional | Destination folder. Defaults to `notefusion/avatars`. |
+| `R2__UseR2` | **yes** | `true` to store uploads; anything else logs them and stores nothing. A half-configured deployment (flag on, value missing) also falls back to logging rather than failing every upload. |
+| `R2__AccountId` | **yes, when UseR2=true** | Cloudflare account id. Also the S3 endpoint host: `https://<account-id>.r2.cloudflarestorage.com`. |
+| `R2__AccessKeyId` | **yes, when UseR2=true** | From an R2 API token. Scope it **Object Read & Write** on this bucket only — nothing wider. |
+| `R2__SecretAccessKey` | **yes, when UseR2=true** | The token secret, shown once at creation. Env-only — a key in `appsettings.json` is a key in git history. |
+| `R2__BucketName` | **yes, when UseR2=true** | The bucket. |
+| `R2__PublicBaseUrl` | **yes, when UseR2=true** | Origin the bucket is served from, no trailing slash. Required, not optional: without it the API would store the object and persist a URL nobody can fetch, which is worse than the logging fallback. |
+| `R2__KeyPrefix` | optional | Key prefix. Defaults to `avatars`. |
 
-> Uploads are capped at 5 MB and limited to JPEG/PNG/WebP at the controller, then stored as a
-> single 512×512 face-cropped object per user, so replacing a photo overwrites the old one
-> instead of accumulating orphans.
+**Making the bucket readable.** R2 buckets are private by default, and the API returns URLs the
+app fetches directly, so the bucket needs public read access. Connect a **custom domain** under
+the bucket's Settings → Public access; its zone must already be in the same Cloudflare account.
+Two traps:
+
+- Cloudflare documents the alternative `r2.dev` URL as rate-limited and "should only be used for
+  development purposes" — it gets no caching and no WAF. Don't ship it.
+- If you enable `r2.dev` *and* a custom domain, requests can reach the bucket by the `r2.dev`
+  hostname and **bypass** the WAF and Access rules on your custom domain. Turn `r2.dev` off.
+
+> Uploads are capped at 5 MB and limited to JPEG/PNG/WebP at the controller, then centre-cropped
+> and re-encoded server-side to a single 512×512 JPEG per user, so replacing a photo overwrites
+> the old one instead of accumulating orphans. R2 has no cache purge, so the persisted URL carries
+> a `?v=<timestamp>` stamp — that, not invalidation, is what makes a replacement appear at once.
+> Face-aware cropping does not exist in R2; the client crops square before uploading instead.
 
 ---
 

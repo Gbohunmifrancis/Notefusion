@@ -117,16 +117,16 @@ public static class DependencyInjection
 
     private static void AddMedia(this IServiceCollection services, IConfiguration configuration)
     {
-        var cloudinary = configuration.GetSection("Cloudinary").Get<CloudinarySettings>() ?? new CloudinarySettings();
-        services.AddSingleton(cloudinary);
+        var r2 = configuration.GetSection("R2").Get<R2Settings>() ?? new R2Settings();
+        services.AddSingleton(r2);
 
         // Same switch as email and push: the real provider only when it is turned on *and* fully
-        // credentialled, a logging sink otherwise, so a local run needs no Cloudinary account.
-        // Singleton either way — the Cloudinary client owns an HttpClient, and rebuilding one per
+        // credentialled, a logging sink otherwise, so a local run needs no R2 bucket.
+        // Singleton either way — the S3 client owns an HttpClient, and rebuilding one per
         // request is the socket-exhaustion mistake AddHttpClient exists to prevent.
-        if (cloudinary.IsConfigured)
+        if (r2.IsConfigured)
         {
-            services.AddSingleton<IImageStorage, CloudinaryImageStorage>();
+            services.AddSingleton<IImageStorage, R2ImageStorage>();
         }
         else
         {

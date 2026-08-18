@@ -33,7 +33,7 @@ public class User : BaseEntity
     /// <summary>The Google <c>sub</c> claim, set once a Google account is linked. Null for password-only users.</summary>
     public string? GoogleId { get; private set; }
 
-    /// <summary>Avatar URL — Cloudinary for uploads, or Google's <c>picture</c> claim on first Google sign-in.</summary>
+    /// <summary>Avatar URL — R2 for uploads, or Google's <c>picture</c> claim on first Google sign-in.</summary>
     public string? ProfilePictureUrl { get; private set; }
 
     public UserRole Role { get; private set; } = UserRole.User;
@@ -146,7 +146,7 @@ public class User : BaseEntity
         }
     }
 
-    /// <summary>Replaces the avatar (Cloudinary upload, or null to clear it).</summary>
+    /// <summary>Replaces the avatar (R2 upload, or null to clear it).</summary>
     public void SetProfilePicture(string? url) => ProfilePictureUrl = url;
 
     public bool IsLockedOut(DateTime utcNow) => LockoutEndAt.HasValue && LockoutEndAt.Value > utcNow;
