@@ -381,9 +381,109 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     # What the measurement says the defect actually IS: mislabelling, not
     # fragmentation.  Basic Pitch's pitch is wrong on 49 of 64 events here while the
     # pyin median already sits within 0.192 semitone of truth (median; max 1.792).
-    # That is a re-label in _refine_pitches, and it needs its own scouting — the
-    # 1.792 outlier is exactly the unbounded-bias case that function's docstring
-    # declines by design.  Do not fold it into the merge.
+    #
+    # THE PYIN RE-LABEL THAT FOLLOWED FROM THAT WAS ALSO STRUCK, AFTER BEING BUILT.
+    # It gated on |pyin_median - round(pyin_median)| <= 0.25 — the idea being that a
+    # median biased by sitting mid-vibrato-cycle lands BETWEEN semitones while a
+    # faithful one lands ON a centre.  On this corpus it measured like a clear win:
+    # this case went solfa.degree 0.000 -> 0.818, key F# major -> C major (correct),
+    # notes.f1 0.098 -> 0.372, and aggregate degree accuracy +0.026 with nothing else
+    # moving.  It was struck anyway, for four measured reasons.
+    #
+    #  1. The gate cannot see the bias it exists to catch.  Centre distance is a
+    #     distance MOD 1, so a bias near a whole semitone lands ON a centre — the
+    #     wrong one — and passes.  Corpus-wide, 13 events have |median - truth| >=
+    #     0.75 AND centre distance <= 0.25, including the 1.792 outlier above
+    #     (median 72.792, centre distance 0.208): the rule fires on it and moves the
+    #     label from one semitone wrong to two.  It is safe only where
+    #     k(fragment/period) * depth < 0.75, an inequality in vibrato RATE, and this
+    #     corpus has exactly one rate.
+    #  2. It is a fragmentation REGRESSION, not the fragmentation fix it looked like.
+    #     Same-pitch adjacencies do rise 12 -> 30, but 20 of the 30 pairs OVERLAP in
+    #     time (gap -0.081 to -0.209 s) and _merge_onsets requires 0.0 <= gap, so it
+    #     refuses them: merges performed fall 12 -> 10, post-merge events rise
+    #     52 -> 54, final notes 30 -> 32 against 11 real ones.  It splits a correct
+    #     three-event bp=72 chain into 71 / 73 / 72, putting a C# in a C major phrase.
+    #  3. Simpler rules dominate it on its own corpus.  Correct labels over all 647
+    #     events: 582 with the rule off, 612 with the centre gate, 617 with NO gate,
+    #     618 with a plain n_voiced >= 7 floor.  n_voiced >= 6 AND pyin_std <= 0.8
+    #     scores 36 fixes and 0 made-worse against the gate's 30 and 1.
+    #  4. The threshold is not even a quantity.  pyin medians sit on a 0.05 lattice
+    #     anchored at frac(hz_to_midi(PYIN_FMIN_HZ)) = 0.892, so reachable centre
+    #     distances step 0.2421 -> 0.2921 and every tolerance in that gap is the
+    #     identical rule — while editing the unrelated PYIN_FMIN_HZ moves all of them.
+    #
+    # And the evidence was one case: all 46 candidate events are here, the other 30
+    # cases show round(pyin_median) == Basic Pitch's label on all 369 of theirs, and
+    # render() is a pure function so "0 labels broken" has no confidence interval to
+    # quote.  A uniform +20 cent detune — ordinary intonation, and unrepresentable in
+    # RenderOptions — takes the 30 fixes down to 11.
+    #
+    # A THIRD FIX WAS SCOUTED FROM THAT AND ALSO STRUCK — THIS TIME BEFORE BUILDING.
+    # Basic Pitch's labels alternate around the truth rather than scattering: true 60
+    # arrives as [61,59,61,59,...], true 67 as [66,68,66,68,...].  So the candidate
+    # read only data the pipeline already has: take time-overlapping event pairs
+    # exactly 2 semitones apart, require the overlap to be >= 5 Basic Pitch frame hops
+    # (round(ov/HOP), HOP = 256/22050 s) and the partner to be unique, then fuse each
+    # committed run into one event at the midpoint.  On this corpus it measured better
+    # than either predecessor above: 46 labels fixed and 0 broken (582 -> 628 of 647),
+    # overlapping straddle pairs here 30 -> 13, corpus final notes 405 -> 388 against
+    # 348 real, aggregate degree +0.032.  Struck on fresh renders, for four reasons.
+    #
+    #  1. The midpoint is only the truth inside a depth window, and 1.2 sits in the
+    #     middle of it.  Re-rendering this phrase at 5.5 Hz and sweeping depth, with
+    #     the >= 5-hop gate (firings / of those, MISLABELLED):
+    #       0.8 silent | 1.0 17/0 | 1.2 39/0 | 1.4 45/0 | 1.6 25/0
+    #       1.8 11/SIX | 2.0 7/SEVEN — every firing wrong | 2.4 silent
+    #     Past ~1.6 the pair stops being symmetric about the truth: one label IS the
+    #     pitch and the other is the excursion, so (67,69) on a true 67 collapses to
+    #     68.  The corpus contains exactly one depth.
+    #  2. Nothing in the pair separates the two cases.  Both are an overlapping
+    #     (p, p+2) with a long overlap, and the WRONG firings' overlaps at 1.8
+    #     (94.2-197.4 ms) sit inside the right ones here (58.0-185.8 ms).  Rate breaks
+    #     it independently: 4.0 Hz 1 wrong of 43, 7.0 Hz 2 of 69, 9.0 Hz 3 of 62 — and
+    #     the >= 5-hop gate that is 46-fixed/0-broken here breaks correct labels at
+    #     7.0 and 9.0 Hz.  Gate sweep on this corpus: >= 2 hops 48 fixed/89 broken,
+    #     >= 3 47/12, >= 4 46/6, >= 5 46/0, >= 8 42/0.
+    #  3. The obvious clip-level repair fails in both directions.  "Stand down if the
+    #     clip holds any overlapping pair >= 3 semitones apart" switches the rule OFF
+    #     at 1.4 and 1.6 (giving up 45 and 25 correct fixes) and at 7.0 Hz (67), while
+    #     4.0 Hz ({2: 52}) and 9.0 Hz ({1: 2, 2: 74}) have clean histograms and break
+    #     anyway.  Tuning a second constant on the same one-point evidence.
+    #  4. It is unsafe in a mode this corpus cannot reach.  Every case here is
+    #     monophonic — measured 0 of 31 cases with any simultaneous reference notes —
+    #     but _transcribe_wav runs the same body for mode="poly", where a sus2, add9
+    #     or whole-tone dyad IS a fully overlapping 2-semitone pair.  The rule would
+    #     collapse two sounding pitches onto one that is not being played.
+    #
+    # Reward was capped before any of that: only one case can move, so the ceiling was
+    # 1/31 = +0.032 aggregate, and 36 of the 46 fixes are also won by the already-
+    # rejected n_voiced >= 7 floor (reason 3 above), leaving 10 unique labels of 647.
+    # The harness would have reported a clean pass — semitone_neighbour_ghosts 22 -> 2
+    # launders the metric built to detect this very defect, while solfa.ghost_count
+    # stays 21 and notes.n_est is in NOT_A_GATE.
+    #
+    # THREE FIXES, ONE VIBRATO POINT: the shared cause of all three strikes is that
+    # 5.5 Hz / 1.2 semitones cannot certify a vibrato rule.  Each candidate died on a
+    # constant fitted to this render (gap window, centre distance, overlap hops).  The
+    # prerequisite is corpus breadth, not a fourth rule.  Seven cases need no synth.py
+    # change at all — vibrato_hz 4.3066 / 5.5570 / 5.7422 / 7.0 and vibrato_semitones
+    # 0.8 / 2.0 alongside the existing 1.2, plus a genuine whole-tone-step case to
+    # cover reason 4.  Note that k = period/hop matters as much as hz: at 5.5 Hz a
+    # fragment spans 15.661 hops, and the measured fragment lengths cluster at exactly
+    # {15: 22, 16: 18}, so a rate change moves the phase truncation, not just the rate.
+    #
+    # One live lead is parked behind that same prerequisite, not struck: the plan's
+    # defect 6 is right that the discarded pitch bends carry the answer.  predict()'s
+    # note_events already return them (transcriber.py:1058 drops the 5th field), they
+    # are in units of 1/3 semitone (basic_pitch/note_creation.py:209-211,
+    # CONTOURS_BINS_PER_SEMITONE = 3), and round(bp + (bends.mean - 1) / 3) scores 36
+    # better / 0 worse over 434 events — the contour argmax, read without
+    # note_creation.py:192's gaussian(51, std=5) bias, is stronger still at 42 of 48
+    # against the library bends' 35.  Use the MEAN, not the median: the median scores
+    # 17/6.  But it inherits both traps above — a relabel alone takes overlapping
+    # same-pitch pairs 0 -> 24, and the perfect-tracker phase-truncation bias grows
+    # 0.092 semitone at 5.5 Hz to 0.517 at 2.5 Hz.  Broaden the corpus first.
     Case(
         name="vibrato_heavy",
         key="C major",

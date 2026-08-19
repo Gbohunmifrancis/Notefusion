@@ -29,10 +29,15 @@ pre-plan pipeline scored, deliberately:
       true C major — coincidental partial credit, not a working behaviour.  What the
       trade buys is honesty: key.confidence goes 0.477 -> 0.023, so the estimate is
       now well under the mobile's 0.5 cut and the editable-key prompt fires instead
-      of a wrong key being presented as plausible.  The real fix is Phase 3c, the
-      vibrato-tolerant merge, which would stop the fragmentation that produces the
-      30 notes; it is not implemented.  Until it is, this number should not improve
-      by chance — if it moves, check notes.f1 first.
+      of a wrong key being presented as plausible.
+      Three candidate fixes have now been built or scouted, measured, and STRUCK — the
+      vibrato-tolerant merge (fired zero times), the pyin re-label (a fragmentation
+      regression behind a gate that cannot see the bias it exists to catch), and the
+      straddle collapse (the midpoint stops being the truth past ~1.6 semitones of
+      depth, and this corpus holds one depth).  All three post-mortems are in the
+      vibrato_heavy comment in corpus.py, with the corpus-breadth prerequisite they
+      share.  So this number should not improve by chance — if it moves,
+      check notes.f1 first.
 
   conf.auc and conf.separation, corpus-wide and on four cases
       Both fall while every note metric on those same cases improves.  They are no
