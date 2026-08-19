@@ -113,7 +113,9 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
             var providerRef = ReadString(raw, "data", "id") ?? reference;
             var subscriptionRef = ReadString(raw, "data", "authorization", "authorization_code");
 
-            return new GatewayVerification(succeeded, amountMinor, currency, providerRef, subscriptionRef, raw);
+            return new GatewayVerification(
+                succeeded, amountMinor, currency, providerRef, subscriptionRef, raw,
+                Terminal: succeeded || IsFinalFailure(status));
         }
         catch (HttpRequestException ex)
         {
@@ -143,6 +145,16 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
 
     private static long? ReadLong(string raw, params string[] path)
         => long.TryParse(ReadString(raw, path), out var v) ? v : null;
+
+    /// <summary>
+    /// Paystack statuses that close the door for good. Deliberately short: a Paystack checkout link stays
+    /// payable while the transaction sits at <c>abandoned</c>, <c>pending</c>, <c>ongoing</c> or
+    /// <c>queued</c>, so calling any of those final would retire a session the customer can still pay —
+    /// and the next attempt would open a second charge beside it.
+    /// </summary>
+    private static bool IsFinalFailure(string? status)
+        => string.Equals(status, "failed", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "reversed", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// Statuses that say nothing about whether the request took effect, and so must stay retryable. Every

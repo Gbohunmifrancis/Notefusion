@@ -205,6 +205,7 @@ public class PaystackPaymentGatewayTests
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value.Succeeded);
+        Assert.True(result.Value.Terminal);
         Assert.Equal(748500, result.Value.AmountMinor);
         Assert.Equal("NGN", result.Value.Currency);
         Assert.Equal("AUTH_72btv547", result.Value.ProviderSubscriptionRef);
@@ -230,6 +231,33 @@ public class PaystackPaymentGatewayTests
 
         Assert.True(result.IsSuccess);
         Assert.False(result.Value.Succeeded);
+    }
+
+    [Theory]
+    // Dead for good: the caller may close the transaction and let the user start over.
+    [InlineData("failed", true)]
+    [InlineData("reversed", true)]
+    // Still payable. A Paystack checkout link survives the customer walking away, so calling any of these
+    // final would retire a session they can still complete — and the next attempt would open a second
+    // charge beside it, which is the duplicate this whole flow exists to avoid.
+    [InlineData("abandoned", false)]
+    [InlineData("pending", false)]
+    [InlineData("ongoing", false)]
+    [InlineData("queued", false)]
+    public async Task Only_a_status_that_can_never_become_a_success_is_reported_as_final(string status, bool terminal)
+    {
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, JsonSerializer.Serialize(new
+        {
+            status = true,
+            data = new { status, amount = AmountMinor, currency = "NGN", id = 1 },
+        }));
+
+        var result = await Gateway(handler).VerifyAsync(
+            new GatewayVerificationRequest(Reference, ProviderReference: null), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.False(result.Value.Succeeded);
+        Assert.Equal(terminal, result.Value.Terminal);
     }
 
     [Fact]

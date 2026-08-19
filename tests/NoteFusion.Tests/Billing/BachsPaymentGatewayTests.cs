@@ -275,6 +275,7 @@ public class BachsPaymentGatewayTests
 
         Assert.True(result.IsSuccess);
         Assert.True(result.Value.Succeeded);
+        Assert.True(result.Value.Terminal);
         Assert.Equal(2900, result.Value.AmountMinor); // "29.00" major → 2900 minor
         Assert.Equal("USD", result.Value.Currency);
         Assert.Equal("sub_123", result.Value.ProviderSubscriptionRef);
@@ -305,6 +306,11 @@ public class BachsPaymentGatewayTests
 
         Assert.True(result.IsSuccess);
         Assert.False(result.Value.Succeeded);
+
+        // Final, not merely unpaid. The caller closes the transaction on the strength of this flag, and
+        // closing it is the only thing that lets the customer open a new checkout instead of being handed
+        // this dead session's URL for ever.
+        Assert.True(result.Value.Terminal);
     }
 
     [Theory]

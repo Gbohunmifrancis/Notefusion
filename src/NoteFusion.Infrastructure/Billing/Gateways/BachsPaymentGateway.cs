@@ -237,8 +237,11 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
             // is exactly why fulfilment re-verifies here instead of trusting the event's own verdict.
             if (IsTerminalNonSuccess(status))
             {
+                // Final: an expired or cancelled session cannot be paid, now or later. Saying so lets the
+                // caller close the transaction, which is what frees the user to start a fresh checkout.
                 return new GatewayVerification(
-                    Succeeded: false, amountMinor ?? 0, currency ?? string.Empty, checkoutId, null, raw);
+                    Succeeded: false, amountMinor ?? 0, currency ?? string.Empty, checkoutId, null, raw,
+                    Terminal: true);
             }
 
             if (!string.Equals(status, "completed", StringComparison.OrdinalIgnoreCase))
@@ -303,7 +306,7 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
             var subscriptionRef = ReadString(raw, "charge", "subscription_id");
 
             return new GatewayVerification(
-                Succeeded: true, amountMinor.Value, currency, checkoutId, subscriptionRef, raw);
+                Succeeded: true, amountMinor.Value, currency, checkoutId, subscriptionRef, raw, Terminal: true);
         }
         catch (HttpRequestException ex)
         {

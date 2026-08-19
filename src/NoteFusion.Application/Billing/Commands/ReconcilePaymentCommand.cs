@@ -11,8 +11,9 @@ namespace NoteFusion.Application.Billing.Commands;
 /// Reconciles one stuck payment against the provider — the recovery path for a webhook we never
 /// received. Given a transaction still in <c>Processing</c>, it asks the provider what actually
 /// happened: on a confirmed, amount-matched success it fulfils exactly as the webhook path would (same
-/// <see cref="PaymentFulfillment"/>, one transaction); on a definite non-success it leaves the row for
-/// the next sweep or a later webhook. Idempotent — an already-completed payment is a no-op — so it is
+/// <see cref="PaymentFulfillment"/>, one transaction); on a final non-success it closes the row so the
+/// user can start over; on anything still open it leaves the row for the next sweep or a later webhook.
+/// Idempotent — an already-completed payment is a no-op — so it is
 /// safe to run repeatedly alongside live webhooks.
 /// </summary>
 public sealed record ReconcilePaymentCommand(Guid PaymentTransactionId) : IRequest<Result>;
@@ -49,9 +50,20 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
             return verification.Error;
         var v = verification.Value;
 
-        // Provider hasn't settled it (yet). Leave as-is; a later sweep or webhook will catch it.
+        // Provider hasn't settled it. A final answer — the session expired or was cancelled — closes the
+        // row, which is the only thing that lets the user's next attempt open a fresh checkout instead of
+        // being handed this dead one again. Anything less final is left for a later sweep or webhook,
+        // because the customer may still pay it.
         if (!v.Succeeded)
+        {
+            if (v.Terminal)
+            {
+                tx.MarkFailed("Provider reports this checkout can no longer be paid.", _clock.UtcNow);
+                await _db.SaveChangesAsync(ct);
+            }
+
             return Result.Success();
+        }
 
         if (v.AmountMinor != tx.AmountMinor
             || !string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
