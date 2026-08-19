@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
@@ -8,12 +9,14 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Infrastructure.Billing.Gateways;
 
 /// <summary>
-/// Paystack adapter — the reference implementation of <see cref="IPaymentGateway"/>. Paystack supports
-/// USD (the product currency) and has a hosted checkout, which is why it is wired end-to-end while the
-/// other providers remain stubs until credentialed. Resilience (retry-with-backoff on transient
-/// failures + circuit breaker) is attached to this adapter's <see cref="HttpClient"/> in DI, so the
-/// methods here stay about mapping, not retrying. This adapter applies NO business effect: it only
-/// opens a checkout and reports, authoritatively, what Paystack says about a payment.
+/// Paystack adapter — the reference implementation of <see cref="IPaymentGateway"/>. It charges in the
+/// plan's own currency and nothing else: which currencies that means is a property of the integration,
+/// declared per deployment in <c>Paystack__SupportedCurrencies</c>, and an integration that has not been
+/// enabled for a currency refuses it with <c>403 Currency not supported by merchant</c>. Resilience
+/// (retry-with-backoff on transient failures + circuit breaker) is attached to this adapter's
+/// <see cref="HttpClient"/> in DI, so the methods here stay about mapping, not retrying. This adapter
+/// applies NO business effect: it only opens a checkout and reports, authoritatively, what Paystack says
+/// about a payment.
 /// </summary>
 internal sealed class PaystackPaymentGateway : IPaymentGateway
 {
@@ -52,31 +55,26 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
 
             if (!response.IsSuccessStatusCode)
             {
-                _logger.LogWarning("Paystack initialize failed: {Status} (raw: {Raw})", response.StatusCode, raw);
-                
-                // Fallback for Paystack test keys: if USD fails with 403/400 (currency not enabled), retry without specifying currency
-                if ((response.StatusCode == System.Net.HttpStatusCode.Forbidden || response.StatusCode == System.Net.HttpStatusCode.BadRequest) && payload.currency == "USD")
-                {
-                    _logger.LogInformation("Retrying Paystack initialize with default account currency...");
-                    var fallbackPayload = new
-                    {
-                        reference = request.Reference,
-                        amount = request.AmountMinor * 1500, // Approximate USD to NGN kobo conversion for test key
-                        email = request.CustomerEmail,
-                        callback_url = request.CallbackUrl,
-                        metadata = new { idempotency_key = request.IdempotencyKey, recurring = request.Recurring }
-                    };
-                    using var retryResp = await _http.PostAsJsonAsync("/transaction/initialize", fallbackPayload, ct);
-                    raw = await retryResp.Content.ReadAsStringAsync(ct);
-                    if (!retryResp.IsSuccessStatusCode)
-                    {
-                        return Error.Network("Paystack.Initiate", $"Paystack returned {(int)retryResp.StatusCode}: {ReadString(raw, "message") ?? raw}");
-                    }
-                }
-                else
-                {
-                    return Error.Network("Paystack.Initiate", $"Paystack returned {(int)response.StatusCode}: {ReadString(raw, "message") ?? raw}");
-                }
+                _logger.LogWarning(
+                    "Paystack initialize failed: {Status} {Message} (raw: {Raw})",
+                    (int)response.StatusCode, ReadString(raw, "message"), raw);
+
+                var detail = $"Paystack returned {(int)response.StatusCode}: {ReadString(raw, "message") ?? raw}";
+
+                // A refusal has to be reported as terminal. Paystack answers 403 "Currency not supported
+                // by merchant" when the integration is not enabled for the plan's currency, and that will
+                // not come right by being retried: reported as transient it parks the transaction Pending
+                // for the reconciliation worker to sweep forever, while the user watches a checkout that
+                // never opens. Reported as terminal it marks the row Failed and says why.
+                //
+                // What must NOT happen here is a retry in some other currency. Converting the amount into
+                // whatever the account does accept charges money that neither the transaction row nor the
+                // plan recognises, and fulfilment compares the charge against both — so the payment
+                // succeeds, the amount gate refuses it, and the customer is left paid-up with no
+                // subscription. Failing the checkout is strictly better than taking money we cannot honour.
+                return LeavesOutcomeUnknown(response.StatusCode)
+                    ? Error.Network("Paystack.Initiate", detail)
+                    : Error.Validation("Paystack.Initiate", detail);
             }
 
             var checkoutUrl = ReadString(raw, "data", "authorization_url");
@@ -145,4 +143,14 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
 
     private static long? ReadLong(string raw, params string[] path)
         => long.TryParse(ReadString(raw, path), out var v) ? v : null;
+
+    /// <summary>
+    /// Statuses that say nothing about whether the request took effect, and so must stay retryable. Every
+    /// other 4xx is Paystack refusing on the merits — a currency the integration cannot take, a duplicate
+    /// reference — and repeating it would only produce the same answer.
+    /// </summary>
+    private static bool LeavesOutcomeUnknown(HttpStatusCode status)
+        => (int)status >= 500
+            || status == HttpStatusCode.RequestTimeout
+            || status == HttpStatusCode.TooManyRequests;
 }
