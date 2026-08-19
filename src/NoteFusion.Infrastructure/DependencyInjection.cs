@@ -7,6 +7,7 @@ using NoteFusion.Application.Common.Settings;
 using NoteFusion.Infrastructure.Api;
 using NoteFusion.Infrastructure.Billing;
 using NoteFusion.Infrastructure.Email;
+using NoteFusion.Infrastructure.Geo;
 using NoteFusion.Infrastructure.Media;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
@@ -28,6 +29,7 @@ public static class DependencyInjection
         services.AddMedia(configuration);
         services.AddTranscriptionApi(configuration);
         services.AddBilling(configuration);
+        services.AddGeo(configuration);
 
         return services;
     }
@@ -142,5 +144,25 @@ public static class DependencyInjection
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(100);
         });
+    }
+
+    private static void AddGeo(this IServiceCollection services, IConfiguration configuration)
+    {
+        var geo = configuration.GetSection("Geo").Get<GeoSettings>() ?? new GeoSettings();
+        services.AddSingleton(geo);
+
+        // Same switch as email, push and media. The timeout is short by design: this runs inline on
+        // sign-up, and a slow geolocation service must cost a new user three seconds at most — after
+        // which they get an unknown country and every tier, which is a worse price for us and no worse
+        // an experience for them.
+        if (geo.IsConfigured)
+        {
+            services.AddHttpClient<IGeoIpLookup, HttpGeoIpLookup>(client =>
+                client.Timeout = TimeSpan.FromSeconds(3));
+        }
+        else
+        {
+            services.AddScoped<IGeoIpLookup, DisabledGeoIpLookup>();
+        }
     }
 }

@@ -103,7 +103,13 @@ export interface SavedTranscription {
 // Mirrors src/NoteFusion.Application/Billing/Dtos/BillingDtos.cs. Enums serialize
 // as camelCase strings (JsonStringEnumConverter + CamelCase policy in Program.cs).
 
-export type BillingInterval = "monthly" | "yearly";
+/**
+ * `"lifetime"` is a one-off purchase, not a period — a plan carrying it has no renewal
+ * and must never be priced "per month". Which of these a user is offered is decided
+ * server-side from the country on their account, so the app renders whatever it is sent
+ * rather than choosing.
+ */
+export type BillingInterval = "monthly" | "yearly" | "lifetime";
 
 export type PaymentProvider = "paystack" | "flutterwave" | "bachs" | "squad";
 
@@ -136,6 +142,20 @@ export interface Subscription {
   planCode: string | null;
   status: SubscriptionStatus | null;
   currentPeriodEndUtc: string | null;
+  /**
+   * Free transcriptions left. Server-authoritative and counted from successful
+   * generations, so it does not go back up when a transcription is deleted.
+   * Meaningless while `isActive` — Pro is unmetered.
+   */
+  trialGenerationsRemaining: number;
+  /** The free allowance, so the UI can say "3 of 5" without hardcoding 5. */
+  trialGenerationsTotal: number;
+  /**
+   * Bought outright — there is no renewal date to show and nothing to cancel.
+   * `currentPeriodEndUtc` carries a far-future sentinel in this case, so anything
+   * that prints a date has to check this first or it shows the year 9999.
+   */
+  isLifetime: boolean;
 }
 
 // --- API errors ---------------------------------------------------------

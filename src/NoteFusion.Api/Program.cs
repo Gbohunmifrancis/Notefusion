@@ -25,6 +25,10 @@ builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
+// Ambient caller location, resolved from the forwarded chain. Registered here rather than in
+// Infrastructure because reading it needs HttpContext, which Infrastructure has no reference to.
+builder.Services.AddScoped<ICountryResolver, RequestCountryResolver>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

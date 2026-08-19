@@ -40,6 +40,7 @@ public sealed class TestHarness : IDisposable
         TokenIssuer = new TokenIssuer(Jwt, new SecureTokenGenerator(), Hasher, Db, Clock, auth);
         Email = new RecordingEmailSender();
         Push = new RecordingPushSender();
+        Country = new StubCountryResolver();
     }
 
     public ApplicationDbContext Db { get; }
@@ -54,6 +55,9 @@ public sealed class TestHarness : IDisposable
 
     /// <summary>Same, for push. A notice that only emailed is a half-delivered notice.</summary>
     public RecordingPushSender Push { get; }
+
+    /// <summary>Where the caller appears to be. Answers null until a test says otherwise.</summary>
+    public StubCountryResolver Country { get; }
 
     public void Dispose()
     {
@@ -144,5 +148,28 @@ public sealed class RecordingPushSender : IPushSender
     {
         Sent.Add((recipientUserIds, message));
         return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// An <see cref="ICountryResolver"/> that answers whatever a test sets, and null by default — which is the
+/// state every account created before geolocation existed is in, and what production answers whenever the
+/// lookup is switched off or fails. Defaulting to a country would leave "we do not know" untested, and that
+/// is the case the pricing rules have to handle gracefully.
+/// </summary>
+public sealed class StubCountryResolver : ICountryResolver
+{
+    public string? Country { get; set; }
+
+    /// <summary>
+    /// How many times it was asked. The point of persisting the country is that a returning user costs no
+    /// lookup, and only a call count can show that.
+    /// </summary>
+    public int Calls { get; private set; }
+
+    public Task<string?> ResolveAsync(CancellationToken ct = default)
+    {
+        Calls++;
+        return Task.FromResult(Country);
     }
 }

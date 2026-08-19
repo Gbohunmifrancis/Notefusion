@@ -32,19 +32,22 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly ICountryResolver _country;
 
     public GoogleSignInCommandHandler(
         IApplicationDbContext db,
         IGoogleTokenValidator googleTokenValidator,
         ITokenIssuer tokenIssuer,
         IDateTimeProvider clock,
-        IEmailSender email)
+        IEmailSender email,
+        ICountryResolver country)
     {
         _db = db;
         _googleTokenValidator = googleTokenValidator;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
         _email = email;
+        _country = country;
     }
 
     public async Task<Result<LoginResponse>> Handle(
@@ -93,6 +96,13 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
         }
 
         user.RecordSuccessfulLogin(now);
+
+        // One branch covers both cases this endpoint has: a brand-new account (no country yet) and a
+        // returning user who predates countries or whose first lookup failed. Guarded on null so a routine
+        // Google sign-in does not pay for a lookup it will discard.
+        if (user.Country is null)
+            user.RecordCountry(await _country.ResolveAsync(cancellationToken));
+
         var tokens = _tokenIssuer.Issue(user);
         await _db.SaveChangesAsync(cancellationToken);
 

@@ -147,5 +147,5 @@ public class GoogleSignInTests
     }
 
     private static GoogleSignInCommandHandler Handler(TestHarness h, StubGoogleTokenValidator google)
-        => new(h.Db, google, h.TokenIssuer, h.Clock, h.Email);
+        => new(h.Db, google, h.TokenIssuer, h.Clock, h.Email, h.Country);
 }

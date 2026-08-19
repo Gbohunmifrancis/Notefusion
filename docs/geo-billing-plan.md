@@ -94,8 +94,15 @@ the first time someone disputes it.
 
 - Prefer a local MaxMind GeoLite2 database over a lookup API: no per-request latency, no vendor rate
   limit on the checkout path, no runtime network dependency.
-- Heroku terminates TLS at its router, so the client IP is the first entry of `X-Forwarded-For`, not
-  `RemoteIpAddress`. Configure forwarded headers or read it explicitly.
+  **Deferred as implemented** — MaxMind needs an account, a license key and a ~9MB build artifact,
+  while the country is resolved once per account and never on the checkout path. It sits behind the
+  `IGeoIpLookup` seam, so swapping the HTTP lookup for a local database is one class.
+- Heroku terminates TLS at its router, so the client IP is in `X-Forwarded-For`, not
+  `RemoteIpAddress`. **Corrected as implemented:** the router *appends* the address it observed to
+  whatever header arrived, so the **leftmost entry is the spoofable one** — a caller can prepend as
+  many as it likes — and the trustworthy entry is counted from the RIGHT (`chain[^hops]`, one hop by
+  default). Reading the first entry, the conventional "original client" reading, would hand the
+  caller their own price.
 - Existing users have no country. Backfilling by guess would mis-price real people; treat unknown as
   "show both" rather than forcing either tier.
 
@@ -118,7 +125,7 @@ not a checkout.
 
 ### 5. Plans, mobile, and config
 
-- Seed `pro_lifetime` (USD) and NGN monthly/yearly plans in `BillingSeeder`.
+- Seed `pro_lifetime` (USD 79.00) and NGN monthly/yearly plans (₦7,500 / ₦75,000) in `BillingSeeder`.
 - `mobile/src/api/types.ts:106` — add `"lifetime"` to the `BillingInterval` union. C# DTO and the
   mirror change together, per the wire-contract rule.
 - Paywall copy differs per tier: recurring price versus one-time purchase. A "lifetime" card that
@@ -126,7 +133,11 @@ not a checkout.
 - Set `Paystack__SupportedCurrencies=NGN`. It currently claims `USD,NGN`, which is untrue for this
   account — a latent trap that would silently route USD to a provider that cannot collect it if the
   Bachs config were ever removed.
-- Retire the `test_ngn_monthly` plan once real NGN plans exist.
+- Retire the `test_ngn_monthly` plan once real NGN plans exist. **Also `pro_monthly` and `pro_yearly`,
+  which the plan did not list and which matter more:** they are USD *subscriptions*, so they are
+  unpayable for the same reason this whole split exists, and left active they would sit on an
+  international paywall beside the lifetime tier as two checkouts that cannot complete. Retiring is a
+  flag flip, never a delete — fulfilment and every receipt read the plan by id long afterwards.
 
 → **verify:** `dotnet test NoteFusion.slnx`, `cd mobile && npm run lint`, and the paywall rendering
 both tiers correctly under a forced country.

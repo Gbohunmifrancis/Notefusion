@@ -26,6 +26,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.PasswordHash).HasMaxLength(200);
         builder.Property(u => u.GoogleId).HasMaxLength(64);
         builder.Property(u => u.ProfilePictureUrl).HasMaxLength(500);
+        // ISO 3166-1 alpha-2. Nullable, and null means "we do not know" — every account created before
+        // countries were resolved is in that state, and so is anyone whose lookup failed.
+        builder.Property(u => u.Country).HasMaxLength(2).IsFixedLength();
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(u => u.CreatedAt).IsRequired();
 

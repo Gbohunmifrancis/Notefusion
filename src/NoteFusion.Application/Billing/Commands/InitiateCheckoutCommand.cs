@@ -64,6 +64,13 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         if (plan is null)
             return BillingErrors.PlanNotFound;
 
+        // The list endpoint already hides ineligible plans, and that is not enough: this command takes a raw
+        // PlanId, so any signed-in caller can post the id of a plan they were never shown. This is the check
+        // that actually holds — before the transaction row, so a refused attempt leaves no audit trail to
+        // reconcile later.
+        if (!PlanEligibility.IsOffered(plan.Currency, user.Country))
+            return BillingErrors.PlanNotAvailableInRegion;
+
         // Retry-safe: an existing in-flight checkout for this user+plan is reused, so tapping "Upgrade"
         // twice returns the same session instead of opening a second charge.
         var inFlight = await _db.PaymentTransactions
