@@ -1,3 +1,6 @@
+import { CalendarDays } from "lucide-react";
+
+import { Segmented } from "@/components/Segmented";
 import { addDays, reportingToday } from "@/lib/format";
 
 /**
@@ -40,47 +43,53 @@ export function RangePicker({ value, offsetMinutes, onChange }: RangePickerProps
     to: today,
   });
 
+  // Empty when the dates have been edited by hand: no preset should read as selected when
+  // the window is not one of them.
+  const activePreset =
+    PRESETS.find((preset) => {
+      const range = presetRange(preset.days);
+      return range.from === value.from && range.to === value.to;
+    })?.label ?? "";
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <div className="flex overflow-hidden rounded-pill border border-border bg-surface">
-        {PRESETS.map(({ label, days }) => {
-          const range = presetRange(days);
-          const active = range.from === value.from && range.to === value.to;
-          return (
-            <button
-              key={label}
-              type="button"
-              onClick={() => onChange(range)}
-              aria-pressed={active}
-              className={`px-3 py-1.5 text-xs font-semibold transition ${
-                active ? "bg-fusion-contrast text-white" : "text-muted hover:bg-surface-alt"
-              }`}
-            >
-              {label}
-            </button>
-          );
-        })}
-      </div>
+      <Segmented<string>
+        label="Range preset"
+        options={PRESETS.map((preset) => ({ value: preset.label, label: preset.label }))}
+        value={activePreset}
+        onChange={(label) => {
+          const preset = PRESETS.find((candidate) => candidate.label === label);
+          if (preset) onChange(presetRange(preset.days));
+        }}
+      />
 
-      <div className="flex items-center gap-1.5 text-xs text-muted">
-        <input
-          type="date"
-          aria-label="Range start"
-          value={value.from}
-          max={value.to}
-          onChange={(event) => onChange({ ...value, from: event.target.value })}
-          className="rounded-sm border border-border bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-blue"
-        />
-        <span aria-hidden="true">to</span>
-        <input
-          type="date"
-          aria-label="Range end"
-          value={value.to}
-          min={value.from}
-          max={today}
-          onChange={(event) => onChange({ ...value, to: event.target.value })}
-          className="rounded-sm border border-border bg-surface px-2 py-1.5 text-xs text-ink outline-none focus:border-blue"
-        />
+      <div className="flex items-center gap-1.5">
+        <label className="flex items-center gap-2 rounded-sm border border-border bg-surface px-2.5 py-1.5">
+          <CalendarDays size={14} aria-hidden="true" className="shrink-0 text-faint" />
+          <input
+            type="date"
+            aria-label="Range start"
+            value={value.from}
+            max={value.to}
+            onChange={(event) => onChange({ ...value, from: event.target.value })}
+            className="bg-transparent text-xs text-ink outline-none"
+          />
+        </label>
+        <span className="text-xs text-faint" aria-hidden="true">
+          to
+        </span>
+        <label className="flex items-center gap-2 rounded-sm border border-border bg-surface px-2.5 py-1.5">
+          <CalendarDays size={14} aria-hidden="true" className="shrink-0 text-faint" />
+          <input
+            type="date"
+            aria-label="Range end"
+            value={value.to}
+            min={value.from}
+            max={today}
+            onChange={(event) => onChange({ ...value, to: event.target.value })}
+            className="bg-transparent text-xs text-ink outline-none"
+          />
+        </label>
       </div>
     </div>
   );

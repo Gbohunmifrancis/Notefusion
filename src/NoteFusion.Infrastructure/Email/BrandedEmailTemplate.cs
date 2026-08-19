@@ -134,23 +134,34 @@ public sealed class BrandedEmailTemplate
     public EmailMessage SubscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt)
     {
         var amount = FormatAmount(receipt.AmountMinor, receipt.Currency);
-        var renews = receipt.RenewsAtUtc.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
+
+        // A one-off purchase has no next charge, so every line that would name one says so instead. The
+        // two shapes are built together rather than in separate methods because they are the same
+        // receipt — only the renewal fact differs.
+        var renews = receipt.RenewsAtUtc?.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
+        var renewsLabel = renews is null ? "Access" : "Renews on";
+        var renewsValue = renews ?? "Lifetime — never expires";
+        var closing = renews is null
+            ? "Keep this email as your receipt. Pro is yours for good — there is nothing to renew and "
+                + "nothing to cancel."
+            : "Keep this email as your receipt. You can cancel any time from Account settings; "
+                + "Pro stays on until the date above.";
 
         var body = Paragraphs(
             "Payment received — your NoteFusion Pro subscription is active.")
             + FactTable(
                 ("Plan", Encode(receipt.PlanName)),
                 ("Amount paid", Encode(amount)),
-                ("Renews on", Encode(renews)),
+                (renewsLabel, Encode(renewsValue)),
                 ("Reference", $"<span style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace\">{Encode(receipt.Reference)}</span>"))
-            + Paragraphs(
-                "Keep this email as your receipt. You can cancel any time from Account settings; "
-                    + "Pro stays on until the date above.");
+            + Paragraphs(closing);
 
         return Compose(
             to,
             subject: $"Your NoteFusion receipt — {amount}",
-            preheader: $"{receipt.PlanName} is active until {renews}.",
+            preheader: renews is null
+                ? $"{receipt.PlanName} is active for life."
+                : $"{receipt.PlanName} is active until {renews}.",
             heading: "You're on Pro",
             bodyHtml: body,
             cta: new CallToAction("Open NoteFusion", _settings.AppUrl),
@@ -159,11 +170,15 @@ public sealed class BrandedEmailTemplate
                 "",
                 $"Plan:        {receipt.PlanName}",
                 $"Amount paid: {amount}",
-                $"Renews on:   {renews}",
+                $"{renewsLabel + ':',-13}{renewsValue}",
                 $"Reference:   {receipt.Reference}",
                 "",
-                "Keep this email as your receipt. You can cancel any time from Account settings;",
-                "Pro stays on until the date above."));
+                renews is null
+                    ? "Keep this email as your receipt. Pro is yours for good — there is nothing to renew"
+                    : "Keep this email as your receipt. You can cancel any time from Account settings;",
+                renews is null
+                    ? "and nothing to cancel."
+                    : "Pro stays on until the date above."));
     }
 
     public EmailMessage PaymentFailed(EmailRecipient to, string planName)
@@ -193,6 +208,62 @@ public sealed class BrandedEmailTemplate
                 "",
                 "Card declines are usually a bank block on online or international payments — worth a",
                 "retry, or try another card.",
+                "",
+                _settings.AppUrl));
+    }
+
+    public EmailMessage SubscriptionExpiring(EmailRecipient to, SubscriptionExpiry expiry)
+    {
+        var ends = expiry.ExpiresAtUtc.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
+        var window = expiry.DaysLeft == 1 ? "tomorrow" : $"in {expiry.DaysLeft} days";
+
+        // The one line that must not be wrong. An active subscription is about to take money; a
+        // cancelled one is about to stop working. Same date, opposite thing to do about it.
+        var (lead, callout, cta, textLead, textCallout) = expiry.WillRenew
+            ? ($"Your <strong>{Encode(expiry.PlanName)}</strong> subscription renews {window}.",
+               "Nothing to do — we'll charge the card on file and Pro carries straight on. Cancel from "
+                   + "Account settings if you'd rather it didn't.",
+               "Manage subscription",
+               $"Your {expiry.PlanName} subscription renews {window}.",
+               "Nothing to do — we'll charge the card on file and Pro carries straight on. Cancel from")
+            : ($"Your <strong>{Encode(expiry.PlanName)}</strong> subscription ends {window}.",
+               "It won't renew, so Pro features switch off on that date. Resubscribe any time to pick "
+                   + "up where you left off.",
+               "Resubscribe",
+               $"Your {expiry.PlanName} subscription ends {window}.",
+               "It won't renew, so Pro features switch off on that date. Resubscribe any time to");
+
+        var body = Paragraphs(lead)
+            + FactTable(
+                ("Plan", Encode(expiry.PlanName)),
+                (expiry.WillRenew ? "Renews on" : "Ends on", Encode(ends)))
+            + Callout(callout, expiry.WillRenew ? Blue : Danger)
+            + Paragraphs(
+                "Everything you've transcribed stays in your library either way — it's yours, not the "
+                    + "subscription's.");
+
+        return Compose(
+            to,
+            subject: expiry.WillRenew
+                ? $"Your NoteFusion Pro renews {window}"
+                : $"Your NoteFusion Pro ends {window}",
+            preheader: $"{expiry.PlanName} — {(expiry.WillRenew ? "renews" : "ends")} {ends}.",
+            heading: expiry.WillRenew ? "Renewing soon" : "Ending soon",
+            bodyHtml: body,
+            cta: new CallToAction(cta, _settings.AppUrl),
+            textBody: Text(
+                textLead,
+                "",
+                $"Plan:    {expiry.PlanName}",
+                $"{(expiry.WillRenew ? "Renews on" : "Ends on")}: {ends}",
+                "",
+                textCallout,
+                expiry.WillRenew
+                    ? "Account settings if you'd rather it didn't."
+                    : "pick up where you left off.",
+                "",
+                "Everything you've transcribed stays in your library either way — it's yours, not",
+                "the subscription's.",
                 "",
                 _settings.AppUrl));
     }

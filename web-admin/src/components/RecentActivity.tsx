@@ -33,14 +33,14 @@ export function RecentActivity({ items }: { items: ActivityItem[] }) {
   const now = Date.now();
 
   return (
-    <ul className="space-y-1">
+    <ul className="divide-y divide-border-light">
       {items.map((item, i) => {
         const meta = KIND[item.kind] ?? FALLBACK;
         const Icon = meta.icon;
         return (
           <li
             key={`${item.kind}-${item.occurredAtUtc}-${i}`}
-            className="flex items-center gap-3 rounded-md px-1 py-2"
+            className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
           >
             <span
               className={`grid h-8 w-8 shrink-0 place-items-center rounded-full ${meta.tint}`}
@@ -48,16 +48,16 @@ export function RecentActivity({ items }: { items: ActivityItem[] }) {
               <Icon size={15} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm text-ink">
+              <p className="truncate text-[13px] text-ink">
                 <span className="text-muted">{meta.verb} · </span>
                 <span className="font-medium">{item.title}</span>
               </p>
               {item.subtitle && (
-                <p className="truncate text-xs text-muted">{item.subtitle}</p>
+                <p className="truncate text-[11px] text-muted">{item.subtitle}</p>
               )}
             </div>
             <time
-              className="shrink-0 text-xs tabular-nums text-faint"
+              className="shrink-0 text-[11px] tabular-nums text-faint"
               dateTime={item.occurredAtUtc}
             >
               {formatRelative(item.occurredAtUtc, now)}

@@ -39,6 +39,7 @@ public sealed class TestHarness : IDisposable
         Jwt = new JwtTokenService(Keys, jwt, auth);
         TokenIssuer = new TokenIssuer(Jwt, new SecureTokenGenerator(), Hasher, Db, Clock, auth);
         Email = new RecordingEmailSender();
+        Push = new RecordingPushSender();
     }
 
     public ApplicationDbContext Db { get; }
@@ -50,6 +51,9 @@ public sealed class TestHarness : IDisposable
 
     /// <summary>Records what would have been sent, so a handler test can assert on it without a network.</summary>
     public RecordingEmailSender Email { get; }
+
+    /// <summary>Same, for push. A notice that only emailed is a half-delivered notice.</summary>
+    public RecordingPushSender Push { get; }
 
     public void Dispose()
     {
@@ -90,6 +94,7 @@ public sealed class RecordingEmailSender : IEmailSender
     public Task SendSubscriptionReceiptAsync(EmailRecipient to, SubscriptionReceipt receipt, CancellationToken ct = default)
     {
         Sent.Add(("receipt", to));
+        Receipts.Add(receipt);
         return Task.CompletedTask;
     }
 
@@ -102,6 +107,42 @@ public sealed class RecordingEmailSender : IEmailSender
     public Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default)
     {
         Sent.Add(("password-reset", to));
+        return Task.CompletedTask;
+    }
+
+    public Task SendSubscriptionExpiringAsync(
+        EmailRecipient to, SubscriptionExpiry expiry, CancellationToken ct = default)
+    {
+        Sent.Add(("subscription-expiring", to));
+        Expiring.Add(expiry);
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// The expiry payloads, kept apart from <see cref="Sent"/> because the renew-vs-lapse wording and the
+    /// day count are the part worth asserting on — the recipient alone does not distinguish them.
+    /// </summary>
+    public List<SubscriptionExpiry> Expiring { get; } = [];
+
+    /// <summary>
+    /// The receipt payloads, for the same reason: whether a purchase has a renewal date at all is the
+    /// difference between a subscription receipt and a lifetime one, and <see cref="Sent"/> cannot show it.
+    /// </summary>
+    public List<SubscriptionReceipt> Receipts { get; } = [];
+}
+
+/// <summary>
+/// An <see cref="IPushSender"/> that records calls instead of delivering. Same reasoning as
+/// <see cref="RecordingEmailSender"/>: pushes are fire-and-forget, so intent is all a handler test can see.
+/// </summary>
+public sealed class RecordingPushSender : IPushSender
+{
+    public List<(IReadOnlyList<Guid> Recipients, PushMessage Message)> Sent { get; } = [];
+
+    public Task SendAsync(
+        IReadOnlyList<Guid> recipientUserIds, PushMessage message, CancellationToken ct = default)
+    {
+        Sent.Add((recipientUserIds, message));
         return Task.CompletedTask;
     }
 }

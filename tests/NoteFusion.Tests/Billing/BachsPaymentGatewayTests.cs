@@ -151,6 +151,72 @@ public class BachsPaymentGatewayTests
         Assert.Empty(handler.Requests);
     }
 
+    // ------------------------------------------------------------ one-off (lifetime)
+
+    [Fact]
+    public async Task A_one_off_sends_a_raw_price_and_no_cart()
+    {
+        // The pricing source IS the mode, and Bachs never says so: a cart yields mode "subscription", a
+        // raw `pricing` yields mode "payment". Sending a cart for a lifetime purchase would open a
+        // recurring session — on this account an unpayable one, with an empty method list and HTTP 201.
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.Created, CreatedResponse());
+
+        var result = await Gateway(handler).InitiateAsync(
+            Initiation() with { Recurring = false }, CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+
+        using var body = JsonDocument.Parse(Assert.Single(handler.Requests).Body!);
+        var root = body.RootElement;
+
+        var pricing = root.GetProperty("pricing");
+        Assert.Equal("29.00", pricing.GetProperty("amount").GetString()); // 2900 minor → major string
+        Assert.Equal("USD", pricing.GetProperty("currency").GetString());
+
+        // Both sources in one body is refused outright ("Provide exactly one pricing source"), so this is
+        // not cosmetic — it is the difference between a checkout and a 400.
+        Assert.False(root.TryGetProperty("product_cart", out _));
+
+        // The currency is already stated inside `pricing`; repeating it as `billing_currency` (which
+        // exists to pin a multi-currency CATALOG product) is redundant at best.
+        Assert.False(root.TryGetProperty("billing_currency", out _));
+
+        // The card-only restriction is a property of subscriptions. Imposing it on a one-off would hide
+        // bank transfer, mobile money and crypto — on this account, every method that actually works.
+        Assert.False(root.TryGetProperty("allowed_payment_method_types", out _));
+    }
+
+    [Fact]
+    public async Task A_one_off_needs_no_catalog_product()
+    {
+        // A lifetime plan has no Bachs product and never will: a product exists to carry a billing_cycle.
+        // Demanding a mapping here would refuse a charge Bachs would have taken happily.
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.Created, CreatedResponse());
+
+        var result = await Gateway(handler).InitiateAsync(
+            Initiation("pro_lifetime") with { Recurring = false }, CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.Single(handler.Requests);
+    }
+
+    [Fact]
+    public void An_empty_product_map_does_not_switch_the_provider_off()
+    {
+        // A lifetime-only deployment legitimately maps no products. Gating IsConfigured on the map would
+        // silently deselect Bachs and strand every currency routed to it.
+        var options = Options();
+        var lifetimeOnly = new BachsOptions
+        {
+            BaseUrl = options.BaseUrl,
+            SecretKey = options.SecretKey,
+            WebhookSecret = options.WebhookSecret,
+        };
+
+        Assert.Empty(lifetimeOnly.ProductMap);
+        Assert.True(lifetimeOnly.IsConfigured);
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.BadRequest)]
     [InlineData(HttpStatusCode.Unauthorized)]

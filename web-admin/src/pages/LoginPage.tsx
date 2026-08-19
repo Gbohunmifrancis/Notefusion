@@ -1,4 +1,15 @@
-import { AlertTriangle, ArrowRight, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  BarChart3,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  Music4,
+  ShieldCheck,
+} from "lucide-react";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -14,16 +25,33 @@ interface FromState {
 }
 
 /**
- * LoginPage — full-bleed immersive branded sign-in.
+ * LoginPage — the console's sign-in, laid out for a desktop browser.
  *
- * Deep brand-blue canvas with a frosted white card centred on screen, matching
- * the mobile app's login aesthetic adapted for the web dashboard. The staff ribbon
- * sits pinned behind the card at the foot of the viewport.
+ * Two panels from `lg` up: a navy panel carrying the brand and saying plainly what this
+ * tool is, and a white panel holding the form in a single narrow column. Below `lg` the
+ * navy panel drops away and the form panel fills the viewport.
  *
- * Field and control metrics track `mobile/src/components/{TextField,Button}.tsx` —
- * 56 px fields at radius 14, a 54 px pill button — so the two sign-ins are the same
- * shape regardless of platform.
+ * The controls are the dashboard's, not the app's — 44 px fields at radius 8, hairline
+ * borders, 13.5 px type, a rectangular submit — so signing in reads as the first screen
+ * of the console rather than as a phone screen stretched to fit a monitor.
  */
+
+/** What the console actually shows, in its own words. Each line is a real page. */
+const POINTS = [
+  {
+    icon: BarChart3,
+    text: "Users, transcriptions and outcomes for any window you pick.",
+  },
+  {
+    icon: Music4,
+    text: "Most-transcribed keys, average confidence, and stored MusicXML.",
+  },
+  {
+    icon: ShieldCheck,
+    text: "Admin accounts only. The server authorises every request.",
+  },
+] as const;
+
 export function LoginPage() {
   const { user, signIn } = useAuth();
   const navigate = useNavigate();
@@ -60,153 +88,177 @@ export function LoginPage() {
     }
   }
 
-  return (
-    /*
-     * Outer shell — deep brand blue gradient fills the whole viewport. The staff
-     * ribbon is absolutely positioned behind the card at the bottom edge.
-     */
-    <div
-      className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 py-12"
-      style={{ background: "linear-gradient(135deg, #1e40af 0%, #1d4ed8 40%, #2563eb 100%)" }}
-    >
-      {/* Subtle ambient glow blobs — echo the mobile canvas */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-40 -top-40 h-96 w-96 rounded-full"
-        style={{ background: "rgba(255,255,255,0.06)", filter: "blur(80px)" }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-32 bottom-0 h-80 w-80 rounded-full"
-        style={{ background: "rgba(255,255,255,0.04)", filter: "blur(72px)" }}
-      />
+  const field =
+    "mt-1.5 flex h-11 items-center gap-2.5 rounded-sm border border-border bg-surface px-3.5 transition focus-within:border-blue";
+  const input =
+    "w-full bg-transparent text-[13.5px] text-ink outline-none placeholder:text-faint";
+  const label = "block text-xs font-medium text-muted";
 
-      {/* ── White frosted card ─────────────────────────────────────────────── */}
-      <div
-        className="relative z-10 w-full max-w-md rounded-2xl bg-white/95 shadow-2xl p-10 animate-fade-in"
-        style={{ backdropFilter: "blur(16px)" }}
-      >
-        {/* ── Brand ───────────────────────────────────────────────────────── */}
-        <div className="flex flex-col items-center">
-          <BrandMark size={88} color="#2563eb" waveColor="#3b82f6" showWaves />
-          <h1
-            className="mt-3 text-[36px] font-bold leading-none text-ink"
-            style={{ fontFamily: "Poppins, sans-serif", letterSpacing: "-1px" }}
-          >
-            Notefusion
-          </h1>
-          <p className="mt-1.5 text-sm font-medium text-muted tracking-wide uppercase">
-            Admin Console
-          </p>
+  return (
+    <div className="min-h-screen bg-surface lg:grid lg:grid-cols-2">
+      {/* ── Brand panel — desktop only, since a phone has no room to spare ──── */}
+      <aside className="relative hidden flex-col justify-between overflow-hidden bg-navy p-12 lg:flex">
+        {/* Ambient blue light, so the navy reads as a lit surface rather than a flat fill. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-24 -top-28 h-80 w-80 rounded-full"
+          style={{ background: "rgba(37, 99, 235, 0.38)", filter: "blur(90px)" }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-20 right-0 h-72 w-72 rounded-full"
+          style={{ background: "rgba(14, 165, 233, 0.20)", filter: "blur(90px)" }}
+        />
+        {/* Colour via currentColor (text-*) since StaffRibbon has no style prop. */}
+        <StaffRibbon
+          className="pointer-events-none absolute bottom-0 left-0 h-[132px] w-full text-white"
+          opacity={0.1}
+        />
+
+        <div className="relative flex items-center gap-2.5">
+          <BrandMark size={26} color="#ffffff" />
+          <span className="text-[15px] font-semibold tracking-[-0.02em] text-white">
+            NoteFusion
+          </span>
+          <span className="rounded-pill border border-white/20 px-2 py-[3px] text-[10px] font-medium uppercase tracking-[0.08em] text-white/70">
+            Admin
+          </span>
         </div>
 
-        {/* ── Divider ─────────────────────────────────────────────────────── */}
-        <div className="my-8 h-px bg-border" />
+        <div className="relative max-w-[27rem]">
+          <h2 className="text-[30px] font-semibold leading-[1.18] tracking-[-0.02em] text-white">
+            The numbers the platform actually measured.
+          </h2>
+          <ul className="mt-8 space-y-4">
+            {POINTS.map(({ icon: Icon, text }) => (
+              <li key={text} className="flex items-start gap-3">
+                <span className="mt-px grid h-7 w-7 shrink-0 place-items-center rounded-sm bg-white/10 text-white">
+                  <Icon size={14} aria-hidden="true" />
+                </span>
+                <span className="text-[13.5px] leading-relaxed text-white/75">{text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        {/* ── Heading ─────────────────────────────────────────────────────── */}
-        <h2
-          className="text-[22px] font-bold text-ink"
-          style={{ fontFamily: "Poppins, sans-serif", letterSpacing: "-0.5px" }}
-        >
-          Welcome back!
-        </h2>
-        <p className="mt-1 text-sm text-muted">Sign in to continue to the admin console.</p>
-
-        {/* ── Form ────────────────────────────────────────────────────────── */}
-        <form onSubmit={onSubmit} className="mt-6">
-          <label className="block text-sm font-semibold text-ink" htmlFor="email">
-            Email
-          </label>
-          <div className="mt-1.5 flex h-14 items-center gap-3 rounded-md border border-border bg-surface px-4 transition focus-within:border-blue focus-within:shadow-glow">
-            <Mail size={20} className="shrink-0 text-blue" aria-hidden="true" />
-            <input
-              id="email"
-              type="email"
-              autoComplete="username"
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="Enter your email"
-              className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-faint"
-            />
-          </div>
-
-          <label className="mt-5 block text-sm font-semibold text-ink" htmlFor="password">
-            Password
-          </label>
-          <div className="mt-1.5 flex h-14 items-center gap-3 rounded-md border border-border bg-surface px-4 transition focus-within:border-blue focus-within:shadow-glow">
-            <Lock size={20} className="shrink-0 text-muted" aria-hidden="true" />
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete="current-password"
-              required
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter your password"
-              className="w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-faint"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((shown) => !shown)}
-              // Typing a long password blind is the top cause of a false "wrong
-              // password", so the app offers this and so does the dashboard.
-              aria-label={showPassword ? "Hide password" : "Show password"}
-              className="shrink-0 rounded-sm p-1 text-muted transition hover:text-ink"
-            >
-              {showPassword ? (
-                <EyeOff size={19} aria-hidden="true" />
-              ) : (
-                <Eye size={19} aria-hidden="true" />
-              )}
-            </button>
-          </div>
-
-          <label className="mt-5 flex cursor-pointer select-none items-center gap-2.5 text-sm text-muted">
-            <input
-              type="checkbox"
-              checked={remember}
-              onChange={(event) => setRemember(event.target.checked)}
-              className="h-4 w-4 rounded-[4px] border-border accent-blue"
-            />
-            Keep me signed in on this device
-          </label>
-
-          {error && (
-            <p
-              role="alert"
-              className="mt-5 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger"
-            >
-              <AlertTriangle size={15} className="mt-px shrink-0" aria-hidden="true" />
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={pending || !canSubmit}
-            className="mt-7 flex h-[54px] w-full items-center justify-center gap-2.5 rounded-pill bg-fusion-contrast text-base font-semibold text-white shadow-glow transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
-          >
-            {pending ? (
-              <Loader2 size={19} className="animate-spin" aria-hidden="true" />
-            ) : null}
-            {pending ? "Signing in" : "Login"}
-            {!pending && <ArrowRight size={19} aria-hidden="true" />}
-          </button>
-        </form>
-
-        <p className="mt-8 text-center text-xs text-faint">
-          Internal analytics. Admin accounts only — access is enforced by the server on every
-          request.
+        <p className="relative text-[11px] text-white/45">
+          Internal tool · nothing here is customer-facing
         </p>
-      </div>
+      </aside>
 
-      {/* ── Decorative staff ribbon — behind the card, pinned to the bottom ─ */}
-      {/* Colour via currentColor (text-*) since StaffRibbon has no style prop. */}
-      <StaffRibbon
-        className="pointer-events-none absolute bottom-0 left-0 h-[120px] w-full text-white"
-        opacity={0.15}
-      />
+      {/* ── Form panel ───────────────────────────────────────────────────────── */}
+      <main className="flex items-center justify-center px-6 py-14 sm:px-10">
+        <div className="w-full max-w-[368px] animate-fade-in">
+          {/* The lockup the navy panel would have carried, for the narrow layout. */}
+          <div className="mb-9 flex items-center gap-2.5 lg:hidden">
+            <BrandMark size={24} color="#2563eb" />
+            <span className="text-[15px] font-semibold tracking-[-0.02em] text-ink">
+              NoteFusion
+            </span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-faint">
+              Admin
+            </span>
+          </div>
+
+          <h1 className="text-[26px] font-semibold leading-tight tracking-[-0.02em] text-ink">
+            Sign in
+          </h1>
+          <p className="mt-1.5 text-[13px] text-muted">
+            Use your NoteFusion admin account to open the console.
+          </p>
+
+          <form onSubmit={onSubmit} className="mt-8">
+            <div className="space-y-4">
+              <div>
+                <label className={label} htmlFor="email">
+                  Email
+                </label>
+                <div className={field}>
+                  <Mail size={15} className="shrink-0 text-faint" aria-hidden="true" />
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="username"
+                    required
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="you@notefusion.app"
+                    className={input}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className={label} htmlFor="password">
+                  Password
+                </label>
+                <div className={field}>
+                  <Lock size={15} className="shrink-0 text-faint" aria-hidden="true" />
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="••••••••"
+                    className={input}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((shown) => !shown)}
+                    // Typing a long password blind is the top cause of a false "wrong
+                    // password", so the app offers this and so does the dashboard.
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="shrink-0 rounded-sm p-1 text-faint transition hover:text-ink"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={16} aria-hidden="true" />
+                    ) : (
+                      <Eye size={16} aria-hidden="true" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <label className="flex cursor-pointer select-none items-center gap-2.5 text-[13px] text-muted">
+                <input
+                  type="checkbox"
+                  checked={remember}
+                  onChange={(event) => setRemember(event.target.checked)}
+                  className="h-4 w-4 rounded-[4px] border-border accent-blue"
+                />
+                Keep me signed in on this device
+              </label>
+            </div>
+
+            {error && (
+              <p
+                role="alert"
+                className="mt-4 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger"
+              >
+                <AlertTriangle size={15} className="mt-px shrink-0" aria-hidden="true" />
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={pending || !canSubmit}
+              className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-blue text-[13.5px] font-semibold text-white transition hover:bg-blue-deep disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {pending && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
+              {pending ? "Signing in" : "Sign in"}
+              {!pending && <ArrowRight size={16} aria-hidden="true" />}
+            </button>
+          </form>
+
+          <p className="mt-8 text-[11px] leading-relaxed text-faint">
+            Internal analytics. Admin accounts only — access is enforced by the server on every
+            request.
+          </p>
+        </div>
+      </main>
     </div>
   );
 }

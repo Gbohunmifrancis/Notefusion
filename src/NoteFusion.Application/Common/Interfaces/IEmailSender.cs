@@ -7,12 +7,29 @@ public sealed record EmailRecipient(string Email, string? Name = null);
 /// The facts a subscription receipt states. Minor units (cents) because that is what the payment
 /// providers settle in and what the ledger stores — formatting for humans happens at render time.
 /// </summary>
+/// <param name="RenewsAtUtc">
+/// When the next charge falls due, or <c>null</c> for a plan that was bought outright and never
+/// renews. Nullable rather than a far-future date so the renderer cannot print the internal sentinel:
+/// a lifetime receipt reading "renews on 31 December 9999" would look like a bug to the one person
+/// who just paid us the most.
+/// </param>
 public sealed record SubscriptionReceipt(
     string PlanName,
     long AmountMinor,
     string Currency,
-    DateTime RenewsAtUtc,
+    DateTime? RenewsAtUtc,
     string Reference);
+
+/// <summary>
+/// The facts an "expiring soon" notice states. <paramref name="WillRenew"/> is the difference between
+/// a reminder and a warning: a cancelled subscription is about to stop, an active one is about to
+/// charge. Getting that line wrong is worse than not sending the email.
+/// </summary>
+public sealed record SubscriptionExpiry(
+    string PlanName,
+    DateTime ExpiresAtUtc,
+    int DaysLeft,
+    bool WillRenew);
 
 /// <summary>
 /// The transactional emails the app sends. Methods name the event, not the message, so the copy and
@@ -44,6 +61,13 @@ public interface IEmailSender
     /// did not happen and can retry rather than waiting for a subscription that will never start.
     /// </summary>
     Task SendPaymentFailedAsync(EmailRecipient to, string planName, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sent once per billing period, shortly before it ends, so a renewal charge is never a surprise
+    /// and a lapse is never a silent one.
+    /// </summary>
+    Task SendSubscriptionExpiringAsync(
+        EmailRecipient to, SubscriptionExpiry expiry, CancellationToken ct = default);
 
     /// <summary>
     /// Sends a password-reset link. The link expires in 1 hour and contains the raw

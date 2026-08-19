@@ -1,27 +1,37 @@
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import { getUsers } from "@/api/endpoints";
 import type { AdminUserRow, PagedResult } from "@/api/types";
+import { Avatar } from "@/components/Avatar";
 import { Card } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { StateView } from "@/components/StateView";
 import { formatCount, formatInstantDate, formatInstantDateTime } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
+import { TD, TH, THEAD_TR, TR } from "@/lib/tableClasses";
 import { useAsync, useDebounced } from "@/lib/useAsync";
 
 const PAGE_SIZE = 25;
 
-function Badge({ children, tone = "neutral" }: { children: string; tone?: "neutral" | "blue" | "success" | "danger" }) {
-  const tones = {
-    neutral: "bg-surface-alt text-muted",
-    blue: "bg-blue/10 text-blue-deep",
-    success: "bg-success/10 text-success",
-    danger: "bg-danger/10 text-danger",
-  } as const;
+const TONES = {
+  neutral: "bg-surface-alt text-muted",
+  blue: "bg-blue/10 text-blue-deep",
+  success: "bg-success/10 text-success",
+  danger: "bg-danger/10 text-danger",
+} as const;
 
+function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: string;
+  tone?: keyof typeof TONES;
+}) {
   return (
     <span
-      className={`inline-flex items-center rounded-pill px-2 py-0.5 text-xs font-medium ${tones[tone]}`}
+      className={`inline-flex items-center rounded-[6px] px-2 py-[3px] text-[11px] font-semibold ${TONES[tone]}`}
     >
       {children}
     </span>
@@ -29,7 +39,14 @@ function Badge({ children, tone = "neutral" }: { children: string; tone?: "neutr
 }
 
 export function UsersPage() {
-  const [search, setSearch] = useState("");
+  // The sidebar's search box navigates here with `?q=`, so the URL seeds the field and
+  // overrides it on every later navigation. Typing stays local: writing a history entry per
+  // keystroke would make the back button useless.
+  const [params] = useSearchParams();
+  const incoming = params.get("q") ?? "";
+  const [search, setSearch] = useState(incoming);
+  useEffect(() => setSearch(incoming), [incoming]);
+
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounced(search);
 
@@ -47,16 +64,13 @@ export function UsersPage() {
   const offset = getReportingOffset();
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <header>
-        <h1 className="text-2xl font-semibold text-ink">Users</h1>
-        <p className="mt-1 text-sm text-muted">
-          Accounts newest first. This view carries personal data — treat it accordingly.
-        </p>
-      </header>
+    <div className="animate-fade-in space-y-5">
+      <PageHeader title="Users" breadcrumb={["Dashboard", "Users"]} />
 
       <Card
         title="All accounts"
+        hint="Newest first. This view carries personal data — treat it accordingly."
+        bleed
         action={
           <label className="relative block">
             <span className="sr-only">Search by name or email</span>
@@ -70,7 +84,7 @@ export function UsersPage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Name or email"
-              className="w-56 rounded-pill border border-border bg-surface py-1.5 pl-9 pr-3 text-sm text-ink outline-none transition focus:border-blue"
+              className="w-56 rounded-sm border border-border bg-surface py-1.5 pl-9 pr-3 text-[13px] text-ink outline-none transition focus:border-blue"
             />
           </label>
         }
@@ -83,35 +97,37 @@ export function UsersPage() {
         >
           {(data) => (
             <>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[52rem] text-sm">
+              <div className="overflow-x-auto border-t border-border">
+                <table className="w-full min-w-[56rem]">
                   <thead>
-                    <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
-                      <th className="py-2 pr-4 font-semibold">Account</th>
-                      <th className="py-2 pr-4 font-semibold">Role</th>
-                      <th className="py-2 pr-4 font-semibold">Sign-in</th>
-                      <th className="py-2 pr-4 font-semibold">Status</th>
-                      <th className="py-2 pr-4 text-right font-semibold">Transcriptions</th>
-                      <th className="py-2 pr-4 font-semibold">Joined</th>
-                      <th className="py-2 font-semibold">Last sign-in</th>
+                    <tr className={THEAD_TR}>
+                      <th className={TH}>Account</th>
+                      <th className={TH}>Role</th>
+                      <th className={TH}>Sign-in</th>
+                      <th className={TH}>Status</th>
+                      <th className={`${TH} text-right`}>Transcriptions</th>
+                      <th className={TH}>Joined</th>
+                      <th className={TH}>Last sign-in</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.items.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="border-b border-border-light last:border-0 hover:bg-surface-alt/60"
-                      >
-                        <td className="py-3 pr-4">
-                          <p className="font-medium text-ink">{user.fullName}</p>
-                          <p className="text-xs text-muted">{user.email}</p>
+                      <tr key={user.id} className={TR}>
+                        <td className={TD}>
+                          <div className="flex items-center gap-3">
+                            <Avatar name={user.fullName} size={34} />
+                            <div className="min-w-0">
+                              <p className="truncate font-medium text-ink">{user.fullName}</p>
+                              <p className="truncate text-[11px] text-faint">{user.email}</p>
+                            </div>
+                          </div>
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className={TD}>
                           <Badge tone={user.role === "Admin" ? "blue" : "neutral"}>
                             {user.role}
                           </Badge>
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className={TD}>
                           <span className="flex flex-wrap gap-1">
                             {user.hasGoogle && <Badge tone="blue">Google</Badge>}
                             {user.hasPassword && <Badge>Password</Badge>}
@@ -122,20 +138,20 @@ export function UsersPage() {
                             )}
                           </span>
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className={TD}>
                           {user.isActive ? (
                             <Badge tone="success">Active</Badge>
                           ) : (
                             <Badge tone="danger">Deactivated</Badge>
                           )}
                         </td>
-                        <td className="py-3 pr-4 text-right tabular-nums text-muted">
+                        <td className={`${TD} text-right tabular-nums`}>
                           {formatCount(user.transcriptionCount)}
                         </td>
-                        <td className="py-3 pr-4 whitespace-nowrap text-muted">
+                        <td className={`${TD} whitespace-nowrap`}>
                           {formatInstantDate(user.createdAt, offset)}
                         </td>
-                        <td className="py-3 whitespace-nowrap text-muted">
+                        <td className={`${TD} whitespace-nowrap`}>
                           {/* Null means never signed in since the column existed, not "today". */}
                           {formatInstantDateTime(user.lastLoginAt, offset)}
                         </td>
@@ -145,7 +161,7 @@ export function UsersPage() {
                 </table>
               </div>
 
-              <footer className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+              <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-3.5">
                 <p className="text-xs text-muted">
                   Showing{" "}
                   <span className="font-medium text-ink">
@@ -163,7 +179,7 @@ export function UsersPage() {
                     type="button"
                     onClick={() => setPage((current) => Math.max(1, current - 1))}
                     disabled={data.page <= 1 || state.loading}
-                    className="grid h-8 w-8 place-items-center rounded-md border border-border text-muted transition hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-40"
+                    className="grid h-8 w-8 place-items-center rounded-sm border border-border text-muted transition hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label="Previous page"
                   >
                     <ChevronLeft size={16} />
@@ -175,7 +191,7 @@ export function UsersPage() {
                     type="button"
                     onClick={() => setPage((current) => current + 1)}
                     disabled={data.page >= data.totalPages || state.loading}
-                    className="grid h-8 w-8 place-items-center rounded-md border border-border text-muted transition hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-40"
+                    className="grid h-8 w-8 place-items-center rounded-sm border border-border text-muted transition hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-40"
                     aria-label="Next page"
                   >
                     <ChevronRight size={16} />

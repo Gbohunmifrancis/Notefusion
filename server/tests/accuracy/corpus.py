@@ -5,7 +5,7 @@ unambiguously, every pitch sits inside Basic Pitch's usable range, and no note i
 shorter than the pipeline's own duration floors.  That is deliberate — when a
 metric drops, the cause is a pipeline defect, not corpus ambiguity.
 
-Three groups:
+Four groups:
 
   Keys         12 major + 6 minor cases from one shared melodic template,
                transposed.  Substrate for the Phase 4 relative-major confusion
@@ -20,6 +20,12 @@ Three groups:
                the identical note list and tempo with ``diag_baseline`` and differ
                from it in exactly ONE RenderOptions field, so a regression points at
                one cause.  Never combine two render defects in one case.
+
+  Vibrato      Seven cases along the two axes vibrato actually has — rate and depth —
+  breadth      because one point on each is what let three separate vibrato fixes
+               measure as wins and then fail off the corpus.  Same phrase and tempo
+               as the diagnostics, so ``vibrato_heavy`` is the origin of both axes.
+               See VIBRATO_BREADTH_CASES.
 
 Read each diagnostic case against its OWN recorded baseline, not against
 ``diag_baseline``.  The control is not the easiest case in the group: on a clean
@@ -451,10 +457,13 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     #     4.0 Hz ({2: 52}) and 9.0 Hz ({1: 2, 2: 74}) have clean histograms and break
     #     anyway.  Tuning a second constant on the same one-point evidence.
     #  4. It is unsafe in a mode this corpus cannot reach.  Every case here is
-    #     monophonic — measured 0 of 31 cases with any simultaneous reference notes —
-    #     but _transcribe_wav runs the same body for mode="poly", where a sus2, add9
+    #     monophonic — measured 0 of 38 cases with any simultaneous reference notes,
+    #     and structurally so, not by accident: a case's notes are (pitch, dur_beats)
+    #     laid end to end, so simultaneity is inexpressible without a synth.py change.
+    #     But _transcribe_wav runs the same body for mode="poly", where a sus2, add9
     #     or whole-tone dyad IS a fully overlapping 2-semitone pair.  The rule would
-    #     collapse two sounding pitches onto one that is not being played.
+    #     collapse two sounding pitches onto one that is not being played.  This is the
+    #     one reason the breadth cases below do NOT retire.
     #
     # Reward was capped before any of that: only one case can move, so the ceiling was
     # 1/31 = +0.032 aggregate, and 36 of the 46 fixes are also won by the already-
@@ -466,12 +475,22 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     # THREE FIXES, ONE VIBRATO POINT: the shared cause of all three strikes is that
     # 5.5 Hz / 1.2 semitones cannot certify a vibrato rule.  Each candidate died on a
     # constant fitted to this render (gap window, centre distance, overlap hops).  The
-    # prerequisite is corpus breadth, not a fourth rule.  Seven cases need no synth.py
-    # change at all — vibrato_hz 4.3066 / 5.5570 / 5.7422 / 7.0 and vibrato_semitones
-    # 0.8 / 2.0 alongside the existing 1.2, plus a genuine whole-tone-step case to
-    # cover reason 4.  Note that k = period/hop matters as much as hz: at 5.5 Hz a
-    # fragment spans 15.661 hops, and the measured fragment lengths cluster at exactly
-    # {15: 22, 16: 18}, so a rate change moves the phase truncation, not just the rate.
+    # prerequisite is corpus breadth, not a fourth rule.  That prerequisite is now MET
+    # for the rate and depth axes: VIBRATO_BREADTH_CASES below carries vibrato_hz
+    # 4.3066 / 5.5570 / 5.7422 / 7.0 and vibrato_semitones 0.8 / 1.8 / 2.0 alongside
+    # this case's 1.2, and needed no synth.py change.  Note that k = period/hop matters
+    # as much as hz: at 5.5 Hz a fragment spans 15.661 hops, and the measured fragment
+    # lengths cluster at exactly {15: 22, 16: 18}, so a rate change moves the phase
+    # truncation, not just the rate — which is why that axis is parameterised on k.
+    #
+    # Reason 4 is the exception, and the earlier draft of this note was wrong about it:
+    # a "genuine whole-tone-step case" does NOT cover the poly hazard.  DIAG_PHRASE is a
+    # C major scale, so genuine whole-tone steps were already here (60-62, 62-64, 65-67,
+    # 67-69, 69-71) and the depth cases now watch them under vibrato — but the hazard is
+    # two pitches sounding AT ONCE, and a case's notes are (pitch, dur_beats) laid end
+    # to end.  Simultaneity is inexpressible in this format at any interval, so reason 4
+    # stays open behind a synth.py + runner.py change (overlapping render, mode="poly"),
+    # not behind another case.
     #
     # One live lead is parked behind that same prerequisite, not struck: the plan's
     # defect 6 is right that the discarded pitch bends carry the answer.  predict()'s
@@ -558,6 +577,124 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
         notes=DIAG_PHRASE,
         options=RenderOptions(sustained=False),
         tags=("diagnostic", "pluck"),
+    ),
+)
+
+
+# ── Vibrato breadth: the rate and depth axes ──────────────────────────────────
+
+# Why a sweep and not one more defect case.  Three vibrato fixes have been built or
+# scouted against ``vibrato_heavy`` ALONE and all three died on a constant fitted to
+# its single rate/depth point — an 80 ms gap window, a 0.25 centre distance, a 5-frame
+# overlap.  Read the vibrato_heavy comment for the post-mortems; these cases exist so
+# a fourth attempt is falsifiable inside the harness instead of in a throwaway script.
+# Every one of them is DIAG_PHRASE at DIAG_TEMPO_BPM, so vibrato_heavy is the origin
+# of both axes and each case moves along exactly one of them.
+#
+# The rate axis is chosen by k = vibrato period / Basic Pitch frame hop, NOT by round
+# frequencies.  HOP = 256/22050 s = 11.609977 ms, so k = 86.1328 / vibrato_hz.  An
+# integer k fits a whole number of frames in a vibrato cycle, so the phase truncation
+# of a fragment is zero; a half-integer k maximises it.  That truncation is the bias
+# term which made the pyin re-label look safe here and provably is not elsewhere
+# (measured for a perfect tracker: 0.092 semitone at 5.5 Hz, 0.517 at 2.5 Hz), and
+# vibrato_heavy's 5.5 Hz sits at k = 15.661 — near neither extreme, by accident.
+#
+#   vibrato_rate_k15   5.7422 Hz  k = 15.000  no truncation
+#   vibrato_rate_k155  5.5570 Hz  k = 15.500  maximal truncation, adjacent in RATE to
+#                                             k15 (3.3 % apart) and far from it in
+#                                             BIAS — the pair is the whole point
+#   vibrato_rate_k20   4.3066 Hz  k = 20.000  no truncation, wider cycle
+#   vibrato_rate_7hz   7.0000 Hz  k = 12.305  unremarkable k, a rate people sing
+#
+# All four keep >= 2.69 vibrato cycles inside a 625 ms quarter note (3.59 / 3.47 /
+# 2.69 / 4.38 against vibrato_heavy's 3.44), which is the property DIAG_PHRASE's
+# quarter notes were chosen for; a slower rate would test the note length instead.
+#
+# The depth axis brackets the window in which "the midpoint of a time-overlapping
+# 2-semitone pair is the true pitch" is true AT ALL.  Measured on this phrase at
+# 5.5 Hz through the real pipeline — firings of that rule, and how many of them
+# mislabelled: 0.8 silent, 1.0 17/0, 1.2 39/0, 1.4 45/0, 1.6 25/0, 1.8 11/SIX,
+# 2.0 7/SEVEN, 2.4 silent.  One point inside a window cannot show you the window.
+#
+#   vibrato_depth_0_8  Below the floor.  Measured: the pipeline returns the exactly
+#                      correct 11 pitches with zero semitone-neighbour ghosts, better
+#                      than the clean control.  A vibrato rule must be SILENT here,
+#                      not merely harmless — a fix that moves this case is reaching
+#                      for notes that were already right.
+#   vibrato_depth_1_8  The mixed population, and the hardest case in the corpus: right
+#                      and wrong straddles in ONE clip, so no clip-level guard can
+#                      switch a rule off wholesale.  Interval histogram over
+#                      overlapping pairs {1: 3, 2: 14, 3: 20, 4: 2} — the only case
+#                      here where 2 semitones is not the mode.
+#   vibrato_depth_2_0  Above the ceiling.  The pair stops being symmetric about the
+#                      truth: one label IS the pitch and the other is the excursion,
+#                      so (67, 69) on a true 67 averages to 68.  Histogram
+#                      {2: 9, 3: 6, 4: 31}.
+#
+# These also give DIAG_PHRASE's genuine whole-tone steps (60-62, 62-64, 65-67, 67-69,
+# 69-71) their first watcher under vibrato — semitone_steps_c_major has zero
+# 2-semitone adjacencies and no vibrato, as its own comment below admits.
+#
+# Cost: seven more full ONNX + pyin runs per harness run, and seven cases the pipeline
+# currently fails, so the aggregate means drop when they land.  That drop is the
+# measurement the one-point corpus was hiding, not a regression — the same argument
+# KEY_HEADROOM_CASES was added under.  Per-case rows are where the protection lives.
+VIBRATO_BREADTH_CASES: tuple[Case, ...] = (
+    Case(
+        name="vibrato_rate_k15",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=5.7422, vibrato_semitones=1.2),
+        tags=("vibrato", "rate", "breadth"),
+    ),
+    Case(
+        name="vibrato_rate_k155",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=5.5570, vibrato_semitones=1.2),
+        tags=("vibrato", "rate", "breadth"),
+    ),
+    Case(
+        name="vibrato_rate_k20",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=4.3066, vibrato_semitones=1.2),
+        tags=("vibrato", "rate", "breadth"),
+    ),
+    Case(
+        name="vibrato_rate_7hz",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=7.0, vibrato_semitones=1.2),
+        tags=("vibrato", "rate", "breadth"),
+    ),
+    Case(
+        name="vibrato_depth_0_8",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=5.5, vibrato_semitones=0.8),
+        tags=("vibrato", "depth", "breadth"),
+    ),
+    Case(
+        name="vibrato_depth_1_8",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=5.5, vibrato_semitones=1.8),
+        tags=("vibrato", "depth", "breadth"),
+    ),
+    Case(
+        name="vibrato_depth_2_0",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=RenderOptions(vibrato_hz=5.5, vibrato_semitones=2.0),
+        tags=("vibrato", "depth", "breadth"),
     ),
 )
 
@@ -678,7 +815,12 @@ RHYTHM_CASES: tuple[Case, ...] = (
 # ── The corpus ────────────────────────────────────────────────────────────────
 
 CASES: tuple[Case, ...] = (
-    MAJOR_CASES + MINOR_CASES + KEY_HEADROOM_CASES + DIAGNOSTIC_CASES + RHYTHM_CASES
+    MAJOR_CASES
+    + MINOR_CASES
+    + KEY_HEADROOM_CASES
+    + DIAGNOSTIC_CASES
+    + VIBRATO_BREADTH_CASES
+    + RHYTHM_CASES
 )
 
 

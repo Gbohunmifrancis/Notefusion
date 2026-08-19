@@ -364,7 +364,7 @@ def _parse_key_override(text: str | None):
 # SimpleWeights is noisiest on short excerpts.  Those pull four different ways.
 #
 # Weights are deliberately equal rather than hand-tuned.  Any per-profile weighting
-# would have to be fitted on the 31-case synthetic corpus, which would tune the
+# would have to be fitted on the 38-case synthetic corpus, which would tune the
 # constants to this corpus's quirks rather than to key detection — and the measured
 # result does not need it.  BellmanBudge is *not* trusted above the others despite
 # music21 describing it as the least biased: on a plain C-major stream it agrees
@@ -383,10 +383,31 @@ KEY_PROFILE_NAMES = (
 # Calibrated against the mobile's own cut points, which are what this number is *for*:
 # theme.ts labels below 0.5 "Low confidence" and ResultScreen counts those in its
 # re-record hint, so the property that matters is "every wrong key lands under 0.5".
-# Measured over the 31-case corpus at this value: all 4 wrong keys land in 0.216-0.460
-# (prompt fires on every one) and 23 of 27 correct keys land at or above 0.75 (no
-# needless prompt).  The three correct cases that read low are the hardest in the
-# corpus, where a wasted prompt costs a tap and nothing else.
+# That property held on the 31-case corpus and DOES NOT hold now.  Broadening the
+# vibrato axis from one point to seven (corpus.py VIBRATO_BREADTH_CASES) took the
+# wrong-key count 4 -> 9, and one of the new cases clears the cut: vibrato_rate_k155
+# reads C major as E minor at 0.631, so the editable-key prompt stays silent on a
+# wrong key.  Measured over the 38-case corpus at this value:
+#
+#      9 wrong keys    0.023 - 0.631   eight under the cut, k155 the one above
+#     29 correct keys  23 at or above 0.75; two under 0.5
+#                      (triplets_eighth 0.235, fast_sixteenths 0.420)
+#
+# Rescaling was evaluated and rejected rather than left open.  Pushing k155 under 0.5
+# needs this constant above 0.947, and at 0.95 four currently-correct cases cross the
+# cut the other way: drift_1_semitone 0.526 -> 0.415, vibrato_depth_0_8 0.541 -> 0.427,
+# semitone_steps 0.618 -> 0.488, lead_in_800ms 0.626 -> 0.494.  Trading one false
+# negative for four false prompts is a bad trade on its own, and vibrato_depth_0_8
+# makes it indefensible: that case scores notes.f1 1.000 and degree 1.000, so the
+# prompt would be asking for a re-record of a clip that transcribed perfectly.
+#
+# So the constant stays and the defect is recorded upstream of it.  The margin is
+# reporting profile agreement honestly; the profiles agree on garbage, because k155's
+# note list is 24 events for 11 real ones and the duration-weighted histogram all five
+# of them read is vibrato fragments.  key.confidence_auc is still 0.966, so the
+# *ranking* is largely intact — it is this absolute cut that was fitted against a
+# corpus holding a single vibrato point.  Fix the notes (the vibrato post-mortems in
+# corpus.py) and the calibration follows.
 #
 # A scale constant, not a threshold — no decision is taken on it, so a mis-set value
 # costs calibration rather than correctness.

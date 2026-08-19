@@ -12,11 +12,23 @@ public sealed record PlanDto(Guid Id, string Code, string Name, long AmountMinor
 public sealed record CheckoutSessionDto(string Reference, string CheckoutUrl, PaymentProvider Provider);
 
 /// <summary>The caller's subscription state, enough for the app to gate Pro features.</summary>
+/// <param name="TrialGenerationsRemaining">
+/// Free transcriptions still available, floored at zero. Meaningless while <paramref name="IsActive"/>
+/// is true — Pro is unlimited — and reported anyway so the app has one shape to read.
+/// </param>
+/// <param name="IsLifetime">
+/// True when Pro was bought outright. Sent as its own flag rather than left for the client to infer
+/// from <paramref name="CurrentPeriodEndUtc"/>: the period end carries a far-future sentinel, and an
+/// app that formats it renders "renews 31 December 9999".
+/// </param>
 public sealed record SubscriptionDto(
     bool IsActive,
     string? PlanCode,
     SubscriptionStatus? Status,
-    DateTime? CurrentPeriodEndUtc);
+    DateTime? CurrentPeriodEndUtc,
+    int TrialGenerationsRemaining,
+    int TrialGenerationsTotal,
+    bool IsLifetime);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

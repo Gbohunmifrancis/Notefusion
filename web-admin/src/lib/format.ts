@@ -91,6 +91,20 @@ export function formatDayLong(value: string): string {
   return `${parts.day} ${MONTHS[parts.month - 1]} ${parts.year}`;
 }
 
+/** `"2026-07-12"` → `"Jul"`. Axis labels once days are grouped by month. */
+export function formatMonthShort(value: string): string {
+  const parts = splitCalendarDate(value);
+  if (!parts) return value;
+  return MONTHS[parts.month - 1] ?? value;
+}
+
+/** `"2026-07-12"` → `"Jul 2026"`. */
+export function formatMonthYear(value: string): string {
+  const parts = splitCalendarDate(value);
+  if (!parts) return value;
+  return `${MONTHS[parts.month - 1] ?? ""} ${parts.year}`.trim();
+}
+
 /** `"2026-07-12"` → `"Week of 12 Jul"`. Retention cohort labels. */
 export const formatWeekOf = (value: string) => `Week of ${formatDayShort(value)}`;
 

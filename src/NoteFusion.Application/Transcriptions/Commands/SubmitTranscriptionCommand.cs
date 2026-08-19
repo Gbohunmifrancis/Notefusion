@@ -1,9 +1,11 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Dtos;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 using NoteFusion.Core.Solfa;
 using NoteFusion.Shared.Results;
@@ -51,8 +53,12 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             bool isPro = sub != null && sub.IsActiveAt(_clock.UtcNow);
             if (!isPro)
             {
-                var count = await _db.Transcriptions.CountAsync(t => t.UserId == userId, cancellationToken);
-                if (count >= 5)
+                // Successful generations, not saved rows. Counting Transcriptions meant deleting one
+                // handed the free slot back, so the limit was avoidable by anyone who noticed.
+                var used = await _db.TranscriptionJobs
+                    .CountAsync(j => j.UserId == userId && j.TrialConsumedAtUtc != null, cancellationToken);
+
+                if (used >= FreeTier.TrialGenerations)
                 {
                     return BillingErrors.FreeTierLimitReached;
                 }
@@ -77,7 +83,18 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             Tempo = request.Tempo
         };
 
-        return await _api.SubmitAsync(request.Audio, request.FileName, options, cancellationToken);
+        var submitted = await _api.SubmitAsync(request.Audio, request.FileName, options, cancellationToken);
+
+        // Attribute the job before the id leaves the server, so the very first poll can check
+        // ownership. Nothing is charged here — the audio has not been transcribed yet, and a job that
+        // fails must not cost the user one of their five.
+        if (submitted.IsSuccess && _currentUser.UserId is { } owner)
+        {
+            _db.TranscriptionJobs.Add(TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow));
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+
+        return submitted;
     }
 
     /// <summary>

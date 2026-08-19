@@ -119,7 +119,12 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         var initiation = await gateway.InitiateAsync(
             new GatewayInitiationRequest(
                 transaction.Reference, plan.AmountMinor, plan.Currency, user.Email,
-                _settings.CheckoutCallbackUrl, Recurring: true, transaction.IdempotencyKey, plan.Code,
+                _settings.CheckoutCallbackUrl,
+                // The plan decides this, never the caller: a lifetime plan is a single charge, and asking
+                // a provider for a subscription against it would open a recurring session for something
+                // that must never recur.
+                Recurring: plan.Interval != BillingInterval.Lifetime,
+                transaction.IdempotencyKey, plan.Code,
                 user.FullName),
             ct);
 

@@ -43,6 +43,30 @@ pre-plan pipeline scored, deliberately:
       Both fall while every note metric on those same cases improves.  They are no
       longer gated; see the NOT_A_GATE note below for why that is structural rather
       than convenient.
+
+The 31 -> 38 corpus expansion moved every aggregate down, and none of it is a regression
+────────────────────────────────────────────────────────────────────────────────────────
+This baseline was re-recorded when ``VIBRATO_BREADTH_CASES`` added a rate and depth
+sweep around the single vibrato point (corpus.py) — six cases the pipeline fails and one
+it transcribes perfectly.  Diffed against the previous baseline the aggregates fall
+hard: solfa.degree_accuracy 0.935 -> 0.831, key.exact 0.903 -> 0.763, notes.f1
+0.914 -> 0.786, notes.semitone_neighbour_ghosts 1.000 -> 4.289.  Every one of those is
+the denominator growing, not the pipeline getting worse: all 31 pre-existing cases
+scored identically, to +0.000 on notes.f1, which is the determinism proof that the new
+RenderOptions values did not perturb the existing audio.
+
+That is the trade KEY_HEADROOM_CASES was added under — a corpus holding only cases we
+pass cannot gate a fix — and it is why cross-baseline aggregate deltas mean nothing
+without the fingerprint.  The ``baseline`` fixture fails loudly on a fingerprint
+mismatch rather than diffing across it, precisely so this expansion could not be read
+as a 0.105 loss on the headline metric.
+
+What the expansion bought immediately: it falsified a calibration property the pipeline
+asserts.  ``KEY_MARGIN_FULL``'s comment claimed "every wrong key lands under 0.5" on the
+31-case corpus; on 38 the wrong-key count is 9 spanning 0.023-0.631, and
+``vibrato_rate_k155`` reads C major as E minor at 0.631 — above the mobile's cut, so the
+editable-key prompt stays silent on a confidently wrong key.  That is a live defect, not
+an accepted trade; the analysis and the rejected rescaling are recorded at the constant.
 """
 
 import json
@@ -113,7 +137,7 @@ LOWER_IS_BETTER = frozenset(
 #                          and mean_wrong against the mobile's fixed 0.5 cut in
 #                          theme.ts, which is why it is recorded at all.
 #                          key.confidence_auc and key.confidence_separation ARE gated:
-#                          their population is the 31 corpus cases and a fix migrates
+#                          their population is the 38 corpus cases and a fix migrates
 #                          one or two, where a case's wrong-note pool is often 2-4
 #                          notes and one migration swings the statistic by 0.1.
 #   solfa.anchor_matches_reference
