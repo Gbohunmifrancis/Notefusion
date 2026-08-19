@@ -72,6 +72,15 @@ public sealed class ProcessWebhookEventCommandHandler : IRequestHandler<ProcessW
         {
             // Provider says this payment did not succeed; there is nothing to fulfil. Mark handled so
             // the worker stops retrying; a later success will arrive as its own event.
+            //
+            // When the answer is final — an expired or cancelled session — the transaction has to be
+            // closed as well, not just the event. A row left Processing still reads as an in-flight
+            // checkout, so InitiateCheckout keeps handing this user the dead session's URL and no later
+            // attempt can open a new one: the upgrade path stays bricked until someone edits the database.
+            // Anything less than final is left alone, because the customer may still pay it.
+            if (v.Terminal)
+                tx.MarkFailed($"Provider reported '{e.EventType}'; this checkout can no longer be paid.", now);
+
             e.MarkProcessed(now);
             await _db.SaveChangesAsync(ct);
             return Result.Success();

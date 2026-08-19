@@ -66,10 +66,18 @@ public sealed record GatewayInitiationRequest(
 public sealed record GatewayInitiation(string CheckoutUrl, string? ProviderReference, string? Raw);
 
 /// <summary>A provider's authoritative account of a payment, used to verify before fulfilling.</summary>
+/// <param name="Terminal">
+/// True when this is the provider's last word: the attempt can never become a success. Only consulted
+/// when <paramref name="Succeeded"/> is false, and defaulted to <c>false</c> because that is the safe
+/// answer — a checkout reported as still open is simply asked again, whereas one wrongly reported as
+/// final is closed while the customer may be a keystroke away from paying it. An expired or cancelled
+/// session is final; one the customer has merely not paid yet is not.
+/// </param>
 public sealed record GatewayVerification(
     bool Succeeded,
     long AmountMinor,
     string Currency,
     string ProviderReference,
     string? ProviderSubscriptionRef,
-    string? Raw);
+    string? Raw,
+    bool Terminal = false);

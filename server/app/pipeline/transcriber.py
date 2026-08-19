@@ -449,10 +449,14 @@ def _key_confidence_from_margin(margin: float, n_events: int) -> float:
 def _detect_key(s, n_events: int):
     """(key, confidence) for a stream, by equal vote over KEY_PROFILE_NAMES.
 
-    Falls back to music21's single-profile default if the ensemble cannot run — a
-    degenerate stream, or a music21 version without these profiles.  The fallback is
-    the pre-existing behaviour, so a failure here can only lose the improvement, not
-    the transcription.
+    Falls back to music21's single-profile default if the ensemble cannot run.  That
+    is not hypothetical: any clip with a *uniform* pitch-class histogram gives every
+    profile a zero correlation spread, so all five return nothing and ``voted`` is 0.
+    A chromatic run does it exactly — measured on the pinned music21 10.5.0, all five
+    profiles decline and the raw coefficient is 0.0, so the fallback emits confidence
+    0.0 and the mobile's editable-key prompt fires.  That is the safe direction: the
+    fallback is the pre-existing behaviour, so a failure here can only lose the
+    improvement, not the transcription.
     """
     from music21.analysis import discrete
 
@@ -555,10 +559,21 @@ def _merge_onsets(
     Merging them reduces ghost syllables in the solfa output and improves
     overall confidence scores.
 
-    The merged event inherits the amplitude — and the pyin-derived fields — of
-    the louder fragment and spans from the earliest start to the latest end.
-    Multiple passes are made until no further merges are possible (handles
-    chains of three or more).
+    The merged event inherits the amplitude of the louder fragment and spans
+    from the earliest start to the latest end.  Multiple passes are made until
+    no further merges are possible (handles chains of three or more).
+
+    The pitch test is exact equality, deliberately and permanently.  A
+    semitone-tolerant variant (plan phase 3c, to fuse vibrato that crosses a
+    semitone boundary) was measured on the corpus and struck: see the
+    vibrato_heavy comment in tests/accuracy/corpus.py for the geometry.  In
+    short, Basic Pitch fires at *both* neighbours of a wobbling pitch, so
+    consecutive fragments of one note are two semitones apart, not one — 43 of
+    63 adjacencies against 5 — and the shorter fragment measures 116.1 ms
+    (2560/22050, a quantization constant) on genuine legato semitone steps in
+    fast_sixteenths_c_major just as it does on vibrato fragments, so no
+    duration cap separates them.  Do not reintroduce a tolerance here without
+    reading that comment first.
     """
     if len(events) < 2:
         return events

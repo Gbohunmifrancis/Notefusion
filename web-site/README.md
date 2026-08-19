@@ -30,6 +30,42 @@ It resizes the hero to 3× its display size (PNG → JPEG takes it from 1.1 MB t
 134 KB, which matters on a Nigerian mobile connection) and draws the share card
 in `gradients.brand` and Poppins, both read from the app's own artwork.
 
+## The hero screenshot
+
+⚠️ **`mobile/assets/Notefusion-home.png` is still the pre-launch design mockup,
+not the shipped app.** It shows a *Transcribe* tab and a *Tools / Key Changer*
+grid that were never built, an *Enable Sync* card that does not exist, recording
+data dated May 2025, and it spells the name "Notefusion". The landing page
+carries a `TODO(screenshot)` comment saying the same thing.
+
+To replace it:
+
+1. Take the shot on a real device (or an emulator at phone resolution) with the
+   app signed in and a few saved transcriptions in the library, so the Home
+   screen has real cards with real keys and BPM on them. Portrait, full screen,
+   status bar included.
+2. Save it over `mobile/assets/Notefusion-home.png`. That path is hard-coded as
+   `SCREENSHOT` in `tools/build-assets.py`; keep the name and nothing else needs
+   changing.
+3. Rebuild:
+
+   ```bash
+   python tools/build-assets.py
+   ```
+
+   That regenerates `app-home.jpg` (828 w) and `app-home-552.jpg` (552 w) for the
+   `srcset`, and prints the pixel dimensions of each.
+4. If the new screenshot's aspect ratio differs from the old one, copy the 828 w
+   dimensions the script printed into the hero `<img>`'s `width`/`height` in
+   `index.html`. They are there to reserve layout space, so a stale `height`
+   shows up as a jump while the page loads.
+5. Delete the `TODO(screenshot)` comment, and check the `alt` text still
+   describes what the image actually shows.
+
+The other screens (Record, the solfa/staff result view, Library) are not used on
+the site yet. If you want them in a gallery later, that is new markup and new
+build-script output, not a swap.
+
 Kept in `web-site/` rather than `docs/` deliberately: GitHub Pages' zero-config
 option serves `docs/` wholesale, and that folder holds `NoteFusion_PRD.docx` and
 `NoteFusion_TRD.docx` — publishing it would put the product requirements on the

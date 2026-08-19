@@ -536,15 +536,15 @@ h1 em {
   }
 }
 
-/* ── African mode — the differentiator, so it gets the full-bleed blue ───── */
+/* ── Solfa spotlight — the differentiator, so it gets the full-bleed blue ─── */
 
-.african {
+.spotlight {
   background: var(--fusion);
   color: #fff;
   position: relative;
   overflow: hidden;
 }
-.african::after {
+.spotlight::after {
   content: "";
   position: absolute;
   right: -140px;
@@ -555,7 +555,7 @@ h1 em {
   background: rgba(255, 255, 255, 0.07);
   pointer-events: none;
 }
-.african .wrap {
+.spotlight .wrap {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -565,39 +565,45 @@ h1 em {
 /* A grid item's default min-width is auto, so the nowrap solfa line below sets
    a min-content floor and pushes the column past the viewport. The section
    clips it rather than scrolling, so the text would simply vanish off-screen. */
-.african .wrap > * {
+.spotlight .wrap > * {
   min-width: 0;
 }
-.african h2 {
+.spotlight h2 {
   color: #fff;
   max-width: 16ch;
 }
-.african h2 em {
+.spotlight h2 em {
   color: #dbeafe;
 }
 /* Solid white, not a translucent white. Over the light end of a 135deg gradient
    ending in #3B82F6, white at .86 falls to 3.1:1. */
-.african p {
+.spotlight p {
   color: #fff;
   font-size: 1.05rem;
 }
-.african-list {
+.spotlight-list {
   list-style: none;
   margin: var(--s-xl) 0 0;
   padding: 0;
   display: grid;
   gap: var(--s-md);
 }
-.african-list li {
+.spotlight-list li {
   display: flex;
   gap: var(--s-md);
   align-items: flex-start;
   color: #fff;
   font-size: 0.975rem;
 }
-.african-list svg {
+.spotlight-list svg {
   flex: none;
   margin-top: 3px;
+}
+/* The inline italics in the list are solfa syllables, not emphasis, so they keep
+   the body colour rather than picking up the blue `em` treatment from the top. */
+.spotlight-list em {
+  color: #dbeafe;
+  font-style: italic;
 }
 
 /* Dark glass, not light. This panel sits in the right-hand column, which is the
@@ -647,7 +653,7 @@ h1 em {
 }
 
 @media (max-width: 900px) {
-  .african .wrap {
+  .spotlight .wrap {
     grid-template-columns: 1fr;
   }
 }
@@ -726,9 +732,13 @@ h1 em {
 
 .plans {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--s-xl);
   align-items: stretch;
+  /* Two plans, not three: capped and centred so the pair reads as a pair instead of
+     two billboards stretched across the full wrap width. */
+  max-width: 820px;
+  margin-inline: auto;
 }
 .plan {
   display: flex;

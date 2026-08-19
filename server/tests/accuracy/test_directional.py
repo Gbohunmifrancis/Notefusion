@@ -373,10 +373,25 @@ def test_defect5_correct_durations_improve_the_only_duration_column():
 
 
 def _fragmented(phrase=PHRASE) -> list[TranscribedNote]:
-    """Each note plus a semitone-neighbour sliver, as deep vibrato is transcribed.
+    """Each note plus a semitone-neighbour sliver — a hand-built fragmentation model.
 
-    The real ``vibrato_heavy`` case returns 30 estimated notes for 11 reference ones
-    with ``notes.f1`` 0.049, so fragmentation — not mislabelling — is the whole defect.
+    What this module tests is that the METRICS punish fragmentation in the right
+    direction, on note lists built here.  That still holds, so the assertions below
+    are unchanged.  The *premise* in the name is no longer what the corpus does, and
+    saying so here is cheaper than someone re-deriving it:
+
+    ``vibrato_heavy`` returns 30 estimated notes for 11 reference ones at ``notes.f1``
+    0.098 (this docstring said 0.049 before the phase 2-4 work moved it).  But its
+    fragments are not one semitone wide.  Basic Pitch fires at BOTH neighbours of a
+    wobbling pitch, so consecutive fragments sit TWO semitones apart — measured
+    interval histogram {0: 12, 1: 5, 2: 43, 3: 2, 5: 1} over 63 adjacencies — and its
+    label is outright wrong on 49 of 64 events.  The real defect there is
+    MISLABELLING, not fragmentation, which is why the semitone-tolerant merge (phase
+    3c) was struck; see the vibrato_heavy comment in corpus.py.
+
+    So ``pitch + 1`` below is a deliberate synthetic stand-in for "a neighbouring
+    ghost", not a claim about the corpus.  Do not use it as evidence for how wide a
+    real merge tolerance should be.
     """
     events: list[tuple[int, float, float]] = []
     for i, pitch in enumerate(phrase):
@@ -401,11 +416,19 @@ def test_defect6_merging_vibrato_fragments_improves_the_gated_metrics():
 
 
 def test_defect6_over_merging_a_genuine_semitone_step_is_punished():
-    """The riskiest change in the plan, and the reason this guard is permanent.
+    """That the METRIC punishes over-merging — which is only half an instrument.
 
-    A merge that cannot tell deep vibrato from a real mi-fa step would swallow half of
-    ``semitone_steps_c_major``.  The metric must fall when that happens, or Phase 3c
-    could ship a regression that reads as an improvement.
+    Phase 3c (the semitone-tolerant merge) was measured and struck, so nothing in the
+    pipeline can over-merge today.  This stays because it pins the property any future
+    attempt would need: drop half a genuine semitone phrase and recall must fall.
+
+    Keep the other half in view if that day comes.  This test scores a hand-built note
+    list, so it proves the metric responds.  It does NOT prove the corpus would catch a
+    real over-merge — measured, it would not: a wrong cross-note merge on
+    ``semitone_steps_c_major`` leaves its note count and pitch sequence byte-identical,
+    because Basic Pitch emits two fragments per note and the melody overlap resolver
+    truncates the survivor back.  See the corpus.py comment on that case.  The missing
+    instrument is a unit test on the merge's own decisions, not a metric assertion.
     """
     refs = _refs(SEMITONE_PHRASE)
     honest = _perfect(SEMITONE_PHRASE)
@@ -459,6 +482,7 @@ def test_every_recorded_metric_is_deliberately_classified():
         "notes.precision", "notes.recall", "notes.f1",
         "beats.precision", "beats.recall", "beats.f1", "beats.f1_shift_invariant",
         "key.weighted_score", "key.exact", "key.confidence_separation",
+        "key.confidence_auc",
         "solfa.degree_accuracy", "solfa.syllable_accuracy",
     }
     classified = LOWER_IS_BETTER | NOT_A_GATE | higher_is_better
@@ -473,6 +497,57 @@ def test_every_recorded_metric_is_deliberately_classified():
         "these metrics are gated higher-is-better by default; confirm that is right "
         f"and add them to a registry: {unclassified}"
     )
+
+
+def test_flag_drift_reports_each_difference_and_nothing_else():
+    """The provenance note has to be silent when nothing moved, or it is noise."""
+    from tests.accuracy.report import _flag_drift
+
+    flags = {"beat_align": True, "key_ensemble": True, "quantize_divisors": [2]}
+
+    assert _flag_drift(flags, flags) == []
+    assert _flag_drift(flags, {**flags, "key_ensemble": False}) == ["key_ensemble: False -> True"]
+    assert _flag_drift(flags, {**flags, "quantize_divisors": [4]}) == [
+        "quantize_divisors: [4] -> [2]"
+    ]
+    # A baseline written before flags were recorded has none.  Reporting that once beats
+    # reporting every flag as a difference against a missing dict.
+    assert _flag_drift(flags, None) == ["(baseline predates flag provenance - it records none)"]
+
+    # Printed to a redirected stdout on Windows, which encodes cp1252 — the same reason
+    # report.py's table is pure ASCII.
+    every_line = "".join(_flag_drift(flags, None) + _flag_drift(flags, {**flags, "beat_align": False}))
+    assert every_line.isascii()
+
+
+def test_the_recorded_baseline_is_the_shipped_configuration():
+    """A baseline recorded under non-default flags silently misattributes every delta.
+
+    The corpus fingerprint already refuses a baseline measured on different *audio*.
+    Flags are the other half: identical audio through a differently-configured pipeline
+    produces numbers that look comparable and are not.  Re-recording while an
+    ``NF_*`` override is exported is an easy mistake to make in a shell that has been
+    A/Bing flags all afternoon, and it leaves no trace anywhere else.
+
+    If this fails, either unset the overrides and re-record, or you meant to and the
+    baseline is not the shipped configuration.
+    """
+    import json
+
+    from tests.accuracy.report import _effective_flags, _flag_drift
+    from tests.accuracy.test_accuracy import BASELINE_PATH
+
+    if not BASELINE_PATH.exists():
+        pytest.skip("no baseline.json - nothing recorded to attribute yet")
+
+    recorded = json.loads(BASELINE_PATH.read_text(encoding="utf-8")).get("flags")
+    assert recorded is not None, (
+        "baseline.json carries no flags block, so what produced it is unknowable; "
+        "re-record it with `python -m tests.accuracy.report --write-baseline`"
+    )
+
+    drift = _flag_drift(_effective_flags(), recorded)
+    assert not drift, "baseline.json was recorded under non-default flags: " + ", ".join(drift)
 
 
 def test_metrics_are_deterministic_under_reordering_of_tied_onsets():

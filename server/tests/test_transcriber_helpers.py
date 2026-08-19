@@ -156,8 +156,8 @@ class TestNormaliseKeyName:
 class TestMergeOnsets:
     """Same-pitch fragments separated by a gap smaller than gap_sec are fused.
 
-    Events are ``Event(start_sec, end_sec, pitch_midi, amplitude)``; the pyin
-    fields default to 0.0 and none of this logic reads them.
+    Events are ``Event(start_sec, end_sec, pitch_midi, amplitude)`` — the four values
+    Basic Pitch reports, which is all this logic reads.
     """
 
     def test_two_same_pitch_notes_within_gap_are_merged(self):
@@ -953,6 +953,35 @@ class TestDetectKey:
         key, conf = transcriber._detect_key(s, 8)
         assert key is not None
         assert 0.0 <= conf <= 1.0
+
+    def test_a_uniform_pitch_class_histogram_reaches_the_fallback_for_real(self):
+        # Not a synthetic monkeypatch: a chromatic run gives every profile a zero
+        # correlation spread, so all five genuinely decline and voted == 0.  This is the
+        # only known real input that reaches the raw-coefficient branch, and it must
+        # fail SAFE — confidence 0.0 so the mobile's editable-key prompt fires — rather
+        # than emitting a confident arbitrary key.
+        from music21.analysis import discrete
+
+        chromatic = _stream(
+            ["C4", "C#4", "D4", "E-4", "E4", "F4", "F#4", "G4", "A-4", "A4", "B-4", "B4"]
+        )
+        for name in transcriber.KEY_PROFILE_NAMES:
+            assert transcriber._profile_z_scores(getattr(discrete, name)(), chromatic) == {}
+
+        key, conf = transcriber._detect_key(chromatic, 12)
+        assert key is not None  # a key is still reported; the score must be labellable
+        assert conf == pytest.approx(0.0)  # and it is flagged as worthless
+
+    def test_the_fallback_key_still_normalises_to_the_wire_convention(self):
+        # music21 spells minor keys lowercase ("b minor"), which the C# KeyParser
+        # rejects — the fallback path must not be the one that leaks it.
+        chromatic = _stream(
+            ["C4", "C#4", "D4", "E-4", "E4", "F4", "F#4", "G4", "A-4", "A4", "B-4", "B4"]
+        )
+        key, _conf = transcriber._detect_key(chromatic, 12)
+        normalised = _normalise_key_name(str(key))
+        assert "-" not in normalised
+        assert normalised[0].isupper()
 
     def test_one_raising_profile_does_not_lose_the_vote(self, monkeypatch):
         real = transcriber._profile_z_scores

@@ -38,9 +38,11 @@ class TestBeatAlign:
 
 
 class TestQuantizeDivisors:
-    def test_defaults_to_sixteenths(self, monkeypatch):
+    def test_defaults_to_eighths(self, monkeypatch):
+        # Sixteenths were the default until the corpus showed they cost degree
+        # accuracy; see the property docstring for the numbers.
         monkeypatch.delenv("NF_QUANTIZE_DIVISORS", raising=False)
-        assert settings.quantize_divisors == (4,)
+        assert settings.quantize_divisors == (2,)
 
     def test_parses_a_comma_list(self, monkeypatch):
         monkeypatch.setenv("NF_QUANTIZE_DIVISORS", "4,3")
@@ -54,7 +56,7 @@ class TestQuantizeDivisors:
     def test_unparseable_values_fall_back_to_the_default(self, monkeypatch, value):
         # A typo in a deploy must not fail every transcription with a ValueError.
         monkeypatch.setenv("NF_QUANTIZE_DIVISORS", value)
-        assert settings.quantize_divisors == (4,)
+        assert settings.quantize_divisors == (2,)
 
     def test_zero_is_dropped(self, monkeypatch):
         # music21 divides by the divisor; 0 would raise inside quantize().
