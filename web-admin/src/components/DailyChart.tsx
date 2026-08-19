@@ -1,98 +1,224 @@
+import { useState } from "react";
 import type { ReactNode } from "react";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+
 import type { DailyCount } from "@/api/types";
-import { formatCount, formatDayLong, formatDayShort } from "@/lib/format";
+import { Card } from "@/components/Card";
+import { Segmented } from "@/components/Segmented";
+import {
+  formatCount,
+  formatDayLong,
+  formatDayShort,
+  formatMonthShort,
+  formatMonthYear,
+} from "@/lib/format";
 
 /**
- * A daily series. The API zero-fills every day in the range, so a flat stretch here means
- * "nothing happened on those days" and not "no data was returned" — which is why the
- * points are plotted as-is with no gap-filling or smoothing of our own.
+ * A daily series as bars, with a grey full-height ghost behind each one so the plot reads as
+ * a row of gauges rather than as a set of floating marks.
  *
- * `date` is a reporting-local calendar string and is formatted as one. Handing it to
- * `new Date` would shift the axis a day in negative-offset browsers.
+ * The API zero-fills every day in the range, so a missing bar means "nothing happened that
+ * day" and not "no data was returned" — the points are plotted as-is, with no gap-filling or
+ * smoothing of our own. `date` is a reporting-local calendar string and is formatted as one;
+ * handing it to `new Date` would shift the axis a day in negative-offset browsers.
+ *
+ * Grouping is Day / Week / Month, and an option is disabled rather than hidden when the
+ * window is too short to make more than one bar out of it.
  */
 
-interface DailyChartProps {
-  data: DailyCount[];
-  color?: string;
-  gradientId: string;
-  /** Singular noun for the tooltip, e.g. "signup". */
-  unit: string;
+type Bucket = "day" | "week" | "month";
+
+interface Group {
+  /** The first calendar date in the group. Doubles as the x-axis key. */
+  key: string;
+  label: string;
+  /** The heading in the tooltip, where there is room to name the whole span. */
+  title: string;
+  count: number;
 }
+
+/**
+ * Weeks are consecutive seven-day blocks anchored at the start of the window, not ISO weeks:
+ * the admin asked for this window, so the blocks should line up with it. The final block is
+ * short whenever the range is not a multiple of seven, and its tooltip names its real span.
+ */
+function groupIntoWeeks(data: DailyCount[]): Group[] {
+  const groups: Group[] = [];
+  for (let i = 0; i < data.length; i += 7) {
+    const block = data.slice(i, i + 7);
+    const first = block[0];
+    const last = block[block.length - 1];
+    if (!first || !last) continue;
+    groups.push({
+      key: first.date,
+      label: formatDayShort(first.date),
+      title:
+        first.date === last.date
+          ? formatDayLong(first.date)
+          : `${formatDayShort(first.date)} – ${formatDayLong(last.date)}`,
+      count: block.reduce((sum, day) => sum + day.count, 0),
+    });
+  }
+  return groups;
+}
+
+/** The series arrives ordered by date, so a month closes as soon as the prefix changes. */
+function groupIntoMonths(data: DailyCount[]): Group[] {
+  const groups: Group[] = [];
+  for (const day of data) {
+    const open = groups[groups.length - 1];
+    if (open && open.key.slice(0, 7) === day.date.slice(0, 7)) {
+      open.count += day.count;
+    } else {
+      groups.push({
+        key: day.date,
+        label: formatMonthShort(day.date),
+        title: formatMonthYear(day.date),
+        count: day.count,
+      });
+    }
+  }
+  return groups;
+}
+
+const groupIntoDays = (data: DailyCount[]): Group[] =>
+  data.map((day) => ({
+    key: day.date,
+    label: formatDayShort(day.date),
+    title: formatDayLong(day.date),
+    count: day.count,
+  }));
 
 interface TooltipEntry {
-  value?: number;
-  payload?: { date?: string };
+  payload?: Partial<Group>;
 }
 
-function renderTooltip(props: unknown): ReactNode {
-  const { active, payload } = (props ?? {}) as {
-    active?: boolean;
-    payload?: readonly TooltipEntry[];
+function tooltip(unit: string, color: string) {
+  return function render(props: unknown): ReactNode {
+    const { active, payload } = (props ?? {}) as {
+      active?: boolean;
+      payload?: readonly TooltipEntry[];
+    };
+    const group = payload?.[0]?.payload;
+    if (!active || !group?.title) return null;
+
+    return (
+      <div className="rounded-sm border border-border bg-surface px-3 py-2 shadow-lift">
+        <p className="text-[11px] font-semibold text-ink">{group.title}</p>
+        <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
+          <span
+            aria-hidden="true"
+            className="h-1.5 w-1.5 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+          {formatCount(group.count ?? 0)} {unit}
+        </p>
+      </div>
+    );
   };
-  const first = payload?.[0];
-  if (!active || !first?.payload?.date) return null;
-
-  return (
-    <div className="rounded-sm border border-border bg-surface px-3 py-2 shadow-lift">
-      <p className="text-xs font-semibold text-ink">{formatDayLong(first.payload.date)}</p>
-      <p className="text-xs text-muted">{formatCount(first.value ?? 0)}</p>
-    </div>
-  );
 }
 
-export function DailyChart({ data, color = "#2563eb", gradientId, unit }: DailyChartProps) {
+interface DailyChartProps {
+  title: string;
+  /** The caveat behind the ⓘ beside the title. */
+  info?: string;
+  data: DailyCount[];
+  /** Plural noun for the tooltip, e.g. "signups". */
+  unit: string;
+  color?: string;
+  className?: string;
+}
+
+export function DailyChart({
+  title,
+  info,
+  data,
+  unit,
+  color = "#2563eb",
+  className = "",
+}: DailyChartProps) {
+  const [chosen, setChosen] = useState<Bucket>("day");
+
+  const weeks = groupIntoWeeks(data);
+  const months = groupIntoMonths(data);
+
+  // A single bar is not a chart, so a grouping that collapses the window to one is offered
+  // but disabled, with the reason on hover. Falling back to days rather than storing the
+  // correction keeps the admin's choice intact if they widen the range again.
+  const options: readonly { value: Bucket; label: string; disabledReason?: string }[] = [
+    { value: "day", label: "Day" },
+    {
+      value: "week",
+      label: "Week",
+      ...(weeks.length < 2 ? { disabledReason: "The window is under two weeks long" } : {}),
+    },
+    {
+      value: "month",
+      label: "Month",
+      ...(months.length < 2 ? { disabledReason: "The window sits inside one month" } : {}),
+    },
+  ];
+
+  const bucket: Bucket =
+    (chosen === "week" && weeks.length < 2) || (chosen === "month" && months.length < 2)
+      ? "day"
+      : chosen;
+
+  const groups =
+    bucket === "week" ? weeks : bucket === "month" ? months : groupIntoDays(data);
+
   // Every count is an integer, so a fractional tick would be meaningless.
-  const max = Math.max(...data.map((d) => d.count), 0);
-  const tickCount = Math.min(max + 1, 5);
+  const max = Math.max(...groups.map((group) => group.count), 0);
 
   return (
-    <div className="h-64 w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -18 }}>
-          <defs>
-            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.28} />
-              <stop offset="100%" stopColor={color} stopOpacity={0.02} />
-            </linearGradient>
-          </defs>
-          <CartesianGrid stroke="#eff3f9" vertical={false} />
-          <XAxis
-            dataKey="date"
-            tickFormatter={formatDayShort}
-            tick={{ fill: "#5d6d82", fontSize: 11 }}
-            stroke="#e2e8f0"
-            // A 90-day range would otherwise stack 90 labels on top of each other.
-            interval="preserveStartEnd"
-            minTickGap={24}
-          />
-          <YAxis
-            allowDecimals={false}
-            tickCount={tickCount}
-            tick={{ fill: "#5d6d82", fontSize: 11 }}
-            stroke="#e2e8f0"
-          />
-          <Tooltip content={renderTooltip} />
-          <Area
-            type="monotone"
-            dataKey="count"
-            name={unit}
-            stroke={color}
-            strokeWidth={2}
-            fill={`url(#${gradientId})`}
-            dot={false}
-            activeDot={{ r: 4, strokeWidth: 0 }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+    <Card
+      title={title}
+      {...(info ? { info } : {})}
+      className={className}
+      action={
+        <Segmented<Bucket>
+          label="Chart grouping"
+          options={options}
+          value={bucket}
+          onChange={setChosen}
+        />
+      }
+    >
+      <div className="h-64 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={groups} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
+            <CartesianGrid stroke="#eff3f9" vertical={false} />
+            <XAxis
+              dataKey="label"
+              tick={{ fill: "#94a3b8", fontSize: 11 }}
+              stroke="#e2e8f0"
+              tickLine={false}
+              // A 90-day range would otherwise stack 90 labels on top of each other.
+              interval="preserveStartEnd"
+              minTickGap={20}
+            />
+            <YAxis
+              allowDecimals={false}
+              tickCount={Math.min(max + 1, 5)}
+              tick={{ fill: "#94a3b8", fontSize: 11 }}
+              stroke="#e2e8f0"
+              tickLine={false}
+            />
+            {/* The ghost bar is already the hover affordance, so recharts' grey cursor band
+                on top of it would just muddy the column. */}
+            <Tooltip content={tooltip(unit, color)} cursor={false} />
+            <Bar
+              dataKey="count"
+              name={unit}
+              fill={color}
+              radius={[4, 4, 0, 0]}
+              maxBarSize={14}
+              background={{ fill: "#eff3f9", radius: 4 }}
+              isAnimationActive={false}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </Card>
   );
 }

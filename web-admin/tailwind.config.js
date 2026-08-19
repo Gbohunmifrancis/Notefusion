@@ -33,6 +33,10 @@ export default {
       },
       borderRadius: { sm: "8px", md: "14px", lg: "20px", xl: "28px", pill: "999px" },
       boxShadow: {
+        // Panels are border-first: the hairline does the separating and the shadow only
+        // lifts the card off the canvas by a pixel. `card` is the heavier version, kept
+        // for the surfaces that float over content (tooltips use `lift`).
+        hairline: "0 1px 2px rgba(15, 23, 42, 0.04)",
         card: "0 2px 10px rgba(15, 23, 42, 0.06)",
         lift: "0 12px 32px rgba(15, 23, 42, 0.10)",
         glow: "0 8px 20px rgba(37, 99, 235, 0.28)",

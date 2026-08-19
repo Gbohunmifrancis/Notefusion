@@ -1,14 +1,3 @@
-import {
-  Activity,
-  CheckCircle2,
-  Gauge,
-  HardDrive,
-  Hourglass,
-  Music4,
-  ShieldCheck,
-  UserPlus,
-  Users2,
-} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { getOverview } from "@/api/endpoints";
@@ -16,22 +5,25 @@ import type { AnalyticsOverview } from "@/api/types";
 import { BreakdownList } from "@/components/BreakdownList";
 import { Card } from "@/components/Card";
 import { DailyChart } from "@/components/DailyChart";
+import { DonutCard } from "@/components/DonutCard";
+import type { DonutSlice } from "@/components/DonutCard";
+import { PageHeader } from "@/components/PageHeader";
 import { RangePicker } from "@/components/RangePicker";
 import type { Range } from "@/components/RangePicker";
 import { RecentActivity } from "@/components/RecentActivity";
 import { StatCard } from "@/components/StatCard";
+import { StatStrip, StatTile } from "@/components/StatStrip";
 import { EmptyView, StateView } from "@/components/StateView";
 import {
   changeAgainst,
   formatBytes,
   formatCount,
-  formatDayLong,
-  formatInstantDate,
   formatOffset,
   formatPercent,
   formatWeekOf,
-  UNKNOWN,
 } from "@/lib/format";
+import { useAuth } from "@/lib/auth";
+import { TD, TH, THEAD_TR, TR } from "@/lib/tableClasses";
 import { useAsync } from "@/lib/useAsync";
 import { rememberReportingOffset } from "@/lib/reporting";
 
@@ -49,7 +41,21 @@ function seedRange(overview: AnalyticsOverview): Range | null {
   return first && last ? { from: first.date, to: last.date } : null;
 }
 
+/**
+ * The greeting is about the reader, not the data, so it reads the browser's clock — the
+ * reporting zone is the wrong one to say good evening in.
+ */
+function greeting(firstName: string): string {
+  const hour = new Date().getHours();
+  const part = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
+  return firstName ? `Good ${part}, ${firstName}` : `Good ${part}`;
+}
+
+/** Ring colours for the signup-method slices, in the order the server lists them. */
+const METHOD_COLORS = ["#2563eb", "#0ea5e9", "#6366f1", "#94a3b8"] as const;
+
 export function OverviewPage() {
+  const { user } = useAuth();
   const [range, setRange] = useState<Range | null>(null);
 
   const fetcher = useCallback(
@@ -65,298 +71,328 @@ export function OverviewPage() {
   }, [offset]);
 
   const picker = range ?? (state.data ? seedRange(state.data) : null);
+  const firstName = user?.fullName.trim().split(/\s+/)[0] ?? "";
 
   return (
-    <div className="animate-fade-in space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-ink">Overview</h1>
-          <p className="mt-1 text-sm text-muted">
-            {state.data ? (
-              <>
-                {formatInstantDate(state.data.fromUtc, state.data.reportingOffsetMinutes)} to{" "}
-                {picker ? formatDayLong(picker.to) : UNKNOWN} · days bucketed in{" "}
-                {formatOffset(state.data.reportingOffsetMinutes)}
-              </>
-            ) : (
-              "Loading the reporting window"
-            )}
-          </p>
-        </div>
-
-        {state.data && picker && (
-          <RangePicker
-            value={picker}
-            offsetMinutes={state.data.reportingOffsetMinutes}
-            onChange={setRange}
-          />
-        )}
-      </header>
+    <div className="animate-fade-in space-y-5">
+      <PageHeader
+        title={greeting(firstName)}
+        breadcrumb={["Dashboard", "Overview"]}
+        actions={
+          state.data &&
+          picker && (
+            <>
+              {/* The window itself is in the date inputs; this names the zone its days were
+                  bucketed in, which is the server's and not the browser's. */}
+              <span className="hidden text-[11px] text-faint md:block">
+                Days bucketed in {formatOffset(state.data.reportingOffsetMinutes)}
+              </span>
+              <RangePicker
+                value={picker}
+                offsetMinutes={state.data.reportingOffsetMinutes}
+                onChange={setRange}
+              />
+            </>
+          )
+        }
+      />
 
       <StateView state={state} loadingLabel="Loading analytics">
-        {(data) => (
-          <div className="space-y-6">
-            {/* People */}
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <StatCard
-                label="Total users"
-                value={formatCount(data.users.totalUsers)}
-                hint="Every account, all time"
-                icon={Users2}
-              />
-              <StatCard
-                label="New signups"
-                value={formatCount(data.users.newUsers)}
-                hint="Registered inside the window"
-                icon={UserPlus}
-                change={changeAgainst(data.users.newUsers, data.users.newUsersPrevious)}
-              />
-              <StatCard
-                label="Active users"
-                value={formatCount(data.users.activeUsers)}
-                hint="Signed in within the last 30 days"
-                icon={Activity}
-                change={changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious)}
-              />
-              {/* Labelled for what it measures. It is not an email-verification count, and
-                  calling it "Verified" would overstate what the schema knows. */}
-              <StatCard
-                label="Google-linked accounts"
-                value={formatCount(data.users.googleVerifiedUsers)}
-                hint="Signed in through Google, so the address is Google-verified"
-                icon={ShieldCheck}
-              />
-            </div>
+        {(data) => {
+          const ended = data.transcriptions.succeededCount + data.transcriptions.failedCount;
+          const outcomes: DonutSlice[] = [
+            {
+              label: "Succeeded",
+              value: data.transcriptions.succeededCount,
+              color: "#16a34a",
+            },
+            { label: "Failed", value: data.transcriptions.failedCount, color: "#dc2626" },
+          ];
+          const methods: DonutSlice[] = data.signupMethods.map((method, i) => ({
+            label: method.label,
+            value: method.count,
+            color: METHOD_COLORS[i % METHOD_COLORS.length] ?? "#94a3b8",
+          }));
+          const methodTotal = data.signupMethods.reduce((sum, row) => sum + row.count, 0);
+          const share = (count: number) =>
+            data.users.totalUsers === 0 ? null : count / data.users.totalUsers;
 
-            {/* Transcription */}
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <StatCard
-                label="Transcriptions saved"
-                value={formatCount(data.transcriptions.totalSaved)}
-                hint="Saved inside the window"
-                icon={Music4}
-                change={changeAgainst(
-                  data.transcriptions.totalSaved,
-                  data.transcriptions.totalSavedPrevious,
-                )}
-              />
-              <StatCard
-                label="Success rate"
-                value={formatPercent(data.transcriptions.successRate)}
-                hint={
-                  data.transcriptions.successRate === null
-                    ? "Nothing reached a final state in this window"
-                    : `${formatCount(data.transcriptions.succeededCount)} done, ${formatCount(
-                        data.transcriptions.failedCount,
-                      )} failed`
-                }
-                icon={CheckCircle2}
-                unknown={data.transcriptions.successRate === null}
-              />
-              <StatCard
-                label="Average confidence"
-                value={formatPercent(data.transcriptions.averageConfidence)}
-                hint="Mean confidence across completed transcriptions"
-                icon={Gauge}
-                unknown={data.transcriptions.averageConfidence === null}
-              />
-              <StatCard
-                label="In flight"
-                value={formatCount(data.transcriptions.inFlightCount)}
-                hint="Pending or processing right now"
-                icon={Hourglass}
-              />
-            </div>
+          return (
+            <div className="space-y-5">
+              {/* People */}
+              <StatStrip>
+                <StatTile
+                  label="Total users"
+                  value={formatCount(data.users.totalUsers)}
+                  hint="Every account, all time"
+                />
+                <StatTile
+                  label="New signups"
+                  value={formatCount(data.users.newUsers)}
+                  hint="Registered inside the window"
+                  change={changeAgainst(data.users.newUsers, data.users.newUsersPrevious)}
+                />
+                <StatTile
+                  label="Active users"
+                  value={formatCount(data.users.activeUsers)}
+                  hint="Signed in within the last 30 days"
+                  change={changeAgainst(
+                    data.users.activeUsers,
+                    data.users.activeUsersPrevious,
+                  )}
+                />
+                {/* Labelled for what it measures. It is not an email-verification count, and
+                    calling it "Verified" would overstate what the schema knows. */}
+                <StatTile
+                  label="Google-linked"
+                  value={formatCount(data.users.googleVerifiedUsers)}
+                  hint="Signed in through Google, so the address is Google-verified"
+                  sub="Accounts with a Google identity"
+                />
+              </StatStrip>
 
-            {/* Series */}
-            <div className="grid gap-4 xl:grid-cols-2">
-              <Card
-                title="Signups per day"
-                hint="Zero-filled, so a flat stretch means no signups that day"
-              >
+              {/* Transcription */}
+              <StatStrip>
+                <StatTile
+                  label="Transcriptions saved"
+                  value={formatCount(data.transcriptions.totalSaved)}
+                  hint="Saved inside the window"
+                  change={changeAgainst(
+                    data.transcriptions.totalSaved,
+                    data.transcriptions.totalSavedPrevious,
+                  )}
+                />
+                <StatTile
+                  label="Success rate"
+                  value={formatPercent(data.transcriptions.successRate)}
+                  hint="Succeeded as a share of everything that reached a final state"
+                  sub={
+                    data.transcriptions.successRate === null
+                      ? "Nothing reached a final state"
+                      : `${formatCount(data.transcriptions.succeededCount)} done, ${formatCount(
+                          data.transcriptions.failedCount,
+                        )} failed`
+                  }
+                  unknown={data.transcriptions.successRate === null}
+                />
+                <StatTile
+                  label="Average confidence"
+                  value={formatPercent(data.transcriptions.averageConfidence)}
+                  hint="Mean confidence across completed transcriptions"
+                  unknown={data.transcriptions.averageConfidence === null}
+                />
+                <StatTile
+                  label="In flight"
+                  value={formatCount(data.transcriptions.inFlightCount)}
+                  hint="Pending or processing right now, not a windowed count"
+                  sub="Right now"
+                />
+              </StatStrip>
+
+              {/* Series, each beside the categorical list that reads with it */}
+              <div className="grid gap-5 xl:grid-cols-3">
                 <DailyChart
+                  title="Signups"
+                  info="Zero-filled, so a missing bar means no signups that day."
                   data={data.signupsPerDay}
-                  gradientId="signups"
                   unit="signups"
                   color="#2563eb"
+                  className="xl:col-span-2"
                 />
-              </Card>
-              <Card
-                title="Transcriptions per day"
-                hint="Counted on the day the transcription was saved"
-              >
+                <Card title="Most transcribed keys" info="All saved transcriptions, all time">
+                  {data.topKeys.length === 0 ? (
+                    <EmptyView message="No transcriptions saved yet" />
+                  ) : (
+                    <BreakdownList data={data.topKeys} />
+                  )}
+                </Card>
+              </div>
+
+              <div className="grid gap-5 xl:grid-cols-3">
                 <DailyChart
+                  title="Transcriptions"
+                  info="Counted on the day the transcription was saved."
                   data={data.transcriptionsPerDay}
-                  gradientId="transcriptions"
                   unit="transcriptions"
                   color="#0ea5e9"
+                  className="xl:col-span-2"
                 />
-              </Card>
-            </div>
+                <Card title="Push platforms" info="Registered device tokens, all time">
+                  {data.devicePlatforms.length === 0 ? (
+                    <EmptyView
+                      message="No devices registered"
+                      hint="A token appears here once a build with push enabled signs in."
+                    />
+                  ) : (
+                    <BreakdownList data={data.devicePlatforms} />
+                  )}
+                </Card>
+              </div>
 
-            {/* Breakdowns */}
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Card
-                title="Signup method"
-                hint={`All accounts. "Both" linked Google to a password account.`}
-              >
-                <BreakdownList data={data.signupMethods} />
-              </Card>
-              <Card title="Push platforms" hint="Registered device tokens, all time">
-                {data.devicePlatforms.length === 0 ? (
-                  <EmptyView
-                    message="No devices registered"
-                    hint="A token appears here once a build with push enabled signs in."
+              {/* Compositions */}
+              <div className="grid gap-5 lg:grid-cols-2">
+                <Card
+                  title="Transcription outcomes"
+                  info="Inside the window. In-flight jobs are absent because they have no outcome yet."
+                >
+                  <DonutCard
+                    slices={outcomes}
+                    centerLabel="Reached an end state"
+                    centerValue={formatCount(ended)}
+                    meters
+                    emptyMessage="Nothing reached a final state in this window"
                   />
-                ) : (
-                  <BreakdownList data={data.devicePlatforms} color="#0ea5e9" />
-                )}
-              </Card>
-              <Card title="Most transcribed keys" hint="All saved transcriptions, all time">
-                {data.topKeys.length === 0 ? (
-                  <EmptyView message="No transcriptions saved yet" />
-                ) : (
-                  <BreakdownList data={data.topKeys} color="#1d4ed8" />
-                )}
-              </Card>
-            </div>
+                </Card>
+                <Card
+                  title="Signup method"
+                  info={`All accounts, all time. "Both" linked Google to a password account.`}
+                >
+                  <DonutCard
+                    slices={methods}
+                    centerLabel="All accounts"
+                    centerValue={formatCount(methodTotal)}
+                    emptyMessage="No accounts yet"
+                  />
+                </Card>
+              </div>
 
-            {/* Activity feed + storage — the mockup's right-rail, made honest. The feed is real
-                recorded events; storage is the exact MusicXML footprint, since audio is deleted. */}
-            <div className="grid gap-4 lg:grid-cols-3">
-              <Card
-                title="Recent activity"
-                hint="Newest signups, saved transcriptions, and sign-ins across the platform"
-                className="lg:col-span-2"
-              >
-                <RecentActivity items={data.recentActivity} />
-              </Card>
-              <StatCard
-                label="Storage used"
-                value={formatBytes(data.transcriptions.storedBytes)}
-                hint="MusicXML held across all transcriptions. Audio is deleted after each job, so this is the whole footprint."
-                icon={HardDrive}
-              />
-            </div>
-
-            {/* Retention — deliberately not called D1/D7/D30. See the note below. */}
-            <Card
-              title="Weekly cohorts"
-              hint="Share of each signup week that has ever signed in on a later day"
-            >
-              {data.retention.length === 0 ? (
-                <EmptyView message="No signups in the last twelve weeks" />
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted">
-                        <th className="py-2 pr-4 font-semibold">Cohort</th>
-                        <th className="py-2 pr-4 font-semibold">Signups</th>
-                        <th className="py-2 pr-4 font-semibold">Ever returned</th>
-                        <th className="py-2 font-semibold">Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.retention.map((cohort) => (
-                        <tr
-                          key={cohort.cohortStart}
-                          className="border-b border-border-light last:border-0"
-                        >
-                          <td className="py-2.5 pr-4 font-medium text-ink">
-                            {formatWeekOf(cohort.cohortStart)}
-                          </td>
-                          <td className="py-2.5 pr-4 tabular-nums text-muted">
-                            {formatCount(cohort.cohortSize)}
-                          </td>
-                          <td className="py-2.5 pr-4 tabular-nums text-muted">
-                            {formatCount(cohort.returnedCount)}
-                          </td>
-                          <td className="w-40 py-2.5">
-                            <div className="flex items-center gap-2">
-                              <div className="h-2 w-20 overflow-hidden rounded-pill bg-surface-alt">
-                                <div
-                                  className="h-full rounded-pill bg-blue"
-                                  style={{
-                                    width: `${(cohort.retentionRate ?? 0) * 100}%`,
-                                  }}
-                                />
-                              </div>
-                              <span
-                                className={`tabular-nums text-xs ${
-                                  cohort.retentionRate === null ? "text-faint" : "text-ink"
-                                }`}
-                              >
-                                {formatPercent(cohort.retentionRate, 0)}
-                              </span>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+              {/* Activity feed, with the account-health tiles as its right rail. The feed is
+                  real recorded events; storage is the exact MusicXML footprint, since audio
+                  is deleted after each job. */}
+              <div className="grid gap-5 lg:grid-cols-3">
+                <Card
+                  title="Recent activity"
+                  info="Newest signups, saved transcriptions, and sign-ins across the platform"
+                  className="lg:col-span-2"
+                >
+                  <RecentActivity items={data.recentActivity} />
+                </Card>
+                <div className="space-y-4">
+                  <StatCard
+                    label="Password-only accounts"
+                    value={formatCount(data.users.passwordOnlyUsers)}
+                    sub="No Google identity linked"
+                    share={share(data.users.passwordOnlyUsers)}
+                  />
+                  <StatCard
+                    label="Locked out"
+                    value={formatCount(data.users.lockedOutUsers)}
+                    sub="Lockout still active from failed sign-ins"
+                    tone="warning"
+                    share={share(data.users.lockedOutUsers)}
+                  />
+                  <StatCard
+                    label="Deactivated"
+                    value={formatCount(data.users.deactivatedUsers)}
+                    sub="Accounts marked inactive"
+                    tone="danger"
+                    share={share(data.users.deactivatedUsers)}
+                  />
+                  <StatCard
+                    label="Storage used"
+                    value={formatBytes(data.transcriptions.storedBytes)}
+                    sub="MusicXML across all transcriptions"
+                    hint="Audio is deleted after each job, so this is the whole stored footprint."
+                    tone="neutral"
+                  />
                 </div>
-              )}
-            </Card>
+              </div>
 
-            {/* Account health */}
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Card title="Password-only accounts">
-                <p className="text-2xl font-semibold tabular-nums text-ink">
-                  {formatCount(data.users.passwordOnlyUsers)}
-                </p>
-                <p className="mt-1 text-xs text-muted">No Google identity linked</p>
+              {/* Retention — deliberately not called D1/D7/D30. See the note below. */}
+              <Card
+                title="Weekly cohorts"
+                info="Share of each signup week that has ever signed in on a later day"
+                bleed
+              >
+                {data.retention.length === 0 ? (
+                  <div className="px-5 pb-5">
+                    <EmptyView message="No signups in the last twelve weeks" />
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto border-t border-border">
+                    <table className="w-full">
+                      <thead>
+                        <tr className={THEAD_TR}>
+                          <th className={TH}>Cohort</th>
+                          <th className={TH}>Signups</th>
+                          <th className={TH}>Ever returned</th>
+                          <th className={TH}>Rate</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.retention.map((cohort) => (
+                          <tr key={cohort.cohortStart} className={TR}>
+                            <td className={`${TD} font-medium text-ink`}>
+                              {formatWeekOf(cohort.cohortStart)}
+                            </td>
+                            <td className={`${TD} tabular-nums`}>
+                              {formatCount(cohort.cohortSize)}
+                            </td>
+                            <td className={`${TD} tabular-nums`}>
+                              {formatCount(cohort.returnedCount)}
+                            </td>
+                            <td className={`${TD} w-48`}>
+                              <div className="flex items-center gap-2">
+                                <div className="h-1.5 w-24 overflow-hidden rounded-pill bg-surface-alt">
+                                  <div
+                                    className="h-full rounded-pill bg-blue"
+                                    style={{
+                                      width: `${(cohort.retentionRate ?? 0) * 100}%`,
+                                    }}
+                                  />
+                                </div>
+                                <span
+                                  className={`text-xs font-semibold tabular-nums ${
+                                    cohort.retentionRate === null ? "text-faint" : "text-ink"
+                                  }`}
+                                >
+                                  {formatPercent(cohort.retentionRate, 0)}
+                                </span>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </Card>
-              <Card title="Locked out">
-                <p className="text-2xl font-semibold tabular-nums text-ink">
-                  {formatCount(data.users.lockedOutUsers)}
-                </p>
-                <p className="mt-1 text-xs text-muted">
-                  Lockout still active from failed sign-ins
-                </p>
-              </Card>
-              <Card title="Deactivated">
-                <p className="text-2xl font-semibold tabular-nums text-ink">
-                  {formatCount(data.users.deactivatedUsers)}
-                </p>
-                <p className="mt-1 text-xs text-muted">Accounts marked inactive</p>
+
+              {/*
+                What the dashboard does not claim to know. This panel exists so that an absent
+                metric reads as absent rather than as a zero, and so nobody plans against a
+                number this system cannot currently produce.
+              */}
+              <Card title="Not measured yet" hint="Why these are missing rather than zero">
+                <ul className="space-y-2 text-[13px] text-muted">
+                  <li>
+                    <span className="font-medium text-ink">Top countries and geography.</span>{" "}
+                    No location, IP, or locale is stored against an account or a transcription,
+                    so a country breakdown would be invented, not measured. It arrives if and
+                    when the schema captures a signal worth mapping.
+                  </li>
+                  <li>
+                    <span className="font-medium text-ink">
+                      Subscribed, paid and free-tier counts.
+                    </span>{" "}
+                    No subscription, plan or payment entity exists in the schema. Once pricing
+                    is settled these become real columns, and only then real cards.
+                  </li>
+                  <li>
+                    <span className="font-medium text-ink">Day-N retention.</span> Only the
+                    latest sign-in is stored, not a login history, so a cohort can be asked
+                    whether it ever returned and not whether it was active in week three.
+                  </li>
+                  <li>
+                    <span className="font-medium text-ink">Email verification.</span> There is
+                    no verification flag. The Google-linked count above is the closest honest
+                    proxy and is labelled as exactly that.
+                  </li>
+                </ul>
               </Card>
             </div>
-
-            {/*
-              What the dashboard does not claim to know. This panel exists so that an absent
-              metric reads as absent rather than as a zero, and so nobody plans against a
-              number this system cannot currently produce.
-            */}
-            <Card title="Not measured yet" hint="Why these are missing rather than zero">
-              <ul className="space-y-2 text-sm text-muted">
-                <li>
-                  <span className="font-medium text-ink">Top countries and geography.</span>{" "}
-                  No location, IP, or locale is stored against an account or a transcription, so a
-                  country breakdown would be invented, not measured. It arrives if and when the
-                  schema captures a signal worth mapping.
-                </li>
-                <li>
-                  <span className="font-medium text-ink">
-                    Subscribed, paid and free-tier counts.
-                  </span>{" "}
-                  No subscription, plan or payment entity exists in the schema. Once pricing
-                  is settled these become real columns, and only then real cards.
-                </li>
-                <li>
-                  <span className="font-medium text-ink">Day-N retention.</span> Only the
-                  latest sign-in is stored, not a login history, so a cohort can be asked
-                  whether it ever returned and not whether it was active in week three.
-                </li>
-                <li>
-                  <span className="font-medium text-ink">Email verification.</span> There is
-                  no verification flag. The Google-linked count above is the closest honest
-                  proxy and is labelled as exactly that.
-                </li>
-              </ul>
-            </Card>
-          </div>
-        )}
+          );
+        }}
       </StateView>
     </div>
   );
