@@ -17,12 +17,19 @@ public sealed class GeoSettings
     /// missing country is invisible, where a failed lookup at least shows up in the log.
     /// </para>
     /// <para>
-    /// ipapi.co's free tier allows roughly 1,000 lookups a day. That is sized for this: the country is
-    /// resolved once per account, not once per paywall view. If it is ever the binding constraint, replace
-    /// this with a local MaxMind reader behind <c>IGeoIpLookup</c> — no caller changes.
+    /// geojs.io rather than the more obvious ipapi.co, because ipapi.co answered a dyno's very first
+    /// lookup with HTTP 429. Its free tier is metered per calling address, and a platform dyno shares one
+    /// egress address with every other tenant on the host, so the day's quota is spent by strangers before
+    /// this process starts. A provider that tolerates being called from shared cloud egress is worth more
+    /// here than a larger quota, since there is no key to attribute one to.
+    /// </para>
+    /// <para>
+    /// Volume is sign-ups per day, not paywall views — the country is resolved once per account and never
+    /// on the checkout path. If lookups ever do become the binding constraint, replace this with a local
+    /// MaxMind reader behind <c>IGeoIpLookup</c> — no caller changes.
     /// </para>
     /// </summary>
-    public string LookupUrl { get; set; } = "https://ipapi.co/{ip}/country/";
+    public string LookupUrl { get; set; } = "https://get.geojs.io/v1/ip/country/{ip}";
 
     /// <summary>
     /// How many proxies between the client and this process append to <c>X-Forwarded-For</c>. One for

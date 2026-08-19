@@ -5,7 +5,7 @@ namespace NoteFusion.Infrastructure.Geo;
 
 /// <summary>
 /// Resolves a country by asking an HTTP endpoint that answers with the bare ISO 3166-1 alpha-2 code as
-/// plain text (ipapi.co's <c>/{ip}/country/</c> by default).
+/// plain text (geojs.io's <c>/v1/ip/country/{ip}</c> by default).
 /// </summary>
 /// <remarks>
 /// Plain text rather than JSON on purpose: there is no field name to configure, no schema to drift, and a

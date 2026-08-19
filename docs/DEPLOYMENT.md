@@ -158,6 +158,30 @@ providers authenticate by signature, not JWT.
 | `Billing__DefaultProvider` | `Paystack` | Provider chosen when a currency has more than one candidate. |
 | `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | **Must be set for Bachs.** Where the provider returns the browser after checkout. Bachs rejects a non-http(s) `success_url` outright (`VALIDATION_ERROR success_url must use http:// or https:// scheme`), so the committed deep-link default fails every Bachs checkout — loudly, before anyone is charged. Point it at the API's own bridge page, which hands off to the app's deep link: `https://<your-heroku-app>.herokuapp.com/api/billing/return`. The real result still arrives via webhook. |
 
+### 1.2 Region pricing (geolocation)
+
+Which tier a user is offered follows the country stored on their row, resolved once from the
+forwarded request address at sign-up — or on the next sign-in, for an account created before
+countries existed. [docs/geo-billing-plan.md](geo-billing-plan.md) explains why the split exists.
+
+| Var | Default | Notes |
+|-----|---------|-------|
+| `Geo__LookupUrl` | `https://get.geojs.io/v1/ip/country/{ip}` | Must answer with the bare two-letter country code as **plain text**; `{ip}` is substituted. An empty string switches resolution off — then nobody has a country and everybody is offered every tier. |
+| `Geo__TrustedProxyHops` | `1` | How many proxies append to `X-Forwarded-For`. One is correct behind Heroku's router. |
+
+> **Do not point this at ipapi.co, even though its `/{ip}/country/` fits the contract exactly.**
+> Its free tier is metered per calling address, and a dyno shares one egress address with every
+> other tenant on the host — so it answered this app's very first production lookup with HTTP 429.
+> Nothing breaks when a lookup fails (the user keeps a null country and is offered every tier),
+> which is exactly why a provider change should be followed by a look for
+> `Geo lookup for … returned` in the log rather than by waiting for someone to complain about
+> their price.
+
+> **Setting `TrustedProxyHops` too high is the dangerous direction.** Heroku's router *appends*
+> the address it observed, so the trustworthy entry is counted from the right-hand end of the
+> chain. Raising the count walks the read leftwards into the part of the header the caller wrote,
+> which lets a caller pick the country — and therefore the price — they are quoted.
+
 ---
 
 ## 2. Google sign-in
