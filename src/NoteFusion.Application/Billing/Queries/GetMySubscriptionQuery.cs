@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Billing.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Shared.Results;
@@ -32,16 +33,26 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         if (_currentUser.UserId is not { } userId)
             return BillingErrors.NotAuthenticated;
 
+        // Counted the same way the submit gate counts it, from the same constant, so the number the
+        // app shows and the number that triggers the paywall cannot drift apart.
+        var used = await _db.TranscriptionJobs
+            .CountAsync(j => j.UserId == userId && j.TrialConsumedAtUtc != null, ct);
+        var remaining = Math.Max(0, FreeTier.TrialGenerations - used);
+
         var sub = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
             .FirstOrDefaultAsync(s => s.UserId == userId, ct);
 
         if (sub is null)
-            return new SubscriptionDto(IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null);
+            return new SubscriptionDto(
+                IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null,
+                TrialGenerationsRemaining: remaining, TrialGenerationsTotal: FreeTier.TrialGenerations,
+                IsLifetime: false);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
         return new SubscriptionDto(
-            sub.IsActiveAt(_clock.UtcNow), plan?.Code, sub.Status, sub.CurrentPeriodEndUtc);
+            sub.IsActiveAt(_clock.UtcNow), plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
+            remaining, FreeTier.TrialGenerations, sub.IsLifetime);
     }
 }

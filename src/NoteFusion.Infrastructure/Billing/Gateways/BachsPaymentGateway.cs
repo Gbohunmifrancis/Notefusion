@@ -22,12 +22,15 @@ namespace NoteFusion.Infrastructure.Billing.Gateways;
 /// <item><description>
 /// <b>Recurrence is a property of the product, not of the request.</b> There is no recurring flag and no
 /// create-subscription endpoint: a checkout becomes a subscription because a catalog product in the cart
-/// has a <c>billing_cycle</c>, and a subscription checkout needs exactly one such product (raw amounts
-/// are rejected outright). So the plan code has to resolve to a <c>prod_…</c> id via
+/// has a <c>billing_cycle</c>, and a subscription checkout needs exactly one such product (a raw amount is
+/// rejected in a cart). So a recurring plan code has to resolve to a <c>prod_…</c> id via
 /// <see cref="BachsOptions.ProductMap"/>, and the price we charge lives in Bachs' catalog, not in our
 /// request body. That coupling is checked where it can be checked safely — at verification, against the
 /// amount we recorded — so a catalog price that drifts from our plan price blocks fulfilment instead of
-/// silently granting a subscription for the wrong money.
+/// silently granting a subscription for the wrong money. A ONE-OFF is the other branch of the same fact:
+/// it sends <c>pricing</c> instead of a cart, needs no catalog product, and Bachs settles it as
+/// <c>mode: "payment"</c>. The two pricing sources are mutually exclusive, and which one we send is the
+/// only thing that decides the mode.
 /// </description></item>
 /// <item><description>
 /// <b>Bachs cannot be asked about a payment by our own reference.</b> No endpoint accepts one: the
@@ -82,15 +85,38 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
 
     public async Task<Result<GatewayInitiation>> InitiateAsync(GatewayInitiationRequest request, CancellationToken ct)
     {
-        var productId = _options.ProductIdFor(request.PlanCode);
-        if (productId is null)
+        // Only a recurring session needs a catalog product — the cart is what makes it recurring. A
+        // one-off carries its own amount, so demanding a mapping for one would refuse a charge Bachs
+        // would have taken happily.
+        string? productId = null;
+        if (request.Recurring)
         {
-            // Terminal on purpose: Bachs is never contacted, so no money can have moved, and retrying
-            // cannot help until someone maps this plan. Failing loudly beats opening a one-off charge
-            // that would never become a subscription.
-            return Error.Validation(
-                "Bachs.Initiate", $"No Bachs product is mapped for plan '{request.PlanCode}'.");
+            productId = _options.ProductIdFor(request.PlanCode);
+            if (productId is null)
+            {
+                // Terminal on purpose: Bachs is never contacted, so no money can have moved, and retrying
+                // cannot help until someone maps this plan. Failing loudly beats opening a one-off charge
+                // that would never become a subscription.
+                return Error.Validation(
+                    "Bachs.Initiate", $"No Bachs product is mapped for plan '{request.PlanCode}'.");
+            }
         }
+
+        // The pricing source IS the session mode, and Bachs never says so out loud: a cart of catalog
+        // products yields `mode: "subscription"`, a raw `pricing` amount yields `mode: "payment"`. The two
+        // are mutually exclusive — a body carrying both is refused with "Provide exactly one pricing
+        // source" — so exactly one of these is non-null, and `WhenWritingNull` drops the other.
+        object? productCart = productId is null
+            ? null
+            : new[] { new { product_id = productId, quantity = 1 } };
+
+        object? pricing = productId is not null
+            ? null
+            : new
+            {
+                amount = CurrencyUnits.ToMajorString(request.AmountMinor, request.Currency),
+                currency = request.Currency,
+            };
 
         var payload = new
         {
@@ -103,15 +129,17 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                 name = FallbackName(request.CustomerName, request.CustomerEmail),
             },
 
-            // Exactly one recurring catalog product: Bachs rejects a subscription checkout that carries
-            // anything else, and the cart is what makes the session recurring at all.
-            product_cart = new[] { new { product_id = productId, quantity = 1 } },
+            // Exactly one pricing source, chosen above. A cart makes the session recurring; a `pricing`
+            // amount makes it a single charge.
+            product_cart = productCart,
+            pricing = pricing,
             reference = request.Reference,
             success_url = request.CallbackUrl,
 
-            // Pins the session to the currency we priced and recorded, so a multi-currency product
-            // cannot settle in one we did not expect.
-            billing_currency = request.Currency,
+            // Pins a catalog product to the currency we priced and recorded, so a multi-currency product
+            // cannot settle in one we did not expect. A one-off states its currency inside `pricing`, and
+            // sending both there is redundant at best, so it is omitted.
+            billing_currency = request.Recurring ? request.Currency : null,
 
             // Bachs documents a 400 (SUBSCRIPTION_METHOD_NOT_SUPPORTED) for a subscription paid by
             // anything but card, so a recurring session offers only card. Null is omitted entirely.

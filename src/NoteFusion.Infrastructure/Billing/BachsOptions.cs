@@ -59,16 +59,21 @@ public sealed class BachsOptions
     public int CheckoutExpiryMinutes { get; init; } = 60;
 
     /// <summary>
-    /// Live only when a key, a base URL, a webhook secret and at least one product mapping are all
-    /// present. The last two are part of the gate on purpose: a deployment missing the signing secret
-    /// could take payments it can never verify, and one missing the product map could open checkouts
-    /// that never become subscriptions. Half-configured is worse than off.
+    /// Live only when a key, a base URL and a webhook secret are all present. The signing secret is part
+    /// of the gate on purpose: a deployment missing it could take payments it can never verify, and
+    /// half-configured is worse than off.
     /// </summary>
+    /// <remarks>
+    /// <see cref="ProductMap"/> is deliberately NOT required. It is needed only to open a RECURRING
+    /// checkout, and a deployment that sells only one-off purchases through Bachs legitimately has none —
+    /// gating on it here would silently switch the provider off and strand every currency routed to it.
+    /// The map is enforced instead at the point it actually matters, per request, where a recurring plan
+    /// with no product fails loudly and a one-off proceeds.
+    /// </remarks>
     public bool IsConfigured =>
         !string.IsNullOrWhiteSpace(SecretKey)
         && !string.IsNullOrWhiteSpace(BaseUrl)
-        && !string.IsNullOrWhiteSpace(WebhookSecret)
-        && ProductMap.Count > 0;
+        && !string.IsNullOrWhiteSpace(WebhookSecret);
 
     public IReadOnlyCollection<string> Currencies => SupportedCurrencies
         .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)

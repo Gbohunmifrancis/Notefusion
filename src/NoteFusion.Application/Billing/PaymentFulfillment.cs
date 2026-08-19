@@ -53,6 +53,14 @@ internal static class PaymentFulfillment
             db.Subscriptions.Add(Subscription.Start(
                 tx.UserId, tx.PlanId, tx.Provider, now, renewsAtUtc, verification.ProviderSubscriptionRef, now));
         }
+        else if (sub.IsLifetime)
+        {
+            // Already sold outright. No later purchase can extend "forever", and advancing from the
+            // sentinel would overflow DateTime, so leave the window alone and let the payment record
+            // itself in the ledger above. Once lifetime, always lifetime — a subsequent monthly charge
+            // must never shorten access that was already paid for in full.
+            renewsAtUtc = sub.CurrentPeriodEndUtc;
+        }
         else
         {
             // Renew from the later of "now" and the current period end, so an early renewal stacks the
@@ -69,11 +77,27 @@ internal static class PaymentFulfillment
         return new FulfillmentReceipt(
             new EmailRecipient(user.Email, user.FullName),
             new SubscriptionReceipt(
-                plan?.Name ?? "NoteFusion Pro", tx.AmountMinor, tx.Currency, renewsAtUtc, tx.Reference));
+                plan?.Name ?? "NoteFusion Pro", tx.AmountMinor, tx.Currency,
+                // Null, not the sentinel: a lifetime purchase has no renewal date, and the receipt must
+                // not print 31 December 9999 at the customer who paid the most.
+                renewsAtUtc >= Subscription.LifetimeEndUtc ? null : renewsAtUtc,
+                tx.Reference));
     }
 
-    private static DateTime Advance(DateTime from, BillingInterval interval)
-        => interval == BillingInterval.Monthly ? from.AddMonths(1) : from.AddYears(1);
+    /// <summary>
+    /// How far one payment extends access. Written as a switch over every interval rather than a
+    /// two-way ternary because the ternary's "else" quietly meant "a year", so adding
+    /// <see cref="BillingInterval.Lifetime"/> would have granted a lifetime buyer twelve months and
+    /// looked correct until the renewal that never came. The default throws instead of guessing: a
+    /// period we cannot compute is a bug to fix, not a length to invent.
+    /// </summary>
+    private static DateTime Advance(DateTime from, BillingInterval interval) => interval switch
+    {
+        BillingInterval.Monthly => from.AddMonths(1),
+        BillingInterval.Yearly => from.AddYears(1),
+        BillingInterval.Lifetime => Subscription.LifetimeEndUtc,
+        _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled billing interval."),
+    };
 }
 
 /// <summary>Who to thank and what to tell them, once a fulfilment has committed.</summary>

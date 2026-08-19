@@ -201,6 +201,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CurrentPeriodStartUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("ExpiryNoticeSentForPeriodEndUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<Guid>("PlanId")
                         .HasColumnType("uuid");
 
@@ -228,6 +231,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId")
                         .IsUnique();
+
+                    b.HasIndex("Status", "CurrentPeriodEndUtc");
 
                     b.ToTable("subscriptions", (string)null);
                 });
@@ -403,6 +408,35 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("transcriptions", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.TranscriptionJob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("JobId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime?>("TrialConsumedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "TrialConsumedAtUtc");
+
+                    b.ToTable("transcription_jobs", (string)null);
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.User", b =>

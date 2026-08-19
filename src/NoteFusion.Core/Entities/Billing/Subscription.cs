@@ -28,6 +28,25 @@ public class Subscription : BaseEntity
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime UpdatedAtUtc { get; private set; }
 
+    /// <summary>
+    /// The <see cref="CurrentPeriodEndUtc"/> the "expiring soon" notice was last sent for. Storing the
+    /// date rather than a bool is what makes the notice re-arm itself: <see cref="Renew"/> moves the
+    /// period end, so the stored value stops matching and the next period gets its own warning, with no
+    /// reset step anyone can forget to call.
+    /// </summary>
+    public DateTime? ExpiryNoticeSentForPeriodEndUtc { get; private set; }
+
+    /// <summary>
+    /// The period end used by a plan that never renews. A far-future sentinel rather than a nullable
+    /// end, so <see cref="IsActiveAt"/> and every query that filters on the period window keep working
+    /// untouched — the alternative was a null check in each of them, where one omission silently locks a
+    /// paying customer out.
+    /// </summary>
+    public static readonly DateTime LifetimeEndUtc = new(9999, 12, 31, 0, 0, 0, DateTimeKind.Utc);
+
+    /// <summary>True when this was bought outright, so there is no renewal date to show or charge.</summary>
+    public bool IsLifetime => CurrentPeriodEndUtc >= LifetimeEndUtc;
+
     /// <summary>Pro is unlocked while active, or cancelled but still inside the paid period.</summary>
     public bool IsActiveAt(DateTime utcNow)
         => Status is SubscriptionStatus.Active or SubscriptionStatus.Canceled
@@ -77,6 +96,22 @@ public class Subscription : BaseEntity
     {
         Status = SubscriptionStatus.Expired;
         Touch(utcNow);
+    }
+
+    /// <summary>
+    /// Records that the user has been warned about the period now ending. Returns false when they
+    /// already have, so a sweep running twice inside the notice window cannot mail them twice.
+    /// </summary>
+    public bool MarkExpiryNoticeSent(DateTime utcNow)
+    {
+        if (ExpiryNoticeSentForPeriodEndUtc == CurrentPeriodEndUtc)
+        {
+            return false;
+        }
+
+        ExpiryNoticeSentForPeriodEndUtc = CurrentPeriodEndUtc;
+        Touch(utcNow);
+        return true;
     }
 
     private void Touch(DateTime utcNow) => UpdatedAtUtc = utcNow;

@@ -201,8 +201,10 @@ public class BillingWiringTests
     [InlineData("Bachs:BaseUrl")]
     // Without the signing secret we could take payments we can never verify.
     [InlineData("Bachs:WebhookSecret")]
-    // Without the product map every checkout would be unmapped, or worse, a one-off charge.
-    [InlineData("Bachs:ProductMap:pro_monthly")]
+    // ProductMap is deliberately absent from this list: a deployment selling only one-off
+    // purchases legitimately maps no products, and gating IsConfigured on it would silently
+    // deselect Bachs and strand every currency routed to it.  A missing mapping is refused
+    // per request instead, before Bachs is contacted — see BachsPaymentGatewayTests.
     public void A_half_configured_bachs_stays_a_stub(string missingKey)
     {
         var config = Config();

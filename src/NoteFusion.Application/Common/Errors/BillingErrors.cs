@@ -23,6 +23,9 @@ public static class BillingErrors
     public static readonly Error TransactionNotFound =
         Error.NotFound("BILLING_TRANSACTION_NOT_FOUND", "No payment matches the webhook reference.");
 
+    public static readonly Error SubscriptionNotFound =
+        Error.NotFound("BILLING_SUBSCRIPTION_NOT_FOUND", "That subscription no longer exists.");
+
     public static readonly Error VerificationMismatch =
         Error.Conflict("BILLING_VERIFICATION_MISMATCH",
             "The provider's amount or currency did not match the payment; not fulfilling.");
@@ -31,5 +34,7 @@ public static class BillingErrors
         Error.Unauthorized("BILLING_NOT_AUTHENTICATED", "You must be signed in to do that.");
 
     public static readonly Error FreeTierLimitReached =
-        Error.Forbidden("BILLING_FREE_TIER_LIMIT", "You have reached the limit of 5 free transcriptions. Upgrade to Pro for unlimited transcriptions.");
+        Error.Forbidden("BILLING_FREE_TIER_LIMIT",
+            $"You have used all {FreeTier.TrialGenerations} of your free transcriptions. "
+            + "Upgrade to Pro for unlimited transcriptions.");
 }

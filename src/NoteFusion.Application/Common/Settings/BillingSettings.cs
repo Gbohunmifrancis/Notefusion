@@ -28,4 +28,10 @@ public sealed class BillingSettings
 
     /// <summary>How often the reconciliation worker sweeps stuck transactions against the provider.</summary>
     public int ReconciliationMinutes { get; init; } = 15;
+
+    /// <summary>
+    /// How often the expiry worker looks for subscriptions ending soon. Twice a day by default — the
+    /// notice window is a week wide, so a tighter loop would only re-scan the same rows.
+    /// </summary>
+    public int ExpiryNoticeMinutes { get; init; } = 720;
 }

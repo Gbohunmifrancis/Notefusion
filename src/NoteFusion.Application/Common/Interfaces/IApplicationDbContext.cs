@@ -15,6 +15,12 @@ public interface IApplicationDbContext
     DbSet<DeviceToken> DeviceTokens { get; }
     DbSet<Transcription> Transcriptions { get; }
 
+    /// <summary>
+    /// One row per submitted ML job. Separate from <see cref="Transcriptions"/> on purpose: a saved
+    /// transcription can be deleted, and the free-trial count must not go up when it is.
+    /// </summary>
+    DbSet<TranscriptionJob> TranscriptionJobs { get; }
+
     // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }

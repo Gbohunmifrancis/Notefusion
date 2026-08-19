@@ -25,9 +25,13 @@ public sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscri
         builder.Property(s => s.CurrentPeriodEndUtc).IsRequired();
         builder.Property(s => s.ProviderSubscriptionRef).HasMaxLength(200);
         builder.Property(s => s.CanceledAtUtc);
+        builder.Property(s => s.ExpiryNoticeSentForPeriodEndUtc);
         builder.Property(s => s.CreatedAtUtc).IsRequired();
         builder.Property(s => s.UpdatedAtUtc).IsRequired();
 
         builder.HasIndex(s => s.UserId).IsUnique();
+
+        // The expiry sweep filters on status and period end together.
+        builder.HasIndex(s => new { s.Status, s.CurrentPeriodEndUtc });
     }
 }
