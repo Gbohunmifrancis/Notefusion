@@ -116,7 +116,7 @@ def build_og_card():
                 if x + dx < W:
                     px[x + dx, y] = c
 
-    # Soft white circle, echoing .african::after on the page.
+    # Soft white circle, echoing .spotlight::after on the page.
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     ImageDraw.Draw(glow).ellipse([W - 260, -300, W + 380, 340], fill=(255, 255, 255, 20))
     card = Image.alpha_composite(card.convert("RGBA"), glow).convert("RGB")

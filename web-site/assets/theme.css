@@ -147,9 +147,10 @@ a:hover {
 
 /* Visible focus ring on every interactive element. Removing the default outline
    without replacing it makes the site unusable by keyboard.
-   Two-tone on purpose: a single #3B82F6 ring is 1.0:1 against the African
-   section, whose gradient ends in that exact colour, so the halo is what makes
-   it visible there and the blue ring is what makes it visible everywhere else. */
+   Two-tone on purpose: a single #3B82F6 ring is 1.0:1 against the full-bleed
+   blue spotlight section, whose gradient ends in that exact colour, so the halo
+   is what makes it visible there and the blue ring is what makes it visible
+   everywhere else. */
 :focus-visible {
   outline: 3px solid var(--blue-deep);
   outline-offset: 3px;

@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NoteFusion: Tonic Solfa and staff notation from any sound</title>
-<meta name="description" content="Tonic Solfa and staff notation from anything you record. Built for African choruses, Afrobeat and worship teams. Free to start on Android.">
+<meta name="description" content="Tonic Solfa and staff notation from anything you record. Built for choirs, worship teams and music teachers. Free to start on Android.">
 <link rel="canonical" href="https://notefusion.studio/">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="NoteFusion">
 <meta property="og:locale" content="en_NG">
 <meta property="og:title" content="NoteFusion: Tonic Solfa from any recording">
-<meta property="og:description" content="Record a chorus, get Tonic Solfa and staff notation in seconds. Built for the music that no other transcriber was trained on.">
+<meta property="og:description" content="Record a chorus, get Tonic Solfa and staff notation in seconds. True movable-do, so a key change is one tap.">
 <meta property="og:url" content="https://notefusion.studio/">
 <meta property="og:image" content="https://notefusion.studio/assets/og-card.jpg">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="The NoteFusion wordmark above a line of Tonic Solfa notation">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="NoteFusion: Tonic Solfa from any recording">
-<meta name="twitter:description" content="Record a chorus, get Tonic Solfa and staff notation in seconds. Built for the music that no other transcriber was trained on.">
+<meta name="twitter:description" content="Record a chorus, get Tonic Solfa and staff notation in seconds. True movable-do, so a key change is one tap.">
 <meta name="twitter:image" content="https://notefusion.studio/assets/og-card.jpg">
 <meta name="twitter:image:alt" content="The NoteFusion wordmark above a line of Tonic Solfa notation">
 <meta name="theme-color" content="#2563EB">
@@ -43,9 +43,10 @@
      purpose, because a deferred file would flash the content. -->
 <script>document.documentElement.classList.add("js");</script>
 
-<!-- No `offers` and no `aggregateRating`: the prices are provisional and there
-     are no real ratings yet. Structured data that outruns the page is what earns
-     a manual action, and an invented rating is worse than no rich result. -->
+<!-- No `offers`: the app installs free and Pro is an in-app subscription, so a
+     single acquisition price would misstate both. No `aggregateRating` either —
+     there are no real ratings yet, and an invented one is worse than no rich
+     result. Structured data that outruns the page is what earns a manual action. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -84,7 +85,7 @@
     <nav class="site-nav" aria-label="Primary">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
-      <a href="#african">African Mode</a>
+      <a href="#solfa">Tonic Solfa</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
       <a class="btn btn--primary" href="#get">Get the app</a>
@@ -131,17 +132,23 @@
       </ul>
 
       <ul class="hero-chips" aria-label="What NoteFusion can transcribe">
-        <li><span aria-hidden="true">🎤</span> Live recording</li>
+        <li><span aria-hidden="true">🎤</span> Sung or hummed</li>
         <li><span aria-hidden="true">🎹</span> Piano &amp; guitar</li>
-        <li><span aria-hidden="true">🎶</span> Choir &amp; SATB</li>
-        <li><span aria-hidden="true">🥁</span> Afrobeat</li>
+        <li><span aria-hidden="true">🎧</span> Live recording</li>
         <li><span aria-hidden="true">📁</span> Import a file</li>
       </ul>
     </div>
 
     <div class="phone-col">
       <div class="phone">
-        <!-- Displayed at 276px wide. `sizes` is that fixed width, so a 1x screen
+        <!-- TODO(screenshot): this is still the pre-launch design mockup, not the
+             shipped app — it shows a "Transcribe" tab and a "Tools" grid that do
+             not exist, and spells the name "Notefusion". Replace with a real
+             capture of the Home screen: drop it at mobile/assets/Notefusion-home.png
+             and re-run `python tools/build-assets.py`, which regenerates both JPEGs
+             below at the right sizes. See web-site/README.md.
+
+             Displayed at 276px wide. `sizes` is that fixed width, so a 1x screen
              takes the 552 (78 KB) and only a 3x screen pays for the 828. -->
         <img src="/assets/app-home.jpg"
              srcset="/assets/app-home-552.jpg 552w, /assets/app-home.jpg 828w"
@@ -198,15 +205,15 @@
         song with your phone, sing or play it yourself, or import an audio file you
         already have. NoteFusion listens to it and writes the music down for you in two
         forms: movable-do <strong>Tonic Solfa</strong> (d r m f s l t) and standard
-        <strong>staff notation</strong> you can export as MusicXML or MIDI.
+        <strong>staff notation</strong> you can export as MusicXML.
       </p>
       <p class="lede">
         It works out the key, the tempo and the time signature on its own, so you do not
         need to know them, and it can move a piece into a different key in one tap
-        without recording anything again. It is built first for the music other
-        transcription tools were never trained on: African choruses, worship songs,
-        Afrobeat and highlife. Recordings are analysed on our own servers and deleted as
-        soon as the transcription finishes. We keep the notation, never the audio.
+        without recording anything again. It is aimed at choruses, worship songs and
+        other music that nobody ever wrote down. Recordings are analysed on our own
+        servers and deleted as soon as the transcription finishes. We keep the notation,
+        never the audio.
       </p>
       <p class="lede">
         It is for choir masters, worship teams, music teachers and self-taught musicians
@@ -326,7 +333,7 @@
           The same performance rendered on a stave and exportable as MusicXML, so it
           opens in MuseScore, Sibelius or Finale without retyping a note.
         </p>
-        <span class="meta">MusicXML · MIDI</span>
+        <span class="meta">MusicXML</span>
       </article>
 
       <article class="feature">
@@ -389,39 +396,42 @@
   </div>
 </section>
 
-<!-- ══ African Mode, the differentiator ═════════════════════════════════════ -->
-<section id="african" class="african" tabindex="-1" aria-labelledby="african-h">
+<!-- ══ Tonic Solfa, the differentiator ══════════════════════════════════════
+     Every claim in here is checkable against src/NoteFusion.Core/Solfa: doh is
+     derived from the detected key, minors are la-based, and a key change
+     re-labels rather than re-transcribes. Keep it that way — this band is the
+     one place the site claims something no other transcriber does. -->
+<section id="solfa" class="spotlight" tabindex="-1" aria-labelledby="solfa-h">
   <div class="wrap">
     <div class="reveal">
-      <span class="eyebrow eyebrow--on-blue">African Mode</span>
-      <h2 id="african-h">Built for the music <em>nobody else transcribes</em></h2>
+      <span class="eyebrow eyebrow--on-blue">Tonic Solfa</span>
+      <h2 id="solfa-h">Movable-do, <em>done properly</em></h2>
       <p>
-        Every transcription tool on the market was trained on Western classical and
-        pop. Point one at a Yoruba chorus, a highlife guitar line or an Afrobeat log-drum
-        and it falls apart.
+        Most transcription tools stop at a stave. NoteFusion derives every syllable
+        from the key it detected, which is what makes the solfa usable by a choir
+        that has never read a note of staff notation.
       </p>
       <p>
-        <strong>African Mode</strong> is tuned for exactly that material: dense
-        percussion, call-and-response, and vocal-led choruses. It is aimed at the songs
-        a congregation already knows and nobody ever wrote down.
+        It also means a key change is a <strong>re-labelling, not a re-analysis</strong>.
+        Pick a new key and the syllables move; the notes underneath never do.
       </p>
 
-      <ul class="african-list">
+      <ul class="spotlight-list">
         <li>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          Nigerian and pan-African church choruses, in the keys they are actually sung in
+          Doh follows the key, across all 24 keys, major and minor
         </li>
         <li>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          Afrobeat and hip-hop, with the melody lifted clear of the drums
+          Minors are la-based, so A minor reads <em>l t d</em> with doh on C
         </li>
         <li>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          Viral sounds and local instruments, from talking drum to shekere
+          Chromatics get their proper syllables: <em>de, ra, fe, se, ta</em>
         </li>
         <li>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DBEAFE" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          Vetted transcriptions published free under <strong>African Tunes &amp; Choruses</strong>
+          Octave marks included, so the line is unambiguous to sing from
         </li>
       </ul>
     </div>
@@ -506,62 +516,59 @@
   <div class="wrap">
     <div class="section-head section-head--center reveal">
       <span class="eyebrow">Pricing</span>
-      <h2 id="pricing-h">Start free, upgrade when you hit the cap</h2>
+      <h2 id="pricing-h">Start free. Upgrade when you run out.</h2>
       <p class="lede">
-        The free tier gives you the same transcription engine as Pro, capped at five
-        a month and two minutes each.
+        Free and Pro run the same transcription engine on the same notation. The only
+        thing Pro buys you is that it never stops.
       </p>
     </div>
 
+    <!--
+      Two cards, because there are exactly two plans in the product: BillingSeeder.cs
+      seeds pro_monthly (499) and pro_yearly (4990) in USD cents and nothing else. The
+      free tier is not a seeded plan — it is the absence of a subscription, gated in
+      SubmitTranscriptionCommand at five transcriptions per ACCOUNT (lifetime, not per
+      month). If the seeded prices ever change, change them here too: a stale price on
+      a public page is a consumer-law problem, not a copy nit.
+    -->
     <div class="plans reveal">
 
       <div class="plan">
         <h3>Free</h3>
-        <div class="price">₦0 <small>/ forever</small></div>
-        <p class="blurb">Enough to transcribe your Sunday chorus and see the thing work.</p>
+        <div class="price">$0 <small>/ forever</small></div>
+        <p class="blurb">Enough to transcribe your Sunday chorus and hear the thing work.</p>
         <ul>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>5 transcriptions a month</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Up to 2 minutes per recording</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Your first <strong>5 transcriptions</strong></li>
           <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Tonic Solfa + staff notation</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Key change, playback, library sync</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>All 24 keys, key change in one tap</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Playback, MusicXML export, library sync</li>
         </ul>
         <a class="btn btn--ghost" href="#get">Get the app</a>
       </div>
 
       <div class="plan plan--featured">
-        <span class="plan-tag">Most popular</span>
+        <span class="plan-tag">Recommended</span>
         <h3>Pro</h3>
-        <div class="price">₦3,500 <small>/ month</small></div>
+        <div class="price">$4.99 <small>/ month</small></div>
         <p class="blurb">For the person who transcribes every week and teaches from it.</p>
         <ul>
           <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><strong>Unlimited</strong> transcriptions</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Up to 10 minutes per recording</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><strong>African Mode</strong> for Afrobeat, hip-hop and choruses</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Full <strong>African Tunes &amp; Choruses</strong> library</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>MusicXML &amp; MIDI export</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Priority queue</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free, nothing held back</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg><strong>$49.90 a year</strong> if you pay yearly — ten months for twelve</li>
+          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>An emailed receipt for every charge</li>
         </ul>
         <a class="btn btn--primary" href="#get">Choose Pro</a>
-      </div>
-
-      <div class="plan">
-        <h3>Choir</h3>
-        <div class="price">₦12,000 <small>/ month</small></div>
-        <p class="blurb">One library for the whole music department or worship team.</p>
-        <ul>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Everything in Pro, for up to 10 people</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Shared team library</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Part-by-part SATB capture</li>
-          <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>Submit to the public library and get credited</li>
-        </ul>
-        <a class="btn btn--ghost" href="mailto:hello@notefusion.studio?subject=Choir%20plan">Talk to us</a>
       </div>
 
     </div>
 
     <p class="pricing-note">
-      Prices are in Naira and billed through Google Play. You can cancel any time in
-      the Play Store. See the <a href="/terms">terms of service</a>.
+      Prices are in US dollars. You subscribe inside the app: checkout opens in your
+      browser and is handled by our payment provider, so NoteFusion never sees your
+      card details. Pro stays on to the end of the period you paid for — for anything
+      else about a charge, email
+      <a href="mailto:hello@notefusion.studio?subject=Billing">hello@notefusion.studio</a>.
+      See the <a href="/terms">terms of service</a>.
     </p>
   </div>
 </section>
@@ -605,15 +612,6 @@
       </details>
 
       <details>
-        <summary><h3>What exactly is African Mode?</h3></summary>
-        <p>
-          A transcription mode tuned for material the standard models handle badly. It
-          only changes the analysis. The solfa rules are the same in every mode, with
-          doh following the key and minors la-based.
-        </p>
-      </details>
-
-      <details>
         <summary><h3>Can I change the key after transcribing?</h3></summary>
         <p>
           Yes, and it is instant. Changing key re-labels the solfa; it never re-analyses
@@ -624,10 +622,8 @@
       <details>
         <summary><h3>Is my transcription mine?</h3></summary>
         <p>
-          Yes. What you record and what you save belongs to you. If you choose to submit
-          a chorus to the public <strong>African Tunes &amp; Choruses</strong> library, it is
-          reviewed for accuracy first, and you are credited. Nothing is published without
-          you asking for it.
+          Yes. What you record and what you save belongs to you. Your library is private
+          to your account, and nothing you transcribe is published anywhere.
         </p>
       </details>
 
@@ -673,8 +669,8 @@
           <span class="wordmark">Note<span>Fusion</span></span>
         </div>
         <p>
-          Transcribing local sounds, music and instruments into accurate Tonic Solfa
-          and staff notation, so everyone else can access them too.
+          Transcribing sounds, music and instruments into accurate Tonic Solfa and
+          staff notation.
         </p>
       </div>
 
@@ -683,7 +679,7 @@
         <ul>
           <li><a href="#how">How it works</a></li>
           <li><a href="#features">Features</a></li>
-          <li><a href="#african">African Mode</a></li>
+          <li><a href="#solfa">Tonic Solfa</a></li>
           <li><a href="#pricing">Pricing</a></li>
         </ul>
       </nav>
