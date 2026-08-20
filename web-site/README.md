@@ -14,11 +14,12 @@ assets/theme.css      design tokens, copied from mobile/src/design/theme.ts
 assets/landing.css    landing page layout
 assets/landing.js     sticky-header border + reveal-on-scroll, nothing else
 assets/mark.png       brand mark, white silhouette recoloured with a CSS mask
-assets/app-home.jpg   hero screenshot          ┐ derived — see
-assets/og-card.jpg    1200×630 social card     ┘   ../tools/build-assets.py
+assets/app-onboarding.jpg  hero, front device   ┐ derived — see
+assets/app-splash.jpg      hero, back device    │   ../tools/build-assets.py
+assets/og-card.jpg         1200×630 social card ┘   (plus a -552.jpg each)
 ```
 
-The two JPEGs are derived from `mobile/assets/` and should be rebuilt, not
+The hero JPEGs are derived from `mobile/assets/` and should be rebuilt, not
 hand-edited. The script lives at the repo root, outside the deploy root, so it
 is never served over the network:
 
@@ -26,45 +27,52 @@ is never served over the network:
 python tools/build-assets.py    # needs Pillow
 ```
 
-It resizes the hero to 3× its display size (PNG → JPEG takes it from 1.1 MB to
-134 KB, which matters on a Nigerian mobile connection) and draws the share card
+It resizes each hero screen to 3× its display width (PNG → JPEG takes 1.1 MB to
+~120 KB, which matters on a Nigerian mobile connection) and draws the share card
 in `gradients.brand` and Poppins, both read from the app's own artwork.
 
-## The hero screenshot
+## The hero devices
 
-⚠️ **`mobile/assets/Notefusion-home.png` is still the pre-launch design mockup,
-not the shipped app.** It shows a *Transcribe* tab and a *Tools / Key Changer*
-grid that were never built, an *Enable Sync* card that does not exist, recording
-data dated May 2025, and it spells the name "Notefusion". The landing page
-carries a `TODO(screenshot)` comment saying the same thing.
+The hero is two app screens angled in one shared 3D space, store-listing style,
+not a flat screenshot:
 
-To replace it:
+| Layer | Source in `mobile/assets/` | Output |
+|---|---|---|
+| front | `Notefusion-onboarding-1.png` | `app-onboarding.jpg` + `-552` |
+| back | `Notefusion-splash-screen.png` | `app-splash.jpg` + `-552` |
 
-1. Take the shot on a real device (or an emulator at phone resolution) with the
-   app signed in and a few saved transcriptions in the library, so the Home
-   screen has real cards with real keys and BPM on them. Portrait, full screen,
-   status bar included.
-2. Save it over `mobile/assets/Notefusion-home.png`. That path is hard-coded as
-   `SCREENSHOT` in `tools/build-assets.py`; keep the name and nothing else needs
-   changing.
+Both sources have **the black device frame rendered into them**, which is why
+`.device` adds no bezel of its own — it only rounds the corners the render
+leaves square and supplies the perspective, shadow and glare. Feed it a bare
+screen capture (as `Notefusion-home.png` was) and the hero will look frameless;
+you would need to put the old `padding` + dark `background` back on `.device` to
+compensate.
+
+The angle, the shadows and the sheen are all CSS — `perspective` on `.showcase`,
+`rotateY`/`rotateX` per device. Nothing is baked into the JPEGs, so the tilt is
+editable in `landing.css` without touching an image.
+
+To swap a screen:
+
+1. Capture portrait, full screen, status bar included, at phone resolution —
+   with the device frame if you want the current look.
+2. Save it over the matching file in `mobile/assets/`, or point `HERO_SCREENS`
+   in `tools/build-assets.py` at a new name.
 3. Rebuild:
 
    ```bash
    python tools/build-assets.py
    ```
 
-   That regenerates `app-home.jpg` (828 w) and `app-home-552.jpg` (552 w) for the
-   `srcset`, and prints the pixel dimensions of each.
-4. If the new screenshot's aspect ratio differs from the old one, copy the 828 w
-   dimensions the script printed into the hero `<img>`'s `width`/`height` in
-   `index.html`. They are there to reserve layout space, so a stale `height`
-   shows up as a jump while the page loads.
-5. Delete the `TODO(screenshot)` comment, and check the `alt` text still
-   describes what the image actually shows.
+   It prints the exact pixel dimensions of all four outputs.
+4. Copy the 828 w dimensions it printed into that `<img>`'s `width`/`height` in
+   `index.html`. They reserve the layout box, so a stale `height` shows up as a
+   jump while the page loads. If the aspect ratio changed, also update the
+   `2.162` multiplier in `.showcase`'s `height`.
+5. Check the `alt` text still describes what the image actually shows.
 
-The other screens (Record, the solfa/staff result view, Library) are not used on
-the site yet. If you want them in a gallery later, that is new markup and new
-build-script output, not a swap.
+The remaining screens (Record, the solfa/staff result view, Library) are not on
+the site yet. A third device, or a scrolling gallery, is new markup — not a swap.
 
 Kept in `web-site/` rather than `docs/` deliberately: GitHub Pages' zero-config
 option serves `docs/` wholesale, and that folder holds `NoteFusion_PRD.docx` and

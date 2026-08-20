@@ -59,7 +59,10 @@
   "inLanguage": "en",
   "description": "Transcribes live and recorded music into movable-do Tonic Solfa and staff notation.",
   "installUrl": "https://play.google.com/store/apps/details?id=app.notefusion",
-  "screenshot": "https://notefusion.studio/assets/app-home.jpg",
+  "screenshot": [
+    "https://notefusion.studio/assets/app-onboarding.jpg",
+    "https://notefusion.studio/assets/app-splash.jpg"
+  ],
   "publisher": { "@type": "Organization", "name": "NoteFusion", "url": "https://notefusion.studio/" }
 }
 </script>
@@ -140,26 +143,45 @@
     </div>
 
     <div class="phone-col">
-      <div class="phone">
-        <!-- TODO(screenshot): this is still the pre-launch design mockup, not the
-             shipped app — it shows a "Transcribe" tab and a "Tools" grid that do
-             not exist, and spells the name "Notefusion". Replace with a real
-             capture of the Home screen: drop it at mobile/assets/Notefusion-home.png
-             and re-run `python tools/build-assets.py`, which regenerates both JPEGs
-             below at the right sizes. See web-site/README.md.
+      <!-- Two real app screens angled in one shared 3D space, the way a store
+           listing shot is, rather than laid flat: onboarding in front, the
+           splash behind and to the left.
 
-             Displayed at 276px wide. `sizes` is that fixed width, so a 1x screen
-             takes the 552 (78 KB) and only a 3x screen pays for the 828. -->
-        <img src="/assets/app-home.jpg"
-             srcset="/assets/app-home-552.jpg 552w, /assets/app-home.jpg 828w"
-             sizes="276px"
-             width="828" height="1790"
-             alt="The NoteFusion home screen, showing recent recordings with their keys and durations"
-             loading="eager" fetchpriority="high">
+           Both sources already have the black device frame rendered into them
+           (unlike the old bare capture), so there is deliberately no bezel in
+           the markup — .device only rounds the corners the render leaves square
+           and supplies the perspective, shadow and glare. Hand it a frameless
+           capture and the hero looks frameless.
+
+           The floating cards are siblings, not children of the devices: text
+           rasterised through a rotateY goes soft on every browser, and keeping
+           them flat over the angled glass is what the layering reads as. -->
+      <div class="showcase">
+        <div class="device device--back">
+          <!-- Displayed at 258px. Flat gradient and one logo, so it costs 43 KB
+               at 1x — less than half what the front screen does. -->
+          <img src="/assets/app-splash.jpg"
+               srcset="/assets/app-splash-552.jpg 552w, /assets/app-splash.jpg 828w"
+               sizes="258px"
+               width="828" height="1789"
+               alt="The NoteFusion splash screen: the note-and-waveform mark above the tagline “Hear it. See it. Notate it.”"
+               loading="eager">
+        </div>
+
+        <div class="device device--front">
+          <!-- Displayed at 300px, so a 1x screen takes the 552 (69 KB) and only
+               a 3x screen pays for the 828. -->
+          <img src="/assets/app-onboarding.jpg"
+               srcset="/assets/app-onboarding-552.jpg 552w, /assets/app-onboarding.jpg 828w"
+               sizes="300px"
+               width="828" height="1790"
+               alt="The NoteFusion onboarding screen, “Record a melody” — capture a live tune or hum, a few bars is all it takes — with a Sign in with Google button below"
+               loading="eager" fetchpriority="high">
+        </div>
 
         <!-- Two floating cards naming the two outputs, plus the detected key.
-             Hidden below 940px, where the phone has the column to itself and
-             there is no room beside the bezel. -->
+             Hidden below 940px, where the devices have the column to themselves
+             and there is no room beside them. -->
         <div class="phone-chip phone-chip--solfa" aria-hidden="true">
           <div class="k">Tonic Solfa</div>
           <div class="v">d&nbsp;:&nbsp;r&nbsp;|&nbsp;m&nbsp;:&nbsp;f</div>
@@ -188,83 +210,12 @@
   </div>
 </section>
 
-<!-- ══ What the app is ══════════════════════════════════════════════════════
-     This section exists for Google's OAuth branding review as much as for
-     visitors. The review requires the home page to state the purpose of the app
-     in plain language, under the same name as the consent screen, and to explain
-     what the app does with a signed-in user's Google account data. If this is
-     ever rewritten, keep three things: the literal name "NoteFusion", the
-     sentence that says what it is for, and the sign-in disclosure below. -->
-<section id="about" class="features" tabindex="-1" aria-labelledby="about-h">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">About the app</span>
-      <h2 id="about-h">What <em>NoteFusion</em> is for</h2>
-      <p class="lede">
-        NoteFusion is a free-to-start music transcription app for Android. You record a
-        song with your phone, sing or play it yourself, or import an audio file you
-        already have. NoteFusion listens to it and writes the music down for you in two
-        forms: movable-do <strong>Tonic Solfa</strong> (d r m f s l t) and standard
-        <strong>staff notation</strong> you can export as MusicXML.
-      </p>
-      <p class="lede">
-        It works out the key, the tempo and the time signature on its own, so you do not
-        need to know them, and it can move a piece into a different key in one tap
-        without recording anything again. It is aimed at choruses, worship songs and
-        other music that nobody ever wrote down. Recordings are analysed on our own
-        servers and deleted as soon as the transcription finishes. We keep the notation,
-        never the audio.
-      </p>
-      <p class="lede">
-        It is for choir masters, worship teams, music teachers and self-taught musicians
-        who need a part written down before the next rehearsal.
-      </p>
-    </div>
-
-    <div class="compare-col compare-col--us disclosure reveal">
-      <h3>Signing in with Google</h3>
-      <p>
-        NoteFusion offers Google Sign-In so you do not have to remember another password.
-        It is optional: you can create an account with an email address and a password
-        instead. When you do choose Google, this is everything we receive and everything
-        we do with it.
-      </p>
-      <ul>
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          <span><strong>Your name</strong> and <strong>profile picture</strong>, shown on your own
-          profile screen in the app.</span>
-        </li>
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          <span><strong>Your email address</strong>, used as the name of your account and to
-          reach you about the app.</span>
-        </li>
-        <li>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-          <span><strong>A Google account identifier</strong>, so that the next time you sign in
-          we can match you to the same transcription library.</span>
-        </li>
-      </ul>
-      <p class="disclosure-scope">
-        That is the whole list. NoteFusion does not ask for your contacts, Gmail, Drive
-        files, photos or calendar, it never posts anything on your behalf, and none of it
-        is sold or shared. The <a href="/privacy">privacy policy</a> has the full detail,
-        including how to delete your account and everything in it.
-      </p>
-    </div>
-  </div>
-</section>
-
 <!-- ══ How it works ═════════════════════════════════════════════════════════ -->
 <section id="how" tabindex="-1" aria-labelledby="how-h">
   <div class="wrap">
     <div class="section-head section-head--center reveal">
       <span class="eyebrow">How it works</span>
       <h2 id="how-h">From recording to notation in three steps</h2>
-      <p class="lede">
-        You do not need to read a stave or know what key you are in.
-      </p>
     </div>
 
     <div class="steps reveal">
@@ -299,11 +250,6 @@
     <div class="section-head reveal">
       <span class="eyebrow">What you get</span>
       <h2 id="features-h">What a choir master actually needs</h2>
-      <p class="lede">
-        Built with worship teams, music teachers and self-taught musicians in mind.
-        These are the people who hear a part once and have to teach it to twenty
-        others by Sunday.
-      </p>
     </div>
 
     <div class="feature-grid reveal">
@@ -411,10 +357,6 @@
         from the key it detected, which is what makes the solfa usable by a choir
         that has never read a note of staff notation.
       </p>
-      <p>
-        It also means a key change is a <strong>re-labelling, not a re-analysis</strong>.
-        Pick a new key and the syllables move; the notes underneath never do.
-      </p>
 
       <ul class="spotlight-list">
         <li>
@@ -448,65 +390,8 @@
         <p class="solfa-line" aria-hidden="true">| m :&nbsp; f&nbsp; | s :&nbsp; l&nbsp; | s :&nbsp; f&nbsp; | m :&nbsp; &mdash;&nbsp; |</p>
       </figure>
       <p class="caption">
-        Movable-do, so the same chorus reads identically whatever key you move it to.
-        That is why choirs learn from solfa rather than from a stave.
+        The same chorus reads identically in whatever key you move it to.
       </p>
-    </div>
-  </div>
-</section>
-
-<!-- ══ Comparison ═══════════════════════════════════════════════════════════ -->
-<section id="why" tabindex="-1" aria-labelledby="why-h">
-  <div class="wrap">
-    <div class="section-head section-head--center reveal">
-      <span class="eyebrow">Why bother</span>
-      <h2 id="why-h">By ear, or with the app</h2>
-    </div>
-
-    <div class="compare reveal">
-      <div class="compare-col compare-col--them">
-        <h3>Working it out by ear</h3>
-        <ul>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            An evening at the keyboard hunting for the right notes
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            One person in the team who can write, and everyone waiting on them
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Transposing by hand, and re-copying every part when it is still too high
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-            Choruses nobody ever wrote down
-          </li>
-        </ul>
-      </div>
-
-      <div class="compare-col compare-col--us">
-        <h3>With NoteFusion</h3>
-        <ul>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Record it once. Notation before the rehearsal ends.
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Anyone in the team can capture a part, because the phone does the reading
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            New key in one tap, solfa re-labelled, nothing re-recorded
-          </li>
-          <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
-            Saved to the library and shareable with the team
-          </li>
-        </ul>
-      </div>
     </div>
   </div>
 </section>
@@ -518,8 +403,8 @@
       <span class="eyebrow">Pricing</span>
       <h2 id="pricing-h">Start free. Upgrade when you run out.</h2>
       <p class="lede">
-        Free and Pro run the same transcription engine on the same notation. The only
-        thing Pro buys you is that it never stops.
+        Free and Pro run the same engine on the same notation. Pro is the one that
+        never runs out.
       </p>
     </div>
 
@@ -564,11 +449,11 @@
 
     <p class="pricing-note">
       Prices are in US dollars. You subscribe inside the app: checkout opens in your
-      browser and is handled by our payment provider, so NoteFusion never sees your
-      card details. Pro stays on to the end of the period you paid for — for anything
-      else about a charge, email
-      <a href="mailto:hello@notefusion.studio?subject=Billing">hello@notefusion.studio</a>.
-      See the <a href="/terms">terms of service</a>.
+      browser and is handled by our payment provider, so NoteFusion never sees your card
+      details, and Pro stays on to the end of the period you paid for. See the
+      <a href="/terms">terms of service</a>, or email
+      <a href="mailto:hello@notefusion.studio?subject=Billing">hello@notefusion.studio</a>
+      about a charge.
     </p>
   </div>
 </section>
