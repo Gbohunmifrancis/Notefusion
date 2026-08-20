@@ -97,6 +97,7 @@ LOWER_IS_BETTER = frozenset(
         "key.parallel_confusion",
         "solfa.octave_error_rate",
         "solfa.ghost_count",
+        "solfa.chromatic_ghosts",
         "notes.semitone_neighbour_ghosts",
         "n_failed",
     }
@@ -156,6 +157,15 @@ LOWER_IS_BETTER = frozenset(
 #                          quantized, 0.615 with every duration crushed to an eighth,
 #                          0.000 at 1.0 beat), which is what Phase 2c needs — read it
 #                          next to tempo.metrical_factor, not on its own.
+#   solfa.chromatic_count / solfa.ref_chromatic_count
+#                          how many accidentals the notation carries and how many the
+#                          music actually contains.  Neither has a direction on its own:
+#                          the harmonic minor cases genuinely need one (la-based minor
+#                          writes the raised 7th as se), so fewer is not better and more
+#                          is not worse.  They are here to make the gated
+#                          solfa.chromatic_ghosts readable — an excess of 0 against a
+#                          reference count of 2 means something different from 0
+#                          against 0.
 NOT_A_GATE = frozenset(
     {
         "notes.n_ref",
@@ -164,6 +174,8 @@ NOT_A_GATE = frozenset(
         "beats.best_shift_beats",
         "solfa.matched",
         "solfa.anchor_matches_reference",
+        "solfa.chromatic_count",
+        "solfa.ref_chromatic_count",
         "tempo.metrical_factor",
         "key.confidence",
         "conf.mean_correct",

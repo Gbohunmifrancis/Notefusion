@@ -452,6 +452,18 @@ def _match_by_pitch_then_time(
     return sorted(pairs)
 
 
+# The five semitones above doh that fall outside the diatonic scale, so a note on one of
+# them is written with an accidental: ``ASCENDING_SYLLABLES`` indices 1, 3, 6, 8 and 10 —
+# de, re, fe, se, le.  ``transcribe`` only ever labels ascending, so the descending
+# spellings (ra, ma, sa, la, ta) cannot appear.
+CHROMATIC_SEMITONES = frozenset({1, 3, 6, 8, 10})
+
+
+def _is_chromatic(pitch_midi: int, doh_pc: int) -> bool:
+    """Would this pitch be written with an accidental, in the key whose doh is *doh_pc*?"""
+    return (pitch_midi - doh_pc) % 12 in CHROMATIC_SEMITONES
+
+
 def solfa_metrics(
     ref: Sequence[RefNote],
     est: Sequence[TranscribedNote],
@@ -487,6 +499,22 @@ def solfa_metrics(
     median of the pitch list, ascending syllable table — except that the pitch list is
     the *reference* one.  Deriving it from the estimate would make the octave marks
     agree by construction.
+
+    ``chromatic_ghosts`` is the accidentals column, and it counts the *excess* rather
+    than the total on purpose.  Lower-is-better on the total would be plainly wrong:
+    under la-based minor the harmonic minor's raised 7th is ``se``, a chromatic
+    syllable, so ``minor_harmonic_a`` legitimately needs one and driving that column to
+    zero would be a regression wearing a fix's clothes.  So an estimated note counts
+    here only when it carries an accidental *and* the reference note it matched does
+    not — or it matched nothing at all.  Zero is therefore both achievable and correct
+    for every case in the corpus, which is what makes it gateable.
+
+    All three chromatic columns are computed under the *reference* key, for the same
+    reason the octave marks are: a mis-detected key shifts both sides together, so a key
+    error cannot inflate them.  The consequence is that they undercount what the user
+    actually sees — the pipeline notates under the key it detected, so a wrong key adds
+    accidentals this column cannot see.  ``key.exact`` is where that shows up; read the
+    two together rather than reading this one as the whole of the complaint.
     """
     zeros = {
         "degree_accuracy": 0.0,
@@ -495,6 +523,12 @@ def solfa_metrics(
         "anchor_matches_reference": False,
         "ghost_count": len(est),
         "matched": 0,
+        # Not knowable without a parseable key, which is what the paths returning this
+        # either lack or have just failed on.  A case that reached here produced no
+        # comparable notes at all and is already fully flagged by notes.f1.
+        "chromatic_ghosts": 0,
+        "chromatic_count": 0,
+        "ref_chromatic_count": 0,
     }
     if not ref or not est or est_tempo_bpm <= 0 or ref_tempo_bpm <= 0:
         return zeros
@@ -525,8 +559,26 @@ def solfa_metrics(
         np.array([n.pitch_midi for n in est], dtype=int),
         _onset_tolerance_sec(ref_tempo_bpm),
     )
+
+    # Deliberately ahead of the no-pairs return: a clip whose notes all failed to match
+    # is exactly the case where spurious accidentals are worst, so it has to be counted
+    # rather than reported as zero.  With no pairs every accidental is unmatched, which
+    # the loop below already handles.
+    ref_for_est = {est_idx: ref_idx for ref_idx, est_idx in pairs}
+    chromatic = {
+        "chromatic_ghosts": sum(
+            _is_chromatic(note.pitch_midi, doh_pc)
+            and not (
+                i in ref_for_est
+                and _is_chromatic(ref[ref_for_est[i]].pitch_midi, doh_pc)
+            )
+            for i, note in enumerate(est)
+        ),
+        "chromatic_count": sum(_is_chromatic(n.pitch_midi, doh_pc) for n in est),
+        "ref_chromatic_count": sum(_is_chromatic(r.pitch_midi, doh_pc) for r in ref),
+    }
     if not pairs:
-        return {**zeros, "anchor_matches_reference": est_doh == ref_doh}
+        return {**zeros, "anchor_matches_reference": est_doh == ref_doh, **chromatic}
 
     degree_hits = syllable_hits = octave_misses = 0
     for ref_idx, est_idx in pairs:
@@ -548,6 +600,7 @@ def solfa_metrics(
         "anchor_matches_reference": est_doh == ref_doh,
         "ghost_count": len(est) - matched,
         "matched": matched,
+        **chromatic,
     }
 
 
