@@ -47,9 +47,26 @@ from app.pipeline import solfa
 # 22 050 Hz gives CD-quality for speech/melody with half the data of 44 100 Hz.
 PREVIEW_SAMPLE_RATE = 22_050
 
-# Synthesis voice: fundamental + harmonics mix (piano-like timbre).
-# Weights sum to < 1.0 so headroom is preserved before normalisation.
-_HARMONIC_WEIGHTS = (0.50, 0.20, 0.12, 0.08)  # 1st, 2nd, 3rd, 4th harmonic
+# Synthesis voice: fundamental + partials, falling off as roughly 1/k^1.7. A
+# nearly-flat spectrum (the old four weights were 0.50/0.20/0.12/0.08, i.e. 1/k^1.3
+# truncated) reads as a buzz; rolling off further and going wider sounds like a
+# soft plucked tone. Eight partials at the pipeline's 1050 Hz pitch ceiling put the
+# topmost at 8.4 kHz, under the 11.025 kHz Nyquist of PREVIEW_SAMPLE_RATE — and the
+# loop drops any partial that would exceed it anyway, so raising either is safe.
+_HARMONIC_WEIGHTS = (1.0, 0.36, 0.22, 0.13, 0.085, 0.055, 0.035, 0.022)
+
+# Per-partial brightness decay: partial k is damped by exp(-k·t/_HARMONIC_DECAY_SEC),
+# so upper partials die away faster than the fundamental. This is the cue that
+# separates a struck or plucked instrument from an organ. Without it the spectrum of
+# every note is frozen for its whole length, which is most of why the old preview
+# sounded synthetic.
+_HARMONIC_DECAY_SEC = 2.5
+
+# Upper partials of a real string sit slightly sharp of exact multiples. Stretching
+# partial k by (1 + B·k²) with this B puts the 8th about 9 cents sharp: enough to
+# keep the partials from phase-locking into a static buzz, small enough not to sound
+# out of tune.
+_INHARMONICITY = 8e-5
 
 # ADSR parameters (seconds). Short attack / longer release sounds more natural
 # than a rectangular envelope when notes are hummed or played on a soft instrument.
@@ -123,6 +140,17 @@ _M21_FLAT_MAP: dict[str, str] = {
 # ── Audio preview synthesis ───────────────────────────────────────────────────
 
 
+def _smooth_ramp(n: int, start: float, end: float) -> "np.ndarray":
+    """A raised-cosine ramp from *start* to *end* over *n* samples.
+
+    Slope is zero at both ends, unlike ``np.linspace``, so an envelope built from
+    these has no corner anywhere for the ear to hear as a click.
+    """
+    return start + (end - start) * (
+        0.5 - 0.5 * np.cos(np.pi * np.linspace(0.0, 1.0, n))
+    )
+
+
 def _synthesize_audio_preview(
     notes: "list[TranscribedNote]",
     tempo_bpm: int,
@@ -137,19 +165,24 @@ def _synthesize_audio_preview(
 
     Voice model
     ───────────
-    Each note is rendered as a sum of four harmonics with amplitudes defined by
-    ``_HARMONIC_WEIGHTS``.  An ADSR envelope is applied:
-      • Attack  : linear ramp-up over ``_ATTACK_SEC`` seconds.
-      • Decay   : linear drop to the sustain level over ``_DECAY_SEC`` seconds.
+    Each note is a sum of the partials in ``_HARMONIC_WEIGHTS``, each one slightly
+    stretched sharp by ``_INHARMONICITY`` and damped by
+    ``exp(-k·t/_HARMONIC_DECAY_SEC)`` so the tone darkens as it rings. An ADSR
+    envelope is applied, using raised-cosine ramps so no segment boundary clicks:
+      • Attack  : ramp-up over ``_ATTACK_SEC`` seconds.
+      • Decay   : drop to the sustain level over ``_DECAY_SEC`` seconds.
       • Sustain : held at ``_SUSTAIN_LEVEL`` × peak for the body of the note.
-      • Release : linear fade-out over the final ``_RELEASE_FRAC`` of the note
+      • Release : fade-out over the final ``_RELEASE_FRAC`` of the note
                   (capped at 0.18 s so long notes still end cleanly).
 
     The confidence score of each note is used as a per-note velocity scaler so
     low-confidence notes are softer than high-confidence ones.
 
-    The final mix is normalised to 0.9 × peak and encoded as signed 16-bit PCM
-    WAV (no dependencies beyond numpy + soundfile).
+    Starting phases are derived from each note's pitch and partial index, so they
+    are deterministic — identical input always produces identical bytes — while
+    still avoiding every partial starting at the same zero crossing. The mix is
+    then soft-limited through ``tanh`` rather than divided by its peak, and encoded
+    as signed 16-bit PCM WAV.
 
     Parameters
     ----------
@@ -181,6 +214,11 @@ def _synthesize_audio_preview(
     total_samples = int((max_end_sec + tail_sec) * sr)
     audio = np.zeros(total_samples, dtype=np.float64)
 
+    # A single voice peaks at the sum of its partial weights, so dividing by that
+    # sum gives every note the same predictable ceiling of 1.0 before velocity.
+    voice_gain = 1.0 / sum(_HARMONIC_WEIGHTS)
+    nyquist = 0.5 * sr
+
     for n in notes:
         freq = 440.0 * 2.0 ** ((n.pitch_midi - 69) / 12.0)
         start_samp = int(n.start_beat * beat_sec * sr)
@@ -192,34 +230,54 @@ def _synthesize_audio_preview(
 
         t = np.arange(actual, dtype=np.float64) / sr
 
-        # Additive synthesis: sum of harmonics
+        # Additive synthesis. Each partial gets its own starting phase and its own
+        # decay rate. The phases come from the pitch and the partial index rather
+        # than from a random draw, so the same notes always render to the same bytes.
+        # Deliberately *not* varied per note: two fragments of the same pitch then
+        # stay in phase and reinforce, where a per-note offset would let them cancel
+        # — and it is the limiter below, not phase scattering, that handles overlaps.
         tone = np.zeros(actual, dtype=np.float64)
-        for harmonic_idx, weight in enumerate(_HARMONIC_WEIGHTS, start=1):
-            tone += weight * np.sin(2.0 * np.pi * freq * harmonic_idx * t)
+        for k, weight in enumerate(_HARMONIC_WEIGHTS, start=1):
+            f_k = freq * k * (1.0 + _INHARMONICITY * k * k)
+            if f_k >= nyquist:
+                break
+            phase = 2.0 * np.pi * (
+                (n.pitch_midi * 0.5698402909 + k * 0.6180339887) % 1.0
+            )
+            tone += (
+                weight
+                * np.exp(-k * t / _HARMONIC_DECAY_SEC)
+                * np.sin(2.0 * np.pi * f_k * t + phase)
+            )
 
-        # ADSR envelope
-        env = np.ones(actual, dtype=np.float64)
+        # ADSR. The ramps are raised-cosine, not linear: a linear ramp has a corner
+        # at each end, and over a 15 ms attack that corner is audible as a click on
+        # every single note. Pre-filling with the sustain level means only the attack
+        # and decay segments need writing, and both fit by construction since each is
+        # capped at a quarter of the note.
+        env = np.full(actual, _SUSTAIN_LEVEL, dtype=np.float64)
         atk = min(int(_ATTACK_SEC * sr), actual // 4)
         dec = min(int(_DECAY_SEC * sr), actual // 4)
         rel = min(int(_RELEASE_FRAC * actual), int(0.18 * sr))
 
         if atk > 0:
-            env[:atk] = np.linspace(0.0, 1.0, atk)
-        if dec > 0 and atk + dec <= actual:
-            env[atk : atk + dec] = np.linspace(1.0, _SUSTAIN_LEVEL, dec)
-            if atk + dec < actual:
-                env[atk + dec :] = _SUSTAIN_LEVEL
+            env[:atk] = _smooth_ramp(atk, 0.0, 1.0)
+        if dec > 0:
+            env[atk : atk + dec] = _smooth_ramp(dec, 1.0, _SUSTAIN_LEVEL)
         if rel > 0:
-            env[-rel:] *= np.linspace(1.0, 0.0, rel)
+            env[-rel:] *= _smooth_ramp(rel, 1.0, 0.0)
 
         # Velocity from confidence (range 0.4 – 1.0 so even low-conf notes audible)
         velocity = 0.4 + 0.6 * float(n.conf)
-        audio[start_samp:end_samp] += tone * env * velocity
+        audio[start_samp:end_samp] += tone * env * (velocity * voice_gain)
 
-    # Normalise to 0.9 × full scale
-    peak = np.max(np.abs(audio))
-    if peak > 1e-6:
-        audio = audio / peak * 0.90
+    # Soft-limit instead of rescaling by the peak. The old code divided the whole
+    # mix by its loudest sample, so a single pile-up of overlapping notes — exactly
+    # what the ghost-note fragments produce — scaled the *entire* preview down and
+    # left everything else close to inaudible. tanh is bounded by 1.0 for any input,
+    # so overlaps compress into the headroom they need and every other note keeps
+    # the level it was rendered at. A solo note peaks at tanh(1) ≈ 0.76.
+    audio = np.tanh(audio)
 
     # Encode as signed 16-bit PCM WAV via soundfile
     buf = io.BytesIO()
