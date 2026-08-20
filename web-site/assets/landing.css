@@ -300,14 +300,22 @@ h1 em {
    what. With preserve-3d the browser sorts by computed Z instead and the
    stacking becomes something you fight rather than declare.
 
-   Height is set from --dev-w because both devices are absolutely positioned:
-   nothing else would give this box a size, and the hero would collapse. 2.162
-   is the source aspect (853 x 1844); the rest is room for the back device's
-   offset and the rotation overshoot. */
+   Both dimensions are set from --dev-w because the devices are absolutely
+   positioned: nothing else would give this box a size, and the hero would
+   collapse. 2.335 is the source aspect (2.162, from 853 x 1844) plus room for
+   the front device's offset and the rotation overshoot. The width matters just
+   as much — the floating cards are placed in percentages of this box, so tying
+   it to --dev-w is what keeps them tethered to the phones at every size.
+
+   The 28vh cap is the one that stops the pair eating a whole short laptop
+   screen: at this width the hero is side-by-side, so the phone column sets the
+   height of the fold on its own. */
 .showcase {
-  --dev-w: min(300px, 72vw);
+  --dev-w: min(232px, 72vw, 28vh);
   position: relative;
-  height: calc(var(--dev-w) * 2.162 + 52px);
+  width: calc(var(--dev-w) * 1.62);
+  margin-left: auto;
+  height: calc(var(--dev-w) * 2.335);
   perspective: 1500px;
   perspective-origin: 62% 42%;
 }
@@ -347,7 +355,7 @@ h1 em {
 .device--front {
   --w: var(--dev-w);
   right: 2%;
-  top: 46px;
+  top: calc(var(--dev-w) * 0.153);
   z-index: 2;
   transform: rotateY(-17deg) rotateX(5deg) rotate(-1.5deg);
 }
@@ -458,7 +466,7 @@ h1 em {
      unit — `right`/`left` percentages of a full-width column would fling them
      to the edges. */
   .showcase {
-    --dev-w: min(288px, 46vw);
+    --dev-w: min(232px, 42vw);
     width: calc(var(--dev-w) * 1.72);
     margin: 0 auto;
   }
@@ -478,7 +486,7 @@ h1 em {
    button on, so the splash drops out and the front screen straightens up. */
 @media (max-width: 620px) {
   .showcase {
-    --dev-w: min(272px, 68vw);
+    --dev-w: min(210px, 56vw);
     width: var(--dev-w);
     height: calc(var(--dev-w) * 2.162 + 24px);
   }
