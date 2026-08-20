@@ -290,27 +290,94 @@ h1 em {
   pointer-events: none;
 }
 
-.phone {
+/* The two hero devices share one 3D space so they share one vanishing point —
+   give each its own `perspective` and they read as two unrelated photographs
+   pasted together.
+
+   `perspective` here but no `transform-style: preserve-3d`: the children are
+   still projected through the parent's perspective, but the parent flattens
+   them afterwards, which keeps plain `z-index` in charge of what overlaps
+   what. With preserve-3d the browser sorts by computed Z instead and the
+   stacking becomes something you fight rather than declare.
+
+   Height is set from --dev-w because both devices are absolutely positioned:
+   nothing else would give this box a size, and the hero would collapse. 2.162
+   is the source aspect (853 x 1844); the rest is room for the back device's
+   offset and the rotation overshoot. */
+.showcase {
+  --dev-w: min(300px, 72vw);
   position: relative;
-  margin: 0 auto;
-  width: min(300px, 78vw);
-  padding: 12px;
-  background: #0f172a;
-  border-radius: 42px;
-  box-shadow: 0 40px 80px rgba(15, 23, 42, 0.28),
-    0 0 0 2px rgba(15, 23, 42, 0.06);
-}
-.phone img {
-  border-radius: 32px;
-  width: 100%;
+  height: calc(var(--dev-w) * 2.162 + 52px);
+  perspective: 1500px;
+  perspective-origin: 62% 42%;
 }
 
-/* Floating "Doh is D" card overlapping the bezel — shows the product's actual
-   output rather than only its chrome. */
+/* No bezel: both sources are rendered with the black device frame already in
+   them. All this adds is the outer corner radius the render leaves square,
+   the drop shadow, and the angle. */
+.device {
+  position: absolute;
+  width: var(--w);
+  line-height: 0;
+}
+.device img {
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--w) * 0.115);
+}
+
+/* Glass: a diagonal sheen plus a hairline edge, both clipped to the same
+   radius. Without them a rotated rectangle reads as a tilted picture rather
+   than as a device catching light. */
+.device::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: calc(var(--w) * 0.115);
+  background: linear-gradient(
+    108deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 26%,
+    rgba(255, 255, 255, 0) 46%
+  );
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+}
+
+.device--front {
+  --w: var(--dev-w);
+  right: 2%;
+  top: 46px;
+  z-index: 2;
+  transform: rotateY(-17deg) rotateX(5deg) rotate(-1.5deg);
+}
+.device--front img {
+  box-shadow: 34px 46px 90px rgba(15, 23, 42, 0.34),
+    10px 14px 28px rgba(15, 23, 42, 0.16);
+}
+
+/* Turned a few degrees harder than the front one. Two devices on the same
+   angle look like a duplicated layer; the divergence is what sells the depth. */
+.device--back {
+  --w: calc(var(--dev-w) * 0.86);
+  left: 0;
+  top: 0;
+  z-index: 1;
+  transform: rotateY(-23deg) rotateX(7deg) rotate(-3deg);
+}
+.device--back img {
+  box-shadow: 22px 30px 60px rgba(15, 23, 42, 0.26);
+}
+
+/* Floating "Doh is D" card overlapping the front device — shows the product's
+   actual output rather than only its chrome. Deliberately outside the 3D
+   transform: type rendered through a rotateY goes soft, and the flat-card-over-
+   angled-glass contrast is the whole point of the layering. */
 .phone-badge {
   position: absolute;
-  left: -46px;
-  bottom: 92px;
+  z-index: 3;
+  left: 30%;
+  bottom: 6%;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
@@ -337,6 +404,7 @@ h1 em {
    column to itself. */
 .phone-chip {
   position: absolute;
+  z-index: 3;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--r-md);
@@ -358,12 +426,12 @@ h1 em {
   margin-top: 2px;
 }
 .phone-chip--solfa {
-  left: -58px;
-  top: 56px;
+  left: -6%;
+  top: 12%;
 }
 .phone-chip--staff {
-  right: -54px;
-  top: 210px;
+  right: -7%;
+  top: 46%;
   display: grid;
   gap: 4px;
   justify-items: center;
@@ -386,12 +454,44 @@ h1 em {
   .hero-chips {
     justify-content: center;
   }
+  /* The devices have the column to themselves here, so the pair is centred as a
+     unit — `right`/`left` percentages of a full-width column would fling them
+     to the edges. */
+  .showcase {
+    --dev-w: min(288px, 46vw);
+    width: calc(var(--dev-w) * 1.72);
+    margin: 0 auto;
+  }
+  .device--front {
+    right: 0;
+  }
   .phone-badge {
-    left: -12px;
+    left: -6%;
   }
   .phone-chip,
   .phone-col::before {
     display: none;
+  }
+}
+
+/* Two angled devices below this width leaves each one too small to read a
+   button on, so the splash drops out and the front screen straightens up. */
+@media (max-width: 620px) {
+  .showcase {
+    --dev-w: min(272px, 68vw);
+    width: var(--dev-w);
+    height: calc(var(--dev-w) * 2.162 + 24px);
+  }
+  .device--back {
+    display: none;
+  }
+  .device--front {
+    top: 12px;
+    transform: rotateY(-11deg) rotateX(3deg) rotate(-1deg);
+  }
+  .phone-badge {
+    left: -14px;
+    bottom: 12%;
   }
 }
 
@@ -656,76 +756,6 @@ h1 em {
   .spotlight .wrap {
     grid-template-columns: 1fr;
   }
-}
-
-/* ── Comparison ──────────────────────────────────────────────────────────── */
-
-.compare {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--s-xl);
-}
-.compare-col {
-  border-radius: var(--r-lg);
-  padding: var(--s-xl);
-  border: 1px solid var(--border);
-}
-.compare-col h3 {
-  margin: 0 0 var(--s-lg);
-  font-size: 1.075rem;
-  font-weight: 600;
-}
-.compare-col ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: var(--s-md);
-}
-.compare-col li {
-  display: flex;
-  gap: var(--s-md);
-  align-items: flex-start;
-  font-size: 0.95rem;
-}
-.compare-col li svg {
-  flex: none;
-  margin-top: 3px;
-}
-
-.compare-col--them {
-  background: var(--surface-alt);
-  color: var(--text-muted);
-}
-.compare-col--us {
-  background: var(--surface);
-  box-shadow: var(--sh-card-lift);
-  border-color: rgba(37, 99, 235, 0.25);
-}
-
-@media (max-width: 760px) {
-  .compare {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ── Google sign-in disclosure ───────────────────────────────────────────────
-   Borrows the comparison card shell, but stands alone rather than in the 2-up
-   grid, so it needs its own width cap: a full 1080px measure would run the list
-   items to about 130 characters. */
-
-.disclosure {
-  max-width: var(--wrap-narrow);
-}
-.disclosure p {
-  margin: 0 0 var(--s-lg);
-  color: var(--text-muted);
-  font-size: 0.95rem;
-}
-.disclosure .disclosure-scope {
-  margin: var(--s-lg) 0 0;
-  padding-top: var(--s-lg);
-  border-top: 1px solid var(--border);
 }
 
 /* ── Pricing ─────────────────────────────────────────────────────────────── */

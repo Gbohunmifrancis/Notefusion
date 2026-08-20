@@ -32,16 +32,18 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly ICountryResolver _country;
 
     public RegisterCommandHandler(
         IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock,
-        IEmailSender email)
+        IEmailSender email, ICountryResolver country)
     {
         _db = db;
         _hasher = hasher;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
         _email = email;
+        _country = country;
     }
 
     public async Task<Result<LoginResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -51,6 +53,12 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
             return UserErrors.EmailAlreadyExists;
 
         var user = User.Create(request.FullName.Trim(), email, _hasher.Hash(request.Password), _clock.UtcNow);
+
+        // Before the insert, so the country rides the same commit as the account. Which tier this person
+        // is offered follows from it, and a resolver that never throws means a geolocation outage costs us
+        // the country, not the sign-up.
+        user.RecordCountry(await _country.ResolveAsync(cancellationToken));
+
         _db.Users.Add(user);
 
         var tokens = _tokenIssuer.Issue(user);

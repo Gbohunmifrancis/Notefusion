@@ -54,6 +54,14 @@ public class User : BaseEntity
     /// <summary>UTC expiry for the current reset token. Null when no token is set.</summary>
     public DateTime? PasswordResetTokenExpiry { get; private set; }
 
+    /// <summary>
+    /// ISO 3166-1 alpha-2 code for where this account was first seen, or null when it could not be
+    /// determined. Drives which billing tier the user is offered, so it is stored rather than derived per
+    /// request for two reasons: the offer stays put when the user travels, and we keep a record of why a
+    /// given person was shown a given price — which matters the first time someone disputes it.
+    /// </summary>
+    public string? Country { get; private set; }
+
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     public IReadOnlyCollection<DeviceToken> DeviceTokens => _deviceTokens.AsReadOnly();
 
@@ -148,6 +156,25 @@ public class User : BaseEntity
 
     /// <summary>Replaces the avatar (R2 upload, or null to clear it).</summary>
     public void SetProfilePicture(string? url) => ProfilePictureUrl = url;
+
+    /// <summary>
+    /// Records where this account was first observed, once. First observation wins on purpose: it makes
+    /// this safe to call on every sign-in — which is what backfills accounts created before we resolved
+    /// countries at all, and accounts whose lookup failed the first time — while guaranteeing a user who
+    /// travels, or who signs in over a VPN, is never silently re-priced. Blank or malformed input is
+    /// ignored rather than stored: "unknown" and "wrong" are not the same, and only the first is safe.
+    /// Returns true when the value was actually taken, so a caller can skip a pointless write.
+    /// </summary>
+    public bool RecordCountry(string? isoAlpha2)
+    {
+        if (Country is not null) return false;
+
+        var code = isoAlpha2?.Trim().ToUpperInvariant();
+        if (code is null || code.Length != 2 || !code.All(char.IsAsciiLetterUpper)) return false;
+
+        Country = code;
+        return true;
+    }
 
     public bool IsLockedOut(DateTime utcNow) => LockoutEndAt.HasValue && LockoutEndAt.Value > utcNow;
 

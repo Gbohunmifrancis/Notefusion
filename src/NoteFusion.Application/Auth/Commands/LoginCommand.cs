@@ -26,14 +26,17 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
     private readonly IPasswordHasher _hasher;
     private readonly ITokenIssuer _tokenIssuer;
     private readonly IDateTimeProvider _clock;
+    private readonly ICountryResolver _country;
 
     public LoginCommandHandler(
-        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock)
+        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock,
+        ICountryResolver country)
     {
         _db = db;
         _hasher = hasher;
         _tokenIssuer = tokenIssuer;
         _clock = clock;
+        _country = country;
     }
 
     public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -64,6 +67,13 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
 
         if (!user.IsActive)
             return AuthErrors.AccountInactive;
+
+        // Backfill, and only that. Every account created before countries existed has none, as does anyone
+        // whose lookup failed at sign-up; a sign-in is the one moment we can fix that without adding a
+        // write path. The null check is what keeps it from being a lookup per login — RecordCountry would
+        // refuse the write anyway, but not before paying for the call.
+        if (user.Country is null)
+            user.RecordCountry(await _country.ResolveAsync(cancellationToken));
 
         user.RecordSuccessfulLogin(now);
         var tokens = _tokenIssuer.Issue(user);

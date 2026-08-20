@@ -4,14 +4,16 @@
 
 All outputs are derived and safe to delete and rebuild:
 
-  app-home.jpg  the hero screenshot, resized to 3x its display size and
-                re-encoded as JPEG. The source is a photographic screenshot,
-                so PNG buys nothing but weight (1.1 MB -> 134 KB).
-  app-home-552.jpg  the same screenshot at 2x, for the srcset. A 1x phone
-                still downloads 828px otherwise, which is most of the page
-                weight on the connection this app is built for.
+  app-onboarding.jpg / app-splash.jpg
+                the two hero devices, resized to ~3x their display width and
+                re-encoded as JPEG. The sources are photographic renders, so
+                PNG buys nothing but weight (1.1 MB each -> ~100 KB).
+  app-onboarding-552.jpg / app-splash-552.jpg
+                the same two at 2x, for the srcset. A 1x phone still downloads
+                828px otherwise, which is most of the page weight on the
+                connection this app is built for.
   og-card.jpg   the 1200x630 social share card. Link scrapers want a wide
-                image; handing them the tall phone screenshot gets it cropped
+                image; handing them a tall phone screenshot gets it cropped
                 to nonsense.
   favicon.ico   16/32/48px, on an opaque blue tile. mark.png is a white
                 silhouette with alpha, so used directly it is invisible in a
@@ -19,6 +21,11 @@ All outputs are derived and safe to delete and rebuild:
   icon-192.png / icon-512.png / apple-touch-icon.png
                 the same tile at the sizes Android home screens, the web
                 manifest and iOS "Add to Home Screen" ask for.
+
+Both hero sources already have the black device frame rendered into them, so
+the page must NOT wrap them in a bezel of its own — .device only rounds the
+outer corners and applies the perspective. Feed this script a bare screen
+capture and the hero will look frameless.
 
 Brand fidelity comes from mobile/src/design/theme.ts — the gradient is
 gradients.brand and the type is Poppins. Keep them in step by hand.
@@ -31,7 +38,13 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 ASSETS = os.path.join(ROOT, "web-site/assets")
 FONTS = os.path.join(ROOT, "mobile/node_modules/@expo-google-fonts/poppins")
-SCREENSHOT = os.path.join(ROOT, "mobile/assets/Notefusion-home.png")
+
+# (source in mobile/assets, output stem). Order is front device first, purely so
+# the printed sizes read in the order the page paints them.
+HERO_SCREENS = (
+    ("Notefusion-onboarding-1.png", "app-onboarding"),
+    ("Notefusion-splash-screen.png", "app-splash"),
+)
 
 BLUE_DEEP = (29, 78, 216)   # gradients.brand[0] — #1D4ED8
 BLUE = (59, 130, 246)       # gradients.brand[1] — #3B82F6
@@ -44,15 +57,22 @@ def font(name, size):
 
 
 def build_hero():
-    """Hero screenshot at 3x its ~276px display width, plus a 2x for srcset."""
-    im = Image.open(SCREENSHOT).convert("RGB")
-    for target_w, name in ((828, "app-home.jpg"), (552, "app-home-552.jpg")):
-        target_h = round(im.height * target_w / im.width)
-        out = os.path.join(ASSETS, name)
-        im.resize((target_w, target_h), Image.LANCZOS).save(
-            out, "JPEG", quality=82, optimize=True, progressive=True
-        )
-        print(f"{name:<17} {os.path.getsize(out):>7,} bytes  {target_w}x{target_h}")
+    """The two hero devices, each at 3x its display width plus a 2x for srcset.
+
+    Prints the exact pixel dimensions of every output: the <img> width/height
+    attributes in index.html have to match, or the reserved layout box is wrong
+    and the hero jumps as the images arrive.
+    """
+    for source, stem in HERO_SCREENS:
+        im = Image.open(os.path.join(ROOT, "mobile/assets", source)).convert("RGB")
+        for target_w, suffix in ((828, ""), (552, "-552")):
+            target_h = round(im.height * target_w / im.width)
+            name = f"{stem}{suffix}.jpg"
+            out = os.path.join(ASSETS, name)
+            im.resize((target_w, target_h), Image.LANCZOS).save(
+                out, "JPEG", quality=82, optimize=True, progressive=True
+            )
+            print(f"{name:<24} {os.path.getsize(out):>7,} bytes  {target_w}x{target_h}")
 
 
 def build_icon(px, mark_frac=0.68):

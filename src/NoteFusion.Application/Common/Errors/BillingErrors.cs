@@ -8,6 +8,16 @@ public static class BillingErrors
     public static readonly Error PlanNotFound =
         Error.NotFound("BILLING_PLAN_NOT_FOUND", "That plan does not exist or is no longer offered.");
 
+    /// <summary>
+    /// The plan exists, but not for this account's region. Deliberately distinct from
+    /// <see cref="PlanNotFound"/>: a client that never showed the plan cannot have produced this by accident,
+    /// so it means either a stale paywall or someone posting an id they were not given — and those want
+    /// different follow-ups.
+    /// </summary>
+    public static readonly Error PlanNotAvailableInRegion =
+        Error.Forbidden("BILLING_PLAN_NOT_AVAILABLE_IN_REGION",
+            "That plan is not available in your region. Please choose one of the plans shown to you.");
+
     public static readonly Error CurrencyUnsupported =
         Error.Failure("BILLING_CURRENCY_UNSUPPORTED", "No payment provider is available for this currency.");
 

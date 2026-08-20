@@ -383,6 +383,7 @@ export function ResultScreen({ route, navigation }: Props) {
             <StaffNotation
               notes={view.notes}
               timeSignature={result.timeSignature}
+              musicalKey={key}
             />
           )}
         </View>

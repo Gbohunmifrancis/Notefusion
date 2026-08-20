@@ -12,7 +12,7 @@ public class AuthHandlerTests
     public async Task Register_creates_a_user_and_returns_a_token_pair()
     {
         using var h = new TestHarness();
-        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email);
+        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email, h.Country);
 
         var result = await handler.Handle(new RegisterCommand("Ada Lovelace", "ada@example.com", "password123"), default);
 
@@ -28,7 +28,7 @@ public class AuthHandlerTests
     public async Task Register_rejects_a_duplicate_email_case_insensitively()
     {
         using var h = new TestHarness();
-        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email);
+        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email, h.Country);
         await handler.Handle(new RegisterCommand("Ada", "ada@example.com", "password123"), default);
 
         var duplicate = await handler.Handle(new RegisterCommand("Ada Two", "ADA@example.com", "password123"), default);
@@ -44,7 +44,7 @@ public class AuthHandlerTests
     {
         using var h = new TestHarness();
         await Seed(h, "grace@example.com", "s3cretpw!");
-        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock);
+        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Country);
 
         var result = await handler.Handle(new LoginCommand("grace@example.com", "s3cretpw!"), default);
 
@@ -57,7 +57,7 @@ public class AuthHandlerTests
     {
         using var h = new TestHarness();
         await Seed(h, "grace@example.com", "s3cretpw!");
-        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock);
+        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Country);
 
         var result = await handler.Handle(new LoginCommand("grace@example.com", "wrong"), default);
 
@@ -70,7 +70,7 @@ public class AuthHandlerTests
     {
         using var h = new TestHarness();
         await Seed(h, "grace@example.com", "s3cretpw!");
-        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock);
+        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Country);
 
         for (var i = 0; i < User.MaxFailedLoginAttempts; i++)
             await handler.Handle(new LoginCommand("grace@example.com", "wrong"), default);
@@ -86,7 +86,7 @@ public class AuthHandlerTests
     public async Task Unknown_email_returns_invalid_credentials_not_not_found()
     {
         using var h = new TestHarness();
-        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock);
+        var handler = new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Country);
 
         var result = await handler.Handle(new LoginCommand("nobody@example.com", "whatever"), default);
 

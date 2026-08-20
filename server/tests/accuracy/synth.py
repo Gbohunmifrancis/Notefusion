@@ -7,14 +7,17 @@ mutates ``app/``.
 
 Why this voice and not any other
 ────────────────────────────────
-The timbre deliberately mirrors ``_synthesize_audio_preview``
-(``app/pipeline/transcriber.py``): four additive harmonics weighted
-(0.50, 0.20, 0.12, 0.08) plus the same ADSR shape.  Basic Pitch's frame
-activations are timbre-sensitive, so a corpus rendered with an unrelated voice
-would end up measuring the synth instead of the pipeline.  The ADSR constants
-are *copied* rather than imported: later phases are expected to retune the
-preview voice, and the corpus audio must stay byte-identical across those
-phases or every stored baseline silently stops meaning anything.
+The timbre was cloned from ``_synthesize_audio_preview``
+(``app/pipeline/transcriber.py``) as it stood when the corpus was built: four
+additive harmonics weighted (0.50, 0.20, 0.12, 0.08) plus that ADSR shape.
+Basic Pitch's frame activations are timbre-sensitive, so a corpus rendered with
+an unrelated voice would end up measuring the synth instead of the pipeline.
+The constants are *copied* rather than imported precisely so the two can drift:
+the preview voice has since been retuned (wider partial set, per-partial decay,
+raised-cosine ramps) and the numbers here deliberately did not follow it.
+**Do not re-sync them.** The corpus models the *input* — a person humming into a
+phone — while the preview models the *output*; and if this audio moves at all,
+every stored baseline silently stops meaning anything.
 
 Physical failure modes
 ──────────────────────
@@ -43,11 +46,12 @@ import soundfile as sf
 # internally anyway, so rendering higher would only add a resample step.
 SAMPLE_RATE = 22_050
 
-# ── Voice model (mirrors _synthesize_audio_preview) ───────────────────────────
+# ── Voice model (cloned from the preview voice, now diverged) ─────────────────
 
-# Copied from app/pipeline/transcriber.py:55-58 on purpose — see module
-# docstring.  Keep the values, not a live import: corpus audio must not move
-# when the pipeline's preview voice is retuned in a later phase.
+# Copied from the pipeline's preview voice on purpose — see module docstring.
+# Keep the values, not a live import, and do not update them to match the
+# preview's current constants: corpus audio must not move when that voice is
+# retuned, or every stored baseline stops meaning anything.
 _ATTACK_SEC = 0.015
 _DECAY_SEC = 0.040
 _RELEASE_FRAC = 0.25  # release is 25 % of the note …
@@ -142,9 +146,10 @@ def _envelope(n_samples: int, sr: int, sustained: bool) -> np.ndarray:
     if not sustained:
         return np.minimum(t / _PLUCK_RAMP_SEC, 1.0) * np.exp(-_PLUCK_DECAY_RATE * t)
 
-    # Same construction order as _synthesize_audio_preview: attack and decay are
+    # Same construction order the preview voice uses: attack and decay are
     # each clamped to a quarter of the note so short notes degrade to a ramp
-    # instead of overrunning the buffer.
+    # instead of overrunning the buffer. The ramps here stay linear — the preview's
+    # are raised-cosine now, but changing these would move the corpus audio.
     env = np.ones(n_samples, dtype=np.float64)
     atk = min(int(_ATTACK_SEC * sr), n_samples // 4)
     dec = min(int(_DECAY_SEC * sr), n_samples // 4)

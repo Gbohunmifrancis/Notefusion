@@ -34,4 +34,12 @@ public class Plan : BaseEntity
             Interval = interval,
             IsActive = true
         };
+
+    /// <summary>
+    /// Takes the plan off sale without deleting it. Past charges and live subscriptions still point here by
+    /// id, and the receipt, the expiry notice and the "my subscription" query all read the plan to name what
+    /// was bought — so a retired plan has to stay readable. Only the paywall and the checkout stop offering
+    /// it, since both filter on <see cref="IsActive"/>.
+    /// </summary>
+    public void Retire() => IsActive = false;
 }

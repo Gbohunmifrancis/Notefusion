@@ -39,6 +39,16 @@ Until `USD_CARD` is enabled the USD lifetime tier is technically shippable but c
 launching. Enabling it would also likely repair USD subscriptions, since subscriptions are card-only
 and that would finally supply a card. Treat the support request as the critical path.
 
+**Checked against the first live one-off session (2026-08-20, `checkout.bachs.io/c/lbRMbUUh_RjLvNU`).**
+A real `pro_lifetime` checkout renders three methods — Bank Transfer, Cryptocurrency, Pay with Card —
+so the empty list is specific to *subscription* mode and the one-off path does open a payable page.
+What it will not do is quote dollars: the $79 purchase is presented as **NGN 113,421.48 + NGN 3,402.64
+processing fee = NGN 116,824.12**, and the card option charges that naira figure. So the tier is
+shippable and the price on the card is honest, but an international buyer is still asked for a Nigerian
+bank transfer or a card charged in naira, which foreign issuers commonly decline or surcharge. The page
+also takes upwards of twenty seconds to render its methods, since they wait on a `get-quote` call.
+`USD_CARD` remains the critical path.
+
 ## Phases
 
 ### 1. Adapter: a genuine one-off path — the real code change
@@ -94,8 +104,20 @@ the first time someone disputes it.
 
 - Prefer a local MaxMind GeoLite2 database over a lookup API: no per-request latency, no vendor rate
   limit on the checkout path, no runtime network dependency.
-- Heroku terminates TLS at its router, so the client IP is the first entry of `X-Forwarded-For`, not
-  `RemoteIpAddress`. Configure forwarded headers or read it explicitly.
+  **Deferred as implemented** — MaxMind needs an account, a license key and a ~9MB build artifact,
+  while the country is resolved once per account and never on the checkout path. It sits behind the
+  `IGeoIpLookup` seam, so swapping the HTTP lookup for a local database is one class.
+  **What the HTTP route cost in practice:** ipapi.co, the obvious endpoint, answered the very first
+  production lookup with HTTP 429 — its free tier is metered per calling address and a dyno shares
+  one egress address with every other tenant on the host. The shipped default is geojs.io instead,
+  which answers from shared cloud egress; the swap was one env var, which is the seam earning its
+  keep.
+- Heroku terminates TLS at its router, so the client IP is in `X-Forwarded-For`, not
+  `RemoteIpAddress`. **Corrected as implemented:** the router *appends* the address it observed to
+  whatever header arrived, so the **leftmost entry is the spoofable one** — a caller can prepend as
+  many as it likes — and the trustworthy entry is counted from the RIGHT (`chain[^hops]`, one hop by
+  default). Reading the first entry, the conventional "original client" reading, would hand the
+  caller their own price.
 - Existing users have no country. Backfilling by guess would mis-price real people; treat unknown as
   "show both" rather than forcing either tier.
 
@@ -118,7 +140,7 @@ not a checkout.
 
 ### 5. Plans, mobile, and config
 
-- Seed `pro_lifetime` (USD) and NGN monthly/yearly plans in `BillingSeeder`.
+- Seed `pro_lifetime` (USD 79.00) and NGN monthly/yearly plans (₦7,500 / ₦75,000) in `BillingSeeder`.
 - `mobile/src/api/types.ts:106` — add `"lifetime"` to the `BillingInterval` union. C# DTO and the
   mirror change together, per the wire-contract rule.
 - Paywall copy differs per tier: recurring price versus one-time purchase. A "lifetime" card that
@@ -126,7 +148,11 @@ not a checkout.
 - Set `Paystack__SupportedCurrencies=NGN`. It currently claims `USD,NGN`, which is untrue for this
   account — a latent trap that would silently route USD to a provider that cannot collect it if the
   Bachs config were ever removed.
-- Retire the `test_ngn_monthly` plan once real NGN plans exist.
+- Retire the `test_ngn_monthly` plan once real NGN plans exist. **Also `pro_monthly` and `pro_yearly`,
+  which the plan did not list and which matter more:** they are USD *subscriptions*, so they are
+  unpayable for the same reason this whole split exists, and left active they would sit on an
+  international paywall beside the lifetime tier as two checkouts that cannot complete. Retiring is a
+  flag flip, never a delete — fulfilment and every receipt read the plan by id long afterwards.
 
 → **verify:** `dotnet test NoteFusion.slnx`, `cd mobile && npm run lint`, and the paywall rendering
 both tiers correctly under a forced country.
@@ -144,6 +170,14 @@ both tiers correctly under a forced country.
    dominates lifetime on risk.
 4. **Unknown-country users.** "Show both" is recommended above, which is a deliberate softening of
    the "forced" requirement for the pre-existing cohort only.
+5. **An address is not a market.** The account this shipped against geolocates to **DE**, not NG, so
+   production offered it the dollar lifetime tier — three independent lookup services agree on the
+   country. Any Nigerian user behind a VPN, or on a carrier whose addresses are registered abroad, is
+   therefore priced as international, and the same predicate that stops arbitrage also *refuses* them
+   the naira tier at checkout. There is no appeal path and no manual override. Worth deciding before
+   launch rather than after the first support ticket: candidates are an explicit "wrong country?"
+   affordance, trusting a self-declared country for the cheaper tier only, or an admin override on the
+   user row.
 
 ## Noted, not touched
 
