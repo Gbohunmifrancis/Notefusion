@@ -10,6 +10,8 @@ music21 score assembly:
   _adaptive_amplitude_floor  per-clip dynamic threshold from p75 of amplitudes
   _refine_pitches         correct octave errors against a pyin f0 contour
   _pyin_contour           the contour itself, and every way it can decline to produce one
+  _grid_residual          how far onsets sit from the grid they will be quantized onto
+  _grid_bpm               the tempo that puts those onsets on the grid, tappably
   _estimate_tempo_and_beats  a tap-in override wins the BPM but still recovers phase
   _profile_z_scores       one key profile's standardised opinion of all 24 keys
   _key_from_identity      (pitch class, mode) back to a music21 Key
@@ -36,9 +38,12 @@ from app.pipeline.transcriber import (
     MIN_AMPLITUDE_POLY,
     MIN_NOTES_FOR_KEY,
     Event,
+    _MAX_GRID_SLIP_STEPS,
     _adaptive_amplitude_floor,
     _beat_origin,
     _dedup_simultaneous,
+    _grid_bpm,
+    _grid_residual,
     _key_confidence_from_margin,
     _key_from_identity,
     _merge_onsets,
@@ -449,8 +454,144 @@ class TestOnsetBpm:
         assert _onset_bpm(events) == 0.0
 
 
-# ── decoded-WAV lifetime (defect 2) ───────────────────────────────────────────
+# ── _grid_residual and _grid_bpm ──────────────────────────────────────────────
 
+# The eighth grid that ``quantize_divisors`` actually ships.
+EIGHTHS = (2,)
+
+
+def _events_at(spacing_sec: float, count: int) -> list[Event]:
+    """*count* notes starting every *spacing_sec*, each filling 80 % of its slot."""
+    return [
+        Event(i * spacing_sec, i * spacing_sec + 0.8 * spacing_sec, 60 + i, 0.5)
+        for i in range(count)
+    ]
+
+
+class TestGridResidual:
+    """Distance from the onsets to the grid, in grid steps and in seconds."""
+
+    def test_onsets_on_the_grid_score_zero(self):
+        # Quarter notes at 96 BPM are two eighth steps apart — no rounding to do.
+        onsets = np.array([e.start for e in _events_at(0.625, 8)])
+        assert _grid_residual(onsets, 96.0, EIGHTHS) == pytest.approx((0.0, 0.0))
+
+    def test_onsets_exactly_between_grid_positions_score_the_worst_possible(self):
+        # Sixteenths against an eighth grid: every other onset falls dead centre
+        # between two steps, which is the 0.5 ceiling on a single note.
+        onsets = np.array([e.start for e in _events_at(0.17045, 8)])
+        steps, _ = _grid_residual(onsets, 88.0, EIGHTHS)
+        assert steps == pytest.approx(0.25, abs=0.01)
+
+    def test_the_best_fitting_divisor_wins(self):
+        # Triplet eighths at 96 BPM fit a divisor of 3 exactly and a divisor of 4 not
+        # at all.  music21's quantize snaps each note to whichever offered grid suits
+        # it, so the residual has to follow the same rule.
+        onsets = np.array([e.start for e in _events_at(0.20833, 7)])
+        assert _grid_residual(onsets, 96.0, (4,))[0] > _MAX_GRID_SLIP_STEPS
+        assert _grid_residual(onsets, 96.0, (4, 3))[0] == pytest.approx(0.0, abs=0.01)
+
+    def test_steps_worsen_with_tempo_but_seconds_do_not(self):
+        """The reason ``_grid_bpm`` filters on one unit and ranks on the other.
+
+        A fixed jitter is a larger fraction of a step at a faster tempo, so the step
+        figure cannot be compared across candidates — ranking on it walks the tempo
+        down towards nothing.  In seconds the same performance scores the same at
+        either metrical level, which is what lets the tempo preference decide.
+        """
+        jittered = np.array([0.0, 0.63, 1.24, 1.88, 2.49])
+        fast_steps, fast_sec = _grid_residual(jittered, 96.0, EIGHTHS)
+        slow_steps, slow_sec = _grid_residual(jittered, 48.0, EIGHTHS)
+        assert fast_steps > slow_steps
+        assert fast_sec == pytest.approx(slow_sec, abs=0.002)
+
+
+class TestGridBpm:
+    """The tempo under which the onsets land on the grid and a person could tap."""
+
+    def test_even_quarters_beat_librosas_prior(self):
+        # The corpus defect this exists for: librosa reports 117 — its own ~120 BPM
+        # prior — for a clip of even quarters at 96, and at 117 a quarter measures
+        # 1.219 beats and snaps alternately to 1.0 and 1.5.
+        assert _grid_bpm(_events_at(0.625, 8), 117.0, EIGHTHS) == pytest.approx(96.0)
+
+    def test_the_tappable_metrical_level_wins_among_equal_fits(self):
+        # 48, 96, 144 and 192 all put these onsets exactly on the grid; the one
+        # nearest 100 BPM is the one a person would tap.
+        assert _grid_bpm(_events_at(0.625, 8), 0.0, EIGHTHS) == pytest.approx(96.0)
+
+    def test_sixteenths_are_read_as_eighths_one_level_up(self):
+        """An eighth grid cannot hold a sixteenth, so the answer is the level that can.
+
+        Sixteenths at 88 BPM are the same music as eighths at 176, and only the
+        second is representable — which is why the metrical level cannot be folded
+        into a fixed band before scoring.
+        """
+        assert _grid_bpm(_events_at(0.17045, 12), 0.0, EIGHTHS) == pytest.approx(
+            176.0, abs=1.0
+        )
+
+    def test_librosas_estimate_is_admitted_as_a_candidate(self):
+        # Onsets on eighth steps of 100 BPM, but unevenly spaced, so the median
+        # inter-onset interval alone never proposes 100.  Without the tracker in the
+        # candidate set the answer would be 200, which fits just as exactly.
+        events = [
+            Event(t, t + 0.2, 60, 0.5) for t in (0.0, 0.3, 0.9, 1.2, 1.8, 2.1, 2.7)
+        ]
+        assert _grid_bpm(events, 100.0, EIGHTHS) == pytest.approx(100.0)
+        assert _grid_bpm(events, 0.0, EIGHTHS) == pytest.approx(200.0)
+
+    def test_jitter_within_tolerance_still_finds_the_tempo(self):
+        """Real onsets are never exact; ±20 ms of it must not cost the answer.
+
+        This is the case that decided the ranking unit.  Ranked in grid steps the
+        chooser answered 48 BPM here — half the truth — because the jitter is a
+        smaller fraction of a step down there, and it kept halving for as long as the
+        candidates allowed.  Ranked in seconds 96 and 48 tie, and the tempo
+        preference breaks the tie the way a person would.
+        """
+        events = [
+            Event(t, t + 0.5, 60, 0.5)
+            for t in (0.0, 0.643, 1.232, 1.881, 2.503, 3.135, 3.762)
+        ]
+        assert _grid_bpm(events, 0.0, EIGHTHS) == pytest.approx(96.0, abs=1.0)
+
+    def test_an_exact_fit_above_the_notated_ceiling_is_refused(self):
+        """A perfect fit at an absurd tempo is still an absurd answer.
+
+        Onsets every 100 ms land exactly on the eighth grid of 300 BPM, and on the
+        fragmented vibrato clips that is a real hazard: the median inter-onset
+        interval there is a vibrato fragment rather than a note, and a grid that
+        fine fits almost anything.  Nothing inside the notatable range fits these,
+        so the helper declines and librosa's estimate stands.
+        """
+        assert _grid_bpm(_events_at(0.1, 12), 0.0, EIGHTHS) == 0.0
+
+    def test_too_few_onsets_declines(self):
+        assert _grid_bpm(_events_at(0.625, 3), 96.0, EIGHTHS) == 0.0
+
+    def test_all_gaps_below_the_glitch_threshold_declines(self):
+        events = [Event(i * 0.02, i * 0.02 + 0.01, 60, 0.5) for i in range(8)]
+        assert _grid_bpm(events, 96.0, EIGHTHS) == 0.0
+
+    def test_onsets_too_uneven_to_fit_any_grid_decline(self):
+        """The corpus's own worst case, and the reason declining is a real path.
+
+        On ``fast_sixteenths_c_major`` the detected onsets sit ~38 ms from evenly
+        spaced — 22 % of a 174 ms note, and triple Basic Pitch's frame hop.  No tempo
+        makes that commensurate, so every candidate is refused and librosa's estimate
+        stands.  Pinned because it is tempting to read a decline as a miss and widen
+        the filter until something passes; widening it far enough to admit these would
+        also admit the wrong metrical levels the filter exists to reject.
+        """
+        events = [
+            Event(t, t + 0.12, 60, 0.5)
+            for t in (0.0, 0.212, 0.351, 0.542, 0.689, 0.911, 1.043, 1.254)
+        ]
+        assert _grid_bpm(events, 0.0, EIGHTHS) == 0.0
+
+
+# ── decoded-WAV lifetime (defect 2) ───────────────────────────────────────────
 
 class TestDecodedWavLifetime:
     """The decoded WAV must outlive inference, not be unlinked straight after it.

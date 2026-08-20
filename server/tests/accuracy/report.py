@@ -62,6 +62,7 @@ def _effective_flags() -> dict:
         "pyin_refine": settings.pyin_refine,
         "pyin_max_seconds": settings.pyin_max_seconds,
         "key_ensemble": settings.key_ensemble,
+        "tempo_grid": settings.tempo_grid,
         "quantize_divisors": list(settings.quantize_divisors),
     }
 
