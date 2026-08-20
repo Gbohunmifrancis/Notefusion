@@ -18,7 +18,13 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
 
     private readonly GoogleSettings _settings;
     private readonly ConfigurationManager<OpenIdConnectConfiguration> _configurationManager;
-    private readonly JwtSecurityTokenHandler _handler = new();
+
+    // MapInboundClaims must stay off: left at its default of true, the handler renames every
+    // claim read below to a legacy WS-* URI ('sub' becomes ClaimTypes.NameIdentifier, 'email'
+    // becomes ClaimTypes.Email), so each lookup returns null and a perfectly valid token is
+    // rejected as invalid — after its signature, issuer and audience have all passed. Same
+    // reason ConfigureJwtBearerOptions turns it off for our own tokens.
+    private readonly JwtSecurityTokenHandler _handler = new() { MapInboundClaims = false };
 
     public GoogleTokenValidator(GoogleSettings settings)
     {
@@ -31,7 +37,13 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
 
     public async Task<GoogleIdentity?> ValidateAsync(string idToken, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(idToken) || string.IsNullOrWhiteSpace(_settings.ClientId))
+        // Every platform's SDK audiences its ID token to a different client, so the accepted set is
+        // whichever clients are configured — never a single one, and never all of them blindly.
+        var audiences = new[] { _settings.ClientId, _settings.IosClientId }
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToArray();
+
+        if (string.IsNullOrWhiteSpace(idToken) || audiences.Length == 0)
         {
             return null;
         }
@@ -40,7 +52,7 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
         var parameters = new TokenValidationParameters
         {
             ValidIssuers = ValidIssuers,
-            ValidAudience = _settings.ClientId,
+            ValidAudiences = audiences,
             IssuerSigningKeys = config.SigningKeys,
             ValidateIssuer = true,
             ValidateAudience = true,
@@ -49,6 +61,15 @@ public sealed class GoogleTokenValidator : IGoogleTokenValidator
             ClockSkew = TimeSpan.FromMinutes(1)
         };
 
+        return ReadIdentity(idToken, parameters);
+    }
+
+    /// <summary>
+    /// Validates the token and reads the OIDC claims off it. Split from <see cref="ValidateAsync"/>
+    /// so it can be exercised with a locally signed token instead of Google's live signing keys.
+    /// </summary>
+    internal GoogleIdentity? ReadIdentity(string idToken, TokenValidationParameters parameters)
+    {
         try
         {
             var principal = _handler.ValidateToken(idToken, parameters, out _);

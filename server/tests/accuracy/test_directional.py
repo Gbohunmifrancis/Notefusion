@@ -448,6 +448,69 @@ def test_defect6_over_merging_a_genuine_semitone_step_is_punished():
     assert swallowed["f1"] < kept["f1"]
 
 
+# ── Accidentals — the user-visible face of defect 6 ───────────────────────────
+
+# A minor harmonic, whose raised 7th (G#) is a chromatic syllable under la-based minor:
+# doh is C, so G# is 8 semitones above it, which the ascending table spells "se".  This
+# phrase is the reason the accidentals column counts excess and not total.
+HARMONIC_MINOR_PHRASE = (69, 71, 72, 74, 76, 77, 80, 81, 80, 77, 76)
+
+
+def test_a_genuine_accidental_is_not_counted_against_the_pipeline():
+    """The trap this column was designed around, pinned so it cannot be reintroduced.
+
+    "Fewer accidentals is better" is the obvious reading of the complaint and it is
+    wrong: la-based minor writes the harmonic minor's raised 7th with an accidental, so
+    a perfect transcription of this phrase carries one and must score zero excess.  A
+    column that counted totals would rank a pipeline that flattened the 7th — losing the
+    key's defining note — above one that got it right.
+    """
+    refs = _refs(HARMONIC_MINOR_PHRASE)
+    perfect = _perfect(HARMONIC_MINOR_PHRASE)
+    scored = metrics.solfa_metrics(refs, perfect, "A minor", REF_BPM, REF_BPM)
+
+    assert scored["ref_chromatic_count"] > 0, "fixture no longer contains an accidental"
+    assert scored["chromatic_count"] == scored["ref_chromatic_count"]
+    assert scored["chromatic_ghosts"] == 0
+    assert scored["syllable_accuracy"] == pytest.approx(1.0)
+
+
+def test_spurious_accidentals_are_counted():
+    refs = _refs()
+    fragmented = _fragmented()  # every note plus a sharp neighbour sliver
+    perfect = _perfect()
+
+    dirty = metrics.solfa_metrics(refs, fragmented, "C major", REF_BPM, REF_BPM)
+    clean = metrics.solfa_metrics(refs, perfect, "C major", REF_BPM, REF_BPM)
+
+    assert clean["ref_chromatic_count"] == 0, "C major scale fixture has no accidentals"
+    assert clean["chromatic_ghosts"] == 0
+    assert dirty["chromatic_ghosts"] > 0, (
+        "sharp-neighbour ghosts are exactly the accidentals the bug report is about"
+    )
+
+
+def test_accidentals_are_counted_even_when_nothing_matches():
+    """The no-pairs path, which is where accidentals are worst rather than absent.
+
+    ``vibrato_heavy`` matches almost nothing, so a column computed only from matched
+    pairs would report its accidentals as zero — reading a total failure as clean
+    notation.  Hence the count sits ahead of the no-pairs return, and this pins it.
+
+    Nothing matches here because the onsets are 50 beats away, not because the pitches
+    are wrong: the matcher pairs on time with pitch as the tie-break only, precisely so
+    that a wrong pitch shows up as a label error rather than as a non-match.
+    """
+    refs = _refs()
+    unmatchable = _labelled(
+        [(p + 6, 50.0 + i, 1.0) for i, p in enumerate(PHRASE)], "C major"
+    )
+    scored = metrics.solfa_metrics(refs, unmatchable, "C major", REF_BPM, REF_BPM)
+
+    assert scored["matched"] == 0
+    assert scored["chromatic_ghosts"] > 0
+
+
 # ── Defect 7 — time signature (deferred by the plan) ──────────────────────────
 
 

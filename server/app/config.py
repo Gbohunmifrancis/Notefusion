@@ -57,6 +57,37 @@ class Settings:
         return os.getenv("NF_KEY_ENSEMBLE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def tempo_grid(self) -> bool:
+        """Pick the tempo that puts the detected onsets on the quantizer's grid.
+
+        librosa's ``beat_track`` carries a log-normal prior centred on 120 BPM, and on
+        a single hummed line it wins over the evidence: measured on the corpus, a clip
+        of even quarter notes at a true 96 BPM comes back as 117 — librosa's default
+        tempogram bin — in 12 of 38 cases.
+
+        A tempo that is *metrically* wrong is harmless, because the pipeline is
+        self-consistent under it: ``sec_to_beats`` and the preview's ``beat_sec`` are
+        reciprocals of the same number, so calling those quarters "eighths at 176" plays
+        back at exactly the right speed.  117-against-96 is the damaging kind, because
+        the beat period is then incommensurate with the notes: a true quarter measures
+        1.219 beats and the eighth grid snaps it alternately to 1.0 and 1.5, so a run of
+        equal notes is engraved — and heard — as an uneven lurch.  That is the
+        "not following the recorded time signature" defect, and it is a tempo bug rather
+        than a synthesis or grid bug.
+
+        Measured over the corpus: tempo.abs_error 51.105 -> 23.237, tempo.rel_error
+        0.566 -> 0.252, tempo.octave_error 0.316 -> 0.000, and notes.f1_with_offset
+        0.675 -> 0.709 because notes land where they belong once the beat divides them.
+        Ten cases improve on offset accuracy and one loses 0.074 —
+        triplets_eighth_c_major, where Basic Pitch under-detects the phrase's final long
+        note by ~0.35 s and the wrong tempo's coarser grid had been rounding that
+        shortfall back up.  Off is still a valid setting; the two answers differ on 20 of
+        38 cases, so it is worth an A/B on real recordings before the flag is collapsed
+        to a constant.
+        """
+        return os.getenv("NF_TEMPO_GRID", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def quantize_divisors(self) -> tuple[int, ...]:
         """music21 quantize grid, as divisions per quarter note.
 
@@ -78,8 +109,19 @@ class Settings:
         was added for did not move at all, because that case's tempo is misread as
         117 BPM against a true 96 — no triplet grid can align under a wrong beat
         period.  (That case reaches degree 1.000 anyway, from beat-phase alignment
-        rather than from any grid change.)  Retest both once tempo estimation
-        improves; the finer grids are one measurement away from being right.
+        rather than from any grid change.)
+
+        Both were retested once ``tempo_grid`` fixed that, and both are still worse.
+        The finer grid now does what it was supposed to — "4,3" finds the triplet
+        case's true 96 BPM, exactly as predicted — but it costs
+        solfa.degree_accuracy -0.011 either way, and "4" alone triples
+        tempo.octave_error (+0.316) because a denser grid fits more candidates, so
+        the tempo chooser starts accepting odd metrical levels: it reads that same
+        triplet case as sixteenths at 72 BPM, which is self-consistent and lands
+        every onset exactly, and is not what anyone would tap.  Eighths win a third
+        time.  The remaining triplet defect is not a grid problem at all — Basic
+        Pitch under-detects the phrase's final long note by ~0.35 s, and the coarse
+        grid was rounding that shortfall back up.
 
         Unparseable entries are dropped rather than raising, so a typo in a deploy
         cannot fail every transcription.

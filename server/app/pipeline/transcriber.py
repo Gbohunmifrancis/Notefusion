@@ -1016,6 +1016,89 @@ _MIN_BPM = 20.0
 _MAX_BPM = 400.0
 _DEFAULT_BPM = 100.0
 
+# Choosing a tempo is two questions, and the mistake to avoid is answering them with
+# one number.
+#
+# *Does the beat divide the notes?* is the question that matters, and it is decided on
+# evidence: under a commensurate tempo the onsets land on grid positions and
+# quantization is a no-op, while under an incommensurate one a run of equal notes gets
+# snapped alternately to two different values and is engraved — and heard — as a
+# lurch.  That is a yes/no property, so it is used as a filter and not as a score.
+#
+# *Which metrical level?* — 88 BPM in quarters or 176 in eighths — audio cannot
+# settle, so convention does: prefer the answer nearest the tempo a person taps.
+#
+# Scoring both at once by minimising the grid error does not work, and the failure is
+# not subtle.  A fixed onset jitter is a larger fraction of a grid step at a faster
+# tempo, so an error measured in steps always favours the slowest candidate (the
+# corpus walked down to 48 BPM); converting to seconds inverts it, because a fast
+# candidate's grid is dense enough to fit anything (the corpus ran up to 345 BPM).
+# Neither unit is scale-free, and both biases are large enough to swamp the real
+# signal.  Filter-then-prefer needs no unit that is fair across octaves, because the
+# two axes are never compared numerically.
+#
+# Nor can the metrical level be folded into a fixed band up front, tempting as that
+# is: the quantizer's grid is a division of the *beat*, so the level sets how fine the
+# grid is in real time.  A run of sixteenths at 88 does not fit an eighth grid at all;
+# the same music read as eighths at 176 fits it exactly.
+_TEMPO_PREFERENCE_BPM = 100.0
+
+# The range a beat can be *notated* in, which is narrower than the ``_MIN_BPM``..
+# ``_MAX_BPM`` range librosa is trusted to report inside: those bound what a tracker
+# might plausibly measure, these bound what a tempo mark can plausibly say.  Below and
+# above this, convention reads the same music one metrical level in — nobody writes a
+# quarter at 340 — and both ends matter here.  The top end is load-bearing: on the
+# heavily fragmented vibrato clips the median inter-onset interval is a vibrato
+# fragment rather than a note, which seeds candidates in the hundreds, and a grid that
+# fine fits almost any onset sequence.  Capping the candidates is what stops that,
+# because the filter alone cannot: the fit really is good, it is the reading that is
+# absurd.
+_MIN_NOTATED_BPM = 40.0
+_MAX_NOTATED_BPM = 200.0
+
+# How far, in grid steps, the onsets may sit from the grid and still count as landing
+# on it.  A step is what quantization rounds to, so this is really "does rounding move
+# these notes to a different slot".
+#
+# Measured on the corpus's real Basic Pitch onsets, the two readings are cleanly
+# separated: the candidates that are the right answer measure 0.090 and 0.144, and every
+# wrong one measures 0.209 or more, with nothing in between.  This sits in the middle of
+# that empty band rather than at its edge, which is where an earlier 0.15 sat — correct on
+# the same evidence, but leaving the noisiest passing case a 4 % margin against onset
+# jitter that varies with the material.
+#
+# When nothing passes, ``_grid_bpm`` declines and librosa's estimate stands — the same
+# answer as before this existed.  That is not a rare path and not a failure: on
+# ``fast_sixteenths_c_major`` the detected onsets are ~38 ms from evenly spaced, which is
+# 22 % of a 174 ms note and triple Basic Pitch's frame hop, so no tempo makes them
+# commensurate and every candidate is correctly refused.
+_MAX_GRID_SLIP_STEPS = 0.175
+
+# Survivors are compared on fit rounded to this many seconds, and only then on
+# tappability.  Two units, each where it is the right one: the filter above asks "does
+# rounding put this note in the right slot", which is a question about steps, and this
+# asks "how far does rounding actually move the audio", which is a question about time.
+# Using steps here instead looks natural and is wrong — a fixed jitter is a larger
+# fraction of a step at a faster tempo, so the same recording measured at 96 BPM scores
+# worse than at 48, and the chooser quietly halves the tempo.  In seconds the two are
+# indistinguishable, which is the point: they describe the same performance, so the
+# preference gets to decide.
+#
+# A band is needed at all because a candidate that merely scrapes past the filter can
+# otherwise win on the preference alone: a run of sixteenths admits both 176 BPM, where
+# they are exactly eighths, and librosa's 172.5, where they drift most of a step across
+# the phrase, and 172.5 is the marginally more tappable of the two.  10 ms is just under
+# Basic Pitch's ~11.6 ms frame hop, so differences this small are below what the onsets
+# resolve anyway.
+_GRID_FIT_BAND_SEC = 0.010
+
+# What the most common note length might be relative to the beat: a sixteenth, a
+# triplet eighth, an eighth, a triplet quarter, the beat itself, or a note spanning
+# one and a half, two, three or four beats.  Wider costs nothing directly — every
+# candidate still has to land on the grid — but past a factor of four the beat periods
+# are ones no listener would tap.
+_TEMPO_CANDIDATE_FACTORS = (0.25, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0, 1.5, 2.0, 3.0, 4.0)
+
 
 def _onset_bpm(events: list[Event]) -> float:
     """Rough BPM from the median inter-onset interval; 0.0 when unusable.
@@ -1035,6 +1118,85 @@ def _onset_bpm(events: list[Event]) -> float:
     return 60.0 / median_ioi if median_ioi > 0 else 0.0
 
 
+def _grid_residual(
+    onsets: np.ndarray, bpm: float, divisors: tuple[int, ...]
+) -> tuple[float, float]:
+    """Distance from the onsets to the grid they will be quantized onto.
+
+    Returns it twice, in grid steps and in seconds, both for whichever of the offered
+    divisors fits best — that being what music21's ``quantize`` does with a
+    multi-divisor grid, which snaps each note to whichever grid suits it.  Callers want
+    both because the two answer different questions: 0.5 steps is the worst a note can
+    be placed regardless of tempo, while seconds is the only unit in which the same
+    performance scores alike at every metrical level.  See ``_grid_bpm``, which uses
+    one to filter and the other to rank.
+    """
+    beats = (onsets - onsets[0]) * (bpm / 60.0)
+    divisor, steps = min(
+        (
+            (d, float(np.mean(np.abs(beats * d - np.round(beats * d)))))
+            for d in divisors
+        ),
+        key=lambda pair: pair[1],
+    )
+    return steps, steps * 60.0 / (bpm * divisor)
+
+
+def _grid_bpm(
+    events: list[Event], tracked_bpm: float, divisors: tuple[int, ...]
+) -> float:
+    """The most tappable tempo under which the onsets land on the grid; 0.0 if none.
+
+    The onsets are stronger tempo evidence than librosa's spectral flux on this
+    material — Basic Pitch has already segmented the notes, so their starts are known
+    rather than inferred from an envelope — but the median inter-onset interval alone
+    is not enough, because it says how long the commonest note is and not which
+    metrical level it occupies.  So that interval seeds a family of candidates,
+    librosa's estimate joins them on equal terms, every candidate has to survive the
+    grid filter, and the survivor that fits best and taps most naturally wins.
+
+    Declining (0.0) when nothing survives is deliberate: a clip whose onsets fit no
+    simple grid is one this has nothing to say about, and librosa's answer is a better
+    guess than the least-bad of a set of rejected ones.
+    """
+    onsets = np.array([e.start for e in events])
+    if onsets.size < 4:
+        return 0.0
+    iois = np.diff(onsets)
+    usable = iois[iois > 0.05]  # ignore glitches, as _onset_bpm does
+    if usable.size == 0:
+        return 0.0
+
+    unit_bpm = 60.0 / float(np.median(usable))
+    candidates = {unit_bpm * factor for factor in _TEMPO_CANDIDATE_FACTORS}
+    if tracked_bpm > 0.0:
+        # librosa's answer and its two neighbouring metrical levels.  Included so a
+        # clip whose onsets are too fragmented to give a clean median — heavy vibrato,
+        # for instance — can still be carried by the tracker.
+        candidates |= {tracked_bpm * factor for factor in (0.5, 1.0, 2.0)}
+
+    on_grid = []
+    for bpm in candidates:
+        if not _MIN_NOTATED_BPM <= bpm <= _MAX_NOTATED_BPM:
+            continue
+        steps, seconds = _grid_residual(onsets, bpm, divisors)
+        if steps <= _MAX_GRID_SLIP_STEPS:
+            on_grid.append((bpm, seconds))
+    if not on_grid:
+        return 0.0
+
+    def rank(pair: tuple[float, float]) -> tuple[int, float]:
+        bpm, seconds = pair
+        # Ratio, not difference, for the preference: 80 and 125 BPM are equally far
+        # from 100.
+        return (
+            round(seconds / _GRID_FIT_BAND_SEC),
+            abs(float(np.log(bpm / _TEMPO_PREFERENCE_BPM))),
+        )
+
+    return min(on_grid, key=rank)[0]
+
+
 def _estimate_tempo_and_beats(
     wav_path: Path, events: list[Event], tempo_override: int | None
 ) -> tuple[float, np.ndarray]:
@@ -1044,6 +1206,13 @@ def _estimate_tempo_and_beats(
     tracking still runs — seeded with that BPM — because the override says how
     fast the piece is, not where its downbeats sit.  Beat times come back empty
     when tracking fails, which ``_beat_origin`` reads as "no phase information".
+
+    Absent an override the BPM comes from ``_grid_bpm``, which weighs librosa's
+    estimate against the detected onsets instead of taking it on trust; the beat
+    *times* still come from librosa either way, since nothing else here knows where
+    the downbeats are.  A tempo that loses the vote is only ever off by a metrical
+    level, which does not move the phase by more than the window ``_beat_origin``
+    already applies.
     """
     import librosa
 
@@ -1067,6 +1236,11 @@ def _estimate_tempo_and_beats(
 
     if override_bpm:
         return override_bpm, beat_times
+
+    if settings.tempo_grid:
+        grid_bpm = _grid_bpm(events, tracked_bpm, settings.quantize_divisors)
+        if grid_bpm > 0.0:
+            return grid_bpm, beat_times
 
     if tracked_bpm > 0.0:
         return tracked_bpm, beat_times
