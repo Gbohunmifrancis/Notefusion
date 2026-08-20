@@ -557,12 +557,17 @@ function NoteGlyph({
         <Line x1={stemX} y1={y} x2={stemX} y2={stemEnd} stroke={color} strokeWidth={1.6} />
       )}
 
-      {/* Flags — bend away from the stem. */}
+      {/*
+       * Flags. A flag always hangs off the **right** of the stem and curves back
+       * toward the head, whichever way the stem points — so a down stem mirrors
+       * the shape vertically, not horizontally. Extra flags stack 6px back along
+       * the stem, i.e. toward the head.
+       */}
       {glyph.flags > 0 &&
         Array.from({ length: glyph.flags }).map((_, i) => {
           const fy = stemEnd + (stemDown ? -1 : 1) * i * 6;
           const d = stemDown
-            ? `M${stemX} ${fy} c -7 3, -9 9, -5 15`
+            ? `M${stemX} ${fy} c 7 -3, 9 -9, 5 -15`
             : `M${stemX} ${fy} c 7 3, 9 9, 5 15`;
           return <Path key={i} d={d} stroke={color} strokeWidth={1.6} fill="none" />;
         })}
