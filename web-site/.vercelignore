@@ -6,3 +6,4 @@ README.md
 .vercelignore
 .env*
 .vercel
+.audit-*
