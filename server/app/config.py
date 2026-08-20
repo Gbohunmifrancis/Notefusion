@@ -88,6 +88,47 @@ class Settings:
         return os.getenv("NF_TEMPO_GRID", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def f0_merge(self) -> bool:
+        """Read Basic Pitch's pitch bends, so onset merging can compare f0 not pitch.
+
+        **Off by default: measured, and it does not pay.**  Kept behind a flag rather than
+        deleted because the measurement was expensive and the next attempt should start
+        from it instead of rediscovering it.
+
+        The premise is sound.  Vibrato that crosses a semitone boundary comes back as a run
+        of alternating fragments — Basic Pitch fires at both neighbours of the wobble — and
+        the merge's exact-pitch test cannot fuse them, so one sung note is engraved as a
+        stream of ghost syllables, half of them carrying an accidental.  98.5% of the
+        accidentals the notation prints are not in the music, and all of them come from the
+        eight vibrato/drift cases.  The bends are already in the inference output and were
+        being discarded; reading them separates what the rounded pitch conflates, with
+        consecutive fragments of one note a median 0.395 semitones apart in f0 against
+        2.074 for genuine steps.
+
+        What it actually bought, on: solfa.chromatic_ghosts 3.579 -> 3.553 — one accidental
+        across 38 cases — while solfa.ghost_count went 5.737 -> 5.842, past the harness's
+        0.02 tolerance, and notes.n_est rose by the same 0.105.  Four cases move at all:
+        drift_1_semitone -1 accidental, vibrato_rate_k15 unchanged, and then
+        vibrato_heavy +2 ghosts and vibrato_rate_k155 f1 -0.073 with +3 ghosts.  Both
+        losers sit outside the nine cases ``F0_MERGE_SEMITONES`` was calibrated on, so the
+        tolerance is fitted, not general.
+
+        The reason is structural, and it is the useful part of the result: the merge stage
+        cannot reach the fragments.  51 of 128 f0-agreeing adjacent pairs *overlap* in time
+        at merge time rather than abutting, so ``_merge_onsets``' ``0.0 <= gap`` test never
+        sees them.  Fixing that means either an overlap-tolerant merge or moving the f0
+        evidence to the melody overlap resolver, which is where these events are resolved
+        today — not a wider tolerance here.
+
+        Off restores the previous behaviour exactly rather than approximately, because with
+        no bend data an Event's f0 *is* its pitch and the tolerance test collapses to
+        equality.  Turning it on is still worth an A/B on real recordings before anyone
+        writes the idea off entirely: synthetic vibrato is a clean sinusoid and human
+        vibrato is not, and this corpus is 38 synthetic cases.
+        """
+        return os.getenv("NF_F0_MERGE", "0").strip().lower() not in ("0", "false", "no")
+
+    @property
     def quantize_divisors(self) -> tuple[int, ...]:
         """music21 quantize grid, as divisions per quarter note.
 

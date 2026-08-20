@@ -6,6 +6,7 @@ music21 score assembly:
 
   _normalise_key_name     music21 flat/lowercase → standard C# KeyParser format
   _merge_onsets           fuse same-pitch fragments that are too close together
+  _bend_semitones         Basic Pitch's 1/3-semitone bend bins as a semitone offset
   _dedup_simultaneous     drop exact pitch+onset duplicates from polyphonic mode
   _adaptive_amplitude_floor  per-clip dynamic threshold from p75 of amplitudes
   _refine_pitches         correct octave errors against a pyin f0 contour
@@ -32,6 +33,8 @@ import pytest
 from app.pipeline import transcriber
 from app.pipeline.transcriber import (
     ADAPTIVE_FACTOR,
+    CONTOUR_BINS_PER_SEMITONE,
+    F0_MERGE_SEMITONES,
     KEY_CONFIDENCE_CAP_LOW,
     KEY_MARGIN_FULL,
     MIN_AMPLITUDE_MELODY,
@@ -41,6 +44,7 @@ from app.pipeline.transcriber import (
     _MAX_GRID_SLIP_STEPS,
     _adaptive_amplitude_floor,
     _beat_origin,
+    _bend_semitones,
     _dedup_simultaneous,
     _grid_bpm,
     _grid_residual,
@@ -158,11 +162,52 @@ class TestNormaliseKeyName:
 # ── _merge_onsets ─────────────────────────────────────────────────────────────
 
 
-class TestMergeOnsets:
-    """Same-pitch fragments separated by a gap smaller than gap_sec are fused.
+class TestBendSemitones:
+    """Basic Pitch's bend bins, converted to a semitone offset from the notated pitch."""
 
-    Events are ``Event(start_sec, end_sec, pitch_midi, amplitude)`` — the four values
-    Basic Pitch reports, which is all this logic reads.
+    def test_no_bends_means_no_offset(self):
+        # None is what drop_overlapping_pitch_bends leaves behind; [] is a note whose
+        # span held no contour frames.  Both mean "the pitch is the best estimate".
+        assert _bend_semitones(None) == 0.0
+        assert _bend_semitones([]) == 0.0
+
+    def test_bins_convert_at_three_to_the_semitone(self):
+        assert _bend_semitones([3]) == pytest.approx(1.0)
+        assert _bend_semitones([-3]) == pytest.approx(-1.0)
+        assert _bend_semitones([1]) == pytest.approx(1.0 / 3.0)
+
+    def test_the_bins_are_already_centred_on_the_notated_pitch(self):
+        """A zero bend is no offset — there is no bin-index correction to undo.
+
+        ``get_pitch_bends`` subtracts ``pb_shift`` so the array is relative to the
+        note's own contour bin, and that bin is exactly ``3 * pitch - 63`` for every
+        MIDI pitch, so the rounding in ``midi_pitch_to_contour_bin`` never actually
+        rounds.  Worth pinning: an earlier reading of this assumed a one-bin offset,
+        which would have biased every f0 by a third of a semitone.
+        """
+        assert _bend_semitones([0, 0, 0]) == 0.0
+        assert Event(0.0, 0.5, 60, 0.8, _bend_semitones([0])).f0 == pytest.approx(60.0)
+
+    def test_the_mean_is_taken_not_the_median(self):
+        # A monotonic run through the boundary: mean 1.0 bin, median 0.0 bins.  Chosen
+        # because a fragment shorter than one vibrato cycle sits on the slope, where
+        # the median is just its midpoint sample.
+        assert _bend_semitones([-1, 0, 4]) == pytest.approx(1.0 / 3.0)
+
+    def test_f0_defaults_to_the_notated_pitch(self):
+        assert Event(0.0, 0.5, 67, 0.8).f0 == 67.0
+        assert Event(0.0, 0.5, 67, 0.8).bend_semitones == 0.0
+
+    def test_a_bin_is_a_third_of_a_semitone(self):
+        assert CONTOUR_BINS_PER_SEMITONE == 3.0
+
+
+class TestMergeOnsets:
+    """Fragments separated by a gap smaller than gap_sec whose f0 agree are fused.
+
+    Events are ``Event(start_sec, end_sec, pitch_midi, amplitude, bend_semitones)`` —
+    the four values Basic Pitch reports plus the mean of the bend array it also returns
+    and the pipeline used to discard.
     """
 
     def test_two_same_pitch_notes_within_gap_are_merged(self):
@@ -227,6 +272,68 @@ class TestMergeOnsets:
         assert len(result) == 2
         assert result[0].pitch == 60
         assert result[1].pitch == 61
+
+    # ── the f0 tolerance ──────────────────────────────────────────────────────
+    # Every test above builds Events without bends, which is the point: for those the
+    # tolerance test is arithmetically the old exact-equality test, so they still pin
+    # the original semantics.  These add what the bends buy.
+
+    def test_fragments_a_semitone_apart_merge_when_their_f0_agree(self):
+        """The vibrato case: rounded pitches differ, the fundamentals do not.
+
+        A wobble sitting just under the boundary between 60 and 61 is reported by
+        Basic Pitch as alternating 60/61 fragments.  Their f0 are 60.5 and 60.6 — a
+        tenth of a semitone apart — so they are one note, and the old test could not
+        say so because rounding had already thrown the evidence away.
+        """
+        events = [
+            Event(0.0, 0.10, 60, 0.8, 0.5),  # f0 60.5
+            Event(0.14, 0.24, 61, 0.7, -0.4),  # f0 60.6
+        ]
+        result = _merge_onsets(events, gap_sec=0.08)
+        assert len(result) == 1
+        assert result[0].start == pytest.approx(0.0)
+        assert result[0].end == pytest.approx(0.24)
+        assert result[0].pitch == 60  # the louder fragment's, kept wholesale
+
+    def test_a_genuine_semitone_step_still_never_merges(self):
+        """Two notes really a semitone apart have f0 a semitone apart, so they stay.
+
+        This is the guard the struck tolerant-merge failed and the reason the constant
+        is under 1.0.  Both events are centred, as a clean legato step is.
+        """
+        events = [Event(0.0, 0.10, 60, 0.8, 0.0), Event(0.14, 0.24, 61, 0.7, 0.0)]
+        result = _merge_onsets(events, gap_sec=0.08)
+        assert len(result) == 2
+
+    def test_same_rounded_pitch_but_f0_far_apart_no_longer_merges(self):
+        """The change cuts both ways, deliberately.
+
+        Two events that round to 60 but whose fundamentals are 59.7 and 60.4 are 0.7
+        apart — over the tolerance — so they are read as two notes where the old test
+        called them one.  Measured on the corpus this is a net win: it avoids four
+        genuine-step fusions for the cost of six fragment merges.
+        """
+        events = [
+            Event(0.0, 0.10, 60, 0.8, -0.3),  # f0 59.7
+            Event(0.14, 0.24, 60, 0.7, 0.4),  # f0 60.4
+        ]
+        result = _merge_onsets(events, gap_sec=0.08)
+        assert len(result) == 2
+
+    def test_the_tolerance_boundary_is_inclusive(self):
+        """``<=``, so a difference of exactly F0_MERGE_SEMITONES merges."""
+        exact = [Event(0.0, 0.10, 60, 0.8, 0.0), Event(0.125, 0.25, 60, 0.7, F0_MERGE_SEMITONES)]
+        assert len(_merge_onsets(exact, gap_sec=0.08)) == 1
+
+    def test_a_tolerance_under_one_cannot_reach_bend_free_neighbours(self):
+        """Why 0.5 is safe: distinct integer pitches are at least 1.0 apart in f0.
+
+        Pinning the inequality rather than the constant, so raising F0_MERGE_SEMITONES
+        to 1.0 or beyond — which would silently start fusing adjacent semitones on
+        clips Basic Pitch reported no bends for — fails here.
+        """
+        assert F0_MERGE_SEMITONES < 1.0
 
     def test_empty_input_returns_empty(self):
         assert _merge_onsets([], gap_sec=0.08) == []

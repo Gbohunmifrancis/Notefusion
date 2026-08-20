@@ -94,6 +94,41 @@ MIN_NOTE_SEC = 0.06
 MERGE_GAP_MELODY = 0.08  # ~1 sixteenth note at 120 BPM
 MERGE_GAP_POLY = 0.05  # tighter for polyphonic — avoid swallowing trills
 
+# Basic Pitch reports per-note pitch bends in units of 1/3 semitone, already centred
+# on the note's own pitch (``get_pitch_bends`` subtracts ``pb_shift``, and the contour
+# bin of MIDI pitch p is exactly 3p - 63, so there is no rounding offset to undo).
+CONTOUR_BINS_PER_SEMITONE = 3.0
+
+# How far apart two events' f0 may sit and still be fused by ``_merge_onsets``.
+#
+# This is the constant the struck "vibrato-tolerant merge" needed and did not have.
+# That attempt compared *rounded* pitches, where fragments of one wobbling note are
+# two semitones apart because Basic Pitch fires at both neighbours — so no tolerance
+# under two could reach them, and a tolerance of two swallows real steps.  Reading the
+# bends collapses that: measured over the nine vibrato/drift cases, consecutive
+# fragments of one reference note sit a median 0.395 semitones apart in f0 against
+# 2.074 for genuine steps.
+#
+# 0.5 is where the corpus put it.  Against today's exact-pitch rule it fuses 11 more
+# fragment pairs and 4 *fewer* genuine ones — better on both axes — and the whole
+# movement is inside the vibrato cases: semitone_steps_c_major, fast_sixteenths_c_major,
+# diag_baseline and vibrato_depth_0_8 are bit-identical.  Going to 0.75 buys 9 more
+# fragment merges but starts fusing genuine steps in vibrato_rate_k20 and
+# vibrato_depth_2_0, and 1.0 is the knee where genuine damage triples.
+#
+# Any value below 1.0 also leaves bend-free events behaving exactly as before, since
+# two distinct integer pitches differ by at least 1 — which is why the ~40 helper tests
+# that build Events without bends need no changes and still pin the old semantics.
+#
+# All of which held, and bought almost nothing: on the full corpus the rule fires as
+# calibrated (drift_1_semitone gains 11 merges) and moves solfa.chromatic_ghosts by one
+# accidental in 38 cases, while solfa.ghost_count gets 0.105 *worse* — past the 0.02
+# regression tolerance.  Four cases move at all, and the two that lose (vibrato_rate_k155
+# f1 -0.073 and +3 ghosts, vibrato_heavy +2 ghosts) are outside the nine this constant was
+# fitted on.  So 0.5 is the right answer to the question the nine cases asked and the
+# question was too narrow; ``settings.f0_merge`` is off by default because of it.
+F0_MERGE_SEMITONES = 0.5
+
 # Key detection: fewer than this many note events and no pitch profile is
 # reliable; cap the reported confidence so the mobile shows the prompt.
 MIN_NOTES_FOR_KEY = 6
@@ -602,15 +637,45 @@ class Event:
     cannot quietly change an event another stage has already read.  Derive a modified
     copy with ``dataclasses.replace``.
 
-    Carries exactly the four values Basic Pitch reports and the pipeline consumes.  It
-    is a class rather than the tuple it replaced because five stages read these fields
-    by name where they used to index positionally, not because it holds anything new.
+    ``pitch`` is the notated pitch and stays an int: measured against the corpus the
+    bend-corrected reading is a *worse* notated pitch (135 events closer to the truth,
+    164 further), because the sharpness it faithfully tracks on the drift and vibrato
+    cases is exactly what notation is supposed to round away.  ``bend_semitones`` is
+    therefore not a correction to ``pitch`` but a second, continuous reading of the
+    same note, and the only thing that consumes it is ``_merge_onsets`` — which needs
+    to know whether two fragments are the same note, a question rounding destroys.
+
+    ``bend_semitones`` defaults to 0.0, which is honest rather than a sentinel: no bend
+    information means the best estimate of the fundamental *is* the notated pitch.
     """
 
     start: float
     end: float
     pitch: int
     amp: float
+    bend_semitones: float = 0.0
+
+    @property
+    def f0(self) -> float:
+        """Continuous fundamental in MIDI units — ``pitch`` when there are no bends."""
+        return self.pitch + self.bend_semitones
+
+
+def _bend_semitones(bends: object) -> float:
+    """Mean pitch bend in semitones, or 0.0 when Basic Pitch reported none.
+
+    The mean rather than the median deliberately.  A fragment shorter than one vibrato
+    cycle sits somewhere on the slope, and the median of a monotonic run is just its
+    midpoint sample — measured over the vibrato corpus the median reading separates
+    fragments from genuine steps strictly worse than the mean (a p10 of 0.000 against
+    0.670 on the genuine side, i.e. a floor no threshold can sit under).
+
+    ``bends`` is typed loosely because Basic Pitch documents it as ``Optional[List[int]]``
+    and empties it for notes that overlap another (``drop_overlapping_pitch_bends``).
+    """
+    if not bends:
+        return 0.0
+    return float(np.mean(np.asarray(bends, dtype=float))) / CONTOUR_BINS_PER_SEMITONE
 
 
 def _adaptive_amplitude_floor(events: list[Event], base: float) -> float:
@@ -631,7 +696,7 @@ def _merge_onsets(
     events: list[Event],
     gap_sec: float,
 ) -> list[Event]:
-    """Fuse consecutive same-pitch events separated by less than *gap_sec*.
+    """Fuse consecutive events less than *gap_sec* apart whose f0 agree.
 
     Basic Pitch often splits a single sustained note or a clearly-intended
     short repeated note (e.g. a triplet figure) into several fragments.
@@ -642,17 +707,35 @@ def _merge_onsets(
     from the earliest start to the latest end.  Multiple passes are made until
     no further merges are possible (handles chains of three or more).
 
-    The pitch test is exact equality, deliberately and permanently.  A
-    semitone-tolerant variant (plan phase 3c, to fuse vibrato that crosses a
-    semitone boundary) was measured on the corpus and struck: see the
-    vibrato_heavy comment in tests/accuracy/corpus.py for the geometry.  In
-    short, Basic Pitch fires at *both* neighbours of a wobbling pitch, so
-    consecutive fragments of one note are two semitones apart, not one — 43 of
-    63 adjacencies against 5 — and the shorter fragment measures 116.1 ms
-    (2560/22050, a quantization constant) on genuine legato semitone steps in
-    fast_sixteenths_c_major just as it does on vibrato fragments, so no
-    duration cap separates them.  Do not reintroduce a tolerance here without
-    reading that comment first.
+    The pitch test compares ``f0`` within ``F0_MERGE_SEMITONES`` rather than requiring
+    identical rounded pitches, which is the fix for the vibrato fragmentation the
+    earlier semitone-tolerant attempt could not reach.  That attempt compared rounded
+    pitches and was struck because Basic Pitch fires at *both* neighbours of a wobbling
+    pitch, so consecutive fragments of one note are two semitones apart rather than one
+    — 43 of 63 adjacencies against 5 — and the shorter fragment measures 116.1 ms
+    (2560/22050, a quantization constant) on genuine legato semitone steps just as it
+    does on vibrato fragments, so no duration cap separates them.  Both objections are
+    about *rounding*, and the bends Basic Pitch already returns are what rounding threw
+    away; see ``F0_MERGE_SEMITONES`` for the measured separation and the calibration.
+
+    For events carrying no bend data this is exactly the old exact-equality test, since
+    distinct integer pitches differ by at least 1.  That is the shipped configuration:
+    ``settings.f0_merge`` is off by default, so every ``bend_semitones`` is 0.0 and this
+    reduces to the equality test it replaced.  The tolerance is live code behind a flag
+    that measured a wash — see that flag's docstring and the fourth strike recorded in
+    tests/accuracy/corpus.py before turning it on or building on it.
+
+    An overlap allowance was measured here and is *not* settled.  An earlier probe
+    concluded it "buys nothing"; that probe only looked at gaps down to -50 ms and was
+    wrong.  With no window at all, at merge time over the nine vibrato/drift cases, 51 of
+    the 128 adjacent pairs whose f0 agree overlap in time (p25 -92.9 ms, p10 -246.1 ms)
+    and only 74 are reachable by ``0.0 <= gap``.  Sorted by start, a wobble Basic Pitch
+    reports at both neighbours *simultaneously* interleaves, so most vibrato fragments
+    never become adjacent-and-abutting and this stage structurally cannot see them —
+    which is the likeliest reason the f0 test barely moved the corpus.  It is not free
+    either: the f0-*disagreeing* adjacent pairs overlap harder still (34 of 44 on
+    vibrato_heavy, 61 of 73 on vibrato_rate_7hz), so widening the gap test hands the f0
+    test a much larger population it must reject correctly.  Untried.
     """
     if len(events) < 2:
         return events
@@ -668,11 +751,13 @@ def _merge_onsets(
             if i + 1 < len(merged):
                 nxt = merged[i + 1]
                 gap = nxt.start - curr.end
-                if curr.pitch == nxt.pitch and 0.0 <= gap < gap_sec:
+                if abs(curr.f0 - nxt.f0) <= F0_MERGE_SEMITONES and 0.0 <= gap < gap_sec:
                     # Merge: span from curr.start to nxt.end, keeping the louder
-                    # fragment's amplitude.  Both have the same pitch by the test
-                    # above, so taking the louder half wholesale is equivalent to
-                    # the old max(c_amp, n_amp) on the fields that existed then.
+                    # fragment wholesale — its pitch as well as its amplitude.  The
+                    # two pitches can now differ, and the louder fragment is the more
+                    # confident reading; pooling the f0 and re-rounding was the
+                    # alternative and is not supported by the measurement above, which
+                    # found the rounded pitch the better notated value.
                     loud = curr if curr.amp >= nxt.amp else nxt
                     result.append(replace(loud, start=curr.start, end=nxt.end))
                     i += 2
@@ -1323,10 +1408,16 @@ def _transcribe_wav(
     # Discard events shorter than MIN_NOTE_SEC before computing the adaptive
     # amplitude floor so that very short noise bursts (which tend to be high-
     # amplitude) do not inflate p75 and raise the floor above real notes.
+    #
+    # Dropping the bends here is the exact revert of the f0 merge: with every
+    # bend_semitones at 0.0 an Event's f0 is its pitch, so _merge_onsets' tolerance
+    # test reduces to the exact-equality test it replaced.  That is why the flag
+    # lives at this one line rather than as a branch inside the merge loop.
+    read_bends = settings.f0_merge
     raw_events: list[Event] = sorted(
         [
-            Event(start, end, int(pitch), float(amp))
-            for start, end, pitch, amp, _bends in note_events
+            Event(start, end, int(pitch), float(amp), _bend_semitones(bends) if read_bends else 0.0)
+            for start, end, pitch, amp, bends in note_events
             if (end - start) >= MIN_NOTE_SEC
         ],
         key=lambda e: e.start,

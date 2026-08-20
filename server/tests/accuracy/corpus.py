@@ -492,17 +492,51 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     # stays open behind a synth.py + runner.py change (overlapping render, mode="poly"),
     # not behind another case.
     #
-    # One live lead is parked behind that same prerequisite, not struck: the plan's
-    # defect 6 is right that the discarded pitch bends carry the answer.  predict()'s
-    # note_events already return them (transcriber.py:1058 drops the 5th field), they
-    # are in units of 1/3 semitone (basic_pitch/note_creation.py:209-211,
-    # CONTOURS_BINS_PER_SEMITONE = 3), and round(bp + (bends.mean - 1) / 3) scores 36
-    # better / 0 worse over 434 events — the contour argmax, read without
-    # note_creation.py:192's gaussian(51, std=5) bias, is stronger still at 42 of 48
-    # against the library bends' 35.  Use the MEAN, not the median: the median scores
-    # 17/6.  But it inherits both traps above — a relabel alone takes overlapping
-    # same-pitch pairs 0 -> 24, and the perfect-tracker phase-truncation bias grows
-    # 0.092 semitone at 5.5 Hz to 0.517 at 2.5 Hz.  Broaden the corpus first.
+    # THAT LIVE LEAD WAS TAKEN UP AND IS NOW THE FOURTH STRIKE — the first one the
+    # breadth cases killed, which is the harness doing its job rather than a new mystery.
+    # The plan's defect 6 is right that the discarded pitch bends carry information:
+    # predict()'s note_events return them, and reading them lets _merge_onsets compare a
+    # continuous f0 instead of a rounded pitch, which is the one objection the earlier
+    # semitone-tolerant attempt could not answer.  Measured over the nine vibrato/drift
+    # cases the separation is real: consecutive fragments of one reference note sit a
+    # median 0.395 semitones apart in f0 against 2.074 for genuine steps, and a 0.5
+    # tolerance fuses 11 more fragment pairs than exact-pitch equality while fusing 4
+    # FEWER genuine ones — better on both axes, with semitone_steps_c_major,
+    # fast_sixteenths_c_major, diag_baseline and vibrato_depth_0_8 bit-identical.
+    #
+    # On the full corpus it bought one accidental.  solfa.chromatic_ghosts 3.579 ->
+    # 3.553 across 38 cases, while solfa.ghost_count went 5.737 -> 5.842 — past the 0.02
+    # tolerance, so it fails the gate it was built to pass.  Four cases move at all:
+    # drift_1_semitone -1 accidental, vibrato_rate_k15 unchanged, vibrato_heavy +2
+    # ghosts, vibrato_rate_k155 f1 -0.073 and +3 ghosts.  BOTH LOSERS ARE BREADTH CASES
+    # THE TOLERANCE WAS NOT FITTED ON.  Same death as the first three: a constant fitted
+    # to a subset of the vibrato space.  Live behind settings.f0_merge, default OFF; off
+    # is an exact revert, because with no bends an Event's f0 IS its pitch.
+    #
+    # Two claims in the earlier draft of this paragraph were wrong, and both would have
+    # biased a fourth attempt:
+    #  1. "(bends.mean - 1) / 3" — there is no one-bin offset to undo.  get_pitch_bends
+    #     subtracts pb_shift, and the contour bin of MIDI pitch p is 12*3*log2(
+    #     midi_to_hz(p)/27.5) = 3p - 63 exactly, an integer, so freq_idx never rounds and
+    #     the array is already centred on the note's own pitch.  Subtracting 1 would have
+    #     put every f0 a third of a semitone flat.  Pinned by
+    #     test_the_bins_are_already_centred_on_the_notated_pitch.
+    #  2. "36 better / 0 worse" as a NOTATED pitch.  The zero-offset formula the
+    #     derivation supports scores 135 events better and 164 worse (MAE 1.781 -> 1.761),
+    #     because on the drift and vibrato cases the bend faithfully tracks sharpness that
+    #     notation is supposed to round away — drift_1_semitone gets WORSE, 0.405 ->
+    #     0.759.  So the bends are a better merge DISCRIMINATOR and a worse pitch; Event
+    #     keeps pitch an int and the merge keeps the louder fragment's pitch wholesale.
+    #
+    # The structural finding is the part worth reusing: reason 2 of the second strike
+    # above was right, and more so than it knew.  This stage cannot reach the fragments.
+    # With no candidate window at all, 51 of 128 f0-agreeing adjacent pairs at merge time
+    # overlap (p25 -92.9 ms, p10 -246.1 ms) and only 74 satisfy _merge_onsets' 0.0 <= gap.
+    # A wobble Basic Pitch reports at both neighbours simultaneously interleaves, so the
+    # fragments never abut.  A fifth attempt should widen WHERE the f0 evidence is applied
+    # — an overlap allowance, or the melody overlap resolver where these events are
+    # actually resolved today — not the tolerance.  It is not free: the f0-DISAGREEING
+    # adjacent pairs overlap harder still (34 of 44 here, 61 of 73 on vibrato_rate_7hz).
     Case(
         name="vibrato_heavy",
         key="C major",
