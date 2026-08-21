@@ -138,6 +138,9 @@ export function NotePlayer({
   const readyRef = useRef(ready);
   const isPlayingRef = useRef(isPlaying);
   const durationRef = useRef(duration);
+  const pauseRef = useRef(pause);
+  const playRef = useRef(play);
+  const seekToRef = useRef(seekTo);
   useEffect(() => {
     readyRef.current = ready;
   }, [ready]);
@@ -147,6 +150,15 @@ export function NotePlayer({
   useEffect(() => {
     durationRef.current = duration;
   }, [duration]);
+  useEffect(() => {
+    pauseRef.current = pause;
+  }, [pause]);
+  useEffect(() => {
+    playRef.current = play;
+  }, [play]);
+  useEffect(() => {
+    seekToRef.current = seekTo;
+  }, [seekTo]);
 
   // ── Seek-drag bookkeeping ──────────────────────────────────────────────
   // Purely presentational: the drag fraction is used only to render the
@@ -202,7 +214,7 @@ export function NotePlayer({
       onPanResponderGrant: (evt) => {
         wasPlayingBeforeSeekRef.current = isPlayingRef.current;
         if (isPlayingRef.current) {
-          void pause();
+          void pauseRef.current();
         }
         setDragFraction(computeFraction(evt.nativeEvent.locationX));
       },
@@ -215,7 +227,7 @@ export function NotePlayer({
         const now = Date.now();
         if (now - lastSeekTsRef.current > 120 && durationRef.current > 0) {
           lastSeekTsRef.current = now;
-          void seekTo(fraction * durationRef.current);
+          void seekToRef.current(fraction * durationRef.current);
         }
       },
       onPanResponderRelease: (evt) => {
@@ -223,9 +235,9 @@ export function NotePlayer({
         setDragFraction(null);
 
         if (durationRef.current > 0) {
-          void seekTo(fraction * durationRef.current).then(() => {
+          void seekToRef.current(fraction * durationRef.current).then(() => {
             if (wasPlayingBeforeSeekRef.current) {
-              return play();
+              return playRef.current();
             }
             return undefined;
           });
