@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Linking,
   ScrollView,
   StyleSheet,
@@ -18,6 +17,7 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import { showDialog } from "../lib/dialog";
 import {
   disablePush,
   enablePush,
@@ -149,14 +149,17 @@ export function SettingsScreen({ navigation, route }: Props) {
   // ── Account deletion ───────────────────────────────────────────────────────
 
   function confirmDelete() {
-    Alert.alert(
-      "Delete account?",
-      "This permanently removes your account and every transcription in your library. It cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", style: "destructive", onPress: deleteAccount },
+    showDialog({
+      title: "Delete account?",
+      message:
+        "This permanently removes your account and every transcription in your library. It cannot be undone.",
+      icon: "warning-outline",
+      tone: "danger",
+      actions: [
+        { label: "Delete", style: "destructive", onPress: deleteAccount },
+        { label: "Cancel", style: "cancel" },
       ],
-    );
+    });
   }
 
   async function deleteAccount() {
@@ -180,7 +183,12 @@ export function SettingsScreen({ navigation, route }: Props) {
     } catch (e) {
       // Only reset on failure — the success path has already unmounted.
       setDeleting(false);
-      Alert.alert("Could not delete account", toApiError(e).message);
+      showDialog({
+        title: "Could not delete account",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     }
   }
 

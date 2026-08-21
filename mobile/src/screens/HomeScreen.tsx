@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  Alert,
+  AppState,
   FlatList,
   StyleSheet,
   Text,
@@ -12,18 +12,30 @@ import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
+import { Avatar } from '../components/Avatar';
 import { Card } from '../components/Card';
-import { libraryApi } from '../api/endpoints';
+import { libraryApi, meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { deriveSolfa } from '../lib/solfa';
 import { synthesizeMelodyWavBase64 } from '../lib/synth';
 import { useAuth } from '../lib/auth';
+import { showDialog } from '../lib/dialog';
+import { useSubscription } from '../lib/subscription';
 import { fonts, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
 import type { RootStackParams, TabParams } from '../navigation/types';
 
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
+
+/**
+ * The time-of-day greeting. Module-level so the initial value and every later
+ * refresh read one rule.
+ */
+function currentGreeting(): string {
+  const hour = new Date().getHours();
+  return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+}
 
 /**
  * HomeScreen — strictly following row 2 screen 1 ("Home") of the design sheet:
@@ -36,11 +48,26 @@ type Props = BottomTabScreenProps<TabParams, 'Home'>;
 export function HomeScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { user } = useAuth();
+  const { isPro } = useSubscription();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [pictureUrl, setPictureUrl] = useState<string | null>(null);
+  const [greeting, setGreeting] = useState(currentGreeting);
   const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
+
+  // The greeting used to be read at render, on the assumption that focus alone would
+  // keep it honest. It does not: backgrounding the app with Home focused and coming
+  // back hours later never re-fires the focus effect — the screen never lost focus —
+  // so "Good morning" sat there into the evening. Foreground is the case that was
+  // missing. React bails out when the string is unchanged, so this costs no renders.
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'active') setGreeting(currentGreeting());
+    });
+    return () => sub.remove();
+  }, []);
 
   const reload = useCallback(() => {
     libraryApi
@@ -55,6 +82,15 @@ export function HomeScreen({ navigation }: Props) {
   useFocusEffect(
     useCallback(() => {
       let active = true;
+      setGreeting(currentGreeting());
+      // Re-read on focus rather than once on mount: Home stays mounted for the whole
+      // session, so a photo changed on Profile would otherwise not appear until relaunch.
+      meApi
+        .get()
+        .then((p) => {
+          if (active) setPictureUrl(p.profilePictureUrl);
+        })
+        .catch(() => undefined);
       libraryApi
         .list()
         .then((all) => {
@@ -101,17 +137,16 @@ export function HomeScreen({ navigation }: Props) {
         title: full.title,
       });
     } catch (e) {
-      Alert.alert('Could not open', toApiError(e).message);
+      showDialog({
+        title: 'Could not open',
+        message: toApiError(e).message,
+        icon: 'alert-circle-outline',
+        tone: 'danger',
+      });
     }
   }
 
   const firstName = user?.fullName?.split(' ')[0] ?? 'there';
-
-  // Read at render rather than memoised: the screen re-renders on every focus, so
-  // the greeting corrects itself if the app sat open from morning into afternoon.
-  const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   return (
     <Screen>
@@ -124,7 +159,17 @@ export function HomeScreen({ navigation }: Props) {
           <View style={styles.headerArea}>
             {/* ── 1. Top Header Bar: Dark Mode & Notifications (right) ─ */}
             <View style={styles.topHeader}>
-              <View />
+              {/* The left slot was an empty spacer holding the actions right. The
+                  avatar fills it and carries the premium signal: the gold ring is
+                  `Avatar`'s own `premium` prop, so Home and Profile cannot disagree
+                  about who is paying. */}
+              <Avatar
+                uri={pictureUrl}
+                name={user?.fullName}
+                size={38}
+                premium={isPro}
+                onPress={() => navigation.navigate('Profile')}
+              />
 
               <View style={styles.headerActions}>
                 {/* Dark Mode Toggle */}
@@ -158,7 +203,19 @@ export function HomeScreen({ navigation }: Props) {
             </View>
 
             {/* ── 2. Greeting Header ────────────────────────────────────────── */}
-            <Text style={styles.greetingTitle}>{greeting}, {firstName}</Text>
+            <View style={styles.greetingRow}>
+              <Text style={styles.greetingTitle} numberOfLines={1}>
+                {greeting}, {firstName}
+              </Text>
+              {/* Same soft-gold chip as the Profile plan badge rather than a second
+                  gold treatment invented here. */}
+              {isPro && (
+                <View style={styles.proChip}>
+                  <Ionicons name="star" size={9} color={colors.premiumDeep} />
+                  <Text style={styles.proChipText}>PRO</Text>
+                </View>
+              )}
+            </View>
             <Text style={styles.greetingSub}>What will you transcribe today?</Text>
 
             {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}
@@ -204,7 +261,7 @@ export function HomeScreen({ navigation }: Props) {
                     {item.title}
                   </Text>
                   <Text style={styles.recentMeta}>
-                    {item.key} Major · {item.tempoBpm} BPM
+                    {item.key} · {item.tempoBpm} BPM
                   </Text>
                 </View>
 
@@ -267,11 +324,35 @@ const makeStyles = (c: Palette, s: Shadows) =>
     },
 
     // ── Greeting Header ───────────────────────────────────────────────────────
+    greetingRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+      marginBottom: 2,
+    },
     greetingTitle: {
       fontSize: 22,
       fontFamily: fonts.bold,
       color: c.text,
-      marginBottom: 2,
+      // Shrinks so a long name is truncated rather than pushing the chip off-screen.
+      flexShrink: 1,
+    },
+    proChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
+      backgroundColor: c.premiumSoft,
+      borderWidth: 1,
+      borderColor: c.premiumBorder,
+      borderRadius: radii.pill,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 2,
+    },
+    proChipText: {
+      fontSize: 9.5,
+      fontFamily: fonts.bold,
+      color: c.premiumDeep,
+      letterSpacing: 0.8,
     },
     greetingSub: {
       fontSize: 14,

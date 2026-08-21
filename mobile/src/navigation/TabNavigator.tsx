@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -32,6 +32,8 @@ const Tab = createBottomTabNavigator<TabParams>();
 const TABS: {
   name: keyof TabParams;
   label: string;
+  /** Label for an active subscriber, where the tab manages a plan instead of selling one. */
+  proLabel?: string;
   icon: keyof typeof Ionicons.glyphMap;
   iconActive: keyof typeof Ionicons.glyphMap;
   isCenter?: boolean;
@@ -40,31 +42,30 @@ const TABS: {
   { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
   { name: "Record", label: "Record", icon: "mic", iconActive: "mic", isCenter: true },
   { name: "Profile", label: "Profile", icon: "person-outline", iconActive: "person" },
-  { name: "Subscription", label: "Subscription", icon: "card-outline", iconActive: "card" },
+  {
+    name: "Subscription",
+    label: "Subscription",
+    proLabel: "Premium",
+    icon: "card-outline",
+    iconActive: "card",
+  },
 ];
 
 /**
  * Tab bar matching Image 3 design sheet:
  * Automatically hides when software keyboard is open so bottom icons never shift up over inputs.
  *
- * The Subscription tab is dropped for active subscribers — there is nothing to sell
- * someone who already bought. The screen stays *registered* in the navigator below,
- * so `navigate("Subscription")` and deep links keep working; only the button goes.
- * Items are `flex: 1`, so removing one re-flows the row with no gap to patch.
+ * Every account gets all five tabs. The last one used to be dropped for subscribers — there was
+ * nothing to sell them — but with four items the mic no longer landed in the middle of the row,
+ * and it is the one control the layout is built around. It now stays and changes job instead:
+ * "Subscription" sells Pro, "Premium" manages it (renewal date, cancel). Five items either way,
+ * so the mic is centred for everyone.
  */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const { isPro } = useSubscription();
-
-  // While billing state is still loading `isPro` is false, so the bar renders the
-  // free layout first. Showing a tab and then removing it beats an empty bar or a
-  // late-arriving button pushing the others sideways under the user's thumb.
-  const tabs = useMemo(
-    () => (isPro ? TABS.filter((t) => t.name !== "Subscription") : TABS),
-    [isPro],
-  );
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -95,10 +96,14 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
       pointerEvents="box-none"
     >
       <View style={styles.bar}>
-        {tabs.map((tab, index) => {
+        {TABS.map((tab, index) => {
           let targetRouteName: keyof TabParams = tab.name;
           const routeIndex = state.routes.findIndex((r) => r.name === targetRouteName);
           const focused = state.index === routeIndex;
+          // `isPro` is false until billing answers, so the label can settle a beat after
+          // the bar paints. That is only ever a word changing in place now — the row's
+          // item count no longer depends on it, so nothing moves under the user's thumb.
+          const label = isPro && tab.proLabel ? tab.proLabel : tab.label;
 
           const onPress = () => {
             const route = state.routes.find((r) => r.name === targetRouteName);
@@ -127,7 +132,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 <View style={styles.centerBtn}>
                   <Ionicons name="mic" size={26} color="#FFFFFF" />
                 </View>
-                <Text style={[styles.tabLabel, styles.centerLabel]}>{tab.label}</Text>
+                <Text style={[styles.tabLabel, styles.centerLabel]}>{label}</Text>
               </TouchableOpacity>
             );
           }
@@ -137,7 +142,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               key={`${tab.label}-${index}`}
               accessibilityRole="button"
               accessibilityState={focused ? { selected: true } : {}}
-              accessibilityLabel={tab.label}
+              accessibilityLabel={label}
               activeOpacity={0.85}
               onPress={onPress}
               style={styles.tabItem}
@@ -148,7 +153,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 color={focused ? colors.accent : colors.textMuted}
               />
               <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
-                {tab.label}
+                {label}
               </Text>
             </TouchableOpacity>
           );

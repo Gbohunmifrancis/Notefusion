@@ -193,8 +193,45 @@ the expected audience — there is no client secret on the API side):
 heroku config:set Google__ClientId='<google-oauth-client-id>.apps.googleusercontent.com' --app <your-heroku-app>
 ```
 
+Use the **web** client ID here. The Android app deliberately asks Google for a token
+audienced to the server rather than to itself, so the web client is the audience on
+Android. Add a second variable only once the app ships on iOS, whose SDK audiences to
+the iOS client instead:
+
+```bash
+heroku config:set Google__IosClientId='<ios-oauth-client-id>.apps.googleusercontent.com' --app <your-heroku-app>
+```
+
+Both are accepted when both are set; an unset one is simply not a valid audience.
+
 > The mobile app carries its own Google client id in `mobile/app.json` → `expo.extra`;
 > that is a separate, client-side value and is not a Heroku secret.
+>
+> Google sign-in is native-SDK based and therefore **cannot work in Expo Go** — the
+> buttons hide themselves there. Use a development or production build.
+
+**The Android OAuth client must list two SHA-1 fingerprints, not one.** Google matches an
+Android client by package name plus signing certificate, and this app is enrolled in Play App
+Signing — so the certificate depends on how the app was installed:
+
+| Install route | Certificate presented | Where to find its SHA-1 |
+|---|---|---|
+| Sideload (any EAS `.apk`, `expo run:android`) | your **upload** key | Play Console → Test and release → Setup → App signing → *Upload key certificate* |
+| Google Play | Google's **app signing** key | the *App signing key certificate* block on the same page |
+
+Register **both** on the same Android OAuth client. Registering only the upload key is the
+trap: sign-in then works on every build you test by hand and fails with `DEVELOPER_ERROR`
+(code 10) for every user who installs from the store. A local debug keystore needs its own
+entry too — `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey
+-storepass android`.
+
+> **Check which GCP project you are in.** An OAuth client id is prefixed with the project
+> *number* that owns it, so `21738378819-…` means those clients live in project `21738378819`.
+> Register the fingerprints there. Adding them to a different project is silent: nothing
+> errors, sign-in just keeps failing. The Play publishing service account
+> ([DEPLOYMENT_MOBILE.md](DEPLOYMENT_MOBILE.md)) should live in this same project, so that
+> auth and releases share one identity boundary.
+
 
 ---
 

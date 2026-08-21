@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Modal,
   ScrollView,
   StyleSheet,
@@ -16,6 +15,7 @@ import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import { showDialog } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
 import { meApi, authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -78,9 +78,18 @@ export function ProfileScreen() {
       const updated = await meApi.update(trimmed);
       setProfile(updated);
       setUser({ ...user!, fullName: updated.fullName });
-      Alert.alert("Saved ✓", "Your display name has been updated.");
+      showDialog({
+        title: "Saved",
+        message: "Your display name has been updated.",
+        icon: "checkmark-circle-outline",
+      });
     } catch (e) {
-      Alert.alert("Could not update", toApiError(e).message);
+      showDialog({
+        title: "Could not update",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     }
   }
 
@@ -92,9 +101,18 @@ export function ProfileScreen() {
       await authApi.changePassword(current, next);
       setCurrent("");
       setNext("");
-      Alert.alert("Password updated ✓", "Your password has been changed.");
+      showDialog({
+        title: "Password updated",
+        message: "Your password has been changed.",
+        icon: "checkmark-circle-outline",
+      });
     } catch (e) {
-      Alert.alert("Could not change password", toApiError(e).message);
+      showDialog({
+        title: "Could not change password",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setPwBusy(false);
     }
@@ -117,7 +135,12 @@ export function ProfileScreen() {
       );
       setProfile(updated);
     } catch (e) {
-      Alert.alert("Could not update photo", toApiError(e).message);
+      showDialog({
+        title: "Could not update photo",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setAvatarBusy(false);
     }
@@ -129,7 +152,12 @@ export function ProfileScreen() {
       const updated = await meApi.removePicture();
       setProfile(updated);
     } catch (e) {
-      Alert.alert("Could not remove photo", toApiError(e).message);
+      showDialog({
+        title: "Could not remove photo",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setAvatarBusy(false);
     }
@@ -137,23 +165,29 @@ export function ProfileScreen() {
 
   function onAvatarPress() {
     const hasPicture = Boolean(profile?.profilePictureUrl);
-    Alert.alert(
-      "Profile photo",
-      hasPicture ? undefined : "Add a photo to personalise your account.",
-      [
-        { text: hasPicture ? "Change photo" : "Choose photo", onPress: changePicture },
+    showDialog({
+      title: "Profile photo",
+      message: hasPicture ? undefined : "Add a photo to personalise your account.",
+      icon: "camera-outline",
+      actions: [
+        {
+          label: hasPicture ? "Change photo" : "Choose photo",
+          icon: "image-outline",
+          onPress: changePicture,
+        },
         ...(hasPicture
           ? [
               {
-                text: "Remove photo",
+                label: "Remove photo",
                 style: "destructive" as const,
+                icon: "trash-outline" as const,
                 onPress: removePicture,
               },
             ]
           : []),
-        { text: "Cancel", style: "cancel" as const },
+        { label: "Cancel", style: "cancel" as const },
       ],
-    );
+    });
   }
 
   return (
@@ -196,17 +230,15 @@ export function ProfileScreen() {
         />
         <View style={styles.divider} />
 
-        {/* Nothing left to sell an active subscriber — same rule hides the tab. */}
-        {!isPro ? (
-          <>
-            <MenuItem
-              icon="card-outline"
-              label="Subscription"
-              onPress={() => nav.navigate("Upgrade")}
-            />
-            <View style={styles.divider} />
-          </>
-        ) : null}
+        {/* Same destination either way; only the promise differs. A subscriber goes there to
+            see the renewal date and cancel, so calling it "Subscription" would read as an
+            upsell to someone who already paid. */}
+        <MenuItem
+          icon="card-outline"
+          label={isPro ? "Manage membership" : "Subscription"}
+          onPress={() => nav.navigate("Upgrade")}
+        />
+        <View style={styles.divider} />
 
         <MenuItem
           icon="settings-outline"
@@ -453,6 +485,11 @@ const makeStyles = (c: Palette) =>
     signOutBtn: {
       marginTop: spacing.md,
       marginBottom: spacing.xxl,
+      // Hugs its label instead of spanning the screen. `Button` stretches by default,
+      // which is right for a primary action but made sign-out — the one destructive
+      // control here — the widest thing on the page. `Button` already carries
+      // `paddingHorizontal: spacing.xl`, so the pill still has room to breathe.
+      alignSelf: "center",
     },
 
     // ── Modal ─────────────────────────────────────────────────────────────────

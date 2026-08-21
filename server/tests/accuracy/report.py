@@ -61,6 +61,7 @@ def _effective_flags() -> dict:
         "beat_align": settings.beat_align,
         "pyin_refine": settings.pyin_refine,
         "pyin_max_seconds": settings.pyin_max_seconds,
+        "pyin_semitone": settings.pyin_semitone,
         "key_ensemble": settings.key_ensemble,
         "tempo_grid": settings.tempo_grid,
         "f0_merge": settings.f0_merge,

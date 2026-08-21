@@ -533,10 +533,26 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     # With no candidate window at all, 51 of 128 f0-agreeing adjacent pairs at merge time
     # overlap (p25 -92.9 ms, p10 -246.1 ms) and only 74 satisfy _merge_onsets' 0.0 <= gap.
     # A wobble Basic Pitch reports at both neighbours simultaneously interleaves, so the
-    # fragments never abut.  A fifth attempt should widen WHERE the f0 evidence is applied
-    # — an overlap allowance, or the melody overlap resolver where these events are
-    # actually resolved today — not the tolerance.  It is not free: the f0-DISAGREEING
-    # adjacent pairs overlap harder still (34 of 44 here, 61 of 73 on vibrato_rate_7hz).
+    # fragments never abut.
+    #
+    # THE FIFTH ATTEMPT WON, AND IT WAS NOT A MERGE FIX.  The recommendation this comment
+    # used to carry — widen WHERE the f0 evidence is applied, an overlap allowance or the
+    # melody overlap resolver — was measured and is wrong twice over.  Probes: bends are
+    # present on essentially every overlapping event (49 of 49 on vibrato_heavy), so
+    # drop_overlapping_pitch_bends was never the obstacle; and the step-6 population is
+    # almost never semitone-adjacent (6 candidates across nine vibrato cases, and 0 of 56
+    # f0-agreeing overlapping pairs a semitone apart), so at that stage "f0 agrees"
+    # degenerates to "pitch is identical" and relocating the test buys nothing either.
+    #
+    # Laying the final notes against the reference showed why: within one reference note
+    # the estimate is a run at ONE wrong pitch (ref 69 -> 70,70,70,70,72), not an
+    # alternation.  The wobble parks on the semitone neighbour, so this is a PITCH error
+    # and the accidental merely follows from it — there is no fragment pair to fuse.  The
+    # fix is upstream at stage 3: settings.pyin_semitone rounds pyin's median and takes it
+    # as the pitch.  solfa.degree_accuracy 0.831 -> 0.917, solfa.chromatic_ghosts 3.579 ->
+    # 1.868, key.exact 0.763 -> 0.868, and every guard case bit-identical.  Five strikes
+    # against the merge stage; the sixth attempt should not be a merge attempt.
+
     Case(
         name="vibrato_heavy",
         key="C major",

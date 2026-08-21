@@ -1,16 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri, ResponseType } from 'expo-auth-session';
 import { onSessionExpired } from '../api/client';
 import { authApi } from '../api/endpoints';
 import { tokenStore } from '../lib/tokenStore';
 import { registerForPushAsync } from '../lib/push';
-import { googleAuth, googleAuthConfigured, isExpoGo } from '../lib/env';
+import { googleAuthConfigured } from '../lib/env';
+import { getGoogleIdToken } from '../lib/googleSignin';
 import type { AuthUser } from '../api/types';
-
-// expo-auth-session needs the browser warm so the redirect back can close the tab.
-WebBrowser.maybeCompleteAuthSession();
 
 interface AuthState {
   user: AuthUser | null;
@@ -33,20 +28,6 @@ interface AuthState {
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
 /**
- * Stands in for a real client ID on a build that has none.
- *
- * expo-auth-session asserts the current platform's client ID while *building*
- * the request, inside its own useMemo — so on a build with empty IDs it throws
- * during render and takes the whole app down at launch, rather than merely
- * leaving the button dead. Hooks cannot be called conditionally, so we always
- * build a request and refuse to prompt one that isn't real; googleAuthConfigured
- * guards both the buttons and signInWithGoogle. Shaped like a genuine ID because
- * the native redirect URI is derived from it.
- */
-const UNCONFIGURED_CLIENT_ID = 'unconfigured.apps.googleusercontent.com';
-
-
-/**
  * Owns the session. On boot it reads the cached user (a valid token pair implies
  * a live session; the axios refresh interceptor repairs an expired access token
  * on the first authed call). A hard refresh failure calls signOut via the
@@ -57,19 +38,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUserState] = useState<AuthUser | null>(null);
   const [initializing, setInitializing] = useState(true);
   const mounted = useRef(true);
-
-  // Google OAuth redirect URI: Uses Expo proxy auth URL (valid HTTPS) for both Expo Go & production builds.
-  const redirectUri = 'https://auth.expo.io/@yaw669/notefusion';
-
-  const [googleReq, , googlePrompt] = Google.useIdTokenAuthRequest({
-    responseType: ResponseType.IdToken,
-    iosClientId: isExpoGo ? undefined : (googleAuth.iosClientId || undefined),
-    androidClientId: isExpoGo ? undefined : (googleAuth.androidClientId || undefined),
-    clientId: googleAuth.webClientId || UNCONFIGURED_CLIENT_ID,
-    webClientId: googleAuth.webClientId || UNCONFIGURED_CLIENT_ID,
-    selectAccount: true,
-    redirectUri,
-  });
 
   useEffect(() => {
     mounted.current = true;
@@ -101,24 +69,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   /**
    * Runs the Google consent prompt and returns the raw ID token, or null if the
    * user backs out. Shared by sign-in and by destructive-action re-auth, so the
-   * placeholder-ID and availability guards live in exactly one place.
+   * availability guard lives in exactly one place.
    */
-  async function promptGoogleIdToken(): Promise<string | null> {
+  async function promptGoogleIdToken(forceAccountPicker = false): Promise<string | null> {
     if (!googleAuthConfigured) {
-      throw new Error('Google sign-in is not configured in this build.');
+      throw new Error('Google sign-in is not available in this build.');
     }
-    if (!googleReq) throw new Error('Google sign-in is not available yet.');
-
-    const res = await googlePrompt();
-    if (res.type !== 'success') return null;
-
-    const idToken =
-      res.params?.id_token ||
-      res.authentication?.idToken ||
-      (res as unknown as { authentication?: { idToken?: string } }).authentication?.idToken;
-
-    if (!idToken) throw new Error('Google did not return an ID token.');
-    return idToken;
+    return getGoogleIdToken({ forceAccountPicker });
   }
 
   const value = useMemo<AuthState>(
@@ -157,7 +114,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         );
       },
       async reauthWithGoogle() {
-        return promptGoogleIdToken();
+        // Force the chooser: the SDK would otherwise hand back the cached account
+        // silently, and this is the proof-of-identity step before a deletion.
+        return promptGoogleIdToken(true);
       },
       async signOut() {
         const refresh = await tokenStore.getRefresh();
@@ -170,7 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         tokenStore.saveUser(u).catch(() => undefined);
       },
     }),
-    [user, initializing, googleReq, googlePrompt],
+    [user, initializing],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

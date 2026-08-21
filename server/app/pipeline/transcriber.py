@@ -825,17 +825,24 @@ def _merge_onsets(
     that measured a wash — see that flag's docstring and the fourth strike recorded in
     tests/accuracy/corpus.py before turning it on or building on it.
 
-    An overlap allowance was measured here and is *not* settled.  An earlier probe
+    An overlap allowance was measured here and is *not* worth building.  An earlier probe
     concluded it "buys nothing"; that probe only looked at gaps down to -50 ms and was
-    wrong.  With no window at all, at merge time over the nine vibrato/drift cases, 51 of
-    the 128 adjacent pairs whose f0 agree overlap in time (p25 -92.9 ms, p10 -246.1 ms)
-    and only 74 are reachable by ``0.0 <= gap``.  Sorted by start, a wobble Basic Pitch
-    reports at both neighbours *simultaneously* interleaves, so most vibrato fragments
-    never become adjacent-and-abutting and this stage structurally cannot see them —
-    which is the likeliest reason the f0 test barely moved the corpus.  It is not free
-    either: the f0-*disagreeing* adjacent pairs overlap harder still (34 of 44 on
-    vibrato_heavy, 61 of 73 on vibrato_rate_7hz), so widening the gap test hands the f0
-    test a much larger population it must reject correctly.  Untried.
+    wrong about its reason.  With no window at all, at merge time over the nine
+    vibrato/drift cases, 51 of the 128 adjacent pairs whose f0 agree overlap in time
+    (p25 -92.9 ms, p10 -246.1 ms) and only 74 are reachable by ``0.0 <= gap``.  Sorted by
+    start, a wobble Basic Pitch reports at both neighbours *simultaneously* interleaves, so
+    most vibrato fragments never become adjacent-and-abutting and this stage structurally
+    cannot see them.  It is not free either: the f0-*disagreeing* adjacent pairs overlap
+    harder still (34 of 44 on vibrato_heavy, 61 of 73 on vibrato_rate_7hz), so widening the
+    gap test hands the f0 test a much larger population it must reject correctly.
+
+    What settles it is that the population it would reach is the wrong population: of 56
+    f0-agreeing overlapping pairs, **none** is a semitone apart in pitch, so here "f0
+    agrees" already means "pitch is identical" and a wider window fuses only what the
+    equality test would have fused anyway.  The vibrato defect turned out not to be a
+    fragment pair at all — within one sung note the estimate is a run at one wrong pitch
+    rather than an alternation — and it is fixed upstream by ``settings.pyin_semitone``.
+    See the fourth-strike record in tests/accuracy/corpus.py for the whole measurement.
     """
     if len(events) < 2:
         return events
@@ -945,7 +952,7 @@ def _pyin_contour(wav_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 
 def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
-    """Correct octave errors against a pyin f0 contour.
+    """Correct pitch errors against a pyin f0 contour.
 
     Basic Pitch locks onto the second harmonic often enough to matter: measured on
     the clean synthetic control case, 9 of 15 detected events were a whole octave
@@ -954,18 +961,21 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
     since additive noise breaks the fundamental/overtone ambiguity.  pyin's median
     over the same span was within 0.01 semitones of the truth on every one of them.
 
-    Only whole-octave disagreements are acted on.  Replacing the pitch outright
-    whenever pyin disagrees would be a much larger change with much more to go
-    wrong: a fragment shorter than one vibrato cycle has a median biased toward
-    wherever in the cycle it happens to sit, so on that evidence pyin is *not*
-    reliable to the semitone per fragment — but a bias of at most a semitone or so
-    cannot manufacture or hide a twelve-semitone gap, which is what makes the octave
-    decision safe where a general one is not.
+    How far to trust that median is the ``pyin_semitone`` flag.  Off, only
+    whole-octave disagreements are acted on: the objection to a general correction
+    was that a fragment shorter than one vibrato cycle has a median biased toward
+    wherever in the cycle it happens to sit, so on that evidence pyin looked *not*
+    reliable to the semitone per fragment — while a bias of at most a semitone or so
+    cannot manufacture or hide a twelve-semitone gap.  On, the median is rounded and
+    taken as the pitch, because measurement retired that objection: the rounded
+    median is right 73.4% of the time against the octave-only path's 18.7% over the
+    vibrato cases, and changes nothing at all on the guard cases.  See the flag's
+    docstring for the numbers.
 
     Runs before ``_merge_onsets`` on purpose: two fragments of one note that were
-    split apart only because Basic Pitch put them an octave apart become the same
-    pitch here, and the existing exact-pitch merge then fuses them with no tolerance
-    of its own and therefore no risk to genuine semitone steps.
+    split apart only because Basic Pitch put them at different pitches become the
+    same pitch here, and the existing exact-pitch merge then fuses them with no
+    tolerance of its own and therefore no risk to genuine semitone steps.
     """
     times, midi, voiced_prob = _pyin_contour(wav_path)
     if times.size == 0:
@@ -981,15 +991,21 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
 
         median_midi = float(np.median(midi[span]))
         confidence = float(np.median(voiced_prob[span]))
-
-        octaves = round((median_midi - evt.pitch) / 12.0)
-        if octaves == 0 or confidence < PYIN_MIN_VOICED_PROB:
+        if confidence < PYIN_MIN_VOICED_PROB:
             refined.append(evt)
             continue
 
-        offset = median_midi - evt.pitch - 12.0 * octaves
-        candidate = evt.pitch + 12 * octaves
-        if abs(offset) > PYIN_OCTAVE_TOLERANCE or not 0 <= candidate <= 127:
+        if settings.pyin_semitone:
+            candidate = int(round(median_midi))
+        else:
+            octaves = round((median_midi - evt.pitch) / 12.0)
+            offset = median_midi - evt.pitch - 12.0 * octaves
+            if octaves == 0 or abs(offset) > PYIN_OCTAVE_TOLERANCE:
+                refined.append(evt)
+                continue
+            candidate = evt.pitch + 12 * octaves
+
+        if candidate == evt.pitch or not 0 <= candidate <= 127:
             refined.append(evt)
             continue
 
@@ -998,7 +1014,7 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
 
     if corrected:
         print(
-            f"[notefusion] pyin corrected the octave of {corrected}/{len(events)} events",
+            f"[notefusion] pyin corrected the pitch of {corrected}/{len(events)} events",
             flush=True,
         )
     return refined

@@ -9,7 +9,7 @@ music21 score assembly:
   _bend_semitones         Basic Pitch's 1/3-semitone bend bins as a semitone offset
   _dedup_simultaneous     drop exact pitch+onset duplicates from polyphonic mode
   _adaptive_amplitude_floor  per-clip dynamic threshold from p75 of amplitudes
-  _refine_pitches         correct octave errors against a pyin f0 contour
+  _refine_pitches         correct pitch errors against a pyin f0 contour, octaves or all
   _pyin_contour           the contour itself, and every way it can decline to produce one
   _grid_residual          how far onsets sit from the grid they will be quantized onto
   _grid_bpm               the tempo that puts those onsets on the grid, tappably
@@ -773,18 +773,23 @@ def _contour(midi_values, voiced_prob=0.9, hop_sec=0.01):
 
 
 class TestRefinePitches:
-    """Only whole-octave disagreements with pyin are acted on.
+    """With ``NF_PYIN_SEMITONE`` off, only whole-octave disagreements are acted on.
 
     Basic Pitch locks onto the second harmonic often enough to matter (measured: 9 of
-    15 events on the clean control case were a whole octave high), but a fragment
-    shorter than one vibrato cycle has a median biased toward wherever in the cycle it
-    sits — so pyin is *not* trustworthy to the semitone here.  A sub-semitone bias
-    cannot manufacture or hide a twelve-semitone gap, which is what makes the octave
-    decision safe where a general "believe pyin" would not be.  These tests pin that
-    boundary from both sides.
+    15 events on the clean control case were a whole octave high), and the argument for
+    stopping at octaves was that a fragment shorter than one vibrato cycle has a median
+    biased toward wherever in the cycle it sits — so pyin looked *not* trustworthy to
+    the semitone here.  A sub-semitone bias cannot manufacture or hide a twelve-semitone
+    gap, which is what made the octave decision safe where a general "believe pyin"
+    would not be.  These tests pin that boundary from both sides; measurement later
+    retired the argument, and ``TestRefinePitchesSemitone`` pins the other setting.
     """
 
     def _refine(self, monkeypatch, events, contour):
+        # Explicitly off: this class pins the narrower rule, which is no longer the
+        # default, and test_a_fourteen_semitone_disagreement_is_left_alone is exactly
+        # where the two settings disagree.
+        monkeypatch.setenv("NF_PYIN_SEMITONE", "0")
         monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
         return transcriber._refine_pitches(events, Path("unused.wav"))
 
@@ -864,6 +869,100 @@ class TestRefinePitches:
     def test_every_other_field_survives_the_correction(self, monkeypatch):
         events = [Event(0.25, 0.55, 72, 0.61)]
         (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 60))
+        assert (refined.start, refined.end, refined.amp) == (0.25, 0.55, 0.61)
+
+
+class TestRefinePitchesSemitone:
+    """With ``NF_PYIN_SEMITONE`` on, pyin's rounded median becomes the pitch.
+
+    The octave-only rule's premise was that a fragment's median is too biased to trust
+    to the semitone.  Measured over the eight vibrato/drift cases, 577 events, the
+    rounded median is right 73.4% of the time against the octave-corrected pipeline's
+    18.7% — 278 fixes against 17 breaks — and it changes nothing in either direction on
+    the four guard cases, including the genuine mi-fa and ti-doh steps.  That corpus run
+    is the real evidence for the rule; these tests pin the mechanism, the shared gates
+    it still respects, and the two places it deliberately departs from the octave path.
+    """
+
+    def _refine(self, monkeypatch, events, contour):
+        monkeypatch.setenv("NF_PYIN_SEMITONE", "1")
+        monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
+        return transcriber._refine_pitches(events, Path("unused.wav"))
+
+    def test_a_semitone_too_high_is_pulled_down(self, monkeypatch):
+        # The reported defect in miniature: heavy vibrato parks Basic Pitch on the
+        # semitone neighbour, so a sung A4 comes back as a run of B-flats and the
+        # notation prints an accidental that is not in the music.
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([69.0] * 12))
+        assert [e.pitch for e in result] == [69]
+
+    def test_octaves_are_still_corrected(self, monkeypatch):
+        # Rounding the median subsumes the octave rule rather than replacing it, so the
+        # overtone lock this stage was built for keeps being fixed.
+        events = [Event(0.0, 0.10, 72, 0.6), Event(0.2, 0.30, 84, 0.6)]
+        contour = _contour([60.0] * 12 + [np.nan] * 8 + [60.0] * 12)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour)] == [60, 60]
+
+    def test_a_fourteen_semitone_disagreement_is_taken_here(self, monkeypatch):
+        # The deliberate departure from the octave path, which leaves this alone because
+        # the 2-semitone remainder says "not an octave error".  Rounding has no such
+        # notion: pyin saw 74 for the whole span, so 74 is the pitch.
+        events = [Event(0.0, 0.10, 60, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([74.0] * 12))
+        assert [e.pitch for e in result] == [74]
+
+    def test_the_median_rounds_to_the_nearer_semitone(self, monkeypatch):
+        # No commit-distance filter: a median mid-way between two semitones is still
+        # acted on.  Requiring the median to sit near a whole number was swept over
+        # 0.20-0.50 and costs more fixes than it saves breaks at every setting.
+        for median, expected in ((69.4, 69), (69.6, 70), (69.5, 70)):
+            events = [Event(0.0, 0.10, 64, 0.6)]
+            result = self._refine(monkeypatch, events, _contour([median] * 12))
+            assert [e.pitch for e in result] == [expected], median
+
+    def test_a_genuine_semitone_step_is_not_flattened(self, monkeypatch):
+        # Each event is judged against its own frames, so two real notes a semitone
+        # apart stay two real notes.  This is the failure mode a semitone rule most
+        # endangers; the corpus's semitone_steps_c_major case is the load-bearing
+        # version of this test, and it moves by zero events with the flag on.
+        events = [Event(0.0, 0.05, 64, 0.6), Event(0.10, 0.15, 65, 0.6)]
+        contour = _contour([64.1] * 6 + [np.nan] * 4 + [64.9] * 6)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour)] == [64, 65]
+
+    def test_agreement_leaves_the_pitch_alone(self, monkeypatch):
+        events = [Event(0.0, 0.10, 60, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([60.2] * 12))
+        assert [e.pitch for e in result] == [60]
+
+    def test_low_voiced_probability_still_blocks_it(self, monkeypatch):
+        # The confidence floor is shared with the octave path rather than loosened for
+        # this one: a noise-dominated span makes the median meaningless either way.
+        # Dropping the floor to 0.0 measured 71 more fixes for 5 fewer breaks on the
+        # corpus, but that is synthetic vibrato agreeing with itself — not a reason to
+        # trust pyin where pyin says it is unsure.
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        contour = _contour([69.0] * 12, voiced_prob=0.2)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour)] == [70]
+
+    def test_too_few_voiced_frames_still_passes_the_event_through(self, monkeypatch):
+        events = [Event(0.0, 0.015, 70, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([69.0] * 12))
+        assert [e.pitch for e in result] == [70]
+
+    def test_a_median_outside_the_midi_range_is_skipped(self, monkeypatch):
+        events = [Event(0.0, 0.10, 120, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([130.0] * 12))
+        assert [e.pitch for e in result] == [120]
+
+    def test_an_empty_contour_returns_the_events_unchanged(self, monkeypatch):
+        events = [Event(0.0, 0.10, 70, 0.6), Event(0.2, 0.30, 74, 0.5)]
+        contour = (np.empty(0), np.empty(0), np.empty(0))
+        assert self._refine(monkeypatch, events, contour) == events
+
+    def test_every_other_field_survives_the_correction(self, monkeypatch):
+        events = [Event(0.25, 0.55, 70, 0.61)]
+        (refined,) = self._refine(monkeypatch, events, _contour([69.0] * 60))
         assert (refined.start, refined.end, refined.amp) == (0.25, 0.55, 0.61)
 
 
