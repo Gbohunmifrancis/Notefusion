@@ -148,9 +148,40 @@ PYIN_FMAX_HZ = 1050.0
 PYIN_MIN_VOICED_FRAMES = 3
 
 # Median voiced probability an event must reach before its pitch is corrected.
-# A floor against noise rather than a discriminator: measured over the accuracy
-# corpus, real notes sit at 0.69-0.76 under heavy vibrato and 0.95-0.98 when
-# clean, so nothing real is anywhere near this.
+# Intended as a floor against noise rather than a discriminator, on the grounds that
+# real notes sit at 0.69-0.76 under heavy vibrato and 0.95-0.98 when clean.  That
+# second claim was "so nothing real is anywhere near this", and DEEP vibrato falsifies
+# it: on vibrato_depth_1_8 and vibrato_depth_2_0 real notes sit at a median 0.33 and
+# 0.28, and this floor refuses 50 of 56 and 55 of 56 of their events.  The mechanism is
+# not noise — +-1.8-2.0 semitones at 5.5 Hz sweeps ~4 semitones inside pyin's ~93 ms
+# analysis window, so the signal is not periodic at a single f0 and it is pyin's
+# PERIODICITY estimate that collapses.  The floor reads "the pitch is moving fast" as
+# "this might not be a note".
+#
+# Lowering it anyway was measured over the full corpus at 0.25 / 0.20 / 0.15, and 0.5
+# stays because the headline metric says so.  At the best of those (0.20):
+# solfa.degree_accuracy 0.917 -> 0.915.  Everything underneath it improves —
+# notes.recall 0.935 -> 0.964, notes.f1 0.832 -> 0.846, solfa.chromatic_ghosts 1.868 ->
+# 1.737, notes.semitone_neighbour_ghosts 2.105 -> 1.921, solfa.octave_error_rate 0.008
+# -> 0.002, key.exact 0.868 -> 0.895 (vibrato_depth_2_0's key comes right and no case's
+# key breaks) — and the four cases this floor exists for (noise_moderate,
+# quiet_low_amplitude, overtone_heavy, pluck_envelope) are bit-identical 1.000 at every
+# value, because the rule only fires where pyin and Basic Pitch disagree and on those
+# cases they agree.  So the floor is not, in fact, what protects them.
+#
+# What it costs is why it is not worth it.  Exactly two cases move, in opposite
+# directions and by almost the same amount: vibrato_depth_2_0 0.333 -> 0.875 and
+# vibrato_depth_1_8 0.600 -> 0.000.  The second is a wrong-key artefact — that case's
+# key is wrong at every floor, so its degrees are measured against the wrong tonic and
+# 0.600 was coincidental partial credit — but trading one deep-vibrato case for another
+# is not a fix, it is a coin flip, and it also drags conf.auc 0.868 -> 0.835 because
+# accepting low-probability corrections that turn out correct pulls conf.mean_correct
+# down (0.674 -> 0.655) while conf.mean_wrong sits still.
+#
+# The offline sweep over per-event rows had predicted +260 net fixes here and was
+# wrong: it covered 12 of 38 cases and none of the noise cases, and it mispredicted
+# both moving cases' baselines.  Trust the corpus, not the rows.  The real defect these
+# two cases share is the KEY, not the floor.
 PYIN_MIN_VOICED_PROB = 0.5
 
 # How far from a whole number of octaves the pyin/Basic Pitch disagreement may

@@ -88,9 +88,15 @@ class Settings:
         theory that a mid-slope median is the untrustworthy one — was swept over 0.20-0.50
         against a voiced-probability floor of 0.0-0.50 and costs more fixes than it saves
         breaks at every setting, so it is not here.  No setting in that sweep broke a guard.
-        The floor stays at ``PYIN_MIN_VOICED_PROB`` rather than dropping to 0.0, which would
-        have measured 71 more fixes for 5 fewer breaks: that is synthetic vibrato agreeing
-        with itself, and not a reason to trust pyin where pyin reports it is unsure.
+
+        The standing caveat, as for ``f0_merge``: this corpus is 38 *synthetic* cases, and
+        synthetic vibrato is a clean sinusoid where human vibrato is not.  What makes this
+        gain more trustworthy than that one is the shape of the rule rather than the size of
+        the number — it fires only where pyin and Basic Pitch actually disagree, so on the
+        clean, noisy and quiet cases where they agree it is a no-op by construction rather
+        than by calibration, and there is no fitted constant for a real recording to fall
+        outside of.  It is still the thing to re-measure first once ``tests/accuracy/real/``
+        has labelled recordings in it.
         """
         return os.getenv("NF_PYIN_SEMITONE", "1").strip().lower() not in ("0", "false", "no")
 
