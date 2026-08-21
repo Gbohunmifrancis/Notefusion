@@ -31,6 +31,33 @@ const SUMMARIES: Record<HealthStatus, string> = {
 };
 
 /**
+ * Whether the two database-backed count cards were actually read.
+ *
+ * The server sends zeros for every one of those figures when the database probe fails
+ * (`GetSystemHealthQuery`: `database.Status == "down" ? new ActivityStatsDto(0, 0)`), and their DTO
+ * fields are non-nullable ints, so the wire has no way to say "not measured". Printing them would
+ * state that submissions stopped and that every subscription vanished — a second, worse incident
+ * than the real one. Only `down` suppresses: a `degraded` database (pending migrations) still runs
+ * the counts and returns real numbers.
+ */
+function wasCounted(health: SystemHealth): boolean {
+  return health.database.status !== "down";
+}
+
+/**
+ * Prose rather than six tiles reading "—", for the reason the "Not monitored" card gives below: a
+ * dashed tile reads as a broken metric instead of an absent measurement.
+ */
+function NotCounted() {
+  return (
+    <p className="text-[13px] leading-relaxed text-muted">
+      Not counted — the database is unreachable, so these figures were never read. The Database
+      panel above carries what the probe returned.
+    </p>
+  );
+}
+
+/**
  * One probed tier. The latency line is dropped rather than dashed when the probe carries no timing —
  * the webhook panel never has one, and a tier whose probe failed has no response time by definition,
  * so printing 0 ms would invert the meaning of the number.
@@ -125,45 +152,64 @@ export function HealthPage() {
 
             <Card
               title="Transcription jobs"
-              hint="Submissions accepted by the API. The worker owns the outcome and the API never stores it, so this is volume, not a success rate."
+              {...(wasCounted(health)
+                ? {
+                    hint: "Submissions accepted by the API. The worker owns the outcome and the API never stores it, so this is volume, not a success rate.",
+                  }
+                : {})}
             >
-              <div className="grid gap-4 sm:grid-cols-2">
-                <StatCard label="Last 24 hours" value={formatCount(health.activity.jobsLast24Hours)} />
-                <StatCard label="Last 7 days" value={formatCount(health.activity.jobsLast7Days)} />
-              </div>
+              {wasCounted(health) ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <StatCard
+                    label="Last 24 hours"
+                    value={formatCount(health.activity.jobsLast24Hours)}
+                  />
+                  <StatCard label="Last 7 days" value={formatCount(health.activity.jobsLast7Days)} />
+                </div>
+              ) : (
+                <NotCounted />
+              )}
             </Card>
 
             <Card
               title="Subscriptions"
-              hint="A snapshot as of the check above, not a windowed count — a subscription belongs to an instant."
+              {...(wasCounted(health)
+                ? {
+                    hint: "A snapshot as of the check above, not a windowed count — a subscription belongs to an instant.",
+                  }
+                : {})}
             >
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <StatCard
-                  label="Active"
-                  value={formatCount(health.subscriptions.activeCount)}
-                  sub="Pro unlocked right now"
-                  tone="success"
-                />
-                <StatCard
-                  label="Gifted"
-                  value={formatCount(health.subscriptions.giftedCount)}
-                  sub="Granted, never charged"
-                  hint="Counted inside Active, not beside it — a gift is one of the ways access is live."
-                  tone="warning"
-                />
-                <StatCard
-                  label="Expiring in 7 days"
-                  value={formatCount(health.subscriptions.expiringWithinSevenDays)}
-                  sub="Lifetime access excluded"
-                  tone="blue"
-                />
-                <StatCard
-                  label="Past due"
-                  value={formatCount(health.subscriptions.pastDueCount)}
-                  sub="A renewal the gateway did not settle"
-                  tone="danger"
-                />
-              </div>
+              {wasCounted(health) ? (
+                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                  <StatCard
+                    label="Active"
+                    value={formatCount(health.subscriptions.activeCount)}
+                    sub="Pro unlocked right now"
+                    tone="success"
+                  />
+                  <StatCard
+                    label="Gifted"
+                    value={formatCount(health.subscriptions.giftedCount)}
+                    sub="Granted, never charged"
+                    hint="Counted inside Active, not beside it — a gift is one of the ways access is live."
+                    tone="warning"
+                  />
+                  <StatCard
+                    label="Expiring in 7 days"
+                    value={formatCount(health.subscriptions.expiringWithinSevenDays)}
+                    sub="Lifetime access excluded"
+                    tone="blue"
+                  />
+                  <StatCard
+                    label="Past due"
+                    value={formatCount(health.subscriptions.pastDueCount)}
+                    sub="A renewal the gateway did not settle"
+                    tone="danger"
+                  />
+                </div>
+              ) : (
+                <NotCounted />
+              )}
             </Card>
 
             {health.notMonitored.length > 0 && (

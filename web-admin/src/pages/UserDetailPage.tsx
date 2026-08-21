@@ -507,7 +507,11 @@ function LifecyclePanel({
                       not an instant cut-off, and if that matters, wait out the window before
                       confirming anything else.
                     </p>
-                    <p>Nothing is deleted. Reactivating restores access exactly as it was.</p>
+                    <p>
+                      Nothing is deleted — their transcriptions and their subscription are
+                      untouched. Reactivating lets them sign in again, but the revoked tokens stay
+                      revoked, so every device signs in once more.
+                    </p>
                   </>
                 ),
                 confirmLabel: "Suspend account",

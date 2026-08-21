@@ -184,8 +184,14 @@ export function ConfirmDialog({
             <button
               type="submit"
               disabled={!unlocked || pending}
-              className={`flex h-9 items-center gap-2 rounded-sm px-4 text-[13px] font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-45 ${
-                danger ? "bg-danger hover:opacity-90" : "bg-blue hover:bg-blue-deep"
+              // The label flips with the fill on the danger button. `danger` brightens in dark mode
+              // (#dc2626 → #f87171) because it also has to read as text there, and white on that
+              // brighter red measures 2.77:1 — so the ink goes dark instead, which is 7:1. `blue`
+              // needs no such treatment: it is a fill only, and deliberately does not flip.
+              className={`flex h-9 items-center gap-2 rounded-sm px-4 text-[13px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-45 ${
+                danger
+                  ? "bg-danger text-white hover:opacity-90 dark:text-navy-deep"
+                  : "bg-blue text-white hover:bg-blue-deep"
               }`}
             >
               {pending && <Loader2 size={14} className="animate-spin" aria-hidden="true" />}
