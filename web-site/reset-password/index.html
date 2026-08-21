@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reset your password | NoteFusion</title>
+<meta name="description" content="Choose a new password for your NoteFusion account.">
+<!-- Transactional, and every visit carries a one-time token in the query string.
+     Not indexed, not linked from the site, and deliberately absent from sitemap.xml. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#2563EB">
+
+<link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2563EB;
+    --blue-dark: #1D4ED8;
+    --blue-soft: #E0E7FF;
+    --ink: #0F172A;
+    --muted: #5D6D82;
+    --bg: #F8FAFC;
+    --danger: #B91C1C;
+    --success: #15803D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+  }
+  header {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 56px 24px 44px;
+  }
+  .wrap { max-width: 520px; margin: 0 auto; }
+  .brand {
+    font-weight: 700; font-size: 1.5rem; letter-spacing: -0.01em;
+    color: #fff; text-decoration: none; display: inline-block;
+  }
+  .brand span { opacity: .9; font-weight: 500; }
+  header h1 { font-size: 2rem; margin: 20px 0 8px; letter-spacing: -0.02em; }
+  header p { margin: 0; font-size: .95rem; }
+  main { padding: 40px 24px 72px; }
+  .card {
+    background: #fff;
+    border: 1px solid var(--blue-soft);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  h2 { font-size: 1.15rem; font-weight: 600; margin: 0 0 12px; color: var(--blue-dark); }
+  p { font-size: .95rem; margin: 0 0 14px; }
+  a { color: var(--blue); }
+  strong { font-weight: 600; }
+
+  label { display: block; font-size: .875rem; font-weight: 600; margin: 0 0 6px; }
+  input[type=password] {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--ink);
+    padding: 12px 14px;
+    margin: 0 0 18px;
+    background: var(--bg);
+    border: 1px solid var(--blue-soft);
+    border-radius: 10px;
+  }
+  input[type=password]:focus {
+    outline: 2px solid var(--blue);
+    outline-offset: 1px;
+    background: #fff;
+  }
+  .hint { font-size: .8125rem; color: var(--muted); margin: -12px 0 18px; }
+  button {
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background: var(--blue);
+    border: 0;
+    border-radius: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--blue-dark); }
+  button[disabled] { opacity: .6; cursor: default; }
+
+  /* Both panels are hidden until something is known, so the page never flashes a
+     message it has not earned. role=alert makes the outcome reach a screen reader
+     without the focus having to move. */
+  .notice { border-radius: 12px; padding: 16px 20px; margin: 0 0 18px; font-size: .9375rem; }
+  .notice p:last-child { margin-bottom: 0; }
+  .notice.bad { background: #FEF2F2; border: 1px solid #FECACA; color: var(--danger); }
+  .notice.good { background: #F0FDF4; border: 1px solid #BBF7D0; color: var(--success); }
+  [hidden] { display: none !important; }
+
+  footer {
+    border-top: 1px solid var(--blue-soft);
+    padding: 28px 24px 48px;
+    color: var(--muted);
+    font-size: .875rem;
+  }
+  footer a { color: var(--muted); }
+  @media (max-width: 560px) {
+    header { padding: 40px 20px 32px; }
+    header h1 { font-size: 1.6rem; }
+    .card { padding: 22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="/">Note<span>Fusion</span></a>
+    <h1>Reset your password</h1>
+    <p id="lede">Choose a new password for your account.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+
+    <div id="error" class="notice bad" role="alert" hidden></div>
+    <div id="done" class="notice good" role="alert" hidden></div>
+
+    <form id="form" novalidate hidden>
+      <p>Signing in as <strong id="who"></strong>.</p>
+
+      <label for="pw">New password</label>
+      <input id="pw" type="password" autocomplete="new-password" minlength="8" required>
+      <p class="hint">At least 8 characters.</p>
+
+      <label for="pw2">Confirm new password</label>
+      <input id="pw2" type="password" autocomplete="new-password" minlength="8" required>
+
+      <button id="submit" type="submit">Set new password</button>
+    </form>
+
+    <p id="closing" hidden>Open the NoteFusion app and sign in with your new password.</p>
+  </div>
+</main>
+
+<footer class="wrap">
+  <p><a href="/">NoteFusion</a> &middot; <a href="/privacy">Privacy</a> &middot; <a href="/terms">Terms</a></p>
+  <p>Didn&rsquo;t ask for this? Ignore the email &mdash; nothing changes until a new password is set.
+  If it keeps happening, write to <a href="mailto:support@notefusion.studio">support@notefusion.studio</a>.</p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  // The API this page talks to. Hardcoded because a static host has no server-side
+  // config, and it is the same origin web-admin/.env.production points at. This page
+  // is a cross-origin caller, so notefusion.studio must stay in the API's
+  // Cors:AllowedOrigins — it is in Program.cs's default set.
+  var API = "https://notefusion-api-3c2513a1e974.herokuapp.com";
+
+  var form = document.getElementById("form");
+  var errorBox = document.getElementById("error");
+  var doneBox = document.getElementById("done");
+  var closing = document.getElementById("closing");
+  var submit = document.getElementById("submit");
+  var pw = document.getElementById("pw");
+  var pw2 = document.getElementById("pw2");
+
+  function fail(html) {
+    errorBox.innerHTML = html;
+    errorBox.hidden = false;
+  }
+
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get("token") || "";
+  var email = params.get("email") || "";
+
+  // Strip the token from the address bar. It is a single-use credential and the URL
+  // is the one part of this page that leaks: into history, into a shared screenshot,
+  // into whatever the browser syncs. The values are already captured above.
+  if (window.history.replaceState && (token || email)) {
+    window.history.replaceState(null, "", window.location.pathname);
+  }
+
+  if (!token || !email) {
+    document.getElementById("lede").textContent =
+      "This link is missing something.";
+    fail(
+      "<p>Open the link from the email exactly as it arrived &mdash; the address needs " +
+      "the code that came with it. Copying only part of it, or retyping it by hand, " +
+      "loses that code.</p>" +
+      "<p>If the link is old, request a fresh one from the app: <strong>Sign in &rarr; " +
+      "Forgot password</strong>.</p>"
+    );
+    return;
+  }
+
+  document.getElementById("who").textContent = email;
+  form.hidden = false;
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    errorBox.hidden = true;
+
+    // Checked here as well as by the API: the API cannot see the confirm field at all,
+    // and a mismatch caught after the token is spent leaves the user with a password
+    // they did not mean to set and no second link.
+    if (pw.value.length < 8) {
+      fail("<p>Passwords must be at least 8 characters.</p>");
+      pw.focus();
+      return;
+    }
+    if (pw.value !== pw2.value) {
+      fail("<p>Those two passwords do not match.</p>");
+      pw2.focus();
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = "Setting your password…";
+
+    fetch(API + "/api/auth/reset-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, token: token, newPassword: pw.value })
+    }).then(function (response) {
+      // 204 is the success contract. Anything else carries an ApiError envelope
+      // {code, message, details?}, so the message shown is the API's own wording
+      // rather than a guess made here from the status code.
+      if (response.status === 204) return null;
+      return response.json().then(function (body) { throw body; },
+                                  function () { throw { message: null }; });
+    }).then(function () {
+      form.hidden = true;
+      doneBox.innerHTML = "<p><strong>Your password is set.</strong></p>";
+      doneBox.hidden = false;
+      closing.hidden = false;
+    }).catch(function (body) {
+      submit.disabled = false;
+      submit.textContent = "Set new password";
+
+      var message = (body && body.message) ||
+        "Something went wrong setting your password. Try again in a moment.";
+      var detail = "";
+      if (body && body.details) {
+        // The validation envelope's details are field -> [messages].
+        Object.keys(body.details).forEach(function (field) {
+          (body.details[field] || []).forEach(function (line) {
+            detail += "<p>" + escapeHtml(line) + "</p>";
+          });
+        });
+      }
+      fail("<p>" + escapeHtml(message) + "</p>" + detail);
+    });
+  });
+
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.textContent = String(text);
+    return div.innerHTML;
+  }
+})();
+</script>
+
+</body>
+</html>
