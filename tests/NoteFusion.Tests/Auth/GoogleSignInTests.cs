@@ -56,6 +56,7 @@ public class GoogleSignInTests
     {
         using var h = new TestHarness();
         var existing = User.Create("Ada Singer", Email, h.Hasher.Hash("password123"), h.Clock.UtcNow);
+        h.MarkEmailVerified(existing);
         h.Db.Users.Add(existing);
         await h.Db.SaveChangesAsync();
 
@@ -67,7 +68,9 @@ public class GoogleSignInTests
         var user = await h.Db.Users.SingleAsync();
         Assert.Equal(existing.Id, user.Id);
         Assert.Equal(Subject, user.GoogleId);
-        // Linking must not cost the user their existing password login.
+        // Linking must not cost the user their existing password login. This account proved its address, so
+        // the password is demonstrably its owner's — see EmailVerificationTests for the unverified case,
+        // where linking deliberately discards it.
         Assert.NotNull(user.PasswordHash);
     }
 

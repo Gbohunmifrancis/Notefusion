@@ -4,6 +4,7 @@ import type {
   LoginResponse,
   MyProfile,
   Plan,
+  RegistrationResponse,
   SavedTranscription,
   Subscription,
   TranscriptionJob,
@@ -12,10 +13,34 @@ import type {
 /** Typed wrappers over the C# Web API endpoints. One function per route. */
 
 export const authApi = {
+  /**
+   * Creates the account and mails a six-digit code. Returns no session — the caller
+   * must send the returned email to `verifyEmail` with the code before there are tokens.
+   */
   register: (fullName: string, email: string, password: string) =>
     api
-      .post<LoginResponse>("/api/auth/register", { fullName, email, password })
+      .post<RegistrationResponse>("/api/auth/register", {
+        fullName,
+        email,
+        password,
+      })
       .then((r) => r.data),
+
+  /** Exchanges a sign-up code for the session `register` withheld. */
+  verifyEmail: (email: string, code: string) =>
+    api
+      .post<LoginResponse>("/api/auth/verify-email", { email, code })
+      .then((r) => r.data),
+
+  /**
+   * Asks for another code. Succeeds whether or not one was actually sent — the server
+   * refuses to say whether the address is registered, or whether the 60-second cooldown
+   * swallowed the request, so the countdown the user sees is ours to run.
+   */
+  resendVerification: (email: string) =>
+    api
+      .post("/api/auth/resend-verification", { email })
+      .then(() => undefined),
 
   login: (email: string, password: string) =>
     api

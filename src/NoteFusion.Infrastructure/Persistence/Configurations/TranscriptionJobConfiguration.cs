@@ -5,9 +5,10 @@ using NoteFusion.Core.Entities;
 namespace NoteFusion.Infrastructure.Persistence.Configurations;
 
 /// <summary>
-/// Maps <see cref="TranscriptionJob"/>. Both indexes exist for a query on the hot path: the unique
+/// Maps <see cref="TranscriptionJob"/>. Every index here exists for a query on a hot path: the unique
 /// one because every poll looks a job up by its ML id, the composite one because every submit counts
-/// how much of the caller's free allowance is gone.
+/// how much of the caller's free allowance is gone, and the filtered one because the completion sweep
+/// runs every few seconds.
 /// </summary>
 public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<TranscriptionJob>
 {
@@ -26,5 +27,15 @@ public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<Tra
         builder.Property(j => j.CreatedAtUtc).IsRequired();
 
         builder.HasIndex(j => new { j.UserId, j.TrialConsumedAtUtc });
+
+        // Unbounded: a transcription of a long recording is a few hundred KB of MusicXML and note
+        // data, and there is no sensible cap to impose that the ML service does not already impose.
+        builder.Property(j => j.ResultJson);
+
+        // Filtered so the index holds only open jobs — a handful at any moment — rather than a row
+        // for every transcription ever run. The sweep's predicate is exactly this filter plus an age
+        // cutoff on CreatedAtUtc, which is why that column is the one indexed under it.
+        builder.HasIndex(j => j.CreatedAtUtc)
+            .HasFilter("\"SettledAtUtc\" IS NULL");
     }
 }

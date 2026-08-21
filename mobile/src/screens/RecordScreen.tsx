@@ -797,7 +797,14 @@ export function RecordScreen() {
             {phase === "ready" &&
               "Sing, hum, or play near the mic for accurate Solfa extraction."}
             {phase === "recording" && "Tap the button again when you're done."}
-            {isUploading && "Analysing pitch frequencies and key profile…"}
+            {/* Once the server has the job it finishes it whether or not anyone is watching, and
+                sends a notification when it does. Said here because the poll on this screen used to
+                be the only thing tracking a job, so leaving quietly abandoned it — the upload is
+                still the part that has to stay in the foreground. */}
+            {isUploading &&
+              (state.status === "idle"
+                ? "Analysing pitch frequencies and key profile…"
+                : "You can leave this screen — we'll notify you when it's ready.")}
           </Text>
 
           {phase === "ready" && (

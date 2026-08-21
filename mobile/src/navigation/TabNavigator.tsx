@@ -16,15 +16,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
-import { ProfileScreen } from "../screens/ProfileScreen";
-import { UpgradeScreen } from "../screens/UpgradeScreen";
 import {
   fonts,
   spacing,
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { useSubscription } from "../lib/subscription";
 import type { TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
@@ -32,40 +29,29 @@ const Tab = createBottomTabNavigator<TabParams>();
 const TABS: {
   name: keyof TabParams;
   label: string;
-  /** Label for an active subscriber, where the tab manages a plan instead of selling one. */
-  proLabel?: string;
   icon: keyof typeof Ionicons.glyphMap;
   iconActive: keyof typeof Ionicons.glyphMap;
   isCenter?: boolean;
 }[] = [
   { name: "Home", label: "Home", icon: "home-outline", iconActive: "home" },
-  { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
   { name: "Record", label: "Record", icon: "mic", iconActive: "mic", isCenter: true },
-  { name: "Profile", label: "Profile", icon: "person-outline", iconActive: "person" },
-  {
-    name: "Subscription",
-    label: "Subscription",
-    proLabel: "Premium",
-    icon: "card-outline",
-    iconActive: "card",
-  },
+  { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
 ];
 
 /**
  * Tab bar matching Image 3 design sheet:
  * Automatically hides when software keyboard is open so bottom icons never shift up over inputs.
  *
- * Every account gets all five tabs. The last one used to be dropped for subscribers — there was
- * nothing to sell them — but with four items the mic no longer landed in the middle of the row,
- * and it is the one control the layout is built around. It now stays and changes job instead:
- * "Subscription" sells Pro, "Premium" manages it (renewal date, cancel). Five items either way,
- * so the mic is centred for everyone.
+ * Three items, with the mic in the middle. It used to be five: Profile and Subscription were
+ * kept purely because dropping to four left the mic off-centre, and the mic is the one control
+ * this layout is built around. Every cell is `flex: 1` in a `space-around` row, so what centres
+ * the mic is an *odd* count — three does it as well as five, without two tabs nobody reached
+ * for. Both of those destinations now live in the side bar (`components/AppDrawer.tsx`).
  */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro } = useSubscription();
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -100,10 +86,6 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
           let targetRouteName: keyof TabParams = tab.name;
           const routeIndex = state.routes.findIndex((r) => r.name === targetRouteName);
           const focused = state.index === routeIndex;
-          // `isPro` is false until billing answers, so the label can settle a beat after
-          // the bar paints. That is only ever a word changing in place now — the row's
-          // item count no longer depends on it, so nothing moves under the user's thumb.
-          const label = isPro && tab.proLabel ? tab.proLabel : tab.label;
 
           const onPress = () => {
             const route = state.routes.find((r) => r.name === targetRouteName);
@@ -132,7 +114,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 <View style={styles.centerBtn}>
                   <Ionicons name="mic" size={26} color="#FFFFFF" />
                 </View>
-                <Text style={[styles.tabLabel, styles.centerLabel]}>{label}</Text>
+                <Text style={[styles.tabLabel, styles.centerLabel]}>{tab.label}</Text>
               </TouchableOpacity>
             );
           }
@@ -142,7 +124,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               key={`${tab.label}-${index}`}
               accessibilityRole="button"
               accessibilityState={focused ? { selected: true } : {}}
-              accessibilityLabel={label}
+              accessibilityLabel={tab.label}
               activeOpacity={0.85}
               onPress={onPress}
               style={styles.tabItem}
@@ -153,7 +135,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 color={focused ? colors.accent : colors.textMuted}
               />
               <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
-                {label}
+                {tab.label}
               </Text>
             </TouchableOpacity>
           );
@@ -174,10 +156,8 @@ export function TabNavigator() {
       tabBar={(props) => <FloatingTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Library" component={LibraryScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-      <Tab.Screen name="Subscription" component={UpgradeScreen} />
+      <Tab.Screen name="Library" component={LibraryScreen} />
     </Tab.Navigator>
   );
 }

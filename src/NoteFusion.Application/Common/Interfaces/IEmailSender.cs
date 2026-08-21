@@ -74,4 +74,15 @@ public interface IEmailSender
     /// token — the caller must have already stored the <em>hash</em> on the user row.
     /// </summary>
     Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sends the six-digit code that confirms a new account's address. As with the reset link, the
+    /// caller passes the plaintext and must already have stored only its hash.
+    /// </summary>
+    /// <remarks>
+    /// The one email in this interface whose delivery a user is actively waiting on: until the code
+    /// arrives they have no account they can sign into. Still best-effort by contract — a mail outage
+    /// leaves them able to ask for another code, whereas a failed registration leaves them nothing.
+    /// </remarks>
+    Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default);
 }

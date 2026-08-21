@@ -11,7 +11,14 @@ interface AuthState {
   user: AuthUser | null;
   initializing: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (fullName: string, email: string, password: string) => Promise<void>;
+  /**
+   * Registers the account and returns the server's normalised email. Deliberately
+   * does NOT sign anyone in: there is no session until verifyEmail runs, so the
+   * caller's job is to route to the code screen with the email this resolves to.
+   */
+  signUp: (fullName: string, email: string, password: string) => Promise<string>;
+  /** Exchanges a sign-up code for the session, and signs in on success. */
+  verifyEmail: (email: string, code: string) => Promise<void>;
   /** Signs in with Google. Serves both first-time and returning users. */
   signInWithGoogle: () => Promise<void>;
   /**
@@ -89,7 +96,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
       async signUp(fullName, email, password) {
         const res = await authApi.register(fullName, email, password);
+        // Remembered here rather than after verification: if the app dies on the code
+        // screen, the next launch should still offer the email button they last used.
         await tokenStore.saveLastAuthMethod('email');
+        return res.email;
+      },
+      async verifyEmail(email, code) {
+        const res = await authApi.verifyEmail(email, code);
         await persistSession(res.accessToken, res.refreshToken, res.user);
       },
       /**

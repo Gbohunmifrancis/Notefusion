@@ -13,13 +13,38 @@ public sealed class AuthController : ApiControllerBase
 
     public AuthController(ISender sender) => _sender = sender;
 
-    /// <summary>Creates an account and returns a token pair.</summary>
+    /// <summary>
+    /// Creates an account and emails a six-digit code. Returns the address, not a token pair —
+    /// <see cref="VerifyEmail"/> is what issues the session.
+    /// </summary>
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
-    /// <summary>Authenticates and returns a token pair.</summary>
+    /// <summary>
+    /// Confirms an address with the emailed code and returns the token pair registration withheld.
+    /// 400 with <c>AUTH_INVALID_VERIFICATION_CODE</c> when the code is wrong, expired or used up.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("verify-email")]
+    public async Task<IActionResult> VerifyEmail(VerifyEmailCommand command, CancellationToken ct)
+        => HandleResult(await _sender.Send(command, ct));
+
+    /// <summary>
+    /// Emails a fresh verification code. Always returns 204 — whether the address is registered, already
+    /// verified, or asking again too soon is not the caller's to know.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("resend-verification")]
+    public async Task<IActionResult> ResendVerification(
+        ResendEmailVerificationCommand command, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(command, ct));
+
+    /// <summary>
+    /// Authenticates and returns a token pair. 403 with <c>AUTH_EMAIL_NOT_VERIFIED</c> when the password
+    /// was correct but the address was never confirmed; a fresh code has been sent by then.
+    /// </summary>
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginCommand command, CancellationToken ct)

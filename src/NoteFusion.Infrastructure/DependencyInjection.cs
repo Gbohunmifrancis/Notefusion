@@ -12,6 +12,7 @@ using NoteFusion.Infrastructure.Media;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Security;
+using NoteFusion.Infrastructure.Transcriptions.Workers;
 
 namespace NoteFusion.Infrastructure;
 
@@ -148,6 +149,9 @@ public static class DependencyInjection
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(100);
         });
+
+        // Watches jobs through to completion so a recording finishes whether or not the app is open.
+        services.AddHostedService<TranscriptionCompletionWorker>();
     }
 
     private static void AddGeo(this IServiceCollection services, IConfiguration configuration)

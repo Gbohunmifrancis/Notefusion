@@ -48,6 +48,9 @@ public sealed class EmailSender : IEmailSender
     public Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default)
         => TrySendAsync(_template.PasswordReset(to, resetUrl), ct);
 
+    public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
+        => TrySendAsync(_template.VerifyEmail(to, code), ct);
+
     private async Task TrySendAsync(EmailMessage message, CancellationToken ct)
     {
         try

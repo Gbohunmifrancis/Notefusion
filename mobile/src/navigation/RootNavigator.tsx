@@ -1,13 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
 import { useTheme } from '../lib/theme';
-import { isExpoGo } from '../lib/env';
+import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
 import { ResultScreen } from '../screens/ResultScreen';
+import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
@@ -41,17 +42,10 @@ export function RootNavigator() {
     };
   }, [mode, palette]);
 
-  // Tapping a "transcription ready" push could deep-link here later; for now we
-  // just ensure the handler is installed so foreground notifications present.
-  // Skipped in Expo Go (SDK 53+ dropped remote push; importing the module throws).
-  useEffect(() => {
-    if (isExpoGo) return;
-    const Notifications = require('expo-notifications') as typeof import('expo-notifications');
-    const sub = Notifications.addNotificationResponseReceivedListener(() => {
-      /* deep-link handling hook — no-op for MVP */
-    });
-    return () => sub.remove();
-  }, []);
+  // Tapping a "transcription ready" push opens that transcription as an unsaved draft. Held until
+  // the authenticated stack exists, because a tap is what launches the app in the case this feature
+  // is for.
+  useNotificationDeepLink(Boolean(user));
 
   // Hold the splash for the stored theme as well as the session: mounting the
   // navigator light and repainting it dark a frame later is the flash the
@@ -59,7 +53,7 @@ export function RootNavigator() {
   if (initializing || themeLoading) return <SplashScreen />;
 
   return (
-    <NavigationContainer theme={navTheme}>
+    <NavigationContainer ref={navigationRef} theme={navTheme}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
           <>
@@ -68,6 +62,11 @@ export function RootNavigator() {
               name="Result"
               component={ResultScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen
               name="Settings"

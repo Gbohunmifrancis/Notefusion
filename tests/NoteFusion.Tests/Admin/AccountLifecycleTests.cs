@@ -290,6 +290,10 @@ public class AccountLifecycleTests
         var admin = User.CreateAdmin("Ada Admin", "ada@notefusion.studio", h.Hasher.Hash("password123"), Now.AddDays(-200));
         var target = User.Create("Pat Pro", "pat@example.com", h.Hasher.Hash("password123"), Now.AddDays(-30));
 
+        // The subject here is suspension, not sign-up: an unverified target would be refused at login for
+        // the wrong reason and every assertion below would pass while proving nothing.
+        h.MarkEmailVerified(target);
+
         h.Db.Users.Add(admin);
         h.Db.Users.Add(target);
         h.Db.SaveChanges();
@@ -309,6 +313,6 @@ public class AccountLifecycleTests
             .Handle(new SetUserRoleCommand(targetId, role), CancellationToken.None);
 
     private static Task<Result<Application.Auth.Dtos.LoginResponse>> Login(TestHarness h, string email)
-        => new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Country)
+        => new LoginCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email)
             .Handle(new LoginCommand(email, "password123"), CancellationToken.None);
 }

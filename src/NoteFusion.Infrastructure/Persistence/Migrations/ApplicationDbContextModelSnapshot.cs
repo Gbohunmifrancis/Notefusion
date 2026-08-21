@@ -474,6 +474,12 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("ResultJson")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("SettledAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("TrialConsumedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -481,6 +487,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc")
+                        .HasFilter("\"SettledAtUtc\" IS NULL");
 
                     b.HasIndex("JobId")
                         .IsUnique();
@@ -507,6 +516,22 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(254)
                         .HasColumnType("character varying(254)");
+
+                    b.Property<int>("EmailVerificationAttempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EmailVerificationCodeHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("EmailVerificationExpiry")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("EmailVerificationSentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("integer");

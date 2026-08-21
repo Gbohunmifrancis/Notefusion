@@ -121,6 +121,9 @@ public class AnalyticsHandlerTests
     {
         using var h = new TestHarness(Now);
         var user = User.Create("Linked", "linked@example.com", h.Hasher.Hash("password123"), Now.AddDays(-1));
+        // Verified first: linking Google to an account that never proved its address discards the password,
+        // and this test needs one that genuinely has both routes in.
+        h.MarkEmailVerified(user);
         user.LinkGoogleAccount("google-sub-2");
         h.Db.Users.Add(user);
         await h.Db.SaveChangesAsync();

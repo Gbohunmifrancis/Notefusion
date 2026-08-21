@@ -13,6 +13,7 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { Avatar } from '../components/Avatar';
+import { AppDrawer } from '../components/AppDrawer';
 import { Card } from '../components/Card';
 import { libraryApi, meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
@@ -39,7 +40,7 @@ function currentGreeting(): string {
 
 /**
  * HomeScreen — strictly following row 2 screen 1 ("Home") of the design sheet:
- * 1. Top bar: "Home" title on left, Dark Mode & Bell on right. NO sidebar drawer, NO profile icon in upper right.
+ * 1. Top bar: avatar on the left (opens the account side bar), Dark Mode & Bell on right.
  * 2. Greeting: "Good morning, Francis", "What will you transcribe today?"
  * 3. Primary Mic Card: Centred blue circular mic button, "Tap to start recording", "or import audio file"
  * 4. Quick Action Buttons: "Import" and "Paste URL"
@@ -53,6 +54,7 @@ export function HomeScreen({ navigation }: Props) {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
@@ -162,13 +164,14 @@ export function HomeScreen({ navigation }: Props) {
               {/* The left slot was an empty spacer holding the actions right. The
                   avatar fills it and carries the premium signal: the gold ring is
                   `Avatar`'s own `premium` prop, so Home and Profile cannot disagree
-                  about who is paying. */}
+                  about who is paying. Tapping it opens the account side bar rather
+                  than jumping straight to Profile — the profile is one row inside it. */}
               <Avatar
                 uri={pictureUrl}
                 name={user?.fullName}
                 size={38}
                 premium={isPro}
-                onPress={() => navigation.navigate('Profile')}
+                onPress={() => setDrawerOpen(true)}
               />
 
               <View style={styles.headerActions}>
@@ -288,6 +291,14 @@ export function HomeScreen({ navigation }: Props) {
             </Card>
           )
         }
+      />
+
+      {/* Mounted here rather than in the navigator: nothing else needs to open it, so
+          local state beats another context. A Modal takes no layout space. */}
+      <AppDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        pictureUrl={pictureUrl}
       />
     </Screen>
   );

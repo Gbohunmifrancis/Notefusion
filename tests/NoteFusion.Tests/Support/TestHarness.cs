@@ -79,6 +79,25 @@ public sealed class TestHarness : IDisposable
     public AuditLogger AuditAs(User actor)
         => new(Db, new StubCurrentUser(actor.Id, actor.Role, actor.Email, actor.FullName), ClientIp, Clock);
 
+    /// <summary>
+    /// Puts <paramref name="user"/> through email verification without the mail round trip, for the many
+    /// tests whose subject is something else entirely and which only need an account that can sign in.
+    /// </summary>
+    /// <remarks>
+    /// Goes through the real issue/consume pair rather than reaching for the flag, because the flag has no
+    /// setter — and because a shortcut here would let the production path rot while every test kept
+    /// passing. Does not save: the caller is mid-arrangement and owns the commit.
+    /// </remarks>
+    public void MarkEmailVerified(User user)
+    {
+        var code = EmailVerificationCodes.Issue(user, Tokens, Clock.UtcNow);
+        if (!EmailVerificationCodes.Consume(user, code, Clock.UtcNow))
+        {
+            throw new InvalidOperationException(
+                "A code issued a moment ago was refused — the verification rules have changed under this helper.");
+        }
+    }
+
     public void Dispose()
     {
         Db.Dispose();
@@ -135,6 +154,13 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
+    {
+        Sent.Add(("email-verification", to));
+        VerificationCodes.Add(code);
+        return Task.CompletedTask;
+    }
+
     public Task SendSubscriptionExpiringAsync(
         EmailRecipient to, SubscriptionExpiry expiry, CancellationToken ct = default)
     {
@@ -160,6 +186,13 @@ public sealed class RecordingEmailSender : IEmailSender
     /// sending one — the recipient alone cannot show that the destination is ours.
     /// </summary>
     public List<string> ResetUrls { get; } = [];
+
+    /// <summary>
+    /// The plaintext verification codes, which is the only place a test can see one: the handler stores
+    /// nothing but a hash, so the code that was mailed is otherwise unrecoverable — exactly as intended
+    /// in production, and exactly why a test that wants to enter the right code has to read it here.
+    /// </summary>
+    public List<string> VerificationCodes { get; } = [];
 }
 
 /// <summary>
