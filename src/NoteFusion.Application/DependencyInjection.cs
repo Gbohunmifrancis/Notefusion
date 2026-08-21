@@ -1,8 +1,10 @@
 using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Behaviors;
+using NoteFusion.Application.Common.Interfaces;
 
 namespace NoteFusion.Application;
 
@@ -21,6 +23,7 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
         services.AddScoped<ITokenIssuer, TokenIssuer>();
+        services.AddScoped<IAuditLogger, AuditLogger>();
 
         return services;
     }

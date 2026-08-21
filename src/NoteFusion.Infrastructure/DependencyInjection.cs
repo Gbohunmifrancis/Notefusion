@@ -47,6 +47,10 @@ public static class DependencyInjection
         // Bridge the concrete context to the Application contract.
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
+        // The health probe takes the concrete context because it needs Database, which
+        // IApplicationDbContext deliberately does not expose.
+        services.AddScoped<IDatabaseHealth, DatabaseHealthProbe>();
+
         var seed = configuration.GetSection("Seed").Get<SeedSettings>() ?? new SeedSettings();
         services.AddSingleton(seed);
 

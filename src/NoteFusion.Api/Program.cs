@@ -29,6 +29,9 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // Infrastructure because reading it needs HttpContext, which Infrastructure has no reference to.
 builder.Services.AddScoped<ICountryResolver, RequestCountryResolver>();
 
+// Same seam, different question: the raw address, for the admin audit trail.
+builder.Services.AddScoped<IClientIpAddress, RequestClientIpAddress>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -59,7 +62,14 @@ var originsSet = new HashSet<string>(allowedOriginsArray.Concat(parsedFromRaw), 
 originsSet.Add("http://localhost:5173");
 originsSet.Add("http://127.0.0.1:5173");
 originsSet.Add("https://notefusion.studio");
-originsSet.Add("https://notefusion-admin.vercel.app");
+// The admin dashboard's own subdomain. It is a separate origin from the marketing site, so
+// listing the apex is not enough — without this line every call from the console is blocked.
+originsSet.Add("https://admin.notefusion.studio");
+originsSet.Add("https://notefusion-web.vercel.app");
+// Vercel's generated alias for the dashboard project. `<project>.vercel.app` was already taken
+// globally, so the production URL carries a random suffix — it is the origin the browser actually
+// sends, and it is stable for the life of the project.
+originsSet.Add("https://web-admin-blue-two.vercel.app");
 originsSet.Add("https://notefusion-privacy.vercel.app");
 
 var allowedOrigins = originsSet.ToArray();

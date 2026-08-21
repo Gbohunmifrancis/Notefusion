@@ -1,0 +1,157 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Admin.Dtos;
+using NoteFusion.Application.Common;
+using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Shared.Results;
+
+namespace NoteFusion.Application.Admin.Queries;
+
+/// <summary>
+/// Everything the console shows on one account's detail page, in a single round of queries.
+/// </summary>
+/// <remarks>
+/// One query rather than a handful of endpoints the page stitches together, because every panel on it
+/// answers the same support question and a half-loaded page answers none of them. The cost is a fixed
+/// handful of small reads, all bounded.
+/// </remarks>
+public sealed record GetUserAccountQuery(Guid UserId) : IRequest<Result<AdminUserDetailDto>>
+{
+    /// <summary>
+    /// How many rows of each history the page carries. A support view, not an export — the full trail is
+    /// the audit-log page, which pages properly.
+    /// </summary>
+    public const int HistoryLimit = 20;
+}
+
+public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQuery, Result<AdminUserDetailDto>>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly IDateTimeProvider _clock;
+
+    public GetUserAccountQueryHandler(IApplicationDbContext db, IDateTimeProvider clock)
+    {
+        _db = db;
+        _clock = clock;
+    }
+
+    public async Task<Result<AdminUserDetailDto>> Handle(GetUserAccountQuery request, CancellationToken ct)
+    {
+        var user = await _db.Users.AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
+
+        if (user is null)
+            return UserErrors.NotFound;
+
+        // Counted from the jobs, not from saved transcriptions, and from the same constant the paywall
+        // reads — deleting a transcription does not hand the free generation back, and the number the
+        // console shows must be the number that gates the user.
+        var trialUsed = await _db.TranscriptionJobs.AsNoTracking()
+            .CountAsync(j => j.UserId == request.UserId && j.TrialConsumedAtUtc != null, ct);
+
+        var transcriptionCount = await _db.Transcriptions.AsNoTracking()
+            .CountAsync(t => t.UserId == request.UserId, ct);
+
+        var sub = await _db.Subscriptions.AsNoTracking()
+            .OrderByDescending(s => s.CurrentPeriodEndUtc)
+            .FirstOrDefaultAsync(s => s.UserId == request.UserId, ct);
+
+        AdminSubscriptionDto? subscription = null;
+        if (sub is not null)
+        {
+            var plan = await _db.Plans.AsNoTracking().FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
+
+            subscription = new AdminSubscriptionDto(
+                sub.Id,
+                plan?.Code,
+                plan?.Name,
+                sub.Status.ToString(),
+                sub.IsActiveAt(_clock.UtcNow),
+                sub.IsGift,
+                sub.IsLifetime,
+                sub.Provider?.ToString(),
+                sub.CurrentPeriodStartUtc,
+                sub.IsLifetime ? null : sub.CurrentPeriodEndUtc,
+                sub.CanceledAtUtc,
+                sub.CreatedAtUtc);
+        }
+
+        // The plan name comes from a correlated subquery because the transaction stores only a plan id, and
+        // the row has to keep naming what was bought after that plan is retired and gone from the paywall.
+        var payments = await _db.PaymentTransactions.AsNoTracking()
+            .Where(pt => pt.UserId == request.UserId)
+            .OrderByDescending(pt => pt.CreatedAtUtc)
+            .ThenBy(pt => pt.Id)
+            .Take(GetUserAccountQuery.HistoryLimit)
+            .Select(pt => new AdminPaymentDto(
+                pt.Id,
+                pt.Reference,
+                pt.ProviderReference,
+                pt.Provider.ToString(),
+                pt.Status.ToString(),
+                pt.AmountMinor,
+                pt.Currency,
+                _db.Plans.Where(p => p.Id == pt.PlanId).Select(p => p.Name).FirstOrDefault(),
+                pt.FailureReason,
+                pt.CreatedAtUtc))
+            .ToListAsync(ct);
+
+        var ledger = await _db.LedgerEntries.AsNoTracking()
+            .Where(le => le.UserId == request.UserId)
+            .OrderByDescending(le => le.CreatedAtUtc)
+            .ThenBy(le => le.Id)
+            .Take(GetUserAccountQuery.HistoryLimit)
+            .Select(le => new AdminLedgerEntryDto(
+                le.Id,
+                le.Direction.ToString(),
+                le.Reason.ToString(),
+                le.AmountMinor,
+                le.Currency,
+                le.Description,
+                le.CreatedAtUtc))
+            .ToListAsync(ct);
+
+        var recentActions = await _db.AdminAuditLogs.AsNoTracking()
+            .Where(a => a.TargetUserId == request.UserId)
+            .OrderByDescending(a => a.OccurredAtUtc)
+            .ThenBy(a => a.Id)
+            .Take(GetUserAccountQuery.HistoryLimit)
+            .Select(a => new AuditLogRowDto(
+                a.Id,
+                a.ActorUserId,
+                a.ActorEmail,
+                a.Action.ToString(),
+                a.TargetUserId,
+                a.TargetEmail,
+                a.IpAddress,
+                a.Summary,
+                a.Note,
+                a.OccurredAtUtc))
+            .ToListAsync(ct);
+
+        return new AdminUserDetailDto(
+            user.Id,
+            user.FullName,
+            user.Email,
+            user.PhoneNumber,
+            user.ProfilePictureUrl,
+            user.Role.ToString(),
+            user.IsActive,
+            user.GoogleId != null,
+            user.PasswordHash != null,
+            user.Country,
+            user.CreatedAt,
+            user.LastLoginAt,
+            // Only reported while it is actually in force: a stale lockout date that has already passed is
+            // not the reason anyone cannot sign in, and printing one sends support after the wrong thing.
+            user.IsLockedOut(_clock.UtcNow) ? user.LockoutEndAt : null,
+            transcriptionCount,
+            trialUsed,
+            FreeTier.TrialGenerations,
+            subscription,
+            payments,
+            ledger,
+            recentActions);
+    }
+}

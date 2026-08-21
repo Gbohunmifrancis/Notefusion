@@ -29,5 +29,11 @@ public interface IApplicationDbContext
     DbSet<Subscription> Subscriptions { get; }
     DbSet<WebhookEvent> WebhookEvents { get; }
 
+    /// <summary>
+    /// Append-only trail of admin actions. Staged by <see cref="IAuditLogger"/> in the same
+    /// <see cref="SaveChangesAsync"/> as the change it records, so the two cannot come apart.
+    /// </summary>
+    DbSet<AdminAuditLog> AdminAuditLogs { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

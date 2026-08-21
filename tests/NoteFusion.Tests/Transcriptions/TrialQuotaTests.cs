@@ -267,5 +267,9 @@ public class TrialQuotaTests
             return Task.FromResult(Result<TranscriptionJobDto>.Success(
                 new TranscriptionJobDto(jobId, Status, progress, null)));
         }
+
+        /// <summary>Not exercised here — quota has nothing to do with the health page.</summary>
+        public Task<Result<int>> PingAsync(CancellationToken ct = default)
+            => Task.FromResult(Result<int>.Success(1));
     }
 }

@@ -25,6 +25,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Subscription> Subscriptions => Set<Subscription>();
     public DbSet<WebhookEvent> WebhookEvents => Set<WebhookEvent>();
 
+    public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

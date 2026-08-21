@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Users.Commands;
@@ -26,12 +27,15 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
     private readonly IApplicationDbContext _db;
     private readonly IPasswordHasher _hasher;
     private readonly IDateTimeProvider _clock;
+    private readonly IAuditLogger _audit;
 
-    public CreateUserCommandHandler(IApplicationDbContext db, IPasswordHasher hasher, IDateTimeProvider clock)
+    public CreateUserCommandHandler(
+        IApplicationDbContext db, IPasswordHasher hasher, IDateTimeProvider clock, IAuditLogger audit)
     {
         _db = db;
         _hasher = hasher;
         _clock = clock;
+        _audit = audit;
     }
 
     public async Task<Result<Guid>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -42,6 +46,11 @@ public sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand
 
         var user = User.Create(request.FullName.Trim(), email, _hasher.Hash(request.Password), _clock.UtcNow);
         _db.Users.Add(user);
+
+        // An account that exists because an operator typed a password into a console is worth a trail
+        // entry: it is the one account whose credentials somebody other than its owner has seen.
+        _audit.Record(AdminAuditAction.CreateUser, user, "Created the account with a temporary password.");
+
         await _db.SaveChangesAsync(cancellationToken);
 
         return user.Id;

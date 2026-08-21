@@ -136,6 +136,54 @@ public class User : BaseEntity
     }
 
     /// <summary>
+    /// Removes the administrator role, pairing with <see cref="PromoteToAdmin"/>. Returns false when the
+    /// account was not an admin, so a repeated click costs no write.
+    /// </summary>
+    /// <remarks>
+    /// Nothing here stops the last admin demoting themselves out of the console — that is a rule about the
+    /// whole set of accounts, which this entity cannot see, so the command layer holds it.
+    /// </remarks>
+    public bool DemoteFromAdmin()
+    {
+        if (Role == UserRole.User) return false;
+
+        Role = UserRole.User;
+        return true;
+    }
+
+    /// <summary>
+    /// Bars the account from signing in. Returns false when it was already suspended.
+    /// </summary>
+    /// <remarks>
+    /// This one flag is the whole enforcement: login, Google sign-in and refresh all already refuse an
+    /// inactive account. What it does <em>not</em> do is invalidate an access token already in the user's
+    /// hands — those are self-contained JWTs, valid until they expire — so a caller that means "cut this
+    /// account off" must also revoke the refresh tokens, and whatever tells the operator it worked has to
+    /// name that remaining window rather than imply an instant cut-off.
+    /// </remarks>
+    public bool Suspend()
+    {
+        if (!IsActive) return false;
+
+        IsActive = false;
+        return true;
+    }
+
+    /// <summary>Restores a suspended account. Returns false when it was already active.</summary>
+    /// <remarks>
+    /// Sign-in works again immediately; the revoked refresh tokens are not resurrected, so every device
+    /// signs in once more. That is the honest outcome — an un-revoked token is one an attacker may have
+    /// taken a copy of.
+    /// </remarks>
+    public bool Reactivate()
+    {
+        if (IsActive) return false;
+
+        IsActive = true;
+        return true;
+    }
+
+    /// <summary>
     /// Links a Google account to an existing password account, so both routes reach the
     /// same user. Callers must have confirmed Google verified the email first — linking on
     /// an unverified email would let anyone claiming that address take over the account.

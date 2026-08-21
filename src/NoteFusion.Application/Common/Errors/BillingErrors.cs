@@ -43,6 +43,13 @@ public static class BillingErrors
     public static readonly Error NotAuthenticated =
         Error.Unauthorized("BILLING_NOT_AUTHENTICATED", "You must be signed in to do that.");
 
+    public static readonly Error NoActiveSubscription =
+        Error.NotFound("BILLING_NO_ACTIVE_SUBSCRIPTION", "You do not have an active subscription to cancel.");
+
+    public static readonly Error LifetimeNotCancelable =
+        Error.Failure("BILLING_LIFETIME_NOT_CANCELABLE",
+            "Lifetime access was bought outright, so there is nothing to cancel.");
+
     public static readonly Error FreeTierLimitReached =
         Error.Forbidden("BILLING_FREE_TIER_LIMIT",
             $"You have used all {FreeTier.TrialGenerations} of your free transcriptions. "

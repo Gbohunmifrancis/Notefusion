@@ -86,6 +86,36 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
         }
     }
 
+    public async Task<Result<int>> PingAsync(CancellationToken cancellationToken = default)
+    {
+        // Short of the client's 100-second transcription timeout by a wide margin: a health page that
+        // hangs for a minute and a half on a dead worker has already failed at its job. The worker either
+        // answers this in milliseconds or it is not answering.
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(TimeSpan.FromSeconds(5));
+
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+        try
+        {
+            using var response = await http.GetAsync("healthz", timeout.Token);
+            return response.IsSuccessStatusCode
+                ? (int)stopwatch.ElapsedMilliseconds
+                : Error.Failure("Api.Ping", $"Transcription service returned {(int)response.StatusCode}.");
+        }
+        catch (HttpRequestException ex)
+        {
+            return Error.Network("Api.Ping", $"Could not reach the transcription service: {ex.Message}");
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            // Our own five seconds, not the caller giving up. A worker this slow to answer a static
+            // handler is one that cannot take a job either, so it is reported as unreachable rather than
+            // as a latency figure.
+            return Error.Network("Api.Ping", "The transcription service did not answer within 5 seconds.");
+        }
+    }
+
     private static Result<TranscriptionJobDto> MapJob(string jobId, JobResponse wire)
     {
         var status = wire.Status.ToLowerInvariant() switch

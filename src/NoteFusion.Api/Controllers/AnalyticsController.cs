@@ -33,7 +33,8 @@ public sealed class AnalyticsController : ApiControllerBase
     /// <remarks>
     /// Days are bucketed in West Africa Time (UTC+1); the offset is echoed in the response as
     /// <c>reportingOffsetMinutes</c> so the client formats dates the way the server grouped them.
-    /// Subscription, paid, and free-tier counts are absent because no billing schema exists yet.
+    /// Subscription counts are not here — they are a point-in-time snapshot rather than a windowed
+    /// counter, and live on <c>GET api/admin/health</c>.
     /// </remarks>
     [HttpGet("overview")]
     public async Task<IActionResult> Overview(

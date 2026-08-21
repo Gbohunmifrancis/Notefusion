@@ -49,7 +49,7 @@ internal static class PaymentFulfillment
         DateTime renewsAtUtc;
         if (sub is null)
         {
-            renewsAtUtc = Advance(now, interval);
+            renewsAtUtc = BillingPeriod.Advance(now, interval);
             db.Subscriptions.Add(Subscription.Start(
                 tx.UserId, tx.PlanId, tx.Provider, now, renewsAtUtc, verification.ProviderSubscriptionRef, now));
         }
@@ -60,14 +60,20 @@ internal static class PaymentFulfillment
             // itself in the ledger above. Once lifetime, always lifetime — a subsequent monthly charge
             // must never shorten access that was already paid for in full.
             renewsAtUtc = sub.CurrentPeriodEndUtc;
+            sub.AttachPayment(tx.Provider, verification.ProviderSubscriptionRef, now);
         }
         else
         {
             // Renew from the later of "now" and the current period end, so an early renewal stacks the
             // remaining time instead of discarding it.
             var start = sub.CurrentPeriodEndUtc > now ? sub.CurrentPeriodEndUtc : now;
-            renewsAtUtc = Advance(start, interval);
+            renewsAtUtc = BillingPeriod.Advance(start, interval);
             sub.Renew(start, renewsAtUtc, now);
+
+            // Whoever this row belonged to before, it is paid for now. Matters for the account that was
+            // comped from the admin console and then bought: leaving the provider null would keep calling a
+            // paying customer's subscription a gift.
+            sub.AttachPayment(tx.Provider, verification.ProviderSubscriptionRef, now);
         }
 
         var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);
@@ -83,21 +89,6 @@ internal static class PaymentFulfillment
                 renewsAtUtc >= Subscription.LifetimeEndUtc ? null : renewsAtUtc,
                 tx.Reference));
     }
-
-    /// <summary>
-    /// How far one payment extends access. Written as a switch over every interval rather than a
-    /// two-way ternary because the ternary's "else" quietly meant "a year", so adding
-    /// <see cref="BillingInterval.Lifetime"/> would have granted a lifetime buyer twelve months and
-    /// looked correct until the renewal that never came. The default throws instead of guessing: a
-    /// period we cannot compute is a bug to fix, not a length to invent.
-    /// </summary>
-    private static DateTime Advance(DateTime from, BillingInterval interval) => interval switch
-    {
-        BillingInterval.Monthly => from.AddMonths(1),
-        BillingInterval.Yearly => from.AddYears(1),
-        BillingInterval.Lifetime => Subscription.LifetimeEndUtc,
-        _ => throw new ArgumentOutOfRangeException(nameof(interval), interval, "Unhandled billing interval."),
-    };
 }
 
 /// <summary>Who to thank and what to tell them, once a fulfilment has committed.</summary>
