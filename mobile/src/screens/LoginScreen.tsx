@@ -68,7 +68,15 @@ export function LoginScreen({ navigation }: Props) {
     try {
       await signIn(email.trim(), password);
     } catch (e) {
-      setError(toApiError(e).message);
+      const err = toApiError(e);
+      // The password was right; the address was never confirmed. The server has already
+      // mailed a fresh code by the time this lands, so send them straight to the boxes
+      // rather than showing an error they can do nothing about.
+      if (err.code === "AUTH_EMAIL_NOT_VERIFIED") {
+        navigation.navigate("VerifyEmail", { email: email.trim().toLowerCase() });
+        return;
+      }
+      setError(err.message);
     } finally {
       setBusy(false);
     }

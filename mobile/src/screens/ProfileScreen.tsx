@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Modal,
   ScrollView,
   StyleSheet,
@@ -16,6 +15,7 @@ import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
+import { showDialog } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
 import { meApi, authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -32,7 +32,7 @@ import type { RootStackParams } from "../navigation/types";
 
 /**
  * ProfileScreen — matching Image 4 design sheet:
- * 1. Top bar: Settings gear icon on top right
+ * 1. Top bar: back button and title — a pushed screen since the side bar replaced the Profile tab
  * 2. Header: Avatar disc, Name, Email, plan pill badge
  * 3. Settings List: Account, Subscription, Notifications, Help & Support, About Notefusion
  * 4. Sign Out: Red link centered at bottom
@@ -78,9 +78,18 @@ export function ProfileScreen() {
       const updated = await meApi.update(trimmed);
       setProfile(updated);
       setUser({ ...user!, fullName: updated.fullName });
-      Alert.alert("Saved ✓", "Your display name has been updated.");
+      showDialog({
+        title: "Saved",
+        message: "Your display name has been updated.",
+        icon: "checkmark-circle-outline",
+      });
     } catch (e) {
-      Alert.alert("Could not update", toApiError(e).message);
+      showDialog({
+        title: "Could not update",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     }
   }
 
@@ -92,9 +101,18 @@ export function ProfileScreen() {
       await authApi.changePassword(current, next);
       setCurrent("");
       setNext("");
-      Alert.alert("Password updated ✓", "Your password has been changed.");
+      showDialog({
+        title: "Password updated",
+        message: "Your password has been changed.",
+        icon: "checkmark-circle-outline",
+      });
     } catch (e) {
-      Alert.alert("Could not change password", toApiError(e).message);
+      showDialog({
+        title: "Could not change password",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setPwBusy(false);
     }
@@ -117,7 +135,12 @@ export function ProfileScreen() {
       );
       setProfile(updated);
     } catch (e) {
-      Alert.alert("Could not update photo", toApiError(e).message);
+      showDialog({
+        title: "Could not update photo",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setAvatarBusy(false);
     }
@@ -129,7 +152,12 @@ export function ProfileScreen() {
       const updated = await meApi.removePicture();
       setProfile(updated);
     } catch (e) {
-      Alert.alert("Could not remove photo", toApiError(e).message);
+      showDialog({
+        title: "Could not remove photo",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setAvatarBusy(false);
     }
@@ -137,29 +165,49 @@ export function ProfileScreen() {
 
   function onAvatarPress() {
     const hasPicture = Boolean(profile?.profilePictureUrl);
-    Alert.alert(
-      "Profile photo",
-      hasPicture ? undefined : "Add a photo to personalise your account.",
-      [
-        { text: hasPicture ? "Change photo" : "Choose photo", onPress: changePicture },
+    showDialog({
+      title: "Profile photo",
+      message: hasPicture ? undefined : "Add a photo to personalise your account.",
+      icon: "camera-outline",
+      actions: [
+        {
+          label: hasPicture ? "Change photo" : "Choose photo",
+          icon: "image-outline",
+          onPress: changePicture,
+        },
         ...(hasPicture
           ? [
               {
-                text: "Remove photo",
+                label: "Remove photo",
                 style: "destructive" as const,
+                icon: "trash-outline" as const,
                 onPress: removePicture,
               },
             ]
           : []),
-        { text: "Cancel", style: "cancel" as const },
+        { label: "Cancel", style: "cancel" as const },
       ],
-    );
+    });
   }
 
   return (
     <Screen scroll contentStyle={styles.screen}>
-      {/* ── 1. Top Bar: Title ───────────────────────────────────────────── */}
+      {/* ── 1. Top Bar: Back & Title ────────────────────────────────────── */}
       <View style={styles.topBar}>
+        {/* Needed since Profile stopped being a tab: it is pushed from the side bar now,
+            and with `headerShown: false` the swipe gesture would be the only way back. */}
+        <TouchableOpacity
+          onPress={() => nav.goBack()}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <View style={styles.backCircle}>
+            <Ionicons name="chevron-back" size={20} color={colors.text} />
+          </View>
+        </TouchableOpacity>
+
         <Text style={styles.pageTitle}>Profile</Text>
       </View>
 
@@ -196,17 +244,15 @@ export function ProfileScreen() {
         />
         <View style={styles.divider} />
 
-        {/* Nothing left to sell an active subscriber — same rule hides the tab. */}
-        {!isPro ? (
-          <>
-            <MenuItem
-              icon="card-outline"
-              label="Subscription"
-              onPress={() => nav.navigate("Upgrade")}
-            />
-            <View style={styles.divider} />
-          </>
-        ) : null}
+        {/* Same destination either way; only the promise differs. A subscriber goes there to
+            see the renewal date and cancel, so calling it "Subscription" would read as an
+            upsell to someone who already paid. */}
+        <MenuItem
+          icon="card-outline"
+          label={isPro ? "Manage membership" : "Subscription"}
+          onPress={() => nav.navigate("Upgrade")}
+        />
+        <View style={styles.divider} />
 
         <MenuItem
           icon="settings-outline"
@@ -358,10 +404,20 @@ const makeStyles = (c: Palette) =>
     // ── Top Bar ───────────────────────────────────────────────────────────────
     topBar: {
       flexDirection: "row",
-      justifyContent: "space-between",
       alignItems: "center",
+      gap: spacing.md,
       paddingTop: spacing.sm,
       marginBottom: spacing.lg,
+    },
+    backCircle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
     },
     pageTitle: {
       fontSize: 24,
@@ -453,6 +509,11 @@ const makeStyles = (c: Palette) =>
     signOutBtn: {
       marginTop: spacing.md,
       marginBottom: spacing.xxl,
+      // Hugs its label instead of spanning the screen. `Button` stretches by default,
+      // which is right for a primary action but made sign-out — the one destructive
+      // control here — the widest thing on the page. `Button` already carries
+      // `paddingHorizontal: spacing.xl`, so the pill still has room to breathe.
+      alignSelf: "center",
     },
 
     // ── Modal ─────────────────────────────────────────────────────────────────

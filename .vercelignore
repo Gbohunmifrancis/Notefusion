@@ -1,0 +1,5 @@
+# Vercel deploys the admin dashboard from this repo with Root Directory = web-admin, so the
+# upload only needs that folder. Without this, `vercel --prod` from the repo root ships the
+# whole monorepo (API, ML worker, mobile app, docs) for a static SPA build.
+/*
+!/web-admin

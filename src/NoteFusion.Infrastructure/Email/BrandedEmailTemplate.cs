@@ -131,6 +131,45 @@ public sealed class BrandedEmailTemplate
                 "If you didn't request this, ignore this email."));
     }
 
+    public EmailMessage VerifyEmail(EmailRecipient to, string code)
+    {
+        var name = FirstName(to);
+        var greeting = name is null ? "Almost there —" : $"Almost there, {Encode(name)} —";
+        var body = Paragraphs(
+            $"{greeting} enter this code in the app to confirm this is your email address and finish "
+                + "setting up your account.")
+            + CodeBlock(code)
+            + Paragraphs(
+                "The code expires in <strong>10 minutes</strong>. If it does, ask for a new one from the "
+                    + "same screen.")
+            + Callout(
+                "If you didn't sign up for NoteFusion, ignore this email — the account isn't active and "
+                    + "nobody can sign into it without this code.",
+                Blue);
+
+        return Compose(
+            to,
+            // Some clients preview the subject only, so the code goes in it: one glance from the
+            // notification shade is enough to type it, without opening the mail at all.
+            subject: $"{code} is your NoteFusion verification code",
+            preheader: "Enter this code to confirm your email address. It expires in 10 minutes.",
+            heading: "Confirm your email",
+            bodyHtml: body,
+            // No button on purpose. A link that verifies would have to carry the code, and a code that
+            // travels in a URL is a code that ends up in a browser history and a referrer header.
+            cta: null,
+            textBody: Text(
+                $"{(name is null ? "Almost there" : $"Almost there, {name}")} — enter this code in the app to confirm",
+                "your email address and finish setting up your account.",
+                "",
+                $"    {code}",
+                "",
+                "The code expires in 10 minutes. If it does, ask for a new one from the same screen.",
+                "",
+                "If you didn't sign up for NoteFusion, ignore this email — the account isn't active",
+                "and nobody can sign into it without this code."));
+    }
+
     public EmailMessage SubscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt)
     {
         var amount = FormatAmount(receipt.AmountMinor, receipt.Currency);
@@ -411,6 +450,28 @@ public sealed class BrandedEmailTemplate
         <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:20px 0 4px">
           <tr>
             <td style="padding:14px 18px;background-color:{SurfaceAlt};border-left:3px solid {accent};border-radius:0 8px 8px 0;font-family:{FontStack};font-size:14px;line-height:1.6;color:{Ink}">{html}</td>
+          </tr>
+        </table>
+        """;
+
+    /// <summary>
+    /// A one-time code, set large and spaced so it can be read off a screen and typed into a phone
+    /// without a second look. Monospaced because 0/O and 1/l are the whole risk in a code you retype;
+    /// letter-spaced because digits run together at this size.
+    /// </summary>
+    /// <remarks>
+    /// Not selectable-text-in-a-button and not a link: the code is the secret, so it stays something the
+    /// reader copies deliberately. <c>user-select:all</c> makes one tap grab the whole thing on clients
+    /// that honour it, and costs nothing on those that don't.
+    /// </remarks>
+    private static string CodeBlock(string code) => $"""
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:26px 0 8px">
+          <tr>
+            <td align="center" bgcolor="{SurfaceAlt}"
+                style="padding:22px 18px;background-color:{SurfaceAlt};border:1px solid {Border};border-radius:14px">
+              <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:34px;font-weight:700;letter-spacing:10px;line-height:1.2;color:{Blue};-webkit-user-select:all;user-select:all">{Encode(code)}</div>
+              <div style="font-family:{FontStack};font-size:12px;font-weight:500;letter-spacing:0.4px;color:{Faint};padding-top:10px;text-transform:uppercase">Verification code</div>
+            </td>
           </tr>
         </table>
         """;

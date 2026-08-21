@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
 import * as NativeSplash from 'expo-splash-screen';
 import { AuthProvider } from './src/lib/auth';
+import { DialogProvider } from './src/lib/dialog';
 import { SubscriptionProvider } from './src/lib/subscription';
 import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
@@ -70,7 +71,11 @@ function Themed() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: palette.bg }}>
       <StatusBar barStyle={mode === 'dark' ? 'light-content' : 'dark-content'} backgroundColor="transparent" translucent />
-      <RootNavigator />
+      {/* Inside the theme (the dialog is themed) and around the navigator, so a dialog
+          paints above whatever screen is mounted and survives navigation. */}
+      <DialogProvider>
+        <RootNavigator />
+      </DialogProvider>
     </GestureHandlerRootView>
   );
 }

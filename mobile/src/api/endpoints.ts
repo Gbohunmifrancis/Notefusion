@@ -4,6 +4,7 @@ import type {
   LoginResponse,
   MyProfile,
   Plan,
+  RegistrationResponse,
   SavedTranscription,
   Subscription,
   TranscriptionJob,
@@ -12,10 +13,34 @@ import type {
 /** Typed wrappers over the C# Web API endpoints. One function per route. */
 
 export const authApi = {
+  /**
+   * Creates the account and mails a six-digit code. Returns no session — the caller
+   * must send the returned email to `verifyEmail` with the code before there are tokens.
+   */
   register: (fullName: string, email: string, password: string) =>
     api
-      .post<LoginResponse>("/api/auth/register", { fullName, email, password })
+      .post<RegistrationResponse>("/api/auth/register", {
+        fullName,
+        email,
+        password,
+      })
       .then((r) => r.data),
+
+  /** Exchanges a sign-up code for the session `register` withheld. */
+  verifyEmail: (email: string, code: string) =>
+    api
+      .post<LoginResponse>("/api/auth/verify-email", { email, code })
+      .then((r) => r.data),
+
+  /**
+   * Asks for another code. Succeeds whether or not one was actually sent — the server
+   * refuses to say whether the address is registered, or whether the 60-second cooldown
+   * swallowed the request, so the countdown the user sees is ours to run.
+   */
+  resendVerification: (email: string) =>
+    api
+      .post("/api/auth/resend-verification", { email })
+      .then(() => undefined),
 
   login: (email: string, password: string) =>
     api
@@ -153,6 +178,16 @@ export const libraryApi = {
       .put<SavedTranscription>(`/api/library/${id}/key`, { key })
       .then((r) => r.data),
 
+  /**
+   * Persists tap-to-correct edits (F-07). The whole list, not one note: a
+   * correction may delete a note, and that shifts every index after it. The
+   * server ignores the solfa fields and re-derives them for the stored key.
+   */
+  updateNotes: (id: string, notes: SavedTranscription["notes"]) =>
+    api
+      .put<SavedTranscription>(`/api/library/${id}/notes`, { notes })
+      .then((r) => r.data),
+
   remove: (id: string) =>
     api.delete(`/api/library/${id}`).then(() => undefined),
 };
@@ -174,4 +209,24 @@ export const billingApi = {
   /** The caller's subscription state — the app gates Pro features on this. */
   mySubscription: () =>
     api.get<Subscription>("/api/billing/my-subscription").then((r) => r.data),
+
+  /**
+   * Asks the server to verify the caller's in-flight checkout with the provider *now*,
+   * and returns the resulting subscription state. Send this the moment the checkout
+   * browser closes: without it the app is waiting on the provider's webhook, which is
+   * the entire reason "paid" used to take minutes to become "Pro".
+   *
+   * Safe to call at any time — no pending checkout is a no-op that just reports state —
+   * and idempotent, so a retry cannot double-charge or double-fulfil. Returns the same
+   * shape as `mySubscription()`, so one call both confirms and reports.
+   */
+  confirm: () =>
+    api.post<Subscription>("/api/billing/confirm").then((r) => r.data),
+
+  /**
+   * Cancels at the end of the paid period. Pro is *not* withdrawn early and nothing is
+   * refunded, so the caller should re-read `mySubscription()` afterwards rather than
+   * assume the account just went Free. Idempotent server-side (204 either way).
+   */
+  cancel: () => api.post<void>("/api/billing/cancel").then(() => undefined),
 };

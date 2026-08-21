@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Common.Settings;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Auth.Commands;
@@ -14,14 +15,14 @@ namespace NoteFusion.Application.Auth.Commands;
 /// an account with that email exists — callers always receive a 204 so a probe cannot enumerate
 /// registered addresses.
 /// </summary>
-public sealed record ForgotPasswordCommand(
-    string Email,
-    /// <summary>
-    /// The front-end URL that the emailed link resolves to, e.g.
-    /// <c>https://notefusion.studio/reset-password</c>. The raw token is appended as
-    /// <c>?token=&lt;value&gt;</c> by the handler.
-    /// </summary>
-    string? ResetBaseUrl = null) : IRequest<Result<Unit>>;
+/// <remarks>
+/// The link's destination is <b>not</b> a parameter. It used to be, and that made this endpoint — which is
+/// anonymous by design — a way to have NoteFusion email a genuine one-time reset token to a URL of the
+/// caller's choosing: post someone else's address with your own base URL and the account owner receives a
+/// real-looking reset link pointing at your site. The destination now comes from
+/// <see cref="AuthSettings.ResetPasswordUrl"/>, which only a deploy can set.
+/// </remarks>
+public sealed record ForgotPasswordCommand(string Email) : IRequest<Result<Unit>>;
 
 public sealed class ForgotPasswordCommandValidator : AbstractValidator<ForgotPasswordCommand>
 {
@@ -37,16 +38,18 @@ public sealed class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswor
     private readonly ISecureTokenGenerator _tokenGen;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly AuthSettings _auth;
     private readonly ILogger<ForgotPasswordCommandHandler> _logger;
 
     public ForgotPasswordCommandHandler(
         IApplicationDbContext db, ISecureTokenGenerator tokenGen, IDateTimeProvider clock,
-        IEmailSender email, ILogger<ForgotPasswordCommandHandler> logger)
+        IEmailSender email, AuthSettings auth, ILogger<ForgotPasswordCommandHandler> logger)
     {
         _db = db;
         _tokenGen = tokenGen;
         _clock = clock;
         _email = email;
+        _auth = auth;
         _logger = logger;
     }
 
@@ -71,9 +74,7 @@ public sealed class ForgotPasswordCommandHandler : IRequestHandler<ForgotPasswor
         user.SetPasswordResetToken(tokenHash, _clock.UtcNow);
         await _db.SaveChangesAsync(cancellationToken);
 
-        var baseUrl = string.IsNullOrWhiteSpace(request.ResetBaseUrl)
-            ? "https://notefusion-admin.vercel.app/reset-password"
-            : request.ResetBaseUrl;
+        var baseUrl = _auth.ResetPasswordUrl;
 
         // Build the reset link and email it. Best-effort: a mail failure must not expose
         // the token (it would already be saved) or turn a successful initiation into a 500.

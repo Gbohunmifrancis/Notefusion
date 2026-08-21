@@ -69,4 +69,30 @@ public class Transcription : BaseEntity
         Guard.InRange(index, 0, _notes.Count - 1);
         _notes[index] = Guard.NotNull(corrected);
     }
+
+    /// <summary>
+    /// Tap-to-correct (F-07): replaces the whole note list with the user's corrected one and
+    /// recomputes <see cref="OverallConfidence"/> from it. Both notation views re-derive from
+    /// the list, and solfa is not touched here because it is never stored.
+    /// </summary>
+    /// <remarks>
+    /// Whole-list rather than per-note because a correction can *delete* a note, which shifts
+    /// every later index — <see cref="ReplaceNote"/> cannot express that. The client edits a
+    /// copy of the full list and sends the finished version, so there is nothing to merge.
+    /// <para>
+    /// Confidence becomes the mean of the notes' own confidences, the same formula the Python
+    /// worker uses when it first reports the score, so a corrected transcription stays
+    /// comparable with an untouched one instead of keeping a figure the notes no longer support.
+    /// </para>
+    /// </remarks>
+    public void ReplaceNotes(IEnumerable<NoteEvent> notes)
+    {
+        List<NoteEvent> corrected = [.. Guard.NotNull(notes)];
+        if (corrected.Count == 0)
+            throw new ArgumentException("A transcription must keep at least one note.", nameof(notes));
+
+        _notes.Clear();
+        _notes.AddRange(corrected);
+        OverallConfidence = Math.Round(corrected.Average(n => n.Confidence), 3);
+    }
 }

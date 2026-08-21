@@ -29,6 +29,28 @@ public class TranscriptionJob : BaseEntity
     /// </summary>
     public DateTime? TrialConsumedAtUtc { get; private set; }
 
+    /// <summary>
+    /// The finished transcription, serialised the moment we first observe the ML service report it
+    /// done. Null until then, and stays null for a job that failed or was abandoned.
+    /// </summary>
+    /// <remarks>
+    /// Held here because the ML service's job store is in-process memory with a TTL, on a dyno that
+    /// cycles daily: by the time someone taps a "ready" notification the source may be gone. Copying
+    /// the result onto our own row is what makes that tap reliable.
+    /// </remarks>
+    public string? ResultJson { get; private set; }
+
+    /// <summary>
+    /// When this job reached a terminal state as far as the API is concerned — finished, failed, or
+    /// aged out — and therefore owes the user nothing further.
+    /// </summary>
+    /// <remarks>
+    /// Not named for the push, though sending one is its main consequence: a client that polls a job
+    /// to completion settles it too, precisely so the sweep does not then push about a result the
+    /// user is already looking at. Null means "still open", which is the whole of the sweep predicate.
+    /// </remarks>
+    public DateTime? SettledAtUtc { get; private set; }
+
     public static TranscriptionJob Record(string jobId, Guid userId, DateTime utcNow)
         => new()
         {
@@ -51,6 +73,26 @@ public class TranscriptionJob : BaseEntity
         }
 
         TrialConsumedAtUtc = utcNow;
+        return true;
+    }
+
+    /// <summary>
+    /// Closes the job, caching <paramref name="resultJson"/> when there is one. Returns false when it
+    /// was already closed, which is the caller's signal that someone else got there first and no push
+    /// is owed.
+    /// </summary>
+    /// <param name="resultJson">
+    /// The serialised result for a finished job; null for one that failed or aged out.
+    /// </param>
+    public bool Settle(string? resultJson, DateTime utcNow)
+    {
+        if (SettledAtUtc is not null)
+        {
+            return false;
+        }
+
+        ResultJson = resultJson;
+        SettledAtUtc = utcNow;
         return true;
     }
 }

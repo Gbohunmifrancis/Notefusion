@@ -51,4 +51,25 @@ public static class AuthErrors
     public static readonly Error InvalidResetToken =
         Error.Validation("AUTH_INVALID_RESET_TOKEN",
             "The password-reset link is invalid or has expired. Request a new one.");
+
+    /// <summary>
+    /// Returned by login when the password was correct but the address has never been confirmed. The
+    /// client routes on this code to the code-entry screen, and the handler has already mailed a fresh
+    /// code by the time it is returned — so the user arrives there with something to type.
+    /// </summary>
+    /// <remarks>
+    /// Only ever raised <em>after</em> the password check. Raising it first would be faster and would
+    /// turn login into a way to ask "is this address registered?" without knowing any password.
+    /// </remarks>
+    public static readonly Error EmailNotVerified =
+        Error.Forbidden("AUTH_EMAIL_NOT_VERIFIED",
+            "Confirm your email address to finish setting up your account. We've sent you a new code.");
+
+    /// <summary>
+    /// One answer for a code that is wrong, expired, already used, or has run out of attempts. Which of
+    /// those it was is exactly what someone guessing wants to know.
+    /// </summary>
+    public static readonly Error InvalidVerificationCode =
+        Error.Validation("AUTH_INVALID_VERIFICATION_CODE",
+            "That code is incorrect or has expired. Request a new one to try again.");
 }

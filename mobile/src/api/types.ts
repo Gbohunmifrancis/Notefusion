@@ -22,6 +22,18 @@ export interface TokenPairResponse {
   expiresIn: number;
 }
 
+/**
+ * All that registration returns — deliberately no tokens. The account is not usable
+ * until the emailed code is entered, and `verify-email` is what issues the session.
+ *
+ * The email comes back rather than being reused from the form because the server
+ * normalises it (trimmed, lower-cased), and the verify call has to send the string
+ * the row is actually keyed on.
+ */
+export interface RegistrationResponse {
+  email: string;
+}
+
 export interface MyProfile {
   id: string;
   fullName: string;

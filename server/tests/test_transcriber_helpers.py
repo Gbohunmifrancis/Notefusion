@@ -6,15 +6,18 @@ music21 score assembly:
 
   _normalise_key_name     music21 flat/lowercase → standard C# KeyParser format
   _merge_onsets           fuse same-pitch fragments that are too close together
+  _bend_semitones         Basic Pitch's 1/3-semitone bend bins as a semitone offset
   _dedup_simultaneous     drop exact pitch+onset duplicates from polyphonic mode
   _adaptive_amplitude_floor  per-clip dynamic threshold from p75 of amplitudes
-  _refine_pitches         correct octave errors against a pyin f0 contour
+  _refine_pitches         correct pitch errors against a pyin f0 contour, octaves or all
   _pyin_contour           the contour itself, and every way it can decline to produce one
   _grid_residual          how far onsets sit from the grid they will be quantized onto
   _grid_bpm               the tempo that puts those onsets on the grid, tappably
   _estimate_tempo_and_beats  a tap-in override wins the BPM but still recovers phase
   _profile_z_scores       one key profile's standardised opinion of all 24 keys
   _key_from_identity      (pitch class, mode) back to a music21 Key
+  _key_spelling           pitch class -> note name, as the key signature implies
+  _respell_to_key         that spelling applied to a stream, without moving a pitch
   _key_confidence_from_margin  winner-over-runner-up lead, capped on short clips
   _detect_key             the five-profile vote, and its fallbacks
 
@@ -32,6 +35,10 @@ import pytest
 from app.pipeline import transcriber
 from app.pipeline.transcriber import (
     ADAPTIVE_FACTOR,
+    CONF_WEIGHT_AGREE_MAX,
+    CONF_WEIGHT_AMP,
+    CONTOUR_BINS_PER_SEMITONE,
+    F0_MERGE_SEMITONES,
     KEY_CONFIDENCE_CAP_LOW,
     KEY_MARGIN_FULL,
     MIN_AMPLITUDE_MELODY,
@@ -41,14 +48,18 @@ from app.pipeline.transcriber import (
     _MAX_GRID_SLIP_STEPS,
     _adaptive_amplitude_floor,
     _beat_origin,
+    _bend_semitones,
+    _blend_confidence,
     _dedup_simultaneous,
     _grid_bpm,
     _grid_residual,
     _key_confidence_from_margin,
     _key_from_identity,
+    _key_spelling,
     _merge_onsets,
     _normalise_key_name,
     _onset_bpm,
+    _respell_to_key,
 )
 
 # ── _normalise_key_name ───────────────────────────────────────────────────────
@@ -158,11 +169,52 @@ class TestNormaliseKeyName:
 # ── _merge_onsets ─────────────────────────────────────────────────────────────
 
 
-class TestMergeOnsets:
-    """Same-pitch fragments separated by a gap smaller than gap_sec are fused.
+class TestBendSemitones:
+    """Basic Pitch's bend bins, converted to a semitone offset from the notated pitch."""
 
-    Events are ``Event(start_sec, end_sec, pitch_midi, amplitude)`` — the four values
-    Basic Pitch reports, which is all this logic reads.
+    def test_no_bends_means_no_offset(self):
+        # None is what drop_overlapping_pitch_bends leaves behind; [] is a note whose
+        # span held no contour frames.  Both mean "the pitch is the best estimate".
+        assert _bend_semitones(None) == 0.0
+        assert _bend_semitones([]) == 0.0
+
+    def test_bins_convert_at_three_to_the_semitone(self):
+        assert _bend_semitones([3]) == pytest.approx(1.0)
+        assert _bend_semitones([-3]) == pytest.approx(-1.0)
+        assert _bend_semitones([1]) == pytest.approx(1.0 / 3.0)
+
+    def test_the_bins_are_already_centred_on_the_notated_pitch(self):
+        """A zero bend is no offset — there is no bin-index correction to undo.
+
+        ``get_pitch_bends`` subtracts ``pb_shift`` so the array is relative to the
+        note's own contour bin, and that bin is exactly ``3 * pitch - 63`` for every
+        MIDI pitch, so the rounding in ``midi_pitch_to_contour_bin`` never actually
+        rounds.  Worth pinning: an earlier reading of this assumed a one-bin offset,
+        which would have biased every f0 by a third of a semitone.
+        """
+        assert _bend_semitones([0, 0, 0]) == 0.0
+        assert Event(0.0, 0.5, 60, 0.8, _bend_semitones([0])).f0 == pytest.approx(60.0)
+
+    def test_the_mean_is_taken_not_the_median(self):
+        # A monotonic run through the boundary: mean 1.0 bin, median 0.0 bins.  Chosen
+        # because a fragment shorter than one vibrato cycle sits on the slope, where
+        # the median is just its midpoint sample.
+        assert _bend_semitones([-1, 0, 4]) == pytest.approx(1.0 / 3.0)
+
+    def test_f0_defaults_to_the_notated_pitch(self):
+        assert Event(0.0, 0.5, 67, 0.8).f0 == 67.0
+        assert Event(0.0, 0.5, 67, 0.8).bend_semitones == 0.0
+
+    def test_a_bin_is_a_third_of_a_semitone(self):
+        assert CONTOUR_BINS_PER_SEMITONE == 3.0
+
+
+class TestMergeOnsets:
+    """Fragments separated by a gap smaller than gap_sec whose f0 agree are fused.
+
+    Events are ``Event(start_sec, end_sec, pitch_midi, amplitude, bend_semitones)`` —
+    the four values Basic Pitch reports plus the mean of the bend array it also returns
+    and the pipeline used to discard.
     """
 
     def test_two_same_pitch_notes_within_gap_are_merged(self):
@@ -227,6 +279,68 @@ class TestMergeOnsets:
         assert len(result) == 2
         assert result[0].pitch == 60
         assert result[1].pitch == 61
+
+    # ── the f0 tolerance ──────────────────────────────────────────────────────
+    # Every test above builds Events without bends, which is the point: for those the
+    # tolerance test is arithmetically the old exact-equality test, so they still pin
+    # the original semantics.  These add what the bends buy.
+
+    def test_fragments_a_semitone_apart_merge_when_their_f0_agree(self):
+        """The vibrato case: rounded pitches differ, the fundamentals do not.
+
+        A wobble sitting just under the boundary between 60 and 61 is reported by
+        Basic Pitch as alternating 60/61 fragments.  Their f0 are 60.5 and 60.6 — a
+        tenth of a semitone apart — so they are one note, and the old test could not
+        say so because rounding had already thrown the evidence away.
+        """
+        events = [
+            Event(0.0, 0.10, 60, 0.8, 0.5),  # f0 60.5
+            Event(0.14, 0.24, 61, 0.7, -0.4),  # f0 60.6
+        ]
+        result = _merge_onsets(events, gap_sec=0.08)
+        assert len(result) == 1
+        assert result[0].start == pytest.approx(0.0)
+        assert result[0].end == pytest.approx(0.24)
+        assert result[0].pitch == 60  # the louder fragment's, kept wholesale
+
+    def test_a_genuine_semitone_step_still_never_merges(self):
+        """Two notes really a semitone apart have f0 a semitone apart, so they stay.
+
+        This is the guard the struck tolerant-merge failed and the reason the constant
+        is under 1.0.  Both events are centred, as a clean legato step is.
+        """
+        events = [Event(0.0, 0.10, 60, 0.8, 0.0), Event(0.14, 0.24, 61, 0.7, 0.0)]
+        result = _merge_onsets(events, gap_sec=0.08)
+        assert len(result) == 2
+
+    def test_same_rounded_pitch_but_f0_far_apart_no_longer_merges(self):
+        """The change cuts both ways, deliberately.
+
+        Two events that round to 60 but whose fundamentals are 59.7 and 60.4 are 0.7
+        apart — over the tolerance — so they are read as two notes where the old test
+        called them one.  Measured on the corpus this is a net win: it avoids four
+        genuine-step fusions for the cost of six fragment merges.
+        """
+        events = [
+            Event(0.0, 0.10, 60, 0.8, -0.3),  # f0 59.7
+            Event(0.14, 0.24, 60, 0.7, 0.4),  # f0 60.4
+        ]
+        result = _merge_onsets(events, gap_sec=0.08)
+        assert len(result) == 2
+
+    def test_the_tolerance_boundary_is_inclusive(self):
+        """``<=``, so a difference of exactly F0_MERGE_SEMITONES merges."""
+        exact = [Event(0.0, 0.10, 60, 0.8, 0.0), Event(0.125, 0.25, 60, 0.7, F0_MERGE_SEMITONES)]
+        assert len(_merge_onsets(exact, gap_sec=0.08)) == 1
+
+    def test_a_tolerance_under_one_cannot_reach_bend_free_neighbours(self):
+        """Why 0.5 is safe: distinct integer pitches are at least 1.0 apart in f0.
+
+        Pinning the inequality rather than the constant, so raising F0_MERGE_SEMITONES
+        to 1.0 or beyond — which would silently start fusing adjacent semitones on
+        clips Basic Pitch reported no bends for — fails here.
+        """
+        assert F0_MERGE_SEMITONES < 1.0
 
     def test_empty_input_returns_empty(self):
         assert _merge_onsets([], gap_sec=0.08) == []
@@ -662,18 +776,23 @@ def _contour(midi_values, voiced_prob=0.9, hop_sec=0.01):
 
 
 class TestRefinePitches:
-    """Only whole-octave disagreements with pyin are acted on.
+    """With ``NF_PYIN_SEMITONE`` off, only whole-octave disagreements are acted on.
 
     Basic Pitch locks onto the second harmonic often enough to matter (measured: 9 of
-    15 events on the clean control case were a whole octave high), but a fragment
-    shorter than one vibrato cycle has a median biased toward wherever in the cycle it
-    sits — so pyin is *not* trustworthy to the semitone here.  A sub-semitone bias
-    cannot manufacture or hide a twelve-semitone gap, which is what makes the octave
-    decision safe where a general "believe pyin" would not be.  These tests pin that
-    boundary from both sides.
+    15 events on the clean control case were a whole octave high), and the argument for
+    stopping at octaves was that a fragment shorter than one vibrato cycle has a median
+    biased toward wherever in the cycle it sits — so pyin looked *not* trustworthy to
+    the semitone here.  A sub-semitone bias cannot manufacture or hide a twelve-semitone
+    gap, which is what made the octave decision safe where a general "believe pyin"
+    would not be.  These tests pin that boundary from both sides; measurement later
+    retired the argument, and ``TestRefinePitchesSemitone`` pins the other setting.
     """
 
     def _refine(self, monkeypatch, events, contour):
+        # Explicitly off: this class pins the narrower rule, which is no longer the
+        # default, and test_a_fourteen_semitone_disagreement_is_left_alone is exactly
+        # where the two settings disagree.
+        monkeypatch.setenv("NF_PYIN_SEMITONE", "0")
         monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
         return transcriber._refine_pitches(events, Path("unused.wav"))
 
@@ -754,6 +873,257 @@ class TestRefinePitches:
         events = [Event(0.25, 0.55, 72, 0.61)]
         (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 60))
         assert (refined.start, refined.end, refined.amp) == (0.25, 0.55, 0.61)
+
+
+class TestRefinePitchesSemitone:
+    """With ``NF_PYIN_SEMITONE`` on, pyin's rounded median becomes the pitch.
+
+    The octave-only rule's premise was that a fragment's median is too biased to trust
+    to the semitone.  Measured over the eight vibrato/drift cases, 577 events, the
+    rounded median is right 73.4% of the time against the octave-corrected pipeline's
+    18.7% — 278 fixes against 17 breaks — and it changes nothing in either direction on
+    the four guard cases, including the genuine mi-fa and ti-doh steps.  That corpus run
+    is the real evidence for the rule; these tests pin the mechanism, the shared gates
+    it still respects, and the two places it deliberately departs from the octave path.
+    """
+
+    def _refine(self, monkeypatch, events, contour):
+        monkeypatch.setenv("NF_PYIN_SEMITONE", "1")
+        monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
+        return transcriber._refine_pitches(events, Path("unused.wav"))
+
+    def test_a_semitone_too_high_is_pulled_down(self, monkeypatch):
+        # The reported defect in miniature: heavy vibrato parks Basic Pitch on the
+        # semitone neighbour, so a sung A4 comes back as a run of B-flats and the
+        # notation prints an accidental that is not in the music.
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([69.0] * 12))
+        assert [e.pitch for e in result] == [69]
+
+    def test_octaves_are_still_corrected(self, monkeypatch):
+        # Rounding the median subsumes the octave rule rather than replacing it, so the
+        # overtone lock this stage was built for keeps being fixed.
+        events = [Event(0.0, 0.10, 72, 0.6), Event(0.2, 0.30, 84, 0.6)]
+        contour = _contour([60.0] * 12 + [np.nan] * 8 + [60.0] * 12)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour)] == [60, 60]
+
+    def test_a_fourteen_semitone_disagreement_is_taken_here(self, monkeypatch):
+        # The deliberate departure from the octave path, which leaves this alone because
+        # the 2-semitone remainder says "not an octave error".  Rounding has no such
+        # notion: pyin saw 74 for the whole span, so 74 is the pitch.
+        events = [Event(0.0, 0.10, 60, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([74.0] * 12))
+        assert [e.pitch for e in result] == [74]
+
+    def test_the_median_rounds_to_the_nearer_semitone(self, monkeypatch):
+        # No commit-distance filter: a median mid-way between two semitones is still
+        # acted on.  Requiring the median to sit near a whole number was swept over
+        # 0.20-0.50 and costs more fixes than it saves breaks at every setting.
+        for median, expected in ((69.4, 69), (69.6, 70), (69.5, 70)):
+            events = [Event(0.0, 0.10, 64, 0.6)]
+            result = self._refine(monkeypatch, events, _contour([median] * 12))
+            assert [e.pitch for e in result] == [expected], median
+
+    def test_a_genuine_semitone_step_is_not_flattened(self, monkeypatch):
+        # Each event is judged against its own frames, so two real notes a semitone
+        # apart stay two real notes.  This is the failure mode a semitone rule most
+        # endangers; the corpus's semitone_steps_c_major case is the load-bearing
+        # version of this test, and it moves by zero events with the flag on.
+        events = [Event(0.0, 0.05, 64, 0.6), Event(0.10, 0.15, 65, 0.6)]
+        contour = _contour([64.1] * 6 + [np.nan] * 4 + [64.9] * 6)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour)] == [64, 65]
+
+    def test_agreement_leaves_the_pitch_alone(self, monkeypatch):
+        events = [Event(0.0, 0.10, 60, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([60.2] * 12))
+        assert [e.pitch for e in result] == [60]
+
+    def test_low_voiced_probability_still_blocks_it(self, monkeypatch):
+        # The confidence floor is shared with the octave path rather than loosened for
+        # this one: a noise-dominated span makes the median meaningless either way.
+        # Dropping the floor to 0.0 measured 71 more fixes for 5 fewer breaks on the
+        # corpus, but that is synthetic vibrato agreeing with itself — not a reason to
+        # trust pyin where pyin says it is unsure.
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        contour = _contour([69.0] * 12, voiced_prob=0.2)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour)] == [70]
+
+    def test_too_few_voiced_frames_still_passes_the_event_through(self, monkeypatch):
+        events = [Event(0.0, 0.015, 70, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([69.0] * 12))
+        assert [e.pitch for e in result] == [70]
+
+    def test_a_median_outside_the_midi_range_is_skipped(self, monkeypatch):
+        events = [Event(0.0, 0.10, 120, 0.6)]
+        result = self._refine(monkeypatch, events, _contour([130.0] * 12))
+        assert [e.pitch for e in result] == [120]
+
+    def test_an_empty_contour_returns_the_events_unchanged(self, monkeypatch):
+        events = [Event(0.0, 0.10, 70, 0.6), Event(0.2, 0.30, 74, 0.5)]
+        contour = (np.empty(0), np.empty(0), np.empty(0))
+        assert self._refine(monkeypatch, events, contour) == events
+
+    def test_every_other_field_survives_the_correction(self, monkeypatch):
+        events = [Event(0.25, 0.55, 70, 0.61)]
+        (refined,) = self._refine(monkeypatch, events, _contour([69.0] * 60))
+        assert (refined.start, refined.end, refined.amp) == (0.25, 0.55, 0.61)
+
+
+# ── _refine_pitches carries pyin's evidence forward ───────────────────────────
+
+
+class TestRefinePitchesCarriesEvidence:
+    """Every branch that *can* measure pyin must leave the measurement on the event.
+
+    ``_blend_confidence`` is the only consumer, and it has to tell three states apart
+    that look identical if a branch forgets to attach what it measured: pyin agreed,
+    pyin disagreed and was overruled, and pyin never spoke at all.  A ``continue`` that
+    appends the bare event silently reports the third for the first two, and the
+    confidence field goes quietly back to being bare amplitude.
+    """
+
+    def _refine(self, monkeypatch, events, contour, semitone="0"):
+        monkeypatch.setenv("NF_PYIN_SEMITONE", semitone)
+        monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
+        return transcriber._refine_pitches(events, Path("unused.wav"))
+
+    def test_a_corrected_event_carries_the_reading_that_corrected_it(self, monkeypatch):
+        events = [Event(0.0, 0.10, 72, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 12))
+        assert refined.pitch == 60
+        assert refined.pyin_midi == pytest.approx(60.0)
+        assert refined.voiced_prob == pytest.approx(0.9)
+
+    def test_an_event_pyin_agreed_with_still_carries_the_reading(self, monkeypatch):
+        # Nothing to correct, but "two engines independently landed on this pitch" is
+        # the strongest evidence the pipeline has and this is the only place it exists.
+        events = [Event(0.0, 0.10, 60, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 12))
+        assert (refined.pitch, refined.pyin_midi) == (60, pytest.approx(60.0))
+
+    def test_the_voiced_probability_gate_does_not_discard_the_reading(self, monkeypatch):
+        # The branch most likely to regress, because it exists to decline to act — and
+        # "pyin was unsure here" is precisely what the blend needs to hear.
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        contour = _contour([69.0] * 12, voiced_prob=0.2)
+        (refined,) = self._refine(monkeypatch, events, contour)
+        assert refined.pitch == 70  # unchanged, as TestRefinePitches pins
+        assert refined.pyin_midi == pytest.approx(69.0)
+        assert refined.voiced_prob == pytest.approx(0.2)
+
+    def test_an_overruled_disagreement_carries_the_reading(self, monkeypatch):
+        # Octave path, two semitones out: not an octave error, so the pitch stands.
+        # A two-semitone disagreement is still a reason to distrust the note.
+        events = [Event(0.0, 0.10, 62, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 12))
+        assert (refined.pitch, refined.pyin_midi) == (62, pytest.approx(60.0))
+
+    def test_an_out_of_range_candidate_still_carries_the_reading(self, monkeypatch):
+        events = [Event(0.0, 0.10, 120, 0.6)]
+        (refined,) = self._refine(
+            monkeypatch, events, _contour([130.0] * 12), semitone="1"
+        )
+        assert (refined.pitch, refined.pyin_midi) == (120, pytest.approx(130.0))
+
+    def test_too_few_voiced_frames_leaves_no_reading_at_all(self, monkeypatch):
+        # Deliberately different from a low probability: pyin did not speak, so there is
+        # nothing to carry and the blend must fall back to amplitude, not to a zero that
+        # would read as "pyin contradicted this note".
+        events = [Event(0.0, 0.015, 70, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([69.0] * 12))
+        assert refined.pyin_midi is None
+        assert refined.voiced_prob == 0.0
+
+    def test_an_empty_contour_leaves_no_reading_at_all(self, monkeypatch):
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        contour = (np.empty(0), np.empty(0), np.empty(0))
+        (refined,) = self._refine(monkeypatch, events, contour)
+        assert refined.pyin_midi is None
+
+
+# ── _blend_confidence ─────────────────────────────────────────────────────────
+
+
+class TestBlendConfidence:
+    """The number the client bands as High / Fair / Low and counts below 0.5.
+
+    The weights came from a corpus sweep (see ``CONF_WEIGHT_AMP`` for the table).  These
+    tests pin the *shape* rather than the tuning: the properties that have to hold at any
+    weights for the field to mean anything, so a later re-sweep is free to move the
+    constants without rewriting the suite.
+    """
+
+    def test_no_pyin_reading_falls_back_to_amplitude(self):
+        # Not to zero.  An event pyin could not speak about is not thereby a bad note,
+        # and Basic Pitch's posterior is still real evidence about it.
+        assert _blend_confidence(Event(0.0, 0.5, 60, 0.62)) == pytest.approx(0.62)
+
+    def test_agreement_raises_confidence_above_bare_amplitude(self):
+        evt = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=1.0)
+        assert _blend_confidence(evt) > 0.62
+
+    def test_disagreement_lowers_confidence_below_bare_amplitude(self):
+        # The case the field exists to flag: the pitch printed on the staff is contested
+        # by the only independent pitch evidence in the pipeline.
+        evt = Event(0.0, 0.5, 60, 0.62, pyin_midi=61.0, voiced_prob=1.0)
+        assert _blend_confidence(evt) < 0.62
+
+    def test_disagreement_beyond_a_semitone_is_not_punished_further(self):
+        # The term saturates, so an octave lock and a semitone slip read the same. Both
+        # are "wrong pitch"; ranking them against each other would be false precision.
+        near = Event(0.0, 0.5, 60, 0.62, pyin_midi=61.0, voiced_prob=1.0)
+        far = Event(0.0, 0.5, 60, 0.62, pyin_midi=72.0, voiced_prob=1.0)
+        assert _blend_confidence(near) == pytest.approx(_blend_confidence(far))
+
+    def test_an_unsure_pyin_cannot_move_the_answer_either_way(self):
+        # voiced_prob scales the agreement term instead of being averaged in, so a
+        # reading pyin does not believe is ignored rather than half-trusted.
+        agreeing = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=0.0)
+        contradicting = Event(0.0, 0.5, 60, 0.62, pyin_midi=67.0, voiced_prob=0.0)
+        assert _blend_confidence(agreeing) == pytest.approx(0.62)
+        assert _blend_confidence(contradicting) == pytest.approx(0.62)
+
+    def test_reliability_scales_how_far_agreement_can_move_it(self):
+        def conf(voiced_prob):
+            return _blend_confidence(
+                Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=voiced_prob)
+            )
+
+        assert conf(0.0) < conf(0.5) < conf(1.0)
+
+    def test_full_reliability_is_the_plain_weighted_blend(self):
+        # Pins the documented equivalence: at voiced_prob 1.0 the scaled form is exactly
+        # the additive (CONF_WEIGHT_AMP, CONF_WEIGHT_AGREE_MAX) mean.
+        evt = Event(0.0, 0.5, 60, 0.5, pyin_midi=60.5, voiced_prob=1.0)
+        expected = (CONF_WEIGHT_AMP * 0.5 + CONF_WEIGHT_AGREE_MAX * 0.5) / (
+            CONF_WEIGHT_AMP + CONF_WEIGHT_AGREE_MAX
+        )
+        assert _blend_confidence(evt) == pytest.approx(expected)
+
+    @pytest.mark.parametrize(
+        "amp, pyin_midi, voiced_prob",
+        [
+            (0.0, 60.0, 1.0),
+            (1.0, 72.0, 1.0),
+            (0.0, 72.0, 0.0),
+            (1.0, 60.0, 1.0),
+            (1.2, 60.0, 1.4),  # out-of-range inputs must not escape the interval
+        ],
+    )
+    def test_stays_inside_the_unit_interval(self, amp, pyin_midi, voiced_prob):
+        # The client's banding assumes [0, 1] and the DTO rounds to three places.
+        value = _blend_confidence(
+            Event(0.0, 0.5, 60, amp, pyin_midi=pyin_midi, voiced_prob=voiced_prob)
+        )
+        assert 0.0 <= value <= 1.0
+
+    def test_a_confirmed_note_reads_high_and_a_contested_one_does_not(self):
+        # The end-to-end claim, at the 0.75 cut mobile/src/design/theme.ts:363 uses for
+        # "High confidence".  Same amplitude in both — only the second opinion differs.
+        confirmed = Event(0.0, 0.5, 60, 0.80, pyin_midi=60.0, voiced_prob=0.99)
+        contested = Event(0.0, 0.5, 60, 0.80, pyin_midi=61.0, voiced_prob=0.99)
+        assert _blend_confidence(confirmed) >= 0.75
+        assert _blend_confidence(contested) < 0.75
 
 
 # ── _pyin_contour (defect 6) ──────────────────────────────────────────────────
@@ -1028,6 +1398,186 @@ class TestKeyFromIdentity:
         assert _key_from_identity(9, "major").mode == "major"
 
 
+class TestKeySpelling:
+    """Accidentals must belong to the key, not to music21's MIDI-to-name table.
+
+    That table is ``C C# D E- E F F# G G# A B- B`` and is key-blind, so a note built
+    from a bare MIDI integer is spelled the same in every key.  In E major MIDI 75 came
+    out E-flat when the key's own signature holds a D-sharp; in A-flat major MIDI 68
+    came out G-sharp where the key says A-flat.  Both engrave an accidental the reader
+    then has to reconcile against a signature that already said otherwise.
+    """
+
+    KEYS = [
+        (tonic, mode)
+        for tonic in ("C", "C#", "D-", "D", "E-", "E", "F", "F#", "G-", "G", "A-", "A", "B-", "B")
+        for mode in ("major", "minor")
+    ]
+
+    def _key(self, tonic: str, mode: str):
+        from music21 import key as m21key
+
+        return m21key.Key(tonic, mode)
+
+    def test_every_pitch_class_is_spelled_in_every_key(self):
+        for tonic, mode in self.KEYS:
+            spelling = _key_spelling(self._key(tonic, mode))
+            assert set(spelling) == set(range(12)), f"{tonic} {mode} is missing a pitch class"
+
+    def test_the_spelling_always_names_the_pitch_class_it_is_filed_under(self):
+        """A map that renames a note is worse than no map: solfa reads the MIDI number."""
+        from music21 import pitch as m21pitch
+
+        for tonic, mode in self.KEYS:
+            spelling = _key_spelling(self._key(tonic, mode))
+            for pitch_class, name in spelling.items():
+                assert m21pitch.Pitch(name).pitchClass == pitch_class, f"{tonic} {mode}: {name}"
+
+    def test_the_seven_diatonic_degrees_are_spelled_by_the_signature(self):
+        for tonic, mode in self.KEYS:
+            key = self._key(tonic, mode)
+            spelling = _key_spelling(key)
+            for altered in key.alteredPitches:
+                assert spelling[altered.pitchClass] == altered.name, (
+                    f"{tonic} {mode}: pitch class {altered.pitchClass} should be {altered.name}"
+                )
+
+    def test_e_major_spells_the_signature_not_the_midi_table(self):
+        # The reported defect, exactly: MIDI 75 is E major's D#, and the fixed table
+        # calls it E-flat.
+        spelling = _key_spelling(self._key("E", "major"))
+        assert spelling[75 % 12] == "D#"
+        assert spelling[68 % 12] == "G#"
+        # A pitch class the signature did not claim keeps its plain letter.
+        assert spelling[0] == "C"
+
+    def test_flat_keys_spell_flats(self):
+        spelling = _key_spelling(self._key("A-", "major"))
+        assert spelling[68 % 12] == "A-"  # not G#
+        assert spelling[73 % 12] == "D-"  # not C#
+
+    def test_f_sharp_major_reaches_e_sharp(self):
+        # Six sharps means the 4th degree is E#, which no MIDI table will ever produce.
+        assert _key_spelling(self._key("F#", "major"))[77 % 12] == "E#"
+
+    def test_a_minor_key_raises_its_seventh(self):
+        """A leading tone is ordinary, and the flat-key rule alone would misspell it."""
+        assert _key_spelling(self._key("D", "minor"))[1] == "C#"  # not D-flat
+        assert _key_spelling(self._key("G", "minor"))[6] == "F#"  # not G-flat
+        assert _key_spelling(self._key("A", "minor"))[8] == "G#"
+
+    def test_raising_the_seventh_raises_its_letter_rather_than_adding_a_sharp(self):
+        # C minor's 7th degree is B-flat, so raising it gives plain B — not B-sharp and
+        # not C-flat.  An earlier draft assumed a sharp and raised KeyError on this key.
+        assert _key_spelling(self._key("C", "minor"))[11] == "B"
+        assert _key_spelling(self._key("B-", "minor"))[9] == "A"
+        assert _key_spelling(self._key("F", "minor"))[4] == "E"
+
+    def test_a_signature_that_alters_every_letter_keeps_all_seven_spellings(self):
+        """D-flat minor is the key where filing one letter at a time loses one.
+
+        Its eight-flat signature alters all seven letters — B twice, as B-flat and then
+        B-double-flat — and C-flat's pitch class is 11, the same slot B's natural
+        occupies.  An earlier draft vacated each letter as it filed it, so
+        B-double-flat's vacate of slot 11 deleted the C-flat that had already been filed
+        there and the signature's C-flat came back spelled ``B``.  Nothing else in the
+        28 keys swept above reaches this; the sweep is what found it.
+        """
+        key = self._key("D-", "minor")
+        spelling = _key_spelling(key)
+        assert {altered.step for altered in key.alteredPitches} == set("ABCDEFG")
+        assert spelling[11] == "C-"
+        assert spelling[9] == "B--"
+        # The raised 7th of D-flat minor is C-flat raised, which is plain C.
+        assert spelling[0] == "C"
+
+
+class TestRespellToKey:
+    """Respelling is a notation change only — it must never move a pitch.
+
+    Solfa is mapped from ``n.pitch.midi`` *after* this runs, so a spelling whose octave
+    is solved wrongly would transpose the syllable as well as the notehead.
+    """
+
+    def _stream(self, midis):
+        from music21 import note as m21note
+        from music21 import stream
+
+        s = stream.Stream()
+        for midi in midis:
+            n = m21note.Note(midi)
+            n.duration.quarterLength = 1.0
+            s.append(n)
+        return s
+
+    def _key(self, tonic, mode):
+        from music21 import key as m21key
+
+        return m21key.Key(tonic, mode)
+
+    def test_midi_is_invariant_across_every_key_and_the_whole_piano(self):
+        midis = list(range(21, 109))  # A0 to C8
+        for tonic, mode in TestKeySpelling.KEYS:
+            s = self._stream(midis)
+            _respell_to_key(s, self._key(tonic, mode))
+            assert [n.pitch.midi for n in s.recurse().notes] == midis, f"{tonic} {mode} transposed"
+
+    def test_it_respells_the_reported_defect(self):
+        s = self._stream([75])
+        assert s.recurse().notes[0].pitch.name == "E-"  # what music21 gives us
+        _respell_to_key(s, self._key("E", "major"))
+        assert s.recurse().notes[0].pitch.nameWithOctave == "D#5"
+
+    def test_octaves_survive_a_signature_that_names_c_flat(self):
+        # C-flat major's signature holds C- and F-, whose letters sit in the neighbouring
+        # octave — the case that makes "midi // 12 - 1" the wrong way to pick an octave.
+        for midi in (59, 60, 61, 71, 72):
+            s = self._stream([midi])
+            _respell_to_key(s, self._key("C-", "major"))
+            assert s.recurse().notes[0].pitch.midi == midi
+
+    def test_a_scale_in_its_own_key_engraves_no_accidental(self):
+        """The user-visible payoff, and the one that pins makeAccidentals' arguments."""
+        from music21 import key as m21key
+
+        for tonic, mode, midis in (
+            ("E", "major", [64, 66, 68, 69, 71, 73, 75, 76]),
+            ("B-", "major", [70, 72, 74, 75, 77, 79, 81, 82]),
+            ("A-", "major", [68, 70, 72, 73, 75, 77, 79, 80]),
+            ("F#", "major", [66, 68, 70, 71, 73, 75, 77, 78]),
+        ):
+            key = self._key(tonic, mode)
+            s = self._stream(midis)
+            s.insert(0, m21key.Key(key.tonic.name, key.mode))
+            _respell_to_key(s, key)
+            score = s.makeMeasures()
+            score.makeAccidentals(inPlace=True, alteredPitches=key.alteredPitches)
+            printed = [
+                n.pitch.nameWithOctave
+                for n in score.recurse().notes
+                if n.pitch.accidental is not None and n.pitch.accidental.displayStatus
+            ]
+            assert printed == [], f"{tonic} {mode} scale printed {printed}"
+
+    def test_a_chromatic_note_still_prints_and_a_cancelling_natural_still_prints(self):
+        # The guard on the above: suppressing the signature's own accidentals must not
+        # suppress the ones that carry information.
+        from music21 import key as m21key
+
+        key = self._key("C", "major")
+        s = self._stream([60, 61, 60, 62])  # C, C#, C natural, D — all in one measure
+        s.insert(0, m21key.Key("C", "major"))
+        _respell_to_key(s, key)
+        score = s.makeMeasures()
+        score.makeAccidentals(inPlace=True, alteredPitches=key.alteredPitches)
+        shown = [
+            (n.pitch.nameWithOctave, n.pitch.accidental.name)
+            for n in score.recurse().notes
+            if n.pitch.accidental is not None and n.pitch.accidental.displayStatus
+        ]
+        assert shown == [("C#4", "sharp"), ("C4", "natural")]
+
+
 class TestKeyConfidenceFromMargin:
     """Confidence is the winner's lead, not the winner's own correlation.
 
@@ -1143,3 +1693,137 @@ class TestDetectKey:
         s = _stream(["C4", "E4", "G4"])
         _key, conf = transcriber._detect_key(s, MIN_NOTES_FOR_KEY - 1)
         assert conf <= KEY_CONFIDENCE_CAP_LOW
+
+
+class TestCadenceTiebreak:
+    """A histogram cannot see a cadence, and that blind spot is shared by all five profiles.
+
+    The ensemble cancels disagreement *between* profiles; it cannot cancel something none of
+    them measures.  ``plagal_fourth_c_major`` is the corpus case that proves it: a sustained
+    4th carries 4 of its 12 beats, so every profile prefers F major on a clip that opens and
+    closes on C and contains a B natural.  A wrong tonic re-labels every syllable in the
+    clip, which is why that case scores ``solfa.degree_accuracy`` 0.000 on ``notes.f1`` 0.846.
+
+    The rule is four conjoined restrictions rather than a tuned score, and this class pins
+    each one — including the false positive it exists to prevent, which is the half cadence.
+    """
+
+    # The corpus case's own note list (corpus.py KEY_HEADROOM_CASES), (midi, beats).  The
+    # defect reproduces on the bare symbolic stream, so none of this needs inference.
+    PLAGAL = (
+        (60, 0.5), (64, 0.5), (67, 1.0), (65, 2.0), (69, 1.0), (72, 1.0),
+        (65, 2.0), (69, 1.0), (67, 1.0), (71, 0.5), (72, 2.0),
+    )
+
+    @staticmethod
+    def _weighted(events):
+        """A stream with real durations — the cue is duration-weighted, so they matter."""
+        from music21 import note as m21note, stream as m21stream
+
+        s = m21stream.Stream()
+        for midi, quarter_length in events:
+            n = m21note.Note(midi)
+            n.duration.quarterLength = quarter_length
+            s.append(n)
+        return s
+
+    def test_it_rescues_the_subdominant_trap_the_ensemble_alone_cannot(self, monkeypatch):
+        s = self._weighted(self.PLAGAL)
+        assert str(s.analyze("key")) == "F major"  # single profile, still wrong
+
+        # With the tiebreak disabled the ensemble is wrong here too, which is the point:
+        # this asserts the *tiebreak* is what rescues the case, not some other change.
+        monkeypatch.setattr(transcriber, "_cadence_prefers_runner_up", lambda *a: False)
+        without, _conf = transcriber._detect_key(s, len(self.PLAGAL))
+        assert (without.tonic.pitchClass, without.mode) == (5, "major")
+
+        monkeypatch.undo()
+        with_tiebreak, _conf = transcriber._detect_key(s, len(self.PLAGAL))
+        assert (with_tiebreak.tonic.pitchClass, with_tiebreak.mode) == (0, "major")
+
+    def test_a_swap_does_not_move_the_reported_confidence(self, monkeypatch):
+        # The margin measures how close the two readings were, which is the right
+        # uncertainty to report whichever one was picked — and it is the number the
+        # mobile's editable-key prompt is calibrated against.
+        s = self._weighted(self.PLAGAL)
+        monkeypatch.setattr(transcriber, "_cadence_prefers_runner_up", lambda *a: False)
+        _key, before = transcriber._detect_key(s, len(self.PLAGAL))
+        monkeypatch.undo()
+        _key, after = transcriber._detect_key(s, len(self.PLAGAL))
+
+        assert after == pytest.approx(before)
+
+    @pytest.mark.parametrize(
+        "a,b,expected",
+        [
+            ((0, "major"), (5, "major"), True),   # C -> F, the subdominant slip
+            ((0, "major"), (7, "major"), True),   # C -> G, the dominant slip
+            ((9, "minor"), (2, "minor"), True),   # fifths hold in minor too
+            ((0, "major"), (0, "minor"), True),   # parallel
+            ((0, "major"), (9, "minor"), False),  # relative — solfa-neutral, so never
+            ((9, "minor"), (0, "major"), False),  # relative, the other way round
+            ((0, "major"), (2, "major"), False),  # unrelated
+            ((0, "major"), (1, "major"), False),  # unrelated
+        ],
+    )
+    def test_only_fifths_and_parallels_are_eligible(self, a, b, expected):
+        assert transcriber._is_fifth_or_parallel(a, b) is expected
+
+    def test_a_confident_vote_is_left_alone(self):
+        # The rail, not the decision: above KEY_MARGIN_FULL the profiles have decided and
+        # a structural cue does not get to overturn them.
+        s = self._weighted(self.PLAGAL)
+        assert transcriber._cadence_prefers_runner_up(
+            s, (5, "major"), (0, "major"), KEY_MARGIN_FULL
+        ) is False
+
+    def test_a_half_cadence_does_not_become_a_modulation(self):
+        # The false positive this is built to refuse.  A C-major phrase closing on G ends on
+        # the *dominant's* tonic, so the cadence cue alone would read G major — but the F
+        # natural is outside G major, so C stays strictly the more diatonic reading.
+        s = self._weighted([(60, 1), (64, 1), (65, 1), (64, 1), (62, 1), (67, 2)])
+        assert transcriber._cadence_prefers_runner_up(s, (0, "major"), (7, "major"), 0.2) is False
+
+    def test_an_equally_diatonic_runner_up_is_not_enough(self):
+        # Same shape with the 4th removed: nothing now distinguishes C major from G major on
+        # scale membership, so the two tie and a tie declines.  This is why the comparison is
+        # strictly greater rather than greater-or-equal.
+        s = self._weighted([(60, 1), (64, 1), (62, 1), (64, 1), (67, 2)])
+        weights = transcriber._tonal_cues(s)[1:]
+        assert transcriber._diatonic_fraction(0, "major", *weights) == pytest.approx(
+            transcriber._diatonic_fraction(7, "major", *weights)
+        )
+        assert transcriber._cadence_prefers_runner_up(s, (0, "major"), (7, "major"), 0.2) is False
+
+    def test_it_declines_when_the_winner_also_ends_on_its_own_tonic(self):
+        # A parallel pair shares a tonic, so "ends on the tonic" is true of both and says
+        # nothing.  The asymmetry is the whole cue; without it there is no argument.
+        s = self._weighted([(60, 1), (63, 1), (67, 1), (60, 2)])
+        assert transcriber._cadence_prefers_runner_up(s, (0, "major"), (0, "minor"), 0.2) is False
+
+    def test_a_stream_with_nothing_in_it_declines(self):
+        from music21 import stream as m21stream
+
+        assert transcriber._tonal_cues(m21stream.Stream()) is None
+        assert transcriber._cadence_prefers_runner_up(
+            m21stream.Stream(), (5, "major"), (0, "major"), 0.2
+        ) is False
+
+    def test_the_parsimony_cue_is_duration_weighted_not_note_counted(self):
+        # One long out-of-scale note must cost more than one short one, because that is the
+        # same weighting the profiles use and the cue has to argue on their terms.
+        brief = self._weighted([(60, 4), (62, 4), (66, 0.5)])
+        sustained = self._weighted([(60, 4), (62, 4), (66, 4)])
+
+        assert transcriber._diatonic_fraction(
+            0, "major", *transcriber._tonal_cues(brief)[1:]
+        ) > transcriber._diatonic_fraction(0, "major", *transcriber._tonal_cues(sustained)[1:])
+
+    def test_a_minor_candidate_is_not_penalised_for_its_own_raised_seventh(self):
+        # A minor with a G#: harmonic minor is the same key, so scoring it against natural
+        # minor alone would make the cue argue against the right answer on every
+        # harmonic-minor clip in the corpus.
+        s = self._weighted([(69, 1), (71, 1), (72, 1), (74, 1), (76, 1), (77, 1), (80, 1), (81, 1)])
+        weights = transcriber._tonal_cues(s)[1:]
+
+        assert transcriber._diatonic_fraction(9, "minor", *weights) == pytest.approx(1.0)

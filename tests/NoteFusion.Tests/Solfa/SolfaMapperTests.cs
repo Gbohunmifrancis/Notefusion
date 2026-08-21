@@ -148,4 +148,118 @@ public class SolfaMapperTests
         Assert.Equal(6, SolfaMapper.Degree(69, aMinor)); // A4 is la — the sixth
         Assert.Equal(1, SolfaMapper.Degree(60, aMinor)); // C4 is doh
     }
+
+    // ── AscendingFlags — mirrors solfa.py's ascending_flags, case for case ──────
+    // Every case below is asserted with the same pitches and the same expectation in
+    // server/tests/test_solfa.py. A divergence here means a saved transcription reads
+    // one way from the worker and another from the library endpoint.
+
+    [Fact]
+    public void A_rising_chromatic_is_spelled_sharp()
+    {
+        bool[] flags = SolfaMapper.AscendingFlags([60, 61, 62]); // C C# D
+
+        Assert.True(flags[1]);
+        Assert.Equal("de", SolfaMapper.Map(61, CMajor, MiddleCDoh, ChromaticSpelling.Ascending).Text);
+    }
+
+    [Fact]
+    public void A_falling_chromatic_is_spelled_flat()
+    {
+        bool[] flags = SolfaMapper.AscendingFlags([62, 61, 60]); // D C# C
+
+        Assert.False(flags[1]);
+        Assert.Equal("ra", SolfaMapper.Map(61, CMajor, MiddleCDoh, ChromaticSpelling.Descending).Text);
+    }
+
+    [Fact]
+    public void Direction_comes_from_where_the_melody_arrived_from()
+    {
+        // C C# C — rising in, falling out. The approach wins, so this is an upper
+        // neighbour of doh (de) rather than a lower neighbour of re.
+        Assert.True(SolfaMapper.AscendingFlags([60, 61, 60])[1]);
+        // E D# E — falling in, rising out. Still the approach.
+        Assert.False(SolfaMapper.AscendingFlags([64, 63, 64])[1]);
+    }
+
+    [Fact]
+    public void The_first_note_looks_ahead_because_nothing_precedes_it()
+    {
+        Assert.True(SolfaMapper.AscendingFlags([61, 62])[0]);
+        Assert.False(SolfaMapper.AscendingFlags([61, 60])[0]);
+    }
+
+    [Fact]
+    public void A_single_pitch_is_ascending_by_convention()
+    {
+        Assert.Equal([true], SolfaMapper.AscendingFlags([61]));
+        Assert.Equal([true, true, true], SolfaMapper.AscendingFlags([61, 61, 61]));
+    }
+
+    [Fact]
+    public void An_empty_melody_has_no_flags()
+    {
+        Assert.Empty(SolfaMapper.AscendingFlags([]));
+    }
+
+    [Fact]
+    public void A_repeated_chromatic_keeps_one_spelling()
+    {
+        // D C# C# E. Taking the literal previous note would make the second C# look
+        // ahead to E and flip it, printing "ra de" on one sung pitch.
+        bool[] flags = SolfaMapper.AscendingFlags([62, 61, 61, 64]);
+
+        Assert.False(flags[1]);
+        Assert.False(flags[2]);
+    }
+
+    [Fact]
+    public void A_repeat_at_the_head_looks_past_itself()
+    {
+        Assert.Equal([true, true, true], SolfaMapper.AscendingFlags([61, 61, 62]));
+        Assert.Equal([false, false, false], SolfaMapper.AscendingFlags([61, 61, 60]));
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(2)]
+    [InlineData(4)]
+    [InlineData(5)]
+    [InlineData(7)]
+    [InlineData(9)]
+    [InlineData(11)]
+    public void Direction_cannot_change_a_diatonic_syllable(int semitone)
+    {
+        // The two tables are identical on all seven diatonic degrees, which is what
+        // makes directional spelling unable to touch a note that prints no accidental.
+        var up = SolfaMapper.Map(60 + semitone, CMajor, MiddleCDoh, ChromaticSpelling.Ascending);
+        var down = SolfaMapper.Map(60 + semitone, CMajor, MiddleCDoh, ChromaticSpelling.Descending);
+
+        Assert.Equal(up.Text, down.Text);
+    }
+
+    [Theory]
+    [InlineData(1, "de", "ra")]
+    [InlineData(3, "re", "ma")]
+    [InlineData(6, "fe", "sa")]
+    [InlineData(8, "se", "la")]
+    [InlineData(10, "le", "ta")]
+    public void Every_chromatic_degree_has_both_spellings(int semitone, string up, string down)
+    {
+        // Degree needs no equivalent assertion here: Degree() takes no spelling, so in
+        // this tier re-spelling structurally cannot move it. solfa.py returns both from
+        // one call, which is why the Python mirror of this test asserts it.
+        Assert.Equal(up, SolfaMapper.Map(60 + semitone, CMajor, MiddleCDoh, ChromaticSpelling.Ascending).Text);
+        Assert.Equal(down, SolfaMapper.Map(60 + semitone, CMajor, MiddleCDoh, ChromaticSpelling.Descending).Text);
+    }
+
+    [Fact]
+    public void Direction_does_not_move_the_octave_mark()
+    {
+        var up = SolfaMapper.Map(73, CMajor, MiddleCDoh, ChromaticSpelling.Ascending);
+        var down = SolfaMapper.Map(73, CMajor, MiddleCDoh, ChromaticSpelling.Descending);
+
+        Assert.Equal("'", up.OctaveMark);
+        Assert.Equal(up.OctaveMark, down.OctaveMark);
+    }
 }

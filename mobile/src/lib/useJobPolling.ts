@@ -8,6 +8,13 @@ export interface JobState {
   progress: number;
   result: TranscriptionResult | null;
   error: string | null;
+  /**
+   * The `ApiError.code` behind a request failure, or null when the job itself failed
+   * (the worker reports prose, not a code). Kept alongside the message because callers
+   * that need to *branch* on a failure were reduced to substring-matching the message,
+   * which silently stopped working the moment the server reworded it.
+   */
+  errorCode: string | null;
 }
 
 const TERMINAL: TranscriptionStatus[] = ["done", "failed"];
@@ -51,6 +58,7 @@ export function useJobPolling(intervalMs = 1000) {
     progress: 0,
     result: null,
     error: null,
+    errorCode: null,
   });
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active = useRef(true);
@@ -88,6 +96,9 @@ export function useJobPolling(intervalMs = 1000) {
             progress: job.progress ?? 0,
             result: job.result ?? null,
             error,
+            // A job that failed inside the worker carries no API error code — the
+            // request itself succeeded.
+            errorCode: null,
           });
 
           if (!TERMINAL.includes(status)) {
@@ -96,10 +107,12 @@ export function useJobPolling(intervalMs = 1000) {
         })
         .catch((e) => {
           if (!active.current) return;
+          const err = toApiError(e);
           setState((s) => ({
             ...s,
             status: "failed",
-            error: toApiError(e).message,
+            error: err.message,
+            errorCode: err.code,
           }));
         });
     },
@@ -116,7 +129,13 @@ export function useJobPolling(intervalMs = 1000) {
       fileName: string,
       opts: { mode: "melody" | "poly"; key?: string; tempo?: number },
     ) => {
-      setState({ status: "pending", progress: 0, result: null, error: null });
+      setState({
+        status: "pending",
+        progress: 0,
+        result: null,
+        error: null,
+        errorCode: null,
+      });
       try {
         const res = await transcriptionsApi.submit(fileUri, fileName, opts);
 
@@ -146,6 +165,7 @@ export function useJobPolling(intervalMs = 1000) {
             progress: 1,
             result: res.result,
             error: null,
+            errorCode: null,
           });
         } else {
           poll(jobId);
@@ -153,11 +173,15 @@ export function useJobPolling(intervalMs = 1000) {
 
         return jobId;
       } catch (e) {
+        const err = toApiError(e);
         setState({
           status: "failed",
           progress: 0,
           result: null,
-          error: toApiError(e).message,
+          error: err.message,
+          // The submit rejection is where the quota refusal arrives
+          // (`BILLING_FREE_TIER_LIMIT`), so this is the code callers branch on.
+          errorCode: err.code,
         });
         return null;
       }
@@ -167,7 +191,13 @@ export function useJobPolling(intervalMs = 1000) {
 
   const reset = useCallback(() => {
     if (timer.current) clearTimeout(timer.current);
-    setState({ status: "idle", progress: 0, result: null, error: null });
+    setState({
+      status: "idle",
+      progress: 0,
+      result: null,
+      error: null,
+      errorCode: null,
+    });
   }, []);
 
   return { state, start, reset };

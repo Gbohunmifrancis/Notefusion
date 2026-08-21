@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Keyboard,
   Platform,
@@ -16,15 +16,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
-import { ProfileScreen } from "../screens/ProfileScreen";
-import { UpgradeScreen } from "../screens/UpgradeScreen";
 import {
   fonts,
   spacing,
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { useSubscription } from "../lib/subscription";
 import type { TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
@@ -37,34 +34,24 @@ const TABS: {
   isCenter?: boolean;
 }[] = [
   { name: "Home", label: "Home", icon: "home-outline", iconActive: "home" },
-  { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
   { name: "Record", label: "Record", icon: "mic", iconActive: "mic", isCenter: true },
-  { name: "Profile", label: "Profile", icon: "person-outline", iconActive: "person" },
-  { name: "Subscription", label: "Subscription", icon: "card-outline", iconActive: "card" },
+  { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
 ];
 
 /**
  * Tab bar matching Image 3 design sheet:
  * Automatically hides when software keyboard is open so bottom icons never shift up over inputs.
  *
- * The Subscription tab is dropped for active subscribers — there is nothing to sell
- * someone who already bought. The screen stays *registered* in the navigator below,
- * so `navigate("Subscription")` and deep links keep working; only the button goes.
- * Items are `flex: 1`, so removing one re-flows the row with no gap to patch.
+ * Three items, with the mic in the middle. It used to be five: Profile and Subscription were
+ * kept purely because dropping to four left the mic off-centre, and the mic is the one control
+ * this layout is built around. Every cell is `flex: 1` in a `space-around` row, so what centres
+ * the mic is an *odd* count — three does it as well as five, without two tabs nobody reached
+ * for. Both of those destinations now live in the side bar (`components/AppDrawer.tsx`).
  */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro } = useSubscription();
-
-  // While billing state is still loading `isPro` is false, so the bar renders the
-  // free layout first. Showing a tab and then removing it beats an empty bar or a
-  // late-arriving button pushing the others sideways under the user's thumb.
-  const tabs = useMemo(
-    () => (isPro ? TABS.filter((t) => t.name !== "Subscription") : TABS),
-    [isPro],
-  );
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -95,7 +82,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
       pointerEvents="box-none"
     >
       <View style={styles.bar}>
-        {tabs.map((tab, index) => {
+        {TABS.map((tab, index) => {
           let targetRouteName: keyof TabParams = tab.name;
           const routeIndex = state.routes.findIndex((r) => r.name === targetRouteName);
           const focused = state.index === routeIndex;
@@ -169,10 +156,8 @@ export function TabNavigator() {
       tabBar={(props) => <FloatingTabBar {...props} />}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Library" component={LibraryScreen} />
       <Tab.Screen name="Record" component={RecordScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
-      <Tab.Screen name="Subscription" component={UpgradeScreen} />
+      <Tab.Screen name="Library" component={LibraryScreen} />
     </Tab.Navigator>
   );
 }

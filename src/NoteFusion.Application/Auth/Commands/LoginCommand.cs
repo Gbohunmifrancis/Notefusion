@@ -25,18 +25,23 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
     private readonly IApplicationDbContext _db;
     private readonly IPasswordHasher _hasher;
     private readonly ITokenIssuer _tokenIssuer;
+    private readonly ISecureTokenGenerator _tokenGen;
     private readonly IDateTimeProvider _clock;
     private readonly ICountryResolver _country;
+    private readonly IEmailSender _email;
 
     public LoginCommandHandler(
-        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock,
-        ICountryResolver country)
+        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer,
+        ISecureTokenGenerator tokenGen, IDateTimeProvider clock, ICountryResolver country,
+        IEmailSender email)
     {
         _db = db;
         _hasher = hasher;
         _tokenIssuer = tokenIssuer;
+        _tokenGen = tokenGen;
         _clock = clock;
         _country = country;
+        _email = email;
     }
 
     public async Task<Result<LoginResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -67,6 +72,23 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
 
         if (!user.IsActive)
             return AuthErrors.AccountInactive;
+
+        // Password was right, so this caller owns the account — which is the only point at which it is safe
+        // to say anything specific about it. Someone who abandoned the code screen at sign-up lands here;
+        // mail them a fresh code so the screen they are about to be routed to has something to accept.
+        // Resend is rate-limited on the row, so a login loop cannot turn into a mail loop.
+        if (!user.EmailVerified)
+        {
+            if (user.CanResendEmailVerification(now))
+            {
+                var code = EmailVerificationCodes.Issue(user, _tokenGen, now);
+                await _db.SaveChangesAsync(cancellationToken);
+                await _email.SendEmailVerificationAsync(
+                    new EmailRecipient(user.Email, user.FullName), code, cancellationToken);
+            }
+
+            return AuthErrors.EmailNotVerified;
+        }
 
         // Backfill, and only that. Every account created before countries existed has none, as does anyone
         // whose lookup failed at sign-up; a sign-in is the one moment we can fix that without adding a

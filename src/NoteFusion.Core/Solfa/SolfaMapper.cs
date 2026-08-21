@@ -2,13 +2,19 @@ using NoteFusion.Shared.Guards;
 
 namespace NoteFusion.Core.Solfa;
 
-/// <summary>Which chromatic syllable set to use for a non-diatonic note (TRD §4.2).</summary>
+/// <summary>
+/// Which chromatic syllable set to use for a non-diatonic note (TRD §4.2).
+/// Chosen from melodic direction by <see cref="SolfaMapper.AscendingFlags"/>, not from a
+/// user setting: regional conventions do vary, but a per-user override would let the same
+/// transcription read differently on two devices, and the wire format carries the syllable
+/// as a string.
+/// </summary>
 public enum ChromaticSpelling
 {
-    /// <summary>Sharpened degrees: de re fe se le.</summary>
+    /// <summary>Sharpened degrees: de re fe se le. What a rising chromatic takes.</summary>
     Ascending = 0,
 
-    /// <summary>Flattened degrees: ra ma sa la ta (regional conventions vary; configurable in settings).</summary>
+    /// <summary>Flattened degrees: ra ma sa la ta. What a falling chromatic takes.</summary>
     Descending = 1
 }
 
@@ -54,6 +60,57 @@ public static class SolfaMapper
 
     /// <summary>Diatonic degree for each semitone above doh (ascending/sharp convention).</summary>
     private static readonly int[] SemitoneToDegree = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7];
+
+    /// <summary>
+    /// Which chromatic table each note is spelled from, decided by melodic direction.
+    /// Mirrors solfa.py's <c>ascending_flags</c> and mobile solfa.ts's <c>ascendingFlags</c>.
+    /// <para>
+    /// A rising chromatic is a sharpened degree (de re fe se le); a falling one is a
+    /// flattened degree (ra ma sa la ta). Direction is taken from the pitch the melody
+    /// arrived from; on the opening run, where there is nothing to arrive from, it is taken
+    /// from the pitch the melody leaves for instead; a clip holding one single pitch is
+    /// ascending by convention.
+    /// </para>
+    /// <para>
+    /// Equal neighbours are one run and share a flag, which is why the previous
+    /// <em>differing</em> pitch is what counts rather than the literal previous note: a
+    /// chromatic sung twice must not be spelled <c>ra</c> then <c>de</c>.
+    /// </para>
+    /// <para>
+    /// Only the five chromatic semitones {1, 3, 6, 8, 10} can be affected — the two tables
+    /// agree on all seven diatonic degrees, so a diatonic note's flag is unobservable.
+    /// </para>
+    /// </summary>
+    /// <param name="pitches">
+    /// MIDI pitches in melodic (time) order. This is a statement about a note's position in
+    /// the tune, not about the note in isolation, so the caller owns the ordering — a note
+    /// list read back out of the database is not necessarily in start-beat order.
+    /// </param>
+    public static bool[] AscendingFlags(IReadOnlyList<int> pitches)
+    {
+        Guard.NotNull(pitches);
+
+        bool[] flags = new bool[pitches.Count];
+        int start = 0;
+        while (start < pitches.Count)
+        {
+            int end = start; // last index of the run of pitches equal to pitches[start]
+            while (end + 1 < pitches.Count && pitches[end + 1] == pitches[start])
+                end++;
+
+            bool flag = start > 0
+                // The previous run's pitch, which differs from this one by construction.
+                ? pitches[start - 1] < pitches[start]
+                : end + 1 >= pitches.Count || pitches[end + 1] > pitches[start];
+
+            for (int i = start; i <= end; i++)
+                flags[i] = flag;
+
+            start = end + 1;
+        }
+
+        return flags;
+    }
 
     /// <summary>
     /// The doh octave nearest the melody's median — the unmarked register every octave

@@ -19,7 +19,10 @@ public sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscri
 
         builder.Property(s => s.UserId).IsRequired();
         builder.Property(s => s.PlanId).IsRequired();
-        builder.Property(s => s.Provider).HasConversion<string>().HasMaxLength(20).IsRequired();
+
+        // Nullable on purpose: no provider means no gateway took money, which is how a gift granted from the
+        // admin console is told apart from a sale. See Subscription.Provider.
+        builder.Property(s => s.Provider).HasConversion<string>().HasMaxLength(20);
         builder.Property(s => s.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(s => s.CurrentPeriodStartUtc).IsRequired();
         builder.Property(s => s.CurrentPeriodEndUtc).IsRequired();

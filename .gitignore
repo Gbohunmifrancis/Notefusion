@@ -6,6 +6,9 @@
 # dotenv files
 .env
 
+# Vercel CLI link + pulled project settings (contains an OIDC token)
+.vercel
+
 # User-specific files
 *.rsuser
 *.suo
@@ -512,6 +515,10 @@ mobile/credentials/
 # leaks the credential that unlocks the signing key above.
 mobile/scripts/fetch-keystore.mjs
 mobile/scripts/test-keys.mjs
+# The Google Play service account key `eas submit` authenticates with. It is a private
+# RSA key that can publish releases to the store, and it cannot be scoped read-only —
+# committing it hands anyone with repo access the ability to ship to your users.
+mobile/google-play-service-account.json
 
 # ── NoteFusion: accuracy harness output ──────────────────────
 # Rewritten by every `python -m tests.accuracy.report` run, and a filtered run leaves

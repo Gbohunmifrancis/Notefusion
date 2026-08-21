@@ -172,7 +172,7 @@ public class CountryResolutionTests
         using var h = new TestHarness();
         h.Country.Country = "NG";
 
-        var result = await new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email, h.Country)
+        var result = await new RegisterCommandHandler(h.Db, h.Hasher, h.Tokens, h.Clock, h.Email, h.Country)
             .Handle(new RegisterCommand("Ada", "ada@example.com", "password123"), default);
 
         Assert.True(result.IsSuccess);
@@ -184,7 +184,7 @@ public class CountryResolutionTests
     {
         using var h = new TestHarness(); // resolver answers null by default
 
-        var result = await new RegisterCommandHandler(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Email, h.Country)
+        var result = await new RegisterCommandHandler(h.Db, h.Hasher, h.Tokens, h.Clock, h.Email, h.Country)
             .Handle(new RegisterCommand("Ada", "ada@example.com", "password123"), default);
 
         Assert.True(result.IsSuccess);
@@ -251,11 +251,12 @@ public class CountryResolutionTests
             NullLogger<HttpGeoIpLookup>.Instance);
 
     private static LoginCommandHandler Login(TestHarness h)
-        => new(h.Db, h.Hasher, h.TokenIssuer, h.Clock, h.Country);
+        => new(h.Db, h.Hasher, h.TokenIssuer, h.Tokens, h.Clock, h.Country, h.Email);
 
     private static async Task<User> Seed(TestHarness h)
     {
         var user = User.Create("Grace Hopper", "grace@example.com", h.Hasher.Hash("s3cretpw!"), h.Clock.UtcNow);
+        h.MarkEmailVerified(user);
         h.Db.Users.Add(user);
         await h.Db.SaveChangesAsync();
         return user;

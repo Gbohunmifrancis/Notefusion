@@ -62,7 +62,7 @@ export function StatTile({
       {change ? (
         <p
           className={`mt-2.5 flex items-center gap-1 text-[11px] font-semibold ${
-            change.up ? "text-success" : "text-danger"
+            change.up ? "text-success-deep" : "text-danger-deep"
           }`}
         >
           {change.up ? (

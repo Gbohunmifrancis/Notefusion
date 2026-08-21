@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview } from "@/api/types";
@@ -24,6 +25,7 @@ import {
 } from "@/lib/format";
 import { useAuth } from "@/lib/auth";
 import { TD, TH, THEAD_TR, TR } from "@/lib/tableClasses";
+import { useTheme } from "@/lib/theme";
 import { useAsync } from "@/lib/useAsync";
 import { rememberReportingOffset } from "@/lib/reporting";
 
@@ -51,11 +53,9 @@ function greeting(firstName: string): string {
   return firstName ? `Good ${part}, ${firstName}` : `Good ${part}`;
 }
 
-/** Ring colours for the signup-method slices, in the order the server lists them. */
-const METHOD_COLORS = ["#2563eb", "#0ea5e9", "#6366f1", "#94a3b8"] as const;
-
 export function OverviewPage() {
   const { user } = useAuth();
+  const { chart } = useTheme();
   const [range, setRange] = useState<Range | null>(null);
 
   const fetcher = useCallback(
@@ -104,14 +104,15 @@ export function OverviewPage() {
             {
               label: "Succeeded",
               value: data.transcriptions.succeededCount,
-              color: "#16a34a",
+              color: chart.success,
             },
-            { label: "Failed", value: data.transcriptions.failedCount, color: "#dc2626" },
+            { label: "Failed", value: data.transcriptions.failedCount, color: chart.danger },
           ];
+          // Ring colours for the signup-method slices, in the order the server lists them.
           const methods: DonutSlice[] = data.signupMethods.map((method, i) => ({
             label: method.label,
             value: method.count,
-            color: METHOD_COLORS[i % METHOD_COLORS.length] ?? "#94a3b8",
+            color: chart.categorical[i % chart.categorical.length] ?? chart.faint,
           }));
           const methodTotal = data.signupMethods.reduce((sum, row) => sum + row.count, 0);
           const share = (count: number) =>
@@ -196,7 +197,7 @@ export function OverviewPage() {
                   info="Zero-filled, so a missing bar means no signups that day."
                   data={data.signupsPerDay}
                   unit="signups"
-                  color="#2563eb"
+                  color={chart.series}
                   className="xl:col-span-2"
                 />
                 <Card title="Most transcribed keys" info="All saved transcriptions, all time">
@@ -214,7 +215,7 @@ export function OverviewPage() {
                   info="Counted on the day the transcription was saved."
                   data={data.transcriptionsPerDay}
                   unit="transcriptions"
-                  color="#0ea5e9"
+                  color={chart.sky}
                   className="xl:col-span-2"
                 />
                 <Card title="Push platforms" info="Registered device tokens, all time">
@@ -335,7 +336,7 @@ export function OverviewPage() {
                               <div className="flex items-center gap-2">
                                 <div className="h-1.5 w-24 overflow-hidden rounded-pill bg-surface-alt">
                                   <div
-                                    className="h-full rounded-pill bg-blue"
+                                    className="h-full rounded-pill bg-accent"
                                     style={{
                                       width: `${(cohort.retentionRate ?? 0) * 100}%`,
                                     }}
@@ -367,16 +368,23 @@ export function OverviewPage() {
                 <ul className="space-y-2 text-[13px] text-muted">
                   <li>
                     <span className="font-medium text-ink">Top countries and geography.</span>{" "}
-                    No location, IP, or locale is stored against an account or a transcription,
-                    so a country breakdown would be invented, not measured. It arrives if and
-                    when the schema captures a signal worth mapping.
+                    An account does carry a country, resolved from the caller's address once at its
+                    first sign-in and only when a GeoIP provider is configured — so on a deployment
+                    without one it is null for everybody. It is shown per account on the detail
+                    page; a breakdown card waits until the column is populated widely enough to
+                    mean something.
                   </li>
                   <li>
                     <span className="font-medium text-ink">
                       Subscribed, paid and free-tier counts.
                     </span>{" "}
-                    No subscription, plan or payment entity exists in the schema. Once pricing
-                    is settled these become real columns, and only then real cards.
+                    The billing tables exist, but every figure on this page is windowed to the range
+                    above and a subscription count belongs to an instant instead. The live numbers,
+                    labelled as the snapshot they are, are on{" "}
+                    <Link to="/health" className="font-medium text-accent hover:opacity-80">
+                      System health
+                    </Link>
+                    .
                   </li>
                   <li>
                     <span className="font-medium text-ink">Day-N retention.</span> Only the

@@ -14,6 +14,26 @@ public class User : BaseEntity
     public const int MaxFailedLoginAttempts = 5;
     public static readonly TimeSpan LockoutDuration = TimeSpan.FromMinutes(30);
 
+    /// <summary>
+    /// Guesses allowed against one verification code before it is burned. A six-digit code is a million
+    /// possibilities, which sounds ample until you notice there is no rate limiter in front of the API:
+    /// this cap and the resend cooldown are the whole of the brute-force defence.
+    /// </summary>
+    public const int MaxEmailVerificationAttempts = 5;
+
+    /// <summary>
+    /// How long a verification code stays usable. Short enough that a code read from a breached mailbox
+    /// months later is worthless, long enough to survive a slow mail provider and a user who switches
+    /// apps to find it.
+    /// </summary>
+    public static readonly TimeSpan EmailVerificationLifetime = TimeSpan.FromMinutes(10);
+
+    /// <summary>
+    /// The wait between codes for one address. Registration and resend both mail whoever is named, so
+    /// without this the sign-up form is a mail-bombing tool pointed at any address the caller likes.
+    /// </summary>
+    public static readonly TimeSpan EmailVerificationResendCooldown = TimeSpan.FromSeconds(60);
+
     private readonly List<RefreshToken> _refreshTokens = [];
     private readonly List<DeviceToken> _deviceTokens = [];
 
@@ -55,6 +75,37 @@ public class User : BaseEntity
     public DateTime? PasswordResetTokenExpiry { get; private set; }
 
     /// <summary>
+    /// Whether the address on this account has been proved to belong to whoever signed up. False until
+    /// the emailed code is entered, and password sign-in is refused until it is true.
+    /// </summary>
+    /// <remarks>
+    /// Google-created accounts start true: Google has already proved the address, and
+    /// <c>GoogleSignInCommand</c> refuses an identity whose email Google itself has not verified.
+    /// </remarks>
+    public bool EmailVerified { get; private set; }
+
+    /// <summary>
+    /// SHA-256 of the current six-digit code, or null when none is outstanding. Hashed for the same
+    /// reason the reset token is: a database read must not hand anyone a working code.
+    /// </summary>
+    public string? EmailVerificationCodeHash { get; private set; }
+
+    /// <summary>UTC expiry of the current code. Null when none is outstanding.</summary>
+    public DateTime? EmailVerificationExpiry { get; private set; }
+
+    /// <summary>
+    /// Wrong guesses against the current code. Reset when a new code is issued, and the reason a code
+    /// can die before its expiry.
+    /// </summary>
+    public int EmailVerificationAttempts { get; private set; }
+
+    /// <summary>
+    /// When the last code was mailed, which is what the resend cooldown is measured from. Kept even
+    /// after the code is consumed, so it cannot be reset by verifying and re-registering.
+    /// </summary>
+    public DateTime? EmailVerificationSentAtUtc { get; private set; }
+
+    /// <summary>
     /// ISO 3166-1 alpha-2 code for where this account was first seen, or null when it could not be
     /// determined. Drives which billing tier the user is offered, so it is stored rather than derived per
     /// request for two reasons: the offer stays put when the user travels, and we keep a record of why a
@@ -85,6 +136,9 @@ public class User : BaseEntity
             Role = UserRole.Admin,
             IsActive = true,
             IsFirstLogin = false,
+            // Nobody is going to mail the seeded admin a code, and an admin locked out of the console
+            // is a deploy that cannot be administered.
+            EmailVerified = true,
             CreatedAt = utcNow
         };
 
@@ -99,6 +153,9 @@ public class User : BaseEntity
             Role = UserRole.User,
             IsActive = true,
             IsFirstLogin = false,
+            // Unverified, and no tokens are issued until it is: anyone can type any address into a
+            // sign-up form, so until the code comes back this account is only a claim.
+            EmailVerified = false,
             CreatedAt = utcNow
         };
 
@@ -118,6 +175,10 @@ public class User : BaseEntity
             Role = UserRole.User,
             IsActive = true,
             IsFirstLogin = false,
+            // Google proved the address, and the caller has already refused any identity Google itself
+            // marks unverified. Mailing a code to confirm what an identity provider just confirmed
+            // would be a step with nothing behind it.
+            EmailVerified = true,
             CreatedAt = utcNow
         };
 
@@ -136,13 +197,75 @@ public class User : BaseEntity
     }
 
     /// <summary>
+    /// Removes the administrator role, pairing with <see cref="PromoteToAdmin"/>. Returns false when the
+    /// account was not an admin, so a repeated click costs no write.
+    /// </summary>
+    /// <remarks>
+    /// Nothing here stops the last admin demoting themselves out of the console — that is a rule about the
+    /// whole set of accounts, which this entity cannot see, so the command layer holds it.
+    /// </remarks>
+    public bool DemoteFromAdmin()
+    {
+        if (Role == UserRole.User) return false;
+
+        Role = UserRole.User;
+        return true;
+    }
+
+    /// <summary>
+    /// Bars the account from signing in. Returns false when it was already suspended.
+    /// </summary>
+    /// <remarks>
+    /// This one flag is the whole enforcement: login, Google sign-in and refresh all already refuse an
+    /// inactive account. What it does <em>not</em> do is invalidate an access token already in the user's
+    /// hands — those are self-contained JWTs, valid until they expire — so a caller that means "cut this
+    /// account off" must also revoke the refresh tokens, and whatever tells the operator it worked has to
+    /// name that remaining window rather than imply an instant cut-off.
+    /// </remarks>
+    public bool Suspend()
+    {
+        if (!IsActive) return false;
+
+        IsActive = false;
+        return true;
+    }
+
+    /// <summary>Restores a suspended account. Returns false when it was already active.</summary>
+    /// <remarks>
+    /// Sign-in works again immediately; the revoked refresh tokens are not resurrected, so every device
+    /// signs in once more. That is the honest outcome — an un-revoked token is one an attacker may have
+    /// taken a copy of.
+    /// </remarks>
+    public bool Reactivate()
+    {
+        if (IsActive) return false;
+
+        IsActive = true;
+        return true;
+    }
+
+    /// <summary>
     /// Links a Google account to an existing password account, so both routes reach the
     /// same user. Callers must have confirmed Google verified the email first — linking on
     /// an unverified email would let anyone claiming that address take over the account.
     /// </summary>
+    /// <remarks>
+    /// Google's assurance also verifies the address here. The discarded password is the part worth
+    /// explaining: a password on an <em>unverified</em> account was chosen by whoever typed the address
+    /// into the sign-up form, who may not be the person now proving they own it. Keeping it would leave
+    /// that stranger a working credential on someone else's account, so the account becomes Google-only
+    /// until its real owner sets a password through the reset flow.
+    /// </remarks>
     public void LinkGoogleAccount(string googleId)
     {
         GoogleId = Guard.NotNullOrWhiteSpace(googleId);
+
+        if (!EmailVerified)
+        {
+            PasswordHash = null;
+        }
+
+        EmailVerified = true;
     }
 
     /// <summary>Adopts Google's avatar only when the user has no picture of their own to lose.</summary>
@@ -230,6 +353,79 @@ public class User : BaseEntity
         PasswordResetTokenHash = null;
         PasswordResetTokenExpiry = null;
         IsFirstLogin = false;
+
+        // Receiving the reset link proves the mailbox, which is the same thing the six-digit code
+        // proves — so an account that resets its password is verified by that alone. Without this, a
+        // new user who never entered their code and then reset their password would be left resetting
+        // it forever: the new password works, and login still refuses them.
+        EmailVerified = true;
+        EmailVerificationCodeHash = null;
+        EmailVerificationExpiry = null;
+        return true;
+    }
+
+    /// <summary>
+    /// Stores the hash of a freshly minted verification code and starts its clock. The caller supplies
+    /// the hash; the six digits themselves are emailed and never persisted.
+    /// </summary>
+    /// <remarks>
+    /// Resets the attempt counter, because the guesses were spent against the old code — carrying them
+    /// forward would mean a user who mistyped twice gets three tries on a code they have only just
+    /// received. <see cref="EmailVerificationSentAtUtc"/> is what the resend cooldown reads.
+    /// </remarks>
+    public void SetEmailVerificationCode(string codeHash, DateTime utcNow)
+    {
+        EmailVerificationCodeHash = Guard.NotNullOrWhiteSpace(codeHash);
+        EmailVerificationExpiry = utcNow.Add(EmailVerificationLifetime);
+        EmailVerificationAttempts = 0;
+        EmailVerificationSentAtUtc = utcNow;
+    }
+
+    /// <summary>
+    /// Whether enough time has passed since the last code to send another. False means the caller should
+    /// silently do nothing — telling an anonymous caller they are on cooldown would confirm the address
+    /// is registered.
+    /// </summary>
+    public bool CanResendEmailVerification(DateTime utcNow)
+        => EmailVerificationSentAtUtc is null
+            || utcNow - EmailVerificationSentAtUtc.Value >= EmailVerificationResendCooldown;
+
+    /// <summary>
+    /// Checks a code and, on a match, marks the address verified. Returns false for a code that is
+    /// wrong, expired, exhausted, or absent — one answer for all four, so the caller cannot leak which.
+    /// </summary>
+    /// <remarks>
+    /// A miss increments the attempt counter and, on reaching
+    /// <see cref="MaxEmailVerificationAttempts"/>, destroys the code outright. Merely refusing further
+    /// guesses would leave a live code sitting there for the ten minutes an attacker needs to request a
+    /// resend and keep going; burning it forces them back through the cooldown for every five tries.
+    /// </remarks>
+    public bool ConsumeEmailVerificationCode(string codeHash, DateTime utcNow)
+    {
+        if (EmailVerificationCodeHash is null
+            || EmailVerificationExpiry is null
+            || EmailVerificationExpiry.Value < utcNow
+            || EmailVerificationAttempts >= MaxEmailVerificationAttempts)
+        {
+            return false;
+        }
+
+        if (EmailVerificationCodeHash != codeHash)
+        {
+            EmailVerificationAttempts++;
+            if (EmailVerificationAttempts >= MaxEmailVerificationAttempts)
+            {
+                EmailVerificationCodeHash = null;
+                EmailVerificationExpiry = null;
+            }
+
+            return false;
+        }
+
+        EmailVerified = true;
+        EmailVerificationCodeHash = null;
+        EmailVerificationExpiry = null;
+        EmailVerificationAttempts = 0;
         return true;
     }
 

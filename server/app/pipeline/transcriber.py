@@ -47,33 +47,45 @@ from app.pipeline import solfa
 # 22 050 Hz gives CD-quality for speech/melody with half the data of 44 100 Hz.
 PREVIEW_SAMPLE_RATE = 22_050
 
-# Synthesis voice: fundamental + partials, falling off as roughly 1/k^1.7. A
-# nearly-flat spectrum (the old four weights were 0.50/0.20/0.12/0.08, i.e. 1/k^1.3
-# truncated) reads as a buzz; rolling off further and going wider sounds like a
-# soft plucked tone. Eight partials at the pipeline's 1050 Hz pitch ceiling put the
-# topmost at 8.4 kHz, under the 11.025 kHz Nyquist of PREVIEW_SAMPLE_RATE — and the
-# loop drops any partial that would exceed it anyway, so raising either is safe.
-_HARMONIC_WEIGHTS = (1.0, 0.36, 0.22, 0.13, 0.085, 0.055, 0.035, 0.022)
+# Synthesis voice: a softly-struck piano. Weights fall off as roughly 1/k², steeper
+# than the 1/k^1.7 pluck they replace, because a piano played gently has a dominant
+# fundamental and weak upper partials — a flatter spectrum is what read as a buzz.
+# Eight partials at the pipeline's 1050 Hz pitch ceiling put the topmost at 8.4 kHz,
+# under the 11.025 kHz Nyquist of PREVIEW_SAMPLE_RATE — and the loop drops any partial
+# that would exceed it anyway, so raising either is safe.
+_HARMONIC_WEIGHTS = (1.0, 0.28, 0.14, 0.07, 0.04, 0.022, 0.012, 0.007)
 
 # Per-partial brightness decay: partial k is damped by exp(-k·t/_HARMONIC_DECAY_SEC),
 # so upper partials die away faster than the fundamental. This is the cue that
-# separates a struck or plucked instrument from an organ. Without it the spectrum of
-# every note is frozen for its whole length, which is most of why the old preview
-# sounded synthetic.
-_HARMONIC_DECAY_SEC = 2.5
+# separates a struck instrument from an organ. Without it the spectrum of every note
+# is frozen for its whole length, which is most of why the old preview sounded
+# synthetic. 1.6 s rather than 2.5: a piano's hammer noise and upper partials fade
+# faster than its fundamental, and the slower value left the tone bright enough to
+# still read as a synth pad.
+_HARMONIC_DECAY_SEC = 1.6
 
 # Upper partials of a real string sit slightly sharp of exact multiples. Stretching
 # partial k by (1 + B·k²) with this B puts the 8th about 9 cents sharp: enough to
 # keep the partials from phase-locking into a static buzz, small enough not to sound
-# out of tune.
+# out of tune. Real piano B runs 1e-4 upward, so this is conservative and in-family.
 _INHARMONICITY = 8e-5
 
-# ADSR parameters (seconds). Short attack / longer release sounds more natural
-# than a rectangular envelope when notes are hummed or played on a soft instrument.
-_ATTACK_SEC = 0.015
-_DECAY_SEC = 0.040
-_RELEASE_FRAC = 0.25  # release is 25 % of note duration, capped at 0.18 s
-_SUSTAIN_LEVEL = 0.80  # sustain amplitude relative to peak (after decay)
+# Envelope (seconds). A piano is percussive: it never holds a level, it decays from
+# the strike onward. The previous voice sustained at 0.80 × peak for the whole body
+# of every note, which is an *organ* — and that plateau, more than the spectrum, is
+# what made the preview sound wack. So there is no sustain level here; the body is a
+# continuous exponential (see _string_decay_sec) and only the attack and the damper
+# release are shaped.
+_ATTACK_SEC = 0.006  # hammer strike; raised-cosine, so short but not a click
+_RELEASE_SEC = 0.080  # damper falling at note-off, so notes stop on the grid
+
+# Body decay time constant, seconds, at middle C. Scaled per note by
+# _string_decay_sec: bass strings are longer, heavier and less damped, so they ring
+# far longer than treble ones, and a single global constant makes the low register
+# sound clipped and the high register sound like a bell.
+_STRING_DECAY_SEC_C4 = 2.6
+_STRING_DECAY_MIN_SEC = 0.6
+_STRING_DECAY_MAX_SEC = 4.0
 
 # ── Post-processing thresholds ────────────────────────────────────────────────
 
@@ -82,8 +94,40 @@ MIN_AMPLITUDE_MELODY = 0.15  # v1 was 0.20 — allow softer recordings to pass
 MIN_AMPLITUDE_POLY = 0.12  # v1 was 0.15
 
 # Adaptive threshold: ADAPTIVE_FACTOR × p75(clip amplitudes), floored at the
-# constant above.  Prevents a fixed value from silencing quiet performances.
-ADAPTIVE_FACTOR = 0.25
+# constant above.  Scales the cut with how confident the model is on this clip.
+#
+# 0.25 was structurally unable to do its job, and the harness had already recorded the
+# proof without anyone reading it.  Basic Pitch's amplitude is a posterior in [0,1], so
+# 0.25 × p75 has a hard CEILING of 0.25 — and per-case conf.* (conf IS the event
+# amplitude, see the assignment to editorial.confidence) shows the ghost population
+# clustered at 0.252-0.268 against real notes at 0.585-0.792, with conf.auc a perfect
+# 1.000 on 20 of 38 cases.  Amplitude separates ghosts from notes flawlessly on those
+# clips and the floor sat one thousandth BELOW the entire ghost cluster, so the stage
+# that exists to remove them could never fire.  diag_baseline — the clean control —
+# emitted 15 notes for 11 references.
+#
+# Swept 0.25 / 0.40 / 0.50 / 0.60 over the corpus.  At 0.40: notes.precision 0.783 ->
+# 0.839, notes.f1 0.832 -> 0.863, notes.f1_with_offset 0.707 -> 0.798, solfa.ghost_count
+# 5.711 -> 4.947, beats.precision 0.801 -> 0.858, tempo.abs_error 24.000 -> 21.263
+# (fewer spurious onsets, so the tempo chooser sees the real grid), and
+# solfa.anchor_matches_reference 0.974 -> 1.000.  EIGHTEEN cases go to exactly zero
+# ghosts, including diag_baseline 4 -> 0, plagal_fourth 4 -> 0 and lead_in_800ms 3 -> 0.
+# notes.recall holds at 0.935 and all twelve already-perfect cases stay bit-identical
+# 1.000, guards included.
+#
+# 0.40 rather than the middle of the plateau: 0.40 and 0.50 are identical on every
+# metric, 0.60 breaks vibrato_rate_k15 (recall 1.000 -> 0.909), and deleting a real note
+# is worse than leaving a ghost — so take the low end of the plateau, furthest from the
+# edge that loses notes.
+#
+# What this does NOT fix, so it is not mistaken for a solfa win later:
+# solfa.degree_accuracy is unchanged at 0.917 and chromatic_ghosts at 1.868, because
+# both are computed over MATCHED notes and this removes unmatched ones.  It is a
+# precision and timing fix — what the user sees as spurious extra notes on the staff.
+# conf.auc drops 0.868 -> 0.551 for the same reason: the discarded events were the ones
+# amplitude was correctly identifying, so the statistic loses the population it was
+# scoring.  That is the metric measuring its own success, not a regression.
+ADAPTIVE_FACTOR = 0.40
 
 # Events shorter than this are almost always artefacts (breath noise, finger
 # scrapes, string squeak).
@@ -93,6 +137,41 @@ MIN_NOTE_SEC = 0.06
 # the mode-specific constant are fused into a single event.
 MERGE_GAP_MELODY = 0.08  # ~1 sixteenth note at 120 BPM
 MERGE_GAP_POLY = 0.05  # tighter for polyphonic — avoid swallowing trills
+
+# Basic Pitch reports per-note pitch bends in units of 1/3 semitone, already centred
+# on the note's own pitch (``get_pitch_bends`` subtracts ``pb_shift``, and the contour
+# bin of MIDI pitch p is exactly 3p - 63, so there is no rounding offset to undo).
+CONTOUR_BINS_PER_SEMITONE = 3.0
+
+# How far apart two events' f0 may sit and still be fused by ``_merge_onsets``.
+#
+# This is the constant the struck "vibrato-tolerant merge" needed and did not have.
+# That attempt compared *rounded* pitches, where fragments of one wobbling note are
+# two semitones apart because Basic Pitch fires at both neighbours — so no tolerance
+# under two could reach them, and a tolerance of two swallows real steps.  Reading the
+# bends collapses that: measured over the nine vibrato/drift cases, consecutive
+# fragments of one reference note sit a median 0.395 semitones apart in f0 against
+# 2.074 for genuine steps.
+#
+# 0.5 is where the corpus put it.  Against today's exact-pitch rule it fuses 11 more
+# fragment pairs and 4 *fewer* genuine ones — better on both axes — and the whole
+# movement is inside the vibrato cases: semitone_steps_c_major, fast_sixteenths_c_major,
+# diag_baseline and vibrato_depth_0_8 are bit-identical.  Going to 0.75 buys 9 more
+# fragment merges but starts fusing genuine steps in vibrato_rate_k20 and
+# vibrato_depth_2_0, and 1.0 is the knee where genuine damage triples.
+#
+# Any value below 1.0 also leaves bend-free events behaving exactly as before, since
+# two distinct integer pitches differ by at least 1 — which is why the ~40 helper tests
+# that build Events without bends need no changes and still pin the old semantics.
+#
+# All of which held, and bought almost nothing: on the full corpus the rule fires as
+# calibrated (drift_1_semitone gains 11 merges) and moves solfa.chromatic_ghosts by one
+# accidental in 38 cases, while solfa.ghost_count gets 0.105 *worse* — past the 0.02
+# regression tolerance.  Four cases move at all, and the two that lose (vibrato_rate_k155
+# f1 -0.073 and +3 ghosts, vibrato_heavy +2 ghosts) are outside the nine this constant was
+# fitted on.  So 0.5 is the right answer to the question the nine cases asked and the
+# question was too narrow; ``settings.f0_merge`` is off by default because of it.
+F0_MERGE_SEMITONES = 0.5
 
 # Key detection: fewer than this many note events and no pitch profile is
 # reliable; cap the reported confidence so the mobile shows the prompt.
@@ -113,9 +192,40 @@ PYIN_FMAX_HZ = 1050.0
 PYIN_MIN_VOICED_FRAMES = 3
 
 # Median voiced probability an event must reach before its pitch is corrected.
-# A floor against noise rather than a discriminator: measured over the accuracy
-# corpus, real notes sit at 0.69-0.76 under heavy vibrato and 0.95-0.98 when
-# clean, so nothing real is anywhere near this.
+# Intended as a floor against noise rather than a discriminator, on the grounds that
+# real notes sit at 0.69-0.76 under heavy vibrato and 0.95-0.98 when clean.  That
+# second claim was "so nothing real is anywhere near this", and DEEP vibrato falsifies
+# it: on vibrato_depth_1_8 and vibrato_depth_2_0 real notes sit at a median 0.33 and
+# 0.28, and this floor refuses 50 of 56 and 55 of 56 of their events.  The mechanism is
+# not noise — +-1.8-2.0 semitones at 5.5 Hz sweeps ~4 semitones inside pyin's ~93 ms
+# analysis window, so the signal is not periodic at a single f0 and it is pyin's
+# PERIODICITY estimate that collapses.  The floor reads "the pitch is moving fast" as
+# "this might not be a note".
+#
+# Lowering it anyway was measured over the full corpus at 0.25 / 0.20 / 0.15, and 0.5
+# stays because the headline metric says so.  At the best of those (0.20):
+# solfa.degree_accuracy 0.917 -> 0.915.  Everything underneath it improves —
+# notes.recall 0.935 -> 0.964, notes.f1 0.832 -> 0.846, solfa.chromatic_ghosts 1.868 ->
+# 1.737, notes.semitone_neighbour_ghosts 2.105 -> 1.921, solfa.octave_error_rate 0.008
+# -> 0.002, key.exact 0.868 -> 0.895 (vibrato_depth_2_0's key comes right and no case's
+# key breaks) — and the four cases this floor exists for (noise_moderate,
+# quiet_low_amplitude, overtone_heavy, pluck_envelope) are bit-identical 1.000 at every
+# value, because the rule only fires where pyin and Basic Pitch disagree and on those
+# cases they agree.  So the floor is not, in fact, what protects them.
+#
+# What it costs is why it is not worth it.  Exactly two cases move, in opposite
+# directions and by almost the same amount: vibrato_depth_2_0 0.333 -> 0.875 and
+# vibrato_depth_1_8 0.600 -> 0.000.  The second is a wrong-key artefact — that case's
+# key is wrong at every floor, so its degrees are measured against the wrong tonic and
+# 0.600 was coincidental partial credit — but trading one deep-vibrato case for another
+# is not a fix, it is a coin flip, and it also drags conf.auc 0.868 -> 0.835 because
+# accepting low-probability corrections that turn out correct pulls conf.mean_correct
+# down (0.674 -> 0.655) while conf.mean_wrong sits still.
+#
+# The offline sweep over per-event rows had predicted +260 net fixes here and was
+# wrong: it covered 12 of 38 cases and none of the noise cases, and it mispredicted
+# both moving cases' baselines.  Trust the corpus, not the rows.  The real defect these
+# two cases share is the KEY, not the floor.
 PYIN_MIN_VOICED_PROB = 0.5
 
 # How far from a whole number of octaves the pyin/Basic Pitch disagreement may
@@ -124,6 +234,33 @@ PYIN_MIN_VOICED_PROB = 0.5
 # it stays under 2 so a genuinely wrong pitch a whole tone from the octave (a
 # +14 ghost does occur) is left alone rather than snapped.
 PYIN_OCTAVE_TOLERANCE = 1.5
+
+# Confidence blend: voiced_prob as a reliability scaler on the pyin/Basic-Pitch
+# agreement term, falling back to bare amplitude when pyin was silent.
+#
+#   conf = (W_AMP * amp + (W_AGREE_MAX * voiced_prob) * agreement)
+#          / (W_AMP    + (W_AGREE_MAX * voiced_prob))
+#
+# Swept arithmetic-mean weights, geometric means, products and the scaled form over
+# 609 rows / 38 cases (7 with a non-trivial wrong-note population).  Scores below are
+# per-case auc averaged over those 7, fraction of wrong notes shown as "High confidence"
+# (>= 0.75, which the client highlights), and fraction of wrong notes flagged low (< 0.5):
+#
+#   additive 1:3           auc 0.693  bad_high 0.25  bad_low 0.29
+#   additive 2:3           auc 0.687  bad_high 0.09  bad_low 0.35
+#   scaled 2:3  (chosen)   auc 0.683  bad_high 0.05  bad_low 0.40
+#   amp only (baseline)    auc 0.551  bad_high 0.01  bad_low 0.81
+#
+# auc is flat across the plateau (0.680-0.698) on 7 cases; the decision is on the
+# columns that separate: scaled 2:3 has the lowest wrong-note mislabelling, preserves
+# drift_1_semitone best (0.960 -> 0.760 vs 0.700 for pure additive), and makes
+# voiced_prob load-bearing as a reliability scaler rather than a below-chance additive
+# signal (voiced-only auc: 0.463).
+#
+# At voiced_prob = 1.0 the formula is the additive (2, 0, 3) blend.
+# At voiced_prob = 0.0 it collapses to bare amplitude.
+CONF_WEIGHT_AMP = 2.0
+CONF_WEIGHT_AGREE_MAX = 3.0
 
 # music21 flat letter → "b" convention expected by C#'s KeyParser.
 _M21_FLAT_MAP: dict[str, str] = {
@@ -151,6 +288,19 @@ def _smooth_ramp(n: int, start: float, end: float) -> "np.ndarray":
     )
 
 
+def _string_decay_sec(pitch_midi: int) -> float:
+    """Body decay time constant for a note, in seconds.
+
+    Doubles every two octaves *down* from middle C, so C4 rings for
+    ``_STRING_DECAY_SEC_C4``, C6 for a quarter as long and C2 for four times as long,
+    clamped to a sane band. A real piano's bass strings are longer, heavier and less
+    damped than its treble ones; using one constant for the whole compass makes low
+    notes sound cut off and high notes sound like a struck bell.
+    """
+    scaled = _STRING_DECAY_SEC_C4 * 2.0 ** ((60 - pitch_midi) / 24.0)
+    return float(min(max(scaled, _STRING_DECAY_MIN_SEC), _STRING_DECAY_MAX_SEC))
+
+
 def _synthesize_audio_preview(
     notes: "list[TranscribedNote]",
     tempo_bpm: int,
@@ -165,15 +315,20 @@ def _synthesize_audio_preview(
 
     Voice model
     ───────────
-    Each note is a sum of the partials in ``_HARMONIC_WEIGHTS``, each one slightly
-    stretched sharp by ``_INHARMONICITY`` and damped by
-    ``exp(-k·t/_HARMONIC_DECAY_SEC)`` so the tone darkens as it rings. An ADSR
-    envelope is applied, using raised-cosine ramps so no segment boundary clicks:
-      • Attack  : ramp-up over ``_ATTACK_SEC`` seconds.
-      • Decay   : drop to the sustain level over ``_DECAY_SEC`` seconds.
-      • Sustain : held at ``_SUSTAIN_LEVEL`` × peak for the body of the note.
-      • Release : fade-out over the final ``_RELEASE_FRAC`` of the note
-                  (capped at 0.18 s so long notes still end cleanly).
+    A softly-struck piano. Each note is a sum of the partials in
+    ``_HARMONIC_WEIGHTS``, each one slightly stretched sharp by ``_INHARMONICITY``
+    and damped by ``exp(-k·t/_HARMONIC_DECAY_SEC)`` so the tone darkens as it rings.
+    The envelope is percussive rather than ADSR — a piano has no level to hold:
+      • Attack : raised-cosine ramp-up over ``_ATTACK_SEC``, so there is no click.
+      • Body   : ``exp(-t/tau)`` for the whole note, ``tau`` from
+                 ``_string_decay_sec`` so bass notes ring longer than treble.
+      • Release: raised-cosine fade over ``_RELEASE_SEC``, the damper landing, so
+                 notes stop on the grid instead of smearing into the next.
+
+    ``mobile/src/lib/synth.ts`` renders the same voice with the same constants, and
+    the two must stay in lock-step: the mobile one replaces this preview as soon as
+    the user edits a note, so any divergence is audible as the timbre changing
+    underfoot.
 
     The confidence score of each note is used as a per-note velocity scaler so
     low-confidence notes are softer than high-confidence ones.
@@ -250,25 +405,25 @@ def _synthesize_audio_preview(
                 * np.sin(2.0 * np.pi * f_k * t + phase)
             )
 
-        # ADSR. The ramps are raised-cosine, not linear: a linear ramp has a corner
-        # at each end, and over a 15 ms attack that corner is audible as a click on
-        # every single note. Pre-filling with the sustain level means only the attack
-        # and decay segments need writing, and both fit by construction since each is
-        # capped at a quarter of the note.
-        env = np.full(actual, _SUSTAIN_LEVEL, dtype=np.float64)
+        # Envelope. A piano decays continuously from the strike — there is no level to
+        # hold — so the body is exp(-t/tau) with tau from the register, and only the
+        # attack and the damper release are shaped. The ramps are raised-cosine, not
+        # linear: a linear ramp has a corner at each end, and over a 6 ms attack that
+        # corner is audible as a click on every single note.
+        env = np.exp(-t / _string_decay_sec(n.pitch_midi))
         atk = min(int(_ATTACK_SEC * sr), actual // 4)
-        dec = min(int(_DECAY_SEC * sr), actual // 4)
-        rel = min(int(_RELEASE_FRAC * actual), int(0.18 * sr))
+        rel = min(int(_RELEASE_SEC * sr), actual // 2)
 
         if atk > 0:
-            env[:atk] = _smooth_ramp(atk, 0.0, 1.0)
-        if dec > 0:
-            env[atk : atk + dec] = _smooth_ramp(dec, 1.0, _SUSTAIN_LEVEL)
+            env[:atk] *= _smooth_ramp(atk, 0.0, 1.0)
         if rel > 0:
             env[-rel:] *= _smooth_ramp(rel, 1.0, 0.0)
 
-        # Velocity from confidence (range 0.4 – 1.0 so even low-conf notes audible)
-        velocity = 0.4 + 0.6 * float(n.conf)
+        # Velocity from confidence. Narrower than the old 0.4-1.0: soft-piano dynamics
+        # live in a tighter band, and conf is a noisy number today (see the
+        # ADAPTIVE_FACTOR note above — conf.auc is 0.551), so a low value must not be
+        # able to render a real note near-inaudible.
+        velocity = 0.55 + 0.35 * float(n.conf)
         audio[start_samp:end_samp] += tone * env * (velocity * voice_gain)
 
     # Soft-limit instead of rescaling by the peak. The old code divided the whole
@@ -504,6 +659,124 @@ def _profile_z_scores(profile, s) -> dict[tuple[int, str], float]:
     return {ident: (cc - centre) / spread for ident, cc in scored}
 
 
+# The pitch classes a key's own music lives on, relative to the tonic.
+#
+# Minor takes the union of natural, harmonic and melodic minor rather than natural minor
+# alone.  The raised 6th and 7th belong to the same key, so scoring A minor against natural
+# minor would penalise it for its own G# and make the parsimony cue below argue against the
+# right answer on every harmonic-minor clip in the corpus.
+_MAJOR_SCALE = frozenset({0, 2, 4, 5, 7, 9, 11})
+_MINOR_SCALE = frozenset({0, 2, 3, 5, 7, 8, 9, 10, 11})
+
+
+def _tonal_cues(s):
+    """``(final pitch class, duration weight per pitch class, total weight)`` for a stream.
+
+    Both structural cues used by ``_cadence_prefers_runner_up`` read off this single pass.
+    Returns ``None`` for a stream with nothing in it — the same "no opinion" answer
+    ``_profile_z_scores`` gives, and the tiebreak then declines rather than guessing.
+    """
+    notes = list(s.flatten().notes)
+    if not notes:
+        return None
+
+    weights: dict[int, float] = {}
+    for n in notes:
+        pc = n.pitch.pitchClass
+        weights[pc] = weights.get(pc, 0.0) + float(n.duration.quarterLength)
+
+    total = sum(weights.values())
+    if total <= 0.0:
+        return None
+    return notes[-1].pitch.pitchClass, weights, total
+
+
+def _diatonic_fraction(tonic_pc: int, mode: str, weights: dict[int, float], total: float) -> float:
+    """How much of a clip's *duration* falls inside one candidate key's own scale.
+
+    This is precisely a subdominant detector.  Reading a C-major melody as F major turns
+    every B natural into an accidental, so the wrong key spends duration outside its own
+    scale while the right one spends none: measured on ``plagal_fourth_c_major``, F major
+    scores 0.960 against C major's 1.000.
+    """
+    scale = _MAJOR_SCALE if mode == "major" else _MINOR_SCALE
+    inside = sum(w for pc, w in weights.items() if (pc - tonic_pc) % 12 in scale)
+    return inside / total
+
+
+def _is_fifth_or_parallel(a: tuple[int, str], b: tuple[int, str]) -> bool:
+    """Are two key identities a fifth apart, or the same tonic in opposite modes?
+
+    Relatives are deliberately excluded.  A relative confusion is *exactly* solfa-neutral —
+    la-based minor gives A minor and C major the same doh, so every syllable, degree and
+    accidental is identical and only the displayed key string is wrong (``metrics.py``
+    ``key_metrics`` carries the measurement).  Overturning one buys no accuracy and widens
+    what this tiebreak is allowed to touch, which is the whole risk here.
+    """
+    interval = (b[0] - a[0]) % 12
+    if a[1] == b[1]:
+        return interval in (5, 7)
+    return interval == 0
+
+
+def _cadence_prefers_runner_up(s, winner, runner_up, margin: float) -> bool:
+    """Should the vote's runner-up be preferred, on structural grounds the profiles ignore?
+
+    The pitch profiles are histograms: they weigh *how much* of each pitch class a clip
+    holds and know nothing about where a note sits in the phrase.  That is exactly how
+    ``plagal_fourth_c_major`` goes wrong — a sustained 4th carries 4 of its 12 beats, so
+    F major out-correlates C major (z 1.989 to 1.560) on a clip that begins and ends on C
+    and contains a B natural.  A wrong tonic re-labels every syllable in the clip, and that
+    case measures ``solfa.degree_accuracy`` 0.000 on ``notes.f1`` 0.846: the notes are heard
+    correctly and mislabelled wholesale.  It is the most expensive failure in the pipeline.
+
+    Four conditions must all hold, and each one is a restriction rather than a tuned score:
+
+    ``margin < KEY_MARGIN_FULL``
+        Only where the profiles did not fully decide.  Reuses the existing calibrated
+        constant rather than introducing another, and no corpus case sits near it: the
+        thin-margin fifth pairs run 0.160-0.564 and the confident ones 0.625-0.827.
+
+    the pair is a fifth or a parallel
+        Never a relative (see ``_is_fifth_or_parallel``), and never an unrelated key.
+
+    the runner-up ends on its own tonic and the winner does not
+        The cue, and the reason it is the *final* note rather than the first.  Measured over
+        the corpus, "starts on doh/mi/soh" excludes only 2 of the 5 wrong answers — the
+        tonic triad is closed under precisely the fifth and minor-third slips that cause the
+        confusions — while ending on the tonic excludes 4 of 5.  It has to be the tonic
+        itself and not the triad: on ``plagal_fourth_c_major`` the final C is a triad member
+        of F major too, so the triad form of this cue does not discriminate at all.
+
+    the runner-up is *strictly* more diatonic
+        ``_diatonic_fraction`` must be strictly greater, not merely equal, which is what
+        blocks the obvious false positive: a melody in C that closes on a half cadence at G
+        would otherwise read as G major on the cue above.  Any such clip that contains its
+        own 4th scores C higher; one that does not contain it scores the two equal, and a
+        tie declines.
+
+    Together these fire on exactly one of the 38 corpus cases — the one they were reasoned
+    about — and change nothing on the other 37.  Read that as the control it is rather than
+    as a hit rate.  Counted by whichever condition refuses first, the 37 break down as 21
+    whose winner already ends on its own tonic, 10 whose runner-up is not a fifth or a
+    parallel, 4 where neither reading ends on its tonic, and 2 the margin rail excludes: the
+    cue is silent by construction on nearly every clip, not silent by luck.
+    """
+    if margin >= KEY_MARGIN_FULL or not _is_fifth_or_parallel(winner, runner_up):
+        return False
+
+    cues = _tonal_cues(s)
+    if cues is None:
+        return False
+    final_pc, weights, total = cues
+
+    if final_pc != runner_up[0] or final_pc == winner[0]:
+        return False
+    return _diatonic_fraction(*runner_up, weights, total) > _diatonic_fraction(
+        *winner, weights, total
+    )
+
+
 def _key_confidence_from_margin(margin: float, n_events: int) -> float:
     """Turn the winner's lead over the runner-up into a 0-1 confidence.
 
@@ -527,6 +800,9 @@ def _key_confidence_from_margin(margin: float, n_events: int) -> float:
 
 def _detect_key(s, n_events: int):
     """(key, confidence) for a stream, by equal vote over KEY_PROFILE_NAMES.
+
+    A close vote between a key and its fifth or its parallel is then re-decided on the
+    phrase's own shape rather than its histogram — see ``_cadence_prefers_runner_up``.
 
     Falls back to music21's single-profile default if the ensemble cannot run.  That
     is not hypothetical: any clip with a *uniform* pitch-class histogram gives every
@@ -567,13 +843,22 @@ def _detect_key(s, n_events: int):
         return detected, confidence
 
     ranked = sorted(totals.items(), key=lambda kv: kv[1], reverse=True)
-    (winner_pc, winner_mode), winner_score = ranked[0]
-    runner_up_score = ranked[1][1]
+    winner_ident, winner_score = ranked[0]
+    runner_up_ident, runner_up_score = ranked[1]
     # Divided by the number of voters so the margin means the same thing whether all
     # five profiles ran or only three did.
     margin = (winner_score - runner_up_score) / voted
 
-    winner = _key_from_identity(winner_pc, winner_mode)
+    # A histogram cannot see a cadence.  Where the vote was close and the two readings are
+    # a fifth or a parallel apart, the phrase's own shape gets to decide — see
+    # _cadence_prefers_runner_up for why it is restricted this narrowly.
+    if _cadence_prefers_runner_up(s, winner_ident, runner_up_ident, margin):
+        winner_ident = runner_up_ident
+
+    # The margin is *not* recomputed or negated after a swap.  It measures how close the two
+    # readings were, which is the right uncertainty to report whichever one was picked, and
+    # it is the number the mobile's editable-key prompt is calibrated against.
+    winner = _key_from_identity(*winner_ident)
     return winner, _key_confidence_from_margin(margin, n_events)
 
 
@@ -590,6 +875,106 @@ def _key_from_identity(pitch_class: int, mode: str):
     return m21key.Key(names[pitch_class % 12], mode)
 
 
+# Pitch classes that have a plain letter name.  The seven white keys, and the anchor
+# for every spelling decision below.
+_NATURAL_NAMES = {0: "C", 2: "D", 4: "E", 5: "F", 7: "G", 9: "A", 11: "B"}
+
+
+def _key_spelling(k) -> dict[int, str]:
+    """Pitch class -> note name, spelled the way *k*'s key signature implies.
+
+    music21 spells a pitch built from a bare MIDI integer off a fixed table —
+    ``C C# D E- E F F# G G# A B- B`` — which is key-blind, and that is the whole
+    defect.  In E major, MIDI 75 is a *diatonic* tone of the key (the signature holds
+    F# C# G# D#), so it must print as D# with no accidental sign at all; the fixed
+    table calls it E-flat and engraves a flat.  In A-flat major MIDI 68 comes out G#
+    where the key says A-, and in F# major MIDI 77 comes out F where the key says E#.
+
+    Three rules, in order:
+
+    1. The seven diatonic degrees take their spelling from the signature itself.
+       Start from the naturals, vacate every letter the signature alters, and only then
+       file the altered spellings, so E major's D is replaced by D# and B-flat major's B
+       by B-.  The two passes are not interchangeable with one — see the comment below.
+    2. A minor key adds its raised 7th, because a leading tone is ordinary rather than
+       exotic: D minor's pitch class 1 is C#, never D-flat, even though D minor is a
+       flat key.  (The raised *6th* needs no rule — melodic minor's is a natural.)
+    3. Whatever is left follows the key's own direction: a natural if the pitch class
+       has a letter name the signature did not claim (C natural in E major), otherwise
+       a sharp in sharp keys and a flat in flat keys.
+
+    Measured over eight scale cases in seven keys, the map takes the printed accidentals
+    from 44 to 5, and all 5 that remain are real: three chromatic notes in a C major
+    chromatic run, and the raised leading tones of D minor and G minor.
+
+    Two spellings are deliberately the readable answer rather than the theoretical one,
+    both in the chromatic remainder where the pitch is right and only the letter is
+    arguable.  C-sharp minor's raised 7th is strictly B-sharp and G-sharp minor's is
+    F-double-sharp; this returns C and G.  D minor's pitch class 6 comes back G-flat by
+    the flat-key rule where a musician would more likely write F-sharp.  A hummed-melody
+    score is better off without double sharps, and the alternative is a second table of
+    per-degree conventions fitted to no measurement.
+    """
+    # Vacate every letter the signature claims *before* filing any of them, not letter by
+    # letter: in a signature deep enough that an altered pitch lands on another altered
+    # letter's natural slot, one loop clobbers the other.  D-flat minor's eight flats
+    # alter all seven letters, and its C-flat is filed under pitch class 11 only for
+    # B-double-flat's pop of B's slot — also 11 — to delete it again, leaving C-flat
+    # spelled as a plain B.
+    altered_steps = {altered.step for altered in k.alteredPitches}
+    diatonic = {
+        pc: name for pc, name in _NATURAL_NAMES.items() if name not in altered_steps
+    }
+    for altered in k.alteredPitches:
+        diatonic[altered.pitchClass] = altered.name
+
+    spelling = dict(diatonic)
+    if k.mode == "minor":
+        leading = (k.tonic.pitchClass - 1) % 12
+        if leading not in spelling:
+            # Raising the 7th degree raises its *letter*, which is not always a sharp:
+            # D minor's C becomes C#, but C minor's B-flat becomes plain B and B-flat
+            # minor's A-flat becomes plain A.
+            spelling[leading] = _NATURAL_NAMES.get(leading) or (
+                _NATURAL_NAMES[(leading - 1) % 12] + "#"
+            )
+
+    sharp = (k.sharps or 0) >= 0
+    for pc in range(12):
+        if pc in spelling:
+            continue
+        if pc in _NATURAL_NAMES:
+            spelling[pc] = _NATURAL_NAMES[pc]
+        else:
+            base = (pc - 1) % 12 if sharp else (pc + 1) % 12
+            spelling[pc] = _NATURAL_NAMES[base] + ("#" if sharp else "-")
+    return spelling
+
+
+def _respell_to_key(s, k) -> None:
+    """Rewrite every note in *s* to its ``_key_spelling`` name, in place.
+
+    This runs after key detection because it cannot run before: the key is analysed
+    *from* this stream, so the notes have to exist first.  Only the spelling changes —
+    the octave is solved back from the MIDI number, so ``pitch.midi`` is invariant and
+    the solfa mapping downstream (which reads ``n.pitch.midi``) cannot move.  That
+    invariance is what makes this a pure notation fix; it is swept over all 12 pitch
+    classes in all 24 keys by the helper tests.
+    """
+    from music21 import pitch as m21pitch
+
+    spelling = _key_spelling(k)
+    for n in s.recurse().notes:
+        midi = n.pitch.midi
+        spelled = m21pitch.Pitch(spelling[midi % 12])
+        # Solve the octave from the MIDI number rather than computing midi // 12 - 1:
+        # an extreme signature can name C- or B#, whose letter sits in the neighbouring
+        # octave, and getting that wrong would transpose the note and the syllable.
+        spelled.octave = 4
+        spelled.octave += (midi - spelled.midi) // 12
+        n.pitch = spelled
+
+
 # ── Event post-processing helpers ─────────────────────────────────────────────
 
 
@@ -602,23 +987,74 @@ class Event:
     cannot quietly change an event another stage has already read.  Derive a modified
     copy with ``dataclasses.replace``.
 
-    Carries exactly the four values Basic Pitch reports and the pipeline consumes.  It
-    is a class rather than the tuple it replaced because five stages read these fields
-    by name where they used to index positionally, not because it holds anything new.
+    ``pitch`` is the notated pitch and stays an int: measured against the corpus the
+    bend-corrected reading is a *worse* notated pitch (135 events closer to the truth,
+    164 further), because the sharpness it faithfully tracks on the drift and vibrato
+    cases is exactly what notation is supposed to round away.  ``bend_semitones`` is
+    therefore not a correction to ``pitch`` but a second, continuous reading of the
+    same note, and the only thing that consumes it is ``_merge_onsets`` — which needs
+    to know whether two fragments are the same note, a question rounding destroys.
+
+    ``bend_semitones`` defaults to 0.0, which is honest rather than a sentinel: no bend
+    information means the best estimate of the fundamental *is* the notated pitch.
+
+    ``pyin_midi`` and ``voiced_prob`` are pyin's reading of the same span — the pitch it
+    measured and how reliably it heard anything at all.  ``_refine_pitches`` computes
+    both already and used to throw them away after gating on them; they are carried here
+    because they are the pipeline's only pitch evidence *independent* of Basic Pitch, and
+    that independence is what makes a confidence number worth printing (see
+    ``_blend_confidence``).  ``pyin_midi`` is None when pyin had too few voiced frames in
+    the span to speak, or when it did not run at all, which is not the same claim as
+    ``voiced_prob = 0.0``.
     """
 
     start: float
     end: float
     pitch: int
     amp: float
+    bend_semitones: float = 0.0
+    pyin_midi: float | None = None
+    voiced_prob: float = 0.0
+
+    @property
+    def f0(self) -> float:
+        """Continuous fundamental in MIDI units — ``pitch`` when there are no bends."""
+        return self.pitch + self.bend_semitones
+
+
+def _bend_semitones(bends: object) -> float:
+    """Mean pitch bend in semitones, or 0.0 when Basic Pitch reported none.
+
+    The mean rather than the median deliberately.  A fragment shorter than one vibrato
+    cycle sits somewhere on the slope, and the median of a monotonic run is just its
+    midpoint sample — measured over the vibrato corpus the median reading separates
+    fragments from genuine steps strictly worse than the mean (a p10 of 0.000 against
+    0.670 on the genuine side, i.e. a floor no threshold can sit under).
+
+    ``bends`` is typed loosely because Basic Pitch documents it as ``Optional[List[int]]``
+    and empties it for notes that overlap another (``drop_overlapping_pitch_bends``).
+    """
+    if not bends:
+        return 0.0
+    return float(np.mean(np.asarray(bends, dtype=float))) / CONTOUR_BINS_PER_SEMITONE
 
 
 def _adaptive_amplitude_floor(events: list[Event], base: float) -> float:
     """Return max(base, ADAPTIVE_FACTOR × p75(amplitudes)).
 
-    Using the clip's own amplitude distribution prevents a fixed threshold
-    from silencing quiet hummed or played recordings while still suppressing
-    noise bursts that exceed the absolute base level.
+    Scaling with the clip's own distribution is what lets one threshold serve both a
+    loud and a soft recording, because Basic Pitch's ``amplitude`` is a mean frame
+    *posterior*, not audio loudness — so the level this compares against moves with how
+    confident the model is, not with how loud the microphone was.
+
+    Note what the ``max`` does and does not do.  The adaptive term can only ever RAISE
+    the floor, so it cannot protect a quiet recording; what protects those is ``base``
+    being low, plus the posterior/loudness distinction above.  (Measured:
+    ``quiet_low_amplitude`` scores ``notes.f1`` 1.000 with its correct notes at a mean
+    posterior of 0.734 — as high as any clean case.  Nothing about that clip is quiet
+    from this function's point of view.)  An earlier version of this docstring claimed
+    the adaptive term was what stopped soft recordings being silenced; with ``max`` that
+    was unreachable by construction.
     """
     if not events:
         return base
@@ -631,7 +1067,7 @@ def _merge_onsets(
     events: list[Event],
     gap_sec: float,
 ) -> list[Event]:
-    """Fuse consecutive same-pitch events separated by less than *gap_sec*.
+    """Fuse consecutive events less than *gap_sec* apart whose f0 agree.
 
     Basic Pitch often splits a single sustained note or a clearly-intended
     short repeated note (e.g. a triplet figure) into several fragments.
@@ -642,17 +1078,42 @@ def _merge_onsets(
     from the earliest start to the latest end.  Multiple passes are made until
     no further merges are possible (handles chains of three or more).
 
-    The pitch test is exact equality, deliberately and permanently.  A
-    semitone-tolerant variant (plan phase 3c, to fuse vibrato that crosses a
-    semitone boundary) was measured on the corpus and struck: see the
-    vibrato_heavy comment in tests/accuracy/corpus.py for the geometry.  In
-    short, Basic Pitch fires at *both* neighbours of a wobbling pitch, so
-    consecutive fragments of one note are two semitones apart, not one — 43 of
-    63 adjacencies against 5 — and the shorter fragment measures 116.1 ms
-    (2560/22050, a quantization constant) on genuine legato semitone steps in
-    fast_sixteenths_c_major just as it does on vibrato fragments, so no
-    duration cap separates them.  Do not reintroduce a tolerance here without
-    reading that comment first.
+    The pitch test compares ``f0`` within ``F0_MERGE_SEMITONES`` rather than requiring
+    identical rounded pitches, which is the fix for the vibrato fragmentation the
+    earlier semitone-tolerant attempt could not reach.  That attempt compared rounded
+    pitches and was struck because Basic Pitch fires at *both* neighbours of a wobbling
+    pitch, so consecutive fragments of one note are two semitones apart rather than one
+    — 43 of 63 adjacencies against 5 — and the shorter fragment measures 116.1 ms
+    (2560/22050, a quantization constant) on genuine legato semitone steps just as it
+    does on vibrato fragments, so no duration cap separates them.  Both objections are
+    about *rounding*, and the bends Basic Pitch already returns are what rounding threw
+    away; see ``F0_MERGE_SEMITONES`` for the measured separation and the calibration.
+
+    For events carrying no bend data this is exactly the old exact-equality test, since
+    distinct integer pitches differ by at least 1.  That is the shipped configuration:
+    ``settings.f0_merge`` is off by default, so every ``bend_semitones`` is 0.0 and this
+    reduces to the equality test it replaced.  The tolerance is live code behind a flag
+    that measured a wash — see that flag's docstring and the fourth strike recorded in
+    tests/accuracy/corpus.py before turning it on or building on it.
+
+    An overlap allowance was measured here and is *not* worth building.  An earlier probe
+    concluded it "buys nothing"; that probe only looked at gaps down to -50 ms and was
+    wrong about its reason.  With no window at all, at merge time over the nine
+    vibrato/drift cases, 51 of the 128 adjacent pairs whose f0 agree overlap in time
+    (p25 -92.9 ms, p10 -246.1 ms) and only 74 are reachable by ``0.0 <= gap``.  Sorted by
+    start, a wobble Basic Pitch reports at both neighbours *simultaneously* interleaves, so
+    most vibrato fragments never become adjacent-and-abutting and this stage structurally
+    cannot see them.  It is not free either: the f0-*disagreeing* adjacent pairs overlap
+    harder still (34 of 44 on vibrato_heavy, 61 of 73 on vibrato_rate_7hz), so widening the
+    gap test hands the f0 test a much larger population it must reject correctly.
+
+    What settles it is that the population it would reach is the wrong population: of 56
+    f0-agreeing overlapping pairs, **none** is a semitone apart in pitch, so here "f0
+    agrees" already means "pitch is identical" and a wider window fuses only what the
+    equality test would have fused anyway.  The vibrato defect turned out not to be a
+    fragment pair at all — within one sung note the estimate is a run at one wrong pitch
+    rather than an alternation — and it is fixed upstream by ``settings.pyin_semitone``.
+    See the fourth-strike record in tests/accuracy/corpus.py for the whole measurement.
     """
     if len(events) < 2:
         return events
@@ -668,11 +1129,13 @@ def _merge_onsets(
             if i + 1 < len(merged):
                 nxt = merged[i + 1]
                 gap = nxt.start - curr.end
-                if curr.pitch == nxt.pitch and 0.0 <= gap < gap_sec:
+                if abs(curr.f0 - nxt.f0) <= F0_MERGE_SEMITONES and 0.0 <= gap < gap_sec:
                     # Merge: span from curr.start to nxt.end, keeping the louder
-                    # fragment's amplitude.  Both have the same pitch by the test
-                    # above, so taking the louder half wholesale is equivalent to
-                    # the old max(c_amp, n_amp) on the fields that existed then.
+                    # fragment wholesale — its pitch as well as its amplitude.  The
+                    # two pitches can now differ, and the louder fragment is the more
+                    # confident reading; pooling the f0 and re-rounding was the
+                    # alternative and is not supported by the measurement above, which
+                    # found the rounded pitch the better notated value.
                     loud = curr if curr.amp >= nxt.amp else nxt
                     result.append(replace(loud, start=curr.start, end=nxt.end))
                     i += 2
@@ -760,7 +1223,7 @@ def _pyin_contour(wav_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 
 def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
-    """Correct octave errors against a pyin f0 contour.
+    """Correct pitch errors against a pyin f0 contour.
 
     Basic Pitch locks onto the second harmonic often enough to matter: measured on
     the clean synthetic control case, 9 of 15 detected events were a whole octave
@@ -769,18 +1232,26 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
     since additive noise breaks the fundamental/overtone ambiguity.  pyin's median
     over the same span was within 0.01 semitones of the truth on every one of them.
 
-    Only whole-octave disagreements are acted on.  Replacing the pitch outright
-    whenever pyin disagrees would be a much larger change with much more to go
-    wrong: a fragment shorter than one vibrato cycle has a median biased toward
-    wherever in the cycle it happens to sit, so on that evidence pyin is *not*
-    reliable to the semitone per fragment — but a bias of at most a semitone or so
-    cannot manufacture or hide a twelve-semitone gap, which is what makes the octave
-    decision safe where a general one is not.
+    How far to trust that median is the ``pyin_semitone`` flag.  Off, only
+    whole-octave disagreements are acted on: the objection to a general correction
+    was that a fragment shorter than one vibrato cycle has a median biased toward
+    wherever in the cycle it happens to sit, so on that evidence pyin looked *not*
+    reliable to the semitone per fragment — while a bias of at most a semitone or so
+    cannot manufacture or hide a twelve-semitone gap.  On, the median is rounded and
+    taken as the pitch, because measurement retired that objection: the rounded
+    median is right 73.4% of the time against the octave-only path's 18.7% over the
+    vibrato cases, and changes nothing at all on the guard cases.  See the flag's
+    docstring for the numbers.
 
     Runs before ``_merge_onsets`` on purpose: two fragments of one note that were
-    split apart only because Basic Pitch put them an octave apart become the same
-    pitch here, and the existing exact-pitch merge then fuses them with no tolerance
-    of its own and therefore no risk to genuine semitone steps.
+    split apart only because Basic Pitch put them at different pitches become the
+    same pitch here, and the existing exact-pitch merge then fuses them with no
+    tolerance of its own and therefore no risk to genuine semitone steps.
+
+    Every event that pyin could speak about leaves here carrying ``pyin_midi`` and
+    ``voiced_prob``, on every branch — including the ones that decline to correct the
+    pitch.  "pyin was unsure here" and "pyin disagreed and was overruled" are both
+    signal about how much to trust the note, and this is the only place they exist.
     """
     times, midi, voiced_prob = _pyin_contour(wav_path)
     if times.size == 0:
@@ -796,27 +1267,93 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
 
         median_midi = float(np.median(midi[span]))
         confidence = float(np.median(voiced_prob[span]))
-
-        octaves = round((median_midi - evt.pitch) / 12.0)
-        if octaves == 0 or confidence < PYIN_MIN_VOICED_PROB:
-            refined.append(evt)
+        # From here on ``measured`` stands in for ``evt`` everywhere, so no branch can
+        # drop the evidence just because it declined to act on it.
+        measured = replace(evt, pyin_midi=median_midi, voiced_prob=confidence)
+        if confidence < PYIN_MIN_VOICED_PROB:
+            refined.append(measured)
             continue
 
-        offset = median_midi - evt.pitch - 12.0 * octaves
-        candidate = evt.pitch + 12 * octaves
-        if abs(offset) > PYIN_OCTAVE_TOLERANCE or not 0 <= candidate <= 127:
-            refined.append(evt)
+        if settings.pyin_semitone:
+            candidate = int(round(median_midi))
+        else:
+            octaves = round((median_midi - evt.pitch) / 12.0)
+            offset = median_midi - evt.pitch - 12.0 * octaves
+            if octaves == 0 or abs(offset) > PYIN_OCTAVE_TOLERANCE:
+                refined.append(measured)
+                continue
+            candidate = evt.pitch + 12 * octaves
+
+        if candidate == evt.pitch or not 0 <= candidate <= 127:
+            refined.append(measured)
             continue
 
-        refined.append(replace(evt, pitch=candidate))
+        refined.append(replace(measured, pitch=candidate))
         corrected += 1
 
     if corrected:
         print(
-            f"[notefusion] pyin corrected the octave of {corrected}/{len(events)} events",
+            f"[notefusion] pyin corrected the pitch of {corrected}/{len(events)} events",
             flush=True,
         )
     return refined
+
+
+def _blend_confidence(evt: Event) -> float:
+    """The number the client prints as "High/Medium/Low confidence" for one note.
+
+    This used to be ``evt.amp`` — Basic Pitch's own posterior — and that stopped working
+    the moment the amplitude floor started firing.  ``ADAPTIVE_FACTOR`` 0.25 -> 0.40
+    deletes exactly the events amplitude was correctly identifying as ghosts, so
+    ``conf.auc`` fell 0.868 -> 0.551 and ``conf.separation`` to -0.012: among the notes
+    that survive the floor, amplitude no longer ranks right from wrong at all.  A field
+    that anti-correlates with correctness is worse than no field, because the client
+    counts the notes under 0.5 as the ones worth re-recording.
+
+    The fix is not a better threshold on one signal but a second opinion, and the
+    pipeline already has one it was discarding.  Three terms, in [0, 1]:
+
+    ``amp``          Basic Pitch's posterior.  Still the only evidence for events pyin
+                     cannot speak about, and still what the floor filters on.
+    ``voiced_prob``  pyin's median probability that the span was voiced at all.  Low on
+                     breath, room noise and the decay tail a ghost is usually made of.
+    agreement        ``1 - min(1, |pyin_midi - pitch|)``.  Two engines that independently
+                     land on the same pitch are far more likely to be right than either
+                     alone — the research's consensus argument, and the reason the term
+                     is here rather than a third amplitude statistic.
+
+    ``voiced_prob`` scales the agreement term rather than being added alongside it,
+    because that is what it actually means: not "this note is good" but "pyin's reading
+    of this span can be trusted".  When pyin was unsure the blend falls back toward
+    amplitude instead of averaging in a reading pyin itself did not believe.  As a bare
+    additive term it also ranks *below* chance on the corpus (auc 0.463).
+
+    Agreement is not circular even where ``pyin_semitone`` set the pitch *from* pyin: in
+    that case the term reduces to how close the median sat to a whole semitone, and a
+    note smeared between two semitones is exactly the untrustworthy one.  Note that the
+    same quantity fails as a *gate* (see ``pyin_semitone``, which swept commit-distance
+    over 0.20-0.50 and lost fixes at every setting) while working as a *rank* — nothing
+    here changes which notes exist or what pitch they carry.
+
+    That is also what makes an offline weight sweep legitimate here, against the warning
+    at ``PYIN_MIN_VOICED_PROB``: the note set, the matcher's pairing and the correct/wrong
+    labels are all fixed no matter what these weights are, so sweeping rows dumped from a
+    full 38-case run computes the metric exactly rather than predicting it.  The winner
+    was still confirmed by a real corpus run before it landed.
+
+    What the sweep also showed, which the auc figure alone hides: bare amplitude puts
+    69% of *correct* notes on the hard cases below 0.5 and shows only 26% of correct
+    notes as "High confidence".  Today's field is not a per-note judgement at all, it is
+    a restatement of how loud the clip was.  The blend lifts correct notes to 85% high
+    while holding wrong-notes-shown-high to 5%.  See ``CONF_WEIGHT_AMP`` for the table.
+    """
+    if evt.pyin_midi is None:
+        # pyin had nothing to say about this span, so amplitude is the whole story.
+        return float(min(max(evt.amp, 0.0), 1.0))
+    agreement = 1.0 - min(1.0, abs(evt.pyin_midi - evt.pitch))
+    w_agree = CONF_WEIGHT_AGREE_MAX * min(max(evt.voiced_prob, 0.0), 1.0)
+    blended = (CONF_WEIGHT_AMP * evt.amp + w_agree * agreement) / (CONF_WEIGHT_AMP + w_agree)
+    return float(min(max(blended, 0.0), 1.0))
 
 
 import warnings
@@ -1323,10 +1860,16 @@ def _transcribe_wav(
     # Discard events shorter than MIN_NOTE_SEC before computing the adaptive
     # amplitude floor so that very short noise bursts (which tend to be high-
     # amplitude) do not inflate p75 and raise the floor above real notes.
+    #
+    # Dropping the bends here is the exact revert of the f0 merge: with every
+    # bend_semitones at 0.0 an Event's f0 is its pitch, so _merge_onsets' tolerance
+    # test reduces to the exact-equality test it replaced.  That is why the flag
+    # lives at this one line rather than as a branch inside the merge loop.
+    read_bends = settings.f0_merge
     raw_events: list[Event] = sorted(
         [
-            Event(start, end, int(pitch), float(amp))
-            for start, end, pitch, amp, _bends in note_events
+            Event(start, end, int(pitch), float(amp), _bend_semitones(bends) if read_bends else 0.0)
+            for start, end, pitch, amp, bends in note_events
             if (end - start) >= MIN_NOTE_SEC
         ],
         key=lambda e: e.start,
@@ -1403,8 +1946,52 @@ def _transcribe_wav(
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
+    # pyin is skipped wholesale for clips over settings.pyin_max_seconds and on a
+    # librosa failure.  When that happened no event carries its evidence, and falling
+    # back to amplitude is the honest reading: blending in two terms that are zero for
+    # every note preserves the ranking but drags a whole clip into the client's "Low
+    # confidence" band, which reads as a pipeline failure rather than a skipped stage.
+    pyin_ran = any(e.pyin_midi is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
+    # The meter is a constant, and both routes to detecting it have been measured and
+    # STRUCK.  Do not re-attempt either without new evidence; the post-mortem:
+    #
+    #   Acoustic (librosa.feature.tempogram_ratio, duple {3,9} vs triple {2,5,8,10}).
+    #     Anti-correlated on this corpus.  A true 3/4 waltz and a true 6/8 clip both
+    #     read DUPLE at the tempo this function actually has (-0.062 and -0.019),
+    #     while 12 of the 38 known-4/4 cases read TRIPLE.  No threshold separates
+    #     them: the candidates rank 13th of 40.  The statistic's sign flips on a 3 BPM
+    #     perturbation of the bpm handed in (waltz TRIPLE at 102, duple at 105, TRIPLE
+    #     at 108), so it measures whether bpm sits on a tempogram peak, not meter.
+    #     The largest false "triple" is triplets_eighth_c_major — 4/4 with eighth
+    #     triplets — which is a permanent musical confound, not a corpus artifact.
+    #     Robust to norm and aggregation: all 9 combinations agree in sign.
+    #
+    #   Symbolic (bar-start coverage + phrase wholeness + long-note contrast over the
+    #     quantized events).  On perfect reference notes it picks the right bar length
+    #     for the two triple candidates by margins of only 0.167 and 0.100 — and gets
+    #     0 of 38 4/4 cases right, picking 2 over 4 by a *wider* 0.712 margin on the
+    #     18 cases sharing the major template and 0.267 on the 15 sharing the
+    #     diagnostic phrase.  On real output at its own tolerance it declines on 5 of
+    #     5 cases: the margins never come into existence.  One tolerance step looser
+    #     it answers the 6/8 case DUPLE on a tie-break and calls drift_1_semitone 3/4.
+    #     A one-line "modal gap between the longest notes" matches every case it gets
+    #     right and declines where it is confidently wrong, so the rule earns none of
+    #     its complexity.
+    #
+    # And the gate that would have scored a detector is a tautology: every corpus case
+    # is 4/4 and this value is constant, so an always-4/4 detector and a perfect one
+    # both score meter.exact 1.000.  Adding a 3/4 and a 6/8 case lifts the honest
+    # headroom to one case (0.025) — below the 1/31 = 0.032 ceiling the struck vibrato
+    # fix was rejected on — because the 6/8 clip's tempo comes back 45 against a true
+    # 132 (librosa found the BAR rate) and a correct "6/8" there still engraves a bar
+    # 2.9x too long while scoring exact=True.  6/8-vs-3/4 is a subdivision question
+    # anyway: both are 3 quarter-beats per bar, so no bar-length cue can answer it.
+    #
+    # The real defect the measurement exposed is upstream and is NOT meter: this
+    # function is not told which metrical level ``bpm`` is on.  See
+    # tests/accuracy/metrics.py TEMPO_METRICAL_FACTORS.
     s.insert(0, meter.TimeSignature("4/4"))
     for evt in events:
         n = m21note.Note(evt.pitch)
@@ -1412,7 +1999,7 @@ def _transcribe_wav(
         # well-formed duration in the score.  0.25 is one step of the default
         # grid, so this floor and the quantizer agree.
         n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
-        n.editorial.confidence = evt.amp
+        n.editorial.confidence = _blend_confidence(evt) if pyin_ran else evt.amp
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
@@ -1427,6 +2014,12 @@ def _transcribe_wav(
     # subdominant as the tonic, and that is not academic: it calls a plain C-major
     # stream F major.  A wrong tonic re-labels every solfa syllable, which makes this
     # the worst available failure for movable-do.
+    #
+    # All five profiles are histograms, though, so the ensemble cancels a *disagreement*
+    # between profiles and not a blind spot they share.  Duration-weighting a non-tonic
+    # degree heavily fools all of them at once, which is what a close vote between a key
+    # and its fifth usually is; _cadence_prefers_runner_up settles those on where the
+    # phrase ends and how much of it stays inside each candidate's scale.
     #
     # Confidence is the winner's margin over the runner-up, not the winner's own
     # correlation, because only the margin falls when two keys are genuinely hard to
@@ -1447,8 +2040,29 @@ def _transcribe_wav(
             key_confidence = min(key_confidence, KEY_CONFIDENCE_CAP_LOW)
 
     s.insert(0, m21key.Key(detected.tonic.name, detected.mode))
+
+    # Spell the notes to the key before engraving them.  Both halves matter and both
+    # were wrong: the notes were built from bare MIDI integers, so their spelling was
+    # key-blind (E major's MIDI 75 printed E-flat instead of the D# in its own
+    # signature), and makeAccidentals was then asked to print an accidental on
+    # everything.
+    #
+    # The accidental half needs ``alteredPitches`` passed explicitly.  ``makeAccidentals``
+    # does default to ``useKeySignature=True``, but it also defaults to
+    # ``searchKeySignatureByContext=False``, and called on the score the signature is
+    # inside the measures where that search never looks — so the key was being ignored
+    # and every B-flat in B-flat major engraved its own flat.  ``overrideStatus=True``
+    # then forced a mark onto notes that had none to display, which is where the printed
+    # naturals on plain diatonic notes came from: ``Note(int)`` attaches an *explicit*
+    # natural accidental to every white key, and overriding the status published it.
+    #
+    # Measured on a B-flat major scale: 6 printed accidentals before, 0 after — correct,
+    # since a scale in its own key needs none.  A chromatic note still prints, once per
+    # measure, and a natural cancelling an earlier accidental in the same measure still
+    # prints, which is the part that must not regress.
+    _respell_to_key(s, detected)
     score = s.makeMeasures()
-    score.makeAccidentals(inPlace=True, overrideStatus=True)
+    score.makeAccidentals(inPlace=True, alteredPitches=detected.alteredPitches)
     progress(0.80)
 
     # ── 10. Solfa mapping ─────────────────────────────────────────────────────
@@ -1459,10 +2073,26 @@ def _transcribe_wav(
     notes: list[TranscribedNote] = []
     bars: list[str] = []
 
+    # Chromatic spelling follows melodic direction, so the whole clip's pitch order has to
+    # be settled before any one note is labelled — a note cannot be spelled from itself.
+    # The stream is walked twice in the same order (measures in offset order, notes in
+    # offset order within each), so ``spelling`` indexes the loop below by position.
+    spelling = solfa.ascending_flags(
+        [
+            n.pitch.midi
+            for measure in score.getElementsByClass(stream.Measure)
+            for n in measure.notes
+        ]
+    )
+
+    position = 0
     for measure in score.getElementsByClass(stream.Measure):
         bar_syllables: list[str] = []
         for n in measure.notes:
-            syl, mark, degree = solfa.syllable(n.pitch.midi, doh_pc, ref_doh)
+            syl, mark, degree = solfa.syllable(
+                n.pitch.midi, doh_pc, ref_doh, spelling[position]
+            )
+            position += 1
             bar_syllables.append(syl + mark)
             notes.append(
                 TranscribedNote(

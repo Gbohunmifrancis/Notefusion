@@ -5,10 +5,12 @@ namespace NoteFusion.Application.Analytics.Dtos;
 /// the preceding window of the same length so the UI can show a trend without a second request.
 /// </summary>
 /// <remarks>
-/// <b>What is deliberately absent.</b> There are no subscribed, paid, or free-tier counts, because
-/// no subscription, plan, or payment entity exists in the schema yet. Emitting zeros would be
-/// indistinguishable from "nobody has paid", which is a claim this API cannot make. Those fields
-/// arrive with the billing model.
+/// <b>What is deliberately absent.</b> There are no subscribed, paid, or free-tier counts. The billing
+/// schema exists now, so the reason is no longer that it cannot be counted: these are per-window user
+/// counters with a preceding-window comparison, and a subscription count belongs to a point in time
+/// rather than to a window — "37 subscribers in June" has no honest single meaning. Live subscription
+/// figures are on the health page (<c>GET api/admin/health</c>), where they are stated as a snapshot,
+/// and revenue comes from the ledger.
 /// </remarks>
 /// <param name="TotalUsers">Every account, regardless of when it was created.</param>
 /// <param name="NewUsers">Accounts created inside the window.</param>
@@ -162,6 +164,17 @@ public sealed record AnalyticsOverviewDto(
 /// hash, no token, and no phone number here — a support view does not need the phone number to
 /// identify an account, and the fewer places PII is copied to the better.
 /// </remarks>
+/// <param name="HasProAccess">
+/// Whether Pro is unlocked right now — status and period window read together, the same rule
+/// <c>GetSystemHealthQuery</c> counts subscribers with. Computed here rather than left to the
+/// client, because a client that reimplements it will eventually disagree with the API about who
+/// is a subscriber.
+/// </param>
+/// <param name="IsGiftedPro">
+/// True when that access came from an operator's grant rather than a payment. Only meaningful
+/// while <paramref name="HasProAccess"/> is true; false on an account with no access at all, which
+/// is not the same statement as "they paid".
+/// </param>
 public sealed record AdminUserRowDto(
     Guid Id,
     string FullName,
@@ -172,7 +185,9 @@ public sealed record AdminUserRowDto(
     bool HasPassword,
     DateTime CreatedAt,
     DateTime? LastLoginAt,
-    int TranscriptionCount);
+    int TranscriptionCount,
+    bool HasProAccess,
+    bool IsGiftedPro);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

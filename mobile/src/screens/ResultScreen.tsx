@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,10 +15,16 @@ import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
+import { NoteEditor } from "../components/NoteEditor";
 import { StaffNotation } from "../components/StaffNotation";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import type { NoteEvent } from "../api/types";
+import { showDialog, type DialogAction } from "../lib/dialog";
+import { useSubscription } from "../lib/subscription";
 import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
+import { synthesizeMelodyWavBase64 } from "../lib/synth";
+import { stopAudition } from "../lib/audition";
 import { exportMusicXml } from "../lib/export";
 import {
   confidenceColor,
@@ -35,6 +40,21 @@ import type { RootStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParams, "Result">;
 
+/**
+ * The working note list, plus each entry's index in the pristine list from the
+ * route params. Held as one value so the two can never drift: a delete removes
+ * from both, which is what lets "Revert" still find the right original after one.
+ */
+interface Draft {
+  notes: NoteEvent[];
+  origins: number[];
+}
+
+const pristine = (notes: NoteEvent[]): Draft => ({
+  notes,
+  origins: notes.map((_, i) => i),
+});
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
@@ -48,13 +68,15 @@ type Props = NativeStackScreenProps<RootStackParams, "Result">;
  *       – Large monospace solfa lines in Ink Navy.
  *       – Confidence pill badge (green / amber / red) inside the card.
  *   • Horizontal notes grid: each chip shows the solfa symbol, MIDI number,
- *     and a coloured confidence bar at the bottom.
+ *     and a coloured confidence bar at the bottom. Tapping one opens the
+ *     tap-to-correct sheet (F-07).
  *   • Export row: hands the engraved MusicXML to the OS share sheet.
  *   • Save block: TextField + gradient "Save to Library" button.
  *   • Saved state: blue-glowing checkmark row.
  *
  * PRD honesty rule: overall-confidence banner is always visible; low-confidence
- * notes are outlined in red so users know to double-check.
+ * notes are outlined in red so users know to double-check — and the banner is
+ * the way into a guided review of exactly those notes.
  */
 export function ResultScreen({ route, navigation }: Props) {
   const {
@@ -66,6 +88,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { isPro } = useSubscription();
 
   const [title, setTitle] = useState(
     initialTitle ?? `${result.key} · ${new Date().toLocaleDateString()}`,
@@ -89,20 +112,69 @@ export function ResultScreen({ route, navigation }: Props) {
   // re-places the other from the identical data.
   const [notationView, setNotationView] = useState<"solfa" | "staff">("solfa");
 
+  // ── Tap-to-correct (F-07) ──────────────────────────────────────────────────
+  // The note list is the source of truth for both notation views and for
+  // playback, so a correction lives here and everything downstream re-derives
+  // from it. Route params keep the pristine list, which is what makes discarding
+  // free — nothing has to be re-fetched to get back to the model's version.
+  const [draft, setDraft] = useState<Draft>(() => pristine(result.notes));
+  /** Index being edited; `null` closes the sheet. */
+  const [editing, setEditing] = useState<number | null>(null);
+  /** Frozen when a guided review starts, so fixing a note doesn't reshuffle the path. */
+  const [reviewQueue, setReviewQueue] = useState<number[] | null>(null);
+  /** Last draft the server acknowledged — the rollback target if a correction fails to save. */
+  const persisted = useRef<Draft>(draft);
+  /** Synthesised melody for the player; re-made when the notes change. */
+  const [preview, setPreview] = useState(result.audioPreviewBase64);
+
+  // Counts deletions as well as pitch changes: both are corrections the exported
+  // score doesn't know about, and both are what "Discard" would undo. Zero means
+  // the list is byte-for-byte the model's, even if the user has been busy.
+  const correctedCount = useMemo(
+    () =>
+      draft.notes.filter((n, i) => n !== result.notes[draft.origins[i]]).length +
+      (result.notes.length - draft.notes.length),
+    [draft, result.notes],
+  );
+  const edited = correctedCount > 0;
+
   // The server already labelled the original key, so trust its output until
   // the user actually overrides — that keeps the fresh-transcription path
   // byte-identical to what the worker produced.
   const view = useMemo(
     () =>
-      key === result.key
+      key === result.key && !edited
         ? { notes: result.notes, solfaLines: result.solfaLines }
-        : deriveSolfa(result.notes, key, result.timeSignature),
-    [key, result.key, result.notes, result.solfaLines, result.timeSignature],
+        : deriveSolfa(draft.notes, key, result.timeSignature),
+    [
+      draft.notes,
+      edited,
+      key,
+      result.key,
+      result.notes,
+      result.solfaLines,
+      result.timeSignature,
+    ],
   );
 
   const lowCount = useMemo(
     () => view.notes.filter((n) => n.conf < 0.5).length,
     [view.notes],
+  );
+
+  // A corrected note is the user's, not the model's, so the headline figure has
+  // to move with it — the same mean over the note confidences that the worker
+  // reports, rounded the same way, so a corrected result stays comparable.
+  const overallConfidence = useMemo(
+    () =>
+      edited
+        ? Math.round(
+            (draft.notes.reduce((sum, n) => sum + n.conf, 0) /
+              draft.notes.length) *
+              1000,
+          ) / 1000
+        : result.overallConfidence,
+    [draft.notes, edited, result.overallConfidence],
   );
 
   async function save() {
@@ -115,14 +187,26 @@ export function ResultScreen({ route, navigation }: Props) {
         timeSignature: result.timeSignature,
         musicXml: result.musicXml,
         notes: view.notes,
-        overallConfidence: result.overallConfidence,
+        overallConfidence,
         sourceJobId,
       });
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
-      Alert.alert("Saved ✓", "Added to your library.");
+      // Corrections rode along in the payload, so the server is now level with
+      // the draft and a later edit only has to send the difference.
+      persisted.current = draft;
+      showDialog({
+        title: "Saved",
+        message: "Added to your library.",
+        icon: "checkmark-circle-outline",
+      });
     } catch (e) {
-      Alert.alert("Could not save", toApiError(e).message);
+      showDialog({
+        title: "Could not save",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setSaving(false);
     }
@@ -141,10 +225,148 @@ export function ResultScreen({ route, navigation }: Props) {
       await libraryApi.updateKey(savedId, next);
     } catch (e) {
       setKey(previous); // the label would otherwise disagree with the server
-      Alert.alert("Could not change key", toApiError(e).message);
+      showDialog({
+        title: "Could not change key",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setRekeying(false);
     }
+  }
+
+  // ── Tap-to-correct handlers (F-07) ─────────────────────────────────────────
+
+  /** A free tap on any chip. Prev/Next then walk the whole list. */
+  function openNote(index: number) {
+    setReviewQueue(null);
+    setEditing(index);
+  }
+
+  /** "Review them" — a pre-filled path through the notes the model doubted. */
+  function startReview() {
+    const flagged = view.notes
+      .map((n, i) => (n.conf < 0.5 ? i : -1))
+      .filter((i) => i >= 0);
+    if (flagged.length === 0) return;
+    setReviewQueue(flagged);
+    setEditing(flagged[0]);
+  }
+
+  /** ±1 for a semitone, ±12 for an octave. Clamped to the range the server also enforces. */
+  function transpose(index: number, semitones: number) {
+    setDraft((d) => ({
+      ...d,
+      notes: d.notes.map((n, i) =>
+        i === index
+          ? {
+              ...n,
+              pitchMidi: Math.min(127, Math.max(0, n.pitchMidi + semitones)),
+              // The user is the source for this note now, so it stops being flagged
+              // and the review queue empties as they work.
+              conf: 1,
+            }
+          : n,
+      ),
+    }));
+  }
+
+  function revertNote(index: number) {
+    setDraft((d) => ({
+      ...d,
+      notes: d.notes.map((n, i) =>
+        i === index ? result.notes[d.origins[i]] : n,
+      ),
+    }));
+  }
+
+  function deleteNote(index: number) {
+    if (draft.notes.length === 1) {
+      showDialog({
+        title: "Can't delete this note",
+        message:
+          "A transcription needs at least one note. Correct its pitch instead.",
+        icon: "alert-circle-outline",
+      });
+      return;
+    }
+
+    showDialog({
+      title: "Delete this note?",
+      message:
+        "It leaves the solfa, the stave and the playback. Onsets are absolute, so the notes around it keep their timing and a rest appears in its place.",
+      icon: "trash-outline",
+      tone: "danger",
+      actions: [
+        {
+          label: "Delete",
+          style: "destructive",
+          onPress: () => {
+            const wasLast = index === draft.notes.length - 1;
+            setDraft((d) => ({
+              notes: d.notes.filter((_, i) => i !== index),
+              origins: d.origins.filter((_, i) => i !== index),
+            }));
+            // Every later index shifts down by one, so the frozen review path has
+            // to shift with it or Prev/Next would land on the wrong notes.
+            setReviewQueue((q) =>
+              q === null
+                ? null
+                : q.filter((i) => i !== index).map((i) => (i > index ? i - 1 : i)),
+            );
+            // Stay on the same slot — now the following note — unless there is no
+            // following note.
+            setEditing(wasLast ? index - 1 : index);
+          },
+        },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+  }
+
+  /**
+   * Persists a corrected list for a transcription that is already in the library.
+   * Called once when the sheet closes rather than on every nudge, and it reverts
+   * the display on failure so the screen never disagrees with the server.
+   */
+  async function commitNotes(target: Draft) {
+    if (!savedId) return; // unsaved: corrections travel with the save payload
+    if (target.notes === persisted.current.notes) return;
+
+    const rollback = persisted.current;
+    persisted.current = target;
+    try {
+      await libraryApi.updateNotes(savedId, target.notes);
+    } catch (e) {
+      persisted.current = rollback;
+      setDraft(rollback);
+      setPreview(synthesizeMelodyWavBase64(rollback.notes, result.tempo));
+      showDialog({
+        title: "Could not save your corrections",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
+    }
+  }
+
+  function closeEditor() {
+    setEditing(null);
+    setReviewQueue(null);
+    stopAudition();
+    // Synthesising walks every sample on the JS thread, so it happens once here
+    // rather than on each nudge, which would jank the stepper.
+    if (draft.notes !== result.notes)
+      setPreview(synthesizeMelodyWavBase64(draft.notes, result.tempo));
+    void commitNotes(draft);
+  }
+
+  function discardCorrections() {
+    const original = pristine(result.notes);
+    setDraft(original);
+    setPreview(result.audioPreviewBase64);
+    void commitNotes(original);
   }
 
   async function rename() {
@@ -153,9 +375,18 @@ export function ResultScreen({ route, navigation }: Props) {
     try {
       const updated = await libraryApi.rename(savedId, title.trim());
       setCommittedTitle(updated.title);
-      Alert.alert("Renamed ✓", "The title has been updated.");
+      showDialog({
+        title: "Renamed",
+        message: "The title has been updated.",
+        icon: "checkmark-circle-outline",
+      });
     } catch (e) {
-      Alert.alert("Could not rename", toApiError(e).message);
+      showDialog({
+        title: "Could not rename",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     } finally {
       setRenaming(false);
     }
@@ -170,7 +401,14 @@ export function ResultScreen({ route, navigation }: Props) {
     setExporting(true);
     try {
       const outcome = await exportMusicXml(result.musicXml, title);
-      if (!outcome.ok) Alert.alert("Could not export", outcome.message);
+      if (!outcome.ok) {
+        showDialog({
+          title: "Could not export",
+          message: outcome.message,
+          icon: "alert-circle-outline",
+          tone: "danger",
+        });
+      }
     } finally {
       setExporting(false);
     }
@@ -193,33 +431,61 @@ export function ResultScreen({ route, navigation }: Props) {
           <Ionicons name="arrow-back" size={22} color={colors.text} />
         </TouchableOpacity>
 
-        <Text style={styles.pageTitle}>Preview</Text>
+        <View style={styles.titleGroup}>
+          <Text style={styles.pageTitle}>Preview</Text>
+          {/* Small gold mark — the same premium accent as the avatar ring and the
+              Home chip, sized down to a header ornament. */}
+          {isPro && (
+            <View style={styles.proMark}>
+              <Ionicons name="star" size={10} color={colors.premiumDeep} />
+            </View>
+          )}
+        </View>
 
         <TouchableOpacity
           onPress={() => {
-            const options = [
+            const actions: DialogAction[] = [
               {
-                text: "Export MusicXML",
-                onPress: () => exportMusicXml(result.musicXml, committedTitle || title),
+                label: "Export MusicXML",
+                icon: "download-outline",
+                onPress: () =>
+                  exportMusicXml(result.musicXml, committedTitle || title),
               },
             ];
+            if (edited) {
+              actions.push({
+                label: "Discard corrections",
+                icon: "refresh-outline",
+                onPress: discardCorrections,
+              });
+            }
             if (savedId) {
-              options.push({
-                text: "Delete from Library",
-                style: "destructive" as const,
+              actions.push({
+                label: "Delete from Library",
+                style: "destructive",
+                icon: "trash-outline",
                 onPress: async () => {
                   try {
                     await libraryApi.remove(savedId);
                     navigation.goBack();
                   } catch (e) {
-                    Alert.alert("Could not delete", toApiError(e).message);
+                    showDialog({
+                      title: "Could not delete",
+                      message: toApiError(e).message,
+                      icon: "alert-circle-outline",
+                      tone: "danger",
+                    });
                   }
                 },
-              } as any);
+              });
             }
-            options.push({ text: "Cancel", style: "cancel" as const } as any);
+            actions.push({ label: "Cancel", style: "cancel" });
 
-            Alert.alert("Transcription Options", "Choose an action:", options);
+            showDialog({
+              title: "Transcription options",
+              icon: "ellipsis-horizontal",
+              actions,
+            });
           }}
           style={styles.optionsBtn}
           hitSlop={8}
@@ -297,18 +563,25 @@ export function ResultScreen({ route, navigation }: Props) {
 
         {/* Full confidence badge */}
         <View style={styles.confRow}>
-          <ConfidenceBadge value={result.overallConfidence} />
+          <ConfidenceBadge value={overallConfidence} />
         </View>
 
-        {/* Low-confidence warning */}
+        {/* Low-confidence warning — now with somewhere to go. Tapping walks just
+            the flagged notes, which is otherwise a hunt through a long strip. */}
         {lowCount > 0 && (
-          <View style={styles.warnRow}>
+          <TouchableOpacity
+            style={styles.warnRow}
+            onPress={startReview}
+            activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={`Review ${lowCount} low-confidence notes`}
+          >
             <View style={styles.warnDot} />
             <Text style={styles.warnText}>
-              {lowCount} note{lowCount > 1 ? "s" : ""} below 50% confidence —
-              worth a quick review.
+              {lowCount} note{lowCount > 1 ? "s" : ""} below 50% confidence —{" "}
+              <Text style={styles.warnLink}>review {lowCount > 1 ? "them" : "it"} →</Text>
             </Text>
-          </View>
+          </TouchableOpacity>
         )}
       </Card>
 
@@ -390,9 +663,9 @@ export function ResultScreen({ route, navigation }: Props) {
       </View>
 
       {/* ── Playback: hear the transcribed melody ───────────────────────── */}
-      {result.audioPreviewBase64 ? (
+      {preview ? (
         <NotePlayer
-          audioPreviewBase64={result.audioPreviewBase64}
+          audioPreviewBase64={preview}
           notes={view.notes}
           tempoBpm={result.tempo}
           title="Play back"
@@ -405,6 +678,7 @@ export function ResultScreen({ route, navigation }: Props) {
         <Text style={styles.sectionTitle}>
           Notes <Text style={styles.sectionCount}>({view.notes.length})</Text>
         </Text>
+        <Text style={styles.sectionHint}>Tap a note to fix it</Text>
       </View>
 
       <ScrollView
@@ -416,8 +690,12 @@ export function ResultScreen({ route, navigation }: Props) {
         {view.notes.map((n, i) => {
           const cc = confidenceColor(n.conf, colors);
           return (
-            <View
+            <TouchableOpacity
               key={i}
+              onPress={() => openNote(i)}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Note ${i + 1}, ${n.solfa}, MIDI ${n.pitchMidi}. Tap to correct.`}
               style={[
                 styles.noteChip,
                 {
@@ -446,7 +724,7 @@ export function ResultScreen({ route, navigation }: Props) {
                   },
                 ]}
               />
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
@@ -468,6 +746,25 @@ export function ResultScreen({ route, navigation }: Props) {
             ? "Export as MusicXML to open in Sibelius, MuseScore, or Finale."
             : "No score is attached to this transcription."}
         </Text>
+
+        {/* The score was engraved by the worker before any of this editing, and the
+            client can't re-engrave it. Better to say so than to hand over a file
+            that silently disagrees with what's on screen. */}
+        {hasScore && edited && (
+          <View style={styles.staleRow}>
+            <Ionicons
+              name="alert-circle-outline"
+              size={14}
+              color={colors.warning}
+            />
+            <Text style={styles.staleText}>
+              You corrected {correctedCount} note{correctedCount > 1 ? "s" : ""}.
+              The exported score is the original engraving and does not include
+              them yet.
+            </Text>
+          </View>
+        )}
+
         <Button
           label="Export MusicXML"
           variant="secondary"
@@ -551,9 +848,11 @@ export function ResultScreen({ route, navigation }: Props) {
           <Text style={styles.actionBtnOutlineText}>Re-key</Text>
         </TouchableOpacity>
 
+        {/* Straight to the notes that need it when the model flagged some,
+            otherwise to the first note — the strip itself is the other way in. */}
         <TouchableOpacity
           style={styles.actionBtnOutline}
-          onPress={() => Alert.alert("Edit Notes", "Edit pitches and durations.")}
+          onPress={() => (lowCount > 0 ? startReview() : openNote(0))}
         >
           <Text style={styles.actionBtnOutlineText}>Edit</Text>
         </TouchableOpacity>
@@ -566,6 +865,23 @@ export function ResultScreen({ route, navigation }: Props) {
           <Text style={styles.actionBtnSolidText}>{saving ? "Saving…" : "Save"}</Text>
         </TouchableOpacity>
       </View>
+
+      {/* ── Tap-to-correct sheet (F-07) ─────────────────────────────────── */}
+      <NoteEditor
+        index={editing}
+        notes={view.notes}
+        tempoBpm={result.tempo}
+        edited={
+          editing !== null &&
+          draft.notes[editing] !== result.notes[draft.origins[editing]]
+        }
+        reviewQueue={reviewQueue}
+        onNavigate={setEditing}
+        onTranspose={transpose}
+        onRevert={revertNote}
+        onDelete={deleteNote}
+        onClose={closeEditor}
+      />
     </Screen>
   );
 }
@@ -627,10 +943,27 @@ const makeStyles = (c: Palette) =>
     marginBottom: spacing.xl,
   },
 
+  titleGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+  },
+
   pageTitle: {
     fontSize: 20,
     fontFamily: fonts.bold,
     color: c.text,
+  },
+
+  proMark: {
+    width: 20,
+    height: 20,
+    borderRadius: radii.pill,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: c.premiumSoft,
+    borderWidth: 1,
+    borderColor: c.premiumBorder,
   },
 
   optionsBtn: {
@@ -887,6 +1220,12 @@ const makeStyles = (c: Palette) =>
     fontSize: 12,
   },
 
+  /** The tappable half of the warn row — same amber, weighted so it reads as an action. */
+  warnLink: {
+    fontFamily: fonts.bold,
+    textDecorationLine: "underline",
+  },
+
   // ── Solfa hero card ────────────────────────────────────────────────────────
 
   solfaCardWrap: {
@@ -1032,6 +1371,7 @@ const makeStyles = (c: Palette) =>
   sectionRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: spacing.md,
   },
 
@@ -1040,6 +1380,13 @@ const makeStyles = (c: Palette) =>
     color: c.text,
     fontSize: 16,
     fontFamily: fonts.bold,
+  },
+
+  /** Quiet affordance for the chips below — they don't look tappable on their own. */
+  sectionHint: {
+    ...typography.caption,
+    color: c.textFaint,
+    fontSize: 11,
   },
 
   /** The "(12)" nested inside sectionTitle. It inherits the parent's family, so
@@ -1125,6 +1472,27 @@ const makeStyles = (c: Palette) =>
     fontSize: 13,
     lineHeight: 20,
     marginBottom: spacing.sm,
+  },
+
+  /** Says out loud that the engraved score predates the user's corrections. */
+  staleRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.xs,
+    backgroundColor: `${c.warning}14`,
+    borderWidth: 1,
+    borderColor: `${c.warning}33`,
+    borderRadius: radii.md,
+    padding: spacing.sm,
+    marginBottom: spacing.sm,
+  },
+
+  staleText: {
+    ...typography.caption,
+    color: c.warning,
+    flex: 1,
+    fontSize: 12,
+    lineHeight: 18,
   },
 
   // ── Save block ─────────────────────────────────────────────────────────────

@@ -46,6 +46,61 @@ class Settings:
         return float(os.getenv("NF_PYIN_MAX_SECONDS", "60"))
 
     @property
+    def pyin_semitone(self) -> bool:
+        """Trust pyin's pitch outright, not only when it disagrees by a whole octave.
+
+        ``_refine_pitches`` corrected octaves only, and its docstring gave the reason: a
+        fragment shorter than one vibrato cycle has a median biased toward wherever in the
+        cycle it sits, so per fragment pyin looked unreliable to the semitone.  Measured,
+        that objection does not hold.  Over the eight vibrato/drift cases, 577 events,
+        ``round(pyin median)`` over each event's own span is right 73.4% of the time against
+        the octave-corrected pipeline's 18.7% — 278 fixes against 17 breaks — and on the four
+        guard cases (``major_c``, ``minor_harmonic_a``, ``semitone_steps_c_major``,
+        ``vibrato_depth_0_8``, already 99/100 correct) it makes **zero** changes in either
+        direction, including on the genuine mi-fa and ti-doh steps that a semitone rule most
+        endangers.
+
+        This is what fixes the ghost accidentals at their source.  They are a *pitch* error,
+        not a merge failure: within one reference note the estimate produces a run at one
+        wrong pitch (a reference 69 comes back as 70,70,70,70,72), the wobble parking on the
+        semitone neighbour, and the printed accidental follows from the pitch.  See
+        ``f0_merge`` for the two stages of merge-side attack that could not reach it.
+
+        Measured over the whole corpus, this is the largest single gain in the pipeline so
+        far: solfa.degree_accuracy 0.831 -> 0.917, solfa.syllable_accuracy 0.828 -> 0.912,
+        solfa.chromatic_ghosts 3.579 -> 1.868 and notes.semitone_neighbour_ghosts 4.289 ->
+        2.105 (both roughly halved), notes.f1 0.790 -> 0.832 on recall 0.840 -> 0.935,
+        solfa.octave_error_rate 0.026 -> 0.008, and key.exact 0.763 -> 0.868 because four
+        vibrato cases were only reading F#/E/C#/E-minor on the strength of ghost pitch
+        classes that are now gone.  Nine of the eighteen cases the report lists improve and
+        none regresses.
+
+        Three things move the wrong way and none of them is this rule misbehaving.
+        tempo.abs_error 23.237 -> 24.000 is entirely ``vibrato_rate_k20``, whose estimate
+        goes from a nonsense 369 BPM to a nonsense 398 against a true 96 — broken before and
+        after, and 29 BPM over 38 cases is the whole aggregate delta.  notes.f1_with_offset
+        loses 0.002.  conf.separation 0.343 -> 0.332 and key.confidence_auc 0.973 -> 0.958
+        are dilution: with far more notes correct and only five keys still wrong, both
+        statistics are computed over a smaller, noisier wrong-pool — conf.auc itself rises
+        0.856 -> 0.868 and key.confidence_separation rises 0.162 -> 0.297.
+
+        A commit-distance filter — requiring the median to sit near a whole number, on the
+        theory that a mid-slope median is the untrustworthy one — was swept over 0.20-0.50
+        against a voiced-probability floor of 0.0-0.50 and costs more fixes than it saves
+        breaks at every setting, so it is not here.  No setting in that sweep broke a guard.
+
+        The standing caveat, as for ``f0_merge``: this corpus is 38 *synthetic* cases, and
+        synthetic vibrato is a clean sinusoid where human vibrato is not.  What makes this
+        gain more trustworthy than that one is the shape of the rule rather than the size of
+        the number — it fires only where pyin and Basic Pitch actually disagree, so on the
+        clean, noisy and quiet cases where they agree it is a no-op by construction rather
+        than by calibration, and there is no fitted constant for a real recording to fall
+        outside of.  It is still the thing to re-measure first once ``tests/accuracy/real/``
+        has labelled recordings in it.
+        """
+        return os.getenv("NF_PYIN_SEMITONE", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def key_ensemble(self) -> bool:
         """Vote over five music21 key profiles instead of music21's default one.
 
@@ -86,6 +141,51 @@ class Settings:
         to a constant.
         """
         return os.getenv("NF_TEMPO_GRID", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
+    def f0_merge(self) -> bool:
+        """Read Basic Pitch's pitch bends, so onset merging can compare f0 not pitch.
+
+        **Off by default: measured, and it does not pay.**  Kept behind a flag rather than
+        deleted because the measurement was expensive and the next attempt should start
+        from it instead of rediscovering it.
+
+        The premise is sound.  Vibrato that crosses a semitone boundary comes back as a run
+        of alternating fragments — Basic Pitch fires at both neighbours of the wobble — and
+        the merge's exact-pitch test cannot fuse them, so one sung note is engraved as a
+        stream of ghost syllables, half of them carrying an accidental.  98.5% of the
+        accidentals the notation prints are not in the music, and all of them come from the
+        eight vibrato/drift cases.  The bends are already in the inference output and were
+        being discarded; reading them separates what the rounded pitch conflates, with
+        consecutive fragments of one note a median 0.395 semitones apart in f0 against
+        2.074 for genuine steps.
+
+        What it actually bought, on: solfa.chromatic_ghosts 3.579 -> 3.553 — one accidental
+        across 38 cases — while solfa.ghost_count went 5.737 -> 5.842, past the harness's
+        0.02 tolerance, and notes.n_est rose by the same 0.105.  Four cases move at all:
+        drift_1_semitone -1 accidental, vibrato_rate_k15 unchanged, and then
+        vibrato_heavy +2 ghosts and vibrato_rate_k155 f1 -0.073 with +3 ghosts.  Both
+        losers sit outside the nine cases ``F0_MERGE_SEMITONES`` was calibrated on, so the
+        tolerance is fitted, not general.
+
+        The reason is structural, and it is the useful part of the result: the merge stage
+        cannot reach the fragments.  51 of 128 f0-agreeing adjacent pairs *overlap* in time
+        at merge time rather than abutting, so ``_merge_onsets``' ``0.0 <= gap`` test never
+        sees them.  An earlier draft of this docstring concluded that the fix was therefore
+        an overlap-tolerant merge, or moving the f0 evidence to the melody overlap resolver
+        where these events are resolved today.  **Both were measured and neither would have
+        worked**: of the 56 f0-agreeing *overlapping* pairs, none is a semitone apart, so at
+        that stage "f0 agrees" already collapses to "pitch is identical".  The defect is not
+        a fragment pair — it is a run at one wrong pitch inside a single sung note — and
+        ``pyin_semitone`` fixes it upstream, where the pitch is decided.
+
+        Off restores the previous behaviour exactly rather than approximately, because with
+        no bend data an Event's f0 *is* its pitch and the tolerance test collapses to
+        equality.  Turning it on is still worth an A/B on real recordings before anyone
+        writes the idea off entirely: synthetic vibrato is a clean sinusoid and human
+        vibrato is not, and this corpus is 38 synthetic cases.
+        """
+        return os.getenv("NF_F0_MERGE", "0").strip().lower() not in ("0", "false", "no")
 
     @property
     def quantize_divisors(self) -> tuple[int, ...]:

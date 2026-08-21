@@ -3,7 +3,10 @@ import markUrl from "@/assets/brand/mark.png";
 interface Props {
   /** Rendered height in px; width follows the artwork's aspect. */
   size?: number;
-  /** Mark colour. Brand blue on light canvases, white on the blue splash. */
+  /**
+   * Mark colour. Defaults to `currentColor`, so a `text-*` class on the call site
+   * drives it and the mark follows the theme without anyone passing a hex.
+   */
   color?: string;
   /** Colour of the flanking waveform bars; defaults to `color`. */
   waveColor?: string;
@@ -30,7 +33,7 @@ const MARK_ASPECT = 331 / 438;
  */
 export function BrandMark({
   size = 96,
-  color = "#2563eb",
+  color = "currentColor",
   waveColor,
   showWaves = false,
   className,

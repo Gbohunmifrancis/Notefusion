@@ -1,8 +1,10 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
+using NoteFusion.Core.Entities;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Security;
 
@@ -33,14 +35,16 @@ public sealed class TestHarness : IDisposable
         Clock = new FixedClock(now ?? new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc));
         Hasher = new BcryptPasswordHasher();
 
-        var auth = new AuthSettings();
+        Auth = new AuthSettings();
+        Tokens = new SecureTokenGenerator();
         var jwt = new JwtSettings();
         Keys = new RsaKeyProvider(jwt);
-        Jwt = new JwtTokenService(Keys, jwt, auth);
-        TokenIssuer = new TokenIssuer(Jwt, new SecureTokenGenerator(), Hasher, Db, Clock, auth);
+        Jwt = new JwtTokenService(Keys, jwt, Auth);
+        TokenIssuer = new TokenIssuer(Jwt, Tokens, Hasher, Db, Clock, Auth);
         Email = new RecordingEmailSender();
         Push = new RecordingPushSender();
         Country = new StubCountryResolver();
+        ClientIp = new StubClientIpAddress();
     }
 
     public ApplicationDbContext Db { get; }
@@ -50,6 +54,12 @@ public sealed class TestHarness : IDisposable
     public JwtTokenService Jwt { get; }
     public TokenIssuer TokenIssuer { get; }
 
+    /// <summary>Token lifetimes and the reset-link destination, at their configured defaults.</summary>
+    public AuthSettings Auth { get; }
+
+    /// <summary>The real generator, so reset and refresh tokens are the same shape they are in production.</summary>
+    public SecureTokenGenerator Tokens { get; }
+
     /// <summary>Records what would have been sent, so a handler test can assert on it without a network.</summary>
     public RecordingEmailSender Email { get; }
 
@@ -58,6 +68,35 @@ public sealed class TestHarness : IDisposable
 
     /// <summary>Where the caller appears to be. Answers null until a test says otherwise.</summary>
     public StubCountryResolver Country { get; }
+
+    /// <summary>The address the caller appears to come from. Answers null until a test says otherwise.</summary>
+    public StubClientIpAddress ClientIp { get; }
+
+    /// <summary>
+    /// An audit logger acting as <paramref name="actor"/>, on this harness's context and clock. Admin
+    /// handlers take <see cref="IAuditLogger"/>, so every one of their tests needs this pairing.
+    /// </summary>
+    public AuditLogger AuditAs(User actor)
+        => new(Db, new StubCurrentUser(actor.Id, actor.Role, actor.Email, actor.FullName), ClientIp, Clock);
+
+    /// <summary>
+    /// Puts <paramref name="user"/> through email verification without the mail round trip, for the many
+    /// tests whose subject is something else entirely and which only need an account that can sign in.
+    /// </summary>
+    /// <remarks>
+    /// Goes through the real issue/consume pair rather than reaching for the flag, because the flag has no
+    /// setter — and because a shortcut here would let the production path rot while every test kept
+    /// passing. Does not save: the caller is mid-arrangement and owns the commit.
+    /// </remarks>
+    public void MarkEmailVerified(User user)
+    {
+        var code = EmailVerificationCodes.Issue(user, Tokens, Clock.UtcNow);
+        if (!EmailVerificationCodes.Consume(user, code, Clock.UtcNow))
+        {
+            throw new InvalidOperationException(
+                "A code issued a moment ago was refused — the verification rules have changed under this helper.");
+        }
+    }
 
     public void Dispose()
     {
@@ -111,6 +150,14 @@ public sealed class RecordingEmailSender : IEmailSender
     public Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default)
     {
         Sent.Add(("password-reset", to));
+        ResetUrls.Add(resetUrl);
+        return Task.CompletedTask;
+    }
+
+    public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
+    {
+        Sent.Add(("email-verification", to));
+        VerificationCodes.Add(code);
         return Task.CompletedTask;
     }
 
@@ -133,6 +180,19 @@ public sealed class RecordingEmailSender : IEmailSender
     /// difference between a subscription receipt and a lifetime one, and <see cref="Sent"/> cannot show it.
     /// </summary>
     public List<SubscriptionReceipt> Receipts { get; } = [];
+
+    /// <summary>
+    /// The reset links, kept because <em>where</em> a reset link points is the security-relevant half of
+    /// sending one — the recipient alone cannot show that the destination is ours.
+    /// </summary>
+    public List<string> ResetUrls { get; } = [];
+
+    /// <summary>
+    /// The plaintext verification codes, which is the only place a test can see one: the handler stores
+    /// nothing but a hash, so the code that was mailed is otherwise unrecoverable — exactly as intended
+    /// in production, and exactly why a test that wants to enter the right code has to read it here.
+    /// </summary>
+    public List<string> VerificationCodes { get; } = [];
 }
 
 /// <summary>

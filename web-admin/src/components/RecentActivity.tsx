@@ -12,9 +12,11 @@ import { EmptyView } from "@/components/StateView";
  */
 
 const KIND: Record<string, { icon: LucideIcon; tint: string; verb: string }> = {
-  signup: { icon: UserPlus, tint: "bg-blue/10 text-blue", verb: "Signed up" },
+  // `accent` rather than `blue`: this is a glyph on a tint, so it has to read *as* colour
+  // against the card, and the fill blue is too dark to do that once the card goes navy.
+  signup: { icon: UserPlus, tint: "bg-accent/10 text-accent", verb: "Signed up" },
   transcription: { icon: Music4, tint: "bg-sky/10 text-sky", verb: "Saved" },
-  login: { icon: LogIn, tint: "bg-success/10 text-success", verb: "Signed in" },
+  login: { icon: LogIn, tint: "bg-success/10 text-success-deep", verb: "Signed in" },
 };
 
 const FALLBACK = { icon: UserPlus, tint: "bg-surface-alt text-muted", verb: "Activity" };

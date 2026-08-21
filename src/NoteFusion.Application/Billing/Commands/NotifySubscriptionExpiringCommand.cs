@@ -75,7 +75,10 @@ public sealed class NotifySubscriptionExpiringCommandHandler
 
         // Ceiling, and never below 1: "in 0 days" is not a thing to tell someone.
         var daysLeft = Math.Max(1, (int)Math.Ceiling((sub.CurrentPeriodEndUtc - now).TotalDays));
-        var willRenew = sub.Status == SubscriptionStatus.Active;
+
+        // Active is not enough on its own: a gift granted from the admin console is Active too, and nothing
+        // is going to renew it, so promising a renewal would be a promise no code in this system keeps.
+        var willRenew = sub.Status == SubscriptionStatus.Active && !sub.IsGift;
 
         await _email.SendSubscriptionExpiringAsync(
             new EmailRecipient(user.Email, user.FullName),

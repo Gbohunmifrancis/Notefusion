@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { AppState } from 'react-native';
 import { billingApi } from '../api/endpoints';
 import { useAuth } from './auth';
 import type { Subscription } from '../api/types';
@@ -17,7 +18,7 @@ interface SubscriptionState {
   /**
    * Whether to show Pro treatment. Deliberately `?? false`: an account whose
    * state we could not read is a **Free** account. Every premium perk — the gold
-   * avatar ring, the Pro badge, the hidden Subscription tab — gates on this, so
+   * avatar ring, the Pro badge, the Premium tab label — gates on this, so
    * a failed request can never hand out a paid look.
    */
   isPro: boolean;
@@ -29,11 +30,26 @@ interface SubscriptionState {
    */
   known: boolean;
   loading: boolean;
-  /** Re-reads the server. Called after a checkout completes. */
+  /**
+   * Free transcriptions left, from the server. Falls back to the full allowance while
+   * unknown, for the same fail-open reason as `known`: a dropped billing request must
+   * not read as "0 left" and block the microphone. Gates pair it with `known`.
+   */
+  trialRemaining: number;
+  /** The free allowance, so copy can say "2 of 5" without repeating the 5. */
+  trialTotal: number;
+  /** Re-reads the server. Called after a checkout completes, or a generation succeeds. */
   refresh: () => Promise<void>;
 }
 
 const SubscriptionContext = createContext<SubscriptionState | undefined>(undefined);
+
+/**
+ * Only used before the server has answered. The real number always comes from the
+ * server (`FreeTier.TrialGenerations`); this is the optimistic placeholder that keeps
+ * a dropped request from looking like an exhausted trial.
+ */
+const DEFAULT_TRIAL_TOTAL = 5;
 
 /**
  * Owns "is this account premium?" for the whole app.
@@ -53,6 +69,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const [known, setKnown] = useState(false);
   const [loading, setLoading] = useState(false);
   const mounted = useRef(true);
+  /** Mirrors `known` for reads inside `load`, which must not depend on it. */
+  const knownRef = useRef(false);
 
   useEffect(() => {
     mounted.current = true;
@@ -68,11 +86,18 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       if (!mounted.current) return;
       setSubscription(sub);
       setKnown(true);
+      knownRef.current = true;
     } catch {
-      // Network down, 5xx, expired session mid-refresh — all resolve to Free.
-      // `known` stays false so quota gates keep failing open.
+      // Network down, 5xx, expired session mid-refresh. Only clear the state we have
+      // never successfully read — a *re*-read that fails must leave the last known
+      // answer standing. Wiping it would set `isPro` false while `known` stayed true,
+      // and quota gates read `known && !isPro`, so a dropped request on a refresh would
+      // gate a paying customer out of the microphone. `known` false keeps them open.
+      //
+      // Read through a ref, not the state: this callback must keep a stable identity or
+      // the effects below re-run on every state change and re-fetch in a loop.
       if (!mounted.current) return;
-      setSubscription(null);
+      if (!knownRef.current) setSubscription(null);
     } finally {
       if (mounted.current) setLoading(false);
     }
@@ -87,10 +112,24 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       // Signed out — drop the previous account's state entirely.
       setSubscription(null);
       setKnown(false);
+      knownRef.current = false;
       setLoading(false);
       return;
     }
     load();
+  }, [userId, load]);
+
+  // Re-read whenever the app comes back to the foreground. Checkout happens in an
+  // external browser, so the moment Pro actually unlocks is a moment this app is not
+  // in front of the user — without this the gold ring and the lifted quota waited for
+  // a relaunch. Keyed on AppState rather than screen focus because the provider sits
+  // above the navigator, and because returning from the browser is the case that matters.
+  useEffect(() => {
+    if (!userId) return;
+    const sub = AppState.addEventListener('change', (next) => {
+      if (next === 'active') load();
+    });
+    return () => sub.remove();
   }, [userId, load]);
 
   const value = useMemo<SubscriptionState>(
@@ -99,6 +138,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       isPro: subscription?.isActive ?? false,
       known,
       loading,
+      trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,
+      trialTotal: subscription?.trialGenerationsTotal ?? DEFAULT_TRIAL_TOTAL,
       refresh: load,
     }),
     [subscription, known, loading, load],

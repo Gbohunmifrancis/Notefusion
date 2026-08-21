@@ -49,6 +49,23 @@ export function formatPercent(value: number | null, fractionDigits = 1): string 
   return `${(value * 100).toFixed(fractionDigits)}%`;
 }
 
+/**
+ * `(750000, "NGN")` → `"₦7,500.00"`. The API stores minor units — kobo, cents — so this divides
+ * before formatting. Dividing by a fixed 100 rather than asking Intl for the currency's exponent
+ * is correct for both currencies this app charges in and wrong for a zero-decimal one like JPY;
+ * that is a real limit, and it is here rather than spread across the pages that display money.
+ */
+export function formatMoney(amountMinor: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat("en-NG", { style: "currency", currency }).format(
+      amountMinor / 100,
+    );
+  } catch {
+    // An unknown ISO code throws rather than degrading, and a payment row is not worth a blank page.
+    return `${currency} ${(amountMinor / 100).toFixed(2)}`;
+  }
+}
+
 /** A signed change against the previous period, or null when there is nothing to compare. */
 export function changeAgainst(
   current: number,

@@ -103,7 +103,24 @@ TEMPO_OCTAVE_TOLERANCE = 0.04
 # comes back at 3.92x the reference (it read sixteenths as beats), which a
 # half/double-only test reports as a bare 257 BPM error, i.e. as noise rather than
 # as the clean 4x it is.
-TEMPO_METRICAL_FACTORS = (2.0, 0.5, 4.0, 0.25, 3.0, 1.0 / 3.0, 1.5, 2.0 / 3.0)
+#
+# 1.0 leads the tuple, and leaving it out was a defect rather than a shorthand.
+# Without it "the estimate is on the reference's own level" fell through to the 0.0
+# the docstring calls "none", so metrical_factor could not distinguish a perfect
+# reading from a wildly wrong one: measured over the 38-case report, 0.0 covered 10
+# exact tempi AND 25 incommensurate misses — 35 of 38 cases in one unreadable
+# bucket, which defeats the column's whole stated purpose.  With 1.0 present, 27 of
+# 38 cases report it (every case inside MIREX's +/-4 %, which IS the reference
+# level — abs_error still carries the magnitude), 3 report their clean multiple, and
+# 0.0 falls to the 8 cases that genuinely sit between levels.  Those 8 are worth the
+# column: all 8 report 117 BPM, librosa's own prior, and 7 of them have onset
+# detection destroyed by vibrato (n_est 20-47 against n_ref 11, notes.f1
+# 0.000-0.645), so their tempo is a fallback rather than a measurement.  The eighth,
+# major_c_sharp, is 11/11 notes at f1 1.000 yet reads 117 against a true 88 — an
+# isolated beat-tracking failure the old tuple hid among 35 identical zeros.
+# ``octave_error`` is unaffected: it tests membership in (2.0, 0.5), and no case can
+# be within 4 % of both 1.0 and 2.0.  Measured 0 before and after.
+TEMPO_METRICAL_FACTORS = (1.0, 2.0, 0.5, 4.0, 0.25, 3.0, 1.0 / 3.0, 1.5, 2.0 / 3.0)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -330,6 +347,26 @@ def key_metrics(ref_key: str, est_key: str) -> dict:
     *either* direction (dominant and subdominant are the classic Krumhansl-Schmuckler
     slips), while mir_eval only awards its 0.5 to a fifth above.  A subdominant
     confusion therefore reads ``fifth_confusion=True`` with ``weighted_score=0.0``.
+
+    **The three confusions are not equally expensive, and one of them is free.**  Read
+    against ``solfa.degree_accuracy`` rather than on their own:
+
+    - ``relative_confusion`` costs **nothing**, and not approximately — exactly nothing,
+      by construction.  Solfa is movable-do with la-based minor, so
+      ``solfa.doh_pitch_class`` maps a minor key to ``(tonic + 3) % 12``: A minor and C
+      major both return doh = C.  Identical doh means identical syllables, identical
+      degrees, and relatives share a key signature, so the staff render is identical
+      too.  Only the displayed key *string* is wrong.  Measured:
+      ``relative_bait_c_major`` reads C major as A minor and still scores
+      ``degree_accuracy`` 1.000.  Anything that trades solfa accuracy to push this
+      column down is trading something for nothing.
+    - ``fifth_confusion`` is the fatal one.  A subdominant slip moves doh by five
+      semitones and every degree in the clip with it: ``plagal_fourth_c_major`` reads C
+      major as F major and scores ``degree_accuracy`` 0.000 on ``notes.f1`` 0.846 — the
+      notes are heard correctly and mislabelled wholesale.  This is where the leverage
+      is, and it is the confusion ``KEY_PROFILE_NAMES`` was assembled to cancel.
+    - ``parallel_confusion`` moves doh by three semitones, so it is expensive too; it is
+      0.000 over the corpus and has never been the failure mode here.
     """
     zeros = {
         "weighted_score": 0.0,
@@ -374,10 +411,13 @@ def tempo_metrics(ref_bpm: float, est_bpm: float) -> dict:
     hard-coded 100 BPM when beat tracking fails, so a reported tempo is not
     necessarily something it measured.
 
-    ``metrical_factor`` is the multiple of the reference the estimate landed on
-    (0.0 if none), so a beat tracker that read sixteenths as beats reads "4.0"
-    instead of "257 BPM off".  ``octave_error`` keeps its literal meaning — half or
-    double time only — and is the gated bool; the factor is the label.
+    ``metrical_factor`` is the multiple of the reference the estimate landed on, so a
+    beat tracker that read sixteenths as beats reads "4.0" instead of "257 BPM off",
+    and one that read the reference's own level reads "1.0".  0.0 means *none of the
+    known levels* — the estimate sits between them — which is a stronger statement
+    than a large ``abs_error`` and the one worth reading first.  ``octave_error``
+    keeps its literal meaning — half or double time only — and is the gated bool; the
+    factor is the label.
     """
     if ref_bpm <= 0 or est_bpm <= 0:
         # The WORST value, not the best.  abs_error and rel_error are gated
@@ -453,9 +493,11 @@ def _match_by_pitch_then_time(
 
 
 # The five semitones above doh that fall outside the diatonic scale, so a note on one of
-# them is written with an accidental: ``ASCENDING_SYLLABLES`` indices 1, 3, 6, 8 and 10 —
-# de, re, fe, se, le.  ``transcribe`` only ever labels ascending, so the descending
-# spellings (ra, ma, sa, la, ta) cannot appear.
+# them is written with an accidental: indices 1, 3, 6, 8 and 10 — de/re/fe/se/le rising,
+# ra/ma/sa/la/ta falling.  Which of the two a note gets is a function of melodic
+# direction (``solfa.ascending_flags``), not of the note, so the ground truth below has
+# to derive it the same way the pipeline does; the two tables are identical on the seven
+# diatonic degrees, so nothing outside this set can be affected either way.
 CHROMATIC_SEMITONES = frozenset({1, 3, 6, 8, 10})
 
 
@@ -496,9 +538,9 @@ def solfa_metrics(
 
     Ground truth is built exactly the way ``transcribe()`` builds its own labels
     (transcriber.py:779-788) — one ``reference_doh`` for the whole clip from the
-    median of the pitch list, ascending syllable table — except that the pitch list is
-    the *reference* one.  Deriving it from the estimate would make the octave marks
-    agree by construction.
+    median of the pitch list, chromatic syllables chosen by melodic direction — except
+    that both the pitch list and the direction are the *reference* ones.  Deriving
+    either from the estimate would make it agree by construction.
 
     ``chromatic_ghosts`` is the accidentals column, and it counts the *excess* rather
     than the total on purpose.  Lower-is-better on the total would be plainly wrong:
@@ -581,14 +623,27 @@ def solfa_metrics(
         return {**zeros, "anchor_matches_reference": est_doh == ref_doh, **chromatic}
 
     degree_hits = syllable_hits = octave_misses = 0
+    # Chromatic spelling is a function of melodic direction, so ground truth needs the
+    # direction of the *reference* melody — the only non-circular choice, since deriving
+    # it from the estimate would make the spelling agree by construction.  The
+    # consequence is stated rather than hidden: if the pipeline drops a note, the
+    # surviving neighbour can arrive from a different pitch than it does in the
+    # reference, and a chromatic note there is then spelled from the other table and
+    # scored wrong.  That is the same conflation ``degree_accuracy`` already makes for a
+    # mis-detected key — the syllable the user sees is wrong for the music, and the
+    # detection failure is what made it wrong.  Bounded to chromatic notes only.
+    ref_spelling = solfa.ascending_flags([r.pitch_midi for r in ref])
     for ref_idx, est_idx in pairs:
-        gt_syllable, gt_mark, gt_degree = solfa.syllable(ref[ref_idx].pitch_midi, doh_pc, ref_doh)
+        gt_syllable, gt_mark, gt_degree = solfa.syllable(
+            ref[ref_idx].pitch_midi, doh_pc, ref_doh, ref_spelling[ref_idx]
+        )
         note = est[est_idx]
         degree_hits += note.degree == gt_degree
         syllable_hits += note.solfa == gt_syllable
         # The mark this note WOULD carry under the reference anchor, so the comparison
         # is "is this note in the right octave band" and not "did the two clips agree
-        # on which doh to count octaves from".
+        # on which doh to count octaves from".  No spelling is passed because the mark
+        # falls out of the octave shift alone — the two syllable tables cannot move it.
         _, est_mark, _ = solfa.syllable(note.pitch_midi, doh_pc, ref_doh)
         octave_misses += est_mark != gt_mark
 

@@ -12,6 +12,7 @@ import {
   formatMonthShort,
   formatMonthYear,
 } from "@/lib/format";
+import { useTheme } from "@/lib/theme";
 
 /**
  * A daily series as bars, with a grey full-height ghost behind each one so the plot reads as
@@ -125,6 +126,7 @@ interface DailyChartProps {
   data: DailyCount[];
   /** Plural noun for the tooltip, e.g. "signups". */
   unit: string;
+  /** Bar colour. Defaults to the theme's series colour; pass one from `useTheme().chart`. */
   color?: string;
   className?: string;
 }
@@ -134,10 +136,13 @@ export function DailyChart({
   info,
   data,
   unit,
-  color = "#2563eb",
+  color,
   className = "",
 }: DailyChartProps) {
+  const { chart } = useTheme();
   const [chosen, setChosen] = useState<Bucket>("day");
+
+  const fill = color ?? chart.series;
 
   const weeks = groupIntoWeeks(data);
   const months = groupIntoMonths(data);
@@ -187,11 +192,11 @@ export function DailyChart({
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={groups} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
-            <CartesianGrid stroke="#eff3f9" vertical={false} />
+            <CartesianGrid stroke={chart.grid} vertical={false} />
             <XAxis
               dataKey="label"
-              tick={{ fill: "#94a3b8", fontSize: 11 }}
-              stroke="#e2e8f0"
+              tick={{ fill: chart.tick, fontSize: 11 }}
+              stroke={chart.axis}
               tickLine={false}
               // A 90-day range would otherwise stack 90 labels on top of each other.
               interval="preserveStartEnd"
@@ -200,20 +205,20 @@ export function DailyChart({
             <YAxis
               allowDecimals={false}
               tickCount={Math.min(max + 1, 5)}
-              tick={{ fill: "#94a3b8", fontSize: 11 }}
-              stroke="#e2e8f0"
+              tick={{ fill: chart.tick, fontSize: 11 }}
+              stroke={chart.axis}
               tickLine={false}
             />
             {/* The ghost bar is already the hover affordance, so recharts' grey cursor band
                 on top of it would just muddy the column. */}
-            <Tooltip content={tooltip(unit, color)} cursor={false} />
+            <Tooltip content={tooltip(unit, fill)} cursor={false} />
             <Bar
               dataKey="count"
               name={unit}
-              fill={color}
+              fill={fill}
               radius={[4, 4, 0, 0]}
               maxBarSize={14}
-              background={{ fill: "#eff3f9", radius: 4 }}
+              background={{ fill: chart.track, radius: 4 }}
               isAnimationActive={false}
             />
           </BarChart>

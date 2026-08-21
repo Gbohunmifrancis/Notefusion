@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
   Easing,
@@ -24,7 +24,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
-import { libraryApi } from "../api/endpoints";
+import { showDialog } from "../lib/dialog";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -60,6 +60,15 @@ const KEYS = [
 ];
 
 const WAVE_BARS = 28; // number of soundwave visualiser bars
+
+/**
+ * The API's code for the free-tier refusal (`BillingErrors.FreeTierLimitReached`).
+ *
+ * Matched on the code, not the message: this branch used to sniff for four different
+ * substrings of the server's prose, which would have silently stopped working the first
+ * time anyone reworded the error.
+ */
+const FREE_TIER_LIMIT_CODE = "BILLING_FREE_TIER_LIMIT";
 
 const RECORDING_OPTIONS: RecordingOptions = {
   ...RecordingPresets.HIGH_QUALITY,
@@ -116,7 +125,7 @@ function meteringToColor(dbfs: number, c: Palette): string {
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { state, start, reset } = useJobPolling();
-  const { isPro, known } = useSubscription();
+  const { isPro, known, trialRemaining, trialTotal, refresh } = useSubscription();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -303,27 +312,70 @@ export function RecordScreen() {
       reset();
       setPhase("ready");
       setElapsed(0);
+      // A successful generation is what spends a free credit, server-side, so re-read
+      // the count now — otherwise the pill still claims the old number when the user
+      // comes back from Result. Not awaited: navigation must not wait on billing.
+      refresh();
       nav.navigate("Result", { result });
     }
-  }, [state.status, state.result, nav, reset]);
+  }, [state.status, state.result, nav, reset, refresh]);
+
+  /**
+   * Explains an exhausted trial and offers the way out.
+   *
+   * Shown instead of dropping the user on the paywall unannounced, which was the whole
+   * of the old behaviour and read as the app refusing to record for no stated reason.
+   */
+  const showTrialExhausted = useCallback(() => {
+    showDialog({
+      title: "Free trial used up",
+      message:
+        `You've used all ${trialTotal} free transcriptions. Upgrade to Pro for unlimited ` +
+        `transcriptions — everything you've already transcribed stays in your library.`,
+      icon: "sparkles",
+      tone: "premium",
+      actions: [
+        {
+          label: "See Pro plans",
+          icon: "arrow-forward",
+          onPress: () => nav.navigate("Upgrade"),
+        },
+        { label: "Not now", style: "cancel" },
+      ],
+    });
+  }, [trialTotal, nav]);
+
+  /**
+   * Stops a free account that has nothing left, and says so. Returns true when the
+   * caller should give up.
+   *
+   * `known` is in the condition deliberately: without it a dropped billing request
+   * reads as "not subscribed" and would lock a paying customer out of their own
+   * microphone. Pro accounts are never metered.
+   */
+  const blockedByTrialLimit = useCallback((): boolean => {
+    if (isPro || !known || trialRemaining > 0) return false;
+    showTrialExhausted();
+    return true;
+  }, [isPro, known, trialRemaining, showTrialExhausted]);
 
   // A failed job must clear the uploading chrome, or the record button stays
   // disabled and the "Processing…" spinner renders on top of the error card,
   // stranding the user until they happen to tap Try again. The error card is
   // driven by state.error, so it stays visible; only the phase is reset.
   useEffect(() => {
-    if (state.status === "failed") {
-      setPhase("ready");
-      if (
-        state.error?.includes("BILLING_FREE_TIER_LIMIT") ||
-        state.error?.includes("5 free transcriptions") ||
-        state.error?.includes("upgrade to Pro") ||
-        state.error?.includes("Free plan limit")
-      ) {
-        nav.navigate("Upgrade");
-      }
+    if (state.status !== "failed") return;
+    setPhase("ready");
+
+    // The server refusing on quota means the local gate let the tap through — a stale
+    // count, or the last credit spent on another device. Same dialog, and the job state
+    // is cleared so the error card's "Try again" doesn't offer a retry that cannot
+    // possibly succeed.
+    if (state.errorCode === FREE_TIER_LIMIT_CODE) {
+      reset();
+      showTrialExhausted();
     }
-  }, [state.status, state.error, nav]);
+  }, [state.status, state.errorCode, reset, showTrialExhausted]);
 
   // The elapsed-time interval is cleared in stopAndSubmit, but a screen unmount
   // mid-recording (back gesture, tab switch) never runs that path, leaking the
@@ -399,17 +451,8 @@ export function RecordScreen() {
 
   async function startRecording() {
     setPermError(null);
+    if (blockedByTrialLimit()) return;
     try {
-      // Free accounts cap out at 5 saved transcriptions. `known` guards the gate on
-      // purpose: without it a dropped billing request would read as "not subscribed"
-      // and lock a paying customer out of their own microphone. Billing state comes
-      // from the shared provider, so this no longer costs a request per tap.
-      const items = await libraryApi.list().catch(() => []);
-      if (known && !isPro && items.length >= 5) {
-        nav.navigate("Upgrade");
-        return;
-      }
-
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
         setPermError(
@@ -440,6 +483,9 @@ export function RecordScreen() {
 
   async function pickAudioFile() {
     setPermError(null);
+    // Importing a file costs a generation exactly like recording one, and this path
+    // had no gate at all — the trial was only enforced on the microphone.
+    if (blockedByTrialLimit()) return;
     try {
       const res = await DocumentPicker.getDocumentAsync({
         type: ["audio/*", "audio/mpeg", "audio/wav", "audio/x-m4a", "audio/mp4", "audio/aac"],
@@ -501,6 +547,34 @@ export function RecordScreen() {
         {/* ── Top controls ────────────────────────────────────────────────── */}
         <View style={styles.top}>
           <Text style={styles.screenTitle}>Listening</Text>
+
+          {/* Free-tier counter. Gated on `known` as well as `!isPro`: the fallback
+              value is the full allowance, so an unanswered billing request would
+              otherwise announce "5 of 5 left" to a Pro account. Tappable throughout —
+              wanting to see the plans is not only an out-of-credits impulse. */}
+          {known && !isPro && (
+            <TouchableOpacity
+              onPress={() => nav.navigate("Upgrade")}
+              style={[styles.trialPill, trialRemaining <= 0 && styles.trialPillSpent]}
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name={trialRemaining > 0 ? "sparkles-outline" : "lock-closed-outline"}
+                size={13}
+                color={trialRemaining > 0 ? colors.accent : colors.danger}
+              />
+              <Text
+                style={[
+                  styles.trialPillText,
+                  trialRemaining <= 0 && styles.trialPillTextSpent,
+                ]}
+              >
+                {trialRemaining > 0
+                  ? `${trialRemaining} of ${trialTotal} free transcriptions left`
+                  : "Free trial used up — see Pro plans"}
+              </Text>
+            </TouchableOpacity>
+          )}
 
           {/* Mode toggle */}
           <View style={styles.modeToggle}>
@@ -723,7 +797,14 @@ export function RecordScreen() {
             {phase === "ready" &&
               "Sing, hum, or play near the mic for accurate Solfa extraction."}
             {phase === "recording" && "Tap the button again when you're done."}
-            {isUploading && "Analysing pitch frequencies and key profile…"}
+            {/* Once the server has the job it finishes it whether or not anyone is watching, and
+                sends a notification when it does. Said here because the poll on this screen used to
+                be the only thing tracking a job, so leaving quietly abandoned it — the upload is
+                still the part that has to stay in the foreground. */}
+            {isUploading &&
+              (state.status === "idle"
+                ? "Analysing pitch frequencies and key profile…"
+                : "You can leave this screen — we'll notify you when it's ready.")}
           </Text>
 
           {phase === "ready" && (
@@ -834,6 +915,35 @@ const makeStyles = (c: Palette) =>
     color: c.text,
     fontSize: 22,
     letterSpacing: -0.3,
+  },
+
+  // ── Free-tier counter ─────────────────────────────────────────────────────
+  //
+  // Under the title rather than beside the record button, so it reads as account
+  // context and not as a warning about the recording in progress.
+
+  trialPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+    backgroundColor: c.surface,
+    borderWidth: 1,
+    borderColor: c.border,
+    borderRadius: radii.pill,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 5,
+  },
+  trialPillSpent: {
+    backgroundColor: "rgba(220, 38, 38, 0.10)",
+    borderColor: "rgba(220, 38, 38, 0.28)",
+  },
+  trialPillText: {
+    fontSize: 11.5,
+    fontFamily: fonts.semibold,
+    color: c.accent,
+  },
+  trialPillTextSpent: {
+    color: c.danger,
   },
 
   // ── Mode toggle ───────────────────────────────────────────────────────────

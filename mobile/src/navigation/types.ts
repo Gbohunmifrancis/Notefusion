@@ -7,14 +7,23 @@ export type AuthStackParams = {
   Onboarding: undefined;
   Login: undefined;
   Register: undefined;
+  /**
+   * The email is a param rather than screen state because two routes arrive here:
+   * sign-up, and a login that was refused as unverified. Both know the address the
+   * code went to, and the screen must show it so a typo is visible.
+   */
+  VerifyEmail: { email: string };
 };
 
+/**
+ * Three tabs, not five. The mic is the middle cell and every cell is `flex: 1`, so an odd
+ * count centres it — the account and the plan moved to the side bar (`AppDrawer`) rather
+ * than being carried here as spacers.
+ */
 export type TabParams = {
   Home: undefined;
   Record: undefined;
   Library: undefined;
-  Profile: undefined;
-  Subscription: undefined;
 };
 
 export type RootStackParams = {
@@ -26,6 +35,8 @@ export type RootStackParams = {
     savedId?: string;
     title?: string;
   };
+  /** Reached from the side bar's identity block; a pushed screen since it left the tab bar. */
+  Profile: undefined;
   /**
    * `focus` scrolls straight to a section. The Profile menu has separate
    * "Notifications" and "About Notefusion" rows, and both used to land on a screen

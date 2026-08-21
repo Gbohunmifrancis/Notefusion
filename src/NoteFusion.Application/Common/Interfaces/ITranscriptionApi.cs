@@ -20,4 +20,11 @@ public interface ITranscriptionApi
     Task<Result<TranscriptionJobDto>> GetJobAsync(
         string jobId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// GET /healthz — whether the worker is answering, and how quickly. For the admin health page: this
+    /// is the only tier a client never talks to, so an operator has no other way to tell "the ML service
+    /// is down" from "transcriptions are failing".
+    /// </summary>
+    Task<Result<int>> PingAsync(CancellationToken cancellationToken = default);
 }

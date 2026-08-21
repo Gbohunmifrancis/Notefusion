@@ -32,6 +32,10 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(u => u.CreatedAt).IsRequired();
 
+        // SHA-256 hex — 64 characters, always. Nullable because most rows have no code outstanding:
+        // one is issued at sign-up and destroyed the moment it is used.
+        builder.Property(u => u.EmailVerificationCodeHash).HasMaxLength(64);
+
         builder.HasIndex(u => u.Email).IsUnique();
 
         // Filtered unique index: one account per Google subject, while the many

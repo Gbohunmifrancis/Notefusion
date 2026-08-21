@@ -10,6 +10,9 @@ voice was wrong:
                                    *other* notes overlap somewhere else in the clip
   bounded output                   a pile-up compresses instead of clipping
   spectral decay                   a note darkens as it rings rather than droning
+  percussive envelope              the body decays continuously instead of holding a
+                                   level, which is what made it an organ not a piano
+  register scaling                 bass notes ring longer than treble ones
   determinism                     identical notes render to identical bytes
   Nyquist headroom                 no partial can alias at the pipeline's pitch cap
 
@@ -25,10 +28,12 @@ import soundfile as sf
 from app.pipeline.transcriber import (
     _HARMONIC_WEIGHTS,
     _INHARMONICITY,
-    _SUSTAIN_LEVEL,
+    _STRING_DECAY_MAX_SEC,
+    _STRING_DECAY_MIN_SEC,
     PREVIEW_SAMPLE_RATE,
     TranscribedNote,
     _smooth_ramp,
+    _string_decay_sec,
     _synthesize_audio_preview,
 )
 
@@ -79,7 +84,8 @@ class TestSmoothRamp:
 
     def test_is_monotone(self):
         assert np.all(np.diff(_smooth_ramp(64, 0.0, 1.0)) >= 0)
-        assert np.all(np.diff(_smooth_ramp(64, 1.0, _SUSTAIN_LEVEL)) <= 0)
+        # The release ramp, which is the only descending one the envelope now uses.
+        assert np.all(np.diff(_smooth_ramp(64, 1.0, 0.0)) <= 0)
 
     def test_slope_is_zero_at_both_ends(self):
         """This is the whole point: it is what lets segments join without a corner."""
@@ -161,6 +167,29 @@ class TestVoice:
         top = 1050.0 * len(_HARMONIC_WEIGHTS)
         top *= 1.0 + _INHARMONICITY * len(_HARMONIC_WEIGHTS) ** 2
         assert top < 0.5 * PREVIEW_SAMPLE_RATE
+
+    def test_body_decays_instead_of_holding_a_level(self):
+        """A piano decays from the strike; it has no sustain plateau.
+
+        The previous voice held every note at 0.80 × peak for its whole body, which
+        is an *organ*, and that plateau was the main reason the preview sounded
+        wrong. Compare two windows inside the note body, both clear of the attack
+        and of the release ramp, so only the exponential can account for the drop.
+        """
+        sr = PREVIEW_SAMPLE_RATE
+        y = render([note(60, 0, 8)])  # 8 beats at 120 BPM = 4 s
+        early = rms(y[int(0.15 * sr) : int(0.45 * sr)])
+        late = rms(y[int(2.50 * sr) : int(2.80 * sr)])
+        assert late < early * 0.75, "note body is holding a level rather than decaying"
+
+    def test_bass_rings_longer_than_treble(self):
+        """Register scaling — one global decay makes low notes sound cut off."""
+        assert _string_decay_sec(36) > _string_decay_sec(60) > _string_decay_sec(84)
+
+    def test_decay_stays_inside_its_clamps_across_the_whole_compass(self):
+        taus = [_string_decay_sec(p) for p in range(0, 128)]
+        assert min(taus) >= _STRING_DECAY_MIN_SEC
+        assert max(taus) <= _STRING_DECAY_MAX_SEC
 
     def test_tempo_sets_the_timescale(self):
         """Beat positions are converted with 60/bpm, so doubling the tempo must halve

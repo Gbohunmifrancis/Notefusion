@@ -12,6 +12,7 @@ using NoteFusion.Infrastructure.Media;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Security;
+using NoteFusion.Infrastructure.Transcriptions.Workers;
 
 namespace NoteFusion.Infrastructure;
 
@@ -46,6 +47,10 @@ public static class DependencyInjection
 
         // Bridge the concrete context to the Application contract.
         services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+        // The health probe takes the concrete context because it needs Database, which
+        // IApplicationDbContext deliberately does not expose.
+        services.AddScoped<IDatabaseHealth, DatabaseHealthProbe>();
 
         var seed = configuration.GetSection("Seed").Get<SeedSettings>() ?? new SeedSettings();
         services.AddSingleton(seed);
@@ -144,6 +149,9 @@ public static class DependencyInjection
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(100);
         });
+
+        // Watches jobs through to completion so a recording finishes whether or not the app is open.
+        services.AddHostedService<TranscriptionCompletionWorker>();
     }
 
     private static void AddGeo(this IServiceCollection services, IConfiguration configuration)

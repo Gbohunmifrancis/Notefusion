@@ -10,10 +10,20 @@ using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Auth.Commands;
 
+/// <summary>
+/// Creates an account and emails a six-digit code to the address given. Deliberately returns <b>no
+/// tokens</b>: the account is unusable until <see cref="VerifyEmailCommand"/> is satisfied.
+/// </summary>
+/// <remarks>
+/// Handing back tokens here and nagging afterwards would make verification advisory, and an address
+/// nobody has proved is one we would still be mailing receipts and reset links to. The cost is one extra
+/// screen at sign-up; the benefit is that every password account in the database has a reachable mailbox
+/// behind it.
+/// </remarks>
 public sealed record RegisterCommand(
     string FullName,
     string Email,
-    string Password) : IRequest<Result<LoginResponse>>;
+    string Password) : IRequest<Result<RegistrationResponse>>;
 
 public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
@@ -25,28 +35,28 @@ public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand
     }
 }
 
-public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<LoginResponse>>
+public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<RegistrationResponse>>
 {
     private readonly IApplicationDbContext _db;
     private readonly IPasswordHasher _hasher;
-    private readonly ITokenIssuer _tokenIssuer;
+    private readonly ISecureTokenGenerator _tokenGen;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
     private readonly ICountryResolver _country;
 
     public RegisterCommandHandler(
-        IApplicationDbContext db, IPasswordHasher hasher, ITokenIssuer tokenIssuer, IDateTimeProvider clock,
-        IEmailSender email, ICountryResolver country)
+        IApplicationDbContext db, IPasswordHasher hasher, ISecureTokenGenerator tokenGen,
+        IDateTimeProvider clock, IEmailSender email, ICountryResolver country)
     {
         _db = db;
         _hasher = hasher;
-        _tokenIssuer = tokenIssuer;
+        _tokenGen = tokenGen;
         _clock = clock;
         _email = email;
         _country = country;
     }
 
-    public async Task<Result<LoginResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<RegistrationResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var email = request.Email.Trim().ToLowerInvariant();
         if (await _db.Users.AnyAsync(u => u.Email == email, cancellationToken))
@@ -59,19 +69,16 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
         // the country, not the sign-up.
         user.RecordCountry(await _country.ResolveAsync(cancellationToken));
 
-        _db.Users.Add(user);
+        var code = EmailVerificationCodes.Issue(user, _tokenGen, _clock.UtcNow);
 
-        var tokens = _tokenIssuer.Issue(user);
+        _db.Users.Add(user);
         await _db.SaveChangesAsync(cancellationToken);
 
-        // Welcome the new account. After the commit and best-effort by contract: a mail outage must not
-        // fail a sign-up that has already succeeded and handed back tokens.
-        await _email.SendWelcomeAsync(new EmailRecipient(user.Email, user.FullName), cancellationToken);
+        // The code, after the commit and best-effort by contract. The welcome email waits for
+        // VerifyEmailCommand — one message at a time, and no welcome to a mailbox we have not reached yet.
+        await _email.SendEmailVerificationAsync(
+            new EmailRecipient(user.Email, user.FullName), code, cancellationToken);
 
-        return new LoginResponse(
-            tokens.AccessToken,
-            tokens.RefreshToken,
-            tokens.ExpiresIn,
-            new AuthUserDto(user.Id, user.FullName, user.Email, user.Role.ToString()));
+        return new RegistrationResponse(user.Email);
     }
 }

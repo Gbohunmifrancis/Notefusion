@@ -28,10 +28,16 @@ absent one: it reports safety it never checked.
 """
 
 import inspect
+from dataclasses import replace
 
 import pytest
 from app.pipeline import solfa
-from app.pipeline.transcriber import TranscribedNote, _parse_key_override
+from app.pipeline.transcriber import (
+    Event,
+    TranscribedNote,
+    _blend_confidence,
+    _parse_key_override,
+)
 from tests.accuracy import metrics, runner
 from tests.accuracy.synth import RefNote
 
@@ -76,18 +82,20 @@ def _refs(phrase=PHRASE, lead_in_sec: float = 0.0) -> list[RefNote]:
 def _labelled(events: list[tuple[int, float, float]], key_name: str) -> list[TranscribedNote]:
     """Label ``(pitch, start_beat, dur_beats)`` triples the way ``transcribe()`` does.
 
-    One whole-clip ``reference_doh`` from the median of the pitch list, ascending
-    syllable table — the same three calls as transcriber.py:779-788.  Going through
-    the real solfa engine rather than hand-writing syllables means a fixture can
-    never assert a labelling the product would not actually produce.
+    One whole-clip ``reference_doh`` from the median of the pitch list, chromatic
+    syllables chosen by melodic direction — the same calls as transcriber.py:779-788.
+    Going through the real solfa engine rather than hand-writing syllables means a
+    fixture can never assert a labelling the product would not actually produce, and
+    that is why this function has to move whenever ``transcribe`` does.
     """
     key_obj = _parse_key_override(key_name)
     doh_pc = solfa.doh_pitch_class(key_obj.tonic.pitchClass, key_obj.mode)
     ref_doh = solfa.reference_doh([pitch for pitch, _, _ in events], doh_pc)
+    spelling = solfa.ascending_flags([pitch for pitch, _, _ in events])
 
     notes = []
-    for pitch, start_beat, dur_beats in events:
-        syllable, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh)
+    for i, (pitch, start_beat, dur_beats) in enumerate(events):
+        syllable, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh, spelling[i])
         notes.append(
             TranscribedNote(
                 pitch_midi=pitch,
@@ -451,8 +459,10 @@ def test_defect6_over_merging_a_genuine_semitone_step_is_punished():
 # ── Accidentals — the user-visible face of defect 6 ───────────────────────────
 
 # A minor harmonic, whose raised 7th (G#) is a chromatic syllable under la-based minor:
-# doh is C, so G# is 8 semitones above it, which the ascending table spells "se".  This
-# phrase is the reason the accidentals column counts excess and not total.
+# doh is C, so G# is 8 semitones above it — "se" rising, "la" falling.  It occurs twice
+# here, once approached from below and once from above, which is what makes it the
+# fixture for the directional-spelling trade recorded further down.  This phrase is also
+# the reason the accidentals column counts excess and not total.
 HARMONIC_MINOR_PHRASE = (69, 71, 72, 74, 76, 77, 80, 81, 80, 77, 76)
 
 
@@ -511,15 +521,345 @@ def test_accidentals_are_counted_even_when_nothing_matches():
     assert scored["chromatic_ghosts"] > 0
 
 
-# ── Defect 7 — time signature (deferred by the plan) ──────────────────────────
+# ── Defect 7 — time signature (measured, and the detector STRUCK) ─────────────
 
 
 def test_defect7_no_metric_depends_on_the_hardcoded_time_signature():
-    """Deferred, so the only requirement is that landing it later cannot break the gate."""
+    """No longer deferred — measured, and this is now a guard rather than a placeholder.
+
+    Both routes to a meter detector were measured and struck (the post-mortem is at
+    the ``meter.TimeSignature`` site in ``app/pipeline/transcriber.py``): the acoustic
+    ``tempogram_ratio`` cue is anti-correlated on this corpus and its sign flips on a
+    3 BPM step, and the symbolic bar-length cue declines on 5 of 5 real cases while
+    picking the wrong bar length on 0-of-38 4/4 cases by a *wider* margin than the two
+    it gets right.
+
+    What matters here is that the gate was never allowed to pretend otherwise.  With
+    every corpus case at 4/4 and the pipeline returning the constant "4/4", a
+    ``meter.exact`` column would have read 1.000 for an always-4/4 detector and 1.000
+    for a perfect one — a metric that reads the perfect score and cannot move.  Adding
+    a 3/4 and a 6/8 case lifts the honest headroom to a single case (0.025), and one of
+    those two is laundered: the 6/8 clip's tempo comes back 45 against a true 132, so a
+    correct "6/8" engraves a bar 2.9x too long and still scores exact=True.  So the
+    requirement is unchanged and now load-bearing: scoring stays independent of the
+    meter until something can actually be scored.
+    """
     sources = inspect.getsource(metrics) + inspect.getsource(runner)
     assert "time_signature" not in sources, (
-        "a metric started reading time_signature; defect 7 is deferred, so scoring "
-        "must stay independent of it"
+        "a metric started reading time_signature; the meter detector is struck, so "
+        "scoring must stay independent of it — see the post-mortem in transcriber.py"
+    )
+
+
+def test_the_reference_metrical_level_is_distinguishable_from_no_level_at_all():
+    """``metrical_factor`` must separate a perfect tempo from an incommensurate one.
+
+    The defect: ``TEMPO_METRICAL_FACTORS`` omitted 1.0, so "the estimate is on the
+    reference's own level" fell through to the 0.0 the docstring calls "none".
+    Measured over the 38-case report that collapsed 10 exact tempi and 25
+    incommensurate misses into one bucket — 35 of 38 cases reading the same value —
+    which defeats the column's stated purpose of telling a metrical slip from noise.
+
+    Directional: with 1.0 absent an exact reading is indistinguishable from a 1.219x
+    miss; with it present they separate.
+    """
+    defective = tuple(f for f in metrics.TEMPO_METRICAL_FACTORS if f != 1.0)
+
+    def factor(ref_bpm, est_bpm, factors):
+        for f in factors:
+            if abs(est_bpm - f * ref_bpm) <= metrics.TEMPO_OCTAVE_TOLERANCE * f * ref_bpm:
+                return f
+        return 0.0
+
+    # 117 against 96 is the real signature of the eight residual cases: 1.219x, which
+    # is not any known level.  88 against 88 is a perfect reading.
+    assert factor(96, 96, defective) == factor(96, 117, defective) == 0.0, (
+        "this test no longer reproduces the defect it exists to catch"
+    )
+
+    assert metrics.tempo_metrics(96, 96)["metrical_factor"] == 1.0
+    assert metrics.tempo_metrics(96, 117)["metrical_factor"] == 0.0
+    assert metrics.tempo_metrics(88, 86)["metrical_factor"] == 1.0, (
+        "86 against 88 is inside MIREX's +/-4 %, so it is the reference level with a "
+        "small error — abs_error carries the magnitude, not the level label"
+    )
+
+
+def test_naming_the_reference_level_does_not_disturb_the_gated_octave_flag():
+    """Specificity: ``octave_error`` is the gated bool and must not move.
+
+    It tests membership in (2.0, 0.5), and no estimate can sit within +/-4 % of both
+    1.0 and 2.0, so adding 1.0 to the front of the tuple cannot steal a match from
+    either.  Measured across the corpus: 0 octave errors before and after.
+    """
+    assert metrics.tempo_metrics(96, 192)["metrical_factor"] == 2.0
+    assert metrics.tempo_metrics(96, 192)["octave_error"] is True
+    assert metrics.tempo_metrics(96, 48)["octave_error"] is True
+    assert metrics.tempo_metrics(96, 96)["octave_error"] is False
+    assert metrics.tempo_metrics(96, 117)["octave_error"] is False
+
+    # The clean multiples the corpus really contains still report as multiples.
+    assert metrics.tempo_metrics(88, 345)["metrical_factor"] == 4.0
+    assert metrics.tempo_metrics(96, 144)["metrical_factor"] == 1.5
+    # And a missing tempo is still "no level", which stays true under the new reading.
+    assert metrics.tempo_metrics(96, 0)["metrical_factor"] == 0.0
+
+
+# ── Chromatic spelling — directional, and what that costs ─────────────────────
+
+# A chromatic descent: E Eb D Db C.  Both Eb and Db are approached from above, so both
+# take flat-side syllables.  Spelled from the ascending table the same clip reads
+# "m re r de d" — the sharp names for pitches the music is falling through, which is the
+# defect this section pins.
+CHROMATIC_DESCENT = (64, 63, 62, 61, 60)
+
+# The same shape rising, as the control.
+CHROMATIC_ASCENT = (60, 61, 62, 63, 64)
+
+
+def _syllables(notes: list[TranscribedNote]) -> list[str]:
+    return [n.solfa for n in notes]
+
+
+def test_a_falling_chromatic_is_spelled_from_the_flat_side():
+    """The user-visible half: what the sheet actually prints for a descent."""
+    assert _syllables(_perfect(CHROMATIC_DESCENT)) == ["m", "ma", "r", "ra", "d"]
+
+
+def test_a_rising_chromatic_is_still_spelled_from_the_sharp_side():
+    """Specificity: the fix must not simply have swapped one table for the other."""
+    assert _syllables(_perfect(CHROMATIC_ASCENT)) == ["d", "de", "r", "re", "m"]
+
+
+def test_ground_truth_moved_with_the_pipeline():
+    """Without this, a *correct* descending spelling would have scored as an error.
+
+    ``solfa_metrics`` built its reference labels from the ascending table always, so the
+    moment ``transcribe`` started selecting the flat side, the metric would have read
+    every correct flat syllable as wrong — a fix landing as a regression.  Both halves
+    of that are asserted: the correct spelling scores 1.0, and the old spelling, fed in
+    deliberately, now scores below it.
+    """
+    refs = _refs(CHROMATIC_DESCENT)
+    correct = _perfect(CHROMATIC_DESCENT)
+    scored = metrics.solfa_metrics(refs, correct, "C major", REF_BPM, REF_BPM)
+    assert scored["matched"] == len(CHROMATIC_DESCENT)
+    assert scored["syllable_accuracy"] == pytest.approx(1.0)
+
+    # The pre-Phase-2 labelling, reconstructed by forcing the ascending table.
+    doh_pc = solfa.doh_pitch_class(_parse_key_override("C major").tonic.pitchClass, "major")
+    ref_doh = solfa.reference_doh(list(CHROMATIC_DESCENT), doh_pc)
+    old = [
+        replace(n, solfa=solfa.syllable(n.pitch_midi, doh_pc, ref_doh, True)[0])
+        for n in correct
+    ]
+    old_scored = metrics.solfa_metrics(refs, old, "C major", REF_BPM, REF_BPM)
+    assert old_scored["syllable_accuracy"] < scored["syllable_accuracy"]
+
+
+def test_respelling_never_moves_a_degree():
+    """``SEMITONE_TO_DEGREE`` is one shared table, so ``degree_accuracy`` cannot move.
+
+    This is the whole reason Phase 2 is low-risk, and it is worth an assertion rather
+    than an argument: the two syllable tables differ on five semitones and agree on the
+    degree of all twelve.
+    """
+    for phrase in (CHROMATIC_DESCENT, CHROMATIC_ASCENT, HARMONIC_MINOR_PHRASE):
+        refs = _refs(phrase)
+        key = "A minor" if phrase is HARMONIC_MINOR_PHRASE else "C major"
+        scored = metrics.solfa_metrics(refs, _perfect(phrase, key), key, REF_BPM, REF_BPM)
+        assert scored["degree_accuracy"] == pytest.approx(1.0)
+
+
+def test_accidental_counts_are_blind_to_which_table_was_used():
+    """The gated accidentals column cannot be moved by re-spelling, in either direction.
+
+    ``chromatic_ghosts`` is computed from pitch classes, not syllables, so a descent and
+    an ascent through the same chromatic pitches must score identically.  Pinned because
+    the alternative — a column that counted flat-side syllables as extra accidentals —
+    would have made this phase look like a regression on the metric the original bug
+    report was about.
+    """
+    down = metrics.solfa_metrics(
+        _refs(CHROMATIC_DESCENT), _perfect(CHROMATIC_DESCENT), "C major", REF_BPM, REF_BPM
+    )
+    up = metrics.solfa_metrics(
+        _refs(CHROMATIC_ASCENT), _perfect(CHROMATIC_ASCENT), "C major", REF_BPM, REF_BPM
+    )
+    assert down["chromatic_ghosts"] == up["chromatic_ghosts"] == 0
+    assert down["chromatic_count"] == up["chromatic_count"] == 2
+    assert down["ref_chromatic_count"] == up["ref_chromatic_count"] == 2
+
+
+def test_the_harmonic_minor_leading_tone_is_respelled_on_a_descent():
+    """The accepted cost of "directional, always", recorded rather than discovered later.
+
+    In A minor the raised 7th G# is the leading tone, and conventional tonic sol-fa
+    writes it ``se`` wherever it appears, because its *function* is a sharpened soh
+    however the melody reaches it.  A purely directional rule cannot know that: the
+    second G# in this phrase is approached from A above, so it prints ``la`` — the
+    flattened-la name for the same pitch.  Both names are legitimate for the pitch class
+    and neither moves the degree, so nothing measurable regresses, which is precisely why
+    this needs an assertion to stay visible.
+
+    The narrow exception ("semitone 8 above doh, in a minor key, is always se") is a
+    one-line change to ``ascending_flags`` if the spelling is judged wrong in use.  It is
+    not made here because it would need a mode argument in all three tiers, and
+    "directional, always" was chosen deliberately.
+    """
+    labelled = _syllables(_perfect(HARMONIC_MINOR_PHRASE, "A minor"))
+    rising_leading_tone = labelled[6]
+    falling_leading_tone = labelled[8]
+
+    assert rising_leading_tone == "se", "the rising leading tone must keep the conventional name"
+    assert falling_leading_tone == "la", (
+        "directional spelling renames the falling leading tone; if this fails the rule "
+        "changed, and the trade recorded in this docstring changed with it"
+    )
+    # And it costs nothing the gate can see, which is the other half of the trade.
+    scored = metrics.solfa_metrics(
+        _refs(HARMONIC_MINOR_PHRASE),
+        _perfect(HARMONIC_MINOR_PHRASE, "A minor"),
+        "A minor",
+        REF_BPM,
+        REF_BPM,
+    )
+    assert scored["syllable_accuracy"] == pytest.approx(1.0)
+    assert scored["chromatic_ghosts"] == 0
+
+
+def test_direction_is_read_from_melodic_order_not_storage_order():
+    """The one way this can go wrong across tiers, pinned in the tier that owns the rule.
+
+    ``ascending_flags`` is positional: it takes a note's neighbours to be its neighbours
+    in the list.  The worker's stream is in offset order so it can hand the list straight
+    over, but the C# re-label reads an owned collection back out of Postgres in the
+    database's order and the client re-labels whatever the API sent — so both sort by
+    start beat and scatter the flags back (LibraryDtos.cs, solfa.ts ``deriveSolfa``).
+    Shuffling the input here shows what those two are protecting against: the same music
+    in a different list order gets different syllables.
+    """
+    in_order = solfa.ascending_flags(list(CHROMATIC_DESCENT))
+    shuffled = solfa.ascending_flags([60, 61, 62, 63, 64])  # the same pitches, ascending
+    assert in_order != shuffled
+
+
+# ── Confidence — a consensus number, not a loudness reading ───────────────────
+
+# Three of the eleven notes come back a semitone sharp, and Basic Pitch is *more*
+# confident about those than about the eight it got right.  That inversion is not
+# invented for the fixture: it is what the corpus measures now that the amplitude floor
+# deletes the easy ghosts amplitude used to separate, which is why conf.auc sits at
+# 0.551 and conf.separation at -0.012 with bare amplitude.
+_WRONG_INDICES = (2, 5, 8)
+_AMP_CORRECT = 0.50
+_AMP_WRONG = 0.62  # higher than the correct notes: the measured anti-correlation
+
+
+def _events_for_confidence(*, pyin_sees_the_truth: bool) -> list[Event]:
+    """One event per note of PHRASE, three of them a semitone sharp.
+
+    ``pyin_sees_the_truth`` is the whole experiment.  True is the ordinary case: pyin
+    tracked the sung pitch, so it contradicts the three wrong notes.  False is the
+    drift case, where pyin followed the singer off-pitch and agrees with the error —
+    there is no second opinion to be had, and the fix must not pretend otherwise.
+    """
+    events = []
+    for i, true_pitch in enumerate(PHRASE):
+        wrong = i in _WRONG_INDICES
+        events.append(
+            Event(
+                start=i * BEAT_SEC,
+                end=(i + 1) * BEAT_SEC,
+                pitch=true_pitch + 1 if wrong else true_pitch,
+                amp=_AMP_WRONG if wrong else _AMP_CORRECT,
+                pyin_midi=(
+                    float(true_pitch)
+                    if pyin_sees_the_truth
+                    else float(true_pitch + 1 if wrong else true_pitch)
+                ),
+                voiced_prob=0.95,
+            )
+        )
+    return events
+
+
+def _conf_metrics(events: list[Event], *, blended: bool) -> dict:
+    """Score *events* through the real metric, with conf assigned either way.
+
+    ``blended`` False is the shipped defect (``conf = evt.amp``); True is the fix.  The
+    notes are otherwise identical, so nothing but the confidence column can move.
+    """
+    notes = [
+        TranscribedNote(
+            pitch_midi=evt.pitch,
+            start_beat=float(i),
+            dur_beats=1.0,
+            degree=1,
+            solfa="d",
+            octave_mark="",
+            conf=_blend_confidence(evt) if blended else evt.amp,
+        )
+        for i, evt in enumerate(events)
+    ]
+    return metrics.note_confidence_metrics(_refs(), notes, REF_BPM, REF_BPM)
+
+
+def test_confidence_blend_ranks_right_notes_above_wrong_ones():
+    """The gated columns are conf.auc and conf.separation, and both are broken today.
+
+    Bare amplitude does not merely fail to rank here, it ranks *backwards*: every wrong
+    note outscores every correct one, so auc is 0.0 and separation is negative.  Adding
+    pyin's independent reading of the same spans is what makes the ordering recoverable
+    at all — neither engine alone can tell which of the two disagreeing pitches is right,
+    but disagreement itself is the signal.
+    """
+    events = _events_for_confidence(pyin_sees_the_truth=True)
+
+    before = _conf_metrics(events, blended=False)
+    after = _conf_metrics(events, blended=True)
+
+    assert before["auc"] < 0.5, "fixture should reproduce the measured anti-correlation"
+    assert before["separation"] < 0.0
+    assert after["auc"] > before["auc"]
+    assert after["separation"] > before["separation"]
+    assert after["separation"] > 0.0
+
+
+def test_confidence_blend_is_specific_to_having_a_second_opinion():
+    """When pyin agrees with the error there is no consensus to read, and the blend
+    must inherit amplitude's failure rather than manufacture a fix.
+
+    This is the ``drift_1_semitone`` case, where the singer drifts and pyin drifts with
+    them: measured, that case is the one place the blend *loses* ground (auc 0.960 ->
+    0.760).  Uniform agreement makes the blend a monotone function of amplitude, so the
+    rank statistic is unchanged — which is the honest outcome and worth pinning, because
+    a formula that improved auc here would be scoring its own shape, not the evidence.
+    """
+    events = _events_for_confidence(pyin_sees_the_truth=False)
+
+    before = _conf_metrics(events, blended=False)
+    after = _conf_metrics(events, blended=True)
+
+    assert after["auc"] == before["auc"]
+    # Still strictly ordered the wrong way round: no accidental credit.
+    assert after["separation"] < 0.0
+
+
+def test_confidence_blend_changes_nothing_when_pyin_never_spoke():
+    """Short clips and librosa failures leave every event without a pyin reading.
+
+    The blend has to be a no-op there, not a rescaling: the client bands the number at
+    fixed 0.5 and 0.75 cuts, so dragging a whole clip into a different band on no new
+    evidence would be a regression the rank-based auc cannot see.
+    """
+    silent_pyin = [
+        replace(evt, pyin_midi=None, voiced_prob=0.0)
+        for evt in _events_for_confidence(pyin_sees_the_truth=True)
+    ]
+
+    assert _conf_metrics(silent_pyin, blended=True) == _conf_metrics(
+        silent_pyin, blended=False
     )
 
 

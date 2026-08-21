@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -16,6 +15,8 @@ import { Screen } from "../components/Screen";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { showDialog } from "../lib/dialog";
+import { useSubscription } from "../lib/subscription";
 import { deriveSolfa } from "../lib/solfa";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
@@ -36,6 +37,7 @@ export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { isPro } = useSubscription();
 
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -116,31 +118,43 @@ export function LibraryScreen() {
         title: full.title,
       });
     } catch (e) {
-      Alert.alert("Could not open", toApiError(e).message);
+      showDialog({
+        title: "Could not open",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
     }
   }
 
   function confirmDelete(item: SavedTranscription) {
-    Alert.alert(
-      "Delete transcription",
-      `Remove "${item.title}"?\nThis cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
+    showDialog({
+      title: "Delete transcription",
+      message: `Remove "${item.title}"? This cannot be undone.`,
+      icon: "trash-outline",
+      tone: "danger",
+      actions: [
         {
-          text: "Delete",
+          label: "Delete",
           style: "destructive",
           onPress: async () => {
             setItems((prev) => prev.filter((t) => t.id !== item.id));
             try {
               await libraryApi.remove(item.id);
             } catch (e) {
-              Alert.alert("Could not delete", toApiError(e).message);
+              showDialog({
+                title: "Could not delete",
+                message: toApiError(e).message,
+                icon: "alert-circle-outline",
+                tone: "danger",
+              });
               load();
             }
           },
         },
-      ]
-    );
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
   }
 
   return (
@@ -219,17 +233,26 @@ export function LibraryScreen() {
                 style={styles.optionsBtn}
                 hitSlop={8}
                 onPress={() => {
-                  Alert.alert("Sort Library", "Select sorting preference:", [
-                    {
-                      text: "Newest First" + (sortOrder === "newest" ? " ✓" : ""),
-                      onPress: () => setSortOrder("newest"),
-                    },
-                    {
-                      text: "Oldest First" + (sortOrder === "oldest" ? " ✓" : ""),
-                      onPress: () => setSortOrder("oldest"),
-                    },
-                    { text: "Cancel", style: "cancel" },
-                  ]);
+                  showDialog({
+                    title: "Sort library",
+                    message: "Choose how transcriptions are ordered.",
+                    icon: "swap-vertical-outline",
+                    actions: [
+                      {
+                        label: "Newest first",
+                        // The active order is marked with a tick rather than by
+                        // appending " ✓" to the label, as the OS sheet had to.
+                        icon: sortOrder === "newest" ? "checkmark" : undefined,
+                        onPress: () => setSortOrder("newest"),
+                      },
+                      {
+                        label: "Oldest first",
+                        icon: sortOrder === "oldest" ? "checkmark" : undefined,
+                        onPress: () => setSortOrder("oldest"),
+                      },
+                      { label: "Cancel", style: "cancel" },
+                    ],
+                  });
                 }}
               >
                 <Ionicons
@@ -260,9 +283,17 @@ export function LibraryScreen() {
               onLongPress={() => confirmDelete(item)}
               style={styles.itemRow}
             >
-              {/* Blue note icon badge */}
-              <View style={styles.noteIconBadge}>
-                <Ionicons name="musical-notes-outline" size={22} color="#2563EB" />
+              {/* Note icon badge — gold for Pro accounts, the same premium accent the
+                  avatar ring and the Home chip use. It is the row's visual anchor, so
+                  it carries the signal without adding chrome the rows don't have. */}
+              <View
+                style={[styles.noteIconBadge, isPro && styles.noteIconBadgePremium]}
+              >
+                <Ionicons
+                  name="musical-notes-outline"
+                  size={22}
+                  color={isPro ? colors.premium : "#2563EB"}
+                />
               </View>
 
               {/* Item Info */}
@@ -401,6 +432,11 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       justifyContent: "center",
       marginRight: spacing.md,
+    },
+    noteIconBadgePremium: {
+      backgroundColor: c.premiumSoft,
+      borderWidth: 1,
+      borderColor: c.premiumBorder,
     },
     itemInfo: {
       flex: 1,

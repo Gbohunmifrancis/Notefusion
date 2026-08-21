@@ -1,4 +1,5 @@
-import { Alert, Linking } from 'react-native';
+import { Linking } from 'react-native';
+import { showDialog } from './dialog';
 
 /**
  * Profile-photo picking, isolated behind one function.
@@ -25,10 +26,12 @@ export async function pickProfileImage(): Promise<PickedImage | null> {
   try {
     ImagePicker = require('expo-image-picker') as typeof import('expo-image-picker');
   } catch {
-    Alert.alert(
-      'Not available in this build',
-      'Choosing a photo needs a newer version of the app. Please update to continue.',
-    );
+    showDialog({
+      title: 'Not available in this build',
+      message:
+        'Choosing a photo needs a newer version of the app. Please update to continue.',
+      icon: 'cloud-download-outline',
+    });
     return null;
   }
 
@@ -37,14 +40,15 @@ export async function pickProfileImage(): Promise<PickedImage | null> {
     // canAskAgain false means the OS will no longer show the prompt, so pointing
     // at Settings is the only actionable advice.
     if (permission.canAskAgain) return null;
-    Alert.alert(
-      'Photo access blocked',
-      'Allow photo access in system settings to choose a profile picture.',
-      [
-        { text: 'Not now', style: 'cancel' },
-        { text: 'Open Settings', onPress: () => Linking.openSettings() },
+    showDialog({
+      title: 'Photo access blocked',
+      message: 'Allow photo access in system settings to choose a profile picture.',
+      icon: 'lock-closed-outline',
+      actions: [
+        { label: 'Open Settings', icon: 'settings-outline', onPress: () => Linking.openSettings() },
+        { label: 'Not now', style: 'cancel' },
       ],
-    );
+    });
     return null;
   }
 

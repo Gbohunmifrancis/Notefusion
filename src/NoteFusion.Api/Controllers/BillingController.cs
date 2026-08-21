@@ -11,8 +11,9 @@ namespace NoteFusion.Api.Controllers;
 /// <summary>
 /// Subscription billing for the mobile app (F-monetization). The app never collects card details: it
 /// lists plans, asks to start a checkout, and opens the returned provider URL in an external browser
-/// (Spotify-style). The real payment result arrives out-of-band via the provider webhook, so the app
-/// polls <c>my-subscription</c> to learn when Pro unlocks.
+/// (Spotify-style). The authoritative payment result still arrives out-of-band via the provider webhook,
+/// but the app does not wait for it: on returning from checkout it calls <c>confirm</c>, which asks the
+/// provider directly, so Pro unlocks in a round trip rather than whenever the webhook lands.
 /// </summary>
 [Authorize]
 [Route("api/billing")]
@@ -52,6 +53,25 @@ public sealed class BillingController : ApiControllerBase
     [HttpGet("my-subscription")]
     public async Task<IActionResult> MySubscription(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetMySubscriptionQuery(), ct));
+
+    /// <summary>
+    /// Asks the provider whether the caller's in-flight checkout was paid, and returns the resulting
+    /// subscription state. The app sends this as soon as the checkout browser closes, which turns
+    /// "Pro unlocks whenever the provider's webhook arrives" into a single round trip. Takes no body:
+    /// the transaction is chosen from the authenticated identity, never supplied by the caller.
+    /// </summary>
+    [HttpPost("confirm")]
+    public async Task<IActionResult> Confirm(CancellationToken ct)
+        => HandleResult(await _sender.Send(new ConfirmPaymentCommand(), ct));
+
+    /// <summary>
+    /// Cancels the caller's subscription at the end of the period they have already paid for. Pro is not
+    /// withdrawn early and nothing is refunded; what changes is that the expiring-soon notice stops
+    /// saying the plan renews. Idempotent — cancelling twice returns 204 and changes nothing.
+    /// </summary>
+    [HttpPost("cancel")]
+    public async Task<IActionResult> Cancel(CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new CancelSubscriptionCommand(), ct));
 
     /// <summary>Total revenue balance, summed from the immutable ledger. Admin only.</summary>
     [HttpGet("ledger-balance")]

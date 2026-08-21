@@ -1,4 +1,16 @@
-import { LayoutDashboard, LogOut, Menu, PanelLeft, Search, Users2, X } from "lucide-react";
+import {
+  HeartPulse,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Moon,
+  PanelLeft,
+  ScrollText,
+  Search,
+  Sun,
+  Users2,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
@@ -6,6 +18,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Avatar } from "@/components/Avatar";
 import { BrandMark } from "@/components/BrandMark";
 import { useAuth } from "@/lib/auth";
+import { useTheme } from "@/lib/theme";
 
 /**
  * The application shell: a permanent left rail from `lg` up, an off-canvas drawer below it.
@@ -23,10 +36,20 @@ const NAV_GROUPS = [
       { to: "/users", label: "Users", icon: Users2 },
     ],
   },
+  {
+    // Doing and checking, as opposed to reading. Both pages are about the console's own actions
+    // and the state of the tiers behind them, which is a different job from the numbers above.
+    label: "Operations",
+    items: [
+      { to: "/audit-log", label: "Audit log", icon: ScrollText },
+      { to: "/health", label: "System health", icon: HeartPulse },
+    ],
+  },
 ] as const;
 
 export function Layout() {
   const { user, signOut } = useAuth();
+  const { mode, toggle } = useTheme();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -51,7 +74,7 @@ export function Layout() {
             narrow ? "justify-center" : ""
           }`}
         >
-          <BrandMark size={24} color="#2563eb" />
+          <BrandMark size={24} className="text-accent" />
           {!narrow && (
             <span className="flex-1 truncate text-[15px] font-semibold tracking-[-0.02em] text-ink">
               NoteFusion
@@ -128,7 +151,7 @@ export function Layout() {
                           narrow ? "justify-center px-0" : "px-4"
                         } ${
                           isActive
-                            ? "text-blue"
+                            ? "text-accent"
                             : "text-muted hover:bg-surface-alt hover:text-ink"
                         }`
                       }
@@ -140,7 +163,7 @@ export function Layout() {
                           {isActive && (
                             <span
                               aria-hidden="true"
-                              className="absolute inset-y-1 left-0 w-[3px] rounded-r-pill bg-blue"
+                              className="absolute inset-y-1 left-0 w-[3px] rounded-r-pill bg-accent"
                             />
                           )}
                           <Icon size={17} aria-hidden="true" className="shrink-0" />
@@ -170,10 +193,26 @@ export function Layout() {
             )}
             <button
               type="button"
+              onClick={toggle}
+              // The icon is the destination, not the current state — a moon that means
+              // "you are in light mode" and a moon that means "go dark" look identical,
+              // so the label says which it is.
+              title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              aria-label={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-sm text-muted transition hover:bg-surface-alt hover:text-ink"
+            >
+              {mode === "dark" ? (
+                <Sun size={15} aria-hidden="true" />
+              ) : (
+                <Moon size={15} aria-hidden="true" />
+              )}
+            </button>
+            <button
+              type="button"
               onClick={() => void signOut()}
               title="Sign out"
               aria-label="Sign out"
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-sm text-muted transition hover:bg-danger/10 hover:text-danger"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-sm text-muted transition hover:bg-danger/10 hover:text-danger-deep"
             >
               <LogOut size={15} aria-hidden="true" />
             </button>
@@ -199,7 +238,9 @@ export function Layout() {
             type="button"
             aria-label="Close menu"
             onClick={() => setMenuOpen(false)}
-            className="fixed inset-0 z-30 bg-ink/40 lg:hidden"
+            // Navy rather than ink: `ink` is the text colour, so it inverts to near-white
+            // in dark mode and the scrim would brighten the page instead of dimming it.
+            className="fixed inset-0 z-30 bg-navy-deep/60 lg:hidden"
           />
           <aside className="fixed inset-y-0 left-0 z-40 w-[248px] border-r border-border bg-surface lg:hidden">
             {rail(true)}
@@ -222,7 +263,7 @@ export function Layout() {
           >
             <Menu size={18} aria-hidden="true" />
           </button>
-          <BrandMark size={20} color="#2563eb" />
+          <BrandMark size={20} className="text-accent" />
           <span className="text-sm font-semibold text-ink">NoteFusion Admin</span>
         </header>
 

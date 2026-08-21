@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Library.Commands;
 using NoteFusion.Application.Library.Queries;
+using NoteFusion.Application.Transcriptions.Dtos;
 
 namespace NoteFusion.Api.Controllers;
 
@@ -49,6 +50,14 @@ public sealed class LibraryController : ApiControllerBase
     public async Task<IActionResult> UpdateKey(Guid id, UpdateKeyBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new UpdateTranscriptionKeyCommand(id, body.Key), ct));
 
+    /// <summary>
+    /// Replaces the note list with the user's corrections (tap-to-correct, F-07). The whole list,
+    /// because a correction can delete a note and shift every index after it.
+    /// </summary>
+    [HttpPut("{id:guid}/notes")]
+    public async Task<IActionResult> UpdateNotes(Guid id, UpdateNotesBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new UpdateTranscriptionNotesCommand(id, body.Notes), ct));
+
     /// <summary>Deletes a saved transcription.</summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
@@ -59,4 +68,7 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Body for a key-override request.</summary>
     public sealed record UpdateKeyBody(string Key);
+
+    /// <summary>Body for a note-correction request.</summary>
+    public sealed record UpdateNotesBody(IReadOnlyList<NoteEventDto> Notes);
 }
