@@ -321,6 +321,29 @@ they are not part of this task and should not be printed back:
 - `Jwt__*`, `Cors__AllowedOrigins__0` (the admin dashboard origin), `TranscriptionApi__BaseUrl`
   (the internal ML worker), and the `Seed__*` admin bootstrap.
 
+## 6. The transcriber app — `WEB_CONCURRENCY=1` is not optional
+
+The Python ML worker is a **separate** Heroku app from the API, and it needs exactly one
+web process:
+
+```bash
+heroku config:set WEB_CONCURRENCY=1 --app <your-transcriber-app>
+```
+
+`JobQueue` keeps its jobs in a plain in-process dict (`server/app/jobs/queue.py`), so each
+uvicorn worker process has its own. `POST /v1/transcribe` lands the job in whichever process
+the router picked, and the client's `GET /v1/jobs/{id}` polls are spread across all of them —
+so with *N* workers, (N−1)/N of the polls hit a process that has never heard of that job and
+answer **404**. Heroku's default `WEB_CONCURRENCY` is derived from dyno memory rather than
+from anything this app knows, which is how the setting goes missing: it looks like a
+performance knob and is actually a correctness one. Measured on the deployed app before it
+was set, roughly 70% of polls 404'd and a transcription that had in fact succeeded looked to
+the mobile client like a job that vanished.
+
+Parallelism inside the one process is `NF_INFERENCE_WORKERS` (default 1, deliberately — see
+`pyin_max_seconds` in `server/app/config.py` for the latency budget that assumes it). That is
+the knob to reach for, not `WEB_CONCURRENCY`.
+
 ## Verify
 
 ```bash
