@@ -47,33 +47,45 @@ from app.pipeline import solfa
 # 22 050 Hz gives CD-quality for speech/melody with half the data of 44 100 Hz.
 PREVIEW_SAMPLE_RATE = 22_050
 
-# Synthesis voice: fundamental + partials, falling off as roughly 1/k^1.7. A
-# nearly-flat spectrum (the old four weights were 0.50/0.20/0.12/0.08, i.e. 1/k^1.3
-# truncated) reads as a buzz; rolling off further and going wider sounds like a
-# soft plucked tone. Eight partials at the pipeline's 1050 Hz pitch ceiling put the
-# topmost at 8.4 kHz, under the 11.025 kHz Nyquist of PREVIEW_SAMPLE_RATE — and the
-# loop drops any partial that would exceed it anyway, so raising either is safe.
-_HARMONIC_WEIGHTS = (1.0, 0.36, 0.22, 0.13, 0.085, 0.055, 0.035, 0.022)
+# Synthesis voice: a softly-struck piano. Weights fall off as roughly 1/k², steeper
+# than the 1/k^1.7 pluck they replace, because a piano played gently has a dominant
+# fundamental and weak upper partials — a flatter spectrum is what read as a buzz.
+# Eight partials at the pipeline's 1050 Hz pitch ceiling put the topmost at 8.4 kHz,
+# under the 11.025 kHz Nyquist of PREVIEW_SAMPLE_RATE — and the loop drops any partial
+# that would exceed it anyway, so raising either is safe.
+_HARMONIC_WEIGHTS = (1.0, 0.28, 0.14, 0.07, 0.04, 0.022, 0.012, 0.007)
 
 # Per-partial brightness decay: partial k is damped by exp(-k·t/_HARMONIC_DECAY_SEC),
 # so upper partials die away faster than the fundamental. This is the cue that
-# separates a struck or plucked instrument from an organ. Without it the spectrum of
-# every note is frozen for its whole length, which is most of why the old preview
-# sounded synthetic.
-_HARMONIC_DECAY_SEC = 2.5
+# separates a struck instrument from an organ. Without it the spectrum of every note
+# is frozen for its whole length, which is most of why the old preview sounded
+# synthetic. 1.6 s rather than 2.5: a piano's hammer noise and upper partials fade
+# faster than its fundamental, and the slower value left the tone bright enough to
+# still read as a synth pad.
+_HARMONIC_DECAY_SEC = 1.6
 
 # Upper partials of a real string sit slightly sharp of exact multiples. Stretching
 # partial k by (1 + B·k²) with this B puts the 8th about 9 cents sharp: enough to
 # keep the partials from phase-locking into a static buzz, small enough not to sound
-# out of tune.
+# out of tune. Real piano B runs 1e-4 upward, so this is conservative and in-family.
 _INHARMONICITY = 8e-5
 
-# ADSR parameters (seconds). Short attack / longer release sounds more natural
-# than a rectangular envelope when notes are hummed or played on a soft instrument.
-_ATTACK_SEC = 0.015
-_DECAY_SEC = 0.040
-_RELEASE_FRAC = 0.25  # release is 25 % of note duration, capped at 0.18 s
-_SUSTAIN_LEVEL = 0.80  # sustain amplitude relative to peak (after decay)
+# Envelope (seconds). A piano is percussive: it never holds a level, it decays from
+# the strike onward. The previous voice sustained at 0.80 × peak for the whole body
+# of every note, which is an *organ* — and that plateau, more than the spectrum, is
+# what made the preview sound wack. So there is no sustain level here; the body is a
+# continuous exponential (see _string_decay_sec) and only the attack and the damper
+# release are shaped.
+_ATTACK_SEC = 0.006  # hammer strike; raised-cosine, so short but not a click
+_RELEASE_SEC = 0.080  # damper falling at note-off, so notes stop on the grid
+
+# Body decay time constant, seconds, at middle C. Scaled per note by
+# _string_decay_sec: bass strings are longer, heavier and less damped, so they ring
+# far longer than treble ones, and a single global constant makes the low register
+# sound clipped and the high register sound like a bell.
+_STRING_DECAY_SEC_C4 = 2.6
+_STRING_DECAY_MIN_SEC = 0.6
+_STRING_DECAY_MAX_SEC = 4.0
 
 # ── Post-processing thresholds ────────────────────────────────────────────────
 
@@ -249,6 +261,19 @@ def _smooth_ramp(n: int, start: float, end: float) -> "np.ndarray":
     )
 
 
+def _string_decay_sec(pitch_midi: int) -> float:
+    """Body decay time constant for a note, in seconds.
+
+    Doubles every two octaves *down* from middle C, so C4 rings for
+    ``_STRING_DECAY_SEC_C4``, C6 for a quarter as long and C2 for four times as long,
+    clamped to a sane band. A real piano's bass strings are longer, heavier and less
+    damped than its treble ones; using one constant for the whole compass makes low
+    notes sound cut off and high notes sound like a struck bell.
+    """
+    scaled = _STRING_DECAY_SEC_C4 * 2.0 ** ((60 - pitch_midi) / 24.0)
+    return float(min(max(scaled, _STRING_DECAY_MIN_SEC), _STRING_DECAY_MAX_SEC))
+
+
 def _synthesize_audio_preview(
     notes: "list[TranscribedNote]",
     tempo_bpm: int,
@@ -263,15 +288,20 @@ def _synthesize_audio_preview(
 
     Voice model
     ───────────
-    Each note is a sum of the partials in ``_HARMONIC_WEIGHTS``, each one slightly
-    stretched sharp by ``_INHARMONICITY`` and damped by
-    ``exp(-k·t/_HARMONIC_DECAY_SEC)`` so the tone darkens as it rings. An ADSR
-    envelope is applied, using raised-cosine ramps so no segment boundary clicks:
-      • Attack  : ramp-up over ``_ATTACK_SEC`` seconds.
-      • Decay   : drop to the sustain level over ``_DECAY_SEC`` seconds.
-      • Sustain : held at ``_SUSTAIN_LEVEL`` × peak for the body of the note.
-      • Release : fade-out over the final ``_RELEASE_FRAC`` of the note
-                  (capped at 0.18 s so long notes still end cleanly).
+    A softly-struck piano. Each note is a sum of the partials in
+    ``_HARMONIC_WEIGHTS``, each one slightly stretched sharp by ``_INHARMONICITY``
+    and damped by ``exp(-k·t/_HARMONIC_DECAY_SEC)`` so the tone darkens as it rings.
+    The envelope is percussive rather than ADSR — a piano has no level to hold:
+      • Attack : raised-cosine ramp-up over ``_ATTACK_SEC``, so there is no click.
+      • Body   : ``exp(-t/tau)`` for the whole note, ``tau`` from
+                 ``_string_decay_sec`` so bass notes ring longer than treble.
+      • Release: raised-cosine fade over ``_RELEASE_SEC``, the damper landing, so
+                 notes stop on the grid instead of smearing into the next.
+
+    ``mobile/src/lib/synth.ts`` renders the same voice with the same constants, and
+    the two must stay in lock-step: the mobile one replaces this preview as soon as
+    the user edits a note, so any divergence is audible as the timbre changing
+    underfoot.
 
     The confidence score of each note is used as a per-note velocity scaler so
     low-confidence notes are softer than high-confidence ones.
@@ -348,25 +378,25 @@ def _synthesize_audio_preview(
                 * np.sin(2.0 * np.pi * f_k * t + phase)
             )
 
-        # ADSR. The ramps are raised-cosine, not linear: a linear ramp has a corner
-        # at each end, and over a 15 ms attack that corner is audible as a click on
-        # every single note. Pre-filling with the sustain level means only the attack
-        # and decay segments need writing, and both fit by construction since each is
-        # capped at a quarter of the note.
-        env = np.full(actual, _SUSTAIN_LEVEL, dtype=np.float64)
+        # Envelope. A piano decays continuously from the strike — there is no level to
+        # hold — so the body is exp(-t/tau) with tau from the register, and only the
+        # attack and the damper release are shaped. The ramps are raised-cosine, not
+        # linear: a linear ramp has a corner at each end, and over a 6 ms attack that
+        # corner is audible as a click on every single note.
+        env = np.exp(-t / _string_decay_sec(n.pitch_midi))
         atk = min(int(_ATTACK_SEC * sr), actual // 4)
-        dec = min(int(_DECAY_SEC * sr), actual // 4)
-        rel = min(int(_RELEASE_FRAC * actual), int(0.18 * sr))
+        rel = min(int(_RELEASE_SEC * sr), actual // 2)
 
         if atk > 0:
-            env[:atk] = _smooth_ramp(atk, 0.0, 1.0)
-        if dec > 0:
-            env[atk : atk + dec] = _smooth_ramp(dec, 1.0, _SUSTAIN_LEVEL)
+            env[:atk] *= _smooth_ramp(atk, 0.0, 1.0)
         if rel > 0:
             env[-rel:] *= _smooth_ramp(rel, 1.0, 0.0)
 
-        # Velocity from confidence (range 0.4 – 1.0 so even low-conf notes audible)
-        velocity = 0.4 + 0.6 * float(n.conf)
+        # Velocity from confidence. Narrower than the old 0.4-1.0: soft-piano dynamics
+        # live in a tighter band, and conf is a noisy number today (see the
+        # ADAPTIVE_FACTOR note above — conf.auc is 0.551), so a low value must not be
+        # able to render a real note near-inaudible.
+        velocity = 0.55 + 0.35 * float(n.conf)
         audio[start_samp:end_samp] += tone * env * (velocity * voice_gain)
 
     # Soft-limit instead of rescaling by the peak. The old code divided the whole
