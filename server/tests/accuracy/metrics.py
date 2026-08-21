@@ -330,6 +330,26 @@ def key_metrics(ref_key: str, est_key: str) -> dict:
     *either* direction (dominant and subdominant are the classic Krumhansl-Schmuckler
     slips), while mir_eval only awards its 0.5 to a fifth above.  A subdominant
     confusion therefore reads ``fifth_confusion=True`` with ``weighted_score=0.0``.
+
+    **The three confusions are not equally expensive, and one of them is free.**  Read
+    against ``solfa.degree_accuracy`` rather than on their own:
+
+    - ``relative_confusion`` costs **nothing**, and not approximately — exactly nothing,
+      by construction.  Solfa is movable-do with la-based minor, so
+      ``solfa.doh_pitch_class`` maps a minor key to ``(tonic + 3) % 12``: A minor and C
+      major both return doh = C.  Identical doh means identical syllables, identical
+      degrees, and relatives share a key signature, so the staff render is identical
+      too.  Only the displayed key *string* is wrong.  Measured:
+      ``relative_bait_c_major`` reads C major as A minor and still scores
+      ``degree_accuracy`` 1.000.  Anything that trades solfa accuracy to push this
+      column down is trading something for nothing.
+    - ``fifth_confusion`` is the fatal one.  A subdominant slip moves doh by five
+      semitones and every degree in the clip with it: ``plagal_fourth_c_major`` reads C
+      major as F major and scores ``degree_accuracy`` 0.000 on ``notes.f1`` 0.846 — the
+      notes are heard correctly and mislabelled wholesale.  This is where the leverage
+      is, and it is the confusion ``KEY_PROFILE_NAMES`` was assembled to cancel.
+    - ``parallel_confusion`` moves doh by three semitones, so it is expensive too; it is
+      0.000 over the corpus and has never been the failure mode here.
     """
     zeros = {
         "weighted_score": 0.0,
