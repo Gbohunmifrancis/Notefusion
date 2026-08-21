@@ -20,6 +20,15 @@ var builder = WebApplication.CreateBuilder(args);
 // image runs in dev and compose with only env changes.
 builder.Configuration.AddEnvironmentVariables();
 
+// The framework's own request pipeline narrates every request at Information — endpoint selected,
+// route matched, action executed, result written — which is four lines of noise per call once they
+// are JSON. appsettings.json used to hold this level, but that file is untracked now (it carried a
+// live API key) and the environment cannot carry the replacement: a category-specific key is spelled
+// Logging__LogLevel__Microsoft.AspNetCore, and the dot makes it an illegal variable name on a POSIX
+// host, so the platform stores it and never hands it to the process. It belongs in code anyway — a
+// log level is a policy, not a secret, and this way a fresh clone logs the same volume as this one.
+builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
+
 // Structured logs everywhere but a developer's terminal. The plain console formatter drops logging
 // scopes entirely, which would throw away the correlation id CorrelationIdMiddleware puts there and
 // leave the platform's log drain with prose to regex — the reason a failed job could not be found.
