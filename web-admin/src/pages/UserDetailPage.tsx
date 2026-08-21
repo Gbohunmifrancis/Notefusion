@@ -241,7 +241,13 @@ const DURATION_LABELS: Record<GiftDuration, string> = {
   lifetime: "lifetime",
 };
 
-function SubscriptionPanel({ user, offset, ask, perform }: PanelProps) {
+function SubscriptionPanel({
+  user,
+  offset,
+  ask,
+  perform,
+  isSelf,
+}: PanelProps & { isSelf: boolean }) {
   const [duration, setDuration] = useState<GiftDuration>("monthly");
   const [newEnd, setNewEnd] = useState("");
   const sub = user.subscription;
@@ -252,27 +258,40 @@ function SubscriptionPanel({ user, offset, ask, perform }: PanelProps) {
   const currentEnd = sub?.currentPeriodEndUtc?.slice(0, 10) ?? today;
   const minEnd = addDays(currentEnd > today ? currentEnd : today, 1);
 
-  const giftBlocked = sub?.isActive
-    ? "Pro is already active. Extend the current period instead of granting a second one."
+  // Separation of duties, and it comes first in each reason below: an operator looking at their own
+  // account should be told they are the wrong person to do this, not that the dates do not line up.
+  const selfBlock = isSelf
+    ? "You cannot change your own subscription. Ask another administrator, so the trail has two names in it."
     : undefined;
 
-  const revokeBlocked = !sub
-    ? NO_SUBSCRIPTION
-    : !sub.isActive
-      ? ALREADY_ENDED
-      : !sub.isGift
-        ? "This subscription was paid for. Ending paid access is a separate, separately confirmed action."
-        : undefined;
+  const giftBlocked =
+    selfBlock ??
+    (sub?.isActive
+      ? "Pro is already active. Extend the current period instead of granting a second one."
+      : undefined);
 
-  const extendBlocked = !sub
-    ? NO_SUBSCRIPTION
-    : sub.isLifetime
-      ? "Lifetime access has no end date to move."
-      : !newEnd
-        ? "Pick a new end date first."
-        : undefined;
+  const revokeBlocked =
+    selfBlock ??
+    (!sub
+      ? NO_SUBSCRIPTION
+      : !sub.isActive
+        ? ALREADY_ENDED
+        : !sub.isGift
+          ? "This subscription was paid for. Ending paid access is a separate, separately confirmed action."
+          : undefined);
 
-  const endBlocked = !sub ? NO_SUBSCRIPTION : !sub.isActive ? ALREADY_ENDED : undefined;
+  const extendBlocked =
+    selfBlock ??
+    (!sub
+      ? NO_SUBSCRIPTION
+      : sub.isLifetime
+        ? "Lifetime access has no end date to move."
+        : !newEnd
+          ? "Pick a new end date first."
+          : undefined);
+
+  const endBlocked =
+    selfBlock ?? (!sub ? NO_SUBSCRIPTION : !sub.isActive ? ALREADY_ENDED : undefined);
 
   return (
     <Card
@@ -858,6 +877,7 @@ export function UserDetailPage() {
                 offset={offset}
                 ask={setConfirm}
                 perform={perform}
+                isSelf={loaded.id === auth.user?.id}
               />
               <LifecyclePanel
                 user={loaded}

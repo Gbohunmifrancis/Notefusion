@@ -38,8 +38,13 @@ public sealed class ExtendSubscriptionCommandHandler : IRequestHandler<ExtendSub
 
     public async Task<Result> Handle(ExtendSubscriptionCommand request, CancellationToken ct)
     {
-        if (_currentUser.UserId is null)
+        if (_currentUser.UserId is not { } actorId)
             return AdminErrors.NotAuthenticated;
+
+        // Extending is granting by another name — it is the way an operator who already has Pro would give
+        // themselves more of it, so it carries the same refusal as the gift.
+        if (actorId == request.UserId)
+            return AdminErrors.CannotBillSelf;
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
         if (user is null)

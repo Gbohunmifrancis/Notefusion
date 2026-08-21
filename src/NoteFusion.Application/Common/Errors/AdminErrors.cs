@@ -29,6 +29,17 @@ public static class AdminErrors
         Error.Failure("ADMIN_LAST_ADMIN",
             "This is the only active administrator. Promote someone else first, then try again.");
 
+    /// <summary>
+    /// Granting, revoking, extending or ending your own subscription. A separate code from
+    /// <see cref="CannotActOnSelf"/> because the reason is a different one: none of these would lock the
+    /// operator out, so this is not self-protection. It is separation of duties. The account holding the
+    /// button that hands out the paid product should not be able to point it at itself, and a trail entry
+    /// naming one person as both actor and target is a finding rather than a record.
+    /// </summary>
+    public static readonly Error CannotBillSelf =
+        Error.Failure("ADMIN_CANNOT_BILL_SELF",
+            "You cannot change your own subscription. Ask another administrator, so the trail has two names in it.");
+
     // ---------------------------------------------------------------- subscription operations
 
     public static readonly Error NoSubscription =

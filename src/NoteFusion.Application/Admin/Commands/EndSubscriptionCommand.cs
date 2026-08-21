@@ -40,8 +40,14 @@ public sealed class EndSubscriptionCommandHandler : IRequestHandler<EndSubscript
 
     public async Task<Result> Handle(EndSubscriptionCommand request, CancellationToken ct)
     {
-        if (_currentUser.UserId is null)
+        if (_currentUser.UserId is not { } actorId)
             return AdminErrors.NotAuthenticated;
+
+        // Included for completeness rather than because self-ending is a threat: with the other three
+        // refused, leaving this one open would mean the console's own rule about own-account billing has an
+        // exception, and an exception is what someone reasons from next time.
+        if (actorId == request.UserId)
+            return AdminErrors.CannotBillSelf;
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
         if (user is null)

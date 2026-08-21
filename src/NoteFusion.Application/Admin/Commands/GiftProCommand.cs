@@ -57,8 +57,14 @@ public sealed class GiftProCommandHandler : IRequestHandler<GiftProCommand, Resu
 
     public async Task<Result> Handle(GiftProCommand request, CancellationToken ct)
     {
-        if (_currentUser.UserId is null)
+        if (_currentUser.UserId is not { } actorId)
             return AdminErrors.NotAuthenticated;
+
+        // Separation of duties, checked before anything is loaded: an administrator must not be able to comp
+        // their own account. Nothing else in this handler would stop them, and the trail would record it as a
+        // gift like any other.
+        if (actorId == request.UserId)
+            return AdminErrors.CannotBillSelf;
 
         if (!PlanCodes.TryGetValue(request.Duration, out var planCode))
             return AdminErrors.GiftPlanMissing(request.Duration.ToString());

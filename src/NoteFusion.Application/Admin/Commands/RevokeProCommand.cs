@@ -35,8 +35,14 @@ public sealed class RevokeProCommandHandler : IRequestHandler<RevokeProCommand, 
 
     public async Task<Result> Handle(RevokeProCommand request, CancellationToken ct)
     {
-        if (_currentUser.UserId is null)
+        if (_currentUser.UserId is not { } actorId)
             return AdminErrors.NotAuthenticated;
+
+        // Symmetrical with the gift guard. Taking your own comp back is harmless in itself, but the pair of
+        // buttons has to be all-or-nothing: leaving revoke reachable is how an operator tidies away the
+        // evidence of a grant they should not have made.
+        if (actorId == request.UserId)
+            return AdminErrors.CannotBillSelf;
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
         if (user is null)

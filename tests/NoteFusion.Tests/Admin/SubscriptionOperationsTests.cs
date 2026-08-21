@@ -417,6 +417,67 @@ public class SubscriptionOperationsTests
         Assert.Empty(h.Db.AdminAuditLogs.ToList());
     }
 
+    // ------------------------------------------------------- separation of duties
+
+    [Fact]
+    public async Task An_administrator_cannot_gift_pro_to_their_own_account()
+    {
+        using var h = new TestHarness(Now);
+        var (admin, _) = Seed(h);
+
+        var result = await Gift(h, admin, admin.Id, BillingInterval.Lifetime);
+
+        // The account holding the button that hands out the paid product cannot point it at itself. Refused
+        // before the plan is even looked up, so there is no half-made grant to find later.
+        Assert.True(result.IsFailure);
+        Assert.Equal("ADMIN_CANNOT_BILL_SELF", result.Error.Code);
+        Assert.Empty(h.Db.Subscriptions.ToList());
+        Assert.Empty(h.Db.AdminAuditLogs.ToList());
+    }
+
+    [Fact]
+    public async Task The_refusal_covers_every_route_to_your_own_subscription()
+    {
+        using var h = new TestHarness(Now);
+        var (admin, _) = Seed(h);
+        Paid(h, admin, endsIn: TimeSpan.FromDays(20));
+
+        // One of the four left open is the whole guard: revoke and end are how a grant gets tidied away
+        // afterwards, and extend is granting by another name. An operator would simply use whichever one
+        // still worked.
+        foreach (var result in new[]
+        {
+            await Revoke(h, admin, admin.Id),
+            await Extend(h, admin, admin.Id, Now.AddDays(60)),
+            await End(h, admin, admin.Id),
+        })
+        {
+            Assert.True(result.IsFailure);
+            Assert.Equal("ADMIN_CANNOT_BILL_SELF", result.Error.Code);
+        }
+
+        Assert.True(h.Db.Subscriptions.Single(s => s.UserId == admin.Id).IsActiveAt(Now));
+        Assert.Empty(h.Db.AdminAuditLogs.ToList());
+    }
+
+    [Fact]
+    public async Task Comping_another_administrator_is_still_allowed()
+    {
+        using var h = new TestHarness(Now);
+        var (admin, _) = Seed(h);
+        var colleague = User.CreateAdmin(
+            "Bo Boss", "bo@notefusion.studio", h.Hasher.Hash("password123"), Now.AddDays(-100));
+        h.Db.Users.Add(colleague);
+        await h.Db.SaveChangesAsync();
+
+        var result = await Gift(h, admin, colleague.Id, BillingInterval.Monthly);
+
+        // The guard is about acting alone, not about rank. Two administrators is two names in the trail,
+        // which is the condition the refusal exists to force.
+        Assert.True(result.IsSuccess);
+        Assert.Equal(admin.Id, Assert.Single(h.Db.AdminAuditLogs.ToList()).ActorUserId);
+    }
+
     // ------------------------------------------------------------------ the detail page
 
     [Fact]
