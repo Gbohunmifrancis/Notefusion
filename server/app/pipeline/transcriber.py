@@ -235,6 +235,33 @@ PYIN_MIN_VOICED_PROB = 0.5
 # +14 ghost does occur) is left alone rather than snapped.
 PYIN_OCTAVE_TOLERANCE = 1.5
 
+# Confidence blend: voiced_prob as a reliability scaler on the pyin/Basic-Pitch
+# agreement term, falling back to bare amplitude when pyin was silent.
+#
+#   conf = (W_AMP * amp + (W_AGREE_MAX * voiced_prob) * agreement)
+#          / (W_AMP    + (W_AGREE_MAX * voiced_prob))
+#
+# Swept arithmetic-mean weights, geometric means, products and the scaled form over
+# 609 rows / 38 cases (7 with a non-trivial wrong-note population).  Scores below are
+# per-case auc averaged over those 7, fraction of wrong notes shown as "High confidence"
+# (>= 0.75, which the client highlights), and fraction of wrong notes flagged low (< 0.5):
+#
+#   additive 1:3           auc 0.693  bad_high 0.25  bad_low 0.29
+#   additive 2:3           auc 0.687  bad_high 0.09  bad_low 0.35
+#   scaled 2:3  (chosen)   auc 0.683  bad_high 0.05  bad_low 0.40
+#   amp only (baseline)    auc 0.551  bad_high 0.01  bad_low 0.81
+#
+# auc is flat across the plateau (0.680-0.698) on 7 cases; the decision is on the
+# columns that separate: scaled 2:3 has the lowest wrong-note mislabelling, preserves
+# drift_1_semitone best (0.960 -> 0.760 vs 0.700 for pure additive), and makes
+# voiced_prob load-bearing as a reliability scaler rather than a below-chance additive
+# signal (voiced-only auc: 0.463).
+#
+# At voiced_prob = 1.0 the formula is the additive (2, 0, 3) blend.
+# At voiced_prob = 0.0 it collapses to bare amplitude.
+CONF_WEIGHT_AMP = 2.0
+CONF_WEIGHT_AGREE_MAX = 3.0
+
 # music21 flat letter → "b" convention expected by C#'s KeyParser.
 _M21_FLAT_MAP: dict[str, str] = {
     "A-": "Ab",
@@ -840,6 +867,15 @@ class Event:
 
     ``bend_semitones`` defaults to 0.0, which is honest rather than a sentinel: no bend
     information means the best estimate of the fundamental *is* the notated pitch.
+
+    ``pyin_midi`` and ``voiced_prob`` are pyin's reading of the same span — the pitch it
+    measured and how reliably it heard anything at all.  ``_refine_pitches`` computes
+    both already and used to throw them away after gating on them; they are carried here
+    because they are the pipeline's only pitch evidence *independent* of Basic Pitch, and
+    that independence is what makes a confidence number worth printing (see
+    ``_blend_confidence``).  ``pyin_midi`` is None when pyin had too few voiced frames in
+    the span to speak, or when it did not run at all, which is not the same claim as
+    ``voiced_prob = 0.0``.
     """
 
     start: float
@@ -847,6 +883,8 @@ class Event:
     pitch: int
     amp: float
     bend_semitones: float = 0.0
+    pyin_midi: float | None = None
+    voiced_prob: float = 0.0
 
     @property
     def f0(self) -> float:
@@ -1079,6 +1117,11 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
     split apart only because Basic Pitch put them at different pitches become the
     same pitch here, and the existing exact-pitch merge then fuses them with no
     tolerance of its own and therefore no risk to genuine semitone steps.
+
+    Every event that pyin could speak about leaves here carrying ``pyin_midi`` and
+    ``voiced_prob``, on every branch — including the ones that decline to correct the
+    pitch.  "pyin was unsure here" and "pyin disagreed and was overruled" are both
+    signal about how much to trust the note, and this is the only place they exist.
     """
     times, midi, voiced_prob = _pyin_contour(wav_path)
     if times.size == 0:
@@ -1094,8 +1137,11 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
 
         median_midi = float(np.median(midi[span]))
         confidence = float(np.median(voiced_prob[span]))
+        # From here on ``measured`` stands in for ``evt`` everywhere, so no branch can
+        # drop the evidence just because it declined to act on it.
+        measured = replace(evt, pyin_midi=median_midi, voiced_prob=confidence)
         if confidence < PYIN_MIN_VOICED_PROB:
-            refined.append(evt)
+            refined.append(measured)
             continue
 
         if settings.pyin_semitone:
@@ -1104,15 +1150,15 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
             octaves = round((median_midi - evt.pitch) / 12.0)
             offset = median_midi - evt.pitch - 12.0 * octaves
             if octaves == 0 or abs(offset) > PYIN_OCTAVE_TOLERANCE:
-                refined.append(evt)
+                refined.append(measured)
                 continue
             candidate = evt.pitch + 12 * octaves
 
         if candidate == evt.pitch or not 0 <= candidate <= 127:
-            refined.append(evt)
+            refined.append(measured)
             continue
 
-        refined.append(replace(evt, pitch=candidate))
+        refined.append(replace(measured, pitch=candidate))
         corrected += 1
 
     if corrected:
@@ -1121,6 +1167,63 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
             flush=True,
         )
     return refined
+
+
+def _blend_confidence(evt: Event) -> float:
+    """The number the client prints as "High/Medium/Low confidence" for one note.
+
+    This used to be ``evt.amp`` — Basic Pitch's own posterior — and that stopped working
+    the moment the amplitude floor started firing.  ``ADAPTIVE_FACTOR`` 0.25 -> 0.40
+    deletes exactly the events amplitude was correctly identifying as ghosts, so
+    ``conf.auc`` fell 0.868 -> 0.551 and ``conf.separation`` to -0.012: among the notes
+    that survive the floor, amplitude no longer ranks right from wrong at all.  A field
+    that anti-correlates with correctness is worse than no field, because the client
+    counts the notes under 0.5 as the ones worth re-recording.
+
+    The fix is not a better threshold on one signal but a second opinion, and the
+    pipeline already has one it was discarding.  Three terms, in [0, 1]:
+
+    ``amp``          Basic Pitch's posterior.  Still the only evidence for events pyin
+                     cannot speak about, and still what the floor filters on.
+    ``voiced_prob``  pyin's median probability that the span was voiced at all.  Low on
+                     breath, room noise and the decay tail a ghost is usually made of.
+    agreement        ``1 - min(1, |pyin_midi - pitch|)``.  Two engines that independently
+                     land on the same pitch are far more likely to be right than either
+                     alone — the research's consensus argument, and the reason the term
+                     is here rather than a third amplitude statistic.
+
+    ``voiced_prob`` scales the agreement term rather than being added alongside it,
+    because that is what it actually means: not "this note is good" but "pyin's reading
+    of this span can be trusted".  When pyin was unsure the blend falls back toward
+    amplitude instead of averaging in a reading pyin itself did not believe.  As a bare
+    additive term it also ranks *below* chance on the corpus (auc 0.463).
+
+    Agreement is not circular even where ``pyin_semitone`` set the pitch *from* pyin: in
+    that case the term reduces to how close the median sat to a whole semitone, and a
+    note smeared between two semitones is exactly the untrustworthy one.  Note that the
+    same quantity fails as a *gate* (see ``pyin_semitone``, which swept commit-distance
+    over 0.20-0.50 and lost fixes at every setting) while working as a *rank* — nothing
+    here changes which notes exist or what pitch they carry.
+
+    That is also what makes an offline weight sweep legitimate here, against the warning
+    at ``PYIN_MIN_VOICED_PROB``: the note set, the matcher's pairing and the correct/wrong
+    labels are all fixed no matter what these weights are, so sweeping rows dumped from a
+    full 38-case run computes the metric exactly rather than predicting it.  The winner
+    was still confirmed by a real corpus run before it landed.
+
+    What the sweep also showed, which the auc figure alone hides: bare amplitude puts
+    69% of *correct* notes on the hard cases below 0.5 and shows only 26% of correct
+    notes as "High confidence".  Today's field is not a per-note judgement at all, it is
+    a restatement of how loud the clip was.  The blend lifts correct notes to 85% high
+    while holding wrong-notes-shown-high to 5%.  See ``CONF_WEIGHT_AMP`` for the table.
+    """
+    if evt.pyin_midi is None:
+        # pyin had nothing to say about this span, so amplitude is the whole story.
+        return float(min(max(evt.amp, 0.0), 1.0))
+    agreement = 1.0 - min(1.0, abs(evt.pyin_midi - evt.pitch))
+    w_agree = CONF_WEIGHT_AGREE_MAX * min(max(evt.voiced_prob, 0.0), 1.0)
+    blended = (CONF_WEIGHT_AMP * evt.amp + w_agree * agreement) / (CONF_WEIGHT_AMP + w_agree)
+    return float(min(max(blended, 0.0), 1.0))
 
 
 import warnings
@@ -1713,6 +1816,12 @@ def _transcribe_wav(
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
+    # pyin is skipped wholesale for clips over settings.pyin_max_seconds and on a
+    # librosa failure.  When that happened no event carries its evidence, and falling
+    # back to amplitude is the honest reading: blending in two terms that are zero for
+    # every note preserves the ranking but drags a whole clip into the client's "Low
+    # confidence" band, which reads as a pipeline failure rather than a skipped stage.
+    pyin_ran = any(e.pyin_midi is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
     s.insert(0, meter.TimeSignature("4/4"))
@@ -1722,7 +1831,7 @@ def _transcribe_wav(
         # well-formed duration in the score.  0.25 is one step of the default
         # grid, so this floor and the quantizer agree.
         n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
-        n.editorial.confidence = evt.amp
+        n.editorial.confidence = _blend_confidence(evt) if pyin_ran else evt.amp
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)

@@ -35,6 +35,8 @@ import pytest
 from app.pipeline import transcriber
 from app.pipeline.transcriber import (
     ADAPTIVE_FACTOR,
+    CONF_WEIGHT_AGREE_MAX,
+    CONF_WEIGHT_AMP,
     CONTOUR_BINS_PER_SEMITONE,
     F0_MERGE_SEMITONES,
     KEY_CONFIDENCE_CAP_LOW,
@@ -47,6 +49,7 @@ from app.pipeline.transcriber import (
     _adaptive_amplitude_floor,
     _beat_origin,
     _bend_semitones,
+    _blend_confidence,
     _dedup_simultaneous,
     _grid_bpm,
     _grid_residual,
@@ -964,6 +967,163 @@ class TestRefinePitchesSemitone:
         events = [Event(0.25, 0.55, 70, 0.61)]
         (refined,) = self._refine(monkeypatch, events, _contour([69.0] * 60))
         assert (refined.start, refined.end, refined.amp) == (0.25, 0.55, 0.61)
+
+
+# ── _refine_pitches carries pyin's evidence forward ───────────────────────────
+
+
+class TestRefinePitchesCarriesEvidence:
+    """Every branch that *can* measure pyin must leave the measurement on the event.
+
+    ``_blend_confidence`` is the only consumer, and it has to tell three states apart
+    that look identical if a branch forgets to attach what it measured: pyin agreed,
+    pyin disagreed and was overruled, and pyin never spoke at all.  A ``continue`` that
+    appends the bare event silently reports the third for the first two, and the
+    confidence field goes quietly back to being bare amplitude.
+    """
+
+    def _refine(self, monkeypatch, events, contour, semitone="0"):
+        monkeypatch.setenv("NF_PYIN_SEMITONE", semitone)
+        monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
+        return transcriber._refine_pitches(events, Path("unused.wav"))
+
+    def test_a_corrected_event_carries_the_reading_that_corrected_it(self, monkeypatch):
+        events = [Event(0.0, 0.10, 72, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 12))
+        assert refined.pitch == 60
+        assert refined.pyin_midi == pytest.approx(60.0)
+        assert refined.voiced_prob == pytest.approx(0.9)
+
+    def test_an_event_pyin_agreed_with_still_carries_the_reading(self, monkeypatch):
+        # Nothing to correct, but "two engines independently landed on this pitch" is
+        # the strongest evidence the pipeline has and this is the only place it exists.
+        events = [Event(0.0, 0.10, 60, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 12))
+        assert (refined.pitch, refined.pyin_midi) == (60, pytest.approx(60.0))
+
+    def test_the_voiced_probability_gate_does_not_discard_the_reading(self, monkeypatch):
+        # The branch most likely to regress, because it exists to decline to act — and
+        # "pyin was unsure here" is precisely what the blend needs to hear.
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        contour = _contour([69.0] * 12, voiced_prob=0.2)
+        (refined,) = self._refine(monkeypatch, events, contour)
+        assert refined.pitch == 70  # unchanged, as TestRefinePitches pins
+        assert refined.pyin_midi == pytest.approx(69.0)
+        assert refined.voiced_prob == pytest.approx(0.2)
+
+    def test_an_overruled_disagreement_carries_the_reading(self, monkeypatch):
+        # Octave path, two semitones out: not an octave error, so the pitch stands.
+        # A two-semitone disagreement is still a reason to distrust the note.
+        events = [Event(0.0, 0.10, 62, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([60.0] * 12))
+        assert (refined.pitch, refined.pyin_midi) == (62, pytest.approx(60.0))
+
+    def test_an_out_of_range_candidate_still_carries_the_reading(self, monkeypatch):
+        events = [Event(0.0, 0.10, 120, 0.6)]
+        (refined,) = self._refine(
+            monkeypatch, events, _contour([130.0] * 12), semitone="1"
+        )
+        assert (refined.pitch, refined.pyin_midi) == (120, pytest.approx(130.0))
+
+    def test_too_few_voiced_frames_leaves_no_reading_at_all(self, monkeypatch):
+        # Deliberately different from a low probability: pyin did not speak, so there is
+        # nothing to carry and the blend must fall back to amplitude, not to a zero that
+        # would read as "pyin contradicted this note".
+        events = [Event(0.0, 0.015, 70, 0.6)]
+        (refined,) = self._refine(monkeypatch, events, _contour([69.0] * 12))
+        assert refined.pyin_midi is None
+        assert refined.voiced_prob == 0.0
+
+    def test_an_empty_contour_leaves_no_reading_at_all(self, monkeypatch):
+        events = [Event(0.0, 0.10, 70, 0.6)]
+        contour = (np.empty(0), np.empty(0), np.empty(0))
+        (refined,) = self._refine(monkeypatch, events, contour)
+        assert refined.pyin_midi is None
+
+
+# ── _blend_confidence ─────────────────────────────────────────────────────────
+
+
+class TestBlendConfidence:
+    """The number the client bands as High / Fair / Low and counts below 0.5.
+
+    The weights came from a corpus sweep (see ``CONF_WEIGHT_AMP`` for the table).  These
+    tests pin the *shape* rather than the tuning: the properties that have to hold at any
+    weights for the field to mean anything, so a later re-sweep is free to move the
+    constants without rewriting the suite.
+    """
+
+    def test_no_pyin_reading_falls_back_to_amplitude(self):
+        # Not to zero.  An event pyin could not speak about is not thereby a bad note,
+        # and Basic Pitch's posterior is still real evidence about it.
+        assert _blend_confidence(Event(0.0, 0.5, 60, 0.62)) == pytest.approx(0.62)
+
+    def test_agreement_raises_confidence_above_bare_amplitude(self):
+        evt = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=1.0)
+        assert _blend_confidence(evt) > 0.62
+
+    def test_disagreement_lowers_confidence_below_bare_amplitude(self):
+        # The case the field exists to flag: the pitch printed on the staff is contested
+        # by the only independent pitch evidence in the pipeline.
+        evt = Event(0.0, 0.5, 60, 0.62, pyin_midi=61.0, voiced_prob=1.0)
+        assert _blend_confidence(evt) < 0.62
+
+    def test_disagreement_beyond_a_semitone_is_not_punished_further(self):
+        # The term saturates, so an octave lock and a semitone slip read the same. Both
+        # are "wrong pitch"; ranking them against each other would be false precision.
+        near = Event(0.0, 0.5, 60, 0.62, pyin_midi=61.0, voiced_prob=1.0)
+        far = Event(0.0, 0.5, 60, 0.62, pyin_midi=72.0, voiced_prob=1.0)
+        assert _blend_confidence(near) == pytest.approx(_blend_confidence(far))
+
+    def test_an_unsure_pyin_cannot_move_the_answer_either_way(self):
+        # voiced_prob scales the agreement term instead of being averaged in, so a
+        # reading pyin does not believe is ignored rather than half-trusted.
+        agreeing = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=0.0)
+        contradicting = Event(0.0, 0.5, 60, 0.62, pyin_midi=67.0, voiced_prob=0.0)
+        assert _blend_confidence(agreeing) == pytest.approx(0.62)
+        assert _blend_confidence(contradicting) == pytest.approx(0.62)
+
+    def test_reliability_scales_how_far_agreement_can_move_it(self):
+        def conf(voiced_prob):
+            return _blend_confidence(
+                Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=voiced_prob)
+            )
+
+        assert conf(0.0) < conf(0.5) < conf(1.0)
+
+    def test_full_reliability_is_the_plain_weighted_blend(self):
+        # Pins the documented equivalence: at voiced_prob 1.0 the scaled form is exactly
+        # the additive (CONF_WEIGHT_AMP, CONF_WEIGHT_AGREE_MAX) mean.
+        evt = Event(0.0, 0.5, 60, 0.5, pyin_midi=60.5, voiced_prob=1.0)
+        expected = (CONF_WEIGHT_AMP * 0.5 + CONF_WEIGHT_AGREE_MAX * 0.5) / (
+            CONF_WEIGHT_AMP + CONF_WEIGHT_AGREE_MAX
+        )
+        assert _blend_confidence(evt) == pytest.approx(expected)
+
+    @pytest.mark.parametrize(
+        "amp, pyin_midi, voiced_prob",
+        [
+            (0.0, 60.0, 1.0),
+            (1.0, 72.0, 1.0),
+            (0.0, 72.0, 0.0),
+            (1.0, 60.0, 1.0),
+            (1.2, 60.0, 1.4),  # out-of-range inputs must not escape the interval
+        ],
+    )
+    def test_stays_inside_the_unit_interval(self, amp, pyin_midi, voiced_prob):
+        # The client's banding assumes [0, 1] and the DTO rounds to three places.
+        value = _blend_confidence(
+            Event(0.0, 0.5, 60, amp, pyin_midi=pyin_midi, voiced_prob=voiced_prob)
+        )
+        assert 0.0 <= value <= 1.0
+
+    def test_a_confirmed_note_reads_high_and_a_contested_one_does_not(self):
+        # The end-to-end claim, at the 0.75 cut mobile/src/design/theme.ts:363 uses for
+        # "High confidence".  Same amplitude in both — only the second opinion differs.
+        confirmed = Event(0.0, 0.5, 60, 0.80, pyin_midi=60.0, voiced_prob=0.99)
+        contested = Event(0.0, 0.5, 60, 0.80, pyin_midi=61.0, voiced_prob=0.99)
+        assert _blend_confidence(confirmed) >= 0.75
+        assert _blend_confidence(contested) < 0.75
 
 
 # ── _pyin_contour (defect 6) ──────────────────────────────────────────────────

@@ -28,10 +28,16 @@ absent one: it reports safety it never checked.
 """
 
 import inspect
+from dataclasses import replace
 
 import pytest
 from app.pipeline import solfa
-from app.pipeline.transcriber import TranscribedNote, _parse_key_override
+from app.pipeline.transcriber import (
+    Event,
+    TranscribedNote,
+    _blend_confidence,
+    _parse_key_override,
+)
 from tests.accuracy import metrics, runner
 from tests.accuracy.synth import RefNote
 
@@ -520,6 +526,125 @@ def test_defect7_no_metric_depends_on_the_hardcoded_time_signature():
     assert "time_signature" not in sources, (
         "a metric started reading time_signature; defect 7 is deferred, so scoring "
         "must stay independent of it"
+    )
+
+
+# ── Confidence — a consensus number, not a loudness reading ───────────────────
+
+# Three of the eleven notes come back a semitone sharp, and Basic Pitch is *more*
+# confident about those than about the eight it got right.  That inversion is not
+# invented for the fixture: it is what the corpus measures now that the amplitude floor
+# deletes the easy ghosts amplitude used to separate, which is why conf.auc sits at
+# 0.551 and conf.separation at -0.012 with bare amplitude.
+_WRONG_INDICES = (2, 5, 8)
+_AMP_CORRECT = 0.50
+_AMP_WRONG = 0.62  # higher than the correct notes: the measured anti-correlation
+
+
+def _events_for_confidence(*, pyin_sees_the_truth: bool) -> list[Event]:
+    """One event per note of PHRASE, three of them a semitone sharp.
+
+    ``pyin_sees_the_truth`` is the whole experiment.  True is the ordinary case: pyin
+    tracked the sung pitch, so it contradicts the three wrong notes.  False is the
+    drift case, where pyin followed the singer off-pitch and agrees with the error —
+    there is no second opinion to be had, and the fix must not pretend otherwise.
+    """
+    events = []
+    for i, true_pitch in enumerate(PHRASE):
+        wrong = i in _WRONG_INDICES
+        events.append(
+            Event(
+                start=i * BEAT_SEC,
+                end=(i + 1) * BEAT_SEC,
+                pitch=true_pitch + 1 if wrong else true_pitch,
+                amp=_AMP_WRONG if wrong else _AMP_CORRECT,
+                pyin_midi=(
+                    float(true_pitch)
+                    if pyin_sees_the_truth
+                    else float(true_pitch + 1 if wrong else true_pitch)
+                ),
+                voiced_prob=0.95,
+            )
+        )
+    return events
+
+
+def _conf_metrics(events: list[Event], *, blended: bool) -> dict:
+    """Score *events* through the real metric, with conf assigned either way.
+
+    ``blended`` False is the shipped defect (``conf = evt.amp``); True is the fix.  The
+    notes are otherwise identical, so nothing but the confidence column can move.
+    """
+    notes = [
+        TranscribedNote(
+            pitch_midi=evt.pitch,
+            start_beat=float(i),
+            dur_beats=1.0,
+            degree=1,
+            solfa="d",
+            octave_mark="",
+            conf=_blend_confidence(evt) if blended else evt.amp,
+        )
+        for i, evt in enumerate(events)
+    ]
+    return metrics.note_confidence_metrics(_refs(), notes, REF_BPM, REF_BPM)
+
+
+def test_confidence_blend_ranks_right_notes_above_wrong_ones():
+    """The gated columns are conf.auc and conf.separation, and both are broken today.
+
+    Bare amplitude does not merely fail to rank here, it ranks *backwards*: every wrong
+    note outscores every correct one, so auc is 0.0 and separation is negative.  Adding
+    pyin's independent reading of the same spans is what makes the ordering recoverable
+    at all — neither engine alone can tell which of the two disagreeing pitches is right,
+    but disagreement itself is the signal.
+    """
+    events = _events_for_confidence(pyin_sees_the_truth=True)
+
+    before = _conf_metrics(events, blended=False)
+    after = _conf_metrics(events, blended=True)
+
+    assert before["auc"] < 0.5, "fixture should reproduce the measured anti-correlation"
+    assert before["separation"] < 0.0
+    assert after["auc"] > before["auc"]
+    assert after["separation"] > before["separation"]
+    assert after["separation"] > 0.0
+
+
+def test_confidence_blend_is_specific_to_having_a_second_opinion():
+    """When pyin agrees with the error there is no consensus to read, and the blend
+    must inherit amplitude's failure rather than manufacture a fix.
+
+    This is the ``drift_1_semitone`` case, where the singer drifts and pyin drifts with
+    them: measured, that case is the one place the blend *loses* ground (auc 0.960 ->
+    0.760).  Uniform agreement makes the blend a monotone function of amplitude, so the
+    rank statistic is unchanged — which is the honest outcome and worth pinning, because
+    a formula that improved auc here would be scoring its own shape, not the evidence.
+    """
+    events = _events_for_confidence(pyin_sees_the_truth=False)
+
+    before = _conf_metrics(events, blended=False)
+    after = _conf_metrics(events, blended=True)
+
+    assert after["auc"] == before["auc"]
+    # Still strictly ordered the wrong way round: no accidental credit.
+    assert after["separation"] < 0.0
+
+
+def test_confidence_blend_changes_nothing_when_pyin_never_spoke():
+    """Short clips and librosa failures leave every event without a pyin reading.
+
+    The blend has to be a no-op there, not a rescaling: the client bands the number at
+    fixed 0.5 and 0.75 cuts, so dragging a whole clip into a different band on no new
+    evidence would be a regression the rank-based auc cannot see.
+    """
+    silent_pyin = [
+        replace(evt, pyin_midi=None, voiced_prob=0.0)
+        for evt in _events_for_confidence(pyin_sees_the_truth=True)
+    ]
+
+    assert _conf_metrics(silent_pyin, blended=True) == _conf_metrics(
+        silent_pyin, blended=False
     )
 
 

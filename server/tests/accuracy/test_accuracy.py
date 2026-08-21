@@ -43,6 +43,21 @@ pre-plan pipeline scored, deliberately:
       Both fall while every note metric on those same cases improves.  They are no
       longer gated; see the NOT_A_GATE note below for why that is structural rather
       than convenient.
+      Partly repaid since.  ``conf`` stopped being bare Basic Pitch amplitude and became
+      a consensus of amplitude with pyin's independent reading of the same span
+      (``_blend_confidence``): conf.auc 0.551 -> 0.676, conf.separation -0.012 -> 0.032,
+      conf.mean_correct 0.684 -> 0.845, with every other aggregate bit-identical to
+      +0.000 — which it must be, since conf is carried on notes and never used to select
+      them.
+      It does NOT return to the pre-plan 0.868, and cannot.  That figure was measured
+      over a wrong-note population dominated by quiet ghosts clustered at amplitude
+      0.252-0.268, which is exactly the population ``ADAPTIVE_FACTOR`` 0.40 now deletes
+      before anything is scored.  What remains to rank is the hard residue — wrong-pitch
+      survivors at full amplitude — so 0.676 over this population is not the same
+      question as 0.868 over that one, and treating the older number as a target would
+      be asking the metric to re-acquire the errors the pipeline stopped making.  The
+      POPULATION argument below is precisely this, and it is also why the family stays
+      out of the gate even in the direction of improvement.
 
 The 31 -> 38 corpus expansion moved every aggregate down, and none of it is a regression
 ────────────────────────────────────────────────────────────────────────────────────────
