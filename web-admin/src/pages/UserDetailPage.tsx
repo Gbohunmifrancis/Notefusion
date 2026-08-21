@@ -123,7 +123,7 @@ function ActionButton({
 }) {
   const skin =
     tone === "danger"
-      ? "border border-danger/40 text-danger hover:bg-danger/10"
+      ? "border border-danger/40 text-danger-deep hover:bg-danger/10"
       : tone === "quiet"
         ? "border border-border text-ink hover:bg-surface-alt"
         : "bg-blue text-white hover:bg-blue-deep";
@@ -214,7 +214,7 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
           {/* A failed-login lockout, not a suspension. They stop a sign-in the same way and are
               lifted differently, so the page never collapses them into one word. */}
           {user.lockoutEndAt ? (
-            <span className="text-danger">
+            <span className="text-danger-deep">
               Locked until {formatInstantDateTime(user.lockoutEndAt, offset)}
             </span>
           ) : (
@@ -666,7 +666,7 @@ function PaymentsCard({ user, offset }: { user: AdminUserDetail; offset: number 
                   <td className={TD}>
                     <Badge tone={PAYMENT_TONES[payment.status]}>{payment.status}</Badge>
                     {payment.failureReason && (
-                      <p className="mt-1 max-w-[18rem] text-[11px] text-danger">
+                      <p className="mt-1 max-w-[18rem] text-[11px] text-danger-deep">
                         {payment.failureReason}
                       </p>
                     )}
@@ -839,7 +839,7 @@ export function UserDetailPage() {
           <div className="space-y-5">
             {!loaded.isActive && (
               <p
-                className="flex items-start gap-2.5 rounded-md border border-danger/30 bg-danger/10 px-4 py-3 text-[13px] text-danger"
+                className="flex items-start gap-2.5 rounded-md border border-danger/30 bg-danger/10 px-4 py-3 text-[13px] text-danger-deep"
                 role="status"
               >
                 <AlertTriangle size={16} className="mt-[1px] shrink-0" aria-hidden="true" />

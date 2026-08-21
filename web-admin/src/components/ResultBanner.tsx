@@ -17,7 +17,7 @@ export function ResultBanner({
 }) {
   return (
     <div
-      className="flex items-start gap-2.5 rounded-md border border-success/30 bg-success/10 px-4 py-3 text-[13px] text-success"
+      className="flex items-start gap-2.5 rounded-md border border-success/30 bg-success/10 px-4 py-3 text-[13px] text-success-deep"
       role="status"
     >
       <CheckCircle2 size={16} className="mt-[1px] shrink-0" aria-hidden="true" />

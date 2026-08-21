@@ -9,9 +9,9 @@
 const TONES = {
   neutral: "bg-surface-alt text-muted",
   blue: "bg-accent/10 text-accent-deep",
-  success: "bg-success/10 text-success",
-  warning: "bg-warning/10 text-warning",
-  danger: "bg-danger/10 text-danger",
+  success: "bg-success/10 text-success-deep",
+  warning: "bg-warning/10 text-warning-deep",
+  danger: "bg-danger/10 text-danger-deep",
   premium: "bg-premium/15 text-premium-deep",
 } as const;
 

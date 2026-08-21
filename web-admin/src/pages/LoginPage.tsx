@@ -230,7 +230,7 @@ export function LoginPage() {
             {error && (
               <p
                 role="alert"
-                className="mt-4 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger"
+                className="mt-4 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger-deep"
               >
                 <AlertTriangle size={15} className="mt-px shrink-0" aria-hidden="true" />
                 {error}

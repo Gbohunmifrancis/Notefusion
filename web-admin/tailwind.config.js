@@ -64,9 +64,23 @@ export default {
           deep: "rgb(var(--c-premium-deep) / <alpha-value>)",
         },
 
-        success: "rgb(var(--c-success) / <alpha-value>)",
-        warning: "rgb(var(--c-warning) / <alpha-value>)",
-        danger: "rgb(var(--c-danger) / <alpha-value>)",
+        // Status colours, split the same way and for the same reason as `accent` and
+        // `premium` above: DEFAULT is the fill or the mark, `deep` is the same status
+        // read as text. On its own /10 tint the fill measures 2.6–3.7:1 in light mode,
+        // which is a label nobody can read. In dark mode `deep` is the fill value —
+        // src/index.css says why.
+        success: {
+          DEFAULT: "rgb(var(--c-success) / <alpha-value>)",
+          deep: "rgb(var(--c-success-deep) / <alpha-value>)",
+        },
+        warning: {
+          DEFAULT: "rgb(var(--c-warning) / <alpha-value>)",
+          deep: "rgb(var(--c-warning-deep) / <alpha-value>)",
+        },
+        danger: {
+          DEFAULT: "rgb(var(--c-danger) / <alpha-value>)",
+          deep: "rgb(var(--c-danger-deep) / <alpha-value>)",
+        },
       },
       borderRadius: { sm: "8px", md: "14px", lg: "20px", xl: "28px", pill: "999px" },
       // The app's type scale, so a heading here is the same size as the same heading

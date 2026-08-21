@@ -37,6 +37,13 @@
     --c-success: 22 163 74; /* #16a34a */
     --c-warning: 217 119 6; /* #d97706 */
     --c-danger: 220 38 38; /* #dc2626 */
+    /* The three above are fills and marks — a dot, a spine, a meter. As *text* they do
+       not hold up: on their own /10 tint they measure 2.7:1, 2.6:1 and 3.7:1, and even
+       on a plain white card success and warning only reach 3.3:1. These are the -800
+       step of the same ramps, and clear 4.5:1 on every surface this dashboard has. */
+    --c-success-deep: 22 101 52; /* #166534 — 5.8:1 on a success/10 chip */
+    --c-warning-deep: 146 64 14; /* #92400e — 5.8:1 on a warning/10 chip */
+    --c-danger-deep: 153 27 27; /* #991b1b — 6.4:1 on a danger/10 chip */
 
     --shadow-hairline: 0 1px 2px rgba(15, 23, 42, 0.04);
     --shadow-card: 0 2px 10px rgba(15, 23, 42, 0.06);
@@ -69,6 +76,12 @@
     --c-success: 34 197 94; /* #22c55e */
     --c-warning: 245 158 11; /* #f59e0b */
     --c-danger: 248 113 113; /* #f87171 */
+    /* Collapsed onto the fills, for the reason accent-deep and premium-deep collapse: a
+       label on a tinted chip has to brighten with the chip. Nothing deeper is needed —
+       on the /10 tints these already read 5.5:1, 5.9:1 and 4.8:1 at the worst surface. */
+    --c-success-deep: 34 197 94; /* #22c55e */
+    --c-warning-deep: 245 158 11; /* #f59e0b */
+    --c-danger-deep: 248 113 113; /* #f87171 */
 
     /* Black instead of slate, and far heavier: a 4%-black shadow is invisible
        on a navy canvas, so depth has to come from opacity rather than hue. */

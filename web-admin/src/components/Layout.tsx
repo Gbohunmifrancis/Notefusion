@@ -212,7 +212,7 @@ export function Layout() {
               onClick={() => void signOut()}
               title="Sign out"
               aria-label="Sign out"
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-sm text-muted transition hover:bg-danger/10 hover:text-danger"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-sm text-muted transition hover:bg-danger/10 hover:text-danger-deep"
             >
               <LogOut size={15} aria-hidden="true" />
             </button>

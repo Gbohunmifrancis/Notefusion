@@ -159,7 +159,7 @@ export function ConfirmDialog({
 
           {error && (
             <p
-              className="flex items-start gap-2 rounded-sm bg-danger/10 px-3 py-2 text-[12.5px] text-danger"
+              className="flex items-start gap-2 rounded-sm bg-danger/10 px-3 py-2 text-[12.5px] text-danger-deep"
               role="alert"
             >
               <AlertTriangle size={14} className="mt-[2px] shrink-0" aria-hidden="true" />

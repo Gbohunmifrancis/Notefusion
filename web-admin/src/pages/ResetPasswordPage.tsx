@@ -162,7 +162,7 @@ export function ResetPasswordPage() {
 
           {success ? (
             <>
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-success/10 text-success">
+              <span className="grid h-11 w-11 place-items-center rounded-full bg-success/10 text-success-deep">
                 <CheckCircle2 size={22} aria-hidden="true" />
               </span>
               <h1 className="mt-5 text-[26px] font-semibold leading-tight tracking-[-0.02em] text-ink">
@@ -295,7 +295,7 @@ export function ResetPasswordPage() {
                       />
                     </div>
                     {mismatch && (
-                      <p id="confirm-error" className="mt-1.5 text-[11px] text-danger">
+                      <p id="confirm-error" className="mt-1.5 text-[11px] text-danger-deep">
                         The two passwords do not match yet.
                       </p>
                     )}
@@ -305,7 +305,7 @@ export function ResetPasswordPage() {
                 {error && (
                   <p
                     role="alert"
-                    className="mt-4 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger"
+                    className="mt-4 flex items-start gap-2 rounded-sm bg-danger/10 px-3.5 py-2.5 text-[13px] text-danger-deep"
                   >
                     <AlertTriangle size={15} className="mt-px shrink-0" aria-hidden="true" />
                     {error}

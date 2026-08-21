@@ -19,9 +19,9 @@ const STATUS_LABELS: Record<HealthStatus, string> = {
 
 /** `dot` is the mark, `wash` the tinted strip behind the summary line. */
 const STATUS_SKINS: Record<HealthStatus, { dot: string; text: string; wash: string }> = {
-  healthy: { dot: "bg-success", text: "text-success", wash: "border-success/30 bg-success/10" },
-  degraded: { dot: "bg-warning", text: "text-warning", wash: "border-warning/30 bg-warning/10" },
-  down: { dot: "bg-danger", text: "text-danger", wash: "border-danger/30 bg-danger/10" },
+  healthy: { dot: "bg-success", text: "text-success-deep", wash: "border-success/30 bg-success/10" },
+  degraded: { dot: "bg-warning", text: "text-warning-deep", wash: "border-warning/30 bg-warning/10" },
+  down: { dot: "bg-danger", text: "text-danger-deep", wash: "border-danger/30 bg-danger/10" },
 };
 
 const SUMMARIES: Record<HealthStatus, string> = {
