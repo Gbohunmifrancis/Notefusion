@@ -659,6 +659,124 @@ def _profile_z_scores(profile, s) -> dict[tuple[int, str], float]:
     return {ident: (cc - centre) / spread for ident, cc in scored}
 
 
+# The pitch classes a key's own music lives on, relative to the tonic.
+#
+# Minor takes the union of natural, harmonic and melodic minor rather than natural minor
+# alone.  The raised 6th and 7th belong to the same key, so scoring A minor against natural
+# minor would penalise it for its own G# and make the parsimony cue below argue against the
+# right answer on every harmonic-minor clip in the corpus.
+_MAJOR_SCALE = frozenset({0, 2, 4, 5, 7, 9, 11})
+_MINOR_SCALE = frozenset({0, 2, 3, 5, 7, 8, 9, 10, 11})
+
+
+def _tonal_cues(s):
+    """``(final pitch class, duration weight per pitch class, total weight)`` for a stream.
+
+    Both structural cues used by ``_cadence_prefers_runner_up`` read off this single pass.
+    Returns ``None`` for a stream with nothing in it — the same "no opinion" answer
+    ``_profile_z_scores`` gives, and the tiebreak then declines rather than guessing.
+    """
+    notes = list(s.flatten().notes)
+    if not notes:
+        return None
+
+    weights: dict[int, float] = {}
+    for n in notes:
+        pc = n.pitch.pitchClass
+        weights[pc] = weights.get(pc, 0.0) + float(n.duration.quarterLength)
+
+    total = sum(weights.values())
+    if total <= 0.0:
+        return None
+    return notes[-1].pitch.pitchClass, weights, total
+
+
+def _diatonic_fraction(tonic_pc: int, mode: str, weights: dict[int, float], total: float) -> float:
+    """How much of a clip's *duration* falls inside one candidate key's own scale.
+
+    This is precisely a subdominant detector.  Reading a C-major melody as F major turns
+    every B natural into an accidental, so the wrong key spends duration outside its own
+    scale while the right one spends none: measured on ``plagal_fourth_c_major``, F major
+    scores 0.960 against C major's 1.000.
+    """
+    scale = _MAJOR_SCALE if mode == "major" else _MINOR_SCALE
+    inside = sum(w for pc, w in weights.items() if (pc - tonic_pc) % 12 in scale)
+    return inside / total
+
+
+def _is_fifth_or_parallel(a: tuple[int, str], b: tuple[int, str]) -> bool:
+    """Are two key identities a fifth apart, or the same tonic in opposite modes?
+
+    Relatives are deliberately excluded.  A relative confusion is *exactly* solfa-neutral —
+    la-based minor gives A minor and C major the same doh, so every syllable, degree and
+    accidental is identical and only the displayed key string is wrong (``metrics.py``
+    ``key_metrics`` carries the measurement).  Overturning one buys no accuracy and widens
+    what this tiebreak is allowed to touch, which is the whole risk here.
+    """
+    interval = (b[0] - a[0]) % 12
+    if a[1] == b[1]:
+        return interval in (5, 7)
+    return interval == 0
+
+
+def _cadence_prefers_runner_up(s, winner, runner_up, margin: float) -> bool:
+    """Should the vote's runner-up be preferred, on structural grounds the profiles ignore?
+
+    The pitch profiles are histograms: they weigh *how much* of each pitch class a clip
+    holds and know nothing about where a note sits in the phrase.  That is exactly how
+    ``plagal_fourth_c_major`` goes wrong — a sustained 4th carries 4 of its 12 beats, so
+    F major out-correlates C major (z 1.989 to 1.560) on a clip that begins and ends on C
+    and contains a B natural.  A wrong tonic re-labels every syllable in the clip, and that
+    case measures ``solfa.degree_accuracy`` 0.000 on ``notes.f1`` 0.846: the notes are heard
+    correctly and mislabelled wholesale.  It is the most expensive failure in the pipeline.
+
+    Four conditions must all hold, and each one is a restriction rather than a tuned score:
+
+    ``margin < KEY_MARGIN_FULL``
+        Only where the profiles did not fully decide.  Reuses the existing calibrated
+        constant rather than introducing another, and no corpus case sits near it: the
+        thin-margin fifth pairs run 0.160-0.564 and the confident ones 0.625-0.827.
+
+    the pair is a fifth or a parallel
+        Never a relative (see ``_is_fifth_or_parallel``), and never an unrelated key.
+
+    the runner-up ends on its own tonic and the winner does not
+        The cue, and the reason it is the *final* note rather than the first.  Measured over
+        the corpus, "starts on doh/mi/soh" excludes only 2 of the 5 wrong answers — the
+        tonic triad is closed under precisely the fifth and minor-third slips that cause the
+        confusions — while ending on the tonic excludes 4 of 5.  It has to be the tonic
+        itself and not the triad: on ``plagal_fourth_c_major`` the final C is a triad member
+        of F major too, so the triad form of this cue does not discriminate at all.
+
+    the runner-up is *strictly* more diatonic
+        ``_diatonic_fraction`` must be strictly greater, not merely equal, which is what
+        blocks the obvious false positive: a melody in C that closes on a half cadence at G
+        would otherwise read as G major on the cue above.  Any such clip that contains its
+        own 4th scores C higher; one that does not contain it scores the two equal, and a
+        tie declines.
+
+    Together these fire on exactly one of the 38 corpus cases — the one they were reasoned
+    about — and change nothing on the other 37.  Read that as the control it is rather than
+    as a hit rate.  Counted by whichever condition refuses first, the 37 break down as 21
+    whose winner already ends on its own tonic, 10 whose runner-up is not a fifth or a
+    parallel, 4 where neither reading ends on its tonic, and 2 the margin rail excludes: the
+    cue is silent by construction on nearly every clip, not silent by luck.
+    """
+    if margin >= KEY_MARGIN_FULL or not _is_fifth_or_parallel(winner, runner_up):
+        return False
+
+    cues = _tonal_cues(s)
+    if cues is None:
+        return False
+    final_pc, weights, total = cues
+
+    if final_pc != runner_up[0] or final_pc == winner[0]:
+        return False
+    return _diatonic_fraction(*runner_up, weights, total) > _diatonic_fraction(
+        *winner, weights, total
+    )
+
+
 def _key_confidence_from_margin(margin: float, n_events: int) -> float:
     """Turn the winner's lead over the runner-up into a 0-1 confidence.
 
@@ -682,6 +800,9 @@ def _key_confidence_from_margin(margin: float, n_events: int) -> float:
 
 def _detect_key(s, n_events: int):
     """(key, confidence) for a stream, by equal vote over KEY_PROFILE_NAMES.
+
+    A close vote between a key and its fifth or its parallel is then re-decided on the
+    phrase's own shape rather than its histogram — see ``_cadence_prefers_runner_up``.
 
     Falls back to music21's single-profile default if the ensemble cannot run.  That
     is not hypothetical: any clip with a *uniform* pitch-class histogram gives every
@@ -722,13 +843,22 @@ def _detect_key(s, n_events: int):
         return detected, confidence
 
     ranked = sorted(totals.items(), key=lambda kv: kv[1], reverse=True)
-    (winner_pc, winner_mode), winner_score = ranked[0]
-    runner_up_score = ranked[1][1]
+    winner_ident, winner_score = ranked[0]
+    runner_up_ident, runner_up_score = ranked[1]
     # Divided by the number of voters so the margin means the same thing whether all
     # five profiles ran or only three did.
     margin = (winner_score - runner_up_score) / voted
 
-    winner = _key_from_identity(winner_pc, winner_mode)
+    # A histogram cannot see a cadence.  Where the vote was close and the two readings are
+    # a fifth or a parallel apart, the phrase's own shape gets to decide — see
+    # _cadence_prefers_runner_up for why it is restricted this narrowly.
+    if _cadence_prefers_runner_up(s, winner_ident, runner_up_ident, margin):
+        winner_ident = runner_up_ident
+
+    # The margin is *not* recomputed or negated after a swap.  It measures how close the two
+    # readings were, which is the right uncertainty to report whichever one was picked, and
+    # it is the number the mobile's editable-key prompt is calibrated against.
+    winner = _key_from_identity(*winner_ident)
     return winner, _key_confidence_from_margin(margin, n_events)
 
 
@@ -1846,6 +1976,12 @@ def _transcribe_wav(
     # subdominant as the tonic, and that is not academic: it calls a plain C-major
     # stream F major.  A wrong tonic re-labels every solfa syllable, which makes this
     # the worst available failure for movable-do.
+    #
+    # All five profiles are histograms, though, so the ensemble cancels a *disagreement*
+    # between profiles and not a blind spot they share.  Duration-weighting a non-tonic
+    # degree heavily fools all of them at once, which is what a close vote between a key
+    # and its fifth usually is; _cadence_prefers_runner_up settles those on where the
+    # phrase ends and how much of it stays inside each candidate's scale.
     #
     # Confidence is the winner's margin over the runner-up, not the winner's own
     # correlation, because only the margin falls when two keys are genuinely hard to

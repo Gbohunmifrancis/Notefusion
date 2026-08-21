@@ -1693,3 +1693,137 @@ class TestDetectKey:
         s = _stream(["C4", "E4", "G4"])
         _key, conf = transcriber._detect_key(s, MIN_NOTES_FOR_KEY - 1)
         assert conf <= KEY_CONFIDENCE_CAP_LOW
+
+
+class TestCadenceTiebreak:
+    """A histogram cannot see a cadence, and that blind spot is shared by all five profiles.
+
+    The ensemble cancels disagreement *between* profiles; it cannot cancel something none of
+    them measures.  ``plagal_fourth_c_major`` is the corpus case that proves it: a sustained
+    4th carries 4 of its 12 beats, so every profile prefers F major on a clip that opens and
+    closes on C and contains a B natural.  A wrong tonic re-labels every syllable in the
+    clip, which is why that case scores ``solfa.degree_accuracy`` 0.000 on ``notes.f1`` 0.846.
+
+    The rule is four conjoined restrictions rather than a tuned score, and this class pins
+    each one — including the false positive it exists to prevent, which is the half cadence.
+    """
+
+    # The corpus case's own note list (corpus.py KEY_HEADROOM_CASES), (midi, beats).  The
+    # defect reproduces on the bare symbolic stream, so none of this needs inference.
+    PLAGAL = (
+        (60, 0.5), (64, 0.5), (67, 1.0), (65, 2.0), (69, 1.0), (72, 1.0),
+        (65, 2.0), (69, 1.0), (67, 1.0), (71, 0.5), (72, 2.0),
+    )
+
+    @staticmethod
+    def _weighted(events):
+        """A stream with real durations — the cue is duration-weighted, so they matter."""
+        from music21 import note as m21note, stream as m21stream
+
+        s = m21stream.Stream()
+        for midi, quarter_length in events:
+            n = m21note.Note(midi)
+            n.duration.quarterLength = quarter_length
+            s.append(n)
+        return s
+
+    def test_it_rescues_the_subdominant_trap_the_ensemble_alone_cannot(self, monkeypatch):
+        s = self._weighted(self.PLAGAL)
+        assert str(s.analyze("key")) == "F major"  # single profile, still wrong
+
+        # With the tiebreak disabled the ensemble is wrong here too, which is the point:
+        # this asserts the *tiebreak* is what rescues the case, not some other change.
+        monkeypatch.setattr(transcriber, "_cadence_prefers_runner_up", lambda *a: False)
+        without, _conf = transcriber._detect_key(s, len(self.PLAGAL))
+        assert (without.tonic.pitchClass, without.mode) == (5, "major")
+
+        monkeypatch.undo()
+        with_tiebreak, _conf = transcriber._detect_key(s, len(self.PLAGAL))
+        assert (with_tiebreak.tonic.pitchClass, with_tiebreak.mode) == (0, "major")
+
+    def test_a_swap_does_not_move_the_reported_confidence(self, monkeypatch):
+        # The margin measures how close the two readings were, which is the right
+        # uncertainty to report whichever one was picked — and it is the number the
+        # mobile's editable-key prompt is calibrated against.
+        s = self._weighted(self.PLAGAL)
+        monkeypatch.setattr(transcriber, "_cadence_prefers_runner_up", lambda *a: False)
+        _key, before = transcriber._detect_key(s, len(self.PLAGAL))
+        monkeypatch.undo()
+        _key, after = transcriber._detect_key(s, len(self.PLAGAL))
+
+        assert after == pytest.approx(before)
+
+    @pytest.mark.parametrize(
+        "a,b,expected",
+        [
+            ((0, "major"), (5, "major"), True),   # C -> F, the subdominant slip
+            ((0, "major"), (7, "major"), True),   # C -> G, the dominant slip
+            ((9, "minor"), (2, "minor"), True),   # fifths hold in minor too
+            ((0, "major"), (0, "minor"), True),   # parallel
+            ((0, "major"), (9, "minor"), False),  # relative — solfa-neutral, so never
+            ((9, "minor"), (0, "major"), False),  # relative, the other way round
+            ((0, "major"), (2, "major"), False),  # unrelated
+            ((0, "major"), (1, "major"), False),  # unrelated
+        ],
+    )
+    def test_only_fifths_and_parallels_are_eligible(self, a, b, expected):
+        assert transcriber._is_fifth_or_parallel(a, b) is expected
+
+    def test_a_confident_vote_is_left_alone(self):
+        # The rail, not the decision: above KEY_MARGIN_FULL the profiles have decided and
+        # a structural cue does not get to overturn them.
+        s = self._weighted(self.PLAGAL)
+        assert transcriber._cadence_prefers_runner_up(
+            s, (5, "major"), (0, "major"), KEY_MARGIN_FULL
+        ) is False
+
+    def test_a_half_cadence_does_not_become_a_modulation(self):
+        # The false positive this is built to refuse.  A C-major phrase closing on G ends on
+        # the *dominant's* tonic, so the cadence cue alone would read G major — but the F
+        # natural is outside G major, so C stays strictly the more diatonic reading.
+        s = self._weighted([(60, 1), (64, 1), (65, 1), (64, 1), (62, 1), (67, 2)])
+        assert transcriber._cadence_prefers_runner_up(s, (0, "major"), (7, "major"), 0.2) is False
+
+    def test_an_equally_diatonic_runner_up_is_not_enough(self):
+        # Same shape with the 4th removed: nothing now distinguishes C major from G major on
+        # scale membership, so the two tie and a tie declines.  This is why the comparison is
+        # strictly greater rather than greater-or-equal.
+        s = self._weighted([(60, 1), (64, 1), (62, 1), (64, 1), (67, 2)])
+        weights = transcriber._tonal_cues(s)[1:]
+        assert transcriber._diatonic_fraction(0, "major", *weights) == pytest.approx(
+            transcriber._diatonic_fraction(7, "major", *weights)
+        )
+        assert transcriber._cadence_prefers_runner_up(s, (0, "major"), (7, "major"), 0.2) is False
+
+    def test_it_declines_when_the_winner_also_ends_on_its_own_tonic(self):
+        # A parallel pair shares a tonic, so "ends on the tonic" is true of both and says
+        # nothing.  The asymmetry is the whole cue; without it there is no argument.
+        s = self._weighted([(60, 1), (63, 1), (67, 1), (60, 2)])
+        assert transcriber._cadence_prefers_runner_up(s, (0, "major"), (0, "minor"), 0.2) is False
+
+    def test_a_stream_with_nothing_in_it_declines(self):
+        from music21 import stream as m21stream
+
+        assert transcriber._tonal_cues(m21stream.Stream()) is None
+        assert transcriber._cadence_prefers_runner_up(
+            m21stream.Stream(), (5, "major"), (0, "major"), 0.2
+        ) is False
+
+    def test_the_parsimony_cue_is_duration_weighted_not_note_counted(self):
+        # One long out-of-scale note must cost more than one short one, because that is the
+        # same weighting the profiles use and the cue has to argue on their terms.
+        brief = self._weighted([(60, 4), (62, 4), (66, 0.5)])
+        sustained = self._weighted([(60, 4), (62, 4), (66, 4)])
+
+        assert transcriber._diatonic_fraction(
+            0, "major", *transcriber._tonal_cues(brief)[1:]
+        ) > transcriber._diatonic_fraction(0, "major", *transcriber._tonal_cues(sustained)[1:])
+
+    def test_a_minor_candidate_is_not_penalised_for_its_own_raised_seventh(self):
+        # A minor with a G#: harmonic minor is the same key, so scoring it against natural
+        # minor alone would make the cue argue against the right answer on every
+        # harmonic-minor clip in the corpus.
+        s = self._weighted([(69, 1), (71, 1), (72, 1), (74, 1), (76, 1), (77, 1), (80, 1), (81, 1)])
+        weights = transcriber._tonal_cues(s)[1:]
+
+        assert transcriber._diatonic_fraction(9, "minor", *weights) == pytest.approx(1.0)
