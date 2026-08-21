@@ -1,12 +1,19 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Common;
+using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Auth.Commands;
 
 namespace NoteFusion.Api.Controllers;
 
 /// <summary>Authentication endpoints: register, login, refresh, logout, change password.</summary>
+/// <remarks>
+/// Every anonymous route here is rate limited per caller address — see <see cref="AuthRateLimiting"/> for
+/// which limit is which and why. Rejections come back as 429 with the usual <c>{code, message}</c> envelope
+/// and a <c>Retry-After</c> header, so a client can wait the stated time rather than guess.
+/// </remarks>
 public sealed class AuthController : ApiControllerBase
 {
     private readonly ISender _sender;
@@ -18,6 +25,7 @@ public sealed class AuthController : ApiControllerBase
     /// <see cref="VerifyEmail"/> is what issues the session.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.Registration)]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
@@ -27,6 +35,7 @@ public sealed class AuthController : ApiControllerBase
     /// 400 with <c>AUTH_INVALID_VERIFICATION_CODE</c> when the code is wrong, expired or used up.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("verify-email")]
     public async Task<IActionResult> VerifyEmail(VerifyEmailCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
@@ -36,6 +45,7 @@ public sealed class AuthController : ApiControllerBase
     /// verified, or asking again too soon is not the caller's to know.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.EmailDispatch)]
     [HttpPost("resend-verification")]
     public async Task<IActionResult> ResendVerification(
         ResendEmailVerificationCommand command, CancellationToken ct)
@@ -46,6 +56,7 @@ public sealed class AuthController : ApiControllerBase
     /// was correct but the address was never confirmed; a fresh code has been sent by then.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
@@ -54,12 +65,24 @@ public sealed class AuthController : ApiControllerBase
     /// Signs in with a Google ID token, creating the account on first use.
     /// Serves both sign-up and sign-in — the client cannot tell them apart.
     /// </summary>
+    /// <remarks>
+    /// Limited as registration, not as credentials: there is no secret to guess here — an ID token either
+    /// verifies against Google's keys or it does not — but this route mints accounts, and a free grant per
+    /// account is the thing worth farming.
+    /// </remarks>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.Registration)]
     [HttpPost("google")]
     public async Task<IActionResult> Google(GoogleSignInCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
     /// <summary>Rotates the refresh token and issues a fresh access token.</summary>
+    /// <remarks>
+    /// Deliberately not limited. Every signed-in client calls this on a schedule and again on any 401, so a
+    /// limit tight enough to matter would sign real users out of their own session, and the token it takes
+    /// is long random material that brute force does not reach. Rotation is the control here: a presented
+    /// token is spent whether or not it was the right one.
+    /// </remarks>
     [AllowAnonymous]
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(RefreshTokenCommand command, CancellationToken ct)
@@ -82,6 +105,7 @@ public sealed class AuthController : ApiControllerBase
     /// of whether the address belongs to a registered account.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.EmailDispatch)]
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
@@ -91,6 +115,7 @@ public sealed class AuthController : ApiControllerBase
     /// Returns 204 on success; 400 when the token is invalid or expired.
     /// </summary>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.Credentials)]
     [HttpPost("reset-password")]
     public async Task<IActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
