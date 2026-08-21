@@ -521,16 +521,88 @@ def test_accidentals_are_counted_even_when_nothing_matches():
     assert scored["chromatic_ghosts"] > 0
 
 
-# ── Defect 7 — time signature (deferred by the plan) ──────────────────────────
+# ── Defect 7 — time signature (measured, and the detector STRUCK) ─────────────
 
 
 def test_defect7_no_metric_depends_on_the_hardcoded_time_signature():
-    """Deferred, so the only requirement is that landing it later cannot break the gate."""
+    """No longer deferred — measured, and this is now a guard rather than a placeholder.
+
+    Both routes to a meter detector were measured and struck (the post-mortem is at
+    the ``meter.TimeSignature`` site in ``app/pipeline/transcriber.py``): the acoustic
+    ``tempogram_ratio`` cue is anti-correlated on this corpus and its sign flips on a
+    3 BPM step, and the symbolic bar-length cue declines on 5 of 5 real cases while
+    picking the wrong bar length on 0-of-38 4/4 cases by a *wider* margin than the two
+    it gets right.
+
+    What matters here is that the gate was never allowed to pretend otherwise.  With
+    every corpus case at 4/4 and the pipeline returning the constant "4/4", a
+    ``meter.exact`` column would have read 1.000 for an always-4/4 detector and 1.000
+    for a perfect one — a metric that reads the perfect score and cannot move.  Adding
+    a 3/4 and a 6/8 case lifts the honest headroom to a single case (0.025), and one of
+    those two is laundered: the 6/8 clip's tempo comes back 45 against a true 132, so a
+    correct "6/8" engraves a bar 2.9x too long and still scores exact=True.  So the
+    requirement is unchanged and now load-bearing: scoring stays independent of the
+    meter until something can actually be scored.
+    """
     sources = inspect.getsource(metrics) + inspect.getsource(runner)
     assert "time_signature" not in sources, (
-        "a metric started reading time_signature; defect 7 is deferred, so scoring "
-        "must stay independent of it"
+        "a metric started reading time_signature; the meter detector is struck, so "
+        "scoring must stay independent of it — see the post-mortem in transcriber.py"
     )
+
+
+def test_the_reference_metrical_level_is_distinguishable_from_no_level_at_all():
+    """``metrical_factor`` must separate a perfect tempo from an incommensurate one.
+
+    The defect: ``TEMPO_METRICAL_FACTORS`` omitted 1.0, so "the estimate is on the
+    reference's own level" fell through to the 0.0 the docstring calls "none".
+    Measured over the 38-case report that collapsed 10 exact tempi and 25
+    incommensurate misses into one bucket — 35 of 38 cases reading the same value —
+    which defeats the column's stated purpose of telling a metrical slip from noise.
+
+    Directional: with 1.0 absent an exact reading is indistinguishable from a 1.219x
+    miss; with it present they separate.
+    """
+    defective = tuple(f for f in metrics.TEMPO_METRICAL_FACTORS if f != 1.0)
+
+    def factor(ref_bpm, est_bpm, factors):
+        for f in factors:
+            if abs(est_bpm - f * ref_bpm) <= metrics.TEMPO_OCTAVE_TOLERANCE * f * ref_bpm:
+                return f
+        return 0.0
+
+    # 117 against 96 is the real signature of the eight residual cases: 1.219x, which
+    # is not any known level.  88 against 88 is a perfect reading.
+    assert factor(96, 96, defective) == factor(96, 117, defective) == 0.0, (
+        "this test no longer reproduces the defect it exists to catch"
+    )
+
+    assert metrics.tempo_metrics(96, 96)["metrical_factor"] == 1.0
+    assert metrics.tempo_metrics(96, 117)["metrical_factor"] == 0.0
+    assert metrics.tempo_metrics(88, 86)["metrical_factor"] == 1.0, (
+        "86 against 88 is inside MIREX's +/-4 %, so it is the reference level with a "
+        "small error — abs_error carries the magnitude, not the level label"
+    )
+
+
+def test_naming_the_reference_level_does_not_disturb_the_gated_octave_flag():
+    """Specificity: ``octave_error`` is the gated bool and must not move.
+
+    It tests membership in (2.0, 0.5), and no estimate can sit within +/-4 % of both
+    1.0 and 2.0, so adding 1.0 to the front of the tuple cannot steal a match from
+    either.  Measured across the corpus: 0 octave errors before and after.
+    """
+    assert metrics.tempo_metrics(96, 192)["metrical_factor"] == 2.0
+    assert metrics.tempo_metrics(96, 192)["octave_error"] is True
+    assert metrics.tempo_metrics(96, 48)["octave_error"] is True
+    assert metrics.tempo_metrics(96, 96)["octave_error"] is False
+    assert metrics.tempo_metrics(96, 117)["octave_error"] is False
+
+    # The clean multiples the corpus really contains still report as multiples.
+    assert metrics.tempo_metrics(88, 345)["metrical_factor"] == 4.0
+    assert metrics.tempo_metrics(96, 144)["metrical_factor"] == 1.5
+    # And a missing tempo is still "no level", which stays true under the new reading.
+    assert metrics.tempo_metrics(96, 0)["metrical_factor"] == 0.0
 
 
 # ── Chromatic spelling — directional, and what that costs ─────────────────────

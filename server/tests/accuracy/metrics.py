@@ -103,7 +103,24 @@ TEMPO_OCTAVE_TOLERANCE = 0.04
 # comes back at 3.92x the reference (it read sixteenths as beats), which a
 # half/double-only test reports as a bare 257 BPM error, i.e. as noise rather than
 # as the clean 4x it is.
-TEMPO_METRICAL_FACTORS = (2.0, 0.5, 4.0, 0.25, 3.0, 1.0 / 3.0, 1.5, 2.0 / 3.0)
+#
+# 1.0 leads the tuple, and leaving it out was a defect rather than a shorthand.
+# Without it "the estimate is on the reference's own level" fell through to the 0.0
+# the docstring calls "none", so metrical_factor could not distinguish a perfect
+# reading from a wildly wrong one: measured over the 38-case report, 0.0 covered 10
+# exact tempi AND 25 incommensurate misses — 35 of 38 cases in one unreadable
+# bucket, which defeats the column's whole stated purpose.  With 1.0 present, 27 of
+# 38 cases report it (every case inside MIREX's +/-4 %, which IS the reference
+# level — abs_error still carries the magnitude), 3 report their clean multiple, and
+# 0.0 falls to the 8 cases that genuinely sit between levels.  Those 8 are worth the
+# column: all 8 report 117 BPM, librosa's own prior, and 7 of them have onset
+# detection destroyed by vibrato (n_est 20-47 against n_ref 11, notes.f1
+# 0.000-0.645), so their tempo is a fallback rather than a measurement.  The eighth,
+# major_c_sharp, is 11/11 notes at f1 1.000 yet reads 117 against a true 88 — an
+# isolated beat-tracking failure the old tuple hid among 35 identical zeros.
+# ``octave_error`` is unaffected: it tests membership in (2.0, 0.5), and no case can
+# be within 4 % of both 1.0 and 2.0.  Measured 0 before and after.
+TEMPO_METRICAL_FACTORS = (1.0, 2.0, 0.5, 4.0, 0.25, 3.0, 1.0 / 3.0, 1.5, 2.0 / 3.0)
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -394,10 +411,13 @@ def tempo_metrics(ref_bpm: float, est_bpm: float) -> dict:
     hard-coded 100 BPM when beat tracking fails, so a reported tempo is not
     necessarily something it measured.
 
-    ``metrical_factor`` is the multiple of the reference the estimate landed on
-    (0.0 if none), so a beat tracker that read sixteenths as beats reads "4.0"
-    instead of "257 BPM off".  ``octave_error`` keeps its literal meaning — half or
-    double time only — and is the gated bool; the factor is the label.
+    ``metrical_factor`` is the multiple of the reference the estimate landed on, so a
+    beat tracker that read sixteenths as beats reads "4.0" instead of "257 BPM off",
+    and one that read the reference's own level reads "1.0".  0.0 means *none of the
+    known levels* — the estimate sits between them — which is a stronger statement
+    than a large ``abs_error`` and the one worth reading first.  ``octave_error``
+    keeps its literal meaning — half or double time only — and is the gated bool; the
+    factor is the label.
     """
     if ref_bpm <= 0 or est_bpm <= 0:
         # The WORST value, not the best.  abs_error and rel_error are gated
