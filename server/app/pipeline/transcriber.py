@@ -82,8 +82,40 @@ MIN_AMPLITUDE_MELODY = 0.15  # v1 was 0.20 — allow softer recordings to pass
 MIN_AMPLITUDE_POLY = 0.12  # v1 was 0.15
 
 # Adaptive threshold: ADAPTIVE_FACTOR × p75(clip amplitudes), floored at the
-# constant above.  Prevents a fixed value from silencing quiet performances.
-ADAPTIVE_FACTOR = 0.25
+# constant above.  Scales the cut with how confident the model is on this clip.
+#
+# 0.25 was structurally unable to do its job, and the harness had already recorded the
+# proof without anyone reading it.  Basic Pitch's amplitude is a posterior in [0,1], so
+# 0.25 × p75 has a hard CEILING of 0.25 — and per-case conf.* (conf IS the event
+# amplitude, see the assignment to editorial.confidence) shows the ghost population
+# clustered at 0.252-0.268 against real notes at 0.585-0.792, with conf.auc a perfect
+# 1.000 on 20 of 38 cases.  Amplitude separates ghosts from notes flawlessly on those
+# clips and the floor sat one thousandth BELOW the entire ghost cluster, so the stage
+# that exists to remove them could never fire.  diag_baseline — the clean control —
+# emitted 15 notes for 11 references.
+#
+# Swept 0.25 / 0.40 / 0.50 / 0.60 over the corpus.  At 0.40: notes.precision 0.783 ->
+# 0.839, notes.f1 0.832 -> 0.863, notes.f1_with_offset 0.707 -> 0.798, solfa.ghost_count
+# 5.711 -> 4.947, beats.precision 0.801 -> 0.858, tempo.abs_error 24.000 -> 21.263
+# (fewer spurious onsets, so the tempo chooser sees the real grid), and
+# solfa.anchor_matches_reference 0.974 -> 1.000.  EIGHTEEN cases go to exactly zero
+# ghosts, including diag_baseline 4 -> 0, plagal_fourth 4 -> 0 and lead_in_800ms 3 -> 0.
+# notes.recall holds at 0.935 and all twelve already-perfect cases stay bit-identical
+# 1.000, guards included.
+#
+# 0.40 rather than the middle of the plateau: 0.40 and 0.50 are identical on every
+# metric, 0.60 breaks vibrato_rate_k15 (recall 1.000 -> 0.909), and deleting a real note
+# is worse than leaving a ghost — so take the low end of the plateau, furthest from the
+# edge that loses notes.
+#
+# What this does NOT fix, so it is not mistaken for a solfa win later:
+# solfa.degree_accuracy is unchanged at 0.917 and chromatic_ghosts at 1.868, because
+# both are computed over MATCHED notes and this removes unmatched ones.  It is a
+# precision and timing fix — what the user sees as spurious extra notes on the staff.
+# conf.auc drops 0.868 -> 0.551 for the same reason: the discarded events were the ones
+# amplitude was correctly identifying, so the statistic loses the population it was
+# scoring.  That is the metric measuring its own success, not a regression.
+ADAPTIVE_FACTOR = 0.40
 
 # Events shorter than this are almost always artefacts (breath noise, finger
 # scrapes, string squeak).
@@ -812,9 +844,19 @@ def _bend_semitones(bends: object) -> float:
 def _adaptive_amplitude_floor(events: list[Event], base: float) -> float:
     """Return max(base, ADAPTIVE_FACTOR × p75(amplitudes)).
 
-    Using the clip's own amplitude distribution prevents a fixed threshold
-    from silencing quiet hummed or played recordings while still suppressing
-    noise bursts that exceed the absolute base level.
+    Scaling with the clip's own distribution is what lets one threshold serve both a
+    loud and a soft recording, because Basic Pitch's ``amplitude`` is a mean frame
+    *posterior*, not audio loudness — so the level this compares against moves with how
+    confident the model is, not with how loud the microphone was.
+
+    Note what the ``max`` does and does not do.  The adaptive term can only ever RAISE
+    the floor, so it cannot protect a quiet recording; what protects those is ``base``
+    being low, plus the posterior/loudness distinction above.  (Measured:
+    ``quiet_low_amplitude`` scores ``notes.f1`` 1.000 with its correct notes at a mean
+    posterior of 0.734 — as high as any clean case.  Nothing about that clip is quiet
+    from this function's point of view.)  An earlier version of this docstring claimed
+    the adaptive term was what stopped soft recordings being silenced; with ``max`` that
+    was unreachable by construction.
     """
     if not events:
         return base
