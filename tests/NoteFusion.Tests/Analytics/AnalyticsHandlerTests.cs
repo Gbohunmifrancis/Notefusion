@@ -3,6 +3,8 @@ using NoteFusion.Application.Analytics.Queries;
 using NoteFusion.Application.Library.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Entities.Billing;
+using NoteFusion.Core.Enums;
 using NoteFusion.Tests.Support;
 
 namespace NoteFusion.Tests.Analytics;
@@ -255,7 +257,7 @@ public class AnalyticsHandlerTests
         await SeedUser(h, "second@example.com", Now.AddDays(-5));
         await SeedUser(h, "third@example.com", Now.AddDays(-1));
 
-        var result = await new GetAdminUsersQueryHandler(h.Db)
+        var result = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
             .Handle(new GetAdminUsersQuery(Page: 1, PageSize: 2), default);
 
         Assert.Equal(3, result.Value.TotalCount);
@@ -271,11 +273,11 @@ public class AnalyticsHandlerTests
         await SeedUser(h, "ada@example.com", Now.AddDays(-1), "Ada Lovelace");
         await SeedUser(h, "grace@example.com", Now.AddDays(-1), "Grace Hopper");
 
-        var byName = await new GetAdminUsersQueryHandler(h.Db)
+        var byName = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
             .Handle(new GetAdminUsersQuery(Search: "LOVELACE"), default);
         Assert.Equal("ada@example.com", Assert.Single(byName.Value.Items).Email);
 
-        var byEmail = await new GetAdminUsersQueryHandler(h.Db)
+        var byEmail = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
             .Handle(new GetAdminUsersQuery(Search: "grace@"), default);
         Assert.Equal("grace@example.com", Assert.Single(byEmail.Value.Items).Email);
     }
@@ -289,7 +291,7 @@ public class AnalyticsHandlerTests
         await SaveTranscription(h, userId);
         await SeedUser(h, "empty@example.com", Now.AddDays(-2));
 
-        var result = await new GetAdminUsersQueryHandler(h.Db).Handle(new GetAdminUsersQuery(), default);
+        var result = await new GetAdminUsersQueryHandler(h.Db, h.Clock).Handle(new GetAdminUsersQuery(), default);
 
         var rows = result.Value.Items.ToDictionary(r => r.Email, r => r.TranscriptionCount);
         Assert.Equal(2, rows["author@example.com"]);
@@ -302,13 +304,76 @@ public class AnalyticsHandlerTests
         using var h = new TestHarness(Now);
         await SeedUser(h, "user@example.com", Now.AddDays(-1));
 
-        var result = await new GetAdminUsersQueryHandler(h.Db)
+        var result = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
             .Handle(new GetAdminUsersQuery(Page: 0, PageSize: 5_000), default);
 
         // A paging control that overshoots is normal UI behaviour, not an error state.
         Assert.True(result.IsSuccess);
         Assert.Equal(1, result.Value.Page);
         Assert.Equal(GetAdminUsersQuery.MaxPageSize, result.Value.PageSize);
+    }
+
+    [Fact]
+    public async Task The_user_list_tells_a_gift_apart_from_a_payment_and_from_no_access()
+    {
+        using var h = new TestHarness(Now);
+        var paid = await SeedUser(h, "paid@example.com", Now.AddDays(-3));
+        var gifted = await SeedUser(h, "gifted@example.com", Now.AddDays(-2));
+        await SeedUser(h, "free@example.com", Now.AddDays(-1));
+
+        SeedSubscription(h, paid, PaymentProvider.Paystack, Now.AddDays(20));
+        SeedSubscription(h, gifted, provider: null, Now.AddDays(20));
+
+        var rows = (await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+            .Handle(new GetAdminUsersQuery(), default)).Value.Items.ToDictionary(r => r.Email);
+
+        Assert.True(rows["paid@example.com"].HasProAccess);
+        Assert.False(rows["paid@example.com"].IsGiftedPro);
+
+        Assert.True(rows["gifted@example.com"].HasProAccess);
+        Assert.True(rows["gifted@example.com"].IsGiftedPro);
+
+        // Not gifted, but not paid either — the column has to read "Free", and a row that only carried
+        // "is this a gift" would be indistinguishable from the paying customer above.
+        Assert.False(rows["free@example.com"].HasProAccess);
+        Assert.False(rows["free@example.com"].IsGiftedPro);
+    }
+
+    [Fact]
+    public async Task A_lapsed_subscription_is_not_reported_as_pro_access()
+    {
+        using var h = new TestHarness(Now);
+        var userId = await SeedUser(h, "lapsed@example.com", Now.AddDays(-60));
+        SeedSubscription(h, userId, PaymentProvider.Paystack, Now.AddDays(-1));
+
+        var row = Assert.Single((await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+            .Handle(new GetAdminUsersQuery(), default)).Value.Items);
+
+        // The row still exists — a subscription is never deleted — so presence of a subscription cannot be
+        // the test. The period window decides, exactly as the paywall decides it.
+        Assert.False(row.HasProAccess);
+    }
+
+    [Fact]
+    public async Task The_user_list_can_be_filtered_to_suspended_accounts()
+    {
+        using var h = new TestHarness(Now);
+        await SeedUser(h, "active@example.com", Now.AddDays(-2));
+        var suspendedId = await SeedUser(h, "suspended@example.com", Now.AddDays(-1));
+        h.Db.Users.Single(u => u.Id == suspendedId).Suspend();
+        await h.Db.SaveChangesAsync();
+
+        var suspended = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+            .Handle(new GetAdminUsersQuery(IsActive: false), default);
+        var active = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+            .Handle(new GetAdminUsersQuery(IsActive: true), default);
+
+        Assert.Equal("suspended@example.com", Assert.Single(suspended.Value.Items).Email);
+        Assert.Equal("active@example.com", Assert.Single(active.Value.Items).Email);
+
+        // The total is the filtered total, not the table's. A pager that read 2 here would offer a page
+        // with nothing on it.
+        Assert.Equal(1, suspended.Value.TotalCount);
     }
 
     private static GetAnalyticsOverviewQueryHandler Handler(TestHarness h)
@@ -321,6 +386,28 @@ public class AnalyticsHandlerTests
         h.Db.Users.Add(user);
         await h.Db.SaveChangesAsync();
         return user.Id;
+    }
+
+    /// <summary>
+    /// A subscription ending at <paramref name="endsAtUtc"/>, paid for when a provider is given and gifted
+    /// when it is not — the absence of a provider is the only thing that marks a comp.
+    /// </summary>
+    private static void SeedSubscription(
+        TestHarness h, Guid userId, PaymentProvider? provider, DateTime endsAtUtc)
+    {
+        var planId = new Guid("11111111-1111-1111-1111-111111111111");
+        if (!h.Db.Plans.Any(p => p.Id == planId))
+        {
+            h.Db.Plans.Add(Plan.Create(
+                planId, "pro_monthly_ngn", "NoteFusion Pro (Monthly)", 750_000, "NGN", BillingInterval.Monthly));
+        }
+
+        var start = Now.AddDays(-30);
+        h.Db.Subscriptions.Add(provider is { } p
+            ? Subscription.Start(userId, planId, p, start, endsAtUtc, "prov-sub-1", start)
+            : Subscription.Grant(userId, planId, start, endsAtUtc, start));
+
+        h.Db.SaveChanges();
     }
 
     private static async Task SaveTranscription(TestHarness h, Guid userId)

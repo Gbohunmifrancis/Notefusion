@@ -164,6 +164,17 @@ public sealed record AnalyticsOverviewDto(
 /// hash, no token, and no phone number here — a support view does not need the phone number to
 /// identify an account, and the fewer places PII is copied to the better.
 /// </remarks>
+/// <param name="HasProAccess">
+/// Whether Pro is unlocked right now — status and period window read together, the same rule
+/// <c>GetSystemHealthQuery</c> counts subscribers with. Computed here rather than left to the
+/// client, because a client that reimplements it will eventually disagree with the API about who
+/// is a subscriber.
+/// </param>
+/// <param name="IsGiftedPro">
+/// True when that access came from an operator's grant rather than a payment. Only meaningful
+/// while <paramref name="HasProAccess"/> is true; false on an account with no access at all, which
+/// is not the same statement as "they paid".
+/// </param>
 public sealed record AdminUserRowDto(
     Guid Id,
     string FullName,
@@ -174,7 +185,9 @@ public sealed record AdminUserRowDto(
     bool HasPassword,
     DateTime CreatedAt,
     DateTime? LastLoginAt,
-    int TranscriptionCount);
+    int TranscriptionCount,
+    bool HasProAccess,
+    bool IsGiftedPro);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

@@ -3,9 +3,12 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { RequireAdmin } from "@/components/RequireAdmin";
 import { AuthProvider } from "@/lib/auth";
+import { AuditLogPage } from "@/pages/AuditLogPage";
+import { HealthPage } from "@/pages/HealthPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { ResetPasswordPage } from "@/pages/ResetPasswordPage";
 import { OverviewPage } from "@/pages/OverviewPage";
+import { UserDetailPage } from "@/pages/UserDetailPage";
 import { UsersPage } from "@/pages/UsersPage";
 
 export function App() {
@@ -26,6 +29,9 @@ export function App() {
         >
           <Route path="/" element={<OverviewPage />} />
           <Route path="/users" element={<UsersPage />} />
+          <Route path="/users/:id" element={<UserDetailPage />} />
+          <Route path="/audit-log" element={<AuditLogPage />} />
+          <Route path="/health" element={<HealthPage />} />
         </Route>
 
         {/* An unknown path goes to the overview, which redirects to /login if not signed in. */}

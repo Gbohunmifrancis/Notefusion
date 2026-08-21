@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview } from "@/api/types";
@@ -367,16 +368,23 @@ export function OverviewPage() {
                 <ul className="space-y-2 text-[13px] text-muted">
                   <li>
                     <span className="font-medium text-ink">Top countries and geography.</span>{" "}
-                    No location, IP, or locale is stored against an account or a transcription,
-                    so a country breakdown would be invented, not measured. It arrives if and
-                    when the schema captures a signal worth mapping.
+                    An account does carry a country, resolved from the caller's address once at its
+                    first sign-in and only when a GeoIP provider is configured — so on a deployment
+                    without one it is null for everybody. It is shown per account on the detail
+                    page; a breakdown card waits until the column is populated widely enough to
+                    mean something.
                   </li>
                   <li>
                     <span className="font-medium text-ink">
                       Subscribed, paid and free-tier counts.
                     </span>{" "}
-                    No subscription, plan or payment entity exists in the schema. Once pricing
-                    is settled these become real columns, and only then real cards.
+                    The billing tables exist, but every figure on this page is windowed to the range
+                    above and a subscription count belongs to an instant instead. The live numbers,
+                    labelled as the snapshot they are, are on{" "}
+                    <Link to="/health" className="font-medium text-accent hover:opacity-80">
+                      System health
+                    </Link>
+                    .
                   </li>
                   <li>
                     <span className="font-medium text-ink">Day-N retention.</span> Only the

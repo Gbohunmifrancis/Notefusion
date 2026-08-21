@@ -1,9 +1,11 @@
 import {
+  HeartPulse,
   LayoutDashboard,
   LogOut,
   Menu,
   Moon,
   PanelLeft,
+  ScrollText,
   Search,
   Sun,
   Users2,
@@ -32,6 +34,15 @@ const NAV_GROUPS = [
     items: [
       { to: "/", label: "Overview", icon: LayoutDashboard },
       { to: "/users", label: "Users", icon: Users2 },
+    ],
+  },
+  {
+    // Doing and checking, as opposed to reading. Both pages are about the console's own actions
+    // and the state of the tiers behind them, which is a different job from the numbers above.
+    label: "Operations",
+    items: [
+      { to: "/audit-log", label: "Audit log", icon: ScrollText },
+      { to: "/health", label: "System health", icon: HeartPulse },
     ],
   },
 ] as const;

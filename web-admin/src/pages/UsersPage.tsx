@@ -1,12 +1,15 @@
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import { getUsers } from "@/api/endpoints";
 import type { AdminUserRow, PagedResult } from "@/api/types";
 import { Avatar } from "@/components/Avatar";
+import { Badge } from "@/components/Badge";
 import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
+import { Pager } from "@/components/Pager";
+import { Segmented } from "@/components/Segmented";
 import { StateView } from "@/components/StateView";
 import { formatCount, formatInstantDate, formatInstantDateTime } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
@@ -15,27 +18,31 @@ import { useAsync, useDebounced } from "@/lib/useAsync";
 
 const PAGE_SIZE = 25;
 
-const TONES = {
-  neutral: "bg-surface-alt text-muted",
-  blue: "bg-accent/10 text-accent-deep",
-  success: "bg-success/10 text-success",
-  danger: "bg-danger/10 text-danger",
-} as const;
+/**
+ * Filtered on the server, not here. This page holds one page of rows, so filtering after paging
+ * would report "3 of 340" and never reach the suspended account sitting on page nine.
+ */
+const STATUS_OPTIONS = [
+  { value: "all", label: "All" },
+  { value: "active", label: "Active" },
+  { value: "suspended", label: "Suspended" },
+] as const;
 
-function Badge({
-  children,
-  tone = "neutral",
-}: {
-  children: string;
-  tone?: keyof typeof TONES;
-}) {
-  return (
-    <span
-      className={`inline-flex items-center rounded-[6px] px-2 py-[3px] text-[11px] font-semibold ${TONES[tone]}`}
-    >
-      {children}
-    </span>
-  );
+type StatusFilter = (typeof STATUS_OPTIONS)[number]["value"];
+
+const IS_ACTIVE: Record<StatusFilter, boolean | undefined> = {
+  all: undefined,
+  active: true,
+  suspended: false,
+};
+
+/** Pro / Gift / Free from the two flags the row carries. */
+function PlanBadge({ user }: { user: AdminUserRow }) {
+  if (!user.hasProAccess) return <Badge>Free</Badge>;
+  if (user.isGiftedPro) {
+    return <Badge tone="premium" title="Granted by an operator — no payment was taken">Gift</Badge>;
+  }
+  return <Badge tone="blue">Pro</Badge>;
 }
 
 export function UsersPage() {
@@ -47,15 +54,18 @@ export function UsersPage() {
   const [search, setSearch] = useState(incoming);
   useEffect(() => setSearch(incoming), [incoming]);
 
+  const [status, setStatus] = useState<StatusFilter>("all");
   const [page, setPage] = useState(1);
   const debouncedSearch = useDebounced(search);
 
-  // A new search starts at the beginning; page 4 of the old query means nothing for the new one.
-  useEffect(() => setPage(1), [debouncedSearch]);
+  // A new search or filter starts at the beginning; page 4 of the old query means nothing for
+  // the new one.
+  useEffect(() => setPage(1), [debouncedSearch, status]);
 
   const fetcher = useCallback(
-    (signal: AbortSignal) => getUsers(page, PAGE_SIZE, debouncedSearch.trim(), signal),
-    [page, debouncedSearch],
+    (signal: AbortSignal) =>
+      getUsers(page, PAGE_SIZE, debouncedSearch.trim(), IS_ACTIVE[status], signal),
+    [page, debouncedSearch, status],
   );
   const state = useAsync<PagedResult<AdminUserRow>>(fetcher);
 
@@ -72,36 +82,51 @@ export function UsersPage() {
         hint="Newest first. This view carries personal data — treat it accordingly."
         bleed
         action={
-          <label className="relative block">
-            <span className="sr-only">Search by name or email</span>
-            <Search
-              size={15}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
-              aria-hidden="true"
+          <div className="flex flex-wrap items-center gap-2">
+            <Segmented
+              options={STATUS_OPTIONS}
+              value={status}
+              onChange={setStatus}
+              label="Account status"
             />
-            <input
-              type="search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Name or email"
-              className="w-56 rounded-sm border border-border bg-surface py-1.5 pl-9 pr-3 text-[13px] text-ink outline-none transition focus:border-blue"
-            />
-          </label>
+            <label className="relative block">
+              <span className="sr-only">Search by name or email</span>
+              <Search
+                size={15}
+                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
+                aria-hidden="true"
+              />
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Name or email"
+                className="w-56 rounded-sm border border-border bg-surface py-1.5 pl-9 pr-3 text-[13px] text-ink outline-none transition focus:border-blue"
+              />
+            </label>
+          </div>
         }
       >
         <StateView
           state={state}
           isEmpty={(data) => data.items.length === 0}
-          emptyMessage={debouncedSearch ? "No accounts match that search" : "No accounts yet"}
+          emptyMessage={
+            debouncedSearch
+              ? "No accounts match that search"
+              : status === "suspended"
+                ? "No suspended accounts"
+                : "No accounts yet"
+          }
           loadingLabel="Loading accounts"
         >
           {(data) => (
             <>
               <div className="overflow-x-auto border-t border-border">
-                <table className="w-full min-w-[56rem]">
+                <table className="w-full min-w-[62rem]">
                   <thead>
                     <tr className={THEAD_TR}>
                       <th className={TH}>Account</th>
+                      <th className={TH}>Plan</th>
                       <th className={TH}>Role</th>
                       <th className={TH}>Sign-in</th>
                       <th className={TH}>Status</th>
@@ -114,13 +139,23 @@ export function UsersPage() {
                     {data.items.map((user) => (
                       <tr key={user.id} className={TR}>
                         <td className={TD}>
+                          {/* The link is on the name rather than the row: a whole-row anchor
+                              cannot contain the badges without nesting interactive elements. */}
                           <div className="flex items-center gap-3">
                             <Avatar name={user.fullName} size={34} />
                             <div className="min-w-0">
-                              <p className="truncate font-medium text-ink">{user.fullName}</p>
+                              <Link
+                                to={`/users/${user.id}`}
+                                className="block truncate font-medium text-ink transition hover:text-accent"
+                              >
+                                {user.fullName}
+                              </Link>
                               <p className="truncate text-[11px] text-faint">{user.email}</p>
                             </div>
                           </div>
+                        </td>
+                        <td className={TD}>
+                          <PlanBadge user={user} />
                         </td>
                         <td className={TD}>
                           <Badge tone={user.role === "Admin" ? "blue" : "neutral"}>
@@ -142,7 +177,7 @@ export function UsersPage() {
                           {user.isActive ? (
                             <Badge tone="success">Active</Badge>
                           ) : (
-                            <Badge tone="danger">Deactivated</Badge>
+                            <Badge tone="danger">Suspended</Badge>
                           )}
                         </td>
                         <td className={`${TD} text-right tabular-nums`}>
@@ -161,43 +196,14 @@ export function UsersPage() {
                 </table>
               </div>
 
-              <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-3.5">
-                <p className="text-xs text-muted">
-                  Showing{" "}
-                  <span className="font-medium text-ink">
-                    {formatCount((data.page - 1) * data.pageSize + 1)}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-medium text-ink">
-                    {formatCount(Math.min(data.page * data.pageSize, data.totalCount))}
-                  </span>{" "}
-                  of <span className="font-medium text-ink">{formatCount(data.totalCount)}</span>
-                </p>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPage((current) => Math.max(1, current - 1))}
-                    disabled={data.page <= 1 || state.loading}
-                    className="grid h-8 w-8 place-items-center rounded-sm border border-border text-muted transition hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Previous page"
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-                  <span className="text-xs tabular-nums text-muted">
-                    Page {data.page} of {Math.max(data.totalPages, 1)}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setPage((current) => current + 1)}
-                    disabled={data.page >= data.totalPages || state.loading}
-                    className="grid h-8 w-8 place-items-center rounded-sm border border-border text-muted transition hover:bg-surface-alt disabled:cursor-not-allowed disabled:opacity-40"
-                    aria-label="Next page"
-                  >
-                    <ChevronRight size={16} />
-                  </button>
-                </div>
-              </footer>
+              <Pager
+                page={data.page}
+                pageSize={data.pageSize}
+                totalCount={data.totalCount}
+                totalPages={data.totalPages}
+                busy={state.loading}
+                onPage={setPage}
+              />
             </>
           )}
         </StateView>
