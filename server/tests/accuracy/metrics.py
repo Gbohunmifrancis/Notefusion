@@ -473,9 +473,11 @@ def _match_by_pitch_then_time(
 
 
 # The five semitones above doh that fall outside the diatonic scale, so a note on one of
-# them is written with an accidental: ``ASCENDING_SYLLABLES`` indices 1, 3, 6, 8 and 10 —
-# de, re, fe, se, le.  ``transcribe`` only ever labels ascending, so the descending
-# spellings (ra, ma, sa, la, ta) cannot appear.
+# them is written with an accidental: indices 1, 3, 6, 8 and 10 — de/re/fe/se/le rising,
+# ra/ma/sa/la/ta falling.  Which of the two a note gets is a function of melodic
+# direction (``solfa.ascending_flags``), not of the note, so the ground truth below has
+# to derive it the same way the pipeline does; the two tables are identical on the seven
+# diatonic degrees, so nothing outside this set can be affected either way.
 CHROMATIC_SEMITONES = frozenset({1, 3, 6, 8, 10})
 
 
@@ -516,9 +518,9 @@ def solfa_metrics(
 
     Ground truth is built exactly the way ``transcribe()`` builds its own labels
     (transcriber.py:779-788) — one ``reference_doh`` for the whole clip from the
-    median of the pitch list, ascending syllable table — except that the pitch list is
-    the *reference* one.  Deriving it from the estimate would make the octave marks
-    agree by construction.
+    median of the pitch list, chromatic syllables chosen by melodic direction — except
+    that both the pitch list and the direction are the *reference* ones.  Deriving
+    either from the estimate would make it agree by construction.
 
     ``chromatic_ghosts`` is the accidentals column, and it counts the *excess* rather
     than the total on purpose.  Lower-is-better on the total would be plainly wrong:
@@ -601,14 +603,27 @@ def solfa_metrics(
         return {**zeros, "anchor_matches_reference": est_doh == ref_doh, **chromatic}
 
     degree_hits = syllable_hits = octave_misses = 0
+    # Chromatic spelling is a function of melodic direction, so ground truth needs the
+    # direction of the *reference* melody — the only non-circular choice, since deriving
+    # it from the estimate would make the spelling agree by construction.  The
+    # consequence is stated rather than hidden: if the pipeline drops a note, the
+    # surviving neighbour can arrive from a different pitch than it does in the
+    # reference, and a chromatic note there is then spelled from the other table and
+    # scored wrong.  That is the same conflation ``degree_accuracy`` already makes for a
+    # mis-detected key — the syllable the user sees is wrong for the music, and the
+    # detection failure is what made it wrong.  Bounded to chromatic notes only.
+    ref_spelling = solfa.ascending_flags([r.pitch_midi for r in ref])
     for ref_idx, est_idx in pairs:
-        gt_syllable, gt_mark, gt_degree = solfa.syllable(ref[ref_idx].pitch_midi, doh_pc, ref_doh)
+        gt_syllable, gt_mark, gt_degree = solfa.syllable(
+            ref[ref_idx].pitch_midi, doh_pc, ref_doh, ref_spelling[ref_idx]
+        )
         note = est[est_idx]
         degree_hits += note.degree == gt_degree
         syllable_hits += note.solfa == gt_syllable
         # The mark this note WOULD carry under the reference anchor, so the comparison
         # is "is this note in the right octave band" and not "did the two clips agree
-        # on which doh to count octaves from".
+        # on which doh to count octaves from".  No spelling is passed because the mark
+        # falls out of the octave shift alone — the two syllable tables cannot move it.
         _, est_mark, _ = solfa.syllable(note.pitch_midi, doh_pc, ref_doh)
         octave_misses += est_mark != gt_mark
 

@@ -1899,10 +1899,26 @@ def _transcribe_wav(
     notes: list[TranscribedNote] = []
     bars: list[str] = []
 
+    # Chromatic spelling follows melodic direction, so the whole clip's pitch order has to
+    # be settled before any one note is labelled — a note cannot be spelled from itself.
+    # The stream is walked twice in the same order (measures in offset order, notes in
+    # offset order within each), so ``spelling`` indexes the loop below by position.
+    spelling = solfa.ascending_flags(
+        [
+            n.pitch.midi
+            for measure in score.getElementsByClass(stream.Measure)
+            for n in measure.notes
+        ]
+    )
+
+    position = 0
     for measure in score.getElementsByClass(stream.Measure):
         bar_syllables: list[str] = []
         for n in measure.notes:
-            syl, mark, degree = solfa.syllable(n.pitch.midi, doh_pc, ref_doh)
+            syl, mark, degree = solfa.syllable(
+                n.pitch.midi, doh_pc, ref_doh, spelling[position]
+            )
+            position += 1
             bar_syllables.append(syl + mark)
             notes.append(
                 TranscribedNote(

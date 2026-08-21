@@ -11,9 +11,9 @@
  * minor, reference-doh octave marks. Octave marks follow the Python wire
  * format (' above, , below) because stored notes already carry those strings.
  *
- * The primitives below (parseKey, dohPitchClass, referenceDoh, syllable,
- * dohHeader) are exported to mirror solfa.py's function-level API so the two
- * can be diffed case-by-case; the app itself only calls deriveSolfa, sameKey,
+ * The primitives below (parseKey, dohPitchClass, referenceDoh, ascendingFlags,
+ * syllable, dohHeader) are exported to mirror solfa.py's function-level API so the
+ * two can be diffed case-by-case; the app itself only calls deriveSolfa, sameKey,
  * and KEY_CHOICES.
  */
 
@@ -53,6 +53,21 @@ const ASCENDING_SYLLABLES = [
   "se",
   "l",
   "le",
+  "t",
+] as const;
+
+const DESCENDING_SYLLABLES = [
+  "d",
+  "ra",
+  "r",
+  "ma",
+  "m",
+  "f",
+  "sa",
+  "s",
+  "la",
+  "l",
+  "ta",
   "t",
 ] as const;
 
@@ -153,6 +168,47 @@ export function referenceDoh(pitches: readonly number[], dohPc: number): number 
   return best;
 }
 
+/**
+ * Which chromatic table each note is spelled from, decided by melodic direction.
+ * Mirrors solfa.py's `ascending_flags` and SolfaMapper.cs's `AscendingFlags`.
+ *
+ * A rising chromatic is a sharpened degree (de re fe se le); a falling one is a
+ * flattened degree (ra ma sa la ta). Direction is taken from the pitch the melody
+ * arrived from; on the opening run, where there is nothing to arrive from, it is
+ * taken from the pitch the melody leaves for instead; a clip holding one single
+ * pitch is ascending by convention.
+ *
+ * Equal neighbours are one run and share a flag, which is why the previous
+ * *differing* pitch is what counts rather than the literal previous note: a
+ * chromatic sung twice must not be spelled `ra` then `de`.
+ *
+ * Only the five chromatic semitones {1, 3, 6, 8, 10} can be affected — the two
+ * tables agree on all seven diatonic degrees, so a diatonic note's flag is
+ * unobservable.
+ *
+ * `pitches` must be in melodic (time) order; this is a statement about a note's
+ * position in the tune, not about the note in isolation.
+ */
+export function ascendingFlags(pitches: readonly number[]): boolean[] {
+  const flags: boolean[] = new Array(pitches.length).fill(true);
+  let start = 0;
+  while (start < pitches.length) {
+    // Last index of the run of pitches equal to pitches[start].
+    let end = start;
+    while (end + 1 < pitches.length && pitches[end + 1] === pitches[start]) end++;
+
+    const flag =
+      start > 0
+        ? // The previous run's pitch, which differs from this one by construction.
+          pitches[start - 1]! < pitches[start]!
+        : end + 1 >= pitches.length || pitches[end + 1]! > pitches[start]!;
+
+    for (let i = start; i <= end; i++) flags[i] = flag;
+    start = end + 1;
+  }
+  return flags;
+}
+
 export interface Syllable {
   solfa: string;
   octaveMark: string;
@@ -164,11 +220,13 @@ export function syllable(
   pitchMidi: number,
   dohPc: number,
   refDohMidi: number,
+  ascending = true,
 ): Syllable {
   const semitones = (((pitchMidi - dohPc) % 12) + 12) % 12;
   const shift = Math.floor((pitchMidi - refDohMidi) / 12);
+  const table = ascending ? ASCENDING_SYLLABLES : DESCENDING_SYLLABLES;
   return {
-    solfa: ASCENDING_SYLLABLES[semitones]!,
+    solfa: table[semitones]!,
     octaveMark: shift > 0 ? "'".repeat(shift) : ",".repeat(-shift),
     degree: SEMITONE_TO_DEGREE[semitones]!,
   };
@@ -215,9 +273,24 @@ export function deriveSolfa(
     dohPc,
   );
 
-  const labelled = notes.map((n) => ({
+  // Direction is a property of a note's position in the tune, and this list arrives in
+  // whatever order the API sent it — not necessarily start-beat order. So the flags are
+  // computed over a time-ordered view and scattered back, exactly as LibraryDtos.cs does,
+  // because the two must agree character for character: the server labels a saved
+  // transcription and this re-labels it on a key override. Sort is stable in ES2019+, so
+  // notes sharing a start beat keep their relative order on both sides.
+  const melodic = notes
+    .map((_, i) => i)
+    .sort((a, b) => notes[a]!.startBeat - notes[b]!.startBeat);
+  const inMelodicOrder = ascendingFlags(melodic.map((i) => notes[i]!.pitchMidi));
+  const ascending: boolean[] = new Array(notes.length).fill(true);
+  melodic.forEach((storageIndex, k) => {
+    ascending[storageIndex] = inMelodicOrder[k]!;
+  });
+
+  const labelled = notes.map((n, i) => ({
     ...n,
-    ...syllable(n.pitchMidi, dohPc, refDoh),
+    ...syllable(n.pitchMidi, dohPc, refDoh, ascending[i]),
   }));
 
   // Group into bars by absolute beat, mirroring the worker's measure grouping.

@@ -39,16 +39,32 @@ public static class SavedTranscriptionMapper
     /// Labels the stored notes with solfa for the transcription's current key. Solfa is
     /// never persisted (a key override is a re-label, F-03), so every read derives it —
     /// which is why the octave marks come from the whole note list's reference doh
-    /// rather than from each note in isolation.
+    /// rather than from each note in isolation, and the chromatic spelling from the whole
+    /// list's melodic direction.
     /// </summary>
     private static List<NoteEventDto> MapNotes(Transcription t)
     {
-        int[] pitches = [.. t.Notes.Select(n => n.PitchMidi)];
-        int referenceDoh = SolfaMapper.ReferenceDoh(pitches, t.Key.DohPitchClass);
+        NoteEvent[] notes = [.. t.Notes];
+        int referenceDoh = SolfaMapper.ReferenceDoh([.. notes.Select(n => n.PitchMidi)], t.Key.DohPitchClass);
 
-        return [.. t.Notes.Select(n =>
+        // Direction is a property of a note's position in the tune, and this list arrives in
+        // whatever order the database returned the owned collection in — not necessarily
+        // start-beat order. So the flags are computed over a time-ordered view and scattered
+        // back to storage position; the DTO's own order is part of the contract and stays put.
+        // OrderBy is stable, so notes sharing a start beat keep their relative order.
+        int[] melodic = [.. Enumerable.Range(0, notes.Length).OrderBy(i => notes[i].StartBeat)];
+        bool[] inMelodicOrder = SolfaMapper.AscendingFlags([.. melodic.Select(i => notes[i].PitchMidi)]);
+        bool[] ascending = new bool[notes.Length];
+        for (int k = 0; k < melodic.Length; k++)
+            ascending[melodic[k]] = inMelodicOrder[k];
+
+        return [.. notes.Select((n, i) =>
         {
-            var syllable = SolfaMapper.Map(n.PitchMidi, t.Key, referenceDoh);
+            var syllable = SolfaMapper.Map(
+                n.PitchMidi,
+                t.Key,
+                referenceDoh,
+                ascending[i] ? ChromaticSpelling.Ascending : ChromaticSpelling.Descending);
             return new NoteEventDto(
                 n.PitchMidi,
                 n.StartBeat,

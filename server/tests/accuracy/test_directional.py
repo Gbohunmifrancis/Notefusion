@@ -82,18 +82,20 @@ def _refs(phrase=PHRASE, lead_in_sec: float = 0.0) -> list[RefNote]:
 def _labelled(events: list[tuple[int, float, float]], key_name: str) -> list[TranscribedNote]:
     """Label ``(pitch, start_beat, dur_beats)`` triples the way ``transcribe()`` does.
 
-    One whole-clip ``reference_doh`` from the median of the pitch list, ascending
-    syllable table — the same three calls as transcriber.py:779-788.  Going through
-    the real solfa engine rather than hand-writing syllables means a fixture can
-    never assert a labelling the product would not actually produce.
+    One whole-clip ``reference_doh`` from the median of the pitch list, chromatic
+    syllables chosen by melodic direction — the same calls as transcriber.py:779-788.
+    Going through the real solfa engine rather than hand-writing syllables means a
+    fixture can never assert a labelling the product would not actually produce, and
+    that is why this function has to move whenever ``transcribe`` does.
     """
     key_obj = _parse_key_override(key_name)
     doh_pc = solfa.doh_pitch_class(key_obj.tonic.pitchClass, key_obj.mode)
     ref_doh = solfa.reference_doh([pitch for pitch, _, _ in events], doh_pc)
+    spelling = solfa.ascending_flags([pitch for pitch, _, _ in events])
 
     notes = []
-    for pitch, start_beat, dur_beats in events:
-        syllable, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh)
+    for i, (pitch, start_beat, dur_beats) in enumerate(events):
+        syllable, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh, spelling[i])
         notes.append(
             TranscribedNote(
                 pitch_midi=pitch,
@@ -457,8 +459,10 @@ def test_defect6_over_merging_a_genuine_semitone_step_is_punished():
 # ── Accidentals — the user-visible face of defect 6 ───────────────────────────
 
 # A minor harmonic, whose raised 7th (G#) is a chromatic syllable under la-based minor:
-# doh is C, so G# is 8 semitones above it, which the ascending table spells "se".  This
-# phrase is the reason the accidentals column counts excess and not total.
+# doh is C, so G# is 8 semitones above it — "se" rising, "la" falling.  It occurs twice
+# here, once approached from below and once from above, which is what makes it the
+# fixture for the directional-spelling trade recorded further down.  This phrase is also
+# the reason the accidentals column counts excess and not total.
 HARMONIC_MINOR_PHRASE = (69, 71, 72, 74, 76, 77, 80, 81, 80, 77, 76)
 
 
@@ -527,6 +531,145 @@ def test_defect7_no_metric_depends_on_the_hardcoded_time_signature():
         "a metric started reading time_signature; defect 7 is deferred, so scoring "
         "must stay independent of it"
     )
+
+
+# ── Chromatic spelling — directional, and what that costs ─────────────────────
+
+# A chromatic descent: E Eb D Db C.  Both Eb and Db are approached from above, so both
+# take flat-side syllables.  Spelled from the ascending table the same clip reads
+# "m re r de d" — the sharp names for pitches the music is falling through, which is the
+# defect this section pins.
+CHROMATIC_DESCENT = (64, 63, 62, 61, 60)
+
+# The same shape rising, as the control.
+CHROMATIC_ASCENT = (60, 61, 62, 63, 64)
+
+
+def _syllables(notes: list[TranscribedNote]) -> list[str]:
+    return [n.solfa for n in notes]
+
+
+def test_a_falling_chromatic_is_spelled_from_the_flat_side():
+    """The user-visible half: what the sheet actually prints for a descent."""
+    assert _syllables(_perfect(CHROMATIC_DESCENT)) == ["m", "ma", "r", "ra", "d"]
+
+
+def test_a_rising_chromatic_is_still_spelled_from_the_sharp_side():
+    """Specificity: the fix must not simply have swapped one table for the other."""
+    assert _syllables(_perfect(CHROMATIC_ASCENT)) == ["d", "de", "r", "re", "m"]
+
+
+def test_ground_truth_moved_with_the_pipeline():
+    """Without this, a *correct* descending spelling would have scored as an error.
+
+    ``solfa_metrics`` built its reference labels from the ascending table always, so the
+    moment ``transcribe`` started selecting the flat side, the metric would have read
+    every correct flat syllable as wrong — a fix landing as a regression.  Both halves
+    of that are asserted: the correct spelling scores 1.0, and the old spelling, fed in
+    deliberately, now scores below it.
+    """
+    refs = _refs(CHROMATIC_DESCENT)
+    correct = _perfect(CHROMATIC_DESCENT)
+    scored = metrics.solfa_metrics(refs, correct, "C major", REF_BPM, REF_BPM)
+    assert scored["matched"] == len(CHROMATIC_DESCENT)
+    assert scored["syllable_accuracy"] == pytest.approx(1.0)
+
+    # The pre-Phase-2 labelling, reconstructed by forcing the ascending table.
+    doh_pc = solfa.doh_pitch_class(_parse_key_override("C major").tonic.pitchClass, "major")
+    ref_doh = solfa.reference_doh(list(CHROMATIC_DESCENT), doh_pc)
+    old = [
+        replace(n, solfa=solfa.syllable(n.pitch_midi, doh_pc, ref_doh, True)[0])
+        for n in correct
+    ]
+    old_scored = metrics.solfa_metrics(refs, old, "C major", REF_BPM, REF_BPM)
+    assert old_scored["syllable_accuracy"] < scored["syllable_accuracy"]
+
+
+def test_respelling_never_moves_a_degree():
+    """``SEMITONE_TO_DEGREE`` is one shared table, so ``degree_accuracy`` cannot move.
+
+    This is the whole reason Phase 2 is low-risk, and it is worth an assertion rather
+    than an argument: the two syllable tables differ on five semitones and agree on the
+    degree of all twelve.
+    """
+    for phrase in (CHROMATIC_DESCENT, CHROMATIC_ASCENT, HARMONIC_MINOR_PHRASE):
+        refs = _refs(phrase)
+        key = "A minor" if phrase is HARMONIC_MINOR_PHRASE else "C major"
+        scored = metrics.solfa_metrics(refs, _perfect(phrase, key), key, REF_BPM, REF_BPM)
+        assert scored["degree_accuracy"] == pytest.approx(1.0)
+
+
+def test_accidental_counts_are_blind_to_which_table_was_used():
+    """The gated accidentals column cannot be moved by re-spelling, in either direction.
+
+    ``chromatic_ghosts`` is computed from pitch classes, not syllables, so a descent and
+    an ascent through the same chromatic pitches must score identically.  Pinned because
+    the alternative — a column that counted flat-side syllables as extra accidentals —
+    would have made this phase look like a regression on the metric the original bug
+    report was about.
+    """
+    down = metrics.solfa_metrics(
+        _refs(CHROMATIC_DESCENT), _perfect(CHROMATIC_DESCENT), "C major", REF_BPM, REF_BPM
+    )
+    up = metrics.solfa_metrics(
+        _refs(CHROMATIC_ASCENT), _perfect(CHROMATIC_ASCENT), "C major", REF_BPM, REF_BPM
+    )
+    assert down["chromatic_ghosts"] == up["chromatic_ghosts"] == 0
+    assert down["chromatic_count"] == up["chromatic_count"] == 2
+    assert down["ref_chromatic_count"] == up["ref_chromatic_count"] == 2
+
+
+def test_the_harmonic_minor_leading_tone_is_respelled_on_a_descent():
+    """The accepted cost of "directional, always", recorded rather than discovered later.
+
+    In A minor the raised 7th G# is the leading tone, and conventional tonic sol-fa
+    writes it ``se`` wherever it appears, because its *function* is a sharpened soh
+    however the melody reaches it.  A purely directional rule cannot know that: the
+    second G# in this phrase is approached from A above, so it prints ``la`` — the
+    flattened-la name for the same pitch.  Both names are legitimate for the pitch class
+    and neither moves the degree, so nothing measurable regresses, which is precisely why
+    this needs an assertion to stay visible.
+
+    The narrow exception ("semitone 8 above doh, in a minor key, is always se") is a
+    one-line change to ``ascending_flags`` if the spelling is judged wrong in use.  It is
+    not made here because it would need a mode argument in all three tiers, and
+    "directional, always" was chosen deliberately.
+    """
+    labelled = _syllables(_perfect(HARMONIC_MINOR_PHRASE, "A minor"))
+    rising_leading_tone = labelled[6]
+    falling_leading_tone = labelled[8]
+
+    assert rising_leading_tone == "se", "the rising leading tone must keep the conventional name"
+    assert falling_leading_tone == "la", (
+        "directional spelling renames the falling leading tone; if this fails the rule "
+        "changed, and the trade recorded in this docstring changed with it"
+    )
+    # And it costs nothing the gate can see, which is the other half of the trade.
+    scored = metrics.solfa_metrics(
+        _refs(HARMONIC_MINOR_PHRASE),
+        _perfect(HARMONIC_MINOR_PHRASE, "A minor"),
+        "A minor",
+        REF_BPM,
+        REF_BPM,
+    )
+    assert scored["syllable_accuracy"] == pytest.approx(1.0)
+    assert scored["chromatic_ghosts"] == 0
+
+
+def test_direction_is_read_from_melodic_order_not_storage_order():
+    """The one way this can go wrong across tiers, pinned in the tier that owns the rule.
+
+    ``ascending_flags`` is positional: it takes a note's neighbours to be its neighbours
+    in the list.  The worker's stream is in offset order so it can hand the list straight
+    over, but the C# re-label reads an owned collection back out of Postgres in the
+    database's order and the client re-labels whatever the API sent — so both sort by
+    start beat and scatter the flags back (LibraryDtos.cs, solfa.ts ``deriveSolfa``).
+    Shuffling the input here shows what those two are protecting against: the same music
+    in a different list order gets different syllables.
+    """
+    in_order = solfa.ascending_flags(list(CHROMATIC_DESCENT))
+    shuffled = solfa.ascending_flags([60, 61, 62, 63, 64])  # the same pitches, ascending
+    assert in_order != shuffled
 
 
 # ── Confidence — a consensus number, not a loudness reading ───────────────────

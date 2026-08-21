@@ -71,3 +71,85 @@ def test_reference_doh_picks_nearest_octave_to_median():
 def test_doh_header_names_the_pitch():
     assert solfa.doh_header(0) == "Doh is C"
     assert solfa.doh_header(6) == "Doh is F#"
+
+
+# --- ascending_flags: chromatic spelling follows melodic direction -------------
+
+def test_a_rising_chromatic_is_spelled_sharp():
+    # C C# D — the C# is passed through on the way up, so it is a raised doh.
+    flags = solfa.ascending_flags([60, 61, 62])
+    assert flags[1] is True
+    syl, _, _ = solfa.syllable(61, doh_pc=0, ref_doh_midi=60, ascending=flags[1])
+    assert syl == "de"
+
+
+def test_a_falling_chromatic_is_spelled_flat():
+    # D C# C — the same pitch, arrived at from above, is a lowered re.
+    flags = solfa.ascending_flags([62, 61, 60])
+    assert flags[1] is False
+    syl, _, _ = solfa.syllable(61, doh_pc=0, ref_doh_midi=60, ascending=flags[1])
+    assert syl == "ra"
+
+
+def test_direction_comes_from_where_the_melody_arrived_from():
+    # C C# C: rising into the chromatic, falling out of it.  The approach wins, so
+    # this is an upper neighbour of doh (de) rather than a lower neighbour of re.
+    assert solfa.ascending_flags([60, 61, 60])[1] is True
+    # E D# E: falling into it, rising out.  Still the approach.
+    assert solfa.ascending_flags([64, 63, 64])[1] is False
+
+
+def test_the_first_note_looks_ahead_because_nothing_precedes_it():
+    assert solfa.ascending_flags([61, 62])[0] is True
+    assert solfa.ascending_flags([61, 60])[0] is False
+
+
+def test_a_single_pitch_is_ascending_by_convention():
+    assert solfa.ascending_flags([61]) == [True]
+    assert solfa.ascending_flags([61, 61, 61]) == [True, True, True]
+
+
+def test_an_empty_melody_has_no_flags():
+    assert solfa.ascending_flags([]) == []
+
+
+def test_a_repeated_chromatic_keeps_one_spelling():
+    # D C# C# E.  Taking the literal previous note would make the second C# look ahead
+    # to E and flip it, printing "ra de" on one sung pitch — so the run shares a flag.
+    flags = solfa.ascending_flags([62, 61, 61, 64])
+    assert flags[1] == flags[2] is False
+
+
+def test_a_repeat_at_the_head_looks_past_itself():
+    # C# C# D: the opening run has nothing behind it, so the whole run reads the pitch
+    # the melody leaves for.  The note after it reads the run, as usual.
+    assert solfa.ascending_flags([61, 61, 62]) == [True, True, True]
+    assert solfa.ascending_flags([61, 61, 60]) == [False, False, False]
+
+
+@pytest.mark.parametrize("semitone", [0, 2, 4, 5, 7, 9, 11])
+def test_direction_cannot_change_a_diatonic_syllable(semitone):
+    # The two tables are identical on all seven diatonic degrees, which is what makes
+    # this change unable to touch a note that prints no accidental.
+    up, _, _ = solfa.syllable(60 + semitone, doh_pc=0, ref_doh_midi=60, ascending=True)
+    down, _, _ = solfa.syllable(60 + semitone, doh_pc=0, ref_doh_midi=60, ascending=False)
+    assert up == down
+
+
+@pytest.mark.parametrize(
+    ("semitone", "up", "down"),
+    [(1, "de", "ra"), (3, "re", "ma"), (6, "fe", "sa"), (8, "se", "la"), (10, "le", "ta")],
+)
+def test_every_chromatic_degree_has_both_spellings(semitone, up, down):
+    rising, _, deg_up = solfa.syllable(60 + semitone, doh_pc=0, ref_doh_midi=60, ascending=True)
+    falling, _, deg_down = solfa.syllable(60 + semitone, doh_pc=0, ref_doh_midi=60, ascending=False)
+    assert (rising, falling) == (up, down)
+    # The degree is shared: SEMITONE_TO_DEGREE is one table, so re-spelling a note
+    # never moves which degree it is.
+    assert deg_up == deg_down
+
+
+def test_direction_does_not_move_the_octave_mark():
+    _, up, _ = solfa.syllable(73, doh_pc=0, ref_doh_midi=60, ascending=True)
+    _, down, _ = solfa.syllable(73, doh_pc=0, ref_doh_midi=60, ascending=False)
+    assert up == down == "'"
