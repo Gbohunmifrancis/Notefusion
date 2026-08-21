@@ -16,6 +16,8 @@ music21 score assembly:
   _estimate_tempo_and_beats  a tap-in override wins the BPM but still recovers phase
   _profile_z_scores       one key profile's standardised opinion of all 24 keys
   _key_from_identity      (pitch class, mode) back to a music21 Key
+  _key_spelling           pitch class -> note name, as the key signature implies
+  _respell_to_key         that spelling applied to a stream, without moving a pitch
   _key_confidence_from_margin  winner-over-runner-up lead, capped on short clips
   _detect_key             the five-profile vote, and its fallbacks
 
@@ -50,9 +52,11 @@ from app.pipeline.transcriber import (
     _grid_residual,
     _key_confidence_from_margin,
     _key_from_identity,
+    _key_spelling,
     _merge_onsets,
     _normalise_key_name,
     _onset_bpm,
+    _respell_to_key,
 )
 
 # ── _normalise_key_name ───────────────────────────────────────────────────────
@@ -1133,6 +1137,186 @@ class TestKeyFromIdentity:
     def test_mode_is_preserved(self):
         assert _key_from_identity(9, "minor").mode == "minor"
         assert _key_from_identity(9, "major").mode == "major"
+
+
+class TestKeySpelling:
+    """Accidentals must belong to the key, not to music21's MIDI-to-name table.
+
+    That table is ``C C# D E- E F F# G G# A B- B`` and is key-blind, so a note built
+    from a bare MIDI integer is spelled the same in every key.  In E major MIDI 75 came
+    out E-flat when the key's own signature holds a D-sharp; in A-flat major MIDI 68
+    came out G-sharp where the key says A-flat.  Both engrave an accidental the reader
+    then has to reconcile against a signature that already said otherwise.
+    """
+
+    KEYS = [
+        (tonic, mode)
+        for tonic in ("C", "C#", "D-", "D", "E-", "E", "F", "F#", "G-", "G", "A-", "A", "B-", "B")
+        for mode in ("major", "minor")
+    ]
+
+    def _key(self, tonic: str, mode: str):
+        from music21 import key as m21key
+
+        return m21key.Key(tonic, mode)
+
+    def test_every_pitch_class_is_spelled_in_every_key(self):
+        for tonic, mode in self.KEYS:
+            spelling = _key_spelling(self._key(tonic, mode))
+            assert set(spelling) == set(range(12)), f"{tonic} {mode} is missing a pitch class"
+
+    def test_the_spelling_always_names_the_pitch_class_it_is_filed_under(self):
+        """A map that renames a note is worse than no map: solfa reads the MIDI number."""
+        from music21 import pitch as m21pitch
+
+        for tonic, mode in self.KEYS:
+            spelling = _key_spelling(self._key(tonic, mode))
+            for pitch_class, name in spelling.items():
+                assert m21pitch.Pitch(name).pitchClass == pitch_class, f"{tonic} {mode}: {name}"
+
+    def test_the_seven_diatonic_degrees_are_spelled_by_the_signature(self):
+        for tonic, mode in self.KEYS:
+            key = self._key(tonic, mode)
+            spelling = _key_spelling(key)
+            for altered in key.alteredPitches:
+                assert spelling[altered.pitchClass] == altered.name, (
+                    f"{tonic} {mode}: pitch class {altered.pitchClass} should be {altered.name}"
+                )
+
+    def test_e_major_spells_the_signature_not_the_midi_table(self):
+        # The reported defect, exactly: MIDI 75 is E major's D#, and the fixed table
+        # calls it E-flat.
+        spelling = _key_spelling(self._key("E", "major"))
+        assert spelling[75 % 12] == "D#"
+        assert spelling[68 % 12] == "G#"
+        # A pitch class the signature did not claim keeps its plain letter.
+        assert spelling[0] == "C"
+
+    def test_flat_keys_spell_flats(self):
+        spelling = _key_spelling(self._key("A-", "major"))
+        assert spelling[68 % 12] == "A-"  # not G#
+        assert spelling[73 % 12] == "D-"  # not C#
+
+    def test_f_sharp_major_reaches_e_sharp(self):
+        # Six sharps means the 4th degree is E#, which no MIDI table will ever produce.
+        assert _key_spelling(self._key("F#", "major"))[77 % 12] == "E#"
+
+    def test_a_minor_key_raises_its_seventh(self):
+        """A leading tone is ordinary, and the flat-key rule alone would misspell it."""
+        assert _key_spelling(self._key("D", "minor"))[1] == "C#"  # not D-flat
+        assert _key_spelling(self._key("G", "minor"))[6] == "F#"  # not G-flat
+        assert _key_spelling(self._key("A", "minor"))[8] == "G#"
+
+    def test_raising_the_seventh_raises_its_letter_rather_than_adding_a_sharp(self):
+        # C minor's 7th degree is B-flat, so raising it gives plain B — not B-sharp and
+        # not C-flat.  An earlier draft assumed a sharp and raised KeyError on this key.
+        assert _key_spelling(self._key("C", "minor"))[11] == "B"
+        assert _key_spelling(self._key("B-", "minor"))[9] == "A"
+        assert _key_spelling(self._key("F", "minor"))[4] == "E"
+
+    def test_a_signature_that_alters_every_letter_keeps_all_seven_spellings(self):
+        """D-flat minor is the key where filing one letter at a time loses one.
+
+        Its eight-flat signature alters all seven letters — B twice, as B-flat and then
+        B-double-flat — and C-flat's pitch class is 11, the same slot B's natural
+        occupies.  An earlier draft vacated each letter as it filed it, so
+        B-double-flat's vacate of slot 11 deleted the C-flat that had already been filed
+        there and the signature's C-flat came back spelled ``B``.  Nothing else in the
+        28 keys swept above reaches this; the sweep is what found it.
+        """
+        key = self._key("D-", "minor")
+        spelling = _key_spelling(key)
+        assert {altered.step for altered in key.alteredPitches} == set("ABCDEFG")
+        assert spelling[11] == "C-"
+        assert spelling[9] == "B--"
+        # The raised 7th of D-flat minor is C-flat raised, which is plain C.
+        assert spelling[0] == "C"
+
+
+class TestRespellToKey:
+    """Respelling is a notation change only — it must never move a pitch.
+
+    Solfa is mapped from ``n.pitch.midi`` *after* this runs, so a spelling whose octave
+    is solved wrongly would transpose the syllable as well as the notehead.
+    """
+
+    def _stream(self, midis):
+        from music21 import note as m21note
+        from music21 import stream
+
+        s = stream.Stream()
+        for midi in midis:
+            n = m21note.Note(midi)
+            n.duration.quarterLength = 1.0
+            s.append(n)
+        return s
+
+    def _key(self, tonic, mode):
+        from music21 import key as m21key
+
+        return m21key.Key(tonic, mode)
+
+    def test_midi_is_invariant_across_every_key_and_the_whole_piano(self):
+        midis = list(range(21, 109))  # A0 to C8
+        for tonic, mode in TestKeySpelling.KEYS:
+            s = self._stream(midis)
+            _respell_to_key(s, self._key(tonic, mode))
+            assert [n.pitch.midi for n in s.recurse().notes] == midis, f"{tonic} {mode} transposed"
+
+    def test_it_respells_the_reported_defect(self):
+        s = self._stream([75])
+        assert s.recurse().notes[0].pitch.name == "E-"  # what music21 gives us
+        _respell_to_key(s, self._key("E", "major"))
+        assert s.recurse().notes[0].pitch.nameWithOctave == "D#5"
+
+    def test_octaves_survive_a_signature_that_names_c_flat(self):
+        # C-flat major's signature holds C- and F-, whose letters sit in the neighbouring
+        # octave — the case that makes "midi // 12 - 1" the wrong way to pick an octave.
+        for midi in (59, 60, 61, 71, 72):
+            s = self._stream([midi])
+            _respell_to_key(s, self._key("C-", "major"))
+            assert s.recurse().notes[0].pitch.midi == midi
+
+    def test_a_scale_in_its_own_key_engraves_no_accidental(self):
+        """The user-visible payoff, and the one that pins makeAccidentals' arguments."""
+        from music21 import key as m21key
+
+        for tonic, mode, midis in (
+            ("E", "major", [64, 66, 68, 69, 71, 73, 75, 76]),
+            ("B-", "major", [70, 72, 74, 75, 77, 79, 81, 82]),
+            ("A-", "major", [68, 70, 72, 73, 75, 77, 79, 80]),
+            ("F#", "major", [66, 68, 70, 71, 73, 75, 77, 78]),
+        ):
+            key = self._key(tonic, mode)
+            s = self._stream(midis)
+            s.insert(0, m21key.Key(key.tonic.name, key.mode))
+            _respell_to_key(s, key)
+            score = s.makeMeasures()
+            score.makeAccidentals(inPlace=True, alteredPitches=key.alteredPitches)
+            printed = [
+                n.pitch.nameWithOctave
+                for n in score.recurse().notes
+                if n.pitch.accidental is not None and n.pitch.accidental.displayStatus
+            ]
+            assert printed == [], f"{tonic} {mode} scale printed {printed}"
+
+    def test_a_chromatic_note_still_prints_and_a_cancelling_natural_still_prints(self):
+        # The guard on the above: suppressing the signature's own accidentals must not
+        # suppress the ones that carry information.
+        from music21 import key as m21key
+
+        key = self._key("C", "major")
+        s = self._stream([60, 61, 60, 62])  # C, C#, C natural, D — all in one measure
+        s.insert(0, m21key.Key("C", "major"))
+        _respell_to_key(s, key)
+        score = s.makeMeasures()
+        score.makeAccidentals(inPlace=True, alteredPitches=key.alteredPitches)
+        shown = [
+            (n.pitch.nameWithOctave, n.pitch.accidental.name)
+            for n in score.recurse().notes
+            if n.pitch.accidental is not None and n.pitch.accidental.displayStatus
+        ]
+        assert shown == [("C#4", "sharp"), ("C4", "natural")]
 
 
 class TestKeyConfidenceFromMargin:

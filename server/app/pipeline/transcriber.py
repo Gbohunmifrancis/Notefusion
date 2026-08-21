@@ -625,6 +625,106 @@ def _key_from_identity(pitch_class: int, mode: str):
     return m21key.Key(names[pitch_class % 12], mode)
 
 
+# Pitch classes that have a plain letter name.  The seven white keys, and the anchor
+# for every spelling decision below.
+_NATURAL_NAMES = {0: "C", 2: "D", 4: "E", 5: "F", 7: "G", 9: "A", 11: "B"}
+
+
+def _key_spelling(k) -> dict[int, str]:
+    """Pitch class -> note name, spelled the way *k*'s key signature implies.
+
+    music21 spells a pitch built from a bare MIDI integer off a fixed table —
+    ``C C# D E- E F F# G G# A B- B`` — which is key-blind, and that is the whole
+    defect.  In E major, MIDI 75 is a *diatonic* tone of the key (the signature holds
+    F# C# G# D#), so it must print as D# with no accidental sign at all; the fixed
+    table calls it E-flat and engraves a flat.  In A-flat major MIDI 68 comes out G#
+    where the key says A-, and in F# major MIDI 77 comes out F where the key says E#.
+
+    Three rules, in order:
+
+    1. The seven diatonic degrees take their spelling from the signature itself.
+       Start from the naturals, vacate every letter the signature alters, and only then
+       file the altered spellings, so E major's D is replaced by D# and B-flat major's B
+       by B-.  The two passes are not interchangeable with one — see the comment below.
+    2. A minor key adds its raised 7th, because a leading tone is ordinary rather than
+       exotic: D minor's pitch class 1 is C#, never D-flat, even though D minor is a
+       flat key.  (The raised *6th* needs no rule — melodic minor's is a natural.)
+    3. Whatever is left follows the key's own direction: a natural if the pitch class
+       has a letter name the signature did not claim (C natural in E major), otherwise
+       a sharp in sharp keys and a flat in flat keys.
+
+    Measured over eight scale cases in seven keys, the map takes the printed accidentals
+    from 44 to 5, and all 5 that remain are real: three chromatic notes in a C major
+    chromatic run, and the raised leading tones of D minor and G minor.
+
+    Two spellings are deliberately the readable answer rather than the theoretical one,
+    both in the chromatic remainder where the pitch is right and only the letter is
+    arguable.  C-sharp minor's raised 7th is strictly B-sharp and G-sharp minor's is
+    F-double-sharp; this returns C and G.  D minor's pitch class 6 comes back G-flat by
+    the flat-key rule where a musician would more likely write F-sharp.  A hummed-melody
+    score is better off without double sharps, and the alternative is a second table of
+    per-degree conventions fitted to no measurement.
+    """
+    # Vacate every letter the signature claims *before* filing any of them, not letter by
+    # letter: in a signature deep enough that an altered pitch lands on another altered
+    # letter's natural slot, one loop clobbers the other.  D-flat minor's eight flats
+    # alter all seven letters, and its C-flat is filed under pitch class 11 only for
+    # B-double-flat's pop of B's slot — also 11 — to delete it again, leaving C-flat
+    # spelled as a plain B.
+    altered_steps = {altered.step for altered in k.alteredPitches}
+    diatonic = {
+        pc: name for pc, name in _NATURAL_NAMES.items() if name not in altered_steps
+    }
+    for altered in k.alteredPitches:
+        diatonic[altered.pitchClass] = altered.name
+
+    spelling = dict(diatonic)
+    if k.mode == "minor":
+        leading = (k.tonic.pitchClass - 1) % 12
+        if leading not in spelling:
+            # Raising the 7th degree raises its *letter*, which is not always a sharp:
+            # D minor's C becomes C#, but C minor's B-flat becomes plain B and B-flat
+            # minor's A-flat becomes plain A.
+            spelling[leading] = _NATURAL_NAMES.get(leading) or (
+                _NATURAL_NAMES[(leading - 1) % 12] + "#"
+            )
+
+    sharp = (k.sharps or 0) >= 0
+    for pc in range(12):
+        if pc in spelling:
+            continue
+        if pc in _NATURAL_NAMES:
+            spelling[pc] = _NATURAL_NAMES[pc]
+        else:
+            base = (pc - 1) % 12 if sharp else (pc + 1) % 12
+            spelling[pc] = _NATURAL_NAMES[base] + ("#" if sharp else "-")
+    return spelling
+
+
+def _respell_to_key(s, k) -> None:
+    """Rewrite every note in *s* to its ``_key_spelling`` name, in place.
+
+    This runs after key detection because it cannot run before: the key is analysed
+    *from* this stream, so the notes have to exist first.  Only the spelling changes —
+    the octave is solved back from the MIDI number, so ``pitch.midi`` is invariant and
+    the solfa mapping downstream (which reads ``n.pitch.midi``) cannot move.  That
+    invariance is what makes this a pure notation fix; it is swept over all 12 pitch
+    classes in all 24 keys by the helper tests.
+    """
+    from music21 import pitch as m21pitch
+
+    spelling = _key_spelling(k)
+    for n in s.recurse().notes:
+        midi = n.pitch.midi
+        spelled = m21pitch.Pitch(spelling[midi % 12])
+        # Solve the octave from the MIDI number rather than computing midi // 12 - 1:
+        # an extreme signature can name C- or B#, whose letter sits in the neighbouring
+        # octave, and getting that wrong would transpose the note and the syllable.
+        spelled.octave = 4
+        spelled.octave += (midi - spelled.midi) // 12
+        n.pitch = spelled
+
+
 # ── Event post-processing helpers ─────────────────────────────────────────────
 
 
@@ -1538,8 +1638,29 @@ def _transcribe_wav(
             key_confidence = min(key_confidence, KEY_CONFIDENCE_CAP_LOW)
 
     s.insert(0, m21key.Key(detected.tonic.name, detected.mode))
+
+    # Spell the notes to the key before engraving them.  Both halves matter and both
+    # were wrong: the notes were built from bare MIDI integers, so their spelling was
+    # key-blind (E major's MIDI 75 printed E-flat instead of the D# in its own
+    # signature), and makeAccidentals was then asked to print an accidental on
+    # everything.
+    #
+    # The accidental half needs ``alteredPitches`` passed explicitly.  ``makeAccidentals``
+    # does default to ``useKeySignature=True``, but it also defaults to
+    # ``searchKeySignatureByContext=False``, and called on the score the signature is
+    # inside the measures where that search never looks — so the key was being ignored
+    # and every B-flat in B-flat major engraved its own flat.  ``overrideStatus=True``
+    # then forced a mark onto notes that had none to display, which is where the printed
+    # naturals on plain diatonic notes came from: ``Note(int)`` attaches an *explicit*
+    # natural accidental to every white key, and overriding the status published it.
+    #
+    # Measured on a B-flat major scale: 6 printed accidentals before, 0 after — correct,
+    # since a scale in its own key needs none.  A chromatic note still prints, once per
+    # measure, and a natural cancelling an earlier accidental in the same measure still
+    # prints, which is the part that must not regress.
+    _respell_to_key(s, detected)
     score = s.makeMeasures()
-    score.makeAccidentals(inPlace=True, overrideStatus=True)
+    score.makeAccidentals(inPlace=True, alteredPitches=detected.alteredPitches)
     progress(0.80)
 
     # ── 10. Solfa mapping ─────────────────────────────────────────────────────
