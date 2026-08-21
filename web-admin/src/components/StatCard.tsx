@@ -11,7 +11,10 @@ import { Info } from "lucide-react";
 type Tone = "blue" | "success" | "warning" | "danger" | "neutral";
 
 const TONES: Record<Tone, { spine: string; fill: string }> = {
-  blue: { spine: "bg-blue", fill: "bg-blue" },
+  // `accent`, not `blue`: the spine and the meter are small marks read against the card,
+  // and the other four tones brighten in dark mode. A fill-weight blue beside a bright
+  // green would read as the odd one out rather than as the same kind of mark.
+  blue: { spine: "bg-accent", fill: "bg-accent" },
   success: { spine: "bg-success", fill: "bg-success" },
   warning: { spine: "bg-warning", fill: "bg-warning" },
   danger: { spine: "bg-danger", fill: "bg-danger" },

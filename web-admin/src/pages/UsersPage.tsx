@@ -17,7 +17,7 @@ const PAGE_SIZE = 25;
 
 const TONES = {
   neutral: "bg-surface-alt text-muted",
-  blue: "bg-blue/10 text-blue-deep",
+  blue: "bg-accent/10 text-accent-deep",
   success: "bg-success/10 text-success",
   danger: "bg-danger/10 text-danger",
 } as const;

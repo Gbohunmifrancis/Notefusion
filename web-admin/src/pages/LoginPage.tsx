@@ -18,6 +18,7 @@ import { ApiError } from "@/api/client";
 import { BrandMark } from "@/components/BrandMark";
 import { StaffRibbon } from "@/components/StaffRibbon";
 import { useAuth } from "@/lib/auth";
+import { FIELD, INPUT, LABEL, SUBMIT } from "@/lib/formClasses";
 import { isAdmin } from "@/lib/session";
 
 interface FromState {
@@ -88,12 +89,6 @@ export function LoginPage() {
     }
   }
 
-  const field =
-    "mt-1.5 flex h-11 items-center gap-2.5 rounded-sm border border-border bg-surface px-3.5 transition focus-within:border-blue";
-  const input =
-    "w-full bg-transparent text-[13.5px] text-ink outline-none placeholder:text-faint";
-  const label = "block text-xs font-medium text-muted";
-
   return (
     <div className="min-h-screen bg-surface lg:grid lg:grid-cols-2">
       {/* ── Brand panel — desktop only, since a phone has no room to spare ──── */}
@@ -116,7 +111,7 @@ export function LoginPage() {
         />
 
         <div className="relative flex items-center gap-2.5">
-          <BrandMark size={26} color="#ffffff" />
+          <BrandMark size={26} className="text-white" />
           <span className="text-[15px] font-semibold tracking-[-0.02em] text-white">
             NoteFusion
           </span>
@@ -151,7 +146,7 @@ export function LoginPage() {
         <div className="w-full max-w-[368px] animate-fade-in">
           {/* The lockup the navy panel would have carried, for the narrow layout. */}
           <div className="mb-9 flex items-center gap-2.5 lg:hidden">
-            <BrandMark size={24} color="#2563eb" />
+            <BrandMark size={24} className="text-accent" />
             <span className="text-[15px] font-semibold tracking-[-0.02em] text-ink">
               NoteFusion
             </span>
@@ -170,10 +165,10 @@ export function LoginPage() {
           <form onSubmit={onSubmit} className="mt-8">
             <div className="space-y-4">
               <div>
-                <label className={label} htmlFor="email">
+                <label className={LABEL} htmlFor="email">
                   Email
                 </label>
-                <div className={field}>
+                <div className={FIELD}>
                   <Mail size={15} className="shrink-0 text-faint" aria-hidden="true" />
                   <input
                     id="email"
@@ -183,16 +178,16 @@ export function LoginPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="you@notefusion.app"
-                    className={input}
+                    className={INPUT}
                   />
                 </div>
               </div>
 
               <div>
-                <label className={label} htmlFor="password">
+                <label className={LABEL} htmlFor="password">
                   Password
                 </label>
-                <div className={field}>
+                <div className={FIELD}>
                   <Lock size={15} className="shrink-0 text-faint" aria-hidden="true" />
                   <input
                     id="password"
@@ -202,7 +197,7 @@ export function LoginPage() {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     placeholder="••••••••"
-                    className={input}
+                    className={INPUT}
                   />
                   <button
                     type="button"
@@ -245,7 +240,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={pending || !canSubmit}
-              className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-blue text-[13.5px] font-semibold text-white transition hover:bg-blue-deep disabled:cursor-not-allowed disabled:opacity-45"
+              className={SUBMIT}
             >
               {pending && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
               {pending ? "Signing in" : "Sign in"}
