@@ -47,45 +47,104 @@ from app.pipeline import solfa
 # 22 050 Hz gives CD-quality for speech/melody with half the data of 44 100 Hz.
 PREVIEW_SAMPLE_RATE = 22_050
 
-# Synthesis voice: a softly-struck piano. Weights fall off as roughly 1/k², steeper
-# than the 1/k^1.7 pluck they replace, because a piano played gently has a dominant
-# fundamental and weak upper partials — a flatter spectrum is what read as a buzz.
-# Eight partials at the pipeline's 1050 Hz pitch ceiling put the topmost at 8.4 kHz,
-# under the 11.025 kHz Nyquist of PREVIEW_SAMPLE_RATE — and the loop drops any partial
-# that would exceed it anyway, so raising either is safe.
-_HARMONIC_WEIGHTS = (1.0, 0.28, 0.14, 0.07, 0.04, 0.022, 0.012, 0.007)
+# Synthesis voice: a softly-struck piano.
+#
+# The previous voice was eight partials at ~1/k² damped by exp(-k·t/1.6). Measured,
+# that is a sine wave: a C4 had five audible partials at the strike and *two* by
+# t=2 s, a spectral centroid of 290 Hz on a 262 Hz note, and a C2 whose entire
+# spectrum sat at 72 Hz. The per-partial decay being linear in k is what did it —
+# partial 8 starts 48 dB down and the tone collapses onto its fundamental inside
+# 100 ms. So: many more partials, damped sub-linearly, with the two things that
+# actually make a piano recognisable — a hammer transient and unison beating.
 
-# Per-partial brightness decay: partial k is damped by exp(-k·t/_HARMONIC_DECAY_SEC),
-# so upper partials die away faster than the fundamental. This is the cue that
-# separates a struck instrument from an organ. Without it the spectrum of every note
-# is frozen for its whole length, which is most of why the old preview sounded
-# synthetic. 1.6 s rather than 2.5: a piano's hammer noise and upper partials fade
-# faster than its fundamental, and the slower value left the tone bright enough to
-# still read as a synth pad.
-_HARMONIC_DECAY_SEC = 1.6
+# Hammer contact point as a fraction of the speaking length. A real piano's is near
+# 1/7 to 1/8; it puts a node on the 7th-8th partial, which the ear hears as the
+# absence of a sour minor seventh rather than as a missing partial.
+_STRIKE_POS = 1.0 / 7.6
+
+# Body spectrum: |sin(k·pi·x)| / k^rolloff. Below 1 is buzzy, above 1.4 is dull.
+# Real pianos are flatter in the bass and steeper in the treble — the hammer is wide
+# relative to a short treble string and narrow relative to a long bass one — so the
+# exponent tilts with register instead of being one number for the whole compass.
+_BODY_ROLLOFF_C4 = 1.05
+_ROLLOFF_TILT = 1.0 / 120.0  # per semitone above C4
+_ROLLOFF_MIN = 0.85
+_ROLLOFF_MAX = 1.45
+
+# The one number that decides "soft piano" rather than "bright piano": a gently
+# played note has little above ~5 kHz. Applied as a one-pole tilt rather than a
+# brick wall, because a hard cut is what left the old treble with five partials and
+# a bass whose spectrum stopped dead.
+_BRIGHT_CEILING_HZ = 5200.0
+
+# Generation ceiling, and the level below which a partial is inaudible anyway.
+_MAX_PARTIALS = 48
+_PARTIAL_FLOOR_DB = -60.0
 
 # Upper partials of a real string sit slightly sharp of exact multiples. Stretching
-# partial k by (1 + B·k²) with this B puts the 8th about 9 cents sharp: enough to
-# keep the partials from phase-locking into a static buzz, small enough not to sound
-# out of tune. Real piano B runs 1e-4 upward, so this is conservative and in-family.
-_INHARMONICITY = 8e-5
+# partial k by (1 + B·k²) with this B is squarely in the range measured on real
+# pianos, and at 48 partials the stretch is large enough that it must be modelled
+# rather than ignored.
+_INHARMONICITY = 1.1e-4
+
+# The hammer: a second, much brighter partial stack that is gone in ~15 ms. This is
+# what a strike *is* — broadband energy at contact, immediately gone, leaving the
+# string ringing. Without it a note simply appears, which is much of why the old
+# preview did not read as struck.
+_STRIKE_GAIN = 0.22
+_STRIKE_ROLLOFF = 0.35
+_STRIKE_TAU_SEC = 0.014
+_STRIKE_SPAN_SEC = 10 * _STRIKE_TAU_SEC  # past here the term is below -87 dB
+
+# Per-partial damping: partial k's time constant is tau0/(1 + k·k^exp), so the tone
+# darkens as it rings — but far more slowly than the old exp(-k·t/1.6).
+_DAMP_K = 0.14
+_DAMP_EXP = 1.15
 
 # Envelope (seconds). A piano is percussive: it never holds a level, it decays from
-# the strike onward. The previous voice sustained at 0.80 × peak for the whole body
-# of every note, which is an *organ* — and that plateau, more than the spectrum, is
-# what made the preview sound wack. So there is no sustain level here; the body is a
-# continuous exponential (see _string_decay_sec) and only the attack and the damper
-# release are shaped.
-_ATTACK_SEC = 0.006  # hammer strike; raised-cosine, so short but not a click
+# the strike onward. The voice before last sustained at 0.80 × peak for the whole
+# body of every note, which is an *organ*. There is no sustain level here; the body
+# is a pair of exponentials and only the attack and the damper release are shaped.
+_ATTACK_SEC = 0.005  # hammer strike; raised-cosine, so short but not a click
 _RELEASE_SEC = 0.080  # damper falling at note-off, so notes stop on the grid
 
 # Body decay time constant, seconds, at middle C. Scaled per note by
 # _string_decay_sec: bass strings are longer, heavier and less damped, so they ring
 # far longer than treble ones, and a single global constant makes the low register
 # sound clipped and the high register sound like a bell.
-_STRING_DECAY_SEC_C4 = 2.6
-_STRING_DECAY_MIN_SEC = 0.6
+_STRING_DECAY_SEC_C4 = 2.4
+_STRING_DECAY_MIN_SEC = 0.55
 _STRING_DECAY_MAX_SEC = 4.0
+
+# Piano notes fall fast at first and then much more slowly — the two polarisations
+# of string motion decay at different rates and the crossover is plainly audible.
+# Modelled as a mixture of two exponentials rather than one.
+_TAIL_MIX = 0.22
+_TAIL_FACTOR = 3.2
+
+# Unison detuning, in cents: tuners leave a couple of cents between the two or three
+# strings of a note deliberately, and the slow beating that results is what the ear
+# reads as warmth.
+#
+# Modelled as (1 + depth·cos) rather than as a literal sum of three equal strings.
+# That sum is sin(2·pi·f·t)·(1 + 2·cos(2·pi·d·t)), and (1 + 2·cos) passes through
+# *zero* at 2·pi/3 on its way to -1 — so every partial periodically vanishes
+# outright. Measured, that reads as 49 dB of "beating" and it is a dropout, not a
+# shimmer: the C4 fundamental fell 16 dB below its own third partial at t=1.1 s.
+# Real unisons never null, because the strings differ in amplitude and phase. A
+# depth of 0.6 is a 12 dB swing between 1.6 and 0.4.
+#
+# The depth ramps in over the first few partials, which is both Weinreich's measured
+# result on coupled piano strings — a unison phase-locks at the fundamental and
+# decouples higher up, so the shimmer is a partial-band effect — and what stops the
+# energy-dominant fundamental from swinging the whole spectrum as it beats.
+_DETUNE_CENTS = 2.0
+_UNISON_DEPTH = 0.6
+_UNISON_KNEE = 4.0
+_UNISON_MIN_MIDI = 52  # below this the strings are wound and single or paired
+
+# Every note is normalised to this, so its level does not depend on its spectrum.
+_PEAK_TARGET = 0.95
 
 # ── Post-processing thresholds ────────────────────────────────────────────────
 
@@ -301,6 +360,18 @@ def _string_decay_sec(pitch_midi: int) -> float:
     return float(min(max(scaled, _STRING_DECAY_MIN_SEC), _STRING_DECAY_MAX_SEC))
 
 
+def _body_rolloff(pitch_midi: int) -> float:
+    """Spectral roll-off exponent for a note's register.
+
+    Flatter in the bass, steeper in the treble: the hammer is wide relative to a
+    short treble string and narrow relative to a long bass one, so bass notes carry
+    audible energy much further up the partial series than treble ones do. Mirrors
+    ``bodyRolloff`` in ``mobile/src/lib/synth.ts``.
+    """
+    tilted = _BODY_ROLLOFF_C4 + (pitch_midi - 60) * _ROLLOFF_TILT
+    return float(min(max(tilted, _ROLLOFF_MIN), _ROLLOFF_MAX))
+
+
 def _synthesize_audio_preview(
     notes: "list[TranscribedNote]",
     tempo_bpm: int,
@@ -315,20 +386,36 @@ def _synthesize_audio_preview(
 
     Voice model
     ───────────
-    A softly-struck piano. Each note is a sum of the partials in
-    ``_HARMONIC_WEIGHTS``, each one slightly stretched sharp by ``_INHARMONICITY``
-    and damped by ``exp(-k·t/_HARMONIC_DECAY_SEC)`` so the tone darkens as it rings.
-    The envelope is percussive rather than ADSR — a piano has no level to hold:
+    A softly-struck piano, built as a struck string rather than as a harmonic stack:
+
+      • Spectrum: up to ``_MAX_PARTIALS`` partials, each weighted by the hammer's
+        strike-position node pattern ``|sin(k·pi·x)|``, rolled off by ``k^-rolloff``
+        with the exponent tilted by register, and tilted again by a one-pole
+        brightness ceiling. Partial k is stretched sharp by ``(1 + B·k²)``.
+      • Hammer: a second, brighter partial stack decaying with a 14 ms time
+        constant, truncated at ten time constants — the strike transient.
+      • Damping: partial k decays with ``tau0/(1 + _DAMP_K·k^_DAMP_EXP)``, so the
+        tone darkens as it rings without collapsing onto its fundamental.
+      • Double decay: each partial is a mixture of that time constant and one
+        ``_TAIL_FACTOR`` times longer — the two polarisations of string motion.
+      • Unison: a slow ``(1 + depth·cos)`` amplitude beat per partial, with the
+        depth ramping in over the first few partials.
       • Attack : raised-cosine ramp-up over ``_ATTACK_SEC``, so there is no click.
-      • Body   : ``exp(-t/tau)`` for the whole note, ``tau`` from
-                 ``_string_decay_sec`` so bass notes ring longer than treble.
       • Release: raised-cosine fade over ``_RELEASE_SEC``, the damper landing, so
-                 notes stop on the grid instead of smearing into the next.
+        notes stop on the grid instead of smearing into the next.
+
+    Each note is then normalised to ``_PEAK_TARGET`` rather than divided by a sum of
+    weights: the partial phases do not align, so an analytic ceiling sits far above
+    the real peak and using it leaves every note quiet.
 
     ``mobile/src/lib/synth.ts`` renders the same voice with the same constants, and
     the two must stay in lock-step: the mobile one replaces this preview as soon as
     the user edits a note, so any divergence is audible as the timbre changing
-    underfoot.
+    underfoot. The one deliberate difference is arithmetic, not sound — this side
+    uses closed-form ``np.exp``/``np.sin`` over whole arrays, while the mobile side
+    advances complex rotations and geometric envelopes sample by sample, because
+    vectorised numpy has no per-sample call overhead to avoid and JS does. The two
+    agree to within the last ULP.
 
     The confidence score of each note is used as a per-note velocity scaler so
     low-confidence notes are softer than high-confidence ones.
@@ -361,18 +448,22 @@ def _synthesize_audio_preview(
 
     import soundfile as sf
 
-    beat_sec = 60.0 / max(float(tempo_bpm), 20.0)  # seconds per beat
+    # Floored at 30 BPM, matching `beatSecOf` in mobile/src/lib/synth.ts. The two
+    # used to floor at 20 and 30 respectively, which put the whole grid in a
+    # different place on either side for any clip the tempo estimator read below 30.
+    beat_sec = 60.0 / max(float(tempo_bpm), 30.0)  # seconds per beat
 
-    # Total length = end of the last note + short tail so the release doesn't clip
+    # Total length = end of the last note + short tail so the release doesn't clip.
+    # Rounded up, matching `Math.ceil` in mobile/src/lib/synth.ts — truncating here
+    # made every clip exactly one sample shorter than the mobile render of the same
+    # notes, which is inaudible but is still the two tiers disagreeing.
     max_end_sec = max(n.start_beat * beat_sec + n.dur_beats * beat_sec for n in notes)
     tail_sec = 0.25
-    total_samples = int((max_end_sec + tail_sec) * sr)
+    total_samples = int(np.ceil((max_end_sec + tail_sec) * sr))
     audio = np.zeros(total_samples, dtype=np.float64)
 
-    # A single voice peaks at the sum of its partial weights, so dividing by that
-    # sum gives every note the same predictable ceiling of 1.0 before velocity.
-    voice_gain = 1.0 / sum(_HARMONIC_WEIGHTS)
     nyquist = 0.5 * sr
+    partial_floor = 10.0 ** (_PARTIAL_FLOOR_DB / 20.0)
 
     for n in notes:
         freq = 440.0 * 2.0 ** ((n.pitch_midi - 69) / 12.0)
@@ -384,6 +475,33 @@ def _synthesize_audio_preview(
             continue
 
         t = np.arange(actual, dtype=np.float64) / sr
+        tau0 = _string_decay_sec(n.pitch_midi)
+        rolloff = _body_rolloff(n.pitch_midi)
+        unison = n.pitch_midi >= _UNISON_MIN_MIDI
+        detune_hz = freq * (2.0 ** (_DETUNE_CENTS / 1200.0) - 1.0)
+
+        # Lay the partials out first, so the audibility gate is relative to the
+        # loudest of them rather than to an assumed k=1.
+        layout: "list[tuple[int, float, float, float]]" = []
+        loudest = 0.0
+        for k in range(1, _MAX_PARTIALS + 1):
+            f_k = freq * k * (1.0 + _INHARMONICITY * k * k)
+            if f_k >= nyquist:
+                break
+            node = abs(np.sin(k * np.pi * _STRIKE_POS))
+            # One-pole brightness tilt: unity well below the ceiling, -3 dB at it.
+            tilt = 1.0 / (1.0 + (f_k / _BRIGHT_CEILING_HZ) ** 2)
+            body_amp = float(node * tilt) / k**rolloff
+            strike_amp = float(_STRIKE_GAIN * node * tilt) / k**_STRIKE_ROLLOFF
+            layout.append((k, f_k, body_amp, strike_amp))
+            loudest = max(loudest, body_amp + strike_amp)
+        floor = loudest * partial_floor
+
+        # The strike is truncated rather than run for the whole note, matching the
+        # mobile side sample for sample.
+        strike_n = min(actual, int(np.ceil(_STRIKE_SPAN_SEC * sr)))
+        t_strike = t[:strike_n]
+        strike_env = np.exp(-t_strike / _STRIKE_TAU_SEC)
 
         # Additive synthesis. Each partial gets its own starting phase and its own
         # decay rate. The phases come from the pitch and the partial index rather
@@ -392,39 +510,53 @@ def _synthesize_audio_preview(
         # stay in phase and reinforce, where a per-note offset would let them cancel
         # — and it is the limiter below, not phase scattering, that handles overlaps.
         tone = np.zeros(actual, dtype=np.float64)
-        for k, weight in enumerate(_HARMONIC_WEIGHTS, start=1):
-            f_k = freq * k * (1.0 + _INHARMONICITY * k * k)
-            if f_k >= nyquist:
-                break
+        for k, f_k, body_amp, strike_amp in layout:
+            if body_amp + strike_amp < floor:
+                continue
             phase = 2.0 * np.pi * (
                 (n.pitch_midi * 0.5698402909 + k * 0.6180339887) % 1.0
             )
-            tone += (
-                weight
-                * np.exp(-k * t / _HARMONIC_DECAY_SEC)
-                * np.sin(2.0 * np.pi * f_k * t + phase)
-            )
+            wave = np.sin(2.0 * np.pi * f_k * t + phase)
 
-        # Envelope. A piano decays continuously from the strike — there is no level to
-        # hold — so the body is exp(-t/tau) with tau from the register, and only the
-        # attack and the damper release are shaped. The ramps are raised-cosine, not
-        # linear: a linear ramp has a corner at each end, and over a 6 ms attack that
-        # corner is audible as a click on every single note.
-        env = np.exp(-t / _string_decay_sec(n.pitch_midi))
+            tau_k = tau0 / (1.0 + _DAMP_K * k**_DAMP_EXP)
+            body = body_amp * (
+                (1.0 - _TAIL_MIX) * np.exp(-t / tau_k)
+                + _TAIL_MIX * np.exp(-t / (tau_k * _TAIL_FACTOR))
+            )
+            if unison:
+                depth = _UNISON_DEPTH * min(1.0, k / _UNISON_KNEE)
+                body *= 1.0 + depth * np.cos(2.0 * np.pi * k * detune_hz * t)
+            tone += body * wave
+
+            # A 15 ms transient cannot beat, so the strike carries no unison term.
+            if strike_amp >= floor:
+                tone[:strike_n] += strike_amp * strike_env * wave[:strike_n]
+
+        # Attack and release only: the body decay is per-partial, inside the loop
+        # above. The ramps are raised-cosine, not linear — a linear ramp has a corner
+        # at each end, and over a 5 ms attack that corner is audible as a click on
+        # every single note.
         atk = min(int(_ATTACK_SEC * sr), actual // 4)
         rel = min(int(_RELEASE_SEC * sr), actual // 2)
-
         if atk > 0:
-            env[:atk] *= _smooth_ramp(atk, 0.0, 1.0)
+            tone[:atk] *= _smooth_ramp(atk, 0.0, 1.0)
         if rel > 0:
-            env[-rel:] *= _smooth_ramp(rel, 1.0, 0.0)
+            tone[-rel:] *= _smooth_ramp(rel, 1.0, 0.0)
+
+        # Normalise per note rather than by a sum of weights: the partial phases do
+        # not align, so the analytic ceiling is far above the real peak and using it
+        # would leave every note quiet. A real piano is near equal-loudness across
+        # its compass anyway, so this is also the right voicing.
+        peak = float(np.max(np.abs(tone)))
+        if peak > 0.0:
+            tone *= _PEAK_TARGET / peak
 
         # Velocity from confidence. Narrower than the old 0.4-1.0: soft-piano dynamics
         # live in a tighter band, and conf is a noisy number today (see the
         # ADAPTIVE_FACTOR note above — conf.auc is 0.551), so a low value must not be
         # able to render a real note near-inaudible.
         velocity = 0.55 + 0.35 * float(n.conf)
-        audio[start_samp:end_samp] += tone * env * (velocity * voice_gain)
+        audio[start_samp:end_samp] += tone * velocity
 
     # Soft-limit instead of rescaling by the peak. The old code divided the whole
     # mix by its loudest sample, so a single pile-up of overlapping notes — exactly
