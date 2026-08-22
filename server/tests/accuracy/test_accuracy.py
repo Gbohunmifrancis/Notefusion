@@ -128,6 +128,50 @@ asserts.  ``KEY_MARGIN_FULL``'s comment claimed "every wrong key lands under 0.5
 ``vibrato_rate_k155`` reads C major as E minor at 0.631 — above the mobile's cut, so the
 editable-key prompt stays silent on a confidently wrong key.  That is a live defect, not
 an accepted trade; the analysis and the rejected rescaling are recorded at the constant.
+
+The 38 -> 39 expansion is the same trade again, and one case causes all of it
+────────────────────────────────────────────────────────────────────────────────────────
+``LONG_CLIP_CASES`` adds ``long_clip_over_pyin_cap``: ``DIAG_PHRASE`` repeated nine times
+under ``vibrato_heavy``'s exact vibrato, 67.8 s, the first case in the corpus that crosses
+``settings.pyin_max_seconds``.  Above that line ``_pyin_track`` returns empty arrays and
+``pyin_semitone`` — the stage that suppresses spurious accidentals at their source — goes
+dark.  The regime was 0% measured while ``max_clip_seconds`` accepted 180 s, so read the
+aggregate fall as the cliff finally being *inside* the harness:
+
+    solfa.chromatic_ghosts            1.526 ->  3.846
+    notes.semitone_neighbour_ghosts   1.632 ->  5.256
+    solfa.ghost_count                 2.553 ->  6.179
+    notes.f1                          0.882 ->  0.866
+    tempo.abs_error                  14.184 -> 17.359
+    conf.auc                          0.698 ->  0.624
+
+That one case carries 92 of the 150 chromatic ghosts, 143 of 205 semitone-neighbour
+ghosts and 138 of the 677 BPM of tempo error, so the aggregates are a weighted average
+against a case with 9x the reference notes, not a pipeline regression.  Every pre-existing
+case is unchanged, +0.000 on notes.f1 across all 38.
+
+Its pair is ``vibrato_heavy``, which differs in exactly one variable — length — so
+normalise per reference note and the cap's cost is legible:
+
+    per reference note        vibrato_heavy (7.8 s)   long_clip (67.8 s)
+    ghost_count                       0.73                1.45
+    chromatic_ghosts                  0.55                0.93
+    semitone_neighbour_ghosts         0.55                1.44
+
+Two results are worth keeping.  **The gap between degree and syllable accuracy is the
+user-reported defect, isolated.**  0.707 against 0.476 is the largest in the corpus by
+2.3x — 36 of 39 cases have no gap at all — and a gap means the scale degree is right while
+the printed syllable carries an accidental that is not in the music.  That is "adding
+accidentals where not needed", and until this case there was nowhere in the harness for it
+to register.  **And length helps the key while hurting everything else**: the long clip
+reads C major correctly where its 7.8 s pair reads F minor, because 99 notes of
+duration-weighted pitch-class histogram outvote the ghost classes that 11 notes cannot.
+So the two headline solfa metrics move in opposite directions here, and degree accuracy
+0.707 flatters the case rather than excusing it.
+
+This case is EXPECTED to score badly, in the way ``vibrato_heavy`` is.  Read the pair
+together: if the gap between them ever closes, the cap stopped mattering, which is what
+lifting it via span-targeted refinement is meant to achieve.
 """
 
 import json

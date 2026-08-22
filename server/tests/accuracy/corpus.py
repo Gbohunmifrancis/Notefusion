@@ -862,6 +862,55 @@ RHYTHM_CASES: tuple[Case, ...] = (
 )
 
 
+# ── Long clip: the >60s regime, where pyin refinement is switched off ─────────
+
+# Every other case in this corpus renders to between 3.71 and 8.82 seconds, and
+# ``settings.pyin_max_seconds`` is 60 — so until this case existed, the entire
+# over-the-cap regime was 0% measured while ``max_clip_seconds`` accepted 180 and the
+# recorder had no duration cap.  Above the cap ``_pyin_track`` returns empty arrays, which
+# takes out ``pyin_refine`` AND ``pyin_semitone`` together, and the latter is by its own
+# docstring "what fixes the ghost accidentals at their source".  Forcing the skip on all
+# 38 short cases measured the size of that: solfa.chromatic_ghosts 1.526 -> 3.526,
+# notes.semitone_neighbour_ghosts 1.632 -> 4.237, key.exact 0.895 -> 0.789, with sixteen
+# gated metrics failing.  A cliff rather than a graceful loss of coverage, and the best
+# available explanation for a spurious-accidental report that arrives from real recordings
+# while this corpus looks clean.
+#
+# Three deliberate choices:
+#
+#   It carries VIBRATO, and the same 5.5 Hz / 1.2 semitones as ``vibrato_heavy``.  A clean
+#   long case would gate nothing: ``pyin_semitone`` is a no-op by construction wherever
+#   pyin and Basic Pitch agree, so losing it costs a clean clip nothing and the case would
+#   pass whether the cap were 60 s or 6 s.  The defect has to be present for its absent fix
+#   to be visible.
+#
+#   It is ``DIAG_PHRASE`` REPEATED, not new material, so this case and ``vibrato_heavy``
+#   differ in exactly one variable — length.  The delta between the pair is the cap's
+#   effect and nothing else, which is what makes it readable as a diagnostic rather than
+#   just another failing case.
+#
+#   Nine repeats, not eight.  Eight lands at 60.3 s, three tenths over a 60 s cap; a
+#   rounding change or a tail_sec edit would silently drop it under and the case would
+#   quietly stop testing the thing it exists for.  Nine gives 67.8 s (99 notes, 108 beats
+#   at 96 BPM plus the 0.30 s tail).
+#
+# EXPECTED TO SCORE BADLY, like ``vibrato_heavy`` and for the same underlying reason plus
+# the missing refinement on top.  It is a regression gate, so what matters is that the
+# recorded numbers do not get worse — not that they are good.  Read it next to
+# ``vibrato_heavy``: if the gap between them ever closes, the cap stopped mattering, which
+# is exactly what lifting it via targeted pyin is meant to achieve.
+LONG_CLIP_CASES: tuple[Case, ...] = (
+    Case(
+        name="long_clip_over_pyin_cap",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE * 9,
+        options=RenderOptions(vibrato_hz=5.5, vibrato_semitones=1.2),
+        tags=("long", "pyin_cap", "regime", "vibrato"),
+    ),
+)
+
+
 # ── The corpus ────────────────────────────────────────────────────────────────
 
 CASES: tuple[Case, ...] = (
@@ -871,6 +920,7 @@ CASES: tuple[Case, ...] = (
     + DIAGNOSTIC_CASES
     + VIBRATO_BREADTH_CASES
     + RHYTHM_CASES
+    + LONG_CLIP_CASES
 )
 
 
