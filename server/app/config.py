@@ -42,6 +42,38 @@ class Settings:
         so an unguarded 180 s clip (``max_clip_seconds``) would add ~39 s to the
         queue latency of every job behind it.  60 s covers the great majority of
         hummed phrases at a bounded worst case.
+
+        Re-timed since at **0.40x realtime** (4.04 s / 10 s, 8.86 s / 20 s, 16.13 s / 40 s;
+        discard the first reading in any sweep, numba's JIT lands in it).  Different
+        hardware, so this does not correct the number above so much as bracket it — but at
+        0.40x a 180 s clip is ~72 s of pyin, not ~39 s, so the pressure behind this cap is
+        if anything understated.
+
+        **What crossing it costs, which this docstring used to leave unsaid.**  Above the
+        cap ``_pyin_track`` returns empty arrays, so ``pyin_refine`` AND ``pyin_semitone``
+        both go dark — and per ``pyin_semitone``'s own docstring that stage "is what fixes
+        the ghost accidentals at their source".  Measured by forcing the skip on all 38
+        cases (``NF_PYIN_MAX_SECONDS=1``), against the shipped baseline:
+
+            solfa.chromatic_ghosts            1.526 -> 3.526   (+131%)
+            notes.semitone_neighbour_ghosts   1.632 -> 4.237   (+160%)
+            solfa.ghost_count                 2.553 -> 4.947
+            solfa.degree_accuracy             0.940 -> 0.827
+            solfa.syllable_accuracy           0.935 -> 0.827
+            key.exact                         0.895 -> 0.789
+            notes.f1                          0.882 -> 0.789   (recall 0.911 -> 0.812)
+            tempo.abs_error                  14.184 -> 20.526
+
+        Sixteen gated metrics fail; this is roughly the pre-``pyin_semitone`` pipeline.  So
+        the cap is not a graceful degradation in coverage, it is a cliff, and it is the
+        best available explanation for a spurious-accidental report that arrives from real
+        recordings while the corpus looks clean.
+
+        **The harness cannot see any of it**: all 38 cases render to 3.71-8.82 s and none
+        exceeds 20 s, so the >60 s regime is 0% measured.  Nor is the cliff reachable only
+        in theory — ``max_clip_seconds`` is 180 and the recorder has no duration cap or
+        auto-stop, so holding the button is enough.  Whichever way the latency/length trade
+        is settled, a long-clip case is the prerequisite for gating it.
         """
         return float(os.getenv("NF_PYIN_MAX_SECONDS", "60"))
 
