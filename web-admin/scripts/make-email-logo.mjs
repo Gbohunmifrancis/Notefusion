@@ -1,11 +1,15 @@
 /**
- * One-off: derive web-admin/public/email/logo.png from the app's brand mark, recoloured
- * pure white so it reads on the email header's blue gradient. Run with
- * `node scripts/make-email-logo.mjs`.
+ * One-off: derive web-site/email/logo.png from the app's brand mark, recoloured pure white so it
+ * reads on the email header's blue gradient. Run with `node scripts/make-email-logo.mjs`.
  *
- * The branded email (src/NoteFusion.Infrastructure/Email/BrandedEmailTemplate.cs) shows the
- * mark at 46×61; this emits 2× for retina. When Email__AssetBaseUrl is unset the template
- * falls back to a live-text wordmark, so this asset only matters once assets are served.
+ * It writes into web-site/, not this app's public/, because the marketing site is what publishes
+ * it: `Email__AssetBaseUrl` is https://notefusion.studio, and the template fetches
+ * `{AssetBaseUrl}/email/logo.png` (BrandedEmailTemplate.LogoUrl). This lives here only because
+ * web-admin is the one folder in the repo with a Node toolchain and its sibling generator.
+ *
+ * The branded email (src/NoteFusion.Infrastructure/Email/BrandedEmailTemplate.cs) shows the mark
+ * at 46×61; this emits 2× for retina. With AssetBaseUrl unset the template points at a raw
+ * GitHub URL instead, so this asset is what stops production mail hotlinking the repo.
  *
  * Pure Node, same constraint as make-favicon.mjs — no sharp, no ImageMagick. Handles only
  * what the source is: 8-bit, colour type 6 (RGBA), non-interlaced.
@@ -18,7 +22,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = resolve(ROOT, "..", "mobile", "assets", "brand", "mark.png");
-const OUT_DIR = resolve(ROOT, "public", "email");
+const OUT_DIR = resolve(ROOT, "..", "web-site", "email");
 const OUT = resolve(OUT_DIR, "logo.png");
 const OUT_W = 92;
 const OUT_H = 122;

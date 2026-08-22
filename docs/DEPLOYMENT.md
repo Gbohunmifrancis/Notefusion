@@ -245,7 +245,7 @@ heroku config:set \
   Email__UseResend='true' \
   Email__ApiKey='<resend-api-key>' \
   Email__FromAddress='no-reply@notefusion.studio' \
-  Email__AssetBaseUrl='https://<your-heroku-app>.herokuapp.com' \
+  Email__AssetBaseUrl='https://notefusion.studio' \
   --app <your-heroku-app>
 ```
 
@@ -254,7 +254,7 @@ heroku config:set \
 | `Email__UseResend` | **yes** | `true` to send via Resend; anything else keeps mail in the log. |
 | `Email__ApiKey` | **yes, when UseResend=true** | Resend API key. Env-only — a key in `appsettings.json` is a key in git history. |
 | `Email__FromAddress` | **strongly recommended** | Default `onboarding@resend.dev` is Resend's sandbox and **only delivers to the address that owns the key**. Point at your verified domain (`no-reply@notefusion.studio`) before real users receive mail. |
-| `Email__AssetBaseUrl` | recommended | Public origin the branded email fetches its logo from (`/email/logo.png`, served from the API's `wwwroot`). Set to the app's public URL. Unset simply drops the image; the live-text wordmark still brands the header. |
+| `Email__AssetBaseUrl` | recommended | Public origin the branded email fetches its logo from (`/email/logo.png`). **Point this at the marketing site, `https://notefusion.studio`** — the file lives in `web-site/email/`. It used to be the API's own URL, back when the API served the dashboard bundle out of `wwwroot`; nothing lands in `wwwroot` any more, so a Heroku URL here now yields a broken image. Unset falls back to a raw GitHub URL for the mobile icon. |
 | `Email__FromName` | optional | Sender display name. Defaults to `NoteFusion`. |
 | `Email__ReplyTo` | optional | Where replies land. Committed default is `hello@notefusion.studio`. |
 | `Email__SupportEmail` | optional | Shown in the footer. Defaults to `hello@notefusion.studio`. |
