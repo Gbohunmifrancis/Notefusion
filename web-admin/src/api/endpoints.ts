@@ -7,6 +7,7 @@ import type {
   AuditLogRow,
   GiftDuration,
   LoginResponse,
+  MyProfile,
   PagedResult,
   RoleName,
   SystemHealth,
@@ -26,6 +27,14 @@ export const logout = (refreshToken: string) =>
     body: { refreshToken },
     anonymous: true,
   });
+
+/**
+ * The signed-in operator's own account. Not admin-gated — it is the same endpoint the app calls —
+ * and the console wants it only for the avatar the shell shows, which the login payload cannot
+ * carry without changing a contract the mobile client shares.
+ */
+export const getMyProfile = (signal?: AbortSignal) =>
+  request<MyProfile>("/api/me", signal ? { signal } : {});
 
 /** `from` and `to` are inclusive reporting-local dates, "YYYY-MM-DD". */
 export const getOverview = (from?: string, to?: string, signal?: AbortSignal) =>

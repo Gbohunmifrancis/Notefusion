@@ -1,7 +1,11 @@
 # web-admin
 
-The internal analytics dashboard. Vite + React + TypeScript + Tailwind, served from its own
-origin, talking to the C# Web API over CORS.
+The internal analytics dashboard. Next.js (App Router) + React + TypeScript + Tailwind +
+shadcn/ui, deployed on Vercel from its own origin, talking to the C# Web API over CORS.
+
+It is **not** bundled into the API image any more. Authentication is a bearer token in browser
+storage, so nothing here can be server-rendered against the API — Next is used for routing,
+layouts and the deploy, and every page is a server shell around a client view.
 
 This is a separate app from `web-site/` on purpose. `web-site/` is public marketing with no
 auth; this one is auth-gated, `noindex`, and shows personal data. Keeping them apart means a
@@ -13,20 +17,20 @@ tree never ships to the public site.
 ```bash
 cd web-admin
 npm install
-cp .env.example .env.local   # then set VITE_API_URL to the port the API is actually on
-npm run dev                  # http://localhost:5173
+cp .env.example .env.local   # then set NEXT_PUBLIC_API_URL to the port the API is actually on
+npm run dev                  # http://localhost:3000
 ```
 
-Port 5173 is fixed (`strictPort`) because it is the origin listed in the API's
-`Cors:AllowedOrigins`. If Vite silently moved to 5174 the browser would block every request
-with an opaque CORS error, which is a bad afternoon.
+Port 3000 matters: it is the origin listed in the API's `Cors:AllowedOrigins`. If Next moves to
+3001 because something else holds the port, the browser blocks every request with an opaque
+CORS error, which is a bad afternoon.
 
 You need an **admin** account. A non-admin can sign in successfully and is then told the
 account lacks access, rather than being dropped onto a dashboard where every panel 403s.
 
 ```bash
-npm run lint     # tsc --noEmit, strict
-npm run build    # type-check then production build into dist/
+npm run lint     # next typegen, then tsc --noEmit, strict
+npm run build    # type-check then production build into .next/
 ```
 
 ## API side
@@ -36,9 +40,12 @@ Two endpoints, both behind `[Authorize(Policy = "Admin")]`:
 - `GET /api/admin/analytics/overview?from=&to=` — counters, daily series, breakdowns, cohorts
 - `GET /api/admin/analytics/users?page=&pageSize=&search=` — a page of accounts
 
-CORS is configured in `src/NoteFusion.Api/Program.cs` and fails closed: with no origins set,
-nothing is allowed. Dev origins live in `appsettings.Development.json`; compose reads
-`ADMIN_DASHBOARD_ORIGIN`.
+CORS is configured in `src/NoteFusion.Api/Program.cs`. `http://localhost:3000` is added only in
+Development — in production that origin is one an attacker controls, since anything on the
+victim's machine can claim it. Compose runs Production, so it names the origin explicitly through
+`ADMIN_DASHBOARD_ORIGIN`. The deployed Vercel origins are hard-coded in that file rather than
+config, so a missing `Cors__AllowedOrigins` cannot take the live console offline; it does **not**
+fail closed.
 
 ## Things in here that are load-bearing
 
@@ -65,5 +72,6 @@ latest sign-in is stored, so a day-N curve is not computable.
 several refreshes, and since refresh tokens are single-use and rotating, all but one would fail
 and sign the admin out mid-load. `src/api/client.ts` funnels them through one promise.
 
-**The route gate is convenience, not security.** `RequireAdmin` hides the UI; the server
-enforces the Admin policy on every request. Editing localStorage to say "Admin" gets a 403.
+**The route gate is convenience, not security.** The `(console)` layout hides the UI from anyone
+without an admin session; the server enforces the Admin policy on every request. Editing
+localStorage to say "Admin" gets a 403.

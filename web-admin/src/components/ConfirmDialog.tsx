@@ -1,7 +1,21 @@
-import { AlertTriangle, Loader2, X } from "lucide-react";
+"use client";
+
+import { AlertTriangle, Loader2 } from "lucide-react";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 
 import { ApiError } from "@/api/client";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 /**
  * The confirmation step for an operator action. One component rather than a per-action modal,
@@ -17,6 +31,14 @@ import { ApiError } from "@/api/client";
  * - A failure keeps the dialog open and shows the server's own message, because the guards on the
  *   other side ("you cannot do that to your own account", "that is the last administrator") are
  *   written for this reader and are the whole answer.
+ *
+ * Built on Radix's `AlertDialog`, which brings the focus trap, the scroll lock and the inert
+ * background this used to hand-roll. Two consequences of the primitive worth naming: an alert
+ * dialog does not dismiss on an outside click (Radix prevents it), and it carries no ✕ — a
+ * decision is the point, and Cancel is still one click or one Escape away.
+ *
+ * The confirm button is a plain submit rather than `AlertDialogAction`, because Action closes the
+ * dialog on click and a failed action has to stay open to show why.
  */
 export interface ConfirmRequest {
   title: string;
@@ -45,7 +67,8 @@ export function ConfirmDialog({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const firstFieldRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
-  const titleId = useId();
+  const gateId = useId();
+  const noteId = useId();
 
   // Each opening starts clean. Without this, a note typed for the last action would ride along
   // into the audit row of the next one.
@@ -55,18 +78,8 @@ export function ConfirmDialog({
       setNote("");
       setError(null);
       setPending(false);
-      firstFieldRef.current?.focus();
     }
   }, [request]);
-
-  useEffect(() => {
-    if (!request) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !pending) onClose();
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [request, pending, onClose]);
 
   if (!request) return null;
 
@@ -90,44 +103,44 @@ export function ConfirmDialog({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto p-4 sm:items-center">
-      <button
-        type="button"
-        onClick={() => !pending && onClose()}
-        className="fixed inset-0 bg-navy-deep/60"
-        aria-label="Cancel"
-        tabIndex={-1}
-      />
-
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className="animate-fade-in relative w-full max-w-md rounded-md border border-border bg-surface shadow-lift"
+    <AlertDialog
+      open
+      onOpenChange={(open) => {
+        // Escape is the only route left to `false`, and it must not abandon an action already
+        // in flight — the request would still land, with nothing on screen saying so.
+        if (!open && !pending) onClose();
+      }}
+    >
+      <AlertDialogContent
+        className="bg-popover sm:max-w-md"
+        onOpenAutoFocus={(event) => {
+          // Radix focuses Cancel on open, which is right when the dialog is a bare yes/no. Where
+          // there is a field to fill in, that field is where the operator has to go. Radix composes
+          // this handler ahead of its own and skips its own once the default is prevented.
+          const field = firstFieldRef.current;
+          if (!field) return;
+          event.preventDefault();
+          field.focus();
+        }}
       >
-        <header className="flex items-start justify-between gap-3 border-b border-border px-5 py-4">
-          <h2 id={titleId} className="text-heading font-semibold text-ink">
-            {request.title}
-          </h2>
-          <button
-            type="button"
-            onClick={() => !pending && onClose()}
-            className="-mr-1 -mt-1 grid h-7 w-7 place-items-center rounded-sm text-faint transition hover:bg-surface-alt hover:text-ink"
-            aria-label="Close"
-          >
-            <X size={16} />
-          </button>
-        </header>
+        <AlertDialogTitle>{request.title}</AlertDialogTitle>
 
-        <form onSubmit={submit} className="space-y-4 px-5 py-4">
-          <div className="space-y-2 text-[13px] leading-relaxed text-muted">{request.body}</div>
+        {/* `asChild`: the body is prose with its own paragraphs, and Radix's Description is a
+            `<p>`. It still carries the id that describes the dialog. */}
+        <AlertDialogDescription asChild className="space-y-2 text-[13px] leading-relaxed">
+          <div>{request.body}</div>
+        </AlertDialogDescription>
 
+        <form onSubmit={submit} className="space-y-4">
           {gated && (
-            <label className="block">
-              <span className="block text-xs font-medium text-muted">
-                Type <span className="font-mono text-ink">{request.typeToConfirm}</span> to confirm
-              </span>
-              <input
+            <div>
+              <Label htmlFor={gateId} className="text-xs text-muted-foreground">
+                Type{" "}
+                <span className="font-mono text-foreground">{request.typeToConfirm}</span> to
+                confirm
+              </Label>
+              <Input
+                id={gateId}
                 ref={(node) => {
                   firstFieldRef.current = node;
                 }}
@@ -136,15 +149,18 @@ export function ConfirmDialog({
                 onChange={(event) => setTyped(event.target.value)}
                 autoComplete="off"
                 spellCheck={false}
-                className="mt-1.5 h-10 w-full rounded-sm border border-border bg-bg px-3 font-mono text-[13px] text-ink outline-none transition focus:border-accent"
+                className="mt-1.5 font-mono text-[13px]"
               />
-            </label>
+            </div>
           )}
 
           {request.noteLabel && (
-            <label className="block">
-              <span className="block text-xs font-medium text-muted">{request.noteLabel}</span>
-              <textarea
+            <div>
+              <Label htmlFor={noteId} className="text-xs text-muted-foreground">
+                {request.noteLabel}
+              </Label>
+              <Textarea
+                id={noteId}
                 ref={(node) => {
                   if (!gated) firstFieldRef.current = node;
                 }}
@@ -152,9 +168,9 @@ export function ConfirmDialog({
                 onChange={(event) => setNote(event.target.value)}
                 rows={2}
                 placeholder="Optional — it goes in the audit trail"
-                className="mt-1.5 w-full resize-none rounded-sm border border-border bg-bg px-3 py-2 text-[13px] text-ink outline-none transition focus:border-accent placeholder:text-faint"
+                className="mt-1.5 min-h-0 resize-none text-[13px]"
               />
-            </label>
+            </div>
           )}
 
           {error && (
@@ -172,34 +188,21 @@ export function ConfirmDialog({
             </p>
           )}
 
-          <div className="flex justify-end gap-2 pt-1">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={pending}
-              className="h-9 rounded-sm border border-border px-4 text-[13px] font-semibold text-ink transition hover:bg-surface-alt disabled:opacity-45"
-            >
-              Cancel
-            </button>
-            <button
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>
+            {/* The destructive variant keeps white ink and dims the fill in dark mode
+                (`dark:bg-destructive/60`, ~5.7:1), so the label needs no flip of its own. */}
+            <Button
               type="submit"
+              variant={danger ? "destructive" : "default"}
               disabled={!unlocked || pending}
-              // The label flips with the fill on the danger button. `danger` brightens in dark mode
-              // (#dc2626 → #f87171) because it also has to read as text there, and white on that
-              // brighter red measures 2.77:1 — so the ink goes dark instead, which is 7:1. `blue`
-              // needs no such treatment: it is a fill only, and deliberately does not flip.
-              className={`flex h-9 items-center gap-2 rounded-sm px-4 text-[13px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-45 ${
-                danger
-                  ? "bg-danger text-white hover:opacity-90 dark:text-navy-deep"
-                  : "bg-blue text-white hover:bg-blue-deep"
-              }`}
             >
-              {pending && <Loader2 size={14} className="animate-spin" aria-hidden="true" />}
+              {pending && <Loader2 className="animate-spin" aria-hidden="true" />}
               {request.confirmLabel}
-            </button>
-          </div>
+            </Button>
+          </AlertDialogFooter>
         </form>
-      </div>
-    </div>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

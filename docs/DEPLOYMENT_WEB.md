@@ -1,6 +1,7 @@
 # Deploying the web front-ends (Vercel)
 
-Three static front-ends ship from this repo, all on Vercel:
+Three front-ends ship from this repo, all on Vercel — two hand-written static folders and one
+built app:
 
 | Front-end | Source | Vercel project | Live at |
 |-----------|--------|----------------|---------|
@@ -9,6 +10,11 @@ Three static front-ends ship from this repo, all on Vercel:
 | Admin dashboard | `web-admin/` | `web-admin` | `web-admin-blue-two.vercel.app` |
 
 The API is separate — Heroku, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+> The marketing site also publishes **`/email/logo.png`**, which the API's branded email fetches
+> (`Email__AssetBaseUrl`). It is not decoration for the site itself, so deleting `web-site/email/`
+> silently un-brands every transactional email. Regenerate it with
+> `node web-admin/scripts/make-email-logo.mjs`.
 
 > **DNS lives at name.com**, not at Vercel: the zone's nameservers are `ns1psw`, `ns2dqx`,
 > `ns3ckl`, `ns4cgs.name.com`. Vercel therefore cannot create records for you — every new
@@ -20,9 +26,14 @@ The API is separate — Heroku, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Admin dashboard
 
-The dashboard is a Vite SPA. It is **not** served from the API's `wwwroot`, so it runs on its
-own origin and talks to Heroku cross-origin. Two things have to line up: the Vercel project and
-the API's CORS allow-list.
+The dashboard is a Next.js App Router app. It is **not** served from the API's `wwwroot` — that
+build stage is gone from both Dockerfiles, and the API no longer registers static files or a
+fallback route — so it runs on its own origin and talks to Heroku cross-origin. Two things have to
+line up: the Vercel project and the API's CORS allow-list.
+
+Authentication is a bearer token in browser storage, so nothing here is server-rendered against
+the API. Every page is a server shell (metadata only) around a client view; Vercel is running a
+Node function per route that returns a shell, not fetching your data.
 
 ### 1. Vercel project
 
@@ -31,24 +42,33 @@ the API's CORS allow-list.
 `web-admin.vercel.app` was already taken globally. That suffix is stable for the life of the
 project, and it is the origin the browser sends, so it is what the API must allow.
 
+The project's **Framework Preset must be Next.js**, not Vite. `web-admin/vercel.json` declares
+`"framework": "nextjs"`, but a preset chosen in the dashboard before this rewrite overrides
+nothing — check it, because a Vite preset looks for `dist/` and deploys an empty site rather than
+failing.
+
 Deploy from inside `web-admin/` so the project root is that folder and `web-admin/vercel.json`
-applies (SPA rewrites, `X-Robots-Tag: noindex`, immutable asset caching):
+applies (`X-Robots-Tag: noindex`, nosniff, `X-Frame-Options: DENY`):
 
 ```bash
 cd web-admin && vercel --prod
 ```
 
 The build needs no dashboard configuration: `web-admin/.env.production` is committed and carries
-`VITE_API_URL`. If the API ever moves, change that file rather than adding a Vercel env var, so a
-clean clone keeps building a working bundle.
+`NEXT_PUBLIC_API_URL`. If the API ever moves, change that file rather than adding a Vercel env
+var, so a clean clone keeps building a working bundle. `next.config.ts` fails the production build
+outright when that variable is empty, so a missing value is a build error rather than a dashboard
+that 404s every request at runtime.
 
-> - `vercel --prod` uploads the **working tree**, so uncommitted work ships.
+> - `vercel --prod` uploads the **working tree**, so uncommitted work ships. `web-admin/.vercelignore`
+>   holds `.env.local` out of that upload for a reason worth knowing: Next loads `.env.local`
+>   *over* `.env.production` even in a production build, so a developer's
+>   `NEXT_PUBLIC_API_URL=http://localhost:5080` would be inlined into the deployed bundle. The
+>   build still succeeds — `next.config.ts` only rejects an *empty* value — and the console goes
+>   live fully styled, talking to a machine that is not there.
 > - `vercel link` writes a `web-admin/.gitignore` containing `.env*`. Narrow it if it comes back:
 >   `.env.production` is committed on purpose. It also writes `.env.local` with a short-lived
 >   OIDC token — the root `.gitignore` already covers that file.
-> - The repo root also has a `vercel.json` pointing at `web-admin/dist`. It is a leftover from an
->   earlier attempt to deploy from the repo root and its build command cannot work (there is no
->   root `package.json`). Deploying from inside `web-admin` ignores it; it is safe to delete.
 
 #### If the CLI reports a failed deploy
 
@@ -82,32 +102,41 @@ serving one app from two projects means two different bundles can go live indepe
 
 ### 3. API CORS
 
-The API allows origins explicitly and **fails closed** — an origin that is not listed gets no
-`Access-Control-Allow-Origin` header and the browser blocks the call. Each origin is in two
-places:
+The API allows origins explicitly: an origin that is not listed gets no
+`Access-Control-Allow-Origin` header and the browser blocks the call. It does **not** fail closed,
+though — the deployed origins are hard-coded in `src/NoteFusion.Api/Program.cs` so that a missing
+`Cors__AllowedOrigins` cannot take the live console offline. Origins can come from two places:
 
 - compiled into `src/NoteFusion.Api/Program.cs`, which needs an API redeploy to take effect;
 - and as a Heroku config var, which takes effect on the dyno restart `config:set` performs —
   no image rebuild.
 
-Currently set on `notefusion-api`: `Cors__AllowedOrigins__0` … `__5` = the two localhost dev
-origins, `https://notefusion.studio`, `https://admin.notefusion.studio`,
-`https://notefusion-web.vercel.app`, `https://web-admin-blue-two.vercel.app`. To add another,
-use the next free index — never reuse one, and check first, because a gap leaves a null in the
+Hard-coded in `Program.cs` today: `https://notefusion.studio`,
+`https://admin.notefusion.studio`, `https://notefusion-web.vercel.app`,
+`https://web-admin-blue-two.vercel.app`, `https://notefusion-privacy.vercel.app`. The localhost
+pair is added **only** in Development — in production that is an origin an attacker controls,
+because anything running on the victim's own machine can claim it.
+
+That last point is why the config vars are worth auditing rather than assumed: a
+`Cors__AllowedOrigins__n` holding `http://localhost:3000` puts localhost back into production's
+allow-list, bypassing the Development gate entirely. Read them one key at a time and use the next
+free index to add one — never reuse an index, and check first, because a gap leaves a null in the
 bound array:
 
 ```bash
-heroku config:get Cors__AllowedOrigins__6 --app notefusion-api
+heroku config:get Cors__AllowedOrigins__0 --app notefusion-api
 ```
 
 Do not run bare `heroku config` — it dumps every secret the app holds. Use `config:get` per key.
 
 ### Checks after going live
 
-Confirm the bundle points at the API it should:
+Confirm the deployed app is Next and not a stale Vite bundle — the shell references
+`/_next/static/…`, and an `assets/index-*.js` here means the Vercel project still has the Vite
+preset:
 
 ```bash
-curl -s https://web-admin-blue-two.vercel.app/ | grep -o 'assets/index-[A-Za-z0-9_-]*\.js'
+curl -s https://web-admin-blue-two.vercel.app/ | grep -o '/_next/static/[A-Za-z0-9/_-]*\.js' | head -3
 ```
 
 Confirm the API accepts the origin. A `204` **with** an `Access-Control-Allow-Origin` line is a
@@ -123,5 +152,7 @@ analytics paths are `/api/admin/analytics/overview` and `/api/admin/analytics/us
 `admin` segment). Unauthenticated they answer `401` with `WWW-Authenticate: Bearer`. A `404`
 means the path is wrong, not that auth failed.
 
-Finally, a deep link such as `https://web-admin-blue-two.vercel.app/users` must return `200`,
-not `404` — that is the SPA rewrite doing its job.
+Finally, `https://web-admin-blue-two.vercel.app/users` must return `200` and
+`/nonsense-path` must return `404`. Both are real routes now rather than an SPA rewrite: the
+router used to redirect every unknown path to the overview, which made a typo look like it had
+worked, and `src/app/not-found.tsx` replaces that with a page that says so.

@@ -4,10 +4,14 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
+    // `react-jsx` and `esModuleInterop` are not preferences: `next build` rewrites this file if
+    // they are anything else, so they are set here to stop it editing the config on every build.
     "jsx": "react-jsx",
-    // "node" is here only for vite.config.ts (node:path, import.meta.dirname). Nothing
-    // under src/ may use a Node API — it all runs in the browser.
-    "types": ["vite/client", "node"],
+    "esModuleInterop": true,
+    "plugins": [{ "name": "next" }],
+    // "node" is here only for next.config.ts and the scripts/ generators. Nothing under
+    // src/ may use a Node API — it all runs in the browser.
+    "types": ["node"],
 
     "strict": true,
     "noUnusedLocals": true,
@@ -20,9 +24,16 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "incremental": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
 
     "baseUrl": ".",
     "paths": { "@/*": ["src/*"] }
   },
-  "include": ["src", "vite.config.ts"]
+  // `next-env.d.ts` and `.next/types` are generated, not committed — they are what declares the
+  // image and CSS module types `BrandMark` relies on, so `npm run lint` runs `next typegen` first
+  // and works in a clean clone.
+  "include": ["src", "next.config.ts", "next-env.d.ts", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

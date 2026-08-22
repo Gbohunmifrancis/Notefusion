@@ -1,10 +1,21 @@
+"use client";
+
 import { useState } from "react";
 import type { ReactNode } from "react";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import type { DailyCount } from "@/api/types";
 import { Card } from "@/components/Card";
 import { Segmented } from "@/components/Segmented";
+import { useChartPalette } from "@/lib/chart";
 import {
   formatCount,
   formatDayLong,
@@ -12,19 +23,22 @@ import {
   formatMonthShort,
   formatMonthYear,
 } from "@/lib/format";
-import { useTheme } from "@/lib/theme";
 
 /**
- * A daily series as bars, with a grey full-height ghost behind each one so the plot reads as
- * a row of gauges rather than as a set of floating marks.
+ * A daily series as a line over a fading fill, which reads as one trend rather than as a row of
+ * separate marks — a shape is easier to compare across two charts than eighty bar heights are.
  *
- * The API zero-fills every day in the range, so a missing bar means "nothing happened that
+ * The segments are straight, not splined. A smoothed curve through integer daily counts draws
+ * values that were never measured and can dip below zero between two small days, which is a
+ * claim this data cannot support. Every vertex here is a real count.
+ *
+ * The API zero-fills every day in the range, so a point at zero means "nothing happened that
  * day" and not "no data was returned" — the points are plotted as-is, with no gap-filling or
  * smoothing of our own. `date` is a reporting-local calendar string and is formatted as one;
  * handing it to `new Date` would shift the axis a day in negative-offset browsers.
  *
  * Grouping is Day / Week / Month, and an option is disabled rather than hidden when the
- * window is too short to make more than one bar out of it.
+ * window is too short to make more than one point out of it.
  */
 
 type Bucket = "day" | "week" | "month";
@@ -104,9 +118,9 @@ function tooltip(unit: string, color: string) {
     if (!active || !group?.title) return null;
 
     return (
-      <div className="rounded-sm border border-border bg-surface px-3 py-2 shadow-lift">
-        <p className="text-[11px] font-semibold text-ink">{group.title}</p>
-        <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
+      <div className="rounded-sm border border-border bg-popover px-3 py-2 shadow-lift">
+        <p className="text-[11px] font-semibold text-foreground">{group.title}</p>
+        <p className="mt-1 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <span
             aria-hidden="true"
             className="h-1.5 w-1.5 rounded-full"
@@ -126,7 +140,7 @@ interface DailyChartProps {
   data: DailyCount[];
   /** Plural noun for the tooltip, e.g. "signups". */
   unit: string;
-  /** Bar colour. Defaults to the theme's series colour; pass one from `useTheme().chart`. */
+  /** Line and fill colour. Defaults to the theme's series colour; pass one from `useChartPalette()`. */
   color?: string;
   className?: string;
 }
@@ -139,15 +153,16 @@ export function DailyChart({
   color,
   className = "",
 }: DailyChartProps) {
-  const { chart } = useTheme();
+  const chart = useChartPalette();
   const [chosen, setChosen] = useState<Bucket>("day");
 
   const fill = color ?? chart.series;
+  const gradientId = `daily-${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
   const weeks = groupIntoWeeks(data);
   const months = groupIntoMonths(data);
 
-  // A single bar is not a chart, so a grouping that collapses the window to one is offered
+  // A single point is not a chart, so a grouping that collapses the window to one is offered
   // but disabled, with the reason on hover. Falling back to days rather than storing the
   // correction keeps the admin's choice intact if they widen the range again.
   const options: readonly { value: Bucket; label: string; disabledReason?: string }[] = [
@@ -191,7 +206,15 @@ export function DailyChart({
     >
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={groups} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
+          <AreaChart data={groups} margin={{ top: 8, right: 4, bottom: 0, left: -20 }}>
+            <defs>
+              {/* Two of these render on the overview page, and a repeated id would hand both
+                  charts whichever gradient the document defined last. */}
+              <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={fill} stopOpacity={0.28} />
+                <stop offset="100%" stopColor={fill} stopOpacity={0} />
+              </linearGradient>
+            </defs>
             <CartesianGrid stroke={chart.grid} vertical={false} />
             <XAxis
               dataKey="label"
@@ -209,19 +232,23 @@ export function DailyChart({
               stroke={chart.axis}
               tickLine={false}
             />
-            {/* The ghost bar is already the hover affordance, so recharts' grey cursor band
-                on top of it would just muddy the column. */}
+            {/* The hovered vertex is marked by `activeDot` below, so recharts' grey cursor band
+                on top of it would just muddy the plot. */}
             <Tooltip content={tooltip(unit, fill)} cursor={false} />
-            <Bar
+            <Area
               dataKey="count"
               name={unit}
-              fill={fill}
-              radius={[4, 4, 0, 0]}
-              maxBarSize={14}
-              background={{ fill: chart.track, radius: 4 }}
+              // Straight segments: see the note at the top of the file.
+              type="linear"
+              stroke={fill}
+              strokeWidth={2}
+              fill={`url(#${gradientId})`}
+              // A dot per day is 90 dots on a wide window. The hover mark is enough.
+              dot={false}
+              activeDot={{ r: 3.5, fill, stroke: "none" }}
               isAnimationActive={false}
             />
-          </BarChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </Card>

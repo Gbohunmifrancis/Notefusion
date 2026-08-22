@@ -7,15 +7,16 @@
 import type { ApiErrorBody, TokenPairResponse } from "@/api/types";
 import { clearSession, getAccessToken, getRefreshToken, setTokens } from "@/lib/session";
 
-const BASE_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/+$/, "");
-
-if (!BASE_URL && import.meta.env.DEV) {
-  // Only fatal in dev: `vite dev` serves the dashboard on its own origin, so a relative
-  // URL would hit the Vite server instead of the API. In a production build the bundle is
-  // served out of the API's wwwroot, where same-origin relative paths are exactly right —
-  // throwing there would blank the page before React ever mounts.
-  throw new Error("VITE_API_URL is not set. Copy .env.example to .env.local and set it.");
-}
+/**
+ * Required, with no fallback.
+ *
+ * The Vite build had a same-origin escape hatch — it threw only in dev, because the
+ * production bundle was served out of the API's own `wwwroot` where relative paths were
+ * exactly right. The dashboard now deploys to Vercel and the API lives on another origin,
+ * so an unset value is a blank console rather than a working one. `next.config.ts` asserts
+ * it at build time so a misconfigured deploy fails the build instead of shipping.
+ */
+const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/+$/, "");
 
 /** A failed API call, carrying the server's error code so callers can branch on it. */
 export class ApiError extends Error {

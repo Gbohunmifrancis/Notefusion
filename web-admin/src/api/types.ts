@@ -33,6 +33,22 @@ export interface AuthUser {
   role: string;
 }
 
+/**
+ * `MyProfileDto` from `GET /api/me` — the signed-in operator's own account.
+ *
+ * The console reads it for one thing: the avatar the shell shows. `AuthUser` above cannot carry
+ * the picture, because it is the mobile client's login payload too.
+ */
+export interface MyProfile {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  profilePictureUrl: string | null;
+  hasPassword: boolean;
+  createdAt: string;
+}
+
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
@@ -132,6 +148,8 @@ export interface AdminUserRow {
   id: string;
   fullName: string;
   email: string;
+  /** The account's avatar, or null when it has none — the console draws initials instead. */
+  profilePictureUrl: string | null;
   role: string;
   isActive: boolean;
   hasGoogle: boolean;

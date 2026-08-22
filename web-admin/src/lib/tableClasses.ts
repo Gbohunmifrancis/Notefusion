@@ -1,20 +1,23 @@
 /**
- * Table metrics, shared by the two tables on the dashboard — accounts and retention
- * cohorts. They are the same object visually, so their header, row and cell classes live
- * here instead of being retyped in each page and drifting apart.
+ * The two metrics shadcn's `Table` does not have, shared by the console's tables — accounts, the
+ * audit log, and the retention cohorts inside a user's detail page. They are the same object
+ * visually, so the numbers live here instead of being retyped per page and drifting apart.
  *
- * Cells are padded rather than the rows, so a horizontally scrolled table keeps its
- * gutters at both ends.
+ * Only the cells. The rules and the row hover come from `TableHeader`/`TableRow` as generated:
+ * shadcn already draws a full-weight border under the header and a hover tint on a body row, which
+ * is exactly the treatment this console had. Body rows get the lighter `border-border-light` rule
+ * from a single override on `TableBody`, so a long table reads as one block rather than as a stack
+ * of framed strips.
+ *
+ * Cells are padded rather than the rows, so a horizontally scrolled table keeps its gutters at
+ * both ends.
  */
 
 /** Header cell. Sentence case, not uppercase — long headings stay readable. */
-export const TH = "whitespace-nowrap px-4 py-2.5 text-left text-xs font-medium text-muted";
+export const TH = "px-4 py-2.5 text-xs font-medium text-muted-foreground";
 
 /** Body cell. */
-export const TD = "px-4 py-3 align-middle text-[13px] text-muted";
+export const TD = "px-4 py-3 text-[13px] text-muted-foreground";
 
-/** Body row. */
-export const TR = "border-b border-border-light transition last:border-0 hover:bg-surface-alt/50";
-
-/** The header row itself, which carries the only full-weight rule in the table. */
-export const THEAD_TR = "border-b border-border";
+/** Body rows, applied once to `TableBody`: a hairline rule rather than the header's full weight. */
+export const TBODY = "[&_tr]:border-border-light";

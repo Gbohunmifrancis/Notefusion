@@ -1,5 +1,12 @@
 # Vercel deploys the admin dashboard from this repo with Root Directory = web-admin, so the
 # upload only needs that folder. Without this, `vercel --prod` from the repo root ships the
-# whole monorepo (API, ML worker, mobile app, docs) for a static SPA build.
+# whole monorepo (API, ML worker, mobile app, docs) to build one Next.js app.
 /*
 !/web-admin
+
+# `!/web-admin` re-includes the whole folder, including `.env.local` — which Next loads *over*
+# `.env.production` even in a production build. Deploying from the repo root would otherwise inline
+# a developer's `http://localhost:5080` into the live bundle, and the build would still succeed.
+# web-admin/.vercelignore says the same thing for the `cd web-admin && vercel --prod` route.
+web-admin/.env.local
+web-admin/.env*.local

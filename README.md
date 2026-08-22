@@ -67,9 +67,10 @@ Dev credentials (override via environment / a gitignored `.env` for anything rea
 - Seed admin: `admin@notefusion.app` / `ChangeMe!123` (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`)
 
 For the production Heroku env vars left out of source — payment-provider keys, Google
-sign-in, and Resend email — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). The two static
-front-ends (marketing site, admin dashboard at `web-admin-blue-two.vercel.app`) deploy to
-Vercel — see [docs/DEPLOYMENT_WEB.md](docs/DEPLOYMENT_WEB.md).
+sign-in, and Resend email — see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). The two web
+front-ends (static marketing site, and the Next.js admin dashboard at
+`web-admin-blue-two.vercel.app`) deploy to Vercel — see
+[docs/DEPLOYMENT_WEB.md](docs/DEPLOYMENT_WEB.md).
 
 ## Build & test each tier
 

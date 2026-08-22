@@ -2,9 +2,15 @@
  * The small pill toggle used for chart grouping and the range presets — a grey track with
  * the active segment filled in brand blue.
  *
- * `aria-pressed` rather than a radiogroup: these are buttons that act immediately, and a
- * radiogroup would promise arrow-key navigation between options that this does not wire up.
+ * Wraps shadcn's `ToggleGroup`, which is Radix's roving-tabindex implementation: the group is
+ * one tab stop and the arrow keys move between segments. The hand-rolled version this replaces
+ * was a row of buttons with `aria-pressed`, which meant four tab stops for one control and no
+ * arrow keys at all.
  */
+
+"use client";
+
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface SegmentedOption<T extends string> {
   value: T;
@@ -28,29 +34,31 @@ export function Segmented<T extends string>({
   label,
 }: SegmentedProps<T>) {
   return (
-    <div
-      role="group"
+    <ToggleGroup
+      type="single"
+      value={value}
+      // Radix reports "" when the active item is clicked again. Dropping it is deliberate:
+      // these toggles pick which grouping or preset is shown, and there is no such thing as
+      // a chart grouped by nothing. The range picker relies on the same behaviour — it passes
+      // "" in when the dates have been hand-edited, and must not be able to *return* there.
+      onValueChange={(next) => {
+        if (next) onChange(next as T);
+      }}
       aria-label={label}
-      className="inline-flex items-center gap-0.5 rounded-sm border border-border bg-surface-alt/60 p-0.5"
+      className="inline-flex items-center gap-0.5 rounded-sm border border-border bg-muted/60 p-0.5"
     >
-      {options.map((option) => {
-        const active = option.value === value;
-        return (
-          <button
-            key={option.value}
-            type="button"
-            onClick={() => onChange(option.value)}
-            aria-pressed={active}
-            disabled={Boolean(option.disabledReason)}
-            {...(option.disabledReason ? { title: option.disabledReason } : {})}
-            className={`rounded-[6px] px-2.5 py-1 text-[11px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
-              active ? "bg-blue text-white" : "text-muted hover:text-ink"
-            }`}
-          >
-            {option.label}
-          </button>
-        );
-      })}
-    </div>
+      {options.map((option) => (
+        <ToggleGroupItem
+          key={option.value}
+          value={option.value}
+          aria-label={option.label}
+          disabled={Boolean(option.disabledReason)}
+          {...(option.disabledReason ? { title: option.disabledReason } : {})}
+          className="h-auto min-w-0 rounded-[6px] px-2.5 py-1 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+        >
+          {option.label}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   );
 }

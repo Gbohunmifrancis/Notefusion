@@ -1,0 +1,375 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* next-themes writes `class="dark"` onto <html>; this is what teaches Tailwind v4 to read it. */
+@custom-variant dark (&:is(.dark *));
+
+/* ── Theme tokens ─────────────────────────────────────────────────────────────
+   Every colour that differs between light and dark lives here, and the whole app —
+   including every component shadcn generates — reads it through the `@theme inline`
+   block below. Light is the default, matching the app.
+
+   The vocabulary is shadcn's (`background`, `card`, `muted-foreground`, `primary`)
+   rather than the console's old one (`bg`, `surface`, `muted`, `accent`). That is a
+   deliberate rename, not churn: shadcn's `--muted` is a *surface* while this console's
+   `muted` was a *text* colour, and its `--accent` is a hover tint while ours was brand
+   blue. Keeping both vocabularies would mean every generated component picked up brand
+   blue for its hover states. NoteFusion-only ideas that shadcn has no name for — `faint`,
+   `premium`, `navy`, the `badge-*` fills — keep theirs.
+
+   The raw custom properties also keep shadcn's *names*, not a private `--c-` prefix, because
+   several generated components reach past Tailwind and read them directly: `sonner.tsx` sets
+   `--normal-bg: var(--popover)`, `sidebar.tsx` draws a rail border with
+   `shadow-[0_0_0_1px_var(--sidebar-border)]`. `@theme inline` inlines its values into
+   utilities instead of emitting them as variables, so those escape hatches only resolve if the
+   raw layer answers to the name shadcn expects.
+
+   Values are copied from the app (mobile/src/design/theme.ts), not reinterpreted. Where
+   this file departs from the app's value the comment says why; the reason is always
+   contrast at dashboard body size, which is smaller than the app's.
+
+   Dark values are the app's own `darkColors`. They are not re-tuned: measured against
+   these surfaces the app's dark text ramp is already stronger than this dashboard's light
+   one — muted reads 5.9:1 against the lightest dark surface where light muted reads 4.9:1,
+   and faint reads 3.6:1 where light faint reads 2.4:1. The semantic colours do flip,
+   because the light ones do not survive the swap: #dc2626 measures 3.5:1 on dark. */
+:root {
+  --background: #f4f7fc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  /* Brand blue as a *fill* carrying white text. Does not flip: white on a dark-mode
+     brightened blue measures 3.7:1, so the fill stays put and the blue that has to read
+     as text on a dark ground is `brand` below. Both are real values from the app. */
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --primary-deep: #1d4ed8;
+  --primary-bright: #3b82f6;
+
+  /* `muted` and `secondary` are the one tinted surface this console has; `accent` is the
+     same tint again, because shadcn uses it for hover and active states. */
+  --muted: #eef3fb;
+  --secondary: #eef3fb;
+  --accent: #eef3fb;
+  --secondary-foreground: #0f172a;
+  --accent-foreground: #0f172a;
+
+  /* Darkened from the app's #64748b: at dashboard body size the app value measures
+     4.43:1 on the canvas and fails AA. This clears 4.5:1 everywhere. */
+  --muted-foreground: #5d6d82;
+  --faint: #94a3b8;
+
+  --border: #e2e8f0;
+  --border-light: #eff3f9;
+  --input: #e2e8f0;
+
+  /* The blue that appears as text, as a glyph on a tint, or as a small graphic mark.
+     A fill blue and a text blue cannot be one colour once the ground goes dark: dark
+     enough for white text on top is too dark to read as text itself. So this one flips.
+     `deep` is the label colour on a `brand/10` chip — at 11px the DEFAULT measures 4.4:1
+     on that tint in light mode, which is a badge just under AA. */
+  --brand: #2563eb; /* 5.1:1 on white */
+  --brand-deep: #1d4ed8; /* 5.8:1 on a brand/10 chip */
+  --ring: #2563eb;
+
+  --sky: #0ea5e9;
+
+  /* The dark ground for the sign-in value panel. Dark in both modes — it is a brand
+     surface, not a themed one — but pushed deeper in dark so it still separates from the
+     form panel beside it, which is no longer white. */
+  --navy: #0b1736;
+  --navy-deep: #070f24;
+
+  /* Pro and gift badges, from the app's `premium` gold. `deep` is the label colour on a
+     `premium/10` chip; the fill itself does not clear AA as text on a light surface, and
+     a badge nobody can read is not a badge. */
+  --premium: #f59e0b;
+  --premium-deep: #b45309; /* 5.0:1 on white */
+
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  /* The three above are fills and marks — a dot, a spine, a meter. As *text* they do not
+     hold up: on their own /10 tint they measure 2.7:1, 2.6:1 and 3.7:1, and even on a
+     plain white card success and warning only reach 3.3:1. These are the -800 step of the
+     same ramps, and clear 4.5:1 on every surface this dashboard has. */
+  --success-deep: #166534; /* 5.8:1 on a success/10 chip */
+  --warning-deep: #92400e; /* 5.8:1 on a warning/10 chip */
+  --danger-deep: #991b1b; /* 6.4:1 on a danger/10 chip */
+
+  /* The shadcn sidebar block reads its own set, so the rail can differ from the canvas.
+     Here it matches a card: the console's rail is a panel, not a separate brand surface. */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef3fb;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #2563eb;
+
+  --chart-1: #2563eb;
+  --chart-2: #0ea5e9;
+  --chart-3: #6366f1;
+  --chart-4: #94a3b8;
+  --chart-5: #f59e0b;
+
+  /* The base radius shadcn's own escape hatches read (sonner's `--border-radius`). Set to
+     the `md` step, which is the card corner. */
+  --radius: 14px;
+
+  /* Panels are border-first: the hairline separates and the shadow only lifts the card off
+     the canvas by a pixel. Whole values rather than just a colour, because dark mode needs
+     more than a darker rgba — see `.dark`. Named `--s-*` rather than `--shadow-*` because
+     `--shadow-*` is Tailwind v4's own theme namespace, and `--shadow-card: var(--shadow-card)`
+     inside @theme would be a circular reference. */
+  --s-hairline: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --s-card: 0 2px 10px rgba(15, 23, 42, 0.06);
+  --s-lift: 0 12px 32px rgba(15, 23, 42, 0.1);
+  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.28);
+}
+
+.dark {
+  --background: #0b1220;
+  --foreground: #e8eef9;
+  --card: #131d30;
+  --card-foreground: #e8eef9;
+  --popover: #131d30;
+  --popover-foreground: #e8eef9;
+
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --primary-deep: #1d4ed8;
+  --primary-bright: #3b82f6;
+
+  --muted: #1b2739;
+  --secondary: #1b2739;
+  --accent: #1b2739;
+  --secondary-foreground: #e8eef9;
+  --accent-foreground: #e8eef9;
+
+  --muted-foreground: #94a3b8;
+  --faint: #64748b;
+
+  --border: #243146;
+  --border-light: #1c2739;
+  --input: #243146;
+
+  --brand: #60a5fa; /* 6.0:1 on the lightest dark surface */
+  /* Not deeper here. #1d4ed8 on the dark chip reads 2.3:1; the chip's label has to
+     brighten with the chip, so both ends of the pair land on one value. */
+  --brand-deep: #60a5fa;
+  --ring: #60a5fa;
+
+  --sky: #38bdf8;
+
+  --navy: #070f24;
+  --navy-deep: #030814;
+
+  --premium: #fbbf24;
+  /* Same as the fill: the burnt light-mode gold reads 1.9:1 on the dark surface, and gold
+     at this brightness is already 10:1 there. */
+  --premium-deep: #fbbf24;
+
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #f87171;
+  --destructive: #f87171;
+  /* shadcn's destructive *button* does not read this — it keeps white ink and dims the fill
+     instead (`dark:bg-destructive/60`, landing on ~#9c4f57 over a card, 5.7:1). This token is
+     for a full-strength fill, where white measures 2.2:1 and fails, so it carries the canvas
+     colour. */
+  --destructive-foreground: #0b1220;
+  /* Collapsed onto the fills, for the reason brand-deep and premium-deep collapse: a label
+     on a tinted chip has to brighten with the chip. Nothing deeper is needed — on the /10
+     tints these already read 5.5:1, 5.9:1 and 4.8:1 at the worst surface. */
+  --success-deep: #22c55e;
+  --warning-deep: #f59e0b;
+  --danger-deep: #f87171;
+
+  --sidebar: #131d30;
+  --sidebar-foreground: #e8eef9;
+  --sidebar-primary: #60a5fa;
+  --sidebar-primary-foreground: #0b1220;
+  --sidebar-accent: #1b2739;
+  --sidebar-accent-foreground: #e8eef9;
+  --sidebar-border: #243146;
+  --sidebar-ring: #60a5fa;
+
+  --chart-1: #60a5fa;
+  --chart-2: #38bdf8;
+  --chart-3: #818cf8;
+  --chart-4: #64748b;
+  --chart-5: #fbbf24;
+
+  /* Black instead of slate, and far heavier: a 4%-black shadow is invisible on a navy
+     canvas, so depth has to come from opacity rather than hue. */
+  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --s-card: 0 2px 10px rgba(0, 0, 0, 0.45);
+  --s-lift: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+@theme inline {
+  /* ── shadcn's vocabulary ──────────────────────────────────────────────────
+     Every component the shadcn CLI writes styles itself through these names, so a
+     freshly added component arrives already wearing NoteFusion's palette. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  /* shadcn's `muted` is a surface and `muted-foreground` is the text on it. */
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  /* And `accent` is the hover/active tint, which is why brand blue is `primary`/`brand`. */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── NoteFusion-only tokens ───────────────────────────────────────────────
+     Ideas shadcn has no name for. `faint` is a third text step below
+     muted-foreground; the semantic pairs are fill + the same status read as text. */
+  --color-border-light: var(--border-light);
+  --color-faint: var(--faint);
+
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-primary-deep: var(--primary-deep);
+  --color-primary-bright: var(--primary-bright);
+  --color-sky: var(--sky);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+
+  --color-premium: var(--premium);
+  --color-premium-deep: var(--premium-deep);
+  --color-success: var(--success);
+  --color-success-deep: var(--success-deep);
+  --color-warning: var(--warning);
+  --color-warning-deep: var(--warning-deep);
+  --color-danger: var(--danger);
+  --color-danger-deep: var(--danger-deep);
+
+  /* KPI icon badges. These do not flip, for the reason `primary` does not: each is a
+     saturated fill carrying a *white* glyph, and a value dark enough to hold white text is
+     already too dark to brighten. Every one clears 3:1 against white, the floor WCAG
+     1.4.11 sets for a graphical mark — read back out of the rendered page, not eyeballed:
+     indigo 7.9, violet 5.7, emerald 3.77, cyan 3.68, orange 3.56.
+
+     The reference dashboard's amber and lime are absent on purpose: amber lands at 3.1 and
+     lime fails outright, and a badge whose glyph disappears is a coloured square. */
+  --color-badge-indigo: #4338ca;
+  --color-badge-violet: #7c3aed;
+  --color-badge-emerald: #059669;
+  --color-badge-cyan: #0891b2;
+  --color-badge-orange: #ea580c;
+
+  /* Recharts styles through props, not classes, so the chart palette is also exported as
+     tokens for the shadcn <ChartContainer>, which sets series colours from CSS variables.
+     src/lib/chart.ts holds the same values for the props recharts still needs. */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* The app's radius scale, so a card here has the same corner as a card there. */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* The app's type scale, so a heading here is the same size as the same heading there.
+     Sizes only: line-height stays with the `leading-*` utility at the call site. */
+  --text-hero: 40px;
+  --text-hero--letter-spacing: -1px;
+  --text-display: 34px;
+  --text-display--letter-spacing: -0.5px;
+  --text-screen-title: 26px;
+  --text-screen-title--letter-spacing: -0.5px;
+  --text-title: 24px;
+  --text-title--letter-spacing: -0.3px;
+  --text-heading: 18px;
+  --text-body: 15px;
+  --text-label: 14px;
+  --text-caption: 12px;
+  --text-caption--letter-spacing: 0.2px;
+  --text-mono: 17px;
+
+  /* Poppins, loaded and self-hosted by next/font in src/app/layout.tsx. */
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-hairline: var(--s-hairline);
+  --shadow-card: var(--s-card);
+  --shadow-lift: var(--s-lift);
+  --shadow-glow: var(--s-glow);
+
+  --animate-fade-in: fade-in 0.25s ease-out;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-pill bg-border;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Visible keyboard focus on every interactive element, including the ones that are
+     styled divs. Removing the default ring without replacing it is how admin tools become
+     keyboard-hostile. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}

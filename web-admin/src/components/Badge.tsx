@@ -4,11 +4,18 @@
  *
  * Tones are named for what they mean, not for their colour: `premium` is the Pro/gift gold from the
  * mobile app, and every value resolves through the theme tokens, so both modes come for free.
+ *
+ * Separate from shadcn's `Badge`, whose four variants (default/secondary/destructive/outline) are
+ * about emphasis while these six are about account state — there is no `outline` subscription and
+ * no `secondary` suspension. It also stays a tint-plus-deep-text pair rather than a solid fill,
+ * because a row of solid pills in a table reads as the loudest thing on the page.
  */
 
+import { cn } from "@/lib/utils";
+
 const TONES = {
-  neutral: "bg-surface-alt text-muted",
-  blue: "bg-accent/10 text-accent-deep",
+  neutral: "bg-muted text-muted-foreground",
+  blue: "bg-brand/10 text-brand-deep",
   success: "bg-success/10 text-success-deep",
   warning: "bg-warning/10 text-warning-deep",
   danger: "bg-danger/10 text-danger-deep",
@@ -29,7 +36,10 @@ export function Badge({
 }) {
   return (
     <span
-      className={`inline-flex items-center rounded-[6px] px-2 py-[3px] text-[11px] font-semibold ${TONES[tone]}`}
+      className={cn(
+        "inline-flex items-center rounded-[6px] px-2 py-[3px] text-[11px] font-semibold",
+        TONES[tone],
+      )}
       {...(title ? { title } : {})}
     >
       {children}

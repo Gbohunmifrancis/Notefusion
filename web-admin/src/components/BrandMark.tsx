@@ -1,4 +1,5 @@
-import markUrl from "@/assets/brand/mark.png";
+import mark from "@/assets/brand/mark.png";
+import { cn } from "@/lib/utils";
 
 interface Props {
   /** Rendered height in px; width follows the artwork's aspect. */
@@ -28,6 +29,10 @@ const MARK_ASPECT = 331 / 438;
  * fill — same one-mark-many-colours property, and it inherits `currentColor` so a
  * parent's text colour drives it.
  *
+ * Imported rather than referenced from `public/`, so the URL carries a content hash and the
+ * file is not fetched at all in the mask-unsupported case. A static import under Next resolves
+ * to a `StaticImageData` object, hence `mark.src` where Vite handed back a bare string.
+ *
  * The flanking bars stay vector, as on mobile, keeping their opacity ramp independent
  * of the mark's tint.
  */
@@ -43,7 +48,7 @@ export function BrandMark({
 
   return (
     <span
-      className={`inline-flex items-center justify-center ${className ?? ""}`}
+      className={cn("inline-flex items-center justify-center", className)}
       style={{ height: size }}
     >
       {showWaves && <SideWave size={size} color={wave} mirrored={false} />}
@@ -54,8 +59,8 @@ export function BrandMark({
           width: markWidth,
           height: size,
           backgroundColor: color,
-          WebkitMaskImage: `url(${markUrl})`,
-          maskImage: `url(${markUrl})`,
+          WebkitMaskImage: `url(${mark.src})`,
+          maskImage: `url(${mark.src})`,
           WebkitMaskSize: "contain",
           maskSize: "contain",
           WebkitMaskPosition: "center",
