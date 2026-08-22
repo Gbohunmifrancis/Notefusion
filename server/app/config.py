@@ -160,13 +160,35 @@ class Settings:
         consecutive fragments of one note a median 0.395 semitones apart in f0 against
         2.074 for genuine steps.
 
-        What it actually bought, on: solfa.chromatic_ghosts 3.579 -> 3.553 — one accidental
-        across 38 cases — while solfa.ghost_count went 5.737 -> 5.842, past the harness's
-        0.02 tolerance, and notes.n_est rose by the same 0.105.  Four cases move at all:
-        drift_1_semitone -1 accidental, vibrato_rate_k15 unchanged, and then
-        vibrato_heavy +2 ghosts and vibrato_rate_k155 f1 -0.073 with +3 ghosts.  Both
-        losers sit outside the nine cases ``F0_MERGE_SEMITONES`` was calibrated on, so the
-        tolerance is fitted, not general.
+        What it bought when first measured: solfa.chromatic_ghosts 3.579 -> 3.553 — one
+        accidental across 38 cases — while solfa.ghost_count went 5.737 -> 5.842, past the
+        harness's 0.02 tolerance, and notes.n_est rose by the same 0.105.
+
+        **Re-measured on top of the wobble fuse, and the clutter half of that reversed
+        sign.**  Worth reading before re-running it a third time.  A merged event spans both
+        fragments, so it is longer, so it overlaps more of what follows — and the *old*
+        melody resolver's truncate branch appended both sides of an overlap, which is how a
+        stage that fuses more used to emit more notes.  ``WOBBLE_MIN_OVERLAP_FRACTION``
+        removed that mechanism, and with it the recorded objection: ghost_count now
+        2.553 -> 2.342 (-8 ghost notes corpus-wide) and n_est 13.395 -> 13.263, both
+        improvements.
+
+        It still does not pay, for a cost the first measurement could not see: **the key.**
+        key.exact 0.895 -> 0.842, key.parallel_confusion 0.000 -> 0.053,
+        key.confidence_separation 0.376 -> 0.098.  Merging rewrites note *durations*, and
+        the ensemble reads a duration-weighted pitch-class histogram, so reweighting it is
+        enough to move the vote — on vibrato_rate_k20 the merge also deleted three real
+        notes (recall 0.909 -> 0.636).  Because every syllable derives from the key, both
+        cases that lose it go to zero: degree/syllable accuracy 1.000 -> 0.000 on k20 and
+        0.889 -> 0.000 on k155, i.e. -0.050 on both corpus-wide.
+
+        Weigh that against the win, which is unchanged and is smaller than it looks:
+        chromatic_ghosts 1.526 -> 1.500 is exactly one accidental, on exactly one case
+        (drift_1_semitone, 8 -> 7 — it still carries seven).  Nor is even the clutter win
+        uniform: vibrato_rate_7hz is strictly worse on, ghost_count 6 -> 8, notes.f1
+        0.593 -> 0.552.  So the trade is one accidental against two clips whose every
+        syllable is wrong.  ``F0_MERGE_SEMITONES``' tolerance also remains fitted rather
+        than general — the losers sit outside the nine cases it was calibrated on.
 
         The reason is structural, and it is the useful part of the result: the merge stage
         cannot reach the fragments.  51 of 128 f0-agreeing adjacent pairs *overlap* in time
@@ -178,6 +200,12 @@ class Settings:
         that stage "f0 agrees" already collapses to "pitch is identical".  The defect is not
         a fragment pair — it is a run at one wrong pitch inside a single sung note — and
         ``pyin_semitone`` fixes it upstream, where the pitch is decided.
+
+        That struck the resolver route only for *f0 as the discriminator*.  The resolver
+        turned out to be the right stage after all, reached with a different signal: integer
+        pitch adjacency plus overlap as a fraction of the shorter event, since a genuine
+        legato step bleeds at its edge while a wobble sliver sits inside its note.  See
+        ``WOBBLE_MIN_OVERLAP_FRACTION`` in ``pipeline/transcriber.py``.
 
         Off restores the previous behaviour exactly rather than approximately, because with
         no bend data an Event's f0 *is* its pitch and the tolerance test collapses to
