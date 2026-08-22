@@ -3,7 +3,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,17 +11,19 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
+import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
 import { NoteEditor } from "../components/NoteEditor";
-import { StaffNotation } from "../components/StaffNotation";
+import ScoreView from "../components/ScoreView";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { NoteEvent } from "../api/types";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
 import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
+import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { stopAudition } from "../lib/audition";
 import { exportMusicXml } from "../lib/export";
@@ -30,12 +31,14 @@ import {
   confidenceColor,
   fonts,
   gradients,
+  motion,
   radii,
   spacing,
   typography,
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import * as haptics from "../lib/haptics";
 import type { RootStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<RootStackParams, "Result">;
@@ -112,6 +115,9 @@ export function ResultScreen({ route, navigation }: Props) {
   // re-places the other from the identical data.
   const [notationView, setNotationView] = useState<"solfa" | "staff">("solfa");
 
+  /** Note the player is sounding, −1 when stopped. Drives the stave's cursor. */
+  const [playingNote, setPlayingNote] = useState(-1);
+
   // ── Tap-to-correct (F-07) ──────────────────────────────────────────────────
   // The note list is the source of truth for both notation views and for
   // playback, so a correction lives here and everything downstream re-derives
@@ -162,6 +168,26 @@ export function ResultScreen({ route, navigation }: Props) {
     [view.notes],
   );
 
+  /** null parks the cursor off the page, which is what "not playing" should look like. */
+  const cursorBeat = view.notes[playingNote]?.startBeat ?? null;
+
+  /**
+   * The score as it stands now, for export. `result.musicXml` is the worker's
+   * engraving of the *original* transcription, so it knows nothing about a
+   * correction or a key override — this is generated from the same note list the
+   * stave draws, which is what lets the export claim to match the screen.
+   */
+  const scoreXml = useMemo(
+    () =>
+      buildMusicXml(
+        view.notes,
+        resolveKeySignature(key),
+        result.timeSignature,
+        { title: committedTitle || title, lyrics: true },
+      ) ?? "",
+    [view.notes, key, result.timeSignature, committedTitle, title],
+  );
+
   // A corrected note is the user's, not the model's, so the headline figure has
   // to move with it — the same mean over the note confidences that the worker
   // reports, rounded the same way, so a corrected result stays comparable.
@@ -195,6 +221,9 @@ export function ResultScreen({ route, navigation }: Props) {
       // Corrections rode along in the payload, so the server is now level with
       // the draft and a later edit only has to send the difference.
       persisted.current = draft;
+      // Fired here rather than from the button's press-in: the success pattern
+      // means "it happened", and on press-in nothing has happened yet.
+      haptics.play("success");
       showDialog({
         title: "Saved",
         message: "Added to your library.",
@@ -393,14 +422,15 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   // ── Export (MusicXML) ──────────────────────────────────────────────────────
-  // The worker engraved a full score, so this screen owns the "send it to
-  // Sibelius / MuseScore" moment; library items reach the same button with the
-  // score fetched in the detail read. No success alert — the OS share sheet is
-  // its own confirmation, and it has already closed by the time this resolves.
+  // Exports `scoreXml`, engraved here from the live note list, rather than the
+  // worker's `result.musicXml` — the two are identical until the first
+  // correction or key override, and after that only this one is the score on
+  // screen. No success alert: the OS share sheet is its own confirmation, and it
+  // has already closed by the time this resolves.
   async function exportScore() {
     setExporting(true);
     try {
-      const outcome = await exportMusicXml(result.musicXml, title);
+      const outcome = await exportMusicXml(scoreXml, title);
       if (!outcome.ok) {
         showDialog({
           title: "Could not export",
@@ -414,7 +444,7 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
-  const hasScore = Boolean(result.musicXml?.trim());
+  const hasScore = scoreXml.length > 0;
 
   const confColor = confidenceColor(result.overallConfidence, colors);
   const confPct = Math.round(result.overallConfidence * 100);
@@ -423,13 +453,15 @@ export function ResultScreen({ route, navigation }: Props) {
     <Screen scroll>
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
-        <TouchableOpacity
+        <Touchable
           onPress={() => navigation.goBack()}
           style={styles.backBtn}
-          activeOpacity={0.7}
+          hitSlop={8}
+          ripple="borderless"
+          accessibilityLabel="Go back"
         >
           <Ionicons name="arrow-back" size={22} color={colors.text} />
-        </TouchableOpacity>
+        </Touchable>
 
         <View style={styles.titleGroup}>
           <Text style={styles.pageTitle}>Preview</Text>
@@ -442,14 +474,14 @@ export function ResultScreen({ route, navigation }: Props) {
           )}
         </View>
 
-        <TouchableOpacity
+        <Touchable
           onPress={() => {
             const actions: DialogAction[] = [
               {
                 label: "Export MusicXML",
                 icon: "download-outline",
                 onPress: () =>
-                  exportMusicXml(result.musicXml, committedTitle || title),
+                  exportMusicXml(scoreXml, committedTitle || title),
               },
             ];
             if (edited) {
@@ -489,9 +521,11 @@ export function ResultScreen({ route, navigation }: Props) {
           }}
           style={styles.optionsBtn}
           hitSlop={8}
+          ripple="borderless"
+          accessibilityLabel="Transcription options"
         >
           <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
-        </TouchableOpacity>
+        </Touchable>
       </View>
 
       {/* ── Summary card ─────────────────────────────────────────────────── */}
@@ -546,15 +580,16 @@ export function ResultScreen({ route, navigation }: Props) {
                     <Text style={styles.keyChipTextActive}>{k}</Text>
                   </LinearGradient>
                 ) : (
-                  <TouchableOpacity
+                  <Touchable
                     key={k}
                     style={styles.keyChip}
+                    radius={radii.pill}
                     onPress={() => applyKey(k)}
                     disabled={rekeying}
-                    activeOpacity={0.7}
+                    accessibilityLabel={`Change key to ${k}`}
                   >
                     <Text style={styles.keyChipText}>{k}</Text>
-                  </TouchableOpacity>
+                  </Touchable>
                 ),
               )}
             </ScrollView>
@@ -569,11 +604,12 @@ export function ResultScreen({ route, navigation }: Props) {
         {/* Low-confidence warning — now with somewhere to go. Tapping walks just
             the flagged notes, which is otherwise a hunt through a long strip. */}
         {lowCount > 0 && (
-          <TouchableOpacity
+          <Touchable
             style={styles.warnRow}
             onPress={startReview}
-            activeOpacity={0.7}
-            accessibilityRole="button"
+            // A full-bleed row inside the card: a deeper press would pull it away
+            // from both card edges at once.
+            scaleTo={motion.scale.row}
             accessibilityLabel={`Review ${lowCount} low-confidence notes`}
           >
             <View style={styles.warnDot} />
@@ -581,7 +617,7 @@ export function ResultScreen({ route, navigation }: Props) {
               {lowCount} note{lowCount > 1 ? "s" : ""} below 50% confidence —{" "}
               <Text style={styles.warnLink}>review {lowCount > 1 ? "them" : "it"} →</Text>
             </Text>
-          </TouchableOpacity>
+          </Touchable>
         )}
       </Card>
 
@@ -602,15 +638,16 @@ export function ResultScreen({ route, navigation }: Props) {
           {/* Solfa / Staff segmented toggle */}
           <View style={styles.viewToggle}>
             {(["solfa", "staff"] as const).map((v) => (
-              <TouchableOpacity
+              <Touchable
                 key={v}
                 onPress={() => setNotationView(v)}
-                activeOpacity={0.8}
                 style={[
                   styles.viewToggleBtn,
                   notationView === v && styles.viewToggleBtnActive,
                 ]}
-                accessibilityRole="button"
+                // Sits on the brand gradient, where a blue ripple is invisible —
+                // and the selected half already paints its own white wash.
+                ripple={false}
                 accessibilityState={{ selected: notationView === v }}
                 accessibilityLabel={v === "solfa" ? "Show tonic solfa" : "Show staff notation"}
               >
@@ -622,7 +659,7 @@ export function ResultScreen({ route, navigation }: Props) {
                 <Text style={styles.viewToggleText}>
                   {v === "solfa" ? "Solfa" : "Staff"}
                 </Text>
-              </TouchableOpacity>
+              </Touchable>
             ))}
           </View>
         </LinearGradient>
@@ -653,10 +690,12 @@ export function ResultScreen({ route, navigation }: Props) {
               </>
             )
           ) : (
-            <StaffNotation
+            <ScoreView
               notes={view.notes}
               timeSignature={result.timeSignature}
               musicalKey={key}
+              cursorBeat={cursorBeat}
+              onSelectNote={openNote}
             />
           )}
         </View>
@@ -668,7 +707,9 @@ export function ResultScreen({ route, navigation }: Props) {
           audioPreviewBase64={preview}
           notes={view.notes}
           tempoBpm={result.tempo}
+          timeSignature={result.timeSignature}
           title="Play back"
+          onCurrentNoteChange={setPlayingNote}
           style={styles.playerCard}
         />
       ) : null}
@@ -690,12 +731,12 @@ export function ResultScreen({ route, navigation }: Props) {
         {view.notes.map((n, i) => {
           const cc = confidenceColor(n.conf, colors);
           return (
-            <TouchableOpacity
+            <Touchable
               key={i}
               onPress={() => openNote(i)}
-              activeOpacity={0.7}
-              accessibilityRole="button"
               accessibilityLabel={`Note ${i + 1}, ${n.solfa}, MIDI ${n.pitchMidi}. Tap to correct.`}
+              // No `radius` needed: `noteChip` already carries borderRadius plus
+              // overflow:hidden, so the ripple clips to the chip on its own.
               style={[
                 styles.noteChip,
                 {
@@ -724,14 +765,14 @@ export function ResultScreen({ route, navigation }: Props) {
                   },
                 ]}
               />
-            </TouchableOpacity>
+            </Touchable>
           );
         })}
       </ScrollView>
 
       {/* ── Export ───────────────────────────────────────────────────────── */}
-      {/* Offered whether or not the transcription is saved — the score exists
-          as soon as the worker engraves it, and saving is a separate choice. */}
+      {/* Offered whether or not the transcription is saved — the score is
+          engraved from the notes on screen, and saving is a separate choice. */}
       <View style={styles.exportBlock}>
         <View style={styles.exportHeaderRow}>
           <Ionicons
@@ -746,24 +787,6 @@ export function ResultScreen({ route, navigation }: Props) {
             ? "Export as MusicXML to open in Sibelius, MuseScore, or Finale."
             : "No score is attached to this transcription."}
         </Text>
-
-        {/* The score was engraved by the worker before any of this editing, and the
-            client can't re-engrave it. Better to say so than to hand over a file
-            that silently disagrees with what's on screen. */}
-        {hasScore && edited && (
-          <View style={styles.staleRow}>
-            <Ionicons
-              name="alert-circle-outline"
-              size={14}
-              color={colors.warning}
-            />
-            <Text style={styles.staleText}>
-              You corrected {correctedCount} note{correctedCount > 1 ? "s" : ""}.
-              The exported score is the original engraving and does not include
-              them yet.
-            </Text>
-          </View>
-        )}
 
         <Button
           label="Export MusicXML"
@@ -841,29 +864,38 @@ export function ResultScreen({ route, navigation }: Props) {
 
       {/* ── 3-Button Action Row (Image 2 Screen 3) ────────────────────── */}
       <View style={styles.actionRow}>
-        <TouchableOpacity
+        <Touchable
           style={styles.actionBtnOutline}
+          radius={radii.pill}
           onPress={() => setPickingKey((p) => !p)}
+          accessibilityLabel="Re-key"
         >
           <Text style={styles.actionBtnOutlineText}>Re-key</Text>
-        </TouchableOpacity>
+        </Touchable>
 
         {/* Straight to the notes that need it when the model flagged some,
             otherwise to the first note — the strip itself is the other way in. */}
-        <TouchableOpacity
+        <Touchable
           style={styles.actionBtnOutline}
+          radius={radii.pill}
           onPress={() => (lowCount > 0 ? startReview() : openNote(0))}
+          accessibilityLabel="Edit notes"
         >
           <Text style={styles.actionBtnOutlineText}>Edit</Text>
-        </TouchableOpacity>
+        </Touchable>
 
-        <TouchableOpacity
+        <Touchable
           style={styles.actionBtnSolid}
+          radius={radii.pill}
           onPress={save}
           disabled={saving}
+          // The deliberate one of the three. The success pattern fires from
+          // `save()` when the server confirms, not from this press.
+          haptic="medium"
+          accessibilityLabel="Save to library"
         >
           <Text style={styles.actionBtnSolidText}>{saving ? "Saving…" : "Save"}</Text>
-        </TouchableOpacity>
+        </Touchable>
       </View>
 
       {/* ── Tap-to-correct sheet (F-07) ─────────────────────────────────── */}
@@ -917,13 +949,13 @@ function SummaryStat({
   // Only the interactive stat (Key) gets a touch target, so the other two
   // don't advertise an affordance they don't have.
   return onPress ? (
-    <TouchableOpacity
+    <Touchable
       style={styles.statItem}
       onPress={onPress}
-      activeOpacity={0.7}
+      accessibilityLabel={`${label}: ${value}`}
     >
       {body}
-    </TouchableOpacity>
+    </Touchable>
   ) : (
     <View style={styles.statItem}>{body}</View>
   );
@@ -1472,27 +1504,6 @@ const makeStyles = (c: Palette) =>
     fontSize: 13,
     lineHeight: 20,
     marginBottom: spacing.sm,
-  },
-
-  /** Says out loud that the engraved score predates the user's corrections. */
-  staleRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: spacing.xs,
-    backgroundColor: `${c.warning}14`,
-    borderWidth: 1,
-    borderColor: `${c.warning}33`,
-    borderRadius: radii.md,
-    padding: spacing.sm,
-    marginBottom: spacing.sm,
-  },
-
-  staleText: {
-    ...typography.caption,
-    color: c.warning,
-    flex: 1,
-    fontSize: 12,
-    lineHeight: 18,
   },
 
   // ── Save block ─────────────────────────────────────────────────────────────

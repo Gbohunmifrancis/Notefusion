@@ -6,6 +6,7 @@ import {
   setAudioModeAsync,
 } from "expo-audio";
 import type { NoteEvent } from "../api/types";
+import { beatSecOf } from "./synth";
 
 /**
  * useNotePlayer — plays the server-synthesised WAV audio preview
@@ -44,6 +45,10 @@ export interface NotePlayerState {
    * playback is stopped, between notes, or no preview is loaded.
    */
   currentNoteIndex: number;
+  /** Playback speed, 1 being the transcribed tempo. */
+  rate: number;
+  /** True when the clip restarts on reaching the end. */
+  loop: boolean;
   /** Human-readable error message from load/playback failures, or null. */
   error: string | null;
 }
@@ -56,7 +61,23 @@ export interface UseNotePlayerResult extends NotePlayerState {
   seekTo: (seconds: number) => Promise<void>;
   /** Convenience: pause if playing, otherwise play. */
   toggle: () => void;
+  /**
+   * Change playback speed without changing pitch. Clamped to
+   * [`MIN_RATE`, `MAX_RATE`].
+   */
+  setRate: (rate: number) => void;
+  setLoop: (loop: boolean) => void;
+  /** Back to the beginning, still playing if it was. */
+  skipToStart: () => void;
 }
+
+/**
+ * 2 is the platform ceiling on both iOS and Android. The floor is ours: pitch
+ * correction below half speed starts to warble badly enough that the melody is
+ * harder to follow than it was at full speed, which defeats the point.
+ */
+export const MIN_RATE = 0.5;
+export const MAX_RATE = 2;
 
 interface NoteWindow {
   start: number;
@@ -72,15 +93,23 @@ interface NoteWindow {
  *                            mutated.
  * @param tempoBpm            The transcription's tempo, used to convert each
  *                            note's beat position into seconds.
+ * @param leadInSec           Audio in front of the first beat — a count-in.
+ *                            Every highlight window shifts by it, which is what
+ *                            keeps `currentNoteIndex` (and so the stave cursor)
+ *                            honest while the count-in is still clicking. See
+ *                            `lib/synth.ts`'s `leadInSec`, which computes it.
  */
 export function useNotePlayer(
   audioPreviewBase64: string | null | undefined,
   notes: NoteEvent[],
   tempoBpm: number,
+  leadInSec = 0,
 ): UseNotePlayerResult {
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rate, setRateState] = useState(1);
+  const [loop, setLoopState] = useState(false);
 
   const noteWindowsRef = useRef<NoteWindow[]>([]);
   const mountedRef = useRef(true);
@@ -99,14 +128,14 @@ export function useNotePlayer(
     }
   };
 
-  // Recompute note highlight windows whenever the notes or tempo change.
+  // Recompute note highlight windows whenever the notes, tempo or count-in change.
   useEffect(() => {
-    const beatSec = 60 / Math.max(tempoBpm, 20);
+    const beatSec = beatSecOf(tempoBpm);
     noteWindowsRef.current = notes.map((n) => ({
-      start: n.startBeat * beatSec,
-      end: (n.startBeat + n.durBeats) * beatSec,
+      start: leadInSec + n.startBeat * beatSec,
+      end: leadInSec + (n.startBeat + n.durBeats) * beatSec,
     }));
-  }, [notes, tempoBpm]);
+  }, [notes, tempoBpm, leadInSec]);
 
   // Track mount state for async cleanup
   useEffect(() => {
@@ -189,6 +218,26 @@ export function useNotePlayer(
   const player = useAudioPlayer(fileUri ? { uri: fileUri } : undefined);
   const status = useAudioPlayerStatus(player);
 
+  /**
+   * Re-apply the practice settings to the player.
+   *
+   * This has to react to `player`, not just to the settings: `useAudioPlayer`
+   * builds a *new* native player whenever the source changes, and a new one
+   * starts at 1× and un-looped. Turning the metronome on rewrites the clip, so
+   * without this a chosen speed would silently snap back to normal at the very
+   * moment the user was trying to practise slowly.
+   */
+  useEffect(() => {
+    // Pitch correction is not optional here: at 0.5× without it the melody drops
+    // an octave, and a solfa exercise sung an octave low is the wrong exercise.
+    // It must also be set *first* — Android reads it inside `setPlaybackRate` to
+    // decide the pitch factor, so setting it afterwards would apply to the next
+    // rate change rather than this one.
+    player.shouldCorrectPitch = true;
+    player.setPlaybackRate(rate, "high");
+    player.loop = loop;
+  }, [player, rate, loop]);
+
   // Compute the current note index from playback position
   const currentNoteIndex = status.playing
     ? findNoteIndexAt(noteWindowsRef.current, status.currentTime)
@@ -223,6 +272,20 @@ export function useNotePlayer(
     }
   }, [status.playing, player]);
 
+  const setRate = useCallback((next: number) => {
+    setRateState(Math.min(Math.max(next, MIN_RATE), MAX_RATE));
+  }, []);
+
+  const setLoop = useCallback((next: boolean) => {
+    setLoopState(next);
+  }, []);
+
+  // Seeks without pausing: mid-run, "start again" means start again, and having
+  // to press play afterwards breaks the rhythm of practising a passage.
+  const skipToStart = useCallback(() => {
+    void player.seekTo(0);
+  }, [player]);
+
   return {
     ready: status.isLoaded && !isLoading,
     isLoading,
@@ -230,12 +293,17 @@ export function useNotePlayer(
     position: status.currentTime,
     duration: status.duration,
     currentNoteIndex,
+    rate,
+    loop,
     error: error || status.error,
     play,
     pause,
     stop,
     seekTo,
     toggle,
+    setRate,
+    setLoop,
+    skipToStart,
   };
 }
 

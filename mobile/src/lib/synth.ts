@@ -34,6 +34,30 @@ const STRING_DECAY_MAX_SEC = 4.0;
 /** Every note peaks at the sum of the weights, so this normalises to 1.0. */
 const VOICE_GAIN = 1 / HARMONIC_WEIGHTS.reduce((a, b) => a + b, 0);
 
+/**
+ * Metronome click. Deliberately not a piano note — it has to read as a separate
+ * instrument keeping time, not as part of the tune, so it sits above the melody's
+ * usual range and is gone inside 35 ms. The accent is higher and louder rather
+ * than a different timbre, which is how a downbeat is heard on a real one.
+ */
+const CLICK_HZ = 1000;
+const CLICK_ACCENT_HZ = 1500;
+const CLICK_DECAY_SEC = 0.035;
+const CLICK_LEN_SEC = 0.06;
+const CLICK_GAIN = 0.45;
+const CLICK_ACCENT_GAIN = 0.7;
+
+/**
+ * Seconds per quarter note. Floored at 30 BPM so a bad tempo can't divide by ~0.
+ *
+ * Exported because anything mapping beats onto this audio has to use the *same*
+ * floor — `useNotePlayer`'s highlight windows in particular. Two definitions
+ * that disagree only below 30 BPM is exactly the kind of thing that ships.
+ */
+export function beatSecOf(tempoBpm: number): number {
+  return 60 / Math.max(tempoBpm, 30);
+}
+
 /** Body decay constant: doubles every two octaves down. Mirrors _string_decay_sec. */
 function stringDecaySec(pitchMidi: number): number {
   const scaled = STRING_DECAY_SEC_C4 * Math.pow(2, (60 - pitchMidi) / 24);
@@ -89,14 +113,75 @@ function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
 }
 
 /**
+ * One metronome click. Sine into a fast exponential decay — a woodblock rather
+ * than a note, so it cuts through the melody without being mistaken for it.
+ */
+function renderClick(accent: boolean): Float64Array {
+  const n = Math.ceil(CLICK_LEN_SEC * SAMPLE_RATE);
+  const out = new Float64Array(n);
+  const omega = 2 * Math.PI * (accent ? CLICK_ACCENT_HZ : CLICK_HZ);
+  const gain = accent ? CLICK_ACCENT_GAIN : CLICK_GAIN;
+  for (let i = 0; i < n; i++) {
+    const t = i / SAMPLE_RATE;
+    // A handful of samples of fade-in: starting a sine at full amplitude is
+    // itself a click, and two clicks per beat is not what was asked for.
+    const ramp = i < 8 ? i / 8 : 1;
+    out[i] = gain * ramp * Math.exp(-t / CLICK_DECAY_SEC) * Math.sin(omega * t);
+  }
+  return out;
+}
+
+export interface SynthOptions {
+  /** A click on every beat, accented on the first of each bar. */
+  metronome?: boolean;
+  /**
+   * Bars of clicks before the melody starts, so a singer can find the pulse
+   * before the first note. Clicks during the count-in sound whether or not
+   * `metronome` is set — that is the whole point of one.
+   */
+  countInBars?: number;
+  /**
+   * Quarter-note beats per bar, from the transcription's time signature. Sets
+   * where the accent falls and how long a count-in bar is. Compound meters get
+   * a quarter-note pulse rather than a dotted one — 6/8 clicks three to the bar,
+   * which is the usual practice-tool compromise.
+   */
+  beatsPerBar?: number;
+}
+
+/**
+ * How much audio a count-in puts in front of the melody, in seconds.
+ *
+ * Callers need this to keep positions lined up: with a count-in, a note whose
+ * `startBeat` says 0 is heard `leadInSec` into the clip, so anything mapping a
+ * playback position back onto a note has to subtract it first.
+ */
+export function leadInSec(tempoBpm: number, opts: SynthOptions = {}): number {
+  const bars = Math.max(0, Math.floor(opts.countInBars ?? 0));
+  if (bars === 0) return 0;
+  return bars * beatsPerBarOf(opts) * beatSecOf(tempoBpm);
+}
+
+function beatsPerBarOf(opts: SynthOptions): number {
+  const perBar = opts.beatsPerBar ?? 4;
+  return perBar > 0 ? perBar : 4;
+}
+
+/**
  * Generates a base64-encoded 16-bit PCM WAV audio clip for a list of NoteEvents.
  * Used when opening saved transcriptions from the library so audio can be previewed
  * and played back anytime, offline or online, and after every local note edit.
  */
-export function synthesizeMelodyWavBase64(notes: NoteEvent[], tempoBpm: number): string {
+export function synthesizeMelodyWavBase64(
+  notes: NoteEvent[],
+  tempoBpm: number,
+  opts: SynthOptions = {},
+): string {
   if (!notes || notes.length === 0) return "";
 
-  const beatSec = 60 / Math.max(tempoBpm, 30);
+  const beatSec = beatSecOf(tempoBpm);
+  const lead = leadInSec(tempoBpm, opts);
+  const leadSamples = Math.round(lead * SAMPLE_RATE);
 
   // Total length = end of the last note + short tail so the release doesn't clip
   let maxBeat = 0;
@@ -104,14 +189,14 @@ export function synthesizeMelodyWavBase64(notes: NoteEvent[], tempoBpm: number):
     const end = n.startBeat + n.durBeats;
     if (end > maxBeat) maxBeat = end;
   }
-  const totalSamples = Math.ceil((maxBeat * beatSec + 0.25) * SAMPLE_RATE);
+  const totalSamples = Math.ceil((lead + maxBeat * beatSec + 0.25) * SAMPLE_RATE);
   const mix = new Float64Array(totalSamples);
   const cache = new Map<string, Float64Array>();
 
   for (const note of notes) {
     if (note.pitchMidi <= 0) continue;
 
-    const startSample = Math.floor(note.startBeat * beatSec * SAMPLE_RATE);
+    const startSample = leadSamples + Math.floor(note.startBeat * beatSec * SAMPLE_RATE);
     if (startSample >= totalSamples) continue;
     // Floored at 40 ms so a zero-length note still sounds, as on the server.
     const durSamples = Math.max(
@@ -132,6 +217,33 @@ export function synthesizeMelodyWavBase64(notes: NoteEvent[], tempoBpm: number):
     const n = Math.min(durSamples, totalSamples - startSample);
     for (let i = 0; i < n; i++) {
       mix[startSample + i] = mix[startSample + i]! + voice[i]! * gain;
+    }
+  }
+
+  // Clicks are mixed into the melody's own buffer rather than played by a second
+  // player. Two players started together drift, and a metronome that drifts is
+  // worse than no metronome at all; in one buffer they are sample-locked.
+  const metronome = opts.metronome === true;
+  if (metronome || leadSamples > 0) {
+    const perBar = beatsPerBarOf(opts);
+    const countInBeats = Math.round(lead / beatSec);
+    // The last beat that has music on it. A click on the bar-line *after* the
+    // final note would sound like the piece has one bar more than it does.
+    const lastBeat = metronome ? Math.ceil(maxBeat) - 1 : -1;
+    const plain = renderClick(false);
+    const accented = renderClick(true);
+
+    for (let beat = -countInBeats; beat <= lastBeat; beat++) {
+      // A count-in is a whole number of bars, so its beats are negative
+      // multiples of `perBar` and this accents them on the same downbeats the
+      // melody will land on. (`-0 % perBar` is `-0`, and `-0 === 0`.)
+      const click = beat % perBar === 0 ? accented : plain;
+      const startSample = leadSamples + Math.round(beat * beatSec * SAMPLE_RATE);
+      if (startSample < 0) continue;
+      const n = Math.min(click.length, totalSamples - startSample);
+      for (let i = 0; i < n; i++) {
+        mix[startSample + i] = mix[startSample + i]! + click[i]!;
+      }
     }
   }
 
