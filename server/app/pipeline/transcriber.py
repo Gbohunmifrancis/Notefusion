@@ -197,6 +197,37 @@ MIN_NOTE_SEC = 0.06
 MERGE_GAP_MELODY = 0.08  # ~1 sixteenth note at 120 BPM
 MERGE_GAP_POLY = 0.05  # tighter for polyphonic — avoid swallowing trills
 
+# Melody overlap resolution: two *overlapping* events this close in pitch, sharing
+# this much of the shorter one's span, are one wobbling note that inference split
+# rather than two notes.
+#
+# This is the population every earlier vibrato fix was structurally unable to reach.
+# All of them lived in ``_merge_onsets``, whose ``0.0 <= gap`` test only sees events
+# that abut; the fragments of a wobbling note *interleave*, because Basic Pitch fires
+# at both neighbours of the wobble simultaneously.  The melody resolver is the one
+# stage that already looks at overlapping pairs — and it had no pitch test at all,
+# comparing only amplitude and onset proximity, so it kept a semitone-off sliver as a
+# note of its own.  Every such sliver is chromatic against the key by definition, so
+# it prints an accidental: this is the whole of the "accidentals where not needed"
+# complaint, and ``solfa.chromatic_ghosts`` is where it shows up.
+#
+# Pitch alone is not enough, and that is why there are two constants.  A genuine
+# legato semitone step also overlaps — the events bleed into each other at the
+# boundary — so a pitch-only rule fused real steps and cost one note each on
+# major_e_flat, minor_natural_d, overtone_heavy, pluck_envelope,
+# triplets_eighth_c_major and fast_sixteenths_c_major (recall 0.935 -> 0.889).
+# What separates the two populations is *how much* they overlap, measured as a
+# fraction of the shorter event:
+#
+#   genuine steps   n=6   min 0.021  median 0.100  max 0.100
+#   wobble pairs    n=38  min 0.091  median 0.800  max 1.000
+#
+# 0.20 sits in the middle of the gap — twice the largest genuine step, a third of the
+# lowest wobble pair above them — and fuses 37 of 38 wobble pairs while leaving all 6
+# genuine steps alone.  A step bleeds at its edge; a sliver sits *inside* its note.
+WOBBLE_SEMITONES = 1
+WOBBLE_MIN_OVERLAP_FRACTION = 0.20
+
 # Basic Pitch reports per-note pitch bends in units of 1/3 semitone, already centred
 # on the note's own pitch (``get_pitch_bends`` subtracts ``pb_shift``, and the contour
 # bin of MIDI pitch p is exactly 3p - 63, so there is no rounding offset to undo).
@@ -1307,6 +1338,71 @@ def _dedup_simultaneous(events: list[Event]) -> list[Event]:
     return order
 
 
+def _resolve_melody_overlaps(events: list[Event]) -> list[Event]:
+    """Reduce overlapping events to one voice, fusing the wobble slivers on the way.
+
+    Melody mode promises a single line, so every overlap here is an artefact of
+    inference and this decides which reading survives.  Three outcomes: fuse (the two
+    are one wobbling note that got split), replace (the newcomer is the real note and
+    the incumbent was its leading edge), or truncate (both are real and the boundary
+    belongs to the newcomer).
+
+    A module-level function rather than a loop inside ``_transcribe_wav`` because the
+    fuse rule's two constants were chosen from a measured distribution, and a threshold
+    picked from data needs a test on *its own decisions* — a corpus metric cannot
+    distinguish "fused the right pair" from "fused nothing and got lucky".  See
+    ``tests/accuracy/test_directional.py``.
+    """
+    cleaned: list[Event] = []
+    for evt in events:
+        if not cleaned:
+            cleaned.append(evt)
+            continue
+
+        prev = cleaned[-1]
+
+        if evt.start < prev.end:  # overlap detected
+            shorter = min(prev.end - prev.start, evt.end - evt.start)
+            overlap = min(prev.end, evt.end) - evt.start
+            if (
+                abs(evt.pitch - prev.pitch) <= WOBBLE_SEMITONES
+                and shorter > 0.0
+                and overlap / shorter >= WOBBLE_MIN_OVERLAP_FRACTION
+            ):
+                # One wobbling note that inference split across two semitones.
+                # Fuse, keeping the LONGER fragment's pitch and spanning both:
+                # duration is what separates the note's body from a piece of its
+                # wobble, and amplitude demonstrably is not (see _blend_confidence).
+                longer = prev if (prev.end - prev.start) >= (evt.end - evt.start) else evt
+                cleaned[-1] = replace(
+                    longer,
+                    start=min(prev.start, evt.start),
+                    end=max(prev.end, evt.end),
+                )
+                continue
+            onset_close = (evt.start - prev.start) < 0.12
+            if evt.amp > prev.amp and onset_close:
+                # Current note is louder and nearly co-incident → replace
+                cleaned[-1] = evt
+            else:
+                # Truncate previous to the boundary of the new one
+                if (evt.start - prev.start) >= 0.04:
+                    # Only the part of prev after evt is given up.  Truncating a
+                    # prev that *contains* evt would also delete prev's sustain
+                    # past evt.end, turning one long note into a sliver plus a
+                    # hole; keeping the later end is what stops that.
+                    cleaned[-1] = replace(prev, end=evt.start)
+                    cleaned.append(evt if evt.end >= prev.end else replace(evt, end=prev.end))
+                # else: previous becomes too short → drop it, keep current
+                else:
+                    cleaned[-1] = evt
+        else:
+            cleaned.append(evt)
+
+    # Drop any note that was truncated below the absolute minimum duration
+    return [e for e in cleaned if (e.end - e.start) >= 0.04]
+
+
 # ── pyin pitch refinement (defect 6) ──────────────────────────────────────────
 
 
@@ -2032,32 +2128,7 @@ def _transcribe_wav(
 
     # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────────
     if mode == "melody" and events:
-        cleaned: list[Event] = []
-        for evt in events:
-            if not cleaned:
-                cleaned.append(evt)
-                continue
-
-            prev = cleaned[-1]
-
-            if evt.start < prev.end:  # overlap detected
-                onset_close = (evt.start - prev.start) < 0.12
-                if evt.amp > prev.amp and onset_close:
-                    # Current note is louder and nearly co-incident → replace
-                    cleaned[-1] = evt
-                else:
-                    # Truncate previous to the boundary of the new one
-                    if (evt.start - prev.start) >= 0.04:
-                        cleaned[-1] = replace(prev, end=evt.start)
-                        cleaned.append(evt)
-                    # else: previous becomes too short → drop it, keep current
-                    else:
-                        cleaned[-1] = evt
-            else:
-                cleaned.append(evt)
-
-        # Drop any note that was truncated below the absolute minimum duration
-        events = [e for e in cleaned if (e.end - e.start) >= 0.04]
+        events = _resolve_melody_overlaps(events)
 
     if not events:
         raise LowConfidenceError(

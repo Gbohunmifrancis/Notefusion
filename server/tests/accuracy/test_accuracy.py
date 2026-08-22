@@ -17,7 +17,7 @@ session-scoped fixture is what keeps this usable.
 
 Accepted trades recorded in the current baseline
 ────────────────────────────────────────────────
-This baseline is the shipped configuration.  Two numbers in it are *worse* than the
+This baseline is the shipped configuration.  Four numbers in it are *worse* than the
 pre-plan pipeline scored, deliberately:
 
   vibrato_heavy / solfa.degree_accuracy  0.375 -> 0.000
@@ -58,6 +58,52 @@ pre-plan pipeline scored, deliberately:
       be asking the metric to re-acquire the errors the pipeline stopped making.  The
       POPULATION argument below is precisely this, and it is also why the family stays
       out of the gate even in the direction of improvement.
+
+  notes.recall on four vibrato cases, and 0.024 corpus-wide
+      The wobble fuse (``WOBBLE_SEMITONES`` / ``WOBBLE_MIN_OVERLAP_FRACTION`` in
+      transcriber.py) absorbs a semitone-off sliver back into the note it came from.
+      Under a heavy wobble two *real* notes a semitone apart can overlap enough to be
+      fused as well, and this is what that costs:
+
+          vibrato_heavy      recall 0.909 -> 0.545   n_est 35 -> 17   f1 0.435 -> 0.429
+          vibrato_rate_k15   recall 1.000 -> 0.727   n_est 32 -> 13   f1 0.512 -> 0.667
+          vibrato_rate_k155  recall 1.000 -> 0.727   n_est 29 -> 18   f1 0.550 -> 0.552
+          vibrato_rate_7hz   recall 0.909 -> 0.727   n_est 47 -> 16   f1 0.345 -> 0.593
+
+      Precision rises on all four (0.213-0.379 -> 0.353-0.615) and f1 rises or holds on
+      all four, because the notes being given up are bought back several times over in
+      ghosts: solfa.ghost_count on these four falls 24/21/18/36 -> 8/5/9/6.  Eleven real
+      notes were being printed as 29-47, and are now printed as 13-18.
+
+      This is the threshold's own trade and not a fixable side effect, which took two
+      measurements to establish.  Sweeping it over the eight vibrato cases:
+
+          t       recall  f1     n_est  ghost_count  chromatic_ghosts
+          none    0.716   0.404  32.9   22.3         7.88
+          0.70    0.739   0.436  30.8   20.3         5.88
+          0.50    0.705   0.453  27.6   17.4         6.00
+          0.20    0.602   0.496  20.4   10.9         6.25
+
+      Recall is not monotonic in t, which pointed at the fused event's span extension
+      (``end=max(prev.end, evt.end)``) rather than at the pitch test — a protruding
+      sliver grows the note forward over whatever follows.  Pinning the end to the
+      longer fragment instead recovers recall 0.602 -> 0.682 but gives back nearly all
+      the clutter (n_est 20.4 -> 27.9, ghost_count 10.9 -> 17.6, f1 0.496 -> 0.435) and
+      still does not reach the no-fuse 0.716.  So absorbing the span is what removes the
+      ghosts; it is one trade with one knob, and 0.20 was chosen for the readable score.
+
+      0.70 remains the option to revisit if breadth ever matters more than clutter: it
+      scores BETTER than no fuse on recall and has the lowest accidental count of any
+      setting.  What rules it out today is 30.8 printed notes for 11 real ones.
+
+  beats.recall 0.990 -> 0.969, from the same change
+      Recorded here because it is gated and 0.022 is just over tolerance, but it is the
+      signature of the tempo estimate getting BETTER rather than worse.  beats.precision
+      rises 0.858 -> 0.890 and beats.f1 0.890 -> 0.916 alongside it, and
+      tempo.abs_error falls 21.263 -> 14.184: a tempo no longer inflated by ghost onsets
+      predicts fewer beat instants, so it hits marginally fewer reference beats while
+      emitting far fewer spurious ones.  Read the three columns together; recall alone on
+      a predicted-instant count is maximised by predicting a beat everywhere.
 
 The 31 -> 38 corpus expansion moved every aggregate down, and none of it is a regression
 ────────────────────────────────────────────────────────────────────────────────────────
