@@ -12,9 +12,12 @@ public sealed class AuthSettings
     /// caller cannot choose where a real reset token gets delivered.
     /// </summary>
     /// <remarks>
-    /// <c>/reset-password</c> is a route of the admin-console SPA — the only build in this repo that has
-    /// one — so the default is the console's live origin, which works with no configuration. Override with
-    /// <c>Auth__ResetPasswordUrl</c> to point at <c>admin.notefusion.studio</c> once that name resolves.
+    /// The marketing site, because the person following this link is an app user and the link arrives in
+    /// their inbox. It used to point at the admin console's Vercel alias — a random-suffix hostname running
+    /// a staff tool — which asked a customer to type a new password into a domain that has no visible
+    /// relationship to the product. That is indistinguishable from a phishing mail, and teaching users to
+    /// trust it is worse than the inconvenience it saved. <c>web-site/reset-password/</c> is the page this
+    /// resolves to. Override with <c>Auth__ResetPasswordUrl</c>.
     /// </remarks>
-    public string ResetPasswordUrl { get; set; } = "https://web-admin-blue-two.vercel.app/reset-password";
+    public string ResetPasswordUrl { get; set; } = "https://notefusion.studio/reset-password";
 }

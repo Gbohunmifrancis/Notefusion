@@ -1,0 +1,223 @@
+using System.Globalization;
+using System.Net;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
+using NoteFusion.Api.Common;
+
+namespace NoteFusion.Api.RateLimiting;
+
+/// <summary>
+/// Per-caller limits on the anonymous auth endpoints — the only routes in this API that a stranger can
+/// call in a loop and get something out of.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Three distinct abuses, so three policies rather than one number: guessing a secret
+/// (<see cref="Credentials"/>), making us send mail to somebody (<see cref="EmailDispatch"/>), and
+/// minting accounts for the free transcription grant each one carries (<see cref="Registration"/>). A
+/// single shared limit would have to be as loose as the most chatty of the three, which is login, and
+/// that is the one where volume is the attack.
+/// </para>
+/// <para>
+/// Every limit is per-address and configurable (<c>RateLimit__*</c>), because the right number depends on
+/// how many real users sit behind one address in the market being served, and that is not something to
+/// find out by shipping a code change. Setting <c>RateLimit__Enabled=false</c> turns the whole thing off.
+/// </para>
+/// </remarks>
+public static class AuthRateLimiting
+{
+    /// <summary>Endpoints where the caller is guessing at a secret: login, a six-digit code, a reset token.</summary>
+    public const string Credentials = "auth-credentials";
+
+    /// <summary>Endpoints that make us send an email to an address the caller chose.</summary>
+    public const string EmailDispatch = "auth-email";
+
+    /// <summary>Account creation, which hands out the free transcription grant.</summary>
+    public const string Registration = "auth-registration";
+
+    public static IServiceCollection AddNoteFusionRateLimiting(
+        this IServiceCollection services, IConfiguration configuration)
+    {
+        var configured = configuration.GetSection("RateLimit").Get<RateLimitSettings>() ?? new RateLimitSettings();
+
+        // Turning it off still registers all three policies: an [EnableRateLimiting] attribute naming a
+        // policy that does not exist throws at the first request, so removing the limiter has to leave the
+        // names resolvable. An unreachable permit count is what "off" looks like.
+        var settings = configured.Enabled ? configured : configured.Disabled();
+        services.AddSingleton(settings);
+
+        services.AddRateLimiter(options =>
+        {
+            options.AddPolicy(Credentials, context => SlidingWindow(
+                context, settings, settings.CredentialsPermits, settings.CredentialsWindowSeconds));
+
+            options.AddPolicy(EmailDispatch, context => SlidingWindow(
+                context, settings, settings.EmailPermits, settings.EmailWindowSeconds));
+
+            options.AddPolicy(Registration, context => SlidingWindow(
+                context, settings, settings.RegistrationPermits, settings.RegistrationWindowSeconds));
+
+            options.OnRejected = async (context, cancellationToken) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+
+                // The window, not the time to the next free permit — the limiter does not expose the
+                // latter. Erring long is the right direction: a client that waits the whole window is
+                // certain to be let through, and one that retries early gets another 429, not a lockout.
+                var seconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter)
+                    ? (int)Math.Ceiling(retryAfter.TotalSeconds)
+                    : 60;
+
+                context.HttpContext.Response.Headers.RetryAfter =
+                    seconds.ToString(CultureInfo.InvariantCulture);
+
+                // Same envelope as every other failure this API returns, so a client that already knows
+                // how to read an error does not need a second code path for this one. Wording is
+                // deliberately incurious about which limit was hit: naming the policy would tell an
+                // attacker which of the three they tripped.
+                await context.HttpContext.Response.WriteAsJsonAsync(
+                    new ApiError(
+                        "RATE_LIMITED",
+                        $"Too many attempts from this device. Try again in {Describe(seconds)}."),
+                    cancellationToken);
+            };
+        });
+
+        return services;
+    }
+
+    private static RateLimitPartition<string> SlidingWindow(
+        HttpContext context, RateLimitSettings settings, int permits, int windowSeconds)
+        => RateLimitPartition.GetSlidingWindowLimiter(
+            PartitionKey(context, settings.TrustedProxyHops),
+            _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = permits,
+                Window = TimeSpan.FromSeconds(windowSeconds),
+                // Sliding rather than fixed because a fixed window lets a caller spend the whole allowance
+                // at the end of one window and again at the start of the next — 2x the stated limit in a
+                // burst, and the burst is the attack. Four segments means the allowance decays in
+                // quarter-window steps instead of all at once.
+                SegmentsPerWindow = 4,
+                // Nothing queues. A rejected caller wants the 429 now; holding the request open to release
+                // it later spends a connection on somebody who is, by hypothesis, calling too often.
+                QueueLimit = 0,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            });
+
+    /// <summary>
+    /// Which bucket this request counts against: the caller's address, as far as it can be established.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Reads the forwarded chain from the RIGHT for the same reason
+    /// <c>ClientIpAddress.Resolve</c> does — each hop appends, so the leftmost entry is whatever the
+    /// caller typed, and partitioning on that would let one attacker mint a fresh bucket per request by
+    /// varying a header.
+    /// </para>
+    /// <para>
+    /// It deliberately does <b>not</b> reuse that method. <c>Resolve</c> discards any address that is not
+    /// publicly routable, carrier-grade NAT included, because an address shared between subscribers
+    /// identifies nobody and so cannot pick a billing tier. Here the opposite is true: a CGNAT address is
+    /// the finest distinction available for a mobile subscriber, and collapsing every one of them into a
+    /// single null bucket would let one abuser lock out an entire mobile network. Non-routable is kept;
+    /// only genuinely absent is pooled, under a name that says so.
+    /// </para>
+    /// </remarks>
+    private static string PartitionKey(HttpContext context, int trustedProxyHops)
+    {
+        if (trustedProxyHops > 0)
+        {
+            var chain = context.Request.Headers["X-Forwarded-For"].ToString()
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+            if (chain.Length >= trustedProxyHops)
+                return Normalise(chain[^trustedProxyHops]) ?? "unknown";
+        }
+
+        return Normalise(context.Connection.RemoteIpAddress?.ToString()) ?? "unknown";
+    }
+
+    /// <summary>
+    /// One chain entry reduced to a bare address, or null if it is not one. Brackets and ports are
+    /// stripped so <c>1.2.3.4:5678</c> and <c>1.2.3.4</c> cannot become two buckets for one caller.
+    /// </summary>
+    private static string? Normalise(string? candidate)
+    {
+        if (string.IsNullOrWhiteSpace(candidate))
+            return null;
+
+        var value = candidate.Trim();
+
+        if (value.StartsWith('['))
+        {
+            var close = value.IndexOf(']');
+            if (close < 0) return null;
+            value = value[1..close];
+        }
+        else if (value.Count(c => c == ':') == 1)
+        {
+            value = value[..value.IndexOf(':')];
+        }
+
+        if (!IPAddress.TryParse(value, out var ip))
+            return null;
+
+        return (ip.IsIPv4MappedToIPv6 ? ip.MapToIPv4() : ip).ToString();
+    }
+
+    private static string Describe(int seconds)
+        => seconds < 90
+            ? $"{seconds} seconds"
+            : $"{(int)Math.Ceiling(seconds / 60.0)} minutes";
+}
+
+/// <summary>Limits for <see cref="AuthRateLimiting"/>, bound from the <c>RateLimit</c> configuration section.</summary>
+public sealed class RateLimitSettings
+{
+    /// <summary>Master switch. Off leaves the policies registered but effectively unlimited.</summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>
+    /// How many hops append to <c>X-Forwarded-For</c> between the caller and this process. One for
+    /// Heroku's router. Mirrors <c>Geo__TrustedProxyHops</c>, and is a separate setting only so that
+    /// tightening one cannot silently move the other.
+    /// </summary>
+    public int TrustedProxyHops { get; set; } = 1;
+
+    /// <summary>
+    /// Login, email verification and password reset. Fifteen a minute is far above a person mistyping a
+    /// password and far below a list being worked through.
+    /// </summary>
+    public int CredentialsPermits { get; set; } = 15;
+
+    public int CredentialsWindowSeconds { get; set; } = 60;
+
+    /// <summary>
+    /// Forgot-password and resend-verification. Low, because each one sends mail to an address the caller
+    /// chose: the cost of getting this wrong is a stranger's inbox and our sending reputation, and a real
+    /// user needs one or two.
+    /// </summary>
+    public int EmailPermits { get; set; } = 5;
+
+    public int EmailWindowSeconds { get; set; } = 900;
+
+    /// <summary>
+    /// Sign-ups. Each account carries free transcriptions, so bulk registration is a way of buying
+    /// nothing. Ten an hour leaves room for a shared address — a classroom, an office — while making a
+    /// farm of throwaway accounts slow enough to be visible.
+    /// </summary>
+    public int RegistrationPermits { get; set; } = 10;
+
+    public int RegistrationWindowSeconds { get; set; } = 3600;
+
+    /// <summary>A copy with every limit effectively removed, used when <see cref="Enabled"/> is false.</summary>
+    internal RateLimitSettings Disabled() => new()
+    {
+        Enabled = false,
+        TrustedProxyHops = TrustedProxyHops,
+        CredentialsPermits = int.MaxValue,
+        EmailPermits = int.MaxValue,
+        RegistrationPermits = int.MaxValue,
+    };
+}

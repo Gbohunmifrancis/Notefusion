@@ -18,6 +18,27 @@ router = APIRouter(prefix="/v1")
 
 ACCEPTED_SUFFIXES = {".wav", ".flac", ".ogg", ".opus", ".mp3", ".m4a"}
 
+#: Long enough for a GUID or the C# API's own id, short enough that a caller cannot
+#: pad the log file with one header.
+_MAX_CORRELATION_ID = 64
+
+
+def _correlation_id(request: Request) -> str | None:
+    """The caller's ``X-Correlation-ID`` if it is safe to repeat, otherwise None.
+
+    Mirrors CorrelationIdMiddleware.Sanitised on the C# side, including its choice to
+    refuse rather than strip: this value is written into log lines, where an embedded
+    newline forges a whole fabricated entry, and a silently edited id no longer matches
+    the one the API recorded. Only the API is meant to send this, but the transcriber
+    trusts nothing about who reached it.
+    """
+    candidate = (request.headers.get("x-correlation-id") or "").strip()
+    if not candidate or len(candidate) > _MAX_CORRELATION_ID:
+        return None
+    if not all(c.isascii() and (c.isalnum() or c in "-_") for c in candidate):
+        return None
+    return candidate
+
 
 def _get_queue(request: Request) -> JobQueue:
     """Prefer the lifespan-managed queue; fall back to module-level for tests."""
@@ -113,7 +134,8 @@ async def submit_transcription(
                                  f"of {settings.max_clip_seconds:.0f}s.")
 
     queue = _get_queue(request)
-    job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo)
+    job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
+                          correlation_id=_correlation_id(request))
     return SubmitResponse(job_id=job_id)
 
 

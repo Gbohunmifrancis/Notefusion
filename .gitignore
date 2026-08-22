@@ -520,6 +520,21 @@ mobile/scripts/test-keys.mjs
 # committing it hands anyone with repo access the ability to ship to your users.
 mobile/google-play-service-account.json
 
+# ── NoteFusion: API configuration ────────────────────────────
+# appsettings.json is untracked because it carried a live Resend API key, the seeded
+# admin password and the admin email list — secrets in the one file every clone gets.
+# The API reads all of those keys from the environment instead (Email__ApiKey,
+# Seed__AdminEmail, Jwt__Issuer, …), which is where they now live: `heroku config` for
+# the deployed app, the environment block in docker-compose.yml for the local stack.
+# Anything non-secret that used to sit here has to be set in one of those two places as
+# well — a key present in neither silently falls back to a default in C#.
+# Untracking is not unpublishing: the key is still readable in every earlier commit, so
+# it has to be rotated regardless.
+src/NoteFusion.Api/appsettings.json
+# Same file, local overrides — it holds the dev Postgres password. Untracked from the
+# start but never ignored, so a single `git add -A` would have committed it.
+src/NoteFusion.Api/appsettings.Development.json
+
 # ── NoteFusion: accuracy harness output ──────────────────────
 # Rewritten by every `python -m tests.accuracy.report` run, and a filtered run leaves
 # a partial document behind. baseline.json is deliberately NOT ignored: it is the
@@ -529,3 +544,13 @@ server/tests/accuracy/report.json
 # ── Scratch tooling: design previews, palette audits, verification scripts ──
 .preview/
 .claude/launch.json
+
+# ── NoteFusion: Play Store asset intermediates ───────────────
+# The uploads themselves (mobile/store/out/screenshots, feature-graphic.png,
+# icon-512.png) ARE tracked — same as web-site/assets, which tools/build-assets.py
+# generates. What is ignored is everything the renderer only makes on the way
+# there: the 1236×2745 bare captures Play would reject for aspect ratio, the card
+# crop that feeds the feature graphic, and the HTML the browser loads.
+mobile/store/.build/
+mobile/store/out/device/
+mobile/store/out/parts/

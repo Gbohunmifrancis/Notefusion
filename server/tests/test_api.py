@@ -225,3 +225,38 @@ def test_submit_rejects_unsupported_format():
             files={"audio": ("clip.txt", BytesIO(b"not audio"), "text/plain")},
         )
         assert r.status_code == 415
+
+
+def test_correlation_id_header_is_carried_onto_the_job(monkeypatch):
+    """The C# API's X-Correlation-ID must reach the job, and only if it is safe to log.
+
+    This is the whole point of the header: the job's log lines are the only record of
+    what inference did, and without the id there is nothing joining them to the API
+    request — or to the user who reported the failure.
+    """
+    from app.jobs import queue as queue_mod
+
+    monkeypatch.setattr(queue_mod, "transcribe", lambda *a, **k: None)
+
+    with TestClient(app) as client:
+        def _submit(headers: dict) -> str:
+            r = client.post(
+                "/v1/transcribe",
+                files={"audio": ("clip.wav", BytesIO(_make_wav(0.5)), "audio/wav")},
+                data={"mode": "melody"},
+                headers=headers,
+            )
+            assert r.status_code == 202
+            return r.json()["jobId"]
+
+        good = _submit({"X-Correlation-ID": "9f2c4b1e-trace_7"})
+        assert app.state.queue.get(good).correlation_id == "9f2c4b1e-trace_7"
+
+        # Refused, not sanitised: a value that has been quietly edited no longer matches
+        # the one the API wrote down, and these two would forge a log entry or pad the file.
+        for forged in ("id with spaces; and punctuation", "a" * 65):
+            assert app.state.queue.get(_submit({"X-Correlation-ID": forged})).correlation_id is None
+
+        # No header at all is normal — anything calling the worker directly, and the API
+        # itself when the call originates outside a request.
+        assert app.state.queue.get(_submit({})).correlation_id is None

@@ -50,6 +50,17 @@ def _await_deleted(path: Path, timeout: float = 2.0) -> None:
     raise AssertionError(f"{path} was not deleted (privacy guarantee, TRD par. 9)")
 
 
+def _await_record(caplog, needle: str, timeout: float = 2.0):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        for record in caplog.records:
+            if needle in record.getMessage():
+                return record
+        time.sleep(0.02)
+    raise AssertionError(f"no log record containing {needle!r}; "
+                         f"saw {[r.getMessage() for r in caplog.records]}")
+
+
 def test_submit_returns_unique_id():
     queue = JobQueue(workers=1)
     try:
@@ -116,6 +127,34 @@ def test_get_unknown_job_returns_none():
     queue = JobQueue(workers=1)
     try:
         assert queue.get("does-not-exist") is None
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_terminal_log_lines_carry_the_job_and_correlation_ids(monkeypatch, caplog):
+    """A failure has to be findable, which means the traceback and both ids in the log.
+
+    These lines used to be bare `print` calls, so the only record of a crashed job was
+    its exception type with no stack and nothing tying it to the request that caused it.
+    """
+    def _boom(*a, **k):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr("app.jobs.queue.transcribe", _boom)
+    queue = JobQueue(workers=1)
+    try:
+        with caplog.at_level("INFO", logger="app.jobs.queue"):
+            jid = queue.submit(_temp_audio(), mode="melody", key=None, tempo=None,
+                               correlation_id="req-42")
+            _await_status(queue, jid, STATUS_FAILED)
+            # The status flips just before the log call, so the record lands a beat
+            # later on a pool thread. Poll for it inside at_level, not after.
+            failure = _await_record(caplog, "EXCEPTION")
+
+        text = failure.getMessage()
+        assert jid[:8] in text
+        assert "correlationId=req-42" in text
+        assert failure.exc_info is not None, "logger.exception, so the traceback is kept"
     finally:
         queue.shutdown(wait=True)
 

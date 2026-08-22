@@ -68,8 +68,21 @@ services:
       Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@notefusion.app}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-ChangeMe!123}
       Push__UseExpo: "false"
-      # Origin allowed to call the admin analytics routes from a browser. CORS fails closed when
-      # this is unset, so the dashboard has to be named explicitly; add more as __1, __2, …
+      # This stack has no TLS anywhere — the api binds plain http on 8080 and nothing terminates
+      # https in front of it — so the production default of redirecting http to https would send
+      # every request to a port nobody is listening on. Heroku, which does have a TLS router, leaves
+      # this unset and gets the redirect.
+      Security__RequireHttps: "false"
+      # The header at the top of this file sends you to /swagger, so say so: it is opt-in outside
+      # Development now, because it documents every admin route to anyone who loads it.
+      Swagger__Enabled: "true"
+      # Nothing sits between a caller and this container, so there is no forwarded chain to trust and
+      # rate limiting partitions on the socket peer instead. Left at Heroku's 1 and the whole stack
+      # would share one bucket, because every request arrives from the same compose-network address.
+      RateLimit__TrustedProxyHops: "0"
+      # Origin allowed to call the admin analytics routes from a browser. The localhost pair is only
+      # added automatically in Development, and this service runs Production, so the dashboard has to
+      # be named explicitly; add more as __1, __2, …
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:5173}
     ports:
       - "5080:8080"
@@ -79,8 +92,10 @@ services:
       transcriber:
         condition: service_healthy
     # No container healthcheck: the aspnet runtime image ships no curl/wget, and nothing
-    # in this stack gates on the api being healthy. Liveness is the /health endpoint
-    # (anonymous) that an external orchestrator/load balancer can probe.
+    # in this stack gates on the api being healthy. Both probes are anonymous, for an
+    # external orchestrator/load balancer: /health is liveness (always 200 if the process
+    # is up) and /health/ready is readiness (503 when the database or transcriber is
+    # unreachable, so a bad deploy is not sent traffic).
 
 volumes:
   db-data:

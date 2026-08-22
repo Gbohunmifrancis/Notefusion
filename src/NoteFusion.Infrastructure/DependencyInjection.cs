@@ -144,11 +144,17 @@ public static class DependencyInjection
     private static void AddTranscriptionApi(this IServiceCollection services, IConfiguration configuration)
     {
         var baseUrl = configuration["TranscriptionApi:BaseUrl"] ?? "http://localhost:8000";
+
+        // Transient, as AddHttpMessageHandler requires: the factory resolves one per handler chain it
+        // builds, and a chain is rebuilt every two minutes.
+        services.AddTransient<CorrelationIdHandler>();
+
         services.AddHttpClient<ITranscriptionApi, TranscriptionApiClient>(client =>
         {
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(100);
-        });
+        })
+        .AddHttpMessageHandler<CorrelationIdHandler>();
 
         // Watches jobs through to completion so a recording finishes whether or not the app is open.
         services.AddHostedService<TranscriptionCompletionWorker>();
