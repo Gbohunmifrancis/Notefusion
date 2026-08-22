@@ -115,7 +115,7 @@ builder.Services.AddAuthorization(options => options.AddNoteFusionPolicies());
 // a misconfigured deploy — an earlier comment here claimed it did, and that was wrong. They stay because
 // removing them takes the live console offline the moment Cors__AllowedOrigins is missing from Heroku
 // config; the localhost pair is the part that had no business being reachable in production, so that is
-// what is now gated. Compose runs Production and passes localhost:5173 through
+// what is now gated. Compose runs Production and passes localhost:3000 through
 // Cors__AllowedOrigins__0, which is the intended route for it.
 var allowedOriginsArray = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 var rawAllowedOrigins = builder.Configuration["Cors:AllowedOrigins"]
@@ -127,8 +127,12 @@ var originsSet = new HashSet<string>(allowedOriginsArray.Concat(parsedFromRaw), 
 
 if (builder.Environment.IsDevelopment())
 {
-    // The admin console's Vite dev server. Development only: in production this is an origin an
-    // attacker controls, because anything running on the victim's own machine can claim it.
+    // The admin console's Next dev server, which defaults to port 3000. Development only: in
+    // production this is an origin an attacker controls, because anything running on the victim's
+    // own machine can claim it. 5173 was the console's port while it was a Vite app; nothing in the
+    // repo serves on it now, and it stays only because appsettings.Development.json still lists it.
+    originsSet.Add("http://localhost:3000");
+    originsSet.Add("http://127.0.0.1:3000");
     originsSet.Add("http://localhost:5173");
     originsSet.Add("http://127.0.0.1:5173");
 }
@@ -230,22 +234,6 @@ if (app.Environment.IsDevelopment() || app.Configuration.GetValue("Swagger:Enabl
     });
 }
 
-// The admin dashboard ships inside this image: the Dockerfile builds web-admin/ into
-// wwwroot, which makes the API its web server too. Without this the deployed dashboard
-// answered every non-API path with an empty 404, which is what "the page is blank" was.
-// Guarded on index.html so an API-only build (dotnet run, tests) still starts.
-var webRoot = app.Environment.WebRootPath
-    ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
-var dashboardIndex = Path.Combine(webRoot, "index.html");
-var dashboardIsBundled = File.Exists(dashboardIndex);
-
-if (dashboardIsBundled)
-{
-    // Rewrites "/" to "/index.html"; must precede UseStaticFiles to have anything to serve.
-    app.UseDefaultFiles();
-    app.UseStaticFiles();
-}
-
 // Explicit, because UseRateLimiter needs endpoint metadata to know which policy an [EnableRateLimiting]
 // route asked for, and that is only resolved once routing has run.
 app.UseRouting();
@@ -263,31 +251,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-if (dashboardIsBundled)
-{
-    // Client-side routes (/login, /users) have no server route, so the shell is returned and
-    // React Router resolves the path. /api and /swagger are excluded explicitly: an unknown
-    // API path must still fail as a 404, not hand the caller an HTML page. This is a delegate
-    // rather than MapFallbackToFile with a regex constraint because a route template splits on
-    // "/" before constraints are parsed, so a regex containing "/" corrupts the template.
-    app.MapFallback(async context =>
-    {
-        var path = context.Request.Path.Value ?? string.Empty;
-        if (path.StartsWith("/api", StringComparison.OrdinalIgnoreCase)
-            || path.StartsWith("/swagger", StringComparison.OrdinalIgnoreCase))
-        {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-            return;
-        }
-
-        context.Response.ContentType = "text/html; charset=utf-8";
-        // The shell must never be cached: it names hashed asset files, so a stale copy points
-        // at bundles that no longer exist after a deploy.
-        context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
-        await context.Response.SendFileAsync(dashboardIndex);
-    });
-}
 
 app.Run();
 

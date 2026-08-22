@@ -83,7 +83,7 @@ services:
       # Origin allowed to call the admin analytics routes from a browser. The localhost pair is only
       # added automatically in Development, and this service runs Production, so the dashboard has to
       # be named explicitly; add more as __1, __2, …
-      Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:5173}
+      Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:3000}
     ports:
       - "5080:8080"
     depends_on:
