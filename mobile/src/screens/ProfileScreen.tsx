@@ -530,7 +530,7 @@ const makeStyles = (c: Palette) =>
     // ── Modal ─────────────────────────────────────────────────────────────────
     modalOverlay: {
       flex: 1,
-      backgroundColor: "rgba(0,0,0,0.45)",
+      backgroundColor: c.scrim,
       justifyContent: "center",
       alignItems: "center",
       paddingHorizontal: spacing.xl,

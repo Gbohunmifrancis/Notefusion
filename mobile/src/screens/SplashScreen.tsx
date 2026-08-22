@@ -188,7 +188,7 @@ export function SplashScreen() {
    wordmark: {
      marginTop: 24,
      fontSize: 36,
-     fontFamily: fonts.bold,
+     fontFamily: fonts.displayBold,
      color: "#FFFFFF",
      letterSpacing: -0.2,
      textAlign: "center",

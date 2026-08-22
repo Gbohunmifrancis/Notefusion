@@ -1019,7 +1019,7 @@ const makeStyles = (c: Palette) =>
     borderRadius: radii.pill,
     backgroundColor: c.surface,
     borderWidth: 1.5,
-    borderColor: "#2563EB",
+    borderColor: c.accent,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1027,14 +1027,15 @@ const makeStyles = (c: Palette) =>
   actionBtnOutlineText: {
     fontSize: 15,
     fontFamily: fonts.bold,
-    color: "#2563EB",
+    color: c.accent,
   },
 
+  /** `ink`, not `accent`: a fill under white text, so it stays dark in both modes. */
   actionBtnSolid: {
     flex: 1,
     height: 48,
     borderRadius: radii.pill,
-    backgroundColor: "#2563EB",
+    backgroundColor: c.ink,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -1042,7 +1043,7 @@ const makeStyles = (c: Palette) =>
   actionBtnSolidText: {
     fontSize: 15,
     fontFamily: fonts.bold,
-    color: "#FFFFFF",
+    color: c.onInk,
   },
 
   /** Glass circle back button. */
@@ -1371,8 +1372,8 @@ const makeStyles = (c: Palette) =>
     fontWeight: "700",
     letterSpacing: 2,
     lineHeight: 30,
-    // Subtle blue text-shadow glow
-    textShadowColor: "rgba(37, 99, 235, 0.6)",
+    // Subtle brand text-shadow glow
+    textShadowColor: c.accentGlow,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },

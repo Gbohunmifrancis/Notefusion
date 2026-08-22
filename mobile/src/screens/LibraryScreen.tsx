@@ -302,7 +302,7 @@ export function LibraryScreen() {
                 <Ionicons
                   name="musical-notes-outline"
                   size={22}
-                  color={isPro ? colors.premium : "#2563EB"}
+                  color={isPro ? colors.premium : colors.accent}
                 />
               </View>
 
@@ -411,9 +411,11 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
+    /** `ink`, not `accent`: this is a fill carrying white text, so it has to stay
+     *  dark in both modes — the lifted dark-mode accent fails AA at this size. */
     filterTabActive: {
-      backgroundColor: "#2563EB",
-      borderColor: "#2563EB",
+      backgroundColor: c.ink,
+      borderColor: c.ink,
     },
     filterTabText: {
       fontSize: 13,
@@ -421,7 +423,7 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
     },
     filterTabTextActive: {
-      color: "#FFFFFF",
+      color: c.onInk,
       fontFamily: fonts.bold,
     },
     optionsBtn: {
@@ -438,7 +440,7 @@ const makeStyles = (c: Palette) =>
       width: 44,
       height: 44,
       borderRadius: radii.md,
-      backgroundColor: "#EFF6FF",
+      backgroundColor: c.accentSoft,
       alignItems: "center",
       justifyContent: "center",
       marginRight: spacing.md,
@@ -463,7 +465,7 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
     },
     typeBadge: {
-      backgroundColor: "#EFF6FF",
+      backgroundColor: c.accentSoft,
       borderRadius: radii.pill,
       paddingHorizontal: spacing.md,
       paddingVertical: 4,
@@ -471,7 +473,7 @@ const makeStyles = (c: Palette) =>
     typeBadgeText: {
       fontSize: 12,
       fontFamily: fonts.semibold,
-      color: "#2563EB",
+      color: c.accent,
     },
     itemDivider: {
       height: 1,

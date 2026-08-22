@@ -708,10 +708,7 @@ export function RecordScreen() {
                 phase === "recording"
                   ? (["#DC2626", "#B91C1C"] as const)
                   : isUploading
-                    ? ([
-                        "rgba(37,99,235,0.4)",
-                        "rgba(59,130,246,0.4)",
-                      ] as const)
+                    ? gradients.brandMuted
                     : gradients.brand
               }
               start={{ x: 0, y: 0 }}
@@ -748,6 +745,10 @@ export function RecordScreen() {
                   styles.waveBar,
                   {
                     transform: [{ scaleY: anim }],
+                    // Literal rgba, not a palette token: the alpha is computed per
+                    // bar so the ramp fades toward the outer edges, and a token
+                    // carries a fixed one. The two hues are the brand gradient's
+                    // own endpoints — deep blue out from the left, bright from the right.
                     backgroundColor:
                       i < WAVE_BARS / 2
                         ? `rgba(37, 99, 235, ${0.4 + (i / WAVE_BARS) * 0.6})`
@@ -949,8 +950,8 @@ const makeStyles = (c: Palette) =>
     paddingVertical: 5,
   },
   trialPillSpent: {
-    backgroundColor: "rgba(220, 38, 38, 0.10)",
-    borderColor: "rgba(220, 38, 38, 0.28)",
+    backgroundColor: c.dangerSoft,
+    borderColor: c.dangerBorder,
   },
   trialPillText: {
     fontSize: 11.5,
@@ -1074,16 +1075,14 @@ const makeStyles = (c: Palette) =>
 
   // ── Voice-level guidance banner ───────────────────────────────────────────
 
-  /** The wash stays a fixed rgba rather than the palette's danger hue so it
-   *  reads as a tint over both canvases; the dot and label use c.danger. */
   guidanceBanner: {
     position: "absolute",
     top: -8,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(220, 38, 38, 0.16)",
+    backgroundColor: c.dangerSoft,
     borderWidth: 1,
-    borderColor: "rgba(220, 38, 38, 0.35)",
+    borderColor: c.dangerBorder,
     borderRadius: radii.pill,
     paddingVertical: 8,
     paddingHorizontal: spacing.md,
@@ -1143,6 +1142,9 @@ const makeStyles = (c: Palette) =>
     borderWidth: 1.5,
   },
 
+  /** Two rings at different strengths, so the outer one reads as the fainter,
+   *  further-travelled wave. Literal rgba because each needs its own alpha pair
+   *  and no palette token carries four of them; the hue is the brand blue. */
   rippleInner: {
     width: 176,
     height: 176,
@@ -1260,7 +1262,7 @@ const makeStyles = (c: Palette) =>
     fontFamily: fonts.bold,
     color: c.text,
     letterSpacing: -1,
-    textShadowColor: "rgba(37, 99, 235, 0.55)",
+    textShadowColor: c.accentGlow,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
     fontVariant: ["tabular-nums"],
@@ -1322,8 +1324,8 @@ const makeStyles = (c: Palette) =>
   errCard: {
     width: "100%",
     marginTop: spacing.sm,
-    backgroundColor: "rgba(220, 38, 38, 0.08)",
-    borderColor: "rgba(220, 38, 38, 0.22)",
+    backgroundColor: c.dangerSoft,
+    borderColor: c.dangerBorder,
   },
 
   errRow: {

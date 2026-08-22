@@ -51,6 +51,12 @@ interface Props {
   children: React.ReactNode;
   onPress?: () => void;
   onLongPress?: () => void;
+  /**
+   * Extra press-in work, run alongside the spring and the haptic. For a control that
+   * paints its own press effect — Home's mic fires a ring from here — because
+   * press-in is the moment that reads as connected to the finger, not press.
+   */
+  onPressIn?: () => void;
   disabled?: boolean;
   /**
    * How far to press in. Defaults to `motion.scale.default` (0.97); use
@@ -83,6 +89,7 @@ export function Touchable({
   children,
   onPress,
   onLongPress,
+  onPressIn,
   disabled = false,
   scaleTo = motion.scale.default,
   haptic = "light",
@@ -105,6 +112,7 @@ export function Touchable({
     if (disabled) return;
     scale.value = withSpring(scaleTo, motion.press);
     haptics.play(haptic);
+    onPressIn?.();
   };
 
   const handlePressOut = () => {

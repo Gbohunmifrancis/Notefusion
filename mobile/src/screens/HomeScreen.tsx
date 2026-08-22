@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   AppState,
+  Easing,
   FlatList,
   StyleSheet,
   Text,
@@ -8,6 +10,7 @@ import {
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
@@ -22,7 +25,7 @@ import { synthesizeMelodyWavBase64 } from '../lib/synth';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
 import { useSubscription } from '../lib/subscription';
-import { fonts, motion, radii, spacing, type Palette, type Shadows } from '../design/theme';
+import { fonts, gradients, motion, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
 import type { RootStackParams, TabParams } from '../navigation/types';
@@ -58,6 +61,77 @@ export function HomeScreen({ navigation }: Props) {
   const { mode, toggle } = useTheme();
   const styles = useThemedStyles(makeStyles);
   const colors = useColors();
+
+  // ── Mic stage motion ──────────────────────────────────────────────────────
+  /**
+   * One driver, 0 → 1 → 0, feeding both the halo's opacity and the circle's own
+   * scale so they breathe as a single object rather than two things that happen
+   * to share a duration.
+   *
+   * RN `Animated` rather than Reanimated, matching the ambient pulse on
+   * RecordScreen: this is an idle loop on the native driver, not a gesture
+   * response, and there is nothing for the UI thread to win here. The press
+   * spring inside `Touchable` is the Reanimated half.
+   */
+  const breathe = useRef(new Animated.Value(0)).current;
+  /** Fires once per press-in: one ring out of the circle, then gone. */
+  const ring = useRef(new Animated.Value(0)).current;
+
+  const haloOpacity = breathe.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.25, 0.6],
+  });
+  const breatheScale = breathe.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.03],
+  });
+  const ringScale = ring.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.7],
+  });
+  const ringOpacity = ring.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.55, 0],
+  });
+
+  // Gated on focus, not mount: Home stays mounted for the whole session, so an
+  // ungated loop would keep waking the native driver behind Library and Settings
+  // for as long as the app is open.
+  useFocusEffect(
+    useCallback(() => {
+      const pulse = Animated.loop(
+        Animated.sequence([
+          Animated.timing(breathe, {
+            toValue: 1,
+            duration: 1800,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+          Animated.timing(breathe, {
+            toValue: 0,
+            duration: 1800,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      pulse.start();
+      return () => {
+        pulse.stop();
+        breathe.setValue(0);
+      };
+    }, [breathe]),
+  );
+
+  const fireRing = useCallback(() => {
+    ring.setValue(0);
+    Animated.timing(ring, {
+      toValue: 1,
+      duration: 520,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    }).start();
+  }, [ring]);
 
   // The greeting used to be read at render, on the assumption that focus alone would
   // keep it honest. It does not: backgrounding the app with Home focused and coming
@@ -225,20 +299,53 @@ export function HomeScreen({ navigation }: Props) {
 
             {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}
             <View style={styles.stageCard}>
-              <Touchable
-                onPress={() => navigation.navigate('Record')}
-                style={styles.micCircleWrap}
-                // The screen's hero control: heavier tick, deeper press. No ripple
-                // and no radius — the circle casts a blue glow that a clip would cut.
-                haptic="medium"
-                scaleTo={motion.scale.large}
-                ripple={false}
-                accessibilityLabel="Start recording"
-              >
-                <View style={styles.micCircle}>
-                  <Ionicons name="mic" size={42} color="#FFFFFF" />
-                </View>
-              </Touchable>
+              <View style={styles.micStage}>
+                {/* Breathing halo. Behind the circle and non-interactive, so the
+                    tap target stays the 88px circle rather than growing to the
+                    halo's diameter. */}
+                <Animated.View
+                  pointerEvents="none"
+                  style={[
+                    styles.micHalo,
+                    { opacity: haloOpacity, transform: [{ scale: breatheScale }] },
+                  ]}
+                />
+
+                {/* Tap ring — one expanding outline per press, fired from
+                    press-in so it starts under the finger. */}
+                <Animated.View
+                  pointerEvents="none"
+                  style={[
+                    styles.micRing,
+                    { opacity: ringOpacity, transform: [{ scale: ringScale }] },
+                  ]}
+                />
+
+                <Touchable
+                  onPress={() => navigation.navigate('Record')}
+                  onPressIn={fireRing}
+                  // The screen's hero control: heavier tick, deeper press. No ripple
+                  // and no radius — the circle casts a glow that a clip would cut.
+                  haptic="medium"
+                  scaleTo={motion.scale.large}
+                  ripple={false}
+                  accessibilityLabel="Start recording"
+                >
+                  {/* Breathing scale lives here, not on the Touchable: that already
+                      owns a Reanimated scale, and two drivers writing one transform
+                      fight. Nested, they compose — parent press × child breath. */}
+                  <Animated.View style={{ transform: [{ scale: breatheScale }] }}>
+                    <LinearGradient
+                      colors={gradients.brand}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.micCircle}
+                    >
+                      <Ionicons name="mic" size={42} color="#FFFFFF" />
+                    </LinearGradient>
+                  </Animated.View>
+                </Touchable>
+              </View>
 
               <Touchable
                 onPress={() => navigation.navigate('Record')}
@@ -409,21 +516,36 @@ const makeStyles = (c: Palette, s: Shadows) =>
       marginBottom: spacing.xxl,
       ...s.card,
     },
-    micCircleWrap: {
+    /** Centres the halo, the tap ring and the circle on one point. */
+    micStage: {
+      alignItems: 'center',
+      justifyContent: 'center',
       marginBottom: spacing.md,
+    },
+    /** Same filled-glow idiom as RecordScreen's ambient orb, scaled to the
+     *  smaller circle: 30px of halo either side of an 88px button. */
+    micHalo: {
+      position: 'absolute',
+      width: 148,
+      height: 148,
+      borderRadius: 74,
+      backgroundColor: c.accentGlow,
+    },
+    micRing: {
+      position: 'absolute',
+      width: 88,
+      height: 88,
+      borderRadius: 44,
+      borderWidth: 1.5,
+      borderColor: c.accent,
     },
     micCircle: {
       width: 88,
       height: 88,
       borderRadius: 44,
-      backgroundColor: '#2563EB',
       alignItems: 'center',
       justifyContent: 'center',
-      shadowColor: '#2563EB',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.35,
-      shadowRadius: 16,
-      elevation: 8,
+      ...s.glow,
     },
     tapText: {
       fontSize: 16,
@@ -492,7 +614,7 @@ const makeStyles = (c: Palette, s: Shadows) =>
       width: 40,
       height: 40,
       borderRadius: radii.md,
-      backgroundColor: '#EFF6FF',
+      backgroundColor: c.accentSoft,
       alignItems: 'center',
       justifyContent: 'center',
     },

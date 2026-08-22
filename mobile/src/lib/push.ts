@@ -3,6 +3,7 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { devicesApi } from '../api/endpoints';
+import { colors } from '../design/theme';
 import { isExpoGo } from './env';
 
 /**
@@ -178,7 +179,10 @@ export async function registerForPushAsync(
     await Notifications.setNotificationChannelAsync('default', {
       name: 'Transcriptions',
       importance: Notifications.AndroidImportance.DEFAULT,
-      lightColor: '#2563EB',
+      // The light palette's accent, read from the plain export: this is a module,
+      // so no hook is available, and the notification LED is an OS surface that
+      // has no idea which theme the app is in anyway.
+      lightColor: colors.accent,
     });
   }
 

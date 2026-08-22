@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, View, StyleSheet } from "react-native";
 import Svg, { Rect } from "react-native-svg";
+import { colors } from "../design/theme";
 
 const MARK = require("../../assets/brand/mark.png");
 
@@ -44,7 +45,10 @@ interface Props {
  */
 export function BrandMark({
   size = 96,
-  color = "#2563EB",
+  // The light accent, not a literal hex. Module scope, so no hook is available
+  // here — `colors` is the documented fallback for exactly this case, and all
+  // three call sites pass the live palette value explicitly anyway.
+  color = colors.accent,
   waveColor,
   showWaves = false,
 }: Props) {

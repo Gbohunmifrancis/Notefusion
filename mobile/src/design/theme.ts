@@ -3,8 +3,8 @@
  *
  * Root canvas is Mist (#F4F7FC); cards sit on pure white with a hairline
  * slate border and a very soft shadow instead of the old glass fill. The
- * signature brand gradient — "The Fusion" — runs from Indigo (#4F46E5) to
- * Violet (#7C3AED) and is used for primary buttons, active states, and
+ * signature brand gradient — "The Fusion" — runs from Deep Blue (#1D4ED8) to
+ * Bright Blue (#3B82F6) and is used for primary buttons, active states, and
  * energetic accents.
  *
  * Every export name from the original dark theme is preserved (ink, accent,
@@ -42,19 +42,11 @@ export const colors = {
   borderLight: "#EFF3F9",
 
   // ── "The Fusion" brand palette ──────────────────────────────────────────
-  /**
-   * Indigo → Violet. The previous values were Tailwind's blue-600/blue-500 and
-   * the "gradient" ran #1D4ED8 → #3B82F6 — two shades of the same hue, so it
-   * rendered as a flat blue with a slight sheen rather than as a fusion of
-   * anything. These endpoints travel ~28° of hue, which is what makes the
-   * gradient legible *as* a gradient.
-   *
-   * The names finally match the values: `purple` holds an actual purple.
-   */
-  purple: "#4F46E5", // Indigo        — gradient start
-  purpleDark: "#4338CA", // Deep Indigo   — pressed / darker shade
-  gold: "#7C3AED", // Violet        — gradient end
-  pink: "#A855F7", // Purple        — logo "Note" half, accents
+  /** Brand names kept from the dark theme; values are now blue-family. */
+  purple: "#2563EB", // Primary Blue    — gradient start
+  purpleDark: "#1D4ED8", // Deep Blue       — pressed / darker shade
+  gold: "#3B82F6", // Bright Blue     — gradient end
+  pink: "#0EA5E9", // Sky             — logo "Note" half, accents
 
   // ── Legacy aliases (used by existing screens / components) ──────────────
   /**
@@ -64,14 +56,14 @@ export const colors = {
    *              circle, the tab-bar mic). Stays dark in both modes so
    *              `onAccent` white holds well past AA on top of it.
    *   `accent` — brand colour *on* a surface: text, icons, hairlines. Lifts in
-   *              dark mode, where a fill-weight indigo goes muddy on navy.
+   *              dark mode, where a fill-weight blue goes muddy on navy.
    */
-  ink: "#4338CA",
-  accent: "#4F46E5",
-  accentAlt: "#7C3AED",
-  accentSoft: "rgba(79, 70, 229, 0.10)",
-  accentGlow: "rgba(79, 70, 229, 0.22)",
-  pinkSoft: "rgba(168, 85, 247, 0.10)",
+  ink: "#1D4ED8",
+  accent: "#2563EB",
+  accentAlt: "#3B82F6",
+  accentSoft: "rgba(37, 99, 235, 0.10)",
+  accentGlow: "rgba(37, 99, 235, 0.22)",
+  pinkSoft: "rgba(14, 165, 233, 0.10)",
 
   // ── Premium (Pro subscribers) ───────────────────────────────────────────
   /** Genuine amber. `gold` above is blue — it kept its name through the light
@@ -138,19 +130,19 @@ export const darkColors: Palette = {
   border: "#243146",
   borderLight: "#1C2739",
 
-  purple: "#818CF8",
-  purpleDark: "#6366F1",
-  gold: "#A78BFA",
-  pink: "#C084FC",
+  purple: "#3B82F6",
+  purpleDark: "#2563EB",
+  gold: "#60A5FA",
+  pink: "#38BDF8",
 
-  // Fill, so it does *not* lift: white on #4F46E5 is 8.6:1, white on the
-  // lifted #818CF8 is 3.2:1 and fails AA at chip-label sizes.
-  ink: "#4F46E5",
-  accent: "#818CF8",
-  accentAlt: "#A78BFA",
-  accentSoft: "rgba(129, 140, 248, 0.16)",
-  accentGlow: "rgba(129, 140, 248, 0.30)",
-  pinkSoft: "rgba(192, 132, 252, 0.16)",
+  // Fill, so it does *not* lift: white on #2563EB is 5.2:1, but white on the
+  // lifted accent #3B82F6 is 3.7:1 and fails AA at chip-label sizes.
+  ink: "#2563EB",
+  accent: "#3B82F6",
+  accentAlt: "#60A5FA",
+  accentSoft: "rgba(59, 130, 246, 0.16)",
+  accentGlow: "rgba(59, 130, 246, 0.30)",
+  pinkSoft: "rgba(56, 189, 248, 0.16)",
 
   // Amber lifts a step on navy, same reason the brand blues do.
   premium: "#FBBF24",
@@ -195,19 +187,23 @@ export function paletteFor(mode: ThemeMode): Palette {
 
 export const gradients = {
   /** "The Fusion" — primary CTA, active states, energetic accents. */
-  brand: ["#4F46E5", "#7C3AED"] as const,
+  brand: ["#1D4ED8", "#3B82F6"] as const,
 
-  /** Indigo → Purple, a wider sweep than `brand` — logo wordmark, onboarding icons. */
-  brandStart: ["#6366F1", "#A855F7"] as const,
+  /** Sky → Blue — logo wordmark, onboarding icons. */
+  brandStart: ["#0EA5E9", "#2563EB"] as const,
 
   /** Dim tinted version of brand — subtle background washes. */
-  brandDim: ["rgba(79, 70, 229, 0.10)", "rgba(124, 58, 237, 0.10)"] as const,
+  brandDim: ["rgba(29, 78, 216, 0.10)", "rgba(59, 130, 246, 0.10)"] as const,
 
-  /** Recording-state button — deep indigo pulse. */
-  record: ["#4F46E5", "#4338CA"] as const,
+  /** Brand at 40 % — the record button while a job is analysing. Half-strength
+   *  rather than greyed out, because the button is busy, not disabled. */
+  brandMuted: ["rgba(29, 78, 216, 0.4)", "rgba(59, 130, 246, 0.4)"] as const,
+
+  /** Recording-state button — deep blue pulse. */
+  record: ["#2563EB", "#1D4ED8"] as const,
 
   /** Light accent — confidence high, saved state. */
-  gold: ["#7C3AED", "#A78BFA"] as const,
+  gold: ["#3B82F6", "#60A5FA"] as const,
 
   /** Real amber — the Pro avatar ring. Four stops so the ring reads as
    *  brushed metal rather than a flat band. */
@@ -217,7 +213,7 @@ export const gradients = {
   glass: ["rgba(255, 255, 255, 0.95)", "rgba(238, 243, 251, 0.95)"] as const,
 
   /** Legacy aliases kept for backward compatibility. */
-  pink: ["#6366F1", "#A855F7"] as const,
+  pink: ["#0EA5E9", "#2563EB"] as const,
 } as const;
 
 // ─── Spacing ────────────────────────────────────────────────────────────────
@@ -320,27 +316,27 @@ export const shadow = {
     elevation: 2,
   },
 
-  /** Indigo lift — hero buttons, record button. */
+  /** Blue lift — hero buttons, record button. */
   glow: {
-    shadowColor: "#4F46E5",
+    shadowColor: "#2563EB",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.28,
     shadowRadius: 20,
     elevation: 8,
   },
 
-  /** Violet lift — save/confirm actions, high-confidence badges. */
+  /** Lighter blue lift — save/confirm actions, high-confidence badges. */
   goldGlow: {
-    shadowColor: "#7C3AED",
+    shadowColor: "#3B82F6",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.24,
     shadowRadius: 16,
     elevation: 6,
   },
 
-  /** Purple lift — wordmark "Note" half on splash. */
+  /** Sky lift — wordmark "Note" half on splash. */
   pinkGlow: {
-    shadowColor: "#A855F7",
+    shadowColor: "#0EA5E9",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.26,
     shadowRadius: 18,
@@ -384,21 +380,21 @@ export const darkShadow: Shadows = {
     elevation: 2,
   },
   glow: {
-    shadowColor: "#818CF8",
+    shadowColor: "#3B82F6",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 22,
     elevation: 8,
   },
   goldGlow: {
-    shadowColor: "#A78BFA",
+    shadowColor: "#60A5FA",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.34,
     shadowRadius: 18,
     elevation: 6,
   },
   pinkGlow: {
-    shadowColor: "#C084FC",
+    shadowColor: "#38BDF8",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.36,
     shadowRadius: 20,

@@ -138,7 +138,7 @@ const makeStyles = (c: Palette) =>
     },
 
     lastUsedPill: {
-      backgroundColor: "#EFF6FF",
+      backgroundColor: c.accentSoft,
       borderRadius: radii.pill,
       paddingHorizontal: spacing.sm,
       paddingVertical: 2,
@@ -148,7 +148,7 @@ const makeStyles = (c: Palette) =>
     lastUsedText: {
       fontSize: 11,
       fontFamily: fonts.bold,
-      color: "#2563EB",
+      color: c.accent,
     },
 
     disabled: {
