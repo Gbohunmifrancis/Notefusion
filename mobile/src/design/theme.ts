@@ -1,17 +1,16 @@
 /**
- * NoteFusion design tokens — Light Blue mode (the default) and its dark twin.
+ * NoteFusion design tokens — Light mode (the default) and its dark twin.
  *
  * Root canvas is Mist (#F4F7FC); cards sit on pure white with a hairline
  * slate border and a very soft shadow instead of the old glass fill. The
- * signature brand gradient — "The Fusion" — runs from Deep Blue (#1D4ED8)
- * to Bright Blue (#3B82F6) and is used for primary buttons, active states,
- * and energetic accents.
+ * signature brand gradient — "The Fusion" — runs from Indigo (#4F46E5) to
+ * Violet (#7C3AED) and is used for primary buttons, active states, and
+ * energetic accents.
  *
- * Every export name from the previous dark theme is preserved (ink, accent,
+ * Every export name from the original dark theme is preserved (ink, accent,
  * purple, gold, pink, …) so existing screen/component imports keep
- * compiling. Only the values changed — brand names now carry blue-family
- * colours. Semantic signals (success / warning / danger / confidence) keep
- * their meaningful hues.
+ * compiling. Only the values changed. Semantic signals (success / warning /
+ * danger / confidence) keep their meaningful hues.
  *
  * ── Runtime theming ────────────────────────────────────────────────────────
  * `colors` is the light palette and stays a plain export: it is the fallback
@@ -19,6 +18,12 @@
  * do NOT import it directly — they call `useColors()` (see ../lib/theme) and
  * build styles through a factory, because StyleSheet.create captures values at
  * module-evaluation time and could never re-run on a mode change.
+ *
+ * That last rule was widely broken: roughly forty-five sites across thirteen
+ * files retyped the *light* accent as a literal `#2563EB` / `#EFF6FF` /
+ * `rgba(37,99,235,…)`, so those controls stayed light-mode blue on a navy
+ * canvas and ignored the theme switch entirely. If you find yourself typing a
+ * brand hex into a screen, reach for `useColors()` instead.
  */
 
 // ─── Colours ────────────────────────────────────────────────────────────────
@@ -37,21 +42,36 @@ export const colors = {
   borderLight: "#EFF3F9",
 
   // ── "The Fusion" brand palette ──────────────────────────────────────────
-  /** Brand names kept from the dark theme; values are now blue-family. */
-  purple: "#2563EB", // Primary Blue    — gradient start
-  purpleDark: "#1D4ED8", // Deep Blue       — pressed / darker shade
-  gold: "#3B82F6", // Bright Blue     — gradient end
-  pink: "#0EA5E9", // Sky             — logo "Note" half, accents
+  /**
+   * Indigo → Violet. The previous values were Tailwind's blue-600/blue-500 and
+   * the "gradient" ran #1D4ED8 → #3B82F6 — two shades of the same hue, so it
+   * rendered as a flat blue with a slight sheen rather than as a fusion of
+   * anything. These endpoints travel ~28° of hue, which is what makes the
+   * gradient legible *as* a gradient.
+   *
+   * The names finally match the values: `purple` holds an actual purple.
+   */
+  purple: "#4F46E5", // Indigo        — gradient start
+  purpleDark: "#4338CA", // Deep Indigo   — pressed / darker shade
+  gold: "#7C3AED", // Violet        — gradient end
+  pink: "#A855F7", // Purple        — logo "Note" half, accents
 
   // ── Legacy aliases (used by existing screens / components) ──────────────
-  /** Primary action colour. Deliberately darker than `accent` so text set in
-   *  `ink` stays legible on an `accent`-filled surface. */
-  ink: "#1D4ED8",
-  accent: "#2563EB",
-  accentAlt: "#3B82F6",
-  accentSoft: "rgba(37, 99, 235, 0.10)",
-  accentGlow: "rgba(37, 99, 235, 0.22)",
-  pinkSoft: "rgba(14, 165, 233, 0.10)",
+  /**
+   * The two have different jobs, and mixing them up is what breaks contrast:
+   *
+   *   `ink`    — a *fill* that carries white text (active chips, the mic
+   *              circle, the tab-bar mic). Stays dark in both modes so
+   *              `onAccent` white holds well past AA on top of it.
+   *   `accent` — brand colour *on* a surface: text, icons, hairlines. Lifts in
+   *              dark mode, where a fill-weight indigo goes muddy on navy.
+   */
+  ink: "#4338CA",
+  accent: "#4F46E5",
+  accentAlt: "#7C3AED",
+  accentSoft: "rgba(79, 70, 229, 0.10)",
+  accentGlow: "rgba(79, 70, 229, 0.22)",
+  pinkSoft: "rgba(168, 85, 247, 0.10)",
 
   // ── Premium (Pro subscribers) ───────────────────────────────────────────
   /** Genuine amber. `gold` above is blue — it kept its name through the light
@@ -72,6 +92,19 @@ export const colors = {
   success: "#16A34A",
   warning: "#D97706",
   danger: "#DC2626",
+
+  /** Destructive washes. These were retyped as literal `rgba(220, 38, 38, …)`
+   *  in eight places, which meant dark mode painted a light-mode maroon fill
+   *  under a lightened salmon label — the tint and the text came from
+   *  different hues. */
+  dangerSoft: "rgba(220, 38, 38, 0.12)",
+  dangerBorder: "rgba(220, 38, 38, 0.30)",
+
+  /** Modal/drawer backdrop. `rgba(0,0,0,0.45)` was hardcoded in both, and on a
+   *  navy canvas it barely darkened anything: dialogs read as floating *among*
+   *  the screen behind them rather than above it. Dark mode needs the heavier
+   *  wash because it has less headroom to darken into. */
+  scrim: "rgba(15, 23, 42, 0.55)",
 
   // ── Confidence scale (PRD: honest confidence, never hidden) ─────────────
   confHigh: "#16A34A",
@@ -105,17 +138,19 @@ export const darkColors: Palette = {
   border: "#243146",
   borderLight: "#1C2739",
 
-  purple: "#3B82F6",
-  purpleDark: "#2563EB",
-  gold: "#60A5FA",
-  pink: "#38BDF8",
+  purple: "#818CF8",
+  purpleDark: "#6366F1",
+  gold: "#A78BFA",
+  pink: "#C084FC",
 
-  ink: "#2563EB",
-  accent: "#3B82F6",
-  accentAlt: "#60A5FA",
-  accentSoft: "rgba(59, 130, 246, 0.16)",
-  accentGlow: "rgba(59, 130, 246, 0.30)",
-  pinkSoft: "rgba(56, 189, 248, 0.16)",
+  // Fill, so it does *not* lift: white on #4F46E5 is 8.6:1, white on the
+  // lifted #818CF8 is 3.2:1 and fails AA at chip-label sizes.
+  ink: "#4F46E5",
+  accent: "#818CF8",
+  accentAlt: "#A78BFA",
+  accentSoft: "rgba(129, 140, 248, 0.16)",
+  accentGlow: "rgba(129, 140, 248, 0.30)",
+  pinkSoft: "rgba(192, 132, 252, 0.16)",
 
   // Amber lifts a step on navy, same reason the brand blues do.
   premium: "#FBBF24",
@@ -130,6 +165,14 @@ export const darkColors: Palette = {
   success: "#22C55E",
   warning: "#F59E0B",
   danger: "#F87171",
+
+  // Derived from the *lifted* danger, so the wash and its label finally agree.
+  dangerSoft: "rgba(248, 113, 113, 0.16)",
+  dangerBorder: "rgba(248, 113, 113, 0.38)",
+
+  // Heavier than light mode's: there is far less headroom to darken a navy
+  // canvas into, and 0.45 black over #0B1220 is almost a no-op.
+  scrim: "rgba(2, 2, 8, 0.74)",
 
   confHigh: "#22C55E",
   confMed: "#F59E0B",
@@ -152,19 +195,19 @@ export function paletteFor(mode: ThemeMode): Palette {
 
 export const gradients = {
   /** "The Fusion" — primary CTA, active states, energetic accents. */
-  brand: ["#1D4ED8", "#3B82F6"] as const,
+  brand: ["#4F46E5", "#7C3AED"] as const,
 
-  /** Sky → Blue — logo wordmark, onboarding icons. */
-  brandStart: ["#0EA5E9", "#2563EB"] as const,
+  /** Indigo → Purple, a wider sweep than `brand` — logo wordmark, onboarding icons. */
+  brandStart: ["#6366F1", "#A855F7"] as const,
 
   /** Dim tinted version of brand — subtle background washes. */
-  brandDim: ["rgba(29, 78, 216, 0.10)", "rgba(59, 130, 246, 0.10)"] as const,
+  brandDim: ["rgba(79, 70, 229, 0.10)", "rgba(124, 58, 237, 0.10)"] as const,
 
-  /** Recording-state button — deep blue pulse. */
-  record: ["#2563EB", "#1D4ED8"] as const,
+  /** Recording-state button — deep indigo pulse. */
+  record: ["#4F46E5", "#4338CA"] as const,
 
   /** Light accent — confidence high, saved state. */
-  gold: ["#3B82F6", "#60A5FA"] as const,
+  gold: ["#7C3AED", "#A78BFA"] as const,
 
   /** Real amber — the Pro avatar ring. Four stops so the ring reads as
    *  brushed metal rather than a flat band. */
@@ -174,7 +217,7 @@ export const gradients = {
   glass: ["rgba(255, 255, 255, 0.95)", "rgba(238, 243, 251, 0.95)"] as const,
 
   /** Legacy aliases kept for backward compatibility. */
-  pink: ["#0EA5E9", "#2563EB"] as const,
+  pink: ["#6366F1", "#A855F7"] as const,
 } as const;
 
 // ─── Spacing ────────────────────────────────────────────────────────────────
@@ -202,7 +245,18 @@ export const radii = {
 // ─── Typography ─────────────────────────────────────────────────────────────
 
 /**
- * Poppins families, loaded in App.tsx via `useFonts`.
+ * Two families, loaded together in `lib/appReady.ts` via `useFonts`.
+ *
+ * **Inter reads, Poppins announces.** Poppins used to do both jobs, and it is
+ * only good at one: its near-circular geometric letterforms and wide sidebearings
+ * make a handsome 36px wordmark and a juvenile 13px paragraph. Worse, the old
+ * scale was bold at every tier, so a dialog's cancel button landed at the same
+ * visual weight as the dialog's own title and the hierarchy collapsed.
+ *
+ * So the four workhorse names now resolve to Inter — every existing
+ * `fontFamily: fonts.bold` call site gets it, which is the right default because
+ * those sites are UI text. Poppins survives behind `display`/`displayBold`, used
+ * only by `typography.hero`/`display`/`screenTitle` and the splash wordmark.
  *
  * These are family names, not weights, and that distinction matters: once a
  * custom `fontFamily` is set, React Native stops honouring `fontWeight` —
@@ -212,26 +266,37 @@ export const radii = {
  * two. Every token below therefore carries `fontFamily` and no `fontWeight`.
  */
 export const fonts = {
-  regular: "Poppins_400Regular",
-  medium: "Poppins_500Medium",
-  semibold: "Poppins_600SemiBold",
-  bold: "Poppins_700Bold",
+  regular: "Inter_400Regular",
+  medium: "Inter_500Medium",
+  semibold: "Inter_600SemiBold",
+  bold: "Inter_700Bold",
+
+  /** Display only — wordmarks, splash, onboarding titles. Never body copy. */
+  display: "Poppins_600SemiBold",
+  displayBold: "Poppins_700Bold",
 } as const;
 
 /**
- * The type scale from the design sheet. `hero`/`screenTitle` cover the large
- * centred headings on splash, login, and onboarding; the rest are the everyday
- * in-app sizes.
+ * The type scale. `hero`/`screenTitle` cover the large centred headings on
+ * splash, login, and onboarding and are the Poppins tier; the rest are the
+ * everyday in-app sizes and read in Inter.
  */
 export const typography = {
   /** Splash + login wordmark. */
-  hero: { fontSize: 40, fontFamily: fonts.bold, letterSpacing: -1 },
-  display: { fontSize: 34, fontFamily: fonts.bold, letterSpacing: -0.5 },
+  hero: { fontSize: 40, fontFamily: fonts.displayBold, letterSpacing: -1 },
+  display: { fontSize: 34, fontFamily: fonts.displayBold, letterSpacing: -0.5 },
   /** Onboarding slide titles, "Welcome back!". */
-  screenTitle: { fontSize: 26, fontFamily: fonts.bold, letterSpacing: -0.5 },
-  title: { fontSize: 24, fontFamily: fonts.bold, letterSpacing: -0.3 },
-  heading: { fontSize: 18, fontFamily: fonts.semibold },
-  body: { fontSize: 15, fontFamily: fonts.regular },
+  screenTitle: {
+    fontSize: 26,
+    fontFamily: fonts.displayBold,
+    letterSpacing: -0.5,
+  },
+  /** In-app screen titles. Inter, not Poppins — this is chrome, not display. */
+  title: { fontSize: 24, fontFamily: fonts.bold, letterSpacing: -0.4 },
+  heading: { fontSize: 18, fontFamily: fonts.semibold, letterSpacing: -0.2 },
+  /** Inter carries a larger x-height than Poppins, so 14.5 here reads as large
+   *  as the old 15 did while fitting more words on a line. */
+  body: { fontSize: 14.5, fontFamily: fonts.regular },
   label: { fontSize: 14, fontFamily: fonts.semibold },
   caption: { fontSize: 12, fontFamily: fonts.medium, letterSpacing: 0.2 },
   /** Solfa syllables and note names — stays monospaced so columns line up. */
@@ -255,27 +320,27 @@ export const shadow = {
     elevation: 2,
   },
 
-  /** Blue lift — hero buttons, record button. */
+  /** Indigo lift — hero buttons, record button. */
   glow: {
-    shadowColor: "#2563EB",
+    shadowColor: "#4F46E5",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.28,
     shadowRadius: 20,
     elevation: 8,
   },
 
-  /** Lighter blue lift — save/confirm actions, high-confidence badges. */
+  /** Violet lift — save/confirm actions, high-confidence badges. */
   goldGlow: {
-    shadowColor: "#3B82F6",
+    shadowColor: "#7C3AED",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.24,
     shadowRadius: 16,
     elevation: 6,
   },
 
-  /** Sky lift — wordmark "Note" half on splash. */
+  /** Purple lift — wordmark "Note" half on splash. */
   pinkGlow: {
-    shadowColor: "#0EA5E9",
+    shadowColor: "#A855F7",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.26,
     shadowRadius: 18,
@@ -319,21 +384,21 @@ export const darkShadow: Shadows = {
     elevation: 2,
   },
   glow: {
-    shadowColor: "#3B82F6",
+    shadowColor: "#818CF8",
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 22,
     elevation: 8,
   },
   goldGlow: {
-    shadowColor: "#60A5FA",
+    shadowColor: "#A78BFA",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.34,
     shadowRadius: 18,
     elevation: 6,
   },
   pinkGlow: {
-    shadowColor: "#38BDF8",
+    shadowColor: "#C084FC",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.36,
     shadowRadius: 20,
@@ -351,6 +416,34 @@ export const darkShadow: Shadows = {
 export function shadowsFor(mode: ThemeMode): Shadows {
   return mode === "dark" ? darkShadow : shadow;
 }
+
+// ─── Motion ─────────────────────────────────────────────────────────────────
+
+/**
+ * Press-feedback motion, shared by `components/Touchable.tsx` and anything else
+ * that springs under a finger.
+ *
+ * The house style is snappy and restrained: settle in roughly 120 ms with no
+ * perceptible overshoot. In a `withSpring` config that comes from keeping `damping`
+ * high relative to `stiffness` — a bouncier feel would mean dropping damping, not
+ * lengthening a duration, because springs here are driven by physics rather than a
+ * curve and a time.
+ */
+export const motion = {
+  /** The one press spring. Passed straight to Reanimated's `withSpring`. */
+  press: { damping: 20, stiffness: 400, mass: 0.4 },
+
+  /** How far a control travels under the finger, by target shape. */
+  scale: {
+    /** Cards, chips, icon buttons — the default. */
+    default: 0.97,
+    /** Large circular targets (the tab-bar mic, Home's mic stage). At that
+     *  diameter 0.97 is too small a move to read. */
+    large: 0.94,
+    /** Full-bleed rows. Anything deeper reveals the canvas down both edges. */
+    row: 0.99,
+  },
+} as const;
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 

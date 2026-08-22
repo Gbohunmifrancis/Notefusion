@@ -4,7 +4,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,6 +12,7 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
+import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
@@ -22,6 +22,7 @@ import { toApiError } from "../api/client";
 import { pickProfileImage } from "../lib/imagePicker";
 import {
   fonts,
+  motion,
   radii,
   spacing,
   type Palette,
@@ -196,17 +197,18 @@ export function ProfileScreen() {
       <View style={styles.topBar}>
         {/* Needed since Profile stopped being a tab: it is pushed from the side bar now,
             and with `headerShown: false` the swipe gesture would be the only way back. */}
-        <TouchableOpacity
+        <Touchable
           onPress={() => nav.goBack()}
-          activeOpacity={0.7}
-          accessibilityRole="button"
           accessibilityLabel="Go back"
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          hitSlop={8}
+          // Borderless so the ripple radiates from the circle rather than boxing
+          // the hit-slop rectangle around it.
+          ripple="borderless"
         >
           <View style={styles.backCircle}>
             <Ionicons name="chevron-back" size={20} color={colors.text} />
           </View>
-        </TouchableOpacity>
+        </Touchable>
 
         <Text style={styles.pageTitle}>Profile</Text>
       </View>
@@ -303,9 +305,14 @@ export function ProfileScreen() {
           <View style={styles.modalCard}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Account Settings</Text>
-              <TouchableOpacity onPress={() => setAccountModal(false)} hitSlop={8}>
+              <Touchable
+                onPress={() => setAccountModal(false)}
+                hitSlop={8}
+                ripple="borderless"
+                accessibilityLabel="Close account settings"
+              >
                 <Ionicons name="close" size={22} color={colors.textMuted} />
-              </TouchableOpacity>
+              </Touchable>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -379,16 +386,20 @@ function MenuItem({
   const styles = useThemedStyles(makeStyles);
 
   return (
-    <TouchableOpacity
+    <Touchable
       style={[styles.menuRow, isLast && styles.menuRowLast]}
       onPress={onPress}
-      activeOpacity={0.7}
+      // Full-bleed row: a deeper press would pull it away from both edges of the
+      // card at once. No `radius` needed — `menuCard` already carries
+      // overflow:hidden, so the ripple clips to the card's corners.
+      scaleTo={motion.scale.row}
+      accessibilityLabel={label}
     >
       <Ionicons name={icon} size={20} color={colors.text} style={styles.menuIcon} />
       <Text style={styles.menuLabel}>{label}</Text>
       {meta ? <Text style={styles.menuMeta}>{meta}</Text> : null}
       <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 

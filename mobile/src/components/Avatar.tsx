@@ -3,13 +3,13 @@ import {
   Image,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Touchable } from './Touchable';
 import { fonts, gradients, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles } from '../lib/theme';
 
@@ -107,7 +107,10 @@ export function Avatar({
   );
 
   const body = (
-    <View style={[styles.wrap, busy && styles.busy, style]}>
+    // The busy dim is only applied here when the avatar is *not* pressable: when it
+    // is, `Touchable`'s own disabled fade covers the same box, and stacking the two
+    // would leave a mid-upload photo at a quarter opacity.
+    <View style={[styles.wrap, busy && !onPress && styles.busy, style]}>
       {framed}
       {editable ? (
         <View
@@ -129,15 +132,16 @@ export function Avatar({
   if (!onPress) return body;
 
   return (
-    <TouchableOpacity
+    <Touchable
       onPress={onPress}
-      activeOpacity={0.85}
       disabled={busy}
-      accessibilityRole="button"
+      // No ripple and no radius: the premium ring carries a gold glow, and clipping
+      // the view to the circle would cut that shadow off. The scale carries the press.
+      ripple={false}
       accessibilityLabel={editable ? 'Change profile picture' : 'Profile picture'}
     >
       {body}
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 

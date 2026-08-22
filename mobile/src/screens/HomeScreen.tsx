@@ -4,7 +4,6 @@ import {
   FlatList,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -15,6 +14,7 @@ import { Screen } from '../components/Screen';
 import { Avatar } from '../components/Avatar';
 import { AppDrawer } from '../components/AppDrawer';
 import { Card } from '../components/Card';
+import { Touchable } from '../components/Touchable';
 import { libraryApi, meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { deriveSolfa } from '../lib/solfa';
@@ -22,7 +22,7 @@ import { synthesizeMelodyWavBase64 } from '../lib/synth';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
 import { useSubscription } from '../lib/subscription';
-import { fonts, radii, spacing, type Palette, type Shadows } from '../design/theme';
+import { fonts, motion, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useThemedStyles, useColors, useTheme } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
 import type { RootStackParams, TabParams } from '../navigation/types';
@@ -176,11 +176,13 @@ export function HomeScreen({ navigation }: Props) {
 
               <View style={styles.headerActions}>
                 {/* Dark Mode Toggle */}
-                <TouchableOpacity
+                <Touchable
                   onPress={toggle}
                   style={styles.headerIconBtn}
                   hitSlop={8}
-                  accessibilityRole="button"
+                  // Bare glyphs, so the ripple radiates from the icon rather than
+                  // boxing its 4px of padding.
+                  ripple="borderless"
                   accessibilityLabel={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
                   <Ionicons
@@ -188,20 +190,20 @@ export function HomeScreen({ navigation }: Props) {
                     size={22}
                     color={colors.text}
                   />
-                </TouchableOpacity>
+                </Touchable>
 
                 {/* Notifications Bell — opens the notification controls. There is
                     no server-side notification feed to list, so an inbox would be
                     an empty screen; the settings are the real destination. */}
-                <TouchableOpacity
+                <Touchable
                   onPress={() => rootNav.navigate('Settings', { focus: 'notifications' })}
                   style={styles.headerIconBtn}
                   hitSlop={8}
-                  accessibilityRole="button"
+                  ripple="borderless"
                   accessibilityLabel="Notification settings"
                 >
                   <Ionicons name="notifications-outline" size={22} color={colors.text} />
-                </TouchableOpacity>
+                </Touchable>
               </View>
             </View>
 
@@ -223,35 +225,52 @@ export function HomeScreen({ navigation }: Props) {
 
             {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}
             <View style={styles.stageCard}>
-              <TouchableOpacity
-                activeOpacity={0.85}
+              <Touchable
                 onPress={() => navigation.navigate('Record')}
                 style={styles.micCircleWrap}
+                // The screen's hero control: heavier tick, deeper press. No ripple
+                // and no radius — the circle casts a blue glow that a clip would cut.
+                haptic="medium"
+                scaleTo={motion.scale.large}
+                ripple={false}
+                accessibilityLabel="Start recording"
               >
                 <View style={styles.micCircle}>
                   <Ionicons name="mic" size={42} color="#FFFFFF" />
                 </View>
-              </TouchableOpacity>
+              </Touchable>
 
-              <TouchableOpacity onPress={() => navigation.navigate('Record')}>
+              <Touchable
+                onPress={() => navigation.navigate('Record')}
+                ripple={false}
+                accessibilityLabel="Start recording"
+              >
                 <Text style={styles.tapText}>Tap to start recording</Text>
                 <Text style={styles.importSubLink}>or import audio file</Text>
-              </TouchableOpacity>
+              </Touchable>
             </View>
 
             {/* ── 4. Recent Recordings Header ───────────────────────────────── */}
             <View style={styles.recentSectionHeader}>
               <Text style={styles.recentSectionTitle}>Recent</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Library')}>
+              <Touchable
+                onPress={() => navigation.navigate('Library')}
+                ripple={false}
+                accessibilityLabel="See all transcriptions"
+              >
                 <Text style={styles.seeAllText}>See all</Text>
-              </TouchableOpacity>
+              </Touchable>
             </View>
           </View>
         }
         renderItem={({ item }) => (
-          <TouchableOpacity
-            activeOpacity={0.85}
+          <Touchable
             onPress={() => openRecent(item)}
+            // No ripple: clipping it to the Card's 20px radius would need
+            // overflow:hidden, which cuts off the Card's own shadow. The scale
+            // carries the press on its own.
+            ripple={false}
+            accessibilityLabel={`Open ${item.title}`}
           >
             <Card style={styles.recentCard} padded={false}>
               <View style={styles.recentRow}>
@@ -271,16 +290,23 @@ export function HomeScreen({ navigation }: Props) {
                 <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
               </View>
             </Card>
-          </TouchableOpacity>
+          </Touchable>
         )}
         ListEmptyComponent={
           loadError ? (
             <Card style={styles.emptyCard}>
               <Ionicons name="cloud-offline-outline" size={30} color={colors.danger} />
               <Text style={styles.emptyText}>{loadError}</Text>
-              <TouchableOpacity onPress={reload} style={styles.retryBtn}>
+              {/* Flat accentSoft fill and no shadow, so this one can be clipped
+                  to its pill and take the ripple. */}
+              <Touchable
+                onPress={reload}
+                style={styles.retryBtn}
+                radius={radii.pill}
+                accessibilityLabel="Try again"
+              >
                 <Text style={styles.retryLabel}>Try again</Text>
-              </TouchableOpacity>
+              </Touchable>
             </Card>
           ) : (
             <Card style={styles.emptyCard}>

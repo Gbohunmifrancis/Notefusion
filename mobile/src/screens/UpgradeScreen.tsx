@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -13,6 +12,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
+import { Touchable } from "../components/Touchable";
 import { BrandMark } from "../components/BrandMark";
 import { billingApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -249,17 +249,16 @@ export function UpgradeScreen({ navigation }: Props) {
     <Screen scroll contentStyle={styles.screen}>
       {/* ── Header row ─────────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
-        <TouchableOpacity
+        <Touchable
           onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-          accessibilityRole="button"
           accessibilityLabel="Go back"
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          hitSlop={8}
+          ripple="borderless"
         >
           <View style={styles.backCircle}>
             <Ionicons name="chevron-back" size={20} color={colors.text} />
           </View>
-        </TouchableOpacity>
+        </Touchable>
 
         <View style={styles.titleBlock}>
           <Text style={styles.titleLabel}>Membership</Text>
@@ -531,12 +530,15 @@ function PlanOption({
         : "/ month";
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
+    <Touchable
       onPress={onSelect}
       style={[styles.planOption, selected && styles.planOptionSelected]}
+      // Flat surface fill and no shadow, so the ripple can be clipped to the card's
+      // own corner radius rather than painting a square over it.
+      radius={radii.lg}
       accessibilityRole="radio"
       accessibilityState={{ selected }}
+      accessibilityLabel={`${plan.name}, ${formatPrice(plan.amountMinor, plan.currency)} ${period}`}
     >
       <View
         style={[styles.radio, selected && styles.radioSelected]}
@@ -562,7 +564,7 @@ function PlanOption({
       {selected && (
         <Ionicons name="checkmark-circle" size={20} color={colors.accent} />
       )}
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 

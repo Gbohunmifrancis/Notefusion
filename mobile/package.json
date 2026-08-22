@@ -8,9 +8,11 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "tsc --noEmit",
-    "build:brand": "node scripts/build-brand-assets.mjs"
+    "build:brand": "node scripts/build-brand-assets.mjs",
+    "build:engraver": "node scripts/build-engraver.mjs"
   },
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/poppins": "^0.4.1",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -29,6 +31,7 @@
     "expo-document-picker": "~56.0.4",
     "expo-file-system": "~56.0.8",
     "expo-font": "~56.0.7",
+    "expo-haptics": "~56.0.3",
     "expo-image-picker": "~56.0.24",
     "expo-linear-gradient": "~56.0.4",
     "expo-notifications": "~56.0.22",
@@ -47,11 +50,13 @@
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
     "react-native-svg": "15.15.4",
+    "react-native-webview": "13.16.1",
     "react-native-worklets": "0.8.3"
   },
   "devDependencies": {
     "@types/react": "~19.2.0",
     "babel-preset-expo": "~56.0.18",
+    "opensheetmusicdisplay": "^2.1.2",
     "typescript": "~6.0.3"
   },
   "overrides": {

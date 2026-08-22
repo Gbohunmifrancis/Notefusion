@@ -4,7 +4,6 @@ import {
   Platform,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,8 +15,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
+import { Touchable } from "../components/Touchable";
 import {
   fonts,
+  motion,
   spacing,
   type Palette,
 } from "../design/theme";
@@ -103,30 +104,36 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 
           if (tab.isCenter) {
             return (
-              <TouchableOpacity
+              <Touchable
                 key={`center-${tab.label}`}
-                accessibilityRole="button"
                 accessibilityLabel="Record melody"
-                activeOpacity={0.85}
                 onPress={onPress}
+                // The deliberate control on this bar, so it gets the heavier tick
+                // and a deeper press — 0.97 barely reads at this diameter.
+                haptic="medium"
+                scaleTo={motion.scale.large}
+                // No ripple and no radius: the circle casts a blue glow, and either
+                // one would clip the shadow or paint a rectangle across the cell.
+                ripple={false}
                 style={styles.centerBtnWrap}
               >
                 <View style={styles.centerBtn}>
                   <Ionicons name="mic" size={26} color="#FFFFFF" />
                 </View>
                 <Text style={[styles.tabLabel, styles.centerLabel]}>{tab.label}</Text>
-              </TouchableOpacity>
+              </Touchable>
             );
           }
 
           return (
-            <TouchableOpacity
+            <Touchable
               key={`${tab.label}-${index}`}
-              accessibilityRole="button"
               accessibilityState={focused ? { selected: true } : {}}
               accessibilityLabel={tab.label}
-              activeOpacity={0.85}
               onPress={onPress}
+              // Borderless is the platform idiom for a bare tab icon: the ripple
+              // radiates from the glyph instead of boxing the whole cell.
+              ripple="borderless"
               style={styles.tabItem}
             >
               <Ionicons
@@ -137,7 +144,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
                 {tab.label}
               </Text>
-            </TouchableOpacity>
+            </Touchable>
           );
         })}
       </View>

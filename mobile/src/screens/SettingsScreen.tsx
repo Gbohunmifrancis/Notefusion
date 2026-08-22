@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Switch,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,9 +14,11 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
+import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
+import * as haptics from "../lib/haptics";
 import {
   disablePush,
   enablePush,
@@ -31,7 +32,7 @@ import {
 import { meApi } from "../api/endpoints";
 import type { MyProfile } from "../api/types";
 import { toApiError } from "../api/client";
-import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import { fonts, motion, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useTheme, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
@@ -73,6 +74,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
   const [pushOn, setPushOn] = useState(true);
   const [soundOn, setSoundOn] = useState(true);
+  const [hapticsOn, setHapticsOn] = useState(haptics.hapticsEnabled());
   const [permission, setPermission] = useState<PushPermission | null>(null);
   const [pushBusy, setPushBusy] = useState(false);
 
@@ -92,10 +94,18 @@ export function SettingsScreen({ navigation, route }: Props) {
   // ── Notification preferences ───────────────────────────────────────────────
 
   const syncPermission = useCallback(async () => {
-    const [, perm] = await Promise.all([loadNotificationPrefs(), getPushPermission()]);
+    const [, perm] = await Promise.all([
+      loadNotificationPrefs(),
+      getPushPermission(),
+      // Already in flight from the module's own load, so this resolves
+      // immediately — awaiting it just guarantees the switch never paints "on"
+      // for a frame when the stored value is off.
+      haptics.loadHapticPref(),
+    ]);
     setPermission(perm);
     setPushOn(pushEnabled());
     setSoundOn(soundEnabled());
+    setHapticsOn(haptics.hapticsEnabled());
   }, []);
 
   useEffect(() => {
@@ -133,8 +143,46 @@ export function SettingsScreen({ navigation, route }: Props) {
     await setSoundEnabled(on);
   }
 
+  async function toggleHaptics(on: boolean) {
+    setHapticsOn(on);
+    // Persist before the demo buzz below: `play` reads the module cache, which
+    // this sets.
+    await haptics.setHapticsEnabled(on);
+    // Turning it on demonstrates itself. Turning it off obviously can't.
+    if (on) haptics.play("medium");
+  }
+
   /** Push state, as one thing the row can render. */
   const push = describePush(permission, pushOn);
+
+  /** The push row's contents, so the row can be wrapped in a press target or not. */
+  const pushRow = (
+    <>
+      <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+        <Ionicons name={push.icon} size={16} color={colors.accent} />
+      </View>
+
+      <View style={styles.switchText}>
+        <Text style={styles.rowLabel}>Push Notifications</Text>
+        <Text style={[styles.rowHint, push.warn && styles.rowHintWarn]}>
+          {push.hint}
+        </Text>
+      </View>
+
+      {pushBusy ? (
+        <ActivityIndicator color={colors.accent} />
+      ) : (
+        <Switch
+          value={pushOn}
+          onValueChange={togglePush}
+          disabled={push.disabled}
+          trackColor={{ false: colors.border, true: colors.accentGlow }}
+          thumbColor={pushOn ? colors.accent : colors.surface}
+          ios_backgroundColor={colors.border}
+        />
+      )}
+    </>
+  );
 
   // The delete control depends on whether the account has a password to re-verify.
   // Until the profile loads we can't tell, so the danger zone shows a spinner
@@ -198,17 +246,19 @@ export function SettingsScreen({ navigation, route }: Props) {
     <Screen scroll scrollRef={scrollRef}>
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
-        <TouchableOpacity
+        <Touchable
           onPress={() => navigation.goBack()}
-          activeOpacity={0.7}
-          accessibilityRole="button"
           accessibilityLabel="Go back"
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          hitSlop={8}
+          // Borderless so the ripple radiates from the circle rather than boxing
+          // it; a `radius` clip here would be the same shape but square-cornered
+          // at the hit-slop edges.
+          ripple="borderless"
         >
           <View style={styles.backCircle}>
             <Ionicons name="chevron-back" size={20} color={colors.text} />
           </View>
-        </TouchableOpacity>
+        </Touchable>
 
         <View style={styles.titleBlock}>
           <Text style={styles.titleLabel}>Account</Text>
@@ -219,7 +269,7 @@ export function SettingsScreen({ navigation, route }: Props) {
       {/* ── Appearance ───────────────────────────────────────────────────── */}
       <View style={styles.sectionHeader}>
         <Ionicons name="color-palette-outline" size={14} color={colors.purple} />
-        <Text style={styles.sectionTitle}>Appearance</Text>
+        <Text style={styles.sectionTitle}>Appearance & feel</Text>
       </View>
 
       <Card style={styles.card}>
@@ -251,6 +301,39 @@ export function SettingsScreen({ navigation, route }: Props) {
             ios_backgroundColor={colors.border}
           />
         </View>
+
+        <View style={styles.rowDivider} />
+
+        {/* Every button, row and chip buzzes on press, so this has to be
+            switchable — an unstoppable vibration is an accessibility problem, not
+            a flourish. The flag is read from a module cache on each press, which
+            is why turning it off silences everything at once. */}
+        <View style={styles.switchRow}>
+          <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+            <Ionicons
+              name={hapticsOn ? "pulse" : "pulse-outline"}
+              size={16}
+              color={colors.purple}
+            />
+          </View>
+
+          <View style={styles.switchText}>
+            <Text style={styles.rowLabel}>Haptic feedback</Text>
+            <Text style={styles.rowHint}>
+              {hapticsOn
+                ? "A short tap when you press a control."
+                : "Controls respond silently."}
+            </Text>
+          </View>
+
+          <Switch
+            value={hapticsOn}
+            onValueChange={toggleHaptics}
+            trackColor={{ false: colors.border, true: colors.accentGlow }}
+            thumbColor={hapticsOn ? colors.accent : colors.surface}
+            ios_backgroundColor={colors.border}
+          />
+        </View>
       </Card>
 
       {/* ── Notifications ────────────────────────────────────────────────── */}
@@ -266,37 +349,22 @@ export function SettingsScreen({ navigation, route }: Props) {
         </View>
 
         <Card style={styles.card}>
-          <TouchableOpacity
-            style={styles.switchRow}
-            activeOpacity={push.actionable ? 0.7 : 1}
-            disabled={!push.actionable}
-            onPress={() => Linking.openSettings()}
-            accessibilityRole={push.actionable ? "button" : undefined}
-          >
-            <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
-              <Ionicons name={push.icon} size={16} color={colors.accent} />
-            </View>
-
-            <View style={styles.switchText}>
-              <Text style={styles.rowLabel}>Push Notifications</Text>
-              <Text style={[styles.rowHint, push.warn && styles.rowHintWarn]}>
-                {push.hint}
-              </Text>
-            </View>
-
-            {pushBusy ? (
-              <ActivityIndicator color={colors.accent} />
-            ) : (
-              <Switch
-                value={pushOn}
-                onValueChange={togglePush}
-                disabled={push.disabled}
-                trackColor={{ false: colors.border, true: colors.accentGlow }}
-                thumbColor={pushOn ? colors.accent : colors.surface}
-                ios_backgroundColor={colors.border}
-              />
-            )}
-          </TouchableOpacity>
+          {/* Only a *press target* when pressing it does something — that is,
+              when permission was denied and the row's job is to open system
+              settings. Wrapping it unconditionally would fade the whole row to
+              the disabled 0.4 in the ordinary case, Switch included. */}
+          {push.actionable ? (
+            <Touchable
+              style={styles.switchRow}
+              onPress={() => Linking.openSettings()}
+              scaleTo={motion.scale.row}
+              accessibilityLabel="Open system notification settings"
+            >
+              {pushRow}
+            </Touchable>
+          ) : (
+            <View style={styles.switchRow}>{pushRow}</View>
+          )}
 
           <View style={styles.rowDivider} />
 
@@ -352,27 +420,29 @@ export function SettingsScreen({ navigation, route }: Props) {
 
           <View style={styles.rowDivider} />
 
-          <TouchableOpacity
+          <Touchable
             style={styles.linkRow}
             onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")}
-            activeOpacity={0.7}
+            scaleTo={motion.scale.row}
+            accessibilityLabel="Privacy Policy"
           >
             <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
             <Text style={styles.linkText}>Privacy Policy</Text>
             <Ionicons name="open-outline" size={14} color={colors.textFaint} />
-          </TouchableOpacity>
+          </Touchable>
 
           <View style={styles.rowDivider} />
 
-          <TouchableOpacity
+          <Touchable
             style={styles.linkRow}
             onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")}
-            activeOpacity={0.7}
+            scaleTo={motion.scale.row}
+            accessibilityLabel="Terms of Service"
           >
             <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
             <Text style={styles.linkText}>Terms of Service</Text>
             <Ionicons name="open-outline" size={14} color={colors.textFaint} />
-          </TouchableOpacity>
+          </Touchable>
 
           <View style={styles.rowDivider} />
 

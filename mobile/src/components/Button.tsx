@@ -17,6 +17,7 @@ import {
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import * as haptics from "../lib/haptics";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
@@ -136,7 +137,13 @@ export function Button({
     >
       <Pressable
         onPress={isDisabled ? undefined : onPress}
-        onPressIn={() => !isDisabled && animate(0.96)}
+        onPressIn={() => {
+          if (isDisabled) return;
+          animate(0.96);
+          // Danger variants are the destructive ones (sign out, delete), so they
+          // get the warning pattern rather than the ordinary tick.
+          haptics.play(variant === "danger" ? "warning" : "light");
+        }}
         onPressOut={() => animate(1)}
         accessibilityRole="button"
         accessibilityLabel={label}

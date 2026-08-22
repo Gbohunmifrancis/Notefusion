@@ -6,7 +6,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -15,10 +14,11 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar } from './Avatar';
+import { Touchable } from './Touchable';
 import { useAuth } from '../lib/auth';
 import { useSubscription } from '../lib/subscription';
 import { showDialog } from '../lib/dialog';
-import { fonts, radii, spacing, type Palette, type Shadows } from '../design/theme';
+import { fonts, motion, radii, spacing, type Palette, type Shadows } from '../design/theme';
 import { useColors, useThemedStyles } from '../lib/theme';
 import type { RootStackParams } from '../navigation/types';
 
@@ -153,10 +153,13 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
         ]}
       >
         {/* ── Identity: the whole block is the route to the profile ─────────── */}
-        <TouchableOpacity
-          activeOpacity={0.85}
+        <Touchable
           onPress={() => go(() => nav.navigate('Profile'))}
           style={styles.identity}
+          // The rows only shrink a hair: the panel slides in as it is pressed, and
+          // a deep press on top of that reads as two animations arguing.
+          scaleTo={motion.scale.row}
+          accessibilityLabel="View profile"
         >
           <Avatar uri={pictureUrl} name={user?.fullName} size={52} premium={isPro} />
           <View style={styles.identityText}>
@@ -166,7 +169,7 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
             <Text style={styles.viewProfile}>View profile</Text>
           </View>
           <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
-        </TouchableOpacity>
+        </Touchable>
 
         <View style={styles.rule} />
 
@@ -248,11 +251,13 @@ function Row({
   danger?: boolean;
 }) {
   return (
-    <TouchableOpacity
-      activeOpacity={0.85}
+    <Touchable
       onPress={onPress}
       style={styles.row}
-      accessibilityRole="button"
+      scaleTo={motion.scale.row}
+      // `danger` is only ever the sign-out row, and that one opens a confirmation —
+      // the warning pattern is what marks it as the row you did not mean to hit.
+      haptic={danger ? 'warning' : 'light'}
       accessibilityLabel={label}
     >
       <Ionicons name={icon} size={21} color={color} />
@@ -260,7 +265,7 @@ function Row({
         {label}
       </Text>
       {trailing}
-    </TouchableOpacity>
+    </Touchable>
   );
 }
 

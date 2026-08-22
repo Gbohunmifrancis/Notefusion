@@ -24,7 +24,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
+import { Touchable } from "../components/Touchable";
 import { showDialog } from "../lib/dialog";
+import * as haptics from "../lib/haptics";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -553,10 +555,11 @@ export function RecordScreen() {
               otherwise announce "5 of 5 left" to a Pro account. Tappable throughout —
               wanting to see the plans is not only an out-of-credits impulse. */}
           {known && !isPro && (
-            <TouchableOpacity
+            <Touchable
               onPress={() => nav.navigate("Upgrade")}
               style={[styles.trialPill, trialRemaining <= 0 && styles.trialPillSpent]}
-              activeOpacity={0.8}
+              radius={radii.pill}
+              accessibilityLabel="See Pro plans"
             >
               <Ionicons
                 name={trialRemaining > 0 ? "sparkles-outline" : "lock-closed-outline"}
@@ -573,7 +576,7 @@ export function RecordScreen() {
                   ? `${trialRemaining} of ${trialTotal} free transcriptions left`
                   : "Free trial used up — see Pro plans"}
               </Text>
-            </TouchableOpacity>
+            </Touchable>
           )}
 
           {/* Mode toggle */}
@@ -593,17 +596,23 @@ export function RecordScreen() {
                   </Text>
                 </LinearGradient>
               ) : (
-                <TouchableOpacity
+                <Touchable
                   key={m}
                   style={styles.modeSegment}
-                  onPress={() => phase === "ready" && setMode(m)}
+                  onPress={() => setMode(m)}
+                  // Both pickers are locked once recording starts. Passing `disabled`
+                  // rather than gating inside onPress is what stops a locked segment
+                  // springing and buzzing at a tap that does nothing — and it fades to
+                  // the same 0.4 every other disabled control in the app uses, so the
+                  // lock is finally visible.
                   disabled={phase !== "ready"}
-                  activeOpacity={0.7}
+                  radius={radii.pill}
+                  accessibilityLabel={m === "melody" ? "Melody mode" : "Polyphonic mode"}
                 >
                   <Text style={styles.modeTextInactive}>
                     {m === "melody" ? "Melody" : "Polyphonic"}
                   </Text>
-                </TouchableOpacity>
+                </Touchable>
               );
             })}
           </View>
@@ -629,15 +638,16 @@ export function RecordScreen() {
                     <Text style={styles.keyChipTextActive}>{k}</Text>
                   </LinearGradient>
                 ) : (
-                  <TouchableOpacity
+                  <Touchable
                     key={k}
                     style={styles.keyChip}
-                    onPress={() => phase === "ready" && setSelectedKey(k)}
+                    onPress={() => setSelectedKey(k)}
                     disabled={phase !== "ready"}
-                    activeOpacity={0.7}
+                    radius={radii.pill}
+                    accessibilityLabel={`Key: ${k}`}
                   >
                     <Text style={styles.keyChipText}>{k}</Text>
-                  </TouchableOpacity>
+                  </Touchable>
                 );
               })}
             </ScrollView>
@@ -682,10 +692,14 @@ export function RecordScreen() {
             ]}
           />
 
-          {/* Record button */}
+          {/* Record button. Deliberately still a TouchableOpacity: it owns the
+              ripple/glow system above, and a competing press-scale would fight it.
+              It does take the heavier tick, on press-in — starting and stopping a
+              recording is the most consequential tap on the screen. */}
           <TouchableOpacity
             activeOpacity={0.88}
             onPress={isUploading ? undefined : handleButtonPress}
+            onPressIn={() => haptics.play("medium")}
             disabled={isUploading}
             style={styles.btnOuter}
           >
@@ -808,14 +822,15 @@ export function RecordScreen() {
           </Text>
 
           {phase === "ready" && (
-            <TouchableOpacity
+            <Touchable
               onPress={pickAudioFile}
               style={styles.importFileBtn}
-              activeOpacity={0.8}
+              radius={radii.pill}
+              accessibilityLabel="Import audio file"
             >
               <Ionicons name="folder-open-outline" size={18} color={colors.accent} />
               <Text style={styles.importFileBtnText}>Import audio file</Text>
-            </TouchableOpacity>
+            </Touchable>
           )}
 
           {isUploading && (
