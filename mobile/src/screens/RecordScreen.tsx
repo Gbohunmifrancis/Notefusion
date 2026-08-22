@@ -79,6 +79,27 @@ const RECORDING_OPTIONS: RecordingOptions = {
   isMeteringEnabled: true,
 };
 
+// ── Recording length cap ──────────────────────────────────────────────────────
+//
+// Mirrors the transcriber's NF_PYIN_MAX_SECONDS (server default 60). Above that cap
+// _pyin_track returns empty arrays, which takes out pyin_refine and pyin_semitone
+// together — and the latter is, by its own docstring, "what fixes the ghost accidentals
+// at their source". Measured on the accuracy corpus by forcing the skip, crossing the
+// line costs solfa.chromatic_ghosts 1.526 -> 3.526 and notes.semitone_neighbour_ghosts
+// 1.632 -> 4.237. So a clip a second over came back visibly worse than one a second
+// under, with nothing on screen to explain why — which is the shape of the
+// spurious-accidental reports that arrive from real recordings.
+//
+// The server still ACCEPTS up to NF_MAX_CLIP_SECONDS (180), and file imports are
+// deliberately left alone: this only stops the microphone path from walking off the
+// cliff by holding the button. Raise or delete this once refinement is span-targeted
+// rather than whole-clip and the server-side cap goes back up.
+const MAX_RECORD_SEC = 60;
+
+// How close to the cap the subtitle starts counting down instead of giving the
+// ordinary "tap when you're done" hint.
+const RECORD_WARN_AT_SEC = 15;
+
 // ── Voice-level guidance thresholds (dBFS, 0 = loudest, -160 = silence) ───────
 //
 // expo-audio's metering value is an averaged power level in dBFS. Typical
@@ -388,6 +409,19 @@ export function RecordScreen() {
     },
     [],
   );
+
+  // ── Auto-stop at MAX_RECORD_SEC ───────────────────────────────────────────
+  //
+  // Submits for the user rather than refusing to record further, because the clip up to
+  // the cap is perfectly usable and discarding it would be worse than truncating it.
+  // Safe against firing twice: the phase guard closes as soon as stopAndSubmit sets
+  // "uploading", and stopAndSubmit itself returns early unless recorder.isRecording.
+  // stopAndSubmit is deliberately not a dependency — it is redeclared every render, so
+  // depending on it would re-run this effect on each one.
+  useEffect(() => {
+    if (phase === "recording" && elapsed >= MAX_RECORD_SEC) void stopAndSubmit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, elapsed]);
 
   // ── Voice-level metering & "sing louder" guidance ─────────────────────────
   //
@@ -811,7 +845,10 @@ export function RecordScreen() {
           <Text style={styles.statusSub}>
             {phase === "ready" &&
               "Sing, hum, or play near the mic for accurate Solfa extraction."}
-            {phase === "recording" && "Tap the button again when you're done."}
+            {phase === "recording" &&
+              (elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
+                ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC} seconds is the limit for accurate notation.`
+                : "Tap the button again when you're done.")}
             {/* Once the server has the job it finishes it whether or not anyone is watching, and
                 sends a notification when it does. Said here because the poll on this screen used to
                 be the only thing tracking a job, so leaving quietly abandoned it — the upload is

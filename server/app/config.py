@@ -69,11 +69,15 @@ class Settings:
         best available explanation for a spurious-accidental report that arrives from real
         recordings while the corpus looks clean.
 
-        **The harness cannot see any of it**: all 38 cases render to 3.71-8.82 s and none
-        exceeds 20 s, so the >60 s regime is 0% measured.  Nor is the cliff reachable only
-        in theory — ``max_clip_seconds`` is 180 and the recorder has no duration cap or
-        auto-stop, so holding the button is enough.  Whichever way the latency/length trade
-        is settled, a long-clip case is the prerequisite for gating it.
+        **The harness now sees it.**  It could not before: all 38 cases rendered to
+        3.71-8.82 s, none over 20 s, so the >60 s regime was 0% measured while
+        ``max_clip_seconds`` accepted 180 s and the recorder had no duration cap.
+        ``long_clip_over_pyin_cap`` (corpus.py) is that regime — 67.8 s, paired with
+        ``vibrato_heavy`` on everything but length — and per reference note it carries
+        2.0x the ghosts, 1.7x the accidentals and 2.6x the semitone-neighbour errors of its
+        under-cap twin.  The mobile recorder now auto-stops at 60 s to stay on the good side
+        of the line (``MAX_RECORD_SEC`` in ``RecordScreen.tsx``); imports are deliberately
+        still allowed past it, so the cliff remains reachable by file upload.
         """
         return float(os.getenv("NF_PYIN_MAX_SECONDS", "60"))
 

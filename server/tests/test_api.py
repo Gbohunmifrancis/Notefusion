@@ -78,6 +78,52 @@ def test_submit_returns_202_and_polls_done(monkeypatch):
         assert body["result"] is not None
         assert body["result"]["musicxml"]
         assert isinstance(body["result"]["notes"], list)
+        # Default: a clip that was refined must not carry a warning flag.
+        assert body["result"]["pitchRefined"] is True
+
+
+def test_a_skipped_refinement_reaches_the_wire(monkeypatch):
+    """``pitchRefined`` is the client's only signal that a long clip was degraded.
+
+    Worth its own contract test rather than trusting the DTO, because it is a negative
+    boolean that defaults to True: both plausible wiring mistakes — dropping it from
+    ``ResultDto`` and mis-aliasing the camelCase key — fail *silently*, as "this clip
+    was fine".  The flag exists precisely for the clips that are not.
+    """
+    from app.jobs import queue as queue_mod
+
+    def fake_transcribe(audio_path, mode="melody", **kwargs):
+        from app.pipeline.transcriber import TranscriptionResult
+
+        return TranscriptionResult(
+            key="C",
+            key_confidence=1.0,
+            tempo=120,
+            time_signature="4/4",
+            musicxml="<score/>",
+            midi_base64="bWk=",
+            notes=[],
+            solfa_lines=["Doh is C", "| - |"],
+            overall_confidence=1.0,
+            pitch_refined=False,
+        )
+
+    monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.5)
+        r = client.post(
+            "/v1/transcribe",
+            files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
+            data={"mode": "melody"},
+        )
+        assert r.status_code == 202
+        submit = SubmitResponse.model_validate(r.json())
+        body = _wait_for_status(client, submit.job_id, STATUS_DONE)
+        assert body["result"]["pitchRefined"] is False
+        # snake_case must NOT also be present — the C# and mobile DTOs bind the alias,
+        # and a model emitting both would let a typo in either tier pass unnoticed.
+        assert "pitch_refined" not in body["result"]
 
 
 def test_submit_rejects_empty_file():

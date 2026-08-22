@@ -139,7 +139,8 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
                 .ToList(),
             wire.Result.SolfaLines,
             wire.Result.OverallConfidence,
-            wire.Result.AudioPreviewBase64);
+            wire.Result.AudioPreviewBase64,
+            wire.Result.PitchRefined);
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error);
     }

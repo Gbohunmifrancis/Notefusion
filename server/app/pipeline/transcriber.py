@@ -632,6 +632,14 @@ class TranscriptionResult:
     # Base64-encoded 16-bit PCM WAV synthesised from the note list.
     # Empty string when synthesis is skipped (e.g. no notes survived).
     audio_preview_base64: str = ""
+    # False when the pyin stage contributed no evidence to this clip's pitches, which
+    # is a materially worse transcription rather than a cosmetic difference: with
+    # ``pyin_semitone`` dark, solfa.chromatic_ghosts more than doubles (1.526 -> 3.526
+    # on the corpus) and it is the ghost accidentals that grow.  Three causes collapse
+    # into it — the clip exceeded ``pyin_max_seconds``, the decode failed, or no frame
+    # was voiced — and clients want the same caveat for all three, so the field
+    # reports the outcome rather than the reason.  See ``config.pyin_max_seconds``.
+    pitch_refined: bool = True
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -2357,6 +2365,11 @@ def _transcribe_wav(
         solfa_lines=solfa_lines,
         overall_confidence=round(float(np.mean([n.conf for n in notes])), 3),
         audio_preview_base64=audio_preview_b64,
+        # Read off the events rather than re-testing duration against the cap, so this
+        # cannot drift from what _pyin_track actually did: _refine_pitches sets
+        # pyin_midi on every event pyin could speak about, on every branch, so an
+        # empty contour for any reason leaves all of them None.
+        pitch_refined=any(e.pyin_midi is not None for e in events),
     )
 
 
