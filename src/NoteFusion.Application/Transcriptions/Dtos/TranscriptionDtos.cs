@@ -38,9 +38,10 @@ public sealed record NoteEventDto(
 /// </para>
 ///
 /// <para>
-/// <c>PitchRefined</c> is false when the worker skipped its pyin refinement stage,
-/// which happens for clips longer than the worker's pyin budget (NF_PYIN_MAX_SECONDS,
-/// 60 s by default).  Clients should present the notation with a caveat rather than
+/// <c>PitchRefined</c> is false when the worker skipped its pyin refinement stage — now
+/// only a decode failure or a wholly unvoiced clip, since NF_PYIN_MAX_SECONDS was raised
+/// to match NF_MAX_CLIP_SECONDS (180 s) and a longer clip is refused rather than
+/// under-refined.  Clients should present the notation with a caveat rather than
 /// suppress it — the notes are still the best available reading, but they carry roughly
 /// twice the spurious accidentals.
 /// </para>

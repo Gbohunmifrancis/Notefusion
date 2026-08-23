@@ -43,8 +43,9 @@ class ResultDto(ApiModel):
     # Empty string when synthesis produced no output (e.g. no notes survived the pipeline).
     # The camelCase alias "audioPreviewBase64" is emitted automatically by to_camel.
     audio_preview_base64: str = ""
-    # False when pyin refinement contributed nothing to this clip — most often because it
-    # ran longer than NF_PYIN_MAX_SECONDS. Clients should caveat the notation rather than
+    # False when pyin refinement contributed nothing to this clip: a failed decode, or no
+    # voiced frame at all. The duration cause is unreachable now that NF_PYIN_MAX_SECONDS
+    # equals NF_MAX_CLIP_SECONDS. Clients should caveat the notation rather than
     # hide it: the notes are still the best available reading, they just carry roughly
     # twice the spurious accidentals. Defaults True so an older worker cannot make a
     # good transcription look degraded.

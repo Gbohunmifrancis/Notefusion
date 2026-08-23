@@ -36,50 +36,122 @@ class Settings:
     def pyin_max_seconds(self) -> float:
         """Longest clip that gets pyin refinement; longer ones keep Basic Pitch's pitches.
 
-        pyin is the most expensive thing in the pipeline: measured on the pinned
-        librosa 0.11.0, 2.4 s for a 10 s clip and 13.0 s for a 60 s clip — about
-        0.22x realtime.  Inference runs on a single worker (``inference_workers``),
-        so an unguarded 180 s clip (``max_clip_seconds``) would add ~39 s to the
-        queue latency of every job behind it.  60 s covers the great majority of
-        hummed phrases at a bounded worst case.
+        **Now equal to ``max_clip_seconds``, so nothing the API accepts is skipped.**  This
+        was 60 s, and the paragraphs below are kept because they are the measurement that
+        justified paying to raise it — not history for its own sake.
 
-        Re-timed since at **0.40x realtime** (4.04 s / 10 s, 8.86 s / 20 s, 16.13 s / 40 s;
-        discard the first reading in any sweep, numba's JIT lands in it).  Different
-        hardware, so this does not correct the number above so much as bracket it — but at
-        0.40x a 180 s clip is ~72 s of pyin, not ~39 s, so the pressure behind this cap is
-        if anything understated.
+        pyin is the most expensive thing in the pipeline and it runs on a single worker
+        (``inference_workers``), so this cap was a latency guarantee: on the pinned librosa
+        0.11.0 at librosa's default grid, 0.40-0.54x realtime depending on hardware and how
+        much the clip wobbles, which made an unguarded 180 s clip ~72-97 s of pyin added to the
+        queue latency of every job behind it.  60 s covered the great majority of hummed
+        phrases at a bounded worst case.  ``pyin_resolution`` is what changed the arithmetic:
+        at 0.23x realtime a full 180 s clip costs ~41 s, against ~32 s for a 60 s clip before,
+        so the whole accepted range now fits in the budget that used to buy 60 s.
 
-        **What crossing it costs, which this docstring used to leave unsaid.**  Above the
-        cap ``_pyin_track`` returns empty arrays, so ``pyin_refine`` AND ``pyin_semitone``
-        both go dark — and per ``pyin_semitone``'s own docstring that stage "is what fixes
-        the ghost accidentals at their source".  Measured by forcing the skip on all 38
-        cases (``NF_PYIN_MAX_SECONDS=1``), against the shipped baseline:
+        **What crossing the old cap cost.**  Above it ``_pyin_track`` returns empty arrays, so
+        ``pyin_refine`` AND ``pyin_semitone`` both go dark — and per ``pyin_semitone``'s own
+        docstring that stage "is what fixes the ghost accidentals at their source".  Measured
+        by forcing the skip on all 38 cases (``NF_PYIN_MAX_SECONDS=1``):
 
             solfa.chromatic_ghosts            1.526 -> 3.526   (+131%)
             notes.semitone_neighbour_ghosts   1.632 -> 4.237   (+160%)
-            solfa.ghost_count                 2.553 -> 4.947
             solfa.degree_accuracy             0.940 -> 0.827
-            solfa.syllable_accuracy           0.935 -> 0.827
             key.exact                         0.895 -> 0.789
             notes.f1                          0.882 -> 0.789   (recall 0.911 -> 0.812)
-            tempo.abs_error                  14.184 -> 20.526
 
-        Sixteen gated metrics fail; this is roughly the pre-``pyin_semitone`` pipeline.  So
-        the cap is not a graceful degradation in coverage, it is a cliff, and it is the
-        best available explanation for a spurious-accidental report that arrives from real
-        recordings while the corpus looks clean.
+        Sixteen gated metrics failed; that is roughly the pre-``pyin_semitone`` pipeline.  So
+        the cap was never a graceful degradation in coverage, it was a cliff — and the best
+        available explanation for a spurious-accidental report arriving from real recordings
+        while the corpus looked clean.
 
-        **The harness now sees it.**  It could not before: all 38 cases rendered to
-        3.71-8.82 s, none over 20 s, so the >60 s regime was 0% measured while
-        ``max_clip_seconds`` accepted 180 s and the recorder had no duration cap.
-        ``long_clip_over_pyin_cap`` (corpus.py) is that regime — 67.8 s, paired with
-        ``vibrato_heavy`` on everything but length — and per reference note it carries
-        2.0x the ghosts, 1.7x the accidentals and 2.6x the semitone-neighbour errors of its
-        under-cap twin.  The mobile recorder now auto-stops at 60 s to stay on the good side
-        of the line (``MAX_RECORD_SEC`` in ``RecordScreen.tsx``); imports are deliberately
-        still allowed past it, so the cliff remains reachable by file upload.
+        **What lifting it bought, on the 39-case harness** (``long_clip_over_pyin_cap`` is
+        67.8 s and was the only case above the old cap; the numbers are corpus-wide against
+        the 60 s / 0.1-grid baseline):
+
+            solfa.chromatic_ghosts            3.846 -> 2.846   (-26%)
+            notes.semitone_neighbour_ghosts   5.256 -> 3.051   (-42%)
+            solfa.ghost_count                 6.179 -> 4.821
+            solfa.degree_accuracy             0.934 -> 0.944
+            solfa.syllable_accuracy           0.923 -> 0.933
+            notes.f1                          0.866 -> 0.875   (recall 0.898 -> 0.913)
+            tempo.abs_error                  17.359 -> 15.641
+            key.confidence_auc                0.929 -> 0.964
+
+        and on the long case itself, ``notes.f1`` 0.240 -> 0.596, ``solfa.degree_accuracy``
+        0.707 -> 0.988, estimated notes 226 -> 166 against 99 real.  The over-segmentation is
+        the mechanism: refinement collapses semitone-adjacent fragments, which is why the ghost
+        columns move furthest.
+
+        One case regressed and it is a real cost, not a rounding artefact:
+        ``vibrato_rate_k15`` read C major and now reads F minor, taking its
+        ``solfa.degree_accuracy`` to 0.000.  ``vibrato_heavy`` and ``vibrato_rate_k155`` moved
+        the other way over the same change, so ``key.exact`` is unmoved at 0.897 — the four
+        hard vibrato cases trade places whenever the pitch evidence shifts, because their key
+        decision is marginal.  Tuning the pyin grid to protect one of them would be fitting to
+        the corpus; the fix is a real tiebreak on the key ensemble (ends-on-doh and diatonic
+        parsimony), which is tracked separately.
+
+        ``pitch_refined`` on the wire still reports the skip, because the other two causes —
+        a failed decode and a clip with no voiced frame — remain reachable.
         """
-        return float(os.getenv("NF_PYIN_MAX_SECONDS", "60"))
+        return float(os.getenv("NF_PYIN_MAX_SECONDS", "180"))
+
+    @property
+    def pyin_resolution(self) -> float:
+        """pyin's Viterbi grid, in semitones.  Coarser than librosa's default on purpose.
+
+        This is what pays for ``pyin_max_seconds``, so the two are one decision and neither
+        docstring is readable without the other.
+
+        librosa defaults ``resolution`` to 0.1 semitones, which over
+        ``PYIN_FMIN_HZ``..``PYIN_FMAX_HZ`` is **481 candidate bins** per frame, and the Viterbi
+        transition matrix is quadratic in that count.  ``_refine_pitches`` then takes a median
+        over each event's frames and, on the ``pyin_semitone`` path, **rounds it to the nearest
+        integer MIDI number**.  Precision finer than a semitone was being computed and thrown
+        away, and the throwing away is not incidental — it is what the stage is for.
+
+        Cost measured on 20 s of ``long_clip_over_pyin_cap`` (5.5 Hz / 1.2 semitone vibrato,
+        the hardest thing in the corpus for an f0 tracker); agreement judged on the rounded
+        per-event median over ``vibrato_heavy``'s 64 real inference events:
+
+            resolution   bins   x realtime   speedup   medians identical   max frame drift
+              0.1 (lib)   481       0.54       1.00x    reference           --
+              0.2         240       0.23       2.39x    --                  0.10 semitone
+              0.25        192       0.20       2.67x    63/64  (98.4%)      0.15 semitone
+              0.5          96       0.05      10.36x    55/64  (85.9%)      0.20 semitone
+
+        **0.2 is chosen, and not the cheapest setting that looked lossless.**  0.25 was, on
+        the agreement column, and the 39-case harness overruled it: both were run end to end
+        at a 180 s cap and 0.2 won on nearly every gated metric — ``notes.f1`` 0.875 against
+        0.872, ``solfa.degree_accuracy`` 0.944 against 0.938, ``key.confidence_auc`` 0.964
+        against 0.921, and the long case's own ``notes.f1`` 0.596 against 0.413.  0.25 also
+        tipped ``vibrato_rate_k15`` into reading F major, failing the ``key.fifth_confusion``
+        gate outright.  Frame-level agreement is a proxy; the harness is the measurement.
+
+        0.5 is 10x cheaper and refused: 85.9% would move roughly one note in seven.  It also
+        scored *worse* than 1.0 on the same test (85.9% against 90.6%), which is the warning
+        that coarse grids do not degrade smoothly — they move the Viterbi path rather than
+        merely blunting it.  Read the whole column as "close to the default is safe, far from
+        it is unpredictable", not as a curve to optimise along.
+
+        The payoff is the cap: at 0.23x realtime a full 180 s ``max_clip_seconds`` clip costs
+        ~41 s of pyin, against ~32 s for a 60 s clip on the old grid.  The entire accepted
+        duration range now fits inside a latency budget that used to buy 60 s, so the cliff
+        ``pyin_max_seconds`` used to document is gone rather than moved.
+
+        Span-*targeted* refinement was the plan this replaced.  It was measured first and
+        abandoned: the union of spans a targeting rule would have to refine (padded ±0.10 s,
+        "suspect" = shorter than 0.20 s or semitone-adjacent to a temporal neighbour, which is
+        the wobble-fuse signal) covers **97.0%** of ``vibrato_heavy`` and **99.2%** of
+        ``long_clip_over_pyin_cap``.  A wobbling clip fragments into semitone-adjacent events
+        across its whole timeline — 530 events for 99 reference notes — so the targeting signal
+        is not sparse on precisely the clips that need refining.  Targeting would have saved
+        ~1% there while saving half on clean short clips already under the cap.  Making the
+        *frame* cheaper works because the waste is uniform; making the *span* smaller does not,
+        because the suspicion is uniform too.
+        """
+        return float(os.getenv("NF_PYIN_RESOLUTION", "0.2"))
 
     @property
     def pyin_semitone(self) -> bool:

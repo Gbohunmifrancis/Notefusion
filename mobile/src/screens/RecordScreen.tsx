@@ -81,20 +81,19 @@ const RECORDING_OPTIONS: RecordingOptions = {
 
 // ── Recording length cap ──────────────────────────────────────────────────────
 //
-// Mirrors the transcriber's NF_PYIN_MAX_SECONDS (server default 60). Above that cap
-// _pyin_track returns empty arrays, which takes out pyin_refine and pyin_semitone
-// together — and the latter is, by its own docstring, "what fixes the ghost accidentals
-// at their source". Measured on the accuracy corpus by forcing the skip, crossing the
-// line costs solfa.chromatic_ghosts 1.526 -> 3.526 and notes.semitone_neighbour_ghosts
-// 1.632 -> 4.237. So a clip a second over came back visibly worse than one a second
-// under, with nothing on screen to explain why — which is the shape of the
-// spurious-accidental reports that arrive from real recordings.
+// Mirrors the server's NF_MAX_CLIP_SECONDS (180), which is a hard 413: a longer recording
+// is not degraded, it is refused, and the user would lose the whole take. Stopping at the
+// limit and submitting is the only outcome that keeps the audio.
 //
-// The server still ACCEPTS up to NF_MAX_CLIP_SECONDS (180), and file imports are
-// deliberately left alone: this only stops the microphone path from walking off the
-// cliff by holding the button. Raise or delete this once refinement is span-targeted
-// rather than whole-clip and the server-side cap goes back up.
-const MAX_RECORD_SEC = 60;
+// This was 60 s and the reason was different — NF_PYIN_MAX_SECONDS was also 60, and above
+// it _pyin_track returned empty arrays, taking out pyin_refine and pyin_semitone together
+// (the latter being "what fixes the ghost accidentals at their source"). Crossing that line
+// cost solfa.chromatic_ghosts 1.526 -> 3.526 on the corpus, so a clip a second over came
+// back visibly worse than one a second under with nothing on screen to explain why. The
+// worker's pyin grid is now coarser (NF_PYIN_RESOLUTION, 2.39x cheaper for no measured loss),
+// which bought a 180 s pyin budget — the cap and the accepted duration are the same number
+// now, so there is no accuracy cliff left inside the recordable range to hide from.
+const MAX_RECORD_SEC = 180;
 
 // How close to the cap the subtitle starts counting down instead of giving the
 // ordinary "tap when you're done" hint.
@@ -847,7 +846,7 @@ export function RecordScreen() {
               "Sing, hum, or play near the mic for accurate Solfa extraction."}
             {phase === "recording" &&
               (elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
-                ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC} seconds is the limit for accurate notation.`
+                ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
                 : "Tap the button again when you're done.")}
             {/* Once the server has the job it finishes it whether or not anyone is watching, and
                 sends a notification when it does. Said here because the poll on this screen used to

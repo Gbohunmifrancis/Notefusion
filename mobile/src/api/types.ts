@@ -77,8 +77,10 @@ export interface TranscriptionResult {
    */
   audioPreviewBase64?: string;
   /**
-   * False when the worker skipped its pyin refinement stage — almost always
-   * because the clip ran longer than the worker's 60s pyin budget.
+   * False when the worker skipped its pyin refinement stage. No longer reachable
+   * by recording a long clip: the worker's pyin budget now equals the duration it
+   * accepts (180 s, which MAX_RECORD_SEC in RecordScreen mirrors), so the two
+   * remaining causes are a failed decode and a clip with no voiced frame at all.
    *
    * Worth surfacing rather than swallowing: with that stage dark, the worker's
    * accuracy corpus records spurious accidentals rising from 1.53 to 3.53 per

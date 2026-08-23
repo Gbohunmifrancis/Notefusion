@@ -1132,9 +1132,10 @@ class TestBlendConfidence:
 class TestPyinContour:
     """Every failure path must degrade to "no refinement", never raise.
 
-    pyin is the most expensive thing in the pipeline (~0.22x realtime) and runs on a
-    single-worker queue, so the length budget is a latency guarantee rather than a
-    nicety — and a tracker that throws on an odd clip must not fail the whole job.
+    pyin is the most expensive thing in the pipeline (~0.23x realtime at the grid
+    ``pyin_resolution`` sets, ~0.54x at librosa's default) and runs on a single-worker
+    queue, so the length budget is a latency guarantee rather than a nicety — and a
+    tracker that throws on an odd clip must not fail the whole job.
     """
 
     def _patch_librosa(self, monkeypatch, load=None, pyin=None):
@@ -1144,6 +1145,29 @@ class TestPyinContour:
             monkeypatch.setattr(librosa, "load", load)
         if pyin is not None:
             monkeypatch.setattr(librosa, "pyin", pyin)
+
+    def test_the_configured_resolution_reaches_librosa(self, monkeypatch, tmp_path):
+        """The coarse grid is what pays for the 180 s budget, and losing it is invisible.
+
+        Dropping the kwarg does not break a transcription or move a metric — it silently
+        restores librosa's 481-bin default, making pyin 2.4x slower on a single-worker
+        queue.  Nothing else in the suite would notice, and the symptom reaches users as
+        latency on long clips rather than as a failure.  So the pass-through is pinned.
+        """
+        seen = {}
+
+        def fake_pyin(y, **kwargs):
+            seen.update(kwargs)
+            return np.full(4, 440.0), np.ones(4, dtype=bool), np.ones(4)
+
+        monkeypatch.setenv("NF_PYIN_RESOLUTION", "0.4")
+        self._patch_librosa(
+            monkeypatch,
+            load=lambda *a, **k: (np.zeros(22_050, dtype=np.float32), 22_050),
+            pyin=fake_pyin,
+        )
+        transcriber._pyin_contour(tmp_path / "clip.wav")
+        assert seen.get("resolution") == pytest.approx(0.4)
 
     def test_a_clip_over_the_budget_is_skipped(self, monkeypatch, tmp_path):
         monkeypatch.setenv("NF_PYIN_MAX_SECONDS", "1")

@@ -1434,7 +1434,7 @@ def _pyin_contour(wav_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
             y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
             duration = len(y) / float(sr) if sr else 0.0
             # Checked after the decode and before pyin because the decode is the
-            # cheap half: pyin is ~0.22x realtime and this is a single-worker queue.
+            # cheap half: pyin is ~0.23x realtime and this is a single-worker queue.
             if duration > settings.pyin_max_seconds:
                 print(
                     f"[notefusion] clip is {duration:.0f}s, over the "
@@ -1442,8 +1442,15 @@ def _pyin_contour(wav_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
                     flush=True,
                 )
                 return np.empty(0), np.empty(0), np.empty(0)
+            # resolution is deliberately coarser than librosa's 0.1 default: it is what
+            # buys the cap above, and _refine_pitches rounds this to a semitone anyway.
+            # See config.pyin_resolution for the cost/agreement measurement.
             f0, _voiced_flag, voiced_prob = librosa.pyin(
-                y, fmin=PYIN_FMIN_HZ, fmax=PYIN_FMAX_HZ, sr=sr
+                y,
+                fmin=PYIN_FMIN_HZ,
+                fmax=PYIN_FMAX_HZ,
+                sr=sr,
+                resolution=settings.pyin_resolution,
             )
     except Exception as exc:
         print(f"[notefusion] librosa pyin failed ({exc}); keeping Basic Pitch pitches", flush=True)

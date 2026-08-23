@@ -11,7 +11,8 @@
   "flags": {
     "beat_align": true,
     "pyin_refine": true,
-    "pyin_max_seconds": 60.0,
+    "pyin_max_seconds": 180.0,
+    "pyin_resolution": 0.2,
     "pyin_semitone": true,
     "key_ensemble": true,
     "tempo_grid": true,
@@ -27,43 +28,43 @@
     "filter": ""
   },
   "aggregate": {
-    "beats.best_shift_beats": 0.014404410256410255,
-    "beats.f1": 0.9053853522244595,
-    "beats.f1_shift_invariant": 0.9238454895184136,
-    "beats.precision": 0.876709128622445,
-    "beats.recall": 0.9652939652939653,
-    "conf.auc": 0.6236343640020111,
-    "conf.mean_correct": 0.8147954361428046,
-    "conf.mean_wrong": 0.5181758923796791,
-    "conf.separation": 0.04046978838155314,
-    "key.confidence": 0.6572820512820513,
+    "beats.best_shift_beats": -0.009902000000000001,
+    "beats.f1": 0.9037094223978059,
+    "beats.f1_shift_invariant": 0.9244426027527616,
+    "beats.precision": 0.8733315741598875,
+    "beats.recall": 0.9645169645169646,
+    "conf.auc": 0.7449195355684832,
+    "conf.mean_correct": 0.7827443917341818,
+    "conf.mean_wrong": 0.5111839199002485,
+    "conf.separation": 0.0865072508254919,
+    "key.confidence": 0.6866410256410257,
     "key.exact": 0.8974358974358975,
     "key.fifth_confusion": 0.0,
     "key.parallel_confusion": 0.0,
     "key.relative_confusion": 0.02564102564102564,
     "key.weighted_score": 0.905128205128205,
-    "notes.f1": 0.8657455050891414,
-    "notes.f1_with_offset": 0.8223647442309203,
-    "notes.n_est": 18.846153846153847,
+    "notes.f1": 0.8746948309001505,
+    "notes.f1_with_offset": 0.819266415076881,
+    "notes.n_est": 17.46153846153846,
     "notes.n_ref": 13.435897435897436,
-    "notes.precision": 0.8474354634007059,
-    "notes.recall": 0.8982128982128982,
-    "notes.semitone_neighbour_ghosts": 5.256410256410256,
+    "notes.precision": 0.85217934675766,
+    "notes.recall": 0.9132349132349133,
+    "notes.semitone_neighbour_ghosts": 3.051282051282051,
     "solfa.anchor_matches_reference": 1.0,
-    "solfa.chromatic_count": 3.8974358974358974,
-    "solfa.chromatic_ghosts": 3.8461538461538463,
-    "solfa.degree_accuracy": 0.9340907511639219,
-    "solfa.ghost_count": 6.17948717948718,
-    "solfa.matched": 12.666666666666666,
-    "solfa.octave_error_rate": 0.010843266940827916,
+    "solfa.chromatic_count": 2.8974358974358974,
+    "solfa.chromatic_ghosts": 2.8461538461538463,
+    "solfa.degree_accuracy": 0.944127888572333,
+    "solfa.ghost_count": 4.82051282051282,
+    "solfa.matched": 12.64102564102564,
+    "solfa.octave_error_rate": 0.00802900802900803,
     "solfa.ref_chromatic_count": 0.05128205128205128,
-    "solfa.syllable_accuracy": 0.9230213327774303,
-    "tempo.abs_error": 17.358974358974358,
+    "solfa.syllable_accuracy": 0.9329851218740108,
+    "tempo.abs_error": 15.64102564102564,
     "tempo.metrical_factor": 0.7564102564102564,
     "tempo.octave_error": 0.0,
-    "tempo.rel_error": 0.18820415695415696,
-    "key.confidence_separation": 0.3629142857142857,
-    "key.confidence_auc": 0.9285714285714286,
+    "tempo.rel_error": 0.1703088578088578,
+    "key.confidence_separation": 0.39782857142857136,
+    "key.confidence_auc": 0.9642857142857143,
     "n_cases": 39,
     "n_failed": 0
   },
@@ -112,7 +113,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8872727272727272,
+        "conf.mean_correct": 0.8373636363636364,
         "key.confidence": 0.833
       }
     },
@@ -160,7 +161,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8868181818181818,
+        "conf.mean_correct": 0.8366363636363636,
         "key.confidence": 0.833
       }
     },
@@ -208,7 +209,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8894545454545455,
+        "conf.mean_correct": 0.8392727272727272,
         "key.confidence": 0.833
       }
     },
@@ -256,7 +257,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8894545454545454,
+        "conf.mean_correct": 0.8394545454545455,
         "key.confidence": 0.833
       }
     },
@@ -304,7 +305,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8886363636363636,
+        "conf.mean_correct": 0.8384545454545453,
         "key.confidence": 0.833
       }
     },
@@ -352,7 +353,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8900909090909092,
+        "conf.mean_correct": 0.8399090909090909,
         "key.confidence": 0.833
       }
     },
@@ -400,7 +401,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8892727272727273,
+        "conf.mean_correct": 0.839181818181818,
         "key.confidence": 0.833
       }
     },
@@ -448,7 +449,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8898181818181818,
+        "conf.mean_correct": 0.8395454545454545,
         "key.confidence": 0.833
       }
     },
@@ -496,7 +497,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8895454545454545,
+        "conf.mean_correct": 0.8393636363636362,
         "key.confidence": 0.833
       }
     },
@@ -544,7 +545,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8902727272727272,
+        "conf.mean_correct": 0.84,
         "key.confidence": 0.833
       }
     },
@@ -592,7 +593,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8894545454545454,
+        "conf.mean_correct": 0.8391818181818181,
         "key.confidence": 0.833
       }
     },
@@ -640,7 +641,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8901818181818182,
+        "conf.mean_correct": 0.8399090909090908,
         "key.confidence": 0.833
       }
     },
@@ -689,7 +690,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8898181818181818,
+        "conf.mean_correct": 0.8395454545454545,
         "key.confidence": 0.96
       }
     },
@@ -738,7 +739,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8896363636363636,
+        "conf.mean_correct": 0.8395454545454545,
         "key.confidence": 0.96
       }
     },
@@ -787,7 +788,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8895454545454548,
+        "conf.mean_correct": 0.8394545454545455,
         "key.confidence": 0.96
       }
     },
@@ -836,7 +837,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8900000000000001,
+        "conf.mean_correct": 0.8396363636363635,
         "key.confidence": 0.96
       }
     },
@@ -885,7 +886,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 1,
         "solfa.ref_chromatic_count": 1,
-        "conf.mean_correct": 0.8907272727272727,
+        "conf.mean_correct": 0.8403636363636363,
         "key.confidence": 1.0
       }
     },
@@ -934,7 +935,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 1,
         "solfa.ref_chromatic_count": 1,
-        "conf.mean_correct": 0.8886363636363637,
+        "conf.mean_correct": 0.8386363636363637,
         "key.confidence": 1.0
       }
     },
@@ -984,7 +985,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8966363636363638,
+        "conf.mean_correct": 0.8465454545454546,
         "key.confidence": 0.572
       }
     },
@@ -1034,10 +1035,10 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8960000000000001,
-        "conf.mean_wrong": 0.886,
-        "conf.auc": 0.95,
-        "conf.separation": 0.01000000000000012,
+        "conf.mean_correct": 0.8459,
+        "conf.mean_wrong": 0.835,
+        "conf.auc": 1.0,
+        "conf.separation": 0.01090000000000002,
         "key.confidence": 0.338
       }
     },
@@ -1085,7 +1086,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8922727272727272,
+        "conf.mean_correct": 0.8422727272727272,
         "key.confidence": 0.752
       }
     },
@@ -1134,7 +1135,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8912727272727273,
+        "conf.mean_correct": 0.841090909090909,
         "key.confidence": 0.752
       }
     },
@@ -1147,26 +1148,26 @@
         "defect6"
       ],
       "ref_key": "C major",
-      "est_key": "F minor",
+      "est_key": "C major",
       "ref_tempo": 96,
       "est_tempo": 117,
       "n_ref": 11,
-      "n_est": 17,
+      "n_est": 20,
       "metrics": {
-        "notes.precision": 0.35294117647058826,
-        "notes.recall": 0.5454545454545454,
-        "notes.f1": 0.42857142857142855,
-        "notes.f1_with_offset": 0.2857142857142857,
+        "notes.precision": 0.4,
+        "notes.recall": 0.7272727272727273,
+        "notes.f1": 0.5161290322580645,
+        "notes.f1_with_offset": 0.19354838709677416,
         "notes.semitone_neighbour_ghosts": 6,
         "notes.n_ref": 11,
-        "notes.n_est": 17,
-        "beats.precision": 0.5294117647058824,
+        "notes.n_est": 20,
+        "beats.precision": 0.45,
         "beats.recall": 0.8181818181818182,
-        "beats.f1": 0.6428571428571428,
-        "beats.best_shift_beats": -0.025641,
-        "beats.f1_shift_invariant": 0.7142857142857143,
-        "key.weighted_score": 0.0,
-        "key.exact": false,
+        "beats.f1": 0.5806451612903226,
+        "beats.best_shift_beats": -0.076923,
+        "beats.f1_shift_invariant": 0.7096774193548387,
+        "key.weighted_score": 1.0,
+        "key.exact": true,
         "key.relative_confusion": false,
         "key.fifth_confusion": false,
         "key.parallel_confusion": false,
@@ -1174,20 +1175,20 @@
         "tempo.rel_error": 0.21875,
         "tempo.octave_error": false,
         "tempo.metrical_factor": 0.0,
-        "solfa.degree_accuracy": 0.0,
-        "solfa.syllable_accuracy": 0.0,
+        "solfa.degree_accuracy": 1.0,
+        "solfa.syllable_accuracy": 0.8888888888888888,
         "solfa.octave_error_rate": 0.0,
         "solfa.anchor_matches_reference": true,
-        "solfa.ghost_count": 8,
+        "solfa.ghost_count": 11,
         "solfa.matched": 9,
         "solfa.chromatic_ghosts": 6,
         "solfa.chromatic_count": 6,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.6025,
-        "conf.mean_wrong": 0.4878181818181819,
-        "conf.auc": 0.8939393939393939,
-        "conf.separation": 0.11468181818181816,
-        "key.confidence": 0.112
+        "conf.mean_correct": 0.5725,
+        "conf.mean_wrong": 0.4805,
+        "conf.auc": 0.78125,
+        "conf.separation": 0.09200000000000003,
+        "key.confidence": 0.064
       }
     },
     "drift_1_semitone": {
@@ -1234,10 +1235,10 @@
         "solfa.chromatic_ghosts": 8,
         "solfa.chromatic_count": 8,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8222999999999999,
-        "conf.mean_wrong": 0.7747999999999999,
-        "conf.auc": 0.76,
-        "conf.separation": 0.04749999999999999,
+        "conf.mean_correct": 0.8253999999999999,
+        "conf.mean_wrong": 0.7897000000000001,
+        "conf.auc": 0.75,
+        "conf.separation": 0.03569999999999984,
         "key.confidence": 0.526
       }
     },
@@ -1285,7 +1286,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8859090909090909,
+        "conf.mean_correct": 0.8362727272727273,
         "key.confidence": 0.752
       }
     },
@@ -1334,7 +1335,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9050909090909091,
+        "conf.mean_correct": 0.8547272727272728,
         "key.confidence": 0.752
       }
     },
@@ -1383,7 +1384,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.888818181818182,
+        "conf.mean_correct": 0.8387272727272727,
         "key.confidence": 0.752
       }
     },
@@ -1431,7 +1432,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8849090909090908,
+        "conf.mean_correct": 0.8347272727272728,
         "key.confidence": 0.752
       }
     },
@@ -1444,26 +1445,26 @@
         "breadth"
       ],
       "ref_key": "C major",
-      "est_key": "C major",
+      "est_key": "F minor",
       "ref_tempo": 96,
       "est_tempo": 117,
       "n_ref": 11,
-      "n_est": 13,
+      "n_est": 15,
       "metrics": {
-        "notes.precision": 0.6153846153846154,
+        "notes.precision": 0.5333333333333333,
         "notes.recall": 0.7272727272727273,
-        "notes.f1": 0.6666666666666667,
-        "notes.f1_with_offset": 0.41666666666666663,
-        "notes.semitone_neighbour_ghosts": 2,
+        "notes.f1": 0.6153846153846153,
+        "notes.f1_with_offset": 0.30769230769230765,
+        "notes.semitone_neighbour_ghosts": 4,
         "notes.n_ref": 11,
-        "notes.n_est": 13,
-        "beats.precision": 0.6153846153846154,
+        "notes.n_est": 15,
+        "beats.precision": 0.5333333333333333,
         "beats.recall": 0.7272727272727273,
-        "beats.f1": 0.6666666666666667,
+        "beats.f1": 0.6153846153846153,
         "beats.best_shift_beats": -0.128205,
-        "beats.f1_shift_invariant": 0.9166666666666666,
-        "key.weighted_score": 1.0,
-        "key.exact": true,
+        "beats.f1_shift_invariant": 0.846153846153846,
+        "key.weighted_score": 0.0,
+        "key.exact": false,
         "key.relative_confusion": false,
         "key.fifth_confusion": false,
         "key.parallel_confusion": false,
@@ -1471,20 +1472,20 @@
         "tempo.rel_error": 0.21875,
         "tempo.octave_error": false,
         "tempo.metrical_factor": 0.0,
-        "solfa.degree_accuracy": 1.0,
-        "solfa.syllable_accuracy": 1.0,
+        "solfa.degree_accuracy": 0.0,
+        "solfa.syllable_accuracy": 0.0,
         "solfa.octave_error_rate": 0.0,
         "solfa.anchor_matches_reference": true,
-        "solfa.ghost_count": 5,
+        "solfa.ghost_count": 7,
         "solfa.matched": 8,
-        "solfa.chromatic_ghosts": 2,
-        "solfa.chromatic_count": 2,
+        "solfa.chromatic_ghosts": 3,
+        "solfa.chromatic_count": 3,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.5667500000000001,
-        "conf.mean_wrong": 0.49559999999999993,
-        "conf.auc": 0.7,
-        "conf.separation": 0.07115000000000016,
-        "key.confidence": 0.175
+        "conf.mean_correct": 0.5936250000000001,
+        "conf.mean_wrong": 0.4755714285714286,
+        "conf.auc": 0.7678571428571429,
+        "conf.separation": 0.11805357142857148,
+        "key.confidence": 0.035
       }
     },
     "vibrato_rate_k155": {
@@ -1523,7 +1524,7 @@
         "tempo.rel_error": 0.21875,
         "tempo.octave_error": false,
         "tempo.metrical_factor": 0.0,
-        "solfa.degree_accuracy": 0.8888888888888888,
+        "solfa.degree_accuracy": 1.0,
         "solfa.syllable_accuracy": 0.8888888888888888,
         "solfa.octave_error_rate": 0.0,
         "solfa.anchor_matches_reference": true,
@@ -1532,11 +1533,11 @@
         "solfa.chromatic_ghosts": 6,
         "solfa.chromatic_count": 6,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.5365,
-        "conf.mean_wrong": 0.49899999999999994,
-        "conf.auc": 0.65,
-        "conf.separation": 0.03750000000000003,
-        "key.confidence": 0.071
+        "conf.mean_correct": 0.542125,
+        "conf.mean_wrong": 0.46399999999999997,
+        "conf.auc": 0.7375,
+        "conf.separation": 0.078125,
+        "key.confidence": 0.907
       }
     },
     "vibrato_rate_k20": {
@@ -1584,10 +1585,10 @@
         "solfa.chromatic_ghosts": 7,
         "solfa.chromatic_count": 7,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.6758000000000001,
-        "conf.mean_wrong": 0.7037,
-        "conf.auc": 0.33,
-        "conf.separation": -0.027899999999999925,
+        "conf.mean_correct": 0.6831,
+        "conf.mean_wrong": 0.708,
+        "conf.auc": 0.335,
+        "conf.separation": -0.024899999999999922,
         "key.confidence": 0.447
       }
     },
@@ -1637,9 +1638,9 @@
         "solfa.chromatic_count": 2,
         "solfa.ref_chromatic_count": 0,
         "conf.mean_correct": 0.6045,
-        "conf.mean_wrong": 0.34825,
-        "conf.auc": 0.84375,
-        "conf.separation": 0.25625000000000003,
+        "conf.mean_wrong": 0.3425,
+        "conf.auc": 0.859375,
+        "conf.separation": 0.262,
         "key.confidence": 0.582
       }
     },
@@ -1656,20 +1657,20 @@
       "ref_tempo": 96,
       "est_tempo": 98,
       "n_ref": 11,
-      "n_est": 11,
+      "n_est": 12,
       "metrics": {
-        "notes.precision": 1.0,
+        "notes.precision": 0.9166666666666666,
         "notes.recall": 1.0,
-        "notes.f1": 1.0,
-        "notes.f1_with_offset": 1.0,
-        "notes.semitone_neighbour_ghosts": 0,
+        "notes.f1": 0.9565217391304348,
+        "notes.f1_with_offset": 0.8695652173913043,
+        "notes.semitone_neighbour_ghosts": 1,
         "notes.n_ref": 11,
-        "notes.n_est": 11,
-        "beats.precision": 1.0,
+        "notes.n_est": 12,
+        "beats.precision": 0.9166666666666666,
         "beats.recall": 1.0,
-        "beats.f1": 1.0,
+        "beats.f1": 0.9565217391304348,
         "beats.best_shift_beats": 0.0,
-        "beats.f1_shift_invariant": 1.0,
+        "beats.f1_shift_invariant": 0.9565217391304348,
         "key.weighted_score": 1.0,
         "key.exact": true,
         "key.relative_confusion": false,
@@ -1683,13 +1684,16 @@
         "solfa.syllable_accuracy": 1.0,
         "solfa.octave_error_rate": 0.0,
         "solfa.anchor_matches_reference": true,
-        "solfa.ghost_count": 0,
+        "solfa.ghost_count": 1,
         "solfa.matched": 11,
-        "solfa.chromatic_ghosts": 0,
-        "solfa.chromatic_count": 0,
+        "solfa.chromatic_ghosts": 1,
+        "solfa.chromatic_count": 1,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.7567272727272727,
-        "key.confidence": 0.752
+        "conf.mean_correct": 0.7447272727272728,
+        "conf.mean_wrong": 0.485,
+        "conf.auc": 1.0,
+        "conf.separation": 0.2597272727272728,
+        "key.confidence": 0.698
       }
     },
     "vibrato_depth_1_8": {
@@ -1737,10 +1741,10 @@
         "solfa.chromatic_ghosts": 19,
         "solfa.chromatic_count": 19,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.28900000000000003,
-        "conf.mean_wrong": 0.31985294117647056,
+        "conf.mean_correct": 0.2685,
+        "conf.mean_wrong": 0.3148235294117647,
         "conf.auc": 0.45588235294117646,
-        "conf.separation": -0.030852941176470527,
+        "conf.separation": -0.04632352941176471,
         "key.confidence": 0.343
       }
     },
@@ -1789,7 +1793,7 @@
         "solfa.chromatic_ghosts": 8,
         "solfa.chromatic_count": 8,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_wrong": 0.23140625,
+        "conf.mean_wrong": 0.23125,
         "key.confidence": 0.134
       }
     },
@@ -1838,7 +1842,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.89025,
+        "conf.mean_correct": 0.8401666666666667,
         "key.confidence": 0.412
       }
     },
@@ -1887,7 +1891,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8759230769230769,
+        "conf.mean_correct": 0.8259230769230766,
         "key.confidence": 0.214
       }
     },
@@ -1936,7 +1940,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8712,
+        "conf.mean_correct": 0.8215333333333333,
         "key.confidence": 0.355
       }
     },
@@ -1952,45 +1956,45 @@
       "ref_key": "C major",
       "est_key": "C major",
       "ref_tempo": 96,
-      "est_tempo": 234,
+      "est_tempo": 167,
       "n_ref": 99,
-      "n_est": 226,
+      "n_est": 166,
       "metrics": {
-        "notes.precision": 0.17256637168141592,
-        "notes.recall": 0.3939393939393939,
-        "notes.f1": 0.23999999999999996,
-        "notes.f1_with_offset": 0.030769230769230767,
-        "notes.semitone_neighbour_ghosts": 143,
+        "notes.precision": 0.4759036144578313,
+        "notes.recall": 0.797979797979798,
+        "notes.f1": 0.5962264150943396,
+        "notes.f1_with_offset": 0.24150943396226415,
+        "notes.semitone_neighbour_ghosts": 54,
         "notes.n_ref": 99,
-        "notes.n_est": 226,
-        "beats.precision": 0.36283185840707965,
-        "beats.recall": 0.8282828282828283,
-        "beats.f1": 0.5046153846153847,
-        "beats.best_shift_beats": 0.794872,
-        "beats.f1_shift_invariant": 0.56,
+        "notes.n_est": 166,
+        "beats.precision": 0.4759036144578313,
+        "beats.recall": 0.797979797979798,
+        "beats.f1": 0.5962264150943396,
+        "beats.best_shift_beats": -0.101796,
+        "beats.f1_shift_invariant": 0.7018867924528303,
         "key.weighted_score": 1.0,
         "key.exact": true,
         "key.relative_confusion": false,
         "key.fifth_confusion": false,
         "key.parallel_confusion": false,
-        "tempo.abs_error": 138.0,
-        "tempo.rel_error": 1.4375,
+        "tempo.abs_error": 71.0,
+        "tempo.rel_error": 0.7395833333333334,
         "tempo.octave_error": false,
         "tempo.metrical_factor": 0.0,
-        "solfa.degree_accuracy": 0.7073170731707317,
-        "solfa.syllable_accuracy": 0.47560975609756095,
-        "solfa.octave_error_rate": 0.10975609756097561,
+        "solfa.degree_accuracy": 0.9876543209876543,
+        "solfa.syllable_accuracy": 0.9753086419753086,
+        "solfa.octave_error_rate": 0.0,
         "solfa.anchor_matches_reference": true,
-        "solfa.ghost_count": 144,
-        "solfa.matched": 82,
-        "solfa.chromatic_ghosts": 92,
-        "solfa.chromatic_count": 92,
+        "solfa.ghost_count": 85,
+        "solfa.matched": 81,
+        "solfa.chromatic_ghosts": 51,
+        "solfa.chromatic_count": 51,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.32123076923076926,
-        "conf.mean_wrong": 0.43533155080213903,
-        "conf.auc": 0.029137529137529136,
-        "conf.separation": -0.11410078157136977,
-        "key.confidence": 0.253
+        "conf.mean_correct": 0.5764683544303797,
+        "conf.mean_wrong": 0.4966781609195402,
+        "conf.auc": 0.7623308598865124,
+        "conf.separation": 0.07979019351083949,
+        "key.confidence": 0.804
       }
     }
   }

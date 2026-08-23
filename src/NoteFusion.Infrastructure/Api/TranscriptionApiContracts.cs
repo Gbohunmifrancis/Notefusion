@@ -51,9 +51,10 @@ internal sealed record JobResultResponse(
     string AudioPreviewBase64 = "",
     /// <summary>
     /// False when the worker's pyin refinement stage contributed nothing to this clip —
-    /// most often because the audio ran longer than the worker's NF_PYIN_MAX_SECONDS
-    /// budget (60 s by default), though a decode failure or a wholly unvoiced clip
-    /// produce the same outcome.
+    /// a decode failure, or a wholly unvoiced clip.  The duration cause is no longer
+    /// reachable through this API: NF_PYIN_MAX_SECONDS now equals the worker's
+    /// NF_MAX_CLIP_SECONDS (180 s), so anything long enough to skip refinement is
+    /// rejected upstream with a 413 instead.
     ///
     /// It is not cosmetic: with that stage dark the worker's own accuracy corpus records
     /// spurious accidentals rising from 1.53 to 3.53 per clip, so the notation is worth
