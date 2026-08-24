@@ -50,8 +50,12 @@ public static class BillingErrors
         Error.Failure("BILLING_LIFETIME_NOT_CANCELABLE",
             "Lifetime access was bought outright, so there is nothing to cancel.");
 
-    public static readonly Error FreeTierLimitReached =
+    /// <summary>
+    /// Takes the allowance that was actually enforced, because it is regional — naming a global number here
+    /// would contradict the count the trial pill had been showing that user all along.
+    /// </summary>
+    public static Error FreeTierLimitReached(int allowance) =>
         Error.Forbidden("BILLING_FREE_TIER_LIMIT",
-            $"You have used all {FreeTier.TrialGenerations} of your free transcriptions. "
+            $"You have used all {allowance} of your free transcriptions. "
             + "Upgrade to Pro for unlimited transcriptions.");
 }

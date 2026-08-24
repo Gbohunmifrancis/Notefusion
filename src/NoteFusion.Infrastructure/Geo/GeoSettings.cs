@@ -24,8 +24,9 @@ public sealed class GeoSettings
     /// here than a larger quota, since there is no key to attribute one to.
     /// </para>
     /// <para>
-    /// Volume is sign-ups per day, not paywall views — the country is resolved once per account and never
-    /// on the checkout path. If lookups ever do become the binding constraint, replace this with a local
+    /// Volume is sign-ups per day, not paywall views — the country is resolved once per account, once more
+    /// the first time a handset spends a free generation (<c>TrialDeviceRecorder</c>), and never on the
+    /// checkout path. If lookups ever do become the binding constraint, replace this with a local
     /// MaxMind reader behind <c>IGeoIpLookup</c> — no caller changes.
     /// </para>
     /// </summary>

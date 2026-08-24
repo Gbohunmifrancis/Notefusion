@@ -34,6 +34,7 @@ import { AUDIT_ACTIONS, auditMeta } from "@/lib/audit";
 import { UNKNOWN, formatInstantDateTime } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
+import { useClampPage } from "@/lib/useClampPage";
 import { useDebounced } from "@/lib/useDebounced";
 
 const PAGE_SIZE = 30;
@@ -78,6 +79,10 @@ export function AuditLogView() {
     // spinner between two pages that differ by thirty rows.
     placeholderData: keepPreviousData,
   });
+
+  // The trail only grows, so this is the restored-tab case: a page number replayed from a longer
+  // filtered list would otherwise render the empty state with no control to step back.
+  useClampPage(page, state.data?.totalPages, setPage);
 
   const offset = getReportingOffset();
 

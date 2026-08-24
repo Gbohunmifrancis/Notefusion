@@ -140,7 +140,8 @@ not a checkout.
 
 ### 5. Plans, mobile, and config
 
-- Seed `pro_lifetime` (USD 79.00) and NGN monthly/yearly plans (₦7,500 / ₦75,000) in `BillingSeeder`.
+- Seed the USD lifetime plan (now `pro_lifetime_v2`, USD 200.00 — see "Price" below) and NGN
+  monthly/yearly plans (₦7,500 / ₦75,000) in `BillingSeeder`.
 - `mobile/src/api/types.ts:106` — add `"lifetime"` to the `BillingInterval` union. C# DTO and the
   mirror change together, per the wire-contract rule.
 - Paywall copy differs per tier: recurring price versus one-time purchase. A "lifetime" card that
@@ -163,8 +164,13 @@ both tiers correctly under a forced country.
    there is no metering in the codebase. Selling unlimited ONNX inference forever for one payment is
    an unbounded liability against a real per-job CPU cost. Recommend a monthly ceiling set high
    enough that no honest user notices. Needs a counter that does not exist yet.
-2. **Price.** Recommended $79 standing, $49 for the launch cohort ("lifetime for the price of one
-   year"), raising to $99 once `USD_CARD` is live and the checkout is no longer crypto-or-naira.
+2. **Price — settled at $200.** Was recommended here as $79 standing, $49 for a launch cohort. Shipped
+   at **$200** as `pro_lifetime_v2`, with `pro_lifetime` retired at its $79 rather than edited, so a
+   past buyer's receipt keeps saying what they agreed to. The higher figure follows from decision 3
+   going the other way: this is a one-off standing in for a subscription that cannot be billed on this
+   rail at all, so it has to cover the whole relationship rather than a year and a half of it. The
+   non-Nigerian free trial doubled to 10 generations alongside it — a longer look before a larger
+   single payment (`FreeTier.TrialGenerationsFor`).
 3. **Lifetime versus an annual one-off.** An annual one-off uses the identical working Bachs mode,
    carries no compute tail, and keeps revenue recurring, at the cost of manual re-purchase. It
    dominates lifetime on risk.

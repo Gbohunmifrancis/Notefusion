@@ -469,6 +469,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DeviceFingerprint")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<string>("JobId")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -494,9 +498,47 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("JobId")
                         .IsUnique();
 
+                    b.HasIndex("DeviceFingerprint", "TrialConsumedAtUtc");
+
                     b.HasIndex("UserId", "TrialConsumedAtUtc");
 
                     b.ToTable("transcription_jobs", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.TrialDevice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Fingerprint")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime>("FirstSeenAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FirstSeenCountry")
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
+                    b.Property<string>("FirstSeenIp")
+                        .HasMaxLength(45)
+                        .HasColumnType("character varying(45)");
+
+                    b.Property<DateTime>("LastSeenAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastSeenCountry")
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Fingerprint")
+                        .IsUnique();
+
+                    b.ToTable("trial_devices", (string)null);
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.User", b =>

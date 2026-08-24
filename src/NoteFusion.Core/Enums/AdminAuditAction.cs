@@ -19,5 +19,13 @@ public enum AdminAuditAction
     ReactivateUser = 6,
     CreateUser = 7,
     SendPasswordReset = 8,
-    ChangeRole = 9
+    ChangeRole = 9,
+
+    /// <summary>
+    /// An operator asked the provider what happened to one payment, ahead of the sweep that would have
+    /// asked anyway. Recorded even though it changes no account by itself, because the answer can: a
+    /// verification that lands writes a ledger entry and a subscription, and the trail is where "who
+    /// went looking, and when" has to be readable afterwards.
+    /// </summary>
+    ReconcilePayment = 10
 }

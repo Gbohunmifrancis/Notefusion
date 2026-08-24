@@ -24,6 +24,18 @@ public class TranscriptionJob : BaseEntity
     public DateTime CreatedAtUtc { get; private set; }
 
     /// <summary>
+    /// The handset this job was submitted from — an opaque hash, null for a client that sent none and for
+    /// every row written before the free tier became per-device.
+    /// </summary>
+    /// <remarks>
+    /// Stamped at submit rather than when the trial is charged, because charging happens on the poll and
+    /// the completion sweep charges with no request in flight at all — there would be no header to read.
+    /// This is the column <c>TrialUsage.CountUsedAsync</c> counts, which is what stops a second Google
+    /// account on the same phone being five more free generations.
+    /// </remarks>
+    public string? DeviceFingerprint { get; private set; }
+
+    /// <summary>
     /// When this job took one of the account's free generations. Null while it is still running, if
     /// it failed, or if the submitter was on Pro — none of those cost the user anything.
     /// </summary>
@@ -51,13 +63,14 @@ public class TranscriptionJob : BaseEntity
     /// </remarks>
     public DateTime? SettledAtUtc { get; private set; }
 
-    public static TranscriptionJob Record(string jobId, Guid userId, DateTime utcNow)
+    public static TranscriptionJob Record(string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint = null)
         => new()
         {
             Id = Guid.NewGuid(),
             JobId = Guard.NotNullOrWhiteSpace(jobId),
             UserId = Guard.AgainstEmpty(userId),
-            CreatedAtUtc = utcNow
+            CreatedAtUtc = utcNow,
+            DeviceFingerprint = deviceFingerprint
         };
 
     /// <summary>

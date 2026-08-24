@@ -29,21 +29,32 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
+    private readonly IDeviceFingerprint _device;
+    private readonly ITrialDeviceRecorder _devices;
 
     public SubmitTranscriptionCommandHandler(
         ITranscriptionApi api,
         IApplicationDbContext db,
         ICurrentUser currentUser,
-        IDateTimeProvider clock)
+        IDateTimeProvider clock,
+        IDeviceFingerprint device,
+        ITrialDeviceRecorder devices)
     {
         _api = api;
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
+        _device = device;
+        _devices = devices;
     }
 
     public async Task<Result<string>> Handle(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
     {
+        // Read once: the header cannot change mid-request, and the gate below and the stamp further down
+        // must agree about which handset this is or the two would count different things.
+        var fingerprint = _device.Current;
+        var metered = false;
+
         if (_currentUser.UserId is { } userId)
         {
             var sub = await _db.Subscriptions
@@ -51,16 +62,30 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 .FirstOrDefaultAsync(s => s.UserId == userId, cancellationToken);
 
             bool isPro = sub != null && sub.IsActiveAt(_clock.UtcNow);
-            if (!isPro)
+            metered = !isPro;
+
+            if (metered)
             {
                 // Successful generations, not saved rows. Counting Transcriptions meant deleting one
-                // handed the free slot back, so the limit was avoidable by anyone who noticed.
-                var used = await _db.TranscriptionJobs
-                    .CountAsync(j => j.UserId == userId && j.TrialConsumedAtUtc != null, cancellationToken);
+                // handed the free slot back, so the limit was avoidable by anyone who noticed. And counted
+                // per device as well as per account, because adding a second Google account to an Android
+                // phone is four taps and used to be worth five more free generations.
+                var used = await TrialUsage.CountUsedAsync(_db, userId, fingerprint, cancellationToken);
 
-                if (used >= FreeTier.TrialGenerations)
+                // The ceiling is regional: Nigeria's allowance is smaller than the rest of the world's, keyed
+                // on the same country code the paywall's currency rule uses.
+                var country = await _db.Users
+                    .Where(u => u.Id == userId)
+                    .Select(u => u.Country)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                var allowance = FreeTier.TrialGenerationsFor(country);
+
+                if (used >= allowance)
                 {
-                    return BillingErrors.FreeTierLimitReached;
+                    // Told the number that actually applied to them, not a global one: a refusal that names
+                    // a different count than the trial pill did is indistinguishable from a billing bug.
+                    return BillingErrors.FreeTierLimitReached(allowance);
                 }
             }
         }
@@ -87,10 +112,20 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
 
         // Attribute the job before the id leaves the server, so the very first poll can check
         // ownership. Nothing is charged here — the audio has not been transcribed yet, and a job that
-        // fails must not cost the user one of their five.
+        // fails must not cost the user one of their five. The device is stamped now rather than at
+        // consume time because the poll that charges the trial may be the completion sweep, which runs
+        // on a timer with no request behind it and so no header to read.
         if (submitted.IsSuccess && _currentUser.UserId is { } owner)
         {
-            _db.TranscriptionJobs.Add(TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow));
+            _db.TranscriptionJobs.Add(TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint));
+
+            // Only for accounts the allowance applies to: a Pro subscriber's handset is not part of the
+            // trial ledger, and registering it would spend a geo lookup to learn nothing.
+            if (metered && fingerprint is not null)
+            {
+                await _devices.RecordAsync(fingerprint, owner, cancellationToken);
+            }
+
             await _db.SaveChangesAsync(cancellationToken);
         }
 

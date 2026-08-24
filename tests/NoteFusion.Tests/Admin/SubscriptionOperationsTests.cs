@@ -500,7 +500,7 @@ public class SubscriptionOperationsTests
         var detail = await Detail(h, target.Id);
 
         Assert.Equal(2, detail.TrialGenerationsUsed);
-        Assert.Equal(5, detail.TrialGenerationsTotal);
+        Assert.Equal(10, detail.TrialGenerationsTotal); // Pat has no country recorded, so the wider allowance
         Assert.Equal(0, detail.TranscriptionCount);
     }
 
@@ -589,7 +589,7 @@ public class SubscriptionOperationsTests
         // by code and a plan invented here would not be the one production attaches.
         h.Db.Plans.Add(Plan.Create(PlanId("pro_monthly_ngn"), "pro_monthly_ngn", "NoteFusion Pro (Monthly)", 750_000, "NGN", BillingInterval.Monthly));
         h.Db.Plans.Add(Plan.Create(PlanId("pro_yearly_ngn"), "pro_yearly_ngn", "NoteFusion Pro (Yearly)", 7_500_000, "NGN", BillingInterval.Yearly));
-        h.Db.Plans.Add(Plan.Create(PlanId("pro_lifetime"), "pro_lifetime", "NoteFusion Pro (Lifetime)", 7_900, "USD", BillingInterval.Lifetime));
+        h.Db.Plans.Add(Plan.Create(PlanId("pro_lifetime_v2"), "pro_lifetime_v2", "NoteFusion Pro (Lifetime)", 20_000, "USD", BillingInterval.Lifetime));
         h.Db.SaveChanges();
 
         return (admin, target);

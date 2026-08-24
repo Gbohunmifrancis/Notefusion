@@ -148,7 +148,9 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             user.IsLockedOut(_clock.UtcNow) ? user.LockoutEndAt : null,
             transcriptionCount,
             trialUsed,
-            FreeTier.TrialGenerations,
+            // This user's ceiling, not a global one — the allowance is regional, and an admin comparing
+            // "used" against the wrong total would read a spent Nigerian trial as barely touched.
+            FreeTier.TrialGenerationsFor(user.Country),
             subscription,
             payments,
             ledger,

@@ -28,6 +28,11 @@ public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<Tra
 
         builder.HasIndex(j => new { j.UserId, j.TrialConsumedAtUtc });
 
+        // 64 exactly: SHA-256 hex out of RequestDeviceFingerprint. Indexed alongside the trial column for
+        // the same reason the pair above is — the submit gate counts by device on every free submission.
+        builder.Property(j => j.DeviceFingerprint).HasMaxLength(64);
+        builder.HasIndex(j => new { j.DeviceFingerprint, j.TrialConsumedAtUtc });
+
         // Unbounded: a transcription of a long recording is a few hundred KB of MusicXML and note
         // data, and there is no sensible cap to impose that the ML service does not already impose.
         builder.Property(j => j.ResultJson);

@@ -170,7 +170,7 @@ public class LifetimeFulfillmentTests
 
         await Fulfil(h, tx);
 
-        var result = await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock)
+        var result = await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, h.Device)
             .Handle(new GetMySubscriptionQuery(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
@@ -189,7 +189,7 @@ public class LifetimeFulfillmentTests
 
         await Fulfil(h, tx, amountMinor: 499);
 
-        var result = await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock)
+        var result = await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, h.Device)
             .Handle(new GetMySubscriptionQuery(), CancellationToken.None);
 
         Assert.False(result.Value.IsLifetime);

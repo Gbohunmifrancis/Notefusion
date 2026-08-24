@@ -11,7 +11,7 @@ namespace NoteFusion.Api.Controllers;
 
 /// <summary>
 /// Operational actions for the admin console (<c>web-admin/</c>): read one account in full, act on its
-/// access and its subscription, and read the trail of everything that has been done.
+/// access and its subscription, reconcile the money, and read the trail of everything that has been done.
 /// </summary>
 /// <remarks>
 /// Gated on the Admin policy at the controller rather than per-action, matching
@@ -151,6 +151,118 @@ public sealed class AdminController : ApiControllerBase
     [HttpPost("users/{id:guid}/send-password-reset")]
     public async Task<IActionResult> SendPasswordReset(Guid id, NoteBody? body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new SendPasswordResetCommand(id, body?.Note), ct));
+
+    // ------------------------------------------------ payments & reconciliation
+
+    /// <summary>
+    /// The state of the money right now: payments per state, how many are overdue, how the webhook inbox is
+    /// draining, and what the ledger sums to.
+    /// </summary>
+    /// <remarks>
+    /// Also carries the grace window and the sweep interval, so the console can say what "overdue" means
+    /// rather than printing a number the reader has to take on trust.
+    /// </remarks>
+    [HttpGet("payments/summary")]
+    public async Task<IActionResult> PaymentsSummary(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPaymentOpsSummaryQuery(), ct));
+
+    /// <summary>Payment attempts across every account, newest first.</summary>
+    /// <param name="page">1-based page number. Out-of-range values are clamped.</param>
+    /// <param name="pageSize">Rows per page, capped at 100.</param>
+    /// <param name="status">Only payments in this state.</param>
+    /// <param name="provider">Only payments through this gateway.</param>
+    /// <param name="stuckOnly">Only what the reconciliation sweep would pick up.</param>
+    /// <param name="fromUtc">Created at or after this instant.</param>
+    /// <param name="toUtc">Created strictly before this instant.</param>
+    /// <param name="search">Case-insensitive substring of our reference, the provider's, or the account's email.</param>
+    /// <param name="ct">Cancellation token.</param>
+    [HttpGet("payments")]
+    public async Task<IActionResult> Payments(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] PaymentStatus? status = null,
+        [FromQuery] PaymentProvider? provider = null,
+        [FromQuery] bool stuckOnly = false,
+        [FromQuery] DateTime? fromUtc = null,
+        [FromQuery] DateTime? toUtc = null,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(
+            new GetPaymentsQuery(page, pageSize, status, provider, stuckOnly, fromUtc, toUtc, search), ct));
+
+    /// <summary>
+    /// One payment in full, including the raw provider payloads and everything it caused.
+    /// </summary>
+    /// <remarks>
+    /// The raw payloads are the evidence in a dispute — what the gateway said, verbatim — and this is the
+    /// only route that returns them. Admin-only for that reason, like the rest of this controller.
+    /// </remarks>
+    [HttpGet("payments/{id:guid}")]
+    public async Task<IActionResult> Payment(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPaymentQuery(id), ct));
+
+    /// <summary>
+    /// Asks the provider what happened to one payment and applies the answer, without waiting for the
+    /// sweep that would have asked in the next few minutes.
+    /// </summary>
+    /// <remarks>
+    /// Runs the same command the background worker runs, so an operator cannot reach an outcome the sweep
+    /// could not. Safe to repeat: a settled payment is a no-op, and the response says which it was.
+    /// </remarks>
+    [HttpPost("payments/{id:guid}/reconcile")]
+    public async Task<IActionResult> ReconcilePayment(Guid id, NoteBody? body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new ReconcilePaymentAdminCommand(id, body?.Note), ct));
+
+    /// <summary>Stored provider callbacks, newest first — the inbox that makes processing exactly-once.</summary>
+    /// <param name="page">1-based page number. Out-of-range values are clamped.</param>
+    /// <param name="pageSize">Rows per page, capped at 100.</param>
+    /// <param name="status">Only events in this processing state.</param>
+    /// <param name="provider">Only this gateway's callbacks.</param>
+    /// <param name="search">Case-insensitive substring of the provider event id, the event type, or the payment reference.</param>
+    /// <param name="ct">Cancellation token.</param>
+    [HttpGet("webhooks")]
+    public async Task<IActionResult> Webhooks(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] WebhookStatus? status = null,
+        [FromQuery] PaymentProvider? provider = null,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(
+            new GetWebhookEventsQuery(page, pageSize, status, provider, search), ct));
+
+    /// <summary>One stored callback, with the request body the provider sent.</summary>
+    /// <remarks>
+    /// There is deliberately no replay action beside this. Reprocessing a parked event would need the inbox
+    /// row to be moved back to <c>Received</c>, and nothing in the domain does that; more to the point it
+    /// would be redundant, because reconciling the payment recovers the subscription whether or not the
+    /// callback ever drains. The payload is here so somebody can find out why it did not.
+    /// </remarks>
+    [HttpGet("webhooks/{id:guid}")]
+    public async Task<IActionResult> Webhook(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetWebhookEventQuery(id), ct));
+
+    /// <summary>Money in and money out across every account, newest first.</summary>
+    /// <param name="page">1-based page number. Out-of-range values are clamped.</param>
+    /// <param name="pageSize">Rows per page, capped at 100.</param>
+    /// <param name="direction">Credits or debits. Omit for both.</param>
+    /// <param name="reason">Only entries written for this reason.</param>
+    /// <param name="fromUtc">Written at or after this instant.</param>
+    /// <param name="toUtc">Written strictly before this instant.</param>
+    /// <param name="search">Case-insensitive substring of the account's email or the payment's reference.</param>
+    /// <param name="ct">Cancellation token.</param>
+    [HttpGet("ledger")]
+    public async Task<IActionResult> Ledger(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] LedgerDirection? direction = null,
+        [FromQuery] LedgerEntryReason? reason = null,
+        [FromQuery] DateTime? fromUtc = null,
+        [FromQuery] DateTime? toUtc = null,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(
+            new GetLedgerEntriesQuery(page, pageSize, direction, reason, fromUtc, toUtc, search), ct));
 
     // ------------------------------------------------------------------- bodies
 

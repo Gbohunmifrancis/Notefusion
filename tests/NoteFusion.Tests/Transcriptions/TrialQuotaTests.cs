@@ -1,3 +1,4 @@
+using NoteFusion.Application.Billing.Queries;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -11,7 +12,9 @@ using NoteFusion.Tests.Support;
 namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
-/// The five free transcriptions: what spends one, what does not, and who is metered at all.
+/// The free transcriptions: what spends one, what does not, who is metered at all, and how many they get —
+/// five in Nigeria, ten everywhere else, so the fixtures here state a country rather than leaving it to
+/// chance.
 /// <para>
 /// The count is kept on <c>TranscriptionJobs</c> rather than on saved <c>Transcriptions</c>, and that is
 /// the regression these tests exist to pin. Counting saved rows meant deleting a transcription handed the
@@ -97,6 +100,81 @@ public class TrialQuotaTests
         Assert.Equal(result.Value, job.JobId);
         Assert.Equal(user.Id, job.UserId);
         Assert.Null(job.TrialConsumedAtUtc); // the audio has not been transcribed yet
+    }
+
+    // ---------------------------------------------------------------- the ceiling is regional
+
+    [Fact]
+    public async Task An_account_outside_Nigeria_is_not_capped_at_the_Nigerian_five()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h);
+        Spend(h, user, 5);
+
+        // Where the Nigerian account above is finished, this one is half way. The naira tier is priced to
+        // local purchasing power and its trial is sized to match; the dollar tier's is not.
+        Assert.True((await Submit(h, user)).IsSuccess);
+        Assert.Equal(5, await Remaining(h, user));
+        Assert.Equal(10, await Total(h, user));
+    }
+
+    [Fact]
+    public async Task An_account_outside_Nigeria_is_blocked_once_all_ten_are_spent()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h);
+        Spend(h, user, 10);
+
+        var result = await Submit(h, user);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
+
+        // And it says ten, not five. A refusal quoting a different number than the pill had been showing is
+        // indistinguishable from a billing bug, which is the worst place to look buggy.
+        Assert.Contains("10", result.Error.Message);
+        Assert.Equal(0, await Remaining(h, user));
+    }
+
+    [Fact]
+    public async Task An_account_whose_country_is_unknown_gets_the_larger_allowance()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h, country: null);
+        Spend(h, user, 5);
+
+        // Fail open, the same way the paywall does: a null country is offered every tier rather than a
+        // guessed one, so an unresolved country here means "not known to be Nigeria", not "assume Nigeria".
+        Assert.True((await Submit(h, user)).IsSuccess);
+        Assert.Equal(10, await Total(h, user));
+    }
+
+    [Fact]
+    public async Task A_Nigerian_refusal_names_the_Nigerian_five()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 5);
+
+        var result = await Submit(h, user);
+
+        Assert.Contains("5", result.Error.Message);
+        Assert.Equal(5, await Total(h, user));
+    }
+
+    [Fact]
+    public async Task A_shared_handset_is_capped_by_whoever_is_asking()
+    {
+        using var h = new TestHarness(Now);
+        var nigerian = Seed(h);
+        var abroad = SeedAbroad(h);
+        Spend(h, nigerian, 6, "phone-a");
+
+        // The device half of the count is shared; the ceiling it is measured against is not. Six generations
+        // on this handset has already finished the Nigerian account and leaves the other four.
+        Assert.True((await Submit(h, nigerian, device: "phone-a")).IsFailure);
+        Assert.True((await Submit(h, abroad, device: "phone-a")).IsSuccess);
+        Assert.Equal(4, await Remaining(h, abroad, "phone-a"));
     }
 
     // ---------------------------------------------------------------- the charge on poll
@@ -200,11 +278,148 @@ public class TrialQuotaTests
         Assert.Empty(h.Db.TranscriptionJobs);
     }
 
+    // ---------------------------------------------------------------- the ceiling is per handset too
+
+    [Fact]
+    public async Task A_second_account_on_a_spent_handset_is_blocked()
+    {
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var second = Seed(h, "second@example.com");
+        Spend(h, first, 5, "phone-a");
+
+        var result = await Submit(h, second, device: "phone-a");
+
+        // Adding a second Google account to an Android phone is four taps, and used to be worth five more
+        // free generations. The five are now shared by every account on the handset.
+        Assert.True(result.IsFailure);
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
+    }
+
+    [Fact]
+    public async Task The_number_shown_matches_the_number_the_gate_enforces()
+    {
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var second = Seed(h, "second@example.com");
+        Spend(h, first, 3, "phone-a");
+
+        // FreeTier's doc forbids these two from disagreeing, and the device half is where they would: a
+        // pill reading "5 free left" above a paywall that refuses on the third is the bug this pins.
+        Assert.Equal(2, await Remaining(h, second, "phone-a"));
+        Assert.True((await Submit(h, second, device: "phone-a")).IsSuccess);
+    }
+
+    [Fact]
+    public async Task An_install_that_sends_no_device_keeps_its_own_five()
+    {
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var second = Seed(h, "second@example.com");
+        Spend(h, first, 5); // unstamped: jobs from before the header existed
+
+        // Fail open. Pooling every header-less install into one bucket would refuse a genuine first-time
+        // user their first transcription — a silent failure, and worse than the farming it would stop.
+        Assert.Equal(5, await Remaining(h, second));
+        Assert.True((await Submit(h, second)).IsSuccess);
+    }
+
+    [Fact]
+    public async Task The_same_account_on_a_second_handset_is_still_capped()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 5, "phone-a");
+
+        var result = await Submit(h, user, device: "phone-b");
+
+        // The per-account half of the count is untouched: a new phone is not a new allowance.
+        Assert.True(result.IsFailure);
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
+    }
+
+    [Fact]
+    public async Task A_pro_account_on_a_spent_handset_still_submits()
+    {
+        using var h = new TestHarness(Now);
+        var free = Seed(h);
+        var paid = Seed(h, "paid@example.com");
+        GoPro(h, paid);
+        Spend(h, free, 5, "phone-a");
+
+        // Someone who pays does not inherit a flatmate's exhausted trial.
+        Assert.True((await Submit(h, paid, device: "phone-a")).IsSuccess);
+    }
+
+    // ---------------------------------------------------------------- where the handset is
+
+    [Fact]
+    public async Task The_first_submission_from_a_handset_records_where_it_is()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi(); // one instance, so the two submissions get distinct job ids
+        h.Country.Country = "NG";
+        h.ClientIp.Current = "102.89.1.1";
+
+        await Submit(h, user, api, "phone-a");
+
+        var device = Assert.Single(h.Db.TrialDevices);
+        Assert.Equal("NG", device.FirstSeenCountry);
+        Assert.Equal("102.89.1.1", device.FirstSeenIp);
+        Assert.Equal(Now, device.FirstSeenAtUtc);
+        Assert.Equal(1, h.Country.Calls);
+
+        // A second generation by the same account on the same handset teaches us nothing new. geojs's free
+        // tier is metered per calling address and a dyno shares egress with strangers, so GeoSettings puts
+        // the budget at sign-ups per day — one lookup per submission would blow straight through it.
+        h.Clock.UtcNow = Now.AddHours(1);
+        await Submit(h, user, api, "phone-a");
+
+        Assert.Equal(1, h.Country.Calls);
+        Assert.Equal(Now.AddHours(1), h.Db.TrialDevices.Single().LastSeenAtUtc);
+    }
+
+    [Fact]
+    public async Task A_new_account_on_a_known_handset_is_located_again()
+    {
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var second = Seed(h, "second@example.com");
+        var api = new FakeTranscriptionApi(); // shared, so the two submissions get distinct job ids
+        h.Country.Country = "NG";
+        await Submit(h, first, api, "phone-a");
+
+        h.Country.Country = "GB";
+        await Submit(h, second, api, "phone-a");
+
+        var device = h.Db.TrialDevices.Single();
+        Assert.Equal(2, h.Country.Calls); // the one case a second lookup earns its keep
+        Assert.Equal("NG", device.FirstSeenCountry); // first observation wins, as with User.RecordCountry
+        Assert.Equal("GB", device.LastSeenCountry); // and the move is what a human would want to see
+    }
+
     // ---------------------------------------------------------------- fixtures
 
     private static User Seed(TestHarness h, string email = "free@example.com")
     {
         var user = User.Create("Free User", email, h.Hasher.Hash("password123"), Now.AddDays(-30));
+
+        // Nigerian on purpose, because the allowance is regional and these cases assert on the number 5.
+        // Left country-less they would silently be testing the rest-of-world ceiling of 10 while still
+        // reading "five" — the boundaries would pass and mean nothing. The 10 is pinned separately below.
+        user.RecordCountry("NG");
+        h.Db.Users.Add(user);
+        h.Db.SaveChanges();
+        return user;
+    }
+
+    /// <summary>An account outside Nigeria, which gets the larger allowance.</summary>
+    private static User SeedAbroad(TestHarness h, string email = "abroad@example.com", string? country = "GB")
+    {
+        var user = User.Create("Abroad User", email, h.Hasher.Hash("password123"), Now.AddDays(-30));
+        if (country is not null)
+            user.RecordCountry(country);
         h.Db.Users.Add(user);
         h.Db.SaveChanges();
         return user;
@@ -221,11 +436,11 @@ public class TrialQuotaTests
     }
 
     /// <summary>Records <paramref name="count"/> already-successful generations against the account.</summary>
-    private static void Spend(TestHarness h, User user, int count)
+    private static void Spend(TestHarness h, User user, int count, string? device = null)
     {
         for (var i = 0; i < count; i++)
         {
-            var job = TranscriptionJob.Record($"spent-{user.Id}-{i}", user.Id, Now.AddDays(-10));
+            var job = TranscriptionJob.Record($"spent-{user.Id}-{i}", user.Id, Now.AddDays(-10), device);
             job.ConsumeTrial(Now.AddDays(-10));
             h.Db.TranscriptionJobs.Add(job);
         }
@@ -233,12 +448,32 @@ public class TrialQuotaTests
         h.Db.SaveChanges();
     }
 
-    private static Task<Result<string>> Submit(TestHarness h, User user, FakeTranscriptionApi? api = null)
+    private static Task<Result<string>> Submit(
+        TestHarness h, User user, FakeTranscriptionApi? api = null, string? device = null)
         => new SubmitTranscriptionCommandHandler(
-                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock)
+                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock,
+                new StubDeviceFingerprint(device), h.DeviceRegister)
             .Handle(
                 new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null),
                 CancellationToken.None);
+
+    /// <summary>
+    /// What the app would show this caller on this handset. The same query the trial pill reads, so a test
+    /// can compare it against what the gate actually did.
+    /// </summary>
+    private static async Task<int> Remaining(TestHarness h, User user, string? device = null)
+        => (await Shown(h, user, device)).TrialGenerationsRemaining;
+
+    /// <summary>The ceiling the app prints beside it, which must be the one the gate enforced.</summary>
+    private static async Task<int> Total(TestHarness h, User user, string? device = null)
+        => (await Shown(h, user, device)).TrialGenerationsTotal;
+
+    private static async Task<Application.Billing.Dtos.SubscriptionDto> Shown(
+        TestHarness h, User user, string? device = null)
+        => (await new GetMySubscriptionQueryHandler(
+                h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(device))
+            .Handle(new GetMySubscriptionQuery(), CancellationToken.None))
+            .Value;
 
     private static Task<Result<TranscriptionJobDto>> Poll(
         TestHarness h, User user, string jobId, FakeTranscriptionApi api)

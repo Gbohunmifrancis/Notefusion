@@ -3,9 +3,13 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   Activity,
+  CalendarClock,
   CircleCheck,
+  CreditCard,
   Gauge,
+  Globe,
   Hourglass,
+  MailCheck,
   Music4,
   ShieldCheck,
   UserPlus,
@@ -16,6 +20,7 @@ import { useEffect, useState } from "react";
 
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview } from "@/api/types";
+import { Badge } from "@/components/Badge";
 import { BreakdownList } from "@/components/BreakdownList";
 import { Card } from "@/components/Card";
 import { DailyChart } from "@/components/DailyChart";
@@ -72,6 +77,77 @@ function greeting(firstName: string): string {
   const part = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
   return firstName ? `Good ${part}, ${firstName}` : `Good ${part}`;
 }
+
+/**
+ * The metrics this page is asked for and will not fake, each with the thing it is actually waiting
+ * on.
+ *
+ * `waiting` is the reason this is a set of tiles now rather than the paragraph list it used to be.
+ * All four items used to read as one undifferentiated apology, when they are in fact three
+ * different situations: one an operator can clear by setting config, one that already exists on
+ * another page, and two that need a column that was never written. Sorting them by that is the
+ * only structure here that carries information — so it is the only structure here.
+ *
+ * The explanations are unchanged. They are the honest part, and shortening them to fit a tile
+ * would be the one edit this panel cannot afford.
+ */
+const UNMEASURED = [
+  {
+    icon: Globe,
+    metric: "Top countries and geography",
+    waiting: "Needs a GeoIP provider",
+    tone: "warning" as const,
+    body: (
+      <>
+        An account does carry a country, resolved from the caller&apos;s address once at its first
+        sign-in and only when a GeoIP provider is configured — so on a deployment without one it is
+        null for everybody. It is shown per account on the detail page; a breakdown card waits until
+        the column is populated widely enough to mean something.
+      </>
+    ),
+  },
+  {
+    icon: CreditCard,
+    metric: "Subscribed, paid and free-tier counts",
+    waiting: "Lives on System health",
+    tone: "blue" as const,
+    body: (
+      <>
+        The billing tables exist, but every figure on this page is windowed to the range above and a
+        subscription count belongs to an instant instead. The live numbers, labelled as the snapshot
+        they are, are on{" "}
+        <Link href="/health" className="font-medium text-brand hover:opacity-80">
+          System health
+        </Link>
+        .
+      </>
+    ),
+  },
+  {
+    icon: CalendarClock,
+    metric: "Day-N retention",
+    waiting: "Never recorded",
+    tone: "neutral" as const,
+    body: (
+      <>
+        Only the latest sign-in is stored, not a login history, so a cohort can be asked whether it
+        ever returned and not whether it was active in week three.
+      </>
+    ),
+  },
+  {
+    icon: MailCheck,
+    metric: "Email verification",
+    waiting: "Never recorded",
+    tone: "neutral" as const,
+    body: (
+      <>
+        There is no verification flag. The Google-linked count above is the closest honest proxy and
+        is labelled as exactly that.
+      </>
+    ),
+  },
+];
 
 export function OverviewView() {
   const { user } = useAuth();
@@ -138,8 +214,14 @@ export function OverviewView() {
             color: chart.categorical[i % chart.categorical.length] ?? chart.faint,
           }));
           const methodTotal = data.signupMethods.reduce((sum, row) => sum + row.count, 0);
+          /*
+           * Null at zero, so the tile draws no meter. An always-empty track with "0%" beside it
+           * repeats the 0 already printed above it, and on the two tiles that are normally zero —
+           * locked out, deactivated — that was the whole right rail's worth of visual noise. The
+           * meter appears the moment the count is real and the share means something.
+           */
           const share = (count: number) =>
-            data.users.totalUsers === 0 ? null : count / data.users.totalUsers;
+            count === 0 || data.users.totalUsers === 0 ? null : count / data.users.totalUsers;
 
           return (
             <div className="space-y-5">
@@ -254,11 +336,14 @@ export function OverviewView() {
                   color={chart.sky}
                   className="xl:col-span-2"
                 />
-                <Card title="Push platforms" info="Registered device tokens, all time">
+                <Card
+                  title="Push platforms"
+                  info="Registered Expo push tokens by platform, all time. A device appears here once it signs in from a build that can receive push."
+                >
                   {data.devicePlatforms.length === 0 ? (
                     <EmptyView
                       message="No devices registered"
-                      hint="A token appears here once a build with push enabled signs in."
+                      hint="Nothing has registered a push token yet. Expo Go and simulators cannot receive remote push, so a token only appears once a real dev or production build signs in."
                     />
                   ) : (
                     <BreakdownList data={data.devicePlatforms} />
@@ -288,6 +373,7 @@ export function OverviewView() {
                     slices={methods}
                     centerLabel="All accounts"
                     centerValue={formatCount(methodTotal)}
+                    meters
                     emptyMessage="No accounts yet"
                   />
                 </Card>
@@ -311,18 +397,21 @@ export function OverviewView() {
                     sub="No Google identity linked"
                     share={share(data.users.passwordOnlyUsers)}
                   />
+                  {/* Tone follows the reading, not the label: a red or orange spine on a count of
+                      zero reads as an alarm for something that is in fact the healthy state. It
+                      colours up when there is actually somebody locked out or deactivated. */}
                   <StatCard
                     label="Locked out"
                     value={formatCount(data.users.lockedOutUsers)}
                     sub="Lockout still active from failed sign-ins"
-                    tone="warning"
+                    tone={data.users.lockedOutUsers > 0 ? "warning" : "neutral"}
                     share={share(data.users.lockedOutUsers)}
                   />
                   <StatCard
                     label="Deactivated"
                     value={formatCount(data.users.deactivatedUsers)}
                     sub="Accounts marked inactive"
-                    tone="danger"
+                    tone={data.users.deactivatedUsers > 0 ? "danger" : "neutral"}
                     share={share(data.users.deactivatedUsers)}
                   />
                   <StatCard
@@ -400,43 +489,32 @@ export function OverviewView() {
               {/*
                 What the dashboard does not claim to know. This panel exists so that an absent
                 metric reads as absent rather than as a zero, and so nobody plans against a
-                number this system cannot currently produce.
+                number this system cannot currently produce. It is a grid of tiles rather than a
+                paragraph list because each item is a different kind of "missing" — see UNMEASURED.
               */}
-              <Card title="Not measured yet" hint="Why these are missing rather than zero">
-                <ul className="space-y-2 text-[13px] text-muted-foreground">
-                  <li>
-                    <span className="font-medium text-foreground">
-                      Top countries and geography.
-                    </span>{" "}
-                    An account does carry a country, resolved from the caller&apos;s address once at
-                    its first sign-in and only when a GeoIP provider is configured — so on a
-                    deployment without one it is null for everybody. It is shown per account on the
-                    detail page; a breakdown card waits until the column is populated widely enough
-                    to mean something.
-                  </li>
-                  <li>
-                    <span className="font-medium text-foreground">
-                      Subscribed, paid and free-tier counts.
-                    </span>{" "}
-                    The billing tables exist, but every figure on this page is windowed to the range
-                    above and a subscription count belongs to an instant instead. The live numbers,
-                    labelled as the snapshot they are, are on{" "}
-                    <Link href="/health" className="font-medium text-brand hover:opacity-80">
-                      System health
-                    </Link>
-                    .
-                  </li>
-                  <li>
-                    <span className="font-medium text-foreground">Day-N retention.</span> Only the
-                    latest sign-in is stored, not a login history, so a cohort can be asked whether
-                    it ever returned and not whether it was active in week three.
-                  </li>
-                  <li>
-                    <span className="font-medium text-foreground">Email verification.</span> There
-                    is no verification flag. The Google-linked count above is the closest honest
-                    proxy and is labelled as exactly that.
-                  </li>
-                </ul>
+              <Card
+                title="Not measured yet"
+                hint="Why these read as missing rather than zero — and what each is waiting on"
+              >
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {UNMEASURED.map(({ icon: Icon, metric, waiting, tone, body }) => (
+                    <div
+                      key={metric}
+                      className="flex flex-col gap-2.5 rounded-sm border border-border-light bg-muted p-4"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-card text-muted-foreground shadow-hairline">
+                          <Icon size={16} aria-hidden="true" />
+                        </span>
+                        <span className="flex-1 text-[13px] font-semibold text-foreground">
+                          {metric}
+                        </span>
+                        <Badge tone={tone}>{waiting}</Badge>
+                      </div>
+                      <p className="text-[12.5px] leading-relaxed text-muted-foreground">{body}</p>
+                    </div>
+                  ))}
+                </div>
               </Card>
             </div>
           );

@@ -21,6 +21,13 @@ public interface IApplicationDbContext
     /// </summary>
     DbSet<TranscriptionJob> TranscriptionJobs { get; }
 
+    /// <summary>
+    /// One row per handset that has spent a free generation, with where it was first seen. The ceiling is
+    /// enforced from the device stamp on <see cref="TranscriptionJobs"/>; this is the register that makes
+    /// multi-account farming visible rather than merely blocked.
+    /// </summary>
+    DbSet<TrialDevice> TrialDevices { get; }
+
     // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }
