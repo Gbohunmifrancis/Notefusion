@@ -1,12 +1,23 @@
 import { api } from "./client";
 import type {
+  AdminPaymentDetail,
+  AdminPaymentRow,
+  AdminReconcileResult,
+  AdminUserDetail,
+  AdminUserRow,
+  AdminWebhookEventDetail,
+  AdminWebhookEventRow,
+  BillingInterval,
   CheckoutSession,
   LoginResponse,
   MyProfile,
+  PagedResult,
+  PaymentOpsSummary,
   Plan,
   RegistrationResponse,
   SavedTranscription,
   Subscription,
+  SystemHealth,
   TranscriptionJob,
 } from "./types";
 
@@ -109,6 +120,8 @@ export const meApi = {
 export const devicesApi = {
   register: (token: string, platform: "ios" | "android" | "web") =>
     api.post("/api/devices", { token, platform }).then(() => undefined),
+  unregister: (token: string) =>
+    api.delete("/api/devices", { data: { token } }).then(() => undefined),
 };
 
 export interface SubmitOptions {
@@ -229,4 +242,126 @@ export const billingApi = {
    * assume the account just went Free. Idempotent server-side (204 either way).
    */
   cancel: () => api.post<void>("/api/billing/cancel").then(() => undefined),
+};
+
+/**
+ * The admin console's routes, behind `AuthorizationPolicies.Admin`. An ordinary
+ * account gets 403 from every one of these, so the mobile gate (`useAuth().isAdmin`)
+ * is a courtesy that keeps a normal user from seeing a screen full of errors — not
+ * the security boundary. That is the server's.
+ *
+ * Every mutation is a POST carrying an optional `note`, and the target account or
+ * payment is always in the URL rather than the body: a mismatched body could act on
+ * a different row than the route names, which is the one thing an audit trail cannot
+ * help with, because the row would be truthful about the wrong person.
+ */
+export const adminApi = {
+  /** State of the money right now — counts, stuck rows, and what the ledger sums to. */
+  paymentsSummary: () =>
+    api
+      .get<PaymentOpsSummary>("/api/admin/payments/summary")
+      .then((r) => r.data),
+
+  /** Always 200 while the API is up: a dependency being down is the answer. */
+  health: () => api.get<SystemHealth>("/api/admin/health").then((r) => r.data),
+
+  payments: (params: {
+    page?: number;
+    pageSize?: number;
+    /** PascalCase on the way out too, though ASP.NET binds enums case-insensitively. */
+    status?: string;
+    provider?: string;
+    stuckOnly?: boolean;
+    search?: string;
+  }) =>
+    api
+      .get<PagedResult<AdminPaymentRow>>("/api/admin/payments", { params })
+      .then((r) => r.data),
+
+  payment: (id: string) =>
+    api
+      .get<AdminPaymentDetail>(`/api/admin/payments/${id}`)
+      .then((r) => r.data),
+
+  /**
+   * Asks the provider what happened and applies the answer, instead of waiting for
+   * the sweep. Runs the same command the background worker runs, so an operator
+   * cannot reach an outcome the sweep could not. Safe to repeat — a settled payment
+   * is a no-op, and `changed` says which one you got.
+   */
+  reconcile: (id: string, note?: string) =>
+    api
+      .post<AdminReconcileResult>(`/api/admin/payments/${id}/reconcile`, { note })
+      .then((r) => r.data),
+
+  webhooks: (params: {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+    provider?: string;
+    search?: string;
+  }) =>
+    api
+      .get<PagedResult<AdminWebhookEventRow>>("/api/admin/webhooks", { params })
+      .then((r) => r.data),
+
+  /** Carries the provider's request body — the field that explains a parked event. */
+  webhook: (id: string) =>
+    api
+      .get<AdminWebhookEventDetail>(`/api/admin/webhooks/${id}`)
+      .then((r) => r.data),
+
+  users: (params: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+    isActive?: boolean;
+  }) =>
+    api
+      .get<PagedResult<AdminUserRow>>("/api/admin/analytics/users", { params })
+      .then((r) => r.data),
+
+  user: (id: string) =>
+    api.get<AdminUserDetail>(`/api/admin/users/${id}`).then((r) => r.data),
+
+  /** Grants Pro at no charge. Records no payment and no ledger entry — a gift is
+   *  not revenue — and is refused when the account already has an active one. */
+  giftPro: (id: string, duration: BillingInterval, note?: string) =>
+    api
+      .post(`/api/admin/users/${id}/gift-pro`, { duration, note })
+      .then(() => undefined),
+
+  /** Takes a gift back. Refused for a subscription somebody paid for. */
+  revokePro: (id: string, note?: string) =>
+    api.post(`/api/admin/users/${id}/revoke-pro`, { note }).then(() => undefined),
+
+  /** Moves the end of the period out. Must be later than the date it replaces. */
+  extendSubscription: (id: string, newEndUtc: string, note?: string) =>
+    api
+      .post(`/api/admin/users/${id}/subscription/extend`, { newEndUtc, note })
+      .then(() => undefined),
+
+  /** Ends it now, gift or paid, forfeiting the rest of the period. Refunds nothing. */
+  endSubscription: (id: string, note?: string) =>
+    api
+      .post(`/api/admin/users/${id}/subscription/end`, { note })
+      .then(() => undefined),
+
+  /**
+   * Blocks sign-in and revokes refresh tokens. Not instant: an access token already
+   * issued keeps working until it expires (up to `Auth:AccessTokenMinutes`, 60 by
+   * default), because there is no server-side session to tear down.
+   */
+  suspend: (id: string, note?: string) =>
+    api.post(`/api/admin/users/${id}/suspend`, { note }).then(() => undefined),
+
+  reactivate: (id: string, note?: string) =>
+    api.post(`/api/admin/users/${id}/reactivate`, { note }).then(() => undefined),
+
+  /** Mails a reset link — the supported way to help someone locked out, because it
+   *  puts the new password in their hands and not in an operator's. */
+  sendPasswordReset: (id: string, note?: string) =>
+    api
+      .post(`/api/admin/users/${id}/send-password-reset`, { note })
+      .then(() => undefined),
 };

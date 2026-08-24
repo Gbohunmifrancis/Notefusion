@@ -49,7 +49,7 @@ const CLOSE_MS = 170;
  * screen inside the stack could not do.
  */
 export function AppDrawer({ open, onClose, pictureUrl }: Props) {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const { isPro, known } = useSubscription();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const insets = useSafeAreaInsets();
@@ -217,6 +217,22 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
           styles={styles}
           color={colors.text}
         />
+
+        {/* Admin. Hidden for everyone else — the routes themselves are behind the
+            server's Admin policy, so this row is about not showing an operator
+            surface to a customer, not about keeping them out of it. */}
+        {isAdmin && (
+          <>
+            <View style={styles.rule} />
+            <Row
+              icon="shield-checkmark-outline"
+              label="Admin"
+              onPress={() => go(() => nav.navigate('AdminHome'))}
+              styles={styles}
+              color={colors.accent}
+            />
+          </>
+        )}
 
         <View style={styles.rule} />
 

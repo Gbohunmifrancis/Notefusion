@@ -20,6 +20,7 @@
     },
     "android": {
       "package": "com.notefusion.com",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#2563EB"
@@ -33,7 +34,13 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-notifications",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/brand/mark.png",
+          "color": "#2563EB"
+        }
+      ],
       [
         "expo-audio",
         {

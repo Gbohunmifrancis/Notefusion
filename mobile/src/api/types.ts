@@ -191,3 +191,296 @@ export interface ApiError {
   message: string;
   details?: Record<string, string[]>;
 }
+
+// --- Admin --------------------------------------------------------------
+// Mirrors src/NoteFusion.Application/Admin/Dtos/*.cs plus the two admin-only
+// records in Analytics/Dtos/AnalyticsDtos.cs. Behind the Admin policy, so nothing
+// here is reachable by an ordinary account.
+//
+// One trap runs through the whole section. Every status, provider and direction
+// field below is a plain C# `string` holding the enum member's *name*
+// (`t.Status.ToString()`), not a serialized enum — so the values arrive
+// PascalCase and the camelCase policy never touches them. Contrast
+// {@link PaymentProvider} above, which is a real enum on the client-facing
+// billing DTOs and therefore arrives as `"paystack"`. Comparing an admin row's
+// `provider` against that union matches nothing, silently. Same reason
+// {@link AuthUser.role} is `"Admin"` and not `"admin"`.
+
+/** A page of results plus the total, so a list can say "showing 1–25 of 340". */
+export interface PagedResult<T> {
+  items: T[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+export type AdminPaymentStatus =
+  | "Pending"
+  | "Processing"
+  | "Verified"
+  | "Completed"
+  | "Failed";
+
+export type AdminWebhookStatus = "Received" | "Processed" | "Failed";
+
+export type AdminProvider = "Paystack" | "Flutterwave" | "Bachs" | "Squad";
+
+export type AdminLedgerDirection = "Credit" | "Debit";
+
+/**
+ * One payment attempt across every account — the row of the reconciliation table.
+ *
+ * `Verified` is the status to read carefully: the money moved but the ledger entry
+ * and subscription have not been written, so that row is a customer who has paid
+ * and does not have Pro.
+ */
+export interface AdminPaymentRow {
+  id: string;
+  userId: string;
+  userEmail: string;
+  userFullName: string;
+  reference: string;
+  providerReference: string | null;
+  provider: AdminProvider;
+  status: AdminPaymentStatus;
+  /** Minor units of `currency` — cents for USD, kobo for NGN. Never a float. */
+  amountMinor: number;
+  currency: string;
+  planName: string | null;
+  failureReason: string | null;
+  /** Still `Processing` past the grace window — what the background sweep picks up. */
+  isStuck: boolean;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+}
+
+/**
+ * One payment in full. `initiateRaw`/`verifyRaw` are the provider's own words —
+ * the evidence in a dispute — and this is the only route that returns them.
+ */
+export interface AdminPaymentDetail {
+  payment: AdminPaymentRow;
+  idempotencyKey: string;
+  checkoutUrl: string | null;
+  initiateRaw: string | null;
+  verifyRaw: string | null;
+  ledger: AdminLedgerEntry[];
+  webhookEvents: AdminWebhookEventRow[];
+}
+
+/**
+ * One row of the webhook inbox. A `Failed` row does not mean the customer lost
+ * their subscription — reconciling the payment recovers that independently — it
+ * means nobody has looked at why the callback would not drain.
+ */
+export interface AdminWebhookEventRow {
+  id: string;
+  provider: AdminProvider;
+  providerEventId: string;
+  eventType: string;
+  paymentReference: string | null;
+  /** Null when the payload carried no reference of ours, or named a dead one. */
+  paymentTransactionId: string | null;
+  status: AdminWebhookStatus;
+  processAttempts: number;
+  lastError: string | null;
+  receivedAtUtc: string;
+  lastAttemptAtUtc: string | null;
+  processedAtUtc: string | null;
+}
+
+/** One inbox row plus the request body it stored — what explains a parked event. */
+export interface AdminWebhookEventDetail {
+  event: AdminWebhookEventRow;
+  payload: string;
+}
+
+/** One immutable ledger movement inside a single account's history. */
+export interface AdminLedgerEntry {
+  id: string;
+  direction: AdminLedgerDirection;
+  reason: string;
+  amountMinor: number;
+  currency: string;
+  description: string;
+  createdAtUtc: string;
+}
+
+/** The same movement in the cross-account list, which has to name its owner. */
+export interface AdminLedgerRow {
+  id: string;
+  userId: string;
+  userEmail: string;
+  paymentTransactionId: string;
+  paymentReference: string | null;
+  direction: AdminLedgerDirection;
+  reason: string;
+  amountMinor: number;
+  currency: string;
+  description: string;
+  createdAtUtc: string;
+}
+
+/**
+ * The reconciliation snapshot: what state the money is in, and what the workers
+ * are about to do about it. One request because the numbers only mean something
+ * read against each other — a stuck count needs the window that defines "stuck".
+ */
+export interface PaymentOpsSummary {
+  pendingCount: number;
+  processingCount: number;
+  /**
+   * Paid, but the ledger entry and subscription are missing. The most important
+   * number here: every one is a customer who cannot use what they bought, and it
+   * is **not** self-healing — the sweep only touches rows still in `Processing`.
+   */
+  verifiedCount: number;
+  completedCount: number;
+  failedCount: number;
+  /** `Processing` rows older than `graceWindowMinutes` — what the sweep will take. */
+  stuckCount: number;
+  /** An instant, not an age: an age computed server-side goes stale in transit. */
+  oldestStuckSinceUtc: string | null;
+  webhooksAwaitingCount: number;
+  webhooksProcessedCount: number;
+  webhooksFailedCount: number;
+  oldestAwaitingWebhookAtUtc: string | null;
+  /** Money in. Gifts are absent by design: no payment, no ledger entry. */
+  creditedMinor: number;
+  /** Money out. */
+  refundedMinor: number;
+  /** Credits minus debits, summed from the entries rather than stored anywhere. */
+  netMinor: number;
+  currency: string;
+  graceWindowMinutes: number;
+  sweepIntervalMinutes: number;
+}
+
+/**
+ * What an operator-triggered reconciliation actually did. The command is
+ * idempotent and answers "nothing to do" with success, so `changed` is the
+ * difference between "the provider confirmed it" and "this was already settled".
+ */
+export interface AdminReconcileResult {
+  paymentTransactionId: string;
+  previousStatus: AdminPaymentStatus;
+  status: AdminPaymentStatus;
+  changed: boolean;
+  /** A sentence written for the operator, ready to show as-is. */
+  outcome: string;
+}
+
+/** One tier of the health page, or the whole page's rolled-up verdict. */
+export interface HealthPanel {
+  name: string;
+  status: string;
+  latencyMs: number | null;
+  detail: string | null;
+}
+
+export interface SystemHealth {
+  status: string;
+  checkedAtUtc: string;
+  database: HealthPanel;
+  transcriptionWorker: HealthPanel;
+  webhookBacklog: HealthPanel;
+  activity: { jobsLast24Hours: number; jobsLast7Days: number };
+  subscriptions: {
+    activeCount: number;
+    giftedCount: number;
+    expiringWithinSevenDays: number;
+    pastDueCount: number;
+  };
+  /** Tiers this stack cannot prove anything about, named rather than faked. */
+  notMonitored: string[];
+}
+
+/** One row of the admin user table — enough for a support conversation, no more. */
+export interface AdminUserRow {
+  id: string;
+  fullName: string;
+  email: string;
+  profilePictureUrl: string | null;
+  role: string;
+  isActive: boolean;
+  hasGoogle: boolean;
+  hasPassword: boolean;
+  createdAt: string;
+  lastLoginAt: string | null;
+  transcriptionCount: number;
+  /** Computed server-side; a client that recomputes it eventually disagrees. */
+  hasProAccess: boolean;
+  /** Only meaningful while `hasProAccess` — false is not "they paid". */
+  isGiftedPro: boolean;
+}
+
+export interface AdminSubscription {
+  id: string;
+  planCode: string | null;
+  planName: string | null;
+  status: string;
+  isActive: boolean;
+  isGift: boolean;
+  isLifetime: boolean;
+  provider: string | null;
+  currentPeriodStartUtc: string;
+  /** Null for lifetime — the column holds a year-9999 sentinel a client would print. */
+  currentPeriodEndUtc: string | null;
+  canceledAtUtc: string | null;
+  createdAtUtc: string;
+}
+
+/** One payment attempt inside a single account's page, which needs no owner. */
+export interface AdminPayment {
+  id: string;
+  reference: string;
+  providerReference: string | null;
+  provider: AdminProvider;
+  status: AdminPaymentStatus;
+  amountMinor: number;
+  currency: string;
+  planName: string | null;
+  failureReason: string | null;
+  createdAtUtc: string;
+}
+
+/** One line of the audit trail. Emails come from stored snapshots, not a join. */
+export interface AuditLogRow {
+  id: string;
+  actorUserId: string;
+  actorEmail: string;
+  /** The enum member's name, e.g. "GiftPro". */
+  action: string;
+  targetUserId: string | null;
+  targetEmail: string | null;
+  ipAddress: string | null;
+  summary: string;
+  note: string | null;
+  occurredAtUtc: string;
+}
+
+/** Everything the console shows about one account. The most personal payload. */
+export interface AdminUserDetail {
+  id: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string | null;
+  profilePictureUrl: string | null;
+  role: string;
+  isActive: boolean;
+  hasGoogle: boolean;
+  hasPassword: boolean;
+  country: string | null;
+  createdAt: string;
+  lastLoginAt: string | null;
+  /** When a failed-login lockout lifts. Usually the real cause of "I can't log in". */
+  lockoutEndAt: string | null;
+  transcriptionCount: number;
+  trialGenerationsUsed: number;
+  trialGenerationsTotal: number;
+  subscription: AdminSubscription | null;
+  payments: AdminPayment[];
+  ledger: AdminLedgerEntry[];
+  recentActions: AuditLogRow[];
+}

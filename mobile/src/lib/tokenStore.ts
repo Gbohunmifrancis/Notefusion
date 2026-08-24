@@ -47,6 +47,9 @@ export const tokenStore = {
   },
 
   async clear(): Promise<void> {
+    // Credentials only. `nf.deviceId` (see lib/deviceId.ts) is deliberately not here: signing out
+    // to add a second Google account is the exact move the free-trial ceiling exists to catch, and
+    // minting a new device id on the way out would hand back the five it just spent.
     await Promise.all([
       SecureStore.deleteItemAsync(ACCESS_KEY),
       SecureStore.deleteItemAsync(REFRESH_KEY),

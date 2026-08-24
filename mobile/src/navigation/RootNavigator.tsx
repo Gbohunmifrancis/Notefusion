@@ -12,6 +12,11 @@ import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
+import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
+import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
+import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
+import { AdminUsersScreen } from '../screens/admin/AdminUsersScreen';
+import { AdminWebhooksScreen } from '../screens/admin/AdminWebhooksScreen';
 import type { RootStackParams } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -81,7 +86,37 @@ export function RootNavigator() {
             <Stack.Screen
               name="Upgrade"
               component={UpgradeScreen}
-              options={{ animation: 'slide_from_bottom' }}
+              options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+
+            {/* Admin. Registered for every session rather than gated here: the
+                only way in is the drawer row, which checks `isAdmin`, and a
+                conditional screen list would remount the stack the moment the
+                boot profile re-read changes that flag. */}
+            <Stack.Screen
+              name="AdminHome"
+              component={AdminHomeScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="AdminPayments"
+              component={AdminPaymentsScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="AdminWebhooks"
+              component={AdminWebhooksScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="AdminUsers"
+              component={AdminUsersScreen}
+              options={{ animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="AdminUser"
+              component={AdminUserScreen}
+              options={{ animation: 'slide_from_right' }}
             />
           </>
         ) : (
