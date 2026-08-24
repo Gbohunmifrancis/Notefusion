@@ -38,7 +38,12 @@ public sealed class RegisterDeviceCommandHandler : IRequestHandler<RegisterDevic
         if (_currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
 
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        // DeviceTokens must be loaded: RegisterDeviceToken dedupes by scanning the collection,
+        // so without this the re-register path always Adds and trips the unique index on
+        // (UserId, Token). Registration runs on every sign-in, so that is the common case.
+        var user = await _db.Users
+            .Include(u => u.DeviceTokens)
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         if (user is null)
             return UserErrors.NotFound;
 
