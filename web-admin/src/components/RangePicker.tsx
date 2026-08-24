@@ -64,7 +64,7 @@ export function RangePicker({ value, offsetMinutes, onChange }: RangePickerProps
       />
 
       <div className="flex items-center gap-1.5">
-        <label className="flex items-center gap-2 rounded-sm border border-border bg-surface px-2.5 py-1.5">
+        <label className="flex items-center gap-2 rounded-sm border border-border bg-card px-2.5 py-1.5">
           <CalendarDays size={14} aria-hidden="true" className="shrink-0 text-faint" />
           <input
             type="date"
@@ -72,13 +72,13 @@ export function RangePicker({ value, offsetMinutes, onChange }: RangePickerProps
             value={value.from}
             max={value.to}
             onChange={(event) => onChange({ ...value, from: event.target.value })}
-            className="bg-transparent text-xs text-ink outline-none"
+            className="bg-transparent text-xs text-foreground outline-none"
           />
         </label>
         <span className="text-xs text-faint" aria-hidden="true">
           to
         </span>
-        <label className="flex items-center gap-2 rounded-sm border border-border bg-surface px-2.5 py-1.5">
+        <label className="flex items-center gap-2 rounded-sm border border-border bg-card px-2.5 py-1.5">
           <CalendarDays size={14} aria-hidden="true" className="shrink-0 text-faint" />
           <input
             type="date"
@@ -87,7 +87,7 @@ export function RangePicker({ value, offsetMinutes, onChange }: RangePickerProps
             min={value.from}
             max={today}
             onChange={(event) => onChange({ ...value, to: event.target.value })}
-            className="bg-transparent text-xs text-ink outline-none"
+            className="bg-transparent text-xs text-foreground outline-none"
           />
         </label>
       </div>

@@ -862,6 +862,68 @@ RHYTHM_CASES: tuple[Case, ...] = (
 )
 
 
+# ── Long clip: the multi-minute regime the short cases cannot reach ───────────
+
+# Every other case in this corpus renders to between 3.71 and 8.82 seconds, so without this
+# one the long-clip regime was 0% measured while ``max_clip_seconds`` accepted 180.
+#
+# **The name is now historical and deliberately not corrected.**  When this case was added,
+# ``pyin_max_seconds`` was 60 and 67.8 s put it over the cap: above the cap ``_pyin_track``
+# returns empty arrays, which takes out ``pyin_refine`` AND ``pyin_semitone`` together, and
+# the latter is by its own docstring "what fixes the ghost accidentals at their source".
+# Forcing that skip on all 38 short cases measured the size of it — solfa.chromatic_ghosts
+# 1.526 -> 3.526, key.exact 0.895 -> 0.789, sixteen gated metrics failing — a cliff rather
+# than a graceful loss of coverage, and the best available explanation for a
+# spurious-accidental report arriving from real recordings while this corpus looked clean.
+# The cap is now 180 (see ``config.pyin_resolution`` for what paid for that), so this clip
+# is refined like any other and there is no cliff inside the accepted range.  Renaming it
+# would change ``corpus_fingerprint`` and discard the per-case baseline history for the one
+# case that history is most interesting for; the name stays until something else forces a
+# re-fingerprint.
+#
+# What it still measures, which is why it stays: 99 notes and 67.8 s of continuous vibrato
+# is the only place the corpus exercises long-horizon behaviour at all — key estimation with
+# enough evidence to outvote its own ghosts, tempo over 108 beats, and refinement over 527
+# events rather than ~60.  It is also the guard on the lifted cap: if the cap regresses to a
+# value under 67.8 s, or the coarse pyin grid is lost, this case is where it shows.
+#
+# Three deliberate choices:
+#
+#   It carries VIBRATO, and the same 5.5 Hz / 1.2 semitones as ``vibrato_heavy``.  A clean
+#   long case would gate nothing: ``pyin_semitone`` is a no-op by construction wherever
+#   pyin and Basic Pitch agree, so losing it costs a clean clip nothing and the case would
+#   pass whether the cap were 60 s or 6 s.  The defect has to be present for its fix — or
+#   the absence of its fix — to be visible.
+#
+#   It is ``DIAG_PHRASE`` REPEATED, not new material, so this case and ``vibrato_heavy``
+#   differ in exactly one variable — length.  The delta between the pair is length's effect
+#   and nothing else, which is what makes it readable as a diagnostic rather than just
+#   another failing case.
+#
+#   Nine repeats, not eight.  The original reason was that eight lands at 60.3 s, three
+#   tenths over the then-60 s cap, so a rounding change or a ``tail_sec`` edit would silently
+#   drop it under and the case would stop testing the thing it existed for.  That margin no
+#   longer guards a cap, but nine repeats are kept because they are what the baseline was
+#   measured on and 67.8 s is the length the long-horizon claims above are made about.
+#
+# STILL EXPECTED TO SCORE BADLY, like ``vibrato_heavy`` and for the same underlying reason:
+# it is a regression gate, so what matters is that the recorded numbers do not get worse, not
+# that they are good.  Read it next to ``vibrato_heavy`` — the pair is now much closer than
+# it was (``notes.f1`` 0.596 against 0.516, ``solfa.degree_accuracy`` 0.988 against 1.000),
+# which is what lifting the cap was meant to achieve.  A gap reopening means refinement
+# stopped reaching long clips.
+LONG_CLIP_CASES: tuple[Case, ...] = (
+    Case(
+        name="long_clip_over_pyin_cap",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE * 9,
+        options=RenderOptions(vibrato_hz=5.5, vibrato_semitones=1.2),
+        tags=("long", "pyin_cap", "regime", "vibrato"),
+    ),
+)
+
+
 # ── The corpus ────────────────────────────────────────────────────────────────
 
 CASES: tuple[Case, ...] = (
@@ -871,6 +933,7 @@ CASES: tuple[Case, ...] = (
     + DIAGNOSTIC_CASES
     + VIBRATO_BREADTH_CASES
     + RHYTHM_CASES
+    + LONG_CLIP_CASES
 )
 
 

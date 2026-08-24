@@ -12,14 +12,14 @@ import { EmptyView } from "@/components/StateView";
  */
 
 const KIND: Record<string, { icon: LucideIcon; tint: string; verb: string }> = {
-  // `accent` rather than `blue`: this is a glyph on a tint, so it has to read *as* colour
+  // `brand` rather than `primary`: this is a glyph on a tint, so it has to read *as* colour
   // against the card, and the fill blue is too dark to do that once the card goes navy.
-  signup: { icon: UserPlus, tint: "bg-accent/10 text-accent", verb: "Signed up" },
+  signup: { icon: UserPlus, tint: "bg-brand/10 text-brand", verb: "Signed up" },
   transcription: { icon: Music4, tint: "bg-sky/10 text-sky", verb: "Saved" },
   login: { icon: LogIn, tint: "bg-success/10 text-success-deep", verb: "Signed in" },
 };
 
-const FALLBACK = { icon: UserPlus, tint: "bg-surface-alt text-muted", verb: "Activity" };
+const FALLBACK = { icon: UserPlus, tint: "bg-muted text-muted-foreground", verb: "Activity" };
 
 export function RecentActivity({ items }: { items: ActivityItem[] }) {
   if (items.length === 0) {
@@ -50,12 +50,12 @@ export function RecentActivity({ items }: { items: ActivityItem[] }) {
               <Icon size={15} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] text-ink">
-                <span className="text-muted">{meta.verb} · </span>
+              <p className="truncate text-[13px] text-foreground">
+                <span className="text-muted-foreground">{meta.verb} · </span>
                 <span className="font-medium">{item.title}</span>
               </p>
               {item.subtitle && (
-                <p className="truncate text-[11px] text-muted">{item.subtitle}</p>
+                <p className="truncate text-[11px] text-muted-foreground">{item.subtitle}</p>
               )}
             </div>
             <time

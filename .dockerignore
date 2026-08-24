@@ -6,19 +6,19 @@
 **/.vs/
 **/.git/
 
-# Host-installed node modules and prior Vite output. The image runs `npm ci` itself, so
-# copying these in would both bloat the context and risk shipping win32-native binaries.
+# Host-installed node modules. Nothing in this image is built from JavaScript, and copying
+# these in would both bloat the context and risk shipping win32-native binaries.
 **/node_modules/
-web-admin/dist/
 
-# Other stacks — not part of the API image.
+# Other stacks — not part of the API image. web-admin/ was built into wwwroot here once; it is
+# a separate Next.js app deployed to Vercel now, so the whole folder stays out of the context.
 mobile/
 server/
 spike/
 docs/
+web-admin/
 
-# Local env / secrets. `.env.local` matters here beyond secrets: Vite would read it during
-# the image build and bake a localhost API URL into the dashboard bundle.
+# Local env / secrets.
 **/.env
 **/*.env
 **/.env.*

@@ -36,10 +36,11 @@ public sealed class EmailSettings
     public string AppUrl { get; set; } = "https://notefusion.studio";
 
     /// <summary>
-    /// Origin the email logo is fetched from. Defaults to the API's own public URL because the API
-    /// serves <c>wwwroot</c>, where the mark is published as part of the dashboard bundle. Mail
-    /// clients fetch this over the public internet, so localhost is useless here — an unset value
-    /// simply drops the image and the text wordmark carries the header.
+    /// Origin the email logo is fetched from — the marketing site, which publishes it at
+    /// <c>/email/logo.png</c> (source: <c>web-admin/scripts/make-email-logo.mjs</c>). It used to be the
+    /// API's own URL, back when the API served the dashboard bundle out of <c>wwwroot</c>; the dashboard
+    /// is a separate Vercel app now and this image is the only asset the API ever needed from it. Mail
+    /// clients fetch this over the public internet, so localhost is useless here.
     /// </summary>
     public string AssetBaseUrl { get; set; } = string.Empty;
 }

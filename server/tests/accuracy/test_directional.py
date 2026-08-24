@@ -37,6 +37,7 @@ from app.pipeline.transcriber import (
     TranscribedNote,
     _blend_confidence,
     _parse_key_override,
+    _resolve_melody_overlaps,
 )
 from tests.accuracy import metrics, runner
 from tests.accuracy.synth import RefNote
@@ -454,6 +455,122 @@ def test_defect6_over_merging_a_genuine_semitone_step_is_punished():
         "over-aggressive vibrato merge would read as an improvement"
     )
     assert swallowed["f1"] < kept["f1"]
+
+
+# ── The wobble fuse — a unit test on the resolver's own decisions ──────────────
+
+# The instrument the test above says is missing.  A corpus metric cannot tell "fused
+# the right pair" from "fused nothing and got lucky", so the fuse rule is exercised
+# here against its own inputs, at the two ends of the distribution its constants were
+# read off.  Measured on the events entering stage 6, as a fraction of the shorter
+# event's duration:
+#
+#   genuine legato steps   n=6    min 0.021  median 0.100  max 0.100
+#   wobble slivers         n=38   min 0.091  median 0.800  max 1.000
+#
+# A step bleeds at its *edge*; a sliver sits *inside* its note.  The two fixtures below
+# sit at 1.000 and 0.100 — the sliver extreme and the tightest genuine step — so
+# widening ``WOBBLE_MIN_OVERLAP_FRACTION`` past the step population fails the second
+# test and narrowing the pitch tolerance to nothing fails the first.
+
+_SLIVER_SEC = 0.10  # comfortably above the 0.04 s final duration floor, on purpose
+
+
+def _wobbling_events(phrase=PHRASE) -> list[Event]:
+    """Each note with a semitone-neighbour sliver sitting wholly inside it.
+
+    This is the population the accidentals complaint is made of: the sliver is a
+    semitone off, so it is chromatic against the key by definition and prints a sharp.
+
+    Two details are deliberate.  The sliver is *louder* than the note it belongs to,
+    because amplitude demonstrably does not separate the two — with the fuse absent
+    this pair reaches the truncate branch and both survive.  And every fragment is
+    longer than the 0.04 s floor, so nothing here can be removed by the duration
+    filter: if the slivers disappear, the fuse is what removed them.
+    """
+    events: list[Event] = []
+    for i, pitch in enumerate(phrase):
+        base = i * BEAT_SEC
+        events.append(Event(start=base, end=base + 0.60, pitch=pitch, amp=0.6))
+        events.append(
+            Event(start=base + 0.25, end=base + 0.25 + _SLIVER_SEC, pitch=pitch + 1, amp=0.7)
+        )
+    return events
+
+
+def _legato_events(phrase=SEMITONE_PHRASE) -> list[Event]:
+    """Consecutive notes bleeding into each other at the boundary, one beat apart.
+
+    ``0.694`` is chosen so the overlap is 0.100 of the shorter event — the widest
+    genuine step measured on the corpus, i.e. the case the fuse comes closest to
+    swallowing.  Equal amplitudes so the resolver takes its truncate branch.
+    """
+    return [
+        Event(start=i * BEAT_SEC, end=i * BEAT_SEC + 0.694, pitch=pitch, amp=0.6)
+        for i, pitch in enumerate(phrase)
+    ]
+
+
+def _as_notes(events: list[Event]) -> list[TranscribedNote]:
+    """Label events in the beat domain, the way stages 7-8 eventually do."""
+    return _labelled(
+        [(e.pitch, e.start / BEAT_SEC, (e.end - e.start) / BEAT_SEC) for e in events],
+        "C major",
+    )
+
+
+def test_the_wobble_fuse_removes_the_accidentals_it_was_built_for():
+    """Fusing a contained sliver back into its note is what clears the ghost accidentals.
+
+    "Before" is the resolver's input rather than a hand-built list: with no pitch test
+    the resolver kept these slivers, which is the defect as shipped.  "After" is what
+    the rule actually returns, so the assertion is on the real decision and not on a
+    model of it.
+    """
+    refs = _refs()
+    events = _wobbling_events()
+    assert all(e.end - e.start >= 0.04 for e in events), (
+        "a fragment short enough for the duration filter would make this vacuous"
+    )
+
+    survivors = _resolve_melody_overlaps(events)
+
+    assert [e.pitch for e in survivors] == list(PHRASE), (
+        "every sliver must be gone and every note must keep its own pitch"
+    )
+
+    before = metrics.solfa_metrics(refs, _as_notes(events), "C major", REF_BPM, REF_BPM)
+    after = metrics.solfa_metrics(refs, _as_notes(survivors), "C major", REF_BPM, REF_BPM)
+
+    assert before["chromatic_ghosts"] > 0, "fixture no longer reproduces the complaint"
+    assert after["chromatic_ghosts"] == 0
+    assert after["ghost_count"] < before["ghost_count"]
+
+
+def test_the_wobble_fuse_leaves_a_genuine_legato_semitone_step_alone():
+    """Specificity, and it is not hypothetical — a pitch-only rule failed exactly here.
+
+    ``WOBBLE_SEMITONES = 1`` on its own fused real steps on six clean cases, one note
+    each, taking ``notes.recall`` 0.935 → 0.889.  ``semitone_steps_c_major`` did not
+    catch it, because its steps do not overlap; these do, which is the whole point.
+    """
+    refs = _refs(SEMITONE_PHRASE)
+    events = _legato_events()
+
+    survivors = _resolve_melody_overlaps(events)
+
+    assert [e.pitch for e in survivors] == list(SEMITONE_PHRASE), (
+        "a step that bleeds at its edge is two notes, not one wobbling note"
+    )
+
+    before = metrics.note_metrics_seconds(refs, _as_notes(events), REF_BPM, REF_BPM)
+    after = metrics.note_metrics_seconds(refs, _as_notes(survivors), REF_BPM, REF_BPM)
+    assert after["recall"] >= before["recall"]
+
+    # And the fuse cannot take credit on the accidentals column here: this phrase is
+    # diatonic, so there is nothing for it to clean and both readings must read zero.
+    scored = metrics.solfa_metrics(refs, _as_notes(survivors), "C major", REF_BPM, REF_BPM)
+    assert scored["chromatic_ghosts"] == 0
 
 
 # ── Accidentals — the user-visible face of defect 6 ───────────────────────────

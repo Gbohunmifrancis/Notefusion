@@ -136,7 +136,7 @@ export function LoginScreen({ navigation }: Props) {
 
           {/* ── 2. Centered Brand Logo ────────────────────────────────────── */}
           <View style={styles.brandContainer}>
-            <BrandMark size={72} color="#2563EB" waveColor="rgba(37,99,235,0.4)" showWaves={false} />
+            <BrandMark size={72} color={colors.accent} waveColor={colors.accentGlow} showWaves={false} />
             <Text style={styles.wordmark}>Notefusion</Text>
           </View>
 
@@ -294,8 +294,9 @@ const makeStyles = (c: Palette) =>
     },
     wordmark: {
       fontSize: 26,
-      fontFamily: fonts.bold,
-      color: "#2563EB",
+      // Poppins: this is the wordmark, not UI text. See `fonts` in design/theme.
+      fontFamily: fonts.displayBold,
+      color: c.accent,
       letterSpacing: -0.5,
       marginTop: spacing.xs,
     },
@@ -319,7 +320,7 @@ const makeStyles = (c: Palette) =>
     errorCard: {
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: "#FEF2F2",
+      backgroundColor: c.dangerSoft,
       borderWidth: 1,
       borderColor: c.danger,
       borderRadius: radii.md,
@@ -345,7 +346,7 @@ const makeStyles = (c: Palette) =>
     forgotLink: {
       fontSize: 13,
       fontFamily: fonts.semibold,
-      color: "#2563EB",
+      color: c.accent,
     },
 
     submitBtn: {
@@ -366,12 +367,12 @@ const makeStyles = (c: Palette) =>
     footerLink: {
       fontSize: 14,
       fontFamily: fonts.bold,
-      color: "#2563EB",
+      color: c.accent,
     },
 
     modalOverlay: {
       flex: 1,
-      backgroundColor: "rgba(0,0,0,0.45)",
+      backgroundColor: c.scrim,
       justifyContent: "center",
       alignItems: "center",
       paddingHorizontal: spacing.xl,

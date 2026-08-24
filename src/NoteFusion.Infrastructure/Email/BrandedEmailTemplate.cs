@@ -7,7 +7,7 @@ namespace NoteFusion.Infrastructure.Email;
 /// <summary>
 /// Renders every transactional email in one NoteFusion-branded shell, so mail from the app is
 /// recognisably the same product as the app itself. Tokens are copied from the design system —
-/// <c>mobile/src/design/theme.ts</c> and <c>web-admin/tailwind.config.js</c> — not reinterpreted.
+/// <c>mobile/src/design/theme.ts</c> and <c>web-admin/src/app/globals.css</c> — not reinterpreted.
 /// </summary>
 /// <remarks>
 /// <para>

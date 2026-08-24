@@ -24,7 +24,9 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
+import { Touchable } from "../components/Touchable";
 import { showDialog } from "../lib/dialog";
+import * as haptics from "../lib/haptics";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -76,6 +78,26 @@ const RECORDING_OPTIONS: RecordingOptions = {
   numberOfChannels: 1,
   isMeteringEnabled: true,
 };
+
+// ── Recording length cap ──────────────────────────────────────────────────────
+//
+// Mirrors the server's NF_MAX_CLIP_SECONDS (180), which is a hard 413: a longer recording
+// is not degraded, it is refused, and the user would lose the whole take. Stopping at the
+// limit and submitting is the only outcome that keeps the audio.
+//
+// This was 60 s and the reason was different — NF_PYIN_MAX_SECONDS was also 60, and above
+// it _pyin_track returned empty arrays, taking out pyin_refine and pyin_semitone together
+// (the latter being "what fixes the ghost accidentals at their source"). Crossing that line
+// cost solfa.chromatic_ghosts 1.526 -> 3.526 on the corpus, so a clip a second over came
+// back visibly worse than one a second under with nothing on screen to explain why. The
+// worker's pyin grid is now coarser (NF_PYIN_RESOLUTION, 2.39x cheaper for no measured loss),
+// which bought a 180 s pyin budget — the cap and the accepted duration are the same number
+// now, so there is no accuracy cliff left inside the recordable range to hide from.
+const MAX_RECORD_SEC = 180;
+
+// How close to the cap the subtitle starts counting down instead of giving the
+// ordinary "tap when you're done" hint.
+const RECORD_WARN_AT_SEC = 15;
 
 // ── Voice-level guidance thresholds (dBFS, 0 = loudest, -160 = silence) ───────
 //
@@ -387,6 +409,19 @@ export function RecordScreen() {
     [],
   );
 
+  // ── Auto-stop at MAX_RECORD_SEC ───────────────────────────────────────────
+  //
+  // Submits for the user rather than refusing to record further, because the clip up to
+  // the cap is perfectly usable and discarding it would be worse than truncating it.
+  // Safe against firing twice: the phase guard closes as soon as stopAndSubmit sets
+  // "uploading", and stopAndSubmit itself returns early unless recorder.isRecording.
+  // stopAndSubmit is deliberately not a dependency — it is redeclared every render, so
+  // depending on it would re-run this effect on each one.
+  useEffect(() => {
+    if (phase === "recording" && elapsed >= MAX_RECORD_SEC) void stopAndSubmit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase, elapsed]);
+
   // ── Voice-level metering & "sing louder" guidance ─────────────────────────
   //
   // recorderState.metering is only meaningful while phase === "recording";
@@ -553,10 +588,11 @@ export function RecordScreen() {
               otherwise announce "5 of 5 left" to a Pro account. Tappable throughout —
               wanting to see the plans is not only an out-of-credits impulse. */}
           {known && !isPro && (
-            <TouchableOpacity
+            <Touchable
               onPress={() => nav.navigate("Upgrade")}
               style={[styles.trialPill, trialRemaining <= 0 && styles.trialPillSpent]}
-              activeOpacity={0.8}
+              radius={radii.pill}
+              accessibilityLabel="See Pro plans"
             >
               <Ionicons
                 name={trialRemaining > 0 ? "sparkles-outline" : "lock-closed-outline"}
@@ -573,7 +609,7 @@ export function RecordScreen() {
                   ? `${trialRemaining} of ${trialTotal} free transcriptions left`
                   : "Free trial used up — see Pro plans"}
               </Text>
-            </TouchableOpacity>
+            </Touchable>
           )}
 
           {/* Mode toggle */}
@@ -593,17 +629,23 @@ export function RecordScreen() {
                   </Text>
                 </LinearGradient>
               ) : (
-                <TouchableOpacity
+                <Touchable
                   key={m}
                   style={styles.modeSegment}
-                  onPress={() => phase === "ready" && setMode(m)}
+                  onPress={() => setMode(m)}
+                  // Both pickers are locked once recording starts. Passing `disabled`
+                  // rather than gating inside onPress is what stops a locked segment
+                  // springing and buzzing at a tap that does nothing — and it fades to
+                  // the same 0.4 every other disabled control in the app uses, so the
+                  // lock is finally visible.
                   disabled={phase !== "ready"}
-                  activeOpacity={0.7}
+                  radius={radii.pill}
+                  accessibilityLabel={m === "melody" ? "Melody mode" : "Polyphonic mode"}
                 >
                   <Text style={styles.modeTextInactive}>
                     {m === "melody" ? "Melody" : "Polyphonic"}
                   </Text>
-                </TouchableOpacity>
+                </Touchable>
               );
             })}
           </View>
@@ -629,15 +671,16 @@ export function RecordScreen() {
                     <Text style={styles.keyChipTextActive}>{k}</Text>
                   </LinearGradient>
                 ) : (
-                  <TouchableOpacity
+                  <Touchable
                     key={k}
                     style={styles.keyChip}
-                    onPress={() => phase === "ready" && setSelectedKey(k)}
+                    onPress={() => setSelectedKey(k)}
                     disabled={phase !== "ready"}
-                    activeOpacity={0.7}
+                    radius={radii.pill}
+                    accessibilityLabel={`Key: ${k}`}
                   >
                     <Text style={styles.keyChipText}>{k}</Text>
-                  </TouchableOpacity>
+                  </Touchable>
                 );
               })}
             </ScrollView>
@@ -682,10 +725,14 @@ export function RecordScreen() {
             ]}
           />
 
-          {/* Record button */}
+          {/* Record button. Deliberately still a TouchableOpacity: it owns the
+              ripple/glow system above, and a competing press-scale would fight it.
+              It does take the heavier tick, on press-in — starting and stopping a
+              recording is the most consequential tap on the screen. */}
           <TouchableOpacity
             activeOpacity={0.88}
             onPress={isUploading ? undefined : handleButtonPress}
+            onPressIn={() => haptics.play("medium")}
             disabled={isUploading}
             style={styles.btnOuter}
           >
@@ -694,10 +741,7 @@ export function RecordScreen() {
                 phase === "recording"
                   ? (["#DC2626", "#B91C1C"] as const)
                   : isUploading
-                    ? ([
-                        "rgba(37,99,235,0.4)",
-                        "rgba(59,130,246,0.4)",
-                      ] as const)
+                    ? gradients.brandMuted
                     : gradients.brand
               }
               start={{ x: 0, y: 0 }}
@@ -734,6 +778,10 @@ export function RecordScreen() {
                   styles.waveBar,
                   {
                     transform: [{ scaleY: anim }],
+                    // Literal rgba, not a palette token: the alpha is computed per
+                    // bar so the ramp fades toward the outer edges, and a token
+                    // carries a fixed one. The two hues are the brand gradient's
+                    // own endpoints — deep blue out from the left, bright from the right.
                     backgroundColor:
                       i < WAVE_BARS / 2
                         ? `rgba(37, 99, 235, ${0.4 + (i / WAVE_BARS) * 0.6})`
@@ -796,7 +844,10 @@ export function RecordScreen() {
           <Text style={styles.statusSub}>
             {phase === "ready" &&
               "Sing, hum, or play near the mic for accurate Solfa extraction."}
-            {phase === "recording" && "Tap the button again when you're done."}
+            {phase === "recording" &&
+              (elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
+                ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
+                : "Tap the button again when you're done.")}
             {/* Once the server has the job it finishes it whether or not anyone is watching, and
                 sends a notification when it does. Said here because the poll on this screen used to
                 be the only thing tracking a job, so leaving quietly abandoned it — the upload is
@@ -808,14 +859,15 @@ export function RecordScreen() {
           </Text>
 
           {phase === "ready" && (
-            <TouchableOpacity
+            <Touchable
               onPress={pickAudioFile}
               style={styles.importFileBtn}
-              activeOpacity={0.8}
+              radius={radii.pill}
+              accessibilityLabel="Import audio file"
             >
               <Ionicons name="folder-open-outline" size={18} color={colors.accent} />
               <Text style={styles.importFileBtnText}>Import audio file</Text>
-            </TouchableOpacity>
+            </Touchable>
           )}
 
           {isUploading && (
@@ -934,8 +986,8 @@ const makeStyles = (c: Palette) =>
     paddingVertical: 5,
   },
   trialPillSpent: {
-    backgroundColor: "rgba(220, 38, 38, 0.10)",
-    borderColor: "rgba(220, 38, 38, 0.28)",
+    backgroundColor: c.dangerSoft,
+    borderColor: c.dangerBorder,
   },
   trialPillText: {
     fontSize: 11.5,
@@ -1059,16 +1111,14 @@ const makeStyles = (c: Palette) =>
 
   // ── Voice-level guidance banner ───────────────────────────────────────────
 
-  /** The wash stays a fixed rgba rather than the palette's danger hue so it
-   *  reads as a tint over both canvases; the dot and label use c.danger. */
   guidanceBanner: {
     position: "absolute",
     top: -8,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(220, 38, 38, 0.16)",
+    backgroundColor: c.dangerSoft,
     borderWidth: 1,
-    borderColor: "rgba(220, 38, 38, 0.35)",
+    borderColor: c.dangerBorder,
     borderRadius: radii.pill,
     paddingVertical: 8,
     paddingHorizontal: spacing.md,
@@ -1128,6 +1178,9 @@ const makeStyles = (c: Palette) =>
     borderWidth: 1.5,
   },
 
+  /** Two rings at different strengths, so the outer one reads as the fainter,
+   *  further-travelled wave. Literal rgba because each needs its own alpha pair
+   *  and no palette token carries four of them; the hue is the brand blue. */
   rippleInner: {
     width: 176,
     height: 176,
@@ -1245,7 +1298,7 @@ const makeStyles = (c: Palette) =>
     fontFamily: fonts.bold,
     color: c.text,
     letterSpacing: -1,
-    textShadowColor: "rgba(37, 99, 235, 0.55)",
+    textShadowColor: c.accentGlow,
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
     fontVariant: ["tabular-nums"],
@@ -1307,8 +1360,8 @@ const makeStyles = (c: Palette) =>
   errCard: {
     width: "100%",
     marginTop: spacing.sm,
-    backgroundColor: "rgba(220, 38, 38, 0.08)",
-    borderColor: "rgba(220, 38, 38, 0.22)",
+    backgroundColor: c.dangerSoft,
+    borderColor: c.dangerBorder,
   },
 
   errRow: {

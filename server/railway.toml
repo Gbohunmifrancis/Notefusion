@@ -1,0 +1,56 @@
+# Railway service manifest for the Python transcription worker.
+#
+# Set the Railway service's Root Directory to `server/`.  This is a monorepo: the
+# C# Web API in `src/` is a separate service and clients never reach this one
+# directly (see CLAUDE.md — the API is the single gateway to the ML worker).
+#
+# Schema: https://backboard.railway.app/railway.schema.json
+
+[build]
+# The Dockerfile is preferred over Nixpacks/Railpack detection because two things
+# here are not inferable: basic-pitch 0.4.0 pins tensorflow (which has no 3.12
+# Linux wheel) so it must be installed with --no-deps, and ffmpeg + libsndfile1
+# are apt packages that librosa/soundfile need at runtime.  Heroku needed an
+# Aptfile buildpack for the same reason; the Dockerfile makes that explicit.
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+# Repo-root relative, so a mobile/ or src/ commit does not rebuild the worker.
+watchPatterns = ["server/**"]
+
+[deploy]
+healthcheckPath = "/healthz"
+# Generous because the port does not open until the ONNX session is warm:
+# _warmup_basic_pitch() runs inside `lifespan` (app/main.py:48) specifically so
+# the ~3-4 s model load lands before the platform marks the service healthy,
+# rather than on some user's first request.
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# MUST stay 1, and this is a correctness constraint rather than a cost one.
+# JobQueue keeps its jobs in a plain in-process dict (app/jobs/queue.py), so a
+# job submitted to one replica is invisible to every other: with N replicas,
+# (N-1)/N of the client's GET /v1/jobs/{id} polls hit a process that has never
+# heard of that job and answer 404 — a transcription that in fact succeeded looks
+# to the mobile client like a job that vanished.  Measured at roughly 70% of
+# polls on Heroku before WEB_CONCURRENCY=1 was set; see docs/DEPLOYMENT.md §6.
+#
+# Railway makes replica scaling a one-click change in the dashboard, which is
+# exactly how this regresses.  Raising it requires moving JobQueue to a shared
+# store (Redis/Postgres) first.
+#
+# To spend extra cores instead, raise NF_INFERENCE_WORKERS — that parallelises
+# inside the single process, where the dict is still shared.  It defaults to 1;
+# see the pyin_max_seconds latency budget in app/config.py, which assumes 1.
+numReplicas = 1
+
+# Capacity is deliberately not pinned here.  [deploy.limitOverride.containers]
+# only *lowers* the ceiling the plan already grants, so setting it can cost
+# capacity but never add any.  Verified per-service maximums (these are ceilings
+# and include replica multiplication):
+#
+#   Trial   1 GB RAM /    2 vCPU   <- barely above the 512 MB Heroku dyno
+#   Hobby  48 GB RAM /   48 vCPU
+#   Pro     1 TB RAM / 1000 vCPU
+#
+# So "more capacity" is a plan question, not a manifest question.

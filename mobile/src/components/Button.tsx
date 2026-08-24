@@ -10,6 +10,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import {
+  fonts,
   gradients,
   radii,
   spacing,
@@ -17,8 +18,9 @@ import {
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import * as haptics from "../lib/haptics";
 
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "dangerSolid";
 
 interface Props {
   label: string;
@@ -33,13 +35,20 @@ interface Props {
 }
 
 /**
- * Unified button component for the light blue design system.
+ * Unified button component.
  *
- * primary   — "The Fusion" gradient (Deep Blue → Bright Blue), bold white
- *             label, tactile spring-scale on press.
- * secondary — Glass surface (8 % white) + 14 % white border; muted label.
- * ghost     — Transparent; Slate label for low-hierarchy actions.
- * danger    — Red-tinted glass; danger-red label for destructive actions.
+ * primary     — "The Fusion" gradient (blue), white label, tactile
+ *               spring-scale on press.
+ * secondary   — Raised surface + hairline border; body-coloured label.
+ * ghost       — Transparent, and genuinely quieter: a lighter face at a smaller
+ *               size, because a "ghost" that matches `primary`'s 17px semibold
+ *               is only quieter in colour and ends up competing with whatever
+ *               heading sits above it (this is what made dialog cancels shout).
+ * danger      — Danger-tinted wash; danger label. For a destructive action that
+ *               is *not* the main event on screen.
+ * dangerSolid — Filled danger, white label. For a destructive action that IS the
+ *               primary action — a confirmation dialog's "Sign out". A 12 % tint
+ *               reads hollow in that position, as if the app were hedging.
  *
  * All variants share the same spring-scale press animation powered by
  * React Native's built-in Animated API (no extra dependencies needed).
@@ -72,6 +81,7 @@ export function Button({
   const getTextColor = (): string => {
     switch (variant) {
       case "primary":
+      case "dangerSolid":
         return colors.onAccent;
       case "danger":
         return colors.danger;
@@ -99,7 +109,15 @@ export function Button({
   ) : (
     <>
       {iconPosition === "left" && glyph}
-      <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+      <Text
+        style={[
+          styles.label,
+          variant === "ghost" && styles.ghostLabel,
+          { color: textColor },
+        ]}
+      >
+        {label}
+      </Text>
       {iconPosition === "right" && glyph}
     </>
   );
@@ -107,7 +125,7 @@ export function Button({
   // ── Primary — LinearGradient background ───────────────────────────────────
   const primaryInner = (
     <LinearGradient
-      colors={gradients.brand} // #2563EB → #3B82F6
+      colors={gradients.brand} // #1D4ED8 → #3B82F6
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.base}
@@ -124,6 +142,7 @@ export function Button({
         variant === "secondary" && styles.secondary,
         variant === "ghost" && styles.ghost,
         variant === "danger" && styles.danger,
+        variant === "dangerSolid" && styles.dangerSolid,
       ]}
     >
       {content}
@@ -136,7 +155,17 @@ export function Button({
     >
       <Pressable
         onPress={isDisabled ? undefined : onPress}
-        onPressIn={() => !isDisabled && animate(0.96)}
+        onPressIn={() => {
+          if (isDisabled) return;
+          animate(0.96);
+          // Both destructive variants are the ones that sign you out or delete
+          // something, so they get the warning pattern rather than the tick.
+          haptics.play(
+            variant === "danger" || variant === "dangerSolid"
+              ? "warning"
+              : "light",
+          );
+        }}
         onPressOut={() => animate(1)}
         accessibilityRole="button"
         accessibilityLabel={label}
@@ -187,13 +216,18 @@ const makeStyles = (c: Palette) =>
       backgroundColor: "transparent",
     },
 
-    /** Red-tinted wash — destructive / sign-out actions. The tint stays a fixed
-     *  rgba rather than the palette's danger hue so it reads as a wash over both
-     *  canvases; the label itself uses c.danger, which does lighten in dark mode. */
+    /** Danger-tinted wash — secondary destructive actions. Both the tint and the
+     *  label now come from the same palette, so dark mode stops painting a
+     *  light-mode maroon fill under a lightened salmon label. */
     danger: {
-      backgroundColor: "rgba(220, 38, 38, 0.12)",
+      backgroundColor: c.dangerSoft,
       borderWidth: 1,
-      borderColor: "rgba(220, 38, 38, 0.30)",
+      borderColor: c.dangerBorder,
+    },
+
+    /** Filled danger — the destructive action that is also the primary one. */
+    dangerSolid: {
+      backgroundColor: c.danger,
     },
 
     /** Applied when disabled or loading — preserves layout, fades visually. */
@@ -203,7 +237,13 @@ const makeStyles = (c: Palette) =>
 
     label: {
       ...typography.label,
-      fontSize: 17,
+      fontSize: 16,
+    },
+
+    /** Ghost only: a step down in size and weight, not just in colour. */
+    ghostLabel: {
+      fontFamily: fonts.medium,
+      fontSize: 15,
     },
 
     icon: {

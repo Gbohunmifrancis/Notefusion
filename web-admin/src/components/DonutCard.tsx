@@ -1,6 +1,8 @@
-import { Info } from "lucide-react";
+"use client";
+
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
+import { InfoHint } from "@/components/InfoHint";
 import { EmptyView } from "@/components/StateView";
 import { formatCount } from "@/lib/format";
 
@@ -73,8 +75,8 @@ export function DonutCard({
 
         <div className="pointer-events-none absolute inset-0 grid place-items-center">
           <div className="text-center">
-            <p className="text-[11px] text-muted">{centerLabel}</p>
-            <p className="mt-0.5 text-xl font-semibold tracking-[-0.02em] tabular-nums text-ink">
+            <p className="text-[11px] text-muted-foreground">{centerLabel}</p>
+            <p className="mt-0.5 text-xl font-semibold tracking-[-0.02em] tabular-nums text-foreground">
               {centerValue}
             </p>
           </div>
@@ -91,21 +93,16 @@ export function DonutCard({
                   className="h-2 w-2 shrink-0 rounded-full"
                   style={{ backgroundColor: slice.color }}
                 />
-                <span className="truncate text-muted">{slice.label}</span>
-                {slice.hint && (
-                  <span title={slice.hint} className="shrink-0 cursor-help text-faint">
-                    <Info size={11} aria-hidden="true" />
-                    <span className="sr-only">{slice.hint}</span>
-                  </span>
-                )}
+                <span className="truncate text-muted-foreground">{slice.label}</span>
+                {slice.hint && <InfoHint text={slice.hint} size={11} />}
               </span>
-              <span className="shrink-0 font-semibold tabular-nums text-ink">
+              <span className="shrink-0 font-semibold tabular-nums text-foreground">
                 {slice.display ?? formatCount(slice.value)}
               </span>
             </div>
 
             {meters && (
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-pill bg-surface-alt">
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-pill bg-muted">
                 <div
                   className="h-full rounded-pill"
                   style={{

@@ -2,19 +2,10 @@
 # Build context is the REPO ROOT (project references span src/), so build with:
 #   docker build -f src/NoteFusion.Api/Dockerfile -t notefusion-api .
 # docker-compose sets this context/dockerfile pair for you.
-
-# ── Admin dashboard ───────────────────────────────────────────────────────────
-# The API is also the dashboard's web server (it serves the bundle from wwwroot), so the
-# Vite build happens here instead of in a separate deploy. VITE_API_URL is deliberately
-# left unset: the bundle is served from the API's own origin, so relative paths are right.
-FROM node:22-alpine AS dashboard
-WORKDIR /dashboard
-
-COPY web-admin/package.json web-admin/package-lock.json ./
-RUN npm ci
-
-COPY web-admin/ ./
-RUN npm run build
+#
+# API only. The admin dashboard used to be built here and served out of wwwroot; it is now a
+# separate Next.js app deployed to Vercel from web-admin/, on its own origin and in the API's
+# CORS allow-list. Nothing in this image knows about it.
 
 # ── C# API ────────────────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -38,10 +29,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
 WORKDIR /app
 
 COPY --from=build /app/publish ./
-
-# The dashboard lands in wwwroot, where the static-file middleware picks it up. Program.cs
-# only enables that middleware when index.html is present, so an API-only build still runs.
-COPY --from=dashboard /dashboard/dist ./wwwroot
 
 # Kestrel binds Heroku's dynamic $PORT, falling back to 8080 for compose.
 CMD sh -c "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet NoteFusion.Api.dll"

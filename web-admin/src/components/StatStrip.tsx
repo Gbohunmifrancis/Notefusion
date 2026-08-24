@@ -1,26 +1,42 @@
-import { Info, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { InfoHint } from "@/components/InfoHint";
+import { cn } from "@/lib/utils";
+
 /**
- * The headline KPI row: one card whose cells are separated by hairlines rather than four
- * cards with gaps between them.
+ * The headline KPI row: four separate cards with the canvas showing between them.
  *
- * The dividers are the parent's background showing through a 1px grid gap, which keeps
- * them exactly one device pixel at any zoom and needs no per-cell border to reset at the
- * ends of each wrapped row.
+ * They used to be one card divided by hairlines, which was tidier but flatter — nothing on the
+ * page had an icon and every tile was grey text on white. Splitting them gives each metric a
+ * card edge of its own to hang a badge on, which is what makes the row scannable.
  */
 
 export function StatStrip({ children }: { children: ReactNode }) {
-  return (
-    <div className="grid gap-px overflow-hidden rounded-md border border-border bg-border-light shadow-hairline sm:grid-cols-2 xl:grid-cols-4">
-      {children}
-    </div>
-  );
+  return <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{children}</div>;
 }
+
+/**
+ * Badge fills, keyed by name rather than passed as a class so a page cannot reach for a colour
+ * Tailwind will not have compiled. All five are non-flipping and carry a white glyph — see the
+ * `badge-*` tokens in src/app/globals.css for the contrast measurements.
+ */
+const TONES = {
+  indigo: "bg-badge-indigo",
+  violet: "bg-badge-violet",
+  emerald: "bg-badge-emerald",
+  cyan: "bg-badge-cyan",
+  orange: "bg-badge-orange",
+} as const;
+
+export type StatTone = keyof typeof TONES;
 
 interface StatTileProps {
   label: string;
   value: string;
+  icon: LucideIcon;
+  tone: StatTone;
   /** What the number counts, in the reader's terms. Carried by the ⓘ beside the label. */
   hint?: string;
   /** The small line under the value. */
@@ -33,48 +49,65 @@ interface StatTileProps {
 export function StatTile({
   label,
   value,
+  icon: Icon,
+  tone,
   hint,
   sub,
   change,
   unknown = false,
 }: StatTileProps) {
   return (
-    <div className="bg-surface px-5 py-4">
-      <p className="flex items-center gap-1.5 text-xs font-medium text-muted">
-        <span className="truncate">{label}</span>
-        {hint && (
-          <span title={hint} className="shrink-0 cursor-help text-faint">
-            <Info size={12} aria-hidden="true" />
-            <span className="sr-only">{hint}</span>
-          </span>
-        )}
-      </p>
+    <div className="rounded-md border border-border bg-card p-5 shadow-hairline">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+            <span className="truncate">{label}</span>
+            {hint && <InfoHint text={hint} />}
+          </p>
 
-      <p
-        className={`mt-2.5 text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums ${
-          unknown ? "text-faint" : "text-ink"
-        }`}
-      >
-        {value}
-      </p>
+          {/* The measured change sits beside the number rather than under it: the two are read
+              together, and stacking them pushed the card taller than the metric deserved. */}
+          <div className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <p
+              className={cn(
+                "text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums",
+                unknown ? "text-faint" : "text-foreground",
+              )}
+            >
+              {value}
+            </p>
+            {change && (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-0.5 text-[11px] font-semibold",
+                  change.up ? "text-success-deep" : "text-danger-deep",
+                )}
+              >
+                {change.up ? (
+                  <TrendingUp size={12} aria-hidden="true" />
+                ) : (
+                  <TrendingDown size={12} aria-hidden="true" />
+                )}
+                {change.label}
+              </span>
+            )}
+          </div>
+        </div>
 
-      {/* A measured change beats a restatement of what the tile counts, so it wins the slot. */}
-      {change ? (
-        <p
-          className={`mt-2.5 flex items-center gap-1 text-[11px] font-semibold ${
-            change.up ? "text-success-deep" : "text-danger-deep"
-          }`}
-        >
-          {change.up ? (
-            <TrendingUp size={12} aria-hidden="true" />
-          ) : (
-            <TrendingDown size={12} aria-hidden="true" />
+        <span
+          aria-hidden="true"
+          className={cn(
+            "grid h-10 w-10 shrink-0 place-items-center rounded-sm text-white",
+            TONES[tone],
           )}
-          {change.label}
-        </p>
-      ) : (
-        sub && <p className="mt-2.5 truncate text-[11px] text-faint">{sub}</p>
-      )}
+        >
+          <Icon size={18} />
+        </span>
+      </div>
+
+      {/* A measured change already won the slot beside the value, so this only restates what the
+          tile counts when there is no change to show. */}
+      {!change && sub && <p className="mt-2.5 truncate text-[11px] text-faint">{sub}</p>}
     </div>
   );
 }

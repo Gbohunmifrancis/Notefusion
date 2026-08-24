@@ -280,7 +280,7 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
     overlay: {
       flex: 1,
-      backgroundColor: "rgba(0,0,0,0.45)", // matches AppDialog's backdrop
+      backgroundColor: c.scrim, // same wash as AppDialog
       justifyContent: "flex-end",
     },
 

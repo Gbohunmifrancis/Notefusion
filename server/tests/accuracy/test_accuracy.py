@@ -17,47 +17,122 @@ session-scoped fixture is what keeps this usable.
 
 Accepted trades recorded in the current baseline
 ────────────────────────────────────────────────
-This baseline is the shipped configuration.  Two numbers in it are *worse* than the
+This baseline is the shipped configuration.  Three numbers in it are *worse* than the
 pre-plan pipeline scored, deliberately:
 
-  vibrato_heavy / solfa.degree_accuracy  0.375 -> 0.000
-      This case is broken in every configuration, pre-plan included — 30 estimated
-      notes for 11 real ones, notes.f1 0.098, 21 ghosts.  With 90% of the note list
-      wrong, the duration-weighted pitch-class histogram every music21 profile reads
-      is noise, and all five profiles vote for an unrelated key.  Pre-plan scored
-      0.375 by landing on Bb minor, which happens to share 3 of 8 degrees with the
-      true C major — coincidental partial credit, not a working behaviour.  What the
-      trade buys is honesty: key.confidence goes 0.477 -> 0.023, so the estimate is
-      now well under the mobile's 0.5 cut and the editable-key prompt fires instead
-      of a wrong key being presented as plausible.
-      Three candidate fixes have now been built or scouted, measured, and STRUCK — the
+  vibrato_heavy / solfa.degree_accuracy  0.375 -> 0.000 -> REPAID, now 1.000
+      Kept in full because the reasoning is what the repair has to be read against, and
+      because the failure did not disappear so much as move to another case.
+
+      This case was broken in every configuration, pre-plan included — 30 estimated notes
+      for 11 real ones, notes.f1 0.098, 21 ghosts.  With 90% of the note list wrong, the
+      duration-weighted pitch-class histogram every music21 profile reads is noise, and all
+      five profiles voted for an unrelated key.  Pre-plan scored 0.375 by landing on Bb
+      minor, which happens to share 3 of 8 degrees with the true C major — coincidental
+      partial credit, not a working behaviour.  What the trade bought was honesty:
+      key.confidence went 0.477 -> 0.023, so the estimate sat well under the mobile's 0.5
+      cut and the editable-key prompt fired instead of a wrong key being presented as
+      plausible.
+      Three candidate fixes were built or scouted, measured, and STRUCK — the
       vibrato-tolerant merge (fired zero times), the pyin re-label (a fragmentation
       regression behind a gate that cannot see the bias it exists to catch), and the
       straddle collapse (the midpoint stops being the truth past ~1.6 semitones of
       depth, and this corpus holds one depth).  All three post-mortems are in the
-      vibrato_heavy comment in corpus.py, with the corpus-breadth prerequisite they
-      share.  So this number should not improve by chance — if it moves,
-      check notes.f1 first.
+      vibrato_heavy comment in corpus.py, with the corpus-breadth prerequisite they share.
+
+      **None of those is what repaired it.**  Lifting ``pyin_max_seconds`` to 180 on a
+      coarser ``pyin_resolution`` did, incidentally: F minor -> C major, degree 0.000 ->
+      1.000, syllable 0.000 -> 0.889, notes.f1 0.429 -> 0.516.  The case is still badly
+      over-segmented (20 estimated notes for 11) so this is not the fix those three were
+      looking for — it is the key ensemble crossing back over a margin it was sitting just
+      the wrong side of, which is precisely the marginality the struck post-mortems
+      identified.  Read it as the defect being unstable rather than solved.
+      The proof that it is unstable: ``vibrato_rate_k15`` made the opposite move over the
+      same change (C major -> F minor, degree 1.000 -> 0.000), so ``key.exact`` is unmoved
+      at 0.897 and the corpus simply holds a different broken case than it did.  The
+      standing entry for that is below.  A real fix is a tiebreak on the key ensemble
+      (ends-on-doh, diatonic parsimony), not another pass at the note list.
+
+  vibrato_rate_k15 / solfa.degree_accuracy  1.000 -> 0.000
+      The inherited half of the trade above, and the only per-case regression the cap lift
+      cost.  C major -> F minor takes every syllable in the clip with it (syllable
+      accuracy 1.000 -> 0.000) even though the note list barely moved (notes.f1 0.667 ->
+      0.615, 13 -> 15 estimated for 11 real).
+      Accepted for the same reason ``vibrato_heavy``'s version was, and on a better number:
+      key.confidence falls 0.175 -> **0.035**, so the wrong key is reported as
+      near-worthless and the mobile's editable-key prompt fires.  The corpus-wide picture
+      is what makes this a trade rather than a loss — every one of the four wrong keys now
+      sits under the mobile's 0.5 cut (0.035-0.343), and ``key.confidence_auc`` rises
+      0.929 -> 0.964.  Tuning the pyin grid to protect this one case instead would be
+      fitting to the corpus; the four hard vibrato cases trade places whenever the pitch
+      evidence shifts, because their key decision is marginal by construction.
 
   conf.auc and conf.separation, corpus-wide and on four cases
       Both fall while every note metric on those same cases improves.  They are no
       longer gated; see the NOT_A_GATE note below for why that is structural rather
       than convenient.
-      Partly repaid since.  ``conf`` stopped being bare Basic Pitch amplitude and became
-      a consensus of amplitude with pyin's independent reading of the same span
+      Largely repaid since, in two steps.  ``conf`` stopped being bare Basic Pitch amplitude
+      and became a consensus of amplitude with pyin's independent reading of the same span
       (``_blend_confidence``): conf.auc 0.551 -> 0.676, conf.separation -0.012 -> 0.032,
-      conf.mean_correct 0.684 -> 0.845, with every other aggregate bit-identical to
-      +0.000 — which it must be, since conf is carried on notes and never used to select
-      them.
+      with every other aggregate bit-identical to +0.000 — which it must be, since conf is
+      carried on notes and never used to select them.  Lifting the pyin cap then took it
+      to conf.auc **0.745** and conf.separation **0.087**, for the mechanical reason that
+      the consensus term now has a pyin reading to consult on long clips at all.
       It does NOT return to the pre-plan 0.868, and cannot.  That figure was measured
       over a wrong-note population dominated by quiet ghosts clustered at amplitude
       0.252-0.268, which is exactly the population ``ADAPTIVE_FACTOR`` 0.40 now deletes
       before anything is scored.  What remains to rank is the hard residue — wrong-pitch
-      survivors at full amplitude — so 0.676 over this population is not the same
+      survivors at full amplitude — so 0.745 over this population is not the same
       question as 0.868 over that one, and treating the older number as a target would
       be asking the metric to re-acquire the errors the pipeline stopped making.  The
       POPULATION argument below is precisely this, and it is also why the family stays
       out of the gate even in the direction of improvement.
+
+  notes.recall on four vibrato cases, and 0.024 corpus-wide
+      The wobble fuse (``WOBBLE_SEMITONES`` / ``WOBBLE_MIN_OVERLAP_FRACTION`` in
+      transcriber.py) absorbs a semitone-off sliver back into the note it came from.
+      Under a heavy wobble two *real* notes a semitone apart can overlap enough to be
+      fused as well, and this is what that costs:
+
+          vibrato_heavy      recall 0.909 -> 0.545   n_est 35 -> 17   f1 0.435 -> 0.429
+          vibrato_rate_k15   recall 1.000 -> 0.727   n_est 32 -> 13   f1 0.512 -> 0.667
+          vibrato_rate_k155  recall 1.000 -> 0.727   n_est 29 -> 18   f1 0.550 -> 0.552
+          vibrato_rate_7hz   recall 0.909 -> 0.727   n_est 47 -> 16   f1 0.345 -> 0.593
+
+      Precision rises on all four (0.213-0.379 -> 0.353-0.615) and f1 rises or holds on
+      all four, because the notes being given up are bought back several times over in
+      ghosts: solfa.ghost_count on these four falls 24/21/18/36 -> 8/5/9/6.  Eleven real
+      notes were being printed as 29-47, and are now printed as 13-18.
+
+      This is the threshold's own trade and not a fixable side effect, which took two
+      measurements to establish.  Sweeping it over the eight vibrato cases:
+
+          t       recall  f1     n_est  ghost_count  chromatic_ghosts
+          none    0.716   0.404  32.9   22.3         7.88
+          0.70    0.739   0.436  30.8   20.3         5.88
+          0.50    0.705   0.453  27.6   17.4         6.00
+          0.20    0.602   0.496  20.4   10.9         6.25
+
+      Recall is not monotonic in t, which pointed at the fused event's span extension
+      (``end=max(prev.end, evt.end)``) rather than at the pitch test — a protruding
+      sliver grows the note forward over whatever follows.  Pinning the end to the
+      longer fragment instead recovers recall 0.602 -> 0.682 but gives back nearly all
+      the clutter (n_est 20.4 -> 27.9, ghost_count 10.9 -> 17.6, f1 0.496 -> 0.435) and
+      still does not reach the no-fuse 0.716.  So absorbing the span is what removes the
+      ghosts; it is one trade with one knob, and 0.20 was chosen for the readable score.
+
+      0.70 remains the option to revisit if breadth ever matters more than clutter: it
+      scores BETTER than no fuse on recall and has the lowest accidental count of any
+      setting.  What rules it out today is 30.8 printed notes for 11 real ones.
+
+  beats.recall 0.990 -> 0.969, from the same change
+      Recorded here because it is gated and 0.022 is just over tolerance, but it is the
+      signature of the tempo estimate getting BETTER rather than worse.  beats.precision
+      rises 0.858 -> 0.890 and beats.f1 0.890 -> 0.916 alongside it, and
+      tempo.abs_error falls 21.263 -> 14.184: a tempo no longer inflated by ghost onsets
+      predicts fewer beat instants, so it hits marginally fewer reference beats while
+      emitting far fewer spurious ones.  Read the three columns together; recall alone on
+      a predicted-instant count is maximised by predicting a beat everywhere.
 
 The 31 -> 38 corpus expansion moved every aggregate down, and none of it is a regression
 ────────────────────────────────────────────────────────────────────────────────────────
@@ -80,8 +155,97 @@ What the expansion bought immediately: it falsified a calibration property the p
 asserts.  ``KEY_MARGIN_FULL``'s comment claimed "every wrong key lands under 0.5" on the
 31-case corpus; on 38 the wrong-key count is 9 spanning 0.023-0.631, and
 ``vibrato_rate_k155`` reads C major as E minor at 0.631 — above the mobile's cut, so the
-editable-key prompt stays silent on a confidently wrong key.  That is a live defect, not
+editable-key prompt stays silent on a confidently wrong key.  That was a live defect, not
 an accepted trade; the analysis and the rejected rescaling are recorded at the constant.
+**It is no longer live.**  On this baseline all four wrong keys land at 0.035-0.343 and
+``vibrato_rate_k155`` reads C major at 0.907, so the claim holds again on 39 cases and the
+prompt fires on every wrong key.  It was not fixed by rescaling — the pyin cap lift below
+moved the underlying evidence — so the constant's analysis stands and this property is
+still a coincidence of the current numbers rather than something the code enforces.  Five
+*correct* keys also sit under the cut (0.064-0.447), which is the safe direction for a
+prompt but means the cut is not a wrong-key detector.
+
+The 38 -> 39 expansion, and the cap lift that resolved it
+────────────────────────────────────────────────────────────────────────────────────────
+``LONG_CLIP_CASES`` added ``long_clip_over_pyin_cap``: ``DIAG_PHRASE`` repeated nine times
+under ``vibrato_heavy``'s exact vibrato, 67.8 s, and at the time the only case in the corpus
+that crossed ``settings.pyin_max_seconds`` (then 60).  Above that line ``_pyin_track``
+returns empty arrays and ``pyin_semitone`` — the stage that suppresses spurious accidentals
+at their source — goes dark.  The regime was 0% measured while ``max_clip_seconds`` accepted
+180 s, so the aggregate fall on the 38 -> 39 re-record was the cliff finally being *inside*
+the harness, not a pipeline regression:
+
+    solfa.chromatic_ghosts            1.526 ->  3.846
+    notes.semitone_neighbour_ghosts   1.632 ->  5.256
+    solfa.ghost_count                 2.553 ->  6.179
+    notes.f1                          0.882 ->  0.866
+    tempo.abs_error                  14.184 -> 17.359
+    conf.auc                          0.698 ->  0.624
+
+That one case carried 92 of the 150 chromatic ghosts, 143 of 205 semitone-neighbour ghosts
+and 138 of the 677 BPM of tempo error — a weighted average against a case with 9x the
+reference notes.  Every pre-existing case was unchanged, +0.000 on notes.f1 across all 38.
+
+**The cap is now 180, equal to ``max_clip_seconds``, and this baseline is the first recorded
+with it.**  What paid for that is ``config.pyin_resolution``: pyin's Viterbi grid is coarser
+than librosa's default (0.2 semitones against 0.1, 240 bins against 481, 2.39x cheaper),
+which is affordable because ``_refine_pitches`` rounds to a whole semitone anyway.  Read
+those two config docstrings together — they are one decision.  Corpus-wide, against the
+60 s / 0.1-grid baseline:
+
+    solfa.chromatic_ghosts            3.846 ->  2.846
+    notes.semitone_neighbour_ghosts   5.256 ->  3.051
+    solfa.ghost_count                 6.179 ->  4.821
+    notes.n_est                      18.846 -> 17.462   (13.436 real)
+    notes.f1                          0.866 ->  0.875   (recall 0.898 -> 0.913)
+    solfa.degree_accuracy             0.934 ->  0.944
+    solfa.syllable_accuracy           0.923 ->  0.933
+    tempo.abs_error                  17.359 -> 15.641
+    conf.auc                          0.624 ->  0.745
+    key.confidence_auc                0.929 ->  0.964
+
+No gated aggregate regressed.  The three negatives are all inside ``NOT_A_GATE`` or
+tolerance: conf.mean_correct -0.032 and beats.best_shift_beats -0.024 are ungated, and
+beats.f1/precision/recall move -0.002/-0.003/-0.001.
+
+On the case itself: 226 -> 166 estimated notes for 99 real, notes.f1 0.240 -> 0.596,
+solfa.degree_accuracy 0.707 -> 0.988, syllable_accuracy 0.476 -> 0.975, key.confidence
+0.253 -> 0.804.  Over-segmentation is the whole mechanism — refinement collapses
+semitone-adjacent fragments, which is why the ghost columns move furthest and why 60 fewer
+printed notes buys 0.356 of f1.
+
+Its pair is still ``vibrato_heavy``, differing in exactly one variable — length — so
+normalise per reference note and the result is legible in a way the aggregates cannot show:
+
+    per reference note        vibrato_heavy (7.8 s)   long_clip (67.8 s)
+    ghost_count                    0.73 -> 1.00          1.45 -> 0.86
+    chromatic_ghosts               0.55 -> 0.55          0.93 -> 0.52
+    semitone_neighbour_ghosts      0.55 -> 0.55          1.44 -> 0.55
+
+**Length has stopped costing anything on the accidental columns** — semitone-neighbour
+ghosts per note are now identical on the pair, and chromatic ghosts are marginally *lower*
+on the long clip.  What remains at ~0.55 per note is the vibrato, which both share and
+which no cap change can touch.  ``ghost_count`` moving the other way on the short case is
+the wobble fuse having less to fuse once refinement is available, and it is 3 notes.
+
+Two results from the original expansion are worth keeping, because one is now closed and
+the other reversed.  **The degree/syllable gap was the user-reported defect, isolated.**
+0.707 against 0.476 was the largest in the corpus by 2.3x — 36 of 39 cases had no gap at
+all — and a gap means the scale degree is right while the printed syllable carries an
+accidental that is not in the music.  That is "adding accidentals where not needed", and
+this case was the only place in the harness it registered.  It is now 0.988 against 0.975,
+a gap of 0.013, so the harness's one witness to that defect has gone quiet.  Treat that as
+the reason to populate ``tests/accuracy/real/`` rather than as the defect being solved:
+a synthetic 5.5 Hz vibrato is not a human voice.  **And "length helps the key while hurting
+everything else" no longer holds either** — it was true when the long clip read C major and
+its 7.8 s pair read F minor, on the argument that 99 notes of duration-weighted histogram
+outvote ghost classes that 11 notes cannot.  Both read C major now, so length is no longer
+compensating for anything.
+
+This case is STILL expected to score badly, in the way ``vibrato_heavy`` is: 166 printed
+notes for 99 real is not a working transcription.  Read the pair together — they are now
+close (notes.f1 0.596 against 0.516, degree 0.988 against 1.000), and a gap reopening means
+refinement stopped reaching long clips, which is the one thing this case exists to catch.
 """
 
 import json

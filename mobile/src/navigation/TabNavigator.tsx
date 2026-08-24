@@ -4,7 +4,6 @@ import {
   Platform,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -13,11 +12,15 @@ import {
   type BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
+import { Touchable } from "../components/Touchable";
 import {
   fonts,
+  gradients,
+  motion,
   spacing,
   type Palette,
 } from "../design/theme";
@@ -103,30 +106,41 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 
           if (tab.isCenter) {
             return (
-              <TouchableOpacity
+              <Touchable
                 key={`center-${tab.label}`}
-                accessibilityRole="button"
                 accessibilityLabel="Record melody"
-                activeOpacity={0.85}
                 onPress={onPress}
+                // The deliberate control on this bar, so it gets the heavier tick
+                // and a deeper press — 0.97 barely reads at this diameter.
+                haptic="medium"
+                scaleTo={motion.scale.large}
+                // No ripple and no radius: the circle casts a coloured glow, and
+                // either one would clip the shadow or paint a rectangle across the cell.
+                ripple={false}
                 style={styles.centerBtnWrap}
               >
-                <View style={styles.centerBtn}>
+                <LinearGradient
+                  colors={gradients.brand}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.centerBtn}
+                >
                   <Ionicons name="mic" size={26} color="#FFFFFF" />
-                </View>
+                </LinearGradient>
                 <Text style={[styles.tabLabel, styles.centerLabel]}>{tab.label}</Text>
-              </TouchableOpacity>
+              </Touchable>
             );
           }
 
           return (
-            <TouchableOpacity
+            <Touchable
               key={`${tab.label}-${index}`}
-              accessibilityRole="button"
               accessibilityState={focused ? { selected: true } : {}}
               accessibilityLabel={tab.label}
-              activeOpacity={0.85}
               onPress={onPress}
+              // Borderless is the platform idiom for a bare tab icon: the ripple
+              // radiates from the glyph instead of boxing the whole cell.
+              ripple="borderless"
               style={styles.tabItem}
             >
               <Ionicons
@@ -137,7 +151,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               <Text style={[styles.tabLabel, focused && styles.tabLabelActive]}>
                 {tab.label}
               </Text>
-            </TouchableOpacity>
+            </Touchable>
           );
         })}
       </View>
@@ -216,14 +230,15 @@ const makeStyles = (c: Palette) =>
       marginTop: -20,
     },
 
+    /** Same gradient as Home's mic stage — it is the same action, and a flat fill
+     *  beside a gradient one made the two read as different buttons. */
     centerBtn: {
       width: 54,
       height: 54,
       borderRadius: 27,
-      backgroundColor: "#2563EB",
       alignItems: "center",
       justifyContent: "center",
-      shadowColor: "#2563EB",
+      shadowColor: c.ink,
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: 0.4,
       shadowRadius: 10,

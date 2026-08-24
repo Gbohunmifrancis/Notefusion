@@ -1,6 +1,8 @@
 import { AlertTriangle, Inbox, Loader2 } from "lucide-react";
 import type { ReactNode } from "react";
+
 import { ApiError } from "@/api/client";
+import { Button } from "@/components/ui/button";
 
 /**
  * The three non-success states, in one place so every panel reports them the same way.
@@ -12,7 +14,7 @@ import { ApiError } from "@/api/client";
 export function LoadingView({ label = "Loading" }: { label?: string }) {
   return (
     <div
-      className="flex items-center justify-center gap-2 py-12 text-sm text-muted"
+      className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground"
       role="status"
     >
       <Loader2 size={18} className="animate-spin" aria-hidden="true" />
@@ -25,13 +27,22 @@ export function EmptyView({ message, hint }: { message: string; hint?: string })
   return (
     <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
       <Inbox size={26} className="text-faint" aria-hidden="true" />
-      <p className="text-sm font-medium text-ink">{message}</p>
-      {hint && <p className="max-w-sm text-xs text-muted">{hint}</p>}
+      <p className="text-sm font-medium text-foreground">{message}</p>
+      {hint && <p className="max-w-sm text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
 }
 
-export function ErrorView({ error, onRetry }: { error: Error; onRetry?: () => void }) {
+export function ErrorView({
+  error,
+  onRetry,
+  retrying = false,
+}: {
+  error: Error;
+  onRetry?: () => void;
+  /** True while the retry is in flight, so the button can say so instead of looking inert. */
+  retrying?: boolean;
+}) {
   // Surfacing the server's own code makes a report actionable instead of "it broke".
   const code = error instanceof ApiError ? error.code : null;
   const status = error instanceof ApiError ? error.status : null;
@@ -42,28 +53,47 @@ export function ErrorView({ error, onRetry }: { error: Error; onRetry?: () => vo
       role="alert"
     >
       <AlertTriangle size={26} className="text-danger" aria-hidden="true" />
-      <p className="text-sm font-medium text-ink">{error.message}</p>
+      <p className="text-sm font-medium text-foreground">{error.message}</p>
       {code && (
-        <p className="font-mono text-xs text-muted">
+        <p className="font-mono text-xs text-muted-foreground">
           {code}
           {status ? ` · ${status}` : ""}
         </p>
       )}
       {onRetry && (
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={onRetry}
-          className="mt-2 rounded-pill border border-border bg-surface px-4 py-1.5 text-xs font-semibold text-ink transition hover:bg-surface-alt"
+          disabled={retrying}
+          className="mt-2 rounded-pill text-xs font-semibold"
         >
-          Try again
-        </button>
+          {retrying && <Loader2 className="animate-spin" aria-hidden="true" />}
+          {retrying ? "Retrying…" : "Try again"}
+        </Button>
       )}
     </div>
   );
 }
 
+/**
+ * The slice of a TanStack Query result this needs. Narrow on purpose: `UseQueryResult` is
+ * assignable to it, so a page passes its query straight through, but the panels stay testable
+ * without a QueryClient and the props say exactly which four fields drive the rendering.
+ */
+export interface QueryState<T> {
+  data: T | undefined;
+  error: Error | null;
+  /** No data yet — first load, or a reload after the cache was dropped. */
+  isPending: boolean;
+  /** A request is in flight, including a background refresh over data already on screen. */
+  isFetching: boolean;
+  refetch: () => void;
+}
+
 interface StateViewProps<T> {
-  state: { data: T | null; error: Error | null; loading: boolean; reload: () => void };
+  state: QueryState<T>;
   /** Called with the loaded data. Return the panel's real content. */
   children: (data: T) => ReactNode;
   isEmpty?: (data: T) => boolean;
@@ -81,11 +111,14 @@ export function StateView<T>({
   emptyHint,
   loadingLabel,
 }: StateViewProps<T>) {
-  if (state.error) return <ErrorView error={state.error} onRetry={state.reload} />;
+  if (state.error) {
+    return <ErrorView error={state.error} onRetry={state.refetch} retrying={state.isFetching} />;
+  }
   // Keeps the previous data visible while a reload is in flight, so the page does not
-  // flash a spinner every time the range changes.
-  if (!state.data) {
-    return state.loading ? (
+  // flash a spinner every time the range changes. `placeholderData: keepPreviousData` on the
+  // query does the same thing across a key change; this covers the plain refetch.
+  if (state.data === undefined) {
+    return state.isPending ? (
       <LoadingView {...(loadingLabel ? { label: loadingLabel } : {})} />
     ) : (
       <EmptyView message={emptyMessage} {...(emptyHint ? { hint: emptyHint } : {})} />

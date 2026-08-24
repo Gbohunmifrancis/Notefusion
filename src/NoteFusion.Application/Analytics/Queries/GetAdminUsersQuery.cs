@@ -84,6 +84,7 @@ public sealed class GetAdminUsersQueryHandler
                 u.Id,
                 u.FullName,
                 u.Email,
+                u.ProfilePictureUrl,
                 u.Role.ToString(),
                 u.IsActive,
                 u.GoogleId != null,

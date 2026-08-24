@@ -1,1 +1,8 @@
 .vercel
+
+# Next build output and the type declarations it generates. `next-env.d.ts` references files
+# under .next/types, so it is regenerated rather than committed — `npm run lint` runs
+# `next typegen` first for exactly that reason.
+.next/
+next-env.d.ts
+*.tsbuildinfo

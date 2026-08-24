@@ -5,21 +5,22 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
+import { Touchable } from "../components/Touchable";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
+import * as haptics from "../lib/haptics";
 import { useSubscription } from "../lib/subscription";
 import { deriveSolfa } from "../lib/solfa";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
-import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import { fonts, motion, radii, spacing, typography, type Palette } from "../design/theme";
 import type { SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
@@ -128,6 +129,9 @@ export function LibraryScreen() {
   }
 
   function confirmDelete(item: SavedTranscription) {
+    // Reached by long-pressing a row, so the dialog is the first sign anything
+    // happened — the warning pattern is what makes the long press land.
+    haptics.play("warning");
     showDialog({
       title: "Delete transcription",
       message: `Remove "${item.title}"? This cannot be undone.`,
@@ -206,14 +210,16 @@ export function LibraryScreen() {
                 {FILTERS.map((f) => {
                   const isActive = activeFilter === f;
                   return (
-                    <TouchableOpacity
+                    <Touchable
                       key={f}
                       onPress={() => setActiveFilter(f)}
                       style={[
                         styles.filterTab,
                         isActive && styles.filterTabActive,
                       ]}
-                      activeOpacity={0.8}
+                      radius={radii.pill}
+                      accessibilityState={{ selected: isActive }}
+                      accessibilityLabel={`Filter: ${f}`}
                     >
                       <Text
                         style={[
@@ -223,15 +229,17 @@ export function LibraryScreen() {
                       >
                         {f}
                       </Text>
-                    </TouchableOpacity>
+                    </Touchable>
                   );
                 })}
               </View>
 
               {/* Filter controls icon */}
-              <TouchableOpacity
+              <Touchable
                 style={styles.optionsBtn}
                 hitSlop={8}
+                ripple="borderless"
+                accessibilityLabel="Sort library"
                 onPress={() => {
                   showDialog({
                     title: "Sort library",
@@ -260,7 +268,7 @@ export function LibraryScreen() {
                   size={20}
                   color={colors.text}
                 />
-              </TouchableOpacity>
+              </Touchable>
             </View>
           </View>
         }
@@ -277,11 +285,13 @@ export function LibraryScreen() {
           const isStaff = Boolean(item.musicXml);
 
           return (
-            <TouchableOpacity
-              activeOpacity={0.8}
+            <Touchable
               onPress={() => openItem(item)}
               onLongPress={() => confirmDelete(item)}
               style={styles.itemRow}
+              // Full-bleed row: a deeper press pulls it off both screen edges.
+              scaleTo={motion.scale.row}
+              accessibilityLabel={`${item.title}. Long press to delete.`}
             >
               {/* Note icon badge — gold for Pro accounts, the same premium accent the
                   avatar ring and the Home chip use. It is the row's visual anchor, so
@@ -292,7 +302,7 @@ export function LibraryScreen() {
                 <Ionicons
                   name="musical-notes-outline"
                   size={22}
-                  color={isPro ? colors.premium : "#2563EB"}
+                  color={isPro ? colors.premium : colors.accent}
                 />
               </View>
 
@@ -312,7 +322,7 @@ export function LibraryScreen() {
                   {isStaff ? "Staff" : "Tonic Solfa"}
                 </Text>
               </View>
-            </TouchableOpacity>
+            </Touchable>
           );
         }}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
@@ -401,9 +411,11 @@ const makeStyles = (c: Palette) =>
       borderWidth: 1,
       borderColor: c.border,
     },
+    /** `ink`, not `accent`: this is a fill carrying white text, so it has to stay
+     *  dark in both modes — the lifted dark-mode accent fails AA at this size. */
     filterTabActive: {
-      backgroundColor: "#2563EB",
-      borderColor: "#2563EB",
+      backgroundColor: c.ink,
+      borderColor: c.ink,
     },
     filterTabText: {
       fontSize: 13,
@@ -411,7 +423,7 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
     },
     filterTabTextActive: {
-      color: "#FFFFFF",
+      color: c.onInk,
       fontFamily: fonts.bold,
     },
     optionsBtn: {
@@ -428,7 +440,7 @@ const makeStyles = (c: Palette) =>
       width: 44,
       height: 44,
       borderRadius: radii.md,
-      backgroundColor: "#EFF6FF",
+      backgroundColor: c.accentSoft,
       alignItems: "center",
       justifyContent: "center",
       marginRight: spacing.md,
@@ -453,7 +465,7 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
     },
     typeBadge: {
-      backgroundColor: "#EFF6FF",
+      backgroundColor: c.accentSoft,
       borderRadius: radii.pill,
       paddingHorizontal: spacing.md,
       paddingVertical: 4,
@@ -461,7 +473,7 @@ const makeStyles = (c: Palette) =>
     typeBadgeText: {
       fontSize: 12,
       fontFamily: fonts.semibold,
-      color: "#2563EB",
+      color: c.accent,
     },
     itemDivider: {
       height: 1,

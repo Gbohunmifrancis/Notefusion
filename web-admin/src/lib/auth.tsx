@@ -7,12 +7,14 @@
  * Telling them plainly that the account lacks access is the honest failure.
  */
 
+"use client";
+
+import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { setSessionExpiredHandler } from "@/api/client";
-import { login, logout } from "@/api/endpoints";
+import { getMyProfile, login, logout } from "@/api/endpoints";
 import type { AuthUser } from "@/api/types";
 import {
   clearSession,
@@ -25,6 +27,18 @@ import {
 
 interface AuthContextValue {
   user: AuthUser | null;
+  /**
+   * False until the stored session has been read. `user === null` means two different things
+   * before and after that — "nobody is signed in" and "we have not looked yet" — and a route
+   * guard that cannot tell them apart bounces every signed-in admin to /login on load.
+   */
+  ready: boolean;
+  /**
+   * The operator's own profile picture, or null while it is loading, absent, or unreachable.
+   * The login payload does not carry it — it is shared with the mobile client — so it comes
+   * from `GET /api/me` instead.
+   */
+  avatarUrl: string | null;
   signIn: (email: string, password: string, remember?: boolean) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -32,18 +46,47 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Seeded from storage so a refresh does not bounce a signed-in admin to /login.
-  const [user, setUser] = useState<AuthUser | null>(() => getStoredUser());
-  const navigate = useNavigate();
+  /*
+   * Seeded in an effect rather than from `useState(getStoredUser)`.
+   *
+   * Under Vite the initialiser was right: localStorage is synchronous and there was no server
+   * render to disagree with. Next renders this component once in Node, where the initialiser
+   * would return null, and hydration then compares that against a client tree built from a
+   * live session — a mismatch React resolves by throwing the server HTML away. Reading storage
+   * after mount costs one extra paint and is the only version that is correct in both places.
+   */
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [ready, setReady] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    setUser(getStoredUser());
+    setReady(true);
+  }, []);
+
+  // Fetched once per signed-in session, and allowed to fail silently: an avatar is decoration,
+  // and the initials it falls back to are a correct answer rather than an error state.
+  useEffect(() => {
+    if (!user) {
+      setAvatarUrl(null);
+      return;
+    }
+    const controller = new AbortController();
+    getMyProfile(controller.signal)
+      .then((profile) => setAvatarUrl(profile.profilePictureUrl))
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, [user]);
 
   useEffect(() => {
     // The API client cannot navigate; it reports an unrecoverable session and this does.
     setSessionExpiredHandler(() => {
       setUser(null);
-      navigate("/login", { replace: true });
+      router.replace("/login");
     });
     return () => setSessionExpiredHandler(() => undefined);
-  }, [navigate]);
+  }, [router]);
 
   const signIn = useCallback(async (email: string, password: string, remember = true) => {
     const response = await login(email, password);
@@ -75,12 +118,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     clearSession();
     setUser(null);
-    navigate("/login", { replace: true });
-  }, [navigate]);
+    router.replace("/login");
+  }, [router]);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ user, signIn, signOut }),
-    [user, signIn, signOut],
+    () => ({ user, ready, avatarUrl, signIn, signOut }),
+    [user, ready, avatarUrl, signIn, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

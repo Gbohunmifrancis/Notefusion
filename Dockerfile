@@ -1,13 +1,8 @@
 # NoteFusion C# Web API — multi-stage build.
 # Build context is the REPO ROOT (project references span src/).
-FROM node:22-alpine AS dashboard
-WORKDIR /dashboard
-
-COPY web-admin/package.json web-admin/package-lock.json ./
-RUN npm ci
-
-COPY web-admin/ ./
-RUN npm run build
+#
+# API only. The admin dashboard is a separate Next.js app deployed to Vercel from web-admin/,
+# so nothing here builds or serves it.
 
 # ── C# API ────────────────────────────────────────────────────────────────────
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
@@ -31,10 +26,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
 WORKDIR /app
 
 COPY --from=build /app/publish ./
-
-# The dashboard lands in wwwroot, where the static-file middleware picks it up. Program.cs
-# only enables that middleware when index.html is present, so an API-only build still runs.
-COPY --from=dashboard /dashboard/dist ./wwwroot
 
 # Kestrel binds Heroku's dynamic $PORT, falling back to 8080 for compose.
 CMD sh -c "ASPNETCORE_URLS=http://+:${PORT:-8080} dotnet NoteFusion.Api.dll"

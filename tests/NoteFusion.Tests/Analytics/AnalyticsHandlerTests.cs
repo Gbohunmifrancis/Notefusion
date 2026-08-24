@@ -299,6 +299,25 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
+    public async Task The_user_list_carries_each_accounts_avatar_when_it_has_one()
+    {
+        using var h = new TestHarness(Now);
+        var withPhoto = await SeedUser(h, "photo@example.com", Now.AddDays(-2));
+        await SeedUser(h, "initials@example.com", Now.AddDays(-1));
+        h.Db.Users.Single(u => u.Id == withPhoto).SetProfilePicture("https://cdn.example.com/a.jpg");
+        await h.Db.SaveChangesAsync();
+
+        var rows = (await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+            .Handle(new GetAdminUsersQuery(), default)).Value.Items.ToDictionary(r => r.Email);
+
+        Assert.Equal("https://cdn.example.com/a.jpg", rows["photo@example.com"].ProfilePictureUrl);
+
+        // Null rather than a placeholder URL: the console draws initials for an account with no
+        // picture, and it can only make that choice if the absence reaches it as an absence.
+        Assert.Null(rows["initials@example.com"].ProfilePictureUrl);
+    }
+
+    [Fact]
     public async Task An_oversized_page_size_is_clamped_rather_than_rejected()
     {
         using var h = new TestHarness(Now);

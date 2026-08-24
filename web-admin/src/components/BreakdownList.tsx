@@ -26,11 +26,11 @@ export function BreakdownList({ data }: BreakdownListProps) {
             key={row.label}
             className="flex items-center justify-between gap-3 rounded-sm border border-border-light px-3.5 py-3"
           >
-            <span className="truncate text-[13px] text-muted" title={row.label}>
+            <span className="truncate text-[13px] text-muted-foreground" title={row.label}>
               {row.label}
             </span>
             <span className="shrink-0 tabular-nums">
-              <span className="text-[13px] font-semibold text-ink">
+              <span className="text-[13px] font-semibold text-foreground">
                 {formatCount(row.count)}
               </span>
               <span className="ml-2 text-[11px] text-faint">{(share * 100).toFixed(0)}%</span>

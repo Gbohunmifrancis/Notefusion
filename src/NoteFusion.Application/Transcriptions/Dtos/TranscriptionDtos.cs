@@ -36,6 +36,15 @@ public sealed record NoteEventDto(
 /// network round-trip.  The field is an empty string when synthesis produced no
 /// output (e.g. an empty note list survived the pipeline).
 /// </para>
+///
+/// <para>
+/// <c>PitchRefined</c> is false when the worker skipped its pyin refinement stage — now
+/// only a decode failure or a wholly unvoiced clip, since NF_PYIN_MAX_SECONDS was raised
+/// to match NF_MAX_CLIP_SECONDS (180 s) and a longer clip is refused rather than
+/// under-refined.  Clients should present the notation with a caveat rather than
+/// suppress it — the notes are still the best available reading, but they carry roughly
+/// twice the spurious accidentals.
+/// </para>
 /// </summary>
 public sealed record TranscriptionResultDto(
     string Key,
@@ -47,7 +56,8 @@ public sealed record TranscriptionResultDto(
     IReadOnlyList<NoteEventDto> Notes,
     IReadOnlyList<string> SolfaLines,
     double OverallConfidence,
-    string AudioPreviewBase64 = "");
+    string AudioPreviewBase64 = "",
+    bool PitchRefined = true);
 
 /// <summary>
 /// Polling envelope for a transcription job.

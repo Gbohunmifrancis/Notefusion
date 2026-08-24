@@ -12,9 +12,13 @@ voice was wrong:
   spectral decay                   a note darkens as it rings rather than droning
   percussive envelope              the body decays continuously instead of holding a
                                    level, which is what made it an organ not a piano
-  register scaling                 bass notes ring longer than treble ones
+  register scaling                 bass notes ring longer than treble ones, and carry
+                                   further up the partial series
+  unison beating                   the shimmer is a breath, not a periodic dropout,
+                                   measured per partial because the total envelope
+                                   is blind to exactly this defect
   determinism                     identical notes render to identical bytes
-  Nyquist headroom                 no partial can alias at the pipeline's pitch cap
+  no aliasing                      no partial of the top note folds below f0
 
 No ML models and no audio files: the preview synthesiser only needs numpy and
 soundfile, both already required in production.
@@ -26,12 +30,11 @@ import io
 import numpy as np
 import soundfile as sf
 from app.pipeline.transcriber import (
-    _HARMONIC_WEIGHTS,
-    _INHARMONICITY,
     _STRING_DECAY_MAX_SEC,
     _STRING_DECAY_MIN_SEC,
     PREVIEW_SAMPLE_RATE,
     TranscribedNote,
+    _body_rolloff,
     _smooth_ramp,
     _string_decay_sec,
     _synthesize_audio_preview,
@@ -159,14 +162,75 @@ class TestVoice:
         late = centroid(y[int(1.00 * sr) : int(1.10 * sr)])
         assert late < early * 0.9
 
-    def test_partials_fit_under_nyquist_at_the_pipeline_pitch_ceiling(self):
-        """Basic Pitch is capped at 1050 Hz (``max_freq_hz``), so the highest note
-        the preview ever has to render is about C6. Every partial of that note must
-        stay below Nyquist or the preview aliases — which would put spurious low
-        tones under the melody."""
-        top = 1050.0 * len(_HARMONIC_WEIGHTS)
-        top *= 1.0 + _INHARMONICITY * len(_HARMONIC_WEIGHTS) ** 2
-        assert top < 0.5 * PREVIEW_SAMPLE_RATE
+    def test_no_aliasing_at_the_pipeline_pitch_ceiling(self):
+        """Basic Pitch is capped at 1050 Hz (``max_freq_hz``), so the highest note the
+        preview ever renders is about C6 — and that note's partial series runs well
+        past Nyquist, so the generator's ``f_k >= nyquist`` guard is the only thing
+        keeping it from aliasing.
+
+        Asserted by measurement rather than arithmetic: an aliased partial folds down
+        to ``sr - f_k``, which lands *below* the fundamental, somewhere no legitimate
+        partial of a harmonic series can ever be. So energy under the fundamental is
+        the signature, and looking for it catches a broken guard where recomputing the
+        top partial from the constants would only restate the design.
+        """
+        y = render([note(84, 0, 4)])  # C6, the top of the pipeline's range
+        f0 = 440.0 * 2.0 ** ((84 - 69) / 12.0)
+        spec = np.abs(np.fft.rfft(y * np.hanning(y.size))) ** 2
+        freqs = np.fft.rfftfreq(y.size, 1.0 / PREVIEW_SAMPLE_RATE)
+        # 0.9·f0 leaves room for the analysis window's skirt around the fundamental.
+        below = spec[(freqs > 20.0) & (freqs < 0.9 * f0)].sum()
+        assert below / spec.sum() < 1e-4, "energy below f0 means a partial aliased"
+
+    def test_bass_carries_further_up_the_partial_series_than_treble(self):
+        """Register-tilted roll-off. A real piano's bass notes are spectrally much
+        flatter than its treble ones, and one exponent for the whole compass is what
+        left the old voice's C2 with its entire spectrum sitting at 72 Hz."""
+        assert _body_rolloff(36) < _body_rolloff(60) < _body_rolloff(84)
+
+    def test_unison_beating_never_nulls_a_partial(self):
+        """The shimmer must be a breath, not a dropout.
+
+        Three equal strings at f-d, f, f+d sum to sin(2·pi·f·t)·(1 + 2·cos(2·pi·d·t)),
+        and (1 + 2·cos) crosses *zero* at 2·pi/3 — so modelling a unison that way makes
+        every partial periodically vanish. That is the bug this file was given the
+        measurement to catch: it showed up as 49 dB of "beating" and a C4 fundamental
+        sitting 16 dB below its own third partial.
+
+        Measured per partial, not on the total envelope, and the difference is not a
+        detail — the total is *blind* to this defect. At theta = 2·pi/3 every partial
+        whose index is not a multiple of 3 nulls, but k = 3, 6, 9 sit at three times
+        amplitude, so the sum holds its level and only changes timbre. Restoring the
+        historical formula moves total min/median from 0.554 to 0.556.
+
+        Two partials are probed because the depth taper means neither alone is enough:
+        k=1 (least modulated, so a uniform null is unmissable there) and k=4, the knee
+        index and therefore the loudest partial carrying full depth. Thresholds are
+        halved from the measured pass values; the historical bug scores 0.005 at k=1,
+        and a depth of 1.0 with the taper intact scores 0.005 at k=4.
+        """
+        y = render([note(60, 0, 8)])  # 4 s, long enough for several beat cycles
+        f0 = 440.0 * 2.0 ** ((60 - 69) / 12.0)
+        for k, floor in ((1, 0.40), (4, 0.08)):
+            env = self._partial_envelope(y, f0 * k)
+            # Against a decaying reference, so the string's own decay is not a null.
+            ratio = env.min() / np.median(env)
+            assert ratio > floor, f"partial {k} is nulling, not beating ({ratio:.4f})"
+
+    @staticmethod
+    def _partial_envelope(y: np.ndarray, f: float) -> np.ndarray:
+        """Amplitude of the single partial at ``f`` over the note body, in 25 ms steps.
+
+        Heterodyning to DC and taking the block mean is a ~40 Hz low-pass: narrow
+        enough to reject neighbouring partials a semitone-series apart, wide enough to
+        keep the f +/- k·d beat sidebands, which are the thing being measured.
+        """
+        sr, block = PREVIEW_SAMPLE_RATE, 551
+        start = int(0.05 * sr)
+        seg = y[start : int(3.0 * sr)]
+        n = seg.size // block * block
+        t = (np.arange(n) + start) / sr
+        return np.abs((seg[:n] * np.exp(-2j * np.pi * f * t)).reshape(-1, block).mean(axis=1))
 
     def test_body_decays_instead_of_holding_a_level(self):
         """A piano decays from the strike; it has no sustain plateau.

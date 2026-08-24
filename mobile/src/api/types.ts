@@ -76,6 +76,19 @@ export interface TranscriptionResult {
    * Written to a cache file with expo-file-system and played via expo-av.
    */
   audioPreviewBase64?: string;
+  /**
+   * False when the worker skipped its pyin refinement stage. No longer reachable
+   * by recording a long clip: the worker's pyin budget now equals the duration it
+   * accepts (180 s, which MAX_RECORD_SEC in RecordScreen mirrors), so the two
+   * remaining causes are a failed decode and a clip with no voiced frame at all.
+   *
+   * Worth surfacing rather than swallowing: with that stage dark, the worker's
+   * accuracy corpus records spurious accidentals rising from 1.53 to 3.53 per
+   * clip, which is exactly the "accidentals where not needed" complaint. Show
+   * the notation with a caveat, not instead of it. Optional and defaulting to
+   * refined, so an older API build never displays a false warning.
+   */
+  pitchRefined?: boolean;
 }
 
 export interface TranscriptionJob {

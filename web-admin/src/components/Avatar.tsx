@@ -1,15 +1,34 @@
 /**
- * An account's avatar.
+ * An account's avatar: the stored photo when there is one, initials over a hashed tint when
+ * there is not.
  *
- * No image is stored against a user, so this is initials over a tint derived from the
- * name. The tint is hashed rather than picked at random, so one person keeps one colour
- * across the accounts table and the sidebar instead of reshuffling on every render.
+ * The tint is hashed rather than picked at random, so one person keeps one colour across the
+ * accounts table and the sidebar instead of reshuffling on every render. It also stays behind
+ * the photo as its ground, which is what keeps a transparent PNG or a slow load from showing
+ * as a hole in the surface.
+ *
+ * Not shadcn's `Avatar`. That one swaps between `AvatarImage` and `AvatarFallback` — one or the
+ * other — so a photo with transparency lands on the page background rather than on a tint, and
+ * the fallback it would show has no per-account colour.
  */
 
-import { useTheme, type ThemeMode } from "@/lib/theme";
+"use client";
+
+import { useState } from "react";
+
+import { useTheme } from "next-themes";
+
+import type { ThemeMode } from "@/lib/chart";
+import { cn } from "@/lib/utils";
 
 interface AvatarProps {
   name: string;
+  /**
+   * The account's `profilePictureUrl`. Typed to accept null because that is what the API
+   * returns for an account with no photo, and `exactOptionalPropertyTypes` will not let a
+   * nullable value through an optional-only prop.
+   */
+  src?: string | null;
   /** Diameter in px. */
   size?: number;
   className?: string;
@@ -58,16 +77,24 @@ function tintFor(name: string, mode: ThemeMode) {
   return set[Math.abs(hash) % set.length] ?? set[0]!;
 }
 
-export function Avatar({ name, size = 32, className = "" }: AvatarProps) {
-  const { mode } = useTheme();
-  const tint = tintFor(name, mode);
+export function Avatar({ name, src, size = 32, className }: AvatarProps) {
+  const { resolvedTheme } = useTheme();
+  const tint = tintFor(name, resolvedTheme === "dark" ? "dark" : "light");
+
+  // The URL that failed, not a boolean: a row that re-renders with a different `src` has to
+  // try the new one, and a flag would keep the fallback forever.
+  const [failed, setFailed] = useState<string | null>(null);
+  const photo = src && src !== failed ? src : null;
 
   return (
     <span
       // The name is always rendered as text beside this, so announcing the initials too
       // would just make a screen reader say the person twice.
       aria-hidden="true"
-      className={`inline-grid shrink-0 place-items-center rounded-full font-semibold leading-none ${className}`}
+      className={cn(
+        "relative inline-grid shrink-0 place-items-center overflow-hidden rounded-full font-semibold leading-none",
+        className,
+      )}
       style={{
         width: size,
         height: size,
@@ -77,6 +104,27 @@ export function Avatar({ name, size = 32, className = "" }: AvatarProps) {
       }}
     >
       {initials(name)}
+      {photo && (
+        /*
+         * A plain `<img>`, not `next/image`. These URLs come from whatever storage the account
+         * used — Google's CDN today, R2 for uploads — and `next/image` would need every one of
+         * those hosts allow-listed in `next.config.ts`, so the next storage change would show
+         * up as blank avatars rather than as a build error.
+         *
+         * Not lazy, either. Twenty 32px thumbnails on a page of accounts are all within a
+         * screen or two of the viewport, so `loading="lazy"` saves nothing and costs a request
+         * that only fires once something scrolls.
+         */
+        <img
+          src={photo}
+          alt=""
+          // Google serves avatars from lh3.googleusercontent.com and answers 403 to some
+          // referrers, which is one of the ways this used to end up blank.
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(photo)}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
     </span>
   );
 }

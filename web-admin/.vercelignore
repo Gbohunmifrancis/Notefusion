@@ -1,0 +1,13 @@
+# `vercel --prod` runs from inside this folder (see docs/DEPLOYMENT_WEB.md), and it uploads the
+# working tree rather than HEAD. `.env.local` must not be part of that: Next loads it *over*
+# `.env.production` in every environment including a production build, so a developer's
+# `NEXT_PUBLIC_API_URL=http://localhost:5080` would be inlined into the deployed bundle. The
+# build would still succeed — next.config.ts only rejects an empty value — and the console would
+# go live fully styled, talking to a machine that isn't there.
+.env.local
+.env*.local
+
+# Build output and local caches: Vercel builds these itself.
+.next
+node_modules
+*.tsbuildinfo

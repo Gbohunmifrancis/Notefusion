@@ -48,7 +48,20 @@ internal sealed record JobResultResponse(
     /// plays it through expo-av so users can hear their transcription immediately
     /// after the result arrives — no extra network round-trip required.
     /// </summary>
-    string AudioPreviewBase64 = "");
+    string AudioPreviewBase64 = "",
+    /// <summary>
+    /// False when the worker's pyin refinement stage contributed nothing to this clip —
+    /// a decode failure, or a wholly unvoiced clip.  The duration cause is no longer
+    /// reachable through this API: NF_PYIN_MAX_SECONDS now equals the worker's
+    /// NF_MAX_CLIP_SECONDS (180 s), so anything long enough to skip refinement is
+    /// rejected upstream with a 413 instead.
+    ///
+    /// It is not cosmetic: with that stage dark the worker's own accuracy corpus records
+    /// spurious accidentals rising from 1.53 to 3.53 per clip, so the notation is worth
+    /// showing with a caveat rather than showing silently.  Defaults true so a worker
+    /// predating the field cannot make a good transcription look degraded.
+    /// </summary>
+    bool PitchRefined = true);
 
 internal sealed record WireNoteEvent(
     int PitchMidi,

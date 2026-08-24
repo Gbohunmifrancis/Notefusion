@@ -1,9 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
+import { Touchable } from "../components/Touchable";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
@@ -61,11 +62,16 @@ export function HelpScreen({ navigation }: Props) {
     <Screen scroll contentStyle={styles.screen}>
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
-        <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
+        <Touchable
+          onPress={() => navigation.goBack()}
+          accessibilityLabel="Go back"
+          hitSlop={8}
+          ripple="borderless"
+        >
           <View style={styles.backCircle}>
             <Ionicons name="chevron-back" size={20} color={colors.text} />
           </View>
-        </TouchableOpacity>
+        </Touchable>
 
         <View style={styles.titleBlock}>
           <Text style={styles.titleLabel}>Support</Text>

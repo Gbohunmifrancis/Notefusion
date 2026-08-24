@@ -1,26 +1,32 @@
 /**
  * Boot gate — owns everything that has to finish before the navigator mounts.
  *
- * Three things are in flight at launch: the Poppins faces, the "have we been
+ * Three things are in flight at launch: the type faces, the "have we been
  * opened before" flag, and a deliberate minimum time on the branded splash.
  * They are gated together here so RootNavigator has a single boolean to check.
  *
- * The native splash (a flat brand-blue field, configured in app.json) stays up
- * until the fonts are in memory. Without that the branded splash would paint its
- * wordmark in the system face and then snap to Poppins a frame later — the same
- * class of flash the stored theme preference already exists to avoid.
+ * Both families are needed before the first frame, not just one: Inter carries
+ * every piece of UI text and Poppins carries the wordmark the splash is about
+ * to draw. The native splash (a flat brand field, configured in app.json) stays
+ * up until they are in memory. Without that the branded splash would paint its
+ * wordmark in the system face and then snap a frame later — the same class of
+ * flash the stored theme preference already exists to avoid.
  */
 
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as NativeSplash from "expo-splash-screen";
 import {
-  useFonts,
-  Poppins_400Regular,
-  Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from "@expo-google-fonts/poppins";
+import {
+  useFonts,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from "@expo-google-fonts/inter";
 
 const LAUNCHED_KEY = "nf.hasLaunched";
 
@@ -44,8 +50,12 @@ interface AppReady {
 
 export function useAppReady(): AppReady {
   const [fontsLoaded, fontError] = useFonts({
-    Poppins_400Regular,
-    Poppins_500Medium,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    // Display tier only — see the `fonts` block in design/theme.ts. Poppins
+    // Regular and Medium are deliberately no longer loaded: nothing sets them.
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
@@ -54,7 +64,7 @@ export function useAppReady(): AppReady {
   const [firstLaunch, setFirstLaunch] = useState<boolean | null>(null);
   const [holdDone, setHoldDone] = useState(false);
 
-  // A missing font must not brick the app: Poppins failing to load is a
+  // A missing font must not brick the app: a face failing to load is a
   // cosmetic problem, an app stuck on its splash forever is not.
   const fontsReady = fontsLoaded || fontError !== null;
 

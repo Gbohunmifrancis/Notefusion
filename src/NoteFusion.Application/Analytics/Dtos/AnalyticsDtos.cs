@@ -164,6 +164,11 @@ public sealed record AnalyticsOverviewDto(
 /// hash, no token, and no phone number here — a support view does not need the phone number to
 /// identify an account, and the fewer places PII is copied to the better.
 /// </remarks>
+/// <param name="ProfilePictureUrl">
+/// The account's avatar, or null when it has none. Only ever a URL — the image itself lives with
+/// Google or in object storage — so this adds no new class of data to a view that already carries
+/// the name and the address.
+/// </param>
 /// <param name="HasProAccess">
 /// Whether Pro is unlocked right now — status and period window read together, the same rule
 /// <c>GetSystemHealthQuery</c> counts subscribers with. Computed here rather than left to the
@@ -179,6 +184,7 @@ public sealed record AdminUserRowDto(
     Guid Id,
     string FullName,
     string Email,
+    string? ProfilePictureUrl,
     string Role,
     bool IsActive,
     bool HasGoogle,

@@ -61,6 +61,10 @@ def _effective_flags() -> dict:
         "beat_align": settings.beat_align,
         "pyin_refine": settings.pyin_refine,
         "pyin_max_seconds": settings.pyin_max_seconds,
+        # Recorded next to the cap because it is what pays for the cap: the two are one
+        # decision, and a report that shows a lifted cap without the grid that made it
+        # affordable is the misattribution this whole block exists to prevent.
+        "pyin_resolution": settings.pyin_resolution,
         "pyin_semitone": settings.pyin_semitone,
         "key_ensemble": settings.key_ensemble,
         "tempo_grid": settings.tempo_grid,

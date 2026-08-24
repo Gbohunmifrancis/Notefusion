@@ -138,8 +138,8 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
           <View style={styles.brandContainer}>
             <BrandMark
               size={72}
-              color="#2563EB"
-              waveColor="rgba(37,99,235,0.4)"
+              color={colors.accent}
+              waveColor={colors.accentGlow}
               showWaves={false}
             />
             <Text style={styles.wordmark}>Notefusion</Text>
@@ -263,8 +263,9 @@ const makeStyles = (c: Palette) =>
     },
     wordmark: {
       fontSize: 26,
-      fontFamily: fonts.bold,
-      color: "#2563EB",
+      // Poppins: this is the wordmark, not UI text. See `fonts` in design/theme.
+      fontFamily: fonts.displayBold,
+      color: c.accent,
       letterSpacing: -0.5,
       marginTop: spacing.xs,
     },
@@ -388,7 +389,7 @@ const makeStyles = (c: Palette) =>
     footerLink: {
       fontSize: 14,
       fontFamily: fonts.bold,
-      color: "#2563EB",
+      color: c.accent,
     },
 
     hint: {
