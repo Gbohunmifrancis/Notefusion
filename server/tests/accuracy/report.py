@@ -66,8 +66,10 @@ def _effective_flags() -> dict:
         # affordable is the misattribution this whole block exists to prevent.
         "pyin_resolution": settings.pyin_resolution,
         "pyin_semitone": settings.pyin_semitone,
+        "contour_first": settings.contour_first,
         "key_ensemble": settings.key_ensemble,
         "tempo_grid": settings.tempo_grid,
+        "grid_refine": settings.grid_refine,
         "f0_merge": settings.f0_merge,
         "quantize_divisors": list(settings.quantize_divisors),
     }

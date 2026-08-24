@@ -325,6 +325,105 @@ PYIN_MIN_VOICED_PROB = 0.5
 # +14 ghost does occur) is left alone rather than snapped.
 PYIN_OCTAVE_TOLERANCE = 1.5
 
+# ── Contour-first segmentation (settings.contour_first) ───────────────────────
+# Notes read straight off the pyin f0 contour, with Basic Pitch not consulted about
+# where they start or stop.  See ``settings.contour_first`` for why that is sound for a
+# monophonic line and for the three rules that were measured; these are the constants of
+# the one that won.
+#
+# pyin's hop is 512 samples at 22.05 kHz, so one frame is 23.2 ms.  Every constant below
+# is quoted in frames because that is the unit the rule actually operates in.
+
+# Median pre-smooth, in frames.  9 frames is 209 ms, which is ~1.15 cycles of the 5.5 Hz
+# vibrato the corpus uses — a median over about one full period of an oscillation returns
+# its centre, and a median (unlike a mean) leaves a step edge where it is.  Swept 1/5/9:
+# 1 and 5 leave the deep cases at f1 0.167/0.080, 9 lifts them to 0.500 and holds all
+# nine clean cases at 1.000, so the smoother is doing work no tolerance change could.
+CONTOUR_SMOOTH_FRAMES = 9
+
+# How far the contour may sit from the current note's centre before that frame counts as
+# out of band.  0.75 is three quarters of the smallest interval notation can express, so a
+# genuine semitone step clears it while intonation error and residual wobble do not.
+CONTOUR_BAND_SEMITONES = 0.75
+
+# Consecutive out-of-band frames required before the note is declared over.  THIS is the
+# rule, and its value is geometry rather than calibration: for x = A sin(2 pi f t) the run
+# spent outside +-tol is (pi - 2 arcsin(tol / A)) / (2 pi) of a period, so at
+# CONTOUR_BAND_SEMITONES over the corpus's 5.5 Hz / 7.8-frame cycle the deepest case in it
+# (A = 2.0) is outside for 2.9 consecutive frames and A = 1.8 for 2.8.  4 rejects both with
+# a margin, and rejects a wobble at that band and rate up to roughly A = 2.2.
+#
+# NOT to any depth, though the raw-sine geometry says it should be: the out-run tends to half
+# a period as A grows, which is 3.91 frames at 5.5 Hz and still under 4.  The geometry is
+# describing the wrong signal — the band test runs on the SMOOTHED contour, and the
+# CONTOUR_SMOOTH_FRAMES median passes about 42% of the vibrato amplitude at 5.5 Hz rather
+# than removing it (a 9-frame window spans 1.15 periods, so its samples cover phase unevenly
+# and the median tracks an attenuated copy instead of the centre).  42% of A = 1.8 is 0.76,
+# which is already over the 0.75 band, so at these depths the frames really are out of band
+# and only persistence is holding the note together.  Measured: A = 2.0 gives one segment,
+# A = 2.5 gives three, A = 4.0 gives nine.
+#
+# That points the remaining vibrato loss at the smoother, not at this number: the same
+# measurement puts the pass-through at 29% at width 21, which would bring A = 2.0 back inside
+# the band outright.  vibrato_depth_1_8 and vibrato_depth_2_0 are the two corpus cases still
+# under the notes.f1 gate and they sit a tenth of a frame inside the cliff.  Widening is
+# bounded by short notes, not by vibrato: 21 frames is 0.49 s against 0.156 s sixteenths at
+# 96 BPM, so the width that helps has to be found against fast_sixteenths_c_major as the
+# guard.  Not yet measured on the corpus.  Ceiling pinned by
+# test_depth_invariance_has_a_measured_ceiling_and_this_is_where_it_is.
+#
+# 3 was measured and is below the geometric minimum, exactly as predicted: mean f1
+# 0.920 -> 0.730, and it breaks cases the deep ones do not (vibrato_heavy 1.000 -> 0.114).
+# The cut is placed at the FIRST out-of-band frame, not where the count completes, so
+# persistence costs no onset accuracy — misplacing the onset by the window width is what
+# made the change-point rule unusable.
+CONTOUR_PERSIST_FRAMES = 4
+
+# Shortest run that becomes a note.  5 frames is 116 ms, matching the 100 ms
+# ``minimum_note_length`` melody mode already hands Basic Pitch rather than introducing a
+# second, looser opinion about how short a note can be.
+CONTOUR_MIN_SEGMENT_FRAMES = 5
+
+# Two adjacent segments whose pitches round to the same integer are one note that the
+# persistence rule cut at a wobble that happened to be long enough.  Fusing them is an
+# exact-integer test with no tolerance, so unlike ``WOBBLE_SEMITONES`` it cannot swallow a
+# genuine step — but it does swallow two genuinely REPEATED notes at one pitch, which is
+# what ``_split_rearticulations`` below exists to put back.
+CONTOUR_FUSE_GAP_SEC = 0.10
+
+# ── Re-articulation (``_split_rearticulations``) ──────────────────────────────
+# The persistence rule segments on pitch, so a repeated note is invisible to it: there is
+# no pitch event at the boundary to see, and the fuse above then joins the two halves on
+# purpose.  Measured cost before this stage existed, on long_clip_over_pyin_cap, whose
+# phrase ends on 60 and whose next repetition starts on 60:
+#
+#   99 reference notes, 91 estimated, notes.f1 0.242.  Each of the 8 phrase joins fused
+#   into one 1.834 s note, every later note shifted by one index, and the error accumulated
+#   to +5.0 s by the end of the clip.  The pitch SEQUENCE was exactly right throughout,
+#   which is why solfa.degree_accuracy read 1.000 on the notes that did match — the whole
+#   defect was "where does the second one start".  Repeated notes are everywhere in real
+#   music, so this was never a corpus artifact.
+#
+# Pitch says WHAT a note is; re-articulation says WHERE the next one starts, and that cue
+# is amplitude.  ``librosa.onset.onset_strength`` was measured first and is REJECTED: it
+# responds to frequency modulation, so vibrato_heavy went 11 -> 36 segments at every delta
+# tried, which is the over-segmentation the persistence rule exists to prevent.  An RMS
+# valley does not see vibrato at all.
+
+# How far the RMS must dip below the smaller flanking peak to count as a note boundary.
+# -6 dB: the amplitude halves between the two notes.  Not fitted — 0.40 through 0.85 give
+# byte-identical segment counts on all 19 guard cases AND on all four repeat cases except
+# repeated sixteenths, so the constant is picked for what a real articulation gap looks
+# like rather than for the corpus.  Deliberately on the conservative side of that flat
+# region: the corpus's sustains are synthetically flat, and a legato real note ripples.
+CONTOUR_REARTICULATION_FRAC = 0.50
+
+# Half-width, in frames, of the neighbourhood a dip must be the minimum of.  RMS at a
+# 23.2 ms hop is noisy enough that comparing a frame against its two immediate neighbours
+# accepts any single-frame wobble as a "valley"; +-3 frames is 70 ms either side, shorter
+# than any notatable note and long enough to reject frame noise.
+CONTOUR_VALLEY_WIDTH_FRAMES = 3
+
 # Confidence blend: voiced_prob as a reliability scaler on the pyin/Basic-Pitch
 # agreement term, falling back to bare amplitude when pyin was silent.
 #
@@ -1465,6 +1564,265 @@ def _pyin_contour(wav_path: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     return times, midi, voiced_prob
 
 
+def _median_smooth(x: np.ndarray, width: int) -> np.ndarray:
+    """Running median over ``width`` samples, edge-padded so the result is the same length.
+
+    A median and not a mean, and that is the whole reason this stage exists: over about one
+    period of an oscillation both return its centre, but a mean turns a step edge into a
+    ramp ``width`` samples long while a median leaves the edge exactly where it was.  The
+    contour needs the wobble gone and the note boundaries intact, and only one of the two
+    filters does both.
+    """
+    if width <= 1 or x.size == 0:
+        return x
+    half = width // 2
+    padded = np.pad(x, (half, half), mode="edge")
+    return np.array([np.median(padded[i : i + width]) for i in range(x.size)])
+
+
+def _contour_segments(
+    times: np.ndarray, midi: np.ndarray, voiced_prob: np.ndarray
+) -> list[tuple[int, int, float, float]]:
+    """Cut the f0 contour into notes.  Returns ``(start_idx, end_idx, midi, voiced_prob)``.
+
+    One note is a voiced run whose pitch stays within ``CONTOUR_BAND_SEMITONES`` of the
+    run's own running median — where "stays" is the load-bearing word.  A frame outside the
+    band does not end the note; ``CONTOUR_PERSIST_FRAMES`` consecutive frames outside it do.
+    That is the difference between a wobble, which leaves the band and comes back inside a
+    fraction of a vibrato cycle, and a note change, which leaves and stays.  See
+    ``settings.contour_first`` for the two rules this replaced and why neither could work.
+
+    The centre is a median over the frames accepted so far rather than a fixed value, so a
+    note that drifts is followed rather than cut — ``drift_1_semitone`` scores 1.000 through
+    a full semitone of drift, which a fixed centre could not do.
+
+    ``end_idx`` is exclusive.  Segments shorter than ``CONTOUR_MIN_SEGMENT_FRAMES`` are
+    dropped rather than emitted, so the caller never sees a note too short to notate.
+    """
+    segments: list[tuple[int, int, float, float]] = []
+    n_frames = times.size
+    i = 0
+    while i < n_frames:
+        if np.isnan(midi[i]):
+            i += 1
+            continue
+        run_end = i
+        while run_end < n_frames and not np.isnan(midi[run_end]):
+            run_end += 1
+
+        # Smooth inside the voiced run only.  Smoothing across a voicing gap would drag
+        # whatever pyin reported for the silence into the first frames of the note.
+        smoothed = _median_smooth(midi[i:run_end], CONTOUR_SMOOTH_FRAMES)
+
+        seg_start = 0           # index into ``smoothed``
+        accepted: list[float] = []
+        out_run = 0             # consecutive frames outside the band
+        out_start = 0           # index of the first of them, which is where the cut goes
+        for k in range(smoothed.size):
+            if not accepted:
+                accepted.append(float(smoothed[k]))
+                continue
+            if abs(smoothed[k] - float(np.median(accepted))) > CONTOUR_BAND_SEMITONES:
+                if out_run == 0:
+                    out_start = k
+                out_run += 1
+                if out_run >= CONTOUR_PERSIST_FRAMES:
+                    if out_start - seg_start >= CONTOUR_MIN_SEGMENT_FRAMES:
+                        segments.append(
+                            (
+                                i + seg_start,
+                                i + out_start,
+                                float(np.median(accepted)),
+                                float(np.median(voiced_prob[i + seg_start : i + out_start])),
+                            )
+                        )
+                    seg_start = out_start
+                    accepted = [float(v) for v in smoothed[out_start : k + 1]]
+                    out_run = 0
+            else:
+                out_run = 0
+                accepted.append(float(smoothed[k]))
+        if accepted and smoothed.size - seg_start >= CONTOUR_MIN_SEGMENT_FRAMES:
+            segments.append(
+                (
+                    i + seg_start,
+                    run_end,
+                    float(np.median(accepted)),
+                    float(np.median(voiced_prob[i + seg_start : run_end])),
+                )
+            )
+        i = run_end
+    return segments
+
+
+def _fuse_same_pitch(
+    segments: list[tuple[int, int, float, float]],
+    times: np.ndarray,
+    hop_sec: float,
+) -> list[tuple[int, int, float, float]]:
+    """Join adjacent segments that notate as the same pitch and nearly touch in time.
+
+    A wobble that stayed out of band for longer than ``CONTOUR_PERSIST_FRAMES`` cuts one
+    note in two, and both halves keep the same notated pitch — so an exact-integer test
+    repairs it with no tolerance of its own and therefore no risk to a genuine step.
+    ``_split_rearticulations`` runs after this and puts genuinely repeated notes back.
+    """
+    fused: list[tuple[int, int, float, float]] = []
+    for start_i, end_i, median_midi, vprob in segments:
+        if fused and round(median_midi) == round(fused[-1][2]):
+            prev_start, prev_end, prev_midi, prev_vprob = fused[-1]
+            if times[start_i] - (times[prev_end - 1] + hop_sec) < CONTOUR_FUSE_GAP_SEC:
+                prev_frames, frames = prev_end - prev_start, end_i - start_i
+                fused[-1] = (
+                    prev_start,
+                    end_i,
+                    (prev_midi * prev_frames + median_midi * frames)
+                    / ((prev_frames + frames) or 1),
+                    max(prev_vprob, vprob),
+                )
+                continue
+        fused.append((start_i, end_i, median_midi, vprob))
+    return fused
+
+
+def _split_rearticulations(
+    segments: list[tuple[int, int, float, float]],
+    rms: np.ndarray,
+    midi: np.ndarray,
+) -> list[tuple[int, int, float, float]]:
+    """Cut a segment where the amplitude dips and recovers: a note struck again at one pitch.
+
+    Runs after ``_fuse_same_pitch`` and not before, because the fuse would otherwise simply
+    undo it.  That ordering is the division of labour: pitch decides every boundary it can
+    see, and amplitude decides the ones it structurally cannot — the same-pitch ones.
+
+    A dip is a boundary when it is the minimum of its own ``CONTOUR_VALLEY_WIDTH_FRAMES``
+    neighbourhood and falls below ``CONTOUR_REARTICULATION_FRAC`` of the smaller peak either
+    side of it.  Both halves must then still notate as the segment's own pitch, or the split
+    is abandoned whole — that guard is what makes this stage safe, and it is not a
+    threshold.  A repeated note has the same pitch on both sides of the dip, which is
+    precisely why the pitch rule could not see it; a dip that separates two DIFFERENT
+    pitches is a boundary the pitch rule already found, a few frames late because the
+    median pre-smooth lags, and re-cutting it there only produces a sliver of the next
+    note's attack.  Measured: with the guard, all 19 guard cases keep byte-identical
+    segment counts while long_clip_over_pyin_cap goes 91 -> 99 of 99.
+
+    Known limitation, measured rather than assumed: repeated SIXTEENTHS at 96 BPM dip only
+    ~15 % between strikes, so they still fuse.  Recovering them needs a threshold shallow
+    enough (0.85) to be unsafe on real legato audio, so it is deliberately not taken.
+    """
+    out: list[tuple[int, int, float, float]] = []
+    width = CONTOUR_VALLEY_WIDTH_FRAMES
+    for segment in segments:
+        start_i, end_i, median_midi, vprob = segment
+        window = rms[start_i:end_i] if rms.size >= end_i else np.empty(0)
+        if window.size < 2 * CONTOUR_MIN_SEGMENT_FRAMES + 1:
+            out.append(segment)
+            continue
+
+        cuts: list[int] = []
+        last = 0
+        for k in range(CONTOUR_MIN_SEGMENT_FRAMES, window.size - CONTOUR_MIN_SEGMENT_FRAMES):
+            if k - last < CONTOUR_MIN_SEGMENT_FRAMES:
+                continue
+            neighbourhood = window[max(0, k - width) : k + width + 1]
+            if window[k] > neighbourhood.min():
+                continue
+            flank = min(float(window[last:k].max()), float(window[k:].max()))
+            if window[k] >= CONTOUR_REARTICULATION_FRAC * flank:
+                continue
+            cuts.append(k)
+            last = k
+        if not cuts:
+            out.append(segment)
+            continue
+
+        bounds = [0, *cuts, window.size]
+        parts = [
+            (a, b) for a, b in zip(bounds, bounds[1:]) if b - a >= CONTOUR_MIN_SEGMENT_FRAMES
+        ]
+        pitches = [float(np.nanmedian(midi[start_i + a : start_i + b])) for a, b in parts]
+        if len(parts) < 2 or any(round(p) != round(median_midi) for p in pitches):
+            out.append(segment)
+            continue
+
+        out.extend(
+            (start_i + a, start_i + b, pitch, vprob)
+            for (a, b), pitch in zip(parts, pitches)
+        )
+    return out
+
+
+def _segment_contour(wav_path: Path) -> list[Event]:
+    """Notes read off the pyin contour, with Basic Pitch not asked where they are.
+
+    The melody-mode alternative to stages 3-6 of ``_transcribe_wav``: the amplitude floor,
+    pyin refinement, onset merging, simultaneous dedup and the melody overlap resolver all
+    exist to repair fragmentation that this path does not create, so it replaces all five
+    rather than running before them.  ``settings.contour_first`` gates it and carries the
+    measurement; ``_contour_segments`` is the rule, then ``_fuse_same_pitch`` repairs a
+    wobble that outlasted it and ``_split_rearticulations`` puts repeated notes back.
+
+    Returns ``[]`` when pyin declined to produce a contour at all — too long, unreadable,
+    or no voiced frame — and the caller falls back to the inference path rather than
+    failing the job, because all three of those causes are still reachable.
+
+    ``amp`` is per-segment RMS against the loudest segment in the clip.  Basic Pitch's
+    posterior does not exist on this path and ``_blend_confidence`` weights ``amp``, so the
+    honest substitute is a real amplitude measurement rather than a constant or a second
+    copy of ``voiced_prob`` — which would make the blend's two independent terms one term.
+    """
+    import librosa
+
+    times, midi, voiced_prob = _pyin_contour(wav_path)
+    if times.size == 0:
+        return []
+
+    segments = _contour_segments(times, midi, voiced_prob)
+    if not segments:
+        print("[notefusion] contour-first found no stable-pitch runs", flush=True)
+        return []
+
+    # times is one frame per pyin hop, so the hop is the frame spacing; a segment's last
+    # frame still sounds for a whole hop, which is why end is padded by one.
+    hop_sec = float(times[1] - times[0]) if times.size > 1 else 0.0
+
+    try:
+        y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
+        rms = librosa.feature.rms(y=y, hop_length=512)[0]
+    except Exception:
+        rms = np.empty(0)
+
+    segments = _fuse_same_pitch(segments, times, hop_sec)
+    segments = _split_rearticulations(segments, rms, midi)
+
+    amps: list[float] = []
+    for start_i, end_i, _m, _vp in segments:
+        window = rms[start_i:end_i] if rms.size >= end_i else np.empty(0)
+        amps.append(float(np.mean(window)) if window.size else 1.0)
+    peak = max(amps) if amps else 0.0
+    amps = [a / peak for a in amps] if peak > 0 else [1.0] * len(amps)
+
+    events = [
+        Event(
+            start=float(times[start_i]),
+            end=float(times[end_i - 1]) + hop_sec,
+            pitch=int(round(median_midi)),
+            amp=amp,
+            pyin_midi=median_midi,
+            voiced_prob=vp,
+        )
+        for (start_i, end_i, median_midi, vp), amp in zip(segments, amps)
+    ]
+
+    print(
+        f"[notefusion] contour-first segmented {len(events)} notes "
+        f"from {times.size} f0 frames",
+        flush=True,
+    )
+    return events
+
+
 def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
     """Correct pitch errors against a pyin f0 contour.
 
@@ -1879,6 +2237,31 @@ _GRID_FIT_BAND_SEC = 0.010
 # are ones no listener would tap.
 _TEMPO_CANDIDATE_FACTORS = (0.25, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0, 1.5, 2.0, 3.0, 4.0)
 
+# ── Grid refinement (``_refine_grid``) ────────────────────────────────────────
+# How far the refinement may move the BPM it is handed, as a fraction.  1% cannot reach
+# any adjacent metrical level — the nearest is 33% away — so picking the level stays
+# ``_grid_bpm``'s job, which is where it is measured.  The band is what stops the search,
+# not the objective: distance-to-grid falls monotonically as the tempo rises (at a high
+# enough BPM every onset is near *some* grid line), so an unbounded sweep of it runs away.
+#
+# Wider was measured and buys nothing.  At 3% and 5% the guards are unchanged or a hair
+# better while the three over-segmented deep-vibrato cases get worse — their spurious
+# onsets are half the sample, so a longer leash only fits them harder.
+_GRID_REFINE_BAND = 0.01
+
+# Sweep resolution.  121 points over +-1% is 0.017% per step, or 0.016 BPM at 96 — an
+# order of magnitude finer than the 0.31% error this exists to remove, and both counts are
+# ODD on purpose so the linspace lands exactly on the values handed in.  That makes the
+# incumbent a member of its own search space, so the refinement cannot return a worse grid
+# fit than it started with and needs no accept/reject test.
+_GRID_REFINE_BPM_STEPS = 121
+_GRID_REFINE_PHASE_STEPS = 201
+
+# Fewer onsets than this and the sweep is interpolating rather than fitting: the leverage
+# on the slope is the clip's length in beats, and the whole point is to average the frame
+# hop's +-11.6 ms out over many of them.  Matches ``_grid_bpm``'s own floor.
+_GRID_REFINE_MIN_ONSETS = 4
+
 
 def _onset_bpm(events: list[Event]) -> float:
     """Rough BPM from the median inter-onset interval; 0.0 when unusable.
@@ -2052,6 +2435,72 @@ def _beat_origin(beat_times: np.ndarray, first_onset: float, bpm: float) -> floa
     return first_onset
 
 
+def _refine_grid(
+    onsets: np.ndarray,
+    bpm: float,
+    beat_origin: float,
+    divisors: tuple[int, ...],
+    band: float = _GRID_REFINE_BAND,
+) -> tuple[float, float]:
+    """(BPM, beat origin) re-measured against the grid the notes will actually snap to.
+
+    Both numbers arrive estimated from a *single* sample and both are systematically
+    wrong because of it.
+
+    ``_grid_bpm`` takes 60/median(inter-onset interval), and an interval is a difference
+    of two onsets that can only fall on frame boundaries — 23.2 ms for the contour path,
+    ~11.6 ms for Basic Pitch.  A true 0.625 s beat is 26.94 frames at the coarser hop, so
+    the nearest value any single interval can express is 27 frames = 95.70 BPM.  96 is not
+    reachable at any threshold; it is a quantization floor, not a tuning miss.  Over a
+    62 s clip that 0.31 % error accumulates to a quarter of a beat.
+
+    ``_beat_origin`` nails beat 0 to the first surviving onset whenever no tracked beat
+    sits near it, so every other note inherits that one onset's error — and the first
+    onset is the least representative in the clip, because a pitch tracker needs voiced
+    frames before it commits.  Measured on ``long_clip_over_pyin_cap``: first onset 0.093 s
+    late against ~0.02 s for the rest, which reads as every *other* note being 0.185 beats
+    early.
+
+    Neither alone crosses the half-step boundary the quantizer rounds on.  Together they
+    swept the residue from −0.185 to +0.056 beats across that clip, so some notes rounded
+    up and some down, and each crossing cost exactly half a beat.  It was worth 0.485 →
+    1.000 of local ``notes.f1`` on a clip whose segmentation was already 99 of 99.
+
+    A clip's whole length is the fix for both: sweep the tempo inside ``band`` and, for
+    each candidate, search the origin across one grid step, keeping whichever pair puts
+    the onsets closest to the grid.  The slope is then measured over every beat in the
+    clip rather than between adjacent pairs, which divides the hop quantization by their
+    number instead of paying it in full, and the origin becomes a consensus over all the
+    onsets instead of a copy of the first.
+
+    The origin search is centred on the ``beat_origin`` handed in and spans exactly one
+    grid step, which is what keeps ``_beat_origin``'s own job intact: quantization only
+    sees position *modulo* the step, so one step covers every reachable phase, while the
+    integer cell the first note lands in — that is, whether a count-in is preserved as a
+    leading rest — is still decided upstream.
+
+    ``band=0.0`` refines the origin alone, for a caller whose BPM is not ours to move.
+    """
+    if onsets.size < _GRID_REFINE_MIN_ONSETS or bpm <= 0.0:
+        return bpm, beat_origin
+
+    steps = _GRID_REFINE_BPM_STEPS if band > 0.0 else 1
+    best = (bpm, beat_origin, np.inf)
+    for candidate in np.linspace(bpm * (1.0 - band), bpm * (1.0 + band), steps):
+        for divisor in divisors:
+            # One grid step of origin, in seconds, at this candidate tempo.
+            step_sec = 60.0 / (float(candidate) * divisor)
+            phases = beat_origin + np.linspace(
+                -step_sec / 2.0, step_sec / 2.0, _GRID_REFINE_PHASE_STEPS
+            )
+            scaled = (onsets[None, :] - phases[:, None]) * (float(candidate) / 60.0) * divisor
+            cost = np.mean(np.abs(scaled - np.round(scaled)), axis=1)
+            i = int(np.argmin(cost))
+            if float(cost[i]) < best[2]:
+                best = (float(candidate), float(phases[i]), float(cost[i]))
+    return best[0], best[1]
+
+
 def _transcribe_wav(
     wav_path: Path,
     mode: str,
@@ -2099,51 +2548,69 @@ def _transcribe_wav(
 
     progress(0.45)
 
-    # ── 2. Initial duration filter ────────────────────────────────────────────
-    # Discard events shorter than MIN_NOTE_SEC before computing the adaptive
-    # amplitude floor so that very short noise bursts (which tend to be high-
-    # amplitude) do not inflate p75 and raise the floor above real notes.
-    #
-    # Dropping the bends here is the exact revert of the f0 merge: with every
-    # bend_semitones at 0.0 an Event's f0 is its pitch, so _merge_onsets' tolerance
-    # test reduces to the exact-equality test it replaced.  That is why the flag
-    # lives at this one line rather than as a branch inside the merge loop.
-    read_bends = settings.f0_merge
-    raw_events: list[Event] = sorted(
-        [
-            Event(start, end, int(pitch), float(amp), _bend_semitones(bends) if read_bends else 0.0)
-            for start, end, pitch, amp, bends in note_events
-            if (end - start) >= MIN_NOTE_SEC
-        ],
-        key=lambda e: e.start,
-    )
+    # ── 2-6. Note events ──────────────────────────────────────────────────────
+    # Two ways to turn the audio into a list of Events.  The contour-first path reads them
+    # straight off the pyin f0 contour; the inference path repairs Basic Pitch's fragments
+    # through five stages.  Either way ``midi_data`` above is kept — it is Basic Pitch's own
+    # multi-track MIDI and the only source for the exported .mid, which the contour path
+    # does not reproduce.
+    contour_events: list[Event] = []
+    if settings.contour_first and mode == "melody":
+        contour_events = _segment_contour(wav_path)
 
-    # ── 3. Adaptive amplitude floor ───────────────────────────────────────────
-    min_amp_base = MIN_AMPLITUDE_MELODY if mode == "melody" else MIN_AMPLITUDE_POLY
-    amp_floor = _adaptive_amplitude_floor(raw_events, min_amp_base)
-    events = [e for e in raw_events if e.amp >= amp_floor]
+    if contour_events:
+        # A monophonic line's notes are runs of stable pitch bounded by voicing gaps, so
+        # the amplitude floor, pyin refinement, onset merge, dedup and overlap resolver —
+        # all of which repair fragmentation this path never creates — are skipped wholesale.
+        # See settings.contour_first.
+        events = contour_events
+    else:
+        # ── 2. Initial duration filter ────────────────────────────────────────
+        # Discard events shorter than MIN_NOTE_SEC before computing the adaptive
+        # amplitude floor so that very short noise bursts (which tend to be high-
+        # amplitude) do not inflate p75 and raise the floor above real notes.
+        #
+        # Dropping the bends here is the exact revert of the f0 merge: with every
+        # bend_semitones at 0.0 an Event's f0 is its pitch, so _merge_onsets' tolerance
+        # test reduces to the exact-equality test it replaced.  That is why the flag
+        # lives at this one line rather than as a branch inside the merge loop.
+        read_bends = settings.f0_merge
+        raw_events: list[Event] = sorted(
+            [
+                Event(start, end, int(pitch), float(amp), _bend_semitones(bends) if read_bends else 0.0)
+                for start, end, pitch, amp, bends in note_events
+                if (end - start) >= MIN_NOTE_SEC
+            ],
+            key=lambda e: e.start,
+        )
 
-    # ── 3b. pyin pitch refinement ─────────────────────────────────────────────
-    # After the amplitude floor so pyin is not spent on events about to be dropped,
-    # and before merging so an octave correction can let two fragments of one note
-    # fuse on the existing exact-pitch test.
-    if settings.pyin_refine and events:
-        events = _refine_pitches(events, wav_path)
+        # ── 3. Adaptive amplitude floor ───────────────────────────────────────
+        min_amp_base = MIN_AMPLITUDE_MELODY if mode == "melody" else MIN_AMPLITUDE_POLY
+        amp_floor = _adaptive_amplitude_floor(raw_events, min_amp_base)
+        events = [e for e in raw_events if e.amp >= amp_floor]
+
+        # ── 3b. pyin pitch refinement ─────────────────────────────────────────
+        # After the amplitude floor so pyin is not spent on events about to be dropped,
+        # and before merging so an octave correction can let two fragments of one note
+        # fuse on the existing exact-pitch test.
+        if settings.pyin_refine and events:
+            events = _refine_pitches(events, wav_path)
+
+        # ── 4. Onset merging ──────────────────────────────────────────────────
+        # Merge before voice-cleaning so the melody overlap resolver sees clean
+        # sustained notes rather than fragmented triplet artefacts.
+        merge_gap = MERGE_GAP_MELODY if mode == "melody" else MERGE_GAP_POLY
+        events = _merge_onsets(events, gap_sec=merge_gap)
+
+        # ── 5. Polyphonic deduplication ───────────────────────────────────────
+        # Remove exact pitch + onset duplicates that survive merging.
+        events = _dedup_simultaneous(events)
+
+        # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────
+        if mode == "melody" and events:
+            events = _resolve_melody_overlaps(events)
+
     progress(0.50)
-
-    # ── 4. Onset merging ──────────────────────────────────────────────────────
-    # Merge before voice-cleaning so the melody overlap resolver sees clean
-    # sustained notes rather than fragmented triplet artefacts.
-    merge_gap = MERGE_GAP_MELODY if mode == "melody" else MERGE_GAP_POLY
-    events = _merge_onsets(events, gap_sec=merge_gap)
-
-    # ── 5. Polyphonic deduplication ───────────────────────────────────────────
-    # Remove exact pitch + onset duplicates that survive merging.
-    events = _dedup_simultaneous(events)
-
-    # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────────
-    if mode == "melody" and events:
-        events = _resolve_melody_overlaps(events)
 
     if not events:
         raise LowConfidenceError(
@@ -2159,8 +2626,18 @@ def _transcribe_wav(
     # which instant is beat 0 (see _beat_origin — without it, leading silence
     # shifts the whole melody off the barline).
     bpm, beat_times = _estimate_tempo_and_beats(wav_path, events, tempo_override)
-    sec_to_beats = bpm / 60.0
     beat_origin = _beat_origin(beat_times, events[0].start, bpm) if settings.beat_align else 0.0
+    if settings.grid_refine:
+        # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
+        # BPM alone and refines only the phase — which the override says nothing about.
+        bpm, beat_origin = _refine_grid(
+            np.array([e.start for e in events]),
+            bpm,
+            beat_origin,
+            settings.quantize_divisors,
+            band=0.0 if tempo_override is not None else _GRID_REFINE_BAND,
+        )
+    sec_to_beats = bpm / 60.0
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
