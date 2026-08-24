@@ -28,6 +28,7 @@ import {
 import { formatCount, formatInstantDate, formatInstantDateTime } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
+import { useClampPage } from "@/lib/useClampPage";
 import { useDebounced } from "@/lib/useDebounced";
 
 const PAGE_SIZE = 25;
@@ -88,6 +89,10 @@ export function UsersView() {
     // draw a spinner between two pages that differ by twenty-five rows.
     placeholderData: keepPreviousData,
   });
+
+  // Suspending an account shrinks the "suspended"/"active" set underfoot, so a page that was valid
+  // can fall off the end. Snap back to the last real page rather than stranding an empty view.
+  useClampPage(page, state.data?.totalPages, setPage);
 
   // Timestamps are shown in the same zone the overview buckets days in, so the two pages
   // never disagree about which day something happened on.
