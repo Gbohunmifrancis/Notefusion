@@ -39,10 +39,21 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         if (_currentUser.UserId is not { } userId)
             return BillingErrors.NotAuthenticated;
 
-        // Counted by the same helper the submit gate uses, from the same constant, so the number the
+        // The ceiling is regional — Nigeria's allowance is smaller than the rest of the world's — so it is
+        // resolved here once and fed to both halves of what the app displays. Read straight off the account
+        // rather than looked up afresh: the country is recorded at sign-up and first observation wins, so a
+        // user who travels keeps the allowance they were shown, and a VPN cannot buy a bigger trial.
+        var country = await _db.Users
+            .Where(u => u.Id == userId)
+            .Select(u => u.Country)
+            .FirstOrDefaultAsync(ct);
+
+        var total = FreeTier.TrialGenerationsFor(country);
+
+        // Counted by the same helper the submit gate uses, against the same country, so the number the
         // app shows and the number that triggers the paywall cannot drift apart. That includes the
         // device half: a second account on a spent handset must see 0 left, not 5 followed by a refusal.
-        var remaining = await TrialUsage.CountRemainingAsync(_db, userId, _device.Current, ct);
+        var remaining = await TrialUsage.CountRemainingAsync(_db, userId, _device.Current, country, ct);
 
         var sub = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
@@ -51,13 +62,13 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         if (sub is null)
             return new SubscriptionDto(
                 IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null,
-                TrialGenerationsRemaining: remaining, TrialGenerationsTotal: FreeTier.TrialGenerations,
+                TrialGenerationsRemaining: remaining, TrialGenerationsTotal: total,
                 IsLifetime: false);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
         return new SubscriptionDto(
             sub.IsActiveAt(_clock.UtcNow), plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
-            remaining, FreeTier.TrialGenerations, sub.IsLifetime);
+            remaining, total, sub.IsLifetime);
     }
 }

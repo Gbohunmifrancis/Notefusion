@@ -35,7 +35,7 @@ public class BillingSeederTests
         await Seed(h);
 
         var plans = await h.Db.Plans.OrderBy(p => p.Code).ToListAsync();
-        Assert.Equal(["pro_lifetime", "pro_monthly_ngn", "pro_yearly_ngn"], plans.Select(p => p.Code));
+        Assert.Equal(["pro_lifetime_v2", "pro_monthly_ngn", "pro_yearly_ngn"], plans.Select(p => p.Code));
         Assert.All(plans, p => Assert.True(p.IsActive));
     }
 
@@ -56,7 +56,7 @@ public class BillingSeederTests
 
         var dollars = Assert.Single(await h.Db.Plans.Where(p => p.Currency == "USD").ToListAsync());
         Assert.Equal(BillingInterval.Lifetime, dollars.Interval);
-        Assert.Equal(7_900, dollars.AmountMinor); // $79.00, in cents
+        Assert.Equal(20_000, dollars.AmountMinor); // $200.00, in cents
     }
 
     [Fact]
@@ -125,6 +125,36 @@ public class BillingSeederTests
         await Seed(h);
 
         Assert.False((await h.Db.Plans.SingleAsync(p => p.Code == "test_ngn_monthly")).IsActive);
+    }
+
+    [Fact]
+    public async Task A_repriced_tier_ships_as_a_new_code_and_leaves_the_old_price_intact()
+    {
+        // Lifetime went from $79 to $200. The tempting move is to edit the amount on pro_lifetime, and it
+        // would quietly rewrite history: fulfilment and the receipt read the plan by id, so every past buyer's
+        // record would start claiming they agreed to $200. Instead the new price is a new code and the old one
+        // comes off sale still holding the number it was sold at.
+        using var h = new TestHarness(Now);
+        var old = Plan.Create(
+            Guid.NewGuid(), "pro_lifetime", "NoteFusion Pro (Lifetime)", 7_900, "USD", BillingInterval.Lifetime);
+        h.Db.Plans.Add(old);
+        await h.Db.SaveChangesAsync();
+
+        await Seed(h);
+
+        var previous = await h.Db.Plans.SingleAsync(p => p.Code == "pro_lifetime");
+        Assert.False(previous.IsActive);
+        Assert.Equal(7_900, previous.AmountMinor);
+
+        var current = await h.Db.Plans.SingleAsync(p => p.Code == "pro_lifetime_v2");
+        Assert.True(current.IsActive);
+        Assert.Equal(20_000, current.AmountMinor);
+
+        // And only one of them is on the international paywall, or the buyer picks their own price.
+        var offered = (await h.Db.Plans.Where(p => p.IsActive).ToListAsync())
+            .Where(p => PlanEligibility.IsOffered(p.Currency, "US"))
+            .ToList();
+        Assert.Equal("pro_lifetime_v2", Assert.Single(offered).Code);
     }
 
     // ---------------------------------------------------------------- the seeder against the rule

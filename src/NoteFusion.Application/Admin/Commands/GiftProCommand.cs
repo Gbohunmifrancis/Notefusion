@@ -32,13 +32,15 @@ public sealed class GiftProCommandHandler : IRequestHandler<GiftProCommand, Resu
     /// <summary>
     /// Which seeded plan stands in for each gift length. Naira for the recurring tiers because those are the
     /// only monthly and yearly plans still on sale (<c>BillingSeeder</c> retired the USD ones); the currency
-    /// is immaterial to a gift, since nothing is charged.
+    /// is immaterial to a gift, since nothing is charged. What does matter is that every code here is one the
+    /// seeder still creates — a repriced tier retires its old code, and a gift pointed at a retired code would
+    /// fail on a fresh database with a missing-plan error that looks nothing like its cause.
     /// </summary>
     private static readonly Dictionary<BillingInterval, string> PlanCodes = new()
     {
         [BillingInterval.Monthly] = "pro_monthly_ngn",
         [BillingInterval.Yearly] = "pro_yearly_ngn",
-        [BillingInterval.Lifetime] = "pro_lifetime",
+        [BillingInterval.Lifetime] = "pro_lifetime_v2",
     };
 
     private readonly IApplicationDbContext _db;

@@ -12,7 +12,9 @@ using NoteFusion.Tests.Support;
 namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
-/// The five free transcriptions: what spends one, what does not, and who is metered at all.
+/// The free transcriptions: what spends one, what does not, who is metered at all, and how many they get —
+/// five in Nigeria, ten everywhere else, so the fixtures here state a country rather than leaving it to
+/// chance.
 /// <para>
 /// The count is kept on <c>TranscriptionJobs</c> rather than on saved <c>Transcriptions</c>, and that is
 /// the regression these tests exist to pin. Counting saved rows meant deleting a transcription handed the
@@ -98,6 +100,81 @@ public class TrialQuotaTests
         Assert.Equal(result.Value, job.JobId);
         Assert.Equal(user.Id, job.UserId);
         Assert.Null(job.TrialConsumedAtUtc); // the audio has not been transcribed yet
+    }
+
+    // ---------------------------------------------------------------- the ceiling is regional
+
+    [Fact]
+    public async Task An_account_outside_Nigeria_is_not_capped_at_the_Nigerian_five()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h);
+        Spend(h, user, 5);
+
+        // Where the Nigerian account above is finished, this one is half way. The naira tier is priced to
+        // local purchasing power and its trial is sized to match; the dollar tier's is not.
+        Assert.True((await Submit(h, user)).IsSuccess);
+        Assert.Equal(5, await Remaining(h, user));
+        Assert.Equal(10, await Total(h, user));
+    }
+
+    [Fact]
+    public async Task An_account_outside_Nigeria_is_blocked_once_all_ten_are_spent()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h);
+        Spend(h, user, 10);
+
+        var result = await Submit(h, user);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
+
+        // And it says ten, not five. A refusal quoting a different number than the pill had been showing is
+        // indistinguishable from a billing bug, which is the worst place to look buggy.
+        Assert.Contains("10", result.Error.Message);
+        Assert.Equal(0, await Remaining(h, user));
+    }
+
+    [Fact]
+    public async Task An_account_whose_country_is_unknown_gets_the_larger_allowance()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedAbroad(h, country: null);
+        Spend(h, user, 5);
+
+        // Fail open, the same way the paywall does: a null country is offered every tier rather than a
+        // guessed one, so an unresolved country here means "not known to be Nigeria", not "assume Nigeria".
+        Assert.True((await Submit(h, user)).IsSuccess);
+        Assert.Equal(10, await Total(h, user));
+    }
+
+    [Fact]
+    public async Task A_Nigerian_refusal_names_the_Nigerian_five()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 5);
+
+        var result = await Submit(h, user);
+
+        Assert.Contains("5", result.Error.Message);
+        Assert.Equal(5, await Total(h, user));
+    }
+
+    [Fact]
+    public async Task A_shared_handset_is_capped_by_whoever_is_asking()
+    {
+        using var h = new TestHarness(Now);
+        var nigerian = Seed(h);
+        var abroad = SeedAbroad(h);
+        Spend(h, nigerian, 6, "phone-a");
+
+        // The device half of the count is shared; the ceiling it is measured against is not. Six generations
+        // on this handset has already finished the Nigerian account and leaves the other four.
+        Assert.True((await Submit(h, nigerian, device: "phone-a")).IsFailure);
+        Assert.True((await Submit(h, abroad, device: "phone-a")).IsSuccess);
+        Assert.Equal(4, await Remaining(h, abroad, "phone-a"));
     }
 
     // ---------------------------------------------------------------- the charge on poll
@@ -327,6 +404,22 @@ public class TrialQuotaTests
     private static User Seed(TestHarness h, string email = "free@example.com")
     {
         var user = User.Create("Free User", email, h.Hasher.Hash("password123"), Now.AddDays(-30));
+
+        // Nigerian on purpose, because the allowance is regional and these cases assert on the number 5.
+        // Left country-less they would silently be testing the rest-of-world ceiling of 10 while still
+        // reading "five" — the boundaries would pass and mean nothing. The 10 is pinned separately below.
+        user.RecordCountry("NG");
+        h.Db.Users.Add(user);
+        h.Db.SaveChanges();
+        return user;
+    }
+
+    /// <summary>An account outside Nigeria, which gets the larger allowance.</summary>
+    private static User SeedAbroad(TestHarness h, string email = "abroad@example.com", string? country = "GB")
+    {
+        var user = User.Create("Abroad User", email, h.Hasher.Hash("password123"), Now.AddDays(-30));
+        if (country is not null)
+            user.RecordCountry(country);
         h.Db.Users.Add(user);
         h.Db.SaveChanges();
         return user;
@@ -369,10 +462,18 @@ public class TrialQuotaTests
     /// can compare it against what the gate actually did.
     /// </summary>
     private static async Task<int> Remaining(TestHarness h, User user, string? device = null)
+        => (await Shown(h, user, device)).TrialGenerationsRemaining;
+
+    /// <summary>The ceiling the app prints beside it, which must be the one the gate enforced.</summary>
+    private static async Task<int> Total(TestHarness h, User user, string? device = null)
+        => (await Shown(h, user, device)).TrialGenerationsTotal;
+
+    private static async Task<Application.Billing.Dtos.SubscriptionDto> Shown(
+        TestHarness h, User user, string? device = null)
         => (await new GetMySubscriptionQueryHandler(
                 h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(device))
             .Handle(new GetMySubscriptionQuery(), CancellationToken.None))
-            .Value.TrialGenerationsRemaining;
+            .Value;
 
     private static Task<Result<TranscriptionJobDto>> Poll(
         TestHarness h, User user, string jobId, FakeTranscriptionApi api)

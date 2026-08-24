@@ -46,8 +46,11 @@ const SubscriptionContext = createContext<SubscriptionState | undefined>(undefin
 
 /**
  * Only used before the server has answered. The real number always comes from the
- * server (`FreeTier.TrialGenerations`); this is the optimistic placeholder that keeps
- * a dropped request from looking like an exhausted trial.
+ * server (`FreeTier.TrialGenerationsFor`), and it is regional — 5 in Nigeria, 10
+ * elsewhere — so no single value here can be right for everyone. Deliberately the
+ * smaller one: this placeholder exists to keep a dropped request from looking like an
+ * exhausted trial, and under-promising corrects upward, which reads as a bonus rather
+ * than as a trial that shrank.
  */
 const DEFAULT_TRIAL_TOTAL = 5;
 

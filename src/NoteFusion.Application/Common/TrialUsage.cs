@@ -4,9 +4,10 @@ using NoteFusion.Application.Common.Interfaces;
 namespace NoteFusion.Application.Common;
 
 /// <summary>
-/// How much of <see cref="FreeTier.TrialGenerations"/> is already gone. One query in one place, for the
-/// same reason <see cref="FreeTier"/> is one constant: the submit gate and the count the app displays
-/// must never disagree, and two copies of a predicate this fiddly would eventually drift.
+/// How much of the allowance <see cref="FreeTier.TrialGenerationsFor"/> grants is already gone. One query
+/// in one place, for the same reason <see cref="FreeTier"/> resolves the ceiling in one method: the submit
+/// gate and the count the app displays must never disagree, and two copies of a predicate this fiddly would
+/// eventually drift.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -44,7 +45,15 @@ public static class TrialUsage
     }
 
     /// <summary>What is left of the allowance, floored at zero.</summary>
+    /// <param name="country">
+    /// The account's country, which sets the ceiling — Nigeria's allowance is smaller than the rest of the
+    /// world's. Passed in rather than looked up here so the caller resolves it once and feeds the same value
+    /// to both this and the total it displays alongside.
+    /// </param>
     public static async Task<int> CountRemainingAsync(
-        IApplicationDbContext db, Guid userId, string? deviceFingerprint, CancellationToken ct = default)
-        => Math.Max(0, FreeTier.TrialGenerations - await CountUsedAsync(db, userId, deviceFingerprint, ct));
+        IApplicationDbContext db, Guid userId, string? deviceFingerprint, string? country,
+        CancellationToken ct = default)
+        => Math.Max(
+            0,
+            FreeTier.TrialGenerationsFor(country) - await CountUsedAsync(db, userId, deviceFingerprint, ct));
 }

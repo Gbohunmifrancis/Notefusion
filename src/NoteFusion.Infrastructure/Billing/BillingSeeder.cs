@@ -19,22 +19,26 @@ public sealed class BillingSeeder : IHostedService
 {
     // The geo split (docs/geo-billing-plan.md): a Nigerian account subscribes in naira through Paystack,
     // everyone else buys Pro once, for life, in dollars. Amounts are minor units — cents for USD, kobo for
-    // NGN. Yearly is priced as ten months to reward the annual commitment; the lifetime price is roughly a
-    // year and a half of it, which is the standing $79 rather than the launch-cohort discount (that would
-    // ship as its own code, since a price is only traceable if it never moves under an existing one).
+    // NGN. Yearly is priced as ten months to reward the annual commitment; the lifetime price is $200, a
+    // one-off standing in for a subscription that cannot be billed on this rail at all, so it has to cover
+    // the whole relationship rather than a year and a half of it.
     private static readonly (string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval)[] Plans =
     [
         ("pro_monthly_ngn", "NoteFusion Pro (Monthly)",   750_000,   "NGN", BillingInterval.Monthly),
         ("pro_yearly_ngn",  "NoteFusion Pro (Yearly)",    7_500_000, "NGN", BillingInterval.Yearly),
-        ("pro_lifetime",    "NoteFusion Pro (Lifetime)",  7_900,     "USD", BillingInterval.Lifetime),
+        ("pro_lifetime_v2", "NoteFusion Pro (Lifetime)",  20_000,    "USD", BillingInterval.Lifetime),
     ];
 
-    // Codes that must no longer be sold. The two USD subscriptions are not merely superseded, they are
-    // unpayable: Bachs subscriptions are card-only, this account has no USD card rail, and their checkout
-    // renders an empty payment-method list — so leaving them active would offer an international buyer two
-    // tiers that cannot complete. test_ngn_monthly was only ever a probe. Retiring is a flag flip and not a
-    // delete, because fulfilment and every receipt read the plan by id long after it stops being on sale.
-    private static readonly string[] RetiredCodes = ["pro_monthly", "pro_yearly", "test_ngn_monthly"];
+    // Codes that must no longer be sold, for two different reasons. The two USD subscriptions are not merely
+    // superseded, they are unpayable: Bachs subscriptions are card-only, this account has no USD card rail,
+    // and their checkout renders an empty payment-method list — so leaving them active would offer an
+    // international buyer two tiers that cannot complete. test_ngn_monthly was only ever a probe. pro_lifetime
+    // is different: it was sellable and correct, just at $79, and lifetime is now $200 — which ships as
+    // pro_lifetime_v2 rather than an edit, because a price is only traceable if it never moves under an
+    // existing code. Retiring is a flag flip and not a delete, because fulfilment and every receipt read the
+    // plan by id long after it stops being on sale, and a $79 buyer's receipt must keep saying $79.
+    private static readonly string[] RetiredCodes =
+        ["pro_monthly", "pro_yearly", "test_ngn_monthly", "pro_lifetime"];
 
     private readonly IServiceProvider _services;
     private readonly ILogger<BillingSeeder> _logger;

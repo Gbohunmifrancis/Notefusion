@@ -72,9 +72,20 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // phone is four taps and used to be worth five more free generations.
                 var used = await TrialUsage.CountUsedAsync(_db, userId, fingerprint, cancellationToken);
 
-                if (used >= FreeTier.TrialGenerations)
+                // The ceiling is regional: Nigeria's allowance is smaller than the rest of the world's, keyed
+                // on the same country code the paywall's currency rule uses.
+                var country = await _db.Users
+                    .Where(u => u.Id == userId)
+                    .Select(u => u.Country)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                var allowance = FreeTier.TrialGenerationsFor(country);
+
+                if (used >= allowance)
                 {
-                    return BillingErrors.FreeTierLimitReached;
+                    // Told the number that actually applied to them, not a global one: a refusal that names
+                    // a different count than the trial pill did is indistinguishable from a billing bug.
+                    return BillingErrors.FreeTierLimitReached(allowance);
                 }
             }
         }
