@@ -1,9 +1,11 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
+using NoteFusion.Application.Transcriptions.Services;
 using NoteFusion.Core.Entities;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Security;
@@ -45,6 +47,9 @@ public sealed class TestHarness : IDisposable
         Push = new RecordingPushSender();
         Country = new StubCountryResolver();
         ClientIp = new StubClientIpAddress();
+        Device = new StubDeviceFingerprint();
+        DeviceRegister = new TrialDeviceRecorder(
+            Db, Country, ClientIp, Clock, NullLogger<TrialDeviceRecorder>.Instance);
     }
 
     public ApplicationDbContext Db { get; }
@@ -71,6 +76,18 @@ public sealed class TestHarness : IDisposable
 
     /// <summary>The address the caller appears to come from. Answers null until a test says otherwise.</summary>
     public StubClientIpAddress ClientIp { get; }
+
+    /// <summary>
+    /// Which handset the caller is on. Answers null until a test says otherwise, which is the pre-header
+    /// install and the per-account-only count.
+    /// </summary>
+    public StubDeviceFingerprint Device { get; }
+
+    /// <summary>
+    /// The trial-device register, on this harness's context, clock, geo stub and address stub. The submit
+    /// handler takes an <see cref="ITrialDeviceRecorder"/>, so every free-tier test needs this one.
+    /// </summary>
+    public TrialDeviceRecorder DeviceRegister { get; }
 
     /// <summary>
     /// An audit logger acting as <paramref name="actor"/>, on this harness's context and clock. Admin

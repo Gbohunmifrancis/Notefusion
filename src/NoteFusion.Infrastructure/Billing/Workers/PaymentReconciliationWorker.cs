@@ -21,7 +21,6 @@ namespace NoteFusion.Infrastructure.Billing.Workers;
 internal sealed class PaymentReconciliationWorker : BackgroundService
 {
     private const int BatchSize = 50;
-    private static readonly TimeSpan GraceWindow = TimeSpan.FromMinutes(10);
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly BillingSettings _settings;
@@ -72,7 +71,8 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
         var sender = scope.ServiceProvider.GetRequiredService<ISender>();
         var clock = scope.ServiceProvider.GetRequiredService<IDateTimeProvider>();
 
-        var cutoff = clock.UtcNow - GraceWindow;
+        // Same window the admin console calls "stuck", read from the one place both can see it.
+        var cutoff = clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.ReconciliationGraceMinutes));
 
         var stuck = await db.PaymentTransactions
             .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < cutoff)

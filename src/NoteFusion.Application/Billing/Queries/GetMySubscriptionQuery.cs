@@ -20,12 +20,18 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
+    private readonly IDeviceFingerprint _device;
 
-    public GetMySubscriptionQueryHandler(IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock)
+    public GetMySubscriptionQueryHandler(
+        IApplicationDbContext db,
+        ICurrentUser currentUser,
+        IDateTimeProvider clock,
+        IDeviceFingerprint device)
     {
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
+        _device = device;
     }
 
     public async Task<Result<SubscriptionDto>> Handle(GetMySubscriptionQuery request, CancellationToken ct)
@@ -33,11 +39,10 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         if (_currentUser.UserId is not { } userId)
             return BillingErrors.NotAuthenticated;
 
-        // Counted the same way the submit gate counts it, from the same constant, so the number the
-        // app shows and the number that triggers the paywall cannot drift apart.
-        var used = await _db.TranscriptionJobs
-            .CountAsync(j => j.UserId == userId && j.TrialConsumedAtUtc != null, ct);
-        var remaining = Math.Max(0, FreeTier.TrialGenerations - used);
+        // Counted by the same helper the submit gate uses, from the same constant, so the number the
+        // app shows and the number that triggers the paywall cannot drift apart. That includes the
+        // device half: a second account on a spent handset must see 0 left, not 5 followed by a refusal.
+        var remaining = await TrialUsage.CountRemainingAsync(_db, userId, _device.Current, ct);
 
         var sub = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)

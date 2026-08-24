@@ -59,6 +59,10 @@ builder.Services.AddScoped<ICountryResolver, RequestCountryResolver>();
 // Same seam, different question: the raw address, for the admin audit trail.
 builder.Services.AddScoped<IClientIpAddress, RequestClientIpAddress>();
 
+// Same seam again: which handset, for the free-trial ceiling. Per device rather than per account only,
+// because a second Google account on the same phone was five more free generations.
+builder.Services.AddScoped<IDeviceFingerprint, RequestDeviceFingerprint>();
+
 // Same seam again, but singleton — see RequestCorrelationId for why the outbound HttpClient handler
 // makes any shorter lifetime wrong.
 builder.Services.AddSingleton<ICorrelationId, RequestCorrelationId>();

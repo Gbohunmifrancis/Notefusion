@@ -5,6 +5,7 @@ using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Behaviors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions.Services;
 
 namespace NoteFusion.Application;
 
@@ -24,6 +25,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(assembly, includeInternalTypes: true);
         services.AddScoped<ITokenIssuer, TokenIssuer>();
         services.AddScoped<IAuditLogger, AuditLogger>();
+        services.AddScoped<ITrialDeviceRecorder, TrialDeviceRecorder>();
 
         return services;
     }

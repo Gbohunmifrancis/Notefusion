@@ -1,0 +1,119 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Admin.Dtos;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Common.Settings;
+using NoteFusion.Core.Enums;
+using NoteFusion.Shared.Results;
+
+namespace NoteFusion.Application.Admin.Queries;
+
+/// <summary>
+/// The state of the money right now, in one request: how many payments sit in each state, how many are
+/// overdue, how the webhook inbox is draining, and what the ledger sums to.
+/// </summary>
+/// <remarks>
+/// Unfiltered and unpaged on purpose — it is a health readout, not a report. Every figure is counted from
+/// the tables at read time; nothing here is cached or stored, so there is no counter that can drift away
+/// from the rows it describes.
+/// </remarks>
+public sealed record GetPaymentOpsSummaryQuery : IRequest<Result<PaymentOpsSummaryDto>>;
+
+public sealed class GetPaymentOpsSummaryQueryHandler
+    : IRequestHandler<GetPaymentOpsSummaryQuery, Result<PaymentOpsSummaryDto>>
+{
+    private readonly IApplicationDbContext _db;
+    private readonly IDateTimeProvider _clock;
+    private readonly BillingSettings _settings;
+
+    public GetPaymentOpsSummaryQueryHandler(
+        IApplicationDbContext db, IDateTimeProvider clock, BillingSettings settings)
+    {
+        _db = db;
+        _clock = clock;
+        _settings = settings;
+    }
+
+    public async Task<Result<PaymentOpsSummaryDto>> Handle(
+        GetPaymentOpsSummaryQuery request, CancellationToken cancellationToken)
+    {
+        var stuckCutoff = PaymentOps.StuckCutoff(_clock.UtcNow, _settings);
+
+        // One grouped pass rather than five counts. A state with no rows is simply absent from the result,
+        // which is why every lookup below defaults to zero instead of indexing.
+        var paymentCounts = await _db.PaymentTransactions
+            .AsNoTracking()
+            .GroupBy(t => t.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        var stuck = _db.PaymentTransactions
+            .AsNoTracking()
+            .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < stuckCutoff);
+
+        var stuckCount = await stuck.CountAsync(cancellationToken);
+
+        var oldestStuckSinceUtc = await stuck
+            .OrderBy(t => t.UpdatedAtUtc)
+            .Select(t => (DateTime?)t.UpdatedAtUtc)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var webhookCounts = await _db.WebhookEvents
+            .AsNoTracking()
+            .GroupBy(e => e.Status)
+            .Select(g => new { Status = g.Key, Count = g.Count() })
+            .ToListAsync(cancellationToken);
+
+        var oldestAwaitingWebhookAtUtc = await _db.WebhookEvents
+            .AsNoTracking()
+            .Where(e => e.Status == WebhookStatus.Received)
+            .OrderBy(e => e.ReceivedAtUtc)
+            .Select(e => (DateTime?)e.ReceivedAtUtc)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        // Summed from the entries, never read from a stored balance — the same rule
+        // GetLedgerBalanceQuery follows for one account, which is the canonical statement of it.
+        var credited = await _db.LedgerEntries
+            .AsNoTracking()
+            .Where(e => e.Direction == LedgerDirection.Credit)
+            .SumAsync(e => e.AmountMinor, cancellationToken);
+
+        var refunded = await _db.LedgerEntries
+            .AsNoTracking()
+            .Where(e => e.Direction == LedgerDirection.Debit)
+            .SumAsync(e => e.AmountMinor, cancellationToken);
+
+        // The oldest entry's currency, matching the per-user balance. Falls back to USD only when there
+        // are no entries at all, where the figure is zero and the code is a label on nothing.
+        var currency = await _db.LedgerEntries
+            .AsNoTracking()
+            .OrderBy(e => e.CreatedAtUtc)
+            .Select(e => e.Currency)
+            .FirstOrDefaultAsync(cancellationToken) ?? "USD";
+
+        int PaymentsIn(PaymentStatus status)
+            => paymentCounts.FirstOrDefault(c => c.Status == status)?.Count ?? 0;
+
+        int WebhooksIn(WebhookStatus status)
+            => webhookCounts.FirstOrDefault(c => c.Status == status)?.Count ?? 0;
+
+        return new PaymentOpsSummaryDto(
+            PaymentsIn(PaymentStatus.Pending),
+            PaymentsIn(PaymentStatus.Processing),
+            PaymentsIn(PaymentStatus.Verified),
+            PaymentsIn(PaymentStatus.Completed),
+            PaymentsIn(PaymentStatus.Failed),
+            stuckCount,
+            oldestStuckSinceUtc,
+            WebhooksIn(WebhookStatus.Received),
+            WebhooksIn(WebhookStatus.Processed),
+            WebhooksIn(WebhookStatus.Failed),
+            oldestAwaitingWebhookAtUtc,
+            credited,
+            refunded,
+            credited - refunded,
+            currency,
+            Math.Max(1, _settings.ReconciliationGraceMinutes),
+            Math.Max(1, _settings.ReconciliationMinutes));
+    }
+}

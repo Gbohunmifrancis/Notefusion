@@ -30,6 +30,17 @@ public sealed class BillingSettings
     public int ReconciliationMinutes { get; init; } = 15;
 
     /// <summary>
+    /// How long a payment may sit in <c>Processing</c> before the reconciliation sweep treats it as stuck.
+    /// Long enough for the normal webhook to arrive, so the sweep does not race the primary path.
+    /// </summary>
+    /// <remarks>
+    /// Settings rather than a constant in the worker because the admin console reports the same threshold —
+    /// it flags stuck payments and prints the window as the definition of "stuck". Two copies of the number
+    /// would eventually disagree, and the console would then be explaining a rule the worker does not follow.
+    /// </remarks>
+    public int ReconciliationGraceMinutes { get; init; } = 10;
+
+    /// <summary>
     /// How often the expiry worker looks for subscriptions ending soon. Twice a day by default — the
     /// notice window is a week wide, so a tighter loop would only re-scan the same rows.
     /// </summary>

@@ -48,7 +48,7 @@ public sealed class HarnessSender : ISender
                     _h.Db, Require(_gateways, "gateways"), _h.Clock, _h.Email)
                 .Handle(reconcile, cancellationToken),
             GetMySubscriptionQuery mine => (Task<TResponse>)(object)new GetMySubscriptionQueryHandler(
-                    _h.Db, Require(_currentUser, "currentUser"), _h.Clock)
+                    _h.Db, Require(_currentUser, "currentUser"), _h.Clock, _h.Device)
                 .Handle(mine, cancellationToken),
             _ => throw new NotSupportedException($"{request.GetType().Name} is not wired into the test sender.")
         };
