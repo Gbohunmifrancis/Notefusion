@@ -72,11 +72,20 @@ _ROLLOFF_TILT = 1.0 / 120.0  # per semitone above C4
 _ROLLOFF_MIN = 0.85
 _ROLLOFF_MAX = 1.45
 
-# The one number that decides "soft piano" rather than "bright piano": a gently
-# played note has little above ~5 kHz. Applied as a one-pole tilt rather than a
-# brick wall, because a hard cut is what left the old treble with five partials and
-# a bass whose spectrum stopped dead.
-_BRIGHT_CEILING_HZ = 5200.0
+# The number that decides "soft piano" rather than "bright piano": a gently played
+# note has very little above ~2.5 kHz, and one pole at 5.2 kHz did not come close.
+# Measured on a C4, partial 20 sat about 19 dB below the fundamental where a softly
+# struck piano is 40-plus down — the pole was so far above the partials it was meant
+# to tame that it barely touched the upper lobes of |sin(k·pi·x)|.
+#
+# Applied squared — two poles at this corner rather than one — because what needed
+# to change was the steepness of the skirt, not the passband. Measured on a rendered
+# C4, two poles here put partial 20 at -43 dB while moving k=1 by 0.06 dB, so the
+# body of the spectrum is where it was and only the harsh top comes off. Two poles at
+# 2.6 kHz were tried first and overshot to -52 dB, which is duller than a piano.
+# Still a tilt and not a brick wall: a hard cut is what left the old treble with five
+# partials and a bass whose spectrum stopped dead.
+_BRIGHT_CEILING_HZ = 3800.0
 
 # Generation ceiling, and the level below which a partial is inaudible anyway.
 _MAX_PARTIALS = 48
@@ -107,7 +116,20 @@ _DAMP_EXP = 1.15
 # body of every note, which is an *organ*. There is no sustain level here; the body
 # is a pair of exponentials and only the attack and the damper release are shaped.
 _ATTACK_SEC = 0.005  # hammer strike; raised-cosine, so short but not a click
-_RELEASE_SEC = 0.080  # damper falling at note-off, so notes stop on the grid
+
+# How long the damper takes to land *after* note-off. This is a ring-out past the
+# notated end, not a fade inside it — the distinction is the whole of it. At 80 ms
+# ending *at* the notated end, every note measured 40 to 43 dB down by the time the
+# next onset arrived, so nothing carried across a note boundary and the melody read
+# as a sequencer rather than as an instrument. A piano rings into the next note, and
+# that overlap is most of what makes it sound like a piano.
+#
+# Ceiling on this: it doubles as the buffer's end padding, and
+# ``test_tempo_sets_the_timescale`` asserts a 240 BPM render is under 0.6x a 120 BPM
+# one. On its 4-beat fixture a tempo-independent tail T gives (1 + T) < 0.6·(2 + T),
+# so T < 0.5 s. 0.35 leaves 0.574 against that 0.6. Do not raise it to "ring more"
+# without redoing the arithmetic.
+_RELEASE_SEC = 0.350
 
 # Body decay time constant, seconds, at middle C. Scaled per note by
 # _string_decay_sec: bass strings are longer, heavier and less damped, so they ring
@@ -132,16 +154,21 @@ _TAIL_FACTOR = 3.2
 # *zero* at 2·pi/3 on its way to -1 — so every partial periodically vanishes
 # outright. Measured, that reads as 49 dB of "beating" and it is a dropout, not a
 # shimmer: the C4 fundamental fell 16 dB below its own third partial at t=1.1 s.
-# Real unisons never null, because the strings differ in amplitude and phase. A
-# depth of 0.6 is a 12 dB swing between 1.6 and 0.4.
+# Depth is the swing itself, and 0.6 was still far too much of one: 1.6 down to 0.4
+# is a 12 dB swing on every partial from the fourth up, which the ear reads as an
+# out-of-tune wobble rather than as warmth. 0.25 is 1.25 down to 0.75, a swing of
+# 4.4 dB. Easy to under-read from a rendered clip — the partials each beat at their
+# own k·detune rate, so a summed envelope averages the whole thing away and shows
+# barely 1 dB. Measure per partial (see ``test_unison_beating_never_nulls_a_partial``,
+# which does).
 #
-# The depth ramps in over the first few partials, which is both Weinreich's measured
-# result on coupled piano strings — a unison phase-locks at the fundamental and
-# decouples higher up, so the shimmer is a partial-band effect — and what stops the
-# energy-dominant fundamental from swinging the whole spectrum as it beats.
+# The depth ramps in over the first several partials, which is both Weinreich's
+# measured result on coupled piano strings — a unison phase-locks at the fundamental
+# and decouples higher up, so the shimmer is a partial-band effect — and what stops
+# the energy-dominant fundamental from swinging the whole spectrum as it beats.
 _DETUNE_CENTS = 2.0
-_UNISON_DEPTH = 0.6
-_UNISON_KNEE = 4.0
+_UNISON_DEPTH = 0.25
+_UNISON_KNEE = 8.0
 _UNISON_MIN_MIDI = 52  # below this the strings are wound and single or paired
 
 # Every note is normalised to this, so its level does not depend on its spectrum.
@@ -690,7 +717,7 @@ def _synthesize_audio_preview(
 
       • Spectrum: up to ``_MAX_PARTIALS`` partials, each weighted by the hammer's
         strike-position node pattern ``|sin(k·pi·x)|``, rolled off by ``k^-rolloff``
-        with the exponent tilted by register, and tilted again by a one-pole
+        with the exponent tilted by register, and tilted again by a two-pole
         brightness ceiling. Partial k is stretched sharp by ``(1 + B·k²)``.
       • Hammer: a second, brighter partial stack decaying with a 14 ms time
         constant, truncated at ten time constants — the strike transient.
@@ -701,8 +728,10 @@ def _synthesize_audio_preview(
       • Unison: a slow ``(1 + depth·cos)`` amplitude beat per partial, with the
         depth ramping in over the first few partials.
       • Attack : raised-cosine ramp-up over ``_ATTACK_SEC``, so there is no click.
-      • Release: raised-cosine fade over ``_RELEASE_SEC``, the damper landing, so
-        notes stop on the grid instead of smearing into the next.
+      • Release: raised-cosine fade over ``_RELEASE_SEC`` *past* the notated end —
+        the damper landing after note-off, so each note rings on into the next the
+        way a real one does. Every note is therefore rendered ``_RELEASE_SEC``
+        longer than it is notated, and overlaps are left to the limiter below.
 
     Each note is then normalised to ``_PEAK_TARGET`` rather than divided by a sum of
     weights: the partial phases do not align, so an analytic ceiling sits far above
@@ -753,13 +782,15 @@ def _synthesize_audio_preview(
     # different place on either side for any clip the tempo estimator read below 30.
     beat_sec = 60.0 / max(float(tempo_bpm), 30.0)  # seconds per beat
 
-    # Total length = end of the last note + short tail so the release doesn't clip.
+    # Total length = end of the last note + the ring-out past it. One constant does
+    # both jobs, and deliberately so: the padding exists to hold the release, so any
+    # other value either clips the last note's decay or leaves silence after it.
     # Rounded up, matching `Math.ceil` in mobile/src/lib/synth.ts — truncating here
     # made every clip exactly one sample shorter than the mobile render of the same
     # notes, which is inaudible but is still the two tiers disagreeing.
     max_end_sec = max(n.start_beat * beat_sec + n.dur_beats * beat_sec for n in notes)
-    tail_sec = 0.25
-    total_samples = int(np.ceil((max_end_sec + tail_sec) * sr))
+    tail_samp = int(round(_RELEASE_SEC * sr))
+    total_samples = int(np.ceil((max_end_sec + _RELEASE_SEC) * sr))
     audio = np.zeros(total_samples, dtype=np.float64)
 
     nyquist = 0.5 * sr
@@ -769,7 +800,9 @@ def _synthesize_audio_preview(
         freq = 440.0 * 2.0 ** ((n.pitch_midi - 69) / 12.0)
         start_samp = int(n.start_beat * beat_sec * sr)
         dur_samp = max(int(n.dur_beats * beat_sec * sr), int(0.04 * sr))
-        end_samp = min(start_samp + dur_samp, total_samples)
+        # The ring-out belongs to the note, so it is rendered and mixed as part of it
+        # and lands on top of whatever comes next.
+        end_samp = min(start_samp + dur_samp + tail_samp, total_samples)
         actual = end_samp - start_samp
         if actual <= 0:
             continue
@@ -789,8 +822,9 @@ def _synthesize_audio_preview(
             if f_k >= nyquist:
                 break
             node = abs(np.sin(k * np.pi * _STRIKE_POS))
-            # One-pole brightness tilt: unity well below the ceiling, -3 dB at it.
-            tilt = 1.0 / (1.0 + (f_k / _BRIGHT_CEILING_HZ) ** 2)
+            # Two-pole brightness tilt: unity well below the ceiling, -6 dB at it,
+            # and 12 dB per octave above it rather than 6.
+            tilt = 1.0 / (1.0 + (f_k / _BRIGHT_CEILING_HZ) ** 2) ** 2
             body_amp = float(node * tilt) / k**rolloff
             strike_amp = float(_STRIKE_GAIN * node * tilt) / k**_STRIKE_ROLLOFF
             layout.append((k, f_k, body_amp, strike_amp))
@@ -837,7 +871,10 @@ def _synthesize_audio_preview(
         # at each end, and over a 5 ms attack that corner is audible as a click on
         # every single note.
         atk = min(int(_ATTACK_SEC * sr), actual // 4)
-        rel = min(int(_RELEASE_SEC * sr), actual // 2)
+        # The fade *is* the tail, so it begins at note-off instead of ending there.
+        # The `min` bites only on the last note of a clip, whose tail the buffer may
+        # have cut short; fading what is left still lands the clip on zero.
+        rel = min(tail_samp, actual)
         if atk > 0:
             tone[:atk] *= _smooth_ramp(atk, 0.0, 1.0)
         if rel > 0:
