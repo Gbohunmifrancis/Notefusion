@@ -85,10 +85,14 @@ def _load_sidecar(path: Path) -> RealCase:
         )
         for pitch, onset, duration in rows
     )
-    audio_path = path.with_suffix(".wav")
+    # Both names come off the same stem.  ``with_suffix`` cannot be used here: it
+    # replaces only the final suffix, so ``clip.truth.json`` becomes
+    # ``clip.truth.wav`` and the audio beside it is never found.
+    stem = path.name.removesuffix(".truth.json")
+    audio_path = path.with_name(f"{stem}.wav")
     if not audio_path.is_file():
         raise ValueError(f"{path.name}: missing audio file {audio_path.name}")
-    return RealCase(path.stem.removesuffix(".truth"), audio_path, key.strip(), int(tempo), notes)
+    return RealCase(stem, audio_path, key.strip(), int(tempo), notes)
 
 
 def load_real_cases(directory: Path | None = None) -> tuple[RealCase, ...]:
