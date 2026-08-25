@@ -339,6 +339,9 @@ PYIN_OCTAVE_TOLERANCE = 1.5
 # its centre, and a median (unlike a mean) leaves a step edge where it is.  Swept 1/5/9:
 # 1 and 5 leave the deep cases at f1 0.167/0.080, 9 lifts them to 0.500 and holds all
 # nine clean cases at 1.000, so the smoother is doing work no tolerance change could.
+# Swept upward as well, 11 through 21, on the theory that a wider median would remove the
+# wobble the deep cases still lose to; it does the reverse, and the numbers are under
+# ``CONTOUR_PERSIST_FRAMES``.  9 is the measured optimum in both directions.
 CONTOUR_SMOOTH_FRAMES = 9
 
 # How far the contour may sit from the current note's centre before that frame counts as
@@ -363,14 +366,23 @@ CONTOUR_BAND_SEMITONES = 0.75
 # and only persistence is holding the note together.  Measured: A = 2.0 gives one segment,
 # A = 2.5 gives three, A = 4.0 gives nine.
 #
-# That points the remaining vibrato loss at the smoother, not at this number: the same
-# measurement puts the pass-through at 29% at width 21, which would bring A = 2.0 back inside
-# the band outright.  vibrato_depth_1_8 and vibrato_depth_2_0 are the two corpus cases still
-# under the notes.f1 gate and they sit a tenth of a frame inside the cliff.  Widening is
-# bounded by short notes, not by vibrato: 21 frames is 0.49 s against 0.156 s sixteenths at
-# 96 BPM, so the width that helps has to be found against fast_sixteenths_c_major as the
-# guard.  Not yet measured on the corpus.  Ceiling pinned by
-# test_depth_invariance_has_a_measured_ceiling_and_this_is_where_it_is.
+# That pointed the remaining vibrato loss at the smoother rather than at this number, since
+# the same measurement puts the pass-through at 29% for width 21, which should have brought
+# A = 2.0 back inside the band outright.  It does not, and the prediction is wrong: swept over
+# 9/11/13/15/17/21 the deep targets get WORSE and their note counts RISE with width
+# (vibrato_depth_1_8 n_est 17 -> 21 -> 27 -> 26 -> 23 -> 29; vibrato_depth_2_0 19 -> 25 -> 30
+# -> 30 -> 28 -> 30), which is the opposite sign to attenuating the wobble.  A window spanning
+# several periods does not average one out — it covers phase unevenly enough to track a slower,
+# larger excursion that clears the band for longer than 4 frames, so widening buys residual
+# amplitude and spends it on persistence.  It also costs the guards, and short notes are the
+# binding constraint exactly as predicted: 7 of 7 hold at 1.000 for widths 9 and 11 and only 3
+# of 7 from 13 up, with long_clip_over_pyin_cap 1.000 -> 0.743 (n_est 99 -> 127) at 21.  9 is
+# retained.  11 is the only other guard-neutral point and is not a win either: it is worth
+# vibrato_rate_k20 0.667 -> 0.957 but vibrato_depth_2_0 0.400 -> 0.167, moving the 3-target mean
+# only 0.498 -> 0.541.  So the two deep cases are not a smoother-width problem, and the next
+# thing to try is separating the two jobs the smoother does — a wide contour for the band
+# comparison, the 9-frame one for boundary placement — not a bigger number here.  Ceiling
+# pinned by test_depth_invariance_has_a_measured_ceiling_and_this_is_where_it_is.
 #
 # 3 was measured and is below the geometric minimum, exactly as predicted: mean f1
 # 0.920 -> 0.730, and it breaks cases the deep ones do not (vibrato_heavy 1.000 -> 0.114).

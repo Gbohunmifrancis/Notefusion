@@ -263,8 +263,10 @@ class Settings:
         Two cases remain under the notes.f1 gate — ``vibrato_depth_1_8`` (0.429) and
         ``vibrato_depth_2_0`` (0.400), both from 0.085/0.000 — and both now reach
         solfa.degree_accuracy 1.000, so the syllables are right and the note COUNT is not.
-        The cause is measured and it is the pre-smoother rather than this rule; see the
-        ceiling recorded at ``CONTOUR_PERSIST_FRAMES``.
+        Both over-segment because the pre-smoother passes enough of the wobble to leave
+        frames genuinely out of band; widening it was measured and makes them worse, so the
+        remedy is not a wider median.  See ``CONTOUR_PERSIST_FRAMES``, which records the
+        sweep and the ceiling.
         """
         return os.getenv("NF_CONTOUR_FIRST", "1").strip().lower() not in ("0", "false", "no")
 
