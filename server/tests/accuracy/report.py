@@ -25,11 +25,14 @@ from pathlib import Path
 
 from tests.accuracy import synth
 from tests.accuracy.corpus import CASES, corpus_fingerprint
+from tests.accuracy.real_loader import load_real_cases, real_corpus_fingerprint
 from tests.accuracy.runner import METRIC_NAMESPACES, CaseOutcome, aggregate, run_all
+from tests.accuracy.runner import run_real
 
 from app.config import settings
 
 REPORT_PATH = Path(__file__).parent / "report.json"
+REAL_REPORT_PATH = Path(__file__).parent / "real_report.json"
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
 
 # Bumped only if the JSON layout changes in a way a reader must notice.
@@ -100,6 +103,40 @@ def _document(outcomes: list[CaseOutcome], name_filter: str) -> dict:
             "fingerprint": corpus_fingerprint(CASES),
             "sample_rate": synth.SAMPLE_RATE,
             # Non-empty means the run was partial and must not be trusted as a baseline.
+            "filter": name_filter,
+        },
+        "aggregate": aggregate(outcomes),
+        "cases": {
+            outcome.name: {
+                "ok": outcome.ok,
+                "error": outcome.error,
+                "tags": list(outcome.tags),
+                "ref_key": outcome.ref_key,
+                "est_key": outcome.est_key,
+                "ref_tempo": outcome.ref_tempo,
+                "est_tempo": outcome.est_tempo,
+                "n_ref": outcome.n_ref,
+                "n_est": outcome.n_est,
+                "metrics": outcome.metrics,
+            }
+            for outcome in outcomes
+        },
+    }
+
+
+def _real_document(
+    outcomes: list[CaseOutcome],
+    cases: tuple,
+    name_filter: str,
+) -> dict:
+    return {
+        "schema": SCHEMA_VERSION,
+        "metric_namespaces": list(METRIC_NAMESPACES),
+        "flags": _effective_flags(),
+        "corpus": {
+            "kind": "real",
+            "n_cases": len(cases),
+            "fingerprint": real_corpus_fingerprint(cases),
             "filter": name_filter,
         },
         "aggregate": aggregate(outcomes),
@@ -211,8 +248,35 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="also freeze the run into baseline.json (the regression gate reads it)",
     )
+    parser.add_argument(
+        "--real",
+        action="store_true",
+        help="score labelled recordings in tests/accuracy/real/ into real_report.json",
+    )
     parser.add_argument("--filter", default="", metavar="SUBSTR", help="only cases whose name contains SUBSTR")
     args = parser.parse_args(argv)
+
+    if args.real and args.write_baseline:
+        parser.error("--write-baseline is only supported for the synthetic corpus")
+
+    if args.real:
+        real_cases = load_real_cases()
+        cases = tuple(case for case in real_cases if args.filter in case.name)
+        if not cases:
+            parser.error("no real cases found" if not real_cases else f"no case name contains {args.filter!r}")
+        outcomes = run_real(cases)
+        document = _real_document(outcomes, cases, args.filter)
+        _print_cases(outcomes, None)
+        _print_aggregate(document["aggregate"], None)
+        REAL_REPORT_PATH.write_text(
+            json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8"
+        )
+        print(f"\nwrote {REAL_REPORT_PATH.name}")
+        failed = [outcome.name for outcome in outcomes if not outcome.ok]
+        if failed:
+            print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
+            return 1
+        return 0
 
     cases = [case for case in CASES if args.filter in case.name]
     if not cases:

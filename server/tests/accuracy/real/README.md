@@ -1,9 +1,19 @@
 # `real/` — label format for real recordings
 
-**Nothing in this directory is loaded yet.** There is no `real/` loader: `runner.py` and
-`report.py` currently know only about the synthetic cases in `corpus.py`. This file
-specifies the sidecar format so recordings can be labelled *now* and scored by the same
-metrics when the loader is written.
+Labelled recordings are loaded by `tests.accuracy.real_loader` and scored by the same
+metrics as the synthetic corpus. They are kept in a separate report so real-world
+measurements never overwrite the synthetic regression baseline.
+
+Run the real evaluation from `server/` with:
+
+```text
+python -m tests.accuracy.report --real
+python -m tests.accuracy.report --real --filter humming
+```
+
+The command writes `tests/accuracy/real_report.json`. It fails on malformed sidecars,
+and reports an empty fixture directory as an error so a typo cannot look like a clean
+zero-case evaluation.
 
 ## Why real recordings are not optional
 
