@@ -41,6 +41,7 @@ import numpy as np
 
 from app.config import settings
 from app.pipeline import solfa
+from app.pipeline import solfa_render
 
 # ── Audio preview synthesis ───────────────────────────────────────────────────
 
@@ -3266,10 +3267,15 @@ def _transcribe_wav(
             "or too short. Try a cleaner 3–10 second clip."
         )
 
-    # 4 bars per solfa line — fits a phone screen without horizontal scrolling.
-    solfa_lines: list[str] = [solfa.doh_header(doh_pc)]
-    for i in range(0, len(bars), 4):
-        solfa_lines.append("| " + " | ".join(bars[i : i + 4]) + " |")
+    # Keep the text view on the same beat grid as the staff view.  ``bars`` remains
+    # useful for debugging and backwards-compatible inspection, while the public
+    # lines now preserve rests and held beats.
+    solfa_lines = solfa_render.render_lines(
+        notes,
+        solfa.doh_header(doh_pc),
+        time_signature="4/4",
+        divisions_per_beat=settings.quantize_divisors[0],
+    )
 
     # ── 11. Normalise key name for C#'s KeyParser ─────────────────────────────
     # music21 returns names like "B- major" or "a minor"; C#'s KeyParser expects
