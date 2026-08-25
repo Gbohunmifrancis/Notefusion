@@ -1167,6 +1167,102 @@ def test_a_dip_between_two_different_pitches_is_left_to_the_pitch_rule():
     assert _split_rearticulations([segment], rms, midi) == [segment]
 
 
+# ── The reseed ratchet — why a deep wobble shatters, and what stops it ─────────
+
+# The corpus can only show that ``vibrato_rate_k20`` went 0.667 -> 0.957.  It cannot show
+# WHY, and here the why was a specific mechanical claim that had to be checked before the
+# constant could be justified: on a cut, ``_contour_segments`` reseeds ``accepted`` from the
+# excursion's own frames, so a deep wobble leaves the running centre on the wobble's PEAK.
+# The opposite swing is then a whole peak-to-peak away, outside the band again, cutting again
+# — a ratchet that feeds itself.  These two tests are the evidence for that claim and for the
+# bound on the fix, both on the pure function with no inference in the way.
+
+
+def _sine_contour(centre: float, depth: float, rate_hz: float, n_frames: int = 120):
+    """A held note wobbling ``+-depth`` semitones at ``rate_hz``.
+
+    Rate is a parameter here, unlike ``_vibrato_contour`` above, because the ratchet is
+    rate-sensitive in a way the fixed 5.5 Hz cannot show: at 5.5 Hz a depth of 2.0 splits into
+    2 segments, but at 4.0 Hz the same depth splits into 22.  A slower wobble spends more
+    consecutive frames outside the band per swing, which is what completes the persistence
+    count and springs the ratchet, so the slow case is the one that exhibits it.
+    """
+    import numpy as np
+
+    times = np.arange(n_frames) * _FRAME_SEC
+    midi = centre + depth * np.sin(2 * np.pi * rate_hz * times)
+    return times, midi, np.full(n_frames, 0.9)
+
+
+def test_the_reseed_ratchet_shatters_a_deep_wobble_and_the_lookahead_stops_it(monkeypatch):
+    """One held note must stay one note, and without the lookahead it becomes 22.
+
+    22 is the measurement that made the ratchet worth fixing rather than a theory about it:
+    a single sustained pitch is being reported as twenty-two notes, which is not a tuning
+    imprecision but a self-feeding failure.  The lookahead collapses it to 1 by declining the
+    cut when the contour comes back to the centre it left, and — the load-bearing detail —
+    by skipping to the return frame so ``accepted`` is never reseeded from the excursion at
+    all.  Merely clearing the out-of-band counter would re-count the same swing every
+    ``CONTOUR_PERSIST_FRAMES`` and the ratchet would survive.
+    """
+    from app.pipeline import transcriber as T
+
+    times, midi, vp = _sine_contour(60.0, 2.0, 4.0)
+
+    monkeypatch.setattr(T, "CONTOUR_RESEED_LOOKAHEAD_FRAMES", 0)
+    shattered = T._contour_segments(times, midi, vp)
+
+    monkeypatch.setattr(T, "CONTOUR_RESEED_LOOKAHEAD_FRAMES", 2)
+    whole = T._contour_segments(times, midi, vp)
+
+    assert len(shattered) >= 10, (
+        f"the ratchet should shred this contour; got {len(shattered)} segments, so the "
+        "fixture no longer exhibits the defect the lookahead exists to fix"
+    )
+    assert len(whole) == 1, f"expected one held note, got {len(whole)}"
+
+
+def test_the_lookahead_keeps_a_genuine_six_frame_note_and_swallows_a_five_frame_one(
+    monkeypatch,
+):
+    """The specificity bound, pinned at the value measured rather than the one predicted.
+
+    The prediction was that any window under ``CONTOUR_MIN_SEGMENT_FRAMES`` (5) is safe,
+    because a genuine note occupies at least that many frames and so cannot return to the
+    previous pitch inside the window.  That is wrong, and this test is where it is wrong: the
+    band test runs on a 9-frame median, which blurs a boundary across several frames, so a
+    real note of exactly 5 frames DOES get swallowed at a window of 2.  Six frames and up
+    survive.
+
+    The 5-frame case is asserted, not merely mentioned, because it is a live exposure — a
+    116 ms note a semitone and a half away can be absorbed into its neighbour — and pinning
+    it means any future change that fixes it has to come here and say so.  It is also the
+    direct explanation for the corpus behaviour recorded on the constant: widths of 3 and up
+    cost ``fast_sixteenths_c_major`` 1.000 -> 0.929, because at those widths the merge starts
+    reaching notes that are longer than five frames.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    monkeypatch.setattr(T, "CONTOUR_RESEED_LOOKAHEAD_FRAMES", 2)
+
+    def segments_for(hold_frames: int) -> int:
+        midi = np.concatenate(
+            [np.full(20, 60.0), np.full(hold_frames, 61.5), np.full(20, 60.0)]
+        )
+        times = np.arange(midi.size) * _FRAME_SEC
+        return len(T._contour_segments(times, midi, np.full(midi.size, 0.9)))
+
+    assert segments_for(6) == 3, "a genuine six-frame note must survive the lookahead"
+    assert segments_for(12) == 3, "and so must a comfortably long one"
+    assert segments_for(5) == 1, (
+        "measured exposure: a genuine five-frame note IS absorbed at this width.  If this "
+        "now fails, the exposure is gone — update CONTOUR_RESEED_LOOKAHEAD_FRAMES' comment, "
+        "which cites it as the reason the safe ceiling is 2 and not 4"
+    )
+
+
 # ── The melody floor — which voice pyin is pointed at ──────────────────────────
 
 # The corpus shows the outcome (poly_alberti_bass 0.000 -> 1.000) but not the mechanism, and

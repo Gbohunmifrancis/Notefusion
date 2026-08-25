@@ -484,6 +484,46 @@ CONTOUR_PERSIST_FRAMES = 4
 # second, looser opinion about how short a note can be.
 CONTOUR_MIN_SEGMENT_FRAMES = 5
 
+# How far past a completed out-of-band run to look for the contour coming BACK to the note's
+# old centre before believing the cut.  This is the lead left standing under
+# ``CONTOUR_FUSE_GAP_SEC``: on a cut, ``accepted`` is reseeded from the excursion's own frames,
+# so a deep wobble leaves the running centre on the wobble's peak and the opposite swing is
+# then a whole peak-to-peak away — outside the band again, cutting again.  A ratchet, and one
+# that explains why a wider pre-smoother makes these cases worse instead of better.  A wobble
+# comes back; a note change does not, so asking is what tells them apart.
+#
+# 2 is the measured ceiling and NOT the one predicted.  The prediction was 4, reasoned from
+# ``CONTOUR_MIN_SEGMENT_FRAMES``: a genuine next note occupies at least 5 frames, so a window
+# of 4 should not be able to see one return to the old pitch.  Swept 0-6, that is false — 3 and
+# 4 already cost ``fast_sixteenths_c_major`` 1.000 -> 0.929 (n_est 15 -> 13) and 5 adds
+# ``triplets_eighth_c_major`` 1.000 -> 0.917.  The reason is the pre-smoother: the band test
+# runs on a 9-frame median, which blurs a boundary across several frames, so the contour of a
+# genuinely short note transits back through the old centre well inside its own duration.  The
+# emitted-length floor does not bound the window; the fastest real notes in the corpus do.
+#
+#   width           0      1      2      3      4      5      6
+#   3 deep targets  0.498  0.517  0.613  0.613  0.567  0.567  0.650
+#   13 guards       0.986  0.986  0.986  0.981  0.981  0.974  0.915
+#
+# So 2 is the widest guard-neutral value, and it is worth ``vibrato_rate_k20`` 0.667 -> 0.957
+# (n_est 16 -> 12) and ``vibrato_depth_1_8`` 0.429 -> 0.538 (17 -> 15) for
+# ``vibrato_depth_2_0`` 0.400 -> 0.345 (19 -> 18) — two of the three targets, with every guard
+# and ``solfa.degree_accuracy`` bit-identical.  Note what that buys against the alternative
+# already rejected under ``CONTOUR_FUSE_GAP_SEC``: a 0.80 fuse tolerance also lifted k20 to
+# 0.957, but paid ``vibrato_rate_7hz`` 1.000 -> 0.952 and dropped degree_accuracy off 1.000.
+# This reaches the same number and holds both.
+#
+# The deepest case wants a window this cannot give it.  6 is the best setting for
+# ``vibrato_depth_2_0`` (0.522) and ``vibrato_depth_1_8`` (0.609) and is unusable: it takes
+# ``long_clip_over_pyin_cap`` 1.000 -> 0.466 (n_est 99 -> 90) and ``vibrato_heavy`` to 0.857.
+# That is the same shape the fuse sweep hit — one wobble at different rates, where every window
+# wide enough to hold the deep swing together also joins notes that are merely adjacent — so
+# ``vibrato_depth_2_0`` is not fixed here either.  What is left for it is the split the
+# ``CONTOUR_PERSIST_FRAMES`` note names: a WIDE contour for the band comparison and the 9-frame
+# one for boundary placement, which is the only remaining idea that separates the two jobs
+# instead of trading them off.
+CONTOUR_RESEED_LOOKAHEAD_FRAMES = 2
+
 # Two adjacent segments whose pitches round to the same integer are one note that the
 # persistence rule cut at a wobble that happened to be long enough.  Fusing them is an
 # exact-integer test with no tolerance, so unlike ``WOBBLE_SEMITONES`` it cannot swallow a
@@ -1717,6 +1757,22 @@ def _median_smooth(x: np.ndarray, width: int) -> np.ndarray:
     return np.array([np.median(padded[i : i + width]) for i in range(x.size)])
 
 
+def _wobble_returns(smoothed: np.ndarray, k: int, centre: float) -> int | None:
+    """First frame after ``k`` back inside the band of ``centre``, or ``None`` if there is none.
+
+    Searched over ``CONTOUR_RESEED_LOOKAHEAD_FRAMES`` frames only, and that width is the whole
+    safety argument — wide enough and this forgives genuine boundaries rather than wobbles, as
+    the sweep recorded on the constant shows it doing to the fast cases.  Returning the index
+    rather than a bool lets the caller skip the excursion outright instead of re-counting it
+    every ``CONTOUR_PERSIST_FRAMES``, which is what actually breaks the ratchet.
+    """
+    stop = min(smoothed.size, k + 1 + CONTOUR_RESEED_LOOKAHEAD_FRAMES)
+    for j in range(k + 1, stop):
+        if abs(float(smoothed[j]) - centre) <= CONTOUR_BAND_SEMITONES:
+            return j
+    return None
+
+
 def _contour_segments(
     times: np.ndarray, midi: np.ndarray, voiced_prob: np.ndarray
 ) -> list[tuple[int, int, float, float]]:
@@ -1755,21 +1811,36 @@ def _contour_segments(
         accepted: list[float] = []
         out_run = 0             # consecutive frames outside the band
         out_start = 0           # index of the first of them, which is where the cut goes
+        resume = 0              # frames before this belong to a wobble already forgiven
         for k in range(smoothed.size):
+            if k < resume:
+                continue
             if not accepted:
                 accepted.append(float(smoothed[k]))
                 continue
-            if abs(smoothed[k] - float(np.median(accepted))) > CONTOUR_BAND_SEMITONES:
+            centre = float(np.median(accepted))
+            if abs(smoothed[k] - centre) > CONTOUR_BAND_SEMITONES:
                 if out_run == 0:
                     out_start = k
                 out_run += 1
                 if out_run >= CONTOUR_PERSIST_FRAMES:
+                    # Persistence says the note is over.  Before believing it, look for the
+                    # contour returning to the centre it left: a wobble comes back within a
+                    # period and a note change does not.  Skipping to the return frame rather
+                    # than merely clearing ``out_run`` is what breaks the ratchet — it leaves
+                    # ``accepted`` and therefore the centre untouched by the excursion, and it
+                    # stops the same swing being re-counted every CONTOUR_PERSIST_FRAMES.
+                    back = _wobble_returns(smoothed, k, centre)
+                    if back is not None:
+                        resume = back
+                        out_run = 0
+                        continue
                     if out_start - seg_start >= CONTOUR_MIN_SEGMENT_FRAMES:
                         segments.append(
                             (
                                 i + seg_start,
                                 i + out_start,
-                                float(np.median(accepted)),
+                                centre,
                                 float(np.median(voiced_prob[i + seg_start : i + out_start])),
                             )
                         )
