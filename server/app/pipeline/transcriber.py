@@ -946,6 +946,7 @@ class TranscriptionResult:
     # was voiced — and clients want the same caveat for all three, so the field
     # reports the outcome rather than the reason.  See ``config.pyin_max_seconds``.
     pitch_refined: bool = True
+    chromatic_spelling: str = "direction"
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -3230,6 +3231,10 @@ def _transcribe_wav(
             for n in measure.notes
         ]
     )
+    spelling = [
+        solfa.resolve_ascending(flag, settings.chromatic_spelling)
+        for flag in spelling
+    ]
 
     position = 0
     for measure in score.getElementsByClass(stream.Measure):
@@ -3305,6 +3310,7 @@ def _transcribe_wav(
         # pyin_midi on every event pyin could speak about, on every branch, so an
         # empty contour for any reason leaves all of them None.
         pitch_refined=any(e.pyin_midi is not None for e in events),
+        chromatic_spelling=settings.chromatic_spelling,
     )
 
 

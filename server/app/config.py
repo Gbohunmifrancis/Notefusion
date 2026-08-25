@@ -466,5 +466,17 @@ class Settings:
         parsed = tuple(int(p) for p in raw.split(",") if p.strip().isdigit() and int(p) > 0)
         return parsed or (2,)
 
+    @property
+    def chromatic_spelling(self) -> str:
+        """Chromatic solfa convention shared with clients.
+
+        ``direction`` preserves the historical behaviour: rising notes use the
+        sharpened table and falling notes use the flattened table.  The explicit
+        modes are useful for regional notation preferences and are deliberately
+        constrained to a small wire-safe vocabulary.
+        """
+        value = os.getenv("NF_CHROMATIC_SPELLING", "direction").strip().lower()
+        return value if value in {"direction", "ascending", "descending"} else "direction"
+
 
 settings = Settings()

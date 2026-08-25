@@ -6,6 +6,7 @@ so any divergence shows up as user-visible inconsistency.
 """
 
 from collections.abc import Sequence
+from typing import Literal
 
 import numpy as np
 
@@ -16,6 +17,7 @@ DESCENDING_SYLLABLES = ["d", "ra", "r", "ma", "m", "f", "sa", "s", "la", "l", "t
 SEMITONE_TO_DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7]
 
 PITCH_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+ChromaticSpelling = Literal["direction", "ascending", "descending"]
 
 
 def doh_pitch_class(tonic_pc: int, mode: str) -> int:
@@ -68,6 +70,15 @@ def ascending_flags(pitches: Sequence[int]) -> list[bool]:
             flags[i] = flag
         start = end + 1
     return flags
+
+
+def resolve_ascending(flag: bool, spelling: ChromaticSpelling = "direction") -> bool:
+    """Resolve melodic direction through the configured chromatic convention."""
+    if spelling == "ascending":
+        return True
+    if spelling == "descending":
+        return False
+    return flag
 
 
 def syllable(pitch_midi: int, doh_pc: int, ref_doh_midi: int, ascending: bool = True) -> tuple[str, str, int]:
