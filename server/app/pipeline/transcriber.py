@@ -401,6 +401,36 @@ CONTOUR_MIN_SEGMENT_FRAMES = 5
 # exact-integer test with no tolerance, so unlike ``WOBBLE_SEMITONES`` it cannot swallow a
 # genuine step — but it does swallow two genuinely REPEATED notes at one pitch, which is
 # what ``_split_rearticulations`` below exists to put back.
+#
+# The rounding is a real weakness and replacing it was measured twice; both are failures, so
+# it stays.  Rounding fails whenever two fragments of one note straddle a rounding boundary,
+# which is exactly what the deep-vibrato cases do — ``vibrato_depth_2_0`` cuts a note into
+# centres 62.69 and 61.89, only 0.8 apart but rounding to 63 and 62, so they survive as two
+# notes.  Aligning every segment to the reference note it overlaps showed 12 such boundaries
+# inside one reference note against 475 between two different ones, and none of the 475 is
+# under a semitone, which looks like a clean separation and is not one:
+#
+#   * Fusing at ``< 1.0`` semitone instead of on ``round()`` costs notes.f1 0.954 -> 0.920 and
+#     solfa.degree_accuracy 1.000 -> 0.965.  A genuine semitone step measures 1.000 only where
+#     pyin's 0.2-semitone grid happens to align, as it does in ``major_c``; in the transposed
+#     keys it lands just under, so a threshold AT the semitone sits on top of the boundary it
+#     must not reach and 11 of the ``major_*`` cases each lose a real note.
+#   * Swept below it (0.75/0.80/0.85/0.90) the 18-case key guard family holds at 1.000
+#     throughout, so the cascade is avoidable — but no value is a win.  0.80 is the best of
+#     them and buys ``vibrato_rate_k20`` 0.667 -> 0.957 at the price of ``vibrato_rate_7hz``
+#     1.000 -> 0.952: the two are one shape at different rates, and every threshold that
+#     catches one clips the other.  solfa.degree_accuracy falls from its perfect 1.000 at
+#     every threshold tried, which for this product is the wrong side of the trade.
+#
+# The two deep-depth cases are inert at every threshold (n_est 19 -> 18 -> 17 against a
+# reference 11) because their spurious boundaries span 0.600 to 1.600 semitones, i.e. straight
+# through the range where the two classes overlap.  So they are not a fusion problem at all,
+# and the remaining lead is upstream: ``_contour_segments`` reseeds ``accepted`` from the
+# frames of the EXCURSION when it cuts, so a large wobble leaves the running centre on the
+# wobble's peak, which puts the opposite swing ~0.8 semitone away and cuts again — a ratchet
+# that also explains why a wider pre-smoother makes these cases worse rather than better (see
+# ``CONTOUR_PERSIST_FRAMES``).  A lookahead that declines a cut when the contour returns to
+# the old centre is the untried idea; a bigger fuse tolerance is not.
 CONTOUR_FUSE_GAP_SEC = 0.10
 
 # ── Re-articulation (``_split_rearticulations``) ──────────────────────────────

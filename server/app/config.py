@@ -266,7 +266,9 @@ class Settings:
         Both over-segment because the pre-smoother passes enough of the wobble to leave
         frames genuinely out of band; widening it was measured and makes them worse, so the
         remedy is not a wider median.  See ``CONTOUR_PERSIST_FRAMES``, which records the
-        sweep and the ceiling.
+        sweep and the ceiling.  Joining the fragments afterwards instead was measured too and
+        is also a failure — the numbers are under ``CONTOUR_FUSE_GAP_SEC``, along with the one
+        lead the two measurements leave standing.
         """
         return os.getenv("NF_CONTOUR_FIRST", "1").strip().lower() not in ("0", "false", "no")
 
