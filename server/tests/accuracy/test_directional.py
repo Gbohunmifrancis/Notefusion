@@ -28,6 +28,7 @@ absent one: it reports safety it never checked.
 """
 
 import inspect
+import math
 from dataclasses import replace
 
 import pytest
@@ -1164,6 +1165,269 @@ def test_a_dip_between_two_different_pitches_is_left_to_the_pitch_rule():
     rms = np.concatenate([half, half])
 
     assert _split_rearticulations([segment], rms, midi) == [segment]
+
+
+# ── The melody floor — which voice pyin is pointed at ──────────────────────────
+
+# The corpus shows the outcome (poly_alberti_bass 0.000 -> 1.000) but not the mechanism, and
+# here the mechanism is the whole risk: the floor is applied by RE-RUNNING pyin, so a gate
+# that fires wrongly does not degrade a clip, it re-pitches or silences it.  These tests
+# exercise the estimator on synthetic Basic Pitch events, where the right answer is a
+# property of the rule rather than of any recording.
+#
+# Basic Pitch's tuples are ``(start, end, pitch, amp, bends)`` and only the first four are
+# read, so these fixtures carry four.
+
+_FLOOR_HOP = 512 / 22050.0
+
+
+def _two_hand_events(*, melody=(60, 64, 67), melody_amp: float = 0.7,
+                     accomp_amp: float = 0.6):
+    """A three-note melody over a C3-E3-G3 left hand, as Basic Pitch would report it.
+
+    Deliberately NOT amplitude-separated by hand: the accompaniment is nearly as loud as the
+    melody, because that is the case the rule has to survive.  What separates the two is
+    register and simultaneity, not level.
+    """
+    events = []
+    for i, pitch in enumerate(melody):
+        events.append((i * 0.5, i * 0.5 + 0.5, pitch, melody_amp))
+    for i in range(3):
+        for pitch in (48, 52, 55):
+            events.append((i * 0.5, i * 0.5 + 0.5, pitch, accomp_amp))
+    return events
+
+
+def _flat_contour(midi_value: float, n_frames: int = 60):
+    """pyin stuck on one pitch — what happens when it locks onto a sustained lower voice."""
+    import numpy as np
+
+    times = np.arange(n_frames) * _FLOOR_HOP
+    return times, np.full(n_frames, midi_value)
+
+
+def _contour_following(events, n_frames: int):
+    """pyin tracking the given events, which is what a monophonic clip actually produces.
+
+    ``_flat_contour`` cannot stand in for this: against a melody that moves, a held contour
+    reports the melody's own range as disagreement, so it would test the gate on a signal no
+    recording generates.  Frames past the last event stay NaN, as unvoiced frames do.
+    """
+    import numpy as np
+
+    times = np.arange(n_frames) * _FLOOR_HOP
+    midi = np.full(n_frames, np.nan)
+    for start, end, pitch, *_ in events:
+        midi[(times >= start) & (times < end)] = float(pitch)
+    return times, midi
+
+
+def test_the_floor_fires_when_pyin_is_an_octave_below_the_skyline():
+    """The gate's positive case: pyin on the left hand, Basic Pitch seeing both.
+
+    The returned floor has to clear the accompaniment's top note (G3, midi 55) or pyin can
+    simply find it again, and stay at or below the melody's own lowest note (C4, midi 60) or
+    the melody is what gets excluded.  That window is the entire specification.
+    """
+    from app.pipeline.transcriber import _melody_floor_hz
+
+    times, midi = _flat_contour(48.0)  # pyin locked onto the C3 in the left hand
+
+    floor_hz = _melody_floor_hz(_two_hand_events(), times, midi)
+
+    assert floor_hz is not None, "the gate did not fire on a two-octave disagreement"
+    floor_midi = 69.0 + 12.0 * math.log2(floor_hz / 440.0)
+    assert 55 < floor_midi <= 60, f"floor at midi {floor_midi:.1f} is outside the window"
+
+
+def test_the_floor_declines_a_monophonic_clip():
+    """The gate's negative case, and the one that protects the 39 monophonic cases.
+
+    Same melody, no left hand, and pyin tracking it — which is what every monophonic corpus
+    case measured ([-0.09, +1.11] semitones).  Returning ``None`` here is what makes the
+    change byte-identical on all of them.
+    """
+    from app.pipeline.transcriber import _melody_floor_hz
+
+    melody_only = [e for e in _two_hand_events() if e[2] >= 60]
+    times, midi = _contour_following(melody_only, 60)
+
+    assert _melody_floor_hz(melody_only, times, midi) is None
+
+
+def test_a_harmonic_ghost_does_not_fire_the_gate():
+    """The failure mode the gate has to survive, at the amplitudes the corpus measures.
+
+    A monophonic clip whose skyline were a persistent +12 self-ghost would disagree by an
+    octave and have its floor put above its own fundamental — silencing the whole clip.
+    ``overtone_heavy`` is the corpus's evidence this does not happen; this is the mechanism,
+    and there are two of them, which is why the fixture carries ghosts at two amplitudes.
+
+    Measured over 267 overlapping +12/+19 pairs: the ghost/parent ratio has a median of
+    0.39-0.49 by case and a ceiling of 0.520.  So ``MELODY_FLOOR_TAU`` falls between the two
+    — it rejects the bulk outright, and the handful above it reach the skyline and are
+    absorbed by the median instead.  A fixture with only one of those amplitudes would leave
+    half the defence untested.
+    """
+    from app.pipeline.transcriber import MELODY_FLOOR_TAU, _melody_floor_hz
+
+    melody = [(i * 0.5, i * 0.5 + 0.5, p, 0.70) for i, p in enumerate((60, 64, 67, 69))]
+    below_tau = [(s, e, p + 12, 0.70 * 0.49) for s, e, p, _a in melody]
+    above_tau = [(melody[-1][0], melody[-1][1], melody[-1][2] + 12, 0.70 * 0.52)]
+    times, midi = _contour_following(melody, 90)
+
+    assert 0.49 < MELODY_FLOOR_TAU < 0.52, "both ghosts on one side of tau prove nothing"
+    assert _melody_floor_hz(melody + below_tau + above_tau, times, midi) is None
+
+
+def test_the_gate_is_what_declines_and_not_the_floor_estimate():
+    """Specificity: the same events fire the gate once pyin drops to the lower voice.
+
+    Without this, ``test_the_floor_declines_a_monophonic_clip`` would also pass for a rule
+    that never fires at all, so it is this pair — one set of events, two contours — that
+    shows the decision is being read off the disagreement.
+    """
+    from app.pipeline.transcriber import _melody_floor_hz
+
+    events = _two_hand_events()
+    times, on_the_melody = _flat_contour(60.0)
+    _, on_the_left_hand = _flat_contour(48.0)
+
+    assert _melody_floor_hz(events, times, on_the_melody) is None
+    assert _melody_floor_hz(events, times, on_the_left_hand) is not None
+
+
+def test_the_floor_is_read_from_the_melody_register_not_the_whole_skyline():
+    """Why the estimate is a restricted minimum, and where the restriction runs out.
+
+    The skyline drops to the accompaniment wherever the melody rests, so its unrestricted
+    minimum is a left-hand pitch — measured 46 and 53 on the corpus against a left hand
+    topping out at 55, i.e. useless as a floor.  ``MELODY_FLOOR_REGISTER_WIDTH`` discards
+    those frames, and the first half asserts it does.
+
+    The second half is the limit, and it is a real one rather than a hypothetical.  The window
+    is centred on the skyline's MEDIAN and reaches ``WIDTH`` below it, so the rule holds only
+    while the accompaniment's top note sits FURTHER than ``WIDTH`` below that median.  A
+    close voicing — melody a fifth above the left hand rather than an octave and a half —
+    puts the accompaniment inside the window and the floor lands under it.  Asserting that
+    makes the boundary discoverable instead of a surprise, and names the condition to look for
+    if a real recording ever transcribes its left hand despite the gate firing.
+
+    On the corpus the limit is not reached: the polyphonic cases put the melody's median at 72
+    against a left hand topping out at 55, seventeen semitones of separation.  Widening the
+    window is not the fix — it admits the accompaniment sooner.  A clip that hits this needs a
+    register anchor that is not the median, and the corpus has no case to measure one on;
+    adding a close-voicing case is the prerequisite, not inventing the anchor here.
+    """
+    from app.pipeline.transcriber import MELODY_FLOOR_REGISTER_WIDTH, _melody_floor_hz
+
+    rest = [(1.5, 1.7, p, 0.6) for p in (48, 52, 55)]  # left hand alone, melody resting
+
+    def floor_midi(melody):
+        events = _two_hand_events(melody=melody) + rest
+        times, midi = _flat_contour(48.0, n_frames=75)  # pyin down on the left hand
+        hz = _melody_floor_hz(events, times, midi)
+        return None if hz is None else 69.0 + 12.0 * math.log2(hz / 440.0)
+
+    separated = floor_midi((72, 76, 79))  # median 76, sixteen semitones clear of midi 55
+    assert separated is not None and separated > 55, (
+        f"floor at midi {separated} fell to the accompaniment sounding alone"
+    )
+
+    close = floor_midi((60, 64, 67))  # median 64, and 64 - 55 < WIDTH
+    assert 64 - 55 < MELODY_FLOOR_REGISTER_WIDTH, "the close voicing is no longer close"
+    assert close is not None and close <= 55, (
+        "a median-centred window is documented as admitting an accompaniment nearer than "
+        f"MELODY_FLOOR_REGISTER_WIDTH; the floor came out at midi {close}, so that limit "
+        "has moved and the docstring above is now wrong"
+    )
+
+
+def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
+    tmp_path, monkeypatch
+):
+    """Pointing pyin at the melody does not oblige pyin to find it.
+
+    ``poly_block_chords`` is the case: the gate fires correctly, pyin re-runs from midi 60 —
+    and comes back with 82 of 336 frames voiced, every one at midi 60.  One pitch, whole clip.
+    Segmenting that yields two notes, and because contour events win outright they became the
+    entire transcription, which is why that case scored beats.f1 0.308 and the wrong key while
+    its two notes were individually correct.
+
+    So ``_segment_contour`` has to be able to say "I found the register but not the line", and
+    the floor has to survive its own path's failure — Basic Pitch could see this melody all
+    along (11 of 11 reference pitches above the floor).
+
+    ``_pyin_contour`` is monkeypatched rather than driven through audio, and that is the point
+    rather than a shortcut: the check is a property of the contour, and synthesising a clip
+    that makes pyin return a CONSTANT contour above a raised floor is its own research problem
+    — two equal sinusoids an octave apart, the obvious attempt, make pyin return *nothing*
+    above the floor and quietly exercise the wrong branch instead.  Patching the seam names
+    the three contours the branch has to distinguish and asserts on each.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    wav = tmp_path / "unused.wav"
+    wav.write_bytes(b"")  # never decoded: the RMS load is already try/except-guarded
+
+    n = 60
+    times = np.arange(n) * _FLOOR_HOP
+
+    def contours(second: np.ndarray):
+        """pyin on the accompaniment first, then whatever the raised floor produces."""
+
+        def fake(_path, fmin: float = T.PYIN_FMIN_HZ):
+            first = fmin == T.PYIN_FMIN_HZ
+            midi = np.full(n, 48.0) if first else second
+            return times, midi, np.full(n, 0.9)
+
+        return fake
+
+    # The melody is at 60 and pyin's first pass is at 48, so the gate fires: skyline 60 minus
+    # contour 48 is a full octave, well past MELODY_FLOOR_DISAGREEMENT_SEMITONES.
+    firing = [(0.0, 1.4, 60, 0.8)]
+
+    monkeypatch.setattr(T, "_pyin_contour", contours(np.full(n, 60.0)))
+    events, floor_midi = T._segment_contour(wav, firing)
+
+    assert floor_midi is not None, "the gate did not fire, so this tests nothing"
+    assert not events, (
+        f"a contour of one distinct pitch produced {len(events)} notes; the degeneracy check "
+        "is no longer reached and poly_block_chords will transcribe its left hand again"
+    )
+    # The point of the whole change: [] does NOT mean "no information".
+    assert floor_midi > 48, (
+        f"floor came back at midi {floor_midi}, at or below the voice it is meant to exclude"
+    )
+
+    # Specificity 1: the DEGENERACY is what declined, not the gate.  Same gate, same floor,
+    # but a second contour that moves — alberti's situation, which must keep winning.
+    moving = np.concatenate([np.full(20, 60.0), np.full(20, 62.0), np.full(20, 64.0)])
+    monkeypatch.setattr(T, "_pyin_contour", contours(moving))
+    events, floor_midi = T._segment_contour(wav, firing)
+
+    assert floor_midi is not None and events, (
+        "a moving contour above the floor was discarded; the check is meant to reject a "
+        "constant contour, not every gated clip"
+    )
+    assert len({e.pitch for e in events}) > 1
+
+    # Specificity 2: the check is scoped to the SECOND pass.  With pyin already on the melody
+    # the gate declines, and a constant contour is then a clip of one sustained note — a real
+    # transcription, which must survive.
+    def agreeing(_path, fmin: float = T.PYIN_FMIN_HZ):
+        return times, np.full(n, 60.0), np.full(n, 0.9)
+
+    monkeypatch.setattr(T, "_pyin_contour", agreeing)
+    events, floor_midi = T._segment_contour(wav, firing)
+
+    assert floor_midi is None, "the gate fired without a register disagreement"
+    assert events, (
+        "a constant contour with no floor was discarded; one sustained note is a real "
+        "transcription and the degeneracy check was scoped to the second pass only"
+    )
 
 
 # ── Grid refinement — two single-sample biases, one bounded sweep ──────────────
