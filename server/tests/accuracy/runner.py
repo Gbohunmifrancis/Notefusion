@@ -37,6 +37,7 @@ from pathlib import Path
 from app.pipeline.transcriber import TranscriptionResult, transcribe
 from tests.accuracy import metrics, synth
 from tests.accuracy.corpus import CASES, Case
+from tests.accuracy.real_loader import RealCase, load_real_cases
 
 # The metric groups, in the order they appear in a row.  These prefixes are the
 # keys ``baseline.json`` is stored under — renaming one silently invalidates every
@@ -180,6 +181,61 @@ def run_case(case: Case) -> CaseOutcome:
 def run_all(cases: Sequence[Case] | None = None) -> list[CaseOutcome]:
     """Run every case in order.  Defaults to the whole corpus."""
     return [run_case(case) for case in (CASES if cases is None else cases)]
+
+
+def run_real_case(case: RealCase) -> CaseOutcome:
+    """Transcribe one labelled real recording without modifying or deleting the fixture."""
+    result: TranscriptionResult | None = None
+    error = ""
+    try:
+        result = transcribe(case.audio_path, mode="melody")
+    except Exception as exc:  # noqa: BLE001 - failures are reportable data
+        error = f"{type(exc).__name__}: {exc}"
+
+    if result is None:
+        return CaseOutcome(
+            name=case.name,
+            tags=("real",),
+            ok=False,
+            error=error,
+            ref_key=case.key,
+            est_key="",
+            ref_tempo=case.tempo_bpm,
+            est_tempo=0,
+            n_ref=len(case.notes),
+            n_est=0,
+            metrics={},
+        )
+
+    flat: dict[str, float] = {}
+    flat.update(_prefixed("notes", metrics.note_metrics_seconds(
+        case.notes, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("beats", metrics.onset_metrics_beats(
+        case.notes, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("key", metrics.key_metrics(case.key, result.key)))
+    flat.update(_prefixed("tempo", metrics.tempo_metrics(case.tempo_bpm, result.tempo)))
+    flat.update(_prefixed("solfa", metrics.solfa_metrics(
+        case.notes, result.notes, case.key, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("conf", metrics.note_confidence_metrics(
+        case.notes, result.notes, result.tempo, case.tempo_bpm)))
+    flat["key.confidence"] = float(result.key_confidence)
+    return CaseOutcome(
+        name=case.name,
+        tags=("real",),
+        ok=True,
+        error="",
+        ref_key=case.key,
+        est_key=result.key,
+        ref_tempo=case.tempo_bpm,
+        est_tempo=result.tempo,
+        n_ref=len(case.notes),
+        n_est=len(result.notes),
+        metrics=flat,
+    )
+
+
+def run_real(cases: Sequence[RealCase] | None = None) -> list[CaseOutcome]:
+    return [run_real_case(case) for case in (load_real_cases() if cases is None else cases)]
 
 
 # ── Aggregation ───────────────────────────────────────────────────────────────
