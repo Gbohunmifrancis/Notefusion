@@ -80,6 +80,7 @@ def test_submit_returns_202_and_polls_done(monkeypatch):
         assert isinstance(body["result"]["notes"], list)
         # Default: a clip that was refined must not carry a warning flag.
         assert body["result"]["pitchRefined"] is True
+        assert body["result"]["chromaticSpelling"] == "direction"
 
 
 def test_a_skipped_refinement_reaches_the_wire(monkeypatch):

@@ -39,6 +39,7 @@ from app.pipeline.transcriber import (
     _blend_confidence,
     _parse_key_override,
     _resolve_melody_overlaps,
+    _select_melody_path,
 )
 from tests.accuracy import metrics, runner
 from tests.accuracy.synth import RefNote
@@ -1524,6 +1525,70 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
         "a constant contour with no floor was discarded; one sustained note is a real "
         "transcription and the degeneracy check was scoped to the second pass only"
     )
+
+
+def test_melody_path_keeps_the_confident_voice_through_block_chord_candidates():
+    """The fallback must follow one sustained line, not the last/highest overlap.
+
+    These are the raised-floor Basic Pitch candidates from the block-chord texture,
+    reduced to the notes that exercise the decision.  The true line is not the skyline:
+    every opening C has an octave or harmonic above it, and the false notes around beats
+    five and nine start late enough that a same-onset-only rule cannot reach them.
+    """
+    candidates = [
+        Event(0.000, 0.592, 60, 0.654),
+        Event(0.000, 0.580, 72, 0.582),
+        Event(0.000, 0.430, 79, 0.288),
+        Event(0.615, 1.231, 62, 0.544),
+        Event(0.615, 1.196, 74, 0.297),
+        Event(1.254, 1.858, 64, 0.599),
+        Event(1.881, 2.497, 65, 0.802),
+        Event(1.881, 2.451, 77, 0.464),
+        Event(2.497, 3.113, 67, 0.602),
+        Event(2.962, 3.612, 74, 0.277),
+        Event(3.113, 3.763, 69, 0.777),
+        Event(3.171, 3.647, 76, 0.267),
+        Event(3.751, 4.368, 71, 0.754),
+        Event(4.368, 5.041, 72, 0.732),
+        Event(5.006, 5.633, 67, 0.604),
+        Event(5.436, 5.564, 74, 0.297),
+        Event(5.633, 6.273, 64, 0.683),
+        Event(6.238, 7.527, 60, 0.664),
+        Event(6.250, 7.481, 72, 0.567),
+    ]
+
+    selected = _select_melody_path(candidates)
+
+    assert [event.pitch for event in selected] == [60, 62, 64, 65, 67, 69, 71, 72, 67, 64, 60]
+    assert selected[0].pitch != max(event.pitch for event in candidates if event.start == 0.0)
+
+
+def test_melody_path_leaves_a_non_competing_line_unchanged():
+    """Genuine semitone steps with ordinary boundary bleed are not polyphony."""
+    events = [
+        Event(0.00, 0.64, 64, 0.72),
+        Event(0.62, 1.26, 65, 0.70),
+        Event(1.24, 1.88, 64, 0.71),
+        Event(1.86, 2.50, 65, 0.69),
+    ]
+
+    selected = _select_melody_path(events)
+
+    assert selected is events
+    assert [event.pitch for event in selected] == [64, 65, 64, 65]
+
+
+def test_melody_path_does_not_trade_a_line_for_one_long_harmonic():
+    """A sustained harmonic cannot win merely by having a longer duration."""
+    events = [
+        Event(0.00, 0.50, 60, 0.70),
+        Event(0.50, 1.00, 62, 0.70),
+        Event(0.00, 1.00, 72, 0.90),
+    ]
+
+    selected = _select_melody_path(events)
+
+    assert [event.pitch for event in selected] == [60, 62]
 
 
 # ── Grid refinement — two single-sample biases, one bounded sweep ──────────────

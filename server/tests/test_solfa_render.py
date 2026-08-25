@@ -17,7 +17,7 @@ def test_renders_rests_and_held_cells_on_the_grid():
 
     assert render_lines(notes, "Doh is C", divisions_per_beat=2) == [
         "Doh is C",
-        "| _ _ | d - _ _ | _ _ _ _ | _ _ _ _ | _ _ _ _ |",
+        "| _ _ d - - _ _ _ |",
     ]
 
 
@@ -26,7 +26,7 @@ def test_renders_simultaneous_starts_without_dropping_a_voice():
 
     lines = render_lines(notes, "Doh is C", divisions_per_beat=1)
 
-    assert lines[1].startswith("| d+m - _ _ |")
+    assert lines[1] == "| d+m _ _ _ |"
 
 
 def test_snaps_small_start_drift_to_the_nearest_display_cell():
@@ -34,7 +34,13 @@ def test_snaps_small_start_drift_to_the_nearest_display_cell():
 
     lines = render_lines(notes, "Doh is C", divisions_per_beat=2)
 
-    assert lines[1].startswith("| _ _ r _ |")
+    assert lines[1].startswith("| _ r _ _ _ _ _ _ |")
+
+
+def test_grid_ties_round_up_consistently():
+    notes = [_note(0.25, 0.5, "r")]
+
+    assert render_lines(notes, "Doh is C", divisions_per_beat=2)[1].startswith("| _ r _ _ _ _ _ _ |")
 
 
 def test_empty_note_list_keeps_only_the_header():

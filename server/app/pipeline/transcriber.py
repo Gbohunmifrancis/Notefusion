@@ -257,6 +257,13 @@ MERGE_GAP_POLY = 0.05  # tighter for polyphonic — avoid swallowing trills
 WOBBLE_SEMITONES = 1
 WOBBLE_MIN_OVERLAP_FRACTION = 0.20
 
+# A real note's Basic Pitch event can bleed a few milliseconds into the next note.
+# Treating that boundary blur as polyphony would force the melody selector to drop one
+# of two genuine steps.  Forty milliseconds is already the minimum duration accepted by
+# ``_resolve_melody_overlaps``, so an overlap no longer than this cannot contain a second
+# independently notatable event and is safe to keep in one path.
+MELODY_PATH_OVERLAP_SEC = 0.04
+
 # Basic Pitch reports per-note pitch bends in units of 1/3 semitone, already centred
 # on the note's own pitch (``get_pitch_bends`` subtracts ``pb_shift``, and the contour
 # bin of MIDI pitch p is exactly 3p - 63, so there is no rounding offset to undo).
@@ -1719,6 +1726,61 @@ def _resolve_melody_overlaps(events: list[Event]) -> list[Event]:
     return [e for e in cleaned if (e.end - e.start) >= 0.04]
 
 
+def _select_melody_path(events: list[Event]) -> list[Event]:
+    """Choose the strongest sustained single voice from competing melody candidates.
+
+    This is deliberately narrower than ``_resolve_melody_overlaps``.  The resolver repairs
+    occasional overlap artefacts in otherwise monophonic input; this helper handles the
+    raised-floor fallback, where Basic Pitch has returned several simultaneous readings of
+    the melody register after pyin failed to segment it.  In that population, choosing by
+    input order lets a quiet octave or harmonic replace the real note simply because it was
+    visited last.
+
+    The path score is posterior confidence multiplied by sounding duration.  That rewards
+    both evidence axes Basic Pitch supplies without assuming the melody is the highest or
+    lowest candidate.  Weighted interval scheduling then maximises that score across the
+    whole clip, allowing the small boundary overlap defined above.  A list with no competing
+    events is returned unchanged, which keeps ordinary monophonic behaviour out of scope.
+    """
+    if len(events) < 2:
+        return events
+
+    by_start = sorted(events, key=lambda e: (e.start, e.end, e.pitch))
+    furthest_end = by_start[0].end
+    has_competition = False
+    for evt in by_start[1:]:
+        if evt.start < furthest_end - MELODY_PATH_OVERLAP_SEC:
+            has_competition = True
+            break
+        furthest_end = max(furthest_end, evt.end)
+    if not has_competition:
+        return events
+
+    ordered = sorted(events, key=lambda e: (e.end, e.start, e.pitch))
+    duration_cap = float(np.median([max(0.0, e.end - e.start) for e in ordered]))
+    duration_cap = max(duration_cap, MELODY_PATH_OVERLAP_SEC)
+    scores = [0.0] * (len(ordered) + 1)
+    choices: list[list[Event]] = [[] for _ in range(len(ordered) + 1)]
+
+    for i, evt in enumerate(ordered, start=1):
+        predecessor = i - 2
+        while predecessor >= 0:
+            if ordered[predecessor].end <= evt.start + MELODY_PATH_OVERLAP_SEC:
+                break
+            predecessor -= 1
+
+        duration = min(max(0.0, evt.end - evt.start), duration_cap)
+        take_score = scores[predecessor + 1] + evt.amp * duration
+        if take_score > scores[i - 1]:
+            scores[i] = take_score
+            choices[i] = [*choices[predecessor + 1], evt]
+        else:
+            scores[i] = scores[i - 1]
+            choices[i] = choices[i - 1]
+
+    return sorted(choices[-1], key=lambda e: (e.start, e.end, e.pitch))
+
+
 # ── pyin pitch refinement (defect 6) ──────────────────────────────────────────
 
 
@@ -3061,6 +3123,8 @@ def _transcribe_wav(
 
         # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────
         if mode == "melody" and events:
+            if melody_floor_midi is not None:
+                events = _select_melody_path(events)
             events = _resolve_melody_overlaps(events)
 
     progress(0.50)

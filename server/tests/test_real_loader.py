@@ -40,3 +40,9 @@ def test_rejects_missing_audio(tmp_path):
     }), encoding="utf-8")
     with pytest.raises(ValueError, match="missing audio"):
         load_real_cases(tmp_path)
+
+
+def test_loads_audio_beside_truth_sidecar(tmp_path):
+    _write_case(tmp_path)
+    case = load_real_cases(tmp_path)[0]
+    assert case.audio_path.name == "humming_c_major_01.wav"

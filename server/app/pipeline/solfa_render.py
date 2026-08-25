@@ -50,8 +50,12 @@ def render_lines(
 
     ordered = sorted(notes, key=lambda note: (float(note.start_beat), float(note.dur_beats)))
     starts_by_cell: dict[int, list] = {}
+    quantized_start: dict[int, float] = {}
     for note in ordered:
-        cell_index = round(float(note.start_beat) / cell_beats)
+        # Use explicit half-up rounding so this matches JavaScript's Math.floor(x + .5)
+        # in the mobile renderer; Python's round() uses banker's ties.
+        cell_index = int(math.floor(float(note.start_beat) / cell_beats + 0.5))
+        quantized_start[id(note)] = cell_index * cell_beats
         if 0 <= cell_index < bar_count * cells_per_bar:
             starts_by_cell.setdefault(cell_index, []).append(note)
     for cell_index in range(bar_count * cells_per_bar):
@@ -61,8 +65,8 @@ def render_lines(
         active = [
             note
             for note in ordered
-            if float(note.start_beat) < end - 1e-9
-            and float(note.start_beat) + max(0.0, float(note.dur_beats)) > start + 1e-9
+            if quantized_start[id(note)] < end - 1e-9
+            and quantized_start[id(note)] + max(0.0, float(note.dur_beats)) > start + 1e-9
         ]
         if starts:
             token = "+".join(
