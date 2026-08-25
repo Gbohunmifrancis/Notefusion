@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { onSessionExpired } from '../api/client';
-import { authApi } from '../api/endpoints';
+import { authApi, meApi } from '../api/endpoints';
 import { tokenStore } from '../lib/tokenStore';
 import { registerForPushAsync } from '../lib/push';
 import { googleAuthConfigured } from '../lib/env';
@@ -10,6 +10,18 @@ import type { AuthUser } from '../api/types';
 interface AuthState {
   user: AuthUser | null;
   initializing: boolean;
+  /**
+   * Whether this account may reach the admin screens.
+   *
+   * Compared against `'Admin'` with that exact casing. `AuthUserDto.Role` is a
+   * plain `string` built from `user.Role.ToString()`, so the camelCase enum
+   * converter never touches it and the wire value is PascalCase. `'admin'`
+   * would hide the whole surface and read as a routing bug.
+   *
+   * A courtesy gate, not the boundary: every admin route is behind the server's
+   * Admin policy and answers 403 regardless of what this says.
+   */
+  isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   /**
    * Registers the account and returns the server's normalised email. Deliberately
@@ -53,6 +65,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const refresh = await tokenStore.getRefresh();
       if (cached && refresh && mounted.current) setUserState(cached);
       if (mounted.current) setInitializing(false);
+
+      // The cached user is a snapshot taken at sign-in, so a role granted since
+      // then — `Seed:AdminEmails` promotes a matching account at API startup —
+      // would stay invisible until a full re-login. Re-read the profile once,
+      // after initializing has already cleared so this never delays first paint,
+      // and correct only what actually differs.
+      if (!cached || !refresh) return;
+      try {
+        const me = await meApi.get();
+        if (!mounted.current) return;
+        if (
+          me.role !== cached.role ||
+          me.fullName !== cached.fullName ||
+          me.email !== cached.email
+        ) {
+          const fresh: AuthUser = {
+            id: me.id,
+            fullName: me.fullName,
+            email: me.email,
+            role: me.role,
+          };
+          setUserState(fresh);
+          tokenStore.saveUser(fresh).catch(() => undefined);
+        }
+      } catch {
+        // Offline, or a session the refresh interceptor is about to fail — either
+        // way onSessionExpired owns that outcome. The cached user stands.
+      }
     })();
     return () => {
       mounted.current = false;
@@ -89,6 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     () => ({
       user,
       initializing,
+      isAdmin: user?.role === 'Admin',
       async signIn(email, password) {
         const res = await authApi.login(email, password);
         await tokenStore.saveLastAuthMethod('email');

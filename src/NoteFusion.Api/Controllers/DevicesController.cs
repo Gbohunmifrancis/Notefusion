@@ -18,4 +18,13 @@ public sealed class DevicesController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> Register(RegisterDeviceCommand command, CancellationToken ct)
         => HandleNoContent(await _sender.Send(command, ct));
+
+    /// <summary>
+    /// Drops this device's push token, so the server stops sending to it. The token travels in the
+    /// body rather than the route: an expo token is <c>ExponentPushToken[…]</c>, and those brackets
+    /// are a poor fit for a path segment.
+    /// </summary>
+    [HttpDelete]
+    public async Task<IActionResult> Unregister(UnregisterDeviceCommand command, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(command, ct));
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "844286286556",
+    "project_id": "notefusion-2a15a",
+    "storage_bucket": "notefusion-2a15a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844286286556:android:9c7ae42236094531587219",
+        "android_client_info": {
+          "package_name": "com.notefusion.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARP1XeYhOlZWKd7oEhHN11vzuJfE_TNco"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

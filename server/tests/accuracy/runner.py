@@ -125,7 +125,9 @@ def _score(case: Case, ref: list[synth.RefNote], result: TranscriptionResult) ->
 
 def run_case(case: Case) -> CaseOutcome:
     """Render *case*, transcribe it, score it.  Never raises on a pipeline failure."""
-    audio, ref = synth.render(case.notes, case.tempo_bpm, case.options)
+    audio, ref = synth.render(
+        case.notes, case.tempo_bpm, case.options, accompaniment=case.accompaniment
+    )
 
     # mkstemp so parallel invocations cannot collide on a name; the descriptor is
     # closed immediately because soundfile opens the path itself.

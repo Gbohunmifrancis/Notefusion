@@ -27,6 +27,13 @@ import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
+import {
+  enablePush,
+  getPushPermission,
+  loadNotificationPrefs,
+  markPushPermissionAsked,
+  pushPermissionAsked,
+} from "../lib/push";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -126,6 +133,43 @@ function meteringToColor(dbfs: number, c: Palette): string {
   if (dbfs >= LEVEL_GOOD_DBFS) return c.success; // comfortably loud
   if (dbfs >= LEVEL_QUIET_DBFS) return c.warning; // audible but soft
   return c.danger; // too quiet / far from the mic
+}
+
+/**
+ * Offers notifications the first time a transcription is submitted — the one
+ * moment where the ask explains itself.
+ *
+ * Deliberately not at sign-in: `push.ts` refuses to prompt without `force` so a
+ * silent login can never raise a system dialog. But nothing else forced it
+ * either, so a user who never opened Settings → Notifications had no token on
+ * the server and the API's completion push had nowhere to go — the background
+ * worker was doing its job and the phone had no way to hear about it. This is
+ * that missing prompt, asked once, with its reason attached.
+ *
+ * Fire-and-forget: the job is already running and nothing here may delay or fail
+ * the submit. A denied or unsupported permission shows nothing at all — the poll
+ * still finishes the job while this screen lives, and re-asking someone who said
+ * no is the wrong move.
+ */
+async function offerBackgroundAlerts(): Promise<void> {
+  await loadNotificationPrefs();
+  if (pushPermissionAsked()) return;
+  if ((await getPushPermission()) !== "undetermined") return;
+
+  // Marked before showing, not after: a dismissal resolves with no action, and
+  // "asked" means asked either way.
+  await markPushPermissionAsked();
+  showDialog({
+    title: "Tell you when it's ready?",
+    message:
+      "Transcribing takes a moment. Turn on notifications and you can leave the app — we'll let you know as soon as your score is done.",
+    icon: "notifications-outline",
+    tone: "brand",
+    actions: [
+      { label: "Notify me", icon: "checkmark", onPress: () => void enablePush() },
+      { label: "Not now", style: "cancel" },
+    ],
+  });
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -534,10 +578,13 @@ export function RecordScreen() {
       const asset = res.assets[0];
       setPhase("uploading");
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      await start(asset.uri, asset.name || "imported-audio.m4a", {
+      const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", {
         mode,
         key: keyOpt,
       });
+      // Only once the job is really queued — a quota refusal has no completion
+      // to notify about.
+      if (jobId) void offerBackgroundAlerts();
     } catch {
       setPhase("ready");
       setPermError("Could not import audio file. Please try again.");
@@ -559,7 +606,8 @@ export function RecordScreen() {
         return;
       }
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
+      const jobId = await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
+      if (jobId) void offerBackgroundAlerts();
     } catch {
       setPhase("ready");
     }

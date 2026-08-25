@@ -28,6 +28,7 @@ absent one: it reports safety it never checked.
 """
 
 import inspect
+import math
 from dataclasses import replace
 
 import pytest
@@ -977,6 +978,786 @@ def test_confidence_blend_changes_nothing_when_pyin_never_spoke():
 
     assert _conf_metrics(silent_pyin, blended=True) == _conf_metrics(
         silent_pyin, blended=False
+    )
+
+
+# ── Contour-first segmentation — the persistence rule, on its own inputs ───────
+
+# The corpus proves the outcome; it cannot prove the reason.  ``vibrato_depth_2_0`` going
+# 0.000 -> 0.400 is consistent with the persistence rule working and equally consistent with
+# a lucky interaction downstream, so the rule is exercised here against contours built to
+# sit at the two ends of the distribution its constants were read off.
+#
+# Both functions are pure array transforms, so no inference runs: pyin's job is to produce
+# the contour, and whether a given contour is one note or two is a property of the rule.
+
+_FRAME_SEC = 512 / 22050.0  # pyin hop at the pipeline's rate — 23.2 ms
+
+
+def _contour(midi_per_frame: list[float], voiced: float = 0.9):
+    """(times, midi, voiced_prob) as ``_contour_segments`` expects them."""
+    import numpy as np
+
+    midi = np.array(midi_per_frame, dtype=float)
+    times = np.arange(midi.size) * _FRAME_SEC
+    return times, midi, np.full(midi.size, voiced)
+
+
+def _vibrato_contour(centre: float, depth: float, n_frames: int = 80):
+    """A single note wobbling ``+-depth`` semitones at the corpus's 5.5 Hz.
+
+    ``depth`` above ``CONTOUR_BAND_SEMITONES`` means most of these frames are out of band —
+    which is the point.  A rule that cut on being outside would shred this into slivers;
+    the rule under test cuts on *staying* outside, and by the sine geometry recorded at
+    ``CONTOUR_PERSIST_FRAMES`` a 5.5 Hz wobble never stays out for four frames at any depth.
+    """
+    import numpy as np
+
+    t = np.arange(n_frames) * _FRAME_SEC
+    return [centre + depth * float(v) for v in np.sin(2 * np.pi * 5.5 * t)]
+
+
+def test_a_wobble_is_one_note_across_the_whole_depth_range_the_corpus_covers():
+    """Depth invariance, asserted rather than asserted-about — over the measured range.
+
+    ``vibrato_depth_2_0`` is 2.67x the band, so at any fixed pitch tolerance this contour is
+    out of band for most of its length.  That it comes back as one segment means the rule is
+    reading persistence and not displacement, which is the whole thesis of contour-first.
+    """
+    from app.pipeline.transcriber import CONTOUR_BAND_SEMITONES, _contour_segments
+
+    for depth in (0.8, 1.0, 1.5, 1.8, 2.0):
+        times, midi, vprob = _contour(_vibrato_contour(60.0, depth))
+        assert depth > CONTOUR_BAND_SEMITONES, "a depth inside the band proves nothing"
+
+        segments = _contour_segments(times, midi, vprob)
+
+        assert len(segments) == 1, f"depth {depth} shredded into {len(segments)} notes"
+        assert round(segments[0][2]) == 60
+
+
+def test_depth_invariance_has_a_measured_ceiling_and_this_is_where_it_is():
+    """The bound the comment at ``CONTOUR_PERSIST_FRAMES`` states, pinned by measurement.
+
+    Pure sine geometry says the out-run tends to half a period as depth grows — 3.91 frames
+    at 5.5 Hz against a threshold of 4, so nominally *any* depth survives.  It does not, and
+    the reason is the 9-frame median pre-smooth: the smoother lags, so a smoothed excursion
+    stays out of band about a frame longer than the raw one, spending most of that 0.09-frame
+    margin.  Measured out-runs and outcomes:
+
+        depth 1.8 -> 2.84 frames, 1 segment      depth 2.5 -> 3.16 frames, 3 segments
+        depth 2.0 -> 2.96 frames, 1 segment      depth 4.0 -> 3.45 frames, 5 segments
+
+    This is not academic.  The two cases still below the notes.f1 gate are exactly
+    ``vibrato_depth_1_8`` and ``vibrato_depth_2_0``, sitting 0.1 frames inside the cliff —
+    so a test that claimed invariance at every depth would be hiding the live defect.
+    """
+    from app.pipeline.transcriber import _contour_segments
+
+    times, midi, vprob = _contour(_vibrato_contour(60.0, 4.0))
+
+    assert len(_contour_segments(times, midi, vprob)) > 1, (
+        "if this now holds the smoother or the threshold changed — re-measure the cliff "
+        "and move the bound rather than deleting the test"
+    )
+
+
+def test_a_genuine_step_is_two_notes_even_though_it_is_smaller_than_the_wobble():
+    """Specificity, and it is the hard direction: one semitone < the 2.0 wobble above.
+
+    A displacement rule ordered these backwards — it cut the wobble and kept the step.
+    Persistence orders them correctly because a step *stays*, and that reordering is the
+    entire reason the amplitude floor could be deleted.
+    """
+    from app.pipeline.transcriber import _contour_segments
+
+    times, midi, vprob = _contour([60.0] * 40 + [61.0] * 40)
+
+    segments = _contour_segments(times, midi, vprob)
+
+    assert len(segments) == 2
+    assert [round(s[2]) for s in segments] == [60, 61]
+
+
+def test_the_cut_lands_on_the_step_and_not_where_the_count_completes():
+    """Onset accuracy, which is what made the change-point rule unusable.
+
+    ``CONTOUR_PERSIST_FRAMES`` frames of evidence are needed to *declare* the boundary, but
+    the boundary is where the contour left — placing it where the count finished would cost
+    every onset 4 frames, and the tolerance at 96 BPM is only ~6.
+    """
+    from app.pipeline.transcriber import CONTOUR_SMOOTH_FRAMES, _contour_segments
+
+    times, midi, vprob = _contour([60.0] * 40 + [61.0] * 40)
+
+    _first, second = _contour_segments(times, midi, vprob)
+
+    # The median pre-smooth is allowed to lag by its own half-width and no more.
+    assert abs(second[0] - 40) <= CONTOUR_SMOOTH_FRAMES // 2 + 1
+
+
+def test_a_repeated_pitch_is_split_by_amplitude_because_pitch_cannot_see_it():
+    """The division of labour, stated as a test: same pitch, so only the dip is evidence.
+
+    This is the defect ``long_clip_over_pyin_cap`` was made of — 91 of 99 notes, the eight
+    missing ones all at a phrase seam where the last note and the next first note share a
+    pitch.  ``_contour_segments`` is *correct* to return one segment here; there is no pitch
+    event to find.  What must not happen is the pipeline stopping there.
+    """
+    import numpy as np
+
+    from app.pipeline.transcriber import _contour_segments, _split_rearticulations
+
+    times, midi, vprob = _contour([60.0] * 60)
+    segments = _contour_segments(times, midi, vprob)
+    assert len(segments) == 1, "pitch alone cannot see a repeat — that is the premise"
+
+    # Two strikes: full amplitude decaying into a deep valley, then struck again.
+    half = np.concatenate([np.linspace(1.0, 0.15, 30)])
+    rms = np.concatenate([half, half])
+
+    split = _split_rearticulations(segments, rms, midi)
+
+    assert len(split) == 2, "the amplitude valley is the only boundary evidence there is"
+    assert [round(s[2]) for s in split] == [60, 60]
+
+
+def test_a_shallow_dip_inside_one_note_is_not_a_repeat():
+    """Specificity: tremolo and bow noise dip too, and must not become extra notes.
+
+    ``CONTOUR_REARTICULATION_FRAC`` is where this line sits, and the measured limitation is
+    recorded honestly at the function: repeated sixteenths dip only ~15% and therefore still
+    fuse.  This test pins the safe side of that trade rather than pretending it is absent.
+    """
+    import numpy as np
+
+    from app.pipeline.transcriber import (
+        CONTOUR_REARTICULATION_FRAC,
+        _contour_segments,
+        _split_rearticulations,
+    )
+
+    times, midi, vprob = _contour([60.0] * 60)
+    segments = _contour_segments(times, midi, vprob)
+
+    t = np.arange(60) * _FRAME_SEC
+    rms = 1.0 - 0.15 * np.abs(np.sin(2 * np.pi * 6.0 * t))  # 15% tremolo
+    assert rms.min() > CONTOUR_REARTICULATION_FRAC, "a dip past the threshold proves nothing"
+
+    assert _split_rearticulations(segments, rms, midi) == segments
+
+
+def test_a_dip_between_two_different_pitches_is_left_to_the_pitch_rule():
+    """The guard that made this stage safe, and it is not a threshold.
+
+    Re-cutting a boundary the pitch rule already found only yields a sliver of the next
+    note's attack.  Both halves must notate as the segment's own pitch or the split is
+    abandoned whole — so a fixture whose halves disagree must come back untouched even
+    though its valley is deep enough to qualify.
+    """
+    import numpy as np
+
+    from app.pipeline.transcriber import _split_rearticulations
+
+    midi = np.array([60.0] * 30 + [64.0] * 30)
+    segment = (0, 60, 60.0, 0.9)
+    half = np.linspace(1.0, 0.10, 30)
+    rms = np.concatenate([half, half])
+
+    assert _split_rearticulations([segment], rms, midi) == [segment]
+
+
+# ── The melody floor — which voice pyin is pointed at ──────────────────────────
+
+# The corpus shows the outcome (poly_alberti_bass 0.000 -> 1.000) but not the mechanism, and
+# here the mechanism is the whole risk: the floor is applied by RE-RUNNING pyin, so a gate
+# that fires wrongly does not degrade a clip, it re-pitches or silences it.  These tests
+# exercise the estimator on synthetic Basic Pitch events, where the right answer is a
+# property of the rule rather than of any recording.
+#
+# Basic Pitch's tuples are ``(start, end, pitch, amp, bends)`` and only the first four are
+# read, so these fixtures carry four.
+
+_FLOOR_HOP = 512 / 22050.0
+
+
+def _two_hand_events(*, melody=(60, 64, 67), melody_amp: float = 0.7,
+                     accomp_amp: float = 0.6):
+    """A three-note melody over a C3-E3-G3 left hand, as Basic Pitch would report it.
+
+    Deliberately NOT amplitude-separated by hand: the accompaniment is nearly as loud as the
+    melody, because that is the case the rule has to survive.  What separates the two is
+    register and simultaneity, not level.
+    """
+    events = []
+    for i, pitch in enumerate(melody):
+        events.append((i * 0.5, i * 0.5 + 0.5, pitch, melody_amp))
+    for i in range(3):
+        for pitch in (48, 52, 55):
+            events.append((i * 0.5, i * 0.5 + 0.5, pitch, accomp_amp))
+    return events
+
+
+def _flat_contour(midi_value: float, n_frames: int = 60):
+    """pyin stuck on one pitch — what happens when it locks onto a sustained lower voice."""
+    import numpy as np
+
+    times = np.arange(n_frames) * _FLOOR_HOP
+    return times, np.full(n_frames, midi_value)
+
+
+def _contour_following(events, n_frames: int):
+    """pyin tracking the given events, which is what a monophonic clip actually produces.
+
+    ``_flat_contour`` cannot stand in for this: against a melody that moves, a held contour
+    reports the melody's own range as disagreement, so it would test the gate on a signal no
+    recording generates.  Frames past the last event stay NaN, as unvoiced frames do.
+    """
+    import numpy as np
+
+    times = np.arange(n_frames) * _FLOOR_HOP
+    midi = np.full(n_frames, np.nan)
+    for start, end, pitch, *_ in events:
+        midi[(times >= start) & (times < end)] = float(pitch)
+    return times, midi
+
+
+def test_the_floor_fires_when_pyin_is_an_octave_below_the_skyline():
+    """The gate's positive case: pyin on the left hand, Basic Pitch seeing both.
+
+    The returned floor has to clear the accompaniment's top note (G3, midi 55) or pyin can
+    simply find it again, and stay at or below the melody's own lowest note (C4, midi 60) or
+    the melody is what gets excluded.  That window is the entire specification.
+    """
+    from app.pipeline.transcriber import _melody_floor_hz
+
+    times, midi = _flat_contour(48.0)  # pyin locked onto the C3 in the left hand
+
+    floor_hz = _melody_floor_hz(_two_hand_events(), times, midi)
+
+    assert floor_hz is not None, "the gate did not fire on a two-octave disagreement"
+    floor_midi = 69.0 + 12.0 * math.log2(floor_hz / 440.0)
+    assert 55 < floor_midi <= 60, f"floor at midi {floor_midi:.1f} is outside the window"
+
+
+def test_the_floor_declines_a_monophonic_clip():
+    """The gate's negative case, and the one that protects the 39 monophonic cases.
+
+    Same melody, no left hand, and pyin tracking it — which is what every monophonic corpus
+    case measured ([-0.09, +1.11] semitones).  Returning ``None`` here is what makes the
+    change byte-identical on all of them.
+    """
+    from app.pipeline.transcriber import _melody_floor_hz
+
+    melody_only = [e for e in _two_hand_events() if e[2] >= 60]
+    times, midi = _contour_following(melody_only, 60)
+
+    assert _melody_floor_hz(melody_only, times, midi) is None
+
+
+def test_a_harmonic_ghost_does_not_fire_the_gate():
+    """The failure mode the gate has to survive, at the amplitudes the corpus measures.
+
+    A monophonic clip whose skyline were a persistent +12 self-ghost would disagree by an
+    octave and have its floor put above its own fundamental — silencing the whole clip.
+    ``overtone_heavy`` is the corpus's evidence this does not happen; this is the mechanism,
+    and there are two of them, which is why the fixture carries ghosts at two amplitudes.
+
+    Measured over 267 overlapping +12/+19 pairs: the ghost/parent ratio has a median of
+    0.39-0.49 by case and a ceiling of 0.520.  So ``MELODY_FLOOR_TAU`` falls between the two
+    — it rejects the bulk outright, and the handful above it reach the skyline and are
+    absorbed by the median instead.  A fixture with only one of those amplitudes would leave
+    half the defence untested.
+    """
+    from app.pipeline.transcriber import MELODY_FLOOR_TAU, _melody_floor_hz
+
+    melody = [(i * 0.5, i * 0.5 + 0.5, p, 0.70) for i, p in enumerate((60, 64, 67, 69))]
+    below_tau = [(s, e, p + 12, 0.70 * 0.49) for s, e, p, _a in melody]
+    above_tau = [(melody[-1][0], melody[-1][1], melody[-1][2] + 12, 0.70 * 0.52)]
+    times, midi = _contour_following(melody, 90)
+
+    assert 0.49 < MELODY_FLOOR_TAU < 0.52, "both ghosts on one side of tau prove nothing"
+    assert _melody_floor_hz(melody + below_tau + above_tau, times, midi) is None
+
+
+def test_the_gate_is_what_declines_and_not_the_floor_estimate():
+    """Specificity: the same events fire the gate once pyin drops to the lower voice.
+
+    Without this, ``test_the_floor_declines_a_monophonic_clip`` would also pass for a rule
+    that never fires at all, so it is this pair — one set of events, two contours — that
+    shows the decision is being read off the disagreement.
+    """
+    from app.pipeline.transcriber import _melody_floor_hz
+
+    events = _two_hand_events()
+    times, on_the_melody = _flat_contour(60.0)
+    _, on_the_left_hand = _flat_contour(48.0)
+
+    assert _melody_floor_hz(events, times, on_the_melody) is None
+    assert _melody_floor_hz(events, times, on_the_left_hand) is not None
+
+
+def test_the_floor_is_read_from_the_melody_register_not_the_whole_skyline():
+    """Why the estimate is a restricted minimum, and where the restriction runs out.
+
+    The skyline drops to the accompaniment wherever the melody rests, so its unrestricted
+    minimum is a left-hand pitch — measured 46 and 53 on the corpus against a left hand
+    topping out at 55, i.e. useless as a floor.  ``MELODY_FLOOR_REGISTER_WIDTH`` discards
+    those frames, and the first half asserts it does.
+
+    The second half is the limit, and it is a real one rather than a hypothetical.  The window
+    is centred on the skyline's MEDIAN and reaches ``WIDTH`` below it, so the rule holds only
+    while the accompaniment's top note sits FURTHER than ``WIDTH`` below that median.  A
+    close voicing — melody a fifth above the left hand rather than an octave and a half —
+    puts the accompaniment inside the window and the floor lands under it.  Asserting that
+    makes the boundary discoverable instead of a surprise, and names the condition to look for
+    if a real recording ever transcribes its left hand despite the gate firing.
+
+    On the corpus the limit is not reached: the polyphonic cases put the melody's median at 72
+    against a left hand topping out at 55, seventeen semitones of separation.  Widening the
+    window is not the fix — it admits the accompaniment sooner.  A clip that hits this needs a
+    register anchor that is not the median, and the corpus has no case to measure one on;
+    adding a close-voicing case is the prerequisite, not inventing the anchor here.
+    """
+    from app.pipeline.transcriber import MELODY_FLOOR_REGISTER_WIDTH, _melody_floor_hz
+
+    rest = [(1.5, 1.7, p, 0.6) for p in (48, 52, 55)]  # left hand alone, melody resting
+
+    def floor_midi(melody):
+        events = _two_hand_events(melody=melody) + rest
+        times, midi = _flat_contour(48.0, n_frames=75)  # pyin down on the left hand
+        hz = _melody_floor_hz(events, times, midi)
+        return None if hz is None else 69.0 + 12.0 * math.log2(hz / 440.0)
+
+    separated = floor_midi((72, 76, 79))  # median 76, sixteen semitones clear of midi 55
+    assert separated is not None and separated > 55, (
+        f"floor at midi {separated} fell to the accompaniment sounding alone"
+    )
+
+    close = floor_midi((60, 64, 67))  # median 64, and 64 - 55 < WIDTH
+    assert 64 - 55 < MELODY_FLOOR_REGISTER_WIDTH, "the close voicing is no longer close"
+    assert close is not None and close <= 55, (
+        "a median-centred window is documented as admitting an accompaniment nearer than "
+        f"MELODY_FLOOR_REGISTER_WIDTH; the floor came out at midi {close}, so that limit "
+        "has moved and the docstring above is now wrong"
+    )
+
+
+def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
+    tmp_path, monkeypatch
+):
+    """Pointing pyin at the melody does not oblige pyin to find it.
+
+    ``poly_block_chords`` is the case: the gate fires correctly, pyin re-runs from midi 60 —
+    and comes back with 82 of 336 frames voiced, every one at midi 60.  One pitch, whole clip.
+    Segmenting that yields two notes, and because contour events win outright they became the
+    entire transcription, which is why that case scored beats.f1 0.308 and the wrong key while
+    its two notes were individually correct.
+
+    So ``_segment_contour`` has to be able to say "I found the register but not the line", and
+    the floor has to survive its own path's failure — Basic Pitch could see this melody all
+    along (11 of 11 reference pitches above the floor).
+
+    ``_pyin_contour`` is monkeypatched rather than driven through audio, and that is the point
+    rather than a shortcut: the check is a property of the contour, and synthesising a clip
+    that makes pyin return a CONSTANT contour above a raised floor is its own research problem
+    — two equal sinusoids an octave apart, the obvious attempt, make pyin return *nothing*
+    above the floor and quietly exercise the wrong branch instead.  Patching the seam names
+    the three contours the branch has to distinguish and asserts on each.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    wav = tmp_path / "unused.wav"
+    wav.write_bytes(b"")  # never decoded: the RMS load is already try/except-guarded
+
+    n = 60
+    times = np.arange(n) * _FLOOR_HOP
+
+    def contours(second: np.ndarray):
+        """pyin on the accompaniment first, then whatever the raised floor produces."""
+
+        def fake(_path, fmin: float = T.PYIN_FMIN_HZ):
+            first = fmin == T.PYIN_FMIN_HZ
+            midi = np.full(n, 48.0) if first else second
+            return times, midi, np.full(n, 0.9)
+
+        return fake
+
+    # The melody is at 60 and pyin's first pass is at 48, so the gate fires: skyline 60 minus
+    # contour 48 is a full octave, well past MELODY_FLOOR_DISAGREEMENT_SEMITONES.
+    firing = [(0.0, 1.4, 60, 0.8)]
+
+    monkeypatch.setattr(T, "_pyin_contour", contours(np.full(n, 60.0)))
+    events, floor_midi = T._segment_contour(wav, firing)
+
+    assert floor_midi is not None, "the gate did not fire, so this tests nothing"
+    assert not events, (
+        f"a contour of one distinct pitch produced {len(events)} notes; the degeneracy check "
+        "is no longer reached and poly_block_chords will transcribe its left hand again"
+    )
+    # The point of the whole change: [] does NOT mean "no information".
+    assert floor_midi > 48, (
+        f"floor came back at midi {floor_midi}, at or below the voice it is meant to exclude"
+    )
+
+    # Specificity 1: the DEGENERACY is what declined, not the gate.  Same gate, same floor,
+    # but a second contour that moves — alberti's situation, which must keep winning.
+    moving = np.concatenate([np.full(20, 60.0), np.full(20, 62.0), np.full(20, 64.0)])
+    monkeypatch.setattr(T, "_pyin_contour", contours(moving))
+    events, floor_midi = T._segment_contour(wav, firing)
+
+    assert floor_midi is not None and events, (
+        "a moving contour above the floor was discarded; the check is meant to reject a "
+        "constant contour, not every gated clip"
+    )
+    assert len({e.pitch for e in events}) > 1
+
+    # Specificity 2: the check is scoped to the SECOND pass.  With pyin already on the melody
+    # the gate declines, and a constant contour is then a clip of one sustained note — a real
+    # transcription, which must survive.
+    def agreeing(_path, fmin: float = T.PYIN_FMIN_HZ):
+        return times, np.full(n, 60.0), np.full(n, 0.9)
+
+    monkeypatch.setattr(T, "_pyin_contour", agreeing)
+    events, floor_midi = T._segment_contour(wav, firing)
+
+    assert floor_midi is None, "the gate fired without a register disagreement"
+    assert events, (
+        "a constant contour with no floor was discarded; one sustained note is a real "
+        "transcription and the degeneracy check was scoped to the second pass only"
+    )
+
+
+# ── Grid refinement — two single-sample biases, one bounded sweep ──────────────
+
+# ``long_clip_over_pyin_cap`` segmented 99 of 99 notes at the right pitches and still scored
+# notes.f1 0.232, because every note from the eleventh on was placed exactly half a beat
+# late.  Neither estimator was wrong by enough to matter alone; together they swept the
+# clip's distance-to-grid across a quantizer boundary.  Both are simulable exactly, which
+# makes this the one place the defect can be reproduced without inference.
+
+_TRUE_BPM = 96.0
+_HOP_QUANTIZED_BPM = 60.0 / (round(60.0 / _TRUE_BPM / _FRAME_SEC) * _FRAME_SEC)
+
+# The two latencies, both measured on ``long_clip_over_pyin_cap``.  The first onset comes in
+# 0.093 s late because a pitch tracker needs voiced frames before it commits; every onset
+# after it is ~0.020 s late, which is the tracker's steady-state lag.  ``_beat_origin`` nails
+# beat 0 to the first onset when no tracked beat is near — so it copies the phase from the one
+# sample in the clip that is least like the others.  That gap, 0.073 s, IS the phase bias.
+_FIRST_ONSET_LATE_SEC = 0.093
+_STEADY_LATENCY_SEC = 0.020
+
+
+def _quarter_note_onsets(n: int, *, first_late: bool = True):
+    """``n`` quarter notes at exactly 96 BPM, detected the way pyin detects them."""
+    import numpy as np
+
+    onsets = np.arange(n) * (60.0 / _TRUE_BPM) + _STEADY_LATENCY_SEC
+    if first_late:
+        onsets[0] = _FIRST_ONSET_LATE_SEC
+    return onsets
+
+
+def _mean_distance_to_grid(onsets, bpm: float, origin: float, divisor: int = 2) -> float:
+    """Average distance from a grid line, in grid steps — the sweep's own objective."""
+    import numpy as np
+
+    steps = (onsets - origin) * (bpm / 60.0) * divisor
+    return float(np.mean(np.abs(steps - np.round(steps))))
+
+
+def _misplaced(onsets, bpm: float, origin: float, divisor: int = 2) -> int:
+    """How many onsets quantize into a different cell than the true grid puts them in.
+
+    Distance-to-grid is a proxy; this is the defect itself.  Measured relative to the first
+    onset's cell, because an overall shift is what ``beats.f1_shift_invariant`` forgives and
+    what a listener never hears — a note landing in the *wrong cell relative to its
+    neighbours* is the half-beat error, and it is worth exactly 0.500 every time.
+    """
+    import numpy as np
+
+    def cells(b: float, o: float):
+        return np.round((onsets - o) * (b / 60.0) * divisor)
+
+    truth = cells(_TRUE_BPM, _STEADY_LATENCY_SEC)
+    got = cells(bpm, origin)
+    return int(np.sum((got - got[0]) != (truth - truth[0])))
+
+
+def test_the_hop_quantized_tempo_is_a_floor_and_not_a_tuning_miss():
+    """96 BPM is unreachable from a single IOI, so no threshold change could have fixed this.
+
+    ``_grid_bpm`` takes ``60/median(IOI)``, and an IOI is a difference of two onsets that can
+    only land on frame boundaries.  A 0.625 s beat is 26.94 hops, so the nearest value one
+    IOI can express is 27 hops — 95.70 BPM, 0.31% slow.  Asserting the arithmetic is what
+    stops someone re-tuning a threshold to chase it.
+    """
+    assert _HOP_QUANTIZED_BPM != pytest.approx(_TRUE_BPM, abs=0.05)
+    assert _HOP_QUANTIZED_BPM == pytest.approx(95.70, abs=0.01)
+
+
+def test_the_phase_bias_is_harmless_alone_and_triples_the_tempo_bias_beside_it():
+    """The compound failure, reproduced — and it is compounding, not co-triggering.
+
+    Measured on this fixture, misplaced notes out of 99:
+
+        phase bias alone        0     mean distance 0.231 steps
+        tempo bias alone       18     mean distance 0.286
+        both together          55     mean distance 0.343
+
+    So the phase bias on its own moves nothing across a cell boundary, and the tempo bias on
+    its own already costs 18 notes.  What the phase bias does is shift *which side* of the
+    boundary each note falls on: the signed residue sweeps across zero over the clip, so the
+    early notes round one way and the late notes the other.  That is why the fix had to move
+    both, and why correcting the phase alone made the case worse rather than better.
+    """
+    onsets = _quarter_note_onsets(99)
+
+    phase_only = _misplaced(onsets, _TRUE_BPM, _FIRST_ONSET_LATE_SEC)
+    tempo_only = _misplaced(onsets, _HOP_QUANTIZED_BPM, _STEADY_LATENCY_SEC)
+    both = _misplaced(onsets, _HOP_QUANTIZED_BPM, _FIRST_ONSET_LATE_SEC)
+
+    assert phase_only == 0, "copying the phase from the first onset misplaces nothing alone"
+    assert tempo_only > 0, "0.31% over 63 s is already enough on its own"
+    assert both > 2 * tempo_only, "and the two together are far worse than their sum"
+
+
+def test_refining_the_grid_recovers_the_tempo_and_repairs_every_placement():
+    """The fix, on the real function: a bounded tempo sweep with a per-candidate origin.
+
+    A least-squares refit could not do this.  It fits seconds against each onset's ASSIGNED
+    cell, and once the residue has swept past the boundary the assignment is wrong —
+    regressing on wrong cells reproduces the wrong tempo, a fixed point iteration cannot
+    escape.  A sweep is not handed the assignment, so it can.
+    """
+    from app.pipeline.transcriber import _refine_grid
+
+    onsets = _quarter_note_onsets(99)
+    before = _misplaced(onsets, _HOP_QUANTIZED_BPM, _FIRST_ONSET_LATE_SEC)
+    assert before > 0, "fixture no longer reproduces the defect"
+
+    bpm, origin = _refine_grid(onsets, _HOP_QUANTIZED_BPM, _FIRST_ONSET_LATE_SEC, (2,))
+
+    assert bpm == pytest.approx(_TRUE_BPM, abs=0.05), "1% of 95.70 reaches 96"
+    assert origin == pytest.approx(_STEADY_LATENCY_SEC, abs=0.005), (
+        "the origin should land on the steady-state latency, not the first onset"
+    )
+    assert _misplaced(onsets, bpm, origin) == 0
+    assert _mean_distance_to_grid(onsets, bpm, origin) < 0.05
+
+
+def test_refinement_cannot_return_a_worse_grid_fit_than_it_was_handed():
+    """Why there is no accept/reject test: the incumbent is a member of its own search space.
+
+    Both step counts are odd on purpose, so ``linspace`` lands exactly on the values handed
+    in.  A clip already on the grid must therefore come back unmoved rather than nudged onto
+    some other candidate that ties.
+    """
+    from app.pipeline.transcriber import _refine_grid
+
+    onsets = _quarter_note_onsets(20, first_late=False)
+
+    bpm, origin = _refine_grid(onsets, _TRUE_BPM, _STEADY_LATENCY_SEC, (2,))
+
+    assert (bpm, origin) == (_TRUE_BPM, _STEADY_LATENCY_SEC)
+
+
+def test_refinement_declines_a_sample_too_small_to_be_a_fit():
+    """Below the floor the sweep is interpolating, not averaging the hop out.
+
+    The leverage on the slope is the clip's length in beats; with three onsets there is
+    nothing to average, and a 1% band would happily fit noise.  Matches ``_grid_bpm``'s floor.
+    """
+    from app.pipeline.transcriber import _refine_grid
+
+    onsets = _quarter_note_onsets(3)
+    handed = (_HOP_QUANTIZED_BPM, _FIRST_ONSET_LATE_SEC)
+
+    assert _refine_grid(onsets, *handed, (2,)) == handed
+
+
+def test_a_tap_in_tempo_override_keeps_its_bpm_and_still_gets_its_phase_fixed():
+    """``band=0.0`` is the override path: the user said how fast, not where beat 0 is.
+
+    The TRD makes a tap-in authoritative on tempo, so the sweep must not move it — but an
+    override says nothing about phase, and phase is half the defect.  The objective is the
+    MEAN distance, so this is asserted on the mean: a sweep that centres the whole clip can
+    leave one outlier marginally further out, and here that outlier is the late first onset,
+    which is the sample the refinement is right to stop trusting.
+    """
+    from app.pipeline.transcriber import _refine_grid
+
+    onsets = _quarter_note_onsets(40)
+
+    bpm, origin = _refine_grid(onsets, _TRUE_BPM, _FIRST_ONSET_LATE_SEC, (2,), band=0.0)
+
+    assert bpm == _TRUE_BPM, "an override is authoritative on tempo"
+    assert origin == pytest.approx(_STEADY_LATENCY_SEC, abs=0.005), "but not on phase"
+    assert _mean_distance_to_grid(onsets, bpm, origin) < _mean_distance_to_grid(
+        onsets, _TRUE_BPM, _FIRST_ONSET_LATE_SEC
+    )
+
+
+# ── Metrical level — the step filter's slow bias, and re-admitting the partner ──
+
+# ``vibrato_heavy`` reported 48 BPM against a true 96 with every note otherwise correct
+# (notes.f1 1.000).  The cause is structural rather than a threshold: the step filter in
+# ``_grid_bpm`` asks "would rounding move these notes to another slot", which is genuinely a
+# question about steps — but a fixed onset jitter is a smaller *fraction* of a step at a
+# slower tempo, so of two readings of one performance the slower always measures better.
+# Measured on that clip: 95.703 was rejected at 0.323 steps and 47.852 accepted at 0.162,
+# with both at 0.1013 s.  Equal in seconds means one performance; the filter still split them.
+
+# Onsets at 96 BPM with a repeating 0.11 s scatter on three of every four, which is the shape
+# that reproduces the bias.  Its residual spectrum was searched for rather than guessed,
+# because a simpler jitter is commensurate with too many grids: an alternating displacement
+# lets 144 or 192 fit BETTER than 48, and then the choice under test never arises.  This one
+# gives, at divisor 2 — 48: 0.122 steps / 0.0762 s (accepted); 96: 0.244 steps / 0.0762 s
+# (rejected, and equal to the millisecond); 64: 0.228, 144: 0.327, 192: 0.205 (all rejected
+# with margin).  So the decision really is between 48 and 96 and nothing else can win on fit.
+_SCATTER_CYCLE_SEC = (0.0, 0.11, 0.11, 0.11)
+
+
+def _scattered_beat_onsets(n: int = 13, bpm: float = 96.0):
+    """``n`` beats at ``bpm``, each displaced by the measured-scale scatter cycle."""
+    import numpy as np
+
+    beat = 60.0 / bpm
+    scatter = [_SCATTER_CYCLE_SEC[k % len(_SCATTER_CYCLE_SEC)] for k in range(n)]
+    return np.arange(n) * beat + np.array(scatter)
+
+
+def _events_at(onsets, pitch: int = 60):
+    from app.pipeline.transcriber import Event
+
+    return [Event(start=float(t), end=float(t) + 0.3, pitch=pitch, amp=0.6) for t in onsets]
+
+
+def _with_admit_ratios(module, ratios, fn):
+    """Call ``fn`` with ``_OCTAVE_ADMIT_RATIOS`` replaced; an empty tuple is the off switch."""
+    saved = module._OCTAVE_ADMIT_RATIOS
+    module._OCTAVE_ADMIT_RATIOS = ratios
+    try:
+        return fn()
+    finally:
+        module._OCTAVE_ADMIT_RATIOS = saved
+
+
+def test_the_step_filter_prefers_the_slower_reading_of_the_same_performance():
+    """The bias itself, before any repair — asserted on the filter's own two units.
+
+    This is the premise every test below rests on, so it is measured here rather than
+    assumed: the two readings are one performance (identical seconds, which is the only
+    level-fair unit) and the filter still accepts one and rejects the other.
+    """
+    from app.pipeline.transcriber import _MAX_GRID_SLIP_STEPS, _grid_residual
+
+    onsets = _scattered_beat_onsets()
+    slow_steps, slow_sec = _grid_residual(onsets, 48.0, (2,))
+    true_steps, true_sec = _grid_residual(onsets, 96.0, (2,))
+
+    assert slow_sec == pytest.approx(true_sec, abs=1e-6), "same performance, same seconds"
+    assert true_steps == pytest.approx(2.0 * slow_steps, rel=1e-6), "steps scale with level"
+    assert slow_steps <= _MAX_GRID_SLIP_STEPS < true_steps, "and the filter splits them"
+
+
+def test_the_true_level_is_recovered_from_a_reading_the_filter_rejected():
+    """The repair: admitted as its partner, the faster reading wins on tappability.
+
+    Both halves matter.  Without the admission the answer is the halved one, so the rule is
+    load-bearing; with it the answer is the level the onsets were generated at, so the
+    preference — not a re-tuned threshold — is what chose it.
+    """
+    from app.pipeline import transcriber
+
+    events = _events_at(_scattered_beat_onsets())
+
+    without = _with_admit_ratios(transcriber, (), lambda: transcriber._grid_bpm(events, 0.0, (2,)))
+    with_it = transcriber._grid_bpm(events, 0.0, (2,))
+
+    assert without == pytest.approx(48.0, abs=0.5), "the bias, reproduced end to end"
+    assert with_it == pytest.approx(96.0, abs=0.5), "and corrected"
+
+
+def test_an_admitted_reading_cannot_win_on_a_fit_it_was_never_credited_with():
+    """The specificity that keeps the whole ``major_*`` family intact.
+
+    An admitted candidate carries its partner's seconds, not its own.  It has to: on
+    ``major_c`` the accepted 86.133 measures 0.0507 s and the rejected 172.266 measures
+    0.0443 — 6 ms apart, half a frame hop, and enough to straddle a ranking bucket.  Credited
+    with its own number the doubling would win on *fit* and the tempo would read 174; credited
+    with its partner's it can only win on tappability, which it loses.
+
+    The fixture is that shape, derived rather than searched: eighth notes at 172 BPM with
+    alternate onsets 96 ms late.  At divisor 2 that puts 86 inside the filter at 0.129 steps
+    and 172 outside it at 0.212, their seconds 8 ms apart — inside the admission band — and
+    172's own seconds a whole bucket BETTER.  So the two crediting rules give different
+    answers here, which is what makes the assertion mean something.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber
+
+    step = 60.0 / 86.0 / 2.0
+    n = 17
+    onsets = np.arange(n) * step + np.where(np.arange(n) % 2 == 1, 0.275 * step, 0.0)
+    events = _events_at(onsets)
+
+    slow_steps, slow_sec = transcriber._grid_residual(onsets, 86.0, (2,))
+    fast_steps, fast_sec = transcriber._grid_residual(onsets, 172.0, (2,))
+    assert slow_steps <= transcriber._MAX_GRID_SLIP_STEPS < fast_steps, "premise: filter splits"
+    assert abs(slow_sec - fast_sec) <= transcriber._GRID_FIT_BAND_SEC, "premise: admissible"
+    assert round(fast_sec / transcriber._GRID_FIT_BAND_SEC) < round(
+        slow_sec / transcriber._GRID_FIT_BAND_SEC
+    ), "premise: on its OWN seconds the doubling would win the ranking"
+
+    assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(86.0, abs=0.5)
+
+
+def test_a_dotted_relationship_is_never_admitted():
+    """1.5 is absent from the ratios on purpose, and its absence is what is asserted.
+
+    Doubling a tempo renotates the same beats; taking one and a half times it changes which
+    notes ARE beats, and the onsets carry no evidence for that.  ``triplets_eighth_c_major``
+    is what happens when a 1.5 reading is the only one a half-beat grid can express, and it
+    is a quantizer-divisor consequence rather than something the chooser should invent.
+    """
+    from app.pipeline import transcriber
+
+    assert 1.5 not in transcriber._OCTAVE_ADMIT_RATIOS
+    assert 2.0 / 3.0 not in transcriber._OCTAVE_ADMIT_RATIOS
+    for ratio in transcriber._OCTAVE_ADMIT_RATIOS:
+        assert ratio == pytest.approx(round(ratio)), "integer multiples only"
+
+
+def test_admission_needs_the_fits_to_agree_and_not_merely_the_ratio():
+    """A partner at the right ratio whose fit is genuinely worse stays rejected.
+
+    The ratio says the two readings *could* be the same performance; the seconds say whether
+    they are.  Without the seconds test this would admit any doubling of any survivor, which
+    is the runaway ``_GRID_REFINE_BAND`` warns about — at a fine enough grid everything fits.
+
+    Non-vacuous by construction: the premise asserts such a partner exists, so the ratio alone
+    really would have let it in.
+    """
+    from app.pipeline import transcriber
+
+    onsets = _scattered_beat_onsets()
+    events = _events_at(onsets)
+
+    accepted = 48.0
+    partner = 96.0
+    acc_sec = transcriber._grid_residual(onsets, accepted, (2,))[1]
+    far_sec = transcriber._grid_residual(onsets, accepted * 4.0, (2,))[1]
+    assert 4.0 in transcriber._OCTAVE_ADMIT_RATIOS, "premise: the ratio is one it accepts"
+    assert (
+        abs(far_sec - acc_sec) > transcriber._GRID_FIT_BAND_SEC
+    ), "premise: and this partner's fit disagrees, so only the seconds test excludes it"
+
+    assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(partner, abs=0.5), (
+        "the doubling is admitted on an equal fit; the quadrupling is not admitted at all"
     )
 
 

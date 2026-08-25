@@ -46,4 +46,26 @@ export type RootStackParams = {
   Settings: { focus?: 'notifications' | 'about' } | undefined;
   Help: undefined;
   Upgrade: undefined;
+
+  /**
+   * Admin-only screens, reached from the side bar's Admin row and nowhere else.
+   *
+   * Pushed routes rather than tabs: `TabParams` above is three cells on purpose,
+   * and an operator surface should not cost every user a tab. Each screen is
+   * behind the server's Admin policy regardless of how it was reached.
+   */
+  AdminHome: undefined;
+  /**
+   * `search` seeds the search box. The webhook inbox pushes here with a payment
+   * reference, because a failed callback is diagnosed there and repaired on the
+   * payment — a push rather than a navigate, so back returns to the inbox and the
+   * seeded screen is always a fresh one.
+   */
+  AdminPayments: { search?: string } | undefined;
+  AdminWebhooks: undefined;
+  /** The account search. Split from `AdminUser` so finding and acting are
+   *  separate steps, the same way a payment row opens a payment. */
+  AdminUsers: undefined;
+  /** The account to act on. Reached from a payment row or the account search. */
+  AdminUser: { userId: string };
 };

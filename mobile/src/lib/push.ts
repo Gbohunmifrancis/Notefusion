@@ -24,10 +24,13 @@ import { isExpoGo } from './env';
 
 const PUSH_KEY = '@notefusion_push';
 const SOUND_KEY = '@notefusion_sound';
+const ASKED_KEY = '@notefusion_push_asked';
 
 /** Both default to on, matching the switches' initial state. */
 let pushOn = true;
 let soundOn = true;
+/** Whether the record screen's `offerBackgroundAlerts` has had its one turn. */
+let asked = false;
 let prefsLoaded: Promise<void> | null = null;
 
 /**
@@ -39,9 +42,14 @@ export function loadNotificationPrefs(): Promise<void> {
   if (!prefsLoaded) {
     prefsLoaded = (async () => {
       try {
-        const [push, sound] = await AsyncStorage.multiGet([PUSH_KEY, SOUND_KEY]);
+        const [push, sound, wasAsked] = await AsyncStorage.multiGet([
+          PUSH_KEY,
+          SOUND_KEY,
+          ASKED_KEY,
+        ]);
         if (push[1] !== null) pushOn = push[1] === 'true';
         if (sound[1] !== null) soundOn = sound[1] === 'true';
+        asked = wasAsked[1] === 'true';
       } catch {
         // Unreadable preferences just mean the defaults.
       }
@@ -127,12 +135,30 @@ export async function enablePush(): Promise<PushPermission> {
 }
 
 /**
- * Turns notifications off.
+ * Whether the app has already offered notifications of its own accord.
  *
- * Local only, by design: the API exposes `POST /api/devices` and no delete, so the
- * server keeps the token and may still send. Muting the handler is what the user
- * actually observes, and `registerForPushAsync` stops re-registering on the next
- * sign-in, so the device drops out naturally.
+ * Nothing outside Settings used to force the permission prompt, so a user who
+ * never opened Settings → Notifications had no token on the server and the
+ * background-completion push had nowhere to go. The first transcription submit
+ * now offers it — once. Call {@link loadNotificationPrefs} first; it hydrates
+ * this alongside the two switches in a single read.
+ */
+export function pushPermissionAsked(): boolean {
+  return asked;
+}
+
+export async function markPushPermissionAsked(): Promise<void> {
+  asked = true;
+  await AsyncStorage.setItem(ASKED_KEY, 'true').catch(() => undefined);
+}
+
+/**
+ * Turns notifications off, on this device and on the server.
+ *
+ * Muting the handler alone is not enough: it only affects a foregrounded app, and the
+ * whole point of these notifications is to arrive while the app is closed. So we also
+ * drop the token server-side. Best-effort — if the call fails the local switch still
+ * applies, and `registerForPushAsync` will not re-register without `force`.
  */
 export async function disablePush(): Promise<void> {
   await setPushEnabled(false);
@@ -140,8 +166,18 @@ export async function disablePush(): Promise<void> {
   try {
     const Notifications = require('expo-notifications') as typeof import('expo-notifications');
     await Notifications.dismissAllNotificationsAsync();
+
+    if (Device.isDevice) {
+      const projectId =
+        Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+      const { data: token } = await Notifications.getExpoPushTokenAsync(
+        projectId ? { projectId } : undefined,
+      );
+      await devicesApi.unregister(token).catch(() => undefined);
+    }
   } catch {
-    // Nothing to dismiss, or no notifications module — the mute already applied.
+    // Nothing to dismiss, no notifications module, or the token could not be read —
+    // the local mute already applied, which is what the user asked for.
   }
 }
 

@@ -246,6 +246,42 @@ This case is STILL expected to score badly, in the way ``vibrato_heavy`` is: 166
 notes for 99 real is not a working transcription.  Read the pair together — they are now
 close (notes.f1 0.596 against 0.516, degree 0.988 against 1.000), and a gap reopening means
 refinement stopped reaching long clips, which is the one thing this case exists to catch.
+
+The 39 -> 41 expansion: polyphony, and the aggregate fall that is the point of it
+────────────────────────────────────────────────────────────────────────────────────────
+``POLYPHONIC_CASES`` added ``poly_block_chords_c_major`` and ``poly_alberti_bass_c_major``
+— ``DIAG_PHRASE`` under a sounding accompaniment that produces no reference notes, so the
+ground truth is the melody and the scored behaviour is melody extraction.  Until this
+baseline that behaviour was 0% measured on a corpus of 39 monophonic cases, while the
+complaint the accuracy work exists to answer is a polyphonic piano recording.
+
+All 39 pre-existing cases are byte-identical — 0 differences across every metric, key,
+tempo and note count, not merely +0.000 on notes.f1 — which is the determinism proof that
+adding the ``accompaniment`` parameter to ``synth.render`` moved no existing audio.  The
+new cases are the entire delta:
+
+    notes.f1                          0.954 ->  0.908   (precision 0.948 -> 0.901)
+    notes.recall                      0.965 ->  0.918
+    solfa.degree_accuracy             1.000 ->  0.984
+    solfa.syllable_accuracy           0.982 ->  0.968
+    solfa.octave_error_rate           0.002 ->  0.051
+    solfa.ghost_count                 0.692 ->  0.878
+    solfa.anchor_matches_reference    1.000 ->  0.951
+    tempo.abs_error                  11.872 -> 13.415
+    key.confidence_auc                0.947 ->  0.925
+
+Both new cases score notes.f1 **0.000**, so they cannot regress and every future melody
+extraction change has room to demonstrate a gain — the same trade KEY_HEADROOM_CASES was
+added under, taken at full price on the headline metric because the regime is worth more
+than the number.  ``key.exact`` actually *rises* 0.974 -> 0.976: both read C major, since
+the accompaniment reinforces the key it accompanies.
+
+**The aggregate that sees this defect is solfa.octave_error_rate, and it is the only one.**
+It moves 25x while degree_accuracy loses 0.016, because the pipeline is transcribing the
+LEFT HAND: eleven segments in the right places at pitches 12-24 semitones low, which a
+diatonic accompaniment makes look like plausible degrees. ``notes.f1`` and the octave
+column are the two to read on these cases; the degree columns are actively misleading here
+and that is worth knowing about the degree columns generally.
 """
 
 import json

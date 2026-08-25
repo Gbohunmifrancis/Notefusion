@@ -209,6 +209,106 @@ class Settings:
         return os.getenv("NF_PYIN_SEMITONE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def contour_first(self) -> bool:
+        """Segment notes from the pyin f0 contour instead of repairing Basic Pitch's.
+
+        Melody mode only.  This is the end of the road ``pyin_refine`` -> ``pyin_semitone``
+        started down: each step trusted pyin further, and this one stops asking Basic Pitch
+        where the notes are at all.
+
+        **The claim the old division of labour rested on is false for monophonic input.**
+        ``_pyin_contour``'s docstring says "a frame-level f0 tracker has no note
+        segmentation of its own, so it cannot replace inference".  A monophonic note *is* a
+        run of stable pitch bounded by a voicing gap, so the segmentation is there — it was
+        never looked for.  Measured on the corpus at pyin's 23.2 ms hop:
+
+            voiced frames                     95.4-96.7% on every case measured
+            unvoiced holes inside a sung span 0 on every case but one (that one: 1 frame)
+            |raw f0 - truth|, per ref note    median 0.092 semitones on EVERY case,
+                                              vibrato_depth_2_0 (+-2.0 st at 5.5 Hz) included
+
+        So the contour carries both boundaries and pitch, to well under the semitone the
+        notation rounds to, on precisely the clips Basic Pitch fragments.  Note this also
+        retires the worry ``PYIN_MIN_VOICED_PROB`` raises: pyin's periodicity *value*
+        collapses under deep vibrato (median 0.28-0.33) while its voicing *decision* and its
+        pitch do not, and only the latter two are load-bearing here.
+
+        **Three segmentation rules were measured; only the third works.**  Scored offline as
+        onset within 150 ms AND correct rounded pitch, over 17 cases:
+
+            rule                                       mean f1   guards at 1.000   worst
+            deviation from a running median band         0.807       5 of 5        0.167
+            |median(left) - median(right)| change point   0.488       0 of 5        0.042
+            band + PERSISTENCE (this one)                 0.920      14 of 17       0.333
+
+        The band test fails because its cut condition scales with vibrato DEPTH: no band
+        narrow enough to see a 1-semitone step contains a 4-semitone peak-to-peak wobble,
+        so the two requirements contradict — the same contradiction ``WOBBLE_SEMITONES``
+        hit downstream, restated in the frequency domain.  The change-point test is
+        depth-invariant and unusable: the statistic is high across a plateau ~N frames wide
+        rather than at a point, so it cuts every genuine boundary two or three times and
+        breaks the clean guards (major_c 0.417, semitone_steps 0.560).
+
+        What separates the populations is neither amplitude nor stationarity but
+        PERSISTENCE: a vibrato excursion leaves the band and returns within a fraction of a
+        cycle, a note change leaves and stays.  See ``CONTOUR_PERSIST_FRAMES`` — its value
+        comes from the sine geometry rather than from the corpus.
+
+        On by default: scored over the full 38-case corpus it takes notes.f1 0.875 -> 0.937,
+        semitone_neighbour_ghosts 3.051 -> 0.410 and solfa.degree_accuracy 0.944 -> 0.996,
+        which is the offline segmentation metric above confirmed on the real gate.  Poly mode
+        ignores this flag outright: the rule assumes one voice, and a chord has no single
+        f0 contour to segment.
+
+        Two cases remain under the notes.f1 gate — ``vibrato_depth_1_8`` (0.429) and
+        ``vibrato_depth_2_0`` (0.400), both from 0.085/0.000 — and both now reach
+        solfa.degree_accuracy 1.000, so the syllables are right and the note COUNT is not.
+        Both over-segment because the pre-smoother passes enough of the wobble to leave
+        frames genuinely out of band; widening it was measured and makes them worse, so the
+        remedy is not a wider median.  See ``CONTOUR_PERSIST_FRAMES``, which records the
+        sweep and the ceiling.  Joining the fragments afterwards instead was measured too and
+        is also a failure — the numbers are under ``CONTOUR_FUSE_GAP_SEC``, along with the one
+        lead the two measurements leave standing.
+        """
+        return os.getenv("NF_CONTOUR_FIRST", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
+    def grid_refine(self) -> bool:
+        """Re-measure the tempo and the beat origin against the grid, over the whole clip.
+
+        Both are currently estimated from one sample and both are biased because of it.
+        ``_grid_bpm`` takes 60/median(inter-onset interval), which cannot express a tempo
+        whose beat period is not a whole number of frame hops — a true 96 BPM is 26.94 hops
+        at pyin's 23.2 ms, so the closest reachable answer is 27 hops = 95.70 BPM.  And
+        ``_beat_origin`` nails beat 0 to the first onset, the one sample a pitch tracker is
+        least sure of, so every other note inherits its error.
+
+        The two compound rather than merely coexisting.  Reproduced exactly over 99 quarter
+        notes, counting how many land in the wrong cell relative to their neighbours: the
+        phase bias alone misplaces 0, the 0.31% tempo bias alone misplaces 18, and the pair
+        together misplaces 55.  The phase bias adds no magnitude — it shifts which SIDE of
+        each boundary the residue sits on, so the early notes round one way and the late ones
+        the other.  On ``long_clip_over_pyin_cap`` that swept the residue from −0.185 to
+        +0.056 beats across 63 s, and each crossing cost exactly half a beat.  It is also why
+        correcting the phase on its own made that case worse: a ramp is a tempo error.
+
+        On by default.  It repairs ``long_clip_over_pyin_cap`` outright (notes.f1 0.242 ->
+        1.000 on the contour path) and helps the legacy inference path too, where it is worth
+        notes.f1 +0.002, solfa.syllable_accuracy +0.009 and tempo.abs_error −0.385 on its own.
+
+        One case moves the wrong way: ``drift_1_semitone`` 0.909 -> 0.818.  Its tempo comes
+        back 145 against a true 96 — a 1.5x metrical-level error — and refining ±1% around
+        the wrong level reshuffles placement within it.  That is the pre-existing defect
+        ``metrics.TEMPO_METRICAL_FACTORS`` exists to measure, not this rule misbehaving;
+        picking the level is ``_grid_bpm``'s job and this deliberately cannot reach another.
+
+        See ``_refine_grid``.  It cannot return a worse grid fit than it was handed — the
+        incumbent is a member of its own search space — but "closer to the grid" is not the
+        same claim as "closer to the truth", which is what the harness is for.
+        """
+        return os.getenv("NF_GRID_REFINE", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def key_ensemble(self) -> bool:
         """Vote over five music21 key profiles instead of music21's default one.
 

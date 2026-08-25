@@ -451,5 +451,21 @@ public class User : BaseEntity
         _deviceTokens.Add(DeviceToken.Create(Id, tokenValue, platform, utcNow));
     }
 
+    /// <summary>
+    /// Drops a device push token, so the server stops sending to it. Deleting rather than
+    /// flagging keeps <see cref="DeviceToken"/> a plain record of "somewhere we can reach you":
+    /// the client re-registers whenever the user turns notifications back on.
+    /// </summary>
+    /// <returns><c>true</c> when a token was removed; <c>false</c> when there was nothing to remove.</returns>
+    public bool RemoveDeviceToken(string tokenValue)
+    {
+        var existing = _deviceTokens.FirstOrDefault(t => t.Token == tokenValue);
+        if (existing is null)
+            return false;
+
+        _deviceTokens.Remove(existing);
+        return true;
+    }
+
     private static string NormalizeEmail(string email) => Guard.NotNullOrWhiteSpace(email).Trim().ToLowerInvariant();
 }
