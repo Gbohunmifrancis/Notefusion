@@ -2217,6 +2217,12 @@ _MAX_NOTATED_BPM = 200.0
 # the same evidence, but leaving the noisiest passing case a 4 % margin against onset
 # jitter that varies with the material.
 #
+# It is level-biased and no value of it could not be: a fixed onset jitter is a smaller
+# fraction of a step at a slower tempo, so of two readings of one performance the slower
+# always measures better here.  That is corrected downstream rather than by moving this
+# number — see the re-admission in ``_grid_bpm``, which is where the bias was measured
+# changing an answer.
+#
 # When nothing passes, ``_grid_bpm`` declines and librosa's estimate stands — the same
 # answer as before this existed.  That is not a rare path and not a failure: on
 # ``fast_sixteenths_c_major`` the detected onsets are ~38 ms from evenly spaced, which is
@@ -2248,6 +2254,21 @@ _GRID_FIT_BAND_SEC = 0.010
 # candidate still has to land on the grid — but past a factor of four the beat periods
 # are ones no listener would tap.
 _TEMPO_CANDIDATE_FACTORS = (0.25, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0, 1.5, 2.0, 3.0, 4.0)
+
+# Which ratios count as "the same performance, one level in" when re-admitting a candidate
+# the step filter rejected.  Doublings and their compounds only: 2, 3 and 4 are the ways one
+# beat subdivides into another beat, so a candidate at one of these ratios to an accepted one
+# is a re-notation of it.  1.5 and 2/3 are deliberately absent — a dotted relationship
+# changes which notes are beats rather than how many beats there are, so admitting one would
+# let the chooser invent a metre it has no evidence for.  An empty tuple disables the
+# re-admission entirely, which is how it was A/B'd.
+_OCTAVE_ADMIT_RATIOS = (2.0, 3.0, 4.0)
+
+# How exactly the ratio must hold.  The candidates are built by multiplying one measured
+# median, so partners are exact to floating point when they come from the factor family and
+# within a fraction of a percent when one of them came from librosa.  2% is loose enough for
+# the latter and far tighter than the 33% gap to the nearest ratio it must not reach.
+_OCTAVE_ADMIT_TOLERANCE = 0.02
 
 # ── Grid refinement (``_refine_grid``) ────────────────────────────────────────
 # How far the refinement may move the BPM it is handed, as a fraction.  1% cannot reach
@@ -2333,6 +2354,24 @@ def _grid_bpm(
     Declining (0.0) when nothing survives is deliberate: a clip whose onsets fit no
     simple grid is one this has nothing to say about, and librosa's answer is a better
     guess than the least-bad of a set of rejected ones.
+
+    Scored per case over the corpus, 33 of 39 land on the reference metrical level and the
+    six that do not are three separate things, only one of which is this function's:
+
+      * ``vibrato_depth_1_8``, ``vibrato_depth_2_0``, ``vibrato_rate_k20`` — over-segmented,
+        so the median interval is a vibrato fragment.  A note-count defect upstream; the
+        tempo is downstream of it.
+      * ``fast_sixteenths_c_major`` (4x) and ``triplets_eighth_c_major`` (1.5x) — the
+        shortest note is not expressible on the half-beat grid ``quantize_divisors`` ships
+        with, so the only reading that lands on it is one where that note becomes a half
+        beat.  Both score notes.f1 1.000: the notes are right in seconds and it is the tempo
+        mark and the note VALUES that are wrong.  The price of ``(2,)``, which is a measured
+        decision recorded at ``settings.quantize_divisors``, not a defect here.
+      * ``drift_1_semitone`` (1.5x) — the 1.5 reading genuinely fits better (bucket 3 against
+        5) because two of its eleven notes are wrong.  Its own notes.f1 is 0.818.
+
+    So there is no further clean level bug on this corpus, and a tiebreak invented to move
+    any of the six would be fitted to a defect that lives somewhere else.
     """
     onsets = np.array([e.start for e in events])
     if onsets.size < 4:
@@ -2350,15 +2389,43 @@ def _grid_bpm(
         # for instance — can still be carried by the tracker.
         candidates |= {tracked_bpm * factor for factor in (0.5, 1.0, 2.0)}
 
-    on_grid = []
+    in_range = []
     for bpm in candidates:
         if not _MIN_NOTATED_BPM <= bpm <= _MAX_NOTATED_BPM:
             continue
         steps, seconds = _grid_residual(onsets, bpm, divisors)
-        if steps <= _MAX_GRID_SLIP_STEPS:
-            on_grid.append((bpm, seconds))
+        in_range.append((bpm, steps, seconds))
+
+    on_grid = [(bpm, sec) for bpm, steps, sec in in_range if steps <= _MAX_GRID_SLIP_STEPS]
     if not on_grid:
         return 0.0
+
+    # The step filter above is level-biased and cannot help being: a fixed onset jitter is
+    # a smaller fraction of a step at a slower tempo, so of two readings of the SAME
+    # performance the slower one always measures better in steps.  Where that bias decides
+    # the outcome, the faster reading is admitted here so the preference gets to choose the
+    # notation instead.  The test for "same performance" is the seconds fit, which is the
+    # only level-fair unit (see ``_GRID_FIT_BAND_SEC``): an equal seconds fit at an integer
+    # ratio is one performance written two ways, and which way to write it is a question
+    # about tappability, not about fit.
+    #
+    # Admitted candidates carry their partner's seconds rather than their own, which is the
+    # whole point — they are admitted *because* the two fits are indistinguishable, so
+    # letting a 6 ms difference then win the ranking would just reintroduce the bias with
+    # the opposite sign.  Measured: without this, ``vibrato_heavy`` reports 48 against a
+    # true 96, its correct level having been filtered out at 0.323 steps while the halved
+    # one passed at 0.162 — with the two agreeing to the millisecond in seconds.
+    accepted = tuple(on_grid)
+    for bpm, steps, seconds in in_range:
+        if steps <= _MAX_GRID_SLIP_STEPS:
+            continue
+        for acc_bpm, acc_seconds in accepted:
+            ratio = bpm / acc_bpm
+            if abs(seconds - acc_seconds) > _GRID_FIT_BAND_SEC:
+                continue
+            if any(abs(ratio - r) <= _OCTAVE_ADMIT_TOLERANCE * r for r in _OCTAVE_ADMIT_RATIOS):
+                on_grid.append((bpm, acc_seconds))
+                break
 
     def rank(pair: tuple[float, float]) -> tuple[int, float]:
         bpm, seconds = pair

@@ -1336,6 +1336,167 @@ def test_a_tap_in_tempo_override_keeps_its_bpm_and_still_gets_its_phase_fixed():
     )
 
 
+# ── Metrical level — the step filter's slow bias, and re-admitting the partner ──
+
+# ``vibrato_heavy`` reported 48 BPM against a true 96 with every note otherwise correct
+# (notes.f1 1.000).  The cause is structural rather than a threshold: the step filter in
+# ``_grid_bpm`` asks "would rounding move these notes to another slot", which is genuinely a
+# question about steps — but a fixed onset jitter is a smaller *fraction* of a step at a
+# slower tempo, so of two readings of one performance the slower always measures better.
+# Measured on that clip: 95.703 was rejected at 0.323 steps and 47.852 accepted at 0.162,
+# with both at 0.1013 s.  Equal in seconds means one performance; the filter still split them.
+
+# Onsets at 96 BPM with a repeating 0.11 s scatter on three of every four, which is the shape
+# that reproduces the bias.  Its residual spectrum was searched for rather than guessed,
+# because a simpler jitter is commensurate with too many grids: an alternating displacement
+# lets 144 or 192 fit BETTER than 48, and then the choice under test never arises.  This one
+# gives, at divisor 2 — 48: 0.122 steps / 0.0762 s (accepted); 96: 0.244 steps / 0.0762 s
+# (rejected, and equal to the millisecond); 64: 0.228, 144: 0.327, 192: 0.205 (all rejected
+# with margin).  So the decision really is between 48 and 96 and nothing else can win on fit.
+_SCATTER_CYCLE_SEC = (0.0, 0.11, 0.11, 0.11)
+
+
+def _scattered_beat_onsets(n: int = 13, bpm: float = 96.0):
+    """``n`` beats at ``bpm``, each displaced by the measured-scale scatter cycle."""
+    import numpy as np
+
+    beat = 60.0 / bpm
+    scatter = [_SCATTER_CYCLE_SEC[k % len(_SCATTER_CYCLE_SEC)] for k in range(n)]
+    return np.arange(n) * beat + np.array(scatter)
+
+
+def _events_at(onsets, pitch: int = 60):
+    from app.pipeline.transcriber import Event
+
+    return [Event(start=float(t), end=float(t) + 0.3, pitch=pitch, amp=0.6) for t in onsets]
+
+
+def _with_admit_ratios(module, ratios, fn):
+    """Call ``fn`` with ``_OCTAVE_ADMIT_RATIOS`` replaced; an empty tuple is the off switch."""
+    saved = module._OCTAVE_ADMIT_RATIOS
+    module._OCTAVE_ADMIT_RATIOS = ratios
+    try:
+        return fn()
+    finally:
+        module._OCTAVE_ADMIT_RATIOS = saved
+
+
+def test_the_step_filter_prefers_the_slower_reading_of_the_same_performance():
+    """The bias itself, before any repair — asserted on the filter's own two units.
+
+    This is the premise every test below rests on, so it is measured here rather than
+    assumed: the two readings are one performance (identical seconds, which is the only
+    level-fair unit) and the filter still accepts one and rejects the other.
+    """
+    from app.pipeline.transcriber import _MAX_GRID_SLIP_STEPS, _grid_residual
+
+    onsets = _scattered_beat_onsets()
+    slow_steps, slow_sec = _grid_residual(onsets, 48.0, (2,))
+    true_steps, true_sec = _grid_residual(onsets, 96.0, (2,))
+
+    assert slow_sec == pytest.approx(true_sec, abs=1e-6), "same performance, same seconds"
+    assert true_steps == pytest.approx(2.0 * slow_steps, rel=1e-6), "steps scale with level"
+    assert slow_steps <= _MAX_GRID_SLIP_STEPS < true_steps, "and the filter splits them"
+
+
+def test_the_true_level_is_recovered_from_a_reading_the_filter_rejected():
+    """The repair: admitted as its partner, the faster reading wins on tappability.
+
+    Both halves matter.  Without the admission the answer is the halved one, so the rule is
+    load-bearing; with it the answer is the level the onsets were generated at, so the
+    preference — not a re-tuned threshold — is what chose it.
+    """
+    from app.pipeline import transcriber
+
+    events = _events_at(_scattered_beat_onsets())
+
+    without = _with_admit_ratios(transcriber, (), lambda: transcriber._grid_bpm(events, 0.0, (2,)))
+    with_it = transcriber._grid_bpm(events, 0.0, (2,))
+
+    assert without == pytest.approx(48.0, abs=0.5), "the bias, reproduced end to end"
+    assert with_it == pytest.approx(96.0, abs=0.5), "and corrected"
+
+
+def test_an_admitted_reading_cannot_win_on_a_fit_it_was_never_credited_with():
+    """The specificity that keeps the whole ``major_*`` family intact.
+
+    An admitted candidate carries its partner's seconds, not its own.  It has to: on
+    ``major_c`` the accepted 86.133 measures 0.0507 s and the rejected 172.266 measures
+    0.0443 — 6 ms apart, half a frame hop, and enough to straddle a ranking bucket.  Credited
+    with its own number the doubling would win on *fit* and the tempo would read 174; credited
+    with its partner's it can only win on tappability, which it loses.
+
+    The fixture is that shape, derived rather than searched: eighth notes at 172 BPM with
+    alternate onsets 96 ms late.  At divisor 2 that puts 86 inside the filter at 0.129 steps
+    and 172 outside it at 0.212, their seconds 8 ms apart — inside the admission band — and
+    172's own seconds a whole bucket BETTER.  So the two crediting rules give different
+    answers here, which is what makes the assertion mean something.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber
+
+    step = 60.0 / 86.0 / 2.0
+    n = 17
+    onsets = np.arange(n) * step + np.where(np.arange(n) % 2 == 1, 0.275 * step, 0.0)
+    events = _events_at(onsets)
+
+    slow_steps, slow_sec = transcriber._grid_residual(onsets, 86.0, (2,))
+    fast_steps, fast_sec = transcriber._grid_residual(onsets, 172.0, (2,))
+    assert slow_steps <= transcriber._MAX_GRID_SLIP_STEPS < fast_steps, "premise: filter splits"
+    assert abs(slow_sec - fast_sec) <= transcriber._GRID_FIT_BAND_SEC, "premise: admissible"
+    assert round(fast_sec / transcriber._GRID_FIT_BAND_SEC) < round(
+        slow_sec / transcriber._GRID_FIT_BAND_SEC
+    ), "premise: on its OWN seconds the doubling would win the ranking"
+
+    assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(86.0, abs=0.5)
+
+
+def test_a_dotted_relationship_is_never_admitted():
+    """1.5 is absent from the ratios on purpose, and its absence is what is asserted.
+
+    Doubling a tempo renotates the same beats; taking one and a half times it changes which
+    notes ARE beats, and the onsets carry no evidence for that.  ``triplets_eighth_c_major``
+    is what happens when a 1.5 reading is the only one a half-beat grid can express, and it
+    is a quantizer-divisor consequence rather than something the chooser should invent.
+    """
+    from app.pipeline import transcriber
+
+    assert 1.5 not in transcriber._OCTAVE_ADMIT_RATIOS
+    assert 2.0 / 3.0 not in transcriber._OCTAVE_ADMIT_RATIOS
+    for ratio in transcriber._OCTAVE_ADMIT_RATIOS:
+        assert ratio == pytest.approx(round(ratio)), "integer multiples only"
+
+
+def test_admission_needs_the_fits_to_agree_and_not_merely_the_ratio():
+    """A partner at the right ratio whose fit is genuinely worse stays rejected.
+
+    The ratio says the two readings *could* be the same performance; the seconds say whether
+    they are.  Without the seconds test this would admit any doubling of any survivor, which
+    is the runaway ``_GRID_REFINE_BAND`` warns about — at a fine enough grid everything fits.
+
+    Non-vacuous by construction: the premise asserts such a partner exists, so the ratio alone
+    really would have let it in.
+    """
+    from app.pipeline import transcriber
+
+    onsets = _scattered_beat_onsets()
+    events = _events_at(onsets)
+
+    accepted = 48.0
+    partner = 96.0
+    acc_sec = transcriber._grid_residual(onsets, accepted, (2,))[1]
+    far_sec = transcriber._grid_residual(onsets, accepted * 4.0, (2,))[1]
+    assert 4.0 in transcriber._OCTAVE_ADMIT_RATIOS, "premise: the ratio is one it accepts"
+    assert (
+        abs(far_sec - acc_sec) > transcriber._GRID_FIT_BAND_SEC
+    ), "premise: and this partner's fit disagrees, so only the seconds test excludes it"
+
+    assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(partner, abs=0.5), (
+        "the doubling is admitted on an equal fit; the quadrupling is not admitted at all"
+    )
+
+
 # ── Meta: the gate's own wiring ────────────────────────────────────────────────
 
 
