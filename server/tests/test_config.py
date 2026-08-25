@@ -62,3 +62,18 @@ class TestQuantizeDivisors:
         # music21 divides by the divisor; 0 would raise inside quantize().
         monkeypatch.setenv("NF_QUANTIZE_DIVISORS", "0,4")
         assert settings.quantize_divisors == (4,)
+
+
+class TestChromaticSpelling:
+    def test_defaults_to_direction(self, monkeypatch):
+        monkeypatch.delenv("NF_CHROMATIC_SPELLING", raising=False)
+        assert settings.chromatic_spelling == "direction"
+
+    @pytest.mark.parametrize("value", ["direction", "ascending", "descending"])
+    def test_accepts_supported_values(self, monkeypatch, value):
+        monkeypatch.setenv("NF_CHROMATIC_SPELLING", value)
+        assert settings.chromatic_spelling == value
+
+    def test_invalid_values_fall_back_to_direction(self, monkeypatch):
+        monkeypatch.setenv("NF_CHROMATIC_SPELLING", "flat-first")
+        assert settings.chromatic_spelling == "direction"

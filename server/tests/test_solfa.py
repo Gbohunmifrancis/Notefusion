@@ -153,3 +153,9 @@ def test_direction_does_not_move_the_octave_mark():
     _, up, _ = solfa.syllable(73, doh_pc=0, ref_doh_midi=60, ascending=True)
     _, down, _ = solfa.syllable(73, doh_pc=0, ref_doh_midi=60, ascending=False)
     assert up == down == "'"
+
+
+def test_resolve_ascending_honours_explicit_spelling_modes():
+    assert solfa.resolve_ascending(False, "direction") is False
+    assert solfa.resolve_ascending(False, "ascending") is True
+    assert solfa.resolve_ascending(True, "descending") is False
