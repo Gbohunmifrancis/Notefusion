@@ -27,6 +27,12 @@ Four groups:
                as the diagnostics, so ``vibrato_heavy`` is the origin of both axes.
                See VIBRATO_BREADTH_CASES.
 
+  Polyphonic   Two cases with a sounding accompaniment and a melody-only ground truth,
+               because "melody line only" is the decided behaviour for polyphonic input
+               and every other case in the file is monophonic.  The product's actual
+               failing input is a piano recording, so this is the group that measures
+               the complaint.  See POLYPHONIC_CASES.
+
 Read each diagnostic case against its OWN recorded baseline, not against
 ``diag_baseline``.  The control is not the easiest case in the group: on a clean
 sustained tone the pipeline reports the first C4 an octave up and emits four +12
@@ -102,6 +108,14 @@ class Case:
     notes: tuple[tuple[int | None, float], ...]  # (pitch_midi | None, dur_beats)
     options: RenderOptions
     tags: tuple[str, ...]
+    # Extra sounding voices on the same beat clock, in the same format as ``notes``.
+    # They make the AUDIO polyphonic without making the GROUND TRUTH polyphonic:
+    # ``synth.render`` emits no reference note for them, so a case with an
+    # accompaniment scores exactly the melody the pipeline is supposed to return in
+    # ``mode="melody"`` and charges every accompaniment note it reports as a false
+    # positive.  Empty for every monophonic case, which is why it is defaulted:
+    # spelling it out 39 times would be noise.
+    accompaniment: tuple[tuple[tuple[int | None, float], ...], ...] = ()
 
 
 # ── Melodic templates (semitones above the tonic, beats) ──────────────────────
@@ -456,11 +470,13 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     #     at 1.4 and 1.6 (giving up 45 and 25 correct fixes) and at 7.0 Hz (67), while
     #     4.0 Hz ({2: 52}) and 9.0 Hz ({1: 2, 2: 74}) have clean histograms and break
     #     anyway.  Tuning a second constant on the same one-point evidence.
-    #  4. It is unsafe in a mode this corpus cannot reach.  Every case here is
-    #     monophonic — measured 0 of 38 cases with any simultaneous reference notes,
-    #     and structurally so, not by accident: a case's notes are (pitch, dur_beats)
-    #     laid end to end, so simultaneity is inexpressible without a synth.py change.
-    #     But _transcribe_wav runs the same body for mode="poly", where a sus2, add9
+    #  4. It is unsafe in a mode this corpus cannot reach.  Every reference note here is
+    #     monophonic — measured 0 of 38 cases with any simultaneous reference notes when
+    #     this was written, and still 0 of 41 now that POLYPHONIC_CASES exists, because
+    #     an accompaniment sounds without producing a reference note (see
+    #     ``synth.render``).  So the polyphonic cases do NOT retire this reason: they
+    #     measure melody extraction from a mixture, not mode="poly".  And
+    #     _transcribe_wav runs the same body for mode="poly", where a sus2, add9
     #     or whole-tone dyad IS a fully overlapping 2-semitone pair.  The rule would
     #     collapse two sounding pitches onto one that is not being played.  This is the
     #     one reason the breadth cases below do NOT retire.
@@ -862,8 +878,98 @@ RHYTHM_CASES: tuple[Case, ...] = (
 )
 
 
-# ── Long clip: the multi-minute regime the short cases cannot reach ───────────
+# ── Polyphonic headroom: the texture the product's actual failing input has ────
 
+# Every case above is monophonic, so "melody line only" — the decided behaviour for
+# polyphonic input — was 0% measured, and the complaint that started the accuracy work
+# was a Fur Elise piano recording.  A rule cannot be gated on a corpus that cannot
+# express the input it is for, which is why these two exist.
+#
+# Both are ``DIAG_PHRASE`` at ``DIAG_TEMPO_BPM`` with an accompaniment added and every
+# ``RenderOptions`` field left at CLEAN, so ``diag_baseline`` is their exact monophonic
+# control and the accompaniment is the single variable — the same discipline the render
+# defect cases use.  And both accompany with the SAME harmony, so the pair differs in
+# texture only: one sustains the chord, the other breaks it into eighths.
+#
+# The reference notes stay the eleven melody notes.  An accompaniment note the pipeline
+# reports is therefore a false positive by construction, which is exactly the charge a
+# melody-extraction case has to be able to make — see ``synth.render``.
+#
+# Why the accompaniment tops out at G3 (55) while the melody bottoms at C4 (60): the two
+# hands must not share a pitch, or "the pipeline returned 60" would be unattributable and
+# a precision score would stop meaning anything.  The fourth of clear air also makes a
+# correct answer REACHABLE — take the top line — so these remain clips the pipeline
+# should get right, per the corpus rule at the top of this file.  They are still hard:
+# Basic Pitch fires on the accompaniment, and the f0 contour ``_contour_segments`` reads
+# is a mixture rather than one voice.
+#
+# Both were verified WRONG before being added rather than assumed to be hard, and the
+# measurement is sharper than "polyphony is hard" — it names one mechanism:
+#
+#   poly_block_chords   notes.f1 0.000, n_est 11 against n_ref 11, tempo 96 EXACT,
+#                       beats.f1 1.000.  Eleven segments in the right places with every
+#                       pitch 12 to 24 semitones low: [36, 50, 45, 46, 55, 50, 47, 48,
+#                       55, 52, 36] for a reference of [60, 62, 64, 65, 67, 69, 71, 72,
+#                       67, 64, 60].  So segmentation and tempo are unharmed and the
+#                       pipeline is transcribing the LEFT HAND — pyin returns the
+#                       lowest strong voice of a mixture, and nothing downstream asks
+#                       which voice that was.
+#   poly_alberti_bass   notes.f1 0.000, n_est 20, est_tempo 183 (~2x, the eighth-note
+#                       left hand), beats.f1 0.710, solfa.ghost_count 9.  The broken
+#                       chord also drags the GRID, which the block chords do not.
+#
+# ``solfa.degree_accuracy`` is 0.727 and 0.636 rather than 0.000 only because the
+# accompaniment is diatonic in the same key, so wrong-voice pitches still often land on
+# a right-looking degree.  Read notes.f1 here, not the solfa columns — that gap between
+# them is itself the warning that degree accuracy alone cannot see this defect.
+#
+# I - IV - I - V - I - I, one chord per two beats, six chords across the phrase's 12.
+_PROGRESSION: tuple[tuple[int, int, int], ...] = (
+    (48, 52, 55),  # C3 E3 G3
+    (41, 45, 48),  # F2 A2 C3
+    (48, 52, 55),
+    (43, 47, 50),  # G2 B2 D3
+    (48, 52, 55),
+    (48, 52, 55),
+)
+
+# Block chords: one voice per chord tone, each held its full two beats.  Three notes
+# sounding under the melody at once — the thickest texture in the corpus.
+BLOCK_CHORD_VOICES: tuple[tuple[tuple[int | None, float], ...], ...] = tuple(
+    tuple((chord[voice], 2.0) for chord in _PROGRESSION) for voice in range(3)
+)
+
+# Alberti bass: low-high-mid-high eighths, the figure Fur Elise's left hand actually
+# plays.  One voice, so the audio is only ever two notes thick — thinner than the block
+# chords and the harder case anyway, because it puts 24 competing onsets against the
+# melody's 11 and gives the contour a second line that never holds still.
+ALBERTI_VOICES: tuple[tuple[tuple[int | None, float], ...], ...] = (
+    tuple((chord[i], 0.5) for chord in _PROGRESSION for i in (0, 2, 1, 2)),
+)
+
+POLYPHONIC_CASES: tuple[Case, ...] = (
+    Case(
+        name="poly_block_chords_c_major",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=CLEAN,
+        tags=("polyphonic", "melody_line", "block_chords"),
+        accompaniment=BLOCK_CHORD_VOICES,
+    ),
+    Case(
+        name="poly_alberti_bass_c_major",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=DIAG_PHRASE,
+        options=CLEAN,
+        tags=("polyphonic", "melody_line", "alberti"),
+        accompaniment=ALBERTI_VOICES,
+    ),
+)
+
+
+# ── Long clip: the multi-minute regime the short cases cannot reach ───────────
 # Every other case in this corpus renders to between 3.71 and 8.82 seconds, so without this
 # one the long-clip regime was 0% measured while ``max_clip_seconds`` accepted 180.
 #
@@ -933,6 +1039,7 @@ CASES: tuple[Case, ...] = (
     + DIAGNOSTIC_CASES
     + VIBRATO_BREADTH_CASES
     + RHYTHM_CASES
+    + POLYPHONIC_CASES
     + LONG_CLIP_CASES
 )
 
@@ -948,6 +1055,13 @@ def corpus_fingerprint(cases: tuple[Case, ...] = CASES) -> str:
 
     Short (16 hex chars) because it only has to catch "this baseline was recorded
     against a different corpus", not resist tampering.
+
+    ``accompaniment`` is included only when a case HAS one.  Emitting it
+    unconditionally — even as an empty list — would change the fingerprint of all 39
+    monophonic cases whose audio is bit-identical, and the gate would then declare
+    every stored number incomparable on a change that moved no sample.  Same reason
+    the accompaniment gain is a module constant in ``synth`` rather than a
+    ``RenderOptions`` field, since ``asdict(case.options)`` is hashed here verbatim.
     """
     payload = json.dumps(
         [
@@ -958,6 +1072,11 @@ def corpus_fingerprint(cases: tuple[Case, ...] = CASES) -> str:
                 "notes": [list(note) for note in case.notes],
                 "options": asdict(case.options),
                 "tags": list(case.tags),
+                **(
+                    {"accompaniment": [[list(n) for n in v] for v in case.accompaniment]}
+                    if case.accompaniment
+                    else {}
+                ),
             }
             for case in cases
         ],

@@ -65,6 +65,19 @@ _SUSTAIN_LEVEL = 0.80
 _PLUCK_RAMP_SEC = 0.01
 _PLUCK_DECAY_RATE = 2.5
 
+# Per-voice level for accompaniment relative to the melody.  Deliberately NOT a
+# ``RenderOptions`` field: ``corpus.corpus_fingerprint`` hashes ``asdict(case.options)``, so a
+# new field there would change the fingerprint of all 39 pre-existing cases whose audio had
+# not moved one sample, and every stored baseline delta would be declared meaningless at once.
+#
+# 0.45 is chosen so the melody stays the loudest single voice — which is what "melody line
+# only" means musically, and what any saliency rule must be given a chance to exploit — while
+# a three-note left hand sums to roughly 1.35x it and therefore genuinely dominates the
+# spectrum.  A tracker that follows total energy rather than the top line will fail; one that
+# follows the strongest single line will not.  That is the discrimination the polyphonic cases
+# exist to make, so this constant is the knob to move if they turn out to measure nothing.
+_ACCOMPANIMENT_GAIN = 0.45
+
 # Fixed salt for the per-case noise seed.  zlib.crc32 rather than hash(),
 # because PYTHONHASHSEED randomises str hashing per process and the corpus has
 # to be reproducible across runs and machines.
@@ -129,13 +142,19 @@ def _noise_seed(
     notes: Sequence[tuple[int | None, float]],
     tempo_bpm: int,
     options: RenderOptions,
+    accompaniment: Sequence[Sequence[tuple[int | None, float]]] = (),
 ) -> int:
     """Deterministic seed derived from the render inputs.
 
     Different cases get different noise (so a defect cannot be masked by one
     lucky noise instance) while any single case is reproducible forever.
+
+    ``accompaniment`` is folded in only when there is one, so adding the parameter
+    left every pre-existing case's seed — and therefore its audio — bit-identical.
     """
     payload = repr((tuple(notes), tempo_bpm, options)).encode()
+    if accompaniment:
+        payload += repr(tuple(tuple(voice) for voice in accompaniment)).encode()
     return zlib.crc32(payload) ^ _SEED_SALT
 
 
@@ -201,29 +220,24 @@ def _tone(freq_hz: float, n_samples: int, sr: int, options: RenderOptions) -> np
     return tone
 
 
-def render(
-    notes: Sequence[tuple[int | None, float]],
-    tempo_bpm: int,
-    options: RenderOptions = RenderOptions(),
-    sr: int = SAMPLE_RATE,
-) -> tuple[np.ndarray, list[RefNote]]:
-    """Render ``notes`` to float64 audio plus its ground truth.
+def _lay_voice(
+    audio: np.ndarray,
+    voice: Sequence[tuple[int | None, float]],
+    beat_sec: float,
+    sr: int,
+    options: RenderOptions,
+    gain: float,
+) -> list[RefNote]:
+    """Mix one monophonic voice into ``audio`` from beat 0, returning what it sounded.
 
-    ``notes`` is a sequence of ``(pitch_midi | None, dur_beats)`` laid out
-    sequentially with no gap beyond explicit rests; ``None`` is a rest, which
-    advances both clocks but yields no ``RefNote``.  (Leading silence belongs in
-    ``options.lead_in_sec``, not in a leading rest — a leading rest would push
-    the first sounding note off beat 0 and confuse the shift diagnostic.)
+    Shared by the melody and by each accompaniment voice so the two cannot drift in
+    their sample arithmetic; the only differences are ``gain`` and whether the caller
+    keeps the returned notes.
     """
-    beat_sec = 60.0 / float(tempo_bpm)
-    total_beats = sum(float(dur_beats) for _, dur_beats in notes)
-    total_sec = options.lead_in_sec + total_beats * beat_sec + options.tail_sec
-    total_samples = int(round(total_sec * sr))
-    audio = np.zeros(total_samples, dtype=np.float64)
-
+    total_samples = audio.shape[0]
     refs: list[RefNote] = []
     cursor_beat = 0.0
-    for pitch_midi, dur_beats in notes:
+    for pitch_midi, dur_beats in voice:
         dur_beats = float(dur_beats)
         onset_sec = options.lead_in_sec + cursor_beat * beat_sec
         dur_sec = dur_beats * beat_sec
@@ -236,9 +250,11 @@ def render(
             end_samp = min(int(round((onset_sec + dur_sec) * sr)), total_samples)
             n_samples = end_samp - start_samp
             if n_samples > 0:
-                audio[start_samp:end_samp] += _tone(
-                    _midi_to_hz(int(pitch_midi)), n_samples, sr, options
-                ) * _envelope(n_samples, sr, options.sustained)
+                audio[start_samp:end_samp] += (
+                    _tone(_midi_to_hz(int(pitch_midi)), n_samples, sr, options)
+                    * _envelope(n_samples, sr, options.sustained)
+                    * gain
+                )
                 # Only notes that actually produced samples become ground
                 # truth; scoring against an inaudible note would charge the
                 # pipeline for a miss it could not avoid.
@@ -253,6 +269,46 @@ def render(
                 )
 
         cursor_beat += dur_beats
+    return refs
+
+
+def render(
+    notes: Sequence[tuple[int | None, float]],
+    tempo_bpm: int,
+    options: RenderOptions = RenderOptions(),
+    sr: int = SAMPLE_RATE,
+    accompaniment: Sequence[Sequence[tuple[int | None, float]]] = (),
+) -> tuple[np.ndarray, list[RefNote]]:
+    """Render ``notes`` to float64 audio plus its ground truth.
+
+    ``notes`` is a sequence of ``(pitch_midi | None, dur_beats)`` laid out
+    sequentially with no gap beyond explicit rests; ``None`` is a rest, which
+    advances both clocks but yields no ``RefNote``.  (Leading silence belongs in
+    ``options.lead_in_sec``, not in a leading rest — a leading rest would push
+    the first sounding note off beat 0 and confuse the shift diagnostic.)
+
+    ``accompaniment`` is zero or more further voices in the same format, each
+    starting at beat 0 on the same clock, mixed into the same buffer at
+    ``_ACCOMPANIMENT_GAIN``.  They sound but they **do not** produce ``RefNote``s:
+    the ground truth of a melody-extraction case is the melody, and an
+    accompaniment note the pipeline reports is a false positive by definition, which
+    is precisely what such a case has to be able to charge it for.  Notes stacked
+    across voices are what makes the audio polyphonic — a single voice cannot be,
+    since its notes are laid end to end.
+    """
+    beat_sec = 60.0 / float(tempo_bpm)
+    # Longest voice sets the length, so an accompaniment that outlasts the melody is
+    # not silently truncated.  With no accompaniment this is the melody's own sum.
+    total_beats = max(
+        [sum(float(dur_beats) for _, dur_beats in voice) for voice in (notes, *accompaniment)]
+    )
+    total_sec = options.lead_in_sec + total_beats * beat_sec + options.tail_sec
+    total_samples = int(round(total_sec * sr))
+    audio = np.zeros(total_samples, dtype=np.float64)
+
+    refs = _lay_voice(audio, notes, beat_sec, sr, options, 1.0)
+    for voice in accompaniment:
+        _lay_voice(audio, voice, beat_sec, sr, options, _ACCOMPANIMENT_GAIN)
 
     # Normalise the tone bed *before* noise so noise_rms is an absolute level
     # and the SNR of a case is a property of the case, not of how many
@@ -262,7 +318,7 @@ def render(
         audio *= options.peak / peak
 
     if options.noise_rms > 0.0 and total_samples:
-        rng = np.random.default_rng(_noise_seed(notes, tempo_bpm, options))
+        rng = np.random.default_rng(_noise_seed(notes, tempo_bpm, options, accompaniment))
         # Noise covers the lead-in and tail too: a real room has a floor
         # everywhere, and silent silence would make the lead-in case easier
         # than the recordings it stands in for.
