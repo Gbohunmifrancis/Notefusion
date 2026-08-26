@@ -19,7 +19,14 @@ public sealed class DeviceTokenConfiguration : IEntityTypeConfiguration<DeviceTo
         builder.Property(t => t.Platform).HasMaxLength(10).IsRequired();
         builder.Property(t => t.CreatedAt).IsRequired();
         builder.Property(t => t.UpdatedAt).IsRequired();
+        builder.Property(t => t.AppBuild).IsRequired();
+        builder.Property(t => t.NotifiedBuild).IsRequired();
 
         builder.HasIndex(t => new { t.UserId, t.Token }).IsUnique();
+
+        // The update-notice sweep's whole predicate, so it does not table-scan device_tokens every
+        // interval. Ordered build-then-notified because the first column is the selective one: once
+        // a release has propagated, almost no row is still behind on AppBuild.
+        builder.HasIndex(t => new { t.AppBuild, t.NotifiedBuild });
     }
 }

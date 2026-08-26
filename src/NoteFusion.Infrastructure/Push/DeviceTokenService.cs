@@ -22,7 +22,7 @@ public sealed class DeviceTokenService : IDeviceTokenService
     }
 
     public async Task<Result> RegisterAsync(
-        Guid userId, string token, string platform, CancellationToken cancellationToken = default)
+        Guid userId, string token, string platform, int appBuild, CancellationToken cancellationToken = default)
     {
         var user = await _db.Users
             .Include(u => u.DeviceTokens)
@@ -31,7 +31,7 @@ public sealed class DeviceTokenService : IDeviceTokenService
         if (user is null)
             return Error.NotFound("Device.UserNotFound", "The user was not found.");
 
-        user.RegisterDeviceToken(token, platform, _clock.UtcNow);
+        user.RegisterDeviceToken(token, platform, appBuild, _clock.UtcNow);
         await _db.SaveChangesAsync(cancellationToken);
         return Result.Success();
     }

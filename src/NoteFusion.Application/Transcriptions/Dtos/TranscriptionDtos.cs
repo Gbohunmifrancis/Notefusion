@@ -57,7 +57,8 @@ public sealed record TranscriptionResultDto(
     IReadOnlyList<string> SolfaLines,
     double OverallConfidence,
     string AudioPreviewBase64 = "",
-    bool PitchRefined = true);
+    bool PitchRefined = true,
+    string ChromaticSpelling = "direction");
 
 /// <summary>
 /// Polling envelope for a transcription job.

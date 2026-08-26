@@ -11,6 +11,7 @@ using NoteFusion.Infrastructure.Geo;
 using NoteFusion.Infrastructure.Media;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
+using NoteFusion.Infrastructure.Push.Workers;
 using NoteFusion.Infrastructure.Security;
 using NoteFusion.Infrastructure.Transcriptions.Workers;
 
@@ -84,6 +85,12 @@ public static class DependencyInjection
     private static void AddPush(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IDeviceTokenService, DeviceTokenService>();
+
+        // What the stores carry. Both build numbers default to zero, which means "announce nothing,
+        // block nobody" — so a deploy that forgets AppRelease__LatestBuild is silent rather than wrong.
+        var release = configuration.GetSection("AppRelease").Get<AppReleaseSettings>() ?? new AppReleaseSettings();
+        services.AddSingleton(release);
+        services.AddHostedService<AppUpdateNoticeWorker>();
 
         // Push provider: Expo in production, logging otherwise. The switch is a single DI line
         // (see IPushSender). Default to the logging sender so local/dev runs need no credentials.

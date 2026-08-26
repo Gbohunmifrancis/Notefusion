@@ -8,7 +8,12 @@ using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Devices.Commands;
 
-public sealed record RegisterDeviceCommand(string Token, string Platform) : IRequest<Result>;
+/// <param name="AppBuild">
+/// The build this device is running. Registration runs on every sign-in, so this is how the server
+/// learns which devices are behind a store release — and therefore who the update notice is for.
+/// Zero from an older client, which reads as "behind".
+/// </param>
+public sealed record RegisterDeviceCommand(string Token, string Platform, int AppBuild = 0) : IRequest<Result>;
 
 public sealed class RegisterDeviceCommandValidator : AbstractValidator<RegisterDeviceCommand>
 {
@@ -16,6 +21,7 @@ public sealed class RegisterDeviceCommandValidator : AbstractValidator<RegisterD
     {
         RuleFor(x => x.Token).NotEmpty();
         RuleFor(x => x.Platform).NotEmpty().Must(p => p is "ios" or "android" or "web");
+        RuleFor(x => x.AppBuild).GreaterThanOrEqualTo(0);
     }
 }
 
@@ -47,7 +53,7 @@ public sealed class RegisterDeviceCommandHandler : IRequestHandler<RegisterDevic
         if (user is null)
             return UserErrors.NotFound;
 
-        user.RegisterDeviceToken(request.Token, request.Platform, _clock.UtcNow);
+        user.RegisterDeviceToken(request.Token, request.Platform, request.AppBuild, _clock.UtcNow);
         await _db.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
