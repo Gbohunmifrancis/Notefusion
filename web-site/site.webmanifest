@@ -1,7 +1,7 @@
 {
   "name": "NoteFusion",
   "short_name": "NoteFusion",
-  "description": "Tonic Solfa and staff notation from anything you record.",
+  "description": "NoteFusion transcribes recorded or imported melodies into movable-do Tonic Solfa and staff notation.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#f4f7fc",

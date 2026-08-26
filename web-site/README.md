@@ -1,7 +1,7 @@
 # NoteFusion public web
 
 The marketing site and the privacy policy. No build step, no framework — plain
-HTML, two CSS files, and one small script. Open `index.html` in a browser and you
+HTML, two CSS files, and two small scripts. Open `index.html` in a browser and you
 are looking at production.
 
 ```
@@ -13,6 +13,7 @@ sitemap.xml           the three public URLs
 assets/theme.css      design tokens, copied from mobile/src/design/theme.ts
 assets/landing.css    landing page layout
 assets/landing.js     sticky-header border + reveal-on-scroll, nothing else
+assets/pricing.js     location-aware pricing from /api/billing/public-plans
 assets/mark.png       brand mark, white silhouette recoloured with a CSS mask
 assets/app-onboarding.jpg  hero, front device   ┐ derived — see
 assets/app-splash.jpg      hero, back device    │   ../tools/build-assets.py

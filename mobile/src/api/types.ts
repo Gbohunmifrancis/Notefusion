@@ -152,6 +152,12 @@ export interface Plan {
   interval: BillingInterval;
 }
 
+/** Anonymous, location-resolved pricing used by the public website. */
+export interface PublicPricing {
+  countryCode: string | null;
+  plans: Plan[];
+}
+
 /**
  * A hosted-checkout session. The app opens {@link checkoutUrl} in an external
  * browser (Spotify-style) and never collects card details; the result arrives
