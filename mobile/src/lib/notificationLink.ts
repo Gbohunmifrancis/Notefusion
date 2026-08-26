@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createNavigationContainerRef } from '@react-navigation/native';
 import { transcriptionsApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
+import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
 import { synthesizeMelodyWavBase64 } from './synth';
 import { isExpoGo } from './env';
@@ -66,6 +67,38 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
 }
 
 /**
+ * Screens a notification may ask for by name, and how to get there. Doubles as the allow-list: a
+ * `screen` the server did not send — or one from an older build — finds no entry here and is ignored,
+ * so an unexpected payload cannot reach the navigator with a route it does not have.
+ *
+ * Deliberately just the destinations something actually sends. Adding one is a line here and the
+ * matching `Data["screen"]` on the server.
+ */
+const LINKS: Record<string, () => void> = {
+  /** `NotifySubscriptionExpiringCommand` has been sending this since it was written. */
+  Upgrade: () => navigationRef.navigate('Upgrade'),
+  /** `NotifyAdminsOfPaymentIssuesCommand` — the screen with the Reconcile button. */
+  AdminPayments: () => navigationRef.navigate('AdminPayments'),
+  AdminWebhooks: () => navigationRef.navigate('AdminWebhooks'),
+  /**
+   * `NotifyAppUpdateCommand`. Goes to the store, not a screen: there is nothing in the app to
+   * show someone whose whole problem is that the app is out of date.
+   */
+  AppUpdate: () => void openStoreListing(),
+  /**
+   * The daily practice reminder. `Record` is a **tab**, not a root-stack route, so it needs the
+   * nested form — `navigate('Record')` would find no such route and silently do nothing.
+   */
+  Record: () => navigationRef.navigate('Tabs', { screen: 'Record' }),
+};
+
+/**
+ * A tap waiting for the authenticated stack. `job` carries a job id and costs an API call to resolve;
+ * `screen` is a name from {@link LINKS}.
+ */
+type PendingTap = { kind: 'job' | 'screen'; value: string };
+
+/**
  * Wires notification taps to the screens they refer to.
  *
  * @param ready Whether the authenticated stack is mounted. A tap that launched the app arrives while
@@ -73,7 +106,7 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
  * are held until this turns true rather than dropped.
  */
 export function useNotificationDeepLink(ready: boolean): void {
-  const [pending, setPending] = useState<string | null>(null);
+  const [pending, setPending] = useState<PendingTap | null>(null);
 
   // Both sources below can report the same tap. Without this the drain effect would run twice and
   // push Result on top of itself.
@@ -85,15 +118,22 @@ export function useNotificationDeepLink(ready: boolean): void {
 
     const Notifications = require('expo-notifications') as typeof import('expo-notifications');
 
-    const jobIdOf = (response: unknown): string | null => {
+    const tapOf = (response: unknown): PendingTap | null => {
       const data = (response as { notification?: { request?: { content?: { data?: unknown } } } })
-        ?.notification?.request?.content?.data as { jobId?: unknown } | undefined;
-      return typeof data?.jobId === 'string' ? data.jobId : null;
+        ?.notification?.request?.content?.data as
+        | { jobId?: unknown; screen?: unknown }
+        | undefined;
+
+      // A job id first: it names a specific result, where `screen` only names a place.
+      if (typeof data?.jobId === 'string') return { kind: 'job', value: data.jobId };
+      if (typeof data?.screen === 'string' && data.screen in LINKS)
+        return { kind: 'screen', value: data.screen };
+      return null;
     };
 
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
-      const jobId = jobIdOf(response);
-      if (jobId) setPending(jobId);
+      const tap = tapOf(response);
+      if (tap) setPending(tap);
     });
 
     // The listener above covers a running app. A tap that started the app from cold may already have
@@ -103,8 +143,8 @@ export function useNotificationDeepLink(ready: boolean): void {
       .then((response) => {
         if (cancelled || !response) return;
         if (Date.now() - response.notification.date > COLD_START_FRESH_MS) return;
-        const jobId = jobIdOf(response);
-        if (jobId) setPending(jobId);
+        const tap = tapOf(response);
+        if (tap) setPending(tap);
       })
       .catch(() => undefined);
 
@@ -115,9 +155,17 @@ export function useNotificationDeepLink(ready: boolean): void {
   }, []);
 
   useEffect(() => {
-    if (!ready || !pending || handled.current === pending) return;
-    handled.current = pending;
+    if (!ready || !pending) return;
+
+    const key = `${pending.kind}:${pending.value}`;
+    if (handled.current === key) return;
+    handled.current = key;
     setPending(null);
-    void openTranscriptionFromNotification(pending);
+
+    if (pending.kind === 'job') {
+      void openTranscriptionFromNotification(pending.value);
+      return;
+    }
+    if (navigationRef.isReady()) LINKS[pending.value]?.();
   }, [ready, pending]);
 }

@@ -58,6 +58,26 @@ const pristine = (notes: NoteEvent[]): Draft => ({
   origins: notes.map((_, i) => i),
 });
 
+/**
+ * Threads a note list the piano handed back onto the draft it was given.
+ *
+ * `origins` is what lets "Revert" find a note's pristine pitch, so a list corrected on
+ * another screen cannot simply replace `notes` — the two halves would drift the moment
+ * the piano deleted anything. Correcting a note never moves it in time and deleting one
+ * never reorders the rest, so walking both lists by onset recovers the mapping.
+ */
+function realign(next: NoteEvent[], from: Draft): Draft {
+  const last = from.origins.length - 1;
+  const origins: number[] = [];
+  let j = 0;
+  for (const n of next) {
+    while (j < last && from.notes[j]!.startBeat < n.startBeat) j++;
+    origins.push(from.origins[Math.min(j, last)]!);
+    j++;
+  }
+  return { notes: next, origins };
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
@@ -151,7 +171,12 @@ export function ResultScreen({ route, navigation }: Props) {
     () =>
       key === result.key && !edited
         ? { notes: result.notes, solfaLines: result.solfaLines }
-        : deriveSolfa(draft.notes, key, result.timeSignature),
+        : deriveSolfa(
+            draft.notes,
+            key,
+            result.timeSignature,
+            result.chromaticSpelling ?? "direction",
+          ),
     [
       draft.notes,
       edited,
@@ -281,6 +306,32 @@ export function ResultScreen({ route, navigation }: Props) {
     if (flagged.length === 0) return;
     setReviewQueue(flagged);
     setEditing(flagged[0]);
+  }
+
+  /**
+   * Opens the piano on this transcription.
+   *
+   * `view.notes` rather than `result.notes`: a correction already made, or a key
+   * override, is the version worth practising and the version worth repairing. The
+   * piano edits nothing itself — `onApply` brings the list back here, and this screen
+   * still holds the only rollback path, exactly as the correction sheet does.
+   */
+  function openPiano(pianoMode: "play" | "correct") {
+    navigation.navigate("Piano", {
+      mode: pianoMode,
+      notes: view.notes,
+      tempoBpm: result.tempo,
+      timeSignature: result.timeSignature,
+      musicalKey: key,
+      title: committedTitle ?? route.params.title ?? "Play along",
+      savedId,
+      onApply: (notes) => {
+        const next = realign(notes, draft);
+        setDraft(next);
+        setPreview(synthesizeMelodyWavBase64(next.notes, result.tempo));
+        void commitNotes(next);
+      },
+    });
   }
 
   /** ±1 for a semitone, ±12 for an octave. Clamped to the range the server also enforces. */
@@ -601,21 +652,26 @@ export function ResultScreen({ route, navigation }: Props) {
           <ConfidenceBadge value={overallConfidence} />
         </View>
 
-        {/* Low-confidence warning — now with somewhere to go. Tapping walks just
-            the flagged notes, which is otherwise a hunt through a long strip. */}
+        {/* Low-confidence warning — now with somewhere to go. Tapping opens the piano
+            on the flagged piece: a doubtful note is a *pitch* question, and the
+            fastest answer to one is pressing the key and hearing it. The stepper is
+            still there for a note that is only a semitone out — the notes grid opens
+            it — so nothing is lost by making this the wider door. */}
         {lowCount > 0 && (
           <Touchable
             style={styles.warnRow}
-            onPress={startReview}
+            onPress={() => openPiano("correct")}
             // A full-bleed row inside the card: a deeper press would pull it away
             // from both card edges at once.
             scaleTo={motion.scale.row}
-            accessibilityLabel={`Review ${lowCount} low-confidence notes`}
+            accessibilityLabel={`Fix ${lowCount} low-confidence notes on the piano`}
           >
             <View style={styles.warnDot} />
             <Text style={styles.warnText}>
               {lowCount} note{lowCount > 1 ? "s" : ""} below 50% confidence —{" "}
-              <Text style={styles.warnLink}>review {lowCount > 1 ? "them" : "it"} →</Text>
+              <Text style={styles.warnLink}>
+                fix {lowCount > 1 ? "them" : "it"} on the piano →
+              </Text>
             </Text>
           </Touchable>
         )}
@@ -711,6 +767,18 @@ export function ResultScreen({ route, navigation }: Props) {
           title="Play back"
           onCurrentNoteChange={setPlayingNote}
           style={styles.playerCard}
+        />
+      ) : null}
+
+      {/* Play it yourself. Sends the piece as it stands, not the model's original: a
+          correction the user has just made is the version worth practising. */}
+      {draft.notes.length > 0 ? (
+        <Button
+          label="Play it yourself"
+          icon="musical-notes"
+          variant="secondary"
+          onPress={() => openPiano("play")}
+          style={styles.gameButton}
         />
       ) : null}
 
@@ -1114,6 +1182,10 @@ const makeStyles = (c: Palette) =>
   },
 
   playerCard: {
+    marginBottom: spacing.xl,
+  },
+
+  gameButton: {
     marginBottom: spacing.xl,
   },
 

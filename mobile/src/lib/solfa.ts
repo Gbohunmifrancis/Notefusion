@@ -74,6 +74,8 @@ const DESCENDING_SYLLABLES = [
 /** Diatonic degree for each semitone above doh (ascending/sharp convention). */
 const SEMITONE_TO_DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7] as const;
 
+export type ChromaticSpelling = "direction" | "ascending" | "descending";
+
 const NATURAL_PITCH_CLASS: Readonly<Record<string, number>> = {
   c: 0,
   d: 2,
@@ -209,6 +211,12 @@ export function ascendingFlags(pitches: readonly number[]): boolean[] {
   return flags;
 }
 
+function resolveAscending(flag: boolean, spelling: ChromaticSpelling): boolean {
+  if (spelling === "ascending") return true;
+  if (spelling === "descending") return false;
+  return flag;
+}
+
 export interface Syllable {
   solfa: string;
   octaveMark: string;
@@ -247,6 +255,64 @@ function beatsPerBar(timeSignature: string): number {
   return (num * 4) / den;
 }
 
+/** Mirrors app/pipeline/solfa_render.py. */
+function renderSolfaLines(
+  notes: readonly NoteEvent[],
+  header: string,
+  timeSignature: string,
+  divisionsPerBeat = 2,
+): string[] {
+  if (notes.length === 0) return [header];
+  const cellBeats = 1 / Math.max(1, divisionsPerBeat);
+  const barBeats = beatsPerBar(timeSignature);
+  const cellsPerBar = Math.max(1, Math.round(barBeats * divisionsPerBeat));
+  const maxEnd = Math.max(...notes.map((n) => n.startBeat + Math.max(0, n.durBeats)));
+  const barCount = Math.max(1, Math.ceil(maxEnd / barBeats - 1e-9));
+  const ordered = [...notes].sort((a, b) => a.startBeat - b.startBeat || a.durBeats - b.durBeats);
+  const startsByCell = new Map<number, NoteEvent[]>();
+  const quantizedStart = new Map<NoteEvent, number>();
+  for (const note of ordered) {
+    // Match Python's explicit half-up grid rounding; Math.round differs only at ties.
+    const cellIndex = Math.floor(note.startBeat / cellBeats + 0.5);
+    quantizedStart.set(note, cellIndex * cellBeats);
+    if (cellIndex >= 0 && cellIndex < barCount * cellsPerBar) {
+      const starts = startsByCell.get(cellIndex) ?? [];
+      starts.push(note);
+      startsByCell.set(cellIndex, starts);
+    }
+  }
+  const cells: string[] = [];
+
+  for (let cell = 0; cell < barCount * cellsPerBar; cell++) {
+    const start = cell * cellBeats;
+    const end = start + cellBeats;
+    const starts = startsByCell.get(cell) ?? [];
+    const active = ordered.filter(
+      (n) => {
+        const quantized = quantizedStart.get(n) ?? n.startBeat;
+        return quantized < end - 1e-9 && quantized + Math.max(0, n.durBeats) > start + 1e-9;
+      },
+    );
+    if (starts.length > 0) {
+      cells.push(starts.map((n) => `${n.solfa}${n.octaveMark}`).join("+"));
+    } else if (active.length > 0) {
+      cells.push("-");
+    } else {
+      cells.push("_");
+    }
+  }
+
+  const bars: string[] = [];
+  for (let i = 0; i < cells.length; i += cellsPerBar) {
+    bars.push(cells.slice(i, i + cellsPerBar).join(" "));
+  }
+  const lines = [header];
+  for (let i = 0; i < bars.length; i += 4) {
+    lines.push(`| ${bars.slice(i, i + 4).join(" | ")} |`);
+  }
+  return lines;
+}
+
 export interface DerivedSolfa {
   /** The same notes with solfa/octaveMark/degree filled in for this key. */
   notes: NoteEvent[];
@@ -263,6 +329,7 @@ export function deriveSolfa(
   notes: readonly NoteEvent[],
   keyText: string,
   timeSignature: string,
+  chromaticSpelling: ChromaticSpelling = "direction",
 ): DerivedSolfa {
   const key = parseKey(keyText);
   if (!key || notes.length === 0) return { notes: [...notes], solfaLines: [] };
@@ -285,7 +352,7 @@ export function deriveSolfa(
   const inMelodicOrder = ascendingFlags(melodic.map((i) => notes[i]!.pitchMidi));
   const ascending: boolean[] = new Array(notes.length).fill(true);
   melodic.forEach((storageIndex, k) => {
-    ascending[storageIndex] = inMelodicOrder[k]!;
+    ascending[storageIndex] = resolveAscending(inMelodicOrder[k]!, chromaticSpelling);
   });
 
   const labelled = notes.map((n, i) => ({
@@ -293,20 +360,7 @@ export function deriveSolfa(
     ...syllable(n.pitchMidi, dohPc, refDoh, ascending[i]),
   }));
 
-  // Group into bars by absolute beat, mirroring the worker's measure grouping.
-  const perBar = beatsPerBar(timeSignature);
-  const bars: string[][] = [];
-  for (const n of labelled) {
-    const i = Math.max(0, Math.floor(n.startBeat / perBar));
-    while (bars.length <= i) bars.push([]);
-    bars[i]!.push(n.solfa + n.octaveMark);
-  }
-
-  const cells = bars.map((b) => (b.length > 0 ? b.join(" ") : "-"));
-  const solfaLines = [dohHeader(dohPc)];
-  for (let i = 0; i < cells.length; i += 4) {
-    solfaLines.push(`| ${cells.slice(i, i + 4).join(" | ")} |`);
-  }
+  const solfaLines = renderSolfaLines(labelled, dohHeader(dohPc), timeSignature);
 
   return { notes: labelled, solfaLines };
 }

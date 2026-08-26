@@ -487,6 +487,10 @@ $RECYCLE.BIN/
 # ── NoteFusion: Python ML worker ─────────────────────────────
 .venv/
 server/.pytest_cache/
+# A pytest --basetemp left behind, and unreadable even to its owner. Untracked and
+# unignored, it stopped `eas build` dead: the upload walks the whole repo from the git
+# root, and a directory it cannot scandir is an EPERM rather than a skip.
+server/.pytest-tmp/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -554,3 +558,11 @@ server/tests/accuracy/report.json
 mobile/store/.build/
 mobile/store/out/device/
 mobile/store/out/parts/
+
+# ── NoteFusion: walkthrough video frames ─────────────────────
+# 15 MB of PNG that `node mobile/store/video.mjs` rebuilds from tracked source —
+# nothing here is an upload. The deliverable is the cut video and SHOTLIST.md,
+# which IS tracked; these are the editor's raw material. Un-ignore
+# `out/video/frame/` if the edit ever moves to a machine that can't run the render.
+mobile/store/.build-video/
+mobile/store/out/video/

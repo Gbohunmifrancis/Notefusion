@@ -69,6 +69,8 @@ export interface TranscriptionResult {
   notes: NoteEvent[];
   solfaLines: string[];
   overallConfidence: number;
+  /** Chromatic spelling convention used by the worker; old results default to direction. */
+  chromaticSpelling?: "direction" | "ascending" | "descending";
   /**
    * Base64-encoded 16-bit PCM WAV audio preview synthesised server-side from
    * the note list (numpy + soundfile — no system audio libraries required).
@@ -181,6 +183,25 @@ export interface Subscription {
    * that prints a date has to check this first or it shows the year 9999.
    */
   isLifetime: boolean;
+}
+
+// --- App release --------------------------------------------------------
+
+/**
+ * What the stores carry, from `GET /api/app/version`. Mirrors `AppVersionDto`.
+ *
+ * Compare against `Application.nativeBuildVersion` — the **builds**, never the version
+ * strings, because `"1.10.0" < "1.9.0"` lexically. Both build numbers are 0 on a server
+ * that has not been told about a release, which means "announce nothing, block nobody".
+ */
+export interface AppVersionInfo {
+  latestVersion: string;
+  latestBuild: number;
+  /** Below this, the app must not be usable. See `lib/appUpdate.ts`. */
+  minimumBuild: number;
+  releaseNotes: string;
+  androidStoreUrl: string;
+  iosStoreUrl: string;
 }
 
 // --- API errors ---------------------------------------------------------

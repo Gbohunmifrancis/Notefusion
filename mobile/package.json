@@ -23,6 +23,7 @@
     "@sentry/react-native": "^8.22.0",
     "axios": "^1.7.9",
     "expo": "^56.0.18",
+    "expo-application": "~56.0.3",
     "expo-asset": "~56.0.21",
     "expo-audio": "~56.0.13",
     "expo-constants": "~56.0.22",
@@ -56,6 +57,7 @@
   "devDependencies": {
     "@types/react": "~19.2.0",
     "babel-preset-expo": "~56.0.18",
+    "lottie-web": "5.13.0",
     "opensheetmusicdisplay": "^2.1.2",
     "typescript": "~6.0.3"
   },

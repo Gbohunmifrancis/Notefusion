@@ -29,6 +29,16 @@ export interface DialogOptions {
   tone?: "brand" | "premium" | "danger";
   /** Defaults to a single "OK", matching `Alert.alert` with no buttons. */
   actions?: DialogAction[];
+  /**
+   * Removes every way out except the actions: the backdrop stops dismissing and the Android
+   * back button does nothing. For the one case that has no "later" — a build below the
+   * minimum the server will serve, where letting the user past the dialog only lands them
+   * on a screen that cannot work.
+   *
+   * Withholding a `cancel` action is not enough on its own, because both dismissal paths
+   * call `onResolve(undefined)`, which still closes the dialog.
+   */
+  blocking?: boolean;
 }
 
 interface Props {
@@ -105,6 +115,12 @@ export function AppDialog({ visible, options, onResolve }: Props) {
   // sheet) become a list instead — four stacked gradient buttons is a wall, not a choice.
   const emphasised = rest.length === 1;
 
+  /** The backdrop and the Android back button. Both dead while `blocking`. */
+  const dismiss = () => {
+    if (shown?.blocking) return;
+    onResolve(cancel);
+  };
+
   const tone = shown?.tone ?? "brand";
   const toneColor =
     tone === "premium" ? c.premium : tone === "danger" ? c.danger : c.accent;
@@ -128,9 +144,9 @@ export function AppDialog({ visible, options, onResolve }: Props) {
       animationType="fade"
       statusBarTranslucent
       // Android hardware back resolves the same way a backdrop tap does.
-      onRequestClose={() => onResolve(cancel)}
+      onRequestClose={dismiss}
     >
-      <Pressable style={styles.overlay} onPress={() => onResolve(cancel)}>
+      <Pressable style={styles.overlay} onPress={dismiss}>
         <Animated.View style={[styles.cardWrap, cardStyle]}>
           {/* Swallows taps on the card so they don't reach the dismissing backdrop. */}
           <Pressable style={styles.card} onPress={() => undefined}>

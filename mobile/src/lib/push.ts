@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+import * as Application from 'expo-application';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -25,6 +26,9 @@ import { isExpoGo } from './env';
 const PUSH_KEY = '@notefusion_push';
 const SOUND_KEY = '@notefusion_sound';
 const ASKED_KEY = '@notefusion_push_asked';
+
+/** Android channel for the daily practice nudge. See {@link ensureRemindersChannel}. */
+export const REMINDER_CHANNEL_ID = 'reminders';
 
 /** Both default to on, matching the switches' initial state. */
 let pushOn = true;
@@ -220,6 +224,7 @@ export async function registerForPushAsync(
       // has no idea which theme the app is in anyway.
       lightColor: colors.accent,
     });
+    await ensureRemindersChannel();
   }
 
   const projectId =
@@ -231,7 +236,35 @@ export async function registerForPushAsync(
   const token = tokenResponse.data;
 
   const platform = Platform.OS === 'ios' ? 'ios' : Platform.OS === 'android' ? 'android' : 'web';
-  await devicesApi.register(token, platform).catch(() => undefined);
+  // The build this handset is running, so the server's update notice can skip anyone already
+  // on the latest. `nativeBuildVersion` is a string on both platforms and null in Expo Go —
+  // which cannot reach here anyway — and 0 reads server-side as "unknown, assume behind".
+  await devicesApi
+    .register(token, platform, Number(Application.nativeBuildVersion ?? 0) || 0)
+    .catch(() => undefined);
 
   return token;
+}
+
+/**
+ * The channel practice reminders arrive on, separate from `default`/"Transcriptions".
+ *
+ * Android surfaces channels individually in system settings, so this is what lets someone mute
+ * a daily nudge without also muting "your transcription is ready" — which they asked for and
+ * are waiting on. Exported because the reminder scheduler runs without any push registration:
+ * a local notification needs no token, so it cannot rely on `registerForPushAsync` having run.
+ */
+export async function ensureRemindersChannel(): Promise<void> {
+  if (isExpoGo || Platform.OS !== 'android') return;
+  try {
+    const Notifications = require('expo-notifications') as typeof import('expo-notifications');
+    await Notifications.setNotificationChannelAsync(REMINDER_CHANNEL_ID, {
+      name: 'Practice reminders',
+      importance: Notifications.AndroidImportance.DEFAULT,
+      lightColor: colors.accent,
+    });
+  } catch {
+    // No notifications module, or the OS refused. The reminder still schedules; on a device
+    // without the channel Android files it under the app's default one.
+  }
 }

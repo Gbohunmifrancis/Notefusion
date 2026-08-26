@@ -49,6 +49,14 @@ import type { NoteEvent } from "../api/types";
  *
  * PRD honesty rule: each note head is tinted by its own confidence (green / amber
  * / red), so a low-confidence note is as visible on the stave as it is in the grid.
+ *
+ * ── Who renders this ──────────────────────────────────────────────────────────
+ * Nothing, at present: `ScoreView` (a WebView around OpenSheetMusicDisplay) took
+ * over the in-app stave on the Result screen. What is still live is the *glyph
+ * table* below — `CLEF_ART`, `SIG_STEP_SHARP` / `SIG_STEP_FLAT`, `ACCIDENTAL_INK`
+ * and the three accidental components — which `PianoStaff` imports rather than
+ * authoring a second treble clef. Those exports exist for that reason alone; the
+ * component itself is kept for the day a stave has to render without a WebView.
  */
 
 interface Props {
@@ -68,8 +76,8 @@ interface Props {
 // ─── Geometry ─────────────────────────────────────────────────────────────────
 
 /** Pixels between two adjacent staff lines. One diatonic step is half of this. */
-const LINE_GAP = 12;
-const STEP = LINE_GAP / 2;
+export const LINE_GAP = 12;
+export const STEP = LINE_GAP / 2;
 /** Note-head radii. */
 const HEAD_RX = 6.2;
 const HEAD_RY = 4.6;
@@ -78,16 +86,14 @@ const STEM = LINE_GAP * 2.8;
 /** Horizontal slot each note occupies. */
 const NOTE_W = 30;
 /** Padding after a barline before the next bar's first note. */
-const BAR_PAD = 10;
+export const BAR_PAD = 10;
 /** Left margin before the clef, and the gaps either side of the key signature. */
-const HEAD_PAD = 6;
+export const HEAD_PAD = 6;
 /** Gap between two adjacent key-signature glyphs. Wide enough to cover the
  *  stroke overhang either side, which the ink widths below exclude. */
-const SIG_PACK = 2.5;
+export const SIG_PACK = 2.5;
 /** Gap between an accidental's right edge and the head it belongs to. */
-const ACC_GAP = 2.5;
-/** Stroke width the clef artwork is drawn at, in pixels. */
-const CLEF_STROKE = 2.3;
+export const ACC_GAP = 2.5;
 
 /**
  * Ink box of each accidental glyph, in pixels relative to its (x, y) anchor:
@@ -95,7 +101,7 @@ const CLEF_STROKE = 2.3;
  * reserve horizontal space and the vertical pair to keep a high sharp in the key
  * signature from clipping out of the top of the SVG.
  */
-const ACCIDENTAL_INK: Record<Accidental, { w: number; up: number; down: number }> = {
+export const ACCIDENTAL_INK: Record<Accidental, { w: number; up: number; down: number }> = {
   sharp: { w: 7.5, up: 6, down: 6 },
   flat: { w: 6, up: 10, down: 5 },
   natural: { w: 5.4, up: 8, down: 8 },
@@ -107,8 +113,8 @@ const ACCIDENTAL_INK: Record<Accidental, { w: number; up: number; down: number }
  * D5 A4 E5 B4 and the flats at B4 E5 A4 D5 G4 C5 F4, which differ for F, G and C
  * because a flat sequence descends where a sharp sequence climbs.
  */
-const SIG_STEP_SHARP = [35, 36, 37, 38, 39, 33, 34] as const;
-const SIG_STEP_FLAT = [35, 36, 37, 31, 32, 33, 34] as const;
+export const SIG_STEP_SHARP = [35, 36, 37, 38, 39, 33, 34] as const;
+export const SIG_STEP_FLAT = [35, 36, 37, 31, 32, 33, 34] as const;
 
 /** Quarter-note beats per bar. "6/8" → 3 (six eighths = three quarters). Falls back to 4. */
 function beatsPerBar(timeSignature: string): number {
@@ -117,7 +123,7 @@ function beatsPerBar(timeSignature: string): number {
   return (num * 4) / den;
 }
 
-interface Clef {
+export interface Clef {
   kind: "treble" | "bass";
   /** Absolute diatonic step sitting on the top staff line. */
   topLineStep: number;
@@ -131,11 +137,11 @@ interface Clef {
   sigOffset: number;
 }
 
-const TREBLE: Clef = { kind: "treble", topLineStep: 38, refStep: 32, sigOffset: 0 };
-const BASS: Clef = { kind: "bass", topLineStep: 26, refStep: 24, sigOffset: -14 };
+export const TREBLE: Clef = { kind: "treble", topLineStep: 38, refStep: 32, sigOffset: 0 };
+export const BASS: Clef = { kind: "bass", topLineStep: 26, refStep: 24, sigOffset: -14 };
 
 /** Treble unless the melody's median sits well below the treble staff. */
-function pickClef(notes: readonly NoteEvent[]): Clef {
+export function pickClef(notes: readonly NoteEvent[]): Clef {
   if (notes.length === 0) return TREBLE;
   const sorted = [...notes].map((n) => n.pitchMidi).sort((a, b) => a - b);
   const median = sorted[sorted.length >> 1]!;
@@ -147,55 +153,54 @@ function pickClef(notes: readonly NoteEvent[]): Clef {
 // ─── Clef artwork ─────────────────────────────────────────────────────────────
 
 /**
- * Both clefs are authored with **one unit = one staff space** and the origin on
- * the clef's own reference line — the G line for the treble, the F line for the
- * bass. Rendering is therefore `translate(x, referenceLineY) scale(LINE_GAP)`,
- * which is correct at any staff size: change LINE_GAP and the clef follows.
+ * The same clef the engraver draws.
  *
- * `ink` is the measured bounding box of the sampled curves in the same units
- * (.preview/clef_author.py renders and reports it). The layout cursor places the
- * clef by its ink, not by a guessed column width, and folds the vertical extent
- * into the SVG box so the tail cannot clip.
+ * `ScoreView` renders the stave with OpenSheetMusicDisplay, which draws through
+ * VexFlow 1.2.93 and its Gonville glyph outlines — so the clef a user sees after
+ * recording comes from `vexflow/src/fonts/vexflow_font.js`, glyphs `v83` (treble)
+ * and `v79` (bass). These are those two outlines, converted once: VexFlow renders
+ * them at `point: 40` against 10 px line spacing, which works out to 347.22 font
+ * units per staff space, and its font is y-up while SVG is y-down. Dividing by the
+ * former and negating the latter lands both clefs in the units below. The bass
+ * clef's two dots are part of its outline, so `dots` is empty for both.
+ *
+ * The units are therefore **one unit = one staff space**, with the origin on the
+ * clef's own reference line — the G line for the treble, the F line for the bass,
+ * which is where a font puts its baseline. Rendering is
+ * `translate(x, referenceLineY) scale(LINE_GAP)`, correct at any staff size:
+ * change LINE_GAP and the clef follows.
+ *
+ * These are filled outlines, not stroked skeletons, which is what makes them read
+ * as engraving rather than as a sketch of one. `ink` is the tight bounding box of
+ * the curves, sampled at conversion time. The layout cursor places the clef by its
+ * ink, not by a guessed column width, and folds the vertical extent into the SVG
+ * box so the tail cannot clip.
  */
-interface ClefArt {
+export interface ClefArt {
   paths: readonly string[];
   dots: readonly { cx: number; cy: number; r: number }[];
   ink: { x0: number; x1: number; y0: number; y1: number };
 }
 
-const CLEF_ART: Record<Clef["kind"], ClefArt> = {
+export const CLEF_ART: Record<Clef["kind"], ClefArt> = {
   treble: {
     paths: [
-      // The spine: top tip, down through the staff, into the tail hook.
-      "M 1.08 -3.80 C 1.20 -2.70, 1.31 -1.40, 1.34 -0.06" +
-        " C 1.37 0.98, 1.31 1.72, 1.13 2.22" +
-        " C 0.96 2.70, 0.50 2.88, 0.25 2.60" +
-        " C 0.06 2.38, 0.16 2.04, 0.44 2.00",
-      // The crook, the left-bulging upper loop, and the spiral eye on the G line.
-      "M 1.08 -3.80 C 1.02 -4.24, 0.44 -4.22, 0.18 -3.78" +
-        " C 0.00 -3.46, 0.04 -3.16, 0.12 -2.96" +
-        " C 0.20 -2.34, 0.02 -1.74, 0.36 -1.04" +
-        " C 0.74 -0.40, 2.00 -0.86, 2.10 -0.20" +
-        " C 2.20 0.46, 1.72 0.90, 1.20 0.82" +
-        " C 0.72 0.74, 0.52 0.20, 0.74 -0.18" +
-        " C 0.94 -0.50, 1.44 -0.48, 1.52 -0.14",
+      "M 1.405 -4.317 C 1.411 -4.32 1.417 -4.32 1.426 -4.32 C 1.46 -4.32 1.5 -4.291 1.558 -4.219 C 1.791 -3.951 1.956 -3.485 1.956 -3.105 C 1.956 -3.076 1.95 -3.053 1.95 -3.024 C 1.924 -2.572 1.74 -2.2 1.374 -1.849 L 1.276 -1.754 L 1.241 -1.716 L 1.241 -1.705 L 1.261 -1.619 L 1.293 -1.463 L 1.325 -1.319 C 1.368 -1.123 1.385 -1.022 1.385 -1.022 C 1.385 -1.022 1.385 -1.022 1.385 -1.022 C 1.385 -1.022 1.397 -1.022 1.411 -1.025 C 1.426 -1.025 1.472 -1.031 1.521 -1.031 C 1.555 -1.031 1.59 -1.025 1.607 -1.025 C 2.013 -0.973 2.327 -0.683 2.416 -0.274 C 2.434 -0.207 2.439 -0.135 2.439 -0.063 C 2.439 0.325 2.206 0.697 1.817 0.873 C 1.794 0.887 1.786 0.89 1.786 0.89 L 1.786 0.893 C 1.786 0.893 1.803 0.959 1.817 1.034 L 1.86 1.253 L 1.901 1.428 C 1.924 1.541 1.935 1.621 1.935 1.693 C 1.935 1.757 1.927 1.814 1.912 1.881 C 1.814 2.281 1.466 2.52 1.103 2.52 C 0.924 2.52 0.74 2.462 0.579 2.333 C 0.435 2.212 0.372 2.102 0.372 1.958 C 0.372 1.705 0.576 1.526 0.789 1.526 C 0.864 1.526 0.939 1.549 1.011 1.593 C 1.132 1.676 1.187 1.803 1.187 1.927 C 1.187 2.117 1.054 2.304 0.827 2.318 L 0.804 2.318 L 0.821 2.33 C 0.916 2.37 1.011 2.39 1.103 2.39 C 1.336 2.39 1.555 2.272 1.688 2.068 C 1.763 1.953 1.803 1.817 1.803 1.682 C 1.803 1.63 1.794 1.578 1.783 1.521 C 1.783 1.515 1.774 1.469 1.763 1.426 C 1.699 1.115 1.662 0.933 1.662 0.933 C 1.662 0.933 1.662 0.933 1.662 0.933 C 1.656 0.933 1.644 0.933 1.636 0.939 C 1.607 0.945 1.547 0.959 1.521 0.962 C 1.457 0.971 1.397 0.973 1.339 0.973 C 0.775 0.973 0.251 0.593 0.069 0.032 C 0.023 -0.118 -0.003 -0.268 -0.003 -0.418 C -0.003 -0.717 0.092 -1.011 0.276 -1.273 C 0.478 -1.558 0.68 -1.803 0.927 -2.056 L 1.014 -2.146 L 0.994 -2.252 L 0.956 -2.428 L 0.907 -2.652 C 0.893 -2.736 0.876 -2.817 0.873 -2.834 C 0.858 -2.929 0.85 -3.021 0.85 -3.116 C 0.85 -3.479 0.968 -3.828 1.189 -4.107 C 1.256 -4.193 1.374 -4.308 1.405 -4.317",
+      "M 1.581 -3.747 C 1.575 -3.747 1.567 -3.747 1.558 -3.747 C 1.44 -3.747 1.287 -3.637 1.184 -3.476 C 1.077 -3.318 1.022 -3.108 1.022 -2.892 C 1.022 -2.834 1.025 -2.773 1.034 -2.713 C 1.043 -2.67 1.045 -2.641 1.068 -2.537 L 1.109 -2.356 C 1.12 -2.301 1.129 -2.258 1.129 -2.252 L 1.129 -2.252 C 1.132 -2.252 1.221 -2.35 1.25 -2.385 C 1.538 -2.71 1.711 -3.053 1.748 -3.355 C 1.751 -3.384 1.751 -3.407 1.751 -3.436 C 1.751 -3.525 1.74 -3.612 1.719 -3.658 C 1.696 -3.704 1.644 -3.741 1.581 -3.747",
+      "M 1.146 -1.521 C 1.14 -1.561 1.132 -1.593 1.132 -1.598 C 1.132 -1.598 1.132 -1.598 1.129 -1.598 C 1.123 -1.598 0.999 -1.454 0.913 -1.354 C 0.766 -1.175 0.611 -0.962 0.547 -0.858 C 0.426 -0.654 0.366 -0.426 0.366 -0.202 C 0.366 -0.055 0.395 0.086 0.446 0.222 C 0.602 0.622 0.959 0.873 1.348 0.873 C 1.394 0.873 1.446 0.87 1.495 0.861 C 1.558 0.85 1.636 0.827 1.636 0.818 L 1.636 0.818 C 1.636 0.818 1.63 0.789 1.621 0.757 L 1.538 0.346 L 1.472 0.037 L 1.428 -0.176 L 1.382 -0.383 C 1.359 -0.507 1.351 -0.539 1.351 -0.539 C 1.351 -0.539 1.351 -0.541 1.348 -0.541 C 1.331 -0.541 1.238 -0.495 1.198 -0.467 C 1.048 -0.363 0.971 -0.199 0.971 -0.037 C 0.971 0.115 1.045 0.268 1.189 0.357 C 1.221 0.377 1.233 0.395 1.233 0.415 C 1.233 0.418 1.233 0.426 1.233 0.429 C 1.227 0.464 1.207 0.478 1.178 0.478 C 1.166 0.478 1.152 0.475 1.135 0.467 C 0.87 0.351 0.691 0.078 0.691 -0.222 L 0.691 -0.222 C 0.691 -0.567 0.907 -0.867 1.238 -0.985 L 1.256 -0.991 L 1.227 -1.135 L 1.146 -1.521",
+      "M 1.578 -0.559 C 1.555 -0.562 1.532 -0.562 1.515 -0.562 C 1.509 -0.562 1.5 -0.562 1.495 -0.562 L 1.48 -0.562 L 1.492 -0.51 L 1.552 -0.228 L 1.59 -0.043 L 1.63 0.138 L 1.711 0.539 L 1.742 0.691 C 1.754 0.732 1.76 0.766 1.763 0.766 C 1.763 0.766 1.763 0.766 1.763 0.766 C 1.765 0.766 1.814 0.737 1.846 0.714 C 1.993 0.611 2.102 0.449 2.143 0.282 C 2.157 0.228 2.163 0.17 2.163 0.115 C 2.163 -0.219 1.915 -0.521 1.578 -0.559",
     ],
     dots: [],
-    ink: { x0: 0.0524, x1: 2.1133, y0: -4.1202, y1: 2.7327 },
+    ink: { x0: -0.003, x1: 2.439, y0: -4.32, y1: 2.52 },
   },
   bass: {
     paths: [
-      // Head on the F line, over the top, then a tail sweeping down and left.
-      "M 0.16 0.46 C 0.10 -0.30, 0.60 -0.92, 1.24 -0.86" +
-        " C 1.86 -0.80, 2.16 -0.20, 2.10 0.44" +
-        " C 1.98 1.42, 1.24 2.10, 0.30 2.52" +
-        " C 0.06 2.62, -0.12 2.66, -0.28 2.66",
+      "M 0.884 -1.005 C 0.907 -1.011 0.93 -1.011 0.956 -1.011 C 1.057 -1.011 1.175 -0.999 1.276 -0.979 C 1.748 -0.881 2.074 -0.562 2.134 -0.135 C 2.14 -0.089 2.143 -0.046 2.143 0 C 2.143 0.259 2.053 0.593 1.901 0.873 C 1.538 1.529 0.876 2.002 0.081 2.174 C 0.066 2.174 0.055 2.177 0.04 2.177 C 0.012 2.177 -0.003 2.16 -0.003 2.134 C -0.003 2.105 0.003 2.097 0.06 2.074 C 0.971 1.731 1.578 0.991 1.633 0.161 C 1.636 0.118 1.636 0.069 1.636 0.032 C 1.636 -0.372 1.512 -0.671 1.273 -0.821 C 1.169 -0.887 1.057 -0.919 0.936 -0.919 C 0.668 -0.919 0.395 -0.766 0.268 -0.51 C 0.262 -0.49 0.242 -0.446 0.242 -0.444 C 0.242 -0.444 0.242 -0.444 0.242 -0.444 C 0.242 -0.444 0.245 -0.446 0.253 -0.449 C 0.317 -0.49 0.386 -0.51 0.458 -0.51 C 0.559 -0.51 0.665 -0.467 0.74 -0.386 C 0.809 -0.311 0.847 -0.21 0.847 -0.118 C 0.847 0.069 0.708 0.259 0.492 0.279 C 0.478 0.279 0.464 0.282 0.449 0.282 C 0.21 0.282 0.017 0.063 0.017 -0.213 C 0.017 -0.219 0.017 -0.228 0.017 -0.23 C 0.029 -0.642 0.406 -0.979 0.884 -1.005",
+      "M 2.416 -0.619 C 2.422 -0.622 2.425 -0.622 2.434 -0.622 C 2.454 -0.622 2.477 -0.619 2.483 -0.613 C 2.555 -0.593 2.589 -0.53 2.589 -0.469 C 2.589 -0.418 2.563 -0.366 2.511 -0.337 C 2.491 -0.323 2.465 -0.32 2.439 -0.32 C 2.399 -0.32 2.356 -0.337 2.327 -0.374 C 2.304 -0.403 2.292 -0.435 2.292 -0.467 C 2.292 -0.539 2.339 -0.611 2.416 -0.619",
+      "M 2.416 0.323 C 2.422 0.323 2.425 0.323 2.434 0.323 C 2.454 0.323 2.477 0.325 2.483 0.331 C 2.555 0.351 2.589 0.415 2.589 0.475 C 2.589 0.527 2.563 0.579 2.511 0.605 C 2.491 0.619 2.465 0.625 2.439 0.625 C 2.399 0.625 2.356 0.605 2.327 0.57 C 2.304 0.541 2.292 0.51 2.292 0.475 C 2.292 0.403 2.339 0.334 2.416 0.323",
     ],
-    dots: [
-      { cx: 2.52, cy: -0.5, r: 0.14 },
-      { cx: 2.52, cy: 0.5, r: 0.14 },
-    ],
-    ink: { x0: -0.28, x1: 2.66, y0: -0.8639, y1: 2.66 },
+    dots: [],
+    ink: { x0: -0.003, x1: 2.589, y0: -1.011, y1: 2.177 },
   },
 };
 
@@ -348,12 +353,12 @@ interface Model {
 }
 
 /** y of a diatonic step in model space (origin at the top staff line's step). */
-function yOfStep(step: number, topLineStep: number): number {
+export function yOfStep(step: number, topLineStep: number): number {
   return (topLineStep - step) * STEP;
 }
 
 /** The key signature to draw, falling back to C major when the key is unreadable. */
-function resolveKey(musicalKey: string | null | undefined): KeySignature {
+export function resolveKey(musicalKey: string | null | undefined): KeySignature {
   const parsed = parseKey(musicalKey);
   return parsed === null ? C_MAJOR : keySignatureFor(parsed.tonicPitchClass, parsed.mode);
 }
@@ -473,8 +478,8 @@ function buildModel(
   let maxY = yOfStep(bottomLineStep, clef.topLineStep);
 
   const refY = yOfStep(clef.refStep, clef.topLineStep);
-  minY = Math.min(minY, refY + art.ink.y0 * LINE_GAP - CLEF_STROKE / 2);
-  maxY = Math.max(maxY, refY + art.ink.y1 * LINE_GAP + CLEF_STROKE / 2);
+  minY = Math.min(minY, refY + art.ink.y0 * LINE_GAP);
+  maxY = Math.max(maxY, refY + art.ink.y1 * LINE_GAP);
 
   for (const g of keySig) {
     minY = Math.min(minY, g.y - ACCIDENTAL_INK[g.kind].up);
@@ -600,7 +605,7 @@ function AccidentalGlyph({
 }
 
 /** Two verticals crossed by two slightly-rising bars. */
-function Sharp({ x, y, color }: { x: number; y: number; color: string }) {
+export function Sharp({ x, y, color }: { x: number; y: number; color: string }) {
   return (
     <G stroke={color} strokeWidth={1.1}>
       <Line x1={x + 2} y1={y - 5} x2={x + 2} y2={y + 6} />
@@ -612,7 +617,7 @@ function Sharp({ x, y, color }: { x: number; y: number; color: string }) {
 }
 
 /** A stem rising well above the line, with a bowl bulging right of its foot. */
-function Flat({ x, y, color }: { x: number; y: number; color: string }) {
+export function Flat({ x, y, color }: { x: number; y: number; color: string }) {
   return (
     <G stroke={color} strokeWidth={1.3} fill="none" strokeLinecap="round">
       <Line x1={x + 1} y1={y - 9.5} x2={x + 1} y2={y + 4} />
@@ -622,7 +627,7 @@ function Flat({ x, y, color }: { x: number; y: number; color: string }) {
 }
 
 /** Two offset verticals joined by two bars — the box that cancels an alteration. */
-function Natural({ x, y, color }: { x: number; y: number; color: string }) {
+export function Natural({ x, y, color }: { x: number; y: number; color: string }) {
   return (
     <G stroke={color} strokeWidth={1.2}>
       <Line x1={x + 0.9} y1={y - 7.5} x2={x + 0.9} y2={y + 4} />
@@ -635,18 +640,17 @@ function Natural({ x, y, color }: { x: number; y: number; color: string }) {
 
 // ─── Clef (drawn, so it recolours for dark mode and stays crisp when scaled) ──
 
-function ClefGlyph({ clef, x, color }: { clef: Clef; x: number; color: string }) {
+export function ClefGlyph({ clef, x, color }: { clef: Clef; x: number; color: string }) {
   const art = CLEF_ART[clef.kind];
   const refY = yOfStep(clef.refStep, clef.topLineStep);
   return (
     <G
       transform={`translate(${x}, ${refY}) scale(${LINE_GAP})`}
-      stroke={color}
-      // The whole group is scaled by LINE_GAP, so the stroke has to be divided by
-      // it to come out at CLEF_STROKE pixels on screen.
-      strokeWidth={CLEF_STROKE / LINE_GAP}
-      fill="none"
-      strokeLinecap="round"
+      // Filled, not stroked: these are real glyph outlines, so the shape *is* the
+      // ink and the counters (the treble's spiral eye) are reverse-wound subpaths
+      // that only read as holes under a fill.
+      fill={color}
+      stroke="none"
     >
       {art.paths.map((d, i) => (
         <Path key={i} d={d} />
@@ -694,13 +698,13 @@ const TS_BASELINE = 0.36;
 const TS_DIGIT_W = TS_FONT * 0.677;
 
 /** Width the meter needs, so 12/8 reserves more room than 4/4. */
-function meterWidth(timeSignature: string): number {
+export function meterWidth(timeSignature: string): number {
   const [num, den] = timeSignature.split("/");
   if (!num || !den) return 0;
   return Math.max(num.length, den.length) * TS_DIGIT_W;
 }
 
-function TimeSignature({
+export function TimeSignature({
   timeSignature,
   x,
   midY,

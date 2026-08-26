@@ -3,15 +3,17 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
 import { useTheme } from '../lib/theme';
+import { useAppUpdatePrompt } from '../lib/appUpdate';
+import { useReminderWindow } from '../lib/practiceReminder';
 import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
 import { ResultScreen } from '../screens/ResultScreen';
-import { ProfileScreen } from '../screens/ProfileScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
+import { PianoScreen } from '../screens/PianoScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -52,6 +54,20 @@ export function RootNavigator() {
   // is for.
   useNotificationDeepLink(Boolean(user));
 
+  // "There's a newer version in the store" — checked here rather than on a screen because it has
+  // to reach whichever screen the user happens to be on, and because the blocking case must not
+  // be escapable by navigating.
+  //
+  // Gated on the splash being done rather than on being signed in: someone whose build is below
+  // the minimum gets rejected at sign-in, so the login screen is exactly where they end up and
+  // exactly where the dialog has to reach them. (A dialog over the splash reads as a crash, which
+  // is why it is gated at all — hooks run above the early return below.)
+  useAppUpdatePrompt(!initializing && !themeLoading);
+
+  // Re-tops the 14-day reminder window whenever the app comes forward. Local scheduling has no
+  // server to keep it filled, so this is the only thing that stops the window running out.
+  useReminderWindow(Boolean(user));
+
   // Hold the splash for the stored theme as well as the session: mounting the
   // navigator light and repainting it dark a frame later is the flash the
   // preference exists to avoid.
@@ -59,7 +75,13 @@ export function RootNavigator() {
 
   return (
     <NavigationContainer ref={navigationRef} theme={navTheme}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* `orientation: 'portrait'` here rather than in app.json, which is inverted to
+          `default` on purpose: iOS reads `expo.orientation` into
+          `UISupportedInterfaceOrientations`, and a runtime lock can never *exceed*
+          that list — so the only way one screen rotates is for the manifest to allow
+          both and every screen but that one to lock itself down. Inherited by
+          `AuthNavigator` and `TabNavigator`; overridden once, on `Piano`. */}
+      <Stack.Navigator screenOptions={{ headerShown: false, orientation: 'portrait' }}>
         {user ? (
           <>
             <Stack.Screen name="Tabs" component={TabNavigator} />
@@ -67,11 +89,6 @@ export function RootNavigator() {
               name="Result"
               component={ResultScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
-            />
-            <Stack.Screen
-              name="Profile"
-              component={ProfileScreen}
-              options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen
               name="Settings"
@@ -87,6 +104,18 @@ export function RootNavigator() {
               name="Upgrade"
               component={UpgradeScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+            {/* The one landscape screen in the app: a keyboard wide enough to hit and a
+                stave long enough to read ahead on do not both fit across a portrait
+                phone. */}
+            <Stack.Screen
+              name="Piano"
+              component={PianoScreen}
+              options={{
+                presentation: 'card',
+                animation: 'slide_from_bottom',
+                orientation: 'landscape',
+              }}
             />
 
             {/* Admin. Registered for every session rather than gated here: the

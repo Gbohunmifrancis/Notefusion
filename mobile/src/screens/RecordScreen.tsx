@@ -26,6 +26,7 @@ import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
 import { showDialog } from "../lib/dialog";
+import { markPractisedToday } from "../lib/practiceReminder";
 import * as haptics from "../lib/haptics";
 import {
   enablePush,
@@ -121,6 +122,23 @@ const LEVEL_GOOD_DBFS = -18; // comfortably loud — meter reads "good" from her
 // banner appears. Short dips (breaths, pauses between phrases) shouldn't
 // trigger a nag — only a sustained quiet stretch should.
 const QUIET_GUIDANCE_DELAY_MS = 1200;
+
+/**
+ * Ceilings on the OS text-size setting, for the two kinds of text this screen cannot let grow freely.
+ * Android's *Font size* and *Display size* multiply independently, so a handset set to both extremes
+ * asks for roughly 1.5× the type in roughly 0.8× the width.
+ *
+ * DISPLAY caps the large decorative figures — the timer and the screen title. They are already the
+ * biggest text on the screen at 1.0×, so a third again is plenty and the rest of the growth would only
+ * cost layout. Everything that carries instructions (the status line, the error text, the guidance
+ * banner) is deliberately left uncapped and wraps or scrolls instead.
+ *
+ * IN_DISC caps the two labels inside the record button's 116px glass disc, which cannot grow with them:
+ * "analysing" at 1.5× is wider than the circle it sits in. Cheap accessibility-wise, because both
+ * repeat information the uncapped status area shows at full size right below.
+ */
+const MAX_TEXT_SCALE_DISPLAY = 1.3;
+const MAX_TEXT_SCALE_IN_DISC = 1.15;
 
 /** Maps a dBFS metering value to a 0..1 fraction for the level-meter bar. */
 function meteringToFraction(dbfs: number): number {
@@ -382,6 +400,8 @@ export function RecordScreen() {
       // the count now — otherwise the pill still claims the old number when the user
       // comes back from Result. Not awaited: navigation must not wait on billing.
       refresh();
+      // Practised today, so today's reminder has nothing to nag about. Fire-and-forget.
+      void markPractisedToday();
       nav.navigate("Result", { result });
     }
   }, [state.status, state.result, nav, reset, refresh]);
@@ -625,11 +645,17 @@ export function RecordScreen() {
   const isUploading = phase === "uploading";
 
   return (
-    <Screen edges={["top"]}>
+    // Scrolls only when it has to. `container` grows to fill the viewport, so at the default text
+    // size the column still spreads with `space-between` exactly as it did before — the scroll is
+    // what absorbs a large Font size or Display size setting instead of pushing the status text off
+    // the bottom edge behind the tab bar.
+    <Screen edges={["top"]} scroll contentStyle={styles.scrollContent}>
       <View style={styles.container}>
         {/* ── Top controls ────────────────────────────────────────────────── */}
         <View style={styles.top}>
-          <Text style={styles.screenTitle}>Listening</Text>
+          <Text style={styles.screenTitle} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
+            Listening
+          </Text>
 
           {/* Free-tier counter. Gated on `known` as well as `!isPro`: the fallback
               value is the full allowance, so an unanswered billing request would
@@ -799,10 +825,18 @@ export function RecordScreen() {
               <View style={styles.btnGlassDisc}>
                 {isUploading ? (
                   <View style={styles.btnIconWrap}>
-                    <Text style={styles.progressPct}>
+                    <Text
+                      style={styles.progressPct}
+                      maxFontSizeMultiplier={MAX_TEXT_SCALE_IN_DISC}
+                    >
                       {Math.round(state.progress * 100)}%
                     </Text>
-                    <Text style={styles.progressLabel}>analysing</Text>
+                    <Text
+                      style={styles.progressLabel}
+                      maxFontSizeMultiplier={MAX_TEXT_SCALE_IN_DISC}
+                    >
+                      analysing
+                    </Text>
                   </View>
                 ) : phase === "recording" ? (
                   <View style={styles.btnIconWrap}>
@@ -885,7 +919,7 @@ export function RecordScreen() {
                 : "Processing audio…")}
           </Text>
 
-          <Text style={styles.timerText}>
+          <Text style={styles.timerText} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
             {isUploading ? `${Math.round(state.progress * 100)}%` : mmss}
           </Text>
 
@@ -994,8 +1028,14 @@ const METER_TRACK_WIDTH = 220;
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
+  scrollContent: {
+    // `flex: 1` does nothing to a ScrollView's content container; `flexGrow` is what makes the
+    // column fill the viewport when the content is shorter than it.
+    flexGrow: 1,
+  },
+
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "space-between",
     paddingBottom: 100,
@@ -1032,6 +1072,10 @@ const makeStyles = (c: Palette) =>
     borderRadius: radii.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: 5,
+    // "Free trial used up — see Pro plans" is wider than a narrow handset once the text setting is
+    // turned up. RN defaults `flexShrink` to 0, so without this pair the row keeps its natural width
+    // and simply runs off both edges rather than wrapping.
+    maxWidth: "100%",
   },
   trialPillSpent: {
     backgroundColor: c.dangerSoft,
@@ -1041,6 +1085,7 @@ const makeStyles = (c: Palette) =>
     fontSize: 11.5,
     fontFamily: fonts.semibold,
     color: c.accent,
+    flexShrink: 1,
   },
   trialPillTextSpent: {
     color: c.danger,
@@ -1055,6 +1100,7 @@ const makeStyles = (c: Palette) =>
     borderWidth: 1,
     borderColor: c.border,
     padding: 3,
+    maxWidth: "100%",
   },
 
   modeSegment: {
@@ -1063,6 +1109,9 @@ const makeStyles = (c: Palette) =>
     borderRadius: radii.pill,
     alignItems: "center",
     justifyContent: "center",
+    // "Polyphonic" is the long one; the two segments give up padding and wrap their label rather
+    // than pushing the whole toggle past the screen edge.
+    flexShrink: 1,
   },
 
   modeSegmentActive: {
@@ -1079,12 +1128,14 @@ const makeStyles = (c: Palette) =>
     color: "#FFFFFF", // sits on the brand gradient — blue in both modes
     fontSize: 12,
     fontFamily: fonts.bold,
+    flexShrink: 1,
   },
 
   modeTextInactive: {
     ...typography.label,
     color: c.textFaint,
     fontSize: 12,
+    flexShrink: 1,
   },
 
   // ── Key picker ────────────────────────────────────────────────────────────
@@ -1171,6 +1222,10 @@ const makeStyles = (c: Palette) =>
     paddingVertical: 8,
     paddingHorizontal: spacing.md,
     zIndex: 10,
+    // Resolves against the 280px centre zone, which is itself inside the screen padding — so this is
+    // what keeps the banner on screen. Absolutely positioned and unclipped, it otherwise grows past
+    // both edges, and it is the one element that must stay clear of the record button beneath it.
+    maxWidth: "100%",
   },
 
   guidanceDot: {
@@ -1191,6 +1246,7 @@ const makeStyles = (c: Palette) =>
     color: c.danger,
     fontSize: 12,
     fontFamily: fonts.bold,
+    flexShrink: 1,
   },
 
   // ── Voice-level meter bar ──────────────────────────────────────────────────

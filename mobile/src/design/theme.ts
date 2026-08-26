@@ -464,6 +464,50 @@ export function confidenceLabel(conf: number): string {
   return "Low — please double-check";
 }
 
+/** The seven letter names, in the order the white keys run. */
+export type PitchLetter = "C" | "D" | "E" | "F" | "G" | "A" | "B";
+
+/**
+ * One hue per letter name, for the piano's stave and its key labels.
+ *
+ * A seventh colour wheel of its own, deliberately outside the brand palette: the
+ * palette is entirely blue (`purple`, `gold` and `pink` all hold blues since the
+ * light redesign kept the names and changed the values), so seven distinguishable
+ * hues cannot be drawn from it. Nor should they be — these say "this chip is the
+ * key under your finger", which is a different job from an accent or a signal.
+ *
+ * Not a palette token for the same reason `gradients` is not: `Palette` maps every
+ * key to a flat `string`, and this is a record per mode.
+ *
+ * An accidental takes its *letter's* colour — E♭ is a green E, not a colour of its
+ * own — because that is what makes a chip match the key you have to press.
+ */
+const PITCH_INK: Record<ThemeMode, Record<PitchLetter, string>> = {
+  light: {
+    C: "#8B5CF6",
+    D: "#F97316",
+    E: "#16A34A",
+    F: "#DB2777",
+    G: "#2563EB",
+    A: "#E11D48",
+    B: "#0D9488",
+  },
+  // Lifted a step for the navy canvas, exactly as the confidence scale is.
+  dark: {
+    C: "#A78BFA",
+    D: "#FB923C",
+    E: "#22C55E",
+    F: "#F472B6",
+    G: "#3B82F6",
+    A: "#FB7185",
+    B: "#2DD4BF",
+  },
+};
+
+export function pitchColor(letter: PitchLetter, mode: ThemeMode = "light"): string {
+  return PITCH_INK[mode][letter];
+}
+
 // ─── Barrel export ──────────────────────────────────────────────────────────
 
 export const theme = {

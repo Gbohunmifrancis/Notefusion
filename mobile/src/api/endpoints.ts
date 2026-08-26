@@ -7,6 +7,7 @@ import type {
   AdminUserRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
+  AppVersionInfo,
   BillingInterval,
   CheckoutSession,
   LoginResponse,
@@ -118,10 +119,23 @@ export const meApi = {
 };
 
 export const devicesApi = {
-  register: (token: string, platform: "ios" | "android" | "web") =>
-    api.post("/api/devices", { token, platform }).then(() => undefined),
+  /**
+   * Registers this handset's push token, and tells the server which build it is running so
+   * the update notice only goes to someone genuinely behind. `appBuild` 0 means unknown,
+   * which the server reads as "behind" — the right guess for a client too old to report.
+   */
+  register: (token: string, platform: "ios" | "android" | "web", appBuild = 0) =>
+    api.post("/api/devices", { token, platform, appBuild }).then(() => undefined),
   unregister: (token: string) =>
     api.delete("/api/devices", { data: { token } }).then(() => undefined),
+};
+
+export const appApi = {
+  /**
+   * What the stores carry. Anonymous, so it answers before sign-in — the hard block has to
+   * work on the login screen too, which is where a user stuck on a broken build ends up.
+   */
+  version: () => api.get<AppVersionInfo>("/api/app/version").then((r) => r.data),
 };
 
 export interface SubmitOptions {
