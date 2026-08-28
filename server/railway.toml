@@ -14,8 +14,19 @@
 # Aptfile buildpack for the same reason; the Dockerfile makes that explicit.
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
-# Repo-root relative, so a mobile/ or src/ commit does not rebuild the worker.
-watchPatterns = ["server/**"]
+# No watchPatterns, deliberately.  They were `["server/**"]` on the reasoning that a mobile/
+# or src/ commit should not rebuild the worker — which is correct for a *GitHub-connected*
+# service watching the whole repo, and wrong here.  This service has no repo attached
+# (`source.repo` is null); it is deployed by `railway up`, which runs from server/ because
+# the CLI has no --root-directory flag.  So the uploaded tree is rooted at server/ and every
+# path in it starts `app/`, `tests/`, `Dockerfile` — never `server/`.  Nothing could ever
+# match, and the builder answered every deploy with "no changes detected in watch paths,
+# build will skip" and left the previous image live.  Silent, and it looks like a successful
+# no-op deploy from the CLI side.
+#
+# Everything in the upload root already belongs to this worker, so there is nothing to
+# filter.  If this service is ever connected to a GitHub repo, restore `["server/**"]` at
+# the same time — that is when the pattern starts being both meaningful and correct.
 
 [deploy]
 healthcheckPath = "/healthz"
