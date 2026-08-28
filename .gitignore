@@ -491,6 +491,7 @@ server/.pytest_cache/
 # unignored, it stopped `eas build` dead: the upload walks the whole repo from the git
 # root, and a directory it cannot scandir is an EPERM rather than a skip.
 server/.pytest-tmp/
+server/.pytest-run-next/
 __pycache__/
 *.py[cod]
 .pytest_cache/

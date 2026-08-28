@@ -4,6 +4,10 @@ __pycache__/
 *.pyo
 *.egg-info
 .pytest_cache/
+# Hyphenated, so the line above does not cover them. `.pytest-tmp/` is unreadable even to its
+# owner, and a context walk that cannot scandir a directory fails the build rather than skipping it.
+.pytest-tmp/
+.pytest-run-next/
 .mypy_cache/
 .ruff_cache/
 .coverage
