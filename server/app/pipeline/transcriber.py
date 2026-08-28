@@ -629,32 +629,62 @@ CONTOUR_REARTICULATION_FRAC = 0.50
 # than any notatable note and long enough to reject frame noise.
 CONTOUR_VALLEY_WIDTH_FRAMES = 3
 
-# Confidence blend: voiced_prob as a reliability scaler on the pyin/Basic-Pitch
-# agreement term, falling back to bare amplitude when pyin was silent.
+# Confidence blend: Basic Pitch's note amplitude, corrected by its onset posterior.
+#
+#   conf = (W_AMP * amp + W_ONSET * onset_post) / (W_AMP + W_ONSET)
+#
+# ── the blend this replaced, and why the terms it used are gone ──────────────
+# The previous form scaled a pyin/Basic-Pitch agreement term by voiced_prob:
 #
 #   conf = (W_AMP * amp + (W_AGREE_MAX * voiced_prob) * agreement)
 #          / (W_AMP    + (W_AGREE_MAX * voiced_prob))
 #
-# Swept arithmetic-mean weights, geometric means, products and the scaled form over
-# 609 rows / 38 cases (7 with a non-trivial wrong-note population).  Scores below are
-# per-case auc averaged over those 7, fraction of wrong notes shown as "High confidence"
-# (>= 0.75, which the client highlights), and fraction of wrong notes flagged low (< 0.5):
+# That was the right choice given the terms available when it was swept — amp and
+# agreement were the only two, agreement is below chance as an additive signal
+# (voiced-only auc 0.463), and making voiced_prob a reliability scaler rescued it.  The
+# posterior capture added a third term, and re-measuring all of them on the five corpus
+# cases that produce BOTH a correct and a wrong note — the only cases conf.auc can see —
+# ranked them per-case:
 #
-#   additive 1:3           auc 0.693  bad_high 0.25  bad_low 0.29
-#   additive 2:3           auc 0.687  bad_high 0.09  bad_low 0.35
-#   scaled 2:3  (chosen)   auc 0.683  bad_high 0.05  bad_low 0.40
-#   amp only (baseline)    auc 0.551  bad_high 0.01  bad_low 0.81
+#   amp 0.765   onset 0.629   frame_cover 0.454   agreement 0.448   voiced_prob 0.357
 #
-# auc is flat across the plateau (0.680-0.698) on 7 cases; the decision is on the
-# columns that separate: scaled 2:3 has the lowest wrong-note mislabelling, preserves
-# drift_1_semitone best (0.960 -> 0.760 vs 0.700 for pure additive), and makes
-# voiced_prob load-bearing as a reliability scaler rather than a below-chance additive
-# signal (voiced-only auc: 0.463).
+# Three of the four are at or below chance.  Both are STRICTLY dominated, improving auc
+# and separation together when removed, so this is not a trade:
 #
-# At voiced_prob = 1.0 the formula is the additive (2, 0, 3) blend.
-# At voiced_prob = 0.0 it collapses to bare amplitude.
+#   shipped 2-term (amp + agree*vprob)   auc 0.614  sep 0.012
+#   4-term (+ onset + frame)             auc 0.611  sep 0.092
+#   3-term, frame dropped                auc 0.731  sep 0.101
+#   2-term, agreement dropped too        auc 0.843  sep 0.173
+#
+# The frame term cannot be rescued by redefinition: mean-over-span, mean-over-first-8-
+# frames, max-over-span and fraction-above-frame-threshold score 0.451, 0.292, 0.365 and
+# 0.454.  It is dropped rather than reweighted.  Do not re-add a frame-posterior
+# confidence term without new evidence — the sustained-vibrato cases are why it fails, and
+# they need fixing upstream (see _split_rearticulations).
+#
+# ── why 2 : 1.5 ─────────────────────────────────────────────────────────────
+# auc across the onset weight is a broad plateau, which is what makes the pick defensible
+# on 5 cases rather than fitted to them — a 6x range of weights all clear the gate:
+#
+#   w_onset   0.0    0.25   0.5    0.75   1.0    1.5    2.0    3.0    5.0
+#   auc       0.765  0.881  0.888  0.891  0.888  0.876  0.859  0.843  0.790
+#   sep       0.051  0.073  0.091  0.106  0.118  0.138  0.152  0.173  0.196
+#   bad_high  0.920  0.920  0.960  0.960  0.920  0.640  0.640  0.600  0.480
+#   ok_high   1.000  1.000  1.000  1.000  0.976  0.976  0.952  0.929  0.905
+#
+# 1.5 rather than the 0.75 auc peak because bad_high — the fraction of WRONG notes the
+# client colours "High confidence" at >= 0.75 — collapses 0.960 -> 0.640 there while auc
+# gives up 0.015 and ok_high gives up 0.024.  Below 1.5 the blend is no better than bare
+# amplitude on that column; above it, auc and ok_high both fall for little more gain.
+#
+# Not decided on bad_low, the fraction of wrong notes falling under the 0.5 cut that
+# actually drives the client's review list: it is 0.000 for EVERY candidate above,
+# including both shipped blends.  No weighting flags a wrong note for review, because
+# every term is a posterior in the 0.6-1.0 range and a weighted mean of them cannot reach
+# 0.5.  That is a defect in the scale rather than the ranking, and fixing it means moving
+# the client's cut or calibrating conf against the corpus — not choosing other weights.
 CONF_WEIGHT_AMP = 2.0
-CONF_WEIGHT_AGREE_MAX = 3.0
+CONF_WEIGHT_ONSET = 1.5
 
 # music21 flat letter → "b" convention expected by C#'s KeyParser.
 _M21_FLAT_MAP: dict[str, str] = {
@@ -1486,12 +1516,24 @@ class Event:
 
     ``pyin_midi`` and ``voiced_prob`` are pyin's reading of the same span — the pitch it
     measured and how reliably it heard anything at all.  ``_refine_pitches`` computes
-    both already and used to throw them away after gating on them; they are carried here
-    because they are the pipeline's only pitch evidence *independent* of Basic Pitch, and
-    that independence is what makes a confidence number worth printing (see
-    ``_blend_confidence``).  ``pyin_midi`` is None when pyin had too few voiced frames in
-    the span to speak, or when it did not run at all, which is not the same claim as
-    ``voiced_prob = 0.0``.
+    both already and used to throw them away after gating on them.  They are carried here
+    because they are the pipeline's only pitch evidence *independent* of Basic Pitch;
+    ``pitch_refined`` on the result is derived from them, and ``_refine_pitches`` gates on
+    them.  ``pyin_midi`` is None when pyin had too few voiced frames in the span to speak,
+    or when it did not run at all, which is not the same claim as ``voiced_prob = 0.0``.
+
+    They are deliberately NOT in the confidence blend any more.  On the contour path
+    ``pitch`` is derived FROM ``pyin_midi``, so the two are one measurement and an
+    agreement term between them degenerates to "how near a whole semitone did the median
+    sit" — measured at auc 0.448, i.e. below chance, with ``voiced_prob`` at 0.357.  See
+    the CONF_WEIGHT_AMP block.
+
+    ``onset_post`` is how strongly Basic Pitch's onset head fired where this event starts
+    (see ``Posteriorgram``).  It defaults to None, which means "not sampled", and that is a
+    real state rather than a placeholder: ``Posteriorgram.capture`` returns None on an
+    unusable ``model_output``, and every consumer must fall back rather than read a 0.0 as
+    evidence of absence.  On the contour path, where Basic Pitch is asked nothing else at
+    all, it is the only evidence from a model that path has ever carried.
     """
 
     start: float
@@ -1501,6 +1543,7 @@ class Event:
     bend_semitones: float = 0.0
     pyin_midi: float | None = None
     voiced_prob: float = 0.0
+    onset_post: float | None = None
 
     @property
     def f0(self) -> float:
@@ -1523,6 +1566,139 @@ def _bend_semitones(bends: object) -> float:
     if not bends:
         return 0.0
     return float(np.mean(np.asarray(bends, dtype=float))) / CONTOUR_BINS_PER_SEMITONE
+
+
+# ── Basic Pitch's frame-level posteriors ──────────────────────────────────────
+
+# Lowest MIDI pitch Basic Pitch has a column for: A0, the bottom of an 88-key piano.
+# ``basic_pitch.note_creation`` calls the same number MIDI_OFFSET and adds it back when it
+# turns a bin index into a pitch; this is that constant read in the other direction.
+POSTERIOR_MIDI_LOW = 21
+POSTERIOR_N_BINS = 88
+
+# Half-width, in frames, of the window an onset is looked for in.  Onsets & Frames labels
+# an onset as a ~32 ms window rather than the single true-start frame *because labelling
+# the exact frame scored worse* — audio and annotation are never aligned to better than a
+# frame or two, so a point query asks for a precision the signal does not have.  32 ms is
+# 2.75 frames at ANNOTATIONS_FPS 86; 3 rounds that up, which is the forgiving direction.
+ONSET_WINDOW_FRAMES = 3
+
+# Half-width, in semitone bins, of the same lookup.  ``_merge_onsets`` documents that Basic
+# Pitch fires at BOTH neighbours of a wobbling pitch — 43 of 63 vibrato adjacencies land two
+# semitones apart rather than one — so a query pinned to the notated bin misses the onset of
+# any note with vibrato on it.  One bin either side covers that without opening the query up
+# to the +12/+19 harmonic ghosts ``_strong_skyline`` has to defend against.
+ONSET_PITCH_BINS = 1
+
+
+@dataclass(frozen=True, slots=True)
+class Posteriorgram:
+    """Basic Pitch's three per-frame matrices — the two thirds of ``predict`` we threw away.
+
+    ``predict`` returns ``(model_output, midi_data, note_events)`` and this pipeline bound
+    that first element to ``_`` from the day it was written, discarding every frame-level
+    posterior the ONNX pass had just produced.  Nothing was saved by doing so: the matrices
+    are the model's raw output and its own decoder ran on them either way.  Capturing them
+    costs one name.
+
+    ``onset`` and ``note`` are (T, 88), one column per piano key from ``POSTERIOR_MIDI_LOW``;
+    ``contour`` is (T, 264) at ``CONTOUR_BINS_PER_SEMITONE`` bins per semitone over the same
+    compass.  ``times`` is Basic Pitch's own frame->seconds map, taken from
+    ``model_frames_to_time`` rather than computed as ``i / ANNOTATIONS_FPS``: the model reads
+    overlapping two-second windows and concatenates them, so the naive reading gains one
+    window offset (~10.3 ms) per window and is most of a second out by the end of a
+    three-minute clip — which is the whole length of a note at 96 BPM.
+
+    Why this class exists.  ``onset`` is a *trained note-onset detector*, and Onsets & Frames
+    (Hawthorne et al. 2018, MAPS config-2) measured what a decoder gives up without one.
+    Removing only their inference-time rule — that a frame activation may not start a note
+    unless the onset detector agrees — costs 18% relative note F1 (82.29 -> 67.44) and 32%
+    relative note-with-offset F1 (50.22 -> 34.15), while frame F1 *rises*, 78.30 -> 78.37.
+    That inversion is the argument: a frame-only decoder buys coverage with note-level
+    correctness, and until this class existed both of this pipeline's decode paths were
+    frame-only.  ``_segment_contour``'s docstring said as much out loud — "with Basic Pitch
+    not asked where they are".
+
+    The matrices are held unthresholded because the consumers want different things from
+    them: an onset gate wants a hard local-maximum test, while ``_blend_confidence`` wants a
+    continuous number to rank by.  Thresholding on arrival would serve the first and destroy
+    the second.
+
+    Only ``onset`` is read today — ``_sample_posteriors`` samples it per event.  ``note`` and
+    ``contour`` are captured and shape-checked but unread: they arrive in the same dict at no
+    extra cost, and dropping them would mean ``capture`` could not verify the three heads
+    agree on T, which is the check that stops a basic-pitch change silently mis-indexing.  A
+    frame-posterior *confidence* term was built on ``note`` and removed — it measured at or
+    below chance in four different formulations, and the CONF_WEIGHT_AMP block records the
+    numbers so it is not re-attempted.
+    """
+
+    onset: np.ndarray
+    note: np.ndarray
+    contour: np.ndarray
+    times: np.ndarray
+
+    @classmethod
+    def capture(cls, model_output: dict) -> "Posteriorgram | None":
+        """Wrap ``predict``'s first return value, or ``None`` if it is not usable.
+
+        Defensive because ``model_output`` is the one input here this pipeline does not
+        own: it is whatever the pinned basic-pitch happens to return, the key names differ
+        from the ones its own docstring advertises (that docstring says ``frame``; the code
+        reads ``note``), and a shape mismatch between the three heads would silently
+        mis-index rather than raise.  Returning ``None`` degrades every consumer back to the
+        pre-capture behaviour, which is the honest failure mode for a pure enrichment.
+        """
+        try:
+            from basic_pitch.note_creation import model_frames_to_time
+
+            onset = np.asarray(model_output["onset"], dtype=float)
+            note = np.asarray(model_output["note"], dtype=float)
+            contour = np.asarray(model_output["contour"], dtype=float)
+        except Exception:
+            return None
+        if onset.ndim != 2 or note.shape != onset.shape or contour.shape[0] != onset.shape[0]:
+            return None
+        if onset.shape[1] != POSTERIOR_N_BINS or onset.shape[0] < 2:
+            return None
+        return cls(onset=onset, note=note, contour=contour, times=model_frames_to_time(onset.shape[0]))
+
+    def frame_at(self, t: float) -> int:
+        """Index of the frame nearest time *t*, clamped to the matrix.
+
+        ``times`` is monotonic — the per-window offset subtracted at each boundary
+        (~10.3 ms) is smaller than the frame hop (~11.6 ms), so the sequence still rises
+        across a window seam, by ~1.3 ms — which is what makes a binary search valid here.
+        """
+        i = int(np.searchsorted(self.times, t))
+        if i <= 0:
+            return 0
+        if i >= self.times.size:
+            return int(self.times.size - 1)
+        return i if abs(self.times[i] - t) < abs(self.times[i - 1] - t) else i - 1
+
+    def _bin(self, pitch: float) -> int:
+        return int(min(max(round(pitch) - POSTERIOR_MIDI_LOW, 0), POSTERIOR_N_BINS - 1))
+
+    def onset_evidence(
+        self,
+        t: float,
+        pitch: float,
+        window_frames: int = ONSET_WINDOW_FRAMES,
+        pitch_bins: int = ONSET_PITCH_BINS,
+    ) -> float:
+        """Strongest onset posterior near (*t*, *pitch*), in [0, 1].
+
+        The max over the neighbourhood rather than the value at the centre, for the two
+        reasons ``ONSET_WINDOW_FRAMES`` and ``ONSET_PITCH_BINS`` carry: annotation and audio
+        are not aligned to the frame, and a note with vibrato on it fires at its neighbours.
+        """
+        i = self.frame_at(t)
+        b = self._bin(pitch)
+        lo_t, hi_t = max(0, i - window_frames), min(self.onset.shape[0], i + window_frames + 1)
+        lo_b, hi_b = max(0, b - pitch_bins), min(POSTERIOR_N_BINS, b + pitch_bins + 1)
+        window = self.onset[lo_t:hi_t, lo_b:hi_b]
+        return float(window.max()) if window.size else 0.0
 
 
 def _adaptive_amplitude_floor(events: list[Event], base: float) -> float:
@@ -2324,60 +2500,68 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
     return refined
 
 
+def _sample_posteriors(events: list[Event], post: "Posteriorgram | None") -> list[Event]:
+    """Stamp Basic Pitch's onset posterior onto events from either decode path.
+
+    One stage serving both paths rather than an argument threaded into each, because the
+    question it answers — "what did the onset head say where this note claims to start" —
+    does not depend on which path proposed the note.  It runs last so it reads final
+    boundaries; see the call site.
+
+    A no-op when the capture failed, which leaves ``onset_post`` None and every consumer on
+    its pre-capture behaviour.
+    """
+    if post is None or not events:
+        return events
+    return [replace(e, onset_post=post.onset_evidence(e.start, e.pitch)) for e in events]
+
+
 def _blend_confidence(evt: Event) -> float:
     """The number the client prints as "High/Medium/Low confidence" for one note.
 
-    This used to be ``evt.amp`` — Basic Pitch's own posterior — and that stopped working
-    the moment the amplitude floor started firing.  ``ADAPTIVE_FACTOR`` 0.25 -> 0.40
-    deletes exactly the events amplitude was correctly identifying as ghosts, so
-    ``conf.auc`` fell 0.868 -> 0.551 and ``conf.separation`` to -0.012: among the notes
-    that survive the floor, amplitude no longer ranks right from wrong at all.  A field
-    that anti-correlates with correctness is worse than no field, because the client
-    counts the notes under 0.5 as the ones worth re-recording.
+    Two terms, each in [0, 1]: Basic Pitch's note amplitude and its onset posterior, mixed
+    at the weights the CONF_WEIGHT_AMP block sweeps.
 
-    The fix is not a better threshold on one signal but a second opinion, and the
-    pipeline already has one it was discarding.  Three terms, in [0, 1]:
+    ``amp``          Basic Pitch's posterior on the inference path, per-segment RMS on the
+                     contour path.  Still what the amplitude floor filters on.
+    ``onset_post``   How hard Basic Pitch's onset head fired where this note starts.
 
-    ``amp``          Basic Pitch's posterior.  Still the only evidence for events pyin
-                     cannot speak about, and still what the floor filters on.
-    ``voiced_prob``  pyin's median probability that the span was voiced at all.  Low on
-                     breath, room noise and the decay tail a ghost is usually made of.
-    agreement        ``1 - min(1, |pyin_midi - pitch|)``.  Two engines that independently
-                     land on the same pitch are far more likely to be right than either
-                     alone — the research's consensus argument, and the reason the term
-                     is here rather than a third amplitude statistic.
+    This used to be ``evt.amp`` alone, and that stopped working when the amplitude floor
+    started firing: ``ADAPTIVE_FACTOR`` 0.25 -> 0.40 deletes exactly the events amplitude was
+    correctly identifying as ghosts, so among the notes that survive the floor, amplitude
+    ranks right from wrong much less well than it did.  A pyin-agreement term was added to
+    fix that and did not: ``contour_first`` is on by default for melody, and on that path
+    ``pitch`` is ``round(pyin_midi)`` — one measurement, not two — so agreement degenerates
+    into "how near a whole semitone did the median sit" while ``amp`` is RMS loudness, which
+    is not evidence about pitch at all.  Measured per-case, agreement lands at auc 0.448 and
+    ``voiced_prob`` at 0.357, both at or below chance.
 
-    ``voiced_prob`` scales the agreement term rather than being added alongside it,
-    because that is what it actually means: not "this note is good" but "pyin's reading
-    of this span can be trusted".  When pyin was unsure the blend falls back toward
-    amplitude instead of averaging in a reading pyin itself did not believe.  As a bare
-    additive term it also ranks *below* chance on the corpus (auc 0.463).
+    ``onset_post`` is the term that works, because it is independent of pyin by construction:
+    a different model, a different feature front-end, and a different *question* — where a
+    note begins, rather than what pitch is sounding.  It alone lifts the two non-vibrato
+    discriminating cases from auc 0.800/0.389 to 1.000/1.000.
 
-    Agreement is not circular even where ``pyin_semitone`` set the pitch *from* pyin: in
-    that case the term reduces to how close the median sat to a whole semitone, and a
-    note smeared between two semitones is exactly the untrustworthy one.  Note that the
-    same quantity fails as a *gate* (see ``pyin_semitone``, which swept commit-distance
-    over 0.20-0.50 and lost fixes at every setting) while working as a *rank* — nothing
-    here changes which notes exist or what pitch they carry.
+    The onset term is added rather than multiplied in.  A missed onset is common and
+    forgivable on a soft legato re-attack, so a zero there should lower a note's rank, not
+    zero it out — which is the difference between ranking and gating, and this function only
+    ranks.  Nothing here changes which notes exist or what pitch they carry, which is the
+    property that makes an offline weight sweep legitimate: the note set, the matcher's
+    pairing and the correct/wrong labels are all fixed no matter what the weights are, so a
+    sweep over rows dumped from one corpus run computes the metric exactly rather than
+    predicting it.
 
-    That is also what makes an offline weight sweep legitimate here, against the warning
-    at ``PYIN_MIN_VOICED_PROB``: the note set, the matcher's pairing and the correct/wrong
-    labels are all fixed no matter what these weights are, so sweeping rows dumped from a
-    full 38-case run computes the metric exactly rather than predicting it.  The winner
-    was still confirmed by a real corpus run before it landed.
-
-    What the sweep also showed, which the auc figure alone hides: bare amplitude puts
-    69% of *correct* notes on the hard cases below 0.5 and shows only 26% of correct
-    notes as "High confidence".  Today's field is not a per-note judgement at all, it is
-    a restatement of how loud the clip was.  The blend lifts correct notes to 85% high
-    while holding wrong-notes-shown-high to 5%.  See ``CONF_WEIGHT_AMP`` for the table.
+    **What this cannot fix.**  The three sustained-vibrato cases carry almost the whole
+    remaining deficit, and their wrong notes are not ghosts invented from nothing — the
+    segmenter cuts one vibrato'd note into a staircase of real pitch excursions, so the onset
+    head fires genuinely at each one.  No confidence weighting can rank away a note that is
+    physically present in the audio; that is a segmentation defect, not a scoring one.
     """
-    if evt.pyin_midi is None:
-        # pyin had nothing to say about this span, so amplitude is the whole story.
-        return float(min(max(evt.amp, 0.0), 1.0))
-    agreement = 1.0 - min(1.0, abs(evt.pyin_midi - evt.pitch))
-    w_agree = CONF_WEIGHT_AGREE_MAX * min(max(evt.voiced_prob, 0.0), 1.0)
-    blended = (CONF_WEIGHT_AMP * evt.amp + w_agree * agreement) / (CONF_WEIGHT_AMP + w_agree)
+    amp = float(min(max(evt.amp, 0.0), 1.0))
+    if evt.onset_post is None:
+        return amp
+    onset = float(min(max(evt.onset_post, 0.0), 1.0))
+    total = CONF_WEIGHT_AMP + CONF_WEIGHT_ONSET
+    blended = (CONF_WEIGHT_AMP * amp + CONF_WEIGHT_ONSET * onset) / total
     return float(min(max(blended, 0.0), 1.0))
 
 
@@ -3028,7 +3212,7 @@ def _transcribe_wav(
     min_note_ms = 100 if mode == "melody" else 80
     max_freq_hz = 1050.0
 
-    _, midi_data, note_events = predict(
+    model_output, midi_data, note_events = predict(
         str(wav_path),
         ICASSP_2022_MODEL_PATH,
         onset_threshold=onset_thresh,
@@ -3036,6 +3220,17 @@ def _transcribe_wav(
         minimum_note_length=min_note_ms,
         maximum_frequency=max_freq_hz,
     )
+
+    # The three frame-level posteriors ``predict`` computed on the way to ``note_events``,
+    # which this line used to bind to ``_``.  See ``Posteriorgram`` for what they are and why
+    # discarding them cost more than anything else in this function; ``None`` here means the
+    # capture failed and every consumer falls back to its pre-capture behaviour.
+    post = Posteriorgram.capture(model_output)
+
+    # Basic Pitch's list before the melody floor narrows it below.  ``midi_data`` was built
+    # from exactly this, so step 12 needs it to re-stamp the tempo without also changing
+    # which notes the .mid contains.
+    all_note_events = list(note_events)
 
     progress(0.45)
 
@@ -3127,6 +3322,14 @@ def _transcribe_wav(
                 events = _select_melody_path(events)
             events = _resolve_melody_overlaps(events)
 
+    # ── 6b. Sample Basic Pitch's onset posterior ──────────────────────────────
+    # After both paths converge and after every stage that can move a boundary, because the
+    # reading is taken AT the event's start — a merge, a split or an overlap trim would
+    # invalidate one taken before it.  Deliberately outside the else: the contour path needs
+    # this more than the inference path does, being the one that has never had any Basic
+    # Pitch evidence at all.
+    events = _sample_posteriors(events, post)
+
     progress(0.50)
 
     if not events:
@@ -3158,12 +3361,19 @@ def _transcribe_wav(
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
-    # pyin is skipped wholesale for clips over settings.pyin_max_seconds and on a
-    # librosa failure.  When that happened no event carries its evidence, and falling
-    # back to amplitude is the honest reading: blending in two terms that are zero for
-    # every note preserves the ranking but drags a whole clip into the client's "Low
-    # confidence" band, which reads as a pipeline failure rather than a skipped stage.
-    pyin_ran = any(e.pyin_midi is not None for e in events)
+    # ``_blend_confidence`` needs an onset posterior to say anything beyond amplitude, and
+    # ``Posteriorgram.capture`` returns None on an unusable ``model_output``.  When that
+    # happens no event carries the term and the blend already falls back to bare amplitude
+    # per note; this flag keeps the fallback explicit at the call site so the two cannot
+    # drift apart.
+    #
+    # It no longer consults ``pyin_midi``.  The blend stopped reading pyin when the
+    # agreement term measured below chance, so a clip over ``settings.pyin_max_seconds`` —
+    # which skips pyin wholesale — now gets a real confidence from the onset head instead of
+    # a uniform "Low confidence" band across the whole recording.  That was the case the
+    # previous guard served worst, and it is the long clips, where it read as a pipeline
+    # failure rather than a skipped stage.
+    has_evidence = any(e.onset_post is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
     # The meter is a constant, and both routes to detecting it have been measured and
@@ -3211,7 +3421,7 @@ def _transcribe_wav(
         # well-formed duration in the score.  0.25 is one step of the default
         # grid, so this floor and the quantizer agree.
         n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
-        n.editorial.confidence = _blend_confidence(evt) if pyin_ran else evt.amp
+        n.editorial.confidence = _blend_confidence(evt) if has_evidence else evt.amp
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
@@ -3348,6 +3558,23 @@ def _transcribe_wav(
 
     # ── 12. MusicXML + MIDI (base64) ─────────────────────────────────────────
     musicxml = GeneralObjectExporter(score).parse().decode("utf-8")
+    # Re-render the .mid at the tempo step 7 detected.  ``predict`` builds its MIDI before
+    # anything here knows the tempo, so it stamps basic-pitch's ``midi_tempo`` default of
+    # 120 on every export regardless — a hymn at 76 imports into a DAW or a notation editor
+    # claiming 120, which puts every barline in the wrong place.  Note times are absolute
+    # seconds either way, so this changes what the file SAYS about the beat, not when the
+    # notes sound.
+    #
+    # Rebuilt from ``all_note_events``, Basic Pitch's own unfiltered list, because that is
+    # what ``midi_data`` was: the melody floor narrows ``note_events`` for the notated
+    # melody and the .mid has always deliberately kept the whole texture.  Falling back to
+    # ``midi_data`` on failure keeps a wrong tempo rather than losing the export.
+    try:
+        from basic_pitch.note_creation import note_events_to_midi
+
+        midi_data = note_events_to_midi(list(all_note_events), False, float(round(bpm)))
+    except Exception as exc:  # pragma: no cover - export must survive a basic-pitch change
+        print(f"[notefusion] midi tempo re-stamp skipped: {exc!r}", flush=True)
     with tempfile.NamedTemporaryFile(suffix=".mid", delete=False) as tmp:
         midi_path = Path(tmp.name)
     try:

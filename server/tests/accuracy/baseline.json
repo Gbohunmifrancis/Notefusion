@@ -35,10 +35,10 @@
     "beats.f1_shift_invariant": 0.9848653193444212,
     "beats.precision": 0.9686006405518601,
     "beats.recall": 0.9822616407982262,
-    "conf.auc": 0.6154145854145854,
-    "conf.mean_correct": 0.9114218365645196,
-    "conf.mean_wrong": 0.8318096153846154,
-    "conf.separation": 0.01214977855477859,
+    "conf.auc": 0.8756143856143856,
+    "conf.mean_correct": 0.9453311050737879,
+    "conf.mean_wrong": 0.7653076923076922,
+    "conf.separation": 0.13780266844266842,
     "key.confidence": 0.7410975609756097,
     "key.exact": 0.975609756097561,
     "key.fifth_confusion": 0.0,
@@ -115,7 +115,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9373636363636365,
+        "conf.mean_correct": 0.9623636363636364,
         "key.confidence": 0.833
       }
     },
@@ -163,7 +163,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9373636363636365,
+        "conf.mean_correct": 0.961181818181818,
         "key.confidence": 0.833
       }
     },
@@ -211,7 +211,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9371818181818181,
+        "conf.mean_correct": 0.9623636363636362,
         "key.confidence": 0.833
       }
     },
@@ -259,7 +259,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9370909090909091,
+        "conf.mean_correct": 0.965,
         "key.confidence": 0.833
       }
     },
@@ -307,7 +307,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9370909090909091,
+        "conf.mean_correct": 0.9647272727272728,
         "key.confidence": 0.833
       }
     },
@@ -355,7 +355,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9372727272727274,
+        "conf.mean_correct": 0.966,
         "key.confidence": 0.833
       }
     },
@@ -403,7 +403,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9371818181818181,
+        "conf.mean_correct": 0.9650909090909091,
         "key.confidence": 0.833
       }
     },
@@ -451,7 +451,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9372727272727274,
+        "conf.mean_correct": 0.9656363636363636,
         "key.confidence": 0.833
       }
     },
@@ -499,7 +499,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9371818181818181,
+        "conf.mean_correct": 0.9653636363636362,
         "key.confidence": 0.833
       }
     },
@@ -547,7 +547,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9370909090909091,
+        "conf.mean_correct": 0.9647272727272725,
         "key.confidence": 0.833
       }
     },
@@ -595,7 +595,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9371818181818181,
+        "conf.mean_correct": 0.9644545454545453,
         "key.confidence": 0.833
       }
     },
@@ -643,7 +643,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9373636363636365,
+        "conf.mean_correct": 0.9652727272727273,
         "key.confidence": 0.833
       }
     },
@@ -692,7 +692,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.937,
+        "conf.mean_correct": 0.9654545454545456,
         "key.confidence": 0.96
       }
     },
@@ -741,7 +741,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9372727272727275,
+        "conf.mean_correct": 0.9653636363636363,
         "key.confidence": 0.96
       }
     },
@@ -790,7 +790,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9370909090909091,
+        "conf.mean_correct": 0.963909090909091,
         "key.confidence": 0.96
       }
     },
@@ -839,7 +839,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.937,
+        "conf.mean_correct": 0.9654545454545453,
         "key.confidence": 0.96
       }
     },
@@ -888,7 +888,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 1,
         "solfa.ref_chromatic_count": 1,
-        "conf.mean_correct": 0.9370909090909091,
+        "conf.mean_correct": 0.9638181818181818,
         "key.confidence": 1.0
       }
     },
@@ -937,7 +937,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 1,
         "solfa.ref_chromatic_count": 1,
-        "conf.mean_correct": 0.9371818181818181,
+        "conf.mean_correct": 0.9637272727272727,
         "key.confidence": 1.0
       }
     },
@@ -987,7 +987,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9267272727272726,
+        "conf.mean_correct": 0.9525454545454545,
         "key.confidence": 0.572
       }
     },
@@ -1037,10 +1037,10 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9269000000000001,
-        "conf.mean_wrong": 0.917,
-        "conf.auc": 0.8,
-        "conf.separation": 0.00990000000000002,
+        "conf.mean_correct": 0.9523999999999999,
+        "conf.mean_wrong": 0.593,
+        "conf.auc": 1.0,
+        "conf.separation": 0.35939999999999994,
         "key.confidence": 0.338
       }
     },
@@ -1088,7 +1088,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9377272727272726,
+        "conf.mean_correct": 0.9647272727272728,
         "key.confidence": 0.752
       }
     },
@@ -1137,7 +1137,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9369090909090908,
+        "conf.mean_correct": 0.9635454545454546,
         "key.confidence": 0.752
       }
     },
@@ -1186,7 +1186,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8812727272727273,
+        "conf.mean_correct": 0.9249999999999999,
         "key.confidence": 0.752
       }
     },
@@ -1234,10 +1234,10 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.7003333333333333,
-        "conf.mean_wrong": 0.701,
-        "conf.auc": 0.5,
-        "conf.separation": -0.0006666666666667043,
+        "conf.mean_correct": 0.9577777777777777,
+        "conf.mean_wrong": 0.73,
+        "conf.auc": 1.0,
+        "conf.separation": 0.22777777777777775,
         "key.confidence": 0.758
       }
     },
@@ -1285,7 +1285,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9383636363636363,
+        "conf.mean_correct": 0.9570000000000001,
         "key.confidence": 0.752
       }
     },
@@ -1334,7 +1334,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9377272727272726,
+        "conf.mean_correct": 0.9658181818181817,
         "key.confidence": 0.752
       }
     },
@@ -1383,7 +1383,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9392727272727271,
+        "conf.mean_correct": 0.97,
         "key.confidence": 0.752
       }
     },
@@ -1431,7 +1431,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9244545454545455,
+        "conf.mean_correct": 0.9474545454545453,
         "key.confidence": 0.752
       }
     },
@@ -1480,7 +1480,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8887272727272727,
+        "conf.mean_correct": 0.9224545454545453,
         "key.confidence": 0.752
       }
     },
@@ -1529,7 +1529,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8919999999999999,
+        "conf.mean_correct": 0.9272727272727272,
         "key.confidence": 0.752
       }
     },
@@ -1578,10 +1578,10 @@
         "solfa.chromatic_ghosts": 1,
         "solfa.chromatic_count": 1,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8693636363636364,
-        "conf.mean_wrong": 0.885,
-        "conf.auc": 0.45454545454545453,
-        "conf.separation": -0.01563636363636356,
+        "conf.mean_correct": 0.8985454545454545,
+        "conf.mean_wrong": 0.898,
+        "conf.auc": 0.8181818181818182,
+        "conf.separation": 0.0005454545454545157,
         "key.confidence": 0.786
       }
     },
@@ -1630,7 +1630,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9020909090909093,
+        "conf.mean_correct": 0.9278181818181818,
         "key.confidence": 0.752
       }
     },
@@ -1679,7 +1679,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9285454545454546,
+        "conf.mean_correct": 0.9292727272727274,
         "key.confidence": 0.752
       }
     },
@@ -1728,10 +1728,10 @@
         "solfa.chromatic_ghosts": 4,
         "solfa.chromatic_count": 4,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8400000000000001,
-        "conf.mean_wrong": 0.814125,
-        "conf.auc": 0.6071428571428571,
-        "conf.separation": 0.025875000000000092,
+        "conf.mean_correct": 0.8614285714285714,
+        "conf.mean_wrong": 0.8119999999999999,
+        "conf.auc": 0.8214285714285714,
+        "conf.separation": 0.04942857142857149,
         "key.confidence": 0.52
       }
     },
@@ -1780,10 +1780,10 @@
         "solfa.chromatic_ghosts": 6,
         "solfa.chromatic_count": 6,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8832000000000001,
-        "conf.mean_wrong": 0.841923076923077,
-        "conf.auc": 0.7153846153846154,
-        "conf.separation": 0.0412769230769231,
+        "conf.mean_correct": 0.8454,
+        "conf.mean_wrong": 0.7935384615384616,
+        "conf.auc": 0.7384615384615385,
+        "conf.separation": 0.0518615384615384,
         "key.confidence": 0.03
       }
     },
@@ -1832,7 +1832,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9345833333333332,
+        "conf.mean_correct": 0.96175,
         "key.confidence": 0.412
       }
     },
@@ -1881,7 +1881,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9369230769230767,
+        "conf.mean_correct": 0.9623846153846155,
         "key.confidence": 0.214
       }
     },
@@ -1930,7 +1930,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9378000000000001,
+        "conf.mean_correct": 0.9653333333333333,
         "key.confidence": 0.391
       }
     },
@@ -1979,7 +1979,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.6224545454545454,
+        "conf.mean_correct": 0.7843636363636364,
         "key.confidence": 0.752
       }
     },
@@ -2028,7 +2028,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.9425454545454547,
+        "conf.mean_correct": 0.9358181818181817,
         "key.confidence": 0.752
       }
     },
@@ -2078,7 +2078,7 @@
         "solfa.chromatic_ghosts": 0,
         "solfa.chromatic_count": 0,
         "solfa.ref_chromatic_count": 0,
-        "conf.mean_correct": 0.8711010101010102,
+        "conf.mean_correct": 0.9205555555555555,
         "key.confidence": 0.752
       }
     }

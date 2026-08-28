@@ -868,20 +868,34 @@ def test_direction_is_read_from_melodic_order_not_storage_order():
 # Three of the eleven notes come back a semitone sharp, and Basic Pitch is *more*
 # confident about those than about the eight it got right.  That inversion is not
 # invented for the fixture: it is what the corpus measures now that the amplitude floor
-# deletes the easy ghosts amplitude used to separate, which is why conf.auc sits at
-# 0.551 and conf.separation at -0.012 with bare amplitude.
+# deletes the easy ghosts amplitude used to separate.
 _WRONG_INDICES = (2, 5, 8)
 _AMP_CORRECT = 0.50
 _AMP_WRONG = 0.62  # higher than the correct notes: the measured anti-correlation
+_ONSET_FIRED = 0.85
+_ONSET_SILENT = 0.10
 
 
-def _events_for_confidence(*, pyin_sees_the_truth: bool) -> list[Event]:
+def _events_for_confidence(*, onset_agrees: bool) -> list[Event]:
     """One event per note of PHRASE, three of them a semitone sharp.
 
-    ``pyin_sees_the_truth`` is the whole experiment.  True is the ordinary case: pyin
-    tracked the sung pitch, so it contradicts the three wrong notes.  False is the
-    drift case, where pyin followed the singer off-pitch and agrees with the error —
-    there is no second opinion to be had, and the fix must not pretend otherwise.
+    ``onset_agrees`` is the whole experiment, and it names the two populations the corpus
+    actually contains.
+
+    True is the ordinary ghost: a note assembled from leftover frame energy, which by
+    construction has frame support and no onset support — the Onsets & Frames rule, and the
+    inversion their ablation measured at 18% relative note F1.  The onset head is silent
+    where those three notes claim to start.
+
+    False is the sustained-vibrato case, where the segmenter cuts one vibrato'd note into a
+    staircase and every fragment is a real pitch excursion the onset head fires at just as
+    hard.  There is no second opinion to be had, and the blend must not pretend otherwise.
+
+    ``pyin_midi`` and ``voiced_prob`` are set on every event and are deliberately inert:
+    the blend stopped reading them when the agreement term measured below chance (auc 0.448,
+    voiced_prob 0.357).  Leaving them populated makes
+    ``test_confidence_blend_changes_nothing_without_an_onset_reading`` a live guard that they
+    are still being ignored, rather than a test of an empty struct.
     """
     events = []
     for i, true_pitch in enumerate(PHRASE):
@@ -892,12 +906,11 @@ def _events_for_confidence(*, pyin_sees_the_truth: bool) -> list[Event]:
                 end=(i + 1) * BEAT_SEC,
                 pitch=true_pitch + 1 if wrong else true_pitch,
                 amp=_AMP_WRONG if wrong else _AMP_CORRECT,
-                pyin_midi=(
-                    float(true_pitch)
-                    if pyin_sees_the_truth
-                    else float(true_pitch + 1 if wrong else true_pitch)
-                ),
+                pyin_midi=float(true_pitch),
                 voiced_prob=0.95,
+                onset_post=(
+                    _ONSET_FIRED if onset_agrees or not wrong else _ONSET_SILENT
+                ),
             )
         )
     return events
@@ -925,15 +938,15 @@ def _conf_metrics(events: list[Event], *, blended: bool) -> dict:
 
 
 def test_confidence_blend_ranks_right_notes_above_wrong_ones():
-    """The gated columns are conf.auc and conf.separation, and both are broken today.
+    """The gated columns are conf.auc and conf.separation, and bare amplitude fails both.
 
-    Bare amplitude does not merely fail to rank here, it ranks *backwards*: every wrong
-    note outscores every correct one, so auc is 0.0 and separation is negative.  Adding
-    pyin's independent reading of the same spans is what makes the ordering recoverable
-    at all — neither engine alone can tell which of the two disagreeing pitches is right,
-    but disagreement itself is the signal.
+    Amplitude does not merely fail to rank here, it ranks *backwards*: every wrong note
+    outscores every correct one, so auc is 0.0 and separation is negative.  Asking Basic
+    Pitch's onset head whether it fired where each note claims to start is what makes the
+    ordering recoverable — a different question from "what pitch is sounding", which is the
+    only question either decode path asks today.
     """
-    events = _events_for_confidence(pyin_sees_the_truth=True)
+    events = _events_for_confidence(onset_agrees=False)
 
     before = _conf_metrics(events, blended=False)
     after = _conf_metrics(events, blended=True)
@@ -946,16 +959,17 @@ def test_confidence_blend_ranks_right_notes_above_wrong_ones():
 
 
 def test_confidence_blend_is_specific_to_having_a_second_opinion():
-    """When pyin agrees with the error there is no consensus to read, and the blend
-    must inherit amplitude's failure rather than manufacture a fix.
+    """When the onset head fires at the error too, the blend must inherit amplitude's
+    failure rather than manufacture a fix.
 
-    This is the ``drift_1_semitone`` case, where the singer drifts and pyin drifts with
-    them: measured, that case is the one place the blend *loses* ground (auc 0.960 ->
-    0.760).  Uniform agreement makes the blend a monotone function of amplitude, so the
-    rank statistic is unchanged — which is the honest outcome and worth pinning, because
-    a formula that improved auc here would be scoring its own shape, not the evidence.
+    This is the sustained-vibrato case, and it is measured, not hypothetical: on
+    ``vibrato_rate_k20`` the ghost's onset posterior is 0.926 while a correct note's is
+    0.355, because the staircase fragments are genuinely in the audio.  A uniform onset
+    reading makes the blend a monotone function of amplitude, so the rank statistic is
+    unchanged — which is the honest outcome and worth pinning, because a formula that
+    improved auc here would be scoring its own shape rather than the evidence.
     """
-    events = _events_for_confidence(pyin_sees_the_truth=False)
+    events = _events_for_confidence(onset_agrees=True)
 
     before = _conf_metrics(events, blended=False)
     after = _conf_metrics(events, blended=True)
@@ -965,20 +979,21 @@ def test_confidence_blend_is_specific_to_having_a_second_opinion():
     assert after["separation"] < 0.0
 
 
-def test_confidence_blend_changes_nothing_when_pyin_never_spoke():
-    """Short clips and librosa failures leave every event without a pyin reading.
+def test_confidence_blend_changes_nothing_without_an_onset_reading():
+    """``Posteriorgram.capture`` returns None on an unusable ``model_output``.
 
-    The blend has to be a no-op there, not a rescaling: the client bands the number at
-    fixed 0.5 and 0.75 cuts, so dragging a whole clip into a different band on no new
-    evidence would be a regression the rank-based auc cannot see.
+    The blend has to be a no-op there, not a rescaling: the client bands the number at fixed
+    0.5 and 0.75 cuts, so dragging a whole clip into a different band on no new evidence
+    would be a regression the rank-based auc cannot see.  The events still carry
+    ``pyin_midi`` and ``voiced_prob``, so this also pins that neither is read.
     """
-    silent_pyin = [
-        replace(evt, pyin_midi=None, voiced_prob=0.0)
-        for evt in _events_for_confidence(pyin_sees_the_truth=True)
+    no_onset = [
+        replace(evt, onset_post=None)
+        for evt in _events_for_confidence(onset_agrees=False)
     ]
 
-    assert _conf_metrics(silent_pyin, blended=True) == _conf_metrics(
-        silent_pyin, blended=False
+    assert _conf_metrics(no_onset, blended=True) == _conf_metrics(
+        no_onset, blended=False
     )
 
 

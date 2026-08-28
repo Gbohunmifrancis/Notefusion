@@ -35,8 +35,8 @@ import pytest
 from app.pipeline import transcriber
 from app.pipeline.transcriber import (
     ADAPTIVE_FACTOR,
-    CONF_WEIGHT_AGREE_MAX,
     CONF_WEIGHT_AMP,
+    CONF_WEIGHT_ONSET,
     CONTOUR_BINS_PER_SEMITONE,
     F0_MERGE_SEMITONES,
     KEY_CONFIDENCE_CAP_LOW,
@@ -1053,77 +1053,81 @@ class TestBlendConfidence:
     constants without rewriting the suite.
     """
 
-    def test_no_pyin_reading_falls_back_to_amplitude(self):
-        # Not to zero.  An event pyin could not speak about is not thereby a bad note,
-        # and Basic Pitch's posterior is still real evidence about it.
+    def test_no_onset_posterior_falls_back_to_amplitude(self):
+        # Not to zero.  ``Posteriorgram.capture`` returns None on an unusable model_output,
+        # and an event with no onset reading is not thereby a bad note — Basic Pitch's
+        # amplitude is still real evidence about it.
         assert _blend_confidence(Event(0.0, 0.5, 60, 0.62)) == pytest.approx(0.62)
 
-    def test_agreement_raises_confidence_above_bare_amplitude(self):
-        evt = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=1.0)
+    def test_a_strong_onset_raises_confidence_above_bare_amplitude(self):
+        evt = Event(0.0, 0.5, 60, 0.62, onset_post=1.0)
         assert _blend_confidence(evt) > 0.62
 
-    def test_disagreement_lowers_confidence_below_bare_amplitude(self):
-        # The case the field exists to flag: the pitch printed on the staff is contested
-        # by the only independent pitch evidence in the pipeline.
-        evt = Event(0.0, 0.5, 60, 0.62, pyin_midi=61.0, voiced_prob=1.0)
+    def test_a_missing_onset_lowers_confidence_below_bare_amplitude(self):
+        # The case the term exists to flag: a note whose start the trained onset detector
+        # never fired at.  Onsets & Frames measured 18% relative note F1 riding on exactly
+        # this signal, so a note without it should rank below one with it.
+        evt = Event(0.0, 0.5, 60, 0.62, onset_post=0.0)
         assert _blend_confidence(evt) < 0.62
 
-    def test_disagreement_beyond_a_semitone_is_not_punished_further(self):
-        # The term saturates, so an octave lock and a semitone slip read the same. Both
-        # are "wrong pitch"; ranking them against each other would be false precision.
-        near = Event(0.0, 0.5, 60, 0.62, pyin_midi=61.0, voiced_prob=1.0)
-        far = Event(0.0, 0.5, 60, 0.62, pyin_midi=72.0, voiced_prob=1.0)
-        assert _blend_confidence(near) == pytest.approx(_blend_confidence(far))
-
-    def test_an_unsure_pyin_cannot_move_the_answer_either_way(self):
-        # voiced_prob scales the agreement term instead of being averaged in, so a
-        # reading pyin does not believe is ignored rather than half-trusted.
-        agreeing = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=0.0)
-        contradicting = Event(0.0, 0.5, 60, 0.62, pyin_midi=67.0, voiced_prob=0.0)
-        assert _blend_confidence(agreeing) == pytest.approx(0.62)
-        assert _blend_confidence(contradicting) == pytest.approx(0.62)
-
-    def test_reliability_scales_how_far_agreement_can_move_it(self):
-        def conf(voiced_prob):
-            return _blend_confidence(
-                Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=voiced_prob)
-            )
+    def test_confidence_is_monotone_in_the_onset_posterior(self):
+        def conf(onset_post):
+            return _blend_confidence(Event(0.0, 0.5, 60, 0.62, onset_post=onset_post))
 
         assert conf(0.0) < conf(0.5) < conf(1.0)
 
-    def test_full_reliability_is_the_plain_weighted_blend(self):
-        # Pins the documented equivalence: at voiced_prob 1.0 the scaled form is exactly
-        # the additive (CONF_WEIGHT_AMP, CONF_WEIGHT_AGREE_MAX) mean.
-        evt = Event(0.0, 0.5, 60, 0.5, pyin_midi=60.5, voiced_prob=1.0)
-        expected = (CONF_WEIGHT_AMP * 0.5 + CONF_WEIGHT_AGREE_MAX * 0.5) / (
-            CONF_WEIGHT_AMP + CONF_WEIGHT_AGREE_MAX
+    def test_a_weak_onset_cannot_zero_a_loud_note(self):
+        # The term is averaged in, not multiplied: a missed attack is common and forgivable
+        # on a soft legato re-attack, so it must lower the rank rather than gate the note.
+        # This function only ranks; nothing downstream drops a note for a low conf.
+        assert _blend_confidence(Event(0.0, 0.5, 60, 1.0, onset_post=0.0)) > 0.0
+
+    def test_pyin_no_longer_moves_the_answer(self):
+        # Regression guard, not a preference.  The pyin/Basic-Pitch agreement term measured
+        # at auc 0.448 and voiced_prob at 0.357 — both at or below chance — because on the
+        # default contour path ``pitch`` is derived FROM ``pyin_midi``, making them one
+        # measurement.  Re-adding either silently would regress conf.auc; this fails if it
+        # happens.  The fields stay on Event for ``pitch_refined`` and ``_refine_pitches``.
+        base = _blend_confidence(Event(0.0, 0.5, 60, 0.62, onset_post=0.8))
+        agreeing = Event(0.0, 0.5, 60, 0.62, pyin_midi=60.0, voiced_prob=1.0, onset_post=0.8)
+        contradicting = Event(
+            0.0, 0.5, 60, 0.62, pyin_midi=67.0, voiced_prob=1.0, onset_post=0.8
+        )
+        assert _blend_confidence(agreeing) == pytest.approx(base)
+        assert _blend_confidence(contradicting) == pytest.approx(base)
+
+    def test_is_the_documented_weighted_mean(self):
+        # Pins the formula in the CONF_WEIGHT_AMP block against the code.
+        evt = Event(0.0, 0.5, 60, 0.5, onset_post=1.0)
+        expected = (CONF_WEIGHT_AMP * 0.5 + CONF_WEIGHT_ONSET * 1.0) / (
+            CONF_WEIGHT_AMP + CONF_WEIGHT_ONSET
         )
         assert _blend_confidence(evt) == pytest.approx(expected)
 
     @pytest.mark.parametrize(
-        "amp, pyin_midi, voiced_prob",
+        "amp, onset_post",
         [
-            (0.0, 60.0, 1.0),
-            (1.0, 72.0, 1.0),
-            (0.0, 72.0, 0.0),
-            (1.0, 60.0, 1.0),
-            (1.2, 60.0, 1.4),  # out-of-range inputs must not escape the interval
+            (0.0, 0.0),
+            (1.0, 1.0),
+            (0.0, 1.0),
+            (1.0, 0.0),
+            (1.2, 1.4),  # out-of-range inputs must not escape the interval
+            (-0.3, -0.2),
         ],
     )
-    def test_stays_inside_the_unit_interval(self, amp, pyin_midi, voiced_prob):
+    def test_stays_inside_the_unit_interval(self, amp, onset_post):
         # The client's banding assumes [0, 1] and the DTO rounds to three places.
-        value = _blend_confidence(
-            Event(0.0, 0.5, 60, amp, pyin_midi=pyin_midi, voiced_prob=voiced_prob)
-        )
+        value = _blend_confidence(Event(0.0, 0.5, 60, amp, onset_post=onset_post))
         assert 0.0 <= value <= 1.0
 
-    def test_a_confirmed_note_reads_high_and_a_contested_one_does_not(self):
-        # The end-to-end claim, at the 0.75 cut mobile/src/design/theme.ts:363 uses for
-        # "High confidence".  Same amplitude in both — only the second opinion differs.
-        confirmed = Event(0.0, 0.5, 60, 0.80, pyin_midi=60.0, voiced_prob=0.99)
-        contested = Event(0.0, 0.5, 60, 0.80, pyin_midi=61.0, voiced_prob=0.99)
-        assert _blend_confidence(confirmed) >= 0.75
-        assert _blend_confidence(contested) < 0.75
+    def test_a_struck_note_reads_high_and_an_unstruck_one_does_not(self):
+        # The end-to-end claim, at the 0.75 cut mobile/src/design/theme.ts:452 uses for
+        # "High confidence".  Same amplitude in both — only the onset head differs, which is
+        # the whole point: a loud note the onset head never saw start is the ghost shape.
+        struck = Event(0.0, 0.5, 60, 0.80, onset_post=0.95)
+        unstruck = Event(0.0, 0.5, 60, 0.80, onset_post=0.10)
+        assert _blend_confidence(struck) >= 0.75
+        assert _blend_confidence(unstruck) < 0.75
 
 
 # ── _pyin_contour (defect 6) ──────────────────────────────────────────────────
