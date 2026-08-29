@@ -287,28 +287,95 @@ Frame index → seconds is `i / 86` (mind `model_frames_to_time`'s window correc
 *Verify:* log the three shapes on one corpus case; assert `note.shape[0] == contour.shape[0]`
 and that inference wall-clock is unchanged.
 
-### W2 — Onset gating on every note start *(the O&F rule)*
+### W2 — Onset gating on every note start *(the O&F rule)* — **measured, refuted, not shipping**
 
-No note may begin unless `onset[frame, pitch_bin]` is a local maximum over ±2 frames and
-clears `onset_thresh`. Apply at **both** decode sites:
+The proposal was: no note may begin unless `onset[frame, pitch_bin]` is a local maximum over
+±2 frames and clears `onset_thresh`, applied at **both** decode sites. Both halves were wrong
+about this codebase, and the half that could be built loses. Kept here in full because the
+corrections are the useful part.
 
-1. **Inference path** — re-run `model_output_to_notes` ourselves from `model_output` with
-   `melodia_trick=False` for `mode == "melody"`, and keep it on for `poly`. Monophonic humming
-   has no leftover-energy voices worth recovering; polyphonic piano does.
-2. **Contour path** — replace `_split_rearticulations`' RMS heuristic with the onset matrix.
-   Split a stable-pitch run only where an onset peak exists at that pitch.
+1. ~~**Inference path** — re-run `model_output_to_notes` ourselves from `model_output` with
+   `melodia_trick=False` for `mode == "melody"`, and keep it on for `poly`.~~
+   **The gate is already there.** `output_to_notes_polyphonic` (`note_creation.py:386-389`)
+   peak-picks the onset matrix with `scipy.signal.argrelmax` and thresholds it, so every note
+   its main loop emits already starts at an onset peak. What evades it is the **melodia trick**
+   (`:436-496`), a `while np.max(remaining_energy) > frame_thresh` loop that builds notes from
+   leftover *frame* activation with the onset head never consulted — that, and only that, is
+   the O&F ablation, and it is on by default. So this is one `predict` kwarg
+   (`inference.py:423`), not a re-decode. (`infer_onsets` is *not* exposed on `predict`;
+   reaching it needs the direct decoder call, which is W3's mechanism.)
+2. ~~**Contour path** — replace `_split_rearticulations`' RMS heuristic with the onset matrix.~~
+   **Wrong function.** `_split_rearticulations` cuts only on an RMS valley at *one* pitch and
+   abandons any split unless **both** halves still notate as the segment's own pitch, so it
+   cannot produce the shredding this section predicts it would stop. Those cuts are made
+   upstream, in `_contour_segments`, on pitch excursions.
 
-Evidence: O&F ablation (b), note F1 82.29 → 67.44 without the gate. Onset targets there are
-32 ms ≈ 2 frames wide, which is why the ±2-frame local-max window rather than an exact hit.
+Evidence for the rule itself stands — O&F ablation (b), note F1 82.29 → 67.44 without the gate;
+onset targets there are 32 ms ≈ 2 frames wide, hence the ±2-frame local-max window.
 
-*Predicted:* `solfa.ghost_count` 0.488 and `notes.semitone_neighbour_ghosts` 0.293 fall
-sharply; sustained and vibrato notes stop being shredded, because a re-trigger with no onset
-peak is refused — the paper's stated behaviour.
-*Gate:* `notes.precision` ≥ 0.961 **and** `notes.recall` ≥ 0.971 — the gate must not buy
-precision with recall. `notes.f1_with_offset` ≥ 0.953.
-*Risk:* a genuinely soft legato re-attack has a weak onset peak and gets merged. This is why
-`onset_thresh` for the gate must be swept, not assumed, and why the real corpus (§5) has to
-exist first — synthetic attacks are cleaner than sung ones.
+*Gate (unmet):* `notes.precision` ≥ 0.961 **and** `notes.recall` ≥ 0.971,
+`notes.f1_with_offset` ≥ 0.953.
+*Risk that materialised:* the section's own stated risk — "a genuinely soft legato re-attack has
+a weak onset peak and gets merged" — is exactly what the measurement found, and it is not a
+tuning problem. See below.
+
+#### Why W2 did not pay
+
+**Inference half — built, measured, misses its own gate on both counts.** Implemented as
+default-off `settings.onset_gate`, wiring `melodia_trick = not (settings.onset_gate and mode ==
+"melody")` into `predict`. With `NF_ONSET_GATE=1`:
+
+| metric | gate on | baseline | Δ |
+|---|---|---|---|
+| `notes.precision` | 0.936 | 0.961 | −0.024 ← gate wanted ≥ 0.961 |
+| `notes.recall` | 0.947 | 0.971 | −0.024 ← gate wanted ≥ 0.971 |
+| `notes.f1_with_offset` | 0.929 | 0.953 | −0.024 ← gate wanted ≥ 0.953 |
+| `solfa.degree_accuracy` | 0.976 | 1.000 | −0.024 (was saturated) |
+| `solfa.syllable_accuracy` | 0.963 | 0.988 | −0.024 |
+| `conf.mean_correct` | 0.949 | 0.945 | +0.004 |
+
+The uniform −0.024 is 1/41: **exactly one case collapses**, `poly_block_chords_c_major`, 11/11
+`notes.f1` 1.000 → 11/10 0.000, every other case bit-identical. The melody floor is *not* what
+breaks — it fires identically either way (skyline +24.1 vs +23.9 semitones above the contour,
+both re-running pyin from midi 60). What changes is the event set it filters: 59 → 49 Basic
+Pitch events, 29 → 22 above the floor. `shift-inv` 1.000 → 0.952 says what the lost 7 were: 10
+of 11 notes still match under a *constant* transposition, so the reading keeps the right rhythm
+at a uniformly wrong pitch — it locked onto a lower chord voice for the whole clip. In a
+block-chord clip the melodia trick is what recovers the **melody**, the top voice, not "a second
+voice below it": all three voices attack together, the onset-driven pass spends the shared
+attack on a lower one, and the top voice is left in the leftover energy. `mode == "melody"` is
+no defence, because every corpus case runs melody mode (`runner.py:143`), the poly ones included
+— which is also how a real user hums over a chord.
+
+**Contour half — refuted before building.** Two probes measured whether the onset head can
+separate a real boundary from a vibrato excursion, over 241 cuts on 3 target and 12 guard cases,
+scored by Mann-Whitney AUC (0.5 is chance):
+
+| variant | auc | gen_min | gen_p10 | spur_max | spur_med |
+|---|---|---|---|---|---|
+| A `onset_evidence` | 0.803 | 0.119 | 0.554 | 0.925 | 0.609 |
+| B strict local max ±2 | 0.630 | 0.000 | 0.000 | 0.660 | 0.553 |
+| C prominence over 1 period | 0.756 | −0.001 | 0.238 | 0.612 | 0.248 |
+
+genuine n=229, spurious n=12. **B is the rule W2 specifies and it is the worst of the three** —
+56 of 229 genuine cuts have no strict local maximum within ±2 frames at all. At the lowest
+threshold that removes even *one* spurious cut, the genuine casualties are already A 10, B 56,
+C 13.
+
+The mechanism is why no variant tunes out of it: **the onset head is excited by the same
+physical cause as the defect.** A ±2.0-semitone swing crosses semitone bins ~11 times a second,
+and `onset_evidence` maxes over ±1 bin precisely so that vibrato still fires at its neighbours —
+so the head fires mid-note exactly where the spurious cuts are (spurious median 0.609).
+Meanwhile the corpus's weakest genuine boundaries are **descending legato leaps**, where nothing
+is re-struck: `long_clip_over_pyin_cap`'s 72→67 join scores 0.119–0.213 across its nine repeats,
+`vibrato_heavy` 0.121, `vibrato_rate_k15` 0.326. The ordering is inverted where it matters, so
+the guards break before the targets move at *every* threshold — at t=0.416 `vibrato_depth_2_0`
+is still 18 notes for 11 while `long_clip_over_pyin_cap` has gone 99 → 22, `drift_1_semitone`
+11 → 6, `vibrato_rate_k20` 12 → 6.
+
+This raises the priority of §5's **soft-legato-re-attack** case: those 0.119–0.33 posteriors on
+legato descents are the strongest evidence yet that synthetic attacks are hiding the problem the
+real corpus would expose. The flag stays in the tree, default-off, carrying the numbers.
 
 ### W3 — Melody floor at the source, via a second cheap decode
 
@@ -323,6 +390,14 @@ Because `model_output_to_notes` is pure numpy, we do **one inference and two dec
 The left hand is then never built, and the melodia trick's energy budget is never spent on
 bass. Cost: milliseconds, not a second ONNX pass. This also deletes the second
 `_pyin_contour` call in `_segment_contour` if W4 lands.
+
+**Carry W2's finding into the re-decode: keep `melodia_trick=True` on it.** W2 measured that in
+`poly_block_chords_c_major` the trick is what recovers the *melody* — all three voices of a
+block chord attack together, the onset-driven pass spends the shared attack on a lower voice,
+and the top line survives only in the leftover energy. Turning it off dropped that case's
+`notes.f1` 1.000 → 0.000. W3 is aimed at the same case, so this is the failure most likely to
+be re-introduced here; the reasoning that "the energy budget is never spent on bass" is an
+argument for constraining the frequency floor, not for disabling the trick.
 
 *Gate:* the two polyphonic cases hold or improve; all 39 monophonic cases bit-identical (the
 floor cannot fire on an ungated clip, so this must be true by construction — assert it).
@@ -569,8 +644,8 @@ marginal compute cost.
 | 1 | **5a** label the two real recordings; **5c** author the four cases | `real_report.json` non-empty; new cases fail for the stated reason | |
 | 2 | W5 confidence | ~~`separation` ≥ 0.30~~ → `conf.auc` ≥ 0.85, all else identical | **done — 0.876, +0.000 elsewhere** |
 | 2b | ~~**vibrato-aware segmentation**~~ — promoted by W5, then **demoted by measurement**: the centre-estimator family is exhausted and what remains needs an adaptive band, on a case already past real singing | ~~`notes.f1` > 0.965~~ | **measured, not attempted — see below** |
-| 3 | W2 onset gating | `notes.precision` ≥ 0.961 **and** `recall` ≥ 0.971; ghosts down | **next** |
-| 4 | W3 source-level floor + W4 contour head | poly cases up; 39 mono cases identical (W3) / `notes.f1` ≥ 0.965 (W4) | |
+| 3 | ~~W2 onset gating~~ — **refuted by measurement, both halves.** The O&F gate is already in the vendored decoder; only the melodia trick evades it, and removing it costs one poly case its melody. The contour half named the wrong function, and the onset head cannot separate a real boundary from a vibrato swing (best AUC 0.803; W2's own rule 0.630) | ~~`notes.precision` ≥ 0.961 **and** `recall` ≥ 0.971~~ → **missed both: 0.936 / 0.947** | **measured, not shipping — see W2** |
+| 4 | W3 source-level floor + W4 contour head | poly cases up; 39 mono cases identical (W3) / `notes.f1` ≥ 0.965 (W4) | **next** |
 | 5 | W6 **tempo only** (meter struck, see W6) | `tempo.abs_error` < 8.0; `beats.f1` ≥ 0.974 | |
 | 6 | W7 mode as strategy | no metric moves; structural only | |
 | 7 | **6.1** symbolic import → solfa + staff; **5b** repertoire corpus | round-trips a real hymn score exactly | |

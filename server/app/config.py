@@ -209,6 +209,59 @@ class Settings:
         return os.getenv("NF_PYIN_SEMITONE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def onset_gate(self) -> bool:
+        """Refuse a note that Basic Pitch's onset head never fired for (Onsets & Frames).
+
+        Melody mode only, and it reaches exactly one thing: ``melodia_trick``.
+
+        Onsets & Frames (Hawthorne et al. 2018) measured the cost of dropping the rule that a
+        frame activation may not start a note unless the onset detector agrees — note F1
+        82.29 -> 67.44.  ``Posteriorgram``'s docstring records that result and observes that
+        both of this pipeline's decode paths are frame-only.  For the *inference* path that
+        turned out to be half wrong, which is worth stating plainly because it changes what
+        this flag is: ``output_to_notes_polyphonic`` already peak-picks the onset matrix with
+        ``scipy.signal.argrelmax`` and thresholds it, so every note its main loop emits does
+        start at an onset peak.  The gate is already there.
+
+        What bypasses it is the melodia trick, which runs afterwards over ``remaining_energy``
+        and creates notes from leftover FRAME activation with no onset consulted at all.  That
+        is the O&F ablation, in the vendored decoder, on by default.  So the whole of W2's
+        inference half is this one kwarg rather than the re-decode the plan proposed --
+        ``predict`` exposes ``melodia_trick`` directly (basic_pitch/inference.py:423).
+
+        **Measured, and it does not pay -- leave this off.**  W2 set itself a gate of
+        ``notes.precision >= 0.961`` and ``recall >= 0.971``; turning this on misses both, and
+        every headline metric moves the wrong way:
+
+            notes.precision          0.936  vs  0.961      <- gate wanted >= 0.961
+            notes.recall             0.947  vs  0.971      <- gate wanted >= 0.971
+            notes.f1_with_offset     0.929  vs  0.953
+            solfa.degree_accuracy    0.976  vs  1.000      <- was saturated
+            solfa.syllable_accuracy  0.963  vs  0.988
+
+        against only decorative gains (``conf.mean_correct`` +0.004, key unchanged).  The
+        uniform -0.024 is 1/41: exactly one case collapses, ``poly_block_chords_c_major``,
+        11/11 notes.f1 1.000 -> 11/10 0.000 with every other case bit-identical.
+
+        The reason is the useful part, and it corrects what this docstring first claimed.  The
+        melody floor is NOT what breaks -- it fires identically either way (skyline +24.1 vs
+        +23.9 semitones above the contour, both re-running pyin from midi 60).  What changes is
+        the event set it filters: 59 -> 49 Basic Pitch events, 29 -> 22 surviving above the
+        floor.  The trick was contributing 10 events, 7 of them above the floor, and
+        ``shift-inv`` 1.000 -> 0.952 says what those 7 were: 10 of 11 notes still match under a
+        CONSTANT transposition, so the reading keeps the right rhythm at a uniformly wrong
+        pitch.  It locked onto a lower chord voice for the whole clip.
+
+        So in a block-chord clip the melodia trick is what recovers the MELODY -- the top voice
+        -- not "a second voice below it".  All three voices of a block chord attack together,
+        and the onset-driven pass spends the shared attack on a lower one, leaving the top
+        voice to be found in leftover frame energy.  ``mode == "melody"`` is no defence here
+        because every corpus case runs melody mode (``runner.py:143``), poly ones included --
+        which is also how a real user hums over a chord and gets the top line.
+        """
+        return os.getenv("NF_ONSET_GATE", "0").strip().lower() not in ("0", "false", "no")
+
+    @property
     def contour_first(self) -> bool:
         """Segment notes from the pyin f0 contour instead of repairing Basic Pitch's.
 

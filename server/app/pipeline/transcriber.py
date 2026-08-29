@@ -611,6 +611,39 @@ CONTOUR_MIN_SEGMENT_FRAMES = 5
 # needs a periodicity feature rather than another threshold.  Note before spending anything on
 # it that 2.0 semitones peak is already past real singing (operatic vibrato is ±0.5-1.0) and
 # that this case is documented as being above the measured ceiling on purpose.
+#
+# **Basic Pitch's onset head is not that feature.**  It is the one signal the four estimators
+# above do not exhaust — not a band, not derived from pitch, independently trained, already
+# captured by ``Posteriorgram`` and already frame-aligned — so W2 proposed gating cuts on it.
+# Measured over 241 cuts on the 3 target and 12 guard cases, scored by Mann-Whitney AUC (the
+# statistic ``CONF_WEIGHT_AMP`` is ranked with, so 0.5 is chance):
+#
+#     variant                       auc  gen_min  gen_p10  spur_max  spur_med
+#     A  onset_evidence           0.803    0.119    0.554     0.925     0.609
+#     B  strict local max ±2      0.630    0.000    0.000     0.660     0.553
+#     C  prominence over 1 period 0.756   -0.001    0.238     0.612     0.248
+#     genuine n=229  spurious n=12
+#
+# B is the rule W2 specifies and it is the worst of the three: 56 of 229 genuine cuts have no
+# strict local maximum within ±2 frames at all.  At the lowest threshold that removes even ONE
+# spurious cut the genuine casualties are already A 10, B 56, C 13.
+#
+# The mechanism is why no variant can be tuned out of it: the onset head is excited by the same
+# physical cause as the defect.  A ±2.0 semitone swing crosses semitone bins ~11 times a second,
+# and ``onset_evidence`` maxes over ±1 bin precisely so vibrato still fires at its neighbours, so
+# the head fires MID-NOTE exactly where the spurious cuts are (spurious median 0.609).  Meanwhile
+# the corpus's weakest genuine boundaries are descending legato leaps, where nothing is re-struck:
+# ``long_clip_over_pyin_cap``'s 72->67 join scores 0.119-0.213 across its nine repeats,
+# ``vibrato_heavy`` 0.121, ``vibrato_rate_k15`` 0.326.  The ordering is inverted where it matters,
+# so the guards break before the targets move at EVERY threshold: at t=0.416 ``vibrato_depth_2_0``
+# is still 18 notes for 11 while ``long_clip_over_pyin_cap`` has gone 99 -> 22,
+# ``drift_1_semitone`` 11 -> 6 and ``vibrato_rate_k20`` 12 -> 6.
+#
+# Two corrections to W2 fell out of measuring it, both recorded at ``settings.onset_gate``: the
+# plan aims its contour half at ``_split_rearticulations``, which cuts only on an RMS valley at
+# one pitch and refuses any split whose halves do not both notate as the segment's own pitch, so
+# it cannot produce the shredding the plan predicts it would stop — these cuts are made upstream
+# in ``_contour_segments``.  And the inference half is one ``predict`` kwarg, not a re-decode.
 CONTOUR_RESEED_LOOKAHEAD_FRAMES = 2
 
 # Two adjacent segments whose pitches round to the same integer are one note that the
@@ -3269,6 +3302,11 @@ def _transcribe_wav(
     min_note_ms = 100 if mode == "melody" else 80
     max_freq_hz = 1050.0
 
+    # The melodia trick creates notes from frame energy the onset-driven pass left over, with
+    # the onset head not consulted — the Onsets & Frames ablation, inside the vendored decoder.
+    # ``settings.onset_gate`` turns it off for melody mode only; see that property.
+    melodia_trick = not (settings.onset_gate and mode == "melody")
+
     model_output, midi_data, note_events = predict(
         str(wav_path),
         ICASSP_2022_MODEL_PATH,
@@ -3276,6 +3314,7 @@ def _transcribe_wav(
         frame_threshold=frame_thresh,
         minimum_note_length=min_note_ms,
         maximum_frequency=max_freq_hz,
+        melodia_trick=melodia_trick,
     )
 
     # The three frame-level posteriors ``predict`` computed on the way to ``note_events``,
