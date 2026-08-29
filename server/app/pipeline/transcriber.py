@@ -502,10 +502,11 @@ CONTOUR_BAND_SEMITONES = 0.75
 # of 7 from 13 up, with long_clip_over_pyin_cap 1.000 -> 0.743 (n_est 99 -> 127) at 21.  9 is
 # retained.  11 is the only other guard-neutral point and is not a win either: it is worth
 # vibrato_rate_k20 0.667 -> 0.957 but vibrato_depth_2_0 0.400 -> 0.167, moving the 3-target mean
-# only 0.498 -> 0.541.  So the two deep cases are not a smoother-width problem, and the next
-# thing to try is separating the two jobs the smoother does — a wide contour for the band
-# comparison, the 9-frame one for boundary placement — not a bigger number here.  Ceiling
-# pinned by test_depth_invariance_has_a_measured_ceiling_and_this_is_where_it_is.
+# only 0.498 -> 0.541.  So the two deep cases are not a smoother-width problem, and the split
+# this note used to propose next — a wide contour for the band comparison, the 9-frame one for
+# boundary placement — has since been measured and is REFUTED; see the estimator table under
+# ``CONTOUR_RESEED_LOOKAHEAD_FRAMES``.  Ceiling pinned by
+# test_depth_invariance_has_a_measured_ceiling_and_this_is_where_it_is.
 #
 # 3 was measured and is below the geometric minimum, exactly as predicted: mean f1
 # 0.920 -> 0.730, and it breaks cases the deep ones do not (vibrato_heavy 1.000 -> 0.114).
@@ -552,11 +553,64 @@ CONTOUR_MIN_SEGMENT_FRAMES = 5
 # ``vibrato_depth_2_0`` (0.522) and ``vibrato_depth_1_8`` (0.609) and is unusable: it takes
 # ``long_clip_over_pyin_cap`` 1.000 -> 0.466 (n_est 99 -> 90) and ``vibrato_heavy`` to 0.857.
 # That is the same shape the fuse sweep hit — one wobble at different rates, where every window
-# wide enough to hold the deep swing together also joins notes that are merely adjacent — so
-# ``vibrato_depth_2_0`` is not fixed here either.  What is left for it is the split the
-# ``CONTOUR_PERSIST_FRAMES`` note names: a WIDE contour for the band comparison and the 9-frame
-# one for boundary placement, which is the only remaining idea that separates the two jobs
-# instead of trading them off.
+# wide enough to hold the deep swing together also joins notes that are merely adjacent.
+#
+# ── the centre ESTIMATOR, measured: the ratchet is real and is still not the lever ──────────
+# Every constant above is a scalar (band, persistence, smoother width, fuse tolerance, this
+# lookahead).  None of them touches the statistic the band is measured against, so that was
+# measured separately, changing the estimator and nothing else.  First, the mechanism, from
+# instrumenting each cut on ``vibrato_depth_2_0`` (11 reference notes, 27 frames each):
+#
+#   frame  seg_frames   centre    local     bias   excursion
+#      25          21   59.892   62.692   -2.800      +3.000   <- genuine boundary, 60 -> 62
+#      43          18   62.692   61.892   +0.800      -0.800   <- spurious
+#      70          18   64.892   63.892   +1.000      -1.200   <- spurious
+#      97          18   65.792   64.892   +0.900      -1.100   <- spurious
+#
+# The cuts alternate at 18 and 9 frames, a ratchet whose period is exactly one note, and the
+# spurious ones share one shape: the segment's centre sits 0.8-1.6 SEMITONES above the true
+# local centre, so the note's own trough falls out of band.  The bias is seeded at the previous
+# cut, where ``accepted`` is refilled from the excursion's frames — the upward transition plus
+# the peak that tripped persistence.  What makes it survive 18 frames instead of averaging out
+# is feedback: the band is centred on the estimate, so only frames that CONFIRM a high centre
+# are admitted to it.  A biased centre is self-confirming.
+#
+# That diagnosis is correct and it is still not worth acting on, because four independent ways
+# to remove the bias all land in the same place.  Final segment counts, full chain (segment,
+# fuse, re-articulate), against 11 reference notes on the three deep targets:
+#
+#                          A current   B centred   C warmup   D trailing   E all-frames
+#   vibrato_depth_2_0             18           2         16           16             16
+#   vibrato_depth_1_8             15           2         14           13             14
+#   vibrato_rate_k20              12           1         11           12             12
+#   guards paid                    —         all         2            2              3
+#
+#   A  current: median over the in-band frames only.
+#   B  a median over [k-H, k+H] of the smoothed contour, H = 4/8/12 — the "wide contour for the
+#      band comparison" this file used to name as the one remaining idea.  It is refuted in
+#      PRINCIPLE, not merely unhelpful: an estimator centred on k tracks whatever the contour
+#      does, a sustained step included, so ``abs(smoothed[k] - centre)`` never stays outside the
+#      band and nothing is ever cut.  Every case collapses to 1-3 segments, ``diag_baseline`` and
+#      ``major_c`` included.  Do not propose it again.
+#   C  accept unconditionally until the centre has one period of evidence: buys the deep cases 2
+#      and costs ``triplets_eighth_c_major`` 13 -> 8 and ``fast_sixteenths_c_major`` 15 -> 9, the
+#      binding constraint being that 12 frames is longer than a sixteenth at 88 bpm.
+#   D  causal median over the last period only: ``drift_1_semitone`` 11 -> 9, ``vibrato_rate_7hz``
+#      11 -> 10.
+#   E  median over EVERY frame since the segment started, in band or not — the direct fix for the
+#      feedback above, and the best-motivated of the four.  It removes the bias and buys the same
+#      2 notes: ``long_clip_over_pyin_cap`` 99 -> 108, ``vibrato_heavy`` 11 -> 12,
+#      ``vibrato_rate_7hz`` 11 -> 10.
+#
+# Four estimators with different failure modes agreeing on 16 is the result worth keeping: with
+# the bias removed entirely the deepest case still emits 16 notes for 11, so ~5 of its cuts were
+# never about the centre.  They are genuine band violations — at 2.0 semitones PEAK the swing is
+# 4.0 peak-to-peak, and a band has to be under a semitone to see a semitone step.  Under 1 and
+# over 2 at once is not a value this constant or any of the others can hold, so what is left for
+# the deep cases is an ADAPTIVE band, widened only on evidence of periodic modulation, which
+# needs a periodicity feature rather than another threshold.  Note before spending anything on
+# it that 2.0 semitones peak is already past real singing (operatic vibrato is ±0.5-1.0) and
+# that this case is documented as being above the measured ceiling on purpose.
 CONTOUR_RESEED_LOOKAHEAD_FRAMES = 2
 
 # Two adjacent segments whose pitches round to the same integer are one note that the
@@ -592,8 +646,11 @@ CONTOUR_RESEED_LOOKAHEAD_FRAMES = 2
 # frames of the EXCURSION when it cuts, so a large wobble leaves the running centre on the
 # wobble's peak, which puts the opposite swing ~0.8 semitone away and cuts again — a ratchet
 # that also explains why a wider pre-smoother makes these cases worse rather than better (see
-# ``CONTOUR_PERSIST_FRAMES``).  A lookahead that declines a cut when the contour returns to
-# the old centre is the untried idea; a bigger fuse tolerance is not.
+# ``CONTOUR_PERSIST_FRAMES``).  Both follow-ups that lead named have since been measured: the
+# lookahead that declines such a cut is ``CONTOUR_RESEED_LOOKAHEAD_FRAMES``, and the estimator
+# change that removes the bias outright is the table under it.  The ratchet is confirmed and
+# closing it leaves the deep cases at 16 notes for 11 — so a bigger fuse tolerance is still not
+# the answer, and neither is the centre.
 CONTOUR_FUSE_GAP_SEC = 0.10
 
 # ── Re-articulation (``_split_rearticulations``) ──────────────────────────────

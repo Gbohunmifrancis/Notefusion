@@ -396,10 +396,12 @@ cases. 1.5 rather than the 0.891 peak because the fraction of wrong notes still 
    three vibrato cases carry the entire remainder. There, 11 reference notes come back as
    12/15/18 estimates in an overshoot/undershoot staircase — and **those wrong notes are
    physically in the audio**, so the onset head fires genuinely at each. No confidence
-   weighting can rank them away. This makes **vibrato-aware segmentation** (a regular ±2
+   weighting can rank them away. This made **vibrato-aware segmentation** (a regular ±2
    semitone oscillation is ONE note at the mean of the excursion, not a staircase) outrank
-   the remaining W items: it attacks `notes.f1` directly and dissolves this deficit as a
-   side-effect.
+   the remaining W items on paper: it attacks `notes.f1` directly and would dissolve this
+   deficit as a side-effect. It was then measured and demoted — the mechanism is confirmed but
+   every cheap fix for it is exhausted, and the case is past real singing. See
+   "Why 2b was demoted rather than done" in §7.
 
 **A separate defect this surfaced, not yet fixed.** `bad_low` — the fraction of wrong notes
 falling under the client's `conf < 0.5` review cut — is **0.000 for every blend measured**,
@@ -566,8 +568,8 @@ marginal compute cost.
 | 0 | W1 (capture `model_output`), W8 (free fixes) | shapes logged, inference time unchanged | **done** |
 | 1 | **5a** label the two real recordings; **5c** author the four cases | `real_report.json` non-empty; new cases fail for the stated reason | |
 | 2 | W5 confidence | ~~`separation` ≥ 0.30~~ → `conf.auc` ≥ 0.85, all else identical | **done — 0.876, +0.000 elsewhere** |
-| 2b | **vibrato-aware segmentation** — promoted here by W5's finding | `notes.f1` > 0.965; the 3 vibrato cases stop producing 12/15/18 notes for 11 refs | |
-| 3 | W2 onset gating | `notes.precision` ≥ 0.961 **and** `recall` ≥ 0.971; ghosts down | |
+| 2b | ~~**vibrato-aware segmentation**~~ — promoted by W5, then **demoted by measurement**: the centre-estimator family is exhausted and what remains needs an adaptive band, on a case already past real singing | ~~`notes.f1` > 0.965~~ | **measured, not attempted — see below** |
+| 3 | W2 onset gating | `notes.precision` ≥ 0.961 **and** `recall` ≥ 0.971; ghosts down | **next** |
 | 4 | W3 source-level floor + W4 contour head | poly cases up; 39 mono cases identical (W3) / `notes.f1` ≥ 0.965 (W4) | |
 | 5 | W6 **tempo only** (meter struck, see W6) | `tempo.abs_error` < 8.0; `beats.f1` ≥ 0.974 | |
 | 6 | W7 mode as strategy | no metric moves; structural only | |
@@ -577,6 +579,39 @@ marginal compute cost.
 Step 1 is not optional and does not come later. Steps 2b–6 are mostly unmeasurable without it
 — W5 landed ahead of it only because it is provably metric-neutral by construction (`conf` is
 carried on notes, never used to select them), which is not true of anything below it.
+
+### Why 2b was demoted rather than done
+
+W5's finding pointed here: the residual `conf.auc` deficit is a segmentation defect, because the
+three vibrato cases emit 12/15/18 notes for 11 references and the extra notes are physically
+present in the audio. That diagnosis stands. What changed is the estimate of what fixing it
+costs.
+
+The defect was instrumented cut by cut on `vibrato_depth_2_0`. The spurious cuts are a ratchet
+whose period is exactly one note: at each cut `_contour_segments` refills its running centre
+from the excursion's own frames — the transition plus the peak that tripped persistence — so the
+new centre sits 0.8–1.6 semitones high and the note's own trough then falls out of band. The bias
+survives because the band is centred on the estimate, so only frames that confirm a high centre
+are admitted to it. A biased centre is self-confirming.
+
+Four independent ways to remove that bias were measured (centred window, warm-up, trailing
+period, and a median over every frame rather than the in-band ones). Every one of them lands the
+deepest case at **16 notes for 11**, and every one pays somewhere in the guards — `triplets` 13→8,
+`fast_sixteenths` 15→9, `drift` 11→9, `long_clip` 99→108 depending on the variant. Four estimators
+with different failure modes agreeing on 16 is the result: with centre bias removed entirely, ~5
+of the cuts were never about the centre. They are genuine band violations, and at 2.0 semitones
+**peak** the swing is 4.0 peak-to-peak, so holding it together needs a band over 2 semitones while
+seeing a semitone step needs one under 1. No fixed band is both.
+
+So what is actually left is an *adaptive* band keyed on periodic modulation — a new feature, not a
+constant. Two things argue against spending it now: 2.0 semitones peak is past real singing
+(operatic vibrato is ±0.5–1.0, and the corpus documents this case as deliberately above the
+measured ceiling), and the estimator table is recorded in
+`transcriber.py` under `CONTOUR_RESEED_LOOKAHEAD_FRAMES` so the ground does not have to be
+re-covered. One correction landed from it: the "wide contour for the band comparison" that file
+previously named as the only remaining idea is refuted in principle, not merely unhelpful — an
+estimator centred on the current frame tracks a sustained step too, so it cuts nothing and
+collapses every case, `diag_baseline` included, to 1–3 notes.
 
 ## 8. Honest limits of this document
 
