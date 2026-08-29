@@ -247,17 +247,34 @@ class Settings:
         melody floor is NOT what breaks -- it fires identically either way (skyline +24.1 vs
         +23.9 semitones above the contour, both re-running pyin from midi 60).  What changes is
         the event set it filters: 59 -> 49 Basic Pitch events, 29 -> 22 surviving above the
-        floor.  The trick was contributing 10 events, 7 of them above the floor, and
-        ``shift-inv`` 1.000 -> 0.952 says what those 7 were: 10 of 11 notes still match under a
-        CONSTANT transposition, so the reading keeps the right rhythm at a uniformly wrong
-        pitch.  It locked onto a lower chord voice for the whole clip.
+        floor.  The trick was contributing 10 events, 7 of them above the floor, and what those
+        7 held is one note:
 
-        So in a block-chord clip the melodia trick is what recovers the MELODY -- the top voice
-        -- not "a second voice below it".  All three voices of a block chord attack together,
-        and the onset-driven pass spends the shared attack on a lower one, leaving the top
-        voice to be found in leftover frame energy.  ``mode == "melody"`` is no defence here
-        because every corpus case runs melody mode (``runner.py:143``), poly ones included --
-        which is also how a real user hums over a chord and gets the top line.
+            ref : 0@60  1@62  2@64  3@65  4@67  5@69  6@71  7@72  8@67  9@64  10@60
+            est : 0@62  1@64  2@65  3@67  4@69  5@71  6@72  7@67  8@64  9@60
+
+        Every surviving PITCH is correct.  The melody's first note -- C4, midi 60, sitting
+        exactly ON the floor and an octave above the first chord's C3 root -- is the one the
+        trick was supplying, and without it the whole clip re-indexes one beat earlier.  That is
+        why notes.f1 goes to 0.000 rather than to 0.909: each right pitch now lands on the wrong
+        beat.  It also explains the other two columns exactly -- beats.f1 0.952 is 2*10/21 with
+        every onset still on a reference onset, and ``f1_shift_invariant`` equals raw beats.f1
+        because the onsets already align, so no constant shift improves them.
+
+        (An earlier version of this note read ``shift-inv`` as pitch-transposition invariance and
+        concluded the pipeline had locked onto a lower chord voice.  It is onset-only and ignores
+        pitch by construction -- ``metrics.py`` says so -- and the pitches above show tracking
+        was in fact near-perfect.  Noted because the wrong reading is an easy one to repeat.)
+
+        So the melodia trick is recovering a MELODY note here, not "a second voice below the
+        melody": the chord's three voices attack together at t=0, the onset-driven pass does not
+        return the C4 an octave above the root, and only leftover frame energy does.
+        ``mode == "melody"`` is no defence because every corpus case runs melody mode
+        (``runner.py:143``), poly ones included -- which is also how a real user hums over a
+        chord and expects the top line.
+
+        Worth knowing independently of this flag: ONE dropped leading note re-indexed all ten
+        that followed.  That cascade is not caused by the gate, only exposed by it.
         """
         return os.getenv("NF_ONSET_GATE", "0").strip().lower() not in ("0", "false", "no")
 

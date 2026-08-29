@@ -338,14 +338,33 @@ The uniform −0.024 is 1/41: **exactly one case collapses**, `poly_block_chords
 `notes.f1` 1.000 → 11/10 0.000, every other case bit-identical. The melody floor is *not* what
 breaks — it fires identically either way (skyline +24.1 vs +23.9 semitones above the contour,
 both re-running pyin from midi 60). What changes is the event set it filters: 59 → 49 Basic
-Pitch events, 29 → 22 above the floor. `shift-inv` 1.000 → 0.952 says what the lost 7 were: 10
-of 11 notes still match under a *constant* transposition, so the reading keeps the right rhythm
-at a uniformly wrong pitch — it locked onto a lower chord voice for the whole clip. In a
-block-chord clip the melodia trick is what recovers the **melody**, the top voice, not "a second
-voice below it": all three voices attack together, the onset-driven pass spends the shared
-attack on a lower one, and the top voice is left in the leftover energy. `mode == "melody"` is
-no defence, because every corpus case runs melody mode (`runner.py:143`), the poly ones included
-— which is also how a real user hums over a chord.
+Pitch events, 29 → 22 above the floor. The trick was contributing 10 events, 7 above the floor,
+and what those 7 held is **one note**:
+
+```
+ref : 0@60  1@62  2@64  3@65  4@67  5@69  6@71  7@72  8@67  9@64  10@60
+est : 0@62  1@64  2@65  3@67  4@69  5@71  6@72  7@67  8@64  9@60
+```
+
+Every surviving pitch is *correct*. The melody's first note — C4, midi 60, sitting exactly **on**
+the floor and an octave above the first chord's C3 root — is what the trick was supplying, and
+without it the whole clip re-indexes one beat earlier. That is why `notes.f1` goes to 0.000 rather
+than to 0.909: each right pitch now lands on the wrong beat. It also accounts for the other two
+columns exactly — `beats.f1` 0.952 is 2·10/21 with every onset still on a reference onset, and
+`f1_shift_invariant` *equals* raw `beats.f1` because the onsets already align, so no constant
+shift improves them.
+
+So in a block-chord clip the melodia trick recovers a **melody note**, not "a second voice below
+the melody": the chord's three voices attack together at t=0, the onset-driven pass does not
+return the C4 an octave above the root, and only leftover frame energy does. `mode == "melody"`
+is no defence, because every corpus case runs melody mode (`runner.py:143`), the poly ones
+included — which is also how a real user hums over a chord.
+
+Two things worth carrying forward. **`f1_shift_invariant` is onset-only and ignores pitch by
+construction** (`metrics.py` says so outright); an earlier draft of this section read it as
+transposition invariance and concluded the pipeline had locked onto a lower chord voice, which the
+pitches above refute. And **one dropped leading note re-indexed all ten that followed** — a
+cascade the gate only *exposed*, not caused, and a candidate defect in its own right.
 
 **Contour half — refuted before building.** Two probes measured whether the onset head can
 separate a real boundary from a vibrato excursion, over 241 cuts on 3 target and 12 guard cases,
@@ -377,7 +396,7 @@ This raises the priority of §5's **soft-legato-re-attack** case: those 0.119–
 legato descents are the strongest evidence yet that synthetic attacks are hiding the problem the
 real corpus would expose. The flag stays in the tree, default-off, carrying the numbers.
 
-### W3 — Melody floor at the source, via a second cheap decode
+### W3 — Melody floor at the source, via a second cheap decode — **blocked: no headroom to measure**
 
 `constrain_frequency()` zeroes bins *before* peak-picking and before the melodia trick. Our
 floor filters *after* the whole decode.
@@ -401,6 +420,47 @@ argument for constraining the frequency floor, not for disabling the trick.
 
 *Gate:* the two polyphonic cases hold or improve; all 39 monophonic cases bit-identical (the
 floor cannot fire on an ungated clip, so this must be true by construction — assert it).
+
+#### Why this is blocked rather than next
+
+**That gate is unsatisfiable-as-an-improvement today: both polyphonic cases already measure
+1.000.** Verified on the current baseline —
+
+| case | floor | path taken | `notes.f1` |
+|---|---|---|---|
+| `poly_block_chords_c_major` | fires, midi 60 | contour gives up → **inference path + post-hoc filter** | 1.000 |
+| `poly_alberti_bass_c_major` | fires, midi 60 (as pyin `fmin`) | contour path **succeeds** | 1.000 |
+
+and 1.000 on `beats.f1`, shift-invariant f1, key, tempo and `solfa.degree_accuracy` too. W3
+replaces the post-hoc filter, which only `poly_block_chords` reaches — `poly_alberti` returns
+from the contour path before that code runs, so W3 cannot touch it. So W3 has **exactly one
+reachable case, already saturated**, and the 39 monophonic cases cannot reach the floor by
+construction. Every possible outcome is "no change" or "regression"; there is nothing to
+measure and nothing to gate on.
+
+Two further reasons not to build it blind:
+
+- **`constrain_frequency` mutates in place.** It writes `onsets[:, :min_freq_idx] = 0` straight
+  into the caller's arrays with no copy (`note_creation.py:321-328`), and
+  `output_to_notes_polyphonic` hands it `output["onset"]` / `output["note"]` directly. `predict`
+  then *returns that same dict* — so the `model_output` this pipeline holds already has every bin
+  above ~87 MIDI zeroed by our `maximum_frequency=1050.0`, and `Posteriorgram.capture` reads it
+  (harmless today: the corpus melody tops out near MIDI 72). A second decode must therefore be
+  handed **copies** of `note` and `onset` — `contour` is safe to share, `constrain_frequency`
+  never touches it — or it will silently erase the accompaniment from the posteriorgram that
+  confidence scoring depends on.
+- **W2's finding attacks W3's stated benefit directly.** "The melodia trick's energy budget is
+  never spent on bass" assumes the trick's output is expendable. In `poly_block_chords` it carries
+  the melody's **first note** — C4, midi 60, one octave above the first chord's C3 root and sitting
+  exactly on the floor W3 would compute; removing the trick took that case 1.000 → 0.000. That is
+  the single worst note for W3 to interact with: a floor set even slightly above midi 60 discards
+  it outright, and constraining `min_freq` changes what counts as leftover energy for the same
+  trick on the same note. The one case where the interaction is observable has no room to show a
+  win.
+
+**Prerequisite:** §5's polyphonic work. This needs a poly case that is *not* already at 1.000 —
+the close-voicing case, or a labelled real recording with an accompaniment. Until one exists W3
+is an architectural preference, not a measurable change, and this repo's rule is measure first.
 
 ### W4 — Use the `contour` head as the melody tracker; keep pyin as the second opinion
 
@@ -645,7 +705,8 @@ marginal compute cost.
 | 2 | W5 confidence | ~~`separation` ≥ 0.30~~ → `conf.auc` ≥ 0.85, all else identical | **done — 0.876, +0.000 elsewhere** |
 | 2b | ~~**vibrato-aware segmentation**~~ — promoted by W5, then **demoted by measurement**: the centre-estimator family is exhausted and what remains needs an adaptive band, on a case already past real singing | ~~`notes.f1` > 0.965~~ | **measured, not attempted — see below** |
 | 3 | ~~W2 onset gating~~ — **refuted by measurement, both halves.** The O&F gate is already in the vendored decoder; only the melodia trick evades it, and removing it costs one poly case its melody. The contour half named the wrong function, and the onset head cannot separate a real boundary from a vibrato swing (best AUC 0.803; W2's own rule 0.630) | ~~`notes.precision` ≥ 0.961 **and** `recall` ≥ 0.971~~ → **missed both: 0.936 / 0.947** | **measured, not shipping — see W2** |
-| 4 | W3 source-level floor + W4 contour head | poly cases up; 39 mono cases identical (W3) / `notes.f1` ≥ 0.965 (W4) | **next** |
+| 4 | ~~W3 source-level floor~~ — **blocked, no headroom.** Both poly cases already 1.000, and W3 reaches only one of them; the 39 mono cases cannot reach the floor. Needs a poly case that is not saturated (§5) | ~~poly cases up; 39 mono identical~~ → nothing to measure | **blocked on §5 — see W3** |
+| 4b | W4 contour head as melody tracker | `notes.f1` ≥ 0.965; the vibrato family is where the headroom is | **next** |
 | 5 | W6 **tempo only** (meter struck, see W6) | `tempo.abs_error` < 8.0; `beats.f1` ≥ 0.974 | |
 | 6 | W7 mode as strategy | no metric moves; structural only | |
 | 7 | **6.1** symbolic import → solfa + staff; **5b** repertoire corpus | round-trips a real hymn score exactly | |
