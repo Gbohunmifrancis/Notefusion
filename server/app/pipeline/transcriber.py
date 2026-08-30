@@ -317,8 +317,10 @@ PYIN_FMAX_HZ = 1050.0
 # right (poly_block_chords measured beats.f1 1.000 and tempo 96 exact) and every pitch is 12
 # to 24 semitones low.  Nothing downstream asks which voice pyin chose, so nothing downstream
 # can repair it; the register has to be decided BEFORE pyin runs.  (The third polyphonic case,
-# ``close_voicing_c_major``, fails the opposite way and the floor does not reach it — see
-# MELODY_FLOOR_MARGIN_SEMITONES.)
+# ``close_voicing_c_major``, fails the opposite way — the floor lands correctly and pyin then
+# reports nothing at all.  Deciding the register is necessary there too and not sufficient;
+# see MELODY_FLOOR_MARGIN_SEMITONES for why, and ``Posteriorgram.melody_track`` for what the
+# floor hands the register to instead of pyin once it has fired.)
 #
 # Basic Pitch is the evidence, because it is polyphonic and it provably already has the
 # melody — measured 11 of 11 reference notes covered by an exact-pitch event on both
@@ -370,7 +372,9 @@ MELODY_FLOOR_REGISTER_WIDTH = 10.0
 # (notes.f1 0.500, 12 reference notes against 4 estimated).  Precision stays perfect and
 # recall collapses — the opposite signature to the two poly cases, which reported the wrong
 # VOICE rather than no voice.  No margin fixes that; only a pitch tracker that does not
-# depend on an ``fmin`` band can.
+# depend on an ``fmin`` band can — which is what ``Posteriorgram.melody_track`` now is, and
+# the case reaches notes.f1 1.000 through it.  The margin sweep above stands as measured:
+# it was a sweep of the wrong knob, not a mismeasured one.
 MELODY_FLOOR_MARGIN_SEMITONES = 2.0
 # The gate.  Fires when the strong skyline sits at least this far above pyin's contour —
 # two independent engines disagreeing about which register the music is in, the same
@@ -392,7 +396,7 @@ MELODY_FLOOR_MARGIN_SEMITONES = 2.0
 # is placed at the midpoint of that range in the log domain rather than fitted to it.
 MELODY_FLOOR_DISAGREEMENT_SEMITONES = 6.0
 
-# How many distinct notated pitches the SECOND contour must carry before it is believed.
+# How many distinct notated pitches an ABOVE-FLOOR contour must carry before it is believed.
 #
 # Raising pyin's floor tells it where to look; it does not make the melody trackable.  On
 # poly_block_chords pyin comes back with 82 of 336 frames voiced and every one of them at
@@ -404,11 +408,17 @@ MELODY_FLOOR_DISAGREEMENT_SEMITONES = 6.0
 # pyin's own confidence cannot do this job, which is worth recording because it is the
 # obvious thing to reach for: the two gated cases report median voiced_prob 0.010 and 0.048,
 # both far under PYIN_MIN_VOICED_PROB, while monophonic vibrato_depth_2_0 sits at 0.323 and
-# is transcribed perfectly.  A raised fmin depresses voiced_prob whatever the outcome.
+# is transcribed perfectly.  A raised fmin depresses voiced_prob whatever the outcome.  That
+# is also why the floor, not a confidence threshold, is what selects ``melody_track``.
 #
-# This applies to the second contour ONLY.  A constant FIRST contour is a clip of one
-# sustained note, which is a legitimate transcription; a constant second one means the
-# melody was not found above the floor.
+# This applies to the above-floor contour ONLY — ``melody_track``'s, or the second pyin pass
+# where the posteriorgram capture failed.  A constant contour from pyin's FIRST pass is a clip
+# of one sustained note, which is a legitimate transcription; a constant above-floor one means
+# the melody was not found in the register the floor pointed at.  No corpus case reaches this
+# check any more, ``poly_block_chords`` included: ``melody_track`` returns 11 distinct-pitched
+# notes where the second pyin pass returned one pitch.  It stays because the failure it
+# describes is a property of a mixture rather than of pyin, and the capture-failure fallback
+# still runs the pass that produced it.
 MELODY_FLOOR_MIN_DISTINCT_PITCHES = 2
 
 # An event needs at least this many voiced pyin frames before its contour is
@@ -1694,6 +1704,43 @@ ONSET_WINDOW_FRAMES = 3
 # to the +12/+19 harmonic ghosts ``_strong_skyline`` has to defend against.
 ONSET_PITCH_BINS = 1
 
+# ── Reading a melody off the contour head ─────────────────────────────────────
+# Ceiling on the contour head, in MIDI, and the reason it has to be applied by hand.
+# ``predict``'s ``maximum_frequency`` zeroes the ``note`` and ``onset`` heads above itself
+# and leaves ``contour`` untouched, so the bins the other two heads do not have still carry
+# activation here — unconstrained, and therefore garbage.  Measured: an unmasked skyline rule
+# reads MIDI 109 (the top bin, 21 + 263/3 = 108.7) as a note on both ``major_c`` and
+# ``close_voicing_control_c_major``.  Derived from ``PYIN_FMAX_HZ`` rather than written as
+# 84.06 because that constant's own comment already requires the two stages to agree about
+# what counts as a plausible fundamental; hard-coding the MIDI value would let them drift.
+CONTOUR_CEIL_MIDI = 69.0 + 12.0 * float(np.log2(PYIN_FMAX_HZ / 440.0))
+
+# Absolute activation a contour bin needs before its frame counts as voiced at all.
+#
+# The contour head has no voiced/unvoiced decision — that is exactly why it is reachable
+# where pyin starves — so ``argmax`` returns a bin on a silent frame too, and silence gets
+# read as a note.  Not cosmetic: every case measured grew ONE spurious trailing note, and
+# ``poly_block_chords_c_major`` reaches notes.f1 1.000 through the inference path, so an
+# eleven-correct-plus-one-spurious contour answer scoring 2*11/(11+12) = 0.957 would trade a
+# win for a loss.  A relative bar cannot do this job: tau is a fraction of the frame's own
+# peak, so on a weak frame the bar drops with it and the artefact survives.
+#
+# Swept, not fitted, over the three polyphonic cases and six monophonic ones:
+#
+#   0.15   the artefact survives — quiet_low_amplitude, overtone_heavy,
+#          close_voicing_control_c_major and major_c all grow the spurious bottom-bin note
+#   0.20   every case EXACT
+#   0.30   every case EXACT
+#   0.40   every case EXACT
+#   0.50   real notes start dying — poly_block_chords returns a wrong list,
+#          close_voicing 11 of 12
+#   0.60   poly_block_chords 6 notes, poly_alberti_bass 9
+#   0.70   close_voicing 5 notes, poly_block_chords 4, noise_moderate 12
+#
+# 0.30 is the midpoint of the measured plateau, the same placement argument as
+# MELODY_FLOOR_DISAGREEMENT_SEMITONES: both edges are known and it sits between them.
+CONTOUR_MIN_ACTIVATION = 0.30
+
 
 @dataclass(frozen=True, slots=True)
 class Posteriorgram:
@@ -1720,21 +1767,25 @@ class Posteriorgram:
     relative note-with-offset F1 (50.22 -> 34.15), while frame F1 *rises*, 78.30 -> 78.37.
     That inversion is the argument: a frame-only decoder buys coverage with note-level
     correctness, and until this class existed both of this pipeline's decode paths were
-    frame-only.  ``_segment_contour``'s docstring said as much out loud — "with Basic Pitch
-    not asked where they are".
+    frame-only.  ``_segment_contour``'s docstring says as much out loud — "with Basic Pitch's
+    ``onset`` head not asked where they are" — and still does, because the argument did not
+    survive measurement: the gate is already inside the vendored decoder, and applying it a
+    second time at the segmenter loses accuracy.  What this class does buy is ``contour``,
+    which ``melody_track`` reads as the melody on a mixture.
 
     The matrices are held unthresholded because the consumers want different things from
     them: an onset gate wants a hard local-maximum test, while ``_blend_confidence`` wants a
     continuous number to rank by.  Thresholding on arrival would serve the first and destroy
     the second.
 
-    Only ``onset`` is read today — ``_sample_posteriors`` samples it per event.  ``note`` and
-    ``contour`` are captured and shape-checked but unread: they arrive in the same dict at no
-    extra cost, and dropping them would mean ``capture`` could not verify the three heads
-    agree on T, which is the check that stops a basic-pitch change silently mis-indexing.  A
+    Only ``onset`` is read today — ``_sample_posteriors`` samples it per event.  ``note`` is
+    captured and shape-checked but unread: it arrives in the same dict at no extra cost, and
+    dropping it would mean ``capture`` could not verify the three heads agree on T, which is
+    the check that stops a basic-pitch change silently mis-indexing.  A
     frame-posterior *confidence* term was built on ``note`` and removed — it measured at or
     below chance in four different formulations, and the CONF_WEIGHT_AMP block records the
-    numbers so it is not re-attempted.
+    numbers so it is not re-attempted.  ``contour`` is read by ``melody_track``, which is the
+    contour path's f0 source on a clip whose melody floor fired.
     """
 
     onset: np.ndarray
@@ -1783,6 +1834,85 @@ class Posteriorgram:
 
     def _bin(self, pitch: float) -> int:
         return int(min(max(round(pitch) - POSTERIOR_MIDI_LOW, 0), POSTERIOR_N_BINS - 1))
+
+    def melody_track(
+        self, floor_midi: float | None, dst_times: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """An f0 contour read off ``contour``, in MIDI, on the *dst_times* grid.
+
+        The alternative to pyin for the one case pyin cannot do: a melody over a close
+        accompaniment.  Raising pyin's ``fmin`` above the accompaniment removes the mixture's
+        strongest component from its search band while leaving the energy in the signal, and
+        pyin then declares the clip nearly unvoiced rather than following the melody —
+        ``close_voicing_c_major`` returns 4 events from 336 frames at voiced_prob
+        0.011-0.023.  This head has no ``fmin`` band and no voiced/unvoiced decision, so it
+        cannot fail that way.
+
+        The rule is ARGMAX over the bins between the melody floor and ``CONTOUR_CEIL_MIDI``,
+        with ``CONTOUR_MIN_ACTIVATION`` deciding voicing.  Two alternatives were measured and
+        refuted:
+
+        * The "strong skyline" — highest bin reaching ``MELODY_FLOOR_TAU`` of its frame's
+          peak, the rule the melody floor itself uses on the ``note`` head — tracks the
+          +12/+19 harmonic ghost here.  ``vibrato_depth_2_0`` reads MIDI 80-94 throughout,
+          and both polyphonic cases come back alternating melody and ghost.  tau is a
+          fraction of the frame peak, so on a weak frame (that case's median peak is 0.152)
+          the bar is low and every ghost clears it.  The ``note`` head is thresholded to
+          notes and this one is not, which is the difference.
+        * ``argmax`` with the floor mask *removed* tracks the accompaniment exactly —
+          ``close_voicing`` reads 52, 53, 55, 57, which is the left hand.  So the melody
+          floor is load-bearing for this rule: W4 composes with it rather than replacing it.
+
+        Measured against the reference pitch lists, pyin first:
+
+            close_voicing_c_major        4 notes  ->  12, EXACT
+            poly_block_chords_c_major    2 notes  ->  11, EXACT
+            poly_alberti_bass_c_major   11 EXACT  ->  11, EXACT
+
+        Resampled by NEAREST FRAME rather than interpolated.  This head runs at ~86 fps
+        against pyin's ~45, so ``_contour_segments`` on the native grid would halve the
+        meaning of every one of CONTOUR_SMOOTH_FRAMES, CONTOUR_PERSIST_FRAMES and
+        CONTOUR_MIN_SEGMENT_FRAMES, all of which are calibrated to pyin's hop.  Nearest-frame
+        also refuses to invent a pitch across an unvoiced gap or to smooth a real leap, both
+        of which linear interpolation would do.
+
+        This is not a general-purpose replacement for pyin and must not be reached where pyin
+        is doing its job.  ``drift_1_semitone`` reads a full semitone sharp here while pyin is
+        EXACT, and on the vibrato family argmax is wrong outright (15-17 notes, wrong
+        pitches).  Its whole warrant is the mixture case, which is why the caller fires it
+        only where the melody floor did.
+
+        The second return is the winning bin's activation, which the caller hands to
+        ``_contour_segments`` in pyin's ``voiced_prob`` slot.  That argument only sets each
+        segment's reported confidence — the voicing decision is NaN in the first return — but
+        the number it reports is an activation rather than a periodicity, which is worth
+        knowing when reading ``conf`` on a clip that came through this path.
+        """
+        bin_midi = (
+            POSTERIOR_MIDI_LOW
+            + np.arange(self.contour.shape[1], dtype=float) / CONTOUR_BINS_PER_SEMITONE
+        )
+        usable = self.contour.copy()
+        usable[:, bin_midi > CONTOUR_CEIL_MIDI] = 0.0
+        if floor_midi is not None:
+            usable[:, bin_midi < floor_midi] = 0.0
+
+        best = usable.argmax(axis=1)
+        strength = usable[np.arange(usable.shape[0]), best]
+        voiced = strength >= CONTOUR_MIN_ACTIVATION
+        midi = np.where(voiced, bin_midi[best], np.nan)
+        strength = np.where(voiced, strength, 0.0)
+
+        # Nearest source frame for each destination time.  ``times`` is monotonic (see
+        # ``frame_at``), so searchsorted is valid; the clip to [1, size-1] keeps the
+        # left/right comparison in range at both ends.
+        idx = np.clip(np.searchsorted(self.times, dst_times), 1, self.times.size - 1)
+        idx = np.where(
+            np.abs(dst_times - self.times[idx - 1]) <= np.abs(self.times[idx] - dst_times),
+            idx - 1,
+            idx,
+        )
+        return midi[idx], strength[idx]
 
     def onset_evidence(
         self,
@@ -2373,7 +2503,7 @@ def _strong_skyline(
 def _melody_floor_hz(
     note_events: Sequence[tuple], times: np.ndarray, midi: np.ndarray
 ) -> float | None:
-    """A pyin ``fmin`` that excludes the accompaniment, or ``None`` to keep the default.
+    """The register boundary that excludes the accompaniment, in Hz, or ``None`` to decline.
 
     Returns a frequency only when Basic Pitch's strong skyline and pyin's contour disagree
     about the register by more than ``MELODY_FLOOR_DISAGREEMENT_SEMITONES`` — i.e. only when
@@ -2381,11 +2511,15 @@ def _melody_floor_hz(
     monophonic clip the two engines agree to within about a semitone and this returns
     ``None``, which is what keeps the 40 monophonic corpus cases byte-identical.
 
-    See the MELODY_FLOOR_* constants for the measurements behind each number, and
-    MELODY_FLOOR_MARGIN_SEMITONES for the one failure mode this does not defend against:
-    raising ``fmin`` above a close accompaniment removes the mixture's strongest component
-    from pyin's search band while leaving its energy in the signal, and pyin then reports
-    almost nothing rather than the melody.
+    Named an ``fmin`` throughout because that is what it originally was and still is on two
+    routes — the posteriorgram-capture fallback in ``_segment_contour`` and the inference
+    path's event filter.  On the primary route it is now a mask boundary on the contour head
+    instead, which is what retired the failure mode this used to carry: raising pyin's
+    ``fmin`` above a close accompaniment removes the mixture's strongest component from its
+    search band while leaving the energy in the signal, and pyin then reports almost nothing
+    rather than the melody.  See MELODY_FLOOR_MARGIN_SEMITONES for that measurement and
+    ``Posteriorgram.melody_track`` for the tracker that does not have the failure, and the
+    other MELODY_FLOOR_* constants for the numbers behind each threshold here.
     """
     sky = _strong_skyline(note_events, times)
     both = ~np.isnan(sky) & ~np.isnan(midi)
@@ -2419,9 +2553,11 @@ def _melody_floor_hz(
 
 
 def _segment_contour(
-    wav_path: Path, note_events: Sequence[tuple] = ()
+    wav_path: Path,
+    note_events: Sequence[tuple] = (),
+    post: "Posteriorgram | None" = None,
 ) -> tuple[list[Event], float | None]:
-    """Notes read off the pyin contour, with Basic Pitch not asked where they are.
+    """Notes read off an f0 contour, with Basic Pitch's ``onset`` head not asked where they are.
 
     The melody-mode alternative to stages 3-6 of ``_transcribe_wav``: the amplitude floor,
     pyin refinement, onset merging, simultaneous dedup and the melody overlap resolver all
@@ -2432,24 +2568,46 @@ def _segment_contour(
 
     Returns ``([], None)`` when pyin declined to produce a contour at all — too long,
     unreadable, or no voiced frame — and the caller falls back to the inference path rather
-    than failing the job, because all three of those causes are still reachable.
+    than failing the job, because all three of those causes are still reachable.  pyin's first
+    pass therefore still gates this path even on a clip whose f0 comes from the posteriorgram:
+    its ``times`` are the grid everything downstream is calibrated to.
 
     ``note_events`` are Basic Pitch's, passed in only so ``_melody_floor_hz`` can decide
     which voice pyin should track; on a mixture the default band makes pyin follow the
-    lowest strong one.  When the floor fires, pyin is re-run from it and the SECOND contour
-    is the one segmented.  The cost is a second pyin pass, paid only on clips that reach the
-    gate.
+    lowest strong one.
+
+    **Which contour gets segmented depends on whether the floor fired.**  Ungated, it is
+    pyin's, unchanged.  Gated, it is ``post.melody_track`` — the argmax of Basic Pitch's
+    ``contour`` head above the floor, resampled onto pyin's grid.  Re-running pyin from the
+    raised floor was the earlier answer and it is strictly worse: the floor is raised
+    *because* a strong voice sits below the melody, and taking that voice out of pyin's
+    search band while leaving its energy in the signal is what makes pyin declare the clip
+    unvoiced.  Measured on the three gated cases, second-pyin-pass then contour-head:
+    ``close_voicing`` 4 notes -> 12 EXACT, ``poly_block_chords`` 2 -> 11 EXACT (it reached
+    the inference path at all only because 2 fails the distinct-pitch floor),
+    ``poly_alberti_bass`` 11 EXACT -> 11 EXACT.  The second pyin pass is gone with it, so
+    this costs one argmax over a matrix already in memory and saves a pitch-tracking pass.
+    ``post`` being ``None`` — capture failed — falls back to the second pass.
+
+    The gate is the floor and nothing else.  pyin's own confidence cannot stand in for it,
+    for the reason ``MELODY_FLOOR_MIN_DISTINCT_PITCHES`` records: a raised ``fmin`` depresses
+    ``voiced_prob`` whatever the outcome, and monophonic ``vibrato_depth_2_0`` sits at 0.323
+    while being transcribed perfectly — below both gated cases' neighbourhood.  Tying it to
+    the floor is also what keeps the 40 monophonic corpus cases byte-identical by
+    construction rather than by measurement: the floor fires on 0 of them.  That matters
+    because the contour head is *not* a better tracker in general — see ``melody_track`` for
+    the cases where it is worse than pyin.
 
     The second element of the return is that floor in MIDI units, or ``None`` if the gate
     declined, and it is returned **whether or not the contour succeeded**.  A raised floor is
     knowledge about the clip rather than about the contour: Basic Pitch's events above it
     covered 11 of 11 reference pitches on the two wrong-hand polyphonic cases, so when this
-    path gives up
-    the caller can still use the floor to keep the inference path off the accompaniment.
+    path gives up the caller can still use the floor to keep the inference path off the
+    accompaniment.
     Handing back ``[]`` with a floor is therefore a much stronger signal than ``[]`` alone,
-    and the three ways to reach it — no periodic signal, no stable-pitch run, and a contour
-    carrying fewer than ``MELODY_FLOOR_MIN_DISTINCT_PITCHES`` — are all cases where pyin
-    was pointed at the right register and still failed to follow the line.
+    and the two ways to reach it — a contour carrying fewer than
+    ``MELODY_FLOOR_MIN_DISTINCT_PITCHES``, and no stable-pitch run in it — are both cases
+    where a tracker was pointed at the right register and still failed to follow the line.
 
     ``amp`` is per-segment RMS against the loudest segment in the clip.  Basic Pitch's
     posterior does not exist on this path and ``_blend_confidence`` weights ``amp``, so the
@@ -2467,14 +2625,17 @@ def _segment_contour(
         None if floor_hz is None else float(69.0 + 12.0 * np.log2(floor_hz / 440.0))
     )
     if floor_hz is not None:
-        times, midi, voiced_prob = _pyin_contour(wav_path, fmin=floor_hz)
-        if times.size == 0:
-            print(
-                "[notefusion] no periodic signal above the melody floor; "
-                "handing the clip to the inference path",
-                flush=True,
-            )
-            return [], floor_midi
+        if post is not None:
+            midi, voiced_prob = post.melody_track(floor_midi, times)
+        else:
+            times, midi, voiced_prob = _pyin_contour(wav_path, fmin=floor_hz)
+            if times.size == 0:
+                print(
+                    "[notefusion] no periodic signal above the melody floor; "
+                    "handing the clip to the inference path",
+                    flush=True,
+                )
+                return [], floor_midi
 
         distinct = np.unique(np.round(midi[~np.isnan(midi)]))
         if distinct.size < MELODY_FLOOR_MIN_DISTINCT_PITCHES:
@@ -3350,14 +3511,14 @@ def _transcribe_wav(
 
     # ── 2-6. Note events ──────────────────────────────────────────────────────
     # Two ways to turn the audio into a list of Events.  The contour-first path reads them
-    # straight off the pyin f0 contour; the inference path repairs Basic Pitch's fragments
-    # through five stages.  Either way ``midi_data`` above is kept — it is Basic Pitch's own
+    # straight off an f0 contour; the inference path repairs Basic Pitch's fragments through
+    # five stages.  Either way ``midi_data`` above is kept — it is Basic Pitch's own
     # multi-track MIDI and the only source for the exported .mid, which the contour path
     # does not reproduce.
     contour_events: list[Event] = []
     melody_floor_midi: float | None = None
     if settings.contour_first and mode == "melody":
-        contour_events, melody_floor_midi = _segment_contour(wav_path, note_events)
+        contour_events, melody_floor_midi = _segment_contour(wav_path, note_events, post)
 
     if contour_events:
         # A monophonic line's notes are runs of stable pitch bounded by voicing gaps, so
@@ -3369,12 +3530,15 @@ def _transcribe_wav(
         # The contour path gave up.  If it had found a melody floor first, that floor still
         # holds: it says the accompaniment lies below a known pitch, and Basic Pitch's events
         # above it covered 11 of 11 reference pitches on the two wrong-hand polyphonic cases.
-        # Applying it
-        # here is what lets poly_block_chords be transcribed at all — pyin cannot follow that
-        # melody through the chords (one distinct pitch over 336 frames), but Basic Pitch can
-        # see it, and without the filter the five stages below transcribe the left hand.
-        # Measured on that case: notes.f1 0.222 -> 0.583, solfa.degree_accuracy 0.364 ->
-        # 0.727, beats.f1 0.815 -> 0.917, ghosts 5 -> 2, tempo 137 -> 96 exact.
+        #
+        # No corpus case reaches this branch today.  It was built for poly_block_chords, whose
+        # second pyin pass returned one distinct pitch over 336 frames, and measured there:
+        # notes.f1 0.222 -> 0.583, solfa.degree_accuracy 0.364 -> 0.727, beats.f1 0.815 ->
+        # 0.917, ghosts 5 -> 2, tempo 137 -> 96 exact.  ``Posteriorgram.melody_track`` then
+        # took that case to 1.000 inside the contour path, so it no longer gives up.  The
+        # branch stays because two live routes still end here — a posteriorgram capture
+        # failure, which restores the second pyin pass and with it the degeneracy this
+        # measured, and a gated clip whose above-floor contour holds no stable-pitch run.
         #
         # The filter cannot fire on an ungated clip, so none of the 40 monophonic cases can
         # reach it.  ``midi_data`` is deliberately left alone: it is Basic Pitch's own

@@ -1460,7 +1460,7 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
 ):
     """Pointing pyin at the melody does not oblige pyin to find it.
 
-    ``poly_block_chords`` is the case: the gate fires correctly, pyin re-runs from midi 60 —
+    ``poly_block_chords`` was the case: the gate fires correctly, pyin re-runs from midi 60 —
     and comes back with 82 of 336 frames voiced, every one at midi 60.  One pitch, whole clip.
     Segmenting that yields two notes, and because contour events win outright they became the
     entire transcription, which is why that case scored beats.f1 0.308 and the wrong key while
@@ -1469,6 +1469,14 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
     So ``_segment_contour`` has to be able to say "I found the register but not the line", and
     the floor has to survive its own path's failure — Basic Pitch could see this melody all
     along (11 of 11 reference pitches above the floor).
+
+    Past tense for that case only.  A correct floor now feeds ``Posteriorgram.melody_track``
+    rather than a second pyin pass, and it reads 11 EXACT pitches off the same clip, so
+    ``poly_block_chords`` no longer reaches this branch.  The branch is still live on two
+    routes — a posteriorgram capture failure, which restores exactly the second pass measured
+    above, and a gated clip with no stable-pitch run above the floor — and the property is a
+    property of a mixture rather than of pyin, so it is still worth pinning.  The test below
+    is the other half: what the same starving pyin produces once the contour head is there.
 
     ``_pyin_contour`` is monkeypatched rather than driven through audio, and that is the point
     rather than a shortcut: the check is a property of the contour, and synthesising a clip
@@ -1539,6 +1547,201 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
     assert events, (
         "a constant contour with no floor was discarded; one sustained note is a real "
         "transcription and the degeneracy check was scoped to the second pass only"
+    )
+
+
+def _posteriorgram_with(times, plan, garbage_midi=100.0, accomp_midi=48.0):
+    """A ``Posteriorgram`` whose ``contour`` head holds exactly *plan*, on its own time grid.
+
+    *plan* is ``[(midi, n_frames), ...]`` counted in *times* frames and must total
+    ``times.size``, so that the fixture covers the destination grid exactly — a plan that
+    overruns would be silently truncated by the slicing below and a plan that falls short
+    would leave the tail untested.  A ``midi`` of ``None`` is a silent stretch, which is how
+    ``CONTOUR_MIN_ACTIVATION`` gets exercised.
+
+    Two distractors are written into every frame of the voiced stretches, because both masks
+    in ``melody_track`` are load-bearing and a fixture without them would leave them untested:
+
+    * *accomp_midi* is activated HARDER than the melody, which is the real situation — the
+      accompaniment is the mixture's strongest component, which is the whole reason pyin
+      follows it.  Without the floor mask ``argmax`` returns this.
+    * *garbage_midi* is above ``CONTOUR_CEIL_MIDI``, where ``maximum_frequency`` constrains
+      the note and onset heads and leaves this one alone.  Without the ceiling mask
+      ``argmax`` returns this.
+
+    The grid is twice as fine as *times* on purpose: this head runs at ~86 fps against pyin's
+    ~45, so a fixture sharing pyin's grid would not exercise the resample at all.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    total = sum(n for _midi, n in plan)
+    assert total == times.size, (
+        f"the plan covers {total} frames and the grid is {times.size}; size them the same or "
+        "the part that does not overlap is not being tested"
+    )
+
+    src_times = np.arange(total * 2) * (float(times[1] - times[0]) / 2.0)
+    contour = np.zeros((src_times.size, 264))
+
+    def bin_of(midi: float) -> int:
+        return int(round((midi - T.POSTERIOR_MIDI_LOW) * T.CONTOUR_BINS_PER_SEMITONE))
+
+    f = 0
+    for midi, n_frames in plan:
+        span = slice(f, f + n_frames * 2)
+        if midi is not None:
+            contour[span, bin_of(midi)] = 0.7
+            contour[span, bin_of(accomp_midi)] = 0.95
+            contour[span, bin_of(garbage_midi)] = 0.99
+        f += n_frames * 2
+
+    onset = np.zeros((src_times.size, T.POSTERIOR_N_BINS))
+    return T.Posteriorgram(
+        onset=onset, note=onset.copy(), contour=contour, times=src_times
+    )
+
+
+def test_the_contour_head_recovers_a_melody_the_second_pyin_pass_cannot(
+    tmp_path, monkeypatch
+):
+    """Pointing pyin at the melody can make things worse, and there is a tracker that fixes it.
+
+    ``close_voicing_c_major`` is the case, and it is the opposite failure to the one above.
+    The floor lands *correctly* — on the melody's own lowest note, one semitone clear of the
+    whole left hand, the best placement available — and pyin then reports 4 events out of 336
+    frames at voiced_prob 0.011-0.023.  Raising ``fmin`` took the mixture's strongest
+    component out of pyin's search band without taking its energy out of the signal.  So the
+    defect is not the floor's placement and no margin reaches it; the second pyin pass is the
+    wrong consumer for a correct floor.
+
+    Basic Pitch's ``contour`` head has no ``fmin`` band and no voiced/unvoiced decision, so it
+    cannot fail that way.  Measured end to end: that case goes notes.f1 0.500 -> 1.000,
+    ``poly_block_chords`` 11 EXACT where the second pass returned one pitch, and
+    ``poly_alberti_bass`` unchanged at 1.000.
+
+    Driven through a hand-built ``Posteriorgram`` for the reason the test above patches
+    ``_pyin_contour``: the properties under test are properties of the two contours, and
+    synthesising audio that produces a *specific* degenerate pyin pass above a raised floor is
+    its own research problem.  The fixture writes in both distractors the masks exist to
+    reject, so an unmasked implementation fails here rather than in the corpus.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    wav = tmp_path / "unused.wav"
+    wav.write_bytes(b"")  # never decoded: the RMS load is already try/except-guarded
+
+    n = 60
+    times = np.arange(n) * _FLOOR_HOP
+    firing = [(0.0, 1.4, 60, 0.8)]
+
+    def degenerate(_path, fmin: float = T.PYIN_FMIN_HZ):
+        """First pass on the accompaniment; second pass above the floor stuck on one pitch."""
+        first = fmin == T.PYIN_FMIN_HZ
+        return times, np.full(n, 48.0 if first else 60.0), np.full(n, 0.9)
+
+    monkeypatch.setattr(T, "_pyin_contour", degenerate)
+
+    # Control: no posteriorgram, so the second pyin pass is all there is and the degeneracy
+    # check declines — the pre-change behaviour, and still the capture-failure fallback.
+    events, floor_midi = T._segment_contour(wav, firing, None)
+    assert floor_midi is not None, "the gate did not fire, so this tests nothing"
+    assert not events, "the fixture is not degenerate, so the comparison below is empty"
+
+    # The change: same clip, same floor, same starving pyin — and the melody comes back.
+    melody = [(60.0, 20), (64.0, 20), (67.0, 20)]
+    events, floor_midi = T._segment_contour(wav, firing, _posteriorgram_with(times, melody))
+
+    assert floor_midi is not None
+    assert [e.pitch for e in events] == [60, 64, 67], (
+        f"the contour head returned {[e.pitch for e in events]}; a melody pyin could not "
+        "follow is exactly what melody_track exists to recover"
+    )
+
+    # Specificity 1: the floor mask is load-bearing.  The accompaniment at 48 is activated
+    # harder than the melody in every frame, so an unmasked argmax returns the left hand —
+    # which is the defect the whole melody floor exists to prevent.  Asserted against the
+    # track rather than the events because the mask is driven by the argument, so there is no
+    # constant to disable: dropping the argument is the mutation, and this is it.
+    unmasked, _strength = _posteriorgram_with(times, melody).melody_track(None, times)
+    assert 48 in {int(round(v)) for v in unmasked[~np.isnan(unmasked)]}, (
+        "argmax without the floor mask did not return the accompaniment, so this fixture no "
+        "longer poses the problem the floor mask solves and the assertion below is vacuous"
+    )
+    assert all(e.pitch >= floor_midi for e in events), (
+        "an event landed below the melody floor, so the floor mask is not being applied and "
+        "argmax is free to follow the accompaniment"
+    )
+
+    # Specificity 2: an above-ceiling bin activated harder than everything else cannot win.
+    # maximum_frequency constrains the note and onset heads and leaves this one alone, so
+    # without the mask these bins carry unconstrained garbage.  Its failure signature is an
+    # EMPTY transcription rather than a high one — garbage wins every frame, the track holds
+    # one distinct pitch, and MELODY_FLOOR_MIN_DISTINCT_PITCHES then declines the clip — so
+    # the emptiness is asserted here too, otherwise this passes vacuously on [].
+    assert events and all(e.pitch <= T.CONTOUR_CEIL_MIDI for e in events), (
+        f"got {[e.pitch for e in events]}; without the ceiling mask the bins above "
+        "CONTOUR_CEIL_MIDI — where the other two heads have no data at all — win every frame, "
+        "and the degeneracy check then hands the whole clip to the inference path"
+    )
+
+    # Specificity 3: silence is not a note.  argmax returns a bin on a silent frame too, so
+    # without an absolute activation floor a clip grows one spurious trailing note at the
+    # bottom bin — which on poly_block_chords would turn notes.f1 1.000 into
+    # 2*11/(11+12) = 0.957, trading a win for a loss.
+    with_tail = [(60.0, 15), (64.0, 15), (67.0, 15), (None, 15)]
+    tail_events, _ = T._segment_contour(wav, firing, _posteriorgram_with(times, with_tail))
+    assert [e.pitch for e in tail_events] == [60, 64, 67], (
+        f"a silent tail produced {[e.pitch for e in tail_events]}; CONTOUR_MIN_ACTIVATION is "
+        "what stops argmax reading silence as a note"
+    )
+
+
+def test_the_contour_head_is_unreachable_on_a_clip_whose_floor_declined(
+    tmp_path, monkeypatch
+):
+    """The gate is the floor, which is what makes the monophonic cases safe by construction.
+
+    ``melody_track`` is not a better tracker in general and must not be reached where pyin is
+    doing its job: ``drift_1_semitone`` reads a full semitone sharp under argmax while pyin is
+    EXACT, and on the vibrato family argmax is wrong outright.  Its whole warrant is the
+    mixture case.  Since the floor fires on 0 of the 40 monophonic corpus cases, tying the two
+    together is what keeps those cases byte-identical without measuring them one by one — so
+    that implication is worth an assertion rather than a comment.
+
+    The fixture makes the wrong answer loud: the posteriorgram is handed a melody that shares
+    no pitch with pyin's contour, so if it were consulted the returned pitches would change.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    wav = tmp_path / "unused.wav"
+    wav.write_bytes(b"")
+
+    n = 60
+    times = np.arange(n) * _FLOOR_HOP
+    # pyin and the skyline agree about the register, so _melody_floor_hz declines.
+    moving = np.concatenate([np.full(20, 60.0), np.full(20, 62.0), np.full(20, 64.0)])
+
+    def agreeing(_path, fmin: float = T.PYIN_FMIN_HZ):
+        return times, moving.copy(), np.full(n, 0.9)
+
+    monkeypatch.setattr(T, "_pyin_contour", agreeing)
+
+    declining = [(0.0, 1.4, 60, 0.8)]
+    contradicting = _posteriorgram_with(times, [(72.0, 20), (74.0, 20), (76.0, 20)])
+
+    events, floor_midi = T._segment_contour(wav, declining, contradicting)
+
+    assert floor_midi is None, "the gate fired on an agreeing clip, so this tests nothing"
+    assert [e.pitch for e in events] == [60, 62, 64], (
+        f"an ungated clip came back as {[e.pitch for e in events]}, which is the "
+        "posteriorgram's melody rather than pyin's; melody_track is being consulted where "
+        "the floor declined and the 40 monophonic cases are no longer safe by construction"
     )
 
 
