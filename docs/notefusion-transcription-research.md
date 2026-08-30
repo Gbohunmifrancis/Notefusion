@@ -32,6 +32,15 @@ them on the floor. The `onset` matrix in particular is a *trained note-onset det
 
 That is, verbatim, the configuration Onsets & Frames measured as their worst ablation.
 
+**Update — that premise no longer describes the code, and this is the one headline claim the
+work has retired.** W1 captured `model_output`; the `onset` matrix now places the melody floor
+(its skyline rule) and W4 reads the melody itself off `contour`. Two of the three matrices are
+load-bearing. But the docstring line quoted above still stands, narrowed to `onset` — because
+the O&F result did **not** transfer the way this section assumed: the onset gate is already
+inside the vendored decoder, and applying it a second time at the segmenter *loses* accuracy
+(W2, refuted by measurement). The value in the discarded matrices was real; it was in
+`contour`, not `onset`.
+
 ---
 
 ## 1. What each source actually is, and the one thing worth taking
@@ -211,34 +220,38 @@ already half-built, and §6 is about closing the flank.
 
 ## 2. Where we actually stand (measured, 43 synthetic cases)
 
-Two columns, because the close-voicing case authored for W4 (§5c) moved six of these and the
-movement is the point: *"41"* is the corpus as it stood when this document was written, *"43"* is
-it with `close_voicing_c_major` and its monophonic control added. All 41 pre-existing cases are
-byte-identical across the two columns — verified, `metric differences among pre-existing cases: 0`
-— so every difference below is the two new cases and nothing else.
+Three columns, because the close-voicing case authored for W4 (§5c) moved six of these, W4 then
+answered it, and both movements are the point: *"41"* is the corpus as it stood when this document
+was written, *"43"* is it with `close_voicing_c_major` and its monophonic control added, *"+W4"* is
+after the contour-head melody tracker shipped. All 41 pre-existing cases are byte-identical
+between the first two columns — verified, `metric differences among pre-existing cases: 0` — and
+all 40 monophonic cases are byte-identical between the last two, by construction rather than by
+luck (the melody floor fires on 0 of them, and W4 runs only where it fires). So the middle column
+is the two new cases and nothing else, and the last column is the three polyphonic cases and
+nothing else.
 
-| Metric | 41 cases | 43 cases | Read |
-|---|---|---|---|
-| `notes.f1` | 0.965 | **0.955** | one case at 0.500 drags it |
-| `notes.f1_with_offset` | 0.953 | 0.944 | — |
-| `notes.precision` | — | 0.963 | the new case's precision is 1.000; recall is what fails |
-| `notes.recall` | — | 0.957 | — |
-| `notes.semitone_neighbour_ghosts` | 0.293 /case | 0.279 /case | ghosts remain |
-| `solfa.degree_accuracy` | 1.000 | **0.977** | **no longer saturated** — see conclusion 1 |
-| `solfa.syllable_accuracy` | 0.988 | 0.965 | — |
-| `solfa.ghost_count` | 0.488 /case | 0.465 /case | ghosts remain |
-| `solfa.chromatic_ghosts` | 0.268 /case | 0.256 /case | ghosts remain |
-| `key.exact` | 0.976 | **0.953** | 2 cases wrong |
-| `key.fifth_confusion` | **0.000** | **0.000** | the old plan's Phase 3 is already done |
-| `key.relative_confusion` | 0.024 | 0.023 | solfa-neutral by construction |
-| `key.parallel_confusion` | 0.000 | **0.023** | **first non-zero** — the new case reads C major as C minor |
-| `key.confidence_auc` | 0.95 | 0.963 | good, and it went *up* |
-| `beats.f1` | 0.974 | 0.964 | good |
-| `tempo.abs_error` | 10.66 BPM | **10.19 BPM** | still the **worst headline metric** |
-| `tempo.metrical_factor` | 0.951 | 0.953 | 2 cases off by a metrical factor |
-| **`conf.auc`** | 0.615 → **0.876** | **0.876** | **fixed in W5** (by removing terms) |
-| **`conf.separation`** | 0.012 → **0.138** | **0.138** | improved; 0.30 shown unreachable — see W5 |
-| `tests/accuracy/real/` | **README.md only** | **README.md only** | **zero labelled real recordings** |
+| Metric | 41 cases | 43 cases | +W4 | Read |
+|---|---|---|---|---|
+| `notes.f1` | 0.965 | 0.955 | **0.967** | above the pre-corpus number, on a harder corpus |
+| `notes.f1_with_offset` | 0.953 | 0.944 | 0.956 | — |
+| `notes.precision` | — | 0.963 | 0.963 | **unchanged** — every note W4 recovered is correct |
+| `notes.recall` | — | 0.957 | **0.973** | this is where W4 landed |
+| `notes.semitone_neighbour_ghosts` | 0.293 /case | 0.279 /case | 0.279 /case | ghosts remain |
+| `solfa.degree_accuracy` | 1.000 | 0.977 | **1.000** | back to saturated — see conclusion 1 |
+| `solfa.syllable_accuracy` | 0.988 | 0.965 | 0.988 | — |
+| `solfa.ghost_count` | 0.488 /case | 0.465 /case | 0.465 /case | ghosts remain |
+| `solfa.chromatic_ghosts` | 0.268 /case | 0.256 /case | 0.256 /case | ghosts remain |
+| `key.exact` | 0.976 | 0.953 | **0.977** | 1 case wrong (`relative_bait_c_major`) |
+| `key.fifth_confusion` | **0.000** | **0.000** | **0.000** | the old plan's Phase 3 is already done |
+| `key.relative_confusion` | 0.024 | 0.023 | 0.023 | solfa-neutral by construction |
+| `key.parallel_confusion` | 0.000 | 0.023 | **0.000** | W4 fixed the C-major-read-as-C-minor case |
+| `key.confidence_auc` | 0.95 | 0.963 | 0.952 | **fell because a case was fixed** — see W4 |
+| `beats.f1` | 0.974 | 0.964 | 0.975 | good |
+| `tempo.abs_error` | 10.66 BPM | 10.19 BPM | **10.16 BPM** | still the **worst headline metric** |
+| `tempo.metrical_factor` | 0.951 | 0.953 | 0.953 | 2 cases off by a metrical factor |
+| **`conf.auc`** | 0.615 → **0.876** | **0.876** | **0.876** | **fixed in W5** (by removing terms) |
+| **`conf.separation`** | 0.012 → **0.138** | **0.138** | **0.138** | improved; 0.30 shown unreachable — see W5 |
+| `tests/accuracy/real/` | **README.md only** | **README.md only** | **README.md only** | **zero labelled real recordings** |
 
 Two conclusions, and they set the whole sequence:
 
@@ -251,6 +264,12 @@ Two conclusions, and they set the whole sequence:
    follow-up**, and this is still the single most important sequencing statement in this
    document. What changed is the cost estimate: authoring one targeted case is cheap, and it
    bought W4 a gate it did not have.
+
+   **And the loop closed.** W4 shipped against that gate and took `degree_accuracy` back to
+   1.000 — so the corpus is saturated on that metric *again*, one case later. Read the third
+   column as evidence for the method, not for the pipeline: a case was authored to expose a real
+   defect, the defect was fixed, and the metric returned. The next accuracy claim needs the next
+   case first.
 2. **Every number above describes synthesized audio.** Absolute accuracy on human singing is
    unmeasured. The loader now works (fixed in `e2dc16d`); the fixtures directory is empty.
 
@@ -422,8 +441,9 @@ Because `model_output_to_notes` is pure numpy, we do **one inference and two dec
 2. if the floor fires, **re-decode from the same `model_output`** with `min_freq` set.
 
 The left hand is then never built, and the melodia trick's energy budget is never spent on
-bass. Cost: milliseconds, not a second ONNX pass. This also deletes the second
-`_pyin_contour` call in `_segment_contour` if W4 lands.
+bass. Cost: milliseconds, not a second ONNX pass. The second `_pyin_contour` call in
+`_segment_contour` is already gone — **W4 deleted it** and put the contour head's `argmax` in
+its place, so that saving is banked and is no longer an argument for W3.
 
 **Carry W2's finding into the re-decode: keep `melodia_trick=True` on it.** W2 measured that in
 `poly_block_chords_c_major` the trick is what recovers the *melody* — all three voices of a
@@ -489,7 +509,12 @@ possible margin. Raise that constant to 3 and this case falls through to inferen
 point W3 *would* reach it. That is a reason to leave the constant alone, not a route to W3.
 W3 stays blocked on a labelled real recording with an accompaniment.
 
-### W4 — Use the `contour` head as the melody tracker; keep pyin as the second opinion
+### W4 — Use the `contour` head as the melody tracker; keep pyin as the second opinion — **DONE**
+
+*Shipped: `close_voicing_c_major` `notes.f1` **0.500 → 1.000**; the other two polyphonic cases
+held at 1.000; all 40 monophonic cases byte-identical. Aggregate `notes.f1` 0.955 → **0.967**,
+`notes.recall` 0.957 → **0.973**, `solfa.degree_accuracy` 0.977 → **1.000**, `key.exact`
+0.953 → **0.977**, `key.parallel_confusion` 0.023 → **0.000**. One metric fell; see below.*
 
 **The prerequisite is now met, and measuring it corrected this section's premise.**
 
@@ -540,9 +565,86 @@ existing `_pyin_contour` machinery, `pyin_midi` and `voiced_prob` fields all sur
 case with headroom, the other two being at 1.000, so the earlier "both polyphonic cases improve"
 was unsatisfiable and is replaced by "neither of the two wrong-hand poly cases regresses from
 1.000". `notes.f1` ≥ **0.964** on the 40 monophonic cases (the earlier 0.965 was the
-whole-corpus aggregate, not the monophonic-only mean). The secondary target is the vibrato
-family, which fails the same way for the same reason — `vibrato_depth_2_0` 0.345,
-`vibrato_depth_1_8` 0.538, `drift_1_semitone` 0.818, `vibrato_rate_k20` 0.957.
+whole-corpus aggregate, not the monophonic-only mean). **Met on all three counts** — 1.000,
+both held, and the 40 are byte-identical rather than merely above threshold.
+
+*The secondary target named here was wrong and is withdrawn.* This section claimed the vibrato
+family "fails the same way for the same reason". It does not. Running the shipped
+`_segment_contour` with and without the posteriorgram returns **the same 18 notes** on
+`vibrato_depth_2_0` (against 11 reference notes), because the melody floor never fires on a
+monophonic clip, so the contour path is unreachable there — and where the contour track *was*
+forced on for comparison it read the vibrato as 15–18 notes too. The vibrato defect is
+**segmentation, not tracking**: a swept note re-crosses the segmenter's pitch-stability test and
+gets cut into pieces. That belongs to plan item 2b, and `drift_1_semitone` is the direct
+refutation of the tracking hypothesis — argmax reads it a full semitone sharp where pyin is
+exact.
+
+#### What shipped
+
+**The rule: `argmax` over the `contour` head's bins, band-limited, nearest-frame resampled onto
+pyin's grid.** Three parts, each of which had to be there:
+
+- **Bins below the melody floor are zeroed.** Not decoration — measured, `argmax` *without* the
+  floor mask reads `close_voicing_c_major` as 52, 53, 55, 57: the left hand, exactly. **The
+  melody floor is load-bearing for W4**; W4 composes with §W3's register boundary rather than
+  replacing it.
+- **Bins above `CONTOUR_CEIL_MIDI` are zeroed** — derived from `PYIN_FMAX_HZ` so the two stages
+  cannot drift apart. `predict`'s `maximum_frequency` zeroes the `note` and `onset` heads and
+  **leaves `contour` untouched**, so bins the other heads do not have still carry unconstrained
+  activation. Unmasked, an early skyline rule read MIDI 109 — the top bin — as a note on both
+  `major_c` and the close-voicing control.
+- **An absolute activation floor, `CONTOUR_MIN_ACTIVATION = 0.30`, decides voicing.** `argmax`
+  always returns a bin, so silence would otherwise read as a note; every case grew exactly one
+  spurious trailing note without it. Swept, not fitted: 0.15 leaves the artefact on four cases,
+  0.20/0.30/0.40 give every case EXACT, 0.50 loses one of `close_voicing`'s twelve notes and
+  0.70 loses seven. A *relative* bar cannot do this job — the frame peak falls with the signal,
+  so a fraction of it follows silence down.
+
+A **relative** skyline was the first candidate and is refuted: "highest bin ≥ `MELODY_FLOOR_TAU` ×
+frame peak" tracks the +12/+19 harmonic ghost, reading `vibrato_depth_2_0` as MIDI 74–84
+throughout.
+
+**The trigger is that the melody floor fired, not a confidence threshold.** This is the design
+decision worth recording, because the obvious alternative is wrong. Reading it off `voiced_prob`
+looks attractive — the gated cases sit at 0.010–0.048 — but `MELODY_FLOOR_MIN_DISTINCT_PITCHES`'
+own comment had already measured the chasm and ruled it out: a raised `fmin` depresses
+`voiced_prob` **whatever the outcome**, and monophonic `vibrato_depth_2_0` sits at 0.323 while
+being transcribed against a floor that never fired. Tying the trigger to the floor instead needs
+**no new constant**, and it makes monophonic invariance structural: the floor fires on 0 of the 40
+monophonic cases, so they cannot change. `test_the_contour_head_is_unreachable_on_a_clip_whose_floor_declined`
+asserts that by handing a declined clip a posteriorgram that *contradicts* pyin and requiring
+pyin's answer back.
+
+The second `_pyin_contour` pass is gone with the change, so this costs one `argmax` over a matrix
+already in memory and **saves** a pitch-tracking pass.
+
+Per-case, calling the shipped function directly with and without the posteriorgram:
+
+| case | pyin (`post=None`) | contour head | reference |
+|---|---|---|---|
+| `close_voicing_c_major` | 4 notes, `notes.f1` 0.500 | **12, EXACT** | 12 |
+| `poly_block_chords_c_major` | `[]` (degenerate → inference path) | **11, EXACT** | 11 |
+| `poly_alberti_bass_c_major` | 11, EXACT | 11, EXACT | 11 |
+| `close_voicing_control_c_major`, `major_c`, `drift_1_semitone`, `vibrato_depth_2_0` | — | **identical** | — |
+
+`melody_track` is **not** a better tracker in general, and the docstring says so: on
+`drift_1_semitone` it reads a full semitone sharp where pyin is exact, and on the vibrato family
+it is wrong outright. Its entire warrant is the mixture case, which is exactly the case the floor
+identifies.
+
+#### The one regression, and why it is not a defect
+
+`key.confidence_auc` **0.963 → 0.952**, and `key.confidence_separation` 0.409 → 0.405. No
+confidence code was touched. The cause is pool composition: `close_voicing_c_major` was
+previously a *well-calibrated wrong answer* — C minor at confidence **0.075**, i.e. the
+best-behaved negative in the pool, a wrong key the pipeline was already flagging as unreliable.
+Fixing the case removed it from the negatives, leaving one negative
+(`relative_bait_c_major`, 0.338) with two correct cases ranked below it: 40/42 = **0.95238**,
+matching the reported figure exactly. The baseline recomputes from scratch as 0.9634 with 41
+positives and 2 negatives, also matching. **The metric fell because a case was fixed.** With two
+negatives in a 43-case corpus this statistic is not robust enough to gate on; the honest reading
+is that AUC over a two-element negative set is noise, and the fix for that is corpus work (§5),
+not calibration work.
 
 ### W5 — Real consensus confidence — **DONE, and the premise above was wrong**
 
@@ -651,10 +753,14 @@ working input yet.
 
 ### W7 — Mode selects a decoding strategy, not four constants
 
-After W2–W4, `melody` and `poly` differ structurally: melody = contour head + onset-gated
-segmentation + `melodia_trick=False` + melody floor; poly = full polyphonic decode +
-`melodia_trick=True` + no floor. That is Omnizart's separation-of-models lesson delivered
-without a second model.
+After W4, `melody` and `poly` already differ structurally, and the difference is *conditional*
+rather than mode-switched: where the melody floor fires, melody = contour-head `argmax` above the
+floor + `melodia_trick=True` + the floor; where it declines, melody = pyin, unchanged. `poly` is
+the full polyphonic decode with no floor. W7's job is to make that a named strategy instead of an
+emergent property of one `if`. (The earlier wording said "After W2–W4" and put onset-gated
+segmentation and `melodia_trick=False` in the melody branch; both are wrong — W2 is refuted and
+the trick is what recovers the melody of a block chord.) That is Omnizart's
+separation-of-models lesson delivered without a second model.
 
 ### W8 — Free correctness fixes found while reading
 
@@ -673,7 +779,8 @@ without a second model.
 `solfa.degree_accuracy` was **1.000** and `notes.f1` **0.965** on 41 synthetic cases — no room
 left to measure in. Authoring **one** case for W4 (5c below) took them to **0.977** and
 **0.955**, which is the cheapest evidence available that the bottleneck is the cases and not the
-pipeline. `tests/accuracy/real/` still contains only a README.
+pipeline — and W4 then took them to **1.000** and **0.967**, i.e. the room the case opened has
+already been spent. `tests/accuracy/real/` still contains only a README.
 
 **5a. Label the two real recordings.** The loader works (`e2dc16d`); the fixtures are the
 only missing piece. Two cases is not a corpus, but it converts every claim in §4 from
@@ -690,7 +797,7 @@ saturation directly and at scale.
 - ~~a close-voicing case (the melody floor's known blind spot)~~ — **done**, and it renamed the
   defect: `close_voicing_c_major` + its monophonic control, `notes.f1` **0.500** against 1.000.
   The floor is not blind to close voicing; it fires and places itself correctly, and pyin
-  starves anyway. See W4.
+  starves anyway. **Now 1.000** — W4 answered it, so the room this case opened is spent.
 - a soft-legato-re-attack case — the failure mode W2's gate can cause
 - a sustained-note-with-vibrato case — what W2 is supposed to stop shredding
 - 3/4 and 6/8 cases + `meter_metrics()` — for W6
@@ -779,8 +886,8 @@ marginal compute cost.
 | 2b | ~~**vibrato-aware segmentation**~~ — promoted by W5, then **demoted by measurement**: the centre-estimator family is exhausted and what remains needs an adaptive band, on a case already past real singing | ~~`notes.f1` > 0.965~~ | **measured, not attempted — see below** |
 | 3 | ~~W2 onset gating~~ — **refuted by measurement, both halves.** The O&F gate is already in the vendored decoder; only the melodia trick evades it, and removing it costs one poly case its melody. The contour half named the wrong function, and the onset head cannot separate a real boundary from a vibrato swing (best AUC 0.803; W2's own rule 0.630) | ~~`notes.precision` ≥ 0.961 **and** `recall` ≥ 0.971~~ → **missed both: 0.936 / 0.947** | **measured, not shipping — see W2** |
 | 4 | ~~W3 source-level floor~~ — **blocked, no headroom.** The two wrong-hand poly cases are already 1.000, and W3 reaches only one of them; the 40 mono cases cannot reach the floor. The new close-voicing case fails but is answered by the *contour* path, so W3's `minimum_frequency` lever never runs on it | ~~poly cases up; 40 mono identical~~ → nothing to measure | **blocked on a real recording — see W3** |
-| 4b | W4 contour head as melody tracker | `close_voicing_c_major` > 0.500; `notes.f1` ≥ 0.964 on the 40 mono cases; the vibrato family is the secondary headroom | **next — prerequisite met** |
-| 5 | W6 **tempo only** (meter struck, see W6) | `tempo.abs_error` < 8.0; `beats.f1` ≥ 0.974 | |
+| 4b | W4 contour head as melody tracker — `argmax` between the melody floor and `CONTOUR_CEIL_MIDI`, triggered by the floor firing, replacing the second pyin pass | `close_voicing_c_major` > 0.500; `notes.f1` ≥ 0.964 on the 40 mono cases; ~~the vibrato family is the secondary headroom~~ — **withdrawn, the vibrato family is unreachable from here** | **done — 0.500 → 1.000, the 40 mono byte-identical, poly held at 1.000** |
+| 5 | W6 **tempo only** (meter struck, see W6) | `tempo.abs_error` < 8.0 (now **10.16**); `beats.f1` ≥ 0.975 | **next** |
 | 6 | W7 mode as strategy | no metric moves; structural only | |
 | 7 | **6.1** symbolic import → solfa + staff; **5b** repertoire corpus | round-trips a real hymn score exactly | |
 | 8 | **6.2** Parts & Practice, score-derived first | per-part solfa + practice track from a MusicXML anthem | |
@@ -793,8 +900,10 @@ carried on notes, never used to select them), which is not true of anything belo
 
 W5's finding pointed here: the residual `conf.auc` deficit is a segmentation defect, because the
 three vibrato cases emit 12/15/18 notes for 11 references and the extra notes are physically
-present in the audio. That diagnosis stands. What changed is the estimate of what fixing it
-costs.
+present in the audio. That diagnosis stands, and W4 independently confirmed the *tracking* half
+of the alternative is dead: swapping pyin for the contour head returns the same 18 notes on
+`vibrato_depth_2_0`, and on `drift_1_semitone` the contour head is a full semitone sharp where
+pyin is exact. What changed is the estimate of what fixing the segmenter costs.
 
 The defect was instrumented cut by cut on `vibrato_depth_2_0`. The spurious cuts are a ratchet
 whose period is exactly one note: at each cut `_contour_segments` refills its running centre
