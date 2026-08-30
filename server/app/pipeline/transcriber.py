@@ -312,11 +312,13 @@ PYIN_FMAX_HZ = 1050.0
 
 # ── Melody floor: which voice the contour path tracks ─────────────────────────
 # pyin is monophonic by construction, so on a mixture it returns ONE voice — and with
-# fmin at C2 the voice it returns is the lowest strong one.  That is why both polyphonic
-# corpus cases transcribe the left hand: segmentation and tempo come out exactly right
-# (poly_block_chords measured beats.f1 1.000 and tempo 96 exact) and every pitch is 12 to
-# 24 semitones low.  Nothing downstream asks which voice pyin chose, so nothing downstream
-# can repair it; the register has to be decided BEFORE pyin runs.
+# fmin at C2 the voice it returns is the lowest strong one.  That is why the two wrong-hand
+# polyphonic corpus cases transcribe the left hand: segmentation and tempo come out exactly
+# right (poly_block_chords measured beats.f1 1.000 and tempo 96 exact) and every pitch is 12
+# to 24 semitones low.  Nothing downstream asks which voice pyin chose, so nothing downstream
+# can repair it; the register has to be decided BEFORE pyin runs.  (The third polyphonic case,
+# ``close_voicing_c_major``, fails the opposite way and the floor does not reach it — see
+# MELODY_FLOOR_MARGIN_SEMITONES.)
 #
 # Basic Pitch is the evidence, because it is polyphonic and it provably already has the
 # melody — measured 11 of 11 reference notes covered by an exact-pitch event on both
@@ -347,7 +349,7 @@ MELODY_FLOOR_TAU = 0.50
 # (measured 46 and 53 against a left hand topping out at 55) and is therefore useless,
 # while a 10th-percentile cuts real low notes on plagal_fourth and semitone_steps, whose
 # melodies visit their lowest note only briefly.  At width 10 the estimate is at or below
-# the melody's own lowest note on all 41 cases.
+# the melody's own lowest note on all 43 cases.
 MELODY_FLOOR_REGISTER_WIDTH = 10.0
 # Dropped below the estimate so the floor does not sit exactly ON the melody's lowest note.
 # 2 is not a safety margin and widening it is not conservative — measured over the window
@@ -357,13 +359,25 @@ MELODY_FLOOR_REGISTER_WIDTH = 10.0
 # poly_block_chords' second pyin pass to zero voiced frames, so it falls through to the
 # inference path and returns 16 events with 5 ghosts at tempo 137 — a worse answer than the
 # 2 correct notes margin 2 yields, on every column except key.
+#
+# Starving pyin is therefore the failure mode of every margin, and ``close_voicing_c_major``
+# shows it does not need a widened margin to happen.  There the accompaniment's top voice is
+# B3 (59) under a melody spanning 60..67, so the estimate lands on 60 and the margin cannot
+# subtract: the floor is already at the melody's lowest note and one semitone above the whole
+# left hand — the best placement available.  Raising ``fmin`` to 262 Hz still removes the
+# mixture's strongest component from pyin's search band while leaving its energy in the
+# signal, and pyin reports 4 events out of 336 f0 frames at voiced_prob 0.011-0.023
+# (notes.f1 0.500, 12 reference notes against 4 estimated).  Precision stays perfect and
+# recall collapses — the opposite signature to the two poly cases, which reported the wrong
+# VOICE rather than no voice.  No margin fixes that; only a pitch tracker that does not
+# depend on an ``fmin`` band can.
 MELODY_FLOOR_MARGIN_SEMITONES = 2.0
 # The gate.  Fires when the strong skyline sits at least this far above pyin's contour —
 # two independent engines disagreeing about which register the music is in, the same
 # consensus argument _blend_confidence runs on pitch.  Measured per-frame median
-# difference: **[-0.09, +1.11] over the 39 monophonic cases, +23.91 and +24.11 on the two
-# polyphonic ones**.  A tritone sits ~5x above the monophonic maximum and ~4x below the
-# polyphonic minimum, so this is a chasm rather than a fitted threshold, and the 39 clean
+# difference: **[-0.09, +1.11] over the 40 monophonic cases, +23.91, +24.11 and +24.11 on
+# the three polyphonic ones**.  A tritone sits ~5x above the monophonic maximum and ~4x below
+# the polyphonic minimum, so this is a chasm rather than a fitted threshold, and the 40 clean
 # cases keep byte-identical behaviour because the gate never fires on them.
 #
 # Reading a MEDIAN over frames rather than a maximum is what makes this robust to harmonic
@@ -374,7 +388,7 @@ MELODY_FLOOR_MARGIN_SEMITONES = 2.0
 # its ghosts were filtered out.
 #
 # 6 semitones is a tritone — ~5x above the monophonic maximum and ~4x below the polyphonic
-# minimum.  Anywhere in roughly [2, 18] would classify all 41 cases identically; the value
+# minimum.  Anywhere in roughly [2, 18] would classify all 43 cases identically; the value
 # is placed at the midpoint of that range in the log domain rather than fitted to it.
 MELODY_FLOOR_DISAGREEMENT_SEMITONES = 6.0
 
@@ -2365,10 +2379,13 @@ def _melody_floor_hz(
     about the register by more than ``MELODY_FLOOR_DISAGREEMENT_SEMITONES`` — i.e. only when
     there is positive evidence that pyin has locked onto a voice below the melody.  On every
     monophonic clip the two engines agree to within about a semitone and this returns
-    ``None``, which is what keeps the 39 monophonic corpus cases byte-identical.
+    ``None``, which is what keeps the 40 monophonic corpus cases byte-identical.
 
-    See the MELODY_FLOOR_* constants for the measurements behind each number, and for the
-    one failure mode this does not defend against.
+    See the MELODY_FLOOR_* constants for the measurements behind each number, and
+    MELODY_FLOOR_MARGIN_SEMITONES for the one failure mode this does not defend against:
+    raising ``fmin`` above a close accompaniment removes the mixture's strongest component
+    from pyin's search band while leaving its energy in the signal, and pyin then reports
+    almost nothing rather than the melody.
     """
     sky = _strong_skyline(note_events, times)
     both = ~np.isnan(sky) & ~np.isnan(midi)
@@ -2426,7 +2443,8 @@ def _segment_contour(
     The second element of the return is that floor in MIDI units, or ``None`` if the gate
     declined, and it is returned **whether or not the contour succeeded**.  A raised floor is
     knowledge about the clip rather than about the contour: Basic Pitch's events above it
-    covered 11 of 11 reference pitches on both polyphonic cases, so when this path gives up
+    covered 11 of 11 reference pitches on the two wrong-hand polyphonic cases, so when this
+    path gives up
     the caller can still use the floor to keep the inference path off the accompaniment.
     Handing back ``[]`` with a floor is therefore a much stronger signal than ``[]`` alone,
     and the three ways to reach it — no periodic signal, no stable-pitch run, and a contour
@@ -3350,14 +3368,15 @@ def _transcribe_wav(
     else:
         # The contour path gave up.  If it had found a melody floor first, that floor still
         # holds: it says the accompaniment lies below a known pitch, and Basic Pitch's events
-        # above it covered 11 of 11 reference pitches on both polyphonic cases.  Applying it
+        # above it covered 11 of 11 reference pitches on the two wrong-hand polyphonic cases.
+        # Applying it
         # here is what lets poly_block_chords be transcribed at all — pyin cannot follow that
         # melody through the chords (one distinct pitch over 336 frames), but Basic Pitch can
         # see it, and without the filter the five stages below transcribe the left hand.
         # Measured on that case: notes.f1 0.222 -> 0.583, solfa.degree_accuracy 0.364 ->
         # 0.727, beats.f1 0.815 -> 0.917, ghosts 5 -> 2, tempo 137 -> 96 exact.
         #
-        # The filter cannot fire on an ungated clip, so none of the 39 monophonic cases can
+        # The filter cannot fire on an ungated clip, so none of the 40 monophonic cases can
         # reach it.  ``midi_data`` is deliberately left alone: it is Basic Pitch's own
         # multi-track MIDI for the .mid export, and this path is about the notated melody.
         if melody_floor_midi is not None:

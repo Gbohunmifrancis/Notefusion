@@ -1353,7 +1353,7 @@ def test_the_floor_fires_when_pyin_is_an_octave_below_the_skyline():
 
 
 def test_the_floor_declines_a_monophonic_clip():
-    """The gate's negative case, and the one that protects the 39 monophonic cases.
+    """The gate's negative case, and the one that protects the 40 monophonic cases.
 
     Same melody, no left hand, and pyin tracking it — which is what every monophonic corpus
     case measured ([-0.09, +1.11] semitones).  Returning ``None`` here is what makes the
