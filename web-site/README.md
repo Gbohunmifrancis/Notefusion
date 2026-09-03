@@ -121,9 +121,8 @@ automatically:
 2. App Store Connect → app privacy.
 3. Google Play Console → Store listing.
 
-The landing page's download buttons point at
-`https://play.google.com/store/apps/details?id=app.notefusion`, which 404s until
-the listing is published.
+The landing page's download buttons point at the published Google Play listing:
+`https://play.google.com/store/apps/details?id=com.notefusion.com`.
 
 ## Contact addresses
 

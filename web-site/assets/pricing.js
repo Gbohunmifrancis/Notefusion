@@ -9,7 +9,7 @@
   var regionNote = document.getElementById("pricing-region-note");
   var pricingApi =
     "https://notefusion-api-3c2513a1e974.herokuapp.com/api/billing/public-plans";
-  var playUrl = "https://play.google.com/store/apps/details?id=app.notefusion";
+  var playUrl = "https://play.google.com/store/apps/details?id=com.notefusion.com";
 
   function checkIcon() {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

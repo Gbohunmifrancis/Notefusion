@@ -495,6 +495,10 @@ public class TrialQuotaTests
             Stream audio, string fileName, TranscribeOptions options, CancellationToken ct = default)
             => Task.FromResult(Result<string>.Success($"job-{++_next}"));
 
+        public Task<Result<string>> SubmitScoreAsync(
+            Stream score, string fileName, TranscribeOptions options, CancellationToken ct = default)
+            => Task.FromResult(Result<string>.Success($"job-{++_next}"));
+
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
         {
             PollCount++;

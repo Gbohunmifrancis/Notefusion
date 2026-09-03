@@ -204,3 +204,22 @@ export function addDays(date: string, days: number): string {
   const day = String(shifted.getUTCDate()).padStart(2, "0");
   return `${shifted.getUTCFullYear()}-${month}-${day}`;
 }
+
+/**
+ * The instant a reporting-local day begins, as UTC — in WAT (UTC+1), `"2026-08-23"` becomes
+ * `"2026-08-22T23:00:00.000Z"`. Null when the date is not one.
+ *
+ * The date inputs speak reporting-local calendar days and the payment and ledger routes bound on
+ * instants, so something has to do this conversion. Sending the bare date instead would have the
+ * server read it as UTC midnight, which is an hour into the reporting day: a window on "23 August"
+ * would silently drop that day's first hour and pick up an hour of the 22nd at the other end.
+ *
+ * Both bounds go through it. The upper one is exclusive server-side, so a window ending on the 23rd
+ * passes the start of the 24th rather than the start of the 23rd.
+ */
+export function reportingDayStartUtc(date: string, offsetMinutes: number): string | null {
+  const parts = splitCalendarDate(date);
+  if (!parts) return null;
+  const midnight = Date.UTC(parts.year, parts.month - 1, parts.day);
+  return new Date(midnight - offsetMinutes * 60_000).toISOString();
+}

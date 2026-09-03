@@ -1,14 +1,17 @@
 "use client";
 
 import {
+  CreditCard,
   HeartPulse,
   LayoutDashboard,
   LogOut,
   Moon,
+  Scale,
   ScrollText,
   Search,
   Sun,
   Users2,
+  Webhook,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -47,7 +50,7 @@ import { useAuth } from "@/lib/auth";
  * collapsed. It deliberately carries no greeting: the overview page's own title is one already.
  *
  * Search submits to the accounts page rather than filtering the nav, because searching an admin
- * tool means searching its records, and four nav items do not need a filter.
+ * tool means searching its records, and a nav this short does not need a filter.
  *
  * Built on shadcn's sidebar block, which supplies the sheet, the icon rail, the cmd/ctrl-B
  * shortcut and the collapsed-state tooltips. Two hand-rolled controls went with it: the hamburger
@@ -62,6 +65,21 @@ const NAV_GROUPS = [
     items: [
       { to: "/", label: "Overview", icon: LayoutDashboard },
       { to: "/users", label: "Users", icon: Users2 },
+    ],
+  },
+  {
+    // The money. Its own group rather than more Operations rows, because these three are read
+    // together during a billing incident — a stuck payment, the callback that should have settled
+    // it, the entry it did or did not write — and none of them is about an account's access.
+    //
+    // Three sibling routes rather than `/payments/webhooks` and `/payments/ledger`: nesting them
+    // would light both the parent and the child at once, since `isActivePath` keeps a parent lit
+    // for its children. `/payments/<id>` is a child on purpose, and it is the only one.
+    label: "Payments",
+    items: [
+      { to: "/payments", label: "Transactions", icon: CreditCard },
+      { to: "/webhooks", label: "Webhook inbox", icon: Webhook },
+      { to: "/ledger", label: "Ledger", icon: Scale },
     ],
   },
   {

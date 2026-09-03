@@ -16,6 +16,13 @@ public interface ITranscriptionApi
         TranscribeOptions options,
         CancellationToken cancellationToken = default);
 
+    /// <summary>POST /v1/transcribe/score — returns the job id from the 202 response for symbolic score files.</summary>
+    Task<Result<string>> SubmitScoreAsync(
+        Stream score,
+        string fileName,
+        TranscribeOptions options,
+        CancellationToken cancellationToken = default);
+
     /// <summary>GET /v1/jobs/{jobId} — status, progress, and the result once done.</summary>
     Task<Result<TranscriptionJobDto>> GetJobAsync(
         string jobId,

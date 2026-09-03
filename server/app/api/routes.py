@@ -83,12 +83,24 @@ async def submit_transcription(
     mode: str = Form("melody"),
     key: str | None = Form(None),
     tempo: int | None = Form(None),
+    time_signature: str | None = Form(None),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
 
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
+
+    if time_signature is not None:
+        time_signature = time_signature.strip()
+        if not time_signature or time_signature.lower() in ("auto", "null", "none"):
+            time_signature = "4/4"
+        else:
+            import re
+            if not re.match(r"^\d{1,2}/\d{1,2}$", time_signature):
+                raise HTTPException(422, f"Invalid time signature format: {time_signature!r}. Expected e.g. '4/4', '3/4', '6/8'.")
+    else:
+        time_signature = "4/4"
 
     if key is not None:
         key = key.strip()
@@ -135,6 +147,7 @@ async def submit_transcription(
 
     queue = _get_queue(request)
     job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
+                          time_signature=time_signature,
                           correlation_id=_correlation_id(request))
     return SubmitResponse(job_id=job_id)
 
@@ -155,3 +168,65 @@ async def get_job(request: Request, job_id: str) -> JobResponse:
 
     return JobResponse(status=job.status, progress=job.progress,
                        result=result, error=job.error)
+
+
+ACCEPTED_SCORE_SUFFIXES = {".musicxml", ".xml", ".mxl", ".mid", ".midi", ".abc"}
+
+
+@router.post("/transcribe/score", status_code=status.HTTP_202_ACCEPTED,
+             response_model=SubmitResponse)
+async def submit_score_transcription(
+    request: Request,
+    score: UploadFile = File(...),
+    key: str | None = Form(None),
+    tempo: int | None = Form(None),
+    time_signature: str | None = Form(None),
+) -> SubmitResponse:
+    if tempo is not None and not (20 <= tempo <= 400):
+        raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
+
+    if time_signature is not None:
+        time_signature = time_signature.strip()
+        if not time_signature or time_signature.lower() in ("auto", "null", "none"):
+            time_signature = None
+        else:
+            import re
+            if not re.match(r"^\d{1,2}/\d{1,2}$", time_signature):
+                raise HTTPException(422, f"Invalid time signature format: {time_signature!r}.")
+
+    if key is not None:
+        key = key.strip()
+        if not key or key.lower() in ("auto", "null", "none"):
+            key = None
+        else:
+            from app.pipeline.transcriber import _parse_key_override
+            try:
+                _parse_key_override(key)
+            except Exception:
+                raise HTTPException(422, f"Unparseable key override: {key!r}")
+
+    suffix = Path(score.filename or "score.musicxml").suffix.lower()
+    if suffix not in ACCEPTED_SCORE_SUFFIXES:
+        raise HTTPException(415, f"Unsupported score format '{suffix}'. "
+                                 f"Accepted: {', '.join(sorted(ACCEPTED_SCORE_SUFFIXES))}")
+
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+        written = 0
+        while chunk := await score.read(1024 * 1024):
+            written += len(chunk)
+            if written > settings.max_upload_bytes:
+                tmp.close()
+                tmp_path.unlink(missing_ok=True)
+                raise HTTPException(413, "Upload exceeds the maximum allowed size.")
+            tmp.write(chunk)
+
+    if written == 0:
+        tmp_path.unlink(missing_ok=True)
+        raise HTTPException(422, "Empty score upload.")
+
+    queue = _get_queue(request)
+    job_id = queue.submit_score(tmp_path, key=key, tempo=tempo,
+                                time_signature=time_signature,
+                                correlation_id=_correlation_id(request))
+    return SubmitResponse(job_id=job_id)

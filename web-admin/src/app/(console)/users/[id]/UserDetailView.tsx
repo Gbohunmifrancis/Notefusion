@@ -33,7 +33,6 @@ import {
 import type {
   AdminUserDetail,
   GiftDuration,
-  PaymentStatus,
   SubscriptionStatus,
 } from "@/api/types";
 import { Avatar } from "@/components/Avatar";
@@ -70,6 +69,7 @@ import {
   formatMoney,
   reportingToday,
 } from "@/lib/format";
+import { PAYMENT_TONES } from "@/lib/payments";
 import { getReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
 
@@ -85,15 +85,6 @@ const SUBSCRIPTION_TONES: Record<SubscriptionStatus, BadgeTone> = {
   PastDue: "danger",
   Canceled: "warning",
   Expired: "neutral",
-};
-
-/** Attempts are kept, so this table has to be able to show a failure as clearly as a success. */
-const PAYMENT_TONES: Record<PaymentStatus, BadgeTone> = {
-  Pending: "neutral",
-  Processing: "warning",
-  Verified: "blue",
-  Completed: "success",
-  Failed: "danger",
 };
 
 /**

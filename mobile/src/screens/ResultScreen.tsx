@@ -26,7 +26,7 @@ import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { stopAudition } from "../lib/audition";
-import { exportMusicXml } from "../lib/export";
+import { exportMidi, exportMusicXml, exportSolfa } from "../lib/export";
 import {
   confidenceColor,
   fonts,
@@ -120,7 +120,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const [savedId, setSavedId] = useState<string | undefined>(initialSavedId);
   const [saving, setSaving] = useState(false);
   const [renaming, setRenaming] = useState(false);
-  const [exporting, setExporting] = useState(false);
+  const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | null>(null);
 
   // ── Key override (F-03) ────────────────────────────────────────────────────
   // Solfa is movable-do, so a key change re-labels the existing notes — it
@@ -129,6 +129,10 @@ export function ResultScreen({ route, navigation }: Props) {
   const [key, setKey] = useState(result.key);
   const [pickingKey, setPickingKey] = useState(false);
   const [rekeying, setRekeying] = useState(false);
+  const [tempo, setTempo] = useState(result.tempo);
+  const [pickingTempo, setPickingTempo] = useState(false);
+  const [timeSignature, setTimeSignature] = useState(result.timeSignature);
+  const [pickingMeter, setPickingMeter] = useState(false);
 
   // Solfa is the product's headline output; the stave is the familiar cross-check.
   // Both read from the same `view.notes`, so a key change relabels one and
@@ -164,29 +168,43 @@ export function ResultScreen({ route, navigation }: Props) {
   );
   const edited = correctedCount > 0;
 
+  const [solfaStyle, setSolfaStyle] = useState<"grid" | "curwen">("grid");
+
   // The server already labelled the original key, so trust its output until
   // the user actually overrides — that keeps the fresh-transcription path
   // byte-identical to what the worker produced.
-  const view = useMemo(
-    () =>
-      key === result.key && !edited
-        ? { notes: result.notes, solfaLines: result.solfaLines }
-        : deriveSolfa(
-            draft.notes,
-            key,
-            result.timeSignature,
-            result.chromaticSpelling ?? "direction",
-          ),
-    [
+  const view = useMemo(() => {
+    const derived = deriveSolfa(
       draft.notes,
-      edited,
       key,
-      result.key,
-      result.notes,
-      result.solfaLines,
-      result.timeSignature,
-    ],
-  );
+      timeSignature,
+      result.chromaticSpelling ?? "direction",
+    );
+    if (key === result.key && timeSignature === result.timeSignature && !edited) {
+      return {
+        notes: result.notes,
+        solfaLines: result.solfaLines,
+        curwenLines: derived.curwenLines,
+      };
+    }
+    return derived;
+  }, [
+    draft.notes,
+    edited,
+    key,
+    result.key,
+    result.notes,
+    result.solfaLines,
+    result.timeSignature,
+    timeSignature,
+    result.chromaticSpelling,
+  ]);
+
+  const activeSolfaLines = useMemo(() => {
+    return solfaStyle === "curwen" && view.curwenLines.length > 0
+      ? view.curwenLines
+      : view.solfaLines;
+  }, [solfaStyle, view.curwenLines, view.solfaLines]);
 
   const lowCount = useMemo(
     () => view.notes.filter((n) => n.conf < 0.5).length,
@@ -207,10 +225,10 @@ export function ResultScreen({ route, navigation }: Props) {
       buildMusicXml(
         view.notes,
         resolveKeySignature(key),
-        result.timeSignature,
+        timeSignature,
         { title: committedTitle || title, lyrics: true },
       ) ?? "",
-    [view.notes, key, result.timeSignature, committedTitle, title],
+    [view.notes, key, timeSignature, committedTitle, title],
   );
 
   // A corrected note is the user's, not the model's, so the headline figure has
@@ -234,9 +252,9 @@ export function ResultScreen({ route, navigation }: Props) {
       const saved = await libraryApi.save({
         title: title.trim() || `${key} transcription`,
         key,
-        tempoBpm: result.tempo,
-        timeSignature: result.timeSignature,
-        musicXml: result.musicXml,
+        tempoBpm: tempo,
+        timeSignature,
+        musicXml: scoreXml || result.musicXml,
         notes: view.notes,
         overallConfidence,
         sourceJobId,
@@ -290,6 +308,48 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+  async function handleTempoChange(nextTempo: number) {
+    if (nextTempo < 20 || nextTempo > 300 || nextTempo === tempo) return;
+    const previous = tempo;
+    setTempo(nextTempo);
+    try {
+      setPreview(synthesizeMelodyWavBase64(view.notes, nextTempo));
+    } catch {
+      // preview synthesis is non-fatal
+    }
+    if (!savedId) return;
+    try {
+      await libraryApi.updateTempo(savedId, nextTempo);
+    } catch (e) {
+      setTempo(previous);
+      showDialog({
+        title: "Could not change tempo",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
+    }
+  }
+
+  async function handleMeterChange(nextMeter: string) {
+    if (nextMeter === timeSignature) return;
+    const previous = timeSignature;
+    setTimeSignature(nextMeter);
+    setPickingMeter(false);
+    if (!savedId) return;
+    try {
+      await libraryApi.updateTimeSignature(savedId, nextMeter);
+    } catch (e) {
+      setTimeSignature(previous);
+      showDialog({
+        title: "Could not change meter",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
+    }
+  }
+
   // ── Tap-to-correct handlers (F-07) ─────────────────────────────────────────
 
   /** A free tap on any chip. Prev/Next then walk the whole list. */
@@ -320,15 +380,15 @@ export function ResultScreen({ route, navigation }: Props) {
     navigation.navigate("Piano", {
       mode: pianoMode,
       notes: view.notes,
-      tempoBpm: result.tempo,
-      timeSignature: result.timeSignature,
+      tempoBpm: tempo,
+      timeSignature,
       musicalKey: key,
       title: committedTitle ?? route.params.title ?? "Play along",
       savedId,
       onApply: (notes) => {
         const next = realign(notes, draft);
         setDraft(next);
-        setPreview(synthesizeMelodyWavBase64(next.notes, result.tempo));
+        setPreview(synthesizeMelodyWavBase64(next.notes, tempo));
         void commitNotes(next);
       },
     });
@@ -478,8 +538,46 @@ export function ResultScreen({ route, navigation }: Props) {
   // correction or key override, and after that only this one is the score on
   // screen. No success alert: the OS share sheet is its own confirmation, and it
   // has already closed by the time this resolves.
+  async function handleExportSolfa() {
+    setExportingType("solfa");
+    try {
+      const outcome = await exportSolfa(activeSolfaLines, title, {
+        key,
+        tempo,
+        timeSignature,
+      });
+      if (!outcome.ok) {
+        showDialog({
+          title: "Could not share solfa",
+          message: outcome.message,
+          icon: "alert-circle-outline",
+          tone: "danger",
+        });
+      }
+    } finally {
+      setExportingType(null);
+    }
+  }
+
+  async function handleExportMidi() {
+    setExportingType("midi");
+    try {
+      const outcome = await exportMidi(result.midiBase64, title);
+      if (!outcome.ok) {
+        showDialog({
+          title: "Could not export MIDI",
+          message: outcome.message,
+          icon: "alert-circle-outline",
+          tone: "danger",
+        });
+      }
+    } finally {
+      setExportingType(null);
+    }
+  }
+
   async function exportScore() {
-    setExporting(true);
+    setExportingType("musicxml");
     try {
       const outcome = await exportMusicXml(scoreXml, title);
       if (!outcome.ok) {
@@ -491,7 +589,7 @@ export function ResultScreen({ route, navigation }: Props) {
         });
       }
     } finally {
-      setExporting(false);
+      setExportingType(null);
     }
   }
 
@@ -585,24 +683,38 @@ export function ResultScreen({ route, navigation }: Props) {
         <View style={styles.summaryRow}>
           <SummaryStat
             icon="key-outline"
-            label={rekeying ? "Saving…" : "Key · tap to change"}
+            label={rekeying ? "Saving…" : "Key · tap"}
             value={key}
             accent={colors.purple}
-            onPress={() => setPickingKey((p) => !p)}
+            onPress={() => {
+              setPickingKey((p) => !p);
+              setPickingTempo(false);
+              setPickingMeter(false);
+            }}
           />
           <View style={styles.summaryDivider} />
           <SummaryStat
             icon="speedometer-outline"
-            label="Tempo"
-            value={`${result.tempo} BPM`}
+            label="Tempo · tap"
+            value={`${tempo} BPM`}
             accent={colors.gold}
+            onPress={() => {
+              setPickingTempo((p) => !p);
+              setPickingKey(false);
+              setPickingMeter(false);
+            }}
           />
           <View style={styles.summaryDivider} />
           <SummaryStat
             icon="grid-outline"
-            label="Meter"
-            value={result.timeSignature}
+            label="Meter · tap"
+            value={timeSignature}
             accent={colors.success}
+            onPress={() => {
+              setPickingMeter((p) => !p);
+              setPickingKey(false);
+              setPickingTempo(false);
+            }}
           />
         </View>
 
@@ -644,6 +756,79 @@ export function ResultScreen({ route, navigation }: Props) {
                 ),
               )}
             </ScrollView>
+          </View>
+        )}
+
+        {/* ── Tempo picker (F-07) ────────────────────────────────────────── */}
+        {pickingTempo && (
+          <View style={styles.tempoPicker}>
+            <Text style={styles.pickerHint}>
+              Adjust playback tempo (20–300 BPM). Notes and beats realign in real time.
+            </Text>
+            <View style={styles.tempoStepperRow}>
+              <Touchable
+                onPress={() => handleTempoChange(Math.max(20, tempo - 5))}
+                style={styles.tempoStepBtn}
+                accessibilityLabel="Decrease tempo by 5 BPM"
+              >
+                <Text style={styles.tempoStepText}>-5</Text>
+              </Touchable>
+              <Touchable
+                onPress={() => handleTempoChange(Math.max(20, tempo - 1))}
+                style={styles.tempoStepBtn}
+                accessibilityLabel="Decrease tempo by 1 BPM"
+              >
+                <Text style={styles.tempoStepText}>-1</Text>
+              </Touchable>
+              <View style={styles.tempoDisplayBadge}>
+                <Text style={styles.tempoDisplayText}>{tempo} BPM</Text>
+              </View>
+              <Touchable
+                onPress={() => handleTempoChange(Math.min(300, tempo + 1))}
+                style={styles.tempoStepBtn}
+                accessibilityLabel="Increase tempo by 1 BPM"
+              >
+                <Text style={styles.tempoStepText}>+1</Text>
+              </Touchable>
+              <Touchable
+                onPress={() => handleTempoChange(Math.min(300, tempo + 5))}
+                style={styles.tempoStepBtn}
+                accessibilityLabel="Increase tempo by 5 BPM"
+              >
+                <Text style={styles.tempoStepText}>+5</Text>
+              </Touchable>
+            </View>
+          </View>
+        )}
+
+        {/* ── Meter picker ────────────────────────────────────────────────── */}
+        {pickingMeter && (
+          <View style={styles.meterPicker}>
+            <Text style={styles.pickerHint}>
+              Select time signature. Re-groups bars for Curwen solfa and staff notation.
+            </Text>
+            <View style={styles.meterPillsRow}>
+              {(["4/4", "3/4", "2/4", "6/8", "12/8"] as const).map((m) => (
+                <Touchable
+                  key={m}
+                  onPress={() => handleMeterChange(m)}
+                  style={[
+                    styles.meterPill,
+                    timeSignature === m && styles.meterPillActive,
+                  ]}
+                  accessibilityLabel={`Set meter to ${m}`}
+                >
+                  <Text
+                    style={[
+                      styles.meterPillText,
+                      timeSignature === m && styles.meterPillTextActive,
+                    ]}
+                  >
+                    {m}
+                  </Text>
+                </Touchable>
+              ))}
+            </View>
           </View>
         )}
 
@@ -723,14 +908,56 @@ export function ResultScreen({ route, navigation }: Props) {
         {/* Body — solfa lines or the engraved stave, from the same note data */}
         <View style={styles.solfaBody}>
           {notationView === "solfa" ? (
-            view.solfaLines.length === 0 ? (
+            activeSolfaLines.length === 0 ? (
               <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
             ) : (
               <>
-                {view.solfaLines.map((line, i) => (
+                <View style={styles.solfaStyleBar}>
+                  <Text style={styles.solfaStyleLabel}>Layout</Text>
+                  <View style={styles.solfaStylePills}>
+                    <Touchable
+                      onPress={() => setSolfaStyle("grid")}
+                      style={[
+                        styles.solfaStylePill,
+                        solfaStyle === "grid" && styles.solfaStylePillActive,
+                      ]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: solfaStyle === "grid" }}
+                    >
+                      <Text
+                        style={[
+                          styles.solfaStylePillText,
+                          solfaStyle === "grid" && styles.solfaStylePillTextActive,
+                        ]}
+                      >
+                        Grid
+                      </Text>
+                    </Touchable>
+                    <Touchable
+                      onPress={() => setSolfaStyle("curwen")}
+                      style={[
+                        styles.solfaStylePill,
+                        solfaStyle === "curwen" && styles.solfaStylePillActive,
+                      ]}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: solfaStyle === "curwen" }}
+                    >
+                      <Text
+                        style={[
+                          styles.solfaStylePillText,
+                          solfaStyle === "curwen" && styles.solfaStylePillTextActive,
+                        ]}
+                      >
+                        Curwen
+                      </Text>
+                    </Touchable>
+                  </View>
+                </View>
+
+                {activeSolfaLines.map((line, i) => (
                   <View key={i} style={styles.solfaLineWrap}>
                     {/* Line number chip */}
-                    {view.solfaLines.length > 1 && (
+                    {activeSolfaLines.length > 1 && (
                       <Text style={styles.solfaLineNum}>{i + 1}</Text>
                     )}
                     <Text
@@ -838,32 +1065,50 @@ export function ResultScreen({ route, navigation }: Props) {
         })}
       </ScrollView>
 
-      {/* ── Export ───────────────────────────────────────────────────────── */}
-      {/* Offered whether or not the transcription is saved — the score is
-          engraved from the notes on screen, and saving is a separate choice. */}
+      {/* ── Export & Share ─────────────────────────────────────────────────── */}
       <View style={styles.exportBlock}>
         <View style={styles.exportHeaderRow}>
           <Ionicons
-            name="document-text-outline"
+            name="share-social-outline"
             size={16}
             color={colors.textMuted}
           />
-          <Text style={styles.exportTitle}>Sheet music</Text>
+          <Text style={styles.exportTitle}>Export & Share</Text>
         </View>
         <Text style={styles.exportHint}>
-          {hasScore
-            ? "Export as MusicXML to open in Sibelius, MuseScore, or Finale."
-            : "No score is attached to this transcription."}
+          Share readable solfa to your choir WhatsApp group, or export MIDI and MusicXML for your DAW or score editor.
         </Text>
 
-        <Button
-          label="Export MusicXML"
-          variant="secondary"
-          icon="share-outline"
-          onPress={exportScore}
-          loading={exporting}
-          disabled={!hasScore}
-        />
+        <View style={styles.exportButtonsRow}>
+          <Button
+            label="Share Tonic Solfa"
+            variant="primary"
+            icon="chatbubbles-outline"
+            onPress={handleExportSolfa}
+            loading={exportingType === "solfa"}
+            style={styles.exportButtonPrimary}
+          />
+          <View style={styles.exportSecondaryRow}>
+            <Button
+              label="Export MIDI"
+              variant="secondary"
+              icon="musical-notes-outline"
+              onPress={handleExportMidi}
+              loading={exportingType === "midi"}
+              disabled={!result.midiBase64}
+              style={styles.exportButtonHalf}
+            />
+            <Button
+              label="MusicXML"
+              variant="secondary"
+              icon="document-text-outline"
+              onPress={exportScore}
+              loading={exportingType === "musicxml"}
+              disabled={!hasScore}
+              style={styles.exportButtonHalf}
+            />
+          </View>
+        </View>
       </View>
 
       {/* ── Save block ───────────────────────────────────────────────────── */}
@@ -1293,6 +1538,99 @@ const makeStyles = (c: Palette) =>
     fontFamily: fonts.bold,
   },
 
+  tempoPicker: {
+    backgroundColor: c.surface,
+    borderRadius: radii.md,
+    padding: spacing.md,
+    marginBottom: spacing.lg,
+    borderWidth: 1,
+    borderColor: c.border,
+  },
+
+  tempoStepperRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.xs,
+  },
+
+  tempoStepBtn: {
+    backgroundColor: c.accentSoft,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.sm,
+    minWidth: 44,
+    alignItems: "center",
+  },
+
+  tempoStepText: {
+    ...typography.caption,
+    fontFamily: fonts.bold,
+    color: c.text,
+    fontSize: 13,
+  },
+
+  tempoDisplayBadge: {
+    flex: 1,
+    backgroundColor: c.borderLight,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.sm,
+    alignItems: "center",
+  },
+
+  tempoDisplayText: {
+    ...typography.body,
+    fontFamily: fonts.bold,
+    color: c.text,
+    fontSize: 14,
+  },
+
+  meterPicker: {
+    backgroundColor: c.surface,
+    borderRadius: radii.md,
+    padding: spacing.md,
+    marginBottom: spacing.lg,
+    borderWidth: 1,
+    borderColor: c.border,
+  },
+
+  meterPillsRow: {
+    flexDirection: "row",
+    gap: spacing.xs,
+    justifyContent: "space-between",
+  },
+
+  meterPill: {
+    flex: 1,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.sm,
+    backgroundColor: c.accentSoft,
+    alignItems: "center",
+  },
+
+  meterPillActive: {
+    backgroundColor: c.purple,
+  },
+
+  meterPillText: {
+    ...typography.caption,
+    fontFamily: fonts.medium,
+    color: c.text,
+    fontSize: 13,
+  },
+
+  meterPillTextActive: {
+    color: "#FFFFFF",
+    fontFamily: fonts.bold,
+  },
+
+  pickerHint: {
+    ...typography.caption,
+    color: c.textMuted,
+    fontSize: 12,
+    marginBottom: spacing.sm,
+  },
+
   /** Warning row — shown when some notes are < 50 % confidence. */
   warnRow: {
     flexDirection: "row",
@@ -1404,6 +1742,54 @@ const makeStyles = (c: Palette) =>
     minHeight: 120,
     position: "relative",
     overflow: "hidden",
+  },
+
+  solfaStyleBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: spacing.md,
+    paddingBottom: spacing.xs,
+    borderBottomWidth: 1,
+    borderBottomColor: c.borderLight,
+  },
+
+  solfaStyleLabel: {
+    ...typography.caption,
+    color: c.textMuted,
+    fontFamily: fonts.semibold,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+
+  solfaStylePills: {
+    flexDirection: "row",
+    backgroundColor: c.borderLight,
+    borderRadius: radii.pill,
+    padding: 2,
+    gap: 2,
+  },
+
+  solfaStylePill: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
+    borderRadius: radii.pill,
+  },
+
+  solfaStylePillActive: {
+    backgroundColor: c.surface,
+  },
+
+  solfaStylePillText: {
+    ...typography.caption,
+    fontSize: 11,
+    fontFamily: fonts.medium,
+    color: c.textMuted,
+  },
+
+  solfaStylePillTextActive: {
+    fontFamily: fonts.bold,
+    color: c.text,
   },
 
   solfaLineWrap: {
@@ -1577,6 +1963,23 @@ const makeStyles = (c: Palette) =>
     fontSize: 13,
     lineHeight: 20,
     marginBottom: spacing.sm,
+  },
+
+  exportButtonsRow: {
+    gap: spacing.sm,
+  },
+
+  exportButtonPrimary: {
+    width: "100%",
+  },
+
+  exportSecondaryRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+  },
+
+  exportButtonHalf: {
+    flex: 1,
   },
 
   // ── Save block ─────────────────────────────────────────────────────────────

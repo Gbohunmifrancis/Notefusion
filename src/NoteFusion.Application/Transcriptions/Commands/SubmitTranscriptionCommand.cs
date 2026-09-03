@@ -21,7 +21,8 @@ public sealed record SubmitTranscriptionCommand(
     string FileName,
     TranscriptionMode Mode,
     string? Key,
-    int? Tempo) : IRequest<Result<string>>;
+    int? Tempo,
+    string? TimeSignature = null) : IRequest<Result<string>>;
 
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
@@ -105,10 +106,16 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         {
             Mode = request.Mode,
             Key = key,
-            Tempo = request.Tempo
+            Tempo = request.Tempo,
+            TimeSignature = request.TimeSignature
         };
 
-        var submitted = await _api.SubmitAsync(request.Audio, request.FileName, options, cancellationToken);
+        var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
+        var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
+
+        var submitted = isScore
+            ? await _api.SubmitScoreAsync(request.Audio, request.FileName, options, cancellationToken)
+            : await _api.SubmitAsync(request.Audio, request.FileName, options, cancellationToken);
 
         // Attribute the job before the id leaves the server, so the very first poll can check
         // ownership. Nothing is charged here — the audio has not been transcribed yet, and a job that

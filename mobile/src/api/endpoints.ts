@@ -142,21 +142,38 @@ export interface SubmitOptions {
   mode: "melody" | "poly";
   key?: string;
   tempo?: number;
+  timeSignature?: string;
 }
 
 export const transcriptionsApi = {
   /** Upload a captured clip as multipart/form-data; returns the polling job. */
   submit: (fileUri: string, fileName: string, opts: SubmitOptions) => {
     const form = new FormData();
+    const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+    const mime =
+      ext === "mp3"
+        ? "audio/mpeg"
+        : ext === "wav"
+        ? "audio/wav"
+        : ext === "mid" || ext === "midi"
+        ? "audio/midi"
+        : ext === "xml" || ext === "musicxml"
+        ? "application/xml"
+        : ext === "mxl"
+        ? "application/vnd.recordare.musicxml"
+        : ext === "abc"
+        ? "text/plain"
+        : "audio/m4a";
     // React Native's FormData takes a {uri,name,type} blob descriptor.
     form.append("audio", {
       uri: fileUri,
       name: fileName,
-      type: "audio/m4a",
+      type: mime,
     } as unknown as Blob);
     form.append("mode", opts.mode);
     if (opts.key) form.append("key", opts.key);
     if (opts.tempo != null) form.append("tempo", String(opts.tempo));
+    if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
 
     // Do NOT set Content-Type manually here.
     // React Native's XHR layer auto-inserts the multipart boundary when the body is
@@ -213,6 +230,16 @@ export const libraryApi = {
   updateNotes: (id: string, notes: SavedTranscription["notes"]) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/notes`, { notes })
+      .then((r) => r.data),
+
+  updateTempo: (id: string, tempo: number) =>
+    api
+      .put<SavedTranscription>(`/api/library/${id}/tempo`, { tempo })
+      .then((r) => r.data),
+
+  updateTimeSignature: (id: string, timeSignature: string) =>
+    api
+      .put<SavedTranscription>(`/api/library/${id}/time-signature`, { timeSignature })
       .then((r) => r.data),
 
   remove: (id: string) =>

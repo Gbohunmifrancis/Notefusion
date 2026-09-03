@@ -12,79 +12,66 @@
  *   out/screenshots/*.png  1080×1920 — the same screens framed in a device
  *                          mock-up with a caption, at the 9:16 Play asks for.
  *                          THESE are the uploads.
+ *   out/parts/*.png        pieces `graphics.py` composites into the feature
+ *                          graphic. Not uploads either.
  *
  * The frame scales the live page in the browser instead of downscaling a finished
  * PNG, so every glyph is re-rasterised at the size it ends up: no resampling mush.
  */
 
-import { mkdirSync, writeFileSync, readdirSync, rmSync } from "node:fs";
+import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import { createRequire } from "node:module";
-import { homedir } from "node:os";
 
+import { launch } from "./lib/browser.mjs";
+import { inspect, solfaProblems } from "./lib/checks.mjs";
 import { home, library, DEVICE_W, DEVICE_H } from "./lib/screens.mjs";
 import { record } from "./lib/record.mjs";
-import { result } from "./lib/result.mjs";
-import { TAKE } from "./lib/sample.mjs";
-
-// ─── Where the browser comes from ────────────────────────────────────────────
-
-/**
- * patchright ships inside the CodeGPT VS Code extension, which is the only copy
- * on this machine. Resolved by glob so a version bump doesn't break the script.
- */
-function loadChromium() {
-  const extRoot = join(homedir(), ".vscode", "extensions");
-  const candidates = readdirSync(extRoot)
-    .filter((d) => d.startsWith("danielsanmedium.dscodegpt-"))
-    .sort();
-  for (const dir of candidates.reverse()) {
-    try {
-      const req = createRequire(join(extRoot, dir, "standalone") + "/");
-      return req("patchright").chromium;
-    } catch {
-      /* try the next one */
-    }
-  }
-  throw new Error(
-    `no patchright found. Looked for danielsanmedium.dscodegpt-*/standalone in ${extRoot}`,
-  );
-}
+import { result, STAFF_W } from "./lib/result.mjs";
+import { engrave } from "./lib/score.mjs";
+import { TAKE, NOTES } from "./lib/sample.mjs";
 
 // ─── The set ─────────────────────────────────────────────────────────────────
 
 /**
  * Order is the order they appear in the listing, so the first two carry the
  * pitch: what the app makes, then how little it asks of you to make it.
+ *
+ * Captions are one line each on purpose. A second line puts the rule at a
+ * different height on every tile, which reads as sloppy when they are swiped
+ * side by side — and the render check below fails the build if one wraps.
+ *
+ * A function of `staff` rather than a constant, because the staff tile's notation
+ * is engraved by the app's own OSMD asset and that needs the browser — so the set
+ * cannot exist until after `chromium.launch`.
  */
-const SCREENS = [
+const screenSet = (staff) => [
   { name: "home", caption: "Hear it. See it. Notate it.", html: home(), scroll: true },
   {
     name: "record",
-    caption: "Sing, hum, or play — the mic does the rest",
+    caption: "Tap once, then just sing",
     html: record(),
     scroll: false, // RecordScreen has no ScrollView: it must fit, or it clips
   },
   {
     name: "solfa",
-    caption: "Movable-do Tonic Solfa, ready to sing",
+    caption: "Tonic Solfa, ready to sing",
     html: result({ view: "solfa" }),
     scroll: true,
   },
   {
     name: "staff",
-    caption: "The same take, engraved on a stave",
-    html: result({ view: "staff" }),
+    caption: "The same take, engraved",
+    html: result({ view: "staff", staff }),
     scroll: true,
   },
   {
     name: "rekey",
-    caption: "Change the key. The notes stay put.",
+    caption: "Change key. Notes stay put.",
     html: result({ view: "solfa", keyPicker: true, keyText: TAKE.rekey }),
     scroll: true,
   },
-  { name: "library", caption: "Every take saved, searchable, yours", html: library(), scroll: true },
+  { name: "library", caption: "Every take saved, and yours", html: library(), scroll: true },
 ];
 
 // ─── Frame geometry ──────────────────────────────────────────────────────────
@@ -113,10 +100,11 @@ const framePage = (screenUrl, caption) => `<!doctype html><html><head><meta char
     margin-left: -210px; border-radius: 50%;
     background: radial-gradient(circle, rgba(37,99,235,0.16) 0%, rgba(37,99,235,0) 68%);
   }
-  /* Caption and rule flow, so a two-line caption pushes the rule down instead
-     of striking through it. */
+  /* Caption and rule flow, so a two-line caption would push the rule down
+     instead of striking through it. They are all one line — this is the belt to
+     the check's braces. */
   .head {
-    position: absolute; left: 24px; right: 24px; top: 22px;
+    position: absolute; left: 20px; right: 20px; top: 26px;
     display: flex; flex-direction: column; align-items: center; gap: 9px;
   }
   .cap {
@@ -149,19 +137,31 @@ const STORE = import.meta.dirname;
 const BUILD = join(STORE, ".build");
 const OUT_DEVICE = join(STORE, "out", "device");
 const OUT_SHOTS = join(STORE, "out", "screenshots");
+const OUT_PARTS = join(STORE, "out", "parts");
 
-for (const d of [BUILD, OUT_DEVICE, OUT_SHOTS]) mkdirSync(d, { recursive: true });
+for (const d of [BUILD, OUT_DEVICE, OUT_SHOTS, OUT_PARTS]) mkdirSync(d, { recursive: true });
 
-const chromium = loadChromium();
-const browser = await chromium.launch({
-  headless: true,
-  channel: "chromium",
-  // file:// pages load the Poppins TTFs and the framed page iframes another
-  // file:// page; both need this.
-  args: ["--no-sandbox", "--allow-file-access-from-files", "--font-render-hinting=none"],
-});
+const browser = await launch();
 
 const problems = [];
+
+/**
+ * The staff tile's notation, from `assets/engraver/index.html` — the same asset
+ * `ScoreView` loads in its WebView. `heads` is the engraver's own count of
+ * noteheads it drew; the sample take needs no ties and no rests, so anything other
+ * than one head per note means the XML or the layout drifted.
+ */
+const { svg: staff, heads } = await engrave(browser, {
+  notes: NOTES,
+  timeSignature: TAKE.timeSignature,
+  keyText: TAKE.key,
+  width: STAFF_W,
+});
+if (heads !== NOTES.length) {
+  problems.push(`staff: engraver drew ${heads} heads for ${NOTES.length} notes`);
+}
+
+const SCREENS = screenSet(staff);
 
 for (const [i, screen] of SCREENS.entries()) {
   const n = String(i + 1).padStart(2, "0");
@@ -178,33 +178,10 @@ for (const [i, screen] of SCREENS.entries()) {
   await page.goto(pathToFileURL(screenPath).href, { waitUntil: "load" });
   await page.evaluate(() => document.fonts.ready.then(() => true));
 
-  const check = await page.evaluate(() => {
-    const lines = [...document.querySelectorAll(".solfaLine")].map((el) => ({
-      h: el.offsetHeight,
-      lh: parseFloat(getComputedStyle(el).lineHeight),
-      w: el.scrollWidth,
-      cw: el.clientWidth,
-    }));
-    // Leaf elements whose bottom edge falls past the viewport: on a screen with
-    // no ScrollView that is a clip, on a scrolling one it is just the fold.
-    const below = [...document.querySelectorAll(".safe *")]
-      .filter((el) => !el.querySelector("*"))
-      .filter((el) => {
-        const r = el.getBoundingClientRect();
-        return r.height > 0 && r.bottom > window.innerHeight + 0.5;
-      })
-      .map((el) => `${el.className || el.tagName}@${Math.round(el.getBoundingClientRect().bottom)}`);
-    const contentBottom = Math.max(
-      0,
-      ...[...document.querySelectorAll(".content > *")].map((el) =>
-        Math.round(el.getBoundingClientRect().bottom),
-      ),
-    );
-    return { contentBottom, viewH: window.innerHeight, lines, below };
-  });
+  const check = await inspect(page);
 
   console.log(
-    `  ${n}-${screen.name}  content ends at ${check.contentBottom}dp of ${check.viewH}dp` +
+    `  ${n}-${screen.name}  content ends at ${check.contentBottom}dp of ${check.view}dp` +
       (check.below.length ? `  (${check.below.length} below the fold)` : ""),
   );
 
@@ -212,12 +189,17 @@ for (const [i, screen] of SCREENS.entries()) {
   if (!screen.scroll && check.below.length) {
     problems.push(`${screen.name}: no ScrollView, yet clipped — ${check.below.slice(0, 4).join(", ")}`);
   }
-  for (const [j, l] of check.lines.entries()) {
-    if (l.h > l.lh + 1) problems.push(`${screen.name}: solfa line ${j + 1} wrapped (${l.h}px / ${l.lh}px)`);
-    if (l.w > l.cw + 1) problems.push(`${screen.name}: solfa line ${j + 1} overflows (${l.w} > ${l.cw})`);
-  }
+  problems.push(...solfaProblems(screen.name, check.lines));
 
   await page.screenshot({ path: join(OUT_DEVICE, `${n}-${screen.name}.png`) });
+
+  // The feature graphic needs the solfa card on its own, big enough to read.
+  // Capturing the element keeps it in step with the layout; a hardcoded crop
+  // would silently slide the moment anything above it changes height.
+  if (screen.name === "solfa") {
+    await page.locator(".solfaCardWrap").screenshot({ path: join(OUT_PARTS, "solfa-card.png") });
+  }
+
   await page.close();
 
   // ── Framed 9:16 upload ──
@@ -228,6 +210,15 @@ for (const [i, screen] of SCREENS.entries()) {
   await tile.goto(pathToFileURL(framePath).href, { waitUntil: "load" });
   await tile.evaluate(() => document.fonts.ready.then(() => true));
   await tile.waitForTimeout(600); // the iframe's own webfonts
+
+  const cap = await tile.evaluate(() => {
+    const el = document.querySelector(".cap");
+    return { h: el.offsetHeight, lh: parseFloat(getComputedStyle(el).lineHeight) };
+  });
+  if (cap.h > cap.lh + 1) {
+    problems.push(`${screen.name}: caption wraps to ${Math.round(cap.h / cap.lh)} lines — shorten it`);
+  }
+
   await tile.screenshot({ path: join(OUT_SHOTS, `${n}-${screen.name}.png`) });
   await tile.close();
 }

@@ -77,3 +77,109 @@ export async function exportMusicXml(
     };
   }
 }
+
+/**
+ * Shares formatted Tonic Solfa notation as a plain text (.txt) file.
+ * Perfect for sharing directly to choir WhatsApp groups, email, or notes.
+ */
+export async function exportSolfa(
+  solfaLines: string[],
+  title: string,
+  meta?: { key?: string; tempo?: number; timeSignature?: string },
+): Promise<ExportOutcome> {
+  if (!solfaLines || solfaLines.length === 0) {
+    return {
+      ok: false,
+      reason: "empty",
+      message: "This transcription has no solfa notation to export.",
+    };
+  }
+
+  if (!(await Sharing.isAvailableAsync())) {
+    return {
+      ok: false,
+      reason: "unavailable",
+      message: "Sharing isn't available on this device.",
+    };
+  }
+
+  try {
+    const file = new File(Paths.cache, `${safeFileName(title)}-solfa.txt`);
+    if (file.exists) file.delete();
+
+    const header = [
+      `=== ${title.toUpperCase()} ===`,
+      meta?.key ? `Key: ${meta.key}` : null,
+      meta?.timeSignature ? `Time: ${meta.timeSignature}` : null,
+      meta?.tempo ? `Tempo: ${meta.tempo} BPM` : null,
+      "Transcribed with NoteFusion",
+      "----------------------------------------",
+      "",
+    ]
+      .filter((line): line is string => line !== null)
+      .join("\n");
+
+    const content = `${header}${solfaLines.join("\n")}\n`;
+    file.write(content);
+
+    await Sharing.shareAsync(file.uri, {
+      mimeType: "text/plain",
+      dialogTitle: `Share Tonic Solfa: ${title}`,
+      UTI: "public.plain-text",
+    });
+
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      reason: "failed",
+      message: e instanceof Error ? e.message : "Could not export solfa text.",
+    };
+  }
+}
+
+/**
+ * Shares base64 MIDI payload as a standard .mid file.
+ * Lets users open the transcription in DAWs, MIDI players, or notation software.
+ */
+export async function exportMidi(
+  midiBase64: string,
+  title: string,
+): Promise<ExportOutcome> {
+  if (!midiBase64?.trim()) {
+    return {
+      ok: false,
+      reason: "empty",
+      message: "This transcription has no MIDI data attached.",
+    };
+  }
+
+  if (!(await Sharing.isAvailableAsync())) {
+    return {
+      ok: false,
+      reason: "unavailable",
+      message: "Sharing isn't available on this device.",
+    };
+  }
+
+  try {
+    const file = new File(Paths.cache, `${safeFileName(title)}.mid`);
+    if (file.exists) file.delete();
+    file.write(midiBase64, { encoding: "base64" });
+
+    await Sharing.shareAsync(file.uri, {
+      mimeType: "audio/midi",
+      dialogTitle: `Export MIDI: ${title}`,
+      UTI: "public.midi-audio",
+    });
+
+    return { ok: true };
+  } catch (e) {
+    return {
+      ok: false,
+      reason: "failed",
+      message: e instanceof Error ? e.message : "Could not export MIDI file.",
+    };
+  }
+}
+

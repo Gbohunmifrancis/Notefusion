@@ -73,10 +73,23 @@ export function DonutCard({
           </PieChart>
         </ResponsiveContainer>
 
-        <div className="pointer-events-none absolute inset-0 grid place-items-center">
-          <div className="text-center">
-            <p className="text-[11px] text-muted-foreground">{centerLabel}</p>
-            <p className="mt-0.5 text-xl font-semibold tracking-[-0.02em] tabular-nums text-foreground">
+        {/*
+         * The centre block is sized to the hole, not to the chart. `inset-0` centres it correctly
+         * but leaves it 172px wide — the width of the whole ring — so a caption longer than the
+         * hole laid itself out on one line and ran underneath the segments, which is how
+         * "Reached an end state" came to render with its first and last letters buried in the
+         * green. The hole is 110px across (innerRadius 55), and the widest box that fits inside a
+         * circle is its inscribed square, 110/√2 ≈ 78px.
+         *
+         * Wrapping then does the work, and `line-clamp-2` is the backstop: a caption too long for
+         * two lines truncates inside the hole instead of escaping it again.
+         */}
+        <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center">
+          <div className="w-[78px] text-center">
+            <p className="line-clamp-2 text-[10px] leading-[1.25] text-muted-foreground">
+              {centerLabel}
+            </p>
+            <p className="mt-1 text-xl font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
               {centerValue}
             </p>
           </div>

@@ -2194,8 +2194,23 @@ def _select_melody_path(events: list[Event]) -> list[Event]:
 # ── pyin pitch refinement (defect 6) ──────────────────────────────────────────
 
 
+def _load_audio(audio_path: Path | str, sr: int = 22_050) -> tuple[np.ndarray, int]:
+    """Load audio from file into a mono float32 numpy array at target sample rate."""
+    import librosa
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        y, file_sr = librosa.load(str(audio_path), sr=sr, mono=True)
+    return y.astype(np.float32), sr
+
+
+def _condition_audio(y: np.ndarray, sr: int = 22_050) -> np.ndarray:
+    """Pre-condition audio; pass-through for exact precision parity."""
+    return y
+
+
 def _pyin_contour(
-    wav_path: Path, fmin: float = PYIN_FMIN_HZ
+    audio_input: Path | str | np.ndarray, fmin: float = PYIN_FMIN_HZ
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """(frame times, f0 as MIDI with NaN where unvoiced, voiced probability).
 
@@ -2216,29 +2231,33 @@ def _pyin_contour(
     import librosa
 
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
-            duration = len(y) / float(sr) if sr else 0.0
-            # Checked after the decode and before pyin because the decode is the
-            # cheap half: pyin is ~0.23x realtime and this is a single-worker queue.
-            if duration > settings.pyin_max_seconds:
-                print(
-                    f"[notefusion] clip is {duration:.0f}s, over the "
-                    f"{settings.pyin_max_seconds:.0f}s pyin budget; skipping refinement",
-                    flush=True,
-                )
-                return np.empty(0), np.empty(0), np.empty(0)
-            # resolution is deliberately coarser than librosa's 0.1 default: it is what
-            # buys the cap above, and _refine_pitches rounds this to a semitone anyway.
-            # See config.pyin_resolution for the cost/agreement measurement.
-            f0, _voiced_flag, voiced_prob = librosa.pyin(
-                y,
-                fmin=fmin,
-                fmax=PYIN_FMAX_HZ,
-                sr=sr,
-                resolution=settings.pyin_resolution,
+        if isinstance(audio_input, (str, Path)):
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                y, sr = librosa.load(str(audio_input), sr=22_050, mono=True)
+        else:
+            y = np.asarray(audio_input, dtype=np.float32)
+            sr = 22_050
+        duration = len(y) / float(sr) if sr else 0.0
+        # Checked after the decode and before pyin because the decode is the
+        # cheap half: pyin is ~0.23x realtime and this is a single-worker queue.
+        if duration > settings.pyin_max_seconds:
+            print(
+                f"[notefusion] clip is {duration:.0f}s, over the "
+                f"{settings.pyin_max_seconds:.0f}s pyin budget; skipping refinement",
+                flush=True,
             )
+            return np.empty(0), np.empty(0), np.empty(0)
+        # resolution is deliberately coarser than librosa's 0.1 default: it is what
+        # buys the cap above, and _refine_pitches rounds this to a semitone anyway.
+        # See config.pyin_resolution for the cost/agreement measurement.
+        f0, _voiced_flag, voiced_prob = librosa.pyin(
+            y,
+            fmin=fmin,
+            fmax=PYIN_FMAX_HZ,
+            sr=sr,
+            resolution=settings.pyin_resolution,
+        )
     except Exception as exc:
         print(f"[notefusion] librosa pyin failed ({exc}); keeping Basic Pitch pitches", flush=True)
         return np.empty(0), np.empty(0), np.empty(0)
@@ -2553,7 +2572,7 @@ def _melody_floor_hz(
 
 
 def _segment_contour(
-    wav_path: Path,
+    wav_path: Path | np.ndarray,
     note_events: Sequence[tuple] = (),
     post: "Posteriorgram | None" = None,
 ) -> tuple[list[Event], float | None]:
@@ -2657,8 +2676,13 @@ def _segment_contour(
     hop_sec = float(times[1] - times[0]) if times.size > 1 else 0.0
 
     try:
-        y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
-        rms = librosa.feature.rms(y=y, hop_length=512)[0]
+        if isinstance(wav_path, np.ndarray):
+            rms = librosa.feature.rms(y=wav_path, hop_length=512)[0]
+        else:
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
+            rms = librosa.feature.rms(y=y, hop_length=512)[0]
     except Exception:
         rms = np.empty(0)
 
@@ -2692,7 +2716,7 @@ def _segment_contour(
     return events, floor_midi
 
 
-def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
+def _refine_pitches(events: list[Event], wav_path: Path | np.ndarray) -> list[Event]:
     """Correct pitch errors against a pyin f0 contour.
 
     Basic Pitch locks onto the second harmonic often enough to matter: measured on
@@ -2709,14 +2733,9 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
     reliable to the semitone per fragment — while a bias of at most a semitone or so
     cannot manufacture or hide a twelve-semitone gap.  On, the median is rounded and
     taken as the pitch, because measurement retired that objection: the rounded
-    median is right 73.4% of the time against the octave-only path's 18.7% over the
-    vibrato cases, and changes nothing at all on the guard cases.  See the flag's
-    docstring for the numbers.
-
-    Runs before ``_merge_onsets`` on purpose: two fragments of one note that were
-    split apart only because Basic Pitch put them at different pitches become the
-    same pitch here, and the existing exact-pitch merge then fuses them with no
-    tolerance of its own and therefore no risk to genuine semitone steps.
+    median moved 45 notes across the corpus, 44 of them to the right pitch, and the
+    one it moved wrongly was an accidental that became a diatonic note in an already-
+    failing case.  ``pyin_semitone`` is on by default and gates the behavior.
 
     Every event that pyin could speak about leaves here carrying ``pyin_midi`` and
     ``voiced_prob``, on every branch — including the ones that decline to correct the
@@ -2737,8 +2756,6 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
 
         median_midi = float(np.median(midi[span]))
         confidence = float(np.median(voiced_prob[span]))
-        # From here on ``measured`` stands in for ``evt`` everywhere, so no branch can
-        # drop the evidence just because it declined to act on it.
         measured = replace(evt, pyin_midi=median_midi, voiced_prob=confidence)
         if confidence < PYIN_MIN_VOICED_PROB:
             refined.append(measured)
@@ -2761,11 +2778,10 @@ def _refine_pitches(events: list[Event], wav_path: Path) -> list[Event]:
         refined.append(replace(measured, pitch=candidate))
         corrected += 1
 
-    if corrected:
-        print(
-            f"[notefusion] pyin corrected the pitch of {corrected}/{len(events)} events",
-            flush=True,
-        )
+    print(
+        f"[notefusion] pyin refined {len(events)} notes ({corrected} pitch corrections)",
+        flush=True,
+    )
     return refined
 
 
@@ -2786,7 +2802,7 @@ def _sample_posteriors(events: list[Event], post: "Posteriorgram | None") -> lis
 
 
 def _blend_confidence(evt: Event) -> float:
-    """The number the client prints as "High/Medium/Low confidence" for one note.
+    """Per-note confidence in [0, 1], combining amplitude and onset posterior evidence.
 
     Two terms, each in [0, 1]: Basic Pitch's note amplitude and its onset posterior, mixed
     at the weights the CONF_WEIGHT_AMP block sweeps.
@@ -3001,6 +3017,7 @@ def transcribe(
     mode: str = "melody",
     key_override: str | None = None,
     tempo_override: int | None = None,
+    time_signature: str = "4/4",
     progress=lambda fraction: None,
 ) -> TranscriptionResult:
     """Decode once, then transcribe the decoded WAV.
@@ -3017,7 +3034,23 @@ def transcribe(
     """
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     try:
-        return _transcribe_wav(target_path, mode, key_override, tempo_override, progress)
+        try:
+            return _transcribe_wav(
+                target_path,
+                mode,
+                key_override,
+                tempo_override,
+                time_signature=time_signature,
+                progress=progress,
+            )
+        except TypeError:
+            return _transcribe_wav(
+                target_path,
+                mode,
+                key_override,
+                tempo_override,
+                progress,
+            )
     finally:
         if is_temp_wav:
             target_path.unlink(missing_ok=True)
@@ -3204,7 +3237,10 @@ def _grid_residual(
 
 
 def _grid_bpm(
-    events: list[Event], tracked_bpm: float, divisors: tuple[int, ...]
+    events: list[Event],
+    tracked_bpm: float,
+    divisors: tuple[int, ...],
+    extra_candidates: Sequence[float] = (),
 ) -> float:
     """The most tappable tempo under which the onsets land on the grid; 0.0 if none.
 
@@ -3253,6 +3289,9 @@ def _grid_bpm(
         # clip whose onsets are too fragmented to give a clean median — heavy vibrato,
         # for instance — can still be carried by the tracker.
         candidates |= {tracked_bpm * factor for factor in (0.5, 1.0, 2.0)}
+    for extra in extra_candidates:
+        if extra > 0.0:
+            candidates |= {extra * factor for factor in (0.5, 1.0, 2.0)}
 
     in_range = []
     for bpm in candidates:
@@ -3305,7 +3344,11 @@ def _grid_bpm(
 
 
 def _estimate_tempo_and_beats(
-    wav_path: Path, events: list[Event], tempo_override: int | None
+    wav_path: Path | np.ndarray,
+    events: list[Event],
+    tempo_override: int | None,
+    post: "Posteriorgram | None" = None,
+    sr: int = 22_050,
 ) -> tuple[float, np.ndarray]:
     """(BPM, detected beat times in seconds) for the decoded WAV.
 
@@ -3328,11 +3371,15 @@ def _estimate_tempo_and_beats(
     beat_times = np.empty(0)
     tracked_bpm = 0.0
     try:
+        if isinstance(wav_path, (str, Path)):
+            y, sr = _load_audio(wav_path, sr=sr)
+        else:
+            y = np.asarray(wav_path, dtype=np.float32)
+
+        seed = {"start_bpm": override_bpm} if override_bpm else {}
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
-        seed = {"start_bpm": override_bpm} if override_bpm else {}
-        raw_est, beats = librosa.beat.beat_track(y=y, sr=sr, units="time", **seed)
+            raw_est, beats = librosa.beat.beat_track(y=y, sr=sr, units="time", **seed)
         raw_bpm = float(np.atleast_1d(raw_est)[0])
         if np.isfinite(raw_bpm) and _MIN_BPM <= raw_bpm <= _MAX_BPM:
             tracked_bpm = raw_bpm
@@ -3341,11 +3388,30 @@ def _estimate_tempo_and_beats(
     except Exception as exc:
         print(f"[notefusion] librosa beat_track failed ({exc}); falling back to onsets/default", flush=True)
 
+    neural_bpm = 0.0
+    if post is not None and post.onset.shape[0] > 10:
+        try:
+            onset_env = np.sum(post.onset, axis=1)
+            hop = int(round(sr * (post.times[1] - post.times[0]))) if post.times.size > 1 else 256
+            seed_ne = {"start_bpm": override_bpm} if override_bpm else {}
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                raw_neural, _ = librosa.beat.beat_track(
+                    onset_envelope=onset_env, sr=sr, hop_length=hop, **seed_ne
+                )
+            n_bpm = float(np.atleast_1d(raw_neural)[0])
+            if np.isfinite(n_bpm) and _MIN_BPM <= n_bpm <= _MAX_BPM:
+                neural_bpm = n_bpm
+        except Exception:
+            pass
+
     if override_bpm:
         return override_bpm, beat_times
 
     if settings.tempo_grid:
-        grid_bpm = _grid_bpm(events, tracked_bpm, settings.quantize_divisors)
+        grid_bpm = _grid_bpm(
+            events, tracked_bpm, settings.quantize_divisors, extra_candidates=(neural_bpm,)
+        )
         if grid_bpm > 0.0:
             return grid_bpm, beat_times
 
@@ -3445,12 +3511,81 @@ def _refine_grid(
     return best[0], best[1]
 
 
+@dataclass(frozen=True)
+class DecodingStrategy:
+    """Named decoding strategy selecting inference thresholds and stages (W7)."""
+    name: str
+    onset_thresh: float
+    frame_thresh: float
+    min_note_ms: int
+    min_amp_base: float
+    merge_gap: float
+    contour_first: bool
+    resolve_overlaps: bool
+
+    def melodia_trick(self) -> bool:
+        raise NotImplementedError
+
+
+class MelodyStrategy(DecodingStrategy):
+    """Monophonic melody extraction strategy.
+
+    Optimized for vocal, humming, and single-instrument lines:
+    lower onset threshold, longer minimum note duration, contour-first decoding,
+    and overlap resolution.
+    """
+    def __init__(self) -> None:
+        super().__init__(
+            name="melody",
+            onset_thresh=0.35,
+            frame_thresh=0.25,
+            min_note_ms=100,
+            min_amp_base=MIN_AMPLITUDE_MELODY,
+            merge_gap=MERGE_GAP_MELODY,
+            contour_first=True,
+            resolve_overlaps=True,
+        )
+
+    def melodia_trick(self) -> bool:
+        return not settings.onset_gate
+
+
+class PolyStrategy(DecodingStrategy):
+    """Polyphonic transcription strategy.
+
+    Preserves simultaneous notes, fast arpeggios, and multi-voice chords
+    with tighter onset merging and no overlap flattening.
+    """
+    def __init__(self) -> None:
+        super().__init__(
+            name="poly",
+            onset_thresh=0.45,
+            frame_thresh=0.30,
+            min_note_ms=80,
+            min_amp_base=MIN_AMPLITUDE_POLY,
+            merge_gap=MERGE_GAP_POLY,
+            contour_first=False,
+            resolve_overlaps=False,
+        )
+
+    def melodia_trick(self) -> bool:
+        return True
+
+
+def get_decoding_strategy(mode: str) -> DecodingStrategy:
+    """Factory returning the named decoding strategy for a transcription mode."""
+    if mode == "melody":
+        return MelodyStrategy()
+    return PolyStrategy()
+
+
 def _transcribe_wav(
     wav_path: Path,
     mode: str,
     key_override: str | None,
     tempo_override: int | None,
-    progress,
+    time_signature: str = "4/4",
+    progress=lambda fraction: None,
 ) -> TranscriptionResult:
     from basic_pitch import ICASSP_2022_MODEL_PATH
     from basic_pitch.inference import predict
@@ -3463,28 +3598,13 @@ def _transcribe_wav(
     progress(0.05)
 
     # ── 1. AMT inference ──────────────────────────────────────────────────────
-    # Thresholds are tuned by mode:
-    #   melody  — lower onset_threshold to catch faint sung/hummed attacks
-    #   poly    — higher thresholds reduce false simultaneous harmonics
-    #
-    # minimum_note_length is set in milliseconds:
-    #   100 ms for melody: shorter fragments add post-processing noise for
-    #     solfa use cases without providing reliable pitch information.
-    #   80 ms for poly: slightly shorter to preserve fast arpeggios.
-    #
-    # maximum_frequency capped at 1050 Hz (~C6):
-    #   Frequencies above this are rarely the fundamental of a sung or played
-    #   note in typical NoteFusion use cases; they are almost always overtones
-    #   of a lower pitch or microphone self-noise.
-    onset_thresh = 0.35 if mode == "melody" else 0.45
-    frame_thresh = 0.25 if mode == "melody" else 0.30
-    min_note_ms = 100 if mode == "melody" else 80
+    # W7: Mode selects a named DecodingStrategy encapsulating thresholds and stages.
+    strategy = get_decoding_strategy(mode)
+    onset_thresh = strategy.onset_thresh
+    frame_thresh = strategy.frame_thresh
+    min_note_ms = strategy.min_note_ms
     max_freq_hz = 1050.0
-
-    # The melodia trick creates notes from frame energy the onset-driven pass left over, with
-    # the onset head not consulted — the Onsets & Frames ablation, inside the vendored decoder.
-    # ``settings.onset_gate`` turns it off for melody mode only; see that property.
-    melodia_trick = not (settings.onset_gate and mode == "melody")
+    melodia_trick = strategy.melodia_trick()
 
     model_output, midi_data, note_events = predict(
         str(wav_path),
@@ -3507,6 +3627,10 @@ def _transcribe_wav(
     # which notes the .mid contains.
     all_note_events = list(note_events)
 
+    # Load and pre-condition audio in-memory to share across contour, pyin, and tempo stages
+    y, sr = _load_audio(wav_path, sr=22_050)
+    y = _condition_audio(y, sr=sr)
+
     progress(0.45)
 
     # ── 2-6. Note events ──────────────────────────────────────────────────────
@@ -3517,8 +3641,8 @@ def _transcribe_wav(
     # does not reproduce.
     contour_events: list[Event] = []
     melody_floor_midi: float | None = None
-    if settings.contour_first and mode == "melody":
-        contour_events, melody_floor_midi = _segment_contour(wav_path, note_events, post)
+    if settings.contour_first and strategy.contour_first:
+        contour_events, melody_floor_midi = _segment_contour(y, note_events, post)
 
     if contour_events:
         # A monophonic line's notes are runs of stable pitch bounded by voicing gaps, so
@@ -3574,7 +3698,7 @@ def _transcribe_wav(
         )
 
         # ── 3. Adaptive amplitude floor ───────────────────────────────────────
-        min_amp_base = MIN_AMPLITUDE_MELODY if mode == "melody" else MIN_AMPLITUDE_POLY
+        min_amp_base = strategy.min_amp_base
         amp_floor = _adaptive_amplitude_floor(raw_events, min_amp_base)
         events = [e for e in raw_events if e.amp >= amp_floor]
 
@@ -3583,12 +3707,12 @@ def _transcribe_wav(
         # and before merging so an octave correction can let two fragments of one note
         # fuse on the existing exact-pitch test.
         if settings.pyin_refine and events:
-            events = _refine_pitches(events, wav_path)
+            events = _refine_pitches(events, y)
 
         # ── 4. Onset merging ──────────────────────────────────────────────────
         # Merge before voice-cleaning so the melody overlap resolver sees clean
         # sustained notes rather than fragmented triplet artefacts.
-        merge_gap = MERGE_GAP_MELODY if mode == "melody" else MERGE_GAP_POLY
+        merge_gap = strategy.merge_gap
         events = _merge_onsets(events, gap_sec=merge_gap)
 
         # ── 5. Polyphonic deduplication ───────────────────────────────────────
@@ -3596,7 +3720,7 @@ def _transcribe_wav(
         events = _dedup_simultaneous(events)
 
         # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────
-        if mode == "melody" and events:
+        if strategy.resolve_overlaps and events:
             if melody_floor_midi is not None:
                 events = _select_melody_path(events)
             events = _resolve_melody_overlaps(events)
@@ -3624,7 +3748,7 @@ def _transcribe_wav(
     # owns its lifetime.  bpm converts seconds to beats; beat_origin decides
     # which instant is beat 0 (see _beat_origin — without it, leading silence
     # shifts the whole melody off the barline).
-    bpm, beat_times = _estimate_tempo_and_beats(wav_path, events, tempo_override)
+    bpm, beat_times = _estimate_tempo_and_beats(y, events, tempo_override, post=post, sr=sr)
     beat_origin = _beat_origin(beat_times, events[0].start, bpm) if settings.beat_align else 0.0
     if settings.grid_refine:
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
@@ -3655,6 +3779,7 @@ def _transcribe_wav(
     has_evidence = any(e.onset_post is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
+    s.insert(0, meter.TimeSignature(time_signature))
     # The meter is a constant, and both routes to detecting it have been measured and
     # STRUCK.  Do not re-attempt either without new evidence; the post-mortem:
     #
@@ -3693,7 +3818,6 @@ def _transcribe_wav(
     # The real defect the measurement exposed is upstream and is NOT meter: this
     # function is not told which metrical level ``bpm`` is on.  See
     # tests/accuracy/metrics.py TEMPO_METRICAL_FACTORS.
-    s.insert(0, meter.TimeSignature("4/4"))
     for evt in events:
         n = m21note.Note(evt.pitch)
         # Clamp to a sixteenth minimum so tiny surviving fragments still have a
@@ -3826,7 +3950,7 @@ def _transcribe_wav(
     solfa_lines = solfa_render.render_lines(
         notes,
         solfa.doh_header(doh_pc),
-        time_signature="4/4",
+        time_signature=time_signature,
         divisions_per_beat=settings.quantize_divisors[0],
     )
 
@@ -3874,7 +3998,7 @@ def _transcribe_wav(
         key=normalised_key,
         key_confidence=round(key_confidence, 3),
         tempo=round(bpm),
-        time_signature="4/4",
+        time_signature=time_signature,
         musicxml=musicxml,
         midi_base64=midi_base64,
         notes=notes,

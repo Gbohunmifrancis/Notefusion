@@ -87,3 +87,93 @@ def render_lines(
         "| " + " | ".join(bars[index : index + bars_per_line]) + " |"
         for index in range(0, len(bars), bars_per_line)
     ]
+
+
+def render_curwen_lines(
+    notes: Sequence,
+    header: str,
+    time_signature: str = "4/4",
+    bars_per_line: int = 4,
+) -> list[str]:
+    """Render notes in formal Curwen Tonic Sol-fa notation.
+
+    Curwen rhythm conventions:
+      - Barline: ``|``
+      - Beat delimiter: ``:``
+      - Half-beat division: ``.``
+      - Held note: ``-``
+      - Rest: empty space
+
+    Example (4/4 time):
+      ``| d : r . m : f : - |``
+    """
+    bars_per_line = max(1, int(bars_per_line))
+    bar_beats = _beats_per_bar(time_signature)
+    beats_per_bar = max(1, int(round(bar_beats)))
+    divisions_per_beat = 2
+    cell_beats = 1.0 / divisions_per_beat
+    cells_per_bar = beats_per_bar * divisions_per_beat
+
+    if not notes:
+        return [header]
+
+    max_end = max(
+        float(getattr(note, "start_beat", 0.0)) + max(0.0, float(getattr(note, "dur_beats", 0.0)))
+        for note in notes
+    )
+    bar_count = max(1, int(math.ceil(max_end / bar_beats - 1e-9)))
+
+    ordered = sorted(notes, key=lambda note: (float(note.start_beat), float(note.dur_beats)))
+    starts_by_cell: dict[int, list] = {}
+    quantized_start: dict[int, float] = {}
+    for note in ordered:
+        cell_index = int(math.floor(float(note.start_beat) / cell_beats + 0.5))
+        quantized_start[id(note)] = cell_index * cell_beats
+        if 0 <= cell_index < bar_count * cells_per_bar:
+            starts_by_cell.setdefault(cell_index, []).append(note)
+
+    bar_strings: list[str] = []
+    for b in range(bar_count):
+        beat_strings: list[str] = []
+        for beat_idx in range(beats_per_bar):
+            c0 = (b * beats_per_bar + beat_idx) * divisions_per_beat
+            c1 = c0 + 1
+
+            # Check if second half-beat has a new note start
+            has_subbeat = bool(starts_by_cell.get(c1))
+
+            def _cell_token(c_idx: int) -> str:
+                t_start = c_idx * cell_beats
+                t_end = t_start + cell_beats
+                starts = starts_by_cell.get(c_idx, [])
+                active = [
+                    note
+                    for note in ordered
+                    if quantized_start[id(note)] < t_end - 1e-9
+                    and quantized_start[id(note)] + max(0.0, float(note.dur_beats)) > t_start + 1e-9
+                ]
+                if starts:
+                    return "+".join(
+                        f"{getattr(n, 'solfa', '')}{getattr(n, 'octave_mark', '')}"
+                        for n in starts
+                    )
+                if active:
+                    return "-"
+                return " "
+
+            tok0 = _cell_token(c0)
+            if has_subbeat:
+                tok1 = _cell_token(c1)
+                beat_strings.append(f"{tok0} . {tok1}")
+            else:
+                beat_strings.append(tok0)
+
+        bar_strings.append(" : ".join(beat_strings))
+
+    lines = [header]
+    for i in range(0, len(bar_strings), bars_per_line):
+        chunk = bar_strings[i : i + bars_per_line]
+        lines.append("| " + " | ".join(chunk) + " |")
+
+    return lines
+

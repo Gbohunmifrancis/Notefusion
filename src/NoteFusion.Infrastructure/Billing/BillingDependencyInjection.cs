@@ -94,6 +94,7 @@ public static class BillingDependencyInjection
         services.AddHostedService<PaymentWebhookWorker>();
         services.AddHostedService<PaymentReconciliationWorker>();
         services.AddHostedService<SubscriptionExpiryWorker>();
+        services.AddHostedService<AdminPaymentAlertWorker>();
 
         return services;
     }

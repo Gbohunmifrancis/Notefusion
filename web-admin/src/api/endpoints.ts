@@ -1,16 +1,28 @@
 import { query, request } from "@/api/client";
 import type {
+  AdminLedgerRow,
+  AdminPaymentDetail,
+  AdminPaymentRow,
+  AdminReconcileResult,
   AdminUserDetail,
   AdminUserRow,
+  AdminWebhookEventDetail,
+  AdminWebhookEventRow,
   AnalyticsOverview,
   AuditAction,
   AuditLogRow,
   GiftDuration,
+  LedgerDirection,
+  LedgerReason,
   LoginResponse,
   MyProfile,
   PagedResult,
+  PaymentOpsSummary,
+  PaymentProviderName,
+  PaymentStatus,
   RoleName,
   SystemHealth,
+  WebhookStatus,
 } from "@/api/types";
 
 export const login = (email: string, password: string) =>
@@ -74,7 +86,101 @@ export const getHealth = (signal?: AbortSignal) =>
   request<SystemHealth>("/api/admin/health", signal ? { signal } : {});
 
 /*
- * Mutations. Every one is a POST that returns 204, so they resolve to undefined — `request`
+ * Payments and reconciliation. The reads are global — every account's attempts in one table — which
+ * is what makes them answer "whose money is stuck" without knowing whose to look at first.
+ */
+
+/**
+ * The counts, the balance, and the two windows the workers run on. Read this before the table: the
+ * stuck count is what makes a filtered list worth opening, and `graceWindowMinutes` is what makes
+ * the word "stuck" mean anything.
+ */
+export const getPaymentsSummary = (signal?: AbortSignal) =>
+  request<PaymentOpsSummary>("/api/admin/payments/summary", signal ? { signal } : {});
+
+/**
+ * `stuckOnly` narrows to exactly what the sweep would pick up. `search` matches our reference, the
+ * provider's, or the account's email — the three things a support ticket actually quotes.
+ */
+export const getPayments = (
+  page: number,
+  pageSize: number,
+  filters: {
+    status?: PaymentStatus;
+    provider?: PaymentProviderName;
+    stuckOnly?: boolean;
+    fromUtc?: string;
+    toUtc?: string;
+    search?: string;
+  } = {},
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminPaymentRow>>(
+    `/api/admin/payments${query({ page, pageSize, ...filters })}`,
+    signal ? { signal } : {},
+  );
+
+/** Adds the raw gateway payloads and everything the payment caused. Admin-only, like the rest. */
+export const getPayment = (id: string, signal?: AbortSignal) =>
+  request<AdminPaymentDetail>(`/api/admin/payments/${id}`, signal ? { signal } : {});
+
+/**
+ * Asks the provider what happened and applies the answer, ahead of the sweep.
+ *
+ * The one mutation here that returns a body rather than 204: the underlying command is idempotent
+ * and reports "already settled" as plain success, so the answer is the only way to tell the console
+ * which kind of success it got. Safe to repeat.
+ */
+export const reconcilePayment = (id: string, note?: string) =>
+  request<AdminReconcileResult>(`/api/admin/payments/${id}/reconcile`, {
+    method: "POST",
+    body: { note },
+  });
+
+/**
+ * The webhook inbox. `search` covers the provider event id, the event type and the payment
+ * reference — deliberately not the payload, so a page of results is never a full-text scan of every
+ * request body the gateways have ever sent.
+ */
+export const getWebhooks = (
+  page: number,
+  pageSize: number,
+  filters: { status?: WebhookStatus; provider?: PaymentProviderName; search?: string } = {},
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminWebhookEventRow>>(
+    `/api/admin/webhooks${query({ page, pageSize, ...filters })}`,
+    signal ? { signal } : {},
+  );
+
+/**
+ * One stored callback, with the body the provider sent. There is no replay beside it: reconciling
+ * the payment recovers the subscription whether or not the callback ever drains, so the payload is
+ * here to explain why it did not, not to be re-run.
+ */
+export const getWebhook = (id: string, signal?: AbortSignal) =>
+  request<AdminWebhookEventDetail>(`/api/admin/webhooks/${id}`, signal ? { signal } : {});
+
+/** Money in and money out across every account. Append-only: nothing on this page can change it. */
+export const getLedger = (
+  page: number,
+  pageSize: number,
+  filters: {
+    direction?: LedgerDirection;
+    reason?: LedgerReason;
+    fromUtc?: string;
+    toUtc?: string;
+    search?: string;
+  } = {},
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminLedgerRow>>(
+    `/api/admin/ledger${query({ page, pageSize, ...filters })}`,
+    signal ? { signal } : {},
+  );
+
+/*
+ * Account mutations. Every one is a POST that returns 204, so they resolve to undefined — `request`
  * already handles that. The target account is always in the route and never in the body, which
  * is what stops a body typo from acting on a different user than the page is showing.
  *

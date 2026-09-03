@@ -10,13 +10,17 @@
  * stylesheets keeps the pixels honest without needing a device, a signed build
  * and a recording session every time a colour changes.
  *
- * Three React Native behaviours are emulated deliberately:
+ * Four React Native behaviours are emulated deliberately:
  *   1. `flex-shrink: 0` globally. RN never shrinks a child below its content, so
  *      an overflowing column overflows rather than squeezing — if a screen is
  *      too tall here, it is too tall on a device too, and the render check will
  *      say so instead of quietly compressing it.
  *   2. `box-sizing: border-box`, which is RN's only box model.
- *   3. Weight-selected Poppins instead of family-selected. See `tokens.mjs`.
+ *   3. `position: relative` on every div, which is RN's default for a View. It is
+ *      what makes an overlay behave: in CSS a positioned sibling paints over an
+ *      in-flow one regardless of document order, so without this the splash's
+ *      gradient hid its own wordmark.
+ *   4. Weight-selected Inter/Poppins instead of family-selected. See `tokens.mjs`.
  *
  * The one thing that is NOT faithful: `typography.mono`. The app asks Android
  * for "monospace" and gets Roboto Mono; there is no monospace TTF in
@@ -24,7 +28,7 @@
  * Windows), which is a little narrower. It affects the solfa lines only.
  */
 
-import { C, FONT_FACES, brand, ic } from "./tokens.mjs";
+import { C, FONT_FACES, brand, ic, paletteVars } from "./tokens.mjs";
 import { TAKE, NOTES, LIBRARY, USER } from "./sample.mjs";
 import { deriveSolfa, staffSvg, confidenceColor, confidenceLabel } from "./music.mjs";
 
@@ -35,8 +39,8 @@ export const DEVICE_H = 915;
 const INSET_TOP = 26;
 const INSET_BOTTOM = 20;
 
-/** `shadow.card` and `shadow.glow` from the theme, as box-shadows. */
-const S_CARD = "0 2px 10px rgba(15,23,42,0.06)";
+/** `shadow.card` from the theme. A var, so dark mode gets the stronger one. */
+const S_CARD = C.shadowCard;
 
 /** NotePlayer's own gradient is [c.purple, c.gold], not gradients.brand. */
 const PLAYER_GRAD = `linear-gradient(90deg, ${C.purple}, ${C.gold})`;
@@ -48,19 +52,26 @@ ${FONT_FACES}
 
 /* RN reset: border-box everywhere, no default margins, and no shrinking. */
 * { margin: 0; padding: 0; box-sizing: border-box; flex-shrink: 0; }
-/* Every RN View is a flex container laying out down the page. A <div> here is a
-   View, so it gets the same defaults — otherwise a rule that only says
-   "flex-direction: row" silently stacks its children instead. */
-div { display: flex; flex-direction: column; }
+/* Every RN View is a flex container laying out down the page, and every RN View is
+   position: relative by default. A <div> here is a View, so it gets both —
+   otherwise a rule that only says "flex-direction: row" silently stacks its
+   children, and, worse, CSS paints any absolutely-positioned sibling *above* the
+   in-flow ones no matter the document order, which RN never does. With every div
+   positioned, document order decides what covers what, exactly as on a device, and
+   an absolute child resolves against its own parent the way RN resolves it. */
+div { display: flex; flex-direction: column; position: relative; }
 html, body { width: ${DEVICE_W}px; height: ${DEVICE_H}px; overflow: hidden; }
 body {
   background: ${C.bg};
   color: ${C.text};
-  font-family: Poppins, sans-serif;
+  font-family: Inter, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
+/* fonts.display / fonts.displayBold. Poppins announces; it never sets body copy,
+   so it is opt-in per element rather than inherited from <body>. */
+.display { font-family: Poppins, sans-serif; }
 .ion { font-family: Ionicons; font-style: normal; font-weight: 400; line-height: 1; }
 
 /* Layout atoms. RN's default flex direction is column, unlike CSS. */
@@ -83,13 +94,34 @@ body {
 .btn { display: flex; flex-direction: row; align-items: center; justify-content: center; height: 54px; padding: 0 24px; border-radius: 999px; overflow: hidden; }
 .btnPrimary { background: ${brand(90)}; }
 .btnSecondary { background: ${C.surface}; border: 1px solid ${C.border}; }
-.btnLabel { font-size: 17px; font-weight: 600; }
+.btnLabel { font-size: 16px; font-weight: 600; }
 .btnIcon { margin-right: 8px; }
+.btnDisabled { opacity: 0.4; }
 
-/* Avatar.tsx — free account, so the ring is the plain border colour. */
-.avatar { width: 38px; height: 38px; border-radius: 19px; background: ${C.border}; display: flex; align-items: center; justify-content: center; }
-.avatarFace { width: 32px; height: 32px; border-radius: 16px; background: ${C.surface}; display: flex; align-items: center; justify-content: center; }
-.avatarInitials { font-size: 13px; font-weight: 700; color: ${C.textMuted}; }
+/* TextField.tsx */
+.tfWrap { margin-bottom: 16px; }
+/* typography.label at c.text — 14/600, 8dp clear of the field. */
+.tfLabel { font-size: 14px; font-weight: 600; color: ${C.text}; margin-bottom: 8px; }
+.tfField { flex-direction: row; align-items: center; background: ${C.surface}; border: 1px solid ${C.border}; border-radius: 14px; padding: 0 16px; height: 56px; }
+.tfInput { flex: 1 1 0; font-size: 16px; font-weight: 400; color: ${C.text}; }
+.tfPlaceholder { color: ${C.textFaint}; }
+
+/* OrDivider.tsx — hairline rules with the label between them. */
+.orRow { flex-direction: row; align-items: center; gap: 16px; margin: 16px 0; }
+.orRule { flex: 1 1 0; height: 1px; background: ${C.border}; }
+.orLabel { font-size: 15px; font-weight: 400; color: ${C.textMuted}; }
+
+/* GoogleButton.tsx */
+.gBtn { height: 56px; border-radius: 14px; border: 1px solid ${C.border}; background: ${C.surface}; align-items: center; justify-content: center; }
+.gRow { flex-direction: row; align-items: center; gap: 12px; }
+.gLabel { font-size: 16px; font-weight: 600; color: ${C.text}; }
+
+/* Avatar.tsx — free account, so the ring is the plain border colour. The three
+   sizes are derived from one size prop (a 3px ring, initials at 0.33x), so the
+   boxes are set inline and only the paint lives here. */
+.avatar { background: ${C.border}; display: flex; align-items: center; justify-content: center; }
+.avatarFace { background: ${C.surface}; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.avatarInitials { font-weight: 700; color: ${C.textMuted}; }
 
 /* Status bar — the OS chrome, drawn rather than iconised. */
 .statusbar { height: ${INSET_TOP}px; padding: 0 16px; }
@@ -106,9 +138,11 @@ body {
 .tabLabel { font-size: 11px; font-weight: 500; color: ${C.textMuted}; margin-top: 3px; }
 .tabLabelActive { font-weight: 700; color: ${C.accent}; }
 .centerBtnWrap { flex: 1 1 0; align-items: center; justify-content: center; margin-top: -20px; }
-.centerBtn { width: 54px; height: 54px; border-radius: 27px; background: #2563EB; box-shadow: 0 4px 10px rgba(37,99,235,0.4); }
+/* Diagonal, matching the tab bar's start {0,0} → end {1,1}. Home's mic stage
+   uses the same gradient because it is the same action. */
+.centerBtn { width: 54px; height: 54px; border-radius: 27px; background: ${brand(135)}; box-shadow: 0 4px 10px rgba(37,99,235,0.4); }
 .centerLabel { margin-top: 4px; font-weight: 700; color: ${C.accent}; }
-.gesturePill { position: absolute; bottom: 8px; left: ${(DEVICE_W - 108) / 2}px; width: 108px; height: 4px; border-radius: 2px; background: rgba(15,23,42,0.30); }
+.gesturePill { position: absolute; bottom: 8px; left: ${(DEVICE_W - 108) / 2}px; width: 108px; height: 4px; border-radius: 2px; background: ${C.gesture}; }
 `;
 
 // ─── Shared chrome ───────────────────────────────────────────────────────────
@@ -127,12 +161,16 @@ const statusBar = () => `
   </div>
 </div>`;
 
+/**
+ * `TabNavigator.tsx`'s own list, in order. Three items with the mic in the
+ * middle — it used to be five (Profile and Subscription trailed it) and what
+ * centres the mic is an *odd* count, so three does it just as well. Both of
+ * those destinations moved to the side bar; see `drawer.mjs`.
+ */
 const TABS = [
   { label: "Home", icon: "home-outline", on: "home" },
-  { label: "Library", icon: "folder-outline", on: "folder" },
   { center: true, label: "Record" },
-  { label: "Profile", icon: "person-outline" },
-  { label: "Subscription", icon: "card-outline" },
+  { label: "Library", icon: "folder-outline", on: "folder" },
 ];
 
 const tabBar = (active) => `
@@ -155,8 +193,15 @@ const tabBar = (active) => `
 </div>
 <div class="gesturePill"></div>`;
 
-const avatar = () => `
-<div class="avatar"><div class="avatarFace"><div class="avatarInitials">${USER.initials}</div></div></div>`;
+/** Header size is 38; the drawer's identity row asks for 52. */
+const avatar = (size = 38) => {
+  const inner = size - 6;
+  return `<div class="avatar" style="width:${size}px;height:${size}px;border-radius:${size / 2}px">
+  <div class="avatarFace" style="width:${inner}px;height:${inner}px;border-radius:${inner / 2}px">
+    <div class="avatarInitials" style="font-size:${Math.round(size * 0.33)}px">${USER.initials}</div>
+  </div>
+</div>`;
+};
 
 const button = (label, icon, variant = "primary") => {
   const color = variant === "primary" ? "#FFFFFF" : C.text;
@@ -166,10 +211,72 @@ const button = (label, icon, variant = "primary") => {
   </div>`;
 };
 
-/** Wraps a screen body in the document shell. `extra` holds screen-scoped CSS. */
-function shell(body, extra = "") {
-  return `<!doctype html><html><head><meta charset="utf-8">
-<style>${CSS}${extra}</style></head>
+/**
+ * `TextField.tsx`'s field. `placeholder: true` renders `text` in the faint
+ * placeholder colour instead of as a typed value; `secure` adds the eye toggle
+ * that reveals a password; `label` is the caption above it, which the component
+ * draws only when it is given one — the auth screens rely on placeholders and pass
+ * none, the Result screen's title field passes "Title".
+ */
+const textField = (text, { placeholder = false, secure = false, label = null } = {}) => `
+<div class="tfWrap f">
+  ${label === null ? "" : `<div class="tfLabel">${label}</div>`}
+  <div class="tfField">
+    <div class="tfInput${placeholder ? " tfPlaceholder" : ""}">${text}</div>
+    ${secure ? ic("eye-outline", 22, C.textFaint) : ""}
+  </div>
+</div>`;
+
+/** `OrDivider.tsx`. */
+const orDivider = (label = "or") => `
+<div class="orRow"><div class="orRule"></div><div class="orLabel">${label}</div><div class="orRule"></div></div>`;
+
+/**
+ * `GoogleButton.tsx`. The four-colour "G" is inline SVG copied verbatim from the
+ * component — Google's brand terms require the mark's own colours and
+ * proportions, so it is not redrawn and not recoloured by the theme.
+ */
+const googleButton = (label = "Continue with Google") => `
+<div class="gBtn f">
+  <div class="gRow">
+    <svg width="20" height="20" viewBox="0 0 48 48">
+      <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+      <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+      <path fill="#FBBC05" d="M11.69 28.18c-.44-1.32-.69-2.73-.69-4.18s.25-2.86.69-4.18v-5.7H4.34A21.99 21.99 0 0 0 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>
+      <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
+    </svg>
+    <div class="gLabel">${label}</div>
+  </div>
+</div>`;
+
+/**
+ * Wraps a screen body in the document shell. `extra` holds screen-scoped CSS.
+ *
+ * `mode` picks the palette, and it does so by swapping the `:root` block alone —
+ * every rule below is written against `var(--token)`, so no screen module needs
+ * to know which mode it is being rendered in. `showTabBar` is the caller's job;
+ * this only draws the safe area and the status bar.
+ *
+ * `scrollY` pans a screen that is taller than the window, for the frames of the
+ * walkthrough that show something below the fold. It is a negative margin on
+ * `.content` rather than a real scroll because there is nothing to scroll — the
+ * page is exactly as tall as the device. The status bar and the tab bar stay put,
+ * which is what a ScrollView does too.
+ *
+ * The margin moves `.content`'s own box up with it, so without the `clip-path` the
+ * panned content would be painted over the status bar — a ScrollView clips at its
+ * own top edge instead. The inset is measured in the element's own coordinates, so
+ * insetting by the same `scrollY` lands exactly on the edge the content started at.
+ * Both are emitted last so they win on equal specificity, and neither is set for
+ * the store tiles, whose layout checks assume the screen starts at the top.
+ */
+function shell(body, extra = "", { mode = "light", scrollY = 0 } = {}) {
+  const pan =
+    scrollY > 0
+      ? `.content { margin-top: -${scrollY}px; clip-path: inset(${scrollY}px 0 0 0); }`
+      : "";
+  return `<!doctype html><html data-mode="${mode}"><head><meta charset="utf-8">
+<style>${paletteVars(mode)}${CSS}${extra}${pan}</style></head>
 <body><div class="safe">${statusBar()}${body}</div></body></html>`;
 }
 
@@ -184,7 +291,8 @@ const HOME_CSS = `
 .greetingSub { font-size: 14px; color: ${C.textMuted}; margin-bottom: 24px; }
 .stageCard { background: ${C.surface}; border-radius: 28px; border: 1px solid ${C.border}; padding: 24px; align-items: center; margin-bottom: 32px; box-shadow: ${S_CARD}; }
 .micCircleWrap { margin-bottom: 12px; }
-.micCircle { width: 88px; height: 88px; border-radius: 44px; background: #2563EB; box-shadow: 0 6px 16px rgba(37,99,235,0.35); }
+/* Same diagonal brand gradient as the tab bar's mic — it is the same action. */
+.micCircle { width: 88px; height: 88px; border-radius: 44px; background: ${brand(135)}; box-shadow: 0 6px 16px rgba(37,99,235,0.35); }
 .tapText { font-size: 16px; font-weight: 700; color: ${C.accent}; text-align: center; }
 .importSubLink { font-size: 13px; font-weight: 500; color: ${C.textFaint}; text-align: center; margin-top: 2px; margin-bottom: 16px; }
 .recentSectionHeader { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -192,13 +300,20 @@ const HOME_CSS = `
 .seeAllText { font-size: 14px; font-weight: 600; color: ${C.accent}; }
 .recentCard { margin-bottom: 8px; }
 .recentRow { flex-direction: row; align-items: center; padding: 12px; }
-.noteIconBadge { width: 40px; height: 40px; border-radius: 14px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; }
+.noteIconBadge { width: 40px; height: 40px; border-radius: 14px; background: ${C.accentSoft}; display: flex; align-items: center; justify-content: center; }
 .recentInfo { flex: 1 1 0; min-width: 0; margin: 0 12px; }
 .recentTitle { font-size: 15px; font-weight: 700; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .recentMeta { font-size: 13px; color: ${C.textMuted}; margin-top: 2px; }
 `;
 
-export function home() {
+/**
+ * Home's body, without the document shell — `drawer.mjs` renders it underneath
+ * the side bar, so the two screens cannot drift apart.
+ *
+ * `mode` only reaches the header's theme toggle, which shows the mode you would
+ * get by tapping it: a moon on a light canvas, a sun on a dark one.
+ */
+export function homeBody(mode = "light") {
   const rows = LIBRARY.slice(0, 3)
     .map(
       (t) => `
@@ -215,13 +330,13 @@ export function home() {
     )
     .join("");
 
-  const body = `
+  return `
 <div class="content">
   <div class="f" style="padding-top:4px">
     <div class="topHeader r">
       ${avatar()}
       <div class="headerActions">
-        <div class="headerIconBtn">${ic("moon-outline", 22, C.text)}</div>
+        <div class="headerIconBtn">${ic(mode === "dark" ? "sunny-outline" : "moon-outline", 22, C.text)}</div>
         <div class="headerIconBtn">${ic("notifications-outline", 22, C.text)}</div>
       </div>
     </div>
@@ -243,8 +358,10 @@ export function home() {
   ${rows}
 </div>
 ${tabBar("Home")}`;
+}
 
-  return shell(body, HOME_CSS);
+export function home({ mode = "light" } = {}) {
+  return shell(homeBody(mode), HOME_CSS, { mode });
 }
 
 // ─── Library ─────────────────────────────────────────────────────────────────
@@ -256,28 +373,28 @@ const LIB_CSS = `
 .filterRow { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .filterTabs { flex-direction: row; align-items: center; gap: 4px; }
 .filterTab { padding: 6px 12px; border-radius: 999px; background: ${C.surface}; border: 1px solid ${C.border}; }
-.filterTabActive { background: #2563EB; border-color: #2563EB; }
+.filterTabActive { background: ${C.ink}; border-color: ${C.ink}; }
 .filterTabText { font-size: 13px; font-weight: 500; color: ${C.textMuted}; }
-.filterTabTextActive { color: #FFFFFF; font-weight: 700; }
+.filterTabTextActive { color: ${C.onInk}; font-weight: 700; }
 .optionsBtn { padding: 4px; }
 .itemRow { flex-direction: row; align-items: center; padding: 12px 0; }
-.libBadge { width: 44px; height: 44px; border-radius: 14px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
+.libBadge { width: 44px; height: 44px; border-radius: 14px; background: ${C.accentSoft}; display: flex; align-items: center; justify-content: center; margin-right: 12px; }
 /* min-width: 0 so the ellipsised title can shrink. Yoga has no content-based
    automatic minimum, so in the app the Text truncates instead of pushing the
    badge off the row. */
 .itemInfo { flex: 1 1 0; min-width: 0; }
 .itemTitle { font-size: 16px; font-weight: 700; margin-bottom: 2px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .itemDate { font-size: 13px; color: ${C.textMuted}; }
-.typeBadge { background: #EFF6FF; border-radius: 999px; padding: 4px 12px; }
-.typeBadgeText { font-size: 12px; font-weight: 600; color: #2563EB; }
+.typeBadge { background: ${C.accentSoft}; border-radius: 999px; padding: 4px 12px; }
+.typeBadgeText { font-size: 12px; font-weight: 600; color: ${C.accent}; }
 .itemDivider { height: 1px; background: ${C.border}; }
 `;
 
-export function library() {
+export function library({ mode = "light" } = {}) {
   const rows = LIBRARY.map(
     (t) => `
     <div class="itemRow">
-      <div class="libBadge">${ic("musical-notes-outline", 22, "#2563EB")}</div>
+      <div class="libBadge">${ic("musical-notes-outline", 22, C.accent)}</div>
       <div class="itemInfo f">
         <div class="itemTitle">${t.title}</div>
         <div class="itemDate">${t.date} • ${t.time}</div>
@@ -311,8 +428,22 @@ export function library() {
 </div>
 ${tabBar("Library")}`;
 
-  return shell(body, LIB_CSS);
+  return shell(body, LIB_CSS, { mode });
 }
 
 export const SCREENS_CSS = CSS;
-export { shell, tabBar, statusBar, button, avatar, S_CARD, PLAYER_GRAD, INSET_TOP, INSET_BOTTOM };
+export {
+  shell,
+  tabBar,
+  statusBar,
+  button,
+  avatar,
+  textField,
+  orDivider,
+  googleButton,
+  S_CARD,
+  PLAYER_GRAD,
+  INSET_TOP,
+  INSET_BOTTOM,
+  HOME_CSS,
+};

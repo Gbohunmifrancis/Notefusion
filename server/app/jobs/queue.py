@@ -49,14 +49,15 @@ class JobQueue:
 
     def submit(self, audio_path: Path, mode: str,
                key: str | None, tempo: int | None,
+               time_signature: str = "4/4",
                correlation_id: str | None = None) -> str:
         job = Job(id=uuid.uuid4().hex, correlation_id=correlation_id)
         with self._lock:
             self._purge_expired()
             self._jobs[job.id] = job
-        logger.info("Job %s queued: mode=%s key=%s tempo=%s%s",
-                    job.id[:8], mode, key or "auto", tempo or "auto", self._trail(job))
-        self._executor.submit(self._run, job, audio_path, mode, key, tempo)
+        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s%s",
+                    job.id[:8], mode, key or "auto", tempo or "auto", time_signature, self._trail(job))
+        self._executor.submit(self._run, job, audio_path, mode, key, tempo, time_signature)
         return job.id
 
     def get(self, job_id: str) -> Job | None:
@@ -65,12 +66,14 @@ class JobQueue:
             return self._jobs.get(job_id)
 
     def _run(self, job: Job, audio_path: Path, mode: str,
-             key: str | None, tempo: int | None) -> None:
+             key: str | None, tempo: int | None,
+             time_signature: str = "4/4") -> None:
         job.status = STATUS_PROCESSING
         try:
             try:
                 job.result = transcribe(
                     audio_path, mode=mode, key_override=key, tempo_override=tempo,
+                    time_signature=time_signature,
                     progress=lambda fraction: setattr(job, "progress", fraction))
             finally:
                 # Stamped on every path out of transcribe() and before any terminal
@@ -102,6 +105,50 @@ class JobQueue:
         finally:
             # Privacy by default: the recording never outlives its job (TRD par. 9)
             audio_path.unlink(missing_ok=True)
+
+    def submit_score(self, score_path: Path,
+                     key: str | None = None, tempo: int | None = None,
+                     time_signature: str | None = None,
+                     correlation_id: str | None = None) -> str:
+        job = Job(id=uuid.uuid4().hex, correlation_id=correlation_id)
+        with self._lock:
+            self._purge_expired()
+            self._jobs[job.id] = job
+        logger.info("Score job %s queued: key=%s tempo=%s meter=%s%s",
+                    job.id[:8], key or "auto", tempo or "auto", time_signature or "auto", self._trail(job))
+        self._executor.submit(self._run_score, job, score_path, key, tempo, time_signature)
+        return job.id
+
+    def _run_score(self, job: Job, score_path: Path,
+                   key: str | None, tempo: int | None,
+                   time_signature: str | None) -> None:
+        job.status = STATUS_PROCESSING
+        try:
+            try:
+                from app.pipeline.score_transcriber import transcribe_score
+                job.result = transcribe_score(
+                    score_path, key_override=key, tempo_override=tempo,
+                    time_signature_override=time_signature,
+                )
+            finally:
+                score_path.unlink(missing_ok=True)
+                job.finished_at = time.monotonic()
+            job.status = STATUS_DONE
+            job.progress = 1.0
+            note_count = len(job.result.notes) if job.result else 0
+            logger.info("Score job %s DONE: %d notes%s",
+                        job.id[:8], note_count, self._trail(job))
+        except LowConfidenceError as ex:
+            job.status = STATUS_FAILED
+            job.error = str(ex)
+            logger.warning("Score job %s FAILED: %s%s", job.id[:8], ex, self._trail(job))
+        except Exception as ex:  # noqa: BLE001
+            job.status = STATUS_FAILED
+            job.error = f"Score transcription failed: {ex}"
+            logger.exception("Score job %s EXCEPTION: %s%s",
+                             job.id[:8], type(ex).__name__, self._trail(job))
+        finally:
+            score_path.unlink(missing_ok=True)
 
     @staticmethod
     def _trail(job: Job) -> str:

@@ -568,13 +568,6 @@ export function RecordScreen() {
       setPhase("recording");
       setElapsed(0);
       tick.current = setInterval(() => setElapsed((e) => e + 1), 1000);
-
-      // Pre-warm the transcriber dyno (Heroku Eco dynos sleep after inactivity).
-      // Fire-and-forget: this runs during recording so the dyno is ready by the
-      // time the audio file is submitted. Errors are intentionally swallowed.
-      fetch("https://notefusion-transcriber-ef80c63d506f.herokuapp.com/docs", {
-        method: "GET",
-      }).catch(() => undefined);
     } catch {
       setPermError("Could not start recording. Please try again.");
     }
@@ -587,7 +580,21 @@ export function RecordScreen() {
     if (blockedByTrialLimit()) return;
     try {
       const res = await DocumentPicker.getDocumentAsync({
-        type: ["audio/*", "audio/mpeg", "audio/wav", "audio/x-m4a", "audio/mp4", "audio/aac"],
+        type: [
+          "audio/*",
+          "audio/mpeg",
+          "audio/wav",
+          "audio/x-m4a",
+          "audio/mp4",
+          "audio/aac",
+          "audio/midi",
+          "audio/x-midi",
+          "application/xml",
+          "text/xml",
+          "application/vnd.recordare.musicxml",
+          "application/vnd.recordare.musicxml+xml",
+          "*/*",
+        ],
         copyToCacheDirectory: true,
       });
 

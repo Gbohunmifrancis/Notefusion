@@ -307,3 +307,28 @@ def test_correlation_id_header_is_carried_onto_the_job(monkeypatch):
         # No header at all is normal — anything calling the worker directly, and the API
         # itself when the call originates outside a request.
         assert app.state.queue.get(_submit({})).correlation_id is None
+
+
+def test_submit_accepts_valid_time_signatures():
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.5)
+        for valid_ts in ("4/4", "3/4", "6/8", "2/4", "12/8"):
+            r = client.post(
+                "/v1/transcribe",
+                files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
+                data={"mode": "melody", "time_signature": valid_ts},
+            )
+            assert r.status_code == 202, f"time_signature={valid_ts!r} should be accepted"
+
+
+def test_submit_rejects_invalid_time_signatures():
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.1)
+        for bad_ts in ("invalid", "4", "4/4/4", "3/a", "xyz"):
+            r = client.post(
+                "/v1/transcribe",
+                files={"audio": ("clip.wav", BytesIO(data), "audio/wav")},
+                data={"mode": "melody", "time_signature": bad_ts},
+            )
+            assert r.status_code == 422, f"time_signature={bad_ts!r} should be rejected"
+            assert "time signature" in r.json()["detail"].lower()

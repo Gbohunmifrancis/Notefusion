@@ -441,6 +441,10 @@ public class TranscriptionCompletionTests
             Stream audio, string fileName, TranscribeOptions options, CancellationToken ct = default)
             => Task.FromResult(Result<string>.Success("job-1"));
 
+        public Task<Result<string>> SubmitScoreAsync(
+            Stream score, string fileName, TranscribeOptions options, CancellationToken ct = default)
+            => Task.FromResult(Result<string>.Success("job-1"));
+
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
         {
             PollCount++;

@@ -1,47 +1,41 @@
 from types import SimpleNamespace
 
-from app.pipeline.solfa_render import render_lines
+from app.pipeline import solfa_render
 
 
-def _note(start, duration, solfa):
-    return SimpleNamespace(
-        start_beat=start,
-        dur_beats=duration,
-        solfa=solfa,
-        octave_mark="",
-    )
-
-
-def test_renders_rests_and_held_cells_on_the_grid():
-    notes = [_note(1.0, 1.5, "d")]
-
-    assert render_lines(notes, "Doh is C", divisions_per_beat=2) == [
-        "Doh is C",
-        "| _ _ d - - _ _ _ |",
+def test_render_lines_basic():
+    notes = [
+        SimpleNamespace(start_beat=0.0, dur_beats=1.0, solfa="d", octave_mark=""),
+        SimpleNamespace(start_beat=1.0, dur_beats=1.0, solfa="r", octave_mark=""),
+        SimpleNamespace(start_beat=2.0, dur_beats=2.0, solfa="m", octave_mark=""),
     ]
+    lines = solfa_render.render_lines(notes, "Doh is C", "4/4")
+    assert lines[0] == "Doh is C"
+    assert lines[1] == "| d - r - m - - - |"
 
 
-def test_renders_simultaneous_starts_without_dropping_a_voice():
-    notes = [_note(0.0, 1.0, "d"), _note(0.0, 1.0, "m")]
-
-    lines = render_lines(notes, "Doh is C", divisions_per_beat=1)
-
-    assert lines[1] == "| d+m _ _ _ |"
-
-
-def test_snaps_small_start_drift_to_the_nearest_display_cell():
-    notes = [_note(0.51, 0.5, "r")]
-
-    lines = render_lines(notes, "Doh is C", divisions_per_beat=2)
-
-    assert lines[1].startswith("| _ r _ _ _ _ _ _ |")
+def test_render_curwen_lines_basic_4_4():
+    notes = [
+        SimpleNamespace(start_beat=0.0, dur_beats=1.0, solfa="d", octave_mark=""),
+        SimpleNamespace(start_beat=1.0, dur_beats=0.5, solfa="r", octave_mark=""),
+        SimpleNamespace(start_beat=1.5, dur_beats=0.5, solfa="m", octave_mark=""),
+        SimpleNamespace(start_beat=2.0, dur_beats=2.0, solfa="f", octave_mark=""),
+    ]
+    lines = solfa_render.render_curwen_lines(notes, "Doh is C", "4/4")
+    assert lines[0] == "Doh is C"
+    assert lines[1] == "| d : r . m : f : - |"
 
 
-def test_grid_ties_round_up_consistently():
-    notes = [_note(0.25, 0.5, "r")]
+def test_render_curwen_lines_3_4_with_rests_and_octave():
+    notes = [
+        SimpleNamespace(start_beat=0.0, dur_beats=1.0, solfa="s", octave_mark="₁"),
+        SimpleNamespace(start_beat=2.0, dur_beats=1.0, solfa="d", octave_mark="'"),
+    ]
+    lines = solfa_render.render_curwen_lines(notes, "Doh is G", "3/4")
+    assert lines[0] == "Doh is G"
+    assert lines[1] == "| s₁ :   : d' |"
 
-    assert render_lines(notes, "Doh is C", divisions_per_beat=2)[1].startswith("| _ r _ _ _ _ _ _ |")
 
-
-def test_empty_note_list_keeps_only_the_header():
-    assert render_lines([], "Doh is C") == ["Doh is C"]
+def test_render_curwen_lines_empty():
+    lines = solfa_render.render_curwen_lines([], "Doh is F", "4/4")
+    assert lines == ["Doh is F"]

@@ -44,14 +44,28 @@ export const NOTES = PITCHES.map((pitchMidi, i) => {
   };
 });
 
-/** Library rows and the Home "Recent" list. Dates are fixed, never `new Date()`. */
+/**
+ * Library rows and the Home "Recent" list. Dates are fixed, never `new Date()`.
+ *
+ * Eight rows because five left a third of the Library screen empty, which reads
+ * as an unused app. Formatting follows LibraryScreen: `day: "numeric"` so no
+ * leading zero on the day, `hour: "2-digit"` so there is one on the hour.
+ */
 export const LIBRARY = [
   { title: "Choir rehearsal — soprano line", key: "G major", tempo: 84, date: "Aug 18, 2026", time: "07:42 PM", type: "Tonic Solfa" },
   { title: "Sunday anthem — descant", key: "D major", tempo: 96, date: "Aug 16, 2026", time: "09:15 AM", type: "Staff" },
   { title: "Evening hymn sketch", key: "A minor", tempo: 72, date: "Aug 14, 2026", time: "06:03 PM", type: "Tonic Solfa" },
   { title: "Praise medley — alto part", key: "C major", tempo: 108, date: "Aug 11, 2026", time: "04:28 PM", type: "Staff" },
-  { title: "Warm-up scale run", key: "F major", tempo: 60, date: "Aug 09, 2026", time: "08:50 AM", type: "Tonic Solfa" },
+  { title: "Warm-up scale run", key: "F major", tempo: 60, date: "Aug 9, 2026", time: "08:50 AM", type: "Tonic Solfa" },
+  { title: "Offertory chorus — tenor line", key: "Eb major", tempo: 88, date: "Aug 7, 2026", time: "05:12 PM", type: "Staff" },
+  { title: "Communion hymn — melody", key: "Bb major", tempo: 66, date: "Aug 4, 2026", time: "07:35 AM", type: "Tonic Solfa" },
+  { title: "Call and response — youth choir", key: "E minor", tempo: 92, date: "Aug 2, 2026", time: "06:47 PM", type: "Staff" },
 ];
 
-/** The signed-in account. Free tier, so the trial pill and plain avatar ring show. */
-export const USER = { fullName: "Francis Okoye", initials: "FO", trialRemaining: 2, trialTotal: 3 };
+/**
+ * The signed-in account. Free tier, so the trial pill and plain avatar ring show.
+ * `trialTotal` is `FreeTier.TrialGenerations` (5) — the number the API actually
+ * grants. A screenshot promising a different allowance is a false claim about
+ * the product, so this tracks the constant, not the mock-up that looked nice.
+ */
+export const USER = { fullName: "Francis Okoye", initials: "FO", trialRemaining: 4, trialTotal: 5 };
