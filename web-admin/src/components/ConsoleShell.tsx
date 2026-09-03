@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowUpRight,
   Bell,
   ChevronDown,
   CreditCard,
@@ -9,11 +8,9 @@ import {
   LayoutDashboard,
   LogOut,
   Moon,
-  Music2,
   Scale,
   ScrollText,
   Search,
-  Sparkles,
   Sun,
   Users2,
   Webhook,
@@ -25,6 +22,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
+import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -93,13 +91,16 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" className="border-r border-white/10 bg-[#07142f] text-white">
-        <SidebarHeader className="h-20 justify-center border-b border-white/10 px-6 group-data-[collapsible=icon]:px-2">
+      <Sidebar
+        collapsible="icon"
+        className="border-r border-slate-200 bg-white text-slate-900 transition-colors duration-200 dark:border-white/10 dark:bg-[#07142f] dark:text-white"
+      >
+        <SidebarHeader className="h-20 justify-center border-b border-slate-200 px-6 transition-colors duration-200 group-data-[collapsible=icon]:px-2 dark:border-white/10">
           <Link href="/" className="flex items-center gap-3 overflow-hidden">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-900/40">
-              <Music2 size={21} />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-900/30">
+              <BrandMark size={24} className="text-white" />
             </div>
-            <span className="truncate text-lg font-bold tracking-tight text-white group-data-[collapsible=icon]:hidden">
+            <span className="truncate text-lg font-bold tracking-tight text-slate-900 transition-colors group-data-[collapsible=icon]:hidden dark:text-white">
               NoteFusion
             </span>
           </Link>
@@ -107,27 +108,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         <ConsoleNav />
 
-        {/* Pro Tip Card widget */}
-        <div className="mx-4 mb-5 rounded-2xl border border-blue-400/20 bg-blue-600/20 p-5 group-data-[collapsible=icon]:hidden">
-          <div className="mb-2.5 flex items-center gap-2">
-            <Sparkles size={17} className="text-blue-300" />
-            <span className="font-semibold text-white">Pro Tip</span>
-          </div>
-
-          <p className="text-xs leading-5 text-blue-100">
-            Monitor transcription success rate to ensure the best user experience.
-          </p>
-
-          <Link
-            href="/health"
-            className="mt-4 flex w-full items-center justify-between rounded-lg border border-blue-300/30 bg-blue-500/20 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-500/30"
-          >
-            <span>View insights</span>
-            <ArrowUpRight size={15} />
-          </Link>
-        </div>
-
-        <SidebarFooter className="border-t border-white/10 p-4">
+        <SidebarFooter className="border-t border-slate-200 p-4 transition-colors duration-200 dark:border-white/10">
           <SignOutItem />
         </SidebarFooter>
       </Sidebar>
@@ -205,7 +186,7 @@ function ConsoleNav() {
     <SidebarContent className="px-4 py-6">
       {NAV_GROUPS.map((group) => (
         <SidebarGroup key={group.label} className="p-0 mb-5 last:mb-0">
-          <SidebarGroupLabel className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+          <SidebarGroupLabel className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
             {group.label}
           </SidebarGroupLabel>
           <SidebarMenu className="gap-1.5">
@@ -219,8 +200,8 @@ function ConsoleNav() {
                     tooltip={label}
                     className={`h-11 rounded-xl px-4 text-sm font-medium transition ${
                       active
-                        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/30 hover:bg-blue-600 hover:text-white"
-                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/25 hover:bg-blue-600 hover:text-white"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
                     }`}
                   >
                     <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-3">
@@ -244,7 +225,7 @@ function SignOutItem() {
   return (
     <button
       onClick={() => void signOut()}
-      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
     >
       <LogOut size={18} aria-hidden="true" />
       <span>Sign out</span>

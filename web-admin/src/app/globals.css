@@ -102,14 +102,13 @@
   --warning-deep: #92400e; /* 5.8:1 on a warning/10 chip */
   --danger-deep: #991b1b; /* 6.4:1 on a danger/10 chip */
 
-  /* The sidebar is a dedicated deep navy brand surface matching the dashboard design. */
-  --sidebar: #07142f;
-  --sidebar-foreground: #ffffff;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
   --sidebar-primary: #2563eb;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(255, 255, 255, 0.08);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
   --sidebar-ring: #2563eb;
 
   --chart-1: #2563eb;
