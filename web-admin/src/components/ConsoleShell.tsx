@@ -1,14 +1,19 @@
 "use client";
 
 import {
+  ArrowUpRight,
+  Bell,
+  ChevronDown,
   CreditCard,
   HeartPulse,
   LayoutDashboard,
   LogOut,
   Moon,
+  Music2,
   Scale,
   ScrollText,
   Search,
+  Sparkles,
   Sun,
   Users2,
   Webhook,
@@ -20,9 +25,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
-import { BrandMark } from "@/components/BrandMark";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Sidebar,
   SidebarContent,
@@ -40,25 +43,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
 
-/**
- * The application shell: a left rail that collapses to icons from `md` up, an off-canvas sheet
- * below it, and a sticky top bar at every width.
- *
- * The bar holds the things that are about the operator rather than about the page — search, the
- * theme switch, and who is signed in. They used to be in the rail, where the account block was
- * three levels below the fold on a short window and search vanished entirely when the rail was
- * collapsed. It deliberately carries no greeting: the overview page's own title is one already.
- *
- * Search submits to the accounts page rather than filtering the nav, because searching an admin
- * tool means searching its records, and a nav this short does not need a filter.
- *
- * Built on shadcn's sidebar block, which supplies the sheet, the icon rail, the cmd/ctrl-B
- * shortcut and the collapsed-state tooltips. Two hand-rolled controls went with it: the hamburger
- * and the expand button are now one `SidebarTrigger` — it toggles the sheet below `md` and the
- * rail above it — which also retires the awkward branch where a collapsed rail could only be
- * reopened from a button in the top bar, because its own control had collapsed with it.
- */
-
 const NAV_GROUPS = [
   {
     label: "Analytics",
@@ -68,13 +52,13 @@ const NAV_GROUPS = [
     ],
   },
   {
-    // The money. Its own group rather than more Operations rows, because these three are read
-    // together during a billing incident — a stuck payment, the callback that should have settled
-    // it, the entry it did or did not write — and none of them is about an account's access.
-    //
-    // Three sibling routes rather than `/payments/webhooks` and `/payments/ledger`: nesting them
-    // would light both the parent and the child at once, since `isActivePath` keeps a parent lit
-    // for its children. `/payments/<id>` is a child on purpose, and it is the only one.
+    label: "Operations",
+    items: [
+      { to: "/audit-log", label: "Audit log", icon: ScrollText },
+      { to: "/health", label: "System health", icon: HeartPulse },
+    ],
+  },
+  {
     label: "Payments",
     items: [
       { to: "/payments", label: "Transactions", icon: CreditCard },
@@ -82,21 +66,18 @@ const NAV_GROUPS = [
       { to: "/ledger", label: "Ledger", icon: Scale },
     ],
   },
-  {
-    // Doing and checking, as opposed to reading. Both pages are about the console's own actions
-    // and the state of the tiers behind them, which is a different job from the numbers above.
-    label: "Operations",
-    items: [
-      { to: "/audit-log", label: "Audit log", icon: ScrollText },
-      { to: "/health", label: "System health", icon: HeartPulse },
-    ],
-  },
 ] as const;
 
-/** `/users/8f2…` keeps Users lit; only the overview matches exactly, or it would light on every page. */
 function isActivePath(pathname: string, to: string): boolean {
   if (to === "/") return pathname === "/";
   return pathname === to || pathname.startsWith(`${to}/`);
+}
+
+function userInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 0 || !parts[0]) return "NA";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0]! + parts[parts.length - 1]![0]!).toUpperCase();
 }
 
 export function ConsoleShell({ children }: { children: ReactNode }) {
@@ -112,11 +93,13 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon">
-        <SidebarHeader className="h-16 justify-center px-4 group-data-[collapsible=icon]:px-2">
-          <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-            <BrandMark size={24} className="shrink-0 text-brand" />
-            <span className="truncate text-[15px] font-semibold tracking-[-0.02em] text-foreground group-data-[collapsible=icon]:hidden">
+      <Sidebar collapsible="icon" className="border-r border-white/10 bg-[#07142f] text-white">
+        <SidebarHeader className="h-20 justify-center border-b border-white/10 px-6 group-data-[collapsible=icon]:px-2">
+          <Link href="/" className="flex items-center gap-3 overflow-hidden">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-900/40">
+              <Music2 size={21} />
+            </div>
+            <span className="truncate text-lg font-bold tracking-tight text-white group-data-[collapsible=icon]:hidden">
               NoteFusion
             </span>
           </Link>
@@ -124,93 +107,130 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         <ConsoleNav />
 
-        <SidebarFooter className="border-t border-border">
+        {/* Pro Tip Card widget */}
+        <div className="mx-4 mb-5 rounded-2xl border border-blue-400/20 bg-blue-600/20 p-5 group-data-[collapsible=icon]:hidden">
+          <div className="mb-2.5 flex items-center gap-2">
+            <Sparkles size={17} className="text-blue-300" />
+            <span className="font-semibold text-white">Pro Tip</span>
+          </div>
+
+          <p className="text-xs leading-5 text-blue-100">
+            Monitor transcription success rate to ensure the best user experience.
+          </p>
+
+          <Link
+            href="/health"
+            className="mt-4 flex w-full items-center justify-between rounded-lg border border-blue-300/30 bg-blue-500/20 px-3 py-2 text-xs font-medium text-white transition hover:bg-blue-500/30"
+          >
+            <span>View insights</span>
+            <ArrowUpRight size={15} />
+          </Link>
+        </div>
+
+        <SidebarFooter className="border-t border-white/10 p-4">
           <SignOutItem />
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset>
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-border bg-card px-4 lg:px-8">
-          <SidebarTrigger className="size-9 shrink-0 text-muted-foreground" />
+        {/* TOP BAR */}
+        <header className="sticky top-0 z-20 flex h-20 items-center border-b border-slate-200 bg-white/90 px-5 backdrop-blur-xl lg:px-9 dark:border-slate-800 dark:bg-[#07142f]/90">
+          <SidebarTrigger className="mr-4 size-10 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" />
 
-          <form onSubmit={onSearch} className="min-w-0 flex-1">
-            <label className="relative block max-w-sm">
-              <span className="sr-only">Search accounts by name or email</span>
-              <Search
-                size={15}
-                aria-hidden="true"
-                className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
-              />
-              <Input
-                name="q"
-                type="search"
-                placeholder="Search accounts"
-                className="rounded-pill bg-muted pl-9 text-[13px] placeholder:text-faint"
-              />
-            </label>
+          <form onSubmit={onSearch} className="relative w-full max-w-lg">
+            <Search
+              size={18}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              name="q"
+              type="search"
+              placeholder="Search accounts, users, keys..."
+              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-50 dark:border-slate-800 dark:bg-slate-900/70 dark:text-white dark:focus:bg-slate-900"
+            />
           </form>
 
-          <ThemeToggle />
+          <div className="ml-auto flex items-center gap-5">
+            <ThemeToggle />
 
-          {/* Display only. The two controls a menu here would hold — the theme switch and sign
-              out — are each already one click away, in the bar and in the rail. */}
-          <div className="flex shrink-0 items-center gap-2.5 border-l border-border pl-3">
-            <div className="hidden min-w-0 text-right sm:block">
-              <p className="truncate text-[13px] font-medium leading-tight text-foreground">
-                {user?.fullName}
-              </p>
-              <p className="truncate text-[11px] leading-tight text-muted-foreground">
-                {user?.role}
-              </p>
+            <button
+              type="button"
+              className="relative text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              aria-label="Notifications"
+            >
+              <Bell size={19} />
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
+                3
+              </span>
+            </button>
+
+            <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
+
+            <div className="hidden items-center gap-3 sm:flex">
+              <div className="text-right">
+                <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+                  {user?.fullName || "NoteFusion Admin"}
+                </div>
+                <div className="text-xs text-slate-400">
+                  {user?.role || "Administrator"}
+                </div>
+              </div>
+
+              {avatarUrl ? (
+                <Avatar name={user?.fullName ?? "Admin"} src={avatarUrl} size={40} />
+              ) : (
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-700 shadow-sm dark:bg-purple-950 dark:text-purple-300">
+                  {userInitials(user?.fullName || "NA")}
+                </div>
+              )}
+
+              <ChevronDown size={16} className="text-slate-400" />
             </div>
-            <Avatar name={user?.fullName ?? ""} src={avatarUrl} size={34} />
           </div>
         </header>
 
-        <div className="px-5 py-6 lg:px-8">
-          <div className="mx-auto max-w-[1440px] space-y-5">{children}</div>
+        <div className="min-h-[calc(100vh-5rem)] bg-slate-50 px-5 py-8 text-slate-900 lg:px-9 dark:bg-[#0b1220] dark:text-slate-100">
+          <div className="mx-auto max-w-[1440px] space-y-6">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>
   );
 }
 
-/**
- * Separate from the shell only because it needs `useSidebar`, which is not available until
- * `SidebarProvider` is above it. It uses it to dismiss the sheet after a tap: on a phone the
- * navigation is what the sheet was opened for, so it has no reason to stay.
- */
 function ConsoleNav() {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
 
   return (
-    <SidebarContent>
+    <SidebarContent className="px-4 py-6">
       {NAV_GROUPS.map((group) => (
-        <SidebarGroup key={group.label}>
-          <SidebarGroupLabel className="px-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-faint">
+        <SidebarGroup key={group.label} className="p-0 mb-5 last:mb-0">
+          <SidebarGroupLabel className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
             {group.label}
           </SidebarGroupLabel>
-          <SidebarMenu>
-            {group.items.map(({ to, label, icon: Icon }) => (
-              <SidebarMenuItem key={to}>
-                {/* A filled pill rather than an edge marker: the row is what the pointer aims at,
-                    so the row is what should look selected. Brand rather than the block's own
-                    `sidebar-accent`, which is also its hover tint — an active row and a hovered
-                    one would otherwise be the same colour. */}
-                <SidebarMenuButton
-                  asChild
-                  isActive={isActivePath(pathname, to)}
-                  tooltip={label}
-                  className="h-9 text-[13.5px] font-medium data-[active=true]:bg-brand/10 data-[active=true]:text-brand-deep"
-                >
-                  <Link href={to} onClick={() => setOpenMobile(false)}>
-                    <Icon aria-hidden="true" />
-                    <span>{label}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+          <SidebarMenu className="gap-1.5">
+            {group.items.map(({ to, label, icon: Icon }) => {
+              const active = isActivePath(pathname, to);
+              return (
+                <SidebarMenuItem key={to}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={active}
+                    tooltip={label}
+                    className={`h-11 rounded-xl px-4 text-sm font-medium transition ${
+                      active
+                        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/30 hover:bg-blue-600 hover:text-white"
+                        : "text-slate-300 hover:bg-white/5 hover:text-white"
+                    }`}
+                  >
+                    <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-3">
+                      <Icon size={18} aria-hidden="true" />
+                      <span>{label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
       ))}
@@ -222,29 +242,16 @@ function SignOutItem() {
   const { signOut } = useAuth();
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          onClick={() => void signOut()}
-          tooltip="Sign out"
-          className="h-9 text-[13px] font-medium text-muted-foreground hover:bg-danger/10 hover:text-danger-deep"
-        >
-          <LogOut aria-hidden="true" />
-          <span>Sign out</span>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    </SidebarMenu>
+    <button
+      onClick={() => void signOut()}
+      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+    >
+      <LogOut size={18} aria-hidden="true" />
+      <span>Sign out</span>
+    </button>
   );
 }
 
-/**
- * The icon names the destination, not the current state — a moon meaning "you are in light mode"
- * and a moon meaning "go dark" look identical, so the label says which it is.
- *
- * Nothing renders until after mount. next-themes only knows the stored preference on the client,
- * so a server-rendered sun against a client-rendered moon is a hydration mismatch; the button
- * keeps its size either way, so the bar does not shift when the icon arrives.
- */
 function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -260,10 +267,10 @@ function ThemeToggle() {
       size="icon"
       onClick={() => setTheme(dark ? "light" : "dark")}
       disabled={!mounted}
-      className="size-9 shrink-0 text-muted-foreground disabled:opacity-100"
+      className="size-9 shrink-0 text-slate-500 hover:text-slate-900 disabled:opacity-100 dark:text-slate-400 dark:hover:text-white"
       {...(mounted ? { title: label, "aria-label": label } : { "aria-label": "Switch theme" })}
     >
-      {mounted ? dark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" /> : null}
+      {mounted ? dark ? <Sun size={19} aria-hidden="true" /> : <Moon size={19} aria-hidden="true" /> : null}
     </Button>
   );
 }
