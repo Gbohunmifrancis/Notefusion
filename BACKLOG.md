@@ -15,24 +15,25 @@ Items from the old native-Android backlog were superseded by the pivot (see git 
       cross-check server-side.
 
 ## Mobile (mobile/)
-- [ ] Push: `Push__UseExpo` is off by default; flip to `true` and pass an Expo access
+- [x] Push: `Push__UseExpo` is off by default; flip to `true` and pass an Expo access
       token once the API is deployed behind a public URL.
 - [ ] Audio compression before upload: Opus/FLAC. Raw PCM is ~10× too big for the data
       budget (≤ ~1 MB per 30 s clip); MVP uploads raw PCM for simplicity.
-- [ ] Reference-doh selection heuristic (doh nearest the melody's median) when rendering
-      solfa — currently uses the transcribed key's doh.
-- [ ] Playback: MIDI → synthesized audio with moving cursor (F-06).
-- [ ] Editing: tap-to-correct notes; transpose; key/tempo override wired to the library
-      endpoints (`/api/library/{id}/key`).
-- [ ] PDF / MusicXML / MIDI export + share sheet (WhatsApp is the primary channel).
+- [x] Reference-doh selection heuristic (doh nearest the melody's median) when rendering
+      solfa — mirrors `solfa.py` and `SolfaMapper.cs`.
+- [x] Playback: MIDI → synthesized audio with moving cursor (F-06).
+- [x] Editing: tap-to-correct notes; transpose; key/tempo/meter override wired to the library
+      endpoints (`/api/library/{id}/key`, `/tempo`, `/time-signature`).
+- [x] Multi-format export suite: Curwen/grid Solfa text sheet, MIDI, MusicXML + share sheet (F-09).
 
 ## Web client (future)
 - [ ] The API is headless by design — the same image serves a web client unchanged.
       First slice: auth + library browse + result rendering (no capture yet).
 
 ## Cross-cutting / later
-- [ ] Chromatic syllable set setting (descending sa/la variants differ regionally, TRD §4.2).
+- [x] Chromatic syllable set setting (descending sa/la variants differ regionally, TRD §4.2).
 - [ ] CI: add a Docker image build + publish job (compose stack currently tested as unit
       tests only; `docker compose up --build` is smoke-tested locally).
-- [ ] v1.x: offline mode via ONNX Runtime + quantized Basic Pitch; choir voice parts;
-      formal Curwen solfa export.
+- [x] Multi-part SATB choral score extraction (`server/app/pipeline/score_transcriber.py`).
+- [x] Formal Curwen solfa layout and punctuation engine (`server/app/pipeline/solfa_render.py` + `mobile/src/lib/solfa.ts`).
+- [ ] v1.x: offline mode via ONNX Runtime + quantized Basic Pitch.
