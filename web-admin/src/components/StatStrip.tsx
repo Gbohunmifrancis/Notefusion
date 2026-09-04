@@ -57,20 +57,20 @@ export function StatTile({
   unknown = false,
 }: StatTileProps) {
   return (
-    <div className="rounded-md border border-border bg-card p-5 shadow-hairline">
+    <div className="rounded-xl border border-border/80 bg-card p-4 sm:p-4.5 shadow-xs transition-all hover:shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
             <span className="truncate">{label}</span>
-            {hint && <InfoHint text={hint} />}
+            {hint && <InfoHint text={hint} size={13} />}
           </p>
 
           {/* The measured change sits beside the number rather than under it: the two are read
               together, and stacking them pushed the card taller than the metric deserved. */}
-          <div className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <p
               className={cn(
-                "text-[26px] font-semibold leading-none tracking-[-0.02em] tabular-nums",
+                "text-2xl font-bold leading-none tracking-tight tabular-nums",
                 unknown ? "text-faint" : "text-foreground",
               )}
             >
@@ -79,7 +79,7 @@ export function StatTile({
             {change && (
               <span
                 className={cn(
-                  "inline-flex items-center gap-0.5 text-[11px] font-semibold",
+                  "inline-flex items-center gap-0.5 text-xs font-semibold",
                   change.up ? "text-success-deep" : "text-danger-deep",
                 )}
               >
@@ -97,17 +97,18 @@ export function StatTile({
         <span
           aria-hidden="true"
           className={cn(
-            "grid h-10 w-10 shrink-0 place-items-center rounded-sm text-white",
+            "grid h-9 w-9 shrink-0 place-items-center rounded-lg text-white shadow-xs",
             TONES[tone],
           )}
         >
-          <Icon size={18} />
+          <Icon size={16} />
         </span>
       </div>
 
       {/* A measured change already won the slot beside the value, so this only restates what the
           tile counts when there is no change to show. */}
-      {!change && sub && <p className="mt-2.5 truncate text-[11px] text-faint">{sub}</p>}
+      {!change && sub && <p className="mt-2 truncate text-[11px] text-faint">{sub}</p>}
     </div>
   );
 }
+

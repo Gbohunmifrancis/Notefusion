@@ -146,38 +146,38 @@ function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/80">
-      <div className="flex items-start justify-between">
-        <div className="min-w-0 flex-1 pr-2">
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
             <span className="truncate">{stat.title}</span>
             <span title={stat.hint ?? stat.title} className="inline-flex items-center">
-              <Info size={14} className="shrink-0 text-slate-400" />
+              <Info size={13} className="shrink-0 text-slate-400" />
             </span>
           </div>
 
-          <div className="mt-3 text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+          <div className="mt-1.5 text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
             {stat.value}
           </div>
 
           {stat.change && (
-            <div className="mt-2 flex items-center gap-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight size={15} />
+            <div className="mt-1.5 flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight size={13} />
               <span>{stat.change}</span>
             </div>
           )}
 
           {stat.description && (
-            <div className="mt-2 text-xs text-slate-400">
+            <div className="mt-1 truncate text-[11px] text-slate-400">
               {stat.description}
             </div>
           )}
         </div>
 
         <div
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${stat.iconStyle}`}
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${stat.iconStyle}`}
         >
-          <Icon size={22} strokeWidth={2} />
+          <Icon size={18} strokeWidth={2} />
         </div>
       </div>
     </div>
@@ -194,19 +194,19 @@ function SignupChart({ data }: { data: DailyCount[] }) {
   }, [data, bucket]);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
-          <Info size={14} className="text-slate-400" />
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
+          <Info size={13} className="text-slate-400" />
         </div>
 
-        <div className="flex rounded-lg border border-slate-200 p-1 text-xs font-medium dark:border-slate-800">
+        <div className="flex rounded-lg border border-slate-200 p-0.5 text-xs font-medium dark:border-slate-800">
           <button
             onClick={() => setBucket("day")}
-            className={`rounded-md px-3 py-1.5 transition ${
+            className={`rounded-md px-2.5 py-1 transition ${
               bucket === "day"
-                ? "bg-blue-600 text-white shadow-sm"
+                ? "bg-blue-600 text-white shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -214,9 +214,9 @@ function SignupChart({ data }: { data: DailyCount[] }) {
           </button>
           <button
             onClick={() => setBucket("week")}
-            className={`rounded-md px-3 py-1.5 transition ${
+            className={`rounded-md px-2.5 py-1 transition ${
               bucket === "week"
-                ? "bg-blue-600 text-white shadow-sm"
+                ? "bg-blue-600 text-white shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -224,9 +224,9 @@ function SignupChart({ data }: { data: DailyCount[] }) {
           </button>
           <button
             onClick={() => setBucket("month")}
-            className={`rounded-md px-3 py-1.5 transition ${
+            className={`rounded-md px-2.5 py-1 transition ${
               bucket === "month"
-                ? "bg-blue-600 text-white shadow-sm"
+                ? "bg-blue-600 text-white shadow-xs"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -235,7 +235,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
         </div>
       </div>
 
-      <div className="h-56 w-full">
+      <div className="h-52 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
@@ -265,9 +265,9 @@ function SignupChart({ data }: { data: DailyCount[] }) {
                 if (!active || !payload?.[0]) return null;
                 const point = payload[0].payload as ChartGroup;
                 return (
-                  <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-900">
+                  <div className="rounded-lg border border-slate-200 bg-white p-2.5 shadow-md dark:border-slate-800 dark:bg-slate-900">
                     <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">{point.title}</p>
-                    <p className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                    <p className="mt-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
                       {formatCount(point.count)} signups
                     </p>
                   </div>
@@ -278,7 +278,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
               type="monotone"
               dataKey="count"
               stroke="#2563eb"
-              strokeWidth={3}
+              strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#signupGradient)"
             />
@@ -294,22 +294,22 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
   const total = keys.reduce((sum, k) => sum + k.count, 0);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-      <div className="mb-5 flex items-center justify-between">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
             Most transcribed keys
           </h2>
-          <Info size={14} className="text-slate-400" />
+          <Info size={13} className="text-slate-400" />
         </div>
 
-        <Link href="/audit-log" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+        <Link href="/audit-log" className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
           View all
         </Link>
       </div>
 
       {topKeys.length === 0 ? (
-        <div className="py-8 text-center text-sm text-slate-400">
+        <div className="py-8 text-center text-xs text-slate-400">
           No transcriptions saved yet
         </div>
       ) : (
@@ -319,31 +319,31 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
             return (
               <div
                 key={key.label}
-                className="rounded-xl bg-slate-50 px-3.5 py-3 transition hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800/70"
+                className="rounded-lg bg-slate-50 px-3 py-2 transition hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800/70"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-slate-500 shadow-sm dark:bg-slate-700 dark:text-slate-300">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-slate-500 shadow-xs dark:bg-slate-700 dark:text-slate-300">
                     {index + 1}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="truncate text-sm font-medium text-slate-700 dark:text-slate-200">
+                      <span className="truncate text-xs font-medium text-slate-700 dark:text-slate-200">
                         {key.label}
                       </span>
 
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="text-sm font-semibold text-slate-800 dark:text-white">
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs font-semibold text-slate-800 dark:text-white">
                           {key.count}
                         </span>
 
-                        <span className="w-8 text-right text-xs text-slate-400">
+                        <span className="w-7 text-right text-[11px] text-slate-400">
                           {percentage}%
                         </span>
                       </div>
                     </div>
 
-                    <div className="mt-2 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700">
+                    <div className="mt-1.5 h-1 rounded-full bg-slate-200 dark:bg-slate-700">
                       <div
                         className="h-full rounded-full bg-blue-600 transition-all duration-500"
                         style={{ width: `${percentage}%` }}
@@ -365,21 +365,21 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
   const displayItems = items.slice(0, 4);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-      <div className="mb-5 flex items-center justify-between">
-        <h2 className="font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
+    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
 
-        <Link href="/audit-log" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+        <Link href="/audit-log" className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
           View all activity
         </Link>
       </div>
 
       {displayItems.length === 0 ? (
-        <div className="py-8 text-center text-sm text-slate-400">
+        <div className="py-8 text-center text-xs text-slate-400">
           No activity recorded yet
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {displayItems.map((item, index) => {
             const isSignup = item.kind === "signup";
             const isTranscription = item.kind === "transcription";
@@ -394,21 +394,21 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
             const verb = isSignup ? "New user registered" : isTranscription ? "Transcription completed" : "User sign-in";
 
             return (
-              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center gap-4">
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconStyle}`}>
-                  <Icon size={19} />
+              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center gap-3">
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}>
+                  <Icon size={16} />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="truncate text-sm font-medium text-slate-800 dark:text-slate-200">
+                  <div className="truncate text-xs font-medium text-slate-800 dark:text-slate-200">
                     {verb}
                   </div>
-                  <div className="truncate text-xs text-slate-400">
+                  <div className="truncate text-[11px] text-slate-400">
                     {item.title} {item.subtitle ? `• ${item.subtitle}` : ""} • {formatRelative(item.occurredAtUtc, now)}
                   </div>
                 </div>
 
-                <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+                <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                   Success ✓
                 </span>
               </div>
@@ -419,6 +419,7 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
     </div>
   );
 }
+
 
 const UNMEASURED = [
   {
@@ -697,44 +698,53 @@ export function OverviewView() {
 
           return (
             <div className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {/* KPI Stat Cards (8 cards in 4 columns) */}
+              <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
                 {stats.map((stat) => (
                   <StatCard key={stat.title} stat={stat} />
                 ))}
               </div>
 
-              <div className="grid gap-6 xl:grid-cols-[1.7fr_1fr]">
+              {/* Charts & Key Trends (2 columns: 1.6fr and 1fr) */}
+              <div className="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
                 <SignupChart data={data.signupsPerDay} />
                 <MostTranscribedKeys keys={data.topKeys} />
               </div>
 
-              <div className="xl:max-w-[calc(100%-33%)]">
+              {/* Activity & Outcomes (2 balanced columns: 1.6fr and 1fr) */}
+              <div className="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
                 <RecentActivityPanel items={data.recentActivity} />
+                <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+                  <div className="mb-4 flex items-center justify-between">
+                    <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      Transcription outcomes
+                    </h4>
+                    <span className="text-xs text-slate-400">Ended jobs</span>
+                  </div>
+                  <DonutCard
+                    slices={outcomes}
+                    centerLabel="Ended jobs"
+                    centerValue={formatCount(ended)}
+                    meters
+                    emptyMessage="Nothing reached a final state in this window"
+                  />
+                </div>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-6">
-                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              {/* Telemetry, Cohorts & Signup Methods */}
+              <div className="mt-8 border-t border-slate-200 pt-6 space-y-5 dark:border-slate-800">
+                <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Platform telemetry &amp; cohorts
                 </h3>
 
-                <div className="grid gap-6 lg:grid-cols-2">
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-                    <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                      Transcription outcomes
-                    </h4>
-                    <DonutCard
-                      slices={outcomes}
-                      centerLabel="Ended jobs"
-                      centerValue={formatCount(ended)}
-                      meters
-                      emptyMessage="Nothing reached a final state in this window"
-                    />
-                  </div>
-
-                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-                    <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                      Signup methods
-                    </h4>
+                <div className="grid gap-5 lg:grid-cols-[1fr_1.6fr]">
+                  <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+                    <div className="mb-4 flex items-center justify-between">
+                      <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                        Signup methods
+                      </h4>
+                      <span className="text-xs text-slate-400">All accounts</span>
+                    </div>
                     <DonutCard
                       slices={methods}
                       centerLabel="All accounts"
@@ -743,59 +753,67 @@ export function OverviewView() {
                       emptyMessage="No accounts yet"
                     />
                   </div>
-                </div>
 
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-                  <h4 className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
-                    Weekly cohorts
-                  </h4>
-                  <p className="mb-4 text-xs text-slate-400">
-                    Share of each signup week that has ever signed in on a later day
-                  </p>
-                  {data.retention.length === 0 ? (
-                    <EmptyView message="No signups in the last twelve weeks" />
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="hover:bg-transparent">
-                            <TableHead className={TH}>Cohort</TableHead>
-                            <TableHead className={TH}>Signups</TableHead>
-                            <TableHead className={TH}>Ever returned</TableHead>
-                            <TableHead className={TH}>Rate</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody className={TBODY}>
-                          {data.retention.map((cohort) => (
-                            <TableRow key={cohort.cohortStart}>
-                              <TableCell className={TD}>{formatWeekOf(cohort.cohortStart)}</TableCell>
-                              <TableCell className={TD}>{formatCount(cohort.cohortSize)}</TableCell>
-                              <TableCell className={TD}>{formatCount(cohort.returnedCount)}</TableCell>
-                              <TableCell className={TD}>{formatPercent(cohort.retentionRate)}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                  {/* Weekly Cohorts Table - Bleed to edges of card, no double box! */}
+                  <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+                    <div className="p-4 sm:p-5 pb-3">
+                      <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                        Weekly cohorts
+                      </h4>
+                      <p className="mt-0.5 text-xs text-slate-400">
+                        Share of each signup week that has ever signed in on a later day
+                      </p>
                     </div>
-                  )}
+                    {data.retention.length === 0 ? (
+                      <div className="p-5">
+                        <EmptyView message="No signups in the last twelve weeks" />
+                      </div>
+                    ) : (
+                      <div className="w-full overflow-x-auto border-t border-slate-100 dark:border-slate-800/60">
+                        <Table>
+                          <TableHeader>
+                            <TableRow className="hover:bg-transparent">
+                              <TableHead className={TH}>Cohort</TableHead>
+                              <TableHead className={TH}>Signups</TableHead>
+                              <TableHead className={TH}>Ever returned</TableHead>
+                              <TableHead className={`${TH} text-right`}>Rate</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody className={TBODY}>
+                            {data.retention.map((cohort) => (
+                              <TableRow key={cohort.cohortStart}>
+                                <TableCell className={TD}>{formatWeekOf(cohort.cohortStart)}</TableCell>
+                                <TableCell className={TD}>{formatCount(cohort.cohortSize)}</TableCell>
+                                <TableCell className={TD}>{formatCount(cohort.returnedCount)}</TableCell>
+                                <TableCell className={`${TD} text-right font-medium text-foreground`}>
+                                  {formatPercent(cohort.retentionRate)}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* Unmeasured telemetry cards */}
+                <div className="grid gap-3.5 sm:grid-cols-2">
                   {UNMEASURED.map(({ icon: Icon, metric, waiting, tone, body }) => (
                     <div
                       key={metric}
-                      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/80"
+                      className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900/80"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                          <Icon size={16} aria-hidden="true" />
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                          <Icon size={15} aria-hidden="true" />
                         </span>
                         <span className="flex-1 text-xs font-semibold text-slate-800 dark:text-slate-200">
                           {metric}
                         </span>
                         <Badge tone={tone}>{waiting}</Badge>
                       </div>
-                      <p className="mt-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                      <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                         {body}
                       </p>
                     </div>
@@ -804,6 +822,7 @@ export function OverviewView() {
               </div>
             </div>
           );
+
         }}
       </StateView>
     </div>

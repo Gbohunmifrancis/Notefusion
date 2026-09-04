@@ -39,25 +39,33 @@ export function Card({
   children,
 }: CardProps) {
   const hasHeader = Boolean(title || action);
-  const body = bleed ? undefined : hasHeader ? "px-5 pb-5" : "p-5";
+  const body = bleed ? undefined : hasHeader ? "px-5 pb-5 pt-1 sm:px-6 sm:pb-6" : "p-5 sm:p-6";
 
   return (
     // `min-w-0`: as a grid item a card would otherwise refuse to shrink below the min-content
     // width of its own nowrap text, widening the track and scrolling the page sideways on a
     // phone. It is inert for a card that is not a grid or flex item.
     <section
-      className={cn("min-w-0 overflow-hidden rounded-md border border-border bg-card shadow-hairline", className)}
+      className={cn(
+        "min-w-0 overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs transition-shadow",
+        className
+      )}
     >
       {hasHeader && (
-        <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 pb-4 pt-5">
+        <header
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 py-3.5 sm:px-6",
+            bleed && "border-b border-border/60"
+          )}
+        >
           <div className="min-w-0">
             {title && (
-              <h2 className="flex items-center gap-1.5 text-[15px] font-semibold tracking-[-0.01em] text-foreground">
+              <h2 className="flex items-center gap-1.5 text-sm font-semibold tracking-tight text-foreground">
                 <span className="truncate">{title}</span>
                 {info && <InfoHint text={info} size={13} />}
               </h2>
             )}
-            {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+            {hint && <p className="mt-0.5 text-xs text-muted-foreground">{hint}</p>}
           </div>
           {action}
         </header>
@@ -66,3 +74,4 @@ export function Card({
     </section>
   );
 }
+

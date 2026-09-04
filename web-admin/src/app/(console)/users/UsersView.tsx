@@ -248,8 +248,8 @@ export function UsersView() {
         >
           {(data) => (
             <>
-              <div className="w-full min-w-0 overflow-x-auto border-t border-border">
-                <Table className="w-full min-w-[56rem]">
+              <div className="w-full min-w-0">
+                <Table className="w-full min-w-[52rem]">
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
                       <TableHead className={TH}>Account</TableHead>

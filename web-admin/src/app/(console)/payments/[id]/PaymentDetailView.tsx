@@ -232,7 +232,7 @@ function LedgerCard({ detail, offset }: { detail: AdminPaymentDetail; offset: nu
       {detail.ledger.length === 0 ? (
         <p className="px-5 pb-5 text-[13px] text-muted-foreground">{empty}</p>
       ) : (
-        <div className="border-t border-border">
+        <div className="w-full min-w-0">
           <Table className="min-w-[34rem]">
             <TableHeader>
               <TableRow className="hover:bg-transparent">

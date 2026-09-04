@@ -115,56 +115,59 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
       <SidebarInset className="min-w-0 w-full overflow-x-hidden">
         {/* TOP BAR */}
-        <header className="sticky top-0 z-20 flex h-20 items-center border-b border-slate-200 bg-white/90 px-5 backdrop-blur-xl lg:px-9 dark:border-slate-800 dark:bg-[#07142f]/90">
-          <SidebarTrigger className="mr-4 size-10 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" />
+        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-6 lg:px-8 dark:border-slate-800 dark:bg-[#07142f]/90">
+          <div className="mx-auto flex w-full max-w-7xl items-center">
+            <SidebarTrigger className="mr-3 size-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" />
 
-          <form onSubmit={onSearch} className="relative w-full max-w-lg">
-            <Search
-              size={18}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-            <input
-              name="q"
-              type="search"
-              placeholder="Search accounts, users, keys..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-50 dark:border-slate-800 dark:bg-slate-900/70 dark:text-white dark:focus:bg-slate-900"
-            />
-          </form>
+            <form onSubmit={onSearch} className="relative w-full max-w-md">
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                name="q"
+                type="search"
+                placeholder="Search accounts, users, keys..."
+                className="h-9.5 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-4 text-xs sm:text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-slate-800 dark:bg-slate-900/70 dark:text-white dark:focus:bg-slate-900"
+              />
+            </form>
 
-          <div className="ml-auto flex items-center gap-5">
-            <ThemeToggle />
+            <div className="ml-auto flex items-center gap-4">
+              <ThemeToggle />
 
-            <NotificationBell />
+              <NotificationBell />
 
-            <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
+              <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
 
-            <div className="hidden items-center gap-3 sm:flex">
-              <div className="text-right">
-                <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                  {user?.fullName || "NoteFusion Admin"}
+              <div className="hidden items-center gap-2.5 sm:flex">
+                <div className="text-right">
+                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                    {user?.fullName || "NoteFusion Admin"}
+                  </div>
+                  <div className="text-[11px] text-slate-400">
+                    {user?.role || "Administrator"}
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400">
-                  {user?.role || "Administrator"}
-                </div>
+
+                {avatarUrl ? (
+                  <Avatar name={user?.fullName ?? "Admin"} src={avatarUrl} size={36} />
+                ) : (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-700 shadow-sm dark:bg-purple-950 dark:text-purple-300">
+                    {userInitials(user?.fullName || "NA")}
+                  </div>
+                )}
+
+                <ChevronDown size={14} className="text-slate-400" />
               </div>
-
-              {avatarUrl ? (
-                <Avatar name={user?.fullName ?? "Admin"} src={avatarUrl} size={40} />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-700 shadow-sm dark:bg-purple-950 dark:text-purple-300">
-                  {userInitials(user?.fullName || "NA")}
-                </div>
-              )}
-
-              <ChevronDown size={16} className="text-slate-400" />
             </div>
           </div>
         </header>
 
-        <div className="min-h-[calc(100vh-5rem)] w-full min-w-0 overflow-x-hidden bg-slate-50 px-4 py-8 text-slate-900 sm:px-5 lg:px-9 dark:bg-[#0b1220] dark:text-slate-100">
-          <div className="mx-auto w-full min-w-0 max-w-[1440px] space-y-6">{children}</div>
+        <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-slate-50/70 px-4 py-6 text-slate-900 sm:px-6 sm:py-7 lg:px-8 dark:bg-[#0b1220] dark:text-slate-100">
+          <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">{children}</div>
         </div>
       </SidebarInset>
+
     </SidebarProvider>
   );
 }
