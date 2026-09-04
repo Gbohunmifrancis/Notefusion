@@ -189,6 +189,8 @@ export interface Subscription {
    * that prints a date has to check this first or it shows the year 9999.
    */
   isLifetime: boolean;
+  /** Granted by an operator — no payment was taken. */
+  isGift?: boolean;
 }
 
 // --- App release --------------------------------------------------------

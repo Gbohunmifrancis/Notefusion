@@ -192,7 +192,8 @@ export type AuditAction =
   | "CreateUser"
   | "SendPasswordReset"
   | "ChangeRole"
-  | "ReconcilePayment";
+  | "ReconcilePayment"
+  | "SendEmail";
 
 /**
  * One line of the audit trail. The emails are stored snapshots rather than joins, so a row still

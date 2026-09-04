@@ -25,6 +25,7 @@ export const AUDIT_ACTIONS: readonly { value: AuditAction; label: string; tone: 
   // Takes nothing away — it asks a gateway what happened and writes down the answer — but it is the
   // one row here that can hand out access, so it reads as a change rather than as neutral.
   { value: "ReconcilePayment", label: "Reconcile payment", tone: "blue" },
+  { value: "SendEmail", label: "Send email", tone: "blue" },
 ];
 
 const BY_VALUE = new Map(AUDIT_ACTIONS.map((entry) => [entry.value, entry]));

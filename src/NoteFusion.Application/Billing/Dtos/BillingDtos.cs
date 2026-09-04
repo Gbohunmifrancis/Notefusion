@@ -34,7 +34,8 @@ public sealed record SubscriptionDto(
     DateTime? CurrentPeriodEndUtc,
     int TrialGenerationsRemaining,
     int TrialGenerationsTotal,
-    bool IsLifetime);
+    bool IsLifetime,
+    bool IsGift = false);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

@@ -152,6 +152,14 @@ public sealed class AdminController : ApiControllerBase
     public async Task<IActionResult> SendPasswordReset(Guid id, NoteBody? body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new SendPasswordResetCommand(id, body?.Note), ct));
 
+    /// <summary>
+    /// Sends a custom branded message drafted by an administrator to the account.
+    /// </summary>
+    [HttpPost("users/{id:guid}/email")]
+    public async Task<IActionResult> SendEmail(Guid id, SendEmailBody body, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(
+            new SendUserEmailCommand(id, body.Subject, body.Heading, body.BodyHtml, body.CtaText, body.CtaUrl, body.Note), ct));
+
     // ------------------------------------------------ payments & reconciliation
 
     /// <summary>
@@ -284,4 +292,13 @@ public sealed class AdminController : ApiControllerBase
 
     /// <summary>The role to leave the account in — not a direction, so the call is unambiguous on retry.</summary>
     public sealed record RoleBody(UserRole Role, string? Note);
+
+    /// <summary>Details for a custom email message drafted by an administrator.</summary>
+    public sealed record SendEmailBody(
+        string Subject,
+        string? Heading,
+        string BodyHtml,
+        string? CtaText,
+        string? CtaUrl,
+        string? Note);
 }

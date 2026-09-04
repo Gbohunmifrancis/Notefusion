@@ -221,3 +221,16 @@ export const setUserRole = (id: string, role: RoleName, note?: string) =>
 
 export const sendPasswordReset = (id: string, note?: string) =>
   act(id, "send-password-reset", { note });
+
+export interface SendUserEmailPayload {
+  subject: string;
+  heading?: string | undefined;
+  bodyHtml: string;
+  ctaText?: string | undefined;
+  ctaUrl?: string | undefined;
+  note?: string | undefined;
+}
+
+/** Sends a branded custom email to the target user, rendered with NoteFusion's template. */
+export const sendUserEmail = (id: string, payload: SendUserEmailPayload) =>
+  act(id, "email", payload as unknown as Record<string, unknown>);

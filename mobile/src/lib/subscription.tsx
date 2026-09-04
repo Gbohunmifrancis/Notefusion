@@ -11,6 +11,8 @@ import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { billingApi } from '../api/endpoints';
 import { useAuth } from './auth';
+import { showDialog } from './dialog';
+import * as haptics from './haptics';
 import type { Subscription } from '../api/types';
 
 interface SubscriptionState {
@@ -26,6 +28,8 @@ interface SubscriptionState {
    * a failed request can never hand out a paid look.
    */
   isPro: boolean;
+  /** True when the active subscription was granted by an operator rather than purchased. */
+  isGift: boolean;
   /**
    * True once a fetch has come back successfully. Distinguishes "definitely not
    * subscribed" from "couldn't ask", which matters for *restricting* a free user:
@@ -66,6 +70,7 @@ const DEFAULT_TRIAL_TOTAL = 5;
  * Per-user, because a handset is shared and one account's paid status must never be read for another.
  */
 const cacheKey = (userId: string) => `@notefusion_sub:${userId}`;
+const trackerKey = (userId: string) => `@notefusion_sub_tracker:${userId}`;
 
 /**
  * Whether a cached period has already run out, in which case it is hydrated inactive. `isLifetime`
@@ -102,6 +107,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const knownRef = useRef(false);
   /** Which account the cache belongs to. Same reason as `knownRef`: `load` may not depend on it. */
   const userIdRef = useRef<string | null>(null);
+  /** Previous acknowledged subscription state for detecting gifts, revokes, and purchases. */
+  const lastSeenRef = useRef<{ isActive: boolean; isGift: boolean } | null>(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -119,10 +126,57 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setKnown(true);
       knownRef.current = true;
 
+      const id = userIdRef.current;
+      const prev = lastSeenRef.current;
+      const currentIsActive = sub.isActive;
+      const currentIsGift = Boolean(sub.isGift);
+
+      // Only check state transitions when we have an existing known baseline
+      if (prev !== null) {
+        if (!prev.isActive && currentIsActive) {
+          if (currentIsGift) {
+            haptics.play('success');
+            showDialog({
+              title: "Pro Access Gifted! 🎁",
+              message:
+                "An administrator has gifted you NoteFusion Pro access! Enjoy unlimited transcriptions, full staff notation, and priority processing.",
+              icon: "gift-outline",
+              tone: "premium",
+            });
+          } else {
+            haptics.play('success');
+            showDialog({
+              title: "Welcome to NoteFusion Pro! 🎉",
+              message:
+                "Your payment has been confirmed and your Pro subscription is now active. Enjoy unlimited transcriptions and premium exports!",
+              icon: "sparkles",
+              tone: "premium",
+            });
+          }
+        } else if (prev.isActive && !currentIsActive) {
+          haptics.play('warning');
+          showDialog({
+            title: "Pro Access Updated",
+            message: prev.isGift
+              ? "Your gifted NoteFusion Pro access has been revoked by an administrator. Your account has returned to the Free plan."
+              : "Your NoteFusion Pro subscription has ended. Your account has returned to the Free plan.",
+            icon: "alert-circle-outline",
+            tone: "danger",
+          });
+        }
+      }
+
+      lastSeenRef.current = { isActive: currentIsActive, isGift: currentIsGift };
+
       // Best-effort, and never awaited: the answer is already on screen, and a storage failure has
       // no consequence beyond the next cold start flashing Free the way it used to.
-      const id = userIdRef.current;
-      if (id) void AsyncStorage.setItem(cacheKey(id), JSON.stringify(sub)).catch(() => undefined);
+      if (id) {
+        void AsyncStorage.setItem(cacheKey(id), JSON.stringify(sub)).catch(() => undefined);
+        void AsyncStorage.setItem(
+          trackerKey(id),
+          JSON.stringify({ isActive: currentIsActive, isGift: currentIsGift }),
+        ).catch(() => undefined);
+      }
     } catch {
       // Network down, 5xx, expired session mid-refresh. Only clear the state we have
       // never successfully read — a *re*-read that fails must leave the last known
@@ -154,9 +208,15 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
    */
   const hydrateFromCache = useCallback(async (id: string) => {
     try {
-      const raw = await AsyncStorage.getItem(cacheKey(id));
-      if (!raw) return;
-      const cached = JSON.parse(raw) as Subscription;
+      const [rawSub, rawTracker] = await Promise.all([
+        AsyncStorage.getItem(cacheKey(id)),
+        AsyncStorage.getItem(trackerKey(id)),
+      ]);
+      if (rawTracker) {
+        lastSeenRef.current = JSON.parse(rawTracker);
+      }
+      if (!rawSub) return;
+      const cached = JSON.parse(rawSub) as Subscription;
 
       // The fetch may have won the race, or the account may have changed under this read. Either way
       // the newer thing wins — this must never overwrite an answer.
@@ -174,8 +234,12 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       // Signed out — drop the previous account's state entirely, cache included: the paid status of
       // an account nobody is signed into has no business surviving on the handset.
       const previous = userIdRef.current;
-      if (previous) void AsyncStorage.removeItem(cacheKey(previous)).catch(() => undefined);
+      if (previous) {
+        void AsyncStorage.removeItem(cacheKey(previous)).catch(() => undefined);
+        void AsyncStorage.removeItem(trackerKey(previous)).catch(() => undefined);
+      }
       userIdRef.current = null;
+      lastSeenRef.current = null;
       setSubscription(null);
       setKnown(false);
       knownRef.current = false;
@@ -207,6 +271,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     () => ({
       subscription,
       isPro: subscription?.isActive ?? false,
+      isGift: Boolean(subscription?.isGift),
       known,
       loading,
       trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,

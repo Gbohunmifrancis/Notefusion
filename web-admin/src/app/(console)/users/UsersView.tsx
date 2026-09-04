@@ -1,7 +1,7 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { ChevronRight, Search } from "lucide-react";
+import { ChevronRight, Mail, Search } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { Pager } from "@/components/Pager";
 import { Segmented } from "@/components/Segmented";
+import { SendEmailDialog, type SendEmailTarget } from "@/components/SendEmailDialog";
 import { StateView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -151,6 +152,8 @@ export function UsersView() {
 
   const [status, setStatus] = useState<StatusFilter>("all");
   const [page, setPage] = useState(1);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailTarget, setEmailTarget] = useState<SendEmailTarget | null>(null);
   const debouncedSearch = useDebounced(search);
 
   // A new search or filter starts at the beginning; page 4 of the old query means nothing for
@@ -177,7 +180,25 @@ export function UsersView() {
 
   return (
     <div className="animate-fade-in space-y-5">
-      <PageHeader title="Users" breadcrumb={["Dashboard", "Users"]} />
+      <PageHeader
+        title="Users"
+        breadcrumb={["Dashboard", "Users"]}
+        actions={
+          <Button
+            type="button"
+            variant="default"
+            size="sm"
+            onClick={() => {
+              setEmailTarget(null);
+              setEmailDialogOpen(true);
+            }}
+            className="h-9 gap-1.5 rounded-md text-xs font-semibold"
+          >
+            <Mail className="size-3.5" aria-hidden="true" />
+            Compose email
+          </Button>
+        }
+      />
 
       <Card
         title="All accounts"
@@ -314,17 +335,33 @@ export function UsersView() {
                             <LastSeenCell lastLoginAt={user.lastLoginAt} offset={offset} />
                           </TableCell>
                           <TableCell className={`${TD} text-right`}>
-                            <Button
-                              asChild
-                              variant="outline"
-                              size="sm"
-                              className="h-auto rounded-pill px-2.5 py-1 text-[11px] font-semibold"
-                            >
-                              <Link href={`/users/${user.id}`}>
-                                Manage
-                                <ChevronRight className="size-3" aria-hidden="true" />
-                              </Link>
-                            </Button>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                title={`Send email to ${user.fullName}`}
+                                onClick={() => {
+                                  setEmailTarget(user);
+                                  setEmailDialogOpen(true);
+                                }}
+                                className="h-7 w-7 p-0 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+                              >
+                                <Mail className="size-3.5" aria-hidden="true" />
+                                <span className="sr-only">Send email</span>
+                              </Button>
+                              <Button
+                                asChild
+                                variant="outline"
+                                size="sm"
+                                className="h-auto rounded-pill px-2.5 py-1 text-[11px] font-semibold"
+                              >
+                                <Link href={`/users/${user.id}`}>
+                                  Manage
+                                  <ChevronRight className="size-3" aria-hidden="true" />
+                                </Link>
+                              </Button>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
@@ -345,6 +382,15 @@ export function UsersView() {
           )}
         </StateView>
       </Card>
+
+      <SendEmailDialog
+        open={emailDialogOpen}
+        onOpenChange={setEmailDialogOpen}
+        targetUser={emailTarget}
+        onSuccess={() => {
+          void state.refetch();
+        }}
+      />
     </div>
   );
 }

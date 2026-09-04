@@ -307,6 +307,42 @@ public sealed class BrandedEmailTemplate
                 _settings.AppUrl));
     }
 
+    /// <summary>
+    /// Renders a custom admin message inside NoteFusion's branded email shell.
+    /// </summary>
+    public EmailMessage Custom(
+        EmailRecipient to,
+        string subject,
+        string heading,
+        string bodyHtml,
+        string? ctaText = null,
+        string? ctaUrl = null)
+    {
+        var name = FirstName(to);
+        CallToAction? cta = !string.IsNullOrWhiteSpace(ctaText) && !string.IsNullOrWhiteSpace(ctaUrl)
+            ? new CallToAction(ctaText, ctaUrl)
+            : null;
+
+        var formattedBody = bodyHtml.Contains("<p", StringComparison.OrdinalIgnoreCase) ||
+                            bodyHtml.Contains("<div", StringComparison.OrdinalIgnoreCase) ||
+                            bodyHtml.Contains("<table", StringComparison.OrdinalIgnoreCase)
+            ? bodyHtml
+            : Paragraphs(bodyHtml.Split(new[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.RemoveEmptyEntries));
+
+        return Compose(
+            to,
+            subject: subject,
+            preheader: heading,
+            heading: heading,
+            bodyHtml: formattedBody,
+            cta: cta,
+            textBody: Text(
+                $"Hello{(name is null ? "" : $" {name}")},",
+                "",
+                bodyHtml.Replace("<br>", "\n").Replace("<br/>", "\n").Replace("<p>", "").Replace("</p>", "\n\n"),
+                cta is not null ? $"\n{cta.Label}: {cta.Url}" : ""));
+    }
+
     // ── Shell ────────────────────────────────────────────────────────────────────
 
     private sealed record CallToAction(string Label, string Url);
