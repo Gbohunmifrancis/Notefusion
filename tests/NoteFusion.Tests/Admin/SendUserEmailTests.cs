@@ -67,7 +67,7 @@ public class SendUserEmailTests
         var result = await handler.Handle(command, CancellationToken.None);
 
         Assert.True(result.IsFailure);
-        Assert.Equal("ADMIN_UNAUTHORIZED", result.Error.Code);
+        Assert.Equal("ADMIN_NOT_AUTHENTICATED", result.Error.Code);
         Assert.Empty(h.Email.CustomEmails);
     }
 

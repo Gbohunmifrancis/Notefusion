@@ -26,7 +26,12 @@ public sealed class SendUserEmailCommandValidator : AbstractValidator<SendUserEm
         RuleFor(x => x.Heading).MaximumLength(200);
         RuleFor(x => x.BodyHtml).NotEmpty().MaximumLength(15000);
         RuleFor(x => x.CtaText).MaximumLength(100);
-        RuleFor(x => x.CtaUrl).MaximumLength(2000);
+        RuleFor(x => x.CtaUrl)
+            .MaximumLength(2000)
+            .Must(url => Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+                         (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            .When(x => !string.IsNullOrEmpty(x.CtaUrl))
+            .WithMessage("CTA URL must be a valid HTTP or HTTPS URL.");
     }
 }
 
@@ -51,7 +56,7 @@ public sealed class SendUserEmailCommandHandler : IRequestHandler<SendUserEmailC
 
     public async Task<Result> Handle(SendUserEmailCommand request, CancellationToken ct)
     {
-        if (_currentUser.UserId is null)
+        if (_currentUser.UserId is null || _currentUser.Role != UserRole.Admin)
             return AdminErrors.NotAuthenticated;
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, ct);
