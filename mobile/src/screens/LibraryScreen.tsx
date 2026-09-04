@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
+import { TranscriptionRowSkeleton } from "../components/Skeleton";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -284,6 +285,17 @@ export function LibraryScreen() {
                 clearButtonMode="while-editing"
                 textAlignVertical="center"
               />
+              {query.length > 0 && (
+                <Touchable
+                  onPress={() => setQuery("")}
+                  hitSlop={8}
+                  ripple="borderless"
+                  accessibilityLabel="Clear search"
+                  style={styles.clearSearchBtn}
+                >
+                  <Ionicons name="close-circle" size={18} color={colors.textFaint} />
+                </Touchable>
+              )}
             </View>
 
             {/* Filter Tabs + Options Icon Row */}
@@ -436,23 +448,68 @@ export function LibraryScreen() {
         }}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
         ListEmptyComponent={
-          !loading ? (
+          loading ? (
+            <View style={styles.skeletonContainer}>
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+            </View>
+          ) : loadError ? (
             <View style={styles.emptyContainer}>
               <Ionicons
-                name="folder-open-outline"
+                name="cloud-offline-outline"
+                size={40}
+                color={colors.danger}
+              />
+              <Text style={styles.emptyTitle}>Could not load library</Text>
+              <Text style={styles.emptySub}>{loadError}</Text>
+              <Touchable
+                onPress={load}
+                style={styles.retryBtn}
+                radius={radii.pill}
+                accessibilityLabel="Try loading library again"
+              >
+                <Text style={styles.retryLabel}>Try again</Text>
+              </Touchable>
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name={
+                  query.trim() || activeFilter !== "All"
+                    ? "search-outline"
+                    : "folder-open-outline"
+                }
                 size={40}
                 color={colors.textFaint}
               />
               <Text style={styles.emptyTitle}>
-                {loadError ?? "No saved notes"}
+                {query.trim() || activeFilter !== "All"
+                  ? "No matching notes"
+                  : "No saved notes"}
               </Text>
               <Text style={styles.emptySub}>
-                {loadError
-                  ? "Couldn't load library"
+                {query.trim() || activeFilter !== "All"
+                  ? `No transcriptions found matching your filter.`
                   : "Recorded transcriptions will appear here."}
               </Text>
+              {(query.trim() || activeFilter !== "All") && (
+                <Touchable
+                  onPress={() => {
+                    setQuery("");
+                    setActiveFilter("All");
+                  }}
+                  style={styles.clearFiltersBtn}
+                  radius={radii.pill}
+                  accessibilityLabel="Clear search and filter"
+                >
+                  <Text style={styles.clearFiltersLabel}>Clear filters</Text>
+                </Touchable>
+              )}
             </View>
-          ) : null
+          )
         }
       />
     </Screen>
@@ -612,5 +669,37 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.regular,
       color: c.textMuted,
       marginTop: 2,
+    },
+    clearSearchBtn: {
+      padding: spacing.xs,
+    },
+    skeletonContainer: {
+      paddingVertical: spacing.sm,
+    },
+    retryBtn: {
+      marginTop: spacing.md,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+    },
+    retryLabel: {
+      fontSize: 14,
+      fontFamily: fonts.medium,
+      color: c.text,
+    },
+    clearFiltersBtn: {
+      marginTop: spacing.md,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+    },
+    clearFiltersLabel: {
+      fontSize: 14,
+      fontFamily: fonts.medium,
+      color: c.accent,
     },
   });

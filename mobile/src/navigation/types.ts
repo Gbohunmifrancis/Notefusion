@@ -29,7 +29,7 @@ export type AuthStackParams = {
 export type TabParams = {
   Home: undefined;
   Library: undefined;
-  Record: undefined;
+  Record: { autoPickAudio?: boolean } | undefined;
   Profile: undefined;
 };
 

@@ -116,7 +116,11 @@ export function AdminWebhooksScreen({ navigation }: Props) {
       <AdminHeader
         label="Operations"
         title="Webhook inbox"
-        onBack={() => navigation.goBack()}
+        onBack={() =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("AdminHome")
+        }
       />
 
       <FlatList

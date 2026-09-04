@@ -275,7 +275,11 @@ export function SettingsScreen({ navigation, route }: Props) {
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.canGoBack()
+              ? navigation.goBack()
+              : navigation.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           // Borderless so the ripple radiates from the circle rather than boxing

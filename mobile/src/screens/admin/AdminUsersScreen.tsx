@@ -84,7 +84,11 @@ export function AdminUsersScreen({ navigation }: Props) {
       <AdminHeader
         label="Operations"
         title="Accounts"
-        onBack={() => navigation.goBack()}
+        onBack={() =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("AdminHome")
+        }
       />
 
       <FlatList

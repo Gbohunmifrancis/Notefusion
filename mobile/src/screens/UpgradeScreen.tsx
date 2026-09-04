@@ -13,6 +13,7 @@ import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
+import { PlanCardSkeleton } from "../components/Skeleton";
 import { BrandMark } from "../components/BrandMark";
 import { billingApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -250,7 +251,11 @@ export function UpgradeScreen({ navigation }: Props) {
       {/* ── Header row ─────────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.canGoBack()
+              ? navigation.goBack()
+              : navigation.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           ripple="borderless"
@@ -292,7 +297,8 @@ export function UpgradeScreen({ navigation }: Props) {
 
       {loading ? (
         <View style={styles.loadingBlock}>
-          <ActivityIndicator color={colors.accent} />
+          <PlanCardSkeleton />
+          <PlanCardSkeleton />
         </View>
       ) : isActive ? (
         <ActiveState
@@ -664,8 +670,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
     },
 
     loadingBlock: {
-      paddingVertical: spacing.xxxl,
-      alignItems: "center",
+      paddingVertical: spacing.md,
+      gap: spacing.md,
     },
 
     // ── Feature list ────────────────────────────────────────────────────────

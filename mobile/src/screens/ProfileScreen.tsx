@@ -14,6 +14,7 @@ import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
+import { ProfileHeaderSkeleton } from "../components/Skeleton";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
@@ -198,7 +199,11 @@ export function ProfileScreen() {
         {/* Needed since Profile stopped being a tab: it is pushed from the side bar now,
             and with `headerShown: false` the swipe gesture would be the only way back. */}
         <Touchable
-          onPress={() => nav.goBack()}
+          onPress={() =>
+            nav.canGoBack()
+              ? nav.goBack()
+              : nav.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           // Borderless so the ripple radiates from the circle rather than boxing
@@ -214,28 +219,32 @@ export function ProfileScreen() {
       </View>
 
       {/* ── 2. Avatar & User Information ─────────────────────────────────── */}
-      <View style={styles.userHeader}>
-        <Avatar
-          uri={profile?.profilePictureUrl}
-          name={user?.fullName}
-          size={104}
-          premium={isPro}
-          editable
-          busy={avatarBusy}
-          onPress={onAvatarPress}
-          style={styles.avatar}
-        />
+      {!user ? (
+        <ProfileHeaderSkeleton />
+      ) : (
+        <View style={styles.userHeader}>
+          <Avatar
+            uri={profile?.profilePictureUrl}
+            name={user?.fullName}
+            size={104}
+            premium={isPro}
+            editable
+            busy={avatarBusy}
+            onPress={onAvatarPress}
+            style={styles.avatar}
+          />
 
-        <Text style={styles.userName}>{user?.fullName ?? "Your name"}</Text>
-        <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
+          <Text style={styles.userName}>{user?.fullName ?? "Your name"}</Text>
+          <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
 
-        {/* Plan Pill Badge — reflects billing state, not role. */}
-        <View style={[styles.planBadge, isPro && styles.planBadgePro]}>
-          <Text style={[styles.planBadgeText, isPro && styles.planBadgeTextPro]}>
-            {isPro ? "Pro Member ✨" : "Free Plan"}
-          </Text>
+          {/* Plan Pill Badge — reflects billing state, not role. */}
+          <View style={[styles.planBadge, isPro && styles.planBadgePro]}>
+            <Text style={[styles.planBadgeText, isPro && styles.planBadgeTextPro]}>
+              {isPro ? "Pro Member ✨" : "Free Plan"}
+            </Text>
+          </View>
         </View>
-      </View>
+      )}
 
       {/* ── 3. Settings List Options ─────────────────────────────────────── */}
       <View style={styles.menuCard}>

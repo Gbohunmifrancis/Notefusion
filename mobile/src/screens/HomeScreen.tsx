@@ -18,6 +18,7 @@ import { Avatar } from '../components/Avatar';
 import { AppDrawer } from '../components/AppDrawer';
 import { Card } from '../components/Card';
 import { Touchable } from '../components/Touchable';
+import { TranscriptionRowSkeleton } from '../components/Skeleton';
 import { libraryApi, meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { deriveSolfa } from '../lib/solfa';
@@ -54,6 +55,7 @@ export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const { isPro } = useSubscription();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
+  const [loadingRecent, setLoadingRecent] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
@@ -146,13 +148,15 @@ export function HomeScreen({ navigation }: Props) {
   }, []);
 
   const reload = useCallback(() => {
+    setLoadingRecent(true);
     libraryApi
       .list()
       .then((all) => {
         setRecent(all.slice(0, 3));
         setLoadError(null);
       })
-      .catch((e) => setLoadError(toApiError(e).message));
+      .catch((e) => setLoadError(toApiError(e).message))
+      .finally(() => setLoadingRecent(false));
   }, []);
 
   useFocusEffect(
@@ -167,6 +171,7 @@ export function HomeScreen({ navigation }: Props) {
           if (active) setPictureUrl(p.profilePictureUrl);
         })
         .catch(() => undefined);
+      setLoadingRecent(true);
       libraryApi
         .list()
         .then((all) => {
@@ -176,6 +181,9 @@ export function HomeScreen({ navigation }: Props) {
         })
         .catch((e) => {
           if (active) setLoadError(toApiError(e).message);
+        })
+        .finally(() => {
+          if (active) setLoadingRecent(false);
         });
       return () => {
         active = false;
@@ -353,8 +361,40 @@ export function HomeScreen({ navigation }: Props) {
                 accessibilityLabel="Start recording"
               >
                 <Text style={styles.tapText}>Tap to start recording</Text>
+              </Touchable>
+
+              <Touchable
+                onPress={() => navigation.navigate('Record', { autoPickAudio: true })}
+                ripple={false}
+                accessibilityLabel="Import audio file"
+              >
                 <Text style={styles.importSubLink}>or import audio file</Text>
               </Touchable>
+
+              {/* ── Quick Action Row ────────────────────────────────────────── */}
+              <View style={styles.quickActionRow}>
+                <Touchable
+                  onPress={() => navigation.navigate('Record', { autoPickAudio: true })}
+                  style={styles.quickBtn}
+                  ripple="borderless"
+                  scaleTo={motion.scale.default}
+                  accessibilityLabel="Import audio file"
+                >
+                  <Ionicons name="folder-open-outline" size={16} color={colors.text} />
+                  <Text style={styles.quickBtnLabel}>Import audio</Text>
+                </Touchable>
+
+                <Touchable
+                  onPress={() => rootNav.navigate('Piano', { mode: 'free' })}
+                  style={styles.quickBtn}
+                  ripple="borderless"
+                  scaleTo={motion.scale.default}
+                  accessibilityLabel="Play interactive piano"
+                >
+                  <Ionicons name="musical-notes-outline" size={16} color={colors.text} />
+                  <Text style={styles.quickBtnLabel}>Play piano</Text>
+                </Touchable>
+              </View>
             </View>
 
             {/* ── 4. Recent Recordings Header ───────────────────────────────── */}
@@ -400,7 +440,13 @@ export function HomeScreen({ navigation }: Props) {
           </Touchable>
         )}
         ListEmptyComponent={
-          loadError ? (
+          loadingRecent ? (
+            <View style={styles.skeletonContainer}>
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+            </View>
+          ) : loadError ? (
             <Card style={styles.emptyCard}>
               <Ionicons name="cloud-offline-outline" size={30} color={colors.danger} />
               <Text style={styles.emptyText}>{loadError}</Text>
@@ -657,5 +703,9 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 14,
       fontFamily: fonts.semibold,
       color: c.accent,
+    },
+    skeletonContainer: {
+      gap: spacing.sm,
+      paddingVertical: spacing.xs,
     },
   });

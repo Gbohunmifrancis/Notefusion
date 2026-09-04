@@ -63,7 +63,11 @@ export function HelpScreen({ navigation }: Props) {
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.canGoBack()
+              ? navigation.goBack()
+              : navigation.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           ripple="borderless"

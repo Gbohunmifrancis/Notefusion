@@ -603,7 +603,11 @@ export function ResultScreen({ route, navigation }: Props) {
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.canGoBack()
+              ? navigation.goBack()
+              : navigation.navigate("Tabs", { screen: "Home" })
+          }
           style={styles.backBtn}
           hitSlop={8}
           ripple="borderless"
@@ -648,7 +652,11 @@ export function ResultScreen({ route, navigation }: Props) {
                 onPress: async () => {
                   try {
                     await libraryApi.remove(savedId);
-                    navigation.goBack();
+                    if (navigation.canGoBack()) {
+                      navigation.goBack();
+                    } else {
+                      navigation.navigate("Tabs", { screen: "Library" });
+                    }
                   } catch (e) {
                     showDialog({
                       title: "Could not delete",

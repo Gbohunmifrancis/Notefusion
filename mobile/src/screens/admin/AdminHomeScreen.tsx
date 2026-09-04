@@ -90,7 +90,11 @@ export function AdminHomeScreen({ navigation }: Props) {
       <AdminHeader
         label="Operations"
         title="Admin"
-        onBack={() => navigation.goBack()}
+        onBack={() =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("Tabs", { screen: "Home" })
+        }
         right={<RefreshButton onPress={load} busy={busy} />}
       />
 

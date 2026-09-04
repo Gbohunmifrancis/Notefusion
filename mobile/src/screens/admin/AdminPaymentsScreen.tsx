@@ -195,7 +195,11 @@ export function AdminPaymentsScreen({ navigation, route }: Props) {
       <AdminHeader
         label="Operations"
         title="Payments"
-        onBack={() => navigation.goBack()}
+        onBack={() =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("AdminHome")
+        }
       />
 
       <FlatList

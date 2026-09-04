@@ -19,7 +19,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
@@ -46,7 +47,7 @@ import {
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { RootStackParams } from "../navigation/types";
+import type { RootStackParams, TabParams } from "../navigation/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -208,6 +209,8 @@ async function offerBackgroundAlerts(): Promise<void> {
  */
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
+  const route = useRoute<RouteProp<TabParams, "Record">>();
+  const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
   const { state, start, reset } = useJobPolling();
   const { isPro, known, trialRemaining, trialTotal, refresh } = useSubscription();
   const colors = useColors();
@@ -617,6 +620,13 @@ export function RecordScreen() {
       setPermError("Could not import audio file. Please try again.");
     }
   }
+
+  useEffect(() => {
+    if (route.params?.autoPickAudio && phase === "ready") {
+      tabNav.setParams({ autoPickAudio: undefined });
+      void pickAudioFile();
+    }
+  }, [route.params?.autoPickAudio, phase]);
 
 
   async function stopAndSubmit() {
