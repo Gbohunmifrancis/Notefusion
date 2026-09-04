@@ -55,16 +55,17 @@ export const getOverview = (from?: string, to?: string, signal?: AbortSignal) =>
     signal ? { signal } : {},
   );
 
-/** `isActive` omitted returns both; true is "can sign in", false is "suspended". */
+/** `isActive` omitted returns both; true is "can sign in", false is "suspended". `isOnline` filters active within 5m. */
 export const getUsers = (
   page: number,
   pageSize: number,
   search?: string,
   isActive?: boolean,
+  isOnline?: boolean,
   signal?: AbortSignal,
 ) =>
   request<PagedResult<AdminUserRow>>(
-    `/api/admin/analytics/users${query({ page, pageSize, search, isActive })}`,
+    `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline })}`,
     signal ? { signal } : {},
   );
 

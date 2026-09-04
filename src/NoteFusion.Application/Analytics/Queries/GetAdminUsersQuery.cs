@@ -18,11 +18,15 @@ namespace NoteFusion.Application.Analytics.Queries;
 /// both. Filtered here rather than in the client because the client only holds one page: filtering after
 /// paging would show "12 of 340" on a page of 25 and never reach the suspended account on page nine.
 /// </param>
+/// <param name="IsOnline">
+/// Keep only accounts active within the last 5 minutes when <c>true</c>. Null returns all.
+/// </param>
 public sealed record GetAdminUsersQuery(
     int Page = 1,
     int PageSize = 25,
     string? Search = null,
-    bool? IsActive = null)
+    bool? IsActive = null,
+    bool? IsOnline = null)
     : IRequest<Result<PagedResultDto<AdminUserRowDto>>>
 {
     public const int MaxPageSize = 100;
@@ -63,12 +67,19 @@ public sealed class GetAdminUsersQueryHandler
             query = query.Where(u => u.IsActive == isActive);
         }
 
+        var now = _clock.UtcNow;
+
+        if (request.IsOnline == true)
+        {
+            var onlineCutoff = now.AddMinutes(-5);
+            query = query.Where(u => (u.LastLoginAt ?? u.CreatedAt) >= onlineCutoff);
+        }
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         // Subscriptions that unlock Pro at this instant. Composed into the projection below rather than
         // repeated in it, and deliberately the same predicate GetSystemHealthQuery counts with — the
         // users table and the health page must not disagree about who is a subscriber.
-        var now = _clock.UtcNow;
         var live = _db.Subscriptions.Where(s =>
             (s.Status == SubscriptionStatus.Active || s.Status == SubscriptionStatus.Canceled)
             && s.CurrentPeriodEndUtc > now);
@@ -90,7 +101,7 @@ public sealed class GetAdminUsersQueryHandler
                 u.GoogleId != null,
                 u.PasswordHash != null,
                 u.CreatedAt,
-                u.LastLoginAt,
+                u.LastLoginAt ?? u.CreatedAt,
                 _db.Transcriptions.Count(t => t.UserId == u.Id),
                 live.Any(s => s.UserId == u.Id),
                 live.Any(s => s.UserId == u.Id && s.Provider == null)))

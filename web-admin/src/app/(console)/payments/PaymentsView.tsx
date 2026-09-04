@@ -262,8 +262,8 @@ export function PaymentsView() {
         >
           {(data) => (
             <>
-              <div className="border-t border-border">
-                <Table className="min-w-[74rem]">
+              <div className="w-full min-w-0 overflow-x-auto border-t border-border">
+                <Table className="w-full min-w-[54rem]">
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
                       <TableHead className={TH}>Started</TableHead>

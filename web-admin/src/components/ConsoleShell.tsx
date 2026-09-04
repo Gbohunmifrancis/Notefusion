@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Bell,
   ChevronDown,
   CreditCard,
   HeartPulse,
@@ -23,6 +22,7 @@ import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
 import { BrandMark } from "@/components/BrandMark";
+import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
 import {
   Sidebar,
@@ -113,7 +113,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
         </SidebarFooter>
       </Sidebar>
 
-      <SidebarInset>
+      <SidebarInset className="min-w-0 w-full overflow-x-hidden">
         {/* TOP BAR */}
         <header className="sticky top-0 z-20 flex h-20 items-center border-b border-slate-200 bg-white/90 px-5 backdrop-blur-xl lg:px-9 dark:border-slate-800 dark:bg-[#07142f]/90">
           <SidebarTrigger className="mr-4 size-10 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" />
@@ -134,16 +134,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
           <div className="ml-auto flex items-center gap-5">
             <ThemeToggle />
 
-            <button
-              type="button"
-              className="relative text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
-              aria-label="Notifications"
-            >
-              <Bell size={19} />
-              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm">
-                3
-              </span>
-            </button>
+            <NotificationBell />
 
             <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
 
@@ -170,8 +161,8 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <div className="min-h-[calc(100vh-5rem)] bg-slate-50 px-5 py-8 text-slate-900 lg:px-9 dark:bg-[#0b1220] dark:text-slate-100">
-          <div className="mx-auto max-w-[1440px] space-y-6">{children}</div>
+        <div className="min-h-[calc(100vh-5rem)] w-full min-w-0 overflow-x-hidden bg-slate-50 px-4 py-8 text-slate-900 sm:px-5 lg:px-9 dark:bg-[#0b1220] dark:text-slate-100">
+          <div className="mx-auto w-full min-w-0 max-w-[1440px] space-y-6">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -207,8 +207,8 @@ export function LedgerView() {
         >
           {(data) => (
             <>
-              <div className="border-t border-border">
-                <Table className="min-w-[64rem]">
+              <div className="w-full min-w-0 overflow-x-auto border-t border-border">
+                <Table className="w-full min-w-[50rem]">
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
                       <TableHead className={TH}>When</TableHead>
