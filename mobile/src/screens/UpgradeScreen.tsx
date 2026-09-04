@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -443,6 +445,9 @@ function ActiveState({
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const [canceling, setCanceling] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState<string | null>(null);
+
   const renews = subscription.currentPeriodEndUtc
     ? new Date(subscription.currentPeriodEndUtc).toLocaleDateString("en", {
         month: "short",
@@ -459,6 +464,7 @@ function ActiveState({
 
   async function cancel() {
     setCanceling(true);
+    setShowCancelModal(false);
     try {
       await billingApi.cancel();
       // Re-read rather than patch the local copy: the server decides how long access runs,
@@ -483,21 +489,13 @@ function ActiveState({
     }
   }
 
-  function confirmCancel() {
-    showDialog({
-      title: "Cancel subscription?",
-      message: renews
-        ? `You'll keep Pro until ${renews} — nothing is withdrawn today and nothing is refunded. ` +
-          `After that date your account returns to the free plan. Everything in your library stays.`
-        : "You'll keep Pro until the end of your paid period, then return to the free plan.",
-      icon: "warning-outline",
-      tone: "danger",
-      actions: [
-        { label: "Cancel subscription", style: "destructive", onPress: cancel },
-        { label: "Keep Pro", style: "cancel" },
-      ],
-    });
+  /** Opens the reason-survey modal — the actual cancel() only fires after
+   *  the user picks a reason and confirms. */
+  function openCancelFlow() {
+    setCancelReason(null);
+    setShowCancelModal(true);
   }
+
 
   return (
     <View style={styles.hubContainer}>
@@ -655,7 +653,7 @@ function ActiveState({
             label="Cancel subscription"
             variant="secondary"
             icon="close-circle-outline"
-            onPress={confirmCancel}
+            onPress={openCancelFlow}
             loading={canceling}
             style={styles.cancelBtn}
           />
@@ -671,12 +669,136 @@ function ActiveState({
                 : "Cancelling keeps Pro until the end of the period you've paid for. Receipts are in your email inbox."}
         </Text>
       </Card>
+
+      {/* ── Cancel Reason Survey Modal ───────────────────────────────── */}
+      <CancelReasonModal
+        visible={showCancelModal}
+        renews={renews}
+        selectedReason={cancelReason}
+        onSelectReason={setCancelReason}
+        onConfirm={cancel}
+        onDismiss={() => setShowCancelModal(false)}
+        canceling={canceling}
+      />
     </View>
+  );
+}
+
+const CANCEL_REASONS = [
+  "Too expensive",
+  "Not using it enough",
+  "Missing features I need",
+  "Found a better alternative",
+  "Other",
+] as const;
+
+/**
+ * Slide-up survey modal shown before the subscription is actually cancelled.
+ * The user picks one of five pre-set reasons, then confirms. The reason is
+ * held client-side (available for future analytics or a server endpoint).
+ */
+function CancelReasonModal({
+  visible,
+  renews,
+  selectedReason,
+  onSelectReason,
+  onConfirm,
+  onDismiss,
+  canceling,
+}: {
+  visible: boolean;
+  renews: string | null;
+  selectedReason: string | null;
+  onSelectReason: (r: string) => void;
+  onConfirm: () => void;
+  onDismiss: () => void;
+  canceling: boolean;
+}) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onDismiss}
+    >
+      <Pressable style={styles.cancelModalBackdrop} onPress={onDismiss} />
+      <View style={styles.cancelModalSheet}>
+        {/* Header */}
+        <View style={styles.cancelModalHandle} />
+        <View style={styles.cancelModalHeader}>
+          <Ionicons name="heart-dislike-outline" size={28} color={colors.danger} />
+          <Text style={styles.cancelModalTitle}>Before you go…</Text>
+          <Text style={styles.cancelModalSub}>
+            Help us improve — why are you cancelling?
+          </Text>
+        </View>
+
+        {/* Reason list */}
+        {CANCEL_REASONS.map((reason) => {
+          const active = selectedReason === reason;
+          return (
+            <Touchable
+              key={reason}
+              style={[styles.cancelReasonRow, active && styles.cancelReasonRowActive]}
+              onPress={() => onSelectReason(reason)}
+              scaleTo={0.98}
+              ripple={false}
+              accessibilityLabel={reason}
+            >
+              <View
+                style={[
+                  styles.cancelReasonRadio,
+                  active && styles.cancelReasonRadioActive,
+                ]}
+              >
+                {active && (
+                  <View style={styles.cancelReasonRadioDot} />
+                )}
+              </View>
+              <Text style={[styles.cancelReasonLabel, active && styles.cancelReasonLabelActive]}>
+                {reason}
+              </Text>
+            </Touchable>
+          );
+        })}
+
+        {/* Info strip */}
+        {renews && (
+          <View style={styles.cancelModalInfo}>
+            <Ionicons name="time-outline" size={14} color={colors.textMuted} />
+            <Text style={styles.cancelModalInfoText}>
+              Pro stays active until {renews}. No refund, no charge today.
+            </Text>
+          </View>
+        )}
+
+        {/* Actions */}
+        <Button
+          label="Confirm cancellation"
+          variant="danger"
+          icon="close-circle-outline"
+          onPress={onConfirm}
+          loading={canceling}
+          disabled={!selectedReason}
+          style={styles.cancelConfirmBtn}
+        />
+        <Button
+          label="Keep Pro"
+          variant="secondary"
+          onPress={onDismiss}
+          style={styles.cancelKeepBtn}
+        />
+      </View>
+    </Modal>
   );
 }
 
 /** A selectable plan row with a radio, price, and optional savings badge. */
 function PlanOption({
+
   plan,
   selected,
   badge,
@@ -1177,4 +1299,110 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 14,
       textAlign: "center",
     },
+
+    // ── Cancel Reason Modal ──────────────────────────────────────────────────
+    cancelModalBackdrop: {
+      flex: 1,
+      backgroundColor: c.scrim,
+    },
+    cancelModalSheet: {
+      backgroundColor: c.bg,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      paddingHorizontal: spacing.xl,
+      paddingBottom: spacing.xxl + 8,
+      paddingTop: spacing.sm,
+    },
+    cancelModalHandle: {
+      alignSelf: "center",
+      width: 40,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: c.border,
+      marginBottom: spacing.lg,
+    },
+    cancelModalHeader: {
+      alignItems: "center",
+      gap: spacing.xs,
+      marginBottom: spacing.xl,
+    },
+    cancelModalTitle: {
+      fontSize: 20,
+      fontFamily: fonts.bold,
+      color: c.text,
+    },
+    cancelModalSub: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      textAlign: "center",
+    },
+    cancelReasonRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.md,
+      marginBottom: spacing.xs,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surface,
+    },
+    cancelReasonRowActive: {
+      borderColor: c.accent,
+      backgroundColor: c.accentSoft,
+    },
+    cancelReasonRadio: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    cancelReasonRadioActive: {
+      borderColor: c.accent,
+    },
+    cancelReasonRadioDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: c.accent,
+    },
+    cancelReasonLabel: {
+      flex: 1,
+      fontSize: 15,
+      fontFamily: fonts.medium,
+      color: c.text,
+    },
+    cancelReasonLabelActive: {
+      color: c.accent,
+      fontFamily: fonts.semibold,
+    },
+    cancelModalInfo: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: spacing.sm,
+      backgroundColor: c.surfaceAlt,
+      borderRadius: radii.md,
+      padding: spacing.md,
+      marginTop: spacing.md,
+      marginBottom: spacing.lg,
+    },
+    cancelModalInfoText: {
+      flex: 1,
+      fontSize: 12,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      lineHeight: 18,
+    },
+    cancelConfirmBtn: {
+      marginTop: spacing.xs,
+    },
+    cancelKeepBtn: {
+      marginTop: spacing.sm,
+    },
   });
+

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Linking,
   Modal,
   ScrollView,
   StyleSheet,
@@ -7,6 +8,8 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Application from "expo-application";
+import * as WebBrowser from "expo-web-browser";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -32,6 +35,7 @@ import { useColors, useThemedStyles } from "../lib/theme";
 import type { MyProfile } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
+
 /**
  * ProfileScreen — matching Image 4 design sheet:
  * 1. Top bar: back button and title — a pushed screen since the side bar replaced the Profile tab
@@ -56,10 +60,12 @@ export function ProfileScreen() {
 
   // Edit modals
   const [accountModal, setAccountModal] = useState(false);
+  const [aboutModal, setAboutModal] = useState(false);
   const [name, setName] = useState(user?.fullName ?? "");
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [pwBusy, setPwBusy] = useState(false);
+
 
   useEffect(() => {
     meApi
@@ -289,7 +295,7 @@ export function ProfileScreen() {
         <MenuItem
           icon="information-circle-outline"
           label="About Notefusion"
-          onPress={() => nav.navigate("Settings", { focus: "about" })}
+          onPress={() => setAboutModal(true)}
           isLast
         />
       </View>
@@ -369,6 +375,67 @@ export function ProfileScreen() {
                 disabled={!current || next.length < 8}
               />
             </ScrollView>
+          </View>
+        </View>
+      </Modal>
+      {/* ── About Modal ───────────────────────────────────────────────── */}
+      <Modal
+        visible={aboutModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setAboutModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>About Notefusion</Text>
+              <Touchable
+                onPress={() => setAboutModal(false)}
+                hitSlop={8}
+                ripple="borderless"
+                accessibilityLabel="Close"
+              >
+                <Ionicons name="close" size={22} color={colors.text} />
+              </Touchable>
+            </View>
+
+            <Text style={styles.aboutDescription}>
+              Notefusion turns what you hum, sing, or play into Tonic Solfa and
+              staff notation — instantly, on your phone.
+            </Text>
+
+            <View style={styles.aboutLinkRow}>
+              <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
+              <Touchable
+                onPress={() =>
+                  WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")
+                }
+                ripple={false}
+                accessibilityLabel="Privacy Policy"
+              >
+                <Text style={styles.aboutLink}>Privacy Policy</Text>
+              </Touchable>
+            </View>
+
+            <View style={styles.aboutLinkRow}>
+              <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
+              <Touchable
+                onPress={() =>
+                  WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")
+                }
+                ripple={false}
+                accessibilityLabel="Terms of Service"
+              >
+                <Text style={styles.aboutLink}>Terms of Service</Text>
+              </Touchable>
+            </View>
+
+            <View style={styles.aboutVersionRow}>
+              <Text style={styles.aboutVersionLabel}>Version</Text>
+              <Text style={styles.aboutVersionValue}>
+                {Application.nativeApplicationVersion ?? "—"}
+              </Text>
+            </View>
           </View>
         </View>
       </Modal>
@@ -569,4 +636,46 @@ const makeStyles = (c: Palette) =>
       marginBottom: spacing.sm,
       marginTop: spacing.md,
     },
+
+    // ── About modal ───────────────────────────────────────────────────────────
+    aboutDescription: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      lineHeight: 21,
+      marginBottom: spacing.xl,
+    },
+    aboutLinkRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+    },
+    aboutLink: {
+      fontSize: 15,
+      fontFamily: fonts.medium,
+      color: c.accent,
+    },
+    aboutVersionRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingVertical: spacing.sm,
+      marginTop: spacing.xs,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+    },
+    aboutVersionLabel: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+    },
+    aboutVersionValue: {
+      fontSize: 14,
+      fontFamily: fonts.bold,
+      color: c.accent,
+    },
   });
+

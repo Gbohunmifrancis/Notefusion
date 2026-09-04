@@ -300,7 +300,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
       {/* ── Appearance ───────────────────────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Ionicons name="color-palette-outline" size={14} color={colors.purple} />
+        <Ionicons name="color-palette-outline" size={14} color={colors.accent} />
         <Text style={styles.sectionTitle}>Appearance & feel</Text>
       </View>
 
@@ -312,7 +312,7 @@ export function SettingsScreen({ navigation, route }: Props) {
             <Ionicons
               name={isDark ? "moon" : "sunny"}
               size={16}
-              color={colors.purple}
+              color={colors.accent}
             />
           </View>
 
@@ -345,7 +345,7 @@ export function SettingsScreen({ navigation, route }: Props) {
             <Ionicons
               name={hapticsOn ? "pulse" : "pulse-outline"}
               size={16}
-              color={colors.purple}
+              color={colors.accent}
             />
           </View>
 
