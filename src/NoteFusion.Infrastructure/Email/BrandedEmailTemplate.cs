@@ -365,8 +365,8 @@ public sealed class BrandedEmailTemplate
         var mark = logo is null
             ? string.Empty
             : $"""
-               <img src="{Encode(logo)}" width="46" height="61" alt=""
-                    style="display:block;margin:0 auto 14px;border:0;outline:none;text-decoration:none;height:61px;width:46px" />
+               <img src="{Encode(logo)}" width="46" height="61" alt="NoteFusion"
+                    border="0" style="display:block;margin:0 auto 14px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;height:61px;width:46px;max-width:46px" />
                """;
 
         var button = cta is null
@@ -537,9 +537,9 @@ public sealed class BrandedEmailTemplate
 
     private string LogoUrl()
     {
-        var origin = _settings.AssetBaseUrl.TrimEnd('/');
-        return string.IsNullOrWhiteSpace(origin)
-            ? "https://raw.githubusercontent.com/Gbohunmifrancis/Notefusion/main/mobile/assets/icon.png"
+        var origin = _settings.AssetBaseUrl?.TrimEnd('/');
+        return string.IsNullOrWhiteSpace(origin) || origin.Contains("herokuapp.com", StringComparison.OrdinalIgnoreCase)
+            ? "https://notefusion.studio/email/logo.png"
             : $"{origin}/email/logo.png";
     }
 

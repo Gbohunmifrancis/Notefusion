@@ -42,5 +42,5 @@ public sealed class EmailSettings
     /// is a separate Vercel app now and this image is the only asset the API ever needed from it. Mail
     /// clients fetch this over the public internet, so localhost is useless here.
     /// </summary>
-    public string AssetBaseUrl { get; set; } = string.Empty;
+    public string AssetBaseUrl { get; set; } = "https://notefusion.studio";
 }
