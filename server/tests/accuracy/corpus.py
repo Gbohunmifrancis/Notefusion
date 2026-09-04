@@ -472,7 +472,7 @@ DIAGNOSTIC_CASES: tuple[Case, ...] = (
     #     anyway.  Tuning a second constant on the same one-point evidence.
     #  4. It is unsafe in a mode this corpus cannot reach.  Every reference note here is
     #     monophonic — measured 0 of 38 cases with any simultaneous reference notes when
-    #     this was written, and still 0 of 41 now that POLYPHONIC_CASES exists, because
+    #     this was written, and still 0 of 43 now that POLYPHONIC_CASES exists, because
     #     an accompaniment sounds without producing a reference note (see
     #     ``synth.render``).  So the polyphonic cases do NOT retire this reason: they
     #     measure melody extraction from a mixture, not mode="poly".  And
@@ -969,6 +969,115 @@ POLYPHONIC_CASES: tuple[Case, ...] = (
 )
 
 
+# ── Close voicing: the accompaniment in the melody's own register ──────────────
+#
+# Both cases above are already at 1.000 on every metric, which left the polyphonic work
+# with nothing to gate on — a fix cannot be measured against a saturated case.  This pair
+# supplies the headroom, and it is the case the research doc's W4 names as the thing that
+# must be authored before the contour-head tracker is built.
+#
+# ``NARROW_ARCH_PHRASE`` is 12 beats so it lines up with ``_PROGRESSION``'s six two-beat
+# chords, and ``close_voicing_control_c_major`` renders it with no accompaniment at all.
+# That control is what makes the accompaniment the single variable, exactly as
+# ``diag_baseline`` does for the two cases above; it scores 1.000 on everything, so the
+# melody itself is not the difficulty.
+#
+# TWO HYPOTHESES DIED GETTING HERE, both by measurement, and both are recorded because
+# the wrong ones are easy to repeat:
+#
+#   "The case must keep the melody floor from firing."  ``_melody_floor_hz`` gates on
+#   median ``skyline - pyin`` over 6.0 semitones, so the obvious design was an
+#   accompaniment close enough for the register test to miss.  It cannot be built: the
+#   floor fired at +12.3 to +24.1 on every close voicing tried, because pyin on a
+#   MIXTURE returns a periodicity far below any sounding voice rather than the lowest
+#   sounding voice.  The disagreement figure is not a function of the voicing gap at all.
+#
+#   "Closeness itself is the defect."  Also false.  ``DIAG_PHRASE`` under these very
+#   shells scores 1.000, and a two-voice shell at the ORIGINAL low register (41..52)
+#   scores 0.870 — worse than the close one — because F2's third harmonic lands on C4 and
+#   is read as a melody note.  Closeness is only half of it.
+#
+# What survives is the INTERACTION, and each control isolates one half of it:
+#
+#   melody 60..67 + shells 52..59   notes.f1 0.500   <- close_voicing_c_major
+#   melody 60..67 + no accompaniment      1.000      <- close_voicing_control_c_major
+#   melody 60..67 + shells 41..52         0.923      same melody, accompaniment dropped
+#   melody 60..72 + shells 52..59         1.000      same shells, melody widened
+#
+# So the defect needs a melody whose ENTIRE range sits within a semitone or two of the
+# accompaniment's top voice.  Widen the melody or drop the accompaniment and it goes away.
+#
+# THE MECHANISM, named rather than guessed: the floor fires and computes midi 60, which is
+# CORRECT — the accompaniment tops out at B3 (59).  Re-running pyin from ``fmin`` = 60 then
+# removes the mixture's strongest component from pyin's search band while leaving its
+# energy in the signal, so pyin finds no periodicity it is allowed to report and declares
+# the clip unvoiced.  ``_segment_contour`` returns 4 notes from 336 f0 frames, covering
+# 2.5 s of 7.5 s, and every surviving event carries ``voiced_prob`` 0.011-0.023.  Read that
+# number: this is not a wrong pitch, it is NO pitch.  Every pitch the case does report is
+# right (est [60, 62, 60, 60], none of them an accompaniment pitch), so precision is
+# perfect and recall is what collapses — the opposite signature to the two cases above,
+# which reported the wrong VOICE.
+#
+# Which is why this is W4's prerequisite specifically: the ``contour`` head has neither an
+# ``fmin`` band nor a voiced/unvoiced decision, so it is the one tracker that cannot fail
+# this way.  ``MELODY_FLOOR_MARGIN_SEMITONES`` is the other lever — 2.0 is what puts
+# ``fmin`` one semitone above B3 — but moving it trades this case against the two above.
+#
+# Attribution is exact: the shells use 52, 53, 55, 57, 59 and the melody uses
+# 60, 62, 64, 65, 67, so no reported pitch is ambiguous about which hand produced it.  The
+# third chord tone is always a melody pitch (C4 60, D4 62) at this voicing, which is why
+# these are two-note shells rather than triads — a triad here would break attribution.
+#
+# The clip is one the pipeline SHOULD get right, per the rule at the top of this file: two
+# accompaniment voices at ``_ACCOMPANIMENT_GAIN`` sum to 0.90 against the melody's 1.00, so
+# the melody is louder than the whole accompaniment put together, not merely the loudest
+# single voice.  "Take the loudest line" would answer it.  EXPECTED TO SCORE BADLY all the
+# same, like the vibrato cases: it is a regression gate, so what matters is that 0.500 does
+# not get worse until something is built to move it.
+#
+# A fifth-wide arch, up and down twice.  Narrow on purpose — every other melody in this
+# corpus spans an octave or more, which is precisely why none of them could show this.
+NARROW_ARCH_PHRASE: tuple[tuple[int | None, float], ...] = (
+    (60, 1), (62, 1), (64, 1), (65, 1), (67, 1), (65, 1),
+    (64, 1), (62, 1), (60, 1), (64, 1), (62, 1), (60, 1),
+)
+
+# ``_PROGRESSION``'s six chords as two-note shells raised into 52..59 — the highest
+# voicing available before the third chord tone collides with the melody.
+_CLOSE_SHELLS: tuple[tuple[int, int], ...] = (
+    (52, 55),  # C: E3 G3
+    (53, 57),  # F: F3 A3
+    (52, 55),
+    (55, 59),  # G: G3 B3
+    (52, 55),
+    (52, 55),
+)
+
+CLOSE_SHELL_VOICES: tuple[tuple[tuple[int | None, float], ...], ...] = tuple(
+    tuple((chord[voice], 2.0) for chord in _CLOSE_SHELLS) for voice in range(2)
+)
+
+CLOSE_VOICING_CASES: tuple[Case, ...] = (
+    Case(
+        name="close_voicing_control_c_major",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=NARROW_ARCH_PHRASE,
+        options=CLEAN,
+        tags=("monophonic", "control", "narrow_range"),
+    ),
+    Case(
+        name="close_voicing_c_major",
+        key="C major",
+        tempo_bpm=DIAG_TEMPO_BPM,
+        notes=NARROW_ARCH_PHRASE,
+        options=CLEAN,
+        tags=("polyphonic", "melody_line", "close_voicing", "narrow_range"),
+        accompaniment=CLOSE_SHELL_VOICES,
+    ),
+)
+
+
 # ── Long clip: the multi-minute regime the short cases cannot reach ───────────
 # Every other case in this corpus renders to between 3.71 and 8.82 seconds, so without this
 # one the long-clip regime was 0% measured while ``max_clip_seconds`` accepted 180.
@@ -1040,6 +1149,7 @@ CASES: tuple[Case, ...] = (
     + VIBRATO_BREADTH_CASES
     + RHYTHM_CASES
     + POLYPHONIC_CASES
+    + CLOSE_VOICING_CASES
     + LONG_CLIP_CASES
 )
 
@@ -1057,7 +1167,7 @@ def corpus_fingerprint(cases: tuple[Case, ...] = CASES) -> str:
     against a different corpus", not resist tampering.
 
     ``accompaniment`` is included only when a case HAS one.  Emitting it
-    unconditionally — even as an empty list — would change the fingerprint of all 39
+    unconditionally — even as an empty list — would change the fingerprint of all 40
     monophonic cases whose audio is bit-identical, and the gate would then declare
     every stored number incomparable on a change that moved no sample.  Same reason
     the accompaniment gain is a module constant in ``synth`` rather than a

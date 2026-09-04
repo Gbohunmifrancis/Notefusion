@@ -8,12 +8,18 @@ import React, {
   useState,
 } from 'react';
 import { AppState } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { billingApi } from '../api/endpoints';
 import { useAuth } from './auth';
+import { showDialog } from './dialog';
+import * as haptics from './haptics';
 import type { Subscription } from '../api/types';
 
 interface SubscriptionState {
-  /** The server's answer, or null for "no subscription OR we don't know yet". */
+  /**
+   * The server's answer, or null for "no subscription OR we don't know yet". Before the server has
+   * replied this may be the previous session's cached answer — `known` is what says which.
+   */
   subscription: Subscription | null;
   /**
    * Whether to show Pro treatment. Deliberately `?? false`: an account whose
@@ -22,6 +28,8 @@ interface SubscriptionState {
    * a failed request can never hand out a paid look.
    */
   isPro: boolean;
+  /** True when the active subscription was granted by an operator rather than purchased. */
+  isGift: boolean;
   /**
    * True once a fetch has come back successfully. Distinguishes "definitely not
    * subscribed" from "couldn't ask", which matters for *restricting* a free user:
@@ -55,6 +63,29 @@ const SubscriptionContext = createContext<SubscriptionState | undefined>(undefin
 const DEFAULT_TRIAL_TOTAL = 5;
 
 /**
+ * Where the last successful answer is kept, per account, so a cold start can paint Pro before the
+ * billing service has replied. Not SecureStore: that is reserved for bearer credentials, and this is
+ * a cosmetic head start, not a capability — the server is still the only thing that grants anything.
+ *
+ * Per-user, because a handset is shared and one account's paid status must never be read for another.
+ */
+const cacheKey = (userId: string) => `@notefusion_sub:${userId}`;
+const trackerKey = (userId: string) => `@notefusion_sub_tracker:${userId}`;
+
+/**
+ * Whether a cached period has already run out, in which case it is hydrated inactive. `isLifetime`
+ * needs no special case — its `currentPeriodEndUtc` is a far-future sentinel — and a null end date is
+ * unjudgeable, so it stands and the fetch settles it a moment later.
+ */
+function lapsed(sub: Subscription): boolean {
+  return (
+    sub.isActive &&
+    sub.currentPeriodEndUtc !== null &&
+    Date.parse(sub.currentPeriodEndUtc) < Date.now()
+  );
+}
+
+/**
  * Owns "is this account premium?" for the whole app.
  *
  * Before this existed the question was answered four different ways — the profile
@@ -74,6 +105,10 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const mounted = useRef(true);
   /** Mirrors `known` for reads inside `load`, which must not depend on it. */
   const knownRef = useRef(false);
+  /** Which account the cache belongs to. Same reason as `knownRef`: `load` may not depend on it. */
+  const userIdRef = useRef<string | null>(null);
+  /** Previous acknowledged subscription state for detecting gifts, revokes, and purchases. */
+  const lastSeenRef = useRef<{ isActive: boolean; isGift: boolean } | null>(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -90,6 +125,58 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setSubscription(sub);
       setKnown(true);
       knownRef.current = true;
+
+      const id = userIdRef.current;
+      const prev = lastSeenRef.current;
+      const currentIsActive = sub.isActive;
+      const currentIsGift = Boolean(sub.isGift);
+
+      // Only check state transitions when we have an existing known baseline
+      if (prev !== null) {
+        if (!prev.isActive && currentIsActive) {
+          if (currentIsGift) {
+            haptics.play('success');
+            showDialog({
+              title: "Pro Access Gifted! 🎁",
+              message:
+                "An administrator has gifted you NoteFusion Pro access! Enjoy unlimited transcriptions, full staff notation, and priority processing.",
+              icon: "gift-outline",
+              tone: "premium",
+            });
+          } else {
+            haptics.play('success');
+            showDialog({
+              title: "Welcome to NoteFusion Pro! 🎉",
+              message:
+                "Your payment has been confirmed and your Pro subscription is now active. Enjoy unlimited transcriptions and premium exports!",
+              icon: "sparkles",
+              tone: "premium",
+            });
+          }
+        } else if (prev.isActive && !currentIsActive) {
+          haptics.play('warning');
+          showDialog({
+            title: "Pro Access Updated",
+            message: prev.isGift
+              ? "Your gifted NoteFusion Pro access has been revoked by an administrator. Your account has returned to the Free plan."
+              : "Your NoteFusion Pro subscription has ended. Your account has returned to the Free plan.",
+            icon: "alert-circle-outline",
+            tone: "danger",
+          });
+        }
+      }
+
+      lastSeenRef.current = { isActive: currentIsActive, isGift: currentIsGift };
+
+      // Best-effort, and never awaited: the answer is already on screen, and a storage failure has
+      // no consequence beyond the next cold start flashing Free the way it used to.
+      if (id) {
+        void AsyncStorage.setItem(cacheKey(id), JSON.stringify(sub)).catch(() => undefined);
+        void AsyncStorage.setItem(
+          trackerKey(id),
+          JSON.stringify({ isActive: currentIsActive, isGift: currentIsGift }),
+        ).catch(() => undefined);
+      }
     } catch {
       // Network down, 5xx, expired session mid-refresh. Only clear the state we have
       // never successfully read — a *re*-read that fails must leave the last known
@@ -110,17 +197,62 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   // profile edit, and a name change is no reason to re-ask the billing service.
   const userId = user?.id ?? null;
 
+  /**
+   * Paints the last known answer while the server is being asked, so a paying customer does not watch
+   * their Pro badge and gold ring arrive a few hundred milliseconds late on every cold start.
+   *
+   * Sets `subscription` and deliberately **leaves `known` false**. That is the whole safety property:
+   * `isPro` turns true immediately, so the premium treatment paints, while quota gates reading
+   * `known && !isPro` stay open until the server itself has answered. Nothing is granted from cache —
+   * a cached "active" that the server then contradicts is corrected on the same tick as before.
+   */
+  const hydrateFromCache = useCallback(async (id: string) => {
+    try {
+      const [rawSub, rawTracker] = await Promise.all([
+        AsyncStorage.getItem(cacheKey(id)),
+        AsyncStorage.getItem(trackerKey(id)),
+      ]);
+      if (rawTracker) {
+        lastSeenRef.current = JSON.parse(rawTracker);
+      }
+      if (!rawSub) return;
+      const cached = JSON.parse(rawSub) as Subscription;
+
+      // The fetch may have won the race, or the account may have changed under this read. Either way
+      // the newer thing wins — this must never overwrite an answer.
+      if (!mounted.current || knownRef.current || userIdRef.current !== id) return;
+
+      setSubscription(lapsed(cached) ? { ...cached, isActive: false } : cached);
+    } catch {
+      // No entry, unreadable, or written by an older shape of `Subscription`. The fetch already
+      // underway is the real answer, so there is nothing to recover from.
+    }
+  }, []);
+
   useEffect(() => {
     if (!userId) {
-      // Signed out — drop the previous account's state entirely.
+      // Signed out — drop the previous account's state entirely, cache included: the paid status of
+      // an account nobody is signed into has no business surviving on the handset.
+      const previous = userIdRef.current;
+      if (previous) {
+        void AsyncStorage.removeItem(cacheKey(previous)).catch(() => undefined);
+        void AsyncStorage.removeItem(trackerKey(previous)).catch(() => undefined);
+      }
+      userIdRef.current = null;
+      lastSeenRef.current = null;
       setSubscription(null);
       setKnown(false);
       knownRef.current = false;
       setLoading(false);
       return;
     }
+    // Before the fetch, and outside it: `load` is `useCallback(…, [])` for a stable identity, so it
+    // cannot take a `userId` dependency without making the AppState listener below re-subscribe on
+    // every change. It reads the id back through `userIdRef` instead.
+    userIdRef.current = userId;
+    void hydrateFromCache(userId);
     load();
-  }, [userId, load]);
+  }, [userId, load, hydrateFromCache]);
 
   // Re-read whenever the app comes back to the foreground. Checkout happens in an
   // external browser, so the moment Pro actually unlocks is a moment this app is not
@@ -139,6 +271,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     () => ({
       subscription,
       isPro: subscription?.isActive ?? false,
+      isGift: Boolean(subscription?.isGift),
       known,
       loading,
       trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,

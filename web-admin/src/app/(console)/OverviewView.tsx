@@ -3,35 +3,41 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   Activity,
+  ArrowUpRight,
   CalendarClock,
+  CalendarDays,
+  ChevronDown,
   CircleCheck,
   CreditCard,
   Gauge,
   Globe,
   Hourglass,
+  Info,
   MailCheck,
-  Music4,
+  Music2,
   ShieldCheck,
-  UserPlus,
-  Users2,
+  UserRound,
+  UserRoundPlus,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { getOverview } from "@/api/endpoints";
-import type { AnalyticsOverview } from "@/api/types";
+import type { AnalyticsOverview, DailyCount } from "@/api/types";
 import { Badge } from "@/components/Badge";
-import { BreakdownList } from "@/components/BreakdownList";
-import { Card } from "@/components/Card";
-import { DailyChart } from "@/components/DailyChart";
 import { DonutCard } from "@/components/DonutCard";
 import type { DonutSlice } from "@/components/DonutCard";
-import { PageHeader } from "@/components/PageHeader";
 import { RangePicker } from "@/components/RangePicker";
 import type { Range } from "@/components/RangePicker";
-import { RecentActivity } from "@/components/RecentActivity";
-import { StatCard } from "@/components/StatCard";
-import { StatStrip, StatTile } from "@/components/StatStrip";
 import { EmptyView, StateView } from "@/components/StateView";
 import {
   Table,
@@ -45,52 +51,375 @@ import { useAuth } from "@/lib/auth";
 import { useChartPalette } from "@/lib/chart";
 import {
   changeAgainst,
-  formatBytes,
   formatCount,
+  formatDayLong,
+  formatDayShort,
+  formatMonthShort,
+  formatMonthYear,
   formatOffset,
   formatPercent,
+  formatRelative,
   formatWeekOf,
 } from "@/lib/format";
 import { rememberReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
 
-/**
- * The requested window, seeded from whatever the server actually returned.
- *
- * The daily series is the server's own list of local dates for the window, so reading the
- * first and last entry gives the picker the exact range the response describes. Deriving it
- * instead of storing it means seeding the control does not trigger a second request for the
- * window we already have.
- */
 function seedRange(overview: AnalyticsOverview): Range | null {
   const first = overview.signupsPerDay.at(0);
   const last = overview.signupsPerDay.at(-1);
   return first && last ? { from: first.date, to: last.date } : null;
 }
 
-/**
- * The greeting is about the reader, not the data, so it reads the browser's clock — the
- * reporting zone is the wrong one to say good evening in.
- */
 function greeting(firstName: string): string {
   const hour = new Date().getHours();
   const part = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
   return firstName ? `Good ${part}, ${firstName}` : `Good ${part}`;
 }
 
-/**
- * The metrics this page is asked for and will not fake, each with the thing it is actually waiting
- * on.
- *
- * `waiting` is the reason this is a set of tiles now rather than the paragraph list it used to be.
- * All four items used to read as one undifferentiated apology, when they are in fact three
- * different situations: one an operator can clear by setting config, one that already exists on
- * another page, and two that need a column that was never written. Sorting them by that is the
- * only structure here that carries information — so it is the only structure here.
- *
- * The explanations are unchanged. They are the honest part, and shortening them to fit a tile
- * would be the one edit this panel cannot afford.
- */
+type Bucket = "day" | "week" | "month";
+
+interface ChartGroup {
+  key: string;
+  label: string;
+  title: string;
+  count: number;
+}
+
+function groupIntoWeeks(data: DailyCount[]): ChartGroup[] {
+  const groups: ChartGroup[] = [];
+  for (let i = 0; i < data.length; i += 7) {
+    const block = data.slice(i, i + 7);
+    const first = block[0];
+    const last = block[block.length - 1];
+    if (!first || !last) continue;
+    groups.push({
+      key: first.date,
+      label: formatDayShort(first.date),
+      title:
+        first.date === last.date
+          ? formatDayLong(first.date)
+          : `${formatDayShort(first.date)} – ${formatDayLong(last.date)}`,
+      count: block.reduce((sum, day) => sum + day.count, 0),
+    });
+  }
+  return groups;
+}
+
+function groupIntoMonths(data: DailyCount[]): ChartGroup[] {
+  const groups: ChartGroup[] = [];
+  for (const day of data) {
+    const open = groups[groups.length - 1];
+    if (open && open.key.slice(0, 7) === day.date.slice(0, 7)) {
+      open.count += day.count;
+    } else {
+      groups.push({
+        key: day.date,
+        label: formatMonthShort(day.date),
+        title: formatMonthYear(day.date),
+        count: day.count,
+      });
+    }
+  }
+  return groups;
+}
+
+function groupIntoDays(data: DailyCount[]): ChartGroup[] {
+  return data.map((day) => ({
+    key: day.date,
+    label: formatDayShort(day.date),
+    title: formatDayLong(day.date),
+    count: day.count,
+  }));
+}
+
+interface StatItem {
+  title: string;
+  value: string;
+  change?: string | null;
+  description?: string | null;
+  hint?: string;
+  icon: typeof UserRound;
+  iconStyle: string;
+}
+
+function StatCard({ stat }: { stat: StatItem }) {
+  const Icon = stat.icon;
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="flex items-start justify-between">
+        <div className="min-w-0 flex-1 pr-2">
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-slate-400">
+            <span className="truncate">{stat.title}</span>
+            <span title={stat.hint ?? stat.title} className="inline-flex items-center">
+              <Info size={14} className="shrink-0 text-slate-400" />
+            </span>
+          </div>
+
+          <div className="mt-3 text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+            {stat.value}
+          </div>
+
+          {stat.change && (
+            <div className="mt-2 flex items-center gap-1 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight size={15} />
+              <span>{stat.change}</span>
+            </div>
+          )}
+
+          {stat.description && (
+            <div className="mt-2 text-xs text-slate-400">
+              {stat.description}
+            </div>
+          )}
+        </div>
+
+        <div
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${stat.iconStyle}`}
+        >
+          <Icon size={22} strokeWidth={2} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SignupChart({ data }: { data: DailyCount[] }) {
+  const [bucket, setBucket] = useState<Bucket>("day");
+
+  const chartData = useMemo(() => {
+    if (bucket === "week") return groupIntoWeeks(data);
+    if (bucket === "month") return groupIntoMonths(data);
+    return groupIntoDays(data);
+  }, [data, bucket]);
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
+          <Info size={14} className="text-slate-400" />
+        </div>
+
+        <div className="flex rounded-lg border border-slate-200 p-1 text-xs font-medium dark:border-slate-800">
+          <button
+            onClick={() => setBucket("day")}
+            className={`rounded-md px-3 py-1.5 transition ${
+              bucket === "day"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            }`}
+          >
+            Day
+          </button>
+          <button
+            onClick={() => setBucket("week")}
+            className={`rounded-md px-3 py-1.5 transition ${
+              bucket === "week"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            }`}
+          >
+            Week
+          </button>
+          <button
+            onClick={() => setBucket("month")}
+            className={`rounded-md px-3 py-1.5 transition ${
+              bucket === "month"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            }`}
+          >
+            Month
+          </button>
+        </div>
+      </div>
+
+      <div className="h-56 w-full">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <defs>
+              <linearGradient id="signupGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.7} />
+            <XAxis
+              dataKey="label"
+              stroke="#94a3b8"
+              fontSize={11}
+              tickLine={false}
+              axisLine={false}
+              dy={6}
+            />
+            <YAxis
+              stroke="#94a3b8"
+              fontSize={11}
+              tickLine={false}
+              axisLine={false}
+              dx={-4}
+            />
+            <Tooltip
+              content={({ active, payload }) => {
+                if (!active || !payload?.[0]) return null;
+                const point = payload[0].payload as ChartGroup;
+                return (
+                  <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-800 dark:bg-slate-900">
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">{point.title}</p>
+                    <p className="mt-1 text-xs font-medium text-blue-600 dark:text-blue-400">
+                      {formatCount(point.count)} signups
+                    </p>
+                  </div>
+                );
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="count"
+              stroke="#2563eb"
+              strokeWidth={3}
+              fillOpacity={1}
+              fill="url(#signupGradient)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[] }) {
+  const topKeys = keys.slice(0, 5);
+  const total = keys.reduce((sum, k) => sum + k.count, 0);
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mb-5 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+            Most transcribed keys
+          </h2>
+          <Info size={14} className="text-slate-400" />
+        </div>
+
+        <Link href="/audit-log" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+          View all
+        </Link>
+      </div>
+
+      {topKeys.length === 0 ? (
+        <div className="py-8 text-center text-sm text-slate-400">
+          No transcriptions saved yet
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {topKeys.map((key, index) => {
+            const percentage = total > 0 ? Math.round((key.count / total) * 100) : 0;
+            return (
+              <div
+                key={key.label}
+                className="rounded-xl bg-slate-50 px-3.5 py-3 transition hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800/70"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-slate-500 shadow-sm dark:bg-slate-700 dark:text-slate-300">
+                    {index + 1}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <span className="truncate text-sm font-medium text-slate-700 dark:text-slate-200">
+                        {key.label}
+                      </span>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-sm font-semibold text-slate-800 dark:text-white">
+                          {key.count}
+                        </span>
+
+                        <span className="w-8 text-right text-xs text-slate-400">
+                          {percentage}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-2 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700">
+                      <div
+                        className="h-full rounded-full bg-blue-600 transition-all duration-500"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivity"] }) {
+  const now = Date.now();
+  const displayItems = items.slice(0, 4);
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+      <div className="mb-5 flex items-center justify-between">
+        <h2 className="font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
+
+        <Link href="/audit-log" className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+          View all activity
+        </Link>
+      </div>
+
+      {displayItems.length === 0 ? (
+        <div className="py-8 text-center text-sm text-slate-400">
+          No activity recorded yet
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {displayItems.map((item, index) => {
+            const isSignup = item.kind === "signup";
+            const isTranscription = item.kind === "transcription";
+
+            const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : ShieldCheck;
+            const iconStyle = isSignup
+              ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
+              : isTranscription
+                ? "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400"
+                : "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400";
+
+            const verb = isSignup ? "New user registered" : isTranscription ? "Transcription completed" : "User sign-in";
+
+            return (
+              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center gap-4">
+                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${iconStyle}`}>
+                  <Icon size={19} />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="truncate text-sm font-medium text-slate-800 dark:text-slate-200">
+                    {verb}
+                  </div>
+                  <div className="truncate text-xs text-slate-400">
+                    {item.title} {item.subtitle ? `• ${item.subtitle}` : ""} • {formatRelative(item.occurredAtUtc, now)}
+                  </div>
+                </div>
+
+                <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+                  Success ✓
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const UNMEASURED = [
   {
     icon: Globe,
@@ -101,8 +430,7 @@ const UNMEASURED = [
       <>
         An account does carry a country, resolved from the caller&apos;s address once at its first
         sign-in and only when a GeoIP provider is configured — so on a deployment without one it is
-        null for everybody. It is shown per account on the detail page; a breakdown card waits until
-        the column is populated widely enough to mean something.
+        null for everybody.
       </>
     ),
   },
@@ -114,8 +442,7 @@ const UNMEASURED = [
     body: (
       <>
         The billing tables exist, but every figure on this page is windowed to the range above and a
-        subscription count belongs to an instant instead. The live numbers, labelled as the snapshot
-        they are, are on{" "}
+        subscription count belongs to an instant instead. The live numbers are on{" "}
         <Link href="/health" className="font-medium text-brand hover:opacity-80">
           System health
         </Link>
@@ -153,51 +480,204 @@ export function OverviewView() {
   const { user } = useAuth();
   const chart = useChartPalette();
   const [range, setRange] = useState<Range | null>(null);
+  const [showRangePicker, setShowRangePicker] = useState(false);
 
   const state = useQuery({
     queryKey: ["overview", range?.from ?? null, range?.to ?? null],
     queryFn: ({ signal }) => getOverview(range?.from, range?.to, signal),
-    // A new range is a new key. Without this the whole page — eight tiles, two charts, two
-    // rings — would blank to a single spinner every time the admin nudged a date.
     placeholderData: keepPreviousData,
   });
 
-  // This is the only response that carries the offset, so the users table borrows it from here.
   const offset = state.data?.reportingOffsetMinutes;
   useEffect(() => {
     if (offset !== undefined) rememberReportingOffset(offset);
   }, [offset]);
 
   const picker = range ?? (state.data ? seedRange(state.data) : null);
-  const firstName = user?.fullName.trim().split(/\s+/)[0] ?? "";
+  const firstName = user?.fullName.trim().split(/\s+/)[0] ?? "NoteFusion";
+
+  function setPresetDays(days: number) {
+    const to = new Date();
+    const from = new Date();
+    from.setDate(to.getDate() - (days - 1));
+    setRange({
+      from: from.toISOString().slice(0, 10),
+      to: to.toISOString().slice(0, 10),
+    });
+  }
+
+  function isPreset(days: number): boolean {
+    if (!picker) return false;
+    const diffDays =
+      Math.round(
+        (new Date(picker.to).getTime() - new Date(picker.from).getTime()) /
+          (1000 * 60 * 60 * 24),
+      ) + 1;
+    return diffDays === days;
+  }
 
   return (
-    <div className="animate-fade-in space-y-5">
-      <PageHeader
-        title={greeting(firstName)}
-        subtitle="Signups, transcriptions and account health across the platform"
-        breadcrumb={["Dashboard", "Overview"]}
-        actions={
-          state.data &&
-          picker && (
-            <>
-              {/* The window itself is in the date inputs; this names the zone its days were
-                  bucketed in, which is the server's and not the browser's. */}
-              <span className="hidden text-[11px] text-faint md:block">
-                Days bucketed in {formatOffset(state.data.reportingOffsetMinutes)}
-              </span>
-              <RangePicker
-                value={picker}
-                offsetMinutes={state.data.reportingOffsetMinutes}
-                onChange={setRange}
-              />
-            </>
-          )
-        }
-      />
+    <div className="animate-fade-in space-y-6">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
+            {greeting(firstName)} 👋
+          </h1>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Here&apos;s what&apos;s happening with your platform today.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-xs text-slate-400">
+            Days bucketed in {formatOffset(state.data?.reportingOffsetMinutes ?? 60)}
+          </span>
+
+          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900">
+            <button
+              onClick={() => setPresetDays(7)}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
+                isPreset(7)
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              7d
+            </button>
+            <button
+              onClick={() => setPresetDays(30)}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
+                isPreset(30)
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              30d
+            </button>
+            <button
+              onClick={() => setPresetDays(90)}
+              className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
+                isPreset(90)
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+              }`}
+            >
+              90d
+            </button>
+          </div>
+
+          <button
+            onClick={() => setShowRangePicker((p) => !p)}
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            <CalendarDays size={15} />
+            <span>
+              {picker
+                ? `${formatDayShort(picker.from)} - ${formatDayShort(picker.to)}`
+                : "Select dates"}
+            </span>
+            <ChevronDown size={14} />
+          </button>
+        </div>
+      </div>
+
+      {showRangePicker && state.data && picker && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md dark:border-slate-800 dark:bg-slate-900">
+          <RangePicker
+            value={picker}
+            offsetMinutes={state.data.reportingOffsetMinutes}
+            onChange={(next) => {
+              setRange(next);
+              setShowRangePicker(false);
+            }}
+          />
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 text-xs text-slate-400">
+        <span>Dashboard</span>
+        <span>/</span>
+        <span className="font-medium text-slate-600 dark:text-slate-300">Overview</span>
+      </div>
 
       <StateView state={state} loadingLabel="Loading analytics">
         {(data) => {
+          const stats: StatItem[] = [
+            {
+              title: "Total users",
+              value: formatCount(data.users.totalUsers),
+              change: `+${formatCount(data.users.newUsers)} vs none`,
+              icon: UserRound,
+              iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+              hint: "Every account, all time",
+            },
+            {
+              title: "New signups",
+              value: formatCount(data.users.newUsers),
+              change:
+                changeAgainst(data.users.newUsers, data.users.newUsersPrevious)?.label ||
+                `+${formatCount(data.users.newUsers)} vs none`,
+              icon: UserRoundPlus,
+              iconStyle: "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400",
+              hint: "Registered inside the window",
+            },
+            {
+              title: "Active users",
+              value: formatCount(data.users.activeUsers),
+              change:
+                changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious)?.label ||
+                `+${formatCount(data.users.activeUsers)} vs none`,
+              icon: Activity,
+              iconStyle: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
+              hint: "Signed in within the last 30 days",
+            },
+            {
+              title: "Google-linked",
+              value: formatCount(data.users.googleVerifiedUsers),
+              description: "Accounts with Google identity",
+              icon: ShieldCheck,
+              iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+              hint: "Signed in through Google",
+            },
+            {
+              title: "Transcriptions saved",
+              value: formatCount(data.transcriptions.totalSaved),
+              change:
+                changeAgainst(
+                  data.transcriptions.totalSaved,
+                  data.transcriptions.totalSavedPrevious,
+                )?.label || `+${formatCount(data.transcriptions.totalSaved)} vs none`,
+              icon: Music2,
+              iconStyle: "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400",
+              hint: "Saved inside the window",
+            },
+            {
+              title: "Success rate",
+              value: formatPercent(data.transcriptions.successRate),
+              description: `${formatCount(data.transcriptions.succeededCount)} done, ${formatCount(
+                data.transcriptions.failedCount,
+              )} failed`,
+              icon: CircleCheck,
+              iconStyle: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
+              hint: "Succeeded as a share of ended jobs",
+            },
+            {
+              title: "Average confidence",
+              value: formatPercent(data.transcriptions.averageConfidence),
+              icon: Gauge,
+              iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+              hint: "Mean confidence across completed jobs",
+            },
+            {
+              title: "In flight",
+              value: formatCount(data.transcriptions.inFlightCount),
+              description: "Right now",
+              icon: Hourglass,
+              iconStyle: "bg-orange-50 text-orange-600 dark:bg-orange-950/60 dark:text-orange-400",
+              hint: "Pending or processing right now",
+            },
+          ];
+
           const ended = data.transcriptions.succeededCount + data.transcriptions.failedCount;
           const outcomes: DonutSlice[] = [
             {
@@ -207,315 +687,121 @@ export function OverviewView() {
             },
             { label: "Failed", value: data.transcriptions.failedCount, color: chart.danger },
           ];
-          // Ring colours for the signup-method slices, in the order the server lists them.
+
           const methods: DonutSlice[] = data.signupMethods.map((method, i) => ({
             label: method.label,
             value: method.count,
             color: chart.categorical[i % chart.categorical.length] ?? chart.faint,
           }));
           const methodTotal = data.signupMethods.reduce((sum, row) => sum + row.count, 0);
-          /*
-           * Null at zero, so the tile draws no meter. An always-empty track with "0%" beside it
-           * repeats the 0 already printed above it, and on the two tiles that are normally zero —
-           * locked out, deactivated — that was the whole right rail's worth of visual noise. The
-           * meter appears the moment the count is real and the share means something.
-           */
-          const share = (count: number) =>
-            count === 0 || data.users.totalUsers === 0 ? null : count / data.users.totalUsers;
 
           return (
-            <div className="space-y-5">
-              {/* People */}
-              <StatStrip>
-                <StatTile
-                  label="Total users"
-                  value={formatCount(data.users.totalUsers)}
-                  hint="Every account, all time"
-                  icon={Users2}
-                  tone="indigo"
-                />
-                <StatTile
-                  label="New signups"
-                  value={formatCount(data.users.newUsers)}
-                  hint="Registered inside the window"
-                  change={changeAgainst(data.users.newUsers, data.users.newUsersPrevious)}
-                  icon={UserPlus}
-                  tone="violet"
-                />
-                <StatTile
-                  label="Active users"
-                  value={formatCount(data.users.activeUsers)}
-                  hint="Signed in within the last 30 days"
-                  change={changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious)}
-                  icon={Activity}
-                  tone="emerald"
-                />
-                {/* Labelled for what it measures. It is not an email-verification count, and
-                    calling it "Verified" would overstate what the schema knows. */}
-                <StatTile
-                  label="Google-linked"
-                  value={formatCount(data.users.googleVerifiedUsers)}
-                  hint="Signed in through Google, so the address is Google-verified"
-                  sub="Accounts with a Google identity"
-                  icon={ShieldCheck}
-                  tone="cyan"
-                />
-              </StatStrip>
-
-              {/* Transcription */}
-              <StatStrip>
-                <StatTile
-                  label="Transcriptions saved"
-                  value={formatCount(data.transcriptions.totalSaved)}
-                  hint="Saved inside the window"
-                  change={changeAgainst(
-                    data.transcriptions.totalSaved,
-                    data.transcriptions.totalSavedPrevious,
-                  )}
-                  icon={Music4}
-                  tone="violet"
-                />
-                <StatTile
-                  label="Success rate"
-                  value={formatPercent(data.transcriptions.successRate)}
-                  hint="Succeeded as a share of everything that reached a final state"
-                  sub={
-                    data.transcriptions.successRate === null
-                      ? "Nothing reached a final state"
-                      : `${formatCount(data.transcriptions.succeededCount)} done, ${formatCount(
-                          data.transcriptions.failedCount,
-                        )} failed`
-                  }
-                  unknown={data.transcriptions.successRate === null}
-                  icon={CircleCheck}
-                  tone="emerald"
-                />
-                <StatTile
-                  label="Average confidence"
-                  value={formatPercent(data.transcriptions.averageConfidence)}
-                  hint="Mean confidence across completed transcriptions"
-                  unknown={data.transcriptions.averageConfidence === null}
-                  icon={Gauge}
-                  tone="cyan"
-                />
-                <StatTile
-                  label="In flight"
-                  value={formatCount(data.transcriptions.inFlightCount)}
-                  hint="Pending or processing right now, not a windowed count"
-                  sub="Right now"
-                  icon={Hourglass}
-                  tone="orange"
-                />
-              </StatStrip>
-
-              {/* Series, each beside the categorical list that reads with it */}
-              <div className="grid gap-5 xl:grid-cols-3">
-                <DailyChart
-                  title="Signups"
-                  info="Zero-filled, so a point at zero means no signups that day."
-                  data={data.signupsPerDay}
-                  unit="signups"
-                  color={chart.series}
-                  className="xl:col-span-2"
-                />
-                <Card title="Most transcribed keys" info="All saved transcriptions, all time">
-                  {data.topKeys.length === 0 ? (
-                    <EmptyView message="No transcriptions saved yet" />
-                  ) : (
-                    <BreakdownList data={data.topKeys} />
-                  )}
-                </Card>
+            <div className="space-y-6">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                {stats.map((stat) => (
+                  <StatCard key={stat.title} stat={stat} />
+                ))}
               </div>
 
-              <div className="grid gap-5 xl:grid-cols-3">
-                <DailyChart
-                  title="Transcriptions"
-                  info="Counted on the day the transcription was saved."
-                  data={data.transcriptionsPerDay}
-                  unit="transcriptions"
-                  color={chart.sky}
-                  className="xl:col-span-2"
-                />
-                <Card
-                  title="Push platforms"
-                  info="Registered Expo push tokens by platform, all time. A device appears here once it signs in from a build that can receive push."
-                >
-                  {data.devicePlatforms.length === 0 ? (
-                    <EmptyView
-                      message="No devices registered"
-                      hint="Nothing has registered a push token yet. Expo Go and simulators cannot receive remote push, so a token only appears once a real dev or production build signs in."
+              <div className="grid gap-6 xl:grid-cols-[1.7fr_1fr]">
+                <SignupChart data={data.signupsPerDay} />
+                <MostTranscribedKeys keys={data.topKeys} />
+              </div>
+
+              <div className="xl:max-w-[calc(100%-33%)]">
+                <RecentActivityPanel items={data.recentActivity} />
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-6">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                  Platform telemetry &amp; cohorts
+                </h3>
+
+                <div className="grid gap-6 lg:grid-cols-2">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+                    <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      Transcription outcomes
+                    </h4>
+                    <DonutCard
+                      slices={outcomes}
+                      centerLabel="Ended jobs"
+                      centerValue={formatCount(ended)}
+                      meters
+                      emptyMessage="Nothing reached a final state in this window"
                     />
-                  ) : (
-                    <BreakdownList data={data.devicePlatforms} />
-                  )}
-                </Card>
-              </div>
+                  </div>
 
-              {/* Compositions */}
-              <div className="grid gap-5 lg:grid-cols-2">
-                <Card
-                  title="Transcription outcomes"
-                  info="Inside the window. In-flight jobs are absent because they have no outcome yet."
-                >
-                  <DonutCard
-                    slices={outcomes}
-                    centerLabel="Reached an end state"
-                    centerValue={formatCount(ended)}
-                    meters
-                    emptyMessage="Nothing reached a final state in this window"
-                  />
-                </Card>
-                <Card
-                  title="Signup method"
-                  info={`All accounts, all time. "Both" linked Google to a password account.`}
-                >
-                  <DonutCard
-                    slices={methods}
-                    centerLabel="All accounts"
-                    centerValue={formatCount(methodTotal)}
-                    meters
-                    emptyMessage="No accounts yet"
-                  />
-                </Card>
-              </div>
-
-              {/* Activity feed, with the account-health tiles as its right rail. The feed is
-                  real recorded events; storage is the exact MusicXML footprint, since audio
-                  is deleted after each job. */}
-              <div className="grid gap-5 lg:grid-cols-3">
-                <Card
-                  title="Recent activity"
-                  info="Newest signups, saved transcriptions, and sign-ins across the platform"
-                  className="lg:col-span-2"
-                >
-                  <RecentActivity items={data.recentActivity} />
-                </Card>
-                <div className="space-y-4">
-                  <StatCard
-                    label="Password-only accounts"
-                    value={formatCount(data.users.passwordOnlyUsers)}
-                    sub="No Google identity linked"
-                    share={share(data.users.passwordOnlyUsers)}
-                  />
-                  {/* Tone follows the reading, not the label: a red or orange spine on a count of
-                      zero reads as an alarm for something that is in fact the healthy state. It
-                      colours up when there is actually somebody locked out or deactivated. */}
-                  <StatCard
-                    label="Locked out"
-                    value={formatCount(data.users.lockedOutUsers)}
-                    sub="Lockout still active from failed sign-ins"
-                    tone={data.users.lockedOutUsers > 0 ? "warning" : "neutral"}
-                    share={share(data.users.lockedOutUsers)}
-                  />
-                  <StatCard
-                    label="Deactivated"
-                    value={formatCount(data.users.deactivatedUsers)}
-                    sub="Accounts marked inactive"
-                    tone={data.users.deactivatedUsers > 0 ? "danger" : "neutral"}
-                    share={share(data.users.deactivatedUsers)}
-                  />
-                  <StatCard
-                    label="Storage used"
-                    value={formatBytes(data.transcriptions.storedBytes)}
-                    sub="MusicXML across all transcriptions"
-                    hint="Audio is deleted after each job, so this is the whole stored footprint."
-                    tone="neutral"
-                  />
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+                    <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                      Signup methods
+                    </h4>
+                    <DonutCard
+                      slices={methods}
+                      centerLabel="All accounts"
+                      centerValue={formatCount(methodTotal)}
+                      meters
+                      emptyMessage="No accounts yet"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Retention — deliberately not called D1/D7/D30. See the note below. */}
-              <Card
-                title="Weekly cohorts"
-                info="Share of each signup week that has ever signed in on a later day"
-                bleed
-              >
-                {data.retention.length === 0 ? (
-                  <div className="px-5 pb-5">
+                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
+                  <h4 className="mb-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
+                    Weekly cohorts
+                  </h4>
+                  <p className="mb-4 text-xs text-slate-400">
+                    Share of each signup week that has ever signed in on a later day
+                  </p>
+                  {data.retention.length === 0 ? (
                     <EmptyView message="No signups in the last twelve weeks" />
-                  </div>
-                ) : (
-                  <div className="border-t border-border">
-                    <Table>
-                      <TableHeader>
-                        <TableRow className="hover:bg-transparent">
-                          <TableHead className={TH}>Cohort</TableHead>
-                          <TableHead className={TH}>Signups</TableHead>
-                          <TableHead className={TH}>Ever returned</TableHead>
-                          <TableHead className={TH}>Rate</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody className={TBODY}>
-                        {data.retention.map((cohort) => (
-                          <TableRow key={cohort.cohortStart}>
-                            <TableCell className={`${TD} font-medium text-foreground`}>
-                              {formatWeekOf(cohort.cohortStart)}
-                            </TableCell>
-                            <TableCell className={`${TD} tabular-nums`}>
-                              {formatCount(cohort.cohortSize)}
-                            </TableCell>
-                            <TableCell className={`${TD} tabular-nums`}>
-                              {formatCount(cohort.returnedCount)}
-                            </TableCell>
-                            <TableCell className={`${TD} w-48`}>
-                              <div className="flex items-center gap-2">
-                                <div className="h-1.5 w-24 overflow-hidden rounded-pill bg-muted">
-                                  <div
-                                    className="h-full rounded-pill bg-brand"
-                                    style={{
-                                      width: `${(cohort.retentionRate ?? 0) * 100}%`,
-                                    }}
-                                  />
-                                </div>
-                                <span
-                                  className={`text-xs font-semibold tabular-nums ${
-                                    cohort.retentionRate === null
-                                      ? "text-faint"
-                                      : "text-foreground"
-                                  }`}
-                                >
-                                  {formatPercent(cohort.retentionRate, 0)}
-                                </span>
-                              </div>
-                            </TableCell>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow className="hover:bg-transparent">
+                            <TableHead className={TH}>Cohort</TableHead>
+                            <TableHead className={TH}>Signups</TableHead>
+                            <TableHead className={TH}>Ever returned</TableHead>
+                            <TableHead className={TH}>Rate</TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                )}
-              </Card>
+                        </TableHeader>
+                        <TableBody className={TBODY}>
+                          {data.retention.map((cohort) => (
+                            <TableRow key={cohort.cohortStart}>
+                              <TableCell className={TD}>{formatWeekOf(cohort.cohortStart)}</TableCell>
+                              <TableCell className={TD}>{formatCount(cohort.cohortSize)}</TableCell>
+                              <TableCell className={TD}>{formatCount(cohort.returnedCount)}</TableCell>
+                              <TableCell className={TD}>{formatPercent(cohort.retentionRate)}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </div>
 
-              {/*
-                What the dashboard does not claim to know. This panel exists so that an absent
-                metric reads as absent rather than as a zero, and so nobody plans against a
-                number this system cannot currently produce. It is a grid of tiles rather than a
-                paragraph list because each item is a different kind of "missing" — see UNMEASURED.
-              */}
-              <Card
-                title="Not measured yet"
-                hint="Why these read as missing rather than zero — and what each is waiting on"
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   {UNMEASURED.map(({ icon: Icon, metric, waiting, tone, body }) => (
                     <div
                       key={metric}
-                      className="flex flex-col gap-2.5 rounded-sm border border-border-light bg-muted p-4"
+                      className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900/80"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-card text-muted-foreground shadow-hairline">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                           <Icon size={16} aria-hidden="true" />
                         </span>
-                        <span className="flex-1 text-[13px] font-semibold text-foreground">
+                        <span className="flex-1 text-xs font-semibold text-slate-800 dark:text-slate-200">
                           {metric}
                         </span>
                         <Badge tone={tone}>{waiting}</Badge>
                       </div>
-                      <p className="text-[12.5px] leading-relaxed text-muted-foreground">{body}</p>
+                      <p className="mt-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                        {body}
+                      </p>
                     </div>
                   ))}
                 </div>
-              </Card>
+              </div>
             </div>
           );
         }}

@@ -50,6 +50,8 @@ class ResultDto(ApiModel):
     # twice the spurious accidentals. Defaults True so an older worker cannot make a
     # good transcription look degraded.
     pitch_refined: bool = True
+    # ``direction`` preserves the historical rising/sharpened, falling/flattened rule.
+    chromatic_spelling: str = "direction"
 
 
 class JobResponse(ApiModel):

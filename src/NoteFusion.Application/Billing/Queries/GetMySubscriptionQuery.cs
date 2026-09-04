@@ -63,12 +63,12 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             return new SubscriptionDto(
                 IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null,
                 TrialGenerationsRemaining: remaining, TrialGenerationsTotal: total,
-                IsLifetime: false);
+                IsLifetime: false, IsGift: false);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
         return new SubscriptionDto(
             sub.IsActiveAt(_clock.UtcNow), plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
-            remaining, total, sub.IsLifetime);
+            remaining, total, sub.IsLifetime, sub.IsGift);
     }
 }

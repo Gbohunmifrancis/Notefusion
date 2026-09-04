@@ -9,8 +9,9 @@ namespace NoteFusion.Application.Common.Interfaces;
 public interface IDeviceTokenService
 {
     /// <summary>Registers (or refreshes) a device push token for the current user.</summary>
+    /// <param name="appBuild">The build this device is running; see <c>DeviceToken.AppBuild</c>.</param>
     Task<Result> RegisterAsync(
-        Guid userId, string token, string platform, CancellationToken cancellationToken = default);
+        Guid userId, string token, string platform, int appBuild, CancellationToken cancellationToken = default);
 
     /// <summary>All active device tokens for the given users (used by the push sender).</summary>
     Task<IReadOnlyList<string>> ResolveTokensAsync(

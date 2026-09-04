@@ -85,4 +85,16 @@ public interface IEmailSender
     /// leaves them able to ask for another code, whereas a failed registration leaves them nothing.
     /// </remarks>
     Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sends a custom branded message drafted by an administrator to the specified recipient.
+    /// </summary>
+    Task SendCustomEmailAsync(
+        EmailRecipient to,
+        string subject,
+        string heading,
+        string bodyHtml,
+        string? ctaText = null,
+        string? ctaUrl = null,
+        CancellationToken ct = default);
 }

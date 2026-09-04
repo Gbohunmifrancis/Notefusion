@@ -352,8 +352,14 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("AppBuild")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("NotifiedBuild")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Platform")
                         .IsRequired()
@@ -372,6 +378,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AppBuild", "NotifiedBuild");
 
                     b.HasIndex("UserId", "Token")
                         .IsUnique();

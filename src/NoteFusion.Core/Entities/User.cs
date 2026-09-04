@@ -439,16 +439,20 @@ public class User : BaseEntity
     public void AddRefreshToken(RefreshToken token) => _refreshTokens.Add(token);
 
     /// <summary>Registers or refreshes a device push token (expo push token, PRD §push).</summary>
-    public void RegisterDeviceToken(string tokenValue, string platform, DateTime utcNow)
+    /// <param name="appBuild">
+    /// The build this device is running. Re-registration is how the server learns a device has
+    /// updated, so this is recorded on the refresh path too, not only on first registration.
+    /// </param>
+    public void RegisterDeviceToken(string tokenValue, string platform, int appBuild, DateTime utcNow)
     {
         var existing = _deviceTokens.FirstOrDefault(t => t.Token == tokenValue);
         if (existing is not null)
         {
-            existing.Touch(utcNow);
+            existing.ReportBuild(appBuild, utcNow);
             return;
         }
 
-        _deviceTokens.Add(DeviceToken.Create(Id, tokenValue, platform, utcNow));
+        _deviceTokens.Add(DeviceToken.Create(Id, tokenValue, platform, appBuild, utcNow));
     }
 
     /// <summary>

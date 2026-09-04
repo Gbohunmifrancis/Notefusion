@@ -61,7 +61,9 @@ internal sealed record JobResultResponse(
     /// showing with a caveat rather than showing silently.  Defaults true so a worker
     /// predating the field cannot make a good transcription look degraded.
     /// </summary>
-    bool PitchRefined = true);
+    bool PitchRefined = true,
+    /// <summary>Chromatic solfa convention used by the worker for this result.</summary>
+    string ChromaticSpelling = "direction");
 
 internal sealed record WireNoteEvent(
     int PitchMidi,

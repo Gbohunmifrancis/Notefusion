@@ -57,6 +57,12 @@ interface Props {
    * press-in is the moment that reads as connected to the finger, not press.
    */
   onPressIn?: () => void;
+  /**
+   * The matching release. Paired with `onPressIn` for a control whose press has a
+   * *duration* rather than a moment — the piano's keys, where how long a key is
+   * held is the note's length.
+   */
+  onPressOut?: () => void;
   disabled?: boolean;
   /**
    * How far to press in. Defaults to `motion.scale.default` (0.97); use
@@ -90,6 +96,7 @@ export function Touchable({
   onPress,
   onLongPress,
   onPressIn,
+  onPressOut,
   disabled = false,
   scaleTo = motion.scale.default,
   haptic = "light",
@@ -117,6 +124,9 @@ export function Touchable({
 
   const handlePressOut = () => {
     scale.value = withSpring(1, motion.press);
+    // Runs even when disabled turned true mid-press: a key that went away while
+    // held still has to be released, or it sustains forever.
+    onPressOut?.();
   };
 
   return (

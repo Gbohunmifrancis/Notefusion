@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
+import { getDeviceId } from '../lib/deviceId';
 import { tokenStore } from '../lib/tokenStore';
 import type { ApiError, TokenPairResponse } from './types';
 
@@ -51,6 +52,12 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   if (config.data instanceof FormData) {
     config.headers.delete('Content-Type');
   }
+  // On every request, including the auth ones: the server reads it on submit to share the free
+  // trial across accounts on one handset, and on the subscription query so the count the paywall
+  // shows matches the count it enforces. Memoised, so this is one native read per launch.
+  const deviceId = await getDeviceId();
+  if (deviceId) config.headers.set('X-Device-Id', deviceId);
+
   if (!AUTH_FREE.some((p) => config.url?.startsWith(p))) {
     const token = await tokenStore.getAccess();
     if (token) config.headers.set('Authorization', `Bearer ${token}`);

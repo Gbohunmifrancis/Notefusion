@@ -4,6 +4,7 @@ import {
   AppState,
   Easing,
   FlatList,
+  Image,
   StyleSheet,
   Text,
   View,
@@ -18,6 +19,7 @@ import { Avatar } from '../components/Avatar';
 import { AppDrawer } from '../components/AppDrawer';
 import { Card } from '../components/Card';
 import { Touchable } from '../components/Touchable';
+import { TranscriptionRowSkeleton } from '../components/Skeleton';
 import { libraryApi, meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
 import { deriveSolfa } from '../lib/solfa';
@@ -54,6 +56,7 @@ export function HomeScreen({ navigation }: Props) {
   const { user } = useAuth();
   const { isPro } = useSubscription();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
+  const [loadingRecent, setLoadingRecent] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
@@ -76,6 +79,9 @@ export function HomeScreen({ navigation }: Props) {
   const breathe = useRef(new Animated.Value(0)).current;
   /** Fires once per press-in: one ring out of the circle, then gone. */
   const ring = useRef(new Animated.Value(0)).current;
+  /** Entrance: fades + slides the content in once per focus, so navigating away
+   *  and back replays the transition rather than keeping a stale snapshot. */
+  const mountFade = useRef(new Animated.Value(0)).current;
 
   const haloOpacity = breathe.interpolate({
     inputRange: [0, 1],
@@ -93,12 +99,30 @@ export function HomeScreen({ navigation }: Props) {
     inputRange: [0, 1],
     outputRange: [0.55, 0],
   });
+  const mountOpacity = mountFade.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+  const mountTranslate = mountFade.interpolate({
+    inputRange: [0, 1],
+    outputRange: [14, 0],
+  });
 
   // Gated on focus, not mount: Home stays mounted for the whole session, so an
   // ungated loop would keep waking the native driver behind Library and Settings
   // for as long as the app is open.
   useFocusEffect(
     useCallback(() => {
+      // Reset and replay entrance animation on every focus.
+      mountFade.setValue(0);
+      const entrance = Animated.timing(mountFade, {
+        toValue: 1,
+        duration: 340,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      });
+      entrance.start();
+
       const pulse = Animated.loop(
         Animated.sequence([
           Animated.timing(breathe, {
@@ -117,10 +141,11 @@ export function HomeScreen({ navigation }: Props) {
       );
       pulse.start();
       return () => {
+        entrance.stop();
         pulse.stop();
         breathe.setValue(0);
       };
-    }, [breathe]),
+    }, [breathe, mountFade]),
   );
 
   const fireRing = useCallback(() => {
@@ -146,13 +171,15 @@ export function HomeScreen({ navigation }: Props) {
   }, []);
 
   const reload = useCallback(() => {
+    setLoadingRecent(true);
     libraryApi
       .list()
       .then((all) => {
         setRecent(all.slice(0, 3));
         setLoadError(null);
       })
-      .catch((e) => setLoadError(toApiError(e).message));
+      .catch((e) => setLoadError(toApiError(e).message))
+      .finally(() => setLoadingRecent(false));
   }, []);
 
   useFocusEffect(
@@ -167,6 +194,7 @@ export function HomeScreen({ navigation }: Props) {
           if (active) setPictureUrl(p.profilePictureUrl);
         })
         .catch(() => undefined);
+      setLoadingRecent(true);
       libraryApi
         .list()
         .then((all) => {
@@ -176,6 +204,9 @@ export function HomeScreen({ navigation }: Props) {
         })
         .catch((e) => {
           if (active) setLoadError(toApiError(e).message);
+        })
+        .finally(() => {
+          if (active) setLoadingRecent(false);
         });
       return () => {
         active = false;
@@ -281,95 +312,146 @@ export function HomeScreen({ navigation }: Props) {
               </View>
             </View>
 
-            {/* ── 2. Greeting Header ────────────────────────────────────────── */}
-            <View style={styles.greetingRow}>
-              <Text style={styles.greetingTitle} numberOfLines={1}>
-                {greeting}, {firstName}
-              </Text>
-              {/* Same soft-gold chip as the Profile plan badge rather than a second
-                  gold treatment invented here. */}
-              {isPro && (
-                <View style={styles.proChip}>
-                  <Ionicons name="star" size={9} color={colors.premiumDeep} />
-                  <Text style={styles.proChipText}>PRO</Text>
+            {/* ── 2. Greeting Header + Stage + Recent: animated entrance ─── */}
+            <Animated.View
+              style={{
+                opacity: mountOpacity,
+                transform: [{ translateY: mountTranslate }],
+              }}
+            >
+              {/* ── 2. Greeting Header ──────────────────────────────────── */}
+              <View style={styles.greetingRow}>
+                <Text style={styles.greetingTitle} numberOfLines={1}>
+                  {greeting}, {firstName}
+                </Text>
+                {/* Same soft-gold chip as the Profile plan badge rather than a second
+                    gold treatment invented here. */}
+                {isPro && (
+                  <View style={styles.proChip}>
+                    <Ionicons name="star" size={9} color={colors.premiumDeep} />
+                    <Text style={styles.proChipText}>PRO</Text>
+                  </View>
+                )}
+              </View>
+              <Text style={styles.greetingSub}>What will you transcribe today?</Text>
+
+              {/* ── 3. Centred Mic Recording Stage ──────────────────────── */}
+              <View style={styles.stageCard}>
+                <View style={styles.micStage}>
+                  {/* Faint brand logo watermark. Sits behind everything — purely
+                      decorative, so it is non-interactive and very low opacity.
+                      pointerEvents="none" is redundant on a plain Image but explicit
+                      for maintainability. */}
+                  <Image
+                    source={require('../../assets/brand/mark.png')}
+                    style={styles.micLogo}
+                    resizeMode="contain"
+                  />
+
+                  {/* Breathing halo. Behind the circle and non-interactive, so the
+                      tap target stays the 88px circle rather than growing to the
+                      halo's diameter. */}
+                  <Animated.View
+                    pointerEvents="none"
+                    style={[
+                      styles.micHalo,
+                      { opacity: haloOpacity, transform: [{ scale: breatheScale }] },
+                    ]}
+                  />
+
+                  {/* Tap ring — one expanding outline per press, fired from
+                      press-in so it starts under the finger. */}
+                  <Animated.View
+                    pointerEvents="none"
+                    style={[
+                      styles.micRing,
+                      { opacity: ringOpacity, transform: [{ scale: ringScale }] },
+                    ]}
+                  />
+
+                  <Touchable
+                    onPress={() => navigation.navigate('Record')}
+                    onPressIn={fireRing}
+                    // The screen's hero control: heavier tick, deeper press. No ripple
+                    // and no radius — the circle casts a glow that a clip would cut.
+                    haptic="medium"
+                    scaleTo={motion.scale.large}
+                    ripple={false}
+                    accessibilityLabel="Start recording"
+                  >
+                    {/* Breathing scale lives here, not on the Touchable: that already
+                        owns a Reanimated scale, and two drivers writing one transform
+                        fight. Nested, they compose — parent press × child breath. */}
+                    <Animated.View style={{ transform: [{ scale: breatheScale }] }}>
+                      <LinearGradient
+                        colors={gradients.brand}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.micCircle}
+                      >
+                        <Ionicons name="mic" size={42} color="#FFFFFF" />
+                      </LinearGradient>
+                    </Animated.View>
+                  </Touchable>
                 </View>
-              )}
-            </View>
-            <Text style={styles.greetingSub}>What will you transcribe today?</Text>
-
-            {/* ── 3. Centred Mic Recording Stage ───────────────────────────── */}
-            <View style={styles.stageCard}>
-              <View style={styles.micStage}>
-                {/* Breathing halo. Behind the circle and non-interactive, so the
-                    tap target stays the 88px circle rather than growing to the
-                    halo's diameter. */}
-                <Animated.View
-                  pointerEvents="none"
-                  style={[
-                    styles.micHalo,
-                    { opacity: haloOpacity, transform: [{ scale: breatheScale }] },
-                  ]}
-                />
-
-                {/* Tap ring — one expanding outline per press, fired from
-                    press-in so it starts under the finger. */}
-                <Animated.View
-                  pointerEvents="none"
-                  style={[
-                    styles.micRing,
-                    { opacity: ringOpacity, transform: [{ scale: ringScale }] },
-                  ]}
-                />
 
                 <Touchable
                   onPress={() => navigation.navigate('Record')}
-                  onPressIn={fireRing}
-                  // The screen's hero control: heavier tick, deeper press. No ripple
-                  // and no radius — the circle casts a glow that a clip would cut.
-                  haptic="medium"
-                  scaleTo={motion.scale.large}
                   ripple={false}
                   accessibilityLabel="Start recording"
                 >
-                  {/* Breathing scale lives here, not on the Touchable: that already
-                      owns a Reanimated scale, and two drivers writing one transform
-                      fight. Nested, they compose — parent press × child breath. */}
-                  <Animated.View style={{ transform: [{ scale: breatheScale }] }}>
-                    <LinearGradient
-                      colors={gradients.brand}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.micCircle}
-                    >
-                      <Ionicons name="mic" size={42} color="#FFFFFF" />
-                    </LinearGradient>
-                  </Animated.View>
+                  <Text style={styles.tapText}>Tap to start recording</Text>
                 </Touchable>
+
+                <Touchable
+                  onPress={() => navigation.navigate('Record', { autoPickAudio: true })}
+                  ripple={false}
+                  accessibilityLabel="Import audio file"
+                >
+                  <Text style={styles.importSubLink}>or import audio file</Text>
+                </Touchable>
+
+                {/* ── Quick Action Row ──────────────────────────────────── */}
+                <View style={styles.quickActionRow}>
+                  <Touchable
+                    onPress={() => navigation.navigate('Record', { autoPickAudio: true })}
+                    style={styles.quickBtn}
+                    ripple="borderless"
+                    scaleTo={motion.scale.default}
+                    accessibilityLabel="Import audio file"
+                  >
+                    <Ionicons name="folder-open-outline" size={16} color={colors.text} />
+                    <Text style={styles.quickBtnLabel}>Import audio</Text>
+                  </Touchable>
+
+                  <Touchable
+                    onPress={() => rootNav.navigate('Piano', { mode: 'free' })}
+                    style={styles.quickBtn}
+                    ripple="borderless"
+                    scaleTo={motion.scale.default}
+                    accessibilityLabel="Play interactive piano"
+                  >
+                    <Ionicons name="musical-notes-outline" size={16} color={colors.text} />
+                    <Text style={styles.quickBtnLabel}>Play piano</Text>
+                  </Touchable>
+                </View>
               </View>
 
-              <Touchable
-                onPress={() => navigation.navigate('Record')}
-                ripple={false}
-                accessibilityLabel="Start recording"
-              >
-                <Text style={styles.tapText}>Tap to start recording</Text>
-                <Text style={styles.importSubLink}>or import audio file</Text>
-              </Touchable>
-            </View>
-
-            {/* ── 4. Recent Recordings Header ───────────────────────────────── */}
-            <View style={styles.recentSectionHeader}>
-              <Text style={styles.recentSectionTitle}>Recent</Text>
-              <Touchable
-                onPress={() => navigation.navigate('Library')}
-                ripple={false}
-                accessibilityLabel="See all transcriptions"
-              >
-                <Text style={styles.seeAllText}>See all</Text>
-              </Touchable>
-            </View>
+              {/* ── 4. Recent Recordings Header ─────────────────────────── */}
+              <View style={styles.recentSectionHeader}>
+                <Text style={styles.recentSectionTitle}>Recent</Text>
+                <Touchable
+                  onPress={() => navigation.navigate('Library')}
+                  ripple={false}
+                  accessibilityLabel="See all transcriptions"
+                >
+                  <Text style={styles.seeAllText}>See all</Text>
+                </Touchable>
+              </View>
+            </Animated.View>
           </View>
         }
+
         renderItem={({ item }) => (
           <Touchable
             onPress={() => openRecent(item)}
@@ -400,7 +482,13 @@ export function HomeScreen({ navigation }: Props) {
           </Touchable>
         )}
         ListEmptyComponent={
-          loadError ? (
+          loadingRecent ? (
+            <View style={styles.skeletonContainer}>
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+            </View>
+          ) : loadError ? (
             <Card style={styles.emptyCard}>
               <Ionicons name="cloud-offline-outline" size={30} color={colors.danger} />
               <Text style={styles.emptyText}>{loadError}</Text>
@@ -516,11 +604,25 @@ const makeStyles = (c: Palette, s: Shadows) =>
       marginBottom: spacing.xxl,
       ...s.card,
     },
-    /** Centres the halo, the tap ring and the circle on one point. */
+    /** Centres the halo, the tap ring and the circle on one point.
+     *  Fixed height matches the 148px halo diameter so the glow shadow stays
+     *  within the stage bounds and the "Tap to start recording" text below
+     *  is never occluded. */
     micStage: {
       alignItems: 'center',
       justifyContent: 'center',
+      height: 148,
+      width: 148,
       marginBottom: spacing.md,
+    },
+    /** Faint brand mark behind the mic button — purely decorative.
+     *  Opacity is low enough to be subliminal; the mic icon reads as the
+     *  primary element. */
+    micLogo: {
+      position: 'absolute',
+      width: 120,
+      height: 120,
+      opacity: 0.05,
     },
     /** Same filled-glow idiom as RecordScreen's ambient orb, scaled to the
      *  smaller circle: 30px of halo either side of an 88px button. */
@@ -657,5 +759,9 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 14,
       fontFamily: fonts.semibold,
       color: c.accent,
+    },
+    skeletonContainer: {
+      gap: spacing.sm,
+      paddingVertical: spacing.xs,
     },
   });

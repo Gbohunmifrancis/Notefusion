@@ -7,6 +7,7 @@ import type {
   AdminUserRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
+  AppVersionInfo,
   BillingInterval,
   CheckoutSession,
   LoginResponse,
@@ -118,31 +119,61 @@ export const meApi = {
 };
 
 export const devicesApi = {
-  register: (token: string, platform: "ios" | "android" | "web") =>
-    api.post("/api/devices", { token, platform }).then(() => undefined),
+  /**
+   * Registers this handset's push token, and tells the server which build it is running so
+   * the update notice only goes to someone genuinely behind. `appBuild` 0 means unknown,
+   * which the server reads as "behind" — the right guess for a client too old to report.
+   */
+  register: (token: string, platform: "ios" | "android" | "web", appBuild = 0) =>
+    api.post("/api/devices", { token, platform, appBuild }).then(() => undefined),
   unregister: (token: string) =>
     api.delete("/api/devices", { data: { token } }).then(() => undefined),
+};
+
+export const appApi = {
+  /**
+   * What the stores carry. Anonymous, so it answers before sign-in — the hard block has to
+   * work on the login screen too, which is where a user stuck on a broken build ends up.
+   */
+  version: () => api.get<AppVersionInfo>("/api/app/version").then((r) => r.data),
 };
 
 export interface SubmitOptions {
   mode: "melody" | "poly";
   key?: string;
   tempo?: number;
+  timeSignature?: string;
 }
 
 export const transcriptionsApi = {
   /** Upload a captured clip as multipart/form-data; returns the polling job. */
   submit: (fileUri: string, fileName: string, opts: SubmitOptions) => {
     const form = new FormData();
+    const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+    const mime =
+      ext === "mp3"
+        ? "audio/mpeg"
+        : ext === "wav"
+        ? "audio/wav"
+        : ext === "mid" || ext === "midi"
+        ? "audio/midi"
+        : ext === "xml" || ext === "musicxml"
+        ? "application/xml"
+        : ext === "mxl"
+        ? "application/vnd.recordare.musicxml"
+        : ext === "abc"
+        ? "text/plain"
+        : "audio/m4a";
     // React Native's FormData takes a {uri,name,type} blob descriptor.
     form.append("audio", {
       uri: fileUri,
       name: fileName,
-      type: "audio/m4a",
+      type: mime,
     } as unknown as Blob);
     form.append("mode", opts.mode);
     if (opts.key) form.append("key", opts.key);
     if (opts.tempo != null) form.append("tempo", String(opts.tempo));
+    if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
 
     // Do NOT set Content-Type manually here.
     // React Native's XHR layer auto-inserts the multipart boundary when the body is
@@ -199,6 +230,16 @@ export const libraryApi = {
   updateNotes: (id: string, notes: SavedTranscription["notes"]) =>
     api
       .put<SavedTranscription>(`/api/library/${id}/notes`, { notes })
+      .then((r) => r.data),
+
+  updateTempo: (id: string, tempo: number) =>
+    api
+      .put<SavedTranscription>(`/api/library/${id}/tempo`, { tempo })
+      .then((r) => r.data),
+
+  updateTimeSignature: (id: string, timeSignature: string) =>
+    api
+      .put<SavedTranscription>(`/api/library/${id}/time-signature`, { timeSignature })
       .then((r) => r.data),
 
   remove: (id: string) =>

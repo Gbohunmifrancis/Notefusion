@@ -51,6 +51,16 @@ public sealed class EmailSender : IEmailSender
     public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
         => TrySendAsync(_template.VerifyEmail(to, code), ct);
 
+    public Task SendCustomEmailAsync(
+        EmailRecipient to,
+        string subject,
+        string heading,
+        string bodyHtml,
+        string? ctaText = null,
+        string? ctaUrl = null,
+        CancellationToken ct = default)
+        => TrySendAsync(_template.Custom(to, subject, heading, bodyHtml, ctaText, ctaUrl), ct);
+
     private async Task TrySendAsync(EmailMessage message, CancellationToken ct)
     {
         try

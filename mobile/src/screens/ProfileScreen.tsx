@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Linking,
   Modal,
   ScrollView,
   StyleSheet,
@@ -7,6 +8,8 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Application from "expo-application";
+import * as WebBrowser from "expo-web-browser";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -14,6 +17,7 @@ import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
+import { ProfileHeaderSkeleton } from "../components/Skeleton";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
@@ -30,6 +34,7 @@ import {
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { MyProfile } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
+
 
 /**
  * ProfileScreen — matching Image 4 design sheet:
@@ -55,10 +60,12 @@ export function ProfileScreen() {
 
   // Edit modals
   const [accountModal, setAccountModal] = useState(false);
+  const [aboutModal, setAboutModal] = useState(false);
   const [name, setName] = useState(user?.fullName ?? "");
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [pwBusy, setPwBusy] = useState(false);
+
 
   useEffect(() => {
     meApi
@@ -198,7 +205,11 @@ export function ProfileScreen() {
         {/* Needed since Profile stopped being a tab: it is pushed from the side bar now,
             and with `headerShown: false` the swipe gesture would be the only way back. */}
         <Touchable
-          onPress={() => nav.goBack()}
+          onPress={() =>
+            nav.canGoBack()
+              ? nav.goBack()
+              : nav.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           // Borderless so the ripple radiates from the circle rather than boxing
@@ -214,28 +225,32 @@ export function ProfileScreen() {
       </View>
 
       {/* ── 2. Avatar & User Information ─────────────────────────────────── */}
-      <View style={styles.userHeader}>
-        <Avatar
-          uri={profile?.profilePictureUrl}
-          name={user?.fullName}
-          size={104}
-          premium={isPro}
-          editable
-          busy={avatarBusy}
-          onPress={onAvatarPress}
-          style={styles.avatar}
-        />
+      {!user ? (
+        <ProfileHeaderSkeleton />
+      ) : (
+        <View style={styles.userHeader}>
+          <Avatar
+            uri={profile?.profilePictureUrl}
+            name={user?.fullName}
+            size={104}
+            premium={isPro}
+            editable
+            busy={avatarBusy}
+            onPress={onAvatarPress}
+            style={styles.avatar}
+          />
 
-        <Text style={styles.userName}>{user?.fullName ?? "Your name"}</Text>
-        <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
+          <Text style={styles.userName}>{user?.fullName ?? "Your name"}</Text>
+          <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
 
-        {/* Plan Pill Badge — reflects billing state, not role. */}
-        <View style={[styles.planBadge, isPro && styles.planBadgePro]}>
-          <Text style={[styles.planBadgeText, isPro && styles.planBadgeTextPro]}>
-            {isPro ? "Pro Member ✨" : "Free Plan"}
-          </Text>
+          {/* Plan Pill Badge — reflects billing state, not role. */}
+          <View style={[styles.planBadge, isPro && styles.planBadgePro]}>
+            <Text style={[styles.planBadgeText, isPro && styles.planBadgeTextPro]}>
+              {isPro ? "Pro Member ✨" : "Free Plan"}
+            </Text>
+          </View>
         </View>
-      </View>
+      )}
 
       {/* ── 3. Settings List Options ─────────────────────────────────────── */}
       <View style={styles.menuCard}>
@@ -280,7 +295,7 @@ export function ProfileScreen() {
         <MenuItem
           icon="information-circle-outline"
           label="About Notefusion"
-          onPress={() => nav.navigate("Settings", { focus: "about" })}
+          onPress={() => setAboutModal(true)}
           isLast
         />
       </View>
@@ -360,6 +375,67 @@ export function ProfileScreen() {
                 disabled={!current || next.length < 8}
               />
             </ScrollView>
+          </View>
+        </View>
+      </Modal>
+      {/* ── About Modal ───────────────────────────────────────────────── */}
+      <Modal
+        visible={aboutModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setAboutModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>About Notefusion</Text>
+              <Touchable
+                onPress={() => setAboutModal(false)}
+                hitSlop={8}
+                ripple="borderless"
+                accessibilityLabel="Close"
+              >
+                <Ionicons name="close" size={22} color={colors.text} />
+              </Touchable>
+            </View>
+
+            <Text style={styles.aboutDescription}>
+              Notefusion turns what you hum, sing, or play into Tonic Solfa and
+              staff notation — instantly, on your phone.
+            </Text>
+
+            <View style={styles.aboutLinkRow}>
+              <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
+              <Touchable
+                onPress={() =>
+                  WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")
+                }
+                ripple={false}
+                accessibilityLabel="Privacy Policy"
+              >
+                <Text style={styles.aboutLink}>Privacy Policy</Text>
+              </Touchable>
+            </View>
+
+            <View style={styles.aboutLinkRow}>
+              <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
+              <Touchable
+                onPress={() =>
+                  WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")
+                }
+                ripple={false}
+                accessibilityLabel="Terms of Service"
+              >
+                <Text style={styles.aboutLink}>Terms of Service</Text>
+              </Touchable>
+            </View>
+
+            <View style={styles.aboutVersionRow}>
+              <Text style={styles.aboutVersionLabel}>Version</Text>
+              <Text style={styles.aboutVersionValue}>
+                {Application.nativeApplicationVersion ?? "—"}
+              </Text>
+            </View>
           </View>
         </View>
       </Modal>
@@ -560,4 +636,46 @@ const makeStyles = (c: Palette) =>
       marginBottom: spacing.sm,
       marginTop: spacing.md,
     },
+
+    // ── About modal ───────────────────────────────────────────────────────────
+    aboutDescription: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      lineHeight: 21,
+      marginBottom: spacing.xl,
+    },
+    aboutLinkRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+    },
+    aboutLink: {
+      fontSize: 15,
+      fontFamily: fonts.medium,
+      color: c.accent,
+    },
+    aboutVersionRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      paddingVertical: spacing.sm,
+      marginTop: spacing.xs,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+    },
+    aboutVersionLabel: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+    },
+    aboutVersionValue: {
+      fontSize: 14,
+      fontFamily: fonts.bold,
+      color: c.accent,
+    },
   });
+

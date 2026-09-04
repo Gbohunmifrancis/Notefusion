@@ -177,7 +177,11 @@ export function AdminUserScreen({ navigation, route }: Props) {
       <AdminHeader
         label="Account"
         title={user?.fullName ?? "Account"}
-        onBack={() => navigation.goBack()}
+        onBack={() =>
+          navigation.canGoBack()
+            ? navigation.goBack()
+            : navigation.navigate("AdminUsers")
+        }
         right={<RefreshButton onPress={() => void load()} busy={busy} />}
       />
 

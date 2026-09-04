@@ -42,6 +42,8 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
                 form.Add(new StringContent(options.Key), "key");
             if (options.Tempo is not null)
                 form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
+            if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                form.Add(new StringContent(options.TimeSignature), "time_signature");
 
             using var response = await http.PostAsync("v1/transcribe", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -60,6 +62,56 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
         catch (HttpRequestException ex)
         {
             return Error.Network("Api.Submit", $"Could not reach the transcription service: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<string>> SubmitScoreAsync(
+        Stream score,
+        string fileName,
+        TranscribeOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var form = new MultipartFormDataContent();
+            var scoreContent = new StreamContent(score);
+            var safeName = string.IsNullOrWhiteSpace(fileName) || !Path.HasExtension(fileName) ? "score.musicxml" : fileName;
+            var ext = Path.GetExtension(safeName).ToLowerInvariant();
+            var contentType = ext switch
+            {
+                ".mid" or ".midi" => "audio/midi",
+                ".xml" or ".musicxml" => "application/xml",
+                ".mxl" => "application/vnd.recordare.musicxml",
+                ".abc" => "text/plain",
+                _ => "application/octet-stream"
+            };
+            scoreContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+            form.Add(scoreContent, "score", safeName);
+
+            if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                form.Add(new StringContent(options.Key), "key");
+            if (options.Tempo is not null)
+                form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
+            if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                form.Add(new StringContent(options.TimeSignature), "time_signature");
+
+            using var response = await http.PostAsync("v1/transcribe/score", form, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return Error.Failure("Api.SubmitScore", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+            }
+
+            var payload = await response.Content.ReadFromJsonAsync(
+                ApiJsonContext.Default.SubmitResponse, cancellationToken);
+
+            return payload is null
+                ? Error.Failure("Api.SubmitScore", "Transcription service returned an empty response.")
+                : payload.JobId;
+        }
+        catch (HttpRequestException ex)
+        {
+            return Error.Network("Api.SubmitScore", $"Could not reach the transcription service: {ex.Message}");
         }
     }
 
@@ -140,7 +192,8 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
             wire.Result.SolfaLines,
             wire.Result.OverallConfidence,
             wire.Result.AudioPreviewBase64,
-            wire.Result.PitchRefined);
+            wire.Result.PitchRefined,
+            wire.Result.ChromaticSpelling);
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error);
     }

@@ -11,11 +11,13 @@ import {
   createBottomTabNavigator,
   type BottomTabBarProps,
 } from "@react-navigation/bottom-tabs";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { LinearGradient } from "expo-linear-gradient";
 import { HomeScreen } from "../screens/HomeScreen";
 import { RecordScreen } from "../screens/RecordScreen";
 import { LibraryScreen } from "../screens/LibraryScreen";
+import { ProfileScreen } from "../screens/ProfileScreen";
 import { Touchable } from "../components/Touchable";
 import {
   fonts,
@@ -25,32 +27,51 @@ import {
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { TabParams } from "../navigation/types";
+import type { RootStackParams, TabParams } from "../navigation/types";
 
 const Tab = createBottomTabNavigator<TabParams>();
 
-const TABS: {
+/**
+ * Five cells, not three — and five because the count must be odd.
+ *
+ * Every cell is `flex: 1` in a `space-around` row, so only an odd count puts the mic
+ * in the geometric middle. Profile came back off the side bar to make the count work
+ * and because it is a destination people look for in a tab bar. Piano is a *launcher*:
+ * it is the one landscape route in the app, so it cannot render inside this portrait
+ * shell. Its entry in `TABS` carries a `push` key, and `onPress` navigates the root
+ * stack rather than switching tabs; it has no `Tab.Screen` and `focused` is always
+ * false — it reads as an action, like Record.
+ *
+ * Order: Home · Library · Record(centre) · Piano · Profile.
+ */
+
+interface TabEntry {
   name: keyof TabParams;
   label: string;
   icon: keyof typeof Ionicons.glyphMap;
   iconActive: keyof typeof Ionicons.glyphMap;
   isCenter?: boolean;
-}[] = [
-  { name: "Home", label: "Home", icon: "home-outline", iconActive: "home" },
-  { name: "Record", label: "Record", icon: "mic", iconActive: "mic", isCenter: true },
-  { name: "Library", label: "Library", icon: "folder-outline", iconActive: "folder" },
+  /** When set, pressing this cell pushes a root-stack route instead of switching tabs. */
+  push?: keyof RootStackParams;
+  /**
+   * Drawn instead of `icon` when set. Ionicons has no piano, and its musical notes
+   * mean "music" in general — which is what every other thing in this app is too. A
+   * keyboard is the one glyph that says which screen this opens, so the launcher
+   * borrows it from Material rather than settling for a near miss.
+   */
+  mdiIcon?: keyof typeof MaterialCommunityIcons.glyphMap;
+}
+
+const TABS: TabEntry[] = [
+  { name: "Home",    label: "Home",    icon: "home-outline",          iconActive: "home" },
+  { name: "Library", label: "Library", icon: "folder-outline",        iconActive: "folder" },
+  { name: "Record",  label: "Record",  icon: "mic",                   iconActive: "mic",   isCenter: true },
+  // Piano is a push action — `name` is a placeholder (no Tab.Screen exists for it,
+  // so `focused` is always false) and `push` drives the actual navigation.
+  { name: "Home", label: "Piano", icon: "musical-notes-outline", iconActive: "musical-notes", push: "Piano", mdiIcon: "piano" },
+  { name: "Profile", label: "Profile", icon: "person-outline",        iconActive: "person" },
 ];
 
-/**
- * Tab bar matching Image 3 design sheet:
- * Automatically hides when software keyboard is open so bottom icons never shift up over inputs.
- *
- * Three items, with the mic in the middle. It used to be five: Profile and Subscription were
- * kept purely because dropping to four left the mic off-centre, and the mic is the one control
- * this layout is built around. Every cell is `flex: 1` in a `space-around` row, so what centres
- * the mic is an *odd* count — three does it as well as five, without two tabs nobody reached
- * for. Both of those destinations now live in the side bar (`components/AppDrawer.tsx`).
- */
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const colors = useColors();
@@ -61,37 +82,50 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   useEffect(() => {
     const showEvent = Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow";
     const hideEvent = Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide";
-
     const showSub = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
     const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
-
-    return () => {
-      showSub.remove();
-      hideSub.remove();
-    };
+    return () => { showSub.remove(); hideSub.remove(); };
   }, []);
 
-  // Hide bottom tab bar completely when keyboard is open
-  if (keyboardVisible) {
-    return null;
-  }
+  if (keyboardVisible) return null;
 
   return (
     <View
-      style={[
-        styles.wrap,
-        { paddingBottom: Math.max(insets.bottom, spacing.xs) },
-      ]}
+      style={[styles.wrap, { paddingBottom: Math.max(insets.bottom, spacing.xs) }]}
       pointerEvents="box-none"
     >
       <View style={styles.bar}>
         {TABS.map((tab, index) => {
-          let targetRouteName: keyof TabParams = tab.name;
-          const routeIndex = state.routes.findIndex((r) => r.name === targetRouteName);
+          // Piano launcher: always unfocused, pushes the root stack.
+          if (tab.push) {
+            return (
+              <Touchable
+                key={`push-${tab.label}`}
+                accessibilityLabel={tab.label}
+                accessibilityRole="button"
+                onPress={() =>
+                  navigation
+                    .getParent<NativeStackNavigationProp<RootStackParams>>()
+                    ?.navigate("Piano", { mode: "free" })
+                }
+                ripple="borderless"
+                style={styles.tabItem}
+              >
+                {tab.mdiIcon ? (
+                  <MaterialCommunityIcons name={tab.mdiIcon} size={24} color={colors.textMuted} />
+                ) : (
+                  <Ionicons name={tab.icon} size={22} color={colors.textMuted} />
+                )}
+                <Text style={styles.tabLabel}>{tab.label}</Text>
+              </Touchable>
+            );
+          }
+
+          const routeIndex = state.routes.findIndex((r) => r.name === tab.name);
           const focused = state.index === routeIndex;
 
           const onPress = () => {
-            const route = state.routes.find((r) => r.name === targetRouteName);
+            const route = state.routes.find((r) => r.name === tab.name);
             if (route) {
               const event = navigation.emit({
                 type: "tabPress",
@@ -99,7 +133,7 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 canPreventDefault: true,
               });
               if (!focused && !event.defaultPrevented) {
-                navigation.navigate(targetRouteName);
+                navigation.navigate(tab.name);
               }
             }
           };
@@ -109,13 +143,10 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               <Touchable
                 key={`center-${tab.label}`}
                 accessibilityLabel="Record melody"
+                accessibilityRole="button"
                 onPress={onPress}
-                // The deliberate control on this bar, so it gets the heavier tick
-                // and a deeper press — 0.97 barely reads at this diameter.
                 haptic="medium"
                 scaleTo={motion.scale.large}
-                // No ripple and no radius: the circle casts a coloured glow, and
-                // either one would clip the shadow or paint a rectangle across the cell.
                 ripple={false}
                 style={styles.centerBtnWrap}
               >
@@ -137,9 +168,8 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
               key={`${tab.label}-${index}`}
               accessibilityState={focused ? { selected: true } : {}}
               accessibilityLabel={tab.label}
+              accessibilityRole="button"
               onPress={onPress}
-              // Borderless is the platform idiom for a bare tab icon: the ripple
-              // radiates from the glyph instead of boxing the whole cell.
               ripple="borderless"
               style={styles.tabItem}
             >
@@ -163,15 +193,13 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
 export function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarHideOnKeyboard: true,
-      }}
+      screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}
       tabBar={(props) => <FloatingTabBar {...props} />}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Record" component={RecordScreen} />
+      <Tab.Screen name="Home"    component={HomeScreen} />
       <Tab.Screen name="Library" component={LibraryScreen} />
+      <Tab.Screen name="Record"  component={RecordScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
@@ -186,7 +214,6 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       backgroundColor: "transparent",
     },
-
     bar: {
       flexDirection: "row",
       alignItems: "flex-end",
@@ -203,35 +230,28 @@ const makeStyles = (c: Palette) =>
       shadowOpacity: 0.04,
       shadowRadius: 8,
     },
-
     tabItem: {
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
       paddingVertical: 2,
     },
-
     tabLabel: {
       fontSize: 11,
       fontFamily: fonts.medium,
       color: c.textMuted,
       marginTop: 3,
     },
-
     tabLabelActive: {
       fontFamily: fonts.bold,
       color: c.accent,
     },
-
     centerBtnWrap: {
       flex: 1,
       alignItems: "center",
       justifyContent: "center",
       marginTop: -20,
     },
-
-    /** Same gradient as Home's mic stage — it is the same action, and a flat fill
-     *  beside a gradient one made the two read as different buttons. */
     centerBtn: {
       width: 54,
       height: 54,
@@ -244,10 +264,10 @@ const makeStyles = (c: Palette) =>
       shadowRadius: 10,
       elevation: 8,
     },
-
     centerLabel: {
       marginTop: 4,
       fontFamily: fonts.bold,
       color: c.accent,
     },
   });
+

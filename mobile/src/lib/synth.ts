@@ -34,11 +34,22 @@ const ROLLOFF_MIN = 0.85;
 const ROLLOFF_MAX = 1.45;
 
 /**
- * The one number that decides "soft piano" rather than "bright piano": a gently
- * played note has little above ~5 kHz. Applied as a one-pole tilt rather than a
- * brick wall — a hard cut is what left the old treble with 5 partials.
+ * The number that decides "soft piano" rather than "bright piano": a gently
+ * played note has very little above ~2.5 kHz, and one pole at 5.2 kHz did not
+ * come close. Measured on a C4, partial 20 sat about 19 dB below the fundamental
+ * where a softly struck piano is 40-plus down — the pole was so far above the
+ * partials it was meant to tame that it barely touched the upper lobes of
+ * |sin(k·pi·x)|.
+ *
+ * Applied squared — two poles at this corner rather than one — because what
+ * needed to change was the steepness of the skirt, not the passband. Two poles
+ * here put partial 20 at -43 dB while moving k=1 by 0.06 dB, so the body of the
+ * spectrum is where it was and only the harsh top comes off. Two poles at
+ * 2.6 kHz were tried first and overshot to -52 dB, duller than a piano. Still a
+ * tilt and not a brick wall: a hard cut is what left the old treble with 5
+ * partials.
  */
-const BRIGHT_CEILING_HZ = 5200;
+const BRIGHT_CEILING_HZ = 3800;
 
 /** Generation ceiling, and the level below which a partial is inaudible anyway. */
 const MAX_PARTIALS = 48;
@@ -89,23 +100,45 @@ const TAIL_FACTOR = 3.2;
  * *zero* at 2·pi/3 on its way to -1 — so every partial periodically vanishes
  * outright. Measured, that reads as 49 dB of "beating" and it is a dropout, not a
  * shimmer. Real unisons never null, because the strings differ in amplitude and
- * phase. A depth of 0.6 is a 12 dB swing between 1.6 and 0.4.
+ * phase.
  *
- * The depth ramps in over the first few partials, which is both Weinreich's
+ * Depth is the swing itself, and 0.6 was still far too much of one: 1.6 down to
+ * 0.4 is a 12 dB swing on every partial from the fourth up, which the ear reads
+ * as an out-of-tune wobble rather than as warmth. 0.25 is 1.25 down to 0.75, a
+ * swing of 4.4 dB. Easy to under-read from a rendered clip — the partials each
+ * beat at their own k·detune rate, so a summed envelope averages the whole thing
+ * away and shows barely 1 dB. Measure per partial.
+ *
+ * The depth ramps in over the first several partials, which is both Weinreich's
  * measured result on coupled piano strings — a unison phase-locks at the
  * fundamental and decouples higher up, so the shimmer is a partial-band effect —
  * and what stops the energy-dominant fundamental from swinging the whole spectrum
  * up and down as it beats.
  */
 const DETUNE_CENTS = 2.0;
-const UNISON_DEPTH = 0.6;
-const UNISON_KNEE = 4;
+const UNISON_DEPTH = 0.25;
+const UNISON_KNEE = 8;
 
 /** Below this the strings are wound and single or paired — no useful beating. */
 const UNISON_MIN_MIDI = 52;
 
 const ATTACK_SEC = 0.005; // hammer strike
-const RELEASE_SEC = 0.08; // damper landing at note-off
+
+/**
+ * How long the damper takes to land *after* note-off. This is a ring-out past the
+ * notated end, not a fade inside it — the distinction is the whole of it. At 80 ms
+ * ending *at* the notated end, every note measured 40 to 43 dB down by the time
+ * the next onset arrived, so nothing carried across a note boundary and the melody
+ * read as a sequencer rather than as an instrument. A piano rings into the next
+ * note, and that overlap is most of what makes it sound like a piano.
+ *
+ * Ceiling on this: it doubles as the buffer's end padding, and the server's
+ * `test_tempo_sets_the_timescale` asserts a 240 BPM render is under 0.6x a 120 BPM
+ * one. On its 4-beat fixture a tempo-independent tail T gives (1 + T) < 0.6·(2 + T),
+ * so T < 0.5 s. 0.35 leaves 0.574 against that 0.6. Do not raise it to "ring more"
+ * without redoing the arithmetic — and it has to move on both sides at once.
+ */
+const RELEASE_SEC = 0.35;
 
 /** Every note is normalised to this, so level does not depend on the spectrum. */
 const PEAK_TARGET = 0.95;
@@ -167,9 +200,17 @@ function smoothRamp(i: number, n: number): number {
  * per sample per partial cost more than the multiplies that replace them. The
  * numpy mirror uses closed-form exp/sin instead, since vectorised numpy has no
  * per-sample call overhead to avoid; the two differ only in the last ULP.
+ *
+ * Renders `lengthSamples + tailSamples`: the ring-out belongs to the note, so the
+ * caller mixes it in on top of whatever comes next rather than truncating it.
  */
-function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
-  const out = new Float64Array(lengthSamples);
+function renderVoice(
+  pitchMidi: number,
+  lengthSamples: number,
+  tailSamples: number,
+): Float64Array {
+  const total = lengthSamples + tailSamples;
+  const out = new Float64Array(total);
   const f0 = 440 * Math.pow(2, (pitchMidi - 69) / 12);
   const nyquist = 0.5 * SAMPLE_RATE;
   const tau0 = stringDecaySec(pitchMidi);
@@ -187,8 +228,9 @@ function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
     const fk = f0 * k * (1 + INHARMONICITY * k * k);
     if (fk >= nyquist) break;
     const node = Math.abs(Math.sin(k * Math.PI * STRIKE_POS));
-    // One-pole brightness tilt: unity well below the ceiling, -3 dB at it.
-    const tilt = 1 / (1 + (fk / BRIGHT_CEILING_HZ) ** 2);
+    // Two-pole brightness tilt: unity well below the ceiling, -6 dB at it, and
+    // 12 dB per octave above it rather than 6.
+    const tilt = 1 / (1 + (fk / BRIGHT_CEILING_HZ) ** 2) ** 2;
     const bodyAmp = (node * tilt) / Math.pow(k, rolloff);
     const strikeAmp = (STRIKE_GAIN * node * tilt) / Math.pow(k, STRIKE_ROLLOFF);
     fks.push(fk);
@@ -198,7 +240,7 @@ function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
   }
   const floor = loudest * Math.pow(10, PARTIAL_FLOOR_DB / 20);
 
-  const strikeSpan = Math.min(lengthSamples, Math.ceil(STRIKE_SPAN_SEC * SAMPLE_RATE));
+  const strikeSpan = Math.min(total, Math.ceil(STRIKE_SPAN_SEC * SAMPLE_RATE));
   const rStrike = Math.exp(-1 / (STRIKE_TAU_SEC * SAMPLE_RATE));
 
   for (let idx = 0; idx < fks.length; idx++) {
@@ -255,7 +297,7 @@ function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
 
     let eFast = 1 - TAIL_MIX;
     let eSlow = TAIL_MIX;
-    for (let i = 0; i < lengthSamples; i++) {
+    for (let i = 0; i < total; i++) {
       out[i] = out[i]! + bodyAmp * (eFast + eSlow) * (1 + depth * mr) * zi;
 
       const nzr = zr * cw - zi * sw;
@@ -282,13 +324,14 @@ function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
   }
 
   // Envelope: continuous decay from the strike, never a sustain plateau. The
-  // plateau is what made this an organ rather than a piano.
-  const attack = Math.min(Math.floor(ATTACK_SEC * SAMPLE_RATE), lengthSamples >> 2);
-  const release = Math.min(Math.floor(RELEASE_SEC * SAMPLE_RATE), lengthSamples >> 1);
+  // plateau is what made this an organ rather than a piano. The release fade *is*
+  // the tail, so it begins at note-off instead of ending there.
+  const attack = Math.min(Math.floor(ATTACK_SEC * SAMPLE_RATE), total >> 2);
+  const release = tailSamples;
   let peak = 0;
-  for (let i = 0; i < lengthSamples; i++) {
+  for (let i = 0; i < total; i++) {
     if (attack > 1 && i < attack) out[i] = out[i]! * smoothRamp(i, attack);
-    const fromEnd = lengthSamples - 1 - i;
+    const fromEnd = total - 1 - i;
     if (release > 1 && fromEnd < release) out[i] = out[i]! * smoothRamp(fromEnd, release);
     const a = Math.abs(out[i]!);
     if (a > peak) peak = a;
@@ -300,7 +343,7 @@ function renderVoice(pitchMidi: number, lengthSamples: number): Float64Array {
   // compass anyway, so per-note normalisation is also the right voicing.
   if (peak > 0) {
     const g = PEAK_TARGET / peak;
-    for (let i = 0; i < lengthSamples; i++) out[i] = out[i]! * g;
+    for (let i = 0; i < total; i++) out[i] = out[i]! * g;
   }
   return out;
 }
@@ -376,13 +419,16 @@ export function synthesizeMelodyWavBase64(
   const lead = leadInSec(tempoBpm, opts);
   const leadSamples = Math.round(lead * SAMPLE_RATE);
 
-  // Total length = end of the last note + short tail so the release doesn't clip
+  // Total length = end of the last note + the ring-out past it. One constant does
+  // both jobs, and deliberately so: the padding exists to hold the release, so any
+  // other value either clips the last note's decay or leaves silence after it.
   let maxBeat = 0;
   for (const n of notes) {
     const end = n.startBeat + n.durBeats;
     if (end > maxBeat) maxBeat = end;
   }
-  const totalSamples = Math.ceil((lead + maxBeat * beatSec + 0.25) * SAMPLE_RATE);
+  const tailSamples = Math.round(RELEASE_SEC * SAMPLE_RATE);
+  const totalSamples = Math.ceil((lead + maxBeat * beatSec + RELEASE_SEC) * SAMPLE_RATE);
   const mix = new Float64Array(totalSamples);
   const cache = new Map<string, Float64Array>();
 
@@ -397,10 +443,11 @@ export function synthesizeMelodyWavBase64(
       Math.floor(0.04 * SAMPLE_RATE),
     );
 
+    // The tail is a constant, so the notated length still identifies a render.
     const key = `${note.pitchMidi}:${durSamples}`;
     let voice = cache.get(key);
     if (!voice) {
-      voice = renderVoice(note.pitchMidi, durSamples);
+      voice = renderVoice(note.pitchMidi, durSamples, tailSamples);
       cache.set(key, voice);
     }
 
@@ -409,7 +456,7 @@ export function synthesizeMelodyWavBase64(
     // separate voice gain to apply here.
     const conf = Number.isFinite(note.conf) ? Math.min(Math.max(note.conf, 0), 1) : 1;
     const gain = 0.55 + 0.35 * conf;
-    const n = Math.min(durSamples, totalSamples - startSample);
+    const n = Math.min(durSamples + tailSamples, totalSamples - startSample);
     for (let i = 0; i < n; i++) {
       mix[startSample + i] = mix[startSample + i]! + voice[i]! * gain;
     }

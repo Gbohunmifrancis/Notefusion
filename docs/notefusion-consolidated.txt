@@ -1,0 +1,1193 @@
+This is an intensely well-engineered pipeline. The docstrings reveal a deep, painful battle with the realities of Automatic Music Transcription (AMT)—specifically the fight against `basic_pitch` octave locking, vibrato fragmentation, and `librosa`'s tempogram biases.
+
+The heuristic band-aids here (adaptive amplitude, onset merging, cross-referencing `pyin` with the CNN posterior) are exceptionally clever. However, you have reached the structural limits of what `basic_pitch` and `librosa` can do. To make this engine hyper-accurate—especially for vocal/hummed inputs where tonic solfa is heavily used—you need to swap the acoustic models for ones explicitly trained on modern Music Information Retrieval (MIR) tasks.
+
+Here is the architectural roadmap to drastically improve pitch, time signature, and key/solfa accuracy.
+
+### 1. Pitch & Onset: Replace `pyin` + `basic_pitch` with specialized Vocal Trackers
+
+`basic_pitch` was trained primarily on instrumental MIDI data (guitars, pianos). It struggles with the continuous pitch glides and vibrato of the human voice, which is why it shatters notes and makes whole-octave errors. Running `librosa.pyin` on top is a heavy CPU bottleneck (~0.22x realtime) that only attempts to patch bad data.
+
+**The Solution:**
+Switch to a neural pitch tracker designed specifically for monophonic voice and continuous pitch.
+
+* **FCPE (Fast Continuous Pitch Estimator):** Originally built by ByteDance, this model is lightweight, incredibly fast, and practically immune to the octave errors and vibrato wobbles that plague `basic_pitch`.
+* **TorchCREPE:** The gold standard for monophonic pitch tracking. It outputs a pitch contour and a highly reliable periodicity (confidence) metric.
+
+**Implementation Strategy:**
+
+1. Run CREPE/FCPE to get a pristine $F_0$ contour without octave jumps.
+2. Run a lightweight onset detector (like `madmom.features.onsets.RNNOnsetProcessor`) to find the note starts.
+3. Pool the CREPE pitch median *only* within the boundaries of the detected onsets. This eliminates the need for your complex `_merge_onsets` and `_refine_pitches` loops entirely.
+
+### 2. Time Signature: Ditch `librosa` for `madmom` Downbeat Tracking
+
+Line 1221 contains the ultimate surrender: `s.insert(0, meter.TimeSignature("4/4"))`. As you noted, `librosa.beat_track` and acoustic tempograms cannot reliably differentiate 3/4 from 4/4 or 6/8 because they only look for generic periodic energy, not musical downbeats.
+
+**The Solution:**
+Use **Madmom** (an advanced Python MIR library) which uses Recurrent Neural Networks (RNNs) specifically trained to find the *first beat of the bar* (the downbeat).
+
+```python
+from madmom.features.downbeats import RNNDownBeatProcessor, DBNDownBeatTrackingProcessor
+
+# 1. Process the audio to find beat probabilities
+proc = RNNDownBeatProcessor()(audio_path)
+
+# 2. Track beats and downbeats, allowing 3/4, 4/4, and 6/8 signatures
+dbn = DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4, 6], fps=100)
+beats_and_downbeats = dbn(proc)
+
+# Output is an array of [time_in_seconds, beat_number_in_bar]
+# Example output: [[0.5, 1], [1.0, 2], [1.5, 3], [2.0, 1]] -> clearly 3/4 time!
+
+```
+
+By analyzing the maximum `beat_number_in_bar` returned by the model over the course of the clip, you instantly have the numerator of your time signature, allowing you to dynamically insert `TimeSignature("3/4")` or `TimeSignature("6/8")`.
+
+### 3. Key Detection & Solfa Efficiency: Transition to Functional Harmony
+
+Tonic solfa is entirely dependent on absolute precision of the *Tonic* (Doh). Right now, the pipeline uses an ensemble vote of `music21` Krumhansl-Schmuckler histograms. Histograms are just pitch-class counters; they don't understand functional harmony (e.g., a V -> I cadence). If a user sings a song with a heavy dominant emphasis, the histogram gets confused.
+
+**The Solution:**
+Implement a Hidden Markov Model (HMM) chord recognizer to find the *cadence*.
+
+1. Extract the chroma features from the audio.
+2. Pass them through an HMM (like `librosa.chord` or Madmom's chord recognition) to get a sequence of chords.
+3. **Look at the end of the phrase.** Western music and folk melodies almost exclusively resolve to the Tonic (I) chord at the final note. If the final chord is C Major, and the leading chord is G Major (V -> I), your key is unequivocally C Major.
+4. This structural cue is vastly more reliable than a pitch histogram for assigning `Doh`.
+
+### 4. Handling Unaccompanied Pitch Drift (A Cappella Tuning)
+
+When people hum or sing into an app without a backing track, they naturally drift flat or sharp over time. A note that started as a perfectly tuned A4 (440Hz) might drift down to an Ab4 (415Hz) by bar 8.
+
+* Your current quantization snaps pitches globally using a rigid 12-TET grid.
+* **The Fix:** Implement a rolling baseline. Track the moving average of the `bend_semitones` over time. If the user drifts flat by 40 cents over 10 seconds, gradually shift the quantization grid down by 40 cents so the later notes aren't abruptly bumped down a semitone and assigned the wrong solfa syllable.
+
+### 5. Backend Optimization
+
+Since this pipeline executes per request:
+
+* **Avoid Subprocesses:** Repeatedly calling `subprocess.run` for FFmpeg introduces high latency. If you must convert formats, use a direct Python binding like `PyAV` to decode the bytes in memory, skipping the disk write entirely.
+* **Model Caching:** Ensure whatever ML models you use (whether Basic Pitch, Madmom, or CREPE) are loaded into a global singleton in memory on server boot. Re-initializing PyTorch/TensorFlow graphs on every web request will cripple throughput as concurrency scales.
+
+
+
+
+
+
+
+2
+
+
+
+
+
+
+The pipeline is already unusually well-engineered: adaptive amplitude floors, pyin refinement, onset merging with f0 tolerance, ensemble key voting with cadence tie-break, confidence blending, and extensive corpus-calibrated constants. Further gains in accuracy (especially pitch, time signature, and tonic solfa) and efficiency come from targeted upgrades rather than rewriting the core.
+
+Below are concrete, high-impact improvements ordered by expected return, grounded in the existing design and current state of the art.
+
+### 1. Pitch Accuracy (biggest remaining lever)
+
+**Current strengths**  
+Basic Pitch + pyin octave/semitone correction, wobble fusion (`WOBBLE_SEMITONES=1`), and confidence blending already handle many real-world failure modes.
+
+**High-value upgrades**
+
+- **Replace or cascade Basic Pitch with a stronger AMT model**  
+  Basic Pitch (ICASSP 2022) is fast but still produces the majority of remaining errors (octave jumps, vibrato fragmentation, soft onsets).  
+  Stronger options that remain practical on a single worker:
+  - **MT3 / MT3+** (Google) or **PerceiverAR** variants — multi-track, better polyphony and pitch.
+  - **Onsets-and-Frames** successors or **Transkun** / **SheetSage**-style models.
+  - Lightweight modern alternatives: **Basic Pitch v2** (if released), **CREPE** + note segmentation, or **pitch-aware diffusion models**.  
+  Keep Basic Pitch as a fast first pass; only run the heavier model on low-confidence regions or short clips.
+
+- **Frame-level pitch refinement with a modern f0 tracker**  
+  pyin is solid but still collapses under deep vibrato (`PYIN_MIN_VOICED_PROB` discussion in the code).  
+  Upgrade path:
+  - **CREPE** (or **torchcrepe**) for higher accuracy on sung material.
+  - **PENN** or **Spice** for real-time / low-latency.
+  - Ensemble: median of pyin + CREPE + Basic Pitch contour, weighted by voiced probability.
+
+- **Vibrato / pitch-bend aware merging**  
+  The `F0_MERGE_SEMITONES` and `settings.f0_merge` flag already exist and were measured carefully.  
+  Make the merge adaptive:  
+  - Estimate local vibrato rate/depth from the contour.  
+  - Widen the tolerance only when high vibrato energy is detected.  
+  - Use continuous f0 distance + duration overlap + amplitude ratio as a soft cost instead of a hard threshold.
+
+- **Post-quantization pitch correction**  
+  After music21 quantization, re-estimate median f0 inside each final note span and snap only when the disagreement is a clear octave or a consistent bias. This catches residual errors that survived the earlier stages.
+
+### 2. Time Signature Detection (currently hardcoded to 4/4)
+
+The code contains a detailed post-mortem explaining why both acoustic and symbolic meter detectors failed on the corpus. That analysis is correct for the current data distribution, but the limitation can be lifted.
+
+**Practical path to real meter detection**
+
+1. **Expand the evaluation corpus** with balanced 3/4, 6/8, 2/4, 5/4, and mixed-meter examples (especially sung material). Without this, any detector will overfit to 4/4.
+2. **Two-stage approach**:
+   - First estimate tempo and beat phase (already strong).
+   - Then score candidate meters `{2/4, 3/4, 4/4, 6/8}` using a combination of:
+     - Bar-level onset density / energy periodicity (tempogram ratio at bar rate).
+     - Phrase-boundary alignment (longer notes / rests preferentially land on strong beats).
+     - Symbolic features after a provisional quantization (coverage of bar starts, long-note contrast).
+3. **Use a learned meter model** (e.g., a small Transformer or RNN trained on beat + onset features) rather than hand-crafted rules. Even a lightweight model trained on the expanded corpus will outperform the previous acoustic/symbolic attempts.
+4. **Fallback policy**: if confidence is low, keep 4/4 and surface a “meter uncertain” flag so the mobile UI can offer a quick override (mirroring the existing key-override UX).
+
+Until the corpus is expanded, leave the constant 4/4 and invest the engineering time in pitch and key instead.
+
+### 3. Tonic / Key / Solfa Accuracy
+
+**Current strengths**  
+Equal-vote ensemble over five music21 profiles + cadence preference + short-clip confidence cap is already better than the single-profile default.
+
+**Further gains**
+
+- **Add a neural key / tonic estimator**  
+  Models such as **KeyNet**, **DeepKey**, or a small Transformer trained on pitch-class histograms + rhythmic features often outperform pure profile methods on short / noisy / vibrato-laden clips.  
+  Run it in parallel with the ensemble and take a weighted vote (or use the neural model only when the profile margin is low).
+
+- **Melodic contour / phrase-structure features**  
+  The current `_cadence_prefers_runner_up` is a good start. Extend it with:
+  - Final + initial pitch-class emphasis.
+  - Leap vs step statistics.
+  - Presence of leading-tone motion.
+  These are cheap to compute from the already-quantized stream.
+
+- **Solfa-specific post-processing**  
+  After syllable assignment, run a small consistency pass:
+  - Prefer spellings that minimize accidental density inside the detected key.
+  - Detect and correct systematic octave errors that survive pyin (common on high notes).
+  - For movable-do, enforce that the majority of notes land on the expected scale degrees; if they don’t, trigger a key re-evaluation.
+
+- **User override feedback loop**  
+  When the mobile user corrects the key, store the (audio features → corrected key) pair. Over time this becomes a valuable fine-tuning set for both the ensemble weights and any neural model.
+
+### 4. Efficiency Improvements
+
+- **Early exit / progressive refinement**  
+  - Run a fast Basic Pitch pass first.  
+  - If overall confidence is already high and note count is sufficient, skip pyin and the heavier model.  
+  - Only refine low-confidence or vibrato-suspect regions.
+
+- **Model quantization & ONNX / TensorRT**  
+  Convert Basic Pitch (and any new model) to ONNX or TensorRT for substantially lower latency on CPU/GPU workers.
+
+- **Batch / streaming inference**  
+  For longer clips, process in overlapping windows and stitch results. This also improves latency for the user.
+
+- **Caching of intermediate contours**  
+  Cache the pyin / CREPE contour keyed by audio hash so repeated jobs (or re-key requests) are nearly free.
+
+- **Parallelize independent stages**  
+  Key ensemble profiles, tempo grid search, and audio preview synthesis can run concurrently once the note list is stable.
+
+### 5. Recommended Implementation Roadmap
+
+| Priority | Change                                      | Expected Impact                  | Effort |
+|----------|---------------------------------------------|----------------------------------|--------|
+| 1        | Stronger AMT model (or cascade)             | Large pitch & note F1 gains      | High   |
+| 2        | Modern f0 tracker (CREPE/PENN) + adaptive merge | Vibrato & soft-note accuracy   | Medium |
+| 3        | Neural key estimator + richer cadence cues  | Key / solfa accuracy             | Medium |
+| 4        | Expanded meter corpus + learned meter model | Real time-signature support      | High   |
+| 5        | Early-exit + ONNX                           | Latency & cost                   | Medium |
+| 6        | User correction feedback loop               | Continuous improvement           | Low    |
+
+### Quick Wins You Can Ship Immediately
+
+1. Turn on `settings.f0_merge` only for clips that show high vibrato energy (detectable from the contour variance).
+2. Lower `PYIN_MIN_VOICED_PROB` selectively when vibrato is detected (the corpus already showed the trade-offs).
+3. Add a simple “majority scale-degree” sanity check after solfa mapping; if it fails, re-run key detection with a different profile weight.
+4. Surface meter confidence and key confidence more prominently so users can correct the remaining hard cases.
+
+The pipeline is already far past typical production AMT systems. The next big accuracy jump will come from a stronger front-end transcription model and a neural tonic estimator, while efficiency gains come from progressive refinement and model optimization. Expanding the evaluation corpus (especially non-4/4 and deep-vibrato material) is the highest-leverage non-code change you can make.
+
+
+
+
+
+
+
+
+
+
+
+3
+
+
+Yes. Your current pipeline is already quite thoughtful, but it is still fundamentally a **Basic Pitch + heuristic post-processing pipeline**. To get genuinely high accuracy on real recordings containing vocals plus multiple instruments, I would change the architecture rather than keep adding thresholds.
+
+Your own benchmark results show this clearly: the adaptive amplitude floor improved note precision from **0.783 → 0.839** and note F1 from **0.832 → 0.863**, while recall remained **0.935**. That is a good optimization, but it is mainly removing errors *after* transcription rather than making the acoustic model better. 
+
+The biggest issue is even more fundamental: your time-signature output is currently literally `"4/4"` regardless of the audio. 
+
+## The architecture I recommend
+
+Instead of:
+
+```text
+Audio
+  ↓
+Basic Pitch
+  ↓
+heuristics
+  ↓
+tempo
+  ↓
+key
+  ↓
+solfa
+  ↓
+MusicXML
+```
+
+build:
+
+```text
+                    ┌───────────────┐
+                    │   Raw Audio   │
+                    └───────┬───────┘
+                            │
+                    Audio normalization
+                            │
+                 ┌──────────▼──────────┐
+                 │ Source Separation   │
+                 │ vocals / bass /     │
+                 │ drums / other       │
+                 └───────┬─────────────┘
+                         │
+              ┌──────────┼──────────┐
+              │          │          │
+          Vocal stem   Harmony    Rhythm
+              │          │          │
+       pitch tracker   AMT model  beat tracker
+              │          │          │
+              └──────┬───┴──────┬───┘
+                     │            │
+                note fusion    beat grid
+                     │            │
+                     └─────┬──────┘
+                           │
+                  musical structure
+                           │
+              ┌────────────▼────────────┐
+              │ Joint correction layer  │
+              │ pitch + onset + duration│
+              │ + key + meter           │
+              └────────────┬────────────┘
+                           │
+                  ┌────────▼────────┐
+                  │ tonic / key     │
+                  │ detection       │
+                  └────────┬────────┘
+                           │
+                  ┌────────▼────────┐
+                  │ tonic sol-fa    │
+                  │ generation      │
+                  └────────┬────────┘
+                           │
+               MusicXML + MIDI + JSON
+```
+
+### 1. Stop asking one transcription model to solve everything
+
+Your current pipeline uses Basic Pitch events and then tries to recover pitch, vibrato, timing, key and notation with post-processing. Your code itself shows that pYIN is being used mainly as a correction layer on Basic Pitch events. 
+
+That is useful, but it has a ceiling.
+
+For mixed music, I would make **two AMT paths** and then fuse their results:
+
+**Path A — Your current Basic Pitch**
+
+Keep it because it is excellent as a lightweight baseline and gives you onset/offset/pitch events.
+
+**Path B — MT3 / YourMT3+**
+
+MT3 is specifically a multi-instrument automatic transcription model, and YourMT3+ is an open implementation designed around multi-task, multi-track transcription. ([GitHub][1])
+
+YourMT3+ is especially interesting for your use case because you are not merely trying to transcribe a single piano note sequence; you want multiple instruments from a mixture. Its repository explicitly targets multi-track transcription. ([GitHub][2])
+
+So:
+
+```text
+Audio
+ ├── Basic Pitch
+ └── YourMT3+
+          ↓
+    confidence-weighted fusion
+```
+
+Don't simply choose one model. Have both produce:
+
+```python
+{
+    "pitch": 64,
+    "onset": 2.314,
+    "offset": 2.822,
+    "velocity": 0.73,
+    "confidence": 0.91,
+    "source": "yourmt3"
+}
+```
+
+and then reconcile them.
+
+---
+
+# 2. Add source separation before transcription
+
+This is probably the **single biggest improvement** for recordings containing vocals + instruments.
+
+Demucs v4 is an open-source hybrid Transformer source-separation system that produces vocals, drums, bass and accompaniment stems. Its repository also contains an experimental 6-source configuration including guitar and piano, although the project notes that piano separation still has substantial bleed/artifacts. ([GitHub][3])
+
+Use:
+
+```text
+mixed.wav
+   │
+   ▼
+Demucs
+   ├── vocals.wav
+   ├── drums.wav
+   ├── bass.wav
+   └── other.wav
+```
+
+Then:
+
+```text
+vocals.wav  → vocal pitch tracker
+bass.wav    → low-frequency transcription
+other.wav   → MT3 / YourMT3+
+drums.wav   → onset/rhythm analysis
+```
+
+This is much better than asking Basic Pitch to distinguish:
+
+```text
+vocal harmonic
++
+guitar harmonic
++
+piano harmonic
++
+bass harmonic
++
+drum transient
+```
+
+from one mixture.
+
+The important point is that **source separation isn't necessarily the final transcription output**. It is an intermediate representation that makes transcription easier.
+
+---
+
+# 3. Use specialized pitch trackers rather than only pYIN
+
+Your current pYIN implementation has a significant weakness that your own tests exposed.
+
+Your comments say deep vibrato causes the pYIN voiced probability to collapse, with some real notes having median probabilities around **0.28–0.33**. 
+
+That means this:
+
+```python
+if confidence < PYIN_MIN_VOICED_PROB:
+    refined.append(measured)
+    continue
+```
+
+can effectively interpret:
+
+```text
+fast vibrato
+```
+
+as:
+
+```text
+uncertain/noisy pitch
+```
+
+when it is actually a valid musical note.
+
+Don't make pYIN your authority.
+
+Use an ensemble:
+
+```text
+Basic Pitch
+      +
+pYIN
+      +
+CREPE / torchcrepe
+      +
+spectral f0
+      +
+model pitch contour
+```
+
+Then estimate:
+
+```python
+f0 = weighted_median([
+    basic_pitch_f0,
+    pyin_f0,
+    crepe_f0
+])
+```
+
+with weights based on:
+
+```text
+voiced probability
+signal-to-noise ratio
+spectral clarity
+harmonicity
+model confidence
+```
+
+This is much more robust than:
+
+```python
+median(pyin)
+```
+
+for every event.
+
+---
+
+# 4. Preserve continuous pitch before quantizing to MIDI
+
+This is extremely important for singing.
+
+Your current system eventually reduces notes to integer MIDI pitches:
+
+```python
+pitch_midi: int
+```
+
+That means:
+
+```text
+62.15
+62.34
+62.71
+63.02
+```
+
+can all become:
+
+```text
+62 or 63
+```
+
+too early.
+
+Instead maintain:
+
+```python
+pitch_hz
+pitch_midi_float
+pitch_contour
+pitch_confidence
+```
+
+until the very end.
+
+Example:
+
+```python
+@dataclass
+class PitchObservation:
+    t: float
+    f0_hz: float
+    midi_float: float
+    confidence: float
+```
+
+Then segment the contour into musical notes.
+
+That allows you to distinguish:
+
+```text
+vibrato
+glissando
+portamento
+intentional chromatic movement
+pitch instability
+```
+
+from an actual sequence of different notes.
+
+Your present code already acknowledges this problem: the comments describe Basic Pitch generating overlapping semitone fragments during vibrato. 
+
+The better solution is to model the **pitch trajectory first**, then derive notes.
+
+---
+
+# 5. Replace hard-coded 4/4 with a real meter estimator
+
+This is currently your most obvious functional limitation.
+
+Your function does:
+
+```python
+s.insert(0, meter.TimeSignature("4/4"))
+```
+
+and returns:
+
+```python
+time_signature="4/4"
+```
+
+regardless of the recording.  
+
+Your own experiments correctly discovered that your previous meter detector was unreliable, so disabling it was sensible. 
+
+But the solution is **not** to give up on meter detection.
+
+Use a dedicated rhythm stack:
+
+```text
+audio
+ ↓
+onset strength
+ ↓
+beat tracking
+ ↓
+downbeat tracking
+ ↓
+bar cycle estimation
+ ↓
+meter classification
+```
+
+Candidate meters:
+
+```text
+2/4
+3/4
+4/4
+5/4
+6/8
+7/8
+9/8
+12/8
+```
+
+Then distinguish:
+
+```text
+3/4
+```
+
+from:
+
+```text
+6/8
+```
+
+using **subdivision and accent structure**, not just bar length.
+
+This directly addresses the problem your experiment discovered: 3/4 and 6/8 both occupy three quarter-note beats per bar, so duration alone cannot identify them. 
+
+A better representation is:
+
+```python
+MeterHypothesis(
+    numerator=6,
+    denominator=8,
+    beat_unit=0.5,
+    bar_length_beats=3,
+    accent_pattern=[STRONG, weak, weak, MEDIUM, weak, weak],
+    confidence=0.91
+)
+```
+
+Then select the meter that best explains:
+
+```text
+onset positions
+accent energy
+downbeats
+note durations
+phrase boundaries
+```
+
+---
+
+# 6. Separate BPM from metrical level
+
+Your own code identifies a very important problem:
+
+> the pipeline doesn't know what metrical level the estimated BPM represents. 
+
+That's a real issue.
+
+For example:
+
+```text
+actual quarter-note = 132 BPM
+```
+
+but an estimator may return:
+
+```text
+66 BPM
+264 BPM
+```
+
+because they are harmonically equivalent tempo interpretations.
+
+So don't return one BPM.
+
+Generate candidates:
+
+```python
+tempo_candidates = [
+    66,
+    99,
+    132,
+    198,
+    264
+]
+```
+
+and score them against:
+
+```text
+note onset periodicity
+downbeat likelihood
+meter hypothesis
+duration distribution
+phrase boundaries
+```
+
+Then choose:
+
+```text
+tempo + beat unit + meter
+```
+
+as one joint solution.
+
+---
+
+# 7. Key detection should become a *tonal inference model*
+
+Your five-profile music21 ensemble is a useful improvement over using a single profile. Your measurements report a **0.926 AUC** for the margin-based confidence scheme, compared with the old correlation-based confidence. 
+
+Keep that.
+
+But for serious accuracy, add:
+
+```text
+pitch-class distribution
++
+duration-weighted distribution
++
+final-note evidence
++
+cadence
++
+chord/harmony evidence
++
+bass/root evidence
++
+melodic direction
+```
+
+Your current key tiebreak already uses final pitch and diatonic fraction. 
+
+Extend this into a scoring function:
+
+```python
+score(key) =
+      0.25 * pitch_profile
+    + 0.15 * duration_profile
+    + 0.20 * cadence
+    + 0.15 * tonic_final
+    + 0.10 * dominant_relationship
+    + 0.10 * bass_root
+    + 0.05 * harmonic_context
+```
+
+Then normalize across all 24 keys.
+
+But don't hard-code those weights permanently. Learn them on your evaluation corpus.
+
+---
+
+# 8. Add a neural tonal embedding
+
+This is where newer music foundation models become useful.
+
+MuQ is a 2025 self-supervised music representation model designed for music understanding and reports strong results across MIR tasks including **key detection**. Open checkpoints are available. ([arXiv][4])
+
+You could use:
+
+```text
+audio
+ ↓
+MuQ
+ ↓
+embedding
+ ↓
+small classifier
+ ↓
+24-key probabilities
+```
+
+For example:
+
+```python
+key_logits = key_head(muq_embedding)
+```
+
+Output:
+
+```json
+{
+  "C_major": 0.72,
+  "G_major": 0.11,
+  "A_minor": 0.08,
+  ...
+}
+```
+
+Then fuse that with your symbolic music21 analysis.
+
+That's much more powerful than relying entirely on pitch histograms.
+
+---
+
+# 9. Don't calculate tonic sol-fa directly from raw MIDI
+
+Your current approach is:
+
+```text
+detected key
+   +
+detected notes
+   ↓
+solfa.syllable()
+```
+
+which is conceptually correct. 
+
+But the quality of sol-fa can never exceed:
+
+```text
+note accuracy × key accuracy × spelling accuracy
+```
+
+So I would introduce an explicit intermediate representation:
+
+```python
+MusicalNote:
+    pitch
+    onset
+    offset
+    duration
+    velocity
+    pitch_confidence
+    onset_confidence
+    key_context
+    harmonic_role
+```
+
+Then derive:
+
+```text
+MIDI
+MusicXML
+Solfa
+Chord symbols
+```
+
+from the same representation.
+
+That prevents your notation and sol-fa paths from drifting apart.
+
+---
+
+# 10. Use musical constraints to correct transcription
+
+This is where you can get a surprisingly large accuracy gain without training a gigantic model.
+
+Suppose the raw model outputs:
+
+```text
+C4  0.0–0.5
+D4  0.49–0.51
+C#4 0.50–0.57
+D4  0.56–1.0
+```
+
+A raw event cleaner sees several notes.
+
+A musical decoder sees:
+
+```text
+C4 ───────────── D4
+```
+
+with the middle fragments likely representing an artifact.
+
+Use a sequence decoder.
+
+For each possible note state:
+
+```text
+pitch
+onset
+duration
+```
+
+define:
+
+```text
+emission probability
++
+transition probability
++
+rhythmic probability
++
+tonal probability
+```
+
+Then solve:
+
+```text
+argmax P(notes | audio, key, meter, tempo)
+```
+
+This can be implemented using:
+
+```text
+Viterbi
+dynamic programming
+beam search
+CRF
+small Transformer decoder
+```
+
+This is much safer than continuing to add:
+
+```python
+WOBBLE_SEMITONES = 1
+MERGE_GAP = 0.08
+MIN_NOTE_SEC = 0.06
+```
+
+one-by-one.
+
+Your existing code already shows why this matters: you have several carefully calibrated heuristics for fragments, vibrato and amplitude, but some improvements don't generalize beyond the cases they were tuned against. 
+
+---
+
+# 11. Use multiple hypotheses instead of committing early
+
+Your current pipeline commits too early:
+
+```text
+one pitch
+one tempo
+one key
+one meter
+```
+
+Instead maintain:
+
+```python
+top_pitch_candidates = 3
+top_tempo_candidates = 5
+top_key_candidates = 3
+top_meter_candidates = 3
+```
+
+Then evaluate combinations.
+
+For example:
+
+```text
+C major + 132 BPM + 4/4
+G major + 132 BPM + 4/4
+C major + 66 BPM + 2/4
+```
+
+and score the entire musical structure.
+
+This is especially important for tonic detection because **relative major/minor, fifth-related keys, and short excerpts are genuinely ambiguous**.
+
+Your own tests already show that wrong keys can receive deceptively high confidence, particularly under vibrato. 
+
+---
+
+# 12. Use source-specific transcription models
+
+For maximum accuracy, don't have one model do every instrument.
+
+Use something like:
+
+```text
+                    MIX
+                     │
+                  Demucs
+                     │
+       ┌─────────────┼───────────────┐
+       │             │               │
+     Vocals         Piano         Other
+       │             │               │
+   CREPE/pYIN     piano AMT       YourMT3+
+       │             │               │
+       └─────────────┴───────────────┘
+                     │
+                note fusion
+```
+
+For solo piano, specialized piano transcription can outperform generic AMT. There are current open systems built around this idea; for example, the open-source Muse project uses Demucs + Transkun V2 for piano and YourMT3+ for multi-instrument transcription, reporting strong onset performance on MAESTRO. ([GitHub][5])
+
+That architecture is very close to what you need.
+
+---
+
+# 13. Your new pipeline should have six confidence scores
+
+Don't return only:
+
+```python
+overall_confidence
+```
+
+Return:
+
+```json
+{
+  "pitch_confidence": 0.96,
+  "onset_confidence": 0.91,
+  "rhythm_confidence": 0.88,
+  "tempo_confidence": 0.94,
+  "meter_confidence": 0.81,
+  "key_confidence": 0.89,
+  "solfa_confidence": 0.86,
+  "overall_confidence": 0.90
+}
+```
+
+For each note:
+
+```json
+{
+  "pitch": 60,
+  "onset": 1.250,
+  "offset": 1.748,
+  "pitch_confidence": 0.98,
+  "onset_confidence": 0.94,
+  "duration_confidence": 0.89,
+  "source_agreement": 0.96
+}
+```
+
+Then the UI can say:
+
+```text
+Key      C major       89%
+Tempo    132 BPM       94%
+Meter    4/4           81%
+
+Pitch    High
+Rhythm   High
+Meter    Medium
+```
+
+instead of giving a misleading single confidence number.
+
+---
+
+# 14. The biggest architectural improvement: train a correction model
+
+Once you have the above working, collect:
+
+```text
+audio
+ground-truth MIDI
+ground-truth key
+ground-truth tempo
+ground-truth meter
+```
+
+Then create synthetic training examples:
+
+```text
+clean MIDI
+   ↓
+FluidSynth / realistic rendering
+   ↓
+vocals
++ piano
++ guitar
++ bass
++ drums
++ noise
++ room reverb
++ microphone coloration
+```
+
+and train on:
+
+```text
+10,000+
+50,000+
+100,000+
+```
+
+synthetic mixtures.
+
+You already have an accuracy harness and a corpus, which is excellent. Your current comments show you are measuring 38 cases and tracking note F1, ghost notes, key exactness, solfa accuracy, etc. 
+
+Expand that into a real training/evaluation dataset.
+
+---
+
+# The stack I would use for your project
+
+### Audio separation
+
+**Demucs v4**
+
+```text
+vocals
+drums
+bass
+other
+```
+
+Open source and practical. ([GitHub][3])
+
+### Multi-instrument transcription
+
+**YourMT3+**
+
+Use it as your main general-purpose AMT model. ([GitHub][2])
+
+### Secondary transcription
+
+**Basic Pitch**
+
+Keep your existing implementation as a second opinion.
+
+### Vocal F0
+
+```text
+torchcrepe / CREPE
++
+pYIN
+```
+
+Use them as continuous pitch estimators rather than treating pYIN as a correction oracle.
+
+### Piano
+
+Dedicated piano AMT path.
+
+### Rhythm
+
+```text
+beat tracking
++
+downbeat detection
++
+tempo hypotheses
++
+meter classifier
+```
+
+### Key
+
+```text
+MuQ embedding
++
+music21 profiles
++
+cadence analysis
++
+duration-weighted pitch class
++
+bass/tonal evidence
+```
+
+MuQ is particularly interesting because it is explicitly designed as a music representation model and includes key-detection capability. ([arXiv][4])
+
+### Final decoder
+
+```text
+Beam search / Viterbi / Transformer
+```
+
+jointly optimizing:
+
+```text
+pitch
+onset
+duration
+tempo
+meter
+key
+```
+
+### Output
+
+```text
+MIDI
+MusicXML
+Tonic Sol-fa
+JSON
+```
+
+all generated from the same canonical note representation.
+
+---
+
+# What I would change in your code first
+
+In priority order:
+
+```text
+1. REMOVE hard-coded 4/4
+2. Add Demucs preprocessing
+3. Add YourMT3+ as second AMT engine
+4. Keep Basic Pitch as ensemble model
+5. Replace integer-only pitch processing with continuous F0
+6. Add CREPE/torchcrepe
+7. Build real beat + downbeat tracking
+8. Build meter classifier
+9. Add MuQ-based key classifier
+10. Fuse symbolic + neural key detection
+11. Introduce musical sequence decoding
+12. Generate solfa only after final note/key decoding
+13. Expand benchmark massively
+14. Train a domain-specific correction model
+```
+
+The **critical conceptual change** is this:
+
+> Don't try to make Basic Pitch increasingly perfect through post-processing.
+
+Instead:
+
+> **Separate → transcribe with multiple models → estimate rhythm/tonality independently → jointly decode the musical structure.**
+
+That is the path most likely to move you from your current **~0.86 note F1 region** toward something substantially more reliable on real-world music rather than merely improving the 38-case heuristic corpus. Your current measurements show that carefully tuned heuristics already helped substantially, but they also show where the approach is hitting structural limits. 
+
+One especially important warning: **do not train or tune your next heuristics only on the existing 38 cases.** Your own post-mortem explicitly found cases where a value fitted to nine vibrato cases produced regressions elsewhere. 
+
+I would therefore make your next version **ensemble + joint-decoding based**, not another accumulation of constants.
+
+[1]: https://github.com/magenta/mt3?utm_source=chatgpt.com "GitHub - magenta/mt3: MT3: Multi-Task Multitrack Music Transcription · GitHub"
+[2]: https://github.com/mimbres/YourMT3?utm_source=chatgpt.com "GitHub - mimbres/YourMT3: multi-task and multi-track music transcription for everyone · GitHub"
+[3]: https://github.com/vvigot/demucs?utm_source=chatgpt.com "GitHub - vvigot/demucs · GitHub"
+[4]: https://arxiv.org/abs/2501.01108?utm_source=chatgpt.com "MuQ: Self-Supervised Music Representation Learning with Mel Residual Vector Quantization"
+[5]: https://github.com/mqtik/muse?utm_source=chatgpt.com "GitHub - mqtik/muse: Record or drop in audio. Get MIDI & MusicXML back. · GitHub"

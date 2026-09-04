@@ -778,6 +778,53 @@ h1 em {
   max-width: 820px;
   margin-inline: auto;
 }
+.plans--single {
+  grid-template-columns: minmax(0, 410px);
+  justify-content: center;
+}
+.plans--loading {
+  display: none;
+  grid-template-columns: minmax(0, 410px);
+  justify-content: center;
+}
+.js .plans--loading {
+  display: grid;
+}
+.plans--nigeria {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: var(--wrap);
+}
+.plan--loading {
+  min-height: 250px;
+  justify-content: center;
+  text-align: center;
+}
+.plan--loading .price {
+  font-size: 1.25rem;
+}
+.pricing-region {
+  width: fit-content;
+  margin: 0 auto var(--s-xl);
+  padding: 7px 15px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--blue-deep);
+  font-size: 0.83rem;
+  font-weight: 600;
+  box-shadow: var(--sh-card);
+}
+.pricing-unavailable {
+  max-width: 410px;
+  margin: 0 auto;
+  padding: var(--s-xl);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  color: var(--text-muted);
+  text-align: center;
+  box-shadow: var(--sh-card);
+}
 .plan {
   display: flex;
   flex-direction: column;

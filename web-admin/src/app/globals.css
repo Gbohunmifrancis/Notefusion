@@ -102,13 +102,11 @@
   --warning-deep: #92400e; /* 5.8:1 on a warning/10 chip */
   --danger-deep: #991b1b; /* 6.4:1 on a danger/10 chip */
 
-  /* The shadcn sidebar block reads its own set, so the rail can differ from the canvas.
-     Here it matches a card: the console's rail is a panel, not a separate brand surface. */
   --sidebar: #ffffff;
   --sidebar-foreground: #0f172a;
   --sidebar-primary: #2563eb;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #eef3fb;
+  --sidebar-accent: #f1f5f9;
   --sidebar-accent-foreground: #0f172a;
   --sidebar-border: #e2e8f0;
   --sidebar-ring: #2563eb;
@@ -192,14 +190,14 @@
   --warning-deep: #f59e0b;
   --danger-deep: #f87171;
 
-  --sidebar: #131d30;
-  --sidebar-foreground: #e8eef9;
-  --sidebar-primary: #60a5fa;
-  --sidebar-primary-foreground: #0b1220;
-  --sidebar-accent: #1b2739;
-  --sidebar-accent-foreground: #e8eef9;
-  --sidebar-border: #243146;
-  --sidebar-ring: #60a5fa;
+  --sidebar: #07142f;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #2563eb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #2563eb;
 
   --chart-1: #60a5fa;
   --chart-2: #38bdf8;
@@ -351,7 +349,10 @@
     @apply border-border;
   }
 
+  html,
   body {
+    max-width: 100vw;
+    overflow-x: hidden;
     @apply bg-background font-sans text-foreground antialiased;
   }
 

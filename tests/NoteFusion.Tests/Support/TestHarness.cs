@@ -186,6 +186,22 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    public Task SendCustomEmailAsync(
+        EmailRecipient to,
+        string subject,
+        string heading,
+        string bodyHtml,
+        string? ctaText = null,
+        string? ctaUrl = null,
+        CancellationToken ct = default)
+    {
+        Sent.Add(("custom", to));
+        CustomEmails.Add((to, subject, heading, bodyHtml, ctaText, ctaUrl));
+        return Task.CompletedTask;
+    }
+
+    public List<(EmailRecipient To, string Subject, string Heading, string BodyHtml, string? CtaText, string? CtaUrl)> CustomEmails { get; } = [];
+
     /// <summary>
     /// The expiry payloads, kept apart from <see cref="Sent"/> because the renew-vs-lapse wording and the
     /// day count are the part worth asserting on — the recipient alone does not distinguish them.

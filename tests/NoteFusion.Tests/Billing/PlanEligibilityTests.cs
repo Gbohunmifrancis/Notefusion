@@ -81,6 +81,51 @@ public class PlanEligibilityTests
     }
 
     [Fact]
+    public async Task The_public_site_shows_only_nigerian_subscription_prices()
+    {
+        using var h = new TestHarness(Now);
+        SeedPlans(h);
+        h.Country.Country = "NG";
+
+        var result = await PublicPlans(h);
+
+        Assert.Equal("NG", result.CountryCode);
+        Assert.Equal(2, result.Plans.Count);
+        Assert.All(result.Plans, p => Assert.Equal("NGN", p.Currency));
+        Assert.Contains(result.Plans, p => p.Code == "pro_monthly_ngn" && p.AmountMinor == 750_000);
+        Assert.Contains(result.Plans, p => p.Code == "pro_yearly_ngn" && p.AmountMinor == 7_500_000);
+    }
+
+    [Fact]
+    public async Task The_public_site_shows_only_the_international_lifetime_price()
+    {
+        using var h = new TestHarness(Now);
+        SeedPlans(h);
+        h.Country.Country = "GB";
+
+        var result = await PublicPlans(h);
+
+        Assert.Equal("GB", result.CountryCode);
+        var plan = Assert.Single(result.Plans);
+        Assert.Equal("pro_lifetime_v2", plan.Code);
+        Assert.Equal(20_000, plan.AmountMinor);
+        Assert.Equal("USD", plan.Currency);
+        Assert.Equal(BillingInterval.Lifetime, plan.Interval);
+    }
+
+    [Fact]
+    public async Task The_public_site_shows_no_price_when_location_is_unknown()
+    {
+        using var h = new TestHarness(Now);
+        SeedPlans(h);
+
+        var result = await PublicPlans(h);
+
+        Assert.Null(result.CountryCode);
+        Assert.Empty(result.Plans);
+    }
+
+    [Fact]
     public async Task The_offer_follows_the_account_not_the_request()
     {
         // The stored country is the whole reason it is stored. A Nigerian subscriber opening the app in
@@ -120,7 +165,7 @@ public class PlanEligibilityTests
     {
         using var h = new TestHarness(Now);
         var user = SeedPlansAndUser(h, "NG");
-        var lifetime = h.Db.Plans.Single(p => p.Code == "pro_lifetime");
+        var lifetime = h.Db.Plans.Single(p => p.Code == "pro_lifetime_v2");
 
         var result = await Checkout(h, user, new CountingGateway())
             .Handle(new InitiateCheckoutCommand(lifetime.Id), default);
@@ -149,7 +194,7 @@ public class PlanEligibilityTests
     {
         using var h = new TestHarness(Now);
         var user = SeedPlansAndUser(h, null);
-        var lifetime = h.Db.Plans.Single(p => p.Code == "pro_lifetime");
+        var lifetime = h.Db.Plans.Single(p => p.Code == "pro_lifetime_v2");
 
         var result = await Checkout(h, user, new CountingGateway())
             .Handle(new InitiateCheckoutCommand(lifetime.Id), default);
@@ -165,19 +210,32 @@ public class PlanEligibilityTests
         user.RecordCountry(country);
 
         h.Db.Users.Add(user);
+        SeedPlans(h);
+        return user;
+    }
+
+    private static void SeedPlans(TestHarness h)
+    {
         h.Db.Plans.AddRange(
             Plan.Create(Guid.NewGuid(), "pro_monthly_ngn", "Pro Monthly", 750_000, "NGN", BillingInterval.Monthly),
             Plan.Create(Guid.NewGuid(), "pro_yearly_ngn", "Pro Yearly", 7_500_000, "NGN", BillingInterval.Yearly),
-            Plan.Create(Guid.NewGuid(), "pro_lifetime", "Pro Lifetime", 7900, "USD", BillingInterval.Lifetime));
+            Plan.Create(Guid.NewGuid(), "pro_lifetime_v2", "Pro Lifetime", 20_000, "USD", BillingInterval.Lifetime));
         h.Db.SaveChanges();
-
-        return user;
     }
 
     private static async Task<IReadOnlyList<PlanDto>> Plans(TestHarness h, User user)
     {
         var result = await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id))
             .Handle(new GetPlansQuery(), default);
+
+        Assert.True(result.IsSuccess);
+        return result.Value;
+    }
+
+    private static async Task<PublicPricingDto> PublicPlans(TestHarness h)
+    {
+        var result = await new GetPublicPricingQueryHandler(h.Db, h.Country)
+            .Handle(new GetPublicPricingQuery(), default);
 
         Assert.True(result.IsSuccess);
         return result.Value;

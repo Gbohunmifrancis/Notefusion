@@ -1,13 +1,14 @@
 /**
- * Record screen, mid-take.
+ * Record screen, in all three of its phases.
  *
- * The recording phase rather than the idle one: the idle screen is a mic on a
- * blank canvas, which says nothing the icon hasn't already said. Recording shows
- * the timer, the level meter and the wave — the parts that tell a shopper the
- * app is listening to them.
+ * `phase: "recording"` is the store screenshot: the idle screen is a mic on a
+ * blank canvas, which says nothing the icon hasn't already said, while recording
+ * shows the timer, the level meter and the wave — the parts that tell a shopper
+ * the app is listening to them. The walkthrough needs the other two as well,
+ * because "tap this, then wait" is the whole instruction.
  *
- * No guidance banner. It exists ("Sing louder or hold closer to the mic") and it
- * is good behaviour, but on a store listing a red banner reads as a fault.
+ * No guidance banner in any phase. It exists ("Sing louder or hold closer to the
+ * mic") and it is good behaviour, but as a still it reads as a fault.
  */
 
 import { C, brand, ic } from "./tokens.mjs";
@@ -21,6 +22,9 @@ const KEYS = [
   "Auto", "C major", "D major", "E major", "F major", "G major",
   "A major", "Bb major", "A minor", "D minor", "E minor",
 ];
+
+/** Upload progress for the working phase. One number, so every frame agrees. */
+const PROGRESS = 0.62;
 
 const REC_CSS = `
 /* Record is a tab screen, so the floating bar sits over it — hence the 100px. */
@@ -45,6 +49,10 @@ const REC_CSS = `
 .keyChipActive { background: ${brand(90)}; border: 0; overflow: hidden; box-shadow: 0 0 8px rgba(37,99,235,0.5); }
 .keyChipText { font-size: 12px; font-weight: 500; color: ${C.textMuted}; letter-spacing: 0.2px; white-space: nowrap; }
 .keyChipTextActive { font-size: 12px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.2px; white-space: nowrap; }
+/* Both pickers lock once a take starts. The app passes \`disabled\` to Touchable,
+   which fades to the 0.4 every disabled control uses — so the lock is visible,
+   and a screenshot that shows them at full strength is showing a live control. */
+.locked { opacity: 0.4; }
 
 .centerZone { position: relative; align-items: center; justify-content: center; width: 280px; height: 280px; }
 /* Frozen mid-animation, at the values the animation actually passes through:
@@ -56,10 +64,11 @@ const REC_CSS = `
 .rippleOuter { width: 232px; height: 232px; border-color: rgba(37,99,235,0.45); background: rgba(37,99,235,0.03); transform: scale(1.34); opacity: 0.2; }
 
 .btnOuter { border-radius: 74px; box-shadow: 0 0 28px rgba(37,99,235,0.5); }
-/* Recording: the ring turns red. start {0,0} end {1,1} — a diagonal, so 135deg. */
-.btnRing { width: 148px; height: 148px; border-radius: 74px; align-items: center; justify-content: center; background: linear-gradient(135deg, #DC2626, #B91C1C); }
+.btnRing { width: 148px; height: 148px; border-radius: 74px; align-items: center; justify-content: center; }
 .btnGlassDisc { width: 116px; height: 116px; border-radius: 58px; background: ${C.surface}; border: 1px solid ${C.border}; align-items: center; justify-content: center; }
 .stopSquare { width: 36px; height: 36px; border-radius: 8px; background: ${C.danger}; box-shadow: 0 0 12px rgba(220,38,38,0.7); }
+.progressPct { font-size: 26px; font-weight: 700; color: ${C.accent}; letter-spacing: -0.5px; }
+.progressLabel { font-size: 10px; font-weight: 500; color: ${C.textFaint}; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
 
 .waveContainer { position: absolute; bottom: -50px; flex-direction: row; align-items: center; justify-content: center; height: 40px; gap: 2.5px; }
 .waveBar { width: 3px; height: 36px; border-radius: 999px; }
@@ -73,13 +82,26 @@ const REC_CSS = `
 .timerText { font-size: 42px; font-weight: 700; letter-spacing: -1px; margin: 4px 0; font-variant-numeric: tabular-nums; text-shadow: 0 0 12px rgba(37,99,235,0.55); }
 .statusSub { font-size: 13px; color: ${C.textMuted}; text-align: center; line-height: 20px; margin-top: 4px; padding: 0 12px; }
 
+.importFileBtn { flex-direction: row; align-items: center; gap: 6px; background: ${C.surface}; border: 1px solid ${C.border}; border-radius: 999px; padding: 8px 16px; margin-top: 12px; }
+.importFileBtnText { font-size: 14px; font-weight: 600; color: ${C.accent}; }
+
+.progressTrack { width: 80%; height: 4px; border-radius: 999px; background: ${C.surfaceAlt}; margin-top: 16px; overflow: hidden; }
+.progressFill { height: 100%; border-radius: 999px; background: ${brand(90)}; }
+
+/* Button loading=true swaps the label for an ActivityIndicator, so "Processing…"
+   is never on screen — this is that spinner, stopped at one angle. */
+.spinner { width: 20px; height: 20px; border-radius: 10px; border: 2px solid ${C.border}; border-top-color: ${C.text}; transform: rotate(115deg); }
+
 .bottomAction { width: 100%; padding: 0 24px; }
 `;
 
-/** Bar heights, from a fixed curve so a rebuild produces the same wave. */
-const waveBars = () =>
+/**
+ * Bar heights. Recording uses a fixed curve so a rebuild produces the same wave;
+ * the other two phases rest at 0.12, which is where the app settles them.
+ */
+const waveBars = (live) =>
   Array.from({ length: WAVE_BARS }, (_, i) => {
-    const scale = 0.22 + 0.78 * Math.abs(Math.sin(i * 1.17 + 0.4));
+    const scale = live ? 0.22 + 0.78 * Math.abs(Math.sin(i * 1.17 + 0.4)) : 0.12;
     const color =
       i < WAVE_BARS / 2
         ? `rgba(37, 99, 235, ${0.4 + (i / WAVE_BARS) * 0.6})`
@@ -88,13 +110,81 @@ const waveBars = () =>
     return `<div class="waveBar" style="background:${color};transform:scaleY(${scale.toFixed(3)})"></div>`;
   }).join("");
 
-export function record() {
+/**
+ * @param phase `"ready"` before a take, `"recording"` during, `"uploading"` while
+ *   the job is in flight.
+ */
+export function record({ phase = "recording", mode = "light" } = {}) {
+  const live = phase === "recording";
+  const uploading = phase === "uploading";
+  const pct = Math.round(PROGRESS * 100);
+  /** Anything but `ready` locks the mode and key pickers. */
+  const lock = phase === "ready" ? "" : " locked";
+
   const keyChips = KEYS.map((k, i) => {
     const on = i === 0;
-    return `<div class="keyChip${on ? " keyChipActive" : ""}">
-      <div class="${on ? "keyChipTextActive" : "keyChipText"}">${k}</div>
-    </div>`;
+    return on
+      ? `<div class="keyChip keyChipActive"><div class="keyChipTextActive">${k}</div></div>`
+      : `<div class="keyChip${lock}"><div class="keyChipText">${k}</div></div>`;
   }).join("");
+
+  /** The ring's gradient. Diagonal in every phase — start {0,0} end {1,1}. */
+  const ring = live
+    ? "linear-gradient(135deg, #DC2626, #B91C1C)"
+    : uploading
+      ? "linear-gradient(135deg, rgba(29,78,216,0.4), rgba(59,130,246,0.4))"
+      : brand(135);
+
+  const discInner = uploading
+    ? `<div class="f ac jc">
+        <div class="progressPct">${pct}%</div>
+        <div class="progressLabel">analysing</div>
+      </div>`
+    : live
+      ? `<div class="stopSquare"></div>`
+      : ic("mic", 44, C.accent);
+
+  const statusTitle = live
+    ? "Listening…"
+    : uploading
+      ? "Transcribing Solfa &amp; Staff…"
+      : "Tap to record";
+
+  const statusSub = live
+    ? "Tap the button again when you're done."
+    : uploading
+      ? "You can leave this screen — we'll notify you when it's ready."
+      : "Sing, hum, or play near the mic for accurate Solfa extraction.";
+
+  const statusTail = uploading
+    ? `<div class="progressTrack"><div class="progressFill" style="width:${Math.max(5, pct)}%"></div></div>`
+    : phase === "ready"
+      ? `<div class="importFileBtn">
+          ${ic("folder-open-outline", 18, C.accent)}
+          <div class="importFileBtnText">Import audio file</div>
+        </div>`
+      : "";
+
+  /** The meter is recording-only — there is no level to show before or after. */
+  const meter = live
+    ? `<div class="meterArea">
+        ${ic("mic-outline", 14, C.success, "margin-right:8px")}
+        <div class="meterTrack"><div class="meterFill" style="width:72%"></div></div>
+      </div>`
+    : "";
+
+  const bottom = live
+    ? `<div class="bottomAction f">
+        <div class="btn btnPrimary">
+          ${ic("stop-circle-outline", 18, "#FFFFFF", "margin-right:8px")}
+          <div class="btnLabel" style="color:#FFFFFF">Stop &amp; Transcribe</div>
+        </div>
+      </div>`
+    : uploading
+      ? `<div class="bottomAction f">
+          <div class="btn btnSecondary btnDisabled"><div class="spinner"></div></div>
+        </div>`
+      : "";
 
   const body = `
 <div class="content">
@@ -110,7 +200,7 @@ export function record() {
 
       <div class="modeToggle">
         <div class="modeSegment modeSegmentActive"><div class="modeTextActive">Melody</div></div>
-        <div class="modeSegment"><div class="modeTextInactive">Polyphonic</div></div>
+        <div class="modeSegment${lock}"><div class="modeTextInactive">Polyphonic</div></div>
       </div>
 
       <div class="keyRow f">
@@ -120,38 +210,30 @@ export function record() {
     </div>
 
     <div class="centerZone f">
-      <div class="ambientOrb"></div>
-      <div class="rippleRing rippleOuter"></div>
-      <div class="rippleRing rippleInner"></div>
+      <div class="ambientOrb"${phase === "ready" ? ' style="opacity:0.45"' : ""}></div>
+      ${live ? `<div class="rippleRing rippleOuter"></div><div class="rippleRing rippleInner"></div>` : ""}
       <div class="btnOuter">
-        <div class="btnRing f ac jc">
-          <div class="btnGlassDisc f ac jc"><div class="stopSquare"></div></div>
+        <div class="btnRing f ac jc" style="background:${ring}">
+          <div class="btnGlassDisc f ac jc">${discInner}</div>
         </div>
       </div>
-      <div class="waveContainer">${waveBars()}</div>
+      <div class="waveContainer">${waveBars(live)}</div>
     </div>
 
-    <div class="meterArea">
-      ${ic("mic-outline", 14, C.success, "margin-right:8px")}
-      <div class="meterTrack"><div class="meterFill" style="width:72%"></div></div>
-    </div>
+    ${meter}
 
     <div class="statusArea f">
-      <div class="statusTitle">Listening…</div>
-      <div class="timerText">00:12</div>
-      <div class="statusSub">Tap the button again when you're done.</div>
+      <div class="statusTitle">${statusTitle}</div>
+      <div class="timerText">${uploading ? `${pct}%` : live ? "00:12" : "00:00"}</div>
+      <div class="statusSub">${statusSub}</div>
+      ${statusTail}
     </div>
 
-    <div class="bottomAction f">
-      <div class="btn btnPrimary">
-        ${ic("stop-circle-outline", 18, "#FFFFFF", "margin-right:8px")}
-        <div class="btnLabel" style="color:#FFFFFF">Stop &amp; Transcribe</div>
-      </div>
-    </div>
+    ${bottom}
 
   </div>
 </div>
 ${tabBar("Record")}`;
 
-  return shell(body, REC_CSS);
+  return shell(body, REC_CSS, { mode });
 }

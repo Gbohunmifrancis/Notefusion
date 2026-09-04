@@ -39,6 +39,7 @@ from app.pipeline.transcriber import (
     _blend_confidence,
     _parse_key_override,
     _resolve_melody_overlaps,
+    _select_melody_path,
 )
 from tests.accuracy import metrics, runner
 from tests.accuracy.synth import RefNote
@@ -867,20 +868,34 @@ def test_direction_is_read_from_melodic_order_not_storage_order():
 # Three of the eleven notes come back a semitone sharp, and Basic Pitch is *more*
 # confident about those than about the eight it got right.  That inversion is not
 # invented for the fixture: it is what the corpus measures now that the amplitude floor
-# deletes the easy ghosts amplitude used to separate, which is why conf.auc sits at
-# 0.551 and conf.separation at -0.012 with bare amplitude.
+# deletes the easy ghosts amplitude used to separate.
 _WRONG_INDICES = (2, 5, 8)
 _AMP_CORRECT = 0.50
 _AMP_WRONG = 0.62  # higher than the correct notes: the measured anti-correlation
+_ONSET_FIRED = 0.85
+_ONSET_SILENT = 0.10
 
 
-def _events_for_confidence(*, pyin_sees_the_truth: bool) -> list[Event]:
+def _events_for_confidence(*, onset_agrees: bool) -> list[Event]:
     """One event per note of PHRASE, three of them a semitone sharp.
 
-    ``pyin_sees_the_truth`` is the whole experiment.  True is the ordinary case: pyin
-    tracked the sung pitch, so it contradicts the three wrong notes.  False is the
-    drift case, where pyin followed the singer off-pitch and agrees with the error —
-    there is no second opinion to be had, and the fix must not pretend otherwise.
+    ``onset_agrees`` is the whole experiment, and it names the two populations the corpus
+    actually contains.
+
+    True is the ordinary ghost: a note assembled from leftover frame energy, which by
+    construction has frame support and no onset support — the Onsets & Frames rule, and the
+    inversion their ablation measured at 18% relative note F1.  The onset head is silent
+    where those three notes claim to start.
+
+    False is the sustained-vibrato case, where the segmenter cuts one vibrato'd note into a
+    staircase and every fragment is a real pitch excursion the onset head fires at just as
+    hard.  There is no second opinion to be had, and the blend must not pretend otherwise.
+
+    ``pyin_midi`` and ``voiced_prob`` are set on every event and are deliberately inert:
+    the blend stopped reading them when the agreement term measured below chance (auc 0.448,
+    voiced_prob 0.357).  Leaving them populated makes
+    ``test_confidence_blend_changes_nothing_without_an_onset_reading`` a live guard that they
+    are still being ignored, rather than a test of an empty struct.
     """
     events = []
     for i, true_pitch in enumerate(PHRASE):
@@ -891,12 +906,11 @@ def _events_for_confidence(*, pyin_sees_the_truth: bool) -> list[Event]:
                 end=(i + 1) * BEAT_SEC,
                 pitch=true_pitch + 1 if wrong else true_pitch,
                 amp=_AMP_WRONG if wrong else _AMP_CORRECT,
-                pyin_midi=(
-                    float(true_pitch)
-                    if pyin_sees_the_truth
-                    else float(true_pitch + 1 if wrong else true_pitch)
-                ),
+                pyin_midi=float(true_pitch),
                 voiced_prob=0.95,
+                onset_post=(
+                    _ONSET_FIRED if onset_agrees or not wrong else _ONSET_SILENT
+                ),
             )
         )
     return events
@@ -924,15 +938,15 @@ def _conf_metrics(events: list[Event], *, blended: bool) -> dict:
 
 
 def test_confidence_blend_ranks_right_notes_above_wrong_ones():
-    """The gated columns are conf.auc and conf.separation, and both are broken today.
+    """The gated columns are conf.auc and conf.separation, and bare amplitude fails both.
 
-    Bare amplitude does not merely fail to rank here, it ranks *backwards*: every wrong
-    note outscores every correct one, so auc is 0.0 and separation is negative.  Adding
-    pyin's independent reading of the same spans is what makes the ordering recoverable
-    at all — neither engine alone can tell which of the two disagreeing pitches is right,
-    but disagreement itself is the signal.
+    Amplitude does not merely fail to rank here, it ranks *backwards*: every wrong note
+    outscores every correct one, so auc is 0.0 and separation is negative.  Asking Basic
+    Pitch's onset head whether it fired where each note claims to start is what makes the
+    ordering recoverable — a different question from "what pitch is sounding", which is the
+    only question either decode path asks today.
     """
-    events = _events_for_confidence(pyin_sees_the_truth=True)
+    events = _events_for_confidence(onset_agrees=False)
 
     before = _conf_metrics(events, blended=False)
     after = _conf_metrics(events, blended=True)
@@ -945,16 +959,17 @@ def test_confidence_blend_ranks_right_notes_above_wrong_ones():
 
 
 def test_confidence_blend_is_specific_to_having_a_second_opinion():
-    """When pyin agrees with the error there is no consensus to read, and the blend
-    must inherit amplitude's failure rather than manufacture a fix.
+    """When the onset head fires at the error too, the blend must inherit amplitude's
+    failure rather than manufacture a fix.
 
-    This is the ``drift_1_semitone`` case, where the singer drifts and pyin drifts with
-    them: measured, that case is the one place the blend *loses* ground (auc 0.960 ->
-    0.760).  Uniform agreement makes the blend a monotone function of amplitude, so the
-    rank statistic is unchanged — which is the honest outcome and worth pinning, because
-    a formula that improved auc here would be scoring its own shape, not the evidence.
+    This is the sustained-vibrato case, and it is measured, not hypothetical: on
+    ``vibrato_rate_k20`` the ghost's onset posterior is 0.926 while a correct note's is
+    0.355, because the staircase fragments are genuinely in the audio.  A uniform onset
+    reading makes the blend a monotone function of amplitude, so the rank statistic is
+    unchanged — which is the honest outcome and worth pinning, because a formula that
+    improved auc here would be scoring its own shape rather than the evidence.
     """
-    events = _events_for_confidence(pyin_sees_the_truth=False)
+    events = _events_for_confidence(onset_agrees=True)
 
     before = _conf_metrics(events, blended=False)
     after = _conf_metrics(events, blended=True)
@@ -964,20 +979,21 @@ def test_confidence_blend_is_specific_to_having_a_second_opinion():
     assert after["separation"] < 0.0
 
 
-def test_confidence_blend_changes_nothing_when_pyin_never_spoke():
-    """Short clips and librosa failures leave every event without a pyin reading.
+def test_confidence_blend_changes_nothing_without_an_onset_reading():
+    """``Posteriorgram.capture`` returns None on an unusable ``model_output``.
 
-    The blend has to be a no-op there, not a rescaling: the client bands the number at
-    fixed 0.5 and 0.75 cuts, so dragging a whole clip into a different band on no new
-    evidence would be a regression the rank-based auc cannot see.
+    The blend has to be a no-op there, not a rescaling: the client bands the number at fixed
+    0.5 and 0.75 cuts, so dragging a whole clip into a different band on no new evidence
+    would be a regression the rank-based auc cannot see.  The events still carry
+    ``pyin_midi`` and ``voiced_prob``, so this also pins that neither is read.
     """
-    silent_pyin = [
-        replace(evt, pyin_midi=None, voiced_prob=0.0)
-        for evt in _events_for_confidence(pyin_sees_the_truth=True)
+    no_onset = [
+        replace(evt, onset_post=None)
+        for evt in _events_for_confidence(onset_agrees=False)
     ]
 
-    assert _conf_metrics(silent_pyin, blended=True) == _conf_metrics(
-        silent_pyin, blended=False
+    assert _conf_metrics(no_onset, blended=True) == _conf_metrics(
+        no_onset, blended=False
     )
 
 
@@ -1167,6 +1183,102 @@ def test_a_dip_between_two_different_pitches_is_left_to_the_pitch_rule():
     assert _split_rearticulations([segment], rms, midi) == [segment]
 
 
+# ── The reseed ratchet — why a deep wobble shatters, and what stops it ─────────
+
+# The corpus can only show that ``vibrato_rate_k20`` went 0.667 -> 0.957.  It cannot show
+# WHY, and here the why was a specific mechanical claim that had to be checked before the
+# constant could be justified: on a cut, ``_contour_segments`` reseeds ``accepted`` from the
+# excursion's own frames, so a deep wobble leaves the running centre on the wobble's PEAK.
+# The opposite swing is then a whole peak-to-peak away, outside the band again, cutting again
+# — a ratchet that feeds itself.  These two tests are the evidence for that claim and for the
+# bound on the fix, both on the pure function with no inference in the way.
+
+
+def _sine_contour(centre: float, depth: float, rate_hz: float, n_frames: int = 120):
+    """A held note wobbling ``+-depth`` semitones at ``rate_hz``.
+
+    Rate is a parameter here, unlike ``_vibrato_contour`` above, because the ratchet is
+    rate-sensitive in a way the fixed 5.5 Hz cannot show: at 5.5 Hz a depth of 2.0 splits into
+    2 segments, but at 4.0 Hz the same depth splits into 22.  A slower wobble spends more
+    consecutive frames outside the band per swing, which is what completes the persistence
+    count and springs the ratchet, so the slow case is the one that exhibits it.
+    """
+    import numpy as np
+
+    times = np.arange(n_frames) * _FRAME_SEC
+    midi = centre + depth * np.sin(2 * np.pi * rate_hz * times)
+    return times, midi, np.full(n_frames, 0.9)
+
+
+def test_the_reseed_ratchet_shatters_a_deep_wobble_and_the_lookahead_stops_it(monkeypatch):
+    """One held note must stay one note, and without the lookahead it becomes 22.
+
+    22 is the measurement that made the ratchet worth fixing rather than a theory about it:
+    a single sustained pitch is being reported as twenty-two notes, which is not a tuning
+    imprecision but a self-feeding failure.  The lookahead collapses it to 1 by declining the
+    cut when the contour comes back to the centre it left, and — the load-bearing detail —
+    by skipping to the return frame so ``accepted`` is never reseeded from the excursion at
+    all.  Merely clearing the out-of-band counter would re-count the same swing every
+    ``CONTOUR_PERSIST_FRAMES`` and the ratchet would survive.
+    """
+    from app.pipeline import transcriber as T
+
+    times, midi, vp = _sine_contour(60.0, 2.0, 4.0)
+
+    monkeypatch.setattr(T, "CONTOUR_RESEED_LOOKAHEAD_FRAMES", 0)
+    shattered = T._contour_segments(times, midi, vp)
+
+    monkeypatch.setattr(T, "CONTOUR_RESEED_LOOKAHEAD_FRAMES", 2)
+    whole = T._contour_segments(times, midi, vp)
+
+    assert len(shattered) >= 10, (
+        f"the ratchet should shred this contour; got {len(shattered)} segments, so the "
+        "fixture no longer exhibits the defect the lookahead exists to fix"
+    )
+    assert len(whole) == 1, f"expected one held note, got {len(whole)}"
+
+
+def test_the_lookahead_keeps_a_genuine_six_frame_note_and_swallows_a_five_frame_one(
+    monkeypatch,
+):
+    """The specificity bound, pinned at the value measured rather than the one predicted.
+
+    The prediction was that any window under ``CONTOUR_MIN_SEGMENT_FRAMES`` (5) is safe,
+    because a genuine note occupies at least that many frames and so cannot return to the
+    previous pitch inside the window.  That is wrong, and this test is where it is wrong: the
+    band test runs on a 9-frame median, which blurs a boundary across several frames, so a
+    real note of exactly 5 frames DOES get swallowed at a window of 2.  Six frames and up
+    survive.
+
+    The 5-frame case is asserted, not merely mentioned, because it is a live exposure — a
+    116 ms note a semitone and a half away can be absorbed into its neighbour — and pinning
+    it means any future change that fixes it has to come here and say so.  It is also the
+    direct explanation for the corpus behaviour recorded on the constant: widths of 3 and up
+    cost ``fast_sixteenths_c_major`` 1.000 -> 0.929, because at those widths the merge starts
+    reaching notes that are longer than five frames.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    monkeypatch.setattr(T, "CONTOUR_RESEED_LOOKAHEAD_FRAMES", 2)
+
+    def segments_for(hold_frames: int) -> int:
+        midi = np.concatenate(
+            [np.full(20, 60.0), np.full(hold_frames, 61.5), np.full(20, 60.0)]
+        )
+        times = np.arange(midi.size) * _FRAME_SEC
+        return len(T._contour_segments(times, midi, np.full(midi.size, 0.9)))
+
+    assert segments_for(6) == 3, "a genuine six-frame note must survive the lookahead"
+    assert segments_for(12) == 3, "and so must a comfortably long one"
+    assert segments_for(5) == 1, (
+        "measured exposure: a genuine five-frame note IS absorbed at this width.  If this "
+        "now fails, the exposure is gone — update CONTOUR_RESEED_LOOKAHEAD_FRAMES' comment, "
+        "which cites it as the reason the safe ceiling is 2 and not 4"
+    )
+
+
 # ── The melody floor — which voice pyin is pointed at ──────────────────────────
 
 # The corpus shows the outcome (poly_alberti_bass 0.000 -> 1.000) but not the mechanism, and
@@ -1241,7 +1353,7 @@ def test_the_floor_fires_when_pyin_is_an_octave_below_the_skyline():
 
 
 def test_the_floor_declines_a_monophonic_clip():
-    """The gate's negative case, and the one that protects the 39 monophonic cases.
+    """The gate's negative case, and the one that protects the 40 monophonic cases.
 
     Same melody, no left hand, and pyin tracking it — which is what every monophonic corpus
     case measured ([-0.09, +1.11] semitones).  Returning ``None`` here is what makes the
@@ -1348,7 +1460,7 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
 ):
     """Pointing pyin at the melody does not oblige pyin to find it.
 
-    ``poly_block_chords`` is the case: the gate fires correctly, pyin re-runs from midi 60 —
+    ``poly_block_chords`` was the case: the gate fires correctly, pyin re-runs from midi 60 —
     and comes back with 82 of 336 frames voiced, every one at midi 60.  One pitch, whole clip.
     Segmenting that yields two notes, and because contour events win outright they became the
     entire transcription, which is why that case scored beats.f1 0.308 and the wrong key while
@@ -1357,6 +1469,14 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
     So ``_segment_contour`` has to be able to say "I found the register but not the line", and
     the floor has to survive its own path's failure — Basic Pitch could see this melody all
     along (11 of 11 reference pitches above the floor).
+
+    Past tense for that case only.  A correct floor now feeds ``Posteriorgram.melody_track``
+    rather than a second pyin pass, and it reads 11 EXACT pitches off the same clip, so
+    ``poly_block_chords`` no longer reaches this branch.  The branch is still live on two
+    routes — a posteriorgram capture failure, which restores exactly the second pass measured
+    above, and a gated clip with no stable-pitch run above the floor — and the property is a
+    property of a mixture rather than of pyin, so it is still worth pinning.  The test below
+    is the other half: what the same starving pyin produces once the contour head is there.
 
     ``_pyin_contour`` is monkeypatched rather than driven through audio, and that is the point
     rather than a shortcut: the check is a property of the contour, and synthesising a clip
@@ -1428,6 +1548,265 @@ def test_a_degenerate_second_contour_hands_the_floor_to_the_inference_path(
         "a constant contour with no floor was discarded; one sustained note is a real "
         "transcription and the degeneracy check was scoped to the second pass only"
     )
+
+
+def _posteriorgram_with(times, plan, garbage_midi=100.0, accomp_midi=48.0):
+    """A ``Posteriorgram`` whose ``contour`` head holds exactly *plan*, on its own time grid.
+
+    *plan* is ``[(midi, n_frames), ...]`` counted in *times* frames and must total
+    ``times.size``, so that the fixture covers the destination grid exactly — a plan that
+    overruns would be silently truncated by the slicing below and a plan that falls short
+    would leave the tail untested.  A ``midi`` of ``None`` is a silent stretch, which is how
+    ``CONTOUR_MIN_ACTIVATION`` gets exercised.
+
+    Two distractors are written into every frame of the voiced stretches, because both masks
+    in ``melody_track`` are load-bearing and a fixture without them would leave them untested:
+
+    * *accomp_midi* is activated HARDER than the melody, which is the real situation — the
+      accompaniment is the mixture's strongest component, which is the whole reason pyin
+      follows it.  Without the floor mask ``argmax`` returns this.
+    * *garbage_midi* is above ``CONTOUR_CEIL_MIDI``, where ``maximum_frequency`` constrains
+      the note and onset heads and leaves this one alone.  Without the ceiling mask
+      ``argmax`` returns this.
+
+    The grid is twice as fine as *times* on purpose: this head runs at ~86 fps against pyin's
+    ~45, so a fixture sharing pyin's grid would not exercise the resample at all.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    total = sum(n for _midi, n in plan)
+    assert total == times.size, (
+        f"the plan covers {total} frames and the grid is {times.size}; size them the same or "
+        "the part that does not overlap is not being tested"
+    )
+
+    src_times = np.arange(total * 2) * (float(times[1] - times[0]) / 2.0)
+    contour = np.zeros((src_times.size, 264))
+
+    def bin_of(midi: float) -> int:
+        return int(round((midi - T.POSTERIOR_MIDI_LOW) * T.CONTOUR_BINS_PER_SEMITONE))
+
+    f = 0
+    for midi, n_frames in plan:
+        span = slice(f, f + n_frames * 2)
+        if midi is not None:
+            contour[span, bin_of(midi)] = 0.7
+            contour[span, bin_of(accomp_midi)] = 0.95
+            contour[span, bin_of(garbage_midi)] = 0.99
+        f += n_frames * 2
+
+    onset = np.zeros((src_times.size, T.POSTERIOR_N_BINS))
+    return T.Posteriorgram(
+        onset=onset, note=onset.copy(), contour=contour, times=src_times
+    )
+
+
+def test_the_contour_head_recovers_a_melody_the_second_pyin_pass_cannot(
+    tmp_path, monkeypatch
+):
+    """Pointing pyin at the melody can make things worse, and there is a tracker that fixes it.
+
+    ``close_voicing_c_major`` is the case, and it is the opposite failure to the one above.
+    The floor lands *correctly* — on the melody's own lowest note, one semitone clear of the
+    whole left hand, the best placement available — and pyin then reports 4 events out of 336
+    frames at voiced_prob 0.011-0.023.  Raising ``fmin`` took the mixture's strongest
+    component out of pyin's search band without taking its energy out of the signal.  So the
+    defect is not the floor's placement and no margin reaches it; the second pyin pass is the
+    wrong consumer for a correct floor.
+
+    Basic Pitch's ``contour`` head has no ``fmin`` band and no voiced/unvoiced decision, so it
+    cannot fail that way.  Measured end to end: that case goes notes.f1 0.500 -> 1.000,
+    ``poly_block_chords`` 11 EXACT where the second pass returned one pitch, and
+    ``poly_alberti_bass`` unchanged at 1.000.
+
+    Driven through a hand-built ``Posteriorgram`` for the reason the test above patches
+    ``_pyin_contour``: the properties under test are properties of the two contours, and
+    synthesising audio that produces a *specific* degenerate pyin pass above a raised floor is
+    its own research problem.  The fixture writes in both distractors the masks exist to
+    reject, so an unmasked implementation fails here rather than in the corpus.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    wav = tmp_path / "unused.wav"
+    wav.write_bytes(b"")  # never decoded: the RMS load is already try/except-guarded
+
+    n = 60
+    times = np.arange(n) * _FLOOR_HOP
+    firing = [(0.0, 1.4, 60, 0.8)]
+
+    def degenerate(_path, fmin: float = T.PYIN_FMIN_HZ):
+        """First pass on the accompaniment; second pass above the floor stuck on one pitch."""
+        first = fmin == T.PYIN_FMIN_HZ
+        return times, np.full(n, 48.0 if first else 60.0), np.full(n, 0.9)
+
+    monkeypatch.setattr(T, "_pyin_contour", degenerate)
+
+    # Control: no posteriorgram, so the second pyin pass is all there is and the degeneracy
+    # check declines — the pre-change behaviour, and still the capture-failure fallback.
+    events, floor_midi = T._segment_contour(wav, firing, None)
+    assert floor_midi is not None, "the gate did not fire, so this tests nothing"
+    assert not events, "the fixture is not degenerate, so the comparison below is empty"
+
+    # The change: same clip, same floor, same starving pyin — and the melody comes back.
+    melody = [(60.0, 20), (64.0, 20), (67.0, 20)]
+    events, floor_midi = T._segment_contour(wav, firing, _posteriorgram_with(times, melody))
+
+    assert floor_midi is not None
+    assert [e.pitch for e in events] == [60, 64, 67], (
+        f"the contour head returned {[e.pitch for e in events]}; a melody pyin could not "
+        "follow is exactly what melody_track exists to recover"
+    )
+
+    # Specificity 1: the floor mask is load-bearing.  The accompaniment at 48 is activated
+    # harder than the melody in every frame, so an unmasked argmax returns the left hand —
+    # which is the defect the whole melody floor exists to prevent.  Asserted against the
+    # track rather than the events because the mask is driven by the argument, so there is no
+    # constant to disable: dropping the argument is the mutation, and this is it.
+    unmasked, _strength = _posteriorgram_with(times, melody).melody_track(None, times)
+    assert 48 in {int(round(v)) for v in unmasked[~np.isnan(unmasked)]}, (
+        "argmax without the floor mask did not return the accompaniment, so this fixture no "
+        "longer poses the problem the floor mask solves and the assertion below is vacuous"
+    )
+    assert all(e.pitch >= floor_midi for e in events), (
+        "an event landed below the melody floor, so the floor mask is not being applied and "
+        "argmax is free to follow the accompaniment"
+    )
+
+    # Specificity 2: an above-ceiling bin activated harder than everything else cannot win.
+    # maximum_frequency constrains the note and onset heads and leaves this one alone, so
+    # without the mask these bins carry unconstrained garbage.  Its failure signature is an
+    # EMPTY transcription rather than a high one — garbage wins every frame, the track holds
+    # one distinct pitch, and MELODY_FLOOR_MIN_DISTINCT_PITCHES then declines the clip — so
+    # the emptiness is asserted here too, otherwise this passes vacuously on [].
+    assert events and all(e.pitch <= T.CONTOUR_CEIL_MIDI for e in events), (
+        f"got {[e.pitch for e in events]}; without the ceiling mask the bins above "
+        "CONTOUR_CEIL_MIDI — where the other two heads have no data at all — win every frame, "
+        "and the degeneracy check then hands the whole clip to the inference path"
+    )
+
+    # Specificity 3: silence is not a note.  argmax returns a bin on a silent frame too, so
+    # without an absolute activation floor a clip grows one spurious trailing note at the
+    # bottom bin — which on poly_block_chords would turn notes.f1 1.000 into
+    # 2*11/(11+12) = 0.957, trading a win for a loss.
+    with_tail = [(60.0, 15), (64.0, 15), (67.0, 15), (None, 15)]
+    tail_events, _ = T._segment_contour(wav, firing, _posteriorgram_with(times, with_tail))
+    assert [e.pitch for e in tail_events] == [60, 64, 67], (
+        f"a silent tail produced {[e.pitch for e in tail_events]}; CONTOUR_MIN_ACTIVATION is "
+        "what stops argmax reading silence as a note"
+    )
+
+
+def test_the_contour_head_is_unreachable_on_a_clip_whose_floor_declined(
+    tmp_path, monkeypatch
+):
+    """The gate is the floor, which is what makes the monophonic cases safe by construction.
+
+    ``melody_track`` is not a better tracker in general and must not be reached where pyin is
+    doing its job: ``drift_1_semitone`` reads a full semitone sharp under argmax while pyin is
+    EXACT, and on the vibrato family argmax is wrong outright.  Its whole warrant is the
+    mixture case.  Since the floor fires on 0 of the 40 monophonic corpus cases, tying the two
+    together is what keeps those cases byte-identical without measuring them one by one — so
+    that implication is worth an assertion rather than a comment.
+
+    The fixture makes the wrong answer loud: the posteriorgram is handed a melody that shares
+    no pitch with pyin's contour, so if it were consulted the returned pitches would change.
+    """
+    import numpy as np
+
+    from app.pipeline import transcriber as T
+
+    wav = tmp_path / "unused.wav"
+    wav.write_bytes(b"")
+
+    n = 60
+    times = np.arange(n) * _FLOOR_HOP
+    # pyin and the skyline agree about the register, so _melody_floor_hz declines.
+    moving = np.concatenate([np.full(20, 60.0), np.full(20, 62.0), np.full(20, 64.0)])
+
+    def agreeing(_path, fmin: float = T.PYIN_FMIN_HZ):
+        return times, moving.copy(), np.full(n, 0.9)
+
+    monkeypatch.setattr(T, "_pyin_contour", agreeing)
+
+    declining = [(0.0, 1.4, 60, 0.8)]
+    contradicting = _posteriorgram_with(times, [(72.0, 20), (74.0, 20), (76.0, 20)])
+
+    events, floor_midi = T._segment_contour(wav, declining, contradicting)
+
+    assert floor_midi is None, "the gate fired on an agreeing clip, so this tests nothing"
+    assert [e.pitch for e in events] == [60, 62, 64], (
+        f"an ungated clip came back as {[e.pitch for e in events]}, which is the "
+        "posteriorgram's melody rather than pyin's; melody_track is being consulted where "
+        "the floor declined and the 40 monophonic cases are no longer safe by construction"
+    )
+
+
+def test_melody_path_keeps_the_confident_voice_through_block_chord_candidates():
+    """The fallback must follow one sustained line, not the last/highest overlap.
+
+    These are the raised-floor Basic Pitch candidates from the block-chord texture,
+    reduced to the notes that exercise the decision.  The true line is not the skyline:
+    every opening C has an octave or harmonic above it, and the false notes around beats
+    five and nine start late enough that a same-onset-only rule cannot reach them.
+    """
+    candidates = [
+        Event(0.000, 0.592, 60, 0.654),
+        Event(0.000, 0.580, 72, 0.582),
+        Event(0.000, 0.430, 79, 0.288),
+        Event(0.615, 1.231, 62, 0.544),
+        Event(0.615, 1.196, 74, 0.297),
+        Event(1.254, 1.858, 64, 0.599),
+        Event(1.881, 2.497, 65, 0.802),
+        Event(1.881, 2.451, 77, 0.464),
+        Event(2.497, 3.113, 67, 0.602),
+        Event(2.962, 3.612, 74, 0.277),
+        Event(3.113, 3.763, 69, 0.777),
+        Event(3.171, 3.647, 76, 0.267),
+        Event(3.751, 4.368, 71, 0.754),
+        Event(4.368, 5.041, 72, 0.732),
+        Event(5.006, 5.633, 67, 0.604),
+        Event(5.436, 5.564, 74, 0.297),
+        Event(5.633, 6.273, 64, 0.683),
+        Event(6.238, 7.527, 60, 0.664),
+        Event(6.250, 7.481, 72, 0.567),
+    ]
+
+    selected = _select_melody_path(candidates)
+
+    assert [event.pitch for event in selected] == [60, 62, 64, 65, 67, 69, 71, 72, 67, 64, 60]
+    assert selected[0].pitch != max(event.pitch for event in candidates if event.start == 0.0)
+
+
+def test_melody_path_leaves_a_non_competing_line_unchanged():
+    """Genuine semitone steps with ordinary boundary bleed are not polyphony."""
+    events = [
+        Event(0.00, 0.64, 64, 0.72),
+        Event(0.62, 1.26, 65, 0.70),
+        Event(1.24, 1.88, 64, 0.71),
+        Event(1.86, 2.50, 65, 0.69),
+    ]
+
+    selected = _select_melody_path(events)
+
+    assert selected is events
+    assert [event.pitch for event in selected] == [64, 65, 64, 65]
+
+
+def test_melody_path_does_not_trade_a_line_for_one_long_harmonic():
+    """A sustained harmonic cannot win merely by having a longer duration."""
+    events = [
+        Event(0.00, 0.50, 60, 0.70),
+        Event(0.50, 1.00, 62, 0.70),
+        Event(0.00, 1.00, 72, 0.90),
+    ]
+
+    selected = _select_melody_path(events)
+
+    assert [event.pitch for event in selected] == [60, 62]
 
 
 # ── Grid refinement — two single-sample biases, one bounded sweep ──────────────

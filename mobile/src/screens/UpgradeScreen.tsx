@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -13,8 +15,10 @@ import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
+import { Avatar } from "../components/Avatar";
+import { PlanCardSkeleton } from "../components/Skeleton";
 import { BrandMark } from "../components/BrandMark";
-import { billingApi } from "../api/endpoints";
+import { billingApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import {
@@ -27,8 +31,9 @@ import {
   type Shadows,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { useAuth } from "../lib/auth";
 import { useSubscription } from "../lib/subscription";
-import type { Plan, Subscription } from "../api/types";
+import type { AuthUser, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 type Props = { navigation: any; route?: any };
@@ -46,6 +51,34 @@ const PRO_FEATURES: { icon: keyof typeof Ionicons.glyphMap; text: string }[] = [
   { icon: "musical-notes", text: "Full staff notation & MIDI export" },
   { icon: "sync", text: "Cloud library sync across devices" },
   { icon: "flash", text: "Priority processing queue" },
+];
+
+/** Key features displayed in the active Pro subscription hub. */
+const PRO_BENEFITS: {
+  icon: keyof typeof Ionicons.glyphMap;
+  title: string;
+  desc: string;
+}[] = [
+  {
+    icon: "infinite",
+    title: "Unlimited Transcriptions",
+    desc: "Transcribe audio recordings and choir takes with no quotas or duration caps.",
+  },
+  {
+    icon: "musical-notes",
+    title: "Full Staff & Tonic Solfa",
+    desc: "Automatic movable-do solfa conversion, interactive sheet display, and MIDI export.",
+  },
+  {
+    icon: "flash",
+    title: "Priority Cloud Queue",
+    desc: "High-speed server worker queue for rapid inference without wait times.",
+  },
+  {
+    icon: "cloud-done",
+    title: "Cloud Library Sync",
+    desc: "Your scores, audio takes, and piano edits are securely backed up across devices.",
+  },
 ];
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -110,6 +143,8 @@ export function UpgradeScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const { refresh: refreshSubscription } = useSubscription();
+  const { user } = useAuth();
+  const [profile, setProfile] = useState<MyProfile | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -128,13 +163,15 @@ export function UpgradeScreen({ navigation }: Props) {
 
   const load = useCallback(async () => {
     try {
-      const [planList, sub] = await Promise.all([
+      const [planList, sub, prof] = await Promise.all([
         billingApi.plans(),
         billingApi.mySubscription(),
+        meApi.get().catch(() => null),
       ]);
       if (!mounted.current) return;
       setPlans(planList);
       setSubscription(sub);
+      if (prof) setProfile(prof);
       // Default to the best-value (highest) plan so the recommended choice is preselected.
       const best = [...planList].sort((a, b) => b.amountMinor - a.amountMinor)[0];
       setSelectedId((cur) => cur ?? best?.id ?? null);
@@ -250,7 +287,11 @@ export function UpgradeScreen({ navigation }: Props) {
       {/* ── Header row ─────────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.canGoBack()
+              ? navigation.goBack()
+              : navigation.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           ripple="borderless"
@@ -261,42 +302,50 @@ export function UpgradeScreen({ navigation }: Props) {
         </Touchable>
 
         <View style={styles.titleBlock}>
-          <Text style={styles.titleLabel}>Membership</Text>
-          <Text style={styles.titleMain}>NoteFusion Pro</Text>
+          <Text style={styles.titleLabel}>
+            {isActive ? "Account" : "Membership"}
+          </Text>
+          <Text style={styles.titleMain}>
+            {isActive ? "Subscription" : "NoteFusion Pro"}
+          </Text>
         </View>
+
+        {isActive && (
+          <View style={styles.activePill}>
+            <View style={styles.activeDot} />
+            <Text style={styles.activePillText}>Pro Active</Text>
+          </View>
+        )}
       </View>
 
-      {/* ── Hero badge ─────────────────────────────────────────────────────── */}
-      <View style={styles.hero}>
-        <LinearGradient
-          colors={gradients.brand}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.heroBadge}
-        >
-          {isActive ? (
-            <Ionicons name="checkmark-circle" size={32} color={colors.onAccent} />
-          ) : (
+      {/* ── Hero badge (only on paywall when not active) ─────────────────── */}
+      {!isActive && !loading && (
+        <View style={styles.hero}>
+          <LinearGradient
+            colors={gradients.brand}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.heroBadge}
+          >
             <BrandMark size={34} color="#FFFFFF" waveColor="rgba(255,255,255,0.7)" />
-          )}
-        </LinearGradient>
-        <Text style={styles.heroTitle}>
-          {isActive ? "You're on Pro" : "Unlock everything"}
-        </Text>
-        <Text style={styles.heroSub}>
-          {isActive
-            ? "Thanks for supporting NoteFusion."
-            : "Go further with unlimited transcriptions and full exports."}
-        </Text>
-      </View>
+          </LinearGradient>
+          <Text style={styles.heroTitle}>Unlock everything</Text>
+          <Text style={styles.heroSub}>
+            Go further with unlimited transcriptions and full exports.
+          </Text>
+        </View>
+      )}
 
       {loading ? (
         <View style={styles.loadingBlock}>
-          <ActivityIndicator color={colors.accent} />
+          <PlanCardSkeleton />
+          <PlanCardSkeleton />
         </View>
       ) : isActive ? (
         <ActiveState
           subscription={subscription!}
+          profile={profile}
+          user={user}
           onChanged={() => {
             load();
             // The shared provider drives the tab label and the gold ring, so it has to
@@ -379,31 +428,43 @@ export function UpgradeScreen({ navigation }: Props) {
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 /**
- * Status and management card for a caller who already has an active subscription. This is what the
- * Premium tab lands on, so it has to be more than a receipt: the renewal date, and the way out.
+ * Clean, focused member hub for a user with active Pro status.
+ * Displays their current plan details, included privileges, and billing management.
  */
 function ActiveState({
   subscription,
+  profile,
+  user,
   onChanged,
 }: {
   subscription: Subscription;
+  profile: MyProfile | null;
+  user: AuthUser | null;
   onChanged: () => void;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const [canceling, setCanceling] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState<string | null>(null);
+
   const renews = subscription.currentPeriodEndUtc
     ? new Date(subscription.currentPeriodEndUtc).toLocaleDateString("en", {
-        month: "long",
+        month: "short",
         day: "numeric",
         year: "numeric",
       })
     : null;
   const canceled = subscription.status === "canceled";
   const lifetime = subscription.isLifetime;
+  const isGift = subscription.isGift ?? false;
+
+  const displayName = user?.fullName || profile?.fullName || "NoteFusion Member";
+  const displayEmail = user?.email || profile?.email || "";
 
   async function cancel() {
     setCanceling(true);
+    setShowCancelModal(false);
     try {
       await billingApi.cancel();
       // Re-read rather than patch the local copy: the server decides how long access runs,
@@ -428,86 +489,316 @@ function ActiveState({
     }
   }
 
-  function confirmCancel() {
-    showDialog({
-      title: "Cancel subscription?",
-      message: renews
-        ? `You'll keep Pro until ${renews} — nothing is withdrawn today and nothing is refunded. ` +
-          `After that date your account returns to the free plan. Everything in your library stays.`
-        : "You'll keep Pro until the end of your paid period, then return to the free plan.",
-      icon: "warning-outline",
-      tone: "danger",
-      actions: [
-        { label: "Cancel subscription", style: "destructive", onPress: cancel },
-        { label: "Keep Pro", style: "cancel" },
-      ],
-    });
+  /** Opens the reason-survey modal — the actual cancel() only fires after
+   *  the user picks a reason and confirms. */
+  function openCancelFlow() {
+    setCancelReason(null);
+    setShowCancelModal(true);
   }
 
+
   return (
-    <Card style={styles.card}>
-      <View style={styles.activeRow}>
-        <Text style={styles.activeLabel}>Current Plan</Text>
-        <View style={styles.statusPill}>
-          <Text style={styles.statusPillText}>
-            {lifetime ? "NoteFusion Pro — Lifetime ✨" : "NoteFusion Pro ✨"}
-          </Text>
+    <View style={styles.hubContainer}>
+      {/* ── 1. Membership Status Card ─────────────────────────────────── */}
+      <Card style={styles.memberCard}>
+        <View style={styles.memberHeader}>
+          <Avatar
+            uri={profile?.profilePictureUrl}
+            name={displayName}
+            size={56}
+            premium={true}
+          />
+          <View style={styles.memberInfo}>
+            <Text style={styles.memberName} numberOfLines={1}>
+              {displayName}
+            </Text>
+            <Text style={styles.memberEmail} numberOfLines={1}>
+              {displayEmail}
+            </Text>
+            <View style={styles.memberBadge}>
+              <Ionicons
+                name={lifetime ? "diamond-outline" : isGift ? "gift-outline" : "sparkles"}
+                size={12}
+                color={colors.premiumDeep}
+              />
+              <Text style={styles.memberBadgeText}>
+                {lifetime
+                  ? "Lifetime Member"
+                  : isGift
+                    ? "Complimentary Access"
+                    : "Pro Subscriber"}
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
-      <View style={styles.activeRow}>
-        <Text style={styles.activeLabel}>Subscription Status</Text>
-        <Text style={styles.activeValue}>
-          {lifetime ? "Yours for good" : canceled ? "Cancels at period end" : "Active & Paid"}
-        </Text>
-      </View>
-      {/* Suppressed for lifetime: the period end is a year-9999 sentinel, and printing it at the
-          customer who paid the most reads as a bug. */}
-      {renews && !lifetime && (
-        <View style={styles.activeRow}>
-          <Text style={styles.activeLabel}>
-            {canceled ? "Access until" : "Renews on"}
+
+        <View style={styles.memberDivider} />
+
+        <View style={styles.statsRow}>
+          <View style={styles.statCol}>
+            <Text style={styles.statLabel}>STATUS</Text>
+            <View style={styles.statStatusRow}>
+              <View
+                style={[
+                  styles.statDot,
+                  { backgroundColor: canceled ? colors.warning : colors.success },
+                ]}
+              />
+              <Text style={styles.statValue}>
+                {canceled ? "Ending Soon" : "Active"}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.statCol}>
+            <Text style={styles.statLabel}>TIER</Text>
+            <Text style={styles.statValue}>
+              {lifetime
+                ? "Lifetime"
+                : isGift
+                  ? "Gift"
+                  : subscription.planCode
+                    ? subscription.planCode.toUpperCase()
+                    : "Pro"}
+            </Text>
+          </View>
+
+          <View style={[styles.statCol, { alignItems: "flex-end" }]}>
+            <Text style={styles.statLabel}>
+              {lifetime ? "VALIDITY" : canceled ? "EXPIRES" : "RENEWS"}
+            </Text>
+            <Text style={styles.statValue}>
+              {lifetime ? "Perpetual" : renews ? renews : "Active"}
+            </Text>
+          </View>
+        </View>
+      </Card>
+
+      {/* ── 2. Notice Callout (if canceled) ───────────────────────────── */}
+      {canceled && renews && (
+        <View style={styles.noticeWarning}>
+          <Ionicons name="time-outline" size={18} color={colors.warning} />
+          <Text style={styles.noticeWarningText}>
+            Your subscription has been canceled and will end on {renews}. Pro features remain active until then, and all your saved music scores will stay safe in your library.
           </Text>
-          <Text style={styles.activeValue}>{renews}</Text>
         </View>
       )}
 
-      <View style={styles.featureBlock}>
-        <Text style={styles.featureBlockTitle}>Included with Pro</Text>
-        {PRO_FEATURES.map((f) => (
-          <View key={f.text} style={styles.includedRow}>
-            <Ionicons name="checkmark-circle" size={16} color={colors.premium} />
-            <Text style={styles.includedText}>{f.text}</Text>
+      {/* ── 3. Included Pro Privileges ────────────────────────────────── */}
+      <View style={styles.sectionHeader}>
+        <Ionicons name="sparkles-outline" size={14} color={colors.accent} />
+        <Text style={styles.sectionTitle}>Included With Pro</Text>
+      </View>
+
+      <Card style={styles.benefitsCard}>
+        {PRO_BENEFITS.map((item, index) => (
+          <View
+            key={item.title}
+            style={[styles.benefitRow, index > 0 && styles.benefitRowBorder]}
+          >
+            <View style={styles.benefitIconCircle}>
+              <Ionicons name={item.icon} size={18} color={colors.accent} />
+            </View>
+            <View style={styles.benefitContent}>
+              <Text style={styles.benefitTitle}>{item.title}</Text>
+              <Text style={styles.benefitDesc}>{item.desc}</Text>
+            </View>
+            <Ionicons name="checkmark-circle" size={18} color={colors.accent} />
           </View>
         ))}
+      </Card>
+
+      {/* ── 4. Plan & Billing Details ─────────────────────────────────── */}
+      <View style={styles.sectionHeader}>
+        <Ionicons name="card-outline" size={14} color={colors.textMuted} />
+        <Text style={styles.sectionTitle}>Billing Details</Text>
       </View>
 
-      {/* ── Manage ──────────────────────────────────────────────────────────────
-          Only offered while there is something to cancel. A lifetime plan has no period
-          to end, and an already-cancelled one would just be a button that does nothing. */}
-      {!lifetime && !canceled && (
-        <Button
-          label="Cancel subscription"
-          variant="secondary"
-          icon="close-circle-outline"
-          onPress={confirmCancel}
-          loading={canceling}
-          style={styles.cancelBtn}
-        />
-      )}
+      <Card style={styles.billingCard}>
+        <View style={styles.billingRow}>
+          <Text style={styles.billingLabel}>Plan</Text>
+          <Text style={styles.billingValue}>
+            {lifetime
+              ? "NoteFusion Pro — Lifetime"
+              : isGift
+                ? "NoteFusion Pro — Gift"
+                : "NoteFusion Pro"}
+          </Text>
+        </View>
 
-      <Text style={styles.manageHint}>
-        {lifetime
-          ? "Lifetime access — there is nothing to renew or cancel. Receipts are in your email inbox."
-          : canceled
-            ? "Cancelled. You keep Pro until the date above, then the account returns to the free plan — resubscribe any time."
-            : "Cancelling keeps Pro until the end of the period you've paid for. Receipts are in your email inbox."}
-      </Text>
-    </Card>
+        <View style={styles.billingRow}>
+          <Text style={styles.billingLabel}>Status</Text>
+          <Text style={styles.billingValue}>
+            {lifetime
+              ? "Paid in full"
+              : isGift
+                ? "Complimentary"
+                : canceled
+                  ? "Cancels at period end"
+                  : "Active & Paid"}
+          </Text>
+        </View>
+
+        {renews && !lifetime && (
+          <View style={styles.billingRow}>
+            <Text style={styles.billingLabel}>
+              {canceled ? "Access until" : "Next renewal"}
+            </Text>
+            <Text style={styles.billingValue}>{renews}</Text>
+          </View>
+        )}
+
+        {!lifetime && !isGift && !canceled && (
+          <Button
+            label="Cancel subscription"
+            variant="secondary"
+            icon="close-circle-outline"
+            onPress={openCancelFlow}
+            loading={canceling}
+            style={styles.cancelBtn}
+          />
+        )}
+
+        <Text style={styles.billingHint}>
+          {lifetime
+            ? "Lifetime access — there is nothing to renew or cancel. Invoices and receipts were sent to your email."
+            : isGift
+              ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
+              : canceled
+                ? `Subscription canceled. Pro privileges remain active until ${renews}. You can resubscribe any time.`
+                : "Cancelling keeps Pro until the end of the period you've paid for. Receipts are in your email inbox."}
+        </Text>
+      </Card>
+
+      {/* ── Cancel Reason Survey Modal ───────────────────────────────── */}
+      <CancelReasonModal
+        visible={showCancelModal}
+        renews={renews}
+        selectedReason={cancelReason}
+        onSelectReason={setCancelReason}
+        onConfirm={cancel}
+        onDismiss={() => setShowCancelModal(false)}
+        canceling={canceling}
+      />
+    </View>
+  );
+}
+
+const CANCEL_REASONS = [
+  "Too expensive",
+  "Not using it enough",
+  "Missing features I need",
+  "Found a better alternative",
+  "Other",
+] as const;
+
+/**
+ * Slide-up survey modal shown before the subscription is actually cancelled.
+ * The user picks one of five pre-set reasons, then confirms. The reason is
+ * held client-side (available for future analytics or a server endpoint).
+ */
+function CancelReasonModal({
+  visible,
+  renews,
+  selectedReason,
+  onSelectReason,
+  onConfirm,
+  onDismiss,
+  canceling,
+}: {
+  visible: boolean;
+  renews: string | null;
+  selectedReason: string | null;
+  onSelectReason: (r: string) => void;
+  onConfirm: () => void;
+  onDismiss: () => void;
+  canceling: boolean;
+}) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={onDismiss}
+    >
+      <Pressable style={styles.cancelModalBackdrop} onPress={onDismiss} />
+      <View style={styles.cancelModalSheet}>
+        {/* Header */}
+        <View style={styles.cancelModalHandle} />
+        <View style={styles.cancelModalHeader}>
+          <Ionicons name="heart-dislike-outline" size={28} color={colors.danger} />
+          <Text style={styles.cancelModalTitle}>Before you go…</Text>
+          <Text style={styles.cancelModalSub}>
+            Help us improve — why are you cancelling?
+          </Text>
+        </View>
+
+        {/* Reason list */}
+        {CANCEL_REASONS.map((reason) => {
+          const active = selectedReason === reason;
+          return (
+            <Touchable
+              key={reason}
+              style={[styles.cancelReasonRow, active && styles.cancelReasonRowActive]}
+              onPress={() => onSelectReason(reason)}
+              scaleTo={0.98}
+              ripple={false}
+              accessibilityLabel={reason}
+            >
+              <View
+                style={[
+                  styles.cancelReasonRadio,
+                  active && styles.cancelReasonRadioActive,
+                ]}
+              >
+                {active && (
+                  <View style={styles.cancelReasonRadioDot} />
+                )}
+              </View>
+              <Text style={[styles.cancelReasonLabel, active && styles.cancelReasonLabelActive]}>
+                {reason}
+              </Text>
+            </Touchable>
+          );
+        })}
+
+        {/* Info strip */}
+        {renews && (
+          <View style={styles.cancelModalInfo}>
+            <Ionicons name="time-outline" size={14} color={colors.textMuted} />
+            <Text style={styles.cancelModalInfoText}>
+              Pro stays active until {renews}. No refund, no charge today.
+            </Text>
+          </View>
+        )}
+
+        {/* Actions */}
+        <Button
+          label="Confirm cancellation"
+          variant="danger"
+          icon="close-circle-outline"
+          onPress={onConfirm}
+          loading={canceling}
+          disabled={!selectedReason}
+          style={styles.cancelConfirmBtn}
+        />
+        <Button
+          label="Keep Pro"
+          variant="secondary"
+          onPress={onDismiss}
+          style={styles.cancelKeepBtn}
+        />
+      </View>
+    </Modal>
   );
 }
 
 /** A selectable plan row with a radio, price, and optional savings badge. */
 function PlanOption({
+
   plan,
   selected,
   badge,
@@ -664,8 +955,8 @@ const makeStyles = (c: Palette, s: Shadows) =>
     },
 
     loadingBlock: {
-      paddingVertical: spacing.xxxl,
-      alignItems: "center",
+      paddingVertical: spacing.md,
+      gap: spacing.md,
     },
 
     // ── Feature list ────────────────────────────────────────────────────────
@@ -794,77 +1085,206 @@ const makeStyles = (c: Palette, s: Shadows) =>
       paddingHorizontal: spacing.lg,
     },
 
-    // ── Active state ────────────────────────────────────────────────────────
-    activeRow: {
+    // ── Header active badge ─────────────────────────────────────────────────
+    activePill: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      backgroundColor: c.accentSoft,
+      borderWidth: 1,
+      borderColor: c.accentGlow,
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderRadius: radii.pill,
+    },
+    activeDot: {
+      width: 7,
+      height: 7,
+      borderRadius: 4,
+      backgroundColor: c.success,
+    },
+    activePillText: {
+      ...typography.caption,
+      color: c.accent,
+      fontSize: 11,
+      fontFamily: fonts.bold,
+      letterSpacing: 0.3,
+    },
+
+    // ── Active Pro Member Hub ───────────────────────────────────────────────
+    hubContainer: {
+      marginBottom: spacing.md,
+    },
+    memberCard: {
+      marginBottom: spacing.xl,
+    },
+    memberHeader: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+    },
+    memberInfo: {
+      flex: 1,
+    },
+    memberName: {
+      ...typography.heading,
+      fontSize: 18,
+      color: c.text,
+      marginBottom: 2,
+    },
+    memberEmail: {
+      ...typography.caption,
+      fontSize: 13,
+      color: c.textMuted,
+      marginBottom: spacing.sm,
+    },
+    memberBadge: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+      alignSelf: "flex-start",
+      backgroundColor: c.premiumSoft,
+      borderWidth: 1,
+      borderColor: c.premiumBorder,
+      paddingHorizontal: spacing.sm + 2,
+      paddingVertical: 3,
+      borderRadius: radii.pill,
+    },
+    memberBadgeText: {
+      ...typography.caption,
+      fontSize: 11,
+      fontFamily: fonts.bold,
+      color: c.premiumDeep,
+    },
+    memberDivider: {
+      height: 1,
+      backgroundColor: c.border,
+      marginVertical: spacing.md,
+    },
+    statsRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    statCol: {
+      flex: 1,
+    },
+    statLabel: {
+      ...typography.caption,
+      fontSize: 10,
+      fontFamily: fonts.bold,
+      color: c.textFaint,
+      letterSpacing: 0.8,
+      marginBottom: 2,
+    },
+    statStatusRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 5,
+    },
+    statDot: {
+      width: 7,
+      height: 7,
+      borderRadius: 4,
+    },
+    statValue: {
+      ...typography.label,
+      fontSize: 13,
+      color: c.text,
+    },
+
+    // ── Notice callout ──────────────────────────────────────────────────────
+    noticeWarning: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: spacing.sm,
+      backgroundColor: c.warning + "12",
+      borderWidth: 1,
+      borderColor: c.warning + "35",
+      borderRadius: radii.lg,
+      padding: spacing.md,
+      marginBottom: spacing.xl,
+    },
+    noticeWarningText: {
+      ...typography.body,
+      flex: 1,
+      fontSize: 13,
+      lineHeight: 19,
+      color: c.text,
+    },
+
+    // ── Included benefits ───────────────────────────────────────────────────
+    benefitsCard: {
+      marginBottom: spacing.xl,
+      paddingHorizontal: 0,
+      paddingVertical: spacing.xs,
+    },
+    benefitRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.lg,
+    },
+    benefitRowBorder: {
+      borderTopWidth: 1,
+      borderTopColor: c.borderLight,
+    },
+    benefitIconCircle: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      backgroundColor: c.accentSoft,
+      alignItems: "center",
+      justifyContent: "center",
+      marginRight: spacing.md,
+    },
+    benefitContent: {
+      flex: 1,
+      paddingRight: spacing.sm,
+    },
+    benefitTitle: {
+      ...typography.label,
+      fontSize: 14,
+      color: c.text,
+      marginBottom: 2,
+    },
+    benefitDesc: {
+      ...typography.caption,
+      fontSize: 12,
+      lineHeight: 17,
+      color: c.textMuted,
+    },
+
+    // ── Billing details ─────────────────────────────────────────────────────
+    billingCard: {
+      marginBottom: spacing.xl,
+    },
+    billingRow: {
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       paddingVertical: spacing.sm,
     },
-    activeLabel: {
+    billingLabel: {
       ...typography.body,
       color: c.textMuted,
       fontSize: 14,
     },
-    activeValue: {
+    billingValue: {
       ...typography.label,
       color: c.text,
       fontSize: 14,
     },
-    statusPill: {
-      backgroundColor: c.accentSoft,
-      borderWidth: 1,
-      borderColor: c.accentGlow,
-      borderRadius: radii.pill,
-      paddingHorizontal: spacing.md,
-      paddingVertical: 4,
-    },
-    statusPillText: {
-      ...typography.caption,
-      color: c.accent,
-      fontSize: 12,
-      fontFamily: fonts.bold,
-    },
-
-    // What Pro includes, restated for someone who already owns it — the same list as the
-    // paywall but in gold, since here it is a receipt rather than a pitch.
-    featureBlock: {
-      marginTop: spacing.lg,
-      paddingTop: spacing.md,
-      borderTopWidth: 1,
-      borderColor: c.border,
-    },
-    featureBlockTitle: {
-      ...typography.label,
-      color: c.text,
-      fontSize: 13,
-      textTransform: "uppercase",
-      letterSpacing: 1,
-      marginBottom: spacing.sm,
-    },
-    includedRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: spacing.sm,
-      marginBottom: 8,
-    },
-    includedText: {
-      ...typography.body,
-      color: c.text,
-      fontSize: 13,
-    },
-    // Centred rather than full-width: leaving is allowed, but it is not the action this
-    // screen is for, and a full-bleed button reads like the primary one.
-    cancelBtn: {
-      alignSelf: "center",
-      marginTop: spacing.lg,
-    },
-    manageHint: {
+    billingHint: {
       ...typography.caption,
       color: c.textFaint,
       fontSize: 12,
       lineHeight: 18,
       marginTop: spacing.md,
+    },
+    cancelBtn: {
+      alignSelf: "center",
+      marginTop: spacing.lg,
     },
 
     // ── Empty state ─────────────────────────────────────────────────────────
@@ -879,4 +1299,110 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 14,
       textAlign: "center",
     },
+
+    // ── Cancel Reason Modal ──────────────────────────────────────────────────
+    cancelModalBackdrop: {
+      flex: 1,
+      backgroundColor: c.scrim,
+    },
+    cancelModalSheet: {
+      backgroundColor: c.bg,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
+      paddingHorizontal: spacing.xl,
+      paddingBottom: spacing.xxl + 8,
+      paddingTop: spacing.sm,
+    },
+    cancelModalHandle: {
+      alignSelf: "center",
+      width: 40,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: c.border,
+      marginBottom: spacing.lg,
+    },
+    cancelModalHeader: {
+      alignItems: "center",
+      gap: spacing.xs,
+      marginBottom: spacing.xl,
+    },
+    cancelModalTitle: {
+      fontSize: 20,
+      fontFamily: fonts.bold,
+      color: c.text,
+    },
+    cancelModalSub: {
+      fontSize: 14,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      textAlign: "center",
+    },
+    cancelReasonRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.md,
+      borderRadius: radii.md,
+      marginBottom: spacing.xs,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surface,
+    },
+    cancelReasonRowActive: {
+      borderColor: c.accent,
+      backgroundColor: c.accentSoft,
+    },
+    cancelReasonRadio: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 2,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    cancelReasonRadioActive: {
+      borderColor: c.accent,
+    },
+    cancelReasonRadioDot: {
+      width: 10,
+      height: 10,
+      borderRadius: 5,
+      backgroundColor: c.accent,
+    },
+    cancelReasonLabel: {
+      flex: 1,
+      fontSize: 15,
+      fontFamily: fonts.medium,
+      color: c.text,
+    },
+    cancelReasonLabelActive: {
+      color: c.accent,
+      fontFamily: fonts.semibold,
+    },
+    cancelModalInfo: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: spacing.sm,
+      backgroundColor: c.surfaceAlt,
+      borderRadius: radii.md,
+      padding: spacing.md,
+      marginTop: spacing.md,
+      marginBottom: spacing.lg,
+    },
+    cancelModalInfoText: {
+      flex: 1,
+      fontSize: 12,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      lineHeight: 18,
+    },
+    cancelConfirmBtn: {
+      marginTop: spacing.xs,
+    },
+    cancelKeepBtn: {
+      marginTop: spacing.sm,
+    },
   });
+

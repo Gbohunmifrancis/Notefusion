@@ -1,20 +1,31 @@
 /**
- * Result screen — the notation itself, in three states.
+ * Result screen — the notation itself.
  *
  * `view: "solfa"` and `view: "staff"` are the same take under the two toggle
  * positions; `keyPicker: true` shows the re-key affordance open, which is the
  * only screenshot that can explain movable-do to someone scrolling a store page:
- * the notes did not move, the labels did.
+ * the notes did not move, the labels did. `tail` picks what comes after the
+ * export block — nothing (the store tiles, which never scroll that far), the
+ * save form, or the saved confirmation.
  *
- * Every syllable, every note head and every confidence colour comes from
- * `music.mjs`, which is the app's engine ported verbatim. Nothing here is drawn
- * by hand from an idea of what the output looks like.
+ * Every syllable and every confidence colour comes from `music.mjs`, which is the
+ * app's engine ported verbatim, and the stave itself is engraved by the app's own
+ * OSMD asset (`score.mjs`) and handed in as `staff`. Nothing here is drawn by hand
+ * from an idea of what the output looks like.
  */
 
-import { C, brand, ic } from "./tokens.mjs";
+import { C, brand, ic, paletteFor } from "./tokens.mjs";
 import { TAKE, NOTES } from "./sample.mjs";
-import { deriveSolfa, staffSvg, confidenceColor, confidenceLabel, KEY_CHOICES } from "./music.mjs";
-import { shell, PLAYER_GRAD, S_CARD } from "./screens.mjs";
+import { deriveSolfa, confidenceColor, confidenceLabel, KEY_CHOICES } from "./music.mjs";
+import { shell, PLAYER_GRAD, S_CARD, textField } from "./screens.mjs";
+
+/**
+ * `.staffWrap`'s content box, which is the width the engraver has to break systems
+ * to: 412 − 32 (`.content`) − 2 (card border) − 48 (`.solfaBody`) − 2 (its own
+ * border). `score.mjs` needs it before this module runs, so it lives here with the
+ * padding it is derived from.
+ */
+export const STAFF_W = 328;
 
 const RES_CSS = `
 .headerRow { flex-direction: row; align-items: center; justify-content: space-between; margin-top: 8px; margin-bottom: 24px; }
@@ -66,9 +77,11 @@ const RES_CSS = `
 .solfaLineFirst { color: ${C.text}; font-size: 20px; font-weight: 700; letter-spacing: 2px; line-height: 30px; text-shadow: 0 0 10px rgba(37,99,235,0.6); }
 .solfaWatermark { position: absolute; right: 24px; bottom: -8px; font-size: 80px; line-height: 90px; font-weight: 700; color: ${C.accentSoft}; }
 
-/* StaffNotation.tsx — surface card, horizontally scrolled, so it clips right. */
+/* ScoreView.tsx's wrap. The WebView inside it is width:100% with no horizontal
+   padding, so the engraved SVG spans the whole card and OSMD is the only thing
+   deciding where a system breaks. */
 .staffWrap { background: ${C.surface}; border-radius: 14px; border: 1px solid ${C.border}; padding: 12px 0; overflow: hidden; }
-.staffScroll { flex-direction: row; align-items: center; padding: 0 12px; }
+.staffWrap svg { display: block; }
 
 /* NotePlayer.tsx */
 .playerCard { background: ${C.surface}; border-radius: 20px; border: 1px solid ${C.border}; padding: 16px; margin-bottom: 24px; }
@@ -108,9 +121,33 @@ const RES_CSS = `
 .exportHeaderRow { flex-direction: row; align-items: center; gap: 4px; }
 .exportTitle { font-size: 16px; font-weight: 700; }
 .exportHint { font-size: 13px; color: ${C.textMuted}; line-height: 20px; margin-bottom: 8px; }
+
+/* Save block + the 3-button action row. Below the fold on the store tiles; the
+   walkthrough scrolls down to them, which is why they are behind "tail". */
+.saveBlock { margin-top: 4px; padding-bottom: 32px; }
+.divider { height: 1px; background: ${C.border}; margin-bottom: 24px; }
+.saveLabel { font-size: 18px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 4px; }
+.saveHint { font-size: 13px; font-weight: 400; color: ${C.textMuted}; line-height: 20px; margin-bottom: 16px; }
+.savedRow { flex-direction: row; align-items: center; margin-bottom: 24px; background: ${C.accentSoft}; border: 1px solid ${C.accentGlow}; border-radius: 20px; padding: 16px; }
+.savedIconCircle { width: 40px; height: 40px; border-radius: 20px; margin-right: 12px; align-items: center; justify-content: center; background: ${brand(90)}; box-shadow: 0 0 12px rgba(59,130,246,0.6); }
+.savedTitle { font-size: 15px; font-weight: 700; }
+.savedSub { font-size: 12px; font-weight: 500; letter-spacing: 0.2px; color: ${C.textMuted}; margin-top: 2px; }
+.actionRow { flex-direction: row; gap: 12px; margin-top: 24px; margin-bottom: 24px; }
+.actionBtnOutline { flex: 1 1 0; height: 48px; border-radius: 999px; background: ${C.surface}; border: 1.5px solid ${C.accent}; align-items: center; justify-content: center; }
+.actionBtnOutlineText { font-size: 15px; font-weight: 700; color: ${C.accent}; }
+/* colors.ink, not colors.accent: a fill under white text, so it stays dark in
+   both modes. */
+.actionBtnSolid { flex: 1 1 0; height: 48px; border-radius: 999px; background: ${C.ink}; align-items: center; justify-content: center; }
+.actionBtnSolidText { font-size: 15px; font-weight: 700; color: ${C.onInk}; }
 `;
 
-/** SummaryStat, with its tinted icon circle. */
+/**
+ * SummaryStat, with its tinted icon circle.
+ *
+ * `accent` must be a real hex, not a `var()`: the tint is made by concatenating
+ * an alpha byte onto it (`#2563EB` + `18` → 9 % opaque), and `var(--purple)18`
+ * is not a colour. Same reasoning in `confBadge` and the note chips below.
+ */
 const stat = (icon, label, value, accent) => `
 <div class="statItem f">
   <div class="statIconCircle" style="background:${accent}18">${ic(icon, 14, accent)}</div>
@@ -118,8 +155,8 @@ const stat = (icon, label, value, accent) => `
   <div class="statLabel">${label}</div>
 </div>`;
 
-const confBadge = (value) => {
-  const color = confidenceColor(value, C);
+const confBadge = (value, palette) => {
+  const color = confidenceColor(value, palette);
   return `<div class="confBadge" style="border-color:${color}4D;background:${color}26">
     <div class="confDot8" style="background:${color};box-shadow:0 0 6px ${color}"></div>
     <div class="confText" style="color:${color}">${Math.round(value * 100)}% · ${confidenceLabel(value)}</div>
@@ -160,7 +197,17 @@ function player(labels) {
 </div>`;
 }
 
-export function result({ view = "solfa", keyPicker = false, keyText = TAKE.key } = {}) {
+export function result({
+  view = "solfa",
+  keyPicker = false,
+  keyText = TAKE.key,
+  mode = "light",
+  tail = "export",
+  staff = null,
+  scrollY = 0,
+} = {}) {
+  /** Real hex, for the places `var()` cannot reach — see `stat`. */
+  const P = paletteFor(mode);
   const derived = deriveSolfa(NOTES, keyText, TAKE.timeSignature);
   const labels = derived.notes.map((n) => n.solfa + n.octaveMark);
   const lowCount = derived.notes.filter((n) => n.conf < 0.5).length;
@@ -175,12 +222,20 @@ export function result({ view = "solfa", keyPicker = false, keyText = TAKE.key }
     )
     .join("");
 
-  const staff = staffSvg(derived.notes, TAKE.timeSignature, keyText, C);
+  /**
+   * The stave is engraved by `score.mjs` and handed in, because that means a
+   * browser. Refusing the fall-back is the point: `music.mjs` still carries a port
+   * of `StaffNotation`, and quietly drawing that would show notation from a
+   * renderer `ResultScreen` no longer uses.
+   */
+  if (view === "staff" && staff === null) {
+    throw new Error("result({ view: 'staff' }) needs an engraved `staff` svg — see score.mjs");
+  }
 
   const bodyInner =
     view === "solfa"
       ? `${solfaLines}<div class="solfaWatermark">♪</div>`
-      : `<div class="staffWrap"><div class="staffScroll">${staff.svg}</div></div>`;
+      : `<div class="staffWrap">${staff}</div>`;
 
   const toggle = (v, icon, label) => `
     <div class="viewToggleBtn${view === v ? " viewToggleBtnActive" : ""}">
@@ -201,7 +256,7 @@ export function result({ view = "solfa", keyPicker = false, keyText = TAKE.key }
 
   const chips = derived.notes
     .map((n, i) => {
-      const cc = confidenceColor(n.conf, C);
+      const cc = confidenceColor(n.conf, P);
       return `<div class="noteChip f" style="border-color:${cc}55;border-width:${n.conf < 0.5 ? 1.5 : 1}px">
         <div class="noteSolfa">${labels[i]}</div>
         <div class="noteMidi">${n.pitchMidi}</div>
@@ -209,6 +264,48 @@ export function result({ view = "solfa", keyPicker = false, keyText = TAKE.key }
       </div>`;
     })
     .join("");
+
+  /**
+   * What follows the export block. The store tiles stop at `"export"` because
+   * everything after it is below the fold anyway; the walkthrough scrolls down,
+   * so it asks for the unsaved form (`"save"`) or the confirmation (`"saved"`).
+   */
+  const saveBlock =
+    tail === "save"
+      ? `<div class="saveBlock f">
+          <div class="divider"></div>
+          <div class="saveLabel">Save to Library</div>
+          <div class="saveHint">Give this transcription a name so you can find it later.</div>
+          ${textField(TAKE.title, { label: "Title" })}
+          <div class="btn btnPrimary">
+            ${ic("bookmark", 18, "#FFFFFF", "margin-right:8px")}
+            <div class="btnLabel" style="color:#FFFFFF">Save to Library</div>
+          </div>
+        </div>`
+      : tail === "saved"
+        ? `<div class="saveBlock f">
+            <div class="savedRow">
+              <div class="savedIconCircle f">${ic("checkmark", 18, "#FFFFFF")}</div>
+              <div class="f">
+                <div class="savedTitle">Saved to Library</div>
+                <div class="savedSub">You can find it in the Library tab.</div>
+              </div>
+            </div>
+            ${textField(TAKE.title, { label: "Title" })}
+            <div class="btn btnSecondary btnDisabled">
+              <div class="btnLabel" style="color:${C.text}">Rename</div>
+            </div>
+          </div>`
+        : "";
+
+  const actionRow =
+    tail === "export"
+      ? ""
+      : `<div class="actionRow">
+          <div class="actionBtnOutline f"><div class="actionBtnOutlineText">Re-key</div></div>
+          <div class="actionBtnOutline f"><div class="actionBtnOutlineText">Edit</div></div>
+          <div class="actionBtnSolid f"><div class="actionBtnSolidText">Save</div></div>
+        </div>`;
 
   const body = `
 <div class="content">
@@ -220,14 +317,14 @@ export function result({ view = "solfa", keyPicker = false, keyText = TAKE.key }
 
   <div class="card cardPadded summaryCard f">
     <div class="summaryRow">
-      ${stat("key-outline", "Key · tap to change", keyText, C.purple)}
+      ${stat("key-outline", "Key · tap to change", keyText, P.purple)}
       <div class="summaryDivider"></div>
-      ${stat("speedometer-outline", "Tempo", `${TAKE.tempo} BPM`, C.gold)}
+      ${stat("speedometer-outline", "Tempo", `${TAKE.tempo} BPM`, P.gold)}
       <div class="summaryDivider"></div>
-      ${stat("grid-outline", "Meter", TAKE.timeSignature, C.success)}
+      ${stat("grid-outline", "Meter", TAKE.timeSignature, P.success)}
     </div>
     ${picker}
-    <div class="confRow f">${confBadge(TAKE.overallConfidence)}</div>
+    <div class="confRow f">${confBadge(TAKE.overallConfidence, P)}</div>
     ${
       lowCount > 0
         ? `<div class="warnRow">
@@ -266,9 +363,11 @@ export function result({ view = "solfa", keyPicker = false, keyText = TAKE.key }
       <div class="btnLabel" style="color:${C.text}">Export MusicXML</div>
     </div>
   </div>
+  ${saveBlock}
+  ${actionRow}
 </div>`;
 
-  return shell(body, RES_CSS);
+  return shell(body, RES_CSS, { mode, scrollY });
 }
 
 export { S_CARD };

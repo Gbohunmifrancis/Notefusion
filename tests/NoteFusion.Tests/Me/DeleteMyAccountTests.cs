@@ -23,7 +23,7 @@ public class DeleteMyAccountTests
     {
         using var h = new TestHarness();
         var user = await SeedUser(h);
-        user.RegisterDeviceToken("ExponentPushToken[abc]", "android", h.Clock.UtcNow);
+        user.RegisterDeviceToken("ExponentPushToken[abc]", "android", 1, h.Clock.UtcNow);
         h.TokenIssuer.Issue(user); // adds a refresh token
         await h.Db.SaveChangesAsync();
 

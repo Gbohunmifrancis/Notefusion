@@ -7,6 +7,7 @@ import {
   CalendarPlus,
   Gift,
   KeyRound,
+  Mail,
   ShieldCheck,
   ShieldOff,
   Undo2,
@@ -18,6 +19,7 @@ import {
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import { SendEmailDialog } from "@/components/SendEmailDialog";
 
 import {
   endSubscription,
@@ -33,7 +35,6 @@ import {
 import type {
   AdminUserDetail,
   GiftDuration,
-  PaymentStatus,
   SubscriptionStatus,
 } from "@/api/types";
 import { Avatar } from "@/components/Avatar";
@@ -70,6 +71,7 @@ import {
   formatMoney,
   reportingToday,
 } from "@/lib/format";
+import { PAYMENT_TONES } from "@/lib/payments";
 import { getReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
 
@@ -85,15 +87,6 @@ const SUBSCRIPTION_TONES: Record<SubscriptionStatus, BadgeTone> = {
   PastDue: "danger",
   Canceled: "warning",
   Expired: "neutral",
-};
-
-/** Attempts are kept, so this table has to be able to show a failure as clearly as a success. */
-const PAYMENT_TONES: Record<PaymentStatus, BadgeTone> = {
-  Pending: "neutral",
-  Processing: "warning",
-  Verified: "blue",
-  Completed: "success",
-  Failed: "danger",
 };
 
 /**
@@ -530,7 +523,8 @@ function LifecyclePanel({
   ask,
   perform,
   isSelf,
-}: Omit<PanelProps, "offset"> & { isSelf: boolean }) {
+  onOpenEmail,
+}: Omit<PanelProps, "offset"> & { isSelf: boolean; onOpenEmail: () => void }) {
   const isAdmin = user.role === "Admin";
 
   // The server refuses both of these on your own account. Blocking them here as well is not
@@ -545,6 +539,13 @@ function LifecyclePanel({
       hint="Every one of these is written to the audit trail against your account."
     >
       <div className="flex flex-wrap items-center gap-2">
+        <ActionButton
+          label="Send email"
+          icon={Mail}
+          tone="default"
+          onClick={onOpenEmail}
+        />
+
         {user.isActive ? (
           <ActionButton
             label="Suspend"
@@ -621,7 +622,7 @@ function LifecyclePanel({
                   {!user.hasPassword && (
                     <p>
                       This account signs in with Google and has no password. The link lets them set
-                      one; it does not remove Google sign-in.
+                    one; it does not remove Google sign-in.
                     </p>
                   )}
                 </>
@@ -868,6 +869,7 @@ export function UserDetailView({ id }: { id: string }) {
   });
 
   const [confirm, setConfirm] = useState<ConfirmRequest | null>(null);
+  const [emailOpen, setEmailOpen] = useState(false);
 
   const offset = getReportingOffset();
 
@@ -891,12 +893,23 @@ export function UserDetailView({ id }: { id: string }) {
         title={user?.fullName ?? "Account"}
         breadcrumb={["Dashboard", "Users", user?.email ?? "…"]}
         actions={
-          <Button asChild variant="outline" className={ACTION}>
-            <Link href="/users">
-              <ArrowLeft className="size-3.5" aria-hidden="true" />
-              All users
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="default"
+              className={ACTION}
+              onClick={() => setEmailOpen(true)}
+            >
+              <Mail className="size-3.5" aria-hidden="true" />
+              Send email
+            </Button>
+            <Button asChild variant="outline" className={ACTION}>
+              <Link href="/users">
+                <ArrowLeft className="size-3.5" aria-hidden="true" />
+                All users
+              </Link>
+            </Button>
+          </div>
         }
       />
 
@@ -931,6 +944,7 @@ export function UserDetailView({ id }: { id: string }) {
                 ask={setConfirm}
                 perform={perform}
                 isSelf={loaded.id === auth.user?.id}
+                onOpenEmail={() => setEmailOpen(true)}
               />
             </div>
 
@@ -942,6 +956,17 @@ export function UserDetailView({ id }: { id: string }) {
       </StateView>
 
       <ConfirmDialog request={confirm} onClose={() => setConfirm(null)} />
+
+      {user && (
+        <SendEmailDialog
+          open={emailOpen}
+          onOpenChange={setEmailOpen}
+          targetUser={user}
+          onSuccess={() => {
+            void queryClient.invalidateQueries();
+          }}
+        />
+      )}
     </div>
   );
 }

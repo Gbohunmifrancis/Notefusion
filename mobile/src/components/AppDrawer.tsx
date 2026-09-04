@@ -36,12 +36,11 @@ const CLOSE_MS = 170;
 /**
  * The account side bar, opened by tapping the avatar in the top-left of Home.
  *
- * It exists because the account, the plan and the library were competing with the
- * microphone for space in the tab bar. Five tabs were carried purely to keep the mic
- * in the middle of the row, which meant two of them — Profile and Subscription — were
- * there for the geometry rather than because anyone reached for them. Moving both here
- * leaves three tabs with the mic still dead centre, and puts the account where a phone
- * user's thumb already expects it.
+ * It exists because the account and the plan were competing with the microphone
+ * for space in the tab bar. The plan is still here — your plan is a decision, not a
+ * destination — while Profile moved back into the tab bar when the bar went to an
+ * odd count of five so the piano could join it. Only the plan badge doubles this
+ * drawer's identity block, which still routes to the Profile tab.
  *
  * Deliberately not `@react-navigation/drawer`: it is not installed, and the ask was
  * tap-to-open, not swipe. A `Modal` needs no dependency and no restructuring of the
@@ -154,7 +153,7 @@ export function AppDrawer({ open, onClose, pictureUrl }: Props) {
       >
         {/* ── Identity: the whole block is the route to the profile ─────────── */}
         <Touchable
-          onPress={() => go(() => nav.navigate('Profile'))}
+          onPress={() => go(() => nav.navigate('Tabs', { screen: 'Profile' }))}
           style={styles.identity}
           // The rows only shrink a hair: the panel slides in as it is pressed, and
           // a deep press on top of that reads as two animations arguing.

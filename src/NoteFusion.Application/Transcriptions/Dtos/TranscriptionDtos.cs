@@ -12,6 +12,9 @@ public sealed record TranscribeOptions
 
     /// <summary>Optional tap-tempo override in BPM.</summary>
     public int? Tempo { get; init; }
+
+    /// <summary>Optional time signature override, e.g. "4/4", "3/4", "6/8".</summary>
+    public string? TimeSignature { get; init; }
 }
 
 /// <summary>One note event in the API result; mirrors the TRD §6 result contract.</summary>
@@ -57,7 +60,8 @@ public sealed record TranscriptionResultDto(
     IReadOnlyList<string> SolfaLines,
     double OverallConfidence,
     string AudioPreviewBase64 = "",
-    bool PitchRefined = true);
+    bool PitchRefined = true,
+    string ChromaticSpelling = "direction");
 
 /// <summary>
 /// Polling envelope for a transcription job.

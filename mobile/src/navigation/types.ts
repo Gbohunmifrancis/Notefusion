@@ -1,5 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
-import type { TranscriptionResult } from '../api/types';
+import type { NoteEvent, TranscriptionResult } from '../api/types';
 
 /** Central navigation type map — every screen's params in one place. */
 
@@ -16,14 +16,21 @@ export type AuthStackParams = {
 };
 
 /**
- * Three tabs, not five. The mic is the middle cell and every cell is `flex: 1`, so an odd
- * count centres it — the account and the plan moved to the side bar (`AppDrawer`) rather
- * than being carried here as spacers.
+ * Five cells, and five because it is odd. Every cell is `flex: 1`, so only an odd count
+ * puts the mic in the geometric middle — with an even one it sits off-centre and the
+ * whole bar reads as a mistake.
+ *
+ * Home · Library · **Record** · Piano · Profile. Profile came back off the side bar to
+ * make the count work and because it is a destination people look for in a tab bar. The
+ * piano is a *launcher*, not a tab: it is the one landscape route in the app, so it
+ * cannot render inside this portrait shell and has no `Tab.Screen` here — the cell
+ * pushes `Piano` on the root stack instead, the way the mic pushes a recording.
  */
 export type TabParams = {
   Home: undefined;
-  Record: undefined;
   Library: undefined;
+  Record: { autoPickAudio?: boolean } | undefined;
+  Profile: undefined;
 };
 
 export type RootStackParams = {
@@ -35,8 +42,6 @@ export type RootStackParams = {
     savedId?: string;
     title?: string;
   };
-  /** Reached from the side bar's identity block; a pushed screen since it left the tab bar. */
-  Profile: undefined;
   /**
    * `focus` scrolls straight to a section. The Profile menu has separate
    * "Notifications" and "About Notefusion" rows, and both used to land on a screen
@@ -48,11 +53,37 @@ export type RootStackParams = {
   Upgrade: undefined;
 
   /**
+   * The piano — one landscape screen with three modes.
+   *
+   * `free` is the tab-bar cell: a keyboard to play anything on, captured to the
+   * library. `play` and `correct` start from a transcription and carry the notes by
+   * value rather than a saved id, because on Result the notes that matter are the
+   * *edited* ones, which exist nowhere a re-fetch could find them. `correct` carries
+   * an `onApply` so the corrected list travels home to whoever saved it; reactive,
+   * not serialisable — the dev-only warning for this route is deliberate.
+   *
+   * Landscape is a native option on `react-native-screens`, so it takes a build, not
+   * an OTA update.
+   */
+  Piano:
+    | { mode: 'free' }
+    | {
+        mode: 'play' | 'correct';
+        notes: NoteEvent[];
+        tempoBpm: number;
+        timeSignature: string;
+        musicalKey: string;
+        title?: string;
+        savedId?: string;
+        onApply?: (notes: NoteEvent[]) => void;
+      };
+
+  /**
    * Admin-only screens, reached from the side bar's Admin row and nowhere else.
    *
-   * Pushed routes rather than tabs: `TabParams` above is three cells on purpose,
-   * and an operator surface should not cost every user a tab. Each screen is
-   * behind the server's Admin policy regardless of how it was reached.
+   * Pushed routes rather than tabs: the tab bar above is full, and an operator
+   * surface should not cost every user a tab. Each screen is behind the server's
+   * Admin policy regardless of how it was reached.
    */
   AdminHome: undefined;
   /**

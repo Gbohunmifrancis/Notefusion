@@ -29,6 +29,16 @@ public sealed class BillingController : ApiControllerBase
         => HandleResult(await _sender.Send(new GetPlansQuery(), ct));
 
     /// <summary>
+    /// The anonymous marketing-site offer. It resolves the request location and returns only that region's
+    /// plans; if location cannot be trusted, the response contains no paid plans rather than both prices.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("public-plans")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+    public async Task<IActionResult> PublicPlans(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPublicPricingQuery(), ct));
+
+    /// <summary>
     /// Starts a hosted-checkout session for a plan and returns the URL to open externally. Idempotent
     /// for an in-flight checkout: tapping "Upgrade" twice returns the same session, never a second charge.
     /// </summary>

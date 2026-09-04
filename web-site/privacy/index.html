@@ -175,6 +175,13 @@
       <li>A push-notification token per device, if you allow notifications. It tells us
       where to send a &ldquo;transcription ready&rdquo; alert, and nothing more.</li>
       <li>Sign-in session tokens, so you stay logged in without re-entering credentials.</li>
+      <li>Your approximate country, inferred from your IP address, so the website and app
+      show the pricing available in your region. An anonymous website lookup is used for
+      that response and is not attached to an account.</li>
+      <li>A device identifier, held as a one-way hash, together with the country it was
+      first seen in. It exists so the five free transcriptions are counted per phone as
+      well as per account, which is what stops one device claiming the free allowance
+      over and over with new sign-ins. It is not used for advertising and is not shared.</li>
       <li>Ordinary server logs, including IP address and error diagnostics, used to keep
       the service running and to investigate abuse.</li>
     </ul>
@@ -201,6 +208,7 @@
       <li><strong>Cloudflare</strong>: profile picture storage and delivery.</li>
       <li><strong>Expo</strong>: delivery of push notifications.</li>
       <li><strong>Google</strong>: only if you choose Google sign-in.</li>
+      <li><strong>GeoJS</strong>: IP-to-country resolution for regional pricing.</li>
     </ul>
     <p>Each processes data on our instructions. We do not sell personal data, and we do
     not share it for advertising. We may disclose data if the law requires it.</p>

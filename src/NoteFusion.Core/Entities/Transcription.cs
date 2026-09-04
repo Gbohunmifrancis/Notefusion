@@ -63,6 +63,8 @@ public class Transcription : BaseEntity
 
     public void SetTempo(int tempoBpm) => TempoBpm = Guard.InRange(tempoBpm, 20, 300);
 
+    public void SetTimeSignature(string timeSignature) => TimeSignature = Guard.NotNullOrWhiteSpace(timeSignature);
+
     /// <summary>Tap-to-correct (F-07): replace a note; both notation views re-derive from the list.</summary>
     public void ReplaceNote(int index, NoteEvent corrected)
     {

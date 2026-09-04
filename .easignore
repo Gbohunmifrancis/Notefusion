@@ -1,0 +1,83 @@
+# ─── What EAS Build uploads ───────────────────────────────────────────────────
+#
+# EAS packs the whole git root, not just the Expo app, and it reads this file
+# *instead of* .gitignore when it does. So every path that must stay out has to be
+# named here — including the ones .gitignore already covers, which is the important
+# half: the Android signing keystore and its cleartext passwords sit untracked in
+# mobile/, and .gitignore is the only reason they are not in every build tarball
+# today. That reason does not carry over to this file.
+#
+# Written as an explicit deny of all 37 root entries except `mobile`, rather than as
+# an allow-list, because the uploader prunes excluded directories and does not honour
+# `!` re-includes — `/*` plus `!/mobile/` packs a derisory 80-byte archive. Every
+# entry below was taken from a listing of the root; a new sibling directory will need
+# a line adding, and until it gets one it only costs upload size.
+#
+# The scope is also simply correct. `mobile/` is a standalone project — no workspace
+# root, no shared node_modules — so the .NET API, the Python worker, web-admin and
+# docs/ have never been anything but dead weight in an Android build.
+#
+# Excluding server/ is what gets the build past `server/.pytest-tmp`, a pytest
+# basetemp whose ACL denies read to its own owner and which the uploader's directory
+# walk therefore hits as an EPERM rather than a skip. The walk does not consult
+# .gitignore, so ignoring it there was not enough (it belongs in both).
+
+# ── The other tiers, and the tooling around them ──
+/.claude/
+/.git/
+/.github/
+/.preview/
+/.vercel/
+/.vs/
+/docs/
+/server/
+/spike/
+/src/
+/tests/
+/tools/
+/web-admin/
+/web-site/
+
+# ── Root files. None of them build an Android app; .env.local and the deploy
+#    scripts are the ones that would actually hurt. ──
+/.dockerignore
+/.easignore
+/.editorconfig
+/.env.local
+/.gitattributes
+/.gitignore
+/.vercelignore
+/AGENTS.md
+/Aptfile
+/BACKLOG.md
+/CLAUDE.md
+/Directory.Build.props
+/Dockerfile
+/NoteFusion.slnx
+/Procfile
+/README.md
+/compose-build-transcriber.log
+/compose-up.log
+/deploy-heroku.ps1
+/deploy-procfile.ps1
+/docker-compose.yml
+/expo-start.log
+/heroku.yml
+/launch-pgadmin-fixed.bat
+
+# ── Inside the app: installed, generated, or secret ──
+# EAS installs dependencies on the builder.
+/mobile/node_modules/
+/mobile/.expo/
+/mobile/dist/
+/mobile/web-build/
+# Store-listing renders: megabytes of PNG and video that ship with the *listing*.
+/mobile/store/out/
+# Signing and publishing material. Remote credentials mean the builder already has
+# what it needs from EAS servers; none of this has any business in the tarball.
+/mobile/*.jks
+/mobile/credentials/
+/mobile/credentials.json
+/mobile/upload_certificate.pem
+/mobile/google-play-service-account.json
+/mobile/.env*

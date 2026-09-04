@@ -228,12 +228,16 @@ export function useNotePlayer(
    * moment the user was trying to practise slowly.
    */
   useEffect(() => {
-    // Pitch correction is not optional here: at 0.5× without it the melody drops
-    // an octave, and a solfa exercise sung an octave low is the wrong exercise.
-    // It must also be set *first* — Android reads it inside `setPlaybackRate` to
-    // decide the pitch factor, so setting it afterwards would apply to the next
-    // rate change rather than this one.
-    player.shouldCorrectPitch = true;
+    // Pitch correction is not optional off unity: at 0.5× without it the melody
+    // drops an octave, and a solfa exercise sung an octave low is the wrong
+    // exercise. But it is only wanted off unity. At 1× it puts Android's Sonic
+    // time-stretcher in the path to stretch by a factor of one, and that costs the
+    // metallic, warbly artifacts the stretcher always has for no benefit at all.
+    //
+    // Still set *first* — Android reads it inside `setPlaybackRate` to decide the
+    // pitch factor, so setting it afterwards would apply to the next rate change
+    // rather than this one.
+    player.shouldCorrectPitch = rate !== 1;
     player.setPlaybackRate(rate, "high");
     player.loop = loop;
   }, [player, rate, loop]);

@@ -46,7 +46,7 @@ export function Card({
     // width of its own nowrap text, widening the track and scrolling the page sideways on a
     // phone. It is inert for a card that is not a grid or flex item.
     <section
-      className={cn("min-w-0 rounded-md border border-border bg-card shadow-hairline", className)}
+      className={cn("min-w-0 overflow-hidden rounded-md border border-border bg-card shadow-hairline", className)}
     >
       {hasHeader && (
         <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-5 pb-4 pt-5">

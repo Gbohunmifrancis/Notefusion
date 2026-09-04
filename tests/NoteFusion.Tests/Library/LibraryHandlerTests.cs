@@ -167,6 +167,66 @@ public class LibraryHandlerTests
         Assert.Equal("LIBRARY_INVALID_KEY", result.Error.Code);
     }
 
+    [Fact]
+    public async Task Tempo_override_updates_tempo_successfully()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var handler = new UpdateTranscriptionTempoCommandHandler(h.Db, new StubCurrentUser(userId));
+        var result = await handler.Handle(new UpdateTranscriptionTempoCommand(saved.Value.Id, 140), default);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(140, result.Value.TempoBpm);
+    }
+
+    [Fact]
+    public async Task Tempo_override_rejects_out_of_range_tempo()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var handler = new UpdateTranscriptionTempoCommandHandler(h.Db, new StubCurrentUser(userId));
+        var result = await handler.Handle(new UpdateTranscriptionTempoCommand(saved.Value.Id, 500), default);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("LIBRARY_INVALID_TEMPO", result.Error.Code);
+    }
+
+    [Fact]
+    public async Task Time_signature_override_updates_time_signature_successfully()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var handler = new UpdateTranscriptionTimeSignatureCommandHandler(h.Db, new StubCurrentUser(userId));
+        var result = await handler.Handle(new UpdateTranscriptionTimeSignatureCommand(saved.Value.Id, "3/4"), default);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("3/4", result.Value.TimeSignature);
+    }
+
+    [Fact]
+    public async Task Time_signature_override_rejects_invalid_format()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var handler = new UpdateTranscriptionTimeSignatureCommandHandler(h.Db, new StubCurrentUser(userId));
+        var result = await handler.Handle(new UpdateTranscriptionTimeSignatureCommand(saved.Value.Id, "invalid_ts"), default);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("LIBRARY_INVALID_TIME_SIGNATURE", result.Error.Code);
+    }
+
     private static SaveTranscriptionCommand SaveCommand(string key = "C") =>
         new("My Song", key, 120, "4/4", "<score/>", SampleNotes, 0.95, SourceJobId: "job-1");
     private static async Task<Guid> SeedUser(TestHarness h, string email = "user@example.com")

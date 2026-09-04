@@ -27,5 +27,8 @@ public enum AdminAuditAction
     /// verification that lands writes a ledger entry and a subscription, and the trail is where "who
     /// went looking, and when" has to be readable afterwards.
     /// </summary>
-    ReconcilePayment = 10
+    ReconcilePayment = 10,
+
+    /// <summary>An operator sent a custom email to an account.</summary>
+    SendEmail = 11
 }

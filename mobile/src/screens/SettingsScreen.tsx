@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import * as Application from "expo-application";
 import * as WebBrowser from "expo-web-browser";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
@@ -29,6 +30,15 @@ import {
   soundEnabled,
   type PushPermission,
 } from "../lib/push";
+import {
+  loadReminderPrefs,
+  reminderEnabled,
+  reminderTime,
+  setReminderEnabled,
+  setReminderTime,
+  REMINDER_TIMES,
+  type ReminderTime,
+} from "../lib/practiceReminder";
 import { meApi } from "../api/endpoints";
 import type { MyProfile } from "../api/types";
 import { toApiError } from "../api/client";
@@ -77,6 +87,8 @@ export function SettingsScreen({ navigation, route }: Props) {
   const [hapticsOn, setHapticsOn] = useState(haptics.hapticsEnabled());
   const [permission, setPermission] = useState<PushPermission | null>(null);
   const [pushBusy, setPushBusy] = useState(false);
+  const [reminderOn, setReminderOn] = useState(false);
+  const [reminderAt, setReminderAt] = useState<ReminderTime>(reminderTime());
 
   // ── Section anchors ────────────────────────────────────────────────────────
   const scrollRef = useRef<ScrollView | null>(null);
@@ -101,11 +113,14 @@ export function SettingsScreen({ navigation, route }: Props) {
       // immediately — awaiting it just guarantees the switch never paints "on"
       // for a frame when the stored value is off.
       haptics.loadHapticPref(),
+      loadReminderPrefs(),
     ]);
     setPermission(perm);
     setPushOn(pushEnabled());
     setSoundOn(soundEnabled());
     setHapticsOn(haptics.hapticsEnabled());
+    setReminderOn(reminderEnabled());
+    setReminderAt(reminderTime());
   }, []);
 
   useEffect(() => {
@@ -150,6 +165,19 @@ export function SettingsScreen({ navigation, route }: Props) {
     await haptics.setHapticsEnabled(on);
     // Turning it on demonstrates itself. Turning it off obviously can't.
     if (on) haptics.play("medium");
+  }
+
+  async function toggleReminder(on: boolean) {
+    setReminderOn(on);
+    // Schedules or clears the whole 14-day window. Awaited so a fast second tap
+    // cannot interleave two re-arms over the same identifiers.
+    await setReminderEnabled(on);
+  }
+
+  async function pickReminderTime(next: ReminderTime) {
+    setReminderAt(next);
+    await setReminderTime(next);
+    haptics.play("light");
   }
 
   /** Push state, as one thing the row can render. */
@@ -247,7 +275,11 @@ export function SettingsScreen({ navigation, route }: Props) {
       {/* ── Header row ───────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.canGoBack()
+              ? navigation.goBack()
+              : navigation.navigate("Tabs", { screen: "Home" })
+          }
           accessibilityLabel="Go back"
           hitSlop={8}
           // Borderless so the ripple radiates from the circle rather than boxing
@@ -268,7 +300,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
       {/* ── Appearance ───────────────────────────────────────────────────── */}
       <View style={styles.sectionHeader}>
-        <Ionicons name="color-palette-outline" size={14} color={colors.purple} />
+        <Ionicons name="color-palette-outline" size={14} color={colors.accent} />
         <Text style={styles.sectionTitle}>Appearance & feel</Text>
       </View>
 
@@ -280,7 +312,7 @@ export function SettingsScreen({ navigation, route }: Props) {
             <Ionicons
               name={isDark ? "moon" : "sunny"}
               size={16}
-              color={colors.purple}
+              color={colors.accent}
             />
           </View>
 
@@ -313,7 +345,7 @@ export function SettingsScreen({ navigation, route }: Props) {
             <Ionicons
               name={hapticsOn ? "pulse" : "pulse-outline"}
               size={16}
-              color={colors.purple}
+              color={colors.accent}
             />
           </View>
 
@@ -395,6 +427,61 @@ export function SettingsScreen({ navigation, route }: Props) {
               ios_backgroundColor={colors.border}
             />
           </View>
+
+          <View style={styles.rowDivider} />
+
+          <View style={styles.switchRow}>
+            <View style={[styles.iconCircle, { backgroundColor: colors.accentSoft }]}>
+              <Ionicons
+                name={reminderOn ? "alarm" : "alarm-outline"}
+                size={16}
+                color={colors.accent}
+              />
+            </View>
+
+            <View style={styles.switchText}>
+              <Text style={styles.rowLabel}>Daily practice reminder</Text>
+              <Text style={styles.rowHint}>{describeReminder(reminderOn, reminderAt, pushOn)}</Text>
+            </View>
+
+            <Switch
+              value={reminderOn}
+              onValueChange={toggleReminder}
+              // Same gate as the sounds row: a local notification needs the very
+              // permission the push switch owns, so nudging someone who turned
+              // notifications off would be scheduling into a void.
+              disabled={!pushOn}
+              trackColor={{ false: colors.border, true: colors.accentGlow }}
+              thumbColor={reminderOn ? colors.accent : colors.surface}
+              ios_backgroundColor={colors.border}
+            />
+          </View>
+
+          {/* Chips rather than a time picker: a real one means a new native
+              dependency (`@react-native-community/datetimepicker`) and therefore
+              a new build, and three presets are the shape of the choice anyway. */}
+          <View style={styles.chipRow}>
+            {REMINDER_TIMES.map((slot) => {
+              const active = reminderAt === slot.key;
+              return (
+                <Touchable
+                  key={slot.key}
+                  style={[styles.chip, active && styles.chipActive]}
+                  onPress={() => void pickReminderTime(slot.key)}
+                  disabled={!pushOn || !reminderOn}
+                  scaleTo={motion.scale.row}
+                  accessibilityLabel={`Remind me in the ${slot.label.toLowerCase()}`}
+                >
+                  <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                    {slot.label}
+                  </Text>
+                  <Text style={[styles.chipTime, active && styles.chipTextActive]}>
+                    {`${slot.hour}:00`}
+                  </Text>
+                </Touchable>
+              );
+            })}
+          </View>
         </Card>
       </View>
 
@@ -448,7 +535,14 @@ export function SettingsScreen({ navigation, route }: Props) {
 
           <View style={styles.versionRow}>
             <Text style={styles.versionLabel}>Application Version</Text>
-            <Text style={styles.versionValue}>1.0.0 (Build 2)</Text>
+            {/* Read from the native manifest, not typed in. The hardcoded string that
+                used to be here was two releases stale, and a lying version number next
+                to an update prompt is worse than either problem alone. */}
+            <Text style={styles.versionValue}>
+              {`${Application.nativeApplicationVersion ?? "—"} (Build ${
+                Application.nativeBuildVersion ?? "—"
+              })`}
+            </Text>
           </View>
         </Card>
       </View>
@@ -567,8 +661,19 @@ function describePush(
   };
 }
 
-// ─── Styles ──────────────────────────────────────────────────────────────────
+/**
+ * The reminder row's hint. Mirrors {@link describePush}: the row says which of the three
+ * reasons it is off, because "off because notifications are off" cannot be fixed here and
+ * "off because you turned it off" can.
+ */
+function describeReminder(on: boolean, at: ReminderTime, pushOn: boolean): string {
+  if (!pushOn) return "Needs push notifications turned on.";
+  if (!on) return "Off — nothing will nudge you to practise.";
+  const slot = REMINDER_TIMES.find((t) => t.key === at);
+  return `Every day around ${slot?.hour ?? 19}:00, unless you've already practised.`;
+}
 
+// ─── Styles ──────────────────────────────────────────────────────────────────
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     // ── Header ──────────────────────────────────────────────────────────────
@@ -675,6 +780,51 @@ const makeStyles = (c: Palette) =>
 
     rowHintWarn: {
       color: c.warning,
+    },
+
+    // ── Reminder time chips ─────────────────────────────────────────────────
+
+    /** Indented to the switch rows' text column, so the chips read as belonging to
+     *  the toggle above rather than as a row of their own. */
+    chipRow: {
+      flexDirection: "row",
+      gap: spacing.sm,
+      marginTop: spacing.md,
+      marginLeft: 32 + spacing.md,
+    },
+
+    chip: {
+      flex: 1,
+      alignItems: "center",
+      paddingVertical: spacing.sm,
+      borderRadius: radii.md,
+      borderWidth: 1,
+      borderColor: c.border,
+      backgroundColor: c.surface,
+    },
+
+    chipActive: {
+      borderColor: c.accent,
+      backgroundColor: c.accentSoft,
+    },
+
+    chipText: {
+      ...typography.body,
+      color: c.textMuted,
+      fontSize: 13,
+    },
+
+    /** The time under the label, so the chip says what "Morning" actually means. */
+    chipTime: {
+      ...typography.caption,
+      color: c.textFaint,
+      fontSize: 11,
+      marginTop: 1,
+    },
+
+    chipTextActive: {
+      color: c.accent,
+      fontFamily: fonts.bold,
     },
 
     aboutRow: {

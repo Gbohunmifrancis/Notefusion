@@ -28,6 +28,9 @@ public sealed class SubmitTranscriptionRequest
 
     /// <summary>Optional tempo in BPM (20 to 400).</summary>
     public int? Tempo { get; init; }
+
+    /// <summary>Optional time signature override (e.g. '4/4', '3/4', '6/8').</summary>
+    public string? TimeSignature { get; init; }
 }
 
 /// <summary>
@@ -56,7 +59,7 @@ public sealed class TranscriptionsController : ApiControllerBase
                 Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo);
+        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature);
         var result = await _sender.Send(command, ct);
 
         if (result.IsFailure)

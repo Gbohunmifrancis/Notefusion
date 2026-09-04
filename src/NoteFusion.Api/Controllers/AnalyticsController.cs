@@ -46,6 +46,7 @@ public sealed class AnalyticsController : ApiControllerBase
     /// <param name="pageSize">Rows per page, capped at 100.</param>
     /// <param name="search">Case-insensitive substring of name or email.</param>
     /// <param name="isActive">True for accounts that can sign in, false for suspended ones, omitted for both.</param>
+    /// <param name="isOnline">True for accounts active within the last 5 minutes, omitted for all.</param>
     /// <param name="ct">Cancellation token.</param>
     [HttpGet("users")]
     public async Task<IActionResult> Users(
@@ -53,6 +54,7 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] int pageSize = 25,
         [FromQuery] string? search = null,
         [FromQuery] bool? isActive = null,
+        [FromQuery] bool? isOnline = null,
         CancellationToken ct = default)
-        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive), ct));
+        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline), ct));
 }

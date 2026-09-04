@@ -6,6 +6,12 @@ namespace NoteFusion.Application.Billing.Dtos;
 public sealed record PlanDto(Guid Id, string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval);
 
 /// <summary>
+/// The region-aware offer for an anonymous marketing-site visitor. A null country means the geo lookup did
+/// not produce a trustworthy answer, so <see cref="Plans"/> is empty rather than exposing both regional tiers.
+/// </summary>
+public sealed record PublicPricingDto(string? CountryCode, IReadOnlyList<PlanDto> Plans);
+
+/// <summary>
 /// A hosted-checkout session. The app opens <see cref="CheckoutUrl"/> in an external browser
 /// (Spotify-style) and never collects card details itself; the result arrives by webhook.
 /// </summary>
@@ -28,7 +34,8 @@ public sealed record SubscriptionDto(
     DateTime? CurrentPeriodEndUtc,
     int TrialGenerationsRemaining,
     int TrialGenerationsTotal,
-    bool IsLifetime);
+    bool IsLifetime,
+    bool IsGift = false);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

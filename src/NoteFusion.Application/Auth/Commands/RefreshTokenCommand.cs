@@ -46,6 +46,8 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
         if (user is null || !user.IsActive)
             return AuthErrors.InvalidRefreshToken;
 
+        user.RecordSuccessfulLogin(now);
+
         var tokens = _tokenIssuer.Issue(user);
 
         // Link the rotated token so the chain is auditable, then revoke the one just used.

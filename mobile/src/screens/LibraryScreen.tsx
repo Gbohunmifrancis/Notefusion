@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
+import { TranscriptionRowSkeleton } from "../components/Skeleton";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi, meApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -21,7 +22,7 @@ import { useSubscription } from "../lib/subscription";
 import { deriveSolfa } from "../lib/solfa";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { fonts, motion, radii, spacing, typography, type Palette } from "../design/theme";
-import type { SavedTranscription } from "../api/types";
+import type { NoteEvent, SavedTranscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 const FILTERS = ["All", "Tonic Solfa", "Staff Notation"] as const;
@@ -89,14 +90,20 @@ export function LibraryScreen() {
     });
   }, [filteredItems, sortOrder]);
 
+  /**
+   * Fetches the full item and re-derives its solfa. The list route omits `notes`,
+   * so every use of a saved item starts here — opening it and playing it both need
+   * the notes, and neither has them until this runs.
+   */
+  async function hydrate(item: SavedTranscription) {
+    const full = await libraryApi.get(item.id);
+    const derived = deriveSolfa(full.notes ?? [], full.key, full.timeSignature);
+    return { full, derived };
+  }
+
   async function openItem(item: SavedTranscription) {
     try {
-      const full = await libraryApi.get(item.id);
-      const derived = deriveSolfa(
-        full.notes ?? [],
-        full.key,
-        full.timeSignature
-      );
+      const { full, derived } = await hydrate(item);
       const audioPreviewBase64 = synthesizeMelodyWavBase64(
         derived.notes,
         full.tempoBpm,
@@ -121,6 +128,82 @@ export function LibraryScreen() {
     } catch (e) {
       showDialog({
         title: "Could not open",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
+    }
+  }
+
+  // Straight into the piano, skipping Result. No preview is synthesised on the way:
+  // the piano makes its own sound, and rendering a clip nobody hears would put a
+  // second's work in front of a screen that already has a warm-up to get through.
+  async function playItem(item: SavedTranscription) {
+    try {
+      const { full, derived } = await hydrate(item);
+      nav.navigate("Piano", {
+        mode: "play",
+        notes: derived.notes,
+        tempoBpm: full.tempoBpm,
+        timeSignature: full.timeSignature,
+        musicalKey: full.key,
+        title: full.title,
+        savedId: full.id,
+        // Carried even into play mode, because the end card offers "Fix it on the
+        // piano" when the score comes out low — the same screen, switched to correct.
+        onApply: (notes) => void overwriteNotes(item, notes),
+      });
+    } catch (e) {
+      showDialog({
+        title: "Could not open",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
+    }
+  }
+
+  /** Straight into correction, for a row whose transcription is already known to be wrong. */
+  async function fixItem(item: SavedTranscription) {
+    try {
+      const { full, derived } = await hydrate(item);
+      nav.navigate("Piano", {
+        mode: "correct",
+        notes: derived.notes,
+        tempoBpm: full.tempoBpm,
+        timeSignature: full.timeSignature,
+        musicalKey: full.key,
+        title: full.title,
+        savedId: full.id,
+        onApply: (notes) => void overwriteNotes(item, notes),
+      });
+    } catch (e) {
+      showDialog({
+        title: "Could not open",
+        message: toApiError(e).message,
+        icon: "alert-circle-outline",
+        tone: "danger",
+      });
+    }
+  }
+
+  /**
+   * The literal "overwrite the old one": the corrected notes replace the row's, so
+   * the library still holds one entry and not a corrected copy beside the original.
+   *
+   * The piano hands the list back rather than saving it, the way `NoteEditor` reports
+   * upward — whoever pushed the piano owns the row. Nothing is patched optimistically
+   * here because the list route omits `notes`: there is no local copy to correct, and
+   * a re-list after the write is what makes the next open show the fix.
+   */
+  async function overwriteNotes(item: SavedTranscription, notes: NoteEvent[]) {
+    try {
+      await libraryApi.updateNotes(item.id, notes);
+      haptics.play("success");
+      load();
+    } catch (e) {
+      showDialog({
+        title: "Could not save corrections",
         message: toApiError(e).message,
         icon: "alert-circle-outline",
         tone: "danger",
@@ -202,6 +285,17 @@ export function LibraryScreen() {
                 clearButtonMode="while-editing"
                 textAlignVertical="center"
               />
+              {query.length > 0 && (
+                <Touchable
+                  onPress={() => setQuery("")}
+                  hitSlop={8}
+                  ripple="borderless"
+                  accessibilityLabel="Clear search"
+                  style={styles.clearSearchBtn}
+                >
+                  <Ionicons name="close-circle" size={18} color={colors.textFaint} />
+                </Touchable>
+              )}
             </View>
 
             {/* Filter Tabs + Options Icon Row */}
@@ -322,28 +416,100 @@ export function LibraryScreen() {
                   {isStaff ? "Staff" : "Tonic Solfa"}
                 </Text>
               </View>
+
+              {/* Straight into the piano. Their own buttons rather than gestures on the
+                  row: press opens and long-press deletes, so there is nothing left to
+                  bind, and a third hidden gesture on one row would be a guess.
+                  Correct sits left of play because it is the one that changes the row —
+                  a destructive-ish action should not be the button next to the thumb. */}
+              <Touchable
+                onPress={() => void fixItem(item)}
+                style={styles.playButton}
+                ripple="borderless"
+                scaleTo={motion.scale.large}
+                accessibilityLabel={`Fix ${item.title} on the piano`}
+                accessibilityRole="button"
+              >
+                <Ionicons name="create-outline" size={20} color={colors.textMuted} />
+              </Touchable>
+
+              <Touchable
+                onPress={() => void playItem(item)}
+                style={styles.playButton}
+                ripple="borderless"
+                scaleTo={motion.scale.large}
+                accessibilityLabel={`Play ${item.title} yourself`}
+                accessibilityRole="button"
+              >
+                <Ionicons name="game-controller-outline" size={20} color={colors.accent} />
+              </Touchable>
             </Touchable>
           );
         }}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
         ListEmptyComponent={
-          !loading ? (
+          loading ? (
+            <View style={styles.skeletonContainer}>
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+              <TranscriptionRowSkeleton />
+            </View>
+          ) : loadError ? (
             <View style={styles.emptyContainer}>
               <Ionicons
-                name="folder-open-outline"
+                name="cloud-offline-outline"
+                size={40}
+                color={colors.danger}
+              />
+              <Text style={styles.emptyTitle}>Could not load library</Text>
+              <Text style={styles.emptySub}>{loadError}</Text>
+              <Touchable
+                onPress={load}
+                style={styles.retryBtn}
+                radius={radii.pill}
+                accessibilityLabel="Try loading library again"
+              >
+                <Text style={styles.retryLabel}>Try again</Text>
+              </Touchable>
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name={
+                  query.trim() || activeFilter !== "All"
+                    ? "search-outline"
+                    : "folder-open-outline"
+                }
                 size={40}
                 color={colors.textFaint}
               />
               <Text style={styles.emptyTitle}>
-                {loadError ?? "No saved notes"}
+                {query.trim() || activeFilter !== "All"
+                  ? "No matching notes"
+                  : "No saved notes"}
               </Text>
               <Text style={styles.emptySub}>
-                {loadError
-                  ? "Couldn't load library"
+                {query.trim() || activeFilter !== "All"
+                  ? `No transcriptions found matching your filter.`
                   : "Recorded transcriptions will appear here."}
               </Text>
+              {(query.trim() || activeFilter !== "All") && (
+                <Touchable
+                  onPress={() => {
+                    setQuery("");
+                    setActiveFilter("All");
+                  }}
+                  style={styles.clearFiltersBtn}
+                  radius={radii.pill}
+                  accessibilityLabel="Clear search and filter"
+                >
+                  <Text style={styles.clearFiltersLabel}>Clear filters</Text>
+                </Touchable>
+              )}
             </View>
-          ) : null
+          )
         }
       />
     </Screen>
@@ -436,6 +602,13 @@ const makeStyles = (c: Palette) =>
       alignItems: "center",
       paddingVertical: spacing.md,
     },
+    playButton: {
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      marginLeft: spacing.xs,
+    },
     noteIconBadge: {
       width: 44,
       height: 44,
@@ -496,5 +669,37 @@ const makeStyles = (c: Palette) =>
       fontFamily: fonts.regular,
       color: c.textMuted,
       marginTop: 2,
+    },
+    clearSearchBtn: {
+      padding: spacing.xs,
+    },
+    skeletonContainer: {
+      paddingVertical: spacing.sm,
+    },
+    retryBtn: {
+      marginTop: spacing.md,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+    },
+    retryLabel: {
+      fontSize: 14,
+      fontFamily: fonts.medium,
+      color: c.text,
+    },
+    clearFiltersBtn: {
+      marginTop: spacing.md,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+    },
+    clearFiltersLabel: {
+      fontSize: 14,
+      fontFamily: fonts.medium,
+      color: c.accent,
     },
   });

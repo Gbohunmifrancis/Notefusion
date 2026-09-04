@@ -50,6 +50,16 @@ public sealed class LibraryController : ApiControllerBase
     public async Task<IActionResult> UpdateKey(Guid id, UpdateKeyBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new UpdateTranscriptionKeyCommand(id, body.Key), ct));
 
+    /// <summary>Overrides the tempo in BPM (F-07).</summary>
+    [HttpPut("{id:guid}/tempo")]
+    public async Task<IActionResult> UpdateTempo(Guid id, UpdateTempoBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new UpdateTranscriptionTempoCommand(id, body.Tempo), ct));
+
+    /// <summary>Overrides the time signature (e.g. "4/4", "3/4", "6/8").</summary>
+    [HttpPut("{id:guid}/time-signature")]
+    public async Task<IActionResult> UpdateTimeSignature(Guid id, UpdateTimeSignatureBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new UpdateTranscriptionTimeSignatureCommand(id, body.TimeSignature), ct));
+
     /// <summary>
     /// Replaces the note list with the user's corrections (tap-to-correct, F-07). The whole list,
     /// because a correction can delete a note and shift every index after it.
@@ -68,6 +78,12 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Body for a key-override request.</summary>
     public sealed record UpdateKeyBody(string Key);
+
+    /// <summary>Body for a tempo-override request.</summary>
+    public sealed record UpdateTempoBody(int Tempo);
+
+    /// <summary>Body for a time-signature-override request.</summary>
+    public sealed record UpdateTimeSignatureBody(string TimeSignature);
 
     /// <summary>Body for a note-correction request.</summary>
     public sealed record UpdateNotesBody(IReadOnlyList<NoteEventDto> Notes);
