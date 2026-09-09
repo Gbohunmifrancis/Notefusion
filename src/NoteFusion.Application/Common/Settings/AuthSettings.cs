@@ -20,4 +20,7 @@ public sealed class AuthSettings
     /// resolves to. Override with <c>Auth__ResetPasswordUrl</c>.
     /// </remarks>
     public string ResetPasswordUrl { get; set; } = "https://notefusion.studio/reset-password";
+
+    /// <summary>Where an emailed account deletion confirmation link points.</summary>
+    public string DeleteAccountUrl { get; set; } = "https://notefusion.studio/delete-account";
 }
