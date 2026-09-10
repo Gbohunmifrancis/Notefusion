@@ -147,113 +147,103 @@
     });
   }
 
+  // ── Authentic Music Engraving Constants ──────────────────────────────────
+  var GONVILLE_CLEF = '<g transform="translate(10, 34) scale(7.8)" fill="currentColor">' +
+    '<path d="M 1.405 -4.317 C 1.411 -4.32 1.417 -4.32 1.426 -4.32 C 1.46 -4.32 1.5 -4.291 1.558 -4.219 C 1.791 -3.951 1.956 -3.485 1.956 -3.105 C 1.956 -3.076 1.95 -3.053 1.95 -3.024 C 1.924 -2.572 1.74 -2.2 1.374 -1.849 L 1.276 -1.754 L 1.241 -1.716 L 1.241 -1.705 L 1.261 -1.619 L 1.293 -1.463 L 1.325 -1.319 C 1.368 -1.123 1.385 -1.022 1.385 -1.022 C 1.385 -1.022 1.385 -1.022 1.385 -1.022 C 1.385 -1.022 1.397 -1.022 1.411 -1.025 C 1.426 -1.025 1.472 -1.031 1.521 -1.031 C 1.555 -1.031 1.59 -1.025 1.607 -1.025 C 2.013 -0.973 2.327 -0.683 2.416 -0.274 C 2.434 -0.207 2.439 -0.135 2.439 -0.063 C 2.439 0.325 2.206 0.697 1.817 0.873 C 1.794 0.887 1.786 0.89 1.786 0.89 L 1.786 0.893 C 1.786 0.893 1.803 0.959 1.817 1.034 L 1.86 1.253 L 1.901 1.428 C 1.924 1.541 1.935 1.621 1.935 1.693 C 1.935 1.757 1.927 1.814 1.912 1.881 C 1.814 2.281 1.466 2.52 1.103 2.52 C 0.924 2.52 0.74 2.462 0.579 2.333 C 0.435 2.212 0.372 2.102 0.372 1.958 C 0.372 1.705 0.576 1.526 0.789 1.526 C 0.864 1.526 0.939 1.549 1.011 1.593 C 1.132 1.676 1.187 1.803 1.187 1.927 C 1.187 2.117 1.054 2.304 0.827 2.318 L 0.804 2.318 L 0.821 2.33 C 0.916 2.37 1.011 2.39 1.103 2.39 C 1.336 2.39 1.555 2.272 1.688 2.068 C 1.763 1.953 1.803 1.817 1.803 1.682 C 1.803 1.63 1.794 1.578 1.783 1.521 C 1.783 1.515 1.774 1.469 1.763 1.426 C 1.699 1.115 1.662 0.933 1.662 0.933 C 1.662 0.933 1.662 0.933 1.662 0.933 C 1.656 0.933 1.644 0.933 1.636 0.939 C 1.607 0.945 1.547 0.959 1.521 0.962 C 1.457 0.971 1.397 0.973 1.339 0.973 C 0.775 0.973 0.251 0.593 0.069 0.032 C 0.023 -0.118 -0.003 -0.268 -0.003 -0.418 C -0.003 -0.717 0.092 -1.011 0.276 -1.273 C 0.478 -1.558 0.68 -1.803 0.927 -2.056 L 1.014 -2.146 L 0.994 -2.252 L 0.956 -2.428 L 0.907 -2.652 C 0.893 -2.736 0.876 -2.817 0.873 -2.834 C 0.858 -2.929 0.85 -3.021 0.85 -3.116 C 0.85 -3.479 0.968 -3.828 1.189 -4.107 C 1.256 -4.193 1.374 -4.308 1.405 -4.317"/>' +
+    '<path d="M 1.581 -3.747 C 1.575 -3.747 1.567 -3.747 1.558 -3.747 C 1.44 -3.747 1.287 -3.637 1.184 -3.476 C 1.077 -3.318 1.022 -3.108 1.022 -2.892 C 1.022 -2.834 1.025 -2.773 1.034 -2.713 C 1.043 -2.67 1.045 -2.641 1.068 -2.537 L 1.109 -2.356 C 1.12 -2.301 1.129 -2.258 1.129 -2.252 L 1.129 -2.252 C 1.132 -2.252 1.221 -2.35 1.25 -2.385 C 1.538 -2.71 1.711 -3.053 1.748 -3.355 C 1.751 -3.384 1.751 -3.407 1.751 -3.436 C 1.751 -3.525 1.74 -3.612 1.719 -3.658 C 1.696 -3.704 1.644 -3.741 1.581 -3.747"/>' +
+    '<path d="M 1.146 -1.521 C 1.14 -1.561 1.132 -1.593 1.132 -1.598 C 1.132 -1.598 1.132 -1.598 1.129 -1.598 C 1.123 -1.598 0.999 -1.454 0.913 -1.354 C 0.766 -1.175 0.611 -0.962 0.547 -0.858 C 0.426 -0.654 0.366 -0.426 0.366 -0.202 C 0.366 -0.055 0.395 0.086 0.446 0.222 C 0.602 0.622 0.959 0.873 1.348 0.873 C 1.394 0.873 1.446 0.87 1.495 0.861 C 1.558 0.85 1.636 0.827 1.636 0.818 L 1.636 0.818 C 1.636 0.818 1.63 0.789 1.621 0.757 L 1.538 0.346 L 1.472 0.037 L 1.428 -0.176 L 1.382 -0.383 C 1.359 -0.507 1.351 -0.539 1.351 -0.539 C 1.351 -0.539 1.351 -0.541 1.348 -0.541 C 1.331 -0.541 1.238 -0.495 1.198 -0.467 C 1.048 -0.363 0.971 -0.199 0.971 -0.037 C 0.971 0.115 1.045 0.268 1.189 0.357 C 1.221 0.377 1.233 0.395 1.233 0.415 C 1.233 0.418 1.233 0.426 1.233 0.429 C 1.227 0.464 1.207 0.478 1.178 0.478 C 1.166 0.478 1.152 0.475 1.135 0.467 C 0.87 0.351 0.691 0.078 0.691 -0.222 L 0.691 -0.222 C 0.691 -0.567 0.907 -0.867 1.238 -0.985 L 1.256 -0.991 L 1.227 -1.135 L 1.146 -1.521"/>' +
+    '<path d="M 1.578 -0.559 C 1.555 -0.562 1.532 -0.562 1.515 -0.562 C 1.509 -0.562 1.5 -0.562 1.495 -0.562 L 1.48 -0.562 L 1.492 -0.51 L 1.552 -0.228 L 1.59 -0.043 L 1.63 0.138 L 1.711 0.539 L 1.742 0.691 C 1.754 0.732 1.76 0.766 1.763 0.766 C 1.763 0.766 1.763 0.766 1.763 0.766 C 1.765 0.766 1.814 0.737 1.846 0.714 C 1.993 0.611 2.102 0.449 2.143 0.282 C 2.157 0.228 2.163 0.17 2.163 0.115 C 2.163 -0.219 1.915 -0.521 1.578 -0.559"/>' +
+    '</g>';
+
+  var STAFF_LINES = '<g stroke="currentColor" stroke-width="1.2">' +
+    '<line x1="0" y1="10" x2="240" y2="10"/>' +
+    '<line x1="0" y1="18" x2="240" y2="18"/>' +
+    '<line x1="0" y1="26" x2="240" y2="26"/>' +
+    '<line x1="0" y1="34" x2="240" y2="34"/>' +
+    '<line x1="0" y1="42" x2="240" y2="42"/>' +
+    '</g>';
+
+  var BAR_LINES = '<line x1="228" y1="10" x2="228" y2="42" stroke="currentColor" stroke-width="1.2"/>' +
+    '<line x1="233" y1="10" x2="233" y2="42" stroke="currentColor" stroke-width="2.8"/>';
+
   // Interactive Key Switching in Hero Card
   var KEYS = [
     {
       name: "D major",
       doh: "D",
       keySigText: "2 sharps (F♯, C♯)",
-      svgContent: '<g stroke="#101828" stroke-width="1.2">' +
-        '<line x1="0" y1="8" x2="240" y2="8"/><line x1="0" y1="16" x2="240" y2="16"/>' +
-        '<line x1="0" y1="24" x2="240" y2="24"/><line x1="0" y1="32" x2="240" y2="32"/>' +
-        '<line x1="0" y1="40" x2="240" y2="40"/>' +
-        '</g>' +
-        '<!-- Treble Clef -->' +
-        '<path d="M14 36c-2-4 1-9 4-9s3 4 1 7c-3 4-5 8-5 12 0 6 4 9 8 9 5 0 8-4 8-9 0-8-8-15-8-23 0-6 3-10 6-10s4 2 4 5c0 6-8 14-8 23v20c0 4-2 6-4 6s-3-2-3-4" fill="none" stroke="#101828" stroke-width="1.8"/>' +
-        '<!-- Sharps for D major (F# and C#) -->' +
-        '<text x="32" y="18" font-family="sans-serif" font-size="14" font-weight="bold" fill="#101828">♯</text>' +
-        '<text x="40" y="26" font-family="sans-serif" font-size="14" font-weight="bold" fill="#101828">♯</text>' +
-        '<!-- Beamed Notes -->' +
-        '<ellipse cx="70" cy="36" rx="4.5" ry="3.5" transform="rotate(-15 70 36)" fill="#101828"/>' +
-        '<line x1="74" y1="36" x2="74" y2="14" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="100" cy="32" rx="4.5" ry="3.5" transform="rotate(-15 100 32)" fill="#101828"/>' +
-        '<line x1="104" y1="32" x2="104" y2="14" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="130" cy="28" rx="4.5" ry="3.5" transform="rotate(-15 130 28)" fill="#101828"/>' +
-        '<line x1="134" y1="28" x2="134" y2="14" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="160" cy="24" rx="4.5" ry="3.5" transform="rotate(-15 160 24)" fill="#101828"/>' +
-        '<line x1="164" y1="24" x2="164" y2="14" stroke="#101828" stroke-width="1.6"/>' +
-        '<polygon points="74,14 164,14 164,10 74,10" fill="#101828"/>' +
-        '<!-- Half Note -->' +
-        '<ellipse cx="200" cy="20" rx="4.5" ry="3.5" transform="rotate(-15 200 20)" fill="none" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="204" y1="20" x2="204" y2="4" stroke="#101828" stroke-width="1.6"/>' +
-        '<!-- Bar lines -->' +
-        '<line x1="230" y1="8" x2="230" y2="40" stroke="#101828" stroke-width="1.4"/>' +
-        '<line x1="234" y1="8" x2="234" y2="40" stroke="#101828" stroke-width="2.8"/>'
+      svgContent: STAFF_LINES + GONVILLE_CLEF +
+        '<text x="32" y="14" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="currentColor">♯</text>' +
+        '<text x="40" y="22" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="currentColor">♯</text>' +
+        '<ellipse cx="70" cy="46" rx="4.5" ry="3.2" transform="rotate(-15 70 46)" fill="currentColor"/>' +
+        '<line x1="74" y1="46" x2="74" y2="18" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="100" cy="42" rx="4.5" ry="3.2" transform="rotate(-15 100 42)" fill="currentColor"/>' +
+        '<line x1="104" y1="42" x2="104" y2="16" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="130" cy="38" rx="4.5" ry="3.2" transform="rotate(-15 130 38)" fill="currentColor"/>' +
+        '<line x1="134" y1="38" x2="134" y2="14" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="160" cy="34" rx="4.5" ry="3.2" transform="rotate(-15 160 34)" fill="currentColor"/>' +
+        '<line x1="164" y1="34" x2="164" y2="12" stroke="currentColor" stroke-width="1.6"/>' +
+        '<polygon points="74,18 164,12 164,8 74,14" fill="currentColor"/>' +
+        '<ellipse cx="200" cy="30" rx="4.5" ry="3.2" transform="rotate(-15 200 30)" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+        '<line x1="204" y1="30" x2="204" y2="10" stroke="currentColor" stroke-width="1.6"/>' +
+        BAR_LINES
     },
     {
       name: "G major",
       doh: "G",
       keySigText: "1 sharp (F♯)",
-      svgContent: '<g stroke="#101828" stroke-width="1.2">' +
-        '<line x1="0" y1="8" x2="240" y2="8"/><line x1="0" y1="16" x2="240" y2="16"/>' +
-        '<line x1="0" y1="24" x2="240" y2="24"/><line x1="0" y1="32" x2="240" y2="32"/>' +
-        '<line x1="0" y1="40" x2="240" y2="40"/>' +
-        '</g>' +
-        '<path d="M14 36c-2-4 1-9 4-9s3 4 1 7c-3 4-5 8-5 12 0 6 4 9 8 9 5 0 8-4 8-9 0-8-8-15-8-23 0-6 3-10 6-10s4 2 4 5c0 6-8 14-8 23v20c0 4-2 6-4 6s-3-2-3-4" fill="none" stroke="#101828" stroke-width="1.8"/>' +
-        '<text x="32" y="18" font-family="sans-serif" font-size="14" font-weight="bold" fill="#101828">♯</text>' +
-        '<ellipse cx="70" cy="28" rx="4.5" ry="3.5" transform="rotate(-15 70 28)" fill="#101828"/>' +
-        '<line x1="74" y1="28" x2="74" y2="10" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="100" cy="24" rx="4.5" ry="3.5" transform="rotate(-15 100 24)" fill="#101828"/>' +
-        '<line x1="104" y1="24" x2="104" y2="10" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="130" cy="20" rx="4.5" ry="3.5" transform="rotate(-15 130 20)" fill="#101828"/>' +
-        '<line x1="134" y1="20" x2="134" y2="10" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="160" cy="16" rx="4.5" ry="3.5" transform="rotate(-15 160 16)" fill="#101828"/>' +
-        '<line x1="164" y1="16" x2="164" y2="10" stroke="#101828" stroke-width="1.6"/>' +
-        '<polygon points="74,10 164,10 164,6 74,6" fill="#101828"/>' +
-        '<ellipse cx="200" cy="12" rx="4.5" ry="3.5" transform="rotate(-15 200 12)" fill="none" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="204" y1="12" x2="204" y2="-4" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="230" y1="8" x2="230" y2="40" stroke="#101828" stroke-width="1.4"/>' +
-        '<line x1="234" y1="8" x2="234" y2="40" stroke="#101828" stroke-width="2.8"/>'
+      svgContent: STAFF_LINES + GONVILLE_CLEF +
+        '<text x="32" y="14" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="currentColor">♯</text>' +
+        '<ellipse cx="70" cy="34" rx="4.5" ry="3.2" transform="rotate(-15 70 34)" fill="currentColor"/>' +
+        '<line x1="74" y1="34" x2="74" y2="12" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="100" cy="30" rx="4.5" ry="3.2" transform="rotate(-15 100 30)" fill="currentColor"/>' +
+        '<line x1="104" y1="30" x2="104" y2="10" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="130" cy="26" rx="4.5" ry="3.2" transform="rotate(-15 130 26)" fill="currentColor"/>' +
+        '<line x1="134" y1="26" x2="134" y2="8" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="160" cy="22" rx="4.5" ry="3.2" transform="rotate(-15 160 22)" fill="currentColor"/>' +
+        '<line x1="164" y1="22" x2="164" y2="6" stroke="currentColor" stroke-width="1.6"/>' +
+        '<polygon points="74,12 164,6 164,2 74,8" fill="currentColor"/>' +
+        '<ellipse cx="200" cy="18" rx="4.5" ry="3.2" transform="rotate(-15 200 18)" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+        '<line x1="196" y1="18" x2="196" y2="38" stroke="currentColor" stroke-width="1.6"/>' +
+        BAR_LINES
     },
     {
       name: "C major",
       doh: "C",
       keySigText: "Natural (no accidentals)",
-      svgContent: '<g stroke="#101828" stroke-width="1.2">' +
-        '<line x1="0" y1="8" x2="240" y2="8"/><line x1="0" y1="16" x2="240" y2="16"/>' +
-        '<line x1="0" y1="24" x2="240" y2="24"/><line x1="0" y1="32" x2="240" y2="32"/>' +
-        '<line x1="0" y1="40" x2="240" y2="40"/>' +
-        '</g>' +
-        '<path d="M14 36c-2-4 1-9 4-9s3 4 1 7c-3 4-5 8-5 12 0 6 4 9 8 9 5 0 8-4 8-9 0-8-8-15-8-23 0-6 3-10 6-10s4 2 4 5c0 6-8 14-8 23v20c0 4-2 6-4 6s-3-2-3-4" fill="none" stroke="#101828" stroke-width="1.8"/>' +
-        '<line x1="62" y1="44" x2="78" y2="44" stroke="#101828" stroke-width="1.2"/>' +
-        '<ellipse cx="70" cy="44" rx="4.5" ry="3.5" transform="rotate(-15 70 44)" fill="#101828"/>' +
-        '<line x1="74" y1="44" x2="74" y2="22" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="100" cy="40" rx="4.5" ry="3.5" transform="rotate(-15 100 40)" fill="#101828"/>' +
-        '<line x1="104" y1="40" x2="104" y2="22" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="130" cy="36" rx="4.5" ry="3.5" transform="rotate(-15 130 36)" fill="#101828"/>' +
-        '<line x1="134" y1="36" x2="134" y2="22" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="160" cy="32" rx="4.5" ry="3.5" transform="rotate(-15 160 32)" fill="#101828"/>' +
-        '<line x1="164" y1="32" x2="164" y2="22" stroke="#101828" stroke-width="1.6"/>' +
-        '<polygon points="74,22 164,22 164,18 74,18" fill="#101828"/>' +
-        '<ellipse cx="200" cy="28" rx="4.5" ry="3.5" transform="rotate(-15 200 28)" fill="none" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="204" y1="28" x2="204" y2="8" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="230" y1="8" x2="230" y2="40" stroke="#101828" stroke-width="1.4"/>' +
-        '<line x1="234" y1="8" x2="234" y2="40" stroke="#101828" stroke-width="2.8"/>'
+      svgContent: STAFF_LINES + GONVILLE_CLEF +
+        '<line x1="62" y1="50" x2="78" y2="50" stroke="currentColor" stroke-width="1.2"/>' +
+        '<ellipse cx="70" cy="50" rx="4.5" ry="3.2" transform="rotate(-15 70 50)" fill="currentColor"/>' +
+        '<line x1="74" y1="50" x2="74" y2="24" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="100" cy="46" rx="4.5" ry="3.2" transform="rotate(-15 100 46)" fill="currentColor"/>' +
+        '<line x1="104" y1="46" x2="104" y2="22" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="130" cy="42" rx="4.5" ry="3.2" transform="rotate(-15 130 42)" fill="currentColor"/>' +
+        '<line x1="134" y1="42" x2="134" y2="20" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="160" cy="38" rx="4.5" ry="3.2" transform="rotate(-15 160 38)" fill="currentColor"/>' +
+        '<line x1="164" y1="38" x2="164" y2="18" stroke="currentColor" stroke-width="1.6"/>' +
+        '<polygon points="74,24 164,18 164,14 74,20" fill="currentColor"/>' +
+        '<ellipse cx="200" cy="34" rx="4.5" ry="3.2" transform="rotate(-15 200 34)" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+        '<line x1="204" y1="34" x2="204" y2="14" stroke="currentColor" stroke-width="1.6"/>' +
+        BAR_LINES
     },
     {
       name: "F major",
       doh: "F",
       keySigText: "1 flat (B♭)",
-      svgContent: '<g stroke="#101828" stroke-width="1.2">' +
-        '<line x1="0" y1="8" x2="240" y2="8"/><line x1="0" y1="16" x2="240" y2="16"/>' +
-        '<line x1="0" y1="24" x2="240" y2="24"/><line x1="0" y1="32" x2="240" y2="32"/>' +
-        '<line x1="0" y1="40" x2="240" y2="40"/>' +
-        '</g>' +
-        '<path d="M14 36c-2-4 1-9 4-9s3 4 1 7c-3 4-5 8-5 12 0 6 4 9 8 9 5 0 8-4 8-9 0-8-8-15-8-23 0-6 3-10 6-10s4 2 4 5c0 6-8 14-8 23v20c0 4-2 6-4 6s-3-2-3-4" fill="none" stroke="#101828" stroke-width="1.8"/>' +
-        '<text x="32" y="26" font-family="sans-serif" font-size="14" font-weight="bold" fill="#101828">♭</text>' +
-        '<ellipse cx="70" cy="32" rx="4.5" ry="3.5" transform="rotate(-15 70 32)" fill="#101828"/>' +
-        '<line x1="74" y1="32" x2="74" y2="12" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="100" cy="28" rx="4.5" ry="3.5" transform="rotate(-15 100 28)" fill="#101828"/>' +
-        '<line x1="104" y1="28" x2="104" y2="12" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="130" cy="24" rx="4.5" ry="3.5" transform="rotate(-15 130 24)" fill="#101828"/>' +
-        '<line x1="134" y1="24" x2="134" y2="12" stroke="#101828" stroke-width="1.6"/>' +
-        '<ellipse cx="160" cy="20" rx="4.5" ry="3.5" transform="rotate(-15 160 20)" fill="#101828"/>' +
-        '<line x1="164" y1="20" x2="164" y2="12" stroke="#101828" stroke-width="1.6"/>' +
-        '<polygon points="74,12 164,12 164,8 74,8" fill="#101828"/>' +
-        '<ellipse cx="200" cy="16" rx="4.5" ry="3.5" transform="rotate(-15 200 16)" fill="none" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="204" y1="16" x2="204" y2="0" stroke="#101828" stroke-width="1.6"/>' +
-        '<line x1="230" y1="8" x2="230" y2="40" stroke="#101828" stroke-width="1.4"/>' +
-        '<line x1="234" y1="8" x2="234" y2="40" stroke="#101828" stroke-width="2.8"/>'
+      svgContent: STAFF_LINES + GONVILLE_CLEF +
+        '<text x="32" y="26" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="bold" fill="currentColor">♭</text>' +
+        '<ellipse cx="70" cy="38" rx="4.5" ry="3.2" transform="rotate(-15 70 38)" fill="currentColor"/>' +
+        '<line x1="74" y1="38" x2="74" y2="14" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="100" cy="34" rx="4.5" ry="3.2" transform="rotate(-15 100 34)" fill="currentColor"/>' +
+        '<line x1="104" y1="34" x2="104" y2="12" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="130" cy="30" rx="4.5" ry="3.2" transform="rotate(-15 130 30)" fill="currentColor"/>' +
+        '<line x1="134" y1="30" x2="134" y2="10" stroke="currentColor" stroke-width="1.6"/>' +
+        '<ellipse cx="160" cy="26" rx="4.5" ry="3.2" transform="rotate(-15 160 26)" fill="currentColor"/>' +
+        '<line x1="164" y1="26" x2="164" y2="8" stroke="currentColor" stroke-width="1.6"/>' +
+        '<polygon points="74,14 164,8 164,4 74,10" fill="currentColor"/>' +
+        '<ellipse cx="200" cy="22" rx="4.5" ry="3.2" transform="rotate(-15 200 22)" fill="none" stroke="currentColor" stroke-width="1.6"/>' +
+        '<line x1="204" y1="22" x2="204" y2="2" stroke="currentColor" stroke-width="1.6"/>' +
+        BAR_LINES
     }
   ];
 
@@ -307,5 +297,30 @@
         popSolfaTiles();
       });
     });
+  }
+
+  // ── Light / Dark Mode Toggle ──────────────────────────────────────────────
+  var themeToggleBtn = document.getElementById("themeToggleBtn");
+  var mobileThemeToggleBtn = document.getElementById("mobileThemeToggleBtn");
+
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute("data-theme") || "light";
+    var next = current === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("notefusion-theme", next);
+    } catch (e) {}
+
+    // Notify 3D canvas if available
+    if (window.NoteFusion3D && typeof window.NoteFusion3D.setTheme === "function") {
+      window.NoteFusion3D.setTheme(next);
+    }
+  }
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", toggleTheme);
+  }
+  if (mobileThemeToggleBtn) {
+    mobileThemeToggleBtn.addEventListener("click", toggleTheme);
   }
 })();

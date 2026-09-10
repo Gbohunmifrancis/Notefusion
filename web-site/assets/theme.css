@@ -83,6 +83,29 @@
   --wrap-narrow: 840px;
 }
 
+[data-theme="dark"] {
+  --color-brand-500: #38BDF8;
+  --color-brand-600: #0284C7;
+  --color-brand-100: rgba(56, 189, 248, 0.16);
+  --color-brand-050: rgba(56, 189, 248, 0.08);
+
+  --color-ink-950: #F8FAFC;
+  --color-ink-700: #E2E8F0;
+  --color-ink-500: #94A3B8;
+  --color-ink-300: #64748B;
+
+  --color-surface-canvas: #0B0F17;
+  --color-surface-base: #131A26;
+  --color-surface-subtle: #1C2433;
+
+  --color-border-default: #253043;
+  --color-border-strong: #374761;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
+  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.35), 0 14px 32px rgba(0, 0, 0, 0.45);
+  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.5);
+}
+
 *,
 *::before,
 *::after {

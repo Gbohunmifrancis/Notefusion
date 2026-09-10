@@ -27,8 +27,15 @@
   // Global controller exposed for interaction
   var NoteFusion3D = {
     isPlaying: false,
+    theme: document.documentElement.getAttribute("data-theme") || "light",
     setPlaying: function (playing) {
       this.isPlaying = !!playing;
+    },
+    setTheme: function (theme) {
+      this.theme = theme;
+      if (typeof this._onThemeChange === "function") {
+        this._onThemeChange(theme);
+      }
     }
   };
   window.NoteFusion3D = NoteFusion3D;
@@ -50,7 +57,7 @@
     var height = container.clientHeight || 480;
 
     var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.set(0, 4, 18);
+    camera.position.set(0, 3.5, 17);
     camera.lookAt(0, 0, 0);
 
     var renderer;
@@ -72,63 +79,68 @@
     renderer.setClearColor(0x000000, 0); // Transparent
 
     // ── Lighting ─────────────────────────────────────────────────────────────
-    var ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    var ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
     scene.add(ambientLight);
 
-    var dirLight = new THREE.DirectionalLight(0x38bdf8, 1.2);
+    var dirLight = new THREE.DirectionalLight(0x38bdf8, 1.8);
     dirLight.position.set(10, 20, 15);
     scene.add(dirLight);
 
-    var blueLight = new THREE.PointLight(0x1769e8, 2.5, 50);
-    blueLight.position.set(-12, -4, 8);
+    var blueLight = new THREE.PointLight(0x1769e8, 3.5, 60);
+    blueLight.position.set(-14, -3, 8);
     scene.add(blueLight);
+
+    var cyanLight = new THREE.PointLight(0x38bdf8, 3.0, 60);
+    cyanLight.position.set(14, 6, 10);
+    scene.add(cyanLight);
 
     // ── 3D Ribbon Field (Multiple Frequency Waves) ───────────────────────────
     // Inspired by ThreeUI Ribbon Field / Audio Wordmark
     var ribbonCount = 5;
-    var ribbonSegments = 120;
+    var ribbonSegments = 140;
     var ribbonMeshes = [];
     var ribbonColors = [
-      0x1769e8, // Primary Brand Blue
-      0x2563eb, // Deep Blue
-      0x38bdf8, // Sky Cyan
-      0x60a5fa, // Light Indigo
-      0x93c5fd  // Soft Pastel Blue
+      0x1769e8, // Primary Brand Royal Blue
+      0x0284c7, // Vibrant Electric Ocean
+      0x38bdf8, // Luminous Sky Cyan
+      0x6366f1, // Indigo Harmonic
+      0x0ea5e9  // Azure Stream
     ];
 
     var ribbonsGroup = new THREE.Group();
     scene.add(ribbonsGroup);
 
     for (var r = 0; r < ribbonCount; r++) {
-      // Create ribbon strip geometry
-      var geom = new THREE.PlaneGeometry(36, 0.45, ribbonSegments, 1);
+      // Create ribbon strip geometry with substantial width
+      var geom = new THREE.PlaneGeometry(42, 1.0, ribbonSegments, 1);
       
-      // Double-sided phong material
+      // Double-sided phong material with prominent glow
       var mat = new THREE.MeshPhongMaterial({
         color: ribbonColors[r],
         emissive: ribbonColors[r],
-        emissiveIntensity: 0.15,
+        emissiveIntensity: 0.32,
+        specular: 0xffffff,
+        shininess: 90,
         transparent: true,
-        opacity: 0.7 - r * 0.08,
+        opacity: 0.88 - r * 0.06,
         wireframe: false,
-        side: THREE.DoubleSide,
-        shininess: 60
+        side: THREE.DoubleSide
       });
 
       var mesh = new THREE.Mesh(geom, mat);
-      mesh.position.y = (r - (ribbonCount - 1) / 2) * 1.05;
-      mesh.position.z = (r - (ribbonCount - 1) / 2) * -1.2;
-      mesh.rotation.x = 0.25;
+      mesh.position.y = (r - (ribbonCount - 1) / 2) * 1.15;
+      mesh.position.z = (r - (ribbonCount - 1) / 2) * -1.3;
+      mesh.rotation.x = 0.22;
       
       // Store original vertices for procedural displacement
       var posAttr = geom.attributes.position;
       mesh.userData = {
         baseY: mesh.position.y,
         initialY: new Float32Array(posAttr.array.length),
-        freqX: 0.18 + r * 0.04,
-        speed: 1.2 + r * 0.25,
+        freqX: 0.16 + r * 0.035,
+        speed: 1.3 + r * 0.25,
         phase: r * 0.75,
-        amp: 0.75 + (ribbonCount - r) * 0.12
+        amp: 1.15 + (ribbonCount - r) * 0.2
       };
 
       for (var i = 0; i < posAttr.array.length; i++) {
@@ -138,6 +150,18 @@
       ribbonMeshes.push(mesh);
       ribbonsGroup.add(mesh);
     }
+
+    // Theme updater callback
+    NoteFusion3D._onThemeChange = function (theme) {
+      var isDark = theme === "dark";
+      ambientLight.intensity = isDark ? 0.7 : 1.1;
+      dirLight.intensity = isDark ? 2.2 : 1.8;
+      ribbonMeshes.forEach(function (m) {
+        m.material.emissiveIntensity = isDark ? 0.48 : 0.32;
+        m.material.opacity = isDark ? 0.92 : 0.84;
+      });
+    };
+    NoteFusion3D._onThemeChange(NoteFusion3D.theme);
 
     // ── Floating Harmonic Pitch Particles (Stream Convergence) ───────────────
     var particleCount = 140;

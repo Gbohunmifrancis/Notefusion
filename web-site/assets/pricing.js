@@ -44,8 +44,8 @@
 
   function action(label, featured) {
     var link = document.createElement("a");
-    link.className = "btn " + (featured ? "btn--primary" : "btn--ghost");
-    link.href = featured ? playUrl : "#get";
+    link.className = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
+    link.href = playUrl;
     link.textContent = label;
     return link;
   }

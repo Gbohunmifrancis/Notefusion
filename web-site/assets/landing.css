@@ -43,25 +43,29 @@
   transform: translateY(1px);
 }
 
-.btn-primary {
+.btn-primary,
+.btn--primary {
   background-color: var(--color-brand-500);
   color: #ffffff;
   border-color: var(--color-brand-500);
 }
 
-.btn-primary:hover {
+.btn-primary:hover,
+.btn--primary:hover {
   background-color: var(--color-brand-600);
   border-color: var(--color-brand-600);
 }
 
-.btn-ghost {
+.btn-ghost,
+.btn--ghost {
   background-color: transparent;
   color: var(--color-ink-700);
   border-color: var(--color-border-default);
 }
 
-.btn-ghost:hover {
-  background-color: #ffffff;
+.btn-ghost:hover,
+.btn--ghost:hover {
+  background-color: var(--color-surface-subtle);
   border-color: var(--color-border-strong);
   color: var(--color-ink-950);
 }
@@ -184,15 +188,62 @@
   gap: 20px;
 }
 
-.nav-sign-in {
-  font-size: 15px;
-  font-weight: 500;
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid var(--color-border-default);
   color: var(--color-ink-700);
-  transition: color 0.15s ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 
-.nav-sign-in:hover {
+.theme-toggle-btn:hover {
+  background-color: var(--color-surface-subtle);
   color: var(--color-ink-950);
+  border-color: var(--color-border-strong);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.96);
+}
+
+.theme-icon-sun {
+  display: none;
+}
+
+.theme-icon-moon {
+  display: block;
+}
+
+[data-theme="dark"] .theme-icon-sun {
+  display: block;
+}
+
+[data-theme="dark"] .theme-icon-moon {
+  display: none;
+}
+
+.theme-toggle-btn-mobile {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  background-color: var(--color-surface-subtle);
+}
+
+.theme-status {
+  display: inline-flex;
+  align-items: center;
 }
 
 .hamburger-btn {
@@ -250,11 +301,9 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0;
   overflow: hidden;
-  opacity: 0.88;
-  mask-image: radial-gradient(circle at 62% 42%, rgba(0, 0, 0, 1) 28%, rgba(0, 0, 0, 0) 78%);
-  -webkit-mask-image: radial-gradient(circle at 62% 42%, rgba(0, 0, 0, 1) 28%, rgba(0, 0, 0, 0) 78%);
+  opacity: 1;
 }
 
 .hero-3d-stage canvas {
@@ -304,12 +353,14 @@
 
 /* ── Product Preview Card (Hero Showcase) ────────────────────────────────── */
 .hero-card {
-  background-color: var(--color-surface-base);
+  background-color: rgba(255, 254, 252, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-xl);
   padding: clamp(20px, 3vw, 28px);
   box-shadow: var(--shadow-card);
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .hero-card:hover {
@@ -1085,6 +1136,17 @@
   margin-top: 2px;
 }
 
+.plan .btn {
+  width: 100%;
+  margin-top: auto;
+  padding: 14px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+}
+
 .pricing-note {
   text-align: center;
   font-size: 13.5px;
@@ -1359,3 +1421,73 @@ html.js .reveal.is-visible {
     gap: 36px;
   }
 }
+
+/* ── Dark Theme Refinements ──────────────────────────────────────────────── */
+[data-theme="dark"] .site-header {
+  background-color: rgba(11, 15, 23, 0.88);
+}
+
+[data-theme="dark"] .site-header[data-scrolled="true"] {
+  background-color: rgba(11, 15, 23, 0.96);
+  border-bottom-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .mobile-menu {
+  background-color: var(--color-surface-base);
+  border-bottom-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .hero-card {
+  background-color: rgba(19, 26, 38, 0.88);
+  border-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .card-waveform-box,
+[data-theme="dark"] .preview-col,
+[data-theme="dark"] .confidence-strip {
+  background-color: var(--color-surface-canvas);
+  border-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .solfa-tile {
+  background-color: var(--color-surface-base);
+  border-color: var(--color-border-default);
+  color: var(--color-ink-950);
+}
+
+[data-theme="dark"] .solfa-tile.is-active-beat {
+  background-color: var(--color-brand-500);
+  color: #0b0f17;
+}
+
+[data-theme="dark"] .value-icon-circle {
+  background-color: var(--color-surface-subtle);
+  border-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .step-card,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .comparison-card,
+[data-theme="dark"] .plan {
+  background-color: var(--color-surface-base);
+  border-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .plan--featured {
+  border-color: var(--color-brand-500);
+  box-shadow: 0 4px 24px rgba(56, 189, 248, 0.15);
+}
+
+[data-theme="dark"] .staff-score-svg {
+  color: var(--color-ink-950);
+}
+
+[data-theme="dark"] .faq-item {
+  border-color: var(--color-border-default);
+}
+
+[data-theme="dark"] .site-footer {
+  background-color: var(--color-surface-base);
+  border-top-color: var(--color-border-default);
+}
+
