@@ -101,7 +101,12 @@
 
 <!-- ══ Hero Section ═════════════════════════════════════════════════════════ -->
 <section class="hero-section" aria-labelledby="hero-title">
-  <div class="wrap">
+  <!-- 3D Interactive Audio Stage (Three.js Ribbon & Particle Field) -->
+  <div class="hero-3d-stage" id="hero3dStage" aria-hidden="true">
+    <canvas id="hero3dCanvas"></canvas>
+  </div>
+
+  <div class="wrap hero-wrap">
     <div class="hero-grid">
       
       <!-- Left Hero Column -->
@@ -153,6 +158,9 @@
 
         <!-- Waveform Visualizer -->
         <div class="waveform-box" id="heroWaveformBox" aria-hidden="true">
+          <div class="waveform-scrub-track">
+            <div class="waveform-scrub-line" id="heroScrubLine"></div>
+          </div>
           <svg class="waveform-svg" viewBox="0 0 460 48" preserveAspectRatio="none">
             <!-- Active Blue Waveform Bars -->
             <rect class="waveform-bar" x="4" y="21" width="3.5" height="6" rx="1.5" fill="#1769E8"/>
@@ -336,7 +344,7 @@
         <span class="underline-accent-container">
           three steps.
           <svg class="underline-accent-svg" viewBox="0 0 220 16" fill="none" aria-hidden="true">
-            <path d="M4 11C55 4 165 2 216 11" stroke="#1769E8" stroke-width="4" stroke-linecap="round"/>
+            <path class="underline-accent-path" d="M4 11C55 4 165 2 216 11" stroke="#1769E8" stroke-width="4" stroke-linecap="round"/>
           </svg>
         </span>
       </h2>
@@ -784,7 +792,9 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+<script src="/assets/scene-3d.js?v=1" defer></script>
 <script src="/assets/pricing.js?v=2" defer></script>
-<script src="/assets/landing.js?v=4" defer></script>
+<script src="/assets/landing.js?v=5" defer></script>
 </body>
 </html>

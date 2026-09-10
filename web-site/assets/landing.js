@@ -65,34 +65,83 @@
   var btnPlay = document.getElementById("heroBtnPlay");
   var waveformBox = document.getElementById("heroWaveformBox");
   var timeDisplay = document.getElementById("heroTimeDisplay");
+  var scrubLine = document.getElementById("heroScrubLine");
   var btnChangeKey = document.getElementById("heroBtnChangeKey");
   var keyPill = document.getElementById("heroKeyPill");
   var staffSvg = document.getElementById("heroStaffSvg");
+  var heroSolfaTiles = document.querySelectorAll(".preview-col-solfa .solfa-tile");
 
   // Audio Play Simulation
   var isPlaying = false;
   var playTimer = null;
+  var scrubTimer = null;
   var playSeconds = 12;
+  var currentElapsed = 0;
+
+  function updateSolfaBeats(second) {
+    if (heroSolfaTiles.length === 0) return;
+    var activeIdx = second % heroSolfaTiles.length;
+    heroSolfaTiles.forEach(function (tile, idx) {
+      if (idx === activeIdx) {
+        tile.classList.add("is-active-beat");
+      } else {
+        tile.classList.remove("is-active-beat");
+      }
+    });
+  }
+
+  function clearSolfaBeats() {
+    heroSolfaTiles.forEach(function (tile) {
+      tile.classList.remove("is-active-beat");
+    });
+  }
 
   if (btnPlay && waveformBox) {
     btnPlay.addEventListener("click", function () {
       isPlaying = !isPlaying;
+
+      // Sync with 3D Three.js scene
+      if (window.NoteFusion3D && typeof window.NoteFusion3D.setPlaying === "function") {
+        window.NoteFusion3D.setPlaying(isPlaying);
+      }
+
       if (isPlaying) {
         waveformBox.classList.add("waveform-playing");
+        btnPlay.classList.add("is-playing");
         btnPlay.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
         btnPlay.setAttribute("aria-label", "Pause playback");
-        
-        var current = 0;
+        if (scrubLine) scrubLine.classList.add("is-active");
+
         playTimer = setInterval(function () {
-          current = (current + 1) % 13;
-          var secStr = current < 10 ? "0" + current : "" + current;
+          currentElapsed = (currentElapsed + 1) % (playSeconds + 1);
+          var secStr = currentElapsed < 10 ? "0" + currentElapsed : "" + currentElapsed;
           if (timeDisplay) timeDisplay.textContent = "00:" + secStr;
+          updateSolfaBeats(currentElapsed);
         }, 1000);
+
+        // Smooth 60fps scrubber line animation
+        var startTs = performance.now() - (currentElapsed * 1000);
+        function stepScrub(now) {
+          if (!isPlaying) return;
+          var elapsedMs = (now - startTs) % (playSeconds * 1000);
+          var pct = (elapsedMs / (playSeconds * 1000)) * 100;
+          if (scrubLine) scrubLine.style.left = pct + "%";
+          scrubTimer = requestAnimationFrame(stepScrub);
+        }
+        scrubTimer = requestAnimationFrame(stepScrub);
       } else {
         waveformBox.classList.remove("waveform-playing");
+        btnPlay.classList.remove("is-playing");
         btnPlay.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
         btnPlay.setAttribute("aria-label", "Play recording");
         if (playTimer) clearInterval(playTimer);
+        if (scrubTimer) cancelAnimationFrame(scrubTimer);
+        if (scrubLine) {
+          scrubLine.classList.remove("is-active");
+          scrubLine.style.left = "0%";
+        }
+        clearSolfaBeats();
+        currentElapsed = 0;
         if (timeDisplay) timeDisplay.textContent = "00:12";
       }
     });
@@ -210,6 +259,17 @@
 
   var currentKeyIndex = 0;
 
+  function popSolfaTiles() {
+    var tiles = document.querySelectorAll(".solfa-tile");
+    tiles.forEach(function (tile, i) {
+      tile.classList.remove("solfa-pop-animate");
+      void tile.offsetWidth;
+      setTimeout(function () {
+        tile.classList.add("solfa-pop-animate");
+      }, i * 35);
+    });
+  }
+
   function cycleKey() {
     currentKeyIndex = (currentKeyIndex + 1) % KEYS.length;
     var k = KEYS[currentKeyIndex];
@@ -219,6 +279,7 @@
     if (staffSvg) {
       staffSvg.innerHTML = k.svgContent;
     }
+    popSolfaTiles();
   }
 
   if (btnChangeKey) {
@@ -243,6 +304,7 @@
         if (spotlightSolfaNote) {
           spotlightSolfaNote.textContent = "The solfa syllables (d r m f s l t d′) remain identical to sing — only Doh moves to " + keyName + ". Instant, lossless re-labelling.";
         }
+        popSolfaTiles();
       });
     });
   }
