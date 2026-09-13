@@ -79,24 +79,24 @@ public sealed class BrandedEmailTemplate
         var name = FirstName(to);
         var body = Paragraphs(
             $"You're on the list{(name is null ? "" : $", {Encode(name)}")}.",
-            "Thank you for joining the NoteFusion waitlist! The Android application is currently in its final review stage on the <strong>Google Play Store</strong>.",
-            "As soon as the app is approved, you will receive an invitation email with priority early access to start transcribing music into <strong>Tonic Solfa</strong> and <strong>staff notation</strong>.",
+            "Thank you for joining the NoteFusion waitlist! We're excited to have you with us.",
+            "You will receive an invitation email with early access to start transcribing live and recorded melodies into <strong>Tonic Solfa</strong> and <strong>staff notation</strong>.",
             "In the meantime, feel free to explore our notation preview and updates at <a href=\"" + Encode(_settings.AppUrl) + "\" style=\"color:" + Blue + ";text-decoration:underline\">notefusion.studio</a>.")
-            + Callout("Have questions or specific choir / worship team requirements? Reach our team anytime at "
+            + Callout("Have questions or specific music team requirements? Reach our team anytime at "
                 + $"<a href=\"mailto:{Encode(_settings.SupportEmail)}\" style=\"color:{Blue};text-decoration:underline\">{Encode(_settings.SupportEmail)}</a>.", Blue);
 
         return Compose(
             to,
             subject: "You're on the NoteFusion waitlist!",
-            preheader: "We've reserved your spot for priority early access.",
+            preheader: "We've reserved your spot for early access.",
             heading: "You're on the waitlist",
             bodyHtml: body,
             cta: new CallToAction("Visit NoteFusion", _settings.AppUrl),
             textBody: Text(
                 $"You're on the NoteFusion waitlist{(name is null ? "" : $", {name}")}!",
                 "",
-                "Thank you for joining our waitlist. The Android app is currently in its final review stage on the Google Play Store.",
-                "As soon as the app is approved, you'll receive priority early access to start transcribing live and recorded music into Tonic Solfa and staff notation.",
+                "Thank you for joining our waitlist! We're excited to have you with us.",
+                "You'll receive an invitation with early access to start transcribing live and recorded music into Tonic Solfa and staff notation.",
                 "",
                 $"Visit us: {_settings.AppUrl}",
                 $"Support: {_settings.SupportEmail}"));

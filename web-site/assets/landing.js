@@ -368,7 +368,9 @@
     mobileThemeToggleBtn.addEventListener("click", toggleTheme);
   }
 
-  // ── Waitlist Form Submission & CTA Focus Handling ─────────────────────────
+  // ── Waitlist Popup Modal & Submission Handling ────────────────────────────
+  var waitlistModal = document.getElementById("waitlistModal");
+  var closeWaitlistModalBtn = document.getElementById("closeWaitlistModal");
   var waitlistForm = document.getElementById("waitlistForm");
   var waitlistEmail = document.getElementById("waitlistEmail");
   var waitlistFullName = document.getElementById("waitlistFullName");
@@ -376,7 +378,6 @@
   var waitlistSource = document.getElementById("waitlistSource");
   var waitlistSubmitBtn = document.getElementById("waitlistSubmitBtn");
   var waitlistStatus = document.getElementById("waitlistStatus");
-  var waitlistCard = document.getElementById("waitlistCard");
 
   var WAITLIST_API_ENDPOINT = "https://notefusion-api-3c2513a1e974.herokuapp.com/api/waitlist";
 
@@ -386,30 +387,55 @@
     return div.innerHTML;
   }
 
-  // Smooth-scroll & focus input when any waitlist CTA is clicked
-  var waitlistCtas = document.querySelectorAll('a[href="#waitlist"]');
-  waitlistCtas.forEach(function (cta) {
-    cta.addEventListener("click", function (e) {
-      var source = cta.getAttribute("data-waitlist-source");
-      if (source && waitlistSource) {
-        waitlistSource.value = source;
+  function openWaitlistModal(source) {
+    if (!waitlistModal) return;
+    if (source && waitlistSource) {
+      waitlistSource.value = source;
+    }
+    waitlistModal.removeAttribute("hidden");
+    void waitlistModal.offsetWidth;
+    waitlistModal.classList.add("is-open");
+    setTimeout(function () {
+      if (waitlistEmail && !waitlistEmail.disabled) {
+        waitlistEmail.focus();
       }
-      var targetSection = document.getElementById("waitlist");
-      if (targetSection) {
-        e.preventDefault();
-        targetSection.scrollIntoView({ behavior: "smooth", block: "center" });
-        if (waitlistCard) {
-          waitlistCard.classList.remove("is-pulsing");
-          void waitlistCard.offsetWidth; // Trigger reflow for animation restart
-          waitlistCard.classList.add("is-pulsing");
-        }
-        setTimeout(function () {
-          if (waitlistEmail && !waitlistEmail.disabled) {
-            waitlistEmail.focus();
-          }
-        }, 450);
+    }, 120);
+  }
+
+  function closeWaitlistModal() {
+    if (!waitlistModal) return;
+    waitlistModal.classList.remove("is-open");
+    setTimeout(function () {
+      if (!waitlistModal.classList.contains("is-open")) {
+        waitlistModal.setAttribute("hidden", "");
+      }
+    }, 220);
+  }
+
+  document.addEventListener("click", function (e) {
+    var cta = e.target.closest && e.target.closest('a[href="#waitlist"], [data-open-waitlist]');
+    if (!cta) return;
+    e.preventDefault();
+    var source = cta.getAttribute("data-waitlist-source") || "landing_cta";
+    openWaitlistModal(source);
+  });
+
+  if (closeWaitlistModalBtn) {
+    closeWaitlistModalBtn.addEventListener("click", closeWaitlistModal);
+  }
+
+  if (waitlistModal) {
+    waitlistModal.addEventListener("click", function (e) {
+      if (e.target === waitlistModal) {
+        closeWaitlistModal();
       }
     });
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && waitlistModal && waitlistModal.classList.contains("is-open")) {
+      closeWaitlistModal();
+    }
   });
 
   if (waitlistForm && waitlistSubmitBtn && waitlistStatus) {
@@ -483,15 +509,12 @@
           waitlistStatus.innerHTML =
             '<div class="success-check" aria-hidden="true">&#10003;</div>' +
             '<h3>You\'re on the waitlist!</h3>' +
-            '<p>A branded confirmation email has been dispatched to <strong>' + escapeHtml(email) + '</strong>. We\'ll notify you the moment NoteFusion is published to Google Play.</p>';
-          if (waitlistCard) {
-            waitlistCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }
+            '<p>We\'ve reserved your spot for early access. A confirmation email has been dispatched to <strong>' + escapeHtml(email) + '</strong>.</p>';
           return;
         }
 
         if (result.status === 409) {
-          showStatus("You're already on the waitlist! We'll notify you as soon as NoteFusion launches.", "conflict");
+          showStatus("You're already on the waitlist! We'll send you an invitation as soon as early access opens.", "conflict");
           return;
         }
 

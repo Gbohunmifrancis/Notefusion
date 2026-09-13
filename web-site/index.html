@@ -34,7 +34,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/assets/theme.css?v=5">
-<link rel="stylesheet" href="/assets/landing.css?v=5">
+<link rel="stylesheet" href="/assets/landing.css?v=6">
 
 <script>
   (function () {
@@ -180,10 +180,6 @@
           <a class="see-sample-link" href="#how">
             See sample &rarr;
           </a>
-        </div>
-        <div class="hero-review-badge">
-          <span class="review-dot"></span>
-          <span>Google Play Store review in progress &bull; Early access open</span>
         </div>
       </div>
 
@@ -795,120 +791,20 @@
   </div>
 </section>
 
-<!-- ══ Waitlist Section (Temporary Early Access) ═══════════════════════════════ -->
-<section class="waitlist-section" id="waitlist" tabindex="-1" aria-labelledby="waitlist-title">
+<!-- ══ Final CTA Band ═══════════════════════════════════════════════════════ -->
+<section class="cta-band" id="get" tabindex="-1" aria-labelledby="get-title">
   <div class="wrap">
-    <div class="waitlist-container reveal">
-      <div class="waitlist-header">
-        <div class="waitlist-badge">
-          <span class="waitlist-badge-dot"></span>
-          <span>Google Play Store Review In Progress</span>
-        </div>
-        <h2 class="display-title waitlist-title" id="waitlist-title">Be the first to turn your melodies into notation.</h2>
-        <p class="lead waitlist-lead">
-          NoteFusion is currently undergoing final review on the Google Play Store. Join the waitlist to secure launch access, reserve your free transcriptions, and receive a branded invitation the instant we go live.
-        </p>
-      </div>
+    <div class="cta-box reveal">
+      <span class="eyebrow eyebrow-blue">Get Started</span>
+      <h2 class="display-title" id="get-title" style="font-size: clamp(32px, 4.5vw, 48px);">Get your next chorus written down.</h2>
+      <p class="lead" style="max-width: 580px; margin-left: auto; margin-right: auto;">
+        Free to start. Turn your melodies into accurate Tonic Solfa and staff notation in seconds.
+      </p>
 
-      <div class="waitlist-card" id="waitlistCard">
-        <!-- Main Form -->
-        <form id="waitlistForm" class="waitlist-form" novalidate>
-          <input type="hidden" name="source" id="waitlistSource" value="landing_cta">
-
-          <div class="waitlist-inputs-grid">
-            <div class="form-group form-group--email">
-              <label for="waitlistEmail" class="form-label">
-                Email Address <span class="required-star" aria-hidden="true">*</span>
-              </label>
-              <div class="input-with-icon">
-                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                <input
-                  type="email"
-                  id="waitlistEmail"
-                  name="email"
-                  class="form-input"
-                  placeholder="name@example.com"
-                  required
-                  autocomplete="email"
-                  spellcheck="false"
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="waitlistFullName" class="form-label">Full Name <span class="optional-tag">(Optional)</span></label>
-              <div class="input-with-icon">
-                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <input
-                  type="text"
-                  id="waitlistFullName"
-                  name="fullName"
-                  class="form-input"
-                  placeholder="e.g. David Adeleke"
-                  autocomplete="name"
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="waitlistRole" class="form-label">Musical Role <span class="optional-tag">(Optional)</span></label>
-              <div class="input-with-icon">
-                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M9 18V5l12-2v13"></path>
-                  <circle cx="6" cy="18" r="3"></circle>
-                  <circle cx="18" cy="16" r="3"></circle>
-                </svg>
-                <select id="waitlistRole" name="role" class="form-select">
-                  <option value="">Select your role</option>
-                  <option value="Choir Director">Choir Director</option>
-                  <option value="Worship Leader">Worship Leader</option>
-                  <option value="Music Teacher">Music Teacher / Educator</option>
-                  <option value="Vocalist">Vocalist / Singer</option>
-                  <option value="Instrumentalist">Instrumentalist</option>
-                  <option value="Arranger / Composer">Music Arranger / Composer</option>
-                  <option value="Student">Music Student</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="waitlist-form-footer">
-            <button type="submit" class="btn btn-primary btn-lg waitlist-submit-btn" id="waitlistSubmitBtn">
-              <span class="btn-spinner" aria-hidden="true"></span>
-              <span class="btn-label">Join the Waitlist</span>
-              <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-
-            <div class="waitlist-trust-badges">
-              <span class="trust-badge">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                Instant confirmation email
-              </span>
-              <span class="trust-badge">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Zero spam &bull; Audio deleted after processing
-              </span>
-            </div>
-          </div>
-        </form>
-
-        <!-- Dynamic Inline Status Container -->
-        <div id="waitlistStatus" class="waitlist-status-banner" style="display: none;" role="status"></div>
+      <div style="margin-top: 24px;">
+        <button type="button" class="btn btn-primary btn-lg" data-open-waitlist data-waitlist-source="bottom_cta">
+          Join the waitlist &rarr;
+        </button>
       </div>
     </div>
   </div>
@@ -969,10 +865,81 @@
   </div>
 </footer>
 
+<!-- ══ Waitlist Modal Popup ══════════════════════════════════════════════════ -->
+<div class="waitlist-modal-backdrop" id="waitlistModal" role="dialog" aria-modal="true" aria-labelledby="waitlistModalTitle" hidden>
+  <div class="waitlist-modal-card">
+    <button type="button" class="waitlist-modal-close" id="closeWaitlistModal" aria-label="Close dialog">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="waitlist-modal-header">
+      <h2 class="waitlist-modal-title" id="waitlistModalTitle">Join the waitlist</h2>
+      <p class="waitlist-modal-subtitle">Reserve early access to NoteFusion.</p>
+    </div>
+
+    <form id="waitlistForm" class="waitlist-popup-form" novalidate>
+      <input type="hidden" name="source" id="waitlistSource" value="landing_cta">
+
+      <div class="form-group">
+        <label for="waitlistEmail" class="form-label">
+          Email address <span class="required-star" aria-hidden="true">*</span>
+        </label>
+        <input
+          type="email"
+          id="waitlistEmail"
+          name="email"
+          class="form-input"
+          placeholder="name@example.com"
+          required
+          autocomplete="email"
+          spellcheck="false"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="waitlistFullName" class="form-label">Full name (optional)</label>
+        <input
+          type="text"
+          id="waitlistFullName"
+          name="fullName"
+          class="form-input"
+          placeholder="e.g. David Adeleke"
+          autocomplete="name"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="waitlistRole" class="form-label">Musical role (optional)</label>
+        <select id="waitlistRole" name="role" class="form-select">
+          <option value="">Select your role</option>
+          <option value="Choir Director">Choir Director</option>
+          <option value="Worship Leader">Worship Leader</option>
+          <option value="Music Teacher">Music Teacher / Educator</option>
+          <option value="Vocalist">Vocalist / Singer</option>
+          <option value="Instrumentalist">Instrumentalist</option>
+          <option value="Arranger / Composer">Music Arranger / Composer</option>
+          <option value="Student">Music Student</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary waitlist-submit-btn" id="waitlistSubmitBtn">
+        <span class="btn-spinner" aria-hidden="true"></span>
+        <span class="btn-label">Join the Waitlist</span>
+      </button>
+    </form>
+
+    <div id="waitlistStatus" class="waitlist-status-banner" style="display: none;" role="status"></div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 <script src="/assets/scene-3d.js?v=1" defer></script>
 <script src="/assets/condensation.js?v=1" defer></script>
 <script src="/assets/pricing.js?v=2" defer></script>
-<script src="/assets/landing.js?v=5" defer></script>
+<script src="/assets/landing.js?v=6" defer></script>
 </body>
 </html>

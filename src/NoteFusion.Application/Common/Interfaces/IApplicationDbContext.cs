@@ -42,7 +42,7 @@ public interface IApplicationDbContext
     /// </summary>
     DbSet<AdminAuditLog> AdminAuditLogs { get; }
 
-    /// <summary>Subscribers who joined the waitlist while the app is in store review.</summary>
+    /// <summary>Subscribers who joined the early access waitlist.</summary>
     DbSet<WaitlistEntry> WaitlistEntries { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

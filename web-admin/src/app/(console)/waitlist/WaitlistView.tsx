@@ -101,7 +101,7 @@ export function WaitlistView() {
     <div className="space-y-6">
       <PageHeader
         title="Waitlist"
-        subtitle="Subscribers registered for early access while NoteFusion is under Google Play review."
+        subtitle="Subscribers registered for early access to NoteFusion."
         breadcrumb={["Analytics", "Waitlist"]}
         actions={
           <Button
@@ -135,14 +135,14 @@ export function WaitlistView() {
         <Card className="flex items-center justify-between p-5">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Store Status
+              Program Status
             </p>
-            <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-amber-600 dark:text-amber-400">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-amber-500" />
-              In Google Play Review
+            <p className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Early Access Active
             </p>
           </div>
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
             <UserCheck className="h-5 w-5" />
           </div>
         </Card>

@@ -1,7 +1,7 @@
 namespace NoteFusion.Core.Entities;
 
 /// <summary>
-/// A person who signed up for early access while NoteFusion is under store review.
+/// A person who signed up for early access to NoteFusion.
 /// Kept separate from <see cref="User"/> because waitlist subscribers have no password,
 /// no auth tokens, and have not yet created an active account.
 /// </summary>
