@@ -4,6 +4,10 @@
  * Minimal, warm, precise, professional music SaaS product.
  */
 
+[hidden] {
+  display: none !important;
+}
+
 :root {
   /* 3.2 Light-Theme Palette */
   --color-brand-500: #1769E8; /* Primary brand blue */

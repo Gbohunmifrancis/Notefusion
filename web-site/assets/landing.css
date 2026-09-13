@@ -22,6 +22,10 @@
   padding-right: 24px;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 /* ── Buttons ─────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
@@ -1595,111 +1599,69 @@
   color: var(--color-brand-500);
 }
 
-.waitlist-alert {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+.waitlist-status-banner {
   padding: 14px 18px;
   border-radius: var(--radius-md);
-  background-color: var(--color-danger-100);
-  border: 1px solid rgba(217, 45, 32, 0.25);
-  color: var(--color-danger-600);
   font-size: 14px;
   font-weight: 500;
   margin-top: 18px;
+  text-align: center;
+  line-height: 1.5;
 }
 
-.waitlist-status-card {
-  display: flex;
-  gap: 18px;
-  padding: 24px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border-default);
-  margin-top: 20px;
+.waitlist-status-banner.is-error {
+  display: block !important;
+  background-color: var(--color-danger-100);
+  border: 1px solid rgba(217, 45, 32, 0.25);
+  color: var(--color-danger-600);
 }
 
-.waitlist-status--success {
-  background-color: var(--color-success-100);
-  border-color: rgba(3, 152, 85, 0.25);
-}
-
-.waitlist-status--conflict {
+.waitlist-status-banner.is-conflict {
+  display: block !important;
   background-color: var(--color-warning-100);
-  border-color: rgba(220, 104, 3, 0.25);
-}
-
-.status-icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status-icon--green {
-  background-color: rgba(3, 152, 85, 0.15);
-  color: var(--color-success-600);
-}
-
-.status-icon--amber {
-  background-color: rgba(220, 104, 3, 0.15);
+  border: 1px solid rgba(220, 104, 3, 0.25);
   color: var(--color-warning-600);
 }
 
-.status-content {
-  flex: 1;
-}
-
-.status-pill--success {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: var(--radius-pill);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: rgba(3, 152, 85, 0.2);
+.waitlist-status-banner.is-success {
+  display: block !important;
+  background-color: var(--color-success-100);
+  border: 1px solid rgba(3, 152, 85, 0.25);
   color: var(--color-success-600);
-  margin-bottom: 8px;
 }
 
-.status-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-ink-950);
-  margin: 0 0 6px 0;
+.waitlist-success-view {
+  text-align: center;
+  padding: 24px 12px;
 }
 
-.status-body {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-ink-700);
-  margin: 0 0 14px 0;
-}
-
-.success-highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.highlight-item {
+.waitlist-success-view .success-check {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 16px auto;
+  border-radius: 50%;
+  background-color: rgba(3, 152, 85, 0.15);
+  color: var(--color-success-600);
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink-950);
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
 }
 
-.highlight-bullet {
-  color: var(--color-success-600);
-  font-weight: 700;
+.waitlist-success-view h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-ink-950);
+  margin: 0 0 8px 0;
+}
+
+.waitlist-success-view p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-ink-700);
+  max-width: 480px;
+  margin: 0 auto;
 }
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
@@ -1999,40 +1961,34 @@ html.js .reveal.is-visible {
   border-top-color: #08090C;
 }
 
-[data-theme="dark"] .waitlist-alert {
+[data-theme="dark"] .waitlist-status-banner.is-error {
   background-color: rgba(217, 45, 32, 0.12);
   border-color: rgba(217, 45, 32, 0.35);
   color: #F87171;
 }
 
-[data-theme="dark"] .waitlist-status--success {
-  background-color: rgba(3, 152, 85, 0.12);
-  border-color: rgba(3, 152, 85, 0.35);
-}
-
-[data-theme="dark"] .waitlist-status--conflict {
+[data-theme="dark"] .waitlist-status-banner.is-conflict {
   background-color: rgba(220, 104, 3, 0.12);
   border-color: rgba(220, 104, 3, 0.35);
-}
-
-[data-theme="dark"] .status-icon--green {
-  color: #34D399;
-}
-
-[data-theme="dark"] .status-icon--amber {
   color: #FBBF24;
 }
 
-[data-theme="dark"] .status-pill--success {
+[data-theme="dark"] .waitlist-status-banner.is-success {
+  background-color: rgba(3, 152, 85, 0.12);
+  border-color: rgba(3, 152, 85, 0.35);
   color: #34D399;
 }
 
-[data-theme="dark"] .success-highlights {
-  border-top-color: rgba(255, 255, 255, 0.1);
+[data-theme="dark"] .waitlist-success-view .success-check {
+  color: #34D399;
 }
 
-[data-theme="dark"] .highlight-bullet {
-  color: #34D399;
+[data-theme="dark"] .waitlist-success-view h3 {
+  color: var(--color-ink-950);
+}
+
+[data-theme="dark"] .waitlist-success-view p {
+  color: var(--color-ink-700);
 }
 
 

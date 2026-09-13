@@ -375,15 +375,16 @@
   var waitlistRole = document.getElementById("waitlistRole");
   var waitlistSource = document.getElementById("waitlistSource");
   var waitlistSubmitBtn = document.getElementById("waitlistSubmitBtn");
-  var waitlistAlert = document.getElementById("waitlistAlert");
-  var waitlistAlertText = document.getElementById("waitlistAlertText");
-  var waitlistConflict = document.getElementById("waitlistConflict");
-  var conflictEmailText = document.getElementById("conflictEmailText");
-  var waitlistSuccess = document.getElementById("waitlistSuccess");
-  var successEmailText = document.getElementById("successEmailText");
+  var waitlistStatus = document.getElementById("waitlistStatus");
   var waitlistCard = document.getElementById("waitlistCard");
 
   var WAITLIST_API_ENDPOINT = "https://notefusion-api-3c2513a1e974.herokuapp.com/api/waitlist";
+
+  function escapeHtml(str) {
+    var div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
 
   // Smooth-scroll & focus input when any waitlist CTA is clicked
   var waitlistCtas = document.querySelectorAll('a[href="#waitlist"]');
@@ -411,23 +412,19 @@
     });
   });
 
-  if (waitlistForm && waitlistSubmitBtn) {
+  if (waitlistForm && waitlistSubmitBtn && waitlistStatus) {
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    function showAlert(msg) {
-      if (waitlistAlert && waitlistAlertText) {
-        waitlistAlertText.textContent = msg;
-        waitlistAlert.removeAttribute("hidden");
-      }
+    function showStatus(msg, type) {
+      waitlistStatus.className = "waitlist-status-banner is-" + type;
+      waitlistStatus.textContent = msg;
+      waitlistStatus.style.display = "block";
     }
 
-    function hideAlert() {
-      if (waitlistAlert) waitlistAlert.setAttribute("hidden", "");
-    }
-
-    function hideStatusCards() {
-      if (waitlistConflict) waitlistConflict.setAttribute("hidden", "");
-      if (waitlistSuccess) waitlistSuccess.setAttribute("hidden", "");
+    function clearStatus() {
+      waitlistStatus.style.display = "none";
+      waitlistStatus.className = "waitlist-status-banner";
+      waitlistStatus.textContent = "";
     }
 
     function setSubmitting(isSubmitting) {
@@ -441,8 +438,7 @@
 
     waitlistForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      hideAlert();
-      hideStatusCards();
+      clearStatus();
 
       var email = waitlistEmail ? waitlistEmail.value.trim() : "";
       var fullName = waitlistFullName ? waitlistFullName.value.trim() : "";
@@ -450,7 +446,7 @@
       var source = waitlistSource ? waitlistSource.value : "landing_cta";
 
       if (!email || !emailRegex.test(email)) {
-        showAlert("Please enter a valid email address.");
+        showStatus("Please enter a valid email address.", "error");
         if (waitlistEmail) waitlistEmail.focus();
         return;
       }
@@ -481,9 +477,13 @@
         setSubmitting(false);
 
         if (result.ok || result.status === 200 || result.status === 201) {
-          if (successEmailText) successEmailText.textContent = email;
-          waitlistForm.setAttribute("hidden", "");
-          if (waitlistSuccess) waitlistSuccess.removeAttribute("hidden");
+          waitlistForm.style.display = "none";
+          waitlistStatus.className = "waitlist-success-view";
+          waitlistStatus.style.display = "block";
+          waitlistStatus.innerHTML =
+            '<div class="success-check" aria-hidden="true">&#10003;</div>' +
+            '<h3>You\'re on the waitlist!</h3>' +
+            '<p>A branded confirmation email has been dispatched to <strong>' + escapeHtml(email) + '</strong>. We\'ll notify you the moment NoteFusion is published to Google Play.</p>';
           if (waitlistCard) {
             waitlistCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
           }
@@ -491,18 +491,17 @@
         }
 
         if (result.status === 409) {
-          if (conflictEmailText) conflictEmailText.textContent = email;
-          if (waitlistConflict) waitlistConflict.removeAttribute("hidden");
+          showStatus("You're already on the waitlist! We'll notify you as soon as NoteFusion launches.", "conflict");
           return;
         }
 
         var errorMsg = (result.data && (result.data.message || (result.data.errors && result.data.errors[0])))
           || "Unable to join the waitlist. Please try again in a few moments.";
-        showAlert(errorMsg);
+        showStatus(errorMsg, "error");
       })
       .catch(function () {
         setSubmitting(false);
-        showAlert("Unable to connect to the waitlist server. Please check your internet connection and try again.");
+        showStatus("Unable to connect to the waitlist server. Please check your internet connection and try again.", "error");
       });
     });
   }

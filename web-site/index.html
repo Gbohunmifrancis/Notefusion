@@ -907,64 +907,8 @@
           </div>
         </form>
 
-        <!-- Dynamic Alert Container (for validation / server error) -->
-        <div id="waitlistAlert" class="waitlist-alert" role="alert" hidden>
-          <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <div class="alert-text" id="waitlistAlertText"></div>
-        </div>
-
-        <!-- Already Registered (409 Conflict) Notice -->
-        <div id="waitlistConflict" class="waitlist-status-card waitlist-status--conflict" role="status" hidden>
-          <div class="status-icon-box status-icon--amber">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
-          </div>
-          <div class="status-content">
-            <h3 class="status-title">You're already on the waitlist!</h3>
-            <p class="status-body">
-              <strong id="conflictEmailText"></strong> is already confirmed on our early access list. We'll send you an invitation the moment NoteFusion is published to Google Play.
-            </p>
-          </div>
-        </div>
-
-        <!-- Success (200 OK) Card -->
-        <div id="waitlistSuccess" class="waitlist-status-card waitlist-status--success" role="status" hidden>
-          <div class="status-icon-box status-icon--green">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-          <div class="status-content">
-            <span class="status-pill status-pill--success">Access Reserved</span>
-            <h3 class="status-title">Welcome to NoteFusion Early Access!</h3>
-            <p class="status-body">
-              We've dispatched a branded confirmation email to <strong id="successEmailText"></strong> with your early adopter reservation details.
-            </p>
-            <div class="success-highlights">
-              <div class="highlight-item">
-                <span class="highlight-bullet">&#10003;</span>
-                <span>Free transcription tier reserved</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-bullet">&#10003;</span>
-                <span>Immediate notification upon Play Store approval</span>
-              </div>
-              <div class="highlight-item">
-                <span class="highlight-bullet">&#10003;</span>
-                <span>Direct line to the product engineering team</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <!-- Dynamic Inline Status Container -->
+        <div id="waitlistStatus" class="waitlist-status-banner" style="display: none;" role="status"></div>
       </div>
     </div>
   </div>
