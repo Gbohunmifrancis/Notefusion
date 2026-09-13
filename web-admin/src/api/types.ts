@@ -504,3 +504,15 @@ export type GiftDuration = "monthly" | "yearly" | "lifetime";
 
 /** `UserRole`, same rule as `GiftDuration`. */
 export type RoleName = "user" | "admin";
+
+export interface AdminWaitlistRow {
+  id: string;
+  email: string;
+  fullName: string | null;
+  role: string | null;
+  source: string | null;
+  createdAtUtc: string;
+  isInvited: boolean;
+  invitedAtUtc: string | null;
+}
+

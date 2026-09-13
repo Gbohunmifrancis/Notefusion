@@ -33,8 +33,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="/assets/theme.css?v=3">
-<link rel="stylesheet" href="/assets/landing.css?v=3">
+<link rel="stylesheet" href="/assets/theme.css?v=5">
+<link rel="stylesheet" href="/assets/landing.css?v=5">
 
 <script>
   (function () {
@@ -43,6 +43,8 @@
       var pref = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       var theme = saved || pref;
       document.documentElement.setAttribute("data-theme", theme);
+      var metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute("content", theme === "dark" ? "#08090C" : "#F7F5F0");
     } catch (e) {}
   })();
   document.documentElement.classList.add("js");
@@ -84,32 +86,44 @@
       <a class="nav-link" href="#faq">FAQ</a>
     </nav>
 
-    <div class="nav-actions">
       <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Toggle color theme" title="Toggle theme">
-        <svg class="theme-icon theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <svg class="theme-icon theme-icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
+        <div class="t-icon-swap" id="themeIconSwap" data-state="a">
+          <span class="t-icon" data-icon="a">
+            <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+          <span class="t-icon" data-icon="b">
+            <svg class="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+        </div>
       </button>
-      <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.notefusion.com">Start free</a>
+      <a class="btn btn-primary" href="#waitlist">Join waitlist</a>
     </div>
 
     <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <div class="t-icon-swap" id="hamburgerIconSwap" data-state="a">
+        <span class="t-icon" data-icon="a">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </span>
+        <span class="t-icon" data-icon="b">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </span>
+      </div>
     </button>
   </div>
 
-  <div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu t-dropdown" id="mobileMenu" data-origin="top-center">
     <div class="mobile-menu-links">
       <a href="#how">How it works</a>
       <a href="#solfa">Tonic Solfa</a>
@@ -120,11 +134,17 @@
     <button class="theme-toggle-btn theme-toggle-btn-mobile" id="mobileThemeToggleBtn" type="button" aria-label="Toggle color theme">
       <span class="theme-label">Switch theme</span>
       <span class="theme-status">
-        <svg class="theme-icon theme-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        <svg class="theme-icon theme-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <div class="t-icon-swap" id="mobileThemeIconSwap" data-state="a">
+          <span class="t-icon" data-icon="a">
+            <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </span>
+          <span class="t-icon" data-icon="b">
+            <svg class="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </span>
+        </div>
       </span>
     </button>
-    <a class="btn btn-primary" style="width: 100%;" href="https://play.google.com/store/apps/details?id=com.notefusion.com">Start free on Android</a>
+    <a class="btn btn-primary" style="width: 100%;" href="#waitlist">Join waitlist</a>
   </div>
 </header>
 
@@ -135,6 +155,11 @@
   <!-- 3D Interactive Audio Stage (Three.js Ribbon & Particle Field) -->
   <div class="hero-3d-stage" id="hero3dStage" aria-hidden="true">
     <canvas id="hero3dCanvas"></canvas>
+  </div>
+
+  <!-- ThreeUI Condensation Background Layer -->
+  <div class="hero-condensation-stage threeui-background condensation" id="condensationStage" aria-hidden="true">
+    <canvas id="condensationCanvas"></canvas>
   </div>
 
   <div class="wrap hero-wrap">
@@ -149,12 +174,16 @@
         </p>
 
         <div class="hero-ctas">
-          <a class="btn btn-primary btn-lg" href="https://play.google.com/store/apps/details?id=com.notefusion.com">
-            Start free
+          <a class="btn btn-primary btn-lg" href="#waitlist" data-waitlist-source="hero_cta">
+            Join the waitlist &rarr;
           </a>
           <a class="see-sample-link" href="#how">
             See sample &rarr;
           </a>
+        </div>
+        <div class="hero-review-badge">
+          <span class="review-dot"></span>
+          <span>Google Play Store review in progress &bull; Early access open</span>
         </div>
       </div>
 
@@ -165,9 +194,19 @@
         <div class="card-header-row">
           <div class="audio-track-info">
             <button class="btn-play-control" id="heroBtnPlay" aria-label="Play recording sample" type="button">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <polygon points="6 4 20 12 6 20 6 4"/>
-              </svg>
+              <div class="t-icon-swap" id="heroPlayIconSwap" data-state="a">
+                <span class="t-icon" data-icon="a">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="6 4 20 12 6 20 6 4"/>
+                  </svg>
+                </span>
+                <span class="t-icon" data-icon="b">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="4" width="4" height="16" rx="1"/>
+                    <rect x="14" y="4" width="4" height="16" rx="1"/>
+                  </svg>
+                </span>
+              </div>
             </button>
             <div>
               <p class="track-name">melody-recording.wav</p>
@@ -456,8 +495,8 @@
     </div>
 
     <div class="how-cta-box reveal">
-      <a class="btn btn-primary btn-lg" href="https://play.google.com/store/apps/details?id=com.notefusion.com">
-        Start free &rarr;
+      <a class="btn btn-primary btn-lg" href="#waitlist" data-waitlist-source="how_cta">
+        Join the waitlist &rarr;
       </a>
       <span class="security-trust-note">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -667,7 +706,7 @@
           <h3>Free Trial</h3>
           <div class="price">Free</div>
           <p class="blurb">Try the complete transcription workflow before upgrading.</p>
-          <a class="btn btn-primary" href="https://play.google.com/store/apps/details?id=com.notefusion.com">Start free</a>
+          <a class="btn btn-primary" href="#waitlist" data-waitlist-source="pricing_noscript">Join the waitlist &rarr;</a>
         </div>
       </div>
     </noscript>
@@ -756,19 +795,177 @@
   </div>
 </section>
 
-<!-- ══ Final CTA Band ═══════════════════════════════════════════════════════ -->
-<section class="cta-band" id="get" tabindex="-1" aria-labelledby="get-title">
+<!-- ══ Waitlist Section (Temporary Early Access) ═══════════════════════════════ -->
+<section class="waitlist-section" id="waitlist" tabindex="-1" aria-labelledby="waitlist-title">
   <div class="wrap">
-    <div class="cta-box reveal">
-      <span class="eyebrow eyebrow-blue">Get Started</span>
-      <h2 class="display-title" id="get-title" style="font-size: clamp(32px, 4.5vw, 48px);">Get your next chorus written down.</h2>
-      <p class="lead" style="max-width: 580px; margin-left: auto; margin-right: auto;">
-        Free to start, no card required. Record your first melody tonight and see clean Tonic Solfa and staff notation in seconds.
-      </p>
+    <div class="waitlist-container reveal">
+      <div class="waitlist-header">
+        <div class="waitlist-badge">
+          <span class="waitlist-badge-dot"></span>
+          <span>Google Play Store Review In Progress</span>
+        </div>
+        <h2 class="display-title waitlist-title" id="waitlist-title">Be the first to turn your melodies into notation.</h2>
+        <p class="lead waitlist-lead">
+          NoteFusion is currently undergoing final review on the Google Play Store. Join the waitlist to secure launch access, reserve your free transcriptions, and receive a branded invitation the instant we go live.
+        </p>
+      </div>
 
-      <a class="store-badge-link" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener">
-        <img class="store-badge-img" src="/assets/google-play-badge.png" width="200" height="60" alt="Get it on Google Play">
-      </a>
+      <div class="waitlist-card" id="waitlistCard">
+        <!-- Main Form -->
+        <form id="waitlistForm" class="waitlist-form" novalidate>
+          <input type="hidden" name="source" id="waitlistSource" value="landing_cta">
+
+          <div class="waitlist-inputs-grid">
+            <div class="form-group form-group--email">
+              <label for="waitlistEmail" class="form-label">
+                Email Address <span class="required-star" aria-hidden="true">*</span>
+              </label>
+              <div class="input-with-icon">
+                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <input
+                  type="email"
+                  id="waitlistEmail"
+                  name="email"
+                  class="form-input"
+                  placeholder="name@example.com"
+                  required
+                  autocomplete="email"
+                  spellcheck="false"
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="waitlistFullName" class="form-label">Full Name <span class="optional-tag">(Optional)</span></label>
+              <div class="input-with-icon">
+                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <input
+                  type="text"
+                  id="waitlistFullName"
+                  name="fullName"
+                  class="form-input"
+                  placeholder="e.g. David Adeleke"
+                  autocomplete="name"
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="waitlistRole" class="form-label">Musical Role <span class="optional-tag">(Optional)</span></label>
+              <div class="input-with-icon">
+                <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                <select id="waitlistRole" name="role" class="form-select">
+                  <option value="">Select your role</option>
+                  <option value="Choir Director">Choir Director</option>
+                  <option value="Worship Leader">Worship Leader</option>
+                  <option value="Music Teacher">Music Teacher / Educator</option>
+                  <option value="Vocalist">Vocalist / Singer</option>
+                  <option value="Instrumentalist">Instrumentalist</option>
+                  <option value="Arranger / Composer">Music Arranger / Composer</option>
+                  <option value="Student">Music Student</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="waitlist-form-footer">
+            <button type="submit" class="btn btn-primary btn-lg waitlist-submit-btn" id="waitlistSubmitBtn">
+              <span class="btn-spinner" aria-hidden="true"></span>
+              <span class="btn-label">Join the Waitlist</span>
+              <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+
+            <div class="waitlist-trust-badges">
+              <span class="trust-badge">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Instant confirmation email
+              </span>
+              <span class="trust-badge">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Zero spam &bull; Audio deleted after processing
+              </span>
+            </div>
+          </div>
+        </form>
+
+        <!-- Dynamic Alert Container (for validation / server error) -->
+        <div id="waitlistAlert" class="waitlist-alert" role="alert" hidden>
+          <svg class="alert-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div class="alert-text" id="waitlistAlertText"></div>
+        </div>
+
+        <!-- Already Registered (409 Conflict) Notice -->
+        <div id="waitlistConflict" class="waitlist-status-card waitlist-status--conflict" role="status" hidden>
+          <div class="status-icon-box status-icon--amber">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="status-content">
+            <h3 class="status-title">You're already on the waitlist!</h3>
+            <p class="status-body">
+              <strong id="conflictEmailText"></strong> is already confirmed on our early access list. We'll send you an invitation the moment NoteFusion is published to Google Play.
+            </p>
+          </div>
+        </div>
+
+        <!-- Success (200 OK) Card -->
+        <div id="waitlistSuccess" class="waitlist-status-card waitlist-status--success" role="status" hidden>
+          <div class="status-icon-box status-icon--green">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="status-content">
+            <span class="status-pill status-pill--success">Access Reserved</span>
+            <h3 class="status-title">Welcome to NoteFusion Early Access!</h3>
+            <p class="status-body">
+              We've dispatched a branded confirmation email to <strong id="successEmailText"></strong> with your early adopter reservation details.
+            </p>
+            <div class="success-highlights">
+              <div class="highlight-item">
+                <span class="highlight-bullet">&#10003;</span>
+                <span>Free transcription tier reserved</span>
+              </div>
+              <div class="highlight-item">
+                <span class="highlight-bullet">&#10003;</span>
+                <span>Immediate notification upon Play Store approval</span>
+              </div>
+              <div class="highlight-item">
+                <span class="highlight-bullet">&#10003;</span>
+                <span>Direct line to the product engineering team</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </section>
@@ -830,6 +1027,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 <script src="/assets/scene-3d.js?v=1" defer></script>
+<script src="/assets/condensation.js?v=1" defer></script>
 <script src="/assets/pricing.js?v=2" defer></script>
 <script src="/assets/landing.js?v=5" defer></script>
 </body>

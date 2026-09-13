@@ -133,30 +133,30 @@
 }
 
 .dark {
-  --background: #0b1220;
-  --foreground: #e8eef9;
-  --card: #131d30;
-  --card-foreground: #e8eef9;
-  --popover: #131d30;
-  --popover-foreground: #e8eef9;
+  --background: #08090c;
+  --foreground: #f4f5f8;
+  --card: #121318;
+  --card-foreground: #f4f5f8;
+  --popover: #121318;
+  --popover-foreground: #f4f5f8;
 
   --primary: #2563eb;
   --primary-foreground: #ffffff;
   --primary-deep: #1d4ed8;
   --primary-bright: #3b82f6;
 
-  --muted: #1b2739;
-  --secondary: #1b2739;
-  --accent: #1b2739;
-  --secondary-foreground: #e8eef9;
-  --accent-foreground: #e8eef9;
+  --muted: #181920;
+  --secondary: #181920;
+  --accent: #181920;
+  --secondary-foreground: #f4f5f8;
+  --accent-foreground: #f4f5f8;
 
-  --muted-foreground: #94a3b8;
-  --faint: #64748b;
+  --muted-foreground: #888c9c;
+  --faint: #505464;
 
-  --border: #243146;
-  --border-light: #1c2739;
-  --input: #243146;
+  --border: #22242e;
+  --border-light: #181920;
+  --input: #22242e;
 
   --brand: #60a5fa; /* 6.0:1 on the lightest dark surface */
   /* Not deeper here. #1d4ed8 on the dark chip reads 2.3:1; the chip's label has to

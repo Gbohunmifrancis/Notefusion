@@ -73,6 +73,19 @@ public sealed class AdminController : ApiControllerBase
         => HandleResult(await _sender.Send(
             new GetAuditLogQuery(page, pageSize, action, targetUserId, search), ct));
 
+    /// <summary>Subscribers on the early access waitlist, newest first.</summary>
+    /// <param name="page">1-based page number.</param>
+    /// <param name="pageSize">Rows per page, capped at 100.</param>
+    /// <param name="search">Filter by email or name.</param>
+    /// <param name="ct">Cancellation token.</param>
+    [HttpGet("waitlist")]
+    public async Task<IActionResult> Waitlist(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetWaitlistEntriesQuery(page, pageSize, search), ct));
+
     /// <summary>
     /// The state of every tier this stack can prove something about, plus the ones it cannot and why.
     /// </summary>

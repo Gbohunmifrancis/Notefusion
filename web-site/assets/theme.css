@@ -81,29 +81,94 @@
   /* Layout Container */
   --wrap: 1200px;
   --wrap-narrow: 840px;
+
+  /* ── Motion tokens (transitions.dev shared scale) ──────────── */
+  /* Durations */
+  --duration-stagger: 40ms;   /* per-item stagger offset */
+  --duration-micro: 80ms;     /* tooltip/path delay, shake segment, large stagger */
+  --duration-quick: 150ms;    /* modal/dropdown close, text swap, tooltip appear */
+  --duration-fast: 250ms;     /* icon swap, dropdown/modal open, tabs sliding, page slide */
+  --duration-medium: 350ms;   /* panel close, toast close */
+  --duration-slow: 400ms;     /* panel open, skeleton content reveal, input clear */
+  --duration-very-slow: 500ms;/* emphasis moments, badge appear, text reveal, success check */
+
+  /* Easings */
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1); /* modal/dropdown/panel open + close, page slide, resize */
+  --ease-in-out: ease-in-out;                        /* icon swap, text swap, text reveal, skeleton reveal */
+  --ease-out: ease-out;                              /* tooltip open / close */
+  --ease-linear: linear;                             /* shimmer, skeleton pulse, spinner */
+  --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);  /* badge pop open */
+  --ease-bounce-strong: cubic-bezier(0.34, 3.85, 0.64, 1); /* bouncy hover-out (avatar return) */
+
+  /* Distances */
+  --distance-micro: 4px;      /* text swap */
+  --distance-small: 6px;      /* error shake (small segment) */
+  --distance-base: 8px;       /* badge diagonal reveal, page slide, error shake */
+  --distance-medium: 12px;    /* text reveal */
+  --distance-large: 30px;     /* check badge appear */
+
+  /* Scales */
+  --scale-large: 0.96;        /* modal open / close */
+  --scale-medium: 0.97;       /* dropdown open */
+  --scale-small: 0.98;        /* tooltip open */
+  --scale-tiny: 0.99;         /* dropdown close */
+
+  /* Blur */
+  --blur-small: 2px;          /* panel reveal, icon swap, text swap, skeleton reveal, number pop-in */
+  --blur-medium: 3px;         /* page slide, text reveal */
+  --blur-large: 8px;          /* success check open */
+
+  /* Component semantic tokens */
+  --dropdown-open-dur: var(--duration-fast);
+  --dropdown-close-dur: var(--duration-quick);
+  --dropdown-pre-scale: var(--scale-medium);
+  --dropdown-closing-scale: var(--scale-tiny);
+  --dropdown-ease: var(--ease-smooth-out);
+
+  --modal-open-dur: var(--duration-fast);
+  --modal-close-dur: var(--duration-quick);
+  --modal-scale: var(--scale-large);
+  --modal-scale-close: var(--scale-large);
+  --modal-ease: var(--ease-smooth-out);
+
+  --icon-swap-dur: var(--duration-fast);
+  --icon-swap-blur: var(--blur-small);
+  --icon-swap-start-scale: 0.25;
+  --icon-swap-ease: var(--ease-in-out);
 }
 
 [data-theme="dark"] {
   --color-brand-500: #38BDF8;
   --color-brand-600: #0284C7;
-  --color-brand-100: rgba(56, 189, 248, 0.16);
-  --color-brand-050: rgba(56, 189, 248, 0.08);
+  --color-brand-100: rgba(56, 189, 248, 0.12);
+  --color-brand-050: rgba(56, 189, 248, 0.05);
 
-  --color-ink-950: #F8FAFC;
-  --color-ink-700: #E2E8F0;
-  --color-ink-500: #94A3B8;
-  --color-ink-300: #64748B;
+  --color-ink-950: #F4F5F8;
+  --color-ink-700: #D0D3DD;
+  --color-ink-500: #888C9C;
+  --color-ink-300: #505464;
 
-  --color-surface-canvas: #0B0F17;
-  --color-surface-base: #131A26;
-  --color-surface-subtle: #1C2433;
+  --color-surface-canvas: #08090C;
+  --color-surface-base: #121318;
+  --color-surface-subtle: #181920;
 
-  --color-border-default: #253043;
-  --color-border-strong: #374761;
+  --color-border-default: #22242E;
+  --color-border-strong: #333644;
 
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 6px 20px rgba(0, 0, 0, 0.25);
-  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.35), 0 14px 32px rgba(0, 0, 0, 0.45);
-  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.5);
+  /* Backward-compatible aliases for dark mode */
+  --bg: var(--color-surface-canvas);
+  --surface: var(--color-surface-base);
+  --border: var(--color-border-default);
+  --blue: var(--color-brand-500);
+  --blue-deep: var(--color-brand-600);
+  --blue-soft: var(--color-brand-100);
+  --text: var(--color-ink-950);
+  --text-muted: var(--color-ink-500);
+  --text-faint: var(--color-ink-300);
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.45), 0 14px 32px rgba(0, 0, 0, 0.55);
+  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.65);
 }
 
 *,

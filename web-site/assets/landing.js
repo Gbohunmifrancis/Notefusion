@@ -16,22 +16,49 @@
     window.addEventListener("scroll", updateHeaderScroll, { passive: true });
   }
 
-  // ── Mobile Menu Toggle ────────────────────────────────────────────────────
+  // ── Mobile Menu Toggle (transitions.dev menu-dropdown & icon-swap) ──────
   var hamburgerBtn = document.getElementById("hamburgerBtn");
+  var hamburgerIconSwap = document.getElementById("hamburgerIconSwap");
   var mobileMenu = document.getElementById("mobileMenu");
+  var dropdownCloseMs = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue("--dropdown-close-dur")
+  ) || 150;
+
   if (hamburgerBtn && mobileMenu) {
+    var closeTimeout = null;
+
+    function openDropdown() {
+      if (closeTimeout) clearTimeout(closeTimeout);
+      mobileMenu.classList.remove("is-closing");
+      mobileMenu.classList.add("is-open");
+      hamburgerBtn.setAttribute("aria-expanded", "true");
+      if (hamburgerIconSwap) hamburgerIconSwap.setAttribute("data-state", "b");
+    }
+
+    function closeDropdown() {
+      mobileMenu.classList.remove("is-open");
+      mobileMenu.classList.add("is-closing");
+      hamburgerBtn.setAttribute("aria-expanded", "false");
+      if (hamburgerIconSwap) hamburgerIconSwap.setAttribute("data-state", "a");
+      closeTimeout = setTimeout(function () {
+        mobileMenu.classList.remove("is-closing");
+      }, dropdownCloseMs);
+    }
+
     hamburgerBtn.addEventListener("click", function () {
-      var isExpanded = hamburgerBtn.getAttribute("aria-expanded") === "true";
-      hamburgerBtn.setAttribute("aria-expanded", !isExpanded);
-      mobileMenu.classList.toggle("is-open", !isExpanded);
+      var isOpen = mobileMenu.classList.contains("is-open");
+      if (isOpen) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
     });
 
     // Close menu when clicking on any menu link
     var menuLinks = mobileMenu.querySelectorAll("a");
     menuLinks.forEach(function (link) {
       link.addEventListener("click", function () {
-        hamburgerBtn.setAttribute("aria-expanded", "false");
-        mobileMenu.classList.remove("is-open");
+        closeDropdown();
       });
     });
   }
@@ -105,10 +132,12 @@
         window.NoteFusion3D.setPlaying(isPlaying);
       }
 
+      var heroPlayIconSwap = document.getElementById("heroPlayIconSwap");
+
       if (isPlaying) {
         waveformBox.classList.add("waveform-playing");
         btnPlay.classList.add("is-playing");
-        btnPlay.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+        if (heroPlayIconSwap) heroPlayIconSwap.setAttribute("data-state", "b");
         btnPlay.setAttribute("aria-label", "Pause playback");
         if (scrubLine) scrubLine.classList.add("is-active");
 
@@ -132,7 +161,7 @@
       } else {
         waveformBox.classList.remove("waveform-playing");
         btnPlay.classList.remove("is-playing");
-        btnPlay.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>';
+        if (heroPlayIconSwap) heroPlayIconSwap.setAttribute("data-state", "a");
         btnPlay.setAttribute("aria-label", "Play recording");
         if (playTimer) clearInterval(playTimer);
         if (scrubTimer) cancelAnimationFrame(scrubTimer);
@@ -299,14 +328,29 @@
     });
   }
 
-  // ── Light / Dark Mode Toggle ──────────────────────────────────────────────
+  // ── Light / Dark Mode Toggle (transitions.dev icon-swap) ──────────────────
   var themeToggleBtn = document.getElementById("themeToggleBtn");
   var mobileThemeToggleBtn = document.getElementById("mobileThemeToggleBtn");
+  var themeIconSwap = document.getElementById("themeIconSwap");
+  var mobileThemeIconSwap = document.getElementById("mobileThemeIconSwap");
+
+  function syncThemeIcons(theme) {
+    var state = theme === "dark" ? "b" : "a";
+    if (themeIconSwap) themeIconSwap.setAttribute("data-state", state);
+    if (mobileThemeIconSwap) mobileThemeIconSwap.setAttribute("data-state", state);
+  }
+
+  // Initialize icon swap state to match active theme immediately
+  var activeTheme = document.documentElement.getAttribute("data-theme") || "light";
+  syncThemeIcons(activeTheme);
 
   function toggleTheme() {
     var current = document.documentElement.getAttribute("data-theme") || "light";
     var next = current === "dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", next);
+    syncThemeIcons(next);
+    var metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute("content", next === "dark" ? "#08090C" : "#F7F5F0");
     try {
       localStorage.setItem("notefusion-theme", next);
     } catch (e) {}
@@ -322,5 +366,144 @@
   }
   if (mobileThemeToggleBtn) {
     mobileThemeToggleBtn.addEventListener("click", toggleTheme);
+  }
+
+  // ── Waitlist Form Submission & CTA Focus Handling ─────────────────────────
+  var waitlistForm = document.getElementById("waitlistForm");
+  var waitlistEmail = document.getElementById("waitlistEmail");
+  var waitlistFullName = document.getElementById("waitlistFullName");
+  var waitlistRole = document.getElementById("waitlistRole");
+  var waitlistSource = document.getElementById("waitlistSource");
+  var waitlistSubmitBtn = document.getElementById("waitlistSubmitBtn");
+  var waitlistAlert = document.getElementById("waitlistAlert");
+  var waitlistAlertText = document.getElementById("waitlistAlertText");
+  var waitlistConflict = document.getElementById("waitlistConflict");
+  var conflictEmailText = document.getElementById("conflictEmailText");
+  var waitlistSuccess = document.getElementById("waitlistSuccess");
+  var successEmailText = document.getElementById("successEmailText");
+  var waitlistCard = document.getElementById("waitlistCard");
+
+  var WAITLIST_API_ENDPOINT = "https://notefusion-api-3c2513a1e974.herokuapp.com/api/waitlist";
+
+  // Smooth-scroll & focus input when any waitlist CTA is clicked
+  var waitlistCtas = document.querySelectorAll('a[href="#waitlist"]');
+  waitlistCtas.forEach(function (cta) {
+    cta.addEventListener("click", function (e) {
+      var source = cta.getAttribute("data-waitlist-source");
+      if (source && waitlistSource) {
+        waitlistSource.value = source;
+      }
+      var targetSection = document.getElementById("waitlist");
+      if (targetSection) {
+        e.preventDefault();
+        targetSection.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (waitlistCard) {
+          waitlistCard.classList.remove("is-pulsing");
+          void waitlistCard.offsetWidth; // Trigger reflow for animation restart
+          waitlistCard.classList.add("is-pulsing");
+        }
+        setTimeout(function () {
+          if (waitlistEmail && !waitlistEmail.disabled) {
+            waitlistEmail.focus();
+          }
+        }, 450);
+      }
+    });
+  });
+
+  if (waitlistForm && waitlistSubmitBtn) {
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function showAlert(msg) {
+      if (waitlistAlert && waitlistAlertText) {
+        waitlistAlertText.textContent = msg;
+        waitlistAlert.removeAttribute("hidden");
+      }
+    }
+
+    function hideAlert() {
+      if (waitlistAlert) waitlistAlert.setAttribute("hidden", "");
+    }
+
+    function hideStatusCards() {
+      if (waitlistConflict) waitlistConflict.setAttribute("hidden", "");
+      if (waitlistSuccess) waitlistSuccess.setAttribute("hidden", "");
+    }
+
+    function setSubmitting(isSubmitting) {
+      waitlistSubmitBtn.disabled = isSubmitting;
+      if (isSubmitting) {
+        waitlistSubmitBtn.classList.add("is-loading");
+      } else {
+        waitlistSubmitBtn.classList.remove("is-loading");
+      }
+    }
+
+    waitlistForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      hideAlert();
+      hideStatusCards();
+
+      var email = waitlistEmail ? waitlistEmail.value.trim() : "";
+      var fullName = waitlistFullName ? waitlistFullName.value.trim() : "";
+      var role = waitlistRole ? waitlistRole.value : "";
+      var source = waitlistSource ? waitlistSource.value : "landing_cta";
+
+      if (!email || !emailRegex.test(email)) {
+        showAlert("Please enter a valid email address.");
+        if (waitlistEmail) waitlistEmail.focus();
+        return;
+      }
+
+      setSubmitting(true);
+
+      var payload = {
+        email: email,
+        name: fullName || null,
+        role: role || null,
+        source: source || null
+      };
+
+      fetch(WAITLIST_API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { status: res.status, ok: res.ok, data: data };
+        });
+      })
+      .then(function (result) {
+        setSubmitting(false);
+
+        if (result.ok || result.status === 200 || result.status === 201) {
+          if (successEmailText) successEmailText.textContent = email;
+          waitlistForm.setAttribute("hidden", "");
+          if (waitlistSuccess) waitlistSuccess.removeAttribute("hidden");
+          if (waitlistCard) {
+            waitlistCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+          return;
+        }
+
+        if (result.status === 409) {
+          if (conflictEmailText) conflictEmailText.textContent = email;
+          if (waitlistConflict) waitlistConflict.removeAttribute("hidden");
+          return;
+        }
+
+        var errorMsg = (result.data && (result.data.message || (result.data.errors && result.data.errors[0])))
+          || "Unable to join the waitlist. Please try again in a few moments.";
+        showAlert(errorMsg);
+      })
+      .catch(function () {
+        setSubmitting(false);
+        showAlert("Unable to connect to the waitlist server. Please check your internet connection and try again.");
+      });
+    });
   }
 })();

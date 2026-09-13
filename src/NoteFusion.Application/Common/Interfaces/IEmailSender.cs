@@ -97,4 +97,9 @@ public interface IEmailSender
         string? ctaText = null,
         string? ctaUrl = null,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Sends a branded confirmation email to a newly registered waitlist subscriber.
+    /// </summary>
+    Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default);
 }

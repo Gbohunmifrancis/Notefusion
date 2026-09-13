@@ -10,6 +10,7 @@ import {
   Scale,
   ScrollText,
   Search,
+  Sparkles,
   Sun,
   Users2,
   Webhook,
@@ -47,6 +48,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/", label: "Overview", icon: LayoutDashboard },
       { to: "/users", label: "Users", icon: Users2 },
+      { to: "/waitlist", label: "Waitlist", icon: Sparkles },
     ],
   },
   {

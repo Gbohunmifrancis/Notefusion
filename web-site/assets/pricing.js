@@ -42,10 +42,11 @@
     return list;
   }
 
-  function action(label, featured) {
+  function action(label, featured, source) {
     var link = document.createElement("a");
     link.className = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
-    link.href = playUrl;
+    link.href = "#waitlist";
+    if (source) link.setAttribute("data-waitlist-source", source);
     link.textContent = label;
     return link;
   }
@@ -76,7 +77,7 @@
         "Playback, MusicXML export and library sync",
       ]),
     );
-    card.appendChild(action("Start free", false));
+    card.appendChild(action("Join Waitlist (Free)", false, "pricing_free"));
     return card;
   }
 
@@ -147,7 +148,7 @@
         "A receipt emailed after payment",
       ]),
     );
-    card.appendChild(action("Choose Pro in the app", true));
+    card.appendChild(action("Join Pro Waitlist", true, "pricing_" + (plan.interval || "pro")));
     return card;
   }
 

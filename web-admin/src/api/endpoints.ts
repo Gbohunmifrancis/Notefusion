@@ -6,6 +6,7 @@ import type {
   AdminReconcileResult,
   AdminUserDetail,
   AdminUserRow,
+  AdminWaitlistRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
   AnalyticsOverview,
@@ -66,6 +67,17 @@ export const getUsers = (
 ) =>
   request<PagedResult<AdminUserRow>>(
     `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline })}`,
+    signal ? { signal } : {},
+  );
+
+export const getWaitlist = (
+  page: number,
+  pageSize: number,
+  search?: string,
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminWaitlistRow>>(
+    `/api/admin/waitlist${query({ page, pageSize, search })}`,
     signal ? { signal } : {},
   );
 

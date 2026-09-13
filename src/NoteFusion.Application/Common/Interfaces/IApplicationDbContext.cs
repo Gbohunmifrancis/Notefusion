@@ -42,5 +42,8 @@ public interface IApplicationDbContext
     /// </summary>
     DbSet<AdminAuditLog> AdminAuditLogs { get; }
 
+    /// <summary>Subscribers who joined the waitlist while the app is in store review.</summary>
+    DbSet<WaitlistEntry> WaitlistEntries { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
