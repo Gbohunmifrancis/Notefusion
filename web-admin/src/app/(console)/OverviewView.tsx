@@ -28,7 +28,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { getOverview } from "@/api/endpoints";
+import { getOverview, getPaymentsSummary } from "@/api/endpoints";
 import type { AnalyticsOverview, DailyCount } from "@/api/types";
 import { Badge } from "@/components/Badge";
 import { DonutCard } from "@/components/DonutCard";
@@ -47,9 +47,11 @@ import {
 import { useAuth } from "@/lib/auth";
 import { useChartPalette } from "@/lib/chart";
 import {
+  changeAgainst,
   formatCount,
   formatDayLong,
   formatDayShort,
+  formatMoney,
   formatMonthShort,
   formatMonthYear,
   formatOffset,
@@ -66,7 +68,7 @@ function seedRange(overview: AnalyticsOverview): Range | null {
   return first && last ? { from: first.date, to: last.date } : null;
 }
 
-function greeting(firstName: string): string {
+function greeting(firstName?: string | null): string {
   const hour = new Date().getHours();
   const part = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening";
   return firstName ? `Good ${part}, ${firstName}` : `Good ${part}`;
@@ -142,9 +144,9 @@ function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-[#243146] dark:bg-[#131D30]">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="flex items-center justify-between">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-zinc-900 dark:text-slate-300">
           <Icon size={18} strokeWidth={1.75} />
         </div>
         {stat.hint && (
@@ -189,17 +191,17 @@ function SignupChart({ data }: { data: DailyCount[] }) {
   }, [data, bucket]);
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-[#243146] dark:bg-[#131D30]">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
 
-        <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/70 p-0.5 text-xs font-medium dark:border-[#243146] dark:bg-slate-800/40">
+        <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/70 p-0.5 text-xs font-medium dark:border-zinc-800 dark:bg-zinc-900/60">
           <button
             type="button"
             onClick={() => setBucket("day")}
             className={`rounded-md px-2.5 py-1 text-xs transition ${
               bucket === "day"
-                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-[#131D30] dark:text-blue-400"
+                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-zinc-800 dark:text-blue-400"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -210,7 +212,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
             onClick={() => setBucket("week")}
             className={`rounded-md px-2.5 py-1 text-xs transition ${
               bucket === "week"
-                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-[#131D30] dark:text-blue-400"
+                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-zinc-800 dark:text-blue-400"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -221,7 +223,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
             onClick={() => setBucket("month")}
             className={`rounded-md px-2.5 py-1 text-xs transition ${
               bucket === "month"
-                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-[#131D30] dark:text-blue-400"
+                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-zinc-800 dark:text-blue-400"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -260,7 +262,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
                 if (!active || !payload?.[0]) return null;
                 const point = payload[0].payload as ChartGroup;
                 return (
-                  <div className="rounded-lg border border-slate-200 bg-white p-2.5 shadow-md dark:border-[#243146] dark:bg-[#131D30]">
+                  <div className="rounded-lg border border-slate-200 bg-white p-2.5 shadow-md dark:border-zinc-800 dark:bg-[#09090b]">
                     <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">{point.title}</p>
                     <p className="mt-0.5 text-xs font-semibold text-[#2563EB] dark:text-blue-400">
                       {formatCount(point.count)} signups
@@ -289,7 +291,7 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
   const total = keys.reduce((sum, k) => sum + k.count, 0);
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -314,10 +316,10 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
             return (
               <div
                 key={key.label}
-                className="rounded-lg bg-slate-50 px-3 py-2 transition hover:bg-slate-100 dark:bg-slate-800/40 dark:hover:bg-slate-800/70"
+                className="rounded-lg bg-slate-50 px-3 py-2 transition hover:bg-slate-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-800/70"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-slate-500 shadow-xs dark:bg-slate-700 dark:text-slate-300">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-slate-500 shadow-xs dark:bg-zinc-800 dark:text-slate-300">
                     {index + 1}
                   </div>
 
@@ -338,7 +340,7 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
                       </div>
                     </div>
 
-                    <div className="mt-1.5 h-1 rounded-full bg-slate-200 dark:bg-slate-700">
+                    <div className="mt-1.5 h-1 rounded-full bg-slate-200 dark:bg-zinc-800">
                       <div
                         className="h-full rounded-full bg-blue-600 transition-all duration-500"
                         style={{ width: `${percentage}%` }}
@@ -360,7 +362,7 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
   const displayItems = items.length > 0 ? items.slice(0, 5) : [];
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-[#243146] dark:bg-[#131D30]">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
 
@@ -486,13 +488,21 @@ export function OverviewView() {
     placeholderData: keepPreviousData,
   });
 
+  const paymentsSummary = useQuery({
+    queryKey: ["payments-summary-overview"],
+    queryFn: ({ signal }) => getPaymentsSummary(signal),
+    staleTime: 30_000,
+  });
+
   const offset = state.data?.reportingOffsetMinutes;
   useEffect(() => {
     if (offset !== undefined) rememberReportingOffset(offset);
   }, [offset]);
 
   const picker = range ?? (state.data ? seedRange(state.data) : null);
-  const firstName = user?.fullName.trim().split(/\s+/)[0] ?? "NoteFusion";
+  const firstName =
+    user?.fullName?.trim().split(/\s+/)[0] ||
+    (user?.email ? user.email.split("@")[0] : "");
 
   function setPresetDays(days: number) {
     const to = new Date();
@@ -531,7 +541,7 @@ export function OverviewView() {
             Days bucketed in {formatOffset(state.data?.reportingOffsetMinutes ?? 60)}
           </span>
 
-          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-[#243146] dark:bg-[#131D30]">
+          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-zinc-800 dark:bg-[#09090b]">
             <button
               onClick={() => setPresetDays(7)}
               className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
@@ -566,7 +576,7 @@ export function OverviewView() {
 
           <button
             onClick={() => setShowRangePicker((p) => !p)}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-300 dark:hover:bg-slate-800"
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-zinc-800 dark:bg-[#09090b] dark:text-slate-300 dark:hover:bg-zinc-900"
           >
             <CalendarDays size={15} />
             <span>
@@ -580,7 +590,7 @@ export function OverviewView() {
       </div>
 
       {showRangePicker && state.data && picker && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md dark:border-[#243146] dark:bg-[#131D30]">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md dark:border-zinc-800 dark:bg-[#09090b]">
           <RangePicker
             value={picker}
             offsetMinutes={state.data.reportingOffsetMinutes}
@@ -594,38 +604,48 @@ export function OverviewView() {
 
       <StateView state={state} loadingLabel="Loading analytics">
         {(data) => {
+          const userChange = changeAgainst(data.users.newUsers, data.users.newUsersPrevious);
+          const activeChange = changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious);
+          const txChange = changeAgainst(data.transcriptions.totalSaved, data.transcriptions.totalSavedPrevious);
+
           const topStats: StatItem[] = [
             {
               title: "Total users",
               value: formatCount(data.users.totalUsers),
-              change: "12%",
-              description: "vs. last 7 days",
+              change: userChange?.label ?? null,
+              description: userChange ? "vs. previous period" : null,
               icon: UserRound,
               hint: "Every account, all time",
             },
             {
               title: "Active today",
               value: formatCount(data.users.activeUsers),
-              change: "8%",
-              description: "vs. yesterday",
+              change: activeChange?.label ?? null,
+              description: activeChange ? "vs. previous period" : null,
               icon: Zap,
               hint: "Signed in recently",
             },
             {
               title: "Transactions",
               value: formatCount(data.transcriptions.totalSaved),
-              change: "24%",
-              description: "vs. last 7 days",
+              change: txChange?.label ?? null,
+              description: txChange ? "vs. previous period" : null,
               icon: CreditCard,
-              hint: "Transcriptions and transactions processed",
+              hint: "Transcriptions saved in library",
             },
             {
               title: "Revenue",
-              value: `$${formatCount(data.users.totalUsers * 29)}`,
-              change: "16%",
-              description: "vs. last 7 days",
+              value: paymentsSummary.data
+                ? formatMoney(paymentsSummary.data.netMinor, paymentsSummary.data.currency)
+                : paymentsSummary.isLoading
+                ? "..."
+                : formatMoney(0, "USD"),
+              change: paymentsSummary.data && paymentsSummary.data.completedCount > 0
+                ? `${formatCount(paymentsSummary.data.completedCount)} completed`
+                : null,
+              description: paymentsSummary.data && paymentsSummary.data.completedCount > 0 ? "settled payments" : null,
               icon: DollarSign,
-              hint: "Estimated total revenue",
+              hint: "Total settled net revenue from payment ledger",
             },
           ];
 
@@ -648,7 +668,7 @@ export function OverviewView() {
 
           return (
             <div className="space-y-6">
-              {/* 4 TOP KPI CARDS MATCHING MOCKUP */}
+              {/* 4 TOP KPI CARDS */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {topStats.map((stat) => (
                   <StatCard key={stat.title} stat={stat} />
@@ -668,7 +688,7 @@ export function OverviewView() {
               {/* SECONDARY DEEP DIVE: KEYS & OUTCOMES */}
               <div className="grid gap-6 xl:grid-cols-2">
                 <MostTranscribedKeys keys={data.topKeys} />
-                <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-[#243146] dark:bg-[#131D30]">
+                <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
                   <div className="mb-4 flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                       Transcription outcomes

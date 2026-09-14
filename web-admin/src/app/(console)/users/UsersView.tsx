@@ -255,7 +255,7 @@ export function UsersView() {
             variant="outline"
             size="sm"
             onClick={handleExport}
-            className="h-9 gap-1.5 rounded-lg border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs hover:bg-slate-50 dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-200 dark:hover:bg-slate-800"
+            className="h-9 gap-1.5 rounded-lg border-slate-200 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs hover:bg-slate-50 dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200 dark:hover:bg-zinc-900"
           >
             <Download size={14} />
             Export
@@ -288,7 +288,7 @@ export function UsersView() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search by name or email..."
-            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-[#243146] dark:bg-[#131D30] dark:text-white"
+            className="h-9 w-full rounded-lg border border-slate-200/90 bg-white pl-9 text-xs shadow-xs placeholder:text-slate-400 focus:border-[#2563EB] dark:border-zinc-800 dark:bg-[#09090b] dark:text-white"
           />
         </div>
 
@@ -296,7 +296,7 @@ export function UsersView() {
           <select
             value={planFilter}
             onChange={(e) => setPlanFilter(e.target.value)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
           >
             <option value="all">All plans</option>
             <option value="pro">Pro</option>
@@ -307,7 +307,7 @@ export function UsersView() {
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as StatusFilter)}
-            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-200"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
           >
             <option value="all">All status</option>
             <option value="active">Active</option>
@@ -318,7 +318,7 @@ export function UsersView() {
       </div>
 
       {/* TABLE CARD MATCHING MOCKUP */}
-      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-[#243146] dark:bg-[#131D30] overflow-hidden">
+      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#09090b] overflow-hidden">
         <StateView
           state={state}
           isEmpty={() => items.length === 0}
@@ -337,7 +337,7 @@ export function UsersView() {
             <>
               <div className="w-full min-w-0 overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="border-b border-slate-100 bg-slate-50/50 text-slate-500 dark:border-[#243146] dark:bg-slate-900/30 dark:text-slate-400">
+                  <thead className="border-b border-slate-100 bg-slate-50/50 text-slate-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
                     <tr>
                       <th className="w-12 px-4 py-3">
                         <Checkbox
@@ -354,14 +354,14 @@ export function UsersView() {
                       <th className="w-12 px-4 py-3 text-right"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-[#243146]">
+                  <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
                     {items.map((user) => {
                       const online = isUserOnline(user.lastLoginAt);
                       const isSelected = selectedIds.has(user.id);
                       return (
                         <tr
                           key={user.id}
-                          className={`transition hover:bg-slate-50/70 dark:hover:bg-slate-800/40 ${
+                          className={`transition hover:bg-slate-50/70 dark:hover:bg-zinc-900/60 ${
                             isSelected ? "bg-blue-50/30 dark:bg-blue-950/20" : ""
                           }`}
                         >
@@ -401,7 +401,7 @@ export function UsersView() {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="size-7 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                                className="size-7 text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200"
                                 title={`Email ${user.fullName}`}
                                 onClick={() => {
                                   setEmailTarget(user);
@@ -414,7 +414,7 @@ export function UsersView() {
                                 asChild
                                 variant="ghost"
                                 size="icon"
-                                className="size-7 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                                className="size-7 text-slate-400 hover:text-slate-700 dark:hover:text-zinc-200"
                                 title="Manage user"
                               >
                                 <Link href={`/users/${user.id}`}>
@@ -431,7 +431,7 @@ export function UsersView() {
               </div>
 
               {/* FOOTER PAGINATION MATCHING MOCKUP */}
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100 px-5 py-3.5 dark:border-[#243146]">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100 px-5 py-3.5 dark:border-zinc-800">
                 <div className="text-xs text-slate-500 dark:text-slate-400">
                   Showing {startItem}-{endItem} of {totalCount} users
                 </div>
@@ -441,7 +441,7 @@ export function UsersView() {
                     type="button"
                     disabled={page <= 1}
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-[#243146] dark:text-slate-400 dark:hover:bg-slate-800"
+                    className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
                     aria-label="Previous page"
                   >
                     <ChevronLeft size={14} />
@@ -454,7 +454,7 @@ export function UsersView() {
                       className={`flex h-7 w-7 items-center justify-center rounded-md text-xs font-semibold transition ${
                         page === p
                           ? "bg-[#2563EB] text-white"
-                          : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                          : "text-slate-600 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
                       }`}
                     >
                       {p}
@@ -464,7 +464,7 @@ export function UsersView() {
                     type="button"
                     disabled={page >= totalPages}
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                    className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-[#243146] dark:text-slate-400 dark:hover:bg-slate-800"
+                    className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-900"
                     aria-label="Next page"
                   >
                     <ChevronRight size={14} />

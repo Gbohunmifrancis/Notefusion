@@ -153,25 +153,25 @@
 }
 
 .dark {
-  /* Dark theme tokens */
-  --nf-background: #0b1220;
-  --nf-surface: #131d30;
-  --nf-surface-muted: #111a2b;
-  --nf-surface-subtle: #1b2739;
-  --nf-foreground: #e8eef9;
-  --nf-foreground-muted: #94a3b8;
-  --nf-foreground-subtle: #64748b;
-  --nf-border: #243146;
-  --nf-border-subtle: #1c2739;
-  --nf-sidebar: #07142f;
-  --nf-input: #111a2b;
+  /* Truly dark theme tokens (OLED / Pitch Black SaaS Admin) */
+  --nf-background: #000000;
+  --nf-surface: #09090b;
+  --nf-surface-muted: #121214;
+  --nf-surface-subtle: #18181b;
+  --nf-foreground: #fafafa;
+  --nf-foreground-muted: #a1a1aa;
+  --nf-foreground-subtle: #71717a;
+  --nf-border: #27272a;
+  --nf-border-subtle: #18181b;
+  --nf-sidebar: #050505;
+  --nf-input: #0c0c0e;
 
-  --nf-chart-1: #60a5fa;
-  --nf-chart-2: #38bdf8;
-  --nf-chart-3: #818cf8;
-  --nf-chart-4: #64748b;
-  --nf-chart-5: #fbbf24;
-  --nf-chart-grid: #243146;
+  --nf-chart-1: #3b82f6;
+  --nf-chart-2: #0ea5e9;
+  --nf-chart-3: #6366f1;
+  --nf-chart-4: #71717a;
+  --nf-chart-5: #f59e0b;
+  --nf-chart-grid: #18181b;
 
   --background: var(--nf-background);
   --foreground: var(--nf-foreground);
@@ -183,7 +183,7 @@
   --primary: var(--nf-primary);
   --primary-foreground: var(--nf-primary-foreground);
   --primary-deep: var(--nf-primary-hover);
-  --primary-bright: #60a5fa;
+  --primary-bright: #3b82f6;
 
   --muted: var(--nf-surface-muted);
   --secondary: var(--nf-surface-muted);
@@ -198,26 +198,26 @@
   --border-light: var(--nf-border-subtle);
   --input: var(--nf-input);
 
-  --brand: #60a5fa;
-  --brand-deep: #60a5fa;
-  --ring: #60a5fa;
+  --brand: #3b82f6;
+  --brand-deep: #2563eb;
+  --ring: #3b82f6;
 
   --sky: #38bdf8;
-  --navy: #070f24;
-  --navy-deep: #030814;
+  --navy: #050505;
+  --navy-deep: #000000;
 
   --premium: #fbbf24;
-  --premium-deep: #fbbf24;
+  --premium-deep: #f59e0b;
 
   --success: #22c55e;
   --warning: #f59e0b;
-  --danger: #f87171;
-  --destructive: #f87171;
-  --destructive-foreground: #0b1220;
+  --danger: #ef4444;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
 
   --success-deep: #22c55e;
   --warning-deep: #f59e0b;
-  --danger-deep: #f87171;
+  --danger-deep: #ef4444;
 
   --sidebar: var(--nf-sidebar);
   --sidebar-foreground: var(--nf-foreground);
@@ -234,10 +234,10 @@
   --chart-4: var(--nf-chart-4);
   --chart-5: var(--nf-chart-5);
 
-  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --s-card: 0 2px 10px rgba(0, 0, 0, 0.45);
-  --s-lift: 0 12px 32px rgba(0, 0, 0, 0.55);
-  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.4);
+  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.8);
+  --s-card: 0 2px 10px rgba(0, 0, 0, 0.9);
+  --s-lift: 0 12px 32px rgba(0, 0, 0, 0.95);
+  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.3);
 }
 
 @theme inline {

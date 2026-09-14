@@ -101,50 +101,68 @@ export function PaymentsView() {
         </p>
       </div>
 
-      {/* 4 TOP KPI CARDS MATCHING MOCKUP */}
+      {/* 4 TOP KPI CARDS */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <TransactionKpiCard
           kpi={{
             title: "Total revenue",
-            value: summary.data?.netMinor ? formatMoney(summary.data.netMinor, summary.data.currency) : "$142,680",
-            change: "18%",
-            description: "vs. last 30 days",
+            value: summary.data
+              ? formatMoney(summary.data.netMinor, summary.data.currency)
+              : summary.isLoading
+              ? "..."
+              : formatMoney(0, "USD"),
+            description: summary.data
+              ? `${formatMoney(summary.data.creditedMinor, summary.data.currency)} credited`
+              : "Net settled revenue",
             icon: DollarSign,
           }}
         />
         <TransactionKpiCard
           kpi={{
             title: "Successful payments",
-            value: summary.data?.completedCount ? formatCount(summary.data.completedCount) : "3,842",
-            change: "22%",
-            description: "vs. last 30 days",
+            value: summary.data
+              ? formatCount(summary.data.completedCount)
+              : summary.isLoading
+              ? "..."
+              : "0",
+            description: summary.data
+              ? `${formatCount(summary.data.processingCount)} processing`
+              : "Settled payments",
             icon: CreditCard,
           }}
         />
         <TransactionKpiCard
           kpi={{
             title: "Failed payments",
-            value: summary.data?.failedCount ? formatCount(summary.data.failedCount) : "168",
-            change: "12%",
-            description: "vs. last 30 days",
+            value: summary.data
+              ? formatCount(summary.data.failedCount)
+              : summary.isLoading
+              ? "..."
+              : "0",
+            description: summary.data && summary.data.stuckCount > 0
+              ? `${formatCount(summary.data.stuckCount)} overdue/stuck`
+              : "Failed transactions",
             icon: AlertTriangle,
-            tone: "danger",
+            tone: summary.data && summary.data.failedCount > 0 ? "danger" : undefined,
           }}
         />
         <TransactionKpiCard
           kpi={{
             title: "Avg. order value",
-            value: "$37.12",
-            change: "8%",
-            description: "vs. last 30 days",
+            value: summary.data && summary.data.completedCount > 0
+              ? formatMoney(Math.round(summary.data.netMinor / summary.data.completedCount), summary.data.currency)
+              : formatMoney(0, summary.data?.currency ?? "USD"),
+            description: summary.data && summary.data.completedCount > 0
+              ? `Across ${formatCount(summary.data.completedCount)} payments`
+              : "Average per transaction",
             icon: Banknote,
           }}
         />
       </div>
 
       {/* TRANSACTIONS TABLE CARD MATCHING MOCKUP */}
-      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-[#243146] dark:bg-[#131D30] overflow-hidden">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 p-5 dark:border-[#243146]">
+      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs dark:border-zinc-800 dark:bg-[#09090b] overflow-hidden">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 p-5 dark:border-zinc-800">
           <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
             Transactions
           </h2>
@@ -160,14 +178,14 @@ export function PaymentsView() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search email or reference..."
-                className="h-8.5 w-48 rounded-lg border-slate-200 bg-white pl-8 text-xs shadow-xs dark:border-[#243146] dark:bg-[#131D30] dark:text-white"
+                className="h-8.5 w-48 rounded-lg border-slate-200 bg-white pl-8 text-xs shadow-xs dark:border-zinc-800 dark:bg-[#09090b] dark:text-white"
               />
             </div>
 
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as any)}
-              className="h-8.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-200"
+              className="h-8.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-slate-200"
             >
               <option value={ALL}>All statuses</option>
               {PAYMENT_STATUSES.map((val) => (
@@ -180,7 +198,7 @@ export function PaymentsView() {
             <select
               value={provider}
               onChange={(e) => setProvider(e.target.value as any)}
-              className="h-8.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-200"
+              className="h-8.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-slate-200"
             >
               <option value={ALL}>All providers</option>
               {PAYMENT_PROVIDERS.map((val) => (
@@ -190,7 +208,7 @@ export function PaymentsView() {
               ))}
             </select>
 
-            <label className="flex h-8.5 cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs text-slate-700 shadow-xs dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-300">
+            <label className="flex h-8.5 cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] dark:text-slate-300">
               <Checkbox
                 checked={stuckOnly}
                 onCheckedChange={(checked) => setStuckOnly(checked === true)}
@@ -198,7 +216,7 @@ export function PaymentsView() {
               <span>Overdue only</span>
             </label>
 
-            <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-xs dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-200">
+            <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] dark:text-slate-200">
               <span>Last 30 days</span>
             </div>
           </div>
@@ -224,7 +242,7 @@ export function PaymentsView() {
               <>
                 <div className="w-full min-w-0 overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="border-b border-slate-100 bg-slate-50/50 text-slate-500 dark:border-[#243146] dark:bg-slate-900/30 dark:text-slate-400">
+                    <thead className="border-b border-slate-100 bg-slate-50/50 text-slate-500 dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-slate-400">
                       <tr>
                         <th className="w-12 px-4 py-3">
                           <Checkbox aria-label="Select all transactions" />
@@ -238,11 +256,11 @@ export function PaymentsView() {
                         <th className="w-12 px-4 py-3 text-right"></th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-[#243146]">
+                    <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
                       {data.items.map((row) => (
                         <tr
                           key={row.id}
-                          className="transition hover:bg-slate-50/70 dark:hover:bg-slate-800/40"
+                          className="transition hover:bg-slate-50/70 dark:hover:bg-zinc-900/40"
                         >
                           <td className="px-4 py-3">
                             <Checkbox aria-label={`Select transaction ${row.reference}`} />
@@ -305,7 +323,7 @@ export function PaymentsView() {
                 </div>
 
                 {/* FOOTER PAGINATION */}
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100 px-5 py-3.5 dark:border-[#243146]">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100 px-5 py-3.5 dark:border-zinc-800">
                   <div className="text-xs text-slate-500 dark:text-slate-400">
                     Showing {startItem}-{endItem} of {totalCount} transactions
                   </div>
@@ -315,7 +333,7 @@ export function PaymentsView() {
                       type="button"
                       disabled={page <= 1}
                       onClick={() => setPage((p) => Math.max(1, p - 1))}
-                      className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-[#243146] dark:text-slate-400 dark:hover:bg-slate-800"
+                      className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-zinc-800 dark:text-slate-400 dark:hover:bg-zinc-800"
                       aria-label="Previous page"
                     >
                       <ChevronLeft size={14} />
@@ -328,7 +346,7 @@ export function PaymentsView() {
                         className={`flex h-7 w-7 items-center justify-center rounded-md text-xs font-semibold transition ${
                           page === p
                             ? "bg-[#2563EB] text-white"
-                            : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                            : "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-zinc-800"
                         }`}
                       >
                         {p}
@@ -338,7 +356,7 @@ export function PaymentsView() {
                       type="button"
                       disabled={page >= totalPages}
                       onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                      className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-[#243146] dark:text-slate-400 dark:hover:bg-slate-800"
+                      className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 text-slate-500 hover:bg-slate-50 disabled:opacity-40 dark:border-zinc-800 dark:text-slate-400 dark:hover:bg-zinc-800"
                       aria-label="Next page"
                     >
                       <ChevronRight size={14} />
@@ -354,7 +372,7 @@ export function PaymentsView() {
       {/* OPERATIONS SNAPSHOT (Collapsible / secondary) */}
       <StateView state={summary} loadingLabel="Loading operational metrics">
         {(data) => (
-          <div className="space-y-4 pt-4 border-t border-slate-200/80 dark:border-[#243146]">
+          <div className="space-y-4 pt-4 border-t border-slate-200/80 dark:border-zinc-800">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               Gateway operations &amp; lifecycle
             </h3>
@@ -374,10 +392,10 @@ export function PaymentsView() {
 interface TransactionKpi {
   title: string;
   value: string;
-  change: string;
-  description: string;
+  change?: string | null | undefined;
+  description?: string | null | undefined;
   icon: any;
-  tone?: "danger" | "emerald";
+  tone?: "danger" | "emerald" | undefined;
 }
 
 function TransactionKpiCard({ kpi }: { kpi: TransactionKpi }) {
@@ -385,9 +403,9 @@ function TransactionKpiCard({ kpi }: { kpi: TransactionKpi }) {
   const isDanger = kpi.tone === "danger";
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-[#243146] dark:bg-[#131D30]">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="flex items-center justify-between">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-zinc-900 dark:text-slate-300">
           <Icon size={18} strokeWidth={1.75} />
         </div>
       </div>
@@ -401,18 +419,26 @@ function TransactionKpiCard({ kpi }: { kpi: TransactionKpi }) {
           {kpi.value}
         </div>
 
-        <div
-          className={`mt-2 flex items-center gap-1 text-xs font-medium ${
-            isDanger
-              ? "text-rose-600 dark:text-rose-400"
-              : "text-emerald-600 dark:text-emerald-400"
-          }`}
-        >
-          <span>↑ {kpi.change}</span>
-          <span className="font-normal text-slate-400 dark:text-slate-500">
+        {kpi.change ? (
+          <div
+            className={`mt-2 flex items-center gap-1 text-xs font-medium ${
+              isDanger
+                ? "text-rose-600 dark:text-rose-400"
+                : "text-emerald-600 dark:text-emerald-400"
+            }`}
+          >
+            <span>↑ {kpi.change}</span>
+            {kpi.description && (
+              <span className="font-normal text-slate-400 dark:text-slate-500">
+                {kpi.description}
+              </span>
+            )}
+          </div>
+        ) : kpi.description ? (
+          <div className="mt-2 text-xs text-slate-400 dark:text-slate-500">
             {kpi.description}
-          </span>
-        </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

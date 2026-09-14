@@ -83,15 +83,19 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
     router.push(query ? `/users?q=${encodeURIComponent(query)}` : "/users");
   }
 
-  const firstName = user?.fullName ? user.fullName.trim().split(/\s+/)[0] : "Francis";
+  const firstName = user?.fullName
+    ? user.fullName.trim().split(/\s+/)[0]
+    : user?.email
+    ? user.email.split("@")[0]
+    : "Admin";
 
   return (
     <SidebarProvider>
       <Sidebar
         collapsible="icon"
-        className="border-r border-slate-200/80 bg-white text-slate-900 transition-colors duration-200 dark:border-[#243146] dark:bg-[#07142f] dark:text-white"
+        className="border-r border-slate-200/80 bg-white text-slate-900 transition-colors duration-200 dark:border-zinc-800/80 dark:bg-[#050505] dark:text-white"
       >
-        <SidebarHeader className="h-16 justify-center border-b border-slate-200/80 px-5 transition-colors duration-200 group-data-[collapsible=icon]:px-2 dark:border-[#243146]">
+        <SidebarHeader className="h-16 justify-center border-b border-slate-200/80 px-5 transition-colors duration-200 group-data-[collapsible=icon]:px-2 dark:border-zinc-800/80">
           <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white shadow-sm">
               <BrandMark size={18} className="text-white" />
@@ -104,7 +108,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         <ConsoleNav />
 
-        <SidebarFooter className="border-t border-slate-200/80 p-3 space-y-2 transition-colors duration-200 dark:border-[#243146]">
+        <SidebarFooter className="border-t border-slate-200/80 p-3 space-y-2 transition-colors duration-200 dark:border-zinc-800/80">
           <div className="flex items-center gap-2.5 px-2 py-1.5 group-data-[collapsible=icon]:hidden">
             <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[#2563EB] text-white text-[10px] font-bold">
               <BrandMark size={14} className="text-white" />
@@ -120,9 +124,9 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
       <SidebarInset className="min-w-0 w-full overflow-x-hidden">
         {/* TOP BAR */}
-        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-6 lg:px-8 dark:border-[#243146] dark:bg-[#07142f]/90">
+        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-6 lg:px-8 dark:border-zinc-800/80 dark:bg-black/90">
           <div className="mx-auto flex w-full max-w-7xl items-center">
-            <SidebarTrigger className="mr-3 size-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" />
+            <SidebarTrigger className="mr-3 size-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-zinc-900 dark:hover:text-white" />
 
             <form onSubmit={onSearch} className="relative w-full max-w-md">
               <Search
@@ -133,7 +137,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
                 name="q"
                 type="search"
                 placeholder="Search users, transactions, or anything..."
-                className="h-9.5 w-full rounded-lg border border-slate-200/90 bg-slate-50/70 pl-10 pr-4 text-xs sm:text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-[#243146] dark:bg-slate-900/70 dark:text-white dark:focus:bg-slate-900 dark:focus:ring-blue-900/30"
+                className="h-9.5 w-full rounded-lg border border-slate-200/90 bg-slate-50/70 pl-10 pr-4 text-xs sm:text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-white dark:focus:bg-black dark:focus:ring-blue-900/30"
               />
             </form>
 
@@ -142,14 +146,14 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
               <NotificationBell />
 
-              <div className="h-6 w-px bg-slate-200 dark:bg-slate-800" />
+              <div className="h-6 w-px bg-slate-200 dark:bg-zinc-800" />
 
               <div className="flex items-center gap-2.5">
                 {avatarUrl ? (
-                  <Avatar name={user?.fullName ?? "Admin"} src={avatarUrl} size={32} />
+                  <Avatar name={user?.fullName || user?.email || "Admin"} src={avatarUrl} size={32} />
                 ) : (
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-[#2563EB] shadow-xs dark:bg-blue-950 dark:text-blue-300">
-                    {userInitials(user?.fullName || "Francis")}
+                    {userInitials(user?.fullName || user?.email || "Admin")}
                   </div>
                 )}
 
@@ -164,7 +168,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-[#FAFAFA] px-4 py-6 text-slate-900 sm:px-6 sm:py-7 lg:px-8 dark:bg-[#0B1220] dark:text-slate-100">
+        <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-[#FAFAFA] px-4 py-6 text-slate-900 sm:px-6 sm:py-7 lg:px-8 dark:bg-black dark:text-slate-100">
           <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">{children}</div>
         </div>
       </SidebarInset>

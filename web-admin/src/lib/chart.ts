@@ -53,15 +53,15 @@ export const CHART: Record<ThemeMode, ChartPalette> = {
     categorical: ["#2563eb", "#0ea5e9", "#6366f1", "#94a3b8"],
   },
   dark: {
-    grid: "#1c2739",
-    axis: "#243146",
-    tick: "#64748b",
+    grid: "#18181b",
+    axis: "#27272a",
+    tick: "#71717a",
     series: "#3b82f6",
     sky: "#38bdf8",
     success: "#22c55e",
     danger: "#f87171",
-    faint: "#64748b",
-    categorical: ["#60a5fa", "#38bdf8", "#818cf8", "#64748b"],
+    faint: "#71717a",
+    categorical: ["#3b82f6", "#38bdf8", "#818cf8", "#71717a"],
   },
 };
 

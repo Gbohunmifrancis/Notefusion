@@ -7,7 +7,6 @@ import {
   Activity,
   AlertCircle,
   ArrowRight,
-  ArrowUp,
   CheckCircle2,
   Database,
   HeartPulse,
@@ -121,44 +120,6 @@ interface TimelineEvent {
   tone: "success" | "info" | "warning" | "danger";
 }
 
-const FALLBACK_EVENTS: TimelineEvent[] = [
-  {
-    id: "evt-1",
-    title: "Webhook delivered successfully",
-    detail: "Paystack charge.success • ref_99214a",
-    time: "2m ago",
-    tone: "success",
-  },
-  {
-    id: "evt-2",
-    title: "User registration completed",
-    detail: "user@notefusion.app • Free tier",
-    time: "15m ago",
-    tone: "info",
-  },
-  {
-    id: "evt-3",
-    title: "High memory usage detected",
-    detail: "Transcription worker pool at 84%",
-    time: "1h ago",
-    tone: "warning",
-  },
-  {
-    id: "evt-4",
-    title: "Webhook delivery failed",
-    detail: "Endpoint timeout (504 Gateway Timeout)",
-    time: "3h ago",
-    tone: "danger",
-  },
-  {
-    id: "evt-5",
-    title: "Database backup completed",
-    detail: "Automated snapshot • 14.2 MB compressed",
-    time: "6h ago",
-    tone: "success",
-  },
-];
-
 interface WebhookRowItem {
   id: string;
   event: string;
@@ -166,14 +127,6 @@ interface WebhookRowItem {
   isSuccess: boolean;
   time: string;
 }
-
-const FALLBACK_WEBHOOKS: WebhookRowItem[] = [
-  { id: "wh-1", event: "payment.success", status: "200 OK", isSuccess: true, time: "Just now" },
-  { id: "wh-2", event: "user.created", status: "200 OK", isSuccess: true, time: "5m ago" },
-  { id: "wh-3", event: "subscription.renewed", status: "200 OK", isSuccess: true, time: "12m ago" },
-  { id: "wh-4", event: "charge.failed", status: "500 Error", isSuccess: false, time: "1h ago" },
-  { id: "wh-5", event: "payment.dispute", status: "200 OK", isSuccess: true, time: "2h ago" },
-];
 
 export function HealthView() {
   const nowMs = useMemo(() => Date.now(), []);
@@ -197,12 +150,11 @@ export function HealthView() {
   });
 
   const offset = getReportingOffset();
+  const health = healthState.data;
 
-  // Format real timeline events from audit query, or fall back to realistic telemetry items
+  // Format real timeline events from audit query
   const timelineEvents: TimelineEvent[] = useMemo(() => {
     const raw = auditQuery.data?.items ?? [];
-    if (raw.length === 0) return FALLBACK_EVENTS;
-
     return raw.slice(0, 5).map((log) => {
       let tone: TimelineEvent["tone"] = "info";
       if (log.action === "GiftPro" || log.action === "ReactivateUser" || log.action === "ExtendSubscription") {
@@ -223,11 +175,9 @@ export function HealthView() {
     });
   }, [auditQuery.data?.items, nowMs]);
 
-  // Format real webhook rows from webhooks query, or fall back to realistic entries
+  // Format real webhook rows from webhooks query
   const webhookRows: WebhookRowItem[] = useMemo(() => {
     const raw = webhooksQuery.data?.items ?? [];
-    if (raw.length === 0) return FALLBACK_WEBHOOKS;
-
     return raw.slice(0, 5).map((wh) => ({
       id: wh.id,
       event: wh.eventType || "webhook.event",
@@ -237,11 +187,14 @@ export function HealthView() {
     }));
   }, [webhooksQuery.data?.items, nowMs]);
 
-  const totalWebhookDeliveries = webhooksQuery.data?.totalCount ?? 12842;
+  const totalWebhookDeliveries = webhooksQuery.data?.totalCount ?? 0;
+  const processedWebhookCount = useMemo(() => {
+    if (!webhooksQuery.data?.items) return 0;
+    return webhooksQuery.data.items.filter((i) => i.status === "Processed").length;
+  }, [webhooksQuery.data]);
   const failedWebhookCount = useMemo(() => {
-    if (!webhooksQuery.data?.items) return 10;
-    const failedInPage = webhooksQuery.data.items.filter((i) => i.status === "Failed").length;
-    return failedInPage > 0 ? failedInPage : 10;
+    if (!webhooksQuery.data?.items) return 0;
+    return webhooksQuery.data.items.filter((i) => i.status === "Failed").length;
   }, [webhooksQuery.data]);
 
   return (
@@ -260,7 +213,7 @@ export function HealthView() {
               void auditQuery.refetch();
             }}
             disabled={healthState.isFetching}
-            className="h-9 px-3.5 text-[13px] font-semibold rounded-lg shadow-xs hover:bg-slate-50 dark:hover:bg-slate-800"
+            className="h-9 px-3.5 text-[13px] font-semibold rounded-lg shadow-xs hover:bg-slate-50 dark:hover:bg-zinc-900 dark:border-zinc-800"
           >
             <RefreshCw
               size={15}
@@ -272,29 +225,41 @@ export function HealthView() {
         }
       />
 
-      {/* Screen 4 Top 4 Metric KPI Cards */}
+      {/* 4 Top Metric KPI Cards (100% Server Scoped) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {/* API Uptime */}
-        <div className="bg-white dark:bg-[#131D30] rounded-xl border border-border dark:border-slate-800/80 p-5 shadow-xs">
+        {/* API Status */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">API uptime</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">API status</span>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+              health?.status === "healthy"
+                ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
+                : health?.status === "degraded"
+                ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400"
+                : "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400"
+            }`}>
               <Activity className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            99.98%
+            {health ? (health.status === "healthy" ? "Operational" : health.status === "degraded" ? "Degraded" : "Offline") : "Probing..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
-            <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
-              <ArrowUp className="w-3 h-3" /> 0.1%
+            <span className={`inline-flex items-center gap-0.5 font-semibold px-1.5 py-0.5 rounded text-[11px] ${
+              health?.status === "healthy"
+                ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                : "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40"
+            }`}>
+              {health?.status === "healthy" ? "Healthy" : "Check status"}
             </span>
-            <span className="text-slate-400 dark:text-slate-500 ml-1.5">Last 90 days</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5 truncate">
+              {health ? `Checked ${formatInstantDateTime(health.checkedAtUtc, offset)}` : "Polling tiers"}
+            </span>
           </div>
         </div>
 
         {/* Database */}
-        <div className="bg-white dark:bg-[#131D30] rounded-xl border border-border dark:border-slate-800/80 p-5 shadow-xs">
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Database</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
@@ -302,18 +267,20 @@ export function HealthView() {
             </div>
           </div>
           <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            99.99%
+            {health ? (health.database.latencyMs !== null ? `${formatCount(health.database.latencyMs)} ms` : STATUS_LABELS[health.database.status]) : "..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
             <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
-              <ArrowUp className="w-3 h-3" /> 0.1%
+              {health?.database.status === "healthy" ? "Operational" : "Check logs"}
             </span>
-            <span className="text-slate-400 dark:text-slate-500 ml-1.5">Last 30 days</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5 truncate">
+              {health?.database.latencyMs !== null ? "Round trip latency" : (health?.database.detail ?? "Probe answered")}
+            </span>
           </div>
         </div>
 
         {/* Background Jobs */}
-        <div className="bg-white dark:bg-[#131D30] rounded-xl border border-border dark:border-slate-800/80 p-5 shadow-xs">
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Background jobs</span>
             <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
@@ -321,18 +288,20 @@ export function HealthView() {
             </div>
           </div>
           <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            99.95%
+            {health ? formatCount(health.activity.jobsLast24Hours) : "..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
             <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
-              <ArrowUp className="w-3 h-3" /> 0.3%
+              Last 24h
             </span>
-            <span className="text-slate-400 dark:text-slate-500 ml-1.5">Last 90 days</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5">
+              {health ? `${formatCount(health.activity.jobsLast7Days)} in 7 days` : "Job executions"}
+            </span>
           </div>
         </div>
 
         {/* Webhooks */}
-        <div className="bg-white dark:bg-[#131D30] rounded-xl border border-border dark:border-slate-800/80 p-5 shadow-xs">
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Webhooks</span>
             <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 flex items-center justify-center text-violet-600 dark:text-violet-400">
@@ -340,25 +309,27 @@ export function HealthView() {
             </div>
           </div>
           <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            99.92%
+            {health ? (health.webhookBacklog.status === "healthy" ? "Clear" : "Backlog") : "..."}
           </div>
           <div className="mt-2 flex items-center text-xs">
             <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
-              <ArrowUp className="w-3 h-3" /> 0.3%
+              {health?.webhookBacklog.status === "healthy" ? "Normal" : "Backlog"}
             </span>
-            <span className="text-slate-400 dark:text-slate-500 ml-1.5">Last 30 days</span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5">
+              {formatCount(totalWebhookDeliveries)} total events
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Screen 4 Middle 2-Column Layout */}
+      {/* Middle 2-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column: Recent Events Timeline */}
-        <div className="bg-white dark:bg-[#131D30] rounded-xl border border-border dark:border-slate-800/80 p-6 shadow-xs flex flex-col">
+        {/* Left Column: Recent Events Timeline (Server Scoped) */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent events</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Timeline of operational and system activity</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Timeline of operational and audit activity</p>
             </div>
             <Link
               href="/audit-log"
@@ -370,54 +341,57 @@ export function HealthView() {
           </div>
 
           <div className="relative pl-1 flex-1">
-            {timelineEvents.map((evt, idx) => {
-              const isLast = idx === timelineEvents.length - 1;
-              const dotColor =
-                evt.tone === "success"
-                  ? "bg-emerald-500 ring-emerald-100 dark:ring-emerald-950/50"
-                  : evt.tone === "info"
-                  ? "bg-blue-500 ring-blue-100 dark:ring-blue-950/50"
-                  : evt.tone === "warning"
-                  ? "bg-amber-500 ring-amber-100 dark:ring-amber-950/50"
-                  : "bg-rose-500 ring-rose-100 dark:ring-rose-950/50";
+            {timelineEvents.length === 0 ? (
+              <div className="py-12 text-center text-xs text-slate-400 dark:text-zinc-500">
+                No audit log events recorded yet
+              </div>
+            ) : (
+              timelineEvents.map((evt, idx) => {
+                const isLast = idx === timelineEvents.length - 1;
+                const dotColor =
+                  evt.tone === "success"
+                    ? "bg-emerald-500 ring-emerald-100 dark:ring-emerald-950/50"
+                    : evt.tone === "info"
+                    ? "bg-blue-500 ring-blue-100 dark:ring-blue-950/50"
+                    : evt.tone === "warning"
+                    ? "bg-amber-500 ring-amber-100 dark:ring-amber-950/50"
+                    : "bg-rose-500 ring-rose-100 dark:ring-rose-950/50";
 
-              return (
-                <div key={evt.id} className="relative flex gap-4 pb-5 last:pb-0">
-                  {/* Vertical connecting line */}
-                  {!isLast && (
-                    <span
-                      className="absolute left-[7px] top-[14px] bottom-0 w-0.5 bg-slate-200 dark:bg-slate-800"
-                      aria-hidden="true"
-                    />
-                  )}
+                return (
+                  <div key={evt.id} className="relative flex gap-4 pb-5 last:pb-0">
+                    {!isLast && (
+                      <span
+                        className="absolute left-[7px] top-[14px] bottom-0 w-0.5 bg-slate-200 dark:bg-zinc-800"
+                        aria-hidden="true"
+                      />
+                    )}
 
-                  {/* Colored status dot */}
-                  <div className="relative flex items-center justify-center shrink-0 mt-1">
-                    <span className={`w-3.5 h-3.5 rounded-full ring-4 ${dotColor}`} />
-                  </div>
-
-                  {/* Event content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 truncate">
-                        {evt.title}
-                      </p>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums shrink-0">
-                        {evt.time}
-                      </span>
+                    <div className="relative flex items-center justify-center shrink-0 mt-1">
+                      <span className={`w-3.5 h-3.5 rounded-full ring-4 ${dotColor}`} />
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
-                      {evt.detail}
-                    </p>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 truncate">
+                          {evt.title}
+                        </p>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums shrink-0">
+                          {evt.time}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                        {evt.detail}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Right Column: Webhook Delivery Overview */}
-        <div className="bg-white dark:bg-[#131D30] rounded-xl border border-border dark:border-slate-800/80 p-6 shadow-xs flex flex-col">
+        {/* Right Column: Webhook Delivery Overview (Server Scoped) */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Webhook delivery</h2>
@@ -432,66 +406,72 @@ export function HealthView() {
             </Link>
           </div>
 
-          {/* Top 3 mini stats */}
+          {/* Top 3 mini stats (Server Scoped) */}
           <div className="grid grid-cols-3 gap-3 mb-5">
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-[#0B1220]/60 border border-slate-200/60 dark:border-slate-800/80">
-              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Success rate</span>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="text-base font-bold text-slate-900 dark:text-slate-100">99.92%</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-              </div>
-            </div>
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-[#0B1220]/60 border border-slate-200/60 dark:border-slate-800/80">
-              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Total deliveries</span>
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-zinc-950/60 border border-slate-200/60 dark:border-zinc-800">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Total</span>
               <span className="text-base font-bold text-slate-900 dark:text-slate-100 block mt-1">
                 {formatCount(totalWebhookDeliveries)}
               </span>
             </div>
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-[#0B1220]/60 border border-slate-200/60 dark:border-slate-800/80">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-zinc-950/60 border border-slate-200/60 dark:border-zinc-800">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Processed</span>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-base font-bold text-slate-900 dark:text-slate-100">{formatCount(processedWebhookCount)}</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-zinc-950/60 border border-slate-200/60 dark:border-zinc-800">
               <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Failed</span>
               <div className="flex items-center gap-1 mt-1">
-                <span className="text-base font-bold text-slate-900 dark:text-slate-100">{failedWebhookCount}</span>
+                <span className="text-base font-bold text-slate-900 dark:text-slate-100">{formatCount(failedWebhookCount)}</span>
                 <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
               </div>
             </div>
           </div>
 
-          {/* Webhook mini table */}
+          {/* Webhook mini table (Server Scoped) */}
           <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-border dark:border-slate-800/80 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                  <th className="pb-2.5">Event</th>
-                  <th className="pb-2.5">Status</th>
-                  <th className="pb-2.5 text-right">Time</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/60 dark:divide-slate-800/60 text-xs">
-                {webhookRows.map((row) => (
-                  <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                    <td className="py-2.5 pr-2 font-mono font-medium text-slate-900 dark:text-slate-100 truncate max-w-[140px]">
-                      {row.event}
-                    </td>
-                    <td className="py-2.5 pr-2">
-                      {row.isSuccess ? (
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                          {row.status}
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
-                          <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                          {row.status}
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-2.5 text-right text-slate-500 dark:text-slate-400 tabular-nums">
-                      {row.time}
-                    </td>
+            {webhookRows.length === 0 ? (
+              <div className="py-12 text-center text-xs text-slate-400 dark:text-zinc-500">
+                No webhook deliveries recorded yet
+              </div>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-100 dark:border-zinc-800 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th className="pb-2.5">Event</th>
+                    <th className="pb-2.5">Status</th>
+                    <th className="pb-2.5 text-right">Time</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-zinc-800 text-xs">
+                  {webhookRows.map((row) => (
+                    <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-900/40 transition-colors">
+                      <td className="py-2.5 pr-2 font-mono font-medium text-slate-900 dark:text-slate-100 truncate max-w-[140px]">
+                        {row.event}
+                      </td>
+                      <td className="py-2.5 pr-2">
+                        {row.isSuccess ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            {row.status}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                            {row.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2.5 text-right text-slate-500 dark:text-slate-400 tabular-nums">
+                        {row.time}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>
