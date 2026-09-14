@@ -15,7 +15,7 @@ public class InboxTests
         public Dictionary<Guid, List<ResendInboxAttachment>> Attachments { get; set; } = [];
 
         public Task<ResendInboxPage> ListAsync(int page, int pageSize, CancellationToken ct = default)
-            => Task.FromResult(new ResendInboxPage(Summaries, TotalCount));
+            => Task.FromResult(new ResendInboxPage(Summaries, false, TotalCount));
 
         public Task<ResendInboxEmail> GetAsync(Guid emailId, CancellationToken ct = default)
         {

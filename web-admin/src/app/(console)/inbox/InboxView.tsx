@@ -388,7 +388,7 @@ export function InboxView() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<InboxEmailSummary | null>(null);
 
-  const PAGE_SIZE = 30;
+  const PAGE_SIZE = 50;
   const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(
@@ -407,7 +407,8 @@ export function InboxView() {
         })
         .catch((err: unknown) => {
           if ((err as { name?: string }).name !== "AbortError") {
-            setError("Could not load inbox. Check your Resend inbound route configuration.");
+            const msg = err instanceof Error ? err.message : "Could not load inbox.";
+            setError(msg);
           }
         })
         .finally(() => setLoading(false));

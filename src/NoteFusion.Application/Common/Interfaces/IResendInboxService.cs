@@ -21,7 +21,10 @@ public interface IResendInboxService
 
 // ── DTOs returned by the service (live in Application so queries can use them directly) ──────────
 
-public sealed record ResendInboxPage(IReadOnlyList<ResendInboxEmailSummary> Items, int Total);
+public sealed record ResendInboxPage(
+    IReadOnlyList<ResendInboxEmailSummary> Items,
+    bool HasMore,
+    int Total);
 
 public sealed record ResendInboxEmailSummary(
     Guid Id,
