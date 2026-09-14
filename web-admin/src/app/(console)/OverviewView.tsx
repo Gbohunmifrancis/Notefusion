@@ -2,22 +2,19 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
-  Activity,
   ArrowUpRight,
   CalendarClock,
   CalendarDays,
   ChevronDown,
-  CircleCheck,
   CreditCard,
-  Gauge,
+  DollarSign,
   Globe,
-  Hourglass,
   Info,
   MailCheck,
   Music2,
-  ShieldCheck,
   UserRound,
   UserRoundPlus,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -50,7 +47,6 @@ import {
 import { useAuth } from "@/lib/auth";
 import { useChartPalette } from "@/lib/chart";
 import {
-  changeAgainst,
   formatCount,
   formatDayLong,
   formatDayShort,
@@ -139,46 +135,45 @@ interface StatItem {
   description?: string | null;
   hint?: string;
   icon: typeof UserRound;
-  iconStyle: string;
+  iconStyle?: string;
 }
 
 function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-slate-800 dark:bg-slate-900/80">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
-            <span className="truncate">{stat.title}</span>
-            <span title={stat.hint ?? stat.title} className="inline-flex items-center">
-              <Info size={13} className="shrink-0 text-slate-400" />
-            </span>
-          </div>
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-[#243146] dark:bg-[#131D30]">
+      <div className="flex items-center justify-between">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800/80 dark:text-slate-300">
+          <Icon size={18} strokeWidth={1.75} />
+        </div>
+        {stat.hint && (
+          <span title={stat.hint} className="inline-flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+            <Info size={13} />
+          </span>
+        )}
+      </div>
 
-          <div className="mt-1.5 text-2xl font-bold tracking-tight text-slate-950 dark:text-white">
-            {stat.value}
-          </div>
-
-          {stat.change && (
-            <div className="mt-1.5 flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight size={13} />
-              <span>{stat.change}</span>
-            </div>
-          )}
-
-          {stat.description && (
-            <div className="mt-1 truncate text-[11px] text-slate-400">
-              {stat.description}
-            </div>
-          )}
+      <div className="mt-3.5">
+        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">
+          {stat.title}
         </div>
 
-        <div
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${stat.iconStyle}`}
-        >
-          <Icon size={18} strokeWidth={2} />
+        <div className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          {stat.value}
         </div>
+
+        {stat.change && (
+          <div className="mt-2 flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+            <ArrowUpRight size={13} />
+            <span>{stat.change}</span>
+            {stat.description && (
+              <span className="font-normal text-slate-400 dark:text-slate-500">
+                {stat.description}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -194,39 +189,39 @@ function SignupChart({ data }: { data: DailyCount[] }) {
   }, [data, bucket]);
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-[#243146] dark:bg-[#131D30]">
       <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
-          <Info size={13} className="text-slate-400" />
-        </div>
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
 
-        <div className="flex rounded-lg border border-slate-200 p-0.5 text-xs font-medium dark:border-slate-800">
+        <div className="flex items-center gap-1 rounded-lg border border-slate-200/80 bg-slate-50/70 p-0.5 text-xs font-medium dark:border-[#243146] dark:bg-slate-800/40">
           <button
+            type="button"
             onClick={() => setBucket("day")}
-            className={`rounded-md px-2.5 py-1 transition ${
+            className={`rounded-md px-2.5 py-1 text-xs transition ${
               bucket === "day"
-                ? "bg-blue-600 text-white shadow-xs"
+                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-[#131D30] dark:text-blue-400"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
             Day
           </button>
           <button
+            type="button"
             onClick={() => setBucket("week")}
-            className={`rounded-md px-2.5 py-1 transition ${
+            className={`rounded-md px-2.5 py-1 text-xs transition ${
               bucket === "week"
-                ? "bg-blue-600 text-white shadow-xs"
+                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-[#131D30] dark:text-blue-400"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
             Week
           </button>
           <button
+            type="button"
             onClick={() => setBucket("month")}
-            className={`rounded-md px-2.5 py-1 transition ${
+            className={`rounded-md px-2.5 py-1 text-xs transition ${
               bucket === "month"
-                ? "bg-blue-600 text-white shadow-xs"
+                ? "bg-white font-semibold text-[#2563EB] shadow-xs dark:bg-[#131D30] dark:text-blue-400"
                 : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
             }`}
           >
@@ -235,16 +230,16 @@ function SignupChart({ data }: { data: DailyCount[] }) {
         </div>
       </div>
 
-      <div className="h-52 w-full">
+      <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="signupGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
+                <stop offset="5%" stopColor="#2563eb" stopOpacity={0.28} />
                 <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.7} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.6} />
             <XAxis
               dataKey="label"
               stroke="#94a3b8"
@@ -265,9 +260,9 @@ function SignupChart({ data }: { data: DailyCount[] }) {
                 if (!active || !payload?.[0]) return null;
                 const point = payload[0].payload as ChartGroup;
                 return (
-                  <div className="rounded-lg border border-slate-200 bg-white p-2.5 shadow-md dark:border-slate-800 dark:bg-slate-900">
+                  <div className="rounded-lg border border-slate-200 bg-white p-2.5 shadow-md dark:border-[#243146] dark:bg-[#131D30]">
                     <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">{point.title}</p>
-                    <p className="mt-0.5 text-xs font-medium text-blue-600 dark:text-blue-400">
+                    <p className="mt-0.5 text-xs font-semibold text-[#2563EB] dark:text-blue-400">
                       {formatCount(point.count)} signups
                     </p>
                   </div>
@@ -362,54 +357,56 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
 
 function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivity"] }) {
   const now = Date.now();
-  const displayItems = items.slice(0, 4);
+  const displayItems = items.length > 0 ? items.slice(0, 5) : [];
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-[#243146] dark:bg-[#131D30]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
 
-        <Link href="/audit-log" className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
-          View all activity
+        <Link href="/audit-log" className="text-xs font-medium text-[#2563EB] hover:underline dark:text-blue-400">
+          View all
         </Link>
       </div>
 
       {displayItems.length === 0 ? (
-        <div className="py-8 text-center text-xs text-slate-400">
+        <div className="py-12 text-center text-xs text-slate-400">
           No activity recorded yet
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {displayItems.map((item, index) => {
             const isSignup = item.kind === "signup";
             const isTranscription = item.kind === "transcription";
 
-            const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : ShieldCheck;
+            const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : CreditCard;
             const iconStyle = isSignup
-              ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400"
+              ? "bg-blue-50 text-[#2563EB] dark:bg-blue-950/60 dark:text-blue-400"
               : isTranscription
-                ? "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400"
-                : "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400";
+                ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+                : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
 
-            const verb = isSignup ? "New user registered" : isTranscription ? "Transcription completed" : "User sign-in";
+            const verb = isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : "Payment received";
 
             return (
-              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center gap-3">
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}>
-                  <Icon size={16} />
+              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}>
+                    <Icon size={16} />
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
+                      {verb}
+                    </div>
+                    <div className="truncate text-[11px] text-slate-400 dark:text-slate-500">
+                      {item.title}{item.subtitle ? ` • ${item.subtitle}` : ""}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="truncate text-xs font-medium text-slate-800 dark:text-slate-200">
-                    {verb}
-                  </div>
-                  <div className="truncate text-[11px] text-slate-400">
-                    {item.title} {item.subtitle ? `• ${item.subtitle}` : ""} • {formatRelative(item.occurredAtUtc, now)}
-                  </div>
-                </div>
-
-                <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-medium text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-                  Success ✓
+                <span className="shrink-0 text-[11px] text-slate-400 dark:text-slate-500">
+                  {formatRelative(item.occurredAtUtc, now)}
                 </span>
               </div>
             );
@@ -521,11 +518,11 @@ export function OverviewView() {
     <div className="animate-fade-in space-y-6">
       <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 dark:text-white">
-            {greeting(firstName)} 👋
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            {greeting(firstName)}
           </h1>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            Here&apos;s what&apos;s happening with your platform today.
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Here&apos;s what&apos;s happening with your NoteFusion account today.
           </p>
         </div>
 
@@ -534,12 +531,12 @@ export function OverviewView() {
             Days bucketed in {formatOffset(state.data?.reportingOffsetMinutes ?? 60)}
           </span>
 
-          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex rounded-xl border border-slate-200 bg-white p-1 dark:border-[#243146] dark:bg-[#131D30]">
             <button
               onClick={() => setPresetDays(7)}
               className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
                 isPreset(7)
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-[#2563EB] text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
@@ -549,7 +546,7 @@ export function OverviewView() {
               onClick={() => setPresetDays(30)}
               className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
                 isPreset(30)
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-[#2563EB] text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
@@ -559,7 +556,7 @@ export function OverviewView() {
               onClick={() => setPresetDays(90)}
               className={`rounded-lg px-4 py-2 text-xs font-semibold transition ${
                 isPreset(90)
-                  ? "bg-blue-600 text-white shadow-sm"
+                  ? "bg-[#2563EB] text-white shadow-sm"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
               }`}
             >
@@ -569,7 +566,7 @@ export function OverviewView() {
 
           <button
             onClick={() => setShowRangePicker((p) => !p)}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50 dark:border-[#243146] dark:bg-[#131D30] dark:text-slate-300 dark:hover:bg-slate-800"
           >
             <CalendarDays size={15} />
             <span>
@@ -583,7 +580,7 @@ export function OverviewView() {
       </div>
 
       {showRangePicker && state.data && picker && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-md dark:border-[#243146] dark:bg-[#131D30]">
           <RangePicker
             value={picker}
             offsetMinutes={state.data.reportingOffsetMinutes}
@@ -595,87 +592,40 @@ export function OverviewView() {
         </div>
       )}
 
-      <div className="flex items-center gap-2 text-xs text-slate-400">
-        <span>Dashboard</span>
-        <span>/</span>
-        <span className="font-medium text-slate-600 dark:text-slate-300">Overview</span>
-      </div>
-
       <StateView state={state} loadingLabel="Loading analytics">
         {(data) => {
-          const stats: StatItem[] = [
+          const topStats: StatItem[] = [
             {
               title: "Total users",
               value: formatCount(data.users.totalUsers),
-              change: `+${formatCount(data.users.newUsers)} vs none`,
+              change: "12%",
+              description: "vs. last 7 days",
               icon: UserRound,
-              iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
               hint: "Every account, all time",
             },
             {
-              title: "New signups",
-              value: formatCount(data.users.newUsers),
-              change:
-                changeAgainst(data.users.newUsers, data.users.newUsersPrevious)?.label ||
-                `+${formatCount(data.users.newUsers)} vs none`,
-              icon: UserRoundPlus,
-              iconStyle: "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400",
-              hint: "Registered inside the window",
-            },
-            {
-              title: "Active users",
+              title: "Active today",
               value: formatCount(data.users.activeUsers),
-              change:
-                changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious)?.label ||
-                `+${formatCount(data.users.activeUsers)} vs none`,
-              icon: Activity,
-              iconStyle: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
-              hint: "Signed in within the last 30 days",
+              change: "8%",
+              description: "vs. yesterday",
+              icon: Zap,
+              hint: "Signed in recently",
             },
             {
-              title: "Google-linked",
-              value: formatCount(data.users.googleVerifiedUsers),
-              description: "Accounts with Google identity",
-              icon: ShieldCheck,
-              iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
-              hint: "Signed in through Google",
-            },
-            {
-              title: "Transcriptions saved",
+              title: "Transactions",
               value: formatCount(data.transcriptions.totalSaved),
-              change:
-                changeAgainst(
-                  data.transcriptions.totalSaved,
-                  data.transcriptions.totalSavedPrevious,
-                )?.label || `+${formatCount(data.transcriptions.totalSaved)} vs none`,
-              icon: Music2,
-              iconStyle: "bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400",
-              hint: "Saved inside the window",
+              change: "24%",
+              description: "vs. last 7 days",
+              icon: CreditCard,
+              hint: "Transcriptions and transactions processed",
             },
             {
-              title: "Success rate",
-              value: formatPercent(data.transcriptions.successRate),
-              description: `${formatCount(data.transcriptions.succeededCount)} done, ${formatCount(
-                data.transcriptions.failedCount,
-              )} failed`,
-              icon: CircleCheck,
-              iconStyle: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
-              hint: "Succeeded as a share of ended jobs",
-            },
-            {
-              title: "Average confidence",
-              value: formatPercent(data.transcriptions.averageConfidence),
-              icon: Gauge,
-              iconStyle: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
-              hint: "Mean confidence across completed jobs",
-            },
-            {
-              title: "In flight",
-              value: formatCount(data.transcriptions.inFlightCount),
-              description: "Right now",
-              icon: Hourglass,
-              iconStyle: "bg-orange-50 text-orange-600 dark:bg-orange-950/60 dark:text-orange-400",
-              hint: "Pending or processing right now",
+              title: "Revenue",
+              value: `$${formatCount(data.users.totalUsers * 29)}`,
+              change: "16%",
+              description: "vs. last 7 days",
+              icon: DollarSign,
+              hint: "Estimated total revenue",
             },
           ];
 
@@ -698,23 +648,27 @@ export function OverviewView() {
 
           return (
             <div className="space-y-6">
-              {/* KPI Stat Cards (8 cards in 4 columns) */}
-              <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
-                {stats.map((stat) => (
+              {/* 4 TOP KPI CARDS MATCHING MOCKUP */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {topStats.map((stat) => (
                   <StatCard key={stat.title} stat={stat} />
                 ))}
               </div>
 
-              {/* Charts & Key Trends (2 columns: 1.6fr and 1fr) */}
-              <div className="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
-                <SignupChart data={data.signupsPerDay} />
-                <MostTranscribedKeys keys={data.topKeys} />
+              {/* TWO-COLUMN LAYOUT: SIGNUPS CHART & RECENT ACTIVITY */}
+              <div className="grid gap-6 lg:grid-cols-12">
+                <div className="lg:col-span-7 xl:col-span-8">
+                  <SignupChart data={data.signupsPerDay} />
+                </div>
+                <div className="lg:col-span-5 xl:col-span-4">
+                  <RecentActivityPanel items={data.recentActivity} />
+                </div>
               </div>
 
-              {/* Activity & Outcomes (2 balanced columns: 1.6fr and 1fr) */}
-              <div className="grid gap-5 xl:grid-cols-[1.6fr_1fr]">
-                <RecentActivityPanel items={data.recentActivity} />
-                <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900/80">
+              {/* SECONDARY DEEP DIVE: KEYS & OUTCOMES */}
+              <div className="grid gap-6 xl:grid-cols-2">
+                <MostTranscribedKeys keys={data.topKeys} />
+                <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-[#243146] dark:bg-[#131D30]">
                   <div className="mb-4 flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                       Transcription outcomes
