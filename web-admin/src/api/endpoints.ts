@@ -13,6 +13,9 @@ import type {
   AuditAction,
   AuditLogRow,
   GiftDuration,
+  InboxAttachment,
+  InboxEmailDetail,
+  InboxPage,
   LedgerDirection,
   LedgerReason,
   LoginResponse,
@@ -246,3 +249,20 @@ export interface SendUserEmailPayload {
 /** Sends a branded custom email to the target user, rendered with NoteFusion's template. */
 export const sendUserEmail = (id: string, payload: SendUserEmailPayload) =>
   act(id, "email", payload as unknown as Record<string, unknown>);
+
+// ── Inbox (received emails via Resend inbound route) ────────────────────────────────────────────
+
+export const getInbox = (page: number, pageSize: number, signal?: AbortSignal) =>
+  request<InboxPage>(`/api/admin/inbox${query({ page, pageSize })}`, signal ? { signal } : {});
+
+export const getInboxEmail = (id: string, signal?: AbortSignal) =>
+  request<InboxEmailDetail>(`/api/admin/inbox/${id}`, signal ? { signal } : {});
+
+export const getInboxAttachments = (id: string, signal?: AbortSignal) =>
+  request<InboxAttachment[]>(`/api/admin/inbox/${id}/attachments`, signal ? { signal } : {});
+
+export const replyToEmail = (id: string, subject: string, bodyHtml: string) =>
+  request<void>(`/api/admin/inbox/${id}/reply`, {
+    method: "POST",
+    body: { subject, bodyHtml },
+  });

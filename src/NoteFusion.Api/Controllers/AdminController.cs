@@ -5,6 +5,8 @@ using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Admin.Commands;
 using NoteFusion.Application.Admin.Queries;
+using NoteFusion.Application.Inbox.Commands;
+using NoteFusion.Application.Inbox.Queries;
 using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Api.Controllers;
@@ -85,6 +87,31 @@ public sealed class AdminController : ApiControllerBase
         [FromQuery] string? search = null,
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetWaitlistEntriesQuery(page, pageSize, search), ct));
+
+    // --------------------------------------------------------------- inbox (inbound email)
+
+    /// <summary>Received emails from the Resend inbound route, newest first.</summary>
+    [HttpGet("inbox")]
+    public async Task<IActionResult> Inbox(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetInboxQuery(page, pageSize), ct));
+
+    /// <summary>One received email in full (subject, from/to, HTML and text bodies).</summary>
+    [HttpGet("inbox/{id:guid}")]
+    public async Task<IActionResult> InboxEmail(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetInboxEmailQuery(id), ct));
+
+    /// <summary>Attachments on one received email.</summary>
+    [HttpGet("inbox/{id:guid}/attachments")]
+    public async Task<IActionResult> InboxAttachments(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetInboxAttachmentsQuery(id), ct));
+
+    /// <summary>Sends a branded reply to the original sender of the specified received email.</summary>
+    [HttpPost("inbox/{id:guid}/reply")]
+    public async Task<IActionResult> ReplyToEmail(Guid id, InboxReplyBody body, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new ReplyToEmailCommand(id, body.Subject, body.BodyHtml), ct));
 
     /// <summary>
     /// The state of every tier this stack can prove something about, plus the ones it cannot and why.
@@ -314,4 +341,7 @@ public sealed class AdminController : ApiControllerBase
         string? CtaText,
         string? CtaUrl,
         string? Note);
+
+    /// <summary>The reply to send back to the original sender of a received email.</summary>
+    public sealed record InboxReplyBody(string Subject, string BodyHtml);
 }

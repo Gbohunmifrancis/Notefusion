@@ -516,3 +516,40 @@ export interface AdminWaitlistRow {
   invitedAtUtc: string | null;
 }
 
+// ── Inbox (received emails via Resend inbound route) ────────────────────────────────────────────
+
+export interface InboxEmailSummary {
+  id: string;
+  subject: string;
+  from: string;
+  to: string;
+  receivedAt: string;
+  hasAttachments: boolean;
+}
+
+export interface InboxEmailDetail {
+  id: string;
+  subject: string;
+  from: string;
+  to: string;
+  receivedAt: string;
+  htmlBody: string | null;
+  textBody: string | null;
+  hasAttachments: boolean;
+}
+
+export interface InboxAttachment {
+  id: string;
+  filename: string;
+  contentType: string;
+  sizeBytes: number;
+  downloadUrl: string;
+}
+
+export interface InboxPage {
+  items: InboxEmailSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}

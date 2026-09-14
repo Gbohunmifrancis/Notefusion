@@ -4,6 +4,7 @@ import {
   ChevronDown,
   CreditCard,
   HeartPulse,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Moon,
@@ -54,6 +55,7 @@ const NAV_GROUPS = [
   {
     label: "Operations",
     items: [
+      { to: "/inbox", label: "Inbox", icon: Inbox },
       { to: "/audit-log", label: "Audit log", icon: ScrollText },
       { to: "/health", label: "System health", icon: HeartPulse },
     ],
