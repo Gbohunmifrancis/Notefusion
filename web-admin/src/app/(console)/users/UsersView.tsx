@@ -109,15 +109,8 @@ function LastSeenCell({
 function PlanBadge({ user }: { user: AdminUserRow }) {
   if (!user.hasProAccess) {
     return (
-      <span className="inline-flex items-center rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-        Basic
-      </span>
-    );
-  }
-  if (user.isGiftedPro) {
-    return (
-      <span className="inline-flex items-center rounded bg-indigo-50 px-2 py-0.5 text-xs font-medium text-[#4F46E5] dark:bg-indigo-950/60 dark:text-indigo-400">
-        Team
+      <span className="inline-flex items-center rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+        Free
       </span>
     );
   }
@@ -183,9 +176,8 @@ export function UsersView() {
   const items = useMemo(() => {
     if (!state.data?.items) return [];
     if (planFilter === "all") return state.data.items;
-    if (planFilter === "pro") return state.data.items.filter((u) => u.hasProAccess && !u.isGiftedPro);
-    if (planFilter === "team") return state.data.items.filter((u) => u.isGiftedPro);
-    if (planFilter === "basic") return state.data.items.filter((u) => !u.hasProAccess);
+    if (planFilter === "pro") return state.data.items.filter((u) => u.hasProAccess);
+    if (planFilter === "free") return state.data.items.filter((u) => !u.hasProAccess);
     return state.data.items;
   }, [state.data?.items, planFilter]);
 
@@ -300,8 +292,7 @@ export function UsersView() {
           >
             <option value="all">All plans</option>
             <option value="pro">Pro</option>
-            <option value="team">Team</option>
-            <option value="basic">Basic</option>
+            <option value="free">Free</option>
           </select>
 
           <select

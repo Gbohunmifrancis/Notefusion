@@ -115,7 +115,7 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             </div>
             <div className="min-w-0">
               <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">NoteFusion</p>
-              <p className="truncate text-[10px] text-slate-400">Secure notes for your team.</p>
+              <p className="truncate text-[10px] text-slate-400">Music transcription & solfa notation.</p>
             </div>
           </div>
           <SignOutItem />

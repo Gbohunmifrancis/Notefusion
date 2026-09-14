@@ -446,17 +446,10 @@ function TransactionKpiCard({ kpi }: { kpi: TransactionKpi }) {
 
 function PaymentPlanBadge({ plan }: { plan: string | null }) {
   const name = (plan ?? "Pro").toLowerCase();
-  if (name.includes("team")) {
+  if (name.includes("free")) {
     return (
-      <span className="inline-flex items-center rounded bg-indigo-50 px-2 py-0.5 text-xs font-medium text-[#4F46E5] dark:bg-indigo-950/60 dark:text-indigo-400">
-        Team
-      </span>
-    );
-  }
-  if (name.includes("basic") || name.includes("free")) {
-    return (
-      <span className="inline-flex items-center rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-        Basic
+      <span className="inline-flex items-center rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-zinc-800 dark:text-zinc-300">
+        Free
       </span>
     );
   }
