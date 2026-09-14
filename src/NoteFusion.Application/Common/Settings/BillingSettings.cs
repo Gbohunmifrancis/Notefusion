@@ -45,4 +45,21 @@ public sealed class BillingSettings
     /// notice window is a week wide, so a tighter loop would only re-scan the same rows.
     /// </summary>
     public int ExpiryNoticeMinutes { get; init; } = 720;
+
+    /// <summary>
+    /// How often the stale payment cleanup worker sweeps to clear abandoned or expired payments.
+    /// Runs hourly by default.
+    /// </summary>
+    public int StalePaymentSweepMinutes { get; init; } = 60;
+
+    /// <summary>
+    /// How many hours a Pending payment with no checkout session may sit before being cleared as expired.
+    /// </summary>
+    public int StalePendingHours { get; init; } = 2;
+
+    /// <summary>
+    /// How many hours a Processing payment may sit before being confirmed expired and cleared.
+    /// Standard hosted checkout sessions across payment gateways expire within 24 hours.
+    /// </summary>
+    public int StaleProcessingHours { get; init; } = 24;
 }

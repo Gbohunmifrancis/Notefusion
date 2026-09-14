@@ -258,4 +258,13 @@ public class BillingWiringTests
         Assert.True(selected.IsSuccess);
         Assert.Equal(PaymentProvider.Paystack, selected.Value.Provider);
     }
+
+    [Fact]
+    public void StalePaymentCleanupWorker_is_registered_as_a_hosted_service()
+    {
+        using var provider = Build(Config());
+        var hostedServices = provider.GetServices<Microsoft.Extensions.Hosting.IHostedService>();
+
+        Assert.Contains(hostedServices, s => s is NoteFusion.Infrastructure.Billing.Workers.StalePaymentCleanupWorker);
+    }
 }

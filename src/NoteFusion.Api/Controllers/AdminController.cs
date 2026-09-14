@@ -5,6 +5,7 @@ using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Admin.Commands;
 using NoteFusion.Application.Admin.Queries;
+using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Inbox.Commands;
 using NoteFusion.Application.Inbox.Queries;
 using NoteFusion.Core.Enums;
@@ -260,6 +261,14 @@ public sealed class AdminController : ApiControllerBase
     [HttpPost("payments/{id:guid}/reconcile")]
     public async Task<IActionResult> ReconcilePayment(Guid id, NoteBody? body, CancellationToken ct)
         => HandleResult(await _sender.Send(new ReconcilePaymentAdminCommand(id, body?.Note), ct));
+
+    /// <summary>
+    /// Sweeps and clears stale payments (abandoned Pending and expired Processing) that can no longer be processed,
+    /// without waiting for the scheduled background worker.
+    /// </summary>
+    [HttpPost("payments/clear-stale")]
+    public async Task<IActionResult> ClearStalePayments(CancellationToken ct)
+        => HandleResult(await _sender.Send(new ClearStalePaymentsCommand(), ct));
 
     /// <summary>Stored provider callbacks, newest first — the inbox that makes processing exactly-once.</summary>
     /// <param name="page">1-based page number. Out-of-range values are clamped.</param>

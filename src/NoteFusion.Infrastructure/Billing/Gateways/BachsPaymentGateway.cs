@@ -258,21 +258,38 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
 
             var status = ReadString(raw, "status");
             var paymentStatus = ReadString(raw, "payment_status");
-            var currency = ReadString(raw, "currency");
-            var amountMinor = CurrencyUnits.TryToMinor(ReadString(raw, "amount"), currency ?? string.Empty);
+            var currency = ReadString(raw, "currency") ?? ReadString(raw, "charge", "currency");
+            var amountStr = ReadString(raw, "amount") ?? ReadString(raw, "charge", "amount");
+            var amountMinor = CurrencyUnits.TryToMinor(amountStr, currency ?? string.Empty);
 
             // A closed, documented enum, unlike the open-ended status set on the webhook payload — which
             // is exactly why fulfilment re-verifies here instead of trusting the event's own verdict.
             if (IsTerminalNonSuccess(status))
             {
-                // Final: an expired or cancelled session cannot be paid, now or later. Saying so lets the
+                // Final: an expired, cancelled, failed, or underpaid session cannot be paid, now or later. Saying so lets the
                 // caller close the transaction, which is what frees the user to start a fresh checkout.
                 return new GatewayVerification(
                     Succeeded: false, amountMinor ?? 0, currency ?? string.Empty, checkoutId, null, raw,
                     Terminal: true);
             }
 
-            if (!string.Equals(status, "completed", StringComparison.OrdinalIgnoreCase))
+            // Check for underpayment via outstanding balance (amount_remaining > 0 per Bachs reconciliation docs).
+            var remainingStr = ReadString(raw, "amount_remaining") ?? ReadString(raw, "charge", "amount_remaining");
+            if (!string.IsNullOrWhiteSpace(remainingStr))
+            {
+                var remainingMinor = CurrencyUnits.TryToMinor(remainingStr, currency ?? string.Empty);
+                if (remainingMinor is > 0)
+                {
+                    _logger.LogWarning(
+                        "Bachs checkout {CheckoutId} has outstanding balance of {RemainingMinor} {Currency}.",
+                        checkoutId, remainingMinor, currency);
+                    return new GatewayVerification(
+                        Succeeded: false, amountMinor ?? 0, currency ?? string.Empty, checkoutId, null, raw,
+                        Terminal: true);
+                }
+            }
+
+            if (!IsTerminalSuccess(status))
             {
                 // `open` (still awaiting the customer) or a status this adapter does not know. Neither is
                 // evidence of anything, so the caller keeps asking rather than concluding.
@@ -280,15 +297,15 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                     "Bachs.Verify", $"Bachs checkout {checkoutId} is not in a terminal state (status: {status ?? "unknown"}).");
             }
 
-            // `completed` is documented as "payment succeeded", so a failed/canceled payment_status
+            // `completed`/`succeeded`/`accepted` is documented as payment settled, so a failed/canceled payment_status
             // alongside it is a contradiction. Refuse to fulfil, and refuse to declare failure either.
             if (IsFailedPaymentStatus(paymentStatus))
             {
                 _logger.LogError(
-                    "Bachs checkout {CheckoutId} is completed but payment_status is {PaymentStatus}.",
-                    checkoutId, paymentStatus);
+                    "Bachs checkout {CheckoutId} is {Status} but payment_status is {PaymentStatus}.",
+                    checkoutId, status, paymentStatus);
                 return Error.Network(
-                    "Bachs.Verify", $"Bachs checkout {checkoutId} reports completed with payment_status {paymentStatus}.");
+                    "Bachs.Verify", $"Bachs checkout {checkoutId} reports {status} with payment_status {paymentStatus}.");
             }
 
             if (amountMinor is null || string.IsNullOrWhiteSpace(currency))
@@ -303,26 +320,32 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
             // docs warn against assuming they are equal. When both are readable and they disagree we do
             // not know which figure the customer was actually charged — so neither is used. Escalating
             // beats fulfilling against the wrong money, and beats declining a payment that may be good.
+            var sessionCurrency = ReadString(raw, "currency");
+            var sessionAmountStr = ReadString(raw, "amount");
             var chargeCurrency = ReadString(raw, "charge", "currency");
-            var chargeAmountMinor = CurrencyUnits.TryToMinor(
-                ReadString(raw, "charge", "amount"), chargeCurrency ?? currency);
+            var chargeAmountStr = ReadString(raw, "charge", "amount");
 
-            if (chargeAmountMinor is not null && chargeAmountMinor != amountMinor.Value)
+            if (!string.IsNullOrWhiteSpace(sessionAmountStr) && !string.IsNullOrWhiteSpace(chargeAmountStr))
             {
-                _logger.LogError(
-                    "Bachs checkout {CheckoutId} reports session amount {SessionAmount} but charge amount {ChargeAmount}.",
-                    checkoutId, amountMinor.Value, chargeAmountMinor.Value);
-                return Error.Network(
-                    "Bachs.Verify",
-                    $"Bachs checkout {checkoutId} disagrees with its own charge about the amount.");
+                var sessionMinor = CurrencyUnits.TryToMinor(sessionAmountStr, sessionCurrency ?? currency);
+                var chargeMinor = CurrencyUnits.TryToMinor(chargeAmountStr, chargeCurrency ?? currency);
+                if (sessionMinor is not null && chargeMinor is not null && sessionMinor != chargeMinor)
+                {
+                    _logger.LogError(
+                        "Bachs checkout {CheckoutId} reports session amount {SessionAmount} but charge amount {ChargeAmount}.",
+                        checkoutId, sessionMinor.Value, chargeMinor.Value);
+                    return Error.Network(
+                        "Bachs.Verify",
+                        $"Bachs checkout {checkoutId} disagrees with its own charge about the amount.");
+                }
             }
 
-            if (!string.IsNullOrWhiteSpace(chargeCurrency)
-                && !string.Equals(chargeCurrency, currency, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrWhiteSpace(sessionCurrency) && !string.IsNullOrWhiteSpace(chargeCurrency)
+                && !string.Equals(chargeCurrency, sessionCurrency, StringComparison.OrdinalIgnoreCase))
             {
                 _logger.LogError(
                     "Bachs checkout {CheckoutId} is in {SessionCurrency} but its charge is in {ChargeCurrency}.",
-                    checkoutId, currency, chargeCurrency);
+                    checkoutId, sessionCurrency, chargeCurrency);
                 return Error.Network(
                     "Bachs.Verify",
                     $"Bachs checkout {checkoutId} disagrees with its own charge about the currency.");
@@ -358,11 +381,19 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
             || status == HttpStatusCode.TooManyRequests
             || status == HttpStatusCode.Conflict;
 
-    /// <summary>Bachs' terminal non-success checkout states. Note the British <c>cancelled</c>.</summary>
+    /// <summary>Bachs' terminal non-success checkout/charge states. Note the British <c>cancelled</c>.</summary>
     private static bool IsTerminalNonSuccess(string? status)
         => string.Equals(status, "expired", StringComparison.OrdinalIgnoreCase)
             || string.Equals(status, "cancelled", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(status, "canceled", StringComparison.OrdinalIgnoreCase);
+            || string.Equals(status, "canceled", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "failed", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "underpaid", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Bachs' terminal success checkout/charge states.</summary>
+    private static bool IsTerminalSuccess(string? status)
+        => string.Equals(status, "completed", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "succeeded", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "accepted", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsFailedPaymentStatus(string? paymentStatus)
         => string.Equals(paymentStatus, "failed", StringComparison.OrdinalIgnoreCase)

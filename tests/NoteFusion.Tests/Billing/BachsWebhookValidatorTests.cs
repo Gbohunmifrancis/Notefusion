@@ -270,6 +270,69 @@ public class BachsWebhookValidatorTests
         Assert.Null(result.Value.PaymentReference);
     }
 
+    [Fact]
+    public void V2_signature_header_verifies_successfully()
+    {
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["X-Bachs-Signature-V2"] = $"t={Timestamp},v1={ValidSignature}",
+        };
+
+        var result = Validator().Validate(new WebhookRequest(Body, headers));
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("evt_1", result.Value.ProviderEventId);
+        Assert.Equal("NF_abc", result.Value.PaymentReference);
+    }
+
+    [Fact]
+    public void V2_signature_header_with_multiple_signatures_verifies_during_secret_rotation()
+    {
+        var rotatedOutSignature = new string('f', 64);
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["X-Bachs-Signature-V2"] = $"t={Timestamp},v1={rotatedOutSignature},v1={ValidSignature}",
+        };
+
+        var result = Validator().Validate(new WebhookRequest(Body, headers));
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("evt_1", result.Value.ProviderEventId);
+    }
+
+    [Fact]
+    public void Unprefixed_V2_signature_header_verifies()
+    {
+        var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Bachs-Signature-V2"] = $"t={Timestamp},v1={ValidSignature}",
+        };
+
+        var result = Validator().Validate(new WebhookRequest(Body, headers));
+
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void Fallback_to_checkout_id_when_data_reference_is_absent()
+    {
+        var body = """{"id":"evt_chk","type":"collection.succeeded","data":{"checkout_id":"chk_abc123"}}""";
+        var result = Validator().Validate(Request(body: body, signature: Sign(body)));
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("chk_abc123", result.Value.PaymentReference);
+    }
+
+    [Fact]
+    public void Fallback_to_chk_id_when_data_reference_and_checkout_id_are_absent()
+    {
+        var body = """{"id":"evt_chk","type":"checkout.completed","data":{"id":"chk_999xyz"}}""";
+        var result = Validator().Validate(Request(body: body, signature: Sign(body)));
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("chk_999xyz", result.Value.PaymentReference);
+    }
+
     /// <summary>Signs a body the way Bachs does, for cases where a fixed vector would be unreadable.</summary>
     private static string Sign(string body)
     {

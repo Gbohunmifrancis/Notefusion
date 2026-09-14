@@ -363,6 +363,8 @@ public class BachsPaymentGatewayTests
     [InlineData("expired")]
     [InlineData("cancelled")]
     [InlineData("canceled")]
+    [InlineData("failed")]
+    [InlineData("underpaid")]
     public async Task A_terminal_non_success_is_reported_as_a_definite_failure(string status)
     {
         var handler = StubHttpMessageHandler.Returning(
@@ -377,6 +379,71 @@ public class BachsPaymentGatewayTests
         // closing it is the only thing that lets the customer open a new checkout instead of being handed
         // this dead session's URL for ever.
         Assert.True(result.Value.Terminal);
+    }
+
+    [Theory]
+    [InlineData("completed")]
+    [InlineData("succeeded")]
+    [InlineData("accepted")]
+    public async Task Terminal_success_statuses_verify_successfully(string status)
+    {
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, SessionResponse(status: status));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.True(result.Value.Terminal);
+        Assert.Equal(2900, result.Value.AmountMinor);
+    }
+
+    [Fact]
+    public async Task A_checkout_with_positive_amount_remaining_is_reported_as_terminal_non_success()
+    {
+        var body = JsonSerializer.Serialize(new
+        {
+            checkout_id = CheckoutId,
+            status = "completed",
+            payment_status = "succeeded",
+            amount = "29.00",
+            amount_paid = "15.00",
+            amount_remaining = "14.00",
+            currency = "USD",
+            reference = Reference,
+        });
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, body);
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.False(result.Value.Succeeded);
+        Assert.True(result.Value.Terminal);
+    }
+
+    [Fact]
+    public async Task A_checkout_where_amount_and_currency_live_in_charge_still_verifies()
+    {
+        var body = JsonSerializer.Serialize(new
+        {
+            checkout_id = CheckoutId,
+            status = "succeeded",
+            reference = Reference,
+            charge = new
+            {
+                payment_id = "pay_777",
+                amount = "29.00",
+                currency = "USD",
+                subscription_id = "sub_123"
+            }
+        });
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, body);
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.Equal(2900, result.Value.AmountMinor);
+        Assert.Equal("USD", result.Value.Currency);
     }
 
     [Theory]
