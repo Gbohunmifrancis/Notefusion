@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
@@ -6,6 +6,7 @@ import { useTheme } from '../lib/theme';
 import { useAppUpdatePrompt } from '../lib/appUpdate';
 import { useReminderWindow } from '../lib/practiceReminder';
 import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink';
+import { logScreenView } from '../lib/analytics';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
 import { TabNavigator } from './TabNavigator';
@@ -68,13 +69,33 @@ export function RootNavigator() {
   // server to keep it filled, so this is the only thing that stops the window running out.
   useReminderWindow(Boolean(user));
 
+  const routeNameRef = useRef<string | undefined>(undefined);
+
   // Hold the splash for the stored theme as well as the session: mounting the
   // navigator light and repainting it dark a frame later is the flash the
   // preference exists to avoid.
   if (initializing || themeLoading) return <SplashScreen />;
 
   return (
-    <NavigationContainer ref={navigationRef} theme={navTheme}>
+    <NavigationContainer
+      ref={navigationRef}
+      theme={navTheme}
+      onReady={() => {
+        const currentRoute = navigationRef.getCurrentRoute()?.name;
+        routeNameRef.current = currentRoute;
+        if (currentRoute) {
+          void logScreenView(currentRoute);
+        }
+      }}
+      onStateChange={() => {
+        const previousRouteName = routeNameRef.current;
+        const currentRouteName = navigationRef.getCurrentRoute()?.name;
+        if (currentRouteName && previousRouteName !== currentRouteName) {
+          void logScreenView(currentRouteName);
+          routeNameRef.current = currentRouteName;
+        }
+      }}
+    >
       {/* `orientation: 'portrait'` here rather than in app.json, which is inverted to
           `default` on purpose: iOS reads `expo.orientation` into
           `UISupportedInterfaceOrientations`, and a runtime lock can never *exceed*
