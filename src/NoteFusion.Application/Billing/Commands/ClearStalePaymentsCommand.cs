@@ -71,69 +71,90 @@ public sealed class ClearStalePaymentsCommandHandler
         var fulfilled = 0;
 
         // 1. Clear abandoned Pending payments (never created a session with the provider).
-        var stalePending = await _db.PaymentTransactions
-            .Where(t => t.Status == PaymentStatus.Pending && t.CreatedAtUtc < pendingCutoff)
-            .OrderBy(t => t.CreatedAtUtc)
-            .Take(BatchSize)
-            .ToListAsync(ct);
-
-        foreach (var tx in stalePending)
+        for (var batch = 0; batch < 10; batch++)
         {
-            tx.MarkFailed("Initiation expired: checkout session was not created in time.", now);
-            clearedPending++;
+            var stalePending = await _db.PaymentTransactions
+                .Where(t => t.Status == PaymentStatus.Pending && t.CreatedAtUtc < pendingCutoff)
+                .OrderBy(t => t.CreatedAtUtc)
+                .Take(BatchSize)
+                .ToListAsync(ct);
+
+            if (stalePending.Count == 0)
+                break;
+
+            foreach (var tx in stalePending)
+            {
+                tx.MarkFailed("Initiation expired: checkout session was not created in time.", now);
+                clearedPending++;
+            }
+
+            await _db.SaveChangesAsync(ct);
+
+            if (stalePending.Count < BatchSize)
+                break;
         }
 
         // 2. Clear expired Processing payments beyond maximum checkout lifetime.
-        var staleProcessing = await _db.PaymentTransactions
-            .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < processingCutoff)
-            .OrderBy(t => t.UpdatedAtUtc)
-            .Take(BatchSize)
-            .ToListAsync(ct);
-
-        foreach (var tx in staleProcessing)
+        for (var batch = 0; batch < 10; batch++)
         {
-            // Perform one final check with the provider before declaring the checkout expired.
-            if (!string.IsNullOrWhiteSpace(tx.ProviderReference))
+            var staleProcessing = await _db.PaymentTransactions
+                .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < processingCutoff)
+                .OrderBy(t => t.UpdatedAtUtc)
+                .Take(BatchSize)
+                .ToListAsync(ct);
+
+            if (staleProcessing.Count == 0)
+                break;
+
+            foreach (var tx in staleProcessing)
             {
-                var verification = await _gateways.Resolve(tx.Provider)
-                    .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
-
-                if (verification.IsSuccess)
+                // Perform one final check with the provider before declaring the checkout expired.
+                if (!string.IsNullOrWhiteSpace(tx.ProviderReference))
                 {
-                    var v = verification.Value;
-                    if (v.Succeeded)
+                    var verification = await _gateways.Resolve(tx.Provider)
+                        .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
+
+                    if (verification.IsSuccess)
                     {
-                        // Even though it was stale, the provider confirms funds settled! Fulfill rather than fail.
-                        if (v.AmountMinor == tx.AmountMinor
-                            && string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
+                        var v = verification.Value;
+                        if (v.Succeeded)
                         {
-                            var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
-                            fulfilled++;
+                            // Even though it was stale, the provider confirms funds settled! Fulfill rather than fail.
+                            if (v.AmountMinor == tx.AmountMinor
+                                && string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
+                                fulfilled++;
 
-                            if (receipt is not null)
-                                await _email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
+                                if (receipt is not null)
+                                    await _email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
 
+                                continue;
+                            }
+                        }
+                        else if (v.Terminal)
+                        {
+                            tx.MarkFailed("Provider confirmed checkout can no longer be paid.", now);
+                            clearedProcessing++;
                             continue;
                         }
                     }
-                    else if (v.Terminal)
-                    {
-                        tx.MarkFailed("Provider confirmed checkout can no longer be paid.", now);
-                        clearedProcessing++;
-                        continue;
-                    }
                 }
+
+                // Exceeded maximum hosted checkout lifetime and cannot be processed again.
+                tx.MarkFailed(
+                    "Checkout session expired: exceeded maximum validity window and can no longer be processed.", now);
+                clearedProcessing++;
             }
 
-            // Exceeded maximum hosted checkout lifetime and cannot be processed again.
-            tx.MarkFailed(
-                "Checkout session expired: exceeded maximum validity window and can no longer be processed.", now);
-            clearedProcessing++;
+            await _db.SaveChangesAsync(ct);
+
+            if (staleProcessing.Count < BatchSize)
+                break;
         }
 
         if (clearedPending > 0 || clearedProcessing > 0 || fulfilled > 0)
         {
-            await _db.SaveChangesAsync(ct);
             _logger.LogInformation(
                 "Stale payments cleanup: {Pending} pending cleared, {Processing} processing cleared, {Fulfilled} fulfilled.",
                 clearedPending, clearedProcessing, fulfilled);
