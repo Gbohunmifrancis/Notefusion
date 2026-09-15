@@ -145,6 +145,27 @@ public class DatabaseSeederTests
         Assert.Equal(1, await CountUsers(h, "admin@notefusion.app"));
     }
 
+    [Fact]
+    public async Task Does_not_seed_admin_when_AdminPassword_is_empty()
+    {
+        using var h = new TestHarness(Now);
+        var services = new ServiceCollection()
+            .AddSingleton(h.Db)
+            .AddSingleton<IPasswordHasher>(h.Hasher)
+            .AddSingleton<IDateTimeProvider>(h.Clock)
+            .BuildServiceProvider();
+
+        var seeder = new DatabaseSeeder(
+            services,
+            new DatabaseSettings { ApplyMigrationsAtStartup = false },
+            new SeedSettings { AdminPassword = "" },
+            NullLogger<DatabaseSeeder>.Instance);
+
+        await seeder.StartAsync(default);
+
+        Assert.Null(await FindUser(h, "admin@notefusion.app"));
+    }
+
     private static async Task Run(TestHarness h, IEnumerable<string>? adminEmails = null)
     {
         var services = new ServiceCollection()
@@ -158,7 +179,11 @@ public class DatabaseSeederTests
             // SQLite here, and the migrations are Npgsql-specific — the harness has already
             // created the schema, so migrating would only fail.
             new DatabaseSettings { ApplyMigrationsAtStartup = false },
-            new SeedSettings { AdminEmails = [.. adminEmails ?? []] },
+            new SeedSettings
+            {
+                AdminPassword = "ChangeMe!123",
+                AdminEmails = [.. adminEmails ?? []]
+            },
             NullLogger<DatabaseSeeder>.Instance);
 
         await seeder.StartAsync(default);

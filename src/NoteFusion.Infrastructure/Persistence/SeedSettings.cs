@@ -5,7 +5,7 @@ public sealed class SeedSettings
 {
     public string AdminFullName { get; set; } = "NoteFusion Admin";
     public string AdminEmail { get; set; } = "admin@notefusion.app";
-    public string AdminPassword { get; set; } = "ChangeMe!123";
+    public string AdminPassword { get; set; } = "";
 
     /// <summary>
     /// Accounts that already signed up as regular users and should hold the admin role. Kept

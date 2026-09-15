@@ -78,12 +78,48 @@ async def lifespan(_app: FastAPI):
     queue.shutdown()
 
 
+import hmac
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
+
+
+class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
+    """Protects internal transcription endpoints when NF_API_KEY is configured."""
+
+    async def dispatch(self, request, call_next):
+        expected_key = settings.api_key
+        if not expected_key:
+            return await call_next(request)
+
+        # Allow liveness probe without authentication
+        if request.url.path in ("/healthz", "/healthz/"):
+            return await call_next(request)
+
+        # Allow OpenAPI documentation if accessed
+        if request.url.path in ("/docs", "/redoc", "/openapi.json"):
+            return await call_next(request)
+
+        provided_key = request.headers.get("x-api-key")
+        if not provided_key and (auth_header := request.headers.get("authorization")):
+            if auth_header.lower().startswith("bearer "):
+                provided_key = auth_header[7:].strip()
+
+        if not provided_key or not hmac.compare_digest(provided_key, expected_key):
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "Invalid or missing API key."}
+            )
+
+        return await call_next(request)
+
+
 app = FastAPI(
     title="NoteFusion Transcription API",
     version="0.1.0",
     description="Audio -> note events -> staff (MusicXML) + Tonic Solfa.",
     lifespan=lifespan,
 )
+app.add_middleware(ApiKeyAuthMiddleware)
 app.include_router(router)
 
 

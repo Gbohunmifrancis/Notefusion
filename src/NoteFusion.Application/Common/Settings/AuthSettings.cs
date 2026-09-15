@@ -23,4 +23,7 @@ public sealed class AuthSettings
 
     /// <summary>Where an emailed account deletion confirmation link points.</summary>
     public string DeleteAccountUrl { get; set; } = "https://notefusion.studio/delete-account";
+
+    /// <summary>Server-side cryptographic pepper mixed into account deletion tokens to prevent offline forgery.</summary>
+    public string DeletionSecret { get; set; } = "nf-deletion-pepper-v1-static-salt";
 }

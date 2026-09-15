@@ -58,11 +58,25 @@ if ($existingAddons -notmatch "heroku-postgresql") {
     Write-Host "Heroku Postgres database already attached." -ForegroundColor Gray
 }
 
+# 2b. Transcriber API Key Protection
+$TranscriptionApiKey = $env:TRANSCRIPTION_API_KEY
+if ([string]::IsNullOrWhiteSpace($TranscriptionApiKey)) {
+    $existingKey = heroku config:get NF_API_KEY -a $TranscriberAppName 2>$null
+    if (-not [string]::IsNullOrWhiteSpace($existingKey)) {
+        $TranscriptionApiKey = $existingKey.Trim()
+    } else {
+        $keyBytes = New-Object byte[] 32
+        [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($keyBytes)
+        $TranscriptionApiKey = [System.Convert]::ToHexString($keyBytes).ToLower()
+    }
+}
+heroku config:set NF_API_KEY="$TranscriptionApiKey" -a $TranscriberAppName
+
 # Newer Heroku apps no longer route the bare <name>.herokuapp.com host — the real
 # web URL carries a random suffix. Derive it so the API always points at a live host.
 $TranscriberUrl = ((heroku apps:info -a $TranscriberAppName --json | ConvertFrom-Json).app.web_url).TrimEnd('/')
 Write-Host "Transcriber URL resolved to: $TranscriberUrl" -ForegroundColor Gray
-heroku config:set TranscriptionApi__BaseUrl="$TranscriberUrl" Database__ApplyMigrationsAtStartup=true -a $ApiAppName
+heroku config:set TranscriptionApi__BaseUrl="$TranscriberUrl" TranscriptionApi__ApiKey="$TranscriptionApiKey" Database__ApplyMigrationsAtStartup=true -a $ApiAppName
 
 Write-Host "Building C# Web API container image..." -ForegroundColor Yellow
 docker build -f src/NoteFusion.Api/Dockerfile -t registry.heroku.com/${ApiAppName}/web .

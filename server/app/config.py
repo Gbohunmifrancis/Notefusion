@@ -15,6 +15,12 @@ class Settings:
     # Single worker: CPU inference on one VPS; a queue prevents overload (TRD par. 3.3)
     inference_workers: int = int(os.getenv("NF_INFERENCE_WORKERS", "1"))
 
+    @property
+    def api_key(self) -> str | None:
+        """Shared secret key required to access transcription endpoints. None disables auth (dev)."""
+        key = os.getenv("NF_API_KEY", "").strip()
+        return key if key else None
+
     # ── Transcription accuracy flags ──────────────────────────────────────────
     # These exist to isolate one measured effect at a time in tests/accuracy, and
     # to allow a rollback without a redeploy.  They are properties, not class

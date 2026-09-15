@@ -332,3 +332,23 @@ def test_submit_rejects_invalid_time_signatures():
             )
             assert r.status_code == 422, f"time_signature={bad_ts!r} should be rejected"
             assert "time signature" in r.json()["detail"].lower()
+
+
+def test_api_key_auth_enforcement(monkeypatch):
+    monkeypatch.setenv("NF_API_KEY", "secret_test_key_123")
+    with TestClient(app) as client:
+        # Healthz remains unauthenticated
+        assert client.get("/healthz").status_code == 200
+
+        # Unauthenticated calls to /v1/ receive 401
+        assert client.get("/v1/jobs/some_id").status_code == 401
+        assert client.get("/v1/jobs/some_id").json() == {"detail": "Invalid or missing API key."}
+
+        # Calls with wrong key receive 401
+        assert client.get("/v1/jobs/some_id", headers={"X-Api-Key": "wrong"}).status_code == 401
+
+        # Calls with correct X-Api-Key pass through auth (job not found is 404, not 401)
+        assert client.get("/v1/jobs/some_id", headers={"X-Api-Key": "secret_test_key_123"}).status_code == 404
+
+        # Calls with Bearer token pass through auth
+        assert client.get("/v1/jobs/some_id", headers={"Authorization": "Bearer secret_test_key_123"}).status_code == 404
