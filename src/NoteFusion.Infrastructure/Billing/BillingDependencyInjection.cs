@@ -83,9 +83,32 @@ public static class BillingDependencyInjection
             services.AddSingleton<IPaymentWebhookValidator>(new StubWebhookValidator(PaymentProvider.Bachs));
         }
 
-        // The remaining providers are listed in the product plan but not yet integrated. They register
-        // as stubs so the factory and webhook routing are uniform; each fails fast until credentialed.
-        RegisterStub(services, configuration, PaymentProvider.Flutterwave, "Flutterwave");
+        // Flutterwave — integrated standard hosted checkout and verification
+        var flutterwave = configuration.GetSection("Flutterwave").Get<PaymentProviderOptions>() ?? new PaymentProviderOptions();
+
+        if (flutterwave.IsConfigured)
+        {
+            services.AddSingleton(flutterwave);
+            services.AddHttpClient<IPaymentGateway, FlutterwavePaymentGateway>("flutterwave", client =>
+                {
+                    client.BaseAddress = new Uri(flutterwave.BaseUrl.TrimEnd('/'));
+                    client.Timeout = TimeSpan.FromSeconds(30);
+                    client.DefaultRequestHeaders.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", flutterwave.SecretKey);
+                })
+                .AddResilienceHandler("flutterwave", BuildResiliencePipeline);
+
+            services.AddSingleton<IPaymentWebhookValidator>(new FlutterwaveWebhookValidator(flutterwave));
+        }
+        else
+        {
+            services.AddSingleton<IPaymentGateway>(
+                new StubPaymentGateway(PaymentProvider.Flutterwave, flutterwave.Currencies));
+            services.AddSingleton<IPaymentWebhookValidator>(new StubWebhookValidator(PaymentProvider.Flutterwave));
+        }
+
+        // Squad is listed in the product plan but not yet integrated. Registers
+        // as stub so the factory and webhook routing are uniform; fails fast until credentialed.
         RegisterStub(services, configuration, PaymentProvider.Squad, "Squad");
 
         services.AddSingleton<IPaymentGatewayFactory, PaymentGatewayFactory>();

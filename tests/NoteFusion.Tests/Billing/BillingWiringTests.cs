@@ -76,9 +76,26 @@ public class BillingWiringTests
         Assert.IsType<BachsPaymentGateway>(factory.Resolve(PaymentProvider.Bachs));
         Assert.IsType<PaystackPaymentGateway>(factory.Resolve(PaymentProvider.Paystack));
 
-        // Not yet integrated, and a stub that fails fast is the honest representation of that.
+        // Unconfigured providers fail fast as stubs
         Assert.IsType<StubPaymentGateway>(factory.Resolve(PaymentProvider.Flutterwave));
         Assert.IsType<StubPaymentGateway>(factory.Resolve(PaymentProvider.Squad));
+    }
+
+    [Fact]
+    public void When_configured_flutterwave_resolves_to_live_adapter_and_validator()
+    {
+        var config = Config();
+        config["Flutterwave:SecretKey"] = "FLWSECK_TEST";
+        config["Flutterwave:BaseUrl"] = "https://api.flutterwave.com";
+        config["Flutterwave:WebhookSecret"] = "whsec_flw";
+
+        using var provider = Build(config);
+        var factory = provider.GetRequiredService<IPaymentGatewayFactory>();
+        var validators = provider.GetRequiredService<IEnumerable<IPaymentWebhookValidator>>()
+            .ToDictionary(v => v.Provider);
+
+        Assert.IsType<FlutterwavePaymentGateway>(factory.Resolve(PaymentProvider.Flutterwave));
+        Assert.IsType<FlutterwaveWebhookValidator>(validators[PaymentProvider.Flutterwave]);
     }
 
     [Fact]

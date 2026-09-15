@@ -34,6 +34,8 @@ public sealed class PaymentTransactionConfiguration : IEntityTypeConfiguration<P
         builder.Property(t => t.CreatedAtUtc).IsRequired();
         builder.Property(t => t.UpdatedAtUtc).IsRequired();
 
+        builder.Ignore(t => t.Money);
+
         builder.HasIndex(t => t.Reference).IsUnique();
         builder.HasIndex(t => t.IdempotencyKey).IsUnique();
         builder.HasIndex(t => new { t.UserId, t.Status });
