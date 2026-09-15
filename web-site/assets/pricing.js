@@ -79,7 +79,7 @@
         "Playback, MusicXML export and library sync",
       ]),
     );
-    card.appendChild(action("Download Free App", false, "pricing_free"));
+    card.appendChild(action("Get it on Google Play", false, "pricing_free"));
     return card;
   }
 
