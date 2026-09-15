@@ -74,6 +74,34 @@ public sealed class BrandedEmailTemplate
                 _settings.AppUrl));
     }
 
+    public EmailMessage WaitlistConfirmation(EmailRecipient to)
+    {
+        var name = FirstName(to);
+        var body = Paragraphs(
+            $"You're on the list{(name is null ? "" : $", {Encode(name)}")}.",
+            "Thank you for joining the NoteFusion waitlist! We're excited to have you with us.",
+            "You will receive an invitation email with early access to start transcribing live and recorded melodies into <strong>Tonic Solfa</strong> and <strong>staff notation</strong>.",
+            "In the meantime, feel free to explore our notation preview and updates at <a href=\"" + Encode(_settings.AppUrl) + "\" style=\"color:" + Blue + ";text-decoration:underline\">notefusion.studio</a>.")
+            + Callout("Have questions or specific music team requirements? Reach our team anytime at "
+                + $"<a href=\"mailto:{Encode(_settings.SupportEmail)}\" style=\"color:{Blue};text-decoration:underline\">{Encode(_settings.SupportEmail)}</a>.", Blue);
+
+        return Compose(
+            to,
+            subject: "You're on the NoteFusion waitlist!",
+            preheader: "We've reserved your spot for early access.",
+            heading: "You're on the waitlist",
+            bodyHtml: body,
+            cta: new CallToAction("Visit NoteFusion", _settings.AppUrl),
+            textBody: Text(
+                $"You're on the NoteFusion waitlist{(name is null ? "" : $", {name}")}!",
+                "",
+                "Thank you for joining our waitlist! We're excited to have you with us.",
+                "You'll receive an invitation with early access to start transcribing live and recorded music into Tonic Solfa and staff notation.",
+                "",
+                $"Visit us: {_settings.AppUrl}",
+                $"Support: {_settings.SupportEmail}"));
+    }
+
     public EmailMessage PasswordChanged(EmailRecipient to)
     {
         var body = Paragraphs(
@@ -365,8 +393,8 @@ public sealed class BrandedEmailTemplate
         var mark = logo is null
             ? string.Empty
             : $"""
-               <img src="{Encode(logo)}" width="46" height="61" alt=""
-                    style="display:block;margin:0 auto 14px;border:0;outline:none;text-decoration:none;height:61px;width:46px" />
+               <img src="{Encode(logo)}" width="46" height="61" alt="NoteFusion"
+                    border="0" style="display:block;margin:0 auto 14px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;height:61px;width:46px;max-width:46px" />
                """;
 
         var button = cta is null
@@ -537,9 +565,9 @@ public sealed class BrandedEmailTemplate
 
     private string LogoUrl()
     {
-        var origin = _settings.AssetBaseUrl.TrimEnd('/');
-        return string.IsNullOrWhiteSpace(origin)
-            ? "https://raw.githubusercontent.com/Gbohunmifrancis/Notefusion/main/mobile/assets/icon.png"
+        var origin = _settings.AssetBaseUrl?.TrimEnd('/');
+        return string.IsNullOrWhiteSpace(origin) || origin.Contains("herokuapp.com", StringComparison.OrdinalIgnoreCase)
+            ? "https://notefusion.studio/email/logo.png"
             : $"{origin}/email/logo.png";
     }
 

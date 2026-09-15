@@ -29,10 +29,10 @@ export function PageHeader({ title, subtitle, breadcrumb, actions }: PageHeaderP
   return (
     <header className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
       <div className="min-w-0">
-        <h1 className="text-[26px] font-semibold leading-tight tracking-[-0.02em] text-foreground">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {title}
         </h1>
-        {subtitle && <p className="mt-1.5 text-[13px] text-muted-foreground">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-xs sm:text-[13px] text-muted-foreground">{subtitle}</p>}
         {/*
           No crumb is a link. The trail says where the page sits in the console rather than
           offering a way back up — "Dashboard / Overview" has no "Dashboard" page to visit — and

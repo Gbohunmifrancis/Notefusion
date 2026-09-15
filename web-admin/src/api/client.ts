@@ -41,7 +41,7 @@ export const setSessionExpiredHandler = (handler: SessionExpiredHandler) => {
 };
 
 interface RequestOptions {
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   body?: unknown;
   /** Skip the bearer header and the refresh retry. Used by login and refresh themselves. */
   anonymous?: boolean;

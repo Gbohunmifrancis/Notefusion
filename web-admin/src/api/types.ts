@@ -193,7 +193,9 @@ export type AuditAction =
   | "SendPasswordReset"
   | "ChangeRole"
   | "ReconcilePayment"
-  | "SendEmail";
+  | "SendEmail"
+  | "ResetTrialQuota"
+  | "SetAnnouncement";
 
 /**
  * One line of the audit trail. The emails are stored snapshots rather than joins, so a row still
@@ -306,6 +308,30 @@ export interface AdminUserDetail {
   payments: AdminPayment[];
   ledger: AdminLedgerEntry[];
   recentActions: AuditLogRow[];
+  recentTranscriptions?: AdminTranscriptionSummary[];
+}
+
+export interface AdminTranscriptionSummary {
+  id: string;
+  title: string;
+  key: string;
+  tempoBpm: number;
+  overallConfidence: number;
+  status: string;
+  createdAtUtc: string;
+}
+
+export interface AdminTranscriptionRow {
+  id: string;
+  userId: string;
+  userEmail: string;
+  title: string;
+  key: string;
+  tempoBpm: number;
+  timeSignature: string;
+  overallConfidence: number;
+  status: string;
+  createdAtUtc: string;
 }
 
 /* ── Payments & reconciliation ────────────────────────────────────────────── */
@@ -431,6 +457,33 @@ export interface PaymentOpsSummary {
   currency: string;
   graceWindowMinutes: number;
   sweepIntervalMinutes: number;
+  mrrMinor: number;
+  activeSubscribersCount: number;
+  expiringInSevenDaysCount: number;
+}
+
+export interface ClearStalePaymentsResult {
+  clearedPendingCount: number;
+  clearedProcessingCount: number;
+  fulfilledCount: number;
+}
+
+export interface WorkerHeartbeat {
+  workerName: string;
+  lastRunUtc: string;
+  durationMs: number;
+  status: string;
+  detail: string | null;
+}
+
+export interface SystemAnnouncement {
+  id: string;
+  message: string;
+  severity: "info" | "warning" | "critical";
+  isActive: boolean;
+  expiresAtUtc: string | null;
+  createdAtUtc: string;
+  updatedAtUtc: string;
 }
 
 /**
@@ -492,6 +545,7 @@ export interface SystemHealth {
    * "—" forever looks like a broken metric rather than an absent tier.
    */
   notMonitored: string[];
+  workerHeartbeats?: WorkerHeartbeat[];
 }
 
 /* ── Mutation bodies ──────────────────────────────────────────────────────── */
@@ -504,3 +558,52 @@ export type GiftDuration = "monthly" | "yearly" | "lifetime";
 
 /** `UserRole`, same rule as `GiftDuration`. */
 export type RoleName = "user" | "admin";
+
+export interface AdminWaitlistRow {
+  id: string;
+  email: string;
+  fullName: string | null;
+  role: string | null;
+  source: string | null;
+  createdAtUtc: string;
+  isInvited: boolean;
+  invitedAtUtc: string | null;
+}
+
+// ── Inbox (received emails via Resend inbound route) ────────────────────────────────────────────
+
+export interface InboxEmailSummary {
+  id: string;
+  subject: string;
+  from: string;
+  to: string;
+  receivedAt: string;
+  hasAttachments: boolean;
+}
+
+export interface InboxEmailDetail {
+  id: string;
+  subject: string;
+  from: string;
+  to: string;
+  receivedAt: string;
+  htmlBody: string | null;
+  textBody: string | null;
+  hasAttachments: boolean;
+}
+
+export interface InboxAttachment {
+  id: string;
+  filename: string;
+  contentType: string;
+  sizeBytes: number;
+  downloadUrl: string;
+}
+
+export interface InboxPage {
+  items: InboxEmailSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}

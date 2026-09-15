@@ -5,6 +5,12 @@ import { tokenStore } from '../lib/tokenStore';
 import { registerForPushAsync } from '../lib/push';
 import { googleAuthConfigured } from '../lib/env';
 import { getGoogleIdToken } from '../lib/googleSignin';
+import {
+  setAnalyticsUserId,
+  setAnalyticsUserProperty,
+  logLogin,
+  logSignUp,
+} from '../lib/analytics';
 import type { AuthUser } from '../api/types';
 
 interface AuthState {
@@ -63,7 +69,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     (async () => {
       const cached = await tokenStore.getUser();
       const refresh = await tokenStore.getRefresh();
-      if (cached && refresh && mounted.current) setUserState(cached);
+      if (cached && refresh && mounted.current) {
+        setUserState(cached);
+        void setAnalyticsUserId(cached.id);
+        void setAnalyticsUserProperty('user_role', cached.role);
+      }
       if (mounted.current) setInitializing(false);
 
       // The cached user is a snapshot taken at sign-in, so a role granted since
@@ -87,6 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             role: me.role,
           };
           setUserState(fresh);
+          void setAnalyticsUserProperty('user_role', fresh.role);
           tokenStore.saveUser(fresh).catch(() => undefined);
         }
       } catch {
@@ -99,7 +110,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  useEffect(() => onSessionExpired(() => setUserState(null)), []);
+  useEffect(() => onSessionExpired(() => {
+    void setAnalyticsUserId(null);
+    setUserState(null);
+  }), []);
 
   async function persistSession(
     accessToken: string,
@@ -109,6 +123,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await tokenStore.save(accessToken, refreshToken);
     await tokenStore.saveUser(authed);
     setUserState(authed);
+    void setAnalyticsUserId(authed.id);
+    void setAnalyticsUserProperty('user_role', authed.role);
     // Best-effort push registration once we have a session — never blocks login.
     registerForPushAsync().catch(() => undefined);
   }
@@ -134,17 +150,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const res = await authApi.login(email, password);
         await tokenStore.saveLastAuthMethod('email');
         await persistSession(res.accessToken, res.refreshToken, res.user);
+        void logLogin('email');
       },
       async signUp(fullName, email, password) {
         const res = await authApi.register(fullName, email, password);
         // Remembered here rather than after verification: if the app dies on the code
         // screen, the next launch should still offer the email button they last used.
         await tokenStore.saveLastAuthMethod('email');
+        void logSignUp('email');
         return res.email;
       },
       async verifyEmail(email, code) {
         const res = await authApi.verifyEmail(email, code);
         await persistSession(res.accessToken, res.refreshToken, res.user);
+        void logLogin('email');
       },
       /**
        * Opens Google's consent screen and exchanges the returned ID token for a
@@ -166,6 +185,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           session.refreshToken,
           session.user,
         );
+        void logLogin('google');
       },
       async reauthWithGoogle() {
         // Force the chooser: the SDK would otherwise hand back the cached account
@@ -176,6 +196,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const refresh = await tokenStore.getRefresh();
         if (refresh) await authApi.logout(refresh).catch(() => undefined);
         await tokenStore.clear();
+        void setAnalyticsUserId(null);
         setUserState(null);
       },
       setUser: (u) => {

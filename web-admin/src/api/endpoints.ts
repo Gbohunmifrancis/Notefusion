@@ -4,14 +4,20 @@ import type {
   AdminPaymentDetail,
   AdminPaymentRow,
   AdminReconcileResult,
+  AdminTranscriptionRow,
   AdminUserDetail,
   AdminUserRow,
+  AdminWaitlistRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
   AnalyticsOverview,
   AuditAction,
   AuditLogRow,
+  ClearStalePaymentsResult,
   GiftDuration,
+  InboxAttachment,
+  InboxEmailDetail,
+  InboxPage,
   LedgerDirection,
   LedgerReason,
   LoginResponse,
@@ -21,6 +27,7 @@ import type {
   PaymentProviderName,
   PaymentStatus,
   RoleName,
+  SystemAnnouncement,
   SystemHealth,
   WebhookStatus,
 } from "@/api/types";
@@ -66,6 +73,17 @@ export const getUsers = (
 ) =>
   request<PagedResult<AdminUserRow>>(
     `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline })}`,
+    signal ? { signal } : {},
+  );
+
+export const getWaitlist = (
+  page: number,
+  pageSize: number,
+  search?: string,
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminWaitlistRow>>(
+    `/api/admin/waitlist${query({ page, pageSize, search })}`,
     signal ? { signal } : {},
   );
 
@@ -234,3 +252,60 @@ export interface SendUserEmailPayload {
 /** Sends a branded custom email to the target user, rendered with NoteFusion's template. */
 export const sendUserEmail = (id: string, payload: SendUserEmailPayload) =>
   act(id, "email", payload as unknown as Record<string, unknown>);
+
+// ── Inbox (received emails via Resend inbound route) ────────────────────────────────────────────
+
+export const getInbox = (page: number, pageSize: number, signal?: AbortSignal) =>
+  request<InboxPage>(`/api/admin/inbox${query({ page, pageSize })}`, signal ? { signal } : {});
+
+export const getInboxEmail = (id: string, signal?: AbortSignal) =>
+  request<InboxEmailDetail>(`/api/admin/inbox/${id}`, signal ? { signal } : {});
+
+export const getInboxAttachments = (id: string, signal?: AbortSignal) =>
+  request<InboxAttachment[]>(`/api/admin/inbox/${id}/attachments`, signal ? { signal } : {});
+
+export const replyToEmail = (id: string, subject: string, bodyHtml: string) =>
+  request<void>(`/api/admin/inbox/${id}/reply`, {
+    method: "POST",
+    body: { subject, bodyHtml },
+  });
+
+export const clearStalePayments = () =>
+  request<ClearStalePaymentsResult>("/api/admin/payments/clear-stale", {
+    method: "POST",
+  });
+
+export const resetTrialQuota = (id: string, note?: string) =>
+  request<number>(`/api/admin/users/${id}/reset-trial`, {
+    method: "POST",
+    body: { note },
+  });
+
+export const getTranscriptions = (
+  page: number,
+  pageSize: number,
+  filters: { status?: string; search?: string } = {},
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminTranscriptionRow>>(
+    `/api/admin/transcriptions${query({ page, pageSize, ...filters })}`,
+    signal ? { signal } : {},
+  );
+
+export const getAnnouncement = (signal?: AbortSignal) =>
+  request<SystemAnnouncement | null>("/api/admin/announcement", signal ? { signal } : {});
+
+export const setAnnouncement = (payload: {
+  message: string;
+  severity?: "info" | "warning" | "critical";
+  expiresAtUtc?: string | null;
+}) =>
+  request<SystemAnnouncement>("/api/admin/announcement", {
+    method: "POST",
+    body: payload,
+  });
+
+export const clearAnnouncement = () =>
+  request<void>("/api/admin/announcement", {
+    method: "DELETE",
+  });

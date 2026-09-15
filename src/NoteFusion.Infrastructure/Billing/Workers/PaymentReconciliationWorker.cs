@@ -24,14 +24,19 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly BillingSettings _settings;
+    private readonly IWorkerHeartbeatTracker? _heartbeatTracker;
     private readonly ILogger<PaymentReconciliationWorker> _logger;
 
     public PaymentReconciliationWorker(
-        IServiceScopeFactory scopeFactory, BillingSettings settings, ILogger<PaymentReconciliationWorker> logger)
+        IServiceScopeFactory scopeFactory,
+        BillingSettings settings,
+        ILogger<PaymentReconciliationWorker> logger,
+        IWorkerHeartbeatTracker? heartbeatTracker = null)
     {
         _scopeFactory = scopeFactory;
         _settings = settings;
         _logger = logger;
+        _heartbeatTracker = heartbeatTracker;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -66,29 +71,51 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
 
     private async Task SweepAsync(CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
-        var clock = scope.ServiceProvider.GetRequiredService<IDateTimeProvider>();
-
-        // Same window the admin console calls "stuck", read from the one place both can see it.
-        var cutoff = clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.ReconciliationGraceMinutes));
-
-        var stuck = await db.PaymentTransactions
-            .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < cutoff)
-            .OrderBy(t => t.UpdatedAtUtc)
-            .Take(BatchSize)
-            .Select(t => t.Id)
-            .ToListAsync(ct);
-
-        foreach (var id in stuck)
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        try
         {
-            var result = await sender.Send(new ReconcilePaymentCommand(id), ct);
-            if (result.IsFailure)
-                _logger.LogWarning("Reconciliation of {Id} failed: {Error}", id, result.Error.Message);
-        }
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+            var clock = scope.ServiceProvider.GetRequiredService<IDateTimeProvider>();
 
-        if (stuck.Count > 0)
-            _logger.LogInformation("Reconciliation swept {Count} stuck payment(s).", stuck.Count);
+            // Same window the admin console calls "stuck", read from the one place both can see it.
+            var cutoff = clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.ReconciliationGraceMinutes));
+
+            var stuck = await db.PaymentTransactions
+                .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < cutoff)
+                .OrderBy(t => t.UpdatedAtUtc)
+                .Take(BatchSize)
+                .Select(t => t.Id)
+                .ToListAsync(ct);
+
+            var failedReconcile = 0;
+            foreach (var id in stuck)
+            {
+                var result = await sender.Send(new ReconcilePaymentCommand(id), ct);
+                if (result.IsFailure)
+                {
+                    failedReconcile++;
+                    _logger.LogWarning("Reconciliation of {Id} failed: {Error}", id, result.Error.Message);
+                }
+            }
+
+            sw.Stop();
+            _heartbeatTracker?.RecordHeartbeat(
+                "PaymentReconciliation",
+                sw.ElapsedMilliseconds,
+                failedReconcile > 0 ? "Degraded" : "Healthy",
+                stuck.Count > 0 ? $"Swept {stuck.Count} stuck payments ({failedReconcile} failed)" : "No stuck payments");
+
+            if (stuck.Count > 0)
+                _logger.LogInformation("Reconciliation swept {Count} stuck payment(s).", stuck.Count);
+        }
+        catch (Exception ex)
+        {
+            sw.Stop();
+            _heartbeatTracker?.RecordHeartbeat(
+                "PaymentReconciliation", sw.ElapsedMilliseconds, "Failed", ex.Message);
+            throw;
+        }
     }
 }

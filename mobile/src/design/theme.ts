@@ -121,14 +121,14 @@ export type Palette = { readonly [K in keyof typeof colors]: string };
  * for the same reason: an honest confidence signal has to stay readable.
  */
 export const darkColors: Palette = {
-  bg: "#0B1220", // Deep navy — root canvas
-  bgElevated: "#111A2B", // Modals, sheets
+  bg: "#08090C", // Deep neutral obsidian — root canvas
+  bgElevated: "#121318", // Modals, sheets
 
-  surface: "#131D30", // Cards
-  surfaceAlt: "#1B2739", // Nested rows, chips
+  surface: "#121318", // Cards
+  surfaceAlt: "#181920", // Nested rows, chips
 
-  border: "#243146",
-  borderLight: "#1C2739",
+  border: "#22242E",
+  borderLight: "#181920",
 
   purple: "#3B82F6",
   purpleDark: "#2563EB",
@@ -150,9 +150,9 @@ export const darkColors: Palette = {
   premiumSoft: "rgba(251, 191, 36, 0.16)",
   premiumBorder: "rgba(251, 191, 36, 0.40)",
 
-  text: "#E8EEF9",
-  textMuted: "#94A3B8",
-  textFaint: "#64748B",
+  text: "#F4F5F8",
+  textMuted: "#888C9C",
+  textFaint: "#505464",
 
   success: "#22C55E",
   warning: "#F59E0B",

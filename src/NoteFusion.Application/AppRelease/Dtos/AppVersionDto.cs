@@ -10,10 +10,14 @@ namespace NoteFusion.Application.AppRelease.Dtos;
 /// <param name="ReleaseNotes">What changed. May be empty.</param>
 /// <param name="AndroidStoreUrl">Play listing.</param>
 /// <param name="IosStoreUrl">App Store listing, empty until listed.</param>
+public sealed record ActiveAnnouncementDto(string Message, string Severity);
+
 public sealed record AppVersionDto(
     string LatestVersion,
     int LatestBuild,
     int MinimumBuild,
     string ReleaseNotes,
     string AndroidStoreUrl,
-    string IosStoreUrl);
+    string IosStoreUrl,
+    ActiveAnnouncementDto? Announcement = null);
+

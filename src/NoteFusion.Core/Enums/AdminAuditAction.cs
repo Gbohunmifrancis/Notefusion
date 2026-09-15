@@ -30,5 +30,11 @@ public enum AdminAuditAction
     ReconcilePayment = 10,
 
     /// <summary>An operator sent a custom email to an account.</summary>
-    SendEmail = 11
+    SendEmail = 11,
+
+    /// <summary>An operator reset the free-trial usage on an account.</summary>
+    ResetTrialQuota = 12,
+
+    /// <summary>An operator set or cleared a global system broadcast announcement.</summary>
+    SetAnnouncement = 13
 }

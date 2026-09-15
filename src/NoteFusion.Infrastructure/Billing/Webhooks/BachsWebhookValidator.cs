@@ -39,9 +39,9 @@ namespace NoteFusion.Infrastructure.Billing.Webhooks;
 internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
 {
     // Bachs' API reference documents the X- prefixed spelling, but its dashboard tells you to verify
-    // "the Bachs-Signature header". Only one of those is what actually arrives, and guessing wrong is a
-    // 401 on every genuine delivery, so both are accepted. This widens nothing that matters: the digest
-    // still has to verify against the signing secret whichever header carried it.
+    // "the Bachs-Signature header". Both V1 (bare digest) and V2 (t=...,v1=... with secret rotation)
+    // are supported.
+    private static readonly string[] SignatureV2Headers = ["X-Bachs-Signature-V2", "Bachs-Signature-V2"];
     private static readonly string[] SignatureHeaders = ["X-Bachs-Signature", "Bachs-Signature"];
     private static readonly string[] TimestampHeaders = ["X-Bachs-Timestamp", "Bachs-Timestamp"];
 
@@ -64,19 +64,48 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
         if (_secret.Length == 0)
             return Error.Unauthorized("Bachs.Webhook", "Webhook signing secret is not configured.");
 
-        var signature = FirstPresent(request.Headers, SignatureHeaders);
-        if (string.IsNullOrWhiteSpace(signature))
-            return Error.Unauthorized("Bachs.Webhook", "Missing signature header.");
+        var v2Header = FirstPresent(request.Headers, SignatureV2Headers);
+        var v1Signature = FirstPresent(request.Headers, SignatureHeaders);
 
-        // Required because it is part of the signed message: without it there is nothing to verify.
-        var timestamp = FirstPresent(request.Headers, TimestampHeaders);
-        if (string.IsNullOrWhiteSpace(timestamp))
-            return Error.Unauthorized("Bachs.Webhook", "Missing timestamp header.");
+        string? timestampHeader = FirstPresent(request.Headers, TimestampHeaders);
+        long sentAtUnix;
+        List<string> signatures;
 
-        if (!long.TryParse(timestamp.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out var sentAtUnix)
-            || sentAtUnix <= 0)
+        // Prefer V2 scheme (or V2 payload in V1 header if passed as t=...,v1=...).
+        if (!string.IsNullOrWhiteSpace(v2Header) || (v1Signature?.Contains("t=") == true && v1Signature.Contains("v1=")))
         {
-            return Error.Unauthorized("Bachs.Webhook", "Timestamp header was not a Unix-seconds value.");
+            var targetHeader = !string.IsNullOrWhiteSpace(v2Header) ? v2Header : v1Signature!;
+            var parsed = ParseV2Header(targetHeader);
+
+            var tsStr = parsed.Timestamp ?? timestampHeader;
+            if (string.IsNullOrWhiteSpace(tsStr))
+                return Error.Unauthorized("Bachs.Webhook", "Missing timestamp header.");
+
+            if (!long.TryParse(tsStr.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out sentAtUnix)
+                || sentAtUnix <= 0)
+            {
+                return Error.Unauthorized("Bachs.Webhook", "Timestamp header was not a Unix-seconds value.");
+            }
+
+            signatures = parsed.Signatures;
+            if (signatures.Count == 0)
+                return Error.Unauthorized("Bachs.Webhook", "Missing signature header.");
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(v1Signature))
+                return Error.Unauthorized("Bachs.Webhook", "Missing signature header.");
+
+            if (string.IsNullOrWhiteSpace(timestampHeader))
+                return Error.Unauthorized("Bachs.Webhook", "Missing timestamp header.");
+
+            if (!long.TryParse(timestampHeader.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out sentAtUnix)
+                || sentAtUnix <= 0)
+            {
+                return Error.Unauthorized("Bachs.Webhook", "Timestamp header was not a Unix-seconds value.");
+            }
+
+            signatures = [v1Signature.Trim()];
         }
 
         // Signature before freshness, deliberately: a stale timestamp on a body we have not authenticated
@@ -85,9 +114,18 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
         // Bachs' own Python/Node/Java samples hash.
         var expected = ComputeHmacSha256Hex(
             $"{sentAtUnix.ToString(CultureInfo.InvariantCulture)}.{request.RawBody}");
-        var match = CryptographicOperations.FixedTimeEquals(
-            Encoding.UTF8.GetBytes(expected),
-            Encoding.UTF8.GetBytes(signature.Trim().ToLowerInvariant()));
+        var expectedBytes = Encoding.UTF8.GetBytes(expected);
+
+        var match = false;
+        foreach (var sig in signatures)
+        {
+            if (CryptographicOperations.FixedTimeEquals(expectedBytes, Encoding.UTF8.GetBytes(sig.ToLowerInvariant())))
+            {
+                match = true;
+                break;
+            }
+        }
+
         if (!match)
             return Error.Unauthorized("Bachs.Webhook", "Signature verification failed.");
 
@@ -118,11 +156,19 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
             if (string.IsNullOrWhiteSpace(eventId))
                 return Error.Validation("Bachs.Webhook", "Webhook carried no event id.");
 
-            // Our own reference, echoed back at data.reference on every payment event. Nullable there —
-            // and legitimately absent on events that are not about a checkout we opened.
-            var reference = root.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object
-                ? ReadString(data, "reference")
-                : null;
+            // Our own reference, echoed back at data.reference on every payment event.
+            // When data.reference is omitted (e.g. on checkout sessions), fall back to data.checkout_id or chk_ id.
+            string? reference = null;
+            if (root.TryGetProperty("data", out var data) && data.ValueKind == JsonValueKind.Object)
+            {
+                reference = ReadString(data, "reference") ?? ReadString(data, "checkout_id");
+                if (string.IsNullOrWhiteSpace(reference))
+                {
+                    var dataId = ReadString(data, "id");
+                    if (dataId is not null && dataId.StartsWith("chk_", StringComparison.OrdinalIgnoreCase))
+                        reference = dataId;
+                }
+            }
 
             return new WebhookMessage(eventId, eventType, reference);
         }
@@ -130,6 +176,34 @@ internal sealed class BachsWebhookValidator : IPaymentWebhookValidator
         {
             return Error.Validation("Bachs.Webhook", "Webhook body was not valid JSON.");
         }
+    }
+
+    private static (string? Timestamp, List<string> Signatures) ParseV2Header(string header)
+    {
+        string? timestamp = null;
+        var signatures = new List<string>();
+
+        var parts = header.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        foreach (var part in parts)
+        {
+            var eq = part.IndexOf('=');
+            if (eq <= 0)
+                continue;
+
+            var key = part[..eq].Trim();
+            var val = part[(eq + 1)..].Trim();
+
+            if (string.Equals(key, "t", StringComparison.OrdinalIgnoreCase))
+            {
+                timestamp = val;
+            }
+            else if (string.Equals(key, "v1", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(val))
+            {
+                signatures.Add(val);
+            }
+        }
+
+        return (timestamp, signatures);
     }
 
     private static string? FirstPresent(IReadOnlyDictionary<string, string> headers, string[] names)

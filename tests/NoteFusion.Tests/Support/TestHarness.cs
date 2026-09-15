@@ -151,6 +151,12 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    public Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default)
+    {
+        Sent.Add(("waitlist-confirmation", to));
+        return Task.CompletedTask;
+    }
+
     public Task SendSubscriptionReceiptAsync(EmailRecipient to, SubscriptionReceipt receipt, CancellationToken ct = default)
     {
         Sent.Add(("receipt", to));

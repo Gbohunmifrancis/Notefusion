@@ -130,6 +130,21 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
                 a.OccurredAtUtc))
             .ToListAsync(ct);
 
+        var recentTranscriptions = await _db.Transcriptions.AsNoTracking()
+            .Where(t => t.UserId == request.UserId)
+            .OrderByDescending(t => t.CreatedAtUtc)
+            .ThenBy(t => t.Id)
+            .Take(GetUserAccountQuery.HistoryLimit)
+            .Select(t => new AdminTranscriptionSummaryDto(
+                t.Id,
+                t.Title,
+                t.Key.ToString(),
+                t.TempoBpm,
+                t.OverallConfidence,
+                t.Status.ToString(),
+                t.CreatedAtUtc))
+            .ToListAsync(ct);
+
         return new AdminUserDetailDto(
             user.Id,
             user.FullName,
@@ -154,6 +169,7 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             subscription,
             payments,
             ledger,
-            recentActions);
+            recentActions,
+            recentTranscriptions);
     }
 }

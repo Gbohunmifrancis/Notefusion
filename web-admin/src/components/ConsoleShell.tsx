@@ -4,12 +4,15 @@ import {
   ChevronDown,
   CreditCard,
   HeartPulse,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Moon,
   Scale,
   ScrollText,
   Search,
+  Settings,
+  Sparkles,
   Sun,
   Users2,
   Webhook,
@@ -41,29 +44,20 @@ import {
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth";
 
-const NAV_GROUPS = [
-  {
-    label: "Analytics",
-    items: [
-      { to: "/", label: "Overview", icon: LayoutDashboard },
-      { to: "/users", label: "Users", icon: Users2 },
-    ],
-  },
-  {
-    label: "Operations",
-    items: [
-      { to: "/audit-log", label: "Audit log", icon: ScrollText },
-      { to: "/health", label: "System health", icon: HeartPulse },
-    ],
-  },
-  {
-    label: "Payments",
-    items: [
-      { to: "/payments", label: "Transactions", icon: CreditCard },
-      { to: "/webhooks", label: "Webhook inbox", icon: Webhook },
-      { to: "/ledger", label: "Ledger", icon: Scale },
-    ],
-  },
+const PRIMARY_NAV = [
+  { to: "/", label: "Overview", icon: LayoutDashboard },
+  { to: "/users", label: "Users", icon: Users2 },
+  { to: "/payments", label: "Transactions", icon: CreditCard },
+  { to: "/health", label: "System Health", icon: HeartPulse },
+  { to: "/audit-log", label: "Settings", icon: Settings },
+] as const;
+
+const SECONDARY_NAV = [
+  { to: "/waitlist", label: "Waitlist", icon: Sparkles },
+  { to: "/inbox", label: "Inbox", icon: Inbox },
+  { to: "/audit-log", label: "Audit Log", icon: ScrollText },
+  { to: "/webhooks", label: "Webhooks", icon: Webhook },
+  { to: "/ledger", label: "Ledger", icon: Scale },
 ] as const;
 
 function isActivePath(pathname: string, to: string): boolean {
@@ -89,18 +83,24 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
     router.push(query ? `/users?q=${encodeURIComponent(query)}` : "/users");
   }
 
+  const firstName = user?.fullName
+    ? user.fullName.trim().split(/\s+/)[0]
+    : user?.email
+    ? user.email.split("@")[0]
+    : "Admin";
+
   return (
     <SidebarProvider>
       <Sidebar
         collapsible="icon"
-        className="border-r border-slate-200 bg-white text-slate-900 transition-colors duration-200 dark:border-white/10 dark:bg-[#07142f] dark:text-white"
+        className="border-r border-slate-200/80 bg-white text-slate-900 transition-colors duration-200 dark:border-zinc-800/80 dark:bg-[#050505] dark:text-white"
       >
-        <SidebarHeader className="h-20 justify-center border-b border-slate-200 px-6 transition-colors duration-200 group-data-[collapsible=icon]:px-2 dark:border-white/10">
-          <Link href="/" className="flex items-center gap-3 overflow-hidden">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md shadow-blue-900/30">
-              <BrandMark size={24} className="text-white" />
+        <SidebarHeader className="h-16 justify-center border-b border-slate-200/80 px-5 transition-colors duration-200 group-data-[collapsible=icon]:px-2 dark:border-zinc-800/80">
+          <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#2563EB] text-white shadow-sm">
+              <BrandMark size={18} className="text-white" />
             </div>
-            <span className="truncate text-lg font-bold tracking-tight text-slate-900 transition-colors group-data-[collapsible=icon]:hidden dark:text-white">
+            <span className="truncate text-base font-bold tracking-tight text-slate-900 transition-colors group-data-[collapsible=icon]:hidden dark:text-white">
               NoteFusion
             </span>
           </Link>
@@ -108,61 +108,68 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
 
         <ConsoleNav />
 
-        <SidebarFooter className="border-t border-slate-200 p-4 transition-colors duration-200 dark:border-white/10">
+        <SidebarFooter className="border-t border-slate-200/80 p-3 space-y-2 transition-colors duration-200 dark:border-zinc-800/80">
+          <div className="flex items-center gap-2.5 px-2 py-1.5 group-data-[collapsible=icon]:hidden">
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-[#2563EB] text-white text-[10px] font-bold">
+              <BrandMark size={14} className="text-white" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">NoteFusion</p>
+              <p className="truncate text-[10px] text-slate-400">Music transcription & solfa notation.</p>
+            </div>
+          </div>
           <SignOutItem />
         </SidebarFooter>
       </Sidebar>
 
       <SidebarInset className="min-w-0 w-full overflow-x-hidden">
         {/* TOP BAR */}
-        <header className="sticky top-0 z-20 flex h-20 items-center border-b border-slate-200 bg-white/90 px-5 backdrop-blur-xl lg:px-9 dark:border-slate-800 dark:bg-[#07142f]/90">
-          <SidebarTrigger className="mr-4 size-10 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-white" />
+        <header className="sticky top-0 z-20 flex h-16 items-center border-b border-slate-200/80 bg-white/95 px-4 backdrop-blur-md sm:px-6 lg:px-8 dark:border-zinc-800/80 dark:bg-black/90">
+          <div className="mx-auto flex w-full max-w-7xl items-center">
+            <SidebarTrigger className="mr-3 size-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-zinc-900 dark:hover:text-white" />
 
-          <form onSubmit={onSearch} className="relative w-full max-w-lg">
-            <Search
-              size={18}
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-            <input
-              name="q"
-              type="search"
-              placeholder="Search accounts, users, keys..."
-              className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-50 dark:border-slate-800 dark:bg-slate-900/70 dark:text-white dark:focus:bg-slate-900"
-            />
-          </form>
+            <form onSubmit={onSearch} className="relative w-full max-w-md">
+              <Search
+                size={16}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                name="q"
+                type="search"
+                placeholder="Search users, transactions, or anything..."
+                className="h-9.5 w-full rounded-lg border border-slate-200/90 bg-slate-50/70 pl-10 pr-4 text-xs sm:text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#2563EB] focus:bg-white focus:ring-2 focus:ring-blue-100 dark:border-zinc-800 dark:bg-zinc-950/80 dark:text-white dark:focus:bg-black dark:focus:ring-blue-900/30"
+              />
+            </form>
 
-          <div className="ml-auto flex items-center gap-5">
-            <ThemeToggle />
+            <div className="ml-auto flex items-center gap-3">
+              <ThemeToggle />
 
-            <NotificationBell />
+              <NotificationBell />
 
-            <div className="h-8 w-px bg-slate-200 dark:bg-slate-800" />
+              <div className="h-6 w-px bg-slate-200 dark:bg-zinc-800" />
 
-            <div className="hidden items-center gap-3 sm:flex">
-              <div className="text-right">
-                <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">
-                  {user?.fullName || "NoteFusion Admin"}
-                </div>
-                <div className="text-xs text-slate-400">
-                  {user?.role || "Administrator"}
+              <div className="flex items-center gap-2.5">
+                {avatarUrl ? (
+                  <Avatar name={user?.fullName || user?.email || "Admin"} src={avatarUrl} size={32} />
+                ) : (
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-[#2563EB] shadow-xs dark:bg-blue-950 dark:text-blue-300">
+                    {userInitials(user?.fullName || user?.email || "Admin")}
+                  </div>
+                )}
+
+                <div className="hidden sm:flex items-center gap-1.5 cursor-pointer">
+                  <span className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+                    {firstName}
+                  </span>
+                  <ChevronDown size={14} className="text-slate-400" />
                 </div>
               </div>
-
-              {avatarUrl ? (
-                <Avatar name={user?.fullName ?? "Admin"} src={avatarUrl} size={40} />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-sm font-bold text-purple-700 shadow-sm dark:bg-purple-950 dark:text-purple-300">
-                  {userInitials(user?.fullName || "NA")}
-                </div>
-              )}
-
-              <ChevronDown size={16} className="text-slate-400" />
             </div>
           </div>
         </header>
 
-        <div className="min-h-[calc(100vh-5rem)] w-full min-w-0 overflow-x-hidden bg-slate-50 px-4 py-8 text-slate-900 sm:px-5 lg:px-9 dark:bg-[#0b1220] dark:text-slate-100">
-          <div className="mx-auto w-full min-w-0 max-w-[1440px] space-y-6">{children}</div>
+        <div className="min-h-[calc(100vh-4rem)] w-full min-w-0 bg-[#FAFAFA] px-4 py-6 text-slate-900 sm:px-6 sm:py-7 lg:px-8 dark:bg-black dark:text-slate-100">
+          <div className="mx-auto w-full min-w-0 max-w-7xl space-y-6">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>
@@ -174,38 +181,71 @@ function ConsoleNav() {
   const { setOpenMobile } = useSidebar();
 
   return (
-    <SidebarContent className="px-4 py-6">
-      {NAV_GROUPS.map((group) => (
-        <SidebarGroup key={group.label} className="p-0 mb-5 last:mb-0">
-          <SidebarGroupLabel className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
-            {group.label}
-          </SidebarGroupLabel>
-          <SidebarMenu className="gap-1.5">
-            {group.items.map(({ to, label, icon: Icon }) => {
-              const active = isActivePath(pathname, to);
-              return (
-                <SidebarMenuItem key={to}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={active}
-                    tooltip={label}
-                    className={`h-11 rounded-xl px-4 text-sm font-medium transition ${
-                      active
-                        ? "bg-blue-600 text-white shadow-lg shadow-blue-900/25 hover:bg-blue-600 hover:text-white"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
-                    }`}
-                  >
-                    <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-3">
-                      <Icon size={18} aria-hidden="true" />
-                      <span>{label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
-        </SidebarGroup>
-      ))}
+    <SidebarContent className="px-3 py-4 space-y-5">
+      <SidebarGroup className="p-0">
+        <SidebarMenu className="gap-1">
+          {PRIMARY_NAV.map(({ to, label, icon: Icon }) => {
+            const active = isActivePath(pathname, to);
+            return (
+              <SidebarMenuItem key={to}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={active}
+                  tooltip={label}
+                  className={`h-9.5 rounded-lg px-3 text-sm font-medium transition ${
+                    active
+                      ? "bg-[#EFF6FF] text-[#2563EB] font-semibold dark:bg-blue-950/50 dark:text-blue-400 hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+                      : "text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:text-slate-100"
+                  }`}
+                >
+                  <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-3">
+                    <Icon
+                      size={18}
+                      className={active ? "text-[#2563EB] dark:text-blue-400" : "text-slate-500 dark:text-slate-400"}
+                      aria-hidden="true"
+                    />
+                    <span>{label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroup>
+
+      <SidebarGroup className="p-0 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+        <SidebarGroupLabel className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+          Operations
+        </SidebarGroupLabel>
+        <SidebarMenu className="gap-1">
+          {SECONDARY_NAV.map(({ to, label, icon: Icon }) => {
+            const active = isActivePath(pathname, to);
+            return (
+              <SidebarMenuItem key={to}>
+                <SidebarMenuButton
+                  asChild
+                  isActive={active}
+                  tooltip={label}
+                  className={`h-9 rounded-lg px-3 text-xs font-medium transition ${
+                    active
+                      ? "bg-[#EFF6FF] text-[#2563EB] font-semibold dark:bg-blue-950/50 dark:text-blue-400 hover:bg-[#EFF6FF] hover:text-[#2563EB]"
+                      : "text-slate-500 hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:text-slate-100"
+                  }`}
+                >
+                  <Link href={to} onClick={() => setOpenMobile(false)} className="flex items-center gap-2.5">
+                    <Icon
+                      size={16}
+                      className={active ? "text-[#2563EB] dark:text-blue-400" : "text-slate-400"}
+                      aria-hidden="true"
+                    />
+                    <span>{label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroup>
     </SidebarContent>
   );
 }
@@ -216,9 +256,9 @@ function SignOutItem() {
   return (
     <button
       onClick={() => void signOut()}
-      className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/5 dark:hover:text-white"
+      className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-100/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/40 dark:hover:text-slate-100"
     >
-      <LogOut size={18} aria-hidden="true" />
+      <LogOut size={16} aria-hidden="true" />
       <span>Sign out</span>
     </button>
   );
@@ -239,10 +279,10 @@ function ThemeToggle() {
       size="icon"
       onClick={() => setTheme(dark ? "light" : "dark")}
       disabled={!mounted}
-      className="size-9 shrink-0 text-slate-500 hover:text-slate-900 disabled:opacity-100 dark:text-slate-400 dark:hover:text-white"
+      className="size-8 shrink-0 text-slate-500 hover:text-slate-900 disabled:opacity-100 dark:text-slate-400 dark:hover:text-white"
       {...(mounted ? { title: label, "aria-label": label } : { "aria-label": "Switch theme" })}
     >
-      {mounted ? dark ? <Sun size={19} aria-hidden="true" /> : <Moon size={19} aria-hidden="true" /> : null}
+      {mounted ? dark ? <Sun size={17} aria-hidden="true" /> : <Moon size={17} aria-hidden="true" /> : null}
     </Button>
   );
 }

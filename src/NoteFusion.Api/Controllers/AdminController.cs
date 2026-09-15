@@ -5,6 +5,9 @@ using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Admin.Commands;
 using NoteFusion.Application.Admin.Queries;
+using NoteFusion.Application.Billing.Commands;
+using NoteFusion.Application.Inbox.Commands;
+using NoteFusion.Application.Inbox.Queries;
 using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Api.Controllers;
@@ -72,6 +75,44 @@ public sealed class AdminController : ApiControllerBase
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(
             new GetAuditLogQuery(page, pageSize, action, targetUserId, search), ct));
+
+    /// <summary>Subscribers on the early access waitlist, newest first.</summary>
+    /// <param name="page">1-based page number.</param>
+    /// <param name="pageSize">Rows per page, capped at 100.</param>
+    /// <param name="search">Filter by email or name.</param>
+    /// <param name="ct">Cancellation token.</param>
+    [HttpGet("waitlist")]
+    public async Task<IActionResult> Waitlist(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetWaitlistEntriesQuery(page, pageSize, search), ct));
+
+    // --------------------------------------------------------------- inbox (inbound email)
+
+    /// <summary>Received emails from the Resend inbound route, newest first.</summary>
+    [HttpGet("inbox")]
+    public async Task<IActionResult> Inbox(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetInboxQuery(page, pageSize), ct));
+
+    /// <summary>One received email in full (subject, from/to, HTML and text bodies).</summary>
+    [HttpGet("inbox/{id:guid}")]
+    public async Task<IActionResult> InboxEmail(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetInboxEmailQuery(id), ct));
+
+    /// <summary>Attachments on one received email.</summary>
+    [HttpGet("inbox/{id:guid}/attachments")]
+    public async Task<IActionResult> InboxAttachments(Guid id, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetInboxAttachmentsQuery(id), ct));
+
+    /// <summary>Sends a branded reply to the original sender of the specified received email.</summary>
+    [HttpPost("inbox/{id:guid}/reply")]
+    public async Task<IActionResult> ReplyToEmail(Guid id, InboxReplyBody body, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new ReplyToEmailCommand(id, body.Subject, body.BodyHtml), ct));
 
     /// <summary>
     /// The state of every tier this stack can prove something about, plus the ones it cannot and why.
@@ -153,12 +194,21 @@ public sealed class AdminController : ApiControllerBase
         => HandleNoContent(await _sender.Send(new SendPasswordResetCommand(id, body?.Note), ct));
 
     /// <summary>
-    /// Sends a custom branded message drafted by an administrator to the account.
+    /// Resets an account's consumed free-trial generations so they can generate free transcriptions again.
     /// </summary>
-    [HttpPost("users/{id:guid}/email")]
-    public async Task<IActionResult> SendEmail(Guid id, SendEmailBody body, CancellationToken ct)
-        => HandleNoContent(await _sender.Send(
-            new SendUserEmailCommand(id, body.Subject, body.Heading, body.BodyHtml, body.CtaText, body.CtaUrl, body.Note), ct));
+    [HttpPost("users/{id:guid}/reset-trial")]
+    public async Task<IActionResult> ResetTrialQuota(Guid id, NoteBody? body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new ResetUserTrialQuotaCommand(id, body?.Note), ct));
+
+    /// <summary>Global list of user transcriptions for monitoring ML quality and outputs.</summary>
+    [HttpGet("transcriptions")]
+    public async Task<IActionResult> Transcriptions(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] TranscriptionStatus? status = null,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetAdminTranscriptionsQuery(page, pageSize, status, search), ct));
 
     // ------------------------------------------------ payments & reconciliation
 
@@ -221,6 +271,14 @@ public sealed class AdminController : ApiControllerBase
     public async Task<IActionResult> ReconcilePayment(Guid id, NoteBody? body, CancellationToken ct)
         => HandleResult(await _sender.Send(new ReconcilePaymentAdminCommand(id, body?.Note), ct));
 
+    /// <summary>
+    /// Sweeps and clears stale payments (abandoned Pending and expired Processing) that can no longer be processed,
+    /// without waiting for the scheduled background worker.
+    /// </summary>
+    [HttpPost("payments/clear-stale")]
+    public async Task<IActionResult> ClearStalePayments(CancellationToken ct)
+        => HandleResult(await _sender.Send(new ClearStalePaymentsCommand(), ct));
+
     /// <summary>Stored provider callbacks, newest first — the inbox that makes processing exactly-once.</summary>
     /// <param name="page">1-based page number. Out-of-range values are clamped.</param>
     /// <param name="pageSize">Rows per page, capped at 100.</param>
@@ -272,6 +330,24 @@ public sealed class AdminController : ApiControllerBase
         => HandleResult(await _sender.Send(
             new GetLedgerEntriesQuery(page, pageSize, direction, reason, fromUtc, toUtc, search), ct));
 
+    // ------------------------------------------------ announcements
+
+    /// <summary>Current active system announcement, if any.</summary>
+    [HttpGet("announcement")]
+    public async Task<IActionResult> GetAnnouncement(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetSystemAnnouncementQuery(), ct));
+
+    /// <summary>Publishes or updates a global broadcast announcement to client apps.</summary>
+    [HttpPost("announcement")]
+    public async Task<IActionResult> SetAnnouncement(SetAnnouncementBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(
+            new SetSystemAnnouncementCommand(body.Message, body.Severity ?? "info", body.ExpiresAtUtc, body.Note), ct));
+
+    /// <summary>Clears/deactivates the active system announcement.</summary>
+    [HttpDelete("announcement")]
+    public async Task<IActionResult> ClearAnnouncement([FromQuery] string? note, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new ClearSystemAnnouncementCommand(note), ct));
+
     // ------------------------------------------------------------------- bodies
 
     /// <summary>
@@ -301,4 +377,10 @@ public sealed class AdminController : ApiControllerBase
         string? CtaText,
         string? CtaUrl,
         string? Note);
+
+    /// <summary>The reply to send back to the original sender of a received email.</summary>
+    public sealed record InboxReplyBody(string Subject, string BodyHtml);
+
+    /// <summary>Body for broadcasting a system announcement.</summary>
+    public sealed record SetAnnouncementBody(string Message, string? Severity, DateTime? ExpiresAtUtc, string? Note);
 }

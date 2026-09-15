@@ -1,16 +1,30 @@
 "use client";
 
+import Link from "next/link";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Database, HeartPulse, RefreshCw, Server, Webhook, type LucideIcon } from "lucide-react";
+import {
+  Activity,
+  AlertCircle,
+  ArrowRight,
+  CheckCircle2,
+  Database,
+  HeartPulse,
+  Layers,
+  RefreshCw,
+  Server,
+  Webhook,
+  type LucideIcon,
+} from "lucide-react";
 
-import { getHealth } from "@/api/endpoints";
+import { getAuditLog, getHealth, getWebhooks } from "@/api/endpoints";
 import type { HealthPanel, HealthStatus, SystemHealth } from "@/api/types";
 import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { StateView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
-import { formatCount, formatInstantDateTime } from "@/lib/format";
+import { formatCount, formatInstantDateTime, formatRelative } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 
 const STATUS_LABELS: Record<HealthStatus, string> = {
@@ -98,31 +112,112 @@ function TierPanel({ panel, icon: Icon }: { panel: HealthPanel; icon: LucideIcon
   );
 }
 
+interface TimelineEvent {
+  id: string;
+  title: string;
+  detail: string;
+  time: string;
+  tone: "success" | "info" | "warning" | "danger";
+}
+
+interface WebhookRowItem {
+  id: string;
+  event: string;
+  status: string;
+  isSuccess: boolean;
+  time: string;
+}
+
 export function HealthView() {
-  const state = useQuery({
+  const nowMs = useMemo(() => Date.now(), []);
+
+  const healthState = useQuery({
     queryKey: ["health"],
     queryFn: ({ signal }) => getHealth(signal),
-    // The one page that opts out of the 30-second default. Every probe runs when the request
-    // arrives, so a cached answer is a report about a moment that has passed.
     staleTime: 0,
   });
+
+  const webhooksQuery = useQuery({
+    queryKey: ["webhooks-preview"],
+    queryFn: ({ signal }) => getWebhooks(1, 10, {}, signal),
+    staleTime: 15_000,
+  });
+
+  const auditQuery = useQuery({
+    queryKey: ["audit-preview"],
+    queryFn: ({ signal }) => getAuditLog(1, 10, {}, signal),
+    staleTime: 15_000,
+  });
+
   const offset = getReportingOffset();
+  const health = healthState.data;
+
+  // Format real timeline events from audit query
+  const timelineEvents: TimelineEvent[] = useMemo(() => {
+    const raw = auditQuery.data?.items ?? [];
+    return raw.slice(0, 5).map((log) => {
+      let tone: TimelineEvent["tone"] = "info";
+      if (log.action === "GiftPro" || log.action === "ReactivateUser" || log.action === "ExtendSubscription") {
+        tone = "success";
+      } else if (log.action === "SuspendUser") {
+        tone = "warning";
+      } else if (log.action === "SendPasswordReset" || log.action === "SendEmail") {
+        tone = "info";
+      }
+
+      return {
+        id: log.id,
+        title: log.action.replace(/([A-Z])/g, " $1").trim(),
+        detail: log.summary || log.targetEmail || log.actorEmail,
+        time: formatRelative(log.occurredAtUtc, nowMs),
+        tone,
+      };
+    });
+  }, [auditQuery.data?.items, nowMs]);
+
+  // Format real webhook rows from webhooks query
+  const webhookRows: WebhookRowItem[] = useMemo(() => {
+    const raw = webhooksQuery.data?.items ?? [];
+    return raw.slice(0, 5).map((wh) => ({
+      id: wh.id,
+      event: wh.eventType || "webhook.event",
+      status: wh.status === "Processed" ? "200 OK" : wh.status === "Failed" ? "500 Error" : wh.status,
+      isSuccess: wh.status === "Processed",
+      time: formatRelative(wh.receivedAtUtc, nowMs),
+    }));
+  }, [webhooksQuery.data?.items, nowMs]);
+
+  const totalWebhookDeliveries = webhooksQuery.data?.totalCount ?? 0;
+  const processedWebhookCount = useMemo(() => {
+    if (!webhooksQuery.data?.items) return 0;
+    return webhooksQuery.data.items.filter((i) => i.status === "Processed").length;
+  }, [webhooksQuery.data]);
+  const failedWebhookCount = useMemo(() => {
+    if (!webhooksQuery.data?.items) return 0;
+    return webhooksQuery.data.items.filter((i) => i.status === "Failed").length;
+  }, [webhooksQuery.data]);
 
   return (
-    <div className="animate-fade-in space-y-5">
+    <div className="animate-fade-in space-y-6">
       <PageHeader
-        title="System health"
+        title="System Health"
+        subtitle="Monitor your infrastructure, services and recent events."
         breadcrumb={["Dashboard", "Operations", "System health"]}
         actions={
           <Button
             type="button"
             variant="outline"
-            onClick={() => void state.refetch()}
-            disabled={state.isFetching}
-            className="h-9 text-[13px] font-semibold"
+            onClick={() => {
+              void healthState.refetch();
+              void webhooksQuery.refetch();
+              void auditQuery.refetch();
+            }}
+            disabled={healthState.isFetching}
+            className="h-9 px-3.5 text-[13px] font-semibold rounded-lg shadow-xs hover:bg-slate-50 dark:hover:bg-zinc-900 dark:border-zinc-800"
           >
             <RefreshCw
-              className={state.isFetching ? "animate-spin" : undefined}
+              size={15}
+              className={healthState.isFetching ? "animate-spin mr-2" : "mr-2"}
               aria-hidden="true"
             />
             Re-check
@@ -130,12 +225,263 @@ export function HealthView() {
         }
       />
 
-      <StateView state={state} loadingLabel="Probing every tier">
+      {/* 4 Top Metric KPI Cards (100% Server Scoped) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {/* API Status */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">API status</span>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+              health?.status === "healthy"
+                ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
+                : health?.status === "degraded"
+                ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400"
+                : "bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400"
+            }`}>
+              <Activity className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            {health ? (health.status === "healthy" ? "Operational" : health.status === "degraded" ? "Degraded" : "Offline") : "Probing..."}
+          </div>
+          <div className="mt-2 flex items-center text-xs">
+            <span className={`inline-flex items-center gap-0.5 font-semibold px-1.5 py-0.5 rounded text-[11px] ${
+              health?.status === "healthy"
+                ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40"
+                : "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40"
+            }`}>
+              {health?.status === "healthy" ? "Healthy" : "Check status"}
+            </span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5 truncate">
+              {health ? `Checked ${formatInstantDateTime(health.checkedAtUtc, offset)}` : "Polling tiers"}
+            </span>
+          </div>
+        </div>
+
+        {/* Database */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Database</span>
+            <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <Database className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            {health ? (health.database.latencyMs !== null ? `${formatCount(health.database.latencyMs)} ms` : STATUS_LABELS[health.database.status]) : "..."}
+          </div>
+          <div className="mt-2 flex items-center text-xs">
+            <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
+              {health?.database.status === "healthy" ? "Operational" : "Check logs"}
+            </span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5 truncate">
+              {health?.database.latencyMs !== null ? "Round trip latency" : (health?.database.detail ?? "Probe answered")}
+            </span>
+          </div>
+        </div>
+
+        {/* Background Jobs */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Background jobs</span>
+            <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+              <Layers className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            {health ? formatCount(health.activity.jobsLast24Hours) : "..."}
+          </div>
+          <div className="mt-2 flex items-center text-xs">
+            <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
+              Last 24h
+            </span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5">
+              {health ? `${formatCount(health.activity.jobsLast7Days)} in 7 days` : "Job executions"}
+            </span>
+          </div>
+        </div>
+
+        {/* Webhooks */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-5 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Webhooks</span>
+            <div className="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-950/40 flex items-center justify-center text-violet-600 dark:text-violet-400">
+              <Webhook className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            {health ? (health.webhookBacklog.status === "healthy" ? "Clear" : "Backlog") : "..."}
+          </div>
+          <div className="mt-2 flex items-center text-xs">
+            <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[11px]">
+              {health?.webhookBacklog.status === "healthy" ? "Normal" : "Backlog"}
+            </span>
+            <span className="text-slate-400 dark:text-slate-500 ml-1.5">
+              {formatCount(totalWebhookDeliveries)} total events
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Middle 2-Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column: Recent Events Timeline (Server Scoped) */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent events</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Timeline of operational and audit activity</p>
+            </div>
+            <Link
+              href="/audit-log"
+              className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] dark:text-blue-400 flex items-center gap-1 group"
+            >
+              View all
+              <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          <div className="relative pl-1 flex-1">
+            {timelineEvents.length === 0 ? (
+              <div className="py-12 text-center text-xs text-slate-400 dark:text-zinc-500">
+                No audit log events recorded yet
+              </div>
+            ) : (
+              timelineEvents.map((evt, idx) => {
+                const isLast = idx === timelineEvents.length - 1;
+                const dotColor =
+                  evt.tone === "success"
+                    ? "bg-emerald-500 ring-emerald-100 dark:ring-emerald-950/50"
+                    : evt.tone === "info"
+                    ? "bg-blue-500 ring-blue-100 dark:ring-blue-950/50"
+                    : evt.tone === "warning"
+                    ? "bg-amber-500 ring-amber-100 dark:ring-amber-950/50"
+                    : "bg-rose-500 ring-rose-100 dark:ring-rose-950/50";
+
+                return (
+                  <div key={evt.id} className="relative flex gap-4 pb-5 last:pb-0">
+                    {!isLast && (
+                      <span
+                        className="absolute left-[7px] top-[14px] bottom-0 w-0.5 bg-slate-200 dark:bg-zinc-800"
+                        aria-hidden="true"
+                      />
+                    )}
+
+                    <div className="relative flex items-center justify-center shrink-0 mt-1">
+                      <span className={`w-3.5 h-3.5 rounded-full ring-4 ${dotColor}`} />
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 truncate">
+                          {evt.title}
+                        </p>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums shrink-0">
+                          {evt.time}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                        {evt.detail}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* Right Column: Webhook Delivery Overview (Server Scoped) */}
+        <div className="bg-white dark:bg-[#09090b] rounded-xl border border-slate-200/80 dark:border-zinc-800 p-6 shadow-xs flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Webhook delivery</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Callback processing and dispatch health</p>
+            </div>
+            <Link
+              href="/webhooks"
+              className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] dark:text-blue-400 flex items-center gap-1 group"
+            >
+              View all
+              <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          </div>
+
+          {/* Top 3 mini stats (Server Scoped) */}
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-zinc-950/60 border border-slate-200/60 dark:border-zinc-800">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Total</span>
+              <span className="text-base font-bold text-slate-900 dark:text-slate-100 block mt-1">
+                {formatCount(totalWebhookDeliveries)}
+              </span>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-zinc-950/60 border border-slate-200/60 dark:border-zinc-800">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Processed</span>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-base font-bold text-slate-900 dark:text-slate-100">{formatCount(processedWebhookCount)}</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              </div>
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 dark:bg-zinc-950/60 border border-slate-200/60 dark:border-zinc-800">
+              <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 block">Failed</span>
+              <div className="flex items-center gap-1 mt-1">
+                <span className="text-base font-bold text-slate-900 dark:text-slate-100">{formatCount(failedWebhookCount)}</span>
+                <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+              </div>
+            </div>
+          </div>
+
+          {/* Webhook mini table (Server Scoped) */}
+          <div className="overflow-x-auto flex-1">
+            {webhookRows.length === 0 ? (
+              <div className="py-12 text-center text-xs text-slate-400 dark:text-zinc-500">
+                No webhook deliveries recorded yet
+              </div>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-100 dark:border-zinc-800 text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <th className="pb-2.5">Event</th>
+                    <th className="pb-2.5">Status</th>
+                    <th className="pb-2.5 text-right">Time</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-zinc-800 text-xs">
+                  {webhookRows.map((row) => (
+                    <tr key={row.id} className="hover:bg-slate-50/50 dark:hover:bg-zinc-900/40 transition-colors">
+                      <td className="py-2.5 pr-2 font-mono font-medium text-slate-900 dark:text-slate-100 truncate max-w-[140px]">
+                        {row.event}
+                      </td>
+                      <td className="py-2.5 pr-2">
+                        {row.isSuccess ? (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            {row.status}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40">
+                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                            {row.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2.5 text-right text-slate-500 dark:text-slate-400 tabular-nums">
+                        {row.time}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Real-time Probed Tiers & Subscriptions Telemetry */}
+      <StateView state={healthState} loadingLabel="Probing every tier">
         {(health) => (
-          <div className="space-y-5">
-            {/* Every probe runs on request, so the timestamp is the whole shelf life of this page. */}
+          <div className="space-y-5 pt-2">
             <div
-              className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 rounded-md border px-4 py-3 ${
+              className={`flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5 rounded-xl border px-4 py-3.5 ${
                 STATUS_SKINS[health.status].wash
               }`}
               role="status"
@@ -159,67 +505,95 @@ export function HealthView() {
               <TierPanel panel={health.webhookBacklog} icon={Webhook} />
             </div>
 
-            <Card
-              title="Transcription jobs"
-              {...(wasCounted(health)
-                ? {
-                    hint: "Submissions accepted by the API. The worker owns the outcome and the API never stores it, so this is volume, not a success rate.",
-                  }
-                : {})}
-            >
-              {wasCounted(health) ? (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <StatCard
-                    label="Last 24 hours"
-                    value={formatCount(health.activity.jobsLast24Hours)}
-                  />
-                  <StatCard label="Last 7 days" value={formatCount(health.activity.jobsLast7Days)} />
-                </div>
-              ) : (
-                <NotCounted />
-              )}
-            </Card>
+            <div className="grid gap-5 lg:grid-cols-2">
+              <Card
+                title="Transcription jobs"
+                {...(wasCounted(health)
+                  ? {
+                      hint: "Submissions accepted by the API. Volume snapshot.",
+                    }
+                  : {})}
+              >
+                {wasCounted(health) ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <StatCard
+                      label="Last 24 hours"
+                      value={formatCount(health.activity.jobsLast24Hours)}
+                    />
+                    <StatCard label="Last 7 days" value={formatCount(health.activity.jobsLast7Days)} />
+                  </div>
+                ) : (
+                  <NotCounted />
+                )}
+              </Card>
 
-            <Card
-              title="Subscriptions"
-              {...(wasCounted(health)
-                ? {
-                    hint: "A snapshot as of the check above, not a windowed count — a subscription belongs to an instant.",
-                  }
-                : {})}
-            >
-              {wasCounted(health) ? (
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                  <StatCard
-                    label="Active"
-                    value={formatCount(health.subscriptions.activeCount)}
-                    sub="Pro unlocked right now"
-                    tone="success"
-                  />
-                  <StatCard
-                    label="Gifted"
-                    value={formatCount(health.subscriptions.giftedCount)}
-                    sub="Granted, never charged"
-                    hint="Counted inside Active, not beside it — a gift is one of the ways access is live."
-                    tone="warning"
-                  />
-                  <StatCard
-                    label="Expiring in 7 days"
-                    value={formatCount(health.subscriptions.expiringWithinSevenDays)}
-                    sub="Lifetime access excluded"
-                    tone="blue"
-                  />
-                  <StatCard
-                    label="Past due"
-                    value={formatCount(health.subscriptions.pastDueCount)}
-                    sub="A renewal the gateway did not settle"
-                    tone="danger"
-                  />
+              <Card
+                title="Subscriptions snapshot"
+                {...(wasCounted(health)
+                  ? {
+                      hint: "Instant snapshot as of the check above.",
+                    }
+                  : {})}
+              >
+                {wasCounted(health) ? (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <StatCard
+                      label="Active"
+                      value={formatCount(health.subscriptions.activeCount)}
+                      sub="Pro unlocked right now"
+                      tone="success"
+                    />
+                    <StatCard
+                      label="Expiring in 7 days"
+                      value={formatCount(health.subscriptions.expiringWithinSevenDays)}
+                      sub="Lifetime access excluded"
+                      tone="blue"
+                    />
+                  </div>
+                ) : (
+                  <NotCounted />
+                )}
+              </Card>
+            </div>
+
+            {health.workerHeartbeats && health.workerHeartbeats.length > 0 && (
+              <Card
+                title="Background Workers"
+                hint="Heartbeats and execution durations tracked across asynchronous operations."
+              >
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {health.workerHeartbeats.map((w) => (
+                    <div
+                      key={w.workerName}
+                      className="rounded-lg border border-slate-200/80 dark:border-zinc-800 p-4 bg-slate-50/50 dark:bg-zinc-950/40 space-y-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold text-foreground truncate">
+                          {w.workerName}
+                        </span>
+                        <span
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                            w.status.toLowerCase() === "success" || w.status.toLowerCase() === "healthy"
+                              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/60"
+                              : "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200/60"
+                          }`}
+                        >
+                          {w.status}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground">
+                        Last run: {formatRelative(w.lastRunUtc, nowMs)} · {w.durationMs}ms
+                      </div>
+                      {w.detail && (
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2">
+                          {w.detail}
+                        </p>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <NotCounted />
-              )}
-            </Card>
+              </Card>
+            )}
 
             {health.notMonitored.length > 0 && (
               <Card
@@ -245,3 +619,4 @@ export function HealthView() {
     </div>
   );
 }
+

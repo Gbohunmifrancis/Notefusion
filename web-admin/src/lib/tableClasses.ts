@@ -13,11 +13,12 @@
  * both ends.
  */
 
-/** Header cell. Sentence case, not uppercase — long headings stay readable. */
-export const TH = "px-4 py-2.5 text-xs font-medium text-muted-foreground";
+/** Header cell: clean, readable, uppercase tracking. */
+export const TH = "px-5 py-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground";
 
-/** Body cell. */
-export const TD = "px-4 py-3 text-[13px] text-muted-foreground";
+/** Body cell: comfortable row height, clear text contrast. */
+export const TD = "px-5 py-3.5 text-[13px] text-slate-700 dark:text-slate-300";
 
-/** Body rows, applied once to `TableBody`: a hairline rule rather than the header's full weight. */
-export const TBODY = "[&_tr]:border-border-light";
+/** Body rows, applied once to `TableBody`: subtle hairline divider without double borders. */
+export const TBODY = "[&_tr]:border-border/40 last:[&_tr]:border-0";
+

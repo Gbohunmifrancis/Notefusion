@@ -10,6 +10,7 @@ using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Infrastructure;
+using NoteFusion.Infrastructure.Email;
 
 // Load a local .env if present (dev convenience); real config comes from env vars in compose/prod.
 Env.TraversePath().Load();
@@ -255,6 +256,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Serve the email logo directly with long-lived public caching. This guarantees instant delivery
+// and backwards compatibility for existing mail clients requesting {BaseUrl}/email/logo.png.
+app.MapGet("/email/logo.png", (HttpContext context) =>
+{
+    context.Response.Headers.CacheControl = "public, max-age=31536000, immutable";
+    return Results.File(EmailLogoAsset.Bytes, "image/png");
+}).AllowAnonymous();
 
 app.Run();
 

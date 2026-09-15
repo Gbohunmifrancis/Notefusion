@@ -31,6 +31,9 @@ public sealed class EmailSender : IEmailSender
     public Task SendWelcomeAsync(EmailRecipient to, CancellationToken ct = default)
         => TrySendAsync(_template.Welcome(to), ct);
 
+    public Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default)
+        => TrySendAsync(_template.WaitlistConfirmation(to), ct);
+
     public Task SendPasswordChangedAsync(EmailRecipient to, CancellationToken ct = default)
         => TrySendAsync(_template.PasswordChanged(to), ct);
 

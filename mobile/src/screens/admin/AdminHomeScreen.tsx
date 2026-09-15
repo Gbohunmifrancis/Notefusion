@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../../components/Screen";
@@ -79,6 +79,24 @@ export function AdminHomeScreen({ navigation }: Props) {
       })
       .finally(() => setBusy(false));
   }, []);
+
+  const [sweeping, setSweeping] = useState(false);
+
+  const handleSweepStale = useCallback(async () => {
+    try {
+      setSweeping(true);
+      const res = await adminApi.clearStalePayments();
+      Alert.alert(
+        "Stale Sweep Completed",
+        `Cleared ${res.clearedPendingCount} pending and ${res.clearedProcessingCount} processing checkout(s). Fulfilled ${res.fulfilledCount}.`,
+        [{ text: "OK", onPress: load }]
+      );
+    } catch (e) {
+      Alert.alert("Sweep Failed", toApiError(e).message);
+    } finally {
+      setSweeping(false);
+    }
+  }, [load]);
 
   useEffect(load, [load]);
 
@@ -163,6 +181,34 @@ export function AdminHomeScreen({ navigation }: Props) {
               </Text>
             </Card>
 
+            {/* ── Revenue & Pro Subscriptions ────────────────────────────── */}
+            <SectionTitle>Revenue & Pro Subscriptions</SectionTitle>
+            <Card>
+              <View style={styles.statRow}>
+                <Stat
+                  label="Est. MRR"
+                  value={money(summary.mrrMinor, summary.currency)}
+                  tone="good"
+                  hint="Normalized /mo"
+                />
+                <Stat
+                  label="Active Pro"
+                  value={String(summary.activeSubscribersCount)}
+                  tone={summary.activeSubscribersCount > 0 ? "good" : "muted"}
+                  hint="Paid accounts"
+                />
+                <Stat
+                  label="Ending ≤7d"
+                  value={String(summary.expiringInSevenDaysCount)}
+                  tone={summary.expiringInSevenDaysCount > 0 ? "warn" : "muted"}
+                  hint="Expiry horizon"
+                />
+              </View>
+              <Text style={styles.cardNote}>
+                MRR normalizes monthly payments and yearly payments (amortized ÷12). Excludes free/gifted tiers.
+              </Text>
+            </Card>
+
             {/* ── Money ────────────────────────────────────────────────────── */}
             <SectionTitle>Ledger · all time</SectionTitle>
             <Card>
@@ -203,6 +249,23 @@ export function AdminHomeScreen({ navigation }: Props) {
                   tone="good"
                 />
                 <Stat label="Failed" value={String(summary.failedCount)} />
+              </View>
+              <View style={styles.sweepBtnContainer}>
+                <Touchable
+                  onPress={handleSweepStale}
+                  disabled={sweeping}
+                  style={styles.sweepBtn}
+                  radius={radii.md}
+                >
+                  <Ionicons
+                    name="sparkles-outline"
+                    size={14}
+                    color={colors.accent}
+                  />
+                  <Text style={styles.sweepBtnText}>
+                    {sweeping ? "Sweeping Stale Payments..." : "Sweep Stale Checkouts"}
+                  </Text>
+                </Touchable>
               </View>
             </Card>
 
@@ -288,6 +351,35 @@ export function AdminHomeScreen({ navigation }: Props) {
                   value={String(health.activity.jobsLast7Days)}
                 />
               </View>
+
+              {health.workerHeartbeats && health.workerHeartbeats.length > 0 ? (
+                <>
+                  <View style={styles.divider} />
+                  <Text style={styles.subhead}>Background Workers</Text>
+                  {health.workerHeartbeats.map((w) => (
+                    <View key={w.workerName} style={styles.workerRow}>
+                      <View style={styles.workerMain}>
+                        <Text style={styles.workerName}>{w.workerName}</Text>
+                        <Text style={styles.workerMeta}>
+                          {ago(w.lastRunUtc)} · {w.durationMs}ms
+                        </Text>
+                        {w.detail ? (
+                          <Text style={styles.workerDetails}>{w.detail}</Text>
+                        ) : null}
+                      </View>
+                      <StatusPill
+                        label={w.status}
+                        tone={
+                          w.status.toLowerCase() === "success" ||
+                          w.status.toLowerCase() === "healthy"
+                            ? "good"
+                            : "bad"
+                        }
+                      />
+                    </View>
+                  ))}
+                </>
+              ) : null}
 
               {health.notMonitored.length > 0 ? (
                 <Text style={styles.cardNote}>
@@ -503,5 +595,66 @@ const makeStyles = (c: Palette) =>
       color: c.textMuted,
       fontSize: 11.5,
       marginTop: 1,
+    },
+
+    sweepBtnContainer: {
+      marginTop: spacing.md,
+      paddingTop: spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: c.border,
+    },
+    sweepBtn: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing.xs,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      backgroundColor: c.accentSoft,
+      borderRadius: radii.md,
+    },
+    sweepBtnText: {
+      ...typography.label,
+      color: c.accent,
+      fontSize: 12.5,
+      fontFamily: fonts.semibold,
+    },
+
+    subhead: {
+      ...typography.label,
+      color: c.textMuted,
+      fontSize: 11,
+      fontFamily: fonts.bold,
+      textTransform: "uppercase",
+      letterSpacing: 0.8,
+      marginBottom: spacing.xs,
+    },
+    workerRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      paddingVertical: spacing.xs,
+      gap: spacing.sm,
+    },
+    workerMain: {
+      flex: 1,
+    },
+    workerName: {
+      ...typography.body,
+      color: c.text,
+      fontSize: 12.5,
+      fontFamily: fonts.medium,
+    },
+    workerMeta: {
+      ...typography.caption,
+      color: c.textFaint,
+      fontSize: 11,
+      marginTop: 1,
+    },
+    workerDetails: {
+      ...typography.caption,
+      color: c.textMuted,
+      fontSize: 10.5,
+      marginTop: 2,
     },
   });

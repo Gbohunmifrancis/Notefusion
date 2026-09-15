@@ -20,7 +20,6 @@ import { getUsers, sendUserEmail, type SendUserEmailPayload } from "@/api/endpoi
 import type { AdminUserRow } from "@/api/types";
 import { Avatar } from "@/components/Avatar";
 import { Badge } from "@/components/Badge";
-import { BrandMark } from "@/components/BrandMark";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -78,13 +77,31 @@ const TEMPLATES: TemplatePreset[] = [
     ctaUrl: "",
   },
   {
+    id: "app_update",
+    name: "App Update Available (Google Play)",
+    subject: "Important Update: Get the Latest NoteFusion on Google Play",
+    heading: "New NoteFusion Update Ready",
+    body: "Hello,\n\nA new update for NoteFusion is now available on the Google Play Store!\n\nThis release brings enhanced audio transcription accuracy, refined tonic solfa and staff notation rendering, streamlined account and membership controls, and performance optimizations.\n\nPlease tap the button below to update to the latest version directly on Google Play:",
+    ctaText: "Update on Google Play",
+    ctaUrl: "https://play.google.com/store/apps/details?id=com.notefusion.com",
+  },
+  {
+    id: "update_apology",
+    name: "Apology: Corrected App Update Link",
+    subject: "Correction: Updated link to NoteFusion on Google Play",
+    heading: "Apology & Corrected Update Link",
+    body: "Hello,\n\nIn our earlier email regarding the latest NoteFusion update, the download button contained an incorrect link that did not open the Google Play Store page.\n\nWe sincerely apologize for any confusion or inconvenience this may have caused.\n\nPlease use the corrected link below to update your NoteFusion app directly on Google Play:",
+    ctaText: "Update on Google Play",
+    ctaUrl: "https://play.google.com/store/apps/details?id=com.notefusion.com",
+  },
+  {
     id: "welcome",
     name: "Welcome & Onboarding Assistance",
     subject: "Welcome to NoteFusion — We're here to help",
     heading: "Getting the Most from NoteFusion",
     body: "Hello,\n\nThank you for choosing NoteFusion. Whether you are transcribing live choir rehearsals, extracting solfa notation from audio recordings, or composing music, we want to ensure you have a seamless experience.\n\nIf you ever run into any questions or would like personalized assistance, feel free to reply directly to our team.",
-    ctaText: "Open NoteFusion",
-    ctaUrl: "https://notefusion.app",
+    ctaText: "Get NoteFusion on Google Play",
+    ctaUrl: "https://play.google.com/store/apps/details?id=com.notefusion.com",
   },
   {
     id: "pro_gift",
@@ -92,8 +109,8 @@ const TEMPLATES: TemplatePreset[] = [
     subject: "You've been gifted NoteFusion Pro! 🎁",
     heading: "Enjoy NoteFusion Pro on Us",
     body: "Great news!\n\nAn administrator has gifted your account with full NoteFusion Pro access. You can now transcribe without trial restrictions, export high-fidelity staff and solfa scores, and access priority cloud processing.\n\nYour Pro perks are ready and waiting in your account.",
-    ctaText: "Explore NoteFusion Pro",
-    ctaUrl: "https://notefusion.app",
+    ctaText: "Open NoteFusion on Google Play",
+    ctaUrl: "https://play.google.com/store/apps/details?id=com.notefusion.com",
   },
   {
     id: "subscription_update",
@@ -101,17 +118,17 @@ const TEMPLATES: TemplatePreset[] = [
     subject: "Important update regarding your NoteFusion subscription",
     heading: "Subscription Notice",
     body: "Hello,\n\nWe are following up regarding your NoteFusion account and subscription status.\n\nPlease review your active plan and settings in the app to make sure everything is configured just the way you like it. If you need any reconciliation or invoice assistance, our support team is at your disposal.",
-    ctaText: "Manage Your Account",
-    ctaUrl: "https://notefusion.app",
+    ctaText: "Open NoteFusion",
+    ctaUrl: "https://play.google.com/store/apps/details?id=com.notefusion.com",
   },
   {
     id: "maintenance",
     name: "Important Service & Product Notice",
     subject: "Notice regarding NoteFusion services and updates",
     heading: "Important NoteFusion Update",
-    body: "Hello,\n\nWe are reaching out to let you know about upcoming improvements and service updates to the NoteFusion transcription engine.\n\nPlease verify that your mobile app is updated to the latest version to continue enjoying fast, accurate transcriptions.",
-    ctaText: "Check Latest Version",
-    ctaUrl: "https://notefusion.app",
+    body: "Hello,\n\nWe are reaching out to let you know about upcoming improvements and service updates to the NoteFusion transcription engine.\n\nPlease verify that your mobile app is updated to the latest version on Google Play to continue enjoying fast, accurate transcriptions.",
+    ctaText: "Check on Google Play",
+    ctaUrl: "https://play.google.com/store/apps/details?id=com.notefusion.com",
   },
 ];
 
@@ -498,51 +515,67 @@ export function SendEmailDialog({
             ) : (
               <div className="rounded-xl border border-border/80 bg-slate-100 dark:bg-slate-900/60 p-4 sm:p-6">
                 <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="font-mono">From: NoteFusion &lt;noreply@notefusion.app&gt;</span>
+                  <span className="font-mono">From: NoteFusion &lt;hello@notefusion.studio&gt;</span>
                   <span className="font-mono">To: {selectedUser?.email ?? "recipient@domain.com"}</span>
                 </div>
 
-                <div className="max-w-xl mx-auto rounded-xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100">
-                  <div className="text-center mb-6">
-                    <div className="inline-flex items-center justify-center p-2 rounded-xl bg-slate-50 dark:bg-slate-900 mb-2">
-                      <BrandMark size={36} className="text-blue-600" />
-                    </div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <div className="max-w-xl mx-auto rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100">
+                  {/* Email header with signature blue gradient and white logo */}
+                  <div className="bg-gradient-to-br from-blue-700 to-blue-600 px-6 py-8 text-center text-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="https://notefusion.studio/email/logo.png"
+                      alt="NoteFusion"
+                      width={46}
+                      height={61}
+                      className="mx-auto mb-3 h-[61px] w-[46px] object-contain drop-shadow-sm"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLElement).style.display = "none";
+                      }}
+                    />
+                    <h1 className="font-sans text-xl font-bold tracking-tight text-white">
                       NoteFusion
-                    </h3>
+                    </h1>
                   </div>
 
-                  <h2 className="text-xl font-bold text-center text-slate-900 dark:text-white mb-6">
-                    {heading.trim() || subject.trim() || "NoteFusion Notification"}
-                  </h2>
+                  <div className="p-6 sm:p-8">
+                    <h2 className="text-xl font-bold text-center text-slate-900 dark:text-white mb-6">
+                      {heading.trim() || subject.trim() || "NoteFusion Notification"}
+                    </h2>
 
-                  <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
-                    Hello{selectedUser?.fullName ? ` ${selectedUser.fullName.split(" ")[0]}` : ""},
-                  </p>
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
+                      Hello{selectedUser?.fullName ? ` ${selectedUser.fullName.split(" ")[0]}` : ""},
+                    </p>
 
-                  <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    {body.trim() ? (
-                      body
-                        .split(/\n\n+/)
-                        .map((para, idx) => <p key={idx}>{para}</p>)
-                    ) : (
-                      <p className="italic text-slate-400 dark:text-slate-500">
-                        (Your message body will appear here...)
-                      </p>
-                    )}
-                  </div>
-
-                  {ctaText.trim() && (
-                    <div className="my-8 text-center">
-                      <span className="inline-block rounded-full px-7 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-700 to-blue-500 shadow-md shadow-blue-500/20">
-                        {ctaText.trim()}
-                      </span>
+                    <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                      {body.trim() ? (
+                        body
+                          .split(/\n\n+/)
+                          .map((para, idx) => <p key={idx}>{para}</p>)
+                      ) : (
+                        <p className="italic text-slate-400 dark:text-slate-500">
+                          (Your message body will appear here...)
+                        </p>
+                      )}
                     </div>
-                  )}
 
-                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-center text-[11px] text-slate-400 dark:text-slate-500 space-y-1">
-                    <p>Sent by NoteFusion Admin Team • Automated notification</p>
-                    <p>© {new Date().getFullYear()} NoteFusion Inc. • notefusion.app</p>
+                    {ctaText.trim() && (
+                      <div className="my-8 text-center">
+                        <span className="inline-block rounded-full px-7 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-700 to-blue-500 shadow-md shadow-blue-500/20">
+                          {ctaText.trim()}
+                        </span>
+                        {ctaUrl.trim() && (
+                          <p className="mt-2 text-[11px] font-mono text-muted-foreground break-all">
+                            Target: {ctaUrl.trim()}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-center text-[11px] text-slate-400 dark:text-slate-500 space-y-1">
+                      <p>Sent by NoteFusion Admin Team • Automated notification</p>
+                      <p>© {new Date().getFullYear()} NoteFusion Inc. • notefusion.studio</p>
+                    </div>
                   </div>
                 </div>
               </div>

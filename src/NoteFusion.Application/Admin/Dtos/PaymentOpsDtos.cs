@@ -180,7 +180,10 @@ public sealed record PaymentOpsSummaryDto(
     long NetMinor,
     string Currency,
     int GraceWindowMinutes,
-    int SweepIntervalMinutes);
+    int SweepIntervalMinutes,
+    long MrrMinor = 0,
+    int ActiveSubscribersCount = 0,
+    int ExpiringInSevenDaysCount = 0);
 
 /// <summary>
 /// What an operator-triggered reconciliation actually did.

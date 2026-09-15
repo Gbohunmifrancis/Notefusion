@@ -24,6 +24,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddSingleton<IWorkerHeartbeatTracker, NoteFusion.Infrastructure.Common.WorkerHeartbeatTracker>();
         services.AddPersistence(configuration);
         services.AddSecurity(configuration);
         services.AddPush(configuration);
@@ -127,6 +128,11 @@ public static class DependencyInjection
         {
             services.AddScoped<IEmailTransport, LoggingEmailTransport>();
         }
+
+        // Inbound email inbox — always registered; returns an empty list when no inbound route
+        // is configured in Resend (so the page renders gracefully without crashing).
+        services.AddHttpClient<IResendInboxService, ResendInboxService>(client =>
+            client.Timeout = TimeSpan.FromSeconds(15));
     }
 
     private static void AddMedia(this IServiceCollection services, IConfiguration configuration)

@@ -1,86 +1,178 @@
 /*
- * NoteFusion design tokens for the web — the browser half of
- * `mobile/src/design/theme.ts`. Values are copied, not reinterpreted: the app and
- * the site have to look like the same product, and a landing page that ships a
- * slightly different blue undermines the download it is asking for.
- *
- * Keep in lock-step with theme.ts. If a token changes there, change it here.
+ * NoteFusion Design Tokens — Web Edition
+ * Based on NoteFusion UI Style Guide Version 1.0
+ * Minimal, warm, precise, professional music SaaS product.
  */
 
+[hidden] {
+  display: none !important;
+}
+
 :root {
-  /* Surfaces */
-  --bg: #f4f7fc; /* Mist — root canvas */
-  --bg-elevated: #ffffff;
-  --surface: #ffffff;
-  --surface-alt: #eef3fb; /* Faint blue tint — nested rows, chips */
+  /* 3.2 Light-Theme Palette */
+  --color-brand-500: #1769E8; /* Primary brand blue */
+  --color-brand-600: #0F56C7; /* Pressed blue */
+  --color-brand-100: #E7F0FF; /* Blue wash - icon backgrounds, callouts */
+  --color-brand-050: #F3F7FF; /* Blue tint - subtle cards & panels */
 
-  /* Borders */
-  --border: #e2e8f0; /* Slate hairline */
-  --border-light: #eff3f9;
+  --color-ink-950: #101828;   /* Primary display headings */
+  --color-ink-700: #344054;   /* Body ink */
+  --color-ink-500: #667085;   /* Muted ink - supporting text, timestamps */
+  --color-ink-300: #98A2B3;   /* Quiet ink - borders, disabled, placeholder */
 
-  /* "The Fusion" brand palette */
-  --blue: #2563eb; /* Primary   — gradient start */
-  --blue-deep: #1d4ed8; /* Deep      — pressed / darker shade */
-  --blue-bright: #3b82f6; /* Bright    — gradient end */
-  --sky: #0ea5e9; /* Sky       — wordmark accent */
+  --color-surface-canvas: #F7F5F0; /* Warm ivory main canvas background */
+  --color-surface-base: #FFFEFC;   /* Primary card and panel surface */
+  --color-surface-subtle: #F9FAFB; /* Secondary grouped surface */
 
-  --accent-soft: rgba(37, 99, 235, 0.1);
-  --accent-glow: rgba(37, 99, 235, 0.22);
+  --color-border-default: #E4E7EC; /* Standard card/divider hairline border */
+  --color-border-strong: #D0D5DD;  /* Emphasized border */
 
-  /* Typography
-   * Two deliberate deviations from theme.ts, both forced by WCAG on a page whose
-   * type is smaller than the app's:
-   *   --text-muted  the app's #64748B measures 4.43:1 on Mist and 4.27:1 on the
-   *                 faint tint, so it fails AA at body size. #5D6D82 clears 4.5
-   *                 on white, Mist and the tint at once.
-   *   --text-faint  #94A3B8 is 2.4:1 and cannot be rescued at any size, so it is
-   *                 no longer used for text here. It stays defined for borders,
-   *                 dividers and icons.
-   */
-  --text: #0f172a; /* Ink Navy */
-  --text-muted: #5d6d82; /* Slate, darkened for AA on light surfaces */
-  --text-faint: #94a3b8; /* Light Slate — non-text use only */
-  --on-accent: #ffffff;
+  /* Semantic Feedback */
+  --color-success-600: #039855;
+  --color-success-100: #ECFDF3;
+  --color-warning-600: #DC6803;
+  --color-warning-100: #FFFAEB;
+  --color-danger-600: #D92D20;
+  --color-danger-100: #FEF3F2;
 
-  /* Semantic signals */
-  --success: #16a34a;
-  --warning: #d97706;
-  --danger: #dc2626;
+  /* Backward-compatible aliases */
+  --bg: var(--color-surface-canvas);
+  --surface: var(--color-surface-base);
+  --border: var(--color-border-default);
+  --blue: var(--color-brand-500);
+  --blue-deep: var(--color-brand-600);
+  --blue-soft: var(--color-brand-100);
+  --text: var(--color-ink-950);
+  --text-muted: var(--color-ink-500);
+  --text-faint: var(--color-ink-300);
 
-  /* Gradients */
-  --fusion: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
-  --fusion-start: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  /* 4. Typography */
+  --font-display: "DM Serif Display", Georgia, serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* The fusion gradient is decorative; text sits on it all over the site. The
-     light end (#3B82F6) fails 4.5:1 for normal-size white text (3.68), so any
-     element that carries text uses this contrast-safe flat blue instead and
-     keeps the gradient for large type, fills and shadows. */
-  --fusion-contrast: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  /* 6. Shape & Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
 
-  /* Radii — radii.sm/md/lg/xl/pill */
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-  --r-pill: 999px;
+  --r-sm: var(--radius-sm);
+  --r-md: var(--radius-md);
+  --r-lg: var(--radius-lg);
+  --r-xl: var(--radius-xl);
+  --r-pill: var(--radius-pill);
 
-  /* Spacing — spacing.xs … xxxl */
-  --s-xs: 4px;
-  --s-sm: 8px;
-  --s-md: 12px;
-  --s-lg: 16px;
-  --s-xl: 24px;
-  --s-2xl: 32px;
-  --s-3xl: 48px;
+  /* 5. Spacing Scale (4px base unit) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
 
-  /* Shadows — shadow.card / shadow.glow */
-  --sh-card: 0 2px 10px rgba(15, 23, 42, 0.06);
-  --sh-card-lift: 0 12px 32px rgba(15, 23, 42, 0.1);
-  --sh-glow: 0 8px 20px rgba(37, 99, 235, 0.28);
+  /* Elevation & Shadows */
+  --shadow-card: 0 1px 3px rgba(16, 24, 40, 0.04), 0 6px 20px rgba(16, 24, 40, 0.03);
+  --shadow-card-hover: 0 4px 6px rgba(16, 24, 40, 0.03), 0 14px 32px rgba(16, 24, 40, 0.07);
+  --shadow-elevated: 0 8px 24px rgba(16, 24, 40, 0.08);
 
-  /* Layout */
-  --wrap: 1120px;
-  --wrap-narrow: 760px;
+  /* Layout Container */
+  --wrap: 1200px;
+  --wrap-narrow: 840px;
+
+  /* ── Motion tokens (transitions.dev shared scale) ──────────── */
+  /* Durations */
+  --duration-stagger: 40ms;   /* per-item stagger offset */
+  --duration-micro: 80ms;     /* tooltip/path delay, shake segment, large stagger */
+  --duration-quick: 150ms;    /* modal/dropdown close, text swap, tooltip appear */
+  --duration-fast: 250ms;     /* icon swap, dropdown/modal open, tabs sliding, page slide */
+  --duration-medium: 350ms;   /* panel close, toast close */
+  --duration-slow: 400ms;     /* panel open, skeleton content reveal, input clear */
+  --duration-very-slow: 500ms;/* emphasis moments, badge appear, text reveal, success check */
+
+  /* Easings */
+  --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1); /* modal/dropdown/panel open + close, page slide, resize */
+  --ease-in-out: ease-in-out;                        /* icon swap, text swap, text reveal, skeleton reveal */
+  --ease-out: ease-out;                              /* tooltip open / close */
+  --ease-linear: linear;                             /* shimmer, skeleton pulse, spinner */
+  --ease-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);  /* badge pop open */
+  --ease-bounce-strong: cubic-bezier(0.34, 3.85, 0.64, 1); /* bouncy hover-out (avatar return) */
+
+  /* Distances */
+  --distance-micro: 4px;      /* text swap */
+  --distance-small: 6px;      /* error shake (small segment) */
+  --distance-base: 8px;       /* badge diagonal reveal, page slide, error shake */
+  --distance-medium: 12px;    /* text reveal */
+  --distance-large: 30px;     /* check badge appear */
+
+  /* Scales */
+  --scale-large: 0.96;        /* modal open / close */
+  --scale-medium: 0.97;       /* dropdown open */
+  --scale-small: 0.98;        /* tooltip open */
+  --scale-tiny: 0.99;         /* dropdown close */
+
+  /* Blur */
+  --blur-small: 2px;          /* panel reveal, icon swap, text swap, skeleton reveal, number pop-in */
+  --blur-medium: 3px;         /* page slide, text reveal */
+  --blur-large: 8px;          /* success check open */
+
+  /* Component semantic tokens */
+  --dropdown-open-dur: var(--duration-fast);
+  --dropdown-close-dur: var(--duration-quick);
+  --dropdown-pre-scale: var(--scale-medium);
+  --dropdown-closing-scale: var(--scale-tiny);
+  --dropdown-ease: var(--ease-smooth-out);
+
+  --modal-open-dur: var(--duration-fast);
+  --modal-close-dur: var(--duration-quick);
+  --modal-scale: var(--scale-large);
+  --modal-scale-close: var(--scale-large);
+  --modal-ease: var(--ease-smooth-out);
+
+  --icon-swap-dur: var(--duration-fast);
+  --icon-swap-blur: var(--blur-small);
+  --icon-swap-start-scale: 0.25;
+  --icon-swap-ease: var(--ease-in-out);
+}
+
+[data-theme="dark"] {
+  --color-brand-500: #38BDF8;
+  --color-brand-600: #0284C7;
+  --color-brand-100: rgba(56, 189, 248, 0.12);
+  --color-brand-050: rgba(56, 189, 248, 0.05);
+
+  --color-ink-950: #F4F5F8;
+  --color-ink-700: #D0D3DD;
+  --color-ink-500: #888C9C;
+  --color-ink-300: #505464;
+
+  --color-surface-canvas: #08090C;
+  --color-surface-base: #121318;
+  --color-surface-subtle: #181920;
+
+  --color-border-default: #22242E;
+  --color-border-strong: #333644;
+
+  /* Backward-compatible aliases for dark mode */
+  --bg: var(--color-surface-canvas);
+  --surface: var(--color-surface-base);
+  --border: var(--color-border-default);
+  --blue: var(--color-brand-500);
+  --blue-deep: var(--color-brand-600);
+  --blue-soft: var(--color-brand-100);
+  --text: var(--color-ink-950);
+  --text-muted: var(--color-ink-500);
+  --text-faint: var(--color-ink-300);
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 6px 20px rgba(0, 0, 0, 0.35);
+  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.45), 0 14px 32px rgba(0, 0, 0, 0.55);
+  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.65);
 }
 
 *,
@@ -92,172 +184,36 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
-  /* The header is sticky and 76px tall, so an unpadded fragment jump parks the
-     target underneath it. Below 860px the section padding drops to 64px, which
-     is less than the header, and the heading disappears entirely. Setting this
-     on the scroll container also stops focus rings being clipped under the bar
-     when Tab scrolls an element to the top. */
-  scroll-padding-top: calc(76px + var(--s-lg));
-}
-
-section[id] {
-  scroll-margin-top: calc(76px + var(--s-lg));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+  scroll-padding-top: 88px;
 }
 
 body {
   margin: 0;
-  font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  line-height: 1.65;
+  padding: 0;
+  font-family: var(--font-sans);
   font-size: 16px;
+  line-height: 1.55;
+  color: var(--color-ink-700);
+  background-color: var(--color-surface-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* `height: auto` is not optional next to `max-width: 100%`. Every img here
-   carries intrinsic width/height attributes so the browser can reserve the box
-   and avoid a layout shift; without this the attribute height is also the used
-   height, so a downscaled image keeps its full pixel height and stretches. */
-img {
-  max-width: 100%;
-  height: auto;
+img, svg {
   display: block;
+  max-width: 100%;
 }
 
 a {
-  color: var(--blue);
+  color: inherit;
   text-decoration: none;
 }
-a:hover {
-  text-decoration: underline;
-}
 
-/* Visible focus ring on every interactive element. Removing the default outline
-   without replacing it makes the site unusable by keyboard.
-   Two-tone on purpose: a single #3B82F6 ring is 1.0:1 against the full-bleed
-   blue spotlight section, whose gradient ends in that exact colour, so the halo
-   is what makes it visible there and the blue ring is what makes it visible
-   everywhere else. */
-:focus-visible {
-  outline: 3px solid var(--blue-deep);
-  outline-offset: 3px;
-  border-radius: var(--r-sm);
-  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.85);
-}
-
-.wrap {
-  width: 100%;
-  max-width: var(--wrap);
-  margin: 0 auto;
-  padding: 0 var(--s-xl);
-}
-
-.wrap-narrow {
-  max-width: var(--wrap-narrow);
-}
-
-/* ── Brand mark ──────────────────────────────────────────────────────────────
- * The artwork ships as a white silhouette with an alpha channel and is recoloured
- * per surface — `tintColor` in React Native, a CSS mask here. Same one-mark-many-
- * colours property, same single source of truth (the design render).
- */
-.mark {
-  display: block;
-  width: 34px;
-  height: 45px; /* artwork is 331 × 438 */
-  background-color: var(--blue);
-  -webkit-mask: url("mark.png") center / contain no-repeat;
-  mask: url("mark.png") center / contain no-repeat;
-  flex: none;
-}
-
-.mark--on-blue {
-  background-color: #ffffff;
-}
-
-.wordmark {
-  font-weight: 700;
-  font-size: 1.4rem;
-  letter-spacing: -0.02em;
-  color: var(--text);
-  line-height: 1.1;
-}
-.wordmark span {
-  color: var(--sky);
-}
-
-/* ── Buttons ───────────────────────────────────────────────────────────────── */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--s-sm);
-  padding: 14px 26px;
-  border: 1px solid transparent;
-  border-radius: var(--r-pill);
+button, input, select, textarea {
   font: inherit;
-  font-weight: 600;
-  font-size: 0.975rem;
-  cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease,
-    background-color 0.18s ease;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.btn:hover {
-  text-decoration: none;
-  transform: translateY(-2px);
 }
 
-.btn--primary {
-  background: var(--fusion-contrast);
-  color: var(--on-accent);
-  box-shadow: var(--sh-glow);
-}
-
-.btn--light {
-  background: #ffffff;
-  color: var(--blue-deep);
-  box-shadow: 0 8px 20px rgba(8, 22, 60, 0.22);
-}
-
-/* A control's visible boundary needs 3:1 of its own (WCAG 1.4.11), which the
-   --border hairline (1.2:1) does not give. This is the one place the hairline
-   is load-bearing rather than decorative. */
-.btn--ghost {
-  background: transparent;
-  color: var(--blue-deep);
-  border-color: #7c8ba0;
-  box-shadow: var(--sh-card);
-}
-.btn--ghost:hover {
-  background: var(--surface);
-}
-
-.btn--on-blue-ghost {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.35);
-}
-.btn--on-blue-ghost:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.btn--lg {
-  padding: 17px 32px;
-  font-size: 1.05rem;
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
 }

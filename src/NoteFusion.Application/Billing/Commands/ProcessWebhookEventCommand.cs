@@ -46,7 +46,8 @@ public sealed class ProcessWebhookEventCommandHandler : IRequestHandler<ProcessW
         if (string.IsNullOrWhiteSpace(e.PaymentReference))
             return Error.Validation("BILLING_WEBHOOK_NO_REFERENCE", "Webhook carried no payment reference.");
 
-        var tx = await _db.PaymentTransactions.FirstOrDefaultAsync(t => t.Reference == e.PaymentReference, ct);
+        var tx = await _db.PaymentTransactions.FirstOrDefaultAsync(
+            t => t.Reference == e.PaymentReference || t.ProviderReference == e.PaymentReference, ct);
         if (tx is null)
             return BillingErrors.TransactionNotFound;
 

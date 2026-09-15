@@ -210,6 +210,7 @@ export interface AppVersionInfo {
   releaseNotes: string;
   androidStoreUrl: string;
   iosStoreUrl: string;
+  announcement?: { message: string; severity: string } | null;
 }
 
 // --- API errors ---------------------------------------------------------
@@ -384,6 +385,9 @@ export interface PaymentOpsSummary {
   currency: string;
   graceWindowMinutes: number;
   sweepIntervalMinutes: number;
+  mrrMinor: number;
+  activeSubscribersCount: number;
+  expiringInSevenDaysCount: number;
 }
 
 /**
@@ -398,6 +402,20 @@ export interface AdminReconcileResult {
   changed: boolean;
   /** A sentence written for the operator, ready to show as-is. */
   outcome: string;
+}
+
+export interface ClearStalePaymentsResult {
+  clearedPendingCount: number;
+  clearedProcessingCount: number;
+  fulfilledCount: number;
+}
+
+export interface WorkerHeartbeat {
+  workerName: string;
+  lastRunUtc: string;
+  durationMs: number;
+  status: string;
+  detail: string | null;
 }
 
 /** One tier of the health page, or the whole page's rolled-up verdict. */
@@ -423,6 +441,7 @@ export interface SystemHealth {
   };
   /** Tiers this stack cannot prove anything about, named rather than faked. */
   notMonitored: string[];
+  workerHeartbeats?: WorkerHeartbeat[];
 }
 
 /** One row of the admin user table — enough for a support conversation, no more. */
@@ -512,4 +531,39 @@ export interface AdminUserDetail {
   payments: AdminPayment[];
   ledger: AdminLedgerEntry[];
   recentActions: AuditLogRow[];
+  recentTranscriptions?: AdminTranscriptionSummary[];
 }
+
+export interface AdminTranscriptionSummary {
+  id: string;
+  title: string;
+  key: string;
+  tempoBpm: number;
+  overallConfidence: number;
+  status: string;
+  createdAtUtc: string;
+}
+
+export interface AdminTranscriptionRow {
+  id: string;
+  userId: string;
+  userEmail: string;
+  title: string;
+  key: string;
+  tempoBpm: number;
+  timeSignature: string;
+  overallConfidence: number;
+  status: string;
+  createdAtUtc: string;
+}
+
+export interface SystemAnnouncement {
+  id: string;
+  message: string;
+  severity: "info" | "warning" | "critical";
+  isActive: boolean;
+  expiresAtUtc: string | null;
+  createdAtUtc: string;
+  updatedAtUtc: string;
+}
+

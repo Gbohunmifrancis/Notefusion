@@ -45,17 +45,20 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
     private readonly IDatabaseHealth _database;
     private readonly ITranscriptionApi _transcriber;
     private readonly IDateTimeProvider _clock;
+    private readonly IWorkerHeartbeatTracker? _heartbeats;
 
     public GetSystemHealthQueryHandler(
         IApplicationDbContext db,
         IDatabaseHealth database,
         ITranscriptionApi transcriber,
-        IDateTimeProvider clock)
+        IDateTimeProvider clock,
+        IWorkerHeartbeatTracker? heartbeats = null)
     {
         _db = db;
         _database = database;
         _transcriber = transcriber;
         _clock = clock;
+        _heartbeats = heartbeats;
     }
 
     public async Task<Result<SystemHealthDto>> Handle(GetSystemHealthQuery request, CancellationToken ct)
@@ -85,8 +88,12 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             : panels.Any(p => p.Status == "degraded") ? "degraded"
             : "healthy";
 
+        var heartbeatDtos = _heartbeats?.GetAll()
+            .Select(h => new WorkerHeartbeatDto(h.WorkerName, h.LastRunUtc, h.DurationMs, h.Status, h.Detail))
+            .ToList() ?? (IReadOnlyList<WorkerHeartbeatDto>)Array.Empty<WorkerHeartbeatDto>();
+
         return new SystemHealthDto(
-            status, now, database, worker, backlog, activity, subscriptions, NotMonitored);
+            status, now, database, worker, backlog, activity, subscriptions, NotMonitored, heartbeatDtos);
     }
 
     private async Task<HealthPanelDto> CheckDatabase(CancellationToken ct)

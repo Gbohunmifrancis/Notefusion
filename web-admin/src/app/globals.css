@@ -34,183 +34,210 @@
    and faint reads 3.6:1 where light faint reads 2.4:1. The semantic colours do flip,
    because the light ones do not survive the swap: #dc2626 measures 3.5:1 on dark. */
 :root {
-  --background: #f4f7fc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
+  /* Brand */
+  --nf-primary: #2563eb;
+  --nf-primary-hover: #1d4ed8;
+  --nf-primary-light: #dbeafe;
+  --nf-primary-foreground: #ffffff;
 
-  /* Brand blue as a *fill* carrying white text. Does not flip: white on a dark-mode
-     brightened blue measures 3.7:1, so the fill stays put and the blue that has to read
-     as text on a dark ground is `brand` below. Both are real values from the app. */
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --primary-deep: #1d4ed8;
+  /* Light theme */
+  --nf-background: #fafafa;
+  --nf-surface: #ffffff;
+  --nf-surface-muted: #f8fafc;
+  --nf-surface-subtle: #f1f5f9;
+  --nf-foreground: #0f172a;
+  --nf-foreground-muted: #64748b;
+  --nf-foreground-subtle: #94a3b8;
+  --nf-border: #e2e8f0;
+  --nf-border-subtle: #f1f5f9;
+  --nf-sidebar: #ffffff;
+  --nf-input: #ffffff;
+
+  /* Semantic */
+  --nf-success: #16a34a;
+  --nf-success-light: #dcfce7;
+  --nf-warning: #d97706;
+  --nf-warning-light: #fef3c7;
+  --nf-danger: #dc2626;
+  --nf-danger-light: #fee2e2;
+  --nf-info: #0284c7;
+  --nf-info-light: #e0f2fe;
+
+  /* Charts */
+  --nf-chart-1: #2563eb;
+  --nf-chart-2: #0ea5e9;
+  --nf-chart-3: #6366f1;
+  --nf-chart-4: #94a3b8;
+  --nf-chart-5: #f59e0b;
+  --nf-chart-grid: #e2e8f0;
+
+  /* Components */
+  --nf-radius-sm: 0.375rem;
+  --nf-radius-md: 0.5rem;
+  --nf-radius-lg: 0.75rem;
+  --nf-icon-sm: 16px;
+  --nf-icon-md: 18px;
+  --nf-icon-lg: 20px;
+  --nf-icon-stroke: 1.75;
+  --nf-shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --nf-shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.16);
+
+  /* shadcn & tailwind mappings */
+  --background: var(--nf-background);
+  --foreground: var(--nf-foreground);
+  --card: var(--nf-surface);
+  --card-foreground: var(--nf-foreground);
+  --popover: var(--nf-surface);
+  --popover-foreground: var(--nf-foreground);
+
+  --primary: var(--nf-primary);
+  --primary-foreground: var(--nf-primary-foreground);
+  --primary-deep: var(--nf-primary-hover);
   --primary-bright: #3b82f6;
 
-  /* `muted` and `secondary` are the one tinted surface this console has; `accent` is the
-     same tint again, because shadcn uses it for hover and active states. */
-  --muted: #eef3fb;
-  --secondary: #eef3fb;
-  --accent: #eef3fb;
-  --secondary-foreground: #0f172a;
-  --accent-foreground: #0f172a;
+  --muted: var(--nf-surface-subtle);
+  --secondary: var(--nf-surface-muted);
+  --accent: var(--nf-surface-subtle);
+  --secondary-foreground: var(--nf-foreground);
+  --accent-foreground: var(--nf-foreground);
 
-  /* Darkened from the app's #64748b: at dashboard body size the app value measures
-     4.43:1 on the canvas and fails AA. This clears 4.5:1 everywhere. */
-  --muted-foreground: #5d6d82;
-  --faint: #94a3b8;
+  --muted-foreground: var(--nf-foreground-muted);
+  --faint: var(--nf-foreground-subtle);
 
-  --border: #e2e8f0;
-  --border-light: #eff3f9;
-  --input: #e2e8f0;
+  --border: var(--nf-border);
+  --border-light: var(--nf-border-subtle);
+  --input: var(--nf-input);
 
-  /* The blue that appears as text, as a glyph on a tint, or as a small graphic mark.
-     A fill blue and a text blue cannot be one colour once the ground goes dark: dark
-     enough for white text on top is too dark to read as text itself. So this one flips.
-     `deep` is the label colour on a `brand/10` chip — at 11px the DEFAULT measures 4.4:1
-     on that tint in light mode, which is a badge just under AA. */
-  --brand: #2563eb; /* 5.1:1 on white */
-  --brand-deep: #1d4ed8; /* 5.8:1 on a brand/10 chip */
-  --ring: #2563eb;
+  --brand: var(--nf-primary);
+  --brand-deep: var(--nf-primary-hover);
+  --ring: var(--nf-primary);
 
   --sky: #0ea5e9;
-
-  /* The dark ground for the sign-in value panel. Dark in both modes — it is a brand
-     surface, not a themed one — but pushed deeper in dark so it still separates from the
-     form panel beside it, which is no longer white. */
   --navy: #0b1736;
   --navy-deep: #070f24;
 
-  /* Pro and gift badges, from the app's `premium` gold. `deep` is the label colour on a
-     `premium/10` chip; the fill itself does not clear AA as text on a light surface, and
-     a badge nobody can read is not a badge. */
   --premium: #f59e0b;
-  --premium-deep: #b45309; /* 5.0:1 on white */
+  --premium-deep: #b45309;
 
-  --success: #16a34a;
-  --warning: #d97706;
-  --danger: #dc2626;
-  --destructive: #dc2626;
+  --success: var(--nf-success);
+  --warning: var(--nf-warning);
+  --danger: var(--nf-danger);
+  --destructive: var(--nf-danger);
   --destructive-foreground: #ffffff;
-  /* The three above are fills and marks — a dot, a spine, a meter. As *text* they do not
-     hold up: on their own /10 tint they measure 2.7:1, 2.6:1 and 3.7:1, and even on a
-     plain white card success and warning only reach 3.3:1. These are the -800 step of the
-     same ramps, and clear 4.5:1 on every surface this dashboard has. */
-  --success-deep: #166534; /* 5.8:1 on a success/10 chip */
-  --warning-deep: #92400e; /* 5.8:1 on a warning/10 chip */
-  --danger-deep: #991b1b; /* 6.4:1 on a danger/10 chip */
 
-  --sidebar: #ffffff;
-  --sidebar-foreground: #0f172a;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #2563eb;
+  --success-deep: #166534;
+  --warning-deep: #92400e;
+  --danger-deep: #991b1b;
 
-  --chart-1: #2563eb;
-  --chart-2: #0ea5e9;
-  --chart-3: #6366f1;
-  --chart-4: #94a3b8;
-  --chart-5: #f59e0b;
+  --sidebar: var(--nf-sidebar);
+  --sidebar-foreground: var(--nf-foreground);
+  --sidebar-primary: var(--nf-primary);
+  --sidebar-primary-foreground: var(--nf-primary-foreground);
+  --sidebar-accent: var(--nf-surface-subtle);
+  --sidebar-accent-foreground: var(--nf-foreground);
+  --sidebar-border: var(--nf-border);
+  --sidebar-ring: var(--nf-primary);
 
-  /* The base radius shadcn's own escape hatches read (sonner's `--border-radius`). Set to
-     the `md` step, which is the card corner. */
-  --radius: 14px;
+  --chart-1: var(--nf-chart-1);
+  --chart-2: var(--nf-chart-2);
+  --chart-3: var(--nf-chart-3);
+  --chart-4: var(--nf-chart-4);
+  --chart-5: var(--nf-chart-5);
 
-  /* Panels are border-first: the hairline separates and the shadow only lifts the card off
-     the canvas by a pixel. Whole values rather than just a colour, because dark mode needs
-     more than a darker rgba — see `.dark`. Named `--s-*` rather than `--shadow-*` because
-     `--shadow-*` is Tailwind v4's own theme namespace, and `--shadow-card: var(--shadow-card)`
-     inside @theme would be a circular reference. */
+  --radius: 0.5rem;
+
   --s-hairline: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --s-card: 0 2px 10px rgba(15, 23, 42, 0.06);
-  --s-lift: 0 12px 32px rgba(15, 23, 42, 0.1);
-  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.28);
+  --s-card: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+  --s-lift: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --s-glow: 0 0 0 3px rgba(37, 99, 235, 0.16);
 }
 
 .dark {
-  --background: #0b1220;
-  --foreground: #e8eef9;
-  --card: #131d30;
-  --card-foreground: #e8eef9;
-  --popover: #131d30;
-  --popover-foreground: #e8eef9;
+  /* Truly dark theme tokens (OLED / Pitch Black SaaS Admin) */
+  --nf-background: #000000;
+  --nf-surface: #09090b;
+  --nf-surface-muted: #121214;
+  --nf-surface-subtle: #18181b;
+  --nf-foreground: #fafafa;
+  --nf-foreground-muted: #a1a1aa;
+  --nf-foreground-subtle: #71717a;
+  --nf-border: #27272a;
+  --nf-border-subtle: #18181b;
+  --nf-sidebar: #050505;
+  --nf-input: #0c0c0e;
 
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --primary-deep: #1d4ed8;
+  --nf-chart-1: #3b82f6;
+  --nf-chart-2: #0ea5e9;
+  --nf-chart-3: #6366f1;
+  --nf-chart-4: #71717a;
+  --nf-chart-5: #f59e0b;
+  --nf-chart-grid: #18181b;
+
+  --background: var(--nf-background);
+  --foreground: var(--nf-foreground);
+  --card: var(--nf-surface);
+  --card-foreground: var(--nf-foreground);
+  --popover: var(--nf-surface);
+  --popover-foreground: var(--nf-foreground);
+
+  --primary: var(--nf-primary);
+  --primary-foreground: var(--nf-primary-foreground);
+  --primary-deep: var(--nf-primary-hover);
   --primary-bright: #3b82f6;
 
-  --muted: #1b2739;
-  --secondary: #1b2739;
-  --accent: #1b2739;
-  --secondary-foreground: #e8eef9;
-  --accent-foreground: #e8eef9;
+  --muted: var(--nf-surface-muted);
+  --secondary: var(--nf-surface-muted);
+  --accent: var(--nf-surface-subtle);
+  --secondary-foreground: var(--nf-foreground);
+  --accent-foreground: var(--nf-foreground);
 
-  --muted-foreground: #94a3b8;
-  --faint: #64748b;
+  --muted-foreground: var(--nf-foreground-muted);
+  --faint: var(--nf-foreground-subtle);
 
-  --border: #243146;
-  --border-light: #1c2739;
-  --input: #243146;
+  --border: var(--nf-border);
+  --border-light: var(--nf-border-subtle);
+  --input: var(--nf-input);
 
-  --brand: #60a5fa; /* 6.0:1 on the lightest dark surface */
-  /* Not deeper here. #1d4ed8 on the dark chip reads 2.3:1; the chip's label has to
-     brighten with the chip, so both ends of the pair land on one value. */
-  --brand-deep: #60a5fa;
-  --ring: #60a5fa;
+  --brand: #3b82f6;
+  --brand-deep: #2563eb;
+  --ring: #3b82f6;
 
   --sky: #38bdf8;
-
-  --navy: #070f24;
-  --navy-deep: #030814;
+  --navy: #050505;
+  --navy-deep: #000000;
 
   --premium: #fbbf24;
-  /* Same as the fill: the burnt light-mode gold reads 1.9:1 on the dark surface, and gold
-     at this brightness is already 10:1 there. */
-  --premium-deep: #fbbf24;
+  --premium-deep: #f59e0b;
 
   --success: #22c55e;
   --warning: #f59e0b;
-  --danger: #f87171;
-  --destructive: #f87171;
-  /* shadcn's destructive *button* does not read this — it keeps white ink and dims the fill
-     instead (`dark:bg-destructive/60`, landing on ~#9c4f57 over a card, 5.7:1). This token is
-     for a full-strength fill, where white measures 2.2:1 and fails, so it carries the canvas
-     colour. */
-  --destructive-foreground: #0b1220;
-  /* Collapsed onto the fills, for the reason brand-deep and premium-deep collapse: a label
-     on a tinted chip has to brighten with the chip. Nothing deeper is needed — on the /10
-     tints these already read 5.5:1, 5.9:1 and 4.8:1 at the worst surface. */
+  --danger: #ef4444;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
   --success-deep: #22c55e;
   --warning-deep: #f59e0b;
-  --danger-deep: #f87171;
+  --danger-deep: #ef4444;
 
-  --sidebar: #07142f;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(255, 255, 255, 0.08);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #2563eb;
+  --sidebar: var(--nf-sidebar);
+  --sidebar-foreground: var(--nf-foreground);
+  --sidebar-primary: var(--nf-primary);
+  --sidebar-primary-foreground: var(--nf-primary-foreground);
+  --sidebar-accent: var(--nf-surface-subtle);
+  --sidebar-accent-foreground: var(--nf-foreground);
+  --sidebar-border: var(--nf-border);
+  --sidebar-ring: var(--nf-primary);
 
-  --chart-1: #60a5fa;
-  --chart-2: #38bdf8;
-  --chart-3: #818cf8;
-  --chart-4: #64748b;
-  --chart-5: #fbbf24;
+  --chart-1: var(--nf-chart-1);
+  --chart-2: var(--nf-chart-2);
+  --chart-3: var(--nf-chart-3);
+  --chart-4: var(--nf-chart-4);
+  --chart-5: var(--nf-chart-5);
 
-  /* Black instead of slate, and far heavier: a 4%-black shadow is invisible on a navy
-     canvas, so depth has to come from opacity rather than hue. */
-  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --s-card: 0 2px 10px rgba(0, 0, 0, 0.45);
-  --s-lift: 0 12px 32px rgba(0, 0, 0, 0.55);
-  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.4);
+  --s-hairline: 0 1px 2px rgba(0, 0, 0, 0.8);
+  --s-card: 0 2px 10px rgba(0, 0, 0, 0.9);
+  --s-lift: 0 12px 32px rgba(0, 0, 0, 0.95);
+  --s-glow: 0 8px 20px rgba(37, 99, 235, 0.3);
 }
 
 @theme inline {

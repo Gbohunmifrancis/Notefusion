@@ -172,8 +172,8 @@ export function WebhooksView() {
         >
           {(data) => (
             <>
-              <div className="w-full min-w-0 overflow-x-auto border-t border-border">
-                <Table className="w-full min-w-[54rem]">
+              <div className="w-full min-w-0">
+                <Table className="w-full min-w-[50rem]">
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
                       <TableHead className={`${TH} w-10`}>
