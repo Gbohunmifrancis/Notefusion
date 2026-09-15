@@ -36,5 +36,8 @@ public enum AdminAuditAction
     ResetTrialQuota = 12,
 
     /// <summary>An operator set or cleared a global system broadcast announcement.</summary>
-    SetAnnouncement = 13
+    SetAnnouncement = 13,
+
+    /// <summary>An operator executed a pre-production purge of test users and data.</summary>
+    PurgeTestData = 14
 }
