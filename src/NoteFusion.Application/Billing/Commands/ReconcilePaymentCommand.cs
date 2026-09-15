@@ -68,7 +68,7 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
         if (v.AmountMinor != tx.AmountMinor
             || !string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
         {
-            return BillingErrors.VerificationMismatch;
+            return BillingErrors.VerificationMismatchDetail(tx.AmountMinor, tx.Currency, v.AmountMinor, v.Currency, v.Raw);
         }
 
         var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, _clock.UtcNow, ct);

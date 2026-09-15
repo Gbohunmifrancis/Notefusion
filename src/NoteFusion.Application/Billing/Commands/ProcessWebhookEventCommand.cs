@@ -91,7 +91,7 @@ public sealed class ProcessWebhookEventCommandHandler : IRequestHandler<ProcessW
         if (v.AmountMinor != tx.AmountMinor
             || !string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
         {
-            return BillingErrors.VerificationMismatch;
+            return BillingErrors.VerificationMismatchDetail(tx.AmountMinor, tx.Currency, v.AmountMinor, v.Currency, v.Raw);
         }
 
         // ---- Fulfilment: a single unit of work. Every write below commits together or not at all. ----

@@ -135,6 +135,8 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
                     return null;
                 current = next;
             }
+            if (current.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+                return null;
             return current.ValueKind == JsonValueKind.String ? current.GetString() : current.ToString();
         }
         catch (JsonException)
@@ -144,7 +146,43 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
     }
 
     private static long? ReadLong(string raw, params string[] path)
-        => long.TryParse(ReadString(raw, path), out var v) ? v : null;
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(raw);
+            var current = doc.RootElement;
+            foreach (var segment in path)
+            {
+                if (current.ValueKind != JsonValueKind.Object || !current.TryGetProperty(segment, out var next))
+                    return null;
+                current = next;
+            }
+
+            if (current.ValueKind == JsonValueKind.Number)
+            {
+                if (current.TryGetInt64(out var num))
+                    return num;
+                if (current.TryGetDecimal(out var dec))
+                    return (long)Math.Round(dec, MidpointRounding.AwayFromZero);
+            }
+
+            var str = current.ValueKind == JsonValueKind.String ? current.GetString() : current.ToString();
+            if (string.IsNullOrWhiteSpace(str))
+                return null;
+
+            if (long.TryParse(str, out var v))
+                return v;
+
+            if (decimal.TryParse(str, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsedDec))
+                return (long)Math.Round(parsedDec, MidpointRounding.AwayFromZero);
+
+            return null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
 
     /// <summary>
     /// Paystack statuses that close the door for good. Deliberately short: a Paystack checkout link stays
