@@ -73,10 +73,14 @@ public sealed class ReconcilePaymentAdminCommandHandler
 
         if (result.IsFailure)
         {
+            var summary = $"Reconciliation of payment {reference} could not be completed: {result.Error.Message}";
+            if (summary.Length > 295)
+                summary = summary[..292] + "...";
+
             _audit.Record(
                 AdminAuditAction.ReconcilePayment,
                 target,
-                $"Reconciliation of payment {reference} could not be completed: {result.Error.Message}",
+                summary,
                 request.Note);
 
             await _db.SaveChangesAsync(cancellationToken);
