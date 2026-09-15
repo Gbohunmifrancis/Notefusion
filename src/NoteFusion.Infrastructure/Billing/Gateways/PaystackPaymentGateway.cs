@@ -108,7 +108,13 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
             // Paystack marks a settled charge with data.status == "success"; amount is in minor units.
             var status = ReadString(raw, "data", "status");
             var succeeded = string.Equals(status, "success", StringComparison.OrdinalIgnoreCase);
-            var amountMinor = ReadLong(raw, "data", "amount") ?? 0;
+            var totalAmountMinor = ReadLong(raw, "data", "amount") ?? 0;
+            var requestedAmountMinor = ReadLong(raw, "data", "requested_amount");
+            // If the merchant configured Paystack to pass fees to customer, data.amount is gross (amount + fee)
+            // while data.requested_amount is the merchant's net price.
+            var amountMinor = (requestedAmountMinor.HasValue && requestedAmountMinor.Value > 0)
+                ? requestedAmountMinor.Value
+                : totalAmountMinor;
             var currency = ReadString(raw, "data", "currency") ?? string.Empty;
             var providerRef = ReadString(raw, "data", "id") ?? reference;
             var subscriptionRef = ReadString(raw, "data", "authorization", "authorization_code");

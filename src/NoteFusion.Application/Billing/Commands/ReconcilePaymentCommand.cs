@@ -65,8 +65,8 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
             return Result.Success();
         }
 
-        if (v.AmountMinor != tx.AmountMinor
-            || !string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
+        if (!string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase)
+            || v.AmountMinor < tx.AmountMinor)
         {
             return BillingErrors.VerificationMismatchDetail(tx.AmountMinor, tx.Currency, v.AmountMinor, v.Currency, v.Raw);
         }
