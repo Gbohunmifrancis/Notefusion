@@ -4,6 +4,7 @@ import type {
   AdminPaymentDetail,
   AdminPaymentRow,
   AdminReconcileResult,
+  AdminTranscriptionRow,
   AdminUserDetail,
   AdminUserRow,
   AdminWaitlistRow,
@@ -12,6 +13,7 @@ import type {
   AnalyticsOverview,
   AuditAction,
   AuditLogRow,
+  ClearStalePaymentsResult,
   GiftDuration,
   InboxAttachment,
   InboxEmailDetail,
@@ -25,6 +27,7 @@ import type {
   PaymentProviderName,
   PaymentStatus,
   RoleName,
+  SystemAnnouncement,
   SystemHealth,
   WebhookStatus,
 } from "@/api/types";
@@ -265,4 +268,44 @@ export const replyToEmail = (id: string, subject: string, bodyHtml: string) =>
   request<void>(`/api/admin/inbox/${id}/reply`, {
     method: "POST",
     body: { subject, bodyHtml },
+  });
+
+export const clearStalePayments = () =>
+  request<ClearStalePaymentsResult>("/api/admin/payments/clear-stale", {
+    method: "POST",
+  });
+
+export const resetTrialQuota = (id: string, note?: string) =>
+  request<number>(`/api/admin/users/${id}/reset-trial`, {
+    method: "POST",
+    body: { note },
+  });
+
+export const getTranscriptions = (
+  page: number,
+  pageSize: number,
+  filters: { status?: string; search?: string } = {},
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminTranscriptionRow>>(
+    `/api/admin/transcriptions${query({ page, pageSize, ...filters })}`,
+    signal ? { signal } : {},
+  );
+
+export const getAnnouncement = (signal?: AbortSignal) =>
+  request<SystemAnnouncement | null>("/api/admin/announcement", signal ? { signal } : {});
+
+export const setAnnouncement = (payload: {
+  message: string;
+  severity?: "info" | "warning" | "critical";
+  expiresAtUtc?: string | null;
+}) =>
+  request<SystemAnnouncement>("/api/admin/announcement", {
+    method: "POST",
+    body: payload,
+  });
+
+export const clearAnnouncement = () =>
+  request<void>("/api/admin/announcement", {
+    method: "DELETE",
   });

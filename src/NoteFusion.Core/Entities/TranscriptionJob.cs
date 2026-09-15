@@ -90,6 +90,14 @@ public class TranscriptionJob : BaseEntity
     }
 
     /// <summary>
+    /// Resets the trial consumption on this job (support action to restore a user's free quota).
+    /// </summary>
+    public void ResetTrial()
+    {
+        TrialConsumedAtUtc = null;
+    }
+
+    /// <summary>
     /// Closes the job, caching <paramref name="resultJson"/> when there is one. Returns false when it
     /// was already closed, which is the caller's signal that someone else got there first and no push
     /// is owed.

@@ -3,6 +3,7 @@ import type {
   AdminPaymentDetail,
   AdminPaymentRow,
   AdminReconcileResult,
+  AdminTranscriptionRow,
   AdminUserDetail,
   AdminUserRow,
   AdminWebhookEventDetail,
@@ -10,6 +11,7 @@ import type {
   AppVersionInfo,
   BillingInterval,
   CheckoutSession,
+  ClearStalePaymentsResult,
   LoginResponse,
   MyProfile,
   PagedResult,
@@ -18,6 +20,7 @@ import type {
   RegistrationResponse,
   SavedTranscription,
   Subscription,
+  SystemAnnouncement,
   SystemHealth,
   TranscriptionJob,
 } from "./types";
@@ -404,5 +407,49 @@ export const adminApi = {
   sendPasswordReset: (id: string, note?: string) =>
     api
       .post(`/api/admin/users/${id}/send-password-reset`, { note })
+      .then(() => undefined),
+
+  /** Manually sweeps abandoned Pending and expired Processing checkouts. */
+  clearStalePayments: () =>
+    api
+      .post<ClearStalePaymentsResult>("/api/admin/payments/clear-stale")
+      .then((r) => r.data),
+
+  /** Resets consumed trial quota on an account so they can transcribe again. */
+  resetTrialQuota: (id: string, note?: string) =>
+    api
+      .post<number>(`/api/admin/users/${id}/reset-trial`, { note })
+      .then((r) => r.data),
+
+  /** Global list of transcriptions across all users. */
+  transcriptions: (params?: {
+    page?: number;
+    pageSize?: number;
+    status?: string;
+    search?: string;
+  }) =>
+    api
+      .get<PagedResult<AdminTranscriptionRow>>("/api/admin/transcriptions", { params })
+      .then((r) => r.data),
+
+  /** Fetches active global system announcement, if any. */
+  getAnnouncement: () =>
+    api.get<SystemAnnouncement | null>("/api/admin/announcement").then((r) => r.data),
+
+  /** Publishes a global broadcast announcement. */
+  setAnnouncement: (data: {
+    message: string;
+    severity?: string;
+    expiresAtUtc?: string | null;
+    note?: string;
+  }) =>
+    api
+      .post<SystemAnnouncement>("/api/admin/announcement", data)
+      .then((r) => r.data),
+
+  /** Clears active global system announcement. */
+  clearAnnouncement: (note?: string) =>
+    api
+      .delete("/api/admin/announcement", { params: { note } })
       .then(() => undefined),
 };

@@ -128,5 +128,37 @@ public sealed record AdminUserDetailDto(
     AdminSubscriptionDto? Subscription,
     IReadOnlyList<AdminPaymentDto> Payments,
     IReadOnlyList<AdminLedgerEntryDto> Ledger,
-    IReadOnlyList<AuditLogRowDto> RecentActions);
+    IReadOnlyList<AuditLogRowDto> RecentActions,
+    IReadOnlyList<AdminTranscriptionSummaryDto>? RecentTranscriptions = null);
+
+public sealed record AdminTranscriptionSummaryDto(
+    Guid Id,
+    string Title,
+    string Key,
+    int TempoBpm,
+    double OverallConfidence,
+    string Status,
+    DateTime CreatedAtUtc);
+
+public sealed record AdminTranscriptionRowDto(
+    Guid Id,
+    Guid UserId,
+    string UserEmail,
+    string Title,
+    string Key,
+    int TempoBpm,
+    string TimeSignature,
+    double OverallConfidence,
+    string Status,
+    DateTime CreatedAtUtc);
+
+public sealed record SystemAnnouncementDto(
+    Guid Id,
+    string Message,
+    string Severity,
+    bool IsActive,
+    DateTime? ExpiresAtUtc,
+    DateTime CreatedAtUtc,
+    DateTime UpdatedAtUtc);
+
 

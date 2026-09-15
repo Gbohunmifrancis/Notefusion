@@ -194,12 +194,21 @@ public sealed class AdminController : ApiControllerBase
         => HandleNoContent(await _sender.Send(new SendPasswordResetCommand(id, body?.Note), ct));
 
     /// <summary>
-    /// Sends a custom branded message drafted by an administrator to the account.
+    /// Resets an account's consumed free-trial generations so they can generate free transcriptions again.
     /// </summary>
-    [HttpPost("users/{id:guid}/email")]
-    public async Task<IActionResult> SendEmail(Guid id, SendEmailBody body, CancellationToken ct)
-        => HandleNoContent(await _sender.Send(
-            new SendUserEmailCommand(id, body.Subject, body.Heading, body.BodyHtml, body.CtaText, body.CtaUrl, body.Note), ct));
+    [HttpPost("users/{id:guid}/reset-trial")]
+    public async Task<IActionResult> ResetTrialQuota(Guid id, NoteBody? body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new ResetUserTrialQuotaCommand(id, body?.Note), ct));
+
+    /// <summary>Global list of user transcriptions for monitoring ML quality and outputs.</summary>
+    [HttpGet("transcriptions")]
+    public async Task<IActionResult> Transcriptions(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 25,
+        [FromQuery] TranscriptionStatus? status = null,
+        [FromQuery] string? search = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetAdminTranscriptionsQuery(page, pageSize, status, search), ct));
 
     // ------------------------------------------------ payments & reconciliation
 
@@ -321,6 +330,24 @@ public sealed class AdminController : ApiControllerBase
         => HandleResult(await _sender.Send(
             new GetLedgerEntriesQuery(page, pageSize, direction, reason, fromUtc, toUtc, search), ct));
 
+    // ------------------------------------------------ announcements
+
+    /// <summary>Current active system announcement, if any.</summary>
+    [HttpGet("announcement")]
+    public async Task<IActionResult> GetAnnouncement(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetSystemAnnouncementQuery(), ct));
+
+    /// <summary>Publishes or updates a global broadcast announcement to client apps.</summary>
+    [HttpPost("announcement")]
+    public async Task<IActionResult> SetAnnouncement(SetAnnouncementBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(
+            new SetSystemAnnouncementCommand(body.Message, body.Severity ?? "info", body.ExpiresAtUtc, body.Note), ct));
+
+    /// <summary>Clears/deactivates the active system announcement.</summary>
+    [HttpDelete("announcement")]
+    public async Task<IActionResult> ClearAnnouncement([FromQuery] string? note, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new ClearSystemAnnouncementCommand(note), ct));
+
     // ------------------------------------------------------------------- bodies
 
     /// <summary>
@@ -353,4 +380,7 @@ public sealed class AdminController : ApiControllerBase
 
     /// <summary>The reply to send back to the original sender of a received email.</summary>
     public sealed record InboxReplyBody(string Subject, string BodyHtml);
+
+    /// <summary>Body for broadcasting a system announcement.</summary>
+    public sealed record SetAnnouncementBody(string Message, string? Severity, DateTime? ExpiresAtUtc, string? Note);
 }

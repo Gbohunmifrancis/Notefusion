@@ -477,6 +477,30 @@ export function AdminUserScreen({ navigation, route }: Props) {
               }
             />
 
+            {user.trialGenerationsUsed > 0 ? (
+              <Button
+                label="Reset free trial quota"
+                variant="secondary"
+                icon="refresh-outline"
+                loading={action === "reset-trial"}
+                disabled={action !== null}
+                style={styles.stacked}
+                onPress={() =>
+                  confirm({
+                    title: "Reset trial quota?",
+                    message: `Reset free trial usage for ${user.email}? They will receive their free transcription quota again.`,
+                    label: "Reset quota",
+                    icon: "refresh-outline",
+                    key: "reset-trial",
+                    done: "Trial quota reset",
+                    fn: async () => {
+                      await adminApi.resetTrialQuota(user.id, NOTE);
+                    },
+                  })
+                }
+              />
+            ) : null}
+
             {!user.hasPassword ? (
               <Text style={styles.note}>
                 This account signs in with Google and has no password, so a reset
@@ -574,6 +598,43 @@ export function AdminUserScreen({ navigation, route }: Props) {
                     >
                       {money(entry.amountMinor, entry.currency)}
                     </Text>
+                  </View>
+                ))}
+              </Card>
+            </>
+          ) : null}
+
+          {/* ── Recent Transcriptions ────────────────────────────────────────── */}
+          {user.recentTranscriptions && user.recentTranscriptions.length > 0 ? (
+            <>
+              <SectionTitle>Recent transcriptions</SectionTitle>
+              <Card padded={false}>
+                {user.recentTranscriptions.map((t, i) => (
+                  <View
+                    key={t.id}
+                    style={[styles.subRow, i > 0 && styles.subRowDivided]}
+                  >
+                    <View style={styles.subMain}>
+                      <Text style={styles.subTitle} numberOfLines={1}>
+                        {t.title || "Untitled"}
+                      </Text>
+                      <Text style={styles.subMeta}>
+                        Key: {t.key || "—"} · {t.tempoBpm > 0 ? `${t.tempoBpm} BPM · ` : ""}{Math.round(t.overallConfidence * 100)}% conf
+                      </Text>
+                      <Text style={styles.subMeta}>
+                        {dateTime(t.createdAtUtc)} · {ago(t.createdAtUtc)} ago
+                      </Text>
+                    </View>
+                    <StatusPill
+                      label={t.status}
+                      tone={
+                        t.status.toLowerCase() === "completed"
+                          ? "good"
+                          : t.status.toLowerCase() === "failed"
+                            ? "bad"
+                            : "info"
+                      }
+                    />
                   </View>
                 ))}
               </Card>

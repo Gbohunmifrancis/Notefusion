@@ -97,6 +97,41 @@ public sealed class GetPaymentOpsSummaryQueryHandler
         int WebhooksIn(WebhookStatus status)
             => webhookCounts.FirstOrDefault(c => c.Status == status)?.Count ?? 0;
 
+        // Calculate MRR and active subscription counts
+        var now = _clock.UtcNow;
+        var inSevenDays = now.AddDays(7);
+
+        var activeSubs = await _db.Subscriptions
+            .AsNoTracking()
+            .Where(s => (s.Status == SubscriptionStatus.Active || s.Status == SubscriptionStatus.Canceled)
+                        && now < s.CurrentPeriodEndUtc)
+            .Join(_db.Plans.AsNoTracking(),
+                s => s.PlanId,
+                p => p.Id,
+                (s, p) => new
+                {
+                    s.Provider,
+                    s.CurrentPeriodEndUtc,
+                    p.AmountMinor,
+                    p.Interval
+                })
+            .ToListAsync(cancellationToken);
+
+        var activePaidSubs = activeSubs.Where(s => s.Provider != null).ToList();
+        var activeSubscribersCount = activePaidSubs.Count;
+
+        long mrrMinor = 0;
+        foreach (var sub in activePaidSubs)
+        {
+            if (sub.Interval == BillingInterval.Monthly)
+                mrrMinor += sub.AmountMinor;
+            else if (sub.Interval == BillingInterval.Yearly)
+                mrrMinor += (long)Math.Round(sub.AmountMinor / 12.0);
+        }
+
+        var expiringInSevenDaysCount = activeSubs
+            .Count(s => s.CurrentPeriodEndUtc < inSevenDays && s.CurrentPeriodEndUtc < NoteFusion.Core.Entities.Billing.Subscription.LifetimeEndUtc);
+
         return new PaymentOpsSummaryDto(
             PaymentsIn(PaymentStatus.Pending),
             PaymentsIn(PaymentStatus.Processing),
@@ -114,6 +149,9 @@ public sealed class GetPaymentOpsSummaryQueryHandler
             credited - refunded,
             currency,
             Math.Max(1, _settings.ReconciliationGraceMinutes),
-            Math.Max(1, _settings.ReconciliationMinutes));
+            Math.Max(1, _settings.ReconciliationMinutes),
+            mrrMinor,
+            activeSubscribersCount,
+            expiringInSevenDaysCount);
     }
 }

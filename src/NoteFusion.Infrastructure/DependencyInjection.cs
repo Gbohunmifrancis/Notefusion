@@ -24,6 +24,7 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        services.AddSingleton<IWorkerHeartbeatTracker, NoteFusion.Infrastructure.Common.WorkerHeartbeatTracker>();
         services.AddPersistence(configuration);
         services.AddSecurity(configuration);
         services.AddPush(configuration);

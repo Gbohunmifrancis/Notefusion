@@ -35,6 +35,13 @@ public sealed record HealthPanelDto(string Name, string Status, int? LatencyMs, 
 /// Provider webhooks received and not yet applied. The number that matters when a customer says they
 /// paid and did not get Pro: a backlog with an old oldest-entry means the drain has stopped.
 /// </param>
+public sealed record WorkerHeartbeatDto(
+    string WorkerName,
+    DateTime LastRunUtc,
+    long DurationMs,
+    string Status,
+    string? Detail);
+
 public sealed record SystemHealthDto(
     string Status,
     DateTime CheckedAtUtc,
@@ -43,7 +50,8 @@ public sealed record SystemHealthDto(
     HealthPanelDto WebhookBacklog,
     ActivityStatsDto Activity,
     SubscriptionHealthDto Subscriptions,
-    IReadOnlyList<string> NotMonitored);
+    IReadOnlyList<string> NotMonitored,
+    IReadOnlyList<WorkerHeartbeatDto>? WorkerHeartbeats = null);
 
 /// <summary>
 /// Transcription throughput. Volume only, deliberately: the API records that a job was submitted and

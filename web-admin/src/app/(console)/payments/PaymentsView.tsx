@@ -1,6 +1,6 @@
 "use client";
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   Banknote,
@@ -12,11 +12,13 @@ import {
   MoreHorizontal,
   Search,
   ShieldAlert,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-import { getPayments, getPaymentsSummary } from "@/api/endpoints";
+import { clearStalePayments, getPayments, getPaymentsSummary } from "@/api/endpoints";
 import type {
   AdminPaymentRow,
   PaymentOpsSummary,
@@ -87,18 +89,49 @@ export function PaymentsView() {
     queryFn: ({ signal }) => getPaymentsSummary(signal),
   });
 
+  const queryClient = useQueryClient();
+  const [sweeping, setSweeping] = useState(false);
+
+  const handleSweepStale = async () => {
+    try {
+      setSweeping(true);
+      const res = await clearStalePayments();
+      toast.success(
+        `Cleared ${res.clearedPendingCount} pending and ${res.clearedProcessingCount} processing checkout(s). Fulfilled ${res.fulfilledCount}.`,
+      );
+      void queryClient.invalidateQueries({ queryKey: ["payments"] });
+      void queryClient.invalidateQueries({ queryKey: ["payments-summary"] });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to sweep stale payments";
+      toast.error(msg);
+    } finally {
+      setSweeping(false);
+    }
+  };
+
   const filtered = Boolean(status !== ALL || provider !== ALL || stuckOnly || term);
 
   return (
     <div className="animate-fade-in space-y-6">
       {/* HEADER MATCHING MOCKUP */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Transactions
-        </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Revenue and payment activity for your NoteFusion account.
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Transactions
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Revenue and payment activity for your NoteFusion account.
+          </p>
+        </div>
+        <Button
+          onClick={handleSweepStale}
+          disabled={sweeping}
+          variant="outline"
+          className="flex items-center gap-2 text-xs"
+        >
+          <Sparkles className={`h-3.5 w-3.5 ${sweeping ? "animate-spin text-amber-500" : "text-amber-500"}`} />
+          {sweeping ? "Sweeping Stale..." : "Sweep Stale Checkouts"}
+        </Button>
       </div>
 
       {/* 4 TOP KPI CARDS */}
@@ -112,7 +145,7 @@ export function PaymentsView() {
               ? "..."
               : formatMoney(0, "USD"),
             description: summary.data
-              ? `${formatMoney(summary.data.creditedMinor, summary.data.currency)} credited`
+              ? `${formatMoney(summary.data.mrrMinor, summary.data.currency)} MRR · ${formatMoney(summary.data.creditedMinor, summary.data.currency)} credited`
               : "Net settled revenue",
             icon: DollarSign,
           }}
@@ -126,7 +159,7 @@ export function PaymentsView() {
               ? "..."
               : "0",
             description: summary.data
-              ? `${formatCount(summary.data.processingCount)} processing`
+              ? `${summary.data.activeSubscribersCount} active Pro (${summary.data.expiringInSevenDaysCount} expiring ≤7d)`
               : "Settled payments",
             icon: CreditCard,
           }}

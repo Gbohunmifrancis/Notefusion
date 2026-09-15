@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Admin.Commands;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 
 namespace NoteFusion.Infrastructure.Billing.Workers;
@@ -20,16 +21,21 @@ internal sealed class AdminPaymentAlertWorker : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly BillingSettings _settings;
+    private readonly IWorkerHeartbeatTracker? _heartbeatTracker;
     private readonly ILogger<AdminPaymentAlertWorker> _logger;
 
     private PaymentIssueSignature? _lastNotified;
 
     public AdminPaymentAlertWorker(
-        IServiceScopeFactory scopeFactory, BillingSettings settings, ILogger<AdminPaymentAlertWorker> logger)
+        IServiceScopeFactory scopeFactory,
+        BillingSettings settings,
+        ILogger<AdminPaymentAlertWorker> logger,
+        IWorkerHeartbeatTracker? heartbeatTracker = null)
     {
         _scopeFactory = scopeFactory;
         _settings = settings;
         _logger = logger;
+        _heartbeatTracker = heartbeatTracker;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -68,20 +74,41 @@ internal sealed class AdminPaymentAlertWorker : BackgroundService
 
     private async Task CheckAsync(CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
-        var sender = scope.ServiceProvider.GetRequiredService<ISender>();
-
-        var result = await sender.Send(new NotifyAdminsOfPaymentIssuesCommand(_lastNotified), ct);
-        if (result.IsFailure)
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        try
         {
-            _logger.LogWarning("Admin payment alert check failed: {Error}", result.Error.Message);
-            return;
+            using var scope = _scopeFactory.CreateScope();
+            var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+
+            var result = await sender.Send(new NotifyAdminsOfPaymentIssuesCommand(_lastNotified), ct);
+            sw.Stop();
+
+            if (result.IsFailure)
+            {
+                _heartbeatTracker?.RecordHeartbeat(
+                    "AdminPaymentAlert", sw.ElapsedMilliseconds, "Degraded", result.Error.Message);
+                _logger.LogWarning("Admin payment alert check failed: {Error}", result.Error.Message);
+                return;
+            }
+
+            // Only ever moves forward on a successful check, so a failed one cannot silence the next.
+            _lastNotified = result.Value;
+
+            _heartbeatTracker?.RecordHeartbeat(
+                "AdminPaymentAlert",
+                sw.ElapsedMilliseconds,
+                "Healthy",
+                result.Value.Total > 0 ? $"{result.Value.Total} issue(s) flagged" : "No payment issues");
+
+            if (result.Value.Total > 0)
+                _logger.LogInformation("Payment conditions needing action: {Signature}.", result.Value);
         }
-
-        // Only ever moves forward on a successful check, so a failed one cannot silence the next.
-        _lastNotified = result.Value;
-
-        if (result.Value.Total > 0)
-            _logger.LogInformation("Payment conditions needing action: {Signature}.", result.Value);
+        catch (Exception ex)
+        {
+            sw.Stop();
+            _heartbeatTracker?.RecordHeartbeat(
+                "AdminPaymentAlert", sw.ElapsedMilliseconds, "Failed", ex.Message);
+            throw;
+        }
     }
 }

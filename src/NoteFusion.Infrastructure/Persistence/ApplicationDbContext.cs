@@ -28,6 +28,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 
     public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
     public DbSet<WaitlistEntry> WaitlistEntries => Set<WaitlistEntry>();
+    public DbSet<SystemAnnouncement> SystemAnnouncements => Set<SystemAnnouncement>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
