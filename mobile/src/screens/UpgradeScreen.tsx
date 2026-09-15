@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Modal,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
@@ -152,6 +153,7 @@ export function UpgradeScreen({ navigation }: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false); // opening checkout
   const [verifying, setVerifying] = useState(false); // polling after return
+  const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
 
   // Guards against setState after the screen unmounts mid-poll.
   const mounted = useRef(true);
@@ -182,17 +184,37 @@ export function UpgradeScreen({ navigation }: Props) {
     }
   }, []);
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Reconcile and confirm any in-flight checkout with the provider, and refresh plans/profile
+      const [sub] = await Promise.all([
+        billingApi.confirm().catch(() => billingApi.mySubscription()),
+        billingApi.plans().then((planList) => setPlans(planList)).catch(() => undefined),
+        meApi.get().then((p) => setProfile(p)).catch(() => null),
+      ]);
+      if (!mounted.current) return;
+      if (sub) {
+        setSubscription(sub);
+        if (sub.isActive) {
+          refreshSubscription(true).catch(() => undefined);
+        }
+      }
+    } finally {
+      if (mounted.current) setRefreshing(false);
+    }
+  }, [refreshSubscription]);
+
   useEffect(() => {
     load();
   }, [load]);
 
   // ── After the external browser returns, ask the server to verify with the provider
-  //    straight away rather than waiting to be told by webhook — that wait was the
-  //    several minutes between paying and Pro appearing. A couple of retries cover the
-  //    provider not having finalised the charge in the same instant the browser closed. ──
+  //    straight away rather than waiting to be told by webhook. Extended to 10 attempts
+  //    (20 seconds total) to comfortably absorb payment gateway settlement latency. ──
   async function verifyActivation() {
     setVerifying(true);
-    for (let attempt = 0; attempt < 4; attempt++) {
+    for (let attempt = 0; attempt < 10; attempt++) {
       try {
         // confirm() reconciles and reports in one round trip; mySubscription() would only
         // report, so it can never do better than "whenever the webhook lands".
@@ -203,9 +225,7 @@ export function UpgradeScreen({ navigation }: Props) {
           setVerifying(false);
           // Tell the shared provider too, so the Subscription tab and the gold
           // avatar ring update without waiting for a relaunch.
-          refreshSubscription().catch(() => undefined);
-          // The gold treatment carries the celebration now, so the 🎉 the OS
-          // dialog needed to feel like anything is gone.
+          refreshSubscription(true).catch(() => undefined);
           showDialog({
             title: "Welcome to Pro",
             message: "Your subscription is now active. Transcribe as much as you like.",
@@ -225,7 +245,7 @@ export function UpgradeScreen({ navigation }: Props) {
     showDialog({
       title: "Payment processing",
       message:
-        "If you completed payment, Pro will unlock in a moment. Reopen this screen to check.",
+        "If you completed payment, Pro will unlock in a moment. Drag down to refresh or reopen this screen to check.",
       icon: "time-outline",
     });
   }
@@ -283,7 +303,18 @@ export function UpgradeScreen({ navigation }: Props) {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <Screen scroll contentStyle={styles.screen}>
+    <Screen
+      scroll
+      contentStyle={styles.screen}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={colors.accent}
+          colors={[colors.accent]}
+        />
+      }
+    >
       {/* ── Header row ─────────────────────────────────────────────────────── */}
       <View style={styles.headerRow}>
         <Touchable

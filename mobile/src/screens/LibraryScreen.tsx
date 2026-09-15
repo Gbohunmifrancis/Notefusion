@@ -39,7 +39,7 @@ export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro } = useSubscription();
+  const { isPro, refresh: refreshSubscription } = useSubscription();
 
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +50,10 @@ export function LibraryScreen() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
 
-  function load() {
+  function load(reconcile = false) {
+    if (reconcile) {
+      refreshSubscription(true).catch(() => undefined);
+    }
     libraryApi
       .list()
       .then((data) => {
@@ -256,7 +259,7 @@ export function LibraryScreen() {
             refreshing={refreshing}
             onRefresh={() => {
               setRefreshing(true);
-              load();
+              load(true);
             }}
             tintColor={colors.accent}
             colors={[colors.accent]}

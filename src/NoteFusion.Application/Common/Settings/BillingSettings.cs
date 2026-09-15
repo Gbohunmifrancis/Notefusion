@@ -11,27 +11,24 @@ public sealed class BillingSettings
 
     /// <summary>
     /// Where the provider returns the browser after hosted checkout. **Must be an absolute http(s) URL**:
-    /// Bachs rejects anything else at session creation (<c>success_url must use http:// or https://
-    /// scheme</c>), so the app's deep link cannot go here directly. Point it at the API's own
-    /// <c>GET /api/billing/return</c>, which is the page that hands off to the deep link. The committed
-    /// default is deliberately the deep link and therefore invalid for Bachs — an unconfigured
-    /// deployment fails loudly at checkout, before anyone is charged, rather than paying and landing on
-    /// a dead page. The real payment result arrives via webhook either way.
+    /// Hosted checkouts (Paystack, Flutterwave, Bachs) reject or ignore custom URI schemes directly,
+    /// so point it at the API's own <c>GET /api/billing/return</c>, which instantly hands off to the
+    /// app's deep link (<c>notefusion://billing/return</c>) to auto-dismiss the in-app browser.
     /// </summary>
-    public string CheckoutCallbackUrl { get; init; } = "notefusion://billing/return";
+    public string CheckoutCallbackUrl { get; init; } = "https://notefusion-api-3c2513a1e974.herokuapp.com/api/billing/return";
 
     /// <summary>How many times the webhook worker retries an event before parking it as Failed.</summary>
     public int MaxWebhookAttempts { get; init; } = 5;
 
     /// <summary>How often the webhook worker polls the inbox for undrained events.</summary>
-    public int WebhookPollSeconds { get; init; } = 5;
+    public int WebhookPollSeconds { get; init; } = 3;
 
     /// <summary>How often the reconciliation worker sweeps stuck transactions against the provider.</summary>
     public int ReconciliationMinutes { get; init; } = 15;
 
     /// <summary>
     /// How long a payment may sit in <c>Processing</c> before the reconciliation sweep treats it as stuck.
-    /// Long enough for the normal webhook to arrive, so the sweep does not race the primary path.
+    /// Long enough for the normal webhook or instant client confirm to arrive, so the sweep does not race the primary path.
     /// </summary>
     /// <remarks>
     /// Settings rather than a constant in the worker because the admin console reports the same threshold —

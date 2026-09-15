@@ -5,6 +5,7 @@ import {
   Easing,
   FlatList,
   Image,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
@@ -54,9 +55,10 @@ function currentGreeting(): string {
 export function HomeScreen({ navigation }: Props) {
   const rootNav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const { user } = useAuth();
-  const { isPro } = useSubscription();
+  const { isPro, refresh: refreshSubscription } = useSubscription();
   const [recent, setRecent] = useState<SavedTranscription[]>([]);
   const [loadingRecent, setLoadingRecent] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const [greeting, setGreeting] = useState(currentGreeting);
@@ -182,6 +184,28 @@ export function HomeScreen({ navigation }: Props) {
       .finally(() => setLoadingRecent(false));
   }, []);
 
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        libraryApi
+          .list()
+          .then((all) => {
+            setRecent(all.slice(0, 3));
+            setLoadError(null);
+          })
+          .catch((e) => setLoadError(toApiError(e).message)),
+        meApi
+          .get()
+          .then((p) => setPictureUrl(p.profilePictureUrl))
+          .catch(() => undefined),
+        refreshSubscription(true).catch(() => undefined),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshSubscription]);
+
   useFocusEffect(
     useCallback(() => {
       let active = true;
@@ -262,6 +286,14 @@ export function HomeScreen({ navigation }: Props) {
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.accent}
+            colors={[colors.accent]}
+          />
+        }
         ListHeaderComponent={
           <View style={styles.headerArea}>
             {/* ── 1. Top Header Bar: Dark Mode & Notifications (right) ─ */}

@@ -46,8 +46,8 @@ interface SubscriptionState {
   trialRemaining: number;
   /** The free allowance, so copy can say "2 of 5" without repeating the 5. */
   trialTotal: number;
-  /** Re-reads the server. Called after a checkout completes, or a generation succeeds. */
-  refresh: () => Promise<void>;
+  /** Re-reads the server. If reconcilePending is true (default for manual refresh), verifies any in-flight payment first. */
+  refresh: (reconcilePending?: boolean) => Promise<void>;
 }
 
 const SubscriptionContext = createContext<SubscriptionState | undefined>(undefined);
@@ -117,10 +117,15 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (reconcilePending: boolean = false) => {
     setLoading(true);
     try {
-      const sub = await billingApi.mySubscription();
+      // If reconcilePending is true (on pull-to-refresh or foreground return), call confirm()
+      // which checks with the payment gateway for any in-flight checkout session first.
+      // If no checkout is pending or confirm fails, it safely falls back to mySubscription().
+      const sub = reconcilePending
+        ? await billingApi.confirm().catch(() => billingApi.mySubscription())
+        : await billingApi.mySubscription();
       if (!mounted.current) return;
       setSubscription(sub);
       setKnown(true);
@@ -262,7 +267,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     if (!userId) return;
     const sub = AppState.addEventListener('change', (next) => {
-      if (next === 'active') load();
+      // Reconcile pending payments when returning to foreground (e.g. from checkout browser)
+      if (next === 'active') void load(true);
     });
     return () => sub.remove();
   }, [userId, load]);
@@ -276,7 +282,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       loading,
       trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,
       trialTotal: subscription?.trialGenerationsTotal ?? DEFAULT_TRIAL_TOTAL,
-      refresh: load,
+      refresh: (reconcile = true) => load(reconcile),
     }),
     [subscription, known, loading, load],
   );
