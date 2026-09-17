@@ -500,6 +500,16 @@ class Settings:
         return os.getenv("NF_F0_MERGE", "0").strip().lower() not in ("0", "false", "no")
 
     @property
+    def contour_gap_merge(self) -> bool:
+        """Fuse same-pitch Basic Pitch fragments across a continuously voiced gap.
+
+        This is off until it is validated on the real singing corpus.  The helper is
+        deliberately conservative and requires pyin voicing plus pitch continuity;
+        keeping the switch dynamic lets the accuracy harness compare it in-process.
+        """
+        return os.getenv("NF_CONTOUR_GAP_MERGE", "0").strip().lower() not in ("0", "false", "no")
+
+    @property
     def quantize_divisors(self) -> tuple[int, ...]:
         """music21 quantize grid, as divisions per quarter note.
 

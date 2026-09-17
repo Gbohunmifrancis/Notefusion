@@ -56,10 +56,12 @@ from app.pipeline.transcriber import (
     _key_confidence_from_margin,
     _key_from_identity,
     _key_spelling,
+    _merge_contour_gaps,
     _merge_onsets,
     _normalise_key_name,
     _onset_bpm,
     _respell_to_key,
+    get_basic_pitch_model,
 )
 
 # ── _normalise_key_name ───────────────────────────────────────────────────────
@@ -355,6 +357,54 @@ class TestMergeOnsets:
         events = [Event(0.0, 0.20, 60, 0.8), Event(0.10, 0.30, 60, 0.7)]  # gap = -0.10
         result = _merge_onsets(events, gap_sec=0.08)
         assert len(result) == 2
+
+
+# ── _merge_contour_gaps ───────────────────────────────────────────────────────
+
+
+class TestMergeContourGaps:
+    def _contour(self, values, probs=0.9, hop=0.01):
+        midi = np.asarray(values, dtype=float)
+        return (
+            np.arange(midi.size, dtype=float) * hop,
+            midi,
+            np.full(midi.size, probs, dtype=float),
+        )
+
+    def test_fuses_same_pitch_fragments_across_a_continuously_voiced_gap(self):
+        events = [Event(0.0, 0.10, 60, 0.8), Event(0.15, 0.25, 60, 0.7)]
+        result = _merge_contour_gaps(events, *self._contour([60.0] * 30))
+        assert len(result) == 1
+        assert (result[0].start, result[0].end, result[0].pitch) == (0.0, 0.25, 60)
+
+    def test_rejects_a_contour_that_leaves_the_note_pitch(self):
+        events = [Event(0.0, 0.10, 60, 0.8), Event(0.15, 0.25, 60, 0.7)]
+        contour = self._contour([60.0] * 12 + [61.5] * 6 + [60.0] * 12)
+        assert len(_merge_contour_gaps(events, *contour)) == 2
+
+    def test_rejects_unvoiced_dropouts(self):
+        events = [Event(0.0, 0.10, 60, 0.8), Event(0.15, 0.25, 60, 0.7)]
+        contour = self._contour([60.0] * 12 + [np.nan] * 6 + [60.0] * 12)
+        assert len(_merge_contour_gaps(events, *contour)) == 2
+
+    def test_rejects_a_gap_longer_than_the_dropout_budget(self):
+        events = [Event(0.0, 0.10, 60, 0.8), Event(0.40, 0.50, 60, 0.7)]
+        assert len(_merge_contour_gaps(events, *self._contour([60.0] * 60))) == 2
+
+    def test_malformed_contour_is_a_safe_noop(self):
+        events = [Event(0.0, 0.10, 60, 0.8), Event(0.15, 0.25, 60, 0.7)]
+        assert _merge_contour_gaps(events, np.array([0.0]), np.array([]), np.array([])) == events
+
+
+# ── Basic Pitch model reuse ───────────────────────────────────────────────────
+
+
+class TestBasicPitchModelReuse:
+    def test_accessor_returns_the_existing_warmed_model(self, monkeypatch):
+        sentinel = object()
+        monkeypatch.setattr(transcriber, "_BASIC_PITCH_MODEL", sentinel)
+        assert get_basic_pitch_model() is sentinel
+        assert get_basic_pitch_model() is sentinel
 
 
 # ── _dedup_simultaneous ───────────────────────────────────────────────────────

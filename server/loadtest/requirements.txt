@@ -1,0 +1,2 @@
+# Isolated load-test dependency; do not add to the transcription API runtime image unless needed.
+locust==2.32.10
