@@ -194,6 +194,14 @@ public sealed class AdminController : ApiControllerBase
         => HandleNoContent(await _sender.Send(new SendPasswordResetCommand(id, body?.Note), ct));
 
     /// <summary>
+    /// Sends a branded custom email to the target user with an optional heading, CTA button, and audit note.
+    /// </summary>
+    [HttpPost("users/{id:guid}/email")]
+    public async Task<IActionResult> SendUserEmail(Guid id, SendEmailBody body, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(
+            new SendUserEmailCommand(id, body.Subject, body.Heading, body.BodyHtml, body.CtaText, body.CtaUrl, body.Note), ct));
+
+    /// <summary>
     /// Resets an account's consumed free-trial generations so they can generate free transcriptions again.
     /// </summary>
     [HttpPost("users/{id:guid}/reset-trial")]
