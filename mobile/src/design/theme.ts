@@ -112,23 +112,21 @@ export const colors = {
 export type Palette = { readonly [K in keyof typeof colors]: string };
 
 /**
- * Dark palette. Surfaces are slate-navy rather than pure black — the previous
- * pitch-black theme was the specific complaint that prompted the light redesign,
- * so dark mode here is "dimmed", not "black".
- *
- * Brand blues are lifted a step (#2563EB → #3B82F6) because the darker values
- * lose contrast against a navy surface, and the confidence colours are lightened
- * for the same reason: an honest confidence signal has to stay readable.
+ * Dark palette. Surfaces are true black / neutral charcoal — AMOLED-friendly,
+ * no blue-grey cast. Brand blues are lifted a step (#2563EB → #3B82F6) because
+ * the darker values lose contrast against a dark surface, and the confidence
+ * colours are lightened for the same reason: an honest confidence signal has to
+ * stay readable.
  */
 export const darkColors: Palette = {
-  bg: "#08090C", // Deep neutral obsidian — root canvas
-  bgElevated: "#121318", // Modals, sheets
+  bg: "#000000", // True black — root canvas (AMOLED-friendly)
+  bgElevated: "#0A0A0A", // Modals, sheets
 
-  surface: "#121318", // Cards
-  surfaceAlt: "#181920", // Nested rows, chips
+  surface: "#0F0F0F", // Cards
+  surfaceAlt: "#141414", // Nested rows, chips — no more blue-grey cast
 
-  border: "#22242E",
-  borderLight: "#181920",
+  border: "#1C1C1C",
+  borderLight: "#111111",
 
   purple: "#3B82F6",
   purpleDark: "#2563EB",
@@ -162,9 +160,8 @@ export const darkColors: Palette = {
   dangerSoft: "rgba(248, 113, 113, 0.16)",
   dangerBorder: "rgba(248, 113, 113, 0.38)",
 
-  // Heavier than light mode's: there is far less headroom to darken a navy
-  // canvas into, and 0.45 black over #0B1220 is almost a no-op.
-  scrim: "rgba(2, 2, 8, 0.74)",
+  // Heavier wash over true black reads clearly as a modal scrim.
+  scrim: "rgba(0, 0, 0, 0.85)",
 
   confHigh: "#22C55E",
   confMed: "#F59E0B",
