@@ -57,9 +57,8 @@ def _warmup_basic_pitch() -> None:
         import warnings
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            from basic_pitch import ICASSP_2022_MODEL_PATH  # noqa: F401
-            from basic_pitch.inference import Model
-            Model(ICASSP_2022_MODEL_PATH)
+            from app.pipeline.transcriber import get_basic_pitch_model
+            get_basic_pitch_model()
         logger.info("basic_pitch ONNX model pre-warmed OK")
     except Exception as exc:  # noqa: BLE001
         logger.warning("basic_pitch warmup skipped: %s", exc)
