@@ -32,6 +32,7 @@ Speed & accuracy improvements over v1
 """
 
 import base64
+import threading
 import tempfile
 from collections.abc import Sequence
 from dataclasses import dataclass, field, replace
@@ -298,6 +299,12 @@ CONTOUR_BINS_PER_SEMITONE = 3.0
 # fitted on.  So 0.5 is the right answer to the question the nine cases asked and the
 # question was too narrow; ``settings.f0_merge`` is off by default because of it.
 F0_MERGE_SEMITONES = 0.5
+
+# Contour-aware gap fusion is intentionally stricter than onset merging.  A gap longer
+# than this is treated as a possible rest or re-articulation, not a posterior dropout.
+CONTOUR_GAP_MAX_SEC = 0.18
+CONTOUR_GAP_TOLERANCE = 0.75
+CONTOUR_GAP_ONSET_VETO = 0.70
 
 # Key detection: fewer than this many note events and no pitch profile is
 # reliable; cap the reported confidence so the mobile shows the prompt.
@@ -2044,6 +2051,74 @@ def _merge_onsets(
     return merged
 
 
+def _merge_contour_gaps(
+    events: list[Event],
+    times: np.ndarray,
+    midi: np.ndarray,
+    voiced_prob: np.ndarray,
+    post: "Posteriorgram | None" = None,
+) -> list[Event]:
+    """Fuse same-pitch fragments across a voiced contour dropout.
+
+    Basic Pitch can briefly lose frame activation in the middle of a sustained sung
+    note.  ``_merge_onsets`` intentionally does not bridge those gaps because it only
+    handles abutting events.  This helper is deliberately narrower than a time-only
+    merge: both events must already have the same notated pitch, the whole gap must be
+    voiced, and pyin must stay close to that pitch.  A strong independent onset at the
+    second event vetoes the merge so repeated notes are preserved.
+
+    ``times``, ``midi`` and ``voiced_prob`` are the single pyin contour already used by
+    pitch refinement.  Passing them in avoids a second expensive pyin invocation.
+    """
+    if len(events) < 2 or times.size == 0:
+        return events
+    if not (times.size == midi.size == voiced_prob.size):
+        return events
+
+    merged = list(events)
+    changed = True
+    while changed:
+        changed = False
+        result: list[Event] = []
+        i = 0
+        while i < len(merged):
+            curr = merged[i]
+            if i + 1 >= len(merged):
+                result.append(curr)
+                i += 1
+                continue
+            nxt = merged[i + 1]
+            gap = nxt.start - curr.end
+            if curr.pitch != nxt.pitch or gap <= 0.0 or gap > CONTOUR_GAP_MAX_SEC:
+                result.append(curr)
+                i += 1
+                continue
+
+            inside = (times >= curr.end) & (times <= nxt.start)
+            observed = midi[inside]
+            probs = voiced_prob[inside]
+            valid = ~np.isnan(observed)
+            if not valid.all() or np.any(probs[valid] < PYIN_MIN_VOICED_PROB):
+                result.append(curr)
+                i += 1
+                continue
+            if np.max(np.abs(observed[valid] - curr.pitch)) > CONTOUR_GAP_TOLERANCE:
+                result.append(curr)
+                i += 1
+                continue
+            if post is not None and post.onset_evidence(nxt.start, nxt.pitch) >= CONTOUR_GAP_ONSET_VETO:
+                result.append(curr)
+                i += 1
+                continue
+
+            loud = curr if curr.amp >= nxt.amp else nxt
+            result.append(replace(loud, start=curr.start, end=nxt.end))
+            i += 2
+            changed = True
+        merged = result
+    return merged
+
+
 def _dedup_simultaneous(events: list[Event]) -> list[Event]:
     """Remove exact duplicate pitch+onset pairs that survive onset merging.
 
@@ -2716,7 +2791,11 @@ def _segment_contour(
     return events, floor_midi
 
 
-def _refine_pitches(events: list[Event], wav_path: Path | np.ndarray) -> list[Event]:
+def _refine_pitches(
+    events: list[Event],
+    wav_path: Path | np.ndarray,
+    contour: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+) -> list[Event]:
     """Correct pitch errors against a pyin f0 contour.
 
     Basic Pitch locks onto the second harmonic often enough to matter: measured on
@@ -2742,7 +2821,7 @@ def _refine_pitches(events: list[Event], wav_path: Path | np.ndarray) -> list[Ev
     pitch.  "pyin was unsure here" and "pyin disagreed and was overruled" are both
     signal about how much to trust the note, and this is the only place they exist.
     """
-    times, midi, voiced_prob = _pyin_contour(wav_path)
+    times, midi, voiced_prob = contour if contour is not None else _pyin_contour(wav_path)
     if times.size == 0:
         return events
 
@@ -2853,6 +2932,28 @@ def _blend_confidence(evt: Event) -> float:
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=FutureWarning)
+
+
+_BASIC_PITCH_MODEL = None
+_BASIC_PITCH_MODEL_LOCK = threading.Lock()
+
+
+def get_basic_pitch_model():
+    """Return one process-local Basic Pitch model, loading it exactly once.
+
+    The ONNX session is thread-safe for inference in the pinned Basic Pitch runtime.
+    Keeping the model alive avoids rebuilding/loading it for every request.  The lock
+    only protects first use; normal requests never serialize on initialization.
+    """
+    global _BASIC_PITCH_MODEL
+    if _BASIC_PITCH_MODEL is None:
+        with _BASIC_PITCH_MODEL_LOCK:
+            if _BASIC_PITCH_MODEL is None:
+                from basic_pitch import ICASSP_2022_MODEL_PATH
+                from basic_pitch.inference import Model
+
+                _BASIC_PITCH_MODEL = Model(ICASSP_2022_MODEL_PATH)
+    return _BASIC_PITCH_MODEL
 
 
 def _inject_apt_path() -> None:
@@ -3587,7 +3688,6 @@ def _transcribe_wav(
     time_signature: str = "4/4",
     progress=lambda fraction: None,
 ) -> TranscriptionResult:
-    from basic_pitch import ICASSP_2022_MODEL_PATH
     from basic_pitch.inference import predict
     from music21 import key as m21key
     from music21 import meter, stream
@@ -3608,7 +3708,7 @@ def _transcribe_wav(
 
     model_output, midi_data, note_events = predict(
         str(wav_path),
-        ICASSP_2022_MODEL_PATH,
+        get_basic_pitch_model(),
         onset_threshold=onset_thresh,
         frame_threshold=frame_thresh,
         minimum_note_length=min_note_ms,
@@ -3706,14 +3806,19 @@ def _transcribe_wav(
         # After the amplitude floor so pyin is not spent on events about to be dropped,
         # and before merging so an octave correction can let two fragments of one note
         # fuse on the existing exact-pitch test.
+        pyin_contour = None
+        if (settings.pyin_refine or settings.contour_gap_merge) and events:
+            pyin_contour = _pyin_contour(y)
         if settings.pyin_refine and events:
-            events = _refine_pitches(events, y)
+            events = _refine_pitches(events, y, contour=pyin_contour)
 
         # ── 4. Onset merging ──────────────────────────────────────────────────
         # Merge before voice-cleaning so the melody overlap resolver sees clean
         # sustained notes rather than fragmented triplet artefacts.
         merge_gap = strategy.merge_gap
         events = _merge_onsets(events, gap_sec=merge_gap)
+        if settings.contour_gap_merge and pyin_contour is not None:
+            events = _merge_contour_gaps(events, *pyin_contour, post=post)
 
         # ── 5. Polyphonic deduplication ───────────────────────────────────────
         # Remove exact pitch + onset duplicates that survive merging.

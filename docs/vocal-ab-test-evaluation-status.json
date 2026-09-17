@@ -1,0 +1,38 @@
+{
+  "schema": "notefusion.vocal_ab_status.v1",
+  "status": "blocked_missing_fixtures_and_runtime",
+  "repository": "Gbohunmifrancis/Notefusion",
+  "feature_flag": "NF_CONTOUR_GAP_MERGE",
+  "treatment_value_requested": true,
+  "real_fixture_directory": "server/tests/accuracy/real",
+  "real_wav_count": 0,
+  "real_truth_sidecar_count": 0,
+  "basic_pitch_runtime_available": false,
+  "accuracy_control": {
+    "status": "not_run",
+    "reason": "No labelled vocal WAV and truth sidecar fixtures are present."
+  },
+  "accuracy_treatment": {
+    "status": "not_run",
+    "reason": "No labelled vocal WAV and truth sidecar fixtures are present."
+  },
+  "real_evaluation_command": "python -m tests.accuracy.report --real",
+  "real_evaluation_result": "error: no real cases found",
+  "warmed_model_benchmark": {
+    "status": "not_run",
+    "reason": "basic_pitch is not installed in the benchmark environment; a stub would not measure inference latency."
+  },
+  "validated_locally": {
+    "helper_tests_passed": 218,
+    "full_server_tests_passed_previous_run": 485,
+    "full_server_tests_deselected_previous_run": 44,
+    "python_compile": true,
+    "git_diff_check": true
+  },
+  "next_required_inputs": [
+    "Consented WAV fixtures in server/tests/accuracy/real",
+    "Matching .truth.json sidecars",
+    "Pinned Basic Pitch runtime from server/requirements.txt",
+    "Representative concurrent Pro request workload"
+  ]
+}
