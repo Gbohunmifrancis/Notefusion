@@ -36,6 +36,7 @@ import type { DonutSlice } from "@/components/DonutCard";
 import { RangePicker } from "@/components/RangePicker";
 import type { Range } from "@/components/RangePicker";
 import { EmptyView, StateView } from "@/components/StateView";
+import { SendEmailDialog } from "@/components/SendEmailDialog";
 import {
   Table,
   TableBody,
@@ -357,9 +358,20 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
   );
 }
 
+function getFlagEmoji(countryCode: string | null | undefined): string {
+  if (!countryCode || countryCode.length !== 2) return "";
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0));
+  return String.fromCodePoint(...codePoints);
+}
+
 function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivity"] }) {
   const now = Date.now();
   const displayItems = items.length > 0 ? items.slice(0, 5) : [];
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailTarget, setEmailTarget] = useState<{ email: string; fullName: string; id: string } | null>(null);
 
   return (
     <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
@@ -389,9 +401,10 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
                 : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
 
             const verb = isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : "Payment received";
-
+            const flag = getFlagEmoji(item.country);
+            
             return (
-              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center justify-between gap-3">
+              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center justify-between gap-3 group">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}>
                     <Icon size={16} />
@@ -401,19 +414,41 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
                     <div className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
                       {verb}
                     </div>
-                    <div className="truncate text-[11px] text-slate-400 dark:text-slate-500">
-                      {item.title}{item.subtitle ? ` • ${item.subtitle}` : ""}
+                    <div className="truncate text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                      {item.title}{flag && <span className="ml-1 leading-none">{flag}</span>}{item.subtitle ? ` • ${item.subtitle}` : ""}
                     </div>
                   </div>
                 </div>
 
-                <span className="shrink-0 text-[11px] text-slate-400 dark:text-slate-500">
-                  {formatRelative(item.occurredAtUtc, now)}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  {item.email && item.userId && (
+                    <button 
+                      onClick={() => {
+                        setEmailTarget({ email: item.email!, fullName: item.title, id: item.userId! });
+                        setEmailDialogOpen(true);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 dark:hover:bg-zinc-800"
+                      title="Send email"
+                    >
+                      <MailCheck size={14} />
+                    </button>
+                  )}
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                    {formatRelative(item.occurredAtUtc, now)}
+                  </span>
+                </div>
               </div>
             );
           })}
         </div>
+      )}
+      
+      {emailTarget && (
+        <SendEmailDialog
+          open={emailDialogOpen}
+          onOpenChange={setEmailDialogOpen}
+          targetUser={emailTarget}
+        />
       )}
     </div>
   );
@@ -626,11 +661,11 @@ export function OverviewView() {
               hint: "Signed in recently",
             },
             {
-              title: "Transactions",
+              title: "Transcriptions",
               value: formatCount(data.transcriptions.totalSaved),
               change: txChange?.label ?? null,
               description: txChange ? "vs. previous period" : null,
-              icon: CreditCard,
+              icon: Music2,
               hint: "Transcriptions saved in library",
             },
             {

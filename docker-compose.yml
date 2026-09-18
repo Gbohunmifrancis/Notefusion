@@ -45,6 +45,15 @@ services:
       retries: 12
       start_period: 20s # model load on first boot is slow (CPU ONNX)
 
+  transcriber-verify:
+    build:
+      context: ./server
+    command: >
+      python -c "from basic_pitch.inference import Model;
+      from basic_pitch import ICASSP_2022_MODEL_PATH;
+      Model(ICASSP_2022_MODEL_PATH);
+      print('basic_pitch_model_load: OK')"
+
   api:
     build:
       context: .

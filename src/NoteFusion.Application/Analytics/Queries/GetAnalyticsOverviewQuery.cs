@@ -283,27 +283,39 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var signups = await _db.Users
             .OrderByDescending(u => u.CreatedAt)
             .Take(RecentActivityCount)
-            .Select(u => new ActivityItemDto("signup", u.FullName, u.Email, u.CreatedAt))
+            .Select(u => new ActivityItemDto("signup", u.FullName, u.Email, u.CreatedAt, u.Id, u.Email, u.Country))
             .ToListAsync(ct);
 
         var saves = await _db.Transcriptions
             .OrderByDescending(t => t.CreatedAtUtc)
             .Take(RecentActivityCount)
-            .Select(t => new ActivityItemDto("transcription", t.Title, null, t.CreatedAtUtc))
+            .Select(t => new { t.Title, t.CreatedAtUtc, User = _db.Users.FirstOrDefault(u => u.Id == t.UserId) })
             .ToListAsync(ct);
+
+        var saveDtos = saves.Where(s => s.User != null).Select(s => new ActivityItemDto("transcription", s.User!.FullName, $"{s.User.Email} • {s.Title}", s.CreatedAtUtc, s.User.Id, s.User.Email, s.User.Country)).ToList();
 
         var logins = await _db.Users
             .Where(u => u.LastLoginAt != null)
             .OrderByDescending(u => u.LastLoginAt)
             .Take(RecentActivityCount)
-            .Select(u => new ActivityItemDto("login", u.FullName, u.Email, u.LastLoginAt!.Value))
+            .Select(u => new ActivityItemDto("login", u.FullName, u.Email, u.LastLoginAt!.Value, u.Id, u.Email, u.Country))
             .ToListAsync(ct);
+
+        var payments = await _db.PaymentTransactions
+            .Where(p => p.Status == NoteFusion.Core.Enums.PaymentStatus.Completed)
+            .OrderByDescending(p => p.CreatedAtUtc)
+            .Take(RecentActivityCount)
+            .Select(p => new { p.CreatedAtUtc, User = _db.Users.FirstOrDefault(u => u.Id == p.UserId) })
+            .ToListAsync(ct);
+
+        var paymentDtos = payments.Where(p => p.User != null).Select(p => new ActivityItemDto("payment", p.User!.FullName, p.User.Email, p.CreatedAtUtc, p.User.Id, p.User.Email, p.User.Country)).ToList();
 
         return
         [
             .. signups
-                .Concat(saves)
+                .Concat(saveDtos)
                 .Concat(logins)
+                .Concat(paymentDtos)
                 .OrderByDescending(a => a.OccurredAtUtc)
                 .Take(RecentActivityCount)
         ];

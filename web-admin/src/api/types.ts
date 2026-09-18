@@ -121,12 +121,15 @@ export interface RetentionCohort {
  * ones are stored.
  */
 export interface ActivityItem {
-  /** "signup" | "transcription" | "login" — the client maps this to an icon. */
+  /** "signup" | "transcription" | "login" | "payment" — the client maps this to an icon. */
   kind: string;
   title: string;
   subtitle: string | null;
   /** ISO-8601 UTC instant. */
   occurredAtUtc: string;
+  userId?: string | null;
+  email?: string | null;
+  country?: string | null;
 }
 
 export interface AnalyticsOverview {
