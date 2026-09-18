@@ -17,13 +17,15 @@
     },
     "production": {
       "autoIncrement": true,
+      "channel": "production",
       "environment": "production",
       "android": {
-        "buildType": "apk"
+        "buildType": "app-bundle"
       }
     },
     "store": {
       "autoIncrement": true,
+      "channel": "production",
       "environment": "production",
       "android": {
         "buildType": "app-bundle"

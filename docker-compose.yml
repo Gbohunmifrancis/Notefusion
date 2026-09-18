@@ -35,6 +35,7 @@ services:
       NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-180}
       NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-20971520}
       NF_JOB_TTL_SECONDS: ${NF_JOB_TTL_SECONDS:-900}
+      NF_API_KEY: ${TRANSCRIPTION_API_KEY:-dev_transcription_secret}
     ports:
       - "8000:8000" # exposed for curl/dev; in production, drop this and let the api reach it internally
     healthcheck:
@@ -43,6 +44,15 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s # model load on first boot is slow (CPU ONNX)
+
+  transcriber-verify:
+    build:
+      context: ./server
+    command: >
+      python -c "from basic_pitch.inference import Model;
+      from basic_pitch import ICASSP_2022_MODEL_PATH;
+      Model(ICASSP_2022_MODEL_PATH);
+      print('basic_pitch_model_load: OK')"
 
   api:
     build:
@@ -60,6 +70,7 @@ services:
       Database__ApplyMigrationsAtStartup: "true"
       # The internal ML worker — the only outbound call the API makes.
       TranscriptionApi__BaseUrl: http://transcriber:8000
+      TranscriptionApi__ApiKey: ${TRANSCRIPTION_API_KEY:-dev_transcription_secret}
       # Stable signing key across restarts. Generate one for real deploys:
       #   openssl genpkey -algorithm RSA -out jwt-key.pem -pkeyopt rsa_keygen_bits:2048
       # then mount/secret it. When unset the API generates an ephemeral key (dev only).

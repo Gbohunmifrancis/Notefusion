@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Common;
+using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Waitlist.Commands;
 
 namespace NoteFusion.Api.Controllers;
@@ -16,6 +18,7 @@ public sealed record JoinWaitlistRequest(
 /// Public endpoints for prospective users joining the NoteFusion waitlist.
 /// </summary>
 [AllowAnonymous]
+[EnableRateLimiting(AuthRateLimiting.EmailDispatch)]
 [Route("api/waitlist")]
 public sealed class WaitlistController : ApiControllerBase
 {

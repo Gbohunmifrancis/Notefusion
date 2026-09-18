@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   Linking,
   Modal,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -50,13 +51,14 @@ import type { RootStackParams } from "../navigation/types";
  */
 export function ProfileScreen() {
   const { user, setUser, signOut } = useAuth();
-  const { isPro } = useSubscription();
+  const { isPro, refresh: refreshSubscription } = useSubscription();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
   const [profile, setProfile] = useState<MyProfile | null>(null);
   const [avatarBusy, setAvatarBusy] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   // Edit modals
   const [accountModal, setAccountModal] = useState(false);
@@ -76,6 +78,24 @@ export function ProfileScreen() {
       })
       .catch(() => undefined);
   }, []);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([
+        meApi
+          .get()
+          .then((p) => {
+            setProfile(p);
+            setName(p.fullName);
+          })
+          .catch(() => undefined),
+        refreshSubscription(true).catch(() => undefined),
+      ]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [refreshSubscription]);
 
   // ── Name update ────────────────────────────────────────────────────────────
 
@@ -199,7 +219,18 @@ export function ProfileScreen() {
   }
 
   return (
-    <Screen scroll contentStyle={styles.screen}>
+    <Screen
+      scroll
+      contentStyle={styles.screen}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          tintColor={colors.accent}
+          colors={[colors.accent]}
+        />
+      }
+    >
       {/* ── 1. Top Bar: Back & Title ────────────────────────────────────── */}
       <View style={styles.topBar}>
         {/* Needed since Profile stopped being a tab: it is pushed from the side bar now,

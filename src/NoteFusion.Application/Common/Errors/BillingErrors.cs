@@ -40,6 +40,10 @@ public static class BillingErrors
         Error.Conflict("BILLING_VERIFICATION_MISMATCH",
             "The provider's amount or currency did not match the payment; not fulfilling.");
 
+    public static Error VerificationMismatchDetail(long expectedAmount, string expectedCurrency, long actualAmount, string actualCurrency, string? raw = null) =>
+        Error.Conflict("BILLING_VERIFICATION_MISMATCH",
+            $"The provider's amount or currency did not match the payment; not fulfilling. Expected {expectedAmount} {expectedCurrency}, received {actualAmount} '{actualCurrency}'.");
+
     public static readonly Error NotAuthenticated =
         Error.Unauthorized("BILLING_NOT_AUTHENTICATED", "You must be signed in to do that.");
 

@@ -194,6 +194,14 @@ public sealed class AdminController : ApiControllerBase
         => HandleNoContent(await _sender.Send(new SendPasswordResetCommand(id, body?.Note), ct));
 
     /// <summary>
+    /// Sends a branded custom email to the target user with an optional heading, CTA button, and audit note.
+    /// </summary>
+    [HttpPost("users/{id:guid}/email")]
+    public async Task<IActionResult> SendUserEmail(Guid id, SendEmailBody body, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(
+            new SendUserEmailCommand(id, body.Subject, body.Heading, body.BodyHtml, body.CtaText, body.CtaUrl, body.Note), ct));
+
+    /// <summary>
     /// Resets an account's consumed free-trial generations so they can generate free transcriptions again.
     /// </summary>
     [HttpPost("users/{id:guid}/reset-trial")]
@@ -348,7 +356,18 @@ public sealed class AdminController : ApiControllerBase
     public async Task<IActionResult> ClearAnnouncement([FromQuery] string? note, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new ClearSystemAnnouncementCommand(note), ct));
 
+    /// <summary>
+    /// Irreversible pre-production maintenance action. Clears all test accounts, transcriptions, jobs,
+    /// and payment records while preserving designated administrator accounts.
+    /// </summary>
+    [HttpPost("maintenance/purge-test-data")]
+    public async Task<IActionResult> PurgeTestData([FromBody] PurgeTestDataBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new PurgeTestDataCommand(body.Confirm, body.Note), ct));
+
     // ------------------------------------------------------------------- bodies
+
+    /// <summary>Safety payload for pre-production database purge.</summary>
+    public sealed record PurgeTestDataBody(string Confirm, string? Note = null);
 
     /// <summary>
     /// The operator's reason, carried by every action that has nothing else to say. Optional, and stored

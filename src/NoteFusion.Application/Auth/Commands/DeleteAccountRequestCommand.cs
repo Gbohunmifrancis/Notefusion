@@ -82,7 +82,7 @@ public sealed class DeleteAccountRequestCommandHandler
         // Case 1: Token confirmation via emailed link
         if (!string.IsNullOrWhiteSpace(request.Token))
         {
-            if (!ValidateDeletionToken(user, request.Token, _clock.UtcNow))
+            if (!ValidateDeletionToken(user, request.Token, _clock.UtcNow, _authSettings.DeletionSecret))
             {
                 return Result.Failure<DeleteAccountResponse>(Error.Validation(
                     "auth.invalid_token",
@@ -118,7 +118,7 @@ public sealed class DeleteAccountRequestCommandHandler
         // Case 3: No password or token provided (e.g. Google auth or forgot password).
         // Generate secure 24-hour token and send email verification link.
         var expiryUtc = _clock.UtcNow.AddHours(24);
-        var token = CreateDeletionToken(user, expiryUtc);
+        var token = CreateDeletionToken(user, expiryUtc, _authSettings.DeletionSecret);
 
         var baseUrl = _authSettings.DeleteAccountUrl.TrimEnd('/');
         var confirmationUrl = $"{baseUrl}?email={Uri.EscapeDataString(user.Email)}&token={token}";
@@ -175,11 +175,11 @@ public sealed class DeleteAccountRequestCommandHandler
         }
     }
 
-    private static string CreateDeletionToken(User user, DateTime expiryUtc)
+    private static string CreateDeletionToken(User user, DateTime expiryUtc, string secret)
     {
         var expiryTicks = expiryUtc.Ticks;
         var raw = $"{user.Id}:{user.Email.ToLowerInvariant()}:{expiryTicks}";
-        var keyBytes = Encoding.UTF8.GetBytes(user.CreatedAt.Ticks + ":" + (user.PasswordHash ?? "google") + ":NoteFusionDeletionSalt");
+        var keyBytes = Encoding.UTF8.GetBytes(secret + ":" + user.CreatedAt.Ticks + ":" + (user.PasswordHash ?? "oauth") + ":" + user.Id);
         using var hmac = new HMACSHA256(keyBytes);
         var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(raw));
         var hashString = Convert.ToHexString(hash);
@@ -188,7 +188,7 @@ public sealed class DeleteAccountRequestCommandHandler
             .Replace('+', '-').Replace('/', '_').TrimEnd('=');
     }
 
-    private static bool ValidateDeletionToken(User user, string token, DateTime utcNow)
+    private static bool ValidateDeletionToken(User user, string token, DateTime utcNow, string secret)
     {
         try
         {
@@ -209,7 +209,7 @@ public sealed class DeleteAccountRequestCommandHandler
             if (expiry < utcNow) return false;
 
             var expectedRaw = $"{user.Id}:{user.Email.ToLowerInvariant()}:{expiryTicks}";
-            var keyBytes = Encoding.UTF8.GetBytes(user.CreatedAt.Ticks + ":" + (user.PasswordHash ?? "google") + ":NoteFusionDeletionSalt");
+            var keyBytes = Encoding.UTF8.GetBytes(secret + ":" + user.CreatedAt.Ticks + ":" + (user.PasswordHash ?? "oauth") + ":" + user.Id);
             using var hmac = new HMACSHA256(keyBytes);
             var expectedHash = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(expectedRaw)));
 

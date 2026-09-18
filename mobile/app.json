@@ -67,7 +67,20 @@
         }
       ],
       "expo-sharing",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./plugins/withRemoveAdId",
+      "./plugins/withAndroidR8Optimization",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableMinifyInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true,
+            "enableBundleCompression": true,
+            "extraProguardRules": "-keep class com.swmansion.reanimated.** { *; }\n-keep class com.swmansion.worklets.** { *; }\n-dontwarn com.swmansion.reanimated.**\n-keep class com.swmansion.gesturehandler.** { *; }\n-keep class com.swmansion.rnscreens.** { *; }\n-keep class com.facebook.react.turbomodule.** { *; }\n-keep class com.facebook.react.bridge.** { *; }\n-keep class expo.modules.** { *; }\n-keep class com.google.android.gms.auth.api.signin.** { *; }\n-keep class com.reactnativegooglesignin.** { *; }\n-keep class io.sentry.** { *; }\n-dontwarn io.sentry.**\n-keep class com.airbnb.lottie.** { *; }\n-keep class com.horcrux.svg.** { *; }\n-keep class com.reactnativecommunity.webview.** { *; }\n-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod"
+          }
+        }
+      ]
     ],
     "extra": {
       "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",

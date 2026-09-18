@@ -76,6 +76,18 @@ export const getUsers = (
     signal ? { signal } : {},
   );
 
+export const getAdminTranscriptions = (
+  page: number,
+  pageSize: number,
+  status?: string,
+  search?: string,
+  signal?: AbortSignal,
+) =>
+  request<PagedResult<AdminTranscriptionRow>>(
+    `/api/admin/transcriptions${query({ page, pageSize, status, search })}`,
+    signal ? { signal } : {},
+  );
+
 export const getWaitlist = (
   page: number,
   pageSize: number,

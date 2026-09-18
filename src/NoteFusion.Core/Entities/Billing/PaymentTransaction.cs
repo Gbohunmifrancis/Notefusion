@@ -1,5 +1,6 @@
 using NoteFusion.Core.Enums;
 using NoteFusion.Core.Seedwork;
+using NoteFusion.Core.ValueObjects;
 using NoteFusion.Shared.Guards;
 
 namespace NoteFusion.Core.Entities.Billing;
@@ -58,6 +59,24 @@ public class PaymentTransaction : BaseEntity
     public DateTime UpdatedAtUtc { get; private set; }
 
     public bool IsTerminal => Status is PaymentStatus.Completed or PaymentStatus.Failed;
+
+    /// <summary>Monetary representation as a strongly typed domain Value Object.</summary>
+    public Money Money => Money.FromMinorUnit(AmountMinor, Currency);
+
+    /// <summary>
+    /// Asserts that a received amount and currency match this payment transaction exactly.
+    /// Prevents underpayment fraud or currency tampering.
+    /// </summary>
+    public void AssertAmountMatches(long receivedAmountMinor, string receivedCurrency)
+    {
+        if (!string.Equals(Currency, receivedCurrency, StringComparison.OrdinalIgnoreCase))
+            throw new InvalidOperationException(
+                $"Payment currency mismatch on reference '{Reference}': expected '{Currency}', received '{receivedCurrency}'.");
+
+        if (AmountMinor != receivedAmountMinor)
+            throw new InvalidOperationException(
+                $"Payment amount mismatch on reference '{Reference}': expected {AmountMinor} {Currency}, received {receivedAmountMinor} {receivedCurrency}.");
+    }
 
     public static PaymentTransaction Create(
         Guid userId,

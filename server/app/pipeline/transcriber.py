@@ -32,6 +32,7 @@ Speed & accuracy improvements over v1
 """
 
 import base64
+import os
 import threading
 import tempfile
 from collections.abc import Sequence
@@ -3113,7 +3114,7 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
     return audio_path, False
 
 
-def transcribe(
+def _transcribe_inner(
     audio_path: Path,
     mode: str = "melody",
     key_override: str | None = None,
@@ -3121,18 +3122,6 @@ def transcribe(
     time_signature: str = "4/4",
     progress=lambda fraction: None,
 ) -> TranscriptionResult:
-    """Decode once, then transcribe the decoded WAV.
-
-    The decoded file has to outlive inference.  Tempo and beat tracking read the
-    same audio Basic Pitch was given, and librosa has no backend for a .m4a on a
-    slim container — pointing it at the original upload is exactly how a clip
-    ends up reported at the 100 BPM fallback.  So the whole pipeline runs inside
-    this ``finally`` and the temporary WAV is deleted once, here.
-
-    A ``.wav`` input is handed back untouched by ``_ensure_wav_path`` and is
-    therefore never deleted here; the caller owns it (``JobQueue._run`` unlinks
-    the upload for privacy, TRD par. 9).
-    """
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     try:
         try:
@@ -3155,6 +3144,64 @@ def transcribe(
     finally:
         if is_temp_wav:
             target_path.unlink(missing_ok=True)
+
+def transcribe(
+    audio_path: Path,
+    mode: str = "melody",
+    key_override: str | None = None,
+    tempo_override: int | None = None,
+    time_signature: str = "4/4",
+    progress=lambda fraction: None,
+) -> TranscriptionResult:
+    import time
+    import librosa
+    from app.telemetry import emit_transcription_event
+    
+    t0 = time.perf_counter()
+    error_class = None
+    res = None
+    duration = 0.0
+    
+    try:
+        try:
+            duration = librosa.get_duration(path=str(audio_path))
+        except Exception:
+            duration = 0.0
+            
+        res = _transcribe_inner(
+            audio_path, mode, key_override, tempo_override, time_signature, progress
+        )
+        return res
+    except Exception as e:
+        error_class = e.__class__.__name__
+        raise
+    finally:
+        t_total = time.perf_counter() - t0
+        
+        if duration < 5:
+            bucket = "<5s"
+        elif duration <= 30:
+            bucket = "5-30s"
+        elif duration <= 60:
+            bucket = "30-60s"
+        else:
+            bucket = ">60s"
+            
+        emit_transcription_event(
+            experiment_arm="contour_gap" if settings.contour_gap_merge else "control",
+            git_sha=os.environ.get("HEROKU_SLUG_COMMIT", "unknown"),
+            model_version="icassp_2022",
+            mode=mode,
+            clip_duration_bucket=bucket,
+            n_est_notes=len(res.notes) if res else 0,
+            contour_merge_count=0, # To be precise we'd need to modify _merge_contour_gaps
+            merge_gap_buckets={},
+            n_candidate_ghosts=0,
+            n_candidate_accidentals=0,
+            stage_timings_ms={"total": t_total * 1000},
+            error_class=error_class
+        )
+
 
 
 # ── Tempo and beat phase ──────────────────────────────────────────────────────

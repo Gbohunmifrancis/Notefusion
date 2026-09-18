@@ -111,4 +111,47 @@ public class PaymentTransactionTests
         Assert.Equal(PaymentStatus.Failed, tx.Status);
         Assert.Equal("abandoned", tx.FailureReason);
     }
+
+    [Fact]
+    public void Money_property_returns_correct_value_object()
+    {
+        var tx = PaymentTransaction.Create(
+            User, PlanId, PaymentProvider.Paystack, "idem-money", "ref-money", 1999, "USD", Now);
+
+        var money = tx.Money;
+        Assert.Equal(19.99m, money.Amount);
+        Assert.Equal("USD", money.Currency);
+        Assert.Equal(1999, money.ToMinorUnit());
+    }
+
+    [Fact]
+    public void AssertAmountMatches_succeeds_when_amount_and_currency_match()
+    {
+        var tx = PaymentTransaction.Create(
+            User, PlanId, PaymentProvider.Paystack, "idem-match", "ref-match", 5000, "NGN", Now);
+
+        // Should not throw
+        tx.AssertAmountMatches(5000, "NGN");
+        tx.AssertAmountMatches(5000, "ngn"); // Case-insensitive
+    }
+
+    [Fact]
+    public void AssertAmountMatches_throws_when_currency_mismatches()
+    {
+        var tx = PaymentTransaction.Create(
+            User, PlanId, PaymentProvider.Paystack, "idem-curr", "ref-curr", 5000, "NGN", Now);
+
+        var ex = Assert.Throws<InvalidOperationException>(() => tx.AssertAmountMatches(5000, "USD"));
+        Assert.Contains("currency mismatch", ex.Message);
+    }
+
+    [Fact]
+    public void AssertAmountMatches_throws_when_amount_mismatches()
+    {
+        var tx = PaymentTransaction.Create(
+            User, PlanId, PaymentProvider.Paystack, "idem-amt", "ref-amt", 5000, "NGN", Now);
+
+        var ex = Assert.Throws<InvalidOperationException>(() => tx.AssertAmountMatches(4500, "NGN"));
+        Assert.Contains("amount mismatch", ex.Message);
+    }
 }

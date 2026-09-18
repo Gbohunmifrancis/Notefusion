@@ -28,6 +28,7 @@
     "expo-application": "~56.0.3",
     "expo-asset": "~56.0.21",
     "expo-audio": "~56.0.13",
+    "expo-build-properties": "~56.0.27",
     "expo-constants": "~56.0.22",
     "expo-dev-client": "~56.0.24",
     "expo-device": "~56.0.4",

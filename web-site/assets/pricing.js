@@ -45,8 +45,10 @@
   function action(label, featured, source) {
     var link = document.createElement("a");
     link.className = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
-    link.href = "#waitlist";
-    if (source) link.setAttribute("data-waitlist-source", source);
+    link.href = playUrl;
+    link.target = "_blank";
+    link.rel = "noopener";
+    if (source) link.setAttribute("data-download-source", source);
     link.textContent = label;
     return link;
   }
@@ -77,7 +79,7 @@
         "Playback, MusicXML export and library sync",
       ]),
     );
-    card.appendChild(action("Join Waitlist (Free)", false, "pricing_free"));
+    card.appendChild(action("Get it on Google Play", false, "pricing_free"));
     return card;
   }
 
@@ -148,7 +150,7 @@
         "A receipt emailed after payment",
       ]),
     );
-    card.appendChild(action("Join Pro Waitlist", true, "pricing_" + (plan.interval || "pro")));
+    card.appendChild(action("Get NoteFusion Pro", true, "pricing_" + (plan.interval || "pro")));
     return card;
   }
 

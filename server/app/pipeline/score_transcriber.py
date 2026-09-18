@@ -100,7 +100,18 @@ def transcribe_score(
 ) -> TranscriptionResult:
     """Parse a symbolic score file and produce tonic sol-fa + staff notation."""
     try:
+        if score_path.suffix.lower() in (".xml", ".musicxml"):
+            try:
+                import defusedxml.ElementTree as defused_et
+                defused_et.parse(str(score_path))
+            except ImportError:
+                pass
+            except Exception as xml_exc:
+                raise LowConfidenceError(f"Invalid or unsafe XML in score file: {xml_exc}") from xml_exc
+
         score = converter.parse(str(score_path))
+    except LowConfidenceError:
+        raise
     except Exception as exc:
         raise LowConfidenceError(f"Could not parse score file: {exc}") from exc
 

@@ -157,6 +157,7 @@ public static class DependencyInjection
     private static void AddTranscriptionApi(this IServiceCollection services, IConfiguration configuration)
     {
         var baseUrl = configuration["TranscriptionApi:BaseUrl"] ?? "http://localhost:8000";
+        var apiKey = configuration["TranscriptionApi:ApiKey"];
 
         // Transient, as AddHttpMessageHandler requires: the factory resolves one per handler chain it
         // builds, and a chain is rebuilt every two minutes.
@@ -166,6 +167,10 @@ public static class DependencyInjection
         {
             client.BaseAddress = new Uri(baseUrl);
             client.Timeout = TimeSpan.FromSeconds(100);
+            if (!string.IsNullOrWhiteSpace(apiKey))
+            {
+                client.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
+            }
         })
         .AddHttpMessageHandler<CorrelationIdHandler>();
 

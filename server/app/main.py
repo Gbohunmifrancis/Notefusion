@@ -18,19 +18,10 @@ logger = logging.getLogger(__name__)
 
 
 def _configure_logging() -> None:
-    """Attach a handler to the root logger so this service's own logs are emitted.
-
-    Uvicorn configures the ``uvicorn*`` loggers and nothing else, so every
-    ``logger.info`` in ``app.*`` was being dropped by the root logger's default
-    WARNING level with no handler beneath it. That is why the job queue reached for
-    ``print`` - it was the only thing that came out - and why a failed transcription
-    left no traceback to read. basicConfig is a no-op if root already has handlers,
-    so a host that configures logging itself (pytest's caplog, gunicorn) still wins.
-    """
-    logging.basicConfig(
-        level=os.environ.get("NF_LOG_LEVEL", "INFO").upper(),
-        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    )
+    """Configure structured logging via structlog."""
+    from app.telemetry import configure_telemetry
+    is_prod = os.environ.get("ASPNETCORE_ENVIRONMENT", "Development") != "Development"
+    configure_telemetry(json_format=is_prod)
 
 
 def _ensure_apt_path() -> None:
@@ -70,11 +61,52 @@ async def lifespan(_app: FastAPI):
     # First, so the two calls below can report what they did.
     _configure_logging()
     _ensure_apt_path()
+    
+    import structlog
+    logger = structlog.get_logger("app.main")
+    git_sha = os.environ.get("HEROKU_SLUG_COMMIT", "unknown")
+    logger.info("app_startup", git_sha=git_sha, model_version="icassp_2022", worker_pid=os.getpid(), nf_contour_gap_merge=os.environ.get("NF_CONTOUR_GAP_MERGE"))
+    
     _warmup_basic_pitch()
     queue = JobQueue(workers=settings.inference_workers)
     _app.state.queue = queue
     yield
     queue.shutdown()
+
+
+import hmac
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import JSONResponse
+
+
+class ApiKeyAuthMiddleware(BaseHTTPMiddleware):
+    """Protects internal transcription endpoints when NF_API_KEY is configured."""
+
+    async def dispatch(self, request, call_next):
+        expected_key = settings.api_key
+        if not expected_key:
+            return await call_next(request)
+
+        # Allow liveness probe without authentication
+        if request.url.path in ("/healthz", "/healthz/"):
+            return await call_next(request)
+
+        # Allow OpenAPI documentation if accessed
+        if request.url.path in ("/docs", "/redoc", "/openapi.json"):
+            return await call_next(request)
+
+        provided_key = request.headers.get("x-api-key")
+        if not provided_key and (auth_header := request.headers.get("authorization")):
+            if auth_header.lower().startswith("bearer "):
+                provided_key = auth_header[7:].strip()
+
+        if not provided_key or not hmac.compare_digest(provided_key, expected_key):
+            return JSONResponse(
+                status_code=401,
+                content={"detail": "Invalid or missing API key."}
+            )
+
+        return await call_next(request)
 
 
 app = FastAPI(
@@ -83,6 +115,7 @@ app = FastAPI(
     description="Audio -> note events -> staff (MusicXML) + Tonic Solfa.",
     lifespan=lifespan,
 )
+app.add_middleware(ApiKeyAuthMiddleware)
 app.include_router(router)
 
 

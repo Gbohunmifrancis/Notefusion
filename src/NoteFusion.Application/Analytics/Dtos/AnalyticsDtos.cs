@@ -96,7 +96,10 @@ public sealed record ActivityItemDto(
     string Kind,
     string Title,
     string? Subtitle,
-    DateTime OccurredAtUtc);
+    DateTime OccurredAtUtc,
+    Guid? UserId,
+    string? Email,
+    string? Country);
 
 /// <summary>
 /// Signup-cohort retention: of the users who joined in a period, how many later came back.

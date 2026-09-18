@@ -57,14 +57,23 @@ public sealed class DatabaseSeeder : IHostedService
 
         if (primary is null)
         {
-            primary = User.CreateAdmin(
-                _seed.AdminFullName,
-                _seed.AdminEmail,
-                hasher.Hash(_seed.AdminPassword),
-                clock.UtcNow);
+            if (string.IsNullOrWhiteSpace(_seed.AdminPassword))
+            {
+                _logger.LogWarning(
+                    "Cannot seed admin account {Email} because Seed:AdminPassword is not configured.",
+                    _seed.AdminEmail);
+            }
+            else
+            {
+                primary = User.CreateAdmin(
+                    _seed.AdminFullName,
+                    _seed.AdminEmail,
+                    hasher.Hash(_seed.AdminPassword),
+                    clock.UtcNow);
 
-            context.Users.Add(primary);
-            _logger.LogInformation("Seeded admin account {Email}.", primary.Email);
+                context.Users.Add(primary);
+                _logger.LogInformation("Seeded admin account {Email}.", primary.Email);
+            }
         }
         else if (primary.PromoteToAdmin())
         {

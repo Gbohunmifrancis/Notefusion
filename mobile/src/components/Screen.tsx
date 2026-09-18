@@ -1,4 +1,11 @@
-import { ScrollView, StatusBar, StyleSheet, View, ViewStyle } from "react-native";
+import {
+  RefreshControlProps,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoider } from "./KeyboardAvoider";
 import { spacing, type Palette } from "../design/theme";
@@ -15,6 +22,7 @@ export function Screen({
   contentStyle,
   edges,
   scrollRef,
+  refreshControl,
 }: {
   children: React.ReactNode;
   scroll?: boolean;
@@ -23,6 +31,7 @@ export function Screen({
   /** Handle on the inner ScrollView, for screens that need to scroll to a
    *  section on arrival. Ignored unless `scroll` is set. */
   scrollRef?: React.RefObject<ScrollView | null>;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
 }) {
   const { mode } = useTheme();
   const styles = useThemedStyles(makeStyles);
@@ -37,6 +46,7 @@ export function Screen({
             contentContainerStyle={[styles.content, contentStyle]}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
+            refreshControl={refreshControl}
           >
             {children}
           </ScrollView>

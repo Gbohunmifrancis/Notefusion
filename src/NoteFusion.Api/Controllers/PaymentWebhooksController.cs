@@ -18,6 +18,7 @@ namespace NoteFusion.Api.Controllers;
 [AllowAnonymous]
 [ApiController]
 [Route("api/billing/webhooks")]
+[Route("api/webhooks")]
 public sealed class PaymentWebhooksController : ControllerBase
 {
     private readonly ISender _sender;
