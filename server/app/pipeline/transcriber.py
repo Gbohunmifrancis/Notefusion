@@ -32,6 +32,7 @@ Speed & accuracy improvements over v1
 """
 
 import base64
+import os
 import threading
 import tempfile
 from collections.abc import Sequence
