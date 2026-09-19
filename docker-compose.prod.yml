@@ -1,4 +1,4 @@
-﻿name: notefusion-prod
+name: notefusion-prod
 
 services:
   db:
