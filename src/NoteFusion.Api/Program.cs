@@ -159,7 +159,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(AdminDashboardCorsPolicy, policy =>
     {
-        policy.WithOrigins(allowedOrigins)
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
