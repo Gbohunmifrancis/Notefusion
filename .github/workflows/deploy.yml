@@ -115,17 +115,13 @@ jobs:
           SEED_ADMIN_EMAIL: ${{ secrets.SEED_ADMIN_EMAIL }}
           SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
           DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          S3_BUCKET: ${{ secrets.S3_BUCKET }}
-          S3_REGION: ${{ secrets.S3_REGION }}
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GHCR_USER: ${{ github.actor }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: API_IMAGE,TRANSCRIBER_IMAGE,POSTGRES_PASSWORD,TRANSCRIPTION_API_KEY,JWT_ISSUER,JWT_AUDIENCE,JWT_PRIVATE_KEY_PEM,SEED_ADMIN_EMAIL,SEED_ADMIN_PASSWORD,DOMAIN_NAME,AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,S3_BUCKET,S3_REGION,GHCR_TOKEN,GHCR_USER
+          envs: API_IMAGE,TRANSCRIBER_IMAGE,POSTGRES_PASSWORD,TRANSCRIPTION_API_KEY,JWT_ISSUER,JWT_AUDIENCE,JWT_PRIVATE_KEY_PEM,SEED_ADMIN_EMAIL,SEED_ADMIN_PASSWORD,DOMAIN_NAME,GHCR_TOKEN,GHCR_USER
           script: |
             set -euo pipefail
             cd /opt/notefusion
@@ -139,8 +135,8 @@ jobs:
             chmod 600 jwt_private_key.pem
 
             echo "─── Writing .env ───"
-            printf 'POSTGRES_PASSWORD="%s"\nTRANSCRIPTION_API_KEY="%s"\nJWT_ISSUER="%s"\nJWT_AUDIENCE="%s"\nSEED_ADMIN_EMAIL="%s"\nSEED_ADMIN_PASSWORD="%s"\nDOMAIN_NAME="%s"\nAWS_ACCESS_KEY_ID="%s"\nAWS_SECRET_ACCESS_KEY="%s"\nS3_BUCKET="%s"\nS3_REGION="%s"\nAPI_IMAGE="%s"\nTRANSCRIBER_IMAGE="%s"\n' \
-              "$POSTGRES_PASSWORD" "$TRANSCRIPTION_API_KEY" "$JWT_ISSUER" "$JWT_AUDIENCE" "$SEED_ADMIN_EMAIL" "$SEED_ADMIN_PASSWORD" "$DOMAIN_NAME" "$AWS_ACCESS_KEY_ID" "$AWS_SECRET_ACCESS_KEY" "$S3_BUCKET" "$S3_REGION" "$API_IMAGE" "$TRANSCRIBER_IMAGE" > .env
+            printf 'POSTGRES_PASSWORD="%s"\nTRANSCRIPTION_API_KEY="%s"\nJWT_ISSUER="%s"\nJWT_AUDIENCE="%s"\nSEED_ADMIN_EMAIL="%s"\nSEED_ADMIN_PASSWORD="%s"\nDOMAIN_NAME="%s"\nAPI_IMAGE="%s"\nTRANSCRIBER_IMAGE="%s"\n' \
+              "$POSTGRES_PASSWORD" "$TRANSCRIPTION_API_KEY" "$JWT_ISSUER" "$JWT_AUDIENCE" "$SEED_ADMIN_EMAIL" "$SEED_ADMIN_PASSWORD" "$DOMAIN_NAME" "$API_IMAGE" "$TRANSCRIBER_IMAGE" > .env
             chmod 600 .env
 
             echo "─── Pulling new images ───"
@@ -149,7 +145,6 @@ jobs:
             echo "─── Starting / swapping containers ───"
             docker compose -f docker-compose.prod.yml up -d --no-deps transcriber
             docker compose -f docker-compose.prod.yml up -d --no-deps db
-            docker compose -f docker-compose.prod.yml up -d --no-deps db-backup
             docker compose -f docker-compose.prod.yml up -d --no-deps api
             docker compose -f docker-compose.prod.yml up -d --no-deps caddy
 

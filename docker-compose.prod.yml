@@ -17,27 +17,6 @@ services:
       retries: 10
       start_period: 20s
 
-  db-backup:
-    image: prodrigestivill/postgres-backup-s3:16
-    restart: always
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      POSTGRES_HOST: db
-      POSTGRES_DATABASE: notefusion
-      POSTGRES_USER: notefusion
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      S3_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-      S3_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
-      S3_BUCKET: ${S3_BUCKET}
-      S3_REGION: ${S3_REGION:-us-east-1}
-      S3_PREFIX: backup
-      SCHEDULE: '@daily'
-      BACKUP_KEEP_DAYS: 7
-      BACKUP_KEEP_WEEKS: 4
-      BACKUP_KEEP_MONTHS: 6
-
   transcriber:
     image: ${TRANSCRIBER_IMAGE:-ghcr.io/OWNER/notefusion-transcriber:latest}
     restart: always
@@ -81,7 +60,7 @@ services:
       Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@notefusion.app}
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
       Push__UseExpo: "false"
-      Security__RequireHttps: "false" 
+      Security__RequireHttps: "false"
       Swagger__Enabled: "false"
       RateLimit__TrustedProxyHops: "1" 
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-https://admin.notefusion.studio}
