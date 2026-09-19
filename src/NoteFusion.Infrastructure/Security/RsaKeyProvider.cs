@@ -1,3 +1,4 @@
+using System.IO;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,7 +18,13 @@ public sealed class RsaKeyProvider : IDisposable
     {
         _rsa = RSA.Create(2048);
         if (!string.IsNullOrWhiteSpace(settings.PrivateKeyPem))
-            _rsa.ImportFromPem(settings.PrivateKeyPem);
+        {
+            var pem = settings.PrivateKeyPem.EndsWith(".pem") && File.Exists(settings.PrivateKeyPem)
+                ? File.ReadAllText(settings.PrivateKeyPem)
+                : settings.PrivateKeyPem;
+                
+            _rsa.ImportFromPem(pem);
+        }
 
         SecurityKey = new RsaSecurityKey(_rsa) { KeyId = "notefusion-rsa" };
         SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.RsaSha256);

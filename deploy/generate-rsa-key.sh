@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # deploy/generate-rsa-key.sh — Generate the RSA-2048 private key used by the JWT token service.
 #
 # Run this once locally, then store the output in:
