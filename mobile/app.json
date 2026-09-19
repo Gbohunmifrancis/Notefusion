@@ -1,4 +1,4 @@
-{
+﻿{
   "expo": {
     "name": "NoteFusion",
     "slug": "notefusion",
@@ -83,7 +83,7 @@
       ]
     ],
     "extra": {
-      "apiBaseUrl": "https://notefusion-api-3c2513a1e974.herokuapp.com",
+      "apiBaseUrl": "https://api.notefusion.studio",
       "googleIosClientId": "",
       "googleAndroidClientId": "21738378819-phjudqm26h6sthgfj0e2eg0l0vnid8ca.apps.googleusercontent.com",
       "googleWebClientId": "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com",
