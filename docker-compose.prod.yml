@@ -1,0 +1,105 @@
+﻿name: notefusion-prod
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: notefusion
+      POSTGRES_USER: notefusion
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notefusion -d notefusion"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  db-backup:
+    image: prodrigestivill/postgres-backup-s3:16
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DATABASE: notefusion
+      POSTGRES_USER: notefusion
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      S3_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      S3_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+      S3_REGION: ${S3_REGION:-us-east-1}
+      S3_PREFIX: backup
+      SCHEDULE: '@daily'
+      BACKUP_KEEP_DAYS: 7
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 6
+
+  transcriber:
+    image: ${TRANSCRIBER_IMAGE:-ghcr.io/OWNER/notefusion-transcriber:latest}
+    restart: always
+    environment:
+      NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-180}
+      NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-20971520}
+      NF_JOB_TTL_SECONDS: ${NF_JOB_TTL_SECONDS:-900}
+      NF_API_KEY: ${TRANSCRIPTION_API_KEY}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  api:
+    image: ${API_IMAGE:-ghcr.io/OWNER/notefusion-api:latest}
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      transcriber:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080" # Bound to localhost only. External traffic goes through Caddy.
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      Database__Host: db
+      Database__Port: "5432"
+      Database__Database: notefusion
+      Database__Username: notefusion
+      Database__Password: ${POSTGRES_PASSWORD}
+      Database__ApplyMigrationsAtStartup: "true"
+      TranscriptionApi__BaseUrl: http://transcriber:8000
+      TranscriptionApi__ApiKey: ${TRANSCRIPTION_API_KEY}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__PrivateKeyPem: /run/secrets/jwt_private_key.pem
+      Seed__AdminFullName: NoteFusion Admin
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@notefusion.app}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
+      Push__UseExpo: "false"
+      Security__RequireHttps: "false" 
+      Swagger__Enabled: "false"
+      RateLimit__TrustedProxyHops: "1" 
+      Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-https://admin.notefusion.studio}
+    volumes:
+      - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
+
+  caddy:
+    image: caddy:2-alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    command: caddy reverse-proxy --from ${DOMAIN_NAME} --to api:8080
+    depends_on:
+      - api
+    volumes:
+      - caddy-data:/data
+
+volumes:
+  db-data:
+  caddy-data:
