@@ -30,6 +30,7 @@ import type {
   SystemAnnouncement,
   SystemHealth,
   WebhookStatus,
+  WebFunnel,
 } from "@/api/types";
 
 export const login = (email: string, password: string) =>
@@ -59,6 +60,12 @@ export const getMyProfile = (signal?: AbortSignal) =>
 export const getOverview = (from?: string, to?: string, signal?: AbortSignal) =>
   request<AnalyticsOverview>(
     `/api/admin/analytics/overview${query({ from, to })}`,
+    signal ? { signal } : {},
+  );
+
+export const getWebFunnel = (from?: string, to?: string, signal?: AbortSignal) =>
+  request<WebFunnel>(
+    `/api/admin/analytics/web-funnel${query({ from, to })}`,
     signal ? { signal } : {},
   );
 

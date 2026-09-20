@@ -607,3 +607,18 @@ export interface InboxPage {
   pageSize: number;
   totalPages: number;
 }
+
+export interface WebFunnelMetric {
+  event: string;
+  count: number;
+}
+
+export interface WebFunnel {
+  fromUtc: string;
+  toUtc: string;
+  previewJobs: number;
+  completedPreviews: number;
+  failedPreviews: number;
+  expiredPreviews: number;
+  events: WebFunnelMetric[];
+}

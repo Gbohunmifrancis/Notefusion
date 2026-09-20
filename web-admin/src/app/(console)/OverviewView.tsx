@@ -28,7 +28,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { getOverview, getPaymentsSummary } from "@/api/endpoints";
+import { getOverview, getPaymentsSummary, getWebFunnel } from "@/api/endpoints";
 import type { AnalyticsOverview, DailyCount } from "@/api/types";
 import { Badge } from "@/components/Badge";
 import { DonutCard } from "@/components/DonutCard";
@@ -61,6 +61,7 @@ import {
 } from "@/lib/format";
 import { rememberReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
+import { WebFunnelCard } from "@/components/WebFunnelCard";
 
 function seedRange(overview: AnalyticsOverview): Range | null {
   const first = overview.signupsPerDay.at(0);
@@ -494,6 +495,12 @@ export function OverviewView() {
     staleTime: 30_000,
   });
 
+  const webFunnel = useQuery({
+    queryKey: ["web-funnel", range?.from ?? null, range?.to ?? null],
+    queryFn: ({ signal }) => getWebFunnel(range?.from, range?.to, signal),
+    placeholderData: keepPreviousData,
+  });
+
   const offset = state.data?.reportingOffsetMinutes;
   useEffect(() => {
     if (offset !== undefined) rememberReportingOffset(offset);
@@ -704,6 +711,13 @@ export function OverviewView() {
                   />
                 </div>
               </div>
+
+              <WebFunnelCard
+                data={webFunnel.data}
+                isLoading={webFunnel.isLoading}
+                isError={webFunnel.isError}
+                onRetry={() => void webFunnel.refetch()}
+              />
 
               {/* Telemetry, Cohorts & Signup Methods */}
               <div className="mt-8 border-t border-slate-200 pt-6 space-y-5 dark:border-slate-800">
