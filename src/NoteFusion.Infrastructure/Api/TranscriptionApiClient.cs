@@ -65,6 +65,57 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
         }
     }
 
+    public async Task<Result<string>> SubmitPreviewAsync(
+        Stream audio,
+        string fileName,
+        TranscribeOptions options,
+        double maxClipSeconds,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var form = new MultipartFormDataContent();
+            var audioContent = new StreamContent(audio);
+            var safeName = string.IsNullOrWhiteSpace(fileName) || !Path.HasExtension(fileName) ? "preview.m4a" : fileName;
+            var ext = Path.GetExtension(safeName).ToLowerInvariant();
+            var contentType = ext switch
+            {
+                ".mp3" => "audio/mpeg",
+                ".wav" => "audio/wav",
+                ".ogg" => "audio/ogg",
+                ".flac" => "audio/flac",
+                _ => "audio/m4a"
+            };
+            audioContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+            form.Add(audioContent, "audio", safeName);
+            form.Add(new StringContent(options.Mode == TranscriptionMode.Poly ? "poly" : "melody"), "mode");
+            form.Add(new StringContent(maxClipSeconds.ToString(System.Globalization.CultureInfo.InvariantCulture)), "preview_max_clip_seconds");
+            if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                form.Add(new StringContent(options.Key), "key");
+            if (options.Tempo is not null)
+                form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
+            if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+                form.Add(new StringContent(options.TimeSignature), "time_signature");
+
+            using var response = await http.PostAsync("v1/transcribe", form, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return Error.Failure("Api.SubmitPreview", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+            }
+
+            var payload = await response.Content.ReadFromJsonAsync(
+                ApiJsonContext.Default.SubmitResponse, cancellationToken);
+            return payload is null
+                ? Error.Failure("Api.SubmitPreview", "Transcription service returned an empty response.")
+                : payload.JobId;
+        }
+        catch (HttpRequestException ex)
+        {
+            return Error.Network("Api.SubmitPreview", $"Could not reach the transcription service: {ex.Message}");
+        }
+    }
+
     public async Task<Result<string>> SubmitScoreAsync(
         Stream score,
         string fileName,

@@ -1,0 +1,133 @@
+.web-preview-panel {
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid rgba(23, 105, 232, 0.2);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface, #fff) 88%, #1769E8 12%);
+  box-shadow: 0 16px 40px rgba(23, 105, 232, 0.10);
+}
+
+.web-preview-panel h2,
+.web-preview-result h3 {
+  margin: 5px 0 8px;
+  color: var(--ink, #101828);
+}
+
+.preview-eyebrow {
+  color: #1769E8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.preview-copy,
+.preview-result-note {
+  color: var(--muted, #667085);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 0 0 16px;
+}
+
+.web-preview-form {
+  display: grid;
+  gap: 10px;
+}
+
+.preview-file-label,
+.preview-controls label {
+  color: var(--ink, #101828);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.web-preview-form input[type="file"],
+.preview-controls select {
+  width: 100%;
+  border: 1px solid var(--border, #d0d5dd);
+  border-radius: 10px;
+  background: var(--surface, #fff);
+  color: var(--ink, #101828);
+  padding: 10px;
+  font: inherit;
+}
+
+.preview-controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.preview-controls .btn {
+  white-space: nowrap;
+}
+
+.web-preview-status {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(23, 105, 232, 0.09);
+  color: var(--ink, #101828);
+  font-size: 0.82rem;
+}
+
+.web-preview-status.is-error {
+  background: rgba(180, 35, 35, 0.10);
+  color: #b42323;
+}
+
+.web-preview-result {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border, #d0d5dd);
+}
+
+.preview-result-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.preview-confidence {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: rgba(23, 105, 232, 0.12);
+  color: #1769E8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 9px;
+}
+
+.preview-solfa {
+  max-height: 160px;
+  overflow: auto;
+  margin: 14px 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--bg, #f7f5f0);
+  color: var(--ink, #101828);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 620px) {
+  .preview-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .preview-controls label {
+    margin-top: 3px;
+  }
+}
+
+[data-theme="dark"] .web-preview-panel {
+  background: color-mix(in srgb, var(--surface, #101828) 90%, #1769E8 10%);
+}
+
+[data-theme="dark"] .preview-solfa {
+  background: rgba(255, 255, 255, 0.06);
+}

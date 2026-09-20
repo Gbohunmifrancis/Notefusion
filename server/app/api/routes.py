@@ -84,6 +84,7 @@ async def submit_transcription(
     key: str | None = Form(None),
     tempo: int | None = Form(None),
     time_signature: str | None = Form(None),
+    preview_max_clip_seconds: float | None = Form(None),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
@@ -140,10 +141,17 @@ async def submit_transcription(
         tmp_path.unlink(missing_ok=True)
         raise HTTPException(422, f"Could not read audio duration: {ex}")
 
-    if duration > settings.max_clip_seconds:
+    max_clip_seconds = settings.max_clip_seconds
+    if preview_max_clip_seconds is not None:
+        if not (1 <= preview_max_clip_seconds <= settings.max_clip_seconds):
+            tmp_path.unlink(missing_ok=True)
+            raise HTTPException(422, "preview_max_clip_seconds is outside the allowed range.")
+        max_clip_seconds = preview_max_clip_seconds
+
+    if duration > max_clip_seconds:
         tmp_path.unlink(missing_ok=True)
         raise HTTPException(413, f"Clip length {duration:.1f}s exceeds the maximum "
-                                 f"of {settings.max_clip_seconds:.0f}s.")
+                                 f"of {max_clip_seconds:.0f}s.")
 
     queue = _get_queue(request)
     job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,

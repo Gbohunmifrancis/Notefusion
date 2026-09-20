@@ -811,6 +811,69 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.Navigation("RefreshTokens");
                 });
+            modelBuilder.Entity("NoteFusion.Core.Entities.ProductEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)");
+                    b.Property<DateTime>("OccurredAtUtc")
+                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("Surface")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+                    b.Property<string>("AnonymousId")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+                    b.Property<string>("JobId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+                    b.Property<string>("MetadataJson")
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+                    b.HasKey("Id");
+                    b.HasIndex("JobId");
+                    b.HasIndex("Name", "OccurredAtUtc");
+                    b.ToTable("product_events", (string)null);
+                });
+            modelBuilder.Entity("NoteFusion.Core.Entities.WebPreviewJob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("DeviceFingerprint")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+                    b.Property<string>("Error")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("JobId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+                    b.Property<string>("PreviewTokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+                    b.Property<string>("ResultJson")
+                        .HasColumnType("text");
+                    b.Property<DateTime?>("SettledAtUtc")
+                        .HasColumnType("timestamp with time zone");
+                    b.HasKey("Id");
+                    b.HasIndex("DeviceFingerprint", "CreatedAtUtc");
+                    b.HasIndex("ExpiresAtUtc");
+                    b.HasIndex("JobId")
+                        .IsUnique();
+                    b.HasIndex("PreviewTokenHash")
+                        .IsUnique();
+                    b.ToTable("web_preview_jobs", (string)null);
+                });
 #pragma warning restore 612, 618
         }
     }

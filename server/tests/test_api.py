@@ -150,6 +150,20 @@ def test_submit_rejects_long_clip(monkeypatch):
         assert r.status_code == 413
 
 
+def test_preview_override_rejects_clip_over_preview_cap(monkeypatch):
+    monkeypatch.setattr("app.api.routes._clip_duration_seconds", lambda _p: 12.0)
+
+    with TestClient(app) as client:
+        data = _make_wav(duration_sec=0.1)
+        r = client.post(
+            "/v1/transcribe",
+            files={"audio": ("preview.wav", BytesIO(data), "audio/wav")},
+            data={"mode": "melody", "preview_max_clip_seconds": "10"},
+        )
+        assert r.status_code == 413
+        assert "10" in r.json()["detail"]
+
+
 def test_get_unknown_job_returns_404():
     with TestClient(app) as client:
         r = client.get("/v1/jobs/nosuchid")

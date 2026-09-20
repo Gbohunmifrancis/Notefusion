@@ -16,6 +16,15 @@ public interface ITranscriptionApi
         TranscribeOptions options,
         CancellationToken cancellationToken = default);
 
+    /// <summary>POST /v1/transcribe with a server-enforced short preview duration.</summary>
+    async Task<Result<string>> SubmitPreviewAsync(
+        Stream audio,
+        string fileName,
+        TranscribeOptions options,
+        double maxClipSeconds,
+        CancellationToken cancellationToken = default)
+        => await SubmitAsync(audio, fileName, options, cancellationToken);
+
     /// <summary>POST /v1/transcribe/score — returns the job id from the 202 response for symbolic score files.</summary>
     Task<Result<string>> SubmitScoreAsync(
         Stream score,

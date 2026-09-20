@@ -9,6 +9,7 @@ using NoteFusion.Api.Middleware;
 using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.WebPreview;
 using NoteFusion.Infrastructure;
 using NoteFusion.Infrastructure.Email;
 
@@ -48,6 +49,9 @@ if (!builder.Environment.IsDevelopment())
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSingleton(
+    builder.Configuration.GetSection(WebPreviewSettings.SectionName).Get<WebPreviewSettings>()
+    ?? new WebPreviewSettings());
 
 // Ambient caller identity resolved from the JWT.
 builder.Services.AddHttpContextAccessor();

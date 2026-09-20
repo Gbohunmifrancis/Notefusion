@@ -57,4 +57,10 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] bool? isOnline = null,
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline), ct));
+
+    /// <summary>Aggregate web preview jobs and conversion events for the selected UTC window.</summary>
+    [HttpGet("web-funnel")]
+    public async Task<IActionResult> WebFunnel(
+        [FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetWebFunnelQuery(from, to), ct));
 }

@@ -35,6 +35,7 @@
 
 <link rel="stylesheet" href="/assets/theme.css?v=5">
 <link rel="stylesheet" href="/assets/landing.css?v=6">
+<link rel="stylesheet" href="/assets/web-preview.css?v=1">
 
 <script>
   (function () {
@@ -181,6 +182,37 @@
             See sample &rarr;
           </a>
         </div>
+
+        <section class="web-preview-panel" id="webPreviewPanel" aria-labelledby="webPreviewTitle">
+          <span class="preview-eyebrow">Try a short preview</span>
+          <h2 id="webPreviewTitle">Hear your melody. See the Solfa.</h2>
+          <p class="preview-copy">Upload up to 30 seconds of an audio recording. We will show a private proof result before you decide whether to continue on mobile.</p>
+          <form id="webPreviewForm" class="web-preview-form">
+            <label class="preview-file-label" for="webPreviewAudio">Choose an audio clip</label>
+            <input id="webPreviewAudio" name="audio" type="file" accept="audio/*,.m4a,.mp3,.wav,.ogg,.flac" required>
+            <div class="preview-controls">
+              <label for="webPreviewMode">Mode</label>
+              <select id="webPreviewMode" name="mode">
+                <option value="melody">Melody / voice</option>
+                <option value="poly">Piano / polyphonic</option>
+              </select>
+              <button class="btn btn-primary" id="webPreviewSubmit" type="submit">Preview notation &rarr;</button>
+            </div>
+          </form>
+          <div class="web-preview-status" id="webPreviewStatus" role="status" aria-live="polite" hidden></div>
+          <div class="web-preview-result" id="webPreviewResult" hidden>
+            <div class="preview-result-heading">
+              <div>
+                <span class="preview-eyebrow">Preview ready</span>
+                <h3 id="webPreviewResultTitle">Your NoteFusion result</h3>
+              </div>
+              <span class="preview-confidence" id="webPreviewConfidence"></span>
+            </div>
+            <div class="preview-solfa" id="webPreviewSolfa"></div>
+            <p class="preview-result-note">This is a short proof result. Continue in the NoteFusion mobile app to correct, practise, save, and export it.</p>
+            <a class="btn btn-secondary" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener">Practise on mobile &rarr;</a>
+          </div>
+        </section>
       </div>
 
       <!-- Right Hero Column: Interactive Product Card -->

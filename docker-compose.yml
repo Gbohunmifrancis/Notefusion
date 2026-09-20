@@ -60,6 +60,11 @@ services:
       Database__ApplyMigrationsAtStartup: "true"
       # The internal ML worker — the only outbound call the API makes.
       TranscriptionApi__BaseUrl: http://transcriber:8000
+      WebPreview__Enabled: ${WEB_PREVIEW_ENABLED:-false}
+      WebPreview__MaxUploadBytes: ${WEB_PREVIEW_MAX_UPLOAD_BYTES:-10485760}
+      WebPreview__MaxClipSeconds: ${WEB_PREVIEW_MAX_CLIP_SECONDS:-30}
+      WebPreview__DailyAllowance: ${WEB_PREVIEW_DAILY_ALLOWANCE:-1}
+      WebPreview__RetentionHours: ${WEB_PREVIEW_RETENTION_HOURS:-24}
       # Stable signing key across restarts. Generate one for real deploys:
       #   openssl genpkey -algorithm RSA -out jwt-key.pem -pkeyopt rsa_keygen_bits:2048
       # then mount/secret it. When unset the API generates an ephemeral key (dev only).

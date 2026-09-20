@@ -528,4 +528,181 @@
       });
     });
   }
+
+  // ── Web Preview Proof Funnel ────────────────────────────────────────────────
+  var previewForm = document.getElementById("webPreviewForm");
+  var previewAudio = document.getElementById("webPreviewAudio");
+  var previewMode = document.getElementById("webPreviewMode");
+  var previewSubmit = document.getElementById("webPreviewSubmit");
+  var previewStatus = document.getElementById("webPreviewStatus");
+  var previewResult = document.getElementById("webPreviewResult");
+  var previewConfidence = document.getElementById("webPreviewConfidence");
+  var previewSolfa = document.getElementById("webPreviewSolfa");
+  var WEB_PREVIEW_API_ROOT = window.NOTE_FUSION_API_BASE || "https://notefusion-api-3c2513a1e974.herokuapp.com";
+  var WEB_PREVIEW_API_ENDPOINT = WEB_PREVIEW_API_ROOT.replace(/\/$/, "") + "/api/web-preview";
+  var TELEMETRY_ENDPOINT = WEB_PREVIEW_API_ROOT.replace(/\/$/, "") + "/api/telemetry/events";
+  var previewPollTimer = null;
+
+  function getAnonymousId() {
+    try {
+      var key = "notefusion-web-anonymous-id";
+      var existing = window.localStorage.getItem(key);
+      if (existing && existing.length <= 128) return existing;
+      var value = (window.crypto && window.crypto.randomUUID)
+        ? window.crypto.randomUUID()
+        : "web-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2);
+      window.localStorage.setItem(key, value.slice(0, 128));
+      return value.slice(0, 128);
+    } catch (e) {
+      return "web-session";
+    }
+  }
+
+  function sendPreviewEvent(name, jobId, metadata) {
+    var body = {
+      event: name,
+      anonymousId: getAnonymousId(),
+      jobId: jobId || null,
+      surface: "web",
+      metadata: metadata || {}
+    };
+    return fetch(TELEMETRY_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(body),
+      keepalive: true
+    }).catch(function () { return undefined; });
+  }
+
+  function previewHeaders(extra) {
+    var headers = extra || {};
+    headers["X-Device-Id"] = getAnonymousId();
+    return headers;
+  }
+
+  function setPreviewStatus(message, type) {
+    if (!previewStatus) return;
+    previewStatus.hidden = !message;
+    previewStatus.textContent = message || "";
+    previewStatus.className = "web-preview-status" + (type ? " is-" + type : "");
+  }
+
+  function setPreviewBusy(busy) {
+    if (!previewSubmit) return;
+    previewSubmit.disabled = busy;
+    previewSubmit.textContent = busy ? "Preparing preview…" : "Preview notation →";
+  }
+
+  function showPreviewResult(job) {
+    if (!previewResult || !job || !job.result) return;
+    var result = job.result;
+    var percent = Math.round(Math.max(0, Math.min(1, result.overallConfidence || 0)) * 100);
+    if (previewConfidence) previewConfidence.textContent = percent + "% confidence";
+    if (previewSolfa) {
+      previewSolfa.textContent = (result.solfaLines || []).join("\n") || "No Solfa line was returned for this clip.";
+    }
+    previewResult.hidden = false;
+    setPreviewStatus("Preview ready. Review the confidence before continuing.", "ready");
+    sendPreviewEvent("preview_ready", job.jobId, { mode: previewMode ? previewMode.value : "melody" });
+  }
+
+  function pollPreview(jobId, token, attempt) {
+    if (attempt > 60) {
+      setPreviewBusy(false);
+      setPreviewStatus("The preview is taking longer than expected. Please try again shortly.", "error");
+      return;
+    }
+    fetch(WEB_PREVIEW_API_ENDPOINT + "/jobs/" + encodeURIComponent(jobId), {
+      headers: previewHeaders({ "X-Preview-Token": token, "Accept": "application/json" })
+    })
+    .then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        return { ok: res.ok, status: res.status, data: data };
+      });
+    })
+    .then(function (response) {
+      if (!response.ok) {
+        var message = response.data && response.data.message;
+        setPreviewBusy(false);
+        setPreviewStatus(message || "This preview is no longer available. Please start again.", "error");
+        return;
+      }
+      var job = response.data;
+      if (job.status === "done") {
+        setPreviewBusy(false);
+        showPreviewResult(job);
+        return;
+      }
+      if (job.status === "failed") {
+        setPreviewBusy(false);
+        setPreviewStatus(job.error || "We could not read that recording. Try a clearer melody.", "error");
+        return;
+      }
+      setPreviewStatus("Listening… " + Math.round((job.progress || 0) * 100) + "%", "working");
+      previewPollTimer = window.setTimeout(function () {
+        pollPreview(jobId, token, attempt + 1);
+      }, 2000);
+    })
+    .catch(function () {
+      setPreviewBusy(false);
+      setPreviewStatus("Unable to reach NoteFusion. Please check your connection and try again.", "error");
+    });
+  }
+
+  if (previewForm && previewAudio && previewSubmit) {
+    sendPreviewEvent("landing_view", null, { source: "hero_preview" });
+    var mobileContinuation = document.querySelector("#webPreviewResult a");
+    if (mobileContinuation) {
+      mobileContinuation.addEventListener("click", function () {
+        sendPreviewEvent("mobile_opened", null, { source: "web_preview_result" });
+      });
+    }
+    previewForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var file = previewAudio.files && previewAudio.files[0];
+      if (!file) {
+        setPreviewStatus("Choose an audio clip first.", "error");
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setPreviewStatus("That file is larger than the 10 MB preview limit.", "error");
+        sendPreviewEvent("upload_rejected", null, { reason: "size" });
+        return;
+      }
+      if (previewPollTimer) window.clearTimeout(previewPollTimer);
+      var form = new FormData();
+      form.append("audio", file, file.name);
+      form.append("mode", previewMode ? previewMode.value : "melody");
+      setPreviewBusy(true);
+      setPreviewStatus("Uploading a private preview…", "working");
+      previewResult.hidden = true;
+      sendPreviewEvent("upload_started", null, { mode: previewMode ? previewMode.value : "melody" });
+      fetch(WEB_PREVIEW_API_ENDPOINT + "/jobs", {
+        method: "POST",
+        headers: previewHeaders({ "Accept": "application/json" }),
+        body: form
+      })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { ok: res.ok, status: res.status, data: data };
+        });
+      })
+      .then(function (response) {
+        if (!response.ok) {
+          setPreviewBusy(false);
+          var message = response.data && response.data.message;
+          setPreviewStatus(message || "That clip could not be submitted for preview.", "error");
+          sendPreviewEvent(response.status === 403 ? "quota_hit" : "upload_rejected", null, { status: String(response.status) });
+          return;
+        }
+        sendPreviewEvent("job_created", response.data.jobId, { mode: previewMode ? previewMode.value : "melody" });
+        setPreviewStatus("Listening… 0%", "working");
+        pollPreview(response.data.jobId, response.data.previewToken, 0);
+      })
+      .catch(function () {
+        setPreviewBusy(false);
+        setPreviewStatus("Unable to reach NoteFusion. Please check your connection and try again.", "error");
+      });
+    });
+  }
 })();
