@@ -3,20 +3,26 @@
 
 $ErrorActionPreference = "Stop"
 
+# Use absolute paths for docker volume mounts on Windows
+$TestsDir = "$PSScriptRoot/tests"
+
+Write-Host "Building transcriber image..."
+docker compose build transcriber
+
 Write-Host "Running control arm..."
-docker compose run --rm -e NF_CONTOUR_GAP_MERGE="0" transcriber python -m tests.accuracy.report --real
-if (Test-Path tests/accuracy/real_report.json) {
-    Move-Item -Path tests/accuracy/real_report.json -Destination tests/accuracy/real_report.control.json -Force
+docker compose run --rm -v "${TestsDir}:/app/tests" -e NF_CONTOUR_GAP_MERGE="0" transcriber python -m tests.accuracy.report --real
+if (Test-Path "$TestsDir/accuracy/real_report.json") {
+    Move-Item -Path "$TestsDir/accuracy/real_report.json" -Destination "$TestsDir/accuracy/real_report.control.json" -Force
 }
 
 Write-Host "Running contour-gap arm..."
-docker compose run --rm -e NF_CONTOUR_GAP_MERGE="1" transcriber python -m tests.accuracy.report --real
-if (Test-Path tests/accuracy/real_report.json) {
-    Move-Item -Path tests/accuracy/real_report.json -Destination tests/accuracy/real_report.contour-gap.json -Force
+docker compose run --rm -v "${TestsDir}:/app/tests" -e NF_CONTOUR_GAP_MERGE="1" transcriber python -m tests.accuracy.report --real
+if (Test-Path "$TestsDir/accuracy/real_report.json") {
+    Move-Item -Path "$TestsDir/accuracy/real_report.json" -Destination "$TestsDir/accuracy/real_report.contour-gap.json" -Force
 }
 
 Write-Host "Comparing arms..."
-docker compose run --rm transcriber python tests/accuracy/compare_arms.py tests/accuracy/real_report.control.json tests/accuracy/real_report.contour-gap.json
+docker compose run --rm -v "${TestsDir}:/app/tests" transcriber python tests/accuracy/compare_arms.py tests/accuracy/real_report.control.json tests/accuracy/real_report.contour-gap.json
 $exitCode = $LASTEXITCODE
 
 if ($exitCode -eq 0) {

@@ -1,0 +1,21 @@
+{
+  "key": "C major",
+  "tempo_bpm": 120,
+  "notes": [
+    {
+      "pitch_midi": 60,
+      "onset_sec": 0.5,
+      "dur_sec": 0.5
+    },
+    {
+      "pitch_midi": 62,
+      "onset_sec": 1.1,
+      "dur_sec": 0.5
+    },
+    {
+      "pitch_midi": 64,
+      "onset_sec": 1.7,
+      "dur_sec": 0.5
+    }
+  ]
+}

@@ -18,6 +18,7 @@ import {
   formatInstantDate,
   formatInstantDateTime,
   formatRelative,
+  getFlagEmoji,
 } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 import { useClampPage } from "@/lib/useClampPage";
@@ -366,12 +367,14 @@ export function UsersView() {
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
                               <Avatar name={user.fullName} src={user.profilePictureUrl} size={30} />
-                              <Link
-                                href={`/users/${user.id}`}
-                                className="truncate font-semibold text-slate-900 transition hover:text-[#2563EB] dark:text-slate-100 dark:hover:text-blue-400"
-                              >
-                                {user.fullName}
-                              </Link>
+                              <div className="flex flex-col min-w-0">
+                                <Link
+                                  href={`/users/${user.id}`}
+                                  className="truncate font-semibold text-slate-900 transition hover:text-[#2563EB] dark:text-slate-100 dark:hover:text-blue-400"
+                                >
+                                  {user.fullName} {getFlagEmoji(user.country)}
+                                </Link>
+                              </div>
                             </div>
                           </td>
                           <td className="px-4 py-3 text-slate-500 dark:text-slate-400">

@@ -7,7 +7,6 @@ import {
   CalendarDays,
   ChevronDown,
   CreditCard,
-  DollarSign,
   Globe,
   Info,
   MailCheck,
@@ -28,7 +27,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { getOverview, getPaymentsSummary } from "@/api/endpoints";
+import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview, DailyCount } from "@/api/types";
 import { Badge } from "@/components/Badge";
 import { DonutCard } from "@/components/DonutCard";
@@ -52,7 +51,6 @@ import {
   formatCount,
   formatDayLong,
   formatDayShort,
-  formatMoney,
   formatMonthShort,
   formatMonthYear,
   formatOffset,
@@ -434,7 +432,7 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
                     </button>
                   )}
                   <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                    {formatRelative(item.occurredAtUtc, now)}
+                    {formatRelative(item.occurredAtUtc.endsWith('Z') ? item.occurredAtUtc : `${item.occurredAtUtc}Z`, now)}
                   </span>
                 </div>
               </div>
@@ -521,12 +519,6 @@ export function OverviewView() {
     queryKey: ["overview", range?.from ?? null, range?.to ?? null],
     queryFn: ({ signal }) => getOverview(range?.from, range?.to, signal),
     placeholderData: keepPreviousData,
-  });
-
-  const paymentsSummary = useQuery({
-    queryKey: ["payments-summary-overview"],
-    queryFn: ({ signal }) => getPaymentsSummary(signal),
-    staleTime: 30_000,
   });
 
   const offset = state.data?.reportingOffsetMinutes;
@@ -668,20 +660,6 @@ export function OverviewView() {
               icon: Music2,
               hint: "Transcriptions saved in library",
             },
-            {
-              title: "Revenue",
-              value: paymentsSummary.data
-                ? formatMoney(paymentsSummary.data.netMinor, paymentsSummary.data.currency)
-                : paymentsSummary.isLoading
-                ? "..."
-                : formatMoney(0, "USD"),
-              change: paymentsSummary.data && paymentsSummary.data.completedCount > 0
-                ? `${formatCount(paymentsSummary.data.completedCount)} completed`
-                : null,
-              description: paymentsSummary.data && paymentsSummary.data.completedCount > 0 ? "settled payments" : null,
-              icon: DollarSign,
-              hint: "Total settled net revenue from payment ledger",
-            },
           ];
 
           const ended = data.transcriptions.succeededCount + data.transcriptions.failedCount;
@@ -703,8 +681,8 @@ export function OverviewView() {
 
           return (
             <div className="space-y-6">
-              {/* 4 TOP KPI CARDS */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* TOP KPI CARDS */}
+              <div className="grid gap-4 sm:grid-cols-3">
                 {topStats.map((stat) => (
                   <StatCard key={stat.title} stat={stat} />
                 ))}
