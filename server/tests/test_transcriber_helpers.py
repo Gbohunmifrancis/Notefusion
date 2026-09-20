@@ -771,16 +771,18 @@ class TestDecodedWavLifetime:
         converted = tmp_path / "converted.wav"
         converted.write_bytes(b"placeholder")
         seen: dict = {}
+        
+        dummy_res = transcriber.TranscriptionResult("C", 1.0, 120, "4/4", "", "", [])
 
         def fake_inner(wav_path, mode, key_override, tempo_override, progress):
             seen["path"] = wav_path
             seen["exists"] = wav_path.exists()
-            return "result"
+            return dummy_res
 
         monkeypatch.setattr(transcriber, "_ensure_wav_path", lambda path: (converted, True))
         monkeypatch.setattr(transcriber, "_transcribe_wav", fake_inner)
 
-        assert transcriber.transcribe(tmp_path / "upload.m4a") == "result"
+        assert transcriber.transcribe(tmp_path / "upload.m4a") == dummy_res
         assert seen["path"] == converted  # the pipeline is handed the decoded file
         assert seen["exists"] is True  # ...and it is still readable
         assert not converted.exists()  # deleted exactly once, by transcribe()
@@ -804,11 +806,13 @@ class TestDecodedWavLifetime:
         # JobQueue._run unlinks the upload for privacy (TRD par. 9).
         upload = tmp_path / "upload.wav"
         upload.write_bytes(b"placeholder")
+        
+        dummy_res = transcriber.TranscriptionResult("C", 1.0, 120, "4/4", "", "", [])
 
         monkeypatch.setattr(transcriber, "_ensure_wav_path", lambda path: (upload, False))
-        monkeypatch.setattr(transcriber, "_transcribe_wav", lambda *args: "result")
+        monkeypatch.setattr(transcriber, "_transcribe_wav", lambda *args: dummy_res)
 
-        assert transcriber.transcribe(upload) == "result"
+        assert transcriber.transcribe(upload) == dummy_res
         assert upload.exists()
 
 
