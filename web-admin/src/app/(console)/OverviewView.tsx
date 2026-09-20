@@ -3,17 +3,16 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight,
-  CalendarClock,
   CalendarDays,
   ChevronDown,
   CreditCard,
-  Globe,
   Info,
   MailCheck,
   Music2,
   UserRound,
   UserRoundPlus,
   Zap,
+  LogIn,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -29,7 +28,6 @@ import {
 
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview, DailyCount } from "@/api/types";
-import { Badge } from "@/components/Badge";
 import { DonutCard } from "@/components/DonutCard";
 import type { DonutSlice } from "@/components/DonutCard";
 import { RangePicker } from "@/components/RangePicker";
@@ -390,15 +388,18 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
           {displayItems.map((item, index) => {
             const isSignup = item.kind === "signup";
             const isTranscription = item.kind === "transcription";
+            const isLogin = item.kind === "login";
 
-            const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : CreditCard;
+            const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : isLogin ? LogIn : CreditCard;
             const iconStyle = isSignup
               ? "bg-blue-50 text-[#2563EB] dark:bg-blue-950/60 dark:text-blue-400"
               : isTranscription
                 ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
+                : isLogin
+                  ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
+                  : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
 
-            const verb = isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : "Payment received";
+            const verb = isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : isLogin ? "User signed in" : "Payment received";
             const flag = getFlagEmoji(item.country);
             
             return (
@@ -453,61 +454,6 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
 }
 
 
-const UNMEASURED = [
-  {
-    icon: Globe,
-    metric: "Top countries and geography",
-    waiting: "Needs a GeoIP provider",
-    tone: "warning" as const,
-    body: (
-      <>
-        An account does carry a country, resolved from the caller&apos;s address once at its first
-        sign-in and only when a GeoIP provider is configured — so on a deployment without one it is
-        null for everybody.
-      </>
-    ),
-  },
-  {
-    icon: CreditCard,
-    metric: "Subscribed, paid and free-tier counts",
-    waiting: "Lives on System health",
-    tone: "blue" as const,
-    body: (
-      <>
-        The billing tables exist, but every figure on this page is windowed to the range above and a
-        subscription count belongs to an instant instead. The live numbers are on{" "}
-        <Link href="/health" className="font-medium text-brand hover:opacity-80">
-          System health
-        </Link>
-        .
-      </>
-    ),
-  },
-  {
-    icon: CalendarClock,
-    metric: "Day-N retention",
-    waiting: "Never recorded",
-    tone: "neutral" as const,
-    body: (
-      <>
-        Only the latest sign-in is stored, not a login history, so a cohort can be asked whether it
-        ever returned and not whether it was active in week three.
-      </>
-    ),
-  },
-  {
-    icon: MailCheck,
-    metric: "Email verification",
-    waiting: "Never recorded",
-    tone: "neutral" as const,
-    body: (
-      <>
-        There is no verification flag. The Google-linked count above is the closest honest proxy and
-        is labelled as exactly that.
-      </>
-    ),
-  },
-];
 
 export function OverviewView() {
   const { user } = useAuth();
@@ -784,28 +730,6 @@ export function OverviewView() {
                   </div>
                 </div>
 
-                {/* Unmeasured telemetry cards */}
-                <div className="grid gap-3.5 sm:grid-cols-2">
-                  {UNMEASURED.map(({ icon: Icon, metric, waiting, tone, body }) => (
-                    <div
-                      key={metric}
-                      className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900/80"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
-                          <Icon size={15} aria-hidden="true" />
-                        </span>
-                        <span className="flex-1 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                          {metric}
-                        </span>
-                        <Badge tone={tone}>{waiting}</Badge>
-                      </div>
-                      <p className="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
-                        {body}
-                      </p>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           );

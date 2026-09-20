@@ -160,6 +160,7 @@ export interface AdminUserRow {
   hasPassword: boolean;
   createdAt: string;
   lastLoginAt: string | null;
+  country: string | null;
   transcriptionCount: number;
   /** Pro unlocked right now, decided server-side by status and period window together. */
   hasProAccess: boolean;
