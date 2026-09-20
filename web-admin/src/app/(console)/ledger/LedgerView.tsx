@@ -1,8 +1,8 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { ChevronDown, Search } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { getLedger } from "@/api/endpoints";
 import { Badge } from "@/components/Badge";
@@ -21,39 +21,37 @@ import {
 import { formatInstantDateTime } from "@/lib/format";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
 import { useClampPage } from "@/lib/useClampPage";
+import { getReportingOffset } from "@/lib/reporting";
 
 const PAGE_SIZE = 30;
 
 export function LedgerView() {
-  const { page, onPageChange } = useClampPage();
+  const [page, setPage] = useState(1);
+  const offset = getReportingOffset();
 
-  const { data, isLoading, isError, refetch } = useQuery({
+  const query = useQuery({
     queryKey: ["ledger", page],
     queryFn: ({ signal }) => getLedger(page, PAGE_SIZE, {}, signal),
     placeholderData: keepPreviousData,
   });
 
+  useClampPage(page, query.data?.totalPages, setPage);
+
   return (
     <>
       <PageHeader
         title="Ledger"
-        description="Append-only record of all financial movements across all accounts."
+        subtitle="Append-only record of all financial movements across all accounts."
+        breadcrumb={["Console", "Ledger"]}
       />
 
       <Card>
         <StateView
-          state={{
-            isInitialLoading: isLoading && !data,
-            isError,
-            isEmpty: data?.items.length === 0,
-          }}
-          onRetry={refetch}
-          empty={{
-            title: "No ledger entries",
-            message: "When payments process, their ledger movements will appear here.",
-          }}
+          state={query}
+          isEmpty={() => query.data?.items.length === 0}
+          emptyMessage="When payments process, their ledger movements will appear here."
         >
-          {() => (
+          {(data) => (
             <>
               <Table>
                 <TableHeader>
@@ -66,10 +64,10 @@ export function LedgerView() {
                   </TableRow>
                 </TableHeader>
                 <TableBody className={TBODY}>
-                  {data?.items.map((row) => (
+                  {data.items.map((row) => (
                     <TableRow key={row.id}>
                       <TableCell className={TD}>
-                        {formatInstantDateTime(row.createdAtUtc)}
+                        {formatInstantDateTime(row.createdAtUtc, offset)}
                       </TableCell>
                       <TableCell className={TD}>
                         <Link
@@ -101,15 +99,15 @@ export function LedgerView() {
                   ))}
                 </TableBody>
               </Table>
-              {data && data.totalCount > PAGE_SIZE && (
-                <div className="border-t border-[#eaecf0] dark:border-[#262626] p-4">
-                  <Pager
-                    page={page}
-                    pageSize={PAGE_SIZE}
-                    totalItems={data.totalCount}
-                    onChange={onPageChange}
-                  />
-                </div>
+              {data.totalCount > PAGE_SIZE && (
+                <Pager
+                  page={page}
+                  pageSize={PAGE_SIZE}
+                  totalCount={data.totalCount}
+                  totalPages={data.totalPages}
+                  busy={query.isFetching}
+                  onPage={setPage}
+                />
               )}
             </>
           )}
