@@ -9,4 +9,6 @@ public sealed record WebFunnelDto(
     int CompletedPreviews,
     int FailedPreviews,
     int ExpiredPreviews,
-    IReadOnlyList<WebFunnelMetricDto> Events);
+    IReadOnlyList<WebFunnelMetricDto> Events,
+    int ClaimedPreviews,
+    int ConvertedVisitors);

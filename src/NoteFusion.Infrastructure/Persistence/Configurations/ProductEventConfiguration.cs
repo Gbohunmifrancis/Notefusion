@@ -17,7 +17,13 @@ public sealed class ProductEventConfiguration : IEntityTypeConfiguration<Product
         builder.Property(e => e.JobId).HasMaxLength(100);
         builder.Property(e => e.MetadataJson).HasMaxLength(2048);
         builder.Property(e => e.OccurredAtUtc).IsRequired();
+        builder.Property(e => e.UserId);
         builder.HasIndex(e => new { e.Name, e.OccurredAtUtc });
         builder.HasIndex(e => e.JobId);
+
+        // Anonymous-to-account attribution reads by visitor, then by account; both sides need an index or
+        // the funnel query degrades into a scan of an append-only table that only ever grows.
+        builder.HasIndex(e => e.AnonymousId);
+        builder.HasIndex(e => e.UserId);
     }
 }

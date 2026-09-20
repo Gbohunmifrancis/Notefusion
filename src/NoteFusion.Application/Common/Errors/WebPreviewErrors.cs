@@ -22,4 +22,19 @@ public static class WebPreviewErrors
 
     public static readonly Error EventTooLarge =
         Error.Validation("TELEMETRY_EVENT_TOO_LARGE", "That product event is too large.");
+
+    /// <summary>
+    /// The preview exists and the token is right, but there is nothing to keep yet. Kept distinct from
+    /// <see cref="InvalidToken"/> because the caller holds a valid token here and the fix is to wait, not
+    /// to start again.
+    /// </summary>
+    public static readonly Error NotReady =
+        Error.Validation("WEB_PREVIEW_NOT_READY", "That preview has not finished yet. Try again in a moment.");
+
+    /// <summary>
+    /// Someone else already kept this preview. A preview token is a bearer credential, so the second holder
+    /// of a leaked one must not be able to pull the result into their own library.
+    /// </summary>
+    public static readonly Error AlreadyClaimed =
+        Error.Forbidden("WEB_PREVIEW_ALREADY_CLAIMED", "That preview has already been saved to another account.");
 }

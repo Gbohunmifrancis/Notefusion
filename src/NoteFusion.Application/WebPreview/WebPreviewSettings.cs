@@ -23,6 +23,7 @@ public static class ProductEventNames
     public const string PreviewReady = "preview_ready";
     public const string PreviewPlayed = "preview_played";
     public const string AccountVerified = "account_verified";
+    public const string PreviewClaimed = "preview_claimed";
     public const string MobileOpened = "mobile_opened";
     public const string JobReopened = "job_reopened";
     public const string PracticeStarted = "practice_started";
@@ -36,7 +37,7 @@ public static class ProductEventNames
     public static readonly IReadOnlySet<string> Allowed = new HashSet<string>(StringComparer.Ordinal)
     {
         LandingView, IntentSelected, UploadStarted, UploadRejected, JobCreated,
-        PreviewReady, PreviewPlayed, AccountVerified, MobileOpened, JobReopened,
+        PreviewReady, PreviewPlayed, AccountVerified, PreviewClaimed, MobileOpened, JobReopened,
         PracticeStarted, ShareCreated, ShareOpened, QuotaHit, UpgradeViewed,
         CheckoutStarted, SubscriptionStarted
     };

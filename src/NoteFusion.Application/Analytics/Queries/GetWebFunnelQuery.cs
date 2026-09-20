@@ -28,7 +28,7 @@ public sealed class GetWebFunnelQueryHandler : MediatR.IRequestHandler<GetWebFun
 
         var jobs = await _db.WebPreviewJobs
             .Where(j => j.CreatedAtUtc >= from && j.CreatedAtUtc < to)
-            .Select(j => new { j.SettledAtUtc, j.ResultJson, j.ExpiresAtUtc })
+            .Select(j => new { j.SettledAtUtc, j.ResultJson, j.ExpiresAtUtc, j.ClaimedByUserId })
             .ToListAsync(cancellationToken);
         var events = await _db.ProductEvents
             .Where(e => e.OccurredAtUtc >= from && e.OccurredAtUtc < to)
@@ -37,6 +37,16 @@ public sealed class GetWebFunnelQueryHandler : MediatR.IRequestHandler<GetWebFun
             .OrderByDescending(x => x.Count)
             .ToListAsync(cancellationToken);
 
+        // The conversion the funnel exists to measure: browsers that were anonymous when they arrived and
+        // had an account by the time they left. Counted over the visitor, not the event, because one
+        // person signing up emits several authenticated rows and would otherwise read as several people.
+        var convertedVisitors = await _db.ProductEvents
+            .Where(e => e.OccurredAtUtc >= from && e.OccurredAtUtc < to)
+            .Where(e => e.UserId != null && e.AnonymousId != null)
+            .Select(e => e.AnonymousId)
+            .Distinct()
+            .CountAsync(cancellationToken);
+
         return new WebFunnelDto(
             from,
             to,
@@ -44,6 +54,8 @@ public sealed class GetWebFunnelQueryHandler : MediatR.IRequestHandler<GetWebFun
             jobs.Count(j => j.ResultJson is not null),
             jobs.Count(j => j.SettledAtUtc is not null && j.ResultJson is null),
             jobs.Count(j => j.SettledAtUtc is null && j.ExpiresAtUtc <= _clock.UtcNow),
-            events);
+            events,
+            jobs.Count(j => j.ClaimedByUserId is not null),
+            convertedVisitors);
     }
 }

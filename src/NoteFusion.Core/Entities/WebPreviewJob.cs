@@ -17,6 +17,17 @@ public sealed class WebPreviewJob
     public string? ResultJson { get; private set; }
     public string? Error { get; private set; }
 
+    /// <summary>
+    /// The account this preview was handed to, once someone signed up or signed in to keep it. Null for a
+    /// preview nobody claimed, which is the state most of them stay in until they expire.
+    /// </summary>
+    public Guid? ClaimedByUserId { get; private set; }
+
+    public DateTime? ClaimedAtUtc { get; private set; }
+
+    /// <summary>The library row the claim produced, so a repeated claim returns the same one.</summary>
+    public Guid? ClaimedTranscriptionId { get; private set; }
+
     public static WebPreviewJob Record(
         string jobId,
         string previewTokenHash,
@@ -43,5 +54,25 @@ public sealed class WebPreviewJob
         SettledAtUtc = now;
         ResultJson = resultJson;
         Error = error;
+    }
+
+    /// <summary>
+    /// Hands this preview to an account. Returns false when it already belongs to a different one, which is
+    /// what stops a leaked preview token from moving someone else's result into a stranger's library.
+    /// </summary>
+    /// <remarks>
+    /// Re-claiming by the same owner succeeds without changing anything, so a retried request — a flaky
+    /// network on the sign-up screen, say — settles on the transcription the first call already created
+    /// instead of making a second copy of it.
+    /// </remarks>
+    public bool Claim(Guid userId, Guid transcriptionId, DateTime now)
+    {
+        if (ClaimedByUserId is { } owner)
+            return owner == userId;
+
+        ClaimedByUserId = userId;
+        ClaimedTranscriptionId = transcriptionId;
+        ClaimedAtUtc = now;
+        return true;
     }
 }

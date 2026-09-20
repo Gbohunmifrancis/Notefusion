@@ -22,5 +22,11 @@ public sealed class WebPreviewJobConfiguration : IEntityTypeConfiguration<WebPre
         builder.HasIndex(j => j.ExpiresAtUtc);
         builder.Property(j => j.ResultJson);
         builder.Property(j => j.Error).HasMaxLength(1000);
+        builder.Property(j => j.ClaimedByUserId);
+        builder.Property(j => j.ClaimedAtUtc);
+        builder.Property(j => j.ClaimedTranscriptionId);
+
+        // The funnel counts claims over a window, and the report is the whole point of the table.
+        builder.HasIndex(j => new { j.ClaimedByUserId, j.ClaimedAtUtc });
     }
 }

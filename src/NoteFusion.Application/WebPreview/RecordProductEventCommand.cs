@@ -19,15 +19,18 @@ public sealed class RecordProductEventCommandHandler : MediatR.IRequestHandler<R
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
     private readonly WebPreviewSettings _settings;
+    private readonly ICurrentUser _currentUser;
 
     public RecordProductEventCommandHandler(
         IApplicationDbContext db,
         IDateTimeProvider clock,
-        WebPreviewSettings settings)
+        WebPreviewSettings settings,
+        ICurrentUser currentUser)
     {
         _db = db;
         _clock = clock;
         _settings = settings;
+        _currentUser = currentUser;
     }
 
     public async Task<Result<ProductEventDto>> Handle(
@@ -50,13 +53,18 @@ public sealed class RecordProductEventCommandHandler : MediatR.IRequestHandler<R
             return WebPreviewErrors.EventTooLarge;
 
         var occurred = _clock.UtcNow;
+
+        // The endpoint is anonymous, but authentication still runs, so an event posted after sign-up
+        // carries the account while keeping the same anonymousId the pre-sign-up events used. That pair on
+        // one row is what lets the funnel follow a visitor across the moment they became a user.
         _db.ProductEvents.Add(ProductEvent.Record(
             request.Event,
             occurred,
             surface,
             request.AnonymousId,
             request.JobId,
-            metadataJson));
+            metadataJson,
+            _currentUser.UserId));
         await _db.SaveChangesAsync(cancellationToken);
 
         return new ProductEventDto(request.Event, occurred);
