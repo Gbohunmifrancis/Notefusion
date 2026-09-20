@@ -621,4 +621,6 @@ export interface WebFunnel {
   failedPreviews: number;
   expiredPreviews: number;
   events: WebFunnelMetric[];
+  claimedPreviews: number;
+  convertedVisitors: number;
 }

@@ -132,21 +132,21 @@ export function WebFunnelCard({ data, isLoading, isError, onRetry }: WebFunnelCa
   const landingViews = eventCount(data, "landing_view");
   const uploadStarts = eventCount(data, "upload_started");
   const previewReady = eventCount(data, "preview_ready") || data.completedPreviews;
-  const mobileOpened = eventCount(data, "mobile_opened");
+  const accountsCreated = data.convertedVisitors;
   const subscriptions = eventCount(data, "subscription_started");
   const funnel: FunnelStep[] = [
     { label: "Landing views", value: landingViews || data.previewJobs, color: chart.series, icon: Eye },
     { label: "Upload started", value: uploadStarts || data.previewJobs, color: chart.sky, icon: MousePointer2 },
     { label: "Preview ready", value: previewReady, color: chart.success, icon: CheckCircle2 },
-    { label: "Opened in mobile", value: mobileOpened, color: "#8b5cf6", icon: UsersRound },
+    { label: "Accounts created", value: accountsCreated, color: "#8b5cf6", icon: UsersRound },
   ];
   const eventData = data.events
     .filter((event) => event.count > 0)
     .map((event) => ({ label: eventLabels[event.event] ?? event.event.replaceAll("_", " "), count: event.count }))
     .slice(0, 8);
   const readyRate = conversion(previewReady, uploadStarts || data.previewJobs);
-  const mobileRate = conversion(mobileOpened, previewReady);
-  const subscriptionRate = conversion(subscriptions, mobileOpened || previewReady);
+  const accountRate = conversion(accountsCreated, previewReady);
+  const claimRate = conversion(data.claimedPreviews, accountsCreated || previewReady);
 
   return (
     <Card
@@ -159,8 +159,8 @@ export function WebFunnelCard({ data, isLoading, isError, onRetry }: WebFunnelCa
         <div className="grid gap-3 sm:grid-cols-4">
           <Kpi label="Preview jobs" value={formatCount(data.previewJobs)} detail="submitted" icon={Activity} tone="bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300" />
           <Kpi label="Ready rate" value={readyRate} detail={`${formatCount(data.completedPreviews)} ready`} icon={CheckCircle2} tone="bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300" />
-          <Kpi label="Mobile handoff" value={mobileRate} detail={`${formatCount(mobileOpened)} opens`} icon={ArrowUpRight} tone="bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300" />
-          <Kpi label="Subscriptions" value={subscriptionRate} detail={`${formatCount(subscriptions)} started`} icon={Sparkles} tone="bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300" />
+          <Kpi label="Accounts created" value={accountRate} detail={`${formatCount(accountsCreated)} users`} icon={UsersRound} tone="bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-300" />
+          <Kpi label="Previews claimed" value={claimRate} detail={`${formatCount(data.claimedPreviews)} kept`} icon={ArrowUpRight} tone="bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300" />
         </div>
 
         <div className="grid gap-5 xl:grid-cols-[1.25fr_1fr]">
@@ -170,7 +170,7 @@ export function WebFunnelCard({ data, isLoading, isError, onRetry }: WebFunnelCa
                 <h3 className="text-xs font-semibold text-foreground">Conversion path</h3>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">Each step compared with the previous step</p>
               </div>
-              <span className="text-[11px] text-muted-foreground">{formatCount(data.failedPreviews)} failed · {formatCount(data.expiredPreviews)} expired</span>
+              <span className="text-[11px] text-muted-foreground">{formatCount(data.failedPreviews)} failed • {formatCount(data.expiredPreviews)} expired</span>
             </div>
             <div className="h-56 w-full">
               <ResponsiveContainer width="100%" height="100%">
@@ -215,8 +215,8 @@ export function WebFunnelCard({ data, isLoading, isError, onRetry }: WebFunnelCa
 
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border/60 pt-3 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" /> Preview ready {readyRate}</span>
-          <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-violet-500" /> Mobile handoff {mobileRate}</span>
-          <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-amber-500" /> Paid conversion {subscriptionRate}</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-violet-500" /> Account created {accountRate}</span>
+          <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-amber-500" /> Preview claimed {claimRate}</span>
           {data.failedPreviews > 0 && <span className="inline-flex items-center gap-1.5 text-warning"><ArrowDownRight size={13} /> {formatCount(data.failedPreviews)} failures need review</span>}
         </div>
       </div>
