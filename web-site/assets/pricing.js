@@ -8,7 +8,9 @@
   var regionLabel = document.getElementById("pricing-region");
   var regionNote = document.getElementById("pricing-region-note");
   var pricingApi =
-    "https://notefusion-api-3c2513a1e974.herokuapp.com/api/billing/public-plans";
+    window.location.hostname === "localhost"
+      ? "http://localhost:5080/api/billing/public-plans"
+      : "https://api.notefusion.studio/api/billing/public-plans";
   var playUrl = "https://play.google.com/store/apps/details?id=com.notefusion.com";
 
   function checkIcon() {
