@@ -1,0 +1,45 @@
+﻿name: E2E Test Suite
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: E2E Tests
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "--- 1. Register User ---"
+            REG_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/register -H "Content-Type: application/json" -d '{"email":"francisgbohunmi@gmail.com","fullName":"Francis Gbohunmi","password":"TestPassword123@"}')
+            echo "Registration Response: $REG_RESP"
+            
+            echo "--- 2. Bypass Email Verification via DB ---"
+            docker exec notefusion-prod-db-1 psql -U notefusion -d notefusion -c "UPDATE users SET \"EmailVerified\" = true WHERE \"Email\" = 'francisgbohunmi@gmail.com';"
+            
+            echo "--- 3. Login ---"
+            LOGIN_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/login -H "Content-Type: application/json" -d '{"email":"francisgbohunmi@gmail.com","password":"TestPassword123@"}')
+            # Extract access token using grep/awk
+            TOKEN=$(echo $LOGIN_RESP | grep -o '"accessToken":"[^"]*' | cut -d'"' -f4)
+            echo "Access Token received."
+            
+            echo "--- 4. Fetch Plans ---"
+            PLANS_RESP=$(curl -s https://api.notefusion.studio/api/billing/plans -H "Authorization: Bearer $TOKEN")
+            echo "Plans: $PLANS_RESP"
+            PLAN_ID=$(echo $PLANS_RESP | grep -o '"id":"[^"]*' | head -n 1 | cut -d'"' -f4)
+            
+            echo "--- 5. Initiate Checkout ---"
+            CHECKOUT_RESP=$(curl -s -X POST https://api.notefusion.studio/api/billing/checkout -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "{\"planId\":\"$PLAN_ID\"}")
+            echo "Checkout URL generated: $CHECKOUT_RESP"
+            
+            echo "--- 6. Generate Dummy WAV File ---"
+            python3 -c "import wave, struct; f=wave.open('test.wav','w'); f.setnchannels(1); f.setsampwidth(2); f.setframerate(44100); f.writeframes(b''.join(struct.pack('h', 0) for i in range(44100))); f.close()"
+            
+            echo "--- 7. Test Transcription Upload ---"
+            TRANS_RESP=$(curl -s -X POST https://api.notefusion.studio/api/transcriptions -H "Authorization: Bearer $TOKEN" -F "audio=@test.wav" -F "mode=Melody")
+            echo "Transcription Job Created: $TRANS_RESP"
