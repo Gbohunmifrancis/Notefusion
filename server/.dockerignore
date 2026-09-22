@@ -1,39 +1,13 @@
-# Build / cache artifacts
-__pycache__/
+﻿__pycache__/
 *.pyc
 *.pyo
-*.egg-info
-.pytest_cache/
-# Hyphenated, so the line above does not cover them. `.pytest-tmp/` is unreadable even to its
-# owner, and a context walk that cannot scandir a directory fails the build rather than skipping it.
-.pytest-tmp/
-.pytest-run-next/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-
-# Virtual environments
-.venv/
-venv/
+*.pyd
+.Python
 env/
-
-# Local data
-recordings/
-output/
-tests/test_clips/
-test_clips/
-
-# Git
-.git/
-.gitignore
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
+venv/
+.env
+.pytest_cache/
+tests/
+locustfile.py
+Dockerfile
+docker-compose*.yml
