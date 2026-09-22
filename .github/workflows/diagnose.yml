@@ -1,0 +1,25 @@
+name: Diagnose EC2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check logs
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /opt/notefusion
+            echo "--- DOCKER PS ---"
+            docker ps -a
+            echo "--- API LOGS ---"
+            docker logs notefusion-api-1 --tail 50
+            echo "--- TRANSCRIBER LOGS ---"
+            docker logs notefusion-transcriber-1 --tail 50
+            echo "--- CADDY LOGS ---"
+            docker logs notefusion-caddy-1 --tail 50
