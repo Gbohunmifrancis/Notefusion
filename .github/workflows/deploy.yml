@@ -216,8 +216,6 @@ jobs:
             Bachs__ProductMap__pro_monthly="${BACHS__PRODUCTMAP__PRO_MONTHLY}"
             Bachs__ProductMap__pro_yearly="${BACHS__PRODUCTMAP__PRO_YEARLY}"
             Paystack__SecretKey="${PAYSTACK__SECRETKEY}"
-            Paystack__BaseUrl="${PAYSTACK__BASEURL}"
-            Paystack__SupportedCurrencies="${PAYSTACK__SUPPORTEDCURRENCIES}"
             Flutterwave__BaseUrl="${FLUTTERWAVE__BASEURL}"
             Squad__BaseUrl="${SQUAD__BASEURL}"
             R2__AccountId="${R2__ACCOUNTID}"
