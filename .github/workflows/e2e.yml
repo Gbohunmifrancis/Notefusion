@@ -15,11 +15,18 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
+            TEST_EMAIL="test$RANDOM@notefusion.studio"
+            echo "--- 1. Register User ($TEST_EMAIL) ---"
+            REG_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/register -H "Content-Type: application/json" -d "{\"email\":\"$TEST_EMAIL\",\"fullName\":\"E2E Tester\",\"password\":\"TestPassword123@\"}")
+            echo "Registration JSON: $REG_RESP"
+            
+            echo "--- 2. Bypass Email Verification via DB ---"
+            docker exec notefusion-prod-db-1 psql -U notefusion -d notefusion -c "UPDATE users SET \"EmailVerified\" = true WHERE \"Email\" = '$TEST_EMAIL';"
+            
             echo "--- 3. Login ---"
-            LOGIN_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/login -H "Content-Type: application/json" -d '{"email":"francisgbohunmi@gmail.com","password":"TestPassword123@"}')
+            LOGIN_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"$TEST_EMAIL\",\"password\":\"TestPassword123@\"}")
             echo "Login JSON: $LOGIN_RESP"
             
-            # Using jq to extract token
             TOKEN=$(echo $LOGIN_RESP | jq -r .accessToken)
             echo "Extracted Token: $TOKEN"
             
