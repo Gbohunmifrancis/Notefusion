@@ -1,0 +1,13 @@
+﻿name: Diagnose Heroku
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Heroku
+        run: |
+          curl -v https://notefusion-api.herokuapp.com/api/app/version
+          curl -v -X POST https://notefusion-api.herokuapp.com/api/auth/login -H "Content-Type: application/json" -d '{"email":"test@notefusion.studio","password":"Password123@"}'
