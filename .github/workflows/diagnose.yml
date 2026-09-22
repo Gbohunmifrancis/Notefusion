@@ -17,13 +17,9 @@ jobs:
             cd /opt/notefusion
             echo "--- DOCKER PS ---"
             docker ps -a
-            echo "--- CURL ASP.NET LOCAL ---"
-            curl -v -I http://localhost:8080/health/liveness
-            echo "--- CURL CADDY LOCAL (HTTPS) ---"
-            curl -v -k -I https://localhost/health/liveness
-            echo "--- CURL DOMAIN (EXTERNAL) ---"
-            curl -v -I https://api.notefusion.studio/health/liveness
+            echo "--- CURL ASP.NET LOCAL (/api/app/version) ---"
+            curl -v -I http://localhost:8080/api/app/version
             echo "--- API LOGS ---"
-            docker logs notefusion-api-1 --tail 50
+            docker logs notefusion-prod-api-1 --tail 50
             echo "--- CADDY LOGS ---"
-            docker logs notefusion-caddy-1 --tail 50
+            docker logs notefusion-prod-caddy-1 --tail 50
