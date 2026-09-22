@@ -1,0 +1,18 @@
+﻿name: Check IP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compare IP
+        run: |
+          if [ "${{ secrets.EC2_HOST }}" == "3.137.151.63" ]; then
+            echo "MATCH"
+          else
+            echo "MISMATCH - The secret EC2_HOST is NOT 3.137.151.63!"
+            # To see what it actually is (carefully):
+            echo "${{ secrets.EC2_HOST }}" | sed 's/./& /g'
+          fi
