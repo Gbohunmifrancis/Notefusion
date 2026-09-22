@@ -23,9 +23,9 @@ RUN dotnet restore src/NoteFusion.Api/NoteFusion.Api.csproj
 
 # Copy the rest of the source and publish a framework-dependent build.
 COPY src/ src/
-RUN dotnet publish src/NoteFusion.Api/NoteFusion.Api.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish src/NoteFusion.Api/NoteFusion.Api.csproj -c Release -r linux-x64 --self-contained false -p:DebugType=None -p:DebugSymbols=false -o /app/publish --no-restore
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 COPY --from=build /app/publish ./

@@ -177,6 +177,12 @@ jobs:
             set -euo pipefail
             cd /opt/notefusion
 
+            echo "─── Cleaning unused Docker resources ───"
+            docker container prune -f || true
+            docker image prune -af || true
+            docker builder prune -af || true
+            docker network prune -f || true
+
             echo "─── Authenticating with GHCR ───"
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
