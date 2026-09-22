@@ -107,21 +107,72 @@ jobs:
         env:
           API_IMAGE: ${{ env.API_IMAGE_NAME }}:sha-${{ github.sha }}
           TRANSCRIBER_IMAGE: ${{ env.TRANSCRIBER_IMAGE_NAME }}:sha-${{ github.sha }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          # ── Core infrastructure ──────────────────────────────────────────────
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
           TRANSCRIPTION_API_KEY: ${{ secrets.TRANSCRIPTION_API_KEY }}
+          # ── JWT ──────────────────────────────────────────────────────────────
           JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
           JWT_AUDIENCE: ${{ secrets.JWT_AUDIENCE }}
           JWT_PRIVATE_KEY_PEM: ${{ secrets.JWT_PRIVATE_KEY_PEM }}
+          # ── Seed ─────────────────────────────────────────────────────────────
           SEED_ADMIN_EMAIL: ${{ secrets.SEED_ADMIN_EMAIL }}
           SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
-          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHCR_USER: ${{ github.actor }}
+          # ── Email (Resend) ────────────────────────────────────────────────────
+          RESEND__APIKEY: ${{ secrets.RESEND__APIKEY }}
+          RESEND__FROM: ${{ secrets.RESEND__FROM }}
+          EMAIL__FROMADDRESS: ${{ secrets.EMAIL__FROMADDRESS }}
+          EMAIL__ASSETBASEURL: ${{ secrets.EMAIL__ASSETBASEURL }}
+          EMAIL__USERESEND: ${{ secrets.EMAIL__USERESEND }}
+          # ── Google OAuth ──────────────────────────────────────────────────────
+          GOOGLE__CLIENTID: ${{ secrets.GOOGLE__CLIENTID }}
+          # ── Billing ───────────────────────────────────────────────────────────
+          BILLING__DEFAULTPROVIDER: ${{ secrets.BILLING__DEFAULTPROVIDER }}
+          BILLING__CHECKOUTCALLBACKURL: ${{ secrets.BILLING__CHECKOUTCALLBACKURL }}
+          # ── Bachs ─────────────────────────────────────────────────────────────
+          BACHS__BASEURL: ${{ secrets.BACHS__BASEURL }}
+          BACHS__SECRETKEY: ${{ secrets.BACHS__SECRETKEY }}
+          BACHS__WEBHOOKSECRET: ${{ secrets.BACHS__WEBHOOKSECRET }}
+          BACHS__PRODUCTMAP__PRO_MONTHLY: ${{ secrets.BACHS__PRODUCTMAP__PRO_MONTHLY }}
+          BACHS__PRODUCTMAP__PRO_YEARLY: ${{ secrets.BACHS__PRODUCTMAP__PRO_YEARLY }}
+          # ── Paystack ──────────────────────────────────────────────────────────
+          PAYSTACK__SECRETKEY: ${{ secrets.PAYSTACK__SECRETKEY }}
+          PAYSTACK__BASEURL: ${{ secrets.PAYSTACK__BASEURL }}
+          PAYSTACK__SUPPORTEDCURRENCIES: ${{ secrets.PAYSTACK__SUPPORTEDCURRENCIES }}
+          # ── Flutterwave ───────────────────────────────────────────────────────
+          FLUTTERWAVE__BASEURL: ${{ secrets.FLUTTERWAVE__BASEURL }}
+          # ── Squad ─────────────────────────────────────────────────────────────
+          SQUAD__BASEURL: ${{ secrets.SQUAD__BASEURL }}
+          # ── Cloudflare R2 ─────────────────────────────────────────────────────
+          R2__ACCOUNTID: ${{ secrets.R2__ACCOUNTID }}
+          R2__ACCESSKEYID: ${{ secrets.R2__ACCESSKEYID }}
+          R2__SECRETACCESSKEY: ${{ secrets.R2__SECRETACCESSKEY }}
+          R2__BUCKETNAME: ${{ secrets.R2__BUCKETNAME }}
+          R2__PUBLICBASEURL: ${{ secrets.R2__PUBLICBASEURL }}
+          R2__USER2: ${{ secrets.R2__USER2 }}
+          # ── Push notifications ────────────────────────────────────────────────
+          PUSH__USEEXPO: ${{ secrets.PUSH__USEEXPO }}
+          # ── Auth ──────────────────────────────────────────────────────────────
+          AUTH__RESETPASSWORDURL: ${{ secrets.AUTH__RESETPASSWORDURL }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          envs: API_IMAGE,TRANSCRIBER_IMAGE,POSTGRES_PASSWORD,TRANSCRIPTION_API_KEY,JWT_ISSUER,JWT_AUDIENCE,JWT_PRIVATE_KEY_PEM,SEED_ADMIN_EMAIL,SEED_ADMIN_PASSWORD,DOMAIN_NAME,GHCR_TOKEN,GHCR_USER
+          envs: >-
+            API_IMAGE,TRANSCRIBER_IMAGE,GHCR_TOKEN,GHCR_USER,
+            POSTGRES_PASSWORD,DOMAIN_NAME,TRANSCRIPTION_API_KEY,
+            JWT_ISSUER,JWT_AUDIENCE,JWT_PRIVATE_KEY_PEM,
+            SEED_ADMIN_EMAIL,SEED_ADMIN_PASSWORD,
+            RESEND__APIKEY,RESEND__FROM,EMAIL__FROMADDRESS,EMAIL__ASSETBASEURL,EMAIL__USERESEND,
+            GOOGLE__CLIENTID,
+            BILLING__DEFAULTPROVIDER,BILLING__CHECKOUTCALLBACKURL,
+            BACHS__BASEURL,BACHS__SECRETKEY,BACHS__WEBHOOKSECRET,BACHS__PRODUCTMAP__PRO_MONTHLY,BACHS__PRODUCTMAP__PRO_YEARLY,
+            PAYSTACK__SECRETKEY,PAYSTACK__BASEURL,PAYSTACK__SUPPORTEDCURRENCIES,
+            FLUTTERWAVE__BASEURL,SQUAD__BASEURL,
+            R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
+            PUSH__USEEXPO,AUTH__RESETPASSWORDURL
           script: |
             set -euo pipefail
             cd /opt/notefusion
@@ -135,8 +186,43 @@ jobs:
             chmod 600 jwt_private_key.pem
 
             echo "─── Writing .env ───"
-            printf 'POSTGRES_PASSWORD="%s"\nTRANSCRIPTION_API_KEY="%s"\nJWT_ISSUER="%s"\nJWT_AUDIENCE="%s"\nSEED_ADMIN_EMAIL="%s"\nSEED_ADMIN_PASSWORD="%s"\nDOMAIN_NAME="%s"\nAPI_IMAGE="%s"\nTRANSCRIBER_IMAGE="%s"\n' \
-              "$POSTGRES_PASSWORD" "$TRANSCRIPTION_API_KEY" "$JWT_ISSUER" "$JWT_AUDIENCE" "$SEED_ADMIN_EMAIL" "$SEED_ADMIN_PASSWORD" "$DOMAIN_NAME" "$API_IMAGE" "$TRANSCRIBER_IMAGE" > .env
+            cat > .env <<EOF
+            POSTGRES_PASSWORD="${POSTGRES_PASSWORD}"
+            TRANSCRIPTION_API_KEY="${TRANSCRIPTION_API_KEY}"
+            JWT_ISSUER="${JWT_ISSUER}"
+            JWT_AUDIENCE="${JWT_AUDIENCE}"
+            SEED_ADMIN_EMAIL="${SEED_ADMIN_EMAIL}"
+            SEED_ADMIN_PASSWORD="${SEED_ADMIN_PASSWORD}"
+            DOMAIN_NAME="${DOMAIN_NAME}"
+            API_IMAGE="${API_IMAGE}"
+            TRANSCRIBER_IMAGE="${TRANSCRIBER_IMAGE}"
+            Resend__ApiKey="${RESEND__APIKEY}"
+            Resend__From="${RESEND__FROM}"
+            Email__FromAddress="${EMAIL__FROMADDRESS}"
+            Email__AssetBaseUrl="${EMAIL__ASSETBASEURL}"
+            Email__UseResend="${EMAIL__USERESEND}"
+            Google__ClientId="${GOOGLE__CLIENTID}"
+            Billing__DefaultProvider="${BILLING__DEFAULTPROVIDER}"
+            Billing__CheckoutCallbackUrl="${BILLING__CHECKOUTCALLBACKURL}"
+            Bachs__BaseUrl="${BACHS__BASEURL}"
+            Bachs__SecretKey="${BACHS__SECRETKEY}"
+            Bachs__WebhookSecret="${BACHS__WEBHOOKSECRET}"
+            Bachs__ProductMap__pro_monthly="${BACHS__PRODUCTMAP__PRO_MONTHLY}"
+            Bachs__ProductMap__pro_yearly="${BACHS__PRODUCTMAP__PRO_YEARLY}"
+            Paystack__SecretKey="${PAYSTACK__SECRETKEY}"
+            Paystack__BaseUrl="${PAYSTACK__BASEURL}"
+            Paystack__SupportedCurrencies="${PAYSTACK__SUPPORTEDCURRENCIES}"
+            Flutterwave__BaseUrl="${FLUTTERWAVE__BASEURL}"
+            Squad__BaseUrl="${SQUAD__BASEURL}"
+            R2__AccountId="${R2__ACCOUNTID}"
+            R2__AccessKeyId="${R2__ACCESSKEYID}"
+            R2__SecretAccessKey="${R2__SECRETACCESSKEY}"
+            R2__BucketName="${R2__BUCKETNAME}"
+            R2__PublicBaseUrl="${R2__PUBLICBASEURL}"
+            R2__UseR2="${R2__USER2}"
+            Push__UseExpo="${PUSH__USEEXPO}"
+            Auth__ResetPasswordUrl="${AUTH__RESETPASSWORDURL}"
+            EOF
             chmod 600 .env
 
             echo "─── Pulling new images ───"
