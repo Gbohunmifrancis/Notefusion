@@ -64,6 +64,16 @@ services:
       Swagger__Enabled: "true"
       RateLimit__TrustedProxyHops: "1" 
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-https://admin.notefusion.studio}
+      Resend__ApiKey: ${Resend__ApiKey}
+      Resend__From: ${Resend__From}
+      Email__FromAddress: ${Email__FromAddress}
+      Email__AssetBaseUrl: ${Email__AssetBaseUrl}
+      Email__UseResend: ${Email__UseResend}
+      Google__ClientId: ${Google__ClientId}
+      Billing__DefaultProvider: ${Billing__DefaultProvider}
+      Billing__CheckoutCallbackUrl: ${Billing__CheckoutCallbackUrl}
+      Bachs__BaseUrl: ${Bachs__BaseUrl}
+      Bachs__SecretKey: ${Bachs__SecretKey}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 
