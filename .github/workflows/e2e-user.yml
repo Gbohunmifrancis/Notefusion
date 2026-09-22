@@ -1,0 +1,23 @@
+﻿name: E2E Test Suite User Email
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: E2E Tests
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "--- 0. Delete Existing Test User ---"
+            docker exec notefusion-prod-db-1 psql -U notefusion -d notefusion -c "DELETE FROM users WHERE \"Email\" = 'francisgbohunmi@gmail.com';"
+            
+            echo "--- 1. Register User ---"
+            REG_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/register -H "Content-Type: application/json" -d "{\"email\":\"francisgbohunmi@gmail.com\",\"fullName\":\"Francis Gbohunmi\",\"password\":\"TestPassword123@\"}")
+            echo "Registration JSON: $REG_RESP"
