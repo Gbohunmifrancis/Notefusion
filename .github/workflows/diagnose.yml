@@ -14,6 +14,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker inspect notefusion-prod-api-1 | grep -E "Database__"
-            docker inspect notefusion-prod-api-1 | grep "ConnectionString" || true
-            cat /opt/notefusion/.env
+            echo "--- POST /api/auth/register ---"
+            curl -v -X POST https://api.notefusion.studio/api/auth/register -H "Content-Type: application/json" -d '{"email":"test@notefusion.studio","fullName":"Test User","password":"Password123@"}'
+            echo "\n--- GET /api/app/version ---"
+            curl -v https://api.notefusion.studio/api/app/version
