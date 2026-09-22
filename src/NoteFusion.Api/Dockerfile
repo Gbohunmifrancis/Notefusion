@@ -19,7 +19,7 @@ COPY src/NoteFusion.Core/NoteFusion.Core.csproj              src/NoteFusion.Core
 COPY src/NoteFusion.Application/NoteFusion.Application.csproj src/NoteFusion.Application/
 COPY src/NoteFusion.Infrastructure/NoteFusion.Infrastructure.csproj src/NoteFusion.Infrastructure/
 COPY src/NoteFusion.Api/NoteFusion.Api.csproj                src/NoteFusion.Api/
-RUN dotnet restore src/NoteFusion.Api/NoteFusion.Api.csproj
+RUN dotnet restore src/NoteFusion.Api/NoteFusion.Api.csproj -r linux-x64
 
 # Copy the rest of the source and publish a framework-dependent build.
 COPY src/ src/
