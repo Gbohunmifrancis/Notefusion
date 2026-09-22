@@ -14,7 +14,5 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "--- POST /api/auth/register ---"
-            curl -v -X POST https://api.notefusion.studio/api/auth/register -H "Content-Type: application/json" -d '{"email":"test@notefusion.studio","fullName":"Test User","password":"Password123@"}'
-            echo "\n--- GET /api/app/version ---"
-            curl -v https://api.notefusion.studio/api/app/version
+            echo "--- POST /api/auth/login ---"
+            curl -v -X POST https://api.notefusion.studio/api/auth/login -H "Content-Type: application/json" -d '{"email":"test@notefusion.studio","password":"Password123@"}'
