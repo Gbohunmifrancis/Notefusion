@@ -1,0 +1,33 @@
+﻿name: Verify Payment Checkout
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: E2E Tests
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            echo "--- Login ---"
+            LOGIN_RESP=$(curl -s -X POST https://api.notefusion.studio/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"francisgbohunmi@gmail.com\",\"password\":\"TestPassword123@\"}")
+            echo "Login JSON: $LOGIN_RESP"
+            
+            TOKEN=$(echo $LOGIN_RESP | jq -r .accessToken)
+            echo "Extracted Token: $TOKEN"
+            
+            echo "--- Fetch Plans ---"
+            PLANS_RESP=$(curl -s https://api.notefusion.studio/api/billing/plans -H "Authorization: Bearer $TOKEN")
+            echo "Plans JSON: $PLANS_RESP"
+            PLAN_ID=$(echo $PLANS_RESP | jq -r '.[0].id')
+            echo "Plan ID: $PLAN_ID"
+            
+            echo "--- Initiate Checkout ---"
+            CHECKOUT_RESP=$(curl -s -X POST https://api.notefusion.studio/api/billing/checkout -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" -d "{\"planId\":\"$PLAN_ID\"}")
+            echo "Checkout JSON: $CHECKOUT_RESP"
