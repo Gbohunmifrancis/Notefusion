@@ -1,0 +1,19 @@
+﻿name: Check EC2 Status
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: E2E Tests
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker ps -a
+            docker logs notefusion-prod-api-1 --tail 50
+            docker logs notefusion-prod-caddy-1 --tail 50
