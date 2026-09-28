@@ -36,6 +36,7 @@ export function useJobPolling() {
     errorCode: null,
   });
   const activeJobId = useRef<string | null>(null);
+  const bufferedJobsRef = useRef<Record<string, any>>({});
   const connectionRef = useRef<HubConnection | null>(null);
 
   useEffect(() => {
@@ -51,7 +52,10 @@ export function useJobPolling() {
 
     connection.on("JobCompleted", (job: any) => {
       if (!active) return;
-      if (activeJobId.current !== job.jobId) return;
+      if (activeJobId.current !== job.jobId) {
+        bufferedJobsRef.current[job.jobId] = job;
+        return;
+      }
 
       const status = normalizeStatus(job.status);
       let error: string | null = null;
@@ -59,7 +63,7 @@ export function useJobPolling() {
         error =
           job.error && job.error.trim().length > 0
             ? job.error.trim()
-            : "Transcription failed — please try a cleaner recording, closer to the microphone.";
+            : "Transcription failed â€” please try a cleaner recording, closer to the microphone.";
       }
 
       setState({
@@ -109,11 +113,24 @@ export function useJobPolling() {
 
         if (!jobId) {
           throw new Error(
-            "Server did not return a job identifier — please try again.",
+            "Server did not return a job identifier â€” please try again.",
           );
         }
         
         activeJobId.current = jobId;
+        // Process any buffered job that arrived before the HTTP response resolved
+        if (bufferedJobsRef.current[jobId]) {
+          const job = bufferedJobsRef.current[jobId];
+          delete bufferedJobsRef.current[jobId];
+          const status = normalizeStatus(job.status);
+          setState({
+            status,
+            progress: job.progress ?? 1,
+            result: job.result ?? null,
+            error: status === 'failed' ? (job.error || 'Transcription failed') : null,
+            errorCode: null,
+          });
+        }
 
         const inlineStatus =
           typeof res !== "string" ? normalizeStatus(res.status) : "pending";
