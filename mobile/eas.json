@@ -23,6 +23,12 @@
         "buildType": "app-bundle"
       }
     },
+    "production-apk": {
+      "extends": "production",
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "store": {
       "autoIncrement": true,
       "channel": "production",

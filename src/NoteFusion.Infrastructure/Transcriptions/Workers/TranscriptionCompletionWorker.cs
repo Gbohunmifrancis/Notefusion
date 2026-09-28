@@ -34,10 +34,10 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
     private const int BatchSize = 25;
 
     /// <summary>
-    /// Short, because this interval is added to how long someone waits for their notification after the
-    /// music has actually finished being transcribed.
+    /// Now acts purely as a dead-letter fallback if a webhook fails to deliver.
+    /// Polling is expensive, so it only runs every 5 minutes.
     /// </summary>
-    private static readonly TimeSpan Interval = TimeSpan.FromSeconds(10);
+    private static readonly TimeSpan Interval = TimeSpan.FromMinutes(5);
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<TranscriptionCompletionWorker> _logger;

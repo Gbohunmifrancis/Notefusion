@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { transcriptionsApi } from "../api/endpoints";
-import { toApiError } from "../api/client";
+import { baseURL, toApiError } from "../api/client";
+import { tokenStore } from "./tokenStore";
 import type { TranscriptionResult, TranscriptionStatus } from "../api/types";
 
 export interface JobState {
@@ -8,12 +10,6 @@ export interface JobState {
   progress: number;
   result: TranscriptionResult | null;
   error: string | null;
-  /**
-   * The `ApiError.code` behind a request failure, or null when the job itself failed
-   * (the worker reports prose, not a code). Kept alongside the message because callers
-   * that need to *branch* on a failure were reduced to substring-matching the message,
-   * which silently stopped working the moment the server reworded it.
-   */
   errorCode: string | null;
 }
 
@@ -29,30 +25,9 @@ function normalizeStatus(status: unknown): TranscriptionStatus {
 }
 
 /**
- * Polls GET /api/transcriptions/jobs/{id} until the job reaches a terminal state.
- *
- * Bug fixes applied here:
- *
- *  Bug 6 — The previous implementation hardcoded the failure message as
- *  "Transcription failed. Try a cleaner clip." regardless of what the Python
- *  worker actually said.  The Python worker sets a rich error string on the job
- *  (e.g. "No confident notes detected in the recording") that now flows through:
- *
- *    Python job.error
- *      → C# JobResponse.Error  (previously missing — fixed in TranscriptionApiContracts.cs)
- *      → C# TranscriptionJobDto.Error  (field added to DTO)
- *      → JSON wire field "error"
- *      → TranscriptionJob.error  (field added to TS type)
- *      → JobState.error  (used directly here instead of hardcoded string)
- *
- *  Fallback: if the server error field is absent or empty (e.g. an old deploy),
- *  a sensible generic message is still shown.
- *
- * Backend transcription is async (queued single-worker inference), so the client
- * polls every ~1 s.  The timer is cleaned up on unmount so a backgrounded screen
- * never leaks.
+ * Listens via SignalR for job completion instead of HTTP polling.
  */
-export function useJobPolling(intervalMs = 1000) {
+export function useJobPolling() {
   const [state, setState] = useState<JobState>({
     status: "idle",
     progress: 0,
@@ -60,69 +35,54 @@ export function useJobPolling(intervalMs = 1000) {
     error: null,
     errorCode: null,
   });
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const active = useRef(true);
+  const activeJobId = useRef<string | null>(null);
+  const connectionRef = useRef<HubConnection | null>(null);
 
   useEffect(() => {
-    active.current = true;
+    let active = true;
+
+    const connection = new HubConnectionBuilder()
+      .withUrl(`${baseURL}/hubs/transcription`, {
+        accessTokenFactory: async () => (await tokenStore.getAccess()) || "",
+      })
+      .configureLogging(LogLevel.Warning)
+      .withAutomaticReconnect()
+      .build();
+
+    connection.on("JobCompleted", (job: any) => {
+      if (!active) return;
+      if (activeJobId.current !== job.jobId) return;
+
+      const status = normalizeStatus(job.status);
+      let error: string | null = null;
+      if (status === "failed") {
+        error =
+          job.error && job.error.trim().length > 0
+            ? job.error.trim()
+            : "Transcription failed — please try a cleaner recording, closer to the microphone.";
+      }
+
+      setState({
+        status,
+        progress: job.progress ?? 1,
+        result: job.result ?? null,
+        error,
+        errorCode: null, // webhook failures don't carry the HTTP error code
+      });
+    });
+
+    connection.start().catch((err) => {
+      console.warn("SignalR connection failed:", err);
+    });
+    
+    connectionRef.current = connection;
+
     return () => {
-      active.current = false;
-      if (timer.current) clearTimeout(timer.current);
+      active = false;
+      connection.stop();
     };
   }, []);
 
-  const poll = useCallback(
-    (jobId: string) => {
-      transcriptionsApi
-        .getJob(jobId)
-        .then((job) => {
-          if (!active.current) return;
-
-          const status = normalizeStatus(job.status);
-
-          // Resolve the error message:
-          //   1. Use the server-supplied message if present (Bug 6 fix).
-          //   2. Fall back to a generic hint only when the server sends nothing.
-          let error: string | null = null;
-          if (status === "failed") {
-            error =
-              job.error && job.error.trim().length > 0
-                ? job.error.trim()
-                : "Transcription failed — please try a cleaner recording, closer to the microphone.";
-          }
-
-          setState({
-            status,
-            progress: job.progress ?? 0,
-            result: job.result ?? null,
-            error,
-            // A job that failed inside the worker carries no API error code — the
-            // request itself succeeded.
-            errorCode: null,
-          });
-
-          if (!TERMINAL.includes(status)) {
-            timer.current = setTimeout(() => poll(jobId), intervalMs);
-          }
-        })
-        .catch((e) => {
-          if (!active.current) return;
-          const err = toApiError(e);
-          setState((s) => ({
-            ...s,
-            status: "failed",
-            error: err.message,
-            errorCode: err.code,
-          }));
-        });
-    },
-    [intervalMs],
-  );
-
-  /**
-   * Upload a clip and begin polling.
-   * Resolves to the job id string (or null on immediate failure).
-   */
   const start = useCallback(
     async (
       fileUri: string,
@@ -136,11 +96,10 @@ export function useJobPolling(intervalMs = 1000) {
         error: null,
         errorCode: null,
       });
+      activeJobId.current = null;
       try {
         const res = await transcriptionsApi.submit(fileUri, fileName, opts);
 
-        // The C# API returns a TranscriptionJob envelope.
-        // jobId lives at res.jobId (camelCase from JsonNamingPolicy.CamelCase).
         const jobId =
           typeof res === "string"
             ? res
@@ -153,9 +112,9 @@ export function useJobPolling(intervalMs = 1000) {
             "Server did not return a job identifier — please try again.",
           );
         }
+        
+        activeJobId.current = jobId;
 
-        // If the server already resolved the job inline (edge case: synchronous fast path),
-        // accept the result immediately without kicking off a polling loop.
         const inlineStatus =
           typeof res !== "string" ? normalizeStatus(res.status) : "pending";
 
@@ -167,9 +126,8 @@ export function useJobPolling(intervalMs = 1000) {
             error: null,
             errorCode: null,
           });
-        } else {
-          poll(jobId);
         }
+        // If not inline resolved, we rely entirely on SignalR JobCompleted event
 
         return jobId;
       } catch (e) {
@@ -179,18 +137,17 @@ export function useJobPolling(intervalMs = 1000) {
           progress: 0,
           result: null,
           error: err.message,
-          // The submit rejection is where the quota refusal arrives
-          // (`BILLING_FREE_TIER_LIMIT`), so this is the code callers branch on.
           errorCode: err.code,
         });
+        activeJobId.current = null;
         return null;
       }
     },
-    [poll],
+    [],
   );
 
   const reset = useCallback(() => {
-    if (timer.current) clearTimeout(timer.current);
+    activeJobId.current = null;
     setState({
       status: "idle",
       progress: 0,

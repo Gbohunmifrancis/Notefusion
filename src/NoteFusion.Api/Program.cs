@@ -103,6 +103,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
     });
 
+builder.Services.AddSignalR();
+builder.Services.AddScoped<NoteFusion.Application.Common.Interfaces.ITranscriptionNotifier, NoteFusion.Api.Services.SignalRTranscriptionNotifier>();
+
 // JWT auth — bearer options are configured against the shared RSA key (see ConfigureJwtBearerOptions).
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
@@ -256,6 +259,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<NoteFusion.Api.Hubs.TranscriptionHub>("/hubs/transcription");
 
 // Serve the email logo directly with long-lived public caching. This guarantees instant delivery
 // and backwards compatibility for existing mail clients requesting {BaseUrl}/email/logo.png.

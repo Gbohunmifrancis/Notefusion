@@ -1,4 +1,4 @@
-﻿{
+{
   "expo": {
     "name": "NoteFusion",
     "slug": "notefusion",
@@ -91,7 +91,6 @@
         "projectId": "8cc4d615-18ab-4e92-8ae7-77087b84bfab"
       }
     },
-    "owner": "yaw669",
     "runtimeVersion": {
       "policy": "appVersion"
     },

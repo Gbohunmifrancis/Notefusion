@@ -11,7 +11,8 @@ import threading
 import time
 import uuid
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+import httpx
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 from app.config import settings
@@ -38,6 +39,7 @@ class Job:
     #: than in a contextvar because inference runs on a pool thread, and a
     #: contextvar set in the request does not propagate across executor.submit().
     correlation_id: str | None = None
+    callback_url: str | None = None
 
 
 class JobQueue:
@@ -50,8 +52,12 @@ class JobQueue:
     def submit(self, audio_path: Path, mode: str,
                key: str | None, tempo: int | None,
                time_signature: str = "4/4",
-               correlation_id: str | None = None) -> str:
-        job = Job(id=uuid.uuid4().hex, correlation_id=correlation_id)
+               correlation_id: str | None = None,
+               callback_url: str | None = None) -> str:
+        job_id = uuid.uuid4().hex
+        if callback_url:
+            callback_url = callback_url.replace("{job_id}", job_id)
+        job = Job(id=job_id, correlation_id=correlation_id, callback_url=callback_url)
         with self._lock:
             self._purge_expired()
             self._jobs[job.id] = job
@@ -97,7 +103,7 @@ class JobQueue:
             logger.warning("Job %s LOW-CONFIDENCE: %s%s", job.id[:8], ex, self._trail(job))
         except Exception as ex:  # noqa: BLE001 - job boundary; error goes to the client
             job.status = STATUS_FAILED
-            job.error = f"Transcription failed: {ex}"
+            job.error = "An unexpected error occurred during transcription. Please try recording again."
             # exception(), so the traceback reaches the log drain: this is the line that
             # used to say only the exception type, leaving nothing to debug from.
             logger.exception("Job %s EXCEPTION: %s%s",
@@ -105,12 +111,17 @@ class JobQueue:
         finally:
             # Privacy by default: the recording never outlives its job (TRD par. 9)
             audio_path.unlink(missing_ok=True)
+            self._trigger_webhook(job)
 
     def submit_score(self, score_path: Path,
                      key: str | None = None, tempo: int | None = None,
                      time_signature: str | None = None,
-                     correlation_id: str | None = None) -> str:
-        job = Job(id=uuid.uuid4().hex, correlation_id=correlation_id)
+                     correlation_id: str | None = None,
+                     callback_url: str | None = None) -> str:
+        job_id = uuid.uuid4().hex
+        if callback_url:
+            callback_url = callback_url.replace("{job_id}", job_id)
+        job = Job(id=job_id, correlation_id=correlation_id, callback_url=callback_url)
         with self._lock:
             self._purge_expired()
             self._jobs[job.id] = job
@@ -144,11 +155,42 @@ class JobQueue:
             logger.warning("Score job %s FAILED: %s%s", job.id[:8], ex, self._trail(job))
         except Exception as ex:  # noqa: BLE001
             job.status = STATUS_FAILED
-            job.error = f"Score transcription failed: {ex}"
+            job.error = "An unexpected error occurred during score transcription. Please try uploading again."
             logger.exception("Score job %s EXCEPTION: %s%s",
                              job.id[:8], type(ex).__name__, self._trail(job))
         finally:
             score_path.unlink(missing_ok=True)
+            self._trigger_webhook(job)
+
+    def _trigger_webhook(self, job: Job) -> None:
+        if not job.callback_url:
+            return
+        
+        from app.api.schemas import JobResponse, ResultDto
+        from dataclasses import asdict
+        
+        result_payload = None
+        if job.result is not None:
+            p = asdict(job.result)
+            p["notes"] = p.pop("notes")  # match get_job behavior if any
+            result_payload = ResultDto.model_validate(p)
+            
+        jr = JobResponse(status=job.status, progress=job.progress,
+                         result=result_payload, error=job.error)
+        
+        payload = jr.model_dump(by_alias=True, exclude_none=True)
+        
+        def fire():
+            try:
+                with httpx.Client(timeout=10.0) as client:
+                    resp = client.post(job.callback_url, json=payload)
+                    resp.raise_for_status()
+                logger.info("Webhook for job %s delivered to %s", job.id[:8], job.callback_url)
+            except Exception as e:
+                logger.warning("Failed to deliver webhook for job %s to %s: %s", job.id[:8], job.callback_url, e)
+                
+        # Fire in a separate thread so we don't block the executor pool if the webhook is slow
+        threading.Thread(target=fire, name=f"webhook-{job.id[:8]}", daemon=True).start()
 
     @staticmethod
     def _trail(job: Job) -> str:
