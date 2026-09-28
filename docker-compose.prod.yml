@@ -74,6 +74,12 @@ services:
       Billing__CheckoutCallbackUrl: ${Billing__CheckoutCallbackUrl}
       Bachs__BaseUrl: ${Bachs__BaseUrl}
       Bachs__SecretKey: ${Bachs__SecretKey}
+      Bachs__WebhookSecret: ${Bachs__WebhookSecret}
+      Bachs__SupportedCurrencies: ${Bachs__SupportedCurrencies}
+      Paystack__BaseUrl: ${Paystack__BaseUrl}
+      Paystack__SecretKey: ${Paystack__SecretKey}
+      Paystack__WebhookSecret: ${Paystack__WebhookSecret}
+      Paystack__SupportedCurrencies: ${Paystack__SupportedCurrencies}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 

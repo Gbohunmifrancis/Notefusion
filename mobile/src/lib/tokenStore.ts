@@ -21,11 +21,19 @@ export const tokenStore = {
   },
 
   async getAccess(): Promise<string | null> {
-    return SecureStore.getItemAsync(ACCESS_KEY);
+    try {
+      return await SecureStore.getItemAsync(ACCESS_KEY);
+    } catch {
+      return null;
+    }
   },
 
   async getRefresh(): Promise<string | null> {
-    return SecureStore.getItemAsync(REFRESH_KEY);
+    try {
+      return await SecureStore.getItemAsync(REFRESH_KEY);
+    } catch {
+      return null;
+    }
   },
 
   async saveUser(user: AuthUser): Promise<void> {
@@ -33,8 +41,12 @@ export const tokenStore = {
   },
 
   async getUser(): Promise<AuthUser | null> {
-    const raw = await SecureStore.getItemAsync(USER_KEY);
-    return raw ? (JSON.parse(raw) as AuthUser) : null;
+    try {
+      const raw = await SecureStore.getItemAsync(USER_KEY);
+      return raw ? (JSON.parse(raw) as AuthUser) : null;
+    } catch {
+      return null;
+    }
   },
 
   async saveLastAuthMethod(method: 'google' | 'email'): Promise<void> {

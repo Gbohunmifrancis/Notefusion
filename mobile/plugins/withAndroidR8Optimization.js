@@ -16,13 +16,13 @@ module.exports = function withAndroidR8Optimization(config) {
       }
     };
 
-    // Enable R8 full mode for aggressive method inlining, class merging, and tree-shaking
-    setProperty('android.enableR8.fullMode', 'true');
+    // R8 full mode is disabled because it breaks Firebase and Reanimated due to aggressive tree-shaking of reflective calls.
+    // setProperty('android.enableR8.fullMode', 'true');
 
-    // Enable AGP optimized resource shrinking (unifies code and resource reference graphs)
-    setProperty('android.r8.optimizedResourceShrinking', 'true');
+    // AGP optimized resource shrinking disabled for stability
+    // setProperty('android.r8.optimizedResourceShrinking', 'true');
 
-    // Allocate sufficient heap for R8 full-program optimization
+    // Allocate sufficient heap for R8
     setProperty('org.gradle.jvmargs', '-Xmx4096m -XX:MaxMetaspaceSize=1024m');
 
     return mod;

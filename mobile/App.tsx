@@ -10,6 +10,7 @@ import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
+import { ErrorBoundary } from './src/components/ErrorBoundary';
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
@@ -74,7 +75,9 @@ function Themed() {
       {/* Inside the theme (the dialog is themed) and around the navigator, so a dialog
           paints above whatever screen is mounted and survives navigation. */}
       <DialogProvider>
-        <RootNavigator />
+        <ErrorBoundary>
+          <RootNavigator />
+        </ErrorBoundary>
       </DialogProvider>
     </GestureHandlerRootView>
   );
