@@ -127,11 +127,6 @@
     btnPlay.addEventListener("click", function () {
       isPlaying = !isPlaying;
 
-      // Sync with 3D Three.js scene
-      if (window.NoteFusion3D && typeof window.NoteFusion3D.setPlaying === "function") {
-        window.NoteFusion3D.setPlaying(isPlaying);
-      }
-
       var heroPlayIconSwap = document.getElementById("heroPlayIconSwap");
 
       if (isPlaying) {
@@ -326,46 +321,6 @@
         popSolfaTiles();
       });
     });
-  }
-
-  // ── Light / Dark Mode Toggle (transitions.dev icon-swap) ──────────────────
-  var themeToggleBtn = document.getElementById("themeToggleBtn");
-  var mobileThemeToggleBtn = document.getElementById("mobileThemeToggleBtn");
-  var themeIconSwap = document.getElementById("themeIconSwap");
-  var mobileThemeIconSwap = document.getElementById("mobileThemeIconSwap");
-
-  function syncThemeIcons(theme) {
-    var state = theme === "dark" ? "b" : "a";
-    if (themeIconSwap) themeIconSwap.setAttribute("data-state", state);
-    if (mobileThemeIconSwap) mobileThemeIconSwap.setAttribute("data-state", state);
-  }
-
-  // Initialize icon swap state to match active theme immediately
-  var activeTheme = document.documentElement.getAttribute("data-theme") || "light";
-  syncThemeIcons(activeTheme);
-
-  function toggleTheme() {
-    var current = document.documentElement.getAttribute("data-theme") || "light";
-    var next = current === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    syncThemeIcons(next);
-    var metaTheme = document.querySelector('meta[name="theme-color"]');
-    if (metaTheme) metaTheme.setAttribute("content", next === "dark" ? "#08090C" : "#F7F5F0");
-    try {
-      localStorage.setItem("notefusion-theme", next);
-    } catch (e) {}
-
-    // Notify 3D canvas if available
-    if (window.NoteFusion3D && typeof window.NoteFusion3D.setTheme === "function") {
-      window.NoteFusion3D.setTheme(next);
-    }
-  }
-
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener("click", toggleTheme);
-  }
-  if (mobileThemeToggleBtn) {
-    mobileThemeToggleBtn.addEventListener("click", toggleTheme);
   }
 
   // ── Google Play Store Link Handler ─────────────────────────────────────────

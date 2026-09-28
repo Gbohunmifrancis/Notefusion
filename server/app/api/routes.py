@@ -84,6 +84,7 @@ async def submit_transcription(
     key: str | None = Form(None),
     tempo: int | None = Form(None),
     time_signature: str | None = Form(None),
+    callback_url: str | None = Form(None),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
@@ -148,7 +149,8 @@ async def submit_transcription(
     queue = _get_queue(request)
     job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
                           time_signature=time_signature,
-                          correlation_id=_correlation_id(request))
+                          correlation_id=_correlation_id(request),
+                          callback_url=callback_url)
     return SubmitResponse(job_id=job_id)
 
 
@@ -181,6 +183,7 @@ async def submit_score_transcription(
     key: str | None = Form(None),
     tempo: int | None = Form(None),
     time_signature: str | None = Form(None),
+    callback_url: str | None = Form(None),
 ) -> SubmitResponse:
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
@@ -228,5 +231,6 @@ async def submit_score_transcription(
     queue = _get_queue(request)
     job_id = queue.submit_score(tmp_path, key=key, tempo=tempo,
                                 time_signature=time_signature,
-                                correlation_id=_correlation_id(request))
+                                correlation_id=_correlation_id(request),
+                                callback_url=callback_url)
     return SubmitResponse(job_id=job_id)

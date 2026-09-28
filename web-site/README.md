@@ -1,18 +1,22 @@
 # NoteFusion public web
 
-The marketing site and the privacy policy. No build step, no framework — plain
-HTML, two CSS files, and two small scripts. Open `index.html` in a browser and you
-are looking at production.
+The marketing site, public policies and account self-service pages. No build step,
+no framework — plain HTML, responsive CSS, and small scripts. Open `index.html` in a
+browser and you are looking at production.
 
 ```
 index.html            landing page
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service
+delete-account/       account/data deletion and email confirmation flow
+reset-password/       single-use password-reset flow
 robots.txt            declares sitemap.xml
 sitemap.xml           the three public URLs
-assets/theme.css      design tokens, copied from mobile/src/design/theme.ts
-assets/landing.css    landing page layout
-assets/landing.js     sticky-header border + reveal-on-scroll, nothing else
+assets/theme.css      website-wide color, type, and spacing tokens
+assets/landing.css    landing page structure and interactions
+assets/site-refresh.css   approved blue-white landing page theme and responsive layout
+assets/site-pages.css     consistent branded shell for policies and account flows
+assets/landing.js     mobile menu, sample re-keying, and reveal-on-scroll
 assets/pricing.js     location-aware pricing from /api/billing/public-plans
 assets/mark.png       brand mark, white silhouette recoloured with a CSS mask
 assets/app-onboarding.jpg  hero, front device   ┐ derived — see
@@ -20,60 +24,24 @@ assets/app-splash.jpg      hero, back device    │   ../tools/build-assets.py
 assets/og-card.jpg         1200×630 social card ┘   (plus a -552.jpg each)
 ```
 
-The hero JPEGs are derived from `mobile/assets/` and should be rebuilt, not
-hand-edited. The script lives at the repo root, outside the deploy root, so it
-is never served over the network:
+The legacy device screenshots, social share card and icons are derived from
+`mobile/assets/` and should be rebuilt, not hand-edited. The script lives at the
+repo root, outside the deploy root, so it is never served over the network:
 
 ```bash
 python tools/build-assets.py    # needs Pillow
 ```
 
-It resizes each hero screen to 3× its display width (PNG → JPEG takes 1.1 MB to
-~120 KB, which matters on a Nigerian mobile connection) and draws the share card
-in `gradients.brand` and Poppins, both read from the app's own artwork.
+It still resizes the original app screens and draws social/share imagery. The
+home page now renders a lightweight interactive sample card directly in HTML;
+those older device images are retained as source assets, not shown in the hero.
 
 ## The hero devices
 
-The hero is two app screens angled in one shared 3D space, store-listing style,
-not a flat screenshot:
-
-| Layer | Source in `mobile/assets/` | Output |
-|---|---|---|
-| front | `Notefusion-onboarding-1.png` | `app-onboarding.jpg` + `-552` |
-| back | `Notefusion-splash-screen.png` | `app-splash.jpg` + `-552` |
-
-Both sources have **the black device frame rendered into them**, which is why
-`.device` adds no bezel of its own — it only rounds the corners the render
-leaves square and supplies the perspective, shadow and glare. Feed it a bare
-screen capture (as `Notefusion-home.png` was) and the hero will look frameless;
-you would need to put the old `padding` + dark `background` back on `.device` to
-compensate.
-
-The angle, the shadows and the sheen are all CSS — `perspective` on `.showcase`,
-`rotateY`/`rotateX` per device. Nothing is baked into the JPEGs, so the tilt is
-editable in `landing.css` without touching an image.
-
-To swap a screen:
-
-1. Capture portrait, full screen, status bar included, at phone resolution —
-   with the device frame if you want the current look.
-2. Save it over the matching file in `mobile/assets/`, or point `HERO_SCREENS`
-   in `tools/build-assets.py` at a new name.
-3. Rebuild:
-
-   ```bash
-   python tools/build-assets.py
-   ```
-
-   It prints the exact pixel dimensions of all four outputs.
-4. Copy the 828 w dimensions it printed into that `<img>`'s `width`/`height` in
-   `index.html`. They reserve the layout box, so a stale `height` shows up as a
-   jump while the page loads. If the aspect ratio changed, also update the
-   `2.162` multiplier in `.showcase`'s `height`.
-5. Check the `alt` text still describes what the image actually shows.
-
-The remaining screens (Record, the solfa/staff result view, Library) are not on
-the site yet. A third device, or a scrolling gallery, is new markup — not a swap.
+The homepage sample exposes the app's central visual story—Tonic Solfa, staff
+notation, confidence, playback and key switching—using responsive, accessible HTML.
+The official mark remains a repository asset tinted with a CSS mask, not AI-rendered
+or cropped into a background.
 
 Kept in `web-site/` rather than `docs/` deliberately: GitHub Pages' zero-config
 option serves `docs/` wholesale, and that folder holds `NoteFusion_PRD.docx` and
@@ -85,10 +53,11 @@ This directory is public and unauthenticated; nothing here talks to the API.
 
 ## Design tokens
 
-`assets/theme.css` is a hand-copy of `mobile/src/design/theme.ts`. Nothing keeps
-them in sync, so **a palette change in the app has to be made here too**, or the
-site and the product drift apart. The variable names mirror the TypeScript keys
-to make that mechanical.
+`assets/theme.css`, `assets/site-refresh.css` and `assets/site-pages.css` carry the
+website's light palette, deep-navy typography, cobalt gradient and rounded white
+surfaces shown in the approved page concepts. Values intentionally stay local to
+the website, so product/mobile theme changes do not silently recolor the public
+site; update this web palette when a web rebrand is approved.
 
 The brand mark ships as a white silhouette with alpha. The app recolours it per
 surface with React Native's `tintColor`; the web equivalent is `mask` +

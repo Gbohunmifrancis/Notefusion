@@ -36,7 +36,7 @@ function getBaseUrl(): string {
   return extraUrl ?? 'http://10.0.2.2:5080';
 }
 
-const baseURL: string = getBaseUrl();
+export const baseURL: string = getBaseUrl();
 
 export const api: AxiosInstance = axios.create({
   baseURL,

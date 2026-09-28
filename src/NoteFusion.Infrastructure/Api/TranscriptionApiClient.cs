@@ -12,7 +12,7 @@ namespace NoteFusion.Infrastructure.Api;
 /// <see cref="ErrorType.Network"/> results — connectivity drops are an expected condition
 /// in the target market, not an exceptional one.
 /// </summary>
-internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionApi
+internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensions.Configuration.IConfiguration config) : ITranscriptionApi
 {
     public async Task<Result<string>> SubmitAsync(
         Stream audio,
@@ -44,6 +44,10 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
                 form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
             if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 form.Add(new StringContent(options.TimeSignature), "time_signature");
+
+            var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
+            var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";
+            form.Add(new StringContent(callbackUrl), "callback_url");
 
             using var response = await http.PostAsync("v1/transcribe", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -94,6 +98,10 @@ internal sealed class TranscriptionApiClient(HttpClient http) : ITranscriptionAp
                 form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
             if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
                 form.Add(new StringContent(options.TimeSignature), "time_signature");
+
+            var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
+            var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";
+            form.Add(new StringContent(callbackUrl), "callback_url");
 
             using var response = await http.PostAsync("v1/transcribe/score", form, cancellationToken);
             if (!response.IsSuccessStatusCode)

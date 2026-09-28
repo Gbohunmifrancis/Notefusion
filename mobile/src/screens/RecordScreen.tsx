@@ -237,6 +237,7 @@ export function RecordScreen() {
     Array.from({ length: WAVE_BARS }, () => new Animated.Value(0.15)),
   ).current;
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastSubmitArgs = useRef<{uri: string, name: string, opts: any} | null>(null);
 
   // ── Voice-level guidance state ────────────────────────────────────────────
   const [showQuietGuidance, setShowQuietGuidance] = useState(false);
@@ -608,7 +609,7 @@ export function RecordScreen() {
       const asset = res.assets[0];
       setPhase("uploading");
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", {
+      lastSubmitArgs.current = { uri: asset.uri, name: asset.name || "imported-audio.m4a", opts: { mode, key: keyOpt } }; const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", {
         mode,
         key: keyOpt,
       });
@@ -643,7 +644,7 @@ export function RecordScreen() {
         return;
       }
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      const jobId = await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
+      lastSubmitArgs.current = { uri, name: `clip-${elapsed}s.m4a`, opts: { mode, key: keyOpt } }; const jobId = await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
       if (jobId) void offerBackgroundAlerts();
     } catch {
       setPhase("ready");
@@ -1022,13 +1023,18 @@ export function RecordScreen() {
               <Text style={styles.errText}>{state.error}</Text>
             </View>
             <Button
-              label="Try again"
-              variant="secondary"
-              onPress={() => {
-                reset();
-                setPhase("ready");
-              }}
-              style={{ marginTop: spacing.md }}
+              label="Retry Upload"
+                variant="secondary"
+                onPress={() => {
+                  if (lastSubmitArgs.current) {
+                    setPhase("uploading");
+                    void start(lastSubmitArgs.current.uri, lastSubmitArgs.current.name, lastSubmitArgs.current.opts);
+                  } else {
+                    reset();
+                    setPhase("ready");
+                  }
+                }}
+                style={{ marginTop: spacing.md }}
             />
           </Card>
         )}

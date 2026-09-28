@@ -83,18 +83,29 @@ services:
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 
+  dozzle:
+    image: amir20/dozzle:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - dozzle-data:/data
+    environment:
+      DOZZLE_BASE: /logs
+
   caddy:
     image: caddy:2-alpine
     restart: always
     ports:
       - "80:80"
       - "443:443"
-    command: caddy reverse-proxy --from ${DOMAIN_NAME} --to api:8080
     depends_on:
       - api
+      - dozzle
     volumes:
       - caddy-data:/data
+      - ./Caddyfile:/etc/caddy/Caddyfile
 
 volumes:
   db-data:
   caddy-data:
+  dozzle-data:

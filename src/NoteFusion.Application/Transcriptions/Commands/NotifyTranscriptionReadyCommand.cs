@@ -42,14 +42,16 @@ public sealed class NotifyTranscriptionReadyCommandHandler
     private readonly ITranscriptionApi _api;
     private readonly IDateTimeProvider _clock;
     private readonly IPushSender _push;
+    private readonly ITranscriptionNotifier _notifier;
 
     public NotifyTranscriptionReadyCommandHandler(
-        IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock, IPushSender push)
+        IApplicationDbContext db, ITranscriptionApi api, IDateTimeProvider clock, IPushSender push, ITranscriptionNotifier notifier)
     {
         _db = db;
         _api = api;
         _clock = clock;
         _push = push;
+        _notifier = notifier;
     }
 
     public async Task<Result> Handle(NotifyTranscriptionReadyCommand request, CancellationToken ct)
@@ -104,10 +106,17 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         // throw, so pushing first would risk notifying twice about a job we then failed to close.
         await _db.SaveChangesAsync(ct);
 
+        var dto = new TranscriptionJobDto(job.JobId, TranscriptionStatus.Done, 1, result);
+        await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == job.UserId, ct);
+        var firstName = user?.FullName?.Split(' ')[0];
+        if (string.IsNullOrWhiteSpace(firstName)) firstName = "there";
+
         await _push.SendAsync(
             [job.UserId],
             new PushMessage(
-                "Your transcription is ready",
+                $"Hey {firstName}, your transcription is ready!",
                 $"{result.Key} · {result.Tempo} BPM — tap to review and save it.",
                 new Dictionary<string, string> { ["jobId"] = job.JobId }),
             ct);
@@ -127,10 +136,17 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         job.Settle(null, now);
         await _db.SaveChangesAsync(ct);
 
+        var dto = new TranscriptionJobDto(job.JobId, TranscriptionStatus.Failed, 1, null, reason);
+        await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == job.UserId, ct);
+        var firstName = user?.FullName?.Split(' ')[0];
+        if (string.IsNullOrWhiteSpace(firstName)) firstName = "there";
+
         await _push.SendAsync(
             [job.UserId],
             new PushMessage(
-                "We couldn't transcribe that recording",
+                $"Sorry {firstName}, the transcription failed",
                 string.IsNullOrWhiteSpace(reason)
                     ? "Something went wrong on our side. Try recording it again."
                     : reason,
