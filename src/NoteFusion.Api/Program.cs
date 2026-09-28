@@ -104,6 +104,7 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<Microsoft.AspNetCore.SignalR.IUserIdProvider, NoteFusion.Api.Hubs.SubClaimUserIdProvider>();
 builder.Services.AddScoped<NoteFusion.Application.Common.Interfaces.ITranscriptionNotifier, NoteFusion.Api.Services.SignalRTranscriptionNotifier>();
 
 // JWT auth — bearer options are configured against the shared RSA key (see ConfigureJwtBearerOptions).
