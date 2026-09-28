@@ -27,7 +27,7 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --blue: #2563EB;
@@ -40,7 +40,7 @@
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     color: var(--ink);
     background: var(--bg);
     line-height: 1.65;
@@ -99,18 +99,32 @@
     .card { padding: 22px 20px; }
   }
 </style>
+<link rel="stylesheet" href="/assets/site-pages.css?v=1">
 </head>
-<body>
+<body class="site-document">
 
-<header>
-  <div class="wrap">
-    <a class="brand" href="/">Note<span>Fusion</span></a>
-    <h1>Terms of Service</h1>
-    <p>Last updated [DATE]</p>
+<header class="site-header">
+  <div class="site-shell-inner">
+    <a class="site-brand" href="/" aria-label="NoteFusion home">
+      <span class="site-brand-mark" aria-hidden="true"></span>
+      <span class="site-brand-name">NoteFusion</span>
+    </a>
+    <nav class="site-shell-links" aria-label="Primary navigation">
+      <a href="/#how">How it works</a><a href="/#solfa">Tonic Solfa</a><a href="/#features">Features</a><a href="/#pricing">Pricing</a><a href="/#faq">FAQ</a>
+    </nav>
+    <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_header">Get the app</a>
+    <details class="site-shell-mobile">
+      <summary aria-label="Open site navigation"></summary>
+      <nav class="site-shell-panel" aria-label="Mobile navigation">
+        <a href="/#how">How it works</a><a href="/#solfa">Tonic Solfa</a><a href="/#features">Features</a><a href="/#pricing">Pricing</a><a href="/#faq">FAQ</a>
+        <a class="site-shell-cta" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="utility_mobile_header">Get the app</a>
+      </nav>
+    </details>
   </div>
 </header>
 
-<main class="wrap">
+<main class="site-page-main">
+  <section class="site-page-intro"><p class="site-page-kicker">Legal</p><h1>Terms of Service</h1><p>Last updated [DATE]</p></section>
 
   <div class="card">
     <h2>The short version</h2>
@@ -572,9 +586,10 @@
 
 <footer class="wrap">
   <p>NoteFusion. Hear it. See it. Notate it.<br>
-  <a href="/">Back to notefusion.studio</a> &nbsp;&middot;&nbsp;
-  <a href="/privacy">Privacy Policy</a> &nbsp;&middot;&nbsp;
-  <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a></p>
+    <a href="/">Back to notefusion.studio</a> &nbsp;&middot;&nbsp;
+    <a href="/privacy">Privacy Policy</a> &nbsp;&middot;&nbsp;
+    <a href="mailto:hello@notefusion.studio">hello@notefusion.studio</a>
+  </p>
 </footer>
 
 
