@@ -45,14 +45,27 @@
   }
 
   function action(label, featured, source) {
+    var wrapper = document.createElement("div");
+    wrapper.style.cssText = "display:flex;flex-direction:column;gap:10px;margin-top:4px;";
+
+    // Primary: APK download
     var link = document.createElement("a");
     link.className = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
-    link.href = playUrl;
-    link.target = "_blank";
-    link.rel = "noopener";
+    link.href = "https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk";
+    link.setAttribute("download", "");
     if (source) link.setAttribute("data-download-source", source);
     link.textContent = label;
-    return link;
+    wrapper.appendChild(link);
+
+    // Secondary: Play Store (disabled — not yet approved)
+    var playNote = document.createElement("a");
+    playNote.href = "#";
+    playNote.style.cssText = "display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#64748b;opacity:0.55;pointer-events:none;text-decoration:none;";
+    playNote.setAttribute("aria-disabled", "true");
+    playNote.textContent = "▶ Google Play — coming soon";
+    wrapper.appendChild(playNote);
+
+    return wrapper;
   }
 
   function freeCard(trialCount) {
@@ -81,7 +94,7 @@
         "Playback, MusicXML export and library sync",
       ]),
     );
-    card.appendChild(action("Get it on Google Play", false, "pricing_free"));
+    card.appendChild(action("Download Free APK", false, "pricing_free"));
     return card;
   }
 
@@ -152,7 +165,7 @@
         "A receipt emailed after payment",
       ]),
     );
-    card.appendChild(action("Get NoteFusion Pro", true, "pricing_" + (plan.interval || "pro")));
+    card.appendChild(action("Download Pro APK", true, "pricing_" + (plan.interval || "pro")));
     return card;
   }
 
@@ -277,3 +290,4 @@
 
   load();
 })();
+

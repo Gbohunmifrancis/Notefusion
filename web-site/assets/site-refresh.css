@@ -1,5 +1,8 @@
+html, body { overflow-x: hidden; width: 100%; }
 /* NoteFusion site refresh: approved bright, musical, cobalt-and-white visual system. */
 :root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --nf-blue: #2563eb;
   --nf-blue-dark: #1d4ed8;
   --nf-blue-bright: #3b82f6;
@@ -15,7 +18,7 @@
 }
 
 html { scroll-padding-top: 94px; }
-body { background: var(--nf-canvas); color: var(--nf-copy); }
+body { background: var(--nf-canvas); color: var(--nf-copy); font-family: var(--font-sans); }
 .wrap, .wrap-narrow { padding-left: 28px; padding-right: 28px; }
 
 .site-header {
@@ -39,12 +42,12 @@ body { background: var(--nf-canvas); color: var(--nf-copy); }
   mask: url("/assets/mark.png") center / contain no-repeat;
 }
 .brand-name {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-size: 22px;
   line-height: 1;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--nf-ink);
-  letter-spacing: -.045em;
+  letter-spacing: -.06em;
 }
 .nav-links { gap: clamp(17px,2.2vw,32px); }
 .nav-link { font-size: 14px; font-weight: 500; color: #334155; }
@@ -69,7 +72,7 @@ body { background: var(--nf-canvas); color: var(--nf-copy); }
 .eyebrow { color: var(--nf-blue-dark); font-size: 11px; letter-spacing: .16em; }
 .eyebrow-blue { color: var(--nf-blue); }
 .display-title, .section-title, .step-title, .feature-title, .solfa-interactive-card h4, .plan h3 {
-  font-family: var(--font-sans);
+  font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -.045em;
   color: var(--nf-ink);
@@ -290,3 +293,5 @@ body { background: var(--nf-canvas); color: var(--nf-copy); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+
