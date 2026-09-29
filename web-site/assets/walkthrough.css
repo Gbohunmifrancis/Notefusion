@@ -1,0 +1,230 @@
+.nf-walkthrough {
+  --nf-blue: #2563EB;
+  --nf-blue-dark: #1D4ED8;
+  --nf-blue-bright: #3B82F6;
+  --nf-sky: #0EA5E9;
+  --nf-ink: #0F172A;
+  --nf-copy: #334155;
+  --nf-muted: #64748B;
+  --nf-canvas: #F4F7FC;
+  --nf-surface: #FFFFFF;
+  --nf-wash: #EEF3FB;
+  --nf-line: #E2E8F0;
+  --nf-blue-line: #E5EBF4;
+  --nf-gradient: linear-gradient(115deg, #1D4ED8 0%, #3B82F6 100%);
+
+  box-sizing: border-box;
+  padding: clamp(72px, 9vw, 120px) 0;
+  background: var(--nf-canvas);
+  color: var(--nf-copy);
+  font-family: var(--font-sans, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+}
+
+.nf-walkthrough *,
+.nf-walkthrough *::before,
+.nf-walkthrough *::after {
+  box-sizing: inherit;
+}
+
+.nf-walkthrough__inner {
+  width: min(1200px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+.nf-walkthrough__header {
+  max-width: 770px;
+  margin: 0 auto 46px;
+  text-align: center;
+}
+
+.nf-walkthrough__eyebrow {
+  margin: 0 0 12px;
+  color: var(--nf-blue-dark);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+}
+
+.nf-walkthrough__title {
+  margin: 0;
+  color: var(--nf-ink);
+  font-family: var(--font-display, 'Outfit', sans-serif);
+  font-size: clamp(34px, 4vw, 49px);
+  font-weight: 800;
+  letter-spacing: -.055em;
+  line-height: 1.08;
+}
+
+.nf-walkthrough__title span {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+  white-space: nowrap;
+}
+
+.nf-walkthrough__title span::after {
+  position: absolute;
+  right: 0;
+  bottom: -8px;
+  left: 0;
+  z-index: -1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--nf-blue-bright);
+  content: "";
+  transform: rotate(-1deg);
+}
+
+.nf-walkthrough__intro {
+  max-width: 590px;
+  margin: 22px auto 0;
+  color: var(--nf-muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.nf-walkthrough__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nf-step-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 18px;
+  padding: clamp(18px, 2vw, 24px);
+  border: 1px solid var(--nf-blue-line);
+  border-radius: 20px;
+  background: var(--nf-surface);
+  box-shadow: 0 5px 18px rgba(24, 57, 106, .045);
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.nf-step-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.nf-step-card__number {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--nf-gradient);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.nf-step-card__label {
+  color: var(--nf-blue-dark);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.nf-step-card__visual {
+  width: min(100%, 320px);
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #E8EDF5;
+  border-radius: 18px;
+  background: var(--nf-canvas);
+  box-shadow: 0 10px 26px rgba(24, 57, 106, .08);
+}
+
+.nf-step-card__visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.nf-step-card__copy {
+  padding: 0 3px 3px;
+}
+
+.nf-step-card__copy h2 {
+  margin: 0 0 10px;
+  color: var(--nf-ink);
+  font-family: var(--font-display, 'Outfit', sans-serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.04em;
+  line-height: 1.2;
+}
+
+.nf-step-card__copy p {
+  margin: 0;
+  color: var(--nf-copy);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .nf-step-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(37, 99, 235, .28);
+    box-shadow: 0 13px 30px rgba(24, 57, 106, .09);
+  }
+}
+
+@media (max-width: 1024px) {
+  .nf-walkthrough__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .nf-step-card {
+    width: min(100%, 600px);
+    margin-inline: auto;
+  }
+
+  .nf-step-card__visual {
+    width: min(100%, 320px);
+  }
+}
+
+@media (max-width: 520px) {
+  .nf-walkthrough {
+    padding: 64px 0;
+  }
+
+  .nf-walkthrough__inner {
+    width: calc(100% - 32px);
+  }
+
+  .nf-walkthrough__header {
+    margin-bottom: 34px;
+  }
+
+  .nf-walkthrough__title {
+    font-size: clamp(31px, 9vw, 38px);
+  }
+
+  .nf-walkthrough__intro {
+    font-size: 15px;
+  }
+
+  .nf-step-card {
+    padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-step-card {
+    transition: none;
+  }
+}
