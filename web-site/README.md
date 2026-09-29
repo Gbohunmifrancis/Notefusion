@@ -33,15 +33,21 @@ python tools/build-assets.py    # needs Pillow
 ```
 
 It still resizes the original app screens and draws social/share imagery. The
-home page now renders a lightweight interactive sample card directly in HTML;
-those older device images are retained as source assets, not shown in the hero.
+homepage renders a lightweight interactive sample card directly in HTML, and
+the how-it-works section now uses real app screens in three responsive cards.
+Those step images are `assets/how-step-01-record.jpg`,
+`assets/how-step-02-transcribe.jpg` and `assets/how-step-03-review.jpg`.
 
-## The hero devices
+## Product preview and how it works
 
 The homepage sample exposes the app's central visual story—Tonic Solfa, staff
 notation, confidence, playback and key switching—using responsive, accessible HTML.
-The official mark remains a repository asset tinted with a CSS mask, not AI-rendered
-or cropped into a background.
+The three how-it-works cards use actual Home, Listening and Tonic Solfa result
+screenshots, followed by short actions users can perform in the real app. When
+updating the flow, replace these images with current app screenshots (do not
+generate substitute app interfaces) and keep the visible sequence accurate:
+start or import, record and transcribe, then review notation. The official mark
+remains a repository asset tinted with a CSS mask, not AI-rendered or cropped.
 
 Kept in `web-site/` rather than `docs/` deliberately: GitHub Pages' zero-config
 option serves `docs/` wholesale, and that folder holds `NoteFusion_PRD.docx` and
