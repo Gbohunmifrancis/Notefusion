@@ -320,3 +320,8 @@ body.is-recording .brand-icon { animation: nf-heartbeat 1.05s ease-in-out infini
 .try-alt .btn.is-recording { background: #d92d20; border-color: #d92d20; color: #fff; }
 @media (prefers-reduced-motion: reduce) { body.is-recording .brand-icon { animation: none; } }
 
+
+/* The try box's recorded take, offered back before it is sent. */
+.try-status audio.try-take { display: block; width: 100%; margin: 10px 0; }
+.try-take-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.try-take-actions .btn { padding: 10px 16px; font-size: 14px; }
