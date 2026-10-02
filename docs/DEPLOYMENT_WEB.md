@@ -92,26 +92,23 @@ believing the CLI. Two flags help: `--no-wait` returns as soon as the upload fin
 holding a long-lived status stream, and `vercel build && vercel deploy --prebuilt --prod` moves
 the build to your machine so the platform only has to accept files.
 
-### 2. A custom subdomain (`admin.notefusion.studio`) — not live yet
+### 2. The custom subdomain (`admin.notefusion.studio`)
 
-`admin.notefusion.studio` is already assigned to the **`notefusion-web`** project (a second
-project also rooted at `web-admin`, connected to `main`). It does not resolve: the zone has no
-`admin` record, so the name is NXDOMAIN. To finish it, add one record at name.com to the
-`notefusion.studio` zone — this is what Vercel asks for on this domain:
-
-| Type | Host | Answer | TTL |
-|------|------|--------|-----|
-| A | `admin` | `76.76.21.21` | 300 |
-
-Then confirm Vercel sees it:
+`admin.notefusion.studio` is live and is an alias on the **`web-admin`** project (project id
+`prj_5sZAlBcwZ4h4IH1EllClktRqoQXV`), the same deployment that answers at
+`web-admin-blue-two.vercel.app`. DNS at name.com is a CNAME to `cname.vercel-dns.com`. A
+production deploy of `web-admin/` updates both names at once; check with:
 
 ```bash
-cd web-admin && vercel domains inspect admin.notefusion.studio
+cd web-admin && vercel alias ls | grep admin.notefusion.studio
 ```
 
-Note the split before doing this: the domain is on `notefusion-web` while the live dashboard is
-the `web-admin` project. Decide which project owns the dashboard and move the domain to it —
-serving one app from two projects means two different bundles can go live independently.
+An older `notefusion-web` project (also rooted at `web-admin/`, connected to `main`) still exists
+and still builds; nothing points at it. Deploy the dashboard through `web-admin` only.
+
+> After a deploy, a tab that was already open keeps the previous bundle until it is reloaded:
+> Next's client router does not fetch a new build on its own. A hard refresh
+> (Ctrl/Cmd + Shift + R) or a new tab shows the new one.
 
 ### 3. API CORS
 
