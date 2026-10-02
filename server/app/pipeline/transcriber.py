@@ -1470,6 +1470,9 @@ KEY_PROFILE_NAMES = (
 # A scale constant, not a threshold — no decision is taken on it, so a mis-set value
 # costs calibration rather than correctness.
 KEY_MARGIN_FULL = 0.75
+# The key must be one whose scale holds the notes about as well as any scale does: within
+# this fraction of the clip's duration of the best.  See ``_scale_parsimony``.
+KEY_SCALE_TOLERANCE = 0.03
 
 
 def _profile_z_scores(profile, s) -> dict[tuple[int, str], float]:
@@ -1547,6 +1550,40 @@ def _diatonic_fraction(tonic_pc: int, mode: str, weights: dict[int, float], tota
     scale = _MAJOR_SCALE if mode == "major" else _MINOR_SCALE
     inside = sum(w for pc, w in weights.items() if (pc - tonic_pc) % 12 in scale)
     return inside / total
+
+
+def _doh_of(ident: tuple[int, str]) -> int:
+    """Movable doh of a key identity: the tonic for major, the relative major's for minor."""
+    pitch_class, mode = ident
+    return pitch_class % 12 if mode == "major" else (pitch_class + 3) % 12
+
+
+def _scale_parsimony(s) -> set[int] | None:
+    """The dohs whose major scale holds the clip's notes about as well as any doh's does.
+
+    The profile vote weighs how much of each pitch class a clip holds, never whether a key
+    would turn its notes into accidentals, and on real singing that is the commonest wrong
+    answer: the subdominant.  Reading a C-major tune as F major costs every B natural a
+    "fe"; the profiles do not see the cost when the tune leans on F and touches B lightly.
+    Measured on Vocadito (40 real solo singers), 9 of the 22 wrong dohs were the
+    subdominant before this rule.
+
+    The scale is the doh's *major* scale for both modes, because that is the set movable-do
+    writes without an accidental (la-based minor: A minor's doh is C).  A minor tune's
+    raised 7th is then outside every competing doh's scale too, so it cannot tip the choice.
+
+    Returns None for a stream with no notes; the caller then keeps the plain vote.
+    """
+    cues = _tonal_cues(s)
+    if cues is None:
+        return None
+    _, weights, total = cues
+    inside = {
+        doh: sum(w for pc, w in weights.items() if (pc - doh) % 12 in _MAJOR_SCALE) / total
+        for doh in range(12)
+    }
+    best = max(inside.values())
+    return {doh for doh, fraction in inside.items() if fraction >= best - KEY_SCALE_TOLERANCE}
 
 
 def _is_fifth_or_parallel(a: tuple[int, str], b: tuple[int, str]) -> bool:
@@ -1688,6 +1725,19 @@ def _detect_key(s, n_events: int):
         return detected, confidence
 
     ranked = sorted(totals.items(), key=lambda kv: kv[1], reverse=True)
+    # Only keys whose scale holds the notes as well as any does are eligible; the vote then
+    # chooses among them.  See _scale_parsimony.
+    allowed = _scale_parsimony(s)
+    if allowed:
+        eligible = [kv for kv in ranked if _doh_of(kv[0]) in allowed]
+        if len(eligible) >= 2:
+            if eligible[0][0] != ranked[0][0]:
+                print(
+                    f"[notefusion] key: {ranked[0][0]} puts notes outside its scale; "
+                    f"{eligible[0][0]} holds them",
+                    flush=True,
+                )
+            ranked = eligible
     winner_ident, winner_score = ranked[0]
     runner_up_ident, runner_up_score = ranked[1]
     # Divided by the number of voters so the margin means the same thing whether all

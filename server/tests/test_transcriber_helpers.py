@@ -1708,6 +1708,23 @@ class TestDetectKey:
         key, _conf = transcriber._detect_key(s, 8)
         assert (key.tonic.pitchClass, key.mode) == (0, "major")
 
+    def test_a_key_that_would_make_a_note_chromatic_loses_to_one_that_holds_it(self):
+        # Leans on F and A, so the vote alone says F major; but the B natural leading to the
+        # final C would then be a "fe". C major holds every note in its scale.
+        from music21 import note as m21note, stream as m21stream
+
+        s = m21stream.Stream()
+        for name, ql in [("F4", 2), ("A4", 1), ("C5", 1), ("A4", 1), ("F4", 2), ("G4", 1),
+                         ("B4", 0.5), ("C5", 2), ("A4", 1), ("F4", 2), ("C4", 1)]:
+            s.append(m21note.Note(name, quarterLength=ql))
+        key, _conf = transcriber._detect_key(s, 11)
+        assert (key.tonic.pitchClass, key.mode) == (0, "major")
+
+    def test_a_minor_tunes_raised_seventh_does_not_move_its_doh(self):
+        s = _stream(["A3", "C4", "E4", "G#4", "A4", "B4", "C5", "B4", "G#4", "A4", "E4", "A3"])
+        key, _conf = transcriber._detect_key(s, 12)
+        assert transcriber._doh_of((key.tonic.pitchClass, key.mode)) == 0  # A minor / C major: doh is C
+
     def test_it_still_agrees_where_the_default_is_right(self):
         s = _stream(["A3", "B3", "C4", "D4", "E4", "F4", "G4", "A4"])
         key, _conf = transcriber._detect_key(s, 8)
@@ -1813,15 +1830,22 @@ class TestCadenceTiebreak:
         s = self._weighted(self.PLAGAL)
         assert str(s.analyze("key")) == "F major"  # single profile, still wrong
 
-        # With the tiebreak disabled the ensemble is wrong here too, which is the point:
-        # this asserts the *tiebreak* is what rescues the case, not some other change.
+        # The scale rule (_scale_parsimony) also rescues this clip, so it is switched off
+        # here: with it and the tiebreak both disabled the ensemble is wrong, which is the
+        # point — this asserts the *tiebreak* rescues the case on its own.
+        monkeypatch.setattr(transcriber, "KEY_SCALE_TOLERANCE", 1.0)
         monkeypatch.setattr(transcriber, "_cadence_prefers_runner_up", lambda *a: False)
         without, _conf = transcriber._detect_key(s, len(self.PLAGAL))
         assert (without.tonic.pitchClass, without.mode) == (5, "major")
 
         monkeypatch.undo()
+        monkeypatch.setattr(transcriber, "KEY_SCALE_TOLERANCE", 1.0)
         with_tiebreak, _conf = transcriber._detect_key(s, len(self.PLAGAL))
         assert (with_tiebreak.tonic.pitchClass, with_tiebreak.mode) == (0, "major")
+
+        monkeypatch.undo()
+        with_both, _conf = transcriber._detect_key(s, len(self.PLAGAL))
+        assert (with_both.tonic.pitchClass, with_both.mode) == (0, "major")
 
     def test_a_swap_does_not_move_the_reported_confidence(self, monkeypatch):
         # The margin measures how close the two readings were, which is the right
