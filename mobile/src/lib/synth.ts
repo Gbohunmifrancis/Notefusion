@@ -48,8 +48,13 @@ const ROLLOFF_MAX = 1.45;
  * 2.6 kHz were tried first and overshot to -52 dB, duller than a piano. Still a
  * tilt and not a brick wall: a hard cut is what left the old treble with 5
  * partials.
+ *
+ * 3.8 kHz was a mezzo-forte piano. The voice is meant to be a *soft* one, and a
+ * gently played note has its energy below ~2.5 kHz, so the corner came down to
+ * 3 kHz: on a C4 that moves the spectral centroid from 1.0 kHz to 840 Hz and takes
+ * the glassy edge off the top octave without dulling the body.
  */
-const BRIGHT_CEILING_HZ = 3800;
+const BRIGHT_CEILING_HZ = 3000;
 
 /** Generation ceiling, and the level below which a partial is inaudible anyway. */
 const MAX_PARTIALS = 48;
@@ -63,7 +68,12 @@ const INHARMONICITY = 1.1e-4;
  * is what a strike *is* — broadband energy at contact, immediately gone, leaving
  * the string ringing. Without it a note simply appears.
  */
-const STRIKE_GAIN = 0.22;
+/**
+ * 0.22 was a hammer that could be heard as a hammer. For a soft voice the strike
+ * has to be felt rather than heard, so it is half that: still enough that a note
+ * begins rather than appears, no longer a knock in front of every one.
+ */
+const STRIKE_GAIN = 0.11;
 const STRIKE_ROLLOFF = 0.35;
 const STRIKE_TAU_SEC = 0.014;
 /** Ten time constants: past here the strike term is below -87 dB. */
@@ -122,7 +132,8 @@ const UNISON_KNEE = 8;
 /** Below this the strings are wound and single or paired — no useful beating. */
 const UNISON_MIN_MIDI = 52;
 
-const ATTACK_SEC = 0.005; // hammer strike
+/** A soft hammer stays on the string longer, so a quiet note rises more slowly: 8 ms, not 5. */
+const ATTACK_SEC = 0.008;
 
 /**
  * How long the damper takes to land *after* note-off. This is a ring-out past the
@@ -140,8 +151,54 @@ const ATTACK_SEC = 0.005; // hammer strike
  */
 const RELEASE_SEC = 0.35;
 
-/** Every note is normalised to this, so level does not depend on the spectrum. */
-const PEAK_TARGET = 0.95;
+/**
+ * Every note is normalised to this, so level does not depend on the spectrum.
+ *
+ * It used to be 0.95, which with the velocity range put a solo note at 0.85 going
+ * into a plain tanh — and tanh at 0.85 is not a limiter, it is a distortion pedal:
+ * a third harmonic 23 dB down on *every* note, and in chords far worse. That edge
+ * was most of what read as "not a piano". At 0.70 the loudest solo note peaks at
+ * 0.63, under the limiter's knee, so a single note is never bent at all.
+ */
+const PEAK_TARGET = 0.7;
+
+/**
+ * Limiter. Two stages, because they fail differently. The first is a gain rider:
+ * it looks at the peak level in a window around each instant and turns the whole
+ * mix down, smoothly, by just enough to keep that peak at LIMIT_CEILING. A gain
+ * change is not a waveshape, so a four-voice chord comes through as a quieter
+ * chord and not — as it did through the old plain tanh, which bent the *sum* of
+ * the voices — as a chord with every pair of voices intermodulating into a buzz.
+ * The window is a block of 256 samples looked at ±LIMIT_HOLD_BLOCKS either side
+ * (about ±46 ms: look-ahead, so the gain is already down when the peak arrives,
+ * and hold, so it does not flutter between the notes of a chord), and the block
+ * gains are joined by raised-cosine interpolation so the gain itself has no
+ * corners to hear. The second stage is a soft knee at LIMIT_KNEE for whatever the
+ * interpolation lets through: a waveshaper, but one that is barely ever touched,
+ * and never by a solo note.
+ */
+const LIMIT_CEILING = 0.8;
+const LIMIT_BLOCK = 256;
+const LIMIT_HOLD_BLOCKS = 4;
+const LIMIT_KNEE = 0.9;
+
+/**
+ * Soundboard. An additive string on its own is a string in a vacuum, and that is
+ * the single biggest tell: a piano note is heard *through* a large wooden plate
+ * that rings on after it. Modelled as the smallest thing that does the job — three
+ * damped feedback combs in parallel (a dense, short, darkening tail; RT60 about
+ * half a second) through one allpass to break up the comb's own pitch — mixed in
+ * under the dry note. The delays are mutually prime in samples so their echoes do
+ * not line up into a flutter. Wet level: the board's impulse response carries
+ * about -13 dB of the dry energy, enough to put the note in a body, not enough to
+ * put it in a hall.
+ */
+const BOARD_DELAYS_SEC = [0.0297, 0.0371, 0.0411] as const;
+const BOARD_RT60_SEC = 0.55;
+const BOARD_DAMP = 0.35; // one-pole low-pass in each loop: the tail darkens as it decays
+const BOARD_ALLPASS_SEC = 0.0051;
+const BOARD_ALLPASS_GAIN = 0.5;
+const BOARD_WET = 0.07;
 
 /** Samples between renormalisations of the rotation oscillators. */
 const RENORM_EVERY = 4096;
@@ -349,6 +406,103 @@ function renderVoice(
 }
 
 /**
+ * Adds the soundboard resonance to a finished dry mix. Linear and time-invariant,
+ * so it is applied once to the mix rather than per note — the result is identical
+ * and it costs a few multiplies per sample instead of a few per note-sample.
+ *
+ * Each comb is y[n] = x[n] + g·s[n] with s[n] = (1-d)·y[n-D] + d·s[n-1]: the
+ * feedback runs through a one-pole low-pass, so high partials die out of the tail
+ * first, which is what a wooden plate does and what stops the tail hissing. The
+ * allpass is y[n] = -g·x[n] + x[n-D] + g·y[n-D]. Mirrors `_soundboard` on the
+ * server, which runs the same recurrences a block at a time.
+ */
+function soundboard(dry: Float64Array): Float64Array {
+  const n = dry.length;
+  const wet = new Float64Array(n);
+  for (const delaySec of BOARD_DELAYS_SEC) {
+    const d = Math.round(delaySec * SAMPLE_RATE);
+    // Feedback for the loop to fall 60 dB in RT60.
+    const g = Math.pow(10, (-3 * d) / (BOARD_RT60_SEC * SAMPLE_RATE));
+    const y = new Float64Array(n);
+    let s = 0;
+    for (let i = 0; i < n; i++) {
+      const back = i >= d ? y[i - d]! : 0;
+      s = (1 - BOARD_DAMP) * back + BOARD_DAMP * s;
+      y[i] = dry[i]! + g * s;
+      wet[i] = wet[i]! + y[i]!;
+    }
+  }
+
+  const ap = Math.round(BOARD_ALLPASS_SEC * SAMPLE_RATE);
+  const out = new Float64Array(n);
+  for (let i = 0; i < n; i++) {
+    const xBack = i >= ap ? wet[i - ap]! : 0;
+    const yBack = i >= ap ? out[i - ap]! : 0;
+    out[i] = -BOARD_ALLPASS_GAIN * wet[i]! + xBack + BOARD_ALLPASS_GAIN * yBack;
+  }
+
+  const mixed = new Float64Array(n);
+  for (let i = 0; i < n; i++) mixed[i] = dry[i]! + BOARD_WET * out[i]!;
+  return mixed;
+}
+
+/**
+ * Stage one of the limiter: a smooth gain that holds windowed peaks at the ceiling.
+ *
+ * Block peaks (LIMIT_BLOCK samples) are widened by a running maximum over
+ * ±LIMIT_HOLD_BLOCKS blocks, turned into a per-block gain min(1, ceiling / peak),
+ * and interpolated back to sample rate with a raised cosine between block centres.
+ * Because every peak sits inside a plateau of its own block's gain, the
+ * interpolation is exact where it matters and smooth everywhere else. Mirrors
+ * `_ride_gain` on the server.
+ */
+function rideGain(x: Float64Array): Float64Array {
+  const n = x.length;
+  const blocks = Math.ceil(n / LIMIT_BLOCK);
+  const peak = new Float64Array(blocks);
+  for (let i = 0; i < n; i++) {
+    const b = (i / LIMIT_BLOCK) | 0;
+    const a = Math.abs(x[i]!);
+    if (a > peak[b]!) peak[b] = a;
+  }
+  const gainB = new Float64Array(blocks);
+  for (let b = 0; b < blocks; b++) {
+    let held = 0;
+    const lo = Math.max(0, b - LIMIT_HOLD_BLOCKS);
+    const hi = Math.min(blocks - 1, b + LIMIT_HOLD_BLOCKS);
+    for (let j = lo; j <= hi; j++) if (peak[j]! > held) held = peak[j]!;
+    gainB[b] = Math.min(1, LIMIT_CEILING / Math.max(held, 1e-9));
+  }
+
+  const out = new Float64Array(n);
+  if (blocks === 1) {
+    for (let i = 0; i < n; i++) out[i] = x[i]! * gainB[0]!;
+    return out;
+  }
+  const half = LIMIT_BLOCK / 2;
+  for (let i = 0; i < n; i++) {
+    // Flat before the first block centre and after the last.
+    const idx = Math.min(Math.max(Math.floor((i - half) / LIMIT_BLOCK), 0), blocks - 2);
+    const frac = Math.min(Math.max((i - (idx * LIMIT_BLOCK + half)) / LIMIT_BLOCK, 0), 1);
+    const w = 0.5 - 0.5 * Math.cos(Math.PI * frac);
+    out[i] = x[i]! * (gainB[idx]! + (gainB[idx + 1]! - gainB[idx]!) * w);
+  }
+  return out;
+}
+
+/**
+ * Stage two: identity up to LIMIT_KNEE, tanh over the rest. Bounded below 1 for
+ * any input, so nothing can clip — and, unlike the plain tanh it replaces, a
+ * signal under the knee comes out exactly as it went in.
+ */
+function softLimit(v: number): number {
+  const a = Math.abs(v);
+  if (a <= LIMIT_KNEE) return v;
+  const span = 1 - LIMIT_KNEE;
+  return Math.sign(v) * (LIMIT_KNEE + span * Math.tanh((a - LIMIT_KNEE) / span));
+}
+
+/**
  * One metronome click. Sine into a fast exponential decay — a woodblock rather
  * than a note, so it cuts through the melody without being mistaken for it.
  */
@@ -425,8 +579,8 @@ export interface SynthVoice {
 
 /**
  * Several voices in one clip — the rehearsal mix. The parts are rendered through the
- * same piano and summed before the limiter, so four voices at once compress into the
- * headroom rather than clipping. A single voice at gain 1 is sample-identical to the
+ * same piano and summed before the soundboard and the limiter, so four voices at once
+ * compress into the headroom rather than clipping. A single voice at gain 1 is sample-identical to the
  * melody preview.
  */
 export function synthesizeVoicesWavBase64(
@@ -512,12 +666,14 @@ export function synthesizeVoicesWavBase64(
     }
   }
 
-  // Soft-limit through tanh rather than rescaling by the peak: a pile-up of
+  // The soundboard goes on the dry mix and the limiter after it, so whatever the
+  // board adds is bounded too. Limit rather than rescale by the peak: a pile-up of
   // overlapping notes then compresses into the headroom it needs instead of
   // dragging the level of every other note down with it.
+  const limited = rideGain(soundboard(mix));
   const buffer = new Int16Array(totalSamples);
   for (let i = 0; i < totalSamples; i++) {
-    buffer[i] = Math.round(Math.tanh(mix[i]!) * 32767);
+    buffer[i] = Math.round(softLimit(limited[i]!) * 32767);
   }
 
   // Build WAV header
