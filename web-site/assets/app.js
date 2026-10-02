@@ -102,6 +102,11 @@
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
+  function base64ToBytes(b64) {
+    var bin = atob(b64), out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
   function safeName(text) { return (text || "notefusion").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").slice(0, 60) || "notefusion"; }
 
   // ── State ────────────────────────────────────────────────────────────────
@@ -118,8 +123,55 @@
 
   // ── Auth view ────────────────────────────────────────────────────────────
   function showAuth() {
-    hide($("view-app")); hide($("who")); show($("view-auth"));
+    hide($("boot-skel")); hide($("view-app")); hide($("who")); show($("view-auth"));
+    if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
+    maybeOnboard();
   }
+  function selectAuthTab(name) {
+    var tab = document.querySelector('.tab[data-tab="' + name + '"]');
+    if (tab) tab.click();
+  }
+
+  // ── Onboarding: three cards on the first visit, and from "How it works" ──
+  var ONB_KEY = "nf.web.onboarded";
+  var ONB = [
+    { title: "Paste a link, hum, or upload",
+      body: "A YouTube, Spotify or Apple Music link, a tune you hum into the mic, or a recording from your device. The first 30 seconds are free, no account.",
+      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>' },
+    { title: "Solfa, staff, and the four parts",
+      body: "The lead vocal is isolated and written out as movable-do solfa and staff notation. Pro adds alto, tenor and bass under the tune, the way a hymn arranger would.",
+      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>' },
+    { title: "Rehearse, transpose, share",
+      body: "Play it back, loop a few bars, mute your part and sing against the others. Move the key to fit your singers, then share a link the choir can open.",
+      art: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' }
+  ];
+  var onbIndex = 0;
+  function onbSeen() { try { return !!localStorage.getItem(ONB_KEY); } catch (e) { return true; } }
+  function onbMark() { try { localStorage.setItem(ONB_KEY, "1"); } catch (e) { /* private mode */ } }
+  function renderOnb() {
+    var slide = ONB[onbIndex], last = onbIndex === ONB.length - 1;
+    $("onb-art").innerHTML = slide.art;
+    $("onb-title").textContent = slide.title;
+    $("onb-body").textContent = slide.body;
+    var dots = $("onb-dots"); dots.innerHTML = "";
+    ONB.forEach(function (_, i) { var d = document.createElement("span"); if (i === onbIndex) d.className = "on"; dots.appendChild(d); });
+    onbIndex > 0 ? show($("onb-back")) : hide($("onb-back"));
+    $("onb-next").textContent = last ? (me ? "Let's go" : "Try it free") : "Next";
+  }
+  function openOnb() { onbIndex = 0; renderOnb(); show($("onb")); $("onb-next").focus(); }
+  function closeOnb(toTry) {
+    onbMark(); hide($("onb"));
+    var tryUrl = $("try-url");
+    if (toTry && !me && tryUrl && !$("view-auth").classList.contains("hidden")) { tryUrl.focus(); tryUrl.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  }
+  /** First visit, signed out, no preview in the URL: show the cards once. */
+  function maybeOnboard() { if (!onbSeen() && !previewId) openOnb(); }
+  $("onb-next").addEventListener("click", function () { if (onbIndex < ONB.length - 1) { onbIndex++; renderOnb(); } else closeOnb(true); });
+  $("onb-back").addEventListener("click", function () { if (onbIndex > 0) { onbIndex--; renderOnb(); } });
+  $("onb-skip").addEventListener("click", function () { closeOnb(false); });
+  $("onb").addEventListener("click", function (e) { if (e.target === $("onb")) closeOnb(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("onb").classList.contains("hidden")) closeOnb(false); });
+  $("how-link").addEventListener("click", function (e) { e.preventDefault(); openOnb(); });
 
   document.querySelectorAll(".tabs[role=tablist] .tab[data-tab]").forEach(function (tab) {
     tab.addEventListener("click", function () {
@@ -197,8 +249,81 @@
   $("signout").addEventListener("click", function () {
     var t = tokens();
     if (t && t.refreshToken) request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ });
-    clearTokens(); me = null; sub = null; stopPolling(); showAuth();
+    clearTokens(); me = null; sub = null; libraryCache = null; stopPolling(); hide($("top-nav")); showAuth();
   });
+
+  // ── Views: transcribe / library / account ───────────────────────────────
+  function setView(name) {
+    ["transcribe", "library", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
+    document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.classList.toggle("on", b.dataset.view === name); });
+    if (name === "library") loadLibrary();
+    if (name === "account") renderAccount();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.addEventListener("click", function () { setView(b.dataset.view); }); });
+
+  var libraryCache = null;
+  function loadLibrary(force) {
+    var list = $("lib-list"), empty = $("lib-empty"), skel = $("lib-skel");
+    if (!libraryCache || force) { show(skel); hide(list); hide(empty); }
+    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; });
+    return p.then(function (items) {
+      hide(skel);
+      list.innerHTML = "";
+      if (!items.length) { show(empty); hide(list); return; }
+      hide(empty); show(list);
+      items.forEach(function (it) {
+        var card = document.createElement("div"); card.className = "lib-item";
+        var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
+        var m = document.createElement("div"); m.className = "meta";
+        m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "");
+        card.appendChild(m);
+        var a = document.createElement("div"); a.className = "actions";
+        var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
+        open.addEventListener("click", function () { openSaved(it.id); });
+        var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm"; del.type = "button"; del.textContent = "Delete";
+        del.addEventListener("click", function () {
+          if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone.")) return;
+          del.disabled = true;
+          request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); })
+            .catch(function (err) { alertIn($("app-alert"), "danger", "Could not delete: " + (err.message || err)); del.disabled = false; });
+        });
+        a.appendChild(open); a.appendChild(del); card.appendChild(a);
+        list.appendChild(card);
+      });
+    }).catch(function (err) { hide(skel); show(empty); empty.textContent = "Your library could not be loaded: " + (err.message || err); });
+  }
+  /** A saved sheet, opened into the same result view a fresh transcription uses. */
+  function openSaved(id) {
+    stopPolling();
+    request("/api/library/" + id).then(function (t) {
+      var result = {
+        key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
+        overallConfidence: t.overallConfidence || 0, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
+        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null
+      };
+      current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0 };
+      setView("transcribe");
+      hide($("progress"));
+      $("sheet-parts").innerHTML = "";
+      showResult(result);
+      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
+  }
+
+  function renderAccount() {
+    $("acct-name").textContent = me ? (me.fullName || "—") : "—";
+    $("acct-email").textContent = me ? (me.email || "—") : "—";
+    $("acct-plan").textContent = isPro() ? "Pro" : "Free";
+    $("acct-credits").textContent = sub ? (isPro() ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left" : (sub.songCreditsRemaining > 0 ? "1 free song preview" : "Preview used")) : "—";
+    var since = me && (me.createdAtUtc || me.createdAt);
+    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "long" }) : "—";
+    isPro() ? hide($("acct-upgrade")) : show($("acct-upgrade"));
+    (libraryCache ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; }))
+      .then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
+  }
+  $("acct-upgrade").addEventListener("click", function () { setView("transcribe"); show($("upgrade-panel")); loadPlans($("upgrade-panel"), $("plans-standalone")); $("upgrade-panel").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  $("acct-signout").addEventListener("click", function () { $("signout").click(); });
 
   // ── App view ─────────────────────────────────────────────────────────────
   function isPro() { return !!(sub && sub.isActive); }
@@ -230,10 +355,12 @@
       if (previewId) { startGuest(); return Promise.resolve(); }
       showAuth(); return Promise.resolve();
     }
+    show($("boot-skel"));
     return loadAccount().then(function () {
       var wasGuest = guest;
       guest = false;
-      hide($("view-auth")); hide($("guest-bar")); show($("view-app"));
+      hide($("boot-skel")); hide($("view-auth")); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
+      if (new URLSearchParams(location.search).get("upgrade") && !isPro()) { show($("upgrade-panel")); setTimeout(function () { $("upgrade-panel").scrollIntoView({ behavior: "smooth", block: "start" }); }, 50); }
       if (!isPro()) loadPlans($("upgrade-panel"), $("plans-standalone"));
       else hide($("upgrade-panel"));
       var params = new URLSearchParams(location.search);
@@ -250,7 +377,7 @@
   /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
   function startGuest() {
     guest = true;
-    hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel"));
+    hide($("boot-skel")); hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
@@ -266,17 +393,59 @@
       .finally(function () { $("link-submit").disabled = false; });
   });
 
+  function uploadKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "hum"; }
+  function submitAudio(file, name) {
+    var song = uploadKind() === "song";
+    var form = new FormData();
+    form.append("audio", file, name);
+    form.append("mode", "melody");
+    // A song with a band behind the voice is separated first; a hummed tune is not.
+    form.append("separate", song ? "true" : "false");
+    hide($("app-alert"));
+    return request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
+      .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || (song ? "separating" : "transcribing") }), guest ? "preview" : "upload"); })
+      .catch(function (err) { explain(err); });
+  }
   $("file-input").addEventListener("change", function (e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
-    var form = new FormData();
-    form.append("audio", file, file.name);
-    form.append("mode", "melody");
-    hide($("app-alert"));
-    request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
-      .then(function (job) { startJob(job, guest ? "preview" : "upload"); })
-      .catch(function (err) { explain(err); });
+    submitAudio(file, file.name);
     e.target.value = "";
+  });
+
+  // ── Record a tune in the browser ─────────────────────────────────────────
+  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, MAX_SEC: 180 };
+  function stopRecording() {
+    if (rec.timer) clearInterval(rec.timer); if (rec.stopAt) clearTimeout(rec.stopAt); rec.timer = rec.stopAt = null;
+    if (rec.recorder && rec.recorder.state !== "inactive") rec.recorder.stop();
+    $("rec-btn").textContent = "🎤 Record a tune";
+  }
+  $("rec-btn").addEventListener("click", function () {
+    if (rec.recorder && rec.recorder.state === "recording") { stopRecording(); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { $("rec-status").textContent = "This browser cannot record; upload a file instead."; return; }
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
+      rec.chunks = [];
+      var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+      rec.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      rec.recorder.addEventListener("dataavailable", function (ev) { if (ev.data && ev.data.size) rec.chunks.push(ev.data); });
+      rec.recorder.addEventListener("stop", function () {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        var type = rec.recorder.mimeType || mime || "audio/webm";
+        var blob = new Blob(rec.chunks, { type: type });
+        if (blob.size < 2000) { $("rec-status").textContent = "That was too short to hear. Hum for a few seconds."; return; }
+        $("rec-status").textContent = "";
+        document.querySelector('input[name="upload-kind"][value="hum"]').checked = true;
+        submitAudio(blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm");
+      });
+      rec.recorder.start();
+      rec.started = Date.now();
+      rec.timer = setInterval(function () {
+        var left = Math.max(0, rec.MAX_SEC - Math.floor((Date.now() - rec.started) / 1000));
+        $("rec-btn").textContent = "■ Stop (" + left + "s)";
+        $("rec-status").textContent = "Recording… hum or sing, then press Stop.";
+      }, 250);
+      rec.stopAt = setTimeout(stopRecording, rec.MAX_SEC * 1000);
+    }).catch(function () { $("rec-status").textContent = "Microphone access is needed to record. Upload a file instead."; });
   });
 
   function explain(err) {
@@ -299,7 +468,7 @@
     $("save-title").value = "";
     hide($("result"));
     show($("progress"));
-    $("p-title").textContent = kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…";
+    $("p-title").textContent = kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : job.stage === "separating" ? "Isolating the voice…" : "Transcribing your recording…";
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId;
     $("p-artist").textContent = "";
@@ -390,7 +559,10 @@
     renderSave();
 
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
+    // One set of plans on the page at a time: the note under the downloads carries them while a
+    // result is showing; the standalone panel is for the empty state and the Account view.
     isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
+    hide($("upgrade-panel"));
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       b.innerHTML = b.textContent.replace(/\s*🔒$/, "") + (isPro() ? "" : ' <span class="lock">🔒</span>');
     });
@@ -469,6 +641,7 @@
       $("restart").addEventListener("click", function () { player.stop(); player.play(); });
       $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
       ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
+      $("backing-on").addEventListener("change", function () { player.setBackingOn($("backing-on").checked); });
       player.onTick(function (t) {
         $("play").textContent = t.playing ? "❚❚ Pause" : "▶ Play";
         var now = -1;
@@ -478,6 +651,14 @@
     }
     var voices = rehearsalVoices(result);
     player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature });
+    // The song's own backing, when the worker isolated the voice: the solfa melody plays
+    // over the instrumental, in time, instead of a piano on its own.
+    var backing = $("backing-group");
+    if (result.backingAudioBase64) {
+      show(backing);
+      player.setBacking(base64ToBytes(result.backingAudioBase64).buffer, result.beatOriginSec || 0);
+      $("backing-on").checked = true; player.setBackingOn(true);
+    } else { hide(backing); player.setBacking(null, 0); player.setBackingOn(false); }
     var bars = C.barCount(result.notes || [], result.timeSignature);
     $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
     var box = $("voices");
@@ -659,6 +840,7 @@
       lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null
     } }).then(function (saved) {
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
+      libraryCache = null;
       renderSave();
       var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
       if (!dismissed) show($("app-banner"));
@@ -745,7 +927,13 @@
   }
   ensureOsmd().catch(function () { /* reported where the sheet is drawn */ });
 
-  function engrave(xml) { osmd = engraveInto($("sheet"), xml); }
+  function engrave(xml) {
+    // The engraver takes a moment on a long sheet (and longer the first time, while it
+    // loads): show the shape of a staff rather than an empty box.
+    var skel = $("sheet-skel"); show(skel); $("sheet").classList.add("hidden");
+    try { osmd = engraveInto($("sheet"), xml); }
+    finally { hide(skel); $("sheet").classList.remove("hidden"); }
+  }
 
   function engraveInto(container, xml) {
     container.innerHTML = "";
@@ -884,6 +1072,7 @@
   var plansCache = null;
   function loadPlans(panel, grid) {
     show(panel);
+    if (!plansCache) { grid.innerHTML = ""; for (var i = 0; i < 2; i++) { var sk = document.createElement("div"); sk.className = "skel skel-plan"; grid.appendChild(sk); } }
     var p = plansCache ? Promise.resolve(plansCache) : request("/api/billing/plans").then(function (list) { plansCache = list; return list; });
     p.then(function (plans) {
       grid.innerHTML = "";

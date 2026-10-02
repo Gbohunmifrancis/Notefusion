@@ -190,9 +190,12 @@ export const transcriptionsApi = {
     // causes ASP.NET Core's multipart parser to receive a boundary-less header →
     // it cannot parse the body → request.Audio binds as null →
     // TranscriptionErrors.InvalidAudio (Error.Validation) → HTTP 422.
+    // Five minutes, not one: a 20 MB recording over a mobile connection can take well over a
+    // minute to leave the phone, and the old 60 s timeout abandoned the upload mid-flight —
+    // the server went on to transcribe a job nobody was polling, and the user saw "try again".
     return api
       .post<TranscriptionJob>("/api/transcriptions", form, {
-        timeout: 60_000,
+        timeout: 300_000,
       })
       .then((r) => r.data);
   },

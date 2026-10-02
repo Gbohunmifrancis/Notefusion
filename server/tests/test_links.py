@@ -100,7 +100,9 @@ def test_high_priority_jobs_run_before_waiting_normal_ones(monkeypatch, tmp_path
                                    musicxml="<x/>", midi_base64="")
 
     monkeypatch.setattr(queue_mod, "transcribe", slow_transcribe)
-    queue = JobQueue(workers=1)
+    # The general queue's ordering is what this test is about, so the Pro lane's own worker
+    # is switched off here; with it on, the high job would not wait at all (see test_queue).
+    queue = JobQueue(workers=1, pro_lane_workers=0)
     try:
         paths = []
         for _ in range(3):
@@ -144,8 +146,10 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
     monkeypatch.setattr(links, "fetch_audio", fake_fetch)
     monkeypatch.setattr(separate, "available", lambda: True)
 
-    def fake_separate(wav, out, progress=lambda f: None):
+    def fake_separate(wav, out, progress=lambda f: None, backing_path=None):
         progress(1.0)
+        if backing_path is not None:
+            _fake_wav(backing_path)
         return _fake_wav(out)
 
     monkeypatch.setattr(separate, "separate_file", fake_separate)
@@ -153,6 +157,8 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
     def fake_transcribe(path, **kwargs):
         seen["transcribed"] = Path(path).name
         seen["fast"] = kwargs.get("fast")
+        # The beat is read from the full mix, not the isolated vocal.
+        seen["tempo_source"] = Path(kwargs["tempo_source"]).name if kwargs.get("tempo_source") else None
         return TranscriptionResult(key="C major", key_confidence=1, tempo=100, time_signature="4/4",
                                    musicxml="<x/>", midi_base64="")
 
@@ -166,7 +172,9 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
         assert job.status == STATUS_DONE, job.error
         assert job.source == {"provider": "youtube", "url": source.url, "title": "Way Maker",
                               "artist": "Sinach", "thumbnail_url": None}
-        assert seen == {"max_seconds": 60, "transcribed": "vocals.wav", "fast": True}
+        assert seen == {"max_seconds": 60, "transcribed": "vocals.wav", "fast": True, "tempo_source": "song.wav"}
+        # The instrumental rides along for rehearsal (ffmpeg permitting); never an error either way.
+        assert isinstance(job.result.backing_audio_base64, str)
         assert job.result.source["title"] == "Way Maker"
         assert job.result.truncated is True and job.result.separated is True
         assert job.result.song_duration_sec == 250.0

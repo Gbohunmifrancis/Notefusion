@@ -33,9 +33,22 @@ services:
     logging: *default-logging
     environment:
       NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-180}
-      NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-20971520}
+      NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-26214400}
       NF_JOB_TTL_SECONDS: ${NF_JOB_TTL_SECONDS:-900}
       NF_API_KEY: ${TRANSCRIPTION_API_KEY}
+      # YouTube refuses anonymous downloads from datacenter addresses ("Sign in to confirm
+      # you're not a bot"), which is every EC2 instance. A cookies file exported from a
+      # signed-in browser gets through; the deploy writes it from the YTDLP_COOKIES secret
+      # and mounts it here. With no secret, /dev/null is mounted and yt-dlp runs without.
+      NF_YTDLP_COOKIES_FILE: /run/ytdlp-cookies.txt
+      # Vocal separation is the memory peak (about 1.4 GB per song at the defaults; see
+      # app/pipeline/separate.py). The limit keeps a runaway worker from taking the API and
+      # the database down with it: the kernel kills this container alone and Docker restarts it.
+      NF_MDX_BATCH: ${NF_MDX_BATCH:-1}
+      NF_MDX_MEM_ARENA: ${NF_MDX_MEM_ARENA:-0}
+    mem_limit: ${NF_TRANSCRIBER_MEM_LIMIT:-3g}
+    volumes:
+      - ${YTDLP_COOKIES_HOST:-/dev/null}:/run/ytdlp-cookies.txt:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
       interval: 10s

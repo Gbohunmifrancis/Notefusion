@@ -300,3 +300,10 @@ body { background: var(--nf-canvas); color: var(--nf-copy); font-family: var(--f
 }
 
 
+
+/* ── Web-first calls to action (added with the web app) ───────────────────── */
+.hero-app-link { display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; color: var(--color-ink-500); text-decoration: none; }
+.hero-app-link:hover { color: var(--color-brand-600); text-decoration: underline; }
+.try-note .try-signup { color: var(--color-brand-600); font-weight: 600; text-decoration: none; }
+.try-note .try-signup:hover { text-decoration: underline; }
+.hero-floating-bar { flex-wrap: wrap; }

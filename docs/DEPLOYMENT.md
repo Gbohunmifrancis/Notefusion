@@ -424,3 +424,24 @@ heroku config:set TranscriptionApi__BaseUrl=https://notefusion-transcriber-ef80c
 heroku config --app <your-heroku-app>          # names only; review before/after
 heroku logs --tail --app <your-heroku-app>      # watch the seeder + provider wiring on boot
 ```
+
+
+## YouTube links ("YouTube is refusing automated downloads")
+
+YouTube blocks anonymous downloads from datacenter addresses — every EC2 instance — with
+"Sign in to confirm you're not a bot". Spotify and Apple Music links are resolved to a
+YouTube search, so when YouTube refuses, every link fails the same way. The worker gets
+through with the cookies of a signed-in YouTube account:
+
+1. On a desktop browser signed in to a Google account (a throwaway one is sensible), export
+   the YouTube cookies in Netscape `cookies.txt` format — the "Get cookies.txt LOCALLY"
+   extension, or `yt-dlp --cookies-from-browser chrome --cookies cookies.txt
+   "https://www.youtube.com/watch?v=dQw4w9WgXcQ"` on that machine, which writes the file.
+2. Paste the file's contents into the repository secret `YTDLP_COOKIES`.
+3. Redeploy (push to `main`, or run **Deploy to EC2** from the Actions tab). The deploy
+   writes `/opt/notefusion/ytdlp-cookies.txt`, the compose file mounts it into the
+   transcriber, and `NF_YTDLP_COOKIES_FILE` points yt-dlp at it.
+
+Cookies expire and YouTube rotates them; when links start failing again, export a fresh
+file and update the secret. Keep yt-dlp current too (`server/requirements.txt` pins a
+minimum; the image is rebuilt on every deploy, so a redeploy picks up a newer release).

@@ -33,6 +33,9 @@ public sealed class SubmitTranscriptionRequest
     /// <summary>Optional key override (e.g. 'C major', 'A minor').</summary>
     public string? Key { get; init; }
 
+    /// <summary>True when the file is a whole song with instruments: the voice is isolated before transcription.</summary>
+    public bool Separate { get; init; }
+
     /// <summary>Optional tempo in BPM (20 to 400).</summary>
     public int? Tempo { get; init; }
 
@@ -78,7 +81,7 @@ public sealed class TranscriptionsController : ApiControllerBase
                 Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature);
+        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate);
         var result = await _sender.Send(command, ct);
 
         if (result.IsFailure)

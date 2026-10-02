@@ -1,4 +1,5 @@
 using NoteFusion.Application.Billing.Queries;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -480,6 +481,28 @@ public class TrialQuotaTests
         => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock)
             .Handle(new GetTranscriptionJobQuery(jobId), CancellationToken.None);
 
+    [Fact]
+    public async Task A_job_the_worker_has_forgotten_is_reported_as_lost_not_as_a_bare_404()
+    {
+        // The worker's queue is in memory. When it restarts under a running job (an out-of-memory kill,
+        // a deploy), every poll after that is a 404, and the client used to show "Transcription service
+        // returned 404" forever. The job row says we handed this job out and never settled it, so the
+        // poll now answers with a failed job that says what happened — and nothing is charged.
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+        var submitted = await Submit(h, user, api);
+        Assert.True(submitted.IsSuccess);
+
+        api.Lost = true;
+        var poll = await Poll(h, user, submitted.Value, api);
+
+        Assert.True(poll.IsSuccess, poll.IsFailure ? poll.Error.Message : "");
+        Assert.Equal(TranscriptionStatus.Failed, poll.Value.Status);
+        Assert.Contains("restarted", poll.Value.Error);
+        Assert.Equal(0, await TrialUsage.CountUsedAsync(h.Db, user.Id, null, CancellationToken.None));
+    }
+
     /// <summary>
     /// Stands in for the Python worker. The status is the test's to set, which is the whole point: in
     /// production it is the ML service's answer, so neither the client nor the handler can invent it.
@@ -490,6 +513,9 @@ public class TrialQuotaTests
 
         public TranscriptionStatus Status { get; set; } = TranscriptionStatus.Pending;
         public int PollCount { get; private set; }
+
+        /// <summary>When set, the worker answers every poll with "no such job" — what a restart looks like.</summary>
+        public bool Lost { get; set; }
 
         public Task<Result<string>> SubmitAsync(
             Stream audio, string fileName, TranscribeOptions options, CancellationToken ct = default)
@@ -506,6 +532,8 @@ public class TrialQuotaTests
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
         {
             PollCount++;
+            if (Lost)
+                return Task.FromResult<Result<TranscriptionJobDto>>(Error.NotFound("Api.Job", "The transcription service no longer has this job."));
             var progress = Status == TranscriptionStatus.Done ? 1d : 0.5d;
             return Task.FromResult(Result<TranscriptionJobDto>.Success(
                 new TranscriptionJobDto(jobId, Status, progress, null)));

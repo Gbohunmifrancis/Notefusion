@@ -383,3 +383,41 @@ def test_a_capped_upload_keeps_only_the_head_and_says_so(monkeypatch):
                         data={"mode": "melody", "max_seconds": "30"})
         body = _wait_for_status(client, r.json()["jobId"], STATUS_DONE)
         assert body["result"]["truncated"] is False
+
+
+def test_submit_forwards_the_separate_flag_to_the_queue(monkeypatch):
+    """A song with a band behind the voice says so with ``separate=true``; the route must hand
+    that to the queue untouched, and leave it off for a hummed clip."""
+    from app.jobs import queue as queue_mod
+
+    seen = []
+
+    def fake_submit(self, audio_path, **kwargs):
+        seen.append(kwargs.get("separate"))
+        audio_path.unlink(missing_ok=True)
+        return "job-" + str(len(seen))
+
+    monkeypatch.setattr(queue_mod.JobQueue, "submit", fake_submit)
+    with TestClient(app) as client:
+        for value in ("true", None):
+            data = {"mode": "melody"}
+            if value is not None:
+                data["separate"] = value
+            r = client.post("/v1/transcribe",
+                            files={"audio": ("clip.wav", BytesIO(_make_wav(duration_sec=0.5)), "audio/wav")},
+                            data=data)
+            assert r.status_code == 202, r.text
+    assert seen == [True, False]
+
+
+def test_browser_recordings_are_accepted(monkeypatch):
+    """MediaRecorder gives .webm in Chrome and .mp4 in Safari; both used to be refused with 415
+    before a byte was read, which is what the web app's Record button ran into."""
+    from app.jobs import queue as queue_mod
+
+    monkeypatch.setattr(queue_mod.JobQueue, "submit", lambda self, audio_path, **kw: (audio_path.unlink(missing_ok=True), "job")[1])
+    monkeypatch.setattr("app.api.routes._clip_duration_seconds", lambda path: 2.0)
+    with TestClient(app) as client:
+        for name in ("hum.webm", "hum.mp4"):
+            r = client.post("/v1/transcribe", files={"audio": (name, BytesIO(b"\x1a\x45\xdf\xa3" + b"\0" * 64), "audio/webm")})
+            assert r.status_code == 202, (name, r.text)

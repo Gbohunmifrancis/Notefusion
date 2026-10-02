@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from app.jobs.queue import (STATUS_DONE, STATUS_FAILED, JobQueue)
+from app.jobs.queue import (PRIORITY_HIGH, STATUS_DONE, STATUS_FAILED, STATUS_PROCESSING, JobQueue)
 from app.pipeline.transcriber import LowConfidenceError, TranscriptionResult
 
 
@@ -180,3 +180,64 @@ def test_expired_jobs_are_purged(monkeypatch):
         assert queue.get(jid) is None
     finally:
         queue.shutdown(wait=True)
+
+
+def test_pro_lane_runs_while_the_general_worker_is_busy(monkeypatch):
+    """The Pro lane's promise: a high-priority job starts at once even when the only
+    general worker is in the middle of a long normal job. Before the lane had its own
+    worker the high job sorted to the front of the queue and then waited for the running
+    job anyway, which for a linked song in vocal separation was minutes."""
+    import threading
+    release = threading.Event()
+
+    def slow_or_quick(audio_path, **kwargs):
+        if "slow" in audio_path.name:
+            release.wait(5.0)
+        return _result()
+
+    monkeypatch.setattr("app.jobs.queue.transcribe", slow_or_quick)
+    queue = JobQueue(workers=1, pro_lane_workers=1)
+    try:
+        with tempfile.NamedTemporaryFile(suffix="-slow.wav", delete=False) as tmp:
+            tmp.write(b"RIFF")
+            slow = Path(tmp.name)
+        slow_id = queue.submit(slow, mode="melody", key=None, tempo=120)
+        _await_status(queue, slow_id, STATUS_PROCESSING)
+
+        # A normal job queued behind the slow one must still wait: the lane is for Pro.
+        waiting_id = queue.submit(_temp_audio(), mode="melody", key=None, tempo=120)
+        pro_id = queue.submit(_temp_audio(), mode="melody", key=None, tempo=120, priority=PRIORITY_HIGH)
+        _await_status(queue, pro_id, STATUS_DONE)
+        assert queue.get(waiting_id).status != STATUS_DONE
+        assert queue.get(slow_id).status == STATUS_PROCESSING
+
+        release.set()
+        _await_status(queue, slow_id, STATUS_DONE)
+        _await_status(queue, waiting_id, STATUS_DONE)
+    finally:
+        release.set()
+        queue.shutdown(wait=True, timeout=5.0)
+
+
+def test_backing_is_encoded_as_mp3_when_ffmpeg_is_present(tmp_path):
+    """The instrumental goes to the client as a small mono MP3; without ffmpeg it is simply
+    absent (an empty string), never an error."""
+    import shutil
+    import base64
+
+    import numpy as np
+    import soundfile as sf
+
+    from app.jobs.queue import _encode_backing
+
+    wav = tmp_path / "backing.wav"
+    t = np.arange(22_050) / 22_050
+    sf.write(str(wav), (0.3 * np.sin(2 * np.pi * 110 * t)).astype(np.float32), 22_050)
+    encoded = _encode_backing(wav)
+    if shutil.which("ffmpeg"):
+        raw = base64.b64decode(encoded)
+        assert raw[:3] == b"ID3" or raw[0] == 0xFF, "not an MP3 stream"
+        assert len(raw) < wav.stat().st_size / 4
+    else:
+        assert encoded == ""
+    assert _encode_backing(tmp_path / "missing.wav") == ""

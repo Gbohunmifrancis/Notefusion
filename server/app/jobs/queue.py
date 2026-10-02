@@ -5,15 +5,25 @@ inference so concurrent uploads queue instead of thrashing one VPS core.  Audio 
 are deleted the moment processing ends (TRD par. 9); only the structured result lives
 in memory, and it expires after a TTL.
 
-Two lanes.  Every job carries a priority, and the workers always take the highest
-priority waiting job first: a Pro user's clip never waits behind a free user's
-four-minute song.  Within a lane, first come first served.
+Two lanes.  Every job carries a priority, and the general workers always take the
+highest priority waiting job first: a Pro user's clip never waits behind a free user's
+four-minute song that is still *queued*.  Within a lane, first come first served.
+
+That ordering says nothing about a job that is already *running*, and with one general
+worker that is where the Pro lane used to stall: a free three-minute upload, or a linked
+song in its vocal-separation stage (minutes on CPU), held the only worker and a Pro
+upload sat behind it however high its priority.  So the Pro lane has a worker of its own
+(``settings.pro_lane_workers``) that only ever takes high-priority jobs.  It idles while
+there are none; when one arrives it starts at once, beside whatever the general workers
+are doing.  Two jobs then share the CPU, which slows both a little — the Pro one is
+never stopped dead, which is the promise the lane makes.
 """
 
+import heapq
 import itertools
 import logging
-import queue as queue_mod
 import shutil
+import tempfile
 import threading
 import time
 import uuid
@@ -65,15 +75,28 @@ class Job:
     source: dict | None = None
 
 
+#: Rank of the shutdown sentinel: below every real job, so a draining worker of either
+#: lane picks it up ahead of anything still queued.
+_RANK_STOP = -1
+
+
 class JobQueue:
-    def __init__(self, workers: int = settings.inference_workers) -> None:
+    def __init__(self, workers: int = settings.inference_workers,
+                 pro_lane_workers: int = settings.pro_lane_workers) -> None:
         self._jobs: dict[str, Job] = {}
         self._lock = threading.Lock()
-        self._queue: queue_mod.PriorityQueue = queue_mod.PriorityQueue()
+        # (rank, seq, fn) heap guarded by a condition: a worker waits until an entry it
+        # may take is at the top. A high job always sorts above a normal one, so "is the
+        # top entry high?" is the whole of the Pro-lane worker's test.
+        self._pending: list[tuple[int, int, object]] = []
+        self._cv = threading.Condition()
         self._seq = itertools.count()
         self._threads = [
-            threading.Thread(target=self._worker, name=f"nf-inference-{i}", daemon=True)
+            threading.Thread(target=self._worker, args=(False,), name=f"nf-inference-{i}", daemon=True)
             for i in range(max(1, workers))
+        ] + [
+            threading.Thread(target=self._worker, args=(True,), name=f"nf-pro-lane-{i}", daemon=True)
+            for i in range(max(0, pro_lane_workers))
         ]
         for t in self._threads:
             t.start()
@@ -86,12 +109,13 @@ class JobQueue:
                correlation_id: str | None = None,
                callback_url: str | None = None,
                priority: str = PRIORITY_NORMAL,
-               song_seconds: float | None = None) -> str:
+               song_seconds: float | None = None,
+               separate: bool = False) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
-        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s%s",
+        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s%s",
                     job.id[:8], mode, key or "auto", tempo or "auto", time_signature,
-                    job.priority, self._trail(job))
-        self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds))
+                    job.priority, separate, self._trail(job))
+        self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds, separate))
         return job.id
 
     def submit_link(self, url: str, mode: str,
@@ -141,32 +165,60 @@ class JobQueue:
         return job
 
     def _enqueue(self, job: Job, fn) -> None:
-        self._queue.put((_PRIORITY_RANK[job.priority], next(self._seq), fn))
+        self._push(_PRIORITY_RANK[job.priority], fn)
 
-    def _worker(self) -> None:
+    def _push(self, rank: int, fn) -> None:
+        with self._cv:
+            heapq.heappush(self._pending, (rank, next(self._seq), fn))
+            self._cv.notify_all()
+
+    def _take(self, pro_lane: bool):
+        """Block until there is an entry this worker may run, and pop it.
+
+        A general worker takes whatever is on top. The Pro-lane worker takes the top
+        entry only when it is a high-priority job (or the stop sentinel), and otherwise
+        keeps waiting — a normal job is never its business, however long it has queued.
+        """
+        with self._cv:
+            while True:
+                if self._pending:
+                    rank = self._pending[0][0]
+                    if not pro_lane or rank <= _PRIORITY_RANK[PRIORITY_HIGH]:
+                        return heapq.heappop(self._pending)
+                self._cv.wait()
+
+    def _worker(self, pro_lane: bool = False) -> None:
         while True:
-            _rank, _seq, fn = self._queue.get()
+            _rank, _seq, fn = self._take(pro_lane)
             if fn is None:
-                self._queue.task_done()
                 return
             try:
                 fn()
             except Exception:  # noqa: BLE001 - a job body already reports; never kill the worker
                 logger.exception("Unhandled error in queue worker")
-            finally:
-                self._queue.task_done()
 
     def _run(self, job: Job, audio_path: Path, mode: str,
              key: str | None, tempo: int | None,
-             time_signature: str = "4/4", song_seconds: float | None = None) -> None:
+             time_signature: str = "4/4", song_seconds: float | None = None,
+             separate_vocals: bool = False) -> None:
         job.status = STATUS_PROCESSING
+        work_dir: Path | None = None
         try:
             try:
-                job.result = transcribe(
-                    audio_path, mode=mode, key_override=key, tempo_override=tempo,
-                    time_signature=time_signature,
-                    progress=lambda fraction: setattr(job, "progress", fraction),
-                    fast=job.priority == PRIORITY_HIGH)
+                if separate_vocals:
+                    # A song with a band behind the voice, uploaded as a file: the same
+                    # road a linked song takes — isolate the vocal, read the beat from the
+                    # mix, keep the instrumental for rehearsal.
+                    work_dir = Path(tempfile.mkdtemp(prefix="nf-upload-"))
+                    job.result = self._separate_and_transcribe(
+                        job, audio_path, work_dir, mode, key, tempo, time_signature, progress_from=0.0)
+                else:
+                    job.stage = STAGE_TRANSCRIBING
+                    job.result = transcribe(
+                        audio_path, mode=mode, key_override=key, tempo_override=tempo,
+                        time_signature=time_signature,
+                        progress=lambda fraction: setattr(job, "progress", fraction),
+                        fast=job.priority == PRIORITY_HIGH)
                 if song_seconds is not None:
                     # The route kept only the head of a longer clip (a preview).
                     job.result.song_duration_sec = round(song_seconds, 1)
@@ -188,13 +240,57 @@ class JobQueue:
         finally:
             # Privacy by default: the recording never outlives its job (TRD par. 9)
             audio_path.unlink(missing_ok=True)
+            if work_dir is not None:
+                shutil.rmtree(work_dir, ignore_errors=True)
             self._trigger_webhook(job)
+
+    def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
+                                 key: str | None, tempo: int | None, time_signature: str,
+                                 progress_from: float) -> TranscriptionResult:
+        """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
+
+        Shared by uploaded songs and linked ones. ``progress_from`` is where the job's
+        progress bar already stands (a link job has spent some of it fetching); separation
+        takes the bar to 0.55 and transcription the rest. Without a separation model the
+        mixture is transcribed as it is, which is what the old upload path always did.
+        """
+        from app.pipeline import separate
+
+        span = 0.55 - progress_from
+        if separate.available():
+            job.stage = STAGE_SEPARATING
+            try:
+                vocals = separate.separate_file(
+                    wav, work_dir / "vocals.wav",
+                    progress=lambda f: setattr(job, "progress", progress_from + span * f),
+                    backing_path=work_dir / "backing.wav")
+                separated = True
+            except MemoryError:
+                # Better a sheet read from the mixture than no sheet: the worker stays up
+                # and the job finishes, with ``separated`` false so the client can say so.
+                logger.warning("Job %s: out of memory separating vocals; transcribing the mixture", job.id[:8])
+                vocals, separated = wav, False
+        else:
+            logger.warning("Job %s: no separation model at %s; transcribing the mixture",
+                           job.id[:8], separate.model_path())
+            vocals, separated = wav, False
+
+        job.stage = STAGE_TRANSCRIBING
+        result = transcribe(
+            vocals, mode=mode, key_override=key, tempo_override=tempo,
+            time_signature=time_signature,
+            progress=lambda fraction: setattr(job, "progress", 0.55 + 0.45 * fraction),
+            fast=job.priority == PRIORITY_HIGH,
+            tempo_source=wav if separated else None)
+        result.separated = separated
+        if separated:
+            result.backing_audio_base64 = _encode_backing(work_dir / "backing.wav")
+        return result
 
     def _run_link(self, job: Job, url: str, mode: str,
                   key: str | None, tempo: int | None,
                   time_signature: str, max_seconds: float) -> None:
         from app.ingest.links import LinkError, fetch_audio, resolve_source
-        from app.pipeline import separate
 
         job.status = STATUS_PROCESSING
         work_dir: Path | None = None
@@ -208,27 +304,11 @@ class JobQueue:
                 work_dir = wav.parent
                 job.progress = 0.10
 
-                if separate.available():
-                    job.stage = STAGE_SEPARATING
-                    vocals = separate.separate_file(
-                        wav, work_dir / "vocals.wav",
-                        progress=lambda f: setattr(job, "progress", 0.10 + 0.45 * f))
-                    separated = True
-                else:
-                    logger.warning("Link job %s: no separation model at %s; transcribing the mixture",
-                                   job.id[:8], separate.model_path())
-                    vocals, separated = wav, False
-
-                job.stage = STAGE_TRANSCRIBING
-                job.result = transcribe(
-                    vocals, mode=mode, key_override=key, tempo_override=tempo,
-                    time_signature=time_signature,
-                    progress=lambda fraction: setattr(job, "progress", 0.55 + 0.45 * fraction),
-                    fast=job.priority == PRIORITY_HIGH)
+                job.result = self._separate_and_transcribe(
+                    job, wav, work_dir, mode, key, tempo, time_signature, progress_from=0.10)
                 job.result.source = job.source
                 job.result.song_duration_sec = round(song_seconds, 1)
                 job.result.truncated = song_seconds > max_seconds + 0.5
-                job.result.separated = separated
             finally:
                 job.finished_at = time.monotonic()
             self._done(job, "Link job")
@@ -330,7 +410,7 @@ class JobQueue:
     def shutdown(self, wait: bool = True, timeout: float | None = None) -> None:
         """Drain the workers and drop all job state."""
         for _ in self._threads:
-            self._queue.put((99, next(self._seq), None))
+            self._push(_RANK_STOP, None)
         if wait:
             for t in self._threads:
                 t.join(timeout)
@@ -341,6 +421,35 @@ class JobQueue:
                    if j.finished_at and now - j.finished_at > settings.job_ttl_seconds]
         for jid in expired:
             del self._jobs[jid]
+
+
+# The instrumental is sent to the client as a mono MP3 at this bit rate: a six-minute song
+# is about 2 MB, against 24 MB as the 16-bit WAV. Rehearsal playback does not need more.
+_BACKING_BITRATE = "48k"
+
+
+def _encode_backing(wav_path: Path) -> str:
+    """The instrumental WAV as a base64 mono MP3, or "" when ffmpeg is not available.
+
+    An empty string is a feature quietly missing rather than a failed job: the sheet and
+    the piano playback are still there, and a client that sees no backing simply does not
+    offer to play over the song.
+    """
+    import base64
+    import subprocess
+
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg or not wav_path.is_file():
+        return ""
+    try:
+        done = subprocess.run(
+            [ffmpeg, "-v", "error", "-nostdin", "-i", str(wav_path), "-ac", "1", "-ar", "22050",
+             "-codec:a", "libmp3lame", "-b:a", _BACKING_BITRATE, "-f", "mp3", "pipe:1"],
+            capture_output=True, timeout=120, check=True)
+    except Exception as exc:  # noqa: BLE001 - the backing is a nicety; the sheet is the job
+        logger.warning("Backing track not encoded: %s", exc)
+        return ""
+    return base64.b64encode(done.stdout).decode("ascii")
 
 
 def _source_dict(source) -> dict:
@@ -354,7 +463,7 @@ def _source_dict(source) -> dict:
 
 
 def _default_queue() -> JobQueue:
-    return JobQueue(workers=settings.inference_workers)
+    return JobQueue(workers=settings.inference_workers, pro_lane_workers=settings.pro_lane_workers)
 
 
 job_queue = _default_queue()

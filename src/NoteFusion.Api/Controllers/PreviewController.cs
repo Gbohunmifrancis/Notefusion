@@ -34,7 +34,7 @@ public sealed class PreviewController : ApiControllerBase
         if (request.Audio is null || request.Audio.Length == 0)
             return HandleResult(Result.Failure<TranscriptionJobDto>(Application.Common.Errors.TranscriptionErrors.InvalidAudio));
         await using var stream = request.Audio.OpenReadStream();
-        var result = await _sender.Send(new SubmitPreviewCommand(stream, request.Audio.FileName), ct);
+        var result = await _sender.Send(new SubmitPreviewCommand(stream, request.Audio.FileName, request.Separate), ct);
         return result.IsFailure
             ? HandleResult(Result.Failure<TranscriptionJobDto>(result.Error))
             : HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null)));
@@ -64,6 +64,9 @@ public sealed class PreviewController : ApiControllerBase
     public sealed class PreviewUploadRequest
     {
         public IFormFile? Audio { get; set; }
+
+        /// <summary>True when the file is a whole song with instruments: the voice is isolated before transcription.</summary>
+        public bool Separate { get; set; }
     }
 
     public sealed record PreviewLinkRequest(string? Url);

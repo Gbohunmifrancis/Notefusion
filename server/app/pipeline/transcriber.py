@@ -1275,6 +1275,13 @@ class TranscriptionResult:
     # Four-part harmony (``app.pipeline.harmony``): part name -> {"notes": [...], "solfa_lines": [...]}.
     parts: dict | None = None
     parts_musicxml: str = ""
+    # Where beat 0 falls in the source audio, in seconds. With ``backing_audio_base64``
+    # it is what lets a client play the notated melody over the song's own backing in
+    # time: audio time of beat b is ``beat_origin_sec + b * 60 / tempo``.
+    beat_origin_sec: float = 0.0
+    # Separated jobs only: the instrumental (mix minus the isolated vocal) as a small
+    # mono MP3, so the sheet can be rehearsed over the real song rather than a piano.
+    backing_audio_base64: str = ""
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -3347,8 +3354,12 @@ def _transcribe_inner(
     time_signature: str = "4/4",
     progress=lambda fraction: None,
     fast: bool = False,
+    tempo_source: Path | None = None,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
+    tempo_path, tempo_is_temp = (None, False)
+    if tempo_source is not None:
+        tempo_path, tempo_is_temp = _ensure_wav_path(tempo_source)
     try:
         return _transcribe_wav(
             target_path,
@@ -3358,10 +3369,13 @@ def _transcribe_inner(
             time_signature=time_signature,
             progress=progress,
             fast=fast,
+            tempo_source=tempo_path,
         )
     finally:
         if is_temp_wav:
             target_path.unlink(missing_ok=True)
+        if tempo_is_temp and tempo_path is not None:
+            tempo_path.unlink(missing_ok=True)
 
 def transcribe(
     audio_path: Path,
@@ -3371,8 +3385,18 @@ def transcribe(
     time_signature: str = "4/4",
     progress=lambda fraction: None,
     fast: bool = False,
+    tempo_source: Path | None = None,
 ) -> TranscriptionResult:
     """Audio file -> ``TranscriptionResult``.
+
+    ``tempo_source`` is a second recording on the same timeline whose *rhythm* is to be
+    trusted over ``audio_path``'s: the full mix of a song whose isolated vocal is being
+    transcribed. A separated vocal is the right thing to read pitches from and the wrong
+    thing to read the beat from — the drums and bass that carry the pulse are exactly
+    what separation removed, and a tempo tracked on the voice alone drifts, halves, and
+    lands its bar lines between the singer's phrases. Pitches come from ``audio_path``,
+    tempo and beat phase from ``tempo_source``, and ``beat_origin_sec`` ties the two
+    back to the audio's own clock.
 
     ``fast`` is the Pro lane: in melody mode the voice engine is run alone and Basic
     Pitch is skipped, which is the whole of the inference cost on a hummed clip (the
@@ -3398,7 +3422,8 @@ def transcribe(
             duration = 0.0
             
         res = _transcribe_inner(
-            audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast
+            audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast,
+            tempo_source=tempo_source,
         )
         return res
     except Exception as e:
@@ -3964,6 +3989,7 @@ def _transcribe_wav(
     time_signature: str = "4/4",
     progress=lambda fraction: None,
     fast: bool = False,
+    tempo_source: Path | None = None,
 ) -> TranscriptionResult:
     from music21 import key as m21key
     from music21 import meter, stream
@@ -4148,7 +4174,16 @@ def _transcribe_wav(
     # owns its lifetime.  bpm converts seconds to beats; beat_origin decides
     # which instant is beat 0 (see _beat_origin — without it, leading silence
     # shifts the whole melody off the barline).
-    bpm, beat_times = _estimate_tempo_and_beats(y, events, tempo_override, post=post, sr=sr)
+    # The rhythm is read from the full mix when the caller has one (see ``transcribe``):
+    # the drums are there and the voice's phrasing is not what sets the bar lines.
+    rhythm_y = y
+    if tempo_source is not None:
+        try:
+            rhythm_y = _condition_audio(_load_audio(tempo_source, sr=sr)[0], sr=sr)
+        except Exception as exc:  # noqa: BLE001 - fall back to the vocal rather than fail the job
+            print(f"[notefusion] tempo source unreadable ({exc!r}); tracking the beat on the vocal", flush=True)
+            rhythm_y = y
+    bpm, beat_times = _estimate_tempo_and_beats(rhythm_y, events, tempo_override, post=post, sr=sr)
     beat_origin = _beat_origin(beat_times, events[0].start, bpm) if settings.beat_align else 0.0
     if settings.grid_refine:
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
@@ -4418,6 +4453,7 @@ def _transcribe_wav(
         solfa_lines=solfa_lines,
         overall_confidence=round(float(np.mean([n.conf for n in notes])), 3),
         audio_preview_base64=audio_preview_b64,
+        beat_origin_sec=round(float(beat_origin), 4),
         # Read off the events rather than re-testing duration against the cap, so this
         # cannot drift from what _pyin_track actually did: _refine_pitches sets
         # pyin_midi on every event pyin could speak about, on every branch, so an
