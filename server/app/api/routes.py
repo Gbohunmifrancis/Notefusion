@@ -85,9 +85,11 @@ async def submit_transcription(
     tempo: int | None = Form(None),
     time_signature: str | None = Form(None),
     callback_url: str | None = Form(None),
+    priority: str = Form("normal"),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
+    priority = _priority(priority)
 
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
@@ -150,7 +152,86 @@ async def submit_transcription(
     job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
                           time_signature=time_signature,
                           correlation_id=_correlation_id(request),
-                          callback_url=callback_url)
+                          callback_url=callback_url, priority=priority)
+    return SubmitResponse(job_id=job_id)
+
+
+def _priority(value: str) -> str:
+    value = (value or "normal").strip().lower()
+    if value not in ("normal", "high"):
+        raise HTTPException(422, "priority must be 'normal' or 'high'")
+    return value
+
+
+def _clean_time_signature(time_signature: str | None) -> str:
+    if time_signature is None:
+        return "4/4"
+    time_signature = time_signature.strip()
+    if not time_signature or time_signature.lower() in ("auto", "null", "none"):
+        return "4/4"
+    import re
+    if not re.match(r"^\d{1,2}/\d{1,2}$", time_signature):
+        raise HTTPException(422, f"Invalid time signature format: {time_signature!r}. Expected e.g. '4/4', '3/4', '6/8'.")
+    return time_signature
+
+
+def _clean_key(key: str | None) -> str | None:
+    if key is None:
+        return None
+    key = key.strip()
+    if not key or key.lower() in ("auto", "null", "none"):
+        return None
+    from app.pipeline.transcriber import _parse_key_override
+    try:
+        _parse_key_override(key)
+    except Exception:  # noqa: BLE001 - any parse failure is a client input error
+        raise HTTPException(422, f"Unparseable key override: {key!r}")
+    return key
+
+
+@router.post("/transcribe/link", status_code=status.HTTP_202_ACCEPTED,
+             response_model=SubmitResponse)
+async def submit_link_transcription(
+    request: Request,
+    url: str = Form(...),
+    mode: str = Form("melody"),
+    key: str | None = Form(None),
+    tempo: int | None = Form(None),
+    time_signature: str | None = Form(None),
+    callback_url: str | None = Form(None),
+    priority: str = Form("normal"),
+    max_seconds: float | None = Form(None),
+) -> SubmitResponse:
+    """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
+
+    The audio is fetched, its vocals isolated, and the result carries the song's title
+    and artist for the acknowledgement line.  ``max_seconds`` is the caller's cap (a
+    free preview, or the Pro allowance); it can only lower the worker's own limit.
+    """
+    from app.ingest.links import provider_of
+
+    if mode not in ("melody", "poly"):
+        raise HTTPException(422, "mode must be 'melody' or 'poly'")
+    if tempo is not None and not (20 <= tempo <= 400):
+        raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
+    priority = _priority(priority)
+    time_signature = _clean_time_signature(time_signature)
+    key = _clean_key(key)
+    url = (url or "").strip()
+    if len(url) > 2048 or provider_of(url) is None:
+        raise HTTPException(422, "url must be a YouTube video, Spotify track or Apple Music song link.")
+    cap = settings.link_max_seconds
+    if max_seconds is not None:
+        if max_seconds < 10:
+            raise HTTPException(422, "max_seconds must be at least 10.")
+        cap = min(cap, float(max_seconds))
+
+    queue = _get_queue(request)
+    job_id = queue.submit_link(url, mode=mode, key=key, tempo=tempo,
+                               time_signature=time_signature,
+                               correlation_id=_correlation_id(request),
+                               callback_url=callback_url, priority=priority,
+                               max_seconds=cap)
     return SubmitResponse(job_id=job_id)
 
 
@@ -168,8 +249,8 @@ async def get_job(request: Request, job_id: str) -> JobResponse:
         payload["notes"] = payload.pop("notes")
         result = ResultDto.model_validate(payload)
 
-    return JobResponse(status=job.status, progress=job.progress,
-                       result=result, error=job.error)
+    return JobResponse(status=job.status, progress=job.progress, stage=job.stage,
+                       source=job.source, result=result, error=job.error)
 
 
 ACCEPTED_SCORE_SUFFIXES = {".musicxml", ".xml", ".mxl", ".mid", ".midi", ".abc"}
@@ -184,6 +265,7 @@ async def submit_score_transcription(
     tempo: int | None = Form(None),
     time_signature: str | None = Form(None),
     callback_url: str | None = Form(None),
+    priority: str = Form("normal"),
 ) -> SubmitResponse:
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
@@ -232,5 +314,5 @@ async def submit_score_transcription(
     job_id = queue.submit_score(tmp_path, key=key, tempo=tempo,
                                 time_signature=time_signature,
                                 correlation_id=_correlation_id(request),
-                                callback_url=callback_url)
+                                callback_url=callback_url, priority=_priority(priority))
     return SubmitResponse(job_id=job_id)

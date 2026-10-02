@@ -30,6 +30,10 @@ typing_extensions==4.16.0
 # python:3.12-slim base image (no setuptools by default since 3.12).
 setuptools==80.9.0
 
+# Linked songs: audio fetch (YouTube) for the song-to-solfa feature.  Deliberately a
+# floor rather than a pin — YouTube changes under it and the image rebuilds per deploy.
+yt-dlp>=2026.1.1
+
 # Development / test
 pytest==8.3.4
 httpx==0.28.1   # required by starlette.testclient (TestClient) in tests/test_api.py

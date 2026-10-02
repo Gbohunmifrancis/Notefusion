@@ -34,6 +34,15 @@ from basic_pitch import ICASSP_2022_MODEL_PATH
 Model(ICASSP_2022_MODEL_PATH)
 PY
 
+# Vocal-isolation model for linked songs (MDX-Net, MIT licence, ~67 MB).  Fetched at
+# build time like the Basic Pitch weights, so a cold container never downloads.
+ENV NF_MDX_MODEL_PATH=/app/models/UVR-MDX-NET-Voc_FT.onnx
+RUN mkdir -p /app/models && python - <<'PY'
+import urllib.request
+url = "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models/UVR-MDX-NET-Voc_FT.onnx"
+urllib.request.urlretrieve(url, "/app/models/UVR-MDX-NET-Voc_FT.onnx")
+PY
+
 COPY app ./app
 
 CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"

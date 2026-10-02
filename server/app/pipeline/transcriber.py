@@ -1108,6 +1108,11 @@ class TranscriptionResult:
     # reports the outcome rather than the reason.  See ``config.pyin_max_seconds``.
     pitch_refined: bool = True
     chromatic_spelling: str = "direction"
+    # Linked-song jobs only; see ``app.jobs.queue.JobQueue._run_link``.
+    source: dict | None = None
+    song_duration_sec: float = 0.0
+    truncated: bool = False
+    separated: bool = False
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -3179,26 +3184,19 @@ def _transcribe_inner(
     tempo_override: int | None = None,
     time_signature: str = "4/4",
     progress=lambda fraction: None,
+    fast: bool = False,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     try:
-        try:
-            return _transcribe_wav(
-                target_path,
-                mode,
-                key_override,
-                tempo_override,
-                time_signature=time_signature,
-                progress=progress,
-            )
-        except TypeError:
-            return _transcribe_wav(
-                target_path,
-                mode,
-                key_override,
-                tempo_override,
-                progress,
-            )
+        return _transcribe_wav(
+            target_path,
+            mode,
+            key_override,
+            tempo_override,
+            time_signature=time_signature,
+            progress=progress,
+            fast=fast,
+        )
     finally:
         if is_temp_wav:
             target_path.unlink(missing_ok=True)
@@ -3210,7 +3208,18 @@ def transcribe(
     tempo_override: int | None = None,
     time_signature: str = "4/4",
     progress=lambda fraction: None,
+    fast: bool = False,
 ) -> TranscriptionResult:
+    """Audio file -> ``TranscriptionResult``.
+
+    ``fast`` is the Pro lane: in melody mode the voice engine is run alone and Basic
+    Pitch is skipped, which is the whole of the inference cost on a hummed clip (the
+    ONNX pass is 2-4 s per 30 s of audio; pyin is already paid for either way).  It
+    gives up two things a hum does not need: the mixture guard (a sung line over an
+    accompaniment) and the onset head's contribution to per-note confidence.  Should
+    the voice engine find no note at all, Basic Pitch is run after all, so the fast lane
+    can never return less than the normal one.
+    """
     import time
     import librosa
     from app.telemetry import emit_transcription_event
@@ -3227,7 +3236,7 @@ def transcribe(
             duration = 0.0
             
         res = _transcribe_inner(
-            audio_path, mode, key_override, tempo_override, time_signature, progress
+            audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast
         )
         return res
     except Exception as e:
@@ -3792,8 +3801,8 @@ def _transcribe_wav(
     tempo_override: int | None,
     time_signature: str = "4/4",
     progress=lambda fraction: None,
+    fast: bool = False,
 ) -> TranscriptionResult:
-    from basic_pitch.inference import predict
     from music21 import key as m21key
     from music21 import meter, stream
     from music21 import note as m21note
@@ -3811,30 +3820,47 @@ def _transcribe_wav(
     max_freq_hz = 1050.0
     melodia_trick = strategy.melodia_trick()
 
-    model_output, midi_data, note_events = predict(
-        str(wav_path),
-        get_basic_pitch_model(),
-        onset_threshold=onset_thresh,
-        frame_threshold=frame_thresh,
-        minimum_note_length=min_note_ms,
-        maximum_frequency=max_freq_hz,
-        melodia_trick=melodia_trick,
-    )
+    def run_basic_pitch():
+        from basic_pitch.inference import predict
+
+        return predict(
+            str(wav_path),
+            get_basic_pitch_model(),
+            onset_threshold=onset_thresh,
+            frame_threshold=frame_thresh,
+            minimum_note_length=min_note_ms,
+            maximum_frequency=max_freq_hz,
+            melodia_trick=melodia_trick,
+        )
+
+    # Load and pre-condition audio in-memory to share across contour, pyin, and tempo stages
+    y, sr = _load_audio(wav_path, sr=22_050)
+    y = _condition_audio(y, sr=sr)
+
+    # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
+    # Pitch at all, and skips it when the engine found the line.
+    fast_events: list[Event] = []
+    skip_basic_pitch = fast and strategy.contour_first and settings.vocal_engine
+    if skip_basic_pitch:
+        fast_events, _floor = _segment_vocal(y, sr, [], None)
+        skip_basic_pitch = bool(fast_events)
+    progress(0.15)
+
+    if skip_basic_pitch:
+        model_output, midi_data, note_events = None, None, []
+    else:
+        model_output, midi_data, note_events = run_basic_pitch()
 
     # The three frame-level posteriors ``predict`` computed on the way to ``note_events``,
     # which this line used to bind to ``_``.  See ``Posteriorgram`` for what they are and why
     # discarding them cost more than anything else in this function; ``None`` here means the
     # capture failed and every consumer falls back to its pre-capture behaviour.
-    post = Posteriorgram.capture(model_output)
+    post = Posteriorgram.capture(model_output) if model_output is not None else None
 
     # Basic Pitch's list before the melody floor narrows it below.  ``midi_data`` was built
     # from exactly this, so step 12 needs it to re-stamp the tempo without also changing
     # which notes the .mid contains.
     all_note_events = list(note_events)
-
-    # Load and pre-condition audio in-memory to share across contour, pyin, and tempo stages
-    y, sr = _load_audio(wav_path, sr=22_050)
-    y = _condition_audio(y, sr=sr)
 
     progress(0.45)
 
@@ -3844,9 +3870,9 @@ def _transcribe_wav(
     # five stages.  Either way ``midi_data`` above is kept — it is Basic Pitch's own
     # multi-track MIDI and the only source for the exported .mid, which the contour path
     # does not reproduce.
-    contour_events: list[Event] = []
+    contour_events: list[Event] = list(fast_events)
     melody_floor_midi: float | None = None
-    if settings.vocal_engine and strategy.contour_first:
+    if not contour_events and settings.vocal_engine and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_vocal(y, sr, note_events, post)
     if not contour_events and settings.contour_first and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_contour(y, note_events, post)
@@ -4184,16 +4210,22 @@ def _transcribe_wav(
     # what ``midi_data`` was: the melody floor narrows ``note_events`` for the notated
     # melody and the .mid has always deliberately kept the whole texture.  Falling back to
     # ``midi_data`` on failure keeps a wrong tempo rather than losing the export.
-    try:
-        from basic_pitch.note_creation import note_events_to_midi
+    if all_note_events:
+        try:
+            from basic_pitch.note_creation import note_events_to_midi
 
-        midi_data = note_events_to_midi(list(all_note_events), False, float(round(bpm)))
-    except Exception as exc:  # pragma: no cover - export must survive a basic-pitch change
-        print(f"[notefusion] midi tempo re-stamp skipped: {exc!r}", flush=True)
+            midi_data = note_events_to_midi(list(all_note_events), False, float(round(bpm)))
+        except Exception as exc:  # pragma: no cover - export must survive a basic-pitch change
+            print(f"[notefusion] midi tempo re-stamp skipped: {exc!r}", flush=True)
     with tempfile.NamedTemporaryFile(suffix=".mid", delete=False) as tmp:
         midi_path = Path(tmp.name)
     try:
-        midi_data.write(str(midi_path))
+        if midi_data is not None:
+            midi_data.write(str(midi_path))
+        else:
+            # The fast lane never ran Basic Pitch, so the .mid is the notated melody
+            # itself — which, for a monophonic line, is also the more useful export.
+            score.write("midi", fp=str(midi_path))
         midi_base64 = base64.b64encode(midi_path.read_bytes()).decode("ascii")
     finally:
         midi_path.unlink(missing_ok=True)

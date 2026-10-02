@@ -29,6 +29,15 @@ class NoteEventDto(ApiModel):
     conf: float
 
 
+class SourceDto(ApiModel):
+    """The song a linked transcription came from, for the acknowledgement line."""
+    provider: str
+    url: str
+    title: str
+    artist: str
+    thumbnail_url: str | None = None
+
+
 class ResultDto(ApiModel):
     key: str
     key_confidence: float
@@ -52,10 +61,21 @@ class ResultDto(ApiModel):
     pitch_refined: bool = True
     # ``direction`` preserves the historical rising/sharpened, falling/flattened rule.
     chromatic_spelling: str = "direction"
+    # Linked-song jobs only.  ``truncated`` means the song outlasted the caller's cap
+    # (a free preview, or the Pro six minutes) and only the first part was transcribed;
+    # ``separated`` means the vocals were isolated before transcription.
+    source: SourceDto | None = None
+    song_duration_sec: float = 0.0
+    truncated: bool = False
+    separated: bool = False
 
 
 class JobResponse(ApiModel):
     status: str
     progress: float | None = None
+    # ``fetching`` | ``separating`` | ``transcribing`` while a linked song is in flight.
+    stage: str | None = None
+    # Known as soon as the link resolves, before ``result`` exists.
+    source: SourceDto | None = None
     result: ResultDto | None = None
     error: str | None = None
