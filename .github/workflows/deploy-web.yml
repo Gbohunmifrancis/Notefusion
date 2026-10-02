@@ -1,0 +1,62 @@
+name: Deploy website to Vercel
+
+# The marketing site and web app (web-site/) are static files on Vercel. They used to ship by
+# hand with `cd web-site && vercel --prod` from a working tree, which is how the live site fell
+# behind main. This deploys the committed folder on every merge that touches it.
+#
+# Needs three repository secrets, all from the Vercel dashboard / `vercel link` in web-site/:
+#   VERCEL_TOKEN       an account token (Settings → Tokens)
+#   VERCEL_ORG_ID      .vercel/project.json → orgId
+#   VERCEL_PROJECT_ID  .vercel/project.json → projectId  (the "notefusion" project)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "web-site/**"
+      - ".github/workflows/deploy-web.yml"
+
+concurrency:
+  group: deploy-website
+  cancel-in-progress: false
+
+jobs:
+  vercel:
+    name: Vercel production deploy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-site
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        run: |
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::error::Set VERCEL_TOKEN, VERCEL_ORG_ID and VERCEL_PROJECT_ID in the repository secrets (see .github/workflows/deploy-web.yml)."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Pull the project's Vercel settings
+        run: npx --yes vercel@latest pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Deploy
+        run: npx --yes vercel@latest deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Smoke-check the live site
+        working-directory: .
+        run: |
+          sleep 10
+          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" "https://notefusion.studio${path}")
+            echo "${code}  ${path}"
+            case "$code" in 200|308) ;; *) echo "::error::${path} returned ${code}"; exit 1;; esac
+          done

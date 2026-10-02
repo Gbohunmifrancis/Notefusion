@@ -247,15 +247,23 @@ jobs:
             EOF
             chmod 600 .env
 
-            # One service at a time: pull, swap, then prune the image it replaced.  Pulling
-            # both new images while both old ones are still in use needs room for four
-            # images at once, and the transcriber alone is ~1.5 GB; that peak is what ran
-            # the root volume out of space.  The prune after each swap frees the old image
-            # before the next pull starts.
-            echo "─── Transcriber: pull, swap, prune ───"
+            # The root volume is 8 GB.  The transcriber image is the biggest thing on it, and
+            # since the link-ingest and vocal-isolation work it no longer fits beside its own
+            # previous version: the merge of #34 died mid-pull with 1.6 GB free and nothing
+            # reclaimable.  So the old transcriber is stopped and its image removed BEFORE the
+            # new one is pulled.  Transcription is unavailable for the length of the pull
+            # (about a minute); the API, database and site stay up.  If the pull fails the
+            # next deploy run pulls again — there is no old image to fall back to, which is
+            # the price of a volume this small (growing it to 20 GB removes the problem).
+            echo "─── Transcriber: stop, free the old image, pull, start ───"
+            docker compose -f docker-compose.prod.yml rm -sf transcriber
+            docker image prune -af || true
+            df -h / || true
             docker compose -f docker-compose.prod.yml pull transcriber
             docker compose -f docker-compose.prod.yml up -d --no-deps transcriber
-            docker image prune -af || true
+
+            # The API image is small enough to pull beside the running one, so it swaps
+            # without downtime; the prune afterwards drops the version it replaced.
 
             echo "─── API: pull, swap, prune ───"
             docker compose -f docker-compose.prod.yml pull api

@@ -11,6 +11,14 @@ built app:
 
 The API is separate — Heroku, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
+> **The marketing site deploys from CI now.** `.github/workflows/deploy-web.yml` runs
+> `vercel deploy --prod` from `web-site/` on every push to `main` that touches that folder (and on
+> demand from the Actions tab). It needs three repository secrets — `VERCEL_TOKEN`,
+> `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` — which `cd web-site && vercel link` writes to
+> `web-site/.vercel/project.json` (org and project ids) and the Vercel dashboard issues (the token).
+> Until they are set, the job fails on its first step with that message, and the manual
+> `cd web-site && vercel --prod` still works.
+
 > The marketing site also publishes **`/email/logo.png`**, which the API's branded email fetches
 > (`Email__AssetBaseUrl`). It is not decoration for the site itself, so deleting `web-site/email/`
 > silently un-brands every transactional email. Regenerate it with
