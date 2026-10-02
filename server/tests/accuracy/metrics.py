@@ -729,3 +729,58 @@ def note_confidence_metrics(
         out["auc"] = (wins + 0.5 * ties) / (correct.size * wrong.size)
         out["separation"] = float(correct.mean() - wrong.mean())
     return out
+
+
+# ── Solfa sequence accuracy ───────────────────────────────────────────────────
+
+
+def _edit_distance(a: Sequence[object], b: Sequence[object]) -> int:
+    """Levenshtein distance between two label sequences."""
+    previous = list(range(len(b) + 1))
+    for i, x in enumerate(a, start=1):
+        current = [i]
+        for j, y in enumerate(b, start=1):
+            current.append(min(previous[j] + 1, current[j - 1] + 1, previous[j - 1] + (x != y)))
+        previous = current
+    return previous[-1]
+
+
+def sequence_metrics(ref: Sequence[RefNote], est: Sequence[TranscribedNote], ref_key: str) -> dict:
+    """How far the solfa *text* is from the truth, ignoring timing altogether.
+
+    The matched-note metrics above score each note where it was heard; this one scores
+    what the user reads.  A spurious ``fe`` between ``m`` and ``s`` costs one insertion
+    whatever its duration, and a missed note costs one deletion — which is how a choir
+    leader counts the mistakes on the page.  Reported as an error rate over the
+    reference length so a longer tune does not look worse for being longer.
+
+    Labels are derived under the reference key for both sides, so a key error cannot
+    inflate the count — ``key.exact`` reports that separately.  ``syllable_error_rate``
+    includes the octave mark, ``degree_error_rate`` only the scale degree.
+    """
+    zeros = {"syllable_error_rate": 1.0, "degree_error_rate": 1.0, "exact": False}
+    if not ref:
+        return zeros
+    try:
+        key_obj = _parse_key_override(ref_key)
+    except ValueError:
+        return zeros
+    doh_pc = solfa.doh_pitch_class(key_obj.tonic.pitchClass, key_obj.mode)
+    ref_doh = solfa.reference_doh([r.pitch_midi for r in ref], doh_pc)
+
+    def labels(pitches: Sequence[int]) -> tuple[list[str], list[int]]:
+        flags = solfa.ascending_flags(list(pitches))
+        syllables, degrees = [], []
+        for pitch, flag in zip(pitches, flags):
+            syl, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh, flag)
+            syllables.append(syl + mark)
+            degrees.append(degree)
+        return syllables, degrees
+
+    ref_syl, ref_deg = labels([r.pitch_midi for r in ref])
+    est_syl, est_deg = labels([n.pitch_midi for n in sorted(est, key=lambda n: n.start_beat)])
+    return {
+        "syllable_error_rate": _edit_distance(ref_syl, est_syl) / len(ref),
+        "degree_error_rate": _edit_distance(ref_deg, est_deg) / len(ref),
+        "exact": ref_syl == est_syl,
+    }

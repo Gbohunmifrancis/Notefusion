@@ -27,12 +27,15 @@ from tests.accuracy import synth
 from tests.accuracy.corpus import CASES, corpus_fingerprint
 from tests.accuracy.real_loader import load_real_cases, real_corpus_fingerprint
 from tests.accuracy.runner import METRIC_NAMESPACES, CaseOutcome, aggregate, run_all
-from tests.accuracy.runner import run_real
+from tests.accuracy.runner import run_real, run_vocal
+from tests.accuracy.vocal_corpus import CASES as VOCAL_CASES, vocal_corpus_fingerprint
 
 from app.config import settings
 
 REPORT_PATH = Path(__file__).parent / "report.json"
 REAL_REPORT_PATH = Path(__file__).parent / "real_report.json"
+VOCAL_REPORT_PATH = Path(__file__).parent / "vocal_report.json"
+VOCAL_BASELINE_PATH = Path(__file__).parent / "vocal_baseline.json"
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
 
 # Bumped only if the JSON layout changes in a way a reader must notice.
@@ -253,11 +256,19 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="score labelled recordings in tests/accuracy/real/ into real_report.json",
     )
+    parser.add_argument(
+        "--vocal",
+        action="store_true",
+        help="score the sung/hummed vocal corpus into vocal_report.json (baseline: vocal_baseline.json)",
+    )
     parser.add_argument("--filter", default="", metavar="SUBSTR", help="only cases whose name contains SUBSTR")
     args = parser.parse_args(argv)
 
     if args.real and args.write_baseline:
         parser.error("--write-baseline is only supported for the synthetic corpus")
+
+    if args.vocal:
+        return _main_vocal(args, parser)
 
     if args.real:
         real_cases = load_real_cases()
@@ -317,6 +328,51 @@ def main(argv: list[str] | None = None) -> int:
         BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
         print(f"wrote {BASELINE_PATH.name}")
 
+    failed = [outcome.name for outcome in outcomes if not outcome.ok]
+    if failed:
+        print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
+        return 1
+    return 0
+
+
+def _main_vocal(args, parser) -> int:
+    cases = tuple(case for case in VOCAL_CASES if args.filter in case.name)
+    if not cases:
+        parser.error(f"no vocal case name contains {args.filter!r}")
+    if args.write_baseline and args.filter:
+        parser.error("--write-baseline needs the full corpus; drop --filter")
+
+    outcomes = run_vocal(cases)
+    document = {
+        "schema": SCHEMA_VERSION,
+        "metric_namespaces": list(METRIC_NAMESPACES),
+        "flags": _effective_flags(),
+        "corpus": {
+            "kind": "vocal",
+            "n_cases": len(cases),
+            "fingerprint": vocal_corpus_fingerprint(VOCAL_CASES),
+            "sample_rate": synth.SAMPLE_RATE,
+            "filter": args.filter,
+        },
+        "aggregate": aggregate(outcomes),
+        "cases": _document(outcomes, args.filter)["cases"],
+    }
+    baseline = (
+        json.loads(VOCAL_BASELINE_PATH.read_text(encoding="utf-8"))
+        if VOCAL_BASELINE_PATH.exists()
+        else None
+    )
+    print()
+    if baseline is not None and baseline.get("corpus", {}).get("fingerprint") != document["corpus"]["fingerprint"]:
+        print("WARNING: vocal_baseline.json was recorded against a different vocal corpus; re-record it.")
+        print()
+    _print_cases(outcomes, baseline)
+    _print_aggregate(document["aggregate"], baseline)
+    VOCAL_REPORT_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+    print(f"\nwrote {VOCAL_REPORT_PATH.name}")
+    if args.write_baseline:
+        VOCAL_BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+        print(f"wrote {VOCAL_BASELINE_PATH.name}")
     failed = [outcome.name for outcome in outcomes if not outcome.ok]
     if failed:
         print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")

@@ -44,6 +44,7 @@ import numpy as np
 from app.config import settings
 from app.pipeline import solfa
 from app.pipeline import solfa_render
+from app.pipeline import vocal
 
 # ── Audio preview synthesis ───────────────────────────────────────────────────
 
@@ -2792,6 +2793,63 @@ def _segment_contour(
     return events, floor_midi
 
 
+def _segment_vocal(
+    y: np.ndarray,
+    sr: int,
+    note_events: Sequence[tuple] = (),
+    post: "Posteriorgram | None" = None,
+) -> tuple[list[Event], float | None]:
+    """Notes from ``app.pipeline.vocal``: the melody path for hummed and sung clips.
+
+    pyin runs once, on conditioned audio.  The melody-floor gate is kept exactly as
+    ``_segment_contour`` applies it: when Basic Pitch's strong skyline sits a tritone or
+    more above pyin's contour the clip is a mixture, and the contour segmented is the
+    one read off the contour head above that floor — the voice engine's segmenter and
+    tuning estimate then run on that contour instead of pyin's.
+
+    Returns ``([], floor)`` when the engine finds no note, and the caller falls back to
+    the previous contour path and then to the inference path, so this can only add.
+    """
+    try:
+        raw = vocal.track(vocal.condition(y, sr), sr)
+    except Exception as exc:  # noqa: BLE001 - the fallback paths still exist
+        print(f"[notefusion] vocal engine: pyin failed ({exc}); falling back", flush=True)
+        return [], None
+    if not np.any(~np.isnan(raw.midi)):
+        return [], None
+
+    floor_hz = _melody_floor_hz(note_events, raw.times, raw.midi)
+    floor_midi = None if floor_hz is None else float(69.0 + 12.0 * np.log2(floor_hz / 440.0))
+    if floor_midi is not None and post is not None:
+        midi, strength = post.melody_track(floor_midi, raw.times)
+        raw = vocal.Contour(
+            times=raw.times, midi=midi, voiced_prob=strength, rms=raw.rms, rms_fast=raw.rms_fast
+        )
+        distinct = np.unique(np.round(midi[~np.isnan(midi)]))
+        if distinct.size < MELODY_FLOOR_MIN_DISTINCT_PITCHES:
+            return [], floor_midi
+
+    analysis = vocal.analyse(y, sr, contour=raw)
+    events = [
+        Event(
+            start=n.start,
+            end=n.end,
+            pitch=n.pitch,
+            amp=n.amp,
+            pyin_midi=n.midi,
+            voiced_prob=n.voiced_prob,
+        )
+        for n in analysis.notes
+        if 0 <= n.pitch <= 127
+    ]
+    print(
+        f"[notefusion] vocal engine: {len(events)} notes, tuning {analysis.tuning_cents:+.0f} cents"
+        + (f", melody floor midi {floor_midi:.0f}" if floor_midi is not None else ""),
+        flush=True,
+    )
+    return events, floor_midi
+
+
 def _refine_pitches(
     events: list[Event],
     wav_path: Path | np.ndarray,
@@ -3788,7 +3846,9 @@ def _transcribe_wav(
     # does not reproduce.
     contour_events: list[Event] = []
     melody_floor_midi: float | None = None
-    if settings.contour_first and strategy.contour_first:
+    if settings.vocal_engine and strategy.contour_first:
+        contour_events, melody_floor_midi = _segment_vocal(y, sr, note_events, post)
+    if not contour_events and settings.contour_first and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_contour(y, note_events, post)
 
     if contour_events:

@@ -15,6 +15,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   rotating refresh tokens.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
+  Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
+  tuning-offset estimation, hysteresis note segmentation, key-aware rounding of ambiguous
+  notes — with the Basic Pitch paths as fallback (`NF_VOCAL_ENGINE=0` restores the old
+  decoder). Its accuracy is measured by the sung corpus: `python -m tests.accuracy.report
+  --vocal` (baseline in `tests/accuracy/vocal_baseline.json`).
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
   client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
@@ -46,6 +51,7 @@ dotnet test  NoteFusion.slnx
 
 # Python ML worker
 cd server && python -m pytest -q
+cd server && python -m tests.accuracy.report --vocal   # sung/hummed corpus (slow, real inference)
 
 # Mobile — strict type-check
 cd mobile && npm run lint          # tsc --noEmit
