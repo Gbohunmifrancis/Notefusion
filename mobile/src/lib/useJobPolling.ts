@@ -259,7 +259,7 @@ export function useJobPolling() {
     async (
       fileUri: string,
       fileName: string,
-      opts: { mode: "melody" | "poly"; key?: string; tempo?: number },
+      opts: { mode: "melody" | "poly"; key?: string; tempo?: number; separate?: boolean },
     ) => {
       stopPolling();
       setState({
