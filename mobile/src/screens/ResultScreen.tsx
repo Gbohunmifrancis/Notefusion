@@ -618,10 +618,25 @@ export function ResultScreen({ route, navigation }: Props) {
         showDialog({ title: "Nothing to harmonise yet", message: "The tune needs a few notes before parts can be written under it.", icon: "information-circle-outline" });
         return;
       }
+      // A saved sheet keeps its parts on the server first: showing them before they are kept would
+      // let them vanish when the sheet is reopened.
+      if (savedId) {
+        try {
+          await libraryApi.setParts(savedId, written.parts, written.partsMusicXml ?? null);
+        } catch (e) {
+          showDialog({
+            title: "Parts written, not saved",
+            message: `The parts could not be kept with this saved sheet: ${toApiError(e).message}`,
+            icon: "alert-circle-outline",
+            tone: "danger",
+            actions: [{ label: "Try again", onPress: () => void writeParts() }],
+          });
+          return;
+        }
+      }
       setParts(written.parts as Parts);
       setPartsMusicXml(written.partsMusicXml ?? "");
       haptics.play("success");
-      if (savedId) await libraryApi.setParts(savedId, written.parts, written.partsMusicXml ?? null);
     } catch (e) {
       showDialog({ title: "Could not write the parts", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
     } finally {
