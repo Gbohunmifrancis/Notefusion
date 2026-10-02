@@ -249,7 +249,7 @@
       ? "Lifetime access. Thank you for supporting NoteFusion."
       : sub.isGift
         ? "Complimentary access from the NoteFusion team."
-        : (sub.planName || "NoteFusion Pro") + (when ? (sub.status === "canceled" ? "; runs until " : "; renews on ") + when : "") + ". Thank you for supporting NoteFusion.";
+        : (sub.planName || "NoteFusion Pro") + (when ? ", Pro until " + when : "") + ". Thank you for supporting NoteFusion.";
     card.appendChild(blurb);
     card.appendChild(
       featureList([

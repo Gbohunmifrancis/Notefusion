@@ -128,9 +128,33 @@ api.interceptors.response.use(
 );
 
 /** Normalize any thrown axios error into the API's ApiError envelope. */
+/**
+ * Text a person should never read: a server fault, a provider's reply, a database or stack detail.
+ * The API's messages for expected failures are written for people and pass through untouched.
+ */
+const TECHNICAL =
+  /\b(exception|stack|sql|npgsql|postgres|database|entity framework|null reference|object reference|returned \d{3}|status code|http \d{3}|bachs|paystack|flutterwave|squad|resend|traceback|internal server|[A-Z]{3,}_[A-Z_]{3,})/i;
+
+/** A failure reason fit to show: the text itself when it is written for people, the fallback otherwise. */
+export function safeReason(text: string | null | undefined, fallback: string): string {
+  const t = (text ?? "").trim();
+  return t.length > 0 && !TECHNICAL.test(t) ? t : fallback;
+}
+
 export function toApiError(err: unknown): ApiError {
   const ax = err as AxiosError<ApiError>;
-  if (ax?.response?.data?.message) return ax.response.data;
+  const data = ax?.response?.data;
+  const status = ax?.response?.status ?? 0;
+  if (data?.message && (status >= 500 || TECHNICAL.test(data.message))) {
+    if (__DEV__) console.warn("[api]", status, data.code, data.message);
+    return {
+      code: data.code ?? "SERVER_ERROR",
+      message: /^BILLING_/.test(data.code ?? "")
+        ? "We couldn't open the payment page just now. Please try again in a minute."
+        : "Something went wrong on our side. Please try again in a moment.",
+    };
+  }
+  if (data?.message) return data;
   if (ax?.response?.status === 415) {
     return { code: 'UNSUPPORTED_MEDIA', message: 'Unsupported audio format. Please re-record.' };
   }
@@ -143,5 +167,5 @@ export function toApiError(err: unknown): ApiError {
   if (ax?.request && !ax.response) {
     return { code: 'NETWORK_OFFLINE', message: 'Could not reach the server. Are you online?' };
   }
-  return { code: 'UNKNOWN', message: ax?.message || 'Something went wrong. Please try again.' };
+  return { code: 'UNKNOWN', message: 'Something went wrong. Please try again.' };
 }

@@ -69,6 +69,10 @@ internal static class PaymentFulfillment
             var start = sub.CurrentPeriodEndUtc > now ? sub.CurrentPeriodEndUtc : now;
             renewsAtUtc = BillingPeriod.Advance(start, interval);
             sub.Renew(start, renewsAtUtc, now);
+            // Switching monthly to yearly (or back): the new period is the new plan's, so the
+            // membership is on that plan from here, and the remaining time stacks as above.
+            if (sub.PlanId != tx.PlanId)
+                sub.SwitchPlan(tx.PlanId, now);
 
             // Whoever this row belonged to before, it is paid for now. Matters for the account that was
             // comped from the admin console and then bought: leaving the provider null would keep calling a

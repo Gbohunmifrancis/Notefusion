@@ -36,8 +36,25 @@
   function ApiError(status, body) {
     this.status = status;
     this.code = (body && body.code) || "UNKNOWN";
-    this.message = (body && body.message) || ("Request failed (" + status + ")");
+    this.message = friendlyMessage(status, this.code, body && body.message);
     this.details = (body && body.details) || null;
+  }
+  /**
+   * What a person reads when something fails. The API's own messages for expected failures are
+   * written for people and pass through; anything else (a server fault, a provider's reply, a
+   * database or stack trace, a bare status) becomes a plain sentence. The console keeps the detail.
+   */
+  var TECHNICAL = /\b(exception|stack|sql|npgsql|postgres|database|db context|entity framework|null reference|object reference|timeout expired|returned \d{3}|status code|http \d{3}|\d{3} \(|bachs|paystack|flutterwave|squad|stripe|resend|traceback|internal server|[A-Z]{3,}_[A-Z_]{3,})/i;
+  function friendlyMessage(status, code, message) {
+    if (status === 0 || status === undefined) return "We couldn't reach NoteFusion. Check your connection and try again.";
+    if (status === 401) return message && !TECHNICAL.test(message) ? message : "Please sign in again to continue.";
+    if (status === 429) return "That's a lot of requests at once. Wait a moment and try again.";
+    if (!message || status >= 500 || TECHNICAL.test(message)) {
+      try { if (message) console.warn("[notefusion]", status, code, message); } catch (e) { /* ignore */ }
+      if (/^BILLING_/.test(code || "")) return "We couldn't open the payment page just now. Please try again in a minute.";
+      return "Something went wrong on our side. Please try again in a moment.";
+    }
+    return message;
   }
 
   var refreshing = null;
@@ -69,7 +86,8 @@
         var t = tokens();
         if (t && t.accessToken) headers.Authorization = "Bearer " + t.accessToken;
       }
-      return fetch(API + path, { method: opts.method || "GET", headers: headers, body: body });
+      return fetch(API + path, { method: opts.method || "GET", headers: headers, body: body })
+        .catch(function () { throw new ApiError(0, null); });
     }
     return send().then(function (r) {
       if (r.status === 401 && !opts.anonymous) {
@@ -181,12 +199,14 @@
   var hymnCells = [];     // solfa cells of the hymn layout, for the playback cursor
 
   // ── Auth view ────────────────────────────────────────────────────────────
+  /** Signing in is a screen of its own: the card and nothing else around it. */
   function showAuth() {
-    hide($("boot-skel")); hide($("view-app")); hide($("who")); show($("view-auth"));
-    document.body.classList.add("guest"); hide($("topbar-signin")); closeDrawer();
+    hide($("boot-skel")); hide($("view-app")); hide($("who")); show($("view-auth")); hide($("auth-back"));
+    document.body.classList.add("guest", "auth-only"); hide($("topbar-signin")); closeDrawer(); hide($("onb"));
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
-    maybeOnboard();
+    window.scrollTo(0, 0);
   }
+  function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
   var AUTH_COPY = { login: ["Welcome back!", "Sign in to continue"], register: ["Create your account", "Start your musical journey"], verify: ["Check your email", "One code and you're in"] };
   function showAuthForm(name) {
     ["login", "register", "verify"].forEach(function (f) { name === f ? show($("form-" + f)) : hide($("form-" + f)); });
@@ -335,14 +355,15 @@
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not resend the code."); });
   });
 
-  // Guest → account: every "create an account" button opens the auth card under the result.
+  // Guest → account: the sign-up screen on its own, with a way back to the preview that is waiting.
   function openAuth(tab) {
-    var auth = $("view-auth");
-    document.querySelector("main").appendChild(auth); // below the sheet, so the preview stays in view
-    show(auth);
+    hide($("view-app")); show($("view-auth"));
+    document.body.classList.add("auth-only"); closeDrawer();
+    guest ? show($("auth-back")) : hide($("auth-back"));
     showAuthForm(tab);
-    auth.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo(0, 0);
   }
+  $("auth-back").addEventListener("click", function () { leaveAuth(); show($("view-app")); });
   ["guest-signup", "guest-cta-signup"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("register"); }); });
   ["guest-signin", "guest-cta-signin"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("login"); }); });
 
@@ -509,10 +530,10 @@
   function periodLine() {
     if (!sub) return "";
     if (sub.isLifetime) return "Yours for life; nothing renews.";
-    if (sub.isGift) return "Granted by the NoteFusion team; nothing is billed.";
     var when = sub.currentPeriodEndUtc ? new Date(sub.currentPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
+    if (sub.isGift) return when ? "A gift from the NoteFusion team, Pro until " + when + "." : "A gift from the NoteFusion team.";
     if (!when) return "Your membership is active.";
-    return (sub.status === "canceled" ? "Cancelled; Pro runs until " : "Renews on ") + when + ".";
+    return "Pro until " + when + ".";
   }
   function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left this month" : "—"; }
   /** The plans dialog for a member: the membership, with nothing for sale. */
@@ -522,7 +543,15 @@
     $("upgrade-pro-plan").textContent = planLabel();
     $("upgrade-pro-period").textContent = periodLine();
     $("upgrade-pro-credits").textContent = creditsLine();
+    sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
+    hide($("plans-extend"));
   }
+  $("upgrade-extend").addEventListener("click", function () {
+    track("Opened plans to extend");
+    show($("plans-extend"));
+    loadPlans($("upgrade-panel"), $("plans-extend"));
+    $("plans-extend").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
   function autoCheckout(planId) {
@@ -579,7 +608,7 @@
     return loadAccount().then(function () {
       var wasGuest = guest;
       guest = false;
-      hide($("boot-skel")); hide($("view-auth")); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
+      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
@@ -598,7 +627,7 @@
   /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
   function startGuest() {
     guest = true;
-    hide($("boot-skel")); hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
+    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Try another tune while it comes.";
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
@@ -818,7 +847,7 @@
       if (status === "failed") {
         hide($("progress"));
         sfx.play("error");
-        alertIn($("app-alert"), "danger", job.error || "That could not be transcribed. Try a cleaner recording or a different link.");
+        alertIn($("app-alert"), "danger", job.error && !TECHNICAL.test(job.error) ? job.error : "That could not be transcribed. Try a cleaner recording or a different link.");
         return;
       }
       pollTimer = setTimeout(poll, POLL_MS);
@@ -1421,32 +1450,62 @@
 
   // ── Upgrade ──────────────────────────────────────────────────────────────
   var plansCache = null;
+  function isYearly(plan) { return plan.interval === "yearly" || plan.interval === 1; }
+  function isLifetimePlan(plan) { return plan.interval === "lifetime" || plan.interval === 2; }
+  /**
+   * The plan picker: one tile per plan, the yearly one chosen to start with, and a single button that
+   * says what will be charged. One payment covers one period, so the copy never promises a renewal.
+   */
   function loadPlans(panel, grid) {
     show(panel);
     if (!plansCache) { grid.innerHTML = ""; for (var i = 0; i < 2; i++) { var sk = document.createElement("div"); sk.className = "skel skel-plan"; grid.appendChild(sk); } }
     var p = plansCache ? Promise.resolve(plansCache) : request("/api/billing/plans").then(function (list) { plansCache = list; return list; });
     p.then(function (plans) {
       grid.innerHTML = "";
-      var monthly = plans.find(function (x) { return x.interval === "monthly" || x.interval === 0; });
-      plans.forEach(function (plan) {
-        var card = document.createElement("div"); card.className = "plan";
-        var price = document.createElement("div"); price.className = "price"; price.textContent = money(plan);
-        var per = document.createElement("div"); per.className = "per";
-        var yearly = plan.interval === "yearly" || plan.interval === 1;
-        per.textContent = yearly ? "per year" : "per month";
-        card.appendChild(price); card.appendChild(per);
-        if (yearly && monthly) {
-          var saving = Math.round(100 - (plan.amountMinor / (monthly.amountMinor * 12)) * 100);
-          if (saving > 0) { var s = document.createElement("div"); s.className = "save"; s.textContent = "Save " + saving + "% vs monthly"; card.appendChild(s); }
+      grid.classList.add("plan-picker");
+      if (!plans.length) { grid.textContent = "No plan is available for your region yet."; return; }
+      var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });
+      var ordered = plans.slice().sort(function (a, b) { return (isYearly(b) ? 1 : 0) - (isYearly(a) ? 1 : 0); });
+      var chosen = ordered[0];
+      var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
+      var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
+      function label(plan) { return isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
+      function per(plan) { return isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
+      function renderCta() {
+        cta.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+        cta.appendChild(document.createTextNode("Continue — " + money(chosen) + " " + per(chosen)));
+      }
+      ordered.forEach(function (plan) {
+        var opt = document.createElement("button"); opt.type = "button"; opt.className = "plan-opt"; opt.setAttribute("role", "radio");
+        var top = document.createElement("span"); top.className = "plan-opt-top";
+        var name = document.createElement("span"); name.className = "plan-opt-name"; name.textContent = label(plan);
+        top.appendChild(name);
+        var saving = isYearly(plan) && monthly ? Math.round(100 - (plan.amountMinor / (monthly.amountMinor * 12)) * 100) : 0;
+        if (saving > 0) { var tag = document.createElement("span"); tag.className = "plan-opt-tag"; tag.textContent = "Save " + saving + "%"; top.appendChild(tag); }
+        var price = document.createElement("span"); price.className = "plan-opt-price"; price.textContent = money(plan);
+        var small = document.createElement("small"); small.textContent = " / " + (isLifetimePlan(plan) ? "once" : isYearly(plan) ? "year" : "month"); price.appendChild(small);
+        var note = document.createElement("span"); note.className = "plan-opt-note";
+        note.textContent = isYearly(plan)
+          ? money({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year"
+          : isLifetimePlan(plan) ? "Pay once, Pro for good" : "Pay month by month";
+        var dot = document.createElement("span"); dot.className = "plan-opt-dot"; dot.setAttribute("aria-hidden", "true");
+        opt.appendChild(dot); opt.appendChild(top); opt.appendChild(price); opt.appendChild(note);
+        function select() {
+          chosen = plan;
+          options.querySelectorAll(".plan-opt").forEach(function (o) { var on = o === opt; o.classList.toggle("on", on); o.setAttribute("aria-checked", String(on)); });
+          renderCta();
         }
-        var btn = document.createElement("button"); btn.className = "btn " + (yearly ? "btn-gold" : "btn-primary"); btn.type = "button";
-        btn.textContent = "Upgrade — " + plan.name;
-        btn.addEventListener("click", function () { checkout(plan, btn); });
-        card.appendChild(btn);
-        grid.appendChild(card);
+        opt.addEventListener("click", select);
+        options.appendChild(opt);
+        if (plan === chosen) { opt.classList.add("on"); opt.setAttribute("aria-checked", "true"); } else opt.setAttribute("aria-checked", "false");
       });
-      if (!plans.length) grid.textContent = "No plan is available for your region yet.";
-    }).catch(function () { grid.textContent = "Plans could not be loaded right now."; });
+      renderCta();
+      cta.addEventListener("click", function () { checkout(chosen, cta); });
+      var fine = document.createElement("p"); fine.className = "pay-fine";
+      fine.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+      fine.appendChild(document.createTextNode("Secure checkout. One payment covers the whole period; nothing renews without you."));
+      grid.appendChild(options); grid.appendChild(cta); grid.appendChild(fine);
+    }).catch(function () { grid.textContent = "Plans could not be loaded right now. Please try again in a moment."; });
   }
 
   function money(plan) {

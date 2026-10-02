@@ -71,6 +71,16 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         if (!PlanEligibility.IsOffered(plan.Currency, user.Country))
             return BillingErrors.PlanNotAvailableInRegion;
 
+        // Nothing bills off-session, so a member buying again is how Pro continues: the payment adds a
+        // period after the one already paid for (PaymentFulfillment stacks it), on whichever plan they
+        // chose. Only lifetime access has nothing left to buy. Ordered as GetMySubscriptionQuery orders
+        // it, so this is the membership the app is showing.
+        var current = await _db.Subscriptions
+            .OrderByDescending(s => s.CurrentPeriodEndUtc)
+            .FirstOrDefaultAsync(s => s.UserId == userId, ct);
+        if (current is not null && current.IsLifetime && current.IsActiveAt(_clock.UtcNow))
+            return BillingErrors.AlreadyLifetime;
+
         // Retry-safe: an existing in-flight checkout for this user+plan is reused, so tapping "Upgrade"
         // twice returns the same session instead of opening a second charge.
         var inFlight = await _db.PaymentTransactions
@@ -127,10 +137,13 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             new GatewayInitiationRequest(
                 transaction.Reference, plan.AmountMinor, plan.Currency, user.Email,
                 _settings.CheckoutCallbackUrl,
-                // The plan decides this, never the caller: a lifetime plan is a single charge, and asking
-                // a provider for a subscription against it would open a recurring session for something
-                // that must never recur.
-                Recurring: plan.Interval != BillingInterval.Lifetime,
+                // Every plan is a single charge for one period, priced from our own plan row. Bachs
+                // subscription checkouts must be paid by a card it can save, and this account offers
+                // no card method for USD, so a recurring session is refused outright
+                // (CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD); Paystack is initialised as a plain transaction
+                // either way. A one-off needs no catalog product, so changing a price is a plan-row
+                // change and nothing else.
+                Recurring: false,
                 transaction.IdempotencyKey, plan.Code,
                 user.FullName),
             ct);
@@ -144,7 +157,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             // request, unsupported plan, auth failure) is a real terminal outcome worth telling the user
             // about; the reconciliation worker is what resolves anything left ambiguous.
             if (initiation.Error.Type == ErrorType.Network)
-                return BillingErrors.GatewayInitiationFailed(initiation.Error.Message);
+                return BillingErrors.GatewayInitiationFailed;
 
             transaction.MarkFailed(initiation.Error.Message, _clock.UtcNow);
             await _db.SaveChangesAsync(ct);
@@ -154,7 +167,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             // decline into a 500 the client shows as "try again", risking a real second charge later.
             await _email.SendPaymentFailedAsync(new EmailRecipient(user.Email, user.FullName), plan.Name, ct);
 
-            return BillingErrors.GatewayInitiationFailed(initiation.Error.Message);
+            return BillingErrors.GatewayInitiationFailed;
         }
 
         transaction.AttachCheckout(
