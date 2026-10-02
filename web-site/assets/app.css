@@ -577,3 +577,28 @@ body.auth-only .auth-page .try-free { display: none; }
 #plans-extend { margin-top: 4px; }
 
 .studio-credits { margin: 10px 2px 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.85); text-align: center; }
+
+/* ── Dark mode ───────────────────────────────────────────────────────────────
+ * theme.css darkens the brand tokens; these are the app's own light-only colours. The engraved
+ * sheet stays on white paper, as printed music does, so the notation reads the same either way. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --blue-deep: #0c4a6e;
+  --amber-soft: rgba(233, 185, 73, 0.16);
+  --danger-soft: rgba(239, 68, 68, 0.16);
+  --success-soft: rgba(16, 185, 129, 0.16);
+  --ring: 0 0 0 4px rgba(56, 189, 248, 0.2);
+}
+[data-theme="dark"] .card-upsell { background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), var(--surface)); border-color: var(--line-strong); }
+[data-theme="dark"] .solfa { border-color: var(--line); }
+[data-theme="dark"] .mark, [data-theme="dark"] .plan { background: var(--surface); }
+[data-theme="dark"] .upgrade-note { background: rgba(233, 185, 73, 0.08); border-color: rgba(233, 185, 73, 0.3); }
+[data-theme="dark"] .skel { background: #1d1f27; }
+[data-theme="dark"] .skel-staff { background: repeating-linear-gradient(180deg, #262833 0 3px, transparent 3px 14px) 0 30px / 100% 70px no-repeat, #181920; }
+[data-theme="dark"] .onb-card, [data-theme="dark"] .modal-card { background: var(--surface); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); border: 1px solid var(--line); }
+[data-theme="dark"] .onb-art, [data-theme="dark"] .rec-orb { background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.22), var(--surface) 72%); }
+[data-theme="dark"] body.is-pro .who { background: linear-gradient(135deg, rgba(233, 185, 73, 0.12) 0%, var(--surface) 70%); border-color: rgba(233, 185, 73, 0.4); }
+[data-theme="dark"] .membership-head { background: rgba(233, 185, 73, 0.1); border-color: rgba(233, 185, 73, 0.35); }
+[data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
+[data-theme="dark"] .plan-opt.on { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18); }
+[data-theme="dark"] .pill-free { color: var(--color-brand-500); }

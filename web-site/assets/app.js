@@ -184,6 +184,22 @@
     b.setAttribute("aria-checked", String(on)); b.querySelector("span").textContent = on ? "Sounds on" : "Sounds off";
   }
   $("menu-sounds").addEventListener("click", function () { sfx.set(!sfx.enabled()); if (sfx.enabled()) sfx.play("saved"); });
+
+  // ── Theme: light or dark, remembered on this browser (the page head applies it before paint) ──
+  function isDark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
+  function renderThemeMenu() {
+    var b = $("menu-theme"), dark = isDark();
+    b.setAttribute("aria-checked", String(dark)); b.querySelector("span").textContent = dark ? "Dark mode on" : "Dark mode";
+    var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dark ? "#08090C" : "#FFFFFF");
+  }
+  $("menu-theme").addEventListener("click", function () {
+    var next = isDark() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("nf.web.theme", next); } catch (e) { /* private mode */ }
+    renderThemeMenu();
+    track(next === "dark" ? "Dark mode on" : "Dark mode off");
+  });
+  renderThemeMenu();
   renderSoundsMenu();
 
   // ── State ────────────────────────────────────────────────────────────────
