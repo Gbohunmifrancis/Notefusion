@@ -487,6 +487,14 @@
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
   function openUpgrade() { loadPlans($("upgrade-panel"), $("plans-standalone")); }
+  /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
+  function autoCheckout(planId) {
+    request("/api/billing/plans").then(function (plans) {
+      var plan = (plans || []).find(function (p) { return String(p.id) === String(planId) || p.code === planId; });
+      if (!plan) return;
+      checkout(plan, document.createElement("button"));
+    }).catch(function () { /* the dialog is open; the user can pick a plan */ });
+  }
   $("upgrade-close").addEventListener("click", function () { hide($("upgrade-panel")); });
   $("upgrade-panel").addEventListener("click", function (e) { if (e.target === $("upgrade-panel")) hide($("upgrade-panel")); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide($("upgrade-panel")); });
@@ -534,7 +542,8 @@
       hide($("boot-skel")); hide($("view-auth")); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
-      if (new URLSearchParams(location.search).get("upgrade") && !isPro()) openUpgrade();
+      var upgradeTo = new URLSearchParams(location.search).get("upgrade");
+      if (upgradeTo && !isPro()) { openUpgrade(); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
       var params = new URLSearchParams(location.search);
       if (params.get("paid")) confirmPayment();
       if (previewId) {
