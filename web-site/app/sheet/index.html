@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shared sheet — NoteFusion</title>
 <meta name="description" content="A Tonic Solfa sheet shared from NoteFusion: read it, hear it, rehearse your part.">
 <meta name="robots" content="noindex">
@@ -13,138 +13,108 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#2563EB">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/theme.css?v=6">
+<link rel="stylesheet" href="/assets/app.css?v=1">
 <style>
-  :root {
-    --blue: #2563EB; --blue-dark: #1D4ED8; --blue-soft: #E0E7FF; --blue-tint: #EFF4FF;
-    --ink: #0F172A; --muted: #5D6D82; --faint: #94A3B8; --line: #E2E8F0;
-    --bg: #F4F7FC; --surface: #FFFFFF; --success: #15803D; --danger: #B91C1C;
-    --radius: 16px; --radius-sm: 10px;
-    --shadow: 0 1px 3px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-  a { color: var(--blue); }
-  button { font-family: inherit; }
-  .hidden { display: none !important; }
-  .top { background: var(--surface); border-bottom: 1px solid var(--line); }
-  .top-inner { max-width: 960px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--ink); text-decoration: none; }
-  .brand-mark { width: 30px; height: 30px; background: var(--blue); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; border-radius: 8px; }
-  .brand small { font-weight: 500; color: var(--muted); font-size: .8rem; }
-  .top-spacer { flex: 1; }
-  main { max-width: 960px; margin: 0 auto; padding: 28px 20px 80px; }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
-  h1 { font-size: 1.6rem; letter-spacing: -0.02em; margin: 0 0 4px; }
-  h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; }
-  p { margin: 0 0 12px; }
-  .muted { color: var(--muted); } .small { font-size: .85rem; }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
-  .chip { padding: 5px 10px; border-radius: 999px; background: var(--bg); font-size: .8rem; font-weight: 600; }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px solid transparent; font-weight: 600; font-size: .95rem; cursor: pointer; background: var(--blue); color: #fff; }
-  .btn:disabled { opacity: .55; cursor: not-allowed; }
-  .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line); }
-  .btn-sm { padding: 6px 12px; font-size: .85rem; }
-  .btn.on { background: var(--blue); color: #fff; border-color: var(--blue); }
-  .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 999px; margin: 8px 0 16px; max-width: 360px; }
-  .tab { flex: 1; text-align: center; padding: 8px; border-radius: 999px; border: none; background: none; font-weight: 600; color: var(--muted); cursor: pointer; }
-  .tab[aria-selected=true] { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
-  .sheet-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 200px; padding: 12px; }
-  .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border-radius: var(--radius-sm); padding: 18px; }
-  .solfa .doh { color: var(--blue-dark); font-weight: 700; }
-  .part { margin-top: 12px; }
-  .part h3 { font-size: .85rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-  table.hymn { border-collapse: collapse; margin: 6px 0 12px; font-family: ui-monospace, Menlo, monospace; }
-  table.hymn td { border-left: 2px solid var(--ink); padding: 2px 8px; vertical-align: top; white-space: nowrap; }
-  table.hymn td:last-child { border-right: 2px solid var(--ink); }
-  .cell { display: inline-block; min-width: 2.6em; text-align: center; margin-right: 2px; }
-  .cell b { display: block; font-size: 1rem; } .cell b.now { color: var(--blue); }
-  .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: .72rem; color: var(--muted); min-height: 1em; }
-  .player { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-  .player .group { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border-radius: 999px; padding: 4px 8px; }
-  .player label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-  .player input[type=number] { width: 52px; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; }
-  .player select { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-  .lyrics { white-space: pre-wrap; color: var(--ink); }
-  .alert { padding: 12px 14px; border-radius: var(--radius-sm); background: #FEE2E2; color: var(--danger); }
-  .foot { color: var(--faint); font-size: .8rem; text-align: center; margin-top: 30px; }
-  .foot a.cta { display: inline-block; margin-top: 8px; }
-  @media print {
-    .top, .player, .tabs, .no-print, .foot .cta { display: none !important; }
-    body { background: #fff; } .card { box-shadow: none; border: none; padding: 0; }
-    .hidden-print-show { display: block !important; }
-  }
+  main { max-width: 960px; }
+  .sheet-head { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+  .lyrics { white-space: pre-wrap; color: var(--ink); margin-top: 12px; }
+  .cta-card { text-align: center; background: linear-gradient(135deg, #eff6ff, #ffffff); }
+  .cta-card h2 { justify-content: center; }
+  .cta-card p { max-width: 48ch; margin-left: auto; margin-right: auto; }
 </style>
 </head>
-<body>
-<header class="top">
-  <div class="top-inner">
-    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>shared sheet</small></a>
-    <span class="top-spacer"></span>
+<body class="guest">
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14"/><path d="M16 5v14"/></symbol>
+  <symbol id="i-restart" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m5.6 5.6 2.8 2.8"/><path d="m15.6 15.6 2.8 2.8"/><path d="m5.6 18.4 2.8-2.8"/><path d="m15.6 8.4 2.8-2.8"/></symbol>
+</svg>
+
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Shared sheet</small></a>
+    <span class="side-spacer"></span>
     <a class="btn btn-ghost btn-sm" href="/app">Make your own</a>
+  </aside>
+
+  <div class="content">
+  <main>
+  <div id="loading" class="card" aria-hidden="true">
+    <div class="skel skel-title"></div>
+    <div class="skel skel-line w60"></div>
+    <div class="skel skel-staff"></div>
   </div>
-</header>
-<main>
-  <div id="loading" class="card"><p class="muted">Opening the sheet…</p></div>
-  <div id="error" class="card hidden"><div class="alert" id="error-text"></div></div>
+  <div id="error" class="card hidden"><div class="alert alert-danger" id="error-text"></div></div>
 
   <div id="sheet" class="hidden">
     <div class="card">
-      <h1 id="s-title"></h1>
-      <p class="muted small" id="s-by"></p>
-      <div class="chips" id="s-chips"></div>
+      <div class="sheet-head">
+        <div style="min-width:0">
+          <h1 id="s-title"></h1>
+          <p class="muted small" id="s-by" style="margin:0"></p>
+          <div class="chips" id="s-chips"></div>
+        </div>
+        <div class="tabs" role="tablist" style="margin:0">
+          <button class="tab" role="tab" aria-selected="true" data-view="solfa" type="button">Tonic Solfa</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="staff" type="button">Staff</button>
+          <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">SATB</button>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <div id="v-solfa">
+          <div class="solfa" id="solfa-text"></div>
+          <div id="hymn"></div>
+          <p class="lyrics" id="lyrics"></p>
+        </div>
+        <div id="v-staff" class="hidden"><div class="sheet-wrap" id="staff"></div></div>
+        <div id="v-parts" class="hidden">
+          <div class="sheet-wrap" id="staff-parts" style="margin-bottom:12px"></div>
+          <div id="parts-solfa"></div>
+        </div>
+      </div>
+      <div class="downloads no-print" style="margin-top:16px">
+        <button class="btn btn-ghost btn-sm" id="dl-solfa" type="button"><svg class="ic"><use href="#i-download"/></svg>Download solfa text</button>
+        <button class="btn btn-ghost btn-sm" id="print" type="button"><svg class="ic"><use href="#i-print"/></svg>Print</button>
+      </div>
     </div>
 
     <div class="card">
-      <h2>Rehearse</h2>
-      <p class="muted small no-print">Hear the tune or just your part. Mute a voice to sing it against the others; loop a few bars; slow it down.</p>
+      <h2><svg class="ic"><use href="#i-play"/></svg>Rehearse</h2>
+      <p class="card-lead no-print">Hear the tune or just your part. Mute a voice to sing it against the others; loop a few bars; slow it down.</p>
       <div class="player" id="player">
-        <button class="btn" id="play" type="button">▶ Play</button>
-        <button class="btn btn-ghost btn-sm" id="restart" type="button">⟲</button>
+        <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="#i-play"/></svg>Play</button>
+        <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="#i-restart"/></svg></button>
         <span class="group"><label for="rate">Speed</label>
           <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
         <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
-          <input type="number" id="loop-from" min="1" value="1"> – <input type="number" id="loop-to" min="1" value="4"></span>
+          <input type="number" id="loop-from" min="1" value="1" aria-label="From bar"> – <input type="number" id="loop-to" min="1" value="4" aria-label="To bar"></span>
         <span class="group hidden" id="voices"><label>Voices</label></span>
       </div>
     </div>
-
-    <div class="card">
-      <div class="tabs" role="tablist">
-        <button class="tab" role="tab" aria-selected="true" data-view="solfa" type="button">Tonic Solfa</button>
-        <button class="tab" role="tab" aria-selected="false" data-view="staff" type="button">Staff</button>
-        <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">SATB</button>
-      </div>
-      <div id="v-solfa">
-        <div class="solfa" id="solfa-text"></div>
-        <div id="hymn"></div>
-        <p class="lyrics" id="lyrics"></p>
-      </div>
-      <div id="v-staff" class="hidden"><div class="sheet-wrap" id="staff"></div></div>
-      <div id="v-parts" class="hidden">
-        <div class="sheet-wrap" id="staff-parts" style="margin-bottom:12px"></div>
-        <div id="parts-solfa"></div>
-      </div>
-      <div class="chips no-print">
-        <button class="btn btn-ghost btn-sm" id="dl-solfa" type="button">Download solfa text</button>
-        <button class="btn btn-ghost btn-sm" id="print" type="button">Print</button>
-      </div>
-    </div>
   </div>
 
-  <div class="card no-print" style="text-align:center">
-    <h2 style="margin-bottom:6px">Make your own</h2>
-    <p class="muted small">Hum a tune or paste a YouTube link and get the Tonic Solfa in a minute — free to try, no account.</p>
-    <a class="btn" href="/?utm_source=shared-sheet">Try NoteFusion free</a>
+  <div class="card cta-card no-print">
+    <h2><svg class="ic"><use href="#i-sparkle"/></svg>Make your own</h2>
+    <p class="card-lead">Hum a tune or paste a YouTube link and get the Tonic Solfa in a minute — free to try, no account.</p>
+    <a class="btn btn-primary" href="/?utm_source=shared-sheet">Try NoteFusion free</a>
   </div>
   <p class="foot">Transcribed with NoteFusion — hum a tune or paste a song link and get Tonic Solfa, staff notation and four-part harmony.<br><a class="cta" href="/">notefusion.studio</a></p>
-</main>
-<script src="/assets/choir.js"></script>
-<script src="/assets/sheet.js"></script>
+  </main>
+  </div>
+</div>
+<script src="/assets/choir.js?v=2"></script>
+<script src="/assets/sheet.js?v=2"></script>
 </body>
 </html>

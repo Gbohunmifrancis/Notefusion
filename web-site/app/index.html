@@ -2,265 +2,76 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>NoteFusion Web — paste a song, get the Tonic Solfa</title>
-<meta name="description" content="Sign in to NoteFusion on the web. Paste a YouTube, Spotify or Apple Music link and get the lead vocal as Tonic Solfa and staff notation; download the sheet with Pro.">
+<meta name="description" content="Sign in to NoteFusion on the web. Paste a YouTube, Spotify or Apple Music link, hum a tune or upload a recording and get Tonic Solfa and staff notation; rehearse, transpose and share it with your choir.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#2563EB">
+<meta name="theme-color" content="#FFFFFF">
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --blue: #2563EB; --blue-dark: #1D4ED8; --blue-soft: #E0E7FF; --blue-tint: #EFF4FF;
-    --ink: #0F172A; --muted: #5D6D82; --faint: #94A3B8; --line: #E2E8F0;
-    --bg: #F4F7FC; --surface: #FFFFFF;
-    --gold: #F2C14E; --danger: #B91C1C; --danger-soft: #FEE2E2; --success: #15803D; --success-soft: #DCFCE7;
-    --radius: 16px; --radius-sm: 10px;
-    --shadow: 0 1px 3px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
-  }
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-  a { color: var(--blue); }
-  button { font-family: inherit; }
-  .hidden { display: none !important; }
-  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-
-  /* ── Header ─────────────────────────────────────────────────────────── */
-  .top { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
-  .top-inner { max-width: 1080px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
-  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--ink); text-decoration: none; letter-spacing: -0.01em; }
-  .brand-mark { width: 30px; height: 30px; background: var(--blue); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; border-radius: 8px; }
-  .brand small { font-weight: 500; color: var(--muted); font-size: .8rem; margin-left: 2px; }
-  .top-spacer { flex: 1; }
-  .who { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--muted); }
-  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
-  .pill-pro { background: #FEF3C7; color: #92400E; }
-  .pill-free { background: var(--blue-tint); color: var(--blue-dark); }
-  .pill-credits { background: var(--bg); color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 600; }
-
-  /* ── Layout ─────────────────────────────────────────────────────────── */
-  main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; }
-  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
-  h1 { font-size: 1.75rem; letter-spacing: -0.02em; margin: 0 0 6px; }
-  h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; }
-  p { margin: 0 0 12px; }
-  .muted { color: var(--muted); }
-  .small { font-size: .85rem; }
-  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-
-  /* ── Forms & buttons ────────────────────────────────────────────────── */
-  label { display: block; font-size: .85rem; font-weight: 600; margin: 0 0 6px; }
-  input[type=text], input[type=url], input[type=email], input[type=password] {
-    width: 100%; font: inherit; color: var(--ink); padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; outline: none;
-  }
-  input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: 999px; border: 1px solid transparent; font-weight: 600; font-size: .95rem; cursor: pointer; text-decoration: none; transition: transform .12s ease, box-shadow .12s ease, background .12s ease; white-space: nowrap; }
-  .btn:active { transform: translateY(1px); }
-  .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-  .btn-primary { background: var(--blue); color: #fff; }
-  .btn-primary:hover:not(:disabled) { background: var(--blue-dark); box-shadow: 0 6px 18px rgba(37,99,235,.25); }
-  .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line); }
-  .btn-ghost:hover:not(:disabled) { border-color: var(--faint); }
-  .btn-gold { background: var(--gold); color: #1F1600; }
-  .btn-link { background: none; border: none; color: var(--blue); padding: 0; font-weight: 600; cursor: pointer; }
-  .btn .lock { font-size: .8em; opacity: .7; }
-  .link-form { display: flex; gap: 10px; }
-  .link-form input { flex: 1; }
-  .or { display: flex; align-items: center; gap: 12px; color: var(--faint); font-size: .8rem; margin: 14px 0 6px; }
-  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-  .file-pick { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); font-weight: 600; cursor: pointer; font-size: .9rem; }
-  .file-pick input { display: none; }
-
-  .alert { padding: 12px 14px; border-radius: var(--radius-sm); font-size: .9rem; margin: 0 0 14px; }
-  .alert-danger { background: var(--danger-soft); color: var(--danger); }
-  .alert-info { background: var(--blue-tint); color: var(--blue-dark); }
-  .alert-success { background: var(--success-soft); color: var(--success); }
-
-  /* ── Auth ───────────────────────────────────────────────────────────── */
-  .auth { max-width: 440px; margin: 40px auto; }
-  .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 999px; margin-bottom: 20px; }
-  .tab { flex: 1; text-align: center; padding: 8px; border-radius: 999px; border: none; background: none; font-weight: 600; color: var(--muted); cursor: pointer; }
-  .tab[aria-selected=true] { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
-  .field { margin-bottom: 14px; }
-
-  /* ── Progress ───────────────────────────────────────────────────────── */
-  .stages { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
-  .stage { padding: 6px 12px; border-radius: 999px; background: var(--bg); color: var(--faint); font-size: .8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
-  .stage.on { background: var(--blue-tint); color: var(--blue-dark); }
-  .stage.done { background: var(--success-soft); color: var(--success); }
-  .stage .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-  .stage.on .dot { animation: pulse 1s ease-in-out infinite; }
-  @keyframes pulse { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
-  .bar { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; }
-  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), #60A5FA); transition: width .6s ease; }
-
-  /* ── Song card ──────────────────────────────────────────────────────── */
-  .song { display: flex; gap: 14px; align-items: center; }
-  .song img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; background: var(--bg); flex: none; }
-  .song .title { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
-  .song .artist { color: var(--muted); }
-  .credit { font-size: .85rem; color: var(--muted); }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
-  .chip { padding: 5px 10px; border-radius: 999px; background: var(--bg); font-size: .8rem; font-weight: 600; color: var(--ink); }
-
-  /* ── Result ─────────────────────────────────────────────────────────── */
-  .result-tabs { margin: 8px 0 16px; }
-  .sheet-wrap { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 240px; }
-  #sheet { padding: 12px; }
-  .watermark { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .watermark span { font-weight: 800; font-size: clamp(32px, 7vw, 72px); color: rgba(37,99,235,.10); transform: rotate(-24deg); white-space: nowrap; letter-spacing: .04em; }
-  .watermark span::before { content: "♪ "; }
-  .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border-radius: var(--radius-sm); padding: 18px; }
-  .solfa .doh { color: var(--blue-dark); font-weight: 700; }
-  .part { margin-top: 12px; }
-  .part h3 { font-size: .9rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
-  .section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .btn-sm { padding: 6px 12px; font-size: .85rem; }
-  .btn.on { background: var(--blue); color: #fff; border-color: var(--blue); }
-  .player { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-  .player .group { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border-radius: 999px; padding: 4px 8px; }
-  .player label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 0; }
-  .player input[type=number] { width: 52px; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; }
-  .player select { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
-  .sing-live { font-size: 2.4rem; font-weight: 800; color: var(--blue); text-align: center; padding: 10px 0; font-family: ui-monospace, Menlo, monospace; }
-  .sing-live small { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); font-family: Inter, sans-serif; }
-  .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
-  .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; }
-  .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .mark { min-width: 40px; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, monospace; font-weight: 700; background: #fff; }
-  .mark small { display: block; font-weight: 500; color: var(--faint); font-size: .7rem; font-family: Inter, sans-serif; }
-  .mark.hit { border-color: var(--success); color: var(--success); } .mark.near { border-color: #B45309; color: #B45309; } .mark.wrong { border-color: var(--danger); color: var(--danger); } .mark.missed { color: var(--faint); }
-  .tr-readout strong { font-size: 1.3rem; min-width: 2ch; display: inline-block; text-align: center; }
-  textarea { width: 100%; font: inherit; color: var(--ink); padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; outline: none; resize: vertical; }
-  textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
-  table.ranges { border-collapse: collapse; margin-top: 10px; font-size: .9rem; }
-  table.ranges td { padding: 3px 14px 3px 0; }
-  table.ranges td:first-child { text-transform: capitalize; color: var(--muted); }
-  table.ranges .ok { color: var(--success); font-weight: 600; } table.ranges .warn { color: #B45309; font-weight: 600; } table.ranges .bad { color: var(--danger); font-weight: 600; }
-  table.hymn { border-collapse: collapse; margin: 6px 0 12px; font-family: ui-monospace, Menlo, monospace; }
-  table.hymn td { border-left: 2px solid var(--ink); padding: 2px 8px; vertical-align: top; white-space: nowrap; }
-  table.hymn td:last-child { border-right: 2px solid var(--ink); }
-  .cell { display: inline-block; min-width: 2.6em; text-align: center; margin-right: 2px; }
-  .cell b { display: block; font-size: 1rem; } .cell b.now { color: var(--blue); }
-  .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: .72rem; color: var(--muted); min-height: 1em; }
-  .downloads { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-  .upgrade-note { background: linear-gradient(135deg, #FFF7E0, #FFFBEF); border: 1px solid #F6E3A1; border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 16px; }
-  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
-  .plan { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; background: #fff; }
-  .plan .price { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
-  .plan .per { color: var(--muted); font-size: .85rem; }
-  .plan .save { color: var(--success); font-size: .8rem; font-weight: 700; }
-  .plan .btn { width: 100%; margin-top: 10px; }
-  .foot { color: var(--faint); font-size: .8rem; text-align: center; margin-top: 30px; }
-  /* ── Header links ───────────────────────────────────────────────────── */
-  .top-link { font-weight: 600; font-size: .9rem; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 999px; }
-  .top-link:hover { color: var(--ink); background: var(--bg); }
-  .top-nav { display: flex; gap: 2px; }
-  .top-nav .top-link { border: none; background: none; font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer; }
-  .top-nav .top-link.on { color: var(--blue-dark); background: var(--blue-tint); }
-  .upload-kind { display: flex; gap: 14px; flex-wrap: wrap; margin: 4px 0 10px; }
-  .upload-kind label { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .9rem; cursor: pointer; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; }
-  .upload-kind label:has(input:checked) { border-color: var(--blue); background: var(--blue-tint); color: var(--blue-dark); }
-  .upload-kind input { margin: 0; }
-  .upload-kind small { font-weight: 500; color: var(--muted); }
-  .lib-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
-  .lib-item { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; background: #fff; display: flex; flex-direction: column; gap: 6px; }
-  .lib-item h3 { margin: 0; font-size: 1rem; line-height: 1.3; }
-  .lib-item .meta { color: var(--muted); font-size: .85rem; }
-  .lib-item .actions { display: flex; gap: 8px; margin-top: 6px; }
-  .lib-empty { color: var(--muted); padding: 14px 0; }
-  .acct-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-  .acct-row { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; }
-  .acct-row small { color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; font-size: .7rem; }
-  .acct-row strong { font-size: 1.05rem; }
-  .only-app { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 8px; }
-  .only-app li { display: flex; gap: 10px; align-items: flex-start; font-size: .95rem; }
-  .only-app li::before { content: "📱"; flex: none; }
-
-  /* ── Signed out: the pitch, the try box and the sign-in card side by side ── */
-  .auth-split { max-width: 980px; margin: 24px auto 0; display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: start; }
-  .auth-split h1 { font-size: 2rem; line-height: 1.15; }
-  .auth-split .auth { margin: 0; max-width: none; }
-  .try-free .try-status { min-height: 1.2em; margin: 8px 0 0; }
-  .try-free .try-status-error { color: var(--danger); }
-  .try-free .try-status-info { color: var(--blue-dark); }
-  .try-file input { display: none; }
-  .auth-points { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }
-  .auth-points li { display: flex; gap: 10px; align-items: flex-start; font-size: .95rem; color: var(--ink); }
-  .auth-points li::before { content: "✓"; color: var(--blue); font-weight: 800; flex: none; }
-
-  /* ── Skeletons: the shape of what is loading, in place of a blank ───── */
-  .skel { position: relative; overflow: hidden; background: #E9EEF6; border-radius: 8px; }
-  .skel::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.65), transparent); animation: shimmer 1.3s ease-in-out infinite; }
-  @keyframes shimmer { to { transform: translateX(100%); } }
-  .skel-line { height: 12px; margin: 10px 0; }
-  .skel-line.w40 { width: 40%; } .skel-line.w60 { width: 60%; } .skel-line.w80 { width: 80%; }
-  .skel-title { height: 22px; width: 50%; margin: 4px 0 14px; }
-  .skel-input { height: 46px; border-radius: var(--radius-sm); }
-  .skel-staff { height: 220px; margin: 12px; border-radius: 6px; background: repeating-linear-gradient(180deg, #E9EEF6 0 3px, transparent 3px 14px) 0 30px / 100% 70px no-repeat, #F6F8FC; }
-  .skel-plan { height: 150px; border-radius: var(--radius-sm); }
-  @media (prefers-reduced-motion: reduce) { .skel::after { animation: none; } }
-
-  /* ── Onboarding ─────────────────────────────────────────────────────── */
-  .onb { position: fixed; inset: 0; z-index: 50; background: rgba(15,23,42,.45); display: flex; align-items: center; justify-content: center; padding: 20px; }
-  .onb-card { position: relative; width: min(460px, 100%); background: #fff; border-radius: 22px; padding: 28px 28px 24px; box-shadow: 0 24px 60px rgba(15,23,42,.25); text-align: center; animation: onb-in .25s ease-out; }
-  @keyframes onb-in { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
-  .onb-skip { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--muted); font-weight: 600; cursor: pointer; font-size: .9rem; }
-  .onb-art { width: 150px; height: 150px; margin: 6px auto 18px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #E0E7FF, #F4F7FC 72%); display: flex; align-items: center; justify-content: center; color: var(--blue); }
-  .onb-art svg { width: 76px; height: 76px; }
-  .onb-card h2 { font-size: 1.4rem; letter-spacing: -0.02em; margin: 0 0 8px; }
-  .onb-card p { color: var(--muted); margin: 0 0 18px; min-height: 3.2em; }
-  .onb-dots { display: flex; justify-content: center; gap: 8px; margin: 0 0 18px; }
-  .onb-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
-  .onb-dots span.on { background: var(--blue); }
-  .onb-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .onb-brand { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; color: var(--ink); margin-bottom: 10px; }
-  .onb-brand .brand-mark { width: 24px; height: 24px; border-radius: 6px; }
-
-  @media (max-width: 760px) {
-    .auth-split { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 640px) {
-    .link-form { flex-direction: column; }
-    .card { padding: 18px; }
-    .who .name { display: none; }
-    #how-link { display: none; }
-    .top-inner { gap: 8px 10px; padding: 10px 14px; flex-wrap: wrap; }
-    .top-nav { order: 10; width: 100%; justify-content: space-between; }
-    .top-nav .top-link { flex: 1; text-align: center; padding: 7px 8px; font-size: .85rem; }
-    .brand small { display: none; }
-    #who-credits { display: none; }
-    .who { gap: 6px; }
-    .onb-card { padding: 22px 18px 18px; }
-  }
-</style>
+<link rel="stylesheet" href="/assets/theme.css?v=6">
+<link rel="stylesheet" href="/assets/app.css?v=1">
 </head>
-<body>
-<header class="top">
-  <div class="top-inner">
-    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
-    <a class="top-link" href="/#how" id="how-link">How it works</a>
-    <nav class="top-nav hidden" id="top-nav" aria-label="App sections">
-      <button class="top-link on" type="button" data-view="transcribe">Transcribe</button>
-      <button class="top-link" type="button" data-view="library">Library</button>
-      <button class="top-link" type="button" data-view="account">Account</button>
-    </nav>
-    <span class="top-spacer"></span>
-    <div class="who hidden" id="who">
-      <span class="name" id="who-name"></span>
-      <span class="pill" id="who-plan"></span>
-      <span class="pill pill-credits" id="who-credits"></span>
-      <button class="btn btn-ghost" id="signout" type="button">Sign out</button>
-    </div>
-  </div>
-</header>
+<body class="guest">
 
-<main>
+<!-- Icon sprite: one path set, referenced with <use> throughout the page. -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12h2l2-7 3 14 3-10 2 6 2-3h6"/></symbol>
+  <symbol id="i-library" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/></symbol>
+  <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14"/><path d="M16 5v14"/></symbol>
+  <symbol id="i-restart" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></symbol>
+  <symbol id="i-shift" viewBox="0 0 24 24"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m5.6 5.6 2.8 2.8"/><path d="m15.6 15.6 2.8 2.8"/><path d="m5.6 18.4 2.8-2.8"/><path d="m15.6 8.4 2.8-2.8"/></symbol>
+  <symbol id="i-sing" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4"/><path d="M8 23h8"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M2 2l20 20"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 12.5a10 10 0 0 1 3.5-2.6"/><path d="M12 20h.01"/><path d="M1.4 8.6a16 16 0 0 1 5.3-3.4"/><path d="M19 12.5a10 10 0 0 0-3-2.2"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></symbol>
+</svg>
+
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
+    <nav class="side-nav top-nav hidden" id="top-nav" aria-label="App sections">
+      <button class="nav-item top-link on" type="button" data-view="transcribe"><svg class="ic"><use href="#i-wave"/></svg><span>Transcribe</span></button>
+      <button class="nav-item top-link" type="button" data-view="library"><svg class="ic"><use href="#i-library"/></svg><span>Library</span></button>
+      <button class="nav-item top-link" type="button" data-view="account"><svg class="ic"><use href="#i-user"/></svg><span>Account</span></button>
+    </nav>
+    <span class="side-spacer"></span>
+    <a class="side-help" href="/#how" id="how-link"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <div class="who hidden" id="who">
+      <span class="who-avatar" id="who-avatar" aria-hidden="true"></span>
+      <span class="who-text">
+        <span class="name" id="who-name"></span>
+        <span class="who-meta"><span class="pill" id="who-plan"></span><span class="pill pill-credits" id="who-credits"></span></span>
+      </span>
+      <button class="btn btn-ghost btn-icon" id="signout" type="button" title="Sign out" aria-label="Sign out"><svg class="ic"><use href="#i-logout"/></svg></button>
+    </div>
+  </aside>
+
+  <div class="content">
+  <main>
   <!-- Shown while the account and the first result load, so the page is never blank. -->
   <section id="boot-skel" aria-hidden="true">
     <div class="card">
@@ -278,31 +89,32 @@
   <!-- ── Signed out: sign in, create an account, or try it first ─────── -->
   <section id="view-auth" class="auth-split hidden">
     <div>
+      <span class="eyebrow"><svg class="ic" style="width:14px;height:14px"><use href="#i-sparkle"/></svg>NoteFusion on the web</span>
       <h1>Paste a song.<br>Get the Tonic Solfa.</h1>
-      <p class="muted">Any YouTube, Spotify or Apple Music link, a hummed tune, or a recording — written out as movable-do solfa and staff notation, with alto, tenor and bass for your choir. The same account works in the Android app.</p>
+      <p class="lead">Any YouTube, Spotify or Apple Music link, a hummed tune, or a recording — written out as movable-do solfa and staff notation, with alto, tenor and bass for your choir. The same account works in the Android app.</p>
       <ul class="auth-points">
-        <li>Hear it, loop a few bars, mute your part and sing against the others</li>
-        <li>Move the key to fit your singers; the solfa never changes</li>
-        <li>Share a link the whole choir can open, no account needed</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Hear it, loop a few bars, mute your part and sing against the others</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Move the key to fit your singers; the solfa never changes</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Share a link the whole choir can open, no account needed</li>
       </ul>
-      <div class="card try-free" id="try-free" style="margin-top:18px">
-        <h2>Try it first — free, no account</h2>
-        <p class="muted small">A 30-second preview of any song, or a tune you hum right now.</p>
+      <div class="card try-free" id="try-free">
+        <h2><svg class="ic"><use href="#i-sparkle"/></svg>Try it first — free, no account</h2>
+        <p class="card-lead">A 30-second preview of any song, or a tune you hum right now.</p>
         <form id="try-form" class="link-form" novalidate>
           <label class="sr-only" for="try-url">Song link</label>
-          <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false">
+          <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
           <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
         </form>
-        <div class="row" style="margin-top:10px">
-          <button class="btn btn-ghost btn-sm" id="try-record" type="button">Record a tune</button>
-          <label class="btn btn-ghost btn-sm try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*">Upload a recording</label>
+        <div class="row" style="margin-top:12px">
+          <button class="btn btn-ghost btn-sm btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
+          <label class="btn btn-ghost btn-sm try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
         </div>
         <p class="try-status small" id="try-status" aria-live="polite"></p>
       </div>
     </div>
     <div class="auth">
     <div class="card">
-      <div class="tabs" role="tablist">
+      <div class="tabs fill" role="tablist">
         <button class="tab" role="tab" aria-selected="true" data-tab="login" type="button">Sign in</button>
         <button class="tab" role="tab" aria-selected="false" data-tab="register" type="button">Create account</button>
       </div>
@@ -312,21 +124,21 @@
         <div class="field"><label for="login-email">Email</label><input id="login-email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="login-password">Password</label><input id="login-password" type="password" autocomplete="current-password" required></div>
         <button class="btn btn-primary" type="submit" style="width:100%">Sign in</button>
-        <p class="small muted" style="margin-top:12px">Forgot your password? Reset it from the app's sign-in screen.</p>
+        <p class="small muted" style="margin:14px 0 0">Forgot your password? Reset it from the app's sign-in screen.</p>
       </form>
 
       <form id="form-verify" class="hidden" novalidate>
         <p class="small muted">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
         <div class="field"><label for="verify-code">Code</label><input id="verify-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
         <button class="btn btn-primary" type="submit" style="width:100%">Confirm and sign in</button>
-        <p class="small muted" style="margin:10px 0 0">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
+        <p class="small muted" style="margin:12px 0 0">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
       </form>
       <form id="form-register" class="hidden" novalidate>
         <div class="field"><label for="reg-name">Full name</label><input id="reg-name" type="text" autocomplete="name" required></div>
         <div class="field"><label for="reg-email">Email</label><input id="reg-email" type="email" autocomplete="email" required></div>
         <div class="field"><label for="reg-password">Password</label><input id="reg-password" type="password" autocomplete="new-password" minlength="8" required></div>
         <button class="btn btn-primary" type="submit" style="width:100%">Create account</button>
-        <p class="small muted" style="margin-top:12px">We email you a six-digit code to confirm the address.</p>
+        <p class="small muted" style="margin:14px 0 0">We email you a six-digit code to confirm the address.</p>
       </form>
     </div>
     </div>
@@ -351,32 +163,40 @@
   <!-- ── Signed in ──────────────────────────────────────────────────── -->
   <section id="view-app" class="hidden">
     <div class="alert alert-info hidden" id="guest-bar">
-      <strong>You're trying NoteFusion free.</strong> Previews are the first 30 seconds, no account needed. Create a free account to keep the sheet, hear it in four parts and share it with your choir.
-      <button class="btn btn-primary btn-sm" id="guest-signup" type="button" style="margin-left:10px">Create a free account</button>
-      <button class="btn btn-ghost btn-sm" id="guest-signin" type="button">Sign in</button>
+      <span><strong>You're trying NoteFusion free.</strong> Previews are the first 30 seconds, no account needed. Create a free account to keep the sheet, hear it in four parts and share it with your choir.</span>
+      <span class="row" style="gap:8px;flex:none">
+        <button class="btn btn-primary btn-sm" id="guest-signup" type="button">Create a free account</button>
+        <button class="btn btn-ghost btn-sm" id="guest-signin" type="button">Sign in</button>
+      </span>
     </div>
     <div id="view-transcribe">
     <div class="card">
-      <h2>Transcribe a song</h2>
-      <p class="muted small">Paste a YouTube, Spotify or Apple Music link. We fetch the audio, isolate the lead vocal, and write it out as Tonic Solfa and staff notation. The song is acknowledged by title and artist on the sheet.</p>
+      <h2><svg class="ic"><use href="#i-wave"/></svg>New transcription</h2>
+      <p class="card-lead">Paste a link, upload a recording or hum into the mic. The voice is written out as Tonic Solfa and staff notation; a song is acknowledged by title and artist on the sheet.</p>
       <div id="app-alert" class="alert hidden" role="alert"></div>
       <form id="form-link" class="link-form" novalidate>
-        <input id="link-url" type="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" spellcheck="false" required>
+        <label class="sr-only" for="link-url">Song link</label>
+        <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="link-url" type="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" spellcheck="false" required></span>
         <button class="btn btn-primary" id="link-submit" type="submit">Transcribe</button>
       </form>
-      <div class="or">or upload / record</div>
+      <div class="or">or a recording</div>
       <div class="upload-kind" role="radiogroup" aria-label="What kind of recording is it?">
-        <label><input type="radio" name="upload-kind" value="hum" checked> A tune I hummed or sang</label>
-        <label><input type="radio" name="upload-kind" value="song"> A song with instruments <small>— the voice is isolated first</small></label>
+        <label><input type="radio" name="upload-kind" value="hum" checked>Just a voice <small>· hummed or sung</small></label>
+        <label><input type="radio" name="upload-kind" value="song">Voice with instruments <small>· the voice is isolated first</small></label>
       </div>
-      <div class="row">
-        <label class="file-pick">
+      <div class="sources">
+        <label class="drop" id="drop">
           <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,.mp4,audio/*">
-          <span>Upload a recording</span>
+          <svg class="ic"><use href="#i-upload"/></svg>
+          <strong>Drop an audio file here, or browse</strong>
+          <span>MP3, WAV, M4A, OGG or WebM · up to 25 MB</span>
         </label>
-        <button class="btn btn-ghost btn-sm" id="rec-btn" type="button">🎤 Record a tune</button>
-        <span id="rec-status" class="small muted" aria-live="polite"></span>
+        <div class="rec-tile">
+          <button class="btn btn-ghost btn-rec" id="rec-btn" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
+          <p>Straight from your microphone, up to three minutes.</p>
+        </div>
       </div>
+      <p id="rec-status" class="small muted" aria-live="polite"></p>
     </div>
 
     <div class="card hidden" id="progress">
@@ -389,30 +209,32 @@
       </div>
       <div class="stages" id="p-stages">
         <span class="stage" data-stage="fetching"><span class="dot"></span>Fetching audio</span>
-        <span class="stage" data-stage="separating"><span class="dot"></span>Isolating vocals</span>
-        <span class="stage" data-stage="transcribing"><span class="dot"></span>Transcribing</span>
+        <span class="stage" data-stage="separating"><span class="dot"></span>Isolating the voice</span>
+        <span class="stage" data-stage="transcribing"><span class="dot"></span>Writing the notes</span>
       </div>
       <div class="bar"><div id="p-bar"></div></div>
-      <p class="small muted" id="p-note" style="margin:10px 0 0">A hummed tune takes seconds; a full song from a link a minute or two. You can keep this tab in the background.</p>
+      <p class="small muted" id="p-note" style="margin:12px 0 0">A hummed tune takes seconds; a full song a few minutes. You can keep this tab in the background.</p>
     </div>
 
     <div class="card hidden" id="result">
-      <div class="song">
-        <img id="r-thumb" alt="" class="hidden">
-        <div>
-          <div class="title" id="r-title"></div>
-          <div class="artist" id="r-artist"></div>
-          <div class="credit" id="r-credit"></div>
-          <div class="chips" id="r-chips"></div>
+      <div class="result-head">
+        <div class="song">
+          <img id="r-thumb" alt="" class="hidden">
+          <div style="min-width:0">
+            <div class="title" id="r-title"></div>
+            <div class="artist" id="r-artist"></div>
+            <div class="credit" id="r-credit"></div>
+            <div class="chips" id="r-chips"></div>
+          </div>
+        </div>
+        <div class="tabs result-tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" data-view="staff" type="button">Staff</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="solfa" type="button">Tonic Solfa</button>
+          <button class="tab" role="tab" aria-selected="false" data-view="parts" type="button">SATB</button>
         </div>
       </div>
-      <div id="r-truncated" class="alert alert-info hidden" style="margin-top:14px"></div>
+      <div id="r-truncated" class="alert alert-info hidden"></div>
 
-      <div class="tabs result-tabs" role="tablist" style="max-width:320px">
-        <button class="tab" role="tab" aria-selected="true" data-view="staff" type="button">Staff</button>
-        <button class="tab" role="tab" aria-selected="false" data-view="solfa" type="button">Tonic Solfa</button>
-        <button class="tab" role="tab" aria-selected="false" data-view="parts" type="button">SATB</button>
-      </div>
       <div id="r-staff">
         <div class="sheet-wrap">
           <div class="skel skel-staff hidden" id="sheet-skel" aria-hidden="true"></div>
@@ -431,17 +253,18 @@
         </div>
       </div>
 
+      <div class="tool-grid">
       <!-- ── Rehearse ─────────────────────────────────────────────────── -->
-      <div class="section">
-        <h2>Rehearse</h2>
-        <p class="muted small">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down.</p>
+      <div class="section wide">
+        <h2><svg class="ic"><use href="#i-play"/></svg>Rehearse</h2>
+        <p class="card-lead">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down.</p>
         <div class="player" id="player">
-          <button class="btn btn-primary" id="play" type="button">▶ Play</button>
-          <button class="btn btn-ghost btn-sm" id="restart" type="button" title="From the start">⟲</button>
+          <button class="btn btn-primary" id="play" type="button"><svg class="ic"><use href="#i-play"/></svg>Play</button>
+          <button class="btn btn-ghost btn-icon" id="restart" type="button" title="From the start" aria-label="From the start"><svg class="ic"><use href="#i-restart"/></svg></button>
           <span class="group"><label for="rate">Speed</label>
             <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
           <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
-            <input type="number" id="loop-from" min="1" value="1"> – <input type="number" id="loop-to" min="1" value="4"></span>
+            <input type="number" id="loop-from" min="1" value="1" aria-label="From bar"> – <input type="number" id="loop-to" min="1" value="4" aria-label="To bar"></span>
           <span class="group hidden" id="voices"><label>Voices</label></span>
           <label class="group hidden" id="backing-group" title="The song's own backing, with the solfa melody played over it in time"><input type="checkbox" id="backing-on"> Play with the song</label>
         </div>
@@ -449,12 +272,12 @@
 
       <!-- ── Sing it ──────────────────────────────────────────────────── -->
       <div class="section" id="sing">
-        <h2>Sing it <span class="pill pill-pro" style="vertical-align:middle">Pro</span></h2>
-        <p class="muted small">Pick your voice, hear the starting note and a count-in, then sing into your microphone. Every note comes back marked: in tune, close, or off. Headphones help; nothing is stored.</p>
+        <h2><svg class="ic"><use href="#i-sing"/></svg>Sing it <span class="pill pill-pro">Pro</span></h2>
+        <p class="card-lead">Pick your voice, hear the starting note and a count-in, then sing into your microphone. Every note comes back marked: in tune, close, or off. Headphones help; nothing is stored.</p>
         <div class="player">
           <span class="group" id="sing-voices"><label>Voice</label></span>
-          <button class="btn btn-primary btn-sm" id="sing-start" type="button">Record my take</button>
-          <button class="btn btn-ghost btn-sm hidden" id="sing-stop" type="button">Stop</button>
+          <button class="btn btn-primary btn-sm" id="sing-start" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record my take</button>
+          <button class="btn btn-ghost btn-sm hidden" id="sing-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
           <span id="sing-status" class="small muted"></span>
         </div>
         <div id="sing-live" class="sing-live hidden"></div>
@@ -467,28 +290,28 @@
 
       <!-- ── Lyrics ───────────────────────────────────────────────────── -->
       <div class="section">
-        <h2>Lyrics</h2>
+        <h2><svg class="ic"><use href="#i-text"/></svg>Lyrics</h2>
         <textarea id="lyrics" rows="3" placeholder="A-ma-zing grace, how sweet the sound…"></textarea>
-        <p class="muted small" style="margin:6px 0 0">Split syllables with hyphens (a-ma-zing); each goes under the next note. Use grace_ to hold a syllable over two notes. The Tonic Solfa tab shows the hymn-book layout.</p>
+        <p class="muted small" style="margin:8px 0 0">Split syllables with hyphens (a-ma-zing); each goes under the next note. Use grace_ to hold a syllable over two notes. The Tonic Solfa tab shows the hymn-book layout.</p>
       </div>
 
       <!-- ── Transpose ────────────────────────────────────────────────── -->
       <div class="section">
-        <h2>Transpose for my choir</h2>
-        <p class="muted small">Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.</p>
+        <h2><svg class="ic"><use href="#i-shift"/></svg>Transpose for my choir</h2>
+        <p class="card-lead">Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.</p>
         <div class="player">
-          <button class="btn btn-ghost btn-sm" id="tr-down" type="button" aria-label="A semitone lower">−</button>
+          <button class="btn btn-ghost btn-icon" id="tr-down" type="button" aria-label="A semitone lower"><svg class="ic"><use href="#i-minus"/></svg></button>
           <span class="tr-readout"><strong id="tr-value">0</strong> <span class="muted small" id="tr-key"></span></span>
-          <button class="btn btn-ghost btn-sm" id="tr-up" type="button" aria-label="A semitone higher">+</button>
+          <button class="btn btn-ghost btn-icon" id="tr-up" type="button" aria-label="A semitone higher"><svg class="ic"><use href="#i-plus"/></svg></button>
           <button class="btn btn-primary btn-sm" id="tr-apply" type="button" disabled>Transpose</button>
         </div>
         <table class="ranges" id="ranges"></table>
       </div>
 
       <!-- ── Guest: what an account unlocks ───────────────────────────── -->
-      <div class="section hidden" id="guest-cta">
-        <h2>Keep this sheet</h2>
-        <p class="muted small">Create a free account to save it to your library, share a link your choir can open, hear the whole song, and have alto, tenor and bass written under the tune.</p>
+      <div class="section wide hidden" id="guest-cta">
+        <h2><svg class="ic"><use href="#i-save"/></svg>Keep this sheet</h2>
+        <p class="card-lead">Create a free account to save it to your library, share a link your choir can open, hear the whole song, and have alto, tenor and bass written under the tune.</p>
         <div class="player">
           <button class="btn btn-primary" id="guest-cta-signup" type="button">Create a free account</button>
           <button class="btn btn-ghost" id="guest-cta-signin" type="button">I have an account</button>
@@ -496,33 +319,36 @@
       </div>
 
       <!-- ── Save & share ─────────────────────────────────────────────── -->
-      <div class="section" id="save-section">
-        <h2>Save &amp; share</h2>
+      <div class="section wide" id="save-section">
+        <h2><svg class="ic"><use href="#i-share"/></svg>Save &amp; share</h2>
         <div id="save-form" class="link-form">
-          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120">
-          <button class="btn btn-primary" id="save" type="button">Save to my library</button>
+          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120" aria-label="Sheet title">
+          <button class="btn btn-primary" id="save" type="button"><svg class="ic"><use href="#i-save"/></svg>Save to my library</button>
         </div>
         <div id="saved" class="hidden">
           <div class="alert alert-info hidden" id="app-banner">
-            <strong>Take it to rehearsal.</strong> The NoteFusion app records in the room, works offline with your library, and reminds the choir to practise.
-            <a class="btn btn-primary btn-sm" href="https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk" style="margin-left:8px">Get the Android app</a>
-            <button class="btn btn-ghost btn-sm" id="app-banner-dismiss" type="button">Not now</button>
+            <span><strong>Take it to rehearsal.</strong> The NoteFusion app records in the room, works offline with your library, and reminds the choir to practise.</span>
+            <span class="row" style="gap:8px;flex:none">
+              <a class="btn btn-primary btn-sm" href="https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk">Get the Android app</a>
+              <button class="btn btn-ghost btn-sm" id="app-banner-dismiss" type="button">Not now</button>
+            </span>
           </div>
-          <p class="small" style="margin:0 0 8px"><span class="pill pill-free">Saved</span> <span id="saved-title"></span></p>
+          <p class="small" style="margin:0 0 10px"><span class="pill pill-free">Saved</span> <strong id="saved-title"></strong></p>
           <div class="player">
-            <button class="btn btn-primary btn-sm" id="share" type="button">Share a link</button>
-            <span id="share-row" class="hidden" style="display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap">
-              <input id="share-url" type="text" readonly style="width:min(360px,70vw)">
+            <button class="btn btn-primary btn-sm" id="share" type="button"><svg class="ic"><use href="#i-share"/></svg>Share a link</button>
+            <span id="share-row" class="share-row hidden">
+              <input id="share-url" type="text" readonly aria-label="Share link">
               <button class="btn btn-ghost btn-sm" id="share-copy" type="button">Copy</button>
               <button class="btn btn-ghost btn-sm" id="share-stop" type="button">Stop sharing</button>
             </span>
           </div>
-          <p class="muted small" style="margin:8px 0 0">Anyone with the link can read the sheet and rehearse with playback — no account needed. Paste it into the choir group.</p>
+          <p class="muted small" style="margin:10px 0 0">Anyone with the link can read the sheet and rehearse with playback — no account needed. Paste it into the choir group.</p>
         </div>
+      </div>
       </div>
 
       <div class="downloads">
-        <button class="btn btn-primary" id="dl-pdf" type="button">Download PDF</button>
+        <button class="btn btn-primary" id="dl-pdf" type="button"><svg class="ic"><use href="#i-download"/></svg>Download PDF</button>
         <button class="btn btn-ghost" id="dl-xml" type="button">MusicXML</button>
         <button class="btn btn-ghost" id="dl-midi" type="button">MIDI</button>
         <button class="btn btn-ghost" id="dl-solfa" type="button">Solfa text</button>
@@ -535,56 +361,72 @@
     </div>
 
     <div class="card hidden" id="upgrade-panel">
-      <h2>Upgrade to Pro</h2>
-      <p class="muted small">Full songs up to six minutes, twenty a month, priority processing, and every download format. Cancel any time.</p>
+      <h2><svg class="ic"><use href="#i-sparkle"/></svg>Upgrade to Pro</h2>
+      <p class="card-lead">Full songs up to six minutes, twenty a month, priority processing, and every download format. Cancel any time.</p>
       <div class="plans" id="plans-standalone"></div>
     </div>
     </div>
 
     <!-- ── Library: every sheet this account has saved ─────────────── -->
     <div id="view-library" class="hidden">
+      <div class="page-head">
+        <h1>Library</h1>
+        <p>Every sheet you saved, from the web or the app. Open one to rehearse, transpose, add lyrics or share it.</p>
+      </div>
       <div class="card">
-        <h2>My library</h2>
-        <p class="muted small">Every sheet you saved, from the web or the app. Open one to rehearse, transpose, add lyrics or share it.</p>
         <div id="lib-skel"><div class="lib-list"><div class="skel skel-plan"></div><div class="skel skel-plan"></div><div class="skel skel-plan"></div></div></div>
         <div class="lib-list hidden" id="lib-list"></div>
-        <p class="lib-empty hidden" id="lib-empty">Nothing saved yet. Transcribe a song and press <strong>Save to my library</strong> — it will be here, and in the app.</p>
+        <div class="empty hidden" id="lib-empty">
+          <svg class="ic"><use href="#i-music"/></svg>
+          <p id="lib-empty-text">Nothing saved yet. Transcribe a song and press <strong>Save to my library</strong> — it will be here, and in the app.</p>
+          <button class="btn btn-primary btn-sm" id="lib-empty-go" type="button"><svg class="ic"><use href="#i-plus"/></svg>Transcribe something</button>
+        </div>
       </div>
     </div>
 
     <!-- ── Account ──────────────────────────────────────────────────── -->
     <div id="view-account" class="hidden">
+      <div class="page-head">
+        <h1>Account</h1>
+        <p>Your plan, this month's usage, and what the app adds.</p>
+      </div>
       <div class="card">
-        <h2>Account</h2>
+        <div class="profile">
+          <span class="who-avatar" id="acct-avatar" aria-hidden="true"></span>
+          <div style="min-width:0">
+            <div class="name" id="acct-name">—</div>
+            <div class="email" id="acct-email">—</div>
+          </div>
+        </div>
         <div class="acct-grid">
-          <div class="acct-row"><small>Name</small><strong id="acct-name">—</strong></div>
-          <div class="acct-row"><small>Email</small><strong id="acct-email">—</strong></div>
           <div class="acct-row"><small>Plan</small><strong id="acct-plan">—</strong></div>
           <div class="acct-row"><small>This month</small><strong id="acct-credits">—</strong></div>
           <div class="acct-row"><small>Saved sheets</small><strong id="acct-saved">—</strong></div>
           <div class="acct-row"><small>Member since</small><strong id="acct-since">—</strong></div>
         </div>
-        <div class="player" style="margin-top:14px">
-          <button class="btn btn-primary btn-sm hidden" id="acct-upgrade" type="button">Upgrade to Pro</button>
-          <button class="btn btn-ghost btn-sm" id="acct-signout" type="button">Sign out</button>
-          <a class="btn btn-ghost btn-sm" href="/delete-account">Delete my account</a>
+        <div class="player" style="margin-top:16px">
+          <button class="btn btn-primary btn-sm hidden" id="acct-upgrade" type="button"><svg class="ic"><use href="#i-sparkle"/></svg>Upgrade to Pro</button>
+          <button class="btn btn-ghost btn-sm" id="acct-signout" type="button"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+          <a class="btn btn-ghost btn-sm btn-danger" href="/delete-account">Delete my account</a>
         </div>
       </div>
       <div class="card">
-        <h2>Only in the app</h2>
-        <p class="muted small">The web and the app share one account and one library. A few things need a phone in the room:</p>
+        <h2><svg class="ic"><use href="#i-phone"/></svg>Only in the app</h2>
+        <p class="card-lead">The web and the app share one account and one library. A few things need a phone in the room:</p>
         <ul class="only-app">
-          <li>Record straight from rehearsal, with the key set before you sing</li>
-          <li>Your library offline, for churches and halls with no signal</li>
-          <li>Practice reminders and a note when a long transcription is ready</li>
+          <li><svg class="ic"><use href="#i-mic"/></svg>Record straight from rehearsal, with the key set before you sing</li>
+          <li><svg class="ic"><use href="#i-wifi-off"/></svg>Your library offline, for churches and halls with no signal</li>
+          <li><svg class="ic"><use href="#i-bell"/></svg>Practice reminders and a note when a long transcription is ready</li>
         </ul>
-        <p style="margin-top:12px"><a class="btn btn-ghost btn-sm" href="https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk">Get the Android app (APK)</a></p>
+        <p style="margin-top:14px"><a class="btn btn-ghost btn-sm" href="https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk"><svg class="ic"><use href="#i-download"/></svg>Get the Android app (APK)</a></p>
       </div>
     </div>
   </section>
 
   <p class="foot">Transcriptions are for personal and choir rehearsal use. Audio fetched from a link is deleted as soon as the job finishes. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
-</main>
+  </main>
+  </div>
+</div>
 
 <!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
 <div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
@@ -592,7 +434,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
 <script src="/assets/choir.js?v=2" defer></script>
-<script src="/assets/preview.js?v=2" defer></script>
-<script src="/assets/app.js?v=3" defer></script>
+<script src="/assets/preview.js?v=3" defer></script>
+<script src="/assets/app.js?v=4" defer></script>
 </body>
 </html>

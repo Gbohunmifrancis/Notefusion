@@ -86,6 +86,11 @@
     revealables.forEach(function (el) {
       observer.observe(el);
     });
+    // Safety net: whatever the observer has not shown after a few seconds is shown anyway,
+    // so a section is never left invisible on a browser that reports no intersections.
+    setTimeout(function () {
+      revealables.forEach(function (el) { el.classList.add("is-visible"); });
+    }, 4000);
   }
 
   // ── Interactive Hero Showcase Card ────────────────────────────────────────

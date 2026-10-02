@@ -107,6 +107,9 @@
     for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
     return out;
   }
+  /** A button's content: an icon from the page's sprite and a label. */
+  function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="#i-' + icon + '"/></svg>' + text; }
+  function initial(name) { return (name || "?").trim().charAt(0).toUpperCase() || "?"; }
   function safeName(text) { return (text || "notefusion").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").slice(0, 60) || "notefusion"; }
 
   // ── State ────────────────────────────────────────────────────────────────
@@ -124,6 +127,7 @@
   // ── Auth view ────────────────────────────────────────────────────────────
   function showAuth() {
     hide($("boot-skel")); hide($("view-app")); hide($("who")); show($("view-auth"));
+    document.body.classList.add("guest");
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
     maybeOnboard();
   }
@@ -274,6 +278,7 @@
       hide(empty); show(list);
       items.forEach(function (it) {
         var card = document.createElement("div"); card.className = "lib-item";
+        var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
         m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "");
@@ -281,7 +286,7 @@
         var a = document.createElement("div"); a.className = "actions";
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
         open.addEventListener("click", function () { openSaved(it.id); });
-        var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm"; del.type = "button"; del.textContent = "Delete";
+        var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
         del.addEventListener("click", function () {
           if (!confirm("Delete \u201c" + (it.title || "Untitled") + "\u201d from your library? This cannot be undone.")) return;
           del.disabled = true;
@@ -291,8 +296,9 @@
         a.appendChild(open); a.appendChild(del); card.appendChild(a);
         list.appendChild(card);
       });
-    }).catch(function (err) { hide(skel); show(empty); empty.textContent = "Your library could not be loaded: " + (err.message || err); });
+    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); });
   }
+  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); $("link-url").focus(); });
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
     stopPolling();
@@ -313,6 +319,7 @@
 
   function renderAccount() {
     $("acct-name").textContent = me ? (me.fullName || "—") : "—";
+    $("acct-avatar").textContent = initial(me && (me.fullName || me.email));
     $("acct-email").textContent = me ? (me.email || "—") : "—";
     $("acct-plan").textContent = isPro() ? "Pro" : "Free";
     $("acct-credits").textContent = sub ? (isPro() ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left" : (sub.songCreditsRemaining > 0 ? "1 free song preview" : "Preview used")) : "—";
@@ -330,6 +337,7 @@
 
   function renderWho() {
     $("who-name").textContent = me ? (me.fullName || me.email || "") : "";
+    $("who-avatar").textContent = initial(me && (me.fullName || me.email));
     var plan = $("who-plan");
     plan.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
     plan.textContent = isPro() ? "Pro" : "Free";
@@ -360,6 +368,7 @@
       var wasGuest = guest;
       guest = false;
       hide($("boot-skel")); hide($("view-auth")); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
+      document.body.classList.remove("guest");
       if (new URLSearchParams(location.search).get("upgrade") && !isPro()) { show($("upgrade-panel")); setTimeout(function () { $("upgrade-panel").scrollIntoView({ behavior: "smooth", block: "start" }); }, 50); }
       if (!isPro()) loadPlans($("upgrade-panel"), $("plans-standalone"));
       else hide($("upgrade-panel"));
@@ -378,6 +387,7 @@
   function startGuest() {
     guest = true;
     hide($("boot-skel")); hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
+    document.body.classList.add("guest");
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
@@ -415,13 +425,22 @@
     submitAudio(file, file.name);
     e.target.value = "";
   });
+  (function () {
+    var drop = $("drop");
+    ["dragenter", "dragover"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("is-over"); }); });
+    ["dragleave", "drop"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("is-over"); }); });
+    drop.addEventListener("drop", function (e) {
+      var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file) submitAudio(file, file.name);
+    });
+  })();
 
   // ── Record a tune in the browser ─────────────────────────────────────────
   var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, MAX_SEC: 180 };
   function stopRecording() {
     if (rec.timer) clearInterval(rec.timer); if (rec.stopAt) clearTimeout(rec.stopAt); rec.timer = rec.stopAt = null;
     if (rec.recorder && rec.recorder.state !== "inactive") rec.recorder.stop();
-    $("rec-btn").textContent = "🎤 Record a tune";
+    label($("rec-btn"), "mic", "Record a tune"); $("rec-btn").classList.remove("is-recording");
   }
   $("rec-btn").addEventListener("click", function () {
     if (rec.recorder && rec.recorder.state === "recording") { stopRecording(); return; }
@@ -444,7 +463,7 @@
       rec.started = Date.now();
       rec.timer = setInterval(function () {
         var left = Math.max(0, rec.MAX_SEC - Math.floor((Date.now() - rec.started) / 1000));
-        $("rec-btn").textContent = "■ Stop (" + left + "s)";
+        label($("rec-btn"), "stop", "Stop (" + left + "s)"); $("rec-btn").classList.add("is-recording");
         $("rec-status").textContent = "Recording… hum or sing, then press Stop.";
       }, 250);
       rec.stopAt = setTimeout(stopRecording, rec.MAX_SEC * 1000);
@@ -567,7 +586,8 @@
     isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
     hide($("upgrade-panel"));
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
-      b.innerHTML = b.textContent.replace(/\s*🔒$/, "") + (isPro() ? "" : ' <span class="lock">🔒</span>');
+      var text = b.textContent.trim();
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -646,7 +666,7 @@
       ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
       $("backing-on").addEventListener("change", function () { player.setBackingOn($("backing-on").checked); });
       player.onTick(function (t) {
-        $("play").textContent = t.playing ? "❚❚ Pause" : "▶ Play";
+        label($("play"), t.playing ? "pause" : "play", t.playing ? "Pause" : "Play");
         var now = -1;
         for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
         hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });

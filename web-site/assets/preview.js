@@ -19,6 +19,9 @@
   if (!form) return;
   var urlInput = $("try-url"), submit = $("try-submit"), file = $("try-file"), record = $("try-record"), status = $("try-status");
 
+  // The web app carries an icon sprite; the home page does not, so the label is text there.
+  var icons = !!document.getElementById("i-mic");
+  function recLabel(icon, text) { record.innerHTML = (icons ? '<svg class="ic"><use href="#i-' + icon + '"/></svg>' : "") + text; }
   function say(text, kind) { status.textContent = text || ""; status.className = "try-status" + (kind ? " try-status-" + kind : ""); }
   function busy(on) { submit.disabled = on; record.disabled = on; file.disabled = on; }
   function send(path, opts) {
@@ -60,7 +63,7 @@
   function stopRecording() {
     if (timer) clearInterval(timer); if (stopAt) clearTimeout(stopAt); timer = stopAt = null;
     if (recorder && recorder.state !== "inactive") recorder.stop();
-    record.textContent = "Record a tune";
+    recLabel("mic", "Record a tune"); record.classList.remove("is-recording");
   }
   record.addEventListener("click", function () {
     if (recorder && recorder.state === "recording") { stopRecording(); return; }
@@ -84,7 +87,7 @@
       submit.disabled = true; file.disabled = true;
       timer = setInterval(function () {
         var left = Math.max(0, MAX_RECORD_SEC - Math.floor((Date.now() - started) / 1000));
-        record.textContent = "Stop (" + left + "s)";
+        recLabel("stop", "Stop (" + left + "s)"); record.classList.add("is-recording");
         say("Recording… hum or sing the tune, then press Stop.");
       }, 250);
       stopAt = setTimeout(stopRecording, MAX_RECORD_SEC * 1000);

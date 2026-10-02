@@ -107,7 +107,7 @@
     }
     ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
     player.onTick(function (t) {
-      $("play").textContent = t.playing ? "❚❚ Pause" : "▶ Play";
+      $("play").innerHTML = '<svg class="ic"><use href="#i-' + (t.playing ? "pause" : "play") + '"/></svg>' + (t.playing ? "Pause" : "Play");
       var now = -1;
       for (var i = 0; i < cells.length; i++) if (cells[i].beat <= t.beat + 1e-6) now = i;
       cells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
