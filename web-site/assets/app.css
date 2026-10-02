@@ -575,3 +575,5 @@ body.auth-only .auth-page .try-free { display: none; }
 .pay-fine .ic { width: 14px; height: 14px; flex: none; }
 .pay-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 #plans-extend { margin-top: 4px; }
+
+.studio-credits { margin: 10px 2px 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.85); text-align: center; }

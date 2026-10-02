@@ -577,6 +577,7 @@
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
     $("menu-plans-label").textContent = isPro() ? "My membership" : "View all plans";
+    renderStudioCredits();
     $("menu-name").textContent = me ? (me.fullName || "") : "";
     $("menu-email").textContent = me ? (me.email || "") : "";
     var plan = $("who-plan");
@@ -647,6 +648,18 @@
   });
 
   function uploadKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "hum"; }
+  /** What a song costs, said before it is spent: a link or a song with instruments uses one credit. */
+  function renderStudioCredits() {
+    var el = $("studio-credits");
+    if (!el) return;
+    if (!sub || !isPro()) { hide(el); return; }
+    var left = sub.songCreditsRemaining, total = sub.songCreditsTotal;
+    el.textContent = left > 0
+      ? "A link or a song with instruments uses 1 of your " + left + " songs left this month. Hummed tunes and choir recordings are free."
+      : "You've used all " + total + " songs this month. Hummed tunes and choir recordings are still free; songs come back next month.";
+    show(el);
+  }
+  document.querySelectorAll('input[name="upload-kind"]').forEach(function (r) { r.addEventListener("change", renderStudioCredits); });
   function submitAudio(file, name) {
     var kind = uploadKind(), song = kind === "song";
     var form = new FormData();
