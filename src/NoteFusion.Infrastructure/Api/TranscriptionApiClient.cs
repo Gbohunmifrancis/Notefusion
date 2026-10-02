@@ -187,6 +187,8 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
             form.Add(new StringContent(options.TimeSignature), "time_signature");
         form.Add(new StringContent(options.Priority == TranscribePriority.High ? "high" : "normal"), "priority");
+        if (withMode && options.MaxSeconds is { } cap)
+            form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
 
         var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
         var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";

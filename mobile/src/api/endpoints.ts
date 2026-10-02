@@ -42,6 +42,7 @@ export const authApi = {
         fullName,
         email,
         password,
+        source: "mobile",
       })
       .then((r) => r.data),
 

@@ -28,6 +28,9 @@ public interface IApplicationDbContext
     /// </summary>
     DbSet<TrialDevice> TrialDevices { get; }
 
+    /// <summary>Anonymous try-it-free transcriptions from the website; the web funnel's top.</summary>
+    DbSet<PreviewJob> PreviewJobs { get; }
+
     // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }

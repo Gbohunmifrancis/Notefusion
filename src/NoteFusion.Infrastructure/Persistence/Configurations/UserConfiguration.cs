@@ -29,6 +29,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         // ISO 3166-1 alpha-2. Nullable, and null means "we do not know" — every account created before
         // countries were resolved is in that state, and so is anyone whose lookup failed.
         builder.Property(u => u.Country).HasMaxLength(2).IsFixedLength();
+        builder.Property(u => u.SignupSource).HasColumnName("signup_source").HasMaxLength(10);
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(u => u.CreatedAt).IsRequired();
 

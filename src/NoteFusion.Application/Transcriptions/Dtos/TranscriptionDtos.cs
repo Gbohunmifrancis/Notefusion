@@ -22,7 +22,7 @@ public sealed record TranscribeOptions
     /// </summary>
     public TranscribePriority Priority { get; init; } = TranscribePriority.Normal;
 
-    /// <summary>Linked songs only: the most of the song to transcribe, in seconds.</summary>
+    /// <summary>The most of the audio to transcribe, in seconds: a linked song's cap, or an anonymous preview's.</summary>
     public double? MaxSeconds { get; init; }
 }
 

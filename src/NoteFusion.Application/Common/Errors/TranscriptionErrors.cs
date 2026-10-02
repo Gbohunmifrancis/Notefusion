@@ -22,6 +22,9 @@ public static class TranscriptionErrors
         Error.Validation("TRANS_INVALID_LINK",
             "Paste a link to a YouTube video, a Spotify track or an Apple Music song.");
 
+    public static readonly Error PreviewLimitReached =
+        Error.Validation("PREVIEW_LIMIT_REACHED", "You've used today's free previews. Create a free account to keep transcribing.");
+
     public static readonly Error ProRequired =
         Error.Forbidden("BILLING_PRO_REQUIRED", "Sing-along grading is a Pro feature. Upgrade to have your takes marked note by note.");
 

@@ -13,6 +13,11 @@ import {
   UserRoundPlus,
   Zap,
   LogIn,
+  Globe,
+  Share2,
+  Eye,
+  Crown,
+  Bookmark,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -28,6 +33,7 @@ import {
 
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview, DailyCount } from "@/api/types";
+import { DailyChart } from "@/components/DailyChart";
 import { DonutCard } from "@/components/DonutCard";
 import type { DonutSlice } from "@/components/DonutCard";
 import { RangePicker } from "@/components/RangePicker";
@@ -55,6 +61,7 @@ import {
   formatPercent,
   formatRelative,
   formatWeekOf,
+  UNKNOWN,
 } from "@/lib/format";
 import { rememberReportingOffset } from "@/lib/reporting";
 import { TBODY, TD, TH } from "@/lib/tableClasses";
@@ -278,6 +285,78 @@ function SignupChart({ data }: { data: DailyCount[] }) {
             />
           </AreaChart>
         </ResponsiveContainer>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The website's funnel: previews at the top, Pro at the bottom. Each stage names what it counts,
+ * and the rates are computed here from the counts the API returned rather than returned as rates,
+ * so a reader can check the arithmetic against the tiles above.
+ */
+function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) {
+  const chart = useChartPalette();
+  const previewChange = changeAgainst(funnel.previews, funnel.previewsPrevious);
+  const signupChange = changeAgainst(funnel.webSignups, funnel.webSignupsPrevious);
+  const rate = (num: number, den: number) => (den > 0 ? formatPercent(num / den, 0) : UNKNOWN);
+
+  const stages = [
+    { label: "Previews", value: funnel.previews, hint: "Anonymous 30-second transcriptions started from the website" },
+    { label: "Sign-ups from a preview", value: funnel.signupsFromPreview, hint: "Web accounts created after a preview, attributed by the claim the app makes on sign-in" },
+    { label: "Saved a sheet", value: funnel.webSignupsWhoSaved, hint: "Of this window's web sign-ups, those with at least one sheet in their library" },
+    { label: "Went Pro", value: funnel.webProConversions, hint: "Subscriptions started in the window by accounts that signed up on the web" },
+  ];
+  const top = stages[0]?.value ?? 0;
+
+  const tiles: StatItem[] = [
+    { title: "Previews", value: formatCount(funnel.previews), change: previewChange?.label ?? null, description: previewChange ? "vs. previous period" : null, icon: Globe, hint: `${formatCount(funnel.previewDevices)} browsers · ${formatCount(funnel.previewsSucceeded)} reached a result` },
+    { title: "Web sign-ups", value: formatCount(funnel.webSignups), change: signupChange?.label ?? null, description: signupChange ? "vs. previous period" : null, icon: UserRoundPlus, hint: "Accounts created on the website in this window" },
+    { title: "Preview → sign-up", value: rate(funnel.signupsFromPreview, funnel.previews), icon: Bookmark, hint: "Sign-ups that claimed a preview, over previews started" },
+    { title: "Shares", value: formatCount(funnel.sharesCreated), icon: Share2, hint: `Sheets put behind a public link in this window · ${formatCount(funnel.shareViews)} link opens all time` },
+    { title: "Link opens", value: formatCount(funnel.shareViews), icon: Eye, hint: "Opens of public sheet links, all time" },
+    { title: "Web → Pro", value: rate(funnel.webProConversions, funnel.webSignups), icon: Crown, hint: "Pro subscriptions started by this window's web sign-ups, over web sign-ups" },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        Web funnel
+      </h3>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {tiles.map((stat) => (
+          <StatCard key={stat.title} stat={stat} />
+        ))}
+      </div>
+      <div className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-7 xl:col-span-8">
+          <DailyChart title="Previews" info="Anonymous try-it-free transcriptions per day" data={funnel.previewsPerDay} unit="previews" color={chart.series} />
+        </div>
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:col-span-5 xl:col-span-4">
+          <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">Preview to Pro</h4>
+          <div className="space-y-3">
+            {stages.map((stage) => {
+              const share = top > 0 ? Math.min(100, Math.round((stage.value / top) * 100)) : 0;
+              return (
+                <div key={stage.label} title={stage.hint}>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-medium text-slate-700 dark:text-slate-200">{stage.label}</span>
+                    <span className="font-semibold text-slate-900 dark:text-white">
+                      {formatCount(stage.value)}
+                      <span className="ml-2 font-normal text-slate-400">{top > 0 ? `${share}%` : UNKNOWN}</span>
+                    </span>
+                  </div>
+                  <div className="mt-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-zinc-800">
+                    <div className="h-full rounded-full bg-blue-600 transition-all duration-500" style={{ width: `${share}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-4 text-[11px] leading-relaxed text-slate-400">
+            Shares of the window&apos;s previews. &ldquo;Saved&rdquo; and &ldquo;Pro&rdquo; count the window&apos;s web sign-ups, who may have previewed earlier.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -644,6 +723,11 @@ export function OverviewView() {
                 </div>
               </div>
 
+              {/* WEB FUNNEL: previews → sign-ups → saves → shares → Pro */}
+              <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+                <WebFunnelPanel funnel={data.webFunnel} />
+              </div>
+
               {/* SECONDARY DEEP DIVE: KEYS & OUTCOMES */}
               <div className="grid gap-6 xl:grid-cols-2">
                 <MostTranscribedKeys keys={data.topKeys} />
@@ -685,6 +769,19 @@ export function OverviewView() {
                       meters
                       emptyMessage="No accounts yet"
                     />
+                    <div className="mt-5 border-t border-slate-100 pt-4 dark:border-slate-800/60">
+                      <div className="mb-3 flex items-center justify-between">
+                        <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Signed up from</h4>
+                        <span className="text-xs text-slate-400">All accounts</span>
+                      </div>
+                      <DonutCard
+                        slices={data.signupSources.map((source, i) => ({ label: source.label, value: source.count, color: chart.categorical[(i + 2) % chart.categorical.length] ?? chart.faint }))}
+                        centerLabel="All accounts"
+                        centerValue={formatCount(data.signupSources.reduce((sum, row) => sum + row.count, 0))}
+                        meters
+                        emptyMessage="No accounts yet"
+                      />
+                    </div>
                   </div>
 
                   {/* Weekly Cohorts Table - Bleed to edges of card, no double box! */}

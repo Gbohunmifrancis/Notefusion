@@ -1,0 +1,112 @@
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions.Dtos;
+using NoteFusion.Core.Entities;
+using NoteFusion.Shared.Results;
+
+namespace NoteFusion.Application.Preview.Commands;
+
+/// <summary>
+/// An anonymous thirty-second preview of a recording or file, from the website, with no account.
+/// Throttled per browser and per address; the worker transcribes only the head of the clip.
+/// </summary>
+public sealed record SubmitPreviewCommand(Stream Audio, string FileName) : IRequest<Result<string>>;
+
+/// <summary>The same preview for a song behind a YouTube, Spotify or Apple Music link.</summary>
+public sealed record SubmitPreviewLinkCommand(string Url) : IRequest<Result<string>>;
+
+internal static class PreviewThrottle
+{
+    public static async Task<Error?> CheckAsync(
+        IApplicationDbContext db, string? device, string? ip, DateTime utcNow, CancellationToken ct)
+    {
+        var since = utcNow.AddDays(-1);
+        if (device is not null)
+        {
+            var used = await db.PreviewJobs.CountAsync(p => p.DeviceFingerprint == device && p.CreatedAtUtc >= since, ct);
+            if (used >= PreviewLimits.PerDevicePerDay) return TranscriptionErrors.PreviewLimitReached;
+        }
+        if (ip is not null)
+        {
+            var used = await db.PreviewJobs.CountAsync(p => p.Ip == ip && p.CreatedAtUtc >= since, ct);
+            if (used >= PreviewLimits.PerAddressPerDay) return TranscriptionErrors.PreviewLimitReached;
+        }
+        return null;
+    }
+
+    public static TranscribeOptions Options => new() { MaxSeconds = PreviewLimits.Seconds };
+}
+
+public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewCommand, Result<string>>
+{
+    private readonly ITranscriptionApi _api;
+    private readonly IApplicationDbContext _db;
+    private readonly IDateTimeProvider _clock;
+    private readonly IDeviceFingerprint _device;
+    private readonly IClientIpAddress _ip;
+
+    public SubmitPreviewCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip)
+    {
+        _api = api;
+        _db = db;
+        _clock = clock;
+        _device = device;
+        _ip = ip;
+    }
+
+    public async Task<Result<string>> Handle(SubmitPreviewCommand request, CancellationToken cancellationToken)
+    {
+        var device = _device.Current;
+        var ip = _ip.Current;
+        if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
+            return refused;
+
+        var submitted = await _api.SubmitAsync(request.Audio, request.FileName, PreviewThrottle.Options, cancellationToken);
+        if (submitted.IsFailure)
+            return submitted;
+
+        _db.PreviewJobs.Add(PreviewJob.Record(submitted.Value, "upload", device, ip, _clock.UtcNow));
+        await _db.SaveChangesAsync(cancellationToken);
+        return submitted;
+    }
+}
+
+public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPreviewLinkCommand, Result<string>>
+{
+    private readonly ITranscriptionApi _api;
+    private readonly IApplicationDbContext _db;
+    private readonly IDateTimeProvider _clock;
+    private readonly IDeviceFingerprint _device;
+    private readonly IClientIpAddress _ip;
+
+    public SubmitPreviewLinkCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip)
+    {
+        _api = api;
+        _db = db;
+        _clock = clock;
+        _device = device;
+        _ip = ip;
+    }
+
+    public async Task<Result<string>> Handle(SubmitPreviewLinkCommand request, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(request.Url) || !Uri.TryCreate(request.Url.Trim(), UriKind.Absolute, out var uri)
+            || (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+            return TranscriptionErrors.InvalidLink;
+
+        var device = _device.Current;
+        var ip = _ip.Current;
+        if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
+            return refused;
+
+        var submitted = await _api.SubmitLinkAsync(uri.ToString(), PreviewThrottle.Options, cancellationToken);
+        if (submitted.IsFailure)
+            return submitted;
+
+        _db.PreviewJobs.Add(PreviewJob.Record(submitted.Value, "link", device, ip, _clock.UtcNow));
+        await _db.SaveChangesAsync(cancellationToken);
+        return submitted;
+    }
+}

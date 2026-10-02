@@ -197,6 +197,12 @@
         <p class="small muted" style="margin-top:12px">Forgot your password? Reset it from the app's sign-in screen.</p>
       </form>
 
+      <form id="form-verify" class="hidden" novalidate>
+        <p class="small muted">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
+        <div class="field"><label for="verify-code">Code</label><input id="verify-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Confirm and sign in</button>
+        <p class="small muted" style="margin:10px 0 0">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
+      </form>
       <form id="form-register" class="hidden" novalidate>
         <div class="field"><label for="reg-name">Full name</label><input id="reg-name" type="text" autocomplete="name" required></div>
         <div class="field"><label for="reg-email">Email</label><input id="reg-email" type="email" autocomplete="email" required></div>
@@ -209,6 +215,11 @@
 
   <!-- ── Signed in ──────────────────────────────────────────────────── -->
   <section id="view-app" class="hidden">
+    <div class="alert alert-info hidden" id="guest-bar">
+      <strong>You're trying NoteFusion free.</strong> Previews are the first 30 seconds, no account needed. Create a free account to keep the sheet, hear it in four parts and share it with your choir.
+      <button class="btn btn-primary btn-sm" id="guest-signup" type="button" style="margin-left:10px">Create a free account</button>
+      <button class="btn btn-ghost btn-sm" id="guest-signin" type="button">Sign in</button>
+    </div>
     <div class="card">
       <h2>Transcribe a song</h2>
       <p class="muted small">Paste a YouTube, Spotify or Apple Music link. We fetch the audio, isolate the lead vocal, and write it out as Tonic Solfa and staff notation. The song is acknowledged by title and artist on the sheet.</p>
@@ -328,14 +339,29 @@
         <table class="ranges" id="ranges"></table>
       </div>
 
+      <!-- ── Guest: what an account unlocks ───────────────────────────── -->
+      <div class="section hidden" id="guest-cta">
+        <h2>Keep this sheet</h2>
+        <p class="muted small">Create a free account to save it to your library, share a link your choir can open, hear the whole song, and have alto, tenor and bass written under the tune.</p>
+        <div class="player">
+          <button class="btn btn-primary" id="guest-cta-signup" type="button">Create a free account</button>
+          <button class="btn btn-ghost" id="guest-cta-signin" type="button">I have an account</button>
+        </div>
+      </div>
+
       <!-- ── Save & share ─────────────────────────────────────────────── -->
-      <div class="section">
+      <div class="section" id="save-section">
         <h2>Save &amp; share</h2>
         <div id="save-form" class="link-form">
           <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120">
           <button class="btn btn-primary" id="save" type="button">Save to my library</button>
         </div>
         <div id="saved" class="hidden">
+          <div class="alert alert-info hidden" id="app-banner">
+            <strong>Take it to rehearsal.</strong> The NoteFusion app records in the room, works offline with your library, and reminds the choir to practise.
+            <a class="btn btn-primary btn-sm" href="https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk" style="margin-left:8px">Get the Android app</a>
+            <button class="btn btn-ghost btn-sm" id="app-banner-dismiss" type="button">Not now</button>
+          </div>
           <p class="small" style="margin:0 0 8px"><span class="pill pill-free">Saved</span> <span id="saved-title"></span></p>
           <div class="player">
             <button class="btn btn-primary btn-sm" id="share" type="button">Share a link</button>

@@ -77,6 +77,8 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var topKeys = await BuildTopKeys(cancellationToken);
         var retention = await BuildRetention(utcNow, cancellationToken);
         var recentActivity = await BuildRecentActivity(cancellationToken);
+        var signupSources = await BuildSignupSources(cancellationToken);
+        var webFunnel = await BuildWebFunnel(range, previous, cancellationToken);
 
         return new AnalyticsOverviewDto(
             range.FromUtc,
@@ -90,7 +92,62 @@ public sealed class GetAnalyticsOverviewQueryHandler
             devicePlatforms,
             topKeys,
             retention,
-            recentActivity);
+            recentActivity,
+            signupSources,
+            webFunnel);
+    }
+
+    private async Task<IReadOnlyList<CategoryCountDto>> BuildSignupSources(CancellationToken ct)
+    {
+        var web = await _db.Users.CountAsync(u => u.SignupSource == "web", ct);
+        var mobile = await _db.Users.CountAsync(u => u.SignupSource == "mobile", ct);
+        var unknown = await _db.Users.CountAsync(u => u.SignupSource == null, ct);
+        return [new CategoryCountDto("Web", web), new CategoryCountDto("Mobile", mobile), new CategoryCountDto("Unknown", unknown)];
+    }
+
+    /// <summary>
+    /// The website's funnel. Every stage is a count of rows the schema actually keeps — preview jobs,
+    /// accounts stamped with a source, claims, saved sheets, share tokens, subscriptions — so each
+    /// number can be traced to a table rather than to an event stream that does not exist.
+    /// </summary>
+    private async Task<WebFunnelDto> BuildWebFunnel(AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
+    {
+        var previews = _db.PreviewJobs.Where(p => p.CreatedAtUtc >= range.FromUtc && p.CreatedAtUtc < range.ToUtc);
+        var webUsers = _db.Users.Where(u => u.SignupSource == "web" && u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc);
+
+        var webUserIds = await webUsers.Select(u => u.Id).ToListAsync(ct);
+        var claimedBy = await _db.PreviewJobs
+            .Where(p => p.ClaimedByUserId != null)
+            .Select(p => p.ClaimedByUserId!.Value)
+            .Distinct()
+            .ToListAsync(ct);
+        var savers = await _db.Transcriptions
+            .Where(t => webUserIds.Contains(t.UserId))
+            .Select(t => t.UserId)
+            .Distinct()
+            .CountAsync(ct);
+        var allWebIds = await _db.Users.Where(u => u.SignupSource == "web").Select(u => u.Id).ToListAsync(ct);
+        var proConversions = await _db.Subscriptions
+            .Where(s => s.CreatedAtUtc >= range.FromUtc && s.CreatedAtUtc < range.ToUtc && allWebIds.Contains(s.UserId))
+            .Select(s => s.UserId)
+            .Distinct()
+            .CountAsync(ct);
+
+        var previewsPerDay = await DailySeries(previews.Select(p => p.CreatedAtUtc), range, ct);
+
+        return new WebFunnelDto(
+            Previews: await previews.CountAsync(ct),
+            PreviewsPrevious: await _db.PreviewJobs.CountAsync(p => p.CreatedAtUtc >= previous.FromUtc && p.CreatedAtUtc < previous.ToUtc, ct),
+            PreviewDevices: await previews.Where(p => p.DeviceFingerprint != null).Select(p => p.DeviceFingerprint).Distinct().CountAsync(ct),
+            PreviewsSucceeded: await previews.CountAsync(p => p.Succeeded, ct),
+            WebSignups: webUserIds.Count,
+            WebSignupsPrevious: await _db.Users.CountAsync(u => u.SignupSource == "web" && u.CreatedAt >= previous.FromUtc && u.CreatedAt < previous.ToUtc, ct),
+            SignupsFromPreview: webUserIds.Count(id => claimedBy.Contains(id)),
+            WebSignupsWhoSaved: savers,
+            SharesCreated: await _db.Transcriptions.CountAsync(t => t.SharedAtUtc != null && t.SharedAtUtc >= range.FromUtc && t.SharedAtUtc < range.ToUtc, ct),
+            ShareViews: await _db.Transcriptions.SumAsync(t => (long?)t.ShareViews, ct) ?? 0L,
+            WebProConversions: proConversions,
+            PreviewsPerDay: previewsPerDay);
     }
 
     private async Task<UserMetricsDto> BuildUserMetrics(

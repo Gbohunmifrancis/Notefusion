@@ -13,6 +13,16 @@
       : "https://api.notefusion.studio";
   var TOKENS_KEY = "nf.web.tokens";
   var POLL_MS = 2000;
+  var DEVICE_KEY = "nf.web.device";
+
+  /** The browser's opaque id, sent as X-Device-Id so the free preview is metered per browser. */
+  function deviceId() {
+    try {
+      var id = localStorage.getItem(DEVICE_KEY);
+      if (!id) { id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2); localStorage.setItem(DEVICE_KEY, id); }
+      return id;
+    } catch (e) { return "anonymous"; }
+  }
 
   // ── Session ──────────────────────────────────────────────────────────────
   function tokens() {
@@ -49,7 +59,7 @@
   function request(path, opts) {
     opts = opts || {};
     function send() {
-      var headers = {};
+      var headers = { "X-Device-Id": deviceId() };
       var body;
       if (opts.form) { body = opts.form; }
       else if (opts.body !== undefined) { headers["Content-Type"] = "application/json"; body = JSON.stringify(opts.body); }
@@ -101,6 +111,8 @@
   var pollTimer = null;
   var osmd = null;
   var C = window.NfChoir;
+  var guest = false;      // a visitor with a preview and no account
+  var previewId = new URLSearchParams(location.search).get("preview");
   var player = null;      // the rehearsal player, made once the first result shows
   var hymnCells = [];     // solfa cells of the hymn layout, for the playback cursor
 
@@ -136,12 +148,13 @@
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true; hide($("auth-alert"));
-    request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value } })
-      .then(function () {
-        alertIn($("auth-alert"), "success", "Account created. Check your email for the confirmation code, confirm it in the app, then sign in here.");
-        document.querySelector('.tab[data-tab="login"]').click();
-        $("login-email").value = $("reg-email").value.trim();
-        show($("auth-alert"));
+    request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
+      .then(function (res) {
+        pendingEmail = (res && res.email) || $("reg-email").value.trim();
+        $("verify-email-label").textContent = pendingEmail;
+        hide($("form-register")); hide($("form-login")); show($("form-verify"));
+        alertIn($("auth-alert"), "success", "Almost there — enter the code we just emailed you.");
+        $("verify-code").focus();
       })
       .catch(function (err) {
         var detail = err.details ? Object.keys(err.details).map(function (k) { return err.details[k].join(" "); }).join(" ") : "";
@@ -149,6 +162,37 @@
       })
       .finally(function () { btn.disabled = false; });
   });
+
+  var pendingEmail = "";
+  $("form-verify").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var btn = e.target.querySelector("button[type=submit]");
+    btn.disabled = true; hide($("auth-alert"));
+    request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.trim() } })
+      .then(function (res) {
+        saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
+        hide($("form-verify")); show($("form-login"));
+        return boot();
+      })
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "That code did not match."); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("verify-resend").addEventListener("click", function () {
+    request("/api/auth/resend-verification", { method: "POST", anonymous: true, body: { email: pendingEmail } })
+      .then(function () { alertIn($("auth-alert"), "success", "A new code is on its way."); })
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not resend the code."); });
+  });
+
+  // Guest → account: every "create an account" button opens the auth card under the result.
+  function openAuth(tab) {
+    var auth = $("view-auth");
+    document.querySelector("main").appendChild(auth); // below the sheet, so the preview stays in view
+    show(auth);
+    document.querySelector('.tab[data-tab="' + tab + '"]').click();
+    auth.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  ["guest-signup", "guest-cta-signup"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("register"); }); });
+  ["guest-signin", "guest-cta-signin"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("login"); }); });
 
   $("signout").addEventListener("click", function () {
     var t = tokens();
@@ -182,14 +226,32 @@
   }
 
   function boot() {
-    if (!tokens()) { showAuth(); return Promise.resolve(); }
+    if (!tokens()) {
+      if (previewId) { startGuest(); return Promise.resolve(); }
+      showAuth(); return Promise.resolve();
+    }
     return loadAccount().then(function () {
-      hide($("view-auth")); show($("view-app"));
+      var wasGuest = guest;
+      guest = false;
+      hide($("view-auth")); hide($("guest-bar")); show($("view-app"));
       if (!isPro()) loadPlans($("upgrade-panel"), $("plans-standalone"));
       else hide($("upgrade-panel"));
       var params = new URLSearchParams(location.search);
       if (params.get("paid")) confirmPayment();
+      if (previewId) {
+        // The preview that brought this person here is now theirs: the funnel's conversion.
+        request("/api/preview/jobs/" + encodeURIComponent(previewId) + "/claim", { method: "POST" }).catch(function () { /* best effort */ });
+        if (wasGuest && current && current.result) showResult(current.result);
+        else if (!current) startJob({ jobId: previewId, stage: "transcribing" }, "preview");
+      }
     }, function () { showAuth(); });
+  }
+
+  /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
+  function startGuest() {
+    guest = true;
+    hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel"));
+    startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
   // ── Submitting ───────────────────────────────────────────────────────────
@@ -198,8 +260,8 @@
     var url = $("link-url").value.trim();
     if (!url) return;
     $("link-submit").disabled = true; hide($("app-alert"));
-    request("/api/transcriptions/link", { method: "POST", body: { url: url, mode: "melody" } })
-      .then(function (job) { startJob(job, "link"); })
+    request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: { url: url, mode: "melody" } })
+      .then(function (job) { startJob(job, guest ? "preview" : "link"); })
       .catch(function (err) { explain(err); })
       .finally(function () { $("link-submit").disabled = false; });
   });
@@ -211,8 +273,8 @@
     form.append("audio", file, file.name);
     form.append("mode", "melody");
     hide($("app-alert"));
-    request("/api/transcriptions", { method: "POST", form: form })
-      .then(function (job) { startJob(job, "upload"); })
+    request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
+      .then(function (job) { startJob(job, guest ? "preview" : "upload"); })
       .catch(function (err) { explain(err); });
     e.target.value = "";
   });
@@ -226,6 +288,7 @@
       return;
     }
     if (err.code === "BILLING_SONG_CREDITS_EXHAUSTED") { alertIn($("app-alert"), "info", text); return; }
+    if (err.code === "PREVIEW_LIMIT_REACHED") { alertIn($("app-alert"), "info", text); openAuth("register"); return; }
     alertIn($("app-alert"), "danger", text);
   }
 
@@ -236,7 +299,9 @@
     $("save-title").value = "";
     hide($("result"));
     show($("progress"));
-    $("p-title").textContent = kind === "link" ? "Reading the link…" : "Transcribing your recording…";
+    $("p-title").textContent = kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…";
+    current.preview = kind === "preview";
+    if (current.preview) previewId = job.jobId;
     $("p-artist").textContent = "";
     hide($("p-thumb"));
     $("p-bar").style.width = "3%";
@@ -261,7 +326,7 @@
   function poll() {
     if (!current) return;
     var jobId = current.jobId;
-    request("/api/transcriptions/jobs/" + encodeURIComponent(jobId)).then(function (job) {
+    request((current.preview ? "/api/preview/jobs/" : "/api/transcriptions/jobs/") + encodeURIComponent(jobId), { anonymous: current.preview && guest }).then(function (job) {
       if (!current || current.jobId !== jobId) return;
       if (job.source) {
         current.source = job.source;
@@ -277,7 +342,7 @@
         current.result = job.result;
         hide($("progress"));
         showResult(job.result);
-        loadAccount();
+        if (!guest) loadAccount();
         return;
       }
       if (status === "failed") {
@@ -310,9 +375,11 @@
     });
     var trunc = $("r-truncated");
     if (result.truncated) {
-      alertIn(trunc, "info", isPro()
-        ? "This song runs " + formatSec(result.songDurationSec) + "; the first six minutes were transcribed."
-        : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
+      alertIn(trunc, "info", guest
+        ? "Free preview: the first 30 seconds of " + formatSec(result.songDurationSec) + ". Create a free account for more."
+        : isPro()
+          ? "This song runs " + formatSec(result.songDurationSec) + "; the first six minutes were transcribed."
+          : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
     } else hide(trunc);
 
     renderSolfa(result);
@@ -327,6 +394,12 @@
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       b.innerHTML = b.textContent.replace(/\s*🔒$/, "") + (isPro() ? "" : ' <span class="lock">🔒</span>');
     });
+
+    // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
+    [$("save-section"), $("sing")].forEach(function (el) { guest ? hide(el) : show(el); });
+    guest ? hide(document.getElementById("tr-apply").closest(".section")) : show(document.getElementById("tr-apply").closest(".section"));
+    guest ? show($("guest-cta")) : hide($("guest-cta"));
+    if (guest) { hide($("r-upgrade")); show($("r-watermark")); }
 
     show($("result"));
     engrave(result.musicXml);
@@ -589,9 +662,12 @@
     } }).then(function (saved) {
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
       renderSave();
+      var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
+      if (!dismissed) show($("app-banner"));
     }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   });
+  $("app-banner-dismiss").addEventListener("click", function () { hide($("app-banner")); try { localStorage.setItem("nf.web.appBanner", "no"); } catch (e) { /* ignore */ } });
   $("share").addEventListener("click", function () {
     if (!current || !current.savedId) return;
     var btn = $("share"); btn.disabled = true;
@@ -695,6 +771,7 @@
   function gated(fn) {
     return function () {
       if (!current || !current.result) return;
+      if (guest) { openAuth("register"); return; }
       if (!isPro()) { show($("r-upgrade")); $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
       fn(current.result);
     };

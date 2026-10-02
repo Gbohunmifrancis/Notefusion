@@ -22,10 +22,13 @@ public sealed class GetSharedTranscriptionQueryHandler : IRequestHandler<GetShar
             return LibraryErrors.ShareNotFound;
 
         var item = await _db.Transcriptions
-            .AsNoTracking()
             .FirstOrDefaultAsync(t => t.ShareToken == request.Token, cancellationToken);
         if (item is null)
             return LibraryErrors.ShareNotFound;
+
+        // Counted on the read, which is the only event there is: a link opened is a link seen.
+        item.RecordShareView();
+        await _db.SaveChangesAsync(cancellationToken);
 
         var owner = await _db.Users.AsNoTracking()
             .Where(u => u.Id == item.UserId)

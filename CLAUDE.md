@@ -50,6 +50,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   an optional public share token (`GET /api/shared/{token}`, anonymous). "Transpose for my
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
+- The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
+  30-second preview (throttled per `X-Device-Id` and per address via `PreviewJob` rows), polled at
+  `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
+  a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
+  turns those rows into the admin dashboard's web funnel.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

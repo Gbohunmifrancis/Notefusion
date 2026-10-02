@@ -113,6 +113,20 @@ public class User : BaseEntity
     /// </summary>
     public string? Country { get; private set; }
 
+    /// <summary>
+    /// Which client created the account: "web" or "mobile". Null for accounts that predate the field,
+    /// which the dashboard reports as unknown rather than guessing.
+    /// </summary>
+    public string? SignupSource { get; private set; }
+
+    /// <summary>First value wins, like <see cref="RecordCountry"/>: the source is where the account was born.</summary>
+    public void RecordSignupSource(string? source)
+    {
+        if (SignupSource is not null || string.IsNullOrWhiteSpace(source)) return;
+        var s = source.Trim().ToLowerInvariant();
+        if (s is "web" or "mobile") SignupSource = s;
+    }
+
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     public IReadOnlyCollection<DeviceToken> DeviceTokens => _deviceTokens.AsReadOnly();
 

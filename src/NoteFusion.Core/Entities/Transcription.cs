@@ -68,6 +68,11 @@ public class Transcription : BaseEntity
     public string? ShareToken { get; private set; }
     public DateTime? SharedAtUtc { get; private set; }
 
+    /// <summary>How many times the public link has been opened. The share loop's one measure of reach.</summary>
+    public int ShareViews { get; private set; }
+
+    public void RecordShareView() => ShareViews++;
+
     public IReadOnlyList<NoteEvent> Notes => _notes.AsReadOnly();
 
     public void SetLyrics(string lyrics) => Lyrics = Guard.NotNull(lyrics).Trim();

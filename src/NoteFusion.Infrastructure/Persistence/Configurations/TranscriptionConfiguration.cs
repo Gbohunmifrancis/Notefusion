@@ -35,6 +35,7 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
         builder.Property(t => t.PartsMusicXml).HasColumnName("parts_music_xml");
         builder.Property(t => t.ShareToken).HasColumnName("share_token").HasMaxLength(64);
         builder.Property(t => t.SharedAtUtc).HasColumnName("shared_at_utc");
+        builder.Property(t => t.ShareViews).HasColumnName("share_views").HasDefaultValue(0);
         builder.HasIndex(t => t.ShareToken).IsUnique();
 
         // The four parts are read and written whole, never queried into, so one JSON column

@@ -23,7 +23,9 @@ namespace NoteFusion.Application.Auth.Commands;
 public sealed record RegisterCommand(
     string FullName,
     string Email,
-    string Password) : IRequest<Result<RegistrationResponse>>;
+    string Password,
+    /// <summary>Which client is signing up: "web" or "mobile". Optional; the dashboard's funnel reads it.</summary>
+    string? Source = null) : IRequest<Result<RegistrationResponse>>;
 
 public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>
 {
@@ -68,6 +70,7 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
         // is offered follows from it, and a resolver that never throws means a geolocation outage costs us
         // the country, not the sign-up.
         user.RecordCountry(await _country.ResolveAsync(cancellationToken));
+        user.RecordSignupSource(request.Source);
 
         var code = EmailVerificationCodes.Issue(user, _tokenGen, _clock.UtcNow);
 

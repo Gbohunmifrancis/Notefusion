@@ -387,6 +387,62 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("device_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.PreviewJob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ClaimedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ClaimedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeviceFingerprint")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Ip")
+                        .HasMaxLength(45)
+                        .HasColumnType("character varying(45)");
+
+                    b.Property<string>("JobId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("SourceTitle")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<bool>("Succeeded")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClaimedByUserId");
+
+                    b.HasIndex("JobId")
+                        .IsUnique();
+
+                    b.HasIndex("DeviceFingerprint", "CreatedAtUtc");
+
+                    b.HasIndex("Ip", "CreatedAtUtc");
+
+                    b.ToTable("preview_jobs", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -494,6 +550,12 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)")
                         .HasColumnName("share_token");
+
+                    b.Property<int>("ShareViews")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("share_views");
 
                     b.Property<DateTime?>("SharedAtUtc")
                         .HasColumnType("timestamp with time zone")
@@ -707,6 +769,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
+
+                    b.Property<string>("SignupSource")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("signup_source");
 
                     b.HasKey("Id");
 
