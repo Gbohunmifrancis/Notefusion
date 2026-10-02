@@ -100,7 +100,9 @@ def test_failed_job_surfaces_generic_error(monkeypatch):
         audio = _temp_audio()
         jid = queue.submit(audio, mode="melody", key=None, tempo=None)
         job = _await_status(queue, jid, STATUS_FAILED)
-        assert "boom" in job.error
+        # The exception text stays in the log; the client gets a generic message.
+        assert "boom" not in job.error
+        assert "unexpected error" in job.error.lower()
         _await_deleted(audio)  # still cleaned up on failure
     finally:
         queue.shutdown(wait=True)

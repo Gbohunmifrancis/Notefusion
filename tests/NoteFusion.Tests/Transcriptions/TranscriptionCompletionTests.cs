@@ -50,7 +50,7 @@ public class TranscriptionCompletionTests
 
         var push = Assert.Single(h.Push.Sent);
         Assert.Equal(user.Id, Assert.Single(push.Recipients));
-        Assert.Equal("Your transcription is ready", push.Message.Title);
+        Assert.Equal("Hey Free, your transcription is ready!", push.Message.Title); // greets the account's first name
         Assert.Contains("G major", push.Message.Body);
 
         // The tap needs the ML job id, not our row id: it re-fetches through the same
@@ -130,7 +130,7 @@ public class TranscriptionCompletionTests
         Assert.Null(stored.TrialConsumedAtUtc); // a failure costs the user nothing
 
         var push = Assert.Single(h.Push.Sent);
-        Assert.Equal("We couldn't transcribe that recording", push.Message.Title);
+        Assert.Equal("Sorry Free, the transcription failed", push.Message.Title);
         Assert.Equal("Too quiet to detect any pitches.", push.Message.Body);
     }
 
@@ -155,7 +155,7 @@ public class TranscriptionCompletionTests
         // Pushed, not closed quietly. This job is only ever reached because the user stopped
         // watching, so silence would leave them waiting for a notification that never comes.
         var push = Assert.Single(h.Push.Sent);
-        Assert.Equal("We couldn't transcribe that recording", push.Message.Title);
+        Assert.Equal("Sorry Free, the transcription failed", push.Message.Title);
     }
 
     [Fact]
