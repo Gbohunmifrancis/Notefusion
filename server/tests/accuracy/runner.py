@@ -35,14 +35,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from app.pipeline.transcriber import TranscriptionResult, transcribe
-from tests.accuracy import metrics, synth
+from tests.accuracy import metrics, synth, vocal_synth
 from tests.accuracy.corpus import CASES, Case
 from tests.accuracy.real_loader import RealCase, load_real_cases
+from tests.accuracy.vocal_corpus import CASES as VOCAL_CASES, VocalCase
 
 # The metric groups, in the order they appear in a row.  These prefixes are the
 # keys ``baseline.json`` is stored under — renaming one silently invalidates every
 # recorded baseline, so they are treated as a wire contract.
-METRIC_NAMESPACES = ("notes", "beats", "key", "tempo", "solfa", "conf")
+METRIC_NAMESPACES = ("notes", "beats", "key", "tempo", "solfa", "conf", "seq")
 
 
 # ── Outcome type ──────────────────────────────────────────────────────────────
@@ -236,6 +237,50 @@ def run_real_case(case: RealCase) -> CaseOutcome:
 
 def run_real(cases: Sequence[RealCase] | None = None) -> list[CaseOutcome]:
     return [run_real_case(case) for case in (load_real_cases() if cases is None else cases)]
+
+
+def run_vocal_case(case: VocalCase) -> CaseOutcome:
+    """Render one vocal case with ``vocal_synth``, transcribe it, score it."""
+    audio, ref = vocal_synth.render(case.notes, case.tempo_bpm, case.options)
+    handle, raw_path = tempfile.mkstemp(prefix=f"nf_voc_{case.name}_", suffix=".wav")
+    os.close(handle)
+    wav_path = Path(raw_path)
+
+    result: TranscriptionResult | None = None
+    error = ""
+    try:
+        synth.write_wav(wav_path, audio)
+        result = transcribe(wav_path, mode="melody")
+    except Exception as exc:  # noqa: BLE001
+        error = f"{type(exc).__name__}: {exc}"
+    finally:
+        wav_path.unlink(missing_ok=True)
+
+    if result is None:
+        return CaseOutcome(
+            name=case.name, tags=case.tags, ok=False, error=error, ref_key=case.key,
+            est_key="", ref_tempo=case.tempo_bpm, est_tempo=0, n_ref=len(ref), n_est=0,
+            metrics={},
+        )
+
+    flat: dict[str, float] = {}
+    flat.update(_prefixed("notes", metrics.note_metrics_seconds(ref, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("beats", metrics.onset_metrics_beats(ref, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("key", metrics.key_metrics(case.key, result.key)))
+    flat.update(_prefixed("tempo", metrics.tempo_metrics(case.tempo_bpm, result.tempo)))
+    flat.update(_prefixed("solfa", metrics.solfa_metrics(ref, result.notes, case.key, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("conf", metrics.note_confidence_metrics(ref, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("seq", metrics.sequence_metrics(ref, result.notes, case.key)))
+    flat["key.confidence"] = float(result.key_confidence)
+    return CaseOutcome(
+        name=case.name, tags=case.tags, ok=True, error="", ref_key=case.key,
+        est_key=result.key, ref_tempo=case.tempo_bpm, est_tempo=result.tempo,
+        n_ref=len(ref), n_est=len(result.notes), metrics=flat,
+    )
+
+
+def run_vocal(cases: Sequence[VocalCase] | None = None) -> list[CaseOutcome]:
+    return [run_vocal_case(case) for case in (VOCAL_CASES if cases is None else cases)]
 
 
 # ── Aggregation ───────────────────────────────────────────────────────────────

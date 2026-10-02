@@ -285,6 +285,14 @@ class Settings:
         return os.getenv("NF_ONSET_GATE", "0").strip().lower() not in ("0", "false", "no")
 
     @property
+    def vocal_engine(self) -> bool:
+        """Segment melody-mode clips with ``app.pipeline.vocal`` (f0 contour, tuning
+        offset, hysteresis segmentation, key-aware rounding) instead of the band /
+        persistence contour segmenter.  Built for hummed and sung recordings; the old
+        path remains as the fallback when it finds nothing."""
+        return os.getenv("NF_VOCAL_ENGINE", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def contour_first(self) -> bool:
         """Segment notes from the pyin f0 contour instead of repairing Basic Pitch's.
 

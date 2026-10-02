@@ -545,6 +545,8 @@ src/NoteFusion.Api/appsettings.Development.json
 # a partial document behind. baseline.json is deliberately NOT ignored: it is the
 # committed artifact the regression gate reads.
 server/tests/accuracy/report.json
+server/tests/accuracy/real_report.json
+server/tests/accuracy/vocal_report.json
 
 # ── Scratch tooling: design previews, palette audits, verification scripts ──
 .preview/
