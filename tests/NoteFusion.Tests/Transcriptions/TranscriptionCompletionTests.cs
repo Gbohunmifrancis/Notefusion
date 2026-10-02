@@ -451,6 +451,10 @@ public class TranscriptionCompletionTests
             Stream score, string fileName, TranscribeOptions options, CancellationToken ct = default)
             => Task.FromResult(Result<string>.Success("job-1"));
 
+        public Task<Result<string>> SubmitLinkAsync(
+            string url, TranscribeOptions options, CancellationToken ct = default)
+            => SubmitAsync(Stream.Null, "link", options, ct);
+
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
         {
             PollCount++;

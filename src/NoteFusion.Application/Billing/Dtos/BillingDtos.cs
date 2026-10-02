@@ -35,7 +35,11 @@ public sealed record SubscriptionDto(
     int TrialGenerationsRemaining,
     int TrialGenerationsTotal,
     bool IsLifetime,
-    bool IsGift = false);
+    bool IsGift = false,
+    /// <summary>Linked songs left this month on Pro, or free previews left otherwise.</summary>
+    int SongCreditsRemaining = 0,
+    /// <summary>The allowance the remaining count is measured against (Pro songs a month, or free previews).</summary>
+    int SongCreditsTotal = 0);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

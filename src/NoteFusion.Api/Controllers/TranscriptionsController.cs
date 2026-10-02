@@ -33,6 +33,18 @@ public sealed class SubmitTranscriptionRequest
     public string? TimeSignature { get; init; }
 }
 
+/// <summary>JSON body for transcribing a song behind a streaming link.</summary>
+public sealed class SubmitLinkRequest
+{
+    /// <summary>A YouTube video, Spotify track or Apple Music song link.</summary>
+    public required string Url { get; init; }
+
+    public TranscriptionMode Mode { get; init; } = TranscriptionMode.Melody;
+    public string? Key { get; init; }
+    public int? Tempo { get; init; }
+    public string? TimeSignature { get; init; }
+}
+
 /// <summary>
 /// The transcription gateway. The client uploads captured audio here and polls the returned job — the
 /// C# backend is the only entry point to the Python ML service (architecture decision).
@@ -72,6 +84,23 @@ public sealed class TranscriptionsController : ApiControllerBase
             null);
 
         return HandleResult(Result.Success(jobDto));
+    }
+
+    /// <summary>
+    /// Transcribes the lead vocal of a song behind a YouTube, Spotify or Apple Music link. Pro accounts get
+    /// the first six minutes of up to twenty songs a month in the fast lane; a free account gets one
+    /// one-minute preview to see what it does. Returns the job envelope to poll, like an upload.
+    /// </summary>
+    [HttpPost("link")]
+    public async Task<IActionResult> SubmitLink([FromBody] SubmitLinkRequest request, CancellationToken ct)
+    {
+        var result = await _sender.Send(
+            new SubmitLinkTranscriptionCommand(request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature), ct);
+
+        if (result.IsFailure)
+            return HandleResult(Result.Failure<TranscriptionJobDto>(result.Error));
+
+        return HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null, null, "fetching")));
     }
 
     /// <summary>Polls a transcription job for status, progress, and the result once done.</summary>

@@ -99,6 +99,9 @@ public sealed class BillingController : ApiControllerBase
     /// </summary>
     private const string AppReturnLink = "notefusion://billing/return";
 
+    /// <summary>Where a checkout started from the website (web-site/app) lands; the page confirms the payment on load.</summary>
+    private const string WebReturnLink = "https://notefusion.studio/app?paid=1";
+
     /// <summary>
     /// Self-contained markup rather than a static file, so the hop cannot break on a missing asset in a
     /// build that ships without the dashboard bundle. The script handles the normal case; the button is
@@ -126,6 +129,7 @@ public sealed class BillingController : ApiControllerBase
           <h1>Returning to NoteFusion…</h1>
           <p>We're confirming your payment. You can close this tab once the app reopens.</p>
           <a href="{{AppReturnLink}}">Open NoteFusion</a>
+          <p style="margin-top:.5rem"><a href="{{WebReturnLink}}" style="background:none;color:#9AA7BF;padding:0;font-weight:500;text-decoration:underline">Paid on the website? Go back to NoteFusion Web</a></p>
           <script>location.replace("{{AppReturnLink}}");</script>
         </body>
         </html>

@@ -10,6 +10,7 @@
  */
 
 import { File, Paths } from "expo-file-system";
+import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
 /** Filesystem-safe stem from a user-entered title, so the shared file is recognisable. */
@@ -183,3 +184,72 @@ export async function exportMidi(
   }
 }
 
+
+
+/** What the PDF says about the piece above and below the stave. */
+export interface PdfMeta {
+  title: string;
+  /** The acknowledgement line for a linked song, e.g. "Way Maker — Sinach (YouTube)". */
+  credit?: string | null;
+  key: string;
+  tempoBpm: number;
+  timeSignature: string;
+  /** The solfa lines, printed on their own page after the stave. */
+  solfaLines?: readonly string[];
+}
+
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/**
+ * Shares the engraved stave as an A4 PDF. The SVG is the one the screen shows
+ * (`ScoreView.getSvg`), so the paper matches the phone; the header names the piece
+ * and the footer credits the song and NoteFusion. A Pro feature — the caller gates it.
+ */
+export async function exportPdf(svg: string, meta: PdfMeta): Promise<ExportOutcome> {
+  if (!svg.trim()) {
+    return { ok: false, reason: "empty", message: "The stave has not been drawn yet. Open the Staff view and try again." };
+  }
+  if (!(await Sharing.isAvailableAsync())) {
+    return { ok: false, reason: "unavailable", message: "Sharing isn't available on this device." };
+  }
+
+  // Let the SVG fill the printable width; OSMD sets absolute pixel dimensions.
+  const scaled = svg
+    .replace(/<svg([^>]*)\swidth="[^"]*"/, "<svg$1")
+    .replace(/<svg([^>]*)\sheight="[^"]*"/, "<svg$1")
+    .replace(/<svg/, '<svg style="width:100%;height:auto"');
+  const credit = meta.credit ? escapeHtml(meta.credit) : "";
+  const solfa = (meta.solfaLines ?? []).map((l) => `<div>${escapeHtml(l)}</div>`).join("");
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 14mm 12mm 16mm; }
+  body { font-family: -apple-system, Roboto, "Segoe UI", sans-serif; color: #0F172A; margin: 0; }
+  h1 { font-size: 20px; margin: 0 0 2px; letter-spacing: -0.01em; }
+  .sub { font-size: 11px; color: #5D6D82; margin: 0 0 10px; }
+  .credit { font-size: 10px; color: #5D6D82; margin: 0 0 12px; }
+  .sheet svg { width: 100%; height: auto; }
+  .solfa { page-break-before: always; font-family: ui-monospace, Menlo, monospace; font-size: 13px; line-height: 1.9; white-space: pre-wrap; }
+  .solfa h2 { font-family: -apple-system, Roboto, sans-serif; font-size: 14px; margin: 0 0 8px; }
+  .foot { position: fixed; bottom: 0; left: 0; right: 0; font-size: 9px; color: #94A3B8; }
+</style></head><body>
+<h1>${escapeHtml(meta.title)}</h1>
+<p class="sub">${escapeHtml(meta.key)} · ${meta.tempoBpm} BPM · ${escapeHtml(meta.timeSignature)}</p>
+${credit ? `<p class="credit">${credit}</p>` : ""}
+<div class="sheet">${scaled}</div>
+${solfa ? `<div class="solfa"><h2>Tonic Solfa</h2>${solfa}</div>` : ""}
+<div class="foot">${credit ? credit + " · " : ""}Transcribed with NoteFusion · notefusion.studio</div>
+</body></html>`;
+
+  try {
+    const { uri } = await Print.printToFileAsync({ html, base64: false });
+    const file = new File(Paths.cache, `${safeFileName(meta.title)}.pdf`);
+    if (file.exists) file.delete();
+    new File(uri).move(file);
+    await Sharing.shareAsync(file.uri, { mimeType: "application/pdf", UTI: "com.adobe.pdf", dialogTitle: meta.title });
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, reason: "failed", message: e instanceof Error ? e.message : "Could not create the PDF." };
+  }
+}

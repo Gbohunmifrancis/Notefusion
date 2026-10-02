@@ -1,5 +1,5 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
-import type { NoteEvent, TranscriptionResult } from '../api/types';
+import type { TranscriptionResult } from '../api/types';
 
 /** Central navigation type map — every screen's params in one place. */
 
@@ -20,11 +20,10 @@ export type AuthStackParams = {
  * puts the mic in the geometric middle — with an even one it sits off-centre and the
  * whole bar reads as a mistake.
  *
- * Home · Library · **Record** · Piano · Profile. Profile came back off the side bar to
- * make the count work and because it is a destination people look for in a tab bar. The
- * piano is a *launcher*, not a tab: it is the one landscape route in the app, so it
- * cannot render inside this portrait shell and has no `Tab.Screen` here — the cell
- * pushes `Piano` on the root stack instead, the way the mic pushes a recording.
+ * Home · Library · **Record** · Songs · Profile. Profile came back off the side bar to
+ * make the count work and because it is a destination people look for in a tab bar.
+ * Songs is a *launcher*, not a tab: the cell pushes `Link` on the root stack — paste a
+ * song link, get its lead vocal as solfa — the way the mic pushes a recording.
  */
 export type TabParams = {
   Home: undefined;
@@ -35,6 +34,8 @@ export type TabParams = {
 
 export type RootStackParams = {
   Tabs: NavigatorScreenParams<TabParams>;
+  /** Paste a song link (YouTube, Spotify, Apple Music) and transcribe its lead vocal. */
+  Link: undefined;
   // Result can arrive fresh from a job or be opened from the library.
   Result: {
     result: TranscriptionResult;
@@ -51,32 +52,6 @@ export type RootStackParams = {
   Settings: { focus?: 'notifications' | 'about' } | undefined;
   Help: undefined;
   Upgrade: undefined;
-
-  /**
-   * The piano — one landscape screen with three modes.
-   *
-   * `free` is the tab-bar cell: a keyboard to play anything on, captured to the
-   * library. `play` and `correct` start from a transcription and carry the notes by
-   * value rather than a saved id, because on Result the notes that matter are the
-   * *edited* ones, which exist nowhere a re-fetch could find them. `correct` carries
-   * an `onApply` so the corrected list travels home to whoever saved it; reactive,
-   * not serialisable — the dev-only warning for this route is deliberate.
-   *
-   * Landscape is a native option on `react-native-screens`, so it takes a build, not
-   * an OTA update.
-   */
-  Piano:
-    | { mode: 'free' }
-    | {
-        mode: 'play' | 'correct';
-        notes: NoteEvent[];
-        tempoBpm: number;
-        timeSignature: string;
-        musicalKey: string;
-        title?: string;
-        savedId?: string;
-        onApply?: (notes: NoteEvent[]) => void;
-      };
 
   /**
    * Admin-only screens, reached from the side bar's Admin row and nowhere else.

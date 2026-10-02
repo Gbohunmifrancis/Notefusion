@@ -49,7 +49,7 @@ function currentGreeting(): string {
  * 1. Top bar: avatar on the left (opens the account side bar), Dark Mode & Bell on right.
  * 2. Greeting: "Good morning, Francis", "What will you transcribe today?"
  * 3. Primary Mic Card: Centred blue circular mic button, "Tap to start recording", "or import audio file"
- * 4. Quick Action Buttons: "Import" and "Paste URL"
+ * 4. Quick Action Buttons: "Import audio" and "Paste a link"
  * 5. Recent Section: Clean "Recent" header with "See all" link and vector-icon transcription cards (NO emojis)
  */
 export function HomeScreen({ navigation }: Props) {
@@ -457,14 +457,14 @@ export function HomeScreen({ navigation }: Props) {
                   </Touchable>
 
                   <Touchable
-                    onPress={() => rootNav.navigate('Piano', { mode: 'free' })}
+                    onPress={() => rootNav.navigate('Link')}
                     style={styles.quickBtn}
                     ripple="borderless"
                     scaleTo={motion.scale.default}
-                    accessibilityLabel="Play interactive piano"
+                    accessibilityLabel="Paste a song link"
                   >
-                    <Ionicons name="musical-notes-outline" size={16} color={colors.text} />
-                    <Text style={styles.quickBtnLabel}>Play piano</Text>
+                    <Ionicons name="link-outline" size={16} color={colors.text} />
+                    <Text style={styles.quickBtnLabel}>Paste a link</Text>
                   </Touchable>
                 </View>
               </View>

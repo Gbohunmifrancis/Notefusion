@@ -17,16 +17,21 @@ namespace NoteFusion.Infrastructure.Billing;
 /// </summary>
 public sealed class BillingSeeder : IHostedService
 {
-    // The geo split (docs/geo-billing-plan.md): a Nigerian account subscribes in naira through Paystack,
-    // everyone else buys Pro once, for life, in dollars. Amounts are minor units — cents for USD, kobo for
-    // NGN. Yearly is priced as ten months to reward the annual commitment; the lifetime price is $200, a
-    // one-off standing in for a subscription that cannot be billed on this rail at all, so it has to cover
-    // the whole relationship rather than a year and a half of it.
+    // The geo split (docs/geo-billing-plan.md): a Nigerian account subscribes in naira, everyone else in
+    // dollars, and the international tier is priced higher on purpose — choirs abroad are the target
+    // market and the naira tier is priced to local purchasing power. Amounts are minor units — cents for
+    // USD, kobo for NGN. Yearly is priced at eight months to reward the annual commitment. Lifetime is no
+    // longer sold: it was a stand-in for a dollar subscription the rails could not bill at the time.
+    //
+    // A recurring dollar charge needs a provider that can bill USD cards on a schedule; the charge routes
+    // through PaymentGatewayFactory.SelectForCurrency, so the operator picks that provider with
+    // Billing__DefaultProvider and the provider's SupportedCurrencies — nothing in this table decides it.
     private static readonly (string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval)[] Plans =
     [
-        ("pro_monthly_ngn", "NoteFusion Pro (Monthly)",   750_000,   "NGN", BillingInterval.Monthly),
-        ("pro_yearly_ngn",  "NoteFusion Pro (Yearly)",    7_500_000, "NGN", BillingInterval.Yearly),
-        ("pro_lifetime_v2", "NoteFusion Pro (Lifetime)",  20_000,    "USD", BillingInterval.Lifetime),
+        ("pro_monthly_ngn",    "NoteFusion Pro (Monthly)", 750_000,   "NGN", BillingInterval.Monthly),
+        ("pro_yearly_ngn_v2",  "NoteFusion Pro (Yearly)",  6_000_000, "NGN", BillingInterval.Yearly),
+        ("pro_monthly_usd",    "NoteFusion Pro (Monthly)", 999,       "USD", BillingInterval.Monthly),
+        ("pro_yearly_usd",     "NoteFusion Pro (Yearly)",  7_900,     "USD", BillingInterval.Yearly),
     ];
 
     // Codes that must no longer be sold, for two different reasons. The two USD subscriptions are not merely
@@ -37,8 +42,12 @@ public sealed class BillingSeeder : IHostedService
     // pro_lifetime_v2 rather than an edit, because a price is only traceable if it never moves under an
     // existing code. Retiring is a flag flip and not a delete, because fulfilment and every receipt read the
     // plan by id long after it stops being on sale, and a $79 buyer's receipt must keep saying $79.
+    //
+    // pro_lifetime_v2 and pro_yearly_ngn are retired the same way: lifetime is withdrawn as a product (an
+    // existing lifetime subscription keeps its far-future period end and stays Pro), and the naira yearly
+    // moved from ₦75,000 to ₦60,000, which ships as pro_yearly_ngn_v2 rather than an edit.
     private static readonly string[] RetiredCodes =
-        ["pro_monthly", "pro_yearly", "test_ngn_monthly", "pro_lifetime"];
+        ["pro_monthly", "pro_yearly", "test_ngn_monthly", "pro_lifetime", "pro_lifetime_v2", "pro_yearly_ngn"];
 
     private readonly IServiceProvider _services;
     private readonly ILogger<BillingSeeder> _logger;

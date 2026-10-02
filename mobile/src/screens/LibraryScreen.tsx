@@ -138,81 +138,7 @@ export function LibraryScreen() {
     }
   }
 
-  // Straight into the piano, skipping Result. No preview is synthesised on the way:
-  // the piano makes its own sound, and rendering a clip nobody hears would put a
-  // second's work in front of a screen that already has a warm-up to get through.
-  async function playItem(item: SavedTranscription) {
-    try {
-      const { full, derived } = await hydrate(item);
-      nav.navigate("Piano", {
-        mode: "play",
-        notes: derived.notes,
-        tempoBpm: full.tempoBpm,
-        timeSignature: full.timeSignature,
-        musicalKey: full.key,
-        title: full.title,
-        savedId: full.id,
-        // Carried even into play mode, because the end card offers "Fix it on the
-        // piano" when the score comes out low — the same screen, switched to correct.
-        onApply: (notes) => void overwriteNotes(item, notes),
-      });
-    } catch (e) {
-      showDialog({
-        title: "Could not open",
-        message: toApiError(e).message,
-        icon: "alert-circle-outline",
-        tone: "danger",
-      });
-    }
-  }
 
-  /** Straight into correction, for a row whose transcription is already known to be wrong. */
-  async function fixItem(item: SavedTranscription) {
-    try {
-      const { full, derived } = await hydrate(item);
-      nav.navigate("Piano", {
-        mode: "correct",
-        notes: derived.notes,
-        tempoBpm: full.tempoBpm,
-        timeSignature: full.timeSignature,
-        musicalKey: full.key,
-        title: full.title,
-        savedId: full.id,
-        onApply: (notes) => void overwriteNotes(item, notes),
-      });
-    } catch (e) {
-      showDialog({
-        title: "Could not open",
-        message: toApiError(e).message,
-        icon: "alert-circle-outline",
-        tone: "danger",
-      });
-    }
-  }
-
-  /**
-   * The literal "overwrite the old one": the corrected notes replace the row's, so
-   * the library still holds one entry and not a corrected copy beside the original.
-   *
-   * The piano hands the list back rather than saving it, the way `NoteEditor` reports
-   * upward — whoever pushed the piano owns the row. Nothing is patched optimistically
-   * here because the list route omits `notes`: there is no local copy to correct, and
-   * a re-list after the write is what makes the next open show the fix.
-   */
-  async function overwriteNotes(item: SavedTranscription, notes: NoteEvent[]) {
-    try {
-      await libraryApi.updateNotes(item.id, notes);
-      haptics.play("success");
-      load();
-    } catch (e) {
-      showDialog({
-        title: "Could not save corrections",
-        message: toApiError(e).message,
-        icon: "alert-circle-outline",
-        tone: "danger",
-      });
-    }
-  }
 
   function confirmDelete(item: SavedTranscription) {
     // Reached by long-pressing a row, so the dialog is the first sign anything
@@ -420,32 +346,6 @@ export function LibraryScreen() {
                 </Text>
               </View>
 
-              {/* Straight into the piano. Their own buttons rather than gestures on the
-                  row: press opens and long-press deletes, so there is nothing left to
-                  bind, and a third hidden gesture on one row would be a guess.
-                  Correct sits left of play because it is the one that changes the row —
-                  a destructive-ish action should not be the button next to the thumb. */}
-              <Touchable
-                onPress={() => void fixItem(item)}
-                style={styles.playButton}
-                ripple="borderless"
-                scaleTo={motion.scale.large}
-                accessibilityLabel={`Fix ${item.title} on the piano`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="create-outline" size={20} color={colors.textMuted} />
-              </Touchable>
-
-              <Touchable
-                onPress={() => void playItem(item)}
-                style={styles.playButton}
-                ripple="borderless"
-                scaleTo={motion.scale.large}
-                accessibilityLabel={`Play ${item.title} yourself`}
-                accessibilityRole="button"
-              >
-                <Ionicons name="game-controller-outline" size={20} color={colors.accent} />
-              </Touchable>
             </Touchable>
           );
         }}

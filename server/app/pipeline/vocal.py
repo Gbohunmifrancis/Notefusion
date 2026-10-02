@@ -45,6 +45,7 @@ HOP = 512  # 23.2 ms at 22 050 Hz; every duration constant below is in seconds
 FRAME = 2048
 FMIN_HZ = 60.0  # just under B1 — below any sung fundamental
 FMAX_HZ = 1100.0  # just over C6
+RANGE_MARGIN_SEMITONES = 7.0  # the fine pass searches the coarse register plus this either side
 # Frames quieter than this, relative to the clip's loud frames, are unvoiced whatever
 # pyin says: breath and room noise between phrases should not carry pitch.
 VOICING_FLOOR_DB = -38.0
@@ -167,8 +168,22 @@ def track(y: np.ndarray, sr: int = SAMPLE_RATE) -> Contour:
     import librosa
 
     y = np.asarray(y, dtype=np.float32)
+    # Two passes.  pyin's Viterbi costs frames x states^2, and states is the search
+    # band in bins: 60-1100 Hz at 10-cent bins is ~1000 states.  A coarse pass at
+    # 50-cent bins finds the register the voice actually uses, and the fine pass then
+    # searches only that register (plus a margin for leaps and scoops), which is a
+    # fraction of the states and several times faster for the same answer.
+    coarse, _flag, _vp = librosa.pyin(
+        y, fmin=FMIN_HZ, fmax=FMAX_HZ, sr=sr, frame_length=FRAME, hop_length=HOP, resolution=0.5
+    )
+    heard = coarse[~np.isnan(coarse)]
+    fmin, fmax = FMIN_HZ, FMAX_HZ
+    if heard.size >= 8:
+        lo, hi = np.percentile(heard, [5, 95])
+        fmin = max(FMIN_HZ, float(lo) / 2.0 ** (RANGE_MARGIN_SEMITONES / 12.0))
+        fmax = min(FMAX_HZ, float(hi) * 2.0 ** (RANGE_MARGIN_SEMITONES / 12.0))
     f0, _flag, vprob = librosa.pyin(
-        y, fmin=FMIN_HZ, fmax=FMAX_HZ, sr=sr, frame_length=FRAME, hop_length=HOP, resolution=0.1
+        y, fmin=fmin, fmax=fmax, sr=sr, frame_length=FRAME, hop_length=HOP, resolution=0.1
     )
     rms = librosa.feature.rms(y=y, frame_length=FRAME, hop_length=HOP)[0]
     rms_fast = librosa.feature.rms(y=y, frame_length=HOP, hop_length=HOP)[0]

@@ -14,6 +14,9 @@ class Settings:
     job_ttl_seconds: float = float(os.getenv("NF_JOB_TTL_SECONDS", "900"))
     # Single worker: CPU inference on one VPS; a queue prevents overload (TRD par. 3.3)
     inference_workers: int = int(os.getenv("NF_INFERENCE_WORKERS", "1"))
+    # Linked songs (YouTube etc.): the most audio a link job will transcribe.  The API
+    # passes a per-plan cap below this (a short free preview, six minutes for Pro).
+    link_max_seconds: float = float(os.getenv("NF_LINK_MAX_SECONDS", "360"))
 
     @property
     def api_key(self) -> str | None:

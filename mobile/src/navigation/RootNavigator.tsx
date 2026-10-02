@@ -14,7 +14,7 @@ import { ResultScreen } from '../screens/ResultScreen';
 import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
-import { PianoScreen } from '../screens/PianoScreen';
+import { LinkScreen } from '../screens/LinkScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -101,7 +101,7 @@ export function RootNavigator() {
           `UISupportedInterfaceOrientations`, and a runtime lock can never *exceed*
           that list — so the only way one screen rotates is for the manifest to allow
           both and every screen but that one to lock itself down. Inherited by
-          `AuthNavigator` and `TabNavigator`; overridden once, on `Piano`. */}
+          `AuthNavigator` and `TabNavigator`. */}
       <Stack.Navigator screenOptions={{ headerShown: false, orientation: 'portrait' }}>
         {user ? (
           <>
@@ -126,17 +126,10 @@ export function RootNavigator() {
               component={UpgradeScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
             />
-            {/* The one landscape screen in the app: a keyboard wide enough to hit and a
-                stave long enough to read ahead on do not both fit across a portrait
-                phone. */}
             <Stack.Screen
-              name="Piano"
-              component={PianoScreen}
-              options={{
-                presentation: 'card',
-                animation: 'slide_from_bottom',
-                orientation: 'landscape',
-              }}
+              name="Link"
+              component={LinkScreen}
+              options={{ presentation: 'card', animation: 'slide_from_bottom' }}
             />
 
             {/* Admin. Registered for every session rather than gated here: the

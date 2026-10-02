@@ -59,6 +59,15 @@ export interface NoteEvent {
   conf: number;
 }
 
+/** The song a linked transcription came from — the acknowledgement line and the sheet's credit. */
+export interface TranscriptionSource {
+  provider: "youtube" | "spotify" | "apple_music" | string;
+  url: string;
+  title: string;
+  artist: string;
+  thumbnailUrl?: string | null;
+}
+
 export interface TranscriptionResult {
   key: string;
   keyConfidence: number;
@@ -91,12 +100,36 @@ export interface TranscriptionResult {
    * refined, so an older API build never displays a false warning.
    */
   pitchRefined?: boolean;
+  /** Linked songs only: where the song came from. */
+  source?: TranscriptionSource | null;
+  /** Linked songs only: the whole song's length, which may exceed what was transcribed. */
+  songDurationSec?: number;
+  /** True when only the first part of the song was transcribed (free preview, or past the Pro cap). */
+  truncated?: boolean;
+  /** True when the vocals were isolated from the mix before transcription. */
+  separated?: boolean;
+  /** Four-part harmony under the melody (soprano, alto, tenor, bass). Pro only; absent otherwise. */
+  parts?: Record<"soprano" | "alto" | "tenor" | "bass", TranscriptionPart> | null;
+  /** The four parts as one MusicXML score. Pro only. */
+  partsMusicXml?: string;
 }
+
+/** One voice of the four-part harmony, in the same note shape as the melody. */
+export interface TranscriptionPart {
+  notes: NoteEvent[];
+  solfaLines: string[];
+}
+
+export type TranscriptionStage = "fetching" | "separating" | "transcribing";
 
 export interface TranscriptionJob {
   jobId: string;
   status: TranscriptionStatus;
   progress: number;
+  /** Which step a linked song is on while it runs; absent for an upload. */
+  stage?: TranscriptionStage | null;
+  /** Known as soon as the link resolves, before `result` exists. */
+  source?: TranscriptionSource | null;
   result?: TranscriptionResult | null;
   /**
    * Human-readable failure reason from the Python worker
@@ -191,6 +224,10 @@ export interface Subscription {
   isLifetime: boolean;
   /** Granted by an operator — no payment was taken. */
   isGift?: boolean;
+  /** Linked songs left this month on Pro, or free previews left otherwise. */
+  songCreditsRemaining?: number;
+  /** The allowance `songCreditsRemaining` is measured against. */
+  songCreditsTotal?: number;
 }
 
 // --- App release --------------------------------------------------------

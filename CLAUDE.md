@@ -19,7 +19,13 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   tuning-offset estimation, hysteresis note segmentation, key-aware rounding of ambiguous
   notes — with the Basic Pitch paths as fallback (`NF_VOCAL_ENGINE=0` restores the old
   decoder). Its accuracy is measured by the sung corpus: `python -m tests.accuracy.report
-  --vocal` (baseline in `tests/accuracy/vocal_baseline.json`).
+  --vocal` (baseline in `tests/accuracy/vocal_baseline.json`). Linked songs
+  (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
+  (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
+  baked into the image at `NF_MDX_MODEL_PATH`), then transcribed. The queue has two lanes:
+  `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode.
+  `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
+  voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — Pro-only via the API.
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
   client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,

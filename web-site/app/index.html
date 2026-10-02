@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NoteFusion Web — paste a song, get the Tonic Solfa</title>
+<meta name="description" content="Sign in to NoteFusion on the web. Paste a YouTube, Spotify or Apple Music link and get the lead vocal as Tonic Solfa and staff notation; download the sheet with Pro.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2563EB">
+<link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2563EB; --blue-dark: #1D4ED8; --blue-soft: #E0E7FF; --blue-tint: #EFF4FF;
+    --ink: #0F172A; --muted: #5D6D82; --faint: #94A3B8; --line: #E2E8F0;
+    --bg: #F4F7FC; --surface: #FFFFFF;
+    --gold: #F2C14E; --danger: #B91C1C; --danger-soft: #FEE2E2; --success: #15803D; --success-soft: #DCFCE7;
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: var(--blue); }
+  button { font-family: inherit; }
+  .hidden { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  /* ── Header ─────────────────────────────────────────────────────────── */
+  .top { background: var(--surface); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 10; }
+  .top-inner { max-width: 1080px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--ink); text-decoration: none; letter-spacing: -0.01em; }
+  .brand-mark { width: 30px; height: 30px; background: var(--blue); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; border-radius: 8px; }
+  .brand small { font-weight: 500; color: var(--muted); font-size: .8rem; margin-left: 2px; }
+  .top-spacer { flex: 1; }
+  .who { display: flex; align-items: center; gap: 10px; font-size: .9rem; color: var(--muted); }
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-size: .75rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+  .pill-pro { background: #FEF3C7; color: #92400E; }
+  .pill-free { background: var(--blue-tint); color: var(--blue-dark); }
+  .pill-credits { background: var(--bg); color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 600; }
+
+  /* ── Layout ─────────────────────────────────────────────────────────── */
+  main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+  h1 { font-size: 1.75rem; letter-spacing: -0.02em; margin: 0 0 6px; }
+  h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .small { font-size: .85rem; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+  /* ── Forms & buttons ────────────────────────────────────────────────── */
+  label { display: block; font-size: .85rem; font-weight: 600; margin: 0 0 6px; }
+  input[type=text], input[type=url], input[type=email], input[type=password] {
+    width: 100%; font: inherit; color: var(--ink); padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; outline: none;
+  }
+  input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; border-radius: 999px; border: 1px solid transparent; font-weight: 600; font-size: .95rem; cursor: pointer; text-decoration: none; transition: transform .12s ease, box-shadow .12s ease, background .12s ease; white-space: nowrap; }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--blue-dark); box-shadow: 0 6px 18px rgba(37,99,235,.25); }
+  .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+  .btn-ghost:hover:not(:disabled) { border-color: var(--faint); }
+  .btn-gold { background: var(--gold); color: #1F1600; }
+  .btn-link { background: none; border: none; color: var(--blue); padding: 0; font-weight: 600; cursor: pointer; }
+  .btn .lock { font-size: .8em; opacity: .7; }
+  .link-form { display: flex; gap: 10px; }
+  .link-form input { flex: 1; }
+  .or { display: flex; align-items: center; gap: 12px; color: var(--faint); font-size: .8rem; margin: 14px 0 6px; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .file-pick { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); font-weight: 600; cursor: pointer; font-size: .9rem; }
+  .file-pick input { display: none; }
+
+  .alert { padding: 12px 14px; border-radius: var(--radius-sm); font-size: .9rem; margin: 0 0 14px; }
+  .alert-danger { background: var(--danger-soft); color: var(--danger); }
+  .alert-info { background: var(--blue-tint); color: var(--blue-dark); }
+  .alert-success { background: var(--success-soft); color: var(--success); }
+
+  /* ── Auth ───────────────────────────────────────────────────────────── */
+  .auth { max-width: 440px; margin: 40px auto; }
+  .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 999px; margin-bottom: 20px; }
+  .tab { flex: 1; text-align: center; padding: 8px; border-radius: 999px; border: none; background: none; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .tab[aria-selected=true] { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .field { margin-bottom: 14px; }
+
+  /* ── Progress ───────────────────────────────────────────────────────── */
+  .stages { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .stage { padding: 6px 12px; border-radius: 999px; background: var(--bg); color: var(--faint); font-size: .8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+  .stage.on { background: var(--blue-tint); color: var(--blue-dark); }
+  .stage.done { background: var(--success-soft); color: var(--success); }
+  .stage .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .stage.on .dot { animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: .35 } 50% { opacity: 1 } }
+  .bar { height: 8px; border-radius: 999px; background: var(--bg); overflow: hidden; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), #60A5FA); transition: width .6s ease; }
+
+  /* ── Song card ──────────────────────────────────────────────────────── */
+  .song { display: flex; gap: 14px; align-items: center; }
+  .song img { width: 72px; height: 72px; object-fit: cover; border-radius: 12px; background: var(--bg); flex: none; }
+  .song .title { font-weight: 700; font-size: 1.05rem; line-height: 1.3; }
+  .song .artist { color: var(--muted); }
+  .credit { font-size: .85rem; color: var(--muted); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
+  .chip { padding: 5px 10px; border-radius: 999px; background: var(--bg); font-size: .8rem; font-weight: 600; color: var(--ink); }
+
+  /* ── Result ─────────────────────────────────────────────────────────── */
+  .result-tabs { margin: 8px 0 16px; }
+  .sheet-wrap { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 240px; }
+  #sheet { padding: 12px; }
+  .watermark { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .watermark span { font-weight: 800; font-size: clamp(32px, 7vw, 72px); color: rgba(37,99,235,.10); transform: rotate(-24deg); white-space: nowrap; letter-spacing: .04em; }
+  .watermark span::before { content: "♪ "; }
+  .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border-radius: var(--radius-sm); padding: 18px; }
+  .solfa .doh { color: var(--blue-dark); font-weight: 700; }
+  .part { margin-top: 12px; }
+  .part h3 { font-size: .9rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+  .downloads { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .upgrade-note { background: linear-gradient(135deg, #FFF7E0, #FFFBEF); border: 1px solid #F6E3A1; border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 16px; }
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+  .plan { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 14px; background: #fff; }
+  .plan .price { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+  .plan .per { color: var(--muted); font-size: .85rem; }
+  .plan .save { color: var(--success); font-size: .8rem; font-weight: 700; }
+  .plan .btn { width: 100%; margin-top: 10px; }
+  .foot { color: var(--faint); font-size: .8rem; text-align: center; margin-top: 30px; }
+  @media (max-width: 640px) {
+    .link-form { flex-direction: column; }
+    .card { padding: 18px; }
+    .who .name { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
+    <span class="top-spacer"></span>
+    <div class="who hidden" id="who">
+      <span class="name" id="who-name"></span>
+      <span class="pill" id="who-plan"></span>
+      <span class="pill pill-credits" id="who-credits"></span>
+      <button class="btn btn-ghost" id="signout" type="button">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ── Signed out ─────────────────────────────────────────────────── -->
+  <section id="view-auth" class="auth hidden">
+    <h1>Paste a song.<br>Get the Tonic Solfa.</h1>
+    <p class="muted">Sign in with your NoteFusion account to transcribe the lead vocal of any YouTube, Spotify or Apple Music song. The same account works in the app.</p>
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-tab="login" type="button">Sign in</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="register" type="button">Create account</button>
+      </div>
+      <div id="auth-alert" class="alert alert-danger hidden" role="alert"></div>
+
+      <form id="form-login" novalidate>
+        <div class="field"><label for="login-email">Email</label><input id="login-email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="login-password">Password</label><input id="login-password" type="password" autocomplete="current-password" required></div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Sign in</button>
+        <p class="small muted" style="margin-top:12px">Forgot your password? Reset it from the app's sign-in screen.</p>
+      </form>
+
+      <form id="form-register" class="hidden" novalidate>
+        <div class="field"><label for="reg-name">Full name</label><input id="reg-name" type="text" autocomplete="name" required></div>
+        <div class="field"><label for="reg-email">Email</label><input id="reg-email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="reg-password">Password</label><input id="reg-password" type="password" autocomplete="new-password" minlength="8" required></div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Create account</button>
+        <p class="small muted" style="margin-top:12px">We email you a code to confirm the address; enter it in the app or sign in here once confirmed.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ── Signed in ──────────────────────────────────────────────────── -->
+  <section id="view-app" class="hidden">
+    <div class="card">
+      <h2>Transcribe a song</h2>
+      <p class="muted small">Paste a YouTube, Spotify or Apple Music link. We fetch the audio, isolate the lead vocal, and write it out as Tonic Solfa and staff notation. The song is acknowledged by title and artist on the sheet.</p>
+      <div id="app-alert" class="alert hidden" role="alert"></div>
+      <form id="form-link" class="link-form" novalidate>
+        <input id="link-url" type="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" spellcheck="false" required>
+        <button class="btn btn-primary" id="link-submit" type="submit">Transcribe</button>
+      </form>
+      <div class="or">or</div>
+      <label class="file-pick">
+        <input id="file-input" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*">
+        <span>Upload a recording (hum it, sing it, or a song file)</span>
+      </label>
+    </div>
+
+    <div class="card hidden" id="progress">
+      <div class="song">
+        <img id="p-thumb" alt="" class="hidden">
+        <div>
+          <div class="title" id="p-title">Reading the link…</div>
+          <div class="artist" id="p-artist"></div>
+        </div>
+      </div>
+      <div class="stages" id="p-stages">
+        <span class="stage" data-stage="fetching"><span class="dot"></span>Fetching audio</span>
+        <span class="stage" data-stage="separating"><span class="dot"></span>Isolating vocals</span>
+        <span class="stage" data-stage="transcribing"><span class="dot"></span>Transcribing</span>
+      </div>
+      <div class="bar"><div id="p-bar"></div></div>
+      <p class="small muted" id="p-note" style="margin:10px 0 0">A full song takes a few minutes. You can keep this tab open in the background.</p>
+    </div>
+
+    <div class="card hidden" id="result">
+      <div class="song">
+        <img id="r-thumb" alt="" class="hidden">
+        <div>
+          <div class="title" id="r-title"></div>
+          <div class="artist" id="r-artist"></div>
+          <div class="credit" id="r-credit"></div>
+          <div class="chips" id="r-chips"></div>
+        </div>
+      </div>
+      <div id="r-truncated" class="alert alert-info hidden" style="margin-top:14px"></div>
+
+      <div class="tabs result-tabs" role="tablist" style="max-width:320px">
+        <button class="tab" role="tab" aria-selected="true" data-view="staff" type="button">Staff</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="solfa" type="button">Tonic Solfa</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="parts" type="button">SATB</button>
+      </div>
+      <div id="r-staff">
+        <div class="sheet-wrap">
+          <div id="sheet"></div>
+          <div class="watermark hidden" id="r-watermark"><span>NoteFusion preview</span></div>
+        </div>
+      </div>
+      <div id="r-solfa" class="hidden"><div class="solfa" id="r-solfa-text"></div></div>
+      <div id="r-parts" class="hidden">
+        <div id="r-parts-locked" class="upgrade-note hidden" style="margin-top:0">
+          <strong>Four-part harmony is a Pro feature.</strong> Alto, tenor and bass are written under the tune the way a hymn arranger would — ready for your choir.
+        </div>
+        <div id="r-parts-body" class="hidden">
+          <div class="sheet-wrap" style="margin-bottom:12px"><div id="sheet-parts"></div></div>
+          <div id="r-parts-solfa"></div>
+        </div>
+      </div>
+
+      <div class="downloads">
+        <button class="btn btn-primary" id="dl-pdf" type="button">Download PDF</button>
+        <button class="btn btn-ghost" id="dl-xml" type="button">MusicXML</button>
+        <button class="btn btn-ghost" id="dl-midi" type="button">MIDI</button>
+        <button class="btn btn-ghost" id="dl-solfa" type="button">Solfa text</button>
+        <button class="btn btn-ghost hidden" id="dl-parts" type="button">SATB MusicXML</button>
+      </div>
+      <div class="upgrade-note hidden" id="r-upgrade">
+        <strong>Downloads are a Pro feature.</strong> Upgrade to download this sheet as PDF, MusicXML or MIDI, transcribe full songs (up to 20 a month) and skip the queue.
+        <div class="plans" id="plans"></div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="upgrade-panel">
+      <h2>Upgrade to Pro</h2>
+      <p class="muted small">Full songs up to six minutes, twenty a month, priority processing, and every download format. Cancel any time.</p>
+      <div class="plans" id="plans-standalone"></div>
+    </div>
+  </section>
+
+  <p class="foot">Transcriptions are for personal and choir rehearsal use. Audio fetched from a link is deleted as soon as the job finishes. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+</main>
+
+<!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
+<div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
+<script src="/assets/app.js?v=1" defer></script>
+</body>
+</html>
