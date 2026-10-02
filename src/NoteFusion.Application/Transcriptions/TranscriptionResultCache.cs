@@ -24,7 +24,7 @@ public static class TranscriptionResultCache
     /// so keeping the bytes here would buy nothing and cost the database a great deal.
     /// </remarks>
     public static string Serialize(TranscriptionResultDto result)
-        => JsonSerializer.Serialize(result with { AudioPreviewBase64 = "" }, Options);
+        => JsonSerializer.Serialize(result with { AudioPreviewBase64 = "", BackingAudioBase64 = "" }, Options);
 
     /// <summary>
     /// Reads a cached result back, or null if the stored JSON cannot be understood — a row written by

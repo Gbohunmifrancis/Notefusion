@@ -55,6 +55,59 @@ def _warmup_basic_pitch() -> None:
         logger.warning("basic_pitch warmup skipped: %s", exc)
 
 
+def _warmup_pipeline() -> None:
+    """Run one short clip through the whole pipeline so the JIT work is paid before a user arrives.
+
+    librosa's pyin and beat tracker are numba-compiled on first use, and the first
+    transcription after a container starts paid for that: measured at 38 s against 9 s
+    for the identical clip once warm, on a two-minute hummed tune. Every deploy restarts
+    the container, so until now every deploy handed that bill to whoever uploaded next —
+    on a small instance, close to a minute of "transcribing…" for a few bars.
+
+    A synthetic three-second tune is enough to compile every path the melody pipeline
+    takes (both lanes share the compiled functions), and the result is thrown away. Run on
+    a daemon thread so the health check and the queue come up at once; a real job that
+    lands during the warm-up simply shares the CPU with it for a few seconds.
+    """
+    import threading
+
+    def run() -> None:
+        import tempfile
+        import time
+        import warnings
+        from pathlib import Path
+
+        import numpy as np
+
+        started = time.perf_counter()
+        try:
+            import soundfile as sf
+            from app.pipeline.transcriber import transcribe
+
+            sr = 22_050
+            t = np.arange(int(3.0 * sr)) / sr
+            # Three sung-ish notes with a little vibrato, so pyin has something to track
+            # and the beat tracker has onsets to find.
+            freqs = np.select([t < 1.0, t < 2.0], [261.63, 329.63], 392.0)
+            phase = 2 * np.pi * np.cumsum(freqs * (1 + 0.004 * np.sin(2 * np.pi * 5.5 * t))) / sr
+            env = np.minimum(1.0, (t % 1.0) / 0.03) * np.minimum(1.0, (1.0 - (t % 1.0)) / 0.05)
+            y = (0.5 * env * np.sin(phase)).astype(np.float32)
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                path = Path(tmp.name)
+            sf.write(path, y, sr)
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    transcribe(path, mode="melody")
+            finally:
+                path.unlink(missing_ok=True)
+            logger.info("pipeline warm-up done in %.1fs", time.perf_counter() - started)
+        except Exception as exc:  # noqa: BLE001 - warm-up is an optimisation, never a failure
+            logger.warning("pipeline warm-up skipped: %s", exc)
+
+    threading.Thread(target=run, name="nf-warmup", daemon=True).start()
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     """Configure logging, inject APT PATH, pre-warm model, start worker, drain on shutdown."""
@@ -68,7 +121,9 @@ async def lifespan(_app: FastAPI):
     logger.info("app_startup", git_sha=git_sha, model_version="icassp_2022", worker_pid=os.getpid(), nf_contour_gap_merge=os.environ.get("NF_CONTOUR_GAP_MERGE"))
     
     _warmup_basic_pitch()
-    queue = JobQueue(workers=settings.inference_workers)
+    if settings.pipeline_warmup:
+        _warmup_pipeline()
+    queue = JobQueue(workers=settings.inference_workers, pro_lane_workers=settings.pro_lane_workers)
     _app.state.queue = queue
     yield
     queue.shutdown()

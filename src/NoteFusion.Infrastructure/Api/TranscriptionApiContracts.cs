@@ -81,7 +81,9 @@ internal sealed record JobResultResponse(
     bool Truncated = false,
     bool Separated = false,
     Dictionary<string, WirePart>? Parts = null,
-    string PartsMusicXml = "");
+    string PartsMusicXml = "",
+    double BeatOriginSec = 0,
+    string BackingAudioBase64 = "");
 
 internal sealed record WirePart(IReadOnlyList<WireNoteEvent> Notes, IReadOnlyList<string> SolfaLines);
 

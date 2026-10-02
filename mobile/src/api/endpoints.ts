@@ -151,6 +151,12 @@ export interface SubmitOptions {
   key?: string;
   tempo?: number;
   timeSignature?: string;
+  /**
+   * The file is a whole song with instruments behind the voice, not a hummed or sung
+   * line: the worker isolates the lead vocal first and reads the beat from the full mix.
+   * Mirrors `SubmitTranscriptionRequest.Separate` on the API.
+   */
+  separate?: boolean;
 }
 
 export const transcriptionsApi = {
@@ -182,6 +188,7 @@ export const transcriptionsApi = {
     if (opts.key) form.append("key", opts.key);
     if (opts.tempo != null) form.append("tempo", String(opts.tempo));
     if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
+    if (opts.separate) form.append("separate", "true");
 
     // Do NOT set Content-Type manually here.
     // React Native's XHR layer auto-inserts the multipart boundary when the body is
@@ -190,9 +197,12 @@ export const transcriptionsApi = {
     // causes ASP.NET Core's multipart parser to receive a boundary-less header →
     // it cannot parse the body → request.Audio binds as null →
     // TranscriptionErrors.InvalidAudio (Error.Validation) → HTTP 422.
+    // Five minutes, not one: a 20 MB recording over a mobile connection can take well over a
+    // minute to leave the phone, and the old 60 s timeout abandoned the upload mid-flight —
+    // the server went on to transcribe a job nobody was polling, and the user saw "try again".
     return api
       .post<TranscriptionJob>("/api/transcriptions", form, {
-        timeout: 60_000,
+        timeout: 300_000,
       })
       .then((r) => r.data);
   },

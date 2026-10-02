@@ -63,7 +63,21 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             // arriving late — after a completion push, typically — gets nothing back. Our own copy is
             // the authority once it exists.
             if (job?.SettledAtUtc is null)
+            {
+                // A job we recorded, never settled, and the worker has forgotten: the worker restarted
+                // under it (the queue is in memory; an out-of-memory kill is the usual cause). The
+                // client was polling a job that will never finish and used to be shown a bare
+                // "service returned 404"; it is told plainly that the job is lost, nothing was
+                // charged, and the thing to do is submit again.
+                if (job is not null && result.Error.Type == ErrorType.NotFound)
+                {
+                    return new TranscriptionJobDto(
+                        request.JobId, TranscriptionStatus.Failed, 0,
+                        null,
+                        "The transcription service restarted while working on this, so the job was lost. Nothing was charged — please submit it again.");
+                }
                 return result;
+            }
             var settled = Settled(request.JobId, job.ResultJson);
             return settled.Result is null || await IsProAsync(job.UserId, cancellationToken)
                 ? settled

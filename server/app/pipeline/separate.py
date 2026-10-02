@@ -38,7 +38,18 @@ DIM_F = 3072
 DIM_T = 256
 CHUNK = HOP * (DIM_T - 1)  # 261 120 samples, 5.92 s
 OVERLAP = 0.25  # fraction of a chunk shared with its neighbour
-BATCH = 4  # chunks per onnxruntime call; the model is batch-first
+# Chunks per onnxruntime call. The model is batch-first, and a batch of four was the obvious
+# throughput choice — until it was measured: on a 30 s clip it peaks at 10 GB of resident
+# memory, against 1.4 GB for a batch of one with the arena off (below). The production
+# box is a small EC2 instance, and that peak is what took the whole API down for seven
+# seconds and lost every in-flight job when the kernel killed the worker. One chunk at a
+# time is a third slower and a seventh of the memory; the memory is the constraint.
+BATCH = max(1, int(os.getenv("NF_MDX_BATCH", "1")))
+# onnxruntime's CPU memory arena and memory-pattern planning keep every activation buffer
+# the session has ever needed. For this network that doubles the peak (2.8 GB against
+# 1.4 GB at batch one) for a quarter less time. Off by default; NF_MDX_MEM_ARENA=1 buys
+# the speed back on a machine with the memory to spare.
+MEM_ARENA = os.getenv("NF_MDX_MEM_ARENA", "0").strip().lower() in ("1", "true", "yes")
 # UVR applies this gain to the model's vocal estimate (``compensate`` in its model data).
 COMPENSATION = 1.021
 
@@ -46,6 +57,9 @@ DEFAULT_MODEL_PATH = "/app/models/UVR-MDX-NET-Voc_FT.onnx"
 
 _SESSION = None
 _SESSION_LOCK = threading.Lock()
+# One separation at a time, whatever the queue's concurrency: two of these side by side is
+# twice the peak memory, and the peak is the number that decides whether the box survives.
+_RUN_LOCK = threading.Lock()
 
 
 def model_path() -> Path:
@@ -64,6 +78,8 @@ def _session():
 
             options = ort.SessionOptions()
             options.intra_op_num_threads = max(1, int(os.getenv("NF_MDX_THREADS", "0")) or (os.cpu_count() or 1))
+            options.enable_cpu_mem_arena = MEM_ARENA
+            options.enable_mem_pattern = MEM_ARENA
             _SESSION = ort.InferenceSession(
                 str(model_path()), sess_options=options, providers=["CPUExecutionProvider"]
             )
@@ -137,6 +153,11 @@ def separate_vocals(mix: np.ndarray, sr: int = SAMPLE_RATE, progress=lambda f: N
     """
     if sr != SAMPLE_RATE:
         raise ValueError(f"separate_vocals expects {SAMPLE_RATE} Hz audio, got {sr}")
+    with _RUN_LOCK:
+        return _separate_locked(mix, progress)
+
+
+def _separate_locked(mix: np.ndarray, progress) -> np.ndarray:
     mono = mix.ndim == 1
     x = np.stack([mix, mix]) if mono else np.asarray(mix, dtype=np.float32)
     n = x.shape[1]
@@ -168,8 +189,14 @@ def separate_vocals(mix: np.ndarray, sr: int = SAMPLE_RATE, progress=lambda f: N
     return result.mean(axis=0) if mono else result
 
 
-def separate_file(wav_path: Path, out_path: Path, progress=lambda f: None) -> Path:
-    """Read a WAV, write its vocals estimate at 22 050 Hz mono — what the melody engine wants."""
+def separate_file(wav_path: Path, out_path: Path, progress=lambda f: None,
+                  backing_path: Path | None = None) -> Path:
+    """Read a WAV, write its vocals estimate at 22 050 Hz mono — what the melody engine wants.
+
+    With ``backing_path`` the instrumental — the mix minus that vocal estimate, which is
+    what the model's residual is — is written there too, at the same rate and mono, for
+    the "play it over the song" rehearsal mode. One pass of the model serves both.
+    """
     import librosa
     import soundfile as sf
 
@@ -179,4 +206,12 @@ def separate_file(wav_path: Path, out_path: Path, progress=lambda f: None) -> Pa
     vocals = separate_vocals(y, SAMPLE_RATE, progress=progress)
     mono = librosa.resample(vocals.mean(axis=0), orig_sr=SAMPLE_RATE, target_sr=22_050)
     sf.write(str(out_path), mono.astype(np.float32), 22_050, format="WAV", subtype="PCM_16")
+    if backing_path is not None:
+        n = min(y.shape[1], vocals.shape[1])
+        residual = (y[:, :n] - vocals[:, :n]).mean(axis=0)
+        backing = librosa.resample(residual, orig_sr=SAMPLE_RATE, target_sr=22_050)
+        peak = float(np.max(np.abs(backing))) if backing.size else 0.0
+        if peak > 1.0:
+            backing = backing / peak
+        sf.write(str(backing_path), backing.astype(np.float32), 22_050, format="WAV", subtype="PCM_16")
     return out_path

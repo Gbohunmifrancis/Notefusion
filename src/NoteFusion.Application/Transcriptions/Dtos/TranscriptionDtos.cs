@@ -17,6 +17,21 @@ public sealed record TranscribeOptions
     public string? TimeSignature { get; init; }
 
     /// <summary>
+    /// The upload is a whole song with instruments behind the voice, not a hummed or sung line: the
+    /// worker isolates the lead vocal first, reads the beat from the full mix, and returns the
+    /// instrumental as <see cref="TranscriptionResultDto.BackingAudioBase64"/>. Linked songs always take
+    /// this road; for uploads the client says which kind of recording it is.
+    /// </summary>
+    public bool Separate { get; init; }
+
+    /// <summary>
+    /// Whether the worker should synthesise the piano preview WAV. The mobile client plays it; the web
+    /// client renders its own playback from the notes and sends false, which saves the worker about nine
+    /// seconds and the response about ten megabytes on a three-minute song.
+    /// </summary>
+    public bool AudioPreview { get; init; } = true;
+
+    /// <summary>
     /// Which lane the worker runs the job in. Pro work goes first, and in melody mode skips the polyphonic
     /// model altogether, which is most of the wait on a hummed clip.
     /// </summary>
@@ -125,7 +140,15 @@ public sealed record TranscriptionResultDto(
     /// <summary>Four-part harmony under the melody, keyed soprano / alto / tenor / bass. Pro only.</summary>
     IReadOnlyDictionary<string, PartDto>? Parts = null,
     /// <summary>The four parts as one MusicXML score. Pro only.</summary>
-    string PartsMusicXml = "");
+    string PartsMusicXml = "",
+    /// <summary>
+    /// Where beat 0 falls in the source audio, in seconds. With <see cref="BackingAudioBase64"/> it lets a
+    /// client play the notated melody over the song's own backing in time: the audio time of beat b is
+    /// BeatOriginSec + b × 60 / Tempo.
+    /// </summary>
+    double BeatOriginSec = 0,
+    /// <summary>Separated jobs only: the instrumental (mix minus the isolated vocal) as a small mono MP3.</summary>
+    string BackingAudioBase64 = "");
 
 /// <summary>
 /// Polling envelope for a transcription job.

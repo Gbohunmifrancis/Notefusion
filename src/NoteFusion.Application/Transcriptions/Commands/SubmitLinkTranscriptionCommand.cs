@@ -28,7 +28,9 @@ public sealed record SubmitLinkTranscriptionCommand(
     TranscriptionMode Mode,
     string? Key,
     int? Tempo,
-    string? TimeSignature = null) : IRequest<Result<string>>;
+    string? TimeSignature = null,
+    /// <summary>False to skip the synthesised preview WAV. See <see cref="TranscribeOptions.AudioPreview"/>.</summary>
+    bool AudioPreview = true) : IRequest<Result<string>>;
 
 public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<SubmitLinkTranscriptionCommand, Result<string>>
 {
@@ -88,7 +90,8 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             Tempo = request.Tempo,
             TimeSignature = request.TimeSignature,
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal,
-            MaxSeconds = isPro ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds
+            MaxSeconds = isPro ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds,
+            AudioPreview = request.AudioPreview
         };
 
         var submitted = await _api.SubmitLinkAsync(url, options, ct);

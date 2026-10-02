@@ -22,7 +22,11 @@ public sealed record SubmitTranscriptionCommand(
     TranscriptionMode Mode,
     string? Key,
     int? Tempo,
-    string? TimeSignature = null) : IRequest<Result<string>>;
+    string? TimeSignature = null,
+    /// <summary>A whole song with instruments: isolate the voice first. See <see cref="TranscribeOptions.Separate"/>.</summary>
+    bool Separate = false,
+    /// <summary>False to skip the synthesised preview WAV. See <see cref="TranscribeOptions.AudioPreview"/>.</summary>
+    bool AudioPreview = true) : IRequest<Result<string>>;
 
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
@@ -105,6 +109,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             Key = key,
             Tempo = request.Tempo,
             TimeSignature = request.TimeSignature,
+            Separate = request.Separate,
+            AudioPreview = request.AudioPreview,
             // Pro work goes to the front of the worker's queue and takes its fast lane.
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal
         };

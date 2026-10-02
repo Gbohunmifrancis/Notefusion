@@ -44,27 +44,16 @@
     return list;
   }
 
-  function action(label, featured, source) {
+  function action(label, featured, source, href) {
     var wrapper = document.createElement("div");
     wrapper.style.cssText = "display:flex;flex-direction:column;gap:10px;margin-top:4px;";
-
-    // Primary: APK download
+    // Into the web app: a free account to start, the upgrade screen for a paid plan.
     var link = document.createElement("a");
     link.className = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
-    link.href = "https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk";
-    link.setAttribute("download", "");
+    link.href = href || "/app?signup=1";
     if (source) link.setAttribute("data-download-source", source);
     link.textContent = label;
     wrapper.appendChild(link);
-
-    // Secondary: Play Store (disabled — not yet approved)
-    var playNote = document.createElement("a");
-    playNote.href = "#";
-    playNote.style.cssText = "display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:#64748b;opacity:0.55;pointer-events:none;text-decoration:none;";
-    playNote.setAttribute("aria-disabled", "true");
-    playNote.textContent = "▶ Google Play — coming soon";
-    wrapper.appendChild(playNote);
-
     return wrapper;
   }
 
@@ -83,18 +72,18 @@
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent = "Try the complete transcription workflow before upgrading.";
+    blurb.textContent = "Hum a tune, preview a song, keep the sheet. No card needed.";
     card.appendChild(blurb);
 
     card.appendChild(
       featureList([
-        "Your first " + trialCount + " transcriptions",
-        "Tonic Solfa and staff notation",
-        "All 24 keys with one-tap re-keying",
-        "Playback, MusicXML export and library sync",
+        "One song preview from a link (the first minute)",
+        "Hummed and sung tunes, " + trialCount + " to start",
+        "Tonic Solfa and staff notation, all 24 keys",
+        "Rehearsal playback, lyrics, transpose and a share link",
       ]),
     );
-    card.appendChild(action("Download Free APK", false, "pricing_free"));
+    card.appendChild(action("Create a free account", false, "pricing_free", "/app?signup=1"));
     return card;
   }
 
@@ -145,7 +134,7 @@
     blurb.textContent =
       plan.interval === "lifetime"
         ? "Pay once and keep NoteFusion Pro for life."
-        : "Unlimited transcription for regular rehearsals, teaching and arranging.";
+        : "Whole songs, four parts, every download — for the choir that rehearses every week.";
     card.appendChild(blurb);
 
     var billingTerm =
@@ -159,13 +148,15 @@
 
     card.appendChild(
       featureList([
-        "Unlimited transcriptions",
-        "Everything in Free, nothing held back",
+        "Whole songs from a link: up to six minutes, twenty a month",
+        "Alto, tenor and bass written under every tune",
+        "Sing-along marking, note by note",
+        "Clean PDF, MusicXML and MIDI downloads",
+        "Priority lane: never queued behind anyone",
         billingTerm,
-        "A receipt emailed after payment",
       ]),
     );
-    card.appendChild(action("Download Pro APK", true, "pricing_" + (plan.interval || "pro")));
+    card.appendChild(action("Upgrade to Pro", true, "pricing_" + (plan.interval || "pro"), "/app?upgrade=1"));
     return card;
   }
 

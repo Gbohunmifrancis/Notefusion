@@ -7,7 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
+ Alert } from "react-native";
 import {
   useAudioRecorder,
   useAudioRecorderState,
@@ -577,6 +577,22 @@ export function RecordScreen() {
     }
   }
 
+  /** What the imported file is; null when the sheet was dismissed. */
+  function askIfSong(): Promise<boolean | null> {
+    return new Promise((resolve) => {
+      Alert.alert(
+        "What is this recording?",
+        "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band.",
+        [
+          { text: "A tune I hummed or sang", onPress: () => resolve(false) },
+          { text: "A song with instruments", onPress: () => resolve(true) },
+          { text: "Cancel", style: "cancel", onPress: () => resolve(null) },
+        ],
+        { cancelable: true, onDismiss: () => resolve(null) },
+      );
+    });
+  }
+
   async function pickAudioFile() {
     setPermError(null);
     // Importing a file costs a generation exactly like recording one, and this path
@@ -607,11 +623,20 @@ export function RecordScreen() {
       }
 
       const asset = res.assets[0];
+      // A file from the phone's library is as likely to be a song with a band behind the
+      // voice as a hummed line, and the two need different treatment: a song's lead vocal
+      // is isolated first and its beat read from the full mix, or the mixture comes back as
+      // a scatter of wrong notes. Scores and MIDI files have nothing to isolate.
+      const ext = (asset.name || "").split(".").pop()?.toLowerCase() ?? "";
+      const isScore = ["mid", "midi", "xml", "musicxml", "mxl", "abc"].includes(ext);
+      const separate = isScore ? false : await askIfSong();
+      if (separate === null) return;
       setPhase("uploading");
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      lastSubmitArgs.current = { uri: asset.uri, name: asset.name || "imported-audio.m4a", opts: { mode, key: keyOpt } }; const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", {
+      lastSubmitArgs.current = { uri: asset.uri, name: asset.name || "imported-audio.m4a", opts: { mode, key: keyOpt, separate } }; const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", {
         mode,
         key: keyOpt,
+        separate,
       });
       // Only once the job is really queued — a quota refusal has no completion
       // to notify about.

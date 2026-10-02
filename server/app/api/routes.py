@@ -16,7 +16,9 @@ from app.jobs.queue import JobQueue
 
 router = APIRouter(prefix="/v1")
 
-ACCEPTED_SUFFIXES = {".wav", ".flac", ".ogg", ".opus", ".mp3", ".m4a"}
+# What a phone or a browser produces, as well as what a desktop exports. ``.webm`` is what
+# MediaRecorder gives in Chrome and Firefox, ``.mp4`` in Safari; both decode through ffmpeg.
+ACCEPTED_SUFFIXES = {".wav", ".flac", ".ogg", ".opus", ".mp3", ".m4a", ".aac", ".webm", ".mp4", ".caf", ".weba"}
 
 #: Long enough for a GUID or the C# API's own id, short enough that a caller cannot
 #: pad the log file with one header.
@@ -87,6 +89,8 @@ async def submit_transcription(
     callback_url: str | None = Form(None),
     priority: str = Form("normal"),
     max_seconds: float | None = Form(None, description="Transcribe only the first N seconds (an anonymous preview)"),
+    separate: bool = Form(False, description="The upload is a full song: isolate the lead vocal first and read the beat from the mix"),
+    audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
@@ -167,7 +171,7 @@ async def submit_transcription(
                           time_signature=time_signature,
                           correlation_id=_correlation_id(request),
                           callback_url=callback_url, priority=priority,
-                          song_seconds=song_seconds)
+                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview)
     return SubmitResponse(job_id=job_id)
 
 
@@ -228,6 +232,7 @@ async def submit_link_transcription(
     callback_url: str | None = Form(None),
     priority: str = Form("normal"),
     max_seconds: float | None = Form(None),
+    audio_preview: bool = Form(True),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
@@ -258,11 +263,11 @@ async def submit_link_transcription(
                                time_signature=time_signature,
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
-                               max_seconds=cap)
+                               max_seconds=cap, audio_preview=audio_preview)
     return SubmitResponse(job_id=job_id)
 
 
-GRADE_SUFFIXES = ACCEPTED_SUFFIXES | {".webm", ".mp4", ".aac", ".caf"}
+GRADE_SUFFIXES = ACCEPTED_SUFFIXES
 GRADE_MAX_SECONDS = 120.0
 
 

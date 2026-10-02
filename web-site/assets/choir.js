@@ -346,6 +346,10 @@
     var playing = false, startCtxTime = 0, startBeat = 0, cursorIdx = 0, timer = null, tickCb = null, endBeat = 0;
     var LOOKAHEAD = 0.25, INTERVAL = 60;
     var events = []; // {beat, dur, midi, voice, vel}
+    // The song's own backing (an instrumental), played under the notes in time: audio
+    // time of beat b is originSec + b * 60 / tempo. Started and stopped with the
+    // transport, restarted on a loop wrap or a rate change, and pitch follows the rate.
+    var backing = { buffer: null, originSec: 0, on: false, src: null, gain: null, pending: null };
 
     function ensure() {
       if (ctx) return;
@@ -353,6 +357,20 @@
       master = createPianoOutput(ctx);
     }
     function beatSec() { return (60 / Math.max(30, tempo)) / rate; }
+    function stopBacking() {
+      if (backing.src) { try { backing.src.stop(); } catch (e) { /* already stopped */ } backing.src = null; }
+    }
+    function startBacking(fromBeat, when) {
+      stopBacking();
+      if (!backing.on || !backing.buffer || !ctx) return;
+      var audioAt = backing.originSec + fromBeat * (60 / Math.max(30, tempo));
+      var src = ctx.createBufferSource(); src.buffer = backing.buffer; src.playbackRate.value = rate;
+      if (!backing.gain) { backing.gain = ctx.createGain(); backing.gain.gain.value = 0.85; backing.gain.connect(ctx.destination); }
+      src.connect(backing.gain);
+      if (audioAt >= 0) src.start(when, Math.min(audioAt, backing.buffer.duration));
+      else src.start(when - audioAt / rate, 0);
+      backing.src = src;
+    }
     function nowBeat() { return playing ? startBeat + (ctx.currentTime - startCtxTime) / beatSec() : startBeat; }
     function rebuild() {
       events = [];
@@ -379,8 +397,8 @@
           var wrapBeat = loop ? loop.end : endBeat;
           var wrapTime = startCtxTime + (wrapBeat - startBeat) * beatSec();
           if (wrapTime > horizon) break;
-          if (loop) { startBeat = loop.start; startCtxTime = wrapTime; cursorIdx = firstIndexAt(loop.start); continue; }
-          playing = false; startBeat = 0; stopTimer(); if (tickCb) tickCb({ beat: 0, playing: false }); return;
+          if (loop) { startBeat = loop.start; startCtxTime = wrapTime; cursorIdx = firstIndexAt(loop.start); startBacking(loop.start, wrapTime); continue; }
+          playing = false; startBeat = 0; stopTimer(); stopBacking(); if (tickCb) tickCb({ beat: 0, playing: false }); return;
         }
         var ev = events[cursorIdx];
         var when = startCtxTime + (ev.beat - startBeat) * beatSec();
@@ -413,13 +431,24 @@
         var from = startBeat;
         if (loop && (from < loop.start || from >= loop.end)) from = loop.start;
         startBeat = from; startCtxTime = ctx.currentTime + 0.05; cursorIdx = firstIndexAt(from); playing = true;
+        startBacking(from, startCtxTime);
         stopTimer(); timer = setInterval(schedule, INTERVAL); schedule();
       },
-      pause: function () { if (!playing) return; startBeat = nowBeat(); playing = false; stopTimer(); if (tickCb) tickCb({ beat: startBeat, playing: false }); },
-      stop: function () { playing = false; stopTimer(); startBeat = loop ? loop.start : 0; if (tickCb) tickCb({ beat: startBeat, playing: false }); },
+      pause: function () { if (!playing) return; startBeat = nowBeat(); playing = false; stopTimer(); stopBacking(); if (tickCb) tickCb({ beat: startBeat, playing: false }); },
+      stop: function () { playing = false; stopTimer(); stopBacking(); startBeat = loop ? loop.start : 0; if (tickCb) tickCb({ beat: startBeat, playing: false }); },
       toggle: function () { playing ? this.pause() : this.play(); },
       isPlaying: function () { return playing; },
-      setRate: function (r) { var b = nowBeat(); rate = Math.min(2, Math.max(0.5, r)); startBeat = b; startCtxTime = ctx ? ctx.currentTime : 0; if (playing) cursorIdx = firstIndexAt(b); },
+      setRate: function (r) { var b = nowBeat(); rate = Math.min(2, Math.max(0.5, r)); startBeat = b; startCtxTime = ctx ? ctx.currentTime : 0; if (playing) { cursorIdx = firstIndexAt(b); startBacking(b, startCtxTime); } },
+      /** The song's instrumental as encoded audio bytes (an ArrayBuffer), with where beat 0 falls in it; null clears it. */
+      setBacking: function (bytes, originSec) {
+        stopBacking(); backing.buffer = null; backing.originSec = originSec || 0;
+        if (!bytes) return;
+        ensure();
+        var mine = backing.pending = {};
+        ctx.decodeAudioData(bytes.slice(0)).then(function (buf) { if (backing.pending === mine) { backing.buffer = buf; if (playing) startBacking(nowBeat(), ctx.currentTime); } }, function () { /* undecodable: play the piano alone */ });
+      },
+      setBackingOn: function (on) { backing.on = !!on; if (playing) { if (on) startBacking(nowBeat(), ctx.currentTime); else stopBacking(); } },
+      hasBacking: function () { return !!backing.buffer; },
       getRate: function () { return rate; },
       /** Bars are 1-based and inclusive; null clears the passage. */
       setLoopBars: function (from, to) {

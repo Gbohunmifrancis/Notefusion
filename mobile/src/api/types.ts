@@ -78,6 +78,14 @@ export interface TranscriptionResult {
   notes: NoteEvent[];
   solfaLines: string[];
   overallConfidence: number;
+  /**
+   * Where beat 0 falls in the source audio, in seconds. With `backingAudioBase64` it is
+   * what lets the notated melody play over the song's own backing in time: the audio
+   * time of beat b is beatOriginSec + b * 60 / tempo. Mirrors the C# DTO.
+   */
+  beatOriginSec?: number;
+  /** Separated jobs only: the instrumental (mix minus the isolated vocal) as a small mono MP3. */
+  backingAudioBase64?: string;
   /** Chromatic spelling convention used by the worker; old results default to direction. */
   chromaticSpelling?: "direction" | "ascending" | "descending";
   /**

@@ -187,6 +187,10 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
             form.Add(new StringContent(options.TimeSignature), "time_signature");
         form.Add(new StringContent(options.Priority == TranscribePriority.High ? "high" : "normal"), "priority");
+        if (options.Separate)
+            form.Add(new StringContent("true"), "separate");
+        if (!options.AudioPreview)
+            form.Add(new StringContent("false"), "audio_preview");
         if (withMode && options.MaxSeconds is { } cap)
             form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
 
@@ -202,6 +206,10 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         try
         {
             using var response = await http.GetAsync($"v1/jobs/{jobId}", cancellationToken);
+            // A 404 is the worker not knowing the job at all — it restarted (the queue is in memory) or
+            // the job expired — which the caller treats differently from the worker being unwell.
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return Error.NotFound("Api.Job", "The transcription service no longer has this job.");
             if (!response.IsSuccessStatusCode)
                 return Error.Failure("Api.Job", $"Transcription service returned {(int)response.StatusCode}.");
 
@@ -283,7 +291,9 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
                 kv => new PartDto(
                     kv.Value.Notes.Select(n => new NoteEventDto(n.PitchMidi, n.StartBeat, n.DurBeats, n.Degree, n.Solfa, n.OctaveMark, n.Conf)).ToList(),
                     kv.Value.SolfaLines)),
-            wire.Result.PartsMusicXml ?? "");
+            wire.Result.PartsMusicXml ?? "",
+            wire.Result.BeatOriginSec,
+            wire.Result.BackingAudioBase64 ?? "");
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source));
     }

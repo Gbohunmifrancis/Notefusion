@@ -8,12 +8,21 @@ class Settings:
     # PRD F-01: clips are 10 s - 3 min; enforced server-side as defence in depth
     max_clip_seconds: float = float(os.getenv("NF_MAX_CLIP_SECONDS", "180"))
     # Compressed uploads are ~1 MB/30 s; 20 MB allows a 3-min WAV during the beta
-    max_upload_bytes: int = int(os.getenv("NF_MAX_UPLOAD_BYTES", str(20 * 1024 * 1024)))
+    # 25 MB, the same ceiling the C# API enforces (TranscriptionsController.MaxAudioBytes). It
+    # was 20 MB here, so a 22 MB file passed the API, spent a minute uploading, and was then
+    # refused by the worker — the slowest possible way to say no.
+    max_upload_bytes: int = int(os.getenv("NF_MAX_UPLOAD_BYTES", str(25 * 1024 * 1024)))
     # Completed/failed jobs are purged after this (results only - audio is deleted
     # immediately after processing, TRD par. 9)
     job_ttl_seconds: float = float(os.getenv("NF_JOB_TTL_SECONDS", "900"))
     # Single worker: CPU inference on one VPS; a queue prevents overload (TRD par. 3.3)
     inference_workers: int = int(os.getenv("NF_INFERENCE_WORKERS", "1"))
+    #: Workers that take high-priority (Pro) jobs only, on top of the general ones above.
+    #: See the module docstring of ``app.jobs.queue`` for why the lane needs its own thread.
+    pro_lane_workers: int = int(os.getenv("NF_PRO_LANE_WORKERS", "1"))
+    #: Run a throwaway clip through the pipeline at startup so numba's JIT cost is paid
+    #: before the first user's job (see ``app.main._warmup_pipeline``). Off in tests.
+    pipeline_warmup: bool = os.getenv("NF_PIPELINE_WARMUP", "1").strip().lower() not in ("0", "false", "no")
     # Linked songs (YouTube etc.): the most audio a link job will transcribe.  The API
     # passes a per-plan cap below this (a short free preview, six minutes for Pro).
     link_max_seconds: float = float(os.getenv("NF_LINK_MAX_SECONDS", "360"))
