@@ -602,3 +602,21 @@ body.auth-only .auth-page .try-free { display: none; }
 [data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
 [data-theme="dark"] .plan-opt.on { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18); }
 [data-theme="dark"] .pill-free { color: var(--color-brand-500); }
+
+/* ── Library folders ─────────────────────────────────────────────────────── */
+.lib-folders { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
+.lib-chip { border: 1px solid var(--line); background: var(--surface); color: var(--copy); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }
+.lib-chip:hover { border-color: var(--line-strong); }
+.lib-chip.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.lib-folder-bar { border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px 14px; margin: 0 0 14px; background: var(--wash); }
+.lib-folder-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.lib-folder-actions { display: inline-flex; gap: 8px; }
+.lib-folder-bar .share-row { margin-top: 10px; }
+.lib-folder-tag { align-self: flex-start; font-size: 0.72rem; font-weight: 700; color: var(--blue-dark); background: var(--blue-tint); border-radius: 999px; padding: 2px 9px; }
+.lib-item .actions { flex-wrap: wrap; align-items: center; }
+.lib-file { width: auto; min-height: 32px; padding: 4px 8px; font-size: 0.8rem; border-radius: 8px; }
+.folder-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }
+.folder-list a { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); text-decoration: none; color: var(--ink); background: var(--surface); font-weight: 600; }
+.folder-list a:hover { border-color: var(--blue); }
+.folder-list .key { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
+.folder-back { display: inline-block; margin-bottom: 10px; font-size: 0.875rem; }

@@ -37,6 +37,8 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
         builder.Property(t => t.SharedAtUtc).HasColumnName("shared_at_utc");
         builder.Property(t => t.ShareViews).HasColumnName("share_views").HasDefaultValue(0);
         builder.HasIndex(t => t.ShareToken).IsUnique();
+        builder.Property(t => t.Folder).HasColumnName("folder").HasMaxLength(Transcription.FolderMaxLength);
+        builder.HasIndex(t => new { t.UserId, t.Folder });
 
         // The four parts are read and written whole, never queried into, so one JSON column
         // beats four more owned tables.

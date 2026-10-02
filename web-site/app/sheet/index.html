@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=10">
+<link rel="stylesheet" href="/assets/app.css?v=11">
 <script>
   (function () {
     var t = null;
@@ -65,6 +65,11 @@
     <div class="skel skel-staff"></div>
   </div>
   <div id="error" class="card hidden"><div class="alert alert-danger" id="error-text"></div></div>
+  <div id="folder" class="card hidden">
+    <h1 id="f-title"></h1>
+    <p class="muted small" id="f-by" style="margin:0"></p>
+    <ul class="folder-list" id="f-list"></ul>
+  </div>
 
   <div id="sheet" class="hidden">
     <div class="card">
@@ -123,7 +128,7 @@
   </div>
 </div>
 <script src="/assets/choir.js?v=2"></script>
-<script src="/assets/sheet.js?v=3"></script>
+<script src="/assets/sheet.js?v=4"></script>
 <script src="/assets/track.js?v=1" defer></script>
 </body>
 </html>

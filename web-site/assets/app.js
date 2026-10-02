@@ -439,6 +439,82 @@
   }
 
   var libraryCache = null;
+  var libFolder = null; // the folder chip selected; null is "All"
+  function foldersOf(items) {
+    var seen = {};
+    (items || []).forEach(function (it) { if (it.folder) seen[it.folder] = (seen[it.folder] || 0) + 1; });
+    return Object.keys(seen).sort(function (a, b) { return a.localeCompare(b); }).map(function (name) { return { name: name, count: seen[name] }; });
+  }
+  /** Folder chips over the list, and the bar to share or rename the chosen folder. */
+  function renderFolders(items) {
+    var folders = foldersOf(items), box = $("lib-folders");
+    if (libFolder && !folders.some(function (f) { return f.name === libFolder; })) libFolder = null;
+    box.innerHTML = "";
+    if (!folders.length) { hide(box); hide($("lib-folder-bar")); return; }
+    [{ name: null, count: items.length }].concat(folders).forEach(function (f) {
+      var chip = document.createElement("button"); chip.type = "button"; chip.className = "lib-chip" + (f.name === libFolder ? " on" : "");
+      chip.setAttribute("role", "tab"); chip.setAttribute("aria-selected", String(f.name === libFolder));
+      chip.textContent = (f.name || "All") + " · " + f.count;
+      chip.addEventListener("click", function () { libFolder = f.name; renderFolders(libraryCache || []); filterLibrary(); });
+      box.appendChild(chip);
+    });
+    show(box);
+    if (libFolder) {
+      $("lib-folder-name").textContent = libFolder;
+      hide($("lib-folder-share-row"));
+      show($("lib-folder-bar"));
+    } else hide($("lib-folder-bar"));
+  }
+  function filterLibrary() {
+    var q = $("lib-search").value.trim().toLowerCase();
+    document.querySelectorAll("#lib-list .lib-item").forEach(function (card) {
+      var match = (!q || card.dataset.title.indexOf(q) >= 0) && (!libFolder || card.dataset.folder === libFolder);
+      card.classList.toggle("hidden", !match);
+    });
+  }
+  /** Files a sheet: an existing folder, a new one, or none. */
+  function fileSheet(it, value, select) {
+    var name = value;
+    if (value === "__new") {
+      name = (window.prompt("Name the new folder (for example: Sunday choir, Easter service):", "") || "").trim();
+      if (!name) { select.value = it.folder || ""; return; }
+    }
+    select.disabled = true;
+    request("/api/library/" + it.id + "/folder", { method: "PUT", body: { folder: name || null } })
+      .then(function () { it.folder = name || null; track("Filed sheet"); loadLibrary(false); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not move the sheet: " + (err.message || err)); select.value = it.folder || ""; })
+      .finally(function () { select.disabled = false; });
+  }
+  $("lib-folder-share").addEventListener("click", function () {
+    if (!libFolder) return;
+    var btn = $("lib-folder-share"); btn.disabled = true;
+    request("/api/library/folders/share", { method: "POST", body: { folder: libFolder } })
+      .then(function (link) {
+        $("lib-folder-url").value = link.url || ("https://notefusion.studio/app/sheet/?f=" + encodeURIComponent(link.token));
+        show($("lib-folder-share-row")); $("lib-folder-url").select(); track("Shared folder"); libraryCache = null;
+      })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share the folder: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("lib-folder-copy").addEventListener("click", function () {
+    var url = $("lib-folder-url").value;
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { $("lib-folder-copy").textContent = "Copied"; setTimeout(function () { $("lib-folder-copy").textContent = "Copy"; }, 1500); }, function () { $("lib-folder-url").select(); });
+  });
+  $("lib-folder-stop").addEventListener("click", function () {
+    if (!libFolder) return;
+    request("/api/library/folders/share?folder=" + encodeURIComponent(libFolder), { method: "DELETE" })
+      .then(function () { hide($("lib-folder-share-row")); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not stop sharing: " + (err.message || err)); });
+  });
+  $("lib-folder-rename").addEventListener("click", function () {
+    if (!libFolder) return;
+    var to = (window.prompt("Rename “" + libFolder + "” to:", libFolder) || "").trim();
+    if (!to || to === libFolder) return;
+    request("/api/library/folders", { method: "PUT", body: { from: libFolder, to: to } })
+      .then(function () { libFolder = to; libraryCache = null; loadLibrary(true); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not rename the folder: " + (err.message || err)); });
+  });
+
   function loadLibrary(force) {
     var list = $("lib-list"), empty = $("lib-empty"), skel = $("lib-skel");
     if (!libraryCache || force) { show(skel); hide(list); hide(empty); }
@@ -447,14 +523,23 @@
       list.innerHTML = "";
       if (!items.length) { show(empty); hide(list); return; }
       hide(empty); show(list);
+      renderFolders(items);
+      var folders = foldersOf(items);
       items.forEach(function (it) {
-        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.title = (it.title || "Untitled").toLowerCase();
+        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.title = (it.title || "Untitled").toLowerCase(); card.dataset.folder = it.folder || "";
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
         m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "");
         card.appendChild(m);
+        if (it.folder) { var tag = document.createElement("span"); tag.className = "lib-folder-tag"; tag.textContent = it.folder; card.appendChild(tag); }
         var a = document.createElement("div"); a.className = "actions";
+        var file = document.createElement("select"); file.className = "lib-file"; file.setAttribute("aria-label", "Folder for " + (it.title || "Untitled"));
+        [["", "No folder"]].concat(folders.map(function (f) { return [f.name, f.name]; })).concat([["__new", "New folder…"]]).forEach(function (o) {
+          var opt = document.createElement("option"); opt.value = o[0]; opt.textContent = o[1]; file.appendChild(opt);
+        });
+        file.value = it.folder || "";
+        file.addEventListener("change", function () { fileSheet(it, file.value, file); });
         var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
         open.addEventListener("click", function () { openSaved(it.id); });
         var del = document.createElement("button"); del.className = "btn btn-ghost btn-sm btn-danger"; del.type = "button"; label(del, "trash", "Delete");
@@ -464,16 +549,14 @@
           request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); })
             .catch(function (err) { alertIn($("app-alert"), "danger", "Could not delete: " + (err.message || err)); del.disabled = false; });
         });
-        a.appendChild(open); a.appendChild(del); card.appendChild(a);
+        a.appendChild(open); a.appendChild(file); a.appendChild(del); card.appendChild(a);
         list.appendChild(card);
       });
+      filterLibrary();
     }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); });
   }
   $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); $("link-url").focus(); });
-  $("lib-search").addEventListener("input", function () {
-    var q = $("lib-search").value.trim().toLowerCase();
-    document.querySelectorAll("#lib-list .lib-item").forEach(function (card) { card.classList.toggle("hidden", !!q && card.dataset.title.indexOf(q) < 0); });
-  });
+  $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
     stopPolling();

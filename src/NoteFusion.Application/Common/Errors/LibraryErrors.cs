@@ -29,4 +29,7 @@ public static class LibraryErrors
 
     public static readonly Error InvalidTimeSignature =
         Error.Validation("LIBRARY_INVALID_TIME_SIGNATURE", "Time signature must be in format N/D (e.g. 4/4, 3/4, 6/8).");
+
+    public static readonly Error EmptyFolder =
+        Error.Validation("LIBRARY_EMPTY_FOLDER", "There are no sheets in that folder to share.");
 }

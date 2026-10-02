@@ -233,6 +233,8 @@ export interface SavedTranscription {
   partsMusicXml?: string | null;
   /** Set while the sheet is behind a public link. */
   shareToken?: string | null;
+  /** The folder the sheet is filed in ("Sunday choir"), or null. */
+  folder?: string | null;
 }
 
 // --- Billing ------------------------------------------------------------

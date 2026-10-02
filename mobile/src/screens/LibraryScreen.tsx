@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
+  Modal,
   RefreshControl,
+  ScrollView,
+  Share,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
+import { Button } from "../components/Button";
+import { TextField } from "../components/TextField";
 import { TranscriptionRowSkeleton } from "../components/Skeleton";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { libraryApi, meApi } from "../api/endpoints";
@@ -49,6 +54,15 @@ export function LibraryScreen() {
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterType>("All");
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
+  // Folders ("Sunday choir", "Easter service"): the chip chosen, and the sheet waiting for a new name.
+  const [folder, setFolder] = useState<string | null>(null);
+  const [naming, setNaming] = useState<SavedTranscription | null>(null);
+  const [newFolder, setNewFolder] = useState("");
+  const [sharingFolder, setSharingFolder] = useState(false);
+  const folders = React.useMemo(
+    () => [...new Set(items.map((i) => i.folder).filter((f): f is string => !!f))].sort((a, b) => a.localeCompare(b)),
+    [items],
+  );
 
   function load(reconcile = false) {
     if (reconcile) {
@@ -82,7 +96,8 @@ export function LibraryScreen() {
         : activeFilter === "Tonic Solfa"
           ? (item.notes?.length ?? 0) > 0
           : Boolean(item.musicXml);
-    return matchesQuery && matchesFilter;
+    const matchesFolder = folder === null || item.folder === folder;
+    return matchesQuery && matchesFilter && matchesFolder;
   });
 
   const sortedItems = React.useMemo(() => {
@@ -143,6 +158,63 @@ export function LibraryScreen() {
   }
 
 
+
+  /** Files a sheet; the list updates in place, so the chips follow at once. */
+  async function fileIn(item: SavedTranscription, name: string | null) {
+    try {
+      await libraryApi.setFolder(item.id, name);
+      setItems((prev) => prev.map((t) => (t.id === item.id ? { ...t, folder: name } : t)));
+      haptics.play("success");
+    } catch (e) {
+      showDialog({ title: "Could not move the sheet", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    }
+  }
+
+  function chooseFolder(item: SavedTranscription) {
+    showDialog({
+      title: "Move to folder",
+      message: `Where should “${item.title}” go?`,
+      icon: "folder-outline",
+      actions: [
+        ...folders.slice(0, 6).map((f) => ({
+          label: f,
+          icon: (item.folder === f ? "checkmark" : undefined) as "checkmark" | undefined,
+          onPress: () => void fileIn(item, f),
+        })),
+        { label: "New folder…", onPress: () => { setNewFolder(""); setNaming(item); } },
+        ...(item.folder ? [{ label: "Take out of folder", onPress: () => void fileIn(item, null) }] : []),
+        { label: "Cancel", style: "cancel" as const },
+      ],
+    });
+  }
+
+  /** Long press: the sheet's actions, filing first because it is the everyday one. */
+  function itemActions(item: SavedTranscription) {
+    haptics.play("light");
+    showDialog({
+      title: item.title,
+      message: item.folder ? `In “${item.folder}”.` : "Not in a folder.",
+      icon: "musical-notes-outline",
+      actions: [
+        { label: "Move to folder…", icon: "folder-outline", onPress: () => chooseFolder(item) },
+        { label: "Delete", icon: "trash-outline", onPress: () => confirmDelete(item) },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+  }
+
+  async function shareFolder() {
+    if (!folder) return;
+    setSharingFolder(true);
+    try {
+      const link = await libraryApi.shareFolder(folder);
+      await Share.share({ message: `${folder} — songs on NoteFusion: ${link.url}` });
+    } catch (e) {
+      showDialog({ title: "Could not share the folder", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    } finally {
+      setSharingFolder(false);
+    }
+  }
 
   function confirmDelete(item: SavedTranscription) {
     // Reached by long-pressing a row, so the dialog is the first sign anything
@@ -297,6 +369,38 @@ export function LibraryScreen() {
                 />
               </Touchable>
             </View>
+
+            {folders.length > 0 && (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.folderChips}>
+                {[null, ...folders].map((f) => {
+                  const active = folder === f;
+                  return (
+                    <Touchable
+                      key={f ?? "__all"}
+                      onPress={() => setFolder(f)}
+                      style={[styles.filterTab, active && styles.filterTabActive]}
+                      radius={radii.pill}
+                      accessibilityState={{ selected: active }}
+                      accessibilityLabel={f ? `Folder: ${f}` : "All folders"}
+                    >
+                      <Text style={[styles.filterTabText, active && styles.filterTabTextActive]}>
+                        {f ?? "All folders"}
+                      </Text>
+                    </Touchable>
+                  );
+                })}
+              </ScrollView>
+            )}
+            {folder !== null && (
+              <Button
+                label="Share the folder"
+                icon="share-outline"
+                variant="secondary"
+                loading={sharingFolder}
+                onPress={() => void shareFolder()}
+                style={styles.folderShare}
+              />
+            )}
           </View>
         }
         renderItem={({ item }) => {
@@ -314,11 +418,11 @@ export function LibraryScreen() {
           return (
             <Touchable
               onPress={() => openItem(item)}
-              onLongPress={() => confirmDelete(item)}
+              onLongPress={() => itemActions(item)}
               style={styles.itemRow}
               // Full-bleed row: a deeper press pulls it off both screen edges.
               scaleTo={motion.scale.row}
-              accessibilityLabel={`${item.title}. Long press to delete.`}
+              accessibilityLabel={`${item.title}${item.folder ? `, in ${item.folder}` : ""}. Long press to move or delete.`}
             >
               {/* Note icon badge — gold for Pro accounts, the same premium accent the
                   avatar ring and the Home chip use. It is the row's visual anchor, so
@@ -419,6 +523,33 @@ export function LibraryScreen() {
           )
         }
       />
+      <Modal visible={naming !== null} transparent animationType="fade" onRequestClose={() => setNaming(null)}>
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>New folder</Text>
+            <TextField
+              label="Folder name"
+              placeholder="Sunday choir, Easter service…"
+              value={newFolder}
+              onChangeText={setNewFolder}
+              autoFocus
+              maxLength={80}
+            />
+            <View style={styles.modalActions}>
+              <Button label="Cancel" variant="secondary" onPress={() => setNaming(null)} />
+              <Button
+                label="Move here"
+                disabled={newFolder.trim().length === 0}
+                onPress={() => {
+                  const item = naming;
+                  setNaming(null);
+                  if (item) void fileIn(item, newFolder.trim());
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Screen>
   );
 }
@@ -501,6 +632,36 @@ const makeStyles = (c: Palette) =>
     },
     optionsBtn: {
       padding: spacing.xs,
+    },
+    folderChips: {
+      flexDirection: "row",
+      gap: spacing.xs,
+      paddingTop: spacing.sm,
+    },
+    folderShare: {
+      marginTop: spacing.sm,
+      alignSelf: "flex-start",
+    },
+    modalBackdrop: {
+      flex: 1,
+      backgroundColor: "rgba(0,0,0,0.45)",
+      justifyContent: "center",
+      padding: spacing.lg,
+    },
+    modalCard: {
+      backgroundColor: c.surface,
+      borderRadius: radii.lg,
+      padding: spacing.lg,
+      gap: spacing.md,
+    },
+    modalTitle: {
+      ...typography.heading,
+      color: c.text,
+    },
+    modalActions: {
+      flexDirection: "row",
+      justifyContent: "flex-end",
+      gap: spacing.sm,
     },
 
     // ── List Item ─────────────────────────────────────────────────────────────

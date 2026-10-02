@@ -59,8 +59,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
-- Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read) and
-  an optional public share token (`GET /api/shared/{token}`, anonymous). "Transpose for my
+- Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read), an
+  optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and
+  an optional public share token (`GET /api/shared/{token}`, anonymous). A `FolderShare` is one public
+  link for a whole folder (`GET /api/shared/folders/{token}`), which lists every sheet filed in it,
+  sharing ones filed later on read. "Transpose for my
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
