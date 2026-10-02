@@ -192,6 +192,16 @@
       }
     },
 
+    /** The engraved sheet as standalone SVG markup, for the PDF export. */
+    svg: function (token) {
+      try {
+        var node = container.querySelector("svg");
+        post({ type: "svg", token: token, svg: node ? node.outerHTML : "" });
+      } catch (err) {
+        fail("svg", err);
+      }
+    },
+
     setZoom: function (zoom) {
       try {
         if (!osmd) return;

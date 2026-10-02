@@ -36,13 +36,12 @@ const Tab = createBottomTabNavigator<TabParams>();
  *
  * Every cell is `flex: 1` in a `space-around` row, so only an odd count puts the mic
  * in the geometric middle. Profile came back off the side bar to make the count work
- * and because it is a destination people look for in a tab bar. Piano is a *launcher*:
- * it is the one landscape route in the app, so it cannot render inside this portrait
- * shell. Its entry in `TABS` carries a `push` key, and `onPress` navigates the root
- * stack rather than switching tabs; it has no `Tab.Screen` and `focused` is always
- * false — it reads as an action, like Record.
+ * and because it is a destination people look for in a tab bar. Songs is a *launcher*:
+ * pasting a link is an action, not a place to be. Its entry in `TABS` carries a `push`
+ * key, and `onPress` navigates the root stack rather than switching tabs; it has no
+ * `Tab.Screen` and `focused` is always false — it reads as an action, like Record.
  *
- * Order: Home · Library · Record(centre) · Piano · Profile.
+ * Order: Home · Library · Record(centre) · Songs · Profile.
  */
 
 interface TabEntry {
@@ -66,9 +65,9 @@ const TABS: TabEntry[] = [
   { name: "Home",    label: "Home",    icon: "home-outline",          iconActive: "home" },
   { name: "Library", label: "Library", icon: "folder-outline",        iconActive: "folder" },
   { name: "Record",  label: "Record",  icon: "mic",                   iconActive: "mic",   isCenter: true },
-  // Piano is a push action — `name` is a placeholder (no Tab.Screen exists for it,
+  // Songs is a push action — `name` is a placeholder (no Tab.Screen exists for it,
   // so `focused` is always false) and `push` drives the actual navigation.
-  { name: "Home", label: "Piano", icon: "musical-notes-outline", iconActive: "musical-notes", push: "Piano", mdiIcon: "piano" },
+  { name: "Home", label: "Songs", icon: "link-outline", iconActive: "link", push: "Link" },
   { name: "Profile", label: "Profile", icon: "person-outline",        iconActive: "person" },
 ];
 
@@ -96,17 +95,17 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
     >
       <View style={styles.bar}>
         {TABS.map((tab, index) => {
-          // Piano launcher: always unfocused, pushes the root stack.
+          // Songs launcher: always unfocused, pushes the root stack.
           if (tab.push) {
             return (
               <Touchable
                 key={`push-${tab.label}`}
-                accessibilityLabel={tab.label}
+                accessibilityLabel="Transcribe a song from a link"
                 accessibilityRole="button"
                 onPress={() =>
                   navigation
                     .getParent<NativeStackNavigationProp<RootStackParams>>()
-                    ?.navigate("Piano", { mode: "free" })
+                    ?.navigate("Link")
                 }
                 ripple="borderless"
                 style={styles.tabItem}

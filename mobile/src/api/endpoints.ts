@@ -196,6 +196,21 @@ export const transcriptionsApi = {
     api
       .get<TranscriptionJob>(`/api/transcriptions/jobs/${jobId}`)
       .then((r) => r.data),
+
+  /**
+   * A song behind a YouTube, Spotify or Apple Music link. The worker fetches the
+   * audio, isolates the lead vocal and transcribes it; the job carries the song's
+   * title and artist as soon as the link resolves. Pro gets six minutes in the fast
+   * lane; a free account gets one sixty-second preview.
+   */
+  submitLink: (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo">) =>
+    api
+      .post<TranscriptionJob>(
+        "/api/transcriptions/link",
+        { url, mode: opts.mode, key: opts.key, tempo: opts.tempo },
+        { timeout: 30_000 },
+      )
+      .then((r) => r.data),
 };
 
 export const libraryApi = {

@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,7 +17,7 @@ import { TextField } from "../components/TextField";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
 import { NoteEditor } from "../components/NoteEditor";
-import ScoreView from "../components/ScoreView";
+import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { NoteEvent } from "../api/types";
@@ -26,7 +27,7 @@ import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { stopAudition } from "../lib/audition";
-import { exportMidi, exportMusicXml, exportSolfa } from "../lib/export";
+import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
   confidenceColor,
   fonts,
@@ -120,7 +121,14 @@ export function ResultScreen({ route, navigation }: Props) {
   const [savedId, setSavedId] = useState<string | undefined>(initialSavedId);
   const [saving, setSaving] = useState(false);
   const [renaming, setRenaming] = useState(false);
-  const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | null>(null);
+  const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | "pdf" | null>(null);
+  const scoreRef = useRef<ScoreViewHandle>(null);
+  /** The acknowledgement for a linked song; null for a recording. */
+  const credit = result.source
+    ? `${result.source.title}${result.source.artist ? ` — ${result.source.artist}` : ""} (${
+        { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" }[result.source.provider] ?? result.source.provider
+      })`
+    : null;
 
   // ── Key override (F-03) ────────────────────────────────────────────────────
   // Solfa is movable-do, so a key change re-labels the existing notes — it
@@ -368,31 +376,6 @@ export function ResultScreen({ route, navigation }: Props) {
     setEditing(flagged[0]);
   }
 
-  /**
-   * Opens the piano on this transcription.
-   *
-   * `view.notes` rather than `result.notes`: a correction already made, or a key
-   * override, is the version worth practising and the version worth repairing. The
-   * piano edits nothing itself — `onApply` brings the list back here, and this screen
-   * still holds the only rollback path, exactly as the correction sheet does.
-   */
-  function openPiano(pianoMode: "play" | "correct") {
-    navigation.navigate("Piano", {
-      mode: pianoMode,
-      notes: view.notes,
-      tempoBpm: tempo,
-      timeSignature,
-      musicalKey: key,
-      title: committedTitle ?? route.params.title ?? "Play along",
-      savedId,
-      onApply: (notes) => {
-        const next = realign(notes, draft);
-        setDraft(next);
-        setPreview(synthesizeMelodyWavBase64(next.notes, tempo));
-        void commitNotes(next);
-      },
-    });
-  }
 
   /** ±1 for a semitone, ±12 for an octave. Clamped to the range the server also enforces. */
   function transpose(index: number, semitones: number) {
@@ -559,7 +542,52 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+  /**
+   * Downloads are Pro. The solfa share stays free — it is text a choir leader pastes
+   * into WhatsApp — while the files (PDF, MusicXML, MIDI) open the upgrade sheet.
+   */
+  function requirePro(): boolean {
+    if (isPro) return true;
+    showDialog({
+      title: "Downloads are a Pro feature",
+      message: "Upgrade to download this sheet as PDF, MusicXML or MIDI, transcribe full songs from a link, and skip the queue.",
+      icon: "star",
+      actions: [{ label: "See Pro plans", icon: "star", onPress: () => navigation.navigate("Upgrade") }],
+    });
+    return false;
+  }
+
+  async function handleExportPdf() {
+    if (!requirePro()) return;
+    setExportingType("pdf");
+    try {
+      const svg = await scoreRef.current?.getSvg();
+      if (!svg) {
+        showDialog({
+          title: "Open the Staff view first",
+          message: "The PDF is made from the engraved stave. Switch to Staff, wait for it to draw, then export.",
+          icon: "information-circle-outline",
+        });
+        return;
+      }
+      const outcome = await exportPdf(svg, {
+        title: committedTitle || title,
+        credit: credit ? `Lead vocal transcribed from “${credit}” with NoteFusion` : null,
+        key,
+        tempoBpm: tempo,
+        timeSignature,
+        solfaLines: activeSolfaLines,
+      });
+      if (!outcome.ok) {
+        showDialog({ title: "Could not export PDF", message: outcome.message, icon: "alert-circle-outline", tone: "danger" });
+      }
+    } finally {
+      setExportingType(null);
+    }
+  }
+
   async function handleExportMidi() {
+    if (!requirePro()) return;
     setExportingType("midi");
     try {
       const outcome = await exportMidi(result.midiBase64, title);
@@ -577,6 +605,7 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   async function exportScore() {
+    if (!requirePro()) return;
     setExportingType("musicxml");
     try {
       const outcome = await exportMusicXml(scoreXml, title);
@@ -617,7 +646,7 @@ export function ResultScreen({ route, navigation }: Props) {
         </Touchable>
 
         <View style={styles.titleGroup}>
-          <Text style={styles.pageTitle}>Preview</Text>
+          <Text style={styles.pageTitle}>{result.source ? "Song" : "Preview"}</Text>
           {/* Small gold mark — the same premium accent as the avatar ring and the
               Home chip, sized down to a header ornament. */}
           {isPro && (
@@ -633,8 +662,7 @@ export function ResultScreen({ route, navigation }: Props) {
               {
                 label: "Export MusicXML",
                 icon: "download-outline",
-                onPress: () =>
-                  exportMusicXml(scoreXml, committedTitle || title),
+                onPress: () => void exportScore(),
               },
             ];
             if (edited) {
@@ -684,6 +712,31 @@ export function ResultScreen({ route, navigation }: Props) {
           <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
         </Touchable>
       </View>
+
+      {/* ── Song credit: a linked song is acknowledged by title and artist ─── */}
+      {result.source ? (
+        <Card style={styles.creditCard}>
+          {result.source.thumbnailUrl ? (
+            <Image source={{ uri: result.source.thumbnailUrl }} style={styles.creditThumb} />
+          ) : (
+            <View style={[styles.creditThumb, { alignItems: "center", justifyContent: "center" }]}>
+              <Ionicons name="musical-notes" size={22} color={colors.textMuted} />
+            </View>
+          )}
+          <View style={{ flex: 1 }}>
+            <Text style={styles.creditTitle} numberOfLines={2}>{result.source.title}</Text>
+            {result.source.artist ? <Text style={styles.creditArtist} numberOfLines={1}>{result.source.artist}</Text> : null}
+            <Text style={styles.creditLine}>Lead vocal, transcribed with NoteFusion</Text>
+          </View>
+        </Card>
+      ) : null}
+      {result.truncated ? (
+        <Text style={styles.truncatedNote}>
+          {isPro
+            ? "The first six minutes of the song were transcribed."
+            : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
+        </Text>
+      ) : null}
 
       {/* ── Summary card ─────────────────────────────────────────────────── */}
       <Card style={styles.summaryCard}>
@@ -853,17 +906,17 @@ export function ResultScreen({ route, navigation }: Props) {
         {lowCount > 0 && (
           <Touchable
             style={styles.warnRow}
-            onPress={() => openPiano("correct")}
+            onPress={startReview}
             // A full-bleed row inside the card: a deeper press would pull it away
             // from both card edges at once.
             scaleTo={motion.scale.row}
-            accessibilityLabel={`Fix ${lowCount} low-confidence notes on the piano`}
+            accessibilityLabel={`Review ${lowCount} low-confidence notes`}
           >
             <View style={styles.warnDot} />
             <Text style={styles.warnText}>
               {lowCount} note{lowCount > 1 ? "s" : ""} below 50% confidence —{" "}
               <Text style={styles.warnLink}>
-                fix {lowCount > 1 ? "them" : "it"} on the piano →
+                review {lowCount > 1 ? "them" : "it"} →
               </Text>
             </Text>
           </Touchable>
@@ -981,13 +1034,23 @@ export function ResultScreen({ route, navigation }: Props) {
               </>
             )
           ) : (
-            <ScoreView
-              notes={view.notes}
-              timeSignature={result.timeSignature}
-              musicalKey={key}
-              cursorBeat={cursorBeat}
-              onSelectNote={openNote}
-            />
+            <View>
+              <ScoreView
+                ref={scoreRef}
+                notes={view.notes}
+                timeSignature={result.timeSignature}
+                musicalKey={key}
+                cursorBeat={cursorBeat}
+                onSelectNote={openNote}
+              />
+              {/* A free account reads the sheet on screen with the preview mark; the
+                  download is the Pro half. */}
+              {!isPro ? (
+                <View pointerEvents="none" style={styles.previewMark}>
+                  <Text style={styles.previewMarkText}>NoteFusion preview</Text>
+                </View>
+              ) : null}
+            </View>
           )}
         </View>
       </View>
@@ -1005,17 +1068,6 @@ export function ResultScreen({ route, navigation }: Props) {
         />
       ) : null}
 
-      {/* Play it yourself. Sends the piece as it stands, not the model's original: a
-          correction the user has just made is the version worth practising. */}
-      {draft.notes.length > 0 ? (
-        <Button
-          label="Play it yourself"
-          icon="musical-notes"
-          variant="secondary"
-          onPress={() => openPiano("play")}
-          style={styles.gameButton}
-        />
-      ) : null}
 
       {/* ── Notes grid ───────────────────────────────────────────────────── */}
       <View style={styles.sectionRow}>
@@ -1084,7 +1136,9 @@ export function ResultScreen({ route, navigation }: Props) {
           <Text style={styles.exportTitle}>Export & Share</Text>
         </View>
         <Text style={styles.exportHint}>
-          Share readable solfa to your choir WhatsApp group, or export MIDI and MusicXML for your DAW or score editor.
+          {isPro
+            ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
+            : "Sharing the solfa is free. PDF, MusicXML and MIDI downloads come with Pro."}
         </Text>
 
         <View style={styles.exportButtonsRow}>
@@ -1096,20 +1150,29 @@ export function ResultScreen({ route, navigation }: Props) {
             loading={exportingType === "solfa"}
             style={styles.exportButtonPrimary}
           />
+          <Button
+            label={isPro ? "Download PDF" : "Download PDF · Pro"}
+            variant="secondary"
+            icon={isPro ? "document-outline" : "lock-closed-outline"}
+            onPress={handleExportPdf}
+            loading={exportingType === "pdf"}
+            disabled={!hasScore}
+            style={styles.exportButtonPrimary}
+          />
           <View style={styles.exportSecondaryRow}>
             <Button
-              label="Export MIDI"
+              label={isPro ? "MIDI" : "MIDI · Pro"}
               variant="secondary"
-              icon="musical-notes-outline"
+              icon={isPro ? "musical-notes-outline" : "lock-closed-outline"}
               onPress={handleExportMidi}
               loading={exportingType === "midi"}
-              disabled={!result.midiBase64}
+              disabled={isPro && !result.midiBase64}
               style={styles.exportButtonHalf}
             />
             <Button
-              label="MusicXML"
+              label={isPro ? "MusicXML" : "MusicXML · Pro"}
               variant="secondary"
-              icon="document-text-outline"
+              icon={isPro ? "document-text-outline" : "lock-closed-outline"}
               onPress={exportScore}
               loading={exportingType === "musicxml"}
               disabled={!hasScore}
@@ -1288,6 +1351,36 @@ const makeStyles = (c: Palette) =>
   StyleSheet.create({
   // ── Header ────────────────────────────────────────────────────────────────
 
+  creditCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+    marginBottom: spacing.md,
+  },
+  creditThumb: { width: 56, height: 56, borderRadius: radii.md, backgroundColor: c.border },
+  creditTitle: { ...typography.label, color: c.text },
+  creditArtist: { ...typography.caption, color: c.textMuted, marginTop: 2 },
+  creditLine: { ...typography.caption, color: c.textFaint, marginTop: 4 },
+  truncatedNote: {
+    ...typography.caption,
+    color: c.accent,
+    backgroundColor: c.accentSoft,
+    borderRadius: radii.sm,
+    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  previewMark: {
+    position: "absolute",
+    right: spacing.sm,
+    bottom: spacing.sm,
+    backgroundColor: c.accentSoft,
+    borderRadius: radii.pill,
+    paddingVertical: 4,
+    paddingHorizontal: spacing.sm,
+    opacity: 0.9,
+  },
+  previewMarkText: { ...typography.caption, color: c.accent, fontFamily: fonts.semibold },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",

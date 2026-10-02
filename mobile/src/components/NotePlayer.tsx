@@ -24,15 +24,6 @@
  * status-tracking logic. That duplication is gone: there is now exactly one
  * `Audio.Sound` per rendered preview, owned by the hook.
  *
- * The one exception to "presentational only" is the click track. A metronome
- * and a count-in are not transport settings — they change what the audio *is* —
- * so when either is on this component synthesises its own clip from `notes`
- * (`lib/synth`) instead of playing `audioPreviewBase64`, and tells the hook how
- * long the resulting lead-in is. Mixing clicks into the melody's own buffer is
- * the only way to keep them from drifting; a second player would. This is only
- * acceptable because the local and server voices are deliberately identical
- * (see the header of `lib/synth.ts`), so turning the metronome on changes the
- * timing information and nothing about the timbre.
  */
 
 import React, {
@@ -45,7 +36,6 @@ import React, {
 import {
   ActivityIndicator,
   Animated,
-  InteractionManager,
   PanResponder,
   Pressable,
   ScrollView,
@@ -61,8 +51,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { beatsPerBar } from "../lib/musicxml";
-import { leadInSec, synthesizeMelodyWavBase64, type SynthOptions } from "../lib/synth";
 import { useNotePlayer } from "../lib/useNotePlayer";
 import type { NoteEvent } from "../api/types";
 
@@ -152,41 +140,10 @@ export function NotePlayer({
   const styles = useThemedStyles(makeStyles);
   const FUSION_GRADIENT = useMemo(() => fusionGradient(colors), [colors]);
 
-  // Speed and loop belong to the player, so the hook owns them. The metronome
-  // and the count-in change the clip itself, so they live here.
-  const [metronome, setMetronome] = useState(false);
-  const [countInBars, setCountInBars] = useState(0);
-
-  const synthOptions = useMemo<SynthOptions>(
-    () => ({ metronome, countInBars, beatsPerBar: beatsPerBar(timeSignature) }),
-    [metronome, countInBars, timeSignature],
-  );
-  const wantsClicks = metronome || countInBars > 0;
-  const lead = useMemo(
-    () => (wantsClicks ? leadInSec(tempoBpm, synthOptions) : 0),
-    [wantsClicks, tempoBpm, synthOptions],
-  );
-
-  const [clickTrack, setClickTrack] = useState<string | null>(null);
-  const [preparing, setPreparing] = useState(false);
-
-  useEffect(() => {
-    if (!wantsClicks || notes.length === 0) {
-      setClickTrack(null);
-      setPreparing(false);
-      return;
-    }
-    setPreparing(true);
-    // A 30 s melody measures ~250 ms to synthesise on a desktop, so several
-    // times that on a phone — long enough that doing it during the press would
-    // read as the button not having registered. Running after the interaction
-    // lets the toggle paint first, then the JS thread goes away to make audio.
-    const task = InteractionManager.runAfterInteractions(() => {
-      setClickTrack(synthesizeMelodyWavBase64(notes, tempoBpm, synthOptions));
-      setPreparing(false);
-    });
-    return () => task.cancel();
-  }, [wantsClicks, notes, tempoBpm, synthOptions]);
+  // Speed belongs to the player, so the hook owns it. The repeat, metronome and
+  // count-in toggles that used to sit beside it are gone: none of them worked
+  // reliably on device, and a control that sometimes does nothing is worse than
+  // no control.
 
   // Single source of truth for everything playback-related — loading state,
   // transport state, position/duration, the currently-sounding note index,
@@ -199,17 +156,15 @@ export function NotePlayer({
     duration,
     currentNoteIndex,
     rate,
-    loop,
     error,
     play,
     pause,
     seekTo,
     setRate,
-    setLoop,
     skipToStart,
-  } = useNotePlayer(wantsClicks ? clickTrack : audioPreviewBase64, notes, tempoBpm, lead);
+  } = useNotePlayer(audioPreviewBase64, notes, tempoBpm, 0);
 
-  const busy = isLoading || preparing;
+  const busy = isLoading;
 
   const stepRate = useCallback(
     (delta: number) => {
@@ -505,33 +460,6 @@ export function NotePlayer({
             </Pressable>
           </View>
 
-          <ToggleChip
-            icon="repeat"
-            on={loop}
-            onPress={() => setLoop(!loop)}
-            label="Repeat the clip"
-          />
-          <ToggleChip
-            icon="pulse"
-            on={metronome}
-            onPress={() => setMetronome(!metronome)}
-            label="Metronome"
-          />
-          <ToggleChip
-            icon="timer-outline"
-            on={countInBars > 0}
-            // Cycles off → 1 bar → 2 bars → off, rather than opening a picker for
-            // a setting with three values.
-            onPress={() =>
-              setCountInBars((bars) => (bars >= MAX_COUNT_IN_BARS ? 0 : bars + 1))
-            }
-            label={
-              countInBars === 0
-                ? "Count in"
-                : `Count in ${countInBars} bar${countInBars === 1 ? "" : "s"}`
-            }
-            text={countInBars > 0 ? String(countInBars) : undefined}
-          />
         </View>
       ) : null}
 
@@ -596,42 +524,6 @@ export default NotePlayer;
  * icon-sized because all five practice controls have to fit one row on a phone,
  * and the on state is carried by the accent fill rather than by text.
  */
-function ToggleChip({
-  icon,
-  on,
-  onPress,
-  label,
-  text,
-}: {
-  icon: React.ComponentProps<typeof Ionicons>["name"];
-  on: boolean;
-  onPress: () => void;
-  label: string;
-  /** Shown beside the icon when the setting has a value, e.g. a bar count. */
-  text?: string;
-}) {
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
-  const ink = on ? "#FFFFFF" : colors.text;
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.chip,
-        on && styles.chipOn,
-        pressed && styles.chipPressed,
-      ]}
-      accessibilityRole="switch"
-      accessibilityState={{ checked: on }}
-      accessibilityLabel={label}
-    >
-      <Ionicons name={icon} size={16} color={ink} />
-      {text ? <Text style={[styles.chipText, { color: ink }]}>{text}</Text> : null}
-    </Pressable>
-  );
-}
-
 // ─── Styles ─────────────────────────────────────────────────────────────────
 
 const makeStyles = (c: Palette) =>

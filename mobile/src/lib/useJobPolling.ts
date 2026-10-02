@@ -3,7 +3,12 @@ import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signal
 import { transcriptionsApi } from "../api/endpoints";
 import { baseURL, toApiError } from "../api/client";
 import { tokenStore } from "./tokenStore";
-import type { TranscriptionResult, TranscriptionStatus } from "../api/types";
+import type {
+  TranscriptionResult,
+  TranscriptionSource,
+  TranscriptionStage,
+  TranscriptionStatus,
+} from "../api/types";
 
 export interface JobState {
   status: TranscriptionStatus | "idle";
@@ -11,7 +16,14 @@ export interface JobState {
   result: TranscriptionResult | null;
   error: string | null;
   errorCode: string | null;
+  /** Which step a linked song is on; null for an upload or once finished. */
+  stage: TranscriptionStage | null;
+  /** The song behind a link, as soon as the worker has read it. */
+  source: TranscriptionSource | null;
 }
+
+/** How often the job is re-read over HTTP while it runs; SignalR still delivers the finish. */
+const POLL_MS = 2500;
 
 const TERMINAL: TranscriptionStatus[] = ["done", "failed"];
 
@@ -34,10 +46,64 @@ export function useJobPolling() {
     result: null,
     error: null,
     errorCode: null,
+    stage: null,
+    source: null,
   });
   const activeJobId = useRef<string | null>(null);
   const bufferedJobsRef = useRef<Record<string, any>>({});
   const connectionRef = useRef<HubConnection | null>(null);
+  const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const stopPolling = useCallback(() => {
+    if (pollTimer.current) {
+      clearTimeout(pollTimer.current);
+      pollTimer.current = null;
+    }
+  }, []);
+
+  /**
+   * Progress over HTTP while the job runs. SignalR only speaks at the end, and a
+   * linked song spends minutes fetching and isolating vocals before that — time the
+   * screen has to account for with a stage and a bar, not a spinner. Stops itself on
+   * a terminal status, on reset, and whenever the job it was watching is replaced.
+   */
+  const pollProgress = useCallback((jobId: string) => {
+    stopPolling();
+    const tick = async () => {
+      if (activeJobId.current !== jobId) return;
+      try {
+        const job = await transcriptionsApi.getJob(jobId);
+        if (activeJobId.current !== jobId) return;
+        const status = normalizeStatus(job.status);
+        if (status === "done" || status === "failed") {
+          setState({
+            status,
+            progress: status === "done" ? 1 : 0,
+            result: job.result ?? null,
+            error:
+              status === "failed"
+                ? (job.error && job.error.trim().length > 0 ? job.error.trim() : "Transcription failed — please try again.")
+                : null,
+            errorCode: null,
+            stage: null,
+            source: job.source ?? job.result?.source ?? null,
+          });
+          return;
+        }
+        setState((prev) => ({
+          ...prev,
+          status,
+          progress: Math.max(prev.progress, job.progress ?? 0),
+          stage: job.stage ?? prev.stage,
+          source: job.source ?? prev.source,
+        }));
+      } catch {
+        // A dropped poll is not a failed job; the next tick, or SignalR, will say.
+      }
+      if (activeJobId.current === jobId) pollTimer.current = setTimeout(tick, POLL_MS);
+    };
+    pollTimer.current = setTimeout(tick, POLL_MS);
+  }, [stopPolling]);
 
   useEffect(() => {
     let active = true;
@@ -72,6 +138,8 @@ export function useJobPolling() {
         result: job.result ?? null,
         error,
         errorCode: null, // webhook failures don't carry the HTTP error code
+        stage: null,
+        source: job.source ?? job.result?.source ?? null,
       });
     });
 
@@ -87,23 +155,9 @@ export function useJobPolling() {
     };
   }, []);
 
-  const start = useCallback(
-    async (
-      fileUri: string,
-      fileName: string,
-      opts: { mode: "melody" | "poly"; key?: string; tempo?: number },
-    ) => {
-      setState({
-        status: "pending",
-        progress: 0,
-        result: null,
-        error: null,
-        errorCode: null,
-      });
-      activeJobId.current = null;
-      try {
-        const res = await transcriptionsApi.submit(fileUri, fileName, opts);
-
+  /** Shared tail of `start` and `startLink`: bind the job, drain any early finish, start polling. */
+  const track = useCallback(
+    (res: Awaited<ReturnType<typeof transcriptionsApi.submit>> | string) => {
         const jobId =
           typeof res === "string"
             ? res
@@ -113,10 +167,10 @@ export function useJobPolling() {
 
         if (!jobId) {
           throw new Error(
-            "Server did not return a job identifier â€” please try again.",
+            "Server did not return a job identifier — please try again.",
           );
         }
-        
+
         activeJobId.current = jobId;
         // Process any buffered job that arrived before the HTTP response resolved
         if (bufferedJobsRef.current[jobId]) {
@@ -129,7 +183,10 @@ export function useJobPolling() {
             result: job.result ?? null,
             error: status === 'failed' ? (job.error || 'Transcription failed') : null,
             errorCode: null,
+            stage: null,
+            source: job.source ?? job.result?.source ?? null,
           });
+          return jobId;
         }
 
         const inlineStatus =
@@ -142,37 +199,104 @@ export function useJobPolling() {
             result: res.result,
             error: null,
             errorCode: null,
+            stage: null,
+            source: res.source ?? res.result.source ?? null,
           });
+          return jobId;
         }
-        // If not inline resolved, we rely entirely on SignalR JobCompleted event
-
+        if (typeof res !== "string") {
+          setState((prev) => ({
+            ...prev,
+            stage: res.stage ?? prev.stage,
+            source: res.source ?? prev.source,
+          }));
+        }
+        pollProgress(jobId);
         return jobId;
+    },
+    [pollProgress],
+  );
+
+  const fail = useCallback((e: unknown) => {
+    const err = toApiError(e);
+    setState({
+      status: "failed",
+      progress: 0,
+      result: null,
+      error: err.message,
+      errorCode: err.code,
+      stage: null,
+      source: null,
+    });
+    activeJobId.current = null;
+    return null;
+  }, []);
+
+  /** A song behind a link. Same lifecycle as `start`; the worker reports its stages. */
+  const startLink = useCallback(
+    async (url: string, opts: { mode: "melody" | "poly"; key?: string; tempo?: number }) => {
+      stopPolling();
+      setState({
+        status: "pending",
+        progress: 0,
+        result: null,
+        error: null,
+        errorCode: null,
+        stage: "fetching",
+        source: null,
+      });
+      activeJobId.current = null;
+      try {
+        return track(await transcriptionsApi.submitLink(url, opts));
       } catch (e) {
-        const err = toApiError(e);
-        setState({
-          status: "failed",
-          progress: 0,
-          result: null,
-          error: err.message,
-          errorCode: err.code,
-        });
-        activeJobId.current = null;
-        return null;
+        return fail(e);
       }
     },
-    [],
+    [track, fail, stopPolling],
+  );
+
+  const start = useCallback(
+    async (
+      fileUri: string,
+      fileName: string,
+      opts: { mode: "melody" | "poly"; key?: string; tempo?: number },
+    ) => {
+      stopPolling();
+      setState({
+        status: "pending",
+        progress: 0,
+        result: null,
+        error: null,
+        errorCode: null,
+        stage: null,
+        source: null,
+      });
+      activeJobId.current = null;
+      try {
+        const res = await transcriptionsApi.submit(fileUri, fileName, opts);
+        return track(res);
+      } catch (e) {
+        return fail(e);
+      }
+    },
+    [track, fail, stopPolling],
   );
 
   const reset = useCallback(() => {
     activeJobId.current = null;
+    stopPolling();
     setState({
       status: "idle",
       progress: 0,
       result: null,
       error: null,
       errorCode: null,
+      stage: null,
+      source: null,
     });
-  }, []);
+  }, [stopPolling]);
 
-  return { state, start, reset };
+  useEffect(() => stopPolling, [stopPolling]);
+
+  return { state, start, startLink, reset };
 }

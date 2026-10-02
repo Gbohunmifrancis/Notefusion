@@ -20,7 +20,7 @@
  * wire's `startBeat`. See `scripts/engraver/page.js` for the other half.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { Asset } from "expo-asset";
 import { File } from "expo-file-system";
@@ -48,6 +48,7 @@ async function loadEngraverHtml(): Promise<string> {
 type PageMessage =
   | { type: "ready" }
   | { type: "rendered"; height: number; heads: number }
+  | { type: "svg"; token: number; svg: string }
   | { type: "tap"; beat: number }
   | { type: "error"; where: string; message: string };
 
@@ -74,7 +75,13 @@ interface Props {
   colorByConfidence?: boolean;
 }
 
-export default function ScoreView({
+/** What a parent can ask the engraved stave for. */
+export interface ScoreViewHandle {
+  /** The sheet as it is drawn, as standalone SVG markup — the PDF export's input. */
+  getSvg: () => Promise<string>;
+}
+
+const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
   notes,
   timeSignature,
   musicalKey,
@@ -82,7 +89,7 @@ export default function ScoreView({
   onSelectNote,
   showSolfa = true,
   colorByConfidence = true,
-}: Props) {
+}: Props, ref) {
   const palette = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -134,6 +141,29 @@ export default function ScoreView({
     webRef.current?.injectJavaScript(`${js}; true;`);
   }, []);
 
+  /** Pending `getSvg` calls, by the token the page echoes back. */
+  const svgWaiters = useRef(new Map<number, (svg: string) => void>());
+  const svgToken = useRef(0);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getSvg: () =>
+        new Promise<string>((resolve, reject) => {
+          if (!rendered) {
+            reject(new Error("The stave has not been drawn yet."));
+            return;
+          }
+          const token = ++svgToken.current;
+          svgWaiters.current.set(token, resolve);
+          send(`window.NF.svg(${token})`);
+          setTimeout(() => {
+            if (svgWaiters.current.delete(token)) reject(new Error("The engraver did not answer."));
+          }, 8000);
+        }),
+    }),
+    [rendered, send],
+  );
+
   useEffect(() => {
     if (!ready || xml === null) return;
     setRendered(false);
@@ -173,6 +203,12 @@ export default function ScoreView({
           setRendered(true);
           setError(null);
           return;
+        case "svg": {
+          const waiter = svgWaiters.current.get(message.token);
+          svgWaiters.current.delete(message.token);
+          waiter?.(message.svg);
+          return;
+        }
         case "tap": {
           const index = indexByOnset.get(beatKey(message.beat));
           if (index !== undefined) onSelectNote?.(index);
@@ -224,7 +260,9 @@ export default function ScoreView({
       {error !== null && <Text style={styles.error}>Could not draw the stave: {error}</Text>}
     </View>
   );
-}
+});
+
+export default ScoreView;
 
 /** Enough for one system, so the WebView is never laid out at zero height. */
 const MIN_HEIGHT = 160;
