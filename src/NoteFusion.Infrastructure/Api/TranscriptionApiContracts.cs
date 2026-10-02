@@ -23,6 +23,8 @@ internal sealed record JobResponse(
     string Status,
     double? Progress,
     JobResultResponse? Result,
+    string? Stage,
+    WireSource? Source,
     /// <summary>
     /// Human-readable failure reason set by the Python worker (LowConfidenceError or
     /// unexpected exception).  Null when the job is still running or succeeded.
@@ -63,7 +65,18 @@ internal sealed record JobResultResponse(
     /// </summary>
     bool PitchRefined = true,
     /// <summary>Chromatic solfa convention used by the worker for this result.</summary>
-    string ChromaticSpelling = "direction");
+    string ChromaticSpelling = "direction",
+    WireSource? Source = null,
+    double SongDurationSec = 0,
+    bool Truncated = false,
+    bool Separated = false);
+
+internal sealed record WireSource(
+    string Provider,
+    string Url,
+    string Title,
+    string Artist,
+    string? ThumbnailUrl);
 
 internal sealed record WireNoteEvent(
     int PitchMidi,

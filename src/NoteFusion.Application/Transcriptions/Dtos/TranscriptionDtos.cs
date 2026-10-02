@@ -15,7 +15,31 @@ public sealed record TranscribeOptions
 
     /// <summary>Optional time signature override, e.g. "4/4", "3/4", "6/8".</summary>
     public string? TimeSignature { get; init; }
+
+    /// <summary>
+    /// Which lane the worker runs the job in. Pro work goes first, and in melody mode skips the polyphonic
+    /// model altogether, which is most of the wait on a hummed clip.
+    /// </summary>
+    public TranscribePriority Priority { get; init; } = TranscribePriority.Normal;
+
+    /// <summary>Linked songs only: the most of the song to transcribe, in seconds.</summary>
+    public double? MaxSeconds { get; init; }
 }
+
+/// <summary>The worker's two queue lanes; wire values "normal" / "high".</summary>
+public enum TranscribePriority
+{
+    Normal = 0,
+    High = 1
+}
+
+/// <summary>The song a linked transcription came from — the acknowledgement line and the sheet's credit.</summary>
+public sealed record SourceDto(
+    string Provider,
+    string Url,
+    string Title,
+    string Artist,
+    string? ThumbnailUrl);
 
 /// <summary>One note event in the API result; mirrors the TRD §6 result contract.</summary>
 public sealed record NoteEventDto(
@@ -61,10 +85,24 @@ public sealed record TranscriptionResultDto(
     double OverallConfidence,
     string AudioPreviewBase64 = "",
     bool PitchRefined = true,
-    string ChromaticSpelling = "direction");
+    string ChromaticSpelling = "direction",
+    /// <summary>Linked songs only: where the song came from, for the acknowledgement line.</summary>
+    SourceDto? Source = null,
+    /// <summary>Linked songs only: the whole song's length, which may exceed what was transcribed.</summary>
+    double SongDurationSec = 0,
+    /// <summary>True when only the first part of the song was transcribed (a free preview, or past the Pro cap).</summary>
+    bool Truncated = false,
+    /// <summary>True when the vocals were isolated from the mix before transcription.</summary>
+    bool Separated = false);
 
 /// <summary>
 /// Polling envelope for a transcription job.
+///
+/// <para>
+/// <c>Stage</c> is <c>fetching</c>, <c>separating</c> or <c>transcribing</c> while a linked song is in
+/// flight, and <c>Source</c> is known as soon as the link resolves — before the result exists — so a
+/// client can show what is being transcribed while it waits.
+/// </para>
 ///
 /// <para>
 /// <c>Error</c> carries the human-readable failure reason from the Python worker
@@ -78,4 +116,6 @@ public sealed record TranscriptionJobDto(
     TranscriptionStatus Status,
     double Progress,
     TranscriptionResultDto? Result,
-    string? Error = null);
+    string? Error = null,
+    string? Stage = null,
+    SourceDto? Source = null);

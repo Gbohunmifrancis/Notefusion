@@ -55,14 +55,11 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         // must agree about which handset this is or the two would count different things.
         var fingerprint = _device.Current;
         var metered = false;
+        var isPro = false;
 
         if (_currentUser.UserId is { } userId)
         {
-            var sub = await _db.Subscriptions
-                .OrderByDescending(s => s.CurrentPeriodEndUtc)
-                .FirstOrDefaultAsync(s => s.UserId == userId, cancellationToken);
-
-            bool isPro = sub != null && sub.IsActiveAt(_clock.UtcNow);
+            isPro = await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken);
             metered = !isPro;
 
             if (metered)
@@ -107,7 +104,9 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             Mode = request.Mode,
             Key = key,
             Tempo = request.Tempo,
-            TimeSignature = request.TimeSignature
+            TimeSignature = request.TimeSignature,
+            // Pro work goes to the front of the worker's queue and takes its fast lane.
+            Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal
         };
 
         var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
@@ -143,7 +142,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
     /// Returns null when the caller's key string means "no override", or the trimmed
     /// key string when it is a genuine key name that should be validated and forwarded.
     /// </summary>
-    private static string? SanitiseKey(string? raw)
+    internal static string? SanitiseKey(string? raw)
     {
         if (string.IsNullOrWhiteSpace(raw))
             return null;

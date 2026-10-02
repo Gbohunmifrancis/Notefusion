@@ -58,17 +58,27 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         var sub = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
             .FirstOrDefaultAsync(s => s.UserId == userId, ct);
+        var isPro = sub is not null && sub.IsActiveAt(_clock.UtcNow);
+
+        // The song allowance, by the same counts the link submit gate enforces.
+        var songsTotal = isPro ? SongCredits.ProMonthlyAllowance : SongCredits.FreePreviews;
+        var songsUsed = isPro
+            ? await SongCredits.CountUsedThisMonthAsync(_db, userId, _clock.UtcNow, ct)
+            : await SongCredits.CountPreviewsUsedAsync(_db, userId, _device.Current, ct);
+        var songsRemaining = Math.Max(0, songsTotal - songsUsed);
 
         if (sub is null)
             return new SubscriptionDto(
                 IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null,
                 TrialGenerationsRemaining: remaining, TrialGenerationsTotal: total,
-                IsLifetime: false, IsGift: false);
+                IsLifetime: false, IsGift: false,
+                SongCreditsRemaining: songsRemaining, SongCreditsTotal: songsTotal);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
         return new SubscriptionDto(
-            sub.IsActiveAt(_clock.UtcNow), plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
-            remaining, total, sub.IsLifetime, sub.IsGift);
+            isPro, plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
+            remaining, total, sub.IsLifetime, sub.IsGift,
+            songsRemaining, songsTotal);
     }
 }

@@ -28,6 +28,11 @@ public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<Tra
 
         builder.HasIndex(j => new { j.UserId, j.TrialConsumedAtUtc });
 
+        // Song credits are counted per account per month, over link jobs only.
+        builder.Property(j => j.Kind).HasDefaultValue(Core.Enums.TranscriptionJobKind.Upload);
+        builder.Property(j => j.WasPro).HasDefaultValue(false);
+        builder.HasIndex(j => new { j.UserId, j.Kind, j.SongCreditConsumedAtUtc });
+
         // 64 exactly: SHA-256 hex out of RequestDeviceFingerprint. Indexed alongside the trial column for
         // the same reason the pair above is — the submit gate counts by device on every free submission.
         builder.Property(j => j.DeviceFingerprint).HasMaxLength(64);

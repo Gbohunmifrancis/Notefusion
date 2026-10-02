@@ -58,6 +58,16 @@ public static class BillingErrors
     /// Takes the allowance that was actually enforced, because it is regional — naming a global number here
     /// would contradict the count the trial pill had been showing that user all along.
     /// </summary>
+    /// <summary>A Pro account has used this month's song allowance; the number named is the one enforced.</summary>
+    public static Error SongCreditsExhausted(int allowance) =>
+        Error.Forbidden("BILLING_SONG_CREDITS_EXHAUSTED",
+            $"You have transcribed all {allowance} of this month's songs. Your allowance resets next month.");
+
+    /// <summary>A free account has had its one song preview; full songs are a Pro feature.</summary>
+    public static readonly Error SongPreviewUsed =
+        Error.Forbidden("BILLING_SONG_PREVIEW_USED",
+            "You have used your free song preview. Upgrade to Pro to transcribe full songs from a link.");
+
     public static Error FreeTierLimitReached(int allowance) =>
         Error.Forbidden("BILLING_FREE_TIER_LIMIT",
             $"You have used all {allowance} of your free transcriptions. "

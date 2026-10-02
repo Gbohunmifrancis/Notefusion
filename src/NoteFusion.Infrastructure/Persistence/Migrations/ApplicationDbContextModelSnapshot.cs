@@ -522,10 +522,18 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int>("Kind")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
+
                     b.Property<string>("ResultJson")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("SettledAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("SongCreditConsumedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("TrialConsumedAtUtc")
@@ -533,6 +541,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("WasPro")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.HasKey("Id");
 
@@ -545,6 +558,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("DeviceFingerprint", "TrialConsumedAtUtc");
 
                     b.HasIndex("UserId", "TrialConsumedAtUtc");
+
+                    b.HasIndex("UserId", "Kind", "SongCreditConsumedAtUtc");
 
                     b.ToTable("transcription_jobs", (string)null);
                 });

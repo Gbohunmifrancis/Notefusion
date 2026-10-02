@@ -95,9 +95,13 @@ public sealed class NotifyTranscriptionReadyCommandHandler
     {
         job.Settle(TranscriptionResultCache.Serialize(result), now);
 
-        // Same rule and the same idempotent method the client poll uses, because either path may be the
+        // Same rule and the same idempotent methods the client poll uses, because either path may be the
         // one that first observes success and the allowance must be spent exactly once regardless.
-        if (!await IsProAsync(job.UserId, ct))
+        if (job.Kind == Core.Enums.TranscriptionJobKind.Link)
+        {
+            job.ConsumeSongCredit(now);
+        }
+        else if (!await IsProAsync(job.UserId, ct))
         {
             job.ConsumeTrial(now);
         }
@@ -156,12 +160,5 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         return Result.Success();
     }
 
-    private async Task<bool> IsProAsync(Guid userId, CancellationToken ct)
-    {
-        var sub = await _db.Subscriptions
-            .OrderByDescending(s => s.CurrentPeriodEndUtc)
-            .FirstOrDefaultAsync(s => s.UserId == userId, ct);
-
-        return sub is not null && sub.IsActiveAt(_clock.UtcNow);
-    }
+    private Task<bool> IsProAsync(Guid userId, CancellationToken ct) => Common.ProStatus.IsProAsync(_db, _clock, userId, ct);
 }

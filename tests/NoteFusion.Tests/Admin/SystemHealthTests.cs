@@ -429,6 +429,10 @@ public class SystemHealthTests
             Stream score, string fileName, TranscribeOptions options, CancellationToken ct = default)
             => throw new NotSupportedException("The health page never submits work.");
 
+        public Task<Result<string>> SubmitLinkAsync(
+            string url, TranscribeOptions options, CancellationToken ct = default)
+            => SubmitAsync(Stream.Null, "link", options, ct);
+
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
             => throw new NotSupportedException("The health page never polls a job.");
     }

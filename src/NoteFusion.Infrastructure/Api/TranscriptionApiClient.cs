@@ -37,17 +37,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             audioContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
             form.Add(audioContent, "audio", safeName);
 
-            form.Add(new StringContent(options.Mode == TranscriptionMode.Poly ? "poly" : "melody"), "mode");
-            if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
-                form.Add(new StringContent(options.Key), "key");
-            if (options.Tempo is not null)
-                form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
-            if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
-                form.Add(new StringContent(options.TimeSignature), "time_signature");
-
-            var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
-            var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";
-            form.Add(new StringContent(callbackUrl), "callback_url");
+            AddOptions(form, options, withMode: true);
 
             using var response = await http.PostAsync("v1/transcribe", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -92,16 +82,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             scoreContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
             form.Add(scoreContent, "score", safeName);
 
-            if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
-                form.Add(new StringContent(options.Key), "key");
-            if (options.Tempo is not null)
-                form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
-            if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
-                form.Add(new StringContent(options.TimeSignature), "time_signature");
-
-            var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
-            var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";
-            form.Add(new StringContent(callbackUrl), "callback_url");
+            AddOptions(form, options, withMode: false);
 
             using var response = await http.PostAsync("v1/transcribe/score", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
@@ -121,6 +102,57 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         {
             return Error.Network("Api.SubmitScore", $"Could not reach the transcription service: {ex.Message}");
         }
+    }
+
+    public async Task<Result<string>> SubmitLinkAsync(
+        string url,
+        TranscribeOptions options,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var form = new MultipartFormDataContent();
+            form.Add(new StringContent(url), "url");
+            AddOptions(form, options, withMode: true);
+            if (options.MaxSeconds is { } cap)
+                form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
+
+            using var response = await http.PostAsync("v1/transcribe/link", form, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return Error.Failure("Api.SubmitLink", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+            }
+
+            var payload = await response.Content.ReadFromJsonAsync(
+                ApiJsonContext.Default.SubmitResponse, cancellationToken);
+
+            return payload is null
+                ? Error.Failure("Api.SubmitLink", "Transcription service returned an empty response.")
+                : payload.JobId;
+        }
+        catch (HttpRequestException ex)
+        {
+            return Error.Network("Api.SubmitLink", $"Could not reach the transcription service: {ex.Message}");
+        }
+    }
+
+    /// <summary>The form fields every submit shares: options, lane, and the completion callback.</summary>
+    private void AddOptions(MultipartFormDataContent form, TranscribeOptions options, bool withMode)
+    {
+        if (withMode)
+            form.Add(new StringContent(options.Mode == TranscriptionMode.Poly ? "poly" : "melody"), "mode");
+        if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+            form.Add(new StringContent(options.Key), "key");
+        if (options.Tempo is not null)
+            form.Add(new StringContent(options.Tempo.Value.ToString()), "tempo");
+        if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+            form.Add(new StringContent(options.TimeSignature), "time_signature");
+        form.Add(new StringContent(options.Priority == TranscribePriority.High ? "high" : "normal"), "priority");
+
+        var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
+        var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";
+        form.Add(new StringContent(callbackUrl), "callback_url");
     }
 
     public async Task<Result<TranscriptionJobDto>> GetJobAsync(
@@ -201,8 +233,15 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             wire.Result.OverallConfidence,
             wire.Result.AudioPreviewBase64,
             wire.Result.PitchRefined,
-            wire.Result.ChromaticSpelling);
+            wire.Result.ChromaticSpelling,
+            MapSource(wire.Result.Source),
+            wire.Result.SongDurationSec,
+            wire.Result.Truncated,
+            wire.Result.Separated);
 
-        return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error);
+        return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source));
     }
+
+    private static SourceDto? MapSource(WireSource? source)
+        => source is null ? null : new SourceDto(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl);
 }

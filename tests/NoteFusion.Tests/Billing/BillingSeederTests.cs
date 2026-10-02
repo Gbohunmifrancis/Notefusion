@@ -35,28 +35,28 @@ public class BillingSeederTests
         await Seed(h);
 
         var plans = await h.Db.Plans.OrderBy(p => p.Code).ToListAsync();
-        Assert.Equal(["pro_lifetime_v2", "pro_monthly_ngn", "pro_yearly_ngn"], plans.Select(p => p.Code));
+        Assert.Equal(["pro_monthly_ngn", "pro_monthly_usd", "pro_yearly_ngn_v2", "pro_yearly_usd"], plans.Select(p => p.Code));
         Assert.All(plans, p => Assert.True(p.IsActive));
     }
 
     [Fact]
-    public async Task The_naira_tier_recurs_and_the_dollar_tier_does_not()
+    public async Task Both_tiers_recur_and_the_dollar_tier_costs_more()
     {
-        // The whole point of the split: naira is a Paystack subscription, dollars are a single Bachs charge.
-        // An interval slipped here would route a lifetime buyer into the recurring Bachs mode that cannot be
-        // paid at all, which is the defect this arrangement exists to route around.
+        // The international tier is the target market and is priced above the naira tier on purpose; the
+        // naira tier is priced to local purchasing power. Neither tier is sold for life any more.
         using var h = new TestHarness(Now);
 
         await Seed(h);
 
-        var naira = await h.Db.Plans.Where(p => p.Currency == "NGN").ToListAsync();
-        Assert.Equal(
-            [BillingInterval.Monthly, BillingInterval.Yearly],
-            naira.Select(p => p.Interval).Order());
+        var naira = await h.Db.Plans.Where(p => p.Currency == "NGN").OrderBy(p => p.AmountMinor).ToListAsync();
+        Assert.Equal([BillingInterval.Monthly, BillingInterval.Yearly], naira.Select(p => p.Interval));
+        Assert.Equal([750_000L, 6_000_000L], naira.Select(p => p.AmountMinor)); // ₦7,500 and ₦60,000, in kobo
 
-        var dollars = Assert.Single(await h.Db.Plans.Where(p => p.Currency == "USD").ToListAsync());
-        Assert.Equal(BillingInterval.Lifetime, dollars.Interval);
-        Assert.Equal(20_000, dollars.AmountMinor); // $200.00, in cents
+        var dollars = await h.Db.Plans.Where(p => p.Currency == "USD").OrderBy(p => p.AmountMinor).ToListAsync();
+        Assert.Equal([BillingInterval.Monthly, BillingInterval.Yearly], dollars.Select(p => p.Interval));
+        Assert.Equal([999L, 7_900L], dollars.Select(p => p.AmountMinor)); // $9.99 and $79, in cents
+
+        Assert.DoesNotContain(await h.Db.Plans.ToListAsync(), p => p.Interval == BillingInterval.Lifetime);
     }
 
     [Fact]
@@ -68,7 +68,7 @@ public class BillingSeederTests
         await Seed(h);
         await Seed(h);
 
-        Assert.Equal(3, await h.Db.Plans.CountAsync());
+        Assert.Equal(4, await h.Db.Plans.CountAsync());
     }
 
     // ---------------------------------------------------------------- what gets retired
@@ -130,40 +130,56 @@ public class BillingSeederTests
     [Fact]
     public async Task A_repriced_tier_ships_as_a_new_code_and_leaves_the_old_price_intact()
     {
-        // Lifetime went from $79 to $200. The tempting move is to edit the amount on pro_lifetime, and it
-        // would quietly rewrite history: fulfilment and the receipt read the plan by id, so every past buyer's
-        // record would start claiming they agreed to $200. Instead the new price is a new code and the old one
-        // comes off sale still holding the number it was sold at.
+        // The naira yearly went from ₦75,000 to ₦60,000. The tempting move is to edit the amount on
+        // pro_yearly_ngn, and it would quietly rewrite history: fulfilment and the receipt read the plan by
+        // id, so every past buyer's record would start claiming they agreed to the new price. Instead the new
+        // price is a new code and the old one comes off sale still holding the number it was sold at.
         using var h = new TestHarness(Now);
         var old = Plan.Create(
-            Guid.NewGuid(), "pro_lifetime", "NoteFusion Pro (Lifetime)", 7_900, "USD", BillingInterval.Lifetime);
+            Guid.NewGuid(), "pro_yearly_ngn", "NoteFusion Pro (Yearly)", 7_500_000, "NGN", BillingInterval.Yearly);
         h.Db.Plans.Add(old);
         await h.Db.SaveChangesAsync();
 
         await Seed(h);
 
-        var previous = await h.Db.Plans.SingleAsync(p => p.Code == "pro_lifetime");
+        var previous = await h.Db.Plans.SingleAsync(p => p.Code == "pro_yearly_ngn");
         Assert.False(previous.IsActive);
-        Assert.Equal(7_900, previous.AmountMinor);
+        Assert.Equal(7_500_000, previous.AmountMinor);
 
-        var current = await h.Db.Plans.SingleAsync(p => p.Code == "pro_lifetime_v2");
+        var current = await h.Db.Plans.SingleAsync(p => p.Code == "pro_yearly_ngn_v2");
         Assert.True(current.IsActive);
-        Assert.Equal(20_000, current.AmountMinor);
+        Assert.Equal(6_000_000, current.AmountMinor);
 
-        // And only one of them is on the international paywall, or the buyer picks their own price.
+        // And only one yearly is on the naira paywall, or the buyer picks their own price.
         var offered = (await h.Db.Plans.Where(p => p.IsActive).ToListAsync())
-            .Where(p => PlanEligibility.IsOffered(p.Currency, "US"))
+            .Where(p => PlanEligibility.IsOffered(p.Currency, "NG"))
             .ToList();
-        Assert.Equal("pro_lifetime_v2", Assert.Single(offered).Code);
+        Assert.Equal("pro_yearly_ngn_v2", Assert.Single(offered, p => p.Interval == BillingInterval.Yearly).Code);
+    }
+
+    [Fact]
+    public async Task Lifetime_is_withdrawn_but_its_buyers_keep_their_plan_row()
+    {
+        using var h = new TestHarness(Now);
+        var lifetime = Plan.Create(
+            Guid.NewGuid(), "pro_lifetime_v2", "NoteFusion Pro (Lifetime)", 20_000, "USD", BillingInterval.Lifetime);
+        h.Db.Plans.Add(lifetime);
+        await h.Db.SaveChangesAsync();
+
+        await Seed(h);
+
+        var found = await h.Db.Plans.SingleAsync(p => p.Code == "pro_lifetime_v2");
+        Assert.False(found.IsActive);
+        Assert.Equal(20_000, found.AmountMinor); // the receipt of a $200 buyer still says $200
     }
 
     // ---------------------------------------------------------------- the seeder against the rule
 
     [Theory]
     [InlineData("NG", 2)]  // monthly and yearly, in naira
-    [InlineData("GB", 1)]  // the lifetime, and nothing that recurs in a currency they cannot be charged
-    [InlineData("US", 1)]
-    [InlineData(null, 3)]  // no country known: every tier, rather than a guessed one
+    [InlineData("GB", 2)]  // monthly and yearly, in dollars
+    [InlineData("US", 2)]
+    [InlineData(null, 4)]  // no country known: every tier, rather than a guessed one
     public async Task What_a_region_is_actually_offered_after_seeding(string? country, int expected)
     {
         // The two halves of the feature meet here. PlanEligibilityTests proves the rule against hand-made

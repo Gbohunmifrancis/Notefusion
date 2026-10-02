@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -61,7 +62,12 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             // The ML service keeps jobs in memory with a TTL, on a dyno that cycles daily, so a poll
             // arriving late — after a completion push, typically — gets nothing back. Our own copy is
             // the authority once it exists.
-            return job?.SettledAtUtc is null ? result : Settled(request.JobId, job.ResultJson);
+            if (job?.SettledAtUtc is null)
+                return result;
+            var settled = Settled(request.JobId, job.ResultJson);
+            return settled.Result is null || await IsProAsync(job.UserId, cancellationToken)
+                ? settled
+                : settled with { Result = ProGate.ForFree(settled.Result) };
         }
 
         // A job with no row was submitted before this table existed, or anonymously. Let it through
@@ -85,7 +91,15 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         // against the five. The cost of asking late is that a job outliving the subscription that paid
         // for it does spend a trial — one credit, in the minutes a transcription takes, so not worth a
         // column to avoid.
-        if (!await IsProAsync(job.UserId, cancellationToken))
+        var isPro = await IsProAsync(job.UserId, cancellationToken);
+        if (job.Kind == Core.Enums.TranscriptionJobKind.Link)
+        {
+            // A song is its own allowance (Pro monthly songs, or the one free preview) and never a trial
+            // generation: the preview exists precisely so a free account can try the feature without it
+            // costing one of their recordings.
+            job.ConsumeSongCredit(_clock.UtcNow);
+        }
+        else if (!isPro)
         {
             job.ConsumeTrial(_clock.UtcNow);
         }
@@ -94,7 +108,11 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         // polls a finished job more than once.
         await _db.SaveChangesAsync(cancellationToken);
 
-        return result;
+        // Downloads are Pro: the MIDI is the one export the client cannot rebuild from the notes, so a
+        // free account does not receive it. The notes, the staff and the solfa text are theirs to read.
+        return isPro || result.Value.Result is null
+            ? result
+            : result.Value with { Result = ProGate.ForFree(result.Value.Result) };
     }
 
     /// <summary>
@@ -112,12 +130,5 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             : new TranscriptionJobDto(jobId, TranscriptionStatus.Done, 1, cached);
     }
 
-    private async Task<bool> IsProAsync(Guid userId, CancellationToken ct)
-    {
-        var sub = await _db.Subscriptions
-            .OrderByDescending(s => s.CurrentPeriodEndUtc)
-            .FirstOrDefaultAsync(s => s.UserId == userId, ct);
-
-        return sub is not null && sub.IsActiveAt(_clock.UtcNow);
-    }
+    private Task<bool> IsProAsync(Guid userId, CancellationToken ct) => ProStatus.IsProAsync(_db, _clock, userId, ct);
 }

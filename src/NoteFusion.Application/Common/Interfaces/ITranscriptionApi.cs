@@ -23,6 +23,15 @@ public interface ITranscriptionApi
         TranscribeOptions options,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// POST /v1/transcribe/link — a song behind a YouTube, Spotify or Apple Music link; returns the job id
+    /// from the 202 response. <c>options.MaxSeconds</c> caps how much of the song is transcribed.
+    /// </summary>
+    Task<Result<string>> SubmitLinkAsync(
+        string url,
+        TranscribeOptions options,
+        CancellationToken cancellationToken = default);
+
     /// <summary>GET /v1/jobs/{jobId} — status, progress, and the result once done.</summary>
     Task<Result<TranscriptionJobDto>> GetJobAsync(
         string jobId,

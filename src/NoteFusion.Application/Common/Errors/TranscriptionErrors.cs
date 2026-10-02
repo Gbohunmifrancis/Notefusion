@@ -18,6 +18,10 @@ public static class TranscriptionErrors
     public static readonly Error ServiceUnavailable =
         Error.Network("TRANS_SERVICE_UNAVAILABLE", "The transcription service is unavailable. Try again shortly.");
 
+    public static readonly Error InvalidLink =
+        Error.Validation("TRANS_INVALID_LINK",
+            "Paste a link to a YouTube video, a Spotify track or an Apple Music song.");
+
     public static readonly Error InvalidAudio =
         Error.Validation("TRANS_INVALID_AUDIO", "The uploaded audio could not be read. Use a WAV, MP3, or M4A file.");
 }

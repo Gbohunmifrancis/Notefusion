@@ -1,3 +1,4 @@
+using NoteFusion.Core.Enums;
 using NoteFusion.Core.Seedwork;
 using NoteFusion.Shared.Guards;
 
@@ -63,6 +64,22 @@ public class TranscriptionJob : BaseEntity
     /// </remarks>
     public DateTime? SettledAtUtc { get; private set; }
 
+    /// <summary>Upload (a recording) or Link (a song fetched from a streaming platform).</summary>
+    public TranscriptionJobKind Kind { get; private set; } = TranscriptionJobKind.Upload;
+
+    /// <summary>
+    /// Whether the submitter was on Pro when a link job was submitted. Stamped up front, unlike the trial
+    /// verdict, because the two song allowances are counted separately: a Pro song must never be re-read
+    /// as a free preview once the subscription lapses, nor a preview as a Pro song once it starts.
+    /// </summary>
+    public bool WasPro { get; private set; }
+
+    /// <summary>
+    /// When this link job took one of the account's song credits (a Pro monthly song, or the free
+    /// preview). Null while it is running, if it failed, and always for an upload.
+    /// </summary>
+    public DateTime? SongCreditConsumedAtUtc { get; private set; }
+
     public static TranscriptionJob Record(string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint = null)
         => new()
         {
@@ -72,6 +89,34 @@ public class TranscriptionJob : BaseEntity
             CreatedAtUtc = utcNow,
             DeviceFingerprint = deviceFingerprint
         };
+
+    public static TranscriptionJob RecordLink(
+        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, bool wasPro)
+        => new()
+        {
+            Id = Guid.NewGuid(),
+            JobId = Guard.NotNullOrWhiteSpace(jobId),
+            UserId = Guard.AgainstEmpty(userId),
+            CreatedAtUtc = utcNow,
+            DeviceFingerprint = deviceFingerprint,
+            Kind = TranscriptionJobKind.Link,
+            WasPro = wasPro
+        };
+
+    /// <summary>
+    /// Charges one song credit to this link job. Returns false for an upload, and when it was already
+    /// charged — a finished job is polled more than once and must cost exactly one song.
+    /// </summary>
+    public bool ConsumeSongCredit(DateTime utcNow)
+    {
+        if (Kind != TranscriptionJobKind.Link || SongCreditConsumedAtUtc is not null)
+        {
+            return false;
+        }
+
+        SongCreditConsumedAtUtc = utcNow;
+        return true;
+    }
 
     /// <summary>
     /// Charges one free generation to this job. Returns false when it was already charged, so a
