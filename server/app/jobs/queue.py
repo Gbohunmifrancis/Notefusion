@@ -111,12 +111,13 @@ class JobQueue:
                priority: str = PRIORITY_NORMAL,
                song_seconds: float | None = None,
                separate: bool = False,
-               audio_preview: bool = True) -> str:
+               audio_preview: bool = True,
+               harmony: bool = False) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
-        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s%s",
+        logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s harmony=%s%s",
                     job.id[:8], mode, key or "auto", tempo or "auto", time_signature,
-                    job.priority, separate, self._trail(job))
-        self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds, separate, audio_preview))
+                    job.priority, separate, harmony, self._trail(job))
+        self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds, separate, audio_preview, harmony))
         return job.id
 
     def submit_link(self, url: str, mode: str,
@@ -126,13 +127,14 @@ class JobQueue:
                     callback_url: str | None = None,
                     priority: str = PRIORITY_NORMAL,
                     max_seconds: float | None = None,
-                    audio_preview: bool = True) -> str:
+                    audio_preview: bool = True,
+                    harmony: bool = False) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
         job.stage = STAGE_FETCHING
         cap = float(max_seconds or settings.link_max_seconds)
-        logger.info("Link job %s queued: mode=%s cap=%.0fs priority=%s%s",
-                    job.id[:8], mode, cap, job.priority, self._trail(job))
-        self._enqueue(job, lambda: self._run_link(job, url, mode, key, tempo, time_signature, cap, audio_preview))
+        logger.info("Link job %s queued: mode=%s cap=%.0fs priority=%s harmony=%s%s",
+                    job.id[:8], mode, cap, job.priority, harmony, self._trail(job))
+        self._enqueue(job, lambda: self._run_link(job, url, mode, key, tempo, time_signature, cap, audio_preview, harmony))
         return job.id
 
     def submit_score(self, score_path: Path,
@@ -202,7 +204,8 @@ class JobQueue:
     def _run(self, job: Job, audio_path: Path, mode: str,
              key: str | None, tempo: int | None,
              time_signature: str = "4/4", song_seconds: float | None = None,
-             separate_vocals: bool = False, audio_preview: bool = True) -> None:
+             separate_vocals: bool = False, audio_preview: bool = True,
+             harmony: bool = False) -> None:
         job.status = STATUS_PROCESSING
         work_dir: Path | None = None
         try:
@@ -214,7 +217,7 @@ class JobQueue:
                     work_dir = Path(tempfile.mkdtemp(prefix="nf-upload-"))
                     job.result = self._separate_and_transcribe(
                         job, audio_path, work_dir, mode, key, tempo, time_signature, progress_from=0.0,
-                        audio_preview=audio_preview)
+                        audio_preview=audio_preview, harmony=harmony)
                 else:
                     job.stage = STAGE_TRANSCRIBING
                     job.result = transcribe(
@@ -222,7 +225,7 @@ class JobQueue:
                         time_signature=time_signature,
                         progress=lambda fraction: setattr(job, "progress", fraction),
                         fast=job.priority == PRIORITY_HIGH,
-                        audio_preview=audio_preview)
+                        audio_preview=audio_preview, harmony=harmony)
                 if song_seconds is not None:
                     # The route kept only the head of a longer clip (a preview).
                     job.result.song_duration_sec = round(song_seconds, 1)
@@ -250,7 +253,8 @@ class JobQueue:
 
     def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
                                  key: str | None, tempo: int | None, time_signature: str,
-                                 progress_from: float, audio_preview: bool = True) -> TranscriptionResult:
+                                 progress_from: float, audio_preview: bool = True,
+                                 harmony: bool = False) -> TranscriptionResult:
         """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
 
         Shared by uploaded songs and linked ones. ``progress_from`` is where the job's
@@ -286,7 +290,7 @@ class JobQueue:
             progress=lambda fraction: setattr(job, "progress", 0.55 + 0.45 * fraction),
             fast=job.priority == PRIORITY_HIGH,
             tempo_source=wav if separated else None,
-            audio_preview=audio_preview)
+            audio_preview=audio_preview, harmony=harmony)
         result.separated = separated
         if separated:
             result.backing_audio_base64 = _encode_backing(work_dir / "backing.wav")
@@ -294,7 +298,8 @@ class JobQueue:
 
     def _run_link(self, job: Job, url: str, mode: str,
                   key: str | None, tempo: int | None,
-                  time_signature: str, max_seconds: float, audio_preview: bool = True) -> None:
+                  time_signature: str, max_seconds: float, audio_preview: bool = True,
+                  harmony: bool = False) -> None:
         from app.ingest.links import LinkError, fetch_audio, resolve_source
 
         job.status = STATUS_PROCESSING
@@ -311,7 +316,7 @@ class JobQueue:
 
                 job.result = self._separate_and_transcribe(
                     job, wav, work_dir, mode, key, tempo, time_signature, progress_from=0.10,
-                    audio_preview=audio_preview)
+                    audio_preview=audio_preview, harmony=harmony)
                 job.result.source = job.source
                 job.result.song_duration_sec = round(song_seconds, 1)
                 job.result.truncated = song_seconds > max_seconds + 0.5

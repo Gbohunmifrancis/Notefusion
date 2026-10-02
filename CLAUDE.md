@@ -29,7 +29,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   baked into the image at `NF_MDX_MODEL_PATH`), then transcribed. The queue has two lanes:
   `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
-  voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — Pro-only via the API.
+  voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — only when asked:
+  `harmony=true` on submit, or `POST /v1/harmonise` (notes + key) behind the Pro-only
+  `POST /api/transcriptions/harmonise`; `PUT /api/library/{id}/parts` keeps them on a saved sheet.
+  A transcription is the one voice that was heard; parts under it are an arrangement on request.
   `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
   pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
   the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.
@@ -50,6 +53,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   derives from the key (la-based for minor). Key change = re-label, never re-transcribe.
   Every change there needs unit tests. The Python worker mirrors this engine — keep the
   two in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+- Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
+  vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. Pro clients show the
+  membership (plan name, period, credits) wherever a free account would see prices.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read) and
   an optional public share token (`GET /api/shared/{token}`, anonymous). "Transpose for my
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts

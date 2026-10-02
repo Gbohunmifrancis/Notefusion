@@ -142,6 +142,44 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
     }
 
+    public async Task<Result<HarmonyDto>> HarmoniseAsync(
+        string key,
+        int tempoBpm,
+        string timeSignature,
+        IReadOnlyList<NoteEventDto> notes,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var wire = new HarmoniseRequest(
+                key, tempoBpm, timeSignature,
+                notes.Select(n => new HarmoniseNote(n.PitchMidi, n.StartBeat, n.DurBeats, n.Conf)).ToList());
+            using var body = new StringContent(
+                System.Text.Json.JsonSerializer.Serialize(wire, ApiJsonContext.Default.HarmoniseRequest),
+                System.Text.Encoding.UTF8, "application/json");
+            using var response = await http.PostAsync("v1/harmonise", body, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return Error.Failure("Api.Harmonise", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+            }
+            var payload = await response.Content.ReadFromJsonAsync(ApiJsonContext.Default.HarmoniseResponse, cancellationToken);
+            if (payload is null)
+                return Error.Failure("Api.Harmonise", "Transcription service returned an empty response.");
+            return new HarmonyDto(
+                payload.Parts?.ToDictionary(
+                    kv => kv.Key,
+                    kv => new PartDto(
+                        kv.Value.Notes.Select(n => new NoteEventDto(n.PitchMidi, n.StartBeat, n.DurBeats, n.Degree, n.Solfa, n.OctaveMark, n.Conf)).ToList(),
+                        kv.Value.SolfaLines)),
+                payload.PartsMusicXml);
+        }
+        catch (HttpRequestException ex)
+        {
+            return Error.Network("Api.Harmonise", $"Could not reach the transcription service: {ex.Message}");
+        }
+    }
+
     public async Task<Result<string>> SubmitLinkAsync(
         string url,
         TranscribeOptions options,
@@ -191,6 +229,8 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             form.Add(new StringContent("true"), "separate");
         if (!options.AudioPreview)
             form.Add(new StringContent("false"), "audio_preview");
+        if (options.Harmony)
+            form.Add(new StringContent("true"), "harmony");
         if (withMode && options.MaxSeconds is { } cap)
             form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
 

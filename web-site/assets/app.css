@@ -120,7 +120,8 @@ body.is-recording .brand-mark, body.is-recording .home-mark { animation: heartbe
 .user-menu-item.danger { color: var(--danger); }
 .user-menu-item.danger .ic { color: var(--danger); }
 .pill { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.5; }
-.pill-pro { background: var(--amber-soft); color: #92400e; }
+.pill-pro { background: linear-gradient(135deg, #fbe39a, #e9b949); color: #3b2a00; box-shadow: inset 0 0 0 1px rgba(146, 64, 14, 0.16); }
+.pill-pro::before { content: "★"; font-size: 0.8em; line-height: 1; }
 .pill-free { background: var(--blue-tint); color: var(--blue-dark); }
 .pill-credits { background: none; color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 600; padding: 0; font-size: 0.75rem; }
 
@@ -522,3 +523,15 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 /* The home page's try box offers the take back before sending it. */
 .try-status audio.try-take { display: block; width: 100%; margin: 10px 0; }
 .try-take-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+/* ── Pro: the membership shows, quietly, wherever the account does ──────── */
+body.is-pro .pill-pro.gate { display: none; }
+body.is-pro .who { border-color: #efd382; background: linear-gradient(135deg, #fffbeb 0%, var(--surface) 70%); }
+body.is-pro .who-avatar { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px #e9b949; }
+.greeting-pro { vertical-align: middle; margin-left: 10px; font-size: 0.65rem; }
+.membership { display: grid; gap: 16px; }
+.membership-head { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #fff7dc, #fffdf5); border: 1px solid #f3dd96; }
+.membership-head .crown { width: 44px; height: 44px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fbe39a, #e9b949); color: #3b2a00; }
+.membership-head .crown .ic { width: 22px; height: 22px; }
+.membership-head strong { display: block; font-size: 1.05rem; letter-spacing: -0.01em; }
+.membership-head span { color: var(--muted); font-size: 0.875rem; }

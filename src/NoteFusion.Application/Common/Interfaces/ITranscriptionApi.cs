@@ -39,6 +39,17 @@ public interface ITranscriptionApi
         GradeTargetDto target,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// POST /v1/harmonise — writes alto, tenor and bass under a melody the client already holds.
+    /// Synchronous; symbolic work only, so the worker answers in milliseconds.
+    /// </summary>
+    Task<Result<HarmonyDto>> HarmoniseAsync(
+        string key,
+        int tempoBpm,
+        string timeSignature,
+        IReadOnlyList<NoteEventDto> notes,
+        CancellationToken cancellationToken = default);
+
     /// <summary>GET /v1/jobs/{jobId} — status, progress, and the result once done.</summary>
     Task<Result<TranscriptionJobDto>> GetJobAsync(
         string jobId,

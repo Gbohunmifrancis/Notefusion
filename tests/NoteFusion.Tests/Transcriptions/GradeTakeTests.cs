@@ -68,6 +68,9 @@ public class GradeTakeTests
 
     private sealed class RecordingApi : ITranscriptionApi
     {
+        public Task<Result<HarmonyDto>> HarmoniseAsync(string key, int tempoBpm, string timeSignature, IReadOnlyList<NoteEventDto> notes, CancellationToken ct = default)
+            => Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(null, null)));
+
         public GradeTargetDto? LastTarget { get; private set; }
         public string? LastFileName { get; private set; }
 

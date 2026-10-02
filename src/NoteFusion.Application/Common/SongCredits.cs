@@ -5,10 +5,11 @@ using NoteFusion.Core.Enums;
 namespace NoteFusion.Application.Common;
 
 /// <summary>
-/// The allowance for linked songs (YouTube, Spotify, Apple Music), kept apart from the free transcription
-/// trial because a song costs the worker far more than a hum: a download, a vocal-isolation pass over
-/// several minutes of audio, and a transcription of the result. Pro gets a monthly allowance of full songs;
-/// a free account gets one short preview, ever, to see what the feature does — and no download of it.
+/// The allowance for whole songs — linked (YouTube, Spotify, Apple Music) or uploaded with the voice
+/// isolated — kept apart from the free transcription trial because a song costs the worker far more than
+/// a hum: a download, a vocal-isolation pass over several minutes of audio, and a transcription of the
+/// result. Pro gets a monthly allowance of full songs; a free account gets one short preview of a linked
+/// song, ever, to see what the feature does — and no download of it.
 /// </summary>
 /// <remarks>
 /// Counted from the job rows, like the trial, so the number cannot drift from the ledger it is derived
@@ -38,7 +39,7 @@ public static class SongCredits
 
         return db.TranscriptionJobs.CountAsync(
             j => j.UserId == userId
-                 && j.Kind == TranscriptionJobKind.Link
+                 && (j.Kind == TranscriptionJobKind.Link || j.Kind == TranscriptionJobKind.Song)
                  && j.SongCreditConsumedAtUtc != null
                  && j.SongCreditConsumedAtUtc >= monthStart
                  && j.SongCreditConsumedAtUtc < monthEnd,

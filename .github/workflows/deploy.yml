@@ -120,7 +120,8 @@ jobs:
           # ── Seed ─────────────────────────────────────────────────────────────
           SEED_ADMIN_EMAIL: ${{ secrets.SEED_ADMIN_EMAIL }}
           SEED_ADMIN_PASSWORD: ${{ secrets.SEED_ADMIN_PASSWORD }}
-          # ── Email (Resend) ────────────────────────────────────────────────────
+          # ── Email (Resend): RESEND_API_KEY alone is enough; the rest are optional overrides ──
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND__APIKEY: ${{ secrets.RESEND__APIKEY }}
           RESEND__FROM: ${{ secrets.RESEND__FROM }}
           EMAIL__FROMADDRESS: ${{ secrets.EMAIL__FROMADDRESS }}
@@ -230,7 +231,7 @@ jobs:
             DOMAIN_NAME="${DOMAIN_NAME}"
             API_IMAGE="${API_IMAGE}"
             TRANSCRIBER_IMAGE="${TRANSCRIBER_IMAGE}"
-            Resend__ApiKey="${RESEND__APIKEY}"
+            Email__ApiKey="${RESEND_API_KEY:-${RESEND__APIKEY}}"
             Resend__From="${RESEND__FROM}"
             Email__FromAddress="${EMAIL__FROMADDRESS}"
             Email__AssetBaseUrl="${EMAIL__ASSETBASEURL}"

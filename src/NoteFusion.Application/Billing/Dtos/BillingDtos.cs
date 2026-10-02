@@ -39,7 +39,9 @@ public sealed record SubscriptionDto(
     /// <summary>Linked songs left this month on Pro, or free previews left otherwise.</summary>
     int SongCreditsRemaining = 0,
     /// <summary>The allowance the remaining count is measured against (Pro songs a month, or free previews).</summary>
-    int SongCreditsTotal = 0);
+    int SongCreditsTotal = 0,
+    /// <summary>The plan's display name ("NoteFusion Pro (Monthly)"); null without a subscription.</summary>
+    string? PlanName = null);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

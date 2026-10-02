@@ -135,6 +135,12 @@ export interface TransposedSheet {
   partsMusicXml?: string | null;
 }
 
+/** Alto, tenor and bass written under a tune on request (Pro): the four parts and their one score. */
+export interface HarmonisedSheet {
+  parts: Record<string, TranscriptionPart> | null;
+  partsMusicXml: string | null;
+}
+
 /** The part a take is judged against, in beats, and the count-in that preceded it in the recording. */
 export interface GradeTarget {
   notes: { pitchMidi: number; startBeat: number; durBeats: number }[];
@@ -296,6 +302,8 @@ export interface Subscription {
   songCreditsRemaining?: number;
   /** The allowance `songCreditsRemaining` is measured against. */
   songCreditsTotal?: number;
+  /** The plan's display name ("NoteFusion Pro (Monthly)"); null without a subscription. */
+  planName?: string | null;
 }
 
 // --- App release --------------------------------------------------------

@@ -156,6 +156,14 @@ public sealed class TranscriptionsController : ApiControllerBase
     public async Task<IActionResult> Transpose([FromBody] TransposeSheetCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
 
+    /// <summary>
+    /// Four-part harmony (Pro), on request: alto, tenor and bass written under the melody the client
+    /// holds. A transcription never carries parts unasked; this is where they come from.
+    /// </summary>
+    [HttpPost("harmonise")]
+    public async Task<IActionResult> Harmonise([FromBody] HarmoniseSheetCommand command, CancellationToken ct)
+        => HandleResult(await _sender.Send(command, ct));
+
     [HttpGet("jobs/{jobId}")]
     public async Task<IActionResult> GetJob(string jobId, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetTranscriptionJobQuery(jobId), ct));

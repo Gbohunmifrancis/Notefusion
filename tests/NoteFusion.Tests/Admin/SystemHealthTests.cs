@@ -410,6 +410,9 @@ public class SystemHealthTests
     /// <summary>Stands in for the Python worker; only the ping matters on this page.</summary>
     private sealed class StubTranscriptionApi : ITranscriptionApi
     {
+        public Task<Result<HarmonyDto>> HarmoniseAsync(string key, int tempoBpm, string timeSignature, IReadOnlyList<NoteEventDto> notes, CancellationToken ct = default)
+            => Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(null, null)));
+
         private readonly Result<int> _ping;
 
         public StubTranscriptionApi() => _ping = 12;

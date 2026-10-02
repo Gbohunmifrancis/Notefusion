@@ -14,19 +14,22 @@ import type {
   ClearStalePaymentsResult,
   GradeResult,
   GradeTarget,
+  HarmonisedSheet,
   LoginResponse,
   MyProfile,
+  NoteEvent,
   PagedResult,
   PaymentOpsSummary,
   Plan,
   RegistrationResponse,
   SavedTranscription,
   ShareLink,
-  TransposedSheet,
   Subscription,
   SystemAnnouncement,
   SystemHealth,
   TranscriptionJob,
+  TranscriptionPart,
+  TransposedSheet,
 } from "./types";
 
 /** Typed wrappers over the C# Web API endpoints. One function per route. */
@@ -215,6 +218,14 @@ export const transcriptionsApi = {
     return api.post<GradeResult>("/api/transcriptions/grade", form, { timeout: 90_000 }).then((r) => r.data);
   },
 
+  /**
+   * Four-part harmony (Pro), written only when asked: the transcription is the one voice that
+   * was heard, and parts under it are an arrangement. Nothing is stored; a saved sheet keeps
+   * them through `libraryApi.setParts`.
+   */
+  harmonise: (body: { key: string; tempoBpm: number; timeSignature: string; notes: NoteEvent[] }) =>
+    api.post<HarmonisedSheet>("/api/transcriptions/harmonise", body, { timeout: 90_000 }).then((r) => r.data),
+
   /** Transposes a result that is not saved yet; the saved form is `libraryApi.transpose`. */
   transpose: (body: {
     key: string;
@@ -305,6 +316,10 @@ export const libraryApi = {
   /** Transpose for a choir's range: moves every note and the key; the solfa reads as before. */
   transpose: (id: string, semitones: number) =>
     api.post<SavedTranscription>(`/api/library/${id}/transpose`, { semitones }).then((r) => r.data),
+
+  /** Keeps the parts written for a saved sheet after it was saved (null removes them). */
+  setParts: (id: string, parts: Record<string, TranscriptionPart> | null, partsMusicXml: string | null) =>
+    api.put<SavedTranscription>(`/api/library/${id}/parts`, { parts, partsMusicXml }).then((r) => r.data),
 
   share: (id: string) => api.post<ShareLink>(`/api/library/${id}/share`).then((r) => r.data),
 

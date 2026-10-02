@@ -3438,6 +3438,7 @@ def _transcribe_inner(
     fast: bool = False,
     tempo_source: Path | None = None,
     audio_preview: bool = True,
+    harmony: bool = False,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     tempo_path, tempo_is_temp = (None, False)
@@ -3453,7 +3454,7 @@ def _transcribe_inner(
             progress=progress,
             fast=fast,
             tempo_source=tempo_path,
-            audio_preview=audio_preview,
+            audio_preview=audio_preview, harmony=harmony,
         )
     finally:
         if is_temp_wav:
@@ -3471,8 +3472,14 @@ def transcribe(
     fast: bool = False,
     tempo_source: Path | None = None,
     audio_preview: bool = True,
+    harmony: bool = False,
 ) -> TranscriptionResult:
     """Audio file -> ``TranscriptionResult``.
+
+    ``harmony`` writes alto, tenor and bass under the tune (``parts`` / ``parts_musicxml``).
+    Off by default: a hummed or sung line is one voice, and parts composed under it are an
+    arrangement the user asks for, not something the recording contained. Clients ask for
+    them afterwards through ``harmonise_sheet`` (``POST /v1/harmonise``).
 
     ``audio_preview`` False skips the synthesised piano WAV. The web client renders its own
     playback from the notes and never plays that file, yet a three-minute song cost about
@@ -3513,7 +3520,7 @@ def transcribe(
             
         res = _transcribe_inner(
             audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast,
-            tempo_source=tempo_source, audio_preview=audio_preview,
+            tempo_source=tempo_source, audio_preview=audio_preview, harmony=harmony,
         )
         return res
     except Exception as e:
@@ -4081,6 +4088,7 @@ def _transcribe_wav(
     fast: bool = False,
     tempo_source: Path | None = None,
     audio_preview: bool = True,
+    harmony: bool = False,
 ) -> TranscriptionResult:
     from music21 import key as m21key
     from music21 import meter, stream
@@ -4483,8 +4491,11 @@ def _transcribe_wav(
     # ── 10b. Four-part harmony ────────────────────────────────────────────────
     # Rule-based SATB under the melody as notated; see ``app.pipeline.harmony``.  Pure
     # symbolic work on the note list, so it adds milliseconds and can never fail the job.
-    parts, parts_musicxml = _harmonise_notes(
-        notes, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, round(bpm)
+    # Only when asked: the parts are an arrangement, not a transcription of the recording.
+    parts, parts_musicxml = (
+        _harmonise_notes(notes, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, round(bpm))
+        if harmony
+        else (None, "")
     )
 
     # ── 11. Normalise key name for C#'s KeyParser ─────────────────────────────
@@ -4556,10 +4567,51 @@ def _transcribe_wav(
     )
 
 
-def _harmonise_notes(
-    notes: list, tonic_pc: int, mode: str, doh_pc: int, ref_doh: int, time_signature: str, bpm: int
+def harmonise_sheet(
+    key: str, tempo_bpm: int, time_signature: str, notes: list[dict]
 ) -> tuple[dict | None, str]:
-    """SATB for the result, or ``(None, "")`` if the harmoniser declines or fails."""
+    """SATB under an already transcribed (or edited) melody, for ``POST /v1/harmonise``.
+
+    ``notes`` are ``{pitch_midi, start_beat, dur_beats, conf?}`` dicts as the clients hold
+    them; the key is the sheet's key string.  Labelled the same way step 10 labels a fresh
+    transcription, so the parts' solfa agrees with the tune's.  Raises ``ValueError`` for
+    a key that does not parse.
+    """
+    try:
+        detected = _parse_key_override(key)
+    except Exception as exc:  # noqa: BLE001 - any parse failure is the caller's input
+        raise ValueError(f"Unparseable key: {key!r}") from exc
+    pitches = [int(n["pitch_midi"]) for n in notes]
+    if not pitches:
+        return None, ""
+    doh_pc = solfa.doh_pitch_class(detected.tonic.pitchClass, detected.mode)
+    ref_doh = solfa.reference_doh(pitches, doh_pc)
+    flags = solfa.ascending_flags(pitches)
+    melody: list[TranscribedNote] = []
+    for n, flag in zip(notes, flags):
+        pitch = int(n["pitch_midi"])
+        syl, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh, solfa.resolve_ascending(flag, settings.chromatic_spelling))
+        melody.append(TranscribedNote(
+            pitch, float(n["start_beat"]), float(n["dur_beats"]), degree, syl, mark, float(n.get("conf", 1.0) or 1.0)))
+    # The dedicated endpoint, unlike step 10b, must not hide a failure as "no parts": an
+    # exception reaches the route's log as a 500, and a declined melody is the caller's input.
+    parts, parts_musicxml = _harmonise_notes(
+        melody, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, int(tempo_bpm),
+        strict=True)
+    if parts is None:
+        raise ValueError("The melody has no sounding notes to write parts under.")
+    return parts, parts_musicxml
+
+
+def _harmonise_notes(
+    notes: list, tonic_pc: int, mode: str, doh_pc: int, ref_doh: int, time_signature: str, bpm: int,
+    strict: bool = False,
+) -> tuple[dict | None, str]:
+    """SATB for the result, or ``(None, "")`` if the harmoniser declines or fails.
+
+    ``strict`` lets a failure propagate instead: for the harmonise endpoint, where the parts
+    are the whole job rather than an extra on top of a transcription.
+    """
     from dataclasses import asdict
 
     from app.pipeline import harmony
@@ -4572,6 +4624,8 @@ def _harmonise_notes(
             divisions_per_beat=settings.quantize_divisors[0],
         )
     except Exception as exc:  # noqa: BLE001 - harmony is an extra, never the job
+        if strict:
+            raise
         print(f"[notefusion] harmonisation skipped: {exc!r}", flush=True)
         return None, ""
     if result is None:

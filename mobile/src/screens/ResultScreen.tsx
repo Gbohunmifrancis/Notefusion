@@ -199,6 +199,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const [transposing, setTransposing] = useState(false);
   const [parts, setParts] = useState<Parts | null>(result.parts ?? null);
   const [partsMusicXml, setPartsMusicXml] = useState(result.partsMusicXml ?? "");
+  const [harmonising, setHarmonising] = useState(false);
 
   // ── Rehearsal mix ─────────────────────────────────────────────────────────
   const [voiceOn, setVoiceOn] = useState<Record<VoiceName, boolean>>({ soprano: true, alto: true, tenor: true, bass: true });
@@ -602,6 +603,45 @@ export function ResultScreen({ route, navigation }: Props) {
     setDraft(original);
     setPreview(baseline.notes === result.notes ? result.audioPreviewBase64 : synthesizeMelodyWavBase64(baseline.notes, tempo));
     void commitNotes(original);
+  }
+
+  /**
+   * Four-part harmony, only when asked: a hummed or sung line is one voice, and alto, tenor
+   * and bass under it are an arrangement, not a transcription. A saved sheet keeps them.
+   */
+  async function writeParts() {
+    if (harmonising || view.notes.length === 0) return;
+    setHarmonising(true);
+    try {
+      const written = await transcriptionsApi.harmonise({ key, tempoBpm: Math.round(tempo), timeSignature, notes: view.notes });
+      if (!written.parts) {
+        showDialog({ title: "Nothing to harmonise yet", message: "The tune needs a few notes before parts can be written under it.", icon: "information-circle-outline" });
+        return;
+      }
+      // A saved sheet keeps its parts on the server first: showing them before they are kept would
+      // let them vanish when the sheet is reopened.
+      if (savedId) {
+        try {
+          await libraryApi.setParts(savedId, written.parts, written.partsMusicXml ?? null);
+        } catch (e) {
+          showDialog({
+            title: "Parts written, not saved",
+            message: `The parts could not be kept with this saved sheet: ${toApiError(e).message}`,
+            icon: "alert-circle-outline",
+            tone: "danger",
+            actions: [{ label: "Try again", onPress: () => void writeParts() }],
+          });
+          return;
+        }
+      }
+      setParts(written.parts as Parts);
+      setPartsMusicXml(written.partsMusicXml ?? "");
+      haptics.play("success");
+    } catch (e) {
+      showDialog({ title: "Could not write the parts", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    } finally {
+      setHarmonising(false);
+    }
   }
 
   /**
@@ -1465,11 +1505,24 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.voiceLines}>{lines.slice(1).join("\n")}</Text>
             </View>
           ))
+        ) : isPro ? (
+          <View style={styles.voicesTeaser}>
+            <Text style={styles.voicesTeaserText}>
+              The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.
+            </Text>
+            <Button
+              label="Write alto, tenor and bass"
+              variant="secondary"
+              icon="people-outline"
+              loading={harmonising}
+              onPress={() => void writeParts()}
+              style={styles.voicesButton}
+            />
+          </View>
         ) : (
           <Touchable onPress={() => navigation.navigate("Upgrade")} style={styles.voicesTeaser} accessibilityLabel="Unlock four-part harmony">
             <Text style={styles.voicesTeaserText}>
-              Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir.
-              {isPro ? " Parts were not generated for this transcription." : " Unlock with Pro →"}
+              Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir. Unlock with Pro →
             </Text>
           </Touchable>
         )}
@@ -1783,6 +1836,7 @@ const makeStyles = (c: Palette) =>
   voiceLines: { ...typography.mono, color: c.text, lineHeight: 22 },
   voicesTeaser: { marginTop: spacing.sm, backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
   voicesTeaserText: { ...typography.caption, color: c.accent, lineHeight: 18 },
+  voicesButton: { marginTop: spacing.sm, alignSelf: "flex-start" },
   proTag: { marginLeft: "auto", backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
   proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
   previewMark: {

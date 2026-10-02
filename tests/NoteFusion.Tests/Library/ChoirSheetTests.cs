@@ -71,6 +71,33 @@ public class ChoirSheetTests
     }
 
     [Fact]
+    public async Task Parts_written_after_saving_are_kept_on_the_sheet_and_can_be_removed()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        var saved = await Save(h, userId);
+        Assert.Null(saved.Parts);
+
+        var alto = new PartDto([new NoteEventDto(57, 0, 1, 6, "l", "", 1), new NoteEventDto(55, 1, 1, 5, "s", "", 1)], ["Doh is C · Alto", "| l s |"]);
+        var handler = new UpdateTranscriptionPartsCommandHandler(h.Db, new StubCurrentUser(userId));
+
+        var result = await handler.Handle(new UpdateTranscriptionPartsCommand(saved.Id, new Dictionary<string, PartDto> { ["alto"] = alto }, "<satb/>"), default);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal([57, 55], result.Value.Parts!["alto"].Notes.Select(n => n.PitchMidi));
+        Assert.Equal("<satb/>", result.Value.PartsMusicXml);
+        Assert.NotNull(h.Db.Transcriptions.Single(t => t.Id == saved.Id).Parts);
+
+        var removed = await handler.Handle(new UpdateTranscriptionPartsCommand(saved.Id, null, null), default);
+        Assert.True(removed.IsSuccess);
+        Assert.Null(removed.Value.Parts);
+
+        var stranger = await new UpdateTranscriptionPartsCommandHandler(h.Db, new StubCurrentUser(Guid.NewGuid()))
+            .Handle(new UpdateTranscriptionPartsCommand(saved.Id, new Dictionary<string, PartDto> { ["alto"] = alto }, null), default);
+        Assert.True(stranger.IsFailure);
+    }
+
+    [Fact]
     public async Task Transposing_moves_every_pitch_and_the_key_but_not_the_solfa()
     {
         using var h = new TestHarness();

@@ -10,7 +10,9 @@ from pathlib import Path
 import librosa
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 
-from app.api.schemas import GradeResponse, GradeTargetDto, JobResponse, ResultDto, SubmitResponse
+from app.api.schemas import (
+    GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, JobResponse, ResultDto, SubmitResponse,
+)
 from app.config import settings
 from app.jobs.queue import JobQueue
 
@@ -91,6 +93,7 @@ async def submit_transcription(
     max_seconds: float | None = Form(None, description="Transcribe only the first N seconds (an anonymous preview)"),
     separate: bool = Form(False, description="The upload is a full song: isolate the lead vocal first and read the beat from the mix"),
     audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
+    harmony: bool = Form(False, description="Also write alto, tenor and bass under the tune (off: one voice is transcribed as one voice)"),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
@@ -171,7 +174,8 @@ async def submit_transcription(
                           time_signature=time_signature,
                           correlation_id=_correlation_id(request),
                           callback_url=callback_url, priority=priority,
-                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview)
+                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
+                          harmony=harmony)
     return SubmitResponse(job_id=job_id)
 
 
@@ -233,6 +237,7 @@ async def submit_link_transcription(
     priority: str = Form("normal"),
     max_seconds: float | None = Form(None),
     audio_preview: bool = Form(True),
+    harmony: bool = Form(False),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
@@ -263,8 +268,41 @@ async def submit_link_transcription(
                                time_signature=time_signature,
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
-                               max_seconds=cap, audio_preview=audio_preview)
+                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony)
     return SubmitResponse(job_id=job_id)
+
+
+# A six-minute song at 400 BPM is 2400 beats; the harmoniser's cost is beats × notes, so both
+# are bounded here before any work starts (the C# validator refuses the same shapes earlier).
+HARMONISE_MAX_BEATS = 2400.0
+HARMONISE_MAX_NOTES = 5000
+
+
+@router.post("/harmonise", response_model=HarmoniseResponse, response_model_exclude_none=True,
+             summary="Write alto, tenor and bass under a transcribed melody")
+def harmonise(body: HarmoniseRequest) -> HarmoniseResponse:
+    """Synchronous, in the threadpool (a plain ``def``): chord choice is fast but the four-part
+    MusicXML takes music21 a second or three for a whole song, and that must not stall the
+    event loop. The arrangement is the user's to ask for; a transcription never carries it
+    unasked."""
+    from app.pipeline.transcriber import harmonise_sheet
+
+    if not body.notes:
+        raise HTTPException(422, "The melody has no notes.")
+    if len(body.notes) > HARMONISE_MAX_NOTES:
+        raise HTTPException(422, f"At most {HARMONISE_MAX_NOTES} notes can be harmonised at once.")
+    if not 20 <= body.tempo_bpm <= 400:
+        raise HTTPException(422, "tempoBpm must be between 20 and 400.")
+    for n in body.notes:
+        if n.start_beat < 0 or n.dur_beats <= 0 or n.start_beat + n.dur_beats > HARMONISE_MAX_BEATS:
+            raise HTTPException(422, f"Notes must start at or after beat 0, last longer than nothing and end by beat {HARMONISE_MAX_BEATS:g}.")
+    time_signature = _clean_time_signature(body.time_signature)
+    try:
+        parts, parts_musicxml = harmonise_sheet(
+            body.key, body.tempo_bpm, time_signature, [n.model_dump() for n in body.notes])
+    except ValueError as ex:
+        raise HTTPException(422, str(ex))
+    return HarmoniseResponse(parts=parts, parts_musicxml=parts_musicxml)
 
 
 GRADE_SUFFIXES = ACCEPTED_SUFFIXES

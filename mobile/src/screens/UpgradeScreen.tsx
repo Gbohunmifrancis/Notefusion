@@ -48,10 +48,10 @@ const RETURN_URL = "notefusion://billing/return";
 
 /** What Pro unlocks — the paywall's value proposition. */
 const PRO_FEATURES: { icon: keyof typeof Ionicons.glyphMap; text: string }[] = [
-  { icon: "infinite", text: "Unlimited transcriptions" },
-  { icon: "musical-notes", text: "Full staff notation & MIDI export" },
-  { icon: "sync", text: "Cloud library sync across devices" },
-  { icon: "flash", text: "Priority processing queue" },
+  { icon: "musical-notes", text: "Whole songs, up to six minutes, twenty a month" },
+  { icon: "people", text: "Alto, tenor and bass written under any tune, when you ask" },
+  { icon: "download", text: "PDF, MusicXML and MIDI downloads, no watermark" },
+  { icon: "flash", text: "Priority lane and sing-along marking" },
 ];
 
 /** Key features displayed in the active Pro subscription hub. */
@@ -61,26 +61,34 @@ const PRO_BENEFITS: {
   desc: string;
 }[] = [
   {
-    icon: "infinite",
-    title: "Unlimited Transcriptions",
-    desc: "Transcribe audio recordings and choir takes with no quotas or duration caps.",
+    icon: "musical-notes",
+    title: "Whole Songs",
+    desc: "Songs from a link or a recording, up to six minutes each, twenty a month. Hummed tunes are never counted.",
   },
   {
-    icon: "musical-notes",
-    title: "Full Staff & Tonic Solfa",
-    desc: "Automatic movable-do solfa conversion, interactive sheet display, and MIDI export.",
+    icon: "people",
+    title: "Four-Part Harmony",
+    desc: "Alto, tenor and bass written under any tune the way a hymn arranger would — only when you ask.",
+  },
+  {
+    icon: "download",
+    title: "Every Download",
+    desc: "Clean PDF, MusicXML and MIDI with no watermark, ready for your choir.",
   },
   {
     icon: "flash",
-    title: "Priority Cloud Queue",
-    desc: "High-speed server worker queue for rapid inference without wait times.",
-  },
-  {
-    icon: "cloud-done",
-    title: "Cloud Library Sync",
-    desc: "Your scores, audio takes, and piano edits are securely backed up across devices.",
+    title: "Priority Lane & Sing-Along",
+    desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
 ];
+
+/** "Monthly" or "Yearly" from the plan's name or code, for the member card. */
+function tierOf(subscription: Subscription): string {
+  const label = `${subscription.planName ?? ""} ${subscription.planCode ?? ""}`.toLowerCase();
+  if (label.includes("year")) return "Yearly";
+  if (label.includes("month")) return "Monthly";
+  return "Pro";
+}
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -584,13 +592,7 @@ function ActiveState({
           <View style={styles.statCol}>
             <Text style={styles.statLabel}>TIER</Text>
             <Text style={styles.statValue}>
-              {lifetime
-                ? "Lifetime"
-                : isGift
-                  ? "Gift"
-                  : subscription.planCode
-                    ? subscription.planCode.toUpperCase()
-                    : "Pro"}
+              {lifetime ? "Lifetime" : isGift ? "Gift" : tierOf(subscription)}
             </Text>
           </View>
 
@@ -653,9 +655,18 @@ function ActiveState({
               ? "NoteFusion Pro — Lifetime"
               : isGift
                 ? "NoteFusion Pro — Gift"
-                : "NoteFusion Pro"}
+                : subscription.planName || "NoteFusion Pro"}
           </Text>
         </View>
+
+        {typeof subscription.songCreditsTotal === "number" && (
+          <View style={styles.billingRow}>
+            <Text style={styles.billingLabel}>Songs this month</Text>
+            <Text style={styles.billingValue}>
+              {subscription.songCreditsRemaining ?? subscription.songCreditsTotal} of {subscription.songCreditsTotal} left
+            </Text>
+          </View>
+        )}
 
         <View style={styles.billingRow}>
           <Text style={styles.billingLabel}>Status</Text>

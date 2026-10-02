@@ -39,6 +39,13 @@ public sealed record TranscribeOptions
 
     /// <summary>The most of the audio to transcribe, in seconds: a linked song's cap, or an anonymous preview's.</summary>
     public double? MaxSeconds { get; init; }
+
+    /// <summary>
+    /// Also write alto, tenor and bass under the tune. Off by default: a hummed or sung line is one
+    /// voice, and parts composed under it are an arrangement the user asks for afterwards
+    /// (<see cref="ITranscriptionApi.HarmoniseAsync"/>), not something the recording contained.
+    /// </summary>
+    public bool Harmony { get; init; }
 }
 
 /// <summary>The worker's two queue lanes; wire values "normal" / "high".</summary>
@@ -75,6 +82,9 @@ public sealed record GradeResultDto(
 
 /// <summary>One voice of the four-part harmony, in the same note shape as the melody.</summary>
 public sealed record PartDto(IReadOnlyList<NoteEventDto> Notes, IReadOnlyList<string> SolfaLines);
+
+/// <summary>Alto, tenor and bass written under a melody on request: the four parts and their one score.</summary>
+public sealed record HarmonyDto(IReadOnlyDictionary<string, PartDto>? Parts, string? PartsMusicXml);
 
 /// <summary>The song a linked transcription came from — the acknowledgement line and the sheet's credit.</summary>
 public sealed record SourceDto(

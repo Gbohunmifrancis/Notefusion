@@ -106,7 +106,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         // for it does spend a trial — one credit, in the minutes a transcription takes, so not worth a
         // column to avoid.
         var isPro = await IsProAsync(job.UserId, cancellationToken);
-        if (job.Kind == Core.Enums.TranscriptionJobKind.Link)
+        if (job.IsSong)
         {
             // A song is its own allowance (Pro monthly songs, or the one free preview) and never a trial
             // generation: the preview exists precisely so a free account can try the feature without it

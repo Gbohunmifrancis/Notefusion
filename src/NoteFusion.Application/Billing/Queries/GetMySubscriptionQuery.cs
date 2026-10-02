@@ -79,6 +79,6 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         return new SubscriptionDto(
             isPro, plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
             remaining, total, sub.IsLifetime, sub.IsGift,
-            songsRemaining, songsTotal);
+            songsRemaining, songsTotal, plan?.Name);
     }
 }

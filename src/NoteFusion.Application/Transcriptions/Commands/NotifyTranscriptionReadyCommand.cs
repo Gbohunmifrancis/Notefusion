@@ -97,7 +97,7 @@ public sealed class NotifyTranscriptionReadyCommandHandler
 
         // Same rule and the same idempotent methods the client poll uses, because either path may be the
         // one that first observes success and the allowance must be spent exactly once regardless.
-        if (job.Kind == Core.Enums.TranscriptionJobKind.Link)
+        if (job.IsSong)
         {
             job.ConsumeSongCredit(now);
         }
