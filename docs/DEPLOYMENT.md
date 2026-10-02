@@ -248,8 +248,10 @@ entry too — `keytool -list -v -keystore ~/.android/debug.keystore -alias andro
 
 ## 3. Email (Resend)
 
-One secret is the whole setup: add **`RESEND_API_KEY`** to the repository's GitHub Actions
-secrets and the next deploy delivers mail as `NoteFusion <no-reply@notefusion.studio>`.
+One secret is the whole setup: the repository's existing **`RESEND__APIKEY`** GitHub Actions
+secret (or a new `RESEND_API_KEY`) is written into the container as `Email__ApiKey`, and the next
+deploy delivers mail as `NoteFusion <no-reply@notefusion.studio>` (or as `RESEND__FROM` when that
+secret is set).
 Without a key, mail is logged, not sent, so a deploy without one is safe. The API logs one line
 at startup saying which of the two it is doing (`EmailReadiness`).
 
@@ -259,7 +261,8 @@ and the refusal is in the API log as a warning.
 
 | Var | Required? | Notes |
 |-----|-----------|-------|
-| `RESEND_API_KEY` | **yes** | Resend API key. Also accepted as `Email__ApiKey` or `Resend__ApiKey`. Env-only — a key in `appsettings.json` is a key in git history. |
+| `RESEND__APIKEY` / `RESEND_API_KEY` | **yes** | Resend API key; the deploy writes either as `Email__ApiKey`, and the app also reads `Resend__ApiKey`. Env-only — a key in `appsettings.json` is a key in git history. |
+| `RESEND__FROM` | optional | Sender address override, read when `Email__FromAddress` is unset. |
 | `Email__UseResend` | optional | Delivery turns on by itself when a key is present; set `false` to keep a keyed environment in the log. |
 | `Email__FromAddress` | optional | Defaults to `no-reply@notefusion.studio`. Resend's sandbox `onboarding@resend.dev` needs no DNS but **only delivers to the address that owns the key** (dev only). |
 | `Email__AssetBaseUrl` | recommended | Public origin the branded email fetches its logo from (`/email/logo.png`). **Point this at the marketing site, `https://notefusion.studio`** — the file lives in `web-site/email/`. It used to be the API's own URL, back when the API served the dashboard bundle out of `wwwroot`; nothing lands in `wwwroot` any more, so a Heroku URL here now yields a broken image. Unset falls back to a raw GitHub URL for the mobile icon. |
