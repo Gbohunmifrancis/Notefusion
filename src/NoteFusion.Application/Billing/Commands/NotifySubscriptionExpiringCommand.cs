@@ -76,9 +76,10 @@ public sealed class NotifySubscriptionExpiringCommandHandler
         // Ceiling, and never below 1: "in 0 days" is not a thing to tell someone.
         var daysLeft = Math.Max(1, (int)Math.Ceiling((sub.CurrentPeriodEndUtc - now).TotalDays));
 
-        // Active is not enough on its own: a gift granted from the admin console is Active too, and nothing
-        // is going to renew it, so promising a renewal would be a promise no code in this system keeps.
-        var willRenew = sub.Status == SubscriptionStatus.Active && !sub.IsGift;
+        // Nothing renews by itself: every checkout is a one-off for one period, so the notice always says
+        // the date Pro ends and how to add more time. Promising a charge "on the card on file" would be a
+        // promise no code in this system keeps, and the member would lose Pro without warning.
+        const bool willRenew = false;
 
         await _email.SendSubscriptionExpiringAsync(
             new EmailRecipient(user.Email, user.FullName),

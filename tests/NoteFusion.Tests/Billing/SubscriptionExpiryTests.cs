@@ -34,7 +34,8 @@ public class SubscriptionExpiryTests
         var expiry = Assert.Single(h.Email.Expiring);
         Assert.Equal("NoteFusion Pro", expiry.PlanName);
         Assert.Equal(5, expiry.DaysLeft);
-        Assert.True(expiry.WillRenew);
+        // Nothing renews by itself, so even an active membership is told the date it ends.
+        Assert.False(expiry.WillRenew);
 
         // Both channels, because either one alone is silently unreachable for some accounts.
         var (recipients, message) = Assert.Single(h.Push.Sent);
