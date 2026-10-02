@@ -220,6 +220,35 @@ export interface AnalyticsOverview {
   webFunnel: WebFunnel;
   /** Page views, visitors, clicks and web-app actions from the site's own tracker. */
   webTraffic: WebTraffic;
+  /** Who has Pro now, what came in and went out in the window, and how songs are used. */
+  membership: Membership;
+}
+
+/** An amount in one currency's minor units. Currencies are never added together. */
+export interface CurrencyAmount {
+  currency: string;
+  amountMinor: number;
+}
+
+/**
+ * Pro membership. Every payment is a one-off for one period, so `monthlyRunRate` is what the running
+ * memberships are worth per month (yearly at a twelfth), not a charge that will happen by itself.
+ */
+export interface Membership {
+  activeMembers: number;
+  paidMembers: number;
+  giftedMembers: number;
+  /** Of the active members, how many hold lifetime access. */
+  lifetimeMembers: number;
+  newMembers: number;
+  /** Memberships whose paid time ran out in the window without a new payment. */
+  lapsedMembers: number;
+  revenue: CurrencyAmount[];
+  monthlyRunRate: CurrencyAmount[];
+  membersByPlan: CategoryCount[];
+  songsUsedThisMonth: number;
+  /** Accounts that have used the whole monthly song allowance. */
+  membersOutOfSongs: number;
 }
 
 export interface AdminUserRow {

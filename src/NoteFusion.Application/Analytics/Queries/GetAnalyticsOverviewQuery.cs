@@ -81,6 +81,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var signupSources = await BuildSignupSources(cancellationToken);
         var webFunnel = await BuildWebFunnel(range, previous, cancellationToken);
         var webTraffic = await BuildWebTraffic(range, previous, cancellationToken);
+        var membership = await BuildMembership(range, utcNow, cancellationToken);
 
         return new AnalyticsOverviewDto(
             range.FromUtc,
@@ -97,7 +98,8 @@ public sealed class GetAnalyticsOverviewQueryHandler
             recentActivity,
             signupSources,
             webFunnel,
-            webTraffic);
+            webTraffic,
+            membership);
     }
 
     private async Task<IReadOnlyList<CategoryCountDto>> BuildSignupSources(CancellationToken ct)
@@ -169,6 +171,81 @@ public sealed class GetAnalyticsOverviewQueryHandler
     /// are grouped there too and ordered in memory, which keeps the ordering identical on Npgsql
     /// and on the SQLite the tests run against.
     /// </remarks>
+    /// <summary>
+    /// Pro membership. Subscriptions and plans are small tables, so they are read whole and folded in
+    /// memory: the same reason the series are, plus that "latest row per account" and the per-currency
+    /// sums would otherwise need SQL that translates differently on Npgsql and on the tests' SQLite.
+    /// </summary>
+    private async Task<MembershipDto> BuildMembership(AnalyticsRange range, DateTime utcNow, CancellationToken ct)
+    {
+        var rows = await _db.Subscriptions
+            .Select(s => new { s.UserId, s.PlanId, s.Provider, s.Status, s.CurrentPeriodEndUtc, s.CreatedAtUtc })
+            .ToListAsync(ct);
+        var plans = await _db.Plans
+            .Select(p => new { p.Id, p.Name, p.AmountMinor, p.Currency, p.Interval })
+            .ToListAsync(ct);
+        var planById = plans.ToDictionary(p => p.Id);
+
+        // One membership per account: its latest row, as the app and the billing commands read it.
+        var latest = rows
+            .GroupBy(s => s.UserId)
+            .Select(g => g.OrderByDescending(s => s.CurrentPeriodEndUtc).First())
+            .ToList();
+        var active = latest
+            .Where(s => s.Status is SubscriptionStatus.Active or SubscriptionStatus.Canceled && utcNow < s.CurrentPeriodEndUtc)
+            .ToList();
+        var gifted = active.Count(s => s.Provider is null);
+        var lifetime = active.Count(s => s.CurrentPeriodEndUtc >= NoteFusion.Core.Entities.Billing.Subscription.LifetimeEndUtc);
+
+        var newMembers = rows
+            .GroupBy(s => s.UserId)
+            .Count(g => g.Min(s => s.CreatedAtUtc) is var first && first >= range.FromUtc && first < range.ToUtc);
+        var lapseUntil = range.ToUtc < utcNow ? range.ToUtc : utcNow;
+        var lapsed = latest.Count(s => s.CurrentPeriodEndUtc >= range.FromUtc && s.CurrentPeriodEndUtc < lapseUntil);
+
+        var runRate = active
+            .Where(s => s.Provider is not null && s.CurrentPeriodEndUtc < NoteFusion.Core.Entities.Billing.Subscription.LifetimeEndUtc)
+            .Select(s => planById.GetValueOrDefault(s.PlanId))
+            .Where(p => p is not null && p.Interval != BillingInterval.Lifetime)
+            .GroupBy(p => p!.Currency)
+            .Select(g => new CurrencyAmountDto(g.Key, g.Sum(p => p!.Interval == BillingInterval.Yearly ? p.AmountMinor / 12 : p.AmountMinor)))
+            .OrderByDescending(c => c.AmountMinor)
+            .ToList();
+
+        var byPlan = active
+            .GroupBy(s => s.Provider is null
+                ? "Gift"
+                : planById.GetValueOrDefault(s.PlanId)?.Name ?? "Unknown plan")
+            .Select(g => new CategoryCountDto(g.Key, g.Count()))
+            .OrderByDescending(c => c.Count)
+            .ToList();
+
+        var charges = await _db.LedgerEntries
+            .Where(e => e.Reason == LedgerEntryReason.SubscriptionCharge
+                        && e.Direction == LedgerDirection.Credit
+                        && e.CreatedAtUtc >= range.FromUtc && e.CreatedAtUtc < range.ToUtc)
+            .Select(e => new { e.Currency, e.AmountMinor })
+            .ToListAsync(ct);
+        var revenue = charges
+            .GroupBy(e => e.Currency)
+            .Select(g => new CurrencyAmountDto(g.Key, g.Sum(e => e.AmountMinor)))
+            .OrderByDescending(c => c.AmountMinor)
+            .ToList();
+
+        var monthStart = new DateTime(utcNow.Year, utcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var spent = await _db.TranscriptionJobs
+            .Where(j => j.SongCreditConsumedAtUtc != null && j.SongCreditConsumedAtUtc >= monthStart)
+            .Select(j => j.UserId)
+            .ToListAsync(ct);
+        var outOfSongs = spent
+            .GroupBy(u => u)
+            .Count(g => g.Count() >= NoteFusion.Application.Common.SongCredits.ProMonthlyAllowance);
+
+        return new MembershipDto(
+            active.Count, active.Count - gifted, gifted, lifetime,
+            newMembers, lapsed, revenue, runRate, byPlan, spent.Count, outOfSongs);
+    }
+
     private async Task<WebTrafficDto> BuildWebTraffic(AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
     {
         var inRange = _db.WebEvents.Where(e => e.OccurredAtUtc >= range.FromUtc && e.OccurredAtUtc < range.ToUtc);

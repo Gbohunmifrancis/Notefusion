@@ -19,6 +19,10 @@ import {
   Crown,
   Bookmark,
   MousePointerClick,
+  Wallet,
+  TrendingUp,
+  UserRoundMinus,
+  Gauge,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -58,6 +62,7 @@ import {
   formatDayShort,
   formatMonthShort,
   formatMonthYear,
+  formatMoney,
   formatOffset,
   formatPercent,
   formatRelative,
@@ -467,6 +472,44 @@ function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"]
   );
 }
 
+/** Amounts in several currencies, each in its own, joined; never summed across currencies. */
+function moneyList(amounts: { currency: string; amountMinor: number }[]): string {
+  return amounts.length === 0 ? formatMoney(0, "USD") : amounts.map((a) => formatMoney(a.amountMinor, a.currency)).join(" · ");
+}
+
+/**
+ * Pro membership: who has it now, who joined and who lapsed in the window, the money collected, and
+ * how the monthly song allowance is being used. Nothing renews by itself, so lapsed members are the
+ * ones to win back and the run-rate is what would recur if every member bought again.
+ */
+function MembershipPanel({ membership }: { membership: AnalyticsOverview["membership"] }) {
+  const m = membership;
+  const lapseRate = m.activeMembers + m.lapsedMembers > 0 ? formatPercent(m.lapsedMembers / (m.activeMembers + m.lapsedMembers), 0) : UNKNOWN;
+  const tiles: StatItem[] = [
+    { title: "Pro members", value: formatCount(m.activeMembers), description: `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted${m.lifetimeMembers ? ` · ${formatCount(m.lifetimeMembers)} lifetime` : ""}`, icon: Crown, hint: "Accounts with Pro right now, each counted once" },
+    { title: "New members", value: formatCount(m.newMembers), icon: UserRoundPlus, hint: "Accounts whose first Pro period started in this window" },
+    { title: "Lapsed", value: formatCount(m.lapsedMembers), description: `${lapseRate} of members in this window`, icon: UserRoundMinus, hint: "Paid time ran out in this window with no new payment: the people to win back" },
+    { title: "Revenue collected", value: moneyList(m.revenue), icon: Wallet, hint: "Payments received in this window, per currency, from the ledger" },
+    { title: "Monthly run-rate", value: moneyList(m.monthlyRunRate), icon: TrendingUp, hint: "Running paid memberships per month (yearly at a twelfth). Nothing renews by itself, so this recurs only if members buy again" },
+    { title: "Songs this month", value: formatCount(m.songsUsedThisMonth), description: m.membersOutOfSongs ? `${formatCount(m.membersOutOfSongs)} members used all 20` : "No one has run out", icon: Gauge, hint: "Song credits spent since the first of the month (UTC)" },
+  ];
+  return (
+    <div className="space-y-5">
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        Pro membership
+      </h3>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {tiles.map((stat) => (
+          <StatCard key={stat.title} stat={stat} />
+        ))}
+      </div>
+      <div className="grid gap-5 md:grid-cols-2">
+        <RankedList title="Members by plan" rows={m.membersByPlan} empty="No Pro members yet" />
+      </div>
+    </div>
+  );
+}
+
 function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[] }) {
   const topKeys = keys.slice(0, 5);
   const total = keys.reduce((sum, k) => sum + k.count, 0);
@@ -827,6 +870,13 @@ export function OverviewView() {
                   <RecentActivityPanel items={data.recentActivity} />
                 </div>
               </div>
+
+              {/* PRO MEMBERSHIP: members, joins and lapses, money, song use */}
+              {data.membership && (
+                <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+                  <MembershipPanel membership={data.membership} />
+                </div>
+              )}
 
               {/* WEBSITE TRAFFIC: visits, clicks, referrers, what web users do */}
               <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
