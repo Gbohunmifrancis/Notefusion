@@ -6,6 +6,8 @@ browser and you are looking at production.
 
 ```
 index.html            landing page
+app/index.html        NoteFusion Web: sign in, paste a song link, read the sheet, download on Pro
+assets/app.js         the web app's script (API client with token refresh, polling, OSMD, PDF)
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service
 delete-account/       account/data deletion and email confirmation flow
@@ -55,7 +57,9 @@ option serves `docs/` wholesale, and that folder holds `NoteFusion_PRD.docx` and
 open internet.
 
 The admin dashboard is a separate application (`web-admin/`) with its own deploy.
-This directory is public and unauthenticated; nothing here talks to the API.
+This directory is public. The one signed-in page is `app/`, which talks to the API from
+the browser with the same bearer-token flow as the admin dashboard; the API's CORS list
+must carry the site's origin (`Cors__AllowedOrigins__1` in `docker-compose.prod.yml`).
 
 ## Design tokens
 
