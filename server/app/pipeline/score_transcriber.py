@@ -10,7 +10,6 @@ from pathlib import Path
 
 import numpy as np
 from music21 import converter, key as m21key, meter, note as m21note, stream, tempo as m21tempo
-from music21.musicxml.m21ToXml import GeneralObjectExporter
 
 from app.config import settings
 from app.pipeline import solfa, solfa_render
@@ -23,6 +22,7 @@ from app.pipeline.transcriber import (
     _parse_key_override,
     _respell_to_key,
     _synthesize_audio_preview,
+    export_musicxml,
 )
 
 ACCEPTED_SCORE_SUFFIXES = {".musicxml", ".xml", ".mxl", ".mid", ".midi", ".abc"}
@@ -179,7 +179,7 @@ def transcribe_score(
         raise LowConfidenceError("No notes could be extracted from score.")
 
     # ── 6. Exports & Preview ─────────────────────────────────────────────────
-    musicxml = GeneralObjectExporter(score_measures).parse().decode("utf-8")
+    musicxml = export_musicxml(score_measures)
 
     with tempfile.NamedTemporaryFile(suffix=".mid", delete=False) as tmp:
         midi_path = Path(tmp.name)

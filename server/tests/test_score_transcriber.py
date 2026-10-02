@@ -29,6 +29,7 @@ def test_transcribe_score_midi(tmp_path):
     assert [n.solfa for n in result.notes] == ["d", "r", "m", "f"]
     assert result.overall_confidence == 1.0
     assert len(result.musicxml) > 0
+    assert "<part-name>Melody</part-name>" in result.musicxml and "Music21" not in result.musicxml
     assert len(result.midi_base64) > 0
     assert len(result.audio_preview_base64) > 0
 

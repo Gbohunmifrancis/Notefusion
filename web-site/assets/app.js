@@ -898,7 +898,7 @@
       view === "solfa" ? show($("r-solfa")) : hide($("r-solfa"));
       view === "parts" ? show($("r-parts")) : hide($("r-parts"));
       if (view === "parts" && current && current.result && current.result.parts && !$("sheet-parts").childElementCount) {
-        engraveInto($("sheet-parts"), current.result.partsMusicXml);
+        engraveInto($("sheet-parts"), current.result.partsMusicXml, true);
       }
     });
   });
@@ -954,21 +954,22 @@
     // The engraver takes a moment on a long sheet (and longer the first time, while it
     // loads): show the shape of a staff rather than an empty box.
     var skel = $("sheet-skel"); show(skel); $("sheet").classList.add("hidden");
-    try { osmd = engraveInto($("sheet"), xml); }
+    try { osmd = engraveInto($("sheet"), xml, false); }
     finally { hide(skel); $("sheet").classList.remove("hidden"); }
   }
 
-  function engraveInto(container, xml) {
+  /** Engrave ``xml`` into ``container``; part names only make sense with more than one part. */
+  function engraveInto(container, xml, partNames) {
     container.innerHTML = "";
     if (!xml) { container.textContent = "Nothing to engrave."; return null; }
     if (!window.opensheetmusicdisplay) {
       container.textContent = "Loading the engraver…";
-      ensureOsmd().then(function () { engraveInto(container, xml); }, function () { container.textContent = "The staff engraver could not be loaded. The Tonic Solfa tab still works; check your connection and reload for the staff."; });
+      ensureOsmd().then(function () { engraveInto(container, xml, partNames); }, function () { container.textContent = "The staff engraver could not be loaded. The Tonic Solfa tab still works; check your connection and reload for the staff."; });
       return null;
     }
     try {
       var display = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, {
-        backend: "svg", autoResize: true, drawTitle: false, drawPartNames: true, drawMeasureNumbers: true,
+        backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: !!partNames, drawMeasureNumbers: true,
         autoBeam: true, autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
       });
       display.load(xml).then(function () { display.render(); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
@@ -1028,7 +1029,7 @@
     var title = src ? (src.title || "Untitled") : "NoteFusion transcription";
     var subtitle = (src && src.artist ? src.artist + " · " : "") + result.key + " · " + result.tempo + " BPM · " + result.timeSignature;
     var engraver = new opensheetmusicdisplay.OpenSheetMusicDisplay(stage, {
-      backend: "canvas", autoResize: false, pageFormat: "A4_P", drawTitle: false, drawPartNames: false,
+      backend: "canvas", autoResize: false, pageFormat: "A4_P", drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: false,
       drawMeasureNumbers: true, autoBeam: true, pageBackgroundColor: "#FFFFFF"
     });
     return engraver.load(result.musicXml).then(function () {
