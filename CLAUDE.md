@@ -55,6 +55,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
   a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
   turns those rows into the admin dashboard's web funnel.
+- Billing: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions (one catalog
+  product per USD plan code, `Bachs__ProductMap__pro_*_usd`). Currency routes the charge
+  (`PaymentGatewayFactory.SelectForCurrency`); `BillingReadiness` logs at startup if a plan on sale
+  has no live provider or no Bachs product. See `docs/geo-billing-plan.md`.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

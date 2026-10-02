@@ -75,7 +75,7 @@ longer gates on one.
 | `Bachs__SecretKey` | **yes** | `sk_sandbox_…` or `sk_live_…`. Sent as `Authorization: Bearer`. |
 | `Bachs__BaseUrl` | **yes** | `https://sandbox-api.bachs.io` or `https://api.bachs.io`. There is no version header — going live is a key swap **and** a host swap. |
 | `Bachs__WebhookSecret` | **yes** | The endpoint's `whsec_…` **signing secret**, which is a different credential from the API key and differs between sandbox and live. Copy it from the webhook endpoint in the Bachs dashboard; it is not retrievable via the API. Never set the API key here — a wrong key makes genuine and forged deliveries indistinguishable. |
-| `Bachs__ProductMap__<plan_code>` | **only for recurring plans** | Our plan code → Bachs catalog product id. Recurrence comes from the product's `billing_cycle`, and that is immutable, so **monthly and yearly are two separate products**. Each product's catalog price must equal the plan price in `BillingSeeder`; a drift is caught at verification and blocks fulfilment rather than granting a subscription for the wrong money. The shipped USD tier (`pro_lifetime_v2`) is a one-off, so it needs no entry — leave the map empty unless USD subscriptions are reinstated. |
+| `Bachs__ProductMap__<plan_code>` | **yes, for both USD plans** | Our plan code → Bachs catalog product id: `Bachs__ProductMap__pro_monthly_usd` and `Bachs__ProductMap__pro_yearly_usd` (a bare `pro_monthly` / `pro_yearly` key is honoured as a fallback). Recurrence comes from the product's `billing_cycle`, and that is immutable, so **monthly and yearly are two separate products**. Each product's catalog price must equal the plan price in `BillingSeeder` ($9.99 and $79, billed in USD); a drift is caught at verification and blocks fulfilment rather than granting a subscription for the wrong money. The API logs `Billing is not ready` at startup for any USD plan with no product mapped. |
 | `Bachs__SupportedCurrencies` | optional | Comma-separated ISO-4217. Defaults to `USD`. |
 | `Bachs__WebhookToleranceSeconds` | optional | Replay window for the signature timestamp, two-sided. Defaults to `300`. |
 | `Bachs__CheckoutExpiryMinutes` | optional | 1–1440. Defaults to `60`, matching Bachs' own default. |
@@ -86,14 +86,25 @@ heroku config:set \
   Bachs__BaseUrl='https://api.bachs.io' \
   Bachs__WebhookSecret='whsec_xxx' \
   Bachs__SupportedCurrencies='USD' \
+  Bachs__ProductMap__pro_monthly_usd='prod_xxx' \
+  Bachs__ProductMap__pro_yearly_usd='prod_yyy' \
   --app <your-heroku-app>
-# Only if a recurring USD plan is reinstated — the lifetime tier needs no product:
-# heroku config:set Bachs__ProductMap__pro_monthly='prod_xxx' --app <your-heroku-app>
 ```
 
-Configuring Bachs does **not** by itself route checkouts through it — both live providers
-support USD, and the factory prefers `Billing__DefaultProvider`. To send USD traffic to
-Bachs, set that too (see the table at the end of this section):
+**The billing model.** Nigerian accounts subscribe in naira through Paystack
+(`Paystack__SupportedCurrencies='NGN'`); everyone else subscribes in dollars through Bachs
+(`Bachs__SupportedCurrencies='USD'`). Currency routes the charge, so the two lists must not
+overlap; `Billing__DefaultProvider='Bachs'` only breaks a tie if they ever do. On the EC2
+deploy these are written to `.env` by `.github/workflows/deploy.yml` from the GitHub secrets
+of the same names, and `docker-compose.prod.yml` defaults the base URLs and currency lists so a
+missing secret cannot silently turn a provider into a stub. Before the dollar tier goes on sale,
+confirm in the Bachs dashboard that the account can bill **USD cards on a schedule**
+(`USD_CARD` enabled): Bachs subscriptions are card-only, and the catalog products must be priced
+in USD at $9.99 and $79.
+
+Configuring Bachs does **not** by itself route checkouts through it if Paystack also lists USD —
+the factory prefers `Billing__DefaultProvider`. To send USD traffic to Bachs, set that too (see
+the table at the end of this section):
 
 ```bash
 heroku config:set Billing__DefaultProvider='Bachs' --app <your-heroku-app>

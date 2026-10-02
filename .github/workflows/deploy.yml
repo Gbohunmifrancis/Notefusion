@@ -135,12 +135,18 @@ jobs:
           BACHS__BASEURL: ${{ secrets.BACHS__BASEURL }}
           BACHS__SECRETKEY: ${{ secrets.BACHS__SECRETKEY }}
           BACHS__WEBHOOKSECRET: ${{ secrets.BACHS__WEBHOOKSECRET }}
+          BACHS__SUPPORTEDCURRENCIES: ${{ secrets.BACHS__SUPPORTEDCURRENCIES }}
+          # Catalog products for the USD subscriptions (plan codes pro_monthly_usd / pro_yearly_usd).
+          # The older PRO_MONTHLY / PRO_YEARLY secrets still work as a fallback for the same codes.
+          BACHS__PRODUCTMAP__PRO_MONTHLY_USD: ${{ secrets.BACHS__PRODUCTMAP__PRO_MONTHLY_USD }}
+          BACHS__PRODUCTMAP__PRO_YEARLY_USD: ${{ secrets.BACHS__PRODUCTMAP__PRO_YEARLY_USD }}
           BACHS__PRODUCTMAP__PRO_MONTHLY: ${{ secrets.BACHS__PRODUCTMAP__PRO_MONTHLY }}
           BACHS__PRODUCTMAP__PRO_YEARLY: ${{ secrets.BACHS__PRODUCTMAP__PRO_YEARLY }}
           # ── Paystack ──────────────────────────────────────────────────────────
           PAYSTACK__SECRETKEY: ${{ secrets.PAYSTACK__SECRETKEY }}
           PAYSTACK__BASEURL: ${{ secrets.PAYSTACK__BASEURL }}
           PAYSTACK__SUPPORTEDCURRENCIES: ${{ secrets.PAYSTACK__SUPPORTEDCURRENCIES }}
+          PAYSTACK__WEBHOOKSECRET: ${{ secrets.PAYSTACK__WEBHOOKSECRET }}
           # ── Flutterwave ───────────────────────────────────────────────────────
           FLUTTERWAVE__BASEURL: ${{ secrets.FLUTTERWAVE__BASEURL }}
           # ── Squad ─────────────────────────────────────────────────────────────
@@ -168,8 +174,9 @@ jobs:
             RESEND__APIKEY,RESEND__FROM,EMAIL__FROMADDRESS,EMAIL__ASSETBASEURL,EMAIL__USERESEND,
             GOOGLE__CLIENTID,
             BILLING__DEFAULTPROVIDER,BILLING__CHECKOUTCALLBACKURL,
-            BACHS__BASEURL,BACHS__SECRETKEY,BACHS__WEBHOOKSECRET,BACHS__PRODUCTMAP__PRO_MONTHLY,BACHS__PRODUCTMAP__PRO_YEARLY,
-            PAYSTACK__SECRETKEY,PAYSTACK__BASEURL,PAYSTACK__SUPPORTEDCURRENCIES,
+            BACHS__BASEURL,BACHS__SECRETKEY,BACHS__WEBHOOKSECRET,BACHS__SUPPORTEDCURRENCIES,
+            BACHS__PRODUCTMAP__PRO_MONTHLY_USD,BACHS__PRODUCTMAP__PRO_YEARLY_USD,BACHS__PRODUCTMAP__PRO_MONTHLY,BACHS__PRODUCTMAP__PRO_YEARLY,
+            PAYSTACK__SECRETKEY,PAYSTACK__BASEURL,PAYSTACK__SUPPORTEDCURRENCIES,PAYSTACK__WEBHOOKSECRET,
             FLUTTERWAVE__BASEURL,SQUAD__BASEURL,
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
             PUSH__USEEXPO,AUTH__RESETPASSWORDURL
@@ -218,9 +225,15 @@ jobs:
             Bachs__BaseUrl="${BACHS__BASEURL}"
             Bachs__SecretKey="${BACHS__SECRETKEY}"
             Bachs__WebhookSecret="${BACHS__WEBHOOKSECRET}"
+            Bachs__SupportedCurrencies="${BACHS__SUPPORTEDCURRENCIES:-USD}"
+            Bachs__ProductMap__pro_monthly_usd="${BACHS__PRODUCTMAP__PRO_MONTHLY_USD}"
+            Bachs__ProductMap__pro_yearly_usd="${BACHS__PRODUCTMAP__PRO_YEARLY_USD}"
             Bachs__ProductMap__pro_monthly="${BACHS__PRODUCTMAP__PRO_MONTHLY}"
             Bachs__ProductMap__pro_yearly="${BACHS__PRODUCTMAP__PRO_YEARLY}"
             Paystack__SecretKey="${PAYSTACK__SECRETKEY}"
+            Paystack__BaseUrl="${PAYSTACK__BASEURL:-https://api.paystack.co}"
+            Paystack__SupportedCurrencies="${PAYSTACK__SUPPORTEDCURRENCIES:-NGN}"
+            Paystack__WebhookSecret="${PAYSTACK__WEBHOOKSECRET}"
             Flutterwave__BaseUrl="${FLUTTERWAVE__BASEURL}"
             Squad__BaseUrl="${SQUAD__BASEURL}"
             R2__AccountId="${R2__ACCOUNTID}"

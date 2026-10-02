@@ -85,16 +85,25 @@ services:
       Email__AssetBaseUrl: ${Email__AssetBaseUrl}
       Email__UseResend: ${Email__UseResend}
       Google__ClientId: ${Google__ClientId}
-      Billing__DefaultProvider: ${Billing__DefaultProvider}
+      # Billing model: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions.
+      # Currency routes the charge — Paystack lists NGN, Bachs lists USD — and the default provider only
+      # breaks a tie. A provider without its base URL boots as a stub, so the URLs default here.
+      Billing__DefaultProvider: ${Billing__DefaultProvider:-Bachs}
       Billing__CheckoutCallbackUrl: ${Billing__CheckoutCallbackUrl}
-      Bachs__BaseUrl: ${Bachs__BaseUrl}
+      Bachs__BaseUrl: ${Bachs__BaseUrl:-https://api.bachs.io}
       Bachs__SecretKey: ${Bachs__SecretKey}
       Bachs__WebhookSecret: ${Bachs__WebhookSecret}
-      Bachs__SupportedCurrencies: ${Bachs__SupportedCurrencies}
-      Paystack__BaseUrl: ${Paystack__BaseUrl}
+      Bachs__SupportedCurrencies: ${Bachs__SupportedCurrencies:-USD}
+      # Bachs subscriptions are catalog products: one per USD plan code (monthly and yearly differ in
+      # billing_cycle, which is immutable per product). The bare codes are honoured as a fallback.
+      Bachs__ProductMap__pro_monthly_usd: ${Bachs__ProductMap__pro_monthly_usd:-}
+      Bachs__ProductMap__pro_yearly_usd: ${Bachs__ProductMap__pro_yearly_usd:-}
+      Bachs__ProductMap__pro_monthly: ${Bachs__ProductMap__pro_monthly:-}
+      Bachs__ProductMap__pro_yearly: ${Bachs__ProductMap__pro_yearly:-}
+      Paystack__BaseUrl: ${Paystack__BaseUrl:-https://api.paystack.co}
       Paystack__SecretKey: ${Paystack__SecretKey}
-      Paystack__WebhookSecret: ${Paystack__WebhookSecret}
-      Paystack__SupportedCurrencies: ${Paystack__SupportedCurrencies}
+      Paystack__WebhookSecret: ${Paystack__WebhookSecret:-}
+      Paystack__SupportedCurrencies: ${Paystack__SupportedCurrencies:-NGN}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 
