@@ -217,7 +217,12 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
     private void AddOptions(MultipartFormDataContent form, TranscribeOptions options, bool withMode)
     {
         if (withMode)
-            form.Add(new StringContent(options.Mode == TranscriptionMode.Poly ? "poly" : "melody"), "mode");
+            form.Add(new StringContent(options.Mode switch
+            {
+                TranscriptionMode.Poly => "poly",
+                TranscriptionMode.Choir => "choir",
+                _ => "melody",
+            }), "mode");
         if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
             form.Add(new StringContent(options.Key), "key");
         if (options.Tempo is not null)
@@ -333,7 +338,8 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
                     kv.Value.SolfaLines)),
             wire.Result.PartsMusicXml ?? "",
             wire.Result.BeatOriginSec,
-            wire.Result.BackingAudioBase64 ?? "");
+            wire.Result.BackingAudioBase64 ?? "",
+            wire.Result.PartsSource);
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source));
     }

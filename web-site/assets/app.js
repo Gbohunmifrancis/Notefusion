@@ -619,17 +619,18 @@
 
   function uploadKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "hum"; }
   function submitAudio(file, name) {
-    var song = uploadKind() === "song";
+    var kind = uploadKind(), song = kind === "song";
     var form = new FormData();
     form.append("audio", file, name);
-    form.append("mode", "melody");
+    // A choir in parts keeps every voice; anything else is one line.
+    form.append("mode", kind === "choir" ? "choir" : "melody");
     // A song with a band behind the voice is separated first; a hummed tune is not.
     form.append("separate", song ? "true" : "false");
     // The browser renders its own playback from the notes: the server's piano WAV (about
     // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
     form.append("audioPreview", "false");
     hide($("app-alert"));
-    track(guest ? "Preview started (audio)" : song ? "Song uploaded" : "Tune uploaded");
+    track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : "Tune uploaded");
     return request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
       .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || (song ? "separating" : "transcribing") }), guest ? "preview" : "upload"); })
       .catch(function (err) { explain(err); });
@@ -869,6 +870,7 @@
     hide($("r-parts"));
     var hasParts = isPro() && !!result.parts;
     hasParts ? show($("tab-parts")) : hide($("tab-parts"));
+    $("tab-parts").textContent = result.partsSource === "heard" ? "Parts as sung" : "Four parts";
     hasParts ? hide($("harmony")) : show($("harmony"));
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {

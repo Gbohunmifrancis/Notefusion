@@ -33,6 +33,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `harmony=true` on submit, or `POST /v1/harmonise` (notes + key) behind the Pro-only
   `POST /api/transcriptions/harmonise`; `PUT /api/library/{id}/parts` keeps them on a saved sheet.
   A transcription is the one voice that was heard; parts under it are an arrangement on request.
+  `mode="choir"` is the exception: a choir singing in parts is decoded with every voice kept,
+  `transcriber._assign_voices` splits each chord into S/A/T/B by pitch order, range and continuity,
+  the top voice becomes the tune and the four come back as `parts` with `parts_source="heard"`.
   `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
   pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
   the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.

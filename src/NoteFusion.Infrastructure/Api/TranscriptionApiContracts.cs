@@ -95,7 +95,8 @@ internal sealed record JobResultResponse(
     // without the explicit name the four-part score was dropped on the way in.
     [property: JsonPropertyName("partsMusicxml")] string PartsMusicXml = "",
     double BeatOriginSec = 0,
-    string BackingAudioBase64 = "");
+    string BackingAudioBase64 = "",
+    string? PartsSource = null);
 
 internal sealed record WirePart(IReadOnlyList<WireNoteEvent> Notes, IReadOnlyList<string> SolfaLines);
 

@@ -241,7 +241,7 @@ def test_link_route_accepts_a_youtube_url_and_caps_the_length(client):
         {"url": "https://example.com/x.mp3"},
         {"url": "https://youtu.be/dQw4w9WgXcQ", "priority": "urgent"},
         {"url": "https://youtu.be/dQw4w9WgXcQ", "max_seconds": "3"},
-        {"url": "https://youtu.be/dQw4w9WgXcQ", "mode": "choir"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "mode": "opera"},
     ],
 )
 def test_link_route_rejects_bad_input(client, data):

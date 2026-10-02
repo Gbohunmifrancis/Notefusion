@@ -78,6 +78,8 @@ class ResultDto(ApiModel):
     parts: dict[str, PartDto] | None = None
     # The four parts as one MusicXML score.
     parts_musicxml: str = ""
+    # "heard" (a choir recording, mode="choir") or "written" (arranged on request); null without parts.
+    parts_source: str | None = None
     # Audio time of beat 0, in seconds, so the notated melody can be played over the
     # backing in time: audio time of beat b is beat_origin_sec + b * 60 / tempo.
     beat_origin_sec: float = 0.0

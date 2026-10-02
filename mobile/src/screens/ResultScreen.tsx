@@ -1491,7 +1491,7 @@ export function ResultScreen({ route, navigation }: Props) {
       <View style={styles.voicesBlock}>
         <View style={styles.exportHeaderRow}>
           <Ionicons name="people-outline" size={16} color={colors.textMuted} />
-          <Text style={styles.exportTitle}>Four-part harmony</Text>
+          <Text style={styles.exportTitle}>{result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}</Text>
           {!isPro ? (
             <View style={styles.proTag}>
               <Text style={styles.proTagText}>PRO</Text>

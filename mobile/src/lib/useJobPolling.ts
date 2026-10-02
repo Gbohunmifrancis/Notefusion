@@ -234,7 +234,7 @@ export function useJobPolling() {
 
   /** A song behind a link. Same lifecycle as `start`; the worker reports its stages. */
   const startLink = useCallback(
-    async (url: string, opts: { mode: "melody" | "poly"; key?: string; tempo?: number }) => {
+    async (url: string, opts: { mode: "melody" | "poly" | "choir"; key?: string; tempo?: number }) => {
       stopPolling();
       setState({
         status: "pending",
@@ -259,7 +259,7 @@ export function useJobPolling() {
     async (
       fileUri: string,
       fileName: string,
-      opts: { mode: "melody" | "poly"; key?: string; tempo?: number; separate?: boolean },
+      opts: { mode: "melody" | "poly" | "choir"; key?: string; tempo?: number; separate?: boolean },
     ) => {
       stopPolling();
       setState({

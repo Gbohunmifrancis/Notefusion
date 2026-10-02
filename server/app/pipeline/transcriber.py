@@ -1275,6 +1275,9 @@ class TranscriptionResult:
     # Four-part harmony (``app.pipeline.harmony``): part name -> {"notes": [...], "solfa_lines": [...]}.
     parts: dict | None = None
     parts_musicxml: str = ""
+    # "heard" when the parts were transcribed from a choir recording (mode="choir"), "written"
+    # when they were arranged under the tune on request; None without parts.
+    parts_source: str | None = None
     # Where beat 0 falls in the source audio, in seconds. With ``backing_audio_base64``
     # it is what lets a client play the notated melody over the song's own backing in
     # time: audio time of beat b is ``beat_origin_sec + b * 60 / tempo``.
@@ -4071,11 +4074,231 @@ class PolyStrategy(DecodingStrategy):
         return True
 
 
+class ChoirStrategy(DecodingStrategy):
+    """A whole choir singing in parts.
+
+    Poly's thresholds (every simultaneous note is kept, nothing is flattened to one line)
+    with melody's minimum note length, since sung notes are not arpeggios. The notes are
+    then handed to soprano, alto, tenor and bass by ``_assign_voices``.
+    """
+    def __init__(self) -> None:
+        super().__init__(
+            name="choir",
+            onset_thresh=0.45,
+            frame_thresh=0.30,
+            min_note_ms=100,
+            min_amp_base=MIN_AMPLITUDE_POLY,
+            merge_gap=MERGE_GAP_POLY,
+            contour_first=False,
+            resolve_overlaps=False,
+        )
+
+    def melodia_trick(self) -> bool:
+        return True
+
+
 def get_decoding_strategy(mode: str) -> DecodingStrategy:
     """Factory returning the named decoding strategy for a transcription mode."""
     if mode == "melody":
         return MelodyStrategy()
+    if mode == "choir":
+        return ChoirStrategy()
     return PolyStrategy()
+
+
+# ── Choir voices ──────────────────────────────────────────────────────────────
+# Comfortable written ranges, a little wider than harmony.py's voicing ranges because these
+# are read off a recording rather than chosen: a soprano line that touches A5 is still soprano.
+CHOIR_RANGES: dict[str, tuple[int, int]] = {
+    "soprano": (60, 81),  # C4 – A5
+    "alto": (53, 74),     # F3 – D5
+    "tenor": (48, 67),    # C3 – G4
+    "bass": (40, 60),     # E2 – C4
+}
+# Onsets this close together are one chord: a choir never lands a chord to the frame, and
+# Basic Pitch's onsets for one chord spread over a few tens of milliseconds.
+CHOIR_CHORD_WINDOW_SEC = 0.09
+# Cost weights for choosing which voices sing a chord: being outside a voice's range costs
+# this per semitone, and a leap beyond a whole tone from the voice's previous note costs
+# this per semitone — voices move by step far more than they jump.
+CHOIR_RANGE_WEIGHT = 2.0
+CHOIR_LEAP_WEIGHT = 0.5
+# Tie-breakers, small enough never to outweigh a range or a leap: a note sits better in the
+# voice whose range centres nearest it (C3 is a bass note before it is a tenor note), a voice
+# that is already singing continues before a silent one starts, and a voice whose previous
+# note is still sounding is not the one that just moved.
+CHOIR_CENTRE_WEIGHT = 0.05
+CHOIR_NEW_VOICE_COST = 0.5
+CHOIR_BUSY_COST = 3.0
+# A voice counts as busy when its previous note still has this much to run: Basic Pitch
+# often starts a voice's next note a little before it ends the previous one, and that is
+# not a held note.
+CHOIR_BUSY_OVERLAP_SEC = 0.3
+# Leaving a note out of the texture costs this: cheaper than forcing a stray fragment a
+# fifth outside every voice's range, dearer than any in-range leap.
+CHOIR_DROP_COST = 6.0
+# A note an octave, a twelfth or two octaves above a much louder note of the same chord is
+# that note's harmonic, which Basic Pitch reports on sung vowels; a real octave doubling
+# between two voices is about as loud as what it doubles.
+CHOIR_HARMONIC_INTERVALS = (12, 19, 24)
+CHOIR_HARMONIC_AMP_RATIO = 0.6
+
+
+def _assign_voices(events: list[Event]) -> dict[str, list[Event]]:
+    """Split a choir's simultaneous notes into soprano, alto, tenor and bass lines.
+
+    Chorale texture is assumed: notes whose onsets fall within ``CHOIR_CHORD_WINDOW_SEC``
+    form one chord, and a chord's notes go to voices in pitch order (the highest note to the
+    highest voice that sings). Which voices sing a chord of fewer than four notes is the
+    cheapest combination by range fit and by continuity with each voice's previous note, so a
+    moving alto under a held soprano stays the alto. A chord of more than four notes keeps its
+    four loudest. Every voice's note is trimmed where its next one starts, so each part is one
+    line and engraves as one.
+    """
+    from itertools import combinations
+
+    names = list(CHOIR_RANGES)
+    voices: dict[str, list[Event]] = {n: [] for n in names}
+    last: dict[str, Event | None] = {n: None for n in names}
+
+    chords: list[list[Event]] = []
+    for e in sorted(events, key=lambda e: (e.start, -e.pitch)):
+        if chords and e.start - chords[-1][0].start <= CHOIR_CHORD_WINDOW_SEC:
+            chords[-1].append(e)
+        else:
+            chords.append([e])
+
+    def note_cost(idx: int, e: Event) -> float:
+        lo, hi = CHOIR_RANGES[names[idx]]
+        cost = CHOIR_RANGE_WEIGHT * (max(0, lo - e.pitch) + max(0, e.pitch - hi))
+        cost += CHOIR_CENTRE_WEIGHT * abs(e.pitch - (lo + hi) / 2)
+        prev = last[names[idx]]
+        if prev is None:
+            return cost + CHOIR_NEW_VOICE_COST
+        cost += CHOIR_LEAP_WEIGHT * max(0, abs(e.pitch - prev.pitch) - 2)
+        if prev.end > e.start + CHOIR_BUSY_OVERLAP_SEC:
+            cost += CHOIR_BUSY_COST
+        return cost
+
+    for chord in chords:
+        chord = _drop_harmonics(chord)
+        chord = sorted(chord, key=lambda e: e.amp, reverse=True)[:len(names)]
+        chord.sort(key=lambda e: e.pitch, reverse=True)
+        best: tuple[float, tuple[Event, ...], tuple[int, ...]] | None = None
+        for size in range(len(chord), 0, -1):
+            dropped = (len(chord) - size) * CHOIR_DROP_COST
+            for sung in combinations(chord, size):
+                for combo in combinations(range(len(names)), size):
+                    cost = dropped + sum(note_cost(idx, e) for idx, e in zip(combo, sung))
+                    if best is None or cost < best[0]:
+                        best = (cost, sung, combo)
+        assert best is not None
+        for idx, e in zip(best[2], best[1]):
+            voices[names[idx]].append(e)
+            last[names[idx]] = e
+
+    for name, line in voices.items():
+        trimmed: list[Event] = []
+        for e in line:
+            if trimmed and e.start < trimmed[-1].end:
+                trimmed[-1] = replace(trimmed[-1], end=e.start)
+            trimmed.append(e)
+        voices[name] = trimmed
+    return voices
+
+
+def _drop_harmonics(chord: list[Event]) -> list[Event]:
+    """Remove repeats and faint upper harmonics from one chord.
+
+    Basic Pitch can report one sung pitch several times within a chord's onset window; one
+    singer is one note, so only the loudest copy of a pitch is kept.
+    """
+    loudest: dict[int, Event] = {}
+    for e in chord:
+        if e.pitch not in loudest or e.amp > loudest[e.pitch].amp:
+            loudest[e.pitch] = e
+    chord = list(loudest.values())
+    kept: list[Event] = []
+    for e in chord:
+        ghost = any(
+            (e.pitch - f.pitch) in CHOIR_HARMONIC_INTERVALS and e.amp < CHOIR_HARMONIC_AMP_RATIO * f.amp
+            for f in chord if f is not e
+        )
+        if not ghost:
+            kept.append(e)
+    return kept
+
+
+def _choir_parts(
+    voices: dict[str, list[Event]],
+    melody_voice: str,
+    melody_notes: list[TranscribedNote],
+    bpm: float,
+    beat_origin: float,
+    detected,
+    doh_pc: int,
+    ref_doh: int,
+    time_signature: str,
+) -> tuple[dict | None, str]:
+    """The heard parts in the result's ``parts`` shape, on the melody's beat grid.
+
+    The melody voice reuses the notes step 10 already labelled; every other voice is
+    quantised the way step 8 quantises the tune and labelled against the same doh, so the
+    four solfa lines agree. ``(None, "")`` when only one voice was heard.
+    """
+    from dataclasses import asdict
+
+    from music21 import note as m21note, stream
+
+    from app.pipeline import harmony
+
+    sec_to_beats = bpm / 60.0
+    parts_notes: dict[str, list[TranscribedNote]] = {}
+    for name in harmony.PART_NAMES:
+        if name == melody_voice:
+            parts_notes[name] = list(melody_notes)
+            continue
+        line = sorted(voices.get(name) or [], key=lambda e: e.start)
+        if not line:
+            continue
+        s = stream.Stream()
+        for evt in line:
+            n = m21note.Note(evt.pitch)
+            n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
+            s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
+        s.quantize(settings.quantize_divisors, processOffsets=True, processDurations=True, inPlace=True)
+        quantised = sorted(s.notes, key=lambda n: n.offset)
+        flags = [
+            solfa.resolve_ascending(flag, settings.chromatic_spelling)
+            for flag in solfa.ascending_flags([n.pitch.midi for n in quantised])
+        ]
+        out: list[TranscribedNote] = []
+        for n, evt, flag in zip(quantised, line, flags):
+            syl, mark, degree = solfa.syllable(n.pitch.midi, doh_pc, ref_doh, flag)
+            out.append(TranscribedNote(
+                n.pitch.midi, float(n.offset), float(n.duration.quarterLength),
+                degree, syl, mark, round(float(evt.amp), 3)))
+        parts_notes[name] = out
+    if len(parts_notes) < 2:
+        return None, ""
+
+    header = solfa.doh_header(doh_pc)
+    parts = {
+        name: {
+            "notes": [asdict(n) for n in notes],
+            "solfa_lines": solfa_render.render_lines(
+                notes, f"{header} · {name.capitalize()}",
+                time_signature=time_signature, divisions_per_beat=settings.quantize_divisors[0]),
+        }
+        for name, notes in parts_notes.items()
+    }
+    try:
+        parts_musicxml = harmony.build_musicxml(
+            parts_notes, detected.tonic.pitchClass, detected.mode, time_signature, round(bpm))
+    except Exception as exc:  # noqa: BLE001 - the parts are the job; the four-part score is an extra
+        print(f"[notefusion] choir score skipped: {exc!r}", flush=True)
+        parts_musicxml = ""
+    return parts, parts_musicxml
 
 
 def _transcribe_wav(
@@ -4159,6 +4382,8 @@ def _transcribe_wav(
     # does not reproduce.
     contour_events: list[Event] = list(fast_events)
     melody_floor_midi: float | None = None
+    choir_voices: dict[str, list[Event]] | None = None
+    melody_voice = "soprano"
     if not contour_events and settings.vocal_engine and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_vocal(y, sr, note_events, post)
     if not contour_events and settings.contour_first and strategy.contour_first:
@@ -4226,10 +4451,13 @@ def _transcribe_wav(
         # After the amplitude floor so pyin is not spent on events about to be dropped,
         # and before merging so an octave correction can let two fragments of one note
         # fuse on the existing exact-pitch test.
+        # Not for a choir: pyin follows one pitch, and on a chord it "corrects" every voice
+        # toward whichever one is loudest.
         pyin_contour = None
-        if (settings.pyin_refine or settings.contour_gap_merge) and events:
+        single_line = mode != "choir"
+        if (settings.pyin_refine or settings.contour_gap_merge) and events and single_line:
             pyin_contour = _pyin_contour(y)
-        if settings.pyin_refine and events:
+        if settings.pyin_refine and events and single_line:
             events = _refine_pitches(events, y, contour=pyin_contour)
 
         # ── 4. Onset merging ──────────────────────────────────────────────────
@@ -4243,6 +4471,14 @@ def _transcribe_wav(
         # ── 5. Polyphonic deduplication ───────────────────────────────────────
         # Remove exact pitch + onset duplicates that survive merging.
         events = _dedup_simultaneous(events)
+
+        # ── 5b. Choir: the chords become four lines ───────────────────────────
+        # The rest of the pipeline (beat grid, key, solfa, engraving) then runs on the top
+        # voice as the tune; the other voices rejoin it as ``parts`` in step 10b.
+        if mode == "choir" and events:
+            choir_voices = _assign_voices(events)
+            melody_voice = next((n for n in CHOIR_RANGES if choir_voices[n]), "soprano")
+            events = choir_voices[melody_voice]
 
         # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────
         if strategy.resolve_overlaps and events:
@@ -4282,13 +4518,19 @@ def _transcribe_wav(
         except Exception as exc:  # noqa: BLE001 - fall back to the vocal rather than fail the job
             print(f"[notefusion] tempo source unreadable ({exc!r}); tracking the beat on the vocal", flush=True)
             rhythm_y = y
-    bpm, beat_times = _estimate_tempo_and_beats(rhythm_y, events, tempo_override, post=post, sr=sr)
-    beat_origin = _beat_origin(beat_times, events[0].start, bpm) if settings.beat_align else 0.0
+    # A choir's beat is in every voice, not only the tune's: the inner parts fill the beats
+    # the soprano holds through.
+    rhythm_events = (
+        sorted((e for line in choir_voices.values() for e in line), key=lambda e: e.start)
+        if choir_voices else events
+    )
+    bpm, beat_times = _estimate_tempo_and_beats(rhythm_y, rhythm_events, tempo_override, post=post, sr=sr)
+    beat_origin = _beat_origin(beat_times, rhythm_events[0].start, bpm) if settings.beat_align else 0.0
     if settings.grid_refine:
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
         # BPM alone and refines only the phase — which the override says nothing about.
         bpm, beat_origin = _refine_grid(
-            np.array([e.start for e in events]),
+            np.array([e.start for e in rhythm_events]),
             bpm,
             beat_origin,
             settings.quantize_divisors,
@@ -4492,11 +4734,16 @@ def _transcribe_wav(
     # Rule-based SATB under the melody as notated; see ``app.pipeline.harmony``.  Pure
     # symbolic work on the note list, so it adds milliseconds and can never fail the job.
     # Only when asked: the parts are an arrangement, not a transcription of the recording.
-    parts, parts_musicxml = (
-        _harmonise_notes(notes, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, round(bpm))
-        if harmony
-        else (None, "")
-    )
+    if choir_voices is not None:
+        parts, parts_musicxml = _choir_parts(
+            choir_voices, melody_voice, notes, bpm, beat_origin, detected, doh_pc, ref_doh, time_signature)
+        parts_source = "heard" if parts else None
+    elif harmony:
+        parts, parts_musicxml = _harmonise_notes(
+            notes, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, round(bpm))
+        parts_source = "written" if parts else None
+    else:
+        parts, parts_musicxml, parts_source = None, "", None
 
     # ── 11. Normalise key name for C#'s KeyParser ─────────────────────────────
     # music21 returns names like "B- major" or "a minor"; C#'s KeyParser expects
@@ -4564,6 +4811,7 @@ def _transcribe_wav(
         chromatic_spelling=settings.chromatic_spelling,
         parts=parts,
         parts_musicxml=parts_musicxml,
+        parts_source=parts_source,
     )
 
 
