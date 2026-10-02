@@ -158,7 +158,12 @@ public sealed record TranscriptionResultDto(
     /// </summary>
     double BeatOriginSec = 0,
     /// <summary>Separated jobs only: the instrumental (mix minus the isolated vocal) as a small mono MP3.</summary>
-    string BackingAudioBase64 = "");
+    string BackingAudioBase64 = "",
+    /// <summary>
+    /// "heard" when <see cref="Parts"/> were transcribed from a choir recording, "written" when they were
+    /// arranged under the tune on request; null without parts.
+    /// </summary>
+    string? PartsSource = null);
 
 /// <summary>
 /// Polling envelope for a transcription job.

@@ -150,7 +150,7 @@ export const appApi = {
 };
 
 export interface SubmitOptions {
-  mode: "melody" | "poly";
+  mode: "melody" | "poly" | "choir";
   key?: string;
   tempo?: number;
   timeSignature?: string;

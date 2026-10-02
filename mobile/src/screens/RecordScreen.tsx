@@ -51,7 +51,10 @@ import type { RootStackParams, TabParams } from "../navigation/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Mode = "melody" | "poly";
+type Mode = "melody" | "poly" | "choir";
+
+/** "Choir" is a whole choir singing in parts: each part comes back as it was sung. */
+const MODE_LABEL: Record<Mode, string> = { melody: "Melody", poly: "Polyphonic", choir: "Choir" };
 type Phase = "ready" | "recording" | "uploading";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -731,7 +734,7 @@ export function RecordScreen() {
 
           {/* Mode toggle */}
           <View style={styles.modeToggle}>
-            {(["melody", "poly"] as Mode[]).map((m) => {
+            {(["melody", "poly", "choir"] as Mode[]).map((m) => {
               const active = mode === m;
               return active ? (
                 <LinearGradient
@@ -742,7 +745,7 @@ export function RecordScreen() {
                   style={[styles.modeSegment, styles.modeSegmentActive]}
                 >
                   <Text style={styles.modeTextActive}>
-                    {m === "melody" ? "Melody" : "Polyphonic"}
+                    {MODE_LABEL[m]}
                   </Text>
                 </LinearGradient>
               ) : (
@@ -757,10 +760,10 @@ export function RecordScreen() {
                   // lock is finally visible.
                   disabled={phase !== "ready"}
                   radius={radii.pill}
-                  accessibilityLabel={m === "melody" ? "Melody mode" : "Polyphonic mode"}
+                  accessibilityLabel={`${MODE_LABEL[m]} mode`}
                 >
                   <Text style={styles.modeTextInactive}>
-                    {m === "melody" ? "Melody" : "Polyphonic"}
+                    {MODE_LABEL[m]}
                   </Text>
                 </Touchable>
               );

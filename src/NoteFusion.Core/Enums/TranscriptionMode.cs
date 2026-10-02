@@ -16,5 +16,11 @@ public enum TranscriptionMode
     /// the form field "mode=poly" because Enum.TryParse could not match "poly" to "Polyphonic".
     /// Renamed to "Poly" so the binder resolves the value correctly.
     /// </summary>
-    Poly = 1
+    Poly = 1,
+
+    /// <summary>
+    /// A whole choir singing in parts (wire value: "choir"). The top voice comes back as the tune and
+    /// soprano, alto, tenor and bass as the parts that were sung (<c>PartsSource = "heard"</c>).
+    /// </summary>
+    Choir = 2
 }

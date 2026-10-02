@@ -95,8 +95,8 @@ async def submit_transcription(
     audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
     harmony: bool = Form(False, description="Also write alto, tenor and bass under the tune (off: one voice is transcribed as one voice)"),
 ) -> SubmitResponse:
-    if mode not in ("melody", "poly"):
-        raise HTTPException(422, "mode must be 'melody' or 'poly'")
+    if mode not in ("melody", "poly", "choir"):
+        raise HTTPException(422, "mode must be 'melody', 'poly' or 'choir'")
     priority = _priority(priority)
     if max_seconds is not None and not 1.0 <= max_seconds <= settings.max_clip_seconds:
         raise HTTPException(422, f"max_seconds must be between 1 and {settings.max_clip_seconds:.0f}.")
@@ -247,8 +247,8 @@ async def submit_link_transcription(
     """
     from app.ingest.links import provider_of
 
-    if mode not in ("melody", "poly"):
-        raise HTTPException(422, "mode must be 'melody' or 'poly'")
+    if mode not in ("melody", "poly", "choir"):
+        raise HTTPException(422, "mode must be 'melody', 'poly' or 'choir'")
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
     priority = _priority(priority)

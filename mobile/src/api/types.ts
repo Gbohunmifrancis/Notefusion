@@ -120,6 +120,8 @@ export interface TranscriptionResult {
   parts?: Record<"soprano" | "alto" | "tenor" | "bass", TranscriptionPart> | null;
   /** The four parts as one MusicXML score. Pro only. */
   partsMusicXml?: string;
+  /** "heard" when the parts were transcribed from a choir recording, "written" when arranged on request. */
+  partsSource?: "heard" | "written" | null;
   /** The words under the solfa; empty until the user types them. Saved items only. */
   lyrics?: string;
   /** The public link's token when the saved sheet is shared; null or absent otherwise. */
