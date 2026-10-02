@@ -31,6 +31,9 @@ public interface IApplicationDbContext
     /// <summary>Anonymous try-it-free transcriptions from the website; the web funnel's top.</summary>
     DbSet<PreviewJob> PreviewJobs { get; }
 
+    /// <summary>Page views, clicks and app actions from the website; the dashboard's web traffic.</summary>
+    DbSet<WebEvent> WebEvents { get; }
+
     // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }

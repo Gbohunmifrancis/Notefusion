@@ -18,6 +18,7 @@ import {
   Eye,
   Crown,
   Bookmark,
+  MousePointerClick,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -32,7 +33,7 @@ import {
 } from "recharts";
 
 import { getOverview } from "@/api/endpoints";
-import type { AnalyticsOverview, DailyCount } from "@/api/types";
+import type { AnalyticsOverview, CategoryCount, DailyCount } from "@/api/types";
 import { DailyChart } from "@/components/DailyChart";
 import { DonutCard } from "@/components/DonutCard";
 import type { DonutSlice } from "@/components/DonutCard";
@@ -357,6 +358,110 @@ function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) 
             Shares of the window&apos;s previews. &ldquo;Saved&rdquo; and &ldquo;Pro&rdquo; count the window&apos;s web sign-ups, who may have previewed earlier.
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** One ranked list on the traffic panel: label, count and share of the list's total. */
+function RankedList({ title, rows, empty }: { title: string; rows: CategoryCount[]; empty: string }) {
+  const total = rows.reduce((sum, row) => sum + row.count, 0);
+  return (
+    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
+      <h4 className="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</h4>
+      {rows.length === 0 ? (
+        <p className="py-6 text-center text-xs text-slate-400">{empty}</p>
+      ) : (
+        <ul className="space-y-2">
+          {rows.map((row) => {
+            const share = total > 0 ? Math.round((row.count / total) * 100) : 0;
+            return (
+              <li key={row.label} className="text-xs" title={row.label}>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="truncate font-medium text-slate-700 dark:text-slate-200">{row.label}</span>
+                  <span className="shrink-0 font-semibold tabular-nums text-slate-900 dark:text-white">
+                    {formatCount(row.count)}
+                    <span className="ml-2 font-normal text-slate-400">{share}%</span>
+                  </span>
+                </div>
+                <div className="mt-1 h-1 rounded-full bg-slate-100 dark:bg-zinc-800">
+                  <div className="h-full rounded-full bg-blue-600/80" style={{ width: `${share}%` }} />
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+/**
+ * What the website's own tracker saw: visits, visitors, clicks, where they came from, and what
+ * signed-in accounts did in the web app. Every figure is a count over events the browser posted,
+ * so a quiet window is zeros, not an outage.
+ */
+function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"] }) {
+  const chart = useChartPalette();
+  const now = Date.now();
+  const viewChange = changeAgainst(traffic.pageviews, traffic.pageviewsPrevious);
+  const visitorChange = changeAgainst(traffic.visitors, traffic.visitorsPrevious);
+  const rate = (num: number, den: number) => (den > 0 ? formatPercent(num / den, 0) : UNKNOWN);
+
+  const tiles: StatItem[] = [
+    { title: "Page views", value: formatCount(traffic.pageviews), change: viewChange?.label ?? null, description: viewChange ? "vs. previous period" : null, icon: Eye, hint: "Pages viewed on the website and in the web app in this window" },
+    { title: "Visitors", value: formatCount(traffic.visitors), change: visitorChange?.label ?? null, description: visitorChange ? "vs. previous period" : null, icon: Globe, hint: `Distinct browsers · ${formatCount(traffic.sessions)} sessions` },
+    { title: "Clicks", value: formatCount(traffic.clicks), icon: MousePointerClick, hint: "Links and buttons clicked anywhere on the site" },
+    { title: "Sign-up clicks", value: formatCount(traffic.signupClicks), description: traffic.visitors > 0 ? `${rate(traffic.signupClicks, traffic.visitors)} of visitors` : null, icon: UserRoundPlus, hint: "Clicks on anything that leads to the sign-up form" },
+    { title: "App actions", value: formatCount(traffic.actions), icon: Zap, hint: "Named actions in the web app: previews, uploads, recordings, saves, shares, checkouts" },
+    { title: "Active web accounts", value: formatCount(traffic.activeWebUsers), icon: UserRound, hint: "Signed-in accounts that took at least one action in the web app" },
+  ];
+
+  return (
+    <div className="space-y-5">
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        Website traffic
+      </h3>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {tiles.map((stat) => (
+          <StatCard key={stat.title} stat={stat} />
+        ))}
+      </div>
+      <div className="grid gap-6 lg:grid-cols-12">
+        <div className="lg:col-span-7 xl:col-span-8">
+          <DailyChart title="Page views" info="Pages viewed per day, website and web app together" data={traffic.pageviewsPerDay} unit="views" color={chart.series} />
+        </div>
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:col-span-5 xl:col-span-4">
+          <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">What web users do</h4>
+          {traffic.recentActions.length === 0 ? (
+            <p className="py-10 text-center text-xs text-slate-400">No signed-in actions in this window yet</p>
+          ) : (
+            <ul className="divide-y divide-slate-100 dark:divide-zinc-800">
+              {traffic.recentActions.map((item, i) => (
+                <li key={`${item.userId}-${item.occurredAtUtc}-${i}`} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] text-slate-900 dark:text-slate-100">
+                      <span className="font-medium">{item.action}</span>
+                      <span className="text-slate-400"> · </span>
+                      <Link href={`/users/${item.userId}`} className="text-slate-600 hover:underline dark:text-slate-300">{item.fullName}</Link>
+                    </p>
+                    <p className="truncate text-[11px] text-slate-400">{item.email} · {item.path}</p>
+                  </div>
+                  <time className="shrink-0 text-[11px] tabular-nums text-slate-400" dateTime={item.occurredAtUtc}>
+                    {formatRelative(item.occurredAtUtc, now)}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+        <RankedList title="Pages" rows={traffic.topPages} empty="No page views yet" />
+        <RankedList title="Came from" rows={traffic.topReferrers} empty="No referrers yet" />
+        <RankedList title="Most clicked" rows={traffic.topClicks} empty="No clicks yet" />
+        <RankedList title="Actions" rows={traffic.topActions} empty="No actions yet" />
+        <RankedList title="Devices" rows={traffic.devices} empty="No page views yet" />
       </div>
     </div>
   );
@@ -721,6 +826,11 @@ export function OverviewView() {
                 <div className="lg:col-span-5 xl:col-span-4">
                   <RecentActivityPanel items={data.recentActivity} />
                 </div>
+              </div>
+
+              {/* WEBSITE TRAFFIC: visits, clicks, referrers, what web users do */}
+              <div className="mt-8 border-t border-slate-200 pt-6 dark:border-slate-800">
+                <WebTrafficPanel traffic={data.webTraffic} />
               </div>
 
               {/* WEB FUNNEL: previews → sign-ups → saves → shares → Pro */}

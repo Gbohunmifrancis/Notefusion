@@ -26,6 +26,7 @@
    */
   function startCheckout(plan, button) {
     var token = accessToken();
+    try { if (window.nfTrack) window.nfTrack(token ? "Checkout started" : "Chose a plan signed out"); } catch (e) { /* ignore */ }
     var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id);
     if (!token) { window.location.href = fallback; return; }
     button.disabled = true;

@@ -29,6 +29,8 @@
     try { return JSON.parse(localStorage.getItem(TOKENS_KEY) || "null"); } catch (e) { return null; }
   }
   function saveTokens(t) { try { localStorage.setItem(TOKENS_KEY, JSON.stringify(t)); } catch (e) { /* private mode */ } }
+  /** First-party analytics (assets/track.js): the action shows on the admin dashboard against this account. */
+  function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
   function clearTokens() { try { localStorage.removeItem(TOKENS_KEY); } catch (e) { /* ignore */ } }
 
   function ApiError(status, body) {
@@ -260,7 +262,7 @@
     if (!res || !res.credential) return;
     hide($("auth-alert"));
     request("/api/auth/google", { method: "POST", anonymous: true, body: { idToken: res.credential } })
-      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); return boot(); })
+      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); track("Signed in with Google"); return boot(); })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Google sign-in did not go through."); sfx.play("error"); });
   }
   function initGoogle() {
@@ -284,6 +286,7 @@
     request("/api/auth/login", { method: "POST", anonymous: true, body: { email: $("login-email").value.trim(), password: $("login-password").value } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
+        track("Signed in");
         return boot();
       })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not sign in."); })
@@ -298,6 +301,7 @@
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         pendingEmail = (res && res.email) || $("reg-email").value.trim();
+        track("Created account");
         $("verify-email-label").textContent = pendingEmail;
         showAuthForm("verify");
         alertIn($("auth-alert"), "success", "Almost there — enter the code we just emailed you.");
@@ -318,6 +322,7 @@
     request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.trim() } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
+        track("Verified email");
         showAuthForm("login");
         return boot();
       })
@@ -486,7 +491,7 @@
   });
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
-  function openUpgrade() { loadPlans($("upgrade-panel"), $("plans-standalone")); }
+  function openUpgrade() { track("Opened plans"); loadPlans($("upgrade-panel"), $("plans-standalone")); }
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
   function autoCheckout(planId) {
     request("/api/billing/plans").then(function (plans) {
@@ -570,6 +575,7 @@
     var url = $("link-url").value.trim();
     if (!url) return;
     $("link-submit").disabled = true; hide($("app-alert"));
+    track(guest ? "Preview started (link)" : "Song link transcribed");
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: { url: url, mode: "melody", audioPreview: false } })
       .then(function (job) { startJob(job, guest ? "preview" : "link"); })
       .catch(function (err) { explain(err); })
@@ -588,6 +594,7 @@
     // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
     form.append("audioPreview", "false");
     hide($("app-alert"));
+    track(guest ? "Preview started (audio)" : song ? "Song uploaded" : "Tune uploaded");
     return request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
       .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || (song ? "separating" : "transcribing") }), guest ? "preview" : "upload"); })
       .catch(function (err) { explain(err); });
@@ -648,6 +655,7 @@
   function startRecording() {
     if (!navigator.mediaDevices || !window.MediaRecorder) { $("rec-status").textContent = "This browser cannot record; upload a file instead."; return; }
     rec.discard = false;
+    track("Recording started");
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
       rec.stream = stream; rec.chunks = [];
       var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
@@ -699,6 +707,7 @@
     var blob = rec.blob, name = rec.name;
     document.querySelector('input[name="upload-kind"][value="hum"]').checked = true;
     recClose();
+    track("Recording sent");
     submitAudio(blob, name);
   });
 
@@ -765,6 +774,7 @@
         current.result = job.result;
         hide($("progress"));
         sfx.play("ready");
+        track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
         showResult(job.result);
         if (!guest) loadAccount();
         return;
@@ -1021,6 +1031,7 @@
     var form = new FormData();
     form.append("audio", blob, name);
     form.append("target", JSON.stringify({ notes: notes.map(function (n) { return { pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats }; }), tempoBpm: tempo, leadInSec: leadIn }));
+    track("Sang along");
     request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
       $("sing-status").textContent = "";
       $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "#B45309" : "var(--danger)";
@@ -1063,6 +1074,7 @@
     var req = current.savedId
       ? request("/api/library/" + current.savedId + "/transpose", { method: "POST", body: { semitones: n } })
       : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null } });
+    track("Transposed");
     req.then(function (moved) {
       current.semitones = 0;
       var next = Object.assign({}, r, {
@@ -1101,6 +1113,7 @@
       lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null
     } }).then(function (saved) {
       sfx.play("saved");
+      track("Saved sheet");
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
       libraryCache = null;
       renderSave();
@@ -1114,7 +1127,7 @@
     if (!current || !current.savedId) return;
     var btn = $("share"); btn.disabled = true;
     request("/api/library/" + current.savedId + "/share", { method: "POST" })
-      .then(function (link) { current.shareToken = link.token; renderShare(); $("share-url").select(); })
+      .then(function (link) { current.shareToken = link.token; renderShare(); $("share-url").select(); track("Shared sheet"); })
       .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   });
@@ -1143,6 +1156,7 @@
   });
 
   $("harmony-add").addEventListener("click", function () {
+    track("Asked for harmony");
     if (guest) { openAuth("register"); return; }
     if (!isPro()) { openUpgrade(); return; }
     show($("tab-parts"));
@@ -1258,6 +1272,7 @@
   }));
   $("dl-pdf").addEventListener("click", gated(function (r) {
     var btn = $("dl-pdf"); btn.disabled = true;
+    track("Downloaded PDF");
     renderPdf(r).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
   }));
@@ -1377,6 +1392,7 @@
 
   function checkout(plan, btn) {
     btn.disabled = true;
+    track("Checkout started");
     request("/api/billing/checkout", { method: "POST", body: { planId: plan.id } })
       .then(function (session) {
         var w = window.open(session.checkoutUrl, "_blank", "noopener");
@@ -1393,6 +1409,7 @@
       .then(function () { return loadAccount(); })
       .then(function () {
         if (isPro()) {
+          track("Went Pro");
           alertIn($("app-alert"), "success", "You're on Pro. Downloads and full songs are unlocked.");
           hide($("upgrade-panel")); hide($("r-upgrade")); hide($("r-watermark"));
           if (current && current.result) showResult(current.result);
