@@ -134,6 +134,16 @@ public class Subscription : BaseEntity
         CurrentPeriodStartUtc = periodStartUtc;
         CurrentPeriodEndUtc = RequireAfter(periodEndUtc, periodStartUtc);
         Status = SubscriptionStatus.Active;
+        // A fresh payment is a fresh decision: a member who cancelled and then paid again is not
+        // cancelled any more.
+        CanceledAtUtc = null;
+        Touch(utcNow);
+    }
+
+    /// <summary>The plan this membership is on from now, after a payment for a different plan.</summary>
+    public void SwitchPlan(Guid planId, DateTime utcNow)
+    {
+        PlanId = Guard.AgainstEmpty(planId);
         Touch(utcNow);
     }
 

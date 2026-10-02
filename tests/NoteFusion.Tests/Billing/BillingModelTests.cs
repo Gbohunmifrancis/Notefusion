@@ -89,14 +89,12 @@ public class BillingModelTests
     }
 
     [Fact]
-    public void An_unmapped_dollar_subscription_is_reported_with_the_variable_to_set()
+    public void Dollar_plans_need_no_bachs_catalog_product_because_every_checkout_is_one_off()
     {
         using var sp = Build(Production(mapUsd: false));
         var problems = BillingReadiness.Check(Catalogue, sp.GetRequiredService<IPaymentGatewayFactory>(), sp.GetService<BachsOptions>());
 
-        var problem = Assert.Single(problems);
-        Assert.Contains("pro_monthly_usd", problem);
-        Assert.Contains("Bachs__ProductMap__pro_monthly_usd", problem);
+        Assert.Empty(problems);
     }
 
     [Fact]

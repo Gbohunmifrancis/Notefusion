@@ -229,6 +229,7 @@ public sealed record WebTrafficDto(
 /// <param name="SignupSources">Accounts by the client that created them: web, mobile, or unknown (older accounts).</param>
 /// <param name="WebFunnel">The website's acquisition funnel for the window.</param>
 /// <param name="WebTraffic">Page views, visitors, clicks and web-app actions from the site's own tracker.</param>
+/// <param name="Membership">Who is on Pro right now, what came in and went out in the window, and how the songs are used.</param>
 public sealed record AnalyticsOverviewDto(
     DateTime FromUtc,
     DateTime ToUtc,
@@ -244,7 +245,39 @@ public sealed record AnalyticsOverviewDto(
     IReadOnlyList<ActivityItemDto> RecentActivity,
     IReadOnlyList<CategoryCountDto> SignupSources,
     WebFunnelDto WebFunnel,
-    WebTrafficDto WebTraffic);
+    WebTrafficDto WebTraffic,
+    MembershipDto Membership);
+
+/// <summary>An amount in one currency's minor units (cents, kobo). Currencies are never added together.</summary>
+public sealed record CurrencyAmountDto(string Currency, long AmountMinor);
+
+/// <summary>
+/// Pro membership for the admin overview. Every payment is a one-off for one period, so there is no
+/// recurring revenue in the strict sense: <paramref name="MonthlyRunRate"/> is what the memberships
+/// running now are worth per month (a yearly plan counted at a twelfth), the figure that would recur if
+/// every member bought again. Each account counts once, on its latest subscription row.
+/// </summary>
+/// <param name="ActiveMembers">Accounts with Pro right now: <paramref name="PaidMembers"/> + <paramref name="GiftedMembers"/>.</param>
+/// <param name="LifetimeMembers">Of the active members, how many hold lifetime access (counted in paid or gifted too).</param>
+/// <param name="NewMembers">Subscriptions first started inside the window.</param>
+/// <param name="LapsedMembers">Memberships whose paid time ran out inside the window without a new payment.</param>
+/// <param name="Revenue">Payments collected inside the window, per currency, from the ledger.</param>
+/// <param name="MonthlyRunRate">The active paid memberships' plan prices per month, per currency. Lifetime is excluded.</param>
+/// <param name="MembersByPlan">Active members by plan name; gifts are labelled as such.</param>
+/// <param name="SongsUsedThisMonth">Song credits spent since the first of this month (UTC), by every account.</param>
+/// <param name="MembersOutOfSongs">Accounts that have spent the whole monthly allowance this month.</param>
+public sealed record MembershipDto(
+    int ActiveMembers,
+    int PaidMembers,
+    int GiftedMembers,
+    int LifetimeMembers,
+    int NewMembers,
+    int LapsedMembers,
+    IReadOnlyList<CurrencyAmountDto> Revenue,
+    IReadOnlyList<CurrencyAmountDto> MonthlyRunRate,
+    IReadOnlyList<CategoryCountDto> MembersByPlan,
+    int SongsUsedThisMonth,
+    int MembersOutOfSongs);
 
 /// <summary>
 /// One row of the admin user table. Deliberately narrow: enough to support the table and a

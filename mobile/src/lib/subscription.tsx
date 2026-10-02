@@ -153,7 +153,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
             showDialog({
               title: "Welcome to NoteFusion Pro! 🎉",
               message:
-                "Your payment has been confirmed and your Pro subscription is now active. Enjoy unlimited transcriptions and premium exports!",
+                "Your payment has been confirmed and Pro is active. Whole songs, four-part harmony and every download are yours.",
               icon: "sparkles",
               tone: "premium",
             });

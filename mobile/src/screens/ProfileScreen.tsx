@@ -51,7 +51,7 @@ import type { RootStackParams } from "../navigation/types";
  */
 export function ProfileScreen() {
   const { user, setUser, signOut } = useAuth();
-  const { isPro, refresh: refreshSubscription } = useSubscription();
+  const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -298,6 +298,11 @@ export function ProfileScreen() {
         <MenuItem
           icon="card-outline"
           label={isPro ? "Manage membership" : "Subscription"}
+          meta={
+            isPro && typeof subscription?.songCreditsRemaining === "number"
+              ? `${subscription.songCreditsRemaining} of ${subscription.songCreditsTotal ?? 20} songs left`
+              : undefined
+          }
           onPress={() => nav.navigate("Upgrade")}
         />
         <View style={styles.divider} />

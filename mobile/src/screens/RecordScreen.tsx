@@ -215,7 +215,7 @@ export function RecordScreen() {
   const route = useRoute<RouteProp<TabParams, "Record">>();
   const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
   const { state, start, reset } = useJobPolling();
-  const { isPro, known, trialRemaining, trialTotal, refresh } = useSubscription();
+  const { isPro, known, trialRemaining, trialTotal, refresh, subscription } = useSubscription();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -585,7 +585,10 @@ export function RecordScreen() {
     return new Promise((resolve) => {
       Alert.alert(
         "What is this recording?",
-        "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band.",
+        "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band." +
+          (isPro && typeof subscription?.songCreditsRemaining === "number"
+            ? ` It uses 1 of your ${subscription.songCreditsRemaining} songs left this month; a hummed tune costs nothing.`
+            : ""),
         [
           { text: "A tune I hummed or sang", onPress: () => resolve(false) },
           { text: "A song with instruments", onPress: () => resolve(true) },

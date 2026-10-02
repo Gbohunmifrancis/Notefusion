@@ -158,7 +158,8 @@ public class LifetimeFulfillmentTests
         }
         else
         {
-            Assert.Contains("Renews on", message.HtmlBody, StringComparison.Ordinal);
+            Assert.Contains("Pro until", message.HtmlBody, StringComparison.Ordinal);
+            Assert.DoesNotContain("Renews on", message.HtmlBody, StringComparison.Ordinal);
         }
     }
 

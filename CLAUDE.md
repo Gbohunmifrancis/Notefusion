@@ -71,10 +71,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
   action) and the overview's `WebTraffic` section reads them back. No third-party analytics.
-- Billing: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions (one catalog
-  product per USD plan code, `Bachs__ProductMap__pro_*_usd`). Currency routes the charge
-  (`PaymentGatewayFactory.SelectForCurrency`); `BillingReadiness` logs at startup if a plan on sale
-  has no live provider or no Bachs product. See `docs/geo-billing-plan.md`.
+- Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
+  charge (`PaymentGatewayFactory.SelectForCurrency`). Every checkout is a one-off priced from the
+  `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this
+  account offers none for USD (`CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD`), so no catalog product is
+  needed and a price change is a new plan code in `BillingSeeder`. Nothing renews by itself: a member
+  buys again to add a period, which stacks after the time left (`PaymentFulfillment`), on either plan.
+  `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
+  error text never reaches a screen: the API returns plain sentences for checkout failures, and the
+  web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

@@ -206,13 +206,13 @@ public sealed class BrandedEmailTemplate
         // two shapes are built together rather than in separate methods because they are the same
         // receipt — only the renewal fact differs.
         var renews = receipt.RenewsAtUtc?.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);
-        var renewsLabel = renews is null ? "Access" : "Renews on";
+        var renewsLabel = renews is null ? "Access" : "Pro until";
         var renewsValue = renews ?? "Lifetime — never expires";
         var closing = renews is null
             ? "Keep this email as your receipt. Pro is yours for good — there is nothing to renew and "
                 + "nothing to cancel."
-            : "Keep this email as your receipt. You can cancel any time from Account settings; "
-                + "Pro stays on until the date above.";
+            : "Keep this email as your receipt. Pro runs until the date above and nothing renews by itself; "
+                + "add more time from the app whenever you like.";
 
         var body = Paragraphs(
             "Payment received — your NoteFusion Pro subscription is active.")
@@ -242,10 +242,10 @@ public sealed class BrandedEmailTemplate
                 "",
                 renews is null
                     ? "Keep this email as your receipt. Pro is yours for good — there is nothing to renew"
-                    : "Keep this email as your receipt. You can cancel any time from Account settings;",
+                    : "Keep this email as your receipt. Pro runs until the date above and nothing renews by itself;",
                 renews is null
                     ? "and nothing to cancel."
-                    : "Pro stays on until the date above."));
+                    : "add more time from the app whenever you like."));
     }
 
     public EmailMessage PaymentFailed(EmailRecipient to, string planName)
@@ -293,12 +293,12 @@ public sealed class BrandedEmailTemplate
                "Manage subscription",
                $"Your {expiry.PlanName} subscription renews {window}.",
                "Nothing to do — we'll charge the card on file and Pro carries straight on. Cancel from")
-            : ($"Your <strong>{Encode(expiry.PlanName)}</strong> subscription ends {window}.",
-               "It won't renew, so Pro features switch off on that date. Resubscribe any time to pick "
-                   + "up where you left off.",
-               "Resubscribe",
-               $"Your {expiry.PlanName} subscription ends {window}.",
-               "It won't renew, so Pro features switch off on that date. Resubscribe any time to");
+            : ($"Your <strong>{Encode(expiry.PlanName)}</strong> ends {window}.",
+               "Nothing renews by itself, so Pro features switch off on that date unless you add more "
+                   + "time. Add a month or a year from the app whenever you like; it starts when your current time ends.",
+               "Add more Pro time",
+               $"Your {expiry.PlanName} ends {window}.",
+               "Nothing renews by itself, so Pro features switch off on that date unless you add more time. Add a month or a year from the app whenever you like;");
 
         var body = Paragraphs(lead)
             + FactTable(
@@ -327,7 +327,7 @@ public sealed class BrandedEmailTemplate
                 textCallout,
                 expiry.WillRenew
                     ? "Account settings if you'd rather it didn't."
-                    : "pick up where you left off.",
+                    : "it starts when your current time ends.",
                 "",
                 "Everything you've transcribed stays in your library either way — it's yours, not",
                 "the subscription's.",

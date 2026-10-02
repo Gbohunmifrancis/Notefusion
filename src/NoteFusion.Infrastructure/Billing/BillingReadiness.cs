@@ -38,13 +38,7 @@ public static class BillingReadiness
                 continue;
             }
 
-            if (gateway.Provider == PaymentProvider.Bachs && plan.Interval != BillingInterval.Lifetime
-                && bachs?.ProductIdFor(plan.Code) is null)
-            {
-                problems.Add(
-                    $"Plan {plan.Code} ({plan.Currency}): recurring on Bachs but no catalog product is mapped "
-                    + $"(set Bachs__ProductMap__{plan.Code} to its prod_… id).");
-            }
+            // No catalog product is needed: every checkout is a one-off priced from the plan row.
         }
         return problems;
     }

@@ -24,8 +24,14 @@ public static class BillingErrors
     public static readonly Error ProviderNotConfigured =
         Error.Failure("BILLING_PROVIDER_NOT_CONFIGURED", "The selected payment provider is not configured.");
 
-    public static Error GatewayInitiationFailed(string detail) =>
-        Error.Network("BILLING_GATEWAY_INITIATION_FAILED", detail);
+    /// <summary>
+    /// The payment page could not be opened. Deliberately says nothing about why: the provider's own
+    /// reason (an error code, an HTTP status, an account setting) is for the log and the transaction row,
+    /// never for the customer's screen.
+    /// </summary>
+    public static readonly Error GatewayInitiationFailed =
+        Error.Network("BILLING_GATEWAY_INITIATION_FAILED",
+            "We couldn't open the payment page just now. Please try again in a minute.");
 
     public static readonly Error WebhookEventNotFound =
         Error.NotFound("BILLING_WEBHOOK_EVENT_NOT_FOUND", "The webhook event was not found.");
@@ -49,6 +55,10 @@ public static class BillingErrors
 
     public static readonly Error NoActiveSubscription =
         Error.NotFound("BILLING_NO_ACTIVE_SUBSCRIPTION", "You do not have an active subscription to cancel.");
+
+    /// <summary>Lifetime access was bought outright; there is nothing more to buy.</summary>
+    public static readonly Error AlreadyLifetime =
+        Error.Conflict("BILLING_ALREADY_LIFETIME", "You have lifetime Pro, so there is nothing more to buy.");
 
     public static readonly Error LifetimeNotCancelable =
         Error.Failure("BILLING_LIFETIME_NOT_CANCELABLE",

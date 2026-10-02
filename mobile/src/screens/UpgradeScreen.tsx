@@ -306,7 +306,10 @@ export function UpgradeScreen({ navigation }: Props) {
   const yearly = plans.find((p) => p.interval === "yearly");
   const saving = savingsPercent(monthly, yearly);
   const selected = plans.find((p) => p.id === selectedId);
-  const isActive = subscription?.isActive ?? false;
+  // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
+  // new one starts when the current time ends.
+  const [extending, setExtending] = useState(false);
+  const isActive = (subscription?.isActive ?? false) && !extending;
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -385,6 +388,7 @@ export function UpgradeScreen({ navigation }: Props) {
           subscription={subscription!}
           profile={profile}
           user={user}
+          onExtend={() => setExtending(true)}
           onChanged={() => {
             load();
             // The shared provider drives the tab label and the gold ring, so it has to
@@ -475,11 +479,13 @@ function ActiveState({
   profile,
   user,
   onChanged,
+  onExtend,
 }: {
   subscription: Subscription;
   profile: MyProfile | null;
   user: AuthUser | null;
   onChanged: () => void;
+  onExtend: () => void;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -598,7 +604,7 @@ function ActiveState({
 
           <View style={[styles.statCol, { alignItems: "flex-end" }]}>
             <Text style={styles.statLabel}>
-              {lifetime ? "VALIDITY" : canceled ? "EXPIRES" : "RENEWS"}
+              {lifetime ? "VALIDITY" : "PRO UNTIL"}
             </Text>
             <Text style={styles.statValue}>
               {lifetime ? "Perpetual" : renews ? renews : "Active"}
@@ -684,10 +690,19 @@ function ActiveState({
         {renews && !lifetime && (
           <View style={styles.billingRow}>
             <Text style={styles.billingLabel}>
-              {canceled ? "Access until" : "Next renewal"}
+              Pro until
             </Text>
             <Text style={styles.billingValue}>{renews}</Text>
           </View>
+        )}
+
+        {!lifetime && (
+          <Button
+            label="Add more Pro time"
+            icon="add-circle-outline"
+            onPress={onExtend}
+            style={styles.cancelBtn}
+          />
         )}
 
         {!lifetime && !isGift && !canceled && (
@@ -708,7 +723,7 @@ function ActiveState({
               ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
               : canceled
                 ? `Subscription canceled. Pro privileges remain active until ${renews}. You can resubscribe any time.`
-                : "Cancelling keeps Pro until the end of the period you've paid for. Receipts are in your email inbox."}
+                : "Each payment covers one period and nothing renews without you. Added time starts when your current time ends. Receipts are in your email inbox."}
         </Text>
       </Card>
 

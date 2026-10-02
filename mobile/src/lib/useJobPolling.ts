@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { transcriptionsApi } from "../api/endpoints";
-import { baseURL, toApiError } from "../api/client";
+import { baseURL, safeReason, toApiError } from "../api/client";
 import { tokenStore } from "./tokenStore";
 import type {
   TranscriptionResult,
@@ -82,7 +82,7 @@ export function useJobPolling() {
             result: job.result ?? null,
             error:
               status === "failed"
-                ? (job.error && job.error.trim().length > 0 ? job.error.trim() : "Transcription failed — please try again.")
+                ? safeReason(job.error, "Transcription failed — please try again.")
                 : null,
             errorCode: null,
             stage: null,
@@ -126,10 +126,7 @@ export function useJobPolling() {
       const status = normalizeStatus(job.status);
       let error: string | null = null;
       if (status === "failed") {
-        error =
-          job.error && job.error.trim().length > 0
-            ? job.error.trim()
-            : "Transcription failed â€” please try a cleaner recording, closer to the microphone.";
+        error = safeReason(job.error, "Transcription failed — please try a cleaner recording, closer to the microphone.");
       }
 
       setState({
@@ -181,7 +178,7 @@ export function useJobPolling() {
             status,
             progress: job.progress ?? 1,
             result: job.result ?? null,
-            error: status === 'failed' ? (job.error || 'Transcription failed') : null,
+            error: status === 'failed' ? safeReason(job.error, 'Transcription failed — please try again.') : null,
             errorCode: null,
             stage: null,
             source: job.source ?? job.result?.source ?? null,
