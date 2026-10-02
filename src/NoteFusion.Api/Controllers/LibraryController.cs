@@ -73,6 +73,31 @@ public sealed class LibraryController : ApiControllerBase
     public async Task<IActionResult> UpdateLyrics(Guid id, UpdateLyricsBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new UpdateTranscriptionLyricsCommand(id, body.Lyrics ?? string.Empty), ct));
 
+    /// <summary>Files the sheet in a folder; a blank name takes it out of one.</summary>
+    [HttpPut("{id:guid}/folder")]
+    public async Task<IActionResult> UpdateFolder(Guid id, UpdateFolderBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new UpdateTranscriptionFolderCommand(id, body.Folder), ct));
+
+    /// <summary>Renames a folder; its sheets move and its shared link keeps working.</summary>
+    [HttpPut("folders")]
+    public async Task<IActionResult> RenameFolder(RenameFolderCommand command, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(command, ct));
+
+    /// <summary>One public link for a whole folder.</summary>
+    [HttpPost("folders/share")]
+    public async Task<IActionResult> ShareFolder(ShareFolderCommand command, CancellationToken ct)
+    {
+        var result = await _sender.Send(command, ct);
+        return result.IsSuccess
+            ? Ok(new ShareLinkResponse(result.Value.Token, $"https://notefusion.studio/app/sheet/?f={Uri.EscapeDataString(result.Value.Token)}"))
+            : HandleResult(result);
+    }
+
+    /// <summary>Stops a folder's link.</summary>
+    [HttpDelete("folders/share")]
+    public async Task<IActionResult> UnshareFolder([FromQuery] string folder, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new UnshareFolderCommand(folder), ct));
+
     /// <summary>Attaches the four parts written for this sheet after it was saved (null removes them).</summary>
     [HttpPut("{id:guid}/parts")]
     public async Task<IActionResult> UpdateParts(Guid id, UpdatePartsBody body, CancellationToken ct)
@@ -126,6 +151,9 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Body for a lyrics update.</summary>
     public sealed record UpdateLyricsBody(string? Lyrics);
+
+    /// <summary>Body for filing a sheet: the folder's name, or blank for none.</summary>
+    public sealed record UpdateFolderBody(string? Folder);
 
     /// <summary>Body for a parts update: the four voices and their one score, or null to remove them.</summary>
     public sealed record UpdatePartsBody(IReadOnlyDictionary<string, PartDto>? Parts, string? PartsMusicXml);

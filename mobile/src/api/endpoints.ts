@@ -317,6 +317,14 @@ export const libraryApi = {
   transpose: (id: string, semitones: number) =>
     api.post<SavedTranscription>(`/api/library/${id}/transpose`, { semitones }).then((r) => r.data),
 
+  /** Files a sheet in a folder; null or blank takes it out of one. */
+  setFolder: (id: string, folder: string | null) =>
+    api.put<SavedTranscription>(`/api/library/${id}/folder`, { folder }).then((r) => r.data),
+
+  /** One public link for a whole folder, including sheets filed in it later. */
+  shareFolder: (folder: string) =>
+    api.post<{ token: string; url: string }>("/api/library/folders/share", { folder }).then((r) => r.data),
+
   /** Keeps the parts written for a saved sheet after it was saved (null removes them). */
   setParts: (id: string, parts: Record<string, TranscriptionPart> | null, partsMusicXml: string | null) =>
     api.put<SavedTranscription>(`/api/library/${id}/parts`, { parts, partsMusicXml }).then((r) => r.data),

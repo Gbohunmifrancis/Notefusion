@@ -73,6 +73,20 @@ public class Transcription : BaseEntity
 
     public void RecordShareView() => ShareViews++;
 
+    /// <summary>
+    /// The folder this sheet is filed in ("Sunday choir", "Easter service"), or null when it is not filed.
+    /// A folder is nothing more than the name its sheets share, so it needs no row of its own.
+    /// </summary>
+    public string? Folder { get; private set; }
+
+    public const int FolderMaxLength = 80;
+
+    public void FileIn(string? folder)
+    {
+        var name = folder?.Trim();
+        Folder = string.IsNullOrEmpty(name) ? null : name.Length > FolderMaxLength ? name[..FolderMaxLength].TrimEnd() : name;
+    }
+
     public IReadOnlyList<NoteEvent> Notes => _notes.AsReadOnly();
 
     public void SetLyrics(string lyrics) => Lyrics = Guard.NotNull(lyrics).Trim();

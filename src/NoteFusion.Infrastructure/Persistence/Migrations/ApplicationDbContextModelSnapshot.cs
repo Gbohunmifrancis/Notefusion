@@ -387,6 +387,41 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("device_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.FolderShare", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Folder")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "Folder")
+                        .IsUnique();
+
+                    b.ToTable("folder_shares", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.PreviewJob", b =>
                 {
                     b.Property<Guid>("Id")
@@ -524,6 +559,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Folder")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("folder");
+
                     b.Property<string>("Lyrics")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -590,6 +630,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ShareToken")
                         .IsUnique();
+
+                    b.HasIndex("UserId", "Folder");
 
                     b.ToTable("transcriptions", (string)null);
                 });

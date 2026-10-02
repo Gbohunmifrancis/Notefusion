@@ -9,13 +9,38 @@
   function show(el) { el.classList.remove("hidden"); }
   function hide(el) { el.classList.add("hidden"); }
 
-  var token = new URLSearchParams(location.search).get("s");
+  var params = new URLSearchParams(location.search);
+  var token = params.get("s"), folderToken = params.get("f");
   var sheet = null, melody = [], parts = null, player = null, cells = [];
+
+  // A shared folder: the list of its songs, each opening as its own shared sheet.
+  if (!token && folderToken) {
+    fetch(API + "/api/shared/folders/" + encodeURIComponent(folderToken)).then(function (r) {
+      if (r.status === 404) throw new Error("This folder is no longer shared.");
+      if (!r.ok) throw new Error("The folder could not be opened right now. Please try again in a moment.");
+      return r.json();
+    }).then(function (data) {
+      document.title = (data.folder || "Shared folder") + " — NoteFusion";
+      $("f-title").textContent = data.folder || "Shared folder";
+      $("f-by").textContent = "Shared by " + (data.sharedBy || "a NoteFusion user") + " · " + (data.items || []).length + " songs";
+      var list = $("f-list");
+      (data.items || []).forEach(function (it) {
+        var li = document.createElement("li"), a = document.createElement("a");
+        a.href = "?s=" + encodeURIComponent(it.token) + "&f=" + encodeURIComponent(folderToken);
+        var t = document.createElement("span"); t.textContent = it.title || "Untitled";
+        var k = document.createElement("span"); k.className = "key"; k.textContent = it.key || "";
+        a.appendChild(t); a.appendChild(k); li.appendChild(a); list.appendChild(li);
+      });
+      if (!(data.items || []).length) { var p = document.createElement("li"); p.className = "muted"; p.textContent = "This folder has no songs yet."; list.appendChild(p); }
+      hide($("loading")); show($("folder"));
+    }).catch(function (e) { fail(e.message || String(e)); });
+    return;
+  }
 
   if (!token) return fail("This link is missing its sheet. Ask whoever shared it to send it again.");
   fetch(API + "/api/shared/" + encodeURIComponent(token)).then(function (r) {
     if (r.status === 404) throw new Error("This sheet is no longer shared.");
-    if (!r.ok) throw new Error("The sheet could not be opened right now (" + r.status + ").");
+    if (!r.ok) throw new Error("The sheet could not be opened right now. Please try again in a moment.");
     return r.json();
   }).then(render).catch(function (e) { fail(e.message || String(e)); });
 
@@ -33,6 +58,10 @@
     }
     document.title = (data.title || "Shared sheet") + " — NoteFusion";
     $("s-title").textContent = data.title || "Shared sheet";
+    if (folderToken) {
+      var back = document.createElement("a"); back.className = "folder-back"; back.href = "?f=" + encodeURIComponent(folderToken); back.textContent = "← All songs in this folder";
+      $("s-title").parentNode.insertBefore(back, $("s-title"));
+    }
     $("s-by").textContent = "Shared by " + (data.sharedBy || "a NoteFusion user") + " · " + C.keyHeader(data.key);
     [data.key, data.tempoBpm + " BPM", data.timeSignature].forEach(function (t) { var c = document.createElement("span"); c.className = "chip"; c.textContent = t; $("s-chips").appendChild(c); });
 

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=10">
+<link rel="stylesheet" href="/assets/app.css?v=11">
 <script>
   // The theme before the first paint, so a dark page never flashes white: the saved choice, else the device's.
   (function () {
@@ -522,6 +522,22 @@
       </div>
       <div class="card">
         <div class="input-wrap lib-search"><svg class="ic"><use href="#i-search"/></svg><input id="lib-search" type="text" placeholder="Search your transcriptions" autocomplete="off" aria-label="Search your transcriptions"></div>
+        <div class="lib-folders hidden" id="lib-folders" role="tablist" aria-label="Folders"></div>
+        <div class="lib-folder-bar hidden" id="lib-folder-bar">
+          <div class="lib-folder-head">
+            <strong id="lib-folder-name"></strong>
+            <span class="lib-folder-actions">
+              <button class="btn btn-ghost btn-sm" id="lib-folder-rename" type="button">Rename</button>
+              <button class="btn btn-primary btn-sm" id="lib-folder-share" type="button"><svg class="ic"><use href="#i-share"/></svg>Share the folder</button>
+            </span>
+          </div>
+          <div class="share-row hidden" id="lib-folder-share-row">
+            <input id="lib-folder-url" type="text" readonly aria-label="Folder link">
+            <button class="btn btn-ghost btn-sm" id="lib-folder-copy" type="button">Copy</button>
+            <button class="btn-link small" id="lib-folder-stop" type="button">Stop sharing</button>
+          </div>
+          <p class="muted small" style="margin:6px 0 0">One link for the whole folder: everyone can open each song, including ones you add later.</p>
+        </div>
         <div id="lib-skel"><div class="lib-list"><div class="skel skel-plan"></div><div class="skel skel-plan"></div><div class="skel skel-plan"></div></div></div>
         <div class="lib-list hidden" id="lib-list"></div>
         <div class="empty hidden" id="lib-empty">
@@ -605,7 +621,7 @@
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
 <script src="/assets/choir.js?v=2" defer></script>
 <script src="/assets/preview.js?v=6" defer></script>
-<script src="/assets/app.js?v=10" defer></script>
+<script src="/assets/app.js?v=11" defer></script>
 <script src="/assets/track.js?v=1" defer></script>
 </body>
 </html>

@@ -23,7 +23,8 @@ public sealed record SavedTranscriptionDto(
     string Lyrics = "",
     IReadOnlyDictionary<string, PartDto>? Parts = null,
     string? PartsMusicXml = null,
-    string? ShareToken = null);
+    string? ShareToken = null,
+    string? Folder = null);
 
 /// <summary>A sheet behind a public link: what a chorister who follows it sees, with no account.</summary>
 public sealed record SharedSheetDto(
@@ -41,6 +42,12 @@ public sealed record SharedSheetDto(
 /// <summary>The public link for a saved transcription.</summary>
 public sealed record ShareLinkDto(string Token);
 
+/// <summary>One song in a shared folder: enough to list it and open it as its own shared sheet.</summary>
+public sealed record SharedFolderItemDto(string Title, string Key, string Token);
+
+/// <summary>A shared folder as anyone with the link sees it: its name, who shared it, and its songs.</summary>
+public sealed record SharedFolderDto(string Folder, string SharedBy, IReadOnlyList<SharedFolderItemDto> Items);
+
 public static class SavedTranscriptionMapper
 {
     public static SavedTranscriptionDto ToDto(Transcription t, bool includeNotes)
@@ -57,7 +64,8 @@ public static class SavedTranscriptionMapper
             t.Lyrics,
             includeNotes ? SolfaLabels.LabelParts(t.Parts, t.Key, t.Notes) : null,
             includeNotes ? t.PartsMusicXml : null,
-            t.ShareToken);
+            t.ShareToken,
+            t.Folder);
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(
