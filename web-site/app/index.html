@@ -117,6 +117,8 @@
   .watermark span::before { content: "♪ "; }
   .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border-radius: var(--radius-sm); padding: 18px; }
   .solfa .doh { color: var(--blue-dark); font-weight: 700; }
+  .part { margin-top: 12px; }
+  .part h3 { font-size: .9rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
   .downloads { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
   .upgrade-note { background: linear-gradient(135deg, #FFF7E0, #FFFBEF); border: 1px solid #F6E3A1; border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 16px; }
   .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
@@ -225,6 +227,7 @@
       <div class="tabs result-tabs" role="tablist" style="max-width:320px">
         <button class="tab" role="tab" aria-selected="true" data-view="staff" type="button">Staff</button>
         <button class="tab" role="tab" aria-selected="false" data-view="solfa" type="button">Tonic Solfa</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="parts" type="button">SATB</button>
       </div>
       <div id="r-staff">
         <div class="sheet-wrap">
@@ -233,12 +236,22 @@
         </div>
       </div>
       <div id="r-solfa" class="hidden"><div class="solfa" id="r-solfa-text"></div></div>
+      <div id="r-parts" class="hidden">
+        <div id="r-parts-locked" class="upgrade-note hidden" style="margin-top:0">
+          <strong>Four-part harmony is a Pro feature.</strong> Alto, tenor and bass are written under the tune the way a hymn arranger would — ready for your choir.
+        </div>
+        <div id="r-parts-body" class="hidden">
+          <div class="sheet-wrap" style="margin-bottom:12px"><div id="sheet-parts"></div></div>
+          <div id="r-parts-solfa"></div>
+        </div>
+      </div>
 
       <div class="downloads">
         <button class="btn btn-primary" id="dl-pdf" type="button">Download PDF</button>
         <button class="btn btn-ghost" id="dl-xml" type="button">MusicXML</button>
         <button class="btn btn-ghost" id="dl-midi" type="button">MIDI</button>
         <button class="btn btn-ghost" id="dl-solfa" type="button">Solfa text</button>
+        <button class="btn btn-ghost hidden" id="dl-parts" type="button">SATB MusicXML</button>
       </div>
       <div class="upgrade-note hidden" id="r-upgrade">
         <strong>Downloads are a Pro feature.</strong> Upgrade to download this sheet as PDF, MusicXML or MIDI, transcribe full songs (up to 20 a month) and skip the queue.

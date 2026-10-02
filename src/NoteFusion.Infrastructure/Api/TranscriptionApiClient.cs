@@ -237,7 +237,13 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             MapSource(wire.Result.Source),
             wire.Result.SongDurationSec,
             wire.Result.Truncated,
-            wire.Result.Separated);
+            wire.Result.Separated,
+            wire.Result.Parts?.ToDictionary(
+                kv => kv.Key,
+                kv => new PartDto(
+                    kv.Value.Notes.Select(n => new NoteEventDto(n.PitchMidi, n.StartBeat, n.DurBeats, n.Degree, n.Solfa, n.OctaveMark, n.Conf)).ToList(),
+                    kv.Value.SolfaLines)),
+            wire.Result.PartsMusicXml ?? "");
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source));
     }

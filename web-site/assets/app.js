@@ -328,6 +328,7 @@
 
     show($("result"));
     engrave(result.musicXml);
+    showParts(result);
     $("result").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
@@ -339,11 +340,38 @@
   document.querySelectorAll(".result-tabs .tab[data-view]").forEach(function (tab) {
     tab.addEventListener("click", function () {
       document.querySelectorAll(".result-tabs .tab").forEach(function (t) { t.setAttribute("aria-selected", String(t === tab)); });
-      var staff = tab.dataset.view === "staff";
-      staff ? show($("r-staff")) : hide($("r-staff"));
-      staff ? hide($("r-solfa")) : show($("r-solfa"));
+      var view = tab.dataset.view;
+      view === "staff" ? show($("r-staff")) : hide($("r-staff"));
+      view === "solfa" ? show($("r-solfa")) : hide($("r-solfa"));
+      view === "parts" ? show($("r-parts")) : hide($("r-parts"));
+      if (view === "parts" && current && current.result && current.result.parts && !$("sheet-parts").childElementCount) {
+        engraveInto($("sheet-parts"), current.result.partsMusicXml);
+      }
     });
   });
+
+  /** Four-part harmony: the four solfa blocks and the SATB score, Pro only. */
+  function showParts(result) {
+    var parts = result.parts;
+    $("sheet-parts").innerHTML = "";
+    if (!isPro() || !parts) {
+      show($("r-parts-locked")); hide($("r-parts-body")); hide($("dl-parts"));
+      return;
+    }
+    hide($("r-parts-locked")); show($("r-parts-body")); show($("dl-parts"));
+    var holder = $("r-parts-solfa");
+    holder.innerHTML = "";
+    ["soprano", "alto", "tenor", "bass"].forEach(function (name) {
+      var part = parts[name];
+      if (!part) return;
+      var block = document.createElement("div"); block.className = "part";
+      var h = document.createElement("h3"); h.textContent = name; block.appendChild(h);
+      var pre = document.createElement("div"); pre.className = "solfa";
+      (part.solfaLines || []).slice(1).forEach(function (line) { var d = document.createElement("div"); d.textContent = line; pre.appendChild(d); });
+      block.appendChild(pre);
+      holder.appendChild(block);
+    });
+  }
 
   /** OpenSheetMusicDisplay, from the first CDN that answers; the same bundle the app's engraver inlines. */
   var OSMD_URLS = [
@@ -368,21 +396,24 @@
   }
   ensureOsmd().catch(function () { /* reported where the sheet is drawn */ });
 
-  function engrave(xml) {
-    var container = $("sheet");
+  function engrave(xml) { osmd = engraveInto($("sheet"), xml); }
+
+  function engraveInto(container, xml) {
     container.innerHTML = "";
+    if (!xml) { container.textContent = "Nothing to engrave."; return null; }
     if (!window.opensheetmusicdisplay) {
       container.textContent = "Loading the engraver…";
-      ensureOsmd().then(function () { engrave(xml); }, function () { container.textContent = "The staff engraver could not be loaded. The Tonic Solfa tab still works; check your connection and reload for the staff."; });
-      return;
+      ensureOsmd().then(function () { engraveInto(container, xml); }, function () { container.textContent = "The staff engraver could not be loaded. The Tonic Solfa tab still works; check your connection and reload for the staff."; });
+      return null;
     }
     try {
-      osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, {
-        backend: "svg", autoResize: true, drawTitle: false, drawPartNames: false, drawMeasureNumbers: true,
+      var display = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, {
+        backend: "svg", autoResize: true, drawTitle: false, drawPartNames: true, drawMeasureNumbers: true,
         autoBeam: true, autoBeamOptions: { beam_rests: false, maintain_stem_directions: false }
       });
-      osmd.load(xml).then(function () { osmd.render(); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
-    } catch (err) { container.textContent = "Could not draw the staff: " + err; }
+      display.load(xml).then(function () { display.render(); }).catch(function (err) { container.textContent = "Could not draw the staff: " + err; });
+      return display;
+    } catch (err) { container.textContent = "Could not draw the staff: " + err; return null; }
   }
 
   // ── Downloads ────────────────────────────────────────────────────────────
@@ -412,6 +443,10 @@
     var text = (r.solfaLines || []).join("\n") + "\n\n" + $("r-credit").textContent + "\n";
     download(baseName() + "-solfa.txt", new Blob([text], { type: "text/plain" }));
   });
+  $("dl-parts").addEventListener("click", gated(function (r) {
+    if (!r.partsMusicXml) return;
+    download(baseName() + "-satb.musicxml", new Blob([r.partsMusicXml], { type: "application/vnd.recordare.musicxml+xml" }));
+  }));
   $("dl-pdf").addEventListener("click", gated(function (r) {
     var btn = $("dl-pdf"); btn.disabled = true;
     renderPdf(r).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })

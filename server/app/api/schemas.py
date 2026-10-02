@@ -38,6 +38,12 @@ class SourceDto(ApiModel):
     thumbnail_url: str | None = None
 
 
+class PartDto(ApiModel):
+    """One voice of the four-part harmony, in the same note shape as the melody."""
+    notes: list[NoteEventDto]
+    solfa_lines: list[str]
+
+
 class ResultDto(ApiModel):
     key: str
     key_confidence: float
@@ -68,6 +74,10 @@ class ResultDto(ApiModel):
     song_duration_sec: float = 0.0
     truncated: bool = False
     separated: bool = False
+    # Four-part harmony under the melody: soprano (the tune), alto, tenor, bass.
+    parts: dict[str, PartDto] | None = None
+    # The four parts as one MusicXML score.
+    parts_musicxml: str = ""
 
 
 class JobResponse(ApiModel):

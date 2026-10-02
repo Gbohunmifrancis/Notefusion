@@ -101,6 +101,7 @@ public class LinkTranscriptionTests
         var result = await Poll(h, user, jobId, api);
 
         Assert.Equal(string.Empty, result.Value.Result!.MidiBase64);
+        Assert.Null(result.Value.Result.Parts); // the harmony is Pro
         Assert.Equal("Way Maker", result.Value.Result.Source!.Title); // the acknowledgement is theirs to see
     }
 
@@ -162,6 +163,8 @@ public class LinkTranscriptionTests
         var result = await Poll(h, user, jobId, api);
 
         Assert.Equal("TVRoZA==", result.Value.Result!.MidiBase64);
+        Assert.NotNull(result.Value.Result.Parts);
+        Assert.Equal("<satb/>", result.Value.Result.PartsMusicXml);
         var job = h.Db.TranscriptionJobs.Single();
         Assert.Equal(Now, job.SongCreditConsumedAtUtc);
         Assert.Null(job.TrialConsumedAtUtc);
@@ -275,9 +278,10 @@ public class LinkTranscriptionTests
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
         {
             var source = new SourceDto("youtube", Link, "Way Maker", "Sinach", null);
+            var parts = new Dictionary<string, PartDto> { ["bass"] = new PartDto([], ["Doh is C · Bass"]) };
             var result = Status == TranscriptionStatus.Done
                 ? new TranscriptionResultDto("C major", 0.9, 100, "4/4", "<score/>", Midi, [], ["d r m"], 0.8,
-                    Source: source, SongDurationSec: 250, Truncated: true, Separated: true)
+                    Source: source, SongDurationSec: 250, Truncated: true, Separated: true, Parts: parts, PartsMusicXml: "<satb/>")
                 : null;
             return Task.FromResult(Result<TranscriptionJobDto>.Success(
                 new TranscriptionJobDto(jobId, Status, Status == TranscriptionStatus.Done ? 1 : 0.5, result, null, null, source)));

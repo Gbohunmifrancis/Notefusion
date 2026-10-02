@@ -1125,6 +1125,38 @@ export function ResultScreen({ route, navigation }: Props) {
         })}
       </ScrollView>
 
+      {/* ── Voices: SATB under the tune ──────────────────────────────────── */}
+      <View style={styles.voicesBlock}>
+        <View style={styles.exportHeaderRow}>
+          <Ionicons name="people-outline" size={16} color={colors.textMuted} />
+          <Text style={styles.exportTitle}>Four-part harmony</Text>
+          {!isPro ? (
+            <View style={styles.proTag}>
+              <Text style={styles.proTagText}>PRO</Text>
+            </View>
+          ) : null}
+        </View>
+        {isPro && result.parts ? (
+          (["soprano", "alto", "tenor", "bass"] as const).map((name) => {
+            const part = result.parts?.[name];
+            if (!part) return null;
+            return (
+              <View key={name} style={styles.voice}>
+                <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+                <Text style={styles.voiceLines}>{part.solfaLines.slice(1).join("\n")}</Text>
+              </View>
+            );
+          })
+        ) : (
+          <Touchable onPress={() => navigation.navigate("Upgrade")} style={styles.voicesTeaser} accessibilityLabel="Unlock four-part harmony">
+            <Text style={styles.voicesTeaserText}>
+              Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir.
+              {isPro ? " Parts were not generated for this transcription." : " Unlock with Pro →"}
+            </Text>
+          </Touchable>
+        )}
+      </View>
+
       {/* ── Export & Share ─────────────────────────────────────────────────── */}
       <View style={styles.exportBlock}>
         <View style={styles.exportHeaderRow}>
@@ -1370,6 +1402,14 @@ const makeStyles = (c: Palette) =>
     paddingHorizontal: spacing.sm,
     marginBottom: spacing.md,
   },
+  voicesBlock: { marginTop: spacing.lg },
+  voice: { marginTop: spacing.sm, backgroundColor: c.surfaceAlt, borderRadius: radii.md, padding: spacing.md },
+  voiceName: { ...typography.label, color: c.textMuted, marginBottom: 4 },
+  voiceLines: { ...typography.mono, color: c.text, lineHeight: 22 },
+  voicesTeaser: { marginTop: spacing.sm, backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
+  voicesTeaserText: { ...typography.caption, color: c.accent, lineHeight: 18 },
+  proTag: { marginLeft: "auto", backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
+  proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
   previewMark: {
     position: "absolute",
     right: spacing.sm,

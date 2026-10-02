@@ -1113,6 +1113,9 @@ class TranscriptionResult:
     song_duration_sec: float = 0.0
     truncated: bool = False
     separated: bool = False
+    # Four-part harmony (``app.pipeline.harmony``): part name -> {"notes": [...], "solfa_lines": [...]}.
+    parts: dict | None = None
+    parts_musicxml: str = ""
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -4192,6 +4195,13 @@ def _transcribe_wav(
         divisions_per_beat=settings.quantize_divisors[0],
     )
 
+    # ── 10b. Four-part harmony ────────────────────────────────────────────────
+    # Rule-based SATB under the melody as notated; see ``app.pipeline.harmony``.  Pure
+    # symbolic work on the note list, so it adds milliseconds and can never fail the job.
+    parts, parts_musicxml = _harmonise_notes(
+        notes, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, round(bpm)
+    )
+
     # ── 11. Normalise key name for C#'s KeyParser ─────────────────────────────
     # music21 returns names like "B- major" or "a minor"; C#'s KeyParser expects
     # "Bb major" / "A minor".  _normalise_key_name does both transformations.
@@ -4255,7 +4265,36 @@ def _transcribe_wav(
         # empty contour for any reason leaves all of them None.
         pitch_refined=any(e.pyin_midi is not None for e in events),
         chromatic_spelling=settings.chromatic_spelling,
+        parts=parts,
+        parts_musicxml=parts_musicxml,
     )
+
+
+def _harmonise_notes(
+    notes: list, tonic_pc: int, mode: str, doh_pc: int, ref_doh: int, time_signature: str, bpm: int
+) -> tuple[dict | None, str]:
+    """SATB for the result, or ``(None, "")`` if the harmoniser declines or fails."""
+    from dataclasses import asdict
+
+    from app.pipeline import harmony
+
+    try:
+        result = harmony.harmonise(
+            notes, tonic_pc, mode, doh_pc, ref_doh,
+            time_signature=time_signature, tempo_bpm=bpm,
+            chromatic_spelling=settings.chromatic_spelling,
+            divisions_per_beat=settings.quantize_divisors[0],
+        )
+    except Exception as exc:  # noqa: BLE001 - harmony is an extra, never the job
+        print(f"[notefusion] harmonisation skipped: {exc!r}", flush=True)
+        return None, ""
+    if result is None:
+        return None, ""
+    parts = {
+        name: {"notes": [asdict(n) for n in part_notes], "solfa_lines": result.solfa_lines[name]}
+        for name, part_notes in result.parts.items()
+    }
+    return parts, result.musicxml
 
 
 class LowConfidenceError(Exception):

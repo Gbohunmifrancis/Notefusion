@@ -33,6 +33,9 @@ public enum TranscribePriority
     High = 1
 }
 
+/// <summary>One voice of the four-part harmony, in the same note shape as the melody.</summary>
+public sealed record PartDto(IReadOnlyList<NoteEventDto> Notes, IReadOnlyList<string> SolfaLines);
+
 /// <summary>The song a linked transcription came from — the acknowledgement line and the sheet's credit.</summary>
 public sealed record SourceDto(
     string Provider,
@@ -93,7 +96,11 @@ public sealed record TranscriptionResultDto(
     /// <summary>True when only the first part of the song was transcribed (a free preview, or past the Pro cap).</summary>
     bool Truncated = false,
     /// <summary>True when the vocals were isolated from the mix before transcription.</summary>
-    bool Separated = false);
+    bool Separated = false,
+    /// <summary>Four-part harmony under the melody, keyed soprano / alto / tenor / bass. Pro only.</summary>
+    IReadOnlyDictionary<string, PartDto>? Parts = null,
+    /// <summary>The four parts as one MusicXML score. Pro only.</summary>
+    string PartsMusicXml = "");
 
 /// <summary>
 /// Polling envelope for a transcription job.

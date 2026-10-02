@@ -69,7 +69,11 @@ internal sealed record JobResultResponse(
     WireSource? Source = null,
     double SongDurationSec = 0,
     bool Truncated = false,
-    bool Separated = false);
+    bool Separated = false,
+    Dictionary<string, WirePart>? Parts = null,
+    string PartsMusicXml = "");
+
+internal sealed record WirePart(IReadOnlyList<WireNoteEvent> Notes, IReadOnlyList<string> SolfaLines);
 
 internal sealed record WireSource(
     string Provider,

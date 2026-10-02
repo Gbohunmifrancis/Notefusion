@@ -108,6 +108,16 @@ export interface TranscriptionResult {
   truncated?: boolean;
   /** True when the vocals were isolated from the mix before transcription. */
   separated?: boolean;
+  /** Four-part harmony under the melody (soprano, alto, tenor, bass). Pro only; absent otherwise. */
+  parts?: Record<"soprano" | "alto" | "tenor" | "bass", TranscriptionPart> | null;
+  /** The four parts as one MusicXML score. Pro only. */
+  partsMusicXml?: string;
+}
+
+/** One voice of the four-part harmony, in the same note shape as the melody. */
+export interface TranscriptionPart {
+  notes: NoteEvent[];
+  solfaLines: string[];
 }
 
 export type TranscriptionStage = "fetching" | "separating" | "transcribing";
