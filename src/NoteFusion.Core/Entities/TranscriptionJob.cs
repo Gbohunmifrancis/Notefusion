@@ -64,8 +64,11 @@ public class TranscriptionJob : BaseEntity
     /// </remarks>
     public DateTime? SettledAtUtc { get; private set; }
 
-    /// <summary>Upload (a recording) or Link (a song fetched from a streaming platform).</summary>
+    /// <summary>Upload (a recording), Link (a song fetched from a streaming platform) or Song (an uploaded song the voice is isolated from).</summary>
     public TranscriptionJobKind Kind { get; private set; } = TranscriptionJobKind.Upload;
+
+    /// <summary>A link or a song upload: the kinds that take a song credit rather than a trial generation.</summary>
+    public bool IsSong => Kind is TranscriptionJobKind.Link or TranscriptionJobKind.Song;
 
     /// <summary>
     /// Whether the submitter was on Pro when a link job was submitted. Stamped up front, unlike the trial
@@ -75,8 +78,8 @@ public class TranscriptionJob : BaseEntity
     public bool WasPro { get; private set; }
 
     /// <summary>
-    /// When this link job took one of the account's song credits (a Pro monthly song, or the free
-    /// preview). Null while it is running, if it failed, and always for an upload.
+    /// When this link or song job took one of the account's song credits (a Pro monthly song, or the free
+    /// preview). Null while it is running, if it failed, and always for a plain upload.
     /// </summary>
     public DateTime? SongCreditConsumedAtUtc { get; private set; }
 
@@ -104,12 +107,29 @@ public class TranscriptionJob : BaseEntity
         };
 
     /// <summary>
-    /// Charges one song credit to this link job. Returns false for an upload, and when it was already
-    /// charged — a finished job is polled more than once and must cost exactly one song.
+    /// A Pro account's upload of a whole song with instruments: the voice is isolated before transcription,
+    /// which is the work a song credit pays for, so it is metered with the links. A free account's song
+    /// upload stays a plain upload and spends a trial generation, as it always has.
+    /// </summary>
+    public static TranscriptionJob RecordSong(string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint)
+        => new()
+        {
+            Id = Guid.NewGuid(),
+            JobId = Guard.NotNullOrWhiteSpace(jobId),
+            UserId = Guard.AgainstEmpty(userId),
+            CreatedAtUtc = utcNow,
+            DeviceFingerprint = deviceFingerprint,
+            Kind = TranscriptionJobKind.Song,
+            WasPro = true
+        };
+
+    /// <summary>
+    /// Charges one song credit to this link or song job. Returns false for a plain upload, and when it
+    /// was already charged — a finished job is polled more than once and must cost exactly one song.
     /// </summary>
     public bool ConsumeSongCredit(DateTime utcNow)
     {
-        if (Kind != TranscriptionJobKind.Link || SongCreditConsumedAtUtc is not null)
+        if (!IsSong || SongCreditConsumedAtUtc is not null)
         {
             return false;
         }

@@ -115,3 +115,26 @@ def test_empty_melody_gives_nothing():
 def test_voicing_never_fails_on_an_extreme_soprano(soprano):
     a, t, b = voice_span(MAJOR_CHORDS[3], C, soprano=soprano, prev=None)
     assert b <= t <= a <= soprano
+
+
+def test_harmonise_sheet_writes_parts_for_a_clients_note_list():
+    from app.pipeline.transcriber import harmonise_sheet
+
+    notes = []
+    t = 0.0
+    for p, d in TWINKLE:
+        notes.append({"pitch_midi": p, "start_beat": t, "dur_beats": d, "conf": 0.9})
+        t += d
+    parts, musicxml = harmonise_sheet("C major", 100, "4/4", notes)
+    assert set(parts) == {"soprano", "alto", "tenor", "bass"}
+    assert [n["pitch_midi"] for n in parts["soprano"]["notes"]] == [p for p, _ in TWINKLE]
+    assert parts["bass"]["solfa_lines"][0].startswith("Doh is C")
+    assert "<score-partwise" in musicxml
+
+
+def test_harmonise_sheet_refuses_a_key_it_cannot_read():
+    from app.pipeline.transcriber import harmonise_sheet
+
+    with pytest.raises(ValueError):
+        harmonise_sheet("H sharp mixolydian", 100, "4/4", [{"pitch_midi": 60, "start_beat": 0, "dur_beats": 1}])
+    assert harmonise_sheet("C major", 100, "4/4", []) == (None, "")

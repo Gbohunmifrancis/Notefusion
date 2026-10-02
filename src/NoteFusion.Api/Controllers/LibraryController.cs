@@ -73,6 +73,11 @@ public sealed class LibraryController : ApiControllerBase
     public async Task<IActionResult> UpdateLyrics(Guid id, UpdateLyricsBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new UpdateTranscriptionLyricsCommand(id, body.Lyrics ?? string.Empty), ct));
 
+    /// <summary>Attaches the four parts written for this sheet after it was saved (null removes them).</summary>
+    [HttpPut("{id:guid}/parts")]
+    public async Task<IActionResult> UpdateParts(Guid id, UpdatePartsBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new UpdateTranscriptionPartsCommand(id, body.Parts, body.PartsMusicXml), ct));
+
     /// <summary>
     /// Transposes for a choir's range: moves every note (melody and parts), the key and both
     /// scores by the given semitones. The solfa reads as before — only Doh moves.
@@ -121,6 +126,9 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Body for a lyrics update.</summary>
     public sealed record UpdateLyricsBody(string? Lyrics);
+
+    /// <summary>Body for a parts update: the four voices and their one score, or null to remove them.</summary>
+    public sealed record UpdatePartsBody(IReadOnlyDictionary<string, PartDto>? Parts, string? PartsMusicXml);
 
     /// <summary>Body for a transposition: −12…12 semitones.</summary>
     public sealed record TransposeBody(int Semitones);

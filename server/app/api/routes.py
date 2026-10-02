@@ -10,7 +10,9 @@ from pathlib import Path
 import librosa
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 
-from app.api.schemas import GradeResponse, GradeTargetDto, JobResponse, ResultDto, SubmitResponse
+from app.api.schemas import (
+    GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, JobResponse, ResultDto, SubmitResponse,
+)
 from app.config import settings
 from app.jobs.queue import JobQueue
 
@@ -91,6 +93,7 @@ async def submit_transcription(
     max_seconds: float | None = Form(None, description="Transcribe only the first N seconds (an anonymous preview)"),
     separate: bool = Form(False, description="The upload is a full song: isolate the lead vocal first and read the beat from the mix"),
     audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
+    harmony: bool = Form(False, description="Also write alto, tenor and bass under the tune (off: one voice is transcribed as one voice)"),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
@@ -171,7 +174,8 @@ async def submit_transcription(
                           time_signature=time_signature,
                           correlation_id=_correlation_id(request),
                           callback_url=callback_url, priority=priority,
-                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview)
+                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
+                          harmony=harmony)
     return SubmitResponse(job_id=job_id)
 
 
@@ -233,6 +237,7 @@ async def submit_link_transcription(
     priority: str = Form("normal"),
     max_seconds: float | None = Form(None),
     audio_preview: bool = Form(True),
+    harmony: bool = Form(False),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
@@ -263,8 +268,28 @@ async def submit_link_transcription(
                                time_signature=time_signature,
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
-                               max_seconds=cap, audio_preview=audio_preview)
+                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony)
     return SubmitResponse(job_id=job_id)
+
+
+@router.post("/harmonise", response_model=HarmoniseResponse, response_model_exclude_none=True,
+             summary="Write alto, tenor and bass under a transcribed melody")
+async def harmonise(body: HarmoniseRequest) -> HarmoniseResponse:
+    """Synchronous: pure symbolic work on the note list, answered in milliseconds. The
+    arrangement is the user's to ask for; a transcription never carries it unasked."""
+    from app.pipeline.transcriber import harmonise_sheet
+
+    if not body.notes:
+        raise HTTPException(422, "The melody has no notes.")
+    if not 20 <= body.tempo_bpm <= 400:
+        raise HTTPException(422, "tempoBpm must be between 20 and 400.")
+    time_signature = _clean_time_signature(body.time_signature)
+    try:
+        parts, parts_musicxml = harmonise_sheet(
+            body.key, body.tempo_bpm, time_signature, [n.model_dump() for n in body.notes])
+    except ValueError as ex:
+        raise HTTPException(422, str(ex))
+    return HarmoniseResponse(parts=parts, parts_musicxml=parts_musicxml)
 
 
 GRADE_SUFFIXES = ACCEPTED_SUFFIXES

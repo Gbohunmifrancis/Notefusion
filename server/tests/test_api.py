@@ -425,3 +425,46 @@ def test_browser_recordings_are_accepted(monkeypatch):
         for name in ("hum.webm", "hum.mp4"):
             r = client.post("/v1/transcribe", files={"audio": (name, BytesIO(b"\x1a\x45\xdf\xa3" + b"\0" * 64), "audio/webm")})
             assert r.status_code == 202, (name, r.text)
+
+
+def test_harmony_is_off_unless_the_submit_asks_for_it(monkeypatch):
+    from app.jobs import queue as queue_mod
+
+    seen = []
+
+    def fake_transcribe(audio_path, mode="melody", **kwargs):
+        from app.pipeline.transcriber import TranscriptionResult
+
+        seen.append(kwargs.get("harmony"))
+        return TranscriptionResult(
+            key="C", key_confidence=1.0, tempo=120, time_signature="4/4", musicxml="<score/>",
+            midi_base64="bWk=", notes=[], solfa_lines=["Doh is C"], overall_confidence=1.0,
+        )
+
+    monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+    with TestClient(app) as client:
+        for data in ({"mode": "melody"}, {"mode": "melody", "harmony": "true"}):
+            r = client.post("/v1/transcribe", files={"audio": ("clip.wav", BytesIO(_make_wav(0.5)), "audio/wav")}, data=data)
+            assert r.status_code == 202
+            _wait_for_status(client, SubmitResponse.model_validate(r.json()).job_id, STATUS_DONE)
+    assert seen == [False, True]
+
+
+def test_harmonise_endpoint_writes_four_parts_for_a_melody():
+    twinkle = [60, 60, 67, 67, 69, 69, 67]
+    body = {
+        "key": "C major", "tempoBpm": 100, "timeSignature": "4/4",
+        "notes": [{"pitchMidi": p, "startBeat": float(i), "durBeats": 1.0} for i, p in enumerate(twinkle)],
+    }
+    with TestClient(app) as client:
+        r = client.post("/v1/harmonise", json=body)
+        assert r.status_code == 200, r.text
+        parts = r.json()["parts"]
+        assert set(parts) == {"soprano", "alto", "tenor", "bass"}
+        assert [n["pitchMidi"] for n in parts["soprano"]["notes"]] == twinkle
+        assert r.json()["partsMusicxml"].startswith("<?xml")
+
+        r = client.post("/v1/harmonise", json={**body, "key": "nonsense"})
+        assert r.status_code == 422
+        r = client.post("/v1/harmonise", json={**body, "notes": []})
+        assert r.status_code == 422

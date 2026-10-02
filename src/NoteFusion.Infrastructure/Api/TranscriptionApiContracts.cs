@@ -23,6 +23,15 @@ internal sealed record GradeTargetNote(int PitchMidi, double StartBeat, double D
 
 internal sealed record GradeTarget(IReadOnlyList<GradeTargetNote> Notes, double TempoBpm, double LeadInSec);
 
+internal sealed record HarmoniseNote(int PitchMidi, double StartBeat, double DurBeats, double Conf);
+
+internal sealed record HarmoniseRequest(string Key, int TempoBpm, string TimeSignature, IReadOnlyList<HarmoniseNote> Notes);
+
+/// <summary>POST /v1/harmonise's answer. The score field is spelled as pydantic's to_camel spells <c>parts_musicxml</c>.</summary>
+internal sealed record HarmoniseResponse(
+    Dictionary<string, WirePart>? Parts,
+    [property: JsonPropertyName("partsMusicxml")] string PartsMusicXml = "");
+
 /// <summary>
 /// Polling envelope returned by GET /v1/jobs/{id}.
 /// Previously missing the <c>error</c> field, which caused Python transcription
@@ -81,7 +90,10 @@ internal sealed record JobResultResponse(
     bool Truncated = false,
     bool Separated = false,
     Dictionary<string, WirePart>? Parts = null,
-    string PartsMusicXml = "",
+    // pydantic's to_camel turns ``parts_musicxml`` into ``partsMusicxml`` (lower-case x), not the
+    // ``partsMusicXml`` the naming policy derives from this name; matching is case-sensitive, so
+    // without the explicit name the four-part score was dropped on the way in.
+    [property: JsonPropertyName("partsMusicxml")] string PartsMusicXml = "",
     double BeatOriginSec = 0,
     string BackingAudioBase64 = "");
 
@@ -113,5 +125,7 @@ internal sealed record WireNoteEvent(
 [JsonSerializable(typeof(SubmitResponse))]
 [JsonSerializable(typeof(GradeResponse))]
 [JsonSerializable(typeof(GradeTarget))]
+[JsonSerializable(typeof(HarmoniseRequest))]
+[JsonSerializable(typeof(HarmoniseResponse))]
 [JsonSerializable(typeof(JobResponse))]
 internal sealed partial class ApiJsonContext : JsonSerializerContext;

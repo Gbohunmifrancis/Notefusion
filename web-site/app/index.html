@@ -98,7 +98,7 @@
     <div class="user-menu hidden" id="user-menu" role="menu">
       <div class="user-menu-head"><strong id="menu-name"></strong><span id="menu-email"></span></div>
       <button class="user-menu-item" type="button" data-view="account" role="menuitem"><svg class="ic"><use href="#i-user"/></svg>Account settings</button>
-      <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="#i-crown"/></svg>View all plans</button>
+      <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="#i-crown"/></svg><span id="menu-plans-label">View all plans</span></button>
       <a class="user-menu-item" href="/#how" id="menu-how" role="menuitem"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
       <button class="user-menu-item" type="button" id="menu-sounds" role="menuitemcheckbox" aria-checked="true"><svg class="ic"><use href="#i-volume"/></svg><span>Sounds on</span></button>
       <button class="user-menu-item danger" type="button" id="signout" role="menuitem"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
@@ -247,15 +247,37 @@
   <div class="modal hidden" id="upgrade-panel" role="dialog" aria-modal="true" aria-labelledby="upgrade-title">
     <div class="modal-card">
       <button class="modal-close btn btn-ghost btn-icon" id="upgrade-close" type="button" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
-      <h2 id="upgrade-title"><svg class="ic"><use href="#i-crown"/></svg>Do more with NoteFusion</h2>
-      <p class="card-lead">Pro transcribes full songs up to six minutes, twenty a month, with priority processing, four-part harmony and every download format. Cancel any time.</p>
-      <ul class="perks">
-        <li><svg class="ic"><use href="#i-check"/></svg>Whole songs, not the first minute</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under the tune</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>Sing a take and have every note marked</li>
-      </ul>
-      <div class="plans" id="plans-standalone"></div>
+      <h2 id="upgrade-title"><svg class="ic"><use href="#i-crown"/></svg><span id="upgrade-title-text">Do more with NoteFusion</span></h2>
+      <div id="upgrade-free">
+        <p class="card-lead">Pro transcribes full songs up to six minutes, twenty a month, with priority processing, four-part harmony and every download format. Cancel any time.</p>
+        <ul class="perks">
+          <li><svg class="ic"><use href="#i-check"/></svg>Whole songs, not the first minute</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under the tune, when you ask</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Sing a take and have every note marked</li>
+        </ul>
+        <div class="plans" id="plans-standalone"></div>
+      </div>
+      <!-- A member sees their membership here, never a price: there is nothing to buy. -->
+      <div id="upgrade-pro" class="membership hidden">
+        <div class="membership-head">
+          <span class="crown" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
+          <div><strong id="upgrade-pro-plan">NoteFusion Pro</strong><span id="upgrade-pro-period"></span></div>
+        </div>
+        <p class="card-lead" style="margin:0">Thank you for supporting NoteFusion. Everything Pro includes is yours:</p>
+        <ul class="perks" style="margin:0">
+          <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Sing a take and have every note marked</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>The priority lane: never queued behind anyone</li>
+        </ul>
+        <dl class="acct-rows">
+          <div><dt><svg class="ic"><use href="#i-clock"/></svg>This month</dt><dd id="upgrade-pro-credits">—</dd></div>
+        </dl>
+        <p class="muted small" style="margin:0">Receipts and renewals come by email. Cancelling is done from the NoteFusion app.</p>
+        <div><button class="btn btn-ghost" id="upgrade-account" type="button"><svg class="ic"><use href="#i-user"/></svg>Account settings</button></div>
+      </div>
     </div>
   </div>
 
@@ -271,7 +293,7 @@
     <div id="view-transcribe">
     <div class="home" id="home">
       <span class="home-mark" aria-hidden="true"></span>
-      <h1 class="greeting" id="greeting">Good afternoon</h1>
+      <h1 class="greeting" id="greeting">Good afternoon</h1><span class="pill pill-pro greeting-pro hidden" id="greeting-pro">Pro member</span>
       <p class="muted home-sub" id="home-sub">What are we writing out today?</p>
     </div>
     <div id="app-alert" class="alert hidden" role="alert"></div>
@@ -374,14 +396,14 @@
 
       <!-- ── Harmony: an explicit step, never an assumption ───────────── -->
       <div class="section" id="harmony">
-        <h2><svg class="ic"><use href="#i-choir"/></svg>Four-part harmony <span class="pill pill-pro">Pro</span></h2>
+        <h2><svg class="ic"><use href="#i-choir"/></svg>Four-part harmony <span class="pill pill-pro gate">Pro</span></h2>
         <p class="card-lead">The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.</p>
         <button class="btn btn-ghost" id="harmony-add" type="button"><svg class="ic"><use href="#i-plus"/></svg>Write the four parts</button>
       </div>
 
       <!-- ── Sing it ──────────────────────────────────────────────────── -->
       <div class="section" id="sing">
-        <h2><svg class="ic"><use href="#i-sing"/></svg>Sing it <span class="pill pill-pro">Pro</span></h2>
+        <h2><svg class="ic"><use href="#i-sing"/></svg>Sing it <span class="pill pill-pro gate">Pro</span></h2>
         <p class="card-lead">Pick your voice, hear the starting note and a count-in, then sing into your microphone. Every note comes back marked: in tune, close, or off. Headphones help; nothing is stored.</p>
         <div class="player">
           <span class="group" id="sing-voices"><label>Voice</label></span>

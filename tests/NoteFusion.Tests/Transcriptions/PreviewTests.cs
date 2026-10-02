@@ -118,6 +118,9 @@ public class PreviewTests
 
     private sealed class FakeApi : ITranscriptionApi
     {
+        public Task<Result<HarmonyDto>> HarmoniseAsync(string key, int tempoBpm, string timeSignature, IReadOnlyList<NoteEventDto> notes, CancellationToken ct = default)
+            => Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(null, null)));
+
         private int _next;
         public TranscriptionStatus Status { get; set; } = TranscriptionStatus.Pending;
         public TranscribeOptions? LastOptions { get; private set; }

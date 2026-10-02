@@ -349,7 +349,7 @@
   $("signout").addEventListener("click", function () {
     var t = tokens();
     if (t && t.refreshToken) request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ });
-    clearTokens(); me = null; sub = null; libraryCache = null; stopPolling(); hide($("top-nav")); showAuth();
+    clearTokens(); me = null; sub = null; libraryCache = null; stopPolling(); hide($("top-nav")); document.body.classList.remove("is-pro"); showAuth();
   });
 
   // ── Views: transcribe / library / account ───────────────────────────────
@@ -460,11 +460,11 @@
     setAvatar($("acct-avatar"), me);
     (me && me.profilePictureUrl) ? show($("acct-photo-remove")) : hide($("acct-photo-remove"));
     $("acct-email").textContent = me ? (me.email || "—") : "—";
-    $("acct-plan").textContent = isPro() ? "Pro" : "Free";
+    $("acct-plan").textContent = isPro() ? planLabel() : "Free";
     var badge = $("acct-badge"); badge.textContent = isPro() ? "Pro" : "Free"; badge.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
     isPro() ? hide($("acct-upsell")) : show($("acct-upsell"));
     $("acct-sub-note").textContent = isPro()
-      ? "Your Pro subscription is active. Receipts and renewals come by email."
+      ? "Thank you for supporting NoteFusion. " + periodLine() + " Receipts come by email."
       : "You don't have an active subscription. The free plan has unlimited hummed tunes and one 30-second song preview.";
     $("acct-credits").textContent = sub ? (isPro() ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left" : (sub.songCreditsRemaining > 0 ? "1 free song preview" : "Preview used")) : "—";
     var since = me && (me.createdAtUtc || me.createdAt);
@@ -491,7 +491,39 @@
   });
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
-  function openUpgrade() { track("Opened plans"); loadPlans($("upgrade-panel"), $("plans-standalone")); }
+  function openUpgrade() {
+    track("Opened plans");
+    if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
+    $("upgrade-title-text").textContent = "Do more with NoteFusion";
+    show($("upgrade-free")); hide($("upgrade-pro"));
+    loadPlans($("upgrade-panel"), $("plans-standalone"));
+  }
+  /** What a member's plan is called: the server's plan name, or the kind of access when nothing was bought. */
+  function planLabel() {
+    if (!sub) return "NoteFusion Pro";
+    if (sub.isLifetime) return "NoteFusion Pro — Lifetime";
+    if (sub.isGift) return "NoteFusion Pro — Complimentary";
+    return sub.planName || "NoteFusion Pro";
+  }
+  /** One sentence on how long the membership runs. */
+  function periodLine() {
+    if (!sub) return "";
+    if (sub.isLifetime) return "Yours for life; nothing renews.";
+    if (sub.isGift) return "Granted by the NoteFusion team; nothing is billed.";
+    var when = sub.currentPeriodEndUtc ? new Date(sub.currentPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
+    if (!when) return "Your membership is active.";
+    return (sub.status === "canceled" ? "Cancelled; Pro runs until " : "Renews on ") + when + ".";
+  }
+  function creditsLine() { return sub ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left this month" : "—"; }
+  /** The plans dialog for a member: the membership, with nothing for sale. */
+  function renderMembership() {
+    $("upgrade-title-text").textContent = "Your Pro membership";
+    hide($("upgrade-free")); show($("upgrade-pro"));
+    $("upgrade-pro-plan").textContent = planLabel();
+    $("upgrade-pro-period").textContent = periodLine();
+    $("upgrade-pro-credits").textContent = creditsLine();
+  }
+  $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
   /** The pricing page sends a plan id along: once signed in, open its checkout without another click. */
   function autoCheckout(planId) {
     request("/api/billing/plans").then(function (plans) {
@@ -512,7 +544,10 @@
     $("who-name").textContent = me ? (me.fullName || me.email || "") : "";
     setAvatar($("who-avatar"), me);
     $("greeting").textContent = greeting(me && me.fullName);
-    $("home-sub").textContent = "What are we writing out today?";
+    $("home-sub").textContent = isPro() ? "Thanks for being a Pro member. What are we writing out today?" : "What are we writing out today?";
+    document.body.classList.toggle("is-pro", isPro());
+    isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
+    $("menu-plans-label").textContent = isPro() ? "My membership" : "View all plans";
     $("menu-name").textContent = me ? (me.fullName || "") : "";
     $("menu-email").textContent = me ? (me.email || "") : "";
     var plan = $("who-plan");
@@ -829,10 +864,13 @@
     // result is showing; the standalone panel is for the empty state and the Account view.
     isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
     hide($("upgrade-panel"));
-    // Four parts are written on request, never assumed: the tab appears when asked for.
-    hide($("tab-parts")); hide($("r-parts"));
+    // Four parts are written on request, never assumed: the tab appears once they exist (a saved
+    // sheet that already carries them, or after "Write the four parts" below).
+    hide($("r-parts"));
+    var hasParts = isPro() && !!result.parts;
+    hasParts ? show($("tab-parts")) : hide($("tab-parts"));
+    hasParts ? hide($("harmony")) : show($("harmony"));
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
-    (isPro() && !result.parts) ? hide($("harmony")) : show($("harmony"));
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
       b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
@@ -1155,13 +1193,38 @@
     });
   });
 
+  function revealParts() {
+    show($("tab-parts")); hide($("harmony"));
+    document.querySelector('.result-tabs [data-view="parts"]').click();
+    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  /**
+   * Four-part harmony, only when asked: the transcription is the one voice we heard, and alto,
+   * tenor and bass are an arrangement written under it on request. A saved sheet keeps them.
+   */
   $("harmony-add").addEventListener("click", function () {
     track("Asked for harmony");
     if (guest) { openAuth("register"); return; }
     if (!isPro()) { openUpgrade(); return; }
-    show($("tab-parts"));
-    document.querySelector('.result-tabs [data-view="parts"]').click();
-    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (!current || !current.result) return;
+    var r = current.result;
+    if (r.parts) { revealParts(); return; }
+    var btn = $("harmony-add"), html = btn.innerHTML;
+    btn.disabled = true; btn.textContent = "Writing alto, tenor and bass…";
+    request("/api/transcriptions/harmonise", { method: "POST", body: { key: r.key, tempoBpm: Math.round(r.tempo || 0), timeSignature: r.timeSignature, notes: r.notes || [] } })
+      .then(function (written) {
+        if (!written || !written.parts) { alertIn($("app-alert"), "info", "The tune needs a few notes before parts can be written under it."); return; }
+        r.parts = written.parts; r.partsMusicXml = written.partsMusicXml || "";
+        showParts(r); setupRehearsal(r); setupSing(r);
+        revealParts();
+        sfx.play("saved");
+        if (current.savedId) {
+          request("/api/library/" + current.savedId + "/parts", { method: "PUT", body: { parts: r.parts, partsMusicXml: r.partsMusicXml } })
+            .catch(function (err) { alertIn($("app-alert"), "danger", "The parts were written but could not be kept with the saved sheet: " + (err.message || err)); });
+        }
+      })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "The parts could not be written: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; btn.innerHTML = html; });
   });
 
   /** Four-part harmony: the four solfa blocks and the SATB score, Pro only. */

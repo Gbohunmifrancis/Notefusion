@@ -186,6 +186,102 @@ public class LinkTranscriptionTests
         Assert.Equal(TranscribePriority.High, api.LastOptions!.Priority);
     }
 
+    // ---------------------------------------------------------------- song uploads
+
+    [Fact]
+    public async Task A_pro_song_upload_is_a_song_and_charged_when_it_finishes()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        var submitted = await SubmitUpload(h, user, api, separate: true);
+
+        Assert.True(submitted.IsSuccess);
+        var job = Assert.Single(h.Db.TranscriptionJobs);
+        Assert.Equal(TranscriptionJobKind.Song, job.Kind);
+        Assert.True(job.WasPro);
+        Assert.Null(job.SongCreditConsumedAtUtc);
+        Assert.Equal(20, (await Shown(h, user)).SongCreditsRemaining);
+
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, submitted.Value, api);
+        await Poll(h, user, submitted.Value, api);
+
+        Assert.Equal(Now, h.Db.TranscriptionJobs.Single().SongCreditConsumedAtUtc);
+        Assert.Null(h.Db.TranscriptionJobs.Single().TrialConsumedAtUtc);
+        Assert.Equal(19, (await Shown(h, user)).SongCreditsRemaining);
+    }
+
+    [Fact]
+    public async Task A_pro_account_is_refused_its_twenty_first_song_upload_this_month()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        SpendSongs(h, user, 20, pro: true);
+
+        var result = await SubmitUpload(h, user, new FakeTranscriptionApi(), separate: true);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("BILLING_SONG_CREDITS_EXHAUSTED", result.Error.Code);
+    }
+
+    [Fact]
+    public async Task Links_and_song_uploads_share_the_monthly_allowance()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        SpendSongs(h, user, 19, pro: true);
+        var api = new FakeTranscriptionApi();
+
+        var song = await SubmitUpload(h, user, api, separate: true);
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, song.Value, api);
+
+        Assert.Equal(0, (await Shown(h, user)).SongCreditsRemaining);
+        var link = await SubmitLink(h, user, api);
+        Assert.Equal("BILLING_SONG_CREDITS_EXHAUSTED", link.Error.Code);
+    }
+
+    [Fact]
+    public async Task A_pro_hum_upload_is_not_a_song_and_costs_nothing()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        var submitted = await SubmitUpload(h, user, api, separate: false);
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, submitted.Value, api);
+
+        var job = h.Db.TranscriptionJobs.Single();
+        Assert.Equal(TranscriptionJobKind.Upload, job.Kind);
+        Assert.Null(job.SongCreditConsumedAtUtc);
+        Assert.Equal(20, (await Shown(h, user)).SongCreditsRemaining);
+    }
+
+    [Fact]
+    public async Task A_free_accounts_song_upload_stays_a_trial_generation()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        var submitted = await SubmitUpload(h, user, api, separate: true);
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, submitted.Value, api);
+
+        var job = h.Db.TranscriptionJobs.Single();
+        Assert.Equal(TranscriptionJobKind.Upload, job.Kind);
+        Assert.Null(job.SongCreditConsumedAtUtc);
+        Assert.Equal(Now, job.TrialConsumedAtUtc);
+        Assert.Equal(1, (await Shown(h, user)).SongCreditsRemaining); // the one link preview is untouched
+    }
+
     // ---------------------------------------------------------------- input
 
     [Theory]
@@ -244,6 +340,12 @@ public class LinkTranscriptionTests
                 api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
             .Handle(new SubmitLinkTranscriptionCommand(url, TranscriptionMode.Melody, null, null), CancellationToken.None);
 
+    private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeTranscriptionApi api, bool separate)
+        => new SubmitTranscriptionCommandHandler(
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister)
+            .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "song.m4a", TranscriptionMode.Melody, null, null, Separate: separate),
+                CancellationToken.None);
+
     private static Task<Result<TranscriptionJobDto>> Poll(
         TestHarness h, User user, string jobId, FakeTranscriptionApi api)
         => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock)
@@ -257,6 +359,9 @@ public class LinkTranscriptionTests
 
     private sealed class FakeTranscriptionApi : ITranscriptionApi
     {
+        public Task<Result<HarmonyDto>> HarmoniseAsync(string key, int tempoBpm, string timeSignature, IReadOnlyList<NoteEventDto> notes, CancellationToken ct = default)
+            => Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(null, null)));
+
         private int _next;
 
         public TranscriptionStatus Status { get; set; } = TranscriptionStatus.Pending;

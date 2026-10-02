@@ -216,6 +216,57 @@
     }
   }
 
+  /** The signed-in browser's subscription when it is active; null for everyone else. */
+  function membership() {
+    var token = accessToken();
+    if (!token) return Promise.resolve(null);
+    return fetch(api + "/api/billing/my-subscription", { headers: { Accept: "application/json", Authorization: "Bearer " + token }, cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (sub) { return sub && sub.isActive ? sub : null; })
+      .catch(function () { return null; });
+  }
+
+  function renderMember(sub) {
+    container.className = "plans plans--single reveal is-visible";
+    container.setAttribute("aria-busy", "false");
+    container.replaceChildren();
+
+    var card = document.createElement("div");
+    card.className = "plan plan--featured";
+    var tag = document.createElement("span");
+    tag.className = "plan-tag";
+    tag.textContent = "Your plan";
+    card.appendChild(tag);
+    var title = document.createElement("h3");
+    title.textContent = "You're on NoteFusion Pro";
+    card.appendChild(title);
+    var blurb = document.createElement("p");
+    blurb.className = "blurb";
+    var when = sub.currentPeriodEndUtc && !sub.isLifetime
+      ? new Date(sub.currentPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
+      : "";
+    blurb.textContent = sub.isLifetime
+      ? "Lifetime access. Thank you for supporting NoteFusion."
+      : sub.isGift
+        ? "Complimentary access from the NoteFusion team."
+        : (sub.planName || "NoteFusion Pro") + (when ? (sub.status === "canceled" ? "; runs until " : "; renews on ") + when : "") + ". Thank you for supporting NoteFusion.";
+    card.appendChild(blurb);
+    card.appendChild(
+      featureList([
+        "Whole songs: up to six minutes, twenty a month",
+        "Alto, tenor and bass written under any tune, when you ask",
+        "Sing-along marking, note by note",
+        "Clean PDF, MusicXML and MIDI downloads",
+        "Priority lane: never queued behind anyone",
+      ]),
+    );
+    card.appendChild(action("Open the app", true, "pricing_member", "/app"));
+    container.appendChild(card);
+
+    if (regionLabel) regionLabel.hidden = true;
+    if (regionNote) regionNote.textContent = "You're signed in as a Pro member; there is nothing to buy here.";
+  }
+
   function render(payload) {
     var country =
       payload && typeof payload.countryCode === "string"
@@ -292,7 +343,10 @@
         if (!response.ok) throw new Error("Pricing request failed");
         return response.json();
       })
-      .then(render)
+      .then(function (payload) {
+        // A member has nothing to buy here: show the membership instead of the prices.
+        return membership().then(function (sub) { sub ? renderMember(sub) : render(payload); });
+      })
       .catch(showError)
       .finally(function () {
         if (timeout !== null) window.clearTimeout(timeout);

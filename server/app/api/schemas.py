@@ -99,6 +99,27 @@ class GradeTargetDto(ApiModel):
     lead_in_sec: float = 0.0
 
 
+class HarmoniseNoteDto(ApiModel):
+    pitch_midi: int
+    start_beat: float
+    dur_beats: float
+    conf: float = 1.0
+
+
+class HarmoniseRequest(ApiModel):
+    """A melody as the clients hold it, to have alto, tenor and bass written under it."""
+
+    key: str
+    tempo_bpm: int
+    time_signature: str = "4/4"
+    notes: list[HarmoniseNoteDto]
+
+
+class HarmoniseResponse(ApiModel):
+    parts: dict[str, PartDto] | None = None
+    parts_musicxml: str = ""
+
+
 class GradeNoteDto(ApiModel):
     index: int
     target_midi: int

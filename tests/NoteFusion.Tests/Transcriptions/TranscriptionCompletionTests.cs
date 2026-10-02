@@ -433,6 +433,9 @@ public class TranscriptionCompletionTests
     /// </summary>
     private sealed class FakeMlService : ITranscriptionApi
     {
+        public Task<Result<HarmonyDto>> HarmoniseAsync(string key, int tempoBpm, string timeSignature, IReadOnlyList<NoteEventDto> notes, CancellationToken ct = default)
+            => Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(null, null)));
+
         public TranscriptionStatus Status { get; set; } = TranscriptionStatus.Processing;
 
         /// <summary>The reason a failed job gives, when it gives one.</summary>
