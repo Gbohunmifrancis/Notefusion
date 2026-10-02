@@ -49,6 +49,8 @@ export interface NotePlayerState {
   rate: number;
   /** True when the clip restarts on reaching the end. */
   loop: boolean;
+  /** A passage to repeat, in seconds; null plays straight through. */
+  loopRange: LoopRange | null;
   /** Human-readable error message from load/playback failures, or null. */
   error: string | null;
 }
@@ -67,6 +69,8 @@ export interface UseNotePlayerResult extends NotePlayerState {
    */
   setRate: (rate: number) => void;
   setLoop: (loop: boolean) => void;
+  /** Repeat a passage; the player jumps back to `start` whenever it reaches `end`. */
+  setLoopRange: (range: LoopRange | null) => void;
   /** Back to the beginning, still playing if it was. */
   skipToStart: () => void;
 }
@@ -80,6 +84,11 @@ export const MIN_RATE = 0.5;
 export const MAX_RATE = 2;
 
 interface NoteWindow {
+  start: number;
+  end: number;
+}
+
+export interface LoopRange {
   start: number;
   end: number;
 }
@@ -110,6 +119,7 @@ export function useNotePlayer(
   const [error, setError] = useState<string | null>(null);
   const [rate, setRateState] = useState(1);
   const [loop, setLoopState] = useState(false);
+  const [loopRange, setLoopRangeState] = useState<LoopRange | null>(null);
 
   const noteWindowsRef = useRef<NoteWindow[]>([]);
   const mountedRef = useRef(true);
@@ -215,8 +225,24 @@ export function useNotePlayer(
   }, []);
 
   // Create the audio player with the file URI
-  const player = useAudioPlayer(fileUri ? { uri: fileUri } : undefined);
+  // 100 ms ticks: an A–B loop is only as tight as the status interval, and half a
+  // second past the end of a passage is a whole beat at rehearsal speed.
+  const player = useAudioPlayer(fileUri ? { uri: fileUri } : undefined, { updateInterval: 100 });
   const status = useAudioPlayerStatus(player);
+
+  // The A–B loop. Done from the status tick rather than a native loop because the
+  // platform players only loop whole clips.
+  const loopRangeRef = useRef<LoopRange | null>(null);
+  useEffect(() => {
+    loopRangeRef.current = loopRange;
+  }, [loopRange]);
+  useEffect(() => {
+    const range = loopRangeRef.current;
+    if (!range || !status.playing) return;
+    if (status.currentTime >= range.end - 0.02 || status.currentTime < range.start - 1.0) {
+      void player.seekTo(range.start);
+    }
+  }, [status.currentTime, status.playing, player]);
 
   /**
    * Re-apply the practice settings to the player.
@@ -284,10 +310,23 @@ export function useNotePlayer(
     setLoopState(next);
   }, []);
 
+  const setLoopRange = useCallback(
+    (next: LoopRange | null) => {
+      const valid = next && next.end > next.start + 0.05 ? next : null;
+      setLoopRangeState(valid);
+      // Entering a passage from outside it starts at its beginning.
+      if (valid && (status.currentTime < valid.start || status.currentTime >= valid.end)) {
+        void player.seekTo(valid.start);
+      }
+    },
+    [player, status.currentTime],
+  );
+
   // Seeks without pausing: mid-run, "start again" means start again, and having
-  // to press play afterwards breaks the rhythm of practising a passage.
+  // to press play afterwards breaks the rhythm of practising a passage. With a
+  // passage set, "the start" is the passage's.
   const skipToStart = useCallback(() => {
-    void player.seekTo(0);
+    void player.seekTo(loopRangeRef.current?.start ?? 0);
   }, [player]);
 
   return {
@@ -299,6 +338,7 @@ export function useNotePlayer(
     currentNoteIndex,
     rate,
     loop,
+    loopRange,
     error: error || status.error,
     play,
     pause,
@@ -307,6 +347,7 @@ export function useNotePlayer(
     toggle,
     setRate,
     setLoop,
+    setLoopRange,
     skipToStart,
   };
 }

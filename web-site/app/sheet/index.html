@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shared sheet — NoteFusion</title>
+<meta name="description" content="A Tonic Solfa sheet shared from NoteFusion: read it, hear it, rehearse your part.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2563EB">
+<link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2563EB; --blue-dark: #1D4ED8; --blue-soft: #E0E7FF; --blue-tint: #EFF4FF;
+    --ink: #0F172A; --muted: #5D6D82; --faint: #94A3B8; --line: #E2E8F0;
+    --bg: #F4F7FC; --surface: #FFFFFF; --success: #15803D; --danger: #B91C1C;
+    --radius: 16px; --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(16,24,40,.04), 0 6px 20px rgba(16,24,40,.05);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: var(--blue); }
+  button { font-family: inherit; }
+  .hidden { display: none !important; }
+  .top { background: var(--surface); border-bottom: 1px solid var(--line); }
+  .top-inner { max-width: 960px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.1rem; color: var(--ink); text-decoration: none; }
+  .brand-mark { width: 30px; height: 30px; background: var(--blue); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; border-radius: 8px; }
+  .brand small { font-weight: 500; color: var(--muted); font-size: .8rem; }
+  .top-spacer { flex: 1; }
+  main { max-width: 960px; margin: 0 auto; padding: 28px 20px 80px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
+  h1 { font-size: 1.6rem; letter-spacing: -0.02em; margin: 0 0 4px; }
+  h2 { font-size: 1.05rem; font-weight: 700; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); } .small { font-size: .85rem; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
+  .chip { padding: 5px 10px; border-radius: 999px; background: var(--bg); font-size: .8rem; font-weight: 600; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px solid transparent; font-weight: 600; font-size: .95rem; cursor: pointer; background: var(--blue); color: #fff; }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+  .btn-sm { padding: 6px 12px; font-size: .85rem; }
+  .btn.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .tabs { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 999px; margin: 8px 0 16px; max-width: 360px; }
+  .tab { flex: 1; text-align: center; padding: 8px; border-radius: 999px; border: none; background: none; font-weight: 600; color: var(--muted); cursor: pointer; }
+  .tab[aria-selected=true] { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .sheet-wrap { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 200px; padding: 12px; }
+  .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border-radius: var(--radius-sm); padding: 18px; }
+  .solfa .doh { color: var(--blue-dark); font-weight: 700; }
+  .part { margin-top: 12px; }
+  .part h3 { font-size: .85rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+  table.hymn { border-collapse: collapse; margin: 6px 0 12px; font-family: ui-monospace, Menlo, monospace; }
+  table.hymn td { border-left: 2px solid var(--ink); padding: 2px 8px; vertical-align: top; white-space: nowrap; }
+  table.hymn td:last-child { border-right: 2px solid var(--ink); }
+  .cell { display: inline-block; min-width: 2.6em; text-align: center; margin-right: 2px; }
+  .cell b { display: block; font-size: 1rem; } .cell b.now { color: var(--blue); }
+  .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: .72rem; color: var(--muted); min-height: 1em; }
+  .player { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .player .group { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border-radius: 999px; padding: 4px 8px; }
+  .player label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .player input[type=number] { width: 52px; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; }
+  .player select { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .lyrics { white-space: pre-wrap; color: var(--ink); }
+  .alert { padding: 12px 14px; border-radius: var(--radius-sm); background: #FEE2E2; color: var(--danger); }
+  .foot { color: var(--faint); font-size: .8rem; text-align: center; margin-top: 30px; }
+  .foot a.cta { display: inline-block; margin-top: 8px; }
+  @media print {
+    .top, .player, .tabs, .no-print, .foot .cta { display: none !important; }
+    body { background: #fff; } .card { box-shadow: none; border: none; padding: 0; }
+    .hidden-print-show { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>shared sheet</small></a>
+    <span class="top-spacer"></span>
+    <a class="btn btn-ghost btn-sm" href="/app">Make your own</a>
+  </div>
+</header>
+<main>
+  <div id="loading" class="card"><p class="muted">Opening the sheet…</p></div>
+  <div id="error" class="card hidden"><div class="alert" id="error-text"></div></div>
+
+  <div id="sheet" class="hidden">
+    <div class="card">
+      <h1 id="s-title"></h1>
+      <p class="muted small" id="s-by"></p>
+      <div class="chips" id="s-chips"></div>
+    </div>
+
+    <div class="card">
+      <h2>Rehearse</h2>
+      <p class="muted small no-print">Hear the tune or just your part. Mute a voice to sing it against the others; loop a few bars; slow it down.</p>
+      <div class="player" id="player">
+        <button class="btn" id="play" type="button">▶ Play</button>
+        <button class="btn btn-ghost btn-sm" id="restart" type="button">⟲</button>
+        <span class="group"><label for="rate">Speed</label>
+          <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
+        <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
+          <input type="number" id="loop-from" min="1" value="1"> – <input type="number" id="loop-to" min="1" value="4"></span>
+        <span class="group hidden" id="voices"><label>Voices</label></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" data-view="solfa" type="button">Tonic Solfa</button>
+        <button class="tab" role="tab" aria-selected="false" data-view="staff" type="button">Staff</button>
+        <button class="tab hidden" role="tab" aria-selected="false" data-view="parts" type="button" id="tab-parts">SATB</button>
+      </div>
+      <div id="v-solfa">
+        <div class="solfa" id="solfa-text"></div>
+        <div id="hymn"></div>
+        <p class="lyrics" id="lyrics"></p>
+      </div>
+      <div id="v-staff" class="hidden"><div class="sheet-wrap" id="staff"></div></div>
+      <div id="v-parts" class="hidden">
+        <div class="sheet-wrap" id="staff-parts" style="margin-bottom:12px"></div>
+        <div id="parts-solfa"></div>
+      </div>
+      <div class="chips no-print">
+        <button class="btn btn-ghost btn-sm" id="dl-solfa" type="button">Download solfa text</button>
+        <button class="btn btn-ghost btn-sm" id="print" type="button">Print</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">Transcribed with NoteFusion — hum a tune or paste a song link and get Tonic Solfa, staff notation and four-part harmony.<br><a class="cta" href="/">notefusion.studio</a></p>
+</main>
+<script src="/assets/choir.js"></script>
+<script src="/assets/sheet.js"></script>
+</body>
+</html>

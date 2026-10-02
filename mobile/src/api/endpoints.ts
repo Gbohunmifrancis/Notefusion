@@ -19,6 +19,8 @@ import type {
   Plan,
   RegistrationResponse,
   SavedTranscription,
+  ShareLink,
+  TransposedSheet,
   Subscription,
   SystemAnnouncement,
   SystemHealth,
@@ -192,6 +194,16 @@ export const transcriptionsApi = {
       .then((r) => r.data);
   },
 
+  /** Transposes a result that is not saved yet; the saved form is `libraryApi.transpose`. */
+  transpose: (body: {
+    key: string;
+    semitones: number;
+    notes: SavedTranscription["notes"];
+    musicXml: string;
+    parts?: Record<string, { notes: NonNullable<SavedTranscription["notes"]>; solfaLines: string[] }> | null;
+    partsMusicXml?: string | null;
+  }) => api.post<TransposedSheet>("/api/transcriptions/transpose", body).then((r) => r.data),
+
   getJob: (jobId: string) =>
     api
       .get<TranscriptionJob>(`/api/transcriptions/jobs/${jobId}`)
@@ -228,6 +240,9 @@ export const libraryApi = {
     notes: SavedTranscription["notes"];
     overallConfidence: number;
     sourceJobId?: string;
+    lyrics?: string;
+    parts?: Record<string, { notes: NonNullable<SavedTranscription["notes"]>; solfaLines: string[] }>;
+    partsMusicXml?: string;
   }) => api.post<SavedTranscription>("/api/library", body).then((r) => r.data),
 
   rename: (id: string, title: string) =>
@@ -262,6 +277,17 @@ export const libraryApi = {
 
   remove: (id: string) =>
     api.delete(`/api/library/${id}`).then(() => undefined),
+
+  updateLyrics: (id: string, lyrics: string) =>
+    api.put<SavedTranscription>(`/api/library/${id}/lyrics`, { lyrics }).then((r) => r.data),
+
+  /** Transpose for a choir's range: moves every note and the key; the solfa reads as before. */
+  transpose: (id: string, semitones: number) =>
+    api.post<SavedTranscription>(`/api/library/${id}/transpose`, { semitones }).then((r) => r.data),
+
+  share: (id: string) => api.post<ShareLink>(`/api/library/${id}/share`).then((r) => r.data),
+
+  unshare: (id: string) => api.delete(`/api/library/${id}/share`).then(() => undefined),
 };
 
 export const billingApi = {

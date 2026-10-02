@@ -278,7 +278,7 @@ function beatsPerBar(timeSignature: string): number {
 }
 
 /** Mirrors app/pipeline/solfa_render.py. */
-function renderSolfaLines(
+export function renderSolfaLines(
   notes: readonly NoteEvent[],
   header: string,
   timeSignature: string,

@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NoteFusion.Core.Entities;
 
@@ -11,6 +13,8 @@ namespace NoteFusion.Infrastructure.Persistence.Configurations;
 /// </summary>
 public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transcription>
 {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
     public void Configure(EntityTypeBuilder<Transcription> builder)
     {
         builder.ToTable("transcriptions");
@@ -27,6 +31,23 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
         builder.Property(t => t.OverallConfidence).IsRequired();
         builder.Property(t => t.SourceJobId).HasMaxLength(100);
         builder.Property(t => t.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
+        builder.Property(t => t.Lyrics).HasColumnName("lyrics").IsRequired().HasDefaultValue(string.Empty);
+        builder.Property(t => t.PartsMusicXml).HasColumnName("parts_music_xml");
+        builder.Property(t => t.ShareToken).HasColumnName("share_token").HasMaxLength(64);
+        builder.Property(t => t.SharedAtUtc).HasColumnName("shared_at_utc");
+        builder.HasIndex(t => t.ShareToken).IsUnique();
+
+        // The four parts are read and written whole, never queried into, so one JSON column
+        // beats four more owned tables.
+        builder.Property(t => t.Parts)
+            .HasColumnName("parts_json")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonOptions),
+                v => JsonSerializer.Deserialize<Dictionary<string, List<NoteEvent>>>(v, JsonOptions),
+                new ValueComparer<Dictionary<string, List<NoteEvent>>?>(
+                    (a, b) => JsonSerializer.Serialize(a, JsonOptions) == JsonSerializer.Serialize(b, JsonOptions),
+                    v => JsonSerializer.Serialize(v, JsonOptions).GetHashCode(),
+                    v => JsonSerializer.Deserialize<Dictionary<string, List<NoteEvent>>>(JsonSerializer.Serialize(v, JsonOptions), JsonOptions)));
 
         // Movable-do key as flattened columns on the same table.
         builder.OwnsOne(t => t.Key, key =>

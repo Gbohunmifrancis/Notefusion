@@ -468,12 +468,36 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Lyrics")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValue("")
+                        .HasColumnName("lyrics");
+
                     b.Property<string>("MusicXml")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<double>("OverallConfidence")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("Parts")
+                        .HasColumnType("text")
+                        .HasColumnName("parts_json");
+
+                    b.Property<string>("PartsMusicXml")
+                        .HasColumnType("text")
+                        .HasColumnName("parts_music_xml");
+
+                    b.Property<string>("ShareToken")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("share_token");
+
+                    b.Property<DateTime?>("SharedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("shared_at_utc");
 
                     b.Property<string>("SourceJobId")
                         .HasMaxLength(100)
@@ -501,6 +525,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ShareToken")
+                        .IsUnique();
 
                     b.ToTable("transcriptions", (string)null);
                 });

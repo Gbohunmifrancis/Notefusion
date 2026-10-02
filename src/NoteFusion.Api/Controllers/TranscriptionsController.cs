@@ -104,6 +104,14 @@ public sealed class TranscriptionsController : ApiControllerBase
     }
 
     /// <summary>Polls a transcription job for status, progress, and the result once done.</summary>
+    /// <summary>
+    /// Transposes a result the client still holds (not yet saved). Stateless; the saved-sheet
+    /// equivalent is <c>POST /api/library/{id}/transpose</c>.
+    /// </summary>
+    [HttpPost("transpose")]
+    public async Task<IActionResult> Transpose([FromBody] TransposeSheetCommand command, CancellationToken ct)
+        => HandleResult(await _sender.Send(command, ct));
+
     [HttpGet("jobs/{jobId}")]
     public async Task<IActionResult> GetJob(string jobId, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetTranscriptionJobQuery(jobId), ct));

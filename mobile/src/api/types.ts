@@ -112,6 +112,25 @@ export interface TranscriptionResult {
   parts?: Record<"soprano" | "alto" | "tenor" | "bass", TranscriptionPart> | null;
   /** The four parts as one MusicXML score. Pro only. */
   partsMusicXml?: string;
+  /** The words under the solfa; empty until the user types them. Saved items only. */
+  lyrics?: string;
+  /** The public link's token when the saved sheet is shared; null or absent otherwise. */
+  shareToken?: string | null;
+}
+
+/** What the API hands back for a transposed sheet (saved or not): the moved notes, labelled. */
+export interface TransposedSheet {
+  key: string;
+  notes: NoteEvent[];
+  musicXml: string;
+  parts?: Record<string, TranscriptionPart> | null;
+  partsMusicXml?: string | null;
+}
+
+/** A public link to a saved sheet. */
+export interface ShareLink {
+  token: string;
+  url: string;
 }
 
 /** One voice of the four-part harmony, in the same note shape as the melody. */
@@ -157,6 +176,13 @@ export interface SavedTranscription {
    * route omits it so a library page doesn't download every score.
    */
   musicXml?: string | null;
+  /** The words under the solfa, as typed. */
+  lyrics?: string;
+  /** Four-part harmony, labelled for the stored key. Detail reads only. */
+  parts?: Record<string, TranscriptionPart> | null;
+  partsMusicXml?: string | null;
+  /** Set while the sheet is behind a public link. */
+  shareToken?: string | null;
 }
 
 // --- Billing ------------------------------------------------------------

@@ -97,9 +97,12 @@
   // ── State ────────────────────────────────────────────────────────────────
   var me = null;          // { fullName, email }
   var sub = null;         // SubscriptionDto
-  var current = null;     // { jobId, source, result }
+  var current = null;     // { jobId, kind, source, result, savedId, shareToken, semitones }
   var pollTimer = null;
   var osmd = null;
+  var C = window.NfChoir;
+  var player = null;      // the rehearsal player, made once the first result shows
+  var hymnCells = [];     // solfa cells of the hymn layout, for the playback cursor
 
   // ── Auth view ────────────────────────────────────────────────────────────
   function showAuth() {
@@ -229,7 +232,8 @@
   // ── Polling ──────────────────────────────────────────────────────────────
   function startJob(job, kind) {
     stopPolling();
-    current = { jobId: job.jobId, kind: kind, source: job.source || null, result: null, startedAt: Date.now() };
+    current = { jobId: job.jobId, kind: kind, source: job.source || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0 };
+    $("save-title").value = "";
     hide($("result"));
     show($("progress"));
     $("p-title").textContent = kind === "link" ? "Reading the link…" : "Transcribing your recording…";
@@ -311,14 +315,11 @@
         : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
     } else hide(trunc);
 
-    var solfa = $("r-solfa-text");
-    solfa.innerHTML = "";
-    (result.solfaLines || []).forEach(function (line, i) {
-      var div = document.createElement("div");
-      if (i === 0 && /^Doh is/i.test(line)) div.className = "doh";
-      div.textContent = line;
-      solfa.appendChild(div);
-    });
+    renderSolfa(result);
+    $("lyrics").value = current.lyrics || "";
+    setupRehearsal(result);
+    renderTranspose();
+    renderSave();
 
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
     isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
@@ -336,6 +337,180 @@
     s = Math.round(s || 0);
     return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
   }
+
+  /** The solfa lines, and under them the hymn-book layout once there are words. */
+  function renderSolfa(result) {
+    var lines = result.solfaLines && result.solfaLines.length > 1 ? result.solfaLines : C.renderLines(result.notes || [], C.keyHeader(result.key), result.timeSignature);
+    var hasLyrics = !!(current.lyrics && current.lyrics.trim());
+    var solfa = $("r-solfa-text");
+    solfa.innerHTML = "";
+    (hasLyrics ? lines.slice(0, 1) : lines).forEach(function (line, i) {
+      var div = document.createElement("div");
+      if (i === 0 && /^Doh is/i.test(line)) div.className = "doh";
+      div.textContent = line;
+      solfa.appendChild(div);
+    });
+    var hymn = $("r-hymn"); hymn.innerHTML = ""; hymnCells = [];
+    if (!hasLyrics) return;
+    var bpb = C.beatsPerBar(result.timeSignature);
+    C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars, r) {
+      var table = document.createElement("table"); table.className = "hymn"; var tr = document.createElement("tr");
+      bars.forEach(function (bar, b) {
+        var td = document.createElement("td");
+        bar.forEach(function (cell, c) {
+          var span = document.createElement("span"); span.className = "cell";
+          var bEl = document.createElement("b"); bEl.textContent = cell.solfa; var iEl = document.createElement("i"); iEl.textContent = cell.lyric;
+          span.appendChild(bEl); span.appendChild(iEl); td.appendChild(span);
+          hymnCells.push({ el: bEl, beat: (r * 4 + b) * bpb + c * 0.5 });
+        });
+        tr.appendChild(td);
+      });
+      table.appendChild(tr); hymn.appendChild(table);
+    });
+  }
+
+  $("lyrics").addEventListener("input", function () {
+    if (!current || !current.result) return;
+    current.lyrics = $("lyrics").value;
+    renderSolfa(current.result);
+  });
+  $("lyrics").addEventListener("change", function () {
+    if (!current || !current.savedId) return;
+    request("/api/library/" + current.savedId + "/lyrics", { method: "PUT", body: { lyrics: $("lyrics").value } })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "The lyrics were not saved: " + (err.message || err)); });
+  });
+
+  // ── Rehearsal player ─────────────────────────────────────────────────────
+  function rehearsalVoices(result) {
+    var voices = [{ name: "soprano", notes: result.notes || [], gain: 1 }];
+    if (isPro() && result.parts) {
+      C.VOICES.forEach(function (v) { if (v !== "soprano" && result.parts[v] && result.parts[v].notes) voices.push({ name: v, notes: result.parts[v].notes, gain: 0.8 }); });
+    }
+    return voices;
+  }
+  function setupRehearsal(result) {
+    if (!player) {
+      player = C.createPlayer();
+      $("play").addEventListener("click", function () { player.toggle(); });
+      $("restart").addEventListener("click", function () { player.stop(); player.play(); });
+      $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
+      ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
+      player.onTick(function (t) {
+        $("play").textContent = t.playing ? "❚❚ Pause" : "▶ Play";
+        var now = -1;
+        for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
+        hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
+      });
+    }
+    var voices = rehearsalVoices(result);
+    player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature });
+    var bars = C.barCount(result.notes || [], result.timeSignature);
+    $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
+    var box = $("voices");
+    box.querySelectorAll("button").forEach(function (b) { b.remove(); });
+    if (voices.length > 1) {
+      show(box);
+      voices.forEach(function (v) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = v.name[0].toUpperCase(); b.title = "Mute " + v.name;
+        b.setAttribute("aria-pressed", "true");
+        b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", String(on)); player.setVoiceOn(v.name, on); });
+        box.appendChild(b);
+      });
+    } else hide(box);
+  }
+  function applyLoop() {
+    if (!player) return;
+    if ($("loop-on").checked) player.setLoopBars(parseInt($("loop-from").value, 10) || 1, parseInt($("loop-to").value, 10) || 1);
+    else player.setLoopBars(null, null);
+  }
+
+  // ── Transpose for my choir ───────────────────────────────────────────────
+  function renderTranspose() {
+    var r = current.result, n = current.semitones || 0;
+    $("tr-value").textContent = n > 0 ? "+" + n : String(n);
+    $("tr-key").textContent = n === 0 ? r.key : r.key + " → " + C.shiftKeyName(r.key, n);
+    $("tr-apply").disabled = n === 0;
+    $("tr-apply").textContent = n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
+    var table = $("ranges"); table.innerHTML = "";
+    C.rangeReport(r.notes || [], isPro() ? r.parts : null, n).forEach(function (row) {
+      var tr = document.createElement("tr");
+      var a = document.createElement("td"); a.textContent = row.voice;
+      var b = document.createElement("td"); b.textContent = C.pitchName(row.low) + " – " + C.pitchName(row.high);
+      var c = document.createElement("td");
+      c.className = row.status === "ok" ? "ok" : row.overBy > 2 ? "bad" : "warn";
+      c.textContent = row.status === "ok" ? "comfortable" : row.status === "wide" ? "too wide" : row.overBy + (row.overBy === 1 ? " semitone" : " semitones") + " too " + row.status;
+      tr.appendChild(a); tr.appendChild(b); tr.appendChild(c); table.appendChild(tr);
+    });
+  }
+  $("tr-down").addEventListener("click", function () { if (!current) return; current.semitones = Math.max(-12, (current.semitones || 0) - 1); renderTranspose(); });
+  $("tr-up").addEventListener("click", function () { if (!current) return; current.semitones = Math.min(12, (current.semitones || 0) + 1); renderTranspose(); });
+  $("tr-apply").addEventListener("click", function () {
+    if (!current || !current.result || !current.semitones) return;
+    var r = current.result, n = current.semitones, btn = $("tr-apply");
+    btn.disabled = true;
+    var req = current.savedId
+      ? request("/api/library/" + current.savedId + "/transpose", { method: "POST", body: { semitones: n } })
+      : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null } });
+    req.then(function (moved) {
+      current.semitones = 0;
+      var next = Object.assign({}, r, {
+        key: moved.key, notes: moved.notes || [], musicXml: moved.musicXml || "",
+        parts: moved.parts || null, partsMusicXml: moved.partsMusicXml || "",
+        solfaLines: C.renderLines(moved.notes || [], C.keyHeader(moved.key), r.timeSignature)
+      });
+      current.result = next;
+      $("sheet-parts").innerHTML = "";
+      showResult(next);
+    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err)); btn.disabled = false; });
+  });
+
+  // ── Save & share ─────────────────────────────────────────────────────────
+  function renderSave() {
+    if (current.savedId) { hide($("save-form")); show($("saved")); $("saved-title").textContent = current.title || ""; renderShare(); }
+    else {
+      show($("save-form")); hide($("saved"));
+      var src = current.result.source || current.source;
+      if (!$("save-title").value) $("save-title").value = src ? (src.title + (src.artist ? " — " + src.artist : "")) : "My transcription";
+    }
+  }
+  function renderShare() {
+    if (current.shareToken) {
+      $("share-url").value = "https://notefusion.studio/app/sheet/?s=" + encodeURIComponent(current.shareToken);
+      show($("share-row")); $("share").textContent = "Share a link";
+    } else hide($("share-row"));
+  }
+  $("save").addEventListener("click", function () {
+    if (!current || !current.result) return;
+    var r = current.result, btn = $("save");
+    btn.disabled = true;
+    request("/api/library", { method: "POST", body: {
+      title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
+      musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
+      lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null
+    } }).then(function (saved) {
+      current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
+      renderSave();
+    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("share").addEventListener("click", function () {
+    if (!current || !current.savedId) return;
+    var btn = $("share"); btn.disabled = true;
+    request("/api/library/" + current.savedId + "/share", { method: "POST" })
+      .then(function (link) { current.shareToken = link.token; renderShare(); $("share-url").select(); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("share-copy").addEventListener("click", function () {
+    var url = $("share-url").value;
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { $("share-copy").textContent = "Copied"; setTimeout(function () { $("share-copy").textContent = "Copy"; }, 1500); }, function () { $("share-url").select(); });
+  });
+  $("share-stop").addEventListener("click", function () {
+    if (!current || !current.savedId) return;
+    request("/api/library/" + current.savedId + "/share", { method: "DELETE" })
+      .then(function () { current.shareToken = null; renderShare(); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not stop sharing: " + (err.message || err)); });
+  });
 
   document.querySelectorAll(".result-tabs .tab[data-view]").forEach(function (tab) {
     tab.addEventListener("click", function () {
@@ -367,7 +542,8 @@
       var block = document.createElement("div"); block.className = "part";
       var h = document.createElement("h3"); h.textContent = name; block.appendChild(h);
       var pre = document.createElement("div"); pre.className = "solfa";
-      (part.solfaLines || []).slice(1).forEach(function (line) { var d = document.createElement("div"); d.textContent = line; pre.appendChild(d); });
+      var lines = part.solfaLines && part.solfaLines.length > 1 ? part.solfaLines : C.renderLines(C.label(part.notes || [], result.key, result.notes || []), "", result.timeSignature);
+      lines.slice(1).forEach(function (line) { var d = document.createElement("div"); d.textContent = line; pre.appendChild(d); });
       block.appendChild(pre);
       holder.appendChild(block);
     });
@@ -440,7 +616,7 @@
   $("dl-solfa").addEventListener("click", function () {
     if (!current || !current.result) return;
     var r = current.result;
-    var text = (r.solfaLines || []).join("\n") + "\n\n" + $("r-credit").textContent + "\n";
+    var text = (r.solfaLines || []).join("\n") + (current.lyrics && current.lyrics.trim() ? "\n\n" + current.lyrics.trim() : "") + "\n\n" + $("r-credit").textContent + "\n";
     download(baseName() + "-solfa.txt", new Blob([text], { type: "text/plain" }));
   });
   $("dl-parts").addEventListener("click", gated(function (r) {
@@ -492,6 +668,39 @@
         doc.text($("r-credit").textContent + "  ·  notefusion.studio", margin, H - margin + 2, { maxWidth: W - 2 * margin });
         doc.text(String(i + 1) + " / " + canvases.length, W - margin, H - margin + 2, { align: "right" });
       });
+      // The solfa on its own page: the hymn-book layout when there are words.
+      doc.addPage();
+      doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(15, 23, 42);
+      doc.text(title, margin, margin + 6);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(93, 109, 130);
+      doc.text("Tonic Solfa · " + subtitle, margin, margin + 12);
+      doc.setFont("courier", "normal"); doc.setFontSize(10); doc.setTextColor(15, 23, 42);
+      var y = margin + 24;
+      var lines = result.solfaLines && result.solfaLines.length > 1 ? result.solfaLines : C.renderLines(result.notes || [], C.keyHeader(result.key), result.timeSignature);
+      var words = current.lyrics && current.lyrics.trim();
+      doc.text(lines[0] || "", margin, y); y += 7;
+      if (words) {
+        C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars) {
+          var top = "", bottom = "";
+          bars.forEach(function (bar) {
+            top += "| "; bottom += "  ";
+            bar.forEach(function (cell) {
+              var w = Math.max(cell.solfa.length, cell.lyric.length, 2) + 1;
+              top += cell.solfa + new Array(w - cell.solfa.length + 1).join(" ");
+              bottom += cell.lyric + new Array(w - cell.lyric.length + 1).join(" ");
+            });
+          });
+          top += "|";
+          if (y > H - margin - 14) { doc.addPage(); y = margin + 8; }
+          doc.text(top, margin, y); doc.setTextColor(93, 109, 130); doc.text(bottom, margin, y + 4); doc.setTextColor(15, 23, 42);
+          y += 11;
+        });
+      } else {
+        lines.slice(1).forEach(function (line) {
+          if (y > H - margin - 10) { doc.addPage(); y = margin + 8; }
+          doc.text(line, margin, y); y += 6;
+        });
+      }
       doc.save(baseName() + ".pdf");
       stage.innerHTML = "";
     });

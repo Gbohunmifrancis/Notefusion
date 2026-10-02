@@ -43,6 +43,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   derives from the key (la-based for minor). Key change = re-label, never re-transcribe.
   Every change there needs unit tests. The Python worker mirrors this engine — keep the
   two in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+- Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read) and
+  an optional public share token (`GET /api/shared/{token}`, anonymous). "Transpose for my
+  choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
+  and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

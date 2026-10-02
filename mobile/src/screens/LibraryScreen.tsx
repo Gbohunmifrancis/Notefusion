@@ -22,7 +22,7 @@ import { useSubscription } from "../lib/subscription";
 import { deriveSolfa } from "../lib/solfa";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
 import { fonts, motion, radii, spacing, typography, type Palette } from "../design/theme";
-import type { NoteEvent, SavedTranscription } from "../api/types";
+import type { NoteEvent, SavedTranscription, TranscriptionResult } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 const FILTERS = ["All", "Tonic Solfa", "Staff Notation"] as const;
@@ -124,6 +124,10 @@ export function LibraryScreen() {
           solfaLines: derived.solfaLines,
           overallConfidence: full.overallConfidence,
           audioPreviewBase64,
+          lyrics: full.lyrics ?? "",
+          parts: (full.parts as TranscriptionResult["parts"]) ?? null,
+          partsMusicXml: full.partsMusicXml ?? "",
+          shareToken: full.shareToken ?? null,
         },
         savedId: full.id,
         title: full.title,

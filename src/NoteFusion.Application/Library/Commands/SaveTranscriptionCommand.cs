@@ -22,7 +22,10 @@ public sealed record SaveTranscriptionCommand(
     string MusicXml,
     IReadOnlyList<NoteEventDto> Notes,
     double OverallConfidence,
-    string? SourceJobId) : IRequest<Result<SavedTranscriptionDto>>;
+    string? SourceJobId,
+    string Lyrics = "",
+    IReadOnlyDictionary<string, PartDto>? Parts = null,
+    string? PartsMusicXml = null) : IRequest<Result<SavedTranscriptionDto>>;
 
 public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTranscriptionCommand>
 {
@@ -34,6 +37,7 @@ public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTr
         RuleFor(x => x.TimeSignature).NotEmpty();
         RuleFor(x => x.MusicXml).NotEmpty();
         RuleFor(x => x.OverallConfidence).InclusiveBetween(0.0, 1.0);
+        RuleFor(x => x.Lyrics).MaximumLength(20_000);
     }
 }
 
@@ -75,6 +79,9 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
             notes,
             request.OverallConfidence,
             request.SourceJobId);
+
+        transcription.SetLyrics(request.Lyrics ?? string.Empty);
+        transcription.SetParts(PartNotes.FromDtos(request.Parts), request.PartsMusicXml);
 
         _db.Transcriptions.Add(transcription);
         await _db.SaveChangesAsync(cancellationToken);
