@@ -134,6 +134,31 @@ pre-plan pipeline scored, deliberately:
       emitting far fewer spurious ones.  Read the three columns together; recall alone on
       a predicted-instant count is maximised by predicting a beat everywhere.
 
+The voice engine baseline (app/pipeline/vocal.py)
+──────────────────────────────────────────────────
+Re-recorded when melody mode moved to the voice engine.  This corpus is an instrument
+(a clean harmonic stack), and the engine was built and tuned on the sung corpus
+(``report --vocal``), so the instrument numbers are the control: they had to hold, and
+they improved.  Aggregates against the previous baseline: notes.f1 0.967 -> 0.990,
+notes.precision 0.963 -> 0.985, solfa.ghost_count 0.465 -> 0.140, solfa.chromatic_ghosts
+0.256 -> 0.070, beats.f1 0.975 -> 0.994, tempo.abs_error 10.2 -> 6.3; key.exact and
+solfa.degree_accuracy unchanged at 0.977 and 1.000.
+
+Two cases are worse than the old baseline by more than the tolerance and are accepted:
+
+  vibrato_rate_k20 / notes.f1  0.957 -> 0.833
+      ±1.5 semitones at the fastest rate in the corpus.  The engine segments on the
+      contour averaged over one vibrato period (vocal.DRIVE_FRAMES) and one attack
+      fragment survives at the start.  A ±1.5 st / 8 Hz vibrato is outside anything a
+      singer produces; the three other wide-vibrato cases GAIN 0.14-0.61 on the same
+      mechanism (vibrato_depth_1_8 0.539 -> 0.957, vibrato_depth_2_0 0.345 -> 0.957).
+
+  close_voicing_c_major / notes.f1  1.000 -> 0.960
+      One extra note on the mixture case, which goes through the melody-floor route
+      (the contour head's track, not pyin's) and was not a tuning target.
+
+Everything else is within tolerance, and 11 cases moved up.
+
 The 31 -> 38 corpus expansion moved every aggregate down, and none of it is a regression
 ────────────────────────────────────────────────────────────────────────────────────────
 This baseline was re-recorded when ``VIBRATO_BREADTH_CASES`` added a rate and depth
