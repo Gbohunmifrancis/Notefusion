@@ -1,9 +1,19 @@
 name: notefusion-prod
 
+# Container logs are json files on the host disk and grow without bound by default.
+# On an 8 GB EC2 root volume that is what fills the disk and breaks the next image
+# pull ("no space left on device"), so every service rotates its log.
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   db:
     image: postgres:16-alpine
     restart: always
+    logging: *default-logging
     environment:
       POSTGRES_DB: notefusion
       POSTGRES_USER: notefusion
@@ -20,6 +30,7 @@ services:
   transcriber:
     image: ${TRANSCRIBER_IMAGE:-ghcr.io/OWNER/notefusion-transcriber:latest}
     restart: always
+    logging: *default-logging
     environment:
       NF_MAX_CLIP_SECONDS: ${NF_MAX_CLIP_SECONDS:-180}
       NF_MAX_UPLOAD_BYTES: ${NF_MAX_UPLOAD_BYTES:-20971520}
@@ -35,6 +46,7 @@ services:
   api:
     image: ${API_IMAGE:-ghcr.io/OWNER/notefusion-api:latest}
     restart: always
+    logging: *default-logging
     depends_on:
       db:
         condition: service_healthy
@@ -86,6 +98,7 @@ services:
   dozzle:
     image: amir20/dozzle:latest
     restart: always
+    logging: *default-logging
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - dozzle-data:/data
@@ -95,6 +108,7 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: always
+    logging: *default-logging
     ports:
       - "80:80"
       - "443:443"
