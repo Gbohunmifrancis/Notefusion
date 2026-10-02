@@ -52,6 +52,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { fonts, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import { useNotePlayer } from "../lib/useNotePlayer";
+import { beatSecOf } from "../lib/synth";
+import type { VoiceName } from "../lib/choir";
 import type { NoteEvent } from "../api/types";
 
 // ─── Props ──────────────────────────────────────────────────────────────────
@@ -92,7 +94,23 @@ export interface NotePlayerProps {
    * still owns no playback state, it only forwards what the hook reports.
    */
   onCurrentNoteChange?: (index: number) => void;
+  /**
+   * Rehearsal mix: which of the four voices are sounding. Omit when the result has no
+   * parts and the player is just the tune. Turning a voice off is "minus one": the
+   * chorister sings their line against the others.
+   */
+  voices?: readonly { name: VoiceName; on: boolean }[];
+  onToggleVoice?: (name: VoiceName) => void;
+  /** Bars in the piece; enables the passage loop. 0 or omitted hides it. */
+  barCount?: number;
   style?: StyleProp<ViewStyle>;
+}
+
+const VOICE_SHORT: Record<VoiceName, string> = { soprano: "S", alto: "A", tenor: "T", bass: "B" };
+
+function beatsPerBarOf(timeSignature: string): number {
+  const [num, den] = timeSignature.split("/").map(Number);
+  return num && den ? (num * 4) / den : 4;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -134,6 +152,9 @@ export function NotePlayer({
   title,
   onPlaybackComplete,
   onCurrentNoteChange,
+  voices,
+  onToggleVoice,
+  barCount = 0,
   style,
 }: NotePlayerProps) {
   const colors = useColors();
@@ -161,10 +182,43 @@ export function NotePlayer({
     pause,
     seekTo,
     setRate,
+    setLoopRange,
     skipToStart,
   } = useNotePlayer(audioPreviewBase64, notes, tempoBpm, 0);
 
   const busy = isLoading;
+
+  // ── Passage loop (A–B, in bars) ───────────────────────────────────────────
+  // Bars are what a choir leader says ("again from bar 5"), so the control counts
+  // bars and the hook gets seconds.
+  const [loopOn, setLoopOn] = useState(false);
+  const [loopFrom, setLoopFrom] = useState(1);
+  const [loopTo, setLoopTo] = useState(Math.max(1, Math.min(4, barCount)));
+  useEffect(() => {
+    if (!loopOn || barCount <= 0) {
+      setLoopRange(null);
+      return;
+    }
+    const barSec = beatsPerBarOf(timeSignature) * beatSecOf(tempoBpm);
+    setLoopRange({ start: (loopFrom - 1) * barSec, end: loopTo * barSec });
+    // setLoopRange reads the current position only to decide whether to jump; it is
+    // deliberately not a dependency, or every tick would re-arm the loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loopOn, loopFrom, loopTo, barCount, timeSignature, tempoBpm]);
+  useEffect(() => {
+    if (loopTo > barCount && barCount > 0) setLoopTo(barCount);
+  }, [barCount, loopTo]);
+  const stepLoop = (which: "from" | "to", delta: number) => {
+    if (which === "from") {
+      const next = clamp(loopFrom + delta, 1, barCount);
+      setLoopFrom(next);
+      if (next > loopTo) setLoopTo(next);
+    } else {
+      const next = clamp(loopTo + delta, 1, barCount);
+      setLoopTo(next);
+      if (next < loopFrom) setLoopFrom(next);
+    }
+  };
 
   const stepRate = useCallback(
     (delta: number) => {
@@ -460,6 +514,61 @@ export function NotePlayer({
             </Pressable>
           </View>
 
+          {barCount > 0 ? (
+            <Pressable
+              onPress={() => setLoopOn((v) => !v)}
+              disabled={!ready}
+              style={({ pressed }) => [
+                styles.chip,
+                loopOn && styles.chipOn,
+                pressed && styles.chipPressed,
+                !ready && styles.chipDisabled,
+              ]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: loopOn }}
+              accessibilityLabel="Loop a passage"
+            >
+              <Ionicons name="repeat" size={16} color={loopOn ? "#FFFFFF" : ready ? colors.text : colors.textFaint} />
+              <Text style={[styles.chipText, loopOn && styles.chipTextOn]}>Loop</Text>
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
+
+      {loopOn && barCount > 0 ? (
+        <View style={styles.loopRow}>
+          <Text style={styles.loopLabel}>Bars</Text>
+          {(["from", "to"] as const).map((which) => (
+            <View key={which} style={styles.speedGroup}>
+              <Pressable onPress={() => stepLoop(which, -1)} style={styles.speedStep} accessibilityRole="button" accessibilityLabel={`${which} bar earlier`}>
+                <Ionicons name="remove" size={16} color={colors.text} />
+              </Pressable>
+              <Text style={styles.speedText}>{which === "from" ? loopFrom : loopTo}</Text>
+              <Pressable onPress={() => stepLoop(which, 1)} style={styles.speedStep} accessibilityRole="button" accessibilityLabel={`${which} bar later`}>
+                <Ionicons name="add" size={16} color={colors.text} />
+              </Pressable>
+            </View>
+          ))}
+          <Text style={styles.loopHint}>of {barCount}</Text>
+        </View>
+      ) : null}
+
+      {voices && voices.length > 0 ? (
+        <View style={styles.voicesRow}>
+          <Text style={styles.loopLabel}>Voices</Text>
+          {voices.map((v) => (
+            <Pressable
+              key={v.name}
+              onPress={() => onToggleVoice?.(v.name)}
+              style={({ pressed }) => [styles.voiceChip, v.on && styles.chipOn, pressed && styles.chipPressed]}
+              accessibilityRole="button"
+              accessibilityState={{ selected: v.on }}
+              accessibilityLabel={`${v.on ? "Mute" : "Unmute"} ${v.name}`}
+            >
+              <Text style={[styles.chipText, v.on && styles.chipTextOn]}>{VOICE_SHORT[v.name]}</Text>
+            </Pressable>
+          ))}
+          <Text style={styles.loopHint}>tap to mute</Text>
         </View>
       ) : null}
 
@@ -672,6 +781,51 @@ const makeStyles = (c: Palette) =>
       opacity: 0.7,
     },
 
+    chipTextOn: {
+      color: "#FFFFFF",
+    },
+
+    loopRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      flexWrap: "wrap",
+      gap: 8,
+      marginTop: 10,
+    },
+
+    loopLabel: {
+      fontSize: 11,
+      fontFamily: fonts.bold,
+      color: c.textMuted,
+      textTransform: "uppercase",
+      letterSpacing: 0.8,
+      marginRight: 2,
+    },
+
+    loopHint: {
+      fontSize: 11,
+      fontFamily: fonts.medium,
+      color: c.textFaint,
+    },
+
+    voicesRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 6,
+      marginTop: 10,
+    },
+
+    voiceChip: {
+      width: 36,
+      height: 32,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.borderLight,
+    },
+
     chipDisabled: {
       opacity: 0.5,
     },
@@ -679,6 +833,7 @@ const makeStyles = (c: Palette) =>
     chipText: {
       fontSize: 12,
       fontFamily: fonts.semibold,
+      color: c.text,
     },
 
     speedGroup: {

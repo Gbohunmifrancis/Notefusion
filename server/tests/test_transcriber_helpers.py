@@ -774,7 +774,7 @@ class TestDecodedWavLifetime:
         
         dummy_res = transcriber.TranscriptionResult("C", 1.0, 120, "4/4", "", "", [])
 
-        def fake_inner(wav_path, mode, key_override, tempo_override, progress):
+        def fake_inner(wav_path, mode, key_override, tempo_override, **kwargs):
             seen["path"] = wav_path
             seen["exists"] = wav_path.exists()
             return dummy_res
@@ -791,7 +791,7 @@ class TestDecodedWavLifetime:
         converted = tmp_path / "converted.wav"
         converted.write_bytes(b"placeholder")
 
-        def boom(*args):
+        def boom(*args, **kwargs):
             raise transcriber.LowConfidenceError("no notes")
 
         monkeypatch.setattr(transcriber, "_ensure_wav_path", lambda path: (converted, True))
@@ -810,7 +810,7 @@ class TestDecodedWavLifetime:
         dummy_res = transcriber.TranscriptionResult("C", 1.0, 120, "4/4", "", "", [])
 
         monkeypatch.setattr(transcriber, "_ensure_wav_path", lambda path: (upload, False))
-        monkeypatch.setattr(transcriber, "_transcribe_wav", lambda *args: dummy_res)
+        monkeypatch.setattr(transcriber, "_transcribe_wav", lambda *args, **kwargs: dummy_res)
 
         assert transcriber.transcribe(upload) == dummy_res
         assert upload.exists()

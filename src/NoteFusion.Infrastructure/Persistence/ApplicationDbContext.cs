@@ -19,6 +19,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Transcription> Transcriptions => Set<Transcription>();
     public DbSet<TranscriptionJob> TranscriptionJobs => Set<TranscriptionJob>();
     public DbSet<TrialDevice> TrialDevices => Set<TrialDevice>();
+    public DbSet<PreviewJob> PreviewJobs => Set<PreviewJob>();
 
     public DbSet<Plan> Plans => Set<Plan>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();

@@ -119,6 +119,35 @@
   .solfa .doh { color: var(--blue-dark); font-weight: 700; }
   .part { margin-top: 12px; }
   .part h3 { font-size: .9rem; margin: 0 0 6px; color: var(--muted); font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+  .section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .btn-sm { padding: 6px 12px; font-size: .85rem; }
+  .btn.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .player { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .player .group { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border-radius: 999px; padding: 4px 8px; }
+  .player label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 0; }
+  .player input[type=number] { width: 52px; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; }
+  .player select { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .sing-live { font-size: 2.4rem; font-weight: 800; color: var(--blue); text-align: center; padding: 10px 0; font-family: ui-monospace, Menlo, monospace; }
+  .sing-live small { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); font-family: Inter, sans-serif; }
+  .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+  .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; }
+  .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .mark { min-width: 40px; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, monospace; font-weight: 700; background: #fff; }
+  .mark small { display: block; font-weight: 500; color: var(--faint); font-size: .7rem; font-family: Inter, sans-serif; }
+  .mark.hit { border-color: var(--success); color: var(--success); } .mark.near { border-color: #B45309; color: #B45309; } .mark.wrong { border-color: var(--danger); color: var(--danger); } .mark.missed { color: var(--faint); }
+  .tr-readout strong { font-size: 1.3rem; min-width: 2ch; display: inline-block; text-align: center; }
+  textarea { width: 100%; font: inherit; color: var(--ink); padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; outline: none; resize: vertical; }
+  textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+  table.ranges { border-collapse: collapse; margin-top: 10px; font-size: .9rem; }
+  table.ranges td { padding: 3px 14px 3px 0; }
+  table.ranges td:first-child { text-transform: capitalize; color: var(--muted); }
+  table.ranges .ok { color: var(--success); font-weight: 600; } table.ranges .warn { color: #B45309; font-weight: 600; } table.ranges .bad { color: var(--danger); font-weight: 600; }
+  table.hymn { border-collapse: collapse; margin: 6px 0 12px; font-family: ui-monospace, Menlo, monospace; }
+  table.hymn td { border-left: 2px solid var(--ink); padding: 2px 8px; vertical-align: top; white-space: nowrap; }
+  table.hymn td:last-child { border-right: 2px solid var(--ink); }
+  .cell { display: inline-block; min-width: 2.6em; text-align: center; margin-right: 2px; }
+  .cell b { display: block; font-size: 1rem; } .cell b.now { color: var(--blue); }
+  .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: .72rem; color: var(--muted); min-height: 1em; }
   .downloads { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
   .upgrade-note { background: linear-gradient(135deg, #FFF7E0, #FFFBEF); border: 1px solid #F6E3A1; border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 16px; }
   .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
@@ -168,6 +197,12 @@
         <p class="small muted" style="margin-top:12px">Forgot your password? Reset it from the app's sign-in screen.</p>
       </form>
 
+      <form id="form-verify" class="hidden" novalidate>
+        <p class="small muted">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
+        <div class="field"><label for="verify-code">Code</label><input id="verify-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Confirm and sign in</button>
+        <p class="small muted" style="margin:10px 0 0">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
+      </form>
       <form id="form-register" class="hidden" novalidate>
         <div class="field"><label for="reg-name">Full name</label><input id="reg-name" type="text" autocomplete="name" required></div>
         <div class="field"><label for="reg-email">Email</label><input id="reg-email" type="email" autocomplete="email" required></div>
@@ -180,6 +215,11 @@
 
   <!-- ── Signed in ──────────────────────────────────────────────────── -->
   <section id="view-app" class="hidden">
+    <div class="alert alert-info hidden" id="guest-bar">
+      <strong>You're trying NoteFusion free.</strong> Previews are the first 30 seconds, no account needed. Create a free account to keep the sheet, hear it in four parts and share it with your choir.
+      <button class="btn btn-primary btn-sm" id="guest-signup" type="button" style="margin-left:10px">Create a free account</button>
+      <button class="btn btn-ghost btn-sm" id="guest-signin" type="button">Sign in</button>
+    </div>
     <div class="card">
       <h2>Transcribe a song</h2>
       <p class="muted small">Paste a YouTube, Spotify or Apple Music link. We fetch the audio, isolate the lead vocal, and write it out as Tonic Solfa and staff notation. The song is acknowledged by title and artist on the sheet.</p>
@@ -235,7 +275,7 @@
           <div class="watermark hidden" id="r-watermark"><span>NoteFusion preview</span></div>
         </div>
       </div>
-      <div id="r-solfa" class="hidden"><div class="solfa" id="r-solfa-text"></div></div>
+      <div id="r-solfa" class="hidden"><div class="solfa" id="r-solfa-text"></div><div id="r-hymn"></div></div>
       <div id="r-parts" class="hidden">
         <div id="r-parts-locked" class="upgrade-note hidden" style="margin-top:0">
           <strong>Four-part harmony is a Pro feature.</strong> Alto, tenor and bass are written under the tune the way a hymn arranger would — ready for your choir.
@@ -243,6 +283,95 @@
         <div id="r-parts-body" class="hidden">
           <div class="sheet-wrap" style="margin-bottom:12px"><div id="sheet-parts"></div></div>
           <div id="r-parts-solfa"></div>
+        </div>
+      </div>
+
+      <!-- ── Rehearse ─────────────────────────────────────────────────── -->
+      <div class="section">
+        <h2>Rehearse</h2>
+        <p class="muted small">Hear the tune — or, with the parts, mute your own voice and sing it against the others. Loop a few bars and slow it down.</p>
+        <div class="player" id="player">
+          <button class="btn btn-primary" id="play" type="button">▶ Play</button>
+          <button class="btn btn-ghost btn-sm" id="restart" type="button" title="From the start">⟲</button>
+          <span class="group"><label for="rate">Speed</label>
+            <select id="rate"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option></select></span>
+          <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
+            <input type="number" id="loop-from" min="1" value="1"> – <input type="number" id="loop-to" min="1" value="4"></span>
+          <span class="group hidden" id="voices"><label>Voices</label></span>
+        </div>
+      </div>
+
+      <!-- ── Sing it ──────────────────────────────────────────────────── -->
+      <div class="section" id="sing">
+        <h2>Sing it <span class="pill pill-pro" style="vertical-align:middle">Pro</span></h2>
+        <p class="muted small">Pick your voice, hear the starting note and a count-in, then sing into your microphone. Every note comes back marked: in tune, close, or off. Headphones help; nothing is stored.</p>
+        <div class="player">
+          <span class="group" id="sing-voices"><label>Voice</label></span>
+          <button class="btn btn-primary btn-sm" id="sing-start" type="button">Record my take</button>
+          <button class="btn btn-ghost btn-sm hidden" id="sing-stop" type="button">Stop</button>
+          <span id="sing-status" class="small muted"></span>
+        </div>
+        <div id="sing-live" class="sing-live hidden"></div>
+        <div id="sing-result" class="hidden">
+          <div class="sing-score"><strong id="sing-score"></strong><span id="sing-summary"></span></div>
+          <div class="marks" id="sing-marks"></div>
+          <p class="muted small" style="margin:8px 0 0">Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off.</p>
+        </div>
+      </div>
+
+      <!-- ── Lyrics ───────────────────────────────────────────────────── -->
+      <div class="section">
+        <h2>Lyrics</h2>
+        <textarea id="lyrics" rows="3" placeholder="A-ma-zing grace, how sweet the sound…"></textarea>
+        <p class="muted small" style="margin:6px 0 0">Split syllables with hyphens (a-ma-zing); each goes under the next note. Use grace_ to hold a syllable over two notes. The Tonic Solfa tab shows the hymn-book layout.</p>
+      </div>
+
+      <!-- ── Transpose ────────────────────────────────────────────────── -->
+      <div class="section">
+        <h2>Transpose for my choir</h2>
+        <p class="muted small">Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.</p>
+        <div class="player">
+          <button class="btn btn-ghost btn-sm" id="tr-down" type="button" aria-label="A semitone lower">−</button>
+          <span class="tr-readout"><strong id="tr-value">0</strong> <span class="muted small" id="tr-key"></span></span>
+          <button class="btn btn-ghost btn-sm" id="tr-up" type="button" aria-label="A semitone higher">+</button>
+          <button class="btn btn-primary btn-sm" id="tr-apply" type="button" disabled>Transpose</button>
+        </div>
+        <table class="ranges" id="ranges"></table>
+      </div>
+
+      <!-- ── Guest: what an account unlocks ───────────────────────────── -->
+      <div class="section hidden" id="guest-cta">
+        <h2>Keep this sheet</h2>
+        <p class="muted small">Create a free account to save it to your library, share a link your choir can open, hear the whole song, and have alto, tenor and bass written under the tune.</p>
+        <div class="player">
+          <button class="btn btn-primary" id="guest-cta-signup" type="button">Create a free account</button>
+          <button class="btn btn-ghost" id="guest-cta-signin" type="button">I have an account</button>
+        </div>
+      </div>
+
+      <!-- ── Save & share ─────────────────────────────────────────────── -->
+      <div class="section" id="save-section">
+        <h2>Save &amp; share</h2>
+        <div id="save-form" class="link-form">
+          <input id="save-title" type="text" placeholder="Name this sheet" maxlength="120">
+          <button class="btn btn-primary" id="save" type="button">Save to my library</button>
+        </div>
+        <div id="saved" class="hidden">
+          <div class="alert alert-info hidden" id="app-banner">
+            <strong>Take it to rehearsal.</strong> The NoteFusion app records in the room, works offline with your library, and reminds the choir to practise.
+            <a class="btn btn-primary btn-sm" href="https://github.com/Gbohunmifrancis/Notefusion/releases/download/v1.0.0-beta/notefusion.apk" style="margin-left:8px">Get the Android app</a>
+            <button class="btn btn-ghost btn-sm" id="app-banner-dismiss" type="button">Not now</button>
+          </div>
+          <p class="small" style="margin:0 0 8px"><span class="pill pill-free">Saved</span> <span id="saved-title"></span></p>
+          <div class="player">
+            <button class="btn btn-primary btn-sm" id="share" type="button">Share a link</button>
+            <span id="share-row" class="hidden" style="display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <input id="share-url" type="text" readonly style="width:min(360px,70vw)">
+              <button class="btn btn-ghost btn-sm" id="share-copy" type="button">Copy</button>
+              <button class="btn btn-ghost btn-sm" id="share-stop" type="button">Stop sharing</button>
+            </span>
+          </div>
+          <p class="muted small" style="margin:8px 0 0">Anyone with the link can read the sheet and rehearse with playback — no account needed. Paste it into the choir group.</p>
         </div>
       </div>
 
@@ -274,6 +403,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
-<script src="/assets/app.js?v=1" defer></script>
+<script src="/assets/choir.js?v=1" defer></script>
+<script src="/assets/app.js?v=2" defer></script>
 </body>
 </html>

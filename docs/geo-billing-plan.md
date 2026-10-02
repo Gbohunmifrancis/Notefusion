@@ -1,7 +1,20 @@
-# Geo-split billing: NGN subscriptions, USD lifetime
+# Geo-split billing: NGN subscriptions on Paystack, USD subscriptions on Bachs
 
-Nigerian users buy Pro monthly or yearly in naira through Paystack. Everyone else buys Pro once,
-for life, in dollars through Bachs.
+**Current model (October 2026).** Nigerian accounts subscribe to Pro in naira through Paystack
+(₦7,500 a month, ₦60,000 a year). Everyone else subscribes in dollars through Bachs ($9.99 a
+month, $79 a year), as a Bachs *catalog product* per plan (`Bachs__ProductMap__pro_monthly_usd`,
+`Bachs__ProductMap__pro_yearly_usd`). Lifetime is no longer sold. Currency routes the charge
+(`Paystack__SupportedCurrencies=NGN`, `Bachs__SupportedCurrencies=USD`), `PlanEligibility` shows a
+Nigerian account only naira plans and everyone else only dollar plans, and `BillingReadiness` logs
+at startup if a plan on sale has no live provider or no Bachs product. The one external
+precondition is unchanged from the history below: the Bachs account must be able to bill USD cards
+on a schedule, or the dollar checkouts render no payment method.
+
+The sections that follow are the plan as it was written when lifetime was the dollar tier; they are
+kept for the reasoning and the Bachs findings.
+
+Nigerian users buy Pro monthly or yearly in naira through Paystack. Everyone else used to buy Pro
+once, for life, in dollars through Bachs.
 
 The split is not only a pricing decision — it is the workaround for a defect diagnosed on
 2026-08-19: Bachs subscriptions are card-only, this account's only card rail is `NGN_CARD`, and NGN

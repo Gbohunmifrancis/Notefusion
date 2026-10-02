@@ -26,6 +26,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
   voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — Pro-only via the API.
+  `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
+  pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
+  the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
   client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
@@ -43,6 +46,19 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   derives from the key (la-based for minor). Key change = re-label, never re-transcribe.
   Every change there needs unit tests. The Python worker mirrors this engine — keep the
   two in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+- Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read) and
+  an optional public share token (`GET /api/shared/{token}`, anonymous). "Transpose for my
+  choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
+  and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
+- The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
+  30-second preview (throttled per `X-Device-Id` and per address via `PreviewJob` rows), polled at
+  `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
+  a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
+  turns those rows into the admin dashboard's web funnel.
+- Billing: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions (one catalog
+  product per USD plan code, `Bachs__ProductMap__pro_*_usd`). Currency routes the charge
+  (`PaymentGatewayFactory.SelectForCurrency`); `BillingReadiness` logs at startup if a plan on sale
+  has no live provider or no Bachs product. See `docs/geo-billing-plan.md`.
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

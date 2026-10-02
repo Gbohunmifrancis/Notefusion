@@ -352,3 +352,34 @@ def test_api_key_auth_enforcement(monkeypatch):
 
         # Calls with Bearer token pass through auth
         assert client.get("/v1/jobs/some_id", headers={"Authorization": "Bearer secret_test_key_123"}).status_code == 404
+
+
+def test_a_capped_upload_keeps_only_the_head_and_says_so(monkeypatch):
+    """The website's free preview: max_seconds trims the clip before the pipeline sees it."""
+    from app.jobs import queue as queue_mod
+    from app.pipeline.transcriber import TranscriptionResult
+
+    seen = {}
+
+    def fake_transcribe(audio_path, mode="melody", **kwargs):
+        import librosa
+        seen["duration"] = librosa.get_duration(path=str(audio_path))
+        return TranscriptionResult(key="C", key_confidence=1.0, tempo=120, time_signature="4/4",
+                                   musicxml="<score/>", midi_base64="", notes=[], solfa_lines=["Doh is C"],
+                                   overall_confidence=1.0)
+
+    monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+    with TestClient(app) as client:
+        r = client.post("/v1/transcribe", files={"audio": ("clip.wav", BytesIO(_make_wav(duration_sec=4.0)), "audio/wav")},
+                        data={"mode": "melody", "max_seconds": "1.5"})
+        assert r.status_code == 202
+        body = _wait_for_status(client, r.json()["jobId"], STATUS_DONE)
+        assert abs(seen["duration"] - 1.5) < 0.05
+        assert body["result"]["truncated"] is True
+        assert abs(body["result"]["songDurationSec"] - 4.0) < 0.1
+
+        # Under the cap, nothing is cut and nothing is flagged.
+        r = client.post("/v1/transcribe", files={"audio": ("clip.wav", BytesIO(_make_wav(duration_sec=1.0)), "audio/wav")},
+                        data={"mode": "melody", "max_seconds": "30"})
+        body = _wait_for_status(client, r.json()["jobId"], STATUS_DONE)
+        assert body["result"]["truncated"] is False

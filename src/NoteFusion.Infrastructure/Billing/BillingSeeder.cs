@@ -17,15 +17,18 @@ namespace NoteFusion.Infrastructure.Billing;
 /// </summary>
 public sealed class BillingSeeder : IHostedService
 {
-    // The geo split (docs/geo-billing-plan.md): a Nigerian account subscribes in naira, everyone else in
-    // dollars, and the international tier is priced higher on purpose — choirs abroad are the target
-    // market and the naira tier is priced to local purchasing power. Amounts are minor units — cents for
-    // USD, kobo for NGN. Yearly is priced at eight months to reward the annual commitment. Lifetime is no
-    // longer sold: it was a stand-in for a dollar subscription the rails could not bill at the time.
+    // The billing model (docs/geo-billing-plan.md): a Nigerian account subscribes in naira through
+    // Paystack; everyone else subscribes in dollars through Bachs. The international tier is priced
+    // higher on purpose — choirs abroad are the target market and the naira tier is priced to local
+    // purchasing power. Amounts are minor units — cents for USD, kobo for NGN. Yearly is priced at eight
+    // months to reward the annual commitment. Lifetime is no longer sold.
     //
-    // A recurring dollar charge needs a provider that can bill USD cards on a schedule; the charge routes
-    // through PaymentGatewayFactory.SelectForCurrency, so the operator picks that provider with
-    // Billing__DefaultProvider and the provider's SupportedCurrencies — nothing in this table decides it.
+    // Currency is what routes a charge: PaymentGatewayFactory.SelectForCurrency sends NGN to the provider
+    // that lists it (Paystack__SupportedCurrencies=NGN) and USD to Bachs (Bachs__SupportedCurrencies=USD,
+    // Billing__DefaultProvider=Bachs). A Bachs subscription is a catalog product, so each USD code here
+    // needs Bachs__ProductMap__<code> (a bare pro_monthly / pro_yearly mapping is honoured too). What
+    // this table cannot check — that the Bachs account can bill USD cards on a schedule — is the one
+    // thing to confirm in the Bachs dashboard before the dollar tier goes on sale.
     private static readonly (string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval)[] Plans =
     [
         ("pro_monthly_ngn",    "NoteFusion Pro (Monthly)", 750_000,   "NGN", BillingInterval.Monthly),
@@ -91,6 +94,16 @@ public sealed class BillingSeeder : IHostedService
             await db.SaveChangesAsync(cancellationToken);
             _logger.LogInformation(
                 "Seeded {Seeded} billing plan(s), retired {Retired}.", seeded, retired.Count);
+        }
+
+        // Can what is on sale be paid for? Optional dependencies, because the seeder also runs in tests
+        // that register no gateways; in the API they are always there.
+        var gateways = scope.ServiceProvider.GetService<IPaymentGatewayFactory>();
+        if (gateways is not null)
+        {
+            var active = await db.Plans.Where(p => p.IsActive).ToListAsync(cancellationToken);
+            foreach (var problem in BillingReadiness.Check(active, gateways, scope.ServiceProvider.GetService<BachsOptions>()))
+                _logger.LogError("Billing is not ready: {Problem}", problem);
         }
     }
 

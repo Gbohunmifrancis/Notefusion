@@ -1,4 +1,5 @@
 using NoteFusion.Core.Enums;
+using NoteFusion.Core.Notation;
 using NoteFusion.Core.Seedwork;
 using NoteFusion.Core.Solfa;
 using NoteFusion.Shared.Guards;
@@ -51,7 +52,70 @@ public class Transcription : BaseEntity
     public string? SourceJobId { get; private set; }
     public TranscriptionStatus Status { get; private set; } = TranscriptionStatus.Done;
 
+    /// <summary>The words, as typed; clients syllabify them under the solfa.</summary>
+    public string Lyrics { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// The four-part harmony keyed soprano/alto/tenor/bass, when the result carried one (Pro).
+    /// Stored as pitches only, like <see cref="Notes"/>: solfa is derived on every read.
+    /// </summary>
+    public Dictionary<string, List<NoteEvent>>? Parts { get; private set; }
+
+    /// <summary>The four parts engraved as one score; null when there are no parts.</summary>
+    public string? PartsMusicXml { get; private set; }
+
+    /// <summary>The public link's token; null while the sheet is private.</summary>
+    public string? ShareToken { get; private set; }
+    public DateTime? SharedAtUtc { get; private set; }
+
+    /// <summary>How many times the public link has been opened. The share loop's one measure of reach.</summary>
+    public int ShareViews { get; private set; }
+
+    public void RecordShareView() => ShareViews++;
+
     public IReadOnlyList<NoteEvent> Notes => _notes.AsReadOnly();
+
+    public void SetLyrics(string lyrics) => Lyrics = Guard.NotNull(lyrics).Trim();
+
+    public void SetParts(Dictionary<string, List<NoteEvent>>? parts, string? partsMusicXml)
+    {
+        Parts = parts is { Count: > 0 } ? parts : null;
+        PartsMusicXml = Parts is null ? null : (string.IsNullOrWhiteSpace(partsMusicXml) ? null : partsMusicXml);
+    }
+
+    public void Share(string token, DateTime nowUtc)
+    {
+        ShareToken = Guard.NotNullOrWhiteSpace(token);
+        SharedAtUtc = nowUtc;
+    }
+
+    public void Unshare()
+    {
+        ShareToken = null;
+        SharedAtUtc = null;
+    }
+
+    /// <summary>
+    /// Transpose for a choir's range: the one edit that moves the notes. Every pitch — melody and
+    /// parts — shifts by <paramref name="semitones"/>, the key moves with them, and both engraved
+    /// scores are respelled for the new key so the staff still matches the note list. Solfa is
+    /// untouched by design: in movable-do only Doh moves.
+    /// </summary>
+    public void Transpose(int semitones)
+    {
+        Guard.InRange(semitones, -12, 12);
+        if (semitones == 0) return;
+        Key = new MusicalKey(((Key.TonicPitchClass + semitones) % 12 + 12) % 12, Key.Mode, Key.Confidence);
+        for (int i = 0; i < _notes.Count; i++)
+            _notes[i] = Shift(_notes[i], semitones);
+        Parts = Parts?.ToDictionary(kv => kv.Key, kv => kv.Value.Select(n => Shift(n, semitones)).ToList());
+        MusicXml = MusicXmlTransposer.Transpose(MusicXml, semitones, Key);
+        if (PartsMusicXml is not null)
+            PartsMusicXml = MusicXmlTransposer.Transpose(PartsMusicXml, semitones, Key);
+    }
+
+    private static NoteEvent Shift(NoteEvent n, int semitones)
+        => n with { PitchMidi = Math.Clamp(n.PitchMidi + semitones, 0, 127) };
 
     public void Rename(string title) => Title = Guard.NotNullOrWhiteSpace(title);
 

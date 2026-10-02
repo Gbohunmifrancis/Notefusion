@@ -22,7 +22,7 @@ public sealed record TranscribeOptions
     /// </summary>
     public TranscribePriority Priority { get; init; } = TranscribePriority.Normal;
 
-    /// <summary>Linked songs only: the most of the song to transcribe, in seconds.</summary>
+    /// <summary>The most of the audio to transcribe, in seconds: a linked song's cap, or an anonymous preview's.</summary>
     public double? MaxSeconds { get; init; }
 }
 
@@ -32,6 +32,31 @@ public enum TranscribePriority
     Normal = 0,
     High = 1
 }
+
+/// <summary>A note of the part a take is judged against, in beats.</summary>
+public sealed record GradeTargetNoteDto(int PitchMidi, double StartBeat, double DurBeats);
+
+/// <summary>The part a sung take is judged against, and the count-in that preceded it in the recording.</summary>
+public sealed record GradeTargetDto(IReadOnlyList<GradeTargetNoteDto> Notes, double TempoBpm, double LeadInSec = 0);
+
+/// <summary>One note's verdict: the pitch sung while it was due, in cents off, and a status of hit / near / wrong / missed.</summary>
+public sealed record GradeNoteDto(int Index, int TargetMidi, double? SungMidi, double? Cents, string Status);
+
+/// <summary>
+/// How a sung take compared to its part. <c>OctaveShift</c> is the octave the singer took it in (a bass
+/// singing the tune down an octave is not wrong); <c>TuningCents</c> is the take's overall lean.
+/// </summary>
+public sealed record GradeResultDto(
+    int Score,
+    int Hits,
+    int Near,
+    int Wrong,
+    int Missed,
+    double TuningCents,
+    double OffsetSec,
+    int OctaveShift,
+    string Summary,
+    IReadOnlyList<GradeNoteDto> Notes);
 
 /// <summary>One voice of the four-part harmony, in the same note shape as the melody.</summary>
 public sealed record PartDto(IReadOnlyList<NoteEventDto> Notes, IReadOnlyList<string> SolfaLines);

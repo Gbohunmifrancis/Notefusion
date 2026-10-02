@@ -132,6 +132,30 @@ export interface ActivityItem {
   country?: string | null;
 }
 
+/**
+ * The website's acquisition funnel for the window. Every stage is a count of rows the API keeps —
+ * preview jobs, accounts stamped with a source, claims, saved sheets, share tokens, subscriptions —
+ * so each number traces to a table rather than to an event stream that does not exist.
+ */
+export interface WebFunnel {
+  previews: number;
+  previewsPrevious: number;
+  /** Distinct browsers that previewed; a floor on visitors who tried it. */
+  previewDevices: number;
+  previewsSucceeded: number;
+  webSignups: number;
+  webSignupsPrevious: number;
+  /** Web sign-ups that claimed a preview — the ones the try-it-free box earned. */
+  signupsFromPreview: number;
+  webSignupsWhoSaved: number;
+  sharesCreated: number;
+  /** Opens of public links, all time: the API keeps a counter per sheet, not a view log. */
+  shareViews: number;
+  /** Subscriptions started in the window by accounts that signed up on the web. */
+  webProConversions: number;
+  previewsPerDay: DailyCount[];
+}
+
 export interface AnalyticsOverview {
   fromUtc: string;
   toUtc: string;
@@ -146,6 +170,9 @@ export interface AnalyticsOverview {
   topKeys: CategoryCount[];
   retention: RetentionCohort[];
   recentActivity: ActivityItem[];
+  /** Accounts by the client that created them: Web, Mobile, or Unknown (older accounts). */
+  signupSources: CategoryCount[];
+  webFunnel: WebFunnel;
 }
 
 export interface AdminUserRow {

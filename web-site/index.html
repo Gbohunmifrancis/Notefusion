@@ -39,6 +39,24 @@
 <link rel="stylesheet" href="/assets/mockup-layout.css?v=1">
 
 <script>document.documentElement.classList.add("js");</script>
+<style>
+  .try-box { margin: 0 0 22px; }
+  .try-form { display: flex; gap: 10px; }
+  .try-form input { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 14px 16px; border: 1.5px solid #cfd8e6; border-radius: 12px; background: #fff; color: #0f172a; outline: none; }
+  .try-form input:focus { border-color: #2563EB; box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
+  .try-alt { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+  .try-alt .btn { padding: 11px 16px; font-size: 14px; }
+  .try-file input { display: none; }
+  .try-status { min-height: 1.4em; margin: 10px 0 0; font-size: 14px; color: #53647c; }
+  .try-status-error { color: #B91C1C; }
+  .try-status-info { color: #1D4ED8; }
+  .try-status a { color: #1D4ED8; font-weight: 600; }
+  .try-note { margin: 6px 0 0; font-size: 13px; color: #7a8aa3; }
+  .hero-ctas--apps { gap: 10px; }
+  .hero-ctas--apps .btn { padding: 10px 14px; font-size: 13px; box-shadow: none; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  @media (max-width: 640px) { .try-form { flex-direction: column; } }
+</style>
 
 <script type="application/ld+json">
 {
@@ -133,11 +151,29 @@
       <div class="hero-content">
         <h1 class="display-title" id="hero-title">Turn every melody into notation.</h1>
         <p class="lead">
-          Record or import a melody. Get Tonic Solfa and staff notation in seconds.
+          Hum it, paste a YouTube link, or drop a recording. Get Tonic Solfa and staff notation in seconds — free to try, no account.
         </p>
 
-        <!-- Desktop CTAs (Used everywhere now) -->
-        <div class="hero-ctas">
+        <!-- Try it here: a 30-second preview with no account, opens in the web app as a guest. -->
+        <div class="try-box">
+          <form id="try-form" class="try-form" novalidate>
+            <label class="sr-only" for="try-url">Song link</label>
+            <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false">
+            <button class="btn btn-primary" id="try-submit" type="submit">Transcribe</button>
+          </form>
+          <div class="try-alt">
+            <button class="btn btn-outline" id="try-record" type="button">Record a tune</button>
+            <label class="btn btn-outline try-file">
+              <input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*">
+              Upload a recording
+            </label>
+          </div>
+          <p class="try-status" id="try-status" aria-live="polite"></p>
+          <p class="try-note">30-second preview. Create a free account for the whole song, four-part harmony and downloads.</p>
+        </div>
+
+        <!-- The app, for those who want it on their phone -->
+        <div class="hero-ctas hero-ctas--apps">
           <a class="btn btn-outline" href="#" style="pointer-events: none; opacity: 0.5;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right:6px;">
               <path d="M3.609 1.814L13.792 12 3.61 22.186a2.213 2.213 0 0 1-.61-.39 2.21 2.21 0 0 1-.5-1.546V3.75c0-.585.176-1.12.5-1.546.16-.205.372-.34.609-.39zm11.238 11.24l2.58 2.58-12.062 6.945 9.482-9.525zm0-2.108L5.365 1.42 17.427 8.366l-2.58 2.58zm1.054 1.054l2.873 1.654a1.865 1.865 0 0 1 0 3.232l-2.873 1.654-2.115-2.115 2.115-2.425z"/>
@@ -681,6 +717,7 @@
   </div>
 </footer>
 
+<script src="/assets/preview.js?v=1" defer></script>
 <script src="/assets/pricing.js?v=2" defer></script>
 <script src="/assets/landing.js?v=7" defer></script>
 

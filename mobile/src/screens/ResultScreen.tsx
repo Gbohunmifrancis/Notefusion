@@ -1,7 +1,8 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Image,
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   View,
@@ -17,15 +18,28 @@ import { TextField } from "../components/TextField";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
 import { NoteEditor } from "../components/NoteEditor";
+import { SingAlong } from "../components/SingAlong";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
-import { libraryApi } from "../api/endpoints";
+import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { NoteEvent } from "../api/types";
+import type { NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
-import { deriveSolfa, KEY_CHOICES, sameKey } from "../lib/solfa";
+import {
+  ascendingFlags,
+  deriveSolfa,
+  dohHeader,
+  dohPitchClass,
+  KEY_CHOICES,
+  parseKey,
+  referenceDoh,
+  renderSolfaLines,
+  sameKey,
+  syllable,
+} from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
-import { synthesizeMelodyWavBase64 } from "../lib/synth";
+import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/synth";
+import { hymnRows, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
@@ -77,6 +91,40 @@ function realign(next: NoteEvent[], from: Draft): Draft {
     j++;
   }
   return { notes: next, origins };
+}
+
+type Parts = NonNullable<TranscriptionResult["parts"]>;
+
+/**
+ * A part's solfa lines for a key. The worker labels the parts it returns; a saved sheet
+ * (and a transposed one) comes back with pitches only, so the lines are made here. The
+ * octave marks are relative to the *melody's* reference doh, as the worker does it, so a
+ * bass "d," sits where the tune's "d" does.
+ */
+function partLines(
+  name: VoiceName,
+  part: TranscriptionPart,
+  melody: readonly NoteEvent[],
+  keyText: string,
+  timeSignature: string,
+): string[] {
+  if (part.solfaLines.length > 1) return part.solfaLines;
+  const key = parseKey(keyText);
+  if (!key || part.notes.length === 0) return [];
+  const dohPc = dohPitchClass(key);
+  const refDoh = referenceDoh(melody.map((n) => n.pitchMidi), dohPc);
+  const flags = ascendingFlags(part.notes.map((n) => n.pitchMidi));
+  const labelled = part.notes.map((n, i) => ({ ...n, ...syllable(n.pitchMidi, dohPc, refDoh, flags[i]!) }));
+  return renderSolfaLines(labelled, `${dohHeader(dohPc)} · ${name[0]!.toUpperCase()}${name.slice(1)}`, timeSignature);
+}
+
+/** How many bars the tune spans — what the passage loop counts in. */
+function barCountOf(notes: readonly NoteEvent[], timeSignature: string): number {
+  if (notes.length === 0) return 0;
+  const [num, den] = timeSignature.split("/").map(Number);
+  const barBeats = num && den ? (num * 4) / den : 4;
+  const end = Math.max(...notes.map((n) => n.startBeat + Math.max(0, n.durBeats)));
+  return Math.max(1, Math.ceil(end / barBeats - 1e-9));
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -137,6 +185,29 @@ export function ResultScreen({ route, navigation }: Props) {
   const [key, setKey] = useState(result.key);
   const [pickingKey, setPickingKey] = useState(false);
   const [rekeying, setRekeying] = useState(false);
+
+  // ── Transpose for my choir ────────────────────────────────────────────────
+  // The one edit that moves the notes. After it, the *baseline* the corrections are
+  // judged against is the transposed sheet, not the worker's — otherwise every note
+  // would count as a correction and "Discard" would silently undo the transposition.
+  const [baseline, setBaseline] = useState<{ notes: NoteEvent[]; key: string; solfaLines: string[] }>({
+    notes: result.notes,
+    key: result.key,
+    solfaLines: result.solfaLines,
+  });
+  const [semitones, setSemitones] = useState(0);
+  const [transposing, setTransposing] = useState(false);
+  const [parts, setParts] = useState<Parts | null>(result.parts ?? null);
+  const [partsMusicXml, setPartsMusicXml] = useState(result.partsMusicXml ?? "");
+
+  // ── Rehearsal mix ─────────────────────────────────────────────────────────
+  const [voiceOn, setVoiceOn] = useState<Record<VoiceName, boolean>>({ soprano: true, alto: true, tenor: true, bass: true });
+
+  // ── Lyrics & sharing ─────────────────────────────────────────────────────
+  const [lyrics, setLyrics] = useState(result.lyrics ?? "");
+  const committedLyrics = useRef(result.lyrics ?? "");
+  const [shareToken, setShareToken] = useState<string | null>(result.shareToken ?? null);
+  const [sharing, setSharing] = useState(false);
   const [tempo, setTempo] = useState(result.tempo);
   const [pickingTempo, setPickingTempo] = useState(false);
   const [timeSignature, setTimeSignature] = useState(result.timeSignature);
@@ -170,13 +241,17 @@ export function ResultScreen({ route, navigation }: Props) {
   // the list is byte-for-byte the model's, even if the user has been busy.
   const correctedCount = useMemo(
     () =>
-      draft.notes.filter((n, i) => n !== result.notes[draft.origins[i]]).length +
-      (result.notes.length - draft.notes.length),
-    [draft, result.notes],
+      draft.notes.filter((n, i) => n !== baseline.notes[draft.origins[i]]).length +
+      (baseline.notes.length - draft.notes.length),
+    [draft, baseline.notes],
   );
   const edited = correctedCount > 0;
 
-  const [solfaStyle, setSolfaStyle] = useState<"grid" | "curwen">("grid");
+  const [solfaStyle, setSolfaStyle] = useState<"grid" | "curwen" | "hymn">("grid");
+  const hasLyrics = lyrics.trim().length > 0;
+  useEffect(() => {
+    if (!hasLyrics && solfaStyle === "hymn") setSolfaStyle("grid");
+  }, [hasLyrics, solfaStyle]);
 
   // The server already labelled the original key, so trust its output until
   // the user actually overrides — that keeps the fresh-transcription path
@@ -188,10 +263,10 @@ export function ResultScreen({ route, navigation }: Props) {
       timeSignature,
       result.chromaticSpelling ?? "direction",
     );
-    if (key === result.key && timeSignature === result.timeSignature && !edited) {
+    if (key === baseline.key && timeSignature === result.timeSignature && !edited) {
       return {
-        notes: result.notes,
-        solfaLines: result.solfaLines,
+        notes: baseline.notes,
+        solfaLines: baseline.solfaLines,
         curwenLines: derived.curwenLines,
       };
     }
@@ -200,13 +275,46 @@ export function ResultScreen({ route, navigation }: Props) {
     draft.notes,
     edited,
     key,
-    result.key,
-    result.notes,
-    result.solfaLines,
+    baseline,
     result.timeSignature,
     timeSignature,
     result.chromaticSpelling,
   ]);
+
+  const hymn = useMemo(
+    () => (hasLyrics ? hymnRows(view.notes, lyrics, timeSignature) : []),
+    [hasLyrics, view.notes, lyrics, timeSignature],
+  );
+
+  /** The parts' solfa lines, labelled for the current key. */
+  const partsView = useMemo(() => {
+    if (!parts) return null;
+    const out: { name: VoiceName; part: TranscriptionPart; lines: string[] }[] = [];
+    for (const name of VOICES) {
+      const part = parts[name];
+      if (part) out.push({ name, part, lines: partLines(name, part, view.notes, key, timeSignature) });
+    }
+    return out.length > 0 ? out : null;
+  }, [parts, view.notes, key, timeSignature]);
+
+  const barCount = useMemo(() => barCountOf(view.notes, timeSignature), [view.notes, timeSignature]);
+  const hasParts = isPro && !!partsView;
+
+  // The rehearsal mix: the tune plus whichever parts are switched on, re-rendered when
+  // any of them changes. Without parts the player keeps the worker's own preview.
+  useEffect(() => {
+    if (!hasParts || !parts) return;
+    const voices = [{ notes: voiceOn.soprano ? view.notes : [], gain: 1 }];
+    for (const name of VOICES) {
+      if (name === "soprano" || !voiceOn[name] || !parts[name]) continue;
+      voices.push({ notes: parts[name].notes, gain: 0.8 });
+    }
+    try {
+      setPreview(synthesizeVoicesWavBase64(voices, tempo));
+    } catch {
+      // preview synthesis is non-fatal
+    }
+  }, [hasParts, parts, voiceOn, view.notes, tempo]);
 
   const activeSolfaLines = useMemo(() => {
     return solfaStyle === "curwen" && view.curwenLines.length > 0
@@ -266,7 +374,11 @@ export function ResultScreen({ route, navigation }: Props) {
         notes: view.notes,
         overallConfidence,
         sourceJobId,
+        lyrics: lyrics.trim(),
+        parts: parts ?? undefined,
+        partsMusicXml: partsMusicXml || undefined,
       });
+      committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
       setCommittedTitle(saved.title);
       // Corrections rode along in the payload, so the server is now level with
@@ -399,7 +511,7 @@ export function ResultScreen({ route, navigation }: Props) {
     setDraft((d) => ({
       ...d,
       notes: d.notes.map((n, i) =>
-        i === index ? result.notes[d.origins[i]] : n,
+        i === index ? baseline.notes[d.origins[i]] : n,
       ),
     }));
   }
@@ -486,10 +598,103 @@ export function ResultScreen({ route, navigation }: Props) {
   }
 
   function discardCorrections() {
-    const original = pristine(result.notes);
+    const original = pristine(baseline.notes);
     setDraft(original);
-    setPreview(result.audioPreviewBase64);
+    setPreview(baseline.notes === result.notes ? result.audioPreviewBase64 : synthesizeMelodyWavBase64(baseline.notes, tempo));
     void commitNotes(original);
+  }
+
+  /**
+   * Transpose for my choir. Saved sheets move on the server (the library row is the
+   * source of truth); an unsaved result goes through the stateless endpoint so the
+   * engraving is respelled by the same code. Either way the solfa reads as before.
+   */
+  async function applyTranspose() {
+    if (semitones === 0) return;
+    setTransposing(true);
+    try {
+      const moved = savedId
+        ? await libraryApi.transpose(savedId, semitones).then((s) => ({
+            key: s.key,
+            notes: s.notes ?? [],
+            musicXml: s.musicXml ?? "",
+            parts: s.parts ?? null,
+            partsMusicXml: s.partsMusicXml ?? null,
+          }))
+        : await transcriptionsApi.transpose({
+            key,
+            semitones,
+            notes: view.notes,
+            musicXml: scoreXml || result.musicXml,
+            parts,
+            partsMusicXml: partsMusicXml || null,
+          });
+      const relabelled = deriveSolfa(moved.notes, moved.key, timeSignature, result.chromaticSpelling ?? "direction");
+      const notes = relabelled.notes;
+      setBaseline({ notes, key: moved.key, solfaLines: relabelled.solfaLines });
+      setDraft(pristine(notes));
+      persisted.current = pristine(notes);
+      setKey(moved.key);
+      setParts((moved.parts as Parts | null) ?? null);
+      setPartsMusicXml(moved.partsMusicXml ?? "");
+      setPreview(synthesizeMelodyWavBase64(notes, tempo));
+      setSemitones(0);
+      setPickingKey(false);
+      haptics.play("success");
+    } catch (e) {
+      showDialog({ title: "Could not transpose", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    } finally {
+      setTransposing(false);
+    }
+  }
+
+  /** Lyrics are saved when the field loses focus, so typing never races the server. */
+  async function commitLyrics() {
+    const next = lyrics.trim();
+    if (!savedId || next === committedLyrics.current) return;
+    const previous = committedLyrics.current;
+    committedLyrics.current = next;
+    try {
+      await libraryApi.updateLyrics(savedId, next);
+    } catch (e) {
+      committedLyrics.current = previous;
+      showDialog({ title: "Could not save the lyrics", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    }
+  }
+
+  /** The public link: made once, then handed to the OS share sheet. */
+  async function shareLink() {
+    if (!savedId) {
+      showDialog({
+        title: "Save it first",
+        message: "A share link points at a sheet in your library. Save this transcription, then share the link.",
+        icon: "bookmark-outline",
+      });
+      return;
+    }
+    setSharing(true);
+    try {
+      const link = await libraryApi.share(savedId);
+      setShareToken(link.token);
+      await Share.share({ message: `${committedTitle || title} — Tonic Solfa on NoteFusion\n${link.url}`, url: link.url });
+    } catch (e) {
+      showDialog({ title: "Could not share", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    } finally {
+      setSharing(false);
+    }
+  }
+
+  async function stopSharing() {
+    if (!savedId) return;
+    setSharing(true);
+    try {
+      await libraryApi.unshare(savedId);
+      setShareToken(null);
+    } catch (e) {
+      showDialog({ title: "Could not stop sharing", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    } finally {
+      setSharing(false);
+    }
   }
 
   async function rename() {
@@ -577,6 +782,8 @@ export function ResultScreen({ route, navigation }: Props) {
         tempoBpm: tempo,
         timeSignature,
         solfaLines: activeSolfaLines,
+        hymn: hasLyrics ? hymn : undefined,
+        parts: partsView?.filter((p) => p.name !== "soprano").map((p) => ({ name: p.name, lines: p.lines })),
       });
       if (!outcome.ok) {
         showDialog({ title: "Could not export PDF", message: outcome.message, icon: "alert-circle-outline", tone: "danger" });
@@ -817,6 +1024,68 @@ export function ResultScreen({ route, navigation }: Props) {
                 ),
               )}
             </ScrollView>
+
+            {/* Transpose for my choir: the one edit that moves the notes. */}
+            <View style={styles.transposeBlock}>
+              <Text style={styles.transposeTitle}>Transpose for my choir</Text>
+              <Text style={styles.keyPickerHint}>
+                Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.
+              </Text>
+              <View style={styles.transposeRow}>
+                <Touchable
+                  style={styles.transposeStep}
+                  radius={radii.pill}
+                  onPress={() => setSemitones((s) => Math.max(-12, s - 1))}
+                  disabled={semitones <= -12}
+                  accessibilityLabel="A semitone lower"
+                >
+                  <Ionicons name="remove" size={18} color={colors.text} />
+                </Touchable>
+                <View style={styles.transposeReadout}>
+                  <Text style={styles.transposeValue}>{semitones > 0 ? `+${semitones}` : semitones}</Text>
+                  <Text style={styles.transposeUnit}>
+                    {Math.abs(semitones) === 1 ? "semitone" : "semitones"} · {semitones === 0 ? key : `${key} → ${shiftKeyName(key, semitones)}`}
+                  </Text>
+                </View>
+                <Touchable
+                  style={styles.transposeStep}
+                  radius={radii.pill}
+                  onPress={() => setSemitones((s) => Math.min(12, s + 1))}
+                  disabled={semitones >= 12}
+                  accessibilityLabel="A semitone higher"
+                >
+                  <Ionicons name="add" size={18} color={colors.text} />
+                </Touchable>
+              </View>
+              {rangeReport(view.notes, parts, semitones).map((r) => (
+                <View key={r.voice} style={styles.rangeRow}>
+                  <Text style={styles.rangeVoice}>{r.voice}</Text>
+                  <Text style={styles.rangeSpan}>
+                    {pitchName(r.low)} – {pitchName(r.high)}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.rangeStatus,
+                      r.status === "ok" ? { color: colors.success } : { color: r.overBy > 2 ? colors.danger : colors.warning },
+                    ]}
+                  >
+                    {r.status === "ok"
+                      ? "comfortable"
+                      : r.status === "wide"
+                        ? "too wide"
+                        : `${r.overBy} ${r.overBy === 1 ? "semitone" : "semitones"} too ${r.status}`}
+                  </Text>
+                </View>
+              ))}
+              <Button
+                label={semitones === 0 ? "Choose a shift" : `Transpose to ${shiftKeyName(key, semitones)}`}
+                icon="swap-vertical-outline"
+                onPress={applyTranspose}
+                loading={transposing}
+                disabled={semitones === 0}
+                style={styles.transposeApply}
+              />
+            </View>
           </View>
         )}
 
@@ -1012,10 +1281,44 @@ export function ResultScreen({ route, navigation }: Props) {
                         Curwen
                       </Text>
                     </Touchable>
+                    {hasLyrics ? (
+                      <Touchable
+                        onPress={() => setSolfaStyle("hymn")}
+                        style={[styles.solfaStylePill, solfaStyle === "hymn" && styles.solfaStylePillActive]}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: solfaStyle === "hymn" }}
+                      >
+                        <Text style={[styles.solfaStylePillText, solfaStyle === "hymn" && styles.solfaStylePillTextActive]}>
+                          Hymn
+                        </Text>
+                      </Touchable>
+                    ) : null}
                   </View>
                 </View>
 
-                {activeSolfaLines.map((line, i) => (
+                {solfaStyle === "hymn" ? (
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View>
+                      <Text style={[styles.solfaLine, styles.solfaLineFirst]}>{activeSolfaLines[0]}</Text>
+                      {hymn.map((bars, r) => (
+                        <View key={r} style={styles.hymnRow}>
+                          {bars.map((bar, b) => (
+                            <View key={b} style={styles.hymnBar}>
+                              {bar.map((cell, c) => (
+                                <View key={c} style={styles.hymnCell}>
+                                  <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
+                                  <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
+                                </View>
+                              ))}
+                            </View>
+                          ))}
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+                ) : null}
+
+                {(solfaStyle === "hymn" ? [] : activeSolfaLines).map((line, i) => (
                   <View key={i} style={styles.solfaLineWrap}>
                     {/* Line number chip */}
                     {activeSolfaLines.length > 1 && (
@@ -1055,15 +1358,34 @@ export function ResultScreen({ route, navigation }: Props) {
         </View>
       </View>
 
-      {/* ── Playback: hear the transcribed melody ───────────────────────── */}
+      {/* ── Lyrics: the words under the solfa ──────────────────────────── */}
+      <View style={styles.lyricsBlock}>
+        <TextField
+          label="Lyrics"
+          value={lyrics}
+          onChangeText={setLyrics}
+          onBlur={() => void commitLyrics()}
+          placeholder="A-ma-zing grace, how sweet the sound…"
+          multiline
+          numberOfLines={3}
+        />
+        <Text style={styles.lyricsHint}>
+          Split syllables with hyphens (a-ma-zing); each syllable goes under the next note. Use grace_ to hold a syllable over two notes.
+        </Text>
+      </View>
+
+      {/* ── Playback: hear the tune, or rehearse a part against the others ─ */}
       {preview ? (
         <NotePlayer
           audioPreviewBase64={preview}
           notes={view.notes}
-          tempoBpm={result.tempo}
-          timeSignature={result.timeSignature}
-          title="Play back"
+          tempoBpm={tempo}
+          timeSignature={timeSignature}
+          title={hasParts ? "Rehearse" : "Play back"}
           onCurrentNoteChange={setPlayingNote}
+          voices={hasParts ? VOICES.filter((v) => v === "soprano" || parts?.[v]).map((v) => ({ name: v, on: voiceOn[v] })) : undefined}
+          onToggleVoice={(v) => setVoiceOn((s) => ({ ...s, [v]: !s[v] }))}
+          barCount={barCount}
           style={styles.playerCard}
         />
       ) : null}
@@ -1136,17 +1458,13 @@ export function ResultScreen({ route, navigation }: Props) {
             </View>
           ) : null}
         </View>
-        {isPro && result.parts ? (
-          (["soprano", "alto", "tenor", "bass"] as const).map((name) => {
-            const part = result.parts?.[name];
-            if (!part) return null;
-            return (
-              <View key={name} style={styles.voice}>
-                <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
-                <Text style={styles.voiceLines}>{part.solfaLines.slice(1).join("\n")}</Text>
-              </View>
-            );
-          })
+        {isPro && partsView ? (
+          partsView.map(({ name, lines }) => (
+            <View key={name} style={styles.voice}>
+              <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+              <Text style={styles.voiceLines}>{lines.slice(1).join("\n")}</Text>
+            </View>
+          ))
         ) : (
           <Touchable onPress={() => navigation.navigate("Upgrade")} style={styles.voicesTeaser} accessibilityLabel="Unlock four-part harmony">
             <Text style={styles.voicesTeaserText}>
@@ -1156,6 +1474,18 @@ export function ResultScreen({ route, navigation }: Props) {
           </Touchable>
         )}
       </View>
+
+      {/* ── Sing it: a take, marked note by note ────────────────────────── */}
+      {view.notes.length > 0 ? (
+        <SingAlong
+          melody={view.notes}
+          parts={isPro ? parts : null}
+          tempoBpm={tempo}
+          timeSignature={timeSignature}
+          isPro={isPro}
+          onRequirePro={() => void requirePro()}
+        />
+      ) : null}
 
       {/* ── Export & Share ─────────────────────────────────────────────────── */}
       <View style={styles.exportBlock}>
@@ -1175,8 +1505,25 @@ export function ResultScreen({ route, navigation }: Props) {
 
         <View style={styles.exportButtonsRow}>
           <Button
-            label="Share Tonic Solfa"
+            label={shareToken ? "Share the link again" : "Share a link"}
             variant="primary"
+            icon="link-outline"
+            onPress={shareLink}
+            loading={sharing}
+            style={styles.exportButtonPrimary}
+          />
+          {shareToken ? (
+            <View style={styles.sharedRow}>
+              <Ionicons name="globe-outline" size={14} color={colors.success} />
+              <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
+              <Touchable onPress={stopSharing} disabled={sharing} accessibilityLabel="Stop sharing">
+                <Text style={styles.sharedStop}>Stop</Text>
+              </Touchable>
+            </View>
+          ) : null}
+          <Button
+            label="Share Tonic Solfa text"
+            variant="secondary"
             icon="chatbubbles-outline"
             onPress={handleExportSolfa}
             loading={exportingType === "solfa"}
@@ -1321,7 +1668,7 @@ export function ResultScreen({ route, navigation }: Props) {
         tempoBpm={result.tempo}
         edited={
           editing !== null &&
-          draft.notes[editing] !== result.notes[draft.origins[editing]]
+          draft.notes[editing] !== baseline.notes[draft.origins[editing]]
         }
         reviewQueue={reviewQueue}
         onNavigate={setEditing}
@@ -1402,6 +1749,34 @@ const makeStyles = (c: Palette) =>
     paddingHorizontal: spacing.sm,
     marginBottom: spacing.md,
   },
+  transposeBlock: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: c.borderLight },
+  transposeTitle: { ...typography.label, color: c.text, marginBottom: 4 },
+  transposeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginBottom: spacing.sm },
+  transposeStep: {
+    width: 40, height: 40, borderRadius: radii.pill, alignItems: "center", justifyContent: "center",
+    backgroundColor: c.surface, borderWidth: 1, borderColor: c.border,
+  },
+  transposeReadout: { flex: 1, alignItems: "center" },
+  transposeValue: { ...typography.title, color: c.text },
+  transposeUnit: { ...typography.caption, color: c.textMuted, marginTop: 2 },
+  rangeRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, paddingVertical: 4 },
+  rangeVoice: { ...typography.caption, color: c.textMuted, width: 64, textTransform: "capitalize" },
+  rangeSpan: { ...typography.mono, color: c.text, fontSize: 13, width: 84 },
+  rangeStatus: { ...typography.caption, flex: 1, fontFamily: fonts.semibold },
+  transposeApply: { marginTop: spacing.sm },
+  lyricsBlock: { marginBottom: spacing.lg },
+  lyricsHint: { ...typography.caption, color: c.textFaint, lineHeight: 17, marginTop: 4 },
+  hymnRow: { flexDirection: "row", marginBottom: spacing.sm },
+  hymnBar: { flexDirection: "row", borderLeftWidth: 1.5, borderLeftColor: c.text, paddingHorizontal: 4 },
+  hymnCell: { minWidth: 34, alignItems: "center", marginRight: 2 },
+  hymnSolfa: { ...typography.mono, color: c.text, fontSize: 15, fontWeight: "700" },
+  hymnLyric: { ...typography.caption, color: c.textMuted, fontSize: 10, minHeight: 14 },
+  sharedRow: {
+    flexDirection: "row", alignItems: "center", gap: spacing.xs,
+    backgroundColor: c.surfaceAlt, borderRadius: radii.sm, paddingVertical: 6, paddingHorizontal: spacing.sm,
+  },
+  sharedText: { ...typography.caption, color: c.textMuted, flex: 1, lineHeight: 16 },
+  sharedStop: { ...typography.caption, color: c.danger, fontFamily: fonts.semibold, paddingHorizontal: 4 },
   voicesBlock: { marginTop: spacing.lg },
   voice: { marginTop: spacing.sm, backgroundColor: c.surfaceAlt, borderRadius: radii.md, padding: spacing.md },
   voiceName: { ...typography.label, color: c.textMuted, marginBottom: 4 },

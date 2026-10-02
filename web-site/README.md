@@ -6,8 +6,12 @@ browser and you are looking at production.
 
 ```
 index.html            landing page
-app/index.html        NoteFusion Web: sign in, paste a song link, read the sheet, download on Pro
-assets/app.js         the web app's script (API client with token refresh, polling, OSMD, PDF)
+app/index.html        NoteFusion Web: sign in, paste a song link, read the sheet, rehearse, transpose, save, share, download on Pro
+app/sheet/index.html  a shared sheet (?s=token): anonymous, read-only, with the rehearsal player
+assets/app.js         the web app's script (API client with token refresh, polling, OSMD, PDF; guest mode for /app/?preview=<id>)
+assets/preview.js     the home page's try-it-free box: link, file or a 30-second recording → an anonymous preview
+assets/choir.js       movable-do labelling, hymn-book layout, voice ranges and the Web Audio rehearsal player
+assets/sheet.js       the shared-sheet page's script
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service
 delete-account/       account/data deletion and email confirmation flow

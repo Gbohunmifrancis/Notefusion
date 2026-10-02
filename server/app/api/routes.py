@@ -10,7 +10,7 @@ from pathlib import Path
 import librosa
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 
-from app.api.schemas import JobResponse, ResultDto, SubmitResponse
+from app.api.schemas import GradeResponse, GradeTargetDto, JobResponse, ResultDto, SubmitResponse
 from app.config import settings
 from app.jobs.queue import JobQueue
 
@@ -86,10 +86,13 @@ async def submit_transcription(
     time_signature: str | None = Form(None),
     callback_url: str | None = Form(None),
     priority: str = Form("normal"),
+    max_seconds: float | None = Form(None, description="Transcribe only the first N seconds (an anonymous preview)"),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
     priority = _priority(priority)
+    if max_seconds is not None and not 1.0 <= max_seconds <= settings.max_clip_seconds:
+        raise HTTPException(422, f"max_seconds must be between 1 and {settings.max_clip_seconds:.0f}.")
 
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
@@ -148,12 +151,36 @@ async def submit_transcription(
         raise HTTPException(413, f"Clip length {duration:.1f}s exceeds the maximum "
                                  f"of {settings.max_clip_seconds:.0f}s.")
 
+    # A capped submission (the website's try-it-free preview) keeps only the head of the
+    # clip; the result says how long the whole clip was and that it was cut.
+    song_seconds: float | None = None
+    if max_seconds is not None and duration > max_seconds + 0.5:
+        try:
+            tmp_path = _trim_head(tmp_path, max_seconds)
+        except Exception as ex:  # noqa: BLE001 - a clip we cannot decode is a client input error
+            tmp_path.unlink(missing_ok=True)
+            raise HTTPException(422, f"Could not trim the clip: {ex}")
+        song_seconds = duration
+
     queue = _get_queue(request)
     job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
                           time_signature=time_signature,
                           correlation_id=_correlation_id(request),
-                          callback_url=callback_url, priority=priority)
+                          callback_url=callback_url, priority=priority,
+                          song_seconds=song_seconds)
     return SubmitResponse(job_id=job_id)
+
+
+def _trim_head(path: Path, seconds: float) -> Path:
+    """The first ``seconds`` of ``path`` as a new 22.05 kHz mono WAV; the original is deleted."""
+    import soundfile as sf
+
+    y, sr = librosa.load(str(path), sr=22_050, mono=True, duration=seconds)
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as out:
+        out_path = Path(out.name)
+    sf.write(str(out_path), y, sr)
+    path.unlink(missing_ok=True)
+    return out_path
 
 
 def _priority(value: str) -> str:
@@ -233,6 +260,75 @@ async def submit_link_transcription(
                                callback_url=callback_url, priority=priority,
                                max_seconds=cap)
     return SubmitResponse(job_id=job_id)
+
+
+GRADE_SUFFIXES = ACCEPTED_SUFFIXES | {".webm", ".mp4", ".aac", ".caf"}
+GRADE_MAX_SECONDS = 120.0
+
+
+@router.post("/grade", response_model=GradeResponse,
+             summary="Grade a sung take against a part — pitch per note, in tune or not")
+async def grade_take(
+    request: Request,
+    audio: UploadFile = File(...),
+    target: str = Form(..., description="GradeTargetDto as JSON: the part in beats, tempo, count-in"),
+):
+    """Synchronous: a take is a minute or two and pyin on it takes seconds, so it is
+    answered in the request rather than queued like a transcription. The audio is
+    deleted before the response is sent."""
+    try:
+        spec = GradeTargetDto.model_validate_json(target)
+    except Exception as ex:  # noqa: BLE001 - any parse failure is a client input error
+        raise HTTPException(422, f"Invalid target: {ex}")
+    if not spec.notes:
+        raise HTTPException(422, "The target has no notes.")
+    if not 20 <= spec.tempo_bpm <= 300:
+        raise HTTPException(422, "tempoBpm must be between 20 and 300.")
+
+    suffix = Path(audio.filename or "take.wav").suffix.lower()
+    if suffix not in GRADE_SUFFIXES:
+        raise HTTPException(415, f"Unsupported audio format '{suffix}'.")
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+        written = 0
+        while chunk := await audio.read(1024 * 1024):
+            written += len(chunk)
+            if written > settings.max_upload_bytes:
+                tmp.close()
+                tmp_path.unlink(missing_ok=True)
+                raise HTTPException(413, "Upload exceeds the maximum allowed size.")
+            tmp.write(chunk)
+    if written == 0:
+        tmp_path.unlink(missing_ok=True)
+        raise HTTPException(422, "Empty audio upload.")
+
+    wav_path, converted = tmp_path, False
+    try:
+        from app.pipeline import grade as grading
+        from app.pipeline.transcriber import _ensure_wav_path
+
+        try:
+            wav_path, converted = _ensure_wav_path(tmp_path)
+            duration = _clip_duration_seconds(wav_path)
+        except Exception as ex:
+            raise HTTPException(422, f"Could not read the take: {ex}")
+        if duration > GRADE_MAX_SECONDS:
+            raise HTTPException(413, f"A take is at most {GRADE_MAX_SECONDS:.0f}s long.")
+        y, sr = librosa.load(str(wav_path), sr=grading.vocal.SAMPLE_RATE, mono=True)
+        result = grading.grade(
+            y, sr,
+            [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats) for n in spec.notes],
+            spec.tempo_bpm, spec.lead_in_sec,
+        )
+    finally:
+        tmp_path.unlink(missing_ok=True)
+        if converted:
+            wav_path.unlink(missing_ok=True)
+    return GradeResponse(
+        score=result.score, hits=result.hits, near=result.near, wrong=result.wrong, missed=result.missed,
+        tuning_cents=result.tuning_cents, offset_sec=result.offset_sec, octave_shift=result.octave_shift,
+        summary=result.summary, notes=[asdict(n) for n in result.notes],
+    )
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponse,

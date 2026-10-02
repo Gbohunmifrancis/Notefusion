@@ -85,12 +85,13 @@ class JobQueue:
                time_signature: str = "4/4",
                correlation_id: str | None = None,
                callback_url: str | None = None,
-               priority: str = PRIORITY_NORMAL) -> str:
+               priority: str = PRIORITY_NORMAL,
+               song_seconds: float | None = None) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
         logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s%s",
                     job.id[:8], mode, key or "auto", tempo or "auto", time_signature,
                     job.priority, self._trail(job))
-        self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature))
+        self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds))
         return job.id
 
     def submit_link(self, url: str, mode: str,
@@ -157,7 +158,7 @@ class JobQueue:
 
     def _run(self, job: Job, audio_path: Path, mode: str,
              key: str | None, tempo: int | None,
-             time_signature: str = "4/4") -> None:
+             time_signature: str = "4/4", song_seconds: float | None = None) -> None:
         job.status = STATUS_PROCESSING
         try:
             try:
@@ -166,6 +167,10 @@ class JobQueue:
                     time_signature=time_signature,
                     progress=lambda fraction: setattr(job, "progress", fraction),
                     fast=job.priority == PRIORITY_HIGH)
+                if song_seconds is not None:
+                    # The route kept only the head of a longer clip (a preview).
+                    job.result.song_duration_sec = round(song_seconds, 1)
+                    job.result.truncated = True
             finally:
                 # Stamped on every path out of transcribe() and before any terminal
                 # status is written. _purge_expired ignores a job whose finished_at is

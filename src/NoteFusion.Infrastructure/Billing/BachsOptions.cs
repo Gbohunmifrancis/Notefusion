@@ -88,6 +88,21 @@ public sealed class BachsOptions
     /// </summary>
     public string? ProductIdFor(string planCode)
     {
+        if (Lookup(planCode) is { } exact)
+            return exact;
+
+        // Plan codes carry their currency (pro_monthly_usd) since the geo split; a map keyed on the
+        // older bare code (pro_monthly) still names the same Bachs product, so it is honoured rather
+        // than making every deployment rename a secret on the day the catalogue changed.
+        var suffix = planCode.LastIndexOf('_');
+        if (suffix > 0 && planCode.Length - suffix == 4)
+            return Lookup(planCode[..suffix]);
+
+        return null;
+    }
+
+    private string? Lookup(string planCode)
+    {
         foreach (var (key, productId) in ProductMap)
         {
             if (string.Equals(key, planCode, StringComparison.OrdinalIgnoreCase)

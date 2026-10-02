@@ -104,6 +104,44 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
     }
 
+    public async Task<Result<GradeResultDto>> GradeAsync(
+        Stream audio,
+        string fileName,
+        GradeTargetDto target,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var form = new MultipartFormDataContent();
+            var audioContent = new StreamContent(audio);
+            var safeName = string.IsNullOrWhiteSpace(fileName) || !Path.HasExtension(fileName) ? "take.m4a" : fileName;
+            audioContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            form.Add(audioContent, "audio", safeName);
+            var wireTarget = new GradeTarget(
+                target.Notes.Select(n => new GradeTargetNote(n.PitchMidi, n.StartBeat, n.DurBeats)).ToList(),
+                target.TempoBpm, target.LeadInSec);
+            form.Add(new StringContent(System.Text.Json.JsonSerializer.Serialize(wireTarget, ApiJsonContext.Default.GradeTarget)), "target");
+
+            using var response = await http.PostAsync("v1/grade", form, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
+                return Error.Failure("Api.Grade", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+            }
+            var payload = await response.Content.ReadFromJsonAsync(ApiJsonContext.Default.GradeResponse, cancellationToken);
+            if (payload is null)
+                return Error.Failure("Api.Grade", "Transcription service returned an empty response.");
+            return new GradeResultDto(
+                payload.Score, payload.Hits, payload.Near, payload.Wrong, payload.Missed, payload.TuningCents,
+                payload.OffsetSec, payload.OctaveShift, payload.Summary,
+                payload.Notes.Select(n => new GradeNoteDto(n.Index, n.TargetMidi, n.SungMidi, n.Cents, n.Status)).ToList());
+        }
+        catch (HttpRequestException ex)
+        {
+            return Error.Network("Api.Grade", $"Could not reach the transcription service: {ex.Message}");
+        }
+    }
+
     public async Task<Result<string>> SubmitLinkAsync(
         string url,
         TranscribeOptions options,
@@ -149,6 +187,8 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         if (!string.IsNullOrWhiteSpace(options.TimeSignature) && !options.TimeSignature.Equals("Auto", StringComparison.OrdinalIgnoreCase))
             form.Add(new StringContent(options.TimeSignature), "time_signature");
         form.Add(new StringContent(options.Priority == TranscribePriority.High ? "high" : "normal"), "priority");
+        if (withMode && options.MaxSeconds is { } cap)
+            form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
 
         var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
         var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";

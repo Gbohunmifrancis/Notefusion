@@ -80,6 +80,41 @@ class ResultDto(ApiModel):
     parts_musicxml: str = ""
 
 
+class GradeTargetNoteDto(ApiModel):
+    pitch_midi: int
+    start_beat: float
+    dur_beats: float
+
+
+class GradeTargetDto(ApiModel):
+    """The part a take is judged against, in beats, and the count-in that preceded it."""
+
+    notes: list[GradeTargetNoteDto]
+    tempo_bpm: float
+    lead_in_sec: float = 0.0
+
+
+class GradeNoteDto(ApiModel):
+    index: int
+    target_midi: int
+    sung_midi: float | None = None
+    cents: float | None = None
+    status: str  # hit | near | wrong | missed
+
+
+class GradeResponse(ApiModel):
+    score: int
+    hits: int
+    near: int
+    wrong: int
+    missed: int
+    tuning_cents: float
+    offset_sec: float
+    octave_shift: int
+    summary: str
+    notes: list[GradeNoteDto]
+
+
 class JobResponse(ApiModel):
     status: str
     progress: float | None = None

@@ -1,15 +1,14 @@
 namespace NoteFusion.Application.Billing;
 
 /// <summary>
-/// Which pricing tier a user may buy, given where their account was first seen. Nigerian accounts buy Pro
-/// in naira on a subscription; everyone else buys it once, in dollars. One rule in one place because it has
+/// Which pricing tier a user may buy, given where their account was first seen. Nigerian accounts
+/// subscribe to Pro in naira; everyone else subscribes in dollars. One rule in one place because it has
 /// two callers that must never disagree — the paywall list and the checkout handler — and a plan hidden from
 /// the list but purchasable by id is not enforcement, it is decoration.
 /// </summary>
 /// <remarks>
 /// Currency is the key rather than the interval, because currency is what routes a charge to a provider:
-/// naira reaches Paystack, dollars reach Bachs. The split exists partly for that reason — Bachs cannot
-/// currently collect a recurring charge at all on this account.
+/// naira reaches Paystack, dollars reach Bachs (see <c>PaymentGatewayFactory.SelectForCurrency</c>).
 /// </remarks>
 public static class PlanEligibility
 {

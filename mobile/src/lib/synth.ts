@@ -413,7 +413,30 @@ export function synthesizeMelodyWavBase64(
   tempoBpm: number,
   opts: SynthOptions = {},
 ): string {
-  if (!notes || notes.length === 0) return "";
+  return synthesizeVoicesWavBase64([{ notes, gain: 1 }], tempoBpm, opts);
+}
+
+/** One voice of a rehearsal mix: its notes and how loud it sits in the blend. */
+export interface SynthVoice {
+  notes: readonly NoteEvent[];
+  /** 1 is the melody's own level; a part someone else sings sits a little under it. */
+  gain: number;
+}
+
+/**
+ * Several voices in one clip — the rehearsal mix. The parts are rendered through the
+ * same piano and summed before the limiter, so four voices at once compress into the
+ * headroom rather than clipping. A single voice at gain 1 is sample-identical to the
+ * melody preview.
+ */
+export function synthesizeVoicesWavBase64(
+  voices: readonly SynthVoice[],
+  tempoBpm: number,
+  opts: SynthOptions = {},
+): string {
+  const notes: { note: NoteEvent; gain: number }[] = [];
+  for (const v of voices) for (const note of v.notes) notes.push({ note, gain: v.gain });
+  if (notes.length === 0) return "";
 
   const beatSec = beatSecOf(tempoBpm);
   const lead = leadInSec(tempoBpm, opts);
@@ -423,7 +446,7 @@ export function synthesizeMelodyWavBase64(
   // both jobs, and deliberately so: the padding exists to hold the release, so any
   // other value either clips the last note's decay or leaves silence after it.
   let maxBeat = 0;
-  for (const n of notes) {
+  for (const { note: n } of notes) {
     const end = n.startBeat + n.durBeats;
     if (end > maxBeat) maxBeat = end;
   }
@@ -432,7 +455,7 @@ export function synthesizeMelodyWavBase64(
   const mix = new Float64Array(totalSamples);
   const cache = new Map<string, Float64Array>();
 
-  for (const note of notes) {
+  for (const { note, gain: voiceGain } of notes) {
     if (note.pitchMidi <= 0) continue;
 
     const startSample = leadSamples + Math.floor(note.startBeat * beatSec * SAMPLE_RATE);
@@ -455,7 +478,7 @@ export function synthesizeMelodyWavBase64(
     // renderVoice already normalises each note to PEAK_TARGET, so there is no
     // separate voice gain to apply here.
     const conf = Number.isFinite(note.conf) ? Math.min(Math.max(note.conf, 0), 1) : 1;
-    const gain = 0.55 + 0.35 * conf;
+    const gain = (0.55 + 0.35 * conf) * voiceGain;
     const n = Math.min(durSamples + tailSamples, totalSamples - startSample);
     for (let i = 0; i < n; i++) {
       mix[startSample + i] = mix[startSample + i]! + voice[i]! * gain;

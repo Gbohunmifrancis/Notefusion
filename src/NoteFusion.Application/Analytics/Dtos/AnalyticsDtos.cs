@@ -122,6 +122,36 @@ public sealed record RetentionCohortDto(
     double? RetentionRate);
 
 /// <summary>
+/// The website's acquisition funnel for one window: anonymous previews at the top, web sign-ups,
+/// the share loop, and Pro conversions among web sign-ups at the bottom.
+/// </summary>
+/// <param name="Previews">Anonymous previews started inside the window.</param>
+/// <param name="PreviewsPrevious">The same count over the preceding window.</param>
+/// <param name="PreviewDevices">Distinct browsers that previewed; a floor on visitors who tried it.</param>
+/// <param name="PreviewsSucceeded">Previews that reached a result the visitor could read.</param>
+/// <param name="WebSignups">Accounts created from the website inside the window.</param>
+/// <param name="WebSignupsPrevious">The same count over the preceding window.</param>
+/// <param name="SignupsFromPreview">Of those, how many claimed a preview — the sign-ups the try-it-free box earned.</param>
+/// <param name="WebSignupsWhoSaved">Web sign-ups in the window that have saved at least one sheet.</param>
+/// <param name="SharesCreated">Sheets put behind a public link inside the window.</param>
+/// <param name="ShareViews">Opens of public links, all time — the schema keeps a counter per sheet, not a view log.</param>
+/// <param name="WebProConversions">Subscriptions started inside the window by accounts that signed up on the web.</param>
+/// <param name="PreviewsPerDay">Previews per local day, zero-filled.</param>
+public sealed record WebFunnelDto(
+    int Previews,
+    int PreviewsPrevious,
+    int PreviewDevices,
+    int PreviewsSucceeded,
+    int WebSignups,
+    int WebSignupsPrevious,
+    int SignupsFromPreview,
+    int WebSignupsWhoSaved,
+    int SharesCreated,
+    long ShareViews,
+    int WebProConversions,
+    IReadOnlyList<DailyCountDto> PreviewsPerDay);
+
+/// <summary>
 /// The whole overview payload in one response, so the dashboard's first paint costs one request
 /// rather than six. Each section is independently meaningful and the series are aligned to the
 /// same window.
@@ -144,6 +174,8 @@ public sealed record RetentionCohortDto(
 /// The newest real events across the platform — signups, saved transcriptions, and latest
 /// sign-ins — interleaved and capped. A feed for the dashboard's right rail, not an audit log.
 /// </param>
+/// <param name="SignupSources">Accounts by the client that created them: web, mobile, or unknown (older accounts).</param>
+/// <param name="WebFunnel">The website's acquisition funnel for the window.</param>
 public sealed record AnalyticsOverviewDto(
     DateTime FromUtc,
     DateTime ToUtc,
@@ -156,7 +188,9 @@ public sealed record AnalyticsOverviewDto(
     IReadOnlyList<CategoryCountDto> DevicePlatforms,
     IReadOnlyList<CategoryCountDto> TopKeys,
     IReadOnlyList<RetentionCohortDto> Retention,
-    IReadOnlyList<ActivityItemDto> RecentActivity);
+    IReadOnlyList<ActivityItemDto> RecentActivity,
+    IReadOnlyList<CategoryCountDto> SignupSources,
+    WebFunnelDto WebFunnel);
 
 /// <summary>
 /// One row of the admin user table. Deliberately narrow: enough to support the table and a

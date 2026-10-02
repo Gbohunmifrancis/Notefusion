@@ -13,6 +13,16 @@
       : "https://api.notefusion.studio";
   var TOKENS_KEY = "nf.web.tokens";
   var POLL_MS = 2000;
+  var DEVICE_KEY = "nf.web.device";
+
+  /** The browser's opaque id, sent as X-Device-Id so the free preview is metered per browser. */
+  function deviceId() {
+    try {
+      var id = localStorage.getItem(DEVICE_KEY);
+      if (!id) { id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2); localStorage.setItem(DEVICE_KEY, id); }
+      return id;
+    } catch (e) { return "anonymous"; }
+  }
 
   // ── Session ──────────────────────────────────────────────────────────────
   function tokens() {
@@ -49,7 +59,7 @@
   function request(path, opts) {
     opts = opts || {};
     function send() {
-      var headers = {};
+      var headers = { "X-Device-Id": deviceId() };
       var body;
       if (opts.form) { body = opts.form; }
       else if (opts.body !== undefined) { headers["Content-Type"] = "application/json"; body = JSON.stringify(opts.body); }
@@ -97,9 +107,14 @@
   // ── State ────────────────────────────────────────────────────────────────
   var me = null;          // { fullName, email }
   var sub = null;         // SubscriptionDto
-  var current = null;     // { jobId, source, result }
+  var current = null;     // { jobId, kind, source, result, savedId, shareToken, semitones }
   var pollTimer = null;
   var osmd = null;
+  var C = window.NfChoir;
+  var guest = false;      // a visitor with a preview and no account
+  var previewId = new URLSearchParams(location.search).get("preview");
+  var player = null;      // the rehearsal player, made once the first result shows
+  var hymnCells = [];     // solfa cells of the hymn layout, for the playback cursor
 
   // ── Auth view ────────────────────────────────────────────────────────────
   function showAuth() {
@@ -133,12 +148,13 @@
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true; hide($("auth-alert"));
-    request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value } })
-      .then(function () {
-        alertIn($("auth-alert"), "success", "Account created. Check your email for the confirmation code, confirm it in the app, then sign in here.");
-        document.querySelector('.tab[data-tab="login"]').click();
-        $("login-email").value = $("reg-email").value.trim();
-        show($("auth-alert"));
+    request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
+      .then(function (res) {
+        pendingEmail = (res && res.email) || $("reg-email").value.trim();
+        $("verify-email-label").textContent = pendingEmail;
+        hide($("form-register")); hide($("form-login")); show($("form-verify"));
+        alertIn($("auth-alert"), "success", "Almost there — enter the code we just emailed you.");
+        $("verify-code").focus();
       })
       .catch(function (err) {
         var detail = err.details ? Object.keys(err.details).map(function (k) { return err.details[k].join(" "); }).join(" ") : "";
@@ -146,6 +162,37 @@
       })
       .finally(function () { btn.disabled = false; });
   });
+
+  var pendingEmail = "";
+  $("form-verify").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var btn = e.target.querySelector("button[type=submit]");
+    btn.disabled = true; hide($("auth-alert"));
+    request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.trim() } })
+      .then(function (res) {
+        saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
+        hide($("form-verify")); show($("form-login"));
+        return boot();
+      })
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "That code did not match."); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("verify-resend").addEventListener("click", function () {
+    request("/api/auth/resend-verification", { method: "POST", anonymous: true, body: { email: pendingEmail } })
+      .then(function () { alertIn($("auth-alert"), "success", "A new code is on its way."); })
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not resend the code."); });
+  });
+
+  // Guest → account: every "create an account" button opens the auth card under the result.
+  function openAuth(tab) {
+    var auth = $("view-auth");
+    document.querySelector("main").appendChild(auth); // below the sheet, so the preview stays in view
+    show(auth);
+    document.querySelector('.tab[data-tab="' + tab + '"]').click();
+    auth.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  ["guest-signup", "guest-cta-signup"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("register"); }); });
+  ["guest-signin", "guest-cta-signin"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("login"); }); });
 
   $("signout").addEventListener("click", function () {
     var t = tokens();
@@ -179,14 +226,32 @@
   }
 
   function boot() {
-    if (!tokens()) { showAuth(); return Promise.resolve(); }
+    if (!tokens()) {
+      if (previewId) { startGuest(); return Promise.resolve(); }
+      showAuth(); return Promise.resolve();
+    }
     return loadAccount().then(function () {
-      hide($("view-auth")); show($("view-app"));
+      var wasGuest = guest;
+      guest = false;
+      hide($("view-auth")); hide($("guest-bar")); show($("view-app"));
       if (!isPro()) loadPlans($("upgrade-panel"), $("plans-standalone"));
       else hide($("upgrade-panel"));
       var params = new URLSearchParams(location.search);
       if (params.get("paid")) confirmPayment();
+      if (previewId) {
+        // The preview that brought this person here is now theirs: the funnel's conversion.
+        request("/api/preview/jobs/" + encodeURIComponent(previewId) + "/claim", { method: "POST" }).catch(function () { /* best effort */ });
+        if (wasGuest && current && current.result) showResult(current.result);
+        else if (!current) startJob({ jobId: previewId, stage: "transcribing" }, "preview");
+      }
     }, function () { showAuth(); });
+  }
+
+  /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
+  function startGuest() {
+    guest = true;
+    hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel"));
+    startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
   // ── Submitting ───────────────────────────────────────────────────────────
@@ -195,8 +260,8 @@
     var url = $("link-url").value.trim();
     if (!url) return;
     $("link-submit").disabled = true; hide($("app-alert"));
-    request("/api/transcriptions/link", { method: "POST", body: { url: url, mode: "melody" } })
-      .then(function (job) { startJob(job, "link"); })
+    request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: { url: url, mode: "melody" } })
+      .then(function (job) { startJob(job, guest ? "preview" : "link"); })
       .catch(function (err) { explain(err); })
       .finally(function () { $("link-submit").disabled = false; });
   });
@@ -208,8 +273,8 @@
     form.append("audio", file, file.name);
     form.append("mode", "melody");
     hide($("app-alert"));
-    request("/api/transcriptions", { method: "POST", form: form })
-      .then(function (job) { startJob(job, "upload"); })
+    request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
+      .then(function (job) { startJob(job, guest ? "preview" : "upload"); })
       .catch(function (err) { explain(err); });
     e.target.value = "";
   });
@@ -223,16 +288,20 @@
       return;
     }
     if (err.code === "BILLING_SONG_CREDITS_EXHAUSTED") { alertIn($("app-alert"), "info", text); return; }
+    if (err.code === "PREVIEW_LIMIT_REACHED") { alertIn($("app-alert"), "info", text); openAuth("register"); return; }
     alertIn($("app-alert"), "danger", text);
   }
 
   // ── Polling ──────────────────────────────────────────────────────────────
   function startJob(job, kind) {
     stopPolling();
-    current = { jobId: job.jobId, kind: kind, source: job.source || null, result: null, startedAt: Date.now() };
+    current = { jobId: job.jobId, kind: kind, source: job.source || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0 };
+    $("save-title").value = "";
     hide($("result"));
     show($("progress"));
-    $("p-title").textContent = kind === "link" ? "Reading the link…" : "Transcribing your recording…";
+    $("p-title").textContent = kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…";
+    current.preview = kind === "preview";
+    if (current.preview) previewId = job.jobId;
     $("p-artist").textContent = "";
     hide($("p-thumb"));
     $("p-bar").style.width = "3%";
@@ -257,7 +326,7 @@
   function poll() {
     if (!current) return;
     var jobId = current.jobId;
-    request("/api/transcriptions/jobs/" + encodeURIComponent(jobId)).then(function (job) {
+    request((current.preview ? "/api/preview/jobs/" : "/api/transcriptions/jobs/") + encodeURIComponent(jobId), { anonymous: current.preview && guest }).then(function (job) {
       if (!current || current.jobId !== jobId) return;
       if (job.source) {
         current.source = job.source;
@@ -273,7 +342,7 @@
         current.result = job.result;
         hide($("progress"));
         showResult(job.result);
-        loadAccount();
+        if (!guest) loadAccount();
         return;
       }
       if (status === "failed") {
@@ -306,25 +375,31 @@
     });
     var trunc = $("r-truncated");
     if (result.truncated) {
-      alertIn(trunc, "info", isPro()
-        ? "This song runs " + formatSec(result.songDurationSec) + "; the first six minutes were transcribed."
-        : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
+      alertIn(trunc, "info", guest
+        ? "Free preview: the first 30 seconds of " + formatSec(result.songDurationSec) + ". Create a free account for more."
+        : isPro()
+          ? "This song runs " + formatSec(result.songDurationSec) + "; the first six minutes were transcribed."
+          : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
     } else hide(trunc);
 
-    var solfa = $("r-solfa-text");
-    solfa.innerHTML = "";
-    (result.solfaLines || []).forEach(function (line, i) {
-      var div = document.createElement("div");
-      if (i === 0 && /^Doh is/i.test(line)) div.className = "doh";
-      div.textContent = line;
-      solfa.appendChild(div);
-    });
+    renderSolfa(result);
+    $("lyrics").value = current.lyrics || "";
+    setupRehearsal(result);
+    setupSing(result);
+    renderTranspose();
+    renderSave();
 
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
     isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       b.innerHTML = b.textContent.replace(/\s*🔒$/, "") + (isPro() ? "" : ' <span class="lock">🔒</span>');
     });
+
+    // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
+    [$("save-section"), $("sing")].forEach(function (el) { guest ? hide(el) : show(el); });
+    guest ? hide(document.getElementById("tr-apply").closest(".section")) : show(document.getElementById("tr-apply").closest(".section"));
+    guest ? show($("guest-cta")) : hide($("guest-cta"));
+    if (guest) { hide($("r-upgrade")); show($("r-watermark")); }
 
     show($("result"));
     engrave(result.musicXml);
@@ -336,6 +411,281 @@
     s = Math.round(s || 0);
     return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
   }
+
+  /** The solfa lines, and under them the hymn-book layout once there are words. */
+  function renderSolfa(result) {
+    var lines = result.solfaLines && result.solfaLines.length > 1 ? result.solfaLines : C.renderLines(result.notes || [], C.keyHeader(result.key), result.timeSignature);
+    var hasLyrics = !!(current.lyrics && current.lyrics.trim());
+    var solfa = $("r-solfa-text");
+    solfa.innerHTML = "";
+    (hasLyrics ? lines.slice(0, 1) : lines).forEach(function (line, i) {
+      var div = document.createElement("div");
+      if (i === 0 && /^Doh is/i.test(line)) div.className = "doh";
+      div.textContent = line;
+      solfa.appendChild(div);
+    });
+    var hymn = $("r-hymn"); hymn.innerHTML = ""; hymnCells = [];
+    if (!hasLyrics) return;
+    var bpb = C.beatsPerBar(result.timeSignature);
+    C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars, r) {
+      var table = document.createElement("table"); table.className = "hymn"; var tr = document.createElement("tr");
+      bars.forEach(function (bar, b) {
+        var td = document.createElement("td");
+        bar.forEach(function (cell, c) {
+          var span = document.createElement("span"); span.className = "cell";
+          var bEl = document.createElement("b"); bEl.textContent = cell.solfa; var iEl = document.createElement("i"); iEl.textContent = cell.lyric;
+          span.appendChild(bEl); span.appendChild(iEl); td.appendChild(span);
+          hymnCells.push({ el: bEl, beat: (r * 4 + b) * bpb + c * 0.5 });
+        });
+        tr.appendChild(td);
+      });
+      table.appendChild(tr); hymn.appendChild(table);
+    });
+  }
+
+  $("lyrics").addEventListener("input", function () {
+    if (!current || !current.result) return;
+    current.lyrics = $("lyrics").value;
+    renderSolfa(current.result);
+  });
+  $("lyrics").addEventListener("change", function () {
+    if (!current || !current.savedId) return;
+    request("/api/library/" + current.savedId + "/lyrics", { method: "PUT", body: { lyrics: $("lyrics").value } })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "The lyrics were not saved: " + (err.message || err)); });
+  });
+
+  // ── Rehearsal player ─────────────────────────────────────────────────────
+  function rehearsalVoices(result) {
+    var voices = [{ name: "soprano", notes: result.notes || [], gain: 1 }];
+    if (isPro() && result.parts) {
+      C.VOICES.forEach(function (v) { if (v !== "soprano" && result.parts[v] && result.parts[v].notes) voices.push({ name: v, notes: result.parts[v].notes, gain: 0.8 }); });
+    }
+    return voices;
+  }
+  function setupRehearsal(result) {
+    if (!player) {
+      player = C.createPlayer();
+      $("play").addEventListener("click", function () { player.toggle(); });
+      $("restart").addEventListener("click", function () { player.stop(); player.play(); });
+      $("rate").addEventListener("change", function () { player.setRate(parseFloat($("rate").value)); });
+      ["loop-on", "loop-from", "loop-to"].forEach(function (id) { $(id).addEventListener("change", applyLoop); });
+      player.onTick(function (t) {
+        $("play").textContent = t.playing ? "❚❚ Pause" : "▶ Play";
+        var now = -1;
+        for (var i = 0; i < hymnCells.length; i++) if (hymnCells[i].beat <= t.beat + 1e-6) now = i;
+        hymnCells.forEach(function (c, i) { c.el.className = t.playing && i === now ? "now" : ""; });
+      });
+    }
+    var voices = rehearsalVoices(result);
+    player.load({ voices: voices, tempoBpm: result.tempo, timeSignature: result.timeSignature });
+    var bars = C.barCount(result.notes || [], result.timeSignature);
+    $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
+    var box = $("voices");
+    box.querySelectorAll("button").forEach(function (b) { b.remove(); });
+    if (voices.length > 1) {
+      show(box);
+      voices.forEach(function (v) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = v.name[0].toUpperCase(); b.title = "Mute " + v.name;
+        b.setAttribute("aria-pressed", "true");
+        b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", String(on)); player.setVoiceOn(v.name, on); });
+        box.appendChild(b);
+      });
+    } else hide(box);
+  }
+  function applyLoop() {
+    if (!player) return;
+    if ($("loop-on").checked) player.setLoopBars(parseInt($("loop-from").value, 10) || 1, parseInt($("loop-to").value, 10) || 1);
+    else player.setLoopBars(null, null);
+  }
+
+  // ── Sing it: a take, marked note by note ─────────────────────────────────
+  var sing = { voice: "soprano", recorder: null, stream: null, ctx: null, timer: null, stopAt: null, startedAt: 0, leadIn: 0, notes: [] };
+  function singNotes() {
+    var r = current.result;
+    if (sing.voice !== "soprano" && isPro() && r.parts && r.parts[sing.voice]) return r.parts[sing.voice].notes || [];
+    return r.notes || [];
+  }
+  function setupSing(result) {
+    var box = $("sing-voices");
+    box.querySelectorAll("button").forEach(function (b) { b.remove(); });
+    var voices = ["soprano"].concat(isPro() && result.parts ? C.VOICES.filter(function (v) { return v !== "soprano" && result.parts[v]; }) : []);
+    sing.voice = "soprano";
+    voices.forEach(function (v) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm" + (v === sing.voice ? " on" : "");
+      b.textContent = v === "soprano" ? "Tune" : v[0].toUpperCase() + v.slice(1);
+      b.addEventListener("click", function () { sing.voice = v; box.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); }); });
+      box.appendChild(b);
+    });
+    hide($("sing-result")); hide($("sing-live")); $("sing-status").textContent = "";
+  }
+  /** A bar of the starting note, then a bar of clicks, on the audio context's clock. Returns the lead-in length. */
+  function playLeadIn(ctx, notes, tempo, ts) {
+    var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo), t0 = ctx.currentTime + 0.05;
+    var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
+    var f = 440 * Math.pow(2, ((first ? first.pitchMidi : 60) - 69) / 12);
+    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.02);
+    g.gain.setValueAtTime(0.5, t0 + bpb * beat - 0.1); g.gain.exponentialRampToValueAtTime(0.0001, t0 + bpb * beat); g.connect(ctx.destination);
+    [[1, 1], [2, 0.3]].forEach(function (p) { var o = ctx.createOscillator(); o.frequency.value = f * p[0]; var og = ctx.createGain(); og.gain.value = p[1]; o.connect(og); og.connect(g); o.start(t0); o.stop(t0 + bpb * beat + 0.05); });
+    for (var i = 0; i < 2 * bpb; i++) {
+      var at = t0 + i * beat, click = ctx.createOscillator(), cg = ctx.createGain();
+      click.frequency.value = i % bpb === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
+      click.connect(cg); cg.connect(ctx.destination); click.start(at); click.stop(at + 0.06);
+    }
+    return 2 * bpb * beat;
+  }
+  $("sing-start").addEventListener("click", function () {
+    if (!current || !current.result) return;
+    if (!isPro()) { show($("r-upgrade")); $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { $("sing-status").textContent = "This browser cannot record audio."; return; }
+    var r = current.result, notes = singNotes();
+    if (!notes.length) return;
+    hide($("sing-result"));
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
+      sing.stream = stream; sing.notes = notes;
+      sing.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+      var chunks = [];
+      sing.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      sing.recorder.addEventListener("dataavailable", function (e) { if (e.data && e.data.size) chunks.push(e.data); });
+      sing.recorder.addEventListener("stop", function () {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        var type = sing.recorder.mimeType || mime || "audio/webm";
+        var blob = new Blob(chunks, { type: type });
+        gradeTake(blob, type.indexOf("mp4") >= 0 ? "take.mp4" : "take.webm", notes, r.tempo, sing.leadIn);
+      });
+      sing.recorder.start();
+      sing.startedAt = Date.now();
+      sing.leadIn = playLeadIn(sing.ctx, notes, r.tempo, r.timeSignature);
+      var beat = 60 / Math.max(30, r.tempo), end = notes.reduce(function (m, n) { return Math.max(m, n.startBeat + n.durBeats); }, 0) * beat;
+      hide($("sing-start")); show($("sing-stop")); show($("sing-live"));
+      sing.timer = setInterval(function () {
+        var t = (Date.now() - sing.startedAt) / 1000, live = $("sing-live");
+        if (t < sing.leadIn) { live.innerHTML = ""; live.textContent = (notes[0].solfa || "") + (notes[0].octaveMark || ""); var s = document.createElement("small"); s.textContent = "starting note… sing in " + Math.max(0, Math.ceil(sing.leadIn - t)); live.appendChild(s); return; }
+        var b = (t - sing.leadIn) / beat, due = null;
+        for (var i = 0; i < notes.length; i++) if (b >= notes[i].startBeat && b < notes[i].startBeat + notes[i].durBeats) due = notes[i];
+        live.textContent = due ? (due.solfa || "") + (due.octaveMark || "") : "·"; var s2 = document.createElement("small"); s2.textContent = "sing!"; live.appendChild(s2);
+      }, 100);
+      sing.stopAt = setTimeout(stopSinging, (sing.leadIn + end + 1.0) * 1000);
+      $("sing-status").textContent = "Recording…";
+    }).catch(function (err) { $("sing-status").textContent = "Microphone access is needed to record a take (" + (err.message || err) + ")."; });
+  });
+  function stopSinging() {
+    if (sing.timer) clearInterval(sing.timer); if (sing.stopAt) clearTimeout(sing.stopAt);
+    sing.timer = null; sing.stopAt = null;
+    hide($("sing-live")); hide($("sing-stop")); show($("sing-start"));
+    if (sing.recorder && sing.recorder.state !== "inactive") { $("sing-status").textContent = "Marking your take…"; sing.recorder.stop(); }
+    if (sing.ctx) { sing.ctx.close().catch(function () {}); sing.ctx = null; }
+  }
+  $("sing-stop").addEventListener("click", stopSinging);
+  function gradeTake(blob, name, notes, tempo, leadIn) {
+    var form = new FormData();
+    form.append("audio", blob, name);
+    form.append("target", JSON.stringify({ notes: notes.map(function (n) { return { pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats }; }), tempoBpm: tempo, leadInSec: leadIn }));
+    request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
+      $("sing-status").textContent = "";
+      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "#B45309" : "var(--danger)";
+      $("sing-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
+      var marks = $("sing-marks"); marks.innerHTML = "";
+      (g.notes || []).forEach(function (m) {
+        var n = notes[m.index]; if (!n) return;
+        var el = document.createElement("span"); el.className = "mark " + m.status; el.textContent = (n.solfa || "") + (n.octaveMark || "");
+        var s = document.createElement("small"); s.textContent = m.status === "missed" ? "—" : (m.cents == null ? "" : (m.cents > 0 ? "+" : "") + Math.round(m.cents)); el.appendChild(s);
+        marks.appendChild(el);
+      });
+      show($("sing-result"));
+    }).catch(function (err) { $("sing-status").textContent = "Could not mark the take: " + (err.message || err); });
+  }
+
+  // ── Transpose for my choir ───────────────────────────────────────────────
+  function renderTranspose() {
+    var r = current.result, n = current.semitones || 0;
+    $("tr-value").textContent = n > 0 ? "+" + n : String(n);
+    $("tr-key").textContent = n === 0 ? r.key : r.key + " → " + C.shiftKeyName(r.key, n);
+    $("tr-apply").disabled = n === 0;
+    $("tr-apply").textContent = n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
+    var table = $("ranges"); table.innerHTML = "";
+    C.rangeReport(r.notes || [], isPro() ? r.parts : null, n).forEach(function (row) {
+      var tr = document.createElement("tr");
+      var a = document.createElement("td"); a.textContent = row.voice;
+      var b = document.createElement("td"); b.textContent = C.pitchName(row.low) + " – " + C.pitchName(row.high);
+      var c = document.createElement("td");
+      c.className = row.status === "ok" ? "ok" : row.overBy > 2 ? "bad" : "warn";
+      c.textContent = row.status === "ok" ? "comfortable" : row.status === "wide" ? "too wide" : row.overBy + (row.overBy === 1 ? " semitone" : " semitones") + " too " + row.status;
+      tr.appendChild(a); tr.appendChild(b); tr.appendChild(c); table.appendChild(tr);
+    });
+  }
+  $("tr-down").addEventListener("click", function () { if (!current) return; current.semitones = Math.max(-12, (current.semitones || 0) - 1); renderTranspose(); });
+  $("tr-up").addEventListener("click", function () { if (!current) return; current.semitones = Math.min(12, (current.semitones || 0) + 1); renderTranspose(); });
+  $("tr-apply").addEventListener("click", function () {
+    if (!current || !current.result || !current.semitones) return;
+    var r = current.result, n = current.semitones, btn = $("tr-apply");
+    btn.disabled = true;
+    var req = current.savedId
+      ? request("/api/library/" + current.savedId + "/transpose", { method: "POST", body: { semitones: n } })
+      : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null } });
+    req.then(function (moved) {
+      current.semitones = 0;
+      var next = Object.assign({}, r, {
+        key: moved.key, notes: moved.notes || [], musicXml: moved.musicXml || "",
+        parts: moved.parts || null, partsMusicXml: moved.partsMusicXml || "",
+        solfaLines: C.renderLines(moved.notes || [], C.keyHeader(moved.key), r.timeSignature)
+      });
+      current.result = next;
+      $("sheet-parts").innerHTML = "";
+      showResult(next);
+    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err)); btn.disabled = false; });
+  });
+
+  // ── Save & share ─────────────────────────────────────────────────────────
+  function renderSave() {
+    if (current.savedId) { hide($("save-form")); show($("saved")); $("saved-title").textContent = current.title || ""; renderShare(); }
+    else {
+      show($("save-form")); hide($("saved"));
+      var src = current.result.source || current.source;
+      if (!$("save-title").value) $("save-title").value = src ? (src.title + (src.artist ? " — " + src.artist : "")) : "My transcription";
+    }
+  }
+  function renderShare() {
+    if (current.shareToken) {
+      $("share-url").value = "https://notefusion.studio/app/sheet/?s=" + encodeURIComponent(current.shareToken);
+      show($("share-row")); $("share").textContent = "Share a link";
+    } else hide($("share-row"));
+  }
+  $("save").addEventListener("click", function () {
+    if (!current || !current.result) return;
+    var r = current.result, btn = $("save");
+    btn.disabled = true;
+    request("/api/library", { method: "POST", body: {
+      title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
+      musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
+      lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null
+    } }).then(function (saved) {
+      current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
+      renderSave();
+      var dismissed = false; try { dismissed = localStorage.getItem("nf.web.appBanner") === "no"; } catch (e) { /* ignore */ }
+      if (!dismissed) show($("app-banner"));
+    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("app-banner-dismiss").addEventListener("click", function () { hide($("app-banner")); try { localStorage.setItem("nf.web.appBanner", "no"); } catch (e) { /* ignore */ } });
+  $("share").addEventListener("click", function () {
+    if (!current || !current.savedId) return;
+    var btn = $("share"); btn.disabled = true;
+    request("/api/library/" + current.savedId + "/share", { method: "POST" })
+      .then(function (link) { current.shareToken = link.token; renderShare(); $("share-url").select(); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("share-copy").addEventListener("click", function () {
+    var url = $("share-url").value;
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { $("share-copy").textContent = "Copied"; setTimeout(function () { $("share-copy").textContent = "Copy"; }, 1500); }, function () { $("share-url").select(); });
+  });
+  $("share-stop").addEventListener("click", function () {
+    if (!current || !current.savedId) return;
+    request("/api/library/" + current.savedId + "/share", { method: "DELETE" })
+      .then(function () { current.shareToken = null; renderShare(); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not stop sharing: " + (err.message || err)); });
+  });
 
   document.querySelectorAll(".result-tabs .tab[data-view]").forEach(function (tab) {
     tab.addEventListener("click", function () {
@@ -367,7 +717,8 @@
       var block = document.createElement("div"); block.className = "part";
       var h = document.createElement("h3"); h.textContent = name; block.appendChild(h);
       var pre = document.createElement("div"); pre.className = "solfa";
-      (part.solfaLines || []).slice(1).forEach(function (line) { var d = document.createElement("div"); d.textContent = line; pre.appendChild(d); });
+      var lines = part.solfaLines && part.solfaLines.length > 1 ? part.solfaLines : C.renderLines(C.label(part.notes || [], result.key, result.notes || []), "", result.timeSignature);
+      lines.slice(1).forEach(function (line) { var d = document.createElement("div"); d.textContent = line; pre.appendChild(d); });
       block.appendChild(pre);
       holder.appendChild(block);
     });
@@ -420,6 +771,7 @@
   function gated(fn) {
     return function () {
       if (!current || !current.result) return;
+      if (guest) { openAuth("register"); return; }
       if (!isPro()) { show($("r-upgrade")); $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
       fn(current.result);
     };
@@ -440,7 +792,7 @@
   $("dl-solfa").addEventListener("click", function () {
     if (!current || !current.result) return;
     var r = current.result;
-    var text = (r.solfaLines || []).join("\n") + "\n\n" + $("r-credit").textContent + "\n";
+    var text = (r.solfaLines || []).join("\n") + (current.lyrics && current.lyrics.trim() ? "\n\n" + current.lyrics.trim() : "") + "\n\n" + $("r-credit").textContent + "\n";
     download(baseName() + "-solfa.txt", new Blob([text], { type: "text/plain" }));
   });
   $("dl-parts").addEventListener("click", gated(function (r) {
@@ -492,6 +844,39 @@
         doc.text($("r-credit").textContent + "  ·  notefusion.studio", margin, H - margin + 2, { maxWidth: W - 2 * margin });
         doc.text(String(i + 1) + " / " + canvases.length, W - margin, H - margin + 2, { align: "right" });
       });
+      // The solfa on its own page: the hymn-book layout when there are words.
+      doc.addPage();
+      doc.setFont("helvetica", "bold"); doc.setFontSize(16); doc.setTextColor(15, 23, 42);
+      doc.text(title, margin, margin + 6);
+      doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(93, 109, 130);
+      doc.text("Tonic Solfa · " + subtitle, margin, margin + 12);
+      doc.setFont("courier", "normal"); doc.setFontSize(10); doc.setTextColor(15, 23, 42);
+      var y = margin + 24;
+      var lines = result.solfaLines && result.solfaLines.length > 1 ? result.solfaLines : C.renderLines(result.notes || [], C.keyHeader(result.key), result.timeSignature);
+      var words = current.lyrics && current.lyrics.trim();
+      doc.text(lines[0] || "", margin, y); y += 7;
+      if (words) {
+        C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars) {
+          var top = "", bottom = "";
+          bars.forEach(function (bar) {
+            top += "| "; bottom += "  ";
+            bar.forEach(function (cell) {
+              var w = Math.max(cell.solfa.length, cell.lyric.length, 2) + 1;
+              top += cell.solfa + new Array(w - cell.solfa.length + 1).join(" ");
+              bottom += cell.lyric + new Array(w - cell.lyric.length + 1).join(" ");
+            });
+          });
+          top += "|";
+          if (y > H - margin - 14) { doc.addPage(); y = margin + 8; }
+          doc.text(top, margin, y); doc.setTextColor(93, 109, 130); doc.text(bottom, margin, y + 4); doc.setTextColor(15, 23, 42);
+          y += 11;
+        });
+      } else {
+        lines.slice(1).forEach(function (line) {
+          if (y > H - margin - 10) { doc.addPage(); y = margin + 8; }
+          doc.text(line, margin, y); y += 6;
+        });
+      }
       doc.save(baseName() + ".pdf");
       stage.innerHTML = "";
     });

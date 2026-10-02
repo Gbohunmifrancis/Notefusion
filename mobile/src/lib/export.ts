@@ -13,6 +13,8 @@ import { File, Paths } from "expo-file-system";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
+import type { HymnCell } from "./choir";
+
 /** Filesystem-safe stem from a user-entered title, so the shared file is recognisable. */
 function safeFileName(title: string): string {
   const stem = title
@@ -196,6 +198,21 @@ export interface PdfMeta {
   timeSignature: string;
   /** The solfa lines, printed on their own page after the stave. */
   solfaLines?: readonly string[];
+  /** Hymn-book layout — a lyric syllable under each solfa cell — printed instead of the bare lines when the sheet has words. */
+  hymn?: HymnCell[][][];
+  /** The four parts' solfa, one block per voice. */
+  parts?: readonly { name: string; lines: readonly string[] }[];
+}
+
+function hymnHtml(rows: HymnCell[][][]): string {
+  return rows
+    .map(
+      (bars) =>
+        `<table class="hymn"><tr>${bars
+          .map((bar) => `<td class="bar">${bar.map((c) => `<span class="cell"><b>${escapeHtml(c.solfa)}</b><i>${escapeHtml(c.lyric)}</i></span>`).join("")}</td>`)
+          .join("")}</tr></table>`,
+    )
+    .join("");
 }
 
 function escapeHtml(text: string): string {
@@ -221,7 +238,14 @@ export async function exportPdf(svg: string, meta: PdfMeta): Promise<ExportOutco
     .replace(/<svg([^>]*)\sheight="[^"]*"/, "<svg$1")
     .replace(/<svg/, '<svg style="width:100%;height:auto"');
   const credit = meta.credit ? escapeHtml(meta.credit) : "";
-  const solfa = (meta.solfaLines ?? []).map((l) => `<div>${escapeHtml(l)}</div>`).join("");
+  const hymn = meta.hymn && meta.hymn.length > 0 ? hymnHtml(meta.hymn) : "";
+  const solfa = hymn
+    ? `<div>${escapeHtml(meta.solfaLines?.[0] ?? "")}</div>${hymn}`
+    : (meta.solfaLines ?? []).map((l) => `<div>${escapeHtml(l)}</div>`).join("");
+  const parts = (meta.parts ?? [])
+    .filter((p) => p.lines.length > 1)
+    .map((p) => `<h3>${escapeHtml(p.name)}</h3>${p.lines.slice(1).map((l) => `<div>${escapeHtml(l)}</div>`).join("")}`)
+    .join("");
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8">
 <style>
   @page { size: A4; margin: 14mm 12mm 16mm; }
@@ -232,13 +256,20 @@ export async function exportPdf(svg: string, meta: PdfMeta): Promise<ExportOutco
   .sheet svg { width: 100%; height: auto; }
   .solfa { page-break-before: always; font-family: ui-monospace, Menlo, monospace; font-size: 13px; line-height: 1.9; white-space: pre-wrap; }
   .solfa h2 { font-family: -apple-system, Roboto, sans-serif; font-size: 14px; margin: 0 0 8px; }
+  .solfa h3 { font-family: -apple-system, Roboto, sans-serif; font-size: 11px; margin: 14px 0 4px; color: #5D6D82; text-transform: uppercase; letter-spacing: .06em; }
+  table.hymn { border-collapse: collapse; margin: 6px 0 10px; width: 100%; }
+  table.hymn td.bar { border-left: 1.5px solid #0F172A; padding: 2px 6px; vertical-align: top; white-space: nowrap; }
+  table.hymn td.bar:last-child { border-right: 1.5px solid #0F172A; }
+  .cell { display: inline-block; min-width: 2.6em; text-align: center; margin-right: 2px; }
+  .cell b { display: block; font-weight: 700; font-size: 13px; }
+  .cell i { display: block; font-style: normal; font-family: -apple-system, Roboto, sans-serif; font-size: 10px; color: #334155; min-height: 12px; }
   .foot { position: fixed; bottom: 0; left: 0; right: 0; font-size: 9px; color: #94A3B8; }
 </style></head><body>
 <h1>${escapeHtml(meta.title)}</h1>
 <p class="sub">${escapeHtml(meta.key)} · ${meta.tempoBpm} BPM · ${escapeHtml(meta.timeSignature)}</p>
 ${credit ? `<p class="credit">${credit}</p>` : ""}
 <div class="sheet">${scaled}</div>
-${solfa ? `<div class="solfa"><h2>Tonic Solfa</h2>${solfa}</div>` : ""}
+${solfa ? `<div class="solfa"><h2>Tonic Solfa</h2>${solfa}${parts}</div>` : ""}
 <div class="foot">${credit ? credit + " · " : ""}Transcribed with NoteFusion · notefusion.studio</div>
 </body></html>`;
 

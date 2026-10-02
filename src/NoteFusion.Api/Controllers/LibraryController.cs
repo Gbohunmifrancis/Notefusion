@@ -68,6 +68,37 @@ public sealed class LibraryController : ApiControllerBase
     public async Task<IActionResult> UpdateNotes(Guid id, UpdateNotesBody body, CancellationToken ct)
         => HandleResult(await _sender.Send(new UpdateTranscriptionNotesCommand(id, body.Notes), ct));
 
+    /// <summary>Sets the words under the solfa.</summary>
+    [HttpPut("{id:guid}/lyrics")]
+    public async Task<IActionResult> UpdateLyrics(Guid id, UpdateLyricsBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new UpdateTranscriptionLyricsCommand(id, body.Lyrics ?? string.Empty), ct));
+
+    /// <summary>
+    /// Transposes for a choir's range: moves every note (melody and parts), the key and both
+    /// scores by the given semitones. The solfa reads as before — only Doh moves.
+    /// </summary>
+    [HttpPost("{id:guid}/transpose")]
+    public async Task<IActionResult> Transpose(Guid id, TransposeBody body, CancellationToken ct)
+        => HandleResult(await _sender.Send(new TransposeTranscriptionCommand(id, body.Semitones), ct));
+
+    /// <summary>Puts the sheet behind a public link (idempotent) and returns it.</summary>
+    [HttpPost("{id:guid}/share")]
+    public async Task<IActionResult> Share(Guid id, CancellationToken ct)
+    {
+        var result = await _sender.Send(new ShareTranscriptionCommand(id), ct);
+        return result.IsSuccess
+            ? Ok(new ShareLinkResponse(result.Value.Token, SharedSheetUrl(result.Value.Token)))
+            : HandleResult(result);
+    }
+
+    /// <summary>Takes the sheet off its public link.</summary>
+    [HttpDelete("{id:guid}/share")]
+    public async Task<IActionResult> Unshare(Guid id, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new UnshareTranscriptionCommand(id), ct));
+
+    /// <summary>Where a shared sheet opens: the website's public sheet page.</summary>
+    public static string SharedSheetUrl(string token) => $"https://notefusion.studio/app/sheet/?s={Uri.EscapeDataString(token)}";
+
     /// <summary>Deletes a saved transcription.</summary>
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
@@ -87,4 +118,13 @@ public sealed class LibraryController : ApiControllerBase
 
     /// <summary>Body for a note-correction request.</summary>
     public sealed record UpdateNotesBody(IReadOnlyList<NoteEventDto> Notes);
+
+    /// <summary>Body for a lyrics update.</summary>
+    public sealed record UpdateLyricsBody(string? Lyrics);
+
+    /// <summary>Body for a transposition: −12…12 semitones.</summary>
+    public sealed record TransposeBody(int Semitones);
+
+    /// <summary>A public link: the token and the page it opens.</summary>
+    public sealed record ShareLinkResponse(string Token, string Url);
 }

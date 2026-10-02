@@ -112,6 +112,59 @@ export interface TranscriptionResult {
   parts?: Record<"soprano" | "alto" | "tenor" | "bass", TranscriptionPart> | null;
   /** The four parts as one MusicXML score. Pro only. */
   partsMusicXml?: string;
+  /** The words under the solfa; empty until the user types them. Saved items only. */
+  lyrics?: string;
+  /** The public link's token when the saved sheet is shared; null or absent otherwise. */
+  shareToken?: string | null;
+}
+
+/** What the API hands back for a transposed sheet (saved or not): the moved notes, labelled. */
+export interface TransposedSheet {
+  key: string;
+  notes: NoteEvent[];
+  musicXml: string;
+  parts?: Record<string, TranscriptionPart> | null;
+  partsMusicXml?: string | null;
+}
+
+/** The part a take is judged against, in beats, and the count-in that preceded it in the recording. */
+export interface GradeTarget {
+  notes: { pitchMidi: number; startBeat: number; durBeats: number }[];
+  tempoBpm: number;
+  leadInSec: number;
+}
+
+export type GradeStatus = "hit" | "near" | "wrong" | "missed";
+
+/** One note's verdict: the pitch sung while it was due, in cents off. */
+export interface GradeNote {
+  index: number;
+  targetMidi: number;
+  sungMidi: number | null;
+  cents: number | null;
+  status: GradeStatus;
+}
+
+/** How a sung take compared to its part. */
+export interface GradeResult {
+  score: number;
+  hits: number;
+  near: number;
+  wrong: number;
+  missed: number;
+  /** The take's overall lean in cents; positive is sharp. */
+  tuningCents: number;
+  offsetSec: number;
+  /** The octave the singer took it in, in semitones; a bass on the tune reads −12 and is not wrong. */
+  octaveShift: number;
+  summary: string;
+  notes: GradeNote[];
+}
+
+/** A public link to a saved sheet. */
+export interface ShareLink {
+  token: string;
+  url: string;
 }
 
 /** One voice of the four-part harmony, in the same note shape as the melody. */
@@ -157,6 +210,13 @@ export interface SavedTranscription {
    * route omits it so a library page doesn't download every score.
    */
   musicXml?: string | null;
+  /** The words under the solfa, as typed. */
+  lyrics?: string;
+  /** Four-part harmony, labelled for the stored key. Detail reads only. */
+  parts?: Record<string, TranscriptionPart> | null;
+  partsMusicXml?: string | null;
+  /** Set while the sheet is behind a public link. */
+  shareToken?: string | null;
 }
 
 // --- Billing ------------------------------------------------------------
