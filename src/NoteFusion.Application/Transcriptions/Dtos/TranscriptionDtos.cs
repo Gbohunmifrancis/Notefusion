@@ -25,6 +25,13 @@ public sealed record TranscribeOptions
     public bool Separate { get; init; }
 
     /// <summary>
+    /// Whether the worker should synthesise the piano preview WAV. The mobile client plays it; the web
+    /// client renders its own playback from the notes and sends false, which saves the worker about nine
+    /// seconds and the response about ten megabytes on a three-minute song.
+    /// </summary>
+    public bool AudioPreview { get; init; } = true;
+
+    /// <summary>
     /// Which lane the worker runs the job in. Pro work goes first, and in melody mode skips the polyphonic
     /// model altogether, which is most of the wait on a hummed clip.
     /// </summary>

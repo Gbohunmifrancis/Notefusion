@@ -13,10 +13,10 @@ namespace NoteFusion.Application.Preview.Commands;
 /// Throttled per browser and per address; the worker transcribes only the head of the clip.
 /// </summary>
 /// <param name="Separate">A whole song with instruments behind the voice: isolate the vocal first (see <see cref="TranscribeOptions.Separate"/>).</param>
-public sealed record SubmitPreviewCommand(Stream Audio, string FileName, bool Separate = false) : IRequest<Result<string>>;
+public sealed record SubmitPreviewCommand(Stream Audio, string FileName, bool Separate = false, bool AudioPreview = true) : IRequest<Result<string>>;
 
 /// <summary>The same preview for a song behind a YouTube, Spotify or Apple Music link.</summary>
-public sealed record SubmitPreviewLinkCommand(string Url) : IRequest<Result<string>>;
+public sealed record SubmitPreviewLinkCommand(string Url, bool AudioPreview = true) : IRequest<Result<string>>;
 
 internal static class PreviewThrottle
 {
@@ -65,7 +65,7 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
             return refused;
 
         var submitted = await _api.SubmitAsync(
-            request.Audio, request.FileName, PreviewThrottle.Options with { Separate = request.Separate }, cancellationToken);
+            request.Audio, request.FileName, PreviewThrottle.Options with { Separate = request.Separate, AudioPreview = request.AudioPreview }, cancellationToken);
         if (submitted.IsFailure)
             return submitted;
 
@@ -103,7 +103,7 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 
-        var submitted = await _api.SubmitLinkAsync(uri.ToString(), PreviewThrottle.Options, cancellationToken);
+        var submitted = await _api.SubmitLinkAsync(uri.ToString(), PreviewThrottle.Options with { AudioPreview = request.AudioPreview }, cancellationToken);
         if (submitted.IsFailure)
             return submitted;
 

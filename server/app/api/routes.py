@@ -90,6 +90,7 @@ async def submit_transcription(
     priority: str = Form("normal"),
     max_seconds: float | None = Form(None, description="Transcribe only the first N seconds (an anonymous preview)"),
     separate: bool = Form(False, description="The upload is a full song: isolate the lead vocal first and read the beat from the mix"),
+    audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
 ) -> SubmitResponse:
     if mode not in ("melody", "poly"):
         raise HTTPException(422, "mode must be 'melody' or 'poly'")
@@ -170,7 +171,7 @@ async def submit_transcription(
                           time_signature=time_signature,
                           correlation_id=_correlation_id(request),
                           callback_url=callback_url, priority=priority,
-                          song_seconds=song_seconds, separate=separate)
+                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview)
     return SubmitResponse(job_id=job_id)
 
 
@@ -231,6 +232,7 @@ async def submit_link_transcription(
     callback_url: str | None = Form(None),
     priority: str = Form("normal"),
     max_seconds: float | None = Form(None),
+    audio_preview: bool = Form(True),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
@@ -261,7 +263,7 @@ async def submit_link_transcription(
                                time_signature=time_signature,
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
-                               max_seconds=cap)
+                               max_seconds=cap, audio_preview=audio_preview)
     return SubmitResponse(job_id=job_id)
 
 

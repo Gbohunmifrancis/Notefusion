@@ -387,7 +387,7 @@
     var url = $("link-url").value.trim();
     if (!url) return;
     $("link-submit").disabled = true; hide($("app-alert"));
-    request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: { url: url, mode: "melody" } })
+    request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: { url: url, mode: "melody", audioPreview: false } })
       .then(function (job) { startJob(job, guest ? "preview" : "link"); })
       .catch(function (err) { explain(err); })
       .finally(function () { $("link-submit").disabled = false; });
@@ -401,6 +401,9 @@
     form.append("mode", "melody");
     // A song with a band behind the voice is separated first; a hummed tune is not.
     form.append("separate", song ? "true" : "false");
+    // The browser renders its own playback from the notes: the server's piano WAV (about
+    // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
+    form.append("audioPreview", "false");
     hide($("app-alert"));
     return request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
       .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || (song ? "separating" : "transcribing") }), guest ? "preview" : "upload"); })

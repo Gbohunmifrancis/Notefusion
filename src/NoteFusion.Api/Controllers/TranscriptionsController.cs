@@ -36,6 +36,9 @@ public sealed class SubmitTranscriptionRequest
     /// <summary>True when the file is a whole song with instruments: the voice is isolated before transcription.</summary>
     public bool Separate { get; init; }
 
+    /// <summary>False when the client renders its own playback and does not want the synthesised preview WAV.</summary>
+    public bool AudioPreview { get; init; } = true;
+
     /// <summary>Optional tempo in BPM (20 to 400).</summary>
     public int? Tempo { get; init; }
 
@@ -53,6 +56,9 @@ public sealed class SubmitLinkRequest
     public string? Key { get; init; }
     public int? Tempo { get; init; }
     public string? TimeSignature { get; init; }
+
+    /// <summary>False when the client renders its own playback and does not want the synthesised preview WAV.</summary>
+    public bool AudioPreview { get; init; } = true;
 }
 
 /// <summary>
@@ -81,7 +87,7 @@ public sealed class TranscriptionsController : ApiControllerBase
                 Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate);
+        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview);
         var result = await _sender.Send(command, ct);
 
         if (result.IsFailure)
@@ -105,7 +111,7 @@ public sealed class TranscriptionsController : ApiControllerBase
     public async Task<IActionResult> SubmitLink([FromBody] SubmitLinkRequest request, CancellationToken ct)
     {
         var result = await _sender.Send(
-            new SubmitLinkTranscriptionCommand(request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature), ct);
+            new SubmitLinkTranscriptionCommand(request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.AudioPreview), ct);
 
         if (result.IsFailure)
             return HandleResult(Result.Failure<TranscriptionJobDto>(result.Error));

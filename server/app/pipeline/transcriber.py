@@ -3355,6 +3355,7 @@ def _transcribe_inner(
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
+    audio_preview: bool = True,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     tempo_path, tempo_is_temp = (None, False)
@@ -3370,6 +3371,7 @@ def _transcribe_inner(
             progress=progress,
             fast=fast,
             tempo_source=tempo_path,
+            audio_preview=audio_preview,
         )
     finally:
         if is_temp_wav:
@@ -3386,8 +3388,14 @@ def transcribe(
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
+    audio_preview: bool = True,
 ) -> TranscriptionResult:
     """Audio file -> ``TranscriptionResult``.
+
+    ``audio_preview`` False skips the synthesised piano WAV. The web client renders its own
+    playback from the notes and never plays that file, yet a three-minute song cost about
+    nine seconds to synthesise and ten megabytes to send — the slowest part of "slow on
+    the web" that was ours to remove. The mobile client still asks for it.
 
     ``tempo_source`` is a second recording on the same timeline whose *rhythm* is to be
     trusted over ``audio_path``'s: the full mix of a song whose isolated vocal is being
@@ -3423,7 +3431,7 @@ def transcribe(
             
         res = _transcribe_inner(
             audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast,
-            tempo_source=tempo_source,
+            tempo_source=tempo_source, audio_preview=audio_preview,
         )
         return res
     except Exception as e:
@@ -3990,6 +3998,7 @@ def _transcribe_wav(
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
+    audio_preview: bool = True,
 ) -> TranscriptionResult:
     from music21 import key as m21key
     from music21 import meter, stream
@@ -4439,7 +4448,7 @@ def _transcribe_wav(
     # ── 13. Audio preview synthesis ───────────────────────────────────────────
     # Pure numpy + soundfile; no system audio libraries required.
     # Runs after MIDI export so it doesn't delay the MIDI write path.
-    audio_preview_b64 = _synthesize_audio_preview(notes, round(bpm))
+    audio_preview_b64 = _synthesize_audio_preview(notes, round(bpm)) if audio_preview else ""
     progress(1.0)
 
     return TranscriptionResult(

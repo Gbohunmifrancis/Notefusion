@@ -391,9 +391,11 @@ def test_submit_forwards_the_separate_flag_to_the_queue(monkeypatch):
     from app.jobs import queue as queue_mod
 
     seen = []
+    previews = []
 
     def fake_submit(self, audio_path, **kwargs):
         seen.append(kwargs.get("separate"))
+        previews.append(kwargs.get("audio_preview"))
         audio_path.unlink(missing_ok=True)
         return "job-" + str(len(seen))
 
@@ -403,11 +405,13 @@ def test_submit_forwards_the_separate_flag_to_the_queue(monkeypatch):
             data = {"mode": "melody"}
             if value is not None:
                 data["separate"] = value
+                data["audio_preview"] = "false"  # the web renders its own playback
             r = client.post("/v1/transcribe",
                             files={"audio": ("clip.wav", BytesIO(_make_wav(duration_sec=0.5)), "audio/wav")},
                             data=data)
             assert r.status_code == 202, r.text
     assert seen == [True, False]
+    assert previews == [False, True]
 
 
 def test_browser_recordings_are_accepted(monkeypatch):

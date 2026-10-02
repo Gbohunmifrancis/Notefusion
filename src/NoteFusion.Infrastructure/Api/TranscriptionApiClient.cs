@@ -189,6 +189,8 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         form.Add(new StringContent(options.Priority == TranscribePriority.High ? "high" : "normal"), "priority");
         if (options.Separate)
             form.Add(new StringContent("true"), "separate");
+        if (!options.AudioPreview)
+            form.Add(new StringContent("false"), "audio_preview");
         if (withMode && options.MaxSeconds is { } cap)
             form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
 

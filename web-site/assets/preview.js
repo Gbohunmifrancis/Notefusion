@@ -45,13 +45,13 @@
     var url = urlInput.value.trim();
     if (!url) { urlInput.focus(); return; }
     busy(true); say("Reading the link…");
-    send("/api/preview/link", { json: { url: url } }).then(open).catch(function (err) { busy(false); explain(err); });
+    send("/api/preview/link", { json: { url: url, audioPreview: false } }).then(open).catch(function (err) { busy(false); explain(err); });
   });
 
   file.addEventListener("change", function () {
     var f = file.files && file.files[0];
     if (!f) return;
-    var fd = new FormData(); fd.append("audio", f, f.name);
+    var fd = new FormData(); fd.append("audio", f, f.name); fd.append("audioPreview", "false");
     busy(true); say("Uploading " + f.name + "…");
     send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
   });
@@ -75,7 +75,7 @@
         var type = recorder.mimeType || mime || "audio/webm";
         var blob = new Blob(chunks, { type: type });
         if (blob.size < 2000) { say("That was too short to hear. Try again and hum for a few seconds.", "error"); busy(false); return; }
-        var fd = new FormData(); fd.append("audio", blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm");
+        var fd = new FormData(); fd.append("audio", blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm"); fd.append("audioPreview", "false");
         busy(true); say("Transcribing your tune…");
         send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
       });
