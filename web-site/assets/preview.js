@@ -63,7 +63,7 @@
   function stopRecording() {
     if (timer) clearInterval(timer); if (stopAt) clearTimeout(stopAt); timer = stopAt = null;
     if (recorder && recorder.state !== "inactive") recorder.stop();
-    recLabel("mic", "Record a tune"); record.classList.remove("is-recording");
+    recLabel("mic", "Record a tune"); record.classList.remove("is-recording"); document.body.classList.remove("is-recording");
   }
   record.addEventListener("click", function () {
     if (recorder && recorder.state === "recording") { stopRecording(); return; }
@@ -83,7 +83,7 @@
         send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
       });
       recorder.start();
-      started = Date.now();
+      started = Date.now(); document.body.classList.add("is-recording");
       submit.disabled = true; file.disabled = true;
       timer = setInterval(function () {
         var left = Math.max(0, MAX_RECORD_SEC - Math.floor((Date.now() - started) / 1000));

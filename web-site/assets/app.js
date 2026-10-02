@@ -110,6 +110,14 @@
   /** A button's content: an icon from the page's sprite and a label. */
   function label(btn, icon, text) { btn.innerHTML = '<svg class="ic"><use href="#i-' + icon + '"/></svg>' + text; }
   function initial(name) { return (name || "?").trim().charAt(0).toUpperCase() || "?"; }
+  /** "Good morning, Francis" — the time of day, and the first name when there is one. */
+  function greeting(name) {
+    var h = new Date().getHours();
+    var part = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+    var first = (name || "").trim().split(/\s+/)[0];
+    return first ? part + ", " + first : part;
+  }
+  function recording(on) { document.body.classList.toggle("is-recording", !!on); }
   function safeName(text) { return (text || "notefusion").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").slice(0, 60) || "notefusion"; }
 
   // ── State ────────────────────────────────────────────────────────────────
@@ -127,7 +135,7 @@
   // ── Auth view ────────────────────────────────────────────────────────────
   function showAuth() {
     hide($("boot-skel")); hide($("view-app")); hide($("who")); show($("view-auth"));
-    document.body.classList.add("guest");
+    document.body.classList.add("guest"); hide($("topbar-signin")); closeDrawer();
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
     maybeOnboard();
   }
@@ -258,26 +266,64 @@
 
   // ── Views: transcribe / library / account ───────────────────────────────
   function setView(name) {
+    var focusSearch = name === "search";
+    if (focusSearch) name = "library";
     ["transcribe", "library", "account"].forEach(function (v) { v === name ? show($("view-" + v)) : hide($("view-" + v)); });
     document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.classList.toggle("on", b.dataset.view === name); });
-    if (name === "library") loadLibrary();
+    if (name === "library") loadLibrary().then(function () { if (focusSearch) $("lib-search").focus(); });
     if (name === "account") renderAccount();
+    closeDrawer(); closeUserMenu();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
-  document.querySelectorAll("#top-nav .top-link").forEach(function (b) { b.addEventListener("click", function () { setView(b.dataset.view); }); });
+  document.querySelectorAll("#top-nav .top-link, .user-menu-item[data-view]").forEach(function (b) { b.addEventListener("click", function () { setView(b.dataset.view); }); });
+
+  // The sidebar is a drawer on phones.
+  function openDrawer() { document.body.classList.add("drawer-open"); $("drawer-backdrop").hidden = false; $("drawer-toggle").setAttribute("aria-expanded", "true"); }
+  function closeDrawer() { document.body.classList.remove("drawer-open"); $("drawer-backdrop").hidden = true; $("drawer-toggle").setAttribute("aria-expanded", "false"); }
+  $("drawer-toggle").addEventListener("click", function () { document.body.classList.contains("drawer-open") ? closeDrawer() : openDrawer(); });
+  $("drawer-close").addEventListener("click", closeDrawer);
+  $("drawer-backdrop").addEventListener("click", closeDrawer);
+
+  // The account chip opens a small menu.
+  function closeUserMenu() { hide($("user-menu")); $("who").setAttribute("aria-expanded", "false"); }
+  $("who").addEventListener("click", function (e) {
+    e.stopPropagation();
+    var open = $("user-menu").classList.contains("hidden");
+    open ? show($("user-menu")) : hide($("user-menu"));
+    $("who").setAttribute("aria-expanded", String(open));
+  });
+  document.addEventListener("click", function (e) { if (!$("user-menu").contains(e.target)) closeUserMenu(); });
+  $("menu-plans").addEventListener("click", function () { closeUserMenu(); openUpgrade(); });
+  $("menu-how").addEventListener("click", function (e) { e.preventDefault(); closeUserMenu(); closeDrawer(); openOnb(); });
+  $("topbar-signin").addEventListener("click", function () { openAuth("login"); });
+  $("recents-all").addEventListener("click", function () { setView("library"); });
+
+  /** The saved sheets, fetched once and shared by the library, the account view and the sidebar. */
+  function fetchLibrary(force) {
+    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; });
+    return p.then(function (items) { renderRecents(items); return items; });
+  }
+  function renderRecents(items) {
+    var list = $("recents-list"); list.innerHTML = "";
+    (items || []).slice(0, 6).forEach(function (it) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "recent-item"; b.textContent = it.title || "Untitled"; b.title = it.title || "Untitled";
+      b.addEventListener("click", function () { openSaved(it.id); });
+      list.appendChild(b);
+    });
+    (items && items.length) ? show($("recents")) : hide($("recents"));
+  }
 
   var libraryCache = null;
   function loadLibrary(force) {
     var list = $("lib-list"), empty = $("lib-empty"), skel = $("lib-skel");
     if (!libraryCache || force) { show(skel); hide(list); hide(empty); }
-    var p = libraryCache && !force ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; });
-    return p.then(function (items) {
+    return fetchLibrary(force).then(function (items) {
       hide(skel);
       list.innerHTML = "";
       if (!items.length) { show(empty); hide(list); return; }
       hide(empty); show(list);
       items.forEach(function (it) {
-        var card = document.createElement("div"); card.className = "lib-item";
+        var card = document.createElement("div"); card.className = "lib-item"; card.dataset.title = (it.title || "Untitled").toLowerCase();
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
@@ -299,6 +345,10 @@
     }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); });
   }
   $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); $("link-url").focus(); });
+  $("lib-search").addEventListener("input", function () {
+    var q = $("lib-search").value.trim().toLowerCase();
+    document.querySelectorAll("#lib-list .lib-item").forEach(function (card) { card.classList.toggle("hidden", !!q && card.dataset.title.indexOf(q) < 0); });
+  });
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
     stopPolling();
@@ -322,14 +372,23 @@
     $("acct-avatar").textContent = initial(me && (me.fullName || me.email));
     $("acct-email").textContent = me ? (me.email || "—") : "—";
     $("acct-plan").textContent = isPro() ? "Pro" : "Free";
+    var badge = $("acct-badge"); badge.textContent = isPro() ? "Pro" : "Free"; badge.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
+    isPro() ? hide($("acct-upsell")) : show($("acct-upsell"));
+    $("acct-sub-note").textContent = isPro()
+      ? "Your Pro subscription is active. Receipts and renewals come by email."
+      : "You don't have an active subscription. The free plan has unlimited hummed tunes and one 30-second song preview.";
     $("acct-credits").textContent = sub ? (isPro() ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left" : (sub.songCreditsRemaining > 0 ? "1 free song preview" : "Preview used")) : "—";
     var since = me && (me.createdAtUtc || me.createdAt);
     $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "long" }) : "—";
-    isPro() ? hide($("acct-upgrade")) : show($("acct-upgrade"));
-    (libraryCache ? Promise.resolve(libraryCache) : request("/api/library").then(function (items) { libraryCache = items || []; return libraryCache; }))
-      .then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
+    fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
   }
-  $("acct-upgrade").addEventListener("click", function () { setView("transcribe"); show($("upgrade-panel")); loadPlans($("upgrade-panel"), $("plans-standalone")); $("upgrade-panel").scrollIntoView({ behavior: "smooth", block: "start" }); });
+  $("acct-upgrade").addEventListener("click", openUpgrade);
+
+  // ── Upgrade dialog ──────────────────────────────────────────────────────
+  function openUpgrade() { loadPlans($("upgrade-panel"), $("plans-standalone")); }
+  $("upgrade-close").addEventListener("click", function () { hide($("upgrade-panel")); });
+  $("upgrade-panel").addEventListener("click", function (e) { if (e.target === $("upgrade-panel")) hide($("upgrade-panel")); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") hide($("upgrade-panel")); });
   $("acct-signout").addEventListener("click", function () { $("signout").click(); });
 
   // ── App view ─────────────────────────────────────────────────────────────
@@ -338,6 +397,10 @@
   function renderWho() {
     $("who-name").textContent = me ? (me.fullName || me.email || "") : "";
     $("who-avatar").textContent = initial(me && (me.fullName || me.email));
+    $("greeting").textContent = greeting(me && me.fullName);
+    $("home-sub").textContent = "What are we writing out today?";
+    $("menu-name").textContent = me ? (me.fullName || "") : "";
+    $("menu-email").textContent = me ? (me.email || "") : "";
     var plan = $("who-plan");
     plan.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
     plan.textContent = isPro() ? "Pro" : "Free";
@@ -368,10 +431,9 @@
       var wasGuest = guest;
       guest = false;
       hide($("boot-skel")); hide($("view-auth")); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
-      document.body.classList.remove("guest");
-      if (new URLSearchParams(location.search).get("upgrade") && !isPro()) { show($("upgrade-panel")); setTimeout(function () { $("upgrade-panel").scrollIntoView({ behavior: "smooth", block: "start" }); }, 50); }
-      if (!isPro()) loadPlans($("upgrade-panel"), $("plans-standalone"));
-      else hide($("upgrade-panel"));
+      document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
+      fetchLibrary().catch(function () { return []; });
+      if (new URLSearchParams(location.search).get("upgrade") && !isPro()) openUpgrade();
       var params = new URLSearchParams(location.search);
       if (params.get("paid")) confirmPayment();
       if (previewId) {
@@ -387,7 +449,8 @@
   function startGuest() {
     guest = true;
     hide($("boot-skel")); hide($("view-auth")); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
-    document.body.classList.add("guest");
+    document.body.classList.add("guest"); show($("topbar-signin"));
+    $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Try another tune while it comes.";
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 
@@ -440,7 +503,7 @@
   function stopRecording() {
     if (rec.timer) clearInterval(rec.timer); if (rec.stopAt) clearTimeout(rec.stopAt); rec.timer = rec.stopAt = null;
     if (rec.recorder && rec.recorder.state !== "inactive") rec.recorder.stop();
-    label($("rec-btn"), "mic", "Record a tune"); $("rec-btn").classList.remove("is-recording");
+    label($("rec-btn"), "mic", "Record a tune"); $("rec-btn").classList.remove("is-recording"); recording(false);
   }
   $("rec-btn").addEventListener("click", function () {
     if (rec.recorder && rec.recorder.state === "recording") { stopRecording(); return; }
@@ -460,7 +523,7 @@
         submitAudio(blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm");
       });
       rec.recorder.start();
-      rec.started = Date.now();
+      rec.started = Date.now(); recording(true);
       rec.timer = setInterval(function () {
         var left = Math.max(0, rec.MAX_SEC - Math.floor((Date.now() - rec.started) / 1000));
         label($("rec-btn"), "stop", "Stop (" + left + "s)"); $("rec-btn").classList.add("is-recording");
@@ -474,8 +537,7 @@
     var text = err.message || "Something went wrong.";
     if (err.code === "BILLING_SONG_PREVIEW_USED" || err.code === "BILLING_FREE_TIER_LIMIT") {
       alertIn($("app-alert"), "info", text);
-      show($("upgrade-panel")); loadPlans($("upgrade-panel"), $("plans-standalone"));
-      $("upgrade-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+      openUpgrade();
       return;
     }
     if (err.code === "BILLING_SONG_CREDITS_EXHAUSTED") { alertIn($("app-alert"), "info", text); return; }
@@ -585,6 +647,10 @@
     // result is showing; the standalone panel is for the empty state and the Account view.
     isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
     hide($("upgrade-panel"));
+    // Four parts are written on request, never assumed: the tab appears when asked for.
+    hide($("tab-parts")); hide($("r-parts"));
+    if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
+    (isPro() && !result.parts) ? hide($("harmony")) : show($("harmony"));
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
       b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
@@ -901,6 +967,14 @@
         engraveInto($("sheet-parts"), current.result.partsMusicXml, true);
       }
     });
+  });
+
+  $("harmony-add").addEventListener("click", function () {
+    if (guest) { openAuth("register"); return; }
+    if (!isPro()) { openUpgrade(); return; }
+    show($("tab-parts"));
+    document.querySelector('.result-tabs [data-view="parts"]').click();
+    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
   /** Four-part harmony: the four solfa blocks and the SATB score, Pro only. */

@@ -40,9 +40,8 @@ python tools/build-assets.py    # needs Pillow
 
 It still resizes the original app screens and draws social/share imagery. The
 homepage renders a lightweight interactive sample card directly in HTML, and
-the how-it-works section now uses real app screens in three responsive cards.
-Those step images are `assets/how-step-01-record.jpg`,
-`assets/how-step-02-transcribe.jpg` and `assets/how-step-03-review.jpg`.
+the how-it-works section draws its three step illustrations as inline SVG in
+`index.html` (no image downloads; they recolour with the brand tokens).
 
 ## Product preview and how it works
 

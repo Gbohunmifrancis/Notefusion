@@ -307,3 +307,16 @@ body { background: var(--nf-canvas); color: var(--nf-copy); font-family: var(--f
 .try-note .try-signup { color: var(--color-brand-600); font-weight: 600; text-decoration: none; }
 .try-note .try-signup:hover { text-decoration: underline; }
 .hero-floating-bar { flex-wrap: wrap; }
+
+/* The brand mark beats like a heart while the microphone is open (preview.js sets the class). */
+@keyframes nf-heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.18); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.12); }
+  70% { transform: scale(1); }
+}
+body.is-recording .brand-icon { animation: nf-heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
+.try-alt .btn.is-recording { background: #d92d20; border-color: #d92d20; color: #fff; }
+@media (prefers-reduced-motion: reduce) { body.is-recording .brand-icon { animation: none; } }
+
