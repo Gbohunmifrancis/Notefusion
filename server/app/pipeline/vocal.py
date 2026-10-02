@@ -88,6 +88,7 @@ MIN_NOTE_SEC = 0.10  # Tony and SiPTH both prune at 100 ms
 # slow ramp on the averaged contour, cannot drag the centre along with it and go
 # unnoticed; it is finite so that a long note that drifts is still followed.
 CENTRE_FRAMES = 60
+SLIVER_NEIGHBOUR_FRAC = 0.6  # a transition sliver is at most this fraction of its shorter neighbour
 FRAGMENT_SEMITONES = 1.5  # a short segment this close to a neighbour is a piece of it
 FRAGMENT_EDGE_SEMITONES = 2.5  # ...and at the edge of a phrase (an attack or a release), this close
 # pyin is a harmonic-pattern matcher and, on a tone whose fundamental is weak, locks an
@@ -512,7 +513,9 @@ def clean(c: Contour, spans: list[tuple[int, int]]) -> list[tuple[int, int, floa
             a, b, m, n_stable = notes[i]
             pa, pb, pm, _ = notes[i - 1]
             na, nb, nm, _ = notes[i + 1]
-            short = (b - a) * hop < 1.5 * MIN_NOTE_SEC
+            # A glide is far shorter than the notes it joins; a passing note in a run of
+            # equal short notes is as long as its neighbours and is music.
+            short = (b - a) * hop < 1.5 * MIN_NOTE_SEC and (b - a) < SLIVER_NEIGHBOUR_FRAC * min(pb - pa, nb - na)
             adjacent = (a - pb) * hop <= JOIN_GAP_SEC and (na - b) * hop <= JOIN_GAP_SEC
             # Strictly interior: a sliver AT a neighbour's pitch is a fragment of that
             # neighbour (5b), not a glide, and treating it as one cascades along a run.
