@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=3">
+<link rel="stylesheet" href="/assets/app.css?v=4">
 </head>
 <body class="guest">
 
@@ -218,14 +218,14 @@
   <div class="modal hidden" id="rec-panel" role="dialog" aria-modal="true" aria-labelledby="rec-title">
     <div class="modal-card rec-card">
       <div id="rec-live">
-        <div class="rec-orb"><svg class="ic"><use href="#i-mic"/></svg></div>
+        <div class="rec-orb"><span class="brand-mark" aria-hidden="true"></span></div>
         <h2 id="rec-title" class="rec-heading"><span class="rec-dot"></span>Recording</h2>
         <p class="rec-time"><span id="rec-elapsed">0:00</span><span class="muted"> / 3:00</span></p>
         <div class="meter" id="rec-meter" aria-hidden="true"></div>
         <p class="card-lead" style="text-align:center;margin-bottom:18px">Hum or sing the tune. Keep going until the phrase is finished, then press Stop.</p>
         <div class="rec-actions">
           <button class="btn btn-ghost" id="rec-cancel" type="button">Cancel</button>
-          <button class="btn btn-danger-solid" id="rec-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
+          <button class="btn btn-dark rec-stop" id="rec-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
         </div>
       </div>
       <div id="rec-review" class="hidden">
@@ -561,6 +561,6 @@
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
 <script src="/assets/choir.js?v=2" defer></script>
 <script src="/assets/preview.js?v=5" defer></script>
-<script src="/assets/app.js?v=7" defer></script>
+<script src="/assets/app.js?v=8" defer></script>
 </body>
 </html>

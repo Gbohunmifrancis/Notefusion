@@ -11,7 +11,42 @@
     window.location.hostname === "localhost"
       ? "http://localhost:5080/api/billing/public-plans"
       : "https://api.notefusion.studio/api/billing/public-plans";
-  var playUrl = "https://play.google.com/store/apps/details?id=com.notefusion.com";
+  var api = window.location.hostname === "localhost" ? "http://localhost:5080" : "https://api.notefusion.studio";
+  var TOKENS_KEY = "nf.web.tokens";
+
+  /** The web app's session, if this browser has one: the pricing page can then check out directly. */
+  function accessToken() {
+    try { var t = JSON.parse(localStorage.getItem(TOKENS_KEY) || "null"); return t && t.accessToken ? t.accessToken : null; } catch (e) { return null; }
+  }
+
+  /**
+   * Upgrade: a signed-in browser goes straight to the hosted checkout for the plan; anyone
+   * else is sent to the web app to create an account or sign in, and the plan id rides along so
+   * the checkout opens by itself once they are in.
+   */
+  function startCheckout(plan, button) {
+    var token = accessToken();
+    var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id);
+    if (!token) { window.location.href = fallback; return; }
+    button.disabled = true;
+    var label = button.textContent;
+    button.textContent = "Opening checkout…";
+    fetch(api + "/api/billing/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+      body: JSON.stringify({ planId: plan.id }),
+    })
+      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(function (session) {
+        if (!session || !session.checkoutUrl) throw new Error("no url");
+        window.location.href = session.checkoutUrl;
+      })
+      .catch(function () {
+        // An expired session, a plan the account cannot buy, or a provider hiccup: the app sorts it out.
+        window.location.href = "/app?upgrade=" + encodeURIComponent(plan.id);
+      })
+      .finally(function () { button.disabled = false; button.textContent = label; });
+  }
 
   function checkIcon() {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -44,16 +79,23 @@
     return list;
   }
 
-  function action(label, featured, source, href) {
+  function action(label, featured, source, href, plan) {
     var wrapper = document.createElement("div");
     wrapper.style.cssText = "display:flex;flex-direction:column;gap:10px;margin-top:4px;";
-    // Into the web app: a free account to start, the upgrade screen for a paid plan.
-    var link = document.createElement("a");
-    link.className = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
-    link.href = href || "/app?signup=1";
-    if (source) link.setAttribute("data-download-source", source);
-    link.textContent = label;
-    wrapper.appendChild(link);
+    var cls = "btn " + (featured ? "btn-primary btn--primary" : "btn-ghost btn--ghost");
+    var control;
+    if (plan) {
+      control = document.createElement("button");
+      control.type = "button";
+      control.addEventListener("click", function () { startCheckout(plan, control); });
+    } else {
+      control = document.createElement("a");
+      control.href = href || "/app?signup=1";
+    }
+    control.className = cls;
+    if (source) control.setAttribute("data-download-source", source);
+    control.textContent = label;
+    wrapper.appendChild(control);
     return wrapper;
   }
 
@@ -103,48 +145,32 @@
     if (featured) {
       var tag = document.createElement("span");
       tag.className = "plan-tag";
-      tag.textContent = plan.interval === "lifetime" ? "One payment" : "Best value";
+      tag.textContent = "Best value";
       card.appendChild(tag);
     }
 
     var title = document.createElement("h3");
-    title.textContent =
-      plan.interval === "lifetime"
-        ? "Pro Lifetime"
-        : plan.interval === "yearly"
-          ? "Pro Yearly"
-          : "Pro Monthly";
+    title.textContent = plan.interval === "yearly" ? "Pro Yearly" : "Pro Monthly";
     card.appendChild(title);
 
     var price = document.createElement("div");
     price.className = "price";
     price.appendChild(document.createTextNode(formatPrice(plan) + " "));
     var period = document.createElement("small");
-    period.textContent =
-      plan.interval === "lifetime"
-        ? "one-time"
-        : plan.interval === "yearly"
-          ? "/ year"
-          : "/ month";
+    period.textContent = plan.interval === "yearly" ? "/ year" : "/ month";
     price.appendChild(period);
     card.appendChild(price);
 
     var blurb = document.createElement("p");
     blurb.className = "blurb";
-    blurb.textContent =
-      plan.interval === "lifetime"
-        ? "Pay once and keep NoteFusion Pro for life."
-        : "Whole songs, four parts, every download — for the choir that rehearses every week.";
+    blurb.textContent = "Whole songs, four parts, every download — for the choir that rehearses every week.";
     card.appendChild(blurb);
 
+    // One payment buys one period; nothing is charged again unless you start a new checkout.
     var billingTerm =
-      plan.interval === "lifetime"
-        ? "One payment; Pro access does not expire"
-        : plan.interval === "yearly"
-          ? saving
-            ? "Save " + saving + "% compared with paying monthly"
-            : "Renews yearly until cancelled"
-          : "Renews monthly until cancelled";
+      plan.interval === "yearly"
+        ? (saving ? "A year of Pro; save " + saving + "% against paying monthly" : "A year of Pro, paid once")
+        : "A month of Pro, paid once; buy again whenever you like";
 
     card.appendChild(
       featureList([
@@ -156,7 +182,7 @@
         billingTerm,
       ]),
     );
-    card.appendChild(action("Upgrade to Pro", true, "pricing_" + (plan.interval || "pro"), "/app?upgrade=1"));
+    card.appendChild(action(accessToken() ? "Upgrade to Pro" : "Sign up and upgrade", true, "pricing_" + (plan.interval || "pro"), null, plan));
     return card;
   }
 
@@ -215,11 +241,8 @@
     var yearly = plans.find(function (plan) {
       return plan.interval === "yearly";
     });
-    var lifetime = plans.find(function (plan) {
-      return plan.interval === "lifetime";
-    });
 
-    if ((isNigeria && (!monthly || !yearly)) || (!isNigeria && !lifetime)) {
+    if (!monthly && !yearly) {
       showError();
       return;
     }
@@ -234,12 +257,8 @@
     container.setAttribute("aria-busy", "false");
     container.replaceChildren();
     container.appendChild(freeCard(isNigeria ? 5 : 10));
-    if (isNigeria) {
-      container.appendChild(paidCard(monthly, false, saving));
-      container.appendChild(paidCard(yearly, true, saving));
-    } else {
-      container.appendChild(paidCard(lifetime, true, null));
-    }
+    if (monthly) container.appendChild(paidCard(monthly, !yearly, saving));
+    if (yearly) container.appendChild(paidCard(yearly, true, saving));
 
     if (regionLabel) {
       regionLabel.textContent = isNigeria ? "Pricing for Nigeria" : "International pricing";
@@ -247,8 +266,8 @@
     }
     if (regionNote) {
       regionNote.textContent = isNigeria
-        ? "Nigerian pricing is shown in naira; monthly and yearly plans renew until cancelled."
-        : "International pricing is shown in US dollars as a one-time lifetime purchase.";
+        ? "Nigerian pricing is shown in naira. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period."
+        : "International pricing is shown in US dollars. One payment buys one month or one year of Pro; nothing is charged again unless you buy another period.";
     }
   }
 

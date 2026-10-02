@@ -124,7 +124,7 @@
 </header>
 
 <main class="site-page-main">
-  <section class="site-page-intro"><p class="site-page-kicker">Privacy</p><h1>Privacy Policy</h1><p>Last updated 18 August 2026</p></section>
+  <section class="site-page-intro"><p class="site-page-kicker">Privacy</p><h1>Privacy Policy</h1><p>Last updated 2 October 2026</p></section>
 
   <div class="card">
     <h2>The short version</h2>
@@ -139,13 +139,11 @@
 
   <div class="card">
     <h2>Who we are</h2>
-    <!-- TODO pre-launch: replace the bracketed placeholders with the registered
-         legal entity, its registration number, and its registered address. -->
-    <p>NoteFusion is provided by [LEGAL ENTITY NAME], a company registered in [COUNTRY]
-    under number [REGISTRATION NUMBER], with its registered address at [REGISTERED
-    ADDRESS] (&ldquo;we&rdquo;, &ldquo;us&rdquo;). We provide a mobile app that listens
-    to music and writes it out as Tonic Solfa and staff notation. This policy explains
-    what we collect, why, and what you can do about it.</p>
+    <p>NoteFusion (&ldquo;we&rdquo;, &ldquo;us&rdquo;) operates the NoteFusion app and the
+    web app at notefusion.studio. They listen to music, a tune you hum, a recording, or a
+    song you link to, and write it out as Tonic Solfa and staff notation. This policy
+    explains what we collect, why, and what you can do about it. It applies to the app,
+    the web app, and this website.</p>
     <p>Questions or requests: <a href="mailto:privacy@notefusion.studio">privacy@notefusion.studio</a>.</p>
   </div>
 
@@ -174,10 +172,26 @@
     and not reviewed by a person. Transcription runs on our own infrastructure; your
     audio is not sent to a third-party AI service.</p>
 
+    <h3>Songs you link to</h3>
+    <p>When you paste a YouTube, Spotify or Apple Music link, our server fetches the
+    song&rsquo;s audio, isolates the voice, transcribes it, and deletes the audio the
+    moment the job finishes, exactly as with a recording. We keep the song&rsquo;s title
+    and artist so the sheet can credit them. The link you pasted is not kept against
+    your account beyond the job.</p>
+
     <h3>Transcriptions you save</h3>
     <p>When you save a result to your library we keep the musical data, which covers
-    note events, detected key, tempo, time signature, solfa labels, MusicXML, and the
-    title you gave it. This is what lets your library persist across devices.</p>
+    note events, detected key, tempo, time signature, solfa labels, MusicXML, any lyrics
+    you type, the alto, tenor and bass parts written for it, and the title you gave it.
+    This is what lets your library persist across the app and the web.</p>
+    <p>If you share a sheet, we create a link that anyone holding it can open without an
+    account. The page shows the sheet and your name as the person who shared it, and we
+    count how often it is opened. Stop sharing at any time and the link stops working.</p>
+
+    <h3>A take you sing back</h3>
+    <p>Pro accounts can sing a part and have each note marked. That recording is
+    compared with the sheet and discarded straight away; neither the audio nor the
+    marks are stored.</p>
 
     <h3>Profile picture</h3>
     <p>If you upload one, the image file is stored with our media host,
@@ -193,12 +207,31 @@
       show the pricing available in your region. An anonymous website lookup is used for
       that response and is not attached to an account.</li>
       <li>A device identifier, held as a one-way hash, together with the country it was
-      first seen in. It exists so the five free transcriptions are counted per phone as
-      well as per account, which is what stops one device claiming the free allowance
-      over and over with new sign-ins. It is not used for advertising and is not shared.</li>
+      first seen in. It exists so the free allowance (five hummed tunes in Nigeria, ten
+      elsewhere) is counted per device as well as per account, which is what stops one
+      device claiming it over and over with new sign-ins. It is not used for advertising
+      and is not shared.</li>
+      <li>For the free 30-second preview on the website, a random identifier your browser
+      keeps and your network address, so the preview is counted per browser and per
+      address. If you then create an account, the preview is attached to it. We also
+      record whether an account was created on the web or in the app, so we can see
+      which parts of the service people find useful.</li>
       <li>Ordinary server logs, including IP address and error diagnostics, used to keep
       the service running and to investigate abuse.</li>
     </ul>
+
+    <h3>Payments</h3>
+    <p>Pro is paid for on a checkout page hosted by a payment provider: Paystack for
+    naira, Bachs for US dollars. They receive your email address and the amount, and
+    take your card details themselves; we never see or store card numbers. They tell us
+    whether the payment succeeded, and we keep that record so your plan is right.</p>
+
+    <h3>Browser storage</h3>
+    <p>The website and web app use no advertising cookies. Your browser keeps your
+    sign-in tokens, the preview identifier above, and a few preferences (such as whether
+    sounds are on) in its local storage, for the web app alone. Our website measures
+    page views and clicks with first-party requests to our own server; no third-party
+    analytics or tracking scripts run on it.</p>
   </div>
   <div class="card">
     <h2>Why we are allowed to hold it</h2>
@@ -218,10 +251,15 @@
     <h2>Who else sees it</h2>
     <p>We share data only with the providers that run the service:</p>
     <ul>
-      <li><strong>Heroku (Salesforce)</strong>: application hosting and database.</li>
+      <li><strong>Amazon Web Services</strong>: the servers that run the API, the
+      transcription engine and the database.</li>
+      <li><strong>Vercel</strong>: hosting of this website and the web app.</li>
       <li><strong>Cloudflare</strong>: profile picture storage and delivery.</li>
-      <li><strong>Expo</strong>: delivery of push notifications.</li>
+      <li><strong>Resend</strong>: the emails we send you, such as the sign-up code and
+      password resets.</li>
+      <li><strong>Expo</strong>: delivery of push notifications to the app.</li>
       <li><strong>Google</strong>: only if you choose Google sign-in.</li>
+      <li><strong>Paystack</strong> and <strong>Bachs</strong>: payment, as above.</li>
       <li><strong>GeoJS</strong>: IP-to-country resolution for regional pricing.</li>
     </ul>
     <p>Each processes data on our instructions. We do not sell personal data, and we do
@@ -244,8 +282,9 @@
 
   <div class="card">
     <h2>Your choices</h2>
-    <p>In the app you can edit your profile, delete individual transcriptions, revoke
-    microphone or notification permission at any time through your device settings, and
+    <p>In the app, and in the web app&rsquo;s account settings, you can edit your profile
+    and photo, delete individual transcriptions, stop sharing a sheet, revoke microphone
+    or notification permission at any time through your device or browser settings, and
     close your account outright.</p>
     <div class="callout">
       <p><strong>Closing your account erases your private library.</strong> Your profile,
@@ -259,8 +298,9 @@
       <a href="mailto:privacy@notefusion.studio">privacy@notefusion.studio</a> if you want one
       removed.</p>
     </div>
-    <p>You can also delete your account through the app, or in a browser via our
-    <a href="/terms#delete-account">account deletion page</a>. Depending on where you
+    <p>You can also delete your account through the app, from the web app&rsquo;s
+    account settings, or in a browser via our
+    <a href="/delete-account">account deletion page</a>. Depending on where you
     live you may have the right to access, correct, export, or restrict the processing
     of your data, and to complain to your data protection authority. Write to
     <a href="mailto:privacy@notefusion.studio">privacy@notefusion.studio</a> and we will
