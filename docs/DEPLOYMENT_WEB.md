@@ -17,7 +17,12 @@ The API is separate — Heroku, see [DEPLOYMENT.md](DEPLOYMENT.md).
 > `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` — which `cd web-site && vercel link` writes to
 > `web-site/.vercel/project.json` (org and project ids) and the Vercel dashboard issues (the token).
 > Until they are set, the job fails on its first step with that message, and the manual
-> `cd web-site && vercel --prod` still works.
+> `cd web-site && vercel --prod` still works. The project is `notefusion` in the
+> `francis-gbohunmis-projects` team (org `team_0ghJL5LGBgeSs8b2UEYo3ynj`, project
+> `prj_LkfxRv0q0HiDtj8KlE2v5zTBsd4W`). One trap: Vercel attributes a deployment to the git
+> commit author it finds beside the files, and blocks it when that author is not a member of
+> the team — a bot's commit, say. Deploy from a copy of the folder outside the checkout (the
+> workflow does) and the deployment is attributed to the token instead.
 
 > The marketing site also publishes **`/email/logo.png`**, which the API's branded email fetches
 > (`Email__AssetBaseUrl`). It is not decoration for the site itself, so deleting `web-site/email/`
