@@ -522,10 +522,8 @@
   function playLeadIn(ctx, notes, tempo, ts) {
     var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo), t0 = ctx.currentTime + 0.05;
     var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
-    var f = 440 * Math.pow(2, ((first ? first.pitchMidi : 60) - 69) / 12);
-    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.02);
-    g.gain.setValueAtTime(0.5, t0 + bpb * beat - 0.1); g.gain.exponentialRampToValueAtTime(0.0001, t0 + bpb * beat); g.connect(ctx.destination);
-    [[1, 1], [2, 0.3]].forEach(function (p) { var o = ctx.createOscillator(); o.frequency.value = f * p[0]; var og = ctx.createGain(); og.gain.value = p[1]; o.connect(og); og.connect(g); o.start(t0); o.stop(t0 + bpb * beat + 0.05); });
+    // The starting note on the same piano the rehearsal player uses, held for the bar.
+    C.pianoNote(ctx, C.createPianoOutput(ctx), first ? first.pitchMidi : 60, bpb * beat, t0, 0.9);
     for (var i = 0; i < 2 * bpb; i++) {
       var at = t0 + i * beat, click = ctx.createOscillator(), cg = ctx.createGain();
       click.frequency.value = i % bpb === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);

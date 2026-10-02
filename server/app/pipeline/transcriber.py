@@ -89,7 +89,12 @@ _ROLLOFF_MAX = 1.45
 # 2.6 kHz were tried first and overshot to -52 dB, which is duller than a piano.
 # Still a tilt and not a brick wall: a hard cut is what left the old treble with five
 # partials and a bass whose spectrum stopped dead.
-_BRIGHT_CEILING_HZ = 3800.0
+#
+# 3.8 kHz was a mezzo-forte piano. The voice is meant to be a *soft* one, and a
+# gently played note has its energy below ~2.5 kHz, so the corner came down to
+# 3 kHz: on a C4 that moves the spectral centroid from 640 Hz to 540 Hz and takes
+# the glassy edge off the top octave without dulling the body.
+_BRIGHT_CEILING_HZ = 3000.0
 
 # Generation ceiling, and the level below which a partial is inaudible anyway.
 _MAX_PARTIALS = 48
@@ -105,7 +110,10 @@ _INHARMONICITY = 1.1e-4
 # what a strike *is* — broadband energy at contact, immediately gone, leaving the
 # string ringing. Without it a note simply appears, which is much of why the old
 # preview did not read as struck.
-_STRIKE_GAIN = 0.22
+# 0.22 was a hammer that could be heard as a hammer. For a soft voice the strike
+# has to be felt rather than heard, so it is half that: still enough that a note
+# begins rather than appears, no longer a knock in front of every one.
+_STRIKE_GAIN = 0.11
 _STRIKE_ROLLOFF = 0.35
 _STRIKE_TAU_SEC = 0.014
 _STRIKE_SPAN_SEC = 10 * _STRIKE_TAU_SEC  # past here the term is below -87 dB
@@ -119,7 +127,9 @@ _DAMP_EXP = 1.15
 # the strike onward. The voice before last sustained at 0.80 × peak for the whole
 # body of every note, which is an *organ*. There is no sustain level here; the body
 # is a pair of exponentials and only the attack and the damper release are shaped.
-_ATTACK_SEC = 0.005  # hammer strike; raised-cosine, so short but not a click
+# A soft hammer stays on the string longer than a hard one, so a quiet note rises
+# more slowly: 8 ms rather than 5. Still a strike, no longer a tick.
+_ATTACK_SEC = 0.008  # raised-cosine, so short but not a click
 
 # How long the damper takes to land *after* note-off. This is a ring-out past the
 # notated end, not a fade inside it — the distinction is the whole of it. At 80 ms
@@ -176,7 +186,48 @@ _UNISON_KNEE = 8.0
 _UNISON_MIN_MIDI = 52  # below this the strings are wound and single or paired
 
 # Every note is normalised to this, so its level does not depend on its spectrum.
-_PEAK_TARGET = 0.95
+#
+# It used to be 0.95, which with the velocity range below put a solo note at 0.85
+# going into a plain tanh — and tanh at 0.85 is not a limiter, it is a distortion
+# pedal: the x³/3 term is 20% of the signal, a third harmonic 23 dB down on *every*
+# note, and in chords far worse. That edge was most of what read as "not a piano".
+# At 0.70 the loudest solo note peaks at 0.63, under the limiter's knee, so a single
+# note is never bent at all and only genuine pile-ups are compressed.
+_PEAK_TARGET = 0.70
+
+# Limiter. Two stages, because they fail differently. The first is a gain rider: it
+# looks at the peak level in a window around each instant and turns the whole mix
+# down, smoothly, by just enough to keep that peak at _LIMIT_CEILING. A gain change
+# is not a waveshape, so a four-voice chord comes through as a quieter chord and not
+# — as it did through the old plain tanh, which bent the *sum* of the voices — as a
+# chord with every pair of voices intermodulating into a buzz. The window is a
+# block of 256 samples looked at ±_LIMIT_HOLD_BLOCKS either side (about ±46 ms:
+# look-ahead, so the gain is already down when the peak arrives, and hold, so it
+# does not flutter between the notes of a chord), and the block gains are joined by
+# raised-cosine interpolation so the gain itself has no corners to hear. The second
+# stage is a soft knee at _LIMIT_KNEE for whatever the interpolation lets through:
+# it is a waveshaper, but one that is barely ever touched, and never by a solo note
+# (which peaks at _PEAK_TARGET × 0.9 = 0.63).
+_LIMIT_CEILING = 0.80
+_LIMIT_BLOCK = 256
+_LIMIT_HOLD_BLOCKS = 4
+_LIMIT_KNEE = 0.90
+
+# Soundboard. An additive string on its own is a string in a vacuum, and that is
+# the single biggest tell: a piano note is heard *through* a large wooden plate
+# that rings on after it. Modelled as the smallest thing that does the job — three
+# damped feedback combs in parallel (a dense, short, darkening tail; RT60 about
+# half a second) through one allpass to break up the comb's own pitch — mixed in
+# under the dry note. The delays are mutually prime in samples so their echoes do
+# not line up into a flutter. Wet level: the board's impulse response carries about
+# -13 dB of the dry energy, enough to put the note in a body, not enough to put it in
+# a hall.
+_BOARD_DELAYS_SEC = (0.0297, 0.0371, 0.0411)
+_BOARD_RT60_SEC = 0.55
+_BOARD_DAMP = 0.35  # one-pole low-pass in each loop: the tail darkens as it decays
+_BOARD_ALLPASS_SEC = 0.0051
+_BOARD_ALLPASS_GAIN = 0.5
+_BOARD_WET = 0.07
 
 # ── Post-processing thresholds ────────────────────────────────────────────────
 
@@ -860,6 +911,105 @@ def _body_rolloff(pitch_midi: int) -> float:
     return float(min(max(tilted, _ROLLOFF_MIN), _ROLLOFF_MAX))
 
 
+def _soundboard(dry: "np.ndarray", sr: int) -> "np.ndarray":
+    """Add the soundboard resonance to a finished dry mix.
+
+    Three damped feedback combs in parallel, then one allpass, scaled by
+    ``_BOARD_WET`` and added to the dry signal. Linear and time-invariant, so it is
+    applied once to the mix rather than per note — the result is identical and it
+    costs a few multiplies per sample instead of a few per note-sample.
+
+    Each comb is ``y[n] = x[n] + g·s[n]`` with ``s[n] = (1-d)·y[n-D] + d·s[n-1]``:
+    the feedback runs through a one-pole low-pass, so high partials die out of the
+    tail first, which is what a wooden plate does and what stops the tail hissing.
+    The allpass is ``y[n] = -g·x[n] + x[n-D] + g·y[n-D]``.
+
+    Both recurrences reach back exactly ``D`` samples, so the mix is processed in
+    blocks of ``D``: everything a block needs from the output is in the block before
+    it, and the only sequential part — the one-pole inside the comb — is a two-tap
+    ``lfilter`` over one block. Written out as a single ``lfilter`` with a dense
+    ``D``-long denominator instead, each comb cost ``n·D`` multiplies and the board
+    took longer than the notes. Mirrors ``soundboard`` in ``mobile/src/lib/synth.ts``,
+    which runs the same recurrences sample by sample.
+    """
+    from scipy.signal import lfilter
+
+    n = dry.size
+    wet = np.zeros(n)
+    for delay_sec in _BOARD_DELAYS_SEC:
+        d_samp = int(round(delay_sec * sr))
+        # Feedback for the loop to fall 60 dB in RT60.
+        g = 10.0 ** (-3.0 * d_samp / (_BOARD_RT60_SEC * sr))
+        y = np.zeros(n)
+        zi = np.zeros(1)
+        prev = np.zeros(d_samp)  # y[n - D] for the first block is silence
+        for start in range(0, n, d_samp):
+            stop = min(start + d_samp, n)
+            s_blk, zi = lfilter([1.0 - _BOARD_DAMP], [1.0, -_BOARD_DAMP], prev[: stop - start], zi=zi)
+            y[start:stop] = dry[start:stop] + g * s_blk
+            prev = y[start:stop]
+        wet += y
+
+    ap = int(round(_BOARD_ALLPASS_SEC * sr))
+    out = np.zeros(n)
+    x_prev = np.zeros(ap)
+    y_prev = np.zeros(ap)
+    for start in range(0, n, ap):
+        stop = min(start + ap, n)
+        blk = wet[start:stop]
+        out[start:stop] = -_BOARD_ALLPASS_GAIN * blk + x_prev[: stop - start] + _BOARD_ALLPASS_GAIN * y_prev[: stop - start]
+        x_prev = blk
+        y_prev = out[start:stop]
+
+    return dry + _BOARD_WET * out
+
+
+def _ride_gain(x: "np.ndarray") -> "np.ndarray":
+    """Stage one of the limiter: a smooth gain that holds windowed peaks at the ceiling.
+
+    Block peaks (``_LIMIT_BLOCK`` samples) are widened by a running maximum over
+    ``±_LIMIT_HOLD_BLOCKS`` blocks, turned into a per-block gain
+    ``min(1, ceiling / peak)``, and interpolated back to sample rate with a
+    raised cosine between block centres. Because every peak sits inside a plateau of
+    its own block's gain, the interpolation is exact where it matters and smooth
+    everywhere else. Mirrors ``rideGain`` in ``mobile/src/lib/synth.ts``.
+    """
+    n = x.size
+    blocks = (n + _LIMIT_BLOCK - 1) // _LIMIT_BLOCK
+    padded = np.zeros(blocks * _LIMIT_BLOCK)
+    padded[:n] = np.abs(x)
+    peak = padded.reshape(blocks, _LIMIT_BLOCK).max(axis=1)
+    held = peak.copy()
+    for shift in range(1, _LIMIT_HOLD_BLOCKS + 1):
+        held[shift:] = np.maximum(held[shift:], peak[:-shift])
+        held[:-shift] = np.maximum(held[:-shift], peak[shift:])
+    gain_b = np.minimum(1.0, _LIMIT_CEILING / np.maximum(held, 1e-9))
+
+    # Raised-cosine interpolation between block centres; flat before the first centre
+    # and after the last.
+    centre = (np.arange(blocks) + 0.5) * _LIMIT_BLOCK
+    pos = np.arange(n, dtype=np.float64)
+    idx = np.clip(np.searchsorted(centre, pos) - 1, 0, blocks - 2)
+    frac = np.clip((pos - centre[idx]) / _LIMIT_BLOCK, 0.0, 1.0)
+    w = 0.5 - 0.5 * np.cos(np.pi * frac)
+    gain = gain_b[idx] + (gain_b[idx + 1] - gain_b[idx]) * w
+    return x * gain
+
+
+def _soft_limit(x: "np.ndarray") -> "np.ndarray":
+    """Stage two: identity up to ``_LIMIT_KNEE``, tanh over the rest.
+
+    Bounded below 1.0 for any input, so nothing can clip — and, unlike the plain
+    ``tanh`` it replaces, a signal under the knee comes out exactly as it went in.
+    """
+    a = np.abs(x)
+    over = a > _LIMIT_KNEE
+    y = x.copy()
+    span = 1.0 - _LIMIT_KNEE
+    y[over] = np.sign(x[over]) * (_LIMIT_KNEE + span * np.tanh((a[over] - _LIMIT_KNEE) / span))
+    return y
+
+
 def _synthesize_audio_preview(
     notes: "list[TranscribedNote]",
     tempo_bpm: int,
@@ -889,6 +1039,9 @@ def _synthesize_audio_preview(
       • Unison: a slow ``(1 + depth·cos)`` amplitude beat per partial, with the
         depth ramping in over the first few partials.
       • Attack : raised-cosine ramp-up over ``_ATTACK_SEC``, so there is no click.
+      • Soundboard: the finished dry mix is passed through a small damped comb
+        resonator (``_soundboard``) and mixed back under itself, so the string is
+        heard through a body rather than in a vacuum.
       • Release: raised-cosine fade over ``_RELEASE_SEC`` *past* the notated end —
         the damper landing after note-off, so each note rings on into the next the
         way a real one does. Every note is therefore rendered ``_RELEASE_SEC``
@@ -913,8 +1066,9 @@ def _synthesize_audio_preview(
     Starting phases are derived from each note's pitch and partial index, so they
     are deterministic — identical input always produces identical bytes — while
     still avoiding every partial starting at the same zero crossing. The mix is
-    then soft-limited through ``tanh`` rather than divided by its peak, and encoded
-    as signed 16-bit PCM WAV.
+    then limited (``_ride_gain``: a smooth gain that holds windowed peaks at a
+    ceiling, then ``_soft_limit``: a soft knee for whatever is left) rather than
+    divided by its peak, and encoded as signed 16-bit PCM WAV.
 
     Parameters
     ----------
@@ -1056,13 +1210,18 @@ def _synthesize_audio_preview(
         velocity = 0.55 + 0.35 * float(n.conf)
         audio[start_samp:end_samp] += tone * velocity
 
+    # The soundboard goes on the dry mix and the limiter after it, so whatever the
+    # board adds is bounded too.
+    audio = _soundboard(audio, sr)
+
     # Soft-limit instead of rescaling by the peak. The old code divided the whole
     # mix by its loudest sample, so a single pile-up of overlapping notes — exactly
     # what the ghost-note fragments produce — scaled the *entire* preview down and
-    # left everything else close to inaudible. tanh is bounded by 1.0 for any input,
-    # so overlaps compress into the headroom they need and every other note keeps
-    # the level it was rendered at. A solo note peaks at tanh(1) ≈ 0.76.
-    audio = np.tanh(audio)
+    # left everything else close to inaudible. The limiter is bounded by 1.0 for any
+    # input, so overlaps compress into the headroom they need and every other note
+    # keeps the level it was rendered at — and a solo note sits under its knee, so
+    # it is not bent at all.
+    audio = _soft_limit(_ride_gain(audio))
 
     # Encode as signed 16-bit PCM WAV via soundfile
     buf = io.BytesIO()

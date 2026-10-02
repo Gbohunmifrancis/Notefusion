@@ -6,8 +6,8 @@ name: Deploy website to Vercel
 #
 # Needs three repository secrets, all from the Vercel dashboard / `vercel link` in web-site/:
 #   VERCEL_TOKEN       an account token (Settings → Tokens)
-#   VERCEL_ORG_ID      .vercel/project.json → orgId
-#   VERCEL_PROJECT_ID  .vercel/project.json → projectId  (the "notefusion" project)
+#   VERCEL_ORG_ID      .vercel/project.json → orgId      (team_0ghJL5LGBgeSs8b2UEYo3ynj)
+#   VERCEL_PROJECT_ID  .vercel/project.json → projectId  (prj_LkfxRv0q0HiDtj8KlE2v5zTBsd4W, the "notefusion" project)
 
 on:
   workflow_dispatch:
@@ -45,10 +45,23 @@ jobs:
         with:
           node-version: "22"
 
+      # Deployed from a copy of the folder outside the checkout. Vercel reads the git
+      # metadata it finds next to the files and attributes the deployment to that
+      # commit's author; when the author is not a member of the Vercel team (a bot, a
+      # contributor) the deployment is created and then BLOCKED ("the commit author
+      # doesn't have permission to create deployments for this project"). Outside the
+      # checkout there is no git metadata, so the deployment is attributed to the token.
+      - name: Stage the site outside the git checkout
+        run: |
+          rm -rf "$RUNNER_TEMP/site" && mkdir -p "$RUNNER_TEMP/site"
+          cp -R . "$RUNNER_TEMP/site/"
+
       - name: Pull the project's Vercel settings
+        working-directory: ${{ runner.temp }}/site
         run: npx --yes vercel@latest pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
 
       - name: Deploy
+        working-directory: ${{ runner.temp }}/site
         run: npx --yes vercel@latest deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
 
       - name: Smoke-check the live site
