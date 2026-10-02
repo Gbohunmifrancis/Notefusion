@@ -272,17 +272,30 @@ async def submit_link_transcription(
     return SubmitResponse(job_id=job_id)
 
 
+# A six-minute song at 400 BPM is 2400 beats; the harmoniser's cost is beats × notes, so both
+# are bounded here before any work starts (the C# validator refuses the same shapes earlier).
+HARMONISE_MAX_BEATS = 2400.0
+HARMONISE_MAX_NOTES = 5000
+
+
 @router.post("/harmonise", response_model=HarmoniseResponse, response_model_exclude_none=True,
              summary="Write alto, tenor and bass under a transcribed melody")
-async def harmonise(body: HarmoniseRequest) -> HarmoniseResponse:
-    """Synchronous: pure symbolic work on the note list, answered in milliseconds. The
-    arrangement is the user's to ask for; a transcription never carries it unasked."""
+def harmonise(body: HarmoniseRequest) -> HarmoniseResponse:
+    """Synchronous, in the threadpool (a plain ``def``): chord choice is fast but the four-part
+    MusicXML takes music21 a second or three for a whole song, and that must not stall the
+    event loop. The arrangement is the user's to ask for; a transcription never carries it
+    unasked."""
     from app.pipeline.transcriber import harmonise_sheet
 
     if not body.notes:
         raise HTTPException(422, "The melody has no notes.")
+    if len(body.notes) > HARMONISE_MAX_NOTES:
+        raise HTTPException(422, f"At most {HARMONISE_MAX_NOTES} notes can be harmonised at once.")
     if not 20 <= body.tempo_bpm <= 400:
         raise HTTPException(422, "tempoBpm must be between 20 and 400.")
+    for n in body.notes:
+        if n.start_beat < 0 or n.dur_beats <= 0 or n.start_beat + n.dur_beats > HARMONISE_MAX_BEATS:
+            raise HTTPException(422, f"Notes must start at or after beat 0, last longer than nothing and end by beat {HARMONISE_MAX_BEATS:g}.")
     time_signature = _clean_time_signature(body.time_signature)
     try:
         parts, parts_musicxml = harmonise_sheet(

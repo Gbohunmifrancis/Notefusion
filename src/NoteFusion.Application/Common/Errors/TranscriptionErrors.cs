@@ -28,6 +28,9 @@ public static class TranscriptionErrors
     public static readonly Error ProRequired =
         Error.Forbidden("BILLING_PRO_REQUIRED", "Sing-along grading is a Pro feature. Upgrade to have your takes marked note by note.");
 
+    public static readonly Error HarmonyProRequired =
+        Error.Forbidden("BILLING_PRO_REQUIRED", "Four-part harmony is a Pro feature. Upgrade to have alto, tenor and bass written under your tune.");
+
     public static readonly Error InvalidAudio =
         Error.Validation("TRANS_INVALID_AUDIO", "The uploaded audio could not be read. Use a WAV, MP3, or M4A file.");
 }

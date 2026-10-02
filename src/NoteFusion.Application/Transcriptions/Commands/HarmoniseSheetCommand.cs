@@ -28,7 +28,10 @@ public sealed class HarmoniseSheetCommandValidator : AbstractValidator<Harmonise
         RuleFor(x => x.Key).NotEmpty();
         RuleFor(x => x.TempoBpm).InclusiveBetween(20, 400);
         RuleFor(x => x.TimeSignature).NotEmpty().Matches(@"^\d{1,2}/\d{1,2}$");
-        RuleFor(x => x.Notes).NotEmpty();
+        // The harmoniser's cost is beats × notes: a six-minute song at 400 BPM is 2400 beats.
+        RuleFor(x => x.Notes).NotEmpty().Must(n => n.Count <= 5000).WithMessage("At most 5000 notes can be harmonised at once.");
+        RuleForEach(x => x.Notes).Must(n => n.StartBeat >= 0 && n.DurBeats > 0 && n.StartBeat + n.DurBeats <= 2400)
+            .WithMessage("Notes must start at or after beat 0, last longer than nothing and end by beat 2400.");
     }
 }
 
@@ -52,11 +55,9 @@ public sealed class HarmoniseSheetCommandHandler : IRequestHandler<HarmoniseShee
         if (_currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
         if (!await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken))
-            return TranscriptionErrors.ProRequired;
+            return TranscriptionErrors.HarmonyProRequired;
         if (KeyParser.Parse(request.Key).IsFailure)
             return LibraryErrors.InvalidKey;
-        if (request.Notes.Count == 0)
-            return TranscriptionErrors.InvalidAudio;
 
         return await _api.HarmoniseAsync(request.Key, request.TempoBpm, request.TimeSignature, request.Notes, cancellationToken);
     }

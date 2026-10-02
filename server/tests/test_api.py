@@ -442,12 +442,26 @@ def test_harmony_is_off_unless_the_submit_asks_for_it(monkeypatch):
         )
 
     monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+    from app.pipeline import separate
+
+    monkeypatch.setattr(separate, "available", lambda: False)  # the isolation path, without the model
     with TestClient(app) as client:
-        for data in ({"mode": "melody"}, {"mode": "melody", "harmony": "true"}):
+        for data in ({"mode": "melody"}, {"mode": "melody", "harmony": "true"}, {"mode": "melody", "separate": "true", "harmony": "true"}):
             r = client.post("/v1/transcribe", files={"audio": ("clip.wav", BytesIO(_make_wav(0.5)), "audio/wav")}, data=data)
             assert r.status_code == 202
             _wait_for_status(client, SubmitResponse.model_validate(r.json()).job_id, STATUS_DONE)
-    assert seen == [False, True]
+    assert seen == [False, True, True]
+
+
+def test_harmonise_refuses_shapes_that_would_run_for_ever():
+    note = {"pitchMidi": 60, "startBeat": 0.0, "durBeats": 1.0}
+    with TestClient(app) as client:
+        far = client.post("/v1/harmonise", json={"key": "C major", "tempoBpm": 100, "notes": [note, {**note, "startBeat": 1e9}]})
+        assert far.status_code == 422
+        negative = client.post("/v1/harmonise", json={"key": "C major", "tempoBpm": 100, "notes": [{**note, "startBeat": -1.0}]})
+        assert negative.status_code == 422
+        many = client.post("/v1/harmonise", json={"key": "C major", "tempoBpm": 100, "notes": [note] * 5001})
+        assert many.status_code == 422
 
 
 def test_harmonise_endpoint_writes_four_parts_for_a_melody():

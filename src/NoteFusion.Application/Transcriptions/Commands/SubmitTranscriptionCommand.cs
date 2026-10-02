@@ -59,6 +59,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         // must agree about which handset this is or the two would count different things.
         var fingerprint = _device.Current;
         var metered = false;
+        var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
+        var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
         var isPro = false;
 
         if (_currentUser.UserId is { } userId)
@@ -90,11 +92,12 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                     return BillingErrors.FreeTierLimitReached(allowance);
                 }
             }
-            else if (request.Separate)
+            else if (request.Separate && !isScore)
             {
                 // A whole song with the voice isolated is the work a song credit pays for, whether the song
                 // arrived as a link or as a file. Same gate as the link submit, so "N of 20 songs" counts
-                // every song and the twenty-first is refused the same way.
+                // every song and the twenty-first is refused the same way. A score file has no voice to
+                // isolate, so it is neither gated nor charged as a song whatever the form said.
                 var used = await SongCredits.CountUsedThisMonthAsync(_db, userId, _clock.UtcNow, cancellationToken);
                 if (used >= SongCredits.ProMonthlyAllowance)
                     return BillingErrors.SongCreditsExhausted(SongCredits.ProMonthlyAllowance);
@@ -123,9 +126,6 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             // Pro work goes to the front of the worker's queue and takes its fast lane.
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal
         };
-
-        var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
-        var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
 
         var submitted = isScore
             ? await _api.SubmitScoreAsync(request.Audio, request.FileName, options, cancellationToken)

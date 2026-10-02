@@ -108,6 +108,26 @@ public class TranscriptionCompletionTests
         Assert.Single(h.Push.Sent);
     }
 
+    [Fact]
+    public async Task A_pro_accounts_finished_song_spends_one_song_credit_once()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var job = TranscriptionJob.RecordSong("job-song", user.Id, Now, null);
+        h.Db.TranscriptionJobs.Add(job);
+        h.Db.SaveChanges();
+
+        await Notify(h, job, new FakeMlService { Status = TranscriptionStatus.Done });
+
+        var row = h.Db.TranscriptionJobs.Single();
+        Assert.Equal(Now, row.SongCreditConsumedAtUtc);
+        Assert.Null(row.TrialConsumedAtUtc);
+        // A second observation of the same finished job, by the sweep or the client, charges nothing more.
+        Assert.False(row.ConsumeSongCredit(Now.AddMinutes(5)));
+        Assert.Equal(Now, row.SongCreditConsumedAtUtc);
+    }
+
     // ---------------------------------------------------------------- a job that does not
 
     [Fact]

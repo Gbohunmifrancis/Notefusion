@@ -109,8 +109,9 @@ public static class DependencyInjection
 
     private static void AddEmail(this IServiceCollection services, IConfiguration configuration)
     {
-        var email = configuration.GetSection("Email").Get<EmailSettings>() ?? new EmailSettings();
+        var email = EmailSettings.Resolve(configuration);
         services.AddSingleton(email);
+        services.AddHostedService<EmailReadiness>();
 
         // The template is pure rendering over the settings, so one shared instance is enough.
         services.AddSingleton<BrandedEmailTemplate>();

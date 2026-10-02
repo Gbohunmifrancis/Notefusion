@@ -3438,6 +3438,7 @@ def _transcribe_inner(
     fast: bool = False,
     tempo_source: Path | None = None,
     audio_preview: bool = True,
+    harmony: bool = False,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     tempo_path, tempo_is_temp = (None, False)
@@ -3453,7 +3454,7 @@ def _transcribe_inner(
             progress=progress,
             fast=fast,
             tempo_source=tempo_path,
-            audio_preview=audio_preview,
+            audio_preview=audio_preview, harmony=harmony,
         )
     finally:
         if is_temp_wav:
@@ -3519,7 +3520,7 @@ def transcribe(
             
         res = _transcribe_inner(
             audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast,
-            tempo_source=tempo_source, audio_preview=audio_preview,
+            tempo_source=tempo_source, audio_preview=audio_preview, harmony=harmony,
         )
         return res
     except Exception as e:
@@ -4087,6 +4088,7 @@ def _transcribe_wav(
     fast: bool = False,
     tempo_source: Path | None = None,
     audio_preview: bool = True,
+    harmony: bool = False,
 ) -> TranscriptionResult:
     from music21 import key as m21key
     from music21 import meter, stream
@@ -4591,14 +4593,25 @@ def harmonise_sheet(
         syl, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh, solfa.resolve_ascending(flag, settings.chromatic_spelling))
         melody.append(TranscribedNote(
             pitch, float(n["start_beat"]), float(n["dur_beats"]), degree, syl, mark, float(n.get("conf", 1.0) or 1.0)))
-    return _harmonise_notes(
-        melody, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, int(tempo_bpm))
+    # The dedicated endpoint, unlike step 10b, must not hide a failure as "no parts": an
+    # exception reaches the route's log as a 500, and a declined melody is the caller's input.
+    parts, parts_musicxml = _harmonise_notes(
+        melody, detected.tonic.pitchClass, detected.mode, doh_pc, ref_doh, time_signature, int(tempo_bpm),
+        strict=True)
+    if parts is None:
+        raise ValueError("The melody has no sounding notes to write parts under.")
+    return parts, parts_musicxml
 
 
 def _harmonise_notes(
-    notes: list, tonic_pc: int, mode: str, doh_pc: int, ref_doh: int, time_signature: str, bpm: int
+    notes: list, tonic_pc: int, mode: str, doh_pc: int, ref_doh: int, time_signature: str, bpm: int,
+    strict: bool = False,
 ) -> tuple[dict | None, str]:
-    """SATB for the result, or ``(None, "")`` if the harmoniser declines or fails."""
+    """SATB for the result, or ``(None, "")`` if the harmoniser declines or fails.
+
+    ``strict`` lets a failure propagate instead: for the harmonise endpoint, where the parts
+    are the whole job rather than an extra on top of a transcription.
+    """
     from dataclasses import asdict
 
     from app.pipeline import harmony
@@ -4611,6 +4624,8 @@ def _harmonise_notes(
             divisions_per_beat=settings.quantize_divisors[0],
         )
     except Exception as exc:  # noqa: BLE001 - harmony is an extra, never the job
+        if strict:
+            raise
         print(f"[notefusion] harmonisation skipped: {exc!r}", flush=True)
         return None, ""
     if result is None:

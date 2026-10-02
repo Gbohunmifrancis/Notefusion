@@ -157,6 +157,7 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
     def fake_transcribe(path, **kwargs):
         seen["transcribed"] = Path(path).name
         seen["fast"] = kwargs.get("fast")
+        seen["harmony"] = kwargs.get("harmony")
         # The beat is read from the full mix, not the isolated vocal.
         seen["tempo_source"] = Path(kwargs["tempo_source"]).name if kwargs.get("tempo_source") else None
         return TranscriptionResult(key="C major", key_confidence=1, tempo=100, time_signature="4/4",
@@ -167,12 +168,12 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
     queue = JobQueue(workers=1)
     try:
         jid = queue.submit_link("https://youtu.be/dQw4w9WgXcQ", "melody", None, None,
-                                priority=PRIORITY_HIGH, max_seconds=60)
+                                priority=PRIORITY_HIGH, max_seconds=60, harmony=True)
         job = _wait(queue, jid, (STATUS_DONE, STATUS_FAILED))
         assert job.status == STATUS_DONE, job.error
         assert job.source == {"provider": "youtube", "url": source.url, "title": "Way Maker",
                               "artist": "Sinach", "thumbnail_url": None}
-        assert seen == {"max_seconds": 60, "transcribed": "vocals.wav", "fast": True, "tempo_source": "song.wav"}
+        assert seen == {"max_seconds": 60, "transcribed": "vocals.wav", "fast": True, "tempo_source": "song.wav", "harmony": True}
         # The instrumental rides along for rehearsal (ffmpeg permitting); never an error either way.
         assert isinstance(job.result.backing_audio_base64, str)
         assert job.result.source["title"] == "Way Maker"

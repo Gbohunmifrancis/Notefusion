@@ -66,6 +66,19 @@ public class HarmoniseSheetTests
     }
 
     [Fact]
+    public void Shapes_that_would_run_for_ever_are_refused_before_the_worker_is_asked()
+    {
+        var validator = new HarmoniseSheetCommandValidator();
+        var note = new NoteEventDto(60, 0, 1, 1, "d", "", 1);
+
+        Assert.True(validator.Validate(new HarmoniseSheetCommand("C major", 100, "4/4", [note])).IsValid);
+        Assert.False(validator.Validate(new HarmoniseSheetCommand("C major", 100, "4/4", [note, note with { StartBeat = 1e9 }])).IsValid);
+        Assert.False(validator.Validate(new HarmoniseSheetCommand("C major", 100, "4/4", [note with { StartBeat = -1 }])).IsValid);
+        Assert.False(validator.Validate(new HarmoniseSheetCommand("C major", 100, "4/4", [note with { DurBeats = 0 }])).IsValid);
+        Assert.False(validator.Validate(new HarmoniseSheetCommand("C major", 100, "4/4", Enumerable.Repeat(note, 5001).ToList())).IsValid);
+    }
+
+    [Fact]
     public void A_transcription_does_not_ask_for_parts_unless_told_to()
     {
         Assert.False(new TranscribeOptions().Harmony);

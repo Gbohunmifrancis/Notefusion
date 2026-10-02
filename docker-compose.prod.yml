@@ -92,7 +92,7 @@ services:
       # The public site's signed-in web app (web-site/app) calls the API from the browser.
       Cors__AllowedOrigins__1: ${WEBSITE_ORIGIN:-https://notefusion.studio}
       Cors__AllowedOrigins__2: ${WEBSITE_WWW_ORIGIN:-https://www.notefusion.studio}
-      Resend__ApiKey: ${Resend__ApiKey}
+      Email__ApiKey: ${Email__ApiKey}
       Resend__From: ${Resend__From}
       Email__FromAddress: ${Email__FromAddress}
       Email__AssetBaseUrl: ${Email__AssetBaseUrl}

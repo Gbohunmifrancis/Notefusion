@@ -801,6 +801,26 @@ class TestDecodedWavLifetime:
             transcriber.transcribe(tmp_path / "upload.m4a")
         assert not converted.exists()
 
+    def test_the_harmony_flag_reaches_the_pipeline(self, monkeypatch, tmp_path):
+        # It once stopped at transcribe(): _transcribe_wav read a name nobody passed, so every
+        # job crashed at step 10b whether or not parts were asked for.
+        upload = tmp_path / "upload.wav"
+        upload.write_bytes(b"placeholder")
+        seen: dict = {}
+        dummy_res = transcriber.TranscriptionResult("C", 1.0, 120, "4/4", "", "", [])
+
+        def fake_wav(wav_path, mode, key_override, tempo_override, **kwargs):
+            seen["harmony"] = kwargs.get("harmony", "missing")
+            return dummy_res
+
+        monkeypatch.setattr(transcriber, "_ensure_wav_path", lambda path: (upload, False))
+        monkeypatch.setattr(transcriber, "_transcribe_wav", fake_wav)
+
+        transcriber.transcribe(upload)
+        assert seen["harmony"] is False
+        transcriber.transcribe(upload, harmony=True)
+        assert seen["harmony"] is True
+
     def test_a_wav_upload_is_never_deleted_here(self, monkeypatch, tmp_path):
         # _ensure_wav_path hands a .wav straight back, so the caller still owns it —
         # JobQueue._run unlinks the upload for privacy (TRD par. 9).
