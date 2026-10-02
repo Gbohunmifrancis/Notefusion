@@ -169,3 +169,17 @@ Finally, `https://web-admin-blue-two.vercel.app/users` must return `200` and
 `/nonsense-path` must return `404`. Both are real routes now rather than an SPA rewrite: the
 router used to redirect every unknown path to the overview, which made a typo look like it had
 worked, and `src/app/not-found.tsx` replaces that with a page that says so.
+
+## Sign in with Google on the web
+
+The web app renders Google's sign-in button with Google Identity Services and posts the ID
+token to `POST /api/auth/google`, the same route the Android app uses. It uses the OAuth
+**web** client the API already validates against (`Google__ClientId`,
+`21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com`).
+
+For the button to work on the site, that client must list the site under **Authorised
+JavaScript origins** in the Google Cloud console (APIs & Services → Credentials → the web
+client): `https://notefusion.studio` and `https://www.notefusion.studio`. Until it does, the
+button renders but Google refuses with "The given origin is not allowed for the given client
+ID" in the browser console. No redirect URI is needed: the popup flow returns the token to
+the page.

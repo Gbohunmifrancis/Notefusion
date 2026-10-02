@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=2">
+<link rel="stylesheet" href="/assets/app.css?v=3">
 </head>
 <body class="guest">
 
@@ -49,6 +49,10 @@
   <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></symbol>
   <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.9 17.9A10 10 0 0 1 12 19c-6.5 0-10-7-10-7a18 18 0 0 1 5.1-5.9"/><path d="M9.9 4.2A9.5 9.5 0 0 1 12 5c6.5 0 10 7 10 7a18 18 0 0 1-2.2 3.2"/><path d="M14.1 14.1a3 3 0 0 1-4.2-4.2"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5.5a9 9 0 0 1 0 13"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
   <symbol id="i-choir" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
@@ -96,6 +100,7 @@
       <button class="user-menu-item" type="button" data-view="account" role="menuitem"><svg class="ic"><use href="#i-user"/></svg>Account settings</button>
       <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="#i-crown"/></svg>View all plans</button>
       <a class="user-menu-item" href="/#how" id="menu-how" role="menuitem"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+      <button class="user-menu-item" type="button" id="menu-sounds" role="menuitemcheckbox" aria-checked="true"><svg class="ic"><use href="#i-volume"/></svg><span>Sounds on</span></button>
       <button class="user-menu-item danger" type="button" id="signout" role="menuitem"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
     </div>
     <button class="who hidden" id="who" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
@@ -124,61 +129,72 @@
     </div>
   </section>
 
-  <!-- ── Signed out: sign in, create an account, or try it first ─────── -->
-  <section id="view-auth" class="auth-split hidden">
-    <div>
-      <span class="eyebrow"><svg class="ic" style="width:14px;height:14px"><use href="#i-sparkle"/></svg>NoteFusion on the web</span>
-      <h1>Paste a song.<br>Get the Tonic Solfa.</h1>
-      <p class="lead">Any YouTube, Spotify or Apple Music link, a hummed tune, or a recording — written out as movable-do solfa and staff notation, with alto, tenor and bass for your choir. The same account works in the Android app.</p>
-      <ul class="auth-points">
-        <li><svg class="ic"><use href="#i-check"/></svg>Hear it, loop a few bars, mute your part and sing against the others</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>Move the key to fit your singers; the solfa never changes</li>
-        <li><svg class="ic"><use href="#i-check"/></svg>Share a link the whole choir can open, no account needed</li>
-      </ul>
-      <div class="card try-free" id="try-free">
-        <h2><svg class="ic"><use href="#i-sparkle"/></svg>Try it first — free, no account</h2>
-        <p class="card-lead">A 30-second preview of any song, or a tune you hum right now.</p>
-        <form id="try-form" class="link-form" novalidate>
-          <label class="sr-only" for="try-url">Song link</label>
-          <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
-          <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
-        </form>
-        <div class="row" style="margin-top:12px">
-          <button class="btn btn-ghost btn-sm btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
-          <label class="btn btn-ghost btn-sm try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
-        </div>
-        <p class="try-status small" id="try-status" aria-live="polite"></p>
-      </div>
-    </div>
-    <div class="auth">
-    <div class="card">
-      <div class="tabs fill" role="tablist">
-        <button class="tab" role="tab" aria-selected="true" data-tab="login" type="button">Sign in</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="register" type="button">Create account</button>
-      </div>
+  <!-- ── Signed out: sign in or create an account, then try it first ──── -->
+  <section id="view-auth" class="auth-page hidden">
+    <div class="auth-card">
+      <div class="auth-brand"><span class="auth-mark" aria-hidden="true"></span><span class="auth-wordmark">NoteFusion</span></div>
+      <h1 class="auth-title" id="auth-title">Welcome back!</h1>
+      <p class="auth-sub" id="auth-sub">Sign in to continue</p>
       <div id="auth-alert" class="alert alert-danger hidden" role="alert"></div>
 
-      <form id="form-login" novalidate>
-        <div class="field"><label for="login-email">Email</label><input id="login-email" type="email" autocomplete="email" required></div>
-        <div class="field"><label for="login-password">Password</label><input id="login-password" type="password" autocomplete="current-password" required></div>
-        <button class="btn btn-primary" type="submit" style="width:100%">Sign in</button>
-        <p class="small muted" style="margin:14px 0 0">Forgot your password? Reset it from the app's sign-in screen.</p>
+      <form id="form-login" class="auth-form" novalidate>
+        <label class="sr-only" for="login-email">Email</label>
+        <input id="login-email" class="pill-input" type="email" placeholder="Email" autocomplete="email" required>
+        <div class="pw-wrap">
+          <label class="sr-only" for="login-password">Password</label>
+          <input id="login-password" class="pill-input" type="password" placeholder="Password" autocomplete="current-password" required>
+          <button class="pw-eye" type="button" data-eye="login-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button>
+        </div>
+        <div class="auth-row-right"><button class="btn-link" id="forgot" type="button">Forgot password?</button></div>
+        <button class="btn btn-primary btn-pill" type="submit">Sign in</button>
+        <div class="or">or</div>
+        <div class="google-slot" id="google-btn-login"></div>
+        <p class="auth-switch">Don't have an account? <button class="btn-link" type="button" data-tab="register">Sign up</button></p>
       </form>
 
-      <form id="form-verify" class="hidden" novalidate>
-        <p class="small muted">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
-        <div class="field"><label for="verify-code">Code</label><input id="verify-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required></div>
-        <button class="btn btn-primary" type="submit" style="width:100%">Confirm and sign in</button>
-        <p class="small muted" style="margin:12px 0 0">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
+      <form id="form-verify" class="auth-form hidden" novalidate>
+        <p class="small muted" style="text-align:center">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
+        <label class="sr-only" for="verify-code">Code</label>
+        <input id="verify-code" class="pill-input code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" required>
+        <button class="btn btn-primary btn-pill" type="submit">Confirm and sign in</button>
+        <p class="auth-switch">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
       </form>
-      <form id="form-register" class="hidden" novalidate>
-        <div class="field"><label for="reg-name">Full name</label><input id="reg-name" type="text" autocomplete="name" required></div>
-        <div class="field"><label for="reg-email">Email</label><input id="reg-email" type="email" autocomplete="email" required></div>
-        <div class="field"><label for="reg-password">Password</label><input id="reg-password" type="password" autocomplete="new-password" minlength="8" required></div>
-        <button class="btn btn-primary" type="submit" style="width:100%">Create account</button>
-        <p class="small muted" style="margin:14px 0 0">We email you a six-digit code to confirm the address.</p>
+
+      <form id="form-register" class="auth-form hidden" novalidate>
+        <label class="sr-only" for="reg-name">Full name</label>
+        <input id="reg-name" class="pill-input" type="text" placeholder="Full name" autocomplete="name" required>
+        <label class="sr-only" for="reg-email">Email</label>
+        <input id="reg-email" class="pill-input" type="email" placeholder="Email" autocomplete="email" required>
+        <div class="pw-wrap">
+          <label class="sr-only" for="reg-password">Password</label>
+          <input id="reg-password" class="pill-input" type="password" placeholder="Password" autocomplete="new-password" minlength="8" required>
+          <button class="pw-eye" type="button" data-eye="reg-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button>
+        </div>
+        <div class="pw-wrap">
+          <label class="sr-only" for="reg-confirm">Confirm password</label>
+          <input id="reg-confirm" class="pill-input" type="password" placeholder="Confirm password" autocomplete="new-password" minlength="8" required>
+          <button class="pw-eye" type="button" data-eye="reg-confirm" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button>
+        </div>
+        <button class="btn btn-primary btn-pill" type="submit">Sign up</button>
+        <div class="or">or</div>
+        <div class="google-slot" id="google-btn-register"></div>
+        <p class="auth-switch">Already have an account? <button class="btn-link" type="button" data-tab="login">Sign in</button></p>
       </form>
     </div>
+
+    <div class="card try-free" id="try-free">
+      <h2><svg class="ic"><use href="#i-sparkle"/></svg>Or try it first — free, no account</h2>
+      <p class="card-lead">A 30-second preview of any song, or a tune you hum right now.</p>
+      <form id="try-form" class="link-form" novalidate>
+        <label class="sr-only" for="try-url">Song link</label>
+        <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
+        <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
+      </form>
+      <div class="row" style="margin-top:12px">
+        <button class="btn btn-ghost btn-sm btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
+        <label class="btn btn-ghost btn-sm try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
+      </div>
+      <p class="try-status small" id="try-status" aria-live="polite"></p>
     </div>
   </section>
 
@@ -194,6 +210,35 @@
       <div class="onb-actions">
         <button class="btn btn-ghost hidden" id="onb-back" type="button">Back</button>
         <button class="btn btn-primary" id="onb-next" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Recording: what the microphone hears, then the take to review ── -->
+  <div class="modal hidden" id="rec-panel" role="dialog" aria-modal="true" aria-labelledby="rec-title">
+    <div class="modal-card rec-card">
+      <div id="rec-live">
+        <div class="rec-orb"><svg class="ic"><use href="#i-mic"/></svg></div>
+        <h2 id="rec-title" class="rec-heading"><span class="rec-dot"></span>Recording</h2>
+        <p class="rec-time"><span id="rec-elapsed">0:00</span><span class="muted"> / 3:00</span></p>
+        <div class="meter" id="rec-meter" aria-hidden="true"></div>
+        <p class="card-lead" style="text-align:center;margin-bottom:18px">Hum or sing the tune. Keep going until the phrase is finished, then press Stop.</p>
+        <div class="rec-actions">
+          <button class="btn btn-ghost" id="rec-cancel" type="button">Cancel</button>
+          <button class="btn btn-danger-solid" id="rec-stop" type="button"><svg class="ic"><use href="#i-stop"/></svg>Stop</button>
+        </div>
+      </div>
+      <div id="rec-review" class="hidden">
+        <div class="rec-orb done"><svg class="ic"><use href="#i-check"/></svg></div>
+        <h2 class="rec-heading">Here's your take</h2>
+        <p class="rec-time"><span id="rec-length">0:00</span><span class="muted"> recorded</span></p>
+        <audio id="rec-audio" controls preload="auto"></audio>
+        <p class="card-lead" style="text-align:center;margin:14px 0 18px">Listen back. If it's the phrase you meant, send it off; otherwise record it again.</p>
+        <div class="rec-actions">
+          <button class="btn btn-ghost" id="rec-discard" type="button">Discard</button>
+          <button class="btn btn-ghost" id="rec-again" type="button"><svg class="ic"><use href="#i-restart"/></svg>Record again</button>
+          <button class="btn btn-primary" id="rec-use" type="button"><svg class="ic"><use href="#i-wave"/></svg>Transcribe this take</button>
+        </div>
       </div>
     </div>
   </div>
@@ -451,10 +496,19 @@
       <div class="card">
         <h2><svg class="ic"><use href="#i-user"/></svg>Account information <span class="pill pill-free" id="acct-badge">Free</span></h2>
         <div class="profile">
-          <span class="who-avatar" id="acct-avatar" aria-hidden="true"></span>
+          <label class="avatar-edit" title="Change photo">
+            <span class="who-avatar" id="acct-avatar" aria-hidden="true"></span>
+            <span class="avatar-badge"><svg class="ic"><use href="#i-camera"/></svg></span>
+            <input id="acct-photo" type="file" accept="image/*" class="sr-only">
+          </label>
           <div style="min-width:0">
             <div class="name" id="acct-name">—</div>
             <div class="email" id="acct-email">—</div>
+            <div class="row" style="gap:8px;margin-top:6px">
+              <label class="btn-link small" for="acct-photo" style="cursor:pointer">Change photo</label>
+              <button class="btn-link small hidden" id="acct-photo-remove" type="button">Remove</button>
+              <span class="small muted" id="acct-photo-status"></span>
+            </div>
           </div>
         </div>
         <dl class="acct-rows">
@@ -502,9 +556,11 @@
 <div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<!-- Sign in with Google. app.js renders the button once this has loaded; without it the forms still work. -->
+<script src="https://accounts.google.com/gsi/client" async defer onload="window.nfGoogleReady && window.nfGoogleReady()"></script>
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
 <script src="/assets/choir.js?v=2" defer></script>
-<script src="/assets/preview.js?v=4" defer></script>
-<script src="/assets/app.js?v=6" defer></script>
+<script src="/assets/preview.js?v=5" defer></script>
+<script src="/assets/app.js?v=7" defer></script>
 </body>
 </html>

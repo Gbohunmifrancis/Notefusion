@@ -118,7 +118,53 @@
     return first ? part + ", " + first : part;
   }
   function recording(on) { document.body.classList.toggle("is-recording", !!on); }
+  /** The account's photo, or the initial of the name when there is none. */
+  function setAvatar(el, who) {
+    var url = who && who.profilePictureUrl;
+    el.textContent = url ? "" : initial(who && (who.fullName || who.email));
+    el.style.backgroundImage = url ? 'url("' + url + '")' : "";
+    el.classList.toggle("has-img", !!url);
+  }
   function safeName(text) { return (text || "notefusion").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").slice(0, 60) || "notefusion"; }
+
+  // ── Sounds: short synthesised cues for the moments that matter ───────────
+  var SOUNDS_KEY = "nf.web.sounds";
+  var sfx = {
+    ctx: null,
+    enabled: function () { try { return localStorage.getItem(SOUNDS_KEY) !== "off"; } catch (e) { return true; } },
+    set: function (on) { try { localStorage.setItem(SOUNDS_KEY, on ? "on" : "off"); } catch (e) { /* private mode */ } renderSoundsMenu(); },
+    tone: function (freq, at, dur, gain, type) {
+      var o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = type || "sine"; o.frequency.setValueAtTime(freq, at);
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(gain || 0.12, at + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+      o.connect(g); g.connect(this.ctx.destination); o.start(at); o.stop(at + dur + 0.02);
+    },
+    play: function (name) {
+      if (!this.enabled()) return;
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        this.ctx = this.ctx || new AC();
+        if (this.ctx.state === "suspended") this.ctx.resume();
+        var t = this.ctx.currentTime + 0.01, s = this;
+        ({
+          start: function () { s.tone(523, t, 0.12); s.tone(659, t + 0.12, 0.16); },
+          stop: function () { s.tone(659, t, 0.12); s.tone(523, t + 0.12, 0.18); },
+          ready: function () { s.tone(523, t, 0.14); s.tone(659, t + 0.13, 0.14); s.tone(784, t + 0.26, 0.3); },
+          saved: function () { s.tone(880, t, 0.22, 0.1); },
+          error: function () { s.tone(220, t, 0.25, 0.1, "triangle"); }
+        })[name]();
+      } catch (e) { /* a sound is a nicety */ }
+    }
+  };
+  function renderSoundsMenu() {
+    var on = sfx.enabled(), b = $("menu-sounds");
+    b.setAttribute("aria-checked", String(on)); b.querySelector("span").textContent = on ? "Sounds on" : "Sounds off";
+  }
+  $("menu-sounds").addEventListener("click", function () { sfx.set(!sfx.enabled()); if (sfx.enabled()) sfx.play("saved"); });
+  renderSoundsMenu();
 
   // ── State ────────────────────────────────────────────────────────────────
   var me = null;          // { fullName, email }
@@ -139,10 +185,13 @@
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
     maybeOnboard();
   }
-  function selectAuthTab(name) {
-    var tab = document.querySelector('.tab[data-tab="' + name + '"]');
-    if (tab) tab.click();
+  var AUTH_COPY = { login: ["Welcome back!", "Sign in to continue"], register: ["Create your account", "Start your musical journey"], verify: ["Check your email", "One code and you're in"] };
+  function showAuthForm(name) {
+    ["login", "register", "verify"].forEach(function (f) { name === f ? show($("form-" + f)) : hide($("form-" + f)); });
+    $("auth-title").textContent = AUTH_COPY[name][0]; $("auth-sub").textContent = AUTH_COPY[name][1];
+    hide($("auth-alert"));
   }
+  function selectAuthTab(name) { showAuthForm(name); }
 
   // ── Onboarding: three cards on the first visit, and from "How it works" ──
   var ONB_KEY = "nf.web.onboarded";
@@ -185,15 +234,48 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("onb").classList.contains("hidden")) closeOnb(false); });
   $("how-link").addEventListener("click", function (e) { e.preventDefault(); openOnb(); });
 
-  document.querySelectorAll(".tabs[role=tablist] .tab[data-tab]").forEach(function (tab) {
-    tab.addEventListener("click", function () {
-      document.querySelectorAll(".tab[data-tab]").forEach(function (t) { t.setAttribute("aria-selected", String(t === tab)); });
-      var login = tab.dataset.tab === "login";
-      login ? show($("form-login")) : hide($("form-login"));
-      login ? hide($("form-register")) : show($("form-register"));
-      hide($("auth-alert"));
+  document.querySelectorAll("[data-tab]").forEach(function (b) { b.addEventListener("click", function () { showAuthForm(b.dataset.tab); }); });
+  document.querySelectorAll("[data-eye]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var input = $(b.dataset.eye), showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      b.innerHTML = '<svg class="ic"><use href="#i-' + (showing ? "eye" : "eye-off") + '"/></svg>';
+      b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
+  $("forgot").addEventListener("click", function () {
+    var email = $("login-email").value.trim();
+    if (!email) { alertIn($("auth-alert"), "info", "Type your email above, then press Forgot password."); $("login-email").focus(); return; }
+    request("/api/auth/forgot-password", { method: "POST", anonymous: true, body: { email: email } })
+      .then(function () { alertIn($("auth-alert"), "success", "If that address has an account, a reset link is on its way."); })
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Could not send the reset email."); });
+  });
+
+  // ── Sign in with Google ──────────────────────────────────────────────────
+  // The same OAuth web client the API validates ID tokens against (Google__ClientId). The
+  // site's origin has to be listed under that client's authorised JavaScript origins in the
+  // Google Cloud console, or the button renders and then refuses to sign anyone in.
+  var GOOGLE_CLIENT_ID = "21738378819-3prjgka9cpf6c2l3si6q879vgm06kf6h.apps.googleusercontent.com";
+  function onGoogleCredential(res) {
+    if (!res || !res.credential) return;
+    hide($("auth-alert"));
+    request("/api/auth/google", { method: "POST", anonymous: true, body: { idToken: res.credential } })
+      .then(function (out) { saveTokens({ accessToken: out.accessToken, refreshToken: out.refreshToken }); return boot(); })
+      .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "Google sign-in did not go through."); sfx.play("error"); });
+  }
+  function initGoogle() {
+    if (!window.google || !google.accounts || !google.accounts.id) return;
+    try {
+      google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential, ux_mode: "popup", itp_support: true });
+      [["google-btn-login", "signin_with"], ["google-btn-register", "signup_with"]].forEach(function (pair) {
+        var slot = $(pair[0]); slot.innerHTML = "";
+        google.accounts.id.renderButton(slot, { theme: "outline", size: "large", shape: "pill", text: pair[1], width: 360, logo_alignment: "center" });
+        slot.closest("form").classList.add("has-google");
+      });
+    } catch (e) { /* the forms work without it */ }
+  }
+  window.nfGoogleReady = initGoogle;
+  if (window.google && google.accounts) initGoogle();
 
   $("form-login").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -212,11 +294,12 @@
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true; hide($("auth-alert"));
+    if ($("reg-password").value !== $("reg-confirm").value) { alertIn($("auth-alert"), "danger", "The two passwords don't match."); btn.disabled = false; return; }
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         pendingEmail = (res && res.email) || $("reg-email").value.trim();
         $("verify-email-label").textContent = pendingEmail;
-        hide($("form-register")); hide($("form-login")); show($("form-verify"));
+        showAuthForm("verify");
         alertIn($("auth-alert"), "success", "Almost there — enter the code we just emailed you.");
         $("verify-code").focus();
       })
@@ -235,7 +318,7 @@
     request("/api/auth/verify-email", { method: "POST", anonymous: true, body: { email: pendingEmail, code: $("verify-code").value.trim() } })
       .then(function (res) {
         saveTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
-        hide($("form-verify")); show($("form-login"));
+        showAuthForm("login");
         return boot();
       })
       .catch(function (err) { alertIn($("auth-alert"), "danger", err.message || "That code did not match."); })
@@ -252,7 +335,7 @@
     var auth = $("view-auth");
     document.querySelector("main").appendChild(auth); // below the sheet, so the preview stays in view
     show(auth);
-    document.querySelector('.tab[data-tab="' + tab + '"]').click();
+    showAuthForm(tab);
     auth.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   ["guest-signup", "guest-cta-signup"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("register"); }); });
@@ -369,7 +452,8 @@
 
   function renderAccount() {
     $("acct-name").textContent = me ? (me.fullName || "—") : "—";
-    $("acct-avatar").textContent = initial(me && (me.fullName || me.email));
+    setAvatar($("acct-avatar"), me);
+    (me && me.profilePictureUrl) ? show($("acct-photo-remove")) : hide($("acct-photo-remove"));
     $("acct-email").textContent = me ? (me.email || "—") : "—";
     $("acct-plan").textContent = isPro() ? "Pro" : "Free";
     var badge = $("acct-badge"); badge.textContent = isPro() ? "Pro" : "Free"; badge.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
@@ -383,6 +467,23 @@
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
   }
   $("acct-upgrade").addEventListener("click", openUpgrade);
+  $("acct-photo").addEventListener("change", function (e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var form = new FormData(); form.append("image", file, file.name);
+    $("acct-photo-status").textContent = "Uploading…";
+    request("/api/me/picture", { method: "POST", form: form })
+      .then(function (profile) { return profile || request("/api/me"); })
+      .then(function (profile) { me = profile; $("acct-photo-status").textContent = ""; renderWho(); renderAccount(); sfx.play("saved"); })
+      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not upload that photo."; sfx.play("error"); })
+      .finally(function () { e.target.value = ""; });
+  });
+  $("acct-photo-remove").addEventListener("click", function () {
+    request("/api/me/picture", { method: "DELETE" })
+      .then(function () { return request("/api/me"); })
+      .then(function (profile) { me = profile; renderWho(); renderAccount(); })
+      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not remove the photo."; });
+  });
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
   function openUpgrade() { loadPlans($("upgrade-panel"), $("plans-standalone")); }
@@ -396,7 +497,7 @@
 
   function renderWho() {
     $("who-name").textContent = me ? (me.fullName || me.email || "") : "";
-    $("who-avatar").textContent = initial(me && (me.fullName || me.email));
+    setAvatar($("who-avatar"), me);
     $("greeting").textContent = greeting(me && me.fullName);
     $("home-sub").textContent = "What are we writing out today?";
     $("menu-name").textContent = me ? (me.fullName || "") : "";
@@ -499,38 +600,97 @@
   })();
 
   // ── Record a tune in the browser ─────────────────────────────────────────
-  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, MAX_SEC: 180 };
-  function stopRecording() {
+  // The microphone opens into a panel that shows what it hears (a level meter and the
+  // clock), and nothing is sent until the take has been listened to and approved.
+  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, MAX_SEC: 180, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false };
+  var meterBars = [];
+  (function () { var m = $("rec-meter"); for (var i = 0; i < 28; i++) { var bar = document.createElement("span"); m.appendChild(bar); meterBars.push(bar); } })();
+  function fmtClock(sec) { sec = Math.max(0, Math.floor(sec)); return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0"); }
+  function recShow(live) { show($("rec-panel")); if (live) { show($("rec-live")); hide($("rec-review")); } else { hide($("rec-live")); show($("rec-review")); } }
+  function recClose() {
+    hide($("rec-panel"));
+    var audio = $("rec-audio"); audio.pause(); audio.removeAttribute("src");
+    if (rec.url) { URL.revokeObjectURL(rec.url); rec.url = null; }
+    rec.blob = null;
+  }
+  function recTeardown() {
     if (rec.timer) clearInterval(rec.timer); if (rec.stopAt) clearTimeout(rec.stopAt); rec.timer = rec.stopAt = null;
-    if (rec.recorder && rec.recorder.state !== "inactive") rec.recorder.stop();
+    if (rec.raf) cancelAnimationFrame(rec.raf); rec.raf = null;
+    if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
+    if (rec.audioCtx) { rec.audioCtx.close().catch(function () { /* already closed */ }); rec.audioCtx = null; rec.analyser = null; }
     label($("rec-btn"), "mic", "Record a tune"); $("rec-btn").classList.remove("is-recording"); recording(false);
   }
-  $("rec-btn").addEventListener("click", function () {
-    if (rec.recorder && rec.recorder.state === "recording") { stopRecording(); return; }
+  function stopRecording() {
+    if (rec.recorder && rec.recorder.state !== "inactive") rec.recorder.stop(); // its "stop" event finishes the job
+    else recTeardown();
+  }
+  function drawMeter() {
+    if (!rec.analyser) return;
+    var data = new Uint8Array(rec.analyser.frequencyBinCount);
+    rec.analyser.getByteFrequencyData(data);
+    var step = Math.floor(data.length / meterBars.length) || 1;
+    meterBars.forEach(function (bar, i) {
+      var v = 0;
+      for (var j = 0; j < step; j++) v = Math.max(v, data[i * step + j] || 0);
+      bar.style.height = Math.max(8, Math.round(v / 255 * 100)) + "%";
+    });
+    rec.raf = requestAnimationFrame(drawMeter);
+  }
+  function startRecording() {
     if (!navigator.mediaDevices || !window.MediaRecorder) { $("rec-status").textContent = "This browser cannot record; upload a file instead."; return; }
+    rec.discard = false;
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
-      rec.chunks = [];
+      rec.stream = stream; rec.chunks = [];
       var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
       rec.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
       rec.recorder.addEventListener("dataavailable", function (ev) { if (ev.data && ev.data.size) rec.chunks.push(ev.data); });
       rec.recorder.addEventListener("stop", function () {
-        stream.getTracks().forEach(function (t) { t.stop(); });
         var type = rec.recorder.mimeType || mime || "audio/webm";
+        var seconds = (Date.now() - rec.started) / 1000;
+        recTeardown();
+        if (rec.discard) { recClose(); return; }
         var blob = new Blob(rec.chunks, { type: type });
-        if (blob.size < 2000) { $("rec-status").textContent = "That was too short to hear. Hum for a few seconds."; return; }
-        $("rec-status").textContent = "";
-        document.querySelector('input[name="upload-kind"][value="hum"]').checked = true;
-        submitAudio(blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm");
+        if (blob.size < 2000) { recClose(); $("rec-status").textContent = "That was too short to hear. Hum for a few seconds."; sfx.play("error"); return; }
+        rec.blob = blob; rec.name = type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm";
+        rec.url = URL.createObjectURL(blob); $("rec-audio").src = rec.url;
+        $("rec-length").textContent = fmtClock(seconds);
+        sfx.play("stop");
+        recShow(false);
       });
-      rec.recorder.start();
-      rec.started = Date.now(); recording(true);
-      rec.timer = setInterval(function () {
-        var left = Math.max(0, rec.MAX_SEC - Math.floor((Date.now() - rec.started) / 1000));
-        label($("rec-btn"), "stop", "Stop (" + left + "s)"); $("rec-btn").classList.add("is-recording");
-        $("rec-status").textContent = "Recording… hum or sing, then press Stop.";
-      }, 250);
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        rec.audioCtx = new AC();
+        rec.analyser = rec.audioCtx.createAnalyser(); rec.analyser.fftSize = 256; rec.analyser.smoothingTimeConstant = 0.6;
+        rec.audioCtx.createMediaStreamSource(stream).connect(rec.analyser);
+        drawMeter();
+      } catch (e) { /* no meter; the clock still runs */ }
+      rec.recorder.start(250);
+      rec.started = Date.now(); recording(true); sfx.play("start");
+      $("rec-elapsed").textContent = "0:00";
+      label($("rec-btn"), "stop", "Recording…"); $("rec-btn").classList.add("is-recording");
+      $("rec-status").textContent = "";
+      recShow(true);
+      rec.timer = setInterval(function () { $("rec-elapsed").textContent = fmtClock((Date.now() - rec.started) / 1000); }, 250);
       rec.stopAt = setTimeout(stopRecording, rec.MAX_SEC * 1000);
-    }).catch(function () { $("rec-status").textContent = "Microphone access is needed to record. Upload a file instead."; });
+    }).catch(function () { $("rec-status").textContent = "Microphone access is needed to record. Upload a file instead."; sfx.play("error"); });
+  }
+  $("rec-btn").addEventListener("click", function () {
+    if (rec.recorder && rec.recorder.state === "recording") { recShow(true); return; }
+    startRecording();
+  });
+  $("rec-stop").addEventListener("click", stopRecording);
+  $("rec-cancel").addEventListener("click", function () {
+    rec.discard = true;
+    if (rec.recorder && rec.recorder.state === "recording") stopRecording(); else { recTeardown(); recClose(); }
+  });
+  $("rec-discard").addEventListener("click", recClose);
+  $("rec-again").addEventListener("click", function () { recClose(); startRecording(); });
+  $("rec-use").addEventListener("click", function () {
+    if (!rec.blob) return;
+    var blob = rec.blob, name = rec.name;
+    document.querySelector('input[name="upload-kind"][value="hum"]').checked = true;
+    recClose();
+    submitAudio(blob, name);
   });
 
   function explain(err) {
@@ -542,6 +702,7 @@
     }
     if (err.code === "BILLING_SONG_CREDITS_EXHAUSTED") { alertIn($("app-alert"), "info", text); return; }
     if (err.code === "PREVIEW_LIMIT_REACHED") { alertIn($("app-alert"), "info", text); openAuth("register"); return; }
+    sfx.play("error");
     alertIn($("app-alert"), "danger", text);
   }
 
@@ -594,12 +755,14 @@
       if (status === "done" && job.result) {
         current.result = job.result;
         hide($("progress"));
+        sfx.play("ready");
         showResult(job.result);
         if (!guest) loadAccount();
         return;
       }
       if (status === "failed") {
         hide($("progress"));
+        sfx.play("error");
         alertIn($("app-alert"), "danger", job.error || "That could not be transcribed. Try a cleaner recording or a different link.");
         return;
       }
@@ -928,6 +1091,7 @@
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
       lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null
     } }).then(function (saved) {
+      sfx.play("saved");
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
       libraryCache = null;
       renderSave();

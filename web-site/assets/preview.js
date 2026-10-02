@@ -65,6 +65,25 @@
     if (recorder && recorder.state !== "inactive") recorder.stop();
     recLabel("mic", "Record a tune"); record.classList.remove("is-recording"); document.body.classList.remove("is-recording");
   }
+  /** The take, to listen back to; nothing is sent until "Transcribe it" is pressed. */
+  function offerTake(blob, type, seconds) {
+    busy(false);
+    say("Recorded " + Math.round(seconds) + " seconds. Listen back, then send it or try again.", "info");
+    var url = URL.createObjectURL(blob);
+    var audio = document.createElement("audio"); audio.controls = true; audio.src = url; audio.className = "try-take";
+    var row = document.createElement("span"); row.className = "try-take-actions";
+    var go = document.createElement("button"); go.type = "button"; go.className = "btn btn-primary"; go.textContent = "Transcribe it";
+    var again = document.createElement("button"); again.type = "button"; again.className = "btn btn-ghost"; again.textContent = "Record again";
+    row.appendChild(go); row.appendChild(again); status.appendChild(audio); status.appendChild(row);
+    go.addEventListener("click", function () {
+      URL.revokeObjectURL(url);
+      var fd = new FormData(); fd.append("audio", blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm"); fd.append("audioPreview", "false");
+      busy(true); say("Transcribing your tune…");
+      send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
+    });
+    again.addEventListener("click", function () { URL.revokeObjectURL(url); say(""); record.click(); });
+  }
+
   record.addEventListener("click", function () {
     if (recorder && recorder.state === "recording") { stopRecording(); return; }
     if (!navigator.mediaDevices || !window.MediaRecorder) { say("This browser cannot record. Paste a link or pick a file instead.", "error"); return; }
@@ -78,9 +97,7 @@
         var type = recorder.mimeType || mime || "audio/webm";
         var blob = new Blob(chunks, { type: type });
         if (blob.size < 2000) { say("That was too short to hear. Try again and hum for a few seconds.", "error"); busy(false); return; }
-        var fd = new FormData(); fd.append("audio", blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm"); fd.append("audioPreview", "false");
-        busy(true); say("Transcribing your tune…");
-        send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
+        offerTake(blob, type, (Date.now() - started) / 1000);
       });
       recorder.start();
       started = Date.now(); document.body.classList.add("is-recording");
