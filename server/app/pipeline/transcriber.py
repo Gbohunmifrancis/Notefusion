@@ -1287,6 +1287,38 @@ class TranscriptionResult:
 # ── Key name helpers ──────────────────────────────────────────────────────────
 
 
+
+def export_musicxml(measured, part_name: str = "Melody") -> str:
+    """MusicXML for ``measured`` — a stream of measures, a Part or a Score — with blank metadata.
+
+    music21 fills in whatever a score does not say: a movement title of "Music21 Fragment",
+    a composer of "Music21", and an empty part name that an engraver then replaces with the
+    part's hash id.  OpenSheetMusicDisplay printed all three at the top of every sheet on
+    the web ("Music21" top right, "Instr. P2e59a823…" beside the stave).  Blank metadata and
+    a real part name leave it nothing to print.  The caller's stream is untouched: it is
+    only placed in a Score for the export.
+    """
+    from music21 import metadata, stream
+    from music21.musicxml.m21ToXml import GeneralObjectExporter
+
+    if isinstance(measured, stream.Score):
+        score = measured
+    else:
+        if isinstance(measured, stream.Part):
+            part = measured
+        else:
+            part = stream.Part(id="melody")
+            for el in measured:
+                part.insert(el.offset, el)
+        part.partName = part_name
+        score = stream.Score()
+        score.insert(0, part)
+    blank = metadata.Metadata()
+    blank.title = ""
+    blank.composer = ""
+    score.metadata = blank
+    return GeneralObjectExporter(score).parse().decode("utf-8")
+
 def _normalise_key_name(name: str) -> str:
     """Convert a music21 key name to the form C#'s KeyParser accepts.
 
@@ -4411,7 +4443,7 @@ def _transcribe_wav(
     normalised_key = _normalise_key_name(detected.name)
 
     # ── 12. MusicXML + MIDI (base64) ─────────────────────────────────────────
-    musicxml = GeneralObjectExporter(score).parse().decode("utf-8")
+    musicxml = export_musicxml(score)
     # Re-render the .mid at the tempo step 7 detected.  ``predict`` builds its MIDI before
     # anything here knows the tempo, so it stamps basic-pitch's ``midi_tempo`` default of
     # 120 on every export regardless — a hymn at 76 imports into a DAW or a notation editor

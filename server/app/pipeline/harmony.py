@@ -454,9 +454,8 @@ def harmonise(
 def build_musicxml(parts: dict[str, list], tonic_pc: int, mode: str, time_signature: str, tempo_bpm: int) -> str:
     """A four-part score: S and A in treble, T in treble-8vb, B in bass clef."""
     from music21 import clef, instrument, key as m21key, meter, note as m21note, stream, tempo as m21tempo
-    from music21.musicxml.m21ToXml import GeneralObjectExporter
 
-    from app.pipeline.transcriber import _key_from_identity, _respell_to_key
+    from app.pipeline.transcriber import _key_from_identity, _respell_to_key, export_musicxml
 
     k = _key_from_identity(tonic_pc, mode)
     score = stream.Score()
@@ -484,4 +483,4 @@ def build_musicxml(parts: dict[str, list], tonic_pc: int, mode: str, time_signat
         measured.id = name
         measured.partName = name.capitalize()
         score.insert(0, measured)
-    return GeneralObjectExporter(score).parse().decode("utf-8")
+    return export_musicxml(score)

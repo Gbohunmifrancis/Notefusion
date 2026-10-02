@@ -1909,3 +1909,38 @@ class TestCadenceTiebreak:
         weights = transcriber._tonal_cues(s)[1:]
 
         assert transcriber._diatonic_fraction(9, "minor", *weights) == pytest.approx(1.0)
+
+
+class TestExportMusicxml:
+    """The MusicXML the clients engrave carries no music21 placeholders."""
+
+    @staticmethod
+    def _measured():
+        from music21 import meter, note, stream
+
+        s = stream.Stream()
+        s.insert(0, meter.TimeSignature("4/4"))
+        for i, name in enumerate(("C4", "D4", "E4", "F4", "G4")):
+            s.insert(i, note.Note(name, quarterLength=1))
+        return s.makeMeasures()
+
+    def test_a_measured_stream_exports_as_one_named_part_with_blank_metadata(self):
+        xml = transcriber.export_musicxml(self._measured())
+        assert "<score-partwise" in xml and xml.count("<part ") == 1
+        assert "<part-name>Melody</part-name>" in xml
+        # The defaults OpenSheetMusicDisplay was printing at the top of every web sheet.
+        assert "Music21" not in xml
+        assert '<creator type="composer">Music21' not in xml
+        assert xml.count("<note>") == 5
+
+    def test_the_part_name_is_the_callers(self):
+        xml = transcriber.export_musicxml(self._measured(), part_name="Tune")
+        assert "<part-name>Tune</part-name>" in xml
+
+    def test_the_callers_stream_is_left_usable(self, tmp_path):
+        measured = self._measured()
+        transcriber.export_musicxml(measured)
+        # The pipeline writes the MIDI from the same stream after the MusicXML export.
+        measured.write("midi", fp=str(tmp_path / "x.mid"))
+        assert (tmp_path / "x.mid").stat().st_size > 0
+

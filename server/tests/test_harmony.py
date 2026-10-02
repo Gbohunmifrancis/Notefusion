@@ -84,6 +84,9 @@ def test_harmonise_returns_four_parts_in_the_note_shape_with_solfa():
     assert len(result.solfa_lines["alto"]) > 1
     assert result.chords[0][2] == "I" and result.chords[-1][2] == "I"
     assert "<score-partwise" in result.musicxml and result.musicxml.count("<part ") == 4
+    # The parts are named for the engraver, and music21's own defaults never reach the sheet.
+    assert "<part-name>Soprano</part-name>" in result.musicxml
+    assert "Music21" not in result.musicxml
 
 
 def test_the_lower_voices_rest_with_the_tune():

@@ -138,7 +138,7 @@
     container.textContent = "Loading the engraver…";
     ensureOsmd().then(function () {
       container.innerHTML = "";
-      var d = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, { backend: "svg", autoResize: true, drawTitle: false, drawPartNames: partNames, drawMeasureNumbers: true, autoBeam: true });
+      var d = new opensheetmusicdisplay.OpenSheetMusicDisplay(container, { backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false, drawLyricist: false, drawPartNames: partNames, drawMeasureNumbers: true, autoBeam: true });
       return d.load(xml).then(function () { d.render(); });
     }).catch(function () { container.textContent = "The staff could not be drawn. The Tonic Solfa tab still works."; });
   }
