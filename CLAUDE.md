@@ -54,7 +54,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   30-second preview (throttled per `X-Device-Id` and per address via `PreviewJob` rows), polled at
   `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
   a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
-  turns those rows into the admin dashboard's web funnel.
+  turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions
+  are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
+  (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
+  action) and the overview's `WebTraffic` section reads them back. No third-party analytics.
 - Billing: naira plans are Paystack subscriptions, dollar plans are Bachs subscriptions (one catalog
   product per USD plan code, `Bachs__ProductMap__pro_*_usd`). Currency routes the charge
   (`PaymentGatewayFactory.SelectForCurrency`); `BillingReadiness` logs at startup if a plan on sale

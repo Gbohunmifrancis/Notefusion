@@ -37,6 +37,7 @@
       });
     });
   }
+  function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
   function open(job) { location.href = "/app/?preview=" + encodeURIComponent(job.jobId); }
   function explain(err) {
     if (err.code === "PREVIEW_LIMIT_REACHED") { say(err.message + " ", "info"); var a = document.createElement("a"); a.href = "/app"; a.textContent = "Create a free account"; status.appendChild(a); return; }
@@ -48,6 +49,7 @@
     var url = urlInput.value.trim();
     if (!url) { urlInput.focus(); return; }
     busy(true); say("Reading the link…");
+    track("Preview started (link)");
     send("/api/preview/link", { json: { url: url, audioPreview: false } }).then(open).catch(function (err) { busy(false); explain(err); });
   });
 
@@ -56,6 +58,7 @@
     if (!f) return;
     var fd = new FormData(); fd.append("audio", f, f.name); fd.append("audioPreview", "false");
     busy(true); say("Uploading " + f.name + "…");
+    track("Preview started (audio)");
     send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
   });
 

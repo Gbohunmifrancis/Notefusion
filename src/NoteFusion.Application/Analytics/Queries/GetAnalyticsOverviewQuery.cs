@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 using NoteFusion.Core.Solfa;
 using NoteFusion.Shared.Results;
@@ -79,6 +80,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var recentActivity = await BuildRecentActivity(cancellationToken);
         var signupSources = await BuildSignupSources(cancellationToken);
         var webFunnel = await BuildWebFunnel(range, previous, cancellationToken);
+        var webTraffic = await BuildWebTraffic(range, previous, cancellationToken);
 
         return new AnalyticsOverviewDto(
             range.FromUtc,
@@ -94,7 +96,8 @@ public sealed class GetAnalyticsOverviewQueryHandler
             retention,
             recentActivity,
             signupSources,
-            webFunnel);
+            webFunnel,
+            webTraffic);
     }
 
     private async Task<IReadOnlyList<CategoryCountDto>> BuildSignupSources(CancellationToken ct)
@@ -148,6 +151,77 @@ public sealed class GetAnalyticsOverviewQueryHandler
             ShareViews: await _db.Transcriptions.SumAsync(t => (long?)t.ShareViews, ct) ?? 0L,
             WebProConversions: proConversions,
             PreviewsPerDay: previewsPerDay);
+    }
+
+    /// <summary>Ranked lists on the traffic panel are read at a glance, so the tail is cut.</summary>
+    private const int TopTrafficCount = 8;
+
+    /// <summary>Entries in the "what web users do" feed.</summary>
+    private const int RecentWebActionCount = 12;
+
+    /// <summary>
+    /// The website's own traffic: what the browser-side tracker posted to <c>api/web/events</c>.
+    /// Counts are over the window; the ranked lists are top-N by count; the feed is the newest
+    /// actions by accounts, joined to the account so the dashboard can name them.
+    /// </summary>
+    /// <remarks>
+    /// Distinct counts (visitors, sessions, accounts) are taken in the database; the ranked lists
+    /// are grouped there too and ordered in memory, which keeps the ordering identical on Npgsql
+    /// and on the SQLite the tests run against.
+    /// </remarks>
+    private async Task<WebTrafficDto> BuildWebTraffic(AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
+    {
+        var inRange = _db.WebEvents.Where(e => e.OccurredAtUtc >= range.FromUtc && e.OccurredAtUtc < range.ToUtc);
+        var inPrevious = _db.WebEvents.Where(e => e.OccurredAtUtc >= previous.FromUtc && e.OccurredAtUtc < previous.ToUtc);
+        var views = inRange.Where(e => e.Kind == WebEvent.Pageview);
+        var clicks = inRange.Where(e => e.Kind == WebEvent.Click);
+        var actions = inRange.Where(e => e.Kind == WebEvent.Action);
+
+        var topPages = await Ranked(views.GroupBy(e => e.Path), ct);
+        var referrers = await Ranked(views.GroupBy(e => e.Referrer ?? "Direct"), ct);
+        var topClicks = await Ranked(clicks.GroupBy(e => e.Name!), ct);
+        var devices = await Ranked(views.GroupBy(e => e.Device == "mobile" ? "Mobile" : "Desktop"), ct);
+        var topActions = await Ranked(actions.GroupBy(e => e.Name!), ct);
+
+        var recentRows = await actions
+            .Where(e => e.UserId != null)
+            .OrderByDescending(e => e.OccurredAtUtc)
+            .Take(RecentWebActionCount)
+            .Select(e => new { e.UserId, e.Name, e.Path, e.OccurredAtUtc, User = _db.Users.FirstOrDefault(u => u.Id == e.UserId) })
+            .ToListAsync(ct);
+        var recent = recentRows
+            .Where(r => r.User != null)
+            .Select(r => new WebActionItemDto(r.User!.Id, r.User.FullName, r.User.Email, r.Name!, r.Path, r.OccurredAtUtc))
+            .ToList();
+
+        return new WebTrafficDto(
+            Pageviews: await views.CountAsync(ct),
+            PageviewsPrevious: await inPrevious.CountAsync(e => e.Kind == WebEvent.Pageview, ct),
+            Visitors: await views.Select(e => e.VisitorId).Distinct().CountAsync(ct),
+            VisitorsPrevious: await inPrevious.Where(e => e.Kind == WebEvent.Pageview).Select(e => e.VisitorId).Distinct().CountAsync(ct),
+            Sessions: await views.Select(e => e.SessionId).Distinct().CountAsync(ct),
+            Clicks: await clicks.CountAsync(ct),
+            SignupClicks: await clicks.CountAsync(e => e.Target != null && e.Target.Contains("signup=1"), ct),
+            Actions: await actions.CountAsync(ct),
+            ActiveWebUsers: await actions.Where(e => e.UserId != null).Select(e => e.UserId).Distinct().CountAsync(ct),
+            PageviewsPerDay: await DailySeries(views.Select(e => e.OccurredAtUtc), range, ct),
+            TopPages: topPages,
+            TopReferrers: referrers,
+            TopClicks: topClicks,
+            Devices: devices,
+            TopActions: topActions,
+            RecentActions: recent);
+    }
+
+    /// <summary>Top-N groups by count, ties broken by label so the order is stable between refreshes.</summary>
+    private static async Task<IReadOnlyList<CategoryCountDto>> Ranked(
+        IQueryable<IGrouping<string, WebEvent>> groups, CancellationToken ct)
+    {
+        var rows = await groups.Select(g => new { Label = g.Key, Count = g.Count() }).ToListAsync(ct);
+        return [.. rows.OrderByDescending(r => r.Count)
+                       .ThenBy(r => r.Label, StringComparer.Ordinal)
+                       .Take(TopTrafficCount)
+                       .Select(r => new CategoryCountDto(r.Label, r.Count))];
     }
 
     private async Task<UserMetricsDto> BuildUserMetrics(

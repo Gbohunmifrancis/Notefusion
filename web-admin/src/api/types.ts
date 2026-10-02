@@ -156,6 +156,51 @@ export interface WebFunnel {
   previewsPerDay: DailyCount[];
 }
 
+/** One action a signed-in web account took, for the "what web users do" feed. */
+export interface WebActionItem {
+  userId: string;
+  fullName: string;
+  email: string;
+  /** The action's name as the web app reported it, e.g. "Saved sheet". */
+  action: string;
+  /** The page it happened on. */
+  path: string;
+  occurredAtUtc: string;
+}
+
+/**
+ * What the website's own tracker recorded for the window: page views, visitors, clicks and the
+ * actions taken in the web app. Every figure is a count over `web_events` rows, which the browser
+ * posts in batches to `POST api/web/events`.
+ */
+export interface WebTraffic {
+  pageviews: number;
+  pageviewsPrevious: number;
+  /** Distinct browsers (the tracker's random visitor id) that viewed a page. */
+  visitors: number;
+  visitorsPrevious: number;
+  /** Distinct tab sessions that viewed a page. */
+  sessions: number;
+  /** Links and buttons clicked. */
+  clicks: number;
+  /** Clicks on anything that leads to the sign-up form. */
+  signupClicks: number;
+  /** Named actions taken in the web app, signed in or as a guest. */
+  actions: number;
+  /** Distinct accounts that took at least one action in the web app. */
+  activeWebUsers: number;
+  pageviewsPerDay: DailyCount[];
+  topPages: CategoryCount[];
+  /** "Direct" when the browser sent no referrer. */
+  topReferrers: CategoryCount[];
+  topClicks: CategoryCount[];
+  /** Page views by device: Mobile or Desktop, from the viewport width. */
+  devices: CategoryCount[];
+  topActions: CategoryCount[];
+  /** The newest actions by signed-in accounts, newest first. */
+  recentActions: WebActionItem[];
+}
+
 export interface AnalyticsOverview {
   fromUtc: string;
   toUtc: string;
@@ -173,6 +218,8 @@ export interface AnalyticsOverview {
   /** Accounts by the client that created them: Web, Mobile, or Unknown (older accounts). */
   signupSources: CategoryCount[];
   webFunnel: WebFunnel;
+  /** Page views, visitors, clicks and web-app actions from the site's own tracker. */
+  webTraffic: WebTraffic;
 }
 
 export interface AdminUserRow {

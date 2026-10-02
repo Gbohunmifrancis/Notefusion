@@ -152,6 +152,58 @@ public sealed record WebFunnelDto(
     IReadOnlyList<DailyCountDto> PreviewsPerDay);
 
 /// <summary>
+/// One action a signed-in web account took, for the dashboard's "what web users do" feed.
+/// </summary>
+/// <param name="Action">The action's name as the web app reported it, e.g. "Saved sheet".</param>
+/// <param name="Path">The page it happened on.</param>
+public sealed record WebActionItemDto(
+    Guid UserId,
+    string FullName,
+    string Email,
+    string Action,
+    string Path,
+    DateTime OccurredAtUtc);
+
+/// <summary>
+/// What the website's own tracker recorded for one window: page views, visitors, clicks and the
+/// actions signed-in accounts took in the web app. Every figure is a count over
+/// <c>web_events</c> rows, which the browser posts in batches to <c>POST api/web/events</c>.
+/// </summary>
+/// <param name="Pageviews">Pages viewed inside the window.</param>
+/// <param name="PageviewsPrevious">The same count over the preceding window.</param>
+/// <param name="Visitors">Distinct browsers (the tracker's random visitor id) that viewed a page.</param>
+/// <param name="VisitorsPrevious">The same count over the preceding window.</param>
+/// <param name="Sessions">Distinct tab sessions that viewed a page.</param>
+/// <param name="Clicks">Links and buttons clicked.</param>
+/// <param name="SignupClicks">Clicks on anything that leads to the sign-up form.</param>
+/// <param name="Actions">Named actions taken in the web app, signed in or as a guest.</param>
+/// <param name="ActiveWebUsers">Distinct accounts that took at least one action in the web app.</param>
+/// <param name="PageviewsPerDay">Page views per local day, zero-filled.</param>
+/// <param name="TopPages">The most viewed paths.</param>
+/// <param name="TopReferrers">The sites visits came from; "Direct" when the browser sent none.</param>
+/// <param name="TopClicks">The most clicked labels.</param>
+/// <param name="Devices">Page views by device: Mobile or Desktop, from the viewport width.</param>
+/// <param name="TopActions">The most taken actions in the web app.</param>
+/// <param name="RecentActions">The newest actions by signed-in accounts, newest first.</param>
+public sealed record WebTrafficDto(
+    int Pageviews,
+    int PageviewsPrevious,
+    int Visitors,
+    int VisitorsPrevious,
+    int Sessions,
+    int Clicks,
+    int SignupClicks,
+    int Actions,
+    int ActiveWebUsers,
+    IReadOnlyList<DailyCountDto> PageviewsPerDay,
+    IReadOnlyList<CategoryCountDto> TopPages,
+    IReadOnlyList<CategoryCountDto> TopReferrers,
+    IReadOnlyList<CategoryCountDto> TopClicks,
+    IReadOnlyList<CategoryCountDto> Devices,
+    IReadOnlyList<CategoryCountDto> TopActions,
+    IReadOnlyList<WebActionItemDto> RecentActions);
+
+/// <summary>
 /// The whole overview payload in one response, so the dashboard's first paint costs one request
 /// rather than six. Each section is independently meaningful and the series are aligned to the
 /// same window.
@@ -176,6 +228,7 @@ public sealed record WebFunnelDto(
 /// </param>
 /// <param name="SignupSources">Accounts by the client that created them: web, mobile, or unknown (older accounts).</param>
 /// <param name="WebFunnel">The website's acquisition funnel for the window.</param>
+/// <param name="WebTraffic">Page views, visitors, clicks and web-app actions from the site's own tracker.</param>
 public sealed record AnalyticsOverviewDto(
     DateTime FromUtc,
     DateTime ToUtc,
@@ -190,7 +243,8 @@ public sealed record AnalyticsOverviewDto(
     IReadOnlyList<RetentionCohortDto> Retention,
     IReadOnlyList<ActivityItemDto> RecentActivity,
     IReadOnlyList<CategoryCountDto> SignupSources,
-    WebFunnelDto WebFunnel);
+    WebFunnelDto WebFunnel,
+    WebTrafficDto WebTraffic);
 
 /// <summary>
 /// One row of the admin user table. Deliberately narrow: enough to support the table and a
