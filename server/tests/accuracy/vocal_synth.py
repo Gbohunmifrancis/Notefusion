@@ -11,6 +11,10 @@ recordings hard are precisely the ones that voice does *not* share with an instr
   tuning       the singer's reference is not A=440 — the whole clip sits some tens of
                cents sharp or flat of equal temperament, and may drift across it;
   jitter       micro-intonation wanders around the target by ~10 cents;
+  pitching     an untrained singer lands each note off its target by its own amount:
+               on the Vocadito corpus of real solo singing, 40% of annotated notes sit
+               more than 25 cents from the nearest semitone even after the clip's own
+               tuning offset is removed;
   timbre       a hum is almost a sine (closed mouth, nasal), a vowel has formants,
                a syllable has a consonant gap and an amplitude dip at each onset;
   breath       noise between phrases and a slow, soft attack rather than a strike.
@@ -43,6 +47,10 @@ class VocalOptions:
     tuning_cents: float = 0.0  # whole-clip offset from A=440
     drift_cents: float = 0.0  # linear drift across the clip (negative = goes flat)
     jitter_cents: float = 8.0  # random-walk micro-intonation, RMS
+    # Per-note pitching error, RMS: each note is sung off its target by its own fixed amount,
+    # drawn once per note and clipped at +/-NOTE_DETUNE_CLIP_CENTS. 0 draws nothing, so every
+    # case rendered before this field existed is sample-for-sample unchanged.
+    note_detune_cents: float = 0.0
     vibrato_hz: float = 5.5
     vibrato_cents: float = 0.0  # peak deviation once fully developed
     vibrato_onset_sec: float = 0.3  # vibrato fades in over this after each onset
@@ -70,6 +78,7 @@ _STYLES = {
 }
 _N_HARMONICS = 24
 _CONSONANT_GAP_SEC = 0.035
+NOTE_DETUNE_CLIP_CENTS = 60.0
 
 
 def _seed(notes, tempo_bpm, options) -> int:
@@ -147,7 +156,10 @@ def render(
         if pitch is None or end <= start:
             previous_voiced = False
             continue
-        target[start:end] = float(pitch)
+        detune = 0.0
+        if options.note_detune_cents > 0.0:
+            detune = float(np.clip(rng.normal(0.0, options.note_detune_cents), -NOTE_DETUNE_CLIP_CENTS, NOTE_DETUNE_CLIP_CENTS))
+        target[start:end] = float(pitch) + detune / 100.0
         onsets.append((start, end, not previous_voiced))
         refs.append(
             RefNote(

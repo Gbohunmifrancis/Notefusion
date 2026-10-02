@@ -185,6 +185,85 @@ def test_diatonic_set_reads_a_minor_key_with_its_raised_seventh():
     assert members >= {9, 11, 0, 2, 4, 5, 7}
 
 
+# ── Scale-fit notation ───────────────────────────────────────────────────────
+
+
+def test_fit_scale_finds_the_offset_and_the_scale_of_a_scattered_singer():
+    # C major, sung 35 cents flat overall, each note off by up to a third of a semitone
+    # more: the deviations are spread too wide for a circular mean, which gives up, and
+    # rounding each note on its own then writes three of them a semitone low...
+    intended = [60, 62, 64, 65, 67, 69, 71, 72, 67, 64, 60]
+    scatter = [0.30, -0.33, 0.20, -0.28, 0.33, -0.30, 0.25, -0.20, 0.30, -0.33, 0.05]
+    sung = [p - 0.35 + e for p, e in zip(intended, scatter)]
+    assert vocal.tuning_offset_cents(sung, [1.0] * len(sung)) == 0.0
+    assert vocal.notate(sung, [1.0] * len(sung)) != intended
+    # ...but the seven-of-twelve pattern of the scale pins it down.
+    offset, root = vocal.fit_scale(sung, [1.0] * len(sung))
+    assert root == 0
+    assert offset == pytest.approx(-0.35, abs=0.05)
+    assert vocal.snap_to_scale([m - offset for m in sung], root) == intended
+
+
+def test_fit_scale_declines_on_too_few_notes():
+    assert vocal.fit_scale([60.1, 62.0, 64.2], [1.0, 1.0, 1.0]) is None
+
+
+def test_fit_scale_ignores_unvoiced_notes():
+    sung = [60.0, 62.0, float("nan"), 64.0, 65.0, 67.0, 69.0]
+    assert vocal.fit_scale(sung, [1.0] * len(sung)) == pytest.approx((0.0, 0), abs=0.02)
+
+
+def test_fit_scale_breaks_a_pentatonic_tie_on_the_tonal_profile():
+    # Do-re-mi-sol-la lies in C, F and G major alike; long Cs and a final C say C.
+    sung = [60, 62, 64, 67, 69, 67, 64, 62, 60]
+    weights = [2.0, 1, 1, 1, 1, 1, 1, 1, 3.0]
+    assert vocal.fit_scale(sung, weights)[1] == 0
+
+
+def test_snap_to_scale_writes_an_off_pitch_note_as_its_scale_tone():
+    # In C major a note 35 cents below F is an imprecise F, not an E-natural-plus.
+    assert vocal.snap_to_scale([64.65], 0) == [65]
+    # 35 cents above F# is an imprecise G, 30 cents below it an imprecise F.
+    assert vocal.snap_to_scale([66.35, 65.7], 0) == [67, 65]
+
+
+def test_snap_to_scale_keeps_a_clearly_chromatic_note():
+    # G major with a sung C#: within SCALE_KEEP_CHROMATIC of it, so it is real music.
+    assert vocal.snap_to_scale([73.1, 72.9], 7) == [73, 73]
+    # 30 cents off C# toward D is past the keep band: the singer meant D.
+    assert vocal.snap_to_scale([73.3], 7) == [74]
+
+
+def test_span_pitch_ignores_unvoiced_frames_inside_a_joined_note():
+    # Two pieces of one note joined across a gap the bridge did not fill: the NaN frames
+    # used to make the note's pitch NaN, and notate() then failed the whole transcription.
+    midi = np.concatenate([np.full(20, 62.0), np.full(3, np.nan), np.full(20, 62.1)])
+    pitch, _ = vocal._span_pitch(vocal.smooth(_contour_obj(midi)), 0, midi.size)
+    assert pitch == pytest.approx(62.05, abs=0.06)
+
+
+def test_analyse_survives_a_dropout_inside_a_note():
+    notes = [(60, 0.5), (62, 0.5), (64, 0.6), (65, 0.5), (67, 0.8)]
+    midi = _contour(notes, glide_sec=0.06)
+    # A 55 ms dropout in the middle of the E: longer than the bridge, shorter than the join.
+    start = int(SR * (0.2 + 1.0 + 0.25))
+    midi[start : start + int(SR * 0.055)] = np.nan
+    result = vocal.analyse(_tone(midi))
+    # The sound stops for 55 ms, so the E may come back as two Es; what must not happen is
+    # a wrong pitch or a failure.
+    pitches = [n.pitch for n in result.notes]
+    collapsed = [p for i, p in enumerate(pitches) if i == 0 or p != pitches[i - 1]]
+    assert collapsed == [p for p, _ in notes]
+
+
+def test_fix_octaves_handles_a_note_near_the_top_of_the_spectrum():
+    # A high note whose sixth harmonic window starts on the last FFT bin used to index past
+    # the spectrum.
+    c = _contour_obj(np.full(40, 103.0))
+    y = _tone(np.full(40 * vocal.HOP, 103.0))
+    assert vocal.fix_octaves(y, SR, c, [(0, 40, 103.0)]) == [(0, 40, 103.0)]
+
+
 # ── End to end on synthesised voice ───────────────────────────────────────────
 
 

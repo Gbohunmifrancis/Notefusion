@@ -25,10 +25,16 @@ instead, and so does this module:
      fragments are absorbed by the note they belong to, repeated pitches are split only
      on a re-articulation cue (an amplitude dip or a consonant gap), notes under the
      floor are dropped.
-  6. **Key-aware rounding** of the genuinely ambiguous notes only: a note whose tuned
-     pitch sits within SNAP_AMBIGUOUS of the half-way point between two semitones is
-     given to the diatonic neighbour of the clip's own key.  A note clearly on a
-     chromatic pitch stays chromatic — a sung ``se`` or ``fe`` is real music.
+  6. **Scale-fit notation.**  The tuning offset and the scale are found together: every
+     offset across one semitone and every major scale is tried, and the pair that puts
+     the sung notes closest to scale tones (duration-weighted, robust to the odd real
+     accidental) wins.  Each note is then written as the nearest scale tone unless it
+     sits within SCALE_KEEP_CHROMATIC of a chromatic pitch — a sung ``se`` or ``fe`` is
+     real music, a note 35 cents off its scale tone is an untrained voice.  Measured on
+     Vocadito (40 real solo singers), notes sit a median 25-30 cents off their own
+     semitone even after the clip's offset is removed, so rounding each note on its own
+     wrote a wrong neighbour into roughly one note in four, and the offset estimate that
+     preceded rounding gave up (returned 0) on 34 of the 40 clips.
 
 Pure numpy/scipy/librosa; no model download, nothing new in the image.  Stateless.
 """
@@ -108,6 +114,18 @@ VALLEY_WIDTH_FRAMES = 3
 # ── Key-aware rounding ────────────────────────────────────────────────────────
 
 SNAP_AMBIGUOUS = 0.32  # |residual| above this (i.e. within 18 cents of the midpoint) is ambiguous
+# Scale-fit notation (step 6).  A note within this many semitones of a chromatic pitch is
+# kept on it; anything further is written as its nearest scale tone.  0.25 measured best of
+# 0.15-0.30 on the sung corpus's amateur cases (intended notes known) and on Vocadito.
+SCALE_KEEP_CHROMATIC = 0.25
+# Each note's squared distance to the scale is capped here (semitones), so one real
+# accidental costs a bounded amount and cannot drag the offset or the scale with it.
+SCALE_FIT_CAP = 0.5
+SCALE_FIT_STEP = 0.01  # offset grid, semitones (1 cent)
+SCALE_FIT_MIN_NOTES = 5
+# Two scales whose costs are this close fit the notes equally (a pentatonic tune lies in
+# three major scales at once); the tonal profile then picks between them.
+SCALE_FIT_TIE = 1e-6
 SNAP_MIN_NOTES = 5
 SNAP_MIN_KEY_MARGIN = 0.05  # correlation lead the key needs before it is allowed to vote
 
@@ -142,6 +160,9 @@ class Analysis:
     notes: list[VocalNote]
     tuning_cents: float
     contour: Contour  # tuned contour, for diagnostics
+    # Pitch class of the major scale the notes were written in, or None when the clip had
+    # too few notes for a fit and fell back to per-note rounding.
+    scale_root: int | None = None
 
 
 # ── 1. Contour ────────────────────────────────────────────────────────────────
@@ -416,8 +437,25 @@ def segment(c: Contour) -> list[tuple[int, int]]:
 # ── 4-5. Pitch per note and clean-up ─────────────────────────────────────────
 
 
+def _nan_moving_average(x: np.ndarray, width: int) -> np.ndarray:
+    """``_moving_average`` that skips unvoiced (NaN) frames instead of spreading them."""
+    voiced = ~np.isnan(x)
+    if voiced.all():
+        return _moving_average(x, width)
+    total = _moving_average(np.where(voiced, x, 0.0), width)
+    count = _moving_average(voiced.astype(float), width)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        return np.where(count > 0, total / np.maximum(count, 1e-12), np.nan)
+
+
 def _span_pitch(c: Contour, a: int, b: int) -> tuple[float, int]:
-    """(median pitch over the span's stable frames, number of stable frames)."""
+    """(median pitch over the span's stable frames, number of stable frames).
+
+    A span can hold unvoiced frames: clean-up joins two pieces of one note across a gap
+    of up to ``JOIN_GAP_SEC`` while ``smooth`` only bridges dropouts up to
+    ``BRIDGE_GAP_SEC``. Those frames carry no pitch and are left out of every median; a
+    NaN here used to reach ``notate`` and fail the whole transcription.
+    """
     hop = _hop_sec(c)
     seg = c.midi[a:b]
     if c.stable is not None:
@@ -431,12 +469,16 @@ def _span_pitch(c: Contour, a: int, b: int) -> tuple[float, int]:
         # Long enough to hold a vibrato cycle: the pitch is the median of the contour
         # averaged over one, read away from the edges, which is what the ear hears as
         # the note.  Frame medians of a wide vibrato scatter by a quarter tone or more.
-        averaged = _moving_average(seg, DRIVE_FRAMES)
+        averaged = _nan_moving_average(seg, DRIVE_FRAMES)
         trim = DRIVE_FRAMES // 2
-        return float(np.median(averaged[trim:-trim])), n_stable
-    core = seg[stable]
+        inner = averaged[trim:-trim]
+        inner = inner[~np.isnan(inner)]
+        if inner.size:
+            return float(np.median(inner)), n_stable
+    voiced = ~np.isnan(seg)
+    core = seg[stable & voiced]
     if core.size == 0:
-        core = seg
+        core = seg[voiced]
     # Two passes: the frames within a band of the first median are the note itself,
     # and glide frames the slope test let through are outside it.
     first = float(np.median(core))
@@ -623,6 +665,7 @@ def fix_octaves(y: np.ndarray, sr: int, c: Contour, spans: list[tuple[int, int, 
             # ``m`` do not land between bins.
             lo_i = int(np.searchsorted(freqs, f * 0.97))
             hi_i = int(np.searchsorted(freqs, f * 1.03)) + 1
+            hi_i = min(hi_i, spectrum.size)
             peak = float(spectrum[lo_i:hi_i].max()) if hi_i > lo_i else 0.0
             if k % 2:
                 odd += peak
@@ -671,6 +714,92 @@ def diatonic_set(midis: Sequence[float], durations: Sequence[float]) -> tuple[fr
     return frozenset(members), best - runner_up
 
 
+_MAJOR_OFFSETS = np.array(sorted(_MAJOR_SET))
+# _SCALE_MEMBER[root, pc]: is pitch class pc in the major scale on root?
+_SCALE_MEMBER = np.zeros((12, 12), dtype=bool)
+for _root in range(12):
+    _SCALE_MEMBER[_root, (_root + _MAJOR_OFFSETS) % 12] = True
+
+
+def fit_scale(midis: Sequence[float], weights: Sequence[float]) -> tuple[float, int] | None:
+    """(tuning offset in semitones, major-scale root) that best fit the sung notes.
+
+    Minimises the duration-weighted, capped squared distance from each note to the nearest
+    tone of the scale, over every offset in [-0.5, 0.5) at ``SCALE_FIT_STEP`` and every
+    major scale.  Minor keys need no family of their own: a natural-minor tune lies in its
+    relative major's scale, which is also where movable-do puts its doh.  (Adding the
+    harmonic minors as candidates was measured and made things worse — 24 scales give an
+    imprecise singer enough freedom to fit the wrong one.)
+
+    Fitting the offset and the scale together is what lets the offset be found at all on
+    real singing: the deviations of untrained voices from the nearest semitone are spread
+    so wide that a circular mean of them carries almost no information, while the
+    seven-of-twelve pattern of a scale pins the offset down.
+
+    Returns None for fewer than ``SCALE_FIT_MIN_NOTES`` notes.
+    """
+    m = np.asarray(midis, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    keep = ~np.isnan(m)
+    m, w = m[keep], w[keep]
+    if m.size < SCALE_FIT_MIN_NOTES:
+        return None
+    if float(w.sum()) <= 0.0:
+        w = np.ones_like(m)
+    cap2 = SCALE_FIT_CAP * SCALE_FIT_CAP
+    best_cost = np.inf
+    best: list[tuple[float, int]] = []
+    for theta in np.arange(-0.5, 0.5, SCALE_FIT_STEP):
+        x = m - theta
+        candidates = np.floor(x).astype(int)[:, None] + np.arange(-1, 3)[None, :]  # (n, 4)
+        distance = np.abs(x[:, None] - candidates)
+        member = _SCALE_MEMBER[:, candidates % 12]  # (12, n, 4)
+        nearest = np.where(member, distance[None], np.inf).min(axis=2)  # (12, n)
+        costs = (w[None] * np.minimum(nearest * nearest, cap2)).sum(axis=1)  # (12,)
+        low = float(costs.min())
+        if low < best_cost - SCALE_FIT_TIE:
+            best_cost = low
+            best = [(float(theta), int(r)) for r in np.flatnonzero(costs <= low + SCALE_FIT_TIE)]
+        elif low <= best_cost + SCALE_FIT_TIE:
+            best.extend((float(theta), int(r)) for r in np.flatnonzero(costs <= best_cost + SCALE_FIT_TIE))
+    if len({root for _, root in best}) == 1:
+        return best[0]
+    # A tie between scales: the notes never touch the tones that tell them apart. The
+    # tonal profile of the rounded notes decides, as diatonic_set did before this.
+    histogram = np.zeros(12)
+    for theta, _ in best[:1]:
+        for value, weight in zip(np.round(m - theta).astype(int), w):
+            histogram[value % 12] += weight
+
+    def tonality(root: int) -> float:
+        r = np.corrcoef(np.roll(histogram, -root), _KK_MAJOR)[0, 1]
+        return float(np.nan_to_num(r, nan=-1.0))
+
+    by_root: dict[int, float] = {}
+    for theta, root in best:
+        by_root.setdefault(root, theta)
+    root = max(by_root, key=tonality)
+    return by_root[root], root
+
+
+def snap_to_scale(midis: Sequence[float], root: int, keep: float = SCALE_KEEP_CHROMATIC) -> list[int]:
+    """Integer pitches for tuned fractional ones, written in the major scale on ``root``.
+
+    A note whose nearest semitone is in the scale is that semitone.  One whose nearest
+    semitone is chromatic keeps it only when it sits within ``keep`` of it; otherwise it is
+    the nearer of its two neighbours that is a scale tone.
+    """
+    out: list[int] = []
+    for value in midis:
+        n = int(round(value))
+        if _SCALE_MEMBER[root, n % 12] or abs(value - n) <= keep:
+            out.append(n)
+            continue
+        neighbours = [p for p in (n - 1, n + 1) if _SCALE_MEMBER[root, p % 12]]
+        out.append(min(neighbours, key=lambda p: abs(value - p)) if neighbours else n)
+    return out
+
+
 def notate(midis: Sequence[float], durations: Sequence[float]) -> list[int]:
     """Integer pitches for tuned fractional ones, resolving ambiguous notes by key."""
     plain = [int(round(m)) for m in midis]
@@ -712,11 +841,15 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
         spans = fix_octaves(y, sr, c, spans)
     hop = _hop_sec(c)
     durations = [(b - a) * hop for a, b, _ in spans]
-    tuned_cents = tuning_offset_cents([m for _, _, m in spans], durations)
+    fit = fit_scale([m for _, _, m in spans], durations)
+    if fit is not None:
+        tuned_cents = fit[0] * 100.0
+    else:
+        tuned_cents = tuning_offset_cents([m for _, _, m in spans], durations)
     c = retune(c, tuned_cents)
     spans = [(a, b, m - tuned_cents / 100.0) for a, b, m in spans]
     midis = [m for _, _, m in spans]
-    pitches = notate(midis, durations)
+    pitches = snap_to_scale(midis, fit[1]) if fit is not None else notate(midis, durations)
 
     amps = [float(np.mean(c.rms[a:b])) if b > a else 0.0 for a, b, _ in spans]
     loudest = max(amps) if amps else 0.0
@@ -741,4 +874,4 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
         )
         for (a, b, m), p, amp, vp in zip(spans, pitches, amps, vprobs)
     ]
-    return Analysis(notes=notes, tuning_cents=tuned_cents, contour=c)
+    return Analysis(notes=notes, tuning_cents=tuned_cents, contour=c, scale_root=None if fit is None else fit[1])

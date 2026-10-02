@@ -16,10 +16,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
-  tuning-offset estimation, hysteresis note segmentation, key-aware rounding of ambiguous
-  notes — with the Basic Pitch paths as fallback (`NF_VOCAL_ENGINE=0` restores the old
-  decoder). Its accuracy is measured by the sung corpus: `python -m tests.accuracy.report
-  --vocal` (baseline in `tests/accuracy/vocal_baseline.json`). Linked songs
+  hysteresis note segmentation, then scale-fit notation (`fit_scale` finds the tuning offset
+  and the major scale together; `snap_to_scale` writes each note as its scale tone unless it
+  sits within 25 cents of an accidental) — with the Basic Pitch paths as fallback
+  (`NF_VOCAL_ENGINE=0` restores the old decoder). The key vote only considers keys whose
+  scale holds the notes as well as any does (`transcriber._scale_parsimony`). Accuracy is
+  measured twice: the sung corpus, intended notes known, including untrained-singer styles
+  (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`),
+  and real singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`), then transcribed. The queue has two lanes:

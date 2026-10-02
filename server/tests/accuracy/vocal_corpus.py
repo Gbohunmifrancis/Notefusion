@@ -166,21 +166,31 @@ STYLES = {
     "hum_noisy": VocalOptions(style="hum", mic_noise_db=-28.0, breath_noise_db=-30.0, tuning_cents=20.0, glide_sec=0.09),
     # Very legato, very sharp: 180 ms glides and a 45-cent offset.
     "hum_slow_glides": VocalOptions(style="hum", glide_sec=0.18, tuning_cents=45.0, scoop_cents=50.0, jitter_cents=10.0),
+    # Untrained singers, the way real ones measure: every note pitched off its target by
+    # its own amount (RMS 22 and 28 cents) on top of a clip offset. Calibrated on Vocadito,
+    # where the decoder's notes sit at a tuning concentration of 0.05-0.49 (median 0.25),
+    # i.e. a per-note spread of roughly 25-30 cents.
+    "hum_amateur": VocalOptions(
+        style="hum", tuning_cents=-35.0, note_detune_cents=22.0, scoop_cents=50.0, jitter_cents=10.0, glide_sec=0.10
+    ),
+    "ah_amateur": VocalOptions(
+        style="ah", tuning_cents=28.0, note_detune_cents=28.0, vibrato_cents=35.0, scoop_cents=60.0, glide_sec=0.11
+    ),
 }
 
 # Which styles each tune is sung in.  Every tune gets the clean hum and the two
 # worst offenders (sharp40, ah_vibrato); the rest are spread so each style appears
 # on at least three tunes.
 _PLAN = {
-    "twinkle": ("hum_clean", "hum_sharp40", "ah_vibrato", "da_syllables", "hum_noisy"),
-    "amazing_grace": ("hum_clean", "hum_sharp40", "ah_vibrato", "ah_wide_vibrato", "hum_slow_glides"),
-    "ode_to_joy": ("hum_clean", "hum_sharp40", "ah_vibrato", "da_syllables", "hum_drift"),
-    "greensleeves": ("hum_clean", "hum_sharp40", "ah_vibrato", "ah_wide_vibrato"),
-    "hymn_eflat": ("hum_clean", "hum_sharp40", "ah_vibrato", "hum_drift", "da_syllables"),
-    "chromatic_g": ("hum_clean", "hum_sharp40", "ah_vibrato", "hum_slow_glides"),
-    "leaps_a": ("hum_clean", "hum_sharp40", "ah_vibrato", "ah_wide_vibrato", "hum_noisy"),
-    "fast_run_bflat": ("hum_clean", "hum_sharp40", "ah_vibrato", "da_syllables"),
-    "low_hum_cminor": ("hum_clean", "hum_sharp40", "ah_vibrato", "hum_noisy", "hum_drift", "hum_slow_glides"),
+    "twinkle": ("hum_clean", "hum_sharp40", "ah_vibrato", "da_syllables", "hum_noisy", "hum_amateur", "ah_amateur"),
+    "amazing_grace": ("hum_clean", "hum_sharp40", "ah_vibrato", "ah_wide_vibrato", "hum_slow_glides", "hum_amateur", "ah_amateur"),
+    "ode_to_joy": ("hum_clean", "hum_sharp40", "ah_vibrato", "da_syllables", "hum_drift", "hum_amateur", "ah_amateur"),
+    "greensleeves": ("hum_clean", "hum_sharp40", "ah_vibrato", "ah_wide_vibrato", "hum_amateur", "ah_amateur"),
+    "hymn_eflat": ("hum_clean", "hum_sharp40", "ah_vibrato", "hum_drift", "da_syllables", "hum_amateur", "ah_amateur"),
+    "chromatic_g": ("hum_clean", "hum_sharp40", "ah_vibrato", "hum_slow_glides", "hum_amateur", "ah_amateur"),
+    "leaps_a": ("hum_clean", "hum_sharp40", "ah_vibrato", "ah_wide_vibrato", "hum_noisy", "hum_amateur", "ah_amateur"),
+    "fast_run_bflat": ("hum_clean", "hum_sharp40", "ah_vibrato", "da_syllables", "hum_amateur", "ah_amateur"),
+    "low_hum_cminor": ("hum_clean", "hum_sharp40", "ah_vibrato", "hum_noisy", "hum_drift", "hum_slow_glides", "hum_amateur", "ah_amateur"),
 }
 
 CASES: tuple[VocalCase, ...] = tuple(
