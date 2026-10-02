@@ -127,6 +127,14 @@
   .player label { font-size: .75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 0; }
   .player input[type=number] { width: 52px; font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; }
   .player select { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  .sing-live { font-size: 2.4rem; font-weight: 800; color: var(--blue); text-align: center; padding: 10px 0; font-family: ui-monospace, Menlo, monospace; }
+  .sing-live small { display: block; font-size: .8rem; font-weight: 600; color: var(--muted); font-family: Inter, sans-serif; }
+  .sing-score { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+  .sing-score strong { font-size: 2.2rem; letter-spacing: -0.02em; min-width: 2.2ch; text-align: center; }
+  .marks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .mark { min-width: 40px; text-align: center; border: 1.5px solid var(--line); border-radius: 8px; padding: 4px 6px; font-family: ui-monospace, Menlo, monospace; font-weight: 700; background: #fff; }
+  .mark small { display: block; font-weight: 500; color: var(--faint); font-size: .7rem; font-family: Inter, sans-serif; }
+  .mark.hit { border-color: var(--success); color: var(--success); } .mark.near { border-color: #B45309; color: #B45309; } .mark.wrong { border-color: var(--danger); color: var(--danger); } .mark.missed { color: var(--faint); }
   .tr-readout strong { font-size: 1.3rem; min-width: 2ch; display: inline-block; text-align: center; }
   textarea { width: 100%; font: inherit; color: var(--ink); padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: #fff; outline: none; resize: vertical; }
   textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
@@ -279,6 +287,24 @@
           <span class="group"><label><input type="checkbox" id="loop-on"> Loop bars</label>
             <input type="number" id="loop-from" min="1" value="1"> – <input type="number" id="loop-to" min="1" value="4"></span>
           <span class="group hidden" id="voices"><label>Voices</label></span>
+        </div>
+      </div>
+
+      <!-- ── Sing it ──────────────────────────────────────────────────── -->
+      <div class="section" id="sing">
+        <h2>Sing it <span class="pill pill-pro" style="vertical-align:middle">Pro</span></h2>
+        <p class="muted small">Pick your voice, hear the starting note and a count-in, then sing into your microphone. Every note comes back marked: in tune, close, or off. Headphones help; nothing is stored.</p>
+        <div class="player">
+          <span class="group" id="sing-voices"><label>Voice</label></span>
+          <button class="btn btn-primary btn-sm" id="sing-start" type="button">Record my take</button>
+          <button class="btn btn-ghost btn-sm hidden" id="sing-stop" type="button">Stop</button>
+          <span id="sing-status" class="small muted"></span>
+        </div>
+        <div id="sing-live" class="sing-live hidden"></div>
+        <div id="sing-result" class="hidden">
+          <div class="sing-score"><strong id="sing-score"></strong><span id="sing-summary"></span></div>
+          <div class="marks" id="sing-marks"></div>
+          <p class="muted small" style="margin:8px 0 0">Green in tune · amber close · red wrong note · grey not sung. Numbers are cents off.</p>
         </div>
       </div>
 

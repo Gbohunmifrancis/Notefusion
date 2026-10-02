@@ -10,7 +10,7 @@ from pathlib import Path
 import librosa
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 
-from app.api.schemas import JobResponse, ResultDto, SubmitResponse
+from app.api.schemas import GradeResponse, GradeTargetDto, JobResponse, ResultDto, SubmitResponse
 from app.config import settings
 from app.jobs.queue import JobQueue
 
@@ -233,6 +233,75 @@ async def submit_link_transcription(
                                callback_url=callback_url, priority=priority,
                                max_seconds=cap)
     return SubmitResponse(job_id=job_id)
+
+
+GRADE_SUFFIXES = ACCEPTED_SUFFIXES | {".webm", ".mp4", ".aac", ".caf"}
+GRADE_MAX_SECONDS = 120.0
+
+
+@router.post("/grade", response_model=GradeResponse,
+             summary="Grade a sung take against a part — pitch per note, in tune or not")
+async def grade_take(
+    request: Request,
+    audio: UploadFile = File(...),
+    target: str = Form(..., description="GradeTargetDto as JSON: the part in beats, tempo, count-in"),
+):
+    """Synchronous: a take is a minute or two and pyin on it takes seconds, so it is
+    answered in the request rather than queued like a transcription. The audio is
+    deleted before the response is sent."""
+    try:
+        spec = GradeTargetDto.model_validate_json(target)
+    except Exception as ex:  # noqa: BLE001 - any parse failure is a client input error
+        raise HTTPException(422, f"Invalid target: {ex}")
+    if not spec.notes:
+        raise HTTPException(422, "The target has no notes.")
+    if not 20 <= spec.tempo_bpm <= 300:
+        raise HTTPException(422, "tempoBpm must be between 20 and 300.")
+
+    suffix = Path(audio.filename or "take.wav").suffix.lower()
+    if suffix not in GRADE_SUFFIXES:
+        raise HTTPException(415, f"Unsupported audio format '{suffix}'.")
+    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+        tmp_path = Path(tmp.name)
+        written = 0
+        while chunk := await audio.read(1024 * 1024):
+            written += len(chunk)
+            if written > settings.max_upload_bytes:
+                tmp.close()
+                tmp_path.unlink(missing_ok=True)
+                raise HTTPException(413, "Upload exceeds the maximum allowed size.")
+            tmp.write(chunk)
+    if written == 0:
+        tmp_path.unlink(missing_ok=True)
+        raise HTTPException(422, "Empty audio upload.")
+
+    wav_path, converted = tmp_path, False
+    try:
+        from app.pipeline import grade as grading
+        from app.pipeline.transcriber import _ensure_wav_path
+
+        try:
+            wav_path, converted = _ensure_wav_path(tmp_path)
+            duration = _clip_duration_seconds(wav_path)
+        except Exception as ex:
+            raise HTTPException(422, f"Could not read the take: {ex}")
+        if duration > GRADE_MAX_SECONDS:
+            raise HTTPException(413, f"A take is at most {GRADE_MAX_SECONDS:.0f}s long.")
+        y, sr = librosa.load(str(wav_path), sr=grading.vocal.SAMPLE_RATE, mono=True)
+        result = grading.grade(
+            y, sr,
+            [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats) for n in spec.notes],
+            spec.tempo_bpm, spec.lead_in_sec,
+        )
+    finally:
+        tmp_path.unlink(missing_ok=True)
+        if converted:
+            wav_path.unlink(missing_ok=True)
+    return GradeResponse(
+        score=result.score, hits=result.hits, near=result.near, wrong=result.wrong, missed=result.missed,
+        tuning_cents=result.tuning_cents, offset_sec=result.offset_sec, octave_shift=result.octave_shift,
+        summary=result.summary, notes=[asdict(n) for n in result.notes],
+    )
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponse,

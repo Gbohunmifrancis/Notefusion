@@ -32,6 +32,13 @@ public interface ITranscriptionApi
         TranscribeOptions options,
         CancellationToken cancellationToken = default);
 
+    /// <summary>POST /v1/grade — judges a sung take against a part. Synchronous; the worker answers in seconds.</summary>
+    Task<Result<GradeResultDto>> GradeAsync(
+        Stream audio,
+        string fileName,
+        GradeTargetDto target,
+        CancellationToken cancellationToken = default);
+
     /// <summary>GET /v1/jobs/{jobId} — status, progress, and the result once done.</summary>
     Task<Result<TranscriptionJobDto>> GetJobAsync(
         string jobId,

@@ -127,6 +127,40 @@ export interface TransposedSheet {
   partsMusicXml?: string | null;
 }
 
+/** The part a take is judged against, in beats, and the count-in that preceded it in the recording. */
+export interface GradeTarget {
+  notes: { pitchMidi: number; startBeat: number; durBeats: number }[];
+  tempoBpm: number;
+  leadInSec: number;
+}
+
+export type GradeStatus = "hit" | "near" | "wrong" | "missed";
+
+/** One note's verdict: the pitch sung while it was due, in cents off. */
+export interface GradeNote {
+  index: number;
+  targetMidi: number;
+  sungMidi: number | null;
+  cents: number | null;
+  status: GradeStatus;
+}
+
+/** How a sung take compared to its part. */
+export interface GradeResult {
+  score: number;
+  hits: number;
+  near: number;
+  wrong: number;
+  missed: number;
+  /** The take's overall lean in cents; positive is sharp. */
+  tuningCents: number;
+  offsetSec: number;
+  /** The octave the singer took it in, in semitones; a bass on the tune reads −12 and is not wrong. */
+  octaveShift: number;
+  summary: string;
+  notes: GradeNote[];
+}
+
 /** A public link to a saved sheet. */
 export interface ShareLink {
   token: string;

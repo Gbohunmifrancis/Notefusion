@@ -13,6 +13,16 @@ namespace NoteFusion.Infrastructure.Api;
 
 internal sealed record SubmitResponse(string JobId);
 
+internal sealed record GradeNote(int Index, int TargetMidi, double? SungMidi, double? Cents, string Status);
+
+internal sealed record GradeResponse(
+    int Score, int Hits, int Near, int Wrong, int Missed, double TuningCents, double OffsetSec, int OctaveShift,
+    string Summary, IReadOnlyList<GradeNote> Notes);
+
+internal sealed record GradeTargetNote(int PitchMidi, double StartBeat, double DurBeats);
+
+internal sealed record GradeTarget(IReadOnlyList<GradeTargetNote> Notes, double TempoBpm, double LeadInSec);
+
 /// <summary>
 /// Polling envelope returned by GET /v1/jobs/{id}.
 /// Previously missing the <c>error</c> field, which caused Python transcription
@@ -99,5 +109,7 @@ internal sealed record WireNoteEvent(
 /// </summary>
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(SubmitResponse))]
+[JsonSerializable(typeof(GradeResponse))]
+[JsonSerializable(typeof(GradeTarget))]
 [JsonSerializable(typeof(JobResponse))]
 internal sealed partial class ApiJsonContext : JsonSerializerContext;

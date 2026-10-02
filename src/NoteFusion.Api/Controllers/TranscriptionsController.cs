@@ -15,6 +15,13 @@ namespace NoteFusion.Api.Controllers;
 /// <summary>
 /// Form request payload for audio transcription upload.
 /// </summary>
+/// <summary>Multipart body of a grading request: the take, and the part as JSON.</summary>
+public sealed class GradeTakeRequest
+{
+    public IFormFile? Audio { get; set; }
+    public string? Target { get; set; }
+}
+
 public sealed class SubmitTranscriptionRequest
 {
     /// <summary>Audio clip file to transcribe (e.g. m4a, wav, mp3).</summary>
@@ -104,6 +111,34 @@ public sealed class TranscriptionsController : ApiControllerBase
     }
 
     /// <summary>Polls a transcription job for status, progress, and the result once done.</summary>
+    /// <summary>
+    /// Sing-along grading (Pro): a recorded take and the part it was sung to, as multipart with the
+    /// part as JSON in the <c>target</c> field. Returns every note's verdict with its cents offset.
+    /// </summary>
+    [HttpPost("grade")]
+    [Consumes("multipart/form-data")]
+    [RequestSizeLimit(MaxAudioBytes)]
+    public async Task<IActionResult> Grade([FromForm] GradeTakeRequest request, CancellationToken ct)
+    {
+        if (request.Audio is null || request.Audio.Length == 0)
+            return HandleResult(Result.Failure<GradeResultDto>(Application.Common.Errors.TranscriptionErrors.InvalidAudio));
+        GradeTargetDto? target;
+        try
+        {
+            target = System.Text.Json.JsonSerializer.Deserialize<GradeTargetDto>(
+                request.Target ?? "", new System.Text.Json.JsonSerializerOptions(System.Text.Json.JsonSerializerDefaults.Web));
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            target = null;
+        }
+        if (target is null || target.Notes is null || target.Notes.Count == 0)
+            return HandleResult(Result.Failure<GradeResultDto>(Application.Common.Errors.TranscriptionErrors.InvalidAudio));
+
+        await using var stream = request.Audio.OpenReadStream();
+        return HandleResult(await _sender.Send(new GradeTakeCommand(stream, request.Audio.FileName, target), ct));
+    }
+
     /// <summary>
     /// Transposes a result the client still holds (not yet saved). Stateless; the saved-sheet
     /// equivalent is <c>POST /api/library/{id}/transpose</c>.

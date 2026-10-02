@@ -26,6 +26,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
   voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — Pro-only via the API.
+  `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
+  pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
+  the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
   client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,

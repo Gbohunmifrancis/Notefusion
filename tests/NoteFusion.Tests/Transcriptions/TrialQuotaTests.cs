@@ -511,6 +511,10 @@ public class TrialQuotaTests
                 new TranscriptionJobDto(jobId, Status, progress, null)));
         }
 
+
+        public Task<Result<GradeResultDto>> GradeAsync(Stream audio, string fileName, GradeTargetDto target, CancellationToken ct = default)
+            => Task.FromResult(Result<GradeResultDto>.Success(new GradeResultDto(100, target.Notes.Count, 0, 0, 0, 0, 0, 0, "Spot on.", [])));
+
         /// <summary>Not exercised here — quota has nothing to do with the health page.</summary>
         public Task<Result<int>> PingAsync(CancellationToken ct = default)
             => Task.FromResult(Result<int>.Success(1));

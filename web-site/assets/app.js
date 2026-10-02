@@ -318,6 +318,7 @@
     renderSolfa(result);
     $("lyrics").value = current.lyrics || "";
     setupRehearsal(result);
+    setupSing(result);
     renderTranspose();
     renderSave();
 
@@ -422,6 +423,104 @@
     if (!player) return;
     if ($("loop-on").checked) player.setLoopBars(parseInt($("loop-from").value, 10) || 1, parseInt($("loop-to").value, 10) || 1);
     else player.setLoopBars(null, null);
+  }
+
+  // ── Sing it: a take, marked note by note ─────────────────────────────────
+  var sing = { voice: "soprano", recorder: null, stream: null, ctx: null, timer: null, stopAt: null, startedAt: 0, leadIn: 0, notes: [] };
+  function singNotes() {
+    var r = current.result;
+    if (sing.voice !== "soprano" && isPro() && r.parts && r.parts[sing.voice]) return r.parts[sing.voice].notes || [];
+    return r.notes || [];
+  }
+  function setupSing(result) {
+    var box = $("sing-voices");
+    box.querySelectorAll("button").forEach(function (b) { b.remove(); });
+    var voices = ["soprano"].concat(isPro() && result.parts ? C.VOICES.filter(function (v) { return v !== "soprano" && result.parts[v]; }) : []);
+    sing.voice = "soprano";
+    voices.forEach(function (v) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm" + (v === sing.voice ? " on" : "");
+      b.textContent = v === "soprano" ? "Tune" : v[0].toUpperCase() + v.slice(1);
+      b.addEventListener("click", function () { sing.voice = v; box.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); }); });
+      box.appendChild(b);
+    });
+    hide($("sing-result")); hide($("sing-live")); $("sing-status").textContent = "";
+  }
+  /** A bar of the starting note, then a bar of clicks, on the audio context's clock. Returns the lead-in length. */
+  function playLeadIn(ctx, notes, tempo, ts) {
+    var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo), t0 = ctx.currentTime + 0.05;
+    var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
+    var f = 440 * Math.pow(2, ((first ? first.pitchMidi : 60) - 69) / 12);
+    var g = ctx.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.5, t0 + 0.02);
+    g.gain.setValueAtTime(0.5, t0 + bpb * beat - 0.1); g.gain.exponentialRampToValueAtTime(0.0001, t0 + bpb * beat); g.connect(ctx.destination);
+    [[1, 1], [2, 0.3]].forEach(function (p) { var o = ctx.createOscillator(); o.frequency.value = f * p[0]; var og = ctx.createGain(); og.gain.value = p[1]; o.connect(og); og.connect(g); o.start(t0); o.stop(t0 + bpb * beat + 0.05); });
+    for (var i = 0; i < 2 * bpb; i++) {
+      var at = t0 + i * beat, click = ctx.createOscillator(), cg = ctx.createGain();
+      click.frequency.value = i % bpb === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
+      click.connect(cg); cg.connect(ctx.destination); click.start(at); click.stop(at + 0.06);
+    }
+    return 2 * bpb * beat;
+  }
+  $("sing-start").addEventListener("click", function () {
+    if (!current || !current.result) return;
+    if (!isPro()) { show($("r-upgrade")); $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { $("sing-status").textContent = "This browser cannot record audio."; return; }
+    var r = current.result, notes = singNotes();
+    if (!notes.length) return;
+    hide($("sing-result"));
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
+      sing.stream = stream; sing.notes = notes;
+      sing.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+      var chunks = [];
+      sing.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      sing.recorder.addEventListener("dataavailable", function (e) { if (e.data && e.data.size) chunks.push(e.data); });
+      sing.recorder.addEventListener("stop", function () {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        var type = sing.recorder.mimeType || mime || "audio/webm";
+        var blob = new Blob(chunks, { type: type });
+        gradeTake(blob, type.indexOf("mp4") >= 0 ? "take.mp4" : "take.webm", notes, r.tempo, sing.leadIn);
+      });
+      sing.recorder.start();
+      sing.startedAt = Date.now();
+      sing.leadIn = playLeadIn(sing.ctx, notes, r.tempo, r.timeSignature);
+      var beat = 60 / Math.max(30, r.tempo), end = notes.reduce(function (m, n) { return Math.max(m, n.startBeat + n.durBeats); }, 0) * beat;
+      hide($("sing-start")); show($("sing-stop")); show($("sing-live"));
+      sing.timer = setInterval(function () {
+        var t = (Date.now() - sing.startedAt) / 1000, live = $("sing-live");
+        if (t < sing.leadIn) { live.innerHTML = ""; live.textContent = (notes[0].solfa || "") + (notes[0].octaveMark || ""); var s = document.createElement("small"); s.textContent = "starting note… sing in " + Math.max(0, Math.ceil(sing.leadIn - t)); live.appendChild(s); return; }
+        var b = (t - sing.leadIn) / beat, due = null;
+        for (var i = 0; i < notes.length; i++) if (b >= notes[i].startBeat && b < notes[i].startBeat + notes[i].durBeats) due = notes[i];
+        live.textContent = due ? (due.solfa || "") + (due.octaveMark || "") : "·"; var s2 = document.createElement("small"); s2.textContent = "sing!"; live.appendChild(s2);
+      }, 100);
+      sing.stopAt = setTimeout(stopSinging, (sing.leadIn + end + 1.0) * 1000);
+      $("sing-status").textContent = "Recording…";
+    }).catch(function (err) { $("sing-status").textContent = "Microphone access is needed to record a take (" + (err.message || err) + ")."; });
+  });
+  function stopSinging() {
+    if (sing.timer) clearInterval(sing.timer); if (sing.stopAt) clearTimeout(sing.stopAt);
+    sing.timer = null; sing.stopAt = null;
+    hide($("sing-live")); hide($("sing-stop")); show($("sing-start"));
+    if (sing.recorder && sing.recorder.state !== "inactive") { $("sing-status").textContent = "Marking your take…"; sing.recorder.stop(); }
+    if (sing.ctx) { sing.ctx.close().catch(function () {}); sing.ctx = null; }
+  }
+  $("sing-stop").addEventListener("click", stopSinging);
+  function gradeTake(blob, name, notes, tempo, leadIn) {
+    var form = new FormData();
+    form.append("audio", blob, name);
+    form.append("target", JSON.stringify({ notes: notes.map(function (n) { return { pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats }; }), tempoBpm: tempo, leadInSec: leadIn }));
+    request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
+      $("sing-status").textContent = "";
+      $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "#B45309" : "var(--danger)";
+      $("sing-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
+      var marks = $("sing-marks"); marks.innerHTML = "";
+      (g.notes || []).forEach(function (m) {
+        var n = notes[m.index]; if (!n) return;
+        var el = document.createElement("span"); el.className = "mark " + m.status; el.textContent = (n.solfa || "") + (n.octaveMark || "");
+        var s = document.createElement("small"); s.textContent = m.status === "missed" ? "—" : (m.cents == null ? "" : (m.cents > 0 ? "+" : "") + Math.round(m.cents)); el.appendChild(s);
+        marks.appendChild(el);
+      });
+      show($("sing-result"));
+    }).catch(function (err) { $("sing-status").textContent = "Could not mark the take: " + (err.message || err); });
   }
 
   // ── Transpose for my choir ───────────────────────────────────────────────

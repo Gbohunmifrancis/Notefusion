@@ -18,6 +18,7 @@ import { TextField } from "../components/TextField";
 import { ConfidenceBadge } from "../components/ConfidenceBadge";
 import { NotePlayer } from "../components/NotePlayer";
 import { NoteEditor } from "../components/NoteEditor";
+import { SingAlong } from "../components/SingAlong";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -1473,6 +1474,18 @@ export function ResultScreen({ route, navigation }: Props) {
           </Touchable>
         )}
       </View>
+
+      {/* ── Sing it: a take, marked note by note ────────────────────────── */}
+      {view.notes.length > 0 ? (
+        <SingAlong
+          melody={view.notes}
+          parts={isPro ? parts : null}
+          tempoBpm={tempo}
+          timeSignature={timeSignature}
+          isPro={isPro}
+          onRequirePro={() => void requirePro()}
+        />
+      ) : null}
 
       {/* ── Export & Share ─────────────────────────────────────────────────── */}
       <View style={styles.exportBlock}>

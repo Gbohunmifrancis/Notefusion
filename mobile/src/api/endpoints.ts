@@ -12,6 +12,8 @@ import type {
   BillingInterval,
   CheckoutSession,
   ClearStalePaymentsResult,
+  GradeResult,
+  GradeTarget,
   LoginResponse,
   MyProfile,
   PagedResult,
@@ -192,6 +194,14 @@ export const transcriptionsApi = {
         timeout: 60_000,
       })
       .then((r) => r.data);
+  },
+
+  /** Sing-along grading (Pro): the recorded take and the part it was sung to. */
+  grade: (fileUri: string, fileName: string, target: GradeTarget) => {
+    const form = new FormData();
+    form.append("audio", { uri: fileUri, name: fileName, type: "audio/m4a" } as unknown as Blob);
+    form.append("target", JSON.stringify(target));
+    return api.post<GradeResult>("/api/transcriptions/grade", form, { timeout: 90_000 }).then((r) => r.data);
   },
 
   /** Transposes a result that is not saved yet; the saved form is `libraryApi.transpose`. */
