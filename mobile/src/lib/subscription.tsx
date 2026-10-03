@@ -74,9 +74,12 @@ interface SubscriptionState {
   beginCheckout: (planId: string, current: Subscription | null) => void;
   /**
    * Polls until the pending checkout lands, then shows the one welcome pop-up. Safe to call again
-   * while it runs. Returns false when there is nothing pending to watch.
+   * while it runs. Returns false when there is nothing pending to watch. The paywall calls it once
+   * the checkout browser has closed, which is also what lets foreground re-reads resume.
    */
   watchPayment: () => boolean;
+  /** Drops the snapshot of a checkout whose browser never opened, so nothing waits on it. */
+  abandonCheckout: () => void;
 }
 
 const SubscriptionContext = createContext<SubscriptionState | undefined>(undefined);
@@ -181,6 +184,13 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const paymentCheckRef = useRef<PaymentCheck>('idle');
   /** Bumped to stop a running poll: each loop exits once the number is no longer its own. */
   const pollRunRef = useRef(0);
+  /**
+   * True from `beginCheckout` until the paywall reports the browser closed. iOS keeps the app
+   * active under the checkout sheet, and coming back from a bank or SMS app mid-payment fires
+   * `active` while the sheet is still up: a poll started then could land the payment and raise the
+   * welcome while the sheet is presented, where iOS refuses to show it and the pop-up is lost.
+   */
+  const checkoutOpenRef = useRef(false);
   /** The last subscription state celebrated, so one payment gets one pop-up. */
   const celebratedRef = useRef<string | null>(null);
   const [welcome, setWelcome] = useState<ProWelcome | null>(null);
@@ -316,6 +326,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [apply]);
 
   const watchPayment = useCallback((): boolean => {
+    checkoutOpenRef.current = false;
     const pending = pendingRef.current;
     if (!pending) return false;
     if (Date.now() - pending.startedAt > CHECKOUT_TTL_MS) {
@@ -360,9 +371,18 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         lifetime: current?.isLifetime ?? false,
         planCode: current?.planCode ?? null,
       });
+      // Nothing confirms behind the sheet, an earlier checkout's slow poll included: the watch
+      // starts again from the browser's return.
+      checkoutOpenRef.current = true;
+      stopWatching();
     },
-    [setPending],
+    [setPending, stopWatching],
   );
+
+  const abandonCheckout = useCallback(() => {
+    checkoutOpenRef.current = false;
+    setPending(null);
+  }, [setPending]);
 
   // Keyed on user id, not the object: `setUser` replaces the object on every
   // profile edit, and a name change is no reason to re-ask the billing service.
@@ -422,6 +442,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       userIdRef.current = null;
       lastSeenRef.current = null;
       pendingRef.current = null;
+      checkoutOpenRef.current = false;
       setPendingCheckout(null);
       stopWatching();
       celebratedRef.current = null;
@@ -447,12 +468,14 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   // above the navigator, and because returning from the browser is the case that matters.
   //
   // A checkout in flight is watched instead: the poll confirms on its first tick, and keeps
-  // asking only while the app is in front.
+  // asking only while the app is in front. While its browser is still open the paywall starts
+  // that watch itself when the browser closes.
   useEffect(() => {
     if (!userId) return;
     const sub = AppState.addEventListener('change', (next) => {
       // Reconcile pending payments when returning to foreground (e.g. from checkout browser)
       if (next === 'active') {
+        if (checkoutOpenRef.current) return;
         if (!watchPayment()) void load(true);
       } else if (next === 'background') {
         stopWatching();
@@ -475,8 +498,19 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       paymentCheck,
       beginCheckout,
       watchPayment,
+      abandonCheckout,
     }),
-    [subscription, known, loading, load, pendingCheckout, paymentCheck, beginCheckout, watchPayment],
+    [
+      subscription,
+      known,
+      loading,
+      load,
+      pendingCheckout,
+      paymentCheck,
+      beginCheckout,
+      watchPayment,
+      abandonCheckout,
+    ],
   );
 
   return (

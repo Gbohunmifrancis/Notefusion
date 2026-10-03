@@ -147,6 +147,7 @@ export function UpgradeScreen({ navigation }: Props) {
     refresh: refreshSubscription,
     beginCheckout,
     watchPayment,
+    abandonCheckout,
     paymentCheck,
     pendingCheckout,
   } = useSubscription();
@@ -245,7 +246,11 @@ export function UpgradeScreen({ navigation }: Props) {
       try {
         await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
       } catch {
-        await WebBrowser.openBrowserAsync(session.checkoutUrl);
+        await WebBrowser.openBrowserAsync(session.checkoutUrl).catch((e) => {
+          // Neither browser would open, so nothing can have been paid: no wait to leave behind.
+          abandonCheckout();
+          throw e;
+        });
       }
 
       // The provider confirms from here, and owns the welcome when the payment lands, so it
