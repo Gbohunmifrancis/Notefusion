@@ -730,7 +730,9 @@
       if (upgradeTo) dropParam("upgrade");
       if (upgradeTo && !isPro()) { openUpgrade(); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
       // Back from checkout (the provider's return page adds ?paid=1), or a checkout started here not long ago.
-      if (new URLSearchParams(location.search).get("paid") || readCheckout()) watchPayment();
+      // Only the provider's return says a payment was made; otherwise the check runs out of sight.
+      var paidReturn = !!new URLSearchParams(location.search).get("paid");
+      if (paidReturn || readCheckout()) watchPayment(!paidReturn);
       if (previewId) {
         // The preview that brought this person here is now theirs: the funnel's conversion.
         request("/api/preview/jobs/" + encodeURIComponent(previewId) + "/claim", { method: "POST" }).catch(function () { /* best effort */ });
@@ -1658,7 +1660,15 @@
         });
         location.assign(session.checkoutUrl);
       })
-      .catch(function (err) { alertIn($("app-alert"), "danger", (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute."); })
+      .catch(function (err) {
+        // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
+        if (err instanceof ApiError && err.code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
+          var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null };
+          return request("/api/billing/my-subscription").then(function (s) { paymentDone(s, before); })
+            .catch(function () { alertIn($("app-alert"), "success", err.message); });
+        }
+        alertIn($("app-alert"), "danger", (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute.");
+      })
       .finally(function () { btn.disabled = false; });
   }
 
@@ -1668,7 +1678,7 @@
   var CHECKOUT_KEY = "nf.checkout";
   var CHECKOUT_TTL = 2 * 60 * 60 * 1000;
   var PAY_FAST_MS = 2500, PAY_FAST_FOR = 60 * 1000, PAY_SLOW_MS = 15000, PAY_SLOW_FOR = 10 * 60 * 1000;
-  var payWatch = null;    // { snap, started, timer, busy, slow } while a payment is being confirmed
+  var payWatch = null;    // { snap, started, timer, busy, slow, quiet } while a payment is being confirmed
   var welcomeReturn = null;
   function readCheckout() {
     try {
@@ -1702,11 +1712,15 @@
     $("pay-toast-sub").textContent = slow ? "Pro unlocks automatically the moment it lands — you can keep working." : "This usually takes a few seconds.";
     show(toast);
   }
-  function watchPayment() {
+  /** quiet: no "Confirming…" note, because nothing says a payment was made (Back from the provider, a later visit). */
+  function watchPayment(quiet) {
     dropParam("paid");
-    if (payWatch) { checkPayment(); return; }
-    payWatch = { snap: readCheckout(), started: Date.now(), timer: null, busy: false, slow: false };
-    showPayToast(false);
+    if (payWatch) {
+      if (!quiet && payWatch.quiet) { payWatch.quiet = false; showPayToast(payWatch.slow); }
+      checkPayment(); return;
+    }
+    payWatch = { snap: readCheckout(), started: Date.now(), timer: null, busy: false, slow: false, quiet: !!quiet };
+    if (!quiet) showPayToast(false);
     checkPayment();
   }
   function stopPaymentWatch() {
@@ -1725,7 +1739,7 @@
         if (payWatch !== w) return;
         if (paymentLanded(s, w.snap)) { paymentDone(s, w.snap); return; }
         var age = Date.now() - w.started;
-        if (age >= PAY_FAST_FOR && !w.slow) { w.slow = true; showPayToast(true); }
+        if (age >= PAY_FAST_FOR && !w.slow) { w.slow = true; if (!w.quiet) showPayToast(true); }
         if (age < PAY_SLOW_FOR) w.timer = setTimeout(checkPayment, w.slow ? PAY_SLOW_MS : PAY_FAST_MS);
       });
   }
@@ -1765,7 +1779,7 @@
   // Coming back to the tab is the likeliest moment for the payment to have landed.
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && payWatch) checkPayment(); });
   // Back from the provider's page out of the browser's cache: boot does not run again, so look here.
-  window.addEventListener("pageshow", function (e) { if (e.persisted && me && readCheckout()) watchPayment(); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted && me && readCheckout()) watchPayment(true); });
 
   boot();
 })();

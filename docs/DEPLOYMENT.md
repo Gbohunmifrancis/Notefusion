@@ -158,7 +158,7 @@ recurring plan — a subscription checkout is otherwise rejected with `SUBSCRIPT
 > Check the session in the Bachs dashboard and reconcile it by hand — retrying will not
 > clear it, because the provider will keep returning the same two numbers.
 
-**Point each provider's webhook at** `POST https://<your-heroku-app>.herokuapp.com/api/billing/webhooks/<provider>`
+**Point each provider's webhook at** `POST https://api.notefusion.studio/api/billing/webhooks/<provider>`
 (e.g. `.../api/billing/webhooks/paystack`). The endpoint is anonymous by design —
 providers authenticate by signature, not JWT.
 
@@ -167,7 +167,7 @@ providers authenticate by signature, not JWT.
 | Var | Default | Notes |
 |-----|---------|-------|
 | `Billing__DefaultProvider` | `Paystack` | Provider chosen when a currency has more than one candidate. |
-| `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | **Must be set for Bachs.** Where the provider returns the browser after checkout. Bachs rejects a non-http(s) `success_url` outright (`VALIDATION_ERROR success_url must use http:// or https:// scheme`), so the committed deep-link default fails every Bachs checkout — loudly, before anyone is charged. Point it at the API's own bridge page, which hands off to the app's deep link: `https://<your-heroku-app>.herokuapp.com/api/billing/return`. The real result still arrives via webhook. |
+| `Billing__CheckoutCallbackUrl` | `https://api.notefusion.studio/api/billing/return` | Where the provider returns the browser after checkout: the API's own bridge page, which hands off to the app's deep link (website checkouts use the same path plus `/web`, which returns to `notefusion.studio/app?paid=1`). Must be an absolute https URL; Bachs refuses anything else. Blank, or a retired `herokuapp.com` host, falls back to the default. The real result still arrives via webhook, and the clients also ask `POST /api/billing/confirm`. |
 
 ### 1.2 Region pricing (geolocation)
 

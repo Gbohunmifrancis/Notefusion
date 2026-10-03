@@ -264,9 +264,11 @@ public class CheckoutRetryTests
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public void A_blank_configured_callback_keeps_the_default(string configured)
+    [InlineData("https://notefusion-api-3c2513a1e974.herokuapp.com/api/billing/return")]
+    public void A_blank_or_retired_configured_callback_keeps_the_default(string configured)
     {
         // Compose passes an unset variable through as an empty string; that must not become success_url "".
+        // The Heroku API is gone, so a value saved before the move is no return page at all.
         Assert.Equal(
             BillingSettings.DefaultCheckoutCallbackUrl,
             new BillingSettings { CheckoutCallbackUrl = configured }.CheckoutCallbackUrl);

@@ -74,14 +74,7 @@ public sealed class MeController : ApiControllerBase
 
         await using var stream = image.OpenReadStream();
         var command = new UpdateMyProfilePictureCommand(stream, image.FileName);
-        var result = await _sender.Send(command, ct);
-
-        // No storage on this deployment is the server's fault, not the request's: 503 rather than the
-        // 400 a plain failure maps to, still carrying the friendly message.
-        if (result.IsFailure && result.Error == UserErrors.PictureStorageUnavailable)
-            return StatusCode(StatusCodes.Status503ServiceUnavailable, new ApiError(result.Error.Code, result.Error.Message));
-
-        return HandleResult(result);
+        return HandleResult(await _sender.Send(command, ct));
     }
 
     /// <summary>Clears the authenticated user's profile picture, restoring their initials.</summary>

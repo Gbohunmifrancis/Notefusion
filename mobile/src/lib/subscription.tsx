@@ -76,8 +76,12 @@ interface SubscriptionState {
    * Polls until the pending checkout lands, then shows the one welcome pop-up. Safe to call again
    * while it runs. Returns false when there is nothing pending to watch. The paywall calls it once
    * the checkout browser has closed, which is also what lets foreground re-reads resume.
+   *
+   * `quiet` polls without the "Confirming your payment…" state, for when nothing says a payment was
+   * made (the sheet was closed by hand, the app came back to the front): a person who cancelled is
+   * not kept from the plans, and a payment that did go through still gets its welcome.
    */
-  watchPayment: () => boolean;
+  watchPayment: (quiet?: boolean) => boolean;
   /** Drops the snapshot of a checkout whose browser never opened, so nothing waits on it. */
   abandonCheckout: () => void;
 }
@@ -184,6 +188,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const paymentCheckRef = useRef<PaymentCheck>('idle');
   /** Bumped to stop a running poll: each loop exits once the number is no longer its own. */
   const pollRunRef = useRef(0);
+  /** The running poll's number and start, and whether it is quiet (see `watchPayment`). */
+  const watchRef = useRef<{ run: number; started: number; quiet: boolean } | null>(null);
   /**
    * True from `beginCheckout` until the paywall reports the browser closed. iOS keeps the app
    * active under the checkout sheet, and coming back from a bank or SMS app mid-payment fires
@@ -325,7 +331,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     }
   }, [apply]);
 
-  const watchPayment = useCallback((): boolean => {
+  const watchPayment = useCallback((quiet: boolean = false): boolean => {
     checkoutOpenRef.current = false;
     const pending = pendingRef.current;
     if (!pending) return false;
@@ -333,16 +339,26 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       setPending(null);
       return false;
     }
-    if (paymentCheckRef.current === 'confirming') return true;
+    // Still in its quick ticks: keep it, only letting a return from the provider make it visible.
+    const live = watchRef.current;
+    if (live && live.run === pollRunRef.current && Date.now() - live.started < FAST_WINDOW_MS) {
+      if (!quiet && live.quiet) {
+        live.quiet = false;
+        setPaymentCheck('confirming');
+      }
+      return true;
+    }
 
     const run = ++pollRunRef.current;
-    setPaymentCheck('confirming');
+    const watch = { run, started: Date.now(), quiet };
+    watchRef.current = watch;
+    setPaymentCheck(quiet ? 'idle' : 'confirming');
     void (async () => {
-      const started = Date.now();
+      const started = watch.started;
       for (;;) {
         const elapsed = Date.now() - started;
         if (elapsed >= WATCH_WINDOW_MS) break;
-        if (elapsed >= FAST_WINDOW_MS && paymentCheckRef.current !== 'delayed') {
+        if (elapsed >= FAST_WINDOW_MS && !watch.quiet && paymentCheckRef.current !== 'delayed') {
           setPaymentCheck('delayed');
         }
         try {
@@ -412,8 +428,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       if (rawCheckout && userIdRef.current === id && !pendingRef.current) {
         pendingRef.current = JSON.parse(rawCheckout) as CheckoutSnapshot;
         setPendingCheckout(pendingRef.current);
-        // Reopened after being closed mid-checkout: the same as coming back from the browser.
-        watchPayment();
+        // Reopened after being closed mid-checkout: nothing says whether it was paid, so look quietly.
+        watchPayment(true);
       }
       if (!rawSub) return;
       const cached = JSON.parse(rawSub) as Subscription;
@@ -476,7 +492,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       // Reconcile pending payments when returning to foreground (e.g. from checkout browser)
       if (next === 'active') {
         if (checkoutOpenRef.current) return;
-        if (!watchPayment()) void load(true);
+        if (!watchPayment(true)) void load(true);
       } else if (next === 'background') {
         stopWatching();
       }

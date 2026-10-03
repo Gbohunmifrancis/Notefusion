@@ -243,8 +243,12 @@ export function UpgradeScreen({ navigation }: Props) {
       // In particular a dismissal must NOT reopen checkout: paying and then swiping the
       // sheet away is ordinary behaviour, and showing that person Paystack a second time
       // reads as "your payment didn't work" at the exact moment it did.
+      // Only the provider sending the browser back to the app says a payment was made; a sheet
+      // closed by hand is still watched, quietly, so the plans stay usable for a second try.
+      let returned = false;
       try {
-        await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
+        const outcome = await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
+        returned = outcome.type === "success";
       } catch {
         await WebBrowser.openBrowserAsync(session.checkoutUrl).catch((e) => {
           // Neither browser would open, so nothing can have been paid: no wait to leave behind.
@@ -255,12 +259,18 @@ export function UpgradeScreen({ navigation }: Props) {
 
       // The provider confirms from here, and owns the welcome when the payment lands, so it
       // carries on if this screen is left.
-      watchPayment();
+      watchPayment(!returned);
       if (!mounted.current) return;
       setBusy(false);
     } catch (e) {
       if (!mounted.current) return;
       setBusy(false);
+      // An earlier checkout turned out to be paid: nothing to buy, so the welcome, not an error.
+      if (toApiError(e).code === "BILLING_PAYMENT_ALREADY_RECEIVED" && selectedId) {
+        beginCheckout(selectedId, subscription);
+        watchPayment();
+        return;
+      }
       showDialog({
         title: "Checkout failed",
         message: toApiError(e).message,

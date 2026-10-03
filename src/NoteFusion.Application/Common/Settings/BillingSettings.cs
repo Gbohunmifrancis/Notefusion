@@ -25,11 +25,16 @@ public sealed class BillingSettings
     /// A blank value counts as unset. Compose passes <c>Billing__CheckoutCallbackUrl</c> through from the
     /// host environment, so an unset variable arrives as an empty string — which would otherwise replace
     /// the default and send every checkout's success_url as "" (a refusal at Bachs, before anyone pays).
+    /// A herokuapp.com host counts as unset too: the API left Heroku and those apps now answer 404, so a
+    /// value saved before the move would land every paying customer on a dead page.
     /// </remarks>
     public string CheckoutCallbackUrl
     {
         get => _checkoutCallbackUrl;
-        init => _checkoutCallbackUrl = string.IsNullOrWhiteSpace(value) ? DefaultCheckoutCallbackUrl : value.Trim();
+        init => _checkoutCallbackUrl =
+            string.IsNullOrWhiteSpace(value) || value.Contains("herokuapp.com", StringComparison.OrdinalIgnoreCase)
+                ? DefaultCheckoutCallbackUrl
+                : value.Trim();
     }
 
     /// <summary>
