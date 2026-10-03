@@ -25,8 +25,9 @@ public sealed record ClearStalePaymentsResult(
 /// <para>
 /// 2. Expired <see cref="PaymentStatus.Processing"/> rows: hosted checkouts have strict provider-enforced TTLs
 /// (at most 24 hours across Bachs and Paystack). Rows older than <see cref="BillingSettings.StaleProcessingHours"/>
-/// are checked against the gateway one last time: settled payments are fulfilled, while expired/unpayable checkouts
-/// are marked <see cref="PaymentStatus.Failed"/> so users can open a fresh checkout.
+/// are checked against the gateway: settled payments are fulfilled, while checkouts the provider confirms are
+/// expired/unpayable are marked <see cref="PaymentStatus.Failed"/> so users can open a fresh checkout. A row the
+/// provider could not answer for is left Processing — never failed on age alone.
 /// </para>
 /// </summary>
 public sealed record ClearStalePaymentsCommand : IRequest<Result<ClearStalePaymentsResult>>;
@@ -94,11 +95,18 @@ public sealed class ClearStalePaymentsCommandHandler
                 break;
         }
 
-        // 2. Clear expired Processing payments beyond maximum checkout lifetime.
+        // 2. Settle Processing payments beyond maximum checkout lifetime. Only the provider can say a checkout
+        // is dead: age alone is not evidence, and a provider we could not reach has told us nothing. So a
+        // row is failed on a definite terminal non-success and on nothing else; anything we could not
+        // settle stays Processing, where the admin payment alert already counts it as stuck.
+        var seen = new List<Guid>();
         for (var batch = 0; batch < 10; batch++)
         {
+            // Rows left alone stay Processing and would otherwise be fetched again by the next batch.
             var staleProcessing = await _db.PaymentTransactions
-                .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < processingCutoff)
+                .Where(t => t.Status == PaymentStatus.Processing
+                            && t.UpdatedAtUtc < processingCutoff
+                            && !seen.Contains(t.Id))
                 .OrderBy(t => t.UpdatedAtUtc)
                 .Take(BatchSize)
                 .ToListAsync(ct);
@@ -106,48 +114,54 @@ public sealed class ClearStalePaymentsCommandHandler
             if (staleProcessing.Count == 0)
                 break;
 
+            var receipts = new List<FulfillmentReceipt>();
             foreach (var tx in staleProcessing)
             {
-                // Perform one final check with the provider before declaring the checkout expired.
-                if (!string.IsNullOrWhiteSpace(tx.ProviderReference))
+                seen.Add(tx.Id);
+
+                var verification = await _gateways.Resolve(tx.Provider)
+                    .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
+
+                if (verification.IsFailure)
                 {
-                    var verification = await _gateways.Resolve(tx.Provider)
-                        .VerifyAsync(new GatewayVerificationRequest(tx.Reference, tx.ProviderReference), ct);
-
-                    if (verification.IsSuccess)
-                    {
-                        var v = verification.Value;
-                        if (v.Succeeded)
-                        {
-                            // Even though it was stale, the provider confirms funds settled! Fulfill rather than fail.
-                            if (v.AmountMinor == tx.AmountMinor
-                                && string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase))
-                            {
-                                var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
-                                fulfilled++;
-
-                                if (receipt is not null)
-                                    await _email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
-
-                                continue;
-                            }
-                        }
-                        else if (v.Terminal)
-                        {
-                            tx.MarkFailed("Provider confirmed checkout can no longer be paid.", now);
-                            clearedProcessing++;
-                            continue;
-                        }
-                    }
+                    _logger.LogWarning(
+                        "Stale payment {Reference} could not be verified and stays Processing: {Error}",
+                        tx.Reference, verification.Error.Message);
+                    continue;
                 }
 
-                // Exceeded maximum hosted checkout lifetime and cannot be processed again.
-                tx.MarkFailed(
-                    "Checkout session expired: exceeded maximum validity window and can no longer be processed.", now);
-                clearedProcessing++;
+                var v = verification.Value;
+                if (v.Succeeded)
+                {
+                    // Stale, but the provider confirms the money settled: fulfil rather than fail. Same
+                    // amount rule as ReconcilePaymentCommand — paying more than the price is still paid.
+                    if (string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase)
+                        && v.AmountMinor >= tx.AmountMinor)
+                    {
+                        var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
+                        if (receipt is not null)
+                            receipts.Add(receipt);
+                        fulfilled++;
+                    }
+                    else
+                    {
+                        _logger.LogWarning(
+                            "Stale payment {Reference} settled for {Amount} {Currency}, expected {Expected} {ExpectedCurrency}; left for review.",
+                            tx.Reference, v.AmountMinor, v.Currency, tx.AmountMinor, tx.Currency);
+                    }
+                }
+                else if (v.Terminal)
+                {
+                    tx.MarkFailed("Provider confirmed checkout can no longer be paid.", now);
+                    clearedProcessing++;
+                }
             }
 
             await _db.SaveChangesAsync(ct);
+
+            // Only after the commit: a receipt for a fulfilment that failed to save would be a lie.
+            foreach (var receipt in receipts)
+                await _email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
 
             if (staleProcessing.Count < BatchSize)
                 break;

@@ -270,6 +270,16 @@ export interface PublicPricing {
 }
 
 /**
+ * Body of `POST /api/billing/checkout`. `client` is optional; only `"web"`
+ * means anything (the browser returns to the website after paying instead of
+ * the app), so the app leaves it out.
+ */
+export interface CheckoutRequest {
+  planId: string;
+  client?: string;
+}
+
+/**
  * A hosted-checkout session. The app opens {@link checkoutUrl} in an external
  * browser (Spotify-style) and never collects card details; the result arrives
  * server-side by webhook, so the app polls my-subscription to learn when Pro unlocks.

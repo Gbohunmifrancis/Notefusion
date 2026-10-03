@@ -258,8 +258,24 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
 
             var status = ReadString(raw, "status");
             var paymentStatus = ReadString(raw, "payment_status");
-            var currency = ReadString(raw, "currency") ?? ReadString(raw, "charge", "currency");
-            var amountStr = ReadString(raw, "amount") ?? ReadString(raw, "charge", "amount");
+            var chargeStatus = ReadString(raw, "charge", "status");
+
+            // Two money figures, and they mean different things. The session's `amount`/`currency` is the
+            // base price — what we priced, sent in `pricing`, and recorded on the transaction. The charge's
+            // is what the payer was actually charged, which for a dollar one-off on this account is naira
+            // by FX conversion ($79.00 is charged as NGN 113,421.48). So the session is what we verify
+            // against; the charge stands in only when the session states no amount, and only in the same
+            // currency — a naira figure read as dollars would be a 1,400× entitlement bug.
+            var sessionCurrency = ReadString(raw, "currency");
+            var sessionAmountStr = ReadString(raw, "amount");
+            var chargeCurrency = ReadString(raw, "charge", "currency");
+            var chargeAmountStr = ReadString(raw, "charge", "amount");
+
+            // A session amount is only ever read in the session's own currency, even when that is missing.
+            var currency = sessionAmountStr is not null ? sessionCurrency : sessionCurrency ?? chargeCurrency;
+            var chargeInSessionCurrency = string.IsNullOrWhiteSpace(chargeCurrency)
+                || string.Equals(chargeCurrency, currency, StringComparison.OrdinalIgnoreCase);
+            var amountStr = sessionAmountStr ?? (chargeInSessionCurrency ? chargeAmountStr : null);
             var amountMinor = CurrencyUnits.TryToMinor(amountStr, currency ?? string.Empty);
 
             // A closed, documented enum, unlike the open-ended status set on the webhook payload — which
@@ -273,26 +289,13 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                     Terminal: true);
             }
 
-            // Check for underpayment via outstanding balance (amount_remaining > 0 per Bachs reconciliation docs).
-            var remainingStr = ReadString(raw, "amount_remaining") ?? ReadString(raw, "charge", "amount_remaining");
-            if (!string.IsNullOrWhiteSpace(remainingStr))
-            {
-                var remainingMinor = CurrencyUnits.TryToMinor(remainingStr, currency ?? string.Empty);
-                if (remainingMinor is > 0)
-                {
-                    _logger.LogWarning(
-                        "Bachs checkout {CheckoutId} has outstanding balance of {RemainingMinor} {Currency}.",
-                        checkoutId, remainingMinor, currency);
-                    return new GatewayVerification(
-                        Succeeded: false, amountMinor ?? 0, currency ?? string.Empty, checkoutId, null, raw,
-                        Terminal: true);
-                }
-            }
-
             if (!IsTerminalSuccess(status))
             {
                 // `open` (still awaiting the customer) or a status this adapter does not know. Neither is
-                // evidence of anything, so the caller keeps asking rather than concluding.
+                // evidence of anything, so the caller keeps asking rather than concluding. An open session is
+                // payable whatever its charge says: a declined card or a transfer still arriving shows as a
+                // failed or processing charge with money outstanding, and the customer can still finish —
+                // closing it here would turn a payment in progress into a dead checkout.
                 return Error.Network(
                     "Bachs.Verify", $"Bachs checkout {checkoutId} is not in a terminal state (status: {status ?? "unknown"}).");
             }
@@ -308,6 +311,29 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                     "Bachs.Verify", $"Bachs checkout {checkoutId} reports {status} with payment_status {paymentStatus}.");
             }
 
+            // A settled session with money still outstanding was underpaid (amount_remaining > 0 per Bachs'
+            // reconciliation docs) — final, unless the merchant accepted the shortfall, in which case Bachs
+            // settles the charge as `accepted` and it is to be fulfilled. The balance is in the CHARGE
+            // currency, so it is read in that currency's units.
+            var remainingStr = ReadString(raw, "amount_remaining") ?? ReadString(raw, "charge", "amount_remaining");
+            var remainingMinor = CurrencyUnits.TryToMinor(remainingStr, chargeCurrency ?? currency ?? string.Empty);
+            if (remainingMinor is > 0)
+            {
+                if (!IsAccepted(status) && !IsAccepted(chargeStatus) && !IsAccepted(paymentStatus))
+                {
+                    _logger.LogWarning(
+                        "Bachs checkout {CheckoutId} has outstanding balance of {RemainingMinor} {Currency}.",
+                        checkoutId, remainingMinor, chargeCurrency ?? currency);
+                    return new GatewayVerification(
+                        Succeeded: false, amountMinor ?? 0, currency ?? string.Empty, checkoutId, null, raw,
+                        Terminal: true);
+                }
+
+                _logger.LogInformation(
+                    "Bachs checkout {CheckoutId} was accepted with {RemainingMinor} {Currency} outstanding.",
+                    checkoutId, remainingMinor, chargeCurrency ?? currency);
+            }
+
             if (amountMinor is null || string.IsNullOrWhiteSpace(currency))
             {
                 // We will not fulfil against an amount we cannot read exactly. Transient, so it is
@@ -316,39 +342,38 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
                     "Bachs.Verify", $"Bachs checkout {checkoutId} did not report a readable amount and currency.");
             }
 
-            // The session total and the charge are two different numbers in Bachs' own example, and the
-            // docs warn against assuming they are equal. When both are readable and they disagree we do
-            // not know which figure the customer was actually charged — so neither is used. Escalating
-            // beats fulfilling against the wrong money, and beats declining a payment that may be good.
-            var sessionCurrency = ReadString(raw, "currency");
-            var sessionAmountStr = ReadString(raw, "amount");
-            var chargeCurrency = ReadString(raw, "charge", "currency");
-            var chargeAmountStr = ReadString(raw, "charge", "amount");
-
-            if (!string.IsNullOrWhiteSpace(sessionAmountStr) && !string.IsNullOrWhiteSpace(chargeAmountStr))
+            if (chargeInSessionCurrency)
             {
-                var sessionMinor = CurrencyUnits.TryToMinor(sessionAmountStr, sessionCurrency ?? currency);
-                var chargeMinor = CurrencyUnits.TryToMinor(chargeAmountStr, chargeCurrency ?? currency);
-                if (sessionMinor is not null && chargeMinor is not null && sessionMinor != chargeMinor)
+                // Same currency, so the two figures are directly comparable, and they should agree. When both
+                // are readable and they do not, we do not know which one the customer was charged — so
+                // neither is used. Escalating beats fulfilling against the wrong money, and beats declining a
+                // payment that may be good.
+                var chargeMinor = CurrencyUnits.TryToMinor(chargeAmountStr, currency);
+                if (sessionAmountStr is not null && chargeMinor is not null && chargeMinor != amountMinor)
                 {
                     _logger.LogError(
                         "Bachs checkout {CheckoutId} reports session amount {SessionAmount} but charge amount {ChargeAmount}.",
-                        checkoutId, sessionMinor.Value, chargeMinor.Value);
+                        checkoutId, amountMinor.Value, chargeMinor.Value);
                     return Error.Network(
                         "Bachs.Verify",
                         $"Bachs checkout {checkoutId} disagrees with its own charge about the amount.");
                 }
             }
-
-            if (!string.IsNullOrWhiteSpace(sessionCurrency) && !string.IsNullOrWhiteSpace(chargeCurrency)
-                && !string.Equals(chargeCurrency, sessionCurrency, StringComparison.OrdinalIgnoreCase))
+            else
             {
-                _logger.LogError(
-                    "Bachs checkout {CheckoutId} is in {SessionCurrency} but its charge is in {ChargeCurrency}.",
-                    checkoutId, sessionCurrency, chargeCurrency);
-                return Error.Network(
-                    "Bachs.Verify",
-                    $"Bachs checkout {checkoutId} disagrees with its own charge about the currency.");
+                // A different currency on the charge is FX conversion, not a contradiction: the customer paid
+                // the session's price in the money they hold, and the charge figure is not comparable with
+                // ours. What has to be positively true instead is that the money moved.
+                _logger.LogInformation(
+                    "Bachs checkout {CheckoutId}: {Amount} {Currency} charged as {ChargeAmount} {ChargeCurrency} (billing currency {BillingCurrency}).",
+                    checkoutId, amountStr, currency, chargeAmountStr, chargeCurrency, ReadString(raw, "billing_currency"));
+
+                if (!IsPaidPaymentStatus(paymentStatus) && !IsSettledCharge(chargeStatus))
+                {
+                    return Error.Network(
+                        "Bachs.Verify",
+                        $"Bachs checkout {checkoutId} is {status} but reports no settled payment (payment_status: {paymentStatus ?? "none"}, charge: {chargeStatus ?? "none"}).");
+                }
             }
 
             // The checkout id stays the provider reference even though the charge has an id of its own:
@@ -399,6 +424,26 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
         => string.Equals(paymentStatus, "failed", StringComparison.OrdinalIgnoreCase)
             || string.Equals(paymentStatus, "canceled", StringComparison.OrdinalIgnoreCase)
             || string.Equals(paymentStatus, "cancelled", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// A session-level <c>payment_status</c> that says money was collected. The reference uses
+    /// <c>succeeded</c>; the <c>checkout.completed</c> example uses <c>paid</c>. Either is the same fact.
+    /// </summary>
+    private static bool IsPaidPaymentStatus(string? paymentStatus)
+        => string.Equals(paymentStatus, "succeeded", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(paymentStatus, "paid", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Charge states that are fulfilable: collected in full, collected with more than was due, or a
+    /// short/long payment the merchant accepted as final.
+    /// </summary>
+    private static bool IsSettledCharge(string? chargeStatus)
+        => string.Equals(chargeStatus, "succeeded", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(chargeStatus, "overpaid", StringComparison.OrdinalIgnoreCase)
+            || IsAccepted(chargeStatus);
+
+    private static bool IsAccepted(string? status)
+        => string.Equals(status, "accepted", StringComparison.OrdinalIgnoreCase);
 
     private static string FallbackName(string? name, string email)
     {

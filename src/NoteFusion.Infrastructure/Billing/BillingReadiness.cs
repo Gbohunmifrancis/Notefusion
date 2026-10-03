@@ -42,4 +42,24 @@ public static class BillingReadiness
         }
         return problems;
     }
+
+    /// <summary>
+    /// A warning when the checkout return URL is not the API's own https return page, or null when it is.
+    /// The providers send the paying customer's browser there, so a wrong host strands them on a dead
+    /// page after paying, a non-https one is refused outright, and a different path loses the website's
+    /// <c>/web</c> variant (only the API's own return page can be extended with it).
+    /// </summary>
+    public static string? CheckCallbackUrl(string callbackUrl)
+    {
+        if (!Uri.TryCreate(callbackUrl, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
+            return $"Billing__CheckoutCallbackUrl '{callbackUrl}' is not an absolute https URL; hosted checkouts will refuse it.";
+
+        if (!uri.AbsolutePath.TrimEnd('/').EndsWith("/api/billing/return", StringComparison.OrdinalIgnoreCase))
+        {
+            return $"Billing__CheckoutCallbackUrl '{callbackUrl}' does not end in /api/billing/return; "
+                + "checkouts will not return to the app, and website checkouts cannot return to the site.";
+        }
+
+        return null;
+    }
 }

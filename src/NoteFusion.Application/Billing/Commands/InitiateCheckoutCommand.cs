@@ -19,11 +19,16 @@ namespace NoteFusion.Application.Billing.Commands;
 /// double-charges. A retry after a failed initiation resumes the same Pending row — same reference, same
 /// idempotency key — so the provider replays the original session instead of opening a second charge.
 /// </summary>
-public sealed record InitiateCheckoutCommand(Guid PlanId) : IRequest<Result<CheckoutSessionDto>>;
+/// <param name="Client">
+/// Where the customer is paying from. <c>"web"</c> sends the browser back to the website after checkout
+/// instead of handing off to the app's deep link; anything else (or nothing) is the app.
+/// </param>
+public sealed record InitiateCheckoutCommand(Guid PlanId, string? Client = null) : IRequest<Result<CheckoutSessionDto>>;
 
 public sealed class InitiateCheckoutCommandValidator : AbstractValidator<InitiateCheckoutCommand>
 {
-    public InitiateCheckoutCommandValidator() => RuleFor(x => x.PlanId).NotEmpty();
+    public InitiateCheckoutCommandValidator()
+        => RuleFor(x => x.PlanId).NotEmpty().WithMessage("Please choose a plan.");
 }
 
 public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateCheckoutCommand, Result<CheckoutSessionDto>>
@@ -91,11 +96,34 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             .OrderByDescending(t => t.CreatedAtUtc)
             .FirstOrDefaultAsync(ct);
         if (inFlight is not null)
-            return new CheckoutSessionDto(inFlight.Reference, inFlight.CheckoutUrl!, inFlight.Provider);
+        {
+            // Only while the session can still be paid. A Processing row's UpdatedAtUtc is the moment its
+            // checkout was attached, and a hosted session dies (Bachs: after an hour) whether or not anyone
+            // tells us — handing an old one back would send the customer to a page that cannot take money.
+            var reuseCutoff = _clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.CheckoutReuseMinutes));
+            if (inFlight.UpdatedAtUtc >= reuseCutoff)
+                return new CheckoutSessionDto(inFlight.Reference, inFlight.CheckoutUrl!, inFlight.Provider);
 
+            // Too old to hand out, but it may have been paid without our hearing of it — often the very reason
+            // the customer is back. Ask first, because the answer decides whether a new charge is wanted at
+            // all. A failed ask does not block the purchase: the row stays for the sweep either way.
+            _ = await ReconcilePaymentCommandHandler.ReconcileAsync(_db, _gateways, _clock, _email, inFlight, ct);
+            if (inFlight.Status == PaymentStatus.Completed)
+            {
+                var updated = await _db.Subscriptions
+                    .OrderByDescending(s => s.CurrentPeriodEndUtc)
+                    .FirstOrDefaultAsync(s => s.UserId == userId, ct);
+                return updated is not null && updated.IsLifetime && updated.IsActiveAt(_clock.UtcNow)
+                    ? BillingErrors.AlreadyLifetime
+                    : EarlierPaymentLanded;
+            }
+        }
+
+        // A currency nothing can collect is a configuration fault, not something the customer can act on,
+        // so it reads as the same plain "could not open the payment page" as any other initiation failure.
         var gatewayResult = _gateways.SelectForCurrency(plan.Currency);
         if (gatewayResult.IsFailure)
-            return gatewayResult.Error;
+            return BillingErrors.GatewayInitiationFailed;
         var gateway = gatewayResult.Value;
 
         var now = _clock.UtcNow;
@@ -136,7 +164,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         var initiation = await gateway.InitiateAsync(
             new GatewayInitiationRequest(
                 transaction.Reference, plan.AmountMinor, plan.Currency, user.Email,
-                _settings.CheckoutCallbackUrl,
+                CallbackUrlFor(request.Client, _settings.CheckoutCallbackUrl),
                 // Every plan is a single charge for one period, priced from our own plan row. Bachs
                 // subscription checkouts must be paid by a card it can save, and this account offers
                 // no card method for USD, so a recurring session is refused outright
@@ -175,5 +203,34 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         await _db.SaveChangesAsync(ct);
 
         return new CheckoutSessionDto(transaction.Reference, transaction.CheckoutUrl!, transaction.Provider);
+    }
+
+    /// <summary>
+    /// The customer's earlier checkout turned out to be paid when they came back to buy again. Opening a
+    /// second charge on top of it would sell them a period they almost certainly did not mean to buy.
+    /// </summary>
+    private static readonly Error EarlierPaymentLanded =
+        Error.Conflict("BILLING_PAYMENT_ALREADY_RECEIVED",
+            "Good news: your earlier payment has gone through and Pro is now active. There is nothing more to pay.");
+
+    /// <summary>The path of the API's own return page, which the website's variant extends with <c>/web</c>.</summary>
+    private const string ReturnPath = "/api/billing/return";
+
+    /// <summary>
+    /// Where the provider sends the browser back to. A checkout from the website returns to the API's
+    /// <c>/api/billing/return/web</c> page, which goes back to the site; any other client gets the
+    /// configured URL, which hands off to the app. Only a configured URL that is the API's own return page
+    /// can be extended — anything else was set deliberately and is used as it stands.
+    /// </summary>
+    internal static string CallbackUrlFor(string? client, string configured)
+    {
+        if (!string.Equals(client?.Trim(), "web", StringComparison.OrdinalIgnoreCase)
+            || !Uri.TryCreate(configured, UriKind.Absolute, out var uri)
+            || !uri.AbsolutePath.TrimEnd('/').EndsWith(ReturnPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return configured;
+        }
+
+        return new UriBuilder(uri) { Path = uri.AbsolutePath.TrimEnd('/') + "/web" }.Uri.AbsoluteUri;
     }
 }

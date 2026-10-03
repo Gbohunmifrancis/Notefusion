@@ -15,12 +15,25 @@ namespace NoteFusion.Infrastructure.Billing.Workers;
 /// Periodically reconciles payments against the provider so a dropped webhook never silently loses a
 /// customer their subscription. It sweeps transactions still in <see cref="PaymentStatus.Processing"/>
 /// past a short grace window (long enough for the normal webhook to arrive) and asks the provider what
-/// happened via <see cref="ReconcilePaymentCommand"/>. This is the safety net behind the webhook inbox,
-/// not the primary path — it runs infrequently.
+/// happened via <see cref="ReconcilePaymentCommand"/>. Rows that went <see cref="PaymentStatus.Failed"/>
+/// in the last two days are asked about again too, less often, because a checkout we closed can still
+/// have been paid. This is the safety net behind the webhook inbox, not the primary path.
 /// </summary>
 internal sealed class PaymentReconciliationWorker : BackgroundService
 {
     private const int BatchSize = 50;
+
+    /// <summary>How far back a failed checkout is still worth asking the provider about.</summary>
+    private static readonly TimeSpan FailedLookback = TimeSpan.FromHours(48);
+
+    /// <summary>
+    /// How often failed rows join the sweep. Nearly all of them really are dead, and each is a provider call,
+    /// so they are not asked about every few minutes; the customer who is waiting on one is covered sooner
+    /// by <c>ConfirmPaymentCommand</c> and by the provider's own webhook.
+    /// </summary>
+    private static readonly TimeSpan FailedRecheckInterval = TimeSpan.FromMinutes(30);
+
+    private DateTime _nextFailedRecheckUtc = DateTime.MinValue;
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly BillingSettings _settings;
@@ -79,18 +92,14 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
             var sender = scope.ServiceProvider.GetRequiredService<ISender>();
             var clock = scope.ServiceProvider.GetRequiredService<IDateTimeProvider>();
 
-            // Same window the admin console calls "stuck", read from the one place both can see it.
-            var cutoff = clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.ReconciliationGraceMinutes));
-
-            var stuck = await db.PaymentTransactions
-                .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < cutoff)
-                .OrderBy(t => t.UpdatedAtUtc)
-                .Take(BatchSize)
-                .Select(t => t.Id)
-                .ToListAsync(ct);
+            var now = clock.UtcNow;
+            var includeFailed = now >= _nextFailedRecheckUtc;
+            var due = await SelectDueAsync(db, now, _settings, includeFailed, ct);
+            if (includeFailed)
+                _nextFailedRecheckUtc = now + FailedRecheckInterval;
 
             var failedReconcile = 0;
-            foreach (var id in stuck)
+            foreach (var id in due)
             {
                 var result = await sender.Send(new ReconcilePaymentCommand(id), ct);
                 if (result.IsFailure)
@@ -105,10 +114,10 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
                 "PaymentReconciliation",
                 sw.ElapsedMilliseconds,
                 failedReconcile > 0 ? "Degraded" : "Healthy",
-                stuck.Count > 0 ? $"Swept {stuck.Count} stuck payments ({failedReconcile} failed)" : "No stuck payments");
+                due.Count > 0 ? $"Swept {due.Count} payments ({failedReconcile} failed)" : "No stuck payments");
 
-            if (stuck.Count > 0)
-                _logger.LogInformation("Reconciliation swept {Count} stuck payment(s).", stuck.Count);
+            if (due.Count > 0)
+                _logger.LogInformation("Reconciliation swept {Count} payment(s).", due.Count);
         }
         catch (Exception ex)
         {
@@ -117,5 +126,41 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
                 "PaymentReconciliation", sw.ElapsedMilliseconds, "Failed", ex.Message);
             throw;
         }
+    }
+
+    /// <summary>
+    /// The payments one sweep asks the provider about: Processing rows past the grace window, oldest first,
+    /// and — when <paramref name="includeFailed"/> — rows failed in the last two days that the provider can
+    /// still be asked about, newest first. Internal so the selection can be tested without the loop.
+    /// </summary>
+    internal static async Task<List<Guid>> SelectDueAsync(
+        ApplicationDbContext db, DateTime utcNow, BillingSettings settings, bool includeFailed, CancellationToken ct)
+    {
+        // Same window the admin console calls "stuck", read from the one place both can see it.
+        var cutoff = utcNow - TimeSpan.FromMinutes(Math.Max(1, settings.ReconciliationGraceMinutes));
+
+        var due = await db.PaymentTransactions
+            .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < cutoff)
+            .OrderBy(t => t.UpdatedAtUtc)
+            .Take(BatchSize)
+            .Select(t => t.Id)
+            .ToListAsync(ct);
+
+        if (!includeFailed)
+            return due;
+
+        // A checkout we closed can still have been paid (a sweep that failed it mid-payment, a webhook
+        // that went astray). No reference means no way to ask, so those are left out.
+        var failedSince = utcNow - FailedLookback;
+        due.AddRange(await db.PaymentTransactions
+            .Where(t => t.Status == PaymentStatus.Failed
+                        && t.UpdatedAtUtc >= failedSince
+                        && t.ProviderReference != null)
+            .OrderByDescending(t => t.UpdatedAtUtc)
+            .Take(BatchSize)
+            .Select(t => t.Id)
+            .ToListAsync(ct));
+
+        return due;
     }
 }

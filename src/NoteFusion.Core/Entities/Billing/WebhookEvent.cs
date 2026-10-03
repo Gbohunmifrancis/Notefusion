@@ -66,9 +66,46 @@ public class WebhookEvent : BaseEntity
     public void RecordFailure(string error, int maxAttempts, DateTime utcNow)
     {
         ProcessAttempts++;
-        LastError = error;
+        LastError = error.Length <= MaxErrorLength ? error : error[..MaxErrorLength];
         LastAttemptAtUtc = utcNow;
         if (ProcessAttempts >= maxAttempts)
             Status = WebhookStatus.Failed;
     }
+
+    /// <summary>
+    /// Whether the worker should try this event again at <paramref name="utcNow"/>. A fresh event is due
+    /// at once; a failed one waits out <see cref="RetryDelays"/> for its attempt number, measured from the
+    /// last attempt. Without the wait every retry landed within seconds of the last — a provider outage of
+    /// fifteen seconds was enough to park a payment for good.
+    /// </summary>
+    public bool IsDueForRetry(DateTime utcNow) => IsDueForRetry(ProcessAttempts, LastAttemptAtUtc, utcNow);
+
+    /// <summary>
+    /// The same rule over the two columns it reads, so the worker can apply it to a projection without
+    /// loading every payload in the inbox.
+    /// </summary>
+    public static bool IsDueForRetry(int processAttempts, DateTime? lastAttemptAtUtc, DateTime utcNow)
+    {
+        if (processAttempts <= 0 || lastAttemptAtUtc is null)
+            return true;
+
+        var delay = RetryDelays[Math.Min(processAttempts, RetryDelays.Length) - 1];
+        return utcNow >= lastAttemptAtUtc.Value + delay;
+    }
+
+    /// <summary>
+    /// The wait after the first, second, … failure; the last entry repeats. Paired with the default
+    /// attempt limit this spreads one event over well over an hour before it is parked.
+    /// </summary>
+    private static readonly TimeSpan[] RetryDelays =
+    [
+        TimeSpan.FromSeconds(5),
+        TimeSpan.FromSeconds(30),
+        TimeSpan.FromMinutes(2),
+        TimeSpan.FromMinutes(10),
+        TimeSpan.FromMinutes(30),
+    ];
+
+    /// <summary>The column width of <see cref="LastError"/>; an exception message can be longer.</summary>
+    private const int MaxErrorLength = 1000;
 }

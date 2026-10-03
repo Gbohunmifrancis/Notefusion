@@ -10,6 +10,32 @@ at startup if a plan on sale has no live provider or no Bachs product. The one e
 precondition is unchanged from the history below: the Bachs account must be able to bill USD cards
 on a schedule, or the dollar checkouts render no payment method.
 
+**Payment confirmation (October 2026).** What has to hold so Pro unlocks as soon as money moves and no
+paid checkout is stranded:
+
+- **Verify against the session, not the charge.** A dollar one-off is priced in the session (`amount`
+  `"79.00"`, `currency` `"USD"`) and charged in naira by FX conversion (`charge.currency` `"NGN"`,
+  `charge.amount` `"113421.48"`, `billing_currency` `"NGN"`). `BachsPaymentGateway.VerifyAsync` verifies the
+  session's base price; the charge figure is cross-checked only when it is in the same currency. A
+  different charge currency is logged as FX and accepted when the payment positively settled
+  (`payment_status` succeeded/paid, or `charge.status` succeeded/overpaid/accepted).
+- **An open session is never a failure**, even after a declined attempt or with money still arriving:
+  verify reports it as transient and the row stays Processing. `amount_remaining` (charge currency)
+  fails only a settled session whose shortfall was not `accepted`.
+- **The provider's word on settlement wins.** A Failed row the provider later confirms is reopened
+  (`PaymentTransaction.Reopen`) and fulfilled — by webhook, `ReconcilePaymentCommand`, the admin console,
+  the sweep (failed rows from the last 48 hours, every 30 minutes) or `POST /api/billing/confirm` (the
+  caller's three newest in-flight checkouts, then any failed in the last two hours).
+- **Nothing is failed on age alone.** The stale cleanup fails a Processing row only on a definite terminal
+  answer; an unreachable provider leaves it Processing, where the admin payment alert counts it as stuck.
+- **Timings.** Webhook retries back off (5 s, 30 s, 2 min, 10 min, 30 min…) over 8 attempts; the
+  reconciliation sweep runs every 5 minutes on rows 3 minutes stale; an open checkout is handed back for 30
+  minutes (`Billing__CheckoutReuseMinutes`), after which it is reconciled and replaced.
+- **Return URL.** `Billing__CheckoutCallbackUrl` defaults to
+  `https://api.notefusion.studio/api/billing/return` (a blank value keeps the default). A checkout started
+  with `client: "web"` returns to `…/api/billing/return/web`, which sends the browser to
+  `https://notefusion.studio/app?paid=1`. Startup logs a warning if the URL is not https or not that path.
+
 The sections that follow are the plan as it was written when lifetime was the dollar tier; they are
 kept for the reasoning and the Bachs findings.
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Persistence;
@@ -105,6 +106,10 @@ public sealed class BillingSeeder : IHostedService
             foreach (var problem in BillingReadiness.Check(active, gateways, scope.ServiceProvider.GetService<BachsOptions>()))
                 _logger.LogError("Billing is not ready: {Problem}", problem);
         }
+
+        var settings = scope.ServiceProvider.GetService<BillingSettings>();
+        if (settings is not null && BillingReadiness.CheckCallbackUrl(settings.CheckoutCallbackUrl) is { } callbackProblem)
+            _logger.LogWarning("Billing callback: {Problem}", callbackProblem);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

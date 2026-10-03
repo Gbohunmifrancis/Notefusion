@@ -113,6 +113,64 @@ public class PaymentTransactionTests
     }
 
     [Fact]
+    public void A_failed_payment_the_provider_later_confirms_can_be_reopened_and_completed()
+    {
+        // A checkout we closed can still have been paid, and the provider's word on settlement wins.
+        var tx = NewPending();
+        tx.AttachCheckout("prov-ref", "https://checkout.example/abc", null, Now);
+        tx.MarkFailed("Provider reports this checkout can no longer be paid.", Now);
+
+        tx.Reopen(Now.AddMinutes(5));
+        Assert.Equal(PaymentStatus.Processing, tx.Status);
+        Assert.Equal(Now.AddMinutes(5), tx.UpdatedAtUtc);
+
+        // The earlier verdict stays on the row for the audit trail.
+        Assert.Contains("Reopened", tx.FailureReason);
+        Assert.Contains("can no longer be paid", tx.FailureReason);
+
+        tx.MarkVerified("prov-ref", null, Now);
+        tx.MarkCompleted(Now);
+        Assert.Equal(PaymentStatus.Completed, tx.Status);
+    }
+
+    [Fact]
+    public void Reopening_is_a_no_op_on_a_row_still_in_flight()
+    {
+        var tx = NewPending();
+        tx.AttachCheckout(null, "https://checkout.example/abc", null, Now);
+
+        tx.Reopen(Now.AddMinutes(5));
+
+        Assert.Equal(PaymentStatus.Processing, tx.Status);
+        Assert.Null(tx.FailureReason);
+    }
+
+    [Fact]
+    public void Only_a_failed_payment_can_be_reopened()
+    {
+        var pending = NewPending();
+        Assert.Throws<InvalidOperationException>(() => pending.Reopen(Now));
+
+        var completed = NewPending();
+        completed.AttachCheckout(null, "https://checkout.example/abc", null, Now);
+        completed.MarkVerified("prov-ref", null, Now);
+        completed.MarkCompleted(Now);
+        Assert.Throws<InvalidOperationException>(() => completed.Reopen(Now));
+    }
+
+    [Fact]
+    public void A_long_earlier_failure_reason_is_clipped_to_the_column_on_reopen()
+    {
+        var tx = NewPending();
+        tx.AttachCheckout(null, "https://checkout.example/abc", null, Now);
+        tx.MarkFailed(new string('x', 1000), Now);
+
+        tx.Reopen(Now);
+
+        Assert.Equal(1000, tx.FailureReason!.Length);
+    }
+
+    [Fact]
     public void Money_property_returns_correct_value_object()
     {
         var tx = PaymentTransaction.Create(

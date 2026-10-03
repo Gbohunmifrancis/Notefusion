@@ -44,7 +44,7 @@ public sealed class BillingController : ApiControllerBase
     /// </summary>
     [HttpPost("checkout")]
     public async Task<IActionResult> Checkout(CheckoutBody body, CancellationToken ct)
-        => HandleResult(await _sender.Send(new InitiateCheckoutCommand(body.PlanId), ct));
+        => HandleResult(await _sender.Send(new InitiateCheckoutCommand(body.PlanId, body.Client), ct));
 
     /// <summary>
     /// The https landing page hosted checkout returns the browser to, whose only job is to hand off to
@@ -58,6 +58,15 @@ public sealed class BillingController : ApiControllerBase
     [HttpGet("return")]
     [Produces("text/html")]
     public IActionResult Return() => Content(ReturnPage, "text/html; charset=utf-8");
+
+    /// <summary>
+    /// The same hop for a checkout started on the website (<c>client: "web"</c>): back to the site's app
+    /// page, which confirms the payment on load. Anonymous and outcome-neutral for the same reasons.
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("return/web")]
+    [Produces("text/html")]
+    public IActionResult ReturnWeb() => Content(WebReturnPage, "text/html; charset=utf-8");
 
     /// <summary>The caller's subscription state — the app gates Pro features on this.</summary>
     [HttpGet("my-subscription")]
@@ -89,8 +98,11 @@ public sealed class BillingController : ApiControllerBase
     public async Task<IActionResult> LedgerBalance(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetLedgerBalanceQuery(), ct));
 
-    /// <summary>Body for a checkout request (plan chosen by id; provider is picked server-side).</summary>
-    public sealed record CheckoutBody(Guid PlanId);
+    /// <summary>
+    /// Body for a checkout request (plan chosen by id; provider is picked server-side). <c>Client</c> is
+    /// optional; <c>"web"</c> returns the browser to the website after paying instead of to the app.
+    /// </summary>
+    public sealed record CheckoutBody(Guid PlanId, string? Client = null);
 
     /// <summary>
     /// The deep link the app listens for. Must stay identical to <c>RETURN_URL</c> in
@@ -131,6 +143,37 @@ public sealed class BillingController : ApiControllerBase
           <a href="{{AppReturnLink}}">Open NoteFusion</a>
           <p style="margin-top:.5rem"><a href="{{WebReturnLink}}" style="background:none;color:#9AA7BF;padding:0;font-weight:500;text-decoration:underline">Paid on the website? Go back to NoteFusion Web</a></p>
           <script>location.replace("{{AppReturnLink}}");</script>
+        </body>
+        </html>
+        """;
+
+    /// <summary>
+    /// The website's return page: the same look, but it goes back to the site rather than the app. The
+    /// button is there for a browser that blocks the scripted jump.
+    /// </summary>
+    private const string WebReturnPage = $$"""
+        <!doctype html>
+        <html lang="en">
+        <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Returning to NoteFusion…</title>
+        <style>
+          body { margin:0; min-height:100vh; box-sizing:border-box; padding:2rem;
+                 display:flex; flex-direction:column; align-items:center; justify-content:center;
+                 gap:1.25rem; text-align:center; background:#0B1220; color:#E8EDF7;
+                 font:16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+          h1 { margin:0; font-size:1.25rem; font-weight:600; }
+          p { margin:0; max-width:22rem; color:#9AA7BF; }
+          a { display:inline-block; padding:.75rem 1.5rem; border-radius:999px;
+              background:#F2C14E; color:#0B1220; font-weight:600; text-decoration:none; }
+        </style>
+        </head>
+        <body>
+          <h1>Returning to NoteFusion…</h1>
+          <p>We're confirming your payment.</p>
+          <a href="{{WebReturnLink}}">Back to NoteFusion</a>
+          <script>location.replace("{{WebReturnLink}}");</script>
         </body>
         </html>
         """;
