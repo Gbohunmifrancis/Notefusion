@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=12">
+<link rel="stylesheet" href="/assets/app.css?v=13">
 <script>
   (function () {
     var t = null;
@@ -47,6 +47,7 @@
   <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
   <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+  <symbol id="i-keys" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 20v-5"/><path d="M15 20v-5"/><path d="M7.5 4v11h3V4"/><path d="M13.5 4v11h3V4"/></symbol>
   <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m5.6 5.6 2.8 2.8"/><path d="m15.6 15.6 2.8 2.8"/><path d="m5.6 18.4 2.8-2.8"/><path d="m15.6 8.4 2.8-2.8"/></symbol>
 </svg>
 
@@ -103,6 +104,13 @@
       </div>
     </div>
 
+    <!-- Chords, when the sheet carries them: the Tonic Solfa tab shows them bar by bar over the tune. -->
+    <div class="card hidden" id="chords-card">
+      <h2><svg class="ic"><use href="#i-keys"/></svg>Chords</h2>
+      <p class="card-lead">Each chord by its letter name, with its root in Tonic Solfa beneath. The Tonic Solfa tab shows them bar by bar over the tune, and the staff shows them above the notes.</p>
+      <div class="chord-list" id="chord-list"></div>
+    </div>
+
     <div class="card">
       <h2><svg class="ic"><use href="#i-play"/></svg>Rehearse</h2>
       <p class="card-lead no-print">Hear the tune or just your part. Mute a voice to sing it against the others; loop a few bars; slow it down.</p>
@@ -128,7 +136,8 @@
   </div>
 </div>
 <script src="/assets/choir.js?v=2"></script>
-<script src="/assets/sheet.js?v=4"></script>
+<script src="/assets/chords.js?v=1"></script>
+<script src="/assets/sheet.js?v=5"></script>
 <script src="/assets/track.js?v=1" defer></script>
 </body>
 </html>

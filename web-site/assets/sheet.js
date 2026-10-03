@@ -4,7 +4,7 @@
   "use strict";
   var API = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5080" : "https://api.notefusion.studio";
   var OSMD = ["https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js", "https://unpkg.com/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js"];
-  var C = window.NfChoir;
+  var C = window.NfChoir, N = window.NfChords;
   function $(id) { return document.getElementById(id); }
   function show(el) { el.classList.remove("hidden"); }
   function hide(el) { el.classList.add("hidden"); }
@@ -66,6 +66,7 @@
     [data.key, data.tempoBpm + " BPM", data.timeSignature].forEach(function (t) { var c = document.createElement("span"); c.className = "chip"; c.textContent = t; $("s-chips").appendChild(c); });
 
     renderSolfa();
+    if (N.has(sheet.chords)) { N.renderList($("chord-list"), sheet.chords, sheet.tempoBpm); show($("chords-card")); }
     if (parts) {
       show($("tab-parts"));
       var holder = $("parts-solfa"); holder.innerHTML = "";
@@ -85,11 +86,14 @@
   function renderSolfa() {
     var lines = C.renderLines(melody, C.keyHeader(sheet.key), sheet.timeSignature);
     var box = $("solfa-text"); box.innerHTML = "";
-    var hasLyrics = !!(sheet.lyrics && sheet.lyrics.trim());
-    (hasLyrics ? lines.slice(0, 1) : lines).forEach(function (line, i) {
+    var hasLyrics = !!(sheet.lyrics && sheet.lyrics.trim()), hasChords = N.has(sheet.chords);
+    (hasLyrics || hasChords ? lines.slice(0, 1) : lines).forEach(function (line, i) {
       var d = document.createElement("div"); if (i === 0) d.className = "doh"; d.textContent = line; box.appendChild(d);
     });
     var hymn = $("hymn"); hymn.innerHTML = ""; cells = [];
+    $("lyrics").textContent = hasLyrics ? sheet.lyrics : "";
+    // With chords, the grid is drawn whatever the words: each chord over the bar it starts in, its root in solfa under its name.
+    if (hasChords) { cells = N.renderGrid(hymn, N.grid(melody, sheet.lyrics, sheet.chords, sheet.timeSignature), hasLyrics); return; }
     if (hasLyrics) {
       C.hymnRows(melody, sheet.lyrics, sheet.timeSignature).forEach(function (bars, r) {
         var table = document.createElement("table"); table.className = "hymn"; var tr = document.createElement("tr");
@@ -105,9 +109,6 @@
         });
         table.appendChild(tr); hymn.appendChild(table);
       });
-      $("lyrics").textContent = sheet.lyrics;
-    } else {
-      $("lyrics").textContent = "";
     }
   }
 
@@ -173,7 +174,11 @@
   }
 
   $("dl-solfa").addEventListener("click", function () {
-    var text = C.renderLines(melody, C.keyHeader(sheet.key), sheet.timeSignature).join("\n") + (sheet.lyrics ? "\n\n" + sheet.lyrics : "") + "\n\nShared from NoteFusion · notefusion.studio\n";
+    var lines = C.renderLines(melody, C.keyHeader(sheet.key), sheet.timeSignature);
+    var text = N.has(sheet.chords)
+      ? lines[0] + "\n\n" + N.textRows(N.grid(melody, sheet.lyrics, sheet.chords, sheet.timeSignature), !!(sheet.lyrics && sheet.lyrics.trim())).join("\n")
+      : lines.join("\n") + (sheet.lyrics ? "\n\n" + sheet.lyrics : "");
+    text += "\n\nShared from NoteFusion · notefusion.studio\n";
     var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
     a.download = (sheet.title || "sheet").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-") + "-solfa.txt"; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   });

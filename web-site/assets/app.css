@@ -43,6 +43,7 @@ html { scroll-padding-top: 80px; }
 body { color: var(--ink); background: var(--bg); line-height: 1.55; }
 a { color: var(--blue-dark); }
 .hidden { display: none !important; }
+[hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .muted { color: var(--muted); }
 .small { font-size: 0.875rem; }
@@ -162,6 +163,16 @@ body.guest .topbar { display: flex; }
 .studio .studio-kind label { flex: 1; justify-content: center; color: rgba(255, 255, 255, 0.85); }
 .studio-kind label .ic { width: 16px; height: 16px; }
 .studio .studio-kind label:has(input:checked) { background: #fff; color: var(--blue-dark); }
+.studio-opts { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 10px 2px 0; }
+.studio-opt { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 0.85rem; font-weight: 600; color: rgba(255, 255, 255, 0.9); cursor: pointer; }
+.studio-opt input[type=checkbox] { width: 16px; height: 16px; margin: 0; accent-color: #fff; }
+.studio-opt select { width: auto; min-height: 32px; padding: 4px 28px 4px 10px; font-size: 0.85rem; font-weight: 600; border-radius: 8px; color: #fff; border: 1px solid rgba(255, 255, 255, 0.45); appearance: none; -webkit-appearance: none; background: rgba(255, 255, 255, 0.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 8px center no-repeat; }
+.studio-opt select:focus { border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18); }
+.studio-opt select option { color: #0f172a; background: #fff; }
+.btn.btn-glass { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.45); }
+.btn.btn-glass:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
+.studio-status.link-hint { margin-top: 8px; font-weight: 500; }
+.studio-status.link-hint:empty { display: none; }
 .studio-or { color: rgba(255, 255, 255, 0.75); margin: 16px 0 12px; }
 .studio-or::before, .studio-or::after { background: rgba(255, 255, 255, 0.3); }
 .studio-link .input-wrap input { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.45); color: #fff; padding-left: 104px; }
@@ -296,6 +307,18 @@ table.hymn td:last-child { border-right: 2px solid var(--ink); }
 .cell b { display: block; font-size: 1rem; }
 .cell b.now { color: var(--blue); }
 .cell i { display: block; font-style: normal; font-family: Inter, sans-serif; font-size: 0.72rem; color: var(--muted); min-height: 1em; }
+/* Chords over the grid: the letter name with its root in solfa under it, greyed when a bar opens on a chord still sounding. */
+.chord-grid .ch { display: block; min-height: 2.15em; line-height: 1.1; padding-bottom: 3px; }
+.chord-grid .ch strong { display: block; font-family: Inter, sans-serif; font-size: 0.82rem; color: var(--blue-dark); white-space: pre; }
+.chord-grid .ch small { display: block; font-size: 0.72rem; color: var(--muted); white-space: pre; }
+.chord-grid .ch.held { opacity: 0.55; }
+.chord-grid .ch.held strong::before { content: "("; }
+.chord-grid .ch.held strong::after { content: ")"; }
+.chord-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.chord-chip { display: inline-flex; flex-direction: column; align-items: center; min-width: 60px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--wash); line-height: 1.25; }
+.chord-chip small { font-size: 0.68rem; color: var(--faint); font-variant-numeric: tabular-nums; }
+.chord-chip strong { font-size: 1.05rem; color: var(--ink); letter-spacing: -0.01em; }
+.chord-chip em { font-style: normal; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.8rem; color: var(--blue-dark); }
 
 /* Player toolbar */
 .player { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
@@ -457,6 +480,9 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
   .result-tabs { width: 100%; display: flex; }
   .tabs { width: 100%; display: flex; }
   .upload-kind label { flex: 1; justify-content: center; white-space: normal; text-align: center; font-size: 0.8rem; padding: 7px 8px; }
+  .studio .studio-kind { flex-wrap: wrap; }
+  .studio .studio-kind label { flex: 1 1 45%; }
+  .studio-opts { gap: 8px 14px; }
   .alert { flex-wrap: wrap; }
   .alert .btn { margin-left: 0; }
   .share-row input { width: 100%; }
@@ -641,6 +667,7 @@ body.auth-only .auth-page .try-free { display: none; }
 [data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
 [data-theme="dark"] .plan-opt.on { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18); }
 [data-theme="dark"] .pill-free { color: var(--color-brand-500); }
+[data-theme="dark"] .chord-grid .ch strong, [data-theme="dark"] .chord-chip em { color: var(--color-brand-500); }
 [data-theme="dark"] .pay-toast { border-color: rgba(233, 185, 73, 0.35); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); }
 [data-theme="dark"] .pay-toast-mark { background: rgba(233, 185, 73, 0.14); color: var(--gold); }
 [data-theme="dark"] .pro-welcome-card::before { background: radial-gradient(120% 100% at 50% 0%, rgba(242, 193, 78, 0.16), transparent 70%); }
