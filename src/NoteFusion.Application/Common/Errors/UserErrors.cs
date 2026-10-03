@@ -20,4 +20,8 @@ public static class UserErrors
 
     public static readonly Error PictureUploadFailed =
         Error.Failure("USER_PICTURE_UPLOAD_FAILED", "The picture could not be uploaded. Please try again.");
+
+    /// <summary>This deployment has nowhere to store pictures, so nothing was saved and the old one stays.</summary>
+    public static readonly Error PictureStorageUnavailable =
+        Error.Failure("USER_PICTURE_STORAGE_UNAVAILABLE", "Photo uploads aren't available right now. Please try again later.");
 }

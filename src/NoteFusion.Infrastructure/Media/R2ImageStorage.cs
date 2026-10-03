@@ -47,21 +47,22 @@ internal sealed class R2ImageStorage : IImageStorage
     public async Task<Result<string>> UploadAvatarAsync(
         Stream content, string fileName, Guid userId, CancellationToken ct)
     {
-        // R2 stores exactly what it is given, so the crop-and-scale that Cloudinary did on ingest
-        // has to happen before the PUT.
-        var avatar = AvatarImage.ToAvatarJpeg(content);
-        if (avatar.IsFailure)
-        {
-            _logger.LogInformation(
-                "[r2] avatar for {UserId} was not a decodable image ({FileName}).", userId, fileName);
-            return avatar.Error;
-        }
-
-        await using var jpeg = avatar.Value;
         var key = KeyFor(userId);
 
         try
         {
+            // R2 stores exactly what it is given, so the crop-and-scale that Cloudinary did on ingest
+            // has to happen before the PUT. Inside the try: a decoder that throws rather than returning
+            // a failure must still reach the user as the friendly message, not a 500.
+            var avatar = AvatarImage.ToAvatarJpeg(content);
+            if (avatar.IsFailure)
+            {
+                _logger.LogInformation(
+                    "[r2] avatar for {UserId} was not a decodable image ({FileName}).", userId, fileName);
+                return avatar.Error;
+            }
+
+            await using var jpeg = avatar.Value;
             await _client.PutObjectAsync(
                 new PutObjectRequest
                 {

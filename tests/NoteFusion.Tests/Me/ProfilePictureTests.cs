@@ -1,7 +1,9 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Me.Commands;
 using NoteFusion.Core.Entities;
+using NoteFusion.Infrastructure.Media;
 using NoteFusion.Shared.Results;
 using NoteFusion.Tests.Support;
 
@@ -45,6 +47,25 @@ public class ProfilePictureTests
         // The whole point of uploading before saving: a network failure must not cost the user
         // the photo they already had.
         Assert.Equal("https://cdn.test/avatars/existing.jpg", h.Db.Users.Single().ProfilePictureUrl);
+    }
+
+    [Fact]
+    public async Task Without_storage_configured_an_upload_is_refused_and_the_google_photo_survives()
+    {
+        // The reported bug: production ran on the logging sink, which used to "succeed" with a dead
+        // images.invalid URL, so a Google user's working photo was overwritten and went blank.
+        using var h = new TestHarness();
+        var user = await SeedUser(h);
+        user.SetProfilePicture("https://lh3.googleusercontent.com/a/photo");
+        await h.Db.SaveChangesAsync();
+        var storage = new LoggingImageStorage(NullLogger<LoggingImageStorage>.Instance);
+
+        var result = await new UpdateMyProfilePictureCommandHandler(h.Db, new StubCurrentUser(user.Id), storage)
+            .Handle(Command(), default);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(UserErrors.PictureStorageUnavailable, result.Error);
+        Assert.Equal("https://lh3.googleusercontent.com/a/photo", h.Db.Users.Single().ProfilePictureUrl);
     }
 
     [Fact]

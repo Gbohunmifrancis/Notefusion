@@ -95,6 +95,14 @@ services:
       # added automatically in Development, and this service runs Production, so the dashboard has to
       # be named explicitly; add more as __1, __2, …
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:3000}
+      # Profile photos go to Cloudflare R2 only when all of these are set in .env; otherwise uploads
+      # are refused with a friendly message. UseR2 must default: an empty bool stops startup.
+      R2__UseR2: ${R2__UseR2:-false}
+      R2__AccountId: ${R2__AccountId:-}
+      R2__AccessKeyId: ${R2__AccessKeyId:-}
+      R2__SecretAccessKey: ${R2__SecretAccessKey:-}
+      R2__BucketName: ${R2__BucketName:-}
+      R2__PublicBaseUrl: ${R2__PublicBaseUrl:-}
     ports:
       - "5080:8080"
     depends_on:

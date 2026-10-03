@@ -117,6 +117,14 @@ services:
       Paystack__SecretKey: ${Paystack__SecretKey}
       Paystack__WebhookSecret: ${Paystack__WebhookSecret:-}
       Paystack__SupportedCurrencies: ${Paystack__SupportedCurrencies:-NGN}
+      # Profile photos (Cloudflare R2). The deploy writes these into .env; without them here the API
+      # never sees them and photo uploads stay off. UseR2 must default: an empty bool stops startup.
+      R2__UseR2: ${R2__UseR2:-false}
+      R2__AccountId: ${R2__AccountId}
+      R2__AccessKeyId: ${R2__AccessKeyId}
+      R2__SecretAccessKey: ${R2__SecretAccessKey}
+      R2__BucketName: ${R2__BucketName}
+      R2__PublicBaseUrl: ${R2__PublicBaseUrl}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 
