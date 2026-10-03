@@ -39,6 +39,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
   pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
   the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.
+  `app/pipeline/chords.py` reads chords per beat (notes + chroma + bass, Viterbi, key from the chords) for
+  `mode="chords"` (top line = melody) and for melody-mode songs off the backing; `keyboard_transpose` writes
+  sounding pitch minus the keyboard's transpose (solfa unchanged). Bench: `python -m tests.accuracy.chords_bench`.
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
   client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,

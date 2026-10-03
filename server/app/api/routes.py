@@ -94,9 +94,10 @@ async def submit_transcription(
     separate: bool = Form(False, description="The upload is a full song: isolate the lead vocal first and read the beat from the mix"),
     audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
     harmony: bool = Form(False, description="Also write alto, tenor and bass under the tune (off: one voice is transcribed as one voice)"),
+    keyboard_transpose: int = Form(0, description="The transpose setting on the player's keyboard, -11..11; the sheet is written in the key they play in"),
 ) -> SubmitResponse:
-    if mode not in ("melody", "poly", "choir"):
-        raise HTTPException(422, "mode must be 'melody', 'poly' or 'choir'")
+    mode = _mode(mode)
+    keyboard_transpose = _keyboard_transpose(keyboard_transpose)
     priority = _priority(priority)
     if max_seconds is not None and not 1.0 <= max_seconds <= settings.max_clip_seconds:
         raise HTTPException(422, f"max_seconds must be between 1 and {settings.max_clip_seconds:.0f}.")
@@ -175,7 +176,7 @@ async def submit_transcription(
                           correlation_id=_correlation_id(request),
                           callback_url=callback_url, priority=priority,
                           song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
-                          harmony=harmony)
+                          harmony=harmony, keyboard_transpose=keyboard_transpose)
     return SubmitResponse(job_id=job_id)
 
 
@@ -189,6 +190,21 @@ def _trim_head(path: Path, seconds: float) -> Path:
     sf.write(str(out_path), y, sr)
     path.unlink(missing_ok=True)
     return out_path
+
+
+MODES = ("melody", "poly", "choir", "chords")
+
+
+def _mode(value: str) -> str:
+    if value not in MODES:
+        raise HTTPException(422, "mode must be 'melody', 'poly', 'choir' or 'chords'")
+    return value
+
+
+def _keyboard_transpose(value: int) -> int:
+    if not -11 <= value <= 11:
+        raise HTTPException(422, "keyboard_transpose must be between -11 and 11.")
+    return value
 
 
 def _priority(value: str) -> str:
@@ -238,6 +254,7 @@ async def submit_link_transcription(
     max_seconds: float | None = Form(None),
     audio_preview: bool = Form(True),
     harmony: bool = Form(False),
+    keyboard_transpose: int = Form(0),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
@@ -247,8 +264,8 @@ async def submit_link_transcription(
     """
     from app.ingest.links import provider_of
 
-    if mode not in ("melody", "poly", "choir"):
-        raise HTTPException(422, "mode must be 'melody', 'poly' or 'choir'")
+    mode = _mode(mode)
+    keyboard_transpose = _keyboard_transpose(keyboard_transpose)
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
     priority = _priority(priority)
@@ -268,7 +285,8 @@ async def submit_link_transcription(
                                time_signature=time_signature,
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
-                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony)
+                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony,
+                               keyboard_transpose=keyboard_transpose)
     return SubmitResponse(job_id=job_id)
 
 
