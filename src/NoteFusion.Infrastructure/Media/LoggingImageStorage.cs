@@ -1,19 +1,20 @@
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Media;
 
 /// <summary>
-/// Default <see cref="IImageStorage"/> used in development: logs the upload instead of performing it
-/// and hands back a placeholder URL. Mirrors <c>LoggingEmailTransport</c> / <c>LoggingPushSender</c> —
-/// <c>docker compose up</c> needs no R2 bucket, and nobody writes to a real one while the
-/// avatar flow is being tested.
+/// Default <see cref="IImageStorage"/> when R2 is not configured: logs the upload and refuses it.
+/// Mirrors <c>LoggingEmailTransport</c> / <c>LoggingPushSender</c> — <c>docker compose up</c> needs
+/// no R2 bucket, and nobody writes to a real one while the avatar flow is being tested.
 /// </summary>
 /// <remarks>
-/// The URL it returns does not resolve, so the picture renders blank in the app. That is the honest
-/// signal that no storage is configured; the alternative — a stock image from some third party —
-/// would look like a working upload.
+/// It used to report success with a placeholder URL that never resolved. Production ran on this
+/// sink when the R2 settings never reached the container, and every upload replaced a working
+/// photo — a Google one included — with that dead URL while the app said it had saved. A refusal
+/// leaves the existing photo alone and tells the user plainly that uploads are off.
 /// </remarks>
 internal sealed class LoggingImageStorage : IImageStorage
 {
@@ -28,11 +29,11 @@ internal sealed class LoggingImageStorage : IImageStorage
         var size = content.CanSeek ? $"{content.Length} bytes" : "unknown size";
 
         _logger.LogWarning(
-            "[image] no R2 bucket configured — avatar for {UserId} was not stored "
+            "[image] no R2 bucket configured — avatar for {UserId} was refused "
             + "({FileName}, {Size}). Set R2__UseR2=true plus credentials to enable uploads.",
             userId, fileName, size);
 
-        return Task.FromResult<Result<string>>($"https://images.invalid/notefusion/avatars/{userId:N}.jpg");
+        return Task.FromResult<Result<string>>(UserErrors.PictureStorageUnavailable);
     }
 
     public Task DeleteAvatarAsync(Guid userId, CancellationToken ct)

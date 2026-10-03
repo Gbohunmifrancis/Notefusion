@@ -1,15 +1,16 @@
+using Microsoft.Extensions.Configuration;
+
 namespace NoteFusion.Infrastructure.Media;
 
 /// <summary>
-/// Avatar hosting on Cloudflare R2, bound from the <c>R2</c> section / env
-/// (<c>R2__AccountId</c>, <c>R2__SecretAccessKey</c>, …).
+/// Avatar hosting on Cloudflare R2, read from the <c>R2</c> section / env
+/// (<c>R2__AccountId</c>, <c>R2__SecretAccessKey</c>, …) by <see cref="Resolve"/>.
 /// </summary>
 public sealed class R2Settings
 {
     /// <summary>
-    /// False (the default) keeps uploads local to the log, so a dev run needs no R2 bucket and
-    /// cannot write to someone's production one. Production sets <c>R2__UseR2=true</c> alongside
-    /// the credentials.
+    /// False (the default) turns uploads off, so a dev run needs no R2 bucket and cannot write to
+    /// someone's production one. Production sets <c>R2__UseR2=true</c> alongside the credentials.
     /// </summary>
     public bool UseR2 { get; set; }
 
@@ -46,11 +47,12 @@ public sealed class R2Settings
 
     /// <summary>
     /// True only when the switch is on *and* every value is present. A half-configured deployment
-    /// falls back to the logging sink instead of failing every upload at runtime.
+    /// falls back to the logging sink, which refuses uploads with a friendly message, instead of
+    /// failing every upload against a bucket it cannot reach.
     /// </summary>
     /// <remarks>
     /// <see cref="PublicBaseUrl"/> is required rather than optional: without it we would store the
-    /// object and persist a URL nobody can fetch, which is worse than the honest logging fallback.
+    /// object and persist a URL nobody can fetch, which is worse than the honest refusal.
     /// </remarks>
     public bool IsConfigured =>
         UseR2
@@ -59,4 +61,34 @@ public sealed class R2Settings
         && !string.IsNullOrWhiteSpace(SecretAccessKey)
         && !string.IsNullOrWhiteSpace(BucketName)
         && !string.IsNullOrWhiteSpace(PublicBaseUrl);
+
+    /// <summary>
+    /// Reads the <c>R2</c> section by hand. <see cref="UseR2"/> is on for <c>true</c>, <c>1</c> or
+    /// <c>yes</c> (any case) and off for anything else, blank included.
+    /// </summary>
+    public static R2Settings Resolve(IConfiguration configuration)
+    {
+        // Not bound: compose passes every variable whether or not the deploy set it, so an unset one
+        // arrives as "" — which the binder refuses for the bool, and that exception stops the whole
+        // API at startup (payments and sign-in with it) over a feature that should just switch off.
+        var section = configuration.GetSection("R2");
+        var keyPrefix = section["KeyPrefix"]?.Trim();
+        return new R2Settings
+        {
+            UseR2 = section["UseR2"]?.Trim().ToLowerInvariant() is "true" or "1" or "yes",
+            AccountId = section["AccountId"]?.Trim() ?? string.Empty,
+            AccessKeyId = section["AccessKeyId"]?.Trim() ?? string.Empty,
+            SecretAccessKey = section["SecretAccessKey"]?.Trim() ?? string.Empty,
+            BucketName = section["BucketName"]?.Trim() ?? string.Empty,
+            PublicBaseUrl = WithScheme(section["PublicBaseUrl"]?.Trim() ?? string.Empty),
+            KeyPrefix = string.IsNullOrEmpty(keyPrefix) ? new R2Settings().KeyPrefix : keyPrefix,
+        };
+    }
+
+    /// <summary>
+    /// Cloudflare lists a bucket's custom domain as a bare host, and a URL saved without a scheme loads
+    /// nowhere: the website reads it as a path on its own site and the app refuses it.
+    /// </summary>
+    private static string WithScheme(string baseUrl)
+        => baseUrl.Length == 0 || baseUrl.Contains("://", StringComparison.Ordinal) ? baseUrl : $"https://{baseUrl}";
 }

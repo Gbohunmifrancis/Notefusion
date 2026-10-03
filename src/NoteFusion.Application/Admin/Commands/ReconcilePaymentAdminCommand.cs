@@ -17,7 +17,8 @@ namespace NoteFusion.Application.Admin.Commands;
 /// The reconciliation itself is <see cref="ReconcilePaymentCommand"/> — the same code the background
 /// worker runs, unchanged. This wrapper exists for two things the worker does not need: an audit entry
 /// naming the operator, and an answer that says which kind of success it was, because the inner command is
-/// idempotent and reports "already settled, nothing to do" as plain success.
+/// idempotent and reports "already settled, nothing to do" as plain success. A Failed payment can be
+/// reconciled too: when the provider now says it was paid, it is fulfilled like any other.
 /// <para>
 /// No separation-of-duties guard, unlike the subscription actions: this asks the provider what happened
 /// and applies the answer. An operator pointing it at their own payment can only be told what they already
@@ -62,7 +63,7 @@ public sealed class ReconcilePaymentAdminCommandHandler
             .FirstOrDefaultAsync(t => t.Id == request.PaymentTransactionId, cancellationToken);
 
         if (tx is null)
-            return BillingErrors.TransactionNotFound;
+            return PlainError(BillingErrors.TransactionNotFound);
 
         var previous = tx.Status;
         var reference = tx.Reference;
@@ -84,7 +85,10 @@ public sealed class ReconcilePaymentAdminCommandHandler
                 request.Note);
 
             await _db.SaveChangesAsync(cancellationToken);
-            return result.Error;
+
+            // The provider's own text (status codes, checkout ids, raw amounts) stays in the audit entry
+            // above; the console gets the same code with a sentence an operator can act on.
+            return PlainError(result.Error);
         }
 
         var changed = tx.Status != previous;
@@ -129,14 +133,17 @@ public sealed class ReconcilePaymentAdminCommandHandler
 
             (PaymentStatus.Completed, _) => "This payment was already completed; there was nothing to reconcile.",
 
-            (PaymentStatus.Failed, _) => "This payment had already failed; there was nothing to reconcile.",
+            // Asked again because a closed checkout can still have been paid; had it been, the first arm
+            // above would have matched.
+            (PaymentStatus.Failed, _) =>
+                "This payment had already failed, and the provider still reports no payment on it. Nothing changed.",
 
             (PaymentStatus.Pending, _) =>
                 "Checkout was never opened for this payment, so the provider has nothing to report on it yet.",
 
             // The money moved and the entitlement was never written. Reconciliation deliberately only acts
-            // on Processing rows, so saying "try again" here would be sending the operator round a loop that
-            // cannot end: this state is not recoverable from the console today.
+            // on Processing and Failed rows, so saying "try again" here would be sending the operator round a
+            // loop that cannot end: this state is not recoverable from the console today.
             (PaymentStatus.Verified, _) =>
                 "The money is confirmed but the subscription was never applied, and reconciliation does not "
                 + "retry this state. Escalate it — the customer has paid and has nothing.",
@@ -145,4 +152,16 @@ public sealed class ReconcilePaymentAdminCommandHandler
             // not given a final answer.
             _ => "The provider has not settled this payment yet. It stays open for the next sweep."
         };
+
+    /// <summary>The failure in words for the console, keeping its code and type.</summary>
+    private static Error PlainError(Error error) => error.Type switch
+    {
+        ErrorType.Network => Error.Network(error.Code,
+            "We couldn't get an answer from the payment provider just now. Nothing was changed; try again in a few minutes."),
+        ErrorType.Conflict => Error.Conflict(error.Code,
+            "The provider's amount or currency doesn't match this payment, so nothing was applied. "
+            + "Check the payment with the provider before going further."),
+        ErrorType.NotFound => Error.NotFound(error.Code, "That payment could not be found."),
+        _ => Error.Failure(error.Code, "This payment could not be reconciled. Nothing was changed."),
+    };
 }

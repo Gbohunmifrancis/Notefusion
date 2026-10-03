@@ -19,11 +19,16 @@ namespace NoteFusion.Application.Billing.Commands;
 /// double-charges. A retry after a failed initiation resumes the same Pending row — same reference, same
 /// idempotency key — so the provider replays the original session instead of opening a second charge.
 /// </summary>
-public sealed record InitiateCheckoutCommand(Guid PlanId) : IRequest<Result<CheckoutSessionDto>>;
+/// <param name="Client">
+/// Where the customer is paying from. <c>"web"</c> sends the browser back to the website after checkout
+/// instead of handing off to the app's deep link; anything else (or nothing) is the app.
+/// </param>
+public sealed record InitiateCheckoutCommand(Guid PlanId, string? Client = null) : IRequest<Result<CheckoutSessionDto>>;
 
 public sealed class InitiateCheckoutCommandValidator : AbstractValidator<InitiateCheckoutCommand>
 {
-    public InitiateCheckoutCommandValidator() => RuleFor(x => x.PlanId).NotEmpty();
+    public InitiateCheckoutCommandValidator()
+        => RuleFor(x => x.PlanId).NotEmpty().WithMessage("Please choose a plan.");
 }
 
 public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateCheckoutCommand, Result<CheckoutSessionDto>>
@@ -83,6 +88,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
 
         // Retry-safe: an existing in-flight checkout for this user+plan is reused, so tapping "Upgrade"
         // twice returns the same session instead of opening a second charge.
+        var fromWeb = IsWebClient(request.Client);
         var inFlight = await _db.PaymentTransactions
             .Where(t => t.UserId == userId
                         && t.PlanId == plan.Id
@@ -91,11 +97,37 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             .OrderByDescending(t => t.CreatedAtUtc)
             .FirstOrDefaultAsync(ct);
         if (inFlight is not null)
-            return new CheckoutSessionDto(inFlight.Reference, inFlight.CheckoutUrl!, inFlight.Provider);
+        {
+            // Only while the session can still be paid. A Processing row's UpdatedAtUtc is the moment its
+            // checkout was attached, and a hosted session dies (Bachs: after an hour) whether or not anyone
+            // tells us — handing an old one back would send the customer to a page that cannot take money.
+            // And only to the client that opened it: the session returns the browser to that client's page
+            // (the app's deep link or the website), so the other one would be left on the wrong page after paying.
+            var reuseCutoff = _clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.CheckoutReuseMinutes));
+            var sameClient = inFlight.IdempotencyKey.EndsWith(WebKeySuffix, StringComparison.Ordinal) == fromWeb;
+            if (sameClient && inFlight.UpdatedAtUtc >= reuseCutoff)
+                return new CheckoutSessionDto(inFlight.Reference, inFlight.CheckoutUrl!, inFlight.Provider);
 
+            // Too old to hand out, or the other client's, but it may have been paid without our hearing of it —
+            // often the very reason the customer is back. Ask first, because the answer decides whether a new
+            // charge is wanted at all. A failed ask does not block the purchase: the row stays for the sweep.
+            _ = await ReconcilePaymentCommandHandler.ReconcileAsync(_db, _gateways, _clock, _email, inFlight, ct);
+            if (inFlight.Status == PaymentStatus.Completed)
+            {
+                var updated = await _db.Subscriptions
+                    .OrderByDescending(s => s.CurrentPeriodEndUtc)
+                    .FirstOrDefaultAsync(s => s.UserId == userId, ct);
+                return updated is not null && updated.IsLifetime && updated.IsActiveAt(_clock.UtcNow)
+                    ? BillingErrors.AlreadyLifetime
+                    : EarlierPaymentLanded;
+            }
+        }
+
+        // A currency nothing can collect is a configuration fault, not something the customer can act on,
+        // so it reads as the same plain "could not open the payment page" as any other initiation failure.
         var gatewayResult = _gateways.SelectForCurrency(plan.Currency);
         if (gatewayResult.IsFailure)
-            return gatewayResult.Error;
+            return BillingErrors.GatewayInitiationFailed;
         var gateway = gatewayResult.Value;
 
         var now = _clock.UtcNow;
@@ -107,14 +139,21 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         // debited on the invisible first attempt is not charged again. Minting a fresh key here instead
         // would make every retry a brand-new charge, which is exactly the duplicate we must never create.
         // Narrowed on provider/amount/currency so a re-priced plan or a re-routed provider starts clean
-        // rather than replaying a key the provider fingerprinted against a different body.
-        var transaction = await _db.PaymentTransactions
+        // rather than replaying a key the provider fingerprinted against a different body. The return URL is
+        // part of that body too, so a row is only replayed by the client (app or website) that started it:
+        // the other one's URL under the same key is a key conflict, which leaves the outcome unknown and
+        // would refuse that client's every attempt until the stale sweep closed the row.
+        var pending = _db.PaymentTransactions
             .Where(t => t.UserId == userId
                         && t.PlanId == plan.Id
                         && t.Status == PaymentStatus.Pending
                         && t.Provider == gateway.Provider
                         && t.AmountMinor == plan.AmountMinor
-                        && t.Currency == plan.Currency)
+                        && t.Currency == plan.Currency);
+        pending = fromWeb
+            ? pending.Where(t => t.IdempotencyKey.EndsWith(WebKeySuffix))
+            : pending.Where(t => !t.IdempotencyKey.EndsWith(WebKeySuffix));
+        var transaction = await pending
             .OrderByDescending(t => t.CreatedAtUtc)
             .FirstOrDefaultAsync(ct);
 
@@ -123,9 +162,11 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             var reference = $"NF_{Guid.NewGuid():N}";
 
             // Derived from the reference, not from a fresh Guid: the key must be stable across retries of
-            // THIS initiation, and the reference already identifies it uniquely.
+            // THIS initiation, and the reference already identifies it uniquely. The suffix records which
+            // client started it, for the narrowing above.
             transaction = PaymentTransaction.Create(
-                userId, plan.Id, gateway.Provider, $"checkout:{reference}", reference,
+                userId, plan.Id, gateway.Provider,
+                fromWeb ? $"checkout:{reference}{WebKeySuffix}" : $"checkout:{reference}", reference,
                 plan.AmountMinor, plan.Currency, now);
 
             // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
@@ -136,7 +177,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         var initiation = await gateway.InitiateAsync(
             new GatewayInitiationRequest(
                 transaction.Reference, plan.AmountMinor, plan.Currency, user.Email,
-                _settings.CheckoutCallbackUrl,
+                CallbackUrlFor(request.Client, _settings.CheckoutCallbackUrl),
                 // Every plan is a single charge for one period, priced from our own plan row. Bachs
                 // subscription checkouts must be paid by a card it can save, and this account offers
                 // no card method for USD, so a recurring session is refused outright
@@ -175,5 +216,40 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         await _db.SaveChangesAsync(ct);
 
         return new CheckoutSessionDto(transaction.Reference, transaction.CheckoutUrl!, transaction.Provider);
+    }
+
+    /// <summary>
+    /// The customer's earlier checkout turned out to be paid when they came back to buy again. Opening a
+    /// second charge on top of it would sell them a period they almost certainly did not mean to buy.
+    /// </summary>
+    private static readonly Error EarlierPaymentLanded =
+        Error.Conflict("BILLING_PAYMENT_ALREADY_RECEIVED",
+            "Good news: your earlier payment has gone through and Pro is now active. There is nothing more to pay.");
+
+    /// <summary>Ends the idempotency key of a checkout the website started; app keys carry no suffix.</summary>
+    private const string WebKeySuffix = ":web";
+
+    private static bool IsWebClient(string? client)
+        => string.Equals(client?.Trim(), "web", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>The path of the API's own return page, which the website's variant extends with <c>/web</c>.</summary>
+    private const string ReturnPath = "/api/billing/return";
+
+    /// <summary>
+    /// Where the provider sends the browser back to. A checkout from the website returns to the API's
+    /// <c>/api/billing/return/web</c> page, which goes back to the site; any other client gets the
+    /// configured URL, which hands off to the app. Only a configured URL that is the API's own return page
+    /// can be extended — anything else was set deliberately and is used as it stands.
+    /// </summary>
+    internal static string CallbackUrlFor(string? client, string configured)
+    {
+        if (!IsWebClient(client)
+            || !Uri.TryCreate(configured, UriKind.Absolute, out var uri)
+            || !uri.AbsolutePath.TrimEnd('/').EndsWith(ReturnPath, StringComparison.OrdinalIgnoreCase))
+        {
+            return configured;
+        }
+
+        return new UriBuilder(uri) { Path = uri.AbsolutePath.TrimEnd('/') + "/web" }.Uri.AbsoluteUri;
     }
 }

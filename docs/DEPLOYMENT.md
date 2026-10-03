@@ -158,7 +158,7 @@ recurring plan — a subscription checkout is otherwise rejected with `SUBSCRIPT
 > Check the session in the Bachs dashboard and reconcile it by hand — retrying will not
 > clear it, because the provider will keep returning the same two numbers.
 
-**Point each provider's webhook at** `POST https://<your-heroku-app>.herokuapp.com/api/billing/webhooks/<provider>`
+**Point each provider's webhook at** `POST https://api.notefusion.studio/api/billing/webhooks/<provider>`
 (e.g. `.../api/billing/webhooks/paystack`). The endpoint is anonymous by design —
 providers authenticate by signature, not JWT.
 
@@ -167,7 +167,7 @@ providers authenticate by signature, not JWT.
 | Var | Default | Notes |
 |-----|---------|-------|
 | `Billing__DefaultProvider` | `Paystack` | Provider chosen when a currency has more than one candidate. |
-| `Billing__CheckoutCallbackUrl` | `notefusion://billing/return` | **Must be set for Bachs.** Where the provider returns the browser after checkout. Bachs rejects a non-http(s) `success_url` outright (`VALIDATION_ERROR success_url must use http:// or https:// scheme`), so the committed deep-link default fails every Bachs checkout — loudly, before anyone is charged. Point it at the API's own bridge page, which hands off to the app's deep link: `https://<your-heroku-app>.herokuapp.com/api/billing/return`. The real result still arrives via webhook. |
+| `Billing__CheckoutCallbackUrl` | `https://api.notefusion.studio/api/billing/return` | Where the provider returns the browser after checkout: the API's own bridge page, which hands off to the app's deep link (website checkouts use the same path plus `/web`, which returns to `notefusion.studio/app?paid=1`). Must be an absolute https URL; Bachs refuses anything else. Blank, or a retired `herokuapp.com` host, falls back to the default. The real result still arrives via webhook, and the clients also ask `POST /api/billing/confirm`. |
 
 ### 1.2 Region pricing (geolocation)
 
@@ -280,8 +280,16 @@ and the refusal is in the API log as a warning.
 
 Avatar uploads are proxied through the API — `POST /api/me/picture` — so the signing secret
 stays on the server and never ships inside the app binary. Until `R2__UseR2=true` *and* every
-value below is set, uploads are logged rather than stored and the endpoint returns a placeholder
-URL that does not resolve, so a deploy without a bucket is safe.
+value below is set, uploads are refused: the endpoint answers 400 `USER_PICTURE_STORAGE_UNAVAILABLE` (a plain sentence the apps show as is)
+("Photo uploads aren't available right now. Please try again later.") and the user's existing
+photo, a Google one included, is left as it was. A deploy without a bucket is safe. The API logs
+one line at startup saying where photos go, or warning that uploads are off (`MediaReadiness`).
+
+On the EC2 stack the deploy workflow writes the `R2__*` values into `.env` and
+`docker-compose.prod.yml` passes them to the `api` service (`R2__UseR2` defaults to `false` there).
+Before that pass-through existed the API never saw them, and uploads were "saved" as dead
+`https://images.invalid/...` URLs; the `RepairDeadProfilePictures` migration clears those, and a
+Google account gets its Google photo back on its next sign-in.
 
 ```bash
 heroku config:set \
@@ -296,12 +304,12 @@ heroku config:set \
 
 | Var | Required? | Notes |
 |-----|-----------|-------|
-| `R2__UseR2` | **yes** | `true` to store uploads; anything else logs them and stores nothing. A half-configured deployment (flag on, value missing) also falls back to logging rather than failing every upload. |
+| `R2__UseR2` | **yes** | `true` (or `1` / `yes`, any case) to store uploads; anything else, blank included, turns uploads off. Read by hand, so a blank or misspelled value can never stop the API from starting. A half-configured deployment (flag on, value missing) also turns uploads off rather than failing each one against a bucket it cannot reach. |
 | `R2__AccountId` | **yes, when UseR2=true** | Cloudflare account id. Also the S3 endpoint host: `https://<account-id>.r2.cloudflarestorage.com`. |
 | `R2__AccessKeyId` | **yes, when UseR2=true** | From an R2 API token. Scope it **Object Read & Write** on this bucket only — nothing wider. |
 | `R2__SecretAccessKey` | **yes, when UseR2=true** | The token secret, shown once at creation. Env-only — a key in `appsettings.json` is a key in git history. |
 | `R2__BucketName` | **yes, when UseR2=true** | The bucket. |
-| `R2__PublicBaseUrl` | **yes, when UseR2=true** | Origin the bucket is served from, no trailing slash. Required, not optional: without it the API would store the object and persist a URL nobody can fetch, which is worse than the logging fallback. |
+| `R2__PublicBaseUrl` | **yes, when UseR2=true** | Origin the bucket is served from, no trailing slash. Required, not optional: without it the API would store the object and persist a URL nobody can fetch, which is worse than refusing the upload. |
 | `R2__KeyPrefix` | optional | Key prefix. Defaults to `avatars`. |
 
 **Making the bucket readable.** R2 buckets are private by default, and the API returns URLs the
@@ -314,8 +322,9 @@ Two traps:
 - If you enable `r2.dev` *and* a custom domain, requests can reach the bucket by the `r2.dev`
   hostname and **bypass** the WAF and Access rules on your custom domain. Turn `r2.dev` off.
 
-> Uploads are capped at 5 MB and limited to JPEG/PNG/WebP at the controller, then centre-cropped
-> and re-encoded server-side to a single 512×512 JPEG per user, so replacing a photo overwrites
+> Uploads are capped at 5 MB and limited to JPEG/PNG/WebP at the controller, then turned upright
+> by their EXIF orientation, centre-cropped and re-encoded server-side (transparency on white) to a
+> single 512×512 JPEG per user, so replacing a photo overwrites
 > the old one instead of accumulating orphans. R2 has no cache purge, so the persisted URL carries
 > a `?v=<timestamp>` stamp — that, not invalidation, is what makes a replacement appear at once.
 > Face-aware cropping does not exist in R2; the client crops square before uploading instead.

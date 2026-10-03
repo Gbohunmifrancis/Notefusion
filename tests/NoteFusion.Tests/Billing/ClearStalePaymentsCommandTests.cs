@@ -99,8 +99,11 @@ public class ClearStalePaymentsCommandTests
     }
 
     [Fact]
-    public async Task Stale_processing_payments_are_marked_failed_when_provider_is_unreachable_past_ttl()
+    public async Task Stale_processing_payments_stay_processing_when_provider_is_unreachable()
     {
+        // Age is not evidence that nobody paid, and an outage has told us nothing. Failing the row here used
+        // to close checkouts that had been paid while the provider was down; left Processing, it is picked
+        // up by the next sweep and counted by the admin payment alert as stuck.
         using var h = new TestHarness(Now);
         var (user, plan) = Seed(h);
 
@@ -117,10 +120,113 @@ public class ClearStalePaymentsCommandTests
         var result = await handler.Handle(new ClearStalePaymentsCommand(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(1, result.Value.ClearedProcessingCount);
+        Assert.Equal(0, result.Value.ClearedProcessingCount);
+        Assert.Equal(PaymentStatus.Processing, staleTx.Status);
+        Assert.Null(staleTx.FailureReason);
+        Assert.Equal(1, gateway.Verifications); // asked once, not once per batch pass
+    }
 
+    [Fact]
+    public async Task Stale_processing_payments_the_provider_reports_unpaid_are_closed_past_the_checkout_lifetime()
+    {
+        // Paystack answers `abandoned` for an unpaid checkout and never moves it to a final state. Left
+        // Processing on that answer, every abandoned cart would stay in flight for good, crowding the
+        // reconciliation sweep and the admin alert. A payment that does land later reopens the row.
+        using var h = new TestHarness(Now);
+        var (user, plan) = Seed(h);
+
+        var staleTx = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Paystack, "checkout:NF_stale_open", "NF_stale_open",
+            MonthlyPrice, "USD", Now.AddHours(-30));
+        staleTx.AttachCheckout("acc_stale_open", "https://checkout.paystack.com/open", "{}", Now.AddHours(-30));
+        h.Db.PaymentTransactions.Add(staleTx);
+        h.Db.SaveChanges();
+
+        var gateway = StubGateway(Result.Success(new GatewayVerification(
+            Succeeded: false, AmountMinor: 0, Currency: "USD", ProviderReference: "acc_stale_open",
+            ProviderSubscriptionRef: null, Raw: "{}", Terminal: false)));
+
+        var result = await Handler(h, gateway).Handle(new ClearStalePaymentsCommand(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(1, result.Value.ClearedProcessingCount);
         Assert.Equal(PaymentStatus.Failed, staleTx.Status);
         Assert.Contains("exceeded maximum validity window", staleTx.FailureReason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task One_unreachable_payment_does_not_stop_the_rest_being_settled()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan) = Seed(h);
+
+        var unreachable = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_a", "NF_a", MonthlyPrice, "USD", Now.AddHours(-40));
+        unreachable.AttachCheckout("chk_a", "https://checkout.bachs.io/c/a", "{}", Now.AddHours(-40));
+        var expired = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_b", "NF_b", MonthlyPrice, "USD", Now.AddHours(-30));
+        expired.AttachCheckout("chk_b", "https://checkout.bachs.io/c/b", "{}", Now.AddHours(-30));
+        h.Db.PaymentTransactions.AddRange(unreachable, expired);
+        h.Db.SaveChanges();
+
+        var gateway = new SingleAnswerGatewayFactory(request => request.ProviderReference == "chk_a"
+            ? Error.Network("Bachs.Verify", "Timed out.")
+            : Result.Success(TerminalFailureVerification("chk_b")));
+
+        var result = await Handler(h, gateway).Handle(new ClearStalePaymentsCommand(), CancellationToken.None);
+
+        Assert.Equal(1, result.Value.ClearedProcessingCount);
+        Assert.Equal(PaymentStatus.Processing, unreachable.Status);
+        Assert.Equal(PaymentStatus.Failed, expired.Status);
+    }
+
+    [Fact]
+    public async Task A_stale_payment_settled_for_more_than_the_price_is_still_fulfilled()
+    {
+        // The same rule as reconciliation: paying more than the price is still paying it. An exact-match
+        // rule here would leave an overpaid customer with nothing.
+        using var h = new TestHarness(Now);
+        var (user, plan) = Seed(h);
+
+        var staleTx = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_over", "NF_over", MonthlyPrice, "USD", Now.AddHours(-25));
+        staleTx.AttachCheckout("chk_over", "https://checkout.bachs.io/c/over", "{}", Now.AddHours(-25));
+        h.Db.PaymentTransactions.Add(staleTx);
+        h.Db.SaveChanges();
+
+        var gateway = StubGateway(Result.Success(new GatewayVerification(
+            Succeeded: true, AmountMinor: MonthlyPrice + 100, Currency: "USD", ProviderReference: "chk_over",
+            ProviderSubscriptionRef: null, Raw: "{}", Terminal: true)));
+
+        var result = await Handler(h, gateway).Handle(new ClearStalePaymentsCommand(), CancellationToken.None);
+
+        Assert.Equal(1, result.Value.FulfilledCount);
+        Assert.Equal(PaymentStatus.Completed, staleTx.Status);
+        Assert.Single(h.Email.Receipts);
+    }
+
+    [Fact]
+    public async Task A_stale_payment_settled_for_less_than_the_price_is_neither_fulfilled_nor_failed()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan) = Seed(h);
+
+        var staleTx = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_under", "NF_under", MonthlyPrice, "USD", Now.AddHours(-25));
+        staleTx.AttachCheckout("chk_under", "https://checkout.bachs.io/c/under", "{}", Now.AddHours(-25));
+        h.Db.PaymentTransactions.Add(staleTx);
+        h.Db.SaveChanges();
+
+        var gateway = StubGateway(Result.Success(new GatewayVerification(
+            Succeeded: true, AmountMinor: 1, Currency: "USD", ProviderReference: "chk_under",
+            ProviderSubscriptionRef: null, Raw: "{}", Terminal: true)));
+
+        var result = await Handler(h, gateway).Handle(new ClearStalePaymentsCommand(), CancellationToken.None);
+
+        Assert.Equal(0, result.Value.FulfilledCount);
+        Assert.Equal(0, result.Value.ClearedProcessingCount);
+        Assert.Equal(PaymentStatus.Processing, staleTx.Status);
+        Assert.Empty(h.Email.Receipts);
     }
 
     [Fact]
@@ -249,9 +355,14 @@ public class ClearStalePaymentsCommandTests
 
     private sealed class SingleAnswerGatewayFactory : IPaymentGatewayFactory, IPaymentGateway
     {
-        private readonly Result<GatewayVerification> _answer;
+        private readonly Func<GatewayVerificationRequest, Result<GatewayVerification>> _answer;
 
-        public SingleAnswerGatewayFactory(Result<GatewayVerification> answer) => _answer = answer;
+        public SingleAnswerGatewayFactory(Result<GatewayVerification> answer) => _answer = _ => answer;
+
+        public SingleAnswerGatewayFactory(Func<GatewayVerificationRequest, Result<GatewayVerification>> answer)
+            => _answer = answer;
+
+        public int Verifications { get; private set; }
 
         public PaymentProvider Provider => PaymentProvider.Bachs;
         public IReadOnlyCollection<string> SupportedCurrencies { get; } = ["USD"];
@@ -263,6 +374,9 @@ public class ClearStalePaymentsCommandTests
             => throw new NotSupportedException();
 
         public Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
-            => Task.FromResult(_answer);
+        {
+            Verifications++;
+            return Task.FromResult(_answer(request));
+        }
     }
 }

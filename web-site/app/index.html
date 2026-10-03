@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=11">
+<link rel="stylesheet" href="/assets/app.css?v=12">
 <script>
   // The theme before the first paint, so a dark page never flashes white: the saved choice, else the device's.
   (function () {
@@ -301,6 +301,30 @@
     </div>
   </div>
 
+  <!-- ── Back from checkout: the payment confirming, while the app stays usable ── -->
+  <div class="pay-toast hidden" id="pay-toast" role="status" aria-live="polite">
+    <span class="pay-toast-mark" aria-hidden="true"><span class="pay-spin"></span><svg class="ic"><use href="#i-clock"/></svg></span>
+    <span class="pay-toast-text"><strong id="pay-toast-title">Confirming your payment…</strong><span id="pay-toast-sub">This usually takes a few seconds.</span></span>
+    <button class="btn btn-ghost btn-icon pay-toast-close" id="pay-toast-close" type="button" aria-label="Hide this note"><svg class="ic"><use href="#i-x"/></svg></button>
+  </div>
+
+  <!-- ── The payment landed: welcome to Pro ──────────────────────────── -->
+  <div class="modal pro-welcome hidden" id="pro-welcome" role="dialog" aria-modal="true" aria-labelledby="pro-welcome-title" aria-describedby="pro-welcome-plan">
+    <div class="modal-card pro-welcome-card">
+      <span class="pro-welcome-mark" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
+      <h2 id="pro-welcome-title">Welcome to NoteFusion Pro</h2>
+      <p class="pro-welcome-plan" id="pro-welcome-plan"></p>
+      <ul class="perks pro-welcome-perks">
+        <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>Sing a take and have every note marked</li>
+        <li><svg class="ic"><use href="#i-check"/></svg>The priority lane: never queued behind anyone</li>
+      </ul>
+      <button class="btn btn-pro btn-pill" id="pro-welcome-go" type="button">Start using Pro</button>
+    </div>
+  </div>
+
   <!-- ── Signed in ──────────────────────────────────────────────────── -->
   <section id="view-app" class="hidden">
     <div class="alert alert-info hidden" id="guest-bar">
@@ -559,7 +583,7 @@
           <label class="avatar-edit" title="Change photo">
             <span class="who-avatar" id="acct-avatar" aria-hidden="true"></span>
             <span class="avatar-badge"><svg class="ic"><use href="#i-camera"/></svg></span>
-            <input id="acct-photo" type="file" accept="image/*" class="sr-only">
+            <input id="acct-photo" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
           </label>
           <div style="min-width:0">
             <div class="name" id="acct-name">—</div>
@@ -621,7 +645,7 @@
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
 <script src="/assets/choir.js?v=2" defer></script>
 <script src="/assets/preview.js?v=6" defer></script>
-<script src="/assets/app.js?v=11" defer></script>
+<script src="/assets/app.js?v=12" defer></script>
 <script src="/assets/track.js?v=1" defer></script>
 </body>
 </html>

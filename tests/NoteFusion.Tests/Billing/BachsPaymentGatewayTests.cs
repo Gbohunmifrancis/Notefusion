@@ -603,12 +603,11 @@ public class BachsPaymentGatewayTests
 
     [Theory]
     // Bachs' own documented example shows a session total and a charge amount that differ, while warning
-    // against assuming they are equal. Whichever is right, we do not know which one the customer was
-    // charged, and fulfilling on a guess is how a subscription gets granted for the wrong money.
+    // against assuming they are equal. In the same currency they should agree; when they do not, we do not
+    // know which one the customer was charged, and fulfilling on a guess is how a subscription gets granted
+    // for the wrong money.
     [InlineData("29.00", "50.00", "USD")]
     [InlineData("50.00", "29.00", "USD")]
-    // Same number, different currency: 29 EUR is not 29 USD.
-    [InlineData("29.00", "29.00", "EUR")]
     public async Task A_charge_that_contradicts_its_session_is_escalated(
         string sessionAmount, string chargeAmount, string chargeCurrency)
     {
@@ -619,6 +618,155 @@ public class BachsPaymentGatewayTests
 
         Assert.True(result.IsFailure);
         Assert.Equal(ErrorType.Network, result.Error.Type);
+    }
+
+    /// <summary>
+    /// The shape of a real dollar one-off on this account: priced at $79.00 in the session, charged in naira
+    /// by FX conversion. The session figures are the base price; the charge figures are what the payer paid.
+    /// </summary>
+    private static string FxOneOff(
+        string status = "completed",
+        string? paymentStatus = "succeeded",
+        string chargeStatus = "succeeded",
+        string? amountRemaining = null) => JsonSerializer.Serialize(new
+        {
+            checkout_id = CheckoutId,
+            mode = "payment",
+            status,
+            payment_status = paymentStatus,
+            amount = "79.00",
+            currency = "USD",
+            billing_currency = "NGN",
+            reference = Reference,
+            charge = new
+            {
+                payment_id = "pay_fx",
+                amount = "113421.48",
+                currency = "NGN",
+                status = chargeStatus,
+                amount_remaining = amountRemaining,
+                subscription_id = (string?)null,
+            },
+        });
+
+    [Fact]
+    public async Task A_dollar_one_off_charged_in_naira_verifies_at_its_dollar_price()
+    {
+        // Every FX-converted one-off used to be rejected as "disagrees with its own charge", so no dollar
+        // purchase ever fulfilled. The currencies differ because Bachs converted, not because anything is
+        // wrong — and what we priced and recorded is the session's $79.00.
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, FxOneOff());
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.Equal(7900, result.Value.AmountMinor);
+        Assert.Equal("USD", result.Value.Currency);
+        Assert.Equal(CheckoutId, result.Value.ProviderReference);
+    }
+
+    [Theory]
+    [InlineData("succeeded")]
+    [InlineData("overpaid")]
+    [InlineData("accepted")]
+    public async Task An_fx_charge_in_a_settled_state_verifies_without_a_session_payment_status(string chargeStatus)
+    {
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, FxOneOff(paymentStatus: null, chargeStatus: chargeStatus));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(7900, result.Value.AmountMinor);
+    }
+
+    [Theory]
+    [InlineData("overpaid")]
+    [InlineData("accepted")]
+    public async Task An_fx_session_whose_payment_status_is_settled_verifies_without_a_charge_status(string paymentStatus)
+    {
+        // The same fulfilable states as the charge's. Read as "no sign money moved", a settled session with
+        // no charge status would be retried as transient for good and never fulfilled.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, FxOneOff(paymentStatus: paymentStatus, chargeStatus: null!));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.Equal(7900, result.Value.AmountMinor);
+    }
+
+    [Fact]
+    public async Task An_fx_charge_with_no_sign_that_money_moved_is_not_fulfilled()
+    {
+        // The amounts are not comparable across currencies, so a positive payment signal is what stands in
+        // for the cross-check. Without one, nothing is fulfilled — and nothing is declared failed either.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, FxOneOff(paymentStatus: null, chargeStatus: "processing"));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.Network, result.Error.Type);
+    }
+
+    [Fact]
+    public async Task An_open_session_with_money_still_arriving_stays_payable()
+    {
+        // A bank transfer under way: the charge is processing and the balance is outstanding. Reporting that
+        // as a final failure closed a checkout the customer was in the middle of paying.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK,
+            FxOneOff(status: "open", paymentStatus: "unpaid", chargeStatus: "processing", amountRemaining: "113421.48"));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.Network, result.Error.Type); // transient: not Terminal, not a decline
+    }
+
+    [Fact]
+    public async Task An_open_session_after_a_declined_attempt_stays_payable()
+    {
+        // A declined card is one attempt, not the end: the session is still open and the customer can try
+        // another card or method on the same page.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK,
+            FxOneOff(status: "open", paymentStatus: "failed", chargeStatus: "failed", amountRemaining: "113421.48"));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(ErrorType.Network, result.Error.Type);
+    }
+
+    [Fact]
+    public async Task A_completed_session_whose_shortfall_was_accepted_is_fulfilled()
+    {
+        // `accepted` is Bachs saying the merchant took the under- or overpayment as final.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, FxOneOff(chargeStatus: "accepted", amountRemaining: "1200.00"));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.Equal(7900, result.Value.AmountMinor);
+    }
+
+    [Fact]
+    public async Task A_completed_session_with_an_unaccepted_shortfall_in_the_charge_currency_is_a_final_failure()
+    {
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, FxOneOff(chargeStatus: "underpaid", amountRemaining: "1200.00"));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.False(result.Value.Succeeded);
+        Assert.True(result.Value.Terminal);
     }
 
     [Fact]

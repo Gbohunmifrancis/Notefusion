@@ -51,11 +51,97 @@ public class AvatarImageTests
         Assert.Equal(UserErrors.PictureUnsupportedType, result.Error);
     }
 
-    private static MemoryStream PngOf(int width, int height)
+    [Fact]
+    public void Transparent_areas_come_out_white_not_black()
+    {
+        // JPEG has no alpha: left as it was, a transparent PNG logo became a black square.
+        using var source = PngOf(600, 600, SKColors.Transparent);
+
+        var result = AvatarImage.ToAvatarJpeg(source);
+
+        Assert.True(result.IsSuccess);
+        using var stored = result.Value;
+        using var decoded = SKBitmap.Decode(stored);
+        var corner = decoded.GetPixel(4, 4);
+        Assert.True(corner is { Red: > 245, Green: > 245, Blue: > 245 }, $"corner was {corner}");
+    }
+
+    [Fact]
+    public void A_phone_photo_is_turned_the_way_its_exif_says_before_cropping()
+    {
+        // Stored landscape, red on top, with orientation 6 ("turn 90° clockwise to view"), as a phone
+        // held upright writes it. Seen upright, red is the right half — ignored, red was the top.
+        using var source = JpegWithOrientation6();
+
+        var result = AvatarImage.ToAvatarJpeg(source);
+
+        Assert.True(result.IsSuccess);
+        using var stored = result.Value;
+        using var decoded = SKBitmap.Decode(stored);
+        var topLeft = decoded.GetPixel(100, 128);
+        var bottomRight = decoded.GetPixel(412, 384);
+        Assert.True(topLeft is { Blue: > 200, Red: < 60 }, $"top-left was {topLeft}");
+        Assert.True(bottomRight is { Red: > 200, Blue: < 60 }, $"bottom-right was {bottomRight}");
+    }
+
+    [Fact]
+    public void A_quarter_turn_swaps_width_and_height_and_moves_the_top_edge_to_the_right()
+    {
+        using var stored = new SKBitmap(4, 2);
+        stored.Erase(SKColors.Blue);
+        stored.SetPixel(0, 0, SKColors.Red);
+
+        using var upright = AvatarImage.Upright(stored, SKEncodedOrigin.RightTop);
+
+        Assert.NotNull(upright);
+        Assert.Equal(2, upright.Width);
+        Assert.Equal(4, upright.Height);
+        Assert.Equal(SKColors.Red, upright.GetPixel(1, 0));
+    }
+
+    [Fact]
+    public void An_already_upright_picture_is_not_copied()
+    {
+        using var stored = new SKBitmap(4, 2);
+
+        Assert.Null(AvatarImage.Upright(stored, SKEncodedOrigin.TopLeft));
+    }
+
+    /// <summary>A 400×200 JPEG, top half red and bottom half blue, tagged EXIF orientation 6.</summary>
+    private static MemoryStream JpegWithOrientation6()
+    {
+        using var bitmap = new SKBitmap(400, 200);
+        using (var canvas = new SKCanvas(bitmap))
+        {
+            canvas.Clear(SKColors.Blue);
+            using var red = new SKPaint { Color = SKColors.Red };
+            canvas.DrawRect(0, 0, 400, 100, red);
+        }
+
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Jpeg, 95);
+        var jpeg = data.ToArray();
+
+        // APP1 "Exif": a big-endian TIFF header and one IFD entry — tag 0x0112 (Orientation), SHORT, 6.
+        byte[] app1 =
+        [
+            0xFF, 0xE1, 0x00, 0x22,
+            (byte)'E', (byte)'x', (byte)'i', (byte)'f', 0x00, 0x00,
+            (byte)'M', (byte)'M', 0x00, 0x2A, 0x00, 0x00, 0x00, 0x08,
+            0x00, 0x01,
+            0x01, 0x12, 0x00, 0x03, 0x00, 0x00, 0x00, 0x01, 0x00, 0x06, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+        ];
+
+        // Straight after the SOI marker, where cameras put it.
+        return new MemoryStream([.. jpeg[..2], .. app1, .. jpeg[2..]]);
+    }
+
+    private static MemoryStream PngOf(int width, int height, SKColor? fill = null)
     {
         using var bitmap = new SKBitmap(width, height);
         using var canvas = new SKCanvas(bitmap);
-        canvas.Clear(SKColors.Purple);
+        canvas.Clear(fill ?? SKColors.Purple);
 
         using var image = SKImage.FromBitmap(bitmap);
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);

@@ -154,6 +154,27 @@ public class PaymentTransaction : BaseEntity
         Touch(utcNow);
     }
 
+    /// <summary>
+    /// Failed → Processing, for the one case that overrules a failure: the provider now confirms the money
+    /// moved. A checkout can be closed on our side (a sweep, a definite answer that later proved wrong)
+    /// and still be paid, and the provider's word on settlement is authoritative — refusing it would leave
+    /// a paying customer with nothing and no route to fix it. The earlier reason is kept in
+    /// <see cref="FailureReason"/> for the audit trail. Callers move straight on to
+    /// <see cref="MarkVerified"/>; nothing else is legal from here. Idempotent when already Processing.
+    /// </summary>
+    public void Reopen(DateTime utcNow)
+    {
+        if (Status == PaymentStatus.Processing) return;
+        RequireStatus(nameof(Reopen), PaymentStatus.Failed);
+        var note = $"Reopened {utcNow:u}: the provider confirmed payment after this checkout was closed. Earlier failure: {FailureReason}";
+        FailureReason = note.Length <= MaxFailureReasonLength ? note : note[..MaxFailureReasonLength];
+        Status = PaymentStatus.Processing;
+        Touch(utcNow);
+    }
+
+    /// <summary>The column width of <see cref="FailureReason"/>.</summary>
+    private const int MaxFailureReasonLength = 1000;
+
     private void Touch(DateTime utcNow) => UpdatedAtUtc = utcNow;
 
     private void RequireStatus(string operation, params PaymentStatus[] allowed)

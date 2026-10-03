@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
@@ -105,7 +106,7 @@ public class CheckoutRetryTests
     public async Task A_checkout_the_customer_could_still_pay_stays_in_flight_and_is_reused()
     {
         using var h = new TestHarness(Now);
-        var (user, plan, tx) = SeedCheckoutInFlight(h);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-10));
 
         // Paystack's `abandoned`: the customer left the page, but the link is still payable.
         var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
@@ -141,16 +142,233 @@ public class CheckoutRetryTests
         Assert.Equal(PaymentStatus.Processing, tx.Status);
     }
 
+    // ---------------------------------------------------------------- too old to hand out again
+
+    [Fact]
+    public async Task An_open_checkout_older_than_the_reuse_window_is_asked_about_and_then_replaced()
+    {
+        // Bachs kills an unpaid session after an hour whether or not anyone tells us, so an old one is no
+        // longer handed back: it might be about to die under the customer.
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-45));
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.NotEqual(DeadUrl, checkout.Value.CheckoutUrl);
+        Assert.NotEqual(tx.Reference, checkout.Value.Reference);
+        Assert.Equal(1, gateway.Verifications); // asked before replacing, in case it had been paid
+        Assert.Equal(PaymentStatus.Processing, tx.Status); // still payable, so not closed on our say-so
+    }
+
+    [Fact]
+    public async Task An_old_checkout_that_was_paid_is_fulfilled_instead_of_charging_again()
+    {
+        // Often why the customer is back: they paid, the webhook went astray, and they see no Pro. Opening a
+        // second charge would sell them a period they never meant to buy.
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-45));
+        var gateway = new FakeGateway(Answer(Succeeded: true, Terminal: true));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id), CancellationToken.None);
+
+        Assert.True(checkout.IsFailure);
+        Assert.Equal("BILLING_PAYMENT_ALREADY_RECEIVED", checkout.Error.Code);
+        Assert.DoesNotContain("Bachs", checkout.Error.Message);
+        Assert.Empty(gateway.InitiatedReferences);
+        Assert.Equal(PaymentStatus.Completed, tx.Status);
+        Assert.Single(h.Db.Subscriptions);
+        Assert.Single(h.Email.Receipts);
+    }
+
+    [Fact]
+    public async Task An_old_checkout_the_provider_cannot_answer_for_does_not_block_a_new_one()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-45));
+        var gateway = new FakeGateway(Error.Network("Bachs.Verify", "Timed out."));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.Single(gateway.InitiatedReferences);
+        Assert.Equal(PaymentStatus.Processing, tx.Status);
+    }
+
+    [Fact]
+    public async Task The_reuse_window_is_a_setting()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-45));
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
+
+        var checkout = await CheckoutHandler(h, user, gateway, new BillingSettings { CheckoutReuseMinutes = 60 })
+            .Handle(new InitiateCheckoutCommand(plan.Id), CancellationToken.None);
+
+        Assert.Equal(tx.Reference, checkout.Value.Reference);
+        Assert.Equal(0, gateway.Verifications);
+        Assert.Empty(gateway.InitiatedReferences);
+    }
+
+    // ---------------------------------------------------------------- where the browser comes back to
+
+    [Fact]
+    public async Task A_website_checkout_returns_to_the_web_return_page()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, _) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddHours(-3));
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: true));
+
+        await CheckoutHandler(h, user, gateway).Handle(new InitiateCheckoutCommand(plan.Id, "web"), CancellationToken.None);
+
+        Assert.Equal("https://api.notefusion.studio/api/billing/return/web", Assert.Single(gateway.CallbackUrls));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("app")]
+    [InlineData("")]
+    public async Task Any_other_checkout_returns_to_the_app_hand_off(string? client)
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, _) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddHours(-3));
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: true));
+
+        await CheckoutHandler(h, user, gateway).Handle(new InitiateCheckoutCommand(plan.Id, client), CancellationToken.None);
+
+        Assert.Equal(BillingSettings.DefaultCheckoutCallbackUrl, Assert.Single(gateway.CallbackUrls));
+    }
+
+    [Theory]
+    // A configured return page on another host still gets the /web variant…
+    [InlineData("https://staging.example.com/api/billing/return", "https://staging.example.com/api/billing/return/web")]
+    [InlineData("https://staging.example.com/api/billing/return/", "https://staging.example.com/api/billing/return/web")]
+    // …but a URL that is not the API's return page was chosen deliberately and is left as it is.
+    [InlineData("https://example.com/thanks", "https://example.com/thanks")]
+    public async Task The_web_return_is_derived_from_the_configured_callback(string configured, string expected)
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, _) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddHours(-3));
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: true));
+
+        await CheckoutHandler(h, user, gateway, new BillingSettings { CheckoutCallbackUrl = configured })
+            .Handle(new InitiateCheckoutCommand(plan.Id, "web"), CancellationToken.None);
+
+        Assert.Equal(expected, Assert.Single(gateway.CallbackUrls));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("https://notefusion-api-3c2513a1e974.herokuapp.com/api/billing/return")]
+    public void A_blank_or_retired_configured_callback_keeps_the_default(string configured)
+    {
+        // Compose passes an unset variable through as an empty string; that must not become success_url "".
+        // The Heroku API is gone, so a value saved before the move is no return page at all.
+        Assert.Equal(
+            BillingSettings.DefaultCheckoutCallbackUrl,
+            new BillingSettings { CheckoutCallbackUrl = configured }.CheckoutCallbackUrl);
+    }
+
+    [Theory]
+    [InlineData("web", "checkout:NF_first", "https://api.notefusion.studio/api/billing/return/web")]
+    [InlineData(null, "checkout:NF_first:web", BillingSettings.DefaultCheckoutCallbackUrl)]
+    public async Task An_open_checkout_is_not_handed_to_the_other_client(string? client, string openKey, string callback)
+    {
+        // Its page returns the browser to the client that opened it (the app's deep link or the website),
+        // so the other one gets its own session, after asking whether the open one was paid meanwhile.
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-5), key: openKey);
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id, client), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.NotEqual(tx.Reference, checkout.Value.Reference);
+        Assert.Equal(1, gateway.Verifications);
+        Assert.Equal(callback, Assert.Single(gateway.CallbackUrls));
+        Assert.Equal(PaymentStatus.Processing, tx.Status);
+    }
+
+    [Fact]
+    public async Task An_open_checkout_paid_on_the_other_client_is_not_charged_again()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-5));
+        var gateway = new FakeGateway(Answer(Succeeded: true, Terminal: true));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id, "web"), CancellationToken.None);
+
+        Assert.Equal("BILLING_PAYMENT_ALREADY_RECEIVED", checkout.Error.Code);
+        Assert.Empty(gateway.InitiatedReferences);
+        Assert.Equal(PaymentStatus.Completed, tx.Status);
+    }
+
+    [Theory]
+    [InlineData(null, "checkout:NF_pending", true)]
+    [InlineData("web", "checkout:NF_pending:web", true)]
+    // The return URL is part of the body the provider fingerprints the key against, so the other client's
+    // URL under the same key is a conflict, not a replay — it would refuse every attempt from that client.
+    [InlineData("web", "checkout:NF_pending", false)]
+    [InlineData(null, "checkout:NF_pending:web", false)]
+    public async Task A_pending_attempt_is_replayed_only_by_the_client_that_started_it(
+        string? client, string pendingKey, bool replayed)
+    {
+        using var h = new TestHarness(Now);
+        var user = User.Create("Pat Payer", "pat@example.com", h.Hasher.Hash("password123"), Now.AddDays(-2));
+        var plan = Plan.Create(Guid.NewGuid(), "pro_monthly", "NoteFusion Pro", 499, "USD", BillingInterval.Monthly);
+        var pending = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, pendingKey, "NF_pending", 499, "USD", Now.AddMinutes(-5));
+        h.Db.Users.Add(user);
+        h.Db.Plans.Add(plan);
+        h.Db.PaymentTransactions.Add(pending);
+        h.Db.SaveChanges();
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id, client), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.Equal(replayed, checkout.Value.Reference == "NF_pending");
+        if (!replayed)
+        {
+            Assert.Equal(PaymentStatus.Pending, pending.Status); // left for its own client, or the stale sweep
+            var opened = h.Db.PaymentTransactions.Single(t => t.Reference == checkout.Value.Reference);
+            Assert.Equal(client == "web", opened.IdempotencyKey.EndsWith(":web", StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void A_blank_callback_from_configuration_keeps_the_default()
+    {
+        // The path compose actually takes: an unset variable passed through arrives as an empty value.
+        var settings = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Billing:CheckoutCallbackUrl"] = "" })
+            .Build()
+            .GetSection("Billing")
+            .Get<BillingSettings>();
+
+        Assert.Equal(BillingSettings.DefaultCheckoutCallbackUrl, settings?.CheckoutCallbackUrl);
+    }
+
     // ---------------------------------------------------------------- fixtures
 
-    private static (User User, Plan Plan, PaymentTransaction Transaction) SeedCheckoutInFlight(TestHarness h)
+    private static (User User, Plan Plan, PaymentTransaction Transaction) SeedCheckoutInFlight(
+        TestHarness h, DateTime? openedAtUtc = null, string key = "checkout:NF_first")
     {
         var user = User.Create("Pat Payer", "pat@example.com", h.Hasher.Hash("password123"), Now.AddDays(-2));
         var plan = Plan.Create(Guid.NewGuid(), "pro_monthly", "NoteFusion Pro", 499, "USD", BillingInterval.Monthly);
 
+        var opened = openedAtUtc ?? Now.AddHours(-3);
         var tx = PaymentTransaction.Create(
-            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_first", "NF_first", 499, "USD", Now.AddHours(-3));
-        tx.AttachCheckout("chk_first", DeadUrl, "{}", Now.AddHours(-3));
+            user.Id, plan.Id, PaymentProvider.Bachs, key, "NF_first", 499, "USD", opened);
+        tx.AttachCheckout("chk_first", DeadUrl, "{}", opened);
 
         h.Db.Users.Add(user);
         h.Db.Plans.Add(plan);
@@ -179,15 +397,16 @@ public class CheckoutRetryTests
     private static ProcessWebhookEventCommandHandler WebhookHandler(TestHarness h, FakeGateway gateway)
         => new(h.Db, new FakeFactory(gateway), h.Clock, h.Email);
 
-    private static InitiateCheckoutCommandHandler CheckoutHandler(TestHarness h, User user, FakeGateway gateway)
-        => new(h.Db, new StubCurrentUser(user.Id), new FakeFactory(gateway), h.Clock, new BillingSettings(), h.Email);
+    private static InitiateCheckoutCommandHandler CheckoutHandler(
+        TestHarness h, User user, FakeGateway gateway, BillingSettings? settings = null)
+        => new(h.Db, new StubCurrentUser(user.Id), new FakeFactory(gateway), h.Clock, settings ?? new BillingSettings(), h.Email);
 
     /// <summary>Answers verification however the test asks, and counts the sessions it was made to open.</summary>
     private sealed class FakeGateway : IPaymentGateway
     {
-        private readonly GatewayVerification _answer;
+        private readonly Result<GatewayVerification> _answer;
 
-        public FakeGateway(GatewayVerification answer) => _answer = answer;
+        public FakeGateway(Result<GatewayVerification> answer) => _answer = answer;
 
         public PaymentProvider Provider => PaymentProvider.Bachs;
         public IReadOnlyCollection<string> SupportedCurrencies { get; } = ["USD"];
@@ -195,16 +414,25 @@ public class CheckoutRetryTests
         /// <summary>One entry per session actually opened — the count that says whether a retry happened.</summary>
         public List<string> InitiatedReferences { get; } = [];
 
+        /// <summary>Where each opened session was told to send the browser back to.</summary>
+        public List<string> CallbackUrls { get; } = [];
+
+        public int Verifications { get; private set; }
+
         public Task<Result<GatewayInitiation>> InitiateAsync(GatewayInitiationRequest request, CancellationToken ct)
         {
             InitiatedReferences.Add(request.Reference);
+            CallbackUrls.Add(request.CallbackUrl);
             var n = InitiatedReferences.Count;
             return Task.FromResult(Result.Success(
                 new GatewayInitiation($"https://pay.test/session-{n}", $"chk_{n}", "{}")));
         }
 
         public Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
-            => Task.FromResult(Result.Success(_answer));
+        {
+            Verifications++;
+            return Task.FromResult(_answer);
+        }
     }
 
     private sealed class FakeFactory : IPaymentGatewayFactory

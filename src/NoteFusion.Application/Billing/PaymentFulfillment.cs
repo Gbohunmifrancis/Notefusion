@@ -11,7 +11,8 @@ namespace NoteFusion.Application.Billing;
 /// reconciliation job call this, so a payment is fulfilled identically whether we heard about it by
 /// push (webhook) or by poll (reconciliation). It stages entity changes only — the caller owns the
 /// <c>SaveChangesAsync</c> so every write, plus the caller's own bookkeeping, commits in ONE
-/// transaction. Fulfilling an already-completed payment is a safe no-op (it returns null); a truly
+/// transaction. A verified success on a row we had already failed reopens it first, so every path can
+/// rescue it. Fulfilling an already-completed payment is a safe no-op (it returns null); a truly
 /// concurrent double-apply is prevented by a unique (PaymentTransactionId, Reason) index on the ledger.
 /// </summary>
 internal static class PaymentFulfillment
@@ -34,6 +35,11 @@ internal static class PaymentFulfillment
         // Reason) index on the ledger, whose second insert rolls its transaction back.
         if (tx.Status == PaymentStatus.Completed)
             return null;
+
+        // The provider's word on settlement outranks our own earlier verdict: a checkout we closed (a sweep,
+        // an answer that later proved wrong) can still have been paid, and that customer is owed Pro.
+        if (tx.Status == PaymentStatus.Failed)
+            tx.Reopen(now);
 
         tx.MarkVerified(verification.ProviderReference, verification.Raw, now);
         tx.MarkCompleted(now);

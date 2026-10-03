@@ -138,8 +138,9 @@ public static class DependencyInjection
 
     private static void AddMedia(this IServiceCollection services, IConfiguration configuration)
     {
-        var r2 = configuration.GetSection("R2").Get<R2Settings>() ?? new R2Settings();
+        var r2 = R2Settings.Resolve(configuration);
         services.AddSingleton(r2);
+        services.AddHostedService<MediaReadiness>();
 
         // Same switch as email and push: the real provider only when it is turned on *and* fully
         // credentialled, a logging sink otherwise, so a local run needs no R2 bucket.

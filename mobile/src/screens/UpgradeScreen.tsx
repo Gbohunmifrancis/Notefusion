@@ -34,6 +34,7 @@ import {
 import { useColors, useThemedStyles } from "../lib/theme";
 import { useAuth } from "../lib/auth";
 import { useSubscription } from "../lib/subscription";
+import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
@@ -45,14 +46,6 @@ type Props = { navigation: any; route?: any };
  * so openAuthSessionAsync can detect the return and close the external browser.
  */
 const RETURN_URL = "notefusion://billing/return";
-
-/** What Pro unlocks — the paywall's value proposition. */
-const PRO_FEATURES: { icon: keyof typeof Ionicons.glyphMap; text: string }[] = [
-  { icon: "musical-notes", text: "Whole songs, up to six minutes, twenty a month" },
-  { icon: "people", text: "Alto, tenor and bass written under any tune, when you ask" },
-  { icon: "download", text: "PDF, MusicXML and MIDI downloads, no watermark" },
-  { icon: "flash", text: "Priority lane and sing-along marking" },
-];
 
 /** Key features displayed in the active Pro subscription hub. */
 const PRO_BENEFITS: {
@@ -89,8 +82,6 @@ function tierOf(subscription: Subscription): string {
   if (label.includes("month")) return "Monthly";
   return "Pro";
 }
-
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * "$4.99", "₦7,500", or "SEK 49.00" for a currency we know no symbol for. Two tiers are on sale in
@@ -143,15 +134,23 @@ function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
  *
  * The app never collects card details (store-policy safe, Spotify-style): it asks
  * the API to start a hosted-checkout session, opens the returned provider URL in an
- * external browser, and — once the browser closes — calls confirm, which has the server
- * verify with the provider there and then instead of waiting for the webhook.
+ * external browser, and — once the browser closes — hands the wait to SubscriptionProvider,
+ * which polls confirm (the server verifies with the provider there and then instead of
+ * waiting for the webhook) and shows the one welcome pop-up when the payment lands.
  *
  * If the caller is already Pro, the paywall is replaced by a status card.
  */
 export function UpgradeScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { refresh: refreshSubscription } = useSubscription();
+  const {
+    refresh: refreshSubscription,
+    beginCheckout,
+    watchPayment,
+    abandonCheckout,
+    paymentCheck,
+    pendingCheckout,
+  } = useSubscription();
   const { user } = useAuth();
   const [profile, setProfile] = useState<MyProfile | null>(null);
 
@@ -160,7 +159,6 @@ export function UpgradeScreen({ navigation }: Props) {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false); // opening checkout
-  const [verifying, setVerifying] = useState(false); // polling after return
   const [refreshing, setRefreshing] = useState(false); // pull-to-refresh
 
   // Guards against setState after the screen unmounts mid-poll.
@@ -217,53 +215,13 @@ export function UpgradeScreen({ navigation }: Props) {
     load();
   }, [load]);
 
-  // ── After the external browser returns, ask the server to verify with the provider
-  //    straight away rather than waiting to be told by webhook. Extended to 10 attempts
-  //    (20 seconds total) to comfortably absorb payment gateway settlement latency. ──
-  async function verifyActivation() {
-    setVerifying(true);
-    for (let attempt = 0; attempt < 10; attempt++) {
-      try {
-        // confirm() reconciles and reports in one round trip; mySubscription() would only
-        // report, so it can never do better than "whenever the webhook lands".
-        const sub = await billingApi.confirm();
-        if (!mounted.current) return;
-        if (sub.isActive) {
-          setSubscription(sub);
-          setVerifying(false);
-          // Tell the shared provider too, so the Subscription tab and the gold
-          // avatar ring update without waiting for a relaunch.
-          refreshSubscription(true).catch(() => undefined);
-          showDialog({
-            title: "Welcome to Pro",
-            message: "Your subscription is now active. Transcribe as much as you like.",
-            icon: "sparkles",
-            tone: "premium",
-          });
-          return;
-        }
-      } catch {
-        // transient — keep polling
-      }
-      await delay(2000);
-      if (!mounted.current) return;
-    }
-    if (!mounted.current) return;
-    setVerifying(false);
-    showDialog({
-      title: "Payment processing",
-      message:
-        "If you completed payment, Pro will unlock in a moment. Drag down to refresh or reopen this screen to check.",
-      icon: "time-outline",
-    });
-  }
-
   async function handleUpgrade() {
     if (!selectedId) return;
     setBusy(true);
     try {
       const session = await billingApi.checkout(selectedId);
       if (!session || !session.checkoutUrl) {
+        setBusy(false);
         showDialog({
           title: "Checkout error",
           message: "Could not initialize checkout. Please try again.",
@@ -273,26 +231,46 @@ export function UpgradeScreen({ navigation }: Props) {
         return;
       }
 
+      // Before the browser opens: what the provider compares the server's answer against, so a
+      // member adding time is told apart from one whose checkout simply closed.
+      beginCheckout(selectedId, subscription);
+
       // Open Paystack hosted checkout in the in-app browser sheet. Every outcome —
       // returned via the deep link, dismissed, or the sheet failing to open — falls
-      // through to verifyActivation, because none of them is evidence either way and
-      // only the server knows whether money moved.
+      // through to watching for the payment, because none of them is evidence either way
+      // and only the server knows whether money moved.
       //
       // In particular a dismissal must NOT reopen checkout: paying and then swiping the
       // sheet away is ordinary behaviour, and showing that person Paystack a second time
       // reads as "your payment didn't work" at the exact moment it did.
+      // Only the provider sending the browser back to the app says a payment was made; a sheet
+      // closed by hand is still watched, quietly, so the plans stay usable for a second try.
+      let returned = false;
       try {
-        await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
+        const outcome = await WebBrowser.openAuthSessionAsync(session.checkoutUrl, RETURN_URL);
+        returned = outcome.type === "success";
       } catch {
-        await WebBrowser.openBrowserAsync(session.checkoutUrl);
+        await WebBrowser.openBrowserAsync(session.checkoutUrl).catch((e) => {
+          // Neither browser would open, so nothing can have been paid: no wait to leave behind.
+          abandonCheckout();
+          throw e;
+        });
       }
 
+      // The provider confirms from here, and owns the welcome when the payment lands, so it
+      // carries on if this screen is left.
+      watchPayment(!returned);
       if (!mounted.current) return;
       setBusy(false);
-      await verifyActivation();
     } catch (e) {
       if (!mounted.current) return;
       setBusy(false);
+      // An earlier checkout turned out to be paid: nothing to buy, so the welcome, not an error.
+      if (toApiError(e).code === "BILLING_PAYMENT_ALREADY_RECEIVED" && selectedId) {
+        beginCheckout(selectedId, subscription);
+        watchPayment();
+        return;
+      }
       showDialog({
         title: "Checkout failed",
         message: toApiError(e).message,
@@ -310,6 +288,19 @@ export function UpgradeScreen({ navigation }: Props) {
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
   const isActive = (subscription?.isActive ?? false) && !extending;
+
+  // The provider drops its checkout snapshot when the payment lands (it shows the welcome
+  // itself): back to the member hub, re-read so it carries the new dates.
+  const hadPending = useRef(false);
+  useEffect(() => {
+    if (pendingCheckout) {
+      hadPending.current = true;
+    } else if (hadPending.current) {
+      hadPending.current = false;
+      setExtending(false);
+      load();
+    }
+  }, [pendingCheckout, load]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -378,11 +369,30 @@ export function UpgradeScreen({ navigation }: Props) {
         </View>
       )}
 
+      {/* ── Payment not confirmed after the quick checks: the provider keeps asking ── */}
+      {!loading && paymentCheck === "delayed" && (
+        <View style={styles.confirmNote}>
+          <Ionicons name="time-outline" size={18} color={colors.accent} />
+          <Text style={styles.confirmNoteText}>
+            Your payment is still being confirmed. Pro unlocks automatically the moment it lands.
+          </Text>
+        </View>
+      )}
+
       {loading ? (
         <View style={styles.loadingBlock}>
           <PlanCardSkeleton />
           <PlanCardSkeleton />
         </View>
+      ) : paymentCheck === "confirming" ? (
+        // The provider is asking the server; there is nothing to press until it answers.
+        <Card style={styles.card}>
+          <View style={styles.confirmBlock}>
+            <ActivityIndicator color={colors.accent} />
+            <Text style={styles.confirmTitle}>Confirming your payment…</Text>
+            <Text style={styles.confirmText}>This usually takes a few seconds.</Text>
+          </View>
+        </Card>
       ) : isActive ? (
         <ActiveState
           subscription={subscription!}
@@ -445,16 +455,10 @@ export function UpgradeScreen({ navigation }: Props) {
 
           {/* ── CTA ──────────────────────────────────────────────────────── */}
           <Button
-            label={
-              verifying
-                ? "Confirming…"
-                : selected
-                  ? `Upgrade — ${ctaPrice(selected)}`
-                  : "Upgrade"
-            }
+            label={selected ? `Upgrade — ${ctaPrice(selected)}` : "Upgrade"}
             icon="lock-open-outline"
             onPress={handleUpgrade}
-            loading={busy || verifying}
+            loading={busy}
             disabled={!selectedId}
             style={styles.cta}
           />
@@ -1140,6 +1144,42 @@ const makeStyles = (c: Palette, s: Shadows) =>
       lineHeight: 16,
       marginTop: spacing.md,
       paddingHorizontal: spacing.lg,
+    },
+
+    // ── Confirming a payment ────────────────────────────────────────────────
+    confirmBlock: {
+      alignItems: "center",
+      gap: spacing.sm,
+      paddingVertical: spacing.lg,
+    },
+    confirmTitle: {
+      ...typography.label,
+      color: c.text,
+      fontSize: 15,
+    },
+    confirmText: {
+      ...typography.body,
+      color: c.textMuted,
+      fontSize: 13,
+      textAlign: "center",
+    },
+    confirmNote: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: spacing.sm,
+      backgroundColor: c.accentSoft,
+      borderWidth: 1,
+      borderColor: c.accentGlow,
+      borderRadius: radii.lg,
+      padding: spacing.md,
+      marginBottom: spacing.xl,
+    },
+    confirmNoteText: {
+      ...typography.body,
+      flex: 1,
+      fontSize: 13,
+      lineHeight: 19,
+      color: c.text,
     },
 
     // ── Header active badge ─────────────────────────────────────────────────

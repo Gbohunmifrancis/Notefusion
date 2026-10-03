@@ -13,7 +13,26 @@ import { billingApi } from '../api/endpoints';
 import { useAuth } from './auth';
 import { showDialog } from './dialog';
 import * as haptics from './haptics';
+import { ProWelcomeModal, type ProWelcome } from '../components/ProWelcomeModal';
 import type { Subscription } from '../api/types';
+
+/**
+ * What the account looked like the moment a checkout opened. A payment has landed when the server's
+ * answer moves past this — `isActive` alone cannot say so for a member who was already Pro and is
+ * adding time, and who is active whether or not they paid.
+ */
+export interface CheckoutSnapshot {
+  planId: string;
+  /** Epoch milliseconds. */
+  startedAt: number;
+  wasActive: boolean;
+  periodEnd: string | null;
+  lifetime: boolean;
+  planCode: string | null;
+}
+
+/** `confirming` while polling hard just after checkout; `delayed` once that window passed unanswered. */
+export type PaymentCheck = 'idle' | 'confirming' | 'delayed';
 
 interface SubscriptionState {
   /**
@@ -48,6 +67,23 @@ interface SubscriptionState {
   trialTotal: number;
   /** Re-reads the server. If reconcilePending is true (default for manual refresh), verifies any in-flight payment first. */
   refresh: (reconcilePending?: boolean) => Promise<void>;
+  /** The checkout this device opened and has not yet seen land, or null. */
+  pendingCheckout: CheckoutSnapshot | null;
+  paymentCheck: PaymentCheck;
+  /** Records the state a checkout starts from. Call before the provider's page opens. */
+  beginCheckout: (planId: string, current: Subscription | null) => void;
+  /**
+   * Polls until the pending checkout lands, then shows the one welcome pop-up. Safe to call again
+   * while it runs. Returns false when there is nothing pending to watch. The paywall calls it once
+   * the checkout browser has closed, which is also what lets foreground re-reads resume.
+   *
+   * `quiet` polls without the "Confirming your payment…" state, for when nothing says a payment was
+   * made (the sheet was closed by hand, the app came back to the front): a person who cancelled is
+   * not kept from the plans, and a payment that did go through still gets its welcome.
+   */
+  watchPayment: (quiet?: boolean) => boolean;
+  /** Drops the snapshot of a checkout whose browser never opened, so nothing waits on it. */
+  abandonCheckout: () => void;
 }
 
 const SubscriptionContext = createContext<SubscriptionState | undefined>(undefined);
@@ -71,6 +107,21 @@ const DEFAULT_TRIAL_TOTAL = 5;
  */
 const cacheKey = (userId: string) => `@notefusion_sub:${userId}`;
 const trackerKey = (userId: string) => `@notefusion_sub_tracker:${userId}`;
+/** The pending checkout, kept so an app closed while the browser was open still celebrates on reopen. */
+const checkoutKey = (userId: string) => `@notefusion_checkout:${userId}`;
+
+/**
+ * How a payment is watched after the browser closes: quick ticks first, because most land within
+ * seconds, then slow ones for a provider that settles minutes later. A checkout older than the TTL
+ * was abandoned and is no longer asked about.
+ */
+const FAST_TICK_MS = 2_500;
+const FAST_WINDOW_MS = 60_000;
+const SLOW_TICK_MS = 15_000;
+const WATCH_WINDOW_MS = 10 * 60_000;
+const CHECKOUT_TTL_MS = 2 * 60 * 60_000;
+
+const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /**
  * Whether a cached period has already run out, in which case it is hydrated inactive. `isLifetime`
@@ -86,6 +137,23 @@ function lapsed(sub: Subscription): boolean {
 }
 
 /**
+ * Whether `sub` shows that the payment started from `from` has landed. Active is enough for an
+ * account that was not; a member adding time needs the period to move on, the plan to change, or
+ * lifetime to arrive — otherwise a cancelled checkout would read as a purchase.
+ */
+function landed(from: CheckoutSnapshot, sub: Subscription): boolean {
+  if (!sub.isActive) return false;
+  if (!from.wasActive) return true;
+  if (sub.isLifetime && !from.lifetime) return true;
+  if (sub.planCode !== from.planCode) return true;
+  if (!sub.currentPeriodEndUtc) return false;
+  return (
+    from.periodEnd === null ||
+    Date.parse(sub.currentPeriodEndUtc) > Date.parse(from.periodEnd)
+  );
+}
+
+/**
  * Owns "is this account premium?" for the whole app.
  *
  * Before this existed the question was answered four different ways — the profile
@@ -93,6 +161,10 @@ function lapsed(sub: Subscription): boolean {
  * tap, the paywall read `isActive`, and the tab bar didn't ask at all — so the same
  * account could look Pro in one place and Free in another. Billing state now has
  * exactly one reader, and everything else consumes this hook.
+ *
+ * It also owns the wait after a checkout: the paywall records where the account stood
+ * (`beginCheckout`), and from the browser's return this polls confirm until the payment
+ * lands and shows the one welcome pop-up, over whatever screen the user is on by then.
  *
  * Must be mounted *inside* AuthProvider: the fetch is keyed on the session, and a
  * sign-out has to wipe the cached state so the next user doesn't inherit it.
@@ -109,6 +181,25 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const userIdRef = useRef<string | null>(null);
   /** Previous acknowledged subscription state for detecting gifts, revokes, and purchases. */
   const lastSeenRef = useRef<{ isActive: boolean; isGift: boolean } | null>(null);
+  const [pendingCheckout, setPendingCheckout] = useState<CheckoutSnapshot | null>(null);
+  /** Mirrors `pendingCheckout` for the poll, which reads it between awaits. */
+  const pendingRef = useRef<CheckoutSnapshot | null>(null);
+  const [paymentCheck, setPaymentCheckState] = useState<PaymentCheck>('idle');
+  const paymentCheckRef = useRef<PaymentCheck>('idle');
+  /** Bumped to stop a running poll: each loop exits once the number is no longer its own. */
+  const pollRunRef = useRef(0);
+  /** The running poll's number and start, and whether it is quiet (see `watchPayment`). */
+  const watchRef = useRef<{ run: number; started: number; quiet: boolean } | null>(null);
+  /**
+   * True from `beginCheckout` until the paywall reports the browser closed. iOS keeps the app
+   * active under the checkout sheet, and coming back from a bank or SMS app mid-payment fires
+   * `active` while the sheet is still up: a poll started then could land the payment and raise the
+   * welcome while the sheet is presented, where iOS refuses to show it and the pop-up is lost.
+   */
+  const checkoutOpenRef = useRef(false);
+  /** The last subscription state celebrated, so one payment gets one pop-up. */
+  const celebratedRef = useRef<string | null>(null);
+  const [welcome, setWelcome] = useState<ProWelcome | null>(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -117,16 +208,42 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     };
   }, []);
 
-  const load = useCallback(async (reconcilePending: boolean = false) => {
-    setLoading(true);
-    try {
-      // If reconcilePending is true (on pull-to-refresh or foreground return), call confirm()
-      // which checks with the payment gateway for any in-flight checkout session first.
-      // If no checkout is pending or confirm fails, it safely falls back to mySubscription().
-      const sub = reconcilePending
-        ? await billingApi.confirm().catch(() => billingApi.mySubscription())
-        : await billingApi.mySubscription();
-      if (!mounted.current) return;
+  const setPending = useCallback((next: CheckoutSnapshot | null) => {
+    pendingRef.current = next;
+    setPendingCheckout(next);
+    const id = userIdRef.current;
+    if (!id) return;
+    void (next
+      ? AsyncStorage.setItem(checkoutKey(id), JSON.stringify(next))
+      : AsyncStorage.removeItem(checkoutKey(id))
+    ).catch(() => undefined);
+  }, []);
+
+  const setPaymentCheck = useCallback((next: PaymentCheck) => {
+    paymentCheckRef.current = next;
+    setPaymentCheckState(next);
+  }, []);
+
+  const stopWatching = useCallback(() => {
+    pollRunRef.current += 1;
+    setPaymentCheck('idle');
+  }, [setPaymentCheck]);
+
+  /**
+   * The poll, a foreground re-read and a pull-to-refresh can all see the same payment land.
+   * Whichever sees it first is the only one that speaks.
+   */
+  const celebrate = useCallback((sub: Subscription, extended: boolean) => {
+    const key = `${sub.planCode}|${sub.currentPeriodEndUtc}|${sub.isLifetime}`;
+    if (celebratedRef.current === key) return;
+    celebratedRef.current = key;
+    haptics.play('success');
+    setWelcome({ subscription: sub, extended });
+  }, []);
+
+  /** Takes a fresh answer from the server: state, transitions, and the cache. */
+  const apply = useCallback(
+    (sub: Subscription) => {
       setSubscription(sub);
       setKnown(true);
       knownRef.current = true;
@@ -135,9 +252,15 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       const prev = lastSeenRef.current;
       const currentIsActive = sub.isActive;
       const currentIsGift = Boolean(sub.isGift);
+      const pending = pendingRef.current;
 
-      // Only check state transitions when we have an existing known baseline
-      if (prev !== null) {
+      if (pending && landed(pending, sub)) {
+        // The payment this device started. Judged against the snapshot rather than the last
+        // state seen, so a member adding time is celebrated too.
+        setPending(null);
+        celebrate(sub, pending.wasActive);
+      } else if (prev !== null) {
+        // Only check state transitions when we have an existing known baseline
         if (!prev.isActive && currentIsActive) {
           if (currentIsGift) {
             haptics.play('success');
@@ -149,14 +272,9 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
               tone: "premium",
             });
           } else {
-            haptics.play('success');
-            showDialog({
-              title: "Welcome to NoteFusion Pro! 🎉",
-              message:
-                "Your payment has been confirmed and Pro is active. Whole songs, four-part harmony and every download are yours.",
-              icon: "sparkles",
-              tone: "premium",
-            });
+            // Paid where this device was not watching: the website, or a checkout that outlived
+            // its snapshot.
+            celebrate(sub, false);
           }
         } else if (prev.isActive && !currentIsActive) {
           haptics.play('warning');
@@ -182,6 +300,21 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
           JSON.stringify({ isActive: currentIsActive, isGift: currentIsGift }),
         ).catch(() => undefined);
       }
+    },
+    [celebrate, setPending],
+  );
+
+  const load = useCallback(async (reconcilePending: boolean = false) => {
+    setLoading(true);
+    try {
+      // If reconcilePending is true (on pull-to-refresh or foreground return), call confirm()
+      // which checks with the payment gateway for any in-flight checkout session first.
+      // If no checkout is pending or confirm fails, it safely falls back to mySubscription().
+      const sub = reconcilePending
+        ? await billingApi.confirm().catch(() => billingApi.mySubscription())
+        : await billingApi.mySubscription();
+      if (!mounted.current) return;
+      apply(sub);
     } catch {
       // Network down, 5xx, expired session mid-refresh. Only clear the state we have
       // never successfully read — a *re*-read that fails must leave the last known
@@ -196,7 +329,76 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, []);
+  }, [apply]);
+
+  const watchPayment = useCallback((quiet: boolean = false): boolean => {
+    checkoutOpenRef.current = false;
+    const pending = pendingRef.current;
+    if (!pending) return false;
+    if (Date.now() - pending.startedAt > CHECKOUT_TTL_MS) {
+      setPending(null);
+      return false;
+    }
+    // Still in its quick ticks: keep it, only letting a return from the provider make it visible.
+    const live = watchRef.current;
+    if (live && live.run === pollRunRef.current && Date.now() - live.started < FAST_WINDOW_MS) {
+      if (!quiet && live.quiet) {
+        live.quiet = false;
+        setPaymentCheck('confirming');
+      }
+      return true;
+    }
+
+    const run = ++pollRunRef.current;
+    const watch = { run, started: Date.now(), quiet };
+    watchRef.current = watch;
+    setPaymentCheck(quiet ? 'idle' : 'confirming');
+    void (async () => {
+      const started = watch.started;
+      for (;;) {
+        const elapsed = Date.now() - started;
+        if (elapsed >= WATCH_WINDOW_MS) break;
+        if (elapsed >= FAST_WINDOW_MS && !watch.quiet && paymentCheckRef.current !== 'delayed') {
+          setPaymentCheck('delayed');
+        }
+        try {
+          const sub = await billingApi.confirm();
+          if (!mounted.current || pollRunRef.current !== run) return;
+          apply(sub); // clears the snapshot once the payment has landed
+        } catch {
+          // Offline, a slow provider, a server hiccup: nothing to say, the next tick asks again.
+        }
+        if (!pendingRef.current) break;
+        await delay(elapsed < FAST_WINDOW_MS ? FAST_TICK_MS : SLOW_TICK_MS);
+        if (!mounted.current || pollRunRef.current !== run) return;
+      }
+      if (mounted.current && pollRunRef.current === run) setPaymentCheck('idle');
+    })();
+    return true;
+  }, [apply, setPending, setPaymentCheck]);
+
+  const beginCheckout = useCallback(
+    (planId: string, current: Subscription | null) => {
+      setPending({
+        planId,
+        startedAt: Date.now(),
+        wasActive: current?.isActive ?? false,
+        periodEnd: current?.currentPeriodEndUtc ?? null,
+        lifetime: current?.isLifetime ?? false,
+        planCode: current?.planCode ?? null,
+      });
+      // Nothing confirms behind the sheet, an earlier checkout's slow poll included: the watch
+      // starts again from the browser's return.
+      checkoutOpenRef.current = true;
+      stopWatching();
+    },
+    [setPending, stopWatching],
+  );
+
+  const abandonCheckout = useCallback(() => {
+    checkoutOpenRef.current = false;
+    setPending(null);
+  }, [setPending]);
 
   // Keyed on user id, not the object: `setUser` replaces the object on every
   // profile edit, and a name change is no reason to re-ask the billing service.
@@ -213,12 +415,21 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
    */
   const hydrateFromCache = useCallback(async (id: string) => {
     try {
-      const [rawSub, rawTracker] = await Promise.all([
+      const [rawSub, rawTracker, rawCheckout] = await Promise.all([
         AsyncStorage.getItem(cacheKey(id)),
         AsyncStorage.getItem(trackerKey(id)),
+        AsyncStorage.getItem(checkoutKey(id)),
       ]);
-      if (rawTracker) {
+      // Never over an answer the fetch already gave: a stale "inactive" here would make the next
+      // re-read look like a purchase and put the welcome up for nothing.
+      if (rawTracker && lastSeenRef.current === null) {
         lastSeenRef.current = JSON.parse(rawTracker);
+      }
+      if (rawCheckout && userIdRef.current === id && !pendingRef.current) {
+        pendingRef.current = JSON.parse(rawCheckout) as CheckoutSnapshot;
+        setPendingCheckout(pendingRef.current);
+        // Reopened after being closed mid-checkout: nothing says whether it was paid, so look quietly.
+        watchPayment(true);
       }
       if (!rawSub) return;
       const cached = JSON.parse(rawSub) as Subscription;
@@ -232,7 +443,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       // No entry, unreadable, or written by an older shape of `Subscription`. The fetch already
       // underway is the real answer, so there is nothing to recover from.
     }
-  }, []);
+  }, [watchPayment]);
 
   useEffect(() => {
     if (!userId) {
@@ -242,36 +453,52 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       if (previous) {
         void AsyncStorage.removeItem(cacheKey(previous)).catch(() => undefined);
         void AsyncStorage.removeItem(trackerKey(previous)).catch(() => undefined);
+        void AsyncStorage.removeItem(checkoutKey(previous)).catch(() => undefined);
       }
       userIdRef.current = null;
       lastSeenRef.current = null;
+      pendingRef.current = null;
+      checkoutOpenRef.current = false;
+      setPendingCheckout(null);
+      stopWatching();
+      celebratedRef.current = null;
+      setWelcome(null);
       setSubscription(null);
       setKnown(false);
       knownRef.current = false;
       setLoading(false);
       return;
     }
-    // Before the fetch, and outside it: `load` is `useCallback(…, [])` for a stable identity, so it
+    // Before the fetch, and outside it: `load` keeps a stable identity (its deps are all stable), so it
     // cannot take a `userId` dependency without making the AppState listener below re-subscribe on
     // every change. It reads the id back through `userIdRef` instead.
     userIdRef.current = userId;
     void hydrateFromCache(userId);
     load();
-  }, [userId, load, hydrateFromCache]);
+  }, [userId, load, hydrateFromCache, stopWatching]);
 
   // Re-read whenever the app comes back to the foreground. Checkout happens in an
   // external browser, so the moment Pro actually unlocks is a moment this app is not
   // in front of the user — without this the gold ring and the lifted quota waited for
   // a relaunch. Keyed on AppState rather than screen focus because the provider sits
   // above the navigator, and because returning from the browser is the case that matters.
+  //
+  // A checkout in flight is watched instead: the poll confirms on its first tick, and keeps
+  // asking only while the app is in front. While its browser is still open the paywall starts
+  // that watch itself when the browser closes.
   useEffect(() => {
     if (!userId) return;
     const sub = AppState.addEventListener('change', (next) => {
       // Reconcile pending payments when returning to foreground (e.g. from checkout browser)
-      if (next === 'active') void load(true);
+      if (next === 'active') {
+        if (checkoutOpenRef.current) return;
+        if (!watchPayment(true)) void load(true);
+      } else if (next === 'background') {
+        stopWatching();
+      }
     });
     return () => sub.remove();
-  }, [userId, load]);
+  }, [userId, load, watchPayment, stopWatching]);
 
   const value = useMemo<SubscriptionState>(
     () => ({
@@ -283,12 +510,30 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,
       trialTotal: subscription?.trialGenerationsTotal ?? DEFAULT_TRIAL_TOTAL,
       refresh: (reconcile = true) => load(reconcile),
+      pendingCheckout,
+      paymentCheck,
+      beginCheckout,
+      watchPayment,
+      abandonCheckout,
     }),
-    [subscription, known, loading, load],
+    [
+      subscription,
+      known,
+      loading,
+      load,
+      pendingCheckout,
+      paymentCheck,
+      beginCheckout,
+      watchPayment,
+      abandonCheckout,
+    ],
   );
 
   return (
-    <SubscriptionContext.Provider value={value}>{children}</SubscriptionContext.Provider>
+    <SubscriptionContext.Provider value={value}>
+      {children}
+      <ProWelcomeModal welcome={welcome} onClose={() => setWelcome(null)} />
+    </SubscriptionContext.Provider>
   );
 }
 

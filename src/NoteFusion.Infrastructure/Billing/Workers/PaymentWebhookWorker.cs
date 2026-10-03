@@ -4,7 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Billing.Commands;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
+using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Persistence;
 
@@ -15,9 +17,10 @@ namespace NoteFusion.Infrastructure.Billing.Workers;
 /// Worker). It polls for <see cref="WebhookStatus.Received"/> rows and hands each to
 /// <see cref="ProcessWebhookEventCommand"/>, which applies the effect exactly once inside a single
 /// transaction. Processing is decoupled from the HTTP request so the provider always gets a fast 200
-/// and retries here — not on their side — drive eventual delivery. A handler failure is recorded on
-/// the row (incrementing attempts) so it is retried until the configured limit, then parked as Failed
-/// for reconciliation.
+/// and retries here — not on their side — drive eventual delivery. A handler failure (or throw) is
+/// recorded on the row (incrementing attempts) so it is retried, after a growing delay, until the
+/// configured limit, then parked as Failed for reconciliation. Each event is isolated: one that keeps
+/// failing never blocks the others.
 /// </summary>
 internal sealed class PaymentWebhookWorker : BackgroundService
 {
@@ -66,36 +69,80 @@ internal sealed class PaymentWebhookWorker : BackgroundService
         }
     }
 
-    private async Task DrainAsync(CancellationToken ct)
+    /// <summary>
+    /// One pass over the inbox. Internal so a test can drive a single pass without the polling loop.
+    /// </summary>
+    internal async Task DrainAsync(CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var sender = scope.ServiceProvider.GetRequiredService<ISender>();
+        var clock = scope.ServiceProvider.GetRequiredService<IDateTimeProvider>();
+        var now = clock.UtcNow;
 
-        var pending = await db.WebhookEvents
+        // Backoff is decided per row (WebhookEvent.IsDueForRetry), so a window of candidates is read and
+        // filtered here. Fewest attempts first: a fresh event is never queued behind one that is waiting
+        // out a long retry delay.
+        var candidates = await db.WebhookEvents
             .Where(e => e.Status == WebhookStatus.Received)
-            .OrderBy(e => e.ReceivedAtUtc)
-            .Take(BatchSize)
-            .Select(e => e.Id)
+            .OrderBy(e => e.ProcessAttempts)
+            .ThenBy(e => e.ReceivedAtUtc)
+            .Take(BatchSize * 10)
+            .Select(e => new { e.Id, e.ProcessAttempts, e.LastAttemptAtUtc })
             .ToListAsync(ct);
 
-        foreach (var id in pending)
+        var due = candidates
+            .Where(e => WebhookEvent.IsDueForRetry(e.ProcessAttempts, e.LastAttemptAtUtc, now))
+            .Take(BatchSize)
+            .Select(e => e.Id)
+            .ToList();
+
+        foreach (var id in due)
         {
-            var result = await sender.Send(new ProcessWebhookEventCommand(id), ct);
-            if (result.IsSuccess)
-                continue;
+            string error;
+            try
+            {
+                var result = await sender.Send(new ProcessWebhookEventCommand(id), ct);
+                if (result.IsSuccess)
+                    continue;
+                error = result.Error.Message;
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // One event that throws — an illegal state transition, a constraint the save tripped — must
+                // not stop every event behind it. It is recorded like any other failure and retried later.
+                _logger.LogError(ex, "Webhook {Id} processing threw.", id);
+                error = ex.Message;
+            }
 
-            // Record the failure on the row so it retries, then parks after the attempt limit.
-            var e = await db.WebhookEvents.FirstOrDefaultAsync(x => x.Id == id, ct);
-            if (e is null || e.Status != WebhookStatus.Received)
-                continue;
+            try
+            {
+                // The handler shares this context. A failure part-way through can leave staged changes
+                // tracked, and they must not ride along with the failure record into the database.
+                db.ChangeTracker.Clear();
 
-            e.RecordFailure(result.Error.Message, _settings.MaxWebhookAttempts, DateTimeUtc(scope));
-            await db.SaveChangesAsync(ct);
-            _logger.LogWarning("Webhook {Id} processing failed: {Error}", id, result.Error.Message);
+                // Record the failure on the row so it retries after a backoff, then parks after the limit.
+                var e = await db.WebhookEvents.FirstOrDefaultAsync(x => x.Id == id, ct);
+                if (e is null || e.Status != WebhookStatus.Received)
+                    continue;
+
+                e.RecordFailure(error, _settings.MaxWebhookAttempts, clock.UtcNow);
+                await db.SaveChangesAsync(ct);
+                _logger.LogWarning("Webhook {Id} processing failed: {Error}", id, error);
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                db.ChangeTracker.Clear();
+                _logger.LogError(ex, "Could not record the failure of webhook {Id}.", id);
+            }
         }
     }
-
-    private static DateTime DateTimeUtc(IServiceScope scope)
-        => scope.ServiceProvider.GetRequiredService<Application.Common.Interfaces.IDateTimeProvider>().UtcNow;
 }
