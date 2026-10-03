@@ -49,6 +49,13 @@ public class R2SettingsTests
         Assert.Equal("avatars", settings.KeyPrefix);
     }
 
+    [Theory]
+    [InlineData("media.notefusion.studio", "https://media.notefusion.studio")]
+    [InlineData("https://media.notefusion.studio", "https://media.notefusion.studio")]
+    [InlineData("http://localhost:9000", "http://localhost:9000")]
+    public void A_bare_custom_domain_is_served_over_https(string configured, string expected)
+        => Assert.Equal(expected, Resolve(("R2:PublicBaseUrl", configured)).PublicBaseUrl);
+
     [Fact]
     public void Blank_values_from_unset_deploy_secrets_leave_uploads_off()
     {

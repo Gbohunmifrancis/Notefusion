@@ -80,8 +80,15 @@ public sealed class R2Settings
             AccessKeyId = section["AccessKeyId"]?.Trim() ?? string.Empty,
             SecretAccessKey = section["SecretAccessKey"]?.Trim() ?? string.Empty,
             BucketName = section["BucketName"]?.Trim() ?? string.Empty,
-            PublicBaseUrl = section["PublicBaseUrl"]?.Trim() ?? string.Empty,
+            PublicBaseUrl = WithScheme(section["PublicBaseUrl"]?.Trim() ?? string.Empty),
             KeyPrefix = string.IsNullOrEmpty(keyPrefix) ? new R2Settings().KeyPrefix : keyPrefix,
         };
     }
+
+    /// <summary>
+    /// Cloudflare lists a bucket's custom domain as a bare host, and a URL saved without a scheme loads
+    /// nowhere: the website reads it as a path on its own site and the app refuses it.
+    /// </summary>
+    private static string WithScheme(string baseUrl)
+        => baseUrl.Length == 0 || baseUrl.Contains("://", StringComparison.Ordinal) ? baseUrl : $"https://{baseUrl}";
 }

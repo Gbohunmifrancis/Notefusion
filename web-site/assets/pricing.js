@@ -38,9 +38,23 @@
       // "web": the provider's return page brings the browser back to /app?paid=1, not to the phone app.
       body: JSON.stringify({ planId: plan.id, client: "web" }),
     })
-      .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
+      .then(function (r) {
+        if (r.ok) return r.json();
+        return r.json().catch(function () { return null; }).then(function (e) {
+          // An earlier checkout turned out to be paid: /app shows the welcome instead of a second charge.
+          if (e && e.code === "BILLING_PAYMENT_ALREADY_RECEIVED") { window.location.href = "/app?paid=1"; return null; }
+          throw new Error(String(r.status));
+        });
+      })
       .then(function (session) {
+        if (session === null) return;
         if (!session || !session.checkoutUrl) throw new Error("no url");
+        // What /app compares against when the browser comes back (only non-members are offered a plan here).
+        try {
+          localStorage.setItem("nf.checkout", JSON.stringify({
+            planId: plan.id, startedAt: Date.now(), wasActive: false, periodEnd: null, lifetime: false, planCode: null
+          }));
+        } catch (e) { /* private mode: the ?paid=1 return still confirms */ }
         window.location.href = session.checkoutUrl;
       })
       .catch(function () {

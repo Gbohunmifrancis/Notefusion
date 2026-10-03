@@ -88,6 +88,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
 
         // Retry-safe: an existing in-flight checkout for this user+plan is reused, so tapping "Upgrade"
         // twice returns the same session instead of opening a second charge.
+        var fromWeb = IsWebClient(request.Client);
         var inFlight = await _db.PaymentTransactions
             .Where(t => t.UserId == userId
                         && t.PlanId == plan.Id
@@ -100,13 +101,16 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             // Only while the session can still be paid. A Processing row's UpdatedAtUtc is the moment its
             // checkout was attached, and a hosted session dies (Bachs: after an hour) whether or not anyone
             // tells us — handing an old one back would send the customer to a page that cannot take money.
+            // And only to the client that opened it: the session returns the browser to that client's page
+            // (the app's deep link or the website), so the other one would be left on the wrong page after paying.
             var reuseCutoff = _clock.UtcNow - TimeSpan.FromMinutes(Math.Max(1, _settings.CheckoutReuseMinutes));
-            if (inFlight.UpdatedAtUtc >= reuseCutoff)
+            var sameClient = inFlight.IdempotencyKey.EndsWith(WebKeySuffix, StringComparison.Ordinal) == fromWeb;
+            if (sameClient && inFlight.UpdatedAtUtc >= reuseCutoff)
                 return new CheckoutSessionDto(inFlight.Reference, inFlight.CheckoutUrl!, inFlight.Provider);
 
-            // Too old to hand out, but it may have been paid without our hearing of it — often the very reason
-            // the customer is back. Ask first, because the answer decides whether a new charge is wanted at
-            // all. A failed ask does not block the purchase: the row stays for the sweep either way.
+            // Too old to hand out, or the other client's, but it may have been paid without our hearing of it —
+            // often the very reason the customer is back. Ask first, because the answer decides whether a new
+            // charge is wanted at all. A failed ask does not block the purchase: the row stays for the sweep.
             _ = await ReconcilePaymentCommandHandler.ReconcileAsync(_db, _gateways, _clock, _email, inFlight, ct);
             if (inFlight.Status == PaymentStatus.Completed)
             {
@@ -139,7 +143,6 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         // part of that body too, so a row is only replayed by the client (app or website) that started it:
         // the other one's URL under the same key is a key conflict, which leaves the outcome unknown and
         // would refuse that client's every attempt until the stale sweep closed the row.
-        var fromWeb = IsWebClient(request.Client);
         var pending = _db.PaymentTransactions
             .Where(t => t.UserId == userId
                         && t.PlanId == plan.Id

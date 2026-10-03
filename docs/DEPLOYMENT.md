@@ -280,7 +280,7 @@ and the refusal is in the API log as a warning.
 
 Avatar uploads are proxied through the API — `POST /api/me/picture` — so the signing secret
 stays on the server and never ships inside the app binary. Until `R2__UseR2=true` *and* every
-value below is set, uploads are refused: the endpoint answers 503 `USER_PICTURE_STORAGE_UNAVAILABLE`
+value below is set, uploads are refused: the endpoint answers 400 `USER_PICTURE_STORAGE_UNAVAILABLE` (a plain sentence the apps show as is)
 ("Photo uploads aren't available right now. Please try again later.") and the user's existing
 photo, a Google one included, is left as it was. A deploy without a bucket is safe. The API logs
 one line at startup saying where photos go, or warning that uploads are off (`MediaReadiness`).

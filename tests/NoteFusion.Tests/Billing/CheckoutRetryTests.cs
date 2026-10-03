@@ -275,6 +275,42 @@ public class CheckoutRetryTests
     }
 
     [Theory]
+    [InlineData("web", "checkout:NF_first", "https://api.notefusion.studio/api/billing/return/web")]
+    [InlineData(null, "checkout:NF_first:web", BillingSettings.DefaultCheckoutCallbackUrl)]
+    public async Task An_open_checkout_is_not_handed_to_the_other_client(string? client, string openKey, string callback)
+    {
+        // Its page returns the browser to the client that opened it (the app's deep link or the website),
+        // so the other one gets its own session, after asking whether the open one was paid meanwhile.
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-5), key: openKey);
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id, client), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.NotEqual(tx.Reference, checkout.Value.Reference);
+        Assert.Equal(1, gateway.Verifications);
+        Assert.Equal(callback, Assert.Single(gateway.CallbackUrls));
+        Assert.Equal(PaymentStatus.Processing, tx.Status);
+    }
+
+    [Fact]
+    public async Task An_open_checkout_paid_on_the_other_client_is_not_charged_again()
+    {
+        using var h = new TestHarness(Now);
+        var (user, plan, tx) = SeedCheckoutInFlight(h, openedAtUtc: Now.AddMinutes(-5));
+        var gateway = new FakeGateway(Answer(Succeeded: true, Terminal: true));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id, "web"), CancellationToken.None);
+
+        Assert.Equal("BILLING_PAYMENT_ALREADY_RECEIVED", checkout.Error.Code);
+        Assert.Empty(gateway.InitiatedReferences);
+        Assert.Equal(PaymentStatus.Completed, tx.Status);
+    }
+
+    [Theory]
     [InlineData(null, "checkout:NF_pending", true)]
     [InlineData("web", "checkout:NF_pending:web", true)]
     // The return URL is part of the body the provider fingerprints the key against, so the other client's
@@ -324,14 +360,14 @@ public class CheckoutRetryTests
     // ---------------------------------------------------------------- fixtures
 
     private static (User User, Plan Plan, PaymentTransaction Transaction) SeedCheckoutInFlight(
-        TestHarness h, DateTime? openedAtUtc = null)
+        TestHarness h, DateTime? openedAtUtc = null, string key = "checkout:NF_first")
     {
         var user = User.Create("Pat Payer", "pat@example.com", h.Hasher.Hash("password123"), Now.AddDays(-2));
         var plan = Plan.Create(Guid.NewGuid(), "pro_monthly", "NoteFusion Pro", 499, "USD", BillingInterval.Monthly);
 
         var opened = openedAtUtc ?? Now.AddHours(-3);
         var tx = PaymentTransaction.Create(
-            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_first", "NF_first", 499, "USD", opened);
+            user.Id, plan.Id, PaymentProvider.Bachs, key, "NF_first", 499, "USD", opened);
         tx.AttachCheckout("chk_first", DeadUrl, "{}", opened);
 
         h.Db.Users.Add(user);
