@@ -1424,6 +1424,75 @@ class TestEstimateTempoAndBeats:
         bpm, _beats = transcriber._estimate_tempo_and_beats(tmp_path / "a.wav", [], None)
         assert bpm == pytest.approx(110.0)
 
+    def _song(self, monkeypatch, beats: np.ndarray, tracked: float = 129.2):
+        # librosa reports one of its lag bins (129.2 for a true 132) and frame-exact beats.
+        self._patch(monkeypatch, load=self._load(), beat_track=lambda **k: (np.array([tracked]), beats))
+
+    def test_a_mix_keeps_the_tracked_level_over_the_singers_onsets(self, monkeypatch, tmp_path):
+        # The singer enters every beat and a half; on the voice alone the onset vote would
+        # call that the beat (88 BPM).  The drums on the mix say 132, and they set the bars.
+        beats = np.arange(24) * 60.0 / 132.0
+        events = [Event(t, t + 0.4, 60, 0.8) for t in np.arange(10) * 1.5 * 60.0 / 132.0]
+        self._song(monkeypatch, beats)
+        assert transcriber._estimate_tempo_and_beats(tmp_path / "a.wav", events, None)[0] != pytest.approx(132.0, abs=1.0)
+        bpm, _ = transcriber._estimate_tempo_and_beats(tmp_path / "a.wav", events, None, mix=True)
+        assert bpm == pytest.approx(132.0, abs=0.05)
+
+    def test_the_mix_bpm_is_read_off_the_beats_not_the_trackers_bin(self, monkeypatch, tmp_path):
+        beats = np.round(np.arange(30) * 60.0 / 132.0 / (512 / 22_050)) * (512 / 22_050)  # frame-quantised
+        beats = np.delete(beats, 12)  # a beat lost in a break must not bend the line
+        self._song(monkeypatch, beats)
+        bpm, _ = transcriber._estimate_tempo_and_beats(tmp_path / "a.wav", [], None, mix=True)
+        assert bpm == pytest.approx(132.0, abs=0.1)
+
+    def test_the_beat_line_never_changes_the_trackers_level(self):
+        beats = np.arange(20) * 60.0 / 132.0
+        assert transcriber._steady_bpm(beats, 66.0) == pytest.approx(66.0)  # a disagreement: keep the tracker
+        assert transcriber._steady_bpm(beats[:5], 129.2) == pytest.approx(129.2)  # too few beats to fit
+
+
+# ── _one_note_per_slot (a tune is one voice) ─────────────────────────────────
+
+
+class TestOneNotePerSlot:
+    """After quantizing, two notes of the tune never start on the same slot."""
+
+    def _run(self, notes):
+        from music21 import note as m21note
+        from music21 import stream
+
+        s = stream.Stream()
+        heard = {}
+        for offset, pitch, length in notes:
+            n = m21note.Note(pitch)
+            n.quarterLength = length
+            s.insert(offset, n)
+            heard[id(n)] = offset
+        s.quantize((2,), processOffsets=True, processDurations=True, inPlace=True)
+        transcriber._one_note_per_slot(s, 0.5, heard)
+        return [(float(n.offset), n.pitch.midi, float(n.quarterLength)) for n in s.notes]
+
+    def test_a_clash_of_the_same_pitch_is_one_note(self):
+        assert self._run([(1.0, 60, 0.5), (1.1, 60, 1.0), (2.0, 62, 1.0)]) == [(1.0, 60, 1.0), (2.0, 62, 1.0)]
+
+    def test_the_later_note_moves_to_the_next_free_slot(self):
+        out = self._run([(0.0, 60, 1.0), (1.0, 62, 1.0), (1.2, 64, 1.0), (3.0, 65, 1.0)])
+        assert [(o, p) for o, p, _ in out] == [(0.0, 60), (1.0, 62), (1.5, 64), (3.0, 65)]
+        assert out[1][2] == 0.5  # the note it now follows is cut to fit, never overlapping
+
+    def test_a_quick_ornament_gives_way_to_the_note_it_leads_into(self):
+        # A short grace note just before a long note: the grace note goes back a slot.
+        out = self._run([(0.0, 60, 1.0), (1.9, 62, 0.25), (2.1, 64, 1.5), (4.0, 65, 1.0)])
+        assert [(o, p) for o, p, _ in out] == [(0.0, 60), (1.5, 62), (2.0, 64), (4.0, 65)]
+        assert out[0][0] + out[0][2] <= 1.5
+
+    def test_with_no_free_slot_the_shorter_note_is_folded_in(self):
+        # Every slot around the clash is taken: a wide vibrato read as alternating notes.
+        out = self._run([(0.0, 60, 0.5), (0.5, 61, 0.5), (1.0, 61, 0.5), (1.1, 63, 0.25), (1.5, 61, 0.5)])
+        starts = [o for o, _, _ in out]
+        assert len(starts) == len(set(starts)) == 4
+        assert 63 not in [p for _, p, _ in out]
+
 
 # ── Key detection ensemble (defects 3, 4) ─────────────────────────────────────
 

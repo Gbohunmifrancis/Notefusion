@@ -136,18 +136,50 @@ def test_submit_rejects_empty_file():
         assert r.status_code == 422
 
 
-def test_submit_rejects_long_clip(monkeypatch):
-    # Pretend every file is 10 minutes long so we don't actually process it.
-    monkeypatch.setattr("app.api.routes.settings.max_clip_seconds", 60.0)
-    monkeypatch.setattr("app.api.routes._clip_duration_seconds", lambda _p: 600.0)
+def test_a_clip_over_the_limit_is_cut_to_its_head_not_refused(monkeypatch):
+    """A whole song uploaded as a file is trimmed like a linked one: the head is
+    transcribed and the result says how long the song was and that it was cut."""
+    from app.jobs import queue as queue_mod
+    from app.pipeline.transcriber import TranscriptionResult
 
+    seen = {}
+
+    def fake_transcribe(audio_path, mode="melody", **kwargs):
+        import librosa
+        seen["duration"] = librosa.get_duration(path=str(audio_path))
+        return TranscriptionResult(key="C", key_confidence=1.0, tempo=120, time_signature="4/4",
+                                   musicxml="<score/>", midi_base64="", notes=[], solfa_lines=["Doh is C"],
+                                   overall_confidence=1.0)
+
+    monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+    monkeypatch.setattr("app.api.routes.settings.max_clip_seconds", 2.0)
     with TestClient(app) as client:
-        data = _make_wav(duration_sec=0.1)
-        r = client.post(
-            "/v1/transcribe",
-            files={"audio": ("long.wav", BytesIO(data), "audio/wav")},
-        )
-        assert r.status_code == 413
+        r = client.post("/v1/transcribe", files={"audio": ("long.wav", BytesIO(_make_wav(duration_sec=5.0)), "audio/wav")})
+        assert r.status_code == 202
+        body = _wait_for_status(client, r.json()["jobId"], STATUS_DONE)
+        assert abs(seen["duration"] - 2.0) < 0.05
+        assert body["result"]["truncated"] is True
+        assert abs(body["result"]["songDurationSec"] - 5.0) < 0.1
+
+
+def test_a_trimmed_clip_keeps_its_sample_rate_and_channels(tmp_path):
+    """The head of a song goes to vocal isolation, which reads 44.1 kHz stereo: the trim
+    must not fold it to 22.05 kHz mono on the way."""
+    from app.api.routes import _trim_head
+
+    sr = 44_100
+    t = np.arange(int(3.0 * sr)) / sr
+    stereo = np.stack([0.3 * np.sin(2 * np.pi * 440 * t), 0.3 * np.sin(2 * np.pi * 660 * t)], axis=1)
+    src = tmp_path / "song.wav"
+    sf.write(src, stereo, sr)
+
+    out = _trim_head(src, 1.0)
+    info = sf.info(str(out))
+    assert info.samplerate == sr
+    assert info.channels == 2
+    assert abs(info.duration - 1.0) < 0.02
+    assert not src.exists()
+    out.unlink()
 
 
 def test_get_unknown_job_returns_404():

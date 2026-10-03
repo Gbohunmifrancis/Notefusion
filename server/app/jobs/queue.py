@@ -214,14 +214,18 @@ class JobQueue:
         work_dir: Path | None = None
         try:
             try:
-                if separate_vocals:
+                # Not asked to isolate, but a band can be heard: a song uploaded as a
+                # tune is isolated all the same (the account is not charged a song for it).
+                heard_band = not separate_vocals and _sounds_like_a_song(job, audio_path, mode)
+                if separate_vocals or heard_band:
                     # A song with a band behind the voice, uploaded as a file: the same
                     # road a linked song takes — isolate the vocal, read the beat from the
                     # mix, keep the instrumental for rehearsal.
                     work_dir = Path(tempfile.mkdtemp(prefix="nf-upload-"))
                     job.result = self._separate_and_transcribe(
                         job, audio_path, work_dir, mode, key, tempo, time_signature, progress_from=0.0,
-                        audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
+                        audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose,
+                        require_voice=heard_band)
                 else:
                     job.stage = STAGE_TRANSCRIBING
                     job.result = transcribe(
@@ -258,15 +262,17 @@ class JobQueue:
     def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
                                  key: str | None, tempo: int | None, time_signature: str,
                                  progress_from: float, audio_preview: bool = True,
-                                 harmony: bool = False, keyboard_transpose: int = 0) -> TranscriptionResult:
+                                 harmony: bool = False, keyboard_transpose: int = 0,
+                                 require_voice: bool = False) -> TranscriptionResult:
         """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
 
         Shared by uploaded songs and linked ones. ``progress_from`` is where the job's
         progress bar already stands (a link job has spent some of it fetching); separation
         takes the bar to 0.55 and transcription the rest. Without a separation model the
         mixture is transcribed as it is, which is what the old upload path always did.
-        In melody mode the chords are read from the instrumental, or from the mix when
-        there is no instrumental.
+        ``require_voice`` does the same when the vocal stem comes back empty (the band the
+        queue heard was playing on its own). In melody mode the chords are read from the
+        instrumental, or from the mix when there is no instrumental.
         """
         from app.pipeline import separate
 
@@ -279,6 +285,11 @@ class JobQueue:
                     progress=lambda f: setattr(job, "progress", progress_from + span * f),
                     backing_path=work_dir / "backing.wav")
                 separated = True
+                share = separate.voice_share_db(vocals, work_dir / "backing.wav") if require_voice else 0.0
+                if share < separate.VOICE_MIN_SHARE_DB:
+                    logger.info("Job %s: no voice in the vocal stem (%.0f dB); transcribing the mixture",
+                                job.id[:8], share)
+                    vocals, separated = wav, False
             except MemoryError:
                 # Better a sheet read from the mixture than no sheet: the worker stays up
                 # and the job finishes, with ``separated`` false so the client can say so.
@@ -443,6 +454,23 @@ class JobQueue:
                    if j.finished_at and now - j.finished_at > settings.job_ttl_seconds]
         for jid in expired:
             del self._jobs[jid]
+
+
+def _sounds_like_a_song(job: Job, audio_path: Path, mode: str) -> bool:
+    """A melody upload with a band behind the voice (``separate.has_accompaniment``)."""
+    from app.pipeline import separate
+
+    if mode != "melody" or not separate.available():
+        return False
+    try:
+        peaks = separate.accompaniment(audio_path)
+    except Exception as exc:  # noqa: BLE001 - an unreadable clip fails in transcribe(), with its own message
+        logger.warning("Job %s: accompaniment check failed (%s); not isolating", job.id[:8], exc)
+        return False
+    band = peaks >= separate.ACCOMPANIMENT_MIN_PEAKS
+    logger.info("Job %s: accompaniment check %.1f tonal peaks per frame -> %s", job.id[:8], peaks,
+                "band heard, isolating the vocal" if band else "solo, no isolation")
+    return band
 
 
 # The instrumental is sent to the client as a mono MP3 at this bit rate: a six-minute song

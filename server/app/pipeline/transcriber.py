@@ -3883,6 +3883,7 @@ def _estimate_tempo_and_beats(
     tempo_override: int | None,
     post: "Posteriorgram | None" = None,
     sr: int = 22_050,
+    mix: bool = False,
 ) -> tuple[float, np.ndarray]:
     """(BPM, detected beat times in seconds) for the decoded WAV.
 
@@ -3897,6 +3898,13 @@ def _estimate_tempo_and_beats(
     the downbeats are.  A tempo that loses the vote is only ever off by a metrical
     level, which does not move the phase by more than the window ``_beat_origin``
     already applies.
+
+    ``mix`` says the audio is a whole song, drums and all (the ``tempo_source`` of an
+    isolated vocal), and there the tracked beat is the answer: on the 36 synthetic songs
+    in ``tests.accuracy.songs`` librosa's level was right on all 36 while the onset vote,
+    fed the singer's phrasing, moved 8-10 of them to half or 1.5x.  Its BPM is read off
+    the beat times (``_steady_bpm``), not librosa's tempo bin, and the onsets are left to
+    set only the phase.
     """
     import librosa
 
@@ -3942,6 +3950,11 @@ def _estimate_tempo_and_beats(
     if override_bpm:
         return override_bpm, beat_times
 
+    if mix and tracked_bpm > 0.0:
+        steady = _steady_bpm(beat_times, tracked_bpm)
+        if _MIN_NOTATED_BPM <= steady <= _MAX_NOTATED_BPM:
+            return steady, beat_times
+
     if settings.tempo_grid:
         grid_bpm = _grid_bpm(
             events, tracked_bpm, settings.quantize_divisors, extra_candidates=(neural_bpm,)
@@ -3955,6 +3968,29 @@ def _estimate_tempo_and_beats(
     onset_bpm = _onset_bpm(events)
     fallback = onset_bpm if _MIN_BPM <= onset_bpm <= _MAX_BPM else _DEFAULT_BPM
     return fallback, beat_times
+
+
+def _steady_bpm(beat_times: np.ndarray, tracked_bpm: float) -> float:
+    """The BPM the tracked beats keep over the whole clip; ``tracked_bpm`` if they cannot say.
+
+    librosa's tempo is one of its autocorrelation lags, which at a 512-sample hop are
+    whole frames apart: 132 BPM reads as 129.2 and 80 as 80.75, up to 2% off (a beat lost
+    every 50), and its beat intervals are whole frames too.  A straight line through the
+    beat times averages that out over every beat in the clip: 0.02% mean error against
+    0.71% on the synthetic songs.  Beats are numbered by how many median intervals each
+    gap holds, so a beat the tracker skipped through a break does not bend the line.
+    """
+    if beat_times.size < 8:
+        return tracked_bpm
+    gaps = np.diff(beat_times)
+    period = float(np.median(gaps))
+    if period <= 0.0:
+        return tracked_bpm
+    index = np.concatenate(([0.0], np.cumsum(np.maximum(np.round(gaps / period), 1.0))))
+    slope = float(np.polyfit(index, beat_times, 1)[0])
+    steady = 60.0 / slope if slope > 0.0 else 0.0
+    # The line refines the tracker's level; it never picks another one.
+    return steady if abs(steady / tracked_bpm - 1.0) <= 0.06 else tracked_bpm
 
 
 def _beat_origin(beat_times: np.ndarray, first_onset: float, bpm: float) -> float:
@@ -4334,6 +4370,82 @@ def _choir_parts(
     return parts, parts_musicxml
 
 
+def _one_note_per_slot(s, step: float, heard_at: dict[int, float]) -> None:
+    """A tune is one voice: after quantizing, no two of its notes may start together.
+
+    Two notes closer than a grid step can round onto the same slot, and the sheet then
+    stacks them into a chord nobody sang: 8% of the notes on the real songs in
+    ``tests.accuracy.songs``, 6% on the synthetic ones.  Same pitch: one note, held across
+    both.  Otherwise one of the two moves to a free neighbouring slot — the later one
+    forward, or the earlier one back — whichever moves less audio (beats away from where
+    it was heard, ``heard_at``, times its length, so a quick ornament gives way to the
+    note it leads into).  With neither neighbour free there are more notes than the grid
+    has room for, typically a wide vibrato read as alternating notes, and the shorter
+    note is folded into the longer.  Notes are never pushed along a run: pushing each
+    clash forward, or spreading a crowded stretch over the slots around it, smeared
+    whole phrases off the beat (real-song frame accuracy 0.586 and 0.596, against 0.603
+    for this and 0.613 with the notes left stacked).
+    """
+    notes = sorted(s.notes, key=lambda x: (x.offset, heard_at.get(id(x), 0.0)))
+    if all(a.offset < b.offset for a, b in zip(notes, notes[1:])):
+        return
+
+    def end(n) -> float:
+        return float(n.offset + n.quarterLength)
+
+    def move(n, start: float) -> None:
+        stop = max(end(n), start + step)
+        s.remove(n)
+        n.quarterLength = stop - start
+        s.insert(start, n)
+
+    def fold(keep, drop) -> None:
+        stop = max(end(keep), end(drop))
+        s.remove(drop)
+        keep.quarterLength = stop - float(keep.offset)
+
+    placed: list = []
+    for i, n in enumerate(notes):
+        last = placed[-1] if placed else None
+        if last is None or n.offset > last.offset:
+            placed.append(n)
+            continue
+        if n.pitch.midi == last.pitch.midi:
+            fold(last, n)
+            continue
+        slot = float(last.offset)
+        before = placed[-2] if len(placed) >= 2 else None
+        later_free = i + 1 == len(notes) or notes[i + 1].offset > slot + step
+        earlier_free = slot - step >= 0.0 and (before is None or before.offset < slot - step)
+        # What each choice costs the sheet, in beats: a moved note's distance from where it
+        # was heard (times its length), the beats it cuts off the note it now follows, or,
+        # folding, the beats of the note that disappears.
+        cost = {}
+        if later_free:
+            cost["later"] = (float(n.quarterLength) * abs(slot + step - heard_at.get(id(n), slot))
+                             + max(0.0, float(last.quarterLength) - step))
+        if earlier_free:
+            cost["earlier"] = (float(last.quarterLength) * abs(slot - step - heard_at.get(id(last), slot))
+                               + (max(0.0, end(before) - (slot - step)) if before is not None else 0.0))
+        cost["fold"] = float(min(n.quarterLength, last.quarterLength))  # last: a tie moves a note
+        choice = min(cost, key=cost.get)
+        if choice == "later":
+            last.quarterLength = min(float(last.quarterLength), step)
+            move(n, slot + step)
+            placed.append(n)
+        elif choice == "earlier":
+            if before is not None:
+                before.quarterLength = min(float(before.quarterLength), slot - step - float(before.offset))
+            move(last, slot - step)
+            last.quarterLength = step
+            placed.append(n)
+        elif n.quarterLength > last.quarterLength:
+            fold(n, last)
+            placed[-1] = n
+        else:
+            fold(last, n)
+
+
 def _transcribe_wav(
     wav_path: Path,
     mode: str,
@@ -4578,17 +4690,21 @@ def _transcribe_wav(
         sorted((e for line in choir_voices.values() for e in line), key=lambda e: e.start)
         if choir_voices else sorted(chord_events, key=lambda e: e.start) if chord_events else events
     )
-    bpm, beat_times = _estimate_tempo_and_beats(rhythm_y, rhythm_events, tempo_override, post=post, sr=sr)
+    from_mix = rhythm_y is not y
+    bpm, beat_times = _estimate_tempo_and_beats(
+        rhythm_y, rhythm_events, tempo_override, post=post, sr=sr, mix=from_mix
+    )
     beat_origin = _beat_origin(beat_times, rhythm_events[0].start, bpm) if settings.beat_align else 0.0
     if settings.grid_refine:
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
         # BPM alone and refines only the phase — which the override says nothing about.
+        # Nor do the singer's onsets get to move a BPM measured on the whole mix.
         bpm, beat_origin = _refine_grid(
             np.array([e.start for e in rhythm_events]),
             bpm,
             beat_origin,
             settings.quantize_divisors,
-            band=0.0 if tempo_override is not None else _GRID_REFINE_BAND,
+            band=0.0 if tempo_override is not None or from_mix else _GRID_REFINE_BAND,
         )
     sec_to_beats = bpm / 60.0
 
@@ -4679,9 +4795,13 @@ def _transcribe_wav(
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
+    heard_at = {id(n): float(n.offset) for n in s.notes}
     s.quantize(settings.quantize_divisors, processOffsets=True, processDurations=True, inPlace=True)
     if mode == "chords":
+        # A chord sheet's top line is kept a line by its own rule.
         _one_line(s)
+    elif mode != "poly":
+        _one_note_per_slot(s, 1.0 / settings.quantize_divisors[0], heard_at)
 
     # ── 9. Key detection ──────────────────────────────────────────────────────
     # Manual override always wins (TRD par. 4.1).
