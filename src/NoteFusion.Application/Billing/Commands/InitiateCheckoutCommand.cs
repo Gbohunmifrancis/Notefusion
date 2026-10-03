@@ -135,14 +135,22 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         // debited on the invisible first attempt is not charged again. Minting a fresh key here instead
         // would make every retry a brand-new charge, which is exactly the duplicate we must never create.
         // Narrowed on provider/amount/currency so a re-priced plan or a re-routed provider starts clean
-        // rather than replaying a key the provider fingerprinted against a different body.
-        var transaction = await _db.PaymentTransactions
+        // rather than replaying a key the provider fingerprinted against a different body. The return URL is
+        // part of that body too, so a row is only replayed by the client (app or website) that started it:
+        // the other one's URL under the same key is a key conflict, which leaves the outcome unknown and
+        // would refuse that client's every attempt until the stale sweep closed the row.
+        var fromWeb = IsWebClient(request.Client);
+        var pending = _db.PaymentTransactions
             .Where(t => t.UserId == userId
                         && t.PlanId == plan.Id
                         && t.Status == PaymentStatus.Pending
                         && t.Provider == gateway.Provider
                         && t.AmountMinor == plan.AmountMinor
-                        && t.Currency == plan.Currency)
+                        && t.Currency == plan.Currency);
+        pending = fromWeb
+            ? pending.Where(t => t.IdempotencyKey.EndsWith(WebKeySuffix))
+            : pending.Where(t => !t.IdempotencyKey.EndsWith(WebKeySuffix));
+        var transaction = await pending
             .OrderByDescending(t => t.CreatedAtUtc)
             .FirstOrDefaultAsync(ct);
 
@@ -151,9 +159,11 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
             var reference = $"NF_{Guid.NewGuid():N}";
 
             // Derived from the reference, not from a fresh Guid: the key must be stable across retries of
-            // THIS initiation, and the reference already identifies it uniquely.
+            // THIS initiation, and the reference already identifies it uniquely. The suffix records which
+            // client started it, for the narrowing above.
             transaction = PaymentTransaction.Create(
-                userId, plan.Id, gateway.Provider, $"checkout:{reference}", reference,
+                userId, plan.Id, gateway.Provider,
+                fromWeb ? $"checkout:{reference}{WebKeySuffix}" : $"checkout:{reference}", reference,
                 plan.AmountMinor, plan.Currency, now);
 
             // Persist PENDING before the provider is ever contacted (spec: durable audit row first).
@@ -213,6 +223,12 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         Error.Conflict("BILLING_PAYMENT_ALREADY_RECEIVED",
             "Good news: your earlier payment has gone through and Pro is now active. There is nothing more to pay.");
 
+    /// <summary>Ends the idempotency key of a checkout the website started; app keys carry no suffix.</summary>
+    private const string WebKeySuffix = ":web";
+
+    private static bool IsWebClient(string? client)
+        => string.Equals(client?.Trim(), "web", StringComparison.OrdinalIgnoreCase);
+
     /// <summary>The path of the API's own return page, which the website's variant extends with <c>/web</c>.</summary>
     private const string ReturnPath = "/api/billing/return";
 
@@ -224,7 +240,7 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
     /// </summary>
     internal static string CallbackUrlFor(string? client, string configured)
     {
-        if (!string.Equals(client?.Trim(), "web", StringComparison.OrdinalIgnoreCase)
+        if (!IsWebClient(client)
             || !Uri.TryCreate(configured, UriKind.Absolute, out var uri)
             || !uri.AbsolutePath.TrimEnd('/').EndsWith(ReturnPath, StringComparison.OrdinalIgnoreCase))
         {

@@ -427,11 +427,14 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
 
     /// <summary>
     /// A session-level <c>payment_status</c> that says money was collected. The reference uses
-    /// <c>succeeded</c>; the <c>checkout.completed</c> example uses <c>paid</c>. Either is the same fact.
+    /// <c>succeeded</c>; the <c>checkout.completed</c> example uses <c>paid</c>. Either is the same fact, and
+    /// so are <c>overpaid</c> and <c>accepted</c> — the same fulfilable states the charge can settle in.
     /// </summary>
     private static bool IsPaidPaymentStatus(string? paymentStatus)
         => string.Equals(paymentStatus, "succeeded", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(paymentStatus, "paid", StringComparison.OrdinalIgnoreCase);
+            || string.Equals(paymentStatus, "paid", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(paymentStatus, "overpaid", StringComparison.OrdinalIgnoreCase)
+            || IsAccepted(paymentStatus);
 
     /// <summary>
     /// Charge states that are fulfilable: collected in full, collected with more than was due, or a

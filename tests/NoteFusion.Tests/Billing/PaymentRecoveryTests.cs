@@ -139,6 +139,23 @@ public class PaymentRecoveryTests
         Assert.DoesNotContain(unaskable.Id, withFailed);
     }
 
+    [Fact]
+    public async Task A_backlog_of_old_unsettled_rows_does_not_crowd_out_a_fresh_one()
+    {
+        // Rows the provider cannot settle yet (abandoned carts, answers we cannot read) can outnumber a batch.
+        // The one a customer has just paid for must still be asked about on this sweep, not after the backlog.
+        using var h = new TestHarness(Now);
+        var user = Payer(h);
+        for (var i = 0; i < 60; i++)
+            Payment(h, user, $"NF_backlog_{i}", Now.AddHours(-20).AddMinutes(i));
+        var justPaid = Payment(h, user, "NF_just_paid", Now.AddMinutes(-5));
+
+        var due = await PaymentReconciliationWorker.SelectDueAsync(
+            h.Db, Now, new BillingSettings(), includeFailed: false, CancellationToken.None);
+
+        Assert.Equal(justPaid.Id, due[0]);
+    }
+
     // ---------------------------------------------------------------- the webhook inbox
 
     [Fact]

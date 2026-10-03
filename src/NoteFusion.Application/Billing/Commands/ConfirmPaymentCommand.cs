@@ -114,7 +114,19 @@ public sealed class ConfirmPaymentCommandHandler : IRequestHandler<ConfirmPaymen
             // subscription state, and reconcile leaves the row as it was on any transient failure — so
             // the webhook and the sweep are both still coming. Reporting what we know now is more useful
             // to the client than a 502, and every genuine outcome is already on the row.
-            _ = await _sender.Send(new ReconcilePaymentCommand(tx.Id), ct);
+            try
+            {
+                _ = await _sender.Send(new ReconcilePaymentCommand(tx.Id), ct);
+            }
+            catch (DbUpdateException)
+            {
+                // Lost the race to fulfil this payment: the client polls this the moment the payment lands,
+                // which is the same moment the webhook worker fulfils it, and the ledger's unique index
+                // refused the second write. The winner's fulfilment is committed, so report the state rather
+                // than a 500, and save nothing more on this context.
+                return true;
+            }
+
             if (tx.Status == PaymentStatus.Completed)
                 return true;
         }

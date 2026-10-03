@@ -25,8 +25,8 @@ public sealed record ClearStalePaymentsResult(
 /// <para>
 /// 2. Expired <see cref="PaymentStatus.Processing"/> rows: hosted checkouts have strict provider-enforced TTLs
 /// (at most 24 hours across Bachs and Paystack). Rows older than <see cref="BillingSettings.StaleProcessingHours"/>
-/// are checked against the gateway: settled payments are fulfilled, while checkouts the provider confirms are
-/// expired/unpayable are marked <see cref="PaymentStatus.Failed"/> so users can open a fresh checkout. A row the
+/// are checked against the gateway: settled payments are fulfilled, while checkouts the provider reports
+/// unpaid are marked <see cref="PaymentStatus.Failed"/> so users can open a fresh checkout. A row the
 /// provider could not answer for is left Processing — never failed on age alone.
 /// </para>
 /// </summary>
@@ -97,7 +97,7 @@ public sealed class ClearStalePaymentsCommandHandler
 
         // 2. Settle Processing payments beyond maximum checkout lifetime. Only the provider can say a checkout
         // is dead: age alone is not evidence, and a provider we could not reach has told us nothing. So a
-        // row is failed on a definite terminal non-success and on nothing else; anything we could not
+        // row is failed only on the provider's own answer that it was not paid; anything we could not
         // settle stays Processing, where the admin payment alert already counts it as stuck.
         var seen = new List<Guid>();
         for (var batch = 0; batch < 10; batch++)
@@ -153,6 +153,17 @@ public sealed class ClearStalePaymentsCommandHandler
                 else if (v.Terminal)
                 {
                     tx.MarkFailed("Provider confirmed checkout can no longer be paid.", now);
+                    clearedProcessing++;
+                }
+                else
+                {
+                    // Answered "not paid" but not final — Paystack's `abandoned` never becomes final on its own.
+                    // Past every provider's checkout lifetime that answer is as good as final, and left alone
+                    // these rows would pile up in Processing for good, filling the reconciliation sweep and the
+                    // admin alert with abandoned carts. Closing it is safe: a payment that lands after all
+                    // reopens and fulfils the row (PaymentFulfillment).
+                    tx.MarkFailed(
+                        "Checkout session expired: exceeded maximum validity window and can no longer be processed.", now);
                     clearedProcessing++;
                 }
             }

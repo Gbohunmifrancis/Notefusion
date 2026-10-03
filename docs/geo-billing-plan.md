@@ -18,7 +18,7 @@ paid checkout is stranded:
   `charge.amount` `"113421.48"`, `billing_currency` `"NGN"`). `BachsPaymentGateway.VerifyAsync` verifies the
   session's base price; the charge figure is cross-checked only when it is in the same currency. A
   different charge currency is logged as FX and accepted when the payment positively settled
-  (`payment_status` succeeded/paid, or `charge.status` succeeded/overpaid/accepted).
+  (`payment_status` succeeded/paid/overpaid/accepted, or `charge.status` succeeded/overpaid/accepted).
 - **An open session is never a failure**, even after a declined attempt or with money still arriving:
   verify reports it as transient and the row stays Processing. `amount_remaining` (charge currency)
   fails only a settled session whose shortfall was not `accepted`.
@@ -26,8 +26,12 @@ paid checkout is stranded:
   (`PaymentTransaction.Reopen`) and fulfilled — by webhook, `ReconcilePaymentCommand`, the admin console,
   the sweep (failed rows from the last 48 hours, every 30 minutes) or `POST /api/billing/confirm` (the
   caller's three newest in-flight checkouts, then any failed in the last two hours).
-- **Nothing is failed on age alone.** The stale cleanup fails a Processing row only on a definite terminal
-  answer; an unreachable provider leaves it Processing, where the admin payment alert counts it as stuck.
+- **Nothing is failed on age alone.** The stale cleanup fails a Processing row only on the provider's own
+  answer that it was not paid (a terminal one, or Paystack's never-final `abandoned` past the checkout
+  lifetime); an unreachable provider leaves it Processing, where the admin payment alert counts it as stuck.
+  The sweep asks about the newest stuck rows first, so a backlog cannot starve the one just paid.
+- **Pending retries stay with their client.** A Pending row is replayed only by the client that started it
+  (website keys end in `:web`): the return URL is part of the body the provider fingerprints the key against.
 - **Timings.** Webhook retries back off (5 s, 30 s, 2 min, 10 min, 30 min…) over 8 attempts; the
   reconciliation sweep runs every 5 minutes on rows 3 minutes stale; an open checkout is handed back for 30
   minutes (`Billing__CheckoutReuseMinutes`), after which it is reconciled and replaced.

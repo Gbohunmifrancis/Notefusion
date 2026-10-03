@@ -681,6 +681,23 @@ public class BachsPaymentGatewayTests
         Assert.Equal(7900, result.Value.AmountMinor);
     }
 
+    [Theory]
+    [InlineData("overpaid")]
+    [InlineData("accepted")]
+    public async Task An_fx_session_whose_payment_status_is_settled_verifies_without_a_charge_status(string paymentStatus)
+    {
+        // The same fulfilable states as the charge's. Read as "no sign money moved", a settled session with
+        // no charge status would be retried as transient for good and never fulfilled.
+        var handler = StubHttpMessageHandler.Returning(
+            HttpStatusCode.OK, FxOneOff(paymentStatus: paymentStatus, chargeStatus: null!));
+
+        var result = await Gateway(handler).VerifyAsync(Verification(), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.Succeeded);
+        Assert.Equal(7900, result.Value.AmountMinor);
+    }
+
     [Fact]
     public async Task An_fx_charge_with_no_sign_that_money_moved_is_not_fulfilled()
     {

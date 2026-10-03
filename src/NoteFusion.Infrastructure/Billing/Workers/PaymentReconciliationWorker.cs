@@ -129,7 +129,7 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
     }
 
     /// <summary>
-    /// The payments one sweep asks the provider about: Processing rows past the grace window, oldest first,
+    /// The payments one sweep asks the provider about: Processing rows past the grace window, newest first,
     /// and — when <paramref name="includeFailed"/> — rows failed in the last two days that the provider can
     /// still be asked about, newest first. Internal so the selection can be tested without the loop.
     /// </summary>
@@ -139,9 +139,12 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
         // Same window the admin console calls "stuck", read from the one place both can see it.
         var cutoff = utcNow - TimeSpan.FromMinutes(Math.Max(1, settings.ReconciliationGraceMinutes));
 
+        // Newest first. The row a customer is waiting on is the one they just paid; oldest first would let a
+        // backlog the provider cannot settle (abandoned carts, answers we cannot read) take every slot of
+        // the batch, sweep after sweep, while that row waits. Older stragglers are ClearStalePayments' job.
         var due = await db.PaymentTransactions
             .Where(t => t.Status == PaymentStatus.Processing && t.UpdatedAtUtc < cutoff)
-            .OrderBy(t => t.UpdatedAtUtc)
+            .OrderByDescending(t => t.UpdatedAtUtc)
             .Take(BatchSize)
             .Select(t => t.Id)
             .ToListAsync(ct);

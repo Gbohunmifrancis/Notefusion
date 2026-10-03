@@ -127,27 +127,31 @@ public class ClearStalePaymentsCommandTests
     }
 
     [Fact]
-    public async Task Stale_processing_payments_the_provider_calls_still_open_are_left_alone()
+    public async Task Stale_processing_payments_the_provider_reports_unpaid_are_closed_past_the_checkout_lifetime()
     {
+        // Paystack answers `abandoned` for an unpaid checkout and never moves it to a final state. Left
+        // Processing on that answer, every abandoned cart would stay in flight for good, crowding the
+        // reconciliation sweep and the admin alert. A payment that does land later reopens the row.
         using var h = new TestHarness(Now);
         var (user, plan) = Seed(h);
 
         var staleTx = PaymentTransaction.Create(
-            user.Id, plan.Id, PaymentProvider.Bachs, "checkout:NF_stale_open", "NF_stale_open",
+            user.Id, plan.Id, PaymentProvider.Paystack, "checkout:NF_stale_open", "NF_stale_open",
             MonthlyPrice, "USD", Now.AddHours(-30));
-        staleTx.AttachCheckout("chk_stale_open", "https://checkout.bachs.io/c/open", "{}", Now.AddHours(-30));
+        staleTx.AttachCheckout("acc_stale_open", "https://checkout.paystack.com/open", "{}", Now.AddHours(-30));
         h.Db.PaymentTransactions.Add(staleTx);
         h.Db.SaveChanges();
 
         var gateway = StubGateway(Result.Success(new GatewayVerification(
-            Succeeded: false, AmountMinor: 0, Currency: "USD", ProviderReference: "chk_stale_open",
+            Succeeded: false, AmountMinor: 0, Currency: "USD", ProviderReference: "acc_stale_open",
             ProviderSubscriptionRef: null, Raw: "{}", Terminal: false)));
 
         var result = await Handler(h, gateway).Handle(new ClearStalePaymentsCommand(), CancellationToken.None);
 
         Assert.True(result.IsSuccess);
-        Assert.Equal(0, result.Value.ClearedProcessingCount);
-        Assert.Equal(PaymentStatus.Processing, staleTx.Status);
+        Assert.Equal(1, result.Value.ClearedProcessingCount);
+        Assert.Equal(PaymentStatus.Failed, staleTx.Status);
+        Assert.Contains("exceeded maximum validity window", staleTx.FailureReason, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

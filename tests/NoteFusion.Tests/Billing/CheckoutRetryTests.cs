@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
@@ -269,6 +270,53 @@ public class CheckoutRetryTests
         Assert.Equal(
             BillingSettings.DefaultCheckoutCallbackUrl,
             new BillingSettings { CheckoutCallbackUrl = configured }.CheckoutCallbackUrl);
+    }
+
+    [Theory]
+    [InlineData(null, "checkout:NF_pending", true)]
+    [InlineData("web", "checkout:NF_pending:web", true)]
+    // The return URL is part of the body the provider fingerprints the key against, so the other client's
+    // URL under the same key is a conflict, not a replay — it would refuse every attempt from that client.
+    [InlineData("web", "checkout:NF_pending", false)]
+    [InlineData(null, "checkout:NF_pending:web", false)]
+    public async Task A_pending_attempt_is_replayed_only_by_the_client_that_started_it(
+        string? client, string pendingKey, bool replayed)
+    {
+        using var h = new TestHarness(Now);
+        var user = User.Create("Pat Payer", "pat@example.com", h.Hasher.Hash("password123"), Now.AddDays(-2));
+        var plan = Plan.Create(Guid.NewGuid(), "pro_monthly", "NoteFusion Pro", 499, "USD", BillingInterval.Monthly);
+        var pending = PaymentTransaction.Create(
+            user.Id, plan.Id, PaymentProvider.Bachs, pendingKey, "NF_pending", 499, "USD", Now.AddMinutes(-5));
+        h.Db.Users.Add(user);
+        h.Db.Plans.Add(plan);
+        h.Db.PaymentTransactions.Add(pending);
+        h.Db.SaveChanges();
+        var gateway = new FakeGateway(Answer(Succeeded: false, Terminal: false));
+
+        var checkout = await CheckoutHandler(h, user, gateway)
+            .Handle(new InitiateCheckoutCommand(plan.Id, client), CancellationToken.None);
+
+        Assert.True(checkout.IsSuccess);
+        Assert.Equal(replayed, checkout.Value.Reference == "NF_pending");
+        if (!replayed)
+        {
+            Assert.Equal(PaymentStatus.Pending, pending.Status); // left for its own client, or the stale sweep
+            var opened = h.Db.PaymentTransactions.Single(t => t.Reference == checkout.Value.Reference);
+            Assert.Equal(client == "web", opened.IdempotencyKey.EndsWith(":web", StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void A_blank_callback_from_configuration_keeps_the_default()
+    {
+        // The path compose actually takes: an unset variable passed through arrives as an empty value.
+        var settings = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["Billing:CheckoutCallbackUrl"] = "" })
+            .Build()
+            .GetSection("Billing")
+            .Get<BillingSettings>();
+
+        Assert.Equal(BillingSettings.DefaultCheckoutCallbackUrl, settings?.CheckoutCallbackUrl);
     }
 
     // ---------------------------------------------------------------- fixtures

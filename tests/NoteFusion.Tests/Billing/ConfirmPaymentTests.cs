@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Shared.Results;
 using NoteFusion.Tests.Support;
 
@@ -309,6 +311,24 @@ public class ConfirmPaymentTests
         Assert.Equal(PaymentStatus.Failed, tx.Status);
     }
 
+    [Fact]
+    public async Task Losing_the_race_to_the_webhook_reports_pro_instead_of_failing()
+    {
+        // The client polls confirm the moment the payment lands — the same moment the webhook worker fulfils
+        // it. Whichever saves second is refused by the ledger's unique index; for confirm, that must read as
+        // "Pro is active", not as a server error on a payment that just succeeded.
+        using var h = new TestHarness(Now);
+        var (user, _, tx) = Seed(h);
+        Open(h, tx);
+        var gateway = new WebhookWinsTheRaceFactory(h, tx.Id, PaidVerification("chk_conf"));
+
+        var result = await Confirm(h, user, gateway);
+
+        Assert.True(result.IsSuccess);
+        Assert.True(result.Value.IsActive);
+        Assert.Equal(1, h.Db.LedgerEntries.AsNoTracking().Count()); // fulfilled once, by the winner
+    }
+
     // ---------------------------------------------------------------- fixtures
 
     private static Task<Result<Application.Billing.Dtos.SubscriptionDto>> Confirm(
@@ -400,6 +420,35 @@ public class ConfirmPaymentTests
             Asked.Add(request.ProviderReference!);
             return Task.FromResult(Result.Success(
                 _answers.TryGetValue(request.ProviderReference!, out var answer) ? answer : Unpaid(terminal: false)));
+        }
+    }
+
+    /// <summary>
+    /// Answers "paid", but first lets the webhook path fulfil the same payment and commit through a context
+    /// of its own — what happens when the worker gets there between confirm reading the row and saving it.
+    /// </summary>
+    private sealed class WebhookWinsTheRaceFactory(TestHarness h, Guid transactionId, GatewayVerification answer)
+        : IPaymentGatewayFactory, IPaymentGateway
+    {
+        public PaymentProvider Provider => PaymentProvider.Paystack;
+        public IReadOnlyCollection<string> SupportedCurrencies { get; } = ["USD"];
+
+        public IPaymentGateway Resolve(PaymentProvider provider) => this;
+        public Result<IPaymentGateway> SelectForCurrency(string currency) => Result.Success<IPaymentGateway>(this);
+
+        public Task<Result<GatewayInitiation>> InitiateAsync(GatewayInitiationRequest request, CancellationToken ct)
+            => throw new NotSupportedException("Confirm never opens a checkout; it only verifies one.");
+
+        public async Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
+        {
+            await using var worker = new ApplicationDbContext(new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseSqlite(h.Db.Database.GetDbConnection())
+                .Options);
+            await new ReconcilePaymentCommandHandler(
+                    worker, new CountingGatewayFactory(Result.Success(answer)), h.Clock, h.Email)
+                .Handle(new ReconcilePaymentCommand(transactionId), ct);
+
+            return answer;
         }
     }
 
