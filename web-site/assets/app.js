@@ -138,12 +138,26 @@
     return first ? part + ", " + first : part;
   }
   function recording(on) { document.body.classList.toggle("is-recording", !!on); }
-  /** The account's photo, or the initial of the name when there is none. */
+  /**
+   * The account's photo, or the initial of the name when there is none. The initial and the brand
+   * gradient stay until the photo has actually loaded, so a link that fails never leaves an empty
+   * circle; the latest call wins if an earlier photo finishes loading after it.
+   */
   function setAvatar(el, who) {
-    var url = who && who.profilePictureUrl;
-    el.textContent = url ? "" : initial(who && (who.fullName || who.email));
-    el.style.backgroundImage = url ? 'url("' + url + '")' : "";
-    el.classList.toggle("has-img", !!url);
+    var url = (who && who.profilePictureUrl) || "";
+    el.textContent = initial(who && (who.fullName || who.email));
+    if (url && el.dataset.photo === url && el.classList.contains("has-img")) return;
+    el.dataset.photo = url;
+    el.style.backgroundImage = "";
+    el.classList.remove("has-img");
+    if (!url) return;
+    var img = new Image();
+    img.onload = function () {
+      if (el.dataset.photo !== url) return;
+      el.style.backgroundImage = 'url("' + url + '")';
+      el.classList.add("has-img");
+    };
+    img.src = url;
   }
   function safeName(text) { return (text || "notefusion").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-").slice(0, 60) || "notefusion"; }
 
@@ -386,7 +400,7 @@
   $("signout").addEventListener("click", function () {
     var t = tokens();
     if (t && t.refreshToken) request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ });
-    clearTokens(); me = null; sub = null; libraryCache = null; stopPolling(); hide($("top-nav")); document.body.classList.remove("is-pro"); showAuth();
+    clearTokens(); me = null; sub = null; libraryCache = null; stopPolling(); stopPaymentWatch(); clearCheckout(); hide($("top-nav")); document.body.classList.remove("is-pro"); showAuth();
   });
 
   // ── Views: transcribe / library / account ───────────────────────────────
@@ -600,7 +614,7 @@
     request("/api/me/picture", { method: "POST", form: form })
       .then(function (profile) { return profile || request("/api/me"); })
       .then(function (profile) { me = profile; $("acct-photo-status").textContent = ""; renderWho(); renderAccount(); sfx.play("saved"); })
-      .catch(function (err) { $("acct-photo-status").textContent = err.message || "Could not upload that photo."; sfx.play("error"); })
+      .catch(function (err) { $("acct-photo-status").textContent = (err instanceof ApiError && err.message) || "We couldn't upload that photo. Please try again."; sfx.play("error"); })
       .finally(function () { e.target.value = ""; });
   });
   $("acct-photo-remove").addEventListener("click", function () {
@@ -712,9 +726,11 @@
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
+      // Handled once: the checkout leaves this tab, and Back must not land on a page that starts it again.
+      if (upgradeTo) dropParam("upgrade");
       if (upgradeTo && !isPro()) { openUpgrade(); if (upgradeTo !== "1") autoCheckout(upgradeTo); }
-      var params = new URLSearchParams(location.search);
-      if (params.get("paid")) confirmPayment();
+      // Back from checkout (the provider's return page adds ?paid=1), or a checkout started here not long ago.
+      if (new URLSearchParams(location.search).get("paid") || readCheckout()) watchPayment();
       if (previewId) {
         // The preview that brought this person here is now theirs: the funnel's conversion.
         request("/api/preview/jobs/" + encodeURIComponent(previewId) + "/claim", { method: "POST" }).catch(function () { /* best effort */ });
@@ -1626,32 +1642,128 @@
     catch (e) { return plan.currency + " " + amount.toFixed(2); }
   }
 
+  /**
+   * The checkout opens in this tab; client "web" has the provider's return page bring the browser back
+   * to /app?paid=1 rather than to the app's deep link. What the membership was before leaving is kept,
+   * so the return can tell a payment that landed from Pro that was already there.
+   */
   function checkout(plan, btn) {
     btn.disabled = true;
     track("Checkout started");
-    request("/api/billing/checkout", { method: "POST", body: { planId: plan.id } })
+    request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
       .then(function (session) {
-        var w = window.open(session.checkoutUrl, "_blank", "noopener");
-        if (!w) location.href = session.checkoutUrl;
-        alertIn($("app-alert"), "info", "Complete the payment in the new tab. This page updates when you come back.");
-        window.addEventListener("focus", confirmPayment, { once: true });
+        saveCheckout({
+          planId: plan.id, startedAt: Date.now(), wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null,
+          lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null
+        });
+        location.assign(session.checkoutUrl);
       })
-      .catch(function (err) { alertIn($("app-alert"), "danger", err.message || "Could not start the checkout."); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute."); })
       .finally(function () { btn.disabled = false; });
   }
 
-  function confirmPayment() {
-    request("/api/billing/confirm", { method: "POST" }).catch(function () { return null; })
-      .then(function () { return loadAccount(); })
-      .then(function () {
-        if (isPro()) {
-          track("Went Pro");
-          alertIn($("app-alert"), "success", "You're on Pro. Downloads and full songs are unlocked.");
-          hide($("upgrade-panel")); hide($("r-upgrade")); hide($("r-watermark"));
-          if (current && current.result) showResult(current.result);
-        }
+  // ── Back from checkout: Pro unlocks the moment the payment lands ────────
+  // The provider's webhook and the browser's return race each other, so the page asks the API to
+  // confirm every few seconds for a minute, then quietly every 15 s for ten; failures are silent retries.
+  var CHECKOUT_KEY = "nf.checkout";
+  var CHECKOUT_TTL = 2 * 60 * 60 * 1000;
+  var PAY_FAST_MS = 2500, PAY_FAST_FOR = 60 * 1000, PAY_SLOW_MS = 15000, PAY_SLOW_FOR = 10 * 60 * 1000;
+  var payWatch = null;    // { snap, started, timer, busy, slow } while a payment is being confirmed
+  var welcomeReturn = null;
+  function readCheckout() {
+    try {
+      var snap = JSON.parse(localStorage.getItem(CHECKOUT_KEY) || "null");
+      return snap && Date.now() - snap.startedAt < CHECKOUT_TTL ? snap : null;
+    } catch (e) { return null; }
+  }
+  function saveCheckout(snap) { try { localStorage.setItem(CHECKOUT_KEY, JSON.stringify(snap)); } catch (e) { /* private mode */ } }
+  function clearCheckout() { try { localStorage.removeItem(CHECKOUT_KEY); } catch (e) { /* ignore */ } }
+  function dropParam(name) {
+    try {
+      var url = new URL(location.href);
+      if (!url.searchParams.has(name)) return;
+      url.searchParams.delete(name);
+      history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    } catch (e) { /* the address keeps it; nothing depends on that */ }
+  }
+  /** Active, and for someone who was already on Pro, something bought since the snapshot: more time, life, or a new plan. */
+  function paymentLanded(s, snap) {
+    if (!s || !s.isActive) return false;
+    if (!snap || !snap.wasActive) return true;
+    var end = s.currentPeriodEndUtc ? Date.parse(s.currentPeriodEndUtc) : 0, before = snap.periodEnd ? Date.parse(snap.periodEnd) : 0;
+    return end > before || (s.isLifetime && !snap.lifetime) || (s.planCode || null) !== (snap.planCode || null);
+  }
+  function showPayToast(slow) {
+    var toast = $("pay-toast");
+    toast.classList.toggle("is-slow", slow);
+    $("pay-toast-title").textContent = slow ? "Your payment is still being confirmed." : "Confirming your payment…";
+    $("pay-toast-sub").textContent = slow ? "Pro unlocks automatically the moment it lands — you can keep working." : "This usually takes a few seconds.";
+    show(toast);
+  }
+  function watchPayment() {
+    dropParam("paid");
+    if (payWatch) { checkPayment(); return; }
+    payWatch = { snap: readCheckout(), started: Date.now(), timer: null, busy: false, slow: false };
+    showPayToast(false);
+    checkPayment();
+  }
+  function stopPaymentWatch() {
+    if (payWatch) clearTimeout(payWatch.timer);
+    payWatch = null;
+    hide($("pay-toast"));
+  }
+  function checkPayment() {
+    var w = payWatch;
+    if (!w || w.busy) return;
+    w.busy = true; clearTimeout(w.timer);
+    request("/api/billing/confirm", { method: "POST" })
+      .catch(function (err) { if (err.status === 401) stopPaymentWatch(); return null; })
+      .then(function (s) {
+        w.busy = false;
+        if (payWatch !== w) return;
+        if (paymentLanded(s, w.snap)) { paymentDone(s, w.snap); return; }
+        var age = Date.now() - w.started;
+        if (age >= PAY_FAST_FOR && !w.slow) { w.slow = true; showPayToast(true); }
+        if (age < PAY_SLOW_FOR) w.timer = setTimeout(checkPayment, w.slow ? PAY_SLOW_MS : PAY_FAST_MS);
       });
   }
+  /** The payment landed: the account shows Pro everywhere it shows the plan, then the welcome. */
+  function paymentDone(s, snap) {
+    stopPaymentWatch(); clearCheckout();
+    sub = s;
+    track(snap && snap.wasActive ? "Added Pro time" : "Went Pro");
+    renderWho();
+    if (!$("view-account").classList.contains("hidden")) renderAccount();
+    hide($("upgrade-panel")); hide($("r-upgrade")); hide($("r-watermark"));
+    if (current && current.result) showResult(current.result);
+    openProWelcome(snap);
+  }
+  function openProWelcome(snap) {
+    $("pro-welcome-title").textContent = snap && snap.wasActive ? "More Pro time added" : "Welcome to NoteFusion Pro";
+    var when = sub.currentPeriodEndUtc ? new Date(sub.currentPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
+    $("pro-welcome-plan").textContent = planLabel() + (sub.isLifetime ? " · Pro for life" : when ? " · Pro until " + when : "");
+    welcomeReturn = document.activeElement;
+    show($("pro-welcome"));
+    $("pro-welcome-go").focus();
+    sfx.play("saved");
+  }
+  function closeProWelcome() {
+    hide($("pro-welcome"));
+    if (welcomeReturn && welcomeReturn.focus && welcomeReturn !== document.body) welcomeReturn.focus();
+    welcomeReturn = null;
+  }
+  $("pro-welcome-go").addEventListener("click", closeProWelcome);
+  $("pro-welcome").addEventListener("click", function (e) { if (e.target === $("pro-welcome")) closeProWelcome(); });
+  document.addEventListener("keydown", function (e) {
+    if ($("pro-welcome").classList.contains("hidden")) return;
+    if (e.key === "Escape") closeProWelcome();
+    else if (e.key === "Tab") { e.preventDefault(); $("pro-welcome-go").focus(); } // its one control keeps the focus
+  });
+  $("pay-toast-close").addEventListener("click", function () { hide($("pay-toast")); });
+  // Coming back to the tab is the likeliest moment for the payment to have landed.
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && payWatch) checkPayment(); });
+  // Back from the provider's page out of the browser's cache: boot does not run again, so look here.
+  window.addEventListener("pageshow", function (e) { if (e.persisted && me && readCheckout()) watchPayment(); });
 
   boot();
 })();

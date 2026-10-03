@@ -578,6 +578,45 @@ body.auth-only .auth-page .try-free { display: none; }
 
 .studio-credits { margin: 10px 2px 0; font-size: 0.8rem; color: rgba(255, 255, 255, 0.85); text-align: center; }
 
+/* ── Back from checkout: a quiet note while the payment confirms, then the welcome ── */
+.pay-toast { position: fixed; right: 20px; bottom: 20px; z-index: 45; display: flex; align-items: center; gap: 12px; width: min(380px, calc(100vw - 32px)); padding: 12px 12px 12px 14px; background: var(--surface); border: 1px solid #f3dd96; border-radius: 16px; box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16); animation: pay-toast-in 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+.pay-toast-mark { width: 38px; height: 38px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #fff7dc; color: #a16207; }
+.pay-toast-mark .ic { display: none; width: 20px; height: 20px; }
+.pay-spin { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid rgba(233, 185, 73, 0.3); border-top-color: #e9b949; animation: pay-spin 0.9s linear infinite; }
+.pay-toast.is-slow .pay-spin { display: none; }
+.pay-toast.is-slow .pay-toast-mark .ic { display: block; }
+.pay-toast-text { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 1px; }
+.pay-toast-text strong { font-size: 0.9rem; color: var(--ink); }
+.pay-toast-text span { font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+.pay-toast-close { align-self: flex-start; border-color: transparent; }
+.pay-toast:not(.is-slow) .pay-toast-close { display: none; }
+@keyframes pay-spin { to { transform: rotate(360deg); } }
+@keyframes pay-toast-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@media (max-width: 640px) { .pay-toast { left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom)); width: auto; } }
+
+.pro-welcome { animation: pro-fade 0.25s ease-out; }
+.pro-welcome-card { width: min(440px, 100%); text-align: center; padding-top: 34px; animation: pro-in 0.5s cubic-bezier(0.34, 1.36, 0.64, 1); }
+.pro-welcome-card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 160px; border-radius: inherit; background: radial-gradient(120% 100% at 50% 0%, rgba(242, 193, 78, 0.3), transparent 70%); pointer-events: none; }
+.pro-welcome-card > * { position: relative; }
+.pro-welcome-mark { width: 76px; height: 76px; margin: 0 auto 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fbe39a, #e9b949); color: #3b2a00; box-shadow: 0 0 0 6px rgba(242, 193, 78, 0.18), 0 14px 30px rgba(233, 185, 73, 0.4); animation: pro-mark-in 0.6s cubic-bezier(0.34, 1.36, 0.64, 1) 0.12s both; }
+.pro-welcome-mark .ic { width: 36px; height: 36px; }
+.pro-welcome-mark::after { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(242, 193, 78, 0.7); opacity: 0; animation: pro-ring 1.4s ease-out 0.55s 2 forwards; }
+.modal-card.pro-welcome-card h2 { justify-content: center; font-size: 1.45rem; padding: 0; margin: 0 0 6px; }
+.pro-welcome-plan { color: var(--muted); font-size: 0.925rem; margin: 0 0 18px; }
+.pro-welcome-perks { text-align: left; margin: 0 0 22px; padding: 16px 18px; border-radius: var(--radius-sm); background: linear-gradient(135deg, #fff7dc, #fffdf5); border: 1px solid #f3dd96; }
+.pro-welcome-perks .ic { color: #b7791f; }
+.btn-pro { background: linear-gradient(135deg, #fbe39a, #e9b949); color: #3b2a00; font-weight: 700; box-shadow: 0 8px 20px rgba(233, 185, 73, 0.35); }
+.btn-pro:hover:not(:disabled) { box-shadow: 0 12px 26px rgba(233, 185, 73, 0.45); transform: translateY(-1px); }
+.btn-pro:focus-visible { outline: 3px solid rgba(233, 185, 73, 0.55); outline-offset: 3px; }
+@keyframes pro-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pro-in { from { opacity: 0; transform: translateY(14px) scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes pro-mark-in { from { opacity: 0; transform: scale(0.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
+@keyframes pro-ring { from { opacity: 0.9; transform: scale(0.92); } to { opacity: 0; transform: scale(1.5); } }
+@media (prefers-reduced-motion: reduce) {
+  .pay-toast, .pro-welcome, .pro-welcome-card, .pro-welcome-mark, .pro-welcome-mark::after { animation: none; }
+  .pay-spin { animation-duration: 2.4s; }
+}
+
 /* ── Dark mode ───────────────────────────────────────────────────────────────
  * theme.css darkens the brand tokens; these are the app's own light-only colours. The engraved
  * sheet stays on white paper, as printed music does, so the notation reads the same either way. */
@@ -602,6 +641,11 @@ body.auth-only .auth-page .try-free { display: none; }
 [data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
 [data-theme="dark"] .plan-opt.on { box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18); }
 [data-theme="dark"] .pill-free { color: var(--color-brand-500); }
+[data-theme="dark"] .pay-toast { border-color: rgba(233, 185, 73, 0.35); box-shadow: 0 18px 48px rgba(0, 0, 0, 0.6); }
+[data-theme="dark"] .pay-toast-mark { background: rgba(233, 185, 73, 0.14); color: var(--gold); }
+[data-theme="dark"] .pro-welcome-card::before { background: radial-gradient(120% 100% at 50% 0%, rgba(242, 193, 78, 0.16), transparent 70%); }
+[data-theme="dark"] .pro-welcome-perks { background: rgba(233, 185, 73, 0.08); border-color: rgba(233, 185, 73, 0.3); }
+[data-theme="dark"] .pro-welcome-perks .ic { color: var(--gold); }
 
 /* ── Library folders ─────────────────────────────────────────────────────── */
 .lib-folders { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 14px; }
