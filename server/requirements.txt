@@ -32,7 +32,12 @@ setuptools==80.9.0
 
 # Linked songs: audio fetch (YouTube) for the song-to-solfa feature.  Deliberately a
 # floor rather than a pin — YouTube changes under it and the image rebuilds per deploy.
-yt-dlp>=2026.1.1
+# [default] brings yt-dlp-ejs, which solves YouTube's JavaScript challenges with the Deno
+# runtime the Dockerfile installs; without it formats go missing.
+yt-dlp[default]>=2026.8.19
+# Proof-of-origin tokens from the bgutil-provider sidecar (docker-compose.prod.yml), which
+# YouTube asks datacenter addresses for.  Pinned to the sidecar image's version.
+bgutil-ytdlp-pot-provider==2.0.1
 
 # Development / test
 pytest==8.3.4

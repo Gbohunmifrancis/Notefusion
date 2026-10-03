@@ -322,7 +322,7 @@ class JobQueue:
                   key: str | None, tempo: int | None,
                   time_signature: str, max_seconds: float, audio_preview: bool = True,
                   harmony: bool = False, keyboard_transpose: int = 0) -> None:
-        from app.ingest.links import LinkError, fetch_audio, resolve_source
+        from app.ingest.links import PREVIEW_NOTICE, LinkError, fetch_audio, resolve_source
 
         job.status = STATUS_PROCESSING
         work_dir: Path | None = None
@@ -332,8 +332,12 @@ class JobQueue:
                 job.progress = 0.02
                 source = resolve_source(url)
                 job.source = _source_dict(source)
-                wav, song_seconds = fetch_audio(source, max_seconds)
+                fetched = fetch_audio(source, max_seconds)
+                wav, song_seconds = fetched.path, fetched.song_seconds
                 work_dir = wav.parent
+                if fetched.preview:
+                    # YouTube refused the song; the store's 30-second preview stood in.
+                    job.source = {**job.source, "preview": True, "notice": PREVIEW_NOTICE}
                 job.progress = 0.10
 
                 job.result = self._separate_and_transcribe(
@@ -341,7 +345,7 @@ class JobQueue:
                     audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
                 job.result.source = job.source
                 job.result.song_duration_sec = round(song_seconds, 1)
-                job.result.truncated = song_seconds > max_seconds + 0.5
+                job.result.truncated = fetched.preview or song_seconds > max_seconds + 0.5
             finally:
                 job.finished_at = time.monotonic()
             self._done(job, "Link job")
