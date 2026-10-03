@@ -8,9 +8,10 @@ namespace NoteFusion.Core.Notation;
 
 /// <summary>
 /// Moves a MusicXML score by a number of semitones. Every pitch is respelled for the new key
-/// (sharps in sharp keys, flats in flat keys) and every key signature is rewritten, so the
-/// engraving matches the note list after a "transpose for my choir" (the one edit that does
-/// change the notes — a key override alone never does, F-03).
+/// (sharps in sharp keys, flats in flat keys), every chord symbol (<c>&lt;harmony&gt;</c>) is moved
+/// and named for the new key as <see cref="ChordSpeller"/> names it, and every key signature is
+/// rewritten, so the engraving matches the note list after a "transpose for my choir" (the one edit
+/// that does change the notes — a key override alone never does, F-03).
 /// </summary>
 public static class MusicXmlTransposer
 {
@@ -78,6 +79,21 @@ public static class MusicXmlTransposer
         foreach (var accidental in semitones == 0 ? [] : doc.Descendants("accidental").ToList())
             accidental.Remove();
 
+        // Chord symbols move with the notes and take the same names as the sheet's chord list.
+        foreach (var harmony in semitones == 0 ? [] : doc.Descendants("harmony").ToList())
+        {
+            var root = harmony.Element("root");
+            if (root is null || ReadPitchClass(root, "root") is not { } rootPc) continue;
+            int newRoot = ((rootPc + semitones) % 12 + 12) % 12;
+            bool diminished = harmony.Element("kind")?.Value.Trim() == "diminished";
+            string rootName = ChordSpeller.SpellRoot(newRoot, newKey, sharp: diminished);
+            WritePitch(root, "root", rootName);
+
+            var bass = harmony.Element("bass");
+            if (bass is not null && ReadPitchClass(bass, "bass") is { } bassPc)
+                WritePitch(bass, "bass", ChordSpeller.SpellTone(rootName, newRoot, ((bassPc + semitones) % 12 + 12) % 12));
+        }
+
         foreach (var key in doc.Descendants("key"))
         {
             var fifthsEl = key.Element("fifths");
@@ -88,5 +104,25 @@ public static class MusicXmlTransposer
         using (var writer = XmlWriter.Create(sb, new XmlWriterSettings { Encoding = new UTF8Encoding(false), Indent = false, OmitXmlDeclaration = false }))
             doc.Save(writer);
         return sb.ToString();
+    }
+
+    /// <summary>The pitch class a harmony's <c>root</c> or <c>bass</c> names (step + alter), or null when it names none.</summary>
+    private static int? ReadPitchClass(XElement element, string prefix)
+    {
+        string? step = element.Element(prefix + "-step")?.Value.Trim().ToUpperInvariant();
+        if (step is null || !StepPitchClass.TryGetValue(step, out int stepPc)) return null;
+        double.TryParse(element.Element(prefix + "-alter")?.Value, System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out double alter);
+        return ((stepPc + (int)Math.Round(alter)) % 12 + 12) % 12;
+    }
+
+    /// <summary>Writes a letter name ("Bb", "F#", "D") as a harmony's step and alter.</summary>
+    private static void WritePitch(XElement element, string prefix, string name)
+    {
+        var step = element.Element(prefix + "-step")!;
+        step.Value = name[..1];
+        element.Element(prefix + "-alter")?.Remove();
+        if (name.Length > 1)
+            step.AddAfterSelf(new XElement(prefix + "-alter", name[1] == '#' ? 1 : -1));
     }
 }

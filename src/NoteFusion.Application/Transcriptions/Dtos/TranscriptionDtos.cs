@@ -46,6 +46,16 @@ public sealed record TranscribeOptions
     /// (<see cref="ITranscriptionApi.HarmoniseAsync"/>), not something the recording contained.
     /// </summary>
     public bool Harmony { get; init; }
+
+    /// <summary>
+    /// The transpose setting on the player's keyboard, in semitones (-11 to 11; 0 when it is off). A
+    /// keyboard set to -4 sounds F when A is played, and the worker writes what the player's hands did:
+    /// every pitch, the key and the chords move by the opposite amount before notation and solfa are built.
+    /// </summary>
+    public int KeyboardTranspose { get; init; }
+
+    /// <summary>The furthest a keyboard's transpose setting goes either way, in semitones.</summary>
+    public const int MaxKeyboardTranspose = 11;
 }
 
 /// <summary>The worker's two queue lanes; wire values "normal" / "high".</summary>
@@ -93,6 +103,20 @@ public sealed record SourceDto(
     string Title,
     string Artist,
     string? ThumbnailUrl);
+
+/// <summary>
+/// One chord heard under the tune, over a run of beats. <c>Root</c> and <c>Bass</c> are pitch classes
+/// (0 = C), <c>Bass</c> only when it differs from the root (a slash chord). <c>Symbol</c> is the letter
+/// name spelled in the key ("Dm", "Bb", "G/B"); <c>Solfa</c> is the root's syllable relative to doh.
+/// </summary>
+public sealed record ChordSymbolDto(
+    double StartBeat,
+    double DurBeats,
+    int Root,
+    string Quality,
+    int? Bass,
+    string Symbol,
+    string Solfa);
 
 /// <summary>One note event in the API result; mirrors the TRD §6 result contract.</summary>
 public sealed record NoteEventDto(
@@ -163,7 +187,14 @@ public sealed record TranscriptionResultDto(
     /// "heard" when <see cref="Parts"/> were transcribed from a choir recording, "written" when they were
     /// arranged under the tune on request; null without parts.
     /// </summary>
-    string? PartsSource = null);
+    string? PartsSource = null,
+    /// <summary>
+    /// The chords heard: always in chords mode, and for a song with accompaniment in melody mode; null
+    /// otherwise.
+    /// </summary>
+    IReadOnlyList<ChordSymbolDto>? Chords = null,
+    /// <summary>"heard" when <see cref="Chords"/> were read from the audio; null without chords.</summary>
+    string? ChordsSource = null);
 
 /// <summary>
 /// Polling envelope for a transcription job.

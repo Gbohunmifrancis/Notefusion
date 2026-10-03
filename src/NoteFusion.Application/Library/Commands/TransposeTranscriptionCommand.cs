@@ -11,7 +11,7 @@ namespace NoteFusion.Application.Library.Commands;
 
 /// <summary>
 /// Transpose for a choir's range. Unlike a key override this moves the notes — every pitch in the
-/// melody and the parts, the key, and both engraved scores — while the solfa reads exactly as
+/// melody and the parts, every chord, the key, and both engraved scores — while the solfa reads exactly as
 /// before, because in movable-do only Doh moves.
 /// </summary>
 public sealed record TransposeTranscriptionCommand(Guid Id, int Semitones) : IRequest<Result<SavedTranscriptionDto>>;

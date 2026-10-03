@@ -11,6 +11,7 @@ import type {
   AppVersionInfo,
   BillingInterval,
   CheckoutSession,
+  ChordSymbol,
   ClearStalePaymentsResult,
   GradeResult,
   GradeTarget,
@@ -150,7 +151,7 @@ export const appApi = {
 };
 
 export interface SubmitOptions {
-  mode: "melody" | "poly" | "choir";
+  mode: "melody" | "poly" | "choir" | "chords";
   key?: string;
   tempo?: number;
   timeSignature?: string;
@@ -160,6 +161,11 @@ export interface SubmitOptions {
    * Mirrors `SubmitTranscriptionRequest.Separate` on the API.
    */
   separate?: boolean;
+  /**
+   * The transpose setting on the player's keyboard, -11 to 11 semitones (e.g. -4 when
+   * A shapes sound F). The sheet is written as played. Omitted or 0 when it is off.
+   */
+  keyboardTranspose?: number;
 }
 
 export const transcriptionsApi = {
@@ -192,6 +198,7 @@ export const transcriptionsApi = {
     if (opts.tempo != null) form.append("tempo", String(opts.tempo));
     if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
     if (opts.separate) form.append("separate", "true");
+    if (opts.keyboardTranspose) form.append("keyboardTranspose", String(opts.keyboardTranspose));
 
     // Do NOT set Content-Type manually here.
     // React Native's XHR layer auto-inserts the multipart boundary when the body is
@@ -234,6 +241,7 @@ export const transcriptionsApi = {
     musicXml: string;
     parts?: Record<string, { notes: NonNullable<SavedTranscription["notes"]>; solfaLines: string[] }> | null;
     partsMusicXml?: string | null;
+    chords?: ChordSymbol[] | null;
   }) => api.post<TransposedSheet>("/api/transcriptions/transpose", body).then((r) => r.data),
 
   getJob: (jobId: string) =>
@@ -247,11 +255,11 @@ export const transcriptionsApi = {
    * title and artist as soon as the link resolves. Pro gets six minutes in the fast
    * lane; a free account gets one sixty-second preview.
    */
-  submitLink: (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo">) =>
+  submitLink: (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose">) =>
     api
       .post<TranscriptionJob>(
         "/api/transcriptions/link",
-        { url, mode: opts.mode, key: opts.key, tempo: opts.tempo },
+        { url, mode: opts.mode, key: opts.key, tempo: opts.tempo, keyboardTranspose: opts.keyboardTranspose || undefined },
         { timeout: 30_000 },
       )
       .then((r) => r.data),
@@ -275,6 +283,7 @@ export const libraryApi = {
     lyrics?: string;
     parts?: Record<string, { notes: NonNullable<SavedTranscription["notes"]>; solfaLines: string[] }>;
     partsMusicXml?: string;
+    chords?: ChordSymbol[] | null;
   }) => api.post<SavedTranscription>("/api/library", body).then((r) => r.data),
 
   rename: (id: string, title: string) =>

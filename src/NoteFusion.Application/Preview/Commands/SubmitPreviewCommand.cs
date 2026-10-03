@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
 using NoteFusion.Shared.Results;
@@ -94,8 +95,8 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
 
     public async Task<Result<string>> Handle(SubmitPreviewLinkCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Url) || !Uri.TryCreate(request.Url.Trim(), UriKind.Absolute, out var uri)
-            || (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+        // Only the link goes on, not the words a share sheet wrapped around it.
+        if (!SongLinks.TryExtract(request.Url, out var url))
             return TranscriptionErrors.InvalidLink;
 
         var device = _device.Current;
@@ -103,7 +104,7 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 
-        var submitted = await _api.SubmitLinkAsync(uri.ToString(), PreviewThrottle.Options with { AudioPreview = request.AudioPreview }, cancellationToken);
+        var submitted = await _api.SubmitLinkAsync(url,PreviewThrottle.Options with { AudioPreview = request.AudioPreview }, cancellationToken);
         if (submitted.IsFailure)
             return submitted;
 

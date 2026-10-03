@@ -24,7 +24,8 @@ public sealed record SavedTranscriptionDto(
     IReadOnlyDictionary<string, PartDto>? Parts = null,
     string? PartsMusicXml = null,
     string? ShareToken = null,
-    string? Folder = null);
+    string? Folder = null,
+    IReadOnlyList<ChordSymbolDto>? Chords = null);
 
 /// <summary>A sheet behind a public link: what a chorister who follows it sees, with no account.</summary>
 public sealed record SharedSheetDto(
@@ -37,7 +38,8 @@ public sealed record SharedSheetDto(
     IReadOnlyList<NoteEventDto> Notes,
     string MusicXml,
     IReadOnlyDictionary<string, PartDto>? Parts,
-    string? PartsMusicXml);
+    string? PartsMusicXml,
+    IReadOnlyList<ChordSymbolDto>? Chords = null);
 
 /// <summary>The public link for a saved transcription.</summary>
 public sealed record ShareLinkDto(string Token);
@@ -65,7 +67,8 @@ public static class SavedTranscriptionMapper
             includeNotes ? SolfaLabels.LabelParts(t.Parts, t.Key, t.Notes) : null,
             includeNotes ? t.PartsMusicXml : null,
             t.ShareToken,
-            t.Folder);
+            t.Folder,
+            includeNotes ? ChordLabels.Label(t.Chords, t.Key) : null);
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(
@@ -78,7 +81,26 @@ public static class SavedTranscriptionMapper
             SolfaLabels.Label(t.Notes, t.Key),
             t.MusicXml,
             SolfaLabels.LabelParts(t.Parts, t.Key, t.Notes),
-            t.PartsMusicXml);
+            t.PartsMusicXml,
+            ChordLabels.Label(t.Chords, t.Key));
+}
+
+/// <summary>
+/// Names stored chords for a key. Like the solfa, a chord's symbol and syllable are never persisted:
+/// a key override re-labels them and a transpose respells the symbols, with the same rules the worker
+/// named them by (<see cref="ChordSpeller"/>).
+/// </summary>
+public static class ChordLabels
+{
+    public static List<ChordSymbolDto>? Label(IReadOnlyList<ChordEvent>? chords, MusicalKey key)
+    {
+        if (chords is null || chords.Count == 0) return null;
+        return [.. chords.Select(c =>
+        {
+            var (symbol, solfa) = ChordSpeller.Label(c.Root, c.Quality, c.Bass, key);
+            return new ChordSymbolDto(c.StartBeat, c.DurationBeats, c.Root, c.Quality, c.Bass, symbol, solfa);
+        })];
+    }
 }
 
 /// <summary>

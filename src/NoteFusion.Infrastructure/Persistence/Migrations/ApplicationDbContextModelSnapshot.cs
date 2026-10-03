@@ -556,6 +556,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Chords")
+                        .HasColumnType("text")
+                        .HasColumnName("chords_json");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 

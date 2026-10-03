@@ -59,6 +59,25 @@ export interface NoteEvent {
   conf: number;
 }
 
+/** A chord quality as the worker reads it. */
+export type ChordQuality = "maj" | "min" | "7" | "maj7" | "min7" | "dim" | "sus4";
+
+/**
+ * One chord heard under the tune, over a run of beats. `root` and `bass` are pitch
+ * classes (0 = C); `bass` only for a slash chord. `symbol` is the letter name spelled
+ * in the key ("Dm", "Bb", "G/B"), `solfa` the root's syllable relative to doh.
+ * Mirrors the C# `ChordSymbolDto`.
+ */
+export interface ChordSymbol {
+  startBeat: number;
+  durBeats: number;
+  root: number;
+  quality: ChordQuality;
+  bass: number | null;
+  symbol: string;
+  solfa: string;
+}
+
 /** The song a linked transcription came from — the acknowledgement line and the sheet's credit. */
 export interface TranscriptionSource {
   provider: "youtube" | "spotify" | "apple_music" | string;
@@ -122,6 +141,10 @@ export interface TranscriptionResult {
   partsMusicXml?: string;
   /** "heard" when the parts were transcribed from a choir recording, "written" when arranged on request. */
   partsSource?: "heard" | "written" | null;
+  /** The chords heard: always in chords mode, and for a song with accompaniment; null otherwise. */
+  chords?: ChordSymbol[] | null;
+  /** "heard" when the chords were read from the audio; null without chords. */
+  chordsSource?: "heard" | null;
   /** The words under the solfa; empty until the user types them. Saved items only. */
   lyrics?: string;
   /** The public link's token when the saved sheet is shared; null or absent otherwise. */
@@ -135,6 +158,8 @@ export interface TransposedSheet {
   musicXml: string;
   parts?: Record<string, TranscriptionPart> | null;
   partsMusicXml?: string | null;
+  /** The chords, moved and respelled for the new key; their solfa reads as before. */
+  chords?: ChordSymbol[] | null;
 }
 
 /** Alto, tenor and bass written under a tune on request (Pro): the four parts and their one score. */
@@ -235,6 +260,8 @@ export interface SavedTranscription {
   shareToken?: string | null;
   /** The folder the sheet is filed in ("Sunday choir"), or null. */
   folder?: string | null;
+  /** The chords heard under the tune, named for the stored key. Detail reads only. */
+  chords?: ChordSymbol[] | null;
 }
 
 // --- Billing ------------------------------------------------------------

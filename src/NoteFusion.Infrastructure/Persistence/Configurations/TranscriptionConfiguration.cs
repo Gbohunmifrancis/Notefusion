@@ -52,6 +52,18 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
                     v => JsonSerializer.Serialize(v, JsonOptions).GetHashCode(),
                     v => JsonSerializer.Deserialize<Dictionary<string, List<NoteEvent>>>(JsonSerializer.Serialize(v, JsonOptions), JsonOptions)));
 
+        // The chords likewise: read and written whole, and only pitch classes — the symbols and solfa
+        // are named from the key on every read.
+        builder.Property(t => t.Chords)
+            .HasColumnName("chords_json")
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonOptions),
+                v => JsonSerializer.Deserialize<List<ChordEvent>>(v, JsonOptions),
+                new ValueComparer<List<ChordEvent>?>(
+                    (a, b) => JsonSerializer.Serialize(a, JsonOptions) == JsonSerializer.Serialize(b, JsonOptions),
+                    v => JsonSerializer.Serialize(v, JsonOptions).GetHashCode(),
+                    v => JsonSerializer.Deserialize<List<ChordEvent>>(JsonSerializer.Serialize(v, JsonOptions), JsonOptions)));
+
         // Movable-do key as flattened columns on the same table.
         builder.OwnsOne(t => t.Key, key =>
         {

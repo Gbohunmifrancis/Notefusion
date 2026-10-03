@@ -2,7 +2,7 @@ namespace NoteFusion.Core.Enums;
 
 /// <summary>
 /// Transcription mode sent to the ML service (TRD §6: options.mode).
-/// The string values "melody" / "poly" are part of the wire contract shared by
+/// The string values "melody" / "poly" / "choir" / "chords" are part of the wire contract shared by
 /// the mobile client, the C# API, and the Python worker — keep them in sync.
 /// </summary>
 public enum TranscriptionMode
@@ -22,5 +22,11 @@ public enum TranscriptionMode
     /// A whole choir singing in parts (wire value: "choir"). The top voice comes back as the tune and
     /// soprano, alto, tenor and bass as the parts that were sung (<c>PartsSource = "heard"</c>).
     /// </summary>
-    Choir = 2
+    Choir = 2,
+
+    /// <summary>
+    /// A keyboard or guitar playing chords (wire value: "chords"). The chords come back as the result's
+    /// chord list (<c>ChordsSource = "heard"</c>) and the notes are their top line.
+    /// </summary>
+    Chords = 3
 }

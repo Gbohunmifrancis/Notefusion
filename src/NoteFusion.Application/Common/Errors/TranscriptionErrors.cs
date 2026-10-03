@@ -22,6 +22,10 @@ public static class TranscriptionErrors
         Error.Validation("TRANS_INVALID_LINK",
             "Paste a link to a YouTube video, a Spotify track or an Apple Music song.");
 
+    public static readonly Error InvalidKeyboardTranspose =
+        Error.Validation("TRANS_INVALID_KEYBOARD_TRANSPOSE",
+            "Keyboard transpose must be a whole number of semitones from -11 to 11.");
+
     public static readonly Error PreviewLimitReached =
         Error.Validation("PREVIEW_LIMIT_REACHED", "You've used today's free previews. Create a free account to keep transcribing.");
 

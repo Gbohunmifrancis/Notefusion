@@ -64,6 +64,13 @@ public class Transcription : BaseEntity
     /// <summary>The four parts engraved as one score; null when there are no parts.</summary>
     public string? PartsMusicXml { get; private set; }
 
+    /// <summary>
+    /// The chords heard under the tune, when the result carried them (a chords-mode recording, or a song
+    /// with accompaniment). Stored as pitch classes only, like <see cref="Parts"/>: the symbols and solfa
+    /// are derived from <see cref="Key"/> on every read.
+    /// </summary>
+    public List<ChordEvent>? Chords { get; private set; }
+
     /// <summary>The public link's token; null while the sheet is private.</summary>
     public string? ShareToken { get; private set; }
     public DateTime? SharedAtUtc { get; private set; }
@@ -97,6 +104,12 @@ public class Transcription : BaseEntity
         PartsMusicXml = Parts is null ? null : (string.IsNullOrWhiteSpace(partsMusicXml) ? null : partsMusicXml);
     }
 
+    public void SetChords(IEnumerable<ChordEvent>? chords)
+    {
+        List<ChordEvent> list = chords is null ? [] : [.. chords];
+        Chords = list.Count > 0 ? list : null;
+    }
+
     public void Share(string token, DateTime nowUtc)
     {
         ShareToken = Guard.NotNullOrWhiteSpace(token);
@@ -111,8 +124,8 @@ public class Transcription : BaseEntity
 
     /// <summary>
     /// Transpose for a choir's range: the one edit that moves the notes. Every pitch — melody and
-    /// parts — shifts by <paramref name="semitones"/>, the key moves with them, and both engraved
-    /// scores are respelled for the new key so the staff still matches the note list. Solfa is
+    /// parts — and every chord shifts by <paramref name="semitones"/>, the key moves with them, and both
+    /// engraved scores are respelled for the new key so the staff still matches the note list. Solfa is
     /// untouched by design: in movable-do only Doh moves.
     /// </summary>
     public void Transpose(int semitones)
@@ -123,6 +136,7 @@ public class Transcription : BaseEntity
         for (int i = 0; i < _notes.Count; i++)
             _notes[i] = Shift(_notes[i], semitones);
         Parts = Parts?.ToDictionary(kv => kv.Key, kv => kv.Value.Select(n => Shift(n, semitones)).ToList());
+        Chords = Chords?.Select(c => c.Shift(semitones)).ToList();
         MusicXml = MusicXmlTransposer.Transpose(MusicXml, semitones, Key);
         if (PartsMusicXml is not null)
             PartsMusicXml = MusicXmlTransposer.Transpose(PartsMusicXml, semitones, Key);

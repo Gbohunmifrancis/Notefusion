@@ -61,11 +61,14 @@ public class PreviewTests
         var api = new FakeApi();
 
         var bad = await Link(h, api).Handle(new SubmitPreviewLinkCommand("not a link"), default);
-        var ok = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/abc"), default);
+        var channel = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://www.youtube.com/@RickAstleyYT"), default);
+        var ok = await Link(h, api).Handle(new SubmitPreviewLinkCommand("Check this out https://youtu.be/dQw4w9WgXcQ."), default);
 
         Assert.Equal("TRANS_INVALID_LINK", bad.Error.Code);
+        Assert.Equal("TRANS_INVALID_LINK", channel.Error.Code);
         Assert.True(ok.IsSuccess);
-        Assert.Equal("https://youtu.be/abc", api.LastLink);
+        // Only the link goes to the worker, without the words around it or the sentence's full stop.
+        Assert.Equal("https://youtu.be/dQw4w9WgXcQ", api.LastLink);
         Assert.Equal(PreviewLimits.Seconds, api.LastOptions!.MaxSeconds);
         Assert.Equal("link", h.Db.PreviewJobs.Single().Kind);
     }
