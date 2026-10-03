@@ -1654,7 +1654,7 @@
       .then(function (session) {
         saveCheckout({
           planId: plan.id, startedAt: Date.now(), wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null,
-          lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null
+          lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null, userId: (me && me.id) || null
         });
         location.assign(session.checkoutUrl);
       })
@@ -1673,6 +1673,8 @@
   function readCheckout() {
     try {
       var snap = JSON.parse(localStorage.getItem(CHECKOUT_KEY) || "null");
+      // Another account's checkout (a session that ended without Sign out leaves it behind) is not this one's.
+      if (snap && snap.userId && me && me.id && snap.userId !== me.id) return null;
       return snap && Date.now() - snap.startedAt < CHECKOUT_TTL ? snap : null;
     } catch (e) { return null; }
   }

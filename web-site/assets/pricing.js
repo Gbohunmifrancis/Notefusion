@@ -35,7 +35,8 @@
     fetch(api + "/api/billing/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
-      body: JSON.stringify({ planId: plan.id }),
+      // "web": the provider's return page brings the browser back to /app?paid=1, not to the phone app.
+      body: JSON.stringify({ planId: plan.id, client: "web" }),
     })
       .then(function (r) { if (!r.ok) throw new Error(String(r.status)); return r.json(); })
       .then(function (session) {
