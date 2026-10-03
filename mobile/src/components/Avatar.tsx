@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -62,6 +62,13 @@ export function Avatar({
 }) {
   const styles = useThemedStyles(makeStyles);
 
+  // A URL that will not load (a dead storage link, an expired Google photo) falls back to the
+  // initials rather than painting an empty circle. Reset per URL so a new photo gets its chance.
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setFailed(false);
+  }, [uri]);
+
   // The ring is a 3px band around the photo, so every inner radius derives from
   // `size` rather than being hardcoded — one prop scales the whole stack.
   const ring = 3;
@@ -70,12 +77,13 @@ export function Avatar({
 
   const face = (
     <View style={[styles.face, { width: inner, height: inner, borderRadius: inner / 2 }]}>
-      {uri ? (
+      {uri && !failed ? (
         <Image
           source={{ uri }}
           style={{ width: inner, height: inner, borderRadius: inner / 2 }}
           resizeMode="cover"
           accessibilityIgnoresInvertColors
+          onError={() => setFailed(true)}
         />
       ) : (
         <Text
