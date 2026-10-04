@@ -60,16 +60,19 @@
   /**
    * Pasted share text is cut down to its link as it lands, with a plain hint when there is none,
    * and an optional Paste button reads the clipboard (shown only where the browser allows that).
-   * ``say`` puts the hint on screen; an empty string clears it.
+   * ``say`` puts the hint on screen; an empty string clears it. ``onChange``, when given, is told
+   * every time the value may have changed (typing, a paste once tidied, the Paste button).
    */
-  function wire(input, pasteButton, say) {
+  function wire(input, pasteButton, say, onChange) {
+    function changed() { if (onChange) onChange(); }
     function tidy() {
       var raw = input.value.trim();
-      if (!raw) { say(""); return; }
+      if (!raw) { say(""); changed(); return; }
       var found = extract(raw);
       if (found) { input.value = found.url; say(""); } else say(hint(raw));
+      changed();
     }
-    input.addEventListener("input", function () { say(""); });
+    input.addEventListener("input", function () { say(""); changed(); });
     input.addEventListener("paste", function () { setTimeout(tidy, 0); });
     if (!pasteButton || !navigator.clipboard || !navigator.clipboard.readText) return;
     pasteButton.hidden = false;

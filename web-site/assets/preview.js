@@ -33,7 +33,7 @@
     }).then(function (r) {
       return r.text().then(function (text) {
         var body = null; try { body = text ? JSON.parse(text) : null; } catch (e) { body = null; }
-        if (!r.ok) { var err = new Error((body && body.message) || ("Request failed (" + r.status + ")")); err.code = body && body.code; throw err; }
+        if (!r.ok) { var err = new Error((body && body.message) || "Something went wrong. Try again."); err.code = body && body.code; throw err; }
         return body;
       });
     });
@@ -52,7 +52,36 @@
     if (text) { say(text, "error"); hinting = true; }
     else if (hinting) { say(""); hinting = false; }
   }
-  links.wire(urlInput, $("try-paste"), sayLink);
+  // Once the box holds a song link, the API says what it is and how long it runs, and a card under
+  // the form lets the guest pick which thirty seconds to hear (assets/rangepicker.js). The pick goes
+  // with the link; with no card (length unknown, lookup failed) the preview is the start of the song.
+  var section = $("try-section"), info = { url: null, card: null, timer: null, seq: 0 };
+  function clearCard() { if (info.card) info.card.destroy(); info.card = null; info.url = null; if (section) section.innerHTML = ""; }
+  function lookup() {
+    if (!section || !window.NfRangePicker) return;
+    clearTimeout(info.timer);
+    info.timer = setTimeout(function () {
+      var found = links.extract(urlInput.value.trim());
+      if (!found) { clearCard(); return; }
+      if (found.url === info.url) return;
+      clearCard();
+      info.url = found.url;
+      var seq = ++info.seq;
+      var looking = document.createElement("p"); looking.className = "try-status link-looking"; looking.textContent = "Finding the song…"; section.appendChild(looking);
+      send("/api/preview/link/info", { json: { url: found.url } }).then(function (data) {
+        if (seq !== info.seq) return;
+        section.innerHTML = "";
+        info.card = window.NfRangePicker.card(section, data, { allowance: data.maxSeconds + " s preview — sign up for a minute, Pro for six" });
+      }).catch(function (err) {
+        if (seq !== info.seq) return;
+        section.innerHTML = "";
+        if (err.code === "TRANS_INVALID_LINK") { info.url = null; sayLink(err.message); return; }
+        if (err.code === "PREVIEW_LIMIT_REACHED") { info.url = null; explain(err); return; }
+        say("We couldn't read the song's length just now. The preview will start from the beginning.", "info");
+      });
+    }, 350);
+  }
+  links.wire(urlInput, $("try-paste"), sayLink, lookup);
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var raw = urlInput.value.trim();
@@ -60,9 +89,12 @@
     var found = links.extract(raw);
     if (!found) { sayLink(links.hint(raw)); urlInput.focus(); return; }
     urlInput.value = found.url;
+    var body = { url: found.url, audioPreview: false };
+    var picked = info.card && info.url === found.url ? info.card.selection() : null;
+    if (picked) { body.startSeconds = picked.startSeconds; body.endSeconds = picked.endSeconds; }
     busy(true); say("Reading the link…");
     track("Preview started (link)");
-    send("/api/preview/link", { json: { url: found.url, audioPreview: false } }).then(open).catch(function (err) { busy(false); explain(err); });
+    send("/api/preview/link", { json: body }).then(open).catch(function (err) { busy(false); explain(err); });
   });
 
   file.addEventListener("change", function () {

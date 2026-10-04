@@ -755,7 +755,46 @@
 
   // ── Submitting ───────────────────────────────────────────────────────────
   function linkHint(text) { $("link-hint").textContent = text; }
-  window.NfSongLink.wire($("link-url"), $("link-paste"), linkHint);
+  // As soon as the box holds a song link, the API is asked what it is and how long it runs, and a
+  // card under the form lets the person pick the part to transcribe (assets/rangepicker.js). The
+  // selection is sent with the link; with no card (length unknown, lookup failed) the song is
+  // transcribed from the start as before.
+  var linkInfo = { url: null, card: null, timer: null, seq: 0 };
+  function clearLinkCard() {
+    if (linkInfo.card) linkInfo.card.destroy();
+    linkInfo.card = null; linkInfo.url = null; $("link-section").innerHTML = "";
+  }
+  /** The plain line about the limit, beside what is selected. */
+  function allowanceLine(maxSeconds) {
+    var fmt = window.NfRangePicker.formatTime;
+    if (guest) return maxSeconds + " s preview — sign up for a minute, Pro for six";
+    return isPro() ? "up to " + fmt(maxSeconds) + " on Pro" : "up to " + fmt(maxSeconds) + " on a free account — Pro gets six minutes";
+  }
+  function lookupLink() {
+    clearTimeout(linkInfo.timer);
+    linkInfo.timer = setTimeout(function () {
+      var found = window.NfSongLink.extract($("link-url").value.trim());
+      if (!found) { clearLinkCard(); return; }
+      if (found.url === linkInfo.url) return;
+      clearLinkCard();
+      linkInfo.url = found.url;
+      var seq = ++linkInfo.seq, host = $("link-section");
+      var looking = document.createElement("p"); looking.className = "small studio-status link-looking"; looking.textContent = "Finding the song…"; host.appendChild(looking);
+      request(guest ? "/api/preview/link/info" : "/api/transcriptions/link/info", { method: "POST", anonymous: guest, body: { url: found.url } })
+        .then(function (info) {
+          if (seq !== linkInfo.seq) return;
+          host.innerHTML = "";
+          linkInfo.card = window.NfRangePicker.card(host, info, { allowance: allowanceLine(info.maxSeconds) });
+        })
+        .catch(function (err) {
+          if (seq !== linkInfo.seq) return;
+          host.innerHTML = "";
+          if (err.code === "TRANS_INVALID_LINK" || err.status === 422) { linkInfo.url = null; linkHint(err.message); return; }
+          linkHint("We couldn't read the song's length just now. We'll transcribe it from the start.");
+        });
+    }, 350);
+  }
+  window.NfSongLink.wire($("link-url"), $("link-paste"), linkHint, lookupLink);
   $("form-link").addEventListener("submit", function (e) {
     e.preventDefault();
     var raw = $("link-url").value.trim();
@@ -765,12 +804,15 @@
     if (!found) { linkHint(window.NfSongLink.hint(raw)); $("link-url").focus(); return; }
     $("link-url").value = found.url; linkHint("");
     var body = { url: found.url, mode: "melody", audioPreview: false };
+    // The part of the song that was picked, when the card is showing for this very link.
+    var section = linkInfo.card && linkInfo.url === found.url ? linkInfo.card.selection() : null;
+    if (section) { body.startSeconds = section.startSeconds; body.endSeconds = section.endSeconds; }
     // Only when set: the sheet is then written in the keys pressed on a transposed keyboard.
     if (kbTranspose() !== 0) body.keyboardTranspose = kbTranspose();
     $("link-submit").disabled = true; hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
-      .then(function (job) { startJob(job, guest ? "preview" : "link"); })
+      .then(function (job) { clearLinkCard(); $("link-url").value = ""; startJob(job, guest ? "preview" : "link"); })
       .catch(function (err) { explain(err); })
       .finally(function () { $("link-submit").disabled = false; });
   });
@@ -1041,7 +1083,7 @@
     $("r-artist").textContent = src ? (src.artist || "") : "";
     if (src && src.thumbnailUrl) { $("r-thumb").src = src.thumbnailUrl; show($("r-thumb")); } else hide($("r-thumb"));
     $("r-credit").textContent = src
-      ? "Lead vocal transcribed from “" + (src.title || "Untitled") + "”" + (src.artist ? " by " + src.artist : "") + " (" + providerName(src.provider) + ") with NoteFusion."
+      ? "Lead vocal transcribed from “" + (src.title || "Untitled") + "”" + (src.artist ? " by " + src.artist : "") + " (" + providerName(src.provider) + ")" + sectionNote(src) + " with NoteFusion."
       : "Transcribed with NoteFusion.";
     var chips = $("r-chips");
     chips.innerHTML = "";
@@ -1051,6 +1093,8 @@
     var trunc = $("r-truncated");
     if (result.source && result.source.preview && result.source.notice) {
       alertIn(trunc, "info", result.source.notice);
+    } else if (result.truncated && src && src.startSeconds != null) {
+      alertIn(trunc, "info", "The part you picked ran longer than " + (guest ? "30 seconds" : isPro() ? "six minutes" : "a minute") + " allows, so the first " + (guest ? "30 seconds" : isPro() ? "six minutes" : "minute") + " of it was transcribed.");
     } else if (result.truncated) {
       alertIn(trunc, "info", guest
         ? "Free preview: the first 30 seconds of " + formatSec(result.songDurationSec) + ". Create a free account for more."
@@ -1100,6 +1144,12 @@
   function formatSec(s) {
     s = Math.round(s || 0);
     return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+  }
+  /** ", 1:05–1:35 of 3:33" when a part of the song was picked; nothing otherwise. */
+  function sectionNote(src) {
+    if (!src || src.startSeconds == null || src.endSeconds == null) return "";
+    var fmt = window.NfRangePicker.formatTime;
+    return ", " + fmt(src.startSeconds) + "–" + fmt(src.endSeconds) + (src.durationSeconds ? " of " + fmt(src.durationSeconds) : "") + ",";
   }
 
   /**

@@ -14,7 +14,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=13">
+<link rel="stylesheet" href="/assets/rangepicker.css?v=1">
+<link rel="stylesheet" href="/assets/app.css?v=14">
 <script>
   // The theme before the first paint, so a dark page never flashes white: the saved choice, else the device's.
   (function () {
@@ -210,6 +211,7 @@
         <button class="btn btn-ghost btn-sm btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
         <label class="btn btn-ghost btn-sm try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
       </div>
+      <div id="try-section"></div>
       <p class="try-status small" id="try-status" aria-live="polite"></p>
     </div>
   </section>
@@ -375,6 +377,7 @@
         <button class="btn btn-light" id="link-submit" type="submit">Transcribe</button>
       </form>
       <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
+      <div id="link-section"></div>
       <div class="or studio-or">or</div>
       <button class="btn btn-dark btn-rec studio-rec" id="rec-btn" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
       <p id="rec-status" class="small studio-status" aria-live="polite"></p>
@@ -663,9 +666,10 @@
 <!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
 <script src="/assets/choir.js?v=3" defer></script>
 <script src="/assets/chords.js?v=1" defer></script>
-<script src="/assets/songlink.js?v=1" defer></script>
-<script src="/assets/preview.js?v=7" defer></script>
-<script src="/assets/app.js?v=14" defer></script>
+<script src="/assets/songlink.js?v=2" defer></script>
+<script src="/assets/rangepicker.js?v=1" defer></script>
+<script src="/assets/preview.js?v=8" defer></script>
+<script src="/assets/app.js?v=15" defer></script>
 <script src="/assets/track.js?v=1" defer></script>
 </body>
 </html>
