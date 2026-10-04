@@ -192,11 +192,14 @@ export function LinkScreen() {
         <View style={styles.backBtn} />
       </View>
 
+      {!busy && (
       <Text style={styles.lead}>
         Paste a YouTube, Spotify or Apple Music link. We isolate the lead vocal and write it
         out as Tonic Solfa and staff notation, with the song and artist credited on the sheet.
       </Text>
+      )}
 
+      {!busy && (
       <Card style={styles.card}>
         <View style={styles.inputRow}>
           <Ionicons
@@ -329,6 +332,7 @@ export function LinkScreen() {
           </View>
         ) : null}
       </Card>
+      )}
 
       {busy ? (
         <Card style={styles.card}>

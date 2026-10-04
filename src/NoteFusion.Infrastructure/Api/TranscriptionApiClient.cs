@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Microsoft.Extensions.Logging;
 
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
@@ -13,7 +14,10 @@ namespace NoteFusion.Infrastructure.Api;
 /// <see cref="ErrorType.Network"/> results — connectivity drops are an expected condition
 /// in the target market, not an exceptional one.
 /// </summary>
-internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensions.Configuration.IConfiguration config) : ITranscriptionApi
+internal sealed class TranscriptionApiClient(
+    HttpClient http,
+    Microsoft.Extensions.Configuration.IConfiguration config,
+    ILogger<TranscriptionApiClient> logger) : ITranscriptionApi
 {
     public async Task<Result<string>> SubmitAsync(
         Stream audio,
@@ -56,7 +60,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.Submit", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.Submit", ex);
         }
     }
 
@@ -101,7 +105,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.SubmitScore", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.SubmitScore", ex);
         }
     }
 
@@ -139,7 +143,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.Grade", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.Grade", ex);
         }
     }
 
@@ -177,7 +181,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.Harmonise", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.Harmonise", ex);
         }
     }
 
@@ -217,7 +221,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.SubmitLink", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.SubmitLink", ex);
         }
     }
 
@@ -341,8 +345,18 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.Job", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.Job", ex);
         }
+    }
+
+    /// <summary>
+    /// The worker could not be reached. The client gets a plain sentence (host names and DNS text are
+    /// not for a screen); the detail goes to the log.
+    /// </summary>
+    private Error Unreachable(string code, HttpRequestException ex)
+    {
+        logger.LogWarning(ex, "Transcription service unreachable ({Code}).", code);
+        return Error.Network(code, "The transcription service is unavailable. Try again shortly.");
     }
 
     public async Task<Result<int>> PingAsync(CancellationToken cancellationToken = default)
@@ -364,7 +378,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         }
         catch (HttpRequestException ex)
         {
-            return Error.Network("Api.Ping", $"Could not reach the transcription service: {ex.Message}");
+            return Unreachable("Api.Ping", ex);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
