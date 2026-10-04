@@ -13,6 +13,14 @@ from app.jobs import queue as queue_mod
 from app.jobs.queue import PRIORITY_HIGH, PRIORITY_NORMAL, STATUS_DONE, STATUS_FAILED, JobQueue
 
 
+@pytest.fixture(autouse=True)
+def _fresh_cache():
+    """Resolved links are remembered for ten minutes; one test's link must not answer another's."""
+    links._cache.clear()
+    yield
+    links._cache.clear()
+
+
 # ── URL parsing ───────────────────────────────────────────────────────────────
 
 
@@ -280,14 +288,16 @@ def test_search_choice_matches_length_and_skips_covers():
     assert links._choose_result(["DDDDDDDDDDD\t301\tTim McGraw - Topic\tLive Like You Were Dying"], live_song) == "DDDDDDDDDDD"
 
 
-def _fake_ytdlp(calls, *, search="", info_duration=214, fail_on=None, stderr=""):
-    """A stand-in for subprocess.run that answers like yt-dlp and ffmpeg would."""
+def _fake_ytdlp(calls, *, search="", info_duration=214, fail_on=None, stderr="", probe_seconds=22.0):
+    """A stand-in for subprocess.run that answers like yt-dlp, ffmpeg and ffprobe would."""
 
     def run(args, **kwargs):
         calls.append(list(args))
         if args[0] == "ffmpeg":
             Path(args[-1]).write_bytes(b"RIFF")
             return _Completed()
+        if args[0] == "ffprobe":
+            return _Completed(0, f"{probe_seconds}\n")
         if fail_on and fail_on in args:
             return _Completed(1, "", stderr)
         if "--flat-playlist" in args:
@@ -313,7 +323,153 @@ def test_a_linked_youtube_video_costs_one_extraction(monkeypatch, tmp_path):
     ytdlp = [c for c in calls if c[0] == "yt-dlp"]
     assert len(ytdlp) == 2 and "-J" in ytdlp[0] and "--load-info-json" in ytdlp[1]
     assert "--download-sections" in ytdlp[1]  # a long video is fetched only as far as needed
+    assert fetched.truncated is True and fetched.start_seconds is None and fetched.end_seconds is None
     assert not any(p.name.startswith(("audio.", "info.")) for p in fetched.path.parent.iterdir())
+
+
+YOUTUBE = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
+
+def _video(**kwargs) -> Source:
+    base = dict(provider="youtube", url=YOUTUBE, title="T", artist="A", audio_url=YOUTUBE)
+    base.update(kwargs)
+    return Source(**base)
+
+
+def _ytdlp_calls(calls):
+    return [c for c in calls if c[0] == "yt-dlp"]
+
+
+def _ffmpeg_call(calls):
+    return next(c for c in calls if c[0] == "ffmpeg")
+
+
+def test_a_chosen_section_is_downloaded_on_its_own_and_cut_exactly(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, info_duration=213))
+    monkeypatch.delenv("NF_YTDLP_COOKIES_FILE", raising=False)
+    fetched = links.fetch_audio(_video(), 360, work_dir=tmp_path, start_seconds=60, end_seconds=80)
+    download = _ytdlp_calls(calls)[1]
+    assert download[download.index("--download-sections") + 1] == "*60.00-82.00"
+    assert "--force-keyframes-at-cuts" in download
+    ffmpeg = _ffmpeg_call(calls)
+    assert ffmpeg[ffmpeg.index("-t") + 1] == "20.00"
+    assert "-ss" not in ffmpeg  # the download already begins at 60 s
+    assert (fetched.start_seconds, fetched.end_seconds) == (60.0, 80.0)
+    assert fetched.song_seconds == 213 and fetched.truncated is False  # the whole song's length, not the section's
+
+
+def test_a_section_longer_than_the_allowance_is_capped_and_marked(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, info_duration=213))
+    fetched = links.fetch_audio(_video(), 60, work_dir=tmp_path, start_seconds=65, end_seconds=200)
+    download = _ytdlp_calls(calls)[1]
+    assert download[download.index("--download-sections") + 1] == "*65.00-127.00"
+    assert _ffmpeg_call(calls)[_ffmpeg_call(calls).index("-t") + 1] == "60.00"
+    assert (fetched.start_seconds, fetched.end_seconds, fetched.truncated) == (65.0, 125.0, True)
+
+
+def test_a_section_past_the_end_is_clamped_or_refused(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, info_duration=213))
+    fetched = links.fetch_audio(_video(), 360, work_dir=tmp_path, start_seconds=200, end_seconds=500)
+    assert (fetched.start_seconds, fetched.end_seconds, fetched.truncated) == (200.0, 213.0, False)
+    # Only the end was given: the section runs to the song's end, within the allowance.
+    fetched = links.fetch_audio(_video(), 360, work_dir=tmp_path, end_seconds=30)
+    assert (fetched.start_seconds, fetched.end_seconds) == (0.0, 30.0)
+    before = set(tmp_path.iterdir())
+    with pytest.raises(LinkError, match="starts after the song ends"):
+        links.fetch_audio(_video(), 360, work_dir=tmp_path, start_seconds=213)
+    assert set(tmp_path.iterdir()) == before  # nothing left behind by the refusal
+
+
+def test_a_section_of_a_video_of_unknown_length_is_still_asked_for(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, info_duration=0))
+    fetched = links.fetch_audio(_video(), 60, work_dir=tmp_path, start_seconds=30)
+    download = _ytdlp_calls(calls)[1]
+    assert download[download.index("--download-sections") + 1] == "*30.00-92.00"
+    assert (fetched.start_seconds, fetched.end_seconds, fetched.truncated) == (30.0, 90.0, False)
+    assert fetched.song_seconds == 0.0
+
+
+def _tone_wav(path: Path, sr: int = 22_050) -> Path:
+    """Ten seconds: 220 Hz for the first five, 440 Hz for the last five."""
+    t = np.arange(5 * sr) / sr
+    low = 0.3 * np.sin(2 * np.pi * 220 * t)
+    high = 0.3 * np.sin(2 * np.pi * 440 * t)
+    sf.write(str(path), np.concatenate([low, high]).astype(np.float32), sr)
+    return path
+
+
+def _dominant_hz(path: Path) -> float:
+    y, sr = sf.read(str(path), always_2d=True)
+    mono = y.mean(axis=1)
+    spectrum = np.abs(np.fft.rfft(mono))
+    return float(np.fft.rfftfreq(len(mono), 1 / sr)[spectrum.argmax()])
+
+
+def test_a_whole_download_is_cut_from_the_start_of_the_section_by_ffmpeg(monkeypatch, tmp_path):
+    """The safety net: yt-dlp hands back the whole song despite the section, and ffmpeg
+    (the real one) cuts the chosen window out of it."""
+    real_run = links.subprocess.run
+    calls = []
+
+    def run(args, **kwargs):
+        calls.append(list(args))
+        if args[0] in ("ffmpeg", "ffprobe"):
+            return real_run(args, **kwargs)
+        if "-J" in args:
+            return _Completed(0, '{"id": "dQw4w9WgXcQ", "duration": 10}')
+        _tone_wav(Path(args[args.index("-o") + 1].replace("%(ext)s", "wav")))  # the section ignored
+        return _Completed()
+
+    monkeypatch.setattr(links.subprocess, "run", run)
+    fetched = links.fetch_audio(_video(), 60, work_dir=tmp_path, start_seconds=6, end_seconds=10)
+    assert (fetched.start_seconds, fetched.end_seconds) == (6.0, 10.0)
+    ffmpeg = _ffmpeg_call(calls)
+    assert ffmpeg[ffmpeg.index("-ss") + 1] == "6.000"
+    info = sf.info(str(fetched.path))
+    assert info.samplerate == 44_100 and info.channels == 2
+    assert abs(info.duration - 4.0) < 0.05
+    assert abs(_dominant_hz(fetched.path) - 440) < 2  # the last four seconds, not the first
+
+
+def test_a_download_that_honoured_the_section_is_not_cut_again(monkeypatch, tmp_path):
+    real_run = links.subprocess.run
+    calls = []
+
+    def run(args, **kwargs):
+        calls.append(list(args))
+        if args[0] in ("ffmpeg", "ffprobe"):
+            return real_run(args, **kwargs)
+        if "-J" in args:
+            return _Completed(0, '{"id": "dQw4w9WgXcQ", "duration": 400}')
+        _tone_wav(Path(args[args.index("-o") + 1].replace("%(ext)s", "wav")))  # 10 s: the section, with its padding
+        return _Completed()
+
+    monkeypatch.setattr(links.subprocess, "run", run)
+    fetched = links.fetch_audio(_video(), 60, work_dir=tmp_path, start_seconds=300, end_seconds=308)
+    assert "-ss" not in _ffmpeg_call(calls)
+    assert abs(sf.info(str(fetched.path)).duration - 8.0) < 0.05
+    assert fetched.end_seconds == 308.0
+
+
+def test_the_download_runs_from_the_details_the_resolve_already_read(monkeypatch, tmp_path):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, info_duration=213))
+    monkeypatch.setattr(links, "_http_json", lambda url: {"title": "Rick Astley - Never Gonna Give You Up",
+                                                          "author_name": "Rick Astley", "thumbnail_url": "t"})
+    monkeypatch.delenv("NF_YTDLP_COOKIES_FILE", raising=False)
+    source = links.resolve_link("https://youtu.be/dQw4w9WgXcQ")
+    assert source.duration == 213.0
+    assert len(_ytdlp_calls(calls)) == 1 and "-J" in _ytdlp_calls(calls)[0]
+    # The job: the same link resolves from memory and the download needs no second extraction.
+    assert links.resolve_source("https://youtu.be/dQw4w9WgXcQ") is source
+    fetched = links.fetch_audio(source, 60, work_dir=tmp_path, start_seconds=60, end_seconds=80)
+    ytdlp = _ytdlp_calls(calls)
+    assert len(ytdlp) == 2 and "--load-info-json" in ytdlp[1] and "-J" not in ytdlp[1]
+    assert fetched.song_seconds == 213.0
 
 
 def test_a_store_link_downloads_the_search_hit_that_fits(monkeypatch, tmp_path):
@@ -340,10 +496,14 @@ def test_preview_stands_in_when_youtube_refuses(monkeypatch, tmp_path):
         return work / "preview.audio"
 
     monkeypatch.setattr(links, "_download_preview", download)
-    fetched = links.fetch_audio(_song(preview_url="https://p.scdn.co/mp3-preview/abc"), 30, work_dir=tmp_path)
-    assert fetched.preview is True and fetched.song_seconds == 214.0
+    fetched = links.fetch_audio(_song(preview_url="https://p.scdn.co/mp3-preview/abc"), 30, work_dir=tmp_path,
+                                start_seconds=60, end_seconds=90)
+    assert fetched.preview is True and fetched.song_seconds == 214.0 and fetched.truncated is True
     assert fetched.path.is_file()
     assert fetched_urls == ["https://p.scdn.co/mp3-preview/abc"]
+    # A 30-second preview has no position in the song: the chosen section does not apply to it.
+    assert fetched.start_seconds is None and fetched.end_seconds is None
+    assert "-ss" not in _ffmpeg_call(calls)
 
 
 def test_preview_is_found_on_itunes_by_title_artist_and_length(monkeypatch, tmp_path):
@@ -433,6 +593,67 @@ def test_resolve_source_rejects_unknown_links():
         links.resolve_source("https://example.com/song.mp3")
 
 
+def _never_run(args, **kwargs):
+    pytest.fail(f"yt-dlp was asked: {args}")
+
+
+def test_resolve_link_takes_a_store_length_without_asking_youtube(monkeypatch):
+    monkeypatch.setattr(links.subprocess, "run", _never_run)
+    monkeypatch.setattr(links, "_http_json", lambda url: {"title": "Never Gonna Give You Up", "thumbnail_url": "t"})
+    monkeypatch.setattr(links, "_http_text", lambda url: SPOTIFY_PAGE)
+    spotify = links.resolve_link(f"https://open.spotify.com/track/{SPOTIFY_ID}")
+    assert (spotify.provider, spotify.duration) == ("spotify", 214.0)
+
+    monkeypatch.setattr(links, "_http_json", lambda url: {"results": [
+        {"wrapperType": "track", "trackId": 1559885426, "trackName": "Don't Say Goodbye",
+         "artistName": "Rick Astley", "trackTimeMillis": 249240}]})
+    apple = links.resolve_link("https://music.apple.com/ng/album/x/1559885421?i=1559885426")
+    assert (apple.provider, apple.duration) == ("apple_music", 249.2)
+
+
+def test_resolve_link_reads_a_youtube_length_once_and_remembers_it(monkeypatch):
+    calls = []
+    asked = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, info_duration=213))
+    monkeypatch.setattr(links, "_http_json", lambda url: asked.append(url) or {
+        "title": "Rick Astley - Never Gonna Give You Up (Official Video)", "author_name": "RickAstleyVEVO",
+        "thumbnail_url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"})
+    monkeypatch.delenv("NF_YTDLP_COOKIES_FILE", raising=False)
+    monkeypatch.delenv("NF_YTDLP_EXTRA_ARGS", raising=False)
+    source = links.resolve_link("Watch: https://youtu.be/dQw4w9WgXcQ?si=abc")
+    assert (source.title, source.artist, source.url) == ("Never Gonna Give You Up", "Rick Astley", YOUTUBE)
+    assert source.duration == 213.0
+    assert calls == [["yt-dlp", "--no-warnings", "--no-playlist", "--no-progress", "-q",
+                      "-f", links._AUDIO_FORMAT, "-J", YOUTUBE]]
+    # The same video under another address: nothing is asked again, of YouTube or oEmbed.
+    assert links.resolve_link(YOUTUBE) is source
+    assert links.resolve_link("https://youtu.be/dQw4w9WgXcQ?si=abc") is source
+    assert len(calls) == 1 and len(asked) == 1
+
+
+def test_resolve_link_has_no_length_when_youtube_will_not_say(monkeypatch):
+    calls = []
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, fail_on="-J", stderr=BOT))
+    monkeypatch.setattr(links, "_http_json", lambda url: {"title": "T", "author_name": "A"})
+    source = links.resolve_link(YOUTUBE)
+    assert source.duration is None and source.title == "T"
+    assert links.resolve_link(YOUTUBE).duration is None
+    assert len(calls) == 1  # the refusal is remembered too, not retried on every keystroke
+
+
+def test_a_resolved_link_is_forgotten_after_ten_minutes(monkeypatch):
+    now = [1000.0]
+    monkeypatch.setattr(links.time, "monotonic", lambda: now[0])
+    answers = iter([{"title": "First", "author_name": "A"}, {"title": "Second", "author_name": "A"}])
+    monkeypatch.setattr(links, "_http_json", lambda url: next(answers))
+    assert links.resolve_source(YOUTUBE).title == "First"
+    now[0] += links.RESOLVE_CACHE_SECONDS - 1
+    assert links.resolve_source(YOUTUBE).title == "First"
+    now[0] += 2
+    assert links.resolve_source(YOUTUBE).title == "Second"
+    assert [e.source.title for e in links._cache.values()] == ["Second"]  # the stale entry went with it
+
+
 # ── Queue ─────────────────────────────────────────────────────────────────────
 
 
@@ -497,11 +718,12 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
 
     monkeypatch.setattr(links, "resolve_source", lambda url: source)
 
-    def fake_fetch(src, max_seconds, work_dir=None):
+    def fake_fetch(src, max_seconds, work_dir=None, start_seconds=0.0, end_seconds=None):
         seen["max_seconds"] = max_seconds
+        seen["section"] = (start_seconds, end_seconds)
         work = tmp_path / "work"
         work.mkdir()
-        return FetchedAudio(_fake_wav(work / "song.wav"), 250.0)
+        return FetchedAudio(_fake_wav(work / "song.wav"), 250.0, start_seconds=30.0, end_seconds=90.0, truncated=True)
 
     monkeypatch.setattr(links, "fetch_audio", fake_fetch)
     monkeypatch.setattr(separate, "available", lambda: True)
@@ -528,12 +750,14 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
     queue = JobQueue(workers=1)
     try:
         jid = queue.submit_link("https://youtu.be/dQw4w9WgXcQ", "melody", None, None,
-                                priority=PRIORITY_HIGH, max_seconds=60, harmony=True)
+                                priority=PRIORITY_HIGH, max_seconds=60, harmony=True, start_seconds=30, end_seconds=100)
         job = _wait(queue, jid, (STATUS_DONE, STATUS_FAILED))
         assert job.status == STATUS_DONE, job.error
         assert job.source == {"provider": "youtube", "url": source.url, "title": "Way Maker",
-                              "artist": "Sinach", "thumbnail_url": None}
-        assert seen == {"max_seconds": 60, "transcribed": "vocals.wav", "fast": True, "tempo_source": "song.wav", "harmony": True}
+                              "artist": "Sinach", "thumbnail_url": None,
+                              "duration_seconds": 250.0, "start_seconds": 30.0, "end_seconds": 90.0}
+        assert seen == {"max_seconds": 60, "section": (30, 100), "transcribed": "vocals.wav", "fast": True,
+                        "tempo_source": "song.wav", "harmony": True}
         # The instrumental rides along for rehearsal (ffmpeg permitting); never an error either way.
         assert isinstance(job.result.backing_audio_base64, str)
         assert job.result.source["title"] == "Way Maker"
@@ -552,10 +776,10 @@ def test_link_job_marks_a_preview_stand_in(monkeypatch, tmp_path):
     source = _song()
     monkeypatch.setattr(links, "resolve_source", lambda url: source)
 
-    def fake_fetch(src, max_seconds, work_dir=None):
+    def fake_fetch(src, max_seconds, work_dir=None, start_seconds=0.0, end_seconds=None):
         work = tmp_path / "work"
         work.mkdir()
-        return FetchedAudio(_fake_wav(work / "song.wav"), 214.0, preview=True)
+        return FetchedAudio(_fake_wav(work / "song.wav"), 214.0, preview=True, truncated=True)
 
     monkeypatch.setattr(links, "fetch_audio", fake_fetch)
     monkeypatch.setattr(separate, "available", lambda: False)
@@ -572,6 +796,8 @@ def test_link_job_marks_a_preview_stand_in(monkeypatch, tmp_path):
         assert job.source["preview"] is True
         assert job.source["notice"] == "Only a 30-second preview was available for this song."
         assert job.result.source["preview"] is True
+        assert job.source["duration_seconds"] == 214.0
+        assert job.source["start_seconds"] is None and job.source["end_seconds"] is None
     finally:
         queue.shutdown(wait=True, timeout=2)
 
@@ -624,6 +850,15 @@ def test_link_route_accepts_a_youtube_url_and_caps_the_length(client):
     assert submitted["priority"] == "high"
     assert submitted["max_seconds"] == pytest.approx(360.0)  # the worker's own cap wins
     assert submitted["mode"] == "melody" and submitted["time_signature"] == "4/4"
+    assert submitted["start_seconds"] == 0.0 and submitted["end_seconds"] is None  # the whole song, as before
+
+
+def test_link_route_forwards_the_chosen_section(client):
+    c, submitted = client
+    r = c.post("/v1/transcribe/link", data={"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "65",
+                                            "end_seconds": "95.5"})
+    assert r.status_code == 202, r.text
+    assert (submitted["start_seconds"], submitted["end_seconds"]) == (65.0, 95.5)
 
 
 @pytest.mark.parametrize(
@@ -633,11 +868,52 @@ def test_link_route_accepts_a_youtube_url_and_caps_the_length(client):
         {"url": "https://youtu.be/dQw4w9WgXcQ", "priority": "urgent"},
         {"url": "https://youtu.be/dQw4w9WgXcQ", "max_seconds": "3"},
         {"url": "https://youtu.be/dQw4w9WgXcQ", "mode": "opera"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "-1"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "60", "end_seconds": "60"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "end_seconds": "0"},
     ],
 )
 def test_link_route_rejects_bad_input(client, data):
     c, _ = client
     assert c.post("/v1/transcribe/link", data=data).status_code == 422
+
+
+def test_resolve_route_describes_the_song_in_camel_case(client, monkeypatch):
+    c, _ = client
+    resolved = []
+    monkeypatch.setattr(links, "resolve_link", lambda text: resolved.append(text) or Source(
+        "spotify", f"https://open.spotify.com/track/{SPOTIFY_ID}", "Never Gonna Give You Up", "Rick Astley",
+        "https://i.scdn.co/image/x", duration=214.0))
+    r = c.post("/v1/links/resolve", json={"url": f"Listen: https://open.spotify.com/track/{SPOTIFY_ID}?si=1"})
+    assert r.status_code == 200, r.text
+    assert r.json() == {"provider": "spotify", "url": f"https://open.spotify.com/track/{SPOTIFY_ID}",
+                        "title": "Never Gonna Give You Up", "artist": "Rick Astley",
+                        "thumbnailUrl": "https://i.scdn.co/image/x", "durationSeconds": 214.0}
+    assert resolved == [f"Listen: https://open.spotify.com/track/{SPOTIFY_ID}?si=1"]
+
+
+def test_resolve_route_says_null_when_the_length_is_unknown(client, monkeypatch):
+    c, _ = client
+    monkeypatch.setattr(links, "resolve_link", lambda text: _video(title="T", thumbnail_url=None))
+    body = c.post("/v1/links/resolve", json={"url": YOUTUBE}).json()
+    assert body["durationSeconds"] is None and body["thumbnailUrl"] is None
+    assert body["provider"] == "youtube"
+
+
+def test_resolve_route_turns_an_unusable_link_into_a_plain_422(client, monkeypatch):
+    c, _ = client
+    r = c.post("/v1/links/resolve", json={"url": "https://example.com/song.mp3"})
+    assert r.status_code == 422
+    assert r.json()["detail"] == "url must be a YouTube video, Spotify track or Apple Music song link."
+
+    def refuse(text):
+        raise LinkError("That Spotify link does not point to a song. Share the song itself and paste that link.")
+
+    monkeypatch.setattr(links, "resolve_link", refuse)
+    r = c.post("/v1/links/resolve", json={"url": "https://spotify.link/qKr2CFxMQwb"})
+    assert r.status_code == 422
+    assert r.json()["detail"].startswith("That Spotify link does not point to a song.")
+    assert c.post("/v1/links/resolve", json={}).status_code == 422
 
 
 def test_job_response_carries_stage_and_source(monkeypatch):
@@ -678,3 +954,25 @@ def test_job_response_carries_the_preview_marking(monkeypatch):
         body = c.get("/v1/jobs/abc").json()
     assert body["source"]["preview"] is True
     assert body["source"]["notice"] == "Only a 30-second preview was available for this song."
+    assert body["source"]["durationSeconds"] == 214.0
+    assert "startSeconds" not in body["source"]
+
+
+def test_job_response_carries_the_chosen_section(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.jobs.queue import STATUS_DONE, Job
+    from app.main import app
+
+    source = {**queue_mod._source_dict(_video()), "duration_seconds": 213.0, "start_seconds": 65.0, "end_seconds": 95.0}
+    job = Job(id="abc", status=STATUS_DONE, progress=1.0, source=source)
+
+    class FakeQueue:
+        def get(self, job_id):
+            return job
+
+    monkeypatch.setattr("app.api.routes._get_queue", lambda request: FakeQueue())
+    with TestClient(app) as c:
+        body = c.get("/v1/jobs/abc").json()
+    assert body["source"] == {"provider": "youtube", "url": YOUTUBE, "title": "T", "artist": "A",
+                              "durationSeconds": 213.0, "startSeconds": 65.0, "endSeconds": 95.0}

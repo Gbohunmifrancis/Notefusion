@@ -40,6 +40,26 @@ class SourceDto(ApiModel):
     # (the result is then ``truncated`` too); ``notice`` is the plain sentence to show.
     preview: bool | None = None
     notice: str | None = None
+    # The section of the song that was transcribed, when the caller chose one (absent for
+    # a preview stand-in, which has no position), and the whole song's length when known.
+    start_seconds: float | None = None
+    end_seconds: float | None = None
+    duration_seconds: float | None = None
+
+
+class LinkInfoRequest(ApiModel):
+    url: str
+
+
+class LinkInfoResponse(ApiModel):
+    """What a pasted link points at, for the clients' section picker: ``duration_seconds``
+    is null when the song's length could not be learned in time."""
+    provider: str
+    url: str
+    title: str
+    artist: str
+    thumbnail_url: str | None = None
+    duration_seconds: float | None = None
 
 
 class PartDto(ApiModel):

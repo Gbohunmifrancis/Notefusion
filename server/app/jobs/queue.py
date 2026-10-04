@@ -131,14 +131,17 @@ class JobQueue:
                     max_seconds: float | None = None,
                     audio_preview: bool = True,
                     harmony: bool = False,
-                    keyboard_transpose: int = 0) -> str:
+                    keyboard_transpose: int = 0,
+                    start_seconds: float = 0.0,
+                    end_seconds: float | None = None) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
         job.stage = STAGE_FETCHING
         cap = float(max_seconds or settings.link_max_seconds)
-        logger.info("Link job %s queued: mode=%s cap=%.0fs priority=%s harmony=%s%s",
-                    job.id[:8], mode, cap, job.priority, harmony, self._trail(job))
+        logger.info("Link job %s queued: mode=%s cap=%.0fs section=%.0f-%s priority=%s harmony=%s%s",
+                    job.id[:8], mode, cap, start_seconds, "end" if end_seconds is None else f"{end_seconds:.0f}",
+                    job.priority, harmony, self._trail(job))
         self._enqueue(job, lambda: self._run_link(job, url, mode, key, tempo, time_signature, cap, audio_preview, harmony,
-                                                  keyboard_transpose))
+                                                  keyboard_transpose, start_seconds, end_seconds))
         return job.id
 
     def submit_score(self, score_path: Path,
@@ -321,7 +324,8 @@ class JobQueue:
     def _run_link(self, job: Job, url: str, mode: str,
                   key: str | None, tempo: int | None,
                   time_signature: str, max_seconds: float, audio_preview: bool = True,
-                  harmony: bool = False, keyboard_transpose: int = 0) -> None:
+                  harmony: bool = False, keyboard_transpose: int = 0,
+                  start_seconds: float = 0.0, end_seconds: float | None = None) -> None:
         from app.ingest.links import PREVIEW_NOTICE, LinkError, fetch_audio, resolve_source
 
         job.status = STATUS_PROCESSING
@@ -332,9 +336,12 @@ class JobQueue:
                 job.progress = 0.02
                 source = resolve_source(url)
                 job.source = _source_dict(source)
-                fetched = fetch_audio(source, max_seconds)
+                fetched = fetch_audio(source, max_seconds, start_seconds=start_seconds, end_seconds=end_seconds)
                 wav, song_seconds = fetched.path, fetched.song_seconds
                 work_dir = wav.parent
+                # The section that was kept, and the whole song's length now that it is known.
+                job.source = {**job.source, "duration_seconds": song_seconds or job.source.get("duration_seconds"),
+                              "start_seconds": fetched.start_seconds, "end_seconds": fetched.end_seconds}
                 if fetched.preview:
                     # YouTube refused the song; the store's 30-second preview stood in.
                     job.source = {**job.source, "preview": True, "notice": PREVIEW_NOTICE}
@@ -345,7 +352,7 @@ class JobQueue:
                     audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
                 job.result.source = job.source
                 job.result.song_duration_sec = round(song_seconds, 1)
-                job.result.truncated = fetched.preview or song_seconds > max_seconds + 0.5
+                job.result.truncated = fetched.truncated
             finally:
                 job.finished_at = time.monotonic()
             self._done(job, "Link job")
@@ -513,6 +520,7 @@ def _source_dict(source) -> dict:
         "title": source.title,
         "artist": source.artist,
         "thumbnail_url": source.thumbnail_url,
+        "duration_seconds": source.duration,
     }
 
 

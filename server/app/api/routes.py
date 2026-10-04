@@ -12,7 +12,8 @@ import librosa
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
 
 from app.api.schemas import (
-    GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, JobResponse, ResultDto, SubmitResponse,
+    GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, JobResponse, LinkInfoRequest, LinkInfoResponse,
+    ResultDto, SubmitResponse,
 )
 from app.config import settings
 from app.jobs.queue import JobQueue
@@ -277,12 +278,16 @@ async def submit_link_transcription(
     audio_preview: bool = Form(True),
     harmony: bool = Form(False),
     keyboard_transpose: int = Form(0),
+    start_seconds: float = Form(0.0, description="Transcribe from this point in the song (seconds)"),
+    end_seconds: float | None = Form(None, description="...up to this point (seconds); the song's end when absent"),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
     The audio is fetched, its vocals isolated, and the result carries the song's title
     and artist for the acknowledgement line.  ``max_seconds`` is the caller's cap (a
     free preview, or the Pro allowance); it can only lower the worker's own limit.
+    ``start_seconds``/``end_seconds`` pick the section of the song; the cap still bounds
+    how much of it is transcribed.
     """
     from app.ingest.links import provider_of
 
@@ -301,6 +306,10 @@ async def submit_link_transcription(
         if max_seconds < 10:
             raise HTTPException(422, "max_seconds must be at least 10.")
         cap = min(cap, float(max_seconds))
+    if start_seconds < 0:
+        raise HTTPException(422, "start_seconds must be 0 or more.")
+    if end_seconds is not None and end_seconds <= start_seconds:
+        raise HTTPException(422, "end_seconds must be later than start_seconds.")
 
     queue = _get_queue(request)
     job_id = queue.submit_link(url, mode=mode, key=key, tempo=tempo,
@@ -308,8 +317,29 @@ async def submit_link_transcription(
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
                                max_seconds=cap, audio_preview=audio_preview, harmony=harmony,
-                               keyboard_transpose=keyboard_transpose)
+                               keyboard_transpose=keyboard_transpose,
+                               start_seconds=start_seconds, end_seconds=end_seconds)
     return SubmitResponse(job_id=job_id)
+
+
+@router.post("/links/resolve", response_model=LinkInfoResponse,
+             summary="What a pasted link points at: title, artist, artwork and length")
+def resolve_link_info(body: LinkInfoRequest) -> LinkInfoResponse:
+    """Synchronous, in the threadpool (a plain ``def``): the stores' metadata endpoints and,
+    for a YouTube video, one bounded yt-dlp call answer within seconds, and the answer is
+    remembered so the job that follows asks for none of it again.  An unusable link is a
+    422 whose detail is the plain sentence to show."""
+    from app.ingest.links import LinkError, provider_of, resolve_link
+
+    url = (body.url or "").strip()
+    if len(url) > 2048 or provider_of(url) is None:
+        raise HTTPException(422, "url must be a YouTube video, Spotify track or Apple Music song link.")
+    try:
+        source = resolve_link(url)
+    except LinkError as ex:
+        raise HTTPException(422, str(ex))
+    return LinkInfoResponse(provider=source.provider, url=source.url, title=source.title, artist=source.artist,
+                            thumbnail_url=source.thumbnail_url, duration_seconds=source.duration)
 
 
 # A six-minute song at 400 BPM is 2400 beats; the harmoniser's cost is beats × notes, so both
