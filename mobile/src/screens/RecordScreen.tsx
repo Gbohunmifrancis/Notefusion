@@ -752,8 +752,9 @@ export function RecordScreen() {
     // what absorbs a large Font size or Display size setting instead of pushing the status text off
     // the bottom edge behind the tab bar.
     <Screen edges={["top"]} scroll contentStyle={styles.scrollContent}>
-      <View style={styles.container}>
+      <View style={[styles.container, isUploading && styles.containerBusy]}>
         {/* ── Top controls ────────────────────────────────────────────────── */}
+        {!isUploading && (
         <View style={styles.top}>
           <Text style={styles.screenTitle} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
             Listening
@@ -912,8 +913,10 @@ export function RecordScreen() {
             </ScrollView>
           </View>
         </View>
+        )}
 
         {/* ── Central record zone ─────────────────────────────────────────── */}
+        {!isUploading && (
         <View style={styles.centerZone}>
           {/* Ambient glow orb */}
           <Animated.View
@@ -1026,6 +1029,7 @@ export function RecordScreen() {
             ))}
           </View>
         </View>
+        )}
 
         {/* ── Voice-level meter ────────────────────────────────────────────── */}
         {/* Only shown while recording — a live traffic-light bar (red → amber →
@@ -1061,7 +1065,7 @@ export function RecordScreen() {
         )}
 
         {/* ── Status area ─────────────────────────────────────────────────── */}
-        <View style={styles.statusArea}>
+        <View style={[styles.statusArea, isUploading && styles.statusAreaBusy]}>
           {isUploading ? (
             /* The uploading card: the mark, the step the job is on, a real percentage — the
                upload's own until the server answers, the worker's after — and the steps still
@@ -1233,6 +1237,11 @@ const makeStyles = (c: Palette) =>
     alignItems: "center",
     justifyContent: "space-between",
     paddingBottom: 100,
+  },
+  /** While the recording is on its way the pickers and the disc step aside, and the uploading
+   *  card sits in the middle of the screen with nothing to scroll past. */
+  containerBusy: {
+    justifyContent: "center",
   },
 
   // ── Top ──────────────────────────────────────────────────────────────────
@@ -1590,6 +1599,10 @@ const makeStyles = (c: Palette) =>
     width: "100%",
     paddingHorizontal: spacing.xl,
     marginTop: spacing.xxxl + spacing.xl,
+  },
+  statusAreaBusy: {
+    marginTop: 0,
+    paddingHorizontal: spacing.md,
   },
 
   statusTitle: {

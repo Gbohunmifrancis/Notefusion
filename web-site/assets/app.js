@@ -947,7 +947,7 @@
     if (!following) {
       openProgress("Uploading your recording");
       setStage("uploading", "upload", null);
-      $("progress").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("progress").scrollIntoView({ behavior: "smooth", block: "center" });
     }
     function onProgress(fraction) {
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
@@ -1057,7 +1057,7 @@
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId;
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
-    $("progress").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("progress").scrollIntoView({ behavior: "smooth", block: "center" });
     poll();
   }
   function stopPolling() { if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; } }
