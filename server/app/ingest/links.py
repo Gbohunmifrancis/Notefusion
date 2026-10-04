@@ -533,7 +533,7 @@ def _youtube_info(url: str) -> str | None:
     with _ytdlp_args() as base:
         try:
             return _run_ytdlp([*base, "-f", _AUDIO_FORMAT, "-J", url], _INFO_TIMEOUT, "youtube").stdout
-        except _YtdlpFailed:
+        except (_YtdlpFailed, OSError):  # OSError: no yt-dlp on this machine; the link still resolves
             return None
 
 

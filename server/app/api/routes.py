@@ -4,6 +4,7 @@
 """
 
 import logging
+import math
 import tempfile
 from dataclasses import asdict
 from pathlib import Path
@@ -306,9 +307,10 @@ async def submit_link_transcription(
         if max_seconds < 10:
             raise HTTPException(422, "max_seconds must be at least 10.")
         cap = min(cap, float(max_seconds))
-    if start_seconds < 0:
+    # A form field parses "nan" and "inf" as floats; neither is a place in a song.
+    if not math.isfinite(start_seconds) or start_seconds < 0:
         raise HTTPException(422, "start_seconds must be 0 or more.")
-    if end_seconds is not None and end_seconds <= start_seconds:
+    if end_seconds is not None and (not math.isfinite(end_seconds) or end_seconds <= start_seconds):
         raise HTTPException(422, "end_seconds must be later than start_seconds.")
 
     queue = _get_queue(request)

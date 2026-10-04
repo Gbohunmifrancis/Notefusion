@@ -631,6 +631,16 @@ def test_resolve_link_reads_a_youtube_length_once_and_remembers_it(monkeypatch):
     assert len(calls) == 1 and len(asked) == 1
 
 
+def test_resolve_link_still_answers_without_yt_dlp_on_the_machine(monkeypatch):
+    def missing(args, **kwargs):
+        raise FileNotFoundError(args[0])
+
+    monkeypatch.setattr(links.subprocess, "run", missing)
+    monkeypatch.setattr(links, "_http_json", lambda url: {"title": "T", "author_name": "A"})
+    source = links.resolve_link(YOUTUBE)
+    assert source.duration is None and source.title == "T"
+
+
 def test_resolve_link_has_no_length_when_youtube_will_not_say(monkeypatch):
     calls = []
     monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp(calls, fail_on="-J", stderr=BOT))
@@ -871,6 +881,10 @@ def test_link_route_forwards_the_chosen_section(client):
         {"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "-1"},
         {"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "60", "end_seconds": "60"},
         {"url": "https://youtu.be/dQw4w9WgXcQ", "end_seconds": "0"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "nan"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "end_seconds": "nan"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "start_seconds": "inf"},
+        {"url": "https://youtu.be/dQw4w9WgXcQ", "end_seconds": "1e400"},
     ],
 )
 def test_link_route_rejects_bad_input(client, data):
