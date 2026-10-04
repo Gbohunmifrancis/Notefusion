@@ -1023,3 +1023,17 @@ def test_a_refusal_leaves_ytdlps_own_words_in_the_log(monkeypatch, tmp_path, cap
     record = next(r for r in caplog.records if "yt-dlp failed" in r.getMessage())
     assert "Sign in to confirm you're not a bot" in record.getMessage()
     assert "youtube" in record.getMessage()
+
+
+def test_the_logged_tail_never_carries_a_cookie_line():
+    stderr = ("WARNING: skipping cookie file entry due to invalid length 3: "
+              "'.youtube.com\tTRUE\t/\tTRUE\t1800000000\tSID\tg.a000secretvalue'\n"
+              "ERROR: [youtube] abc: Sign in to confirm you're not a bot\n")
+    tail = links._log_tail(stderr)
+    assert "secretvalue" not in tail and "SID" not in tail
+    assert "[cookie line withheld]" in tail and "Sign in to confirm" in tail
+    # A bare cookie row (the loader prints the offending line on its own too) is withheld as well.
+    assert "secret2" not in links._log_tail(".youtube.com\tTRUE\t/\tTRUE\t1800000000\tSSID\tsecret2")
+    # Mentioning cookies is not the same as echoing one: the bot message keeps its advice.
+    assert "--cookies-from-browser" in links._log_tail("ERROR: Sign in to confirm. Use --cookies-from-browser")
+    assert links._log_tail("") == "no output"

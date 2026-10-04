@@ -109,3 +109,88 @@ def test_the_real_model_runs_in_the_child(tmp_path):
     assert seen and seen[-1] == 1.0 and seen == sorted(seen)
     info = sf.info(str(out))
     assert info.samplerate == 22_050 and abs(info.duration - 2.0) < 0.05
+
+
+def test_a_chatty_child_cannot_deadlock_the_relay(monkeypatch, tmp_path):
+    """More than a pipe's worth of stderr before the first progress line: the parent must not
+    sit waiting for stdout while the child sits waiting for stderr to drain."""
+    monkeypatch.setattr(separate, "IN_PROCESS", False)
+    monkeypatch.setattr(separate, "SEPARATE_TIMEOUT", 20.0)
+    monkeypatch.setattr(separate, "_child_command", _child("""
+        import sys, soundfile as sf, numpy as np
+        sys.stderr.write("warning: something verbose\\n" * 12000)  # about 300 KB
+        sys.stderr.flush()
+        print("progress 1.0", flush=True)
+        sf.write(sys.argv[2], np.zeros(2205, dtype="float32"), 22050)
+    """))
+    import time
+    t0 = time.time()
+    out = separate.separate_file(tmp_path / "in.wav", tmp_path / "vocals.wav")
+    assert out.is_file() and time.time() - t0 < 15
+
+
+def test_a_failing_childs_last_words_survive_a_long_stderr(monkeypatch, tmp_path):
+    monkeypatch.setattr(separate, "IN_PROCESS", False)
+    monkeypatch.setattr(separate, "_child_command", _child("""
+        import sys
+        sys.stderr.write("noise\\n" * 20000)
+        sys.stderr.write("RuntimeError: the model file is unreadable\\n")
+        sys.exit(1)
+    """))
+    with pytest.raises(separate.SeparationFailed, match="exit 1.*model file is unreadable"):
+        separate.separate_file(tmp_path / "in.wav", tmp_path / "vocals.wav")
+
+
+def test_a_relay_error_does_not_leave_the_child_running(monkeypatch, tmp_path):
+    import subprocess
+
+    monkeypatch.setattr(separate, "IN_PROCESS", False)
+    monkeypatch.setattr(separate, "_child_command", _child("""
+        import time
+        print("progress 0.5", flush=True)
+        time.sleep(30)
+    """))
+
+    def explode(fraction):
+        raise RuntimeError("the job vanished")
+
+    with pytest.raises(RuntimeError, match="vanished"):
+        separate.separate_file(tmp_path / "in.wav", tmp_path / "vocals.wav", progress=explode)
+    # No child of ours is left sleeping: a process still running would show its sleep in the table.
+    mine = subprocess.run(["pgrep", "-f", "time.sleep(30)"], capture_output=True, text=True).stdout.split()
+    assert not mine, mine
+
+
+def test_an_exit_of_137_is_not_mistaken_for_the_kernel(monkeypatch, tmp_path):
+    monkeypatch.setattr(separate, "IN_PROCESS", False)
+    monkeypatch.setattr(separate, "_child_command", _child("import sys; sys.exit(137)"))
+    with pytest.raises(separate.SeparationFailed, match="exit 137"):
+        separate.separate_file(tmp_path / "in.wav", tmp_path / "vocals.wav")
+
+
+def test_a_spawn_the_box_cannot_afford_is_an_out_of_memory(monkeypatch, tmp_path):
+    import errno
+    import subprocess
+
+    monkeypatch.setattr(separate, "IN_PROCESS", False)
+
+    def no_fork(*a, **k):
+        raise OSError(errno.ENOMEM, "Cannot allocate memory")
+
+    monkeypatch.setattr(subprocess, "Popen", no_fork)
+    with pytest.raises(MemoryError, match="could not start"):
+        separate.separate_file(tmp_path / "in.wav", tmp_path / "vocals.wav")
+
+
+def test_a_spawn_that_fails_otherwise_is_a_separation_failure(monkeypatch, tmp_path):
+    import errno
+    import subprocess
+
+    monkeypatch.setattr(separate, "IN_PROCESS", False)
+
+    def no_python(*a, **k):
+        raise OSError(errno.ENOENT, "No such file or directory")
+
+    monkeypatch.setattr(subprocess, "Popen", no_python)
+    with pytest.raises(separate.SeparationFailed, match="could not start"):
+        separate.separate_file(tmp_path / "in.wav", tmp_path / "vocals.wav")

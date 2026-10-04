@@ -37,9 +37,11 @@ worker is back to its hundred megabytes.  ``NF_SEPARATE_IN_PROCESS=1`` restores 
 in-process run; ``NF_SEPARATE_TIMEOUT`` (seconds) bounds a child that never finishes.
 """
 
+import errno
 import os
 import subprocess
 import sys
+import tempfile
 import threading
 from pathlib import Path
 
@@ -70,9 +72,11 @@ COMPENSATION = 1.021
 DEFAULT_MODEL_PATH = "/app/models/UVR-MDX-NET-Voc_FT.onnx"
 # The model runs in a child process unless told otherwise (see "Where it runs" above).
 IN_PROCESS = os.getenv("NF_SEPARATE_IN_PROCESS", "0").strip().lower() in ("1", "true", "yes")
-# A child that is still running after this long is killed and the mixture transcribed instead:
-# six minutes of song take a minute or two here, and this is the ceiling, not a target.
-SEPARATE_TIMEOUT = float(os.getenv("NF_SEPARATE_TIMEOUT", "2700"))
+# A child that is still running after this long is killed and the mixture transcribed instead.
+# Six minutes of song take a minute or two on a box that is not swapping; twenty minutes is
+# the ceiling, not a target, and it is inside the API's own thirty-minute give-up — a child
+# holds _RUN_LOCK and the queue's one general worker for as long as it runs.
+SEPARATE_TIMEOUT = float(os.getenv("NF_SEPARATE_TIMEOUT", "1200"))
 
 
 class SeparationFailed(RuntimeError):
@@ -239,33 +243,50 @@ def _child_command(wav_path: Path, out_path: Path, backing_path: Path | None) ->
 def _separate_in_child(wav_path: Path, out_path: Path, progress, backing_path: Path | None) -> Path:
     """Run ``_separate_here`` in a fresh interpreter and relay its ``progress <fraction>`` lines."""
     root = Path(__file__).resolve().parents[2]  # the directory that holds the ``app`` package
-    proc = subprocess.Popen(_child_command(wav_path, out_path, backing_path), cwd=str(root),
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     timed_out = threading.Event()
+    # stderr goes to a file, not a pipe: the parent reads stdout a line at a time, and a child
+    # that filled a stderr pipe (a long traceback, a chatty library) would block on it while the
+    # parent waited for the next progress line — a deadlock held until the timeout.
+    with tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as err_file:
+        try:
+            proc = subprocess.Popen(_child_command(wav_path, out_path, backing_path), cwd=str(root),
+                                    stdout=subprocess.PIPE, stderr=err_file, text=True)
+        except OSError as ex:
+            # A box too deep in swap to fork is the very state this child exists for; the queue
+            # treats either of these as "transcribe the mixture", only the log line differs.
+            if ex.errno in (errno.ENOMEM, errno.EAGAIN):
+                raise MemoryError(f"could not start the separation: {ex.strerror}") from ex
+            raise SeparationFailed(f"could not start the separation: {ex.strerror or ex}") from ex
 
-    def kill():
-        timed_out.set()
-        proc.kill()
+        def kill():
+            timed_out.set()
+            proc.kill()
 
-    timer = threading.Timer(SEPARATE_TIMEOUT, kill)
-    timer.start()
-    try:
-        assert proc.stdout is not None
-        for line in proc.stdout:
-            if line.startswith("progress "):
-                try:
-                    progress(min(1.0, max(0.0, float(line.split()[1]))))
-                except (ValueError, IndexError):
-                    pass
-        _out, err = proc.communicate()
-    finally:
-        timer.cancel()
+        timer = threading.Timer(SEPARATE_TIMEOUT, kill)
+        timer.start()
+        try:
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                if line.startswith("progress "):
+                    try:
+                        progress(min(1.0, max(0.0, float(line.split()[1]))))
+                    except (ValueError, IndexError):
+                        pass
+            proc.wait()
+        finally:
+            timer.cancel()
+            if proc.poll() is None:  # the relay raised: the child does not go on alone
+                proc.kill()
+                proc.wait()
+            proc.stdout.close()
+        err_file.seek(0)
+        err = err_file.read()
     if timed_out.is_set():
         raise SeparationFailed(f"vocal separation gave up after {SEPARATE_TIMEOUT:.0f}s")
     if proc.returncode != 0:
-        tail = " | ".join(l.strip() for l in (err or "").strip().splitlines()[-3:]) or "no output"
-        # -9 is the OOM killer (or our own kill, handled above); 137 the same from a shell.
-        if proc.returncode in (-9, 137) or "MemoryError" in (err or ""):
+        tail = " | ".join(l.strip() for l in err.strip().splitlines()[-3:]) or "no output"
+        # -9 is the kernel's OOM killer (our own kill is handled above).
+        if proc.returncode == -9 or "MemoryError" in err:
             raise MemoryError(f"vocal separation ran out of memory: {tail}")
         raise SeparationFailed(f"vocal separation failed (exit {proc.returncode}): {tail}")
     if not Path(out_path).is_file():
