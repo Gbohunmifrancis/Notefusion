@@ -1,5 +1,6 @@
 """Linked-song ingest: URL parsing, metadata shaping, the link job and its route."""
 
+import shutil
 import time
 from pathlib import Path
 
@@ -409,6 +410,8 @@ def _dominant_hz(path: Path) -> float:
     return float(np.fft.rfftfreq(len(mono), 1 / sr)[spectrum.argmax()])
 
 
+@pytest.mark.skipif(shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None,
+                    reason="the cut is made by the real ffmpeg")
 def test_a_whole_download_is_cut_from_the_start_of_the_section_by_ffmpeg(monkeypatch, tmp_path):
     """The safety net: yt-dlp hands back the whole song despite the section, and ffmpeg
     (the real one) cuts the chosen window out of it."""
@@ -435,6 +438,8 @@ def test_a_whole_download_is_cut_from_the_start_of_the_section_by_ffmpeg(monkeyp
     assert abs(_dominant_hz(fetched.path) - 440) < 2  # the last four seconds, not the first
 
 
+@pytest.mark.skipif(shutil.which("ffmpeg") is None or shutil.which("ffprobe") is None,
+                    reason="the cut is made by the real ffmpeg")
 def test_a_download_that_honoured_the_section_is_not_cut_again(monkeypatch, tmp_path):
     real_run = links.subprocess.run
     calls = []
