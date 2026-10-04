@@ -1,5 +1,5 @@
-/* The try-it-free box on the home page: paste a link, pick a file or record up to thirty
- * seconds, with no account. The API answers with a preview job; the result opens in the web
+/* The try-it-free box on the home page and in the web app: paste a link, pick a file or record
+ * up to thirty seconds, with no account. The API answers with a preview job; the result opens in the web
  * app as a guest (/app/?preview=<id>), where saving, parts and downloads ask for sign-up.
  * Plain script, no build step. */
 (function () {
@@ -20,9 +20,6 @@
   var urlInput = $("try-url"), submit = $("try-submit"), file = $("try-file"), record = $("try-record"), status = $("try-status");
   var links = window.NfSongLink;
 
-  // The web app carries an icon sprite; the home page does not, so the label is text there.
-  var icons = !!document.getElementById("i-mic");
-  function recLabel(icon, text) { record.innerHTML = (icons ? '<svg class="ic"><use href="#i-' + icon + '"/></svg>' : "") + text; }
   function say(text, kind) { status.textContent = text || ""; status.className = "try-status" + (kind ? " try-status-" + kind : ""); }
   var busyNow = false;
   function busy(on) { busyNow = on; submit.disabled = on || info.pending; record.disabled = on; file.disabled = on; }
@@ -124,55 +121,21 @@
     send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
   });
 
-  var recorder = null, chunks = [], timer = null, stopAt = null, started = 0;
-  function stopRecording() {
-    if (timer) clearInterval(timer); if (stopAt) clearTimeout(stopAt); timer = stopAt = null;
-    if (recorder && recorder.state !== "inactive") recorder.stop();
-    recLabel("mic", "Record a tune"); record.classList.remove("is-recording"); document.body.classList.remove("is-recording");
-  }
-  /** The take, to listen back to; nothing is sent until "Transcribe it" is pressed. */
-  function offerTake(blob, type, seconds) {
-    busy(false);
-    say("Recorded " + Math.round(seconds) + " seconds. Listen back, then send it or try again.", "info");
-    var url = URL.createObjectURL(blob);
-    var audio = document.createElement("audio"); audio.controls = true; audio.src = url; audio.className = "try-take";
-    var row = document.createElement("span"); row.className = "try-take-actions";
-    var go = document.createElement("button"); go.type = "button"; go.className = "btn btn-primary"; go.textContent = "Transcribe it";
-    var again = document.createElement("button"); again.type = "button"; again.className = "btn btn-ghost"; again.textContent = "Record again";
-    row.appendChild(go); row.appendChild(again); status.appendChild(audio); status.appendChild(row);
-    go.addEventListener("click", function () {
-      URL.revokeObjectURL(url);
-      var fd = new FormData(); fd.append("audio", blob, type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm"); fd.append("audioPreview", "false");
-      busy(true); say("Transcribing your tune…");
-      send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
-    });
-    again.addEventListener("click", function () { URL.revokeObjectURL(url); say(""); record.click(); });
-  }
-
+  // "Record a tune" opens the same recording pop-up as the signed-in studio (assets/recorder.js):
+  // the level meter and clock while the microphone is open, then the take to listen back to.
+  // Nothing is sent until "Transcribe this take" is pressed.
   record.addEventListener("click", function () {
-    if (recorder && recorder.state === "recording") { stopRecording(); return; }
-    if (!navigator.mediaDevices || !window.MediaRecorder) { say("This browser cannot record. Paste a link or pick a file instead.", "error"); return; }
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
-      chunks = [];
-      var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
-      recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
-      recorder.addEventListener("dataavailable", function (ev) { if (ev.data && ev.data.size) chunks.push(ev.data); });
-      recorder.addEventListener("stop", function () {
-        stream.getTracks().forEach(function (t) { t.stop(); });
-        var type = recorder.mimeType || mime || "audio/webm";
-        var blob = new Blob(chunks, { type: type });
-        if (blob.size < 2000) { say("That was too short to hear. Try again and hum for a few seconds.", "error"); busy(false); return; }
-        offerTake(blob, type, (Date.now() - started) / 1000);
-      });
-      recorder.start();
-      started = Date.now(); document.body.classList.add("is-recording");
-      submit.disabled = true; file.disabled = true;
-      timer = setInterval(function () {
-        var left = Math.max(0, MAX_RECORD_SEC - Math.floor((Date.now() - started) / 1000));
-        recLabel("stop", "Stop (" + left + "s)"); record.classList.add("is-recording");
-        say("Recording… hum or sing the tune, then press Stop.");
-      }, 250);
-      stopAt = setTimeout(stopRecording, MAX_RECORD_SEC * 1000);
-    }).catch(function () { say("Microphone access is needed to record. Paste a link or pick a file instead.", "error"); });
+    if (!window.NfRecorder) { say("Recording is not available right now. Paste a link or pick a file instead.", "error"); return; }
+    say("");
+    window.NfRecorder.open({
+      maxSeconds: MAX_RECORD_SEC,
+      track: track,
+      onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
+      onTake: function (blob, name) {
+        var fd = new FormData(); fd.append("audio", blob, name); fd.append("audioPreview", "false");
+        busy(true); say("Transcribing your tune\u2026");
+        send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
+      }
+    });
   });
 })();

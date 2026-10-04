@@ -137,7 +137,6 @@
     var first = (name || "").trim().split(/\s+/)[0];
     return first ? part + ", " + first : part;
   }
-  function recording(on) { document.body.classList.toggle("is-recording", !!on); }
   /**
    * The account's photo, or the initial of the name when there is none. The initial and the brand
    * gradient stay until the photo has actually loaded, so a link that fails never leaves an empty
@@ -915,98 +914,18 @@
   })();
 
   // ── Record a tune in the browser ─────────────────────────────────────────
-  // The microphone opens into a panel that shows what it hears (a level meter and the
-  // clock), and nothing is sent until the take has been listened to and approved.
-  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, MAX_SEC: 180, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false };
-  var meterBars = [];
-  (function () { var m = $("rec-meter"); for (var i = 0; i < 28; i++) { var bar = document.createElement("span"); m.appendChild(bar); meterBars.push(bar); } })();
-  function fmtClock(sec) { sec = Math.max(0, Math.floor(sec)); return Math.floor(sec / 60) + ":" + String(sec % 60).padStart(2, "0"); }
-  function recShow(live) { show($("rec-panel")); if (live) { show($("rec-live")); hide($("rec-review")); } else { hide($("rec-live")); show($("rec-review")); } }
-  function recClose() {
-    hide($("rec-panel"));
-    var audio = $("rec-audio"); audio.pause(); audio.removeAttribute("src");
-    if (rec.url) { URL.revokeObjectURL(rec.url); rec.url = null; }
-    rec.blob = null;
-  }
-  function recTeardown() {
-    if (rec.timer) clearInterval(rec.timer); if (rec.stopAt) clearTimeout(rec.stopAt); rec.timer = rec.stopAt = null;
-    if (rec.raf) cancelAnimationFrame(rec.raf); rec.raf = null;
-    if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
-    if (rec.audioCtx) { rec.audioCtx.close().catch(function () { /* already closed */ }); rec.audioCtx = null; rec.analyser = null; }
-    label($("rec-btn"), "mic", "Record a tune"); $("rec-btn").classList.remove("is-recording"); recording(false);
-  }
-  function stopRecording() {
-    if (rec.recorder && rec.recorder.state !== "inactive") rec.recorder.stop(); // its "stop" event finishes the job
-    else recTeardown();
-  }
-  function drawMeter() {
-    if (!rec.analyser) return;
-    var data = new Uint8Array(rec.analyser.frequencyBinCount);
-    rec.analyser.getByteFrequencyData(data);
-    var step = Math.floor(data.length / meterBars.length) || 1;
-    meterBars.forEach(function (bar, i) {
-      var v = 0;
-      for (var j = 0; j < step; j++) v = Math.max(v, data[i * step + j] || 0);
-      bar.style.height = Math.max(8, Math.round(v / 255 * 100)) + "%";
-    });
-    rec.raf = requestAnimationFrame(drawMeter);
-  }
-  function startRecording() {
-    if (!navigator.mediaDevices || !window.MediaRecorder) { $("rec-status").textContent = "This browser cannot record; upload a file instead."; return; }
-    rec.discard = false;
-    track("Recording started");
-    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
-      rec.stream = stream; rec.chunks = [];
-      var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
-      rec.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
-      rec.recorder.addEventListener("dataavailable", function (ev) { if (ev.data && ev.data.size) rec.chunks.push(ev.data); });
-      rec.recorder.addEventListener("stop", function () {
-        var type = rec.recorder.mimeType || mime || "audio/webm";
-        var seconds = (Date.now() - rec.started) / 1000;
-        recTeardown();
-        if (rec.discard) { recClose(); return; }
-        var blob = new Blob(rec.chunks, { type: type });
-        if (blob.size < 2000) { recClose(); $("rec-status").textContent = "That was too short to hear. Hum for a few seconds."; sfx.play("error"); return; }
-        rec.blob = blob; rec.name = type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm";
-        rec.url = URL.createObjectURL(blob); $("rec-audio").src = rec.url;
-        $("rec-length").textContent = fmtClock(seconds);
-        sfx.play("stop");
-        recShow(false);
-      });
-      try {
-        var AC = window.AudioContext || window.webkitAudioContext;
-        rec.audioCtx = new AC();
-        rec.analyser = rec.audioCtx.createAnalyser(); rec.analyser.fftSize = 256; rec.analyser.smoothingTimeConstant = 0.6;
-        rec.audioCtx.createMediaStreamSource(stream).connect(rec.analyser);
-        drawMeter();
-      } catch (e) { /* no meter; the clock still runs */ }
-      rec.recorder.start(250);
-      rec.started = Date.now(); recording(true); sfx.play("start");
-      $("rec-elapsed").textContent = "0:00";
-      label($("rec-btn"), "stop", "Recording…"); $("rec-btn").classList.add("is-recording");
-      $("rec-status").textContent = "";
-      recShow(true);
-      rec.timer = setInterval(function () { $("rec-elapsed").textContent = fmtClock((Date.now() - rec.started) / 1000); }, 250);
-      rec.stopAt = setTimeout(stopRecording, rec.MAX_SEC * 1000);
-    }).catch(function () { $("rec-status").textContent = "Microphone access is needed to record. Upload a file instead."; sfx.play("error"); });
-  }
+  // The same recording pop-up as the home page (assets/recorder.js): the level meter and the
+  // clock while the microphone is open, then the take to listen back to. Nothing is sent
+  // until it has been approved.
   $("rec-btn").addEventListener("click", function () {
-    if (rec.recorder && rec.recorder.state === "recording") { recShow(true); return; }
-    startRecording();
-  });
-  $("rec-stop").addEventListener("click", stopRecording);
-  $("rec-cancel").addEventListener("click", function () {
-    rec.discard = true;
-    if (rec.recorder && rec.recorder.state === "recording") stopRecording(); else { recTeardown(); recClose(); }
-  });
-  $("rec-discard").addEventListener("click", recClose);
-  $("rec-again").addEventListener("click", function () { recClose(); startRecording(); });
-  $("rec-use").addEventListener("click", function () {
-    if (!rec.blob) return;
-    var blob = rec.blob, name = rec.name;
-    recClose();
-    track("Recording sent");
-    submitAudio(blob, name, true);
+    $("rec-status").textContent = "";
+    window.NfRecorder.open({
+      maxSeconds: guest ? 30 : 180, // a guest gets the same thirty seconds as on the home page
+      track: track,
+      sounds: function (name) { sfx.play(name); },
+      onError: function (text, kind) { $("rec-status").textContent = kind === "short" ? text : text + " Upload a file instead."; },
+      onTake: function (blob, name) { submitAudio(blob, name, true); }
+    });
   });
 
   function explain(err) {

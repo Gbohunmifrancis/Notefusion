@@ -317,11 +317,7 @@ body { background: var(--nf-canvas); color: var(--nf-copy); font-family: var(--f
   70% { transform: scale(1); }
 }
 body.is-recording .brand-icon { animation: nf-heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
-.try-alt .btn.is-recording { background: #1e3a8a; border-color: #1e3a8a; color: #fff; }
 @media (prefers-reduced-motion: reduce) { body.is-recording .brand-icon { animation: none; } }
 
 
 /* The try box's recorded take, offered back before it is sent. */
-.try-status audio.try-take { display: block; width: 100%; margin: 10px 0; }
-.try-take-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-.try-take-actions .btn { padding: 10px 16px; font-size: 14px; }
