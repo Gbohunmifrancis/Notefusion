@@ -597,21 +597,31 @@ def _spell_tone(root_name: str, pc: int, interval: int) -> str:
     return _PLAIN[pc] if "b" in root_name[1:] else _PLAIN_SHARP[pc]
 
 
-def _doh_name(tonic_name: str, mode: str) -> str:
-    """Doh's letter name for a key written like "Bb major" / "D minor": the tonic, or for
-    minor the relative major's tonic, spelled from the tonic's letter."""
+def _key_pitch_class(tonic_name: str) -> int:
+    """"Bb", "B-", "F#" -> pitch class."""
     tonic_name = tonic_name.replace("-", "b")
+    return (_LETTER_PC[tonic_name[0].upper()] + tonic_name.count("#") - tonic_name[1:].count("b")) % 12
+
+
+def _doh_name(tonic_pc: int, mode: str) -> str:
+    """Doh's letter name for a key: the tonic's fewest-accidentals spelling for major, and for
+    minor the relative major's tonic, spelled from that tonic's letter.
+
+    From the pitch class alone, never from how the key happened to be spelled, because C#'s
+    ``ChordSpeller.DohName`` names a saved sheet's chords the same way: a key the melody
+    pipeline spells "C# major" or "Ab minor" still gets its chords in Db and B.
+    """
+    tonic = tonic_name(tonic_pc, mode).replace("-", "b")
     if mode == "major":
-        return tonic_name
-    tonic_pc = (_LETTER_PC[tonic_name[0].upper()] + tonic_name.count("#") - tonic_name[1:].count("b")) % 12
-    letter = _LETTERS[(_LETTERS.index(tonic_name[0].upper()) + 2) % 7]
+        return tonic
+    letter = _LETTERS[(_LETTERS.index(tonic[0]) + 2) % 7]
     return _name(letter, (tonic_pc + 3) % 12) or _PLAIN[(tonic_pc + 3) % 12]
 
 
 def label(spans: Iterable[ChordSpan], tonic_name: str, mode: str) -> list[Chord]:
     """Spell and name every span in the key ``tonic_name`` (e.g. "Bb", "F#", "E-") ``mode``."""
-    doh_name = _doh_name(tonic_name, mode)
-    doh = (_LETTER_PC[doh_name[0]] + doh_name.count("#") - doh_name[1:].count("b")) % 12
+    doh_name = _doh_name(_key_pitch_class(tonic_name), mode)
+    doh = _key_pitch_class(doh_name)
     out: list[Chord] = []
     for s in spans:
         semis = (s.root - doh) % 12

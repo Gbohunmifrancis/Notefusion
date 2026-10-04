@@ -96,6 +96,20 @@ def test_key_names_avoid_seven_accidentals():
     assert chords.tonic_name(6, "major") == "F#"
 
 
+def test_a_key_is_spelled_from_its_pitch_class_however_it_was_named():
+    # The melody pipeline spells pitch class 1 "C# major" and 8 "A- minor"; C#'s ChordSpeller,
+    # which names a saved sheet's chords, knows only the pitch class and spells Db and G#
+    # minor (doh B).  The worker must name the chords the same way or a sheet changes its
+    # symbols the moment it is saved.
+    spans = _spans(("Db", 1), ("F", 1), ("Ab7", 1), ("Bbm", 1), ("Cdim", 1))
+    db_major = [("Db", "d"), ("F", "m"), ("Ab7", "s"), ("Bbm", "l"), ("Cdim", "t")]
+    assert _named(spans, "C#") == db_major
+    assert _named(spans, "D-") == db_major
+    gs_minor = [("C#", "r"), ("F", "sa"), ("G#7", "l"), ("A#m", "t"), ("B#dim", "de")]
+    assert _named(spans, "A-", "minor") == gs_minor
+    assert _named(spans, "G#", "minor") == gs_minor
+
+
 # ── Decoding and key ──────────────────────────────────────────────────────────
 
 
