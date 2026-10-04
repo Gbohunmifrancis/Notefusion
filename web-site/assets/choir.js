@@ -169,100 +169,79 @@
   }
 
   // ── Piano voice ──────────────────────────────────────────────────────────
-  // The same softly-struck piano as mobile/src/lib/synth.ts and the server's
-  // _synthesize_audio_preview: a struck-string partial stack with a hammer
-  // transient, per-partial damping, a double decay, unison beating, and a damper
-  // release that rings past the notated end. Rendered offline into an AudioBuffer
-  // per (pitch, length) and played back through a soundboard (the same comb
-  // network, as a convolution) and a limiter. Keep the three in lock-step — the
-  // constants here are the mobile file's, and the comments on what each one is
-  // for live there.
+  // Recorded piano, the same 17 Salamander Grand soft-layer notes mobile/src/lib/synth.ts
+  // plays (scripts/build-piano-samples.py makes both packs from one source; keep the two
+  // players in lock-step). A note is the nearest sample (never more than a semitone away)
+  // run at the rate that puts it on pitch — the interval to the sample plus the cents in
+  // tuning.json, which undo the piano's stretch tuning — held until note-off, then let go
+  // by the damper: an exponential fade with an 80 ms time constant inside a 0.35 s
+  // release that rings past the notated end. Played through the same soundboard as the
+  // mobile synth and a soft limiter that only a pile-up of voices can reach.
   var SR = 22050;
-  var STRIKE_POS = 1 / 7.6;
-  var BODY_ROLLOFF_C4 = 1.05, ROLLOFF_TILT = 1 / 120, ROLLOFF_MIN = 0.85, ROLLOFF_MAX = 1.45;
-  var BRIGHT_CEILING_HZ = 3000;
-  var MAX_PARTIALS = 48, PARTIAL_FLOOR_DB = -60;
-  var INHARMONICITY = 1.1e-4;
-  var STRIKE_GAIN = 0.11, STRIKE_ROLLOFF = 0.35, STRIKE_TAU_SEC = 0.014, STRIKE_SPAN_SEC = 10 * STRIKE_TAU_SEC;
-  var DAMP_K = 0.14, DAMP_EXP = 1.15;
-  var STRING_DECAY_SEC_C4 = 2.4, STRING_DECAY_MIN_SEC = 0.55, STRING_DECAY_MAX_SEC = 4.0;
-  var TAIL_MIX = 0.22, TAIL_FACTOR = 3.2;
-  var DETUNE_CENTS = 2.0, UNISON_DEPTH = 0.25, UNISON_KNEE = 8, UNISON_MIN_MIDI = 52;
-  var ATTACK_SEC = 0.008, RELEASE_SEC = 0.35, PEAK_TARGET = 0.7, RENORM_EVERY = 4096;
+  var SAMPLE_NAMES = ["C2", "Ds2", "Fs2", "A2", "C3", "Ds3", "Fs3", "A3", "C4", "Ds4", "Fs4", "A4", "C5", "Ds5", "Fs5", "A5", "C6"];
+  var SAMPLE_MIDI_LOW = 36, SAMPLE_STEP = 3;
+  var PIANO_URL = "/assets/piano/";
+  var RELEASE_SEC = 0.35, DAMPER_TAU_SEC = 0.08, MIN_NOTE_SEC = 0.04;
+  /** Decoded samples are trimmed to this onset in case a decoder keeps the MP3 encoder delay. */
+  var ONSET_LEVEL = 0.01, ONSET_BACKOFF_SEC = 0.002;
   var BOARD_DELAYS_SEC = [0.0297, 0.0371, 0.0411], BOARD_RT60_SEC = 0.55, BOARD_DAMP = 0.35;
   var BOARD_ALLPASS_SEC = 0.0051, BOARD_ALLPASS_GAIN = 0.5, BOARD_WET = 0.07;
-  var MIN_NOTE_SEC = 0.04;
+  /**
+   * The safety stage is the mobile synth's `softLimit`: identity up to LIMIT_KNEE, tanh
+   * over the rest, bounded below 1 for any input — as a WaveShaper curve, memoryless, so
+   * a note under the knee comes out exactly as it went in. Not a DynamicsCompressorNode:
+   * measured in Chromium, one with threshold -3 dB and no knee still took 3 dB off a
+   * single note peaking at -8 dBFS and softened its attack, and at threshold 0 dB it
+   * still took 5 dB, so there is no setting of it that leaves a note alone.
+   */
+  var LIMIT_KNEE = 0.9;
+  /** The curve is drawn for inputs up to ±LIMIT_RANGE (a pile-up of voices), scaled down into the shaper's ±1. */
+  var LIMIT_RANGE = 2, LIMIT_CURVE_POINTS = 4097;
 
-  function stringDecaySec(midi) { return Math.min(Math.max(STRING_DECAY_SEC_C4 * Math.pow(2, (60 - midi) / 24), STRING_DECAY_MIN_SEC), STRING_DECAY_MAX_SEC); }
-  function bodyRolloff(midi) { return Math.min(Math.max(BODY_ROLLOFF_C4 + (midi - 60) * ROLLOFF_TILT, ROLLOFF_MIN), ROLLOFF_MAX); }
-  function smoothRamp(i, n) { return 0.5 - 0.5 * Math.cos((Math.PI * i) / (n - 1)); }
-
-  /** One note at unit peak, `lengthSamples` of body plus the ring-out, at 22 050 Hz. */
-  function renderPianoNote(midi, lengthSamples) {
-    var tailSamples = Math.round(RELEASE_SEC * SR);
-    var total = lengthSamples + tailSamples;
-    var out = new Float64Array(total);
-    var f0 = 440 * Math.pow(2, (midi - 69) / 12), nyquist = 0.5 * SR;
-    var tau0 = stringDecaySec(midi), rolloff = bodyRolloff(midi);
-    var unison = midi >= UNISON_MIN_MIDI;
-    var detuneHz = f0 * (Math.pow(2, DETUNE_CENTS / 1200) - 1);
-    var fks = [], bodyAmps = [], strikeAmps = [], loudest = 0, k;
-    for (k = 1; k <= MAX_PARTIALS; k++) {
-      var fk = f0 * k * (1 + INHARMONICITY * k * k);
-      if (fk >= nyquist) break;
-      var node = Math.abs(Math.sin(k * Math.PI * STRIKE_POS));
-      var tilt = 1 / Math.pow(1 + Math.pow(fk / BRIGHT_CEILING_HZ, 2), 2);
-      var bodyAmp = (node * tilt) / Math.pow(k, rolloff);
-      var strikeAmp = (STRIKE_GAIN * node * tilt) / Math.pow(k, STRIKE_ROLLOFF);
-      fks.push(fk); bodyAmps.push(bodyAmp); strikeAmps.push(strikeAmp);
-      loudest = Math.max(loudest, bodyAmp + strikeAmp);
+  /** The sample files, fetched once per page; decoding is per context (it resamples to the context's rate). */
+  var pianoBytes = null;
+  var pianoDecoded = {}; // sampleRate -> Promise of [{midi, cents, buffer}], with .samples once resolved
+  function fetchPiano() {
+    if (!pianoBytes) {
+      pianoBytes = Promise.all([fetch(PIANO_URL + "tuning.json").then(function (r) { if (!r.ok) throw new Error("tuning"); return r.json(); })].concat(
+        SAMPLE_NAMES.map(function (name) { return fetch(PIANO_URL + name + ".mp3").then(function (r) { if (!r.ok) throw new Error(name); return r.arrayBuffer(); }); })
+      )).catch(function (err) { pianoBytes = null; throw err; });
     }
-    var floor = loudest * Math.pow(10, PARTIAL_FLOOR_DB / 20);
-    var strikeSpan = Math.min(total, Math.ceil(STRIKE_SPAN_SEC * SR));
-    var rStrike = Math.exp(-1 / (STRIKE_TAU_SEC * SR));
-    for (var idx = 0; idx < fks.length; idx++) {
-      k = idx + 1;
-      var bAmp = bodyAmps[idx], sAmp = strikeAmps[idx];
-      if (bAmp + sAmp < floor) continue;
-      var tauK = tau0 / (1 + DAMP_K * Math.pow(k, DAMP_EXP));
-      var rFast = Math.exp(-1 / (tauK * SR)), rSlow = Math.exp(-1 / (tauK * TAIL_FACTOR * SR));
-      var phase = 2 * Math.PI * ((midi * 0.5698402909 + k * 0.618033988) % 1);
-      var omega = (2 * Math.PI * fks[idx]) / SR, beat = (2 * Math.PI * k * detuneHz) / SR;
-      var depth = unison ? UNISON_DEPTH * Math.min(1, k / UNISON_KNEE) : 0;
-      var cw = Math.cos(omega), sw = Math.sin(omega), zr = Math.cos(phase), zi = Math.sin(phase);
-      var bw = Math.cos(beat), bs = Math.sin(beat), mr = 1, mi = 0, i, g;
-      if (sAmp >= floor) {
-        var sr = Math.cos(phase), si = Math.sin(phase), e = sAmp;
-        for (i = 0; i < strikeSpan; i++) {
-          out[i] += e * si;
-          var nr = sr * cw - si * sw; si = sr * sw + si * cw; sr = nr;
-          e *= rStrike;
-          if ((i & (RENORM_EVERY - 1)) === RENORM_EVERY - 1) { g = 1 / Math.hypot(sr, si); sr *= g; si *= g; }
-        }
-      }
-      var eFast = 1 - TAIL_MIX, eSlow = TAIL_MIX;
-      for (i = 0; i < total; i++) {
-        out[i] += bAmp * (eFast + eSlow) * (1 + depth * mr) * zi;
-        var nzr = zr * cw - zi * sw; zi = zr * sw + zi * cw; zr = nzr;
-        eFast *= rFast; eSlow *= rSlow;
-        if (unison) { var nmr = mr * bw - mi * bs; mi = mr * bs + mi * bw; mr = nmr; }
-        if ((i & (RENORM_EVERY - 1)) === RENORM_EVERY - 1) {
-          g = 1 / Math.hypot(zr, zi); zr *= g; zi *= g;
-          if (unison) { var h = 1 / Math.hypot(mr, mi); mr *= h; mi *= h; }
-        }
-      }
+    return pianoBytes;
+  }
+  function trimOnset(ctx, buf) {
+    var x = buf.getChannelData(0), i = 0;
+    while (i < x.length && Math.abs(x[i]) < ONSET_LEVEL) i++;
+    var cut = Math.max(0, i - Math.round(ONSET_BACKOFF_SEC * buf.sampleRate));
+    if (cut === 0) return buf;
+    var out = ctx.createBuffer(1, x.length - cut, buf.sampleRate);
+    out.getChannelData(0).set(x.subarray(cut));
+    return out;
+  }
+  /**
+   * Loads the piano for `ctx`: resolves once every note can be played. Start it early
+   * (the rehearsal player does, when a sheet is loaded) so the first play is not late.
+   */
+  function loadPiano(ctx) {
+    var rate = ctx.sampleRate;
+    if (!pianoDecoded[rate]) {
+      var p = fetchPiano().then(function (parts) {
+        var tuning = parts[0].centsSharp || {};
+        return Promise.all(SAMPLE_NAMES.map(function (name, i) {
+          return ctx.decodeAudioData(parts[i + 1].slice(0)).then(function (buf) {
+            return { midi: SAMPLE_MIDI_LOW + i * SAMPLE_STEP, cents: Number(tuning[name]) || 0, buffer: trimOnset(ctx, buf) };
+          });
+        }));
+      });
+      p.then(function (samples) { p.samples = samples; }, function () { delete pianoDecoded[rate]; });
+      pianoDecoded[rate] = p;
     }
-    var attack = Math.min(Math.floor(ATTACK_SEC * SR), total >> 2), peak = 0;
-    for (i = 0; i < total; i++) {
-      if (attack > 1 && i < attack) out[i] *= smoothRamp(i, attack);
-      var fromEnd = total - 1 - i;
-      if (tailSamples > 1 && fromEnd < tailSamples) out[i] *= smoothRamp(fromEnd, tailSamples);
-      var a = Math.abs(out[i]); if (a > peak) peak = a;
-    }
-    var f32 = new Float32Array(total);
-    var scale = peak > 0 ? PEAK_TARGET / peak : 0;
-    for (i = 0; i < total; i++) f32[i] = out[i] * scale;
-    return f32;
+    return pianoDecoded[rate];
+  }
+  /** The decoded samples for `ctx`, or null until `loadPiano(ctx)` has resolved. */
+  function pianoSamples(ctx) {
+    var p = pianoDecoded[ctx.sampleRate];
+    return p && p.samples ? p.samples : null;
   }
 
   /**
@@ -289,48 +268,53 @@
     return out;
   }
 
+  function softLimitCurve() {
+    var curve = new Float32Array(LIMIT_CURVE_POINTS), span = 1 - LIMIT_KNEE;
+    for (var i = 0; i < LIMIT_CURVE_POINTS; i++) {
+      var v = ((2 * i) / (LIMIT_CURVE_POINTS - 1) - 1) * LIMIT_RANGE, a = Math.abs(v);
+      curve[i] = a <= LIMIT_KNEE ? v : Math.sign(v) * (LIMIT_KNEE + span * Math.tanh((a - LIMIT_KNEE) / span));
+    }
+    return curve;
+  }
+
   /**
-   * The output chain every piano note plays through: dry + soundboard into a limiter
-   * into the destination. Returns the node to connect notes to.
+   * The output chain every piano note plays through: dry + soundboard into the soft
+   * limiter into the destination. Returns the node to connect notes to. The loudest
+   * single note peaks at 0.72, under the knee, so the limiter is only ever touched by
+   * several voices landing together, and a note's own attack and decay reach the ear
+   * as recorded — the old -10 dB / 10 dB-knee compressor caught every note on its own
+   * and swelled it back up as it released, which is what made the piano sound held.
    */
   function createPianoOutput(ctx) {
     var input = ctx.createGain();
-    // A DynamicsCompressorNode is the only limiter Web Audio has, and it adds make-up
-    // gain of its own that cannot be switched off, so a four-voice chord came out of
-    // it at 1.03 and clipped at the destination. The trim after it is what keeps the
-    // ceiling where the offline renders put theirs (0.8).
-    var limiter = ctx.createDynamicsCompressor();
-    limiter.threshold.value = -10; limiter.knee.value = 10; limiter.ratio.value = 20;
-    limiter.attack.value = 0.002; limiter.release.value = 0.12;
-    var trim = ctx.createGain(); trim.gain.value = 0.7;
+    var scale = ctx.createGain(); scale.gain.value = 1 / LIMIT_RANGE;
+    var limiter = ctx.createWaveShaper(); limiter.curve = softLimitCurve(); limiter.oversample = "2x";
     var board = ctx.createConvolver();
     var ir = boardImpulse(ctx.sampleRate), buf = ctx.createBuffer(1, ir.length, ctx.sampleRate);
     buf.getChannelData(0).set(ir);
     board.normalize = false; board.buffer = buf;
-    input.connect(limiter);
-    input.connect(board); board.connect(limiter);
-    limiter.connect(trim); trim.connect(ctx.destination);
+    input.connect(scale);
+    input.connect(board); board.connect(scale);
+    scale.connect(limiter); limiter.connect(ctx.destination);
     return input;
   }
 
-  var noteCache = {}, noteCacheSize = 0;
-  function pianoBuffer(ctx, midi, durSec) {
-    var len = Math.max(Math.floor(durSec * SR), Math.floor(MIN_NOTE_SEC * SR));
-    var key = midi + ":" + len, buf = noteCache[key];
-    if (!buf) {
-      if (noteCacheSize > 160) { noteCache = {}; noteCacheSize = 0; }
-      var pcm = renderPianoNote(midi, len);
-      buf = ctx.createBuffer(1, pcm.length, SR);
-      buf.getChannelData(0).set(pcm);
-      noteCache[key] = buf; noteCacheSize++;
-    }
-    return buf;
-  }
-  /** Plays one piano note of `durSec` (plus its ring-out) at `when`, at `gain`, into `dest`. */
+  /**
+   * Plays one piano note of `durSec` (plus its ring-out) at `when`, at `gain`, into
+   * `dest`. Needs `loadPiano(ctx)` to have resolved; before that it plays nothing and
+   * returns null.
+   */
   function pianoNote(ctx, dest, midi, durSec, when, gain) {
-    var src = ctx.createBufferSource(); src.buffer = pianoBuffer(ctx, midi, durSec);
-    var g = ctx.createGain(); g.gain.value = gain == null ? 1 : gain;
-    src.connect(g); g.connect(dest); src.start(when);
+    var samples = pianoSamples(ctx);
+    if (!samples) return null;
+    var best = samples[0];
+    for (var i = 1; i < samples.length; i++) if (Math.abs(samples[i].midi - midi) < Math.abs(best.midi - midi)) best = samples[i];
+    var src = ctx.createBufferSource(); src.buffer = best.buffer;
+    src.playbackRate.value = Math.pow(2, (midi - best.midi) / 12 - best.cents / 1200);
+    var g = ctx.createGain(), off = when + Math.max(durSec, MIN_NOTE_SEC);
+    g.gain.setValueAtTime(gain == null ? 1 : gain, when);
+    g.gain.setTargetAtTime(0, off, DAMPER_TAU_SEC);
+    src.connect(g); g.connect(dest); src.start(when); src.stop(off + RELEASE_SEC);
     return src;
   }
   /** Velocity from confidence, as on the server: 0.55 + 0.35·conf. */
@@ -343,7 +327,7 @@
   function createPlayer() {
     var ctx = null, master = null;
     var voices = [], tempo = 100, ts = "4/4", rate = 1, loop = null, bars = 0;
-    var playing = false, startCtxTime = 0, startBeat = 0, cursorIdx = 0, timer = null, tickCb = null, endBeat = 0;
+    var playing = false, startCtxTime = 0, startBeat = 0, cursorIdx = 0, timer = null, tickCb = null, endBeat = 0, pendingPlay = null;
     var LOOKAHEAD = 0.25, INTERVAL = 60;
     var events = []; // {beat, dur, midi, voice, vel}
     // The song's own backing (an instrumental), played under the notes in time: audio
@@ -415,6 +399,7 @@
       /** voicesIn: [{name, notes, gain, on}] in the tune's beats. */
       load: function (opts) {
         ensure();
+        loadPiano(ctx).catch(function () { /* play() reports it */ });
         voices.forEach(function (v) { try { v.gainNode.disconnect(); } catch (e) { /* ignore */ } });
         tempo = opts.tempoBpm || 100; ts = opts.timeSignature || "4/4";
         voices = (opts.voices || []).map(function (v) {
@@ -424,18 +409,25 @@
         this.stop();
         rebuild();
       },
+      /** Starts once the piano has loaded (at once after the first time); pause or stop before then cancels. */
       play: function () {
         ensure();
-        if (!events.length || playing) return;
+        if (!events.length || playing || pendingPlay) return;
+        // Resumed here, on the gesture, not after the await: browsers only honour it then.
         if (ctx.state === "suspended") ctx.resume();
-        var from = startBeat;
-        if (loop && (from < loop.start || from >= loop.end)) from = loop.start;
-        startBeat = from; startCtxTime = ctx.currentTime + 0.05; cursorIdx = firstIndexAt(from); playing = true;
-        startBacking(from, startCtxTime);
-        stopTimer(); timer = setInterval(schedule, INTERVAL); schedule();
+        var mine = pendingPlay = {};
+        loadPiano(ctx).then(function () {
+          if (pendingPlay !== mine) return;
+          pendingPlay = null;
+          var from = startBeat;
+          if (loop && (from < loop.start || from >= loop.end)) from = loop.start;
+          startBeat = from; startCtxTime = ctx.currentTime + 0.05; cursorIdx = firstIndexAt(from); playing = true;
+          startBacking(from, startCtxTime);
+          stopTimer(); timer = setInterval(schedule, INTERVAL); schedule();
+        }, function () { if (pendingPlay === mine) pendingPlay = null; if (tickCb) tickCb({ beat: startBeat, playing: false }); });
       },
-      pause: function () { if (!playing) return; startBeat = nowBeat(); playing = false; stopTimer(); stopBacking(); if (tickCb) tickCb({ beat: startBeat, playing: false }); },
-      stop: function () { playing = false; stopTimer(); stopBacking(); startBeat = loop ? loop.start : 0; if (tickCb) tickCb({ beat: startBeat, playing: false }); },
+      pause: function () { pendingPlay = null; if (!playing) return; startBeat = nowBeat(); playing = false; stopTimer(); stopBacking(); if (tickCb) tickCb({ beat: startBeat, playing: false }); },
+      stop: function () { pendingPlay = null; playing = false; stopTimer(); stopBacking(); startBeat = loop ? loop.start : 0; if (tickCb) tickCb({ beat: startBeat, playing: false }); },
       toggle: function () { playing ? this.pause() : this.play(); },
       isPlaying: function () { return playing; },
       setRate: function (r) { var b = nowBeat(); rate = Math.min(2, Math.max(0.5, r)); startBeat = b; startCtxTime = ctx ? ctx.currentTime : 0; if (playing) { cursorIdx = firstIndexAt(b); startBacking(b, startCtxTime); } },
@@ -469,6 +461,6 @@
     parseKey: parseKey, label: label, keyHeader: keyHeader, renderLines: renderLines, hymnRows: hymnRows,
     syllabify: syllabify, lyricsUnderNotes: lyricsUnderNotes, barCount: barCount, beatsPerBar: beatsPerBar,
     VOICES: VOICES, rangeReport: rangeReport, pitchName: pitchName, shiftKeyName: shiftKeyName,
-    createPlayer: createPlayer, createPianoOutput: createPianoOutput, pianoNote: pianoNote, renderPianoNote: renderPianoNote
+    createPlayer: createPlayer, createPianoOutput: createPianoOutput, loadPiano: loadPiano, pianoNote: pianoNote
   };
 })();

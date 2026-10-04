@@ -1,0 +1,12 @@
+Piano sound: Salamander Grand Piano V3 by Alexander Holm
+(https://archive.org/details/SalamanderGrandPianoV3), licensed under CC BY 3.0
+(https://creativecommons.org/licenses/by/3.0/). Converted to mono, resampled,
+trimmed and level-matched for NoteFusion.
+
+The 17 notes here (C2 to C6, every three semitones) are the soft layer (velocity 5
+of 16) of that recording, taken from the MP3 set published for @tonejs/piano at
+https://tambien.github.io/Piano/audio/. Changes made by NoteFusion, as the licence
+requires us to say: stereo mixed to mono; resampled to 22 050 Hz; trimmed to the
+onset and to 3.5 seconds with a 0.6 second fade; loudness-matched across the set;
+their pitch measured and written to tuning.json so a player can correct the piano's
+stretch tuning to equal temperament.

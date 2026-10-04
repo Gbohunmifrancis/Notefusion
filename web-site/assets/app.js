@@ -1232,8 +1232,14 @@
   function playLeadIn(ctx, notes, tempo, ts) {
     var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo), t0 = ctx.currentTime + 0.05;
     var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
-    // The starting note on the same piano the rehearsal player uses, held for the bar.
-    C.pianoNote(ctx, C.createPianoOutput(ctx), first ? first.pitchMidi : 60, bpb * beat, t0, 0.9);
+    // The starting note on the same piano the rehearsal player uses, held for the bar. The
+    // piano is normally loaded by now (the player fetches it when the sheet is shown); if it
+    // is not, the note starts when it arrives and still ends on the bar-line.
+    var out = C.createPianoOutput(ctx), barEnd = t0 + bpb * beat;
+    C.loadPiano(ctx).then(function () {
+      var at = Math.max(t0, ctx.currentTime);
+      if (barEnd - at > 0.05) C.pianoNote(ctx, out, first ? first.pitchMidi : 60, barEnd - at, at, 0.9);
+    }, function () { /* no piano: the clicks still count the singer in */ });
     for (var i = 0; i < 2 * bpb; i++) {
       var at = t0 + i * beat, click = ctx.createOscillator(), cg = ctx.createGain();
       click.frequency.value = i % bpb === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);

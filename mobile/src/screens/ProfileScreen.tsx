@@ -472,6 +472,19 @@ export function ProfileScreen() {
                 {Application.nativeApplicationVersion ?? "—"}
               </Text>
             </View>
+
+            {/* CC BY 3.0 asks for this credit wherever the recording is used. */}
+            <Text style={styles.aboutCredit}>
+              Piano sound: Salamander Grand Piano V3 by Alexander Holm, licensed under{" "}
+              <Text
+                style={styles.aboutCreditLink}
+                onPress={() => WebBrowser.openBrowserAsync("https://creativecommons.org/licenses/by/3.0/")}
+                accessibilityRole="link"
+              >
+                CC BY 3.0
+              </Text>
+              . Converted to mono, resampled, trimmed and level-matched for NoteFusion.
+            </Text>
           </View>
         </View>
       </Modal>
@@ -711,6 +724,16 @@ const makeStyles = (c: Palette) =>
     aboutVersionValue: {
       fontSize: 14,
       fontFamily: fonts.bold,
+      color: c.accent,
+    },
+    aboutCredit: {
+      fontSize: 12,
+      fontFamily: fonts.regular,
+      color: c.textMuted,
+      lineHeight: 18,
+      marginTop: spacing.md,
+    },
+    aboutCreditLink: {
       color: c.accent,
     },
   });
