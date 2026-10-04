@@ -382,3 +382,31 @@ def test_a_waiting_job_says_so_and_knows_its_place_in_line(monkeypatch):
     finally:
         gate.set()
         queue.shutdown(wait=True)
+
+
+def test_a_separation_that_could_not_deliver_falls_back_to_the_mixture(monkeypatch, caplog):
+    """The child process died or gave up: the job still finishes, read from the mix, and says so."""
+    import logging
+
+    from app.pipeline import separate
+
+    calls = []
+    monkeypatch.setattr(separate, "available", lambda: True)
+    monkeypatch.setattr(separate, "accompaniment", lambda path: 0.0)
+
+    def gives_up(wav, out, progress=lambda f: None, backing_path=None):
+        raise separate.SeparationFailed("vocal separation gave up after 2700s")
+
+    monkeypatch.setattr(separate, "separate_file", gives_up)
+    monkeypatch.setattr("app.jobs.queue.transcribe",
+                        lambda path, **kw: calls.append(Path(path).name) or _result())
+    queue = JobQueue(workers=1)
+    try:
+        with caplog.at_level(logging.WARNING):
+            jid = queue.submit(_temp_audio(), mode="melody", key=None, tempo=None, separate=True)
+            job = _await_status(queue, jid, STATUS_DONE)
+        assert job.result is not None and job.result.separated is False
+        assert calls and not calls[0].startswith("vocals")
+        assert any("gave up" in r.getMessage() and "transcribing the mixture" in r.getMessage() for r in caplog.records)
+    finally:
+        queue.shutdown(wait=True)
