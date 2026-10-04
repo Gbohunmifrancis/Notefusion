@@ -140,6 +140,63 @@ def test_clean_keeps_a_repeated_note_with_an_amplitude_dip():
     assert len(notes) == 2
 
 
+def _dipped(onset: np.ndarray, voiced_prob: np.ndarray | None = None) -> vocal.Contour:
+    """One held pitch whose level dips at frame 20, with the given onset and voicing tracks."""
+    midi = np.full(40, 60.0)
+    rms = np.ones(40)
+    rms[19:22] = 0.3
+    c = vocal.smooth(_contour_obj(midi, rms))
+    vp = np.ones(40) if voiced_prob is None else voiced_prob
+    return vocal.Contour(c.times, c.midi, vp, c.rms, c.rms_fast, c.stable, onset=onset)
+
+
+def test_clean_does_not_split_on_a_dip_with_no_new_attack():
+    # Reverb beating against a held note, or a separated stem thinning out: the level dips,
+    # but nothing starts again — no spectral-flux onset, no break in the voicing.
+    notes = vocal.clean(_dipped(onset=np.ones(40)), [(0, 40)])
+    assert len(notes) == 1
+
+
+def test_clean_splits_a_dip_followed_by_an_attack():
+    onset = np.ones(40)
+    onset[22] = 3.0  # the level comes back as a new attack
+    assert len(vocal.clean(_dipped(onset), [(0, 40)])) == 2
+
+
+def test_clean_splits_a_dip_where_the_voicing_breaks():
+    vp = np.full(40, 0.9)
+    vp[19:22] = 0.1  # a glottal stop: pyin loses the voice for a moment
+    assert len(vocal.clean(_dipped(np.ones(40), vp), [(0, 40)])) == 2
+
+
+def _reverb(y: np.ndarray, rt60: float = 1.3) -> np.ndarray:
+    """A plain exponential-noise hall, mixed in at the level a produced vocal carries."""
+    from scipy import signal
+
+    rng = np.random.default_rng(7)
+    t = np.arange(int(rt60 * SR)) / SR
+    ir = signal.sosfilt(signal.butter(1, 4000, fs=SR, output="sos"), rng.standard_normal(t.size) * np.exp(-6.91 * t / rt60))
+    ir[: int(0.02 * SR)] = 0.0
+    wet = signal.fftconvolve(y, ir)[: y.size]
+    return y + wet * 0.35 * np.sqrt(np.mean(y ** 2)) / np.sqrt(np.mean(wet ** 2))
+
+
+def test_analyse_keeps_a_reverberant_held_note_whole():
+    from tests.accuracy import vocal_synth
+    from tests.accuracy.vocal_corpus import STYLES
+
+    y, _ = vocal_synth.render(((60, 1.0), (64, 6.0), (62, 1.0)), 90, STYLES["ah_vibrato"], sr=SR)
+    assert [n.pitch for n in vocal.analyse(_reverb(y), SR).notes] == [60, 64, 62]
+
+
+def test_analyse_still_splits_repeated_notes_under_reverb():
+    from tests.accuracy import vocal_synth
+    from tests.accuracy.vocal_corpus import STYLES
+
+    y, _ = vocal_synth.render(((60, 1.0), (64, 2.0), (64, 2.0), (64, 2.0), (62, 1.0)), 90, STYLES["ah_vibrato"], sr=SR)
+    assert [n.pitch for n in vocal.analyse(_reverb(y), SR).notes] == [60, 64, 64, 64, 62]
+
+
 def test_clean_does_not_split_on_tremolo():
     midi = np.full(60, 60.0)
     t = np.arange(60) * HOP_SEC

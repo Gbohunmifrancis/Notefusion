@@ -9,10 +9,10 @@ import type { NoteEvent } from "../api/types";
 import { beatSecOf } from "./synth";
 
 /**
- * useNotePlayer — plays the server-synthesised WAV audio preview
- * (`TranscriptionResult.audioPreviewBase64`) and tracks which transcribed note
- * is currently sounding, so the UI can highlight the matching solfa syllable
- * in sync with playback.
+ * useNotePlayer — plays a WAV audio preview (normally the piano rendered by
+ * `lib/synth.ts`, or a server-sent `TranscriptionResult.audioPreviewBase64`) and
+ * tracks which transcribed note is currently sounding, so the UI can highlight
+ * the matching solfa syllable in sync with playback.
  *
  * Why a cache file is required
  * ─────────────────────────────

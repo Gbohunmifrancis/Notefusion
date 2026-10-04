@@ -146,6 +146,16 @@ public static class SolfaMapper
             : (sorted[mid - 1] + sorted[mid]) / 2.0;
     }
 
+    /// <summary>The bare syllable (no octave mark) for a note this many semitones above doh.</summary>
+    public static string Syllable(int semitonesFromDoh, ChromaticSpelling spelling)
+    {
+        Guard.InRange(semitonesFromDoh, 0, 11);
+
+        return spelling == ChromaticSpelling.Ascending
+            ? AscendingSyllables[semitonesFromDoh]
+            : DescendingSyllables[semitonesFromDoh];
+    }
+
     /// <summary>The diatonic degree (1–7) a pitch sounds in the given key.</summary>
     public static int Degree(int pitchMidi, MusicalKey key)
     {

@@ -41,6 +41,10 @@ services:
       # signed-in browser gets through; the deploy writes it from the YTDLP_COOKIES secret
       # and mounts it here. With no secret, /dev/null is mounted and yt-dlp runs without.
       NF_YTDLP_COOKIES_FILE: /run/ytdlp-cookies.txt
+      # Extra yt-dlp flags. The default fetches YouTube's proof-of-origin tokens from the
+      # bgutil-provider sidecar below; an override in .env (a --proxy, say) replaces it, so
+      # keep the --extractor-args part in it to keep the tokens.
+      NF_YTDLP_EXTRA_ARGS: '${NF_YTDLP_EXTRA_ARGS:---extractor-args "youtubepot-bgutilhttp:base_url=http://bgutil-provider:4416"}'
       # Vocal separation is the memory peak (about 1.4 GB per song at the defaults; see
       # app/pipeline/separate.py). The limit keeps a runaway worker from taking the API and
       # the database down with it: the kernel kills this container alone and Docker restarts it.
@@ -55,6 +59,15 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+
+  # Mints the proof-of-origin tokens YouTube asks datacenter addresses for (bgutil, GPL-3.0;
+  # the yt-dlp plugin in the transcriber image is pinned to the same version). Reached only
+  # by the transcriber on the compose network: no published port.
+  bgutil-provider:
+    image: brainicism/bgutil-ytdlp-pot-provider:2.0.1-deno
+    restart: always
+    init: true
+    logging: *default-logging
 
   api:
     image: ${API_IMAGE:-ghcr.io/OWNER/notefusion-api:latest}

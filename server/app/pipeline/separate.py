@@ -215,3 +215,78 @@ def separate_file(wav_path: Path, out_path: Path, progress=lambda f: None,
             backing = backing / peak
         sf.write(str(backing_path), backing.astype(np.float32), 22_050, format="WAV", subtype="PCM_16")
     return out_path
+
+
+# ── Is there a band behind the voice? ─────────────────────────────────────────
+# A song uploaded as "a tune I hummed" (``separate=false``) used to be transcribed as the
+# mixture, which on the real songs in ``tests.accuracy.songs`` is 2.5x the note errors of
+# the isolated vocal.  So the queue asks this first, on the first minute of the upload.
+#
+# The cue is polyphony, read cheaply: on a constant-Q spectrum smoothed over five frames
+# (so a tonal partial survives and noise does not), count the spectral peaks standing
+# 8 dB over their surroundings that are NOT harmonics of the frame's strongest pitch.  A
+# voice alone, however noisy the room, is one harmonic series and leaves few; a band
+# leaves the bass, the chord tones and the backing voices.  Mean per frame:
+#   band songs       synthetic 6.3-8.6 (36 songs); ADC2004 + MIREX05 2.9-10.9, median 8.6 (33)
+#   solo voices      sung corpus 0.3-4.2 (61 clips); Vocadito's 40 real singers 1.3-4.7
+#   one instrument   instrument corpus 1.2-6.3 (40 clips), one over 5: a heavy-vibrato tone
+# ACCOMPANIMENT_MIN_PEAKS = 5 isolates 68 of the 69 songs and none of the 101 solo voices.
+# Two cheaper cues were tried first and do not separate them: the percussive (HPSS)
+# energy share and the energy left after removing the main harmonic series are both as
+# high on Vocadito's phone-and-room noise as on a band.
+ACCOMPANIMENT_SECONDS = 60.0
+ACCOMPANIMENT_MIN_PEAKS = 5.0
+_CQT_BINS_PER_OCTAVE = 36
+# A vocal stem this far under the mix holds no voice: the upload was instruments only (an
+# instrumental lead measured -36 to -60 dB, a sung song -0.3 to -12 dB), and the melody is
+# then in the mixture, not in an empty stem.
+VOICE_MIN_SHARE_DB = -25.0
+
+
+def accompaniment(path: Path) -> float:
+    """Mean count per frame of tonal peaks off the strongest pitch's harmonics (see above)."""
+    import librosa
+    from scipy import ndimage
+
+    y, sr = librosa.load(str(path), sr=22_050, mono=True, duration=ACCOMPANIMENT_SECONDS)
+    if y.size < sr:
+        return 0.0
+    bpo = _CQT_BINS_PER_OCTAVE
+    c = np.abs(librosa.cqt(y, sr=sr, hop_length=512, fmin=librosa.note_to_hz("A1"),
+                           n_bins=bpo * 6, bins_per_octave=bpo))
+    level = np.sqrt(np.mean(c ** 2, axis=0))
+    active = level > np.percentile(level, 95) * 10.0 ** (-25.0 / 20.0)
+    db = ndimage.median_filter(20.0 * np.log10(np.maximum(c, 1e-9)), size=(1, 5))
+    floor = ndimage.median_filter(db, size=(bpo // 2 + 1, 1))
+    peaks = ((db - floor > 8.0) & (db == ndimage.maximum_filter(db, size=(3, 1))))[:, active]
+    if peaks.shape[1] == 0:
+        return 0.0
+    power = np.where(peaks, 10.0 ** (db[:, active] / 10.0), 0.0)
+    bins = power.shape[0]
+    harmonics = [int(round(bpo * np.log2(h))) for h in range(1, 11)]
+    salience = np.zeros_like(power)
+    for offset in harmonics:
+        salience[: bins - offset] += power[offset:]
+    f0 = np.argmax(salience[: bins - bpo], axis=0)
+    frames = np.arange(power.shape[1])
+    series = np.zeros_like(peaks)
+    for offset in harmonics:
+        for wobble in range(-2, 3):  # +-2 bins (67 cents): a vibrato'd harmonic is still one
+            series[np.clip(f0 + offset + wobble, 0, bins - 1), frames] = True
+    return float(np.mean(np.sum(peaks & ~series, axis=0)))
+
+
+def has_accompaniment(path: Path) -> bool:
+    return accompaniment(path) >= ACCOMPANIMENT_MIN_PEAKS
+
+
+def voice_share_db(vocals_path: Path, backing_path: Path) -> float:
+    """The vocal stem's share of the mix's energy in dB (0 is all voice)."""
+    import soundfile as sf
+
+    vocals, _ = sf.read(str(vocals_path), dtype="float32")
+    backing, _ = sf.read(str(backing_path), dtype="float32")
+    n = min(len(vocals), len(backing))
+    voice = float(np.mean(vocals[:n] ** 2)) if n else 0.0
+    rest = float(np.mean(backing[:n] ** 2)) if n else 0.0
+    return float(10.0 * np.log10(max(voice, 1e-12) / max(voice + rest, 1e-12)))

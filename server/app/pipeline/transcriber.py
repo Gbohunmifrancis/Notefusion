@@ -42,6 +42,7 @@ from pathlib import Path
 import numpy as np
 
 from app.config import settings
+from app.pipeline import chords
 from app.pipeline import solfa
 from app.pipeline import solfa_render
 from app.pipeline import vocal
@@ -1285,6 +1286,11 @@ class TranscriptionResult:
     # Separated jobs only: the instrumental (mix minus the isolated vocal) as a small
     # mono MP3, so the sheet can be rehearsed over the real song rather than a piano.
     backing_audio_base64: str = ""
+    # ``chords.Chord`` spans in the written key (``app.pipeline.chords``): always in mode
+    # "chords", and in melody mode for a song with accompaniment; None otherwise.
+    chords: list | None = None
+    # "heard" when ``chords`` were read from the audio; None without chords.
+    chords_source: str | None = None
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -3082,7 +3088,8 @@ def _segment_vocal(
     if floor_midi is not None and post is not None:
         midi, strength = post.melody_track(floor_midi, raw.times)
         raw = vocal.Contour(
-            times=raw.times, midi=midi, voiced_prob=strength, rms=raw.rms, rms_fast=raw.rms_fast
+            times=raw.times, midi=midi, voiced_prob=strength, rms=raw.rms, rms_fast=raw.rms_fast,
+            onset=raw.onset,
         )
         distinct = np.unique(np.round(midi[~np.isnan(midi)]))
         if distinct.size < MELODY_FLOOR_MIN_DISTINCT_PITCHES:
@@ -3442,11 +3449,20 @@ def _transcribe_inner(
     tempo_source: Path | None = None,
     audio_preview: bool = True,
     harmony: bool = False,
+    keyboard_transpose: int = 0,
+    chord_source: Path | None = None,
 ) -> TranscriptionResult:
     target_path, is_temp_wav = _ensure_wav_path(audio_path)
     tempo_path, tempo_is_temp = (None, False)
     if tempo_source is not None:
         tempo_path, tempo_is_temp = _ensure_wav_path(tempo_source)
+    chord_path, chord_is_temp = (None, False)
+    if chord_source is not None:
+        try:
+            chord_path, chord_is_temp = (
+                (target_path, False) if Path(chord_source) == Path(audio_path) else _ensure_wav_path(chord_source))
+        except Exception as exc:  # noqa: BLE001 - the chords are an extra; the melody is the job
+            print(f"[notefusion] chord source unreadable ({exc!r}); no chords", flush=True)
     try:
         return _transcribe_wav(
             target_path,
@@ -3458,12 +3474,15 @@ def _transcribe_inner(
             fast=fast,
             tempo_source=tempo_path,
             audio_preview=audio_preview, harmony=harmony,
+            keyboard_transpose=keyboard_transpose, chord_source=chord_path,
         )
     finally:
         if is_temp_wav:
             target_path.unlink(missing_ok=True)
         if tempo_is_temp and tempo_path is not None:
             tempo_path.unlink(missing_ok=True)
+        if chord_is_temp and chord_path is not None:
+            chord_path.unlink(missing_ok=True)
 
 def transcribe(
     audio_path: Path,
@@ -3476,8 +3495,21 @@ def transcribe(
     tempo_source: Path | None = None,
     audio_preview: bool = True,
     harmony: bool = False,
+    keyboard_transpose: int = 0,
+    chord_source: Path | None = None,
 ) -> TranscriptionResult:
     """Audio file -> ``TranscriptionResult``.
+
+    ``mode`` "chords" reads the chords a keyboard or guitar plays (``app.pipeline.chords``)
+    and writes their top line as the melody. ``chord_source`` is a recording on the same
+    timeline to read chords from in the other modes — a song's instrumental, or its mix
+    when the vocal could not be isolated; the chords come back in ``chords``.
+
+    ``keyboard_transpose`` is the transpose setting on the player's keyboard, -11..11: at
+    -4 they play A-major shapes and it sounds in F. Every written pitch, the key and the
+    chords are moved by ``-keyboard_transpose`` so the sheet reads in the key they play in;
+    the syllables do not move (doh moves with the key). A ``key_override`` is taken to be
+    in that written key already.
 
     ``harmony`` writes alto, tenor and bass under the tune (``parts`` / ``parts_musicxml``).
     Off by default: a hummed or sung line is one voice, and parts composed under it are an
@@ -3524,6 +3556,7 @@ def transcribe(
         res = _transcribe_inner(
             audio_path, mode, key_override, tempo_override, time_signature, progress, fast=fast,
             tempo_source=tempo_source, audio_preview=audio_preview, harmony=harmony,
+            keyboard_transpose=keyboard_transpose, chord_source=chord_source,
         )
         return res
     except Exception as e:
@@ -3851,6 +3884,7 @@ def _estimate_tempo_and_beats(
     tempo_override: int | None,
     post: "Posteriorgram | None" = None,
     sr: int = 22_050,
+    mix: bool = False,
 ) -> tuple[float, np.ndarray]:
     """(BPM, detected beat times in seconds) for the decoded WAV.
 
@@ -3865,6 +3899,13 @@ def _estimate_tempo_and_beats(
     the downbeats are.  A tempo that loses the vote is only ever off by a metrical
     level, which does not move the phase by more than the window ``_beat_origin``
     already applies.
+
+    ``mix`` says the audio is a whole song, drums and all (the ``tempo_source`` of an
+    isolated vocal), and there the tracked beat is the answer: on the 36 synthetic songs
+    in ``tests.accuracy.songs`` librosa's level was right on all 36 while the onset vote,
+    fed the singer's phrasing, moved 8-10 of them to half or 1.5x.  Its BPM is read off
+    the beat times (``_steady_bpm``), not librosa's tempo bin, and the onsets are left to
+    set only the phase.
     """
     import librosa
 
@@ -3910,6 +3951,11 @@ def _estimate_tempo_and_beats(
     if override_bpm:
         return override_bpm, beat_times
 
+    if mix and tracked_bpm > 0.0:
+        steady = _steady_bpm(beat_times, tracked_bpm)
+        if _MIN_NOTATED_BPM <= steady <= _MAX_NOTATED_BPM:
+            return steady, beat_times
+
     if settings.tempo_grid:
         grid_bpm = _grid_bpm(
             events, tracked_bpm, settings.quantize_divisors, extra_candidates=(neural_bpm,)
@@ -3923,6 +3969,29 @@ def _estimate_tempo_and_beats(
     onset_bpm = _onset_bpm(events)
     fallback = onset_bpm if _MIN_BPM <= onset_bpm <= _MAX_BPM else _DEFAULT_BPM
     return fallback, beat_times
+
+
+def _steady_bpm(beat_times: np.ndarray, tracked_bpm: float) -> float:
+    """The BPM the tracked beats keep over the whole clip; ``tracked_bpm`` if they cannot say.
+
+    librosa's tempo is one of its autocorrelation lags, which at a 512-sample hop are
+    whole frames apart: 132 BPM reads as 129.2 and 80 as 80.75, up to 2% off (a beat lost
+    every 50), and its beat intervals are whole frames too.  A straight line through the
+    beat times averages that out over every beat in the clip: 0.02% mean error against
+    0.71% on the synthetic songs.  Beats are numbered by how many median intervals each
+    gap holds, so a beat the tracker skipped through a break does not bend the line.
+    """
+    if beat_times.size < 8:
+        return tracked_bpm
+    gaps = np.diff(beat_times)
+    period = float(np.median(gaps))
+    if period <= 0.0:
+        return tracked_bpm
+    index = np.concatenate(([0.0], np.cumsum(np.maximum(np.round(gaps / period), 1.0))))
+    slope = float(np.polyfit(index, beat_times, 1)[0])
+    steady = 60.0 / slope if slope > 0.0 else 0.0
+    # The line refines the tracker's level; it never picks another one.
+    return steady if abs(steady / tracked_bpm - 1.0) <= 0.06 else tracked_bpm
 
 
 def _beat_origin(beat_times: np.ndarray, first_onset: float, bpm: float) -> float:
@@ -4103,6 +4172,7 @@ def get_decoding_strategy(mode: str) -> DecodingStrategy:
         return MelodyStrategy()
     if mode == "choir":
         return ChoirStrategy()
+    # "chords" keeps every simultaneous note, as poly does; the chords are read from them.
     return PolyStrategy()
 
 
@@ -4301,6 +4371,86 @@ def _choir_parts(
     return parts, parts_musicxml
 
 
+def _one_note_per_slot(s, step: float, heard_at: dict[int, float]) -> None:
+    """A tune is one voice: after quantizing, no two of its notes may start together.
+
+    Two notes closer than a grid step can round onto the same slot, and the sheet then
+    stacks them into a chord nobody sang: 8% of the notes on the real songs in
+    ``tests.accuracy.songs``, 6% on the synthetic ones.  Same pitch: one note, held across
+    both.  Otherwise one of the two moves to a free neighbouring slot — the later one
+    forward, or the earlier one back — whichever moves less audio (beats away from where
+    it was heard, ``heard_at``, times its length, so a quick ornament gives way to the
+    note it leads into).  With neither neighbour free there are more notes than the grid
+    has room for, typically a wide vibrato read as alternating notes, and the shorter
+    note is folded into the longer.  A fold is priced at the vanishing note's length and
+    a step more, so it never ties with a move: priced at the length alone, a half-beat
+    note lost cost the same as a neighbour cut by half a beat, and the sung corpus's
+    amazing_grace (read at half its tempo) lost a true note to a false repeat.  Notes are
+    never pushed along a run: pushing each
+    clash forward, or spreading a crowded stretch over the slots around it, smeared
+    whole phrases off the beat (real-song frame accuracy 0.586 and 0.596, against 0.603
+    for this and 0.613 with the notes left stacked).
+    """
+    notes = sorted(s.notes, key=lambda x: (x.offset, heard_at.get(id(x), 0.0)))
+    if all(a.offset < b.offset for a, b in zip(notes, notes[1:])):
+        return
+
+    def end(n) -> float:
+        return float(n.offset + n.quarterLength)
+
+    def move(n, start: float) -> None:
+        stop = max(end(n), start + step)
+        s.remove(n)
+        n.quarterLength = stop - start
+        s.insert(start, n)
+
+    def fold(keep, drop) -> None:
+        stop = max(end(keep), end(drop))
+        s.remove(drop)
+        keep.quarterLength = stop - float(keep.offset)
+
+    placed: list = []
+    for i, n in enumerate(notes):
+        last = placed[-1] if placed else None
+        if last is None or n.offset > last.offset:
+            placed.append(n)
+            continue
+        if n.pitch.midi == last.pitch.midi:
+            fold(last, n)
+            continue
+        slot = float(last.offset)
+        before = placed[-2] if len(placed) >= 2 else None
+        later_free = i + 1 == len(notes) or notes[i + 1].offset > slot + step
+        earlier_free = slot - step >= 0.0 and (before is None or before.offset < slot - step)
+        # What each choice costs the sheet, in beats: a moved note's distance from where it
+        # was heard (times its length), the beats it cuts off the note it now follows, or,
+        # folding, the beats of the note that disappears.
+        cost = {}
+        if later_free:
+            cost["later"] = (float(n.quarterLength) * abs(slot + step - heard_at.get(id(n), slot))
+                             + max(0.0, float(last.quarterLength) - step))
+        if earlier_free:
+            cost["earlier"] = (float(last.quarterLength) * abs(slot - step - heard_at.get(id(last), slot))
+                               + (max(0.0, end(before) - (slot - step)) if before is not None else 0.0))
+        cost["fold"] = float(min(n.quarterLength, last.quarterLength)) + step
+        choice = min(cost, key=cost.get)
+        if choice == "later":
+            last.quarterLength = min(float(last.quarterLength), step)
+            move(n, slot + step)
+            placed.append(n)
+        elif choice == "earlier":
+            if before is not None:
+                before.quarterLength = min(float(before.quarterLength), slot - step - float(before.offset))
+            move(last, slot - step)
+            last.quarterLength = step
+            placed.append(n)
+        elif n.quarterLength > last.quarterLength:
+            fold(n, last)
+            placed[-1] = n
+        else:
+            fold(last, n)
+
+
 def _transcribe_wav(
     wav_path: Path,
     mode: str,
@@ -4312,6 +4462,8 @@ def _transcribe_wav(
     tempo_source: Path | None = None,
     audio_preview: bool = True,
     harmony: bool = False,
+    keyboard_transpose: int = 0,
+    chord_source: Path | None = None,
 ) -> TranscriptionResult:
     from music21 import key as m21key
     from music21 import meter, stream
@@ -4384,6 +4536,8 @@ def _transcribe_wav(
     melody_floor_midi: float | None = None
     choir_voices: dict[str, list[Event]] | None = None
     melody_voice = "soprano"
+    # Chords mode: every note Basic Pitch kept, which the chords are read from.
+    chord_events: list[Event] | None = None
     if not contour_events and settings.vocal_engine and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_vocal(y, sr, note_events, post)
     if not contour_events and settings.contour_first and strategy.contour_first:
@@ -4454,7 +4608,7 @@ def _transcribe_wav(
         # Not for a choir: pyin follows one pitch, and on a chord it "corrects" every voice
         # toward whichever one is loudest.
         pyin_contour = None
-        single_line = mode != "choir"
+        single_line = mode not in ("choir", "chords")
         if (settings.pyin_refine or settings.contour_gap_merge) and events and single_line:
             pyin_contour = _pyin_contour(y)
         if settings.pyin_refine and events and single_line:
@@ -4480,6 +4634,11 @@ def _transcribe_wav(
             melody_voice = next((n for n in CHOIR_RANGES if choir_voices[n]), "soprano")
             events = choir_voices[melody_voice]
 
+        # ── 5c. Chords: the top line is the tune ──────────────────────────────
+        if mode == "chords" and events:
+            chord_events = events
+            events = chords.top_line(events)
+
         # ── 6. Melody mode: remove polyphonic overlap artefacts ───────────────
         if strategy.resolve_overlaps and events:
             if melody_floor_midi is not None:
@@ -4493,6 +4652,18 @@ def _transcribe_wav(
     # this more than the inference path does, being the one that has never had any Basic
     # Pitch evidence at all.
     events = _sample_posteriors(events, post)
+
+    # ── 6c. Keyboard transpose ────────────────────────────────────────────────
+    # Written pitch = sounding pitch - the keyboard's transpose setting.  Applied here, after
+    # every stage that reads the audio, so the key, the solfa and the engraving below all
+    # see the written notes.  The chords are read in sounding pitch and moved the same way.
+    shift = -int(keyboard_transpose or 0)
+    if shift:
+        events = [replace(e, pitch=e.pitch + shift) for e in events]
+        if choir_voices is not None:
+            choir_voices = {
+                name: [replace(e, pitch=e.pitch + shift) for e in line] for name, line in choir_voices.items()}
+        all_note_events = [(t0, t1, p + shift, a, b) for t0, t1, p, a, b in all_note_events]
 
     progress(0.50)
 
@@ -4522,21 +4693,46 @@ def _transcribe_wav(
     # the soprano holds through.
     rhythm_events = (
         sorted((e for line in choir_voices.values() for e in line), key=lambda e: e.start)
-        if choir_voices else events
+        if choir_voices else sorted(chord_events, key=lambda e: e.start) if chord_events else events
     )
-    bpm, beat_times = _estimate_tempo_and_beats(rhythm_y, rhythm_events, tempo_override, post=post, sr=sr)
+    from_mix = rhythm_y is not y
+    bpm, beat_times = _estimate_tempo_and_beats(
+        rhythm_y, rhythm_events, tempo_override, post=post, sr=sr, mix=from_mix
+    )
     beat_origin = _beat_origin(beat_times, rhythm_events[0].start, bpm) if settings.beat_align else 0.0
     if settings.grid_refine:
         # A tap-in override says how fast the piece is (TRD par. 5), so band=0.0 leaves the
         # BPM alone and refines only the phase — which the override says nothing about.
+        # Nor do the singer's onsets get to move a BPM measured on the whole mix.
         bpm, beat_origin = _refine_grid(
             np.array([e.start for e in rhythm_events]),
             bpm,
             beat_origin,
             settings.quantize_divisors,
-            band=0.0 if tempo_override is not None else _GRID_REFINE_BAND,
+            band=0.0 if tempo_override is not None or from_mix else _GRID_REFINE_BAND,
         )
     sec_to_beats = bpm / 60.0
+
+    # ── 7b. Chords ────────────────────────────────────────────────────────────
+    # On the same beat grid as the melody, in sounding pitch.  In chords mode they are the
+    # job, and the key comes from them (step 9); for a song they are read off the
+    # instrumental and are an extra that can never fail the job.
+    chord_spans: list | None = None
+    chord_key: tuple[int, str] | None = None
+    chord_key_confidence = 0.0
+    if mode == "chords" or chord_source is not None:
+        prior = None
+        if key_override:
+            written = _parse_key_override(key_override)
+            prior = ((written.tonic.pitchClass - shift) % 12, written.mode)
+        try:
+            chord_y = y if mode == "chords" else _load_audio(chord_source, sr=sr)[0]
+            chord_spans, chord_key, chord_key_confidence = chords.read_chords(
+                chord_y, sr, bpm, beat_origin, notes=chord_events, key=prior)
+        except Exception as exc:  # noqa: BLE001 - see above
+            if mode == "chords":
+                raise
+            print(f"[notefusion] chords skipped: {exc!r}", flush=True)
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
@@ -4604,7 +4800,13 @@ def _transcribe_wav(
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
+    heard_at = {id(n): float(n.offset) for n in s.notes}
     s.quantize(settings.quantize_divisors, processOffsets=True, processDurations=True, inPlace=True)
+    if mode == "chords":
+        # A chord sheet's top line is kept a line by its own rule.
+        _one_line(s)
+    elif mode != "poly":
+        _one_note_per_slot(s, 1.0 / settings.quantize_divisors[0], heard_at)
 
     # ── 9. Key detection ──────────────────────────────────────────────────────
     # Manual override always wins (TRD par. 4.1).
@@ -4630,6 +4832,11 @@ def _transcribe_wav(
     if key_override:
         detected = _parse_key_override(key_override)
         key_confidence = 1.0
+    elif mode == "chords" and chord_key is not None:
+        # The chords know the key better than their top line does: a tune can lean on the
+        # fifth for bars while the harmony rests on the tonic.
+        detected = m21key.Key(chords.tonic_name(chord_key[0] + shift, chord_key[1]), chord_key[1])
+        key_confidence = chord_key_confidence
     elif settings.key_ensemble:
         detected, key_confidence = _detect_key(s, len(events))
     else:
@@ -4745,13 +4952,19 @@ def _transcribe_wav(
     else:
         parts, parts_musicxml, parts_source = None, "", None
 
+    # ── 10c. Chord symbols in the written key ─────────────────────────────────
+    chord_list = (
+        chords.label(chords.transpose(chord_spans, shift), detected.tonic.name, detected.mode)
+        if chord_spans is not None else None
+    )
+
     # ── 11. Normalise key name for C#'s KeyParser ─────────────────────────────
     # music21 returns names like "B- major" or "a minor"; C#'s KeyParser expects
     # "Bb major" / "A minor".  _normalise_key_name does both transformations.
     normalised_key = _normalise_key_name(detected.name)
 
     # ── 12. MusicXML + MIDI (base64) ─────────────────────────────────────────
-    musicxml = export_musicxml(score)
+    musicxml = chords.add_harmony(export_musicxml(score), chord_list or [])
     # Re-render the .mid at the tempo step 7 detected.  ``predict`` builds its MIDI before
     # anything here knows the tempo, so it stamps basic-pitch's ``midi_tempo`` default of
     # 120 on every export regardless — a hymn at 76 imports into a DAW or a notation editor
@@ -4812,7 +5025,32 @@ def _transcribe_wav(
         parts=parts,
         parts_musicxml=parts_musicxml,
         parts_source=parts_source,
+        chords=chord_list,
+        chords_source="heard" if chord_list else None,
     )
+
+
+def _one_line(s) -> None:
+    """Keep a quantized top line a single line, in place.
+
+    Two top-line notes a few tens of milliseconds apart (a broken chord's quick notes) can
+    land on one grid point; the higher is the top line and stays.  Each note is then cut
+    off where the next one starts, so the rounding cannot leave two notes sounding at once.
+    """
+    kept = {}
+    for n in list(s.notes):
+        offset = float(n.offset)
+        other = kept.get(offset)
+        if other is None or n.pitch.midi > other.pitch.midi:
+            if other is not None:
+                s.remove(other)
+            kept[offset] = n
+        else:
+            s.remove(n)
+    ordered = sorted(kept.items())
+    for (offset, n), (following, _) in zip(ordered, ordered[1:]):
+        if offset + float(n.duration.quarterLength) > following:
+            n.duration.quarterLength = following - offset
 
 
 def harmonise_sheet(

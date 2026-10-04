@@ -8,6 +8,7 @@ import { DialogProvider } from './src/lib/dialog';
 import { SubscriptionProvider } from './src/lib/subscription';
 import { ThemeProvider, useTheme } from './src/lib/theme';
 import { useAppReady } from './src/lib/appReady';
+import { ensurePiano } from './src/lib/piano';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
@@ -34,6 +35,9 @@ Sentry.init({
 
 // Keep the native splash up until fonts are ready; hide is called in useAppReady.
 NativeSplash.preventAutoHideAsync().catch(() => undefined);
+
+// Read the piano samples behind the splash, so the first note played is the real piano.
+void ensurePiano();
 
 /**
  * App root. The provider order matters: SafeAreaProvider must wrap everything

@@ -2,8 +2,10 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Preview.Commands;
@@ -13,10 +15,19 @@ namespace NoteFusion.Application.Preview.Commands;
 /// Throttled per browser and per address; the worker transcribes only the head of the clip.
 /// </summary>
 /// <param name="Separate">A whole song with instruments behind the voice: isolate the vocal first (see <see cref="TranscribeOptions.Separate"/>).</param>
-public sealed record SubmitPreviewCommand(Stream Audio, string FileName, bool Separate = false, bool AudioPreview = true) : IRequest<Result<string>>;
+/// <param name="Mode">What was recorded: a tune, a choir, a keyboard playing chords (see <see cref="TranscriptionMode"/>).</param>
+/// <param name="KeyboardTranspose">The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</param>
+public sealed record SubmitPreviewCommand(
+    Stream Audio,
+    string FileName,
+    bool Separate = false,
+    bool AudioPreview = true,
+    TranscriptionMode Mode = TranscriptionMode.Melody,
+    int KeyboardTranspose = 0) : IRequest<Result<string>>;
 
 /// <summary>The same preview for a song behind a YouTube, Spotify or Apple Music link.</summary>
-public sealed record SubmitPreviewLinkCommand(string Url, bool AudioPreview = true) : IRequest<Result<string>>;
+/// <param name="KeyboardTranspose">The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</param>
+public sealed record SubmitPreviewLinkCommand(string Url, bool AudioPreview = true, int KeyboardTranspose = 0) : IRequest<Result<string>>;
 
 internal static class PreviewThrottle
 {
@@ -59,13 +70,22 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
 
     public async Task<Result<string>> Handle(SubmitPreviewCommand request, CancellationToken cancellationToken)
     {
+        if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
+            return TranscriptionErrors.InvalidKeyboardTranspose;
+
         var device = _device.Current;
         var ip = _ip.Current;
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 
-        var submitted = await _api.SubmitAsync(
-            request.Audio, request.FileName, PreviewThrottle.Options with { Separate = request.Separate, AudioPreview = request.AudioPreview }, cancellationToken);
+        var options = PreviewThrottle.Options with
+        {
+            Mode = request.Mode,
+            Separate = request.Separate,
+            AudioPreview = request.AudioPreview,
+            KeyboardTranspose = request.KeyboardTranspose
+        };
+        var submitted = await _api.SubmitAsync(request.Audio, request.FileName, options, cancellationToken);
         if (submitted.IsFailure)
             return submitted;
 
@@ -94,16 +114,19 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
 
     public async Task<Result<string>> Handle(SubmitPreviewLinkCommand request, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Url) || !Uri.TryCreate(request.Url.Trim(), UriKind.Absolute, out var uri)
-            || (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp))
+        // Only the link goes on, not the words a share sheet wrapped around it.
+        if (!SongLinks.TryExtract(request.Url, out var url))
             return TranscriptionErrors.InvalidLink;
+        if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
+            return TranscriptionErrors.InvalidKeyboardTranspose;
 
         var device = _device.Current;
         var ip = _ip.Current;
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 
-        var submitted = await _api.SubmitLinkAsync(uri.ToString(), PreviewThrottle.Options with { AudioPreview = request.AudioPreview }, cancellationToken);
+        var options = PreviewThrottle.Options with { AudioPreview = request.AudioPreview, KeyboardTranspose = request.KeyboardTranspose };
+        var submitted = await _api.SubmitLinkAsync(url, options, cancellationToken);
         if (submitted.IsFailure)
             return submitted;
 

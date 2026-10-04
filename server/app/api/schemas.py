@@ -36,12 +36,29 @@ class SourceDto(ApiModel):
     title: str
     artist: str
     thumbnail_url: str | None = None
+    # Set only when YouTube refused the song and the store's 30-second preview stood in
+    # (the result is then ``truncated`` too); ``notice`` is the plain sentence to show.
+    preview: bool | None = None
+    notice: str | None = None
 
 
 class PartDto(ApiModel):
     """One voice of the four-part harmony, in the same note shape as the melody."""
     notes: list[NoteEventDto]
     solfa_lines: list[str]
+
+
+class ChordDto(ApiModel):
+    """One chord over a run of beats (``app.pipeline.chords``): root and bass as pitch
+    classes in the written key, ``bass`` only for a slash chord, ``symbol`` spelled in the
+    key ("Bb", "F#m", "G/B") and ``solfa`` the root's syllable."""
+    start_beat: float
+    dur_beats: float
+    root: int
+    quality: str  # maj | min | 7 | maj7 | min7 | dim | sus4
+    bass: int | None = None
+    symbol: str
+    solfa: str
 
 
 class ResultDto(ApiModel):
@@ -85,6 +102,10 @@ class ResultDto(ApiModel):
     beat_origin_sec: float = 0.0
     # Separated jobs only: the instrumental as a small mono MP3 (base64).
     backing_audio_base64: str = ""
+    # The chords heard: always in mode "chords", and in melody mode for a song with
+    # accompaniment; null otherwise.  ``chords_source`` is "heard" when there are chords.
+    chords: list[ChordDto] | None = None
+    chords_source: str | None = None
 
 
 class GradeTargetNoteDto(ApiModel):

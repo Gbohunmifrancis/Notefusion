@@ -1,6 +1,7 @@
 using NoteFusion.Application.Billing.Queries;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Application.Transcriptions.Queries;
@@ -301,6 +302,118 @@ public class LinkTranscriptionTests
         Assert.Null(api.LastOptions);
     }
 
+    [Fact]
+    public async Task Only_the_link_in_pasted_share_text_reaches_the_worker()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        var result = await SubmitLink(h, user, api,
+            "Listen to Never Gonna Give You Up on Spotify: https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=abc.");
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal("https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=abc", api.LastUrl);
+    }
+
+    [Theory]
+    [InlineData("https://www.youtube.com/@RickAstleyYT")]
+    [InlineData("https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M")]
+    public async Task A_link_that_is_not_a_song_is_refused_in_plain_words(string url)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        var result = await SubmitLink(h, user, api, url);
+
+        Assert.Equal("TRANS_INVALID_LINK", result.Error.Code);
+        Assert.Equal("Paste a link to a YouTube video, a Spotify track or an Apple Music song.", result.Error.Message);
+        Assert.Null(api.LastOptions);
+    }
+
+    // ---------------------------------------------------------------- keyboard transpose and chords
+
+    [Theory]
+    [InlineData(-11)]
+    [InlineData(-4)]
+    [InlineData(0)]
+    [InlineData(11)]
+    public async Task The_keyboards_transpose_setting_goes_to_the_worker_with_an_upload_and_a_link(int transpose)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        await SubmitUpload(h, user, api, separate: false, keyboardTranspose: transpose);
+        Assert.Equal(transpose, api.LastOptions!.KeyboardTranspose);
+
+        await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+            .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Chords, null, null, KeyboardTranspose: transpose), CancellationToken.None);
+        Assert.Equal(transpose, api.LastOptions!.KeyboardTranspose);
+        Assert.Equal(TranscriptionMode.Chords, api.LastOptions.Mode);
+    }
+
+    [Theory]
+    [InlineData(12)]
+    [InlineData(-12)]
+    [InlineData(100)]
+    public async Task A_transpose_setting_no_keyboard_has_is_refused_before_the_worker_is_asked(int transpose)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        var upload = await SubmitUpload(h, user, api, separate: false, keyboardTranspose: transpose);
+        var link = await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+            .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Melody, null, null, KeyboardTranspose: transpose), CancellationToken.None);
+
+        Assert.Equal("TRANS_INVALID_KEYBOARD_TRANSPOSE", upload.Error.Code);
+        Assert.Equal("TRANS_INVALID_KEYBOARD_TRANSPOSE", link.Error.Code);
+        Assert.Equal("Keyboard transpose must be a whole number of semitones from -11 to 11.", upload.Error.Message);
+        Assert.Null(api.LastOptions);
+        Assert.Empty(h.Db.TranscriptionJobs);
+    }
+
+    [Theory]
+    [InlineData(false, TranscriptionJobKind.Upload)]
+    [InlineData(true, TranscriptionJobKind.Song)]
+    public async Task A_chords_recording_is_a_song_only_when_its_voice_is_isolated(bool separate, TranscriptionJobKind kind)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        await new SubmitTranscriptionCommandHandler(
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister)
+            .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "keys.m4a", TranscriptionMode.Chords, null, null, Separate: separate),
+                CancellationToken.None);
+
+        Assert.Equal(TranscriptionMode.Chords, api.LastOptions!.Mode);
+        Assert.Equal(kind, h.Db.TranscriptionJobs.Single().Kind);
+    }
+
+    [Fact]
+    public async Task A_finished_jobs_chords_reach_the_client()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi { Status = TranscriptionStatus.Done };
+        var jobId = (await SubmitLink(h, user, api)).Value;
+
+        var result = await Poll(h, user, jobId, api);
+
+        Assert.Equal("heard", result.Value.Result!.ChordsSource);
+        Assert.Equal(["F", "Dm"], result.Value.Result.Chords!.Select(c => c.Symbol)); // chords are not a Pro extra
+
+        // The cached copy keeps them for a poll after the worker has forgotten the job.
+        var cached = TranscriptionResultCache.Deserialize(h.Db.TranscriptionJobs.Single().ResultJson!)!;
+        Assert.Equal(result.Value.Result.Chords, cached.Chords);
+        Assert.Equal("heard", cached.ChordsSource);
+    }
+
     // ---------------------------------------------------------------- fixtures
 
     private static User Seed(TestHarness h, string email = "free@example.com")
@@ -340,10 +453,10 @@ public class LinkTranscriptionTests
                 api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
             .Handle(new SubmitLinkTranscriptionCommand(url, TranscriptionMode.Melody, null, null), CancellationToken.None);
 
-    private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeTranscriptionApi api, bool separate)
+    private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeTranscriptionApi api, bool separate, int keyboardTranspose = 0)
         => new SubmitTranscriptionCommandHandler(
                 api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister)
-            .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "song.m4a", TranscriptionMode.Melody, null, null, Separate: separate),
+            .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "song.m4a", TranscriptionMode.Melody, null, null, Separate: separate, KeyboardTranspose: keyboardTranspose),
                 CancellationToken.None);
 
     private static Task<Result<TranscriptionJobDto>> Poll(
@@ -367,6 +480,7 @@ public class LinkTranscriptionTests
         public TranscriptionStatus Status { get; set; } = TranscriptionStatus.Pending;
         public string Midi { get; set; } = "";
         public TranscribeOptions? LastOptions { get; private set; }
+        public string? LastUrl { get; private set; }
 
         public Task<Result<string>> SubmitAsync(Stream audio, string fileName, TranscribeOptions options, CancellationToken ct = default)
         {
@@ -378,7 +492,10 @@ public class LinkTranscriptionTests
             => SubmitAsync(score, fileName, options, ct);
 
         public Task<Result<string>> SubmitLinkAsync(string url, TranscribeOptions options, CancellationToken ct = default)
-            => SubmitAsync(Stream.Null, url, options, ct);
+        {
+            LastUrl = url;
+            return SubmitAsync(Stream.Null, url, options, ct);
+        }
 
         public Task<Result<TranscriptionJobDto>> GetJobAsync(string jobId, CancellationToken ct = default)
         {
@@ -386,7 +503,9 @@ public class LinkTranscriptionTests
             var parts = new Dictionary<string, PartDto> { ["bass"] = new PartDto([], ["Doh is C · Bass"]) };
             var result = Status == TranscriptionStatus.Done
                 ? new TranscriptionResultDto("C major", 0.9, 100, "4/4", "<score/>", Midi, [], ["d r m"], 0.8,
-                    Source: source, SongDurationSec: 250, Truncated: true, Separated: true, Parts: parts, PartsMusicXml: "<satb/>")
+                    Source: source, SongDurationSec: 250, Truncated: true, Separated: true, Parts: parts, PartsMusicXml: "<satb/>",
+                    Chords: [new ChordSymbolDto(0, 4, 5, "maj", null, "F", "d"), new ChordSymbolDto(4, 4, 2, "min", null, "Dm", "l")],
+                    ChordsSource: "heard")
                 : null;
             return Task.FromResult(Result<TranscriptionJobDto>.Success(
                 new TranscriptionJobDto(jobId, Status, Status == TranscriptionStatus.Done ? 1 : 0.5, result, null, null, source)));

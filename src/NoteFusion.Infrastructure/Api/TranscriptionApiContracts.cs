@@ -96,7 +96,19 @@ internal sealed record JobResultResponse(
     [property: JsonPropertyName("partsMusicxml")] string PartsMusicXml = "",
     double BeatOriginSec = 0,
     string BackingAudioBase64 = "",
-    string? PartsSource = null);
+    string? PartsSource = null,
+    IReadOnlyList<WireChord>? Chords = null,
+    string? ChordsSource = null);
+
+/// <summary>One chord heard under the tune, as the worker names it (<c>app.pipeline.chords.Chord</c>).</summary>
+internal sealed record WireChord(
+    double StartBeat,
+    double DurBeats,
+    int Root,
+    string Quality,
+    int? Bass,
+    string Symbol,
+    string Solfa);
 
 internal sealed record WirePart(IReadOnlyList<WireNoteEvent> Notes, IReadOnlyList<string> SolfaLines);
 
@@ -105,7 +117,9 @@ internal sealed record WireSource(
     string Url,
     string Title,
     string Artist,
-    string? ThumbnailUrl);
+    string? ThumbnailUrl,
+    bool? Preview = null,
+    string? Notice = null);
 
 internal sealed record WireNoteEvent(
     int PitchMidi,

@@ -438,19 +438,51 @@ heroku logs --tail --app <your-heroku-app>      # watch the seeder + provider wi
 ## YouTube links ("YouTube is refusing automated downloads")
 
 YouTube blocks anonymous downloads from datacenter addresses — every EC2 instance — with
-"Sign in to confirm you're not a bot". Spotify and Apple Music links are resolved to a
-YouTube search, so when YouTube refuses, every link fails the same way. The worker gets
-through with the cookies of a signed-in YouTube account:
+"Sign in to confirm you're not a bot", often after only a handful of requests. Spotify and
+Apple Music links are found on YouTube by title, artist and length, so when YouTube refuses,
+every provider is affected. The worker has four layers against that, in order:
+
+1. **A JavaScript runtime.** The image ships Deno and `yt-dlp[default]` (which brings
+   `yt-dlp-ejs`) so yt-dlp can solve YouTube's player challenges. Nothing to configure.
+2. **Proof-of-origin tokens.** The `bgutil-provider` service in `docker-compose.prod.yml`
+   (`brainicism/bgutil-ytdlp-pot-provider`, no published port) mints the tokens YouTube asks
+   datacenter clients for, and the `bgutil-ytdlp-pot-provider` plugin in the image fetches
+   them. The transcriber's `NF_YTDLP_EXTRA_ARGS` defaults to
+   `--extractor-args "youtubepot-bgutilhttp:base_url=http://bgutil-provider:4416"`. Keep the
+   sidecar image tag and the plugin pin in `server/requirements.txt` on the same version.
+   Setting `NF_YTDLP_EXTRA_ARGS` in `.env` *replaces* that default, so an override (a
+   residential proxy: `--proxy http://user:pass@host:port`, the paid last resort) must
+   repeat the `--extractor-args …` part to keep the tokens. Check the sidecar with
+   `docker compose -f docker-compose.prod.yml logs bgutil-provider`. A token helps but does
+   not guarantee getting past a bot check.
+3. **Cookies of a signed-in account** (see below).
+4. **The store's 30-second preview.** When YouTube still refuses, a Spotify link uses the
+   preview on its track page, an Apple Music link the one from the iTunes lookup, and a
+   YouTube link the iTunes preview of the same title and artist. The job then comes back
+   `truncated`, with `source.preview = true` and the notice "Only a 30-second preview was
+   available for this song." That covers anonymous previews (30 s) and nearly covers free
+   ones (60 s); Pro full songs still need YouTube. Store previews are licensed for promoting
+   the song, so keep the song's store link visible next to a preview result. A private or
+   removed YouTube video never falls back to someone else's recording.
+
+### Cookies
 
 1. On a desktop browser signed in to a Google account (a throwaway one is sensible), export
    the YouTube cookies in Netscape `cookies.txt` format — the "Get cookies.txt LOCALLY"
    extension, or `yt-dlp --cookies-from-browser chrome --cookies cookies.txt
    "https://www.youtube.com/watch?v=dQw4w9WgXcQ"` on that machine, which writes the file.
+   Export from a private window you then close, so the browser does not rotate the session
+   the file holds.
 2. Paste the file's contents into the repository secret `YTDLP_COOKIES`.
 3. Redeploy (push to `main`, or run **Deploy to EC2** from the Actions tab). The deploy
-   writes `/opt/notefusion/ytdlp-cookies.txt`, the compose file mounts it into the
-   transcriber, and `NF_YTDLP_COOKIES_FILE` points yt-dlp at it.
+   writes `/opt/notefusion/ytdlp-cookies.txt`, the compose file mounts it read-only into the
+   transcriber, and `NF_YTDLP_COOKIES_FILE` points the worker at it. yt-dlp writes its
+   cookie jar back on exit, so the worker hands each job a private copy and deletes it
+   afterwards; the mounted file is never written.
 
-Cookies expire and YouTube rotates them; when links start failing again, export a fresh
-file and update the secret. Keep yt-dlp current too (`server/requirements.txt` pins a
-minimum; the image is rebuilt on every deploy, so a redeploy picks up a newer release).
+**Rotation.** Cookies expire, and YouTube rotates or revokes them (sooner when the account
+is used from a server). When link jobs start coming back as previews or with "This song
+could not be fetched right now", export a fresh file, replace the `YTDLP_COOKIES` secret
+and redeploy. Expect to do this every few weeks. Keep yt-dlp current too
+(`server/requirements.txt` pins a minimum; the image is rebuilt on every deploy, so a
+redeploy picks up a newer release).

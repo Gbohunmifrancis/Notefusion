@@ -79,6 +79,50 @@ public class MusicXmlTransposerTests
         Assert.Equal([("D", -1, 4), ("F", 0, 4), ("B", 0, 3)], Pitches(up));
     }
 
+    private const string ChordScore = """
+        <score-partwise version="4.0"><part id="P1"><measure number="1">
+        <attributes><divisions>1</divisions><key><fifths>-1</fifths></key></attributes>
+        <harmony print-frame="no"><root><root-step>D</root-step></root><kind text="m">minor</kind></harmony>
+        <note><pitch><step>A</step><octave>4</octave></pitch><duration>1</duration></note>
+        <harmony print-frame="no"><root><root-step>B</root-step><root-alter>-1</root-alter></root><kind text="">major</kind></harmony>
+        <note><pitch><step>B</step><alter>-1</alter><octave>4</octave></pitch><duration>1</duration></note>
+        <harmony print-frame="no"><root><root-step>G</root-step></root><kind text="">major</kind><bass><bass-step>B</bass-step></bass></harmony>
+        <note><pitch><step>B</step><octave>4</octave></pitch><duration>1</duration></note>
+        <harmony print-frame="no"><root><root-step>E</root-step></root><kind text="dim">diminished</kind></harmony>
+        <note><pitch><step>E</step><octave>4</octave></pitch><duration>1</duration></note>
+        </measure></part></score-partwise>
+        """;
+
+    private static List<string> ChordNames(string xml)
+        => XDocument.Parse(xml).Descendants("harmony").Select(h =>
+        {
+            static string Name(XElement? e, string prefix) => e is null ? "" :
+                e.Element(prefix + "-step")!.Value + (e.Element(prefix + "-alter")?.Value switch { "1" => "#", "-1" => "b", _ => "" });
+            var bass = Name(h.Element("bass"), "bass");
+            return Name(h.Element("root"), "root") + (bass.Length > 0 ? "/" + bass : "");
+        }).ToList();
+
+    [Fact]
+    public void Chord_symbols_move_with_the_notes_and_are_named_for_the_new_key()
+    {
+        var up = MusicXmlTransposer.Transpose(ChordScore, 4, new MusicalKey(9, KeyMode.Major)); // F -> A major
+
+        Assert.Equal(["F#", "D", "B/D#", "G#"], ChordNames(up));
+        Assert.Equal("minor", XDocument.Parse(up).Descendants("kind").First().Value); // the quality is untouched
+        Assert.Equal("3", XDocument.Parse(up).Descendants("fifths").Single().Value);
+
+        var down = MusicXmlTransposer.Transpose(ChordScore, -2, new MusicalKey(3, KeyMode.Major)); // F -> Eb major
+        Assert.Equal(["C", "Ab", "F/A", "D"], ChordNames(down));
+    }
+
+    [Fact]
+    public void Zero_semitones_leaves_the_chord_symbols_as_written()
+    {
+        var relabelled = MusicXmlTransposer.Transpose(ChordScore, 0, new MusicalKey(2, KeyMode.Minor));
+
+        Assert.Equal(["D", "Bb", "G/B", "E"], ChordNames(relabelled));
+    }
+
     [Fact]
     public void Malformed_xml_throws_rather_than_returning_a_stale_score()
     {

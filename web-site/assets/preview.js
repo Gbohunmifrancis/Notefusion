@@ -18,6 +18,7 @@
   var form = $("try-form");
   if (!form) return;
   var urlInput = $("try-url"), submit = $("try-submit"), file = $("try-file"), record = $("try-record"), status = $("try-status");
+  var links = window.NfSongLink;
 
   // The web app carries an icon sprite; the home page does not, so the label is text there.
   var icons = !!document.getElementById("i-mic");
@@ -44,13 +45,24 @@
     say(err.message || "Something went wrong. Try again.", "error");
   }
 
+  // Share text ("Listen to … on Spotify: https://…") is cut down to its link as it lands, with a plain
+  // hint when there is none; the hint clears itself without touching a recorded take shown here.
+  var hinting = false;
+  function sayLink(text) {
+    if (text) { say(text, "error"); hinting = true; }
+    else if (hinting) { say(""); hinting = false; }
+  }
+  links.wire(urlInput, $("try-paste"), sayLink);
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var url = urlInput.value.trim();
-    if (!url) { urlInput.focus(); return; }
+    var raw = urlInput.value.trim();
+    if (!raw) { urlInput.focus(); return; }
+    var found = links.extract(raw);
+    if (!found) { sayLink(links.hint(raw)); urlInput.focus(); return; }
+    urlInput.value = found.url;
     busy(true); say("Reading the link…");
     track("Preview started (link)");
-    send("/api/preview/link", { json: { url: url, audioPreview: false } }).then(open).catch(function (err) { busy(false); explain(err); });
+    send("/api/preview/link", { json: { url: found.url, audioPreview: false } }).then(open).catch(function (err) { busy(false); explain(err); });
   });
 
   file.addEventListener("change", function () {

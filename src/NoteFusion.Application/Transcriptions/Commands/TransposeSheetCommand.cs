@@ -23,14 +23,16 @@ public sealed record TransposeSheetCommand(
     IReadOnlyList<NoteEventDto> Notes,
     string MusicXml,
     IReadOnlyDictionary<string, PartDto>? Parts = null,
-    string? PartsMusicXml = null) : IRequest<Result<TransposedSheetDto>>;
+    string? PartsMusicXml = null,
+    IReadOnlyList<ChordSymbolDto>? Chords = null) : IRequest<Result<TransposedSheetDto>>;
 
 public sealed record TransposedSheetDto(
     string Key,
     IReadOnlyList<NoteEventDto> Notes,
     string MusicXml,
     IReadOnlyDictionary<string, PartDto>? Parts,
-    string? PartsMusicXml);
+    string? PartsMusicXml,
+    IReadOnlyList<ChordSymbolDto>? Chords = null);
 
 public sealed class TransposeSheetCommandValidator : AbstractValidator<TransposeSheetCommand>
 {
@@ -40,6 +42,7 @@ public sealed class TransposeSheetCommandValidator : AbstractValidator<Transpose
         RuleFor(x => x.Semitones).InclusiveBetween(-12, 12);
         RuleFor(x => x.Notes).NotNull();
         RuleFor(x => x.MusicXml).NotNull();
+        RuleForEach(x => x.Chords).SetValidator(new ChordSymbolDtoValidator()).When(x => x.Chords is not null);
     }
 }
 
@@ -69,6 +72,7 @@ public sealed class TransposeSheetCommandHandler : IRequestHandler<TransposeShee
         var parts = PartNotes.FromDtos(request.Parts)?
             .ToDictionary(kv => kv.Key, kv => kv.Value
                 .Select(n => n with { PitchMidi = Math.Clamp(n.PitchMidi + request.Semitones, 0, 127) }).ToList());
+        var chords = SheetChords.FromDtos(request.Chords)?.Select(c => c.Shift(request.Semitones)).ToList();
 
         string musicXml;
         string? partsMusicXml;
@@ -91,6 +95,7 @@ public sealed class TransposeSheetCommandHandler : IRequestHandler<TransposeShee
             SolfaLabels.Label(notes, newKey),
             musicXml,
             SolfaLabels.LabelParts(parts, newKey, notes),
-            partsMusicXml);
+            partsMusicXml,
+            ChordLabels.Label(chords, newKey));
     }
 }

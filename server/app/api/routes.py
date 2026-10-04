@@ -3,6 +3,7 @@
     GET  /v1/jobs/{id}    -> { status, progress } | { status: done, result }
 """
 
+import logging
 import tempfile
 from dataclasses import asdict
 from pathlib import Path
@@ -17,6 +18,7 @@ from app.config import settings
 from app.jobs.queue import JobQueue
 
 router = APIRouter(prefix="/v1")
+logger = logging.getLogger(__name__)
 
 # What a phone or a browser produces, as well as what a desktop exports. ``.webm`` is what
 # MediaRecorder gives in Chrome and Firefox, ``.mp4`` in Safari; both decode through ffmpeg.
@@ -94,9 +96,10 @@ async def submit_transcription(
     separate: bool = Form(False, description="The upload is a full song: isolate the lead vocal first and read the beat from the mix"),
     audio_preview: bool = Form(True, description="Synthesise the piano preview WAV; a client that renders its own playback sends false"),
     harmony: bool = Form(False, description="Also write alto, tenor and bass under the tune (off: one voice is transcribed as one voice)"),
+    keyboard_transpose: int = Form(0, description="The transpose setting on the player's keyboard, -11..11; the sheet is written in the key they play in"),
 ) -> SubmitResponse:
-    if mode not in ("melody", "poly", "choir"):
-        raise HTTPException(422, "mode must be 'melody', 'poly' or 'choir'")
+    mode = _mode(mode)
+    keyboard_transpose = _keyboard_transpose(keyboard_transpose)
     priority = _priority(priority)
     if max_seconds is not None and not 1.0 <= max_seconds <= settings.max_clip_seconds:
         raise HTTPException(422, f"max_seconds must be between 1 and {settings.max_clip_seconds:.0f}.")
@@ -153,20 +156,20 @@ async def submit_transcription(
         tmp_path.unlink(missing_ok=True)
         raise HTTPException(422, f"Could not read audio duration: {ex}")
 
-    if duration > settings.max_clip_seconds:
-        tmp_path.unlink(missing_ok=True)
-        raise HTTPException(413, f"Clip length {duration:.1f}s exceeds the maximum "
-                                 f"of {settings.max_clip_seconds:.0f}s.")
-
     # A capped submission (the website's try-it-free preview) keeps only the head of the
-    # clip; the result says how long the whole clip was and that it was cut.
+    # clip, and so does a clip longer than the worker transcribes — a whole song uploaded
+    # as a file is cut to its first three minutes the way a linked one is, not refused.
+    # The result says how long the whole clip was and that it was cut; the byte limit
+    # above still bounds what is accepted at all.
     song_seconds: float | None = None
-    if max_seconds is not None and duration > max_seconds + 0.5:
+    cap = settings.max_clip_seconds if max_seconds is None else max_seconds
+    if duration > cap + 0.5:
         try:
-            tmp_path = _trim_head(tmp_path, max_seconds)
+            tmp_path = _trim_head(tmp_path, cap)
         except Exception as ex:  # noqa: BLE001 - a clip we cannot decode is a client input error
             tmp_path.unlink(missing_ok=True)
-            raise HTTPException(422, f"Could not trim the clip: {ex}")
+            logger.warning("Trimming a %.0fs upload failed: %s", duration, ex)
+            raise HTTPException(422, "This audio file could not be read. Try saving it as an MP3 or WAV and upload it again.")
         song_seconds = duration
 
     queue = _get_queue(request)
@@ -175,20 +178,55 @@ async def submit_transcription(
                           correlation_id=_correlation_id(request),
                           callback_url=callback_url, priority=priority,
                           song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
-                          harmony=harmony)
+                          harmony=harmony, keyboard_transpose=keyboard_transpose)
     return SubmitResponse(job_id=job_id)
 
 
 def _trim_head(path: Path, seconds: float) -> Path:
-    """The first ``seconds`` of ``path`` as a new 22.05 kHz mono WAV; the original is deleted."""
+    """The first ``seconds`` of ``path`` as a new WAV; the original is deleted.
+
+    At the source's own sample rate and channels: a song is trimmed before its vocal is
+    isolated, and the isolation model reads 44.1 kHz stereo.  This used to write 22.05 kHz
+    mono, which cost the preview of a song 0.02-0.10 solfa error per note and doubled its
+    tempo errors (``tests.accuracy.songs``).  ffmpeg cuts without decoding the rest.
+    """
+    import shutil
+    import subprocess
+
     import soundfile as sf
 
-    y, sr = librosa.load(str(path), sr=22_050, mono=True, duration=seconds)
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as out:
         out_path = Path(out.name)
-    sf.write(str(out_path), y, sr)
+    try:
+        ffmpeg = shutil.which("ffmpeg")
+        if ffmpeg:
+            subprocess.run(
+                [ffmpeg, "-v", "error", "-nostdin", "-y", "-i", str(path), "-t", f"{seconds:.3f}",
+                 "-vn", "-c:a", "pcm_s16le", str(out_path)],
+                capture_output=True, timeout=120, check=True)
+        else:
+            y, sr = librosa.load(str(path), sr=None, mono=False, duration=seconds)
+            sf.write(str(out_path), y.T, sr)
+    except Exception:
+        out_path.unlink(missing_ok=True)
+        raise
     path.unlink(missing_ok=True)
     return out_path
+
+
+MODES = ("melody", "poly", "choir", "chords")
+
+
+def _mode(value: str) -> str:
+    if value not in MODES:
+        raise HTTPException(422, "mode must be 'melody', 'poly', 'choir' or 'chords'")
+    return value
+
+
+def _keyboard_transpose(value: int) -> int:
+    if not -11 <= value <= 11:
+        raise HTTPException(422, "keyboard_transpose must be between -11 and 11.")
+    return value
 
 
 def _priority(value: str) -> str:
@@ -238,6 +276,7 @@ async def submit_link_transcription(
     max_seconds: float | None = Form(None),
     audio_preview: bool = Form(True),
     harmony: bool = Form(False),
+    keyboard_transpose: int = Form(0),
 ) -> SubmitResponse:
     """Transcribe the lead vocal of a song behind a YouTube, Spotify or Apple Music link.
 
@@ -247,8 +286,8 @@ async def submit_link_transcription(
     """
     from app.ingest.links import provider_of
 
-    if mode not in ("melody", "poly", "choir"):
-        raise HTTPException(422, "mode must be 'melody', 'poly' or 'choir'")
+    mode = _mode(mode)
+    keyboard_transpose = _keyboard_transpose(keyboard_transpose)
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
     priority = _priority(priority)
@@ -268,7 +307,8 @@ async def submit_link_transcription(
                                time_signature=time_signature,
                                correlation_id=_correlation_id(request),
                                callback_url=callback_url, priority=priority,
-                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony)
+                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony,
+                               keyboard_transpose=keyboard_transpose)
     return SubmitResponse(job_id=job_id)
 
 

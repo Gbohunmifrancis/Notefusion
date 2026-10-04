@@ -27,7 +27,7 @@ public sealed class SubmitTranscriptionRequest
     /// <summary>Audio clip file to transcribe (e.g. m4a, wav, mp3).</summary>
     public required IFormFile Audio { get; init; }
 
-    /// <summary>Transcription mode: Melody (monophonic) or Poly (polyphonic). Wire values: "melody" / "poly".</summary>
+    /// <summary>Transcription mode. Wire values: "melody" / "poly" / "choir" / "chords".</summary>
     public TranscriptionMode Mode { get; init; } = TranscriptionMode.Melody;
 
     /// <summary>Optional key override (e.g. 'C major', 'A minor').</summary>
@@ -44,6 +44,9 @@ public sealed class SubmitTranscriptionRequest
 
     /// <summary>Optional time signature override (e.g. '4/4', '3/4', '6/8').</summary>
     public string? TimeSignature { get; init; }
+
+    /// <summary>The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</summary>
+    public int KeyboardTranspose { get; init; }
 }
 
 /// <summary>JSON body for transcribing a song behind a streaming link.</summary>
@@ -59,6 +62,9 @@ public sealed class SubmitLinkRequest
 
     /// <summary>False when the client renders its own playback and does not want the synthesised preview WAV.</summary>
     public bool AudioPreview { get; init; } = true;
+
+    /// <summary>The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</summary>
+    public int KeyboardTranspose { get; init; }
 }
 
 /// <summary>
@@ -87,7 +93,7 @@ public sealed class TranscriptionsController : ApiControllerBase
                 Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview);
+        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview, request.KeyboardTranspose);
         var result = await _sender.Send(command, ct);
 
         if (result.IsFailure)
@@ -111,7 +117,7 @@ public sealed class TranscriptionsController : ApiControllerBase
     public async Task<IActionResult> SubmitLink([FromBody] SubmitLinkRequest request, CancellationToken ct)
     {
         var result = await _sender.Send(
-            new SubmitLinkTranscriptionCommand(request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.AudioPreview), ct);
+            new SubmitLinkTranscriptionCommand(request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.AudioPreview, request.KeyboardTranspose), ct);
 
         if (result.IsFailure)
             return HandleResult(Result.Failure<TranscriptionJobDto>(result.Error));

@@ -15,6 +15,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
+# Deno, the JavaScript runtime yt-dlp uses for YouTube's player challenges (yt-dlp-ejs).
+# Without one, YouTube extraction is deprecated and formats go missing.
+COPY --from=denoland/deno:bin-2.5.4 /deno /usr/local/bin/deno
+
 WORKDIR /app
 
 # Install dependencies first so layers cache when source changes.

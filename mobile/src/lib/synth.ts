@@ -1,19 +1,29 @@
 import { NoteEvent } from "../api/types";
+import { type PianoSample, SAMPLE_RATE, nearestSample } from "./piano";
 
 /*
- * Soft-piano voice — mirrors server/app/pipeline/transcriber.py:44-88 and
- * _synthesize_audio_preview. **Keep the two in lock-step.**
+ * Piano voice. Every note the app plays — the preview, a rehearsal mix, "hear it",
+ * the sing-along count-in — is rendered here into one WAV, so the piano sounds the
+ * same wherever it is heard.
  *
- * This is not a cosmetic duplication. The server preview is only heard on the
- * first render of a fresh transcription; the moment the user edits a note or
- * changes the key, ResultScreen regenerates the audio with this function
- * instead. Any divergence between the two is therefore audible as the timbre
- * changing underfoot mid-session, which is worse than either voice being
- * imperfect. Same rate, same partials, same envelope, same limiter.
+ * The voice is the recorded piano in `lib/piano.ts`: the nearest of 17 Salamander
+ * Grand soft-layer samples, resampled onto the pitch (interval plus the sample's
+ * stretch-tuning correction), held to note-off, then let go by the damper. The web's
+ * `web-site/assets/choir.js` plays the same samples the same way — **keep the two in
+ * lock-step**: same release, same damper, same soundboard, same velocity.
+ *
+ * The additive voice further down (a struck-string partial stack, once mirrored by
+ * the server's `_synthesize_audio_preview`) is kept only as the fallback for the
+ * moment before the samples have loaded, or if they could not be. Mobile no longer
+ * plays the server's preview: ResultScreen always synthesises its own.
  */
 
-/** Matches PREVIEW_SAMPLE_RATE. 8 kHz here was telephone-band and sounded it. */
-const SAMPLE_RATE = 22050;
+/**
+ * The damper, after note-off: an exponential fade with this time constant inside the
+ * RELEASE_SEC ring-out — 80 ms is a felt damper landing, not a cut. The same two
+ * numbers drive the web's `setTargetAtTime(0, off, 0.08)` and `stop(off + 0.35)`.
+ */
+const DAMPER_TAU_SEC = 0.08;
 
 /**
  * Hammer contact point as a fraction of the speaking length. A real piano's is
@@ -245,7 +255,40 @@ function smoothRamp(i: number, n: number): number {
 }
 
 /**
- * One note at unit peak: a struck-string partial stack with a hammer transient,
+ * One note from the recorded piano: `sample` resampled onto `pitchMidi` by linear
+ * interpolation at rate 2^(interval/12 − cents/1200), held for `lengthSamples`, then
+ * the damper — exp(−t/DAMPER_TAU_SEC) over the `tailSamples` ring-out, with a cosine
+ * end so the last sample is zero. The recording is already a strike that blooms and
+ * fades, so there is no envelope of its own to shape and no normalisation: the pack is
+ * level-matched at build time, and velocity is the only gain applied. A note that
+ * outlives the 3.5 s recording simply fades with it.
+ */
+function renderSampledVoice(
+  sample: PianoSample,
+  pitchMidi: number,
+  lengthSamples: number,
+  tailSamples: number,
+): Float64Array {
+  const total = lengthSamples + tailSamples;
+  const out = new Float64Array(total);
+  const rate = Math.pow(2, (pitchMidi - sample.midi) / 12 - sample.centsSharp / 1200);
+  const pcm = sample.pcm;
+  const n = Math.min(total, Math.floor((pcm.length - 2) / rate));
+  for (let i = 0; i < n; i++) {
+    const pos = i * rate;
+    const j = Math.floor(pos);
+    const frac = pos - j;
+    out[i] = pcm[j]! * (1 - frac) + pcm[j + 1]! * frac;
+  }
+  for (let i = lengthSamples; i < n; i++) {
+    const k = i - lengthSamples;
+    out[i] = out[i]! * Math.exp(-k / (DAMPER_TAU_SEC * SAMPLE_RATE)) * smoothRamp(tailSamples - 1 - k, tailSamples);
+  }
+  return out;
+}
+
+/**
+ * The fallback voice, at unit peak: a struck-string partial stack with a hammer transient,
  * per-partial damping, a double decay and unison beating. Depends only on pitch
  * and length, which is what makes it cacheable — a melody repeats pitches and
  * note lengths heavily, and this is the expensive part.
@@ -624,13 +667,16 @@ export function synthesizeVoicesWavBase64(
     const key = `${note.pitchMidi}:${durSamples}`;
     let voice = cache.get(key);
     if (!voice) {
-      voice = renderVoice(note.pitchMidi, durSamples, tailSamples);
+      const sample = nearestSample(note.pitchMidi);
+      voice = sample
+        ? renderSampledVoice(sample, note.pitchMidi, durSamples, tailSamples)
+        : renderVoice(note.pitchMidi, durSamples, tailSamples);
       cache.set(key, voice);
     }
 
-    // Velocity from confidence, matching the server's 0.55 + 0.35·conf.
-    // renderVoice already normalises each note to PEAK_TARGET, so there is no
-    // separate voice gain to apply here.
+    // Velocity from confidence, matching the web's 0.55 + 0.35·conf. The sample pack
+    // is level-matched at build time and renderVoice normalises each note to
+    // PEAK_TARGET, so there is no separate voice gain to apply here.
     const conf = Number.isFinite(note.conf) ? Math.min(Math.max(note.conf, 0), 1) : 1;
     const gain = (0.55 + 0.35 * conf) * voiceGain;
     const n = Math.min(durSamples + tailSamples, totalSamples - startSample);

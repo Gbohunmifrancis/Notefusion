@@ -223,6 +223,7 @@
   var pollTimer = null;
   var osmd = null;
   var C = window.NfChoir;
+  var N = window.NfChords;
   var guest = false;      // a visitor with a preview and no account
   var previewId = new URLSearchParams(location.search).get("preview");
   var player = null;      // the rehearsal player, made once the first result shows
@@ -578,6 +579,7 @@
       var result = {
         key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
         overallConfidence: t.overallConfidence || 0, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
+        chords: t.chords || null, chordsSource: t.chords && t.chords.length ? "heard" : null,
         solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null
       };
       current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0 };
@@ -752,19 +754,62 @@
   }
 
   // ── Submitting ───────────────────────────────────────────────────────────
+  function linkHint(text) { $("link-hint").textContent = text; }
+  window.NfSongLink.wire($("link-url"), $("link-paste"), linkHint);
   $("form-link").addEventListener("submit", function (e) {
     e.preventDefault();
-    var url = $("link-url").value.trim();
-    if (!url) return;
+    var raw = $("link-url").value.trim();
+    if (!raw) return;
+    // Share text ("Listen to … on Spotify: https://…") is cut down to its link; anything else gets a plain hint here.
+    var found = window.NfSongLink.extract(raw);
+    if (!found) { linkHint(window.NfSongLink.hint(raw)); $("link-url").focus(); return; }
+    $("link-url").value = found.url; linkHint("");
+    var body = { url: found.url, mode: "melody", audioPreview: false };
+    // Only when set: the sheet is then written in the keys pressed on a transposed keyboard.
+    if (kbTranspose() !== 0) body.keyboardTranspose = kbTranspose();
     $("link-submit").disabled = true; hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
-    request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: { url: url, mode: "melody", audioPreview: false } })
+    request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
       .then(function (job) { startJob(job, guest ? "preview" : "link"); })
       .catch(function (err) { explain(err); })
       .finally(function () { $("link-submit").disabled = false; });
   });
 
-  function uploadKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "hum"; }
+  // ── What is in the recording ─────────────────────────────────────────────
+  // Until the picker is touched, a file is taken for a song with instruments (the voice is isolated,
+  // the better road for anything with a band) and a take recorded here for a voice. Once someone
+  // picks, that choice is kept on this browser for both.
+  var KIND_KEY = "nf.web.uploadKind", CHOIR_BAND_KEY = "nf.web.choirBand", KB_KEY = "nf.web.kbTranspose";
+  var KINDS = ["hum", "song", "choir", "chords"];
+  function stored(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function store(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* private mode */ } }
+  function chosenKind() { var k = stored(KIND_KEY); return KINDS.indexOf(k) >= 0 ? k : null; }
+  function checkedKind() { var el = document.querySelector('input[name="upload-kind"]:checked'); return el ? el.value : "song"; }
+  function selectKind(kind) { var el = document.querySelector('input[name="upload-kind"][value="' + kind + '"]'); if (el) el.checked = true; renderKindOptions(); }
+  /** The kind a submission goes as: the person's choice, else the default for where the audio came from. */
+  function uploadKind(fromMic) { var k = chosenKind() || (fromMic ? "hum" : "song"); selectKind(k); return k; }
+  /** The keyboard's transpose setting, −11 to +11; 0 when it is off. */
+  function kbTranspose() { var n = parseInt(stored(KB_KEY), 10); return n >= -11 && n <= 11 ? n : 0; }
+  /** A choir with instruments behind it, and the keyboard's transpose, only where they apply (or are set). */
+  function renderKindOptions() {
+    var kind = checkedKind();
+    kind === "choir" ? show($("choir-band-row")) : hide($("choir-band-row"));
+    kind === "chords" || kbTranspose() !== 0 ? show($("kb-row")) : hide($("kb-row"));
+  }
+  (function () {
+    var select = $("kb-transpose");
+    [0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].forEach(function (n) {
+      var opt = document.createElement("option"); opt.value = String(n); opt.textContent = n > 0 ? "+" + n : n < 0 ? "\u2212" + -n : "0"; select.appendChild(opt);
+    });
+    select.value = String(kbTranspose());
+    select.addEventListener("change", function () { store(KB_KEY, select.value); renderKindOptions(); });
+    $("choir-band").checked = stored(CHOIR_BAND_KEY) === "1";
+    $("choir-band").addEventListener("change", function () { store(CHOIR_BAND_KEY, $("choir-band").checked ? "1" : "0"); renderStudioCredits(); });
+    if (chosenKind()) selectKind(chosenKind()); else renderKindOptions();
+    document.querySelectorAll('input[name="upload-kind"]').forEach(function (r) {
+      r.addEventListener("change", function () { store(KIND_KEY, r.value); renderKindOptions(); renderStudioCredits(); });
+    });
+  })();
   /** What a song costs, said before it is spent: a link or a song with instruments uses one credit. */
   function renderStudioCredits() {
     var el = $("studio-credits");
@@ -772,24 +817,25 @@
     if (!sub || !isPro()) { hide(el); return; }
     var left = sub.songCreditsRemaining, total = sub.songCreditsTotal;
     el.textContent = left > 0
-      ? "A link or a song with instruments uses 1 of your " + left + " songs left this month. Hummed tunes and choir recordings are free."
-      : "You've used all " + total + " songs this month. Hummed tunes and choir recordings are still free; songs come back next month.";
+      ? "A link or a recording with instruments uses 1 of your " + left + " songs left this month. Hummed tunes, chords and unaccompanied choirs are free."
+      : "You've used all " + total + " songs this month. Hummed tunes, chords and unaccompanied choirs are still free; songs come back next month.";
     show(el);
   }
-  document.querySelectorAll('input[name="upload-kind"]').forEach(function (r) { r.addEventListener("change", renderStudioCredits); });
-  function submitAudio(file, name) {
-    var kind = uploadKind(), song = kind === "song";
+  function submitAudio(file, name, fromMic) {
+    var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
     var form = new FormData();
     form.append("audio", file, name);
-    // A choir in parts keeps every voice; anything else is one line.
-    form.append("mode", kind === "choir" ? "choir" : "melody");
-    // A song with a band behind the voice is separated first; a hummed tune is not.
+    // A choir in parts keeps every voice; chords keep the harmony, with the top line as the tune; anything else is one line.
+    form.append("mode", kind === "choir" ? "choir" : kind === "chords" ? "chords" : "melody");
+    // A song with a band behind the voice (or the voices) is separated first; a hummed tune is not.
     form.append("separate", song ? "true" : "false");
+    // The sheet in the keys pressed on a transposed keyboard: always sent for chords, otherwise only when set.
+    if (kind === "chords" || kbTranspose() !== 0) form.append("keyboardTranspose", String(kbTranspose()));
     // The browser renders its own playback from the notes: the server's piano WAV (about
     // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
     form.append("audioPreview", "false");
     hide($("app-alert"));
-    track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : "Tune uploaded");
+    track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : kind === "chords" ? "Chords uploaded" : "Tune uploaded");
     return request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
       .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || (song ? "separating" : "transcribing") }), guest ? "preview" : "upload"); })
       .catch(function (err) { explain(err); });
@@ -900,10 +946,9 @@
   $("rec-use").addEventListener("click", function () {
     if (!rec.blob) return;
     var blob = rec.blob, name = rec.name;
-    document.querySelector('input[name="upload-kind"][value="hum"]').checked = true;
     recClose();
     track("Recording sent");
-    submitAudio(blob, name);
+    submitAudio(blob, name, true);
   });
 
   function explain(err) {
@@ -1004,7 +1049,9 @@
       var c = document.createElement("span"); c.className = "chip"; c.textContent = text; chips.appendChild(c);
     });
     var trunc = $("r-truncated");
-    if (result.truncated) {
+    if (result.source && result.source.preview && result.source.notice) {
+      alertIn(trunc, "info", result.source.notice);
+    } else if (result.truncated) {
       alertIn(trunc, "info", guest
         ? "Free preview: the first 30 seconds of " + formatSec(result.songDurationSec) + ". Create a free account for more."
         : isPro()
@@ -1013,6 +1060,7 @@
     } else hide(trunc);
 
     renderSolfa(result);
+    renderChords(result);
     $("lyrics").value = current.lyrics || "";
     setupRehearsal(result);
     setupSing(result);
@@ -1054,19 +1102,24 @@
     return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
   }
 
-  /** The solfa lines, and under them the hymn-book layout once there are words. */
+  /**
+   * The solfa lines, and under them the hymn-book layout once there are words. When chords were
+   * heard, the layout is drawn whatever the words, with each chord over the bar it starts in: the
+   * letter name with its root in solfa beneath ("F" over "d", "Dm" over "l").
+   */
   function renderSolfa(result) {
     var lines = result.solfaLines && result.solfaLines.length > 1 ? result.solfaLines : C.renderLines(result.notes || [], C.keyHeader(result.key), result.timeSignature);
-    var hasLyrics = !!(current.lyrics && current.lyrics.trim());
+    var hasLyrics = !!(current.lyrics && current.lyrics.trim()), hasChords = N.has(result.chords);
     var solfa = $("r-solfa-text");
     solfa.innerHTML = "";
-    (hasLyrics ? lines.slice(0, 1) : lines).forEach(function (line, i) {
+    (hasLyrics || hasChords ? lines.slice(0, 1) : lines).forEach(function (line, i) {
       var div = document.createElement("div");
       if (i === 0 && /^Doh is/i.test(line)) div.className = "doh";
       div.textContent = line;
       solfa.appendChild(div);
     });
     var hymn = $("r-hymn"); hymn.innerHTML = ""; hymnCells = [];
+    if (hasChords) { hymnCells = N.renderGrid(hymn, N.grid(result.notes || [], current.lyrics, result.chords, result.timeSignature), hasLyrics); return; }
     if (!hasLyrics) return;
     var bpb = C.beatsPerBar(result.timeSignature);
     C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars, r) {
@@ -1083,6 +1136,14 @@
       });
       table.appendChild(tr); hymn.appendChild(table);
     });
+  }
+
+  /** The progression as a list, when chords were heard; the row over the solfa is renderSolfa's. */
+  function renderChords(result) {
+    if (!N.has(result.chords)) { hide($("chords-card")); return; }
+    N.renderList($("chord-list"), result.chords, result.tempo);
+    result.chordsSource === "heard" ? show($("chords-heard")) : hide($("chords-heard"));
+    show($("chords-card"));
   }
 
   $("lyrics").addEventListener("input", function () {
@@ -1173,8 +1234,14 @@
   function playLeadIn(ctx, notes, tempo, ts) {
     var bpb = C.beatsPerBar(ts), beat = 60 / Math.max(30, tempo), t0 = ctx.currentTime + 0.05;
     var first = notes.slice().sort(function (a, b) { return a.startBeat - b.startBeat; })[0];
-    // The starting note on the same piano the rehearsal player uses, held for the bar.
-    C.pianoNote(ctx, C.createPianoOutput(ctx), first ? first.pitchMidi : 60, bpb * beat, t0, 0.9);
+    // The starting note on the same piano the rehearsal player uses, held for the bar. The
+    // piano is normally loaded by now (the player fetches it when the sheet is shown); if it
+    // is not, the note starts when it arrives and still ends on the bar-line.
+    var out = C.createPianoOutput(ctx), barEnd = t0 + bpb * beat;
+    C.loadPiano(ctx).then(function () {
+      var at = Math.max(t0, ctx.currentTime);
+      if (barEnd - at > 0.05) C.pianoNote(ctx, out, first ? first.pitchMidi : 60, barEnd - at, at, 0.9);
+    }, function () { /* no piano: the clicks still count the singer in */ });
     for (var i = 0; i < 2 * bpb; i++) {
       var at = t0 + i * beat, click = ctx.createOscillator(), cg = ctx.createGain();
       click.frequency.value = i % bpb === 0 ? 1500 : 1000; cg.gain.setValueAtTime(0.4, at); cg.gain.exponentialRampToValueAtTime(0.0001, at + 0.05);
@@ -1272,13 +1339,13 @@
     btn.disabled = true;
     var req = current.savedId
       ? request("/api/library/" + current.savedId + "/transpose", { method: "POST", body: { semitones: n } })
-      : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null } });
+      : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null, chords: r.chords || null } });
     track("Transposed");
     req.then(function (moved) {
       current.semitones = 0;
       var next = Object.assign({}, r, {
         key: moved.key, notes: moved.notes || [], musicXml: moved.musicXml || "",
-        parts: moved.parts || null, partsMusicXml: moved.partsMusicXml || "",
+        parts: moved.parts || null, partsMusicXml: moved.partsMusicXml || "", chords: moved.chords || null,
         solfaLines: C.renderLines(moved.notes || [], C.keyHeader(moved.key), r.timeSignature)
       });
       current.result = next;
@@ -1309,7 +1376,8 @@
     request("/api/library", { method: "POST", body: {
       title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
-      lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null
+      lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null,
+      chords: r.chords || null
     } }).then(function (saved) {
       sfx.play("saved");
       track("Saved sheet");
@@ -1486,8 +1554,12 @@
   }));
   $("dl-solfa").addEventListener("click", function () {
     if (!current || !current.result) return;
-    var r = current.result;
-    var text = (r.solfaLines || []).join("\n") + (current.lyrics && current.lyrics.trim() ? "\n\n" + current.lyrics.trim() : "") + "\n\n" + $("r-credit").textContent + "\n";
+    var r = current.result, words = current.lyrics && current.lyrics.trim();
+    // With chords, each row carries them over the tune (and the words); without, the plain lines and the words after.
+    var text = N.has(r.chords)
+      ? ((r.solfaLines || [])[0] || "") + "\n\n" + N.textRows(N.grid(r.notes || [], current.lyrics, r.chords, r.timeSignature), !!words).join("\n")
+      : (r.solfaLines || []).join("\n") + (words ? "\n\n" + words : "");
+    text += "\n\n" + $("r-credit").textContent + "\n";
     download(baseName() + "-solfa.txt", new Blob([text], { type: "text/plain" }));
   });
   $("dl-parts").addEventListener("click", gated(function (r) {
@@ -1551,7 +1623,13 @@
       var lines = result.solfaLines && result.solfaLines.length > 1 ? result.solfaLines : C.renderLines(result.notes || [], C.keyHeader(result.key), result.timeSignature);
       var words = current.lyrics && current.lyrics.trim();
       doc.text(lines[0] || "", margin, y); y += 7;
-      if (words) {
+      if (N.has(result.chords)) {
+        // Chords, their solfa, the tune (and the words), row by row.
+        N.textRows(N.grid(result.notes || [], current.lyrics, result.chords, result.timeSignature), !!words).forEach(function (line) {
+          if (y > H - margin - 10) { doc.addPage(); y = margin + 8; }
+          doc.text(line, margin, y); y += 4.5;
+        });
+      } else if (words) {
         C.hymnRows(result.notes || [], current.lyrics, result.timeSignature).forEach(function (bars) {
           var top = "", bottom = "";
           bars.forEach(function (bar) {

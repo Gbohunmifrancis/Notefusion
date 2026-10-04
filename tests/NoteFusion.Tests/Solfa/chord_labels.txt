@@ -1,0 +1,2016 @@
+0 major 0 maj d C C/E C/G
+0 major 0 min d Cm Cm/Eb Cm/G
+0 major 0 7 d C7 C7/E C7/G C7/Bb
+0 major 0 maj7 d Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+0 major 0 min7 d Cm7 Cm7/Eb Cm7/G Cm7/Bb
+0 major 0 dim d Cdim Cdim/Eb Cdim/Gb
+0 major 0 sus4 d Csus4 Csus4/F Csus4/G
+0 major 1 maj ra Db Db/F Db/Ab
+0 major 1 min ra Dbm Dbm/Fb Dbm/Ab
+0 major 1 7 ra Db7 Db7/F Db7/Ab Db7/Cb
+0 major 1 maj7 ra Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+0 major 1 min7 ra Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+0 major 1 dim de C#dim C#dim/E C#dim/G
+0 major 1 sus4 ra Dbsus4 Dbsus4/Gb Dbsus4/Ab
+0 major 2 maj r D D/F# D/A
+0 major 2 min r Dm Dm/F Dm/A
+0 major 2 7 r D7 D7/F# D7/A D7/C
+0 major 2 maj7 r Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+0 major 2 min7 r Dm7 Dm7/F Dm7/A Dm7/C
+0 major 2 dim r Ddim Ddim/F Ddim/Ab
+0 major 2 sus4 r Dsus4 Dsus4/G Dsus4/A
+0 major 3 maj ma Eb Eb/G Eb/Bb
+0 major 3 min ma Ebm Ebm/Gb Ebm/Bb
+0 major 3 7 ma Eb7 Eb7/G Eb7/Bb Eb7/Db
+0 major 3 maj7 ma Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+0 major 3 min7 ma Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+0 major 3 dim re D#dim D#dim/F# D#dim/A
+0 major 3 sus4 ma Ebsus4 Ebsus4/Ab Ebsus4/Bb
+0 major 4 maj m E E/G# E/B
+0 major 4 min m Em Em/G Em/B
+0 major 4 7 m E7 E7/G# E7/B E7/D
+0 major 4 maj7 m Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+0 major 4 min7 m Em7 Em7/G Em7/B Em7/D
+0 major 4 dim m Edim Edim/G Edim/Bb
+0 major 4 sus4 m Esus4 Esus4/A Esus4/B
+0 major 5 maj f F F/A F/C
+0 major 5 min f Fm Fm/Ab Fm/C
+0 major 5 7 f F7 F7/A F7/C F7/Eb
+0 major 5 maj7 f Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+0 major 5 min7 f Fm7 Fm7/Ab Fm7/C Fm7/Eb
+0 major 5 dim f Fdim Fdim/Ab Fdim/Cb
+0 major 5 sus4 f Fsus4 Fsus4/Bb Fsus4/C
+0 major 6 maj sa Gb Gb/Bb Gb/Db
+0 major 6 min sa Gbm Gbm/A Gbm/Db
+0 major 6 7 sa Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+0 major 6 maj7 sa Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+0 major 6 min7 sa Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+0 major 6 dim fe F#dim F#dim/A F#dim/C
+0 major 6 sus4 sa Gbsus4 Gbsus4/Cb Gbsus4/Db
+0 major 7 maj s G G/B G/D
+0 major 7 min s Gm Gm/Bb Gm/D
+0 major 7 7 s G7 G7/B G7/D G7/F
+0 major 7 maj7 s Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+0 major 7 min7 s Gm7 Gm7/Bb Gm7/D Gm7/F
+0 major 7 dim s Gdim Gdim/Bb Gdim/Db
+0 major 7 sus4 s Gsus4 Gsus4/C Gsus4/D
+0 major 8 maj la Ab Ab/C Ab/Eb
+0 major 8 min la Abm Abm/Cb Abm/Eb
+0 major 8 7 la Ab7 Ab7/C Ab7/Eb Ab7/Gb
+0 major 8 maj7 la Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+0 major 8 min7 la Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+0 major 8 dim se G#dim G#dim/B G#dim/D
+0 major 8 sus4 la Absus4 Absus4/Db Absus4/Eb
+0 major 9 maj l A A/C# A/E
+0 major 9 min l Am Am/C Am/E
+0 major 9 7 l A7 A7/C# A7/E A7/G
+0 major 9 maj7 l Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+0 major 9 min7 l Am7 Am7/C Am7/E Am7/G
+0 major 9 dim l Adim Adim/C Adim/Eb
+0 major 9 sus4 l Asus4 Asus4/D Asus4/E
+0 major 10 maj ta Bb Bb/D Bb/F
+0 major 10 min ta Bbm Bbm/Db Bbm/F
+0 major 10 7 ta Bb7 Bb7/D Bb7/F Bb7/Ab
+0 major 10 maj7 ta Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+0 major 10 min7 ta Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+0 major 10 dim le A#dim A#dim/C# A#dim/E
+0 major 10 sus4 ta Bbsus4 Bbsus4/Eb Bbsus4/F
+0 major 11 maj t B B/D# B/F#
+0 major 11 min t Bm Bm/D Bm/F#
+0 major 11 7 t B7 B7/D# B7/F# B7/A
+0 major 11 maj7 t Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+0 major 11 min7 t Bm7 Bm7/D Bm7/F# Bm7/A
+0 major 11 dim t Bdim Bdim/D Bdim/F
+0 major 11 sus4 t Bsus4 Bsus4/E Bsus4/F#
+0 minor 0 maj l C C/E C/G
+0 minor 0 min l Cm Cm/Eb Cm/G
+0 minor 0 7 l C7 C7/E C7/G C7/Bb
+0 minor 0 maj7 l Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+0 minor 0 min7 l Cm7 Cm7/Eb Cm7/G Cm7/Bb
+0 minor 0 dim l Cdim Cdim/Eb Cdim/Gb
+0 minor 0 sus4 l Csus4 Csus4/F Csus4/G
+0 minor 1 maj ta Db Db/F Db/Ab
+0 minor 1 min ta Dbm Dbm/Fb Dbm/Ab
+0 minor 1 7 ta Db7 Db7/F Db7/Ab Db7/Cb
+0 minor 1 maj7 ta Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+0 minor 1 min7 ta Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+0 minor 1 dim le C#dim C#dim/E C#dim/G
+0 minor 1 sus4 ta Dbsus4 Dbsus4/Gb Dbsus4/Ab
+0 minor 2 maj t D D/F# D/A
+0 minor 2 min t Dm Dm/F Dm/A
+0 minor 2 7 t D7 D7/F# D7/A D7/C
+0 minor 2 maj7 t Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+0 minor 2 min7 t Dm7 Dm7/F Dm7/A Dm7/C
+0 minor 2 dim t Ddim Ddim/F Ddim/Ab
+0 minor 2 sus4 t Dsus4 Dsus4/G Dsus4/A
+0 minor 3 maj d Eb Eb/G Eb/Bb
+0 minor 3 min d Ebm Ebm/Gb Ebm/Bb
+0 minor 3 7 d Eb7 Eb7/G Eb7/Bb Eb7/Db
+0 minor 3 maj7 d Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+0 minor 3 min7 d Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+0 minor 3 dim d Ebdim Ebdim/Gb Ebdim/A
+0 minor 3 sus4 d Ebsus4 Ebsus4/Ab Ebsus4/Bb
+0 minor 4 maj ra Fb Fb/Ab Fb/Cb
+0 minor 4 min ra Fbm Fbm/G Fbm/Cb
+0 minor 4 7 ra Fb7 Fb7/Ab Fb7/Cb Fb7/D
+0 minor 4 maj7 ra Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+0 minor 4 min7 ra Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+0 minor 4 dim de Edim Edim/G Edim/Bb
+0 minor 4 sus4 ra Fbsus4 Fbsus4/A Fbsus4/Cb
+0 minor 5 maj r F F/A F/C
+0 minor 5 min r Fm Fm/Ab Fm/C
+0 minor 5 7 r F7 F7/A F7/C F7/Eb
+0 minor 5 maj7 r Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+0 minor 5 min7 r Fm7 Fm7/Ab Fm7/C Fm7/Eb
+0 minor 5 dim r Fdim Fdim/Ab Fdim/Cb
+0 minor 5 sus4 r Fsus4 Fsus4/Bb Fsus4/C
+0 minor 6 maj ma Gb Gb/Bb Gb/Db
+0 minor 6 min ma Gbm Gbm/A Gbm/Db
+0 minor 6 7 ma Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+0 minor 6 maj7 ma Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+0 minor 6 min7 ma Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+0 minor 6 dim re F#dim F#dim/A F#dim/C
+0 minor 6 sus4 ma Gbsus4 Gbsus4/Cb Gbsus4/Db
+0 minor 7 maj m G G/B G/D
+0 minor 7 min m Gm Gm/Bb Gm/D
+0 minor 7 7 m G7 G7/B G7/D G7/F
+0 minor 7 maj7 m Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+0 minor 7 min7 m Gm7 Gm7/Bb Gm7/D Gm7/F
+0 minor 7 dim m Gdim Gdim/Bb Gdim/Db
+0 minor 7 sus4 m Gsus4 Gsus4/C Gsus4/D
+0 minor 8 maj f Ab Ab/C Ab/Eb
+0 minor 8 min f Abm Abm/Cb Abm/Eb
+0 minor 8 7 f Ab7 Ab7/C Ab7/Eb Ab7/Gb
+0 minor 8 maj7 f Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+0 minor 8 min7 f Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+0 minor 8 dim f Abdim Abdim/Cb Abdim/D
+0 minor 8 sus4 f Absus4 Absus4/Db Absus4/Eb
+0 minor 9 maj sa A A/C# A/E
+0 minor 9 min sa Am Am/C Am/E
+0 minor 9 7 sa A7 A7/C# A7/E A7/G
+0 minor 9 maj7 sa Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+0 minor 9 min7 sa Am7 Am7/C Am7/E Am7/G
+0 minor 9 dim fe Adim Adim/C Adim/Eb
+0 minor 9 sus4 sa Asus4 Asus4/D Asus4/E
+0 minor 10 maj s Bb Bb/D Bb/F
+0 minor 10 min s Bbm Bbm/Db Bbm/F
+0 minor 10 7 s Bb7 Bb7/D Bb7/F Bb7/Ab
+0 minor 10 maj7 s Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+0 minor 10 min7 s Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+0 minor 10 dim s Bbdim Bbdim/Db Bbdim/Fb
+0 minor 10 sus4 s Bbsus4 Bbsus4/Eb Bbsus4/F
+0 minor 11 maj la Cb Cb/Eb Cb/Gb
+0 minor 11 min la Cbm Cbm/D Cbm/Gb
+0 minor 11 7 la Cb7 Cb7/Eb Cb7/Gb Cb7/A
+0 minor 11 maj7 la Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+0 minor 11 min7 la Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+0 minor 11 dim se Bdim Bdim/D Bdim/F
+0 minor 11 sus4 la Cbsus4 Cbsus4/Fb Cbsus4/Gb
+1 major 0 maj t C C/E C/G
+1 major 0 min t Cm Cm/Eb Cm/G
+1 major 0 7 t C7 C7/E C7/G C7/Bb
+1 major 0 maj7 t Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+1 major 0 min7 t Cm7 Cm7/Eb Cm7/G Cm7/Bb
+1 major 0 dim t Cdim Cdim/Eb Cdim/Gb
+1 major 0 sus4 t Csus4 Csus4/F Csus4/G
+1 major 1 maj d Db Db/F Db/Ab
+1 major 1 min d Dbm Dbm/Fb Dbm/Ab
+1 major 1 7 d Db7 Db7/F Db7/Ab Db7/Cb
+1 major 1 maj7 d Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+1 major 1 min7 d Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+1 major 1 dim d Dbdim Dbdim/Fb Dbdim/G
+1 major 1 sus4 d Dbsus4 Dbsus4/Gb Dbsus4/Ab
+1 major 2 maj ra D D/F# D/A
+1 major 2 min ra Dm Dm/F Dm/A
+1 major 2 7 ra D7 D7/F# D7/A D7/C
+1 major 2 maj7 ra Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+1 major 2 min7 ra Dm7 Dm7/F Dm7/A Dm7/C
+1 major 2 dim de Ddim Ddim/F Ddim/Ab
+1 major 2 sus4 ra Dsus4 Dsus4/G Dsus4/A
+1 major 3 maj r Eb Eb/G Eb/Bb
+1 major 3 min r Ebm Ebm/Gb Ebm/Bb
+1 major 3 7 r Eb7 Eb7/G Eb7/Bb Eb7/Db
+1 major 3 maj7 r Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+1 major 3 min7 r Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+1 major 3 dim r Ebdim Ebdim/Gb Ebdim/A
+1 major 3 sus4 r Ebsus4 Ebsus4/Ab Ebsus4/Bb
+1 major 4 maj ma Fb Fb/Ab Fb/Cb
+1 major 4 min ma Fbm Fbm/G Fbm/Cb
+1 major 4 7 ma Fb7 Fb7/Ab Fb7/Cb Fb7/D
+1 major 4 maj7 ma Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+1 major 4 min7 ma Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+1 major 4 dim re Edim Edim/G Edim/Bb
+1 major 4 sus4 ma Fbsus4 Fbsus4/A Fbsus4/Cb
+1 major 5 maj m F F/A F/C
+1 major 5 min m Fm Fm/Ab Fm/C
+1 major 5 7 m F7 F7/A F7/C F7/Eb
+1 major 5 maj7 m Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+1 major 5 min7 m Fm7 Fm7/Ab Fm7/C Fm7/Eb
+1 major 5 dim m Fdim Fdim/Ab Fdim/Cb
+1 major 5 sus4 m Fsus4 Fsus4/Bb Fsus4/C
+1 major 6 maj f Gb Gb/Bb Gb/Db
+1 major 6 min f Gbm Gbm/A Gbm/Db
+1 major 6 7 f Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+1 major 6 maj7 f Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+1 major 6 min7 f Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+1 major 6 dim f Gbdim Gbdim/A Gbdim/C
+1 major 6 sus4 f Gbsus4 Gbsus4/Cb Gbsus4/Db
+1 major 7 maj sa G G/B G/D
+1 major 7 min sa Gm Gm/Bb Gm/D
+1 major 7 7 sa G7 G7/B G7/D G7/F
+1 major 7 maj7 sa Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+1 major 7 min7 sa Gm7 Gm7/Bb Gm7/D Gm7/F
+1 major 7 dim fe Gdim Gdim/Bb Gdim/Db
+1 major 7 sus4 sa Gsus4 Gsus4/C Gsus4/D
+1 major 8 maj s Ab Ab/C Ab/Eb
+1 major 8 min s Abm Abm/Cb Abm/Eb
+1 major 8 7 s Ab7 Ab7/C Ab7/Eb Ab7/Gb
+1 major 8 maj7 s Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+1 major 8 min7 s Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+1 major 8 dim s Abdim Abdim/Cb Abdim/D
+1 major 8 sus4 s Absus4 Absus4/Db Absus4/Eb
+1 major 9 maj la A A/C# A/E
+1 major 9 min la Am Am/C Am/E
+1 major 9 7 la A7 A7/C# A7/E A7/G
+1 major 9 maj7 la Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+1 major 9 min7 la Am7 Am7/C Am7/E Am7/G
+1 major 9 dim se Adim Adim/C Adim/Eb
+1 major 9 sus4 la Asus4 Asus4/D Asus4/E
+1 major 10 maj l Bb Bb/D Bb/F
+1 major 10 min l Bbm Bbm/Db Bbm/F
+1 major 10 7 l Bb7 Bb7/D Bb7/F Bb7/Ab
+1 major 10 maj7 l Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+1 major 10 min7 l Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+1 major 10 dim l Bbdim Bbdim/Db Bbdim/Fb
+1 major 10 sus4 l Bbsus4 Bbsus4/Eb Bbsus4/F
+1 major 11 maj ta Cb Cb/Eb Cb/Gb
+1 major 11 min ta Cbm Cbm/D Cbm/Gb
+1 major 11 7 ta Cb7 Cb7/Eb Cb7/Gb Cb7/A
+1 major 11 maj7 ta Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+1 major 11 min7 ta Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+1 major 11 dim le Bdim Bdim/D Bdim/F
+1 major 11 sus4 ta Cbsus4 Cbsus4/Fb Cbsus4/Gb
+1 minor 0 maj la C C/E C/G
+1 minor 0 min la Cm Cm/Eb Cm/G
+1 minor 0 7 la C7 C7/E C7/G C7/Bb
+1 minor 0 maj7 la Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+1 minor 0 min7 la Cm7 Cm7/Eb Cm7/G Cm7/Bb
+1 minor 0 dim se B#dim B#dim/D# B#dim/F#
+1 minor 0 sus4 la Csus4 Csus4/F Csus4/G
+1 minor 1 maj l C# C#/E# C#/G#
+1 minor 1 min l C#m C#m/E C#m/G#
+1 minor 1 7 l C#7 C#7/E# C#7/G# C#7/B
+1 minor 1 maj7 l C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+1 minor 1 min7 l C#m7 C#m7/E C#m7/G# C#m7/B
+1 minor 1 dim l C#dim C#dim/E C#dim/G
+1 minor 1 sus4 l C#sus4 C#sus4/F# C#sus4/G#
+1 minor 2 maj ta D D/F# D/A
+1 minor 2 min ta Dm Dm/F Dm/A
+1 minor 2 7 ta D7 D7/F# D7/A D7/C
+1 minor 2 maj7 ta Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+1 minor 2 min7 ta Dm7 Dm7/F Dm7/A Dm7/C
+1 minor 2 dim le Ddim Ddim/F Ddim/Ab
+1 minor 2 sus4 ta Dsus4 Dsus4/G Dsus4/A
+1 minor 3 maj t D# D#/G D#/A#
+1 minor 3 min t D#m D#m/F# D#m/A#
+1 minor 3 7 t D#7 D#7/G D#7/A# D#7/C#
+1 minor 3 maj7 t D#maj7 D#maj7/G D#maj7/A# D#maj7/D
+1 minor 3 min7 t D#m7 D#m7/F# D#m7/A# D#m7/C#
+1 minor 3 dim t D#dim D#dim/F# D#dim/A
+1 minor 3 sus4 t D#sus4 D#sus4/G# D#sus4/A#
+1 minor 4 maj d E E/G# E/B
+1 minor 4 min d Em Em/G Em/B
+1 minor 4 7 d E7 E7/G# E7/B E7/D
+1 minor 4 maj7 d Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+1 minor 4 min7 d Em7 Em7/G Em7/B Em7/D
+1 minor 4 dim d Edim Edim/G Edim/Bb
+1 minor 4 sus4 d Esus4 Esus4/A Esus4/B
+1 minor 5 maj ra F F/A F/C
+1 minor 5 min ra Fm Fm/Ab Fm/C
+1 minor 5 7 ra F7 F7/A F7/C F7/Eb
+1 minor 5 maj7 ra Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+1 minor 5 min7 ra Fm7 Fm7/Ab Fm7/C Fm7/Eb
+1 minor 5 dim de E#dim E#dim/G# E#dim/B
+1 minor 5 sus4 ra Fsus4 Fsus4/Bb Fsus4/C
+1 minor 6 maj r F# F#/A# F#/C#
+1 minor 6 min r F#m F#m/A F#m/C#
+1 minor 6 7 r F#7 F#7/A# F#7/C# F#7/E
+1 minor 6 maj7 r F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+1 minor 6 min7 r F#m7 F#m7/A F#m7/C# F#m7/E
+1 minor 6 dim r F#dim F#dim/A F#dim/C
+1 minor 6 sus4 r F#sus4 F#sus4/B F#sus4/C#
+1 minor 7 maj ma G G/B G/D
+1 minor 7 min ma Gm Gm/Bb Gm/D
+1 minor 7 7 ma G7 G7/B G7/D G7/F
+1 minor 7 maj7 ma Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+1 minor 7 min7 ma Gm7 Gm7/Bb Gm7/D Gm7/F
+1 minor 7 dim re Gdim Gdim/Bb Gdim/Db
+1 minor 7 sus4 ma Gsus4 Gsus4/C Gsus4/D
+1 minor 8 maj m G# G#/B# G#/D#
+1 minor 8 min m G#m G#m/B G#m/D#
+1 minor 8 7 m G#7 G#7/B# G#7/D# G#7/F#
+1 minor 8 maj7 m G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+1 minor 8 min7 m G#m7 G#m7/B G#m7/D# G#m7/F#
+1 minor 8 dim m G#dim G#dim/B G#dim/D
+1 minor 8 sus4 m G#sus4 G#sus4/C# G#sus4/D#
+1 minor 9 maj f A A/C# A/E
+1 minor 9 min f Am Am/C Am/E
+1 minor 9 7 f A7 A7/C# A7/E A7/G
+1 minor 9 maj7 f Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+1 minor 9 min7 f Am7 Am7/C Am7/E Am7/G
+1 minor 9 dim f Adim Adim/C Adim/Eb
+1 minor 9 sus4 f Asus4 Asus4/D Asus4/E
+1 minor 10 maj sa Bb Bb/D Bb/F
+1 minor 10 min sa Bbm Bbm/Db Bbm/F
+1 minor 10 7 sa Bb7 Bb7/D Bb7/F Bb7/Ab
+1 minor 10 maj7 sa Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+1 minor 10 min7 sa Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+1 minor 10 dim fe A#dim A#dim/C# A#dim/E
+1 minor 10 sus4 sa Bbsus4 Bbsus4/Eb Bbsus4/F
+1 minor 11 maj s B B/D# B/F#
+1 minor 11 min s Bm Bm/D Bm/F#
+1 minor 11 7 s B7 B7/D# B7/F# B7/A
+1 minor 11 maj7 s Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+1 minor 11 min7 s Bm7 Bm7/D Bm7/F# Bm7/A
+1 minor 11 dim s Bdim Bdim/D Bdim/F
+1 minor 11 sus4 s Bsus4 Bsus4/E Bsus4/F#
+2 major 0 maj ta C C/E C/G
+2 major 0 min ta Cm Cm/Eb Cm/G
+2 major 0 7 ta C7 C7/E C7/G C7/Bb
+2 major 0 maj7 ta Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+2 major 0 min7 ta Cm7 Cm7/Eb Cm7/G Cm7/Bb
+2 major 0 dim le B#dim B#dim/D# B#dim/F#
+2 major 0 sus4 ta Csus4 Csus4/F Csus4/G
+2 major 1 maj t C# C#/E# C#/G#
+2 major 1 min t C#m C#m/E C#m/G#
+2 major 1 7 t C#7 C#7/E# C#7/G# C#7/B
+2 major 1 maj7 t C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+2 major 1 min7 t C#m7 C#m7/E C#m7/G# C#m7/B
+2 major 1 dim t C#dim C#dim/E C#dim/G
+2 major 1 sus4 t C#sus4 C#sus4/F# C#sus4/G#
+2 major 2 maj d D D/F# D/A
+2 major 2 min d Dm Dm/F Dm/A
+2 major 2 7 d D7 D7/F# D7/A D7/C
+2 major 2 maj7 d Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+2 major 2 min7 d Dm7 Dm7/F Dm7/A Dm7/C
+2 major 2 dim d Ddim Ddim/F Ddim/Ab
+2 major 2 sus4 d Dsus4 Dsus4/G Dsus4/A
+2 major 3 maj ra Eb Eb/G Eb/Bb
+2 major 3 min ra Ebm Ebm/Gb Ebm/Bb
+2 major 3 7 ra Eb7 Eb7/G Eb7/Bb Eb7/Db
+2 major 3 maj7 ra Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+2 major 3 min7 ra Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+2 major 3 dim de D#dim D#dim/F# D#dim/A
+2 major 3 sus4 ra Ebsus4 Ebsus4/Ab Ebsus4/Bb
+2 major 4 maj r E E/G# E/B
+2 major 4 min r Em Em/G Em/B
+2 major 4 7 r E7 E7/G# E7/B E7/D
+2 major 4 maj7 r Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+2 major 4 min7 r Em7 Em7/G Em7/B Em7/D
+2 major 4 dim r Edim Edim/G Edim/Bb
+2 major 4 sus4 r Esus4 Esus4/A Esus4/B
+2 major 5 maj ma F F/A F/C
+2 major 5 min ma Fm Fm/Ab Fm/C
+2 major 5 7 ma F7 F7/A F7/C F7/Eb
+2 major 5 maj7 ma Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+2 major 5 min7 ma Fm7 Fm7/Ab Fm7/C Fm7/Eb
+2 major 5 dim re E#dim E#dim/G# E#dim/B
+2 major 5 sus4 ma Fsus4 Fsus4/Bb Fsus4/C
+2 major 6 maj m F# F#/A# F#/C#
+2 major 6 min m F#m F#m/A F#m/C#
+2 major 6 7 m F#7 F#7/A# F#7/C# F#7/E
+2 major 6 maj7 m F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+2 major 6 min7 m F#m7 F#m7/A F#m7/C# F#m7/E
+2 major 6 dim m F#dim F#dim/A F#dim/C
+2 major 6 sus4 m F#sus4 F#sus4/B F#sus4/C#
+2 major 7 maj f G G/B G/D
+2 major 7 min f Gm Gm/Bb Gm/D
+2 major 7 7 f G7 G7/B G7/D G7/F
+2 major 7 maj7 f Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+2 major 7 min7 f Gm7 Gm7/Bb Gm7/D Gm7/F
+2 major 7 dim f Gdim Gdim/Bb Gdim/Db
+2 major 7 sus4 f Gsus4 Gsus4/C Gsus4/D
+2 major 8 maj sa Ab Ab/C Ab/Eb
+2 major 8 min sa Abm Abm/Cb Abm/Eb
+2 major 8 7 sa Ab7 Ab7/C Ab7/Eb Ab7/Gb
+2 major 8 maj7 sa Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+2 major 8 min7 sa Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+2 major 8 dim fe G#dim G#dim/B G#dim/D
+2 major 8 sus4 sa Absus4 Absus4/Db Absus4/Eb
+2 major 9 maj s A A/C# A/E
+2 major 9 min s Am Am/C Am/E
+2 major 9 7 s A7 A7/C# A7/E A7/G
+2 major 9 maj7 s Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+2 major 9 min7 s Am7 Am7/C Am7/E Am7/G
+2 major 9 dim s Adim Adim/C Adim/Eb
+2 major 9 sus4 s Asus4 Asus4/D Asus4/E
+2 major 10 maj la Bb Bb/D Bb/F
+2 major 10 min la Bbm Bbm/Db Bbm/F
+2 major 10 7 la Bb7 Bb7/D Bb7/F Bb7/Ab
+2 major 10 maj7 la Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+2 major 10 min7 la Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+2 major 10 dim se A#dim A#dim/C# A#dim/E
+2 major 10 sus4 la Bbsus4 Bbsus4/Eb Bbsus4/F
+2 major 11 maj l B B/D# B/F#
+2 major 11 min l Bm Bm/D Bm/F#
+2 major 11 7 l B7 B7/D# B7/F# B7/A
+2 major 11 maj7 l Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+2 major 11 min7 l Bm7 Bm7/D Bm7/F# Bm7/A
+2 major 11 dim l Bdim Bdim/D Bdim/F
+2 major 11 sus4 l Bsus4 Bsus4/E Bsus4/F#
+2 minor 0 maj s C C/E C/G
+2 minor 0 min s Cm Cm/Eb Cm/G
+2 minor 0 7 s C7 C7/E C7/G C7/Bb
+2 minor 0 maj7 s Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+2 minor 0 min7 s Cm7 Cm7/Eb Cm7/G Cm7/Bb
+2 minor 0 dim s Cdim Cdim/Eb Cdim/Gb
+2 minor 0 sus4 s Csus4 Csus4/F Csus4/G
+2 minor 1 maj la Db Db/F Db/Ab
+2 minor 1 min la Dbm Dbm/Fb Dbm/Ab
+2 minor 1 7 la Db7 Db7/F Db7/Ab Db7/Cb
+2 minor 1 maj7 la Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+2 minor 1 min7 la Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+2 minor 1 dim se C#dim C#dim/E C#dim/G
+2 minor 1 sus4 la Dbsus4 Dbsus4/Gb Dbsus4/Ab
+2 minor 2 maj l D D/F# D/A
+2 minor 2 min l Dm Dm/F Dm/A
+2 minor 2 7 l D7 D7/F# D7/A D7/C
+2 minor 2 maj7 l Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+2 minor 2 min7 l Dm7 Dm7/F Dm7/A Dm7/C
+2 minor 2 dim l Ddim Ddim/F Ddim/Ab
+2 minor 2 sus4 l Dsus4 Dsus4/G Dsus4/A
+2 minor 3 maj ta Eb Eb/G Eb/Bb
+2 minor 3 min ta Ebm Ebm/Gb Ebm/Bb
+2 minor 3 7 ta Eb7 Eb7/G Eb7/Bb Eb7/Db
+2 minor 3 maj7 ta Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+2 minor 3 min7 ta Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+2 minor 3 dim le D#dim D#dim/F# D#dim/A
+2 minor 3 sus4 ta Ebsus4 Ebsus4/Ab Ebsus4/Bb
+2 minor 4 maj t E E/G# E/B
+2 minor 4 min t Em Em/G Em/B
+2 minor 4 7 t E7 E7/G# E7/B E7/D
+2 minor 4 maj7 t Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+2 minor 4 min7 t Em7 Em7/G Em7/B Em7/D
+2 minor 4 dim t Edim Edim/G Edim/Bb
+2 minor 4 sus4 t Esus4 Esus4/A Esus4/B
+2 minor 5 maj d F F/A F/C
+2 minor 5 min d Fm Fm/Ab Fm/C
+2 minor 5 7 d F7 F7/A F7/C F7/Eb
+2 minor 5 maj7 d Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+2 minor 5 min7 d Fm7 Fm7/Ab Fm7/C Fm7/Eb
+2 minor 5 dim d Fdim Fdim/Ab Fdim/Cb
+2 minor 5 sus4 d Fsus4 Fsus4/Bb Fsus4/C
+2 minor 6 maj ra Gb Gb/Bb Gb/Db
+2 minor 6 min ra Gbm Gbm/A Gbm/Db
+2 minor 6 7 ra Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+2 minor 6 maj7 ra Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+2 minor 6 min7 ra Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+2 minor 6 dim de F#dim F#dim/A F#dim/C
+2 minor 6 sus4 ra Gbsus4 Gbsus4/Cb Gbsus4/Db
+2 minor 7 maj r G G/B G/D
+2 minor 7 min r Gm Gm/Bb Gm/D
+2 minor 7 7 r G7 G7/B G7/D G7/F
+2 minor 7 maj7 r Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+2 minor 7 min7 r Gm7 Gm7/Bb Gm7/D Gm7/F
+2 minor 7 dim r Gdim Gdim/Bb Gdim/Db
+2 minor 7 sus4 r Gsus4 Gsus4/C Gsus4/D
+2 minor 8 maj ma Ab Ab/C Ab/Eb
+2 minor 8 min ma Abm Abm/Cb Abm/Eb
+2 minor 8 7 ma Ab7 Ab7/C Ab7/Eb Ab7/Gb
+2 minor 8 maj7 ma Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+2 minor 8 min7 ma Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+2 minor 8 dim re G#dim G#dim/B G#dim/D
+2 minor 8 sus4 ma Absus4 Absus4/Db Absus4/Eb
+2 minor 9 maj m A A/C# A/E
+2 minor 9 min m Am Am/C Am/E
+2 minor 9 7 m A7 A7/C# A7/E A7/G
+2 minor 9 maj7 m Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+2 minor 9 min7 m Am7 Am7/C Am7/E Am7/G
+2 minor 9 dim m Adim Adim/C Adim/Eb
+2 minor 9 sus4 m Asus4 Asus4/D Asus4/E
+2 minor 10 maj f Bb Bb/D Bb/F
+2 minor 10 min f Bbm Bbm/Db Bbm/F
+2 minor 10 7 f Bb7 Bb7/D Bb7/F Bb7/Ab
+2 minor 10 maj7 f Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+2 minor 10 min7 f Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+2 minor 10 dim f Bbdim Bbdim/Db Bbdim/Fb
+2 minor 10 sus4 f Bbsus4 Bbsus4/Eb Bbsus4/F
+2 minor 11 maj sa Cb Cb/Eb Cb/Gb
+2 minor 11 min sa Cbm Cbm/D Cbm/Gb
+2 minor 11 7 sa Cb7 Cb7/Eb Cb7/Gb Cb7/A
+2 minor 11 maj7 sa Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+2 minor 11 min7 sa Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+2 minor 11 dim fe Bdim Bdim/D Bdim/F
+2 minor 11 sus4 sa Cbsus4 Cbsus4/Fb Cbsus4/Gb
+3 major 0 maj l C C/E C/G
+3 major 0 min l Cm Cm/Eb Cm/G
+3 major 0 7 l C7 C7/E C7/G C7/Bb
+3 major 0 maj7 l Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+3 major 0 min7 l Cm7 Cm7/Eb Cm7/G Cm7/Bb
+3 major 0 dim l Cdim Cdim/Eb Cdim/Gb
+3 major 0 sus4 l Csus4 Csus4/F Csus4/G
+3 major 1 maj ta Db Db/F Db/Ab
+3 major 1 min ta Dbm Dbm/Fb Dbm/Ab
+3 major 1 7 ta Db7 Db7/F Db7/Ab Db7/Cb
+3 major 1 maj7 ta Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+3 major 1 min7 ta Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+3 major 1 dim le C#dim C#dim/E C#dim/G
+3 major 1 sus4 ta Dbsus4 Dbsus4/Gb Dbsus4/Ab
+3 major 2 maj t D D/F# D/A
+3 major 2 min t Dm Dm/F Dm/A
+3 major 2 7 t D7 D7/F# D7/A D7/C
+3 major 2 maj7 t Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+3 major 2 min7 t Dm7 Dm7/F Dm7/A Dm7/C
+3 major 2 dim t Ddim Ddim/F Ddim/Ab
+3 major 2 sus4 t Dsus4 Dsus4/G Dsus4/A
+3 major 3 maj d Eb Eb/G Eb/Bb
+3 major 3 min d Ebm Ebm/Gb Ebm/Bb
+3 major 3 7 d Eb7 Eb7/G Eb7/Bb Eb7/Db
+3 major 3 maj7 d Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+3 major 3 min7 d Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+3 major 3 dim d Ebdim Ebdim/Gb Ebdim/A
+3 major 3 sus4 d Ebsus4 Ebsus4/Ab Ebsus4/Bb
+3 major 4 maj ra Fb Fb/Ab Fb/Cb
+3 major 4 min ra Fbm Fbm/G Fbm/Cb
+3 major 4 7 ra Fb7 Fb7/Ab Fb7/Cb Fb7/D
+3 major 4 maj7 ra Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+3 major 4 min7 ra Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+3 major 4 dim de Edim Edim/G Edim/Bb
+3 major 4 sus4 ra Fbsus4 Fbsus4/A Fbsus4/Cb
+3 major 5 maj r F F/A F/C
+3 major 5 min r Fm Fm/Ab Fm/C
+3 major 5 7 r F7 F7/A F7/C F7/Eb
+3 major 5 maj7 r Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+3 major 5 min7 r Fm7 Fm7/Ab Fm7/C Fm7/Eb
+3 major 5 dim r Fdim Fdim/Ab Fdim/Cb
+3 major 5 sus4 r Fsus4 Fsus4/Bb Fsus4/C
+3 major 6 maj ma Gb Gb/Bb Gb/Db
+3 major 6 min ma Gbm Gbm/A Gbm/Db
+3 major 6 7 ma Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+3 major 6 maj7 ma Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+3 major 6 min7 ma Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+3 major 6 dim re F#dim F#dim/A F#dim/C
+3 major 6 sus4 ma Gbsus4 Gbsus4/Cb Gbsus4/Db
+3 major 7 maj m G G/B G/D
+3 major 7 min m Gm Gm/Bb Gm/D
+3 major 7 7 m G7 G7/B G7/D G7/F
+3 major 7 maj7 m Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+3 major 7 min7 m Gm7 Gm7/Bb Gm7/D Gm7/F
+3 major 7 dim m Gdim Gdim/Bb Gdim/Db
+3 major 7 sus4 m Gsus4 Gsus4/C Gsus4/D
+3 major 8 maj f Ab Ab/C Ab/Eb
+3 major 8 min f Abm Abm/Cb Abm/Eb
+3 major 8 7 f Ab7 Ab7/C Ab7/Eb Ab7/Gb
+3 major 8 maj7 f Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+3 major 8 min7 f Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+3 major 8 dim f Abdim Abdim/Cb Abdim/D
+3 major 8 sus4 f Absus4 Absus4/Db Absus4/Eb
+3 major 9 maj sa A A/C# A/E
+3 major 9 min sa Am Am/C Am/E
+3 major 9 7 sa A7 A7/C# A7/E A7/G
+3 major 9 maj7 sa Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+3 major 9 min7 sa Am7 Am7/C Am7/E Am7/G
+3 major 9 dim fe Adim Adim/C Adim/Eb
+3 major 9 sus4 sa Asus4 Asus4/D Asus4/E
+3 major 10 maj s Bb Bb/D Bb/F
+3 major 10 min s Bbm Bbm/Db Bbm/F
+3 major 10 7 s Bb7 Bb7/D Bb7/F Bb7/Ab
+3 major 10 maj7 s Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+3 major 10 min7 s Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+3 major 10 dim s Bbdim Bbdim/Db Bbdim/Fb
+3 major 10 sus4 s Bbsus4 Bbsus4/Eb Bbsus4/F
+3 major 11 maj la Cb Cb/Eb Cb/Gb
+3 major 11 min la Cbm Cbm/D Cbm/Gb
+3 major 11 7 la Cb7 Cb7/Eb Cb7/Gb Cb7/A
+3 major 11 maj7 la Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+3 major 11 min7 la Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+3 major 11 dim se Bdim Bdim/D Bdim/F
+3 major 11 sus4 la Cbsus4 Cbsus4/Fb Cbsus4/Gb
+3 minor 0 maj sa C C/E C/G
+3 minor 0 min sa Cm Cm/Eb Cm/G
+3 minor 0 7 sa C7 C7/E C7/G C7/Bb
+3 minor 0 maj7 sa Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+3 minor 0 min7 sa Cm7 Cm7/Eb Cm7/G Cm7/Bb
+3 minor 0 dim fe Cdim Cdim/Eb Cdim/Gb
+3 minor 0 sus4 sa Csus4 Csus4/F Csus4/G
+3 minor 1 maj s Db Db/F Db/Ab
+3 minor 1 min s Dbm Dbm/Fb Dbm/Ab
+3 minor 1 7 s Db7 Db7/F Db7/Ab Db7/Cb
+3 minor 1 maj7 s Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+3 minor 1 min7 s Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+3 minor 1 dim s Dbdim Dbdim/Fb Dbdim/G
+3 minor 1 sus4 s Dbsus4 Dbsus4/Gb Dbsus4/Ab
+3 minor 2 maj la D D/F# D/A
+3 minor 2 min la Dm Dm/F Dm/A
+3 minor 2 7 la D7 D7/F# D7/A D7/C
+3 minor 2 maj7 la Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+3 minor 2 min7 la Dm7 Dm7/F Dm7/A Dm7/C
+3 minor 2 dim se Ddim Ddim/F Ddim/Ab
+3 minor 2 sus4 la Dsus4 Dsus4/G Dsus4/A
+3 minor 3 maj l Eb Eb/G Eb/Bb
+3 minor 3 min l Ebm Ebm/Gb Ebm/Bb
+3 minor 3 7 l Eb7 Eb7/G Eb7/Bb Eb7/Db
+3 minor 3 maj7 l Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+3 minor 3 min7 l Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+3 minor 3 dim l Ebdim Ebdim/Gb Ebdim/A
+3 minor 3 sus4 l Ebsus4 Ebsus4/Ab Ebsus4/Bb
+3 minor 4 maj ta Fb Fb/Ab Fb/Cb
+3 minor 4 min ta Fbm Fbm/G Fbm/Cb
+3 minor 4 7 ta Fb7 Fb7/Ab Fb7/Cb Fb7/D
+3 minor 4 maj7 ta Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+3 minor 4 min7 ta Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+3 minor 4 dim le Edim Edim/G Edim/Bb
+3 minor 4 sus4 ta Fbsus4 Fbsus4/A Fbsus4/Cb
+3 minor 5 maj t F F/A F/C
+3 minor 5 min t Fm Fm/Ab Fm/C
+3 minor 5 7 t F7 F7/A F7/C F7/Eb
+3 minor 5 maj7 t Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+3 minor 5 min7 t Fm7 Fm7/Ab Fm7/C Fm7/Eb
+3 minor 5 dim t Fdim Fdim/Ab Fdim/Cb
+3 minor 5 sus4 t Fsus4 Fsus4/Bb Fsus4/C
+3 minor 6 maj d Gb Gb/Bb Gb/Db
+3 minor 6 min d Gbm Gbm/A Gbm/Db
+3 minor 6 7 d Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+3 minor 6 maj7 d Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+3 minor 6 min7 d Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+3 minor 6 dim d Gbdim Gbdim/A Gbdim/C
+3 minor 6 sus4 d Gbsus4 Gbsus4/Cb Gbsus4/Db
+3 minor 7 maj ra G G/B G/D
+3 minor 7 min ra Gm Gm/Bb Gm/D
+3 minor 7 7 ra G7 G7/B G7/D G7/F
+3 minor 7 maj7 ra Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+3 minor 7 min7 ra Gm7 Gm7/Bb Gm7/D Gm7/F
+3 minor 7 dim de Gdim Gdim/Bb Gdim/Db
+3 minor 7 sus4 ra Gsus4 Gsus4/C Gsus4/D
+3 minor 8 maj r Ab Ab/C Ab/Eb
+3 minor 8 min r Abm Abm/Cb Abm/Eb
+3 minor 8 7 r Ab7 Ab7/C Ab7/Eb Ab7/Gb
+3 minor 8 maj7 r Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+3 minor 8 min7 r Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+3 minor 8 dim r Abdim Abdim/Cb Abdim/D
+3 minor 8 sus4 r Absus4 Absus4/Db Absus4/Eb
+3 minor 9 maj ma A A/C# A/E
+3 minor 9 min ma Am Am/C Am/E
+3 minor 9 7 ma A7 A7/C# A7/E A7/G
+3 minor 9 maj7 ma Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+3 minor 9 min7 ma Am7 Am7/C Am7/E Am7/G
+3 minor 9 dim re Adim Adim/C Adim/Eb
+3 minor 9 sus4 ma Asus4 Asus4/D Asus4/E
+3 minor 10 maj m Bb Bb/D Bb/F
+3 minor 10 min m Bbm Bbm/Db Bbm/F
+3 minor 10 7 m Bb7 Bb7/D Bb7/F Bb7/Ab
+3 minor 10 maj7 m Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+3 minor 10 min7 m Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+3 minor 10 dim m Bbdim Bbdim/Db Bbdim/Fb
+3 minor 10 sus4 m Bbsus4 Bbsus4/Eb Bbsus4/F
+3 minor 11 maj f Cb Cb/Eb Cb/Gb
+3 minor 11 min f Cbm Cbm/D Cbm/Gb
+3 minor 11 7 f Cb7 Cb7/Eb Cb7/Gb Cb7/A
+3 minor 11 maj7 f Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+3 minor 11 min7 f Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+3 minor 11 dim f Cbdim Cbdim/D Cbdim/F
+3 minor 11 sus4 f Cbsus4 Cbsus4/Fb Cbsus4/Gb
+4 major 0 maj la C C/E C/G
+4 major 0 min la Cm Cm/Eb Cm/G
+4 major 0 7 la C7 C7/E C7/G C7/Bb
+4 major 0 maj7 la Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+4 major 0 min7 la Cm7 Cm7/Eb Cm7/G Cm7/Bb
+4 major 0 dim se B#dim B#dim/D# B#dim/F#
+4 major 0 sus4 la Csus4 Csus4/F Csus4/G
+4 major 1 maj l C# C#/E# C#/G#
+4 major 1 min l C#m C#m/E C#m/G#
+4 major 1 7 l C#7 C#7/E# C#7/G# C#7/B
+4 major 1 maj7 l C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+4 major 1 min7 l C#m7 C#m7/E C#m7/G# C#m7/B
+4 major 1 dim l C#dim C#dim/E C#dim/G
+4 major 1 sus4 l C#sus4 C#sus4/F# C#sus4/G#
+4 major 2 maj ta D D/F# D/A
+4 major 2 min ta Dm Dm/F Dm/A
+4 major 2 7 ta D7 D7/F# D7/A D7/C
+4 major 2 maj7 ta Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+4 major 2 min7 ta Dm7 Dm7/F Dm7/A Dm7/C
+4 major 2 dim le Ddim Ddim/F Ddim/Ab
+4 major 2 sus4 ta Dsus4 Dsus4/G Dsus4/A
+4 major 3 maj t D# D#/G D#/A#
+4 major 3 min t D#m D#m/F# D#m/A#
+4 major 3 7 t D#7 D#7/G D#7/A# D#7/C#
+4 major 3 maj7 t D#maj7 D#maj7/G D#maj7/A# D#maj7/D
+4 major 3 min7 t D#m7 D#m7/F# D#m7/A# D#m7/C#
+4 major 3 dim t D#dim D#dim/F# D#dim/A
+4 major 3 sus4 t D#sus4 D#sus4/G# D#sus4/A#
+4 major 4 maj d E E/G# E/B
+4 major 4 min d Em Em/G Em/B
+4 major 4 7 d E7 E7/G# E7/B E7/D
+4 major 4 maj7 d Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+4 major 4 min7 d Em7 Em7/G Em7/B Em7/D
+4 major 4 dim d Edim Edim/G Edim/Bb
+4 major 4 sus4 d Esus4 Esus4/A Esus4/B
+4 major 5 maj ra F F/A F/C
+4 major 5 min ra Fm Fm/Ab Fm/C
+4 major 5 7 ra F7 F7/A F7/C F7/Eb
+4 major 5 maj7 ra Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+4 major 5 min7 ra Fm7 Fm7/Ab Fm7/C Fm7/Eb
+4 major 5 dim de E#dim E#dim/G# E#dim/B
+4 major 5 sus4 ra Fsus4 Fsus4/Bb Fsus4/C
+4 major 6 maj r F# F#/A# F#/C#
+4 major 6 min r F#m F#m/A F#m/C#
+4 major 6 7 r F#7 F#7/A# F#7/C# F#7/E
+4 major 6 maj7 r F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+4 major 6 min7 r F#m7 F#m7/A F#m7/C# F#m7/E
+4 major 6 dim r F#dim F#dim/A F#dim/C
+4 major 6 sus4 r F#sus4 F#sus4/B F#sus4/C#
+4 major 7 maj ma G G/B G/D
+4 major 7 min ma Gm Gm/Bb Gm/D
+4 major 7 7 ma G7 G7/B G7/D G7/F
+4 major 7 maj7 ma Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+4 major 7 min7 ma Gm7 Gm7/Bb Gm7/D Gm7/F
+4 major 7 dim re Gdim Gdim/Bb Gdim/Db
+4 major 7 sus4 ma Gsus4 Gsus4/C Gsus4/D
+4 major 8 maj m G# G#/B# G#/D#
+4 major 8 min m G#m G#m/B G#m/D#
+4 major 8 7 m G#7 G#7/B# G#7/D# G#7/F#
+4 major 8 maj7 m G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+4 major 8 min7 m G#m7 G#m7/B G#m7/D# G#m7/F#
+4 major 8 dim m G#dim G#dim/B G#dim/D
+4 major 8 sus4 m G#sus4 G#sus4/C# G#sus4/D#
+4 major 9 maj f A A/C# A/E
+4 major 9 min f Am Am/C Am/E
+4 major 9 7 f A7 A7/C# A7/E A7/G
+4 major 9 maj7 f Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+4 major 9 min7 f Am7 Am7/C Am7/E Am7/G
+4 major 9 dim f Adim Adim/C Adim/Eb
+4 major 9 sus4 f Asus4 Asus4/D Asus4/E
+4 major 10 maj sa Bb Bb/D Bb/F
+4 major 10 min sa Bbm Bbm/Db Bbm/F
+4 major 10 7 sa Bb7 Bb7/D Bb7/F Bb7/Ab
+4 major 10 maj7 sa Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+4 major 10 min7 sa Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+4 major 10 dim fe A#dim A#dim/C# A#dim/E
+4 major 10 sus4 sa Bbsus4 Bbsus4/Eb Bbsus4/F
+4 major 11 maj s B B/D# B/F#
+4 major 11 min s Bm Bm/D Bm/F#
+4 major 11 7 s B7 B7/D# B7/F# B7/A
+4 major 11 maj7 s Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+4 major 11 min7 s Bm7 Bm7/D Bm7/F# Bm7/A
+4 major 11 dim s Bdim Bdim/D Bdim/F
+4 major 11 sus4 s Bsus4 Bsus4/E Bsus4/F#
+4 minor 0 maj f C C/E C/G
+4 minor 0 min f Cm Cm/Eb Cm/G
+4 minor 0 7 f C7 C7/E C7/G C7/Bb
+4 minor 0 maj7 f Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+4 minor 0 min7 f Cm7 Cm7/Eb Cm7/G Cm7/Bb
+4 minor 0 dim f Cdim Cdim/Eb Cdim/Gb
+4 minor 0 sus4 f Csus4 Csus4/F Csus4/G
+4 minor 1 maj sa Db Db/F Db/Ab
+4 minor 1 min sa Dbm Dbm/Fb Dbm/Ab
+4 minor 1 7 sa Db7 Db7/F Db7/Ab Db7/Cb
+4 minor 1 maj7 sa Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+4 minor 1 min7 sa Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+4 minor 1 dim fe C#dim C#dim/E C#dim/G
+4 minor 1 sus4 sa Dbsus4 Dbsus4/Gb Dbsus4/Ab
+4 minor 2 maj s D D/F# D/A
+4 minor 2 min s Dm Dm/F Dm/A
+4 minor 2 7 s D7 D7/F# D7/A D7/C
+4 minor 2 maj7 s Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+4 minor 2 min7 s Dm7 Dm7/F Dm7/A Dm7/C
+4 minor 2 dim s Ddim Ddim/F Ddim/Ab
+4 minor 2 sus4 s Dsus4 Dsus4/G Dsus4/A
+4 minor 3 maj la Eb Eb/G Eb/Bb
+4 minor 3 min la Ebm Ebm/Gb Ebm/Bb
+4 minor 3 7 la Eb7 Eb7/G Eb7/Bb Eb7/Db
+4 minor 3 maj7 la Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+4 minor 3 min7 la Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+4 minor 3 dim se D#dim D#dim/F# D#dim/A
+4 minor 3 sus4 la Ebsus4 Ebsus4/Ab Ebsus4/Bb
+4 minor 4 maj l E E/G# E/B
+4 minor 4 min l Em Em/G Em/B
+4 minor 4 7 l E7 E7/G# E7/B E7/D
+4 minor 4 maj7 l Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+4 minor 4 min7 l Em7 Em7/G Em7/B Em7/D
+4 minor 4 dim l Edim Edim/G Edim/Bb
+4 minor 4 sus4 l Esus4 Esus4/A Esus4/B
+4 minor 5 maj ta F F/A F/C
+4 minor 5 min ta Fm Fm/Ab Fm/C
+4 minor 5 7 ta F7 F7/A F7/C F7/Eb
+4 minor 5 maj7 ta Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+4 minor 5 min7 ta Fm7 Fm7/Ab Fm7/C Fm7/Eb
+4 minor 5 dim le E#dim E#dim/G# E#dim/B
+4 minor 5 sus4 ta Fsus4 Fsus4/Bb Fsus4/C
+4 minor 6 maj t F# F#/A# F#/C#
+4 minor 6 min t F#m F#m/A F#m/C#
+4 minor 6 7 t F#7 F#7/A# F#7/C# F#7/E
+4 minor 6 maj7 t F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+4 minor 6 min7 t F#m7 F#m7/A F#m7/C# F#m7/E
+4 minor 6 dim t F#dim F#dim/A F#dim/C
+4 minor 6 sus4 t F#sus4 F#sus4/B F#sus4/C#
+4 minor 7 maj d G G/B G/D
+4 minor 7 min d Gm Gm/Bb Gm/D
+4 minor 7 7 d G7 G7/B G7/D G7/F
+4 minor 7 maj7 d Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+4 minor 7 min7 d Gm7 Gm7/Bb Gm7/D Gm7/F
+4 minor 7 dim d Gdim Gdim/Bb Gdim/Db
+4 minor 7 sus4 d Gsus4 Gsus4/C Gsus4/D
+4 minor 8 maj ra Ab Ab/C Ab/Eb
+4 minor 8 min ra Abm Abm/Cb Abm/Eb
+4 minor 8 7 ra Ab7 Ab7/C Ab7/Eb Ab7/Gb
+4 minor 8 maj7 ra Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+4 minor 8 min7 ra Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+4 minor 8 dim de G#dim G#dim/B G#dim/D
+4 minor 8 sus4 ra Absus4 Absus4/Db Absus4/Eb
+4 minor 9 maj r A A/C# A/E
+4 minor 9 min r Am Am/C Am/E
+4 minor 9 7 r A7 A7/C# A7/E A7/G
+4 minor 9 maj7 r Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+4 minor 9 min7 r Am7 Am7/C Am7/E Am7/G
+4 minor 9 dim r Adim Adim/C Adim/Eb
+4 minor 9 sus4 r Asus4 Asus4/D Asus4/E
+4 minor 10 maj ma Bb Bb/D Bb/F
+4 minor 10 min ma Bbm Bbm/Db Bbm/F
+4 minor 10 7 ma Bb7 Bb7/D Bb7/F Bb7/Ab
+4 minor 10 maj7 ma Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+4 minor 10 min7 ma Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+4 minor 10 dim re A#dim A#dim/C# A#dim/E
+4 minor 10 sus4 ma Bbsus4 Bbsus4/Eb Bbsus4/F
+4 minor 11 maj m B B/D# B/F#
+4 minor 11 min m Bm Bm/D Bm/F#
+4 minor 11 7 m B7 B7/D# B7/F# B7/A
+4 minor 11 maj7 m Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+4 minor 11 min7 m Bm7 Bm7/D Bm7/F# Bm7/A
+4 minor 11 dim m Bdim Bdim/D Bdim/F
+4 minor 11 sus4 m Bsus4 Bsus4/E Bsus4/F#
+5 major 0 maj s C C/E C/G
+5 major 0 min s Cm Cm/Eb Cm/G
+5 major 0 7 s C7 C7/E C7/G C7/Bb
+5 major 0 maj7 s Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+5 major 0 min7 s Cm7 Cm7/Eb Cm7/G Cm7/Bb
+5 major 0 dim s Cdim Cdim/Eb Cdim/Gb
+5 major 0 sus4 s Csus4 Csus4/F Csus4/G
+5 major 1 maj la Db Db/F Db/Ab
+5 major 1 min la Dbm Dbm/Fb Dbm/Ab
+5 major 1 7 la Db7 Db7/F Db7/Ab Db7/Cb
+5 major 1 maj7 la Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+5 major 1 min7 la Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+5 major 1 dim se C#dim C#dim/E C#dim/G
+5 major 1 sus4 la Dbsus4 Dbsus4/Gb Dbsus4/Ab
+5 major 2 maj l D D/F# D/A
+5 major 2 min l Dm Dm/F Dm/A
+5 major 2 7 l D7 D7/F# D7/A D7/C
+5 major 2 maj7 l Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+5 major 2 min7 l Dm7 Dm7/F Dm7/A Dm7/C
+5 major 2 dim l Ddim Ddim/F Ddim/Ab
+5 major 2 sus4 l Dsus4 Dsus4/G Dsus4/A
+5 major 3 maj ta Eb Eb/G Eb/Bb
+5 major 3 min ta Ebm Ebm/Gb Ebm/Bb
+5 major 3 7 ta Eb7 Eb7/G Eb7/Bb Eb7/Db
+5 major 3 maj7 ta Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+5 major 3 min7 ta Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+5 major 3 dim le D#dim D#dim/F# D#dim/A
+5 major 3 sus4 ta Ebsus4 Ebsus4/Ab Ebsus4/Bb
+5 major 4 maj t E E/G# E/B
+5 major 4 min t Em Em/G Em/B
+5 major 4 7 t E7 E7/G# E7/B E7/D
+5 major 4 maj7 t Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+5 major 4 min7 t Em7 Em7/G Em7/B Em7/D
+5 major 4 dim t Edim Edim/G Edim/Bb
+5 major 4 sus4 t Esus4 Esus4/A Esus4/B
+5 major 5 maj d F F/A F/C
+5 major 5 min d Fm Fm/Ab Fm/C
+5 major 5 7 d F7 F7/A F7/C F7/Eb
+5 major 5 maj7 d Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+5 major 5 min7 d Fm7 Fm7/Ab Fm7/C Fm7/Eb
+5 major 5 dim d Fdim Fdim/Ab Fdim/Cb
+5 major 5 sus4 d Fsus4 Fsus4/Bb Fsus4/C
+5 major 6 maj ra Gb Gb/Bb Gb/Db
+5 major 6 min ra Gbm Gbm/A Gbm/Db
+5 major 6 7 ra Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+5 major 6 maj7 ra Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+5 major 6 min7 ra Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+5 major 6 dim de F#dim F#dim/A F#dim/C
+5 major 6 sus4 ra Gbsus4 Gbsus4/Cb Gbsus4/Db
+5 major 7 maj r G G/B G/D
+5 major 7 min r Gm Gm/Bb Gm/D
+5 major 7 7 r G7 G7/B G7/D G7/F
+5 major 7 maj7 r Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+5 major 7 min7 r Gm7 Gm7/Bb Gm7/D Gm7/F
+5 major 7 dim r Gdim Gdim/Bb Gdim/Db
+5 major 7 sus4 r Gsus4 Gsus4/C Gsus4/D
+5 major 8 maj ma Ab Ab/C Ab/Eb
+5 major 8 min ma Abm Abm/Cb Abm/Eb
+5 major 8 7 ma Ab7 Ab7/C Ab7/Eb Ab7/Gb
+5 major 8 maj7 ma Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+5 major 8 min7 ma Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+5 major 8 dim re G#dim G#dim/B G#dim/D
+5 major 8 sus4 ma Absus4 Absus4/Db Absus4/Eb
+5 major 9 maj m A A/C# A/E
+5 major 9 min m Am Am/C Am/E
+5 major 9 7 m A7 A7/C# A7/E A7/G
+5 major 9 maj7 m Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+5 major 9 min7 m Am7 Am7/C Am7/E Am7/G
+5 major 9 dim m Adim Adim/C Adim/Eb
+5 major 9 sus4 m Asus4 Asus4/D Asus4/E
+5 major 10 maj f Bb Bb/D Bb/F
+5 major 10 min f Bbm Bbm/Db Bbm/F
+5 major 10 7 f Bb7 Bb7/D Bb7/F Bb7/Ab
+5 major 10 maj7 f Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+5 major 10 min7 f Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+5 major 10 dim f Bbdim Bbdim/Db Bbdim/Fb
+5 major 10 sus4 f Bbsus4 Bbsus4/Eb Bbsus4/F
+5 major 11 maj sa Cb Cb/Eb Cb/Gb
+5 major 11 min sa Cbm Cbm/D Cbm/Gb
+5 major 11 7 sa Cb7 Cb7/Eb Cb7/Gb Cb7/A
+5 major 11 maj7 sa Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+5 major 11 min7 sa Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+5 major 11 dim fe Bdim Bdim/D Bdim/F
+5 major 11 sus4 sa Cbsus4 Cbsus4/Fb Cbsus4/Gb
+5 minor 0 maj m C C/E C/G
+5 minor 0 min m Cm Cm/Eb Cm/G
+5 minor 0 7 m C7 C7/E C7/G C7/Bb
+5 minor 0 maj7 m Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+5 minor 0 min7 m Cm7 Cm7/Eb Cm7/G Cm7/Bb
+5 minor 0 dim m Cdim Cdim/Eb Cdim/Gb
+5 minor 0 sus4 m Csus4 Csus4/F Csus4/G
+5 minor 1 maj f Db Db/F Db/Ab
+5 minor 1 min f Dbm Dbm/Fb Dbm/Ab
+5 minor 1 7 f Db7 Db7/F Db7/Ab Db7/Cb
+5 minor 1 maj7 f Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+5 minor 1 min7 f Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+5 minor 1 dim f Dbdim Dbdim/Fb Dbdim/G
+5 minor 1 sus4 f Dbsus4 Dbsus4/Gb Dbsus4/Ab
+5 minor 2 maj sa D D/F# D/A
+5 minor 2 min sa Dm Dm/F Dm/A
+5 minor 2 7 sa D7 D7/F# D7/A D7/C
+5 minor 2 maj7 sa Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+5 minor 2 min7 sa Dm7 Dm7/F Dm7/A Dm7/C
+5 minor 2 dim fe Ddim Ddim/F Ddim/Ab
+5 minor 2 sus4 sa Dsus4 Dsus4/G Dsus4/A
+5 minor 3 maj s Eb Eb/G Eb/Bb
+5 minor 3 min s Ebm Ebm/Gb Ebm/Bb
+5 minor 3 7 s Eb7 Eb7/G Eb7/Bb Eb7/Db
+5 minor 3 maj7 s Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+5 minor 3 min7 s Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+5 minor 3 dim s Ebdim Ebdim/Gb Ebdim/A
+5 minor 3 sus4 s Ebsus4 Ebsus4/Ab Ebsus4/Bb
+5 minor 4 maj la Fb Fb/Ab Fb/Cb
+5 minor 4 min la Fbm Fbm/G Fbm/Cb
+5 minor 4 7 la Fb7 Fb7/Ab Fb7/Cb Fb7/D
+5 minor 4 maj7 la Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+5 minor 4 min7 la Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+5 minor 4 dim se Edim Edim/G Edim/Bb
+5 minor 4 sus4 la Fbsus4 Fbsus4/A Fbsus4/Cb
+5 minor 5 maj l F F/A F/C
+5 minor 5 min l Fm Fm/Ab Fm/C
+5 minor 5 7 l F7 F7/A F7/C F7/Eb
+5 minor 5 maj7 l Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+5 minor 5 min7 l Fm7 Fm7/Ab Fm7/C Fm7/Eb
+5 minor 5 dim l Fdim Fdim/Ab Fdim/Cb
+5 minor 5 sus4 l Fsus4 Fsus4/Bb Fsus4/C
+5 minor 6 maj ta Gb Gb/Bb Gb/Db
+5 minor 6 min ta Gbm Gbm/A Gbm/Db
+5 minor 6 7 ta Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+5 minor 6 maj7 ta Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+5 minor 6 min7 ta Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+5 minor 6 dim le F#dim F#dim/A F#dim/C
+5 minor 6 sus4 ta Gbsus4 Gbsus4/Cb Gbsus4/Db
+5 minor 7 maj t G G/B G/D
+5 minor 7 min t Gm Gm/Bb Gm/D
+5 minor 7 7 t G7 G7/B G7/D G7/F
+5 minor 7 maj7 t Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+5 minor 7 min7 t Gm7 Gm7/Bb Gm7/D Gm7/F
+5 minor 7 dim t Gdim Gdim/Bb Gdim/Db
+5 minor 7 sus4 t Gsus4 Gsus4/C Gsus4/D
+5 minor 8 maj d Ab Ab/C Ab/Eb
+5 minor 8 min d Abm Abm/Cb Abm/Eb
+5 minor 8 7 d Ab7 Ab7/C Ab7/Eb Ab7/Gb
+5 minor 8 maj7 d Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+5 minor 8 min7 d Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+5 minor 8 dim d Abdim Abdim/Cb Abdim/D
+5 minor 8 sus4 d Absus4 Absus4/Db Absus4/Eb
+5 minor 9 maj ra A A/C# A/E
+5 minor 9 min ra Am Am/C Am/E
+5 minor 9 7 ra A7 A7/C# A7/E A7/G
+5 minor 9 maj7 ra Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+5 minor 9 min7 ra Am7 Am7/C Am7/E Am7/G
+5 minor 9 dim de Adim Adim/C Adim/Eb
+5 minor 9 sus4 ra Asus4 Asus4/D Asus4/E
+5 minor 10 maj r Bb Bb/D Bb/F
+5 minor 10 min r Bbm Bbm/Db Bbm/F
+5 minor 10 7 r Bb7 Bb7/D Bb7/F Bb7/Ab
+5 minor 10 maj7 r Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+5 minor 10 min7 r Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+5 minor 10 dim r Bbdim Bbdim/Db Bbdim/Fb
+5 minor 10 sus4 r Bbsus4 Bbsus4/Eb Bbsus4/F
+5 minor 11 maj ma Cb Cb/Eb Cb/Gb
+5 minor 11 min ma Cbm Cbm/D Cbm/Gb
+5 minor 11 7 ma Cb7 Cb7/Eb Cb7/Gb Cb7/A
+5 minor 11 maj7 ma Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+5 minor 11 min7 ma Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+5 minor 11 dim re Bdim Bdim/D Bdim/F
+5 minor 11 sus4 ma Cbsus4 Cbsus4/Fb Cbsus4/Gb
+6 major 0 maj sa C C/E C/G
+6 major 0 min sa Cm Cm/Eb Cm/G
+6 major 0 7 sa C7 C7/E C7/G C7/Bb
+6 major 0 maj7 sa Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+6 major 0 min7 sa Cm7 Cm7/Eb Cm7/G Cm7/Bb
+6 major 0 dim fe B#dim B#dim/D# B#dim/F#
+6 major 0 sus4 sa Csus4 Csus4/F Csus4/G
+6 major 1 maj s C# C#/E# C#/G#
+6 major 1 min s C#m C#m/E C#m/G#
+6 major 1 7 s C#7 C#7/E# C#7/G# C#7/B
+6 major 1 maj7 s C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+6 major 1 min7 s C#m7 C#m7/E C#m7/G# C#m7/B
+6 major 1 dim s C#dim C#dim/E C#dim/G
+6 major 1 sus4 s C#sus4 C#sus4/F# C#sus4/G#
+6 major 2 maj la D D/F# D/A
+6 major 2 min la Dm Dm/F Dm/A
+6 major 2 7 la D7 D7/F# D7/A D7/C
+6 major 2 maj7 la Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+6 major 2 min7 la Dm7 Dm7/F Dm7/A Dm7/C
+6 major 2 dim se Ddim Ddim/F Ddim/Ab
+6 major 2 sus4 la Dsus4 Dsus4/G Dsus4/A
+6 major 3 maj l D# D#/G D#/A#
+6 major 3 min l D#m D#m/F# D#m/A#
+6 major 3 7 l D#7 D#7/G D#7/A# D#7/C#
+6 major 3 maj7 l D#maj7 D#maj7/G D#maj7/A# D#maj7/D
+6 major 3 min7 l D#m7 D#m7/F# D#m7/A# D#m7/C#
+6 major 3 dim l D#dim D#dim/F# D#dim/A
+6 major 3 sus4 l D#sus4 D#sus4/G# D#sus4/A#
+6 major 4 maj ta E E/G# E/B
+6 major 4 min ta Em Em/G Em/B
+6 major 4 7 ta E7 E7/G# E7/B E7/D
+6 major 4 maj7 ta Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+6 major 4 min7 ta Em7 Em7/G Em7/B Em7/D
+6 major 4 dim le Edim Edim/G Edim/Bb
+6 major 4 sus4 ta Esus4 Esus4/A Esus4/B
+6 major 5 maj t E# E#/A E#/B#
+6 major 5 min t E#m E#m/G# E#m/B#
+6 major 5 7 t E#7 E#7/A E#7/B# E#7/D#
+6 major 5 maj7 t E#maj7 E#maj7/A E#maj7/B# E#maj7/E
+6 major 5 min7 t E#m7 E#m7/G# E#m7/B# E#m7/D#
+6 major 5 dim t E#dim E#dim/G# E#dim/B
+6 major 5 sus4 t E#sus4 E#sus4/A# E#sus4/B#
+6 major 6 maj d F# F#/A# F#/C#
+6 major 6 min d F#m F#m/A F#m/C#
+6 major 6 7 d F#7 F#7/A# F#7/C# F#7/E
+6 major 6 maj7 d F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+6 major 6 min7 d F#m7 F#m7/A F#m7/C# F#m7/E
+6 major 6 dim d F#dim F#dim/A F#dim/C
+6 major 6 sus4 d F#sus4 F#sus4/B F#sus4/C#
+6 major 7 maj ra G G/B G/D
+6 major 7 min ra Gm Gm/Bb Gm/D
+6 major 7 7 ra G7 G7/B G7/D G7/F
+6 major 7 maj7 ra Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+6 major 7 min7 ra Gm7 Gm7/Bb Gm7/D Gm7/F
+6 major 7 dim de Gdim Gdim/Bb Gdim/Db
+6 major 7 sus4 ra Gsus4 Gsus4/C Gsus4/D
+6 major 8 maj r G# G#/B# G#/D#
+6 major 8 min r G#m G#m/B G#m/D#
+6 major 8 7 r G#7 G#7/B# G#7/D# G#7/F#
+6 major 8 maj7 r G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+6 major 8 min7 r G#m7 G#m7/B G#m7/D# G#m7/F#
+6 major 8 dim r G#dim G#dim/B G#dim/D
+6 major 8 sus4 r G#sus4 G#sus4/C# G#sus4/D#
+6 major 9 maj ma A A/C# A/E
+6 major 9 min ma Am Am/C Am/E
+6 major 9 7 ma A7 A7/C# A7/E A7/G
+6 major 9 maj7 ma Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+6 major 9 min7 ma Am7 Am7/C Am7/E Am7/G
+6 major 9 dim re Adim Adim/C Adim/Eb
+6 major 9 sus4 ma Asus4 Asus4/D Asus4/E
+6 major 10 maj m A# A#/D A#/E#
+6 major 10 min m A#m A#m/C# A#m/E#
+6 major 10 7 m A#7 A#7/D A#7/E# A#7/G#
+6 major 10 maj7 m A#maj7 A#maj7/D A#maj7/E# A#maj7/A
+6 major 10 min7 m A#m7 A#m7/C# A#m7/E# A#m7/G#
+6 major 10 dim m A#dim A#dim/C# A#dim/E
+6 major 10 sus4 m A#sus4 A#sus4/D# A#sus4/E#
+6 major 11 maj f B B/D# B/F#
+6 major 11 min f Bm Bm/D Bm/F#
+6 major 11 7 f B7 B7/D# B7/F# B7/A
+6 major 11 maj7 f Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+6 major 11 min7 f Bm7 Bm7/D Bm7/F# Bm7/A
+6 major 11 dim f Bdim Bdim/D Bdim/F
+6 major 11 sus4 f Bsus4 Bsus4/E Bsus4/F#
+6 minor 0 maj ma C C/E C/G
+6 minor 0 min ma Cm Cm/Eb Cm/G
+6 minor 0 7 ma C7 C7/E C7/G C7/Bb
+6 minor 0 maj7 ma Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+6 minor 0 min7 ma Cm7 Cm7/Eb Cm7/G Cm7/Bb
+6 minor 0 dim re B#dim B#dim/D# B#dim/F#
+6 minor 0 sus4 ma Csus4 Csus4/F Csus4/G
+6 minor 1 maj m C# C#/E# C#/G#
+6 minor 1 min m C#m C#m/E C#m/G#
+6 minor 1 7 m C#7 C#7/E# C#7/G# C#7/B
+6 minor 1 maj7 m C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+6 minor 1 min7 m C#m7 C#m7/E C#m7/G# C#m7/B
+6 minor 1 dim m C#dim C#dim/E C#dim/G
+6 minor 1 sus4 m C#sus4 C#sus4/F# C#sus4/G#
+6 minor 2 maj f D D/F# D/A
+6 minor 2 min f Dm Dm/F Dm/A
+6 minor 2 7 f D7 D7/F# D7/A D7/C
+6 minor 2 maj7 f Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+6 minor 2 min7 f Dm7 Dm7/F Dm7/A Dm7/C
+6 minor 2 dim f Ddim Ddim/F Ddim/Ab
+6 minor 2 sus4 f Dsus4 Dsus4/G Dsus4/A
+6 minor 3 maj sa Eb Eb/G Eb/Bb
+6 minor 3 min sa Ebm Ebm/Gb Ebm/Bb
+6 minor 3 7 sa Eb7 Eb7/G Eb7/Bb Eb7/Db
+6 minor 3 maj7 sa Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+6 minor 3 min7 sa Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+6 minor 3 dim fe D#dim D#dim/F# D#dim/A
+6 minor 3 sus4 sa Ebsus4 Ebsus4/Ab Ebsus4/Bb
+6 minor 4 maj s E E/G# E/B
+6 minor 4 min s Em Em/G Em/B
+6 minor 4 7 s E7 E7/G# E7/B E7/D
+6 minor 4 maj7 s Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+6 minor 4 min7 s Em7 Em7/G Em7/B Em7/D
+6 minor 4 dim s Edim Edim/G Edim/Bb
+6 minor 4 sus4 s Esus4 Esus4/A Esus4/B
+6 minor 5 maj la F F/A F/C
+6 minor 5 min la Fm Fm/Ab Fm/C
+6 minor 5 7 la F7 F7/A F7/C F7/Eb
+6 minor 5 maj7 la Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+6 minor 5 min7 la Fm7 Fm7/Ab Fm7/C Fm7/Eb
+6 minor 5 dim se E#dim E#dim/G# E#dim/B
+6 minor 5 sus4 la Fsus4 Fsus4/Bb Fsus4/C
+6 minor 6 maj l F# F#/A# F#/C#
+6 minor 6 min l F#m F#m/A F#m/C#
+6 minor 6 7 l F#7 F#7/A# F#7/C# F#7/E
+6 minor 6 maj7 l F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+6 minor 6 min7 l F#m7 F#m7/A F#m7/C# F#m7/E
+6 minor 6 dim l F#dim F#dim/A F#dim/C
+6 minor 6 sus4 l F#sus4 F#sus4/B F#sus4/C#
+6 minor 7 maj ta G G/B G/D
+6 minor 7 min ta Gm Gm/Bb Gm/D
+6 minor 7 7 ta G7 G7/B G7/D G7/F
+6 minor 7 maj7 ta Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+6 minor 7 min7 ta Gm7 Gm7/Bb Gm7/D Gm7/F
+6 minor 7 dim le Gdim Gdim/Bb Gdim/Db
+6 minor 7 sus4 ta Gsus4 Gsus4/C Gsus4/D
+6 minor 8 maj t G# G#/B# G#/D#
+6 minor 8 min t G#m G#m/B G#m/D#
+6 minor 8 7 t G#7 G#7/B# G#7/D# G#7/F#
+6 minor 8 maj7 t G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+6 minor 8 min7 t G#m7 G#m7/B G#m7/D# G#m7/F#
+6 minor 8 dim t G#dim G#dim/B G#dim/D
+6 minor 8 sus4 t G#sus4 G#sus4/C# G#sus4/D#
+6 minor 9 maj d A A/C# A/E
+6 minor 9 min d Am Am/C Am/E
+6 minor 9 7 d A7 A7/C# A7/E A7/G
+6 minor 9 maj7 d Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+6 minor 9 min7 d Am7 Am7/C Am7/E Am7/G
+6 minor 9 dim d Adim Adim/C Adim/Eb
+6 minor 9 sus4 d Asus4 Asus4/D Asus4/E
+6 minor 10 maj ra Bb Bb/D Bb/F
+6 minor 10 min ra Bbm Bbm/Db Bbm/F
+6 minor 10 7 ra Bb7 Bb7/D Bb7/F Bb7/Ab
+6 minor 10 maj7 ra Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+6 minor 10 min7 ra Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+6 minor 10 dim de A#dim A#dim/C# A#dim/E
+6 minor 10 sus4 ra Bbsus4 Bbsus4/Eb Bbsus4/F
+6 minor 11 maj r B B/D# B/F#
+6 minor 11 min r Bm Bm/D Bm/F#
+6 minor 11 7 r B7 B7/D# B7/F# B7/A
+6 minor 11 maj7 r Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+6 minor 11 min7 r Bm7 Bm7/D Bm7/F# Bm7/A
+6 minor 11 dim r Bdim Bdim/D Bdim/F
+6 minor 11 sus4 r Bsus4 Bsus4/E Bsus4/F#
+7 major 0 maj f C C/E C/G
+7 major 0 min f Cm Cm/Eb Cm/G
+7 major 0 7 f C7 C7/E C7/G C7/Bb
+7 major 0 maj7 f Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+7 major 0 min7 f Cm7 Cm7/Eb Cm7/G Cm7/Bb
+7 major 0 dim f Cdim Cdim/Eb Cdim/Gb
+7 major 0 sus4 f Csus4 Csus4/F Csus4/G
+7 major 1 maj sa Db Db/F Db/Ab
+7 major 1 min sa Dbm Dbm/Fb Dbm/Ab
+7 major 1 7 sa Db7 Db7/F Db7/Ab Db7/Cb
+7 major 1 maj7 sa Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+7 major 1 min7 sa Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+7 major 1 dim fe C#dim C#dim/E C#dim/G
+7 major 1 sus4 sa Dbsus4 Dbsus4/Gb Dbsus4/Ab
+7 major 2 maj s D D/F# D/A
+7 major 2 min s Dm Dm/F Dm/A
+7 major 2 7 s D7 D7/F# D7/A D7/C
+7 major 2 maj7 s Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+7 major 2 min7 s Dm7 Dm7/F Dm7/A Dm7/C
+7 major 2 dim s Ddim Ddim/F Ddim/Ab
+7 major 2 sus4 s Dsus4 Dsus4/G Dsus4/A
+7 major 3 maj la Eb Eb/G Eb/Bb
+7 major 3 min la Ebm Ebm/Gb Ebm/Bb
+7 major 3 7 la Eb7 Eb7/G Eb7/Bb Eb7/Db
+7 major 3 maj7 la Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+7 major 3 min7 la Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+7 major 3 dim se D#dim D#dim/F# D#dim/A
+7 major 3 sus4 la Ebsus4 Ebsus4/Ab Ebsus4/Bb
+7 major 4 maj l E E/G# E/B
+7 major 4 min l Em Em/G Em/B
+7 major 4 7 l E7 E7/G# E7/B E7/D
+7 major 4 maj7 l Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+7 major 4 min7 l Em7 Em7/G Em7/B Em7/D
+7 major 4 dim l Edim Edim/G Edim/Bb
+7 major 4 sus4 l Esus4 Esus4/A Esus4/B
+7 major 5 maj ta F F/A F/C
+7 major 5 min ta Fm Fm/Ab Fm/C
+7 major 5 7 ta F7 F7/A F7/C F7/Eb
+7 major 5 maj7 ta Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+7 major 5 min7 ta Fm7 Fm7/Ab Fm7/C Fm7/Eb
+7 major 5 dim le E#dim E#dim/G# E#dim/B
+7 major 5 sus4 ta Fsus4 Fsus4/Bb Fsus4/C
+7 major 6 maj t F# F#/A# F#/C#
+7 major 6 min t F#m F#m/A F#m/C#
+7 major 6 7 t F#7 F#7/A# F#7/C# F#7/E
+7 major 6 maj7 t F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+7 major 6 min7 t F#m7 F#m7/A F#m7/C# F#m7/E
+7 major 6 dim t F#dim F#dim/A F#dim/C
+7 major 6 sus4 t F#sus4 F#sus4/B F#sus4/C#
+7 major 7 maj d G G/B G/D
+7 major 7 min d Gm Gm/Bb Gm/D
+7 major 7 7 d G7 G7/B G7/D G7/F
+7 major 7 maj7 d Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+7 major 7 min7 d Gm7 Gm7/Bb Gm7/D Gm7/F
+7 major 7 dim d Gdim Gdim/Bb Gdim/Db
+7 major 7 sus4 d Gsus4 Gsus4/C Gsus4/D
+7 major 8 maj ra Ab Ab/C Ab/Eb
+7 major 8 min ra Abm Abm/Cb Abm/Eb
+7 major 8 7 ra Ab7 Ab7/C Ab7/Eb Ab7/Gb
+7 major 8 maj7 ra Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+7 major 8 min7 ra Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+7 major 8 dim de G#dim G#dim/B G#dim/D
+7 major 8 sus4 ra Absus4 Absus4/Db Absus4/Eb
+7 major 9 maj r A A/C# A/E
+7 major 9 min r Am Am/C Am/E
+7 major 9 7 r A7 A7/C# A7/E A7/G
+7 major 9 maj7 r Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+7 major 9 min7 r Am7 Am7/C Am7/E Am7/G
+7 major 9 dim r Adim Adim/C Adim/Eb
+7 major 9 sus4 r Asus4 Asus4/D Asus4/E
+7 major 10 maj ma Bb Bb/D Bb/F
+7 major 10 min ma Bbm Bbm/Db Bbm/F
+7 major 10 7 ma Bb7 Bb7/D Bb7/F Bb7/Ab
+7 major 10 maj7 ma Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+7 major 10 min7 ma Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+7 major 10 dim re A#dim A#dim/C# A#dim/E
+7 major 10 sus4 ma Bbsus4 Bbsus4/Eb Bbsus4/F
+7 major 11 maj m B B/D# B/F#
+7 major 11 min m Bm Bm/D Bm/F#
+7 major 11 7 m B7 B7/D# B7/F# B7/A
+7 major 11 maj7 m Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+7 major 11 min7 m Bm7 Bm7/D Bm7/F# Bm7/A
+7 major 11 dim m Bdim Bdim/D Bdim/F
+7 major 11 sus4 m Bsus4 Bsus4/E Bsus4/F#
+7 minor 0 maj r C C/E C/G
+7 minor 0 min r Cm Cm/Eb Cm/G
+7 minor 0 7 r C7 C7/E C7/G C7/Bb
+7 minor 0 maj7 r Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+7 minor 0 min7 r Cm7 Cm7/Eb Cm7/G Cm7/Bb
+7 minor 0 dim r Cdim Cdim/Eb Cdim/Gb
+7 minor 0 sus4 r Csus4 Csus4/F Csus4/G
+7 minor 1 maj ma Db Db/F Db/Ab
+7 minor 1 min ma Dbm Dbm/Fb Dbm/Ab
+7 minor 1 7 ma Db7 Db7/F Db7/Ab Db7/Cb
+7 minor 1 maj7 ma Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+7 minor 1 min7 ma Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+7 minor 1 dim re C#dim C#dim/E C#dim/G
+7 minor 1 sus4 ma Dbsus4 Dbsus4/Gb Dbsus4/Ab
+7 minor 2 maj m D D/F# D/A
+7 minor 2 min m Dm Dm/F Dm/A
+7 minor 2 7 m D7 D7/F# D7/A D7/C
+7 minor 2 maj7 m Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+7 minor 2 min7 m Dm7 Dm7/F Dm7/A Dm7/C
+7 minor 2 dim m Ddim Ddim/F Ddim/Ab
+7 minor 2 sus4 m Dsus4 Dsus4/G Dsus4/A
+7 minor 3 maj f Eb Eb/G Eb/Bb
+7 minor 3 min f Ebm Ebm/Gb Ebm/Bb
+7 minor 3 7 f Eb7 Eb7/G Eb7/Bb Eb7/Db
+7 minor 3 maj7 f Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+7 minor 3 min7 f Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+7 minor 3 dim f Ebdim Ebdim/Gb Ebdim/A
+7 minor 3 sus4 f Ebsus4 Ebsus4/Ab Ebsus4/Bb
+7 minor 4 maj sa Fb Fb/Ab Fb/Cb
+7 minor 4 min sa Fbm Fbm/G Fbm/Cb
+7 minor 4 7 sa Fb7 Fb7/Ab Fb7/Cb Fb7/D
+7 minor 4 maj7 sa Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+7 minor 4 min7 sa Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+7 minor 4 dim fe Edim Edim/G Edim/Bb
+7 minor 4 sus4 sa Fbsus4 Fbsus4/A Fbsus4/Cb
+7 minor 5 maj s F F/A F/C
+7 minor 5 min s Fm Fm/Ab Fm/C
+7 minor 5 7 s F7 F7/A F7/C F7/Eb
+7 minor 5 maj7 s Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+7 minor 5 min7 s Fm7 Fm7/Ab Fm7/C Fm7/Eb
+7 minor 5 dim s Fdim Fdim/Ab Fdim/Cb
+7 minor 5 sus4 s Fsus4 Fsus4/Bb Fsus4/C
+7 minor 6 maj la Gb Gb/Bb Gb/Db
+7 minor 6 min la Gbm Gbm/A Gbm/Db
+7 minor 6 7 la Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+7 minor 6 maj7 la Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+7 minor 6 min7 la Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+7 minor 6 dim se F#dim F#dim/A F#dim/C
+7 minor 6 sus4 la Gbsus4 Gbsus4/Cb Gbsus4/Db
+7 minor 7 maj l G G/B G/D
+7 minor 7 min l Gm Gm/Bb Gm/D
+7 minor 7 7 l G7 G7/B G7/D G7/F
+7 minor 7 maj7 l Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+7 minor 7 min7 l Gm7 Gm7/Bb Gm7/D Gm7/F
+7 minor 7 dim l Gdim Gdim/Bb Gdim/Db
+7 minor 7 sus4 l Gsus4 Gsus4/C Gsus4/D
+7 minor 8 maj ta Ab Ab/C Ab/Eb
+7 minor 8 min ta Abm Abm/Cb Abm/Eb
+7 minor 8 7 ta Ab7 Ab7/C Ab7/Eb Ab7/Gb
+7 minor 8 maj7 ta Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+7 minor 8 min7 ta Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+7 minor 8 dim le G#dim G#dim/B G#dim/D
+7 minor 8 sus4 ta Absus4 Absus4/Db Absus4/Eb
+7 minor 9 maj t A A/C# A/E
+7 minor 9 min t Am Am/C Am/E
+7 minor 9 7 t A7 A7/C# A7/E A7/G
+7 minor 9 maj7 t Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+7 minor 9 min7 t Am7 Am7/C Am7/E Am7/G
+7 minor 9 dim t Adim Adim/C Adim/Eb
+7 minor 9 sus4 t Asus4 Asus4/D Asus4/E
+7 minor 10 maj d Bb Bb/D Bb/F
+7 minor 10 min d Bbm Bbm/Db Bbm/F
+7 minor 10 7 d Bb7 Bb7/D Bb7/F Bb7/Ab
+7 minor 10 maj7 d Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+7 minor 10 min7 d Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+7 minor 10 dim d Bbdim Bbdim/Db Bbdim/Fb
+7 minor 10 sus4 d Bbsus4 Bbsus4/Eb Bbsus4/F
+7 minor 11 maj ra Cb Cb/Eb Cb/Gb
+7 minor 11 min ra Cbm Cbm/D Cbm/Gb
+7 minor 11 7 ra Cb7 Cb7/Eb Cb7/Gb Cb7/A
+7 minor 11 maj7 ra Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+7 minor 11 min7 ra Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+7 minor 11 dim de Bdim Bdim/D Bdim/F
+7 minor 11 sus4 ra Cbsus4 Cbsus4/Fb Cbsus4/Gb
+8 major 0 maj m C C/E C/G
+8 major 0 min m Cm Cm/Eb Cm/G
+8 major 0 7 m C7 C7/E C7/G C7/Bb
+8 major 0 maj7 m Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+8 major 0 min7 m Cm7 Cm7/Eb Cm7/G Cm7/Bb
+8 major 0 dim m Cdim Cdim/Eb Cdim/Gb
+8 major 0 sus4 m Csus4 Csus4/F Csus4/G
+8 major 1 maj f Db Db/F Db/Ab
+8 major 1 min f Dbm Dbm/Fb Dbm/Ab
+8 major 1 7 f Db7 Db7/F Db7/Ab Db7/Cb
+8 major 1 maj7 f Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+8 major 1 min7 f Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+8 major 1 dim f Dbdim Dbdim/Fb Dbdim/G
+8 major 1 sus4 f Dbsus4 Dbsus4/Gb Dbsus4/Ab
+8 major 2 maj sa D D/F# D/A
+8 major 2 min sa Dm Dm/F Dm/A
+8 major 2 7 sa D7 D7/F# D7/A D7/C
+8 major 2 maj7 sa Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+8 major 2 min7 sa Dm7 Dm7/F Dm7/A Dm7/C
+8 major 2 dim fe Ddim Ddim/F Ddim/Ab
+8 major 2 sus4 sa Dsus4 Dsus4/G Dsus4/A
+8 major 3 maj s Eb Eb/G Eb/Bb
+8 major 3 min s Ebm Ebm/Gb Ebm/Bb
+8 major 3 7 s Eb7 Eb7/G Eb7/Bb Eb7/Db
+8 major 3 maj7 s Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+8 major 3 min7 s Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+8 major 3 dim s Ebdim Ebdim/Gb Ebdim/A
+8 major 3 sus4 s Ebsus4 Ebsus4/Ab Ebsus4/Bb
+8 major 4 maj la Fb Fb/Ab Fb/Cb
+8 major 4 min la Fbm Fbm/G Fbm/Cb
+8 major 4 7 la Fb7 Fb7/Ab Fb7/Cb Fb7/D
+8 major 4 maj7 la Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+8 major 4 min7 la Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+8 major 4 dim se Edim Edim/G Edim/Bb
+8 major 4 sus4 la Fbsus4 Fbsus4/A Fbsus4/Cb
+8 major 5 maj l F F/A F/C
+8 major 5 min l Fm Fm/Ab Fm/C
+8 major 5 7 l F7 F7/A F7/C F7/Eb
+8 major 5 maj7 l Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+8 major 5 min7 l Fm7 Fm7/Ab Fm7/C Fm7/Eb
+8 major 5 dim l Fdim Fdim/Ab Fdim/Cb
+8 major 5 sus4 l Fsus4 Fsus4/Bb Fsus4/C
+8 major 6 maj ta Gb Gb/Bb Gb/Db
+8 major 6 min ta Gbm Gbm/A Gbm/Db
+8 major 6 7 ta Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+8 major 6 maj7 ta Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+8 major 6 min7 ta Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+8 major 6 dim le F#dim F#dim/A F#dim/C
+8 major 6 sus4 ta Gbsus4 Gbsus4/Cb Gbsus4/Db
+8 major 7 maj t G G/B G/D
+8 major 7 min t Gm Gm/Bb Gm/D
+8 major 7 7 t G7 G7/B G7/D G7/F
+8 major 7 maj7 t Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+8 major 7 min7 t Gm7 Gm7/Bb Gm7/D Gm7/F
+8 major 7 dim t Gdim Gdim/Bb Gdim/Db
+8 major 7 sus4 t Gsus4 Gsus4/C Gsus4/D
+8 major 8 maj d Ab Ab/C Ab/Eb
+8 major 8 min d Abm Abm/Cb Abm/Eb
+8 major 8 7 d Ab7 Ab7/C Ab7/Eb Ab7/Gb
+8 major 8 maj7 d Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+8 major 8 min7 d Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+8 major 8 dim d Abdim Abdim/Cb Abdim/D
+8 major 8 sus4 d Absus4 Absus4/Db Absus4/Eb
+8 major 9 maj ra A A/C# A/E
+8 major 9 min ra Am Am/C Am/E
+8 major 9 7 ra A7 A7/C# A7/E A7/G
+8 major 9 maj7 ra Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+8 major 9 min7 ra Am7 Am7/C Am7/E Am7/G
+8 major 9 dim de Adim Adim/C Adim/Eb
+8 major 9 sus4 ra Asus4 Asus4/D Asus4/E
+8 major 10 maj r Bb Bb/D Bb/F
+8 major 10 min r Bbm Bbm/Db Bbm/F
+8 major 10 7 r Bb7 Bb7/D Bb7/F Bb7/Ab
+8 major 10 maj7 r Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+8 major 10 min7 r Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+8 major 10 dim r Bbdim Bbdim/Db Bbdim/Fb
+8 major 10 sus4 r Bbsus4 Bbsus4/Eb Bbsus4/F
+8 major 11 maj ma Cb Cb/Eb Cb/Gb
+8 major 11 min ma Cbm Cbm/D Cbm/Gb
+8 major 11 7 ma Cb7 Cb7/Eb Cb7/Gb Cb7/A
+8 major 11 maj7 ma Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+8 major 11 min7 ma Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+8 major 11 dim re Bdim Bdim/D Bdim/F
+8 major 11 sus4 ma Cbsus4 Cbsus4/Fb Cbsus4/Gb
+8 minor 0 maj ra C C/E C/G
+8 minor 0 min ra Cm Cm/Eb Cm/G
+8 minor 0 7 ra C7 C7/E C7/G C7/Bb
+8 minor 0 maj7 ra Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+8 minor 0 min7 ra Cm7 Cm7/Eb Cm7/G Cm7/Bb
+8 minor 0 dim de B#dim B#dim/D# B#dim/F#
+8 minor 0 sus4 ra Csus4 Csus4/F Csus4/G
+8 minor 1 maj r C# C#/E# C#/G#
+8 minor 1 min r C#m C#m/E C#m/G#
+8 minor 1 7 r C#7 C#7/E# C#7/G# C#7/B
+8 minor 1 maj7 r C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+8 minor 1 min7 r C#m7 C#m7/E C#m7/G# C#m7/B
+8 minor 1 dim r C#dim C#dim/E C#dim/G
+8 minor 1 sus4 r C#sus4 C#sus4/F# C#sus4/G#
+8 minor 2 maj ma D D/F# D/A
+8 minor 2 min ma Dm Dm/F Dm/A
+8 minor 2 7 ma D7 D7/F# D7/A D7/C
+8 minor 2 maj7 ma Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+8 minor 2 min7 ma Dm7 Dm7/F Dm7/A Dm7/C
+8 minor 2 dim re Ddim Ddim/F Ddim/Ab
+8 minor 2 sus4 ma Dsus4 Dsus4/G Dsus4/A
+8 minor 3 maj m D# D#/G D#/A#
+8 minor 3 min m D#m D#m/F# D#m/A#
+8 minor 3 7 m D#7 D#7/G D#7/A# D#7/C#
+8 minor 3 maj7 m D#maj7 D#maj7/G D#maj7/A# D#maj7/D
+8 minor 3 min7 m D#m7 D#m7/F# D#m7/A# D#m7/C#
+8 minor 3 dim m D#dim D#dim/F# D#dim/A
+8 minor 3 sus4 m D#sus4 D#sus4/G# D#sus4/A#
+8 minor 4 maj f E E/G# E/B
+8 minor 4 min f Em Em/G Em/B
+8 minor 4 7 f E7 E7/G# E7/B E7/D
+8 minor 4 maj7 f Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+8 minor 4 min7 f Em7 Em7/G Em7/B Em7/D
+8 minor 4 dim f Edim Edim/G Edim/Bb
+8 minor 4 sus4 f Esus4 Esus4/A Esus4/B
+8 minor 5 maj sa F F/A F/C
+8 minor 5 min sa Fm Fm/Ab Fm/C
+8 minor 5 7 sa F7 F7/A F7/C F7/Eb
+8 minor 5 maj7 sa Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+8 minor 5 min7 sa Fm7 Fm7/Ab Fm7/C Fm7/Eb
+8 minor 5 dim fe E#dim E#dim/G# E#dim/B
+8 minor 5 sus4 sa Fsus4 Fsus4/Bb Fsus4/C
+8 minor 6 maj s F# F#/A# F#/C#
+8 minor 6 min s F#m F#m/A F#m/C#
+8 minor 6 7 s F#7 F#7/A# F#7/C# F#7/E
+8 minor 6 maj7 s F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+8 minor 6 min7 s F#m7 F#m7/A F#m7/C# F#m7/E
+8 minor 6 dim s F#dim F#dim/A F#dim/C
+8 minor 6 sus4 s F#sus4 F#sus4/B F#sus4/C#
+8 minor 7 maj la G G/B G/D
+8 minor 7 min la Gm Gm/Bb Gm/D
+8 minor 7 7 la G7 G7/B G7/D G7/F
+8 minor 7 maj7 la Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+8 minor 7 min7 la Gm7 Gm7/Bb Gm7/D Gm7/F
+8 minor 7 dim se Gdim Gdim/Bb Gdim/Db
+8 minor 7 sus4 la Gsus4 Gsus4/C Gsus4/D
+8 minor 8 maj l G# G#/B# G#/D#
+8 minor 8 min l G#m G#m/B G#m/D#
+8 minor 8 7 l G#7 G#7/B# G#7/D# G#7/F#
+8 minor 8 maj7 l G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+8 minor 8 min7 l G#m7 G#m7/B G#m7/D# G#m7/F#
+8 minor 8 dim l G#dim G#dim/B G#dim/D
+8 minor 8 sus4 l G#sus4 G#sus4/C# G#sus4/D#
+8 minor 9 maj ta A A/C# A/E
+8 minor 9 min ta Am Am/C Am/E
+8 minor 9 7 ta A7 A7/C# A7/E A7/G
+8 minor 9 maj7 ta Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+8 minor 9 min7 ta Am7 Am7/C Am7/E Am7/G
+8 minor 9 dim le Adim Adim/C Adim/Eb
+8 minor 9 sus4 ta Asus4 Asus4/D Asus4/E
+8 minor 10 maj t A# A#/D A#/E#
+8 minor 10 min t A#m A#m/C# A#m/E#
+8 minor 10 7 t A#7 A#7/D A#7/E# A#7/G#
+8 minor 10 maj7 t A#maj7 A#maj7/D A#maj7/E# A#maj7/A
+8 minor 10 min7 t A#m7 A#m7/C# A#m7/E# A#m7/G#
+8 minor 10 dim t A#dim A#dim/C# A#dim/E
+8 minor 10 sus4 t A#sus4 A#sus4/D# A#sus4/E#
+8 minor 11 maj d B B/D# B/F#
+8 minor 11 min d Bm Bm/D Bm/F#
+8 minor 11 7 d B7 B7/D# B7/F# B7/A
+8 minor 11 maj7 d Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+8 minor 11 min7 d Bm7 Bm7/D Bm7/F# Bm7/A
+8 minor 11 dim d Bdim Bdim/D Bdim/F
+8 minor 11 sus4 d Bsus4 Bsus4/E Bsus4/F#
+9 major 0 maj ma C C/E C/G
+9 major 0 min ma Cm Cm/Eb Cm/G
+9 major 0 7 ma C7 C7/E C7/G C7/Bb
+9 major 0 maj7 ma Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+9 major 0 min7 ma Cm7 Cm7/Eb Cm7/G Cm7/Bb
+9 major 0 dim re B#dim B#dim/D# B#dim/F#
+9 major 0 sus4 ma Csus4 Csus4/F Csus4/G
+9 major 1 maj m C# C#/E# C#/G#
+9 major 1 min m C#m C#m/E C#m/G#
+9 major 1 7 m C#7 C#7/E# C#7/G# C#7/B
+9 major 1 maj7 m C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+9 major 1 min7 m C#m7 C#m7/E C#m7/G# C#m7/B
+9 major 1 dim m C#dim C#dim/E C#dim/G
+9 major 1 sus4 m C#sus4 C#sus4/F# C#sus4/G#
+9 major 2 maj f D D/F# D/A
+9 major 2 min f Dm Dm/F Dm/A
+9 major 2 7 f D7 D7/F# D7/A D7/C
+9 major 2 maj7 f Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+9 major 2 min7 f Dm7 Dm7/F Dm7/A Dm7/C
+9 major 2 dim f Ddim Ddim/F Ddim/Ab
+9 major 2 sus4 f Dsus4 Dsus4/G Dsus4/A
+9 major 3 maj sa Eb Eb/G Eb/Bb
+9 major 3 min sa Ebm Ebm/Gb Ebm/Bb
+9 major 3 7 sa Eb7 Eb7/G Eb7/Bb Eb7/Db
+9 major 3 maj7 sa Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+9 major 3 min7 sa Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+9 major 3 dim fe D#dim D#dim/F# D#dim/A
+9 major 3 sus4 sa Ebsus4 Ebsus4/Ab Ebsus4/Bb
+9 major 4 maj s E E/G# E/B
+9 major 4 min s Em Em/G Em/B
+9 major 4 7 s E7 E7/G# E7/B E7/D
+9 major 4 maj7 s Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+9 major 4 min7 s Em7 Em7/G Em7/B Em7/D
+9 major 4 dim s Edim Edim/G Edim/Bb
+9 major 4 sus4 s Esus4 Esus4/A Esus4/B
+9 major 5 maj la F F/A F/C
+9 major 5 min la Fm Fm/Ab Fm/C
+9 major 5 7 la F7 F7/A F7/C F7/Eb
+9 major 5 maj7 la Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+9 major 5 min7 la Fm7 Fm7/Ab Fm7/C Fm7/Eb
+9 major 5 dim se E#dim E#dim/G# E#dim/B
+9 major 5 sus4 la Fsus4 Fsus4/Bb Fsus4/C
+9 major 6 maj l F# F#/A# F#/C#
+9 major 6 min l F#m F#m/A F#m/C#
+9 major 6 7 l F#7 F#7/A# F#7/C# F#7/E
+9 major 6 maj7 l F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+9 major 6 min7 l F#m7 F#m7/A F#m7/C# F#m7/E
+9 major 6 dim l F#dim F#dim/A F#dim/C
+9 major 6 sus4 l F#sus4 F#sus4/B F#sus4/C#
+9 major 7 maj ta G G/B G/D
+9 major 7 min ta Gm Gm/Bb Gm/D
+9 major 7 7 ta G7 G7/B G7/D G7/F
+9 major 7 maj7 ta Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+9 major 7 min7 ta Gm7 Gm7/Bb Gm7/D Gm7/F
+9 major 7 dim le Gdim Gdim/Bb Gdim/Db
+9 major 7 sus4 ta Gsus4 Gsus4/C Gsus4/D
+9 major 8 maj t G# G#/B# G#/D#
+9 major 8 min t G#m G#m/B G#m/D#
+9 major 8 7 t G#7 G#7/B# G#7/D# G#7/F#
+9 major 8 maj7 t G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+9 major 8 min7 t G#m7 G#m7/B G#m7/D# G#m7/F#
+9 major 8 dim t G#dim G#dim/B G#dim/D
+9 major 8 sus4 t G#sus4 G#sus4/C# G#sus4/D#
+9 major 9 maj d A A/C# A/E
+9 major 9 min d Am Am/C Am/E
+9 major 9 7 d A7 A7/C# A7/E A7/G
+9 major 9 maj7 d Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+9 major 9 min7 d Am7 Am7/C Am7/E Am7/G
+9 major 9 dim d Adim Adim/C Adim/Eb
+9 major 9 sus4 d Asus4 Asus4/D Asus4/E
+9 major 10 maj ra Bb Bb/D Bb/F
+9 major 10 min ra Bbm Bbm/Db Bbm/F
+9 major 10 7 ra Bb7 Bb7/D Bb7/F Bb7/Ab
+9 major 10 maj7 ra Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+9 major 10 min7 ra Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+9 major 10 dim de A#dim A#dim/C# A#dim/E
+9 major 10 sus4 ra Bbsus4 Bbsus4/Eb Bbsus4/F
+9 major 11 maj r B B/D# B/F#
+9 major 11 min r Bm Bm/D Bm/F#
+9 major 11 7 r B7 B7/D# B7/F# B7/A
+9 major 11 maj7 r Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+9 major 11 min7 r Bm7 Bm7/D Bm7/F# Bm7/A
+9 major 11 dim r Bdim Bdim/D Bdim/F
+9 major 11 sus4 r Bsus4 Bsus4/E Bsus4/F#
+9 minor 0 maj d C C/E C/G
+9 minor 0 min d Cm Cm/Eb Cm/G
+9 minor 0 7 d C7 C7/E C7/G C7/Bb
+9 minor 0 maj7 d Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+9 minor 0 min7 d Cm7 Cm7/Eb Cm7/G Cm7/Bb
+9 minor 0 dim d Cdim Cdim/Eb Cdim/Gb
+9 minor 0 sus4 d Csus4 Csus4/F Csus4/G
+9 minor 1 maj ra Db Db/F Db/Ab
+9 minor 1 min ra Dbm Dbm/Fb Dbm/Ab
+9 minor 1 7 ra Db7 Db7/F Db7/Ab Db7/Cb
+9 minor 1 maj7 ra Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+9 minor 1 min7 ra Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+9 minor 1 dim de C#dim C#dim/E C#dim/G
+9 minor 1 sus4 ra Dbsus4 Dbsus4/Gb Dbsus4/Ab
+9 minor 2 maj r D D/F# D/A
+9 minor 2 min r Dm Dm/F Dm/A
+9 minor 2 7 r D7 D7/F# D7/A D7/C
+9 minor 2 maj7 r Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+9 minor 2 min7 r Dm7 Dm7/F Dm7/A Dm7/C
+9 minor 2 dim r Ddim Ddim/F Ddim/Ab
+9 minor 2 sus4 r Dsus4 Dsus4/G Dsus4/A
+9 minor 3 maj ma Eb Eb/G Eb/Bb
+9 minor 3 min ma Ebm Ebm/Gb Ebm/Bb
+9 minor 3 7 ma Eb7 Eb7/G Eb7/Bb Eb7/Db
+9 minor 3 maj7 ma Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+9 minor 3 min7 ma Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+9 minor 3 dim re D#dim D#dim/F# D#dim/A
+9 minor 3 sus4 ma Ebsus4 Ebsus4/Ab Ebsus4/Bb
+9 minor 4 maj m E E/G# E/B
+9 minor 4 min m Em Em/G Em/B
+9 minor 4 7 m E7 E7/G# E7/B E7/D
+9 minor 4 maj7 m Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+9 minor 4 min7 m Em7 Em7/G Em7/B Em7/D
+9 minor 4 dim m Edim Edim/G Edim/Bb
+9 minor 4 sus4 m Esus4 Esus4/A Esus4/B
+9 minor 5 maj f F F/A F/C
+9 minor 5 min f Fm Fm/Ab Fm/C
+9 minor 5 7 f F7 F7/A F7/C F7/Eb
+9 minor 5 maj7 f Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+9 minor 5 min7 f Fm7 Fm7/Ab Fm7/C Fm7/Eb
+9 minor 5 dim f Fdim Fdim/Ab Fdim/Cb
+9 minor 5 sus4 f Fsus4 Fsus4/Bb Fsus4/C
+9 minor 6 maj sa Gb Gb/Bb Gb/Db
+9 minor 6 min sa Gbm Gbm/A Gbm/Db
+9 minor 6 7 sa Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+9 minor 6 maj7 sa Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+9 minor 6 min7 sa Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+9 minor 6 dim fe F#dim F#dim/A F#dim/C
+9 minor 6 sus4 sa Gbsus4 Gbsus4/Cb Gbsus4/Db
+9 minor 7 maj s G G/B G/D
+9 minor 7 min s Gm Gm/Bb Gm/D
+9 minor 7 7 s G7 G7/B G7/D G7/F
+9 minor 7 maj7 s Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+9 minor 7 min7 s Gm7 Gm7/Bb Gm7/D Gm7/F
+9 minor 7 dim s Gdim Gdim/Bb Gdim/Db
+9 minor 7 sus4 s Gsus4 Gsus4/C Gsus4/D
+9 minor 8 maj la Ab Ab/C Ab/Eb
+9 minor 8 min la Abm Abm/Cb Abm/Eb
+9 minor 8 7 la Ab7 Ab7/C Ab7/Eb Ab7/Gb
+9 minor 8 maj7 la Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+9 minor 8 min7 la Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+9 minor 8 dim se G#dim G#dim/B G#dim/D
+9 minor 8 sus4 la Absus4 Absus4/Db Absus4/Eb
+9 minor 9 maj l A A/C# A/E
+9 minor 9 min l Am Am/C Am/E
+9 minor 9 7 l A7 A7/C# A7/E A7/G
+9 minor 9 maj7 l Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+9 minor 9 min7 l Am7 Am7/C Am7/E Am7/G
+9 minor 9 dim l Adim Adim/C Adim/Eb
+9 minor 9 sus4 l Asus4 Asus4/D Asus4/E
+9 minor 10 maj ta Bb Bb/D Bb/F
+9 minor 10 min ta Bbm Bbm/Db Bbm/F
+9 minor 10 7 ta Bb7 Bb7/D Bb7/F Bb7/Ab
+9 minor 10 maj7 ta Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+9 minor 10 min7 ta Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+9 minor 10 dim le A#dim A#dim/C# A#dim/E
+9 minor 10 sus4 ta Bbsus4 Bbsus4/Eb Bbsus4/F
+9 minor 11 maj t B B/D# B/F#
+9 minor 11 min t Bm Bm/D Bm/F#
+9 minor 11 7 t B7 B7/D# B7/F# B7/A
+9 minor 11 maj7 t Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+9 minor 11 min7 t Bm7 Bm7/D Bm7/F# Bm7/A
+9 minor 11 dim t Bdim Bdim/D Bdim/F
+9 minor 11 sus4 t Bsus4 Bsus4/E Bsus4/F#
+10 major 0 maj r C C/E C/G
+10 major 0 min r Cm Cm/Eb Cm/G
+10 major 0 7 r C7 C7/E C7/G C7/Bb
+10 major 0 maj7 r Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+10 major 0 min7 r Cm7 Cm7/Eb Cm7/G Cm7/Bb
+10 major 0 dim r Cdim Cdim/Eb Cdim/Gb
+10 major 0 sus4 r Csus4 Csus4/F Csus4/G
+10 major 1 maj ma Db Db/F Db/Ab
+10 major 1 min ma Dbm Dbm/Fb Dbm/Ab
+10 major 1 7 ma Db7 Db7/F Db7/Ab Db7/Cb
+10 major 1 maj7 ma Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+10 major 1 min7 ma Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+10 major 1 dim re C#dim C#dim/E C#dim/G
+10 major 1 sus4 ma Dbsus4 Dbsus4/Gb Dbsus4/Ab
+10 major 2 maj m D D/F# D/A
+10 major 2 min m Dm Dm/F Dm/A
+10 major 2 7 m D7 D7/F# D7/A D7/C
+10 major 2 maj7 m Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+10 major 2 min7 m Dm7 Dm7/F Dm7/A Dm7/C
+10 major 2 dim m Ddim Ddim/F Ddim/Ab
+10 major 2 sus4 m Dsus4 Dsus4/G Dsus4/A
+10 major 3 maj f Eb Eb/G Eb/Bb
+10 major 3 min f Ebm Ebm/Gb Ebm/Bb
+10 major 3 7 f Eb7 Eb7/G Eb7/Bb Eb7/Db
+10 major 3 maj7 f Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+10 major 3 min7 f Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+10 major 3 dim f Ebdim Ebdim/Gb Ebdim/A
+10 major 3 sus4 f Ebsus4 Ebsus4/Ab Ebsus4/Bb
+10 major 4 maj sa Fb Fb/Ab Fb/Cb
+10 major 4 min sa Fbm Fbm/G Fbm/Cb
+10 major 4 7 sa Fb7 Fb7/Ab Fb7/Cb Fb7/D
+10 major 4 maj7 sa Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+10 major 4 min7 sa Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+10 major 4 dim fe Edim Edim/G Edim/Bb
+10 major 4 sus4 sa Fbsus4 Fbsus4/A Fbsus4/Cb
+10 major 5 maj s F F/A F/C
+10 major 5 min s Fm Fm/Ab Fm/C
+10 major 5 7 s F7 F7/A F7/C F7/Eb
+10 major 5 maj7 s Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+10 major 5 min7 s Fm7 Fm7/Ab Fm7/C Fm7/Eb
+10 major 5 dim s Fdim Fdim/Ab Fdim/Cb
+10 major 5 sus4 s Fsus4 Fsus4/Bb Fsus4/C
+10 major 6 maj la Gb Gb/Bb Gb/Db
+10 major 6 min la Gbm Gbm/A Gbm/Db
+10 major 6 7 la Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+10 major 6 maj7 la Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+10 major 6 min7 la Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+10 major 6 dim se F#dim F#dim/A F#dim/C
+10 major 6 sus4 la Gbsus4 Gbsus4/Cb Gbsus4/Db
+10 major 7 maj l G G/B G/D
+10 major 7 min l Gm Gm/Bb Gm/D
+10 major 7 7 l G7 G7/B G7/D G7/F
+10 major 7 maj7 l Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+10 major 7 min7 l Gm7 Gm7/Bb Gm7/D Gm7/F
+10 major 7 dim l Gdim Gdim/Bb Gdim/Db
+10 major 7 sus4 l Gsus4 Gsus4/C Gsus4/D
+10 major 8 maj ta Ab Ab/C Ab/Eb
+10 major 8 min ta Abm Abm/Cb Abm/Eb
+10 major 8 7 ta Ab7 Ab7/C Ab7/Eb Ab7/Gb
+10 major 8 maj7 ta Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+10 major 8 min7 ta Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+10 major 8 dim le G#dim G#dim/B G#dim/D
+10 major 8 sus4 ta Absus4 Absus4/Db Absus4/Eb
+10 major 9 maj t A A/C# A/E
+10 major 9 min t Am Am/C Am/E
+10 major 9 7 t A7 A7/C# A7/E A7/G
+10 major 9 maj7 t Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+10 major 9 min7 t Am7 Am7/C Am7/E Am7/G
+10 major 9 dim t Adim Adim/C Adim/Eb
+10 major 9 sus4 t Asus4 Asus4/D Asus4/E
+10 major 10 maj d Bb Bb/D Bb/F
+10 major 10 min d Bbm Bbm/Db Bbm/F
+10 major 10 7 d Bb7 Bb7/D Bb7/F Bb7/Ab
+10 major 10 maj7 d Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+10 major 10 min7 d Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+10 major 10 dim d Bbdim Bbdim/Db Bbdim/Fb
+10 major 10 sus4 d Bbsus4 Bbsus4/Eb Bbsus4/F
+10 major 11 maj ra Cb Cb/Eb Cb/Gb
+10 major 11 min ra Cbm Cbm/D Cbm/Gb
+10 major 11 7 ra Cb7 Cb7/Eb Cb7/Gb Cb7/A
+10 major 11 maj7 ra Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+10 major 11 min7 ra Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+10 major 11 dim de Bdim Bdim/D Bdim/F
+10 major 11 sus4 ra Cbsus4 Cbsus4/Fb Cbsus4/Gb
+10 minor 0 maj t C C/E C/G
+10 minor 0 min t Cm Cm/Eb Cm/G
+10 minor 0 7 t C7 C7/E C7/G C7/Bb
+10 minor 0 maj7 t Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+10 minor 0 min7 t Cm7 Cm7/Eb Cm7/G Cm7/Bb
+10 minor 0 dim t Cdim Cdim/Eb Cdim/Gb
+10 minor 0 sus4 t Csus4 Csus4/F Csus4/G
+10 minor 1 maj d Db Db/F Db/Ab
+10 minor 1 min d Dbm Dbm/Fb Dbm/Ab
+10 minor 1 7 d Db7 Db7/F Db7/Ab Db7/Cb
+10 minor 1 maj7 d Dbmaj7 Dbmaj7/F Dbmaj7/Ab Dbmaj7/C
+10 minor 1 min7 d Dbm7 Dbm7/Fb Dbm7/Ab Dbm7/Cb
+10 minor 1 dim d Dbdim Dbdim/Fb Dbdim/G
+10 minor 1 sus4 d Dbsus4 Dbsus4/Gb Dbsus4/Ab
+10 minor 2 maj ra D D/F# D/A
+10 minor 2 min ra Dm Dm/F Dm/A
+10 minor 2 7 ra D7 D7/F# D7/A D7/C
+10 minor 2 maj7 ra Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+10 minor 2 min7 ra Dm7 Dm7/F Dm7/A Dm7/C
+10 minor 2 dim de Ddim Ddim/F Ddim/Ab
+10 minor 2 sus4 ra Dsus4 Dsus4/G Dsus4/A
+10 minor 3 maj r Eb Eb/G Eb/Bb
+10 minor 3 min r Ebm Ebm/Gb Ebm/Bb
+10 minor 3 7 r Eb7 Eb7/G Eb7/Bb Eb7/Db
+10 minor 3 maj7 r Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+10 minor 3 min7 r Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+10 minor 3 dim r Ebdim Ebdim/Gb Ebdim/A
+10 minor 3 sus4 r Ebsus4 Ebsus4/Ab Ebsus4/Bb
+10 minor 4 maj ma Fb Fb/Ab Fb/Cb
+10 minor 4 min ma Fbm Fbm/G Fbm/Cb
+10 minor 4 7 ma Fb7 Fb7/Ab Fb7/Cb Fb7/D
+10 minor 4 maj7 ma Fbmaj7 Fbmaj7/Ab Fbmaj7/Cb Fbmaj7/Eb
+10 minor 4 min7 ma Fbm7 Fbm7/G Fbm7/Cb Fbm7/D
+10 minor 4 dim re Edim Edim/G Edim/Bb
+10 minor 4 sus4 ma Fbsus4 Fbsus4/A Fbsus4/Cb
+10 minor 5 maj m F F/A F/C
+10 minor 5 min m Fm Fm/Ab Fm/C
+10 minor 5 7 m F7 F7/A F7/C F7/Eb
+10 minor 5 maj7 m Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+10 minor 5 min7 m Fm7 Fm7/Ab Fm7/C Fm7/Eb
+10 minor 5 dim m Fdim Fdim/Ab Fdim/Cb
+10 minor 5 sus4 m Fsus4 Fsus4/Bb Fsus4/C
+10 minor 6 maj f Gb Gb/Bb Gb/Db
+10 minor 6 min f Gbm Gbm/A Gbm/Db
+10 minor 6 7 f Gb7 Gb7/Bb Gb7/Db Gb7/Fb
+10 minor 6 maj7 f Gbmaj7 Gbmaj7/Bb Gbmaj7/Db Gbmaj7/F
+10 minor 6 min7 f Gbm7 Gbm7/A Gbm7/Db Gbm7/Fb
+10 minor 6 dim f Gbdim Gbdim/A Gbdim/C
+10 minor 6 sus4 f Gbsus4 Gbsus4/Cb Gbsus4/Db
+10 minor 7 maj sa G G/B G/D
+10 minor 7 min sa Gm Gm/Bb Gm/D
+10 minor 7 7 sa G7 G7/B G7/D G7/F
+10 minor 7 maj7 sa Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+10 minor 7 min7 sa Gm7 Gm7/Bb Gm7/D Gm7/F
+10 minor 7 dim fe Gdim Gdim/Bb Gdim/Db
+10 minor 7 sus4 sa Gsus4 Gsus4/C Gsus4/D
+10 minor 8 maj s Ab Ab/C Ab/Eb
+10 minor 8 min s Abm Abm/Cb Abm/Eb
+10 minor 8 7 s Ab7 Ab7/C Ab7/Eb Ab7/Gb
+10 minor 8 maj7 s Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+10 minor 8 min7 s Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+10 minor 8 dim s Abdim Abdim/Cb Abdim/D
+10 minor 8 sus4 s Absus4 Absus4/Db Absus4/Eb
+10 minor 9 maj la A A/C# A/E
+10 minor 9 min la Am Am/C Am/E
+10 minor 9 7 la A7 A7/C# A7/E A7/G
+10 minor 9 maj7 la Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+10 minor 9 min7 la Am7 Am7/C Am7/E Am7/G
+10 minor 9 dim se Adim Adim/C Adim/Eb
+10 minor 9 sus4 la Asus4 Asus4/D Asus4/E
+10 minor 10 maj l Bb Bb/D Bb/F
+10 minor 10 min l Bbm Bbm/Db Bbm/F
+10 minor 10 7 l Bb7 Bb7/D Bb7/F Bb7/Ab
+10 minor 10 maj7 l Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+10 minor 10 min7 l Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+10 minor 10 dim l Bbdim Bbdim/Db Bbdim/Fb
+10 minor 10 sus4 l Bbsus4 Bbsus4/Eb Bbsus4/F
+10 minor 11 maj ta Cb Cb/Eb Cb/Gb
+10 minor 11 min ta Cbm Cbm/D Cbm/Gb
+10 minor 11 7 ta Cb7 Cb7/Eb Cb7/Gb Cb7/A
+10 minor 11 maj7 ta Cbmaj7 Cbmaj7/Eb Cbmaj7/Gb Cbmaj7/Bb
+10 minor 11 min7 ta Cbm7 Cbm7/D Cbm7/Gb Cbm7/A
+10 minor 11 dim le Bdim Bdim/D Bdim/F
+10 minor 11 sus4 ta Cbsus4 Cbsus4/Fb Cbsus4/Gb
+11 major 0 maj ra C C/E C/G
+11 major 0 min ra Cm Cm/Eb Cm/G
+11 major 0 7 ra C7 C7/E C7/G C7/Bb
+11 major 0 maj7 ra Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+11 major 0 min7 ra Cm7 Cm7/Eb Cm7/G Cm7/Bb
+11 major 0 dim de B#dim B#dim/D# B#dim/F#
+11 major 0 sus4 ra Csus4 Csus4/F Csus4/G
+11 major 1 maj r C# C#/E# C#/G#
+11 major 1 min r C#m C#m/E C#m/G#
+11 major 1 7 r C#7 C#7/E# C#7/G# C#7/B
+11 major 1 maj7 r C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+11 major 1 min7 r C#m7 C#m7/E C#m7/G# C#m7/B
+11 major 1 dim r C#dim C#dim/E C#dim/G
+11 major 1 sus4 r C#sus4 C#sus4/F# C#sus4/G#
+11 major 2 maj ma D D/F# D/A
+11 major 2 min ma Dm Dm/F Dm/A
+11 major 2 7 ma D7 D7/F# D7/A D7/C
+11 major 2 maj7 ma Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+11 major 2 min7 ma Dm7 Dm7/F Dm7/A Dm7/C
+11 major 2 dim re Ddim Ddim/F Ddim/Ab
+11 major 2 sus4 ma Dsus4 Dsus4/G Dsus4/A
+11 major 3 maj m D# D#/G D#/A#
+11 major 3 min m D#m D#m/F# D#m/A#
+11 major 3 7 m D#7 D#7/G D#7/A# D#7/C#
+11 major 3 maj7 m D#maj7 D#maj7/G D#maj7/A# D#maj7/D
+11 major 3 min7 m D#m7 D#m7/F# D#m7/A# D#m7/C#
+11 major 3 dim m D#dim D#dim/F# D#dim/A
+11 major 3 sus4 m D#sus4 D#sus4/G# D#sus4/A#
+11 major 4 maj f E E/G# E/B
+11 major 4 min f Em Em/G Em/B
+11 major 4 7 f E7 E7/G# E7/B E7/D
+11 major 4 maj7 f Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+11 major 4 min7 f Em7 Em7/G Em7/B Em7/D
+11 major 4 dim f Edim Edim/G Edim/Bb
+11 major 4 sus4 f Esus4 Esus4/A Esus4/B
+11 major 5 maj sa F F/A F/C
+11 major 5 min sa Fm Fm/Ab Fm/C
+11 major 5 7 sa F7 F7/A F7/C F7/Eb
+11 major 5 maj7 sa Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+11 major 5 min7 sa Fm7 Fm7/Ab Fm7/C Fm7/Eb
+11 major 5 dim fe E#dim E#dim/G# E#dim/B
+11 major 5 sus4 sa Fsus4 Fsus4/Bb Fsus4/C
+11 major 6 maj s F# F#/A# F#/C#
+11 major 6 min s F#m F#m/A F#m/C#
+11 major 6 7 s F#7 F#7/A# F#7/C# F#7/E
+11 major 6 maj7 s F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+11 major 6 min7 s F#m7 F#m7/A F#m7/C# F#m7/E
+11 major 6 dim s F#dim F#dim/A F#dim/C
+11 major 6 sus4 s F#sus4 F#sus4/B F#sus4/C#
+11 major 7 maj la G G/B G/D
+11 major 7 min la Gm Gm/Bb Gm/D
+11 major 7 7 la G7 G7/B G7/D G7/F
+11 major 7 maj7 la Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+11 major 7 min7 la Gm7 Gm7/Bb Gm7/D Gm7/F
+11 major 7 dim se Gdim Gdim/Bb Gdim/Db
+11 major 7 sus4 la Gsus4 Gsus4/C Gsus4/D
+11 major 8 maj l G# G#/B# G#/D#
+11 major 8 min l G#m G#m/B G#m/D#
+11 major 8 7 l G#7 G#7/B# G#7/D# G#7/F#
+11 major 8 maj7 l G#maj7 G#maj7/B# G#maj7/D# G#maj7/G
+11 major 8 min7 l G#m7 G#m7/B G#m7/D# G#m7/F#
+11 major 8 dim l G#dim G#dim/B G#dim/D
+11 major 8 sus4 l G#sus4 G#sus4/C# G#sus4/D#
+11 major 9 maj ta A A/C# A/E
+11 major 9 min ta Am Am/C Am/E
+11 major 9 7 ta A7 A7/C# A7/E A7/G
+11 major 9 maj7 ta Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+11 major 9 min7 ta Am7 Am7/C Am7/E Am7/G
+11 major 9 dim le Adim Adim/C Adim/Eb
+11 major 9 sus4 ta Asus4 Asus4/D Asus4/E
+11 major 10 maj t A# A#/D A#/E#
+11 major 10 min t A#m A#m/C# A#m/E#
+11 major 10 7 t A#7 A#7/D A#7/E# A#7/G#
+11 major 10 maj7 t A#maj7 A#maj7/D A#maj7/E# A#maj7/A
+11 major 10 min7 t A#m7 A#m7/C# A#m7/E# A#m7/G#
+11 major 10 dim t A#dim A#dim/C# A#dim/E
+11 major 10 sus4 t A#sus4 A#sus4/D# A#sus4/E#
+11 major 11 maj d B B/D# B/F#
+11 major 11 min d Bm Bm/D Bm/F#
+11 major 11 7 d B7 B7/D# B7/F# B7/A
+11 major 11 maj7 d Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+11 major 11 min7 d Bm7 Bm7/D Bm7/F# Bm7/A
+11 major 11 dim d Bdim Bdim/D Bdim/F
+11 major 11 sus4 d Bsus4 Bsus4/E Bsus4/F#
+11 minor 0 maj ta C C/E C/G
+11 minor 0 min ta Cm Cm/Eb Cm/G
+11 minor 0 7 ta C7 C7/E C7/G C7/Bb
+11 minor 0 maj7 ta Cmaj7 Cmaj7/E Cmaj7/G Cmaj7/B
+11 minor 0 min7 ta Cm7 Cm7/Eb Cm7/G Cm7/Bb
+11 minor 0 dim le B#dim B#dim/D# B#dim/F#
+11 minor 0 sus4 ta Csus4 Csus4/F Csus4/G
+11 minor 1 maj t C# C#/E# C#/G#
+11 minor 1 min t C#m C#m/E C#m/G#
+11 minor 1 7 t C#7 C#7/E# C#7/G# C#7/B
+11 minor 1 maj7 t C#maj7 C#maj7/E# C#maj7/G# C#maj7/B#
+11 minor 1 min7 t C#m7 C#m7/E C#m7/G# C#m7/B
+11 minor 1 dim t C#dim C#dim/E C#dim/G
+11 minor 1 sus4 t C#sus4 C#sus4/F# C#sus4/G#
+11 minor 2 maj d D D/F# D/A
+11 minor 2 min d Dm Dm/F Dm/A
+11 minor 2 7 d D7 D7/F# D7/A D7/C
+11 minor 2 maj7 d Dmaj7 Dmaj7/F# Dmaj7/A Dmaj7/C#
+11 minor 2 min7 d Dm7 Dm7/F Dm7/A Dm7/C
+11 minor 2 dim d Ddim Ddim/F Ddim/Ab
+11 minor 2 sus4 d Dsus4 Dsus4/G Dsus4/A
+11 minor 3 maj ra Eb Eb/G Eb/Bb
+11 minor 3 min ra Ebm Ebm/Gb Ebm/Bb
+11 minor 3 7 ra Eb7 Eb7/G Eb7/Bb Eb7/Db
+11 minor 3 maj7 ra Ebmaj7 Ebmaj7/G Ebmaj7/Bb Ebmaj7/D
+11 minor 3 min7 ra Ebm7 Ebm7/Gb Ebm7/Bb Ebm7/Db
+11 minor 3 dim de D#dim D#dim/F# D#dim/A
+11 minor 3 sus4 ra Ebsus4 Ebsus4/Ab Ebsus4/Bb
+11 minor 4 maj r E E/G# E/B
+11 minor 4 min r Em Em/G Em/B
+11 minor 4 7 r E7 E7/G# E7/B E7/D
+11 minor 4 maj7 r Emaj7 Emaj7/G# Emaj7/B Emaj7/D#
+11 minor 4 min7 r Em7 Em7/G Em7/B Em7/D
+11 minor 4 dim r Edim Edim/G Edim/Bb
+11 minor 4 sus4 r Esus4 Esus4/A Esus4/B
+11 minor 5 maj ma F F/A F/C
+11 minor 5 min ma Fm Fm/Ab Fm/C
+11 minor 5 7 ma F7 F7/A F7/C F7/Eb
+11 minor 5 maj7 ma Fmaj7 Fmaj7/A Fmaj7/C Fmaj7/E
+11 minor 5 min7 ma Fm7 Fm7/Ab Fm7/C Fm7/Eb
+11 minor 5 dim re E#dim E#dim/G# E#dim/B
+11 minor 5 sus4 ma Fsus4 Fsus4/Bb Fsus4/C
+11 minor 6 maj m F# F#/A# F#/C#
+11 minor 6 min m F#m F#m/A F#m/C#
+11 minor 6 7 m F#7 F#7/A# F#7/C# F#7/E
+11 minor 6 maj7 m F#maj7 F#maj7/A# F#maj7/C# F#maj7/E#
+11 minor 6 min7 m F#m7 F#m7/A F#m7/C# F#m7/E
+11 minor 6 dim m F#dim F#dim/A F#dim/C
+11 minor 6 sus4 m F#sus4 F#sus4/B F#sus4/C#
+11 minor 7 maj f G G/B G/D
+11 minor 7 min f Gm Gm/Bb Gm/D
+11 minor 7 7 f G7 G7/B G7/D G7/F
+11 minor 7 maj7 f Gmaj7 Gmaj7/B Gmaj7/D Gmaj7/F#
+11 minor 7 min7 f Gm7 Gm7/Bb Gm7/D Gm7/F
+11 minor 7 dim f Gdim Gdim/Bb Gdim/Db
+11 minor 7 sus4 f Gsus4 Gsus4/C Gsus4/D
+11 minor 8 maj sa Ab Ab/C Ab/Eb
+11 minor 8 min sa Abm Abm/Cb Abm/Eb
+11 minor 8 7 sa Ab7 Ab7/C Ab7/Eb Ab7/Gb
+11 minor 8 maj7 sa Abmaj7 Abmaj7/C Abmaj7/Eb Abmaj7/G
+11 minor 8 min7 sa Abm7 Abm7/Cb Abm7/Eb Abm7/Gb
+11 minor 8 dim fe G#dim G#dim/B G#dim/D
+11 minor 8 sus4 sa Absus4 Absus4/Db Absus4/Eb
+11 minor 9 maj s A A/C# A/E
+11 minor 9 min s Am Am/C Am/E
+11 minor 9 7 s A7 A7/C# A7/E A7/G
+11 minor 9 maj7 s Amaj7 Amaj7/C# Amaj7/E Amaj7/G#
+11 minor 9 min7 s Am7 Am7/C Am7/E Am7/G
+11 minor 9 dim s Adim Adim/C Adim/Eb
+11 minor 9 sus4 s Asus4 Asus4/D Asus4/E
+11 minor 10 maj la Bb Bb/D Bb/F
+11 minor 10 min la Bbm Bbm/Db Bbm/F
+11 minor 10 7 la Bb7 Bb7/D Bb7/F Bb7/Ab
+11 minor 10 maj7 la Bbmaj7 Bbmaj7/D Bbmaj7/F Bbmaj7/A
+11 minor 10 min7 la Bbm7 Bbm7/Db Bbm7/F Bbm7/Ab
+11 minor 10 dim se A#dim A#dim/C# A#dim/E
+11 minor 10 sus4 la Bbsus4 Bbsus4/Eb Bbsus4/F
+11 minor 11 maj l B B/D# B/F#
+11 minor 11 min l Bm Bm/D Bm/F#
+11 minor 11 7 l B7 B7/D# B7/F# B7/A
+11 minor 11 maj7 l Bmaj7 Bmaj7/D# Bmaj7/F# Bmaj7/A#
+11 minor 11 min7 l Bm7 Bm7/D Bm7/F# Bm7/A
+11 minor 11 dim l Bdim Bdim/D Bdim/F
+11 minor 11 sus4 l Bsus4 Bsus4/E Bsus4/F#

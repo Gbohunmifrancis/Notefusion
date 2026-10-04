@@ -30,7 +30,9 @@ public sealed record SubmitLinkTranscriptionCommand(
     int? Tempo,
     string? TimeSignature = null,
     /// <summary>False to skip the synthesised preview WAV. See <see cref="TranscribeOptions.AudioPreview"/>.</summary>
-    bool AudioPreview = true) : IRequest<Result<string>>;
+    bool AudioPreview = true,
+    /// <summary>The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</summary>
+    int KeyboardTranspose = 0) : IRequest<Result<string>>;
 
 public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<SubmitLinkTranscriptionCommand, Result<string>>
 {
@@ -59,9 +61,11 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         if (_currentUser.UserId is not { } userId)
             return BillingErrors.NotAuthenticated;
 
-        var url = (request.Url ?? string.Empty).Trim();
-        if (url.Length is 0 or > 2048 || !Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme is not ("http" or "https"))
+        // Only the link goes on, not the words a share sheet wrapped around it.
+        if (!SongLinks.TryExtract(request.Url, out var url))
             return TranscriptionErrors.InvalidLink;
+        if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
+            return TranscriptionErrors.InvalidKeyboardTranspose;
 
         var key = SubmitTranscriptionCommandHandler.SanitiseKey(request.Key);
         if (key is not null && KeyParser.Parse(key).IsFailure)
@@ -91,7 +95,8 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             TimeSignature = request.TimeSignature,
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal,
             MaxSeconds = isPro ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds,
-            AudioPreview = request.AudioPreview
+            AudioPreview = request.AudioPreview,
+            KeyboardTranspose = request.KeyboardTranspose
         };
 
         var submitted = await _api.SubmitLinkAsync(url, options, ct);

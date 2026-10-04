@@ -1,5 +1,6 @@
 import { File, Paths } from "expo-file-system";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
+import { ensurePiano } from "./piano";
 import { synthesizeMelodyWavBase64 } from "./synth";
 import type { NoteEvent } from "../api/types";
 
@@ -58,6 +59,11 @@ export async function auditionNote(note: NoteEvent, tempoBpm: number): Promise<v
   const mine = ++generation;
   dispose(current);
   current = null;
+
+  // A pitch check wants the real piano, not the fallback voice, so wait for the samples
+  // (already in memory on any tap after the app's first second).
+  await ensurePiano();
+  if (mine !== generation) return;
 
   const wav = synthesizeMelodyWavBase64(
     [{ ...note, startBeat: 0, durBeats: Math.max(note.durBeats, 1) }],

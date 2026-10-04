@@ -110,6 +110,17 @@ REARTICULATION_FRAC = 0.62  # an RMS valley below this fraction of its flanks is
 # re-strike however deep it goes.  A cut must be this fraction of the typical valley.
 TREMOLO_REL = 0.85
 VALLEY_WIDTH_FRAMES = 3
+# ...and a dip alone is not enough: a held note under reverb, or one through a vocal stem
+# the separation model thinned out, dips in level as its echoes and partials beat, with
+# no new attack.  A cut needs an onset where the level comes back — spectral flux at
+# this multiple of the clip's typical voiced frame — or a voicing drop (pyin's voiced
+# probability at this fraction of the note's either side), which is the glottal stop or
+# consonant of a sung re-strike.  Measured on every cut the dip test made: sung corpus
+# 95 of 95 true cuts keep a cue (flux 2.1 and up) and neither false one does; synthetic
+# songs' reverberant lead 47 of 49 true kept, 45 of 47 false dropped; through the vocal
+# stem 20 of 32 true kept, 63 of 75 false dropped.
+ONSET_CUE_FLUX = 2.0
+ONSET_CUE_VOICING = 0.3
 
 # ── Key-aware rounding ────────────────────────────────────────────────────────
 
@@ -143,6 +154,9 @@ class Contour:
     rms: np.ndarray  # same frames, linear, over the analysis window
     rms_fast: np.ndarray  # same frames, over one hop only — resolves a re-articulation dip
     stable: np.ndarray | None = None  # per frame: pitch not gliding (set by ``smooth``)
+    # Spectral-flux onset strength over the clip's median voiced frame (set by ``track``);
+    # None for a contour handed in from elsewhere, which then cuts on the dip alone.
+    onset: np.ndarray | None = None
 
 
 @dataclass(frozen=True)
@@ -208,8 +222,9 @@ def track(y: np.ndarray, sr: int = SAMPLE_RATE) -> Contour:
     )
     rms = librosa.feature.rms(y=y, frame_length=FRAME, hop_length=HOP)[0]
     rms_fast = librosa.feature.rms(y=y, frame_length=HOP, hop_length=HOP)[0]
-    n = min(f0.size, rms.size, rms_fast.size)
-    f0, vprob, rms, rms_fast = f0[:n], vprob[:n], rms[:n], rms_fast[:n]
+    onset = librosa.onset.onset_strength(y=y, sr=sr, hop_length=HOP)
+    n = min(f0.size, rms.size, rms_fast.size, onset.size)
+    f0, vprob, rms, rms_fast, onset = f0[:n], vprob[:n], rms[:n], rms_fast[:n], onset[:n]
     times = librosa.frames_to_time(np.arange(n), sr=sr, hop_length=HOP)
 
     midi = np.full(n, np.nan)
@@ -220,7 +235,11 @@ def track(y: np.ndarray, sr: int = SAMPLE_RATE) -> Contour:
     if loud > 0.0:
         quiet = rms < loud * 10.0 ** (VOICING_FLOOR_DB / 20.0)
         midi[quiet] = np.nan
-    return Contour(times=times, midi=midi, voiced_prob=np.nan_to_num(vprob), rms=rms, rms_fast=rms_fast)
+    typical = float(np.median(onset[~np.isnan(midi)])) if np.any(~np.isnan(midi)) else 0.0
+    return Contour(
+        times=times, midi=midi, voiced_prob=np.nan_to_num(vprob), rms=rms, rms_fast=rms_fast,
+        onset=onset / typical if typical > 0.0 else None,
+    )
 
 
 def _hop_sec(c: Contour) -> float:
@@ -264,7 +283,8 @@ def smooth(c: Contour) -> Contour:
         drive = _moving_average(_moving_average(midi[start:end], DRIVE_FRAMES), DRIVE_FRAMES)
         stable[start:end] = np.abs(_slope(drive, hop)) <= SLOPE_MAX_ST_PER_SEC
     return Contour(
-        times=c.times, midi=midi, voiced_prob=c.voiced_prob, rms=c.rms, rms_fast=c.rms_fast, stable=stable
+        times=c.times, midi=midi, voiced_prob=c.voiced_prob, rms=c.rms, rms_fast=c.rms_fast, stable=stable,
+        onset=c.onset,
     )
 
 
@@ -313,6 +333,7 @@ def retune(c: Contour, cents: float) -> Contour:
         rms=c.rms,
         rms_fast=c.rms_fast,
         stable=c.stable,
+        onset=c.onset,
     )
 
 
@@ -512,6 +533,21 @@ def _is_restrike(ratio: float, typical: float) -> bool:
     return ratio < REARTICULATION_FRAC and ratio <= TREMOLO_REL * typical
 
 
+def _onset_cue(c: Contour, k: int, a: int, b: int) -> bool:
+    """Is the level dip at frame ``k`` (inside the span ``[a, b)``) a new attack?"""
+    if c.onset is None:
+        return True
+    if float(np.max(c.onset[max(a, k - 1) : min(b, k + VALLEY_WIDTH_FRAMES + 1)], initial=0.0)) >= ONSET_CUE_FLUX:
+        return True
+    w = VALLEY_WIDTH_FRAMES
+    sides = np.concatenate((c.voiced_prob[max(a, k - 4 * w) : max(a, k - w - 1)],
+                            c.voiced_prob[min(b, k + w + 2) : min(b, k + 4 * w + 1)]))
+    if sides.size == 0:
+        return False
+    dip = float(np.min(c.voiced_prob[max(a, k - w) : min(b, k + w + 1)]))
+    return dip <= ONSET_CUE_VOICING * float(np.median(sides))
+
+
 def _has_rearticulation(c: Contour, a_start: int, a_end: int, b_start: int, b_end: int) -> bool:
     """Is there an amplitude dip or a voicing gap between two adjacent spans?"""
     hop = _hop_sec(c)
@@ -521,8 +557,11 @@ def _has_rearticulation(c: Contour, a_start: int, a_end: int, b_start: int, b_en
     valleys = _valleys(window)
     typical = _typical_valley(valleys)
     junction = a_end - a_start
-    near = [ratio for k, ratio in valleys if abs(k - junction) <= VALLEY_WIDTH_FRAMES]
-    return bool(near) and _is_restrike(min(near), typical)
+    near = [(ratio, k) for k, ratio in valleys if abs(k - junction) <= VALLEY_WIDTH_FRAMES]
+    if not near:
+        return False
+    ratio, k = min(near)
+    return _is_restrike(ratio, typical) and _onset_cue(c, a_start + k, a_start, b_end)
 
 
 def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
@@ -540,7 +579,7 @@ def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
     for k, ratio in valleys:
         if k < min_frames or k > window.size - min_frames or k - last < min_frames:
             continue
-        if _is_restrike(ratio, typical):
+        if _is_restrike(ratio, typical) and _onset_cue(c, a + k, a, b):
             cuts.append(k)
             last = k
     bounds = [0, *cuts, window.size]

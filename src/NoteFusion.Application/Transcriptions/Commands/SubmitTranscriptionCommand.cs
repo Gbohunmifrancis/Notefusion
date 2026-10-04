@@ -26,7 +26,9 @@ public sealed record SubmitTranscriptionCommand(
     /// <summary>A whole song with instruments: isolate the voice first. See <see cref="TranscribeOptions.Separate"/>.</summary>
     bool Separate = false,
     /// <summary>False to skip the synthesised preview WAV. See <see cref="TranscribeOptions.AudioPreview"/>.</summary>
-    bool AudioPreview = true) : IRequest<Result<string>>;
+    bool AudioPreview = true,
+    /// <summary>The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</summary>
+    int KeyboardTranspose = 0) : IRequest<Result<string>>;
 
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
@@ -55,6 +57,9 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
 
     public async Task<Result<string>> Handle(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
     {
+        if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
+            return TranscriptionErrors.InvalidKeyboardTranspose;
+
         // Read once: the header cannot change mid-request, and the gate below and the stamp further down
         // must agree about which handset this is or the two would count different things.
         var fingerprint = _device.Current;
@@ -123,6 +128,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             TimeSignature = request.TimeSignature,
             Separate = request.Separate,
             AudioPreview = request.AudioPreview,
+            KeyboardTranspose = request.KeyboardTranspose,
             // Pro work goes to the front of the worker's queue and takes its fast lane.
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal
         };

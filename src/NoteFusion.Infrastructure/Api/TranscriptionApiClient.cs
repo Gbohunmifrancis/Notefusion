@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
@@ -190,10 +191,13 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             using var form = new MultipartFormDataContent();
             form.Add(new StringContent(url), "url");
             AddOptions(form, options, withMode: true);
-            if (options.MaxSeconds is { } cap)
-                form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
 
             using var response = await http.PostAsync("v1/transcribe/link", form, cancellationToken);
+            // The worker is the authority on which links it can fetch, and it answers 422 for one it cannot.
+            // That is the user's link, not a fault on our side, so it gets the same plain sentence as a link
+            // refused here — never the worker's own text.
+            if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+                return TranscriptionErrors.InvalidLink;
             if (!response.IsSuccessStatusCode)
             {
                 var errText = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -221,6 +225,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             {
                 TranscriptionMode.Poly => "poly",
                 TranscriptionMode.Choir => "choir",
+                TranscriptionMode.Chords => "chords",
                 _ => "melody",
             }), "mode");
         if (!string.IsNullOrWhiteSpace(options.Key) && !options.Key.Equals("Auto", StringComparison.OrdinalIgnoreCase))
@@ -238,6 +243,9 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             form.Add(new StringContent("true"), "harmony");
         if (withMode && options.MaxSeconds is { } cap)
             form.Add(new StringContent(cap.ToString(System.Globalization.CultureInfo.InvariantCulture)), "max_seconds");
+        // Only audio is played on a keyboard; a score file is already written in its own key.
+        if (withMode && options.KeyboardTranspose != 0)
+            form.Add(new StringContent(options.KeyboardTranspose.ToString(System.Globalization.CultureInfo.InvariantCulture)), "keyboard_transpose");
 
         var baseUrl = config["TranscriptionApi:WebhookBaseUrl"] ?? "http://api:8080";
         var callbackUrl = $"{baseUrl.TrimEnd('/')}/api/internal/webhooks/transcription/{{job_id}}";
@@ -339,11 +347,15 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             wire.Result.PartsMusicXml ?? "",
             wire.Result.BeatOriginSec,
             wire.Result.BackingAudioBase64 ?? "",
-            wire.Result.PartsSource);
+            wire.Result.PartsSource,
+            wire.Result.Chords?
+                .Select(c => new ChordSymbolDto(c.StartBeat, c.DurBeats, c.Root, c.Quality, c.Bass, c.Symbol, c.Solfa))
+                .ToList(),
+            wire.Result.ChordsSource);
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source));
     }
 
     private static SourceDto? MapSource(WireSource? source)
-        => source is null ? null : new SourceDto(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl);
+        => source is null ? null : new SourceDto(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl, source.Preview, source.Notice);
 }

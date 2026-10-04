@@ -241,3 +241,110 @@ def test_backing_is_encoded_as_mp3_when_ffmpeg_is_present(tmp_path):
     else:
         assert encoded == ""
     assert _encode_backing(tmp_path / "missing.wav") == ""
+
+
+def _fake_separation(monkeypatch, peaks: float, voice_db: float) -> list:
+    """Stand-ins for the MDX model: a band check that reads ``peaks`` and a separation
+    whose vocal stem holds ``voice_db`` of the mix.  Returns the transcribe() calls."""
+    import numpy as np
+    import soundfile as sf
+
+    from app.pipeline import separate
+
+    calls = []
+
+    def fake_separate_file(wav, out, progress=lambda f: None, backing_path=None):
+        t = np.arange(22_050) / 22_050
+        tone = np.sin(2 * np.pi * 220 * t).astype(np.float32)
+        sf.write(str(out), tone * 10.0 ** (voice_db / 20.0), 22_050)
+        sf.write(str(backing_path), tone, 22_050)
+        return out
+
+    monkeypatch.setattr(separate, "available", lambda: True)
+    monkeypatch.setattr(separate, "accompaniment", lambda path: peaks)
+    monkeypatch.setattr(separate, "separate_file", fake_separate_file)
+    monkeypatch.setattr("app.jobs.queue._encode_backing", lambda path: "")
+    monkeypatch.setattr("app.jobs.queue.transcribe",
+                        lambda path, **kw: calls.append((Path(path).name, kw.get("tempo_source"))) or _result())
+    return calls
+
+
+@pytest.mark.parametrize("peaks, isolated", [(7.5, True), (2.0, False)])
+def test_a_melody_upload_with_a_band_is_isolated_without_being_asked(monkeypatch, peaks, isolated):
+    """separate=false, but the accompaniment check hears a band: the vocal is isolated and
+    the beat read from the mix, exactly as for separate=true.  A solo voice is left alone."""
+    calls = _fake_separation(monkeypatch, peaks=peaks, voice_db=-3.0)
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        job = _await_status(queue, queue.submit(audio, mode="melody", key=None, tempo=None), STATUS_DONE)
+        if isolated:
+            assert calls == [("vocals.wav", audio)]
+            assert job.result.separated is True
+        else:
+            assert calls == [(audio.name, None)]
+            assert job.result.separated is False
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_only_melody_mode_is_isolated_on_its_own(monkeypatch):
+    calls = _fake_separation(monkeypatch, peaks=9.0, voice_db=-3.0)
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        _await_status(queue, queue.submit(audio, mode="poly", key=None, tempo=None), STATUS_DONE)
+        assert calls == [(audio.name, None)]
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_a_band_with_no_voice_in_it_is_transcribed_as_the_mixture(monkeypatch):
+    """An instrumental upload reads as accompanied too, but its vocal stem comes back empty;
+    the tune is then in the mixture, so that is what gets transcribed."""
+    calls = _fake_separation(monkeypatch, peaks=7.5, voice_db=-40.0)
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        job = _await_status(queue, queue.submit(audio, mode="melody", key=None, tempo=None), STATUS_DONE)
+        assert calls == [(audio.name, None)]
+        assert job.result.separated is False
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_an_explicit_song_upload_keeps_its_stem_however_quiet(monkeypatch):
+    """separate=true is the user's call: the voice check only guards the automatic path."""
+    calls = _fake_separation(monkeypatch, peaks=0.0, voice_db=-40.0)
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        job = _await_status(queue, queue.submit(audio, mode="melody", key=None, tempo=None, separate=True),
+                            STATUS_DONE)
+        assert calls == [("vocals.wav", audio)]
+        assert job.result.separated is True
+    finally:
+        queue.shutdown(wait=True)
+
+
+def test_the_accompaniment_check_tells_a_band_from_a_voice(tmp_path):
+    """The real check on two synthetic clips: a hummed line (one harmonic series) and the
+    same line over a bass and a sustained triad."""
+    import numpy as np
+    import soundfile as sf
+
+    from app.pipeline import separate
+
+    sr = 22_050
+    t = np.arange(int(4.0 * sr)) / sr
+
+    def tone(f0, n: int = 8) -> np.ndarray:
+        phase = 2 * np.pi * np.cumsum(np.broadcast_to(f0, t.shape)) / sr
+        return sum(np.sin(k * phase) / k for k in range(1, n + 1))
+
+    voice = tone(261.6 * (1 + 0.004 * np.sin(2 * np.pi * 5.5 * t)))
+    band = voice + 0.8 * tone(65.4) + 0.5 * (tone(196.0) + tone(246.9) + tone(293.7))
+    sf.write(tmp_path / "voice.wav", 0.2 * voice / np.max(np.abs(voice)), sr)
+    sf.write(tmp_path / "band.wav", 0.2 * band / np.max(np.abs(band)), sr)
+    assert not separate.has_accompaniment(tmp_path / "voice.wav")
+    assert separate.has_accompaniment(tmp_path / "band.wav")
