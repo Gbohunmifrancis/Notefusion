@@ -1,0 +1,14 @@
+<resources>
+  <string name="nf_tile_label" translatable="false">Find the key</string>
+  <string name="nf_tile_subtitle">Last: doh is %1$s</string>
+  <string name="nf_widget_label" translatable="false">NoteFusion: find the key</string>
+  <string name="nf_widget_button">Tap to find the key</string>
+  <string name="nf_widget_empty">Play any song, tap, hear its doh</string>
+  <string name="nf_widget_last">Last: Doh is %1$s · %2$s</string>
+  <string name="nf_widget_description">Start listening for the key from your home screen</string>
+  <string name="nf_listen_channel">Listening for the key</string>
+  <string name="nf_listen_channel_description">Shows the key NoteFusion hears while another app plays</string>
+  <string name="nf_listen_title">Listening for the key…</string>
+  <string name="nf_listen_body">Play the music out loud</string>
+  <string name="nf_listen_stop">Stop</string>
+</resources>

@@ -34,6 +34,8 @@ import { Touchable } from "../components/Touchable";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { markPractisedToday } from "../lib/practiceReminder";
+import { extractSongUrl, songLinkHint } from "../lib/songLink";
+import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { fonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { TranscriptionStage } from "../api/types";
@@ -47,14 +49,6 @@ const STAGES: { key: TranscriptionStage; label: string }[] = [
   { key: "transcribing", label: "Writing the solfa" },
 ];
 
-function providerOf(url: string): "youtube" | "spotify" | "apple_music" | null {
-  const u = url.trim().toLowerCase();
-  if (/(^|\.)youtube\.com\/|youtu\.be\//.test(u)) return "youtube";
-  if (u.includes("open.spotify.com/track/")) return "spotify";
-  if (u.includes("music.apple.com/") && (u.includes("/song/") || u.includes("?i="))) return "apple_music";
-  return null;
-}
-
 const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" } as const;
 
 export function LinkScreen() {
@@ -65,7 +59,10 @@ export function LinkScreen() {
   const { isPro, known, subscription, refresh } = useSubscription();
 
   const [url, setUrl] = useState("");
-  const provider = useMemo(() => providerOf(url), [url]);
+  // Share text ("Listen to … on Spotify: https://…") is read down to its link, the one rule the
+  // worker applies (lib/songLink); only the link itself is sent.
+  const found = useMemo(() => extractSongUrl(url), [url]);
+  const provider = found?.provider ?? null;
   const busy = state.status === "pending" || state.status === "processing";
 
   const credits = subscription?.songCreditsRemaining;
@@ -96,9 +93,8 @@ export function LinkScreen() {
   }, [busy, state.progress, barWidth]);
 
   function submit() {
-    const trimmed = url.trim();
-    if (!trimmed || busy) return;
-    void startLink(trimmed, { mode: "melody" });
+    if (!found || busy) return;
+    void startLink(found.url, { mode: "melody", keyboardTranspose: keyboardTranspose() || undefined });
   }
 
   const upgradeCodes = new Set(["BILLING_SONG_PREVIEW_USED", "BILLING_FREE_TIER_LIMIT"]);
@@ -153,7 +149,7 @@ export function LinkScreen() {
           ) : null}
         </View>
         {url.trim().length > 0 && !provider ? (
-          <Text style={styles.hintDanger}>That doesn't look like a YouTube, Spotify or Apple Music link.</Text>
+          <Text style={styles.hintDanger}>{songLinkHint(url)}</Text>
         ) : provider ? (
           <Text style={styles.hint}>
             {PROVIDER_LABEL[provider]}

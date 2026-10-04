@@ -36,6 +36,12 @@ export type RootStackParams = {
   Tabs: NavigatorScreenParams<TabParams>;
   /** Paste a song link (YouTube, Spotify, Apple Music) and transcribe its lead vocal. */
   Link: undefined;
+  /**
+   * "Find the key": listens through the microphone and names the doh while another app plays.
+   * `autoStart` comes from a tile, widget or notification tap (notefusion://listen) and is only
+   * true when the app was on screen at the time — a microphone service cannot start otherwise.
+   */
+  Listen: { autoStart?: boolean } | undefined;
   // Result can arrive fresh from a job or be opened from the library.
   Result: {
     result: TranscriptionResult;

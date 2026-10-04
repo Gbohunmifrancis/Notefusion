@@ -16,7 +16,7 @@
       "requireFullScreen": true,
       "bundleIdentifier": "com.notefusion.com",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "NoteFusion records short clips to transcribe them into solfa and staff notation."
+        "NSMicrophoneUsageDescription": "NoteFusion records short clips to transcribe them into solfa and staff notation, and listens for the key of a song while other apps play it."
       }
     },
     "android": {
@@ -30,7 +30,9 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.FOREGROUND_SERVICE_MICROPHONE",
+        "android.permission.POST_NOTIFICATIONS"
       ]
     },
     "plugins": [
@@ -46,7 +48,7 @@
       [
         "expo-audio",
         {
-          "microphonePermission": "NoteFusion records short clips to transcribe them into solfa and staff notation."
+          "microphonePermission": "NoteFusion records short clips to transcribe them into solfa and staff notation, and listens for the key of a song while other apps play it."
         }
       ],
       "expo-asset",

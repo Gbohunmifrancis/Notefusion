@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { transcriptionsApi } from "../api/endpoints";
+import { transcriptionsApi, type SubmitOptions } from "../api/endpoints";
 import { baseURL, safeReason, toApiError } from "../api/client";
 import { tokenStore } from "./tokenStore";
 import type {
@@ -231,7 +231,7 @@ export function useJobPolling() {
 
   /** A song behind a link. Same lifecycle as `start`; the worker reports its stages. */
   const startLink = useCallback(
-    async (url: string, opts: { mode: "melody" | "poly" | "choir"; key?: string; tempo?: number }) => {
+    async (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose">) => {
       stopPolling();
       setState({
         status: "pending",
@@ -256,7 +256,7 @@ export function useJobPolling() {
     async (
       fileUri: string,
       fileName: string,
-      opts: { mode: "melody" | "poly" | "choir"; key?: string; tempo?: number; separate?: boolean },
+      opts: SubmitOptions,
     ) => {
       stopPolling();
       setState({
