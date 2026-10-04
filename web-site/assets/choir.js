@@ -181,6 +181,8 @@
   var SAMPLE_NAMES = ["C2", "Ds2", "Fs2", "A2", "C3", "Ds3", "Fs3", "A3", "C4", "Ds4", "Fs4", "A4", "C5", "Ds5", "Fs5", "A5", "C6"];
   var SAMPLE_MIDI_LOW = 36, SAMPLE_STEP = 3;
   var PIANO_URL = "/assets/piano/";
+  /** Bump when the pack is rebuilt: /assets/* is cached for a week, and only the query string gets past that. */
+  var PIANO_VERSION = "?v=1";
   var RELEASE_SEC = 0.35, DAMPER_TAU_SEC = 0.08, MIN_NOTE_SEC = 0.04;
   /** Decoded samples are trimmed to this onset in case a decoder keeps the MP3 encoder delay. */
   var ONSET_LEVEL = 0.01, ONSET_BACKOFF_SEC = 0.002;
@@ -203,8 +205,8 @@
   var pianoDecoded = {}; // sampleRate -> Promise of [{midi, cents, buffer}], with .samples once resolved
   function fetchPiano() {
     if (!pianoBytes) {
-      pianoBytes = Promise.all([fetch(PIANO_URL + "tuning.json").then(function (r) { if (!r.ok) throw new Error("tuning"); return r.json(); })].concat(
-        SAMPLE_NAMES.map(function (name) { return fetch(PIANO_URL + name + ".mp3").then(function (r) { if (!r.ok) throw new Error(name); return r.arrayBuffer(); }); })
+      pianoBytes = Promise.all([fetch(PIANO_URL + "tuning.json" + PIANO_VERSION).then(function (r) { if (!r.ok) throw new Error("tuning"); return r.json(); })].concat(
+        SAMPLE_NAMES.map(function (name) { return fetch(PIANO_URL + name + ".mp3" + PIANO_VERSION).then(function (r) { if (!r.ok) throw new Error(name); return r.arrayBuffer(); }); })
       )).catch(function (err) { pianoBytes = null; throw err; });
     }
     return pianoBytes;

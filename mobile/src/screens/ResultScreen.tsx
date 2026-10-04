@@ -234,8 +234,12 @@ export function ResultScreen({ route, navigation }: Props) {
   const [reviewQueue, setReviewQueue] = useState<number[] | null>(null);
   /** Last draft the server acknowledged — the rollback target if a correction fails to save. */
   const persisted = useRef<Draft>(draft);
-  /** Synthesised melody for the player; re-made when the notes change. Made here when the server sent none. */
-  const [preview, setPreview] = useState(() => result.audioPreviewBase64 || synthesizeMelodyWavBase64(result.notes, result.tempo));
+  /**
+   * Synthesised melody for the player; re-made when the notes change. Always rendered
+   * here, never the server's `audioPreviewBase64`: that is the old additive voice, and
+   * the piano must not change underfoot between the first play and the first edit.
+   */
+  const [preview, setPreview] = useState(() => synthesizeMelodyWavBase64(result.notes, result.tempo));
 
   // Counts deletions as well as pitch changes: both are corrections the exported
   // score doesn't know about, and both are what "Discard" would undo. Zero means
@@ -302,7 +306,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const hasParts = isPro && !!partsView;
 
   // The rehearsal mix: the tune plus whichever parts are switched on, re-rendered when
-  // any of them changes. Without parts the player keeps the worker's own preview.
+  // any of them changes. Without parts the player keeps the melody preview above.
   useEffect(() => {
     if (!hasParts || !parts) return;
     const voices = [{ notes: voiceOn.soprano ? view.notes : [], gain: 1 }];
@@ -601,7 +605,7 @@ export function ResultScreen({ route, navigation }: Props) {
   function discardCorrections() {
     const original = pristine(baseline.notes);
     setDraft(original);
-    setPreview(baseline.notes === result.notes && result.audioPreviewBase64 ? result.audioPreviewBase64 : synthesizeMelodyWavBase64(baseline.notes, tempo));
+    setPreview(synthesizeMelodyWavBase64(baseline.notes, tempo));
     void commitNotes(original);
   }
 

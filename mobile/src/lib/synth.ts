@@ -15,7 +15,7 @@ import { type PianoSample, SAMPLE_RATE, nearestSample } from "./piano";
  * The additive voice further down (a struck-string partial stack, once mirrored by
  * the server's `_synthesize_audio_preview`) is kept only as the fallback for the
  * moment before the samples have loaded, or if they could not be. Mobile no longer
- * plays the server's preview: ResultScreen synthesises locally when none is sent.
+ * plays the server's preview: ResultScreen always synthesises its own.
  */
 
 /**
