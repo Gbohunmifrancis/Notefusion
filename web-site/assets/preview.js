@@ -130,7 +130,7 @@
     window.NfRecorder.open({
       maxSeconds: MAX_RECORD_SEC,
       track: track,
-      onError: function (text) { say(text + " Paste a link or pick a file instead.", "error"); },
+      onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
       onTake: function (blob, name) {
         var fd = new FormData(); fd.append("audio", blob, name); fd.append("audioPreview", "false");
         busy(true); say("Transcribing your tune\u2026");

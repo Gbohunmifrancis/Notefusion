@@ -317,7 +317,6 @@ body { background: var(--nf-canvas); color: var(--nf-copy); font-family: var(--f
   70% { transform: scale(1); }
 }
 body.is-recording .brand-icon { animation: nf-heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
-.try-alt .btn.is-recording { background: #1e3a8a; border-color: #1e3a8a; color: #fff; }
 @media (prefers-reduced-motion: reduce) { body.is-recording .brand-icon { animation: none; } }
 
 

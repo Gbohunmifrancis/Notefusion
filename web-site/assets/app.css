@@ -68,7 +68,6 @@ p { margin: 0 0 12px; }
   70% { transform: scale(1); }
 }
 body.is-recording .brand-mark, body.is-recording .home-mark { animation: heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
-@keyframes rec-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 
 /* ── Shell ───────────────────────────────────────────────────────────────── */
 .shell { display: grid; grid-template-columns: var(--side-w) minmax(0, 1fr); min-height: 100vh; }
@@ -534,9 +533,6 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .btn-link.small { font-size: 0.85rem; }
 
 
-/* The home page's try box offers the take back before sending it. */
-.try-status audio.try-take { display: block; width: 100%; margin: 10px 0; }
-.try-take-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 
 /* ── Pro: the membership shows, quietly, wherever the account does ──────── */
 body.is-pro .pill-pro.gate { display: none; }

@@ -3,13 +3,15 @@
  * One panel serves the home page, the guest box and the signed-in studio, so recording looks
  * and works the same wherever "Record a tune" is pressed. Plain script, no build step.
  *
- *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds) {…}, onError: function (text) {…} })
+ *   NfRecorder.open({ maxSeconds: 30, onTake: function (blob, name, seconds) {…}, onError: function (text, kind) {…} })
  *
- * `sounds(name)` ("start" | "stop" | "error") and `track(name)` are optional hooks. */
+ * `onError` gets a plain sentence and a kind ("unsupported" | "denied" | "short"), so the page can add
+ * its own way out ("Upload a file instead."). `sounds(name)` ("start" | "stop" | "error") and
+ * `track(name)` are optional hooks. */
 (function () {
   "use strict";
   var panel = null, els = {}, meterBars = [];
-  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false, opts: null };
+  var rec = { recorder: null, chunks: [], timer: null, stopAt: null, started: 0, stream: null, audioCtx: null, analyser: null, raf: null, blob: null, name: "", url: null, discard: false, opts: null, opening: false, opener: null };
 
   function icon(d) {
     return '<svg class="nf-rec-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>";
@@ -36,20 +38,20 @@
           '<div class="nf-rec-meter" aria-hidden="true"></div>' +
           '<p class="nf-rec-lead">Hum or sing the tune. Keep going until the phrase is finished, then press Stop.</p>' +
           '<div class="nf-rec-actions">' +
-            '<button class="btn btn-ghost nf-rec-cancel" type="button">Cancel</button>' +
-            '<button class="btn nf-rec-stop" type="button">' + ICONS.stop + "Stop</button>" +
+            '<button class="nf-rec-btn nf-rec-ghost nf-rec-cancel" type="button">Cancel</button>' +
+            '<button class="nf-rec-btn nf-rec-stop" type="button">' + ICONS.stop + "Stop</button>" +
           "</div>" +
         "</div>" +
         '<div class="nf-rec-review" hidden>' +
           '<div class="nf-rec-orb done">' + ICONS.check + "</div>" +
-          '<h2 class="nf-rec-heading">Here’s your take</h2>' +
+          '<h2 class="nf-rec-heading" id="nf-rec-review-title">Here’s your take</h2>' +
           '<p class="nf-rec-time"><span class="nf-rec-length">0:00</span><span class="nf-rec-muted"> recorded</span></p>' +
           '<audio class="nf-rec-audio" controls preload="auto"></audio>' +
           '<p class="nf-rec-lead">Listen back. If it’s the phrase you meant, send it off; otherwise record it again.</p>' +
           '<div class="nf-rec-actions">' +
-            '<button class="btn btn-ghost nf-rec-discard" type="button">Discard</button>' +
-            '<button class="btn btn-ghost nf-rec-again" type="button">' + ICONS.restart + "Record again</button>" +
-            '<button class="btn btn-primary nf-rec-use" type="button">' + ICONS.wave + "Transcribe this take</button>" +
+            '<button class="nf-rec-btn nf-rec-ghost nf-rec-discard" type="button">Discard</button>' +
+            '<button class="nf-rec-btn nf-rec-ghost nf-rec-again" type="button">' + ICONS.restart + "Record again</button>" +
+            '<button class="nf-rec-btn nf-rec-primary nf-rec-use" type="button">' + ICONS.wave + "Transcribe this take</button>" +
           "</div>" +
         "</div>" +
       "</div>";
@@ -70,16 +72,33 @@
       hook(opts, "track", "Recording sent");
       if (opts.onTake) opts.onTake(blob, name, seconds);
     });
-    panel.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { ev.preventDefault(); (rec.recorder && rec.recorder.state === "recording" ? els.cancel : els.discard).click(); } });
+    document.addEventListener("keydown", function (ev) {
+      if (panel.hidden) return;
+      if (ev.key === "Escape") { ev.preventDefault(); (rec.recorder && rec.recorder.state === "recording" ? els.cancel : els.discard).click(); return; }
+      if (ev.key !== "Tab") return;
+      // Focus stays inside the dialog: Tab from the last control wraps to the first and back.
+      var pane = els.live.hidden ? els.review : els.live;
+      var stops = Array.prototype.filter.call(pane.querySelectorAll("button, audio"), function (el) { return !el.disabled; });
+      if (!stops.length) return;
+      var first = stops[0], last = stops[stops.length - 1], active = document.activeElement;
+      if (ev.shiftKey && (active === first || !panel.contains(active))) { ev.preventDefault(); last.focus(); }
+      else if (!ev.shiftKey && (active === last || !panel.contains(active))) { ev.preventDefault(); first.focus(); }
+    });
   }
   function hook(opts, name, arg) { try { if (opts && typeof opts[name] === "function") opts[name](arg); } catch (e) { /* never in the way */ } }
   function showLive(live) {
+    if (panel.hidden) { rec.opener = document.activeElement; document.documentElement.classList.add("nf-rec-open"); }
     panel.hidden = false;
     els.live.hidden = !live; els.review.hidden = live;
+    panel.setAttribute("aria-labelledby", live ? "nf-rec-title" : "nf-rec-review-title");
     (live ? els.stop : els.use).focus();
   }
+  function fail(opts, kind, text) { hook(opts, "sounds", "error"); try { if (opts && typeof opts.onError === "function") opts.onError(text, kind); } catch (e) { /* never in the way */ } }
   function close() {
-    panel.hidden = true;
+    var wasOpen = !panel.hidden;
+    panel.hidden = true; document.documentElement.classList.remove("nf-rec-open");
+    if (wasOpen && rec.opener && typeof rec.opener.focus === "function" && document.contains(rec.opener)) rec.opener.focus();
+    rec.opener = null;
     els.audio.pause(); els.audio.removeAttribute("src");
     if (rec.url) { URL.revokeObjectURL(rec.url); rec.url = null; }
     rec.blob = null;
@@ -110,12 +129,15 @@
   function start(opts) {
     opts = opts || {};
     build();
+    if (rec.opening) return; // the permission prompt is still up from the first press
     if (rec.recorder && rec.recorder.state === "recording") { showLive(true); return; }
-    if (!navigator.mediaDevices || !window.MediaRecorder) { hook(opts, "onError", "This browser cannot record. Upload a file instead."); return; }
+    if (!navigator.mediaDevices || !window.MediaRecorder) { fail(opts, "unsupported", "This browser cannot record."); return; }
+    if (rec.url) close(); // a take still under review gives way to the new one
     var maxSec = opts.maxSeconds > 0 ? opts.maxSeconds : 180;
-    rec.opts = opts; rec.discard = false;
+    rec.opts = opts; rec.discard = false; rec.opening = true;
     hook(opts, "track", "Recording started");
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
+      rec.opening = false;
       rec.stream = stream; rec.chunks = [];
       var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
       rec.recorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
@@ -126,7 +148,7 @@
         teardown();
         if (rec.discard) { close(); return; }
         var blob = new Blob(rec.chunks, { type: type });
-        if (blob.size < 2000) { close(); hook(opts, "sounds", "error"); hook(opts, "onError", "That was too short to hear. Hum for a few seconds."); return; }
+        if (blob.size < 2000) { close(); fail(opts, "short", "That was too short to hear. Hum for a few seconds."); return; }
         rec.blob = blob; rec.name = type.indexOf("mp4") >= 0 ? "hum.mp4" : "hum.webm"; rec.seconds = seconds;
         rec.url = URL.createObjectURL(blob); els.audio.src = rec.url;
         els.length.textContent = fmtClock(seconds);
@@ -146,7 +168,7 @@
       showLive(true);
       rec.timer = setInterval(function () { els.elapsed.textContent = fmtClock((Date.now() - rec.started) / 1000); }, 250);
       rec.stopAt = setTimeout(stopRecording, maxSec * 1000);
-    }).catch(function () { hook(opts, "sounds", "error"); hook(opts, "onError", "Microphone access is needed to record. Upload a file instead."); });
+    }).catch(function () { rec.opening = false; fail(opts, "denied", "Microphone access is needed to record."); });
   }
 
   window.NfRecorder = { open: start, isRecording: function () { return !!(rec.recorder && rec.recorder.state === "recording"); } };

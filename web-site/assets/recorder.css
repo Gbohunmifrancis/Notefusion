@@ -1,33 +1,44 @@
-/* The recording pop-up (assets/recorder.js): the same panel on the home page, in the guest box
- * and in the signed-in studio. Self-contained: only the shared colour tokens from theme.css and
- * the page's .btn, .btn-ghost and .btn-primary are used. */
-.nf-rec { position: fixed; inset: 0; z-index: 60; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+/* The recording pop-up (assets/recorder.js): the same panel on the home page, in the guest preview
+ * and in the signed-in studio. Self-contained: it styles its own buttons and text from theme.css
+ * tokens (with fallbacks), so it reads the same whether or not app.css is on the page. */
+.nf-rec { position: fixed; inset: 0; z-index: 9999; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; }
 .nf-rec[hidden], .nf-rec [hidden] { display: none; }
-.nf-rec-card { position: relative; width: min(560px, 100%); background: #fff; color: var(--ink); border-radius: 24px; padding: 30px 28px 26px; box-shadow: 0 30px 80px rgba(15, 23, 42, 0.3); animation: nf-rec-in 0.25s ease-out; max-height: calc(100vh - 40px); overflow: auto; text-align: center; font-family: inherit; }
+html.nf-rec-open, html.nf-rec-open body { overflow: hidden; }
+.nf-rec-card { position: relative; width: min(560px, 100%); background: var(--color-surface-base, #fff); color: var(--color-ink-950, #0f172a); border-radius: 24px; padding: 30px 28px 26px; box-shadow: 0 30px 80px rgba(15, 23, 42, 0.3); animation: nf-rec-in 0.25s ease-out; max-height: calc(100vh - 40px); overflow: auto; text-align: center; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.55; }
 @keyframes nf-rec-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
 /* The brand mark beats inside a soft blue halo while the microphone is open. */
 .nf-rec-orb { width: 116px; height: 116px; margin: 4px auto 16px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #dbeafe, #eff6ff 72%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); animation: nf-rec-orb 1.05s ease-out infinite; }
-.nf-rec-mark { width: 64px; height: 64px; background: var(--brand-gradient, linear-gradient(135deg, #3b82f6, #1d4ed8)); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; animation: nf-rec-heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
+.nf-rec-mark { width: 64px; height: 64px; background: linear-gradient(115deg, #1d4ed8 0%, #3b82f6 100%); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; animation: nf-rec-heartbeat 1.05s ease-in-out infinite; transform-origin: 50% 55%; }
 .nf-rec-orb .nf-rec-ic { width: 42px; height: 42px; color: #fff; }
-.nf-rec-orb.done { background: var(--brand-gradient, linear-gradient(135deg, #3b82f6, #1d4ed8)); animation: none; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.3); }
+[data-theme="dark"] .nf-rec-orb:not(.done) { background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.22), var(--color-surface-base, #0f172a) 72%); }
+.nf-rec-orb.done { background: linear-gradient(115deg, #1d4ed8 0%, #3b82f6 100%); animation: none; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.3); }
 @keyframes nf-rec-orb { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); } 70% { box-shadow: 0 0 0 22px rgba(37, 99, 235, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); } }
 @keyframes nf-rec-heartbeat { 0%, 100% { transform: scale(1); } 14% { transform: scale(1.18); } 28% { transform: scale(1); } 42% { transform: scale(1.12); } 70% { transform: scale(1); } }
 @keyframes nf-rec-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
-.nf-rec-heading { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; margin: 0 0 2px; color: var(--ink); }
-.nf-rec-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue, #2563eb); animation: nf-rec-dot 1s ease-in-out infinite; }
-.nf-rec-time { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.5rem; font-weight: 700; color: var(--ink); margin: 0 0 14px; }
-.nf-rec-muted { color: var(--muted, #64748b); font-weight: 500; }
+.nf-rec-heading { display: flex; align-items: center; justify-content: center; gap: 10px; font: 800 1.35rem/1.2 Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.02em; margin: 0 0 2px; color: var(--color-ink-950, #0f172a); }
+.nf-rec-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-brand-500, #2563eb); animation: nf-rec-dot 1s ease-in-out infinite; }
+.nf-rec-time { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.5rem; font-weight: 700; line-height: 1.3; color: var(--color-ink-950, #0f172a); margin: 0 0 14px; }
+.nf-rec-muted { color: var(--color-ink-500, #64748b); font-weight: 500; }
 .nf-rec-meter { display: flex; align-items: center; justify-content: center; gap: 3px; height: 64px; margin: 0 auto 16px; max-width: 360px; }
 .nf-rec-meter span { flex: 1; max-width: 8px; height: 8%; border-radius: 4px; background: linear-gradient(180deg, #3b82f6, #1d4ed8); transition: height 0.06s linear; }
 .nf-rec-audio { width: 100%; max-width: 380px; display: block; margin: 0 auto; }
-.nf-rec-lead { color: var(--muted, #64748b); font-size: 0.98rem; line-height: 1.5; margin: 14px 0 18px; }
+.nf-rec-lead { color: var(--color-ink-500, #64748b); font-size: 0.98rem; line-height: 1.5; margin: 14px 0 18px; }
 .nf-rec-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.nf-rec-actions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+/* Buttons: the studio's look, written out here so neither page's own .btn rules change them. */
+.nf-rec .nf-rec-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 12px; border: 1px solid transparent; font: 600 0.925rem/1.2 Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: 0; cursor: pointer; text-decoration: none; white-space: nowrap; color: var(--color-ink-950, #0f172a); background: var(--color-surface-base, #fff); box-shadow: none; transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease; }
+.nf-rec .nf-rec-btn:active { transform: translateY(1px); }
+.nf-rec .nf-rec-btn:focus-visible { outline: 2px solid var(--color-brand-500, #2563eb); outline-offset: 2px; }
+.nf-rec .nf-rec-ghost { border-color: var(--color-border-strong, #cbd5e1); }
+.nf-rec .nf-rec-ghost:hover { border-color: #94a3b8; background: var(--color-surface-subtle, #f8fafc); }
+.nf-rec .nf-rec-primary { background: linear-gradient(115deg, #1d4ed8 0%, #3b82f6 100%); color: #fff; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18); }
+.nf-rec .nf-rec-primary:hover { box-shadow: 0 10px 22px rgba(37, 99, 235, 0.26); transform: translateY(-1px); }
+.nf-rec .nf-rec-stop { min-width: 140px; background: #0f172a; color: #fff; border-color: #0f172a; }
+.nf-rec .nf-rec-stop:hover { background: #1e293b; border-color: #1e293b; }
 .nf-rec-ic { width: 18px; height: 18px; flex: none; }
-.nf-rec-stop { min-width: 140px; background: #0f172a; color: #fff; border-color: #0f172a; }
-.nf-rec-stop:hover { background: #1e293b; border-color: #1e293b; color: #fff; }
 @media (max-width: 480px) { .nf-rec-card { padding: 24px 18px 20px; } }
-@media (prefers-reduced-motion: reduce) { .nf-rec-orb, .nf-rec-dot, .nf-rec-mark { animation: none; } }
-[data-theme="dark"] .nf-rec-card { background: var(--surface); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); border: 1px solid var(--line); }
-[data-theme="dark"] .nf-rec-orb { background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.22), var(--surface) 72%); }
-[data-theme="dark"] .nf-rec-stop { background: #e2e8f0; color: #0f172a; border-color: #e2e8f0; }
+@media (prefers-reduced-motion: reduce) { .nf-rec-card, .nf-rec-orb, .nf-rec-dot, .nf-rec-mark { animation: none; } .nf-rec-meter span, .nf-rec .nf-rec-btn { transition: none; } }
+[data-theme="dark"] .nf-rec-card { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); border: 1px solid var(--color-border-default, #334155); }
+[data-theme="dark"] .nf-rec .nf-rec-ghost { border-color: var(--color-border-strong, #475569); }
+[data-theme="dark"] .nf-rec .nf-rec-ghost:hover { background: var(--color-surface-subtle, #1e293b); }
+[data-theme="dark"] .nf-rec .nf-rec-stop { background: #e2e8f0; color: #0f172a; border-color: #e2e8f0; }
+[data-theme="dark"] .nf-rec .nf-rec-stop:hover { background: #f1f5f9; border-color: #f1f5f9; }

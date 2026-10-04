@@ -920,10 +920,10 @@
   $("rec-btn").addEventListener("click", function () {
     $("rec-status").textContent = "";
     window.NfRecorder.open({
-      maxSeconds: 180,
+      maxSeconds: guest ? 30 : 180, // a guest gets the same thirty seconds as on the home page
       track: track,
       sounds: function (name) { sfx.play(name); },
-      onError: function (text) { $("rec-status").textContent = text; },
+      onError: function (text, kind) { $("rec-status").textContent = kind === "short" ? text : text + " Upload a file instead."; },
       onTake: function (blob, name) { submitAudio(blob, name, true); }
     });
   });
