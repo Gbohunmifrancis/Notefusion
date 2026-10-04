@@ -96,13 +96,19 @@ public sealed record PartDto(IReadOnlyList<NoteEventDto> Notes, IReadOnlyList<st
 /// <summary>Alto, tenor and bass written under a melody on request: the four parts and their one score.</summary>
 public sealed record HarmonyDto(IReadOnlyDictionary<string, PartDto>? Parts, string? PartsMusicXml);
 
-/// <summary>The song a linked transcription came from — the acknowledgement line and the sheet's credit.</summary>
+/// <summary>
+/// The song a linked transcription came from — the acknowledgement line and the sheet's credit.
+/// <c>Preview</c> is set when the store's 30-second preview stood in for the full song (YouTube refused
+/// it); <c>Notice</c> is the plain sentence the clients show for that.
+/// </summary>
 public sealed record SourceDto(
     string Provider,
     string Url,
     string Title,
     string Artist,
-    string? ThumbnailUrl);
+    string? ThumbnailUrl,
+    bool? Preview = null,
+    string? Notice = null);
 
 /// <summary>
 /// One chord heard under the tune, over a run of beats. <c>Root</c> and <c>Bass</c> are pitch classes

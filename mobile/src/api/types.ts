@@ -85,6 +85,9 @@ export interface TranscriptionSource {
   title: string;
   artist: string;
   thumbnailUrl?: string | null;
+  /** True when the store's 30-second preview stood in for the full song; `notice` says so. */
+  preview?: boolean | null;
+  notice?: string | null;
 }
 
 export interface TranscriptionResult {

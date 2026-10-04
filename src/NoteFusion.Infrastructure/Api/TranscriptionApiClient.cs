@@ -357,5 +357,5 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
     }
 
     private static SourceDto? MapSource(WireSource? source)
-        => source is null ? null : new SourceDto(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl);
+        => source is null ? null : new SourceDto(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl, source.Preview, source.Notice);
 }

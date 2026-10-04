@@ -117,7 +117,9 @@ internal sealed record WireSource(
     string Url,
     string Title,
     string Artist,
-    string? ThumbnailUrl);
+    string? ThumbnailUrl,
+    bool? Preview = null,
+    string? Notice = null);
 
 internal sealed record WireNoteEvent(
     int PitchMidi,

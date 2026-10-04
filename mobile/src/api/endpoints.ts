@@ -199,6 +199,8 @@ export const transcriptionsApi = {
     if (opts.timeSignature) form.append("timeSignature", opts.timeSignature);
     if (opts.separate) form.append("separate", "true");
     if (opts.keyboardTranspose) form.append("keyboardTranspose", String(opts.keyboardTranspose));
+    // The app plays results with its own sampled piano, so the worker's rendered preview is never used.
+    form.append("audioPreview", "false");
 
     // Do NOT set Content-Type manually here.
     // React Native's XHR layer auto-inserts the multipart boundary when the body is
@@ -259,7 +261,7 @@ export const transcriptionsApi = {
     api
       .post<TranscriptionJob>(
         "/api/transcriptions/link",
-        { url, mode: opts.mode, key: opts.key, tempo: opts.tempo, keyboardTranspose: opts.keyboardTranspose || undefined },
+        { url, mode: opts.mode, key: opts.key, tempo: opts.tempo, keyboardTranspose: opts.keyboardTranspose || undefined, audioPreview: false },
         { timeout: 30_000 },
       )
       .then((r) => r.data),

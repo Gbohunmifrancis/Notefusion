@@ -981,7 +981,9 @@ export function ResultScreen({ route, navigation }: Props) {
           </View>
         </Card>
       ) : null}
-      {result.truncated ? (
+      {result.source?.preview && result.source.notice ? (
+        <Text style={styles.truncatedNote}>{result.source.notice}</Text>
+      ) : result.truncated ? (
         <Text style={styles.truncatedNote}>
           {isPro
             ? "The first six minutes of the song were transcribed."

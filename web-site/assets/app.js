@@ -1049,7 +1049,9 @@
       var c = document.createElement("span"); c.className = "chip"; c.textContent = text; chips.appendChild(c);
     });
     var trunc = $("r-truncated");
-    if (result.truncated) {
+    if (result.source && result.source.preview && result.source.notice) {
+      alertIn(trunc, "info", result.source.notice);
+    } else if (result.truncated) {
       alertIn(trunc, "info", guest
         ? "Free preview: the first 30 seconds of " + formatSec(result.songDurationSec) + ". Create a free account for more."
         : isPro()
