@@ -22,20 +22,29 @@ public static class SongSections
             return new SongSection(null, null);
 
         var start = startSeconds ?? 0;
+        // JSON admits 1e999, which arrives as infinity and is not "before the song".
+        if (!double.IsFinite(start))
+            return TranscriptionErrors.SectionOutsideTheSong;
         if (start < 0)
             return TranscriptionErrors.SectionStartsBeforeTheSong;
         if (endSeconds is null)
             return new SongSection(start, null);
 
         var end = endSeconds.Value;
+        if (end <= start)
+            return TranscriptionErrors.SectionEndsBeforeItStarts;
+
         // The length is a courtesy, not a condition: a worker that cannot answer right now still gets the
         // job, and trims the section itself.
         var resolved = await api.ResolveLinkAsync(url, ct);
-        if (resolved.IsSuccess && resolved.Value.DurationSeconds is { } length && end > length)
-            end = length;
+        if (resolved.IsSuccess && resolved.Value.DurationSeconds is { } length)
+        {
+            if (start >= length)
+                return TranscriptionErrors.SectionOutsideTheSong;
+            if (end > length)
+                end = length;
+        }
 
-        if (end <= start)
-            return TranscriptionErrors.SectionEndsBeforeItStarts;
         if (end - start > maxSeconds)
             return TranscriptionErrors.SectionTooLong(maxSeconds);
         return new SongSection(start, end);

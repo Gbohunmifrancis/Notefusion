@@ -205,14 +205,17 @@ public class LinkSectionTests
 
         var early = await Submit(h, user, api, start: -1, end: 20);
         var backwards = await Submit(h, user, api, start: 60, end: 60);
+        Assert.Null(api.LastResolved); // neither needs the song's length to be refused
         var tooLong = await Submit(h, user, api, start: 0, end: 61);
-        var pastTheEnd = await Submit(h, user, api, start: 220, end: 230); // pulled back to 3:33, which is before it starts
+        var pastTheEnd = await Submit(h, user, api, start: 220, end: 230); // the song is 3:33 long
+        var nowhere = await Submit(h, user, api, start: double.PositiveInfinity); // JSON's 1e999
 
         Assert.Equal("The section must start at 0:00 or later.", early.Error.Message);
         Assert.Equal("The section must end after it starts.", backwards.Error.Message);
         Assert.Equal("Pick up to 1:00 of the song.", tooLong.Error.Message);
         Assert.Equal("TRANS_SECTION_TOO_LONG", tooLong.Error.Code);
-        Assert.Equal("The section must end after it starts.", pastTheEnd.Error.Message);
+        Assert.Equal("Pick a section within the song.", pastTheEnd.Error.Message);
+        Assert.Equal("Pick a section within the song.", nowhere.Error.Message);
         Assert.Null(api.LastOptions);
         Assert.Empty(h.Db.TranscriptionJobs);
     }
