@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { transcriptionsApi, type SubmitOptions } from "../api/endpoints";
 import { baseURL, safeReason, toApiError } from "../api/client";
+import { linkInfoApi, type LinkSubmitOptions } from "./linkInfo";
 import { tokenStore } from "./tokenStore";
 import type {
   TranscriptionResult,
@@ -229,9 +230,12 @@ export function useJobPolling() {
     return null;
   }, []);
 
-  /** A song behind a link. Same lifecycle as `start`; the worker reports its stages. */
+  /**
+   * A song behind a link, or the section of it in `opts.startSeconds`/`endSeconds`. Same
+   * lifecycle as `start`; the worker reports its stages.
+   */
   const startLink = useCallback(
-    async (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose">) => {
+    async (url: string, opts: LinkSubmitOptions) => {
       stopPolling();
       setState({
         status: "pending",
@@ -244,7 +248,7 @@ export function useJobPolling() {
       });
       activeJobId.current = null;
       try {
-        return track(await transcriptionsApi.submitLink(url, opts));
+        return track(await linkInfoApi.submit(url, opts));
       } catch (e) {
         return fail(e);
       }

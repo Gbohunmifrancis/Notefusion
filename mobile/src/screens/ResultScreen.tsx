@@ -42,6 +42,8 @@ import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/synth";
 import { hymnRows, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
+import { sectionOf } from "../lib/clipRange";
+import { sectionFields } from "../lib/linkInfo";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
   confidenceColor,
@@ -178,6 +180,8 @@ export function ResultScreen({ route, navigation }: Props) {
         { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" }[result.source.provider] ?? result.source.provider
       })`
     : null;
+  /** "1:05–1:35 of 3:33" when a section of the song was chosen; null for the whole song or a recording. */
+  const section = result.source ? sectionOf(sectionFields(result.source)) : null;
 
   // ── Key override (F-03) ────────────────────────────────────────────────────
   // Solfa is movable-do, so a key change re-labels the existing notes — it
@@ -1002,7 +1006,9 @@ export function ResultScreen({ route, navigation }: Props) {
           <View style={{ flex: 1 }}>
             <Text style={styles.creditTitle} numberOfLines={2}>{result.source.title}</Text>
             {result.source.artist ? <Text style={styles.creditArtist} numberOfLines={1}>{result.source.artist}</Text> : null}
-            <Text style={styles.creditLine}>Lead vocal, transcribed with NoteFusion</Text>
+            <Text style={styles.creditLine}>
+              {section ? `${section} · ` : ""}Lead vocal, transcribed with NoteFusion
+            </Text>
           </View>
         </Card>
       ) : null}
@@ -1010,9 +1016,11 @@ export function ResultScreen({ route, navigation }: Props) {
         <Text style={styles.truncatedNote}>{result.source.notice}</Text>
       ) : result.truncated ? (
         <Text style={styles.truncatedNote}>
-          {isPro
-            ? "The first six minutes of the song were transcribed."
-            : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
+          {section
+            ? "Only the first part of the section you chose fit; the rest was left out."
+            : isPro
+              ? "The first six minutes of the song were transcribed."
+              : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
         </Text>
       ) : null}
 
