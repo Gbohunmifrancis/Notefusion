@@ -13,11 +13,13 @@ import {
   selectedLabel,
 } from "./clipRange.ts";
 
-test("clock: m:ss, h:mm:ss over an hour, rounded, never negative", () => {
+test("clock: m:ss, h:mm:ss over an hour, floored to the second, never negative", () => {
   assert.equal(formatClock(0), "0:00");
   assert.equal(formatClock(30), "0:30");
   assert.equal(formatClock(65), "1:05");
   assert.equal(formatClock(213.4), "3:33");
+  assert.equal(formatClock(213.6), "3:33"); // the total agrees with the end thumb, which stops on whole seconds
+  assert.equal(formatClock(59.9), "0:59");
   assert.equal(formatClock(360), "6:00");
   assert.equal(formatClock(3600), "1:00:00");
   assert.equal(formatClock(3725), "1:02:05");
@@ -67,6 +69,7 @@ test("a clip shorter than five seconds is its own minimum window", () => {
 
 test("labels", () => {
   assert.equal(sectionLabel(65, 95, 213), "1:05–1:35 of 3:33");
+  assert.equal(selectedLabel({ start: 0, end: 213 }, 213.6), "Selected 3:33 of 3:33"); // the whole song reads as the whole song
   assert.equal(sectionLabel(65, 95, null), "1:05–1:35");
   assert.equal(selectedLabel({ start: 0, end: 30 }, 213), "Selected 0:30 of 3:33");
 });

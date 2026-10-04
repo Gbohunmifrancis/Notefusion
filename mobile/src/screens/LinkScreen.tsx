@@ -64,6 +64,11 @@ const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "A
 /** How long to wait after the last keystroke before looking the link up. */
 const INFO_DEBOUNCE_MS = 500;
 
+/** The song's length when the service knew it; null (so no picker) for a missing, zero or broken figure. */
+function knownLength(seconds: number | null | undefined): number | null {
+  return typeof seconds === "number" && Number.isFinite(seconds) && seconds > 0 ? seconds : null;
+}
+
 export function LinkScreen() {
   const nav = useNavigation<Nav>();
   const colors = useColors();
@@ -104,7 +109,8 @@ export function LinkScreen() {
         const data = await linkInfoApi.get(foundUrl);
         if (lookupSeq.current !== seq) return;
         setInfo({ url: foundUrl, data });
-        setRange(data.durationSeconds != null ? defaultRange(data.durationSeconds, data.maxSeconds) : null);
+        const length = knownLength(data.durationSeconds);
+        setRange(length != null ? defaultRange(length, data.maxSeconds) : null);
       } catch (e) {
         if (lookupSeq.current !== seq) return;
         // A plain sentence from the API, or the client's own; never a server detail.
@@ -119,7 +125,7 @@ export function LinkScreen() {
   }, [foundUrl]);
 
   const song = info && info.url === foundUrl ? info.data : null;
-  const duration = song?.durationSeconds ?? null;
+  const duration = song ? knownLength(song.durationSeconds) : null;
   const maxSeconds = song?.maxSeconds ?? null;
   // The section to send: only when the song's length is known, so the thumbs mean something.
   const section = song && duration != null && maxSeconds != null && range ? range : null;
@@ -151,8 +157,12 @@ export function LinkScreen() {
     }).start();
   }, [busy, state.progress, barWidth]);
 
+  // While the link is being read the button waits, so the song and the picker are seen before
+  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say.
+  const canSubmit = found !== null && !busy && !infoBusy;
+
   function submit() {
-    if (!found || busy) return;
+    if (!found || !canSubmit) return;
     void startLink(found.url, {
       mode: "melody",
       keyboardTranspose: keyboardTranspose() || undefined,
@@ -299,7 +309,7 @@ export function LinkScreen() {
           icon="sparkles"
           variant="primary"
           onPress={submit}
-          disabled={!provider || busy}
+          disabled={!canSubmit}
           loading={busy}
           style={styles.submit}
         />

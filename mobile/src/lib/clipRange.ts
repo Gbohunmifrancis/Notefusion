@@ -18,9 +18,13 @@ export interface ClipRange {
 /** The shortest section worth transcribing, in seconds. */
 export const MIN_WINDOW = 5;
 
-/** m:ss, or h:mm:ss from an hour up; rounded to the second, never negative. */
+/**
+ * m:ss, or h:mm:ss from an hour up; never negative. Whole seconds are floored, as a player's
+ * clock does and as the web's `fmtClock` does, so a 213.6 s song reads 3:33 both as its total
+ * length and at the end thumb, which stops on whole seconds.
+ */
 export function formatClock(seconds: number): string {
-  const total = Math.max(0, Math.round(Number.isFinite(seconds) ? seconds : 0));
+  const total = Math.max(0, Math.floor(Number.isFinite(seconds) ? seconds : 0));
   const h = Math.floor(total / 3600);
   const m = Math.floor((total % 3600) / 60);
   const s = total % 60;
