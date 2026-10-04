@@ -1,0 +1,83 @@
+name: Resize EC2
+
+# Changes the production instance's type (default t3.medium). Needs the repository
+# secrets AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_REGION for an IAM user
+# allowed ec2:DescribeInstances, ec2:DescribeAddresses, ec2:DescribeInstanceStatus,
+# ec2:StopInstances, ec2:ModifyInstanceAttribute and ec2:StartInstances.
+# The instance is found by the public address in EC2_HOST. A resize is a stop and a
+# start, which gives the box a new public address unless an Elastic IP is attached,
+# so the run refuses to continue without one unless allow_ip_change is set.
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance_type:
+        description: Target instance type
+        default: t3.medium
+        required: true
+      allow_ip_change:
+        description: Continue even when no Elastic IP is attached (the public address will change)
+        type: boolean
+        default: false
+
+jobs:
+  resize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Find the instance
+        id: find
+        env:
+          HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          set -euo pipefail
+          ID=$(aws ec2 describe-instances --filters "Name=ip-address,Values=$HOST" "Name=instance-state-name,Values=running,stopped" \
+                 --query 'Reservations[].Instances[].InstanceId' --output text)
+          [ -n "$ID" ] && [ "$ID" != "None" ] || { echo "No instance has the public address in EC2_HOST"; exit 1; }
+          TYPE=$(aws ec2 describe-instances --instance-ids "$ID" --query 'Reservations[0].Instances[0].InstanceType' --output text)
+          EIP=$(aws ec2 describe-addresses --filters "Name=instance-id,Values=$ID" --query 'Addresses[0].PublicIp' --output text)
+          echo "instance $ID is a $TYPE; elastic ip: $EIP"
+          echo "id=$ID" >> "$GITHUB_OUTPUT"; echo "type=$TYPE" >> "$GITHUB_OUTPUT"; echo "eip=$EIP" >> "$GITHUB_OUTPUT"
+
+      - name: Refuse to change the public address
+        if: steps.find.outputs.eip == 'None' && inputs.allow_ip_change != true
+        run: |
+          echo "No Elastic IP is attached: a stop and start would give the instance a new public address,"
+          echo "breaking the api DNS record and the EC2_HOST secret. Attach an Elastic IP first, or re-run with allow_ip_change."
+          exit 1
+
+      - name: Already that type
+        if: steps.find.outputs.type == inputs.instance_type
+        run: echo "Instance is already a ${{ inputs.instance_type }}; nothing to do."
+
+      - name: Stop, resize, start
+        if: steps.find.outputs.type != inputs.instance_type
+        env:
+          ID: ${{ steps.find.outputs.id }}
+          TARGET: ${{ inputs.instance_type }}
+        run: |
+          set -euo pipefail
+          aws ec2 stop-instances --instance-ids "$ID" >/dev/null
+          aws ec2 wait instance-stopped --instance-ids "$ID"
+          aws ec2 modify-instance-attribute --instance-id "$ID" --instance-type "{\"Value\":\"$TARGET\"}"
+          aws ec2 start-instances --instance-ids "$ID" >/dev/null
+          aws ec2 wait instance-running --instance-ids "$ID"
+          aws ec2 wait instance-status-ok --instance-ids "$ID"
+          aws ec2 describe-instances --instance-ids "$ID" --query 'Reservations[0].Instances[0].[InstanceType,PublicIpAddress,State.Name]' --output text
+
+      - name: Wait for the API to answer
+        if: steps.find.outputs.type != inputs.instance_type
+        env:
+          DOMAIN: ${{ secrets.DOMAIN_NAME }}
+        run: |
+          for i in $(seq 1 40); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "https://$DOMAIN/health" || true)
+            echo "try $i: $code"; [ "$code" = "200" ] && exit 0; sleep 15
+          done
+          echo "The API did not answer within ten minutes of the start; check the containers with the Check EC2 Status workflow."; exit 1
