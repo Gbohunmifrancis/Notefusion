@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
@@ -53,7 +54,7 @@ public class WorkerContractTests
     {
         var handler = new CapturingHandler();
         var http = new HttpClient(handler) { BaseAddress = new Uri("http://worker/") };
-        var client = new TranscriptionApiClient(http, new ConfigurationBuilder().Build());
+        var client = new TranscriptionApiClient(http, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
 
         await client.SubmitAsync(new MemoryStream([1, 2, 3]), "choir.wav", new TranscribeOptions { Mode = TranscriptionMode.Choir });
 
@@ -102,7 +103,7 @@ public class WorkerContractTests
     public async Task Chords_mode_and_the_keyboards_transpose_reach_the_worker()
     {
         var handler = new CapturingHandler();
-        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
+        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
 
         await client.SubmitAsync(new MemoryStream([1, 2, 3]), "keys.wav", new TranscribeOptions { Mode = TranscriptionMode.Chords, KeyboardTranspose = -4 });
 
@@ -117,7 +118,7 @@ public class WorkerContractTests
     public async Task No_keyboard_transpose_is_sent_when_it_is_off_or_for_a_score()
     {
         var handler = new CapturingHandler();
-        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
+        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
 
         await client.SubmitAsync(new MemoryStream([1, 2, 3]), "hum.wav", new TranscribeOptions());
         Assert.DoesNotContain("keyboard_transpose", handler.Body);
@@ -130,7 +131,7 @@ public class WorkerContractTests
     public async Task A_link_sends_its_length_cap_once()
     {
         var handler = new CapturingHandler();
-        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
+        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
 
         await client.SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions { MaxSeconds = 60 });
 
@@ -156,7 +157,7 @@ public class WorkerContractTests
     public async Task A_chosen_section_reaches_the_worker_and_an_unchosen_one_is_not_sent()
     {
         var handler = new CapturingHandler();
-        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
+        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
 
         await client.SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions { MaxSeconds = 360, StartSeconds = 65, EndSeconds = 95.5 });
         Assert.Equal("65", FormField(handler.Body, "start_seconds"));
@@ -253,7 +254,7 @@ public class WorkerContractTests
     }
 
     private static TranscriptionApiClient Client(HttpMessageHandler handler)
-        => new(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
+        => new(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
 
     /// <summary>The value of one multipart form field, as the request body spelled it.</summary>
     private static string? FormField(string body, string name)
@@ -295,5 +296,24 @@ public sealed class QueuedJobContractTests
         var job = JsonSerializer.Deserialize(payload, ApiJsonContext.Default.JobResponse)!;
         Assert.Equal("queued", job.Stage);
         Assert.Equal(2, job.QueuePosition);
+    }
+}
+
+public sealed class UnreachableWorkerTests
+{
+    [Fact]
+    public async Task A_worker_that_cannot_be_reached_is_reported_in_plain_words()
+    {
+        var handler = new ThrowingHandler(new HttpRequestException("Name or service not known (transcriber:8000)"));
+        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build(), NullLogger<TranscriptionApiClient>.Instance);
+        var result = await client.GetJobAsync("job-1");
+        Assert.True(result.IsFailure);
+        Assert.Equal("The transcription service is unavailable. Try again shortly.", result.Error.Message);
+        Assert.DoesNotContain("transcriber", result.Error.Message);
+    }
+
+    private sealed class ThrowingHandler(Exception ex) : HttpMessageHandler
+    {
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) => throw ex;
     }
 }
