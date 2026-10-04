@@ -519,17 +519,41 @@ def estimate_key(spans: Sequence[ChordSpan], histogram: np.ndarray | None = None
 # ── The whole read ────────────────────────────────────────────────────────────
 
 
+# Chords read from a song's backing track are only written when the evidence is clear.
+# A mix's chroma can be nearly flat — pads, reverb, a bass that swamps the keys — and then
+# the best chord beats the runner-up by almost nothing on every beat; the decoder still
+# names something, but it is a guess, and a wrong chord row under a tune is worse than none.
+# The median per-beat margin (in units of ``EVIDENCE_SCALE``) is 0.06 on a piano playing
+# chords alone and 0.016 on a pop backing where the read was one chord for thirty seconds.
+BACKING_MIN_CLARITY = 0.03
+
+
+def clarity(ev: BeatEvidence) -> float:
+    """How clearly the best chord beats the runner-up: the median per-beat margin."""
+    if ev.chroma.shape[0] == 0:
+        return 0.0
+    em = _emissions(ev)
+    top = np.sort(em[:, :_NO_CHORD], axis=1)
+    margin = (top[:, -1] - top[:, -2]) / EVIDENCE_SCALE
+    sounding = ~ev.silent
+    return float(np.median(margin[sounding])) if sounding.any() else 0.0
+
+
 def read_chords(
     y: np.ndarray, sr: int, bpm: float, beat_origin: float,
     notes: Sequence | None = None, key: tuple[int, str] | None = None,
+    min_clarity: float = 0.0,
 ) -> tuple[list[ChordSpan], tuple[int, str] | None, float]:
     """(spans, key, key confidence) for audio on a beat grid, in sounding pitch.
 
     With ``key`` the chords are read under that key and it comes back with confidence 1.
     Without, a first pass reads the chords with no prior, the key is estimated from them,
-    and the chords are read again under it. The key is None when there is no chord at all.
+    and the chords are read again under it. The key is None when there is no chord at all,
+    or when the evidence is less clear than ``min_clarity`` (see ``clarity``).
     """
     ev = beat_evidence(y, sr, bpm, beat_origin, notes)
+    if min_clarity > 0.0 and clarity(ev) < min_clarity:
+        return [], None, 0.0
     if key is not None:
         return decode(ev, key), key, 1.0
     first = decode(ev)

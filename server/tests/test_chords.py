@@ -420,3 +420,30 @@ def test_a_song_reads_its_chords_from_the_instrumental_and_a_hum_from_nothing(mo
         assert run("chords", False, True)[2] is None  # chords mode reads its own audio
     finally:
         q.shutdown(wait=False)
+
+
+# ── Chords from a song's backing are only written when the evidence is clear ──────────────
+
+def _progression_audio(bpm: float = 100.0):
+    """C F G C, two beats each, as a piano would voice them."""
+    spb = 60.0 / bpm
+    notes = []
+    for i, (root, quality) in enumerate([(0, "maj"), (5, "maj"), (7, "maj"), (0, "maj")]):
+        for midi in bench._voicing(root, quality, 0):
+            notes.append((i * 2 * spb, 2 * spb, midi, 0.8))
+    return bench.render(notes, 8 * spb + 0.5), bpm
+
+
+def test_a_clear_progression_passes_the_backing_gate_and_noise_does_not():
+    y, bpm = _progression_audio()
+    ev = chords.beat_evidence(y, bench.SAMPLE_RATE, bpm, 0.0)
+    assert chords.clarity(ev) >= chords.BACKING_MIN_CLARITY
+    spans, key, _ = chords.read_chords(y, bench.SAMPLE_RATE, bpm, 0.0, min_clarity=chords.BACKING_MIN_CLARITY)
+    assert {s.root for s in spans} >= {0, 5, 7}
+
+    rng = np.random.default_rng(7)
+    noise = (rng.standard_normal(int(bench.SAMPLE_RATE * 8)) * 0.1).astype(np.float32)
+    assert chords.clarity(chords.beat_evidence(noise, bench.SAMPLE_RATE, bpm, 0.0)) < chords.BACKING_MIN_CLARITY
+    assert chords.read_chords(noise, bench.SAMPLE_RATE, bpm, 0.0, min_clarity=chords.BACKING_MIN_CLARITY) == ([], None, 0.0)
+    # A player who asked for chords is never left without an answer by the gate.
+    assert chords.read_chords(noise, bench.SAMPLE_RATE, bpm, 0.0)[0] is not None

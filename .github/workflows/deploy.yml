@@ -277,7 +277,7 @@ jobs:
             docker image prune -af || true
             df -h / || true
             docker compose -f docker-compose.prod.yml pull transcriber
-            docker compose -f docker-compose.prod.yml up -d --no-deps transcriber
+            docker compose -f docker-compose.prod.yml up -d --no-deps transcriber bgutil-provider
 
             # The API image is small enough to pull beside the running one, so it swaps
             # without downtime; the prune afterwards drops the version it replaced.

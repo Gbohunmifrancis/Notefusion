@@ -4728,7 +4728,9 @@ def _transcribe_wav(
         try:
             chord_y = y if mode == "chords" else _load_audio(chord_source, sr=sr)[0]
             chord_spans, chord_key, chord_key_confidence = chords.read_chords(
-                chord_y, sr, bpm, beat_origin, notes=chord_events, key=prior)
+                chord_y, sr, bpm, beat_origin, notes=chord_events, key=prior,
+                # A player who asked for chords gets them; a song's backing only when clear.
+                min_clarity=0.0 if mode == "chords" else chords.BACKING_MIN_CLARITY)
         except Exception as exc:  # noqa: BLE001 - see above
             if mode == "chords":
                 raise
