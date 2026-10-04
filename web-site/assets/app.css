@@ -190,9 +190,6 @@ body.guest .topbar { display: flex; }
 .provider-marks .ic { width: 20px; height: 20px; stroke: none; }
 .studio-rec { width: 100%; min-height: 50px; font-size: 1rem; }
 .studio-status { margin: 10px 0 0; min-height: 1.3em; text-align: center; color: rgba(255, 255, 255, 0.85); }
-.btn-rec.is-recording { background: var(--blue-deep); color: #fff; border-color: var(--blue-deep); }
-.btn-rec.is-recording .ic { color: #fff; }
-.btn-rec.is-recording::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: rec-dot 1s ease-in-out infinite; }
 
 /* ── Cards ───────────────────────────────────────────────────────────────── */
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); margin-bottom: 20px; }
@@ -424,7 +421,7 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .skel-input { height: 46px; border-radius: var(--radius-sm); }
 .skel-staff { height: 220px; margin: 12px; border-radius: 6px; background: repeating-linear-gradient(180deg, #e9eef6 0 3px, transparent 3px 14px) 0 30px / 100% 70px no-repeat, #f6f8fc; }
 .skel-plan { height: 150px; border-radius: var(--radius-sm); }
-@media (prefers-reduced-motion: reduce) { .skel::after, .stage.on .dot, body.is-recording .brand-mark, body.is-recording .home-mark, .btn-rec.is-recording::before { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .skel::after, .stage.on .dot, body.is-recording .brand-mark, body.is-recording .home-mark { animation: none; } }
 
 /* ── Dialogs: onboarding and upgrade ─────────────────────────────────────── */
 .onb, .modal { position: fixed; inset: 0; z-index: 50; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -536,23 +533,6 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .avatar-badge .ic { width: 12px; height: 12px; }
 .btn-link.small { font-size: 0.85rem; }
 
-/* ── Recording panel ─────────────────────────────────────────────────────── */
-.rec-card { text-align: center; }
-/* The brand mark beats (body.is-recording animates .brand-mark) inside a soft blue halo. */
-.rec-orb { width: 116px; height: 116px; margin: 4px auto 16px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, #dbeafe, #eff6ff 72%); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); animation: orb 1.05s ease-out infinite; }
-.rec-orb .brand-mark { width: 64px; height: 64px; }
-.rec-orb .ic { width: 42px; height: 42px; color: #fff; }
-.rec-orb.done { background: var(--brand-gradient); animation: none; box-shadow: 0 10px 24px rgba(37, 99, 235, 0.3); }
-@keyframes orb { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); } 70% { box-shadow: 0 0 0 22px rgba(37, 99, 235, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); } }
-.rec-heading { justify-content: center; font-size: 1.35rem; margin-bottom: 2px; }
-.rec-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); animation: rec-dot 1s ease-in-out infinite; }
-.rec-time { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 1.5rem; font-weight: 700; color: var(--ink); margin: 0 0 14px; }
-.meter { display: flex; align-items: center; justify-content: center; gap: 3px; height: 64px; margin: 0 auto 16px; max-width: 360px; }
-.meter span { flex: 1; max-width: 8px; height: 8%; border-radius: 4px; background: linear-gradient(180deg, #3b82f6, #1d4ed8); transition: height 0.06s linear; }
-#rec-audio { width: 100%; max-width: 380px; display: block; margin: 0 auto; }
-.rec-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-.rec-stop { min-width: 140px; }
-@media (prefers-reduced-motion: reduce) { .rec-orb, .rec-dot { animation: none; } }
 
 /* The home page's try box offers the take back before sending it. */
 .try-status audio.try-take { display: block; width: 100%; margin: 10px 0; }
@@ -669,7 +649,7 @@ body.auth-only .auth-page .try-free { display: none; }
 [data-theme="dark"] .skel { background: #1d1f27; }
 [data-theme="dark"] .skel-staff { background: repeating-linear-gradient(180deg, #262833 0 3px, transparent 3px 14px) 0 30px / 100% 70px no-repeat, #181920; }
 [data-theme="dark"] .onb-card, [data-theme="dark"] .modal-card { background: var(--surface); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6); border: 1px solid var(--line); }
-[data-theme="dark"] .onb-art, [data-theme="dark"] .rec-orb { background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.22), var(--surface) 72%); }
+[data-theme="dark"] .onb-art { background: radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.22), var(--surface) 72%); }
 [data-theme="dark"] body.is-pro .who { background: linear-gradient(135deg, rgba(233, 185, 73, 0.12) 0%, var(--surface) 70%); border-color: rgba(233, 185, 73, 0.4); }
 [data-theme="dark"] .membership-head { background: rgba(233, 185, 73, 0.1); border-color: rgba(233, 185, 73, 0.35); }
 [data-theme="dark"] .plan-opt-tag { background: rgba(16, 185, 129, 0.18); color: #6ee7b7; }
