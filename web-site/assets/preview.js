@@ -23,19 +23,51 @@
   function say(text, kind) { status.textContent = text || ""; status.className = "try-status" + (kind ? " try-status-" + kind : ""); }
   var busyNow = false;
   function busy(on) { busyNow = on; submit.disabled = on || info.pending; record.disabled = on; file.disabled = on; }
+  // What a visitor reads when the API says no: its own sentences for expected refusals pass through;
+  // a server fault, a bare status or anything technical becomes one plain line. The console keeps the detail.
+  var TECHNICAL = /\b(exception|stack|sql|npgsql|postgres|database|db context|entity framework|null reference|object reference|timeout expired|returned \d{3}|status code|http \d{3}|\d{3} \(|traceback|internal server|[A-Z]{3,}_[A-Z_]{3,})/i;
+  function failure(status, body) {
+    var message = body && body.message;
+    var err = new Error(!message || status >= 500 || TECHNICAL.test(message) ? "Something went wrong on our side. Please try again in a moment." : message);
+    if (status === 0) err.message = "We couldn't reach NoteFusion. Check your connection and try again.";
+    if (status === 429) err.message = "That's a lot of requests at once. Wait a moment and try again.";
+    err.code = body && body.code;
+    try { if (message && message !== err.message) console.warn("[notefusion]", status, err.code, message); } catch (e) { /* ignore */ }
+    return err;
+  }
+  function parse(text) { try { return text ? JSON.parse(text) : null; } catch (e) { return null; } }
   function send(path, opts) {
     return fetch(API + path, {
       method: "POST",
       headers: Object.assign({ "X-Device-Id": deviceId() }, opts.json ? { "Content-Type": "application/json" } : {}),
       body: opts.json ? JSON.stringify(opts.json) : opts.form
-    }).then(function (r) {
+    }).catch(function () { throw failure(0, null); }).then(function (r) {
       return r.text().then(function (text) {
-        var body = null; try { body = text ? JSON.parse(text) : null; } catch (e) { body = null; }
-        if (!r.ok) { var err = new Error((body && body.message) || "Something went wrong. Try again."); err.code = body && body.code; throw err; }
+        var body = parse(text);
+        if (!r.ok) throw failure(r.status, body);
         return body;
       });
     });
   }
+  /** A recording on its way up, with how much has gone: fetch cannot say, so this one goes over XMLHttpRequest. */
+  function upload(path, form, onProgress) {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", API + path);
+      xhr.setRequestHeader("X-Device-Id", deviceId());
+      if (xhr.upload) {
+        xhr.upload.addEventListener("progress", function (e) { if (e.lengthComputable && e.total > 0) onProgress(Math.min(1, e.loaded / e.total)); });
+        xhr.upload.addEventListener("load", function () { onProgress(1); });
+      }
+      xhr.onerror = xhr.onabort = xhr.ontimeout = function () { reject(failure(0, null)); };
+      xhr.onload = function () {
+        var body = parse(xhr.responseText || "");
+        if (xhr.status < 200 || xhr.status >= 300) reject(failure(xhr.status, body)); else resolve(body);
+      };
+      xhr.send(form);
+    });
+  }
+  function sayUpload(fraction) { say("Uploading… " + Math.round(fraction * 100) + "%"); }
   function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
   function open(job) { location.href = "/app/?preview=" + encodeURIComponent(job.jobId); }
   function explain(err) {
@@ -116,9 +148,9 @@
     var f = file.files && file.files[0];
     if (!f) return;
     var fd = new FormData(); fd.append("audio", f, f.name); fd.append("audioPreview", "false");
-    busy(true); say("Uploading " + f.name + "…");
+    busy(true); sayUpload(0);
     track("Preview started (audio)");
-    send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
+    upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
   });
 
   // "Record a tune" opens the same recording pop-up as the signed-in studio (assets/recorder.js):
@@ -133,8 +165,8 @@
       onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
       onTake: function (blob, name) {
         var fd = new FormData(); fd.append("audio", blob, name); fd.append("audioPreview", "false");
-        busy(true); say("Transcribing your tune\u2026");
-        send("/api/preview", { form: fd }).then(open).catch(function (err) { busy(false); explain(err); });
+        busy(true); sayUpload(0);
+        upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); });
       }
     });
   });

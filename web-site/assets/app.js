@@ -105,6 +105,45 @@
     });
   }
 
+  /**
+   * A multipart upload that reports how much of it has gone up: fetch cannot, so this one request
+   * goes over XMLHttpRequest. Same headers, same 401 refresh-and-retry and the same ApiError as
+   * request(); opts.onProgress(fraction) is called as the bytes leave.
+   */
+  function upload(path, form, opts) {
+    opts = opts || {};
+    function send() {
+      return new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", API + path);
+        xhr.setRequestHeader("X-Device-Id", deviceId());
+        if (!opts.anonymous) {
+          var t = tokens();
+          if (t && t.accessToken) xhr.setRequestHeader("Authorization", "Bearer " + t.accessToken);
+        }
+        if (opts.onProgress && xhr.upload) {
+          xhr.upload.addEventListener("progress", function (e) { if (e.lengthComputable && e.total > 0) opts.onProgress(Math.min(1, e.loaded / e.total)); });
+          xhr.upload.addEventListener("load", function () { opts.onProgress(1); });
+        }
+        xhr.onerror = xhr.onabort = xhr.ontimeout = function () { reject(new ApiError(0, null)); };
+        xhr.onload = function () { resolve({ status: xhr.status, text: xhr.responseText || "" }); };
+        xhr.send(form);
+      });
+    }
+    return send().then(function (r) {
+      if (r.status === 401 && !opts.anonymous) {
+        return refresh().then(send, function () { clearTokens(); showAuth(); throw new ApiError(401, null); });
+      }
+      return r;
+    }).then(function (r) {
+      if (r.status === 204) return null;
+      var parsed = null;
+      try { parsed = r.text ? JSON.parse(r.text) : null; } catch (e) { parsed = null; }
+      if (r.status < 200 || r.status >= 300) throw new ApiError(r.status, parsed);
+      return parsed;
+    });
+  }
+
   // ── DOM helpers ──────────────────────────────────────────────────────────
   function $(id) { return document.getElementById(id); }
   function show(el) { el.classList.remove("hidden"); }
@@ -824,10 +863,14 @@
     if (section) { body.startSeconds = section.startSeconds; body.endSeconds = section.endSeconds; }
     // Only when set: the sheet is then written in the keys pressed on a transposed keyboard.
     if (kbTranspose() !== 0) body.keyboardTranspose = kbTranspose();
+    sendLink(body);
+  }
+  /** The link as it was sent, kept so "Try again" on a job that never finishes can send the same again. */
+  function sendLink(body) {
     linkInfo.sending = true; syncLinkSubmit(); hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
-      .then(function (job) { clearLinkCard(); $("link-url").value = ""; startJob(job, guest ? "preview" : "link"); })
+      .then(function (job) { clearLinkCard(); $("link-url").value = ""; startJob(job, guest ? "preview" : "link", "link", function () { sendLink(body); }); })
       .catch(function (err) { explain(err); })
       .finally(function () { linkInfo.sending = false; syncLinkSubmit(); });
   }
@@ -893,9 +936,25 @@
     form.append("audioPreview", "false");
     hide($("app-alert"));
     track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : kind === "chords" ? "Chords uploaded" : "Tune uploaded");
-    return request(guest ? "/api/preview" : "/api/transcriptions", { method: "POST", anonymous: guest, form: form })
-      .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || (song ? "separating" : "transcribing") }), guest ? "preview" : "upload"); })
-      .catch(function (err) { explain(err); });
+    // The recording's own journey up is the first stage on the card, with a real percentage. When a
+    // job is still being followed (Try again), that card is left alone and the button carries the count.
+    var following = !!pollTimer;
+    if (!following) {
+      openProgress("Uploading your recording");
+      setStage("uploading", "upload", null);
+      $("progress").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    function onProgress(fraction) {
+      if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
+      else setPercent(fraction);
+    }
+    return upload(guest ? "/api/preview" : "/api/transcriptions", form, { anonymous: guest, onProgress: onProgress })
+      .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic); }); })
+      .catch(function (err) {
+        if (following) { $("p-retry-btn").textContent = "Try again"; $("p-retry-btn").disabled = false; }
+        else { hide($("progress")); if (current && current.result) show($("result")); }
+        explain(err);
+      });
   }
   $("file-input").addEventListener("change", function (e) {
     var file = e.target.files && e.target.files[0];
@@ -942,52 +1001,99 @@
   }
 
   // ── Polling ──────────────────────────────────────────────────────────────
-  function startJob(job, kind) {
-    stopPolling();
-    current = { jobId: job.jobId, kind: kind, source: job.source || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0 };
+  // The card says where the job really is: the recording going up, its place in the worker's
+  // line, then the worker's own stages with a percentage. When nothing moves for a while it says
+  // so; when the API cannot be reached it says that; after twelve minutes it offers to send again.
+  var STAGE_ORDER = ["uploading", "queued", "fetching", "separating", "transcribing"];
+  var STAGE_COPY = { uploading: "Uploading your recording", queued: "Waiting in line", fetching: "Fetching audio", separating: "Isolating the voice", transcribing: "Writing the solfa" };
+  var STALL_MS = 90 * 1000, RETRY_AFTER_MS = 12 * 60 * 1000, OFFLINE_AFTER = 3;
+
+  /** The progress card, blank: a title, no song art, the bar at zero and none of the warnings. */
+  function openProgress(title) {
     $("save-title").value = "";
     hide($("result"));
     show($("progress"));
-    $("p-title").textContent = kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : job.stage === "separating" ? "Isolating the voice…" : "Transcribing your recording…";
-    current.preview = kind === "preview";
-    if (current.preview) previewId = job.jobId;
+    $("p-title").textContent = title;
     $("p-artist").textContent = "";
     hide($("p-thumb"));
-    $("p-bar").style.width = "3%";
-    setStage(job.stage || (kind === "link" ? "fetching" : "transcribing"));
+    setPercent(0);
+    $("p-status").textContent = "";
+    hide($("p-slow")); hide($("p-offline")); hide($("p-retry"));
+    $("p-retry-btn").textContent = "Try again"; $("p-retry-btn").disabled = false;
+  }
+  function setPercent(fraction) {
+    var pct = Math.max(0, Math.min(100, Math.round((fraction || 0) * 100)));
+    $("p-bar").style.width = Math.max(3, pct) + "%";
+    $("p-pct").textContent = pct + "%";
+  }
+
+  /**
+   * Follows a job the API accepted. `from` is where the audio came from ("upload", "link", or
+   * nothing when unknown, as for a preview opened by its id); `retry` sends the same thing again.
+   */
+  function startJob(job, kind, from, retry) {
+    stopPolling();
+    current = { jobId: job.jobId, kind: kind, from: from || null, retry: retry || null, source: job.source || null, result: null, startedAt: Date.now(), savedId: null, shareToken: null, lyrics: "", semitones: 0, failures: 0, seen: "", seenAt: Date.now() };
+    openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
+    current.preview = kind === "preview";
+    if (current.preview) previewId = job.jobId;
+    setStage(job.stage || (kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
     $("progress").scrollIntoView({ behavior: "smooth", block: "start" });
     poll();
   }
   function stopPolling() { if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; } }
 
-  function setStage(stage) {
-    var order = ["fetching", "separating", "transcribing"];
-    var idx = order.indexOf(stage);
+  /** Lights the row and writes the plain line under the bar. A stage this page has no name for is the last one. */
+  function setStage(stage, from, queuePosition) {
+    if (STAGE_ORDER.indexOf(stage) < 0) stage = "transcribing";
+    var idx = STAGE_ORDER.indexOf(stage);
     document.querySelectorAll("#p-stages .stage").forEach(function (el) {
-      var i = order.indexOf(el.dataset.stage);
+      var i = STAGE_ORDER.indexOf(el.dataset.stage);
       el.classList.remove("on", "done");
-      if (idx < 0) { if (el.dataset.stage === "transcribing") el.classList.add("on"); return; }
+      // A recording that was uploaded is never "fetched"; a link is never "uploaded".
+      if (el.dataset.stage === "uploading") (from === "upload" ? show : hide)(el);
+      if (el.dataset.stage === "fetching") (from === "upload" ? hide : show)(el);
       if (i < idx) el.classList.add("done");
       if (i === idx) el.classList.add("on");
     });
+    var text = STAGE_COPY[stage];
+    if (stage === "queued" && queuePosition > 0) text += " · " + queuePosition + " ahead";
+    $("p-status").textContent = text;
   }
+
+  /** The lines under the bar, from how long the job has sat still and how long it has run. */
+  function reviewWait() {
+    var now = Date.now();
+    (now - current.seenAt >= STALL_MS ? show : hide)($("p-slow"));
+    if (now - current.startedAt >= RETRY_AFTER_MS && current.retry) show($("p-retry"));
+  }
+  $("p-retry-btn").addEventListener("click", function () {
+    if (!current || !current.retry) return;
+    $("p-retry-btn").disabled = true; $("p-retry-btn").textContent = "Sending again…";
+    current.retry(); // the old job is still followed until the new one is accepted
+  });
 
   function poll() {
     if (!current) return;
     var jobId = current.jobId;
     request((current.preview ? "/api/preview/jobs/" : "/api/transcriptions/jobs/") + encodeURIComponent(jobId), { anonymous: current.preview && guest }).then(function (job) {
       if (!current || current.jobId !== jobId) return;
+      current.failures = 0; hide($("p-offline"));
       if (job.source) {
         current.source = job.source;
         $("p-title").textContent = job.source.title || "Untitled";
         $("p-artist").textContent = job.source.artist || "";
         if (job.source.thumbnailUrl) { $("p-thumb").src = job.source.thumbnailUrl; show($("p-thumb")); }
       }
-      if (job.stage) setStage(job.stage);
-      var pct = Math.max(3, Math.round((job.progress || 0) * 100));
-      $("p-bar").style.width = pct + "%";
+      var stage = job.stage || "transcribing", progress = job.progress || 0;
+      setStage(stage, current.from, job.queuePosition);
+      setPercent(progress);
+      // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
+      var seen = stage + "|" + Math.round(progress * 100) + "|" + (job.queuePosition == null ? "" : job.queuePosition);
+      if (seen !== current.seen) { current.seen = seen; current.seenAt = Date.now(); }
       var status = String(job.status || "").toLowerCase();
       if (status === "done" && job.result) {
+        stopPolling();
         current.result = job.result;
         hide($("progress"));
         sfx.play("ready");
@@ -997,14 +1103,21 @@
         return;
       }
       if (status === "failed") {
+        stopPolling();
         hide($("progress"));
         sfx.play("error");
         alertIn($("app-alert"), "danger", job.error && !TECHNICAL.test(job.error) ? job.error : "That could not be transcribed. Try a cleaner recording or a different link.");
         return;
       }
+      reviewWait();
       pollTimer = setTimeout(poll, POLL_MS);
     }).catch(function (err) {
-      if (err.status === 401) return;
+      if (err.status === 401) { stopPolling(); return; }
+      if (!current || current.jobId !== jobId) return;
+      // Whatever the API or the network said stays in the console; the card gets one plain line.
+      current.failures++;
+      if (current.failures >= OFFLINE_AFTER) show($("p-offline"));
+      reviewWait();
       pollTimer = setTimeout(poll, POLL_MS * 2);
     });
   }

@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
-<link rel="stylesheet" href="/assets/app.css?v=15">
+<link rel="stylesheet" href="/assets/app.css?v=16">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
 <script>
   // The theme before the first paint, so a dark page never flashes white: the saved choice, else the device's.
@@ -364,11 +364,23 @@
         </div>
       </div>
       <div class="stages" id="p-stages">
+        <span class="stage hidden" data-stage="uploading"><span class="dot"></span>Uploading your recording</span>
+        <span class="stage" data-stage="queued"><span class="dot"></span>Waiting in line</span>
         <span class="stage" data-stage="fetching"><span class="dot"></span>Fetching audio</span>
         <span class="stage" data-stage="separating"><span class="dot"></span>Isolating the voice</span>
-        <span class="stage" data-stage="transcribing"><span class="dot"></span>Writing the notes</span>
+        <span class="stage" data-stage="transcribing"><span class="dot"></span>Writing the solfa</span>
       </div>
-      <div class="bar"><div id="p-bar"></div></div>
+      <div class="bar-row">
+        <div class="bar"><div id="p-bar"></div></div>
+        <span class="bar-pct" id="p-pct">0%</span>
+      </div>
+      <p class="small p-status" id="p-status" aria-live="polite"></p>
+      <p class="small p-slow hidden" id="p-slow">Taking longer than usual — the server is busy, your place is kept.</p>
+      <p class="small p-offline hidden" id="p-offline">Can't reach NoteFusion right now. Still trying…</p>
+      <div class="p-retry hidden" id="p-retry">
+        <span class="small">Still nothing after twelve minutes? You can send it again; the first one keeps its place too.</span>
+        <button class="btn btn-ghost" type="button" id="p-retry-btn">Try again</button>
+      </div>
       <p class="small muted" id="p-note" style="margin:12px 0 0">A hummed tune takes seconds; a full song a few minutes. You can keep this tab in the background.</p>
     </div>
 
@@ -395,7 +407,7 @@
         <div class="sheet-wrap">
           <div class="skel skel-staff hidden" id="sheet-skel" aria-hidden="true"></div>
           <div id="sheet"></div>
-          <div class="watermark hidden" id="r-watermark"><span>NoteFusion preview</span></div>
+          <div class="watermark hidden" id="r-watermark" aria-hidden="true"></div>
         </div>
       </div>
       <div id="r-solfa" class="hidden"><div class="solfa" id="r-solfa-text"></div><div id="r-hymn"></div></div>
@@ -641,8 +653,8 @@
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
-<script src="/assets/preview.js?v=9" defer></script>
-<script src="/assets/app.js?v=16" defer></script>
+<script src="/assets/preview.js?v=10" defer></script>
+<script src="/assets/app.js?v=17" defer></script>
 <script src="/assets/track.js?v=1" defer></script>
 </body>
 </html>
