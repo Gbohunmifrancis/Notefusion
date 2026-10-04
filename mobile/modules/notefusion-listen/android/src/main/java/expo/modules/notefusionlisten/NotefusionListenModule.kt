@@ -86,7 +86,13 @@ class NotefusionListenModule : Module() {
       pendingStart = promise
       startTimeout = Runnable { settleStart(false, "E_START_TIMEOUT", "The microphone service did not start") }
         .also { main.postDelayed(it, 8_000) }
-      KeyListenerService.start(context)
+      try {
+        KeyListenerService.start(context)
+      } catch (e: Exception) {
+        // startForegroundService itself refuses (ForegroundServiceStartNotAllowedException on API 31+
+        // when the app slipped into the background): settle here, or the timeout would reject twice.
+        main.post { settleStart(false, "E_NOT_ALLOWED", e.message) }
+      }
     }
 
     Function("stop") {

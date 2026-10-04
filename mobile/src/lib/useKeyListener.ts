@@ -72,6 +72,7 @@ const NOT_HERE = 'Background listening is on Android for now.';
 function messageFor(code: string | undefined): string {
   switch (code) {
     case 'E_NOT_IN_FOREGROUND':
+    case 'E_NOT_ALLOWED':
       return 'Open NoteFusion on screen and tap Start — Android only lets listening begin while the app is in front.';
     case 'E_NO_MIC_PERMISSION':
       return MIC_DENIED;

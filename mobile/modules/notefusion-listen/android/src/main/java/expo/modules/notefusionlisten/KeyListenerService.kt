@@ -12,7 +12,9 @@ import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.MediaRecorder
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -39,6 +41,7 @@ class KeyListenerService : Service() {
 
   private var record: AudioRecord? = null
   private var thread: Thread? = null
+  private val main = Handler(Looper.getMainLooper())
   @Volatile private var capturing = false
   private var recordingCallback: AudioManager.AudioRecordingCallback? = null
 
@@ -66,9 +69,12 @@ class KeyListenerService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE else 0
       )
     } catch (e: Exception) {
-      // Android 14+: ForegroundServiceStartNotAllowedException (a SecurityException) when the app is
-      // not on screen, or the microphone permission is missing. Reported, never thrown.
-      listener?.onStatus(false, "error", if (e is SecurityException) "E_NOT_ALLOWED" else "E_START_FAILED", e.message)
+      // Android 14+: SecurityException when the app is not on screen or the microphone permission is
+      // missing; ForegroundServiceStartNotAllowedException (an IllegalStateException, API 31+) when
+      // the system refuses the start outright. Both are the same "not now" to JS. Reported, never thrown.
+      val notAllowed = e is SecurityException ||
+        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e is android.app.ForegroundServiceStartNotAllowedException)
+      listener?.onStatus(false, "error", if (notAllowed) "E_NOT_ALLOWED" else "E_START_FAILED", e.message)
       stopSelf()
       return START_NOT_STICKY
     }
@@ -113,12 +119,12 @@ class KeyListenerService : Service() {
     try {
       recorder.startRecording()
     } catch (e: Exception) {
-      recorder.release()
+      discard(recorder)
       fail("E_MIC_UNAVAILABLE", e.message)
       return
     }
     if (recorder.recordingState != AudioRecord.RECORDSTATE_RECORDING) {
-      recorder.release()
+      discard(recorder)
       fail("E_MIC_UNAVAILABLE", "The microphone did not start")
       return
     }
@@ -130,12 +136,29 @@ class KeyListenerService : Service() {
 
     thread = Thread({
       val buf = FloatArray(chunk)
+      var broken = false
       while (capturing) {
         val n = recorder.read(buf, 0, chunk, AudioRecord.READ_BLOCKING)
         if (n > 0) listener?.onBuffer(if (n == chunk) buf.copyOf() else buf.copyOf(n), SAMPLE_RATE)
-        else if (n < 0) break // ERROR_* — the mic went away
+        else if (n < 0) {
+          // ERROR_* — the mic went away under us. A stop() from shutdown() also ends the read, but
+          // then `capturing` is already false and nothing is reported twice.
+          broken = capturing
+          break
+        }
+      }
+      if (broken) {
+        // Off this thread: shutdown() waits for it to finish.
+        main.post { if (capturing) shutdown("error", "E_MIC_UNAVAILABLE", "The microphone stopped") }
       }
     }, "nf-key-listener").apply { start() }
+  }
+
+  /** Releases a recorder that never got going, with the callback it may already carry. */
+  private fun discard(recorder: AudioRecord) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) recordingCallback?.let { runCatching { recorder.unregisterAudioRecordingCallback(it) } }
+    recordingCallback = null
+    recorder.release()
   }
 
   private fun fail(code: String, message: String?) {
@@ -143,20 +166,27 @@ class KeyListenerService : Service() {
     stopSelf()
   }
 
-  /** Stops capture, drops the notification and ends the service. */
-  fun shutdown(reason: String) {
+  /**
+   * Stops capture, drops the notification and ends the service. Reached from the module (JS stop,
+   * JS gone), the notification's Stop action, onTaskRemoved and the capture thread's own failure, so
+   * it is synchronised and waits for the capture thread to leave its last read before the recorder
+   * is released — reading a released AudioRecord is a native use-after-free.
+   */
+  @Synchronized
+  fun shutdown(reason: String, code: String? = null, message: String? = null) {
     val wasCapturing = capturing
     capturing = false
     record?.let { r ->
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) recordingCallback?.let { runCatching { r.unregisterAudioRecordingCallback(it) } }
-      runCatching { r.stop() }
+      runCatching { r.stop() } // unblocks the read
+      thread?.takeIf { it !== Thread.currentThread() }?.let { runCatching { it.join(1_000) } }
       r.release()
     }
     record = null
     recordingCallback = null
     thread = null
     ShortcutState.setListening(this, false)
-    if (wasCapturing) listener?.onStatus(false, reason)
+    if (wasCapturing) listener?.onStatus(false, reason, code, message)
     ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
     stopSelf()
   }

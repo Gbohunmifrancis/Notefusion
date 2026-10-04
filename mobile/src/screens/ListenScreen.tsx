@@ -11,7 +11,7 @@
  * microphone service started from the background), and from the notification itself.
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -37,14 +37,13 @@ export function ListenScreen({ route, navigation }: Props) {
   const listener = useKeyListener();
   const { available, running, starting, hearing, silenced, doh, keyName, confidence, chord, error, start, stop } = listener;
 
-  // A tile or widget tap starts listening the moment the screen is up — once, and only when the link
-  // handler saw the app on screen (that is what `autoStart` means).
-  const autoStarted = useRef(false);
+  // A tile or widget tap starts listening the moment the screen is up, and only when the link handler
+  // saw the app on screen (that is what `autoStart` means). The param is cleared as it is consumed, so
+  // each tap starts once — and a later tap, after Stop, starts again.
   useEffect(() => {
-    if (!route.params?.autoStart || autoStarted.current || running || starting) return;
-    autoStarted.current = true;
+    if (!route.params?.autoStart) return;
     navigation.setParams({ autoStart: undefined });
-    void start();
+    if (!running && !starting) void start();
   }, [route.params?.autoStart, running, starting, start, navigation]);
 
   async function addTile() {

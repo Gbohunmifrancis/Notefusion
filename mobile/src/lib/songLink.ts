@@ -10,13 +10,15 @@
 export type SongProvider = "youtube" | "spotify" | "apple_music";
 
 const URL_IN_TEXT = /https?:\/\/[^\s<>"]+/i;
-const TRAILING = /[.,;:!?'")\]}>»”’]+$/;
+const TRAILING = /[.,;:!?'")\]}>»”’…]+$/;
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 
 /** The first http(s) link in the text, with sentence punctuation trimmed off its end; or null. */
 export function firstUrl(text: string | null | undefined): string | null {
   const m = URL_IN_TEXT.exec(text ?? "");
-  return m ? m[0].replace(TRAILING, "") : null;
+  const url = m ? m[0].replace(TRAILING, "") : null;
+  // A bare scheme ("https://.") is not a link, as the worker also rules.
+  return url && url.length > "https://".length ? url : null;
 }
 
 /** Host, path segments and query of a URL without `new URL()`, which RN's polyfill handles unevenly. */

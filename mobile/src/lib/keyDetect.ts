@@ -160,7 +160,6 @@ export class KeyDetector {
   private readonly salience = new Float64Array(128);
 
   private silentFrames = SILENT_FRAMES;
-  private heardAnything = false;
   private stable: KeyEstimate | null = null;
   private candidate: KeyEstimate | null = null;
   private candidateWins = 0;
@@ -184,7 +183,6 @@ export class KeyDetector {
     this.chroma.fill(0);
     this.chordChroma.fill(0);
     this.silentFrames = SILENT_FRAMES;
-    this.heardAnything = false;
     this.stable = null;
     this.candidate = null;
     this.candidateWins = 0;
@@ -231,7 +229,6 @@ export class KeyDetector {
       return;
     }
     this.silentFrames = 0;
-    this.heardAnything = true;
 
     fft(re, im);
     const half = FFT_SIZE / 2;

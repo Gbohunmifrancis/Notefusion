@@ -58,8 +58,10 @@ export function RootNavigator() {
   useNotificationDeepLink(Boolean(user));
 
   // The Quick Settings tile, the home-screen widget and the listening notification open
-  // notefusion://listen. Same hold-until-signed-in rule; only that one path is matched.
-  useListenDeepLink(Boolean(user));
+  // notefusion://listen. Same hold-until-signed-in rule; only that one path is matched. Also held
+  // until the container below is mounted: a link that drained while the splash still showed would
+  // find no navigator and be lost.
+  useListenDeepLink(Boolean(user) && !initializing && !themeLoading);
 
   // "There's a newer version in the store" — checked here rather than on a screen because it has
   // to reach whichever screen the user happens to be on, and because the blocking case must not

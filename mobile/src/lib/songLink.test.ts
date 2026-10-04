@@ -8,6 +8,8 @@ test("first link in share text, trailing punctuation trimmed", () => {
     "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=abc",
   );
   assert.equal(firstUrl("see (https://youtu.be/dQw4w9WgXcQ)!"), "https://youtu.be/dQw4w9WgXcQ");
+  assert.equal(firstUrl("https://youtu.be/dQw4w9WgXcQ…"), "https://youtu.be/dQw4w9WgXcQ");
+  assert.equal(firstUrl("https://."), null);
   assert.equal(firstUrl("no link here"), null);
   assert.equal(firstUrl(""), null);
 });
