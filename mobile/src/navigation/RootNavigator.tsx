@@ -6,6 +6,7 @@ import { useTheme } from '../lib/theme';
 import { useAppUpdatePrompt } from '../lib/appUpdate';
 import { useReminderWindow } from '../lib/practiceReminder';
 import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink';
+import { useListenDeepLink } from '../lib/listenLink';
 import { logScreenView } from '../lib/analytics';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
@@ -15,6 +16,7 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 import { HelpScreen } from '../screens/HelpScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
 import { LinkScreen } from '../screens/LinkScreen';
+import { ListenScreen } from '../screens/ListenScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -54,6 +56,12 @@ export function RootNavigator() {
   // the authenticated stack exists, because a tap is what launches the app in the case this feature
   // is for.
   useNotificationDeepLink(Boolean(user));
+
+  // The Quick Settings tile, the home-screen widget and the listening notification open
+  // notefusion://listen. Same hold-until-signed-in rule; only that one path is matched. Also held
+  // until the container below is mounted: a link that drained while the splash still showed would
+  // find no navigator and be lost.
+  useListenDeepLink(Boolean(user) && !initializing && !themeLoading);
 
   // "There's a newer version in the store" — checked here rather than on a screen because it has
   // to reach whichever screen the user happens to be on, and because the blocking case must not
@@ -129,6 +137,11 @@ export function RootNavigator() {
             <Stack.Screen
               name="Link"
               component={LinkScreen}
+              options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen
+              name="Listen"
+              component={ListenScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
             />
 

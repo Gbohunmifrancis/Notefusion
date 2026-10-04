@@ -263,6 +263,7 @@ export function HomeScreen({ navigation }: Props) {
           solfaLines: derived.solfaLines,
           overallConfidence: full.overallConfidence,
           audioPreviewBase64,
+          chords: full.chords ?? null,
         },
         savedId: full.id,
         title: full.title,
@@ -468,6 +469,28 @@ export function HomeScreen({ navigation }: Props) {
                   </Touchable>
                 </View>
               </View>
+
+              {/* ── Find the key: the Shazam-style listener ─────────────── */}
+              <Touchable
+                onPress={() => rootNav.navigate('Listen')}
+                ripple={false}
+                accessibilityLabel="Find the key of a song that is playing"
+              >
+                <Card style={styles.listenCard} padded={false}>
+                  <View style={styles.recentRow}>
+                    <View style={styles.noteIconBadge}>
+                      <Ionicons name="radio-outline" size={20} color={colors.accent} />
+                    </View>
+                    <View style={styles.recentInfo}>
+                      <Text style={styles.recentTitle}>Find the key</Text>
+                      <Text style={styles.recentMeta}>
+                        Play any song out loud and NoteFusion names its doh — even while you use other apps.
+                      </Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+                  </View>
+                </Card>
+              </Touchable>
 
               {/* ── 4. Recent Recordings Header ─────────────────────────── */}
               <View style={styles.recentSectionHeader}>
@@ -716,6 +739,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
       fontSize: 13,
       fontFamily: fonts.semibold,
       color: c.text,
+    },
+
+    /** Sits between the stage and Recent; the row inside reuses the recent-card layout. */
+    listenCard: {
+      marginBottom: spacing.xxl,
     },
 
     // ── Recent Section ────────────────────────────────────────────────────────

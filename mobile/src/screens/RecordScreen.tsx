@@ -38,6 +38,14 @@ import {
 } from "../lib/push";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
+import { importKind, loadImportKind, setImportKind } from "../lib/importKind";
+import {
+  KEYBOARD_TRANSPOSE_CHOICES,
+  keyboardTranspose,
+  keyboardTransposeLabel,
+  loadKeyboardTranspose,
+  setKeyboardTranspose,
+} from "../lib/keyboardTranspose";
 import {
   fonts,
   gradients,
@@ -51,10 +59,13 @@ import type { RootStackParams, TabParams } from "../navigation/types";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type Mode = "melody" | "poly" | "choir";
+type Mode = "melody" | "poly" | "choir" | "chords";
 
-/** "Choir" is a whole choir singing in parts: each part comes back as it was sung. */
-const MODE_LABEL: Record<Mode, string> = { melody: "Melody", poly: "Polyphonic", choir: "Choir" };
+/**
+ * "Choir" is a whole choir singing in parts: each part comes back as it was sung. "Chords" is a
+ * piano or guitar playing: the chords are read and written over the solfa.
+ */
+const MODE_LABEL: Record<Mode, string> = { melody: "Melody", poly: "Polyphonic", choir: "Choir", chords: "Chords" };
 type Phase = "ready" | "recording" | "uploading";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -222,6 +233,12 @@ export function RecordScreen() {
   const [phase, setPhase] = useState<Phase>("ready");
   const [mode, setMode] = useState<Mode>("melody");
   const [selectedKey, setSelectedKey] = useState<string>("Auto");
+  /** The player's keyboard transpose, mirrored from the module cache so the chips repaint. */
+  const [kbTranspose, setKbTranspose] = useState(keyboardTranspose());
+  useEffect(() => {
+    void loadImportKind();
+    void loadKeyboardTranspose().then(() => setKbTranspose(keyboardTranspose()));
+  }, []);
   const [elapsed, setElapsed] = useState(0);
   const [permError, setPermError] = useState<string | null>(null);
 
@@ -580,23 +597,37 @@ export function RecordScreen() {
     }
   }
 
-  /** What the imported file is; null when the sheet was dismissed. */
-  function askIfSong(): Promise<boolean | null> {
-    return new Promise((resolve) => {
-      Alert.alert(
-        "What is this recording?",
-        "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band." +
-          (isPro && typeof subscription?.songCreditsRemaining === "number"
-            ? ` It uses 1 of your ${subscription.songCreditsRemaining} songs left this month; a hummed tune costs nothing.`
-            : ""),
-        [
-          { text: "A tune I hummed or sang", onPress: () => resolve(false) },
-          { text: "A song with instruments", onPress: () => resolve(true) },
-          { text: "Cancel", style: "cancel", onPress: () => resolve(null) },
-        ],
-        { cancelable: true, onDismiss: () => resolve(null) },
-      );
+  /**
+   * Whether the audio is a song with instruments (true: vocal isolated first) or a hummed tune;
+   * null when the sheet was dismissed. The remembered answer — a song, until someone says otherwise
+   * — is listed first and marked, and whatever is chosen is remembered for next time. A recording
+   * cannot be cancelled: the take is already made, so it offers only the two answers.
+   */
+  function askIfSong(cancelable: boolean): Promise<boolean | null> {
+    const remembered = importKind();
+    let resolve: (v: boolean | null) => void = () => undefined;
+    const done = new Promise<boolean | null>((r) => {
+      resolve = r;
     });
+    const choose = (kind: "song" | "voice") => {
+      void setImportKind(kind);
+      resolve(kind === "song");
+    };
+    const song = { text: `A song with instruments${remembered === "song" ? " (last time)" : ""}`, onPress: () => choose("song") };
+    const voice = { text: `A tune I hummed or sang${remembered === "voice" ? " (last time)" : ""}`, onPress: () => choose("voice") };
+    Alert.alert(
+      "What is this recording?",
+      "A song with instruments has its lead vocal isolated first, so the notes and the beat come from the voice, not the band." +
+        (isPro && typeof subscription?.songCreditsRemaining === "number"
+          ? ` It uses 1 of your ${subscription.songCreditsRemaining} songs left this month; a hummed tune costs nothing.`
+          : ""),
+      [
+        ...(remembered === "song" ? [song, voice] : [voice, song]),
+        ...(cancelable ? [{ text: "Cancel", style: "cancel" as const, onPress: () => resolve(null) }] : []),
+      ],
+      { cancelable, onDismiss: () => resolve(cancelable ? null : remembered === "song") },
+    );
+    return done;
   }
 
   async function pickAudioFile() {
@@ -633,17 +664,15 @@ export function RecordScreen() {
       // voice as a hummed line, and the two need different treatment: a song's lead vocal
       // is isolated first and its beat read from the full mix, or the mixture comes back as
       // a scatter of wrong notes. Scores and MIDI files have nothing to isolate.
+      // Chords mode reads the instruments themselves, so nothing is isolated there either.
       const ext = (asset.name || "").split(".").pop()?.toLowerCase() ?? "";
       const isScore = ["mid", "midi", "xml", "musicxml", "mxl", "abc"].includes(ext);
-      const separate = isScore ? false : await askIfSong();
+      const separate = isScore || mode === "chords" ? false : await askIfSong(true);
       if (separate === null) return;
       setPhase("uploading");
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      lastSubmitArgs.current = { uri: asset.uri, name: asset.name || "imported-audio.m4a", opts: { mode, key: keyOpt, separate } }; const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", {
-        mode,
-        key: keyOpt,
-        separate,
-      });
+      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined };
+      lastSubmitArgs.current = { uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }; const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
       // Only once the job is really queued — a quota refusal has no completion
       // to notify about.
       if (jobId) void offerBackgroundAlerts();
@@ -675,7 +704,12 @@ export function RecordScreen() {
         return;
       }
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      lastSubmitArgs.current = { uri, name: `clip-${elapsed}s.m4a`, opts: { mode, key: keyOpt } }; const jobId = await start(uri, `clip-${elapsed}s.m4a`, { mode, key: keyOpt });
+      // A phone held up to a speaker records a song as surely as a file import does, and a song
+      // transcribed whole comes back as a scatter of wrong notes — so the same question, with the
+      // same remembered answer, and no cancel because the take is already made.
+      const separate = mode === "chords" ? false : ((await askIfSong(false)) ?? false);
+      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined };
+      lastSubmitArgs.current = { uri, name: `clip-${elapsed}s.m4a`, opts }; const jobId = await start(uri, `clip-${elapsed}s.m4a`, opts);
       if (jobId) void offerBackgroundAlerts();
     } catch {
       setPhase("ready");
@@ -737,7 +771,7 @@ export function RecordScreen() {
 
           {/* Mode toggle */}
           <View style={styles.modeToggle}>
-            {(["melody", "poly", "choir"] as Mode[]).map((m) => {
+            {(["melody", "poly", "choir", "chords"] as Mode[]).map((m) => {
               const active = mode === m;
               return active ? (
                 <LinearGradient
@@ -772,6 +806,56 @@ export function RecordScreen() {
               );
             })}
           </View>
+
+          {mode === "chords" ? (
+            <Text style={styles.modeHint}>
+              Chords (piano, guitar): the chords played are read and written over the solfa.
+            </Text>
+          ) : null}
+
+          {/* Keyboard transpose — the setting on the player's keyboard, so the sheet reads as the
+              music sounded, not as the shapes were played. Shown for chords, and whenever it is set,
+              because it rides along with every submit. */}
+          {mode === "chords" || kbTranspose !== 0 ? (
+            <View style={styles.keyRow}>
+              <Text style={styles.keyLabel}>Keyboard transpose{kbTranspose !== 0 ? ` · ${keyboardTransposeLabel(kbTranspose)}` : ""}</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.keyScroll}
+              >
+                {KEYBOARD_TRANSPOSE_CHOICES.map((t) => {
+                  const active = kbTranspose === t;
+                  const label = keyboardTransposeLabel(t);
+                  return active ? (
+                    <LinearGradient
+                      key={t}
+                      colors={gradients.brand}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={[styles.keyChip, styles.keyChipActive]}
+                    >
+                      <Text style={styles.keyChipTextActive}>{label}</Text>
+                    </LinearGradient>
+                  ) : (
+                    <Touchable
+                      key={t}
+                      style={styles.keyChip}
+                      onPress={() => {
+                        setKbTranspose(t);
+                        void setKeyboardTranspose(t);
+                      }}
+                      disabled={phase !== "ready"}
+                      radius={radii.pill}
+                      accessibilityLabel={`Keyboard transpose ${label}`}
+                    >
+                      <Text style={styles.keyChipText}>{label}</Text>
+                    </Touchable>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : null}
 
           {/* Key picker */}
           <View style={styles.keyRow}>
@@ -1190,6 +1274,14 @@ const makeStyles = (c: Palette) =>
     color: c.textFaint,
     fontSize: 12,
     flexShrink: 1,
+  },
+
+  /** One line under the toggle saying what the chosen mode listens for. */
+  modeHint: {
+    ...typography.caption,
+    color: c.textMuted,
+    textAlign: "center",
+    paddingHorizontal: spacing.md,
   },
 
   // ── Key picker ────────────────────────────────────────────────────────────

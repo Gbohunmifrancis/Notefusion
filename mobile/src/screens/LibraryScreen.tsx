@@ -143,6 +143,7 @@ export function LibraryScreen() {
           parts: (full.parts as TranscriptionResult["parts"]) ?? null,
           partsMusicXml: full.partsMusicXml ?? "",
           shareToken: full.shareToken ?? null,
+          chords: full.chords ?? null,
         },
         savedId: full.id,
         title: full.title,

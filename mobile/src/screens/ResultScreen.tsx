@@ -22,7 +22,8 @@ import { SingAlong } from "../components/SingAlong";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
+import type { ChordSymbol, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
+import { chordRows } from "../lib/chordRow";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -200,6 +201,8 @@ export function ResultScreen({ route, navigation }: Props) {
   const [parts, setParts] = useState<Parts | null>(result.parts ?? null);
   const [partsMusicXml, setPartsMusicXml] = useState(result.partsMusicXml ?? "");
   const [harmonising, setHarmonising] = useState(false);
+  /** The chords heard under the tune (chords mode, songs with accompaniment); transposed with it. */
+  const [chords, setChords] = useState<ChordSymbol[] | null>(result.chords?.length ? result.chords : null);
 
   // ── Rehearsal mix ─────────────────────────────────────────────────────────
   const [voiceOn, setVoiceOn] = useState<Record<VoiceName, boolean>>({ soprano: true, alto: true, tenor: true, bass: true });
@@ -327,6 +330,24 @@ export function ResultScreen({ route, navigation }: Props) {
       : view.solfaLines;
   }, [solfaStyle, view.curwenLines, view.solfaLines]);
 
+  // The chords, with each root's syllable read in the key on screen: a key override relabels the
+  // solfa under a chord exactly as it relabels the tune (the letter name stays — the sound did not move).
+  const chordView = useMemo(() => {
+    if (!chords) return null;
+    const parsed = parseKey(key);
+    const dohPc = parsed ? dohPitchClass(parsed) : null;
+    return chords.map((ch) => ({
+      ...ch,
+      solfa: dohPc === null ? ch.solfa : syllable(60 + ch.root, dohPc, 60).solfa,
+    }));
+  }, [chords, key]);
+
+  /** One chord line per grid solfa line, character-aligned with the bars below. Grid layout only. */
+  const chordLines = useMemo(
+    () => (chordView && solfaStyle === "grid" ? chordRows(chordView, view.solfaLines, timeSignature) : null),
+    [chordView, solfaStyle, view.solfaLines, timeSignature],
+  );
+
   const lowCount = useMemo(
     () => view.notes.filter((n) => n.conf < 0.5).length,
     [view.notes],
@@ -382,6 +403,7 @@ export function ResultScreen({ route, navigation }: Props) {
         lyrics: lyrics.trim(),
         parts: parts ?? undefined,
         partsMusicXml: partsMusicXml || undefined,
+        chords: chords ?? undefined,
       });
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
@@ -664,6 +686,7 @@ export function ResultScreen({ route, navigation }: Props) {
             musicXml: s.musicXml ?? "",
             parts: s.parts ?? null,
             partsMusicXml: s.partsMusicXml ?? null,
+            chords: s.chords ?? null,
           }))
         : await transcriptionsApi.transpose({
             key,
@@ -672,6 +695,7 @@ export function ResultScreen({ route, navigation }: Props) {
             musicXml: scoreXml || result.musicXml,
             parts,
             partsMusicXml: partsMusicXml || null,
+            chords,
           });
       const relabelled = deriveSolfa(moved.notes, moved.key, timeSignature, result.chromaticSpelling ?? "direction");
       const notes = relabelled.notes;
@@ -681,6 +705,7 @@ export function ResultScreen({ route, navigation }: Props) {
       setKey(moved.key);
       setParts((moved.parts as Parts | null) ?? null);
       setPartsMusicXml(moved.partsMusicXml ?? "");
+      setChords(moved.chords?.length ? moved.chords : null);
       setPreview(synthesizeMelodyWavBase64(notes, tempo));
       setSemitones(0);
       setPickingKey(false);
@@ -1370,11 +1395,18 @@ export function ResultScreen({ route, navigation }: Props) {
                     {activeSolfaLines.length > 1 && (
                       <Text style={styles.solfaLineNum}>{i + 1}</Text>
                     )}
-                    <Text
-                      style={[styles.solfaLine, i === 0 && styles.solfaLineFirst]}
-                    >
-                      {line}
-                    </Text>
+                    <View style={styles.solfaLineColumn}>
+                      {/* The chords over the bar, in the same monospaced face so each symbol sits
+                          on the syllable it belongs to (lib/chordRow). */}
+                      {chordLines?.[i]?.trim() ? (
+                        <Text style={styles.chordLine}>{chordLines[i]}</Text>
+                      ) : null}
+                      <Text
+                        style={[styles.solfaLine, i === 0 && styles.solfaLineFirst]}
+                      >
+                        {line}
+                      </Text>
+                    </View>
                   </View>
                 ))}
 
@@ -1403,6 +1435,27 @@ export function ResultScreen({ route, navigation }: Props) {
           )}
         </View>
       </View>
+
+      {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
+      {chordView ? (
+        <View style={styles.chordsBlock}>
+          <View style={styles.exportHeaderRow}>
+            <Ionicons name="musical-note-outline" size={16} color={colors.textMuted} />
+            <Text style={styles.exportTitle}>Chords</Text>
+          </View>
+          <Text style={styles.exportHint}>
+            As heard under the tune. The letter is the chord; the syllable beneath is its root in this key.
+          </Text>
+          <View style={styles.chordChips}>
+            {chordView.map((ch, i) => (
+              <View key={`${ch.startBeat}-${i}`} style={styles.chordChip} accessibilityLabel={`${ch.symbol}, ${ch.solfa}`}>
+                <Text style={styles.chordChipSymbol}>{ch.symbol}</Text>
+                <Text style={styles.chordChipSolfa}>{ch.solfa}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      ) : null}
 
       {/* ── Lyrics: the words under the solfa ──────────────────────────── */}
       <View style={styles.lyricsBlock}>
@@ -2393,6 +2446,31 @@ const makeStyles = (c: Palette) =>
     flex: 1,
     letterSpacing: 1,
   },
+
+  /** Holds a chord line over its solfa line; takes the width `solfaLine` used to. */
+  solfaLineColumn: { flex: 1 },
+
+  /** Same face, size and tracking as `solfaLine`: the alignment is character for character. */
+  chordLine: {
+    ...typography.mono,
+    color: c.accent,
+    fontSize: 16,
+    lineHeight: 20,
+    letterSpacing: 1,
+  },
+
+  chordsBlock: { marginTop: spacing.lg },
+  chordChips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs },
+  chordChip: {
+    alignItems: "center",
+    minWidth: 44,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 6,
+    borderRadius: radii.md,
+    backgroundColor: c.surfaceAlt,
+  },
+  chordChipSymbol: { ...typography.label, color: c.text },
+  chordChipSolfa: { ...typography.mono, color: c.textMuted, fontSize: 13, marginTop: 1 },
 
   /** First line gets full Ink Navy — it's the primary solfa sequence.
    *
