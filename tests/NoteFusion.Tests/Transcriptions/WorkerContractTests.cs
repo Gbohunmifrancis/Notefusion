@@ -219,7 +219,7 @@ public class WorkerContractTests
     public async Task A_jobs_source_carries_the_section_and_the_songs_length()
     {
         const string payload = """
-            {"status":"processing","progress":0.3,"stage":"fetching",
+            {"status":"processing","progress":0.3,"stage":"fetching","queuePosition":null,
              "source":{"provider":"youtube","url":"https://youtu.be/dQw4w9WgXcQ","title":"Way Maker","artist":"Sinach","thumbnailUrl":null,
                        "startSeconds":65.0,"endSeconds":95.0,"durationSeconds":213.0}}
             """;
@@ -283,5 +283,17 @@ public class WorkerContractTests
 
         Assert.Equal("<satb/>", answer.PartsMusicXml);
         Assert.Equal(["bass"], answer.Parts!.Keys);
+    }
+}
+
+public sealed class QueuedJobContractTests
+{
+    [Fact]
+    public void A_waiting_job_carries_its_place_in_line()
+    {
+        const string payload = """{"status":"pending","progress":0.0,"stage":"queued","queuePosition":2}""";
+        var job = JsonSerializer.Deserialize(payload, ApiJsonContext.Default.JobResponse)!;
+        Assert.Equal("queued", job.Stage);
+        Assert.Equal(2, job.QueuePosition);
     }
 }

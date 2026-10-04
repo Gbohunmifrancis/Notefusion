@@ -275,7 +275,7 @@ textarea { resize: vertical; line-height: 1.5; }
 .song .title { font-weight: 700; font-size: 1.05rem; line-height: 1.3; color: var(--ink); }
 .song .artist { color: var(--muted); font-size: 0.9rem; }
 .credit { font-size: 0.825rem; color: var(--muted); margin-top: 2px; }
-.stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 18px 0 14px; counter-reset: stage; }
+.stages { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin: 18px 0 14px; counter-reset: stage; }
 .stage { position: relative; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--bg); color: var(--faint); font-size: 0.85rem; font-weight: 600; min-width: 0; }
 .stage .dot { counter-increment: stage; width: 24px; height: 24px; flex: none; border-radius: 50%; border: 2px solid currentColor; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
 .stage .dot::before { content: counter(stage); }
@@ -285,8 +285,14 @@ textarea { resize: vertical; line-height: 1.5; }
 .stage.done .dot { background: var(--success); border-color: var(--success); color: #fff; }
 .stage.done .dot::before { content: "✓"; }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35); } 50% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); } }
-.bar { height: 8px; border-radius: 999px; background: var(--wash); overflow: hidden; }
+.bar-row { display: flex; align-items: center; gap: 12px; }
+.bar { height: 8px; border-radius: 999px; background: var(--wash); overflow: hidden; flex: 1; min-width: 0; }
 .bar > div { height: 100%; width: 0; background: var(--brand-gradient); border-radius: 999px; transition: width 0.6s ease; }
+.bar-pct { flex: none; min-width: 3.2em; text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.9rem; color: var(--blue-dark); }
+.p-status { margin: 10px 0 0; color: var(--copy); font-weight: 600; }
+.p-slow { margin: 8px 0 0; color: var(--color-warning-600); }
+.p-offline { margin: 8px 0 0; color: var(--danger); }
+.p-retry { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 12px 0 0; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wash); color: var(--copy); }
 
 /* ── Result ──────────────────────────────────────────────────────────────── */
 .result-head { display: flex; gap: 16px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; margin-bottom: 14px; }
@@ -297,8 +303,8 @@ textarea { resize: vertical; line-height: 1.5; }
 .sheet-wrap { position: relative; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: auto; min-height: 240px; }
 #sheet, #staff, #staff-parts, #sheet-parts { padding: 12px; }
 .watermark { position: absolute; inset: 0; pointer-events: none; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.watermark span { font-weight: 800; font-size: clamp(32px, 7vw, 72px); color: rgba(37, 99, 235, 0.08); transform: rotate(-24deg); white-space: nowrap; letter-spacing: 0.04em; }
-.watermark span::before { content: "♪ "; }
+/* The faint mark on a free account's sheet is the logo itself, tinted brand blue, turned like a stamp. */
+.watermark::before { content: ""; display: block; width: clamp(120px, 28%, 260px); aspect-ratio: 331 / 438; background: var(--blue); opacity: 0.08; transform: rotate(-24deg); -webkit-mask: url(/assets/mark.png) center / contain no-repeat; mask: url(/assets/mark.png) center / contain no-repeat; }
 .solfa { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.95rem; line-height: 1.9; white-space: pre-wrap; background: var(--blue-tint); border: 1px solid #dbe6fb; border-radius: var(--radius-sm); padding: 16px 18px; color: var(--ink); }
 .solfa .doh { color: var(--blue-dark); font-weight: 700; }
 .part { margin-top: 14px; }

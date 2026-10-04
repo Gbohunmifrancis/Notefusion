@@ -419,7 +419,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
                 .ToList(),
             wire.Result.ChordsSource);
 
-        return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source));
+        return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source), wire.QueuePosition);
     }
 
     private static SourceDto? MapSource(WireSource? source)

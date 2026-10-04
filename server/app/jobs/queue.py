@@ -46,6 +46,7 @@ PRIORITY_HIGH = "high"
 PRIORITY_NORMAL = "normal"
 _PRIORITY_RANK = {PRIORITY_HIGH: 0, PRIORITY_NORMAL: 1}
 
+STAGE_QUEUED = "queued"
 STAGE_FETCHING = "fetching"
 STAGE_SEPARATING = "separating"
 STAGE_TRANSCRIBING = "transcribing"
@@ -68,8 +69,12 @@ class Job:
     correlation_id: str | None = None
     callback_url: str | None = None
     priority: str = PRIORITY_NORMAL
-    #: Which part of a multi-step job is running (link jobs only); None for an upload.
+    #: Which part of the job is running: ``queued`` while it waits for a worker, then
+    #: ``fetching`` / ``separating`` / ``transcribing``; None once it has ended.
     stage: str | None = None
+    #: Where the job sits in the heap while it waits, so its place in line can be counted.
+    rank: int = 0
+    seq: int = 0
     #: Title/artist of a linked song, known as soon as the link resolves — before the
     #: result exists — so a client can show what is being transcribed while it waits.
     source: dict | None = None
@@ -135,7 +140,6 @@ class JobQueue:
                     start_seconds: float = 0.0,
                     end_seconds: float | None = None) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
-        job.stage = STAGE_FETCHING
         cap = float(max_seconds or settings.link_max_seconds)
         logger.info("Link job %s queued: mode=%s cap=%.0fs section=%.0f-%s priority=%s harmony=%s%s",
                     job.id[:8], mode, cap, start_seconds, "end" if end_seconds is None else f"{end_seconds:.0f}",
@@ -176,12 +180,26 @@ class JobQueue:
         return job
 
     def _enqueue(self, job: Job, fn) -> None:
-        self._push(_PRIORITY_RANK[job.priority], fn)
+        job.stage = STAGE_QUEUED
+        job.rank, job.seq = self._push(_PRIORITY_RANK[job.priority], fn)
 
-    def _push(self, rank: int, fn) -> None:
+    def _push(self, rank: int, fn) -> tuple[int, int]:
         with self._cv:
-            heapq.heappush(self._pending, (rank, next(self._seq), fn))
+            seq = next(self._seq)
+            heapq.heappush(self._pending, (rank, seq, fn))
             self._cv.notify_all()
+            return rank, seq
+
+    def queue_position(self, job_id: str) -> int | None:
+        """How many jobs run before this one; None once it has started or ended.
+
+        Counted from the heap, so a Pro job that jumped the line is reflected at once.
+        """
+        with self._cv:
+            job = self._jobs.get(job_id)
+            if job is None or job.status != STATUS_PENDING:
+                return None
+            return sum(1 for rank, seq, _fn in self._pending if (rank, seq) < (job.rank, job.seq))
 
     def _take(self, pro_lane: bool):
         """Block until there is an entry this worker may run, and pop it.
@@ -214,6 +232,7 @@ class JobQueue:
              separate_vocals: bool = False, audio_preview: bool = True,
              harmony: bool = False, keyboard_transpose: int = 0) -> None:
         job.status = STATUS_PROCESSING
+        job.stage = STAGE_TRANSCRIBING  # listening for a band is part of the work, not the wait
         work_dir: Path | None = None
         try:
             try:
@@ -369,6 +388,7 @@ class JobQueue:
                    key: str | None, tempo: int | None,
                    time_signature: str | None) -> None:
         job.status = STATUS_PROCESSING
+        job.stage = STAGE_TRANSCRIBING
         try:
             try:
                 from app.pipeline.score_transcriber import transcribe_score

@@ -170,8 +170,11 @@ export interface SubmitOptions {
 }
 
 export const transcriptionsApi = {
-  /** Upload a captured clip as multipart/form-data; returns the polling job. */
-  submit: (fileUri: string, fileName: string, opts: SubmitOptions) => {
+  /**
+   * Upload a captured clip as multipart/form-data; returns the polling job. `onUploadProgress`
+   * hears the upload itself, 0..1, so the screen can show a real figure before the server answers.
+   */
+  submit: (fileUri: string, fileName: string, opts: SubmitOptions, extra?: { onUploadProgress?: (fraction: number) => void }) => {
     const form = new FormData();
     const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
     const mime =
@@ -216,6 +219,12 @@ export const transcriptionsApi = {
     return api
       .post<TranscriptionJob>("/api/transcriptions", form, {
         timeout: 300_000,
+        onUploadProgress: extra?.onUploadProgress
+          ? (e) => {
+              const total = e.total ?? 0;
+              if (total > 0) extra.onUploadProgress?.(Math.min(1, e.loaded / total));
+            }
+          : undefined,
       })
       .then((r) => r.data);
   },

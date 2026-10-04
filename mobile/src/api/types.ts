@@ -238,14 +238,21 @@ export interface TranscriptionPart {
   solfaLines: string[];
 }
 
-export type TranscriptionStage = "fetching" | "separating" | "transcribing";
+/**
+ * Where the worker is: `queued` waits for a free worker (progress 0); the other three are
+ * the steps of the job itself. Any word this build does not know is read as `transcribing`
+ * (`lib/jobProgress.normalizeStage`).
+ */
+export type TranscriptionStage = "queued" | "fetching" | "separating" | "transcribing";
 
 export interface TranscriptionJob {
   jobId: string;
   status: TranscriptionStatus;
   progress: number;
-  /** Which step a linked song is on while it runs; absent for an upload. */
+  /** Which step the job is on while it runs; null once finished. */
   stage?: TranscriptionStage | null;
+  /** How many jobs are ahead while this one waits in the queue; null once it runs. */
+  queuePosition?: number | null;
   /** Known as soon as the link resolves, before `result` exists. */
   source?: TranscriptionSource | null;
   result?: TranscriptionResult | null;

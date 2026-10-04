@@ -461,6 +461,7 @@ async def get_job(request: Request, job_id: str) -> JobResponse:
         result = ResultDto.model_validate(payload)
 
     return JobResponse(status=job.status, progress=job.progress, stage=job.stage,
+                       queue_position=queue.queue_position(job_id),
                        source=job.source, result=result, error=job.error)
 
 

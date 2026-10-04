@@ -850,6 +850,9 @@ def client(monkeypatch):
 
         def get(self, job_id):
             return None
+        def queue_position(self, job_id):
+            return None
+
 
     monkeypatch.setattr("app.api.routes._get_queue", lambda request: FakeQueue())
     with TestClient(app) as c:
@@ -947,6 +950,9 @@ def test_job_response_carries_stage_and_source(monkeypatch):
     class FakeQueue:
         def get(self, job_id):
             return job
+        def queue_position(self, job_id):
+            return None
+
 
     monkeypatch.setattr("app.api.routes._get_queue", lambda request: FakeQueue())
     with TestClient(app) as c:
@@ -967,6 +973,9 @@ def test_job_response_carries_the_preview_marking(monkeypatch):
     class FakeQueue:
         def get(self, job_id):
             return job
+        def queue_position(self, job_id):
+            return None
+
 
     monkeypatch.setattr("app.api.routes._get_queue", lambda request: FakeQueue())
     with TestClient(app) as c:
@@ -989,6 +998,9 @@ def test_job_response_carries_the_chosen_section(monkeypatch):
     class FakeQueue:
         def get(self, job_id):
             return job
+        def queue_position(self, job_id):
+            return None
+
 
     monkeypatch.setattr("app.api.routes._get_queue", lambda request: FakeQueue())
     with TestClient(app) as c:

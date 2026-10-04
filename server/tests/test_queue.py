@@ -6,12 +6,14 @@ guarantee that the audio file is deleted once the job ends (TRD par. 9).
 """
 
 import tempfile
+import threading
 import time
 from pathlib import Path
 
 import pytest
 
-from app.jobs.queue import (PRIORITY_HIGH, STATUS_DONE, STATUS_FAILED, STATUS_PROCESSING, JobQueue)
+from app.jobs.queue import (PRIORITY_HIGH, STAGE_QUEUED, STAGE_TRANSCRIBING, STATUS_DONE, STATUS_FAILED,
+                            STATUS_PROCESSING, JobQueue)
 from app.pipeline.transcriber import LowConfidenceError, TranscriptionResult
 
 
@@ -348,3 +350,35 @@ def test_the_accompaniment_check_tells_a_band_from_a_voice(tmp_path):
     sf.write(tmp_path / "band.wav", 0.2 * band / np.max(np.abs(band)), sr)
     assert not separate.has_accompaniment(tmp_path / "voice.wav")
     assert separate.has_accompaniment(tmp_path / "band.wav")
+
+
+def test_a_waiting_job_says_so_and_knows_its_place_in_line(monkeypatch):
+    """One worker, three jobs: the first runs, the others wait as ``queued`` with their place
+    counted from the heap, and a Pro job that jumps the line moves the others back."""
+    gate = threading.Event()
+
+    def _slow(*a, **k):
+        gate.wait(10)
+        return _result()
+
+    monkeypatch.setattr("app.jobs.queue.transcribe", _slow)
+    queue = JobQueue(workers=1)
+    try:
+        first = queue.submit(_temp_audio(), mode="melody", key=None, tempo=None)
+        _await_status(queue, first, STATUS_PROCESSING)
+        second = queue.submit(_temp_audio(), mode="melody", key=None, tempo=None)
+        third = queue.submit(_temp_audio(), mode="melody", key=None, tempo=None)
+        assert queue.get(first).stage == STAGE_TRANSCRIBING and queue.queue_position(first) is None
+        assert queue.get(second).stage == STAGE_QUEUED and queue.queue_position(second) == 0
+        assert queue.get(third).stage == STAGE_QUEUED and queue.queue_position(third) == 1
+        pro = queue.submit(_temp_audio(), mode="melody", key=None, tempo=None, priority=PRIORITY_HIGH)
+        assert queue.queue_position(pro) == 0
+        assert queue.queue_position(second) == 1 and queue.queue_position(third) == 2
+        assert queue.queue_position("nosuchjob") is None
+        gate.set()
+        for jid in (first, pro, second, third):
+            job = _await_status(queue, jid, STATUS_DONE)
+            assert job.stage is None and queue.queue_position(jid) is None
+    finally:
+        gate.set()
+        queue.shutdown(wait=True)
