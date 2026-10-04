@@ -43,7 +43,6 @@ import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/syn
 import { hymnRows, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
 import { sectionOf } from "../lib/clipRange";
-import { sectionFields } from "../lib/linkInfo";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
   confidenceColor,
@@ -181,7 +180,7 @@ export function ResultScreen({ route, navigation }: Props) {
       })`
     : null;
   /** "1:05–1:35 of 3:33" when a section of the song was chosen; null for the whole song or a recording. */
-  const section = result.source ? sectionOf(sectionFields(result.source)) : null;
+  const section = result.source ? sectionOf(result.source) : null;
 
   // ── Key override (F-03) ────────────────────────────────────────────────────
   // Solfa is movable-do, so a key change re-labels the existing notes — it

@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { transcriptionsApi, type SubmitOptions } from "../api/endpoints";
 import { baseURL, safeReason, toApiError } from "../api/client";
-import { linkInfoApi, type LinkSubmitOptions } from "./linkInfo";
 import { tokenStore } from "./tokenStore";
 import type {
   TranscriptionResult,
@@ -235,7 +234,7 @@ export function useJobPolling() {
    * lifecycle as `start`; the worker reports its stages.
    */
   const startLink = useCallback(
-    async (url: string, opts: LinkSubmitOptions) => {
+    async (url: string, opts: Parameters<typeof transcriptionsApi.submitLink>[1]) => {
       stopPolling();
       setState({
         status: "pending",
@@ -248,7 +247,7 @@ export function useJobPolling() {
       });
       activeJobId.current = null;
       try {
-        return track(await linkInfoApi.submit(url, opts));
+        return track(await transcriptionsApi.submitLink(url, opts));
       } catch (e) {
         return fail(e);
       }

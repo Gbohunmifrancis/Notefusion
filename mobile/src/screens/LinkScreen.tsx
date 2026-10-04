@@ -42,13 +42,13 @@ import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { markPractisedToday } from "../lib/practiceReminder";
 import { extractSongUrl, songLinkHint } from "../lib/songLink";
-import { linkInfoApi, type LinkInfo } from "../lib/linkInfo";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
 import { toApiError } from "../api/client";
+import { transcriptionsApi } from "../api/endpoints";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { fonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { TranscriptionStage } from "../api/types";
+import type { LinkInfo, TranscriptionStage } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 type Nav = NativeStackNavigationProp<RootStackParams>;
@@ -106,7 +106,7 @@ export function LinkScreen() {
     setInfoBusy(true);
     const timer = setTimeout(async () => {
       try {
-        const data = await linkInfoApi.get(foundUrl);
+        const data = await transcriptionsApi.linkInfo(foundUrl);
         if (lookupSeq.current !== seq) return;
         setInfo({ url: foundUrl, data });
         const length = knownLength(data.durationSeconds);
