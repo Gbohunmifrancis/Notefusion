@@ -45,6 +45,7 @@ import { extractSongUrl, songLinkHint } from "../lib/songLink";
 import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
 import { toApiError } from "../api/client";
 import { transcriptionsApi } from "../api/endpoints";
+import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/jobProgress";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { fonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
@@ -54,6 +55,7 @@ import type { RootStackParams } from "../navigation/types";
 type Nav = NativeStackNavigationProp<RootStackParams>;
 
 const STAGES: { key: TranscriptionStage; label: string }[] = [
+  { key: "queued", label: "Waiting in line" },
   { key: "fetching", label: "Fetching audio" },
   { key: "separating", label: "Isolating the voice" },
   { key: "transcribing", label: "Writing the solfa" },
@@ -73,7 +75,7 @@ export function LinkScreen() {
   const nav = useNavigation<Nav>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { state, startLink, reset } = useJobPolling();
+  const { state, startLink, retry, reset } = useJobPolling();
   const { isPro, known, subscription, refresh } = useSubscription();
 
   const [url, setUrl] = useState("");
@@ -360,22 +362,40 @@ export function LinkScreen() {
                     size={12}
                     color={done ? colors.success : on ? colors.accent : colors.textFaint}
                   />
-                  <Text style={[styles.stageText, on && styles.stageTextOn, done && styles.stageTextDone]}>{s.label}</Text>
+                  <Text style={[styles.stageText, on && styles.stageTextOn, done && styles.stageTextDone]}>
+                    {on ? stageLabel(s.key, state.queuePosition) : s.label}
+                  </Text>
                 </View>
               );
             })}
           </View>
-          <View style={styles.bar}>
-            <Animated.View
-              style={[
-                styles.barFill,
-                { width: barWidth.interpolate({ inputRange: [0, 1], outputRange: ["0%", "100%"] }) },
-              ]}
-            />
+          <View style={styles.barRow}>
+            <View style={styles.bar}>
+              <Animated.View
+                style={[
+                  styles.barFill,
+                  { width: barWidth.interpolate({ inputRange: [0, 1], outputRange: ["0%", "100%"] }) },
+                ]}
+              />
+            </View>
+            <Text style={styles.barPct}>{percentLabel(state.progress)}</Text>
           </View>
           <Text style={styles.progressNote}>
             A full song takes a few minutes. We'll notify you when it's ready if you leave.
           </Text>
+          {/* The wait explained in plain words: a busy server and an unreachable one are different
+              things, and neither is the job failing. Server text never reaches this card. */}
+          {state.stalled ? <Text style={styles.progressWarn}>{STALLED_LINE}</Text> : null}
+          {state.offline ? <Text style={styles.progressWarn}>{OFFLINE_LINE}</Text> : null}
+          {state.canRetry ? (
+            <Button
+              label="Try again"
+              icon="refresh-outline"
+              variant="secondary"
+              onPress={() => void retry()}
+              style={styles.submit}
+            />
+          ) : null}
         </Card>
       ) : null}
 
@@ -448,9 +468,12 @@ const makeStyles = (c: Palette) =>
     stageText: { fontFamily: fonts.medium, fontSize: 12, color: c.textFaint },
     stageTextOn: { color: c.accent },
     stageTextDone: { color: c.success },
-    bar: { height: 6, borderRadius: 3, backgroundColor: c.border, overflow: "hidden", marginTop: spacing.md },
+    barRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.md },
+    bar: { flex: 1, height: 6, borderRadius: 3, backgroundColor: c.border, overflow: "hidden" },
     barFill: { height: "100%", backgroundColor: c.accent },
+    barPct: { fontFamily: fonts.semibold, fontSize: 12, color: c.accent, minWidth: 38, textAlign: "right", fontVariant: ["tabular-nums"] },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
+    progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warning, marginTop: spacing.sm },
     errorCard: { borderColor: c.danger, borderWidth: 1 },
     errorTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text, marginBottom: 4 },
     errorText: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textMuted },

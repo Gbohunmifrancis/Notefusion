@@ -26,6 +26,7 @@ import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
+import { BrandMark } from "../components/BrandMark";
 import { showDialog } from "../lib/dialog";
 import { markPractisedToday } from "../lib/practiceReminder";
 import * as haptics from "../lib/haptics";
@@ -37,6 +38,7 @@ import {
   pushPermissionAsked,
 } from "../lib/push";
 import { useJobPolling } from "../lib/useJobPolling";
+import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel, type ClientStage } from "../lib/jobProgress";
 import { useSubscription } from "../lib/subscription";
 import { importKind, loadImportKind, setImportKind } from "../lib/importKind";
 import {
@@ -67,6 +69,17 @@ type Mode = "melody" | "poly" | "choir" | "chords";
  */
 const MODE_LABEL: Record<Mode, string> = { melody: "Melody", poly: "Polyphonic", choir: "Choir", chords: "Chords" };
 type Phase = "ready" | "recording" | "uploading";
+
+/**
+ * The steps an upload goes through, as the uploading card lists them. Isolating the voice
+ * is only on the list when the recording is a song with instruments behind it.
+ */
+const UPLOAD_STAGES: { key: ClientStage; label: string }[] = [
+  { key: "uploading", label: "Uploading" },
+  { key: "queued", label: "Waiting in line" },
+  { key: "separating", label: "Isolating the voice" },
+  { key: "transcribing", label: "Writing the solfa" },
+];
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -225,7 +238,7 @@ export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const route = useRoute<RouteProp<TabParams, "Record">>();
   const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
-  const { state, start, reset } = useJobPolling();
+  const { state, start, retry, reset } = useJobPolling();
   const { isPro, known, trialRemaining, trialTotal, refresh, subscription } = useSubscription();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -727,6 +740,12 @@ export function RecordScreen() {
 
   const isUploading = phase === "uploading";
 
+  // The row of steps on the uploading card. A hummed tune skips the isolating step — unless
+  // the worker says it is isolating anyway, in which case the step is shown rather than lost.
+  const separating = lastSubmitArgs.current?.opts?.separate === true || state.stage === "separating";
+  const uploadStages = separating ? UPLOAD_STAGES : UPLOAD_STAGES.filter((s) => s.key !== "separating");
+  const uploadStageIndex = uploadStages.findIndex((s) => s.key === state.stage);
+
   return (
     // Scrolls only when it has to. `container` grows to fill the viewport, so at the default text
     // size the column still spreads with `space-between` exactly as it did before — the scroll is
@@ -968,7 +987,7 @@ export function RecordScreen() {
                       style={styles.progressLabel}
                       maxFontSizeMultiplier={MAX_TEXT_SCALE_IN_DISC}
                     >
-                      analysing
+                      {state.stage === "uploading" ? "uploading" : "analysing"}
                     </Text>
                   </View>
                 ) : phase === "recording" ? (
@@ -1043,35 +1062,95 @@ export function RecordScreen() {
 
         {/* ── Status area ─────────────────────────────────────────────────── */}
         <View style={styles.statusArea}>
-          <Text style={styles.statusTitle}>
-            {phase === "ready" && "Tap to record"}
-            {phase === "recording" && "Listening…"}
-            {isUploading &&
-              (state.status === "processing"
-                ? "Transcribing Solfa & Staff…"
-                : "Processing audio…")}
-          </Text>
+          {isUploading ? (
+            /* The uploading card: the mark, the step the job is on, a real percentage — the
+               upload's own until the server answers, the worker's after — and the steps still
+               to come. Once the server has the job it finishes it whether or not anyone is
+               watching, and sends a notification when it does; the upload itself is the part
+               that has to stay in the foreground. Nothing on this card is server text. */
+            <Card style={styles.uploadCard}>
+              <View style={styles.uploadHead}>
+                <View style={styles.uploadOrb}>
+                  <BrandMark size={28} color={colors.accent} />
+                </View>
+                <View style={styles.uploadHeadText}>
+                  <Text style={styles.uploadTitle}>{stageLabel(state.stage, state.queuePosition)}</Text>
+                  <Text style={styles.uploadSub}>
+                    {state.stage === "uploading"
+                      ? "Keep the app open until the upload finishes."
+                      : "You can leave this screen — we'll notify you when it's ready."}
+                  </Text>
+                </View>
+                <Text style={styles.uploadPct} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
+                  {percentLabel(state.progress)}
+                </Text>
+              </View>
 
-          <Text style={styles.timerText} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
-            {isUploading ? `${Math.round(state.progress * 100)}%` : mmss}
-          </Text>
+              <View style={styles.uploadStages}>
+                {uploadStages.map((s, i) => {
+                  const done = uploadStageIndex > i;
+                  const on = uploadStageIndex === i;
+                  return (
+                    <View key={s.key} style={[styles.uploadStage, on && styles.uploadStageOn]}>
+                      <Ionicons
+                        name={done ? "checkmark-circle" : on ? "ellipse" : "ellipse-outline"}
+                        size={12}
+                        color={done ? colors.success : on ? colors.accent : colors.textFaint}
+                      />
+                      <Text
+                        style={[
+                          styles.uploadStageText,
+                          on && styles.uploadStageTextOn,
+                          done && styles.uploadStageTextDone,
+                        ]}
+                      >
+                        {s.label}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
 
-          <Text style={styles.statusSub}>
-            {phase === "ready" &&
-              "Sing, hum, or play near the mic for accurate Solfa extraction."}
-            {phase === "recording" &&
-              (elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
-                ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
-                : "Tap the button again when you're done.")}
-            {/* Once the server has the job it finishes it whether or not anyone is watching, and
-                sends a notification when it does. Said here because the poll on this screen used to
-                be the only thing tracking a job, so leaving quietly abandoned it — the upload is
-                still the part that has to stay in the foreground. */}
-            {isUploading &&
-              (state.status === "idle"
-                ? "Analysing pitch frequencies and key profile…"
-                : "You can leave this screen — we'll notify you when it's ready.")}
-          </Text>
+              <View style={styles.progressTrack}>
+                <LinearGradient
+                  colors={gradients.brand}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.progressFill, { width: `${Math.max(3, Math.min(100, state.progress * 100))}%` }]}
+                />
+              </View>
+
+              {state.stalled ? <Text style={styles.uploadWarn}>{STALLED_LINE}</Text> : null}
+              {state.offline ? <Text style={styles.uploadWarn}>{OFFLINE_LINE}</Text> : null}
+              {state.canRetry ? (
+                <Button
+                  label="Try again"
+                  icon="refresh-outline"
+                  variant="secondary"
+                  onPress={() => void retry()}
+                  style={{ marginTop: spacing.md }}
+                />
+              ) : null}
+            </Card>
+          ) : (
+            <>
+              <Text style={styles.statusTitle}>
+                {phase === "ready" ? "Tap to record" : "Listening…"}
+              </Text>
+
+              <Text style={styles.timerText} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
+                {mmss}
+              </Text>
+
+              <Text style={styles.statusSub}>
+                {phase === "ready"
+                  ? "Sing, hum, or play near the mic for accurate Solfa extraction."
+                  : elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
+                    ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
+                    : "Tap the button again when you're done."}
+              </Text>
+            </>
+          )}
 
           {phase === "ready" && (
             <Touchable
@@ -1085,39 +1164,16 @@ export function RecordScreen() {
             </Touchable>
           )}
 
-          {isUploading && (
-            <View style={styles.progressTrack}>
-              <LinearGradient
-                colors={gradients.brand}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={[
-                  styles.progressFill,
-                  { width: `${Math.max(5, state.progress * 100)}%` },
-                ]}
-              />
-            </View>
-          )}
         </View>
 
         {/* ── Bottom action ────────────────────────────────────────────────── */}
-        {(phase === "recording" || isUploading) && (
+        {phase === "recording" && (
           <View style={styles.bottomAction}>
-            {phase === "recording" && (
-              <Button
-                label="Stop & Transcribe"
-                onPress={stopAndSubmit}
-                icon="stop-circle-outline"
-              />
-            )}
-            {isUploading && (
-              <Button
-                label="Processing…"
-                variant="secondary"
-                disabled
-                loading
-              />
-            )}
+            <Button
+              label="Stop & Transcribe"
+              onPress={stopAndSubmit}
+              icon="stop-circle-outline"
+            />
           </View>
         )}
 
@@ -1565,12 +1621,103 @@ const makeStyles = (c: Palette) =>
     paddingHorizontal: spacing.md,
   },
 
-  progressTrack: {
-    width: "80%",
-    height: 4,
+  // ── Uploading card ────────────────────────────────────────────────────────
+
+  uploadCard: {
+    width: "100%",
+  },
+
+  uploadHead: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.md,
+  },
+
+  /** The mark on a soft disc, standing in for the record button's glow while it is busy. */
+  uploadOrb: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: c.accentSoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  uploadHeadText: {
+    flex: 1,
+  },
+
+  uploadTitle: {
+    ...typography.heading,
+    color: c.text,
+    fontSize: 16,
+  },
+
+  uploadSub: {
+    ...typography.caption,
+    color: c.textMuted,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: 2,
+  },
+
+  uploadPct: {
+    fontSize: 22,
+    fontFamily: fonts.bold,
+    color: c.accent,
+    letterSpacing: -0.5,
+    fontVariant: ["tabular-nums"],
+  },
+
+  uploadStages: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.xs,
+    marginTop: spacing.md,
+  },
+
+  uploadStage: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
     borderRadius: radii.pill,
     backgroundColor: c.surfaceAlt,
-    marginTop: spacing.lg,
+  },
+
+  uploadStageOn: {
+    backgroundColor: c.accentSoft,
+  },
+
+  uploadStageText: {
+    fontFamily: fonts.medium,
+    fontSize: 12,
+    color: c.textFaint,
+  },
+
+  uploadStageTextOn: {
+    color: c.accent,
+  },
+
+  uploadStageTextDone: {
+    color: c.success,
+  },
+
+  uploadWarn: {
+    ...typography.caption,
+    color: c.warning,
+    fontSize: 12,
+    lineHeight: 17,
+    marginTop: spacing.sm,
+  },
+
+  progressTrack: {
+    width: "100%",
+    height: 6,
+    borderRadius: radii.pill,
+    backgroundColor: c.surfaceAlt,
+    marginTop: spacing.md,
     overflow: "hidden",
   },
 

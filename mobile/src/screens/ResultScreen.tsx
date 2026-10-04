@@ -1417,8 +1417,14 @@ export function ResultScreen({ route, navigation }: Props) {
                   </View>
                 ))}
 
-                {/* Decorative watermark */}
-                <Text style={styles.solfaWatermark}>♪</Text>
+                {/* Decorative watermark: the NoteFusion mark, faint, bottom-right. */}
+                <Image
+                  source={require("../../assets/brand/mark.png")}
+                  style={styles.solfaWatermark}
+                  resizeMode="contain"
+                  tintColor={colors.accent}
+                  accessibilityIgnoresInvertColors
+                />
               </>
             )
           ) : (
@@ -2503,19 +2509,16 @@ const makeStyles = (c: Palette) =>
     fontStyle: "italic",
   },
 
-  /** Decorative ghost note — bottom-right watermark inside the card.
-   *
-   *  Left on the system font: the glyph is ♪, which Poppins doesn't carry, so
-   *  naming a family would only force a silent fallback. No family means the
-   *  weight below is honoured. */
+  /** Decorative ghost of the brand mark — bottom-right watermark inside the card, the
+   *  same footprint the old note glyph had. Tinted the accent and faded by opacity, so
+   *  it reads as a watermark in both themes. */
   solfaWatermark: {
     position: "absolute",
     right: spacing.xl,
-    bottom: -8,
-    fontSize: 80,
-    color: c.accentSoft,
-    fontWeight: "700",
-    lineHeight: 90,
+    bottom: 0,
+    width: 60,
+    height: 80,
+    opacity: 0.12,
   },
 
   // ── Section header ─────────────────────────────────────────────────────────
