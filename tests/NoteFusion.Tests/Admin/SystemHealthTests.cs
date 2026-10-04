@@ -422,6 +422,9 @@ public class SystemHealthTests
         public static StubTranscriptionApi Down(string because)
             => new(Error.Network("Api.Ping", $"Could not reach the transcription service: {because}"));
 
+        public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
+            => Task.FromResult(Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
+
         public Task<Result<int>> PingAsync(CancellationToken ct = default) => Task.FromResult(_ping);
 
         public Task<Result<string>> SubmitAsync(

@@ -45,11 +45,20 @@ public sealed class PreviewController : ApiControllerBase
     [HttpPost("link")]
     public async Task<IActionResult> SubmitLink([FromBody] PreviewLinkRequest request, CancellationToken ct)
     {
-        var result = await _sender.Send(new SubmitPreviewLinkCommand(request.Url ?? string.Empty, request.AudioPreview, request.KeyboardTranspose), ct);
+        var result = await _sender.Send(
+            new SubmitPreviewLinkCommand(request.Url ?? string.Empty, request.AudioPreview, request.KeyboardTranspose, request.StartSeconds, request.EndSeconds), ct);
         return result.IsFailure
             ? HandleResult(Result.Failure<TranscriptionJobDto>(result.Error))
             : HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null, null, "fetching")));
     }
+
+    /// <summary>
+    /// What a song link points at and the thirty seconds a preview may have of it, so the visitor can pick
+    /// which thirty. Throttled with the previews but not counted as one.
+    /// </summary>
+    [HttpPost("link/info")]
+    public async Task<IActionResult> LinkInfo([FromBody] PreviewLinkInfoRequest request, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPreviewLinkInfoQuery(request.Url ?? string.Empty), ct));
 
     /// <summary>Polls a preview; the job id is the credential.</summary>
     [HttpGet("jobs/{jobId}")]
@@ -80,5 +89,10 @@ public sealed class PreviewController : ApiControllerBase
     }
 
     /// <param name="KeyboardTranspose">The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</param>
-    public sealed record PreviewLinkRequest(string? Url, bool AudioPreview = true, int KeyboardTranspose = 0);
+    /// <param name="StartSeconds">Where in the song to start, in seconds. Omit both for the first thirty seconds.</param>
+    /// <param name="EndSeconds">Where in the song to stop, in seconds; the section may not exceed thirty seconds.</param>
+    public sealed record PreviewLinkRequest(
+        string? Url, bool AudioPreview = true, int KeyboardTranspose = 0, double? StartSeconds = null, double? EndSeconds = null);
+
+    public sealed record PreviewLinkInfoRequest(string? Url);
 }

@@ -65,7 +65,16 @@ public sealed class SubmitLinkRequest
 
     /// <summary>The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</summary>
     public int KeyboardTranspose { get; init; }
+
+    /// <summary>Where in the song to start, in seconds. Omit both for the first part of the song.</summary>
+    public double? StartSeconds { get; init; }
+
+    /// <summary>Where in the song to stop, in seconds; the section may not exceed the account's allowance.</summary>
+    public double? EndSeconds { get; init; }
 }
+
+/// <summary>JSON body for asking what a song link points at.</summary>
+public sealed record LinkInfoRequest(string? Url);
 
 /// <summary>
 /// The transcription gateway. The client uploads captured audio here and polls the returned job — the
@@ -117,13 +126,23 @@ public sealed class TranscriptionsController : ApiControllerBase
     public async Task<IActionResult> SubmitLink([FromBody] SubmitLinkRequest request, CancellationToken ct)
     {
         var result = await _sender.Send(
-            new SubmitLinkTranscriptionCommand(request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.AudioPreview, request.KeyboardTranspose), ct);
+            new SubmitLinkTranscriptionCommand(
+                request.Url, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.AudioPreview, request.KeyboardTranspose,
+                request.StartSeconds, request.EndSeconds), ct);
 
         if (result.IsFailure)
             return HandleResult(Result.Failure<TranscriptionJobDto>(result.Error));
 
         return HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null, null, "fetching")));
     }
+
+    /// <summary>
+    /// What a song link points at — title, artist, artwork, length — and how much of it this account may
+    /// transcribe in one go, so the client can offer a section of the song. Costs nothing.
+    /// </summary>
+    [HttpPost("link/info")]
+    public async Task<IActionResult> LinkInfo([FromBody] LinkInfoRequest request, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetLinkInfoQuery(request.Url ?? string.Empty), ct));
 
     /// <summary>Polls a transcription job for status, progress, and the result once done.</summary>
     /// <summary>

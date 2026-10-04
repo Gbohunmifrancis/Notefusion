@@ -32,6 +32,15 @@ public interface ITranscriptionApi
         TranscribeOptions options,
         CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// POST /v1/links/resolve — what a song link points at (title, artist, artwork, length) without
+    /// fetching the song. Synchronous; the worker answers in a few seconds at most. A link the worker
+    /// cannot read comes back as <see cref="Errors.TranscriptionErrors.InvalidLink"/>.
+    /// </summary>
+    Task<Result<SourceDto>> ResolveLinkAsync(
+        string url,
+        CancellationToken cancellationToken = default);
+
     /// <summary>POST /v1/grade — judges a sung take against a part. Synchronous; the worker answers in seconds.</summary>
     Task<Result<GradeResultDto>> GradeAsync(
         Stream audio,
