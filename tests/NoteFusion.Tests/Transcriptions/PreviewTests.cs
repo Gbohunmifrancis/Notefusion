@@ -113,6 +113,44 @@ public class PreviewTests
         Assert.Equal(user.Id, h.Db.PreviewJobs.Single().ClaimedByUserId);
     }
 
+    [Fact]
+    public async Task A_previews_mode_and_keyboard_transpose_reach_the_worker()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+
+        var upload = await Upload(h, api, "browser-a")
+            .Handle(new SubmitPreviewCommand(Stream.Null, "keys.webm", Mode: TranscriptionMode.Chords, KeyboardTranspose: -4), default);
+        Assert.True(upload.IsSuccess);
+        Assert.Equal(TranscriptionMode.Chords, api.LastOptions!.Mode);
+        Assert.Equal(-4, api.LastOptions.KeyboardTranspose);
+        Assert.Equal(PreviewLimits.Seconds, api.LastOptions.MaxSeconds);
+
+        var link = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ", KeyboardTranspose: 3), default);
+        Assert.True(link.IsSuccess);
+        Assert.Equal(3, api.LastOptions!.KeyboardTranspose);
+
+        // A plain hum sends the defaults the worker already assumes.
+        await Upload(h, api, "browser-b").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
+        Assert.Equal(TranscriptionMode.Melody, api.LastOptions!.Mode);
+        Assert.Equal(0, api.LastOptions.KeyboardTranspose);
+    }
+
+    [Fact]
+    public async Task A_transpose_setting_no_keyboard_has_is_refused_before_a_preview_is_spent()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+
+        var upload = await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "keys.webm", KeyboardTranspose: 12), default);
+        var link = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ", KeyboardTranspose: -12), default);
+
+        Assert.Equal("TRANS_INVALID_KEYBOARD_TRANSPOSE", upload.Error.Code);
+        Assert.Equal("TRANS_INVALID_KEYBOARD_TRANSPOSE", link.Error.Code);
+        Assert.Null(api.LastOptions);
+        Assert.Empty(h.Db.PreviewJobs);
+    }
+
     private static SubmitPreviewCommandHandler Upload(TestHarness h, FakeApi api, string device)
         => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp);
 

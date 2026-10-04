@@ -52,7 +52,9 @@ public class ChordSheetTests
         Assert.Equal([0.0, 4, 8, 12, 16], saved.Chords!.Select(c => c.StartBeat));
         Assert.Equal([null, null, 11, null, null], saved.Chords!.Select(c => c.Bass));
 
-        // And it stuck: a fresh read names them the same way; the list view carries none of them.
+        // And it stuck: a fresh read, from the stored JSON and not the tracked entity, names them the same
+        // way; the list view carries none of them.
+        h.Db.ChangeTracker.Clear();
         var reread = await new GetTranscriptionQueryHandler(h.Db, new StubCurrentUser(userId)).Handle(new GetTranscriptionQuery(saved.Id), default);
         Assert.Equal(saved.Chords, reread.Value.Chords);
         var list = await new GetLibraryQueryHandler(h.Db, new StubCurrentUser(userId)).Handle(new GetLibraryQuery(), default);

@@ -13,6 +13,50 @@ public class ChordSpellerTests
     private static readonly MusicalKey FMajor = new(5, KeyMode.Major);
     private static readonly MusicalKey CMajor = new(0, KeyMode.Major);
 
+    // The tones above the root of each quality, as the worker's chords.QUALITIES lists them.
+    private static readonly Dictionary<string, int[]> ChordTones = new()
+    {
+        ["maj"] = [4, 7], ["min"] = [3, 7], ["7"] = [4, 7, 10], ["maj7"] = [4, 7, 11],
+        ["min7"] = [3, 7, 10], ["dim"] = [3, 6], ["sus4"] = [5, 7]
+    };
+
+    /// <summary>
+    /// The whole table, not a sample: every key (24), root (12) and quality (7), plain and as a slash chord
+    /// over each of its tones, named exactly as the worker's <c>chords.label</c> names it. chord_labels.txt
+    /// is that function's output, written by chord_labels.py alongside it; regenerate it when either side
+    /// changes and this test says which chord the two disagree on.
+    /// </summary>
+    [Fact]
+    public void Every_chord_is_named_as_the_worker_names_it()
+    {
+        var lines = File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Solfa", "chord_labels.txt"));
+        Assert.Equal(24 * 12 * 7, lines.Length);
+
+        var disagreements = new List<string>();
+        foreach (var line in lines)
+        {
+            // tonic mode root quality solfa symbol symbol/tone1 symbol/tone2 [symbol/tone3]
+            var f = line.Split(' ');
+            var key = new MusicalKey(int.Parse(f[0]), f[1] == "major" ? KeyMode.Major : KeyMode.Minor);
+            int root = int.Parse(f[2]);
+            string quality = f[3];
+            var tones = ChordTones[quality];
+            Assert.Equal(6 + tones.Length, f.Length);
+
+            var plain = ChordSpeller.Label(root, quality, null, key);
+            if (plain != (f[5], f[4]))
+                disagreements.Add($"{line}: C# says {plain.Symbol} {plain.Solfa}");
+            for (int i = 0; i < tones.Length; i++)
+            {
+                string slash = ChordSpeller.Label(root, quality, (root + tones[i]) % 12, key).Symbol;
+                if (slash != f[6 + i])
+                    disagreements.Add($"{line}: C# says {slash} over the tone {tones[i]} up");
+            }
+        }
+
+        Assert.Empty(disagreements);
+    }
+
     [Theory]
     [InlineData(5, "maj", null, "F", "d")]
     [InlineData(2, "min", null, "Dm", "l")]

@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The worker's chord names, for ChordSpellerTests; written by Solfa/chord_labels.py. -->
+    <None Update="Solfa\chord_labels.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\NoteFusion.Core\NoteFusion.Core.csproj" />
     <ProjectReference Include="..\..\src\NoteFusion.Application\NoteFusion.Application.csproj" />
     <ProjectReference Include="..\..\src\NoteFusion.Infrastructure\NoteFusion.Infrastructure.csproj" />
