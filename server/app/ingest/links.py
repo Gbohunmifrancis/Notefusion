@@ -25,6 +25,7 @@ the refusal surfaces as a ``LinkError`` the clients render as "upload the file i
 
 import html
 import json
+import logging
 import os
 import re
 import shlex
@@ -40,6 +41,8 @@ from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import NamedTuple
+
+logger = logging.getLogger(__name__)
 
 USER_AGENT = "NoteFusion/1.0 (+https://notefusion.studio)"
 HTTP_TIMEOUT = 10.0
@@ -474,8 +477,13 @@ def _run_ytdlp(args: list[str], timeout: float, provider: str) -> subprocess.Com
     try:
         result = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
+        logger.warning("yt-dlp timed out (%s) after %.0fs", provider, timeout)
         raise _YtdlpFailed(_explain("", provider), "timed out") from None
     if result.returncode != 0:
+        # The person reads the plain sentence; the log keeps yt-dlp's own words, which say which
+        # of YouTube's refusals it was (bot check, 403, missing PO token) or that the video is gone.
+        tail = " | ".join(line.strip() for line in (result.stderr or "").strip().splitlines()[-4:])
+        logger.warning("yt-dlp failed (%s, exit %d): %s", provider, result.returncode, tail[:600] or "no output")
         raise _YtdlpFailed(_explain(result.stderr, provider), result.stderr)
     return result
 

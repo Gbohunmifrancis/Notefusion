@@ -1007,3 +1007,19 @@ def test_job_response_carries_the_chosen_section(monkeypatch):
         body = c.get("/v1/jobs/abc").json()
     assert body["source"] == {"provider": "youtube", "url": YOUTUBE, "title": "T", "artist": "A",
                               "durationSeconds": 213.0, "startSeconds": 65.0, "endSeconds": 95.0}
+
+
+def test_a_refusal_leaves_ytdlps_own_words_in_the_log(monkeypatch, tmp_path, caplog):
+    """The person reads the plain sentence; the log keeps the evidence of which refusal it was."""
+    import logging
+
+    monkeypatch.setattr(links.subprocess, "run", _fake_ytdlp([], fail_on="-J", stderr=BOT))
+    monkeypatch.setattr(links, "_http_json", lambda url: {"title": "Rick Astley - Never Gonna Give You Up",
+                                                          "author_name": "Rick Astley", "thumbnail_url": "t"})
+    monkeypatch.delenv("NF_YTDLP_COOKIES_FILE", raising=False)
+    with caplog.at_level(logging.WARNING, logger="app.ingest.links"):
+        source = links.resolve_link("https://youtu.be/dQw4w9WgXcQ")
+    assert source.duration is None  # the length lookup failed, the link still resolved
+    record = next(r for r in caplog.records if "yt-dlp failed" in r.getMessage())
+    assert "Sign in to confirm you're not a bot" in record.getMessage()
+    assert "youtube" in record.getMessage()

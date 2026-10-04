@@ -23,9 +23,23 @@ audio is processed in overlapping chunks and cross-faded back together.
 The model file is downloaded at image build time (see the Dockerfile) and found through
 ``NF_MDX_MODEL_PATH``.  Without it, ``available()`` is False and the caller transcribes
 the mixture as-is rather than failing the job.
+
+Where it runs
+─────────────
+One forward pass of this network needs about 1.6 GB of resident memory (batch one, arena
+off; the input is fixed at 4 x 3072 x 256, so nothing shrinks it), and once it has run the
+process keeps about 320 MB of that for good — onnxruntime's buffers and glibc's heap do
+not go back to the kernel (``malloc_trim`` recovers 80 MB of it).  On the production box
+that dead weight is what pushed every later stage, and the API beside it, into swap.  So
+``separate_file`` runs the model in a child process (``python -m app.pipeline.separate``)
+and relays its progress; when the child exits the memory is the kernel's again and the
+worker is back to its hundred megabytes.  ``NF_SEPARATE_IN_PROCESS=1`` restores the old
+in-process run; ``NF_SEPARATE_TIMEOUT`` (seconds) bounds a child that never finishes.
 """
 
 import os
+import subprocess
+import sys
 import threading
 from pathlib import Path
 
@@ -54,6 +68,15 @@ MEM_ARENA = os.getenv("NF_MDX_MEM_ARENA", "0").strip().lower() in ("1", "true", 
 COMPENSATION = 1.021
 
 DEFAULT_MODEL_PATH = "/app/models/UVR-MDX-NET-Voc_FT.onnx"
+# The model runs in a child process unless told otherwise (see "Where it runs" above).
+IN_PROCESS = os.getenv("NF_SEPARATE_IN_PROCESS", "0").strip().lower() in ("1", "true", "yes")
+# A child that is still running after this long is killed and the mixture transcribed instead:
+# six minutes of song take a minute or two here, and this is the ceiling, not a target.
+SEPARATE_TIMEOUT = float(os.getenv("NF_SEPARATE_TIMEOUT", "2700"))
+
+
+class SeparationFailed(RuntimeError):
+    """The vocal separation did not produce a stem; the caller transcribes the mixture."""
 
 _SESSION = None
 _SESSION_LOCK = threading.Lock()
@@ -196,7 +219,63 @@ def separate_file(wav_path: Path, out_path: Path, progress=lambda f: None,
     With ``backing_path`` the instrumental — the mix minus that vocal estimate, which is
     what the model's residual is — is written there too, at the same rate and mono, for
     the "play it over the song" rehearsal mode. One pass of the model serves both.
+
+    Runs in a child process by default (see the module notes); raises ``SeparationFailed``
+    when the child could not deliver and ``MemoryError`` when the kernel killed it.
     """
+    if IN_PROCESS:
+        return _separate_here(wav_path, out_path, progress, backing_path)
+    with _RUN_LOCK:
+        return _separate_in_child(wav_path, out_path, progress, backing_path)
+
+
+def _child_command(wav_path: Path, out_path: Path, backing_path: Path | None) -> list[str]:
+    cmd = [sys.executable, "-u", "-m", "app.pipeline.separate", str(wav_path), str(out_path)]
+    if backing_path is not None:
+        cmd += ["--backing", str(backing_path)]
+    return cmd
+
+
+def _separate_in_child(wav_path: Path, out_path: Path, progress, backing_path: Path | None) -> Path:
+    """Run ``_separate_here`` in a fresh interpreter and relay its ``progress <fraction>`` lines."""
+    root = Path(__file__).resolve().parents[2]  # the directory that holds the ``app`` package
+    proc = subprocess.Popen(_child_command(wav_path, out_path, backing_path), cwd=str(root),
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    timed_out = threading.Event()
+
+    def kill():
+        timed_out.set()
+        proc.kill()
+
+    timer = threading.Timer(SEPARATE_TIMEOUT, kill)
+    timer.start()
+    try:
+        assert proc.stdout is not None
+        for line in proc.stdout:
+            if line.startswith("progress "):
+                try:
+                    progress(min(1.0, max(0.0, float(line.split()[1]))))
+                except (ValueError, IndexError):
+                    pass
+        _out, err = proc.communicate()
+    finally:
+        timer.cancel()
+    if timed_out.is_set():
+        raise SeparationFailed(f"vocal separation gave up after {SEPARATE_TIMEOUT:.0f}s")
+    if proc.returncode != 0:
+        tail = " | ".join(l.strip() for l in (err or "").strip().splitlines()[-3:]) or "no output"
+        # -9 is the OOM killer (or our own kill, handled above); 137 the same from a shell.
+        if proc.returncode in (-9, 137) or "MemoryError" in (err or ""):
+            raise MemoryError(f"vocal separation ran out of memory: {tail}")
+        raise SeparationFailed(f"vocal separation failed (exit {proc.returncode}): {tail}")
+    if not Path(out_path).is_file():
+        raise SeparationFailed("vocal separation ended without writing the stem")
+    return Path(out_path)
+
+
+def _separate_here(wav_path: Path, out_path: Path, progress=lambda f: None,
+                   backing_path: Path | None = None) -> Path:
+    """The separation itself, in this process."""
     import librosa
     import soundfile as sf
 
@@ -290,3 +369,17 @@ def voice_share_db(vocals_path: Path, backing_path: Path) -> float:
     voice = float(np.mean(vocals[:n] ** 2)) if n else 0.0
     rest = float(np.mean(backing[:n] ** 2)) if n else 0.0
     return float(10.0 * np.log10(max(voice, 1e-12) / max(voice + rest, 1e-12)))
+
+
+if __name__ == "__main__":  # pragma: no cover - exercised through _separate_in_child
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Separate a WAV's vocals; progress is printed as 'progress <fraction>'.")
+    parser.add_argument("wav")
+    parser.add_argument("out")
+    parser.add_argument("--backing", default=None)
+    args = parser.parse_args()
+    _separate_here(Path(args.wav), Path(args.out),
+                   progress=lambda f: print(f"progress {f:.4f}", flush=True),
+                   backing_path=Path(args.backing) if args.backing else None)
+    print("done", flush=True)

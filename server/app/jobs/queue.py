@@ -312,10 +312,11 @@ class JobQueue:
                     logger.info("Job %s: no voice in the vocal stem (%.0f dB); transcribing the mixture",
                                 job.id[:8], share)
                     vocals, separated = wav, False
-            except MemoryError:
+            except (MemoryError, separate.SeparationFailed) as ex:
                 # Better a sheet read from the mixture than no sheet: the worker stays up
                 # and the job finishes, with ``separated`` false so the client can say so.
-                logger.warning("Job %s: out of memory separating vocals; transcribing the mixture", job.id[:8])
+                logger.warning("Job %s: %s; transcribing the mixture", job.id[:8],
+                               "out of memory separating vocals" if isinstance(ex, MemoryError) else ex)
                 vocals, separated = wav, False
         else:
             logger.warning("Job %s: no separation model at %s; transcribing the mixture",
