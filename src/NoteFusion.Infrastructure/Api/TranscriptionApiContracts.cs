@@ -13,6 +13,9 @@ namespace NoteFusion.Infrastructure.Api;
 
 internal sealed record SubmitResponse(string JobId);
 
+/// <summary>POST /v1/links/resolve's body: the one link to look at.</summary>
+internal sealed record ResolveLinkRequest(string Url);
+
 internal sealed record GradeNote(int Index, int TargetMidi, double? SungMidi, double? Cents, string Status);
 
 internal sealed record GradeResponse(
@@ -119,7 +122,10 @@ internal sealed record WireSource(
     string Artist,
     string? ThumbnailUrl,
     bool? Preview = null,
-    string? Notice = null);
+    string? Notice = null,
+    double? StartSeconds = null,
+    double? EndSeconds = null,
+    double? DurationSeconds = null);
 
 internal sealed record WireNoteEvent(
     int PitchMidi,
@@ -138,6 +144,7 @@ internal sealed record WireNoteEvent(
 /// </summary>
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(SubmitResponse))]
+[JsonSerializable(typeof(ResolveLinkRequest))]
 [JsonSerializable(typeof(GradeResponse))]
 [JsonSerializable(typeof(GradeTarget))]
 [JsonSerializable(typeof(HarmoniseRequest))]

@@ -26,7 +26,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   and real singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
-  baked into the image at `NF_MDX_MODEL_PATH`), then transcribed. The queue has two lanes:
+  baked into the image at `NF_MDX_MODEL_PATH`), then transcribed. Before submitting, clients ask `POST /v1/links/resolve` (via the C# `…/link/info`
+  routes, which add the caller's allowance as `maxSeconds`) for the song's length and let the user pick the
+  section; `/v1/transcribe/link` takes `start_seconds`/`end_seconds` and cuts that window. The queue has two lanes:
   `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
   voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — only when asked:

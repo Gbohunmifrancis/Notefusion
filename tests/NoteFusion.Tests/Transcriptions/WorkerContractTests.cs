@@ -152,6 +152,106 @@ public class WorkerContractTests
         Assert.DoesNotContain("detail", result.Error.Message);
     }
 
+    [Fact]
+    public async Task A_chosen_section_reaches_the_worker_and_an_unchosen_one_is_not_sent()
+    {
+        var handler = new CapturingHandler();
+        var client = new TranscriptionApiClient(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
+
+        await client.SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions { MaxSeconds = 360, StartSeconds = 65, EndSeconds = 95.5 });
+        Assert.Equal("65", FormField(handler.Body, "start_seconds"));
+        Assert.Equal("95.5", FormField(handler.Body, "end_seconds"));
+        Assert.Equal("360", FormField(handler.Body, "max_seconds"));
+
+        await client.SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions { MaxSeconds = 60 });
+        Assert.DoesNotContain("start_seconds", handler.Body);
+        Assert.DoesNotContain("end_seconds", handler.Body);
+    }
+
+    [Theory]
+    [InlineData("""{"provider":"youtube","url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ","title":"Way Maker","artist":"Sinach","thumbnail_url":"https://i.ytimg.com/vi/x/hq.jpg","duration_seconds":213.0}""")]
+    [InlineData("""{"provider":"youtube","url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ","title":"Way Maker","artist":"Sinach","thumbnailUrl":"https://i.ytimg.com/vi/x/hq.jpg","durationSeconds":213}""")]
+    public async Task A_resolved_link_is_read_in_either_spelling(string payload)
+    {
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload);
+
+        var source = await Client(handler).ResolveLinkAsync("https://youtu.be/dQw4w9WgXcQ");
+
+        Assert.True(source.IsSuccess);
+        Assert.Equal("Way Maker", source.Value.Title);
+        Assert.Equal("Sinach", source.Value.Artist);
+        Assert.Equal("https://i.ytimg.com/vi/x/hq.jpg", source.Value.ThumbnailUrl);
+        Assert.Equal(213, source.Value.DurationSeconds);
+        var request = Assert.Single(handler.Requests);
+        Assert.Equal("http://worker/v1/links/resolve", request.Uri!.ToString());
+        Assert.Equal("""{"url":"https://youtu.be/dQw4w9WgXcQ"}""", request.Body);
+    }
+
+    [Fact]
+    public async Task A_resolved_link_without_a_length_says_so()
+    {
+        const string payload = """{"provider":"spotify","url":"https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT","title":"Never Gonna Give You Up","artist":"Rick Astley","thumbnail_url":null,"duration_seconds":null}""";
+
+        var source = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload)).ResolveLinkAsync("https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT");
+
+        Assert.Null(source.Value.DurationSeconds);
+        Assert.Null(source.Value.ThumbnailUrl);
+    }
+
+    [Fact]
+    public async Task A_link_the_worker_cannot_resolve_is_an_invalid_link_and_a_worker_that_is_away_is_said_so_plainly()
+    {
+        var refused = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity, """{"detail":"could not read the page"}"""))
+            .ResolveLinkAsync("https://spotify.link/qKr2CFxMQwb");
+        var broken = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.InternalServerError, "Traceback (most recent call last)"))
+            .ResolveLinkAsync("https://youtu.be/dQw4w9WgXcQ");
+        var away = await Client(StubHttpMessageHandler.Throwing(new HttpRequestException("Connection refused")))
+            .ResolveLinkAsync("https://youtu.be/dQw4w9WgXcQ");
+
+        Assert.Equal(TranscriptionErrors.InvalidLink, refused.Error);
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, broken.Error);
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, away.Error);
+        Assert.DoesNotContain("Traceback", broken.Error.Message);
+        Assert.DoesNotContain("refused", away.Error.Message);
+    }
+
+    [Fact]
+    public async Task A_jobs_source_carries_the_section_and_the_songs_length()
+    {
+        const string payload = """
+            {"status":"processing","progress":0.3,"stage":"fetching",
+             "source":{"provider":"youtube","url":"https://youtu.be/dQw4w9WgXcQ","title":"Way Maker","artist":"Sinach","thumbnailUrl":null,
+                       "startSeconds":65.0,"endSeconds":95.0,"durationSeconds":213.0}}
+            """;
+
+        var job = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload)).GetJobAsync("j1");
+
+        var source = job.Value.Source!;
+        Assert.Equal(65, source.StartSeconds);
+        Assert.Equal(95, source.EndSeconds);
+        Assert.Equal(213, source.DurationSeconds);
+        Assert.Null(source.Preview);
+
+        // Written by the client's own DTO serialiser and read back, as the result cache does.
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        var json = JsonSerializer.Serialize(source, options);
+        Assert.Contains("\"startSeconds\":65", json);
+        Assert.Contains("\"durationSeconds\":213", json);
+        Assert.Equal(source, JsonSerializer.Deserialize<SourceDto>(json, options));
+    }
+
+    [Fact]
+    public async Task A_source_from_before_sections_reads_with_none()
+    {
+        const string payload = """{"status":"processing","source":{"provider":"youtube","url":"https://youtu.be/x","title":"T","artist":"A","thumbnailUrl":null}}""";
+
+        var job = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload)).GetJobAsync("j1");
+
+        Assert.Null(job.Value.Source!.StartSeconds);
+        Assert.Null(job.Value.Source.EndSeconds);
+        Assert.Null(job.Value.Source.DurationSeconds);
+    }
+
     private static TranscriptionApiClient Client(HttpMessageHandler handler)
         => new(new HttpClient(handler) { BaseAddress = new Uri("http://worker/") }, new ConfigurationBuilder().Build());
 

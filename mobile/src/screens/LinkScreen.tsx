@@ -11,9 +11,15 @@
  * Entitlement is the server's call (`SubmitLinkTranscriptionCommand`); this screen
  * only explains it: Pro gets twenty full songs a month in the fast lane, a free account
  * gets one sixty-second preview, and the refusal codes map to the upgrade sheet.
+ *
+ * As soon as the pasted text holds a link we can read, the link is looked up
+ * (`/api/transcriptions/link/info`): the song's title, artist, artwork and length appear
+ * under the field, and a two-thumb picker chooses which section to transcribe — the
+ * first of the allowance by default, the whole song when it fits. The section travels
+ * with the job as `startSeconds`/`endSeconds`; the credit on the sheet names it.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -31,14 +37,18 @@ import { Screen } from "../components/Screen";
 import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
+import { RangePicker } from "../components/RangePicker";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { markPractisedToday } from "../lib/practiceReminder";
 import { extractSongUrl, songLinkHint } from "../lib/songLink";
+import { defaultRange, fitsWhole, formatClock, isWholeSong, sectionLabel, type ClipRange } from "../lib/clipRange";
+import { toApiError } from "../api/client";
+import { transcriptionsApi } from "../api/endpoints";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
 import { fonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
-import type { TranscriptionStage } from "../api/types";
+import type { LinkInfo, TranscriptionStage } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 type Nav = NativeStackNavigationProp<RootStackParams>;
@@ -50,6 +60,14 @@ const STAGES: { key: TranscriptionStage; label: string }[] = [
 ];
 
 const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" } as const;
+
+/** How long to wait after the last keystroke before looking the link up. */
+const INFO_DEBOUNCE_MS = 500;
+
+/** The song's length when the service knew it; null (so no picker) for a missing, zero or broken figure. */
+function knownLength(seconds: number | null | undefined): number | null {
+  return typeof seconds === "number" && Number.isFinite(seconds) && seconds > 0 ? seconds : null;
+}
 
 export function LinkScreen() {
   const nav = useNavigation<Nav>();
@@ -64,6 +82,53 @@ export function LinkScreen() {
   const found = useMemo(() => extractSongUrl(url), [url]);
   const provider = found?.provider ?? null;
   const busy = state.status === "pending" || state.status === "processing";
+
+  // ── The song behind the link, and the section of it to take ─────────────
+  // `info` is keyed by the link it was fetched for, so a changed field never shows the
+  // previous song; the sequence number drops a lookup that finishes after the next began.
+  const [info, setInfo] = useState<{ url: string; data: LinkInfo } | null>(null);
+  const [infoBusy, setInfoBusy] = useState(false);
+  const [infoError, setInfoError] = useState<string | null>(null);
+  const [range, setRange] = useState<ClipRange | null>(null);
+  const lookupSeq = useRef(0);
+  const foundUrl = found?.url ?? null;
+
+  useEffect(() => {
+    const seq = ++lookupSeq.current;
+    if (!foundUrl) {
+      setInfo(null);
+      setInfoError(null);
+      setInfoBusy(false);
+      setRange(null);
+      return;
+    }
+    setInfoError(null);
+    setInfoBusy(true);
+    const timer = setTimeout(async () => {
+      try {
+        const data = await transcriptionsApi.linkInfo(foundUrl);
+        if (lookupSeq.current !== seq) return;
+        setInfo({ url: foundUrl, data });
+        const length = knownLength(data.durationSeconds);
+        setRange(length != null ? defaultRange(length, data.maxSeconds) : null);
+      } catch (e) {
+        if (lookupSeq.current !== seq) return;
+        // A plain sentence from the API, or the client's own; never a server detail.
+        setInfoError(toApiError(e).message);
+        setInfo(null);
+        setRange(null);
+      } finally {
+        if (lookupSeq.current === seq) setInfoBusy(false);
+      }
+    }, INFO_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [foundUrl]);
+
+  const song = info && info.url === foundUrl ? info.data : null;
+  const duration = song ? knownLength(song.durationSeconds) : null;
+  const maxSeconds = song?.maxSeconds ?? null;
+  // The section to send: only when the song's length is known, so the thumbs mean something.
+  const section = song && duration != null && maxSeconds != null && range ? range : null;
 
   const credits = subscription?.songCreditsRemaining;
   const creditsTotal = subscription?.songCreditsTotal;
@@ -92,9 +157,18 @@ export function LinkScreen() {
     }).start();
   }, [busy, state.progress, barWidth]);
 
+  // While the link is being read the button waits, so the song and the picker are seen before
+  // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say.
+  const canSubmit = found !== null && !busy && !infoBusy;
+
   function submit() {
-    if (!found || busy) return;
-    void startLink(found.url, { mode: "melody", keyboardTranspose: keyboardTranspose() || undefined });
+    if (!found || !canSubmit) return;
+    void startLink(found.url, {
+      mode: "melody",
+      keyboardTranspose: keyboardTranspose() || undefined,
+      startSeconds: section?.start,
+      endSeconds: section?.end,
+    });
   }
 
   const upgradeCodes = new Set(["BILLING_SONG_PREVIEW_USED", "BILLING_FREE_TIER_LIMIT"]);
@@ -157,12 +231,85 @@ export function LinkScreen() {
           </Text>
         ) : null}
 
+        {provider && !busy ? (
+          song ? (
+            <View style={styles.infoBlock}>
+              <View style={styles.song}>
+                {song.thumbnailUrl ? (
+                  <Image source={{ uri: song.thumbnailUrl }} style={styles.thumb} />
+                ) : (
+                  <View style={[styles.thumb, styles.thumbEmpty]}>
+                    <Ionicons name="musical-notes" size={22} color={colors.textMuted} />
+                  </View>
+                )}
+                <View style={styles.songText}>
+                  <Text style={styles.songTitle} numberOfLines={2}>
+                    {song.title}
+                    {song.artist ? <Text style={styles.songArtistInline}> · {song.artist}</Text> : null}
+                  </Text>
+                  <Text style={styles.songArtist}>
+                    {duration != null ? `Total length ${formatClock(duration)}` : "Length not known"}
+                  </Text>
+                </View>
+              </View>
+
+              {duration != null && maxSeconds != null && range ? (
+                <>
+                  <Text style={styles.pickTitle}>Choose the part to transcribe</Text>
+                  <RangePicker duration={duration} maxSeconds={maxSeconds} value={range} onChange={setRange} />
+                  <View style={styles.chips}>
+                    <Touchable
+                      onPress={() => setRange(defaultRange(duration, maxSeconds))}
+                      style={styles.chip}
+                      radius={radii.pill}
+                      accessibilityLabel="From the start"
+                    >
+                      <Ionicons name="play-skip-back-outline" size={13} color={colors.accent} />
+                      <Text style={styles.chipText}>From the start</Text>
+                    </Touchable>
+                    {fitsWhole(duration, maxSeconds) ? (
+                      <Touchable
+                        onPress={() => setRange({ start: 0, end: Math.floor(duration) })}
+                        style={styles.chip}
+                        radius={radii.pill}
+                        disabled={isWholeSong(range, duration)}
+                        accessibilityLabel="Whole song"
+                        accessibilityState={{ disabled: isWholeSong(range, duration) }}
+                      >
+                        <Ionicons name="musical-note-outline" size={13} color={colors.accent} />
+                        <Text style={styles.chipText}>Whole song</Text>
+                      </Touchable>
+                    ) : null}
+                  </View>
+                  <Text style={styles.hint}>
+                    {isPro
+                      ? `Up to ${formatClock(maxSeconds)} at a time on Pro.`
+                      : `Up to ${formatClock(maxSeconds)} on the free preview — Pro takes up to 6:00 of any song.`}
+                  </Text>
+                </>
+              ) : (
+                <Text style={styles.hint}>
+                  We couldn't read how long this song is, so we'll transcribe the first{" "}
+                  {maxSeconds != null ? formatClock(maxSeconds) : "part"}.
+                </Text>
+              )}
+            </View>
+          ) : infoBusy ? (
+            <View style={styles.infoRow}>
+              <ActivityIndicator size="small" color={colors.accent} />
+              <Text style={styles.hint}>Reading the link…</Text>
+            </View>
+          ) : infoError ? (
+            <Text style={styles.hintDanger}>{infoError}</Text>
+          ) : null
+        ) : null}
+
         <Button
           label={busy ? "Transcribing…" : "Transcribe this song"}
           icon="sparkles"
           variant="primary"
           onPress={submit}
-          disabled={!provider || busy}
+          disabled={!canSubmit}
           loading={busy}
           style={styles.submit}
         />
@@ -196,6 +343,9 @@ export function LinkScreen() {
                 {state.source?.title ?? "Reading the link…"}
               </Text>
               {state.source?.artist ? <Text style={styles.songArtist} numberOfLines={1}>{state.source.artist}</Text> : null}
+              {section && duration != null && !isWholeSong(section, duration) ? (
+                <Text style={styles.songArtist}>{sectionLabel(section.start, section.end, duration)}</Text>
+              ) : null}
             </View>
           </View>
 
@@ -275,11 +425,21 @@ const makeStyles = (c: Palette) =>
     submit: { marginTop: spacing.md },
     entitlement: { flexDirection: "row", alignItems: "flex-start", gap: 6, marginTop: spacing.md },
     entitlementText: { flex: 1, fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: c.textMuted },
+    infoBlock: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: c.borderLight },
+    infoRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.sm },
+    pickTitle: { fontFamily: fonts.medium, fontSize: 13, color: c.text, marginTop: spacing.md },
+    chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.sm },
+    chip: {
+      flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 7, paddingHorizontal: 12,
+      borderRadius: radii.pill, backgroundColor: c.accentSoft,
+    },
+    chipText: { fontFamily: fonts.medium, fontSize: 12, color: c.accent },
     song: { flexDirection: "row", alignItems: "center", gap: spacing.md },
     thumb: { width: 64, height: 64, borderRadius: radii.md, backgroundColor: c.surfaceAlt },
     thumbEmpty: { alignItems: "center", justifyContent: "center" },
     songText: { flex: 1 },
     songTitle: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
+    songArtistInline: { fontFamily: fonts.regular, fontSize: 15, color: c.textMuted },
     songArtist: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
     stages: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.md },
     stage: { flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 6, paddingHorizontal: 10, borderRadius: radii.pill, backgroundColor: c.surfaceAlt },

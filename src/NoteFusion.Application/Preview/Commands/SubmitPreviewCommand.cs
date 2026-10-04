@@ -27,7 +27,10 @@ public sealed record SubmitPreviewCommand(
 
 /// <summary>The same preview for a song behind a YouTube, Spotify or Apple Music link.</summary>
 /// <param name="KeyboardTranspose">The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</param>
-public sealed record SubmitPreviewLinkCommand(string Url, bool AudioPreview = true, int KeyboardTranspose = 0) : IRequest<Result<string>>;
+/// <param name="StartSeconds">Where in the song to start, in seconds; null is the start. See <see cref="TranscribeOptions.StartSeconds"/>.</param>
+/// <param name="EndSeconds">Where in the song to stop, in seconds; null runs to the thirty seconds. See <see cref="TranscribeOptions.EndSeconds"/>.</param>
+public sealed record SubmitPreviewLinkCommand(
+    string Url, bool AudioPreview = true, int KeyboardTranspose = 0, double? StartSeconds = null, double? EndSeconds = null) : IRequest<Result<string>>;
 
 internal static class PreviewThrottle
 {
@@ -125,7 +128,17 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 
-        var options = PreviewThrottle.Options with { AudioPreview = request.AudioPreview, KeyboardTranspose = request.KeyboardTranspose };
+        var section = await SongSections.ChooseAsync(_api, url, request.StartSeconds, request.EndSeconds, PreviewLimits.Seconds, cancellationToken);
+        if (section.IsFailure)
+            return Result.Failure<string>(section.Error);
+
+        var options = PreviewThrottle.Options with
+        {
+            AudioPreview = request.AudioPreview,
+            KeyboardTranspose = request.KeyboardTranspose,
+            StartSeconds = section.Value.StartSeconds,
+            EndSeconds = section.Value.EndSeconds
+        };
         var submitted = await _api.SubmitLinkAsync(url, options, cancellationToken);
         if (submitted.IsFailure)
             return submitted;

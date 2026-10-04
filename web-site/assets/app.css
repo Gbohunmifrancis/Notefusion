@@ -173,6 +173,14 @@ body.guest .topbar { display: flex; }
 .btn.btn-glass:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
 .studio-status.link-hint { margin-top: 8px; font-weight: 500; }
 .studio-status.link-hint:empty { display: none; }
+/* The song card under the link box sits on the blue studio block: glass, white ink, white handles. */
+.studio .link-looking { text-align: left; margin-top: 10px; }
+.studio .link-section {
+  --ls-bg: rgba(255, 255, 255, 0.12); --ls-line: rgba(255, 255, 255, 0.35); --ls-ink: #fff; --ls-muted: rgba(255, 255, 255, 0.8);
+  --ls-track: rgba(255, 255, 255, 0.3); --ls-fill: rgba(255, 255, 255, 0.92); --ls-handle: #fff; --ls-handle-ring: var(--blue-dark); --ls-focus: rgba(255, 255, 255, 0.3);
+}
+.studio .link-section .btn-ghost { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.45); }
+.studio .link-section .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
 .studio-or { color: rgba(255, 255, 255, 0.75); margin: 16px 0 12px; }
 .studio-or::before, .studio-or::after { background: rgba(255, 255, 255, 0.3); }
 .studio-link .input-wrap input { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.45); color: #fff; padding-left: 104px; }

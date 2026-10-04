@@ -17,9 +17,10 @@ namespace NoteFusion.Application.Transcriptions.Commands;
 /// much of the song the caller is entitled to and in which lane it runs.
 /// </summary>
 /// <remarks>
-/// Pro: the first <see cref="SongCredits.ProMaxSeconds"/> of the song, in the high-priority lane, up to
+/// Pro: up to <see cref="SongCredits.ProMaxSeconds"/> of the song, in the high-priority lane, up to
 /// <see cref="SongCredits.ProMonthlyAllowance"/> songs a month. Free: one <see cref="SongCredits.FreePreviewSeconds"/>
-/// preview, ever, in the normal lane. Nothing is charged here — a song is charged when it finishes
+/// preview, ever, in the normal lane. Either takes the first of the song unless the user chose a section
+/// (<see cref="SongSections"/>). Nothing is charged here — a song is charged when it finishes
 /// (<see cref="Queries.GetTranscriptionJobQueryHandler"/>, <see cref="NotifyTranscriptionReadyCommandHandler"/>),
 /// so a link the platform refuses costs nothing.
 /// </remarks>
@@ -32,7 +33,11 @@ public sealed record SubmitLinkTranscriptionCommand(
     /// <summary>False to skip the synthesised preview WAV. See <see cref="TranscribeOptions.AudioPreview"/>.</summary>
     bool AudioPreview = true,
     /// <summary>The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</summary>
-    int KeyboardTranspose = 0) : IRequest<Result<string>>;
+    int KeyboardTranspose = 0,
+    /// <summary>Where in the song to start, in seconds; null is the start. See <see cref="TranscribeOptions.StartSeconds"/>.</summary>
+    double? StartSeconds = null,
+    /// <summary>Where in the song to stop, in seconds; null runs to the allowance. See <see cref="TranscribeOptions.EndSeconds"/>.</summary>
+    double? EndSeconds = null) : IRequest<Result<string>>;
 
 public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<SubmitLinkTranscriptionCommand, Result<string>>
 {
@@ -87,6 +92,11 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
                 return BillingErrors.SongPreviewUsed;
         }
 
+        var maxSeconds = isPro ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds;
+        var section = await SongSections.ChooseAsync(_api, url, request.StartSeconds, request.EndSeconds, maxSeconds, ct);
+        if (section.IsFailure)
+            return Result.Failure<string>(section.Error);
+
         var options = new TranscribeOptions
         {
             Mode = request.Mode,
@@ -94,7 +104,9 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             Tempo = request.Tempo,
             TimeSignature = request.TimeSignature,
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal,
-            MaxSeconds = isPro ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds,
+            MaxSeconds = maxSeconds,
+            StartSeconds = section.Value.StartSeconds,
+            EndSeconds = section.Value.EndSeconds,
             AudioPreview = request.AudioPreview,
             KeyboardTranspose = request.KeyboardTranspose
         };

@@ -191,6 +191,10 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
             using var form = new MultipartFormDataContent();
             form.Add(new StringContent(url), "url");
             AddOptions(form, options, withMode: true);
+            if (options.StartSeconds is { } start)
+                form.Add(new StringContent(start.ToString(System.Globalization.CultureInfo.InvariantCulture)), "start_seconds");
+            if (options.EndSeconds is { } end)
+                form.Add(new StringContent(end.ToString(System.Globalization.CultureInfo.InvariantCulture)), "end_seconds");
 
             using var response = await http.PostAsync("v1/transcribe/link", form, cancellationToken);
             // The worker is the authority on which links it can fetch, and it answers 422 for one it cannot.
@@ -215,6 +219,68 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
         {
             return Error.Network("Api.SubmitLink", $"Could not reach the transcription service: {ex.Message}");
         }
+    }
+
+    public async Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken cancellationToken = default)
+    {
+        // The worker reads a page, or asks yt-dlp for a length, and answers in a few seconds; a client is
+        // waiting on this to draw a picker, so a worker that takes much longer is treated as away.
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeout.CancelAfter(TimeSpan.FromSeconds(20));
+
+        try
+        {
+            using var body = new StringContent(
+                System.Text.Json.JsonSerializer.Serialize(new ResolveLinkRequest(url), ApiJsonContext.Default.ResolveLinkRequest),
+                System.Text.Encoding.UTF8, "application/json");
+            using var response = await http.PostAsync("v1/links/resolve", body, timeout.Token);
+            // As for a submit: a link the worker cannot read is the user's link, told in our own words.
+            if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
+                return TranscriptionErrors.InvalidLink;
+            if (!response.IsSuccessStatusCode)
+                return TranscriptionErrors.ServiceUnavailable;
+
+            // The route's fields are specified in snake_case while the worker's models emit camelCase, so
+            // either spelling is read.
+            using var doc = await System.Text.Json.JsonDocument.ParseAsync(
+                await response.Content.ReadAsStreamAsync(timeout.Token), cancellationToken: timeout.Token);
+            var root = doc.RootElement;
+            return new SourceDto(
+                Text(root, "provider") ?? "",
+                Text(root, "url") ?? url,
+                Text(root, "title") ?? "",
+                Text(root, "artist") ?? "",
+                Text(root, "thumbnailUrl", "thumbnail_url"),
+                DurationSeconds: Number(root, "durationSeconds", "duration_seconds"));
+        }
+        catch (HttpRequestException)
+        {
+            return TranscriptionErrors.ServiceUnavailable;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            return TranscriptionErrors.ServiceUnavailable;
+        }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return TranscriptionErrors.ServiceUnavailable;
+        }
+    }
+
+    private static string? Text(System.Text.Json.JsonElement root, params string[] names)
+    {
+        foreach (var name in names)
+            if (root.TryGetProperty(name, out var value) && value.ValueKind == System.Text.Json.JsonValueKind.String)
+                return value.GetString();
+        return null;
+    }
+
+    private static double? Number(System.Text.Json.JsonElement root, params string[] names)
+    {
+        foreach (var name in names)
+            if (root.TryGetProperty(name, out var value) && value.ValueKind == System.Text.Json.JsonValueKind.Number)
+                return value.GetDouble();
+        return null;
     }
 
     /// <summary>The form fields every submit shares: options, lane, and the completion callback.</summary>
@@ -357,5 +423,7 @@ internal sealed class TranscriptionApiClient(HttpClient http, Microsoft.Extensio
     }
 
     private static SourceDto? MapSource(WireSource? source)
-        => source is null ? null : new SourceDto(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl, source.Preview, source.Notice);
+        => source is null ? null : new SourceDto(
+            source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl, source.Preview, source.Notice,
+            source.StartSeconds, source.EndSeconds, source.DurationSeconds);
 }

@@ -88,6 +88,27 @@ export interface TranscriptionSource {
   /** True when the store's 30-second preview stood in for the full song; `notice` says so. */
   preview?: boolean | null;
   notice?: string | null;
+  /** The section the user chose, in seconds from the start of the song; absent when they took the first part. */
+  startSeconds?: number | null;
+  endSeconds?: number | null;
+  /** The whole song's length in seconds, when the service knew it. */
+  durationSeconds?: number | null;
+}
+
+/**
+ * What a pasted link points at before anything is transcribed, so the app can show the song and let
+ * the user pick a section of it. `maxSeconds` is the most of the song this account may have in one go
+ * (a free account's minute, Pro's six); `durationSeconds` is null when the length is not known.
+ * Mirrors the C# LinkInfoDto.
+ */
+export interface LinkInfo {
+  provider: "youtube" | "spotify" | "apple_music" | string;
+  url: string;
+  title: string;
+  artist: string;
+  thumbnailUrl?: string | null;
+  durationSeconds: number | null;
+  maxSeconds: number;
 }
 
 export interface TranscriptionResult {

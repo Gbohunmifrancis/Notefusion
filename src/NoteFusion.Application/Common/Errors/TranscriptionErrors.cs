@@ -1,3 +1,4 @@
+using NoteFusion.Application.Transcriptions;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Common.Errors;
@@ -21,6 +22,20 @@ public static class TranscriptionErrors
     public static readonly Error InvalidLink =
         Error.Validation("TRANS_INVALID_LINK",
             "Paste a link to a YouTube video, a Spotify track or an Apple Music song.");
+
+    public static readonly Error SectionStartsBeforeTheSong =
+        Error.Validation("TRANS_INVALID_SECTION", "The section must start at 0:00 or later.");
+
+    public static readonly Error SectionEndsBeforeItStarts =
+        Error.Validation("TRANS_INVALID_SECTION", "The section must end after it starts.");
+
+    /// <summary>The section starts at or past the song's end (or at no finite time at all).</summary>
+    public static readonly Error SectionOutsideTheSong =
+        Error.Validation("TRANS_INVALID_SECTION", "Pick a section within the song.");
+
+    /// <summary>The chosen section is longer than this caller may have in one go; <paramref name="maxSeconds"/> is that allowance.</summary>
+    public static Error SectionTooLong(double maxSeconds) =>
+        Error.Validation("TRANS_SECTION_TOO_LONG", $"Pick up to {SongSections.Clock(maxSeconds)} of the song.");
 
     public static readonly Error InvalidKeyboardTranspose =
         Error.Validation("TRANS_INVALID_KEYBOARD_TRANSPOSE",

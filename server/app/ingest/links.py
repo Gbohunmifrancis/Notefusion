@@ -13,8 +13,9 @@ Metadata comes from the platforms' official endpoints (YouTube and Spotify oEmbe
 iTunes lookup API) or the page's Open Graph tags: no API keys, no scraping of signed-in
 pages, and it works even where the download does not.
 
-Audio comes through ``yt-dlp``, audio-only, capped in length, transcoded by ffmpeg to the
-WAV the pipeline wants, and deleted with the job like every other upload.  YouTube rate
+Audio comes through ``yt-dlp``, audio-only, the section the user chose (or the first
+allowance of the song) and no more, transcoded by ffmpeg to the WAV the pipeline wants,
+and deleted with the job like every other upload.  YouTube rate
 limits and sometimes refuses datacenter addresses outright ("Sign in to confirm you're
 not a bot"); ``NF_YTDLP_COOKIES_FILE`` and ``NF_YTDLP_EXTRA_ARGS`` (a proof-of-origin
 token provider, a proxy) exist for that.  When YouTube still refuses, the store's official
@@ -30,11 +31,13 @@ import shlex
 import shutil
 import subprocess
 import tempfile
+import threading
+import time
 import urllib.parse
 import urllib.request
 from collections.abc import Iterator
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import NamedTuple
 
@@ -70,6 +73,13 @@ class FetchedAudio(NamedTuple):
     song_seconds: float
     # True when YouTube refused and the store's 30-second preview was used instead.
     preview: bool = False
+    # The section of the song that was kept, when the caller chose one and the song itself
+    # was fetched (a preview has no position in the song, so neither is set then).
+    start_seconds: float | None = None
+    end_seconds: float | None = None
+    # Only part of what was asked for is in ``path``: the chosen section (the whole song
+    # when none was chosen) outlasted ``max_seconds``, or a preview stood in.
+    truncated: bool = False
 
 
 _VIDEO_ID = re.compile(r"^[A-Za-z0-9_-]{11}$")
@@ -321,22 +331,72 @@ def _resolve_apple(url: str) -> Source:
     return Source("apple_music", url, title, artist, _meta(page, "og:image") or None)
 
 
+#: How long a resolved link is remembered.  The clients ask what a link is the moment it
+#: is pasted and submit it shortly after, so the job resolves nothing twice and, for a
+#: YouTube video, downloads from the details the resolve already read.
+RESOLVE_CACHE_SECONDS = 600.0
+
+
+@dataclass
+class _Cached:
+    source: Source
+    # yt-dlp's ``-J`` output for the YouTube video, for the download to run from: None
+    # until asked for, "" when asking failed (so the resolve does not ask again).
+    info_json: str | None = None
+    expires: float = 0.0
+
+
+_cache: dict[str, _Cached] = {}
+_cache_lock = threading.Lock()
+
+
+def _cache_get(key: str | None) -> _Cached | None:
+    if not key:
+        return None
+    with _cache_lock:
+        entry = _cache.get(key)
+        if entry is not None and entry.expires <= time.monotonic():
+            del _cache[key]
+            return None
+        return entry
+
+
+def _cache_put(entry: _Cached, *keys: str | None) -> None:
+    now = time.monotonic()
+    entry.expires = now + RESOLVE_CACHE_SECONDS
+    with _cache_lock:
+        for stale in [k for k, e in _cache.items() if e.expires <= now]:
+            del _cache[stale]
+        for key in keys:
+            if key:
+                _cache[key] = entry
+
+
 def resolve_source(text: str) -> Source:
-    """Who and what the (first) link points at.  Raises ``LinkError`` for anything unusable."""
+    """Who and what the (first) link points at.  Raises ``LinkError`` for anything unusable.
+
+    Remembered for ``RESOLVE_CACHE_SECONDS`` under the pasted and the canonical address.
+    """
     provider = provider_of(text)
     if provider is None:
         raise LinkError("That link is not a YouTube video, Spotify track or Apple Music song.")
     url = extract_url(text)
+    cached = _cache_get(url)
+    if cached is not None:
+        return cached.source
     try:
         if provider == "youtube":
-            return _resolve_youtube(url)
-        if provider == "spotify":
-            return _resolve_spotify(url)
-        return _resolve_apple(url)
+            source = _resolve_youtube(url)
+        elif provider == "spotify":
+            source = _resolve_spotify(url)
+        else:
+            source = _resolve_apple(url)
     except LinkError:
         raise
     except Exception as exc:  # noqa: BLE001 - network and parse failures all read the same to a user
         raise LinkError("Could not read that link. Check it opens in a browser, or upload the audio file instead.") from exc
+    _cache_put(_Cached(source), url, source.url, source.audio_url)
+    return source
 
 
 # ── Audio ─────────────────────────────────────────────────────────────────────
@@ -463,20 +523,83 @@ def _search_youtube(base: list[str], source: Source) -> str:
     return f"https://www.youtube.com/watch?v={video_id}"
 
 
-def _download_youtube(base: list[str], target: str, max_seconds: float, work: Path,
-                      provider: str) -> tuple[Path, float | None]:
+#: How long yt-dlp may take to read a video's details for the resolve endpoint, which
+#: answers while the user is looking at the link they just pasted.
+_INFO_TIMEOUT = 20.0
+
+
+def _youtube_info(url: str) -> str | None:
+    """yt-dlp's ``-J`` JSON for a video, or None when YouTube would not say in time."""
+    with _ytdlp_args() as base:
+        try:
+            return _run_ytdlp([*base, "-f", _AUDIO_FORMAT, "-J", url], _INFO_TIMEOUT, "youtube").stdout
+        except (_YtdlpFailed, OSError):  # OSError: no yt-dlp on this machine; the link still resolves
+            return None
+
+
+def _info_duration(info_json: str | None) -> float | None:
+    try:
+        return float(json.loads(info_json or "").get("duration") or 0) or None
+    except (ValueError, AttributeError):
+        return None
+
+
+def _window(start: float, end: float | None, song: float | None, max_seconds: float) -> tuple[float, bool]:
+    """``(length, truncated)`` of what is kept from ``start``: up to ``end`` (the song's
+    end when None, and never past it), at most ``max_seconds``.  ``truncated`` says the
+    section asked for was longer than that.  ``song`` is None when the length is unknown.
+    """
+    stop = end if end is not None else song
+    if stop is not None and song is not None:
+        stop = min(stop, song)
+    if stop is None:
+        return max_seconds, False
+    if stop - start < 0.5:
+        raise LinkError("That section starts after the song ends. Pick an earlier start.")
+    return min(stop - start, max_seconds), stop - start > max_seconds + 0.5
+
+
+def _audio_seconds(audio: Path) -> float | None:
+    """The file's length by ffprobe, or None when it will not say."""
+    try:
+        probe = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(audio)],
+            capture_output=True, text=True, timeout=60)
+        return float(probe.stdout.strip()) if probe.returncode == 0 else None
+    except (subprocess.TimeoutExpired, ValueError, OSError):
+        return None
+
+
+class _Downloaded(NamedTuple):
+    path: Path
+    # The whole video's length when YouTube said; None otherwise.
+    song_seconds: float | None
+    # Where in the song the kept window begins and how long it is.
+    start: float
+    length: float
+    # Where in ``path`` the window begins: 0 once a section download has done its job.
+    offset: float
+    truncated: bool
+
+
+def _download_youtube(base: list[str], target: str, max_seconds: float, work: Path, source: Source,
+                      start: float = 0.0, end: float | None = None) -> _Downloaded:
     """The video's audio file and its length, from one YouTube extraction.
 
-    ``-J`` reads the video's details (length included) once; the download then runs from
-    that info file instead of asking YouTube again, which halves what the server asks for.
+    ``-J`` reads the video's details (length included) once — or not at all, when the
+    resolve endpoint already did for this link — and the download runs from that info
+    file instead of asking YouTube again.  The chosen section, or the first allowance of
+    a long video, is downloaded on its own (``--download-sections``), so a long video
+    never costs a long download; ffmpeg then cuts the exact window.
     """
-    info = _run_ytdlp([*base, "-f", _AUDIO_FORMAT, "-J", target], 60, provider)
-    try:
-        duration = float(json.loads(info.stdout).get("duration") or 0) or None
-    except (ValueError, AttributeError):
-        duration = None
+    cached = _cache_get(target)
+    info_json = cached.info_json if cached is not None and cached.info_json else None
+    if info_json is None:
+        info_json = _run_ytdlp([*base, "-f", _AUDIO_FORMAT, "-J", target], 60, source.provider).stdout
+    duration = _info_duration(info_json)
+    length, truncated = _window(start, end, duration if duration is not None else source.duration, max_seconds)
     info_path = work / "info.json"
-    info_path.write_text(info.stdout, encoding="utf-8")
+    info_path.write_text(info_json, encoding="utf-8")
     args = [
         *base,
         "-f", _AUDIO_FORMAT,
@@ -484,19 +607,22 @@ def _download_youtube(base: list[str], target: str, max_seconds: float, work: Pa
         "-o", str(work / "audio.%(ext)s"),
         "--load-info-json", str(info_path),
     ]
-    # ``--download-sections`` asks the downloader for only the first ``max_seconds``,
-    # which keeps a long video from costing a long download; ffmpeg enforces it
-    # exactly either way.
-    if duration is not None and duration > max_seconds:
-        args += ["--download-sections", f"*0-{int(max_seconds) + 2}", "--force-keyframes-at-cuts"]
+    section = start > 0 or (duration is not None and start + length < duration)
+    if section:
+        # Two seconds past the window: the downloader cuts on frames, ffmpeg cuts exactly.
+        args += ["--download-sections", f"*{start:.2f}-{start + length + 2:.2f}", "--force-keyframes-at-cuts"]
     try:
-        _run_ytdlp(args, 300, provider)
+        _run_ytdlp(args, 300, source.provider)
     finally:
         info_path.unlink(missing_ok=True)
     downloaded = sorted(p for p in work.iterdir() if p.name.startswith("audio."))
     if not downloaded:
         raise _YtdlpFailed("Could not fetch audio from that link. Upload the audio file instead.")
-    return downloaded[0], duration
+    # The safety net: a download that came back whole (the section not honoured) is cut
+    # from ``start`` by ffmpeg instead.
+    got = _audio_seconds(downloaded[0]) if start > 0 else None
+    offset = start if got is not None and got > length + 3 else 0.0
+    return _Downloaded(downloaded[0], duration, start, length, offset, truncated)
 
 
 def _norm(text: str) -> str:
@@ -538,11 +664,12 @@ def _download_preview(url: str, work: Path) -> Path:
     return target
 
 
-def _to_wav(audio: Path, max_seconds: float, work: Path) -> Path:
+def _to_wav(audio: Path, max_seconds: float, work: Path, offset: float = 0.0) -> Path:
+    """``max_seconds`` of ``audio`` from ``offset`` seconds in, as the pipeline's WAV."""
     wav = work / "song.wav"
     ffmpeg = subprocess.run(
         [
-            "ffmpeg", "-y", "-v", "error", "-i", str(audio),
+            "ffmpeg", "-y", "-v", "error", *(["-ss", f"{offset:.3f}"] if offset > 0 else []), "-i", str(audio),
             "-t", f"{max_seconds:.2f}", "-ac", "2", "-ar", "44100", "-f", "wav", str(wav),
         ],
         capture_output=True, text=True, timeout=300,
@@ -571,25 +698,58 @@ def _preview_fallback(source: Source, failure: _YtdlpFailed, max_seconds: float,
         wav = _to_wav(_download_preview(preview_url, work), max_seconds, work)
     except Exception:  # noqa: BLE001 - the user is told why YouTube failed, not why the preview did
         raise failure from None
-    return FetchedAudio(wav, round(float(duration or 0.0), 1), preview=True)
+    return FetchedAudio(wav, round(float(duration or 0.0), 1), preview=True, truncated=True)
 
 
-def fetch_audio(source: Source, max_seconds: float, work_dir: Path | None = None) -> FetchedAudio:
-    """The source's audio (first ``max_seconds``) as a 44.1 kHz stereo WAV.
+def fetch_audio(source: Source, max_seconds: float, work_dir: Path | None = None,
+                start_seconds: float = 0.0, end_seconds: float | None = None) -> FetchedAudio:
+    """The source's audio as a 44.1 kHz stereo WAV: from ``start_seconds`` to
+    ``end_seconds`` (the song's end when None), at most ``max_seconds`` of it.
 
     The caller owns the file and its folder.  A Spotify or Apple Music source is found on
     YouTube by title, artist and length.  When YouTube refuses, the store's 30-second
-    preview stands in and ``preview`` says so.
+    preview stands in and ``preview`` says so; a preview has no position in the song, so
+    the section is not applied to it.
     """
+    start_seconds = max(0.0, float(start_seconds or 0.0))
+    chosen = start_seconds > 0 or end_seconds is not None
     work = Path(tempfile.mkdtemp(prefix="nf_link_", dir=str(work_dir) if work_dir else None))
     try:
         with _ytdlp_args() as base:
             try:
                 target = source.audio_url or _search_youtube(base, source)
-                audio, duration = _download_youtube(base, target, max_seconds, work, source.provider)
+                got = _download_youtube(base, target, max_seconds, work, source, start_seconds, end_seconds)
             except _YtdlpFailed as failure:
                 return _preview_fallback(source, failure, max_seconds, work)
-        return FetchedAudio(_to_wav(audio, max_seconds, work), float(duration or source.duration or 0.0))
+        wav = _to_wav(got.path, got.length, work, got.offset)
+        return FetchedAudio(wav, float(got.song_seconds or source.duration or 0.0),
+                            start_seconds=got.start if chosen else None,
+                            end_seconds=round(got.start + got.length, 2) if chosen else None,
+                            truncated=got.truncated)
     except BaseException:
         shutil.rmtree(work, ignore_errors=True)
         raise
+
+
+# ── Resolving for the clients ─────────────────────────────────────────────────
+
+
+def resolve_link(text: str) -> Source:
+    """``resolve_source`` plus the song's length, for the clients' section picker.
+
+    Spotify and Apple Music say how long a song is; YouTube's oEmbed does not, so the
+    video's details are read with yt-dlp (``-J``, within ``_INFO_TIMEOUT``) and kept with
+    the cached link, where the job's download picks them up instead of asking YouTube
+    again.  When YouTube will not say, the length is None and the link still resolves:
+    the clients then offer the first part of the song.
+    """
+    source = resolve_source(text)
+    entry = _cache_get(source.url)
+    if source.provider != "youtube" or source.duration is not None or entry is None or entry.info_json is not None:
+        return source
+    info_json = _youtube_info(source.audio_url or source.url)
+    entry.info_json = info_json or ""
+    duration = _info_duration(info_json)
+    if duration is not None:
+        entry.source = source = replace(source, duration=duration)
+    return source

@@ -41,6 +41,15 @@ public sealed record TranscribeOptions
     public double? MaxSeconds { get; init; }
 
     /// <summary>
+    /// Linked songs only: where in the song to start, in seconds. Null (or 0) is the start. The part
+    /// transcribed runs from here for <see cref="EndSeconds"/> or <see cref="MaxSeconds"/>, whichever is less.
+    /// </summary>
+    public double? StartSeconds { get; init; }
+
+    /// <summary>Linked songs only: where in the song to stop, in seconds; null runs to the cap.</summary>
+    public double? EndSeconds { get; init; }
+
+    /// <summary>
     /// Also write alto, tenor and bass under the tune. Off by default: a hummed or sung line is one
     /// voice, and parts composed under it are an arrangement the user asks for afterwards
     /// (<see cref="ITranscriptionApi.HarmoniseAsync"/>), not something the recording contained.
@@ -99,7 +108,9 @@ public sealed record HarmonyDto(IReadOnlyDictionary<string, PartDto>? Parts, str
 /// <summary>
 /// The song a linked transcription came from — the acknowledgement line and the sheet's credit.
 /// <c>Preview</c> is set when the store's 30-second preview stood in for the full song (YouTube refused
-/// it); <c>Notice</c> is the plain sentence the clients show for that.
+/// it); <c>Notice</c> is the plain sentence the clients show for that. <c>StartSeconds</c> and
+/// <c>EndSeconds</c> are the section the user chose, when they chose one, and <c>DurationSeconds</c> the
+/// whole song's length when the service knew it — the credit line reads "1:05–1:35 of 3:33".
 /// </summary>
 public sealed record SourceDto(
     string Provider,
@@ -108,7 +119,28 @@ public sealed record SourceDto(
     string Artist,
     string? ThumbnailUrl,
     bool? Preview = null,
-    string? Notice = null);
+    string? Notice = null,
+    double? StartSeconds = null,
+    double? EndSeconds = null,
+    double? DurationSeconds = null);
+
+/// <summary>
+/// What a pasted link points at, before anything is transcribed: the song and its length, so the client
+/// can offer a section of it, and <c>MaxSeconds</c>, the most of it this caller may have in one go — an
+/// anonymous preview's half minute, a free account's minute, Pro's six.
+/// </summary>
+public sealed record LinkInfoDto(
+    string Provider,
+    string Url,
+    string Title,
+    string Artist,
+    string? ThumbnailUrl,
+    double? DurationSeconds,
+    double MaxSeconds)
+{
+    public static LinkInfoDto From(SourceDto source, double maxSeconds)
+        => new(source.Provider, source.Url, source.Title, source.Artist, source.ThumbnailUrl, source.DurationSeconds, maxSeconds);
+}
 
 /// <summary>
 /// One chord heard under the tune, over a run of beats. <c>Root</c> and <c>Bass</c> are pitch classes

@@ -229,9 +229,12 @@ export function useJobPolling() {
     return null;
   }, []);
 
-  /** A song behind a link. Same lifecycle as `start`; the worker reports its stages. */
+  /**
+   * A song behind a link, or the section of it in `opts.startSeconds`/`endSeconds`. Same
+   * lifecycle as `start`; the worker reports its stages.
+   */
   const startLink = useCallback(
-    async (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose">) => {
+    async (url: string, opts: Parameters<typeof transcriptionsApi.submitLink>[1]) => {
       stopPolling();
       setState({
         status: "pending",

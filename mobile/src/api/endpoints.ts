@@ -16,6 +16,7 @@ import type {
   GradeResult,
   GradeTarget,
   HarmonisedSheet,
+  LinkInfo,
   LoginResponse,
   MyProfile,
   NoteEvent,
@@ -252,16 +253,37 @@ export const transcriptionsApi = {
       .then((r) => r.data),
 
   /**
+   * What a pasted link points at — title, artist, artwork, length — and how much of
+   * the song this account may transcribe in one go. Costs nothing; asked as soon as a
+   * pasted value is a song link, so the section picker can be drawn before submitting.
+   */
+  linkInfo: (url: string) =>
+    api.post<LinkInfo>("/api/transcriptions/link/info", { url }, { timeout: 30_000 }).then((r) => r.data),
+
+  /**
    * A song behind a YouTube, Spotify or Apple Music link. The worker fetches the
    * audio, isolates the lead vocal and transcribes it; the job carries the song's
    * title and artist as soon as the link resolves. Pro gets six minutes in the fast
-   * lane; a free account gets one sixty-second preview.
+   * lane; a free account gets one sixty-second preview. `startSeconds` / `endSeconds`
+   * name the section the user chose; left out, the first part of the song is taken.
    */
-  submitLink: (url: string, opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose">) =>
+  submitLink: (
+    url: string,
+    opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose"> & { startSeconds?: number; endSeconds?: number },
+  ) =>
     api
       .post<TranscriptionJob>(
         "/api/transcriptions/link",
-        { url, mode: opts.mode, key: opts.key, tempo: opts.tempo, keyboardTranspose: opts.keyboardTranspose || undefined, audioPreview: false },
+        {
+          url,
+          mode: opts.mode,
+          key: opts.key,
+          tempo: opts.tempo,
+          keyboardTranspose: opts.keyboardTranspose || undefined,
+          audioPreview: false,
+          startSeconds: opts.startSeconds,
+          endSeconds: opts.endSeconds,
+        },
         { timeout: 30_000 },
       )
       .then((r) => r.data),

@@ -495,6 +495,9 @@ public class TranscriptionCompletionTests
                 new TranscriptionJobDto(jobId, Status, done ? 1d : 0.4d, done ? Finished : null, FailureReason)));
         }
 
+        public Task<Result<SourceDto>> ResolveLinkAsync(string url, CancellationToken ct = default)
+            => Task.FromResult(Result<SourceDto>.Success(new SourceDto("youtube", url, "Way Maker", "Sinach", null)));
+
         public Task<Result<int>> PingAsync(CancellationToken ct = default)
             => Task.FromResult(Result<int>.Success(1));
     }
