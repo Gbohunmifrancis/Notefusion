@@ -16,6 +16,8 @@ jobs:
           script: |
             echo "== host"; uptime; nproc; free -m; df -h / | tail -1
             echo "== instance"; TOKEN=$(curl -s -m 2 -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 60"); curl -s -m 2 -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-type; echo
+            for k in instance-id placement/region public-ipv4 local-ipv4 iam/info; do printf "%s: " "$k"; curl -s -m 2 -H "X-aws-ec2-metadata-token: $TOKEN" "http://169.254.169.254/latest/meta-data/$k" | head -c 300; echo; done
+            echo "== tools"; command -v aws || echo "no aws cli"; lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | head -8
             echo "== top"; top -bn1 | head -15
             echo "== containers"; docker ps -a
             echo "== stats"; docker stats --no-stream
