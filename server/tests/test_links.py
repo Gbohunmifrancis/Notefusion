@@ -658,3 +658,23 @@ def test_job_response_carries_stage_and_source(monkeypatch):
         body = c.get("/v1/jobs/abc").json()
     assert body["stage"] == "separating"
     assert body["source"] == {"provider": "youtube", "url": "u", "title": "T", "artist": "A"}
+
+
+def test_job_response_carries_the_preview_marking(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.jobs.queue import STATUS_DONE, Job
+    from app.main import app
+
+    source = {**queue_mod._source_dict(_song()), "preview": True, "notice": links.PREVIEW_NOTICE}
+    job = Job(id="abc", status=STATUS_DONE, progress=1.0, source=source)
+
+    class FakeQueue:
+        def get(self, job_id):
+            return job
+
+    monkeypatch.setattr("app.api.routes._get_queue", lambda request: FakeQueue())
+    with TestClient(app) as c:
+        body = c.get("/v1/jobs/abc").json()
+    assert body["source"]["preview"] is True
+    assert body["source"]["notice"] == "Only a 30-second preview was available for this song."

@@ -36,6 +36,10 @@ class SourceDto(ApiModel):
     title: str
     artist: str
     thumbnail_url: str | None = None
+    # Set only when YouTube refused the song and the store's 30-second preview stood in
+    # (the result is then ``truncated`` too); ``notice`` is the plain sentence to show.
+    preview: bool | None = None
+    notice: str | None = None
 
 
 class PartDto(ApiModel):
