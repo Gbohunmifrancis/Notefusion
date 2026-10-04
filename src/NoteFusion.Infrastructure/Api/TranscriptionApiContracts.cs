@@ -51,7 +51,9 @@ internal sealed record JobResponse(
     /// Human-readable failure reason set by the Python worker (LowConfidenceError or
     /// unexpected exception).  Null when the job is still running or succeeded.
     /// </summary>
-    string? Error);
+    string? Error,
+    /// <summary>How many jobs run before this one; only while <c>Stage</c> is <c>queued</c>.</summary>
+    int? QueuePosition = null);
 
 internal sealed record JobResultResponse(
     string Key,

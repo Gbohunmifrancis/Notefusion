@@ -238,8 +238,9 @@ public sealed record TranscriptionResultDto(
 /// Polling envelope for a transcription job.
 ///
 /// <para>
-/// <c>Stage</c> is <c>fetching</c>, <c>separating</c> or <c>transcribing</c> while a linked song is in
-/// flight, and <c>Source</c> is known as soon as the link resolves — before the result exists — so a
+/// <c>Stage</c> is <c>queued</c> while the job waits for a worker (<c>QueuePosition</c> says how many
+/// run before it), then <c>fetching</c>, <c>separating</c> or <c>transcribing</c> while it runs
+/// (uploads skip <c>fetching</c>), and <c>Source</c> is known as soon as the link resolves — before the result exists — so a
 /// client can show what is being transcribed while it waits.
 /// </para>
 ///
@@ -257,4 +258,5 @@ public sealed record TranscriptionJobDto(
     TranscriptionResultDto? Result,
     string? Error = null,
     string? Stage = null,
-    SourceDto? Source = null);
+    SourceDto? Source = null,
+    int? QueuePosition = null);

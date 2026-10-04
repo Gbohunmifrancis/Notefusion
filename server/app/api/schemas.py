@@ -187,8 +187,11 @@ class GradeResponse(ApiModel):
 class JobResponse(ApiModel):
     status: str
     progress: float | None = None
-    # ``fetching`` | ``separating`` | ``transcribing`` while a linked song is in flight.
+    # ``queued`` while the job waits for a worker, then ``fetching`` | ``separating`` |
+    # ``transcribing`` while it runs (uploads skip ``fetching``).
     stage: str | None = None
+    # How many jobs run before this one; only while ``stage`` is ``queued``.
+    queue_position: int | None = None
     # Known as soon as the link resolves, before ``result`` exists.
     source: SourceDto | None = None
     result: ResultDto | None = None
