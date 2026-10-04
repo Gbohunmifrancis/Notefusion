@@ -9,7 +9,7 @@
   "use strict";
 
   var URL_IN_TEXT = /https?:\/\/[^\s<>"]+/i;
-  var TRAILING = /[.,;:!?'")\]}>»”’]+$/;
+  var TRAILING = /[.,;:!?'")\]}>»”’…]+$/;
   var VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
 
   /** The first http(s) link in the text, with sentence punctuation trimmed off its end; or null. */
@@ -24,18 +24,19 @@
     var host = u.hostname.toLowerCase(), parts = u.pathname.split("/").filter(Boolean);
     if (host === "youtu.be" || host === "www.youtu.be") return parts[0] && VIDEO_ID.test(parts[0]) ? "youtube" : null;
     if (host === "youtube.com" || /\.youtube\.com$/.test(host)) {
-      if (parts[0] === "watch") return VIDEO_ID.test(u.searchParams.get("v") || "") ? "youtube" : null;
-      if (["shorts", "live", "embed"].indexOf(parts[0]) >= 0) return parts[1] && VIDEO_ID.test(parts[1]) ? "youtube" : null;
+      if (parts.length === 1 && parts[0] === "watch") return VIDEO_ID.test(u.searchParams.get("v") || "") ? "youtube" : null;
+      if (["shorts", "live", "embed", "v"].indexOf(parts[0]) >= 0) return parts[1] && VIDEO_ID.test(parts[1]) ? "youtube" : null;
       return null;
     }
     if (host === "open.spotify.com") {
-      var at = /^intl-[a-z]{2}(-[a-z]{2})?$/i.test(parts[0] || "") ? 1 : 0;
-      return parts[at] === "track" && /^[A-Za-z0-9]+$/.test(parts[at + 1] || "") ? "spotify" : null;
+      var at = /^intl-[A-Za-z-]+$/.test(parts[0] || "") ? 1 : 0;
+      return parts.length === at + 2 && parts[at] === "track" && /^[A-Za-z0-9]+$/.test(parts[at + 1]) ? "spotify" : null;
     }
     if (host === "spotify.link" || host === "spotify.app.link") return parts[0] ? "spotify" : null;
     if (host === "music.apple.com" || host === "geo.music.apple.com") {
-      if (!/^[a-z]{2}$/i.test(parts[0] || "")) return null;
-      if (parts[1] === "song") return /^\d+$/.test(parts[parts.length - 1] || "") ? "apple_music" : null;
+      // /<country>/(song|album)/<slug>/<id>, the slug sometimes missing.
+      if (parts.length < 3) return null;
+      if (parts[1] === "song") return /^\d+$/.test(parts[parts.length - 1]) ? "apple_music" : null;
       if (parts[1] === "album") return /^\d+$/.test(u.searchParams.get("i") || "") ? "apple_music" : null;
       return null;
     }
