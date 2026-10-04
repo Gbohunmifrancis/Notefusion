@@ -1486,6 +1486,14 @@ class TestOneNotePerSlot:
         assert [(o, p) for o, p, _ in out] == [(0.0, 60), (1.5, 62), (2.0, 64), (4.0, 65)]
         assert out[0][0] + out[0][2] <= 1.5
 
+    def test_a_note_is_moved_rather_than_lost_when_a_slot_is_free(self):
+        # 65 69 65 69 sung, the quick 69-65 rounding onto one slot: moving the 69 back
+        # cuts the 65 before it by half a beat, which must still be cheaper than losing
+        # the second 65 to a fold (the sheet would then show a false repeated 69).
+        out = self._run([(1.0, 65, 1.0), (2.01, 69, 0.5), (2.24, 65, 0.5), (2.5, 69, 1.0)])
+        assert [(o, p) for o, p, _ in out] == [(1.0, 65), (1.5, 69), (2.0, 65), (2.5, 69)]
+        assert out[0][2] == 0.5
+
     def test_with_no_free_slot_the_shorter_note_is_folded_in(self):
         # Every slot around the clash is taken: a wide vibrato read as alternating notes.
         out = self._run([(0.0, 60, 0.5), (0.5, 61, 0.5), (1.0, 61, 0.5), (1.1, 63, 0.25), (1.5, 61, 0.5)])

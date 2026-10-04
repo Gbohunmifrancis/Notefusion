@@ -3088,7 +3088,8 @@ def _segment_vocal(
     if floor_midi is not None and post is not None:
         midi, strength = post.melody_track(floor_midi, raw.times)
         raw = vocal.Contour(
-            times=raw.times, midi=midi, voiced_prob=strength, rms=raw.rms, rms_fast=raw.rms_fast
+            times=raw.times, midi=midi, voiced_prob=strength, rms=raw.rms, rms_fast=raw.rms_fast,
+            onset=raw.onset,
         )
         distinct = np.unique(np.round(midi[~np.isnan(midi)]))
         if distinct.size < MELODY_FLOOR_MIN_DISTINCT_PITCHES:
@@ -4381,7 +4382,11 @@ def _one_note_per_slot(s, step: float, heard_at: dict[int, float]) -> None:
     it was heard, ``heard_at``, times its length, so a quick ornament gives way to the
     note it leads into).  With neither neighbour free there are more notes than the grid
     has room for, typically a wide vibrato read as alternating notes, and the shorter
-    note is folded into the longer.  Notes are never pushed along a run: pushing each
+    note is folded into the longer.  A fold is priced at the vanishing note's length and
+    a step more, so it never ties with a move: priced at the length alone, a half-beat
+    note lost cost the same as a neighbour cut by half a beat, and the sung corpus's
+    amazing_grace (read at half its tempo) lost a true note to a false repeat.  Notes are
+    never pushed along a run: pushing each
     clash forward, or spreading a crowded stretch over the slots around it, smeared
     whole phrases off the beat (real-song frame accuracy 0.586 and 0.596, against 0.603
     for this and 0.613 with the notes left stacked).
@@ -4427,7 +4432,7 @@ def _one_note_per_slot(s, step: float, heard_at: dict[int, float]) -> None:
         if earlier_free:
             cost["earlier"] = (float(last.quarterLength) * abs(slot - step - heard_at.get(id(last), slot))
                                + (max(0.0, end(before) - (slot - step)) if before is not None else 0.0))
-        cost["fold"] = float(min(n.quarterLength, last.quarterLength))  # last: a tie moves a note
+        cost["fold"] = float(min(n.quarterLength, last.quarterLength)) + step
         choice = min(cost, key=cost.get)
         if choice == "later":
             last.quarterLength = min(float(last.quarterLength), step)
