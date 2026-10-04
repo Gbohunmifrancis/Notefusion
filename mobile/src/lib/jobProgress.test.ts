@@ -77,6 +77,22 @@ test("try again is offered after twelve minutes without a finish", () => {
   assert.equal(canRetry(null, start + RETRY_AFTER_MS * 2), false);
 });
 
+test("an upload that has sent every byte and hears nothing back counts as stalled", () => {
+  const t0 = 2_000_000;
+  let mark = markProgress(null, "uploading", 0, t0);
+  // Bytes leaving the phone restart the clock each time the figure moves.
+  mark = markProgress(mark, "uploading", 0.5, t0 + 10_000);
+  mark = markProgress(mark, "uploading", 1, t0 + 20_000);
+  assert.equal(mark.changedAt, t0 + 20_000);
+  assert.equal(isStalled(mark, t0 + 20_000 + STALLED_AFTER_MS - 1), false);
+  // The same 100% again is not movement: the server has not answered.
+  assert.equal(markProgress(mark, "uploading", 1, t0 + 60_000), mark);
+  assert.equal(isStalled(mark, t0 + 20_000 + STALLED_AFTER_MS), true);
+  // The server's answer is a new stage at the worker's own figure, so the clock restarts.
+  const answered = markProgress(null, "queued", 0, t0 + 200_000);
+  assert.equal(isStalled(answered, t0 + 200_000 + 1_000), false);
+});
+
 test("offline after three failed polls in a row", () => {
   assert.equal(OFFLINE_AFTER_FAILED_POLLS, 3);
   assert.equal(isOffline(0), false);

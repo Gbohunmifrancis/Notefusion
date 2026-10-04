@@ -100,6 +100,8 @@ export function useJobPolling() {
 
   const finish = useCallback((job: any, fallback: string) => {
     const status = normalizeStatus(job.status);
+    // Whatever clock was running — the upload's or the poll's — has nothing left to measure.
+    stopPolling();
     setState({
       ...IDLE,
       status,
@@ -108,7 +110,7 @@ export function useJobPolling() {
       error: status === "failed" ? safeReason(job.error, fallback) : null,
       source: job.source ?? job.result?.source ?? null,
     });
-  }, []);
+  }, [stopPolling]);
 
   /**
    * Progress over HTTP while the job runs. SignalR only speaks at the end, and a
@@ -164,6 +166,30 @@ export function useJobPolling() {
     };
     pollTimer.current = setTimeout(tick, POLL_MS);
   }, [stopPolling, finish]);
+
+  /**
+   * The clocks while the file is still leaving the phone. There is no job to poll yet, but
+   * the bytes can all be sent long before the API answers — on a busy server that answer
+   * is what takes the time — and the card would otherwise sit at "100%" without a word.
+   * Stops when the server answers (`track` replaces it), on failure, reset and unmount.
+   */
+  const tickUploadClocks = useCallback(
+    (token: number) => {
+      stopPolling();
+      const tick = () => {
+        if (startedAt.current !== token) return;
+        const now = Date.now();
+        setState((prev) => ({
+          ...prev,
+          stalled: isStalled(markRef.current, now),
+          canRetry: canRetry(startedAt.current, now),
+        }));
+        pollTimer.current = setTimeout(tick, POLL_MS);
+      };
+      pollTimer.current = setTimeout(tick, POLL_MS);
+    },
+    [stopPolling],
+  );
 
   useEffect(() => {
     let active = true;
@@ -235,7 +261,10 @@ export function useJobPolling() {
         const inlineStatus =
           typeof res !== "string" ? normalizeStatus(res.status) : "pending";
 
-        if (typeof res !== "string" && inlineStatus === "done" && res.result) {
+        if (
+          typeof res !== "string" &&
+          ((inlineStatus === "done" && res.result) || inlineStatus === "failed")
+        ) {
           finish(res, "Transcription failed — please try again.");
           return jobId;
         }
@@ -263,6 +292,7 @@ export function useJobPolling() {
 
   const fail = useCallback((e: unknown) => {
     const err = toApiError(e);
+    stopPolling();
     setState({
       ...IDLE,
       status: "failed",
@@ -271,7 +301,7 @@ export function useJobPolling() {
     });
     activeJobId.current = null;
     return null;
-  }, []);
+  }, [stopPolling]);
 
   /** Opens a fresh wait: the clocks start, nothing counted against the last job carries over. */
   const begin = useCallback(
@@ -295,9 +325,14 @@ export function useJobPolling() {
     async (url: string, opts: Parameters<typeof transcriptionsApi.submitLink>[1]) => {
       lastSubmit.current = { kind: "link", url, opts };
       begin("queued");
+      const token = startedAt.current;
       try {
-        return track(await transcriptionsApi.submitLink(url, opts));
+        const res = await transcriptionsApi.submitLink(url, opts);
+        // Reset, resubmitted or unmounted while the link was being sent: this answer is nobody's.
+        if (startedAt.current !== token) return null;
+        return track(res);
       } catch (e) {
+        if (startedAt.current !== token) return null;
         return fail(e);
       }
     },
@@ -312,15 +347,20 @@ export function useJobPolling() {
     ) => {
       lastSubmit.current = { kind: "upload", fileUri, fileName, opts };
       begin("uploading");
-      const token = startedAt.current;
+      const token = startedAt.current as number;
+      tickUploadClocks(token);
       try {
         const res = await transcriptionsApi.submit(fileUri, fileName, opts, {
           onUploadProgress: (fraction) => {
             // Only while this very upload is the one on screen, and only before the server answered.
             if (startedAt.current !== token) return;
-            setState((prev) =>
-              prev.stage === "uploading" ? { ...prev, progress: Math.max(prev.progress, fraction) } : prev,
-            );
+            setState((prev) => {
+              if (prev.stage !== "uploading") return prev;
+              const progress = Math.max(prev.progress, fraction);
+              // Bytes leaving the phone are movement; the stall clock measures from the last of them.
+              markRef.current = markProgress(markRef.current, "uploading", progress, Date.now());
+              return { ...prev, progress };
+            });
           },
         });
         if (startedAt.current !== token) return null;
@@ -330,7 +370,7 @@ export function useJobPolling() {
         return fail(e);
       }
     },
-    [track, fail, begin],
+    [track, fail, begin, tickUploadClocks],
   );
 
   /**
@@ -357,7 +397,16 @@ export function useJobPolling() {
     setState(IDLE);
   }, [stopPolling]);
 
-  useEffect(() => stopPolling, [stopPolling]);
+  useEffect(
+    () => () => {
+      // Unmounted mid-job: a poll or submit still in flight must not reschedule itself or
+      // bind a job to a screen that is gone. The server finishes the job and pushes as usual.
+      activeJobId.current = null;
+      startedAt.current = null;
+      stopPolling();
+    },
+    [stopPolling],
+  );
 
   return { state, start, startLink, retry, reset };
 }
