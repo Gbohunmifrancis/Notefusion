@@ -865,13 +865,18 @@
     if (kbTranspose() !== 0) body.keyboardTranspose = kbTranspose();
     sendLink(body);
   }
-  /** The link as it was sent, kept so "Try again" on a job that never finishes can send the same again. */
-  function sendLink(body) {
+  /** The link as it was sent, kept so "Try again" on a job that never finishes can send the same again (`again`). */
+  function sendLink(body, again) {
     linkInfo.sending = true; syncLinkSubmit(); hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
+    var following = !!pollTimer, before = current;
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
-      .then(function (job) { clearLinkCard(); $("link-url").value = ""; startJob(job, guest ? "preview" : "link", "link", function () { sendLink(body); }); })
-      .catch(function (err) { explain(err); })
+      .then(function (job) {
+        if (again && doneMeanwhile(before)) return;
+        if (!again) { clearLinkCard(); $("link-url").value = ""; }
+        startJob(job, guest ? "preview" : "link", "link", function () { sendLink(body, true); });
+      })
+      .catch(function (err) { if (following) resetRetry(); explain(err); })
       .finally(function () { linkInfo.sending = false; syncLinkSubmit(); });
   }
 
@@ -921,7 +926,7 @@
       : "You've used all " + total + " songs this month. Hummed tunes, chords and unaccompanied choirs are still free; songs come back next month.";
     show(el);
   }
-  function submitAudio(file, name, fromMic) {
+  function submitAudio(file, name, fromMic, again) {
     var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
     var form = new FormData();
     form.append("audio", file, name);
@@ -938,7 +943,7 @@
     track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : kind === "chords" ? "Chords uploaded" : "Tune uploaded");
     // The recording's own journey up is the first stage on the card, with a real percentage. When a
     // job is still being followed (Try again), that card is left alone and the button carries the count.
-    var following = !!pollTimer;
+    var following = !!pollTimer, before = current;
     if (!following) {
       openProgress("Uploading your recording");
       setStage("uploading", "upload", null);
@@ -949,9 +954,12 @@
       else setPercent(fraction);
     }
     return upload(guest ? "/api/preview" : "/api/transcriptions", form, { anonymous: guest, onProgress: onProgress })
-      .then(function (job) { startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic); }); })
+      .then(function (job) {
+        if (again && doneMeanwhile(before)) return;
+        startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true); });
+      })
       .catch(function (err) {
-        if (following) { $("p-retry-btn").textContent = "Try again"; $("p-retry-btn").disabled = false; }
+        if (following) resetRetry();
         else { hide($("progress")); if (current && current.result) show($("result")); }
         explain(err);
       });
@@ -1019,7 +1027,18 @@
     setPercent(0);
     $("p-status").textContent = "";
     hide($("p-slow")); hide($("p-offline")); hide($("p-retry"));
-    $("p-retry-btn").textContent = "Try again"; $("p-retry-btn").disabled = false;
+    resetRetry();
+  }
+  function resetRetry() { $("p-retry-btn").textContent = "Try again"; $("p-retry-btn").disabled = false; }
+  /**
+   * True when the job that was being followed as a resend went out has finished since: its sheet is
+   * showing and stays; the second copy is not followed. A job that failed meanwhile is replaced.
+   */
+  function doneMeanwhile(before) { return !!(before && current === before && before.result); }
+  /** The stage a snapshot stands in. A job the API still calls pending, with no stage yet, is waiting in line. */
+  function stageOf(job, fallback) {
+    if (job.stage) return job.stage;
+    return String(job.status || "").toLowerCase() === "pending" ? "queued" : fallback;
   }
   function setPercent(fraction) {
     var pct = Math.max(0, Math.min(100, Math.round((fraction || 0) * 100)));
@@ -1037,7 +1056,7 @@
     openProgress(kind === "link" ? "Reading the link…" : kind === "preview" ? "Making your free preview…" : "Transcribing your recording…");
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId;
-    setStage(job.stage || (kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
+    setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
     $("progress").scrollIntoView({ behavior: "smooth", block: "start" });
     poll();
   }
@@ -1058,7 +1077,8 @@
     });
     var text = STAGE_COPY[stage];
     if (stage === "queued" && queuePosition > 0) text += " · " + queuePosition + " ahead";
-    $("p-status").textContent = text;
+    // Written only when it changes: the line is aria-live, and a poll that found nothing new should say nothing.
+    if ($("p-status").textContent !== text) $("p-status").textContent = text;
   }
 
   /** The lines under the bar, from how long the job has sat still and how long it has run. */
@@ -1085,7 +1105,7 @@
         $("p-artist").textContent = job.source.artist || "";
         if (job.source.thumbnailUrl) { $("p-thumb").src = job.source.thumbnailUrl; show($("p-thumb")); }
       }
-      var stage = job.stage || "transcribing", progress = job.progress || 0;
+      var stage = stageOf(job, "transcribing"), progress = job.progress || 0;
       setStage(stage, current.from, job.queuePosition);
       setPercent(progress);
       // Something moved: the stage, the bar or the line ahead. Otherwise the clock keeps running.
