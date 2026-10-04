@@ -7,9 +7,9 @@
 (function () {
   "use strict";
 
-  /** Seconds as m:ss, or h:mm:ss from an hour up. */
+  /** Seconds as m:ss, or h:mm:ss from an hour up; whole seconds, floored like the app's own clocks. */
   function formatTime(sec) {
-    sec = Math.max(0, Math.round(sec || 0));
+    sec = Math.max(0, Math.floor(isFinite(sec) ? sec : 0));
     var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
     var ms = (h ? String(m).padStart(2, "0") : m) + ":" + String(s).padStart(2, "0");
     return h ? h + ":" + ms : ms;
@@ -177,7 +177,8 @@
   function card(host, info, opts) {
     opts = opts || {};
     var max = Math.max(1, Math.round(info.maxSeconds || opts.max || 30));
-    var total = info.durationSeconds > 0 ? Math.round(info.durationSeconds) : 0;
+    // Floored: an end of 3:33 then never lands past a 213.6 s song. Zero, NaN or infinity is unknown.
+    var total = isFinite(info.durationSeconds) && info.durationSeconds > 0 ? Math.floor(info.durationSeconds) : 0;
     var root = el("div", "link-section");
     var song = el("div", "link-song");
     if (info.thumbnailUrl) { var img = el("img", "link-cover"); img.src = info.thumbnailUrl; img.alt = ""; song.appendChild(img); }
