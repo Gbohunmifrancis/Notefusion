@@ -302,8 +302,15 @@ body { background: var(--nf-canvas); color: var(--nf-copy); font-family: var(--f
 
 
 /* ── Web-first calls to action (added with the web app) ───────────────────── */
-.hero-app-link { display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; color: var(--color-ink-500); text-decoration: none; }
-.hero-app-link:hover { color: var(--color-brand-600); text-decoration: underline; }
+/* Official Play badge. The PNG's transparent margin is the clear space Google's guidelines
+   require, so it takes no padding of its own; height follows the 646 x 250 artwork. */
+.store-badge { display: inline-block; line-height: 0; transition: transform .18s ease; }
+.store-badge img { width: 182px; height: auto; }
+.store-badge:hover { transform: translateY(-2px); text-decoration: none; }
+.hero-ctas .store-badge img { width: 210px; }
+/* Above 1024px the feature bar floats over the hero's bottom edge (mockup-layout.css); keep the
+   left column's last row, the Play badge, clear of it. */
+@media (min-width: 1025px) { .hero-grid { padding-bottom: 76px; } }
 .try-note .try-signup { color: var(--color-brand-600); font-weight: 600; text-decoration: none; }
 .try-note .try-signup:hover { text-decoration: underline; }
 .hero-floating-bar { flex-wrap: wrap; }

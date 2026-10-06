@@ -681,3 +681,9 @@ body.auth-only .auth-page .try-free { display: none; }
 .folder-list a:hover { border-color: var(--blue); }
 .folder-list .key { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
 .folder-back { display: inline-block; margin-bottom: 10px; font-size: 0.875rem; }
+
+/* Official Play badge. The PNG's transparent margin is the clear space Google's guidelines
+   require, so it takes no padding of its own; height follows the 646 x 250 artwork. */
+.store-badge { display: inline-block; line-height: 0; transition: transform .18s ease; }
+.store-badge img { width: 182px; height: auto; }
+.store-badge:hover { transform: translateY(-2px); text-decoration: none; }
