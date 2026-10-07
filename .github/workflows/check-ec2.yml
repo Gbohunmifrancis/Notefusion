@@ -22,3 +22,4 @@ jobs:
             echo "== containers"; docker ps -a
             echo "== stats"; docker stats --no-stream
             for c in $(docker ps --format '{{.Names}}'); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | tail -60; done
+            echo "== yt-dlp refusals (whole transcriber log)"; docker logs "$(docker ps -q --filter name=transcriber | head -1)" 2>&1 | grep -E "yt-dlp (failed|timed out)" | tail -10
