@@ -21,4 +21,15 @@ jobs:
             echo "== top"; top -bn1 | head -15
             echo "== containers"; docker ps -a
             echo "== stats"; docker stats --no-stream
-            for c in $(docker ps --format '{{.Names}}'); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | tail -60; done
+            for c in $(docker ps --format '{{.Names}}'); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | grep -v "GET /healthz" | tail -60; done
+            echo "== worker: link and yt-dlp lines (last 40)"; docker logs notefusion-prod-transcriber-1 2>&1 | grep -i -E "yt-dlp|link job|journal|recover" | tail -40
+            echo "== cookies file"; ls -la /opt/notefusion/ytdlp-cookies.txt 2>/dev/null || echo "no cookies file"
+            # What YouTube answers the worker right now, with the proof-of-origin tokens it runs with:
+            # the default player clients, then the tv_embedded fallback, then the cookies if there are any.
+            echo "== youtube probe from inside the worker"
+            cd /opt/notefusion
+            probe() { timeout 90 docker compose -f docker-compose.prod.yml exec -T transcriber sh -c "yt-dlp --no-warnings --no-playlist -q --extractor-args 'youtubepot-bgutilhttp:base_url=http://bgutil-provider:4416' $1 -f 'bestaudio[ext=m4a]/bestaudio/best' --print '%(format_id)s %(protocol)s %(duration)s' https://www.youtube.com/watch?v=dQw4w9WgXcQ 2>&1 | tail -2"; }
+            docker compose -f docker-compose.prod.yml exec -T transcriber sh -c "cp /run/ytdlp-cookies.txt /tmp/probe-cookies.txt 2>/dev/null || true"
+            echo "-- default clients"; probe ""
+            echo "-- tv_embedded"; probe "--extractor-args youtube:player_client=tv_embedded"
+            if [ -s /opt/notefusion/ytdlp-cookies.txt ]; then echo "-- default clients + cookies"; probe "--cookies /tmp/probe-cookies.txt" ; fi
