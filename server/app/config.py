@@ -26,6 +26,20 @@ class Settings:
     # Linked songs (YouTube etc.): the most audio a link job will transcribe.  The API
     # passes a per-plan cap below this (a short free preview, six minutes for Pro).
     link_max_seconds: float = float(os.getenv("NF_LINK_MAX_SECONDS", "360"))
+    #: A linked video longer than this is refused the moment the link is looked at: a ten-hour
+    #: loop is not a song, and the section picker is unusable on one. 0 disables the cap.
+    link_max_video_seconds: float = float(os.getenv("NF_LINK_MAX_VIDEO_SECONDS", "7200"))
+    #: The YouTube player client(s) an extraction is tried again with when YouTube refuses the
+    #: first attempt ("Sign in to confirm you're not a bot"). tv_embedded asks for no
+    #: proof-of-origin token and is checked less often than the web clients. Empty: no retry.
+    ytdlp_fallback_clients: str = os.getenv("NF_YTDLP_FALLBACK_CLIENTS", "tv_embedded").strip()
+    #: Where the job journal lives (``app.jobs.journal``): every submitted job is written there
+    #: and replayed after a restart, so a deploy or an out-of-memory kill loses nothing. Empty
+    #: (the default, and tests) keeps jobs in memory only.
+    job_dir: str = os.getenv("NF_JOB_DIR", "").strip()
+    #: How many times a journaled job may be started before it is failed rather than replayed:
+    #: a job that kills the worker twice would otherwise kill it forever.
+    job_max_attempts: int = int(os.getenv("NF_JOB_MAX_ATTEMPTS", "2"))
 
     @property
     def api_key(self) -> str | None:

@@ -352,7 +352,8 @@ def test_a_chosen_section_is_downloaded_on_its_own_and_cut_exactly(monkeypatch, 
     fetched = links.fetch_audio(_video(), 360, work_dir=tmp_path, start_seconds=60, end_seconds=80)
     download = _ytdlp_calls(calls)[1]
     assert download[download.index("--download-sections") + 1] == "*60.00-82.00"
-    assert "--force-keyframes-at-cuts" in download
+    # A copy, not a re-encode: the flag cost six seconds a section and a second lossy pass.
+    assert "--force-keyframes-at-cuts" not in download
     ffmpeg = _ffmpeg_call(calls)
     assert ffmpeg[ffmpeg.index("-t") + 1] == "20.00"
     assert "-ss" not in ffmpeg  # the download already begins at 60 s
@@ -653,7 +654,9 @@ def test_resolve_link_has_no_length_when_youtube_will_not_say(monkeypatch):
     source = links.resolve_link(YOUTUBE)
     assert source.duration is None and source.title == "T"
     assert links.resolve_link(YOUTUBE).duration is None
-    assert len(calls) == 1  # the refusal is remembered too, not retried on every keystroke
+    # The refusal and its one second try (the fallback client); remembered after that, not
+    # retried on every keystroke.
+    assert len(calls) == 2
 
 
 def test_a_resolved_link_is_forgotten_after_ten_minutes(monkeypatch):

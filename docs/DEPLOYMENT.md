@@ -455,8 +455,15 @@ every provider is affected. The worker has four layers against that, in order:
    repeat the `--extractor-args …` part to keep the tokens. Check the sidecar with
    `docker compose -f docker-compose.prod.yml logs bgutil-provider`. A token helps but does
    not guarantee getting past a bot check.
-3. **Cookies of a signed-in account** (see below).
-4. **The store's 30-second preview.** When YouTube still refuses, a Spotify link uses the
+3. **A second player client.** YouTube's bot check is given per player client, and the
+   `tv_embedded` client (which asks for no proof-of-origin token) is often let through where
+   the web clients are not. A refused extraction, and a refused download, is tried once more
+   with it (`NF_YTDLP_FALLBACK_CLIENTS`, default `tv_embedded`; empty switches the retry off).
+   Both refusals are in the worker's log in yt-dlp's own words. The **Check EC2 Status**
+   workflow probes YouTube from inside the worker with the default clients, the fallback client
+   and the cookies, so a refusal can be told from a broken deploy without touching a user's job.
+4. **Cookies of a signed-in account** (see below).
+5. **The store's 30-second preview.** When YouTube still refuses, a Spotify link uses the
    preview on its track page, an Apple Music link the one from the iTunes lookup, and a
    YouTube link the iTunes preview of the same title and artist. The job then comes back
    `truncated`, with `source.preview = true` and the notice "Only a 30-second preview was
@@ -479,6 +486,27 @@ every provider is affected. The worker has four layers against that, in order:
    transcriber, and `NF_YTDLP_COOKIES_FILE` points the worker at it. yt-dlp writes its
    cookie jar back on exit, so the worker hands each job a private copy and deletes it
    afterwards; the mounted file is never written.
+
+### Links that are refused outright
+
+The worker turns a link away when it is pasted, before any job exists, when it can never be a
+song: a video id nothing is behind (oEmbed 400/404), a private or removed video, a live stream
+or premiere, and a video longer than `NF_LINK_MAX_VIDEO_SECONDS` (default 7200, two hours; the
+section picker is unusable on a ten-hour loop). The refusal is remembered for ten minutes, so
+the submit of the same link is refused at once too. The worker names the reason by code and
+the API answers in its own words (`TranscriptionErrors.ForLink`); the worker's sentence is
+never shown.
+
+### The job journal
+
+The queue is in memory. With `NF_JOB_DIR` set (the compose file points it at the `job-data`
+volume), every submitted job is journaled before it is queued — its options, an upload's audio
+(moved onto the volume) and how many times it has been started — and the worker replays the
+journal on startup under the same job ids, so the API's rows, the clients' polling and the
+single song charge are untouched by a deploy or an out-of-memory kill. A job that was started
+`NF_JOB_MAX_ATTEMPTS` (2) times without finishing is failed with a plain message instead, and
+the API is told through the completion webhook, which is itself retried twice while the API
+restarts. Audio is still deleted the moment the job ends, journal entry and all.
 
 **Rotation.** Cookies expire, and YouTube rotates or revokes them (sooner when the account
 is used from a server). When link jobs start coming back as previews or with "This song

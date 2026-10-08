@@ -42,7 +42,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   routes, which add the caller's allowance as `maxSeconds`) for the song's length and let the user pick the
   section; `/v1/transcribe/link` takes `start_seconds`/`end_seconds` and cuts that window. A job waiting for a worker reports `stage="queued"` with `queue_position` (jobs ahead); clients show
   the place in line rather than a stage that has not begun. The queue has two lanes:
-  `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode.
+  `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode. The queue is in memory, but
+  with `NF_JOB_DIR` set (the prod compose's `job-data` volume) every submit is journaled first
+  (`app/jobs/journal.py`) and `JobQueue.recover()` replays the journal at startup under the same job ids;
+  a job started `NF_JOB_MAX_ATTEMPTS` times is failed with a plain message instead. A refused YouTube
+  extraction or download is tried once more with the `tv_embedded` player client
+  (`NF_YTDLP_FALLBACK_CLIENTS`); a nonexistent, private, live or over-long (`NF_LINK_MAX_VIDEO_SECONDS`)
+  video is refused at `/v1/links/resolve` with a `LinkError.code` the C# `TranscriptionErrors.ForLink`
+  turns into its own sentence, and the refusal is remembered so the submit is refused at once. Sections
+  are cut as a copy (no `--force-keyframes-at-cuts`); ffmpeg cuts the exact window while decoding.
   `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
   voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — only when asked:
   `harmony=true` on submit, or `POST /v1/harmonise` (notes + key) behind the Pro-only

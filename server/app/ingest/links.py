@@ -18,9 +18,16 @@ allowance of the song) and no more, transcoded by ffmpeg to the WAV the pipeline
 and deleted with the job like every other upload.  YouTube rate
 limits and sometimes refuses datacenter addresses outright ("Sign in to confirm you're
 not a bot"); ``NF_YTDLP_COOKIES_FILE`` and ``NF_YTDLP_EXTRA_ARGS`` (a proof-of-origin
-token provider, a proxy) exist for that.  When YouTube still refuses, the store's official
-30-second preview is transcribed instead and the result says so; with no preview either,
-the refusal surfaces as a ``LinkError`` the clients render as "upload the file instead".
+token provider, a proxy) exist for that, and a refused extraction is tried once more with
+the ``tv_embedded`` player client (``NF_YTDLP_FALLBACK_CLIENTS``), which asks for no token
+and is checked less often.  When YouTube still refuses, the store's official 30-second
+preview is transcribed instead and the result says so; with no preview either, the refusal
+surfaces as a ``LinkError`` the clients render as "upload the file instead".
+
+A link is turned away the moment it is looked at (``resolve_link``) when it can never be a
+song: a video that does not exist, one that is private, a live stream or premiere, or a
+video longer than ``NF_LINK_MAX_VIDEO_SECONDS``.  Each ``LinkError`` carries a ``code`` for
+the C# API, which tells the user in its own words.
 """
 
 import html
@@ -34,6 +41,7 @@ import subprocess
 import tempfile
 import threading
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from collections.abc import Iterator
@@ -41,6 +49,8 @@ from contextlib import contextmanager
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import NamedTuple
+
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +61,17 @@ PREVIEW_NOTICE = "Only a 30-second preview was available for this song."
 
 
 class LinkError(Exception):
-    """A user-facing reason the link could not be used."""
+    """A user-facing reason the link could not be used.
+
+    ``code`` names the reason for the C# API, which has words of its own for ``not_found``,
+    ``unavailable``, ``live``, ``too_long`` and ``refused``; None for every other reason.
+    ``limit_seconds`` goes with ``too_long``: the cap the video outran.
+    """
+
+    def __init__(self, message: str, code: str | None = None, limit_seconds: float | None = None):
+        super().__init__(message)
+        self.code = code
+        self.limit_seconds = limit_seconds
 
 
 @dataclass(frozen=True)
@@ -280,12 +300,50 @@ def _itunes_lookup(track_id: str, country: str | None) -> dict | None:
     return None
 
 
-def _resolve_youtube(url: str) -> Source:
+def _resolve_youtube(url: str) -> "_Cached":
+    """The video behind a YouTube link, from oEmbed; from yt-dlp's details when oEmbed will not say.
+
+    oEmbed answers 400 or 404 for an id no video has, and 401 or 403 for one that is private,
+    removed or merely not embeddable.  The last of those is still a song anyone can play, so
+    yt-dlp (asked for the length anyway) decides between "private or unavailable" and a
+    video that only refuses embedding, and its details then name the song.
+    """
     video_id = youtube_video_id(url)
     canonical = f"https://www.youtube.com/watch?v={video_id}"
-    data = _http_json("https://www.youtube.com/oembed?format=json&url=" + urllib.parse.quote(canonical, safe=""))
+    try:
+        data = _http_json("https://www.youtube.com/oembed?format=json&url=" + urllib.parse.quote(canonical, safe=""))
+    except urllib.error.HTTPError as exc:
+        if exc.code in (400, 404):
+            raise LinkError("That YouTube video doesn't exist. Check the link and try again.", "not_found") from exc
+        if exc.code not in (401, 403):
+            raise
+        return _resolve_youtube_by_details(canonical)
     title, artist = _split_title(_clean(str(data.get("title", ""))), _clean(str(data.get("author_name", ""))))
-    return Source("youtube", canonical, title, artist, data.get("thumbnail_url"), audio_url=canonical)
+    return _Cached(Source("youtube", canonical, title, artist, data.get("thumbnail_url"), audio_url=canonical))
+
+
+UNAVAILABLE = "That video is private or unavailable, so it can't be fetched."
+
+
+def _resolve_youtube_by_details(canonical: str) -> "_Cached":
+    try:
+        info_json = _extract_info(canonical, _INFO_TIMEOUT)
+    except _YtdlpFailed as failure:
+        if _refused(failure.stderr):
+            raise LinkError("YouTube is refusing automated downloads right now. Upload the audio file instead.",
+                            "refused") from failure
+        raise LinkError(UNAVAILABLE, "unavailable") from failure
+    except OSError as exc:  # no yt-dlp on this machine: nothing left to ask
+        raise LinkError(UNAVAILABLE, "unavailable") from exc
+    refusal = _video_refusal(info_json)
+    if refusal is not None:
+        raise refusal
+    info = json.loads(info_json)
+    title, artist = _split_title(_clean(str(info.get("title") or "")),
+                                 _clean(str(info.get("uploader") or info.get("channel") or "")))
+    source = Source("youtube", canonical, title, artist, info.get("thumbnail") or None, audio_url=canonical,
+                    duration=_info_duration(info_json))
+    return _Cached(source, info_json)
 
 
 def _resolve_spotify(url: str) -> Source:
@@ -346,6 +404,9 @@ class _Cached:
     # yt-dlp's ``-J`` output for the YouTube video, for the download to run from: None
     # until asked for, "" when asking failed (so the resolve does not ask again).
     info_json: str | None = None
+    # Why the video was turned away once its details were read (a live stream, too long), so
+    # the submit that follows is answered at once instead of queueing a job that cannot run.
+    refusal: LinkError | None = None
     expires: float = 0.0
 
 
@@ -389,17 +450,27 @@ def resolve_source(text: str) -> Source:
         return cached.source
     try:
         if provider == "youtube":
-            source = _resolve_youtube(url)
+            entry = _resolve_youtube(url)
         elif provider == "spotify":
-            source = _resolve_spotify(url)
+            entry = _Cached(_resolve_spotify(url))
         else:
-            source = _resolve_apple(url)
+            entry = _Cached(_resolve_apple(url))
     except LinkError:
         raise
     except Exception as exc:  # noqa: BLE001 - network and parse failures all read the same to a user
         raise LinkError("Could not read that link. Check it opens in a browser, or upload the audio file instead.") from exc
-    _cache_put(_Cached(source), url, source.url, source.audio_url)
-    return source
+    _cache_put(entry, url, entry.source.url, entry.source.audio_url)
+    return entry.source
+
+
+def cached_refusal(text: str) -> LinkError | None:
+    """The reason the link was turned away when it was looked at, while that is remembered.
+    A YouTube video is known under every address it has (youtu.be, shorts, music)."""
+    url = extract_url(text or "")
+    entry = _cache_get(url)
+    if entry is None and url and (video_id := youtube_video_id(url)):
+        entry = _cache_get(f"https://www.youtube.com/watch?v={video_id}")
+    return entry.refusal if entry is not None else None
 
 
 # ── Audio ─────────────────────────────────────────────────────────────────────
@@ -415,9 +486,10 @@ _PREFERRED = re.compile(r"official (audio|lyric video)|\(audio\)", re.I)
 class _YtdlpFailed(LinkError):
     """yt-dlp could not deliver; the message is the plain reason, ``stderr`` the evidence."""
 
-    def __init__(self, message: str, stderr: str = ""):
+    def __init__(self, message: str, stderr: str = "", timed_out: bool = False):
         super().__init__(message)
         self.stderr = stderr
+        self.timed_out = timed_out
 
 
 @contextmanager
@@ -458,10 +530,8 @@ def _refused(stderr: str) -> bool:
 def _explain(stderr: str, provider: str = "youtube") -> str:
     text = (stderr or "").lower()
     searched = provider != "youtube"
-    if "not a bot" in text or "sign in" in text:
-        if searched:
-            return "This song could not be fetched right now. Try again later, or upload the audio file instead."
-        return "YouTube is refusing automated downloads right now. Upload the audio file instead."
+    # A private video ("Sign in if you've been granted access") and an age gate ("Sign in to
+    # confirm your age") both mention signing in: they are read before the bot check is.
     if "private" in text or "unavailable" in text or "removed" in text:
         if searched:
             return "Could not find a playable copy of that song. Upload the audio file instead."
@@ -470,6 +540,10 @@ def _explain(stderr: str, provider: str = "youtube") -> str:
         if searched:
             return "Could not find a playable copy of that song. Upload the audio file instead."
         return "That video is age-restricted and cannot be fetched."
+    if "not a bot" in text or "sign in" in text:
+        if searched:
+            return "This song could not be fetched right now. Try again later, or upload the audio file instead."
+        return "YouTube is refusing automated downloads right now. Upload the audio file instead."
     return "Could not fetch audio from that link. Upload the audio file instead."
 
 
@@ -490,13 +564,44 @@ def _run_ytdlp(args: list[str], timeout: float, provider: str) -> subprocess.Com
         result = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         logger.warning("yt-dlp timed out (%s) after %.0fs", provider, timeout)
-        raise _YtdlpFailed(_explain("", provider), "timed out") from None
+        raise _YtdlpFailed(_explain("", provider), "timed out", timed_out=True) from None
     if result.returncode != 0:
         # The person reads the plain sentence; the log keeps yt-dlp's own words, which say which
         # of YouTube's refusals it was (bot check, 403, missing PO token) or that the video is gone.
         logger.warning("yt-dlp failed (%s, exit %d): %s", provider, result.returncode, _log_tail(result.stderr))
         raise _YtdlpFailed(_explain(result.stderr, provider), result.stderr)
     return result
+
+
+#: A refused extraction is tried again only with this much of its time budget left: the
+#: fallback client needs a few seconds of its own, and a near-dead deadline would only add a
+#: second refusal to the log.
+_FALLBACK_MIN_SECONDS = 4.0
+
+
+def _fallback_args() -> list[str]:
+    """yt-dlp's arguments for the second try at a refused extraction, or none when disabled."""
+    clients = settings.ytdlp_fallback_clients
+    return ["--extractor-args", f"youtube:player_client={clients}"] if clients else []
+
+
+def _extract(base: list[str], args: list[str], timeout: float, provider: str) -> subprocess.CompletedProcess:
+    """``_run_ytdlp`` with one more go on a refusal: YouTube's "Sign in to confirm you're not a
+    bot" is given per player client, and ``settings.ytdlp_fallback_clients`` is often let
+    through where the default clients are not.  The retry runs within what is left of
+    ``timeout``; a refusal of both tries raises the second one.
+    """
+    started = time.monotonic()
+    try:
+        return _run_ytdlp([*base, *args], timeout, provider)
+    except _YtdlpFailed as failure:
+        fallback = _fallback_args()
+        left = timeout - (time.monotonic() - started)
+        if not fallback or failure.timed_out or not _refused(failure.stderr) or left < _FALLBACK_MIN_SECONDS:
+            raise
+        logger.info("yt-dlp was refused (%s); trying again with player client %s",
+                    provider, settings.ytdlp_fallback_clients)
+        return _run_ytdlp([*base, *fallback, *args], left, provider)
 
 
 def _choose_result(lines: list[str], source: Source) -> str | None:
@@ -543,17 +648,55 @@ def _search_youtube(base: list[str], source: Source) -> str:
 
 
 #: How long yt-dlp may take to read a video's details for the resolve endpoint, which
-#: answers while the user is looking at the link they just pasted.
-_INFO_TIMEOUT = 20.0
+#: answers while the user is looking at the link they just pasted — and which the C# API
+#: waits twenty seconds for, so a refusal and its retry both fit inside that.
+_INFO_TIMEOUT = 15.0
+
+
+def _extract_info(url: str, timeout: float, provider: str = "youtube") -> str:
+    """yt-dlp's ``-J`` JSON for a video; raises ``_YtdlpFailed`` (or OSError without yt-dlp)."""
+    with _ytdlp_args() as base:
+        return _extract(base, ["-f", _AUDIO_FORMAT, "-J", url], timeout, provider).stdout
 
 
 def _youtube_info(url: str) -> str | None:
     """yt-dlp's ``-J`` JSON for a video, or None when YouTube would not say in time."""
-    with _ytdlp_args() as base:
-        try:
-            return _run_ytdlp([*base, "-f", _AUDIO_FORMAT, "-J", url], _INFO_TIMEOUT, "youtube").stdout
-        except (_YtdlpFailed, OSError):  # OSError: no yt-dlp on this machine; the link still resolves
-            return None
+    try:
+        return _extract_info(url, _INFO_TIMEOUT)
+    except (_YtdlpFailed, OSError):  # OSError: no yt-dlp on this machine; the link still resolves
+        return None
+
+
+def _clock(seconds: float) -> str:
+    """A length as a person says it: "2 hours", "3 h 12 min", "45 min"."""
+    hours, minutes = divmod(int(round(seconds)) // 60, 60)
+    if hours and minutes:
+        return f"{hours} h {minutes} min"
+    if hours:
+        return f"{hours} hour" + ("s" if hours > 1 else "")
+    return f"{max(1, minutes)} min"
+
+
+def _video_refusal(info_json: str | None) -> LinkError | None:
+    """Why a video's details rule it out before anything is downloaded: a live stream or a
+    premiere (there is no song to cut a section from), or a video longer than
+    ``settings.link_max_video_seconds``.  None when the details are missing or fine."""
+    try:
+        info = json.loads(info_json or "")
+    except ValueError:
+        return None
+    if not isinstance(info, dict):
+        return None
+    status = info.get("live_status")
+    if status == "is_upcoming":
+        return LinkError("That video hasn't premiered yet. Try again once it has.", "live")
+    if info.get("is_live") or status in ("is_live", "post_live"):
+        return LinkError("That's a live stream. Paste a link to the recorded song instead.", "live")
+    duration, cap = info.get("duration"), settings.link_max_video_seconds
+    if cap > 0 and isinstance(duration, (int, float)) and duration > cap:
+        return LinkError(f"That video runs {_clock(duration)}. Links up to {_clock(cap)} are supported — "
+                         "upload the song's audio file instead.", "too_long", limit_seconds=cap)
+    return None
 
 
 def _info_duration(info_json: str | None) -> float | None:
@@ -614,11 +757,13 @@ def _download_youtube(base: list[str], target: str, max_seconds: float, work: Pa
     cached = _cache_get(target)
     info_json = cached.info_json if cached is not None and cached.info_json else None
     if info_json is None:
-        info_json = _run_ytdlp([*base, "-f", _AUDIO_FORMAT, "-J", target], 60, source.provider).stdout
+        info_json = _extract(base, ["-f", _AUDIO_FORMAT, "-J", target], 60, source.provider).stdout
+    refusal = _video_refusal(info_json)
+    if refusal is not None:
+        raise refusal
     duration = _info_duration(info_json)
     length, truncated = _window(start, end, duration if duration is not None else source.duration, max_seconds)
     info_path = work / "info.json"
-    info_path.write_text(info_json, encoding="utf-8")
     args = [
         *base,
         "-f", _AUDIO_FORMAT,
@@ -628,10 +773,12 @@ def _download_youtube(base: list[str], target: str, max_seconds: float, work: Pa
     ]
     section = start > 0 or (duration is not None and start + length < duration)
     if section:
-        # Two seconds past the window: the downloader cuts on frames, ffmpeg cuts exactly.
-        args += ["--download-sections", f"*{start:.2f}-{start + length + 2:.2f}", "--force-keyframes-at-cuts"]
+        # Two seconds past the window: the downloader cuts on audio frames (a copy, no
+        # re-encode: every AAC or Opus frame stands alone, so the cut lands within one frame
+        # of the mark), and ffmpeg then cuts the exact window while decoding to WAV.
+        args += ["--download-sections", f"*{start:.2f}-{start + length + 2:.2f}"]
     try:
-        _run_ytdlp(args, 300, source.provider)
+        _download(base, args, info_path, info_json, target, source.provider)
     finally:
         info_path.unlink(missing_ok=True)
     downloaded = sorted(p for p in work.iterdir() if p.name.startswith("audio."))
@@ -642,6 +789,24 @@ def _download_youtube(base: list[str], target: str, max_seconds: float, work: Pa
     got = _audio_seconds(downloaded[0]) if start > 0 else None
     offset = start if got is not None and got > length + 3 else 0.0
     return _Downloaded(downloaded[0], duration, start, length, offset, truncated)
+
+
+def _download(base: list[str], args: list[str], info_path: Path, info_json: str, target: str, provider: str) -> None:
+    """Run the download from ``info_json``.  When YouTube refuses the media itself (a 403 on a
+    URL it no longer honours, a missing token for that client), the details are read once more
+    with the fallback client and the download runs from those."""
+    info_path.write_text(info_json, encoding="utf-8")
+    try:
+        _run_ytdlp(args, 300, provider)
+    except _YtdlpFailed as failure:
+        fallback = _fallback_args()
+        if not fallback or failure.timed_out or not _refused(failure.stderr):
+            raise
+        logger.info("yt-dlp was refused the media (%s); reading the details again with player client %s",
+                    provider, settings.ytdlp_fallback_clients)
+        info_path.write_text(_run_ytdlp([*base, *fallback, "-f", _AUDIO_FORMAT, "-J", target], 60, provider).stdout,
+                             encoding="utf-8")
+        _run_ytdlp(args, 300, provider)
 
 
 def _norm(text: str) -> str:
@@ -760,14 +925,21 @@ def resolve_link(text: str) -> Source:
     video's details are read with yt-dlp (``-J``, within ``_INFO_TIMEOUT``) and kept with
     the cached link, where the job's download picks them up instead of asking YouTube
     again.  When YouTube will not say, the length is None and the link still resolves:
-    the clients then offer the first part of the song.
+    the clients then offer the first part of the song.  A video the details rule out (a
+    live stream, one longer than the cap) is refused here, and the refusal is remembered
+    so the submit of the same link is refused at once too (``cached_refusal``).
     """
     source = resolve_source(text)
     entry = _cache_get(source.url)
+    if entry is not None and entry.refusal is not None:
+        raise entry.refusal
     if source.provider != "youtube" or source.duration is not None or entry is None or entry.info_json is not None:
         return source
     info_json = _youtube_info(source.audio_url or source.url)
     entry.info_json = info_json or ""
+    entry.refusal = _video_refusal(info_json)
+    if entry.refusal is not None:
+        raise entry.refusal
     duration = _info_duration(info_json)
     if duration is not None:
         entry.source = source = replace(source, duration=duration)

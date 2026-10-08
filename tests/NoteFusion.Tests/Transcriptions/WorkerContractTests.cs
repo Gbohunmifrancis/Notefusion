@@ -6,6 +6,7 @@ using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Api;
+using NoteFusion.Shared.Results;
 using NoteFusion.Tests.Support;
 
 namespace NoteFusion.Tests.Transcriptions;
@@ -151,6 +152,43 @@ public class WorkerContractTests
         Assert.Equal(TranscriptionErrors.InvalidLink, result.Error);
         Assert.DoesNotContain("422", result.Error.Message);
         Assert.DoesNotContain("detail", result.Error.Message);
+    }
+
+    [Theory]
+    [InlineData("live", "TRANS_LINK_LIVE")]
+    [InlineData("not_found", "TRANS_LINK_NOT_FOUND")]
+    [InlineData("unavailable", "TRANS_LINK_UNAVAILABLE")]
+    [InlineData("refused", "TRANS_LINK_REFUSED")]
+    public async Task A_reason_the_worker_names_by_code_is_told_in_our_own_words(string code, string expected)
+    {
+        var body = $$$"""{"detail":{"message":"the worker's own sentence","code":"{{{code}}}"}}""";
+
+        var submitted = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity, body))
+            .SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions());
+        var resolved = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity, body))
+            .ResolveLinkAsync("https://youtu.be/dQw4w9WgXcQ");
+
+        Assert.Equal(expected, submitted.Error.Code);
+        Assert.Equal(expected, resolved.Error.Code);
+        Assert.Equal(ErrorType.Validation, submitted.Error.Type);
+        Assert.DoesNotContain("worker's own sentence", submitted.Error.Message);
+        Assert.DoesNotContain("worker's own sentence", resolved.Error.Message);
+    }
+
+    [Fact]
+    public async Task A_video_over_the_cap_is_told_with_the_cap_and_an_unknown_code_is_an_invalid_link()
+    {
+        var tooLong = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity,
+                """{"detail":{"message":"That video runs 3 hours.","code":"too_long","limit_seconds":7200.0}}"""))
+            .ResolveLinkAsync("https://youtu.be/dQw4w9WgXcQ");
+        var unknown = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity,
+                """{"detail":{"message":"something new","code":"novel"}}"""))
+            .SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions());
+
+        Assert.Equal("TRANS_LINK_TOO_LONG", tooLong.Error.Code);
+        Assert.Contains("up to 2 hours", tooLong.Error.Message);
+        Assert.DoesNotContain("3 hours", tooLong.Error.Message);
+        Assert.Equal(TranscriptionErrors.InvalidLink, unknown.Error);
     }
 
     [Fact]

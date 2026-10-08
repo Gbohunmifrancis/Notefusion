@@ -251,6 +251,31 @@ public class LinkSectionTests
         Assert.Equal("link", h.Db.PreviewJobs.Single().Kind);
     }
 
+    [Fact]
+    public async Task A_section_of_a_link_the_worker_turned_away_is_refused_before_the_job()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+
+        var live = new FakeApi { Resolve = TranscriptionErrors.LinkLive };
+        var result = await Submit(h, user, live, start: 10, end: 40);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(TranscriptionErrors.LinkLive, result.Error);
+        Assert.Null(live.LastOptions); // nothing reached the worker
+        Assert.Empty(h.Db.TranscriptionJobs);
+    }
+
+    [Theory]
+    [InlineData(7200, "2 hours")]
+    [InlineData(3600, "1 hour")]
+    [InlineData(5400, "1 h 30 min")]
+    [InlineData(2700, "45 min")]
+    [InlineData(30, "1 min")]
+    public void Seconds_read_as_a_length(double seconds, string words)
+        => Assert.Equal(words, SongSections.Length(seconds));
+
     [Theory]
     [InlineData(0, "0:00")]
     [InlineData(30, "0:30")]

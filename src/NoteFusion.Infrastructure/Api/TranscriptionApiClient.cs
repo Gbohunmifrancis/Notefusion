@@ -202,10 +202,10 @@ internal sealed class TranscriptionApiClient(
 
             using var response = await http.PostAsync("v1/transcribe/link", form, cancellationToken);
             // The worker is the authority on which links it can fetch, and it answers 422 for one it cannot.
-            // That is the user's link, not a fault on our side, so it gets the same plain sentence as a link
-            // refused here — never the worker's own text.
+            // That is the user's link, not a fault on our side, so it is told in this API's own words — by the
+            // reason the worker named, or as an invalid link — never in the worker's text.
             if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
-                return TranscriptionErrors.InvalidLink;
+                return await RefusedLinkAsync(response, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 var errText = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -240,7 +240,7 @@ internal sealed class TranscriptionApiClient(
             using var response = await http.PostAsync("v1/links/resolve", body, timeout.Token);
             // As for a submit: a link the worker cannot read is the user's link, told in our own words.
             if (response.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity)
-                return TranscriptionErrors.InvalidLink;
+                return await RefusedLinkAsync(response, timeout.Token);
             if (!response.IsSuccessStatusCode)
                 return TranscriptionErrors.ServiceUnavailable;
 
@@ -269,6 +269,29 @@ internal sealed class TranscriptionApiClient(
         {
             return TranscriptionErrors.ServiceUnavailable;
         }
+    }
+
+    /// <summary>
+    /// The worker's 422 for a link it will not use. Its detail is a plain sentence, or an object naming the
+    /// reason by code (a live stream, a video over the cap, one that is private or gone); a code this API has
+    /// words for is answered in them, anything else as an invalid link. The worker's sentence is never shown.
+    /// </summary>
+    private static async Task<Error> RefusedLinkAsync(HttpResponseMessage response, CancellationToken ct)
+    {
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(await response.Content.ReadAsStringAsync(ct));
+            if (doc.RootElement.ValueKind == System.Text.Json.JsonValueKind.Object
+                && doc.RootElement.TryGetProperty("detail", out var detail)
+                && detail.ValueKind == System.Text.Json.JsonValueKind.Object
+                && TranscriptionErrors.ForLink(Text(detail, "code"), Number(detail, "limit_seconds", "limitSeconds")) is { } named)
+                return named;
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            // Not JSON at all: the plain invalid link below.
+        }
+        return TranscriptionErrors.InvalidLink;
     }
 
     private static string? Text(System.Text.Json.JsonElement root, params string[] names)
