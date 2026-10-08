@@ -66,10 +66,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `mode="chords"` (top line = melody) and for melody-mode songs off the backing; `keyboard_transpose` writes
   sounding pitch minus the keyboard's transpose (solfa unchanged). Bench: `python -m tests.accuracy.chords_bench`.
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
-  client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
+  client. Night (dark) default with a runtime Day/Night switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
   the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
-  `src/components/night/`; splash, onboarding and sign-in use it in either mode),
+  `src/components/night/`; splash, onboarding and sign-in use it in either mode), a store-rating ask after the third saved sheet (`lib/ratingPolicy`),
   expo-notifications push.
 
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no
@@ -87,7 +87,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
-- Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read), an
+- Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
+  the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and
   an optional public share token (`GET /api/shared/{token}`, anonymous). A `FolderShare` is one public
   link for a whole folder (`GET /api/shared/folders/{token}`), which lists every sheet filed in it,
