@@ -69,7 +69,10 @@ public sealed record TranscriptionMetricsDto(
     int InFlightCount,
     double? SuccessRate,
     double? AverageConfidence,
-    long StoredBytes);
+    long StoredBytes,
+    /// <summary>Transcriptions that produced a result in the window, saved or not (see TranscriptionCounts).</summary>
+    int TotalTranscribed = 0,
+    int TotalTranscribedPrevious = 0);
 
 /// <summary>One day of a time series, bucketed by reporting-local date (WAT, UTC+1).</summary>
 /// <param name="Date">The local calendar date, not an instant.</param>
@@ -317,7 +320,11 @@ public sealed record AdminUserRowDto(
     DateTime? LastLoginAt,
     int TranscriptionCount,
     bool HasProAccess,
-    bool IsGiftedPro);
+    bool IsGiftedPro,
+    /// <summary>Sheets in the library now. <c>TranscriptionCount</c> counts every transcription that produced a result.</summary>
+    int SavedTranscriptionCount = 0,
+    /// <summary>Transcriptions that ended without a result.</summary>
+    int FailedTranscriptionCount = 0);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

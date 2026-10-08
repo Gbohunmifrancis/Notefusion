@@ -342,6 +342,9 @@ export function UsersView() {
                       <th className="px-4 py-3 font-medium">Email</th>
                       <th className="px-4 py-3 font-medium">Plan</th>
                       <th className="px-4 py-3 font-medium">Status</th>
+                      <th className="px-4 py-3 font-medium" title="Transcriptions that produced a result, saved or not">
+                        Transcriptions
+                      </th>
                       <th className="px-4 py-3 font-medium">Last active</th>
                       <th className="w-12 px-4 py-3 text-right"></th>
                     </tr>
@@ -385,6 +388,13 @@ export function UsersView() {
                           </td>
                           <td className="px-4 py-3">
                             <StatusBadge user={user} online={online} />
+                          </td>
+                          <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                            <span className="font-semibold text-slate-900 dark:text-slate-100">{user.transcriptionCount}</span>
+                            <span className="ml-1 text-[11px]">
+                              ({user.savedTranscriptionCount} saved
+                              {user.failedTranscriptionCount > 0 && `, ${user.failedTranscriptionCount} failed`})
+                            </span>
                           </td>
                           <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
                             <LastSeenCell lastLoginAt={user.lastLoginAt} offset={offset} />

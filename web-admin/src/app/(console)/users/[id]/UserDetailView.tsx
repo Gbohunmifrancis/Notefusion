@@ -257,7 +257,15 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
             "None"
           )}
         </Field>
-        <Field label="Transcriptions">{formatCount(user.transcriptionCount)}</Field>
+        <Field label="Transcriptions">
+          <span title="Every transcription that produced a result, saved or not: finished jobs, free previews claimed at sign-up, and sheets saved before jobs were recorded">
+            {formatCount(user.transcriptionCount)}
+          </span>
+          <span className="ml-1.5 text-xs text-muted-foreground">
+            {formatCount(user.savedTranscriptionCount)} saved
+            {user.failedTranscriptionCount > 0 && ` · ${formatCount(user.failedTranscriptionCount)} failed`}
+          </span>
+        </Field>
         <Field label="Free generations used">
           {formatCount(user.trialGenerationsUsed)} of {formatCount(user.trialGenerationsTotal)}
         </Field>

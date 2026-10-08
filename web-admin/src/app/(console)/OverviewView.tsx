@@ -806,7 +806,7 @@ export function OverviewView() {
         {(data) => {
           const userChange = changeAgainst(data.users.newUsers, data.users.newUsersPrevious);
           const activeChange = changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious);
-          const txChange = changeAgainst(data.transcriptions.totalSaved, data.transcriptions.totalSavedPrevious);
+          const txChange = changeAgainst(data.transcriptions.totalTranscribed, data.transcriptions.totalTranscribedPrevious);
 
           const topStats: StatItem[] = [
             {
@@ -827,11 +827,11 @@ export function OverviewView() {
             },
             {
               title: "Transcriptions",
-              value: formatCount(data.transcriptions.totalSaved),
+              value: formatCount(data.transcriptions.totalTranscribed),
               change: txChange?.label ?? null,
-              description: txChange ? "vs. previous period" : null,
+              description: `${formatCount(data.transcriptions.totalSaved)} saved${txChange ? " · vs. previous period" : ""}`,
               icon: Music2,
-              hint: "Transcriptions saved in library",
+              hint: "Transcriptions that produced a result in this window, saved or not, including free previews",
             },
           ];
 
