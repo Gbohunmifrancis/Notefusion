@@ -13,10 +13,16 @@
  * gets one sixty-second preview, and the refusal codes map to the upgrade sheet.
  *
  * As soon as the pasted text holds a link we can read, the link is looked up
- * (`/api/transcriptions/link/info`): the song's title, artist, artwork and length appear
- * under the field, and a two-thumb picker chooses which section to transcribe — the
+ * (`/api/transcriptions/link/info`): the song's cover, title, artist and length appear
+ * under the field, and a window over a waveform chooses which section to transcribe — the
  * first of the allowance by default, the whole song when it fits. The section travels
  * with the job as `startSeconds`/`endSeconds`; the credit on the sheet names it.
+ *
+ * The screen has three faces: ready (nothing readable pasted yet — the field and the
+ * services a link can come from), found (the song and its section picker), and refused (a
+ * link the API turned away by code, in its own plain sentence, beside the links that never
+ * work). The app has no clipboard module, so there is no paste button: the field is
+ * pasted into by hand.
  */
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -38,6 +44,10 @@ import { Card } from "../components/Card";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { RangePicker } from "../components/RangePicker";
+import { Mark, Wordmark } from "../components/night/NightUI";
+import { ProviderMark, SourceTiles } from "../components/link/SourceTiles";
+import { PROVIDER_LABEL, SongCover } from "../components/link/SongCover";
+import { NoticeCard, PillAction, RefusedLinks, linkRefusal } from "../components/link/LinkRefusal";
 import { useJobPolling } from "../lib/useJobPolling";
 import { useSubscription } from "../lib/subscription";
 import { markPractisedToday } from "../lib/practiceReminder";
@@ -47,7 +57,7 @@ import { toApiError } from "../api/client";
 import { transcriptionsApi } from "../api/endpoints";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/jobProgress";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
-import { fonts, radii, spacing, type Palette } from "../design/theme";
+import { fonts, nightFonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { LinkInfo, TranscriptionStage } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
@@ -60,8 +70,6 @@ const STAGES: { key: TranscriptionStage; label: string }[] = [
   { key: "separating", label: "Isolating the voice" },
   { key: "transcribing", label: "Writing the solfa" },
 ];
-
-const PROVIDER_LABEL = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" } as const;
 
 /** How long to wait after the last keystroke before looking the link up. */
 const INFO_DEBOUNCE_MS = 500;
@@ -79,6 +87,8 @@ export function LinkScreen() {
   const { isPro, known, subscription, refresh } = useSubscription();
 
   const [url, setUrl] = useState("");
+  const [focused, setFocused] = useState(false);
+  const inputRef = useRef<TextInput>(null);
   // Share text ("Listen to … on Spotify: https://…") is read down to its link, the one rule the
   // worker applies (lib/songLink); only the link itself is sent.
   const found = useMemo(() => extractSongUrl(url), [url]);
@@ -90,13 +100,16 @@ export function LinkScreen() {
   // previous song; the sequence number drops a lookup that finishes after the next began.
   const [info, setInfo] = useState<{ url: string; data: LinkInfo } | null>(null);
   const [infoBusy, setInfoBusy] = useState(false);
-  const [infoError, setInfoError] = useState<string | null>(null);
+  const [infoError, setInfoError] = useState<{ code: string; message: string } | null>(null);
   const [range, setRange] = useState<ClipRange | null>(null);
+  // The last section dragged by hand, so "My pick" can bring it back after a preset.
+  const [pick, setPick] = useState<ClipRange | null>(null);
   const lookupSeq = useRef(0);
   const foundUrl = found?.url ?? null;
 
   useEffect(() => {
     const seq = ++lookupSeq.current;
+    setPick(null);
     if (!foundUrl) {
       setInfo(null);
       setInfoError(null);
@@ -116,7 +129,8 @@ export function LinkScreen() {
       } catch (e) {
         if (lookupSeq.current !== seq) return;
         // A plain sentence from the API, or the client's own; never a server detail.
-        setInfoError(toApiError(e).message);
+        const err = toApiError(e);
+        setInfoError({ code: err.code, message: err.message });
         setInfo(null);
         setRange(null);
       } finally {
@@ -131,6 +145,9 @@ export function LinkScreen() {
   const maxSeconds = song?.maxSeconds ?? null;
   // The section to send: only when the song's length is known, so the thumbs mean something.
   const section = song && duration != null && maxSeconds != null && range ? range : null;
+  // A link the API turned away by name (live, private, too long…) can never work, so the screen
+  // says so instead of offering the button; any other failed lookup leaves the server the final say.
+  const refusal = infoError ? linkRefusal(infoError.code) : null;
 
   const credits = subscription?.songCreditsRemaining;
   const creditsTotal = subscription?.songCreditsTotal;
@@ -173,8 +190,43 @@ export function LinkScreen() {
     });
   }
 
+  function tryAnother() {
+    setUrl("");
+    inputRef.current?.focus();
+  }
+
+  const uploadInstead = () => nav.navigate("Tabs", { screen: "Record", params: { autoPickAudio: true } });
+
   const upgradeCodes = new Set(["BILLING_SONG_PREVIEW_USED", "BILLING_FREE_TIER_LIMIT"]);
   const wantsUpgrade = state.status === "failed" && state.errorCode !== null && upgradeCodes.has(state.errorCode);
+
+  // Ready: nothing we can read yet, so the screen introduces itself and the services.
+  const ready = !provider;
+
+  // Which preset the section matches, for the chips. A song that fits whole starts as the whole song.
+  const first = duration != null && maxSeconds != null ? defaultRange(duration, maxSeconds) : null;
+  const preset =
+    section && duration != null && first
+      ? isWholeSong(section, duration)
+        ? "whole"
+        : section.start === first.start && section.end === first.end
+          ? "start"
+          : "pick"
+      : null;
+
+  const chip = (label: string, on: boolean, onPress: () => void) => (
+    <Touchable
+      key={label}
+      onPress={onPress}
+      style={[styles.chip, on && styles.chipOn]}
+      radius={radii.pill}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: on }}
+    >
+      <Text style={[styles.chipText, on && styles.chipTextOn]}>{label}</Text>
+    </Touchable>
+  );
 
   return (
     <Screen scroll>
@@ -183,108 +235,131 @@ export function LinkScreen() {
           onPress={() => (nav.canGoBack() ? nav.goBack() : nav.navigate("Tabs", { screen: "Home" }))}
           style={styles.backBtn}
           hitSlop={8}
-          ripple="borderless"
+          radius={20}
           accessibilityLabel="Go back"
         >
-          <Ionicons name="arrow-back" size={22} color={colors.text} />
+          <Ionicons name="chevron-back" size={20} color={colors.text} />
         </Touchable>
-        <Text style={styles.pageTitle}>Song from a link</Text>
-        <View style={styles.backBtn} />
+        {ready && !busy ? (
+          <View style={styles.lockup} accessible accessibilityLabel="Notefusion">
+            <Mark height={20} color={colors.text} />
+            <Wordmark size={16} style={{ color: colors.text }} />
+          </View>
+        ) : (
+          <Text style={styles.pageTitle} accessibilityRole="header">Song from a link</Text>
+        )}
+        <View style={styles.headerSpacer} />
       </View>
 
-      {!busy && (
-      <Text style={styles.lead}>
-        Paste a YouTube, Spotify or Apple Music link. We isolate the lead vocal and write it
-        out as Tonic Solfa and staff notation, with the song and artist credited on the sheet.
-      </Text>
-      )}
+      {!busy && ready ? (
+        <>
+          <Text style={styles.title} accessibilityRole="header">Song from{"\n"}a link</Text>
+          <Text style={styles.lead}>We isolate the lead voice and write it out in solfa and staff.</Text>
+        </>
+      ) : null}
 
-      {!busy && (
-      <Card style={styles.card}>
-        <View style={styles.inputRow}>
-          <Ionicons
-            name={provider === "youtube" ? "logo-youtube" : provider ? "musical-notes" : "link-outline"}
-            size={18}
-            color={provider ? colors.accent : colors.textFaint}
-          />
-          <TextInput
-            value={url}
-            onChangeText={setUrl}
-            placeholder="https://www.youtube.com/watch?v=…"
-            placeholderTextColor={colors.textFaint}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="url"
-            returnKeyType="go"
-            onSubmitEditing={submit}
-            editable={!busy}
-            style={styles.input}
-            accessibilityLabel="Song link"
-          />
-          {url.length > 0 && !busy ? (
-            <Touchable onPress={() => setUrl("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear">
-              <Ionicons name="close-circle" size={18} color={colors.textFaint} />
-            </Touchable>
-          ) : null}
+      {!busy ? (
+        <View style={[styles.ring, ready && focused && styles.ringOn]}>
+          <View
+            style={[
+              styles.field,
+              ready ? styles.fieldLarge : styles.fieldCompact,
+              ready && focused && styles.fieldFocused,
+              refusal && styles.fieldRefused,
+            ]}
+          >
+            {provider ? (
+              <ProviderMark provider={provider} size={30} />
+            ) : (
+              <Ionicons name="link-outline" size={20} color={focused ? colors.accent : colors.textFaint} />
+            )}
+            <TextInput
+              ref={inputRef}
+              value={url}
+              onChangeText={setUrl}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              placeholder="Paste a song link"
+              placeholderTextColor={colors.textFaint}
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType="url"
+              returnKeyType="go"
+              onSubmitEditing={submit}
+              editable={!busy}
+              selectionColor={colors.accent}
+              style={[styles.input, url.length > 0 && styles.inputFilled]}
+              accessibilityLabel="Song link"
+            />
+            {url.length > 0 ? (
+              <Touchable onPress={() => setUrl("")} hitSlop={8} ripple="borderless" accessibilityLabel="Clear">
+                <Ionicons name="close" size={20} color={colors.textMuted} />
+              </Touchable>
+            ) : null}
+          </View>
         </View>
-        {url.trim().length > 0 && !provider ? (
-          <Text style={styles.hintDanger}>{songLinkHint(url)}</Text>
-        ) : provider ? (
-          <Text style={styles.hint}>
-            {PROVIDER_LABEL[provider]}
-            {provider !== "youtube" ? " — we'll find the song on YouTube by its title and artist." : ""}
-          </Text>
-        ) : null}
+      ) : null}
 
-        {provider && !busy ? (
-          song ? (
-            <View style={styles.infoBlock}>
-              <View style={styles.song}>
-                {song.thumbnailUrl ? (
-                  <Image source={{ uri: song.thumbnailUrl }} style={styles.thumb} />
-                ) : (
-                  <View style={[styles.thumb, styles.thumbEmpty]}>
-                    <Ionicons name="musical-notes" size={22} color={colors.textMuted} />
-                  </View>
-                )}
-                <View style={styles.songText}>
-                  <Text style={styles.songTitle} numberOfLines={2}>
-                    {song.title}
-                    {song.artist ? <Text style={styles.songArtistInline}> · {song.artist}</Text> : null}
-                  </Text>
-                  <Text style={styles.songArtist}>
-                    {duration != null ? `Total length ${formatClock(duration)}` : "Length not known"}
-                  </Text>
-                </View>
-              </View>
+      {!busy && url.trim().length > 0 && !provider ? (
+        <View style={styles.note}>
+          <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+          <Text style={styles.noteText}>{songLinkHint(url)}</Text>
+        </View>
+      ) : null}
+
+      {!busy && ready ? (
+        <>
+          <Text style={styles.eyebrow}>Works with</Text>
+          <SourceTiles />
+          <Text style={styles.tip}>Tip: in any of these apps tap Share, then Copy link.</Text>
+        </>
+      ) : null}
+
+      {!busy && provider && refusal && infoError ? (
+        <>
+          <NoticeCard icon={refusal.icon} title={refusal.title} message={infoError.message}>
+            <PillAction label="Try another link" tone="solid" onPress={tryAnother} />
+            <PillAction label="Upload a file" onPress={uploadInstead} />
+          </NoticeCard>
+          <RefusedLinks />
+        </>
+      ) : null}
+
+      {!busy && provider && !refusal ? (
+        <>
+          {provider !== "youtube" && !song ? (
+            <Text style={styles.hint}>
+              {PROVIDER_LABEL[provider]} — we'll find the song on YouTube by its title and artist.
+            </Text>
+          ) : null}
+
+          {song ? (
+            <>
+              <SongCover song={song} provider={provider} duration={duration} />
 
               {duration != null && maxSeconds != null && range ? (
                 <>
-                  <Text style={styles.pickTitle}>Choose the part to transcribe</Text>
-                  <RangePicker duration={duration} maxSeconds={maxSeconds} value={range} onChange={setRange} />
+                  <View style={styles.pickHead}>
+                    <Text style={styles.pickTitle}>Which part?</Text>
+                    <Text style={styles.pickRange}>
+                      {formatClock(range.start)} – {formatClock(range.end)} · {formatClock(range.end - range.start)} long
+                    </Text>
+                  </View>
+                  <RangePicker
+                    duration={duration}
+                    maxSeconds={maxSeconds}
+                    value={range}
+                    onChange={(next) => {
+                      setRange(next);
+                      setPick(next);
+                    }}
+                  />
                   <View style={styles.chips}>
-                    <Touchable
-                      onPress={() => setRange(defaultRange(duration, maxSeconds))}
-                      style={styles.chip}
-                      radius={radii.pill}
-                      accessibilityLabel="From the start"
-                    >
-                      <Ionicons name="play-skip-back-outline" size={13} color={colors.accent} />
-                      <Text style={styles.chipText}>From the start</Text>
-                    </Touchable>
-                    {fitsWhole(duration, maxSeconds) ? (
-                      <Touchable
-                        onPress={() => setRange({ start: 0, end: Math.floor(duration) })}
-                        style={styles.chip}
-                        radius={radii.pill}
-                        disabled={isWholeSong(range, duration)}
-                        accessibilityLabel="Whole song"
-                        accessibilityState={{ disabled: isWholeSong(range, duration) }}
-                      >
-                        <Ionicons name="musical-note-outline" size={13} color={colors.accent} />
-                        <Text style={styles.chipText}>Whole song</Text>
-                      </Touchable>
-                    ) : null}
+                    {chip("From the start", preset === "start", () => setRange(defaultRange(duration, maxSeconds)))}
+                    {pick ? chip("My pick", preset === "pick", () => setRange(pick)) : null}
+                    {fitsWhole(duration, maxSeconds)
+                      ? chip("Whole song", preset === "whole", () => setRange({ start: 0, end: Math.floor(duration) }))
+                      : null}
                   </View>
                   <Text style={styles.hint}>
                     {isPro
@@ -298,44 +373,48 @@ export function LinkScreen() {
                   {maxSeconds != null ? formatClock(maxSeconds) : "part"}.
                 </Text>
               )}
-            </View>
+            </>
           ) : infoBusy ? (
-            <View style={styles.infoRow}>
+            <View style={styles.reading}>
               <ActivityIndicator size="small" color={colors.accent} />
-              <Text style={styles.hint}>Reading the link…</Text>
+              <Text style={styles.readingText}>Reading the link…</Text>
             </View>
           ) : infoError ? (
-            <Text style={styles.hintDanger}>{infoError}</Text>
-          ) : null
-        ) : null}
+            <View style={styles.note}>
+              <Ionicons name="information-circle-outline" size={16} color={colors.warning} />
+              <Text style={styles.noteText}>{infoError.message}</Text>
+            </View>
+          ) : null}
 
-        <Button
-          label={busy ? "Transcribing…" : "Transcribe this song"}
-          icon="sparkles"
-          variant="primary"
-          onPress={submit}
-          disabled={!canSubmit}
-          loading={busy}
-          style={styles.submit}
-        />
+          {known ? (
+            <View style={styles.entitlement}>
+              <Mark height={14} color={isPro ? colors.textMuted : colors.textFaint} />
+              <Text style={styles.entitlementText}>
+                {isPro
+                  ? credits == null
+                    ? `Pro: ${creditsTotal ?? 20} songs a month, in the fast lane.`
+                    : credits > 0
+                      ? `Uses 1 of your ${credits} songs left this month`
+                      : `All ${creditsTotal ?? 20} of this month's songs are used.`
+                  : credits === 0
+                    ? "Your free preview is used. Upgrade to Pro for full songs and downloads."
+                    : "Free preview: the first 60 seconds of one song. Upgrade for full songs and the PDF."}
+              </Text>
+            </View>
+          ) : null}
 
-        {known ? (
-          <View style={styles.entitlement}>
-            <Ionicons name={isPro ? "star" : "information-circle-outline"} size={14} color={isPro ? colors.premiumDeep : colors.textMuted} />
-            <Text style={styles.entitlementText}>
-              {isPro
-                ? `Pro: up to 6 minutes per song, ${credits ?? "—"} of ${creditsTotal ?? 20} songs left this month, fast lane.`
-                : credits === 0
-                  ? "Your free preview is used. Upgrade to Pro for full songs and downloads."
-                  : "Free preview: the first 60 seconds of one song. Upgrade for full songs and the PDF."}
-            </Text>
-          </View>
-        ) : null}
-      </Card>
-      )}
+          <Button
+            label={section && duration != null && !isWholeSong(section, duration) ? "Transcribe this part" : "Transcribe this song"}
+            variant="primary"
+            onPress={submit}
+            disabled={!canSubmit}
+            style={styles.submit}
+          />
+        </>
+      ) : null}
 
       {busy ? (
-        <Card style={styles.card}>
+        <Card style={styles.progressCard}>
           <View style={styles.song}>
             {state.source?.thumbnailUrl ? (
               <Image source={{ uri: state.source.thumbnailUrl }} style={styles.thumb} />
@@ -350,7 +429,7 @@ export function LinkScreen() {
               </Text>
               {state.source?.artist ? <Text style={styles.songArtist} numberOfLines={1}>{state.source.artist}</Text> : null}
               {section && duration != null && !isWholeSong(section, duration) ? (
-                <Text style={styles.songArtist}>{sectionLabel(section.start, section.end, duration)}</Text>
+                <Text style={styles.songSection}>{sectionLabel(section.start, section.end, duration)}</Text>
               ) : null}
             </View>
           </View>
@@ -360,7 +439,7 @@ export function LinkScreen() {
               const done = stageIndex > i;
               const on = stageIndex === i;
               return (
-                <View key={s.key} style={[styles.stage, on && styles.stageOn, done && styles.stageDone]}>
+                <View key={s.key} style={[styles.stage, on && styles.stageOn]}>
                   <Ionicons
                     name={done ? "checkmark-circle" : on ? "ellipse" : "ellipse-outline"}
                     size={12}
@@ -404,23 +483,18 @@ export function LinkScreen() {
       ) : null}
 
       {state.status === "failed" && state.error ? (
-        <Card style={{ ...styles.card, ...styles.errorCard }}>
-          <Text style={styles.errorTitle}>{wantsUpgrade ? "That's a Pro feature" : "Couldn't transcribe that"}</Text>
-          <Text style={styles.errorText}>{state.error}</Text>
-          <View style={styles.errorActions}>
-            {wantsUpgrade ? (
-              <Button label="See Pro plans" icon="star" variant="primary" onPress={() => nav.navigate("Upgrade")} />
-            ) : (
-              <Button
-                label="Upload the audio instead"
-                icon="folder-open-outline"
-                variant="secondary"
-                onPress={() => nav.navigate("Tabs", { screen: "Record", params: { autoPickAudio: true } })}
-              />
-            )}
-            <Button label="Try again" variant="secondary" onPress={reset} />
-          </View>
-        </Card>
+        <NoticeCard
+          icon={wantsUpgrade ? "star-outline" : "alert-circle-outline"}
+          title={wantsUpgrade ? "That's a Pro feature" : "Couldn't transcribe that"}
+          message={state.error}
+        >
+          {wantsUpgrade ? (
+            <PillAction label="See Pro plans" tone="solid" onPress={() => nav.navigate("Upgrade")} />
+          ) : (
+            <PillAction label="Upload the audio instead" tone="solid" onPress={uploadInstead} />
+          )}
+          <PillAction label="Try again" onPress={reset} />
+        </NoticeCard>
       ) : null}
 
       <Text style={styles.legal}>
@@ -433,54 +507,77 @@ export function LinkScreen() {
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-    headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: spacing.md },
-    backBtn: { width: 40, height: 40, alignItems: "center", justifyContent: "center" },
-    pageTitle: { fontFamily: fonts.semibold, fontSize: 18, color: c.text },
-    lead: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 21, color: c.textMuted, marginBottom: spacing.md },
-    card: { marginBottom: spacing.md },
-    inputRow: {
-      flexDirection: "row", alignItems: "center", gap: spacing.sm,
-      borderWidth: 1, borderColor: c.border, borderRadius: radii.md, paddingHorizontal: spacing.md,
-      backgroundColor: c.surface, minHeight: 50,
+    headerRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: spacing.xs },
+    backBtn: {
+      width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center",
+      backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
     },
-    input: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, paddingVertical: spacing.sm },
-    hint: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.xs },
-    hintDanger: { fontFamily: fonts.regular, fontSize: 12, color: c.danger, marginTop: spacing.xs },
-    submit: { marginTop: spacing.md },
-    entitlement: { flexDirection: "row", alignItems: "flex-start", gap: 6, marginTop: spacing.md },
-    entitlementText: { flex: 1, fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: c.textMuted },
-    infoBlock: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: c.borderLight },
-    infoRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.sm },
-    pickTitle: { fontFamily: fonts.medium, fontSize: 13, color: c.text, marginTop: spacing.md },
-    chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.sm },
+    headerSpacer: { width: 40 },
+    lockup: { flexDirection: "row", alignItems: "center", gap: 7 },
+    pageTitle: { fontFamily: fonts.medium, fontSize: 15, color: c.text },
+    title: { fontFamily: fonts.semibold, fontSize: 34, lineHeight: 36, letterSpacing: -1.4, color: c.text, marginTop: 28 },
+    lead: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 22, color: c.textMuted, marginTop: 10 },
+
+    // The focus ring is a padded wrapper rather than a shadow, so it draws the same on Android.
+    ring: { borderRadius: 999, padding: 4, marginHorizontal: -4, marginTop: spacing.lg },
+    ringOn: { backgroundColor: c.accentSoft },
+    field: {
+      flexDirection: "row", alignItems: "center", gap: 10, borderRadius: 999,
+      backgroundColor: c.surfaceAlt, borderWidth: 1.5, borderColor: c.border,
+    },
+    fieldLarge: { height: 60, paddingLeft: 20, paddingRight: 18 },
+    fieldCompact: { height: 52, paddingLeft: 11, paddingRight: 16 },
+    fieldFocused: { borderColor: c.ink },
+    fieldRefused: { borderColor: c.premiumBorder },
+    input: { flex: 1, fontFamily: fonts.regular, fontSize: 15, color: c.text, paddingVertical: 0 },
+    inputFilled: { fontFamily: nightFonts.mono, fontSize: 13.5 },
+
+    note: { flexDirection: "row", alignItems: "flex-start", gap: 8, marginTop: spacing.md, paddingHorizontal: spacing.xs },
+    noteText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textMuted },
+    eyebrow: {
+      fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",
+      color: c.textMuted, marginTop: 30,
+    },
+    tip: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 18, color: c.textFaint, textAlign: "center", marginTop: spacing.lg },
+    hint: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: c.textMuted, marginTop: spacing.sm },
+    reading: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.lg, paddingHorizontal: spacing.xs },
+    readingText: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+
+    pickHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: 22 },
+    pickTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    pickRange: { fontFamily: nightFonts.mono, fontSize: 12.5, color: c.accent },
+    chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.md },
     chip: {
-      flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 7, paddingHorizontal: 12,
-      borderRadius: radii.pill, backgroundColor: c.accentSoft,
+      height: 30, paddingHorizontal: 12, borderRadius: radii.pill, justifyContent: "center",
+      backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border,
     },
-    chipText: { fontFamily: fonts.medium, fontSize: 12, color: c.accent },
+    chipOn: { backgroundColor: c.accentSoft, borderColor: c.ink },
+    chipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
+    chipTextOn: { color: c.accent },
+
+    entitlement: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: spacing.xl, paddingHorizontal: spacing.md },
+    entitlementText: { flexShrink: 1, fontFamily: fonts.regular, fontSize: 12.5, lineHeight: 18, color: c.textMuted, textAlign: "center" },
+    submit: { marginTop: spacing.md },
+
+    progressCard: { marginTop: spacing.lg },
     song: { flexDirection: "row", alignItems: "center", gap: spacing.md },
     thumb: { width: 64, height: 64, borderRadius: radii.md, backgroundColor: c.surfaceAlt },
     thumbEmpty: { alignItems: "center", justifyContent: "center" },
     songText: { flex: 1 },
     songTitle: { fontFamily: fonts.semibold, fontSize: 16, color: c.text },
-    songArtistInline: { fontFamily: fonts.regular, fontSize: 15, color: c.textMuted },
     songArtist: { fontFamily: fonts.regular, fontSize: 13, color: c.textMuted, marginTop: 2 },
+    songSection: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, marginTop: 4 },
     stages: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.md },
     stage: { flexDirection: "row", alignItems: "center", gap: 6, paddingVertical: 6, paddingHorizontal: 10, borderRadius: radii.pill, backgroundColor: c.surfaceAlt },
     stageOn: { backgroundColor: c.accentSoft },
-    stageDone: { backgroundColor: c.surfaceAlt },
     stageText: { fontFamily: fonts.medium, fontSize: 12, color: c.textFaint },
     stageTextOn: { color: c.accent },
     stageTextDone: { color: c.success },
     barRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.md },
     bar: { flex: 1, height: 6, borderRadius: 3, backgroundColor: c.border, overflow: "hidden" },
-    barFill: { height: "100%", backgroundColor: c.accent },
-    barPct: { fontFamily: fonts.semibold, fontSize: 12, color: c.accent, minWidth: 38, textAlign: "right", fontVariant: ["tabular-nums"] },
+    barFill: { height: "100%", backgroundColor: c.ink },
+    barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warning, marginTop: spacing.sm },
-    errorCard: { borderColor: c.danger, borderWidth: 1 },
-    errorTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text, marginBottom: 4 },
-    errorText: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textMuted },
-    errorActions: { gap: spacing.sm, marginTop: spacing.md },
-    legal: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 16, color: c.textFaint, textAlign: "center", marginTop: spacing.lg },
+    legal: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 16, color: c.textFaint, textAlign: "center", marginTop: spacing.xl },
   });

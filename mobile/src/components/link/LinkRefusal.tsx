@@ -1,0 +1,138 @@
+/**
+ * A link that can't be used, said calmly. The sentence is always the API's own plain one
+ * (`TranscriptionErrors.ForLink`, read through `toApiError`); this file only adds a heading
+ * and an icon for the codes it knows, and the short list of links that never work, so
+ * the person knows what to try instead.
+ */
+
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+
+import { Touchable } from "../Touchable";
+import { fonts, spacing, type Palette } from "../../design/theme";
+import { useColors, useThemedStyles } from "../../lib/theme";
+
+type Icon = keyof typeof Ionicons.glyphMap;
+
+/** The link refusals the API names, as the screen titles them. */
+const REFUSALS: Record<string, { title: string; icon: Icon }> = {
+  TRANS_LINK_LIVE: { title: "That's a live stream", icon: "radio-outline" },
+  TRANS_LINK_UNAVAILABLE: { title: "That video can't be fetched", icon: "eye-off-outline" },
+  TRANS_LINK_NOT_FOUND: { title: "No video at that link", icon: "search-outline" },
+  TRANS_LINK_TOO_LONG: { title: "That video is too long", icon: "time-outline" },
+  TRANS_LINK_REFUSED: { title: "YouTube said no for now", icon: "hand-left-outline" },
+  TRANS_INVALID_LINK: { title: "That isn't a song link", icon: "link-outline" },
+};
+
+/** Heading and icon for a link the API turned away; null for any other failure. */
+export function linkRefusal(code: string | null | undefined): { title: string; icon: Icon } | null {
+  return (code && REFUSALS[code]) || null;
+}
+
+const NEVER = [
+  { what: "Live streams and premieres", why: "There's no fixed song to cut a part from." },
+  { what: "Private or removed videos", why: "We can only fetch what anyone can watch." },
+  { what: "Videos over the length limit", why: "Upload the song's audio file instead." },
+  { what: "Playlists, channels and albums", why: "Share the song itself and paste that link." },
+];
+
+/** An icon, a heading, the plain sentence, and what to do next. */
+export function NoticeCard({
+  icon,
+  title,
+  message,
+  children,
+}: {
+  icon: Icon;
+  title: string;
+  message: string;
+  children?: React.ReactNode;
+}) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.card} accessibilityLiveRegion="polite">
+      <View style={styles.iconTile}>
+        <Ionicons name={icon} size={22} color={colors.warning} />
+      </View>
+      <Text style={styles.title} accessibilityRole="header">{title}</Text>
+      <Text style={styles.message}>{message}</Text>
+      {children ? <View style={styles.actions}>{children}</View> : null}
+    </View>
+  );
+}
+
+/** A small pill for a notice's next step: `solid` for the one to take, `quiet` for the other. */
+export function PillAction({
+  label,
+  onPress,
+  tone = "quiet",
+}: {
+  label: string;
+  onPress: () => void;
+  tone?: "solid" | "quiet";
+}) {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Touchable
+      onPress={onPress}
+      radius={20}
+      style={[styles.pill, tone === "solid" ? styles.pillSolid : styles.pillQuiet]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <Text style={[styles.pillText, tone === "solid" && styles.pillTextSolid]}>{label}</Text>
+    </Touchable>
+  );
+}
+
+/** The links that never work, so a refusal doesn't read as the app being broken. */
+export function RefusedLinks() {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.list}>
+      <Text style={styles.eyebrow}>Links we can't use</Text>
+      {NEVER.map((n, i) => (
+        <View key={n.what} style={[styles.item, i > 0 && styles.itemRule]}>
+          <View style={styles.dot} />
+          <View style={styles.itemText}>
+            <Text style={styles.what}>{n.what}</Text>
+            <Text style={styles.why}>{n.why}</Text>
+          </View>
+        </View>
+      ))}
+    </View>
+  );
+}
+
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    card: {
+      marginTop: spacing.lg, padding: 20, borderRadius: 24,
+      backgroundColor: c.surface, borderWidth: 1, borderColor: c.border,
+    },
+    iconTile: {
+      width: 44, height: 44, borderRadius: 14, backgroundColor: c.premiumSoft,
+      alignItems: "center", justifyContent: "center",
+    },
+    title: { fontFamily: fonts.semibold, fontSize: 19, letterSpacing: -0.4, color: c.text, marginTop: 14 },
+    message: { fontFamily: fonts.regular, fontSize: 14, lineHeight: 21, color: c.textMuted, marginTop: 6 },
+    actions: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.lg },
+    pill: { height: 40, paddingHorizontal: 16, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+    pillSolid: { backgroundColor: c.text },
+    pillQuiet: { backgroundColor: c.surfaceAlt, borderWidth: 1, borderColor: c.border },
+    pillText: { fontFamily: fonts.medium, fontSize: 14, color: c.text },
+    pillTextSolid: { color: c.bg },
+    list: { marginTop: 28 },
+    eyebrow: {
+      fontFamily: fonts.medium, fontSize: 12, letterSpacing: 1.7, textTransform: "uppercase",
+      color: c.textMuted, marginBottom: spacing.xs,
+    },
+    item: { flexDirection: "row", alignItems: "flex-start", gap: spacing.md, paddingVertical: 12 },
+    itemRule: { borderTopWidth: 1, borderTopColor: c.border },
+    dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: c.warning, marginTop: 6 },
+    itemText: { flex: 1 },
+    what: { fontFamily: fonts.medium, fontSize: 14, color: c.text },
+    why: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: c.textMuted, marginTop: 2 },
+  });
