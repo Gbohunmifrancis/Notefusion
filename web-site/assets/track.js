@@ -3,11 +3,14 @@
 
    What leaves the browser: the page path (no query string), the referring site's host, a label
    for each clicked link or button, the link's destination, "mobile" or "desktop", and two random
-   ids this script makes up and keeps in the browser's own storage. No cookies, no user agent,
+   ids this script makes up and keeps in the browser's own storage, the browser's device id (the
+   same one the web app sends, hashed by the API before it is stored), and for an action a short
+   detail such as a checkout's error code or a script error's message. No cookies, no user agent,
    no screen size. When the web app has a session, the access token goes with the batch so the
    events are attached to the account; otherwise they are a visitor's.
 
-   Other scripts call window.nfTrack("Saved sheet") to record an action. */
+   Other scripts call window.nfTrack("Saved sheet") to record an action, or
+   window.nfTrack("Checkout failed", "HTTP 502") to record one with a detail. */
 (function () {
   "use strict";
   if (window.self !== window.top) return;
@@ -22,6 +25,14 @@
     try { var v = store.getItem(key); if (!v) { v = id(); store.setItem(key, v); } return v; } catch (e) { return id(); }
   }
   var visitorId = keep(localStorage, VISITOR_KEY);
+  /** The web app's device id (app.js and preview.js read the same key), so pages and previews line up. */
+  var deviceId = (function () {
+    try {
+      var d = localStorage.getItem("nf.web.device");
+      if (!d) { d = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : id() + id(); localStorage.setItem("nf.web.device", d); }
+      return d;
+    } catch (e) { return null; }
+  })();
   var sessionId = keep(sessionStorage, SESSION_KEY);
 
   function token() {
@@ -46,6 +57,7 @@
     var batch = queue.splice(0, 50).map(function (e) { e.ageMs = now - e.at; delete e.at; return e; });
     var body = JSON.stringify({ visitorId: visitorId, sessionId: sessionId, events: batch });
     var headers = { "Content-Type": "application/json" };
+    if (deviceId) headers["X-Device-Id"] = deviceId;
     var t = token();
     if (t) headers.Authorization = "Bearer " + t;
     try {
@@ -53,8 +65,8 @@
         .catch(function () { /* analytics never surfaces an error */ });
     } catch (e) { /* ignore */ }
   }
-  function push(kind, name, target) {
-    queue.push({ kind: kind, name: name || null, path: path(), target: target || null, referrer: firstPage ? referrer() : null, device: device(), at: Date.now() });
+  function push(kind, name, target, detail) {
+    queue.push({ kind: kind, name: name || null, path: path(), target: target || null, detail: detail || null, referrer: firstPage ? referrer() : null, device: device(), at: Date.now() });
     firstPage = false;
     if (queue.length >= 20) flush();
     else if (!timer) timer = setTimeout(flush, 4000);
@@ -86,5 +98,25 @@
   window.addEventListener("pagehide", flush);
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") flush(); });
 
-  window.nfTrack = function (name) { if (name) push("action", String(name).slice(0, 120)); };
+  window.nfTrack = function (name, detail) {
+    if (name) push("action", String(name).slice(0, 120), null, detail == null ? null : String(detail).slice(0, 300));
+  };
+
+  // Script errors, so a broken page (the checkout above all) shows up on the dashboard. A few per page:
+  // one fault often throws on every frame. "Script error." is a cross-origin script hiding its message
+  // (an ad, an extension) and says nothing about this site, so it is left out.
+  var errorsSent = 0;
+  function pageError(message, where) {
+    if (errorsSent >= 5 || !message || /^Script error\.?$/.test(message)) return;
+    errorsSent++;
+    push("action", "Page error", null, (String(message) + (where ? " @ " + where : "")).slice(0, 300));
+  }
+  window.addEventListener("error", function (e) {
+    var file = e.filename ? e.filename.replace(location.origin, "").split("?")[0] : "";
+    pageError(e.message, file ? file + ":" + e.lineno : "");
+  });
+  window.addEventListener("unhandledrejection", function (e) {
+    var r = e.reason;
+    pageError(r && r.message ? r.message : String(r || "Unhandled rejection"), "promise");
+  });
 })();

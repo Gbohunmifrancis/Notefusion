@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Activity;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
@@ -71,6 +72,8 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
                 // charged, and the thing to do is submit again.
                 if (job is not null && result.Error.Type == ErrorType.NotFound)
                 {
+                    await ActivityRecorder.FailAsync(_db, request.JobId, "The transcription service restarted and lost the job.", _clock.UtcNow, cancellationToken);
+                    await _db.SaveChangesAsync(cancellationToken);
                     return new TranscriptionJobDto(
                         request.JobId, TranscriptionStatus.Failed, 0,
                         null,
@@ -86,6 +89,14 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
 
         // A job with no row was submitted before this table existed, or anonymously. Let it through
         // uncharged — breaking an in-flight transcription across a deploy is the worse trade.
+        if (job is not null && result.Value.Status == TranscriptionStatus.Failed)
+        {
+            // The job row is settled by the completion sweep, which also pushes; the log only needs the reason.
+            await ActivityRecorder.FailAsync(_db, request.JobId, result.Value.Error, _clock.UtcNow, cancellationToken);
+            await _db.SaveChangesAsync(cancellationToken);
+            return result;
+        }
+
         if (job is null || result.Value.Status != TranscriptionStatus.Done)
         {
             return result;
@@ -97,6 +108,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         if (result.Value.Result is { } finished)
         {
             job.Settle(TranscriptionResultCache.Serialize(finished), _clock.UtcNow);
+            await ActivityRecorder.FinishAsync(_db, request.JobId, finished, _clock.UtcNow, cancellationToken);
         }
 
         // Pro at the moment of success, so nothing to charge. Asked here rather than recorded at submit

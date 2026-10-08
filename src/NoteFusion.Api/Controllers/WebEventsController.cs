@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NoteFusion.Api.Common;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Web.Commands;
 
 namespace NoteFusion.Api.Controllers;
@@ -27,9 +28,10 @@ public sealed class WebEventsController : ApiControllerBase
     /// <summary>Records a batch of events. Always 204: the tracker has nobody to show an error to.</summary>
     [HttpPost("events")]
     [RequestSizeLimit(MaxBodyBytes)]
-    public async Task<IActionResult> Record([FromBody] WebEventsRequest request, CancellationToken ct)
+    public async Task<IActionResult> Record(
+        [FromBody] WebEventsRequest request, [FromServices] IDeviceFingerprint device, CancellationToken ct)
     {
-        await _sender.Send(new RecordWebEventsCommand(request.VisitorId, request.SessionId, request.Events ?? []), ct);
+        await _sender.Send(new RecordWebEventsCommand(request.VisitorId, request.SessionId, request.Events ?? [], device.Current), ct);
         return NoContent();
     }
 

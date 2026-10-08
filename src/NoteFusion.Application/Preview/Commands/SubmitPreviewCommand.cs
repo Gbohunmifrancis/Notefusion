@@ -23,7 +23,11 @@ public sealed record SubmitPreviewCommand(
     bool Separate = false,
     bool AudioPreview = true,
     TranscriptionMode Mode = TranscriptionMode.Melody,
-    int KeyboardTranspose = 0) : IRequest<Result<string>>;
+    int KeyboardTranspose = 0,
+    /// <summary>The upload's media type as the browser declared it; for the activity log only.</summary>
+    string? ContentType = null,
+    /// <summary>The upload's size in bytes; for the activity log only.</summary>
+    long? SizeBytes = null) : IRequest<Result<string>>;
 
 /// <summary>The same preview for a song behind a YouTube, Spotify or Apple Music link.</summary>
 /// <param name="KeyboardTranspose">The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</param>
@@ -61,17 +65,34 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
     private readonly IDateTimeProvider _clock;
     private readonly IDeviceFingerprint _device;
     private readonly IClientIpAddress _ip;
+    private readonly Activity.ActivityRecorder _activity;
 
-    public SubmitPreviewCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip)
+    public SubmitPreviewCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip, Activity.ActivityRecorder activity)
     {
         _api = api;
         _db = db;
         _clock = clock;
         _device = device;
         _ip = ip;
+        _activity = activity;
     }
 
     public async Task<Result<string>> Handle(SubmitPreviewCommand request, CancellationToken cancellationToken)
+    {
+        var submitted = await SubmitAsync(request, cancellationToken);
+
+        var log = _activity.Describe(
+            TranscriptionLog.PreviewOrigin, request.Separate ? "song" : "upload", request.Mode,
+            request.FileName, request.ContentType, request.SizeBytes);
+        if (submitted.IsSuccess)
+            await _activity.AcceptedAsync(submitted.Value, log, cancellationToken);
+        else
+            await _activity.RefusedAsync(log, submitted.Error, cancellationToken);
+
+        return submitted;
+    }
+
+    private async Task<Result<string>> SubmitAsync(SubmitPreviewCommand request, CancellationToken cancellationToken)
     {
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
             return TranscriptionErrors.InvalidKeyboardTranspose;
@@ -105,17 +126,35 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
     private readonly IDateTimeProvider _clock;
     private readonly IDeviceFingerprint _device;
     private readonly IClientIpAddress _ip;
+    private readonly Activity.ActivityRecorder _activity;
 
-    public SubmitPreviewLinkCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip)
+    public SubmitPreviewLinkCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip, Activity.ActivityRecorder activity)
     {
         _api = api;
         _db = db;
         _clock = clock;
         _device = device;
         _ip = ip;
+        _activity = activity;
     }
 
     public async Task<Result<string>> Handle(SubmitPreviewLinkCommand request, CancellationToken cancellationToken)
+    {
+        var submitted = await SubmitAsync(request, cancellationToken);
+
+        var log = _activity.Describe(
+            TranscriptionLog.PreviewOrigin, "link", TranscriptionMode.Melody,
+            linkUrl: SongLinks.TryExtract(request.Url, out var url) ? url : request.Url,
+            startSeconds: request.StartSeconds, endSeconds: request.EndSeconds);
+        if (submitted.IsSuccess)
+            await _activity.AcceptedAsync(submitted.Value, log, cancellationToken);
+        else
+            await _activity.RefusedAsync(log, submitted.Error, cancellationToken);
+
+        return submitted;
+    }
+
+    private async Task<Result<string>> SubmitAsync(SubmitPreviewLinkCommand request, CancellationToken cancellationToken)
     {
         // Only the link goes on, not the words a share sheet wrapped around it.
         if (!SongLinks.TryExtract(request.Url, out var url))

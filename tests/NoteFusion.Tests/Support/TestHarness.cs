@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
+using NoteFusion.Application.Activity;
 using NoteFusion.Application.Admin.Services;
 using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Interfaces;
@@ -88,6 +89,12 @@ public sealed class TestHarness : IDisposable
     /// handler takes an <see cref="ITrialDeviceRecorder"/>, so every free-tier test needs this one.
     /// </summary>
     public TrialDeviceRecorder DeviceRegister { get; }
+
+    public StubClientApp ClientApp { get; } = new();
+
+    /// <summary>The activity log's writer, as a request from <paramref name="userId"/> on <paramref name="device"/> would see it.</summary>
+    public ActivityRecorder Activity(Guid? userId = null, string? device = null)
+        => new(Db, Clock, new StubDeviceFingerprint(device), ClientApp, new StubCurrentUser(userId));
 
     /// <summary>
     /// An audit logger acting as <paramref name="actor"/>, on this harness's context and clock. Admin

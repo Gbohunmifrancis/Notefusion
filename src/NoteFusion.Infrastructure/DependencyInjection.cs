@@ -178,6 +178,9 @@ public static class DependencyInjection
 
         // Watches jobs through to completion so a recording finishes whether or not the app is open.
         services.AddHostedService<TranscriptionCompletionWorker>();
+
+        // Deletes web events and the transcription activity log after 180 days.
+        services.AddHostedService<Activity.ActivityRetentionWorker>();
     }
 
     private static void AddGeo(this IServiceCollection services, IConfiguration configuration)

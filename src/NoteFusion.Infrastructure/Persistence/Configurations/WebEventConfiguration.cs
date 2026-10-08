@@ -19,10 +19,14 @@ public sealed class WebEventConfiguration : IEntityTypeConfiguration<WebEvent>
         builder.Property(e => e.Referrer).HasMaxLength(WebEvent.ReferrerMaxLength);
         builder.Property(e => e.VisitorId).HasMaxLength(WebEvent.IdMaxLength).IsRequired();
         builder.Property(e => e.SessionId).HasMaxLength(WebEvent.IdMaxLength).IsRequired();
+        builder.Property(e => e.Detail).HasMaxLength(WebEvent.DetailMaxLength);
+        builder.Property(e => e.DeviceHash).HasMaxLength(WebEvent.IdMaxLength);
         builder.Property(e => e.Device).HasMaxLength(10).IsRequired();
         builder.Property(e => e.OccurredAtUtc).IsRequired();
         builder.HasIndex(e => e.OccurredAtUtc);
         builder.HasIndex(e => new { e.Kind, e.OccurredAtUtc });
         builder.HasIndex(e => new { e.UserId, e.OccurredAtUtc });
+        builder.HasIndex(e => new { e.VisitorId, e.OccurredAtUtc });
+        builder.HasIndex(e => new { e.DeviceHash, e.OccurredAtUtc });
     }
 }

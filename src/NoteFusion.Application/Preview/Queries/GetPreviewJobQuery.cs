@@ -43,7 +43,13 @@ public sealed class GetPreviewJobQueryHandler : IRequestHandler<GetPreviewJobQue
         if (job.Status is TranscriptionStatus.Done or TranscriptionStatus.Failed)
         {
             if (preview.Complete(job.Status == TranscriptionStatus.Done, job.Result?.Source?.Title ?? job.Source?.Title, _clock.UtcNow))
+            {
+                if (job.Result is { } finished)
+                    await Activity.ActivityRecorder.FinishAsync(_db, request.JobId, finished, _clock.UtcNow, cancellationToken);
+                else
+                    await Activity.ActivityRecorder.FailAsync(_db, request.JobId, job.Error, _clock.UtcNow, cancellationToken);
                 await _db.SaveChangesAsync(cancellationToken);
+            }
         }
         return job.Result is null ? job : job with { Result = ProGate.ForFree(job.Result) };
     }

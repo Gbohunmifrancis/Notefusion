@@ -453,7 +453,7 @@ public class TrialQuotaTests
         TestHarness h, User user, FakeTranscriptionApi? api = null, string? device = null)
         => new SubmitTranscriptionCommandHandler(
                 api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock,
-                new StubDeviceFingerprint(device), h.DeviceRegister)
+                new StubDeviceFingerprint(device), h.DeviceRegister, h.Activity(user.Id))
             .Handle(
                 new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null),
                 CancellationToken.None);

@@ -11,6 +11,9 @@ import type {
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
   AnalyticsOverview,
+  CheckoutFunnel,
+  Journey,
+  JourneySubject,
   AuditAction,
   AuditLogRow,
   ClearStalePaymentsResult,
@@ -29,6 +32,8 @@ import type {
   RoleName,
   SystemAnnouncement,
   SystemHealth,
+  TranscriptionLogFilters,
+  TranscriptionLogPage,
   WebhookStatus,
 } from "@/api/types";
 
@@ -321,3 +326,26 @@ export const clearAnnouncement = () =>
   request<void>("/api/admin/announcement", {
     method: "DELETE",
   });
+
+/* ── Activity ─────────────────────────────────────────────────────────────── */
+
+/** Every transcription asked for, saved or not, newest first. */
+export const getTranscriptionLog = (
+  page: number,
+  pageSize: number,
+  filters: TranscriptionLogFilters,
+  signal?: AbortSignal,
+) =>
+  request<TranscriptionLogPage>(
+    `/api/admin/activity/transcriptions${query({ page, pageSize, ...filters })}`,
+    signal ? { signal } : {},
+  );
+
+/** One account's, device's or browser's pages, clicks, actions, transcriptions and payments. */
+export const getJourney = (subject: JourneySubject, days: number, signal?: AbortSignal) =>
+  request<Journey>(`/api/admin/activity/journey${query({ ...subject, days })}`, signal ? { signal } : {});
+
+/** The checkout funnel and its problems over a window. */
+export const getCheckoutFunnel = (from?: string, to?: string, signal?: AbortSignal) =>
+  request<CheckoutFunnel>(`/api/admin/activity/checkout${query({ from, to })}`, signal ? { signal } : {});
+

@@ -152,10 +152,10 @@ public class PreviewTests
     }
 
     private static SubmitPreviewCommandHandler Upload(TestHarness h, FakeApi api, string device)
-        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp);
+        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity());
 
     private static SubmitPreviewLinkCommandHandler Link(TestHarness h, FakeApi api)
-        => new(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp);
+        => new(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp, h.Activity());
 
     private sealed class FakeApi : ITranscriptionApi
     {
