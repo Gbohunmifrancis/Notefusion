@@ -23,6 +23,40 @@ public static class TranscriptionErrors
         Error.Validation("TRANS_INVALID_LINK",
             "Paste a link to a YouTube video, a Spotify track or an Apple Music song.");
 
+    /// <summary>The worker looked at the link and found no video behind it.</summary>
+    public static readonly Error LinkNotFound =
+        Error.Validation("TRANS_LINK_NOT_FOUND", "That video doesn't exist. Check the link and try again.");
+
+    public static readonly Error LinkUnavailable =
+        Error.Validation("TRANS_LINK_UNAVAILABLE", "That video is private or unavailable, so it can't be fetched.");
+
+    public static readonly Error LinkLive =
+        Error.Validation("TRANS_LINK_LIVE", "That's a live stream or a premiere. Paste a link to the recorded song instead.");
+
+    public static readonly Error LinkRefused =
+        Error.Validation("TRANS_LINK_REFUSED", "YouTube is refusing automated downloads right now. Upload the audio file instead.");
+
+    /// <summary>The video outruns the worker's cap on a linked video; <paramref name="limitSeconds"/> is that cap when it was named.</summary>
+    public static Error LinkTooLong(double? limitSeconds) =>
+        Error.Validation("TRANS_LINK_TOO_LONG", limitSeconds is { } cap
+            ? $"Links are limited to videos up to {SongSections.Length(cap)} long. Upload the song's audio file instead."
+            : "That video is too long to fetch from a link. Upload the song's audio file instead.");
+
+    /// <summary>
+    /// This API's own words for a reason the worker named by code when it turned a link away; null for a
+    /// code it has no words for, which the caller answers as an invalid link. The worker's sentence itself
+    /// is never shown.
+    /// </summary>
+    public static Error? ForLink(string? code, double? limitSeconds = null) => code switch
+    {
+        "not_found" => LinkNotFound,
+        "unavailable" => LinkUnavailable,
+        "live" => LinkLive,
+        "refused" => LinkRefused,
+        "too_long" => LinkTooLong(limitSeconds),
+        _ => null,
+    };
+
     public static readonly Error SectionStartsBeforeTheSong =
         Error.Validation("TRANS_INVALID_SECTION", "The section must start at 0:00 or later.");
 

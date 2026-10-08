@@ -17,6 +17,11 @@ upload sat behind it however high its priority.  So the Pro lane has a worker of
 there are none; when one arrives it starts at once, beside whatever the general workers
 are doing.  Two jobs then share the CPU, which slows both a little — the Pro one is
 never stopped dead, which is the promise the lane makes.
+
+Nothing is lost to a restart.  With ``NF_JOB_DIR`` set the submit is journaled
+(``app.jobs.journal``) before it is queued and ``recover()`` re-queues the journal after a
+restart under the same job ids; a job that has already been started ``job_max_attempts``
+times is failed with a plain message instead, and the API is told through the webhook.
 """
 
 import heapq
@@ -33,6 +38,7 @@ from pathlib import Path
 import httpx
 
 from app.config import settings
+from app.jobs.journal import JobJournal
 from app.pipeline.transcriber import LowConfidenceError, TranscriptionResult, transcribe
 
 logger = logging.getLogger(__name__)
@@ -52,6 +58,9 @@ STAGE_SEPARATING = "separating"
 STAGE_TRANSCRIBING = "transcribing"
 
 _GENERIC_ERROR = "An unexpected error occurred during transcription. Please try recording again."
+#: A journaled job the worker could not finish across its restarts, or whose audio is gone.
+_LOST_ERROR = ("The transcription service had to restart while working on this and could not finish it. "
+               "Nothing was charged — please submit it again.")
 
 
 @dataclass
@@ -84,11 +93,19 @@ class Job:
 #: lane picks it up ahead of anything still queued.
 _RANK_STOP = -1
 
+#: Seconds before each delivery attempt of the completion webhook: at once, then after
+#: five and twenty seconds, which covers the API's own restart in a deploy.
+_WEBHOOK_DELAYS = (0.0, 5.0, 20.0)
+
 
 class JobQueue:
     def __init__(self, workers: int = settings.inference_workers,
-                 pro_lane_workers: int = settings.pro_lane_workers) -> None:
+                 pro_lane_workers: int = settings.pro_lane_workers,
+                 job_dir: str | None = None) -> None:
         self._jobs: dict[str, Job] = {}
+        # The journal every submit is written to, or None (tests, the module-level fallback
+        # queue): jobs then live in memory only. Only ``recover()`` reads it back.
+        self._journal = JobJournal(job_dir) if job_dir else None
         self._lock = threading.Lock()
         # (rank, seq, fn) heap guarded by a condition: a worker waits until an entry it
         # may take is at the top. A high job always sorts above a normal one, so "is the
@@ -120,6 +137,11 @@ class JobQueue:
                harmony: bool = False,
                keyboard_transpose: int = 0) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
+        if self._journal is not None:
+            audio_path = self._journal.keep(job.id, audio_path)
+        self._journal_write(job, kind="upload", audio=str(audio_path), mode=mode, key=key, tempo=tempo,
+                            time_signature=time_signature, song_seconds=song_seconds, separate=separate,
+                            audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
         logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s harmony=%s transpose=%d%s",
                     job.id[:8], mode, key or "auto", tempo or "auto", time_signature,
                     job.priority, separate, harmony, keyboard_transpose, self._trail(job))
@@ -141,6 +163,9 @@ class JobQueue:
                     end_seconds: float | None = None) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
         cap = float(max_seconds or settings.link_max_seconds)
+        self._journal_write(job, kind="link", url=url, mode=mode, key=key, tempo=tempo, time_signature=time_signature,
+                            max_seconds=cap, audio_preview=audio_preview, harmony=harmony,
+                            keyboard_transpose=keyboard_transpose, start_seconds=start_seconds, end_seconds=end_seconds)
         logger.info("Link job %s queued: mode=%s cap=%.0fs section=%.0f-%s priority=%s harmony=%s%s",
                     job.id[:8], mode, cap, start_seconds, "end" if end_seconds is None else f"{end_seconds:.0f}",
                     job.priority, harmony, self._trail(job))
@@ -155,6 +180,9 @@ class JobQueue:
                      callback_url: str | None = None,
                      priority: str = PRIORITY_NORMAL) -> str:
         job = self._new_job(correlation_id, callback_url, priority)
+        if self._journal is not None:
+            score_path = self._journal.keep(job.id, score_path)
+        self._journal_write(job, kind="score", score=str(score_path), key=key, tempo=tempo, time_signature=time_signature)
         logger.info("Score job %s queued: key=%s tempo=%s meter=%s%s",
                     job.id[:8], key or "auto", tempo or "auto", time_signature or "auto", self._trail(job))
         self._enqueue(job, lambda: self._run_score(job, score_path, key, tempo, time_signature))
@@ -167,8 +195,9 @@ class JobQueue:
 
     # ── Internals ─────────────────────────────────────────────────────────────
 
-    def _new_job(self, correlation_id: str | None, callback_url: str | None, priority: str) -> Job:
-        job_id = uuid.uuid4().hex
+    def _new_job(self, correlation_id: str | None, callback_url: str | None, priority: str,
+                 job_id: str | None = None) -> Job:
+        job_id = job_id or uuid.uuid4().hex
         if callback_url:
             callback_url = callback_url.replace("{job_id}", job_id)
         if priority not in _PRIORITY_RANK:
@@ -182,6 +211,77 @@ class JobQueue:
     def _enqueue(self, job: Job, fn) -> None:
         job.stage = STAGE_QUEUED
         job.rank, job.seq = self._push(_PRIORITY_RANK[job.priority], fn)
+
+    # ── The journal ───────────────────────────────────────────────────────────
+
+    def _journal_write(self, job: Job, **spec) -> None:
+        if self._journal is not None:
+            self._journal.write(job.id, {"id": job.id, "created": time.time(), "attempts": 0, "priority": job.priority,
+                                         "correlation_id": job.correlation_id, "callback_url": job.callback_url, **spec})
+
+    def _journal_started(self, job: Job) -> None:
+        if self._journal is not None:
+            self._journal.started(job.id)
+
+    def _journal_delete(self, job: Job) -> None:
+        if self._journal is not None:
+            self._journal.delete(job.id)
+
+    def recover(self) -> int:
+        """Re-queue the jobs the journal holds from before a restart, under their own ids;
+        the number re-queued.  A job started ``settings.job_max_attempts`` times already, or
+        whose audio is gone, is failed with a plain message instead, and the API is told.
+        Called once, from the application's startup — never from a second queue."""
+        if self._journal is None:
+            return 0
+        requeued = failed = 0
+        for record in self._journal.entries():
+            job = self._new_job(record.get("correlation_id"), record.get("callback_url"),
+                                record.get("priority") or PRIORITY_NORMAL, job_id=str(record["id"]))
+            attempts = int(record.get("attempts") or 0)
+            fn = self._replay(job, record)
+            if fn is None or attempts >= settings.job_max_attempts:
+                reason = f"started {attempts} times without finishing" if fn is not None else "its audio is gone"
+                logger.warning("Job %s from the journal failed: %s%s", job.id[:8], reason, self._trail(job))
+                job.status, job.error, job.stage = STATUS_FAILED, _LOST_ERROR, None
+                job.finished_at = time.monotonic()
+                self._journal.delete(job.id)
+                self._trigger_webhook(job)
+                failed += 1
+                continue
+            logger.info("Job %s from the journal re-queued (%s, started %d times before)%s",
+                        job.id[:8], record.get("kind"), attempts, self._trail(job))
+            self._enqueue(job, fn)
+            requeued += 1
+        if requeued or failed:
+            logger.info("Journal: %d jobs re-queued, %d failed", requeued, failed)
+        return requeued
+
+    def _replay(self, job: Job, record: dict):
+        """The job's body from its journal entry, or None when the entry cannot be run."""
+        kind = record.get("kind")
+        if kind == "link":
+            return lambda: self._run_link(
+                job, str(record.get("url") or ""), record.get("mode") or "melody", record.get("key"), record.get("tempo"),
+                record.get("time_signature") or "4/4", float(record.get("max_seconds") or settings.link_max_seconds),
+                bool(record.get("audio_preview", True)), bool(record.get("harmony", False)),
+                int(record.get("keyboard_transpose") or 0), float(record.get("start_seconds") or 0.0),
+                record.get("end_seconds"))
+        if kind == "upload":
+            audio = Path(str(record.get("audio") or ""))
+            if not audio.is_file():
+                return None
+            return lambda: self._run(
+                job, audio, record.get("mode") or "melody", record.get("key"), record.get("tempo"),
+                record.get("time_signature") or "4/4", record.get("song_seconds"), bool(record.get("separate", False)),
+                bool(record.get("audio_preview", True)), bool(record.get("harmony", False)),
+                int(record.get("keyboard_transpose") or 0))
+        if kind == "score":
+            score = Path(str(record.get("score") or ""))
+            if not score.is_file():
+                return None
+            return lambda: self._run_score(job, score, record.get("key"), record.get("tempo"), record.get("time_signature"))
+        return None
 
     def _push(self, rank: int, fn) -> tuple[int, int]:
         with self._cv:
@@ -233,6 +333,7 @@ class JobQueue:
              harmony: bool = False, keyboard_transpose: int = 0) -> None:
         job.status = STATUS_PROCESSING
         job.stage = STAGE_TRANSCRIBING  # listening for a band is part of the work, not the wait
+        self._journal_started(job)
         work_dir: Path | None = None
         try:
             try:
@@ -279,6 +380,7 @@ class JobQueue:
             audio_path.unlink(missing_ok=True)
             if work_dir is not None:
                 shutil.rmtree(work_dir, ignore_errors=True)
+            self._journal_delete(job)
             self._trigger_webhook(job)
 
     def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
@@ -349,6 +451,7 @@ class JobQueue:
         from app.ingest.links import PREVIEW_NOTICE, LinkError, fetch_audio, resolve_source
 
         job.status = STATUS_PROCESSING
+        self._journal_started(job)
         work_dir: Path | None = None
         try:
             try:
@@ -374,6 +477,10 @@ class JobQueue:
                 job.result.song_duration_sec = round(song_seconds, 1)
                 job.result.truncated = fetched.truncated
             finally:
+                # The fetched audio goes before the job reports done, not after: a client that
+                # sees "done" and looks must find nothing of the song left on disk.
+                if work_dir is not None:
+                    shutil.rmtree(work_dir, ignore_errors=True)
                 job.finished_at = time.monotonic()
             self._done(job, "Link job")
         except (LowConfidenceError, LinkError) as ex:
@@ -383,6 +490,7 @@ class JobQueue:
         finally:
             if work_dir is not None:
                 shutil.rmtree(work_dir, ignore_errors=True)
+            self._journal_delete(job)
             self._trigger_webhook(job)
 
     def _run_score(self, job: Job, score_path: Path,
@@ -390,6 +498,7 @@ class JobQueue:
                    time_signature: str | None) -> None:
         job.status = STATUS_PROCESSING
         job.stage = STAGE_TRANSCRIBING
+        self._journal_started(job)
         try:
             try:
                 from app.pipeline.score_transcriber import transcribe_score
@@ -410,6 +519,7 @@ class JobQueue:
                              job.id[:8], type(ex).__name__, self._trail(job))
         finally:
             score_path.unlink(missing_ok=True)
+            self._journal_delete(job)
             self._trigger_webhook(job)
 
     def _done(self, job: Job, label: str) -> None:
@@ -456,13 +566,24 @@ class JobQueue:
         payload = jr.model_dump(by_alias=True, exclude_none=True)
 
         def fire():
-            try:
-                with httpx.Client(timeout=10.0) as client:
-                    resp = client.post(job.callback_url, json=payload)
-                    resp.raise_for_status()
-                logger.info("Webhook for job %s delivered to %s", job.id[:8], job.callback_url)
-            except Exception as e:
-                logger.warning("Failed to deliver webhook for job %s to %s: %s", job.id[:8], job.callback_url, e)
+            # An API that is restarting (a deploy swaps it after the worker) is tried again
+            # twice; one that answered 4xx has made up its mind and is not.
+            for attempt, delay in enumerate(_WEBHOOK_DELAYS, 1):
+                if delay:
+                    time.sleep(delay)
+                try:
+                    with httpx.Client(timeout=10.0) as client:
+                        resp = client.post(job.callback_url, json=payload)
+                        resp.raise_for_status()
+                    logger.info("Webhook for job %s delivered to %s", job.id[:8], job.callback_url)
+                    return
+                except Exception as e:  # noqa: BLE001 - delivery is best effort; the API's sweep is the net
+                    answered = isinstance(e, httpx.HTTPStatusError) and e.response.status_code < 500
+                    if answered or attempt == len(_WEBHOOK_DELAYS):
+                        logger.warning("Failed to deliver webhook for job %s to %s: %s", job.id[:8], job.callback_url, e)
+                        return
+                    logger.info("Webhook for job %s not delivered (%s); trying again in %.0fs",
+                                job.id[:8], e, _WEBHOOK_DELAYS[attempt])
 
         # Fire in a separate thread so we don't block the executor pool if the webhook is slow
         threading.Thread(target=fire, name=f"webhook-{job.id[:8]}", daemon=True).start()

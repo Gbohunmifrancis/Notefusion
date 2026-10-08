@@ -108,6 +108,14 @@ def _warmup_pipeline() -> None:
     threading.Thread(target=run, name="nf-warmup", daemon=True).start()
 
 
+class _HealthCheckFilter(logging.Filter):
+    """Keeps the probe's ``GET /healthz`` out of the access log: one line every ten seconds
+    buried every real one, and the last hour of the log said nothing at all."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        return "/healthz" not in record.getMessage()
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     """Configure logging, inject APT PATH, pre-warm model, start worker, drain on shutdown."""
@@ -123,8 +131,12 @@ async def lifespan(_app: FastAPI):
     _warmup_basic_pitch()
     if settings.pipeline_warmup:
         _warmup_pipeline()
-    queue = JobQueue(workers=settings.inference_workers, pro_lane_workers=settings.pro_lane_workers)
+    logging.getLogger("uvicorn.access").addFilter(_HealthCheckFilter())
+    queue = JobQueue(workers=settings.inference_workers, pro_lane_workers=settings.pro_lane_workers,
+                     job_dir=settings.job_dir or None)
     _app.state.queue = queue
+    # The jobs a restart interrupted, from the journal; only this queue ever replays them.
+    queue.recover()
     yield
     queue.shutdown()
 

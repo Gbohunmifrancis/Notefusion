@@ -50,9 +50,16 @@ services:
       # the database down with it: the kernel kills this container alone and Docker restarts it.
       NF_MDX_BATCH: ${NF_MDX_BATCH:-1}
       NF_MDX_MEM_ARENA: ${NF_MDX_MEM_ARENA:-0}
+      # The job journal (app/jobs/journal.py): every submitted job, with an upload's audio, on
+      # the job-data volume, replayed after a restart under the same job id. Without it a
+      # deploy or an out-of-memory kill dropped every queued and running job.
+      NF_JOB_DIR: /var/lib/notefusion/jobs
+      # A linked video longer than this is refused when the link is pasted (default two hours).
+      NF_LINK_MAX_VIDEO_SECONDS: ${NF_LINK_MAX_VIDEO_SECONDS:-7200}
     mem_limit: ${NF_TRANSCRIBER_MEM_LIMIT:-3g}
     volumes:
       - ${YTDLP_COOKIES_HOST:-/dev/null}:/run/ytdlp-cookies.txt:ro
+      - job-data:/var/lib/notefusion
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
       interval: 10s
@@ -169,3 +176,4 @@ volumes:
   db-data:
   caddy-data:
   dozzle-data:
+  job-data:

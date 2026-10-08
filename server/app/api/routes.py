@@ -48,6 +48,18 @@ def _correlation_id(request: Request) -> str | None:
     return candidate
 
 
+def _refused_link(error: Exception) -> HTTPException:
+    """The 422 for a link the worker will not use: its detail is the plain sentence, or — when
+    the reason has a code the C# API has words of its own for — an object carrying both."""
+    code = getattr(error, "code", None)
+    if code is None:
+        return HTTPException(422, str(error))
+    detail: dict = {"message": str(error), "code": code}
+    if getattr(error, "limit_seconds", None) is not None:
+        detail["limit_seconds"] = error.limit_seconds
+    return HTTPException(422, detail)
+
+
 def _get_queue(request: Request) -> JobQueue:
     """Prefer the lifespan-managed queue; fall back to module-level for tests."""
     return getattr(request.app.state, "queue", None) or _import_fallback_queue()
@@ -290,7 +302,7 @@ async def submit_link_transcription(
     ``start_seconds``/``end_seconds`` pick the section of the song; the cap still bounds
     how much of it is transcribed.
     """
-    from app.ingest.links import provider_of
+    from app.ingest.links import cached_refusal, provider_of
 
     mode = _mode(mode)
     keyboard_transpose = _keyboard_transpose(keyboard_transpose)
@@ -302,6 +314,11 @@ async def submit_link_transcription(
     url = (url or "").strip()
     if len(url) > 2048 or provider_of(url) is None:
         raise HTTPException(422, "url must be a YouTube video, Spotify track or Apple Music song link.")
+    # A link the resolve already turned away (a live stream, a video over the cap) is
+    # refused here and now rather than queued for a job that would only fail.
+    refusal = cached_refusal(url)
+    if refusal is not None:
+        raise _refused_link(refusal)
     cap = settings.link_max_seconds
     if max_seconds is not None:
         if max_seconds < 10:
@@ -339,7 +356,7 @@ def resolve_link_info(body: LinkInfoRequest) -> LinkInfoResponse:
     try:
         source = resolve_link(url)
     except LinkError as ex:
-        raise HTTPException(422, str(ex))
+        raise _refused_link(ex)
     return LinkInfoResponse(provider=source.provider, url=source.url, title=source.title, artist=source.artist,
                             thumbnail_url=source.thumbnail_url, duration_seconds=source.duration)
 

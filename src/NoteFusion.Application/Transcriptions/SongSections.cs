@@ -35,8 +35,11 @@ public static class SongSections
             return TranscriptionErrors.SectionEndsBeforeItStarts;
 
         // The length is a courtesy, not a condition: a worker that cannot answer right now still gets the
-        // job, and trims the section itself.
+        // job, and trims the section itself. A link the worker has turned away for good (a live stream, a
+        // video over its cap, one that is private or gone) is another matter: there is no section of it.
         var resolved = await api.ResolveLinkAsync(url, ct);
+        if (resolved.IsFailure && resolved.Error.Code.StartsWith("TRANS_LINK_", StringComparison.Ordinal))
+            return Result.Failure<SongSection>(resolved.Error);
         if (resolved.IsSuccess && resolved.Value.DurationSeconds is { } length)
         {
             if (start >= length)
@@ -48,6 +51,16 @@ public static class SongSections
         if (end - start > maxSeconds)
             return TranscriptionErrors.SectionTooLong(maxSeconds);
         return new SongSection(start, end);
+    }
+
+    /// <summary>Seconds as a length in words: "2 hours", "1 h 30 min", "45 min".</summary>
+    public static string Length(double seconds)
+    {
+        var minutes = (int)Math.Round(Math.Max(0, seconds)) / 60;
+        var (h, m) = (minutes / 60, minutes % 60);
+        if (h > 0 && m > 0) return $"{h} h {m} min";
+        if (h > 0) return h == 1 ? "1 hour" : $"{h} hours";
+        return $"{Math.Max(1, m)} min";
     }
 
     /// <summary>Seconds as a clock reading: <c>m:ss</c>, or <c>h:mm:ss</c> from an hour.</summary>
