@@ -23,7 +23,7 @@ import { Skeleton } from '../components/Skeleton';
 import { Mark, Wordmark } from '../components/night/NightUI';
 import { libraryApi, meApi } from '../api/endpoints';
 import { toApiError } from '../api/client';
-import { deriveSolfa, dohPitchClass, parseKey } from '../lib/solfa';
+import { deriveSolfa, dohLetter } from '../lib/solfa';
 import { synthesizeMelodyWavBase64 } from '../lib/synth';
 import { useAuth } from '../lib/auth';
 import { showDialog } from '../lib/dialog';
@@ -43,22 +43,6 @@ type Props = BottomTabScreenProps<TabParams, 'Home'>;
 function currentGreeting(): string {
   const hour = new Date().getHours();
   return hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
-}
-
-/** Doh names as a key signature spells them, for minor keys whose doh is not written in the key name. */
-const DOH_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'] as const;
-
-/**
- * The letter on a row's doh tile. A major key's doh is its tonic as written, so the
- * tile matches the sheet's own spelling; a minor key is la-based, so its doh is the
- * relative major's tonic and has to be named here.
- */
-function dohLetter(keyText: string): string {
-  const key = parseKey(keyText);
-  if (!key) return '–';
-  if (key.mode === 'minor') return DOH_NAMES[dohPitchClass(key)]!;
-  const tonic = keyText.trim().split(/\s+/)[0]!.replace('-', 'b');
-  return tonic[0]!.toUpperCase() + tonic.slice(1);
 }
 
 /**

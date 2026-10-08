@@ -10,7 +10,7 @@
  * PanResponder: no new native dependency.
  *
  * Gestures are created once and read the latest props through refs, the same arrangement
- * as the scrubber in `NotePlayer`, so a drag that began before a re-render keeps working.
+ * as the sheet player's scrubber, so a drag that began before a re-render keeps working.
  * The responder refuses termination requests: inside a scrolling screen, a horizontal drag
  * must not be handed to the ScrollView halfway through.
  */

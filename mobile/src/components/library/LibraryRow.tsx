@@ -4,27 +4,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { Touchable } from "../Touchable";
 import { Skeleton } from "../Skeleton";
 import { useColors, useThemedStyles } from "../../lib/theme";
-import { parseKey, dohPitchClass } from "../../lib/solfa";
+import { dohLetter } from "../../lib/solfa";
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette } from "../../design/theme";
 import type { SavedTranscription } from "../../api/types";
 import { solfaOpening } from "../../lib/solfaOpening";
-
-/** Doh names as key signatures spell them — "Bb", not "A#" — for la-based minor keys. */
-const DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
-
-/**
- * The letter on a sheet's doh tile. A major key keeps its own spelling; a minor key's
- * doh is its relative major's tonic (movable-do, la-based minor), so "D minor" reads F.
- */
-export function dohLetter(key: string): string {
-  const parsed = parseKey(key);
-  if (!parsed) return "–";
-  if (parsed.mode === "major") {
-    const tonic = key.trim().match(/^[A-Ga-g][#♯b♭-]*/)?.[0];
-    if (tonic) return tonic[0]!.toUpperCase() + tonic.slice(1).replace(/[♭-]/g, "b").replace(/♯/g, "#");
-  }
-  return DOH_NAMES[dohPitchClass(parsed)]!;
-}
 
 export function LibraryRow({
   item,

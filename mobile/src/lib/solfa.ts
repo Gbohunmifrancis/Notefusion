@@ -172,6 +172,24 @@ export function dohPitchClass(key: ParsedKey): number {
     : (key.tonicPitchClass + 3) % 12;
 }
 
+/** Doh names as key signatures spell them — "Bb", not "A#" — for la-based minor keys. */
+const DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
+/**
+ * The letter on a sheet's doh tile and DOH figure. A major key keeps its own
+ * spelling; a minor key's doh is its relative major's tonic (la-based), so
+ * "D minor" reads F. A dash when the key cannot be read.
+ */
+export function dohLetter(keyText: string): string {
+  const parsed = parseKey(keyText);
+  if (!parsed) return "–";
+  if (parsed.mode === "major") {
+    const tonic = keyText.trim().match(/^[A-Ga-g][#♯b♭-]*/)?.[0];
+    if (tonic) return tonic[0]!.toUpperCase() + tonic.slice(1).replace(/[♭-]/g, "b").replace(/♯/g, "#");
+  }
+  return DOH_NAMES[dohPitchClass(parsed)]!;
+}
+
 /** The doh octave nearest the melody's median — the unmarked register. */
 export function referenceDoh(pitches: readonly number[], dohPc: number): number {
   // No pitches to centre on — fall back to the doh nearest middle C.

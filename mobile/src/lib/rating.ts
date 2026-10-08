@@ -42,12 +42,18 @@ export const rating = {
     };
   },
 
-  async recordSave(): Promise<void> {
-    if (Platform.OS !== "android") return;
+  /**
+   * Counts a saved sheet. True when the rating ask is about to show, so the caller
+   * can leave out its own "Saved" message: the ask already says the sheet was saved.
+   */
+  async recordSave(): Promise<boolean> {
+    if (Platform.OS !== "android") return false;
     const s = await read();
     const next = { ...s, saves: s.saves + 1 };
     write(next);
-    if (shouldAskForRating(next, Date.now())) listener?.(next.saves);
+    if (!listener || !shouldAskForRating(next, Date.now())) return false;
+    listener(next.saves);
+    return true;
   },
 
   async recordFailure(): Promise<void> {
