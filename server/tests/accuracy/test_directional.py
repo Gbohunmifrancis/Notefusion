@@ -2043,21 +2043,45 @@ def test_the_step_filter_prefers_the_slower_reading_of_the_same_performance():
 
 
 def test_the_true_level_is_recovered_from_a_reading_the_filter_rejected():
-    """The repair: admitted as its partner, the faster reading wins on tappability.
+    """The repair, end to end: the answer is the level the onsets were generated at.
 
-    Both halves matter.  Without the admission the answer is the halved one, so the rule is
-    load-bearing; with it the answer is the level the onsets were generated at, so the
-    preference — not a re-tuned threshold — is what chose it.
+    The step filter measured as proposed rejected the true level here and the halved one
+    passed (the test above); the admission then let it back in as its partner and the
+    preference chose it.  Measured at its best nearby tempo and phase (``_level_residual``)
+    the true level now passes the filter on its own, and the halved reading is still a
+    survivor; what keeps the answer at 96 is the preference between readings of one
+    performance, which ``test_a_finer_grid_cannot_win_on_fit_alone`` takes apart.  (The
+    ratio switch ``_with_admit_ratios`` turns that crediting off too, so "without the
+    admission" is no longer a separable measurement on this fixture.)
     """
     from app.pipeline import transcriber
 
     events = _events_at(_scattered_beat_onsets())
+    assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(96.0, abs=0.5)
 
-    without = _with_admit_ratios(transcriber, (), lambda: transcriber._grid_bpm(events, 0.0, (2,)))
-    with_it = transcriber._grid_bpm(events, 0.0, (2,))
 
-    assert without == pytest.approx(48.0, abs=0.5), "the bias, reproduced end to end"
-    assert with_it == pytest.approx(96.0, abs=0.5), "and corrected"
+def test_a_finer_grid_cannot_win_on_fit_alone():
+    """The bias in the other direction, and the rule that stops it.
+
+    A grid twice as fine absorbs the scatter better by construction: refined, the 192
+    reading of these onsets fits 0.015 s against 96's 0.034 — a whole bucket better — and
+    on fit alone the chooser would write the beats as half notes.  Two survivors one level
+    apart are one performance, so the coarser is credited with the finer one's fit unless
+    the finer is better by more than fitting noise can give (``_SAME_PERFORMANCE_TOLERANCE``
+    of the coarser step), and the preference decides.  Non-vacuous by construction: with
+    the tolerance at zero the fixture reads 192.
+    """
+    from app.pipeline import transcriber
+
+    events = _events_at(_scattered_beat_onsets())
+    saved = transcriber._SAME_PERFORMANCE_TOLERANCE
+    try:
+        transcriber._SAME_PERFORMANCE_TOLERANCE = 0.0
+        on_fit_alone = transcriber._grid_bpm(events, 0.0, (2,))
+    finally:
+        transcriber._SAME_PERFORMANCE_TOLERANCE = saved
+    assert on_fit_alone == pytest.approx(192.0, abs=0.5), "premise: fit alone prefers the finer grid"
+    assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(96.0, abs=0.5)
 
 
 def test_an_admitted_reading_cannot_win_on_a_fit_it_was_never_credited_with():
@@ -2070,10 +2094,13 @@ def test_an_admitted_reading_cannot_win_on_a_fit_it_was_never_credited_with():
     with its partner's it can only win on tappability, which it loses.
 
     The fixture is that shape, derived rather than searched: eighth notes at 172 BPM with
-    alternate onsets 96 ms late.  At divisor 2 that puts 86 inside the filter at 0.129 steps
-    and 172 outside it at 0.212, their seconds 8 ms apart — inside the admission band — and
-    172's own seconds a whole bucket BETTER.  So the two crediting rules give different
-    answers here, which is what makes the assertion mean something.
+    alternate onsets a fifth of a slow step late.  Measured at their best phase (which is
+    how the filter now measures) that puts 86 inside the filter at 0.094 steps and 172
+    outside it at 0.188, their seconds identical — the same performance, so the admission
+    band holds by construction.  The frame-hop difference the docstring above describes
+    cannot be built into a fixture the refined measurement sees, because the refinement is
+    what removes it; what the fixture still pins is that an admitted candidate loses on
+    tappability and never wins on fit.
     """
     import numpy as np
 
@@ -2081,16 +2108,14 @@ def test_an_admitted_reading_cannot_win_on_a_fit_it_was_never_credited_with():
 
     step = 60.0 / 86.0 / 2.0
     n = 17
-    onsets = np.arange(n) * step + np.where(np.arange(n) % 2 == 1, 0.275 * step, 0.0)
+    onsets = np.arange(n) * step + np.where(np.arange(n) % 2 == 1, 0.2 * step, 0.0)
     events = _events_at(onsets)
 
-    slow_steps, slow_sec = transcriber._grid_residual(onsets, 86.0, (2,))
-    fast_steps, fast_sec = transcriber._grid_residual(onsets, 172.0, (2,))
+    slow_steps, slow_sec, _ = transcriber._level_residual(onsets, 86.0, (2,))
+    fast_steps, fast_sec, _ = transcriber._level_residual(onsets, 172.0, (2,))
     assert slow_steps <= transcriber._MAX_GRID_SLIP_STEPS < fast_steps, "premise: filter splits"
     assert abs(slow_sec - fast_sec) <= transcriber._GRID_FIT_BAND_SEC, "premise: admissible"
-    assert round(fast_sec / transcriber._GRID_FIT_BAND_SEC) < round(
-        slow_sec / transcriber._GRID_FIT_BAND_SEC
-    ), "premise: on its OWN seconds the doubling would win the ranking"
+    assert fast_sec == pytest.approx(slow_sec, abs=1e-6), "one performance: the same seconds either way"
 
     assert transcriber._grid_bpm(events, 0.0, (2,)) == pytest.approx(86.0, abs=0.5)
 

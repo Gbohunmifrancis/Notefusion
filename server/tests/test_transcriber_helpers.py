@@ -557,13 +557,15 @@ class TestBeatOrigin:
 
     def test_leading_silence_is_removed(self):
         # The lead_in_800ms corpus case: 800 ms of silence at 96 BPM, so beats
-        # every 0.625 s.  The beat at 0.625 s is 0.175 s before the onset — well
-        # inside the half-beat window (0.3125 s) — so the melody starts a sixth
-        # of a beat in rather than 1.28 beats in.
+        # every 0.625 s.  The beat at 0.625 s is 0.175 s before the onset — 0.28 of
+        # a beat, outside the quarter-beat window — so the onset itself is the
+        # anchor and the melody starts on beat 0 rather than 1.28 beats in.  (Within
+        # the window it would have started 0.28 of a beat in, and ``_refine_grid``,
+        # which moves the origin to where every onset agrees, would have taken it
+        # to the same place.)
         beats = np.array([0.0, 0.625, 1.25, 1.875, 2.5])
         origin = _beat_origin(beats, first_onset=0.8, bpm=96.0)
-        assert origin == pytest.approx(0.625)
-        assert (0.8 - origin) * (96.0 / 60.0) < 0.3  # under a third of a beat
+        assert origin == pytest.approx(0.8)
 
     def test_distant_beat_is_rejected_in_favour_of_the_onset(self):
         # Nearest earlier beat is 0.9 s back — more than half a beat at 120 BPM,
@@ -587,12 +589,12 @@ class TestBeatOrigin:
         for onset in (0.0, 0.31, 0.62, 1.0, 1.25):
             assert _beat_origin(beats, first_onset=onset, bpm=100.0) <= onset + 1e-9
 
-    def test_half_beat_window_scales_with_tempo(self):
-        # Same geometry, two tempi: 0.4 s back is inside half a beat at 60 BPM
-        # (0.5 s) but outside it at 180 BPM (0.167 s).
+    def test_quarter_beat_window_scales_with_tempo(self):
+        # Same geometry, two tempi: 0.2 s back is inside a quarter of a beat at 60 BPM
+        # (0.25 s) but outside it at 180 BPM (0.083 s).
         beats = np.array([0.0, 1.0])
-        assert _beat_origin(beats, first_onset=1.4, bpm=60.0) == pytest.approx(1.0)
-        assert _beat_origin(beats, first_onset=1.4, bpm=180.0) == pytest.approx(1.4)
+        assert _beat_origin(beats, first_onset=1.2, bpm=60.0) == pytest.approx(1.0)
+        assert _beat_origin(beats, first_onset=1.2, bpm=180.0) == pytest.approx(1.2)
 
 
 # ── _onset_bpm ────────────────────────────────────────────────────────────────
@@ -738,21 +740,24 @@ class TestGridBpm:
         events = [Event(i * 0.02, i * 0.02 + 0.01, 60, 0.5) for i in range(8)]
         assert _grid_bpm(events, 96.0, EIGHTHS) == 0.0
 
-    def test_onsets_too_uneven_to_fit_any_grid_decline(self):
-        """The corpus's own worst case, and the reason declining is a real path.
+    def test_uneven_onsets_never_earn_a_slow_level(self):
+        """The corpus's own worst case: sixteenths whose onsets sit ~38 ms from even.
 
-        On ``fast_sixteenths_c_major`` the detected onsets sit ~38 ms from evenly
-        spaced — 22 % of a 174 ms note, and triple Basic Pitch's frame hop.  No tempo
-        makes that commensurate, so every candidate is refused and librosa's estimate
-        stands.  Pinned because it is tempting to read a decline as a miss and widen
-        the filter until something passes; widening it far enough to admit these would
-        also admit the wrong metrical levels the filter exists to reject.
+        On ``fast_sixteenths_c_major`` that is 22 % of a 174 ms note, and triple Basic
+        Pitch's frame hop.  Measured as proposed, no candidate fitted and the chooser
+        declined; measured at its best nearby tempo and phase (``_level_residual``) the
+        eighth reading one level up fits, which is the only level the half-beat grid can
+        write these notes on.  What must never happen is the slow level — 88 in quarters,
+        where every other note falls between grid lines — or an unrelated tempo passing
+        on jitter alone, which is what widening the filter instead of refining the
+        candidates would have admitted.
         """
         events = [
             Event(t, t + 0.12, 60, 0.5)
             for t in (0.0, 0.212, 0.351, 0.542, 0.689, 0.911, 1.043, 1.254)
         ]
-        assert _grid_bpm(events, 0.0, EIGHTHS) == 0.0
+        answer = _grid_bpm(events, 0.0, EIGHTHS)
+        assert answer == 0.0 or 150.0 <= answer <= 200.0
 
 
 # ── decoded-WAV lifetime (defect 2) ───────────────────────────────────────────
@@ -2065,3 +2070,173 @@ class TestExportMusicxml:
         measured.write("midi", fp=str(tmp_path / "x.mid"))
         assert (tmp_path / "x.mid").stat().st_size > 0
 
+
+
+# ── The voice engine's scale decides the doh ──────────────────────────────────
+
+
+class TestDetectKeyKeepsTheVoiceEnginesDoh:
+    def test_the_vote_decides_only_the_mode_when_the_engine_fitted_a_scale(self):
+        # Leans on F and A, so the vote alone reads F major (the subdominant trap).  The
+        # voice engine wrote these notes in the scale on C, so the key keeps doh C and the
+        # confidence reported is the fit's.
+        s = _stream(["C4", "E4", "G4", "C5", "F4", "A4", "G4", "C4"])
+        key, conf = transcriber._detect_key(s, 8, doh=0, doh_confidence=0.9)
+        assert transcriber._doh_of((key.tonic.pitchClass, key.mode)) == 0
+        assert conf == pytest.approx(0.9)
+
+    def test_a_minor_tune_in_that_scale_is_still_read_as_minor(self):
+        s = _stream(["A3", "C4", "E4", "G#4", "A4", "B4", "C5", "B4", "G#4", "A4", "E4", "A3"])
+        key, _conf = transcriber._detect_key(s, 12, doh=0, doh_confidence=1.0)
+        assert (key.tonic.pitchClass, key.mode) == (9, "minor")
+
+    def test_a_short_clip_caps_the_fits_confidence_too(self):
+        s = _stream(["C4", "E4", "G4", "C5", "G4", "E4"])
+        _key, conf = transcriber._detect_key(s, MIN_NOTES_FOR_KEY - 1, doh=0, doh_confidence=1.0)
+        assert conf == pytest.approx(KEY_CONFIDENCE_CAP_LOW)
+
+    def test_without_a_doh_the_vote_is_what_it_was(self):
+        s = _stream(["C4", "E4", "G4", "C5", "F4", "A4", "G4", "C4"])
+        plain, _ = transcriber._detect_key(s, 8)
+        unrestricted, _ = transcriber._detect_key(s, 8, doh=None)
+        assert (plain.tonic.pitchClass, plain.mode) == (unrestricted.tonic.pitchClass, unrestricted.mode)
+
+
+# ── Tempo level: candidates measured at their best nearby tempo ───────────────
+
+
+class TestLevelResidual:
+    def test_a_slightly_wrong_candidate_is_measured_at_the_right_tempo(self):
+        # 16 quarters at 80 BPM: a candidate of 80.7 (librosa's lag grid) drifts a quarter
+        # of a step by the last note when measured as proposed.
+        onsets = np.arange(16) * 0.75
+        plain_steps, _ = _grid_residual(onsets, 80.7, EIGHTHS)
+        steps, _seconds, refined = transcriber._level_residual(onsets, 80.7, EIGHTHS)
+        assert steps < plain_steps
+        assert steps == pytest.approx(0.0, abs=0.02)
+        assert refined == pytest.approx(80.0, abs=0.3)
+
+    def test_the_refinement_stays_inside_its_band(self):
+        onsets = np.arange(12) * 0.5
+        _steps, _seconds, refined = transcriber._level_residual(onsets, 100.0, EIGHTHS)
+        assert abs(refined / 100.0 - 1.0) <= transcriber._GRID_LEVEL_BAND + 1e-9
+
+    def test_a_hummed_phrase_is_read_at_its_own_level_not_half_of_it(self):
+        # The voice engine's onsets for Amazing Grace hummed at 80 (the sung corpus): read
+        # as proposed, only 40 BPM passed the filter and the sheet came out in halves.
+        starts = [0.49, 1.28, 2.79, 3.13, 3.53, 5.02, 5.76, 7.27, 8.01, 10.22, 11.03,
+                  12.52, 12.89, 13.28, 14.74, 15.53]
+        events = [Event(t, t + 0.3, 60, 0.5) for t in starts]
+        assert _grid_bpm(events, 80.7, EIGHTHS) == pytest.approx(80.0, abs=1.5)
+
+
+# ── Confidence is about pitch, not loudness ───────────────────────────────────
+
+
+class TestPitchConfidence:
+    @staticmethod
+    def _heard(residual: float, stability: float = 1.0, voiced_prob: float = 1.0) -> Event:
+        return Event(0.0, 0.5, 60, 0.3, pyin_midi=60.0 + residual, voiced_prob=voiced_prob, stability=stability)
+
+    def test_an_in_tune_held_note_is_sure_however_quiet(self):
+        assert transcriber._pitch_confidence(self._heard(0.05)) == pytest.approx(1.0)
+
+    def test_the_further_from_the_written_note_the_less_sure(self):
+        close, off, far = (transcriber._pitch_confidence(self._heard(r)) for r in (0.05, 0.30, 0.55))
+        assert close > off > far
+        assert far >= transcriber.CONF_PITCH_FLOOR * 0.9
+
+    def test_a_glide_or_a_breathy_note_is_less_sure_than_a_held_tone(self):
+        held = transcriber._pitch_confidence(self._heard(0.05))
+        assert transcriber._pitch_confidence(self._heard(0.05, stability=0.3)) < held
+        assert transcriber._pitch_confidence(self._heard(0.05, voiced_prob=0.2)) < held
+
+    def test_notes_the_voice_engine_did_not_hear_keep_the_blend(self):
+        evt = Event(0.0, 0.5, 60, 0.4, onset_post=0.9)
+        assert transcriber._note_confidence(evt, True) == pytest.approx(transcriber._blend_confidence(evt))
+        assert transcriber._note_confidence(evt, False) == pytest.approx(0.4)
+
+    def test_basic_pitchs_onset_head_lowers_a_note_without_an_attack(self):
+        heard = self._heard(0.05)
+        no_attack = Event(0.0, 0.5, 60, 0.3, pyin_midi=60.05, voiced_prob=1.0, stability=1.0, onset_post=0.0)
+        struck = Event(0.0, 0.5, 60, 0.3, pyin_midi=60.05, voiced_prob=1.0, stability=1.0, onset_post=1.0)
+        assert transcriber._pitch_confidence(no_attack) < transcriber._pitch_confidence(heard)
+        assert transcriber._pitch_confidence(struck) == pytest.approx(transcriber._pitch_confidence(heard))
+
+    def test_the_voice_engines_notes_ignore_loudness(self):
+        loud = transcriber._note_confidence(self._heard(0.05), False)
+        quiet = transcriber._note_confidence(Event(0.0, 0.5, 60, 0.05, pyin_midi=60.05, voiced_prob=1.0, stability=1.0), False)
+        assert loud == pytest.approx(quiet)
+
+
+class TestOverallConfidence:
+    @staticmethod
+    def _note(conf: float, dur: float) -> transcriber.TranscribedNote:
+        return transcriber.TranscribedNote(
+            pitch_midi=60, start_beat=0.0, dur_beats=dur, degree=1, solfa="d", octave_mark="", conf=conf
+        )
+
+    def test_it_weighs_notes_by_their_length(self):
+        notes = [self._note(1.0, 3.0), self._note(0.4, 1.0)]
+        assert transcriber._overall_confidence(notes, None) == pytest.approx(0.85)
+
+    def test_a_doubtful_doh_lowers_it_and_a_sure_one_does_not(self):
+        notes = [self._note(1.0, 3.0), self._note(0.4, 1.0)]
+        assert transcriber._overall_confidence(notes, 1.0) == pytest.approx(0.85)
+        assert transcriber._overall_confidence(notes, 0.0) == pytest.approx(0.85 * (1.0 - transcriber.CONF_KEY_WEIGHT), abs=0.001)
+
+
+class TestBeatOriginWindow:
+    def test_a_tracked_beat_just_before_the_first_note_anchors_it(self):
+        # 100 BPM: a beat 0.1 s (a sixth of a beat) before the first note is the phase.
+        assert transcriber._beat_origin(np.array([0.4]), 0.5, 100.0) == pytest.approx(0.4)
+
+    def test_a_tracked_beat_nearly_half_a_beat_early_is_not_the_phase(self):
+        # The sung corpus's low hum: librosa's beat 0.475 of a beat before the first note put
+        # every note on the "and".  The first note is the anchor instead.
+        assert transcriber._beat_origin(np.array([0.115]), 0.49, 76.0) == pytest.approx(0.49)
+
+
+# ── Tempo evidence: attacks, chords, the tracker's levels ─────────────────────
+
+
+class TestTempoOnsets:
+    @staticmethod
+    def _chord(t: float, pitches=(60, 64, 67, 72)) -> list[Event]:
+        return [Event(t + 0.004 * i, t + 2.0, p, 0.6) for i, p in enumerate(pitches)]
+
+    def test_a_chords_notes_are_one_attack_weighted_by_its_notes(self):
+        onsets, weights = transcriber._attacks(self._chord(1.0) + [Event(1.5, 1.8, 74, 0.5)])
+        assert onsets.tolist() == pytest.approx([1.0, 1.5])
+        assert weights.tolist() == [4.0, 1.0]
+
+    def test_a_repeated_note_is_never_collapsed(self):
+        onsets, weights = transcriber._attacks([Event(0.0, 0.1, 60, 0.5), Event(0.12, 0.3, 60, 0.5)])
+        assert onsets.size == 2 and weights.tolist() == [1.0, 1.0]
+
+    def test_with_enough_chords_only_the_chords_carry_the_beat(self):
+        events = []
+        for k in range(4):
+            events += self._chord(2.4 * k)
+        singles = [Event(t, t + 0.2, 76, 0.4) for t in (0.5, 4.7, 5.5, 8.2)]
+        onsets, weights = transcriber._tempo_onsets(events + singles)
+        assert onsets.tolist() == pytest.approx([0.0, 2.4, 4.8, 7.2])
+        assert all(w == 4.0 for w in weights)
+
+    def test_a_melody_is_untouched(self):
+        melody = [Event(0.6 * k, 0.6 * k + 0.5, 60 + k, 0.5) for k in range(8)]
+        onsets, weights = transcriber._tempo_onsets(melody)
+        assert onsets.size == 8 and all(w == 1.0 for w in weights)
+
+    def test_held_chords_read_at_the_tempo_the_changes_sit_on(self):
+        # The chord bench's jazzish shape: maj7 chords held four beats at 100 with
+        # re-triggers inside the sustain.  librosa tracks the bar rate (25); the changes
+        # alone fit 50, 75, 100 and 150 exactly and the preference picks 100.
+        events = []
+        for k in range(8):
+            events += self._chord(0.41 + 2.4 * k)
+        events += [Event(t, t + 0.2, 70, 0.3) for t in (0.53, 4.74, 5.54, 5.96, 8.2, 9.32, 9.73, 18.27)]
+        assert _grid_bpm(events, 25.1, EIGHTHS) == pytest.approx(100.0, abs=1.0)
+
+    def test_the_trackers_estimate_is_offered_at_the_bar_rate_too(self):
+        assert 4.0 in transcriber._TRACKER_LEVEL_FACTORS and 0.25 in transcriber._TRACKER_LEVEL_FACTORS

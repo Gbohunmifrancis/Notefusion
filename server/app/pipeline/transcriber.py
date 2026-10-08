@@ -1689,11 +1689,23 @@ def _key_confidence_from_margin(margin: float, n_events: int) -> float:
     return confidence
 
 
-def _detect_key(s, n_events: int):
+def _detect_key(s, n_events: int, doh: int | None = None, doh_confidence: float | None = None):
     """(key, confidence) for a stream, by equal vote over KEY_PROFILE_NAMES.
 
     A close vote between a key and its fifth or its parallel is then re-decided on the
     phrase's own shape rather than its histogram — see ``_cadence_prefers_runner_up``.
+
+    ``doh`` is the pitch class of the scale the voice engine wrote the notes in, when it
+    did (``vocal.fit_scale_detail``).  The vote is then held among the keys with that doh
+    — its major and the relative minor — and decides only the mode.  The engine's fit is
+    the better-founded choice: it read the sung pitches before rounding, while the vote
+    reads a histogram of the rounded notes, and the notes were snapped into that scale, so
+    any other doh would turn scale tones into accidentals.  Measured on Vocadito's real
+    singers the vote overturned a correct fit on three clips of 32 (two to the
+    subdominant, one to a relative key's parallel), at confidence 0.03-0.56, and rescued a
+    wrong one once, which ``SCALE_FIT_TIE_RATIO`` now settles inside the fit.
+    ``doh_confidence`` is then the confidence reported — how sure the fit was of its
+    scale — rather than the major-against-minor margin, which says nothing about the doh.
 
     Falls back to music21's single-profile default if the ensemble cannot run.  That
     is not hypothetical: any clip with a *uniform* pitch-class histogram gives every
@@ -1734,28 +1746,44 @@ def _detect_key(s, n_events: int):
         return detected, confidence
 
     ranked = sorted(totals.items(), key=lambda kv: kv[1], reverse=True)
-    # Only keys whose scale holds the notes as well as any does are eligible; the vote then
-    # chooses among them.  See _scale_parsimony.
-    allowed = _scale_parsimony(s)
-    if allowed:
-        eligible = [kv for kv in ranked if _doh_of(kv[0]) in allowed]
-        if len(eligible) >= 2:
-            if eligible[0][0] != ranked[0][0]:
-                print(
-                    f"[notefusion] key: {ranked[0][0]} puts notes outside its scale; "
-                    f"{eligible[0][0]} holds them",
-                    flush=True,
-                )
-            ranked = eligible
+    if doh is not None and any(_doh_of(ident) == doh for ident, _ in ranked):
+        # The voice engine's scale decides the doh; the vote decides the mode.
+        eligible = [kv for kv in ranked if _doh_of(kv[0]) == doh]
+        if eligible[0][0] != ranked[0][0]:
+            print(
+                f"[notefusion] key: the notes are written in the scale on {doh}; "
+                f"{eligible[0][0]} keeps that doh, {ranked[0][0]} does not",
+                flush=True,
+            )
+        ranked = eligible
+    else:
+        doh_confidence = None
+        # Only keys whose scale holds the notes as well as any does are eligible; the vote
+        # then chooses among them.  See _scale_parsimony.
+        allowed = _scale_parsimony(s)
+        if allowed:
+            eligible = [kv for kv in ranked if _doh_of(kv[0]) in allowed]
+            if len(eligible) >= 2:
+                if eligible[0][0] != ranked[0][0]:
+                    print(
+                        f"[notefusion] key: {ranked[0][0]} puts notes outside its scale; "
+                        f"{eligible[0][0]} holds them",
+                        flush=True,
+                    )
+                ranked = eligible
     winner_ident, winner_score = ranked[0]
-    runner_up_ident, runner_up_score = ranked[1]
-    # Divided by the number of voters so the margin means the same thing whether all
-    # five profiles ran or only three did.
-    margin = (winner_score - runner_up_score) / voted
+    if len(ranked) >= 2:
+        runner_up_ident, runner_up_score = ranked[1]
+        # Divided by the number of voters so the margin means the same thing whether all
+        # five profiles ran or only three did.
+        margin = (winner_score - runner_up_score) / voted
+    else:
+        runner_up_ident, margin = winner_ident, KEY_MARGIN_FULL
 
     # A histogram cannot see a cadence.  Where the vote was close and the two readings are
     # a fifth or a parallel apart, the phrase's own shape gets to decide — see
-    # _cadence_prefers_runner_up for why it is restricted this narrowly.
+    # _cadence_prefers_runner_up for why it is restricted this narrowly.  (Among the two
+    # keys sharing a doh there is no such pair, so this is silent when ``doh`` was given.)
     if _cadence_prefers_runner_up(s, winner_ident, runner_up_ident, margin):
         winner_ident = runner_up_ident
 
@@ -1763,6 +1791,11 @@ def _detect_key(s, n_events: int):
     # readings were, which is the right uncertainty to report whichever one was picked, and
     # it is the number the mobile's editable-key prompt is calibrated against.
     winner = _key_from_identity(*winner_ident)
+    if doh_confidence is not None:
+        confidence = max(0.0, min(1.0, float(doh_confidence)))
+        if n_events < MIN_NOTES_FOR_KEY:
+            confidence = min(confidence, KEY_CONFIDENCE_CAP_LOW)
+        return winner, confidence
     return winner, _key_confidence_from_margin(margin, n_events)
 
 
@@ -1932,6 +1965,9 @@ class Event:
     pyin_midi: float | None = None
     voiced_prob: float = 0.0
     onset_post: float | None = None
+    # Fraction of the note's voiced frames within half a semitone of its pitch, from the
+    # voice engine (``vocal.VocalNote.stability``); None off that path.
+    stability: float | None = None
 
     @property
     def f0(self) -> float:
@@ -3063,7 +3099,7 @@ def _segment_vocal(
     sr: int,
     note_events: Sequence[tuple] = (),
     post: "Posteriorgram | None" = None,
-) -> tuple[list[Event], float | None]:
+) -> tuple[list[Event], float | None, "vocal.ScaleFit | None"]:
     """Notes from ``app.pipeline.vocal``: the melody path for hummed and sung clips.
 
     pyin runs once, on conditioned audio.  The melody-floor gate is kept exactly as
@@ -3072,16 +3108,19 @@ def _segment_vocal(
     one read off the contour head above that floor — the voice engine's segmenter and
     tuning estimate then run on that contour instead of pyin's.
 
-    Returns ``([], floor)`` when the engine finds no note, and the caller falls back to
-    the previous contour path and then to the inference path, so this can only add.
+    Returns ``([], floor, None)`` when the engine finds no note, and the caller falls back
+    to the previous contour path and then to the inference path, so this can only add.
+    The third value is the scale the engine wrote the notes in (``vocal.ScaleFit``), which
+    the key detection then keeps to: the notes were snapped into that scale, so a key with
+    another doh would read its own scale tones as accidentals.
     """
     try:
         raw = vocal.track(vocal.condition(y, sr), sr)
     except Exception as exc:  # noqa: BLE001 - the fallback paths still exist
         print(f"[notefusion] vocal engine: pyin failed ({exc}); falling back", flush=True)
-        return [], None
+        return [], None, None
     if not np.any(~np.isnan(raw.midi)):
-        return [], None
+        return [], None, None
 
     floor_hz = _melody_floor_hz(note_events, raw.times, raw.midi)
     floor_midi = None if floor_hz is None else float(69.0 + 12.0 * np.log2(floor_hz / 440.0))
@@ -3093,7 +3132,7 @@ def _segment_vocal(
         )
         distinct = np.unique(np.round(midi[~np.isnan(midi)]))
         if distinct.size < MELODY_FLOOR_MIN_DISTINCT_PITCHES:
-            return [], floor_midi
+            return [], floor_midi, None
 
     analysis = vocal.analyse(y, sr, contour=raw)
     events = [
@@ -3104,16 +3143,19 @@ def _segment_vocal(
             amp=n.amp,
             pyin_midi=n.midi,
             voiced_prob=n.voiced_prob,
+            stability=n.stability,
         )
         for n in analysis.notes
         if 0 <= n.pitch <= 127
     ]
+    fit = analysis.scale_fit
     print(
         f"[notefusion] vocal engine: {len(events)} notes, tuning {analysis.tuning_cents:+.0f} cents"
+        + (f", scale root {fit.root} (doh confidence {fit.confidence:.2f})" if fit is not None else "")
         + (f", melody floor midi {floor_midi:.0f}" if floor_midi is not None else ""),
         flush=True,
     )
-    return events, floor_midi
+    return events, floor_midi, fit
 
 
 def _refine_pitches(
@@ -3203,6 +3245,50 @@ def _sample_posteriors(events: list[Event], post: "Posteriorgram | None") -> lis
     if post is None or not events:
         return events
     return [replace(e, onset_post=post.onset_evidence(e.start, e.pitch)) for e in events]
+
+
+# ``_pitch_confidence``: a note the voice engine heard is as sure as its sung pitch is near
+# the note it was written as.  Within CONF_PITCH_FREE_SEMITONES the pitch costs nothing —
+# that is ordinary intonation; at CONF_PITCH_LOST_SEMITONES the term bottoms out at
+# CONF_PITCH_FLOOR, which is a note the singer put halfway to its neighbour, written one way
+# because the scale said so.  Stability (frames inside the note's own band) and voicing
+# scale it: a glide the segmenter kept and a breathy fragment are both less sure than a held
+# tone at the same pitch.
+CONF_PITCH_FREE_SEMITONES = 0.15
+CONF_PITCH_LOST_SEMITONES = 0.60
+CONF_PITCH_FLOOR = 0.25
+CONF_ATTACK_FLOOR = 0.75
+# The overall confidence of a sung transcription is the notes' weighted by the doh: with
+# the key in doubt every syllable is, so a doh confidence of 0 costs this fraction.
+CONF_KEY_WEIGHT = 0.25
+
+
+def _pitch_confidence(evt: Event) -> float:
+    """Per-note confidence for a note the voice engine heard: is it the note written?
+
+    The old blend ranked notes by loudness (plus the onset head, when Basic Pitch ran),
+    and loudness is not evidence about pitch: on the sung corpus it scored 0.69 on the
+    right notes and 0.66 on the wrong ones, and the number shown to the user was the
+    recording's mean level.  What *is* evidence is how far the tuned sung pitch sits from
+    the pitch it was written as — the snap-to-scale decision has a margin, and this is it.
+    """
+    residual = abs(float(evt.pyin_midi) - float(evt.pitch))
+    excess = (residual - CONF_PITCH_FREE_SEMITONES) / (CONF_PITCH_LOST_SEMITONES - CONF_PITCH_FREE_SEMITONES)
+    pitch_term = 1.0 - (1.0 - CONF_PITCH_FLOOR) * min(1.0, max(0.0, excess))
+    steadiness = 0.6 + 0.4 * min(1.0, max(0.0, float(evt.stability if evt.stability is not None else 1.0)))
+    voicing = 0.7 + 0.3 * min(1.0, max(0.0, float(evt.voiced_prob)))
+    # Where Basic Pitch ran, its onset head is a second opinion on whether a note starts
+    # here at all — the one term that ranks a vibrato fragment (a real pitch, no attack)
+    # below the note it was cut from.  Weighed lightly: a soft legato re-attack misses it.
+    attack = 1.0 if evt.onset_post is None else CONF_ATTACK_FLOOR + (1.0 - CONF_ATTACK_FLOOR) * min(1.0, max(0.0, float(evt.onset_post)))
+    return float(min(1.0, max(0.0, pitch_term * steadiness * voicing * attack)))
+
+
+def _note_confidence(evt: Event, has_evidence: bool) -> float:
+    """Per-note confidence: pitch certainty for the voice engine's notes, else the blend."""
+    if evt.pyin_midi is not None and evt.stability is not None:
+        return _pitch_confidence(evt)
+    return _blend_confidence(evt) if has_evidence else evt.amp
 
 
 def _blend_confidence(evt: Event) -> float:
@@ -3657,21 +3743,25 @@ _MAX_NOTATED_BPM = 200.0
 # changing an answer.
 #
 # When nothing passes, ``_grid_bpm`` declines and librosa's estimate stands — the same
-# answer as before this existed.  That is not a rare path and not a failure: on
-# ``fast_sixteenths_c_major`` the detected onsets are ~38 ms from evenly spaced, which is
-# 22 % of a 174 ms note and triple Basic Pitch's frame hop, so no tempo makes them
-# commensurate and every candidate is correctly refused.
-_MAX_GRID_SLIP_STEPS = 0.175
+# answer as before this existed.
+#
+# Re-measured at 0.125 when the candidates started being refined before the test
+# (``_level_residual``): a candidate measured at its best nearby tempo and phase sits closer
+# to the grid than one measured as proposed, so the band that separated right from wrong
+# moved down with it.  Swept with the refinement in place over both corpora: 0.175 and 0.15
+# leave 38 of 43 instrument clips at the reference level, 0.125 and 0.10 leave 40, and the
+# sung corpus holds 60 of 61 at every value but 0.10 (59).  The two instrument clips wrong
+# at every value are the sixteenths and the triplets the half-beat grid cannot hold.
+_MAX_GRID_SLIP_STEPS = 0.125
 
-# Survivors are compared on fit rounded to this many seconds, and only then on
-# tappability.  Two units, each where it is the right one: the filter above asks "does
-# rounding put this note in the right slot", which is a question about steps, and this
-# asks "how far does rounding actually move the audio", which is a question about time.
-# Using steps here instead looks natural and is wrong — a fixed jitter is a larger
-# fraction of a step at a faster tempo, so the same recording measured at 96 BPM scores
-# worse than at 48, and the chooser quietly halves the tempo.  In seconds the two are
-# indistinguishable, which is the point: they describe the same performance, so the
-# preference gets to decide.
+# Survivors are compared on fit in seconds, and only then on tappability.  Two units,
+# each where it is the right one: the filter above asks "does rounding put this note in
+# the right slot", which is a question about steps, and this asks "how far does rounding
+# actually move the audio", which is a question about time.  Using steps here instead
+# looks natural and is wrong — a fixed jitter is a larger fraction of a step at a faster
+# tempo, so the same recording measured at 96 BPM scores worse than at 48, and the
+# chooser quietly halves the tempo.  In seconds the two are indistinguishable, which is
+# the point: they describe the same performance, so the preference gets to decide.
 #
 # A band is needed at all because a candidate that merely scrapes past the filter can
 # otherwise win on the preference alone: a run of sixteenths admits both 176 BPM, where
@@ -3688,6 +3778,32 @@ _GRID_FIT_BAND_SEC = 0.010
 # are ones no listener would tap.
 _TEMPO_CANDIDATE_FACTORS = (0.25, 1.0 / 3.0, 0.5, 2.0 / 3.0, 1.0, 1.5, 2.0, 3.0, 4.0)
 
+# The levels a *tracker's* estimate is offered at.  librosa lands on the bar rate as readily
+# as on the beat — a chord progression held four beats to the chord read 25 for 100, a 6/8
+# clip 45 for 132 — so its answer joins the candidates at the beat's whole-number multiples
+# and divisions, the same ratios ``_OCTAVE_ADMIT_RATIOS`` treats as one performance.  The
+# median interval's family above already spans them; the tracker's used to stop at a
+# doubling, which left the true tempo of that progression out of the running entirely and
+# the chooser settling for the best of the wrong ones.
+_TRACKER_LEVEL_FACTORS = (0.25, 1.0 / 3.0, 0.5, 1.0, 2.0, 3.0, 4.0)
+
+# Onsets closer than this are one attack for the tempo, weighted by how many notes it
+# starts.  Below Basic Pitch's frame hop times two, so a strum's notes collapse and a
+# repeated note never does.
+_SIMULTANEOUS_ONSET_SEC = 0.03
+
+# When a recording has this many chords — attacks of two notes or more — the chords alone
+# are the tempo evidence and single notes between them are left out.  A progression's
+# harmonic rhythm sits on the beat; what a model hears between the chords of a held
+# progression is re-triggers inside the sustain and passing notes, and neither says where
+# the beat is.  Measured on the chord bench's jazzish progression (maj7 chords held four
+# beats at 100): with the chords' notes counted singly the median inter-onset interval was
+# a near-zero glitch; counted as attacks, nine re-triggers between eight chord changes
+# fitted every tempo that put the changes on a half-beat and the chooser read 87.6; on the
+# changes alone, 100 fits exactly and the preference picks it from 50, 75 and 150.  A
+# melody never has a chord, so a hummed line is untouched.
+_CHORDAL_MIN_ATTACKS = 4
+
 # Which ratios count as "the same performance, one level in" when re-admitting a candidate
 # the step filter rejected.  Doublings and their compounds only: 2, 3 and 4 are the ways one
 # beat subdivides into another beat, so a candidate at one of these ratios to an accepted one
@@ -3702,6 +3818,20 @@ _OCTAVE_ADMIT_RATIOS = (2.0, 3.0, 4.0)
 # within a fraction of a percent when one of them came from librosa.  2% is loose enough for
 # the latter and far tighter than the 33% gap to the nearest ratio it must not reach.
 _OCTAVE_ADMIT_TOLERANCE = 0.02
+
+# Two survivors one level apart are one performance written two ways, and the finer grid
+# fits it at least as well by construction — its steps are a subset of the coarser grid's,
+# so once the candidates are refined (``_level_residual``) a grid half as coarse absorbs
+# half the jitter.  A better seconds figure on the finer reading is therefore not evidence
+# for it unless the gain is more than fitting noise can give: this fraction of the coarser
+# grid's step.  Short of that the coarser reading is credited with the finer one's fit and
+# the tappability preference decides between them, exactly as for a re-admitted candidate.
+# Credited upward, never down: a half-tempo survivor that fits worse must not drag the true
+# level's fit down to its own, which is how a first draft of this handed a hymn at 84 to 168.
+# Measured on the directional fixture of beats at 96 with an 0.11 s scatter: refined, the
+# 192 reading fits 0.015 s against 96's 0.034 — a gain of 0.019 s against a 0.31 s step —
+# and would have won on that alone.
+_SAME_PERFORMANCE_TOLERANCE = 0.10
 
 # ── Grid refinement (``_refine_grid``) ────────────────────────────────────────
 # How far the refinement may move the BPM it is handed, as a fraction.  1% cannot reach
@@ -3727,6 +3857,22 @@ _GRID_REFINE_PHASE_STEPS = 201
 # on the slope is the clip's length in beats, and the whole point is to average the frame
 # hop's +-11.6 ms out over many of them.  Matches ``_grid_bpm``'s own floor.
 _GRID_REFINE_MIN_ONSETS = 4
+
+# ── Level refinement (``_level_residual``) ────────────────────────────────────
+# How far a *candidate* tempo may move before its grid fit is measured for the level
+# choice.  The candidates arrive from one median interval or from librosa's lag grid, and
+# both are off by a percent or two; over a 15 s hummed phrase that is a quarter of a step by
+# the last note, enough to fail ``_MAX_GRID_SLIP_STEPS`` at the right level while the halved
+# level, whose steps are twice as long, passes.  Measured on the sung corpus with the voice
+# engine's onsets: 49 of 61 clips at the reference level before, 60 after (Amazing Grace no
+# longer written at 40 or 160 for 80, the low hum no longer at 112 for 76); the instrument
+# corpus 37 to 38 of 43, where the two that stay wrong are the sixteenths and the triplets
+# the half-beat grid cannot hold.  3% is a third of the gap to the nearest other level, so
+# the refinement cannot cross one; the coarser sweep than ``_refine_grid``'s is enough for a
+# filter, and ``_refine_grid`` then polishes the winner.
+_GRID_LEVEL_BAND = 0.03
+_GRID_LEVEL_BPM_STEPS = 31
+_GRID_LEVEL_PHASE_STEPS = 41
 
 
 def _onset_bpm(events: list[Event]) -> float:
@@ -3771,6 +3917,61 @@ def _grid_residual(
     return steps, steps * 60.0 / (bpm * divisor)
 
 
+def _level_residual(
+    onsets: np.ndarray, bpm: float, divisors: tuple[int, ...], weights: np.ndarray | None = None
+) -> tuple[float, float, float]:
+    """``_grid_residual`` for a candidate tempo, measured at its best nearby tempo and phase.
+
+    Returns ``(steps, seconds, refined bpm)``: the fit over whichever of the offered divisors
+    suits best, as ``_grid_residual`` reports it, after sweeping the tempo over
+    ``_GRID_LEVEL_BAND`` and the phase over one grid step.  See the constant for what the
+    sweep buys; the refined tempo is returned so the winner starts ``_refine_grid`` from a
+    value the onsets already agree with rather than the median interval's rounding of it.
+    ``weights`` counts the notes each onset starts (``_attacks``); equal when omitted.
+    """
+    w = np.ones_like(onsets) if weights is None else np.asarray(weights, dtype=float)
+    w = w / float(w.sum())
+    best = (np.inf, np.inf, float(bpm))
+    for candidate in np.linspace(bpm * (1.0 - _GRID_LEVEL_BAND), bpm * (1.0 + _GRID_LEVEL_BAND), _GRID_LEVEL_BPM_STEPS):
+        for divisor in divisors:
+            step_sec = 60.0 / (float(candidate) * divisor)
+            phases = np.linspace(-step_sec / 2.0, step_sec / 2.0, _GRID_LEVEL_PHASE_STEPS)
+            scaled = (onsets[None, :] - onsets[0] - phases[:, None]) * (float(candidate) / 60.0) * divisor
+            cost = np.sum(np.abs(scaled - np.round(scaled)) * w[None, :], axis=1)
+            i = int(np.argmin(cost))
+            if float(cost[i]) < best[0]:
+                best = (float(cost[i]), float(cost[i]) * step_sec, float(candidate))
+    return best
+
+
+def _attacks(events: Sequence[Event]) -> tuple[np.ndarray, np.ndarray]:
+    """(onset times, notes starting at each) with simultaneous attacks collapsed.
+
+    See _SIMULTANEOUS_ONSET_SEC.  Each attack is timed by its first note.
+    """
+    kept: list[float] = []
+    counts: list[float] = []
+    for t in sorted(float(e.start) for e in events):
+        if kept and t - kept[-1] <= _SIMULTANEOUS_ONSET_SEC:
+            counts[-1] += 1.0
+        else:
+            kept.append(t)
+            counts.append(1.0)
+    return np.array(kept, dtype=float), np.array(counts, dtype=float)
+
+
+def _tempo_onsets(events: Sequence[Event]) -> tuple[np.ndarray, np.ndarray]:
+    """(onset times, weights) that carry the beat: every attack, or the chords alone.
+
+    See _CHORDAL_MIN_ATTACKS.
+    """
+    onsets, counts = _attacks(events)
+    chordal = counts >= 2.0
+    if int(chordal.sum()) >= _CHORDAL_MIN_ATTACKS:
+        return onsets[chordal], counts[chordal]
+    return onsets, counts
+
+
 def _grid_bpm(
     events: list[Event],
     tracked_bpm: float,
@@ -3809,7 +4010,7 @@ def _grid_bpm(
     So there is no further clean level bug on this corpus, and a tiebreak invented to move
     any of the six would be fitted to a defect that lives somewhere else.
     """
-    onsets = np.array([e.start for e in events])
+    onsets, weights = _tempo_onsets(events)
     if onsets.size < 4:
         return 0.0
     iois = np.diff(onsets)
@@ -3820,22 +4021,25 @@ def _grid_bpm(
     unit_bpm = 60.0 / float(np.median(usable))
     candidates = {unit_bpm * factor for factor in _TEMPO_CANDIDATE_FACTORS}
     if tracked_bpm > 0.0:
-        # librosa's answer and its two neighbouring metrical levels.  Included so a
-        # clip whose onsets are too fragmented to give a clean median — heavy vibrato,
-        # for instance — can still be carried by the tracker.
-        candidates |= {tracked_bpm * factor for factor in (0.5, 1.0, 2.0)}
+        # librosa's answer and its neighbouring metrical levels.  Included so a clip whose
+        # onsets are too fragmented to give a clean median — heavy vibrato, for instance —
+        # can still be carried by the tracker.
+        candidates |= {tracked_bpm * factor for factor in _TRACKER_LEVEL_FACTORS}
     for extra in extra_candidates:
         if extra > 0.0:
-            candidates |= {extra * factor for factor in (0.5, 1.0, 2.0)}
+            candidates |= {extra * factor for factor in _TRACKER_LEVEL_FACTORS}
 
+    # Each candidate is measured at its best nearby tempo and phase (``_level_residual``),
+    # and carries that refined tempo forward; the ratios below are taken on the candidates
+    # as proposed, which is where the exact doublings live.
     in_range = []
     for bpm in candidates:
         if not _MIN_NOTATED_BPM <= bpm <= _MAX_NOTATED_BPM:
             continue
-        steps, seconds = _grid_residual(onsets, bpm, divisors)
-        in_range.append((bpm, steps, seconds))
+        steps, seconds, refined = _level_residual(onsets, bpm, divisors, weights)
+        in_range.append((bpm, steps, seconds, refined))
 
-    on_grid = [(bpm, sec) for bpm, steps, sec in in_range if steps <= _MAX_GRID_SLIP_STEPS]
+    on_grid = [(bpm, sec, refined) for bpm, steps, sec, refined in in_range if steps <= _MAX_GRID_SLIP_STEPS]
     if not on_grid:
         return 0.0
 
@@ -3855,19 +4059,35 @@ def _grid_bpm(
     # true 96, its correct level having been filtered out at 0.323 steps while the halved
     # one passed at 0.162 — with the two agreeing to the millisecond in seconds.
     accepted = tuple(on_grid)
-    for bpm, steps, seconds in in_range:
+    for bpm, steps, seconds, refined in in_range:
         if steps <= _MAX_GRID_SLIP_STEPS:
             continue
-        for acc_bpm, acc_seconds in accepted:
+        for acc_bpm, acc_seconds, _acc_refined in accepted:
             ratio = bpm / acc_bpm
             if abs(seconds - acc_seconds) > _GRID_FIT_BAND_SEC:
                 continue
             if any(abs(ratio - r) <= _OCTAVE_ADMIT_TOLERANCE * r for r in _OCTAVE_ADMIT_RATIOS):
-                on_grid.append((bpm, acc_seconds))
+                on_grid.append((bpm, acc_seconds, refined))
                 break
 
-    def rank(pair: tuple[float, float]) -> tuple[int, float]:
-        bpm, seconds = pair
+    # A coarser reading is credited with a finer partner's fit unless the partner is better
+    # by more than fitting noise could make it; see _SAME_PERFORMANCE_TOLERANCE.  Finest
+    # first, so a credited fit carries on down a chain of levels.
+    on_grid.sort(key=lambda entry: -entry[0])
+    for j in range(len(on_grid)):
+        bpm_j, sec_j, refined_j = on_grid[j]
+        for i in range(j):
+            bpm_i, sec_i, _refined_i = on_grid[i]
+            ratio = bpm_i / bpm_j
+            if not any(abs(ratio - r) <= _OCTAVE_ADMIT_TOLERANCE * r for r in _OCTAVE_ADMIT_RATIOS):
+                continue
+            coarse_step = 60.0 / (bpm_j * max(divisors))
+            if sec_i >= sec_j - _SAME_PERFORMANCE_TOLERANCE * coarse_step:
+                sec_j = min(sec_j, sec_i)
+        on_grid[j] = (bpm_j, sec_j, refined_j)
+
+    def rank(entry: tuple[float, float, float]) -> tuple[int, float]:
+        bpm, seconds, _refined = entry
         # Ratio, not difference, for the preference: 80 and 125 BPM are equally far
         # from 100.
         return (
@@ -3875,7 +4095,7 @@ def _grid_bpm(
             abs(float(np.log(bpm / _TEMPO_PREFERENCE_BPM))),
         )
 
-    return min(on_grid, key=rank)[0]
+    return min(on_grid, key=rank)[2]
 
 
 def _estimate_tempo_and_beats(
@@ -4002,16 +4222,28 @@ def _beat_origin(beat_times: np.ndarray, first_onset: float, bpm: float) -> floa
     timing defect in the pipeline, because every bar line and every solfa line
     is drawn from these offsets.  The fix is to measure from a detected beat
     instead: the last one at or before the first surviving onset, provided it is
-    within half a beat.  Further back than that and the grid is describing some
-    other beat, not this onset, so the offset would be a guess dressed up as
+    within a quarter of a beat.  Further back than that and the grid is describing
+    some other beat, not this onset, so the offset would be a guess dressed up as
     evidence.  With no usable beat at all, anchoring the first note to beat 0 is
     still strictly better than preserving the silence.
+
+    The window was half a beat.  On a voice alone — no drums — librosa reads the
+    beat phase off the onset envelope and lands between the beats now and then, and
+    a beat a third to a half of a beat before the first note then put that note on
+    the "and" and every bar line in the sheet half a beat late: the sung corpus's low
+    hum had all thirteen notes written at x.5, bars wrong from the first.  A beat
+    that close to the first note is evidence of the phase; one nearly half a beat
+    away is evidence of a different phase, and the first note is the better anchor.
+    Measured: the sung corpus's beats.f1 0.957 -> 0.998 and best_shift_beats 0.042
+    -> 0.000, the instrument corpus unchanged.  A rule weighing the long notes onto
+    the beats was measured too and struck: it fixed the same clips and broke a tune
+    whose pickup sits on the downbeat.
     """
     if beat_times.size:
         earlier = beat_times[beat_times <= first_onset]
         if earlier.size:
             candidate = float(earlier[-1])
-            if (first_onset - candidate) <= 30.0 / bpm:  # half a beat period
+            if (first_onset - candidate) <= 15.0 / bpm:  # a quarter of a beat period
                 return candidate
     return first_onset
 
@@ -4502,9 +4734,11 @@ def _transcribe_wav(
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
     # Pitch at all, and skips it when the engine found the line.
     fast_events: list[Event] = []
+    # The scale the voice engine wrote the notes in, when it ran; step 9 keeps the key to it.
+    vocal_fit: "vocal.ScaleFit | None" = None
     skip_basic_pitch = fast and strategy.contour_first and settings.vocal_engine
     if skip_basic_pitch:
-        fast_events, _floor = _segment_vocal(y, sr, [], None)
+        fast_events, _floor, vocal_fit = _segment_vocal(y, sr, [], None)
         skip_basic_pitch = bool(fast_events)
     progress(0.15)
 
@@ -4539,7 +4773,7 @@ def _transcribe_wav(
     # Chords mode: every note Basic Pitch kept, which the chords are read from.
     chord_events: list[Event] | None = None
     if not contour_events and settings.vocal_engine and strategy.contour_first:
-        contour_events, melody_floor_midi = _segment_vocal(y, sr, note_events, post)
+        contour_events, melody_floor_midi, vocal_fit = _segment_vocal(y, sr, note_events, post)
     if not contour_events and settings.contour_first and strategy.contour_first:
         contour_events, melody_floor_midi = _segment_contour(y, note_events, post)
 
@@ -4705,7 +4939,7 @@ def _transcribe_wav(
         # BPM alone and refines only the phase — which the override says nothing about.
         # Nor do the singer's onsets get to move a BPM measured on the whole mix.
         bpm, beat_origin = _refine_grid(
-            np.array([e.start for e in rhythm_events]),
+            _tempo_onsets(rhythm_events)[0],
             bpm,
             beat_origin,
             settings.quantize_divisors,
@@ -4798,7 +5032,7 @@ def _transcribe_wav(
         # well-formed duration in the score.  0.25 is one step of the default
         # grid, so this floor and the quantizer agree.
         n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
-        n.editorial.confidence = _blend_confidence(evt) if has_evidence else evt.amp
+        n.editorial.confidence = _note_confidence(evt, has_evidence)
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
@@ -4840,7 +5074,12 @@ def _transcribe_wav(
         detected = m21key.Key(chords.tonic_name(chord_key[0] + shift, chord_key[1]), chord_key[1])
         key_confidence = chord_key_confidence
     elif settings.key_ensemble:
-        detected, key_confidence = _detect_key(s, len(events))
+        # The written pitches carry the keyboard transpose (step 6c); so must the doh.
+        detected, key_confidence = _detect_key(
+            s, len(events),
+            doh=None if vocal_fit is None else (vocal_fit.root + shift) % 12,
+            doh_confidence=None if vocal_fit is None else vocal_fit.confidence,
+        )
     else:
         detected = s.analyze("key")
         cc = float(detected.correlationCoefficient)
@@ -5015,7 +5254,7 @@ def _transcribe_wav(
         midi_base64=midi_base64,
         notes=notes,
         solfa_lines=solfa_lines,
-        overall_confidence=round(float(np.mean([n.conf for n in notes])), 3),
+        overall_confidence=_overall_confidence(notes, key_confidence if vocal_fit is not None else None),
         audio_preview_base64=audio_preview_b64,
         beat_origin_sec=round(float(beat_origin), 4),
         # Read off the events rather than re-testing duration against the cap, so this
@@ -5030,6 +5269,16 @@ def _transcribe_wav(
         chords=chord_list,
         chords_source="heard" if chord_list else None,
     )
+
+
+def _overall_confidence(notes: list["TranscribedNote"], doh_confidence: float | None) -> float:
+    """The sheet's confidence: the notes' mean weighted by length, times the doh's when known."""
+    weights = np.array([max(float(n.dur_beats), 1e-3) for n in notes])
+    confs = np.array([float(n.conf) for n in notes])
+    overall = float(np.sum(weights * confs) / np.sum(weights))
+    if doh_confidence is not None:
+        overall *= (1.0 - CONF_KEY_WEIGHT) + CONF_KEY_WEIGHT * max(0.0, min(1.0, float(doh_confidence)))
+    return round(overall, 3)
 
 
 def _one_line(s) -> None:

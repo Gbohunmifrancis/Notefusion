@@ -307,6 +307,50 @@ LEFT HAND: eleven segments in the right places at pitches 12-24 semitones low, w
 diatonic accompaniment makes look like plausible degrees. ``notes.f1`` and the octave
 column are the two to read on these cases; the degree columns are actively misleading here
 and that is worth knowing about the degree columns generally.
+The doh-from-the-fit baseline (vocal.fit_scale_detail, transcriber._level_residual)
+──────────────────────────────────────────────────────────────────────────────────
+Re-recorded when the voice engine's scale fit became the doh (``_detect_key`` votes only
+between that scale's major and relative minor), the tempo chooser started measuring each
+candidate at its best nearby tempo and phase (``_level_residual``, ``_MAX_GRID_SLIP_STEPS``
+0.175 -> 0.125, ``_SAME_PERFORMANCE_TOLERANCE``), ``_beat_origin`` stopped accepting a
+tracked beat more than a quarter of a beat before the first note, a shallow re-strike dip
+with a clear attack became a note boundary (``vocal.REARTICULATION_SOFT_FRAC``) and a sung
+note's confidence became its pitch's distance from the note written (``_pitch_confidence``).
+
+The sung corpus is what it was built on: notes.f1 0.909 -> 0.971, seq.exact 0.754 -> 0.836,
+seq.syllable_error_rate 0.043 -> 0.027, solfa.ghost_count 0.623 -> 0.016,
+solfa.chromatic_ghosts 0.328 -> 0.213, tempo.octave_error 0.082 -> 0.000 (tempo.abs_error
+10.2 -> 0.66), beats.f1 0.957 -> 0.999, conf.mean_correct 0.691 -> 0.858 with conf.auc
+0.605 -> 0.727, key.confidence_auc 0.025 -> 0.595.  On Vocadito's real singers the doh is
+right on 26 of the 30 clips both runs scored (23 before) and the solfa error rate falls
+0.406 -> 0.389 against a human ceiling of 0.262.
+
+This corpus is the control, and four of its cases are worse by more than the tolerance:
+
+  drift_1_semitone, vibrato_depth_1_8, vibrato_depth_2_0 / notes.f1  0.957 -> 0.870
+      Each already carried one ghost (12 notes for 11) and now loses one match to it: the
+      ghost and a real note round onto the same half-beat slot, and ``_one_note_per_slot``
+      now keeps the ghost where it kept the real note.  Which one it keeps turns on the
+      grid's phase and tempo to the millisecond, and both moved: drift_1_semitone is read
+      at its own level (95 against a true 96) where it was read at 149, and the other two
+      start ``_refine_grid`` from the tempo the onsets refined to rather than the median
+      interval's.  Vibrato of +-1.8 and +-2.0 semitones is outside what a singer produces;
+      the sung corpus's wide-vibrato cases all gained.
+
+  poly_block_chords_c_major / notes.f1  1.000 -> 0.957
+      One extra note on the mixture case, which runs on the contour head's track rather
+      than pyin's and was not a tuning target.
+
+Two sung cases are also recorded as worse, and both are the same decision: chromatic_g's
+hum_sharp40 and ah_vibrato styles now read D major for G (key.exact 1 -> 0, every syllable
+still right under D's doh).  The tune's C and C# cost the two scales the same, the fit's
+tie-break on the tonal profile settles on D on those two renderings, and the vote that used
+to overturn it no longer may — the same restriction that fixed three real singers' dohs.
+conf.auc on this corpus falls 0.833 -> 0.590 (ungated, see NOT_A_GATE): the wrong notes
+here are vibrato fragments at a real pitch, which a pitch-distance confidence cannot rank
+below the note they were cut from, and the onset-head term that could is weighed lightly
+so that a soft legato re-attack is not marked doubtful.
+
 """
 
 import json
