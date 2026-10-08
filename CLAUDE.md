@@ -16,14 +16,24 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
-  hysteresis note segmentation, then scale-fit notation (`fit_scale` finds the tuning offset
-  and the major scale together; `snap_to_scale` writes each note as its scale tone unless it
-  sits within 25 cents of an accidental) — with the Basic Pitch paths as fallback
-  (`NF_VOCAL_ENGINE=0` restores the old decoder). The key vote only considers keys whose
-  scale holds the notes as well as any does (`transcriber._scale_parsimony`). Accuracy is
+  hysteresis note segmentation, then scale-fit notation (`fit_scale_detail` finds the tuning
+  offset and the major scale together, settling roots within `SCALE_FIT_TIE_RATIO` of each other
+  on the tonal profile and a quarter-tone singer's two readings on the simpler key signature;
+  `snap_to_scale` writes each note as its scale tone unless it sits within 25 cents of an
+  accidental) — with the Basic Pitch paths as fallback (`NF_VOCAL_ENGINE=0` restores the old
+  decoder). That scale's root is the doh: `transcriber._detect_key` votes only between its major
+  and relative minor, and the key confidence is the fit's `ScaleFit.confidence` (the cost margin
+  over the runner-up scale); without a fit the vote keeps to keys whose scale holds the notes as
+  well as any does (`_scale_parsimony`). A sung note's confidence is how near its tuned pitch
+  sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
+  confidence weighs the notes by length and by the doh confidence. Tempo level: every candidate
+  is measured at its best nearby tempo and phase before the grid filter (`_level_residual`), and
+  a tracked beat anchors beat 0 only within a quarter of a beat of the first note
+  (`_beat_origin`). Accuracy is
   measured twice: the sung corpus, intended notes known, including untrained-singer styles
   (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`),
-  and real singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run). Linked songs
+  and real singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run; the
+  instrument corpus `python -m tests.accuracy.report` is the control). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,

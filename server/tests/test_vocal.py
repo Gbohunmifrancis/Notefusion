@@ -374,3 +374,76 @@ def test_condition_normalises_and_removes_dc():
     out = vocal.condition(y)
     assert abs(float(out[SR // 2 :].mean())) < 0.02
     assert float(np.max(np.abs(out))) == pytest.approx(0.9, abs=0.05)
+
+
+# ── Scale fit: near-ties, margins, confidence ─────────────────────────────────
+
+
+def test_fit_scale_settles_a_near_tie_on_the_tonal_profile():
+    # G A B C C# D | D C# C B A G with a little scatter: C and C# are each sung twice, so
+    # G major (where C# is chromatic) and D major (where C is) cost the same to within
+    # the scatter.  The long G's and the final G say G.
+    sung = [67.05, 69.0, 70.95, 72.1, 73.0, 74.05, 74.0, 72.9, 72.0, 71.05, 69.0, 66.95]
+    weights = [1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2]
+    fit = vocal.fit_scale_detail(sung, weights)
+    assert fit.root == 7
+    assert fit.cost_margin <= vocal.SCALE_FIT_TIE_RATIO
+    assert fit.tonal_margin > 0.0
+    assert vocal.fit_scale(sung, weights) == (fit.offset, fit.root)
+
+
+def test_a_decisive_fit_is_sure_and_a_tie_is_only_as_sure_as_its_profile():
+    sure = vocal.ScaleFit(0.0, 0, cost_margin=0.2, tonal_margin=1.0)
+    tie_clear = vocal.ScaleFit(0.0, 0, cost_margin=0.0, tonal_margin=0.3)
+    tie_unclear = vocal.ScaleFit(0.0, 0, cost_margin=0.0, tonal_margin=0.02)
+    assert sure.confidence == pytest.approx(1.0)
+    assert sure.confidence > tie_clear.confidence > tie_unclear.confidence
+    assert tie_unclear.confidence < 0.1
+
+
+def test_a_full_scale_sung_in_tune_fits_with_a_wide_margin():
+    sung = [60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62, 60]
+    fit = vocal.fit_scale_detail(sung, [1.0] * len(sung))
+    assert fit.root == 0
+    assert fit.cost_margin > vocal.SCALE_FIT_TIE_RATIO
+    assert fit.confidence >= 0.5
+
+
+# ── Re-strikes with a strong attack ──────────────────────────────────────────
+
+
+def _shallow_dip(onset: np.ndarray) -> vocal.Contour:
+    """One held pitch whose level dips only to 0.7 at frame 20: too shallow on its own."""
+    midi = np.full(40, 60.0)
+    rms = np.ones(40)
+    rms[19:22] = 0.7
+    c = vocal.smooth(_contour_obj(midi, rms))
+    return vocal.Contour(c.times, c.midi, np.ones(40), c.rms, c.rms_fast, c.stable, onset=onset)
+
+
+def test_clean_splits_a_shallow_dip_that_comes_back_as_a_clear_attack():
+    # A hum re-struck on the same pitch: the 23 ms frame straddles the dip and reads it at
+    # 0.7 of the flanks, but the spectral flux of the new attack is unmistakable.
+    onset = np.ones(40)
+    onset[22] = vocal.ONSET_CUE_STRONG_FLUX + 1.0
+    assert len(vocal.clean(_shallow_dip(onset), [(0, 40)])) == 2
+
+
+def test_clean_keeps_a_shallow_dip_with_only_an_ordinary_attack():
+    onset = np.ones(40)
+    onset[22] = vocal.ONSET_CUE_FLUX + 0.5  # an attack, but not a strong one
+    assert len(vocal.clean(_shallow_dip(onset), [(0, 40)])) == 1
+
+
+def test_analyse_reports_how_steadily_each_note_was_held():
+    y = _tone(_contour([(60, 0.6), (64, 0.6), (67, 0.6), (64, 0.6), (60, 0.6)]))
+    notes = vocal.analyse(y, SR).notes
+    assert [n.pitch for n in notes] == [60, 64, 67, 64, 60]
+    assert all(n.stability > 0.9 for n in notes)
+
+
+def test_a_quarter_tone_singer_is_written_in_the_simpler_key():
+    # Every note 50 cents off: B-flat major 50 cents flat and B major 50 cents sharp are
+    # the same reading.  Nothing in the audio separates them, so the simpler key wins.
+    sung = [m + 0.5 for m in (70, 72, 74, 75, 77, 79, 81, 82, 81, 79, 77, 75, 74, 72, 70)]
+    assert vocal.fit_scale(sung, [1.0] * len(sung))[1] == 10

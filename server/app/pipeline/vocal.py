@@ -105,6 +105,13 @@ FRAGMENT_EDGE_SEMITONES = 2.5  # ...and at the edge of a phrase (an attack or a 
 OCTAVE_ODD_EVEN_MAX = 0.12
 JOIN_GAP_SEC = 0.06  # same-pitch segments closer than this are one note unless re-struck
 REARTICULATION_FRAC = 0.62  # an RMS valley below this fraction of its flanks is a re-strike
+# A shallower valley is still a re-strike when the level comes back as a clear new attack
+# (spectral flux at ONSET_CUE_STRONG_FLUX times the clip's typical voiced frame).  A hum
+# re-struck on the same pitch dips only briefly, and a 23 ms frame straddling the dip reads
+# it at two thirds of the flanks rather than half; the attack that follows is unmistakable.
+# Measured: the amateur Twinkle's two merged note pairs come back (12 -> 14 notes) and no
+# vibrato case gains a note, since a vibrato's amplitude ripple carries no attack.
+REARTICULATION_SOFT_FRAC = 0.80
 # ...and clearly deeper than the span's ordinary wobble: a vowel sung with vibrato
 # through a formant has an amplitude ripple at the vibrato rate, and that is not a
 # re-strike however deep it goes.  A cut must be this fraction of the typical valley.
@@ -120,6 +127,7 @@ VALLEY_WIDTH_FRAMES = 3
 # songs' reverberant lead 47 of 49 true kept, 45 of 47 false dropped; through the vocal
 # stem 20 of 32 true kept, 63 of 75 false dropped.
 ONSET_CUE_FLUX = 2.0
+ONSET_CUE_STRONG_FLUX = 4.0
 ONSET_CUE_VOICING = 0.3
 
 # ── Key-aware rounding ────────────────────────────────────────────────────────
@@ -137,6 +145,21 @@ SCALE_FIT_MIN_NOTES = 5
 # Two scales whose costs are this close fit the notes equally (a pentatonic tune lies in
 # three major scales at once); the tonal profile then picks between them.
 SCALE_FIT_TIE = 1e-6
+# Roots whose fit cost is within this fraction of the best are a tie the tonal profile
+# settles.  The two scales a near-tie is between differ in one degree (ti against ta, fa
+# against fe), and a near-tie means the singer put that degree between the two, where no
+# distance can say which was meant; the profile of the whole tune can.  Measured offline
+# on the decoder's own note lists: 0.02 moves the sung corpus's doh from 56 to 58 of 61
+# (the chromatic passing-note tune, whose C and C# cost G and D major the same) and
+# Vocadito's from 27 to 28 of 32; 0.05 and wider hand real singers' tunes to the profile
+# too often and lose clips (26 of 32 at 0.05, 23 at 0.10).
+SCALE_FIT_TIE_RATIO = 0.02
+# How decisive a fit is before it is believed outright: the runner-up root's cost lead,
+# as a fraction of the best cost, at which ``ScaleFit.confidence`` reaches 1.  Vocadito's
+# wrong dohs all sit under 0.035; half the right ones sit above 0.05.
+SCALE_FIT_SURE_MARGIN = 0.10
+# ...and for a tie settled on the tonal profile, the correlation lead that counts as sure.
+SCALE_FIT_SURE_TONAL_MARGIN = 0.25
 SNAP_MIN_NOTES = 5
 SNAP_MIN_KEY_MARGIN = 0.05  # correlation lead the key needs before it is allowed to vote
 
@@ -167,6 +190,37 @@ class VocalNote:
     pitch: int  # notated
     amp: float  # mean RMS, relative to the loudest note
     voiced_prob: float
+    # Fraction of the note's voiced frames within DELTA_SEMITONES of its pitch: 1.0 for a
+    # held tone, lower for a note the voice slid through or wobbled across.
+    stability: float = 1.0
+
+
+@dataclass(frozen=True)
+class ScaleFit:
+    """What ``fit_scale_detail`` found, and how sure it is."""
+
+    offset: float  # tuning offset, semitones
+    root: int  # pitch class of the major scale the notes are written in
+    # The runner-up root's cost over the winner's, as a fraction of the winner's cost.
+    # 0.0 when two roots fit exactly alike (a pentatonic tune) and the profile decided.
+    cost_margin: float
+    # Among roots the cost could not separate, the winner's tonal-profile lead over the
+    # next; 1.0 when the cost alone decided.
+    tonal_margin: float
+
+    @property
+    def confidence(self) -> float:
+        """How sure the doh is, in [0, 1].
+
+        A decisive cost margin is sure on its own.  A tie is as sure as the profile lead
+        that settled it, scaled under what a decisive cost earns: the profile reads a
+        histogram and cannot see which degree the tune avoided.
+        """
+        by_cost = min(1.0, self.cost_margin / SCALE_FIT_SURE_MARGIN)
+        if self.cost_margin > SCALE_FIT_TIE_RATIO:
+            return by_cost
+        by_profile = 0.8 * min(1.0, max(0.0, self.tonal_margin) / SCALE_FIT_SURE_TONAL_MARGIN)
+        return max(by_cost, by_profile)
 
 
 @dataclass(frozen=True)
@@ -177,6 +231,7 @@ class Analysis:
     # Pitch class of the major scale the notes were written in, or None when the clip had
     # too few notes for a fit and fell back to per-note rounding.
     scale_root: int | None = None
+    scale_fit: ScaleFit | None = None
 
 
 # ── 1. Contour ────────────────────────────────────────────────────────────────
@@ -529,15 +584,24 @@ def _typical_valley(valleys: list[tuple[int, float]]) -> float:
     return float(np.median([ratio for _, ratio in valleys])) if len(valleys) >= 3 else 1.0
 
 
-def _is_restrike(ratio: float, typical: float) -> bool:
-    return ratio < REARTICULATION_FRAC and ratio <= TREMOLO_REL * typical
+def _is_restrike(ratio: float, typical: float, strong_attack: bool = False) -> bool:
+    if ratio > TREMOLO_REL * typical:
+        return False
+    return ratio < REARTICULATION_FRAC or (strong_attack and ratio < REARTICULATION_SOFT_FRAC)
+
+
+def _attack_flux(c: Contour, k: int, a: int, b: int) -> float:
+    """Spectral-flux onset strength just after frame ``k``, over the clip's typical frame."""
+    if c.onset is None:
+        return 0.0
+    return float(np.max(c.onset[max(a, k - 1) : min(b, k + VALLEY_WIDTH_FRAMES + 1)], initial=0.0))
 
 
 def _onset_cue(c: Contour, k: int, a: int, b: int) -> bool:
     """Is the level dip at frame ``k`` (inside the span ``[a, b)``) a new attack?"""
     if c.onset is None:
         return True
-    if float(np.max(c.onset[max(a, k - 1) : min(b, k + VALLEY_WIDTH_FRAMES + 1)], initial=0.0)) >= ONSET_CUE_FLUX:
+    if _attack_flux(c, k, a, b) >= ONSET_CUE_FLUX:
         return True
     w = VALLEY_WIDTH_FRAMES
     sides = np.concatenate((c.voiced_prob[max(a, k - 4 * w) : max(a, k - w - 1)],
@@ -561,7 +625,8 @@ def _has_rearticulation(c: Contour, a_start: int, a_end: int, b_start: int, b_en
     if not near:
         return False
     ratio, k = min(near)
-    return _is_restrike(ratio, typical) and _onset_cue(c, a_start + k, a_start, b_end)
+    strong = _attack_flux(c, a_start + k, a_start, b_end) >= ONSET_CUE_STRONG_FLUX
+    return _is_restrike(ratio, typical, strong) and _onset_cue(c, a_start + k, a_start, b_end)
 
 
 def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
@@ -579,7 +644,8 @@ def _split_on_valleys(c: Contour, a: int, b: int) -> list[tuple[int, int]]:
     for k, ratio in valleys:
         if k < min_frames or k > window.size - min_frames or k - last < min_frames:
             continue
-        if _is_restrike(ratio, typical) and _onset_cue(c, a + k, a, b):
+        strong = _attack_flux(c, a + k, a, b) >= ONSET_CUE_STRONG_FLUX
+        if _is_restrike(ratio, typical, strong) and _onset_cue(c, a + k, a, b):
             cuts.append(k)
             last = k
     bounds = [0, *cuts, window.size]
@@ -754,6 +820,8 @@ def diatonic_set(midis: Sequence[float], durations: Sequence[float]) -> tuple[fr
 
 
 _MAJOR_OFFSETS = np.array(sorted(_MAJOR_SET))
+# Accidentals in each major key's signature (the simpler of the two spellings at F#/Gb).
+_KEY_SIGNATURE_ACCIDENTALS = [0, 5, 2, 3, 4, 1, 6, 1, 4, 3, 2, 5]
 # _SCALE_MEMBER[root, pc]: is pitch class pc in the major scale on root?
 _SCALE_MEMBER = np.zeros((12, 12), dtype=bool)
 for _root in range(12):
@@ -762,6 +830,21 @@ for _root in range(12):
 
 def fit_scale(midis: Sequence[float], weights: Sequence[float]) -> tuple[float, int] | None:
     """(tuning offset in semitones, major-scale root) that best fit the sung notes.
+
+    See ``fit_scale_detail``; this is its answer without the margins.
+    """
+    fit = fit_scale_detail(midis, weights)
+    return None if fit is None else (fit.offset, fit.root)
+
+
+def _tonality(histogram: np.ndarray, root: int) -> float:
+    """Krumhansl-Kessler major-profile correlation of a pitch-class histogram at ``root``."""
+    r = np.corrcoef(np.roll(histogram, -root), _KK_MAJOR)[0, 1]
+    return float(np.nan_to_num(r, nan=-1.0))
+
+
+def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleFit | None:
+    """The tuning offset and major-scale root that best fit the sung notes, with margins.
 
     Minimises the duration-weighted, capped squared distance from each note to the nearest
     tone of the scale, over every offset in [-0.5, 0.5) at ``SCALE_FIT_STEP`` and every
@@ -775,6 +858,11 @@ def fit_scale(midis: Sequence[float], weights: Sequence[float]) -> tuple[float, 
     so wide that a circular mean of them carries almost no information, while the
     seven-of-twelve pattern of a scale pins the offset down.
 
+    Roots the cost cannot separate — exactly, when the notes never touch the degrees that
+    tell two scales apart, or within ``SCALE_FIT_TIE_RATIO``, when the singer put that
+    degree between the two — are settled on the tonal profile of the rounded notes, as
+    ``diatonic_set`` did before this.
+
     Returns None for fewer than ``SCALE_FIT_MIN_NOTES`` notes.
     """
     m = np.asarray(midis, dtype=float)
@@ -786,39 +874,57 @@ def fit_scale(midis: Sequence[float], weights: Sequence[float]) -> tuple[float, 
     if float(w.sum()) <= 0.0:
         w = np.ones_like(m)
     cap2 = SCALE_FIT_CAP * SCALE_FIT_CAP
-    best_cost = np.inf
-    best: list[tuple[float, int]] = []
-    for theta in np.arange(-0.5, 0.5, SCALE_FIT_STEP):
+    best_cost = np.full(12, np.inf)
+    best_theta = np.zeros(12)
+    # Both ends of the offset range are searched: at exactly half a semitone the same notes
+    # read as one scale half a semitone flat or the next scale up half a semitone sharp, and
+    # a grid holding only one end would hand that singer to whichever end it kept.
+    for theta in np.arange(-0.5, 0.5 + SCALE_FIT_STEP / 2.0, SCALE_FIT_STEP):
         x = m - theta
         candidates = np.floor(x).astype(int)[:, None] + np.arange(-1, 3)[None, :]  # (n, 4)
         distance = np.abs(x[:, None] - candidates)
         member = _SCALE_MEMBER[:, candidates % 12]  # (12, n, 4)
         nearest = np.where(member, distance[None], np.inf).min(axis=2)  # (12, n)
         costs = (w[None] * np.minimum(nearest * nearest, cap2)).sum(axis=1)  # (12,)
-        low = float(costs.min())
-        if low < best_cost - SCALE_FIT_TIE:
-            best_cost = low
-            best = [(float(theta), int(r)) for r in np.flatnonzero(costs <= low + SCALE_FIT_TIE)]
-        elif low <= best_cost + SCALE_FIT_TIE:
-            best.extend((float(theta), int(r)) for r in np.flatnonzero(costs <= best_cost + SCALE_FIT_TIE))
-    if len({root for _, root in best}) == 1:
-        return best[0]
-    # A tie between scales: the notes never touch the tones that tell them apart. The
-    # tonal profile of the rounded notes decides, as diatonic_set did before this.
-    histogram = np.zeros(12)
-    for theta, _ in best[:1]:
-        for value, weight in zip(np.round(m - theta).astype(int), w):
-            histogram[value % 12] += weight
+        better = costs < best_cost - SCALE_FIT_TIE
+        best_cost = np.where(better, costs, best_cost)
+        best_theta = np.where(better, theta, best_theta)
+    order = sorted(range(12), key=lambda r: float(best_cost[r]))
+    low = float(best_cost[order[0]])
+    tied = [r for r in order if float(best_cost[r]) <= low * (1.0 + SCALE_FIT_TIE_RATIO) + SCALE_FIT_TIE]
+
+    def twins(a: int, b: int) -> bool:
+        # One reading written twice: the same notes a semitone over, at the wrap of the
+        # offset range (a singer a quarter-tone off either semitone).
+        return (a - b) % 12 in (1, 11) and abs(float(best_theta[a]) - float(best_theta[b])) >= 0.9
+
+    def margin_over(root: int) -> float:
+        rivals = [float(best_cost[r]) for r in order if r != root and not twins(r, root)]
+        runner_up = rivals[0] if rivals else np.inf
+        if low > 0.0:
+            return runner_up / low - 1.0
+        return 0.0 if runner_up <= SCALE_FIT_TIE else 1.0
+
+    if len(tied) == 1:
+        root = tied[0]
+        return ScaleFit(float(best_theta[root]), root, margin_over(root), 1.0)
 
     def tonality(root: int) -> float:
-        r = np.corrcoef(np.roll(histogram, -root), _KK_MAJOR)[0, 1]
-        return float(np.nan_to_num(r, nan=-1.0))
+        histogram = np.zeros(12)
+        for value, weight in zip(np.round(m - best_theta[root]).astype(int), w):
+            histogram[value % 12] += weight
+        return _tonality(histogram, root)
 
-    by_root: dict[int, float] = {}
-    for theta, root in best:
-        by_root.setdefault(root, theta)
-    root = max(by_root, key=tonality)
-    return by_root[root], root
+    # Nothing in the audio separates twins, so the key signature does — the reading in the
+    # simpler key, which is where choir music is written (G over A-flat, B-flat over B).
+    scored = sorted(
+        ((round(tonality(r), 3), -_KEY_SIGNATURE_ACCIDENTALS[r], -i, r) for i, r in enumerate(tied)),
+        reverse=True,
+    )
+    root = scored[0][3]
+    rivals = [tone for tone, _sig, _i, r in scored[1:] if not twins(r, root)]
+    tonal_margin = (scored[0][0] - rivals[0]) if rivals else 1.0
+    return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin)
 
 
 def snap_to_scale(midis: Sequence[float], root: int, keep: float = SCALE_KEEP_CHROMATIC) -> list[int]:
@@ -880,19 +986,20 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
         spans = fix_octaves(y, sr, c, spans)
     hop = _hop_sec(c)
     durations = [(b - a) * hop for a, b, _ in spans]
-    fit = fit_scale([m for _, _, m in spans], durations)
+    fit = fit_scale_detail([m for _, _, m in spans], durations)
     if fit is not None:
-        tuned_cents = fit[0] * 100.0
+        tuned_cents = fit.offset * 100.0
     else:
         tuned_cents = tuning_offset_cents([m for _, _, m in spans], durations)
     c = retune(c, tuned_cents)
     spans = [(a, b, m - tuned_cents / 100.0) for a, b, m in spans]
     midis = [m for _, _, m in spans]
-    pitches = snap_to_scale(midis, fit[1]) if fit is not None else notate(midis, durations)
+    pitches = snap_to_scale(midis, fit.root) if fit is not None else notate(midis, durations)
 
     amps = [float(np.mean(c.rms[a:b])) if b > a else 0.0 for a, b, _ in spans]
     loudest = max(amps) if amps else 0.0
     vprobs = [float(np.median(c.voiced_prob[a:b])) if b > a else 0.0 for a, b, _ in spans]
+    stabilities = [_stability(c.midi[a:b], m) for a, b, m in spans]
     keep = [
         not (vp < NOISE_MAX_VOICED_PROB and loudest > 0 and amp / loudest < NOISE_MAX_AMP)
         for vp, amp in zip(vprobs, amps)
@@ -901,6 +1008,7 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
     pitches = [x for x, k in zip(pitches, keep) if k]
     amps = [x for x, k in zip(amps, keep) if k]
     vprobs = [x for x, k in zip(vprobs, keep) if k]
+    stabilities = [x for x, k in zip(stabilities, keep) if k]
     loudest = max(amps) if amps else 0.0
     notes = [
         VocalNote(
@@ -910,7 +1018,19 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
             pitch=p,
             amp=(amp / loudest) if loudest > 0 else 1.0,
             voiced_prob=vp,
+            stability=stability,
         )
-        for (a, b, m), p, amp, vp in zip(spans, pitches, amps, vprobs)
+        for (a, b, m), p, amp, vp, stability in zip(spans, pitches, amps, vprobs, stabilities)
     ]
-    return Analysis(notes=notes, tuning_cents=tuned_cents, contour=c, scale_root=None if fit is None else fit[1])
+    return Analysis(
+        notes=notes, tuning_cents=tuned_cents, contour=c,
+        scale_root=None if fit is None else fit.root, scale_fit=fit,
+    )
+
+
+def _stability(frames: np.ndarray, midi: float) -> float:
+    """Fraction of a span's voiced frames within DELTA_SEMITONES of the note's pitch."""
+    voiced = frames[~np.isnan(frames)]
+    if voiced.size == 0:
+        return 0.0
+    return float(np.mean(np.abs(voiced - midi) <= DELTA_SEMITONES))
