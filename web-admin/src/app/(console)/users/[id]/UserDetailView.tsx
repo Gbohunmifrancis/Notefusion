@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -8,6 +8,7 @@ import {
   Gift,
   KeyRound,
   Mail,
+  Route,
   ShieldCheck,
   ShieldOff,
   Undo2,
@@ -24,6 +25,8 @@ import { SendEmailDialog } from "@/components/SendEmailDialog";
 import {
   endSubscription,
   extendSubscription,
+  getJourney,
+  getTranscriptionLog,
   getUserAccount,
   giftPro,
   reactivateUser,
@@ -38,11 +41,14 @@ import type {
   GiftDuration,
   SubscriptionStatus,
 } from "@/api/types";
+import { JourneyTimeline } from "@/components/activity/JourneyTimeline";
+import { TranscriptionLogTable } from "@/components/activity/TranscriptionLogTable";
 import { Avatar } from "@/components/Avatar";
 import { Badge, type BadgeTone } from "@/components/Badge";
 import { Card } from "@/components/Card";
 import { ConfirmDialog, type ConfirmRequest } from "@/components/ConfirmDialog";
 import { PageHeader } from "@/components/PageHeader";
+import { Pager } from "@/components/Pager";
 import { StateView } from "@/components/StateView";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -943,6 +949,73 @@ function TranscriptionsCard({ user, offset }: { user: AdminUserDetail; offset: n
   );
 }
 
+/** Every transcription this account asked for, saved or not, from the activity log. */
+function ActivityLogCard({ userId, offset }: { userId: string; offset: number }) {
+  const [page, setPage] = useState(1);
+  const state = useQuery({
+    queryKey: ["activity-log", "user", userId, page],
+    queryFn: ({ signal }) => getTranscriptionLog(page, 10, { userId }, signal),
+    placeholderData: keepPreviousData,
+  });
+  const s = state.data?.summary;
+  return (
+    <Card
+      title="Everything transcribed"
+      hint={
+        s
+          ? `${s.total} asked for · ${s.saved} saved · ${s.failed + s.refused} failed or refused, including free previews before signing up`
+          : "Saved or not, including free previews before signing up"
+      }
+      bleed
+    >
+      <StateView
+        state={state}
+        isEmpty={(d) => d.page.items.length === 0}
+        emptyMessage="Nothing transcribed yet"
+        loadingLabel="Loading transcriptions"
+      >
+        {(d) => (
+          <div className="border-t border-border">
+            <TranscriptionLogTable rows={d.page.items} offset={offset} showUser={false} />
+            <Pager
+              page={d.page.page}
+              pageSize={d.page.pageSize}
+              totalCount={d.page.totalCount}
+              totalPages={d.page.totalPages}
+              busy={state.isFetching}
+              onPage={setPage}
+            />
+          </div>
+        )}
+      </StateView>
+    </Card>
+  );
+}
+
+/** The newest of this account's journey; the full one is its own page. */
+function JourneyCard({ userId, offset }: { userId: string; offset: number }) {
+  const state = useQuery({
+    queryKey: ["journey", { userId }, "30", "card"],
+    queryFn: ({ signal }) => getJourney({ userId }, 30, signal),
+  });
+  return (
+    <Card
+      title="Journey (last 30 days)"
+      hint="Pages, clicks, app actions, uploads and payments, from every browser and device seen signed in as this account"
+      action={
+        <Button asChild variant="outline" className={ACTION}>
+          <Link href={`/activity/journey?userId=${userId}`}>Full journey</Link>
+        </Button>
+      }
+      bleed
+    >
+      <StateView state={state} loadingLabel="Loading journey">
+        {(j) => <JourneyTimeline items={j.items} offset={offset} limit={40} />}
+      </StateView>
+    </Card>
+  );
+}
+
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
 export function UserDetailView({ id }: { id: string }) {
@@ -990,6 +1063,12 @@ export function UserDetailView({ id }: { id: string }) {
               Send email
             </Button>
             <Button asChild variant="outline" className={ACTION}>
+              <Link href={`/activity/journey?userId=${id}`}>
+                <Route className="size-3.5" aria-hidden="true" />
+                Journey
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className={ACTION}>
               <Link href="/users">
                 <ArrowLeft className="size-3.5" aria-hidden="true" />
                 All users
@@ -1035,6 +1114,8 @@ export function UserDetailView({ id }: { id: string }) {
             </div>
 
             <PaymentsCard user={loaded} offset={offset} />
+            <JourneyCard userId={loaded.id} offset={offset} />
+            <ActivityLogCard userId={loaded.id} offset={offset} />
             <TranscriptionsCard user={loaded} offset={offset} />
             <LedgerCard user={loaded} offset={offset} />
             <RecentActionsCard user={loaded} offset={offset} />

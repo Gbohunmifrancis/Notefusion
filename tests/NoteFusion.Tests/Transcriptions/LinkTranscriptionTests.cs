@@ -180,7 +180,7 @@ public class LinkTranscriptionTests
         var api = new FakeTranscriptionApi();
 
         await new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister)
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id))
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null),
                 CancellationToken.None);
 
@@ -349,7 +349,7 @@ public class LinkTranscriptionTests
         await SubmitUpload(h, user, api, separate: false, keyboardTranspose: transpose);
         Assert.Equal(transpose, api.LastOptions!.KeyboardTranspose);
 
-        await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+        await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
             .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Chords, null, null, KeyboardTranspose: transpose), CancellationToken.None);
         Assert.Equal(transpose, api.LastOptions!.KeyboardTranspose);
         Assert.Equal(TranscriptionMode.Chords, api.LastOptions.Mode);
@@ -366,7 +366,7 @@ public class LinkTranscriptionTests
         var api = new FakeTranscriptionApi();
 
         var upload = await SubmitUpload(h, user, api, separate: false, keyboardTranspose: transpose);
-        var link = await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+        var link = await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
             .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Melody, null, null, KeyboardTranspose: transpose), CancellationToken.None);
 
         Assert.Equal("TRANS_INVALID_KEYBOARD_TRANSPOSE", upload.Error.Code);
@@ -387,7 +387,7 @@ public class LinkTranscriptionTests
         var api = new FakeTranscriptionApi();
 
         await new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister)
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id))
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "keys.m4a", TranscriptionMode.Chords, null, null, Separate: separate),
                 CancellationToken.None);
 
@@ -450,12 +450,12 @@ public class LinkTranscriptionTests
     private static Task<Result<string>> SubmitLink(
         TestHarness h, User user, FakeTranscriptionApi? api = null, string url = Link)
         => new SubmitLinkTranscriptionCommandHandler(
-                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
             .Handle(new SubmitLinkTranscriptionCommand(url, TranscriptionMode.Melody, null, null), CancellationToken.None);
 
     private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeTranscriptionApi api, bool separate, int keyboardTranspose = 0)
         => new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister)
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id))
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "song.m4a", TranscriptionMode.Melody, null, null, Separate: separate, KeyboardTranspose: keyboardTranspose),
                 CancellationToken.None);
 

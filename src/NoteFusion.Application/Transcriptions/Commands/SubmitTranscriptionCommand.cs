@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
+using NoteFusion.Application.Activity;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
@@ -28,7 +29,11 @@ public sealed record SubmitTranscriptionCommand(
     /// <summary>False to skip the synthesised preview WAV. See <see cref="TranscribeOptions.AudioPreview"/>.</summary>
     bool AudioPreview = true,
     /// <summary>The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</summary>
-    int KeyboardTranspose = 0) : IRequest<Result<string>>;
+    int KeyboardTranspose = 0,
+    /// <summary>The upload's media type as the client declared it; for the activity log only.</summary>
+    string? ContentType = null,
+    /// <summary>The upload's size in bytes; for the activity log only.</summary>
+    long? SizeBytes = null) : IRequest<Result<string>>;
 
 public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTranscriptionCommand, Result<string>>
 {
@@ -38,6 +43,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
     private readonly IDateTimeProvider _clock;
     private readonly IDeviceFingerprint _device;
     private readonly ITrialDeviceRecorder _devices;
+    private readonly ActivityRecorder _activity;
 
     public SubmitTranscriptionCommandHandler(
         ITranscriptionApi api,
@@ -45,7 +51,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         ICurrentUser currentUser,
         IDateTimeProvider clock,
         IDeviceFingerprint device,
-        ITrialDeviceRecorder devices)
+        ITrialDeviceRecorder devices,
+        ActivityRecorder activity)
     {
         _api = api;
         _db = db;
@@ -53,9 +60,28 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         _clock = clock;
         _device = device;
         _devices = devices;
+        _activity = activity;
     }
 
     public async Task<Result<string>> Handle(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
+    {
+        var submitted = await SubmitAsync(request, cancellationToken);
+
+        var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
+        var kind = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc" ? "score"
+            : request.Separate ? "song" : "upload";
+        var log = _activity.Describe(
+            TranscriptionLog.AccountOrigin, kind, request.Mode, request.FileName, request.ContentType, request.SizeBytes,
+            key: request.Key, tempo: request.Tempo, timeSignature: request.TimeSignature);
+        if (submitted.IsSuccess)
+            await _activity.AcceptedAsync(submitted.Value, log, cancellationToken);
+        else
+            await _activity.RefusedAsync(log, submitted.Error, cancellationToken);
+
+        return submitted;
+    }
+
+    private async Task<Result<string>> SubmitAsync(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
     {
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
             return TranscriptionErrors.InvalidKeyboardTranspose;

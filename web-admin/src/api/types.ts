@@ -714,3 +714,143 @@ export interface InboxPage {
   pageSize: number;
   totalPages: number;
 }
+
+/* ── Activity: transcription log, journeys, checkout funnel ───────────────── */
+
+export type TranscriptionLogStatus = "submitted" | "refused" | "done" | "failed";
+
+/** One transcription asked for, saved or not (C# TranscriptionLogRowDto). */
+export interface TranscriptionLogRow {
+  id: string;
+  jobId: string | null;
+  createdAtUtc: string;
+  /** "account" or "preview" (the website's anonymous try-it-free). */
+  origin: string;
+  /** "web", "app" or "unknown". */
+  client: string;
+  /** "upload", "song", "score" or "link". */
+  kind: string;
+  mode: string;
+  fileName: string | null;
+  contentType: string | null;
+  sizeBytes: number | null;
+  linkUrl: string | null;
+  songTitle: string | null;
+  songArtist: string | null;
+  keyRequested: string | null;
+  tempoRequested: number | null;
+  timeSignatureRequested: string | null;
+  startSeconds: number | null;
+  endSeconds: number | null;
+  status: TranscriptionLogStatus;
+  failureReason: string | null;
+  finishedAtUtc: string | null;
+  audioSeconds: number | null;
+  detectedKey: string | null;
+  detectedTempo: number | null;
+  noteCount: number | null;
+  confidence: number | null;
+  usedStorePreview: boolean;
+  saved: boolean;
+  userId: string | null;
+  userName: string | null;
+  userEmail: string | null;
+  deviceHash: string | null;
+}
+
+export interface TranscriptionLogSummary {
+  total: number;
+  done: number;
+  failed: number;
+  refused: number;
+  running: number;
+  saved: number;
+  storePreviews: number;
+  totalBytes: number;
+}
+
+export interface TranscriptionLogPage {
+  page: PagedResult<TranscriptionLogRow>;
+  summary: TranscriptionLogSummary;
+}
+
+export interface TranscriptionLogFilters {
+  search?: string | undefined;
+  origin?: string | undefined;
+  kind?: string | undefined;
+  status?: string | undefined;
+  client?: string | undefined;
+  saved?: boolean | undefined;
+  userId?: string | undefined;
+  device?: string | undefined;
+}
+
+export type JourneyItemType = "pageview" | "click" | "action" | "transcription" | "payment" | "signup";
+
+export interface JourneyItem {
+  atUtc: string;
+  type: JourneyItemType;
+  title: string;
+  detail: string | null;
+  path: string | null;
+  sessionId: string | null;
+  device: string | null;
+  tone: "ok" | "warn" | "error";
+  refId: string | null;
+}
+
+export interface Journey {
+  userId: string | null;
+  userName: string | null;
+  userEmail: string | null;
+  fromUtc: string;
+  toUtc: string;
+  visitorIds: string[];
+  deviceHashes: string[];
+  /** For a device or browser: the accounts it has been seen signed in as. */
+  otherAccounts: string[];
+  sessions: number;
+  pageviews: number;
+  transcriptions: number;
+  payments: number;
+  truncated: boolean;
+  items: JourneyItem[];
+}
+
+export interface JourneySubject {
+  userId?: string | undefined;
+  device?: string | undefined;
+  visitor?: string | undefined;
+}
+
+export interface CheckoutStep {
+  step: string;
+  description: string;
+  sessions: number;
+  events: number;
+}
+
+export interface CheckoutProblem {
+  atUtc: string;
+  /** "browser" (the tracker's report) or "provider" (a failed payment row). */
+  source: string;
+  problem: string;
+  detail: string | null;
+  userId: string | null;
+  userName: string | null;
+  userEmail: string | null;
+  visitorId: string | null;
+  reference: string | null;
+}
+
+export interface CheckoutFunnel {
+  fromUtc: string;
+  toUtc: string;
+  steps: CheckoutStep[];
+  errorCodes: CategoryCount[];
+  paymentsByStatus: CategoryCount[];
+  paymentsByProvider: CategoryCount[];
+  failureReasons: CategoryCount[];
+  pageErrors: CategoryCount[];
+  recentProblems: CheckoutProblem[];
+}

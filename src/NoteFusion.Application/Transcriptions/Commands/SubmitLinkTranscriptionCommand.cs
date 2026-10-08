@@ -46,22 +46,42 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
     private readonly IDeviceFingerprint _device;
+    private readonly Activity.ActivityRecorder _activity;
 
     public SubmitLinkTranscriptionCommandHandler(
         ITranscriptionApi api,
         IApplicationDbContext db,
         ICurrentUser currentUser,
         IDateTimeProvider clock,
-        IDeviceFingerprint device)
+        IDeviceFingerprint device,
+        Activity.ActivityRecorder activity)
     {
         _api = api;
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
         _device = device;
+        _activity = activity;
     }
 
     public async Task<Result<string>> Handle(SubmitLinkTranscriptionCommand request, CancellationToken ct)
+    {
+        var submitted = await SubmitAsync(request, ct);
+
+        var log = _activity.Describe(
+            TranscriptionLog.AccountOrigin, "link", request.Mode,
+            linkUrl: SongLinks.TryExtract(request.Url, out var url) ? url : request.Url,
+            key: request.Key, tempo: request.Tempo, timeSignature: request.TimeSignature,
+            startSeconds: request.StartSeconds, endSeconds: request.EndSeconds);
+        if (submitted.IsSuccess)
+            await _activity.AcceptedAsync(submitted.Value, log, ct);
+        else
+            await _activity.RefusedAsync(log, submitted.Error, ct);
+
+        return submitted;
+    }
+
+    private async Task<Result<string>> SubmitAsync(SubmitLinkTranscriptionCommand request, CancellationToken ct)
     {
         if (_currentUser.UserId is not { } userId)
             return BillingErrors.NotAuthenticated;

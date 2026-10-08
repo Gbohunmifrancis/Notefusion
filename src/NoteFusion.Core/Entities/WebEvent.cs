@@ -24,6 +24,7 @@ public class WebEvent : BaseEntity
     public const int TargetMaxLength = 200;
     public const int ReferrerMaxLength = 120;
     public const int IdMaxLength = 64;
+    public const int DetailMaxLength = 300;
 
     private WebEvent() { } // EF Core
 
@@ -51,6 +52,18 @@ public class WebEvent : BaseEntity
     /// <summary>The signed-in account, from the access token the browser sent; null for a visitor.</summary>
     public Guid? UserId { get; private set; }
 
+    /// <summary>
+    /// What else an action carries: a checkout's error code, the provider it opened, a script error's
+    /// message. Null for page views and clicks.
+    /// </summary>
+    public string? Detail { get; private set; }
+
+    /// <summary>
+    /// The browser's device id, as the same one-way hash the previews and the trial ledger use, so an
+    /// anonymous visitor's pages can be put next to the previews they ran. Null when the browser sent none.
+    /// </summary>
+    public string? DeviceHash { get; private set; }
+
     /// <summary>"mobile" or "desktop", by viewport width.</summary>
     public string Device { get; private set; } = "desktop";
 
@@ -63,7 +76,8 @@ public class WebEvent : BaseEntity
     /// </summary>
     public static WebEvent? TryCreate(
         string? kind, string? name, string? path, string? target, string? referrer,
-        string? visitorId, string? sessionId, Guid? userId, string? device, DateTime occurredAtUtc)
+        string? visitorId, string? sessionId, Guid? userId, string? device, DateTime occurredAtUtc,
+        string? detail = null, string? deviceHash = null)
     {
         kind = kind?.Trim().ToLowerInvariant();
         if (kind is not (Pageview or Click or Action))
@@ -89,6 +103,8 @@ public class WebEvent : BaseEntity
             VisitorId = visitorId,
             SessionId = sessionId,
             UserId = userId,
+            Detail = kind == Action ? Clip(detail, DetailMaxLength) : null,
+            DeviceHash = Clip(deviceHash, IdMaxLength),
             Device = device?.Trim().ToLowerInvariant() == "mobile" ? "mobile" : "desktop",
             OccurredAtUtc = occurredAtUtc
         };

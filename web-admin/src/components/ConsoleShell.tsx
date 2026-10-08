@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Activity,
   ChevronDown,
   HeartPulse,
   Inbox,
@@ -48,6 +49,7 @@ const PRIMARY_NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
   { to: "/users", label: "Users", icon: Users2 },
   { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
+  { to: "/activity", label: "Activity", icon: Activity },
   { to: "/health", label: "System Health", icon: HeartPulse },
   { to: "/audit-log", label: "Settings", icon: Settings },
 ] as const;

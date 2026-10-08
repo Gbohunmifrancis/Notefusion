@@ -30,7 +30,7 @@
   }
   function saveTokens(t) { try { localStorage.setItem(TOKENS_KEY, JSON.stringify(t)); } catch (e) { /* private mode */ } }
   /** First-party analytics (assets/track.js): the action shows on the admin dashboard against this account. */
-  function track(name) { try { if (window.nfTrack) window.nfTrack(name); } catch (e) { /* never in the way */ } }
+  function track(name, detail) { try { if (window.nfTrack) window.nfTrack(name, detail); } catch (e) { /* never in the way */ } }
   function clearTokens() { try { localStorage.removeItem(TOKENS_KEY); } catch (e) { /* ignore */ } }
 
   function ApiError(status, body) {
@@ -667,6 +667,7 @@
   // ── Upgrade dialog ──────────────────────────────────────────────────────
   function openUpgrade() {
     track("Opened plans");
+    track("Plans viewed", "app"); // the checkout funnel's top step (CheckoutSteps in the API)
     if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
@@ -701,6 +702,7 @@
   }
   $("upgrade-extend").addEventListener("click", function () {
     track("Opened plans to extend");
+    track("Plans viewed", "app · extend");
     show($("plans-extend"));
     loadPlans($("upgrade-panel"), $("plans-extend"));
     $("plans-extend").scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -1847,9 +1849,12 @@
    */
   function checkout(plan, btn) {
     btn.disabled = true;
-    track("Checkout started");
+    track("Checkout started", plan.id);
     request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
       .then(function (session) {
+        var provider = "";
+        try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
+        track("Checkout opened", provider);
         saveCheckout({
           planId: plan.id, startedAt: Date.now(), wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null,
           lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null, userId: (me && me.id) || null
@@ -1863,6 +1868,7 @@
           return request("/api/billing/my-subscription").then(function (s) { paymentDone(s, before); })
             .catch(function () { alertIn($("app-alert"), "success", err.message); });
         }
+        track("Checkout failed", (err instanceof ApiError ? err.code + " (HTTP " + err.status + ")" : (err && err.message) || "Network error") + " · app");
         alertIn($("app-alert"), "danger", (err instanceof ApiError && err.message) || "We couldn't open the payment page just now. Please try again in a minute.");
       })
       .finally(function () { btn.disabled = false; });
@@ -1937,6 +1943,11 @@
         var age = Date.now() - w.started;
         if (age >= PAY_FAST_FOR && !w.slow) { w.slow = true; if (!w.quiet) showPayToast(true); }
         if (age < PAY_SLOW_FOR) w.timer = setTimeout(checkPayment, w.slow ? PAY_SLOW_MS : PAY_FAST_MS);
+        else if (!w.reported) {
+          // Watched for the full ten minutes and nothing landed: the dashboard's "never confirmed" step.
+          w.reported = true;
+          track("Payment not confirmed", w.quiet ? "came back without paying (abandoned?)" : "provider sent the browser back, no payment after 10 min");
+        }
       });
   }
   /** The payment landed: the account shows Pro everywhere it shows the plan, then the welcome. */
@@ -1944,6 +1955,7 @@
     stopPaymentWatch(); clearCheckout();
     sub = s;
     track(snap && snap.wasActive ? "Added Pro time" : "Went Pro");
+    track("Payment confirmed", snap && snap.planId ? String(snap.planId) : null);
     renderWho();
     if (!$("view-account").classList.contains("hidden")) renderAccount();
     hide($("upgrade-panel")); hide($("r-upgrade")); hide($("r-watermark"));

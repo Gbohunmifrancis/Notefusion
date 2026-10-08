@@ -14,7 +14,9 @@ public sealed record WebEventInput(
     string? Referrer,
     string? Device,
     /// <summary>Milliseconds the event waited in the browser's queue before this batch was sent; it is subtracted from "now".</summary>
-    int? AgeMs);
+    int? AgeMs,
+    /// <summary>What else an action carries (an error code, a provider); ignored for page views and clicks.</summary>
+    string? Detail = null);
 
 /// <summary>
 /// A batch of page views, clicks and app actions from one browser. Anonymous: a visitor is counted
@@ -29,7 +31,9 @@ public sealed record WebEventInput(
 public sealed record RecordWebEventsCommand(
     string? VisitorId,
     string? SessionId,
-    IReadOnlyList<WebEventInput> Events) : IRequest<Result<int>>;
+    IReadOnlyList<WebEventInput> Events,
+    /// <summary>The browser's device id, already hashed by the Api layer; null when it sent none.</summary>
+    string? DeviceHash = null) : IRequest<Result<int>>;
 
 public sealed class RecordWebEventsCommandHandler : IRequestHandler<RecordWebEventsCommand, Result<int>>
 {
@@ -61,7 +65,8 @@ public sealed class RecordWebEventsCommandHandler : IRequestHandler<RecordWebEve
             var age = Math.Clamp(input.AgeMs ?? 0, 0, MaxAgeMs);
             var evt = WebEvent.TryCreate(
                 input.Kind, input.Name, input.Path, input.Target, input.Referrer,
-                request.VisitorId, request.SessionId, userId, input.Device, now.AddMilliseconds(-age));
+                request.VisitorId, request.SessionId, userId, input.Device, now.AddMilliseconds(-age),
+                input.Detail, request.DeviceHash);
             if (evt is null)
                 continue;
             _db.WebEvents.Add(evt);

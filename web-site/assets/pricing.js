@@ -14,6 +14,17 @@
   var api = window.location.hostname === "localhost" ? "http://localhost:5080" : "https://api.notefusion.studio";
   var TOKENS_KEY = "nf.web.tokens";
 
+  /** Checkout funnel steps for the dashboard; the names match CheckoutSteps in the API. */
+  function track(name, detail) { try { if (window.nfTrack) window.nfTrack(name, detail); } catch (e) { /* ignore */ } }
+
+  // The top of the funnel: the plans scrolled into view, once per page.
+  if ("IntersectionObserver" in window) {
+    var plansSeen = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { track("Plans viewed", "home"); plansSeen.disconnect(); }
+    }, { threshold: 0.4 });
+    plansSeen.observe(container);
+  }
+
   /** The web app's session, if this browser has one: the pricing page can then check out directly. */
   function accessToken() {
     try { var t = JSON.parse(localStorage.getItem(TOKENS_KEY) || "null"); return t && t.accessToken ? t.accessToken : null; } catch (e) { return null; }
@@ -26,7 +37,7 @@
    */
   function startCheckout(plan, button) {
     var token = accessToken();
-    try { if (window.nfTrack) window.nfTrack(token ? "Checkout started" : "Chose a plan signed out"); } catch (e) { /* ignore */ }
+    track(token ? "Checkout started" : "Chose a plan signed out", plan.id);
     var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id);
     if (!token) { window.location.href = fallback; return; }
     button.disabled = true;
@@ -43,21 +54,25 @@
         return r.json().catch(function () { return null; }).then(function (e) {
           // An earlier checkout turned out to be paid: /app shows the welcome instead of a second charge.
           if (e && e.code === "BILLING_PAYMENT_ALREADY_RECEIVED") { window.location.href = "/app?paid=1"; return null; }
-          throw new Error(String(r.status));
+          throw new Error((e && e.code ? e.code + " " : "") + "(HTTP " + r.status + ")");
         });
       })
       .then(function (session) {
         if (session === null) return;
-        if (!session || !session.checkoutUrl) throw new Error("no url");
+        if (!session || !session.checkoutUrl) throw new Error("No checkout URL in the response");
         // What /app compares against when the browser comes back (only non-members are offered a plan here).
         try {
           localStorage.setItem("nf.checkout", JSON.stringify({
             planId: plan.id, startedAt: Date.now(), wasActive: false, periodEnd: null, lifetime: false, planCode: null
           }));
         } catch (e) { /* private mode: the ?paid=1 return still confirms */ }
+        var provider = "";
+        try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
+        track("Checkout opened", provider);
         window.location.href = session.checkoutUrl;
       })
-      .catch(function () {
+      .catch(function (err) {
+        track("Checkout failed", (err && err.message ? err.message : "Network error") + " · home");
         // An expired session, a plan the account cannot buy, or a provider hiccup: the app sorts it out.
         window.location.href = "/app?upgrade=" + encodeURIComponent(plan.id);
       })

@@ -94,6 +94,7 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         TranscriptionJob job, TranscriptionResultDto result, DateTime now, CancellationToken ct)
     {
         job.Settle(TranscriptionResultCache.Serialize(result), now);
+        await Activity.ActivityRecorder.FinishAsync(_db, job.JobId, result, now, ct);
 
         // Same rule and the same idempotent methods the client poll uses, because either path may be the
         // one that first observes success and the allowance must be spent exactly once regardless.
@@ -138,6 +139,8 @@ public sealed class NotifyTranscriptionReadyCommandHandler
     {
         // No result cached, which is how a tap on this notification knows it has nothing to show.
         job.Settle(null, now);
+        await Activity.ActivityRecorder.FailAsync(
+            _db, job.JobId, reason ?? "No result after 30 minutes; the job was lost.", now, ct);
         await _db.SaveChangesAsync(ct);
 
         var dto = new TranscriptionJobDto(job.JobId, TranscriptionStatus.Failed, 1, null, reason);

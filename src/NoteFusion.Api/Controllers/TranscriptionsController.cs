@@ -102,7 +102,7 @@ public sealed class TranscriptionsController : ApiControllerBase
                 Application.Common.Errors.TranscriptionErrors.InvalidAudio));
 
         await using var stream = request.Audio.OpenReadStream();
-        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview, request.KeyboardTranspose);
+        var command = new SubmitTranscriptionCommand(stream, request.Audio.FileName, request.Mode, request.Key, request.Tempo, request.TimeSignature, request.Separate, request.AudioPreview, request.KeyboardTranspose, request.Audio.ContentType, request.Audio.Length);
         var result = await _sender.Send(command, ct);
 
         if (result.IsFailure)

@@ -635,6 +635,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("ShareToken")
                         .IsUnique();
 
+                    b.HasIndex("SourceJobId");
+
                     b.HasIndex("UserId", "Folder");
 
                     b.ToTable("transcriptions", (string)null);
@@ -697,6 +699,129 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId", "Kind", "SongCreditConsumedAtUtc");
 
                     b.ToTable("transcription_jobs", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.TranscriptionLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<double?>("AudioSeconds")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Client")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<double?>("Confidence")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("ContentType")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DetectedKey")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<int?>("DetectedTempo")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("DeviceHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<double?>("EndSeconds")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("FailureReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("FileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime?>("FinishedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("JobId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("KeyRequested")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<string>("LinkUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Mode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<int?>("NoteCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Origin")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<long?>("SizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SongArtist")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("SongTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<double?>("StartSeconds")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<int?>("TempoRequested")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TimeSignatureRequested")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<bool>("UsedStorePreview")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("DeviceHash", "CreatedAtUtc");
+
+                    b.HasIndex("UserId", "CreatedAtUtc");
+
+                    b.ToTable("transcription_logs", (string)null);
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.TrialDevice", b =>
@@ -879,10 +1004,18 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Detail")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
                     b.Property<string>("Device")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
+
+                    b.Property<string>("DeviceHash")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Kind")
                         .IsRequired()
@@ -926,9 +1059,13 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("OccurredAtUtc");
 
+                    b.HasIndex("DeviceHash", "OccurredAtUtc");
+
                     b.HasIndex("Kind", "OccurredAtUtc");
 
                     b.HasIndex("UserId", "OccurredAtUtc");
+
+                    b.HasIndex("VisitorId", "OccurredAtUtc");
 
                     b.ToTable("web_events", (string)null);
                 });

@@ -35,7 +35,7 @@ public sealed class PreviewController : ApiControllerBase
             return HandleResult(Result.Failure<TranscriptionJobDto>(Application.Common.Errors.TranscriptionErrors.InvalidAudio));
         await using var stream = request.Audio.OpenReadStream();
         var result = await _sender.Send(
-            new SubmitPreviewCommand(stream, request.Audio.FileName, request.Separate, request.AudioPreview, request.Mode, request.KeyboardTranspose), ct);
+            new SubmitPreviewCommand(stream, request.Audio.FileName, request.Separate, request.AudioPreview, request.Mode, request.KeyboardTranspose, request.Audio.ContentType, request.Audio.Length), ct);
         return result.IsFailure
             ? HandleResult(Result.Failure<TranscriptionJobDto>(result.Error))
             : HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null)));

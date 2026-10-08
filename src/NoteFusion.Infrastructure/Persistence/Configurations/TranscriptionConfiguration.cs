@@ -30,6 +30,7 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
         builder.Property(t => t.MusicXml).IsRequired();
         builder.Property(t => t.OverallConfidence).IsRequired();
         builder.Property(t => t.SourceJobId).HasMaxLength(100);
+        builder.HasIndex(t => t.SourceJobId); // the activity log's "was it saved?"
         builder.Property(t => t.Status).HasConversion<string>().HasMaxLength(20).IsRequired();
         builder.Property(t => t.Lyrics).HasColumnName("lyrics").IsRequired().HasDefaultValue(string.Empty);
         builder.Property(t => t.PartsMusicXml).HasColumnName("parts_music_xml");

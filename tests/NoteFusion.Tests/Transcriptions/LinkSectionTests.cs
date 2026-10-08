@@ -288,10 +288,10 @@ public class LinkSectionTests
         => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp);
 
     private static SubmitPreviewLinkCommandHandler PreviewLink(TestHarness h, FakeApi api)
-        => new(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp);
+        => new(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp, h.Activity());
 
     private static Task<Result<string>> Submit(TestHarness h, User user, FakeApi api, double? start = null, double? end = null)
-        => new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+        => new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
             .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Melody, null, null, StartSeconds: start, EndSeconds: end), default);
 
     private sealed class FakeApi : ITranscriptionApi
