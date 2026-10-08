@@ -98,6 +98,9 @@ export const colors = {
    *  wash because it has less headroom to darken into. */
   scrim: "rgba(15, 23, 42, 0.55)",
 
+  /** Floating chrome (the tab bar, a player dock): semi-opaque, standing in for a blur. */
+  glass: "rgba(255, 255, 255, 0.96)",
+
   // ── Confidence scale (PRD: honest confidence, never hidden) ─────────────
   confHigh: "#16A34A",
   confMed: "#D97706",
@@ -112,60 +115,58 @@ export const colors = {
 export type Palette = { readonly [K in keyof typeof colors]: string };
 
 /**
- * Dark palette. Surfaces are true black / neutral charcoal — AMOLED-friendly,
- * no blue-grey cast. Brand blues are lifted a step (#2563EB → #3B82F6) because
- * the darker values lose contrast against a dark surface, and the confidence
- * colours are lightened for the same reason: an honest confidence signal has to
- * stay readable.
+ * Dark palette: the night design. A near-black canvas with a cool cast, solid
+ * surfaces a step above it (solid rather than translucent so a sheet or dialog
+ * never shows what is behind it), one blue, and mint / amber / red for the
+ * honest confidence signal. Dark is the default mode; Day stays one switch away.
+ *
+ * `ink` is the fill blue and carries white labels; `accent` is the lifted blue
+ * for text and icons on the dark canvas, where the fill weight reads as muddy.
  */
 export const darkColors: Palette = {
-  bg: "#000000", // True black — root canvas (AMOLED-friendly)
-  bgElevated: "#0A0A0A", // Modals, sheets
+  bg: "#07090E",
+  bgElevated: "#0E121A",
 
-  surface: "#0F0F0F", // Cards
-  surfaceAlt: "#141414", // Nested rows, chips — no more blue-grey cast
+  surface: "#0E121A",
+  surfaceAlt: "#151A24",
 
-  border: "#1C1C1C",
-  borderLight: "#111111",
+  border: "#1C212B",
+  borderLight: "#12161E",
 
-  purple: "#3B82F6",
-  purpleDark: "#2563EB",
-  gold: "#60A5FA",
-  pink: "#38BDF8",
+  purple: "#2F7BFF",
+  purpleDark: "#1B5FE0",
+  gold: "#5C9BFF",
+  pink: "#9CC2FF",
 
-  // Fill, so it does *not* lift: white on #2563EB is 5.2:1, but white on the
-  // lifted accent #3B82F6 is 3.7:1 and fails AA at chip-label sizes.
-  ink: "#2563EB",
-  accent: "#3B82F6",
-  accentAlt: "#60A5FA",
-  accentSoft: "rgba(59, 130, 246, 0.16)",
-  accentGlow: "rgba(59, 130, 246, 0.30)",
-  pinkSoft: "rgba(56, 189, 248, 0.16)",
+  ink: "#2F7BFF",
+  accent: "#5C9BFF",
+  accentAlt: "#9CC2FF",
+  accentSoft: "rgba(47, 123, 255, 0.14)",
+  accentGlow: "rgba(47, 123, 255, 0.35)",
+  pinkSoft: "rgba(156, 194, 255, 0.12)",
 
-  // Amber lifts a step on navy, same reason the brand blues do.
-  premium: "#FBBF24",
-  premiumDeep: "#D97706",
-  premiumSoft: "rgba(251, 191, 36, 0.16)",
-  premiumBorder: "rgba(251, 191, 36, 0.40)",
+  premium: "#F5B544",
+  premiumDeep: "#D99A2B",
+  premiumSoft: "rgba(245, 181, 68, 0.14)",
+  premiumBorder: "rgba(245, 181, 68, 0.40)",
 
-  text: "#F4F5F8",
-  textMuted: "#888C9C",
-  textFaint: "#505464",
+  text: "#F3F6FB",
+  textMuted: "#8B95AA",
+  textFaint: "#5A6478",
 
-  success: "#22C55E",
-  warning: "#F59E0B",
-  danger: "#F87171",
+  success: "#3DDC97",
+  warning: "#F5B544",
+  danger: "#FF4D5E",
 
-  // Derived from the *lifted* danger, so the wash and its label finally agree.
-  dangerSoft: "rgba(248, 113, 113, 0.16)",
-  dangerBorder: "rgba(248, 113, 113, 0.38)",
+  dangerSoft: "rgba(255, 77, 94, 0.12)",
+  dangerBorder: "rgba(255, 77, 94, 0.35)",
 
-  // Heavier wash over true black reads clearly as a modal scrim.
-  scrim: "rgba(0, 0, 0, 0.85)",
+  scrim: "rgba(3, 5, 8, 0.80)",
+  glass: "rgba(20, 25, 35, 0.94)",
 
-  confHigh: "#22C55E",
-  confMed: "#F59E0B",
-  confLow: "#F87171",
+  confHigh: "#3DDC97",
+  confMed: "#F5B544",
+  confLow: "#FF4D5E",
 
   onInk: "#FFFFFF",
   onAccent: "#FFFFFF",
@@ -184,7 +185,7 @@ export function paletteFor(mode: ThemeMode): Palette {
 
 export const gradients = {
   /** "The Fusion" — primary CTA, active states, energetic accents. */
-  brand: ["#1D4ED8", "#3B82F6"] as const,
+  brand: ["#3A84FF", "#2F7BFF"] as const,
 
   /** Sky → Blue — logo wordmark, onboarding icons. */
   brandStart: ["#0EA5E9", "#2563EB"] as const,
@@ -238,18 +239,10 @@ export const radii = {
 // ─── Typography ─────────────────────────────────────────────────────────────
 
 /**
- * Two families, loaded together in `lib/appReady.ts` via `useFonts`.
- *
- * **Inter reads, Poppins announces.** Poppins used to do both jobs, and it is
- * only good at one: its near-circular geometric letterforms and wide sidebearings
- * make a handsome 36px wordmark and a juvenile 13px paragraph. Worse, the old
- * scale was bold at every tier, so a dialog's cancel button landed at the same
- * visual weight as the dialog's own title and the hierarchy collapsed.
- *
- * So the four workhorse names now resolve to Inter — every existing
- * `fontFamily: fonts.bold` call site gets it, which is the right default because
- * those sites are UI text. Poppins survives behind `display`/`displayBold`, used
- * only by `typography.hero`/`display`/`screenTitle` and the splash wordmark.
+ * Geist, loaded in `lib/appReady.ts` via `useFonts`, carries every piece of
+ * interface text in both modes; the night design sets its headings tight in the
+ * same family rather than switching to a display face. Solfa is set in JetBrains
+ * Mono (`typography.mono`, `nightFonts.mono`) so it reads as notation, not UI.
  *
  * These are family names, not weights, and that distinction matters: once a
  * custom `fontFamily` is set, React Native stops honouring `fontWeight` —
@@ -259,44 +252,40 @@ export const radii = {
  * two. Every token below therefore carries `fontFamily` and no `fontWeight`.
  */
 export const fonts = {
-  regular: "Inter_400Regular",
-  medium: "Inter_500Medium",
-  semibold: "Inter_600SemiBold",
-  bold: "Inter_700Bold",
+  regular: "Geist_400Regular",
+  medium: "Geist_500Medium",
+  semibold: "Geist_600SemiBold",
+  bold: "Geist_700Bold",
 
-  /** Display only — wordmarks, splash, onboarding titles. Never body copy. */
-  display: "Poppins_600SemiBold",
-  displayBold: "Poppins_700Bold",
+  /** Display tier: screen titles and headings. Geist set tight, as in the night design. */
+  display: "Geist_600SemiBold",
+  displayBold: "Geist_700Bold",
 } as const;
 
 /**
- * The type scale. `hero`/`screenTitle` cover the large centred headings on
- * splash, login, and onboarding and are the Poppins tier; the rest are the
- * everyday in-app sizes and read in Inter.
+ * The type scale. `hero`/`display`/`screenTitle` are the large headings, set
+ * tight; the rest are the everyday in-app sizes.
  */
 export const typography = {
   /** Splash + login wordmark. */
-  hero: { fontSize: 40, fontFamily: fonts.displayBold, letterSpacing: -1 },
-  display: { fontSize: 34, fontFamily: fonts.displayBold, letterSpacing: -0.5 },
+  hero: { fontSize: 40, fontFamily: fonts.displayBold, letterSpacing: -1.4 },
+  display: { fontSize: 34, fontFamily: fonts.display, letterSpacing: -1.3 },
   /** Onboarding slide titles, "Welcome back!". */
   screenTitle: {
-    fontSize: 26,
-    fontFamily: fonts.displayBold,
-    letterSpacing: -0.5,
+    fontSize: 30,
+    fontFamily: fonts.display,
+    letterSpacing: -1.1,
   },
-  /** In-app screen titles. Inter, not Poppins — this is chrome, not display. */
-  title: { fontSize: 24, fontFamily: fonts.bold, letterSpacing: -0.4 },
+  /** In-app screen titles ("Library", a sheet's name). */
+  title: { fontSize: 28, fontFamily: fonts.display, letterSpacing: -1 },
   heading: { fontSize: 18, fontFamily: fonts.semibold, letterSpacing: -0.2 },
-  /** Inter carries a larger x-height than Poppins, so 14.5 here reads as large
-   *  as the old 15 did while fitting more words on a line. */
   body: { fontSize: 14.5, fontFamily: fonts.regular },
   label: { fontSize: 14, fontFamily: fonts.semibold },
   caption: { fontSize: 12, fontFamily: fonts.medium, letterSpacing: 0.2 },
   /** Solfa syllables and note names — stays monospaced so columns line up. */
   mono: {
     fontSize: 17,
-    fontWeight: "600" as const,
-    fontFamily: "monospace" as const,
+    fontFamily: "JetBrainsMono_600SemiBold",
   },
 } as const;
 

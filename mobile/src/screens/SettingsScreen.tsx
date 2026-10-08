@@ -317,11 +317,11 @@ export function SettingsScreen({ navigation, route }: Props) {
           </View>
 
           <View style={styles.switchText}>
-            <Text style={styles.rowLabel}>Dark mode</Text>
+            <Text style={styles.rowLabel}>Night</Text>
             <Text style={styles.rowHint}>
               {isDark
-                ? "Dimmed navy surfaces, easier at night."
-                : "Bright mist surfaces, the default."}
+                ? "The dark canvas, the default. Easier on the eyes in a dim church."
+                : "Day: white surfaces for bright rooms and print-like reading."}
             </Text>
           </View>
 

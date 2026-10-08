@@ -17,6 +17,7 @@ import type {
   TranscriptionSource,
   TranscriptionStatus,
 } from "../api/types";
+import { rating } from "./rating";
 
 export interface JobState {
   status: TranscriptionStatus | "idle";
@@ -102,6 +103,8 @@ export function useJobPolling() {
     const status = normalizeStatus(job.status);
     // Whatever clock was running — the upload's or the poll's — has nothing left to measure.
     stopPolling();
+    // Keeps the store-rating ask away from someone whose last job just failed.
+    if (status === "failed") void rating.recordFailure();
     setState({
       ...IDLE,
       status,

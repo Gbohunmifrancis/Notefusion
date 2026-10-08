@@ -46,7 +46,8 @@ interface ThemeState {
 const ThemeContext = createContext<ThemeState | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>("light");
+  // Night is the default look; a stored "light" (Day) choice still wins below.
+  const [mode, setModeState] = useState<ThemeMode>("dark");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

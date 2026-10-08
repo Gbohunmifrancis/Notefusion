@@ -5,9 +5,8 @@
  * opened before" flag, and a deliberate minimum time on the branded splash.
  * They are gated together here so RootNavigator has a single boolean to check.
  *
- * Both families are needed before the first frame, not just one: Inter carries
- * every piece of UI text and Poppins carries the wordmark the splash is about
- * to draw. The native splash (a flat brand field, configured in app.json) stays
+ * Every family is needed before the first frame: Geist carries the interface
+ * and Nunito the wordmark the splash is about to draw. The native splash (a flat brand field, configured in app.json) stays
  * up until they are in memory. Without that the branded splash would paint its
  * wordmark in the system face and then snap a frame later — the same class of
  * flash the stored theme preference already exists to avoid.
@@ -16,17 +15,7 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as NativeSplash from "expo-splash-screen";
-import {
-  Poppins_600SemiBold,
-  Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
-import {
-  useFonts,
-  Inter_400Regular,
-  Inter_500Medium,
-  Inter_600SemiBold,
-  Inter_700Bold,
-} from "@expo-google-fonts/inter";
+import { useFonts } from "expo-font";
 import {
   Geist_400Regular,
   Geist_500Medium,
@@ -67,16 +56,9 @@ interface AppReady {
 
 export function useAppReady(): AppReady {
   const [fontsLoaded, fontError] = useFonts({
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
-    Inter_700Bold,
-    // Display tier only — see the `fonts` block in design/theme.ts. Poppins
-    // Regular and Medium are deliberately no longer loaded: nothing sets them.
-    Poppins_600SemiBold,
-    Poppins_700Bold,
-    // The night redesign — see `nightFonts` in design/theme.ts. Nunito is the
-    // wordmark the splash draws, so it has to be in memory before the first frame.
+    // Geist is every piece of interface text, JetBrains Mono the solfa, and
+    // Nunito the wordmark the splash draws — see `fonts` / `nightFonts` in
+    // design/theme.ts. All of them have to be in memory before the first frame.
     Geist_400Regular,
     Geist_500Medium,
     Geist_600SemiBold,
