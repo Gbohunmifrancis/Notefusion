@@ -1,24 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Button } from "../components/Button";
-import { BrandMark } from "../components/BrandMark";
-import { KeyboardAvoider } from "../components/KeyboardAvoider";
+import { NightButton } from "../components/night/NightButton";
+import { BackButton, ErrorNote, Glow, NightScreen, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import { fonts, radii, spacing, type Palette } from "../design/theme";
-import { useTheme, useThemedStyles, useColors } from "../lib/theme";
+import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<AuthStackParams, "VerifyEmail">;
@@ -39,11 +28,8 @@ const RESEND_COOLDOWN = 60;
  * the thing people actually do, would silently lose five digits.
  */
 export function VerifyEmailScreen({ navigation, route }: Props) {
-  const { email } = route.params;
+  const { email, fromSignUp } = route.params;
   const { verifyEmail } = useAuth();
-  const { mode } = useTheme();
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
   const inputRef = useRef<TextInput>(null);
 
   const [code, setCode] = useState("");
@@ -109,294 +95,165 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
   }
 
   const activeIndex = Math.min(code.length, CODE_LENGTH - 1);
+  const clock = `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}`;
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
-      <StatusBar style={mode === "dark" ? "light" : "dark"} />
+    <NightScreen
+      glow={<Glow y={0.18} radius={260} opacity={0.2} />}
+      header={
+        <>
+          {navigation.canGoBack() ? <BackButton onPress={() => navigation.goBack()} /> : <View style={styles.side} />}
+          {fromSignUp ? <Text style={nightText.step}>2 of 2</Text> : <View />}
+          <View style={styles.side} />
+        </>
+      }
+    >
+      <View style={styles.icon}>
+        <Ionicons name="mail-outline" size={28} color={night.ice} />
+      </View>
+      <Text style={[nightText.h1, styles.title]}>Check your email</Text>
+      <Text style={[nightText.lead, styles.lead]}>
+        We sent a {CODE_LENGTH}-digit code to{"\n"}
+        {/* Shown exactly as the server stored it, so a typo in the address is visible
+            here instead of looking like a mail that never arrived. */}
+        <Text style={styles.email}>{email}</Text>
+      </Text>
 
-      <KeyboardAvoider>
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.topHeader}>
-            {navigation.canGoBack() ? (
-              <Pressable
-                onPress={() => navigation.goBack()}
-                hitSlop={12}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Ionicons name="chevron-back" size={24} color={colors.text} />
-              </Pressable>
-            ) : (
-              <View />
-            )}
-          </View>
-
-          <View style={styles.brandContainer}>
-            <BrandMark
-              size={72}
-              color={colors.accent}
-              waveColor={colors.accentGlow}
-              showWaves={false}
-            />
-            <Text style={styles.wordmark}>Notefusion</Text>
-          </View>
-
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Check your email</Text>
-            <Text style={styles.subtitle}>
-              We sent a {CODE_LENGTH}-digit code to
-            </Text>
-            {/* Shown, and shown exactly as the server stored it, so a typo in the address
-                is visible here instead of looking like a mail that never arrived. */}
-            <Text style={styles.email}>{email}</Text>
-          </View>
-
-          {error && (
-            <View style={styles.errorCard}>
-              <Ionicons name="alert-circle-outline" size={18} color={colors.danger} />
-              <Text style={styles.errorText}>{error}</Text>
+      <View style={styles.cells}>
+        {Array.from({ length: CODE_LENGTH }).map((_, i) => {
+          const active = focused && i === activeIndex && code.length < CODE_LENGTH;
+          return (
+            <View key={i} style={[styles.cell, active && styles.cellActive]}>
+              {active && <View pointerEvents="none" style={styles.cellRing} />}
+              <Text style={styles.cellText}>{code[i] ?? ""}</Text>
+              {active && !code[i] && <View style={styles.caret} />}
             </View>
-          )}
+          );
+        })}
 
-          {resent && !error && (
-            <View style={styles.noticeCard}>
-              <Ionicons name="mail-outline" size={18} color={colors.success} />
-              <Text style={styles.noticeText}>
-                A new code is on its way. Use the most recent one — the older code stops
-                working.
-              </Text>
-            </View>
-          )}
+        <TextInput
+          ref={inputRef}
+          style={styles.hiddenInput}
+          value={code}
+          onChangeText={(t) => {
+            setError(null);
+            setCode(t.replace(/[^0-9]/g, "").slice(0, CODE_LENGTH));
+          }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          keyboardType="number-pad"
+          textContentType="oneTimeCode"
+          autoComplete="one-time-code"
+          maxLength={CODE_LENGTH}
+          autoFocus
+          caretHidden
+          accessibilityLabel="Verification code"
+        />
+      </View>
+      <Text style={styles.paste}>Copied it? Paste the whole code in one tap.</Text>
 
-          <View style={styles.cells}>
-            {Array.from({ length: CODE_LENGTH }).map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.cell,
-                  focused && i === activeIndex && styles.cellActive,
-                  !!code[i] && styles.cellFilled,
-                ]}
-              >
-                <Text style={styles.cellText}>{code[i] ?? ""}</Text>
-              </View>
-            ))}
+      {error ? (
+        <View style={styles.note}>
+          <ErrorNote message={error} />
+        </View>
+      ) : resent ? (
+        <Text style={[styles.paste, styles.resent]}>
+          A new code is on its way. Use the newest one; the older code stops working.
+        </Text>
+      ) : null}
 
-            <TextInput
-              ref={inputRef}
-              style={styles.hiddenInput}
-              value={code}
-              onChangeText={(t) => {
-                setError(null);
-                setCode(t.replace(/[^0-9]/g, "").slice(0, CODE_LENGTH));
-              }}
-              onFocus={() => setFocused(true)}
-              onBlur={() => setFocused(false)}
-              keyboardType="number-pad"
-              textContentType="oneTimeCode"
-              maxLength={CODE_LENGTH}
-              autoFocus
-              caretHidden
-              accessibilityLabel="Verification code"
-            />
-          </View>
+      <NightButton
+        label="Verify"
+        variant="blue"
+        onPress={() => submit(code)}
+        loading={busy}
+        disabled={code.length !== CODE_LENGTH}
+        style={styles.submit}
+      />
 
-          <Button
-            label="Verify email"
-            onPress={() => submit(code)}
-            loading={busy}
-            disabled={code.length !== CODE_LENGTH}
-            style={styles.submitBtn}
-          />
-
-          <View style={styles.footerRow}>
-            {secondsLeft > 0 ? (
-              <Text style={styles.footerPrompt}>
-                Didn&apos;t get it? Resend in {secondsLeft}s
-              </Text>
-            ) : (
-              <>
-                <Text style={styles.footerPrompt}>Didn&apos;t get it? </Text>
-                <Pressable onPress={resend} disabled={resending} hitSlop={8}>
-                  <Text style={styles.footerLink}>
-                    {resending ? "Sending…" : "Resend code"}
-                  </Text>
-                </Pressable>
-              </>
-            )}
-          </View>
-
-          <Text style={styles.hint}>
-            The code expires in 10 minutes. Check your spam folder if it isn&apos;t
-            there.
-          </Text>
-        </ScrollView>
-      </KeyboardAvoider>
-    </SafeAreaView>
+      <View style={styles.resendRow}>
+        <Text style={nightText.muted}>Didn&apos;t get it?</Text>
+        {counting ? (
+          <Text style={styles.countdown}>Resend in {clock}</Text>
+        ) : (
+          <Pressable onPress={resend} disabled={resending} hitSlop={8} accessibilityRole="button">
+            <Text style={nightText.link}>{resending ? "Sending…" : "Resend code"}</Text>
+          </Pressable>
+        )}
+      </View>
+      {navigation.canGoBack() && (
+        <Pressable onPress={() => navigation.goBack()} hitSlop={8} accessibilityRole="button" style={styles.change}>
+          <Text style={styles.changeText}>Change email</Text>
+        </Pressable>
+      )}
+      <Text style={styles.hint}>The code expires in 10 minutes. Check your spam folder if it isn&apos;t there.</Text>
+    </NightScreen>
   );
 }
 
-const makeStyles = (c: Palette) =>
-  StyleSheet.create({
-    safe: {
-      flex: 1,
-      backgroundColor: c.bg,
-    },
-    scroll: {
-      flexGrow: 1,
-      paddingHorizontal: spacing.xl,
-      paddingBottom: spacing.xxl,
-    },
+const styles = StyleSheet.create({
+  side: { width: 40 },
+  icon: {
+    marginTop: 26,
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: "rgba(47, 123, 255, 0.16)",
+    borderWidth: 1,
+    borderColor: "rgba(47, 123, 255, 0.4)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  title: { marginTop: 22 },
+  lead: { marginTop: 8 },
+  email: { color: night.text, fontFamily: nightFonts.medium },
 
-    topHeader: {
-      paddingTop: spacing.xs,
-      marginBottom: spacing.md,
-    },
-
-    brandContainer: {
-      alignItems: "center",
-      marginBottom: spacing.lg,
-    },
-    wordmark: {
-      fontSize: 26,
-      // Poppins: this is the wordmark, not UI text. See `fonts` in design/theme.
-      fontFamily: fonts.displayBold,
-      color: c.accent,
-      letterSpacing: -0.5,
-      marginTop: spacing.xs,
-    },
-
-    titleContainer: {
-      alignItems: "center",
-      marginBottom: spacing.xl,
-    },
-    title: {
-      fontSize: 22,
-      fontFamily: fonts.bold,
-      color: c.text,
-      marginBottom: 2,
-    },
-    subtitle: {
-      fontSize: 14,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-    },
-    email: {
-      fontSize: 14,
-      fontFamily: fonts.semibold,
-      color: c.text,
-      marginTop: 2,
-    },
-
-    errorCard: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.danger,
-      borderRadius: radii.md,
-      padding: spacing.md,
-      marginBottom: spacing.lg,
-      gap: spacing.xs,
-    },
-    errorText: {
-      fontSize: 13,
-      fontFamily: fonts.medium,
-      color: c.danger,
-      flex: 1,
-    },
-
-    noticeCard: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      borderRadius: radii.md,
-      padding: spacing.md,
-      marginBottom: spacing.lg,
-      gap: spacing.xs,
-    },
-    noticeText: {
-      fontSize: 13,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      flex: 1,
-    },
-
-    cells: {
-      flexDirection: "row",
-      gap: spacing.sm,
-      marginBottom: spacing.xl,
-    },
-    cell: {
-      flex: 1,
-      height: 60,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      borderRadius: radii.md,
-    },
-    cellActive: {
-      borderColor: c.purple,
-      borderWidth: 1.5,
-    },
-    cellFilled: {
-      borderColor: c.accent,
-    },
-    cellText: {
-      fontSize: 24,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
-    /**
-     * Covers the whole row so a tap anywhere on it opens the keypad, and so a long-press
-     * offers Paste. Invisible rather than absent: the cells above are the visible field.
-     */
-    hiddenInput: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      opacity: 0,
-      color: "transparent",
-      fontSize: 24,
-      textAlign: "center",
-    },
-
-    submitBtn: {
-      marginBottom: spacing.md,
-    },
-
-    footerRow: {
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: spacing.sm,
-    },
-    footerPrompt: {
-      fontSize: 14,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-    },
-    footerLink: {
-      fontSize: 14,
-      fontFamily: fonts.bold,
-      color: c.accent,
-    },
-
-    hint: {
-      fontSize: 12,
-      fontFamily: fonts.regular,
-      color: c.textFaint,
-      textAlign: "center",
-      marginTop: spacing.lg,
-    },
-  });
+  cells: { flexDirection: "row", gap: 8, marginTop: 30 },
+  cell: {
+    flex: 1,
+    height: 62,
+    borderRadius: 16,
+    backgroundColor: night.surface2,
+    borderWidth: 1,
+    borderColor: night.line,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cellActive: { borderColor: night.blueRing },
+  cellRing: {
+    position: "absolute",
+    top: -5,
+    left: -5,
+    right: -5,
+    bottom: -5,
+    borderRadius: 20,
+    borderWidth: 4,
+    borderColor: night.blueSoft,
+  },
+  cellText: { fontSize: 26, fontFamily: nightFonts.monoBold, color: night.text },
+  caret: { position: "absolute", width: 2, height: 26, backgroundColor: night.ice },
+  /**
+   * Covers the whole row so a tap anywhere on it opens the keypad, and so a long-press
+   * offers Paste. Invisible rather than absent: the cells above are the visible field.
+   */
+  hiddenInput: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    opacity: 0,
+    color: "transparent",
+    fontSize: 24,
+    textAlign: "center",
+  },
+  paste: { marginTop: 16, fontSize: 13, fontFamily: nightFonts.regular, color: night.muted },
+  resent: { color: night.mint },
+  note: { marginTop: 16 },
+  submit: { marginTop: 28 },
+  resendRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 20 },
+  countdown: { fontSize: 14, fontFamily: nightFonts.mono, color: night.dim },
+  change: { alignSelf: "flex-start", marginTop: 12 },
+  changeText: { fontSize: 13.5, fontFamily: nightFonts.medium, color: night.ice },
+  hint: { marginTop: 24, fontSize: 12, lineHeight: 17, fontFamily: nightFonts.regular, color: night.dim },
+});

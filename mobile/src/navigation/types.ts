@@ -5,6 +5,8 @@ import type { TranscriptionResult } from '../api/types';
 
 export type AuthStackParams = {
   Onboarding: undefined;
+  /** Google, email or sign in: where the intro ends and where a signed-out return lands. */
+  Welcome: undefined;
   Login: undefined;
   Register: undefined;
   /**
@@ -12,7 +14,9 @@ export type AuthStackParams = {
    * sign-up, and a login that was refused as unverified. Both know the address the
    * code went to, and the screen must show it so a typo is visible.
    */
-  VerifyEmail: { email: string };
+  VerifyEmail: { email: string; fromSignUp?: boolean };
+  /** Seeded with whatever was already typed into Sign in. */
+  ForgotPassword: { email?: string } | undefined;
 };
 
 /**

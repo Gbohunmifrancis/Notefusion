@@ -27,6 +27,17 @@ import {
   Inter_600SemiBold,
   Inter_700Bold,
 } from "@expo-google-fonts/inter";
+import {
+  Geist_400Regular,
+  Geist_500Medium,
+  Geist_600SemiBold,
+  Geist_700Bold,
+} from "@expo-google-fonts/geist";
+import {
+  JetBrainsMono_500Medium,
+  JetBrainsMono_600SemiBold,
+} from "@expo-google-fonts/jetbrains-mono";
+import { Nunito_900Black } from "@expo-google-fonts/nunito";
 
 const LAUNCHED_KEY = "nf.hasLaunched";
 
@@ -38,7 +49,7 @@ const LAUNCHED_KEY = "nf.hasLaunched";
  * flashes past. Every launch after that is kept short, because by then the
  * splash is a toll on the way to the app rather than something to look at.
  */
-const HOLD_FIRST_LAUNCH_MS = 2800;
+const HOLD_FIRST_LAUNCH_MS = 1900;
 const HOLD_RETURNING_MS = 700;
 
 interface AppReady {
@@ -46,6 +57,12 @@ interface AppReady {
   ready: boolean;
   /** First open on this install — drives the longer splash hold. */
   isFirstLaunch: boolean;
+  /**
+   * What the branded splash should play. `hold` while the faces load and the
+   * launch flag is read (the native splash still covers the screen), then the
+   * full `intro` on a first open or the `brief` reveal on every open after.
+   */
+  splash: "hold" | "intro" | "brief";
 }
 
 export function useAppReady(): AppReady {
@@ -58,6 +75,15 @@ export function useAppReady(): AppReady {
     // Regular and Medium are deliberately no longer loaded: nothing sets them.
     Poppins_600SemiBold,
     Poppins_700Bold,
+    // The night redesign — see `nightFonts` in design/theme.ts. Nunito is the
+    // wordmark the splash draws, so it has to be in memory before the first frame.
+    Geist_400Regular,
+    Geist_500Medium,
+    Geist_600SemiBold,
+    Geist_700Bold,
+    JetBrainsMono_500Medium,
+    JetBrainsMono_600SemiBold,
+    Nunito_900Black,
   });
 
   /** null while the flag is still being read — we cannot pick a duration yet. */
@@ -107,5 +133,9 @@ export function useAppReady(): AppReady {
     return () => clearTimeout(t);
   }, [firstLaunch, fontsReady]);
 
-  return { ready: fontsReady && holdDone, isFirstLaunch: firstLaunch === true };
+  return {
+    ready: fontsReady && holdDone,
+    isFirstLaunch: firstLaunch === true,
+    splash: !fontsReady || firstLaunch === null ? "hold" : firstLaunch ? "intro" : "brief",
+  };
 }

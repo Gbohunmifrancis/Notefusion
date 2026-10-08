@@ -518,3 +518,68 @@ export const theme = {
 } as const;
 export type Theme = typeof theme;
 
+
+// ─── Night (the redesign) ───────────────────────────────────────────────────
+
+/**
+ * The night palette from the redesign board: near-black canvas, hairline white
+ * borders, translucent "glass" surfaces and one blue. The first-run screens
+ * (splash, onboarding, sign-in) use it whatever the light/dark setting, because
+ * they are the brand's front door; the in-app screens move onto it as they are
+ * rebuilt.
+ *
+ * Glass is a semi-opaque fill rather than a blur: a real backdrop blur needs a
+ * native module, and these screens must ship as an over-the-air update.
+ */
+export const night = {
+  bg: "#07090E",
+  bgDeep: "#05070B",
+  /** Hairline borders and dividers. */
+  line: "rgba(255, 255, 255, 0.07)",
+  /** Stronger hairline: secondary buttons, unselected S/A/T/B rings. */
+  line2: "rgba(255, 255, 255, 0.12)",
+  glass: "rgba(24, 29, 40, 0.72)",
+  surface: "rgba(255, 255, 255, 0.035)",
+  /** Fields, icon buttons, secondary buttons. */
+  surface2: "rgba(255, 255, 255, 0.06)",
+
+  text: "#F3F6FB",
+  muted: "#8B95AA",
+  dim: "#5A6478",
+
+  blue: "#2F7BFF",
+  blueDeep: "#1B5FE0",
+  blueGlow: "rgba(47, 123, 255, 0.45)",
+  /** The focus ring around an active field or code box. */
+  blueRing: "rgba(47, 123, 255, 0.70)",
+  blueSoft: "rgba(47, 123, 255, 0.14)",
+  /** Links and highlights on the dark canvas, where the fill blue is too heavy. */
+  ice: "#9CC2FF",
+  mint: "#3DDC97",
+  mintSoft: "rgba(61, 220, 151, 0.07)",
+  mintBorder: "rgba(61, 220, 151, 0.25)",
+  amber: "#F5B544",
+  red: "#FF4D5E",
+  redSoft: "rgba(255, 77, 94, 0.10)",
+
+  /** Text on the white primary button. */
+  onWhite: "#0A0D14",
+  /** The native splash field in app.json; the animated splash starts from it. */
+  nativeSplash: "#1D6FF2",
+} as const;
+
+/**
+ * Night type. Geist carries the interface, JetBrains Mono the solfa (its "r"
+ * and "l" stay unmistakable at small sizes, which Geist Mono's do not), and
+ * Nunito Black is the wordmark only. As with `fonts`, weight is chosen by
+ * family name and never by `fontWeight`.
+ */
+export const nightFonts = {
+  regular: "Geist_400Regular",
+  medium: "Geist_500Medium",
+  semibold: "Geist_600SemiBold",
+  bold: "Geist_700Bold",
+  mono: "JetBrainsMono_500Medium",
+  monoBold: "JetBrainsMono_600SemiBold",
+  wordmark: "Nunito_900Black",
+} as const;

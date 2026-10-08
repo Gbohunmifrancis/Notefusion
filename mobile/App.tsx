@@ -48,10 +48,10 @@ void ensurePiano();
  * palette.
  */
 export default Sentry.wrap(function App() {
-  const { ready } = useAppReady();
+  const { ready, splash } = useAppReady();
 
   // Hold the branded splash until fonts are loaded and the minimum time has passed.
-  if (!ready) return <SplashScreen />;
+  if (!ready) return <SplashScreen play={splash} />;
 
   return (
     <ThemeProvider>

@@ -68,6 +68,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`mobile/` — React Native + Expo** (SDK 56, TypeScript strict): the cross-platform
   client. Light default with a runtime light/dark switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
+  the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
+  `src/components/night/`; splash, onboarding and sign-in use it in either mode),
   expo-notifications push.
 
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no

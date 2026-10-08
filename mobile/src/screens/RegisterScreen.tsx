@@ -1,72 +1,48 @@
-import React, { useState } from "react";
-import {
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
+import React, { useRef, useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Button } from "../components/Button";
-import { BrandMark } from "../components/BrandMark";
-import { GoogleButton } from "../components/GoogleButton";
-import { KeyboardAvoider } from "../components/KeyboardAvoider";
-import { OrDivider } from "../components/OrDivider";
-import { TextField } from "../components/TextField";
+import { NightButton } from "../components/night/NightButton";
+import { NightField } from "../components/night/NightField";
+import { BackButton, ErrorNote, NightScreen, nightText } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
-import { googleAuthConfigured } from "../lib/env";
-import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
-import { useTheme, useThemedStyles, useColors } from "../lib/theme";
+import { MIN_PASSWORD, passwordStrength } from "../lib/passwordStrength";
+import { night, nightFonts } from "../design/theme";
 import type { AuthStackParams } from "../navigation/types";
 
 type Props = NativeStackScreenProps<AuthStackParams, "Register">;
 
 /**
- * RegisterScreen — 100% aligned with design sheet:
- * 1. Top left back arrow
- * 2. Centered BrandMark + Notefusion wordmark
- * 3. Title: "Create your account", Subtitle: "Start your musical journey"
- * 4. Full name, Email, Password, and Confirm password fields
- * 5. Primary "Sign up" blue pill button
- * 6. "or" divider + "Sign up with Google" button
- * 7. Bottom link: "Already have an account? Sign in"
+ * Step one of two: name, email and a password, then the emailed code. There is
+ * no "confirm password" field — the eye in the field shows what was typed, which
+ * catches a typo without making everyone type it twice.
  */
 export function RegisterScreen({ navigation }: Props) {
-  const { signUp, signInWithGoogle } = useAuth();
-  const { mode } = useTheme();
-  const colors = useColors();
-  const styles = useThemedStyles(makeStyles);
+  const { signUp } = useAuth();
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [googleBusy, setGoogleBusy] = useState(false);
 
   const nameOk = fullName.trim().length >= 2;
   const emailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim());
-  const pwOk = password.length >= 8;
-  const confirmOk = password === confirmPassword;
-
-  const canSubmit = nameOk && emailOk && pwOk && confirmOk;
+  const pwOk = password.length >= MIN_PASSWORD;
+  const canSubmit = nameOk && emailOk && pwOk;
+  const strength = passwordStrength(password);
 
   async function submit() {
-    if (!confirmOk) {
-      setError("Passwords do not match");
-      return;
-    }
+    if (!canSubmit) return;
     setError(null);
     setBusy(true);
     try {
       // No session yet: registration mails a code, and VerifyEmail is what signs in.
       const registered = await signUp(fullName.trim(), email.trim(), password);
-      navigation.navigate("VerifyEmail", { email: registered });
+      navigation.navigate("VerifyEmail", { email: registered, fromSignUp: true });
     } catch (e) {
       setError(toApiError(e).message);
     } finally {
@@ -74,228 +50,102 @@ export function RegisterScreen({ navigation }: Props) {
     }
   }
 
-  async function google() {
-    setError(null);
-    setGoogleBusy(true);
-    try {
-      await signInWithGoogle();
-    } catch (e) {
-      setError(toApiError(e).message);
-    } finally {
-      setGoogleBusy(false);
-    }
-  }
-
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "bottom"]}>
-      <StatusBar style={mode === "dark" ? "light" : "dark"} />
+    <NightScreen
+      header={
+        <>
+          {navigation.canGoBack() ? <BackButton onPress={() => navigation.goBack()} /> : <View style={styles.side} />}
+          <Text style={nightText.step}>1 of 2</Text>
+          <View style={styles.side} />
+        </>
+      }
+    >
+      <Text style={[nightText.h1, styles.title]}>Create your{"\n"}account</Text>
+      <Text style={[nightText.lead, styles.lead]}>Your first song preview is free.</Text>
 
-      <KeyboardAvoider>
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {/* ── 1. Top Header: Back arrow ─────────────────────────────────── */}
-          <View style={styles.topHeader}>
-            {navigation.canGoBack() ? (
-              <Pressable
-                onPress={() => navigation.goBack()}
-                hitSlop={12}
-                accessibilityRole="button"
-                accessibilityLabel="Go back"
-              >
-                <Ionicons name="chevron-back" size={24} color={colors.text} />
-              </Pressable>
-            ) : (
-              <View />
-            )}
-          </View>
+      <View style={styles.form}>
+        <NightField
+          label="Your name"
+          value={fullName}
+          onChangeText={setFullName}
+          autoCapitalize="words"
+          autoComplete="name"
+          textContentType="name"
+          returnKeyType="next"
+          onSubmitEditing={() => emailRef.current?.focus()}
+          submitBehavior="submit"
+        />
+        <NightField
+          ref={emailRef}
+          label="Email"
+          value={email}
+          onChangeText={(t) => {
+            setEmail(t);
+            setError(null);
+          }}
+          onBlur={() => setEmailTouched(true)}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          submitBehavior="submit"
+          // Only once they have left the field: "enter a valid email" while someone
+          // is still typing the address is nagging, not help.
+          error={emailTouched && email.length > 0 && !emailOk ? "That doesn't look like an email address." : undefined}
+        />
+        <NightField
+          ref={passwordRef}
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          secure
+          autoCapitalize="none"
+          autoComplete="new-password"
+          textContentType="newPassword"
+          returnKeyType="go"
+          onSubmitEditing={submit}
+        />
+      </View>
 
-          {/* ── 2. Centered Brand Logo ────────────────────────────────────── */}
-          <View style={styles.brandContainer}>
-            <BrandMark size={72} color={colors.accent} waveColor={colors.accentGlow} showWaves={false} />
-            <Text style={styles.wordmark}>Notefusion</Text>
-          </View>
+      <View style={styles.meter} accessibilityLabel={strength.hint} accessibilityLiveRegion="polite">
+        <View style={styles.bars}>
+          {[0, 1, 2, 3].map((i) => (
+            <View key={i} style={[styles.bar, i < strength.score && { backgroundColor: night[strength.tone] }]} />
+          ))}
+        </View>
+        <Text style={styles.hint}>{strength.hint}</Text>
+      </View>
 
-          {/* ── 3. Title & Subtitle ────────────────────────────────────────── */}
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Create your account</Text>
-            <Text style={styles.subtitle}>Start your musical journey</Text>
-          </View>
+      {error && (
+        <View style={styles.error}>
+          <ErrorNote message={error} />
+        </View>
+      )}
 
-          {/* Error Banner */}
-          {error && (
-            <View style={styles.errorCard}>
-              <Ionicons name="alert-circle-outline" size={18} color={colors.danger} />
-              <Text style={styles.errorText}>{error}</Text>
-            </View>
-          )}
+      <NightButton label="Continue" variant="blue" onPress={submit} loading={busy} disabled={!canSubmit} style={styles.submit} />
 
-          {/* ── 4. Form Fields ────────────────────────────────────────────── */}
-          <View style={styles.form}>
-            <TextField
-              value={fullName}
-              onChangeText={setFullName}
-              autoCapitalize="words"
-              autoComplete="name"
-              placeholder="Full name"
-            />
-            <TextField
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              placeholder="Email"
-              error={
-                email.length > 0 && !emailOk ? "Enter a valid email" : undefined
-              }
-            />
-            <TextField
-              value={password}
-              onChangeText={setPassword}
-              secure
-              autoComplete="new-password"
-              placeholder="Password"
-              error={
-                password.length > 0 && !pwOk ? "Minimum 8 characters" : undefined
-              }
-            />
-            <TextField
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secure
-              autoComplete="new-password"
-              placeholder="Confirm password"
-              error={
-                confirmPassword.length > 0 && !confirmOk
-                  ? "Passwords do not match"
-                  : undefined
-              }
-            />
-          </View>
-
-          {/* ── 5. Primary Sign up Button ────────────────────────────────── */}
-          <Button
-            label="Sign up"
-            onPress={submit}
-            loading={busy}
-            disabled={!canSubmit}
-            style={styles.submitBtn}
-          />
-
-          {/* ── 6. Divider & Google Sign-Up ───────────────────────────────── */}
-          {googleAuthConfigured && (
-            <>
-              <OrDivider />
-              <GoogleButton
-                onPress={google}
-                loading={googleBusy}
-                label="Sign up with Google"
-              />
-            </>
-          )}
-
-          {/* ── 7. Footer Sign in link ────────────────────────────────────── */}
-          <View style={styles.footerRow}>
-            <Text style={styles.footerPrompt}>Already have an account? </Text>
-            <Pressable onPress={() => navigation.navigate("Login")}>
-              <Text style={styles.footerLink}>Sign in</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </KeyboardAvoider>
-    </SafeAreaView>
+      <Text style={[nightText.muted, styles.footer]}>
+        Already have one?{" "}
+        <Text style={nightText.link} onPress={() => navigation.navigate("Login")} accessibilityRole="link">
+          Sign in
+        </Text>
+      </Text>
+    </NightScreen>
   );
 }
 
-const makeStyles = (c: Palette) =>
-  StyleSheet.create({
-    safe: {
-      flex: 1,
-      backgroundColor: c.bg,
-    },
-    scroll: {
-      flexGrow: 1,
-      paddingHorizontal: spacing.xl,
-      paddingBottom: spacing.xxl,
-    },
-
-    topHeader: {
-      paddingTop: spacing.xs,
-      marginBottom: spacing.md,
-    },
-
-    brandContainer: {
-      alignItems: "center",
-      marginBottom: spacing.lg,
-    },
-    wordmark: {
-      fontSize: 26,
-      // Poppins: this is the wordmark, not UI text. See `fonts` in design/theme.
-      fontFamily: fonts.displayBold,
-      color: c.accent,
-      letterSpacing: -0.5,
-      marginTop: spacing.xs,
-    },
-
-    titleContainer: {
-      alignItems: "center",
-      marginBottom: spacing.xl,
-    },
-    title: {
-      fontSize: 22,
-      fontFamily: fonts.bold,
-      color: c.text,
-      marginBottom: 2,
-    },
-    subtitle: {
-      fontSize: 14,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-    },
-
-    errorCard: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: c.dangerSoft,
-      borderWidth: 1,
-      borderColor: c.danger,
-      borderRadius: radii.md,
-      padding: spacing.md,
-      marginBottom: spacing.lg,
-      gap: spacing.xs,
-    },
-    errorText: {
-      fontSize: 13,
-      fontFamily: fonts.medium,
-      color: c.danger,
-      flex: 1,
-    },
-
-    form: {
-      marginBottom: spacing.md,
-    },
-
-    submitBtn: {
-      marginBottom: spacing.md,
-    },
-
-    footerRow: {
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: spacing.xxl,
-    },
-    footerPrompt: {
-      fontSize: 14,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-    },
-    footerLink: {
-      fontSize: 14,
-      fontFamily: fonts.bold,
-      color: c.accent,
-    },
-  });
+const styles = StyleSheet.create({
+  side: { width: 40 },
+  title: { marginTop: 26 },
+  lead: { marginTop: 8 },
+  form: { marginTop: 28, gap: 12 },
+  meter: { marginTop: 12 },
+  bars: { flexDirection: "row", gap: 5 },
+  bar: { flex: 1, height: 4, borderRadius: 2, backgroundColor: "rgba(255, 255, 255, 0.12)" },
+  hint: { marginTop: 8, fontSize: 12.5, fontFamily: nightFonts.regular, color: night.muted },
+  error: { marginTop: 18 },
+  submit: { marginTop: 24 },
+  footer: { textAlign: "center", marginTop: 20 },
+});
