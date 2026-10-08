@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  Linking,
   Modal,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -18,9 +18,12 @@ import { Avatar } from "../components/Avatar";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
-import { ProfileHeaderSkeleton } from "../components/Skeleton";
+import { Skeleton } from "../components/Skeleton";
+import { Mark } from "../components/night/NightUI";
+import { MembershipCard } from "../components/profile/MembershipCard";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
+import { rating } from "../lib/rating";
 import { useSubscription } from "../lib/subscription";
 import { meApi, authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -32,26 +35,29 @@ import {
   spacing,
   type Palette,
 } from "../design/theme";
-import { useColors, useThemedStyles } from "../lib/theme";
+import { useColors, useTheme, useThemedStyles } from "../lib/theme";
 import type { MyProfile } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
 
 /**
- * ProfileScreen — matching Image 4 design sheet:
- * 1. Top bar: back button and title — a pushed screen since the side bar replaced the Profile tab
- * 2. Header: Avatar disc, Name, Email, plan pill badge
- * 3. Settings List: Account, Subscription, Notifications, Help & Support, About Notefusion
- * 4. Sign Out: Red link centered at bottom
+ * ProfileScreen — "07 · You" on the night board:
+ * 1. Header: the avatar in its ring, the name as a big tight title, the email muted under it
+ * 2. MembershipCard: Pro sees the membership (songs left as a ring, the date Pro runs to);
+ *    a free account sees the same card inviting the plans
+ * 3. One grouped list: Account, Appearance, Notifications, Find the key, Rate, Help, Settings,
+ *    Admin (admins only), Sign out
+ * 4. Footer: the mark and the version, which opens About (version, legal, the piano credit)
  *
- * Premium treatment (gold avatar ring, Pro badge, no Subscription row) is driven
- * entirely by `useSubscription().isPro` — the billing service's answer. It used to
- * read `profile.role`, which is an authorisation level and not a payment, and the
- * ring was unconditional, so free accounts wore the paid look.
+ * Premium treatment (gold avatar ring, the membership card) is driven entirely by
+ * `useSubscription().isPro` — the billing service's answer. It used to read
+ * `profile.role`, which is an authorisation level and not a payment, and the ring was
+ * unconditional, so free accounts wore the paid look.
  */
 export function ProfileScreen() {
-  const { user, setUser, signOut } = useAuth();
-  const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
+  const { user, setUser, signOut, isAdmin } = useAuth();
+  const { isPro, refresh: refreshSubscription } = useSubscription();
+  const { mode, setMode } = useTheme();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -231,119 +237,123 @@ export function ProfileScreen() {
         />
       }
     >
-      {/* ── 1. Top Bar: Back & Title ────────────────────────────────────── */}
-      <View style={styles.topBar}>
-        {/* Needed since Profile stopped being a tab: it is pushed from the side bar now,
-            and with `headerShown: false` the swipe gesture would be the only way back. */}
-        <Touchable
-          onPress={() =>
-            nav.canGoBack()
-              ? nav.goBack()
-              : nav.navigate("Tabs", { screen: "Home" })
-          }
-          accessibilityLabel="Go back"
-          hitSlop={8}
-          // Borderless so the ripple radiates from the circle rather than boxing
-          // the hit-slop rectangle around it.
-          ripple="borderless"
-        >
-          <View style={styles.backCircle}>
-            <Ionicons name="chevron-back" size={20} color={colors.text} />
-          </View>
-        </Touchable>
-
-        <Text style={styles.pageTitle}>Profile</Text>
-      </View>
-
-      {/* ── 2. Avatar & User Information ─────────────────────────────────── */}
+      {/* ── 1. Who: avatar in its ring, the name, the email ──────────────── */}
       {!user ? (
-        <ProfileHeaderSkeleton />
+        <View style={styles.userHeader}>
+          <Skeleton width={76} height={76} radius={38} />
+          <View style={styles.userText}>
+            <Skeleton width={170} height={22} radius={radii.sm} />
+            <Skeleton width={190} height={13} radius={radii.sm} style={styles.skeletonLine} />
+          </View>
+        </View>
       ) : (
         <View style={styles.userHeader}>
           <Avatar
             uri={profile?.profilePictureUrl}
             name={user?.fullName}
-            size={104}
+            size={76}
             premium={isPro}
             editable
             busy={avatarBusy}
             onPress={onAvatarPress}
-            style={styles.avatar}
           />
-
-          <Text style={styles.userName}>{user?.fullName ?? "Your name"}</Text>
-          <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
-
-          {/* Plan Pill Badge — reflects billing state, not role. */}
-          <View style={[styles.planBadge, isPro && styles.planBadgePro]}>
-            <Text style={[styles.planBadgeText, isPro && styles.planBadgeTextPro]}>
-              {isPro ? "Pro Member ✨" : "Free Plan"}
+          <View style={styles.userText}>
+            <Text style={styles.userName} numberOfLines={2}>
+              {user?.fullName ?? "Your name"}
+            </Text>
+            <Text style={styles.userEmail} numberOfLines={1}>
+              {user?.email ?? ""}
             </Text>
           </View>
         </View>
       )}
 
-      {/* ── 3. Settings List Options ─────────────────────────────────────── */}
-      <View style={styles.menuCard}>
-        <MenuItem
+      {/* ── 2. Membership, or the way to it ───────────────────────────────── */}
+      {/* Same destination either way: a member goes there to see the dates and add time or
+          resubscribe, a free account to see the plans. */}
+      <MembershipCard onPress={() => nav.navigate("Upgrade")} />
+
+      {/* ── 3. One grouped list ───────────────────────────────────────────── */}
+      <View style={styles.list}>
+        <ListRow
           icon="person-outline"
           label="Account"
           onPress={() => setAccountModal(true)}
         />
-        <View style={styles.divider} />
-
-        {/* Same destination either way; only the promise differs. A subscriber goes there to
-            see the renewal date and cancel, so calling it "Subscription" would read as an
-            upsell to someone who already paid. */}
-        <MenuItem
-          icon="card-outline"
-          label={isPro ? "Manage membership" : "Subscription"}
-          meta={
-            isPro && typeof subscription?.songCreditsRemaining === "number"
-              ? `${subscription.songCreditsRemaining} of ${subscription.songCreditsTotal ?? 20} songs left`
-              : undefined
-          }
-          onPress={() => nav.navigate("Upgrade")}
+        <ListRow
+          icon="contrast-outline"
+          label="Appearance"
+          value={mode === "dark" ? "Night" : "Day"}
+          chevron={false}
+          onPress={() => setMode(mode === "dark" ? "light" : "dark")}
+          accessibilityLabel={`Appearance: ${mode === "dark" ? "Night" : "Day"}. Switch to ${mode === "dark" ? "Day" : "Night"}`}
         />
-        <View style={styles.divider} />
-
-        <MenuItem
-          icon="settings-outline"
-          label="Settings"
-          onPress={() => nav.navigate("Settings")}
-        />
-        <View style={styles.divider} />
-
-        <MenuItem
+        {/* The push switch lives in Settings, where it reconciles with the OS permission. */}
+        <ListRow
           icon="notifications-outline"
           label="Notifications"
           onPress={() => nav.navigate("Settings", { focus: "notifications" })}
         />
-        <View style={styles.divider} />
-
-        <MenuItem
+        <ListRow
+          icon="radio-outline"
+          label="Find the key"
+          onPress={() => nav.navigate("Listen")}
+          accessibilityLabel="Find the key of a song that is playing"
+        />
+        {/* Android only, like the rating ask: there is no App Store listing to open yet. */}
+        {Platform.OS === "android" && (
+          <ListRow
+            icon="star-outline"
+            iconColor={colors.premium}
+            label="Rate Notefusion"
+            onPress={() => void rating.rate()}
+          />
+        )}
+        <ListRow
           icon="help-circle-outline"
           label="Help & Support"
           onPress={() => nav.navigate("Help")}
         />
-        <View style={styles.divider} />
-
-        <MenuItem
-          icon="information-circle-outline"
-          label="About Notefusion"
-          onPress={() => setAboutModal(true)}
+        <ListRow
+          icon="settings-outline"
+          label="Settings"
+          onPress={() => nav.navigate("Settings")}
+        />
+        {/* Hidden for everyone else, as in the side bar: the routes are behind the server's
+            Admin policy, so this is about not showing a customer an operator surface. */}
+        {isAdmin && (
+          <ListRow
+            icon="shield-checkmark-outline"
+            iconColor={colors.accent}
+            label="Admin"
+            onPress={() => nav.navigate("AdminHome")}
+          />
+        )}
+        <ListRow
+          icon="log-out-outline"
+          iconColor={colors.danger}
+          labelColor={colors.danger}
+          label="Sign out"
+          chevron={false}
+          onPress={() => signOut()}
           isLast
         />
       </View>
 
-      {/* ── 4. Sign Out Button ───────────────────────────────────────────── */}
-      <Button
-        label="Sign out"
-        variant="danger"
-        icon="log-out-outline"
-        onPress={() => signOut()}
-        style={styles.signOutBtn}
-      />
+      {/* ── 4. Footer: the mark and the version, which opens About ────────── */}
+      <Touchable
+        onPress={() => setAboutModal(true)}
+        ripple={false}
+        style={styles.footer}
+        accessibilityLabel="About Notefusion"
+      >
+        <View style={styles.footerMark}>
+          <Mark height={14} color={colors.textFaint} />
+        </View>
+        <Text style={styles.footerText}>
+          Notefusion {Application.nativeApplicationVersion ?? ""}
+        </Text>
+      </Touchable>
 
       {/* ── Account Edit Modal ───────────────────────────────────────────── */}
       <Modal
@@ -492,38 +502,52 @@ export function ProfileScreen() {
   );
 }
 
-// ─── Menu Item Component ──────────────────────────────────────────────────────
+// ─── List row ────────────────────────────────────────────────────────────────
 
-function MenuItem({
+function ListRow({
   icon,
   label,
-  meta,
+  value,
   onPress,
+  iconColor,
+  labelColor,
+  chevron = true,
   isLast = false,
+  accessibilityLabel,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
-  meta?: string;
+  /** Trailing value, e.g. the current appearance. */
+  value?: string;
   onPress: () => void;
+  iconColor?: string;
+  labelColor?: string;
+  chevron?: boolean;
   isLast?: boolean;
+  accessibilityLabel?: string;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
   return (
     <Touchable
-      style={[styles.menuRow, isLast && styles.menuRowLast]}
       onPress={onPress}
       // Full-bleed row: a deeper press would pull it away from both edges of the
-      // card at once. No `radius` needed — `menuCard` already carries
-      // overflow:hidden, so the ripple clips to the card's corners.
+      // list at once. No `radius` needed — `list` carries overflow:hidden, so the
+      // ripple clips to its corners.
       scaleTo={motion.scale.row}
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel ?? label}
     >
-      <Ionicons name={icon} size={20} color={colors.text} style={styles.menuIcon} />
-      <Text style={styles.menuLabel}>{label}</Text>
-      {meta ? <Text style={styles.menuMeta}>{meta}</Text> : null}
-      <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+      <View style={[styles.row, !isLast && styles.rowRule]}>
+        <Ionicons name={icon} size={20} color={iconColor ?? colors.textMuted} />
+        <Text style={[styles.rowLabel, labelColor ? { color: labelColor } : null]}>
+          {label}
+        </Text>
+        {value ? <Text style={styles.rowValue}>{value}</Text> : null}
+        {chevron && (
+          <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+        )}
+      </View>
     </Touchable>
   );
 }
@@ -533,123 +557,88 @@ function MenuItem({
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
     screen: {
+      paddingTop: spacing.md,
+      // Clears the floating tab bar.
       paddingBottom: 120,
       paddingHorizontal: spacing.xl,
     },
 
-    // ── Top Bar ───────────────────────────────────────────────────────────────
-    topBar: {
+    // ── Header ────────────────────────────────────────────────────────────────
+    userHeader: {
       flexDirection: "row",
       alignItems: "center",
-      gap: spacing.md,
-      paddingTop: spacing.sm,
-      marginBottom: spacing.lg,
+      gap: spacing.lg,
+      marginBottom: spacing.xl,
     },
-    backCircle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      alignItems: "center",
-      justifyContent: "center",
+    userText: {
+      flex: 1,
     },
-    pageTitle: {
-      fontSize: 24,
-      fontFamily: fonts.bold,
-      color: c.text,
-    },
-
-    // ── User Header ───────────────────────────────────────────────────────────
-    userHeader: {
-      alignItems: "center",
-      marginBottom: spacing.xxl,
-    },
-    avatar: {
-      marginBottom: spacing.md,
+    skeletonLine: {
+      marginTop: spacing.sm,
     },
     userName: {
-      fontSize: 22,
-      fontFamily: fonts.bold,
+      fontSize: 26,
+      fontFamily: fonts.semibold,
+      letterSpacing: -1,
       color: c.text,
-      marginBottom: 2,
     },
     userEmail: {
       fontSize: 14,
       fontFamily: fonts.regular,
       color: c.textMuted,
-      marginBottom: spacing.md,
-    },
-    planBadge: {
-      backgroundColor: c.accentSoft,
-      borderWidth: 1,
-      borderColor: c.accentGlow,
-      borderRadius: radii.pill,
-      paddingHorizontal: spacing.lg,
-      paddingVertical: 5,
-    },
-    planBadgePro: {
-      backgroundColor: c.premiumSoft,
-      borderColor: c.premiumBorder,
-    },
-    planBadgeText: {
-      fontSize: 13,
-      fontFamily: fonts.bold,
-      color: c.accent,
-    },
-    planBadgeTextPro: {
-      color: c.premiumDeep,
+      marginTop: 3,
     },
 
-    // ── Menu Card List ────────────────────────────────────────────────────────
-    menuCard: {
+    // ── Grouped list ──────────────────────────────────────────────────────────
+    list: {
+      marginTop: 22,
       backgroundColor: c.surface,
-      borderRadius: radii.xl,
+      borderRadius: 22,
       borderWidth: 1,
       borderColor: c.border,
-      marginBottom: spacing.xxl,
       overflow: "hidden",
     },
-    menuRow: {
+    row: {
       flexDirection: "row",
       alignItems: "center",
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.lg - 2,
+      gap: 14,
+      marginHorizontal: spacing.lg,
+      paddingVertical: 15,
     },
-    menuRowLast: {
-      borderBottomWidth: 0,
+    // On the row's inner view, inset by its margin, so the hairline stops short of the edges.
+    rowRule: {
+      borderBottomWidth: 1,
+      borderBottomColor: c.border,
     },
-    menuIcon: {
-      marginRight: spacing.md,
-    },
-    menuLabel: {
+    rowLabel: {
       flex: 1,
-      fontSize: 16,
+      fontSize: 15,
       fontFamily: fonts.medium,
       color: c.text,
     },
-    menuMeta: {
-      fontSize: 14,
+    rowValue: {
+      fontSize: 13,
       fontFamily: fonts.regular,
-      color: c.textFaint,
-      marginRight: spacing.sm,
-    },
-    divider: {
-      height: 1,
-      backgroundColor: c.border,
-      marginHorizontal: spacing.lg,
+      color: c.textMuted,
     },
 
-    // ── Sign Out ──────────────────────────────────────────────────────────────
-    signOutBtn: {
-      marginTop: spacing.md,
-      marginBottom: spacing.xxl,
-      // Hugs its label instead of spanning the screen. `Button` stretches by default,
-      // which is right for a primary action but made sign-out — the one destructive
-      // control here — the widest thing on the page. `Button` already carries
-      // `paddingHorizontal: spacing.xl`, so the pill still has room to breathe.
+    // ── Footer ────────────────────────────────────────────────────────────────
+    footer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: spacing.sm,
+      marginTop: 20,
+      paddingVertical: spacing.sm,
       alignSelf: "center",
+    },
+    footerMark: {
+      opacity: 0.7,
+    },
+    footerText: {
+      fontSize: 12,
+      fontFamily: fonts.regular,
+      color: c.textFaint,
     },
 
     // ── Modal ─────────────────────────────────────────────────────────────────
@@ -661,8 +650,10 @@ const makeStyles = (c: Palette) =>
       paddingHorizontal: spacing.xl,
     },
     modalCard: {
-      backgroundColor: c.bg,
-      borderRadius: radii.xl,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+      borderRadius: 22,
       padding: spacing.xl,
       width: "100%",
       maxHeight: "80%",
@@ -675,7 +666,8 @@ const makeStyles = (c: Palette) =>
     },
     modalTitle: {
       fontSize: 20,
-      fontFamily: fonts.bold,
+      fontFamily: fonts.semibold,
+      letterSpacing: -0.6,
       color: c.text,
     },
     subTitle: {

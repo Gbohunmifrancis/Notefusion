@@ -130,20 +130,6 @@ export function PlanCardSkeleton() {
   );
 }
 
-/**
- * Skeleton placeholder for the ProfileScreen header.
- */
-export function ProfileHeaderSkeleton() {
-  return (
-    <View style={styles.profileHeader}>
-      <Skeleton width={104} height={104} radius={52} style={styles.avatarSkeleton} />
-      <Skeleton width={160} height={20} radius={radii.sm} style={styles.titleLine} />
-      <Skeleton width={190} height={13} radius={radii.sm} style={styles.titleLine} />
-      <Skeleton width={90} height={24} radius={radii.pill} />
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
@@ -179,12 +165,5 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: spacing.xs,
-  },
-  profileHeader: {
-    alignItems: "center",
-    paddingVertical: spacing.lg,
-  },
-  avatarSkeleton: {
-    marginBottom: spacing.md,
   },
 });
