@@ -398,6 +398,48 @@ public class AnalyticsHandlerTests
     private static GetAnalyticsOverviewQueryHandler Handler(TestHarness h)
         => new(h.Db, h.Clock);
 
+    [Fact]
+    public async Task A_users_count_includes_unsaved_work_and_claimed_previews_and_keeps_failures_apart()
+    {
+        using var h = new TestHarness(Now);
+        var userId = await SeedUser(h, "busy@example.com", Now.AddDays(-30));
+
+        // Three finished jobs (one later saved), one failed job, one still running.
+        string[] done = ["j-done-1", "j-done-2", "j-saved"];
+        foreach (var id in done)
+        {
+            var job = TranscriptionJob.Record(id, userId, Now.AddDays(-2));
+            job.Settle("{}", Now.AddDays(-2));
+            h.Db.TranscriptionJobs.Add(job);
+        }
+        var failed = TranscriptionJob.Record("j-failed", userId, Now.AddDays(-1));
+        failed.Settle(null, Now.AddDays(-1));
+        h.Db.TranscriptionJobs.AddRange(failed, TranscriptionJob.Record("j-running", userId, Now));
+
+        // A free preview run before signing up, claimed at sign-up.
+        var preview = PreviewJob.Record("p-1", "upload", "browser", null, Now.AddDays(-31));
+        preview.Complete(true, null, Now.AddDays(-31));
+        preview.Claim(userId, Now.AddDays(-30));
+        h.Db.PreviewJobs.Add(preview);
+        await h.Db.SaveChangesAsync();
+
+        // One sheet saved from a finished job, and one from before jobs were recorded.
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId)).Handle(
+            new SaveTranscriptionCommand("Kept", "C", 120, "4/4", "<score/>", SampleNotes, 0.9, SourceJobId: "j-saved"), default);
+        await SaveTranscription(h, userId);
+
+        var row = (await new GetAdminUsersQueryHandler(h.Db, h.Clock).Handle(new GetAdminUsersQuery(), default))
+            .Value.Items.Single();
+        // 3 finished jobs + 1 claimed preview + 1 legacy sheet; the sheet saved from j-saved is not counted twice.
+        Assert.Equal(5, row.TranscriptionCount);
+        Assert.Equal(2, row.SavedTranscriptionCount);
+        Assert.Equal(1, row.FailedTranscriptionCount);
+
+        var detail = (await new NoteFusion.Application.Admin.Queries.GetUserAccountQueryHandler(h.Db, h.Clock)
+            .Handle(new NoteFusion.Application.Admin.Queries.GetUserAccountQuery(userId), default)).Value;
+        Assert.Equal((5, 2, 1), (detail.TranscriptionCount, detail.SavedTranscriptionCount, detail.FailedTranscriptionCount));
+    }
+
     private static async Task<Guid> SeedUser(
         TestHarness h, string email, DateTime createdAt, string fullName = "Test User")
     {

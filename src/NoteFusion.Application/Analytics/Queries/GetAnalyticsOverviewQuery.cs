@@ -356,7 +356,9 @@ public sealed class GetAnalyticsOverviewQueryHandler
             InFlightCount: inFlight,
             SuccessRate: terminal == 0 ? null : Math.Round(succeeded / (double)terminal, 4),
             AverageConfidence: averageConfidence,
-            StoredBytes: storedBytes);
+            StoredBytes: storedBytes,
+            TotalTranscribed: await Common.TranscriptionCounts.InWindowAsync(_db, range.FromUtc, range.ToUtc, ct),
+            TotalTranscribedPrevious: await Common.TranscriptionCounts.InWindowAsync(_db, previous.FromUtc, previous.ToUtc, ct));
     }
 
     /// <summary>

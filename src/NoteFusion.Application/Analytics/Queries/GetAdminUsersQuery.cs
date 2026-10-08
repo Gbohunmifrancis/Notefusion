@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Analytics.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
@@ -102,10 +103,16 @@ public sealed class GetAdminUsersQueryHandler
                 u.PasswordHash != null,
                 u.CreatedAt,
                 u.LastLoginAt ?? u.CreatedAt,
-                _db.Transcriptions.Count(t => t.UserId == u.Id),
+                0, // filled from TranscriptionCounts below: saved sheets alone undercount
                 live.Any(s => s.UserId == u.Id),
                 live.Any(s => s.UserId == u.Id && s.Provider == null)))
             .ToListAsync(cancellationToken);
+
+        var counts = await TranscriptionCounts.ForUsersAsync(_db, items.Select(i => i.Id).ToList(), cancellationToken);
+        items = items.Select(i => counts.TryGetValue(i.Id, out var c)
+                ? i with { TranscriptionCount = c.Transcribed, SavedTranscriptionCount = c.Saved, FailedTranscriptionCount = c.Failed }
+                : i)
+            .ToList();
 
         return new PagedResultDto<AdminUserRowDto>(items, page, pageSize, totalCount);
     }

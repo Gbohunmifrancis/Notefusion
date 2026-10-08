@@ -129,7 +129,11 @@ public sealed record AdminUserDetailDto(
     IReadOnlyList<AdminPaymentDto> Payments,
     IReadOnlyList<AdminLedgerEntryDto> Ledger,
     IReadOnlyList<AuditLogRowDto> RecentActions,
-    IReadOnlyList<AdminTranscriptionSummaryDto>? RecentTranscriptions = null);
+    IReadOnlyList<AdminTranscriptionSummaryDto>? RecentTranscriptions = null,
+    /// <summary>Sheets in the library now. <c>TranscriptionCount</c> counts every transcription that produced a result.</summary>
+    int SavedTranscriptionCount = 0,
+    /// <summary>Transcriptions that ended without a result.</summary>
+    int FailedTranscriptionCount = 0);
 
 public sealed record AdminTranscriptionSummaryDto(
     Guid Id,

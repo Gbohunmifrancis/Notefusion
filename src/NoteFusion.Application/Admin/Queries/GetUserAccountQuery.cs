@@ -50,8 +50,11 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
         var trialUsed = await _db.TranscriptionJobs.AsNoTracking()
             .CountAsync(j => j.UserId == request.UserId && j.TrialConsumedAtUtc != null, ct);
 
-        var transcriptionCount = await _db.Transcriptions.AsNoTracking()
-            .CountAsync(t => t.UserId == request.UserId, ct);
+        // Every transcription that produced a result, saved or not: counting saved sheets alone missed
+        // everyone who transcribes without saving. See TranscriptionCounts for what is included.
+        var counts = (await TranscriptionCounts.ForUsersAsync(_db, [request.UserId], ct))
+            .GetValueOrDefault(request.UserId, UserTranscriptionCounts.None);
+        var transcriptionCount = counts.Transcribed;
 
         var sub = await _db.Subscriptions.AsNoTracking()
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
@@ -170,6 +173,8 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             payments,
             ledger,
             recentActions,
-            recentTranscriptions);
+            recentTranscriptions,
+            counts.Saved,
+            counts.Failed);
     }
 }

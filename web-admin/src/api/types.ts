@@ -80,6 +80,9 @@ export interface UserMetrics {
 export interface TranscriptionMetrics {
   totalSaved: number;
   totalSavedPrevious: number;
+  /** Transcriptions that produced a result in the window, saved or not. */
+  totalTranscribed: number;
+  totalTranscribedPrevious: number;
   succeededCount: number;
   failedCount: number;
   inFlightCount: number;
@@ -264,7 +267,12 @@ export interface AdminUserRow {
   createdAt: string;
   lastLoginAt: string | null;
   country: string | null;
+  /** Every transcription that produced a result, saved or not (finished jobs, claimed previews, older saved sheets). */
   transcriptionCount: number;
+  /** Sheets in the library now. */
+  savedTranscriptionCount: number;
+  /** Transcriptions that ended without a result. */
+  failedTranscriptionCount: number;
   /** Pro unlocked right now, decided server-side by status and period window together. */
   hasProAccess: boolean;
   /**
@@ -407,7 +415,12 @@ export interface AdminUserDetail {
    * stop a sign-in and they are fixed differently.
    */
   lockoutEndAt: string | null;
+  /** Every transcription that produced a result, saved or not (finished jobs, claimed previews, older saved sheets). */
   transcriptionCount: number;
+  /** Sheets in the library now. */
+  savedTranscriptionCount: number;
+  /** Transcriptions that ended without a result. */
+  failedTranscriptionCount: number;
   trialGenerationsUsed: number;
   trialGenerationsTotal: number;
   /** Null when the account has never had one, gifted or paid. */
