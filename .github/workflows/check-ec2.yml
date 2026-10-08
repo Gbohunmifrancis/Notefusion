@@ -26,6 +26,7 @@ jobs:
             # What the last few transcriptions came out as: the activity log's own columns, then the
             # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
+            cd /opt/notefusion
             echo "== recent transcription logs (newest first)"
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Client\" AS client, \"Kind\" AS kind, \"Mode\" AS mode, \"Status\" AS status, round(\"AudioSeconds\"::numeric,1) AS secs, \"TimeSignatureRequested\" AS meter_req, \"TempoRequested\" AS tempo_req, \"KeyRequested\" AS key_req, \"DetectedKey\" AS key, \"DetectedTempo\" AS tempo, \"NoteCount\" AS notes, round(\"Confidence\"::numeric,2) AS conf, left(\"FailureReason\",60) AS failure FROM transcription_logs ORDER BY \"CreatedAtUtc\" DESC LIMIT 8;" || true
             echo "== newest finished jobs: what the sheet says"
