@@ -1,0 +1,263 @@
+import React from "react";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Button } from "../Button";
+import { Touchable } from "../Touchable";
+import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
+import { useColors, useThemedStyles } from "../../lib/theme";
+
+export type RecordMode = "melody" | "poly" | "choir" | "chords";
+
+export interface ModeOption {
+  mode: RecordMode;
+  /** What the top bar's pill says. */
+  title: string;
+  /** One line on what the mode listens for. */
+  hint: string;
+  icon: keyof typeof Ionicons.glyphMap;
+}
+
+/**
+ * Everything the record screen asks before a take — what is being recorded, the key, and the
+ * keyboard's transpose — in one bottom sheet behind the mode pill, so the screen itself keeps to
+ * the timer, the line and the button.
+ */
+export function RecordOptionsSheet({
+  visible,
+  onClose,
+  modes,
+  mode,
+  onMode,
+  keys,
+  selectedKey,
+  onKey,
+  showTranspose,
+  transposeChoices,
+  transpose,
+  transposeLabel,
+  onTranspose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  modes: readonly ModeOption[];
+  mode: RecordMode;
+  onMode: (m: RecordMode) => void;
+  keys: readonly string[];
+  selectedKey: string;
+  onKey: (k: string) => void;
+  /** Shown for chords, and whenever a transpose is set, because it rides along with every submit. */
+  showTranspose: boolean;
+  transposeChoices: readonly number[];
+  transpose: number;
+  transposeLabel: (t: number) => string;
+  onTranspose: (t: number) => void;
+}) {
+  const c = useColors();
+  const styles = useThemedStyles(makeStyles);
+  const insets = useSafeAreaInsets();
+
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+      <View style={styles.root}>
+        <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" />
+        <View style={[styles.sheet, { paddingBottom: insets.bottom + spacing.lg }]}>
+          <View style={styles.grabber} />
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
+            <Text style={styles.eyebrow}>What are you recording?</Text>
+            <View>
+              {modes.map((m, i) => {
+                const active = m.mode === mode;
+                return (
+                  <Touchable
+                    key={m.mode}
+                    onPress={() => onMode(m.mode)}
+                    scaleTo={0.99}
+                    radius={16}
+                    style={[styles.modeRow, i > 0 && styles.modeRowRule, active && styles.modeRowOn]}
+                    accessibilityLabel={`${m.title} mode`}
+                    accessibilityState={{ selected: active }}
+                  >
+                    <View style={[styles.modeIcon, active && styles.modeIconOn]}>
+                      <Ionicons name={m.icon} size={18} color={active ? c.onInk : c.textMuted} />
+                    </View>
+                    <View style={styles.modeText}>
+                      <Text style={styles.modeTitle}>{m.title}</Text>
+                      <Text style={styles.modeHint}>{m.hint}</Text>
+                    </View>
+                    {active ? <Ionicons name="checkmark" size={20} color={c.accent} /> : null}
+                  </Touchable>
+                );
+              })}
+            </View>
+
+            <Text style={[styles.eyebrow, styles.eyebrowGap]}>Key signature</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+              {keys.map((k) => {
+                const active = selectedKey === k;
+                return (
+                  <Touchable
+                    key={k}
+                    onPress={() => onKey(k)}
+                    radius={radii.pill}
+                    style={[styles.chip, active && styles.chipOn]}
+                    accessibilityLabel={`Key: ${k}`}
+                    accessibilityState={{ selected: active }}
+                  >
+                    <Text style={[styles.chipText, active && styles.chipTextOn]}>{k}</Text>
+                  </Touchable>
+                );
+              })}
+            </ScrollView>
+
+            {showTranspose ? (
+              <>
+                {/* The setting on the player's keyboard, so the sheet reads as the music sounded,
+                    not as the shapes were played. */}
+                <Text style={[styles.eyebrow, styles.eyebrowGap]}>
+                  Keyboard transpose{transpose !== 0 ? ` · ${transposeLabel(transpose)}` : ""}
+                </Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+                  {transposeChoices.map((t) => {
+                    const active = transpose === t;
+                    const label = transposeLabel(t);
+                    return (
+                      <Touchable
+                        key={t}
+                        onPress={() => onTranspose(t)}
+                        radius={radii.pill}
+                        style={[styles.chip, active && styles.chipOn]}
+                        accessibilityLabel={`Keyboard transpose ${label}`}
+                        accessibilityState={{ selected: active }}
+                      >
+                        <Text style={[styles.chipText, styles.chipMono, active && styles.chipTextOn]}>{label}</Text>
+                      </Touchable>
+                    );
+                  })}
+                </ScrollView>
+              </>
+            ) : null}
+
+            <Button label="Done" onPress={onClose} style={{ marginTop: spacing.xl }} />
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const makeStyles = (c: Palette) =>
+  StyleSheet.create({
+    root: {
+      flex: 1,
+      justifyContent: "flex-end",
+      backgroundColor: c.scrim,
+    },
+    sheet: {
+      backgroundColor: c.bgElevated,
+      borderTopLeftRadius: 28,
+      borderTopRightRadius: 28,
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderColor: c.border,
+      paddingTop: spacing.sm,
+      maxHeight: "88%",
+    },
+    grabber: {
+      alignSelf: "center",
+      width: 38,
+      height: 4,
+      borderRadius: 2,
+      backgroundColor: c.border,
+      marginBottom: spacing.md,
+    },
+    scroll: {
+      paddingHorizontal: spacing.lg + 4,
+    },
+    eyebrow: {
+      fontFamily: fonts.medium,
+      fontSize: 12,
+      letterSpacing: 1.7,
+      textTransform: "uppercase",
+      color: c.textMuted,
+      marginBottom: spacing.sm,
+    },
+    eyebrowGap: {
+      marginTop: spacing.xl,
+    },
+    modeRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.md,
+      paddingVertical: spacing.md,
+      paddingHorizontal: spacing.sm,
+      borderRadius: 16,
+    },
+    modeRowRule: {
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: c.border,
+    },
+    modeRowOn: {
+      backgroundColor: c.accentSoft,
+      borderTopColor: "transparent",
+    },
+    modeIcon: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    modeIconOn: {
+      backgroundColor: c.ink,
+      borderColor: c.ink,
+    },
+    modeText: {
+      flex: 1,
+    },
+    modeTitle: {
+      fontFamily: fonts.semibold,
+      fontSize: 15.5,
+      letterSpacing: -0.2,
+      color: c.text,
+    },
+    modeHint: {
+      ...typography.caption,
+      letterSpacing: 0,
+      color: c.textMuted,
+      lineHeight: 17,
+      marginTop: 2,
+    },
+    chips: {
+      gap: spacing.xs + 2,
+      paddingRight: spacing.lg,
+    },
+    chip: {
+      height: 36,
+      paddingHorizontal: 14,
+      borderRadius: radii.pill,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    chipOn: {
+      backgroundColor: c.ink,
+      borderColor: c.ink,
+    },
+    chipText: {
+      fontFamily: fonts.medium,
+      fontSize: 13,
+      color: c.textMuted,
+    },
+    chipMono: {
+      fontFamily: typography.mono.fontFamily,
+    },
+    chipTextOn: {
+      color: c.onInk,
+    },
+  });

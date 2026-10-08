@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Animated,
-  Easing,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,7 +14,6 @@ import {
   requestRecordingPermissionsAsync,
   type RecordingOptions,
 } from "expo-audio";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
@@ -26,7 +23,9 @@ import { Screen } from "../components/Screen";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
-import { BrandMark } from "../components/BrandMark";
+import { Mark } from "../components/night/NightUI";
+import { LevelTrace } from "../components/record/LevelTrace";
+import { RecordOptionsSheet, type ModeOption } from "../components/record/RecordOptionsSheet";
 import { showDialog } from "../lib/dialog";
 import { markPractisedToday } from "../lib/practiceReminder";
 import * as haptics from "../lib/haptics";
@@ -50,7 +49,7 @@ import {
 } from "../lib/keyboardTranspose";
 import {
   fonts,
-  gradients,
+  nightFonts,
   radii,
   spacing,
   typography,
@@ -64,10 +63,17 @@ import type { RootStackParams, TabParams } from "../navigation/types";
 type Mode = "melody" | "poly" | "choir" | "chords";
 
 /**
+ * The modes as the picker lists them; the first `title` is what the top bar's pill says.
  * "Choir" is a whole choir singing in parts: each part comes back as it was sung. "Chords" is a
  * piano or guitar playing: the chords are read and written over the solfa.
  */
-const MODE_LABEL: Record<Mode, string> = { melody: "Melody", poly: "Polyphonic", choir: "Choir", chords: "Chords" };
+const MODES: readonly ModeOption[] = [
+  { mode: "melody", title: "Hum or sing", hint: "One line — hummed, sung or played on its own.", icon: "mic-outline" },
+  { mode: "poly", title: "Polyphonic", hint: "An instrument playing several notes at once.", icon: "musical-notes-outline" },
+  { mode: "choir", title: "Choir", hint: "A choir singing in parts: each part comes back as it was sung.", icon: "people-outline" },
+  { mode: "chords", title: "Chords", hint: "Chords (piano, guitar): the chords played are read and written over the solfa.", icon: "grid-outline" },
+];
+const MODE_TITLE = Object.fromEntries(MODES.map((m) => [m.mode, m.title])) as Record<Mode, string>;
 type Phase = "ready" | "recording" | "uploading";
 
 /**
@@ -96,8 +102,6 @@ const KEYS = [
   "D minor",
   "E minor",
 ];
-
-const WAVE_BARS = 28; // number of soundwave visualiser bars
 
 /**
  * The API's code for the free-tier refusal (`BillingErrors.FreeTierLimitReached`).
@@ -156,19 +160,25 @@ const QUIET_GUIDANCE_DELAY_MS = 1200;
  * Android's *Font size* and *Display size* multiply independently, so a handset set to both extremes
  * asks for roughly 1.5× the type in roughly 0.8× the width.
  *
- * DISPLAY caps the large decorative figures — the timer and the screen title. They are already the
- * biggest text on the screen at 1.0×, so a third again is plenty and the rest of the growth would only
- * cost layout. Everything that carries instructions (the status line, the error text, the guidance
- * banner) is deliberately left uncapped and wraps or scrolls instead.
+ * DISPLAY caps the large decorative figures — the timer and the job card's percentage. The timer is
+ * already the biggest text on the screen at 1.0×, so a third again is plenty and the rest of the growth
+ * would only cost layout. Everything that carries instructions (the status line, the error text, the
+ * guidance banner) is deliberately left uncapped and wraps or scrolls instead.
  *
- * IN_DISC caps the two labels inside the record button's 116px glass disc, which cannot grow with them:
- * "analysing" at 1.5× is wider than the circle it sits in. Cheap accessibility-wise, because both
- * repeat information the uncapped status area shows at full size right below.
+ * CHROME caps the labels that share a fixed row — the mode pill between the close button and the
+ * Fast lane badge, and the captions under the 56px side buttons — which cannot grow without pushing
+ * their neighbours off the edge. Each repeats something the sheet or the button's own label says.
  */
 const MAX_TEXT_SCALE_DISPLAY = 1.3;
-const MAX_TEXT_SCALE_IN_DISC = 1.15;
+const MAX_TEXT_SCALE_CHROME = 1.15;
 
-/** Maps a dBFS metering value to a 0..1 fraction for the level-meter bar. */
+/**
+ * How many level readings the trace holds across its width — at the recorder's ~6.7 readings a
+ * second, the last nine seconds or so of the take.
+ */
+const TRACE_POINTS = 60;
+
+/** Maps a dBFS metering value to a 0..1 fraction for the level trace. */
 function meteringToFraction(dbfs: number): number {
   const clamped = Math.max(LEVEL_SILENCE_DBFS, Math.min(0, dbfs));
   return (clamped - LEVEL_SILENCE_DBFS) / (0 - LEVEL_SILENCE_DBFS);
@@ -221,18 +231,14 @@ async function offerBackgroundAlerts(): Promise<void> {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 /**
- * RecordScreen — light blue audio capture & transcription trigger.
+ * RecordScreen — audio capture & transcription trigger, in the night design.
  *
- * The central gradient record button (Deep Blue → Bright Blue ring +
- * white disc) is the hero.
- *
- *   • Ready state    : static gradient ring, pulsing ambient glow orb.
- *   • Recording      : two concentric blue ripple waves; animated
- *                      soundwave bars below the button.
- *   • Uploading      : gradient progress bar; percentage inside the button.
- *   • Mode toggle    : white pill — active segment uses gradient fill.
- *   • Key picker     : horizontal scroll of glass chips; active chip gradient.
- *   • Error cards    : red-tinted glass surface consistent with the system.
+ *   • Top bar        : close, the mode pill (opens the options sheet: mode, key, keyboard
+ *                      transpose), and the Fast lane badge for Pro.
+ *   • Timer          : large monospace clock with one status line under it.
+ *   • Level trace    : the mic level as a thin glowing line over faint guides.
+ *   • Controls       : import / start over · record–stop · done.
+ *   • Uploading      : one calm card — the mark, the stage, the steps, a thin progress bar.
  */
 export function RecordScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
@@ -246,6 +252,7 @@ export function RecordScreen() {
   const [phase, setPhase] = useState<Phase>("ready");
   const [mode, setMode] = useState<Mode>("melody");
   const [selectedKey, setSelectedKey] = useState<string>("Auto");
+  const [optionsOpen, setOptionsOpen] = useState(false);
   /** The player's keyboard transpose, mirrored from the module cache so the chips repaint. */
   const [kbTranspose, setKbTranspose] = useState(keyboardTranspose());
   useEffect(() => {
@@ -260,171 +267,15 @@ export function RecordScreen() {
   // expo-audio only reports metering through this hook, not on `recorder` itself.
   const recorderState = useAudioRecorderState(recorder, 150);
 
-  // ── Animation values ──────────────────────────────────────────────────────
-  const ripple1 = useRef(new Animated.Value(1)).current;
-  const ripple2 = useRef(new Animated.Value(1)).current;
-  const rippleOpacity1 = useRef(new Animated.Value(0)).current;
-  const rippleOpacity2 = useRef(new Animated.Value(0)).current;
-  const ambientGlow = useRef(new Animated.Value(0.3)).current;
-  const barAnims = useRef(
-    Array.from({ length: WAVE_BARS }, () => new Animated.Value(0.15)),
-  ).current;
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
   const lastSubmitArgs = useRef<{uri: string, name: string, opts: any} | null>(null);
 
   // ── Voice-level guidance state ────────────────────────────────────────────
   const [showQuietGuidance, setShowQuietGuidance] = useState(false);
   const quietSinceRef = useRef<number | null>(null);
-  const meterAnim = useRef(new Animated.Value(0)).current;
+  /** Recent level readings, 0..1, oldest first — what the trace draws. */
+  const [levels, setLevels] = useState<number[]>([]);
   const guidanceOpacity = useRef(new Animated.Value(0)).current;
-
-  // ── Ambient glow pulse (always on) ───────────────────────────────────────
-  useEffect(() => {
-    const pulse = Animated.loop(
-      Animated.sequence([
-        Animated.timing(ambientGlow, {
-          toValue: 0.65,
-          duration: 1800,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(ambientGlow, {
-          toValue: 0.25,
-          duration: 1800,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-      ]),
-    );
-    pulse.start();
-    return () => pulse.stop();
-  }, [ambientGlow]);
-
-  // ── Ripple waves ──────────────────────────────────────────────────────────
-  useEffect(() => {
-    if (phase === "recording") {
-      const anim1 = Animated.loop(
-        Animated.sequence([
-          Animated.parallel([
-            Animated.timing(ripple1, {
-              toValue: 1.6,
-              duration: 1100,
-              easing: Easing.out(Easing.ease),
-              useNativeDriver: true,
-            }),
-            Animated.timing(rippleOpacity1, {
-              toValue: 0,
-              duration: 1100,
-              easing: Easing.out(Easing.ease),
-              useNativeDriver: true,
-            }),
-          ]),
-          Animated.parallel([
-            Animated.timing(ripple1, {
-              toValue: 1,
-              duration: 0,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rippleOpacity1, {
-              toValue: 0.7,
-              duration: 0,
-              useNativeDriver: true,
-            }),
-          ]),
-        ]),
-      );
-
-      const anim2 = Animated.loop(
-        Animated.sequence([
-          Animated.delay(420),
-          Animated.parallel([
-            Animated.timing(ripple2, {
-              toValue: 1.95,
-              duration: 1400,
-              easing: Easing.out(Easing.ease),
-              useNativeDriver: true,
-            }),
-            Animated.timing(rippleOpacity2, {
-              toValue: 0,
-              duration: 1400,
-              easing: Easing.out(Easing.ease),
-              useNativeDriver: true,
-            }),
-          ]),
-          Animated.parallel([
-            Animated.timing(ripple2, {
-              toValue: 1,
-              duration: 0,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rippleOpacity2, {
-              toValue: 0.45,
-              duration: 0,
-              useNativeDriver: true,
-            }),
-          ]),
-        ]),
-      );
-
-      anim1.start();
-      anim2.start();
-
-      return () => {
-        anim1.stop();
-        anim2.stop();
-        ripple1.setValue(1);
-        ripple2.setValue(1);
-        rippleOpacity1.setValue(0);
-        rippleOpacity2.setValue(0);
-      };
-    }
-  }, [phase, ripple1, ripple2, rippleOpacity1, rippleOpacity2]);
-
-  // ── Soundwave bars ────────────────────────────────────────────────────────
-  useEffect(() => {
-    if (phase === "recording") {
-      const anims = barAnims.map((bar, i) => {
-        const targetHigh = 0.5 + Math.random() * 0.5;
-        const targetLow = 0.1 + Math.random() * 0.2;
-        const dur = 180 + Math.random() * 220;
-        const loop = Animated.loop(
-          Animated.sequence([
-            Animated.timing(bar, {
-              toValue: targetHigh,
-              duration: dur,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-            Animated.timing(bar, {
-              toValue: targetLow,
-              duration: dur * 0.8,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-          ]),
-        );
-        return Animated.sequence([Animated.delay(i * 18), loop]);
-      });
-
-      const all = Animated.parallel(anims);
-      all.start();
-      return () => {
-        all.stop();
-        barAnims.forEach((b) => b.setValue(0.15));
-      };
-    } else {
-      Animated.parallel(
-        barAnims.map((b) =>
-          Animated.timing(b, {
-            toValue: 0.12,
-            duration: 400,
-            easing: Easing.out(Easing.ease),
-            useNativeDriver: true,
-          }),
-        ),
-      ).start();
-    }
-  }, [phase, barAnims]);
 
   // ── Navigate to Result ────────────────────────────────────────────────────
   useEffect(() => {
@@ -526,30 +377,21 @@ export function RecordScreen() {
   // ── Voice-level metering & "sing louder" guidance ─────────────────────────
   //
   // recorderState.metering is only meaningful while phase === "recording";
-  // expo-audio reports a stale/undefined value otherwise. The meter bar
-  // animates smoothly toward each new reading rather than snapping, and the
-  // guidance banner only appears after QUIET_GUIDANCE_DELAY_MS of sustained
-  // quiet — not on every brief dip — so pauses for breath don't trigger it.
+  // expo-audio reports a stale/undefined value otherwise. Each reading joins the
+  // trace's history, and the guidance banner only appears after
+  // QUIET_GUIDANCE_DELAY_MS of sustained quiet — not on every brief dip — so
+  // pauses for breath don't trigger it.
   useEffect(() => {
     if (phase !== "recording") {
       quietSinceRef.current = null;
       if (showQuietGuidance) setShowQuietGuidance(false);
-      Animated.timing(meterAnim, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: false,
-      }).start();
+      setLevels((l) => (l.length ? [] : l));
       return;
     }
 
     const dbfs = recorderState.metering ?? LEVEL_SILENCE_DBFS;
 
-    Animated.timing(meterAnim, {
-      toValue: meteringToFraction(dbfs),
-      duration: 150,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: false,
-    }).start();
+    setLevels((l) => [...l.slice(-(TRACE_POINTS - 1)), meteringToFraction(dbfs)]);
 
     const now = Date.now();
     if (dbfs < LEVEL_QUIET_DBFS) {
@@ -565,7 +407,7 @@ export function RecordScreen() {
       quietSinceRef.current = null;
       if (showQuietGuidance) setShowQuietGuidance(false);
     }
-  }, [phase, recorderState.metering, meterAnim, showQuietGuidance]);
+  }, [phase, recorderState.metering, showQuietGuidance]);
 
   // Fade the guidance banner in/out rather than popping it, so it reads as a
   // gentle nudge rather than an alarming error state.
@@ -734,11 +576,71 @@ export function RecordScreen() {
     else if (phase === "recording") stopAndSubmit();
   };
 
-  const mmss = `${String(Math.floor(elapsed / 60)).padStart(2, "0")}:${String(
-    elapsed % 60,
-  ).padStart(2, "0")}`;
+  /**
+   * Throws the take away without sending it: the recorder stops, the clock resets and nothing
+   * reaches the server, so nothing is spent.
+   */
+  async function discardTake() {
+    if (tick.current) clearInterval(tick.current);
+    tick.current = null;
+    quietSinceRef.current = null;
+    setShowQuietGuidance(false);
+    setPhase("ready");
+    setElapsed(0);
+    try {
+      if (recorder.isRecording) await recorder.stop();
+    } catch {
+      // The take is being thrown away; a recorder that will not stop cleanly has nothing to lose.
+    }
+  }
+
+  /**
+   * Asks first once the take is long enough to be worth keeping — a slip of the thumb should not
+   * cost two minutes of singing — and goes straight through for a false start.
+   */
+  function confirmDiscard(title: string, confirmLabel: string, then: () => void) {
+    if (elapsed < 10) {
+      then();
+      return;
+    }
+    showDialog({
+      title,
+      message: "This recording will be lost. Nothing is sent and nothing is used up.",
+      icon: "trash-outline",
+      tone: "danger",
+      actions: [
+        { label: confirmLabel, style: "destructive", onPress: then },
+        { label: "Keep recording", style: "cancel" },
+      ],
+    });
+  }
+
+  /** The ghost button while recording: drop this take and start a fresh one. */
+  function startOver() {
+    confirmDiscard("Start over?", "Start over", () => {
+      void discardTake().then(startRecording);
+    });
+  }
+
+  /**
+   * The close button. A take in progress is thrown away (with the same ask); a job on its way
+   * keeps going — the server finishes it and the result still opens — so leaving is safe.
+   */
+  function close() {
+    if (phase === "recording") {
+      confirmDiscard("Discard this recording?", "Discard", () => {
+        void discardTake();
+        tabNav.navigate("Home");
+      });
+      return;
+    }
+    tabNav.navigate("Home");
+  }
+
+  const clock = `${Math.floor(elapsed / 60)}:${String(elapsed % 60).padStart(2, "0")}`;
 
   const isUploading = phase === "uploading";
+  const isRecording = phase === "recording";
 
   // The row of steps on the uploading card. A hummed tune skips the isolating step — unless
   // the worker says it is isolating anyway, in which case the step is shown rather than lost.
@@ -746,346 +648,83 @@ export function RecordScreen() {
   const uploadStages = separating ? UPLOAD_STAGES : UPLOAD_STAGES.filter((s) => s.key !== "separating");
   const uploadStageIndex = uploadStages.findIndex((s) => s.key === state.stage);
 
+  const pillLabel = MODE_TITLE[mode] + (selectedKey === "Auto" ? "" : ` · ${selectedKey}`);
+
   return (
     // Scrolls only when it has to. `container` grows to fill the viewport, so at the default text
-    // size the column still spreads with `space-between` exactly as it did before — the scroll is
-    // what absorbs a large Font size or Display size setting instead of pushing the status text off
-    // the bottom edge behind the tab bar.
+    // size the trace takes up the slack between the clock and the controls — the scroll is what
+    // absorbs a large Font size or Display size setting instead of pushing the controls off the
+    // bottom edge behind the tab bar.
     <Screen edges={["top"]} scroll contentStyle={styles.scrollContent}>
-      <View style={[styles.container, isUploading && styles.containerBusy]}>
-        {/* ── Top controls ────────────────────────────────────────────────── */}
-        {!isUploading && (
-        <View style={styles.top}>
-          <Text style={styles.screenTitle} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
-            Listening
-          </Text>
-
-          {/* Free-tier counter. Gated on `known` as well as `!isPro`: the fallback
-              value is the full allowance, so an unanswered billing request would
-              otherwise announce "5 of 5 left" to a Pro account. Tappable throughout —
-              wanting to see the plans is not only an out-of-credits impulse. */}
-          {known && !isPro && (
+      <View style={styles.container}>
+        {/* ── Top bar ─────────────────────────────────────────────────────── */}
+        <View style={styles.topBar}>
+          <View style={styles.topSide}>
             <Touchable
-              onPress={() => nav.navigate("Upgrade")}
-              style={[styles.trialPill, trialRemaining <= 0 && styles.trialPillSpent]}
-              radius={radii.pill}
-              accessibilityLabel="See Pro plans"
+              onPress={close}
+              style={styles.iconBtn}
+              radius={20}
+              accessibilityLabel={isRecording ? "Discard recording and close" : "Close"}
             >
-              <Ionicons
-                name={trialRemaining > 0 ? "sparkles-outline" : "lock-closed-outline"}
-                size={13}
-                color={trialRemaining > 0 ? colors.accent : colors.danger}
-              />
-              <Text
-                style={[
-                  styles.trialPillText,
-                  trialRemaining <= 0 && styles.trialPillTextSpent,
-                ]}
-              >
-                {trialRemaining > 0
-                  ? `${trialRemaining} of ${trialTotal} free transcriptions left`
-                  : "Free trial used up — see Pro plans"}
+              <Ionicons name="close" size={20} color={colors.text} />
+            </Touchable>
+          </View>
+
+          {!isUploading && (
+            <Touchable
+              onPress={() => setOptionsOpen(true)}
+              // Locked once recording starts. Passing `disabled` rather than gating inside
+              // onPress is what stops the pill springing and buzzing at a tap that does
+              // nothing — and it fades to the same 0.4 every other disabled control uses.
+              disabled={phase !== "ready"}
+              style={styles.modePill}
+              radius={radii.pill}
+              accessibilityLabel={`${pillLabel}. Change what you're recording`}
+            >
+              <Text style={styles.modePillText} numberOfLines={1} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+                {pillLabel}
               </Text>
+              <Ionicons name="chevron-down" size={14} color={colors.textMuted} />
             </Touchable>
           )}
 
-          {/* Mode toggle */}
-          <View style={styles.modeToggle}>
-            {(["melody", "poly", "choir", "chords"] as Mode[]).map((m) => {
-              const active = mode === m;
-              return active ? (
-                <LinearGradient
-                  key={m}
-                  colors={gradients.brand}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.modeSegment, styles.modeSegmentActive]}
-                >
-                  <Text style={styles.modeTextActive}>
-                    {MODE_LABEL[m]}
-                  </Text>
-                </LinearGradient>
-              ) : (
-                <Touchable
-                  key={m}
-                  style={styles.modeSegment}
-                  onPress={() => setMode(m)}
-                  // Both pickers are locked once recording starts. Passing `disabled`
-                  // rather than gating inside onPress is what stops a locked segment
-                  // springing and buzzing at a tap that does nothing — and it fades to
-                  // the same 0.4 every other disabled control in the app uses, so the
-                  // lock is finally visible.
-                  disabled={phase !== "ready"}
-                  radius={radii.pill}
-                  accessibilityLabel={`${MODE_LABEL[m]} mode`}
-                >
-                  <Text style={styles.modeTextInactive}>
-                    {MODE_LABEL[m]}
-                  </Text>
-                </Touchable>
-              );
-            })}
-          </View>
-
-          {mode === "chords" ? (
-            <Text style={styles.modeHint}>
-              Chords (piano, guitar): the chords played are read and written over the solfa.
-            </Text>
-          ) : null}
-
-          {/* Keyboard transpose — the setting on the player's keyboard, so the sheet reads as the
-              music sounded, not as the shapes were played. Shown for chords, and whenever it is set,
-              because it rides along with every submit. */}
-          {mode === "chords" || kbTranspose !== 0 ? (
-            <View style={styles.keyRow}>
-              <Text style={styles.keyLabel}>Keyboard transpose{kbTranspose !== 0 ? ` · ${keyboardTransposeLabel(kbTranspose)}` : ""}</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.keyScroll}
-              >
-                {KEYBOARD_TRANSPOSE_CHOICES.map((t) => {
-                  const active = kbTranspose === t;
-                  const label = keyboardTransposeLabel(t);
-                  return active ? (
-                    <LinearGradient
-                      key={t}
-                      colors={gradients.brand}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={[styles.keyChip, styles.keyChipActive]}
-                    >
-                      <Text style={styles.keyChipTextActive}>{label}</Text>
-                    </LinearGradient>
-                  ) : (
-                    <Touchable
-                      key={t}
-                      style={styles.keyChip}
-                      onPress={() => {
-                        setKbTranspose(t);
-                        void setKeyboardTranspose(t);
-                      }}
-                      disabled={phase !== "ready"}
-                      radius={radii.pill}
-                      accessibilityLabel={`Keyboard transpose ${label}`}
-                    >
-                      <Text style={styles.keyChipText}>{label}</Text>
-                    </Touchable>
-                  );
-                })}
-              </ScrollView>
-            </View>
-          ) : null}
-
-          {/* Key picker */}
-          <View style={styles.keyRow}>
-            <Text style={styles.keyLabel}>Key Signature</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.keyScroll}
-            >
-              {KEYS.map((k) => {
-                const active = selectedKey === k;
-                return active ? (
-                  <LinearGradient
-                    key={k}
-                    colors={gradients.brand}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={[styles.keyChip, styles.keyChipActive]}
-                  >
-                    <Text style={styles.keyChipTextActive}>{k}</Text>
-                  </LinearGradient>
-                ) : (
-                  <Touchable
-                    key={k}
-                    style={styles.keyChip}
-                    onPress={() => setSelectedKey(k)}
-                    disabled={phase !== "ready"}
-                    radius={radii.pill}
-                    accessibilityLabel={`Key: ${k}`}
-                  >
-                    <Text style={styles.keyChipText}>{k}</Text>
-                  </Touchable>
-                );
-              })}
-            </ScrollView>
-          </View>
-        </View>
-        )}
-
-        {/* ── Central record zone ─────────────────────────────────────────── */}
-        {!isUploading && (
-        <View style={styles.centerZone}>
-          {/* Ambient glow orb */}
-          <Animated.View
-            style={[styles.ambientOrb, { opacity: ambientGlow }]}
-          />
-
-          {/* Ripple 2 — outermost */}
-          <Animated.View
-            style={[
-              styles.rippleRing,
-              styles.rippleOuter,
-              { opacity: rippleOpacity2, transform: [{ scale: ripple2 }] },
-            ]}
-          />
-
-          {/* "Sing louder / move closer" guidance banner — fades in after a
-              sustained quiet stretch while recording. Positioned above the
-              button so it doesn't obscure the record/stop control itself. */}
-          <Animated.View
-            style={[styles.guidanceBanner, { opacity: guidanceOpacity }]}
-            pointerEvents="none"
-          >
-            <View style={styles.guidanceDot} />
-            <Text style={styles.guidanceText}>
-              Sing louder or hold closer to the mic
-            </Text>
-          </Animated.View>
-
-          {/* Ripple 1 — inner */}
-          <Animated.View
-            style={[
-              styles.rippleRing,
-              styles.rippleInner,
-              { opacity: rippleOpacity1, transform: [{ scale: ripple1 }] },
-            ]}
-          />
-
-          {/* Record button. Deliberately still a TouchableOpacity: it owns the
-              ripple/glow system above, and a competing press-scale would fight it.
-              It does take the heavier tick, on press-in — starting and stopping a
-              recording is the most consequential tap on the screen. */}
-          <TouchableOpacity
-            activeOpacity={0.88}
-            onPress={isUploading ? undefined : handleButtonPress}
-            onPressIn={() => haptics.play("medium")}
-            disabled={isUploading}
-            style={styles.btnOuter}
-          >
-            <LinearGradient
-              colors={
-                phase === "recording"
-                  ? (["#DC2626", "#B91C1C"] as const)
-                  : isUploading
-                    ? gradients.brandMuted
-                    : gradients.brand
-              }
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.btnRing}
-            >
-              <View style={styles.btnGlassDisc}>
-                {isUploading ? (
-                  <View style={styles.btnIconWrap}>
-                    <Text
-                      style={styles.progressPct}
-                      maxFontSizeMultiplier={MAX_TEXT_SCALE_IN_DISC}
-                    >
-                      {Math.round(state.progress * 100)}%
-                    </Text>
-                    <Text
-                      style={styles.progressLabel}
-                      maxFontSizeMultiplier={MAX_TEXT_SCALE_IN_DISC}
-                    >
-                      {state.stage === "uploading" ? "uploading" : "analysing"}
-                    </Text>
-                  </View>
-                ) : phase === "recording" ? (
-                  <View style={styles.btnIconWrap}>
-                    <View style={styles.stopSquare} />
-                  </View>
-                ) : (
-                  <View style={styles.btnIconWrap}>
-                    <Ionicons name="mic" size={44} color={colors.accent} />
-                  </View>
-                )}
+          <View style={[styles.topSide, styles.topSideEnd]}>
+            {/* Pro jobs run in the queue's high-priority lane. */}
+            {isPro && (
+              <View style={styles.fastLane} accessibilityLabel="Fast lane: Pro recordings go first">
+                <Text style={styles.fastLaneText} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+                  Fast lane
+                </Text>
               </View>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          {/* Soundwave bars */}
-          <View style={styles.waveContainer}>
-            {barAnims.map((anim, i) => (
-              <Animated.View
-                key={i}
-                style={[
-                  styles.waveBar,
-                  {
-                    transform: [{ scaleY: anim }],
-                    // Literal rgba, not a palette token: the alpha is computed per
-                    // bar so the ramp fades toward the outer edges, and a token
-                    // carries a fixed one. The two hues are the brand gradient's
-                    // own endpoints — deep blue out from the left, bright from the right.
-                    backgroundColor:
-                      i < WAVE_BARS / 2
-                        ? `rgba(37, 99, 235, ${0.4 + (i / WAVE_BARS) * 0.6})`
-                        : `rgba(59, 130, 246, ${0.4 + ((WAVE_BARS - i) / WAVE_BARS) * 0.6})`,
-                  },
-                ]}
-              />
-            ))}
+            )}
           </View>
         </View>
-        )}
 
-        {/* ── Voice-level meter ────────────────────────────────────────────── */}
-        {/* Only shown while recording — a live traffic-light bar (red → amber →
-            green) so users get instant, glanceable feedback on mic level
-            without needing to read the guidance banner text. */}
-        {phase === "recording" && (
-          <View style={styles.meterArea}>
-            <Ionicons
-              name={
-                currentMeterDbfs < LEVEL_QUIET_DBFS
-                  ? "mic-off-outline"
-                  : "mic-outline"
-              }
-              size={14}
-              color={meterColor}
-              style={styles.meterIcon}
-            />
-            <View style={styles.meterTrack}>
-              <Animated.View
-                style={[
-                  styles.meterFill,
-                  {
-                    backgroundColor: meterColor,
-                    width: meterAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: ["0%", "100%"],
-                    }),
-                  },
-                ]}
-              />
-            </View>
-          </View>
-        )}
+        {isUploading ? (
+          /* The uploading card: the mark, the step the job is on, a real percentage — the
+             upload's own until the server answers, the worker's after — and the steps still
+             to come. Once the server has the job it finishes it whether or not anyone is
+             watching, and sends a notification when it does; the upload itself is the part
+             that has to stay in the foreground. Nothing on this card is server text. */
+          <View style={styles.jobZone}>
+            <View style={styles.jobCard}>
+              <View style={styles.jobMark}>
+                <Mark height={30} color={colors.accent} />
+              </View>
+              <Text style={styles.jobTitle}>{stageLabel(state.stage, state.queuePosition)}</Text>
+              <Text style={styles.jobSub}>
+                {state.stage === "uploading"
+                  ? "Keep the app open until the upload finishes."
+                  : "You can leave this screen — we'll notify you when it's ready."}
+              </Text>
 
-        {/* ── Status area ─────────────────────────────────────────────────── */}
-        <View style={[styles.statusArea, isUploading && styles.statusAreaBusy]}>
-          {isUploading ? (
-            /* The uploading card: the mark, the step the job is on, a real percentage — the
-               upload's own until the server answers, the worker's after — and the steps still
-               to come. Once the server has the job it finishes it whether or not anyone is
-               watching, and sends a notification when it does; the upload itself is the part
-               that has to stay in the foreground. Nothing on this card is server text. */
-            <Card style={styles.uploadCard}>
-              <View style={styles.uploadHead}>
-                <View style={styles.uploadOrb}>
-                  <BrandMark size={28} color={colors.accent} />
+              <View style={styles.jobBarRow}>
+                <View style={styles.progressTrack}>
+                  <View
+                    style={[styles.progressFill, { width: `${Math.max(3, Math.min(100, state.progress * 100))}%` }]}
+                  />
                 </View>
-                <View style={styles.uploadHeadText}>
-                  <Text style={styles.uploadTitle}>{stageLabel(state.stage, state.queuePosition)}</Text>
-                  <Text style={styles.uploadSub}>
-                    {state.stage === "uploading"
-                      ? "Keep the app open until the upload finishes."
-                      : "You can leave this screen — we'll notify you when it's ready."}
-                  </Text>
-                </View>
-                <Text style={styles.uploadPct} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
+                <Text style={styles.jobPct} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
                   {percentLabel(state.progress)}
                 </Text>
               </View>
@@ -1095,10 +734,10 @@ export function RecordScreen() {
                   const done = uploadStageIndex > i;
                   const on = uploadStageIndex === i;
                   return (
-                    <View key={s.key} style={[styles.uploadStage, on && styles.uploadStageOn]}>
+                    <View key={s.key} style={styles.uploadStage}>
                       <Ionicons
                         name={done ? "checkmark-circle" : on ? "ellipse" : "ellipse-outline"}
-                        size={12}
+                        size={11}
                         color={done ? colors.success : on ? colors.accent : colors.textFaint}
                       />
                       <Text
@@ -1115,15 +754,6 @@ export function RecordScreen() {
                 })}
               </View>
 
-              <View style={styles.progressTrack}>
-                <LinearGradient
-                  colors={gradients.brand}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={[styles.progressFill, { width: `${Math.max(3, Math.min(100, state.progress * 100))}%` }]}
-                />
-              </View>
-
               {state.stalled ? <Text style={styles.uploadWarn}>{STALLED_LINE}</Text> : null}
               {state.offline ? <Text style={styles.uploadWarn}>{OFFLINE_LINE}</Text> : null}
               {state.canRetry ? (
@@ -1132,53 +762,93 @@ export function RecordScreen() {
                   icon="refresh-outline"
                   variant="secondary"
                   onPress={() => void retry()}
-                  style={{ marginTop: spacing.md }}
+                  style={{ marginTop: spacing.lg, alignSelf: "stretch" }}
                 />
               ) : null}
-            </Card>
-          ) : (
-            <>
-              <Text style={styles.statusTitle}>
-                {phase === "ready" ? "Tap to record" : "Listening…"}
-              </Text>
-
-              <Text style={styles.timerText} maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}>
-                {mmss}
-              </Text>
-
-              <Text style={styles.statusSub}>
-                {phase === "ready"
-                  ? "Sing, hum, or play near the mic for accurate Solfa extraction."
-                  : elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
-                    ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
-                    : "Tap the button again when you're done."}
-              </Text>
-            </>
-          )}
-
-          {phase === "ready" && (
-            <Touchable
-              onPress={pickAudioFile}
-              style={styles.importFileBtn}
-              radius={radii.pill}
-              accessibilityLabel="Import audio file"
-            >
-              <Ionicons name="folder-open-outline" size={18} color={colors.accent} />
-              <Text style={styles.importFileBtnText}>Import audio file</Text>
-            </Touchable>
-          )}
-
-        </View>
-
-        {/* ── Bottom action ────────────────────────────────────────────────── */}
-        {phase === "recording" && (
-          <View style={styles.bottomAction}>
-            <Button
-              label="Stop & Transcribe"
-              onPress={stopAndSubmit}
-              icon="stop-circle-outline"
-            />
+            </View>
           </View>
+        ) : (
+          <>
+            {/* ── Clock and status ──────────────────────────────────────────── */}
+            <View style={styles.clockArea}>
+              <Text
+                style={styles.timerText}
+                maxFontSizeMultiplier={MAX_TEXT_SCALE_DISPLAY}
+                accessibilityLabel={`${Math.floor(elapsed / 60)} minutes ${elapsed % 60} seconds`}
+              >
+                {clock}
+              </Text>
+              <View style={styles.statusRow}>
+                {isRecording && <View style={styles.recDot} />}
+                <Text style={styles.statusLine}>
+                  {phase === "ready"
+                    ? "Tap to record · sing, hum or play near the mic"
+                    : elapsed >= MAX_RECORD_SEC - RECORD_WARN_AT_SEC
+                      ? `Stopping in ${MAX_RECORD_SEC - elapsed}s — ${MAX_RECORD_SEC / 60} minutes is the longest clip we can transcribe.`
+                      : "Recording · keep going to the end of the phrase"}
+                </Text>
+              </View>
+
+              {/* Free-tier counter. Gated on `known` as well as `!isPro`: the fallback
+                  value is the full allowance, so an unanswered billing request would
+                  otherwise announce "5 of 5 left" to a Pro account. Tappable throughout —
+                  wanting to see the plans is not only an out-of-credits impulse. */}
+              {known && !isPro && (
+                <Touchable
+                  onPress={() => nav.navigate("Upgrade")}
+                  style={[styles.trialPill, trialRemaining <= 0 && styles.trialPillSpent]}
+                  radius={radii.pill}
+                  accessibilityLabel="See Pro plans"
+                >
+                  <Ionicons
+                    name={trialRemaining > 0 ? "sparkles-outline" : "lock-closed-outline"}
+                    size={13}
+                    color={trialRemaining > 0 ? colors.accent : colors.danger}
+                  />
+                  <Text
+                    style={[
+                      styles.trialPillText,
+                      trialRemaining <= 0 && styles.trialPillTextSpent,
+                    ]}
+                  >
+                    {trialRemaining > 0
+                      ? `${trialRemaining} of ${trialTotal} free transcriptions left`
+                      : "Free trial used up — see Pro plans"}
+                  </Text>
+                </Touchable>
+              )}
+
+              {/* The transpose rides along with every submit, so it stays in view whenever it
+                  is set, not only inside the sheet. */}
+              {kbTranspose !== 0 && phase === "ready" ? (
+                <Text style={styles.settingLine}>
+                  Keyboard transpose · {keyboardTransposeLabel(kbTranspose)}
+                </Text>
+              ) : null}
+            </View>
+
+            {/* ── Level trace ────────────────────────────────────────────────── */}
+            <View style={styles.traceArea}>
+              <LevelTrace
+                levels={levels}
+                capacity={TRACE_POINTS}
+                headColor={meterColor}
+              />
+
+              {/* "Sing louder / move closer" guidance banner — fades in after a
+                  sustained quiet stretch while recording. Over the top of the trace,
+                  so it never covers the controls. */}
+              <Animated.View
+                style={[styles.guidanceBanner, { opacity: guidanceOpacity }]}
+                pointerEvents="none"
+              >
+                <View style={styles.guidanceDot} />
+                <Text style={styles.guidanceText}>
+                  Sing louder or hold closer to the mic
+                </Text>
+              </Animated.View>
+            </View>
+          </>
         )}
 
         {/* ── Error cards ──────────────────────────────────────────────────── */}
@@ -1213,16 +883,97 @@ export function RecordScreen() {
             />
           </Card>
         )}
+
+        {/* ── Controls ─────────────────────────────────────────────────────── */}
+        {!isUploading && (
+          <View style={styles.controls}>
+            {/* Left: importing a file when idle; throwing the take away and starting again
+                while recording. */}
+            <View style={styles.sideSlot}>
+              <Touchable
+                onPress={isRecording ? startOver : pickAudioFile}
+                style={styles.ghostBtn}
+                radius={28}
+                accessibilityLabel={isRecording ? "Start over" : "Import audio file"}
+              >
+                <Ionicons
+                  name={isRecording ? "refresh" : "folder-open-outline"}
+                  size={22}
+                  color={colors.text}
+                />
+              </Touchable>
+              <Text style={styles.sideCaption} maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}>
+                {isRecording ? "Start over" : "Import"}
+              </Text>
+            </View>
+
+            {/* Record button. Deliberately still a TouchableOpacity rather than Touchable:
+                it takes the heavier tick, on press-in — starting and stopping a recording is
+                the most consequential tap on the screen. Idle it is the mark on the brand
+                blue; recording, a ring around the red stop square. */}
+            <TouchableOpacity
+              activeOpacity={0.88}
+              onPress={handleButtonPress}
+              onPressIn={() => haptics.play("medium")}
+              style={isRecording ? styles.recordRing : styles.recordIdle}
+              accessibilityRole="button"
+              accessibilityLabel={isRecording ? "Stop and transcribe" : "Start recording"}
+            >
+              {isRecording ? (
+                <View style={styles.stopSquare} />
+              ) : (
+                <Mark height={38} color={colors.onInk} />
+              )}
+            </TouchableOpacity>
+
+            {/* Right: done — stop and send the take. Nothing to send before a take starts. */}
+            <View style={styles.sideSlot}>
+              <Touchable
+                onPress={stopAndSubmit}
+                disabled={!isRecording}
+                style={styles.doneBtn}
+                radius={28}
+                accessibilityLabel="Stop and transcribe"
+              >
+                <Ionicons name="checkmark" size={24} color={colors.onInk} />
+              </Touchable>
+              <Text
+                style={[styles.sideCaption, !isRecording && styles.sideCaptionOff]}
+                maxFontSizeMultiplier={MAX_TEXT_SCALE_CHROME}
+              >
+                Done
+              </Text>
+            </View>
+          </View>
+        )}
       </View>
+
+      <RecordOptionsSheet
+        visible={optionsOpen}
+        onClose={() => setOptionsOpen(false)}
+        modes={MODES}
+        mode={mode}
+        onMode={setMode}
+        keys={KEYS}
+        selectedKey={selectedKey}
+        onKey={setSelectedKey}
+        showTranspose={mode === "chords" || kbTranspose !== 0}
+        transposeChoices={KEYBOARD_TRANSPOSE_CHOICES}
+        transpose={kbTranspose}
+        transposeLabel={keyboardTransposeLabel}
+        onTranspose={(t) => {
+          setKbTranspose(t);
+          void setKeyboardTranspose(t);
+        }}
+      />
     </Screen>
   );
 }
 
 // ─── Styles ──────────────────────────────────────────────────────────────────
 
-const BTN_SIZE = 148;
-const DISC_SIZE = 116;
-const METER_TRACK_WIDTH = 220;
+const RECORD_SIZE = 84;
+const SIDE_SIZE = 56;
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
@@ -1234,47 +985,144 @@ const makeStyles = (c: Palette) =>
 
   container: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingBottom: 100,
+    // Clears the floating tab bar, which is absolutely positioned over the bottom of the screen.
+    paddingBottom: 110,
   },
-  /** While the recording is on its way the pickers and the disc step aside, and the uploading
-   *  card sits in the middle of the screen with nothing to scroll past. */
-  containerBusy: {
+
+  // ── Top bar ──────────────────────────────────────────────────────────────
+
+  topBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: spacing.sm,
+    gap: spacing.sm,
+  },
+
+  /** Equal-width sides, so the pill stays centred whether or not the badge is there. */
+  topSide: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  topSideEnd: {
+    justifyContent: "flex-end",
+  },
+
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: c.surfaceAlt,
+    borderWidth: 1,
+    borderColor: c.border,
+    alignItems: "center",
     justifyContent: "center",
   },
 
-  // ── Top ──────────────────────────────────────────────────────────────────
-
-  top: {
-    width: "100%",
+  modePill: {
+    flexDirection: "row",
     alignItems: "center",
-    paddingTop: spacing.sm,
-    gap: spacing.md,
+    gap: 6,
+    height: 36,
+    paddingHorizontal: 15,
+    borderRadius: radii.pill,
+    backgroundColor: c.surfaceAlt,
+    borderWidth: 1,
+    borderColor: c.border,
+    // "Polyphonic · Bb major" on a narrow handset gives up the label's tail rather than the
+    // close button.
+    flexShrink: 1,
   },
 
-  screenTitle: {
-    ...typography.title,
+  modePillText: {
+    fontFamily: fonts.medium,
+    fontSize: 13.5,
     color: c.text,
-    fontSize: 22,
-    letterSpacing: -0.3,
+    flexShrink: 1,
+  },
+
+  fastLane: {
+    height: 26,
+    paddingHorizontal: 10,
+    borderRadius: radii.pill,
+    backgroundColor: c.accentSoft,
+    borderWidth: 1,
+    borderColor: c.accentGlow,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  fastLaneText: {
+    fontFamily: fonts.medium,
+    fontSize: 12,
+    color: c.accentAlt,
+  },
+
+  // ── Clock & status ────────────────────────────────────────────────────────
+
+  clockArea: {
+    alignItems: "center",
+    marginTop: spacing.xxxl - spacing.xs,
+    paddingHorizontal: spacing.sm,
+  },
+
+  timerText: {
+    fontFamily: nightFonts.mono,
+    fontSize: 80,
+    letterSpacing: -3,
+    color: c.text,
+    fontVariant: ["tabular-nums"],
+    // The face's line box is tall at this size; the default leaves a gap that pushes the status
+    // line away from the figures it belongs to.
+    lineHeight: 92,
+  },
+
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 7,
+    marginTop: spacing.xs,
+  },
+
+  recDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: c.danger,
+  },
+
+  statusLine: {
+    ...typography.body,
+    fontSize: 13,
+    lineHeight: 19,
+    color: c.textMuted,
+    textAlign: "center",
+    flexShrink: 1,
+  },
+
+  settingLine: {
+    ...typography.caption,
+    color: c.textFaint,
+    marginTop: spacing.sm,
+    textAlign: "center",
   },
 
   // ── Free-tier counter ─────────────────────────────────────────────────────
   //
-  // Under the title rather than beside the record button, so it reads as account
+  // Under the status line rather than beside the record button, so it reads as account
   // context and not as a warning about the recording in progress.
 
   trialPill: {
     flexDirection: "row",
     alignItems: "center",
     gap: spacing.xs,
-    backgroundColor: c.surface,
+    backgroundColor: c.surfaceAlt,
     borderWidth: 1,
     borderColor: c.border,
     borderRadius: radii.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: 5,
+    marginTop: spacing.md,
     // "Free trial used up — see Pro plans" is wider than a narrow handset once the text setting is
     // turned up. RN defaults `flexShrink` to 0, so without this pair the row keeps its natural width
     // and simply runs off both edges rather than wrapping.
@@ -1294,136 +1142,21 @@ const makeStyles = (c: Palette) =>
     color: c.danger,
   },
 
-  // ── Mode toggle ───────────────────────────────────────────────────────────
+  // ── Level trace ───────────────────────────────────────────────────────────
 
-  modeToggle: {
-    flexDirection: "row",
-    backgroundColor: c.surface,
-    borderRadius: radii.pill,
-    borderWidth: 1,
-    borderColor: c.border,
-    padding: 3,
-    maxWidth: "100%",
-  },
-
-  modeSegment: {
-    paddingVertical: spacing.xs + 2,
-    paddingHorizontal: spacing.md,
-    borderRadius: radii.pill,
+  /** Takes whatever height is left between the clock and the controls. */
+  traceArea: {
+    flexGrow: 1,
+    minHeight: 160,
+    marginTop: spacing.xl,
+    marginHorizontal: -spacing.lg, // runs edge to edge, as the guides do on the board
+    justifyContent: "flex-start",
     alignItems: "center",
-    justifyContent: "center",
-    // "Polyphonic" is the long one; the two segments give up padding and wrap their label rather
-    // than pushing the whole toggle past the screen edge.
-    flexShrink: 1,
-  },
-
-  modeSegmentActive: {
-    overflow: "hidden",
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-
-  modeTextActive: {
-    ...typography.label,
-    color: "#FFFFFF", // sits on the brand gradient — blue in both modes
-    fontSize: 12,
-    fontFamily: fonts.bold,
-    flexShrink: 1,
-  },
-
-  modeTextInactive: {
-    ...typography.label,
-    color: c.textFaint,
-    fontSize: 12,
-    flexShrink: 1,
-  },
-
-  /** One line under the toggle saying what the chosen mode listens for. */
-  modeHint: {
-    ...typography.caption,
-    color: c.textMuted,
-    textAlign: "center",
-    paddingHorizontal: spacing.md,
-  },
-
-  // ── Key picker ────────────────────────────────────────────────────────────
-
-  keyRow: {
-    width: "100%",
-  },
-
-  keyLabel: {
-    ...typography.caption,
-    color: c.textFaint,
-    fontSize: 11,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-    marginBottom: spacing.xs,
-    paddingHorizontal: spacing.sm,
-  },
-
-  keyScroll: {
-    paddingHorizontal: spacing.sm,
-    gap: spacing.xs,
-  },
-
-  keyChip: {
-    paddingVertical: 7,
-    paddingHorizontal: spacing.md,
-    borderRadius: radii.pill,
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-
-  keyChipActive: {
-    overflow: "hidden",
-    borderWidth: 0,
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-
-  keyChipText: {
-    ...typography.caption,
-    color: c.textMuted,
-    fontSize: 12,
-  },
-
-  keyChipTextActive: {
-    ...typography.caption,
-    color: "#FFFFFF", // sits on the brand gradient
-    fontSize: 12,
-    fontFamily: fonts.bold,
-  },
-
-  // ── Centre zone ───────────────────────────────────────────────────────────
-
-  centerZone: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 280,
-    height: 280,
-  },
-
-  ambientOrb: {
-    position: "absolute",
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: c.accentGlow,
   },
 
   // ── Voice-level guidance banner ───────────────────────────────────────────
 
   guidanceBanner: {
-    position: "absolute",
-    top: -8,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: c.dangerSoft,
@@ -1432,11 +1165,8 @@ const makeStyles = (c: Palette) =>
     borderRadius: radii.pill,
     paddingVertical: 8,
     paddingHorizontal: spacing.md,
-    zIndex: 10,
-    // Resolves against the 280px centre zone, which is itself inside the screen padding — so this is
-    // what keeps the banner on screen. Absolutely positioned and unclipped, it otherwise grows past
-    // both edges, and it is the one element that must stay clear of the record button beneath it.
-    maxWidth: "100%",
+    // Inside the edge-to-edge trace area, so this is what keeps the banner off both edges.
+    maxWidth: "90%",
   },
 
   guidanceDot: {
@@ -1445,11 +1175,6 @@ const makeStyles = (c: Palette) =>
     borderRadius: 4,
     backgroundColor: c.danger,
     marginRight: spacing.sm,
-    shadowColor: c.danger,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.85,
-    shadowRadius: 5,
-    elevation: 3,
   },
 
   guidanceText: {
@@ -1460,247 +1185,182 @@ const makeStyles = (c: Palette) =>
     flexShrink: 1,
   },
 
-  // ── Voice-level meter bar ──────────────────────────────────────────────────
+  // ── Controls ──────────────────────────────────────────────────────────────
 
-  meterArea: {
+  controls: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "center",
-    marginTop: -spacing.sm,
-    marginBottom: spacing.xs,
+    gap: 34,
+    marginTop: spacing.lg,
   },
 
-  meterIcon: {
-    marginRight: spacing.sm,
+  /** A side button with its caption; the caption hangs below so the circles line up with the
+   *  record button's centre. */
+  sideSlot: {
+    alignItems: "center",
+    width: 72,
+    paddingTop: (RECORD_SIZE - SIDE_SIZE) / 2,
+    gap: 6,
   },
 
-  meterTrack: {
-    width: METER_TRACK_WIDTH,
-    height: 5,
-    borderRadius: radii.pill,
+  sideCaption: {
+    ...typography.caption,
+    fontSize: 11.5,
+    letterSpacing: 0,
+    color: c.textMuted,
+  },
+
+  /** Matches the 0.4 a disabled Touchable fades its button to. */
+  sideCaptionOff: {
+    opacity: 0.4,
+  },
+
+  ghostBtn: {
+    width: SIDE_SIZE,
+    height: SIDE_SIZE,
+    borderRadius: SIDE_SIZE / 2,
     backgroundColor: c.surfaceAlt,
-    overflow: "hidden",
-  },
-
-  meterFill: {
-    height: "100%",
-    borderRadius: radii.pill,
-  },
-
-  rippleRing: {
-    position: "absolute",
-    borderRadius: 999,
-    borderWidth: 1.5,
-  },
-
-  /** Two rings at different strengths, so the outer one reads as the fainter,
-   *  further-travelled wave. Literal rgba because each needs its own alpha pair
-   *  and no palette token carries four of them; the hue is the brand blue. */
-  rippleInner: {
-    width: 176,
-    height: 176,
-    borderColor: "rgba(37, 99, 235, 0.7)",
-    backgroundColor: "rgba(37, 99, 235, 0.06)",
-  },
-
-  rippleOuter: {
-    width: 232,
-    height: 232,
-    borderColor: "rgba(37, 99, 235, 0.45)",
-    backgroundColor: "rgba(37, 99, 235, 0.03)",
-  },
-
-  // ── Record button ─────────────────────────────────────────────────────────
-
-  btnOuter: {
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 28,
-    elevation: 14,
-    borderRadius: BTN_SIZE / 2,
-  },
-
-  btnRing: {
-    width: BTN_SIZE,
-    height: BTN_SIZE,
-    borderRadius: BTN_SIZE / 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  /** The disc inside the gradient ring — surface-coloured so it reads as a
-   *  raised face rather than punching a white hole in the dark canvas. */
-  btnGlassDisc: {
-    width: DISC_SIZE,
-    height: DISC_SIZE,
-    borderRadius: DISC_SIZE / 2,
-    backgroundColor: c.surface,
     borderWidth: 1,
     borderColor: c.border,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  btnIconWrap: {
+  doneBtn: {
+    width: SIDE_SIZE,
+    height: SIDE_SIZE,
+    borderRadius: SIDE_SIZE / 2,
+    backgroundColor: c.ink,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  /** Idle: the mark on a filled blue disc — the one glowing thing on the screen. */
+  recordIdle: {
+    width: RECORD_SIZE,
+    height: RECORD_SIZE,
+    borderRadius: RECORD_SIZE / 2,
+    backgroundColor: c.ink,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: c.ink,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.45,
+    shadowRadius: 22,
+    elevation: 10,
+  },
+
+  /** Recording: a plain ring in the text colour around the stop square. */
+  recordRing: {
+    width: RECORD_SIZE,
+    height: RECORD_SIZE,
+    borderRadius: RECORD_SIZE / 2,
+    borderWidth: 3,
+    borderColor: c.text,
     alignItems: "center",
     justifyContent: "center",
   },
 
   stopSquare: {
-    width: 36,
-    height: 36,
+    width: 30,
+    height: 30,
     borderRadius: 8,
     backgroundColor: c.danger,
-    shadowColor: c.danger,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.7,
-    shadowRadius: 12,
-    elevation: 6,
   },
 
-  progressPct: {
-    fontSize: 26,
-    fontFamily: fonts.bold,
-    color: c.accent,
-    letterSpacing: -0.5,
+  // ── Job card ──────────────────────────────────────────────────────────────
+
+  /** The card sits in the middle of what is left of the screen, nothing to scroll past. */
+  jobZone: {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingVertical: spacing.xl,
   },
 
-  progressLabel: {
-    ...typography.caption,
-    color: c.textFaint,
-    fontSize: 10,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-    marginTop: 2,
-  },
-
-  // ── Soundwave ─────────────────────────────────────────────────────────────
-
-  waveContainer: {
-    position: "absolute",
-    bottom: -50,
-    flexDirection: "row",
+  jobCard: {
     alignItems: "center",
-    height: 40,
-    gap: 2.5,
-  },
-
-  waveBar: {
-    width: 3,
-    height: 36,
-    borderRadius: radii.pill,
-  },
-
-  // ── Status ────────────────────────────────────────────────────────────────
-
-  statusArea: {
-    alignItems: "center",
-    width: "100%",
+    backgroundColor: c.surface,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: c.border,
     paddingHorizontal: spacing.xl,
-    marginTop: spacing.xxxl + spacing.xl,
-  },
-  statusAreaBusy: {
-    marginTop: 0,
-    paddingHorizontal: spacing.md,
+    paddingTop: spacing.xl + spacing.xs,
+    paddingBottom: spacing.xl,
   },
 
-  statusTitle: {
-    ...typography.heading,
-    color: c.text,
-    fontSize: 18,
-    marginBottom: spacing.xs,
-  },
-
-  timerText: {
-    fontSize: 42,
-    fontFamily: fonts.bold,
-    color: c.text,
-    letterSpacing: -1,
-    textShadowColor: c.accentGlow,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 12,
-    fontVariant: ["tabular-nums"],
-    marginVertical: spacing.xs,
-  },
-
-  statusSub: {
-    ...typography.body,
-    color: c.textMuted,
-    fontSize: 13,
-    textAlign: "center",
-    lineHeight: 20,
-    marginTop: spacing.xs,
-    paddingHorizontal: spacing.md,
-  },
-
-  // ── Uploading card ────────────────────────────────────────────────────────
-
-  uploadCard: {
-    width: "100%",
-  },
-
-  uploadHead: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-  },
-
-  /** The mark on a soft disc, standing in for the record button's glow while it is busy. */
-  uploadOrb: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+  /** The mark on a soft disc, standing in for the record button while it is busy. */
+  jobMark: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: c.accentSoft,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: spacing.lg,
   },
 
-  uploadHeadText: {
-    flex: 1,
-  },
-
-  uploadTitle: {
-    ...typography.heading,
-    color: c.text,
-    fontSize: 16,
-  },
-
-  uploadSub: {
-    ...typography.caption,
-    color: c.textMuted,
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: 2,
-  },
-
-  uploadPct: {
-    fontSize: 22,
-    fontFamily: fonts.bold,
-    color: c.accent,
+  jobTitle: {
+    fontFamily: fonts.semibold,
+    fontSize: 20,
     letterSpacing: -0.5,
+    color: c.text,
+    textAlign: "center",
+  },
+
+  jobSub: {
+    ...typography.body,
+    fontSize: 13.5,
+    lineHeight: 19,
+    color: c.textMuted,
+    textAlign: "center",
+    marginTop: spacing.xs + 2,
+  },
+
+  jobBarRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "stretch",
+    gap: spacing.md,
+    marginTop: spacing.xl,
+  },
+
+  progressTrack: {
+    flex: 1,
+    height: 4,
+    borderRadius: radii.pill,
+    backgroundColor: c.surfaceAlt,
+    overflow: "hidden",
+  },
+
+  progressFill: {
+    height: "100%",
+    borderRadius: radii.pill,
+    backgroundColor: c.ink,
+  },
+
+  jobPct: {
+    fontFamily: typography.mono.fontFamily,
+    fontSize: 14,
+    color: c.accent,
     fontVariant: ["tabular-nums"],
+    minWidth: 40,
+    textAlign: "right",
   },
 
   uploadStages: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: spacing.xs,
-    marginTop: spacing.md,
+    justifyContent: "center",
+    columnGap: spacing.md,
+    rowGap: spacing.xs,
+    marginTop: spacing.lg,
   },
 
   uploadStage: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: radii.pill,
-    backgroundColor: c.surfaceAlt,
-  },
-
-  uploadStageOn: {
-    backgroundColor: c.accentSoft,
+    gap: 5,
   },
 
   uploadStageText: {
@@ -1722,54 +1382,15 @@ const makeStyles = (c: Palette) =>
     color: c.warning,
     fontSize: 12,
     lineHeight: 17,
-    marginTop: spacing.sm,
-  },
-
-  progressTrack: {
-    width: "100%",
-    height: 6,
-    borderRadius: radii.pill,
-    backgroundColor: c.surfaceAlt,
     marginTop: spacing.md,
-    overflow: "hidden",
-  },
-
-  progressFill: {
-    height: "100%",
-    borderRadius: radii.pill,
-  },
-
-  importFileBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs + 2,
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-    borderRadius: radii.pill,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    marginTop: spacing.md,
-    alignSelf: "center",
-  },
-  importFileBtnText: {
-    fontSize: 14,
-    fontFamily: fonts.semibold,
-    color: c.accent,
-  },
-
-  // ── Bottom action ─────────────────────────────────────────────────────────
-
-  bottomAction: {
-    width: "100%",
-    paddingHorizontal: spacing.xl,
+    textAlign: "center",
   },
 
   // ── Error card ────────────────────────────────────────────────────────────
 
   errCard: {
     width: "100%",
-    marginTop: spacing.sm,
+    marginTop: spacing.md,
     backgroundColor: c.dangerSoft,
     borderColor: c.dangerBorder,
   },
@@ -1785,12 +1406,7 @@ const makeStyles = (c: Palette) =>
     borderRadius: 4,
     backgroundColor: c.danger,
     marginRight: spacing.sm,
-    marginTop: 3,
-    shadowColor: c.danger,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 3,
+    marginTop: 6,
   },
 
   errText: {
