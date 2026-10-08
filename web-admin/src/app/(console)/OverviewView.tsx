@@ -524,7 +524,7 @@ function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[
           <Info size={13} className="text-slate-400" />
         </div>
 
-        <Link href="/audit-log" className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+        <Link href="/transcriptions" className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
           View all
         </Link>
       </div>
@@ -601,7 +601,7 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
 
-        <Link href="/audit-log" className="text-xs font-medium text-[#2563EB] hover:underline dark:text-blue-400">
+        <Link href="/activity?tab=feed" className="text-xs font-medium text-[#2563EB] hover:underline dark:text-blue-400">
           View all
         </Link>
       </div>

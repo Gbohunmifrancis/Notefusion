@@ -1,5 +1,11 @@
+import { Suspense } from "react";
+
 import { ActivityView } from "./ActivityView";
 
 export default function ActivityPage() {
-  return <ActivityView />;
+  return (
+    <Suspense>
+      <ActivityView />
+    </Suspense>
+  );
 }

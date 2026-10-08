@@ -116,3 +116,18 @@ public sealed record CheckoutFunnelDto(
     IReadOnlyList<CategoryCountDto> FailureReasons,
     IReadOnlyList<CategoryCountDto> PageErrors,
     IReadOnlyList<CheckoutProblemDto> RecentProblems);
+
+/// <summary>
+/// One entry in the full user activity feed. <c>Kind</c> is "signup", "login", "transcription", "saved",
+/// "payment" or "action"; <c>Tone</c> is "ok", "warn" or "error".
+/// </summary>
+public sealed record FeedItemDto(
+    DateTime AtUtc,
+    string Kind,
+    string Title,
+    string? Detail,
+    string Tone,
+    Guid? UserId,
+    string? UserName,
+    string? UserEmail,
+    string? Country);

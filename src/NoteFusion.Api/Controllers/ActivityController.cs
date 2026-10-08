@@ -46,6 +46,12 @@ public sealed class ActivityController : ApiControllerBase
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetJourneyQuery(userId, device, visitor, days), ct));
 
+    /// <summary>The full user activity feed behind the overview's "Recent activity" panel.</summary>
+    [HttpGet("feed")]
+    public async Task<IActionResult> Feed(
+        [FromQuery] int page = 1, [FromQuery] int pageSize = 30, [FromQuery] string? kind = null, CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetActivityFeedQuery(page, pageSize, kind), ct));
+
     [HttpGet("checkout")]
     public async Task<IActionResult> Checkout([FromQuery] DateTime? from, [FromQuery] DateTime? to, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetCheckoutFunnelQuery(from, to), ct));

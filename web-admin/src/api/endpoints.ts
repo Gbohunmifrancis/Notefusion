@@ -12,6 +12,8 @@ import type {
   AdminWebhookEventRow,
   AnalyticsOverview,
   CheckoutFunnel,
+  FeedItem,
+  FeedKind,
   Journey,
   JourneySubject,
   AuditAction,
@@ -344,6 +346,10 @@ export const getTranscriptionLog = (
 /** One account's, device's or browser's pages, clicks, actions, transcriptions and payments. */
 export const getJourney = (subject: JourneySubject, days: number, signal?: AbortSignal) =>
   request<Journey>(`/api/admin/activity/journey${query({ ...subject, days })}`, signal ? { signal } : {});
+
+/** The full user activity feed behind the overview's "Recent activity" panel. */
+export const getActivityFeed = (page: number, pageSize: number, kind?: FeedKind, signal?: AbortSignal) =>
+  request<PagedResult<FeedItem>>(`/api/admin/activity/feed${query({ page, pageSize, kind })}`, signal ? { signal } : {});
 
 /** The checkout funnel and its problems over a window. */
 export const getCheckoutFunnel = (from?: string, to?: string, signal?: AbortSignal) =>

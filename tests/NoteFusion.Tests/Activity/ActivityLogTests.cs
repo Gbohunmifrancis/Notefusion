@@ -271,6 +271,35 @@ public class ActivityLogTests
         Assert.Equal("/new", Assert.Single(h.Db.WebEvents).Path);
     }
 
+    [Fact]
+    public async Task The_full_feed_merges_every_source_newest_first_pages_and_filters()
+    {
+        using var h = new TestHarness(Now.AddHours(-3));
+        var ada = Signup(h, "ada@example.com", "Ada Lovelace");                       // -3h signup
+        h.Clock.UtcNow = Now.AddHours(-2);
+        await Upload(h, ada, new FakeApi { RefuseSubmit = true }, "broken.m4a");      // -2h refused transcription
+        h.Clock.UtcNow = Now.AddHours(-1);
+        await new RecordWebEventsCommandHandler(h.Db, new StubCurrentUser(ada), h.Clock).Handle(new RecordWebEventsCommand("v", "s",
+            [new WebEventInput("action", "Shared sheet", "/app", null, null, "desktop", null)]), default); // -1h action
+        await new RecordWebEventsCommandHandler(h.Db, new StubCurrentUser(), h.Clock).Handle(new RecordWebEventsCommand("v2", "s2",
+            [new WebEventInput("action", "Preview started", "/", null, null, "desktop", null)]), default); // anonymous: not in the feed
+
+        var handler = new GetActivityFeedQueryHandler(h.Db);
+        var all = (await handler.Handle(new GetActivityFeedQuery(), default)).Value;
+
+        Assert.Equal(["action", "transcription", "signup"], all.Items.Select(i => i.Kind));
+        Assert.Equal(3, all.TotalCount);
+        Assert.All(all.Items, i => Assert.Equal("Ada Lovelace", i.UserName));
+        Assert.Equal("error", all.Items.Single(i => i.Kind == "transcription").Tone);
+        Assert.StartsWith("refused", all.Items.Single(i => i.Kind == "transcription").Detail);
+
+        var page2 = (await handler.Handle(new GetActivityFeedQuery(Page: 2, PageSize: 2), default)).Value;
+        Assert.Equal("signup", Assert.Single(page2.Items).Kind);
+
+        var onlyActions = (await handler.Handle(new GetActivityFeedQuery(Kind: "action"), default)).Value;
+        Assert.Equal("Shared sheet", Assert.Single(onlyActions.Items).Title);
+    }
+
     private static Task<Result<string>> Upload(
         TestHarness h, Guid user, FakeApi api, string fileName, string? contentType = "audio/mp4", long? size = 1234, string? device = null)
         => new SubmitTranscriptionCommandHandler(
