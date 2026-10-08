@@ -1,5 +1,6 @@
 import React, { Component, type ReactNode } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { night } from "../design/theme";
 
 interface Props {
   children: ReactNode;
@@ -52,22 +53,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: night.bg,
   },
   title: {
     fontSize: 22,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#1E293B",
+    color: night.text,
   },
   subtitle: {
     fontSize: 16,
-    color: "#475569",
+    color: night.muted,
     textAlign: "center",
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#2563EB",
+    backgroundColor: night.blue,
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,

@@ -12,6 +12,7 @@ import { ensurePiano } from './src/lib/piano';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { SplashScreen } from './src/screens/SplashScreen';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { RatingPrompt } from './src/components/RatingPrompt';
 import * as Sentry from '@sentry/react-native';
 
 Sentry.init({
@@ -82,6 +83,7 @@ function Themed() {
         <ErrorBoundary>
           <RootNavigator />
         </ErrorBoundary>
+        <RatingPrompt />
       </DialogProvider>
     </GestureHandlerRootView>
   );

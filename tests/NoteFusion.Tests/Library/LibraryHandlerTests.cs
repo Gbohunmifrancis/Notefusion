@@ -1,4 +1,5 @@
 using NoteFusion.Application.Library.Commands;
+using NoteFusion.Application.Library.Dtos;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
 using NoteFusion.Tests.Support;
@@ -150,6 +151,25 @@ public class LibraryHandlerTests
 
         // A list of full scores would dominate the payload; export reads the detail route.
         Assert.Null(Assert.Single(result.Value).MusicXml);
+    }
+
+    [Fact]
+    public async Task List_read_carries_the_opening_notes_labelled()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+            .Handle(SaveCommand(), default);
+
+        var result = await new NoteFusion.Application.Library.Queries.GetLibraryQueryHandler(
+            h.Db, new StubCurrentUser(userId)).Handle(new NoteFusion.Application.Library.Queries.GetLibraryQuery(), default);
+
+        var row = Assert.Single(result.Value);
+        // No full note list on the list route, but enough of the opening for a row to show it.
+        Assert.Null(row.Notes);
+        Assert.NotNull(row.Preview);
+        Assert.Equal(Math.Min(SampleNotes.Count, SavedTranscriptionMapper.PreviewNotes), row.Preview!.Count);
+        Assert.All(row.Preview, n => Assert.False(string.IsNullOrEmpty(n.Solfa)));
     }
 
     [Fact]

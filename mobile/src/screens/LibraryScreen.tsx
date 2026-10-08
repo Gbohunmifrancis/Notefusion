@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  BackHandler,
   FlatList,
   Modal,
   RefreshControl,
@@ -10,41 +12,43 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
 import { Touchable } from "../components/Touchable";
 import { Button } from "../components/Button";
 import { TextField } from "../components/TextField";
-import { TranscriptionRowSkeleton } from "../components/Skeleton";
+import { Mark } from "../components/night/NightUI";
+import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
+import { SelectionBar } from "../components/library/SelectionBar";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { libraryApi, meApi } from "../api/endpoints";
+import { libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
 import { useSubscription } from "../lib/subscription";
 import { deriveSolfa } from "../lib/solfa";
 import { synthesizeMelodyWavBase64 } from "../lib/synth";
-import { fonts, motion, radii, spacing, typography, type Palette } from "../design/theme";
-import type { NoteEvent, SavedTranscription, TranscriptionResult } from "../api/types";
+import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import type { SavedTranscription, TranscriptionResult } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
 
-const FILTERS = ["All", "Tonic Solfa", "Staff Notation"] as const;
-type FilterType = typeof FILTERS[number];
+/** The circular header buttons, and the size the search pill grows from. */
+const ICON_BTN = 40;
 
 /**
- * LibraryScreen — 100% aligned with Image 1 design sheet:
- * 1. Centered "Library" page header
- * 2. Rounded pill search input with search icon
- * 3. Pill filter tabs (All, Tonic Solfa, Staff Notation) + options filter icon
- * 4. Card items with blue note icon, date/time subtitle, and notation type badge (Tonic Solfa / Staff)
+ * LibraryScreen — the night board's "06 · Library": a big title with search and new,
+ * folders as text tabs, the folder's one share link as a banner, and hairline rows
+ * that each read by their doh. Long press starts select mode; the floating bar then
+ * deletes, files or shares the chosen sheets.
  */
 export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro, refresh: refreshSubscription } = useSubscription();
+  const { refresh: refreshSubscription } = useSubscription();
 
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,17 +56,30 @@ export function LibraryScreen() {
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const [query, setQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<FilterType>("All");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
-  // Folders ("Sunday choir", "Easter service"): the chip chosen, and the sheet waiting for a new name.
+  // Folders ("Sunday choir", "Easter service"): the tab chosen, and the sheets waiting for a new name.
   const [folder, setFolder] = useState<string | null>(null);
-  const [naming, setNaming] = useState<SavedTranscription | null>(null);
+  const [naming, setNaming] = useState<SavedTranscription[] | null>(null);
   const [newFolder, setNewFolder] = useState("");
   const [sharingFolder, setSharingFolder] = useState(false);
+  // A folder's link is only known once it has been asked for (asking makes it), so the
+  // banner can say "shared" for the folders shared during this visit and no others.
+  const [folderLinks, setFolderLinks] = useState<Record<string, string>>({});
+  // Select mode is simply "something is selected": clearing the last tick leaves it.
+  const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const [sharingSelection, setSharingSelection] = useState(false);
+  const selecting = selected.size > 0;
+
   const folders = React.useMemo(
     () => [...new Set(items.map((i) => i.folder).filter((f): f is string => !!f))].sort((a, b) => a.localeCompare(b)),
     [items],
   );
+  const folderCounts = React.useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const i of items) if (i.folder) counts.set(i.folder, (counts.get(i.folder) ?? 0) + 1);
+    return counts;
+  }, [items]);
 
   function load(reconcile = false) {
     if (reconcile) {
@@ -85,19 +102,29 @@ export function LibraryScreen() {
     load();
   }, []);
 
-  // Filter & sort items based on search query, active tab, and sort order
+  // A folder emptied by a move or a delete no longer has a tab; fall back to All.
+  useEffect(() => {
+    if (folder !== null && !folders.includes(folder)) setFolder(null);
+  }, [folder, folders]);
+
+  // Android back leaves select mode before it leaves the screen.
+  useFocusEffect(
+    useCallback(() => {
+      if (!selecting) return undefined;
+      const sub = BackHandler.addEventListener("hardwareBackPress", () => {
+        setSelected(new Set());
+        return true;
+      });
+      return () => sub.remove();
+    }, [selecting]),
+  );
+
   const filteredItems = items.filter((item) => {
     const matchesQuery =
       query.trim() === "" ||
       item.title.toLowerCase().includes(query.trim().toLowerCase());
-    const matchesFilter =
-      activeFilter === "All"
-        ? true
-        : activeFilter === "Tonic Solfa"
-          ? (item.notes?.length ?? 0) > 0
-          : Boolean(item.musicXml);
     const matchesFolder = folder === null || item.folder === folder;
-    return matchesQuery && matchesFilter && matchesFolder;
+    return matchesQuery && matchesFolder;
   });
 
   const sortedItems = React.useMemo(() => {
@@ -107,6 +134,26 @@ export function LibraryScreen() {
       return sortOrder === "newest" ? tB - tA : tA - tB;
     });
   }, [filteredItems, sortOrder]);
+
+  const selectedItems = items.filter((i) => selected.has(i.id));
+
+  // ── Search: the round icon grows into a pill across the title row ─────────
+  const [rowWidth, setRowWidth] = useState(0);
+  const searchProgress = useSharedValue(0);
+  useEffect(() => {
+    searchProgress.value = withTiming(searchOpen ? 1 : 0, { duration: 220, easing: Easing.out(Easing.cubic) });
+  }, [searchOpen, searchProgress]);
+  const pillStyle = useAnimatedStyle(() => ({
+    width: interpolate(searchProgress.value, [0, 1], [ICON_BTN, Math.max(rowWidth, ICON_BTN)]),
+    // Closed, the pill is the search button beside "+"; open, it spans the row.
+    right: interpolate(searchProgress.value, [0, 1], [ICON_BTN + spacing.sm, 0]),
+  }));
+  const fadeWithSearch = useAnimatedStyle(() => ({ opacity: 1 - searchProgress.value }));
+
+  function closeSearch() {
+    setQuery("");
+    setSearchOpen(false);
+  }
 
   /**
    * Fetches the full item and re-derives its solfa. The list route omits `notes`,
@@ -158,48 +205,51 @@ export function LibraryScreen() {
     }
   }
 
+  function toggle(item: SavedTranscription) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(item.id)) next.delete(item.id);
+      else next.add(item.id);
+      return next;
+    });
+  }
 
+  /** Long press starts select mode with that sheet ticked; in select mode it just toggles. */
+  function startSelecting(item: SavedTranscription) {
+    if (!selecting) haptics.play("medium");
+    toggle(item);
+  }
 
-  /** Files a sheet; the list updates in place, so the chips follow at once. */
-  async function fileIn(item: SavedTranscription, name: string | null) {
-    try {
-      await libraryApi.setFolder(item.id, name);
-      setItems((prev) => prev.map((t) => (t.id === item.id ? { ...t, folder: name } : t)));
+  /** Files sheets; the list updates in place, so the tabs follow at once. */
+  async function fileIn(targets: SavedTranscription[], name: string | null) {
+    const results = await Promise.allSettled(targets.map((t) => libraryApi.setFolder(t.id, name)));
+    const moved = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
+    setItems((prev) => prev.map((t) => (moved.has(t.id) ? { ...t, folder: name } : t)));
+    const failure = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
+    if (failure) {
+      showDialog({ title: "Could not move the sheet", message: toApiError(failure.reason).message, icon: "alert-circle-outline", tone: "danger" });
+    } else {
       haptics.play("success");
-    } catch (e) {
-      showDialog({ title: "Could not move the sheet", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+      setSelected(new Set());
     }
   }
 
-  function chooseFolder(item: SavedTranscription) {
+  function chooseFolder(targets: SavedTranscription[]) {
+    if (targets.length === 0) return;
+    const one = targets.length === 1 ? targets[0]! : null;
     showDialog({
       title: "Move to folder",
-      message: `Where should “${item.title}” go?`,
+      message: one ? `Where should “${one.title}” go?` : `Where should these ${targets.length} sheets go?`,
       icon: "folder-outline",
       actions: [
         ...folders.slice(0, 6).map((f) => ({
           label: f,
-          icon: (item.folder === f ? "checkmark" : undefined) as "checkmark" | undefined,
-          onPress: () => void fileIn(item, f),
+          icon: (targets.every((t) => t.folder === f) ? "checkmark" : undefined) as "checkmark" | undefined,
+          onPress: () => void fileIn(targets, f),
         })),
-        { label: "New folder…", onPress: () => { setNewFolder(""); setNaming(item); } },
-        ...(item.folder ? [{ label: "Take out of folder", onPress: () => void fileIn(item, null) }] : []),
+        { label: "New folder…", onPress: () => { setNewFolder(""); setNaming(targets); } },
+        ...(targets.some((t) => t.folder) ? [{ label: "Take out of folder", onPress: () => void fileIn(targets, null) }] : []),
         { label: "Cancel", style: "cancel" as const },
-      ],
-    });
-  }
-
-  /** Long press: the sheet's actions, filing first because it is the everyday one. */
-  function itemActions(item: SavedTranscription) {
-    haptics.play("light");
-    showDialog({
-      title: item.title,
-      message: item.folder ? `In “${item.folder}”.` : "Not in a folder.",
-      icon: "musical-notes-outline",
-      actions: [
-        { label: "Move to folder…", icon: "folder-outline", onPress: () => chooseFolder(item) },
-        { label: "Delete", icon: "trash-outline", onPress: () => confirmDelete(item) },
-        { label: "Cancel", style: "cancel" },
       ],
     });
   }
@@ -209,6 +259,7 @@ export function LibraryScreen() {
     setSharingFolder(true);
     try {
       const link = await libraryApi.shareFolder(folder);
+      setFolderLinks((prev) => ({ ...prev, [folder]: link.url }));
       await Share.share({ message: `${folder} — songs on NoteFusion: ${link.url}` });
     } catch (e) {
       showDialog({ title: "Could not share the folder", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
@@ -217,13 +268,35 @@ export function LibraryScreen() {
     }
   }
 
-  function confirmDelete(item: SavedTranscription) {
-    // Reached by long-pressing a row, so the dialog is the first sign anything
-    // happened — the warning pattern is what makes the long press land.
+  /** Each selected sheet's public link, made if needed, sent in one message. */
+  async function shareSelected(targets: SavedTranscription[]) {
+    if (targets.length === 0) return;
+    setSharingSelection(true);
+    try {
+      const links = await Promise.all(targets.map((t) => libraryApi.share(t.id)));
+      const tokens = new Map(targets.map((t, i) => [t.id, links[i]!.token]));
+      setItems((prev) => prev.map((t) => (tokens.has(t.id) ? { ...t, shareToken: tokens.get(t.id) } : t)));
+      const message =
+        targets.length === 1
+          ? `${targets[0]!.title} — Tonic Solfa on NoteFusion\n${links[0]!.url}`
+          : ["Tonic Solfa on NoteFusion", ...targets.map((t, i) => `${t.title}\n${links[i]!.url}`)].join("\n\n");
+      await Share.share({ message });
+      setSelected(new Set());
+    } catch (e) {
+      showDialog({ title: "Could not share", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+    } finally {
+      setSharingSelection(false);
+    }
+  }
+
+  function confirmDelete(targets: SavedTranscription[]) {
+    if (targets.length === 0) return;
+    // The bar's trash is one tap from losing work, so the dialog leads with the warning buzz.
     haptics.play("warning");
+    const one = targets.length === 1 ? targets[0]! : null;
     showDialog({
-      title: "Delete transcription",
-      message: `Remove "${item.title}"? This cannot be undone.`,
+      title: one ? "Delete transcription" : `Delete ${targets.length} transcriptions`,
+      message: one ? `Remove "${one.title}"? This cannot be undone.` : `Remove these ${targets.length} sheets? This cannot be undone.`,
       icon: "trash-outline",
       tone: "danger",
       actions: [
@@ -231,13 +304,15 @@ export function LibraryScreen() {
           label: "Delete",
           style: "destructive",
           onPress: async () => {
-            setItems((prev) => prev.filter((t) => t.id !== item.id));
-            try {
-              await libraryApi.remove(item.id);
-            } catch (e) {
+            const ids = new Set(targets.map((t) => t.id));
+            setItems((prev) => prev.filter((t) => !ids.has(t.id)));
+            setSelected(new Set());
+            const results = await Promise.allSettled(targets.map((t) => libraryApi.remove(t.id)));
+            const failure = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
+            if (failure) {
               showDialog({
                 title: "Could not delete",
-                message: toApiError(e).message,
+                message: toApiError(failure.reason).message,
                 icon: "alert-circle-outline",
                 tone: "danger",
               });
@@ -250,13 +325,186 @@ export function LibraryScreen() {
     });
   }
 
+  function chooseSort() {
+    showDialog({
+      title: "Sort library",
+      message: "Choose how transcriptions are ordered.",
+      icon: "swap-vertical-outline",
+      actions: [
+        {
+          label: "Newest first",
+          // The active order is marked with a tick rather than by
+          // appending " ✓" to the label, as the OS sheet had to.
+          icon: sortOrder === "newest" ? "checkmark" : undefined,
+          onPress: () => setSortOrder("newest"),
+        },
+        {
+          label: "Oldest first",
+          icon: sortOrder === "oldest" ? "checkmark" : undefined,
+          onPress: () => setSortOrder("oldest"),
+        },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+  }
+
+  function subtitleFor(item: SavedTranscription) {
+    const date = new Date(item.createdAtUtc).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    // On "All" the folder says where a sheet lives; inside a folder it would repeat the tab.
+    return [date, folder === null ? item.folder : null, `${Math.round(item.tempoBpm)} bpm`].filter(Boolean).join(" · ");
+  }
+
+  const folderLink = folder ? folderLinks[folder] : undefined;
+
+  const header = (
+    <View style={styles.headerArea}>
+      {/* ── Title row: "Library", then search and new. Search grows over the row. ── */}
+      <View style={styles.titleRow} onLayout={(e) => setRowWidth(e.nativeEvent.layout.width)}>
+        <Animated.Text style={[styles.pageTitle, fadeWithSearch]} accessibilityRole="header">
+          Library
+        </Animated.Text>
+        <Animated.View style={fadeWithSearch} pointerEvents={searchOpen ? "none" : "auto"}>
+          <Touchable
+            onPress={() => nav.navigate("Tabs", { screen: "Record" })}
+            style={styles.iconBtn}
+            radius={radii.pill}
+            accessibilityLabel="New transcription"
+          >
+            <Ionicons name="add" size={22} color={colors.text} />
+          </Touchable>
+        </Animated.View>
+        <Animated.View style={[styles.searchPill, pillStyle]}>
+          {searchOpen ? (
+            <>
+              <Ionicons name="search-outline" size={18} color={colors.textMuted} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search your sheets"
+                placeholderTextColor={colors.textFaint}
+                value={query}
+                onChangeText={setQuery}
+                autoFocus
+                returnKeyType="search"
+                textAlignVertical="center"
+              />
+              <Touchable onPress={closeSearch} hitSlop={8} ripple="borderless" accessibilityLabel="Close search">
+                <Ionicons name="close-circle" size={18} color={colors.textFaint} />
+              </Touchable>
+            </>
+          ) : (
+            <Touchable onPress={() => setSearchOpen(true)} style={styles.searchBtn} radius={radii.pill} accessibilityLabel="Search library">
+              <Ionicons name="search-outline" size={19} color={colors.text} />
+            </Touchable>
+          )}
+        </Animated.View>
+      </View>
+
+      {/* ── Folders as text tabs, counts set small beside each name ───────────── */}
+      <View style={styles.tabsRow}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabs} style={styles.tabsScroll}>
+          {[null, ...folders].map((f) => {
+            const active = folder === f;
+            const count = f === null ? items.length : folderCounts.get(f) ?? 0;
+            return (
+              <Touchable
+                key={f ?? "__all"}
+                onPress={() => setFolder(f)}
+                style={styles.tab}
+                ripple={false}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: active }}
+                accessibilityLabel={`${f ? `Folder: ${f}` : "All sheets"}, ${count}`}
+              >
+                <View style={styles.tabLabelRow}>
+                  <Text style={[styles.tabText, active && styles.tabTextActive]}>{f ?? "All"}</Text>
+                  {count > 0 && <Text style={[styles.tabCount, active && styles.tabCountActive]}>{count}</Text>}
+                </View>
+                <View style={[styles.tabUnderline, active && styles.tabUnderlineActive]} />
+              </Touchable>
+            );
+          })}
+        </ScrollView>
+        <Touchable style={styles.sortBtn} hitSlop={8} ripple="borderless" accessibilityLabel="Sort library" onPress={chooseSort}>
+          <Ionicons name="swap-vertical" size={18} color={colors.textMuted} />
+        </Touchable>
+      </View>
+
+      {/* ── The open folder's one public link ─────────────────────────────────── */}
+      {folder !== null && (
+        <Touchable
+          onPress={() => void shareFolder()}
+          disabled={sharingFolder}
+          style={styles.banner}
+          radius={18}
+          accessibilityLabel={folderLink ? `Share the link to ${folder} again` : `Share ${folder} with one link`}
+        >
+          <Ionicons name="link" size={20} color={colors.accent} />
+          <View style={styles.bannerText}>
+            <Text style={styles.bannerTitle} numberOfLines={1}>
+              {folderLink ? "Shared with a link" : "Share this folder"}
+            </Text>
+            <Text style={styles.bannerSub} numberOfLines={1}>
+              {folderLink ? "One link · sheets you file here join it" : "One link for every sheet in it, and any you add"}
+            </Text>
+          </View>
+          {sharingFolder ? (
+            <ActivityIndicator size="small" color={colors.accent} />
+          ) : (
+            <Text style={styles.bannerAction}>Share</Text>
+          )}
+        </Touchable>
+      )}
+    </View>
+  );
+
+  const emptyAction = (label: string, onPress: () => void) => (
+    <Touchable onPress={onPress} style={styles.emptyBtn} radius={radii.pill} accessibilityLabel={label}>
+      <Text style={styles.emptyBtnLabel}>{label}</Text>
+    </Touchable>
+  );
+
+  const empty = loading ? (
+    <View>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <View key={i} style={i > 0 && styles.skeletonDivider}>
+          <LibraryRowSkeleton />
+        </View>
+      ))}
+    </View>
+  ) : (
+    <View style={styles.emptyContainer}>
+      <Mark height={40} color={loadError ? colors.danger : colors.textFaint} />
+      <Text style={styles.emptyLine}>
+        {loadError
+          ? loadError
+          : query.trim()
+            ? `Nothing here matches “${query.trim()}”.`
+            : folder !== null
+              ? "Nothing in this folder yet."
+              : "Your sheets will live here."}
+      </Text>
+      {loadError
+        ? emptyAction("Try again", () => {
+            setLoading(true);
+            load();
+          })
+        : query.trim()
+          ? emptyAction("Clear search", closeSearch)
+          : folder !== null
+            ? emptyAction("Show all", () => setFolder(null))
+            : emptyAction("Record a tune", () => nav.navigate("Tabs", { screen: "Record" }))}
+    </View>
+  );
+
   return (
     <Screen edges={["top"]}>
       <FlatList
         data={sortedItems}
+        extraData={selected}
         keyExtractor={(t) => t.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={[styles.listContent, selecting && styles.listContentSelecting]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -268,262 +516,30 @@ export function LibraryScreen() {
             colors={[colors.accent]}
           />
         }
-        ListHeaderComponent={
-          <View style={styles.headerArea}>
-            {/* ── Page Title ────────────────────────────────────────────── */}
-            <Text style={styles.pageTitle}>Library</Text>
-
-            {/* ── Search Bar ────────────────────────────────────────────── */}
-            <View style={styles.searchBar}>
-              <Ionicons
-                name="search-outline"
-                size={18}
-                color={colors.textFaint}
-                style={styles.searchIcon}
-              />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search notes..."
-                placeholderTextColor={colors.textFaint}
-                value={query}
-                onChangeText={setQuery}
-                returnKeyType="search"
-                clearButtonMode="while-editing"
-                textAlignVertical="center"
-              />
-              {query.length > 0 && (
-                <Touchable
-                  onPress={() => setQuery("")}
-                  hitSlop={8}
-                  ripple="borderless"
-                  accessibilityLabel="Clear search"
-                  style={styles.clearSearchBtn}
-                >
-                  <Ionicons name="close-circle" size={18} color={colors.textFaint} />
-                </Touchable>
-              )}
-            </View>
-
-            {/* Filter Tabs + Options Icon Row */}
-            <View style={styles.filterRow}>
-              <View style={styles.filterTabs}>
-                {FILTERS.map((f) => {
-                  const isActive = activeFilter === f;
-                  return (
-                    <Touchable
-                      key={f}
-                      onPress={() => setActiveFilter(f)}
-                      style={[
-                        styles.filterTab,
-                        isActive && styles.filterTabActive,
-                      ]}
-                      radius={radii.pill}
-                      accessibilityState={{ selected: isActive }}
-                      accessibilityLabel={`Filter: ${f}`}
-                    >
-                      <Text
-                        style={[
-                          styles.filterTabText,
-                          isActive && styles.filterTabTextActive,
-                        ]}
-                      >
-                        {f}
-                      </Text>
-                    </Touchable>
-                  );
-                })}
-              </View>
-
-              {/* Filter controls icon */}
-              <Touchable
-                style={styles.optionsBtn}
-                hitSlop={8}
-                ripple="borderless"
-                accessibilityLabel="Sort library"
-                onPress={() => {
-                  showDialog({
-                    title: "Sort library",
-                    message: "Choose how transcriptions are ordered.",
-                    icon: "swap-vertical-outline",
-                    actions: [
-                      {
-                        label: "Newest first",
-                        // The active order is marked with a tick rather than by
-                        // appending " ✓" to the label, as the OS sheet had to.
-                        icon: sortOrder === "newest" ? "checkmark" : undefined,
-                        onPress: () => setSortOrder("newest"),
-                      },
-                      {
-                        label: "Oldest first",
-                        icon: sortOrder === "oldest" ? "checkmark" : undefined,
-                        onPress: () => setSortOrder("oldest"),
-                      },
-                      { label: "Cancel", style: "cancel" },
-                    ],
-                  });
-                }}
-              >
-                <Ionicons
-                  name="options-outline"
-                  size={20}
-                  color={colors.text}
-                />
-              </Touchable>
-            </View>
-
-            {folders.length > 0 && (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.folderChips}>
-                {[null, ...folders].map((f) => {
-                  const active = folder === f;
-                  return (
-                    <Touchable
-                      key={f ?? "__all"}
-                      onPress={() => setFolder(f)}
-                      style={[styles.filterTab, active && styles.filterTabActive]}
-                      radius={radii.pill}
-                      accessibilityState={{ selected: active }}
-                      accessibilityLabel={f ? `Folder: ${f}` : "All folders"}
-                    >
-                      <Text style={[styles.filterTabText, active && styles.filterTabTextActive]}>
-                        {f ?? "All folders"}
-                      </Text>
-                    </Touchable>
-                  );
-                })}
-              </ScrollView>
-            )}
-            {folder !== null && (
-              <Button
-                label="Share the folder"
-                icon="share-outline"
-                variant="secondary"
-                loading={sharingFolder}
-                onPress={() => void shareFolder()}
-                style={styles.folderShare}
-              />
-            )}
-          </View>
-        }
-        renderItem={({ item }) => {
-          const dateStr = new Date(item.createdAtUtc).toLocaleDateString(
-            "en-US",
-            { month: "short", day: "numeric", year: "numeric" }
-          );
-          const timeStr = new Date(item.createdAtUtc).toLocaleTimeString(
-            "en-US",
-            { hour: "2-digit", minute: "2-digit" }
-          );
-
-          const isStaff = Boolean(item.musicXml);
-
-          return (
-            <Touchable
-              onPress={() => openItem(item)}
-              onLongPress={() => itemActions(item)}
-              style={styles.itemRow}
-              // Full-bleed row: a deeper press pulls it off both screen edges.
-              scaleTo={motion.scale.row}
-              accessibilityLabel={`${item.title}${item.folder ? `, in ${item.folder}` : ""}. Long press to move or delete.`}
-            >
-              {/* Note icon badge — gold for Pro accounts, the same premium accent the
-                  avatar ring and the Home chip use. It is the row's visual anchor, so
-                  it carries the signal without adding chrome the rows don't have. */}
-              <View
-                style={[styles.noteIconBadge, isPro && styles.noteIconBadgePremium]}
-              >
-                <Ionicons
-                  name="musical-notes-outline"
-                  size={22}
-                  color={isPro ? colors.premium : colors.accent}
-                />
-              </View>
-
-              {/* Item Info */}
-              <View style={styles.itemInfo}>
-                <Text style={styles.itemTitle} numberOfLines={1}>
-                  {item.title}
-                </Text>
-                <Text style={styles.itemDate}>
-                  {dateStr} • {timeStr}
-                </Text>
-              </View>
-
-              {/* Notation Type Pill Badge */}
-              <View style={styles.typeBadge}>
-                <Text style={styles.typeBadgeText}>
-                  {isStaff ? "Staff" : "Tonic Solfa"}
-                </Text>
-              </View>
-
-            </Touchable>
-          );
-        }}
+        ListHeaderComponent={header}
+        renderItem={({ item }) => (
+          <LibraryRow
+            item={item}
+            subtitle={subtitleFor(item)}
+            selecting={selecting}
+            selected={selected.has(item.id)}
+            onPress={() => (selecting ? toggle(item) : void openItem(item))}
+            onLongPress={() => startSelecting(item)}
+          />
+        )}
         ItemSeparatorComponent={() => <View style={styles.itemDivider} />}
-        ListEmptyComponent={
-          loading ? (
-            <View style={styles.skeletonContainer}>
-              <TranscriptionRowSkeleton />
-              <TranscriptionRowSkeleton />
-              <TranscriptionRowSkeleton />
-              <TranscriptionRowSkeleton />
-              <TranscriptionRowSkeleton />
-            </View>
-          ) : loadError ? (
-            <View style={styles.emptyContainer}>
-              <Ionicons
-                name="cloud-offline-outline"
-                size={40}
-                color={colors.danger}
-              />
-              <Text style={styles.emptyTitle}>Could not load library</Text>
-              <Text style={styles.emptySub}>{loadError}</Text>
-              <Touchable
-                onPress={load}
-                style={styles.retryBtn}
-                radius={radii.pill}
-                accessibilityLabel="Try loading library again"
-              >
-                <Text style={styles.retryLabel}>Try again</Text>
-              </Touchable>
-            </View>
-          ) : (
-            <View style={styles.emptyContainer}>
-              <Ionicons
-                name={
-                  query.trim() || activeFilter !== "All"
-                    ? "search-outline"
-                    : "folder-open-outline"
-                }
-                size={40}
-                color={colors.textFaint}
-              />
-              <Text style={styles.emptyTitle}>
-                {query.trim() || activeFilter !== "All"
-                  ? "No matching notes"
-                  : "No saved notes"}
-              </Text>
-              <Text style={styles.emptySub}>
-                {query.trim() || activeFilter !== "All"
-                  ? `No transcriptions found matching your filter.`
-                  : "Recorded transcriptions will appear here."}
-              </Text>
-              {(query.trim() || activeFilter !== "All") && (
-                <Touchable
-                  onPress={() => {
-                    setQuery("");
-                    setActiveFilter("All");
-                  }}
-                  style={styles.clearFiltersBtn}
-                  radius={radii.pill}
-                  accessibilityLabel="Clear search and filter"
-                >
-                  <Text style={styles.clearFiltersLabel}>Clear filters</Text>
-                </Touchable>
-              )}
-            </View>
-          )
-        }
+        ListEmptyComponent={empty}
       />
+      {selecting && (
+        <SelectionBar
+          count={selected.size}
+          sharing={sharingSelection}
+          onClose={() => setSelected(new Set())}
+          onDelete={() => confirmDelete(selectedItems)}
+          onMove={() => chooseFolder(selectedItems)}
+          onShare={() => void shareSelected(selectedItems)}
+        />
+      )}
       <Modal visible={naming !== null} transparent animationType="fade" onRequestClose={() => setNaming(null)}>
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
@@ -542,9 +558,9 @@ export function LibraryScreen() {
                 label="Move here"
                 disabled={newFolder.trim().length === 0}
                 onPress={() => {
-                  const item = naming;
+                  const targets = naming;
                   setNaming(null);
-                  if (item) void fileIn(item, newFolder.trim());
+                  if (targets) void fileIn(targets, newFolder.trim());
                 }}
               />
             </View>
@@ -560,32 +576,57 @@ const makeStyles = (c: Palette) =>
     listContent: {
       paddingBottom: 120,
     },
-    headerArea: {
-      paddingTop: spacing.xs,
-      marginBottom: spacing.md,
+    /** Room for the selection bar, which floats above the tab bar. */
+    listContentSelecting: {
+      paddingBottom: 200,
     },
-    pageTitle: {
-      fontSize: 20,
-      fontFamily: fonts.bold,
-      color: c.text,
-      textAlign: "center",
-      marginBottom: spacing.md,
+    headerArea: {
+      paddingTop: 6,
+      marginBottom: 6,
     },
 
-    // ── Search Bar ────────────────────────────────────────────────────────────
-    searchBar: {
+    // ── Title row ──────────────────────────────────────────────────────────────
+    titleRow: {
+      height: 48,
       flexDirection: "row",
       alignItems: "center",
-      backgroundColor: c.surface,
-      borderRadius: radii.pill,
+      justifyContent: "space-between",
+    },
+    pageTitle: {
+      ...typography.display,
+      color: c.text,
+    },
+    iconBtn: {
+      width: ICON_BTN,
+      height: ICON_BTN,
+      borderRadius: ICON_BTN / 2,
+      backgroundColor: c.surfaceAlt,
       borderWidth: 1,
       borderColor: c.border,
-      paddingHorizontal: spacing.lg,
-      height: 46,
-      marginBottom: spacing.md,
+      alignItems: "center",
+      justifyContent: "center",
     },
-    searchIcon: {
-      marginRight: spacing.sm,
+    searchPill: {
+      position: "absolute",
+      top: (48 - ICON_BTN) / 2,
+      height: ICON_BTN,
+      borderRadius: ICON_BTN / 2,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.sm,
+      paddingHorizontal: 11,
+      overflow: "hidden",
+    },
+    // Fills the closed pill edge to edge (cancelling its padding) so the whole circle is the target.
+    searchBtn: {
+      width: ICON_BTN,
+      height: ICON_BTN,
+      marginHorizontal: -11,
+      alignItems: "center",
+      justifyContent: "center",
     },
     searchInput: {
       flex: 1,
@@ -596,62 +637,140 @@ const makeStyles = (c: Palette) =>
       paddingVertical: 0,
     },
 
-    // ── Filter Row ────────────────────────────────────────────────────────────
-    filterRow: {
+    // ── Folder tabs ───────────────────────────────────────────────────────────
+    tabsRow: {
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: spacing.sm,
+      marginTop: 18,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: c.border,
     },
-    filterTabs: {
+    tabsScroll: { flex: 1 },
+    tabs: {
+      gap: 22,
+      paddingRight: spacing.md,
+    },
+    tab: {
+      paddingTop: spacing.xs,
+    },
+    tabLabelRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      gap: 3,
+    },
+    tabText: {
+      fontFamily: fonts.medium,
+      fontSize: 15,
+      color: c.textFaint,
+    },
+    tabTextActive: {
+      fontFamily: fonts.semibold,
+      color: c.text,
+    },
+    tabCount: {
+      fontFamily: typography.mono.fontFamily,
+      fontSize: 11,
+      color: c.textFaint,
+      marginTop: 1,
+    },
+    tabCountActive: {
+      color: c.accent,
+    },
+    tabUnderline: {
+      height: 2,
+      borderRadius: 1,
+      marginTop: 8,
+    },
+    tabUnderlineActive: {
+      backgroundColor: c.ink,
+    },
+    sortBtn: {
+      paddingLeft: spacing.sm,
+      paddingBottom: spacing.xs,
+    },
+
+    // ── Folder share banner ──────────────────────────────────────────────────
+    banner: {
       flexDirection: "row",
       alignItems: "center",
-      gap: spacing.xs,
+      gap: spacing.md,
+      marginTop: spacing.lg,
+      paddingVertical: 14,
+      paddingHorizontal: spacing.lg,
+      borderRadius: 18,
+      backgroundColor: c.accentSoft,
+      borderWidth: 1,
+      borderColor: c.accentGlow,
     },
-    filterTab: {
-      paddingHorizontal: spacing.md,
-      paddingVertical: spacing.xs + 2,
+    bannerText: { flex: 1 },
+    bannerTitle: {
+      fontFamily: fonts.medium,
+      fontSize: 14,
+      color: c.text,
+    },
+    bannerSub: {
+      fontFamily: fonts.regular,
+      fontSize: 12,
+      color: c.textMuted,
+      marginTop: 2,
+    },
+    bannerAction: {
+      fontFamily: fonts.medium,
+      fontSize: 13,
+      color: c.accent,
+    },
+
+    // ── Rows ───────────────────────────────────────────────────────────────────
+    itemDivider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: c.border,
+    },
+    skeletonDivider: {
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: c.border,
+    },
+
+    // ── Empty / error ─────────────────────────────────────────────────────────
+    emptyContainer: {
+      alignItems: "center",
+      paddingTop: spacing.xxxl,
+      paddingHorizontal: spacing.xl,
+      gap: spacing.lg,
+    },
+    emptyLine: {
+      fontFamily: fonts.regular,
+      fontSize: 15,
+      color: c.textMuted,
+      textAlign: "center",
+    },
+    emptyBtn: {
+      height: 44,
+      paddingHorizontal: spacing.xl,
       borderRadius: radii.pill,
-      backgroundColor: c.surface,
+      backgroundColor: c.surfaceAlt,
       borderWidth: 1,
       borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
     },
-    /** `ink`, not `accent`: this is a fill carrying white text, so it has to stay
-     *  dark in both modes — the lifted dark-mode accent fails AA at this size. */
-    filterTabActive: {
-      backgroundColor: c.ink,
-      borderColor: c.ink,
-    },
-    filterTabText: {
-      fontSize: 13,
+    emptyBtnLabel: {
       fontFamily: fonts.medium,
-      color: c.textMuted,
+      fontSize: 14,
+      color: c.text,
     },
-    filterTabTextActive: {
-      color: c.onInk,
-      fontFamily: fonts.bold,
-    },
-    optionsBtn: {
-      padding: spacing.xs,
-    },
-    folderChips: {
-      flexDirection: "row",
-      gap: spacing.xs,
-      paddingTop: spacing.sm,
-    },
-    folderShare: {
-      marginTop: spacing.sm,
-      alignSelf: "flex-start",
-    },
+
+    // ── New folder sheet ──────────────────────────────────────────────────────
     modalBackdrop: {
       flex: 1,
-      backgroundColor: "rgba(0,0,0,0.45)",
+      backgroundColor: c.scrim,
       justifyContent: "center",
       padding: spacing.lg,
     },
     modalCard: {
       backgroundColor: c.surface,
-      borderRadius: radii.lg,
+      borderRadius: 22,
+      borderWidth: 1,
+      borderColor: c.border,
       padding: spacing.lg,
       gap: spacing.md,
     },
@@ -663,112 +782,5 @@ const makeStyles = (c: Palette) =>
       flexDirection: "row",
       justifyContent: "flex-end",
       gap: spacing.sm,
-    },
-
-    // ── List Item ─────────────────────────────────────────────────────────────
-    itemRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingVertical: spacing.md,
-    },
-    playButton: {
-      width: 40,
-      height: 40,
-      alignItems: "center",
-      justifyContent: "center",
-      marginLeft: spacing.xs,
-    },
-    noteIconBadge: {
-      width: 44,
-      height: 44,
-      borderRadius: radii.md,
-      backgroundColor: c.accentSoft,
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: spacing.md,
-    },
-    noteIconBadgePremium: {
-      backgroundColor: c.premiumSoft,
-      borderWidth: 1,
-      borderColor: c.premiumBorder,
-    },
-    itemInfo: {
-      flex: 1,
-    },
-    itemTitle: {
-      fontSize: 16,
-      fontFamily: fonts.bold,
-      color: c.text,
-      marginBottom: 2,
-    },
-    itemDate: {
-      fontSize: 13,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-    },
-    typeBadge: {
-      backgroundColor: c.accentSoft,
-      borderRadius: radii.pill,
-      paddingHorizontal: spacing.md,
-      paddingVertical: 4,
-    },
-    typeBadgeText: {
-      fontSize: 12,
-      fontFamily: fonts.semibold,
-      color: c.accent,
-    },
-    itemDivider: {
-      height: 1,
-      backgroundColor: c.border,
-    },
-
-    emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingVertical: spacing.xxl,
-    },
-    emptyTitle: {
-      fontSize: 16,
-      fontFamily: fonts.bold,
-      color: c.text,
-      marginTop: spacing.md,
-    },
-    emptySub: {
-      fontSize: 14,
-      fontFamily: fonts.regular,
-      color: c.textMuted,
-      marginTop: 2,
-    },
-    clearSearchBtn: {
-      padding: spacing.xs,
-    },
-    skeletonContainer: {
-      paddingVertical: spacing.sm,
-    },
-    retryBtn: {
-      marginTop: spacing.md,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.sm,
-    },
-    retryLabel: {
-      fontSize: 14,
-      fontFamily: fonts.medium,
-      color: c.text,
-    },
-    clearFiltersBtn: {
-      marginTop: spacing.md,
-      backgroundColor: c.surface,
-      borderWidth: 1,
-      borderColor: c.border,
-      paddingHorizontal: spacing.lg,
-      paddingVertical: spacing.sm,
-    },
-    clearFiltersLabel: {
-      fontSize: 14,
-      fontFamily: fonts.medium,
-      color: c.accent,
     },
   });

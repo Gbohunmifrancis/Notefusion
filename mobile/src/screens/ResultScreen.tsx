@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Image,
   ScrollView,
   Share,
@@ -7,19 +8,22 @@ import {
   Text,
   View,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Screen } from "../components/Screen";
-import { Card } from "../components/Card";
+import { KeyboardAvoider } from "../components/KeyboardAvoider";
 import { Button } from "../components/Button";
 import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
-import { ConfidenceBadge } from "../components/ConfidenceBadge";
-import { NotePlayer } from "../components/NotePlayer";
 import { NoteEditor } from "../components/NoteEditor";
 import { SingAlong } from "../components/SingAlong";
+import { Mark } from "../components/night/NightUI";
 import ScoreView, { type ScoreViewHandle } from "../components/ScoreView";
+import { SheetGrid, barOf } from "../components/result/SheetGrid";
+import { PlayerDock, DOCK_CLEARANCE } from "../components/result/PlayerDock";
+import { RehearseView } from "../components/result/RehearseView";
+import { usePractice } from "../components/result/usePractice";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import type { ChordSymbol, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
@@ -30,6 +34,7 @@ import {
   ascendingFlags,
   deriveSolfa,
   dohHeader,
+  dohLetter,
   dohPitchClass,
   KEY_CHOICES,
   parseKey,
@@ -40,14 +45,14 @@ import {
 } from "../lib/solfa";
 import { buildMusicXml, resolveKeySignature } from "../lib/musicxml";
 import { synthesizeMelodyWavBase64, synthesizeVoicesWavBase64 } from "../lib/synth";
-import { hymnRows, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
+import { hymnRows, lyricsUnderNotes, pitchName, rangeReport, shiftKeyName, VOICES, type VoiceName } from "../lib/choir";
 import { stopAudition } from "../lib/audition";
 import { sectionOf } from "../lib/clipRange";
+import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
   confidenceColor,
   fonts,
-  gradients,
   motion,
   radii,
   spacing,
@@ -131,26 +136,29 @@ function barCountOf(notes: readonly NoteEvent[], timeSignature: string): number 
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+const PROVIDERS: Record<string, string> = { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" };
+
+type Panel = "transpose" | "lyrics" | "parts" | "sing" | "export";
+type SolfaStyle = "bars" | "grid" | "curwen" | "hymn";
+
 /**
- * ResultScreen — light blue transcription result.
+ * ResultScreen — the sheet (night board 04) and, over it, Rehearse (05).
  *
  * Layout (top → bottom):
- *   • Back arrow + "Transcription Complete" title row.
- *   • Summary glass card: Key, Tempo, Meter chips + ConfidenceBadge + warn row.
- *   • Hero Solfa white card:
- *       – Gradient header bar ("TONIC SOLFA" label).
- *       – Large monospace solfa lines in Ink Navy.
- *       – Confidence pill badge (green / amber / red) inside the card.
- *   • Horizontal notes grid: each chip shows the solfa symbol, MIDI number,
- *     and a coloured confidence bar at the bottom. Tapping one opens the
- *     tap-to-correct sheet (F-07).
- *   • Export row: hands the engraved MusicXML to the OS share sheet.
- *   • Save block: TextField + gradient "Save to Library" button.
- *   • Saved state: blue-glowing checkmark row.
+ *   • Round back / share / save buttons; the sheet's name large, a muted line
+ *     under it (artist, section, key) and the song's credit when it has one.
+ *   • One row of the numbers that matter — DOH, BPM, TIME, SURE. The first three
+ *     open their pickers (re-key and transpose, tempo, meter) beneath the row.
+ *   • The notation: a bar to a row, a syllable to a beat, the words beneath, the
+ *     mark faint behind it. The same note list can be read as the text grid, as
+ *     Curwen, as a hymn layout or on the stave. Every syllable opens the editor.
+ *   • One amber row when the model doubted some notes — the way into a review.
+ *   • Round actions — transpose, lyrics, SATB, sing, export, more — each opening
+ *     its panel below the row.
+ *   • The player docked over the bottom; its expand button opens Rehearse.
  *
- * PRD honesty rule: overall-confidence banner is always visible; low-confidence
- * notes are outlined in red so users know to double-check — and the banner is
- * the way into a guided review of exactly those notes.
+ * PRD honesty rule: the SURE figure is always visible and coloured by level, and
+ * low-confidence notes are amber with a dotted underline so users double-check.
  */
 export function ResultScreen({ route, navigation }: Props) {
   const {
@@ -174,10 +182,9 @@ export function ResultScreen({ route, navigation }: Props) {
   const [exportingType, setExportingType] = useState<"musicxml" | "solfa" | "midi" | "pdf" | null>(null);
   const scoreRef = useRef<ScoreViewHandle>(null);
   /** The acknowledgement for a linked song; null for a recording. */
+  const provider = result.source ? (PROVIDERS[result.source.provider] ?? result.source.provider) : null;
   const credit = result.source
-    ? `${result.source.title}${result.source.artist ? ` — ${result.source.artist}` : ""} (${
-        { youtube: "YouTube", spotify: "Spotify", apple_music: "Apple Music" }[result.source.provider] ?? result.source.provider
-      })`
+    ? `${result.source.title}${result.source.artist ? ` — ${result.source.artist}` : ""} (${provider})`
     : null;
   /** "1:05–1:35 of 3:33" when a section of the song was chosen; null for the whole song or a recording. */
   const section = result.source ? sectionOf(result.source) : null;
@@ -225,9 +232,6 @@ export function ResultScreen({ route, navigation }: Props) {
   // re-places the other from the identical data.
   const [notationView, setNotationView] = useState<"solfa" | "staff">("solfa");
 
-  /** Note the player is sounding, −1 when stopped. Drives the stave's cursor. */
-  const [playingNote, setPlayingNote] = useState(-1);
-
   // ── Tap-to-correct (F-07) ──────────────────────────────────────────────────
   // The note list is the source of truth for both notation views and for
   // playback, so a correction lives here and everything downstream re-derives
@@ -258,7 +262,7 @@ export function ResultScreen({ route, navigation }: Props) {
   );
   const edited = correctedCount > 0;
 
-  const [solfaStyle, setSolfaStyle] = useState<"grid" | "curwen" | "hymn">("grid");
+  const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
   const hasLyrics = lyrics.trim().length > 0;
   useEffect(() => {
     if (!hasLyrics && solfaStyle === "hymn") setSolfaStyle("grid");
@@ -311,6 +315,19 @@ export function ResultScreen({ route, navigation }: Props) {
   const barCount = useMemo(() => barCountOf(view.notes, timeSignature), [view.notes, timeSignature]);
   const hasParts = isPro && !!partsView;
 
+  /** The syllable each note carries, for the sheet and for Rehearse's line of words. */
+  const lyricsUnder = useMemo(
+    () => (hasLyrics ? lyricsUnderNotes(view.notes, lyrics) : null),
+    [hasLyrics, view.notes, lyrics],
+  );
+
+  // ── Layout state for the sheet's surfaces ───────────────────────────────────
+  // One panel under the action row at a time; parts heard from a choir open on
+  // arrival, since they are half of what was transcribed.
+  const [panel, setPanel] = useState<Panel | null>(result.parts ? "parts" : null);
+  const [naming, setNaming] = useState(false);
+  const [rehearsing, setRehearsing] = useState(false);
+
   // The rehearsal mix: the tune plus whichever parts are switched on, re-rendered when
   // any of them changes. Without parts the player keeps the melody preview above.
   useEffect(() => {
@@ -355,6 +372,12 @@ export function ResultScreen({ route, navigation }: Props) {
     () => view.notes.filter((n) => n.conf < 0.5).length,
     [view.notes],
   );
+
+  // One player for the dock and Rehearse; the note it reports drives the sheet's
+  // highlight and the stave's cursor.
+  const practice = usePractice(preview, view.notes, tempo, timeSignature, barCount);
+  /** Note the player is sounding, −1 when stopped. */
+  const playingNote = practice.currentNoteIndex;
 
   /** null parks the cursor off the page, which is what "not playing" should look like. */
   const cursorBeat = view.notes[playingNote]?.startBeat ?? null;
@@ -417,11 +440,16 @@ export function ResultScreen({ route, navigation }: Props) {
       // Fired here rather than from the button's press-in: the success pattern
       // means "it happened", and on press-in nothing has happened yet.
       haptics.play("success");
-      showDialog({
-        title: "Saved",
-        message: "Added to your library.",
-        icon: "checkmark-circle-outline",
-      });
+      // The third save may bring the store-rating ask, which says the sheet was saved
+      // itself; two sheets stacked on the same moment would be one too many.
+      const askingForRating = await rating.recordSave();
+      if (!askingForRating) {
+        showDialog({
+          title: "Saved",
+          message: "Added to your library.",
+          icon: "checkmark-circle-outline",
+        });
+      }
     } catch (e) {
       showDialog({
         title: "Could not save",
@@ -901,504 +929,487 @@ export function ResultScreen({ route, navigation }: Props) {
     }
   }
 
+
   const hasScore = scoreXml.length > 0;
 
-  const confColor = confidenceColor(result.overallConfidence, colors);
-  const confPct = Math.round(result.overallConfidence * 100);
+  const insets = useSafeAreaInsets();
+  const shownTitle = committedTitle || title;
+  const doh = dohLetter(key);
+  const surePct = Math.round(overallConfidence * 100);
+  const subtitle = [result.source ? result.source.artist || provider : null, section, key]
+    .filter(Boolean)
+    .join(" · ");
+  /** The first doubtful note, named in the amber row so the ear knows where to go. */
+  const firstLow = view.notes.find((n) => n.conf < 0.5);
 
-  return (
-    <Screen scroll>
-      {/* ── Header row ───────────────────────────────────────────────────── */}
-      <View style={styles.headerRow}>
-        <Touchable
-          onPress={() =>
-            navigation.canGoBack()
-              ? navigation.goBack()
-              : navigation.navigate("Tabs", { screen: "Home" })
-          }
-          style={styles.backBtn}
-          hitSlop={8}
-          ripple="borderless"
-          accessibilityLabel="Go back"
-        >
-          <Ionicons name="arrow-back" size={22} color={colors.text} />
-        </Touchable>
+  function goBack() {
+    if (navigation.canGoBack()) navigation.goBack();
+    else navigation.navigate("Tabs", { screen: "Home" });
+  }
 
-        <View style={styles.titleGroup}>
-          <Text style={styles.pageTitle}>{result.source ? "Song" : "Preview"}</Text>
-          {/* Small gold mark — the same premium accent as the avatar ring and the
-              Home chip, sized down to a header ornament. */}
-          {isPro && (
-            <View style={styles.proMark}>
-              <Ionicons name="star" size={10} color={colors.premiumDeep} />
-            </View>
-          )}
-        </View>
+  /** The DOH stat and the Transpose action open the same controls; only one copy shows. */
+  function toggleKeyPicker() {
+    setPickingKey((p) => !p);
+    setPickingTempo(false);
+    setPickingMeter(false);
+    if (panel === "transpose") setPanel(null);
+  }
 
-        <Touchable
-          onPress={() => {
-            const actions: DialogAction[] = [
-              {
-                label: "Export MusicXML",
-                icon: "download-outline",
-                onPress: () => void exportScore(),
-              },
-            ];
-            if (edited) {
-              actions.push({
-                label: "Discard corrections",
-                icon: "refresh-outline",
-                onPress: discardCorrections,
-              });
+  function togglePanel(next: Panel) {
+    setPanel((p) => (p === next ? null : next));
+    if (next === "transpose") setPickingKey(false);
+  }
+
+  function openOptions() {
+    const actions: DialogAction[] = [
+      {
+        // Straight to the notes that need it when the model flagged some,
+        // otherwise to the first note — the sheet itself is the other way in.
+        label: "Edit notes",
+        icon: "create-outline",
+        onPress: () => (lowCount > 0 ? startReview() : openNote(0)),
+      },
+      {
+        label: "Export MusicXML",
+        icon: "download-outline",
+        onPress: () => void exportScore(),
+      },
+    ];
+    if (edited) {
+      actions.push({
+        label: "Discard corrections",
+        icon: "refresh-outline",
+        onPress: discardCorrections,
+      });
+    }
+    if (savedId) {
+      actions.push({
+        label: "Delete from Library",
+        style: "destructive",
+        icon: "trash-outline",
+        onPress: async () => {
+          try {
+            await libraryApi.remove(savedId);
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            } else {
+              navigation.navigate("Tabs", { screen: "Library" });
             }
-            if (savedId) {
-              actions.push({
-                label: "Delete from Library",
-                style: "destructive",
-                icon: "trash-outline",
-                onPress: async () => {
-                  try {
-                    await libraryApi.remove(savedId);
-                    if (navigation.canGoBack()) {
-                      navigation.goBack();
-                    } else {
-                      navigation.navigate("Tabs", { screen: "Library" });
-                    }
-                  } catch (e) {
-                    showDialog({
-                      title: "Could not delete",
-                      message: toApiError(e).message,
-                      icon: "alert-circle-outline",
-                      tone: "danger",
-                    });
-                  }
-                },
-              });
-            }
-            actions.push({ label: "Cancel", style: "cancel" });
-
+          } catch (e) {
             showDialog({
-              title: "Transcription options",
-              icon: "ellipsis-horizontal",
-              actions,
+              title: "Could not delete",
+              message: toApiError(e).message,
+              icon: "alert-circle-outline",
+              tone: "danger",
             });
-          }}
-          style={styles.optionsBtn}
-          hitSlop={8}
-          ripple="borderless"
-          accessibilityLabel="Transcription options"
+          }
+        },
+      });
+    }
+    actions.push({ label: "Cancel", style: "cancel" });
+
+    showDialog({
+      title: "Transcription options",
+      icon: "ellipsis-horizontal",
+      actions,
+    });
+  }
+
+  /**
+   * Re-key and transpose. Movable-do means re-keying is a re-labelling, not a
+   * re-transcription: the notes never move, only the syllables above them.
+   * Transposing is the one edit that moves them. Opened from the DOH stat or the
+   * Transpose action, so it is drawn by one function.
+   */
+  const keyControls = (
+    <View style={styles.panel}>
+      <Text style={styles.panelEyebrow}>Doh</Text>
+      <Text style={styles.panelHint}>
+        Change the Doh — your notes stay put, only the labels move.
+      </Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.chipScroll}
+      >
+        {KEY_CHOICES.map((k) => {
+          const on = sameKey(k, key);
+          return (
+            <Touchable
+              key={k}
+              style={[styles.chip, on && styles.chipOn]}
+              radius={radii.pill}
+              onPress={() => (on ? undefined : applyKey(k))}
+              disabled={rekeying}
+              accessibilityState={{ selected: on }}
+              accessibilityLabel={`Change key to ${k}`}
+            >
+              <Text style={[styles.chipText, on && styles.chipTextOn]}>{k}</Text>
+            </Touchable>
+          );
+        })}
+      </ScrollView>
+
+      {/* Transpose for my choir: the one edit that moves the notes. */}
+      <View style={styles.panelDivider} />
+      <Text style={styles.panelEyebrow}>Transpose for my choir</Text>
+      <Text style={styles.panelHint}>
+        Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.
+      </Text>
+      <View style={styles.transposeRow}>
+        <Touchable
+          style={styles.roundStep}
+          radius={radii.pill}
+          onPress={() => setSemitones((s) => Math.max(-12, s - 1))}
+          disabled={semitones <= -12}
+          accessibilityLabel="A semitone lower"
         >
-          <Ionicons name="ellipsis-vertical" size={20} color={colors.text} />
+          <Ionicons name="remove" size={18} color={colors.text} />
+        </Touchable>
+        <View style={styles.transposeReadout}>
+          <Text style={styles.transposeValue}>{semitones > 0 ? `+${semitones}` : semitones}</Text>
+          <Text style={styles.transposeUnit}>
+            {Math.abs(semitones) === 1 ? "semitone" : "semitones"} · {semitones === 0 ? key : `${key} → ${shiftKeyName(key, semitones)}`}
+          </Text>
+        </View>
+        <Touchable
+          style={styles.roundStep}
+          radius={radii.pill}
+          onPress={() => setSemitones((s) => Math.min(12, s + 1))}
+          disabled={semitones >= 12}
+          accessibilityLabel="A semitone higher"
+        >
+          <Ionicons name="add" size={18} color={colors.text} />
         </Touchable>
       </View>
-
-      {/* ── Song credit: a linked song is acknowledged by title and artist ─── */}
-      {result.source ? (
-        <Card style={styles.creditCard}>
-          {result.source.thumbnailUrl ? (
-            <Image source={{ uri: result.source.thumbnailUrl }} style={styles.creditThumb} />
-          ) : (
-            <View style={[styles.creditThumb, { alignItems: "center", justifyContent: "center" }]}>
-              <Ionicons name="musical-notes" size={22} color={colors.textMuted} />
-            </View>
-          )}
-          <View style={{ flex: 1 }}>
-            <Text style={styles.creditTitle} numberOfLines={2}>{result.source.title}</Text>
-            {result.source.artist ? <Text style={styles.creditArtist} numberOfLines={1}>{result.source.artist}</Text> : null}
-            <Text style={styles.creditLine}>
-              {section ? `${section} · ` : ""}Lead vocal, transcribed with NoteFusion
-            </Text>
-          </View>
-        </Card>
-      ) : null}
-      {result.source?.preview && result.source.notice ? (
-        <Text style={styles.truncatedNote}>{result.source.notice}</Text>
-      ) : result.truncated ? (
-        <Text style={styles.truncatedNote}>
-          {section
-            ? "Only the first part of the section you chose fit; the rest was left out."
-            : isPro
-              ? "The first six minutes of the song were transcribed."
-              : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
-        </Text>
-      ) : null}
-
-      {/* ── Summary card ─────────────────────────────────────────────────── */}
-      <Card style={styles.summaryCard}>
-        {/* Three stat chips */}
-        <View style={styles.summaryRow}>
-          <SummaryStat
-            icon="key-outline"
-            label={rekeying ? "Saving…" : "Key · tap"}
-            value={key}
-            accent={colors.purple}
-            onPress={() => {
-              setPickingKey((p) => !p);
-              setPickingTempo(false);
-              setPickingMeter(false);
-            }}
-          />
-          <View style={styles.summaryDivider} />
-          <SummaryStat
-            icon="speedometer-outline"
-            label="Tempo · tap"
-            value={`${tempo} BPM`}
-            accent={colors.gold}
-            onPress={() => {
-              setPickingTempo((p) => !p);
-              setPickingKey(false);
-              setPickingMeter(false);
-            }}
-          />
-          <View style={styles.summaryDivider} />
-          <SummaryStat
-            icon="grid-outline"
-            label="Meter · tap"
-            value={timeSignature}
-            accent={colors.success}
-            onPress={() => {
-              setPickingMeter((p) => !p);
-              setPickingKey(false);
-              setPickingTempo(false);
-            }}
-          />
+      {rangeReport(view.notes, parts, semitones).map((r) => (
+        <View key={r.voice} style={styles.rangeRow}>
+          <Text style={styles.rangeVoice}>{r.voice}</Text>
+          <Text style={styles.rangeSpan}>
+            {pitchName(r.low)} – {pitchName(r.high)}
+          </Text>
+          <Text
+            style={[
+              styles.rangeStatus,
+              r.status === "ok" ? { color: colors.success } : { color: r.overBy > 2 ? colors.danger : colors.warning },
+            ]}
+          >
+            {r.status === "ok"
+              ? "comfortable"
+              : r.status === "wide"
+                ? "too wide"
+                : `${r.overBy} ${r.overBy === 1 ? "semitone" : "semitones"} too ${r.status}`}
+          </Text>
         </View>
+      ))}
+      <Button
+        label={semitones === 0 ? "Choose a shift" : `Transpose to ${shiftKeyName(key, semitones)}`}
+        icon="swap-vertical-outline"
+        onPress={applyTranspose}
+        loading={transposing}
+        disabled={semitones === 0}
+        style={styles.panelButton}
+      />
+    </View>
+  );
 
-        {/* ── Key picker (F-03) ────────────────────────────────────────────
-            Movable-do means this is a re-labelling, not a re-transcription:
-            the notes never move, only the syllables above them. */}
-        {pickingKey && (
-          <View style={styles.keyPicker}>
-            <Text style={styles.keyPickerHint}>
-              Change the Doh — your notes stay put, only the labels move.
-            </Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.keyPickerScroll}
-            >
-              {KEY_CHOICES.map((k) =>
-                sameKey(k, key) ? (
-                  <LinearGradient
-                    key={k}
-                    colors={gradients.brand}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                    style={[styles.keyChip, styles.keyChipActive]}
-                  >
-                    <Text style={styles.keyChipTextActive}>{k}</Text>
-                  </LinearGradient>
-                ) : (
-                  <Touchable
-                    key={k}
-                    style={styles.keyChip}
-                    radius={radii.pill}
-                    onPress={() => applyKey(k)}
-                    disabled={rekeying}
-                    accessibilityLabel={`Change key to ${k}`}
-                  >
-                    <Text style={styles.keyChipText}>{k}</Text>
-                  </Touchable>
-                ),
-              )}
-            </ScrollView>
+  const notationChoices: { id: SolfaStyle | "staff"; label: string; a11y: string }[] = [
+    { id: "bars", label: "Solfa", a11y: "Show tonic solfa by bar" },
+    { id: "grid", label: "Grid", a11y: "Show the solfa grid" },
+    { id: "curwen", label: "Curwen", a11y: "Show Curwen solfa" },
+    ...(hasLyrics ? [{ id: "hymn" as const, label: "Hymn", a11y: "Show the hymn layout" }] : []),
+    { id: "staff", label: "Staff", a11y: "Show staff notation" },
+  ];
+  const notationChoice = notationView === "staff" ? "staff" : solfaStyle;
+  const nothingToShow = solfaStyle === "bars" ? view.notes.length === 0 : activeSolfaLines.length === 0;
 
-            {/* Transpose for my choir: the one edit that moves the notes. */}
-            <View style={styles.transposeBlock}>
-              <Text style={styles.transposeTitle}>Transpose for my choir</Text>
-              <Text style={styles.keyPickerHint}>
-                Moves every note so the parts sit in your singers' range. The solfa reads exactly as before — only Doh moves.
-              </Text>
-              <View style={styles.transposeRow}>
-                <Touchable
-                  style={styles.transposeStep}
-                  radius={radii.pill}
-                  onPress={() => setSemitones((s) => Math.max(-12, s - 1))}
-                  disabled={semitones <= -12}
-                  accessibilityLabel="A semitone lower"
-                >
-                  <Ionicons name="remove" size={18} color={colors.text} />
-                </Touchable>
-                <View style={styles.transposeReadout}>
-                  <Text style={styles.transposeValue}>{semitones > 0 ? `+${semitones}` : semitones}</Text>
-                  <Text style={styles.transposeUnit}>
-                    {Math.abs(semitones) === 1 ? "semitone" : "semitones"} · {semitones === 0 ? key : `${key} → ${shiftKeyName(key, semitones)}`}
-                  </Text>
-                </View>
-                <Touchable
-                  style={styles.transposeStep}
-                  radius={radii.pill}
-                  onPress={() => setSemitones((s) => Math.min(12, s + 1))}
-                  disabled={semitones >= 12}
-                  accessibilityLabel="A semitone higher"
-                >
-                  <Ionicons name="add" size={18} color={colors.text} />
-                </Touchable>
-              </View>
-              {rangeReport(view.notes, parts, semitones).map((r) => (
-                <View key={r.voice} style={styles.rangeRow}>
-                  <Text style={styles.rangeVoice}>{r.voice}</Text>
-                  <Text style={styles.rangeSpan}>
-                    {pitchName(r.low)} – {pitchName(r.high)}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.rangeStatus,
-                      r.status === "ok" ? { color: colors.success } : { color: r.overBy > 2 ? colors.danger : colors.warning },
-                    ]}
-                  >
-                    {r.status === "ok"
-                      ? "comfortable"
-                      : r.status === "wide"
-                        ? "too wide"
-                        : `${r.overBy} ${r.overBy === 1 ? "semitone" : "semitones"} too ${r.status}`}
-                  </Text>
-                </View>
-              ))}
-              <Button
-                label={semitones === 0 ? "Choose a shift" : `Transpose to ${shiftKeyName(key, semitones)}`}
-                icon="swap-vertical-outline"
-                onPress={applyTranspose}
-                loading={transposing}
-                disabled={semitones === 0}
-                style={styles.transposeApply}
+  return (
+    <Screen contentStyle={styles.screen}>
+      <KeyboardAvoider>
+        <ScrollView
+          contentContainerStyle={[
+            styles.content,
+            { paddingBottom: (preview ? DOCK_CLEARANCE : spacing.xl) + insets.bottom },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {/* ── Top bar ──────────────────────────────────────────────────── */}
+          <View style={styles.topBar}>
+            <IconButton icon="chevron-back" label="Go back" onPress={goBack} />
+            <View style={styles.topActions}>
+              <IconButton
+                icon="share-outline"
+                label={shareToken ? "Share the link again" : "Share a link"}
+                onPress={() => void shareLink()}
+                busy={sharing}
+              />
+              <IconButton
+                icon={savedId ? "bookmark" : "bookmark-outline"}
+                label={savedId ? "Saved to Library. Rename" : "Save to library"}
+                onPress={() => setNaming((n) => !n)}
+                tint={savedId ? colors.accent : undefined}
+                active={naming}
               />
             </View>
           </View>
-        )}
 
-        {/* ── Tempo picker (F-07) ────────────────────────────────────────── */}
-        {pickingTempo && (
-          <View style={styles.tempoPicker}>
-            <Text style={styles.pickerHint}>
-              Adjust playback tempo (20–300 BPM). Notes and beats realign in real time.
-            </Text>
-            <View style={styles.tempoStepperRow}>
-              <Touchable
-                onPress={() => handleTempoChange(Math.max(20, tempo - 5))}
-                style={styles.tempoStepBtn}
-                accessibilityLabel="Decrease tempo by 5 BPM"
-              >
-                <Text style={styles.tempoStepText}>-5</Text>
-              </Touchable>
-              <Touchable
-                onPress={() => handleTempoChange(Math.max(20, tempo - 1))}
-                style={styles.tempoStepBtn}
-                accessibilityLabel="Decrease tempo by 1 BPM"
-              >
-                <Text style={styles.tempoStepText}>-1</Text>
-              </Touchable>
-              <View style={styles.tempoDisplayBadge}>
-                <Text style={styles.tempoDisplayText}>{tempo} BPM</Text>
-              </View>
-              <Touchable
-                onPress={() => handleTempoChange(Math.min(300, tempo + 1))}
-                style={styles.tempoStepBtn}
-                accessibilityLabel="Increase tempo by 1 BPM"
-              >
-                <Text style={styles.tempoStepText}>+1</Text>
-              </Touchable>
-              <Touchable
-                onPress={() => handleTempoChange(Math.min(300, tempo + 5))}
-                style={styles.tempoStepBtn}
-                accessibilityLabel="Increase tempo by 5 BPM"
-              >
-                <Text style={styles.tempoStepText}>+5</Text>
-              </Touchable>
-            </View>
-          </View>
-        )}
-
-        {/* ── Meter picker ────────────────────────────────────────────────── */}
-        {pickingMeter && (
-          <View style={styles.meterPicker}>
-            <Text style={styles.pickerHint}>
-              Select time signature. Re-groups bars for Curwen solfa and staff notation.
-            </Text>
-            <View style={styles.meterPillsRow}>
-              {(["4/4", "3/4", "2/4", "6/8", "12/8"] as const).map((m) => (
-                <Touchable
-                  key={m}
-                  onPress={() => handleMeterChange(m)}
-                  style={[
-                    styles.meterPill,
-                    timeSignature === m && styles.meterPillActive,
-                  ]}
-                  accessibilityLabel={`Set meter to ${m}`}
-                >
-                  <Text
-                    style={[
-                      styles.meterPillText,
-                      timeSignature === m && styles.meterPillTextActive,
-                    ]}
-                  >
-                    {m}
-                  </Text>
-                </Touchable>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {/* Full confidence badge */}
-        <View style={styles.confRow}>
-          <ConfidenceBadge value={overallConfidence} />
-        </View>
-
-        {/* Low-confidence warning — now with somewhere to go. Tapping opens the piano
-            on the flagged piece: a doubtful note is a *pitch* question, and the
-            fastest answer to one is pressing the key and hearing it. The stepper is
-            still there for a note that is only a semitone out — the notes grid opens
-            it — so nothing is lost by making this the wider door. */}
-        {lowCount > 0 && (
+          {/* ── Title ───────────────────────────────────────────────────── */}
           <Touchable
-            style={styles.warnRow}
-            onPress={startReview}
-            // A full-bleed row inside the card: a deeper press would pull it away
-            // from both card edges at once.
+            onPress={() => setNaming((n) => !n)}
+            ripple={false}
             scaleTo={motion.scale.row}
-            accessibilityLabel={`Review ${lowCount} low-confidence notes`}
+            haptic="none"
+            accessibilityRole="button"
+            accessibilityLabel={`${shownTitle}. ${savedId ? "Rename" : "Name and save"}`}
           >
-            <View style={styles.warnDot} />
-            <Text style={styles.warnText}>
-              {lowCount} note{lowCount > 1 ? "s" : ""} below 50% confidence —{" "}
-              <Text style={styles.warnLink}>
-                review {lowCount > 1 ? "them" : "it"} →
-              </Text>
-            </Text>
+            <Text style={styles.title}>{shownTitle}</Text>
           </Touchable>
-        )}
-      </Card>
+          {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
 
-      {/* ── Hero notation card ───────────────────────────────────────────── */}
-      <View style={styles.solfaCardWrap}>
-        {/* Gradient header strip */}
-        <LinearGradient
-          colors={gradients.brand}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={styles.solfaHeader}
-        >
-          <Ionicons name="musical-notes" size={14} color="#FFFFFF" />
-          <Text style={styles.solfaHeaderLabel}>
-            {notationView === "solfa" ? "TONIC SOLFA" : "STAFF NOTATION"}
-          </Text>
-
-          {/* Solfa / Staff segmented toggle */}
-          <View style={styles.viewToggle}>
-            {(["solfa", "staff"] as const).map((v) => (
-              <Touchable
-                key={v}
-                onPress={() => setNotationView(v)}
-                style={[
-                  styles.viewToggleBtn,
-                  notationView === v && styles.viewToggleBtnActive,
-                ]}
-                // Sits on the brand gradient, where a blue ripple is invisible —
-                // and the selected half already paints its own white wash.
-                ripple={false}
-                accessibilityState={{ selected: notationView === v }}
-                accessibilityLabel={v === "solfa" ? "Show tonic solfa" : "Show staff notation"}
-              >
-                <Ionicons
-                  name={v === "solfa" ? "text" : "musical-note"}
-                  size={12}
-                  color="#FFFFFF"
-                />
-                <Text style={styles.viewToggleText}>
-                  {v === "solfa" ? "Solfa" : "Staff"}
-                </Text>
-              </Touchable>
-            ))}
-          </View>
-        </LinearGradient>
-
-        {/* Body — solfa lines or the engraved stave, from the same note data */}
-        <View style={styles.solfaBody}>
-          {notationView === "solfa" ? (
-            activeSolfaLines.length === 0 ? (
-              <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
-            ) : (
-              <>
-                <View style={styles.solfaStyleBar}>
-                  <Text style={styles.solfaStyleLabel}>Layout</Text>
-                  <View style={styles.solfaStylePills}>
-                    <Touchable
-                      onPress={() => setSolfaStyle("grid")}
-                      style={[
-                        styles.solfaStylePill,
-                        solfaStyle === "grid" && styles.solfaStylePillActive,
-                      ]}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: solfaStyle === "grid" }}
-                    >
-                      <Text
-                        style={[
-                          styles.solfaStylePillText,
-                          solfaStyle === "grid" && styles.solfaStylePillTextActive,
-                        ]}
-                      >
-                        Grid
-                      </Text>
-                    </Touchable>
-                    <Touchable
-                      onPress={() => setSolfaStyle("curwen")}
-                      style={[
-                        styles.solfaStylePill,
-                        solfaStyle === "curwen" && styles.solfaStylePillActive,
-                      ]}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: solfaStyle === "curwen" }}
-                    >
-                      <Text
-                        style={[
-                          styles.solfaStylePillText,
-                          solfaStyle === "curwen" && styles.solfaStylePillTextActive,
-                        ]}
-                      >
-                        Curwen
-                      </Text>
-                    </Touchable>
-                    {hasLyrics ? (
-                      <Touchable
-                        onPress={() => setSolfaStyle("hymn")}
-                        style={[styles.solfaStylePill, solfaStyle === "hymn" && styles.solfaStylePillActive]}
-                        accessibilityRole="button"
-                        accessibilityState={{ selected: solfaStyle === "hymn" }}
-                      >
-                        <Text style={[styles.solfaStylePillText, solfaStyle === "hymn" && styles.solfaStylePillTextActive]}>
-                          Hymn
-                        </Text>
-                      </Touchable>
-                    ) : null}
-                  </View>
+          {naming ? (
+            <View style={styles.panel}>
+              {savedId ? (
+                <View style={styles.savedLine}>
+                  <Ionicons name="checkmark-circle" size={16} color={colors.success} />
+                  <Text style={styles.savedText}>Saved to Library · you can find it in the Library tab.</Text>
                 </View>
+              ) : (
+                <Text style={styles.panelHint}>Give this transcription a name so you can find it later.</Text>
+              )}
+              <TextField
+                label="Title"
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Name this transcription…"
+              />
+              {savedId ? (
+                <Button
+                  label="Rename"
+                  variant="secondary"
+                  onPress={rename}
+                  loading={renaming}
+                  disabled={!title.trim() || title.trim() === committedTitle}
+                />
+              ) : (
+                <Button
+                  label="Save to Library"
+                  icon="bookmark"
+                  onPress={save}
+                  loading={saving}
+                  disabled={!title.trim()}
+                />
+              )}
+            </View>
+          ) : null}
 
-                {solfaStyle === "hymn" ? (
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    <View>
-                      <Text style={[styles.solfaLine, styles.solfaLineFirst]}>{activeSolfaLines[0]}</Text>
-                      {hymn.map((bars, r) => (
-                        <View key={r} style={styles.hymnRow}>
-                          {bars.map((bar, b) => (
-                            <View key={b} style={styles.hymnBar}>
-                              {bar.map((cell, c) => (
-                                <View key={c} style={styles.hymnCell}>
-                                  <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
-                                  <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
-                                </View>
-                              ))}
-                            </View>
-                          ))}
-                        </View>
-                      ))}
-                    </View>
-                  </ScrollView>
-                ) : null}
+          {/* ── Song credit: a linked song is acknowledged by title and artist ─── */}
+          {result.source ? (
+            <View style={styles.credit}>
+              {result.source.thumbnailUrl ? (
+                <Image source={{ uri: result.source.thumbnailUrl }} style={styles.creditThumb} />
+              ) : (
+                <View style={[styles.creditThumb, styles.creditThumbEmpty]}>
+                  <Ionicons name="musical-notes" size={16} color={colors.textMuted} />
+                </View>
+              )}
+              <View style={styles.creditBody}>
+                <Text style={styles.creditTitle} numberOfLines={1}>{result.source.title}</Text>
+                <Text style={styles.creditLine} numberOfLines={1}>Lead vocal, transcribed with NoteFusion</Text>
+              </View>
+            </View>
+          ) : null}
+          {result.source?.preview && result.source.notice ? (
+            <Text style={styles.notice}>{result.source.notice}</Text>
+          ) : result.truncated ? (
+            <Text style={styles.notice}>
+              {section
+                ? "Only the first part of the section you chose fit; the rest was left out."
+                : isPro
+                  ? "The first six minutes of the song were transcribed."
+                  : "Free preview: the first minute. Upgrade to Pro for the whole song and the PDF."}
+            </Text>
+          ) : null}
 
-                {(solfaStyle === "hymn" ? [] : activeSolfaLines).map((line, i) => (
+          {/* ── The numbers that matter ─────────────────────────────────── */}
+          <View style={styles.stats}>
+            <Stat
+              value={doh}
+              caption={rekeying ? "Saving" : "Doh"}
+              onPress={toggleKeyPicker}
+              active={pickingKey}
+              accessibilityLabel={`Key ${key}, doh is ${doh}. Change key`}
+            />
+            <Stat
+              value={String(tempo)}
+              caption="BPM"
+              onPress={() => {
+                setPickingTempo((p) => !p);
+                setPickingKey(false);
+                setPickingMeter(false);
+              }}
+              active={pickingTempo}
+              accessibilityLabel={`Tempo ${tempo} BPM. Change tempo`}
+            />
+            <Stat
+              value={timeSignature}
+              caption="Time"
+              onPress={() => {
+                setPickingMeter((p) => !p);
+                setPickingKey(false);
+                setPickingTempo(false);
+              }}
+              active={pickingMeter}
+              accessibilityLabel={`Time signature ${timeSignature}. Change meter`}
+            />
+            <Stat
+              value={String(surePct)}
+              unit="%"
+              caption="Sure"
+              color={confidenceColor(overallConfidence, colors)}
+              accessibilityLabel={`${surePct} percent sure`}
+            />
+          </View>
+
+          {pickingKey ? keyControls : null}
+
+          {/* ── Tempo picker (F-07) ────────────────────────────────────────── */}
+          {pickingTempo ? (
+            <View style={styles.panel}>
+              <Text style={styles.panelHint}>
+                Adjust playback tempo (20–300 BPM). Notes and beats realign in real time.
+              </Text>
+              <View style={styles.stepperRow}>
+                {[-5, -1].map((d) => (
+                  <Touchable
+                    key={d}
+                    onPress={() => handleTempoChange(Math.max(20, tempo + d))}
+                    style={styles.stepPill}
+                    radius={radii.pill}
+                    accessibilityLabel={`Decrease tempo by ${-d} BPM`}
+                  >
+                    <Text style={styles.stepText}>{d}</Text>
+                  </Touchable>
+                ))}
+                <Text style={styles.stepValue}>{tempo}</Text>
+                {[1, 5].map((d) => (
+                  <Touchable
+                    key={d}
+                    onPress={() => handleTempoChange(Math.min(300, tempo + d))}
+                    style={styles.stepPill}
+                    radius={radii.pill}
+                    accessibilityLabel={`Increase tempo by ${d} BPM`}
+                  >
+                    <Text style={styles.stepText}>+{d}</Text>
+                  </Touchable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {/* ── Meter picker ────────────────────────────────────────────────── */}
+          {pickingMeter ? (
+            <View style={styles.panel}>
+              <Text style={styles.panelHint}>
+                Select time signature. Re-groups bars for Curwen solfa and staff notation.
+              </Text>
+              <View style={styles.meterRow}>
+                {(["4/4", "3/4", "2/4", "6/8", "12/8"] as const).map((m) => (
+                  <Touchable
+                    key={m}
+                    onPress={() => handleMeterChange(m)}
+                    style={[styles.chip, styles.meterChip, timeSignature === m && styles.chipOn]}
+                    radius={radii.pill}
+                    accessibilityState={{ selected: timeSignature === m }}
+                    accessibilityLabel={`Set meter to ${m}`}
+                  >
+                    <Text style={[styles.chipText, timeSignature === m && styles.chipTextOn]}>{m}</Text>
+                  </Touchable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {/* ── How to read it: solfa by bar, the text grid, Curwen, hymn, stave ── */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.viewsScroll}
+            contentContainerStyle={styles.views}
+          >
+            {notationChoices.map((v) => {
+              const on = notationChoice === v.id;
+              return (
+                <Touchable
+                  key={v.id}
+                  onPress={() => {
+                    if (v.id === "staff") {
+                      setNotationView("staff");
+                    } else {
+                      setNotationView("solfa");
+                      setSolfaStyle(v.id);
+                    }
+                  }}
+                  style={[styles.viewChip, on && styles.viewChipOn]}
+                  radius={radii.pill}
+                  haptic="none"
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on }}
+                  accessibilityLabel={v.a11y}
+                >
+                  <Text style={[styles.viewChipText, on && styles.viewChipTextOn]}>{v.label}</Text>
+                </Touchable>
+              );
+            })}
+          </ScrollView>
+
+          {/* ── The notation, from the same note data whichever way it is read ── */}
+          <View style={styles.notation}>
+            {notationView === "solfa" ? (
+              // The mark, faint behind the solfa — the board's watermark.
+              <View pointerEvents="none" style={styles.watermark}>
+                <Mark height={200} color={colors.text} />
+              </View>
+            ) : null}
+            {notationView === "solfa" ? (
+              nothingToShow ? (
+                <Text style={styles.solfaMuted}>No solfa lines produced.</Text>
+              ) : solfaStyle === "bars" ? (
+                <>
+                  <SheetGrid
+                    notes={view.notes}
+                    lyrics={lyricsUnder}
+                    chords={chordView}
+                    timeSignature={timeSignature}
+                    barCount={barCount}
+                    playingNote={playingNote}
+                    onSelectNote={openNote}
+                  />
+                  <Text style={styles.gridHint}>Tap a syllable to fix it.</Text>
+                </>
+              ) : solfaStyle === "hymn" ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <View>
+                    <Text style={styles.solfaHeader}>{activeSolfaLines[0]}</Text>
+                    {hymn.map((bars, r) => (
+                      <View key={r} style={styles.hymnRow}>
+                        {bars.map((bar, b) => (
+                          <View key={b} style={styles.hymnBar}>
+                            {bar.map((cell, c) => (
+                              <View key={c} style={styles.hymnCell}>
+                                <Text style={styles.hymnSolfa}>{cell.solfa}</Text>
+                                <Text style={styles.hymnLyric} numberOfLines={1}>{cell.lyric}</Text>
+                              </View>
+                            ))}
+                          </View>
+                        ))}
+                      </View>
+                    ))}
+                  </View>
+                </ScrollView>
+              ) : (
+                activeSolfaLines.map((line, i) => (
                   <View key={i} style={styles.solfaLineWrap}>
-                    {/* Line number chip */}
                     {activeSolfaLines.length > 1 && (
                       <Text style={styles.solfaLineNum}>{i + 1}</Text>
                     )}
@@ -1408,383 +1419,241 @@ export function ResultScreen({ route, navigation }: Props) {
                       {chordLines?.[i]?.trim() ? (
                         <Text style={styles.chordLine}>{chordLines[i]}</Text>
                       ) : null}
-                      <Text
-                        style={[styles.solfaLine, i === 0 && styles.solfaLineFirst]}
-                      >
-                        {line}
-                      </Text>
+                      <Text style={[styles.solfaLine, i === 0 && styles.solfaHeader]}>{line}</Text>
                     </View>
                   </View>
-                ))}
-
-                {/* Decorative watermark: the NoteFusion mark, faint, bottom-right. */}
-                <Image
-                  source={require("../../assets/brand/mark.png")}
-                  style={styles.solfaWatermark}
-                  resizeMode="contain"
-                  tintColor={colors.accent}
-                  accessibilityIgnoresInvertColors
+                ))
+              )
+            ) : (
+              <View>
+                <ScoreView
+                  ref={scoreRef}
+                  notes={view.notes}
+                  timeSignature={result.timeSignature}
+                  musicalKey={key}
+                  cursorBeat={cursorBeat}
+                  onSelectNote={openNote}
                 />
-              </>
-            )
-          ) : (
-            <View>
-              <ScoreView
-                ref={scoreRef}
-                notes={view.notes}
-                timeSignature={result.timeSignature}
-                musicalKey={key}
-                cursorBeat={cursorBeat}
-                onSelectNote={openNote}
+                {/* A free account reads the sheet on screen with the preview mark; the
+                    download is the Pro half. */}
+                {!isPro ? (
+                  <View pointerEvents="none" style={styles.previewMark}>
+                    <Text style={styles.previewMarkText}>NoteFusion preview</Text>
+                  </View>
+                ) : null}
+              </View>
+            )}
+          </View>
+
+          {/* One amber row when the model doubted some notes. Tapping opens the piano on
+              the flagged piece: a doubtful note is a *pitch* question, and the fastest
+              answer to one is pressing the key and hearing it. */}
+          {lowCount > 0 && firstLow ? (
+            <Touchable
+              style={styles.check}
+              onPress={startReview}
+              scaleTo={motion.scale.row}
+              radius={16}
+              accessibilityLabel={`Review ${lowCount} low-confidence notes`}
+            >
+              <Text style={styles.checkText} numberOfLines={1}>
+                <Text style={styles.checkStrong}>
+                  {lowCount} note{lowCount > 1 ? "s" : ""} to check
+                </Text>
+                {` · ${firstLow.solfa}${firstLow.octaveMark} in bar ${barOf(firstLow, timeSignature)}`}
+              </Text>
+              <Ionicons name="chevron-forward" size={16} color={colors.warning} />
+            </Touchable>
+          ) : null}
+
+          {/* ── Actions ─────────────────────────────────────────────────────── */}
+          <View style={styles.actions}>
+            <Action icon="swap-vertical" label="Transpose" active={panel === "transpose"} onPress={() => togglePanel("transpose")} />
+            <Action icon="text-outline" label="Lyrics" active={panel === "lyrics"} onPress={() => togglePanel("lyrics")} />
+            <Action icon="people-outline" label="SATB" active={panel === "parts"} onPress={() => togglePanel("parts")} />
+            <Action icon="mic-outline" label="Sing" active={panel === "sing"} onPress={() => togglePanel("sing")} />
+            <Action icon="document-outline" label="Export" active={panel === "export"} onPress={() => togglePanel("export")} />
+            <Action icon="ellipsis-horizontal" label="More" onPress={openOptions} accessibilityLabel="Transcription options" />
+          </View>
+
+          {panel === "transpose" ? keyControls : null}
+
+          {/* ── Lyrics: the words under the solfa ──────────────────────────── */}
+          {panel === "lyrics" ? (
+            <View style={styles.panel}>
+              <TextField
+                label="Lyrics"
+                value={lyrics}
+                onChangeText={setLyrics}
+                onBlur={() => void commitLyrics()}
+                placeholder="A-ma-zing grace, how sweet the sound…"
+                multiline
+                numberOfLines={3}
               />
-              {/* A free account reads the sheet on screen with the preview mark; the
-                  download is the Pro half. */}
-              {!isPro ? (
-                <View pointerEvents="none" style={styles.previewMark}>
-                  <Text style={styles.previewMarkText}>NoteFusion preview</Text>
+              <Text style={styles.panelHint}>
+                Split syllables with hyphens (a-ma-zing); each syllable goes under the next note. Use grace_ to hold a syllable over two notes.
+              </Text>
+            </View>
+          ) : null}
+
+          {/* ── Voices: SATB under the tune ──────────────────────────────────── */}
+          {panel === "parts" ? (
+            <View style={styles.panel}>
+              <View style={styles.panelHeader}>
+                <Text style={styles.panelTitle}>
+                  {result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}
+                </Text>
+                {!isPro ? <ProTag /> : null}
+              </View>
+              {isPro && partsView ? (
+                partsView.map(({ name, lines }) => (
+                  <View key={name} style={styles.voice}>
+                    <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                      <Text style={styles.voiceLines}>{lines.slice(1).join("\n")}</Text>
+                    </ScrollView>
+                  </View>
+                ))
+              ) : isPro ? (
+                <>
+                  <Text style={styles.panelHint}>
+                    The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.
+                  </Text>
+                  <Button
+                    label="Write alto, tenor and bass"
+                    variant="secondary"
+                    icon="people-outline"
+                    loading={harmonising}
+                    onPress={() => void writeParts()}
+                    style={styles.panelButton}
+                  />
+                </>
+              ) : (
+                <Touchable
+                  onPress={() => navigation.navigate("Upgrade")}
+                  style={styles.teaser}
+                  radius={radii.md}
+                  accessibilityLabel="Unlock four-part harmony"
+                >
+                  <Text style={styles.teaserText}>
+                    Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir. Unlock with Pro →
+                  </Text>
+                </Touchable>
+              )}
+            </View>
+          ) : null}
+
+          {/* ── Sing it: a take, marked note by note ────────────────────────── */}
+          {panel === "sing" ? (
+            view.notes.length > 0 ? (
+              <SingAlong
+                melody={view.notes}
+                parts={isPro ? parts : null}
+                tempoBpm={tempo}
+                timeSignature={timeSignature}
+                isPro={isPro}
+                onRequirePro={() => void requirePro()}
+              />
+            ) : (
+              <Text style={styles.panelHint}>There are no notes to sing yet.</Text>
+            )
+          ) : null}
+
+          {/* ── Export & Share ─────────────────────────────────────────────────── */}
+          {panel === "export" ? (
+            <View style={styles.panel}>
+              <Text style={styles.panelHint}>
+                {isPro
+                  ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
+                  : "Sharing the solfa is free. PDF, MusicXML and MIDI downloads come with Pro."}
+              </Text>
+              <ExportRow
+                icon="link-outline"
+                label={shareToken ? "Share the link again" : "Share a link"}
+                onPress={() => void shareLink()}
+                busy={sharing}
+              />
+              {shareToken ? (
+                <View style={styles.sharedRow}>
+                  <Ionicons name="globe-outline" size={14} color={colors.success} />
+                  <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
+                  <Touchable onPress={stopSharing} disabled={sharing} accessibilityLabel="Stop sharing">
+                    <Text style={styles.sharedStop}>Stop</Text>
+                  </Touchable>
                 </View>
               ) : null}
-            </View>
-          )}
-        </View>
-      </View>
-
-      {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
-      {chordView ? (
-        <View style={styles.chordsBlock}>
-          <View style={styles.exportHeaderRow}>
-            <Ionicons name="musical-note-outline" size={16} color={colors.textMuted} />
-            <Text style={styles.exportTitle}>Chords</Text>
-          </View>
-          <Text style={styles.exportHint}>
-            As heard under the tune. The letter is the chord; the syllable beneath is its root in this key.
-          </Text>
-          <View style={styles.chordChips}>
-            {chordView.map((ch, i) => (
-              <View key={`${ch.startBeat}-${i}`} style={styles.chordChip} accessibilityLabel={`${ch.symbol}, ${ch.solfa}`}>
-                <Text style={styles.chordChipSymbol}>{ch.symbol}</Text>
-                <Text style={styles.chordChipSolfa}>{ch.solfa}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      ) : null}
-
-      {/* ── Lyrics: the words under the solfa ──────────────────────────── */}
-      <View style={styles.lyricsBlock}>
-        <TextField
-          label="Lyrics"
-          value={lyrics}
-          onChangeText={setLyrics}
-          onBlur={() => void commitLyrics()}
-          placeholder="A-ma-zing grace, how sweet the sound…"
-          multiline
-          numberOfLines={3}
-        />
-        <Text style={styles.lyricsHint}>
-          Split syllables with hyphens (a-ma-zing); each syllable goes under the next note. Use grace_ to hold a syllable over two notes.
-        </Text>
-      </View>
-
-      {/* ── Playback: hear the tune, or rehearse a part against the others ─ */}
-      {preview ? (
-        <NotePlayer
-          audioPreviewBase64={preview}
-          notes={view.notes}
-          tempoBpm={tempo}
-          timeSignature={timeSignature}
-          title={hasParts ? "Rehearse" : "Play back"}
-          onCurrentNoteChange={setPlayingNote}
-          voices={hasParts ? VOICES.filter((v) => v === "soprano" || parts?.[v]).map((v) => ({ name: v, on: voiceOn[v] })) : undefined}
-          onToggleVoice={(v) => setVoiceOn((s) => ({ ...s, [v]: !s[v] }))}
-          barCount={barCount}
-          style={styles.playerCard}
-        />
-      ) : null}
-
-
-      {/* ── Notes grid ───────────────────────────────────────────────────── */}
-      <View style={styles.sectionRow}>
-        <Text style={styles.sectionTitle}>
-          Notes <Text style={styles.sectionCount}>({view.notes.length})</Text>
-        </Text>
-        <Text style={styles.sectionHint}>Tap a note to fix it</Text>
-      </View>
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.notesScroll}
-        contentContainerStyle={styles.notesContent}
-      >
-        {view.notes.map((n, i) => {
-          const cc = confidenceColor(n.conf, colors);
-          return (
-            <Touchable
-              key={i}
-              onPress={() => openNote(i)}
-              accessibilityLabel={`Note ${i + 1}, ${n.solfa}, MIDI ${n.pitchMidi}. Tap to correct.`}
-              // No `radius` needed: `noteChip` already carries borderRadius plus
-              // overflow:hidden, so the ripple clips to the chip on its own.
-              style={[
-                styles.noteChip,
-                {
-                  borderColor: `${cc}55`,
-                  // Low confidence gets a more visible warning border
-                  borderWidth: n.conf < 0.5 ? 1.5 : 1,
-                },
-              ]}
-            >
-              {/* Solfa syllable */}
-              <Text style={styles.noteSolfa}>
-                {n.solfa}
-                {n.octaveMark}
-              </Text>
-
-              {/* MIDI number */}
-              <Text style={styles.noteMidi}>{n.pitchMidi}</Text>
-
-              {/* Confidence colour bar at the bottom */}
-              <View
-                style={[
-                  styles.noteConfBar,
-                  {
-                    backgroundColor: cc,
-                    shadowColor: cc,
-                  },
-                ]}
+              <ExportRow
+                icon="chatbubbles-outline"
+                label="Share Tonic Solfa text"
+                onPress={() => void handleExportSolfa()}
+                busy={exportingType === "solfa"}
               />
-            </Touchable>
-          );
-        })}
-      </ScrollView>
-
-      {/* ── Voices: SATB under the tune ──────────────────────────────────── */}
-      <View style={styles.voicesBlock}>
-        <View style={styles.exportHeaderRow}>
-          <Ionicons name="people-outline" size={16} color={colors.textMuted} />
-          <Text style={styles.exportTitle}>{result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}</Text>
-          {!isPro ? (
-            <View style={styles.proTag}>
-              <Text style={styles.proTagText}>PRO</Text>
+              <ExportRow
+                icon="document-outline"
+                label="Download PDF"
+                pro={!isPro}
+                onPress={() => void handleExportPdf()}
+                busy={exportingType === "pdf"}
+                disabled={!hasScore}
+              />
+              <ExportRow
+                icon="musical-notes-outline"
+                label="MIDI"
+                pro={!isPro}
+                onPress={() => void handleExportMidi()}
+                busy={exportingType === "midi"}
+                disabled={isPro && !result.midiBase64}
+              />
+              <ExportRow
+                icon="document-text-outline"
+                label="MusicXML"
+                pro={!isPro}
+                onPress={() => void exportScore()}
+                busy={exportingType === "musicxml"}
+                disabled={!hasScore}
+                last
+              />
             </View>
           ) : null}
-        </View>
-        {isPro && partsView ? (
-          partsView.map(({ name, lines }) => (
-            <View key={name} style={styles.voice}>
-              <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
-              <Text style={styles.voiceLines}>{lines.slice(1).join("\n")}</Text>
-            </View>
-          ))
-        ) : isPro ? (
-          <View style={styles.voicesTeaser}>
-            <Text style={styles.voicesTeaserText}>
-              The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.
-            </Text>
-            <Button
-              label="Write alto, tenor and bass"
-              variant="secondary"
-              icon="people-outline"
-              loading={harmonising}
-              onPress={() => void writeParts()}
-              style={styles.voicesButton}
-            />
-          </View>
-        ) : (
-          <Touchable onPress={() => navigation.navigate("Upgrade")} style={styles.voicesTeaser} accessibilityLabel="Unlock four-part harmony">
-            <Text style={styles.voicesTeaserText}>
-              Alto, tenor and bass parts, written under this tune the way a hymn arranger would — ready for your choir. Unlock with Pro →
-            </Text>
-          </Touchable>
-        )}
-      </View>
 
-      {/* ── Sing it: a take, marked note by note ────────────────────────── */}
-      {view.notes.length > 0 ? (
-        <SingAlong
-          melody={view.notes}
-          parts={isPro ? parts : null}
-          tempoBpm={tempo}
-          timeSignature={timeSignature}
-          isPro={isPro}
-          onRequirePro={() => void requirePro()}
-        />
-      ) : null}
-
-      {/* ── Export & Share ─────────────────────────────────────────────────── */}
-      <View style={styles.exportBlock}>
-        <View style={styles.exportHeaderRow}>
-          <Ionicons
-            name="share-social-outline"
-            size={16}
-            color={colors.textMuted}
-          />
-          <Text style={styles.exportTitle}>Export & Share</Text>
-        </View>
-        <Text style={styles.exportHint}>
-          {isPro
-            ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
-            : "Sharing the solfa is free. PDF, MusicXML and MIDI downloads come with Pro."}
-        </Text>
-
-        <View style={styles.exportButtonsRow}>
-          <Button
-            label={shareToken ? "Share the link again" : "Share a link"}
-            variant="primary"
-            icon="link-outline"
-            onPress={shareLink}
-            loading={sharing}
-            style={styles.exportButtonPrimary}
-          />
-          {shareToken ? (
-            <View style={styles.sharedRow}>
-              <Ionicons name="globe-outline" size={14} color={colors.success} />
-              <Text style={styles.sharedText}>Anyone with the link can open this sheet, with playback.</Text>
-              <Touchable onPress={stopSharing} disabled={sharing} accessibilityLabel="Stop sharing">
-                <Text style={styles.sharedStop}>Stop</Text>
-              </Touchable>
-            </View>
-          ) : null}
-          <Button
-            label="Share Tonic Solfa text"
-            variant="secondary"
-            icon="chatbubbles-outline"
-            onPress={handleExportSolfa}
-            loading={exportingType === "solfa"}
-            style={styles.exportButtonPrimary}
-          />
-          <Button
-            label={isPro ? "Download PDF" : "Download PDF · Pro"}
-            variant="secondary"
-            icon={isPro ? "document-outline" : "lock-closed-outline"}
-            onPress={handleExportPdf}
-            loading={exportingType === "pdf"}
-            disabled={!hasScore}
-            style={styles.exportButtonPrimary}
-          />
-          <View style={styles.exportSecondaryRow}>
-            <Button
-              label={isPro ? "MIDI" : "MIDI · Pro"}
-              variant="secondary"
-              icon={isPro ? "musical-notes-outline" : "lock-closed-outline"}
-              onPress={handleExportMidi}
-              loading={exportingType === "midi"}
-              disabled={isPro && !result.midiBase64}
-              style={styles.exportButtonHalf}
-            />
-            <Button
-              label={isPro ? "MusicXML" : "MusicXML · Pro"}
-              variant="secondary"
-              icon={isPro ? "document-text-outline" : "lock-closed-outline"}
-              onPress={exportScore}
-              loading={exportingType === "musicxml"}
-              disabled={!hasScore}
-              style={styles.exportButtonHalf}
-            />
-          </View>
-        </View>
-      </View>
-
-      {/* ── Save block ───────────────────────────────────────────────────── */}
-      {!savedId ? (
-        <View style={styles.saveBlock}>
-          {/* Divider */}
-          <View style={styles.divider} />
-
-          <Text style={styles.saveLabel}>Save to Library</Text>
-          <Text style={styles.saveHint}>
-            Give this transcription a name so you can find it later.
-          </Text>
-
-          <TextField
-            label="Title"
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Name this transcription…"
-          />
-
-          {/* Gradient primary save button */}
-          <Button
-            label="Save to Library"
-            icon="bookmark"
-            onPress={save}
-            loading={saving}
-            disabled={!title.trim()}
-          />
-        </View>
-      ) : (
-        /* ── Saved state ─────────────────────────────────────────────────── */
-        <View style={styles.saveBlock}>
-          <View style={styles.savedRow}>
-            <LinearGradient
-              colors={gradients.gold}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.savedIconCircle}
-            >
-              <Ionicons name="checkmark" size={18} color="#FFFFFF" />
-            </LinearGradient>
-            <View style={styles.savedTextBlock}>
-              <Text style={styles.savedTitle}>Saved to Library</Text>
-              <Text style={styles.savedSub}>
-                You can find it in the Library tab.
+          {/* ── Chords: the progression heard, symbol over its solfa ───────── */}
+          {chordView ? (
+            <View style={styles.chordsBlock}>
+              <Text style={styles.eyebrow}>Chords</Text>
+              <Text style={styles.panelHint}>
+                As heard under the tune. The letter is the chord; the syllable beneath is its root in this key.
               </Text>
+              <View style={styles.chordChips}>
+                {chordView.map((ch, i) => (
+                  <View key={`${ch.startBeat}-${i}`} style={styles.chordChip} accessibilityLabel={`${ch.symbol}, ${ch.solfa}`}>
+                    <Text style={styles.chordChipSymbol}>{ch.symbol}</Text>
+                    <Text style={styles.chordChipSolfa}>{ch.solfa}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
+          ) : null}
+        </ScrollView>
+      </KeyboardAvoider>
 
-          {/* Rename */}
-          <TextField
-            label="Title"
-            value={title}
-            onChangeText={setTitle}
-            placeholder="Name this transcription…"
-          />
-          <Button
-            label="Rename"
-            variant="secondary"
-            onPress={rename}
-            loading={renaming}
-            disabled={!title.trim() || title.trim() === committedTitle}
-          />
-        </View>
-      )}
+      {/* ── Playback: hear the tune; Rehearse to loop, slow down and mute parts ─ */}
+      {preview ? <PlayerDock practice={practice} onRehearse={() => setRehearsing(true)} /> : null}
 
-      {/* ── 3-Button Action Row (Image 2 Screen 3) ────────────────────── */}
-      <View style={styles.actionRow}>
-        <Touchable
-          style={styles.actionBtnOutline}
-          radius={radii.pill}
-          onPress={() => setPickingKey((p) => !p)}
-          accessibilityLabel="Re-key"
-        >
-          <Text style={styles.actionBtnOutlineText}>Re-key</Text>
-        </Touchable>
-
-        {/* Straight to the notes that need it when the model flagged some,
-            otherwise to the first note — the strip itself is the other way in. */}
-        <Touchable
-          style={styles.actionBtnOutline}
-          radius={radii.pill}
-          onPress={() => (lowCount > 0 ? startReview() : openNote(0))}
-          accessibilityLabel="Edit notes"
-        >
-          <Text style={styles.actionBtnOutlineText}>Edit</Text>
-        </Touchable>
-
-        <Touchable
-          style={styles.actionBtnSolid}
-          radius={radii.pill}
-          onPress={save}
-          disabled={saving}
-          // The deliberate one of the three. The success pattern fires from
-          // `save()` when the server confirms, not from this press.
-          haptic="medium"
-          accessibilityLabel="Save to library"
-        >
-          <Text style={styles.actionBtnSolidText}>{saving ? "Saving…" : "Save"}</Text>
-        </Touchable>
-      </View>
+      <RehearseView
+        visible={rehearsing}
+        onClose={() => setRehearsing(false)}
+        practice={practice}
+        notes={view.notes}
+        lyricsUnder={lyricsUnder}
+        timeSignature={timeSignature}
+        barCount={barCount}
+        title={shownTitle}
+        subtitle={subtitle}
+        thumbnailUrl={result.source?.thumbnailUrl}
+        doh={doh}
+        voices={hasParts ? VOICES.filter((v) => v === "soprano" || parts?.[v]).map((v) => ({ name: v, on: voiceOn[v] })) : undefined}
+        onToggleVoice={(v) => setVoiceOn((s) => ({ ...s, [v]: !s[v] }))}
+      />
 
       {/* ── Tap-to-correct sheet (F-07) ─────────────────────────────────── */}
       <NoteEditor
@@ -1806,46 +1675,173 @@ export function ResultScreen({ route, navigation }: Props) {
   );
 }
 
-// ─── SummaryStat sub-component ────────────────────────────────────────────────
+// ─── Small pieces ─────────────────────────────────────────────────────────────
 
-function SummaryStat({
+/** The board's 40px round icon button: surface fill, hairline border. */
+function IconButton({
   icon,
   label,
-  value,
-  accent,
   onPress,
+  busy,
+  tint,
+  active,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
+  onPress: () => void;
+  busy?: boolean;
+  tint?: string;
+  active?: boolean;
+}) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Touchable
+      onPress={onPress}
+      disabled={busy}
+      style={[styles.iconBtn, active && styles.iconBtnActive]}
+      radius={20}
+      hitSlop={6}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      {busy ? <ActivityIndicator size="small" color={colors.text} /> : <Ionicons name={icon} size={19} color={tint ?? colors.text} />}
+    </Touchable>
+  );
+}
+
+/** One figure in the stats row: big value, tiny uppercase caption. */
+function Stat({
+  value,
+  unit,
+  caption,
+  color,
+  onPress,
+  active,
+  accessibilityLabel,
+}: {
   value: string;
-  accent: string;
+  unit?: string;
+  caption: string;
+  color?: string;
   onPress?: () => void;
+  active?: boolean;
+  accessibilityLabel: string;
 }) {
   const styles = useThemedStyles(makeStyles);
-
   const body = (
     <>
-      {/* Tinted icon circle */}
-      <View style={[styles.statIconCircle, { backgroundColor: `${accent}18` }]}>
-        <Ionicons name={icon} size={14} color={accent} />
-      </View>
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
+      <Text style={[styles.statValue, color ? { color } : null]} numberOfLines={1} adjustsFontSizeToFit>
+        {value}
+        {unit ? <Text style={styles.statUnit}>{unit}</Text> : null}
+      </Text>
+      <Text style={[styles.statCaption, active && styles.statCaptionActive]}>{caption}</Text>
     </>
   );
-
-  // Only the interactive stat (Key) gets a touch target, so the other two
-  // don't advertise an affordance they don't have.
+  // Only the stats that change something get a touch target, so SURE doesn't
+  // advertise an affordance it doesn't have.
   return onPress ? (
     <Touchable
-      style={styles.statItem}
+      style={styles.stat}
       onPress={onPress}
-      accessibilityLabel={`${label}: ${value}`}
+      ripple={false}
+      accessibilityRole="button"
+      accessibilityState={{ expanded: !!active }}
+      accessibilityLabel={accessibilityLabel}
     >
       {body}
     </Touchable>
   ) : (
-    <View style={styles.statItem}>{body}</View>
+    <View style={styles.stat} accessible accessibilityLabel={accessibilityLabel}>
+      {body}
+    </View>
+  );
+}
+
+/** A round action with its name beneath. */
+function Action({
+  icon,
+  label,
+  onPress,
+  active,
+  accessibilityLabel,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+  active?: boolean;
+  accessibilityLabel?: string;
+}) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Touchable
+      onPress={onPress}
+      style={styles.action}
+      ripple={false}
+      accessibilityRole="button"
+      accessibilityState={active === undefined ? undefined : { expanded: active }}
+      accessibilityLabel={accessibilityLabel ?? label}
+    >
+      <View style={[styles.actionCircle, active && styles.actionCircleOn]}>
+        <Ionicons name={icon} size={20} color={active ? colors.accent : colors.text} />
+      </View>
+      <Text style={[styles.actionLabel, active && styles.actionLabelOn]} numberOfLines={1}>
+        {label}
+      </Text>
+    </Touchable>
+  );
+}
+
+function ProTag() {
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <View style={styles.proTag}>
+      <Text style={styles.proTagText}>PRO</Text>
+    </View>
+  );
+}
+
+/** A row in the export panel: icon, name, and a spinner, PRO tag or chevron at the end. */
+function ExportRow({
+  icon,
+  label,
+  onPress,
+  busy,
+  disabled,
+  pro,
+  last,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+  busy?: boolean;
+  disabled?: boolean;
+  pro?: boolean;
+  last?: boolean;
+}) {
+  const colors = useColors();
+  const styles = useThemedStyles(makeStyles);
+  return (
+    <Touchable
+      onPress={onPress}
+      disabled={disabled || busy}
+      style={[styles.exportRow, !last && styles.exportRowRule, disabled && styles.disabled]}
+      scaleTo={motion.scale.row}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: !!disabled, busy: !!busy }}
+      accessibilityLabel={pro ? `${label}, Pro` : label}
+    >
+      <Ionicons name={pro ? "lock-closed-outline" : icon} size={18} color={colors.accent} />
+      <Text style={styles.exportLabel}>{label}</Text>
+      {busy ? (
+        <ActivityIndicator size="small" color={colors.textMuted} />
+      ) : pro ? (
+        <ProTag />
+      ) : (
+        <Ionicons name="chevron-forward" size={16} color={colors.textFaint} />
+      )}
+    </Touchable>
   );
 }
 
@@ -1853,871 +1849,319 @@ function SummaryStat({
 
 const makeStyles = (c: Palette) =>
   StyleSheet.create({
-  // ── Header ────────────────────────────────────────────────────────────────
-
-  creditCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.md,
-    marginBottom: spacing.md,
-  },
-  creditThumb: { width: 56, height: 56, borderRadius: radii.md, backgroundColor: c.border },
-  creditTitle: { ...typography.label, color: c.text },
-  creditArtist: { ...typography.caption, color: c.textMuted, marginTop: 2 },
-  creditLine: { ...typography.caption, color: c.textFaint, marginTop: 4 },
-  truncatedNote: {
-    ...typography.caption,
-    color: c.accent,
-    backgroundColor: c.accentSoft,
-    borderRadius: radii.sm,
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  transposeBlock: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: c.borderLight },
-  transposeTitle: { ...typography.label, color: c.text, marginBottom: 4 },
-  transposeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginBottom: spacing.sm },
-  transposeStep: {
-    width: 40, height: 40, borderRadius: radii.pill, alignItems: "center", justifyContent: "center",
-    backgroundColor: c.surface, borderWidth: 1, borderColor: c.border,
-  },
-  transposeReadout: { flex: 1, alignItems: "center" },
-  transposeValue: { ...typography.title, color: c.text },
-  transposeUnit: { ...typography.caption, color: c.textMuted, marginTop: 2 },
-  rangeRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, paddingVertical: 4 },
-  rangeVoice: { ...typography.caption, color: c.textMuted, width: 64, textTransform: "capitalize" },
-  rangeSpan: { ...typography.mono, color: c.text, fontSize: 13, width: 84 },
-  rangeStatus: { ...typography.caption, flex: 1, fontFamily: fonts.semibold },
-  transposeApply: { marginTop: spacing.sm },
-  lyricsBlock: { marginBottom: spacing.lg },
-  lyricsHint: { ...typography.caption, color: c.textFaint, lineHeight: 17, marginTop: 4 },
-  hymnRow: { flexDirection: "row", marginBottom: spacing.sm },
-  hymnBar: { flexDirection: "row", borderLeftWidth: 1.5, borderLeftColor: c.text, paddingHorizontal: 4 },
-  hymnCell: { minWidth: 34, alignItems: "center", marginRight: 2 },
-  hymnSolfa: { ...typography.mono, color: c.text, fontSize: 15, fontWeight: "700" },
-  hymnLyric: { ...typography.caption, color: c.textMuted, fontSize: 10, minHeight: 14 },
-  sharedRow: {
-    flexDirection: "row", alignItems: "center", gap: spacing.xs,
-    backgroundColor: c.surfaceAlt, borderRadius: radii.sm, paddingVertical: 6, paddingHorizontal: spacing.sm,
-  },
-  sharedText: { ...typography.caption, color: c.textMuted, flex: 1, lineHeight: 16 },
-  sharedStop: { ...typography.caption, color: c.danger, fontFamily: fonts.semibold, paddingHorizontal: 4 },
-  voicesBlock: { marginTop: spacing.lg },
-  voice: { marginTop: spacing.sm, backgroundColor: c.surfaceAlt, borderRadius: radii.md, padding: spacing.md },
-  voiceName: { ...typography.label, color: c.textMuted, marginBottom: 4 },
-  voiceLines: { ...typography.mono, color: c.text, lineHeight: 22 },
-  voicesTeaser: { marginTop: spacing.sm, backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
-  voicesTeaserText: { ...typography.caption, color: c.accent, lineHeight: 18 },
-  voicesButton: { marginTop: spacing.sm, alignSelf: "flex-start" },
-  proTag: { marginLeft: "auto", backgroundColor: c.premiumSoft, borderRadius: radii.pill, paddingHorizontal: 8, paddingVertical: 2 },
-  proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
-  previewMark: {
-    position: "absolute",
-    right: spacing.sm,
-    bottom: spacing.sm,
-    backgroundColor: c.accentSoft,
-    borderRadius: radii.pill,
-    paddingVertical: 4,
-    paddingHorizontal: spacing.sm,
-    opacity: 0.9,
-  },
-  previewMarkText: { ...typography.caption, color: c.accent, fontFamily: fonts.semibold },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginTop: spacing.sm,
-    marginBottom: spacing.xl,
-  },
-
-  titleGroup: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-
-  pageTitle: {
-    fontSize: 20,
-    fontFamily: fonts.bold,
-    color: c.text,
-  },
-
-  proMark: {
-    width: 20,
-    height: 20,
-    borderRadius: radii.pill,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: c.premiumSoft,
-    borderWidth: 1,
-    borderColor: c.premiumBorder,
-  },
-
-  optionsBtn: {
-    padding: spacing.xs,
-  },
-
-  backBtn: {
-    padding: spacing.xs,
-  },
-
-  actionRow: {
-    flexDirection: "row",
-    gap: spacing.md,
-    marginTop: spacing.xl,
-    marginBottom: spacing.xl,
-  },
-
-  actionBtnOutline: {
-    flex: 1,
-    height: 48,
-    borderRadius: radii.pill,
-    backgroundColor: c.surface,
-    borderWidth: 1.5,
-    borderColor: c.accent,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  actionBtnOutlineText: {
-    fontSize: 15,
-    fontFamily: fonts.bold,
-    color: c.accent,
-  },
-
-  /** `ink`, not `accent`: a fill under white text, so it stays dark in both modes. */
-  actionBtnSolid: {
-    flex: 1,
-    height: 48,
-    borderRadius: radii.pill,
-    backgroundColor: c.ink,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  actionBtnSolidText: {
-    fontSize: 15,
-    fontFamily: fonts.bold,
-    color: c.onInk,
-  },
-
-  /** Glass circle back button. */
-  backCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  titleBlock: {
-    flex: 1,
-    marginHorizontal: spacing.md,
-  },
-
-  titleLabel: {
-    ...typography.caption,
-    color: c.textFaint,
-    textTransform: "uppercase",
-    letterSpacing: 1,
-    fontSize: 10,
-  },
-
-  titleMain: {
-    ...typography.title,
-    color: c.text,
-    fontSize: 22,
-    letterSpacing: -0.4,
-    marginTop: 1,
-  },
-
-  /** Compact confidence pill — top-right corner of the header. */
-  confPill: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth: 1,
-    borderRadius: radii.pill,
-    paddingVertical: 5,
-    paddingHorizontal: spacing.md,
-  },
-
-  confDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    marginRight: 5,
-    // Glow via shadow (set inline)
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-
-  confPillText: {
-    ...typography.caption,
-    fontSize: 12,
-    fontFamily: fonts.bold,
-  },
-
-  // ── Summary card ──────────────────────────────────────────────────────────
-
-  summaryCard: {
-    marginBottom: spacing.xl,
-  },
-
-  playerCard: {
-    marginBottom: spacing.xl,
-  },
-
-  gameButton: {
-    marginBottom: spacing.xl,
-  },
-
-  summaryRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingBottom: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: c.border,
-  },
-
-  /** Vertical divider between stat chips. */
-  summaryDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: c.border,
-  },
-
-  statItem: {
-    flex: 1,
-    alignItems: "center",
-    gap: 4,
-  },
-
-  statIconCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  statValue: {
-    ...typography.label,
-    color: c.text,
-    fontSize: 14,
-    fontFamily: fonts.bold,
-    textAlign: "center",
-  },
-
-  statLabel: {
-    ...typography.caption,
-    color: c.textFaint,
-    fontSize: 10,
-    textAlign: "center",
-  },
-
-  confRow: {
-    paddingTop: spacing.md,
-    alignItems: "center",
-  },
-
-  // ── Key picker (F-03 re-key) ───────────────────────────────────────────────
-
-  keyPicker: {
-    paddingTop: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: c.border,
-    paddingBottom: spacing.md,
-  },
-
-  keyPickerHint: {
-    ...typography.caption,
-    color: c.textMuted,
-    fontSize: 12,
-    lineHeight: 18,
-    marginBottom: spacing.sm,
-  },
-
-  keyPickerScroll: {
-    gap: spacing.xs,
-    paddingRight: spacing.md,
-  },
-
-  keyChip: {
-    paddingVertical: 7,
-    paddingHorizontal: spacing.md,
-    borderRadius: radii.pill,
-    backgroundColor: c.surface,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-
-  keyChipActive: {
-    overflow: "hidden",
-    borderWidth: 0,
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-
-  keyChipText: {
-    ...typography.caption,
-    color: c.textMuted,
-    fontSize: 12,
-  },
-
-  keyChipTextActive: {
-    ...typography.caption,
-    color: "#FFFFFF", // sits on the brand gradient
-    fontSize: 12,
-    fontFamily: fonts.bold,
-  },
-
-  tempoPicker: {
-    backgroundColor: c.surface,
-    borderRadius: radii.md,
-    padding: spacing.md,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-
-  tempoStepperRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: spacing.xs,
-  },
-
-  tempoStepBtn: {
-    backgroundColor: c.accentSoft,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: radii.sm,
-    minWidth: 44,
-    alignItems: "center",
-  },
-
-  tempoStepText: {
-    ...typography.caption,
-    fontFamily: fonts.bold,
-    color: c.text,
-    fontSize: 13,
-  },
-
-  tempoDisplayBadge: {
-    flex: 1,
-    backgroundColor: c.borderLight,
-    paddingVertical: spacing.sm,
-    borderRadius: radii.sm,
-    alignItems: "center",
-  },
-
-  tempoDisplayText: {
-    ...typography.body,
-    fontFamily: fonts.bold,
-    color: c.text,
-    fontSize: 14,
-  },
-
-  meterPicker: {
-    backgroundColor: c.surface,
-    borderRadius: radii.md,
-    padding: spacing.md,
-    marginBottom: spacing.lg,
-    borderWidth: 1,
-    borderColor: c.border,
-  },
-
-  meterPillsRow: {
-    flexDirection: "row",
-    gap: spacing.xs,
-    justifyContent: "space-between",
-  },
-
-  meterPill: {
-    flex: 1,
-    paddingVertical: spacing.sm,
-    borderRadius: radii.sm,
-    backgroundColor: c.accentSoft,
-    alignItems: "center",
-  },
-
-  meterPillActive: {
-    backgroundColor: c.purple,
-  },
-
-  meterPillText: {
-    ...typography.caption,
-    fontFamily: fonts.medium,
-    color: c.text,
-    fontSize: 13,
-  },
-
-  meterPillTextActive: {
-    color: "#FFFFFF",
-    fontFamily: fonts.bold,
-  },
-
-  pickerHint: {
-    ...typography.caption,
-    color: c.textMuted,
-    fontSize: 12,
-    marginBottom: spacing.sm,
-  },
-
-  /** Warning row — shown when some notes are < 50 % confidence. */
-  warnRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginTop: spacing.md,
-    paddingTop: spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: c.accentGlow,
-  },
-
-  warnDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: c.warning,
-    marginRight: spacing.sm,
-    marginTop: 3,
-    shadowColor: c.warning,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-
-  warnText: {
-    ...typography.caption,
-    color: c.warning,
-    flex: 1,
-    lineHeight: 18,
-    fontSize: 12,
-  },
-
-  /** The tappable half of the warn row — same amber, weighted so it reads as an action. */
-  warnLink: {
-    fontFamily: fonts.bold,
-    textDecorationLine: "underline",
-  },
-
-  // ── Solfa hero card ────────────────────────────────────────────────────────
-
-  solfaCardWrap: {
-    borderRadius: radii.lg,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: c.border,
-    marginBottom: spacing.xl,
-    // Blue glow
-    shadowColor: c.purple,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 8,
-  },
-
-  /** Gradient strip at the top of the solfa card. */
-  solfaHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm + 2,
-    gap: spacing.xs,
-  },
-
-  // The header strip and its badge sit on the brand gradient — white in both modes.
-  solfaHeaderLabel: {
-    ...typography.caption,
-    color: "#FFFFFF",
-    fontSize: 11,
-    fontFamily: fonts.bold,
-    letterSpacing: 1.5,
-    flex: 1,
-    marginLeft: 2,
-  },
-
-  /** Solfa / Staff segmented toggle inside the gradient header. */
-  viewToggle: {
-    flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.16)",
-    borderRadius: radii.pill,
-    padding: 2,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.24)",
-  },
-
-  viewToggleBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    paddingVertical: 3,
-    paddingHorizontal: spacing.sm,
-    borderRadius: radii.pill,
-  },
-
-  viewToggleBtnActive: {
-    backgroundColor: "rgba(255,255,255,0.28)",
-  },
-
-  viewToggleText: {
-    ...typography.caption,
-    color: "#FFFFFF",
-    fontSize: 11,
-    fontFamily: fonts.bold,
-  },
-
-  /** Glass card body — the main solfa display area. */
-  solfaBody: {
-    backgroundColor: c.accentSoft,
-    padding: spacing.xl,
-    minHeight: 120,
-    position: "relative",
-    overflow: "hidden",
-  },
-
-  solfaStyleBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: spacing.md,
-    paddingBottom: spacing.xs,
-    borderBottomWidth: 1,
-    borderBottomColor: c.borderLight,
-  },
-
-  solfaStyleLabel: {
-    ...typography.caption,
-    color: c.textMuted,
-    fontFamily: fonts.semibold,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-
-  solfaStylePills: {
-    flexDirection: "row",
-    backgroundColor: c.borderLight,
-    borderRadius: radii.pill,
-    padding: 2,
-    gap: 2,
-  },
-
-  solfaStylePill: {
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 3,
-    borderRadius: radii.pill,
-  },
-
-  solfaStylePillActive: {
-    backgroundColor: c.surface,
-  },
-
-  solfaStylePillText: {
-    ...typography.caption,
-    fontSize: 11,
-    fontFamily: fonts.medium,
-    color: c.textMuted,
-  },
-
-  solfaStylePillTextActive: {
-    fontFamily: fonts.bold,
-    color: c.text,
-  },
-
-  solfaLineWrap: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: spacing.md,
-  },
-
-  /** Optional line-number prefix for multi-line results. */
-  solfaLineNum: {
-    ...typography.caption,
-    color: c.textFaint,
-    fontSize: 11,
-    marginRight: spacing.sm,
-    marginTop: 3,
-    width: 14,
-    textAlign: "right",
-  },
-
-  solfaLine: {
-    ...typography.mono,
-    color: c.textMuted,
-    fontSize: 16,
-    lineHeight: 26,
-    flex: 1,
-    letterSpacing: 1,
-  },
-
-  /** Holds a chord line over its solfa line; takes the width `solfaLine` used to. */
-  solfaLineColumn: { flex: 1 },
-
-  /** Same face, size and tracking as `solfaLine`: the alignment is character for character. */
-  chordLine: {
-    ...typography.mono,
-    color: c.accent,
-    fontSize: 16,
-    lineHeight: 20,
-    letterSpacing: 1,
-  },
-
-  chordsBlock: { marginTop: spacing.lg },
-  chordChips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs },
-  chordChip: {
-    alignItems: "center",
-    minWidth: 44,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: 6,
-    borderRadius: radii.md,
-    backgroundColor: c.surfaceAlt,
-  },
-  chordChipSymbol: { ...typography.label, color: c.text },
-  chordChipSolfa: { ...typography.mono, color: c.textMuted, fontSize: 13, marginTop: 1 },
-
-  /** First line gets full Ink Navy — it's the primary solfa sequence.
-   *
-   *  Keeps `fontWeight` rather than a Poppins family: this overlays `solfaLine`,
-   *  which is monospaced so the syllables stay in columns. A proportional face
-   *  here would break that alignment, and monospace has no Poppins equivalent —
-   *  so the weight is still the only way to bold it, and still honoured. */
-  solfaLineFirst: {
-    color: c.text,
-    fontSize: 20,
-    fontWeight: "700",
-    letterSpacing: 2,
-    lineHeight: 30,
-    // Subtle brand text-shadow glow
-    textShadowColor: c.accentGlow,
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-  },
-
-  solfaMuted: {
-    ...typography.body,
-    color: c.textFaint,
-    fontStyle: "italic",
-  },
-
-  /** Decorative ghost of the brand mark — bottom-right watermark inside the card, the
-   *  same footprint the old note glyph had. Tinted the accent and faded by opacity, so
-   *  it reads as a watermark in both themes. */
-  solfaWatermark: {
-    position: "absolute",
-    right: spacing.xl,
-    bottom: 0,
-    width: 60,
-    height: 80,
-    opacity: 0.12,
-  },
-
-  // ── Section header ─────────────────────────────────────────────────────────
-
-  sectionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: spacing.md,
-  },
-
-  sectionTitle: {
-    ...typography.heading,
-    color: c.text,
-    fontSize: 16,
-    fontFamily: fonts.bold,
-  },
-
-  /** Quiet affordance for the chips below — they don't look tappable on their own. */
-  sectionHint: {
-    ...typography.caption,
-    color: c.textFaint,
-    fontSize: 11,
-  },
-
-  /** The "(12)" nested inside sectionTitle. It inherits the parent's family, so
-   *  lightening it takes an explicit regular face — a weight alone was dropped. */
-  sectionCount: {
-    color: c.textFaint,
-    fontFamily: fonts.regular,
-    fontSize: 14,
-  },
-
-  // ── Notes grid ─────────────────────────────────────────────────────────────
-
-  notesScroll: {
-    marginHorizontal: -spacing.xl,
-    marginBottom: spacing.xl,
-  },
-
-  notesContent: {
-    paddingHorizontal: spacing.xl,
-    gap: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-
-  /** Individual note chip — coloured border signals confidence level. */
-  noteChip: {
-    width: 60,
-    borderRadius: radii.md,
-    backgroundColor: c.surface,
-    alignItems: "center",
-    paddingTop: spacing.sm,
-    paddingBottom: 0,
-    overflow: "hidden",
-  },
-
-  noteSolfa: {
-    ...typography.label,
-    color: c.text,
-    fontSize: 15,
-    fontFamily: fonts.bold,
-  },
-
-  noteMidi: {
-    ...typography.caption,
-    color: c.textFaint,
-    marginVertical: spacing.xs,
-    fontSize: 10,
-  },
-
-  /** Coloured bar at the very bottom of the chip — glows to match confidence. */
-  noteConfBar: {
-    height: 3,
-    width: "100%",
-    // Shadow set inline via shadowColor
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.7,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-
-  // ── Export block ───────────────────────────────────────────────────────────
-
-  exportBlock: {
-    marginBottom: spacing.xl,
-    gap: spacing.xs,
-  },
-
-  exportHeaderRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.xs,
-  },
-
-  exportTitle: {
-    ...typography.heading,
-    color: c.text,
-    fontSize: 16,
-    fontFamily: fonts.bold,
-  },
-
-  exportHint: {
-    ...typography.body,
-    color: c.textMuted,
-    fontSize: 13,
-    lineHeight: 20,
-    marginBottom: spacing.sm,
-  },
-
-  exportButtonsRow: {
-    gap: spacing.sm,
-  },
-
-  exportButtonPrimary: {
-    width: "100%",
-  },
-
-  exportSecondaryRow: {
-    flexDirection: "row",
-    gap: spacing.sm,
-  },
-
-  exportButtonHalf: {
-    flex: 1,
-  },
-
-  // ── Save block ─────────────────────────────────────────────────────────────
-
-  saveBlock: {
-    marginTop: spacing.xs,
-    paddingBottom: spacing.xxl,
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: c.border,
-    marginBottom: spacing.xl,
-  },
-
-  saveLabel: {
-    ...typography.heading,
-    color: c.text,
-    fontSize: 18,
-    fontFamily: fonts.bold,
-    marginBottom: spacing.xs,
-  },
-
-  saveHint: {
-    ...typography.body,
-    color: c.textMuted,
-    fontSize: 13,
-    lineHeight: 20,
-    marginBottom: spacing.lg,
-  },
-
-  // ── Saved state ────────────────────────────────────────────────────────────
-
-  savedRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: spacing.xl,
-    backgroundColor: c.accentSoft,
-    borderWidth: 1,
-    borderColor: c.accentGlow,
-    borderRadius: radii.lg,
-    padding: spacing.lg,
-  },
-
-  savedIconCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: spacing.md,
-    // Light-blue glow
-    shadowColor: c.gold,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.6,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-
-  savedTextBlock: {
-    flex: 1,
-  },
-
-  savedTitle: {
-    ...typography.label,
-    color: c.text,
-    fontSize: 15,
-    fontFamily: fonts.bold,
-  },
-
-  savedSub: {
-    ...typography.caption,
-    color: c.textMuted,
-    marginTop: 2,
-    fontSize: 12,
-  },
-});
+    /** The ScrollView takes the gutter so the dock can sit over the full width. */
+    screen: { paddingHorizontal: 0, paddingBottom: 0 },
+    content: { paddingHorizontal: 22 },
+
+    // ── Top bar & title ───────────────────────────────────────────────────────
+    topBar: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginTop: 6,
+    },
+    topActions: { flexDirection: "row", gap: spacing.sm },
+    iconBtn: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    iconBtnActive: { borderColor: c.accentGlow },
+    title: {
+      fontFamily: fonts.semibold,
+      fontSize: 32,
+      lineHeight: 36,
+      letterSpacing: -1.2,
+      color: c.text,
+      marginTop: 16,
+    },
+    subtitle: { fontFamily: fonts.regular, fontSize: 13.5, color: c.textMuted, marginTop: 6 },
+
+    credit: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginTop: 14 },
+    creditThumb: { width: 36, height: 36, borderRadius: 10, backgroundColor: c.surfaceAlt },
+    creditThumbEmpty: { alignItems: "center", justifyContent: "center" },
+    creditBody: { flex: 1, minWidth: 0 },
+    creditTitle: { fontFamily: fonts.medium, fontSize: 13.5, color: c.text },
+    creditLine: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: 2 },
+    notice: {
+      fontFamily: fonts.regular,
+      fontSize: 12.5,
+      lineHeight: 18,
+      color: c.accentAlt,
+      backgroundColor: c.accentSoft,
+      borderRadius: 12,
+      paddingVertical: spacing.sm,
+      paddingHorizontal: spacing.md,
+      marginTop: 14,
+      overflow: "hidden",
+    },
+
+    // ── Stats row ─────────────────────────────────────────────────────────────
+    stats: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginTop: 18,
+      paddingVertical: 16,
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
+      borderColor: c.border,
+    },
+    stat: { minWidth: 56 },
+    statValue: {
+      fontFamily: fonts.medium,
+      fontSize: 30,
+      lineHeight: 34,
+      letterSpacing: -1.2,
+      color: c.text,
+    },
+    statUnit: { fontSize: 16, letterSpacing: 0 },
+    statCaption: {
+      fontFamily: fonts.medium,
+      fontSize: 10.5,
+      letterSpacing: 1.5,
+      textTransform: "uppercase",
+      color: c.textMuted,
+      marginTop: 6,
+    },
+    statCaptionActive: { color: c.accent },
+
+    // ── Panels (pickers, lyrics, parts, export, the name) ────────────────────
+    panel: {
+      marginTop: 14,
+      padding: spacing.lg,
+      gap: spacing.sm,
+      backgroundColor: c.surface,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    panelHeader: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    panelTitle: { ...typography.heading, fontSize: 16, color: c.text, flex: 1 },
+    panelEyebrow: {
+      fontFamily: fonts.medium,
+      fontSize: 12,
+      letterSpacing: 1.7,
+      textTransform: "uppercase",
+      color: c.textMuted,
+    },
+    panelHint: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: c.textMuted },
+    panelDivider: { height: 1, backgroundColor: c.border, marginVertical: spacing.sm },
+    panelButton: { marginTop: spacing.xs },
+    eyebrow: {
+      fontFamily: fonts.medium,
+      fontSize: 12,
+      letterSpacing: 1.7,
+      textTransform: "uppercase",
+      color: c.textMuted,
+      marginBottom: spacing.xs,
+    },
+    savedLine: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+    savedText: { fontFamily: fonts.medium, fontSize: 13, color: c.text, flex: 1 },
+
+    chipScroll: { gap: spacing.xs, paddingRight: spacing.md },
+    chip: {
+      paddingVertical: 8,
+      paddingHorizontal: 14,
+      borderRadius: radii.pill,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    /** `ink`, not `accent`: a fill under a white label, so it stays deep in both modes. */
+    chipOn: { backgroundColor: c.ink, borderColor: c.ink },
+    chipText: { fontFamily: fonts.medium, fontSize: 13, color: c.textMuted },
+    chipTextOn: { fontFamily: fonts.semibold, color: c.onInk },
+
+    transposeRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, marginVertical: spacing.xs },
+    roundStep: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    transposeReadout: { flex: 1, alignItems: "center" },
+    transposeValue: { fontFamily: typography.mono.fontFamily, fontSize: 28, color: c.text },
+    transposeUnit: { ...typography.caption, color: c.textMuted, marginTop: 2, textAlign: "center" },
+    rangeRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, paddingVertical: 2 },
+    rangeVoice: { ...typography.caption, color: c.textMuted, width: 64, textTransform: "capitalize" },
+    rangeSpan: { fontFamily: typography.mono.fontFamily, color: c.text, fontSize: 13, width: 84 },
+    rangeStatus: { ...typography.caption, flex: 1, fontFamily: fonts.semibold },
+
+    stepperRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: spacing.xs },
+    stepPill: {
+      minWidth: 48,
+      height: 40,
+      borderRadius: radii.pill,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    stepText: { fontFamily: typography.mono.fontFamily, fontSize: 13, color: c.text },
+    stepValue: { flex: 1, textAlign: "center", fontFamily: typography.mono.fontFamily, fontSize: 24, color: c.text },
+    meterRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
+    meterChip: { flexGrow: 1, alignItems: "center" },
+
+    // ── Notation ──────────────────────────────────────────────────────────────
+    viewsScroll: { marginTop: 14, marginHorizontal: -22 },
+    views: { paddingHorizontal: 22, gap: 6 },
+    viewChip: {
+      paddingVertical: 6,
+      paddingHorizontal: 13,
+      borderRadius: radii.pill,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    viewChipOn: { backgroundColor: c.surfaceAlt, borderColor: c.textFaint },
+    viewChipText: { fontFamily: fonts.medium, fontSize: 12.5, color: c.textMuted },
+    viewChipTextOn: { color: c.text },
+
+    notation: { marginTop: 10, minHeight: 120, position: "relative" },
+    watermark: { position: "absolute", right: -30, top: 30, opacity: 0.05 },
+    gridHint: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: spacing.sm },
+
+    solfaLineWrap: { flexDirection: "row", alignItems: "flex-start", marginBottom: spacing.md },
+    /** Optional line-number prefix for multi-line results. */
+    solfaLineNum: {
+      fontFamily: typography.mono.fontFamily,
+      color: c.textFaint,
+      fontSize: 10,
+      marginRight: spacing.sm,
+      marginTop: 5,
+      width: 14,
+      textAlign: "right",
+    },
+    /** Holds a chord line over its solfa line. */
+    solfaLineColumn: { flex: 1 },
+    solfaLine: {
+      fontFamily: typography.mono.fontFamily,
+      color: c.text,
+      fontSize: 16,
+      lineHeight: 26,
+      letterSpacing: 1,
+    },
+    /** The "Doh is F" line that heads every text layout. */
+    solfaHeader: {
+      fontFamily: typography.mono.fontFamily,
+      color: c.accent,
+      fontSize: 13,
+      lineHeight: 22,
+      letterSpacing: 1,
+    },
+    /** Same face, size and tracking as `solfaLine`: the alignment is character for character. */
+    chordLine: {
+      fontFamily: typography.mono.fontFamily,
+      color: c.accent,
+      fontSize: 16,
+      lineHeight: 20,
+      letterSpacing: 1,
+    },
+    solfaMuted: { ...typography.body, color: c.textFaint, fontStyle: "italic" },
+    hymnRow: { flexDirection: "row", marginBottom: spacing.sm },
+    hymnBar: { flexDirection: "row", borderLeftWidth: 1, borderLeftColor: c.border, paddingHorizontal: 4 },
+    hymnCell: { minWidth: 34, alignItems: "center", marginRight: 2 },
+    hymnSolfa: { fontFamily: typography.mono.fontFamily, color: c.text, fontSize: 15 },
+    hymnLyric: { fontFamily: fonts.regular, color: c.textMuted, fontSize: 10, minHeight: 14 },
+    previewMark: {
+      position: "absolute",
+      right: spacing.sm,
+      bottom: spacing.sm,
+      backgroundColor: c.accentSoft,
+      borderRadius: radii.pill,
+      paddingVertical: 4,
+      paddingHorizontal: spacing.sm,
+      opacity: 0.9,
+    },
+    previewMarkText: { ...typography.caption, color: c.accent, fontFamily: fonts.semibold },
+
+    // ── The amber row ─────────────────────────────────────────────────────────
+    check: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: spacing.sm,
+      marginTop: 14,
+      paddingVertical: 12,
+      paddingHorizontal: 14,
+      borderRadius: 16,
+      backgroundColor: c.premiumSoft,
+      borderWidth: 1,
+      borderColor: c.premiumBorder,
+    },
+    checkText: { flex: 1, fontFamily: fonts.regular, fontSize: 13, color: c.textMuted },
+    checkStrong: { fontFamily: fonts.semibold, color: c.warning },
+
+    // ── Actions ───────────────────────────────────────────────────────────────
+    actions: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 },
+    action: { alignItems: "center", gap: 6, flex: 1 },
+    actionCircle: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: c.surfaceAlt,
+      borderWidth: 1,
+      borderColor: c.border,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    actionCircleOn: { backgroundColor: c.accentSoft, borderColor: c.accentGlow },
+    actionLabel: { fontFamily: fonts.regular, fontSize: 11.5, color: c.textMuted },
+    actionLabelOn: { color: c.accent },
+
+    // ── Parts ─────────────────────────────────────────────────────────────────
+    voice: { paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: c.border },
+    voiceName: { ...typography.caption, color: c.textMuted, marginBottom: 4 },
+    voiceLines: { fontFamily: typography.mono.fontFamily, fontSize: 14, color: c.text, lineHeight: 22 },
+    teaser: { backgroundColor: c.accentSoft, borderRadius: radii.md, padding: spacing.md },
+    teaserText: { fontFamily: fonts.regular, fontSize: 13, color: c.accentAlt, lineHeight: 19 },
+    proTag: {
+      backgroundColor: c.premiumSoft,
+      borderRadius: radii.pill,
+      paddingHorizontal: 8,
+      paddingVertical: 2,
+    },
+    proTagText: { ...typography.caption, color: c.premium, fontFamily: fonts.semibold, fontSize: 10 },
+
+    // ── Export ────────────────────────────────────────────────────────────────
+    exportRow: { flexDirection: "row", alignItems: "center", gap: spacing.md, paddingVertical: 13 },
+    exportRowRule: { borderBottomWidth: 1, borderBottomColor: c.border },
+    exportLabel: { flex: 1, fontFamily: fonts.medium, fontSize: 14.5, color: c.text },
+    disabled: { opacity: 0.4 },
+    sharedRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: spacing.xs,
+      backgroundColor: c.surfaceAlt,
+      borderRadius: 12,
+      paddingVertical: 8,
+      paddingHorizontal: spacing.md,
+    },
+    sharedText: { ...typography.caption, color: c.textMuted, flex: 1, lineHeight: 16 },
+    sharedStop: { ...typography.caption, color: c.danger, fontFamily: fonts.semibold, paddingHorizontal: 4 },
+
+    // ── Chords ────────────────────────────────────────────────────────────────
+    chordsBlock: { marginTop: 22, gap: spacing.xs },
+    chordChips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.xs, marginTop: spacing.xs },
+    chordChip: {
+      alignItems: "center",
+      minWidth: 44,
+      paddingHorizontal: spacing.sm,
+      paddingVertical: 6,
+      borderRadius: 12,
+      backgroundColor: c.surface,
+      borderWidth: 1,
+      borderColor: c.border,
+    },
+    chordChipSymbol: { fontFamily: fonts.semibold, fontSize: 14, color: c.text },
+    chordChipSolfa: { fontFamily: typography.mono.fontFamily, color: c.accent, fontSize: 13, marginTop: 1 },
+  });

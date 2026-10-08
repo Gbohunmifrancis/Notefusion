@@ -10,6 +10,11 @@ namespace NoteFusion.Application.Library.Dtos;
 /// MusicXML for staff engraving and export. Sent on detail reads only — a list of
 /// scores would dominate the payload — so it is null wherever Notes is null.
 /// </param>
+/// <param name="Preview">
+/// The opening notes, labelled, on every read: enough for a list row to show how the
+/// song starts ("d r m f │ s") so a sheet is recognisable at a glance, at a fraction of
+/// the full note list.
+/// </param>
 public sealed record SavedTranscriptionDto(
     Guid Id,
     string Title,
@@ -25,7 +30,8 @@ public sealed record SavedTranscriptionDto(
     string? PartsMusicXml = null,
     string? ShareToken = null,
     string? Folder = null,
-    IReadOnlyList<ChordSymbolDto>? Chords = null);
+    IReadOnlyList<ChordSymbolDto>? Chords = null,
+    IReadOnlyList<NoteEventDto>? Preview = null);
 
 /// <summary>A sheet behind a public link: what a chorister who follows it sees, with no account.</summary>
 public sealed record SharedSheetDto(
@@ -52,6 +58,9 @@ public sealed record SharedFolderDto(string Folder, string SharedBy, IReadOnlyLi
 
 public static class SavedTranscriptionMapper
 {
+    /// <summary>How many opening notes a list row gets: about two bars of a hymn tune.</summary>
+    public const int PreviewNotes = 8;
+
     public static SavedTranscriptionDto ToDto(Transcription t, bool includeNotes)
         => new(
             t.Id,
@@ -68,7 +77,8 @@ public static class SavedTranscriptionMapper
             includeNotes ? t.PartsMusicXml : null,
             t.ShareToken,
             t.Folder,
-            includeNotes ? ChordLabels.Label(t.Chords, t.Key) : null);
+            includeNotes ? ChordLabels.Label(t.Chords, t.Key) : null,
+            SolfaLabels.Label(t.Notes.Take(PreviewNotes).ToList(), t.Key));
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(

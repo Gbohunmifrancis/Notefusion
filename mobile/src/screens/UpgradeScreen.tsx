@@ -37,6 +37,7 @@ import { useSubscription } from "../lib/subscription";
 import { PRO_FEATURES } from "../lib/proFeatures";
 import type { AuthUser, MyProfile, Plan, Subscription } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
+import { tierOf } from "../lib/planTier";
 
 type Props = { navigation: any; route?: any };
 
@@ -74,14 +75,6 @@ const PRO_BENEFITS: {
     desc: "Never queued behind anyone, and sing a take to have every note marked.",
   },
 ];
-
-/** "Monthly" or "Yearly" from the plan's name or code, for the member card. */
-function tierOf(subscription: Subscription): string {
-  const label = `${subscription.planName ?? ""} ${subscription.planCode ?? ""}`.toLowerCase();
-  if (label.includes("year")) return "Yearly";
-  if (label.includes("month")) return "Monthly";
-  return "Pro";
-}
 
 /**
  * "$4.99", "₦7,500", or "SEK 49.00" for a currency we know no symbol for. Two tiers are on sale in
