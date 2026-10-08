@@ -22,7 +22,16 @@ jobs:
             echo "== containers"; docker ps -a
             echo "== stats"; docker stats --no-stream
             for c in $(docker ps --format '{{.Names}}'); do echo "== logs $c"; docker logs "$c" --tail 60 2>&1 | grep -v "GET /healthz" | tail -60; done
-            echo "== worker: link and yt-dlp lines (last 40)"; docker logs notefusion-prod-transcriber-1 2>&1 | grep -i -E "yt-dlp|link job|journal|recover" | tail -40
+            echo "== worker: job, link and yt-dlp lines (last 60, with times)"; docker logs -t notefusion-prod-transcriber-1 2>&1 | grep -i -E "yt-dlp|link job|journal|recover|job [0-9a-f]{8}|vocal engine|accompaniment|transcription_completed|warning|error" | grep -v "GET /healthz" | tail -60 | cut -c1-400
+            # What the last few transcriptions came out as: the activity log's own columns, then the
+            # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
+            # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
+            echo "== recent transcription logs (newest first)"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Client\" AS client, \"Kind\" AS kind, \"Mode\" AS mode, \"Status\" AS status, round(\"AudioSeconds\"::numeric,1) AS secs, \"TimeSignatureRequested\" AS meter_req, \"TempoRequested\" AS tempo_req, \"KeyRequested\" AS key_req, \"DetectedKey\" AS key, \"DetectedTempo\" AS tempo, \"NoteCount\" AS notes, round(\"Confidence\"::numeric,2) AS conf, left(\"FailureReason\",60) AS failure FROM transcription_logs ORDER BY \"CreatedAtUtc\" DESC LIMIT 8;" || true
+            echo "== newest finished jobs: what the sheet says"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT left(\"JobId\",8) AS job, to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, r->>'key' AS key, r->>'tempo' AS tempo, r->>'timeSignature' AS meter, round((r->>'overallConfidence')::numeric,2) AS conf, round((r->>'keyConfidence')::numeric,2) AS keyconf, r->>'beatOriginSec' AS origin, jsonb_array_length(r->'notes') AS notes, r->>'separated' AS sep, r->>'pitchRefined' AS refined, r->>'songDurationSec' AS song FROM (SELECT \"JobId\",\"CreatedAtUtc\",\"ResultJson\"::jsonb AS r FROM transcription_jobs WHERE \"ResultJson\" IS NOT NULL ORDER BY \"CreatedAtUtc\" DESC LIMIT 4) j;" || true
+            echo "== newest finished job: the first notes and the solfa lines"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -x -c "SELECT left(\"JobId\",8) AS job, (SELECT string_agg((n->>'pitchMidi')||'@'||(n->>'startBeat')||'x'||(n->>'durBeats'), ' ' ORDER BY i) FROM jsonb_array_elements(r->'notes') WITH ORDINALITY AS t(n,i) WHERE i <= 90) AS first_notes, left((SELECT string_agg(x, ' | ') FROM jsonb_array_elements_text(r->'solfaLines') x), 700) AS solfa FROM (SELECT \"JobId\",\"ResultJson\"::jsonb AS r FROM transcription_jobs WHERE \"ResultJson\" IS NOT NULL ORDER BY \"CreatedAtUtc\" DESC LIMIT 1) j;" || true
             echo "== cookies file"; ls -la /opt/notefusion/ytdlp-cookies.txt 2>/dev/null || echo "no cookies file"
             # What YouTube answers the worker right now, with the proof-of-origin tokens it runs with:
             # the default player clients, then the tv_embedded fallback, then the cookies if there are any.
