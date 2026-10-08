@@ -293,6 +293,8 @@ export interface SavedTranscription {
   folder?: string | null;
   /** The chords heard under the tune, named for the stored key. Detail reads only. */
   chords?: ChordSymbol[] | null;
+  /** The opening notes (up to eight), labelled, on every read: a list row's "d r m f │ s". */
+  preview?: NoteEvent[] | null;
 }
 
 // --- Billing ------------------------------------------------------------

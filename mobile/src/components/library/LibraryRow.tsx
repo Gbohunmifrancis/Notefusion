@@ -7,6 +7,7 @@ import { useColors, useThemedStyles } from "../../lib/theme";
 import { parseKey, dohPitchClass } from "../../lib/solfa";
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette } from "../../design/theme";
 import type { SavedTranscription } from "../../api/types";
+import { solfaOpening } from "../../lib/solfaOpening";
 
 /** Doh names as key signatures spell them — "Bb", not "A#" — for la-based minor keys. */
 const DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
@@ -45,6 +46,7 @@ export function LibraryRow({
   const pct = Math.round(item.overallConfidence * 100);
   const tone = confidenceColor(item.overallConfidence, colors);
   const doh = dohLetter(item.key);
+  const opening = solfaOpening(item.preview ?? item.notes, item.timeSignature);
 
   return (
     <Touchable
@@ -75,9 +77,18 @@ export function LibraryRow({
         <Text style={styles.title} numberOfLines={1}>
           {item.title}
         </Text>
-        <Text style={styles.subtitle} numberOfLines={1}>
-          {subtitle}
-        </Text>
+        {/* The song's opening in solfa when the list carries it, so a row is
+            recognisable by how it starts; the date and folder otherwise. */}
+        {opening ? (
+          <Text style={styles.solfa} numberOfLines={1}>
+            {opening.first}
+            {opening.rest ? ` │ ${opening.rest}` : ""}
+          </Text>
+        ) : (
+          <Text style={styles.subtitle} numberOfLines={1}>
+            {subtitle}
+          </Text>
+        )}
       </View>
       <View style={styles.score}>
         <View style={[styles.scoreDot, { backgroundColor: tone }]} />
@@ -153,6 +164,13 @@ const makeStyles = (c: Palette) =>
       fontSize: 15,
       letterSpacing: -0.15,
       color: c.text,
+    },
+    solfa: {
+      marginTop: 3,
+      fontSize: 13,
+      letterSpacing: 0.4,
+      fontFamily: typography.mono.fontFamily,
+      color: c.accent,
     },
     subtitle: {
       fontFamily: fonts.regular,

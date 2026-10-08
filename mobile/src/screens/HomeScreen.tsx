@@ -32,6 +32,7 @@ import { confidenceColor, fonts, motion, radii, spacing, typography, type Palett
 import { useThemedStyles, useColors } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
 import type { RootStackParams, TabParams } from '../navigation/types';
+import { solfaOpening } from '../lib/solfaOpening';
 
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
@@ -58,23 +59,6 @@ function dohLetter(keyText: string): string {
   if (key.mode === 'minor') return DOH_NAMES[dohPitchClass(key)]!;
   const tonic = keyText.trim().split(/\s+/)[0]!.replace('-', 'b');
   return tonic[0]!.toUpperCase() + tonic.slice(1);
-}
-
-/**
- * The opening of a sheet in solfa: the first bar, then the start of the next after a
- * bar line, so a row reads like the top of the page. Null when the row carries no
- * notes — the library list leaves them out, so this only fills in when they are there.
- */
-function solfaOpening(item: SavedTranscription): { first: string; rest: string } | null {
-  const notes = [...(item.notes ?? [])].sort((a, b) => a.startBeat - b.startBeat).slice(0, 8);
-  if (notes.length === 0) return null;
-  const [num, den] = item.timeSignature.split('/').map(Number);
-  const perBar = num && den ? (num * 4) / den : 4;
-  const firstBar = Math.floor(notes[0]!.startBeat / perBar);
-  const label = (n: (typeof notes)[number]) => n.solfa + n.octaveMark;
-  const inFirst = notes.filter((n) => Math.floor(n.startBeat / perBar) === firstBar);
-  const after = notes.slice(inFirst.length, inFirst.length + 4);
-  return { first: inFirst.map(label).join(' '), rest: after.map(label).join(' ') };
 }
 
 /**
@@ -486,7 +470,7 @@ export function HomeScreen({ navigation }: Props) {
         }
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => {
-          const opening = solfaOpening(item);
+          const opening = solfaOpening(item.notes ?? item.preview, item.timeSignature);
           const tone = confidenceColor(item.overallConfidence, colors);
           return (
             <Touchable
