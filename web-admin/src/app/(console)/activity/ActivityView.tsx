@@ -1,12 +1,14 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Search } from "lucide-react";
+import { CreditCard, LogIn, Music2, Save, Search, UserRoundPlus, Zap } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { getCheckoutFunnel, getTranscriptionLog } from "@/api/endpoints";
-import type { CategoryCount, TranscriptionLogFilters } from "@/api/types";
+import { getActivityFeed, getCheckoutFunnel, getTranscriptionLog } from "@/api/endpoints";
+import type { CategoryCount, FeedItem, FeedKind, TranscriptionLogFilters } from "@/api/types";
 import { TranscriptionLogTable } from "@/components/activity/TranscriptionLogTable";
 import { Badge } from "@/components/Badge";
 import { Card } from "@/components/Card";
@@ -17,7 +19,7 @@ import type { Range } from "@/components/RangePicker";
 import { Segmented } from "@/components/Segmented";
 import { StateView } from "@/components/StateView";
 import { Input } from "@/components/ui/input";
-import { addDays, formatBytes, formatInstantDateTime, reportingToday } from "@/lib/format";
+import { addDays, formatBytes, formatInstantDateTime, formatRelative, reportingToday } from "@/lib/format";
 import { getReportingOffset } from "@/lib/reporting";
 import { useClampPage } from "@/lib/useClampPage";
 import { useDebounced } from "@/lib/useDebounced";
@@ -26,10 +28,23 @@ const PAGE_SIZE = 20;
 const SELECT =
   "h-9 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground shadow-xs outline-none";
 
-type Tab = "transcriptions" | "checkout";
+type Tab = "feed" | "transcriptions" | "checkout";
+const TABS: readonly Tab[] = ["feed", "transcriptions", "checkout"];
 
 export function ActivityView() {
-  const [tab, setTab] = useState<Tab>("transcriptions");
+  const requested = useSearchParams().get("tab");
+  const [tab, setTabState] = useState<Tab>(TABS.includes(requested as Tab) ? (requested as Tab) : "feed");
+  // Kept in the address so a link (the overview's "View all") and a reload land on the same tab.
+  const setTab = (next: Tab) => {
+    setTabState(next);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", next);
+      window.history.replaceState(window.history.state, "", url.pathname + url.search);
+    } catch {
+      /* the tab still changes; only the address does not */
+    }
+  };
   return (
     <div className="animate-fade-in space-y-5">
       <PageHeader
@@ -39,6 +54,7 @@ export function ActivityView() {
           <Segmented
             label="Activity view"
             options={[
+              { value: "feed", label: "Feed" },
               { value: "transcriptions", label: "Transcriptions" },
               { value: "checkout", label: "Checkout" },
             ]}
@@ -47,7 +63,119 @@ export function ActivityView() {
           />
         }
       />
-      {tab === "transcriptions" ? <TranscriptionsTab /> : <CheckoutTab />}
+      {tab === "feed" ? <FeedTab /> : tab === "transcriptions" ? <TranscriptionsTab /> : <CheckoutTab />}
+    </div>
+  );
+}
+
+/* ── The full user activity feed ─────────────────────────────────────────── */
+
+const FEED_ICONS: Record<FeedKind, LucideIcon> = {
+  signup: UserRoundPlus,
+  login: LogIn,
+  transcription: Music2,
+  saved: Save,
+  payment: CreditCard,
+  action: Zap,
+};
+
+const FEED_TONE: Record<FeedItem["tone"], string> = {
+  ok: "bg-muted text-muted-foreground",
+  warn: "bg-warning/15 text-warning-deep",
+  error: "bg-danger/15 text-danger-deep",
+};
+
+function FeedTab() {
+  const [kind, setKind] = useState<FeedKind | "">("");
+  const [page, setPage] = useState(1);
+  useEffect(() => setPage(1), [kind]);
+
+  const state = useQuery({
+    queryKey: ["activity-feed", page, kind],
+    queryFn: ({ signal }) => getActivityFeed(page, 30, kind || undefined, signal),
+    placeholderData: keepPreviousData,
+  });
+  useClampPage(page, state.data?.totalPages, setPage);
+  const offset = getReportingOffset();
+  const now = Date.now();
+
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="max-w-2xl text-[13px] text-muted-foreground">
+          Everything users do, newest first: sign-ups, sign-ins, every transcription asked for (saved or not),
+          saved sheets, payments, and the actions signed-in web users take. Sign-ins show each account&apos;s
+          latest only.
+        </p>
+        <select aria-label="Type" value={kind} onChange={(e) => setKind(e.target.value as FeedKind | "")} className={SELECT}>
+          <option value="">Everything</option>
+          <option value="signup">Sign-ups</option>
+          <option value="login">Sign-ins</option>
+          <option value="transcription">Transcriptions</option>
+          <option value="saved">Saved sheets</option>
+          <option value="payment">Payments</option>
+          <option value="action">Web app actions</option>
+        </select>
+      </div>
+
+      <Card bleed>
+        <StateView
+          state={state}
+          isEmpty={(d) => d.items.length === 0}
+          emptyMessage="No activity recorded yet"
+          loadingLabel="Loading activity"
+        >
+          {(d) => (
+            <>
+              <ol className="divide-y divide-border">
+                {d.items.map((item, index) => {
+                  const Icon = FEED_ICONS[item.kind] ?? Zap;
+                  return (
+                    <li key={`${item.atUtc}-${item.kind}-${index}`} className="flex items-start gap-3 px-5 py-3">
+                      <span className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg ${FEED_TONE[item.tone]}`}>
+                        <Icon className="size-4" aria-hidden="true" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[13px] font-semibold text-foreground [overflow-wrap:anywhere]">{item.title}</div>
+                        <div className="text-xs text-muted-foreground [overflow-wrap:anywhere]">
+                          {item.userId ? (
+                            <Link href={`/users/${item.userId}`} className="font-medium text-foreground hover:text-brand">
+                              {item.userName || item.userEmail || "Account"}
+                            </Link>
+                          ) : (
+                            "Anonymous visitor"
+                          )}
+                          {item.country && ` · ${item.country}`}
+                          {item.detail && (
+                            <span className={item.tone === "error" ? "text-danger-deep" : undefined}> · {item.detail}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-right text-[11px] text-muted-foreground">
+                        <div>{formatRelative(item.atUtc, now)}</div>
+                        <div className="tabular-nums">{formatInstantDateTime(item.atUtc, offset)}</div>
+                        {item.userId && (
+                          <Link href={`/activity/journey?userId=${item.userId}`} className="text-brand hover:underline">
+                            Journey
+                          </Link>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+              <Pager
+                page={d.page}
+                pageSize={d.pageSize}
+                totalCount={d.totalCount}
+                totalPages={d.totalPages}
+                busy={state.isFetching}
+                onPage={setPage}
+              />
+            </>
+          )}
+        </StateView>
+      </Card>
     </div>
   );
 }

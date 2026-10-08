@@ -854,3 +854,18 @@ export interface CheckoutFunnel {
   pageErrors: CategoryCount[];
   recentProblems: CheckoutProblem[];
 }
+
+export type FeedKind = "signup" | "login" | "transcription" | "saved" | "payment" | "action";
+
+/** One entry in the full user activity feed (C# FeedItemDto). */
+export interface FeedItem {
+  atUtc: string;
+  kind: FeedKind;
+  title: string;
+  detail: string | null;
+  tone: "ok" | "warn" | "error";
+  userId: string | null;
+  userName: string | null;
+  userEmail: string | null;
+  country: string | null;
+}
