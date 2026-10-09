@@ -103,7 +103,7 @@ export function SplashScreen({ play = "still" }: Props) {
               toValue: 1,
               duration: 320,
               delay: 100,
-              easing: Easing.out(Easing.back(1.6)),
+              easing: Easing.out(Easing.cubic),
               useNativeDriver: true,
             })),
           ),

@@ -8,6 +8,7 @@ import {
   View,
   type ViewStyle,
 } from "react-native";
+import { useReducedMotion } from "react-native-reanimated";
 import { radii, spacing } from "../design/theme";
 import { useColors } from "../lib/theme";
 
@@ -30,8 +31,14 @@ export function Skeleton({
 }: SkeletonProps) {
   const colors = useColors();
   const pulse = useRef(new Animated.Value(0.4)).current;
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    // Reduce motion: a still placeholder at mid opacity still reads as loading.
+    if (reduceMotion) {
+      pulse.setValue(0.6);
+      return;
+    }
     const animation = Animated.loop(
       Animated.sequence([
         Animated.timing(pulse, {
@@ -50,7 +57,7 @@ export function Skeleton({
     );
     animation.start();
     return () => animation.stop();
-  }, [pulse]);
+  }, [pulse, reduceMotion]);
 
   return (
     <Animated.View

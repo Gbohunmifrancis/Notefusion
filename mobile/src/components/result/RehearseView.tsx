@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Touchable } from "../Touchable";
 import { Glow } from "../night/NightUI";
+import * as haptics from "../../lib/haptics";
 import { fonts, motion, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
 import type { VoiceName } from "../../lib/choir";
@@ -220,10 +221,13 @@ export function RehearseView({
           <View style={styles.transport}>
             <View style={styles.speed}>
               <Pressable
-                onPress={() => p.stepRate(-1)}
+                onPress={() => {
+                  haptics.play("light");
+                  p.stepRate(-1);
+                }}
                 disabled={p.rate <= RATE_STEPS[0]!}
                 hitSlop={6}
-                style={styles.speedStep}
+                style={({ pressed }) => [styles.speedStep, pressed && styles.speedStepPressed]}
                 accessibilityRole="button"
                 accessibilityLabel="Slower"
               >
@@ -231,10 +235,13 @@ export function RehearseView({
               </Pressable>
               <Text style={styles.speedText}>{p.rate}×</Text>
               <Pressable
-                onPress={() => p.stepRate(1)}
+                onPress={() => {
+                  haptics.play("light");
+                  p.stepRate(1);
+                }}
                 disabled={p.rate >= RATE_STEPS[RATE_STEPS.length - 1]!}
                 hitSlop={6}
-                style={styles.speedStep}
+                style={({ pressed }) => [styles.speedStep, pressed && styles.speedStepPressed]}
                 accessibilityRole="button"
                 accessibilityLabel="Faster"
               >
@@ -426,6 +433,7 @@ const makeStyles = (c: Palette) =>
       backgroundColor: c.surface,
     },
     speedStep: { width: 28, height: "100%", alignItems: "center", justifyContent: "center" },
+    speedStepPressed: { opacity: 0.55 },
     speedText: {
       fontFamily: typography.mono.fontFamily,
       fontSize: 13,
