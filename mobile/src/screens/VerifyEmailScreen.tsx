@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
-import { BackButton, ErrorNote, Glow, NightScreen, nightText } from "../components/night/NightUI";
+import { BackButton, ErrorNote, Glow, NightScreen, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
@@ -176,13 +176,19 @@ export function VerifyEmailScreen({ navigation, route }: Props) {
         {counting ? (
           <Text style={styles.countdown}>Resend in {clock}</Text>
         ) : (
-          <Pressable onPress={resend} disabled={resending} hitSlop={8} accessibilityRole="button">
+          <Pressable
+            onPress={resend}
+            disabled={resending}
+            hitSlop={8}
+            accessibilityRole="button"
+            style={({ pressed }) => pressed && pressedLink}
+          >
             <Text style={nightText.link}>{resending ? "Sending…" : "Resend code"}</Text>
           </Pressable>
         )}
       </View>
       {navigation.canGoBack() && (
-        <Pressable onPress={() => navigation.goBack()} hitSlop={8} accessibilityRole="button" style={styles.change}>
+        <Pressable onPress={() => navigation.goBack()} hitSlop={8} accessibilityRole="button" style={({ pressed }) => [styles.change, pressed && pressedLink]}>
           <Text style={styles.changeText}>Change email</Text>
         </Pressable>
       )}

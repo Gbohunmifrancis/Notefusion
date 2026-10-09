@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 
 import { getActivityFeed, getCheckoutFunnel, getTranscriptionLog } from "@/api/endpoints";
 import type { CategoryCount, FeedItem, FeedKind, TranscriptionLogFilters } from "@/api/types";
+import { EngagementTab } from "@/components/activity/Engagement";
 import { TranscriptionLogTable } from "@/components/activity/TranscriptionLogTable";
 import { Badge } from "@/components/Badge";
 import { Card } from "@/components/Card";
@@ -28,8 +29,8 @@ const PAGE_SIZE = 20;
 const SELECT =
   "h-9 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground shadow-xs outline-none";
 
-type Tab = "feed" | "transcriptions" | "checkout";
-const TABS: readonly Tab[] = ["feed", "transcriptions", "checkout"];
+type Tab = "feed" | "engagement" | "transcriptions" | "checkout";
+const TABS: readonly Tab[] = ["feed", "engagement", "transcriptions", "checkout"];
 
 export function ActivityView() {
   const requested = useSearchParams().get("tab");
@@ -55,6 +56,7 @@ export function ActivityView() {
             label="Activity view"
             options={[
               { value: "feed", label: "Feed" },
+              { value: "engagement", label: "Engagement" },
               { value: "transcriptions", label: "Transcriptions" },
               { value: "checkout", label: "Checkout" },
             ]}
@@ -63,7 +65,15 @@ export function ActivityView() {
           />
         }
       />
-      {tab === "feed" ? <FeedTab /> : tab === "transcriptions" ? <TranscriptionsTab /> : <CheckoutTab />}
+      {tab === "feed" ? (
+        <FeedTab />
+      ) : tab === "engagement" ? (
+        <EngagementTab />
+      ) : tab === "transcriptions" ? (
+        <TranscriptionsTab />
+      ) : (
+        <CheckoutTab />
+      )}
     </div>
   );
 }

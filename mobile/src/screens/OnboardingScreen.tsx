@@ -16,7 +16,7 @@ import { StatusBar } from "expo-status-bar";
 import Svg, { Circle, Defs, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from "react-native-svg";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
-import { Glow, Lockup, nightText } from "../components/night/NightUI";
+import { Glow, Lockup, nightText, pressedLink } from "../components/night/NightUI";
 import { AppleMusicLogo, SpotifyLogo, YouTubeLogo, YouTubeMusicLogo } from "../components/SourceLogos";
 import { onboarding } from "../lib/onboarding";
 import { night, nightFonts } from "../design/theme";
@@ -118,6 +118,7 @@ export function OnboardingScreen({ navigation }: Props) {
           <Pressable
             onPress={finish}
             hitSlop={12}
+            style={({ pressed }) => pressed && pressedLink}
             accessibilityRole="button"
             accessibilityLabel="Skip the introduction"
           >

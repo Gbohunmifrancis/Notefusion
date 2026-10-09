@@ -3,9 +3,11 @@ import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Screen } from "../components/Screen";
+import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { Touchable } from "../components/Touchable";
 import { fonts, radii, spacing, typography, type Palette } from "../design/theme";
+import { useFeedback } from "../lib/feedback";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { RootStackParams } from "../navigation/types";
 
@@ -57,6 +59,7 @@ const FAQ: { icon: keyof typeof Ionicons.glyphMap; q: string; a: string }[] = [
 export function HelpScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { openFeedback } = useFeedback();
 
   return (
     <Screen scroll contentStyle={styles.screen}>
@@ -97,6 +100,13 @@ export function HelpScreen({ navigation }: Props) {
           <Text style={styles.answer}>{item.a}</Text>
         </Card>
       ))}
+
+      {/* ── Feedback ─────────────────────────────────────────────────────── */}
+      <Card style={styles.card}>
+        <Text style={styles.question}>Something not answered here?</Text>
+        <Text style={styles.answer}>Report a problem, suggest an idea or tell us how a transcription went.</Text>
+        <Button label="Send feedback" icon="chatbubble-ellipses-outline" variant="secondary" onPress={() => openFeedback("Help")} />
+      </Card>
     </Screen>
   );
 }

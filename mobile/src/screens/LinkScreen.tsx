@@ -172,7 +172,9 @@ export function LinkScreen() {
     Animated.timing(barWidth, {
       toValue: busy ? Math.max(0.03, state.progress) : 0,
       duration: 500,
-      useNativeDriver: false,
+      // scaleX rather than width, so the bar fills on the UI thread while the JS thread
+      // is busy polling the job.
+      useNativeDriver: true,
     }).start();
   }, [busy, state.progress, barWidth]);
 
@@ -457,7 +459,7 @@ export function LinkScreen() {
               <Animated.View
                 style={[
                   styles.barFill,
-                  { width: barWidth.interpolate({ inputRange: [0, 1], outputRange: ["0%", "100%"] }) },
+                  { transformOrigin: "left", transform: [{ scaleX: barWidth }] },
                 ]}
               />
             </View>
@@ -575,7 +577,7 @@ const makeStyles = (c: Palette) =>
     stageTextDone: { color: c.success },
     barRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.md },
     bar: { flex: 1, height: 6, borderRadius: 3, backgroundColor: c.border, overflow: "hidden" },
-    barFill: { height: "100%", backgroundColor: c.ink },
+    barFill: { width: "100%", height: "100%", backgroundColor: c.ink },
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warning, marginTop: spacing.sm },

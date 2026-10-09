@@ -1,7 +1,6 @@
 import React, { useId } from "react";
 import {
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -16,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { KeyboardAvoider } from "../KeyboardAvoider";
+import { Touchable } from "../Touchable";
 import { night, nightFonts } from "../../design/theme";
 
 const MARK = require("../../../assets/brand/mark.png");
@@ -94,15 +94,9 @@ export function Glow({
 /** The round 40px back button. */
 export function BackButton({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable
-      onPress={onPress}
-      hitSlop={8}
-      accessibilityRole="button"
-      accessibilityLabel="Go back"
-      style={styles.iconBtn}
-    >
+    <Touchable onPress={onPress} hitSlop={8} radius={20} accessibilityLabel="Go back" style={styles.iconBtn}>
       <Ionicons name="chevron-back" size={20} color={night.text} />
-    </Pressable>
+    </Touchable>
   );
 }
 
@@ -187,6 +181,12 @@ export const nightText = StyleSheet.create({
   muted: { fontSize: 14, fontFamily: nightFonts.regular, color: night.muted },
   step: { fontSize: 12, fontFamily: nightFonts.mono, color: night.muted },
 });
+
+/**
+ * The pressed look for a bare text link: an instant dim, no motion. Use as
+ * `style={({ pressed }) => [base, pressed && pressedLink]}` on a `Pressable`.
+ */
+export const pressedLink = { opacity: 0.55 } as const;
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: night.bg },

@@ -69,7 +69,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   client. Night (dark) default with a runtime Day/Night switch (`src/lib/theme.tsx`; every
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
   the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
-  `src/components/night/`; splash, onboarding and sign-in use it in either mode), a store-rating ask after the third saved sheet (`lib/ratingPolicy`),
+  `src/components/night/`; splash, onboarding and sign-in use it in either mode), a rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
   expo-notifications push.
 
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no

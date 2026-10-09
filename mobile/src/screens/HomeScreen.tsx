@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useReducedMotion } from 'react-native-reanimated';
 import { Screen } from '../components/Screen';
 import { Avatar } from '../components/Avatar';
 import { AppDrawer } from '../components/AppDrawer';
@@ -81,6 +82,7 @@ export function HomeScreen({ navigation }: Props) {
   /** Entrance: fades + slides the content in once per focus, so navigating away
    *  and back replays the transition rather than keeping a stale snapshot. */
   const mountFade = useRef(new Animated.Value(0)).current;
+  const reduceMotion = useReducedMotion();
 
   const bloomOpacity = breathe.interpolate({
     inputRange: [0, 1],
@@ -121,6 +123,8 @@ export function HomeScreen({ navigation }: Props) {
         useNativeDriver: true,
       });
       entrance.start();
+      // Reduce motion: the content still fades in (no slide, below), but the mic holds still.
+      if (reduceMotion) return () => entrance.stop();
 
       const pulse = Animated.loop(
         Animated.sequence([
@@ -144,7 +148,7 @@ export function HomeScreen({ navigation }: Props) {
         pulse.stop();
         breathe.setValue(0);
       };
-    }, [breathe, mountFade]),
+    }, [breathe, mountFade, reduceMotion]),
   );
 
   const fireRing = useCallback(() => {
@@ -318,7 +322,7 @@ export function HomeScreen({ navigation }: Props) {
             <Animated.View
               style={{
                 opacity: mountOpacity,
-                transform: [{ translateY: mountTranslate }],
+                transform: [{ translateY: reduceMotion ? 0 : mountTranslate }],
               }}
             >
               {/* ── The question ──────────────────────────────────────── */}

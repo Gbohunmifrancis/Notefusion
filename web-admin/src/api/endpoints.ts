@@ -12,6 +12,10 @@ import type {
   AdminWebhookEventRow,
   AnalyticsOverview,
   CheckoutFunnel,
+  Engagement,
+  FeedbackKind,
+  FeedbackRow,
+  FeedbackSummary,
   FeedItem,
   FeedKind,
   Journey,
@@ -354,4 +358,16 @@ export const getActivityFeed = (page: number, pageSize: number, kind?: FeedKind,
 /** The checkout funnel and its problems over a window. */
 export const getCheckoutFunnel = (from?: string, to?: string, signal?: AbortSignal) =>
   request<CheckoutFunnel>(`/api/admin/activity/checkout${query({ from, to })}`, signal ? { signal } : {});
+
+/* ── Engagement and feedback ─────────────────────────────────────────────── */
+
+/** The most active accounts and how engaged users were over a window. */
+export const getEngagement = (from?: string, to?: string, top = 20, signal?: AbortSignal) =>
+  request<Engagement>(`/api/admin/analytics/engagement${query({ from, to, top })}`, signal ? { signal } : {});
+
+export const getFeedbackSummary = (signal?: AbortSignal) =>
+  request<FeedbackSummary>("/api/admin/feedback/summary", signal ? { signal } : {});
+
+export const getFeedbackList = (page: number, pageSize: number, kind?: FeedbackKind, userId?: string, signal?: AbortSignal) =>
+  request<PagedResult<FeedbackRow>>(`/api/admin/feedback${query({ page, pageSize, kind, userId })}`, signal ? { signal } : {});
 
