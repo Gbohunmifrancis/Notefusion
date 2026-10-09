@@ -70,7 +70,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   stylesheet is a `makeStyles(palette)` factory), JWT refresh interceptor,
   the night redesign (`night`/`nightFonts` in `src/design/theme.ts`, primitives in
   `src/components/night/`; splash, onboarding and sign-in use it in either mode), a rating ask after the third saved sheet (`lib/ratingPolicy` decides when; the sheet in `lib/feedback` sends the stars to the API and offers Google Play to 4–5★),
-  expo-notifications push.
+  expo-notifications push. OTA via EAS Update (`production` channel) with the `fingerprint`
+  runtime policy: any native change (a new Expo module, a permission, a plugin) gives a new
+  runtime, so an update can only reach builds that have its native code — anything native
+  needs a store build first.
 
 > The old native `.NET 10 for Android` head was retired in the pivot; there is no
 > `NoteFusion.App` project. Don't reintroduce Android-native or MAUI code.
