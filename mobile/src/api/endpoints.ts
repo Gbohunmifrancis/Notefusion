@@ -131,6 +131,34 @@ export const meApi = {
     api.delete("/api/me", { data: proof }).then(() => undefined),
 };
 
+/** The answers to "where did you hear about us?" the API accepts (UserFeedback.HeardAboutSources). */
+export type HeardAboutSource =
+  | "friend" | "church" | "whatsapp" | "instagram" | "tiktok" | "youtube"
+  | "facebook" | "x" | "google" | "play_store" | "other";
+
+/** Feedback categories the API accepts (UserFeedback.Categories). */
+export type FeedbackCategory = "bug" | "idea" | "accuracy" | "payments" | "other";
+
+export interface FeedbackSubmission {
+  kind: "feedback" | "rating" | "rating_dismissed" | "heard_about";
+  rating?: number;
+  category?: FeedbackCategory;
+  message?: string;
+  source?: HeardAboutSource;
+  client?: "app";
+  appVersion?: string;
+  screen?: string;
+}
+
+export const feedbackApi = {
+  /** Which prompts are due for this account in the app: the API owns the rules. */
+  prompts: () =>
+    api
+      .get<{ askHeardAbout: boolean; askRating: boolean }>("/api/feedback/prompts", { params: { client: "app" } })
+      .then((r) => r.data),
+  submit: (body: FeedbackSubmission) => api.post("/api/feedback", body).then(() => undefined),
+};
+
 export const devicesApi = {
   /**
    * Registers this handset's push token, and tells the server which build it is running so

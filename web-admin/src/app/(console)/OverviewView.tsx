@@ -41,6 +41,7 @@ import type { AnalyticsOverview, CategoryCount, DailyCount } from "@/api/types";
 import { DailyChart } from "@/components/DailyChart";
 import { DonutCard } from "@/components/DonutCard";
 import type { DonutSlice } from "@/components/DonutCard";
+import { MostActiveUsersCard } from "@/components/activity/Engagement";
 import { RangePicker } from "@/components/RangePicker";
 import type { Range } from "@/components/RangePicker";
 import { EmptyView, StateView } from "@/components/StateView";
@@ -870,6 +871,9 @@ export function OverviewView() {
                   <RecentActivityPanel items={data.recentActivity} />
                 </div>
               </div>
+
+              {/* MOST ACTIVE USERS: the engagement leaderboard's top five for this window */}
+              <MostActiveUsersCard from={range?.from} to={range?.to} />
 
               {/* PRO MEMBERSHIP: members, joins and lapses, money, song use */}
               {data.membership && (

@@ -48,6 +48,12 @@ public sealed class AnalyticsController : ApiControllerBase
     /// <param name="isActive">True for accounts that can sign in, false for suspended ones, omitted for both.</param>
     /// <param name="isOnline">True for accounts active within the last 5 minutes, omitted for all.</param>
     /// <param name="ct">Cancellation token.</param>
+    /// <summary>The most active accounts and how engaged users were over a window.</summary>
+    [HttpGet("engagement")]
+    public async Task<IActionResult> Engagement(
+        [FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] int top = 20, CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetEngagementQuery(from, to, top), ct));
+
     [HttpGet("users")]
     public async Task<IActionResult> Users(
         [FromQuery] int page = 1,

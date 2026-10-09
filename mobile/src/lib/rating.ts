@@ -26,9 +26,10 @@ function write(s: RatingState): void {
 }
 
 /**
- * The store-rating ask. Screens only report what happened — a sheet saved, a job
- * failed — and `RatingPrompt` (mounted once, in App) decides whether to show
- * itself. See `ratingPolicy` for the rule.
+ * The rating ask. Screens only report what happened — a sheet saved, a job
+ * failed — and the rating sheet in `lib/feedback` (mounted once, with the signed-in
+ * app) shows itself when `ratingPolicy` says the moment has come. The sheet sends
+ * the stars to the API for the admin console and offers the store to happy raters.
  *
  * Android only for now: the ask opens the Play Store listing. Google's in-app
  * review sheet needs a native module, which waits for the next store build.
@@ -64,6 +65,12 @@ export const rating = {
   async snooze(): Promise<void> {
     const s = await read();
     write({ ...s, snoozedUntil: Date.now() + SNOOZE_MS });
+  },
+
+  /** Rated in the app (any score): never ask again. */
+  async markRated(): Promise<void> {
+    const s = await read();
+    write({ ...s, done: true });
   },
 
   /** Opens the listing and never asks again, whether or not they leave a rating. */

@@ -35,6 +35,7 @@ import {
   spacing,
   type Palette,
 } from "../design/theme";
+import { useFeedback } from "../lib/feedback";
 import { useColors, useTheme, useThemedStyles } from "../lib/theme";
 import type { MyProfile } from "../api/types";
 import type { RootStackParams } from "../navigation/types";
@@ -61,6 +62,7 @@ export function ProfileScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
+  const { openFeedback } = useFeedback();
 
   const [profile, setProfile] = useState<MyProfile | null>(null);
   const [avatarBusy, setAvatarBusy] = useState(false);
@@ -313,6 +315,11 @@ export function ProfileScreen() {
           icon="help-circle-outline"
           label="Help & Support"
           onPress={() => nav.navigate("Help")}
+        />
+        <ListRow
+          icon="chatbubble-ellipses-outline"
+          label="Send feedback"
+          onPress={() => openFeedback("Profile")}
         />
         <ListRow
           icon="settings-outline"
