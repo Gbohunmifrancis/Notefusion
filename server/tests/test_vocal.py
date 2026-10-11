@@ -447,3 +447,47 @@ def test_a_quarter_tone_singer_is_written_in_the_simpler_key():
     # the same reading.  Nothing in the audio separates them, so the simpler key wins.
     sung = [m + 0.5 for m in (70, 72, 74, 75, 77, 79, 81, 82, 81, 79, 77, 75, 74, 72, 70)]
     assert vocal.fit_scale(sung, [1.0] * len(sung))[1] == 10
+
+
+# ── Writing in a root decided elsewhere ──────────────────────────────────────
+
+# A G major tune whose every F# is sung 55 cents flat, nearer F than F#, and the rest within
+# 15 cents: the voice alone fits C major, where those notes are F.
+FLAT_TI_TUNE = [67, 69, 71, 72, 74, 76, 78, 79, 78, 76, 74, 72, 71, 69, 78, 67]
+FLAT_TI_SUNG = [
+    p - 0.55 if p % 12 == 6 else p + wobble
+    for p, wobble in zip(
+        FLAT_TI_TUNE, [0.12, -0.1, 0.15, -0.12, 0.1, -0.15, 0, 0.12, 0, -0.1, 0.15, -0.12, 0.1, -0.15, 0, 0.1])
+]
+
+
+def test_root_costs_are_the_fits_own_costs():
+    weights = [1.0] * len(FLAT_TI_SUNG)
+    fit = vocal.fit_scale_detail(FLAT_TI_SUNG, weights)
+    costs, offsets = vocal.root_costs(FLAT_TI_SUNG, weights)
+    assert fit.root == 0 and int(np.argmin(costs)) == 0
+    assert offsets[0] == pytest.approx(fit.offset)
+    assert costs[7] / costs[0] == pytest.approx(1.0 + fit.cost_margin)
+
+
+def test_write_in_root_writes_the_fits_fifth_with_no_accidental():
+    # The user says G major.  Written in G, the flat F#s are F#s; the fit's own scale wrote
+    # them as F, which relabelled in G is three accidentals.
+    weights = [1.0] * len(FLAT_TI_SUNG)
+    fit = vocal.fit_scale_detail(FLAT_TI_SUNG, weights)
+    in_fit = vocal.snap_to_scale([m - fit.offset for m in FLAT_TI_SUNG], fit.root)
+    assert sum(p % 12 == 5 for p in in_fit) == 3
+    _offset, pitches = vocal.write_in_root(FLAT_TI_SUNG, weights, weights, 7)
+    assert pitches == FLAT_TI_TUNE
+
+
+def test_write_in_root_refits_the_offset_for_the_fits_twin():
+    # Every note 50 cents off: the fit writes B-flat major at +0.5.  A user who says B major
+    # gets B major at -0.5, every note a semitone up and none of them an accidental.
+    flat = [70, 72, 74, 75, 77, 79, 81, 82, 81, 79, 77, 75, 74, 72, 70]
+    sung = [m + 0.5 for m in flat]
+    weights = [1.0] * len(sung)
+    assert vocal.fit_scale(sung, weights) == (pytest.approx(0.5), 10)
+    offset, pitches = vocal.write_in_root(sung, weights, weights, 11)
+    assert offset == pytest.approx(-0.5)
+    assert pitches == [m + 1 for m in flat]

@@ -945,6 +945,46 @@ def snap_to_scale(midis: Sequence[float], root: int, keep: float = SCALE_KEEP_CH
     return out
 
 
+def root_costs(midis: Sequence[float], weights: Sequence[float]) -> tuple[np.ndarray, np.ndarray]:
+    """(cost, offset) per major-scale root: how well the notes fit each scale at its best offset.
+
+    The cost ``fit_scale_detail`` minimises, kept for every root rather than reduced to a
+    winner, for a caller that has the root from somewhere else — a key the user typed, the
+    chords of a song's backing — and has to know whether the voice agrees with it.
+    """
+    m = np.asarray(midis, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    if float(w.sum()) <= 0.0:
+        w = np.ones_like(m)
+    cap2 = SCALE_FIT_CAP * SCALE_FIT_CAP
+    thetas = np.arange(-0.5, 0.5 + SCALE_FIT_STEP / 2.0, SCALE_FIT_STEP)
+    costs = np.empty((thetas.size, 12))
+    for i, theta in enumerate(thetas):
+        x = m - theta
+        candidates = np.floor(x).astype(int)[:, None] + np.arange(-1, 3)[None, :]
+        distance = np.abs(x[:, None] - candidates)
+        nearest = np.where(_SCALE_MEMBER[:, candidates % 12], distance[None], np.inf).min(axis=2)
+        costs[i] = (w[None] * np.minimum(nearest * nearest, cap2)).sum(axis=1)
+    best = costs.argmin(axis=0)
+    return costs[best, np.arange(12)], thetas[best]
+
+
+def write_in_root(
+    midis_untuned: Sequence[float], durations: Sequence[float], stabilities: Sequence[float], root: int,
+) -> tuple[float, list[int]]:
+    """(tuning offset, pitches): the notes written in the major scale on ``root``.
+
+    For a root decided outside the fit.  The offset is fitted again with the root held,
+    because the offset the fit found belongs to the scale it chose: a singer a quarter-tone
+    off fits one scale near +0.5 and its semitone twin near -0.5, and snapping into the twin
+    at the first scale's offset would move every note.  ``stabilities`` are the notes'
+    evidence for an accidental, for the snap to weigh; it does not read them yet.
+    """
+    _costs, offsets = root_costs(midis_untuned, durations)
+    offset = float(offsets[root])
+    return offset, snap_to_scale([m - offset for m in midis_untuned], root)
+
+
 def notate(midis: Sequence[float], durations: Sequence[float]) -> list[int]:
     """Integer pitches for tuned fractional ones, resolving ambiguous notes by key."""
     plain = [int(round(m)) for m in midis]
