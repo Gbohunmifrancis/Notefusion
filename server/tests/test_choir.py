@@ -172,6 +172,19 @@ def test_the_parts_are_written_in_one_scale_fitted_across_every_voice():
     assert [e.pitch for e in written["bass"]] == [48, 53, 55, 48]
 
 
+def test_a_chromatic_in_a_part_needs_the_evidence_a_sung_one_does():
+    # An F# 15 cents sharp slipped into the alto between two chords: a 0.09 s flick is the G
+    # it leans to, as a solo singer's would be; held half a second, it is an F#.
+    for seconds, written_as in ((0.09, 67), (0.5, 66)):
+        voices, _post = _hymn(65.0)
+        passing = Event(1.91, 1.91 + seconds, 66, 0.8)
+        voices["alto"].insert(2, passing)
+        sung = [(e, 66.15 if e is passing else float(e.pitch)) for line in voices.values() for e in line]
+        written, fit = transcriber._choir_in_scale(voices, _posteriorgram(sung))
+        assert fit.root == 0
+        assert written["alto"][2].pitch == written_as
+
+
 def test_a_users_key_the_choir_is_plainly_not_in_leaves_the_fitted_scale():
     voices, post = _hymn(65.0)
     _written, fit = transcriber._choir_in_scale(voices, post, doh=6)
