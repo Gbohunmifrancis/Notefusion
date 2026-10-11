@@ -2915,9 +2915,12 @@ def _strong_skyline(
 def _stillness(midi: np.ndarray) -> float:
     """Fraction of a pyin contour's frame-to-frame steps, within a note, that stay in one bin.
 
-    pyin reports pitch on a 10-cent grid, so a step under half a bin is no move at all; a
-    step of half a semitone or more is a new note, not a wobble, and is left out.  1.0, as
-    still as can be, for a contour with no such step: it shows nothing moving.
+    The voice engine's pyin reports pitch on a 10-cent grid, so a step under half a bin is no
+    move at all; a step of half a semitone or more is a new note, not a wobble, and is left
+    out.  1.0, as still as can be, for a contour with no such step: it shows nothing moving.
+    ``MELODY_FLOOR_MIN_STILLNESS`` was measured on that grid.  The fallback contour without
+    the voice engine (``NF_VOCAL_ENGINE=0``) is on a 20-cent grid, where a voice reads stiller,
+    so there the floor fires about as it always did.
     """
     steps = np.abs(np.diff(midi))
     within = steps[~np.isnan(steps) & (steps < 0.5)]
@@ -3270,8 +3273,9 @@ def _refine_pitches(
     was that a fragment shorter than one vibrato cycle has a median biased toward
     wherever in the cycle it happens to sit, so on that evidence pyin looked *not*
     reliable to the semitone per fragment — while a bias of at most a semitone or so
-    cannot manufacture or hide a twelve-semitone gap.  On, the median is rounded and
-    taken as the pitch, because measurement retired that objection: the rounded
+    cannot manufacture or hide a twelve-semitone gap.  On, the median is rounded (or, for
+    a sung melody, written in its scale: ``in_scale``) and taken as the pitch, because
+    measurement retired that objection: the rounded
     median moved 45 notes across the corpus, 44 of them to the right pitch, and the
     one it moved wrongly was an accidental that became a diatonic note in an already-
     failing case.  ``pyin_semitone`` is on by default and gates the behavior.
@@ -3421,7 +3425,7 @@ def _blend_confidence(evt: Event) -> float:
     correctly identifying as ghosts, so among the notes that survive the floor, amplitude
     ranks right from wrong much less well than it did.  A pyin-agreement term was added to
     fix that and did not: ``contour_first`` is on by default for melody, and on that path
-    ``pitch`` is ``round(pyin_midi)`` — one measurement, not two — so agreement degenerates
+    ``pitch`` is derived from ``pyin_midi`` — one measurement, not two — so agreement degenerates
     into "how near a whole semitone did the median sit" while ``amp`` is RMS loudness, which
     is not evidence about pitch at all.  Measured per-case, agreement lands at auc 0.448 and
     ``voiced_prob`` at 0.357, both at or below chance.
