@@ -4602,6 +4602,115 @@ def _drop_harmonics(chord: list[Event]) -> list[Event]:
     return kept
 
 
+# A choir's tuning is taken out before Basic Pitch when it is at least this far off the grid
+# (semitones); nearer than that, rounding cannot go wrong on it.
+CHOIR_RETUNE_MIN_SEMITONES = 0.05
+# A note's sung pitch is read off the contour head within this many bins (a third of a
+# semitone each) either side of the semitone Basic Pitch named: far enough to see where in
+# its semitone the note was sung, not so far as to reach a voice a whole tone away.
+CHOIR_CONTOUR_HALF_BINS = 2
+# The bass counts this many times over in a choir's key vote: the harmony's roots are in it,
+# and at a cadence it sits on the tonic while the upper parts are on any note of the chord.
+CHOIR_BASS_KEY_WEIGHT = 2.0
+
+
+def _retuned_basic_pitch(y: np.ndarray, sr: int, run_basic_pitch) -> tuple:
+    """Basic Pitch's ``predict`` on the clip with its tuning taken out, and the time scale.
+
+    ``librosa.estimate_tuning`` gives the clip's offset from the equal-tempered grid; the
+    audio resampled by that ratio and played at the same rate sounds on the grid and lasts
+    ``1 / time_scale`` as long, so ``predict``'s times multiplied by ``time_scale`` are on the
+    clip's own clock again.  A clip already on the grid runs as it is, at time scale 1.
+    """
+    import librosa
+    import soundfile as sf
+
+    tuning = float(librosa.estimate_tuning(y=y, sr=sr))
+    if abs(tuning) < CHOIR_RETUNE_MIN_SEMITONES:
+        return (*run_basic_pitch(), 1.0)
+    time_scale = 2.0 ** (-tuning / 12.0)
+    print(f"[notefusion] choir: tuning {100.0 * tuning:+.0f} cents taken out before Basic Pitch", flush=True)
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        retuned = Path(tmp.name)
+    try:
+        sf.write(str(retuned), librosa.resample(y, orig_sr=sr, target_sr=sr / time_scale), sr)
+        return (*run_basic_pitch(retuned), time_scale)
+    finally:
+        retuned.unlink(missing_ok=True)
+
+
+def _heard_pitch(post: "Posteriorgram | None", e: Event) -> float:
+    """Where in its semitone a note was sung: the contour head's weighted centre around it.
+
+    Basic Pitch names an integer; its contour head, three bins a semitone, still holds where
+    within the semitone the energy was.  The integer itself when there is no posteriorgram
+    or nothing under the note.
+    """
+    if post is None:
+        return float(e.pitch)
+    centre = int(round((e.pitch - POSTERIOR_MIDI_LOW) * CONTOUR_BINS_PER_SEMITONE))
+    lo = max(0, centre - CHOIR_CONTOUR_HALF_BINS)
+    hi = min(post.contour.shape[1], centre + CHOIR_CONTOUR_HALF_BINS + 1)
+    weight = post.contour[post.frame_at(e.start):post.frame_at(e.end) + 1, lo:hi].sum(axis=0)
+    total = float(weight.sum())
+    if total <= 0.0:
+        return float(e.pitch)
+    return POSTERIOR_MIDI_LOW + float(np.dot(weight, np.arange(lo, hi))) / total / CONTOUR_BINS_PER_SEMITONE
+
+
+def _choir_in_scale(
+    voices: dict[str, list[Event]], post: "Posteriorgram | None", doh: int | None = None,
+) -> tuple[dict[str, list[Event]], "vocal.ScaleFit | None"]:
+    """Every part written in one major scale, fitted across all of them, and the fit.
+
+    The voice engine's notation for a choir: each note's sung pitch (``_heard_pitch``), one
+    tuning offset and scale fitted over every voice at once, weighted by duration
+    (``vocal.fit_scale_detail``) — the parts of one piece are in one key, and four voices pin
+    it better than the tune alone — and each note written as its scale tone unless it sits
+    on a chromatic one (``vocal.snap_to_scale``).  A ``doh`` the user gave (sounding pitch)
+    is the scale instead, unless the voices are plainly not in it (``DOH_MAX_COST_RATIO``).
+    The voices come back as they were, with no fit, when there are too few notes to fit.
+    """
+    notes = [(name, e) for name, line in voices.items() for e in line]
+    heard = [_heard_pitch(post, e) for _, e in notes]
+    durations = [e.end - e.start for _, e in notes]
+    fit = vocal.fit_scale_detail(heard, durations)
+    if fit is None:
+        return voices, None
+    if doh is not None and doh != fit.root:
+        costs, offsets = vocal.root_costs(heard, durations)
+        if costs[doh] <= DOH_MAX_COST_RATIO * float(costs.min()):
+            fit = replace(fit, offset=float(offsets[doh]), root=doh)
+        else:
+            print(f"[notefusion] key override: the choir is not in the scale on {doh}; relabelling only", flush=True)
+    pitches = vocal.snap_to_scale([m - fit.offset for m in heard], fit.root)
+    written: dict[str, list[Event]] = {name: [] for name in voices}
+    for (name, e), p in zip(notes, pitches):
+        written[name].append(replace(e, pitch=p))
+    print(f"[notefusion] choir: {len(notes)} notes written in the scale on {fit.root} "
+          f"(offset {100.0 * fit.offset:+.0f} cents, doh confidence {fit.confidence:.2f})", flush=True)
+    return written, fit
+
+
+def _choir_key_stream(voices: dict[str, list[Event]], sec_to_beats: float):
+    """Every part in one stream for the key vote, the bass weighted by ``CHOIR_BASS_KEY_WEIGHT``.
+
+    The tune alone is the wrong evidence for a choir's key: a soprano line can sit on the
+    third and fifth of the key for a whole phrase while the bass walks the roots under it.
+    """
+    from music21 import note as m21note
+    from music21 import stream
+
+    s = stream.Stream()
+    for name, line in voices.items():
+        weight = CHOIR_BASS_KEY_WEIGHT if name == "bass" else 1.0
+        for e in line:
+            n = m21note.Note(e.pitch)
+            n.duration.quarterLength = max((e.end - e.start) * sec_to_beats, 0.25) * weight
+            s.insert(e.start * sec_to_beats, n)
+    return s
+
+
 def _choir_parts(
     voices: dict[str, list[Event]],
     melody_voice: str,
@@ -4785,11 +4894,11 @@ def _transcribe_wav(
     max_freq_hz = 1050.0
     melodia_trick = strategy.melodia_trick()
 
-    def run_basic_pitch():
+    def run_basic_pitch(path: Path = wav_path):
         from basic_pitch.inference import predict
 
         return predict(
-            str(wav_path),
+            str(path),
             get_basic_pitch_model(),
             onset_threshold=onset_thresh,
             frame_threshold=frame_thresh,
@@ -4821,8 +4930,17 @@ def _transcribe_wav(
         skip_basic_pitch = bool(fast_events)
     progress(0.15)
 
+    # A choir's tuning comes out before Basic Pitch rounds anything.  Its pitches are integers
+    # with no tuning step behind them, so a choir sitting 30 cents flat rounds to one neighbour
+    # or the other note by note: on a diatonic SATB phrase, 24 of 182 notes in the parts came
+    # out chromatic at -30 cents and 41 of 191 at -45, and the key read E major for C.
+    # Resampling by the tuning's ratio moves every pitch onto the grid and stretches time by
+    # the same ratio, which comes off the events and the posteriorgram's clock below.
+    time_scale = 1.0
     if skip_basic_pitch:
         model_output, midi_data, note_events = None, None, []
+    elif mode == "choir":
+        model_output, midi_data, note_events, time_scale = _retuned_basic_pitch(y, sr, run_basic_pitch)
     else:
         model_output, midi_data, note_events = run_basic_pitch()
 
@@ -4831,6 +4949,10 @@ def _transcribe_wav(
     # discarding them cost more than anything else in this function; ``None`` here means the
     # capture failed and every consumer falls back to its pre-capture behaviour.
     post = Posteriorgram.capture(model_output) if model_output is not None else None
+    if time_scale != 1.0:
+        note_events = [(t0 * time_scale, t1 * time_scale, p, a, b) for t0, t1, p, a, b in note_events]
+        if post is not None:
+            post = replace(post, times=post.times * time_scale)
 
     # Basic Pitch's list before the melody floor narrows it below.  ``midi_data`` was built
     # from exactly this, so step 12 needs it to re-stamp the tempo without also changing
@@ -4848,6 +4970,8 @@ def _transcribe_wav(
     contour_events: list[Event] = list(fast_events)
     melody_floor_midi: float | None = None
     choir_voices: dict[str, list[Event]] | None = None
+    # The scale a choir's parts were written in (``_choir_in_scale``); step 9 keeps the key to it.
+    choir_fit: "vocal.ScaleFit | None" = None
     melody_voice = "soprano"
     # Chords mode: every note Basic Pitch kept, which the chords are read from.
     chord_events: list[Event] | None = None
@@ -4943,7 +5067,7 @@ def _transcribe_wav(
         # The rest of the pipeline (beat grid, key, solfa, engraving) then runs on the top
         # voice as the tune; the other voices rejoin it as ``parts`` in step 10b.
         if mode == "choir" and events:
-            choir_voices = _assign_voices(events)
+            choir_voices, choir_fit = _choir_in_scale(_assign_voices(events), post, override_doh)
             melody_voice = next((n for n in CHOIR_RANGES if choir_voices[n]), "soprano")
             events = choir_voices[melody_voice]
 
@@ -5194,11 +5318,14 @@ def _transcribe_wav(
         detected = m21key.Key(chords.tonic_name(chord_key[0] + shift, chord_key[1]), chord_key[1])
         key_confidence = chord_key_confidence
     elif settings.key_ensemble:
-        # The written pitches carry the keyboard transpose (step 6c); so must the doh.
+        # The written pitches carry the keyboard transpose (step 6c); so must the doh.  A choir
+        # votes with every part, not the tune alone (``_choir_key_stream``).
+        written_in = vocal_fit if vocal_fit is not None else choir_fit
         detected, key_confidence = _detect_key(
-            s, len(events),
-            doh=None if vocal_fit is None else (vocal_fit.root + shift) % 12,
-            doh_confidence=None if vocal_fit is None else vocal_fit.confidence,
+            s if choir_voices is None else _choir_key_stream(choir_voices, sec_to_beats),
+            len(events) if choir_voices is None else sum(len(line) for line in choir_voices.values()),
+            doh=None if written_in is None else (written_in.root + shift) % 12,
+            doh_confidence=None if written_in is None else written_in.confidence,
         )
     else:
         detected = s.analyze("key")
