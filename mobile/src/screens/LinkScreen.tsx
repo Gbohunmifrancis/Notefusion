@@ -156,15 +156,17 @@ export function LinkScreen() {
   useEffect(() => {
     if (state.status === "done" && state.result) {
       const result = state.result;
+      const sourceJobId = state.jobId ?? undefined;
       reset();
       refresh();
       void markPractisedToday();
       nav.replace("Result", {
         result,
+        sourceJobId,
         title: result.source ? result.source.title : undefined,
       });
     }
-  }, [state.status, state.result, nav, reset, refresh]);
+  }, [state.status, state.result, state.jobId, nav, reset, refresh]);
 
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
   const barWidth = useMemo(() => new Animated.Value(0), []);

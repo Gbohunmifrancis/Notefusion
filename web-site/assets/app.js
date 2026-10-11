@@ -778,7 +778,8 @@
       if (previewId) {
         // The preview that brought this person here is now theirs: the funnel's conversion.
         request("/api/preview/jobs/" + encodeURIComponent(previewId) + "/claim", { method: "POST" }).catch(function () { /* best effort */ });
-        if (wasGuest && current && current.result) showResult(current.result);
+        keepPreviewJob = previewId;
+        if (wasGuest && current && current.result) { showResult(current.result); keepClaimedPreview(); }
         else if (!current) startJob({ jobId: previewId, stage: "transcribing" }, "preview");
       }
     }, function () { showAuth(); });
@@ -1121,6 +1122,7 @@
         sfx.play("ready");
         track(current && current.kind === "preview" ? "Preview ready" : "Sheet ready");
         showResult(job.result);
+        keepClaimedPreview();
         if (!guest) loadAccount();
         return;
       }
@@ -1489,8 +1491,13 @@
       show($("share-row")); $("share").textContent = "Share a link";
     } else hide($("share-row"));
   }
-  $("save").addEventListener("click", function () {
-    if (!current || !current.result) return;
+  /**
+   * Saves the sheet on screen. `auto` is the preview someone just signed up to keep: it is saved for
+   * them, with a note saying so, rather than waiting for a Save press that most never made (one in
+   * fifty-two previews was ever saved).
+   */
+  function saveCurrent(auto) {
+    if (!current || !current.result || current.savedId) return;
     var r = current.result, btn = $("save");
     btn.disabled = true;
     request("/api/library", { method: "POST", body: {
@@ -1500,7 +1507,8 @@
       chords: r.chords || null
     } }).then(function (saved) {
       sfx.play("saved");
-      track("Saved sheet");
+      track("Saved sheet", auto ? "preview kept at sign-up" : null);
+      if (auto) alertIn($("app-alert"), "success", "Your preview is saved to your library.");
       current.savedId = saved.id; current.title = saved.title; current.shareToken = saved.shareToken || null;
       libraryCache = null;
       renderSave();
@@ -1508,7 +1516,15 @@
       if (!dismissed) show($("app-banner"));
     }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not save: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
-  });
+  }
+  $("save").addEventListener("click", function () { saveCurrent(false); });
+  /** The preview job a new account was created to keep; saved as soon as its result is on screen. */
+  var keepPreviewJob = null;
+  function keepClaimedPreview() {
+    if (!keepPreviewJob || guest || !current || current.jobId !== keepPreviewJob || !current.result) return;
+    keepPreviewJob = null;
+    saveCurrent(true);
+  }
   $("app-banner-dismiss").addEventListener("click", function () { hide($("app-banner")); try { localStorage.setItem("nf.web.appBanner", "no"); } catch (e) { /* ignore */ } });
   $("share").addEventListener("click", function () {
     if (!current || !current.savedId) return;
