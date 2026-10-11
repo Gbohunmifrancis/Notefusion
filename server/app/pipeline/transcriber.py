@@ -482,6 +482,21 @@ MELODY_FLOOR_DISAGREEMENT_SEMITONES = 6.0
 # still runs the pass that produced it.
 MELODY_FLOOR_MIN_DISTINCT_PITCHES = 2
 
+# ...and the gate is declined when the line pyin followed moves like a voice.  A tritone of
+# disagreement says the two engines heard different lines, not which one is the melody: the
+# polyphonic cases gate because pyin locked onto the left hand, but a singer with a piano
+# behind them gates just as surely, because the piano's top line is the strong skyline, and
+# the floor then hands the sheet to the piano (Vocadito's 34 singers over a piano 15 dB down:
+# 30 gated, doh right on 1).  What tells the two apart is how still pyin's pitch sits.  A
+# keyboard holds its pitch, so pyin's contour stays in one 10-cent bin from frame to frame
+# within a note; a voice never quite does.  Measured as the fraction of consecutive voiced
+# frames, within a note, that stay in one bin: the three gated polyphonic cases 0.80-0.94
+# (every steady-pitched instrument case 0.67 and up), the 34 singers 0.23-0.50 alone and
+# 0.31-0.61 over the piano.  The obvious tests do not separate them: pyin's voiced
+# probability is 0.05-0.62 on the gated cases and 0.13-0.69 on the singers, and the harmonic
+# energy at pyin's pitch outweighs the skyline's on both.
+MELODY_FLOOR_MIN_STILLNESS = 0.70
+
 # An event needs at least this many voiced pyin frames before its contour is
 # trusted.  pyin's default hop is 512 samples (23 ms at 22.05 kHz), so three
 # frames is ~70 ms — just under MIN_NOTE_SEC, which means a note long enough to
@@ -2897,6 +2912,18 @@ def _strong_skyline(
     return sky
 
 
+def _stillness(midi: np.ndarray) -> float:
+    """Fraction of a pyin contour's frame-to-frame steps, within a note, that stay in one bin.
+
+    pyin reports pitch on a 10-cent grid, so a step under half a bin is no move at all; a
+    step of half a semitone or more is a new note, not a wobble, and is left out.  1.0, as
+    still as can be, for a contour with no such step: it shows nothing moving.
+    """
+    steps = np.abs(np.diff(midi))
+    within = steps[~np.isnan(steps) & (steps < 0.5)]
+    return float(np.mean(within < 0.05)) if within.size else 1.0
+
+
 def _melody_floor_hz(
     note_events: Sequence[tuple], times: np.ndarray, midi: np.ndarray
 ) -> float | None:
@@ -2906,7 +2933,10 @@ def _melody_floor_hz(
     about the register by more than ``MELODY_FLOOR_DISAGREEMENT_SEMITONES`` — i.e. only when
     there is positive evidence that pyin has locked onto a voice below the melody.  On every
     monophonic clip the two engines agree to within about a semitone and this returns
-    ``None``, which is what keeps the 40 monophonic corpus cases byte-identical.
+    ``None``, which is what keeps the 40 monophonic corpus cases byte-identical.  It also
+    declines when the line pyin locked onto moves like a singing voice
+    (``MELODY_FLOOR_MIN_STILLNESS``): then the skyline above it is an instrument behind the
+    singer, not the melody.
 
     Named an ``fmin`` throughout because that is what it originally was and still is on two
     routes — the posteriorgram-capture fallback in ``_segment_contour`` and the inference
@@ -2925,6 +2955,15 @@ def _melody_floor_hz(
 
     disagreement = float(np.median(sky[both] - midi[both]))
     if disagreement < MELODY_FLOOR_DISAGREEMENT_SEMITONES:
+        return None
+    stillness = _stillness(midi)
+    if stillness < MELODY_FLOOR_MIN_STILLNESS:
+        print(
+            f"[notefusion] melody floor declined: Basic Pitch's skyline sits {disagreement:+.1f} "
+            f"semitones above pyin's contour, but that contour moves like a voice (stillness "
+            f"{stillness:.2f}); the voice is the melody",
+            flush=True,
+        )
         return None
 
     voiced_sky = sky[~np.isnan(sky)]
@@ -3166,6 +3205,38 @@ def _segment_vocal(
         flush=True,
     )
     return events, floor_midi, fit
+
+
+# A doh decided outside the voice — the key the user gave, a song's chords — is written in
+# unless the voice's best fit cost in that doh's scale is more than this many times its best
+# in any.  Then the voice is plainly not in that scale (a key typed for another song) and
+# keeps its own: a user's key only relabels the notes, as it always did.  Where the voice's
+# own fit is wrong, the right doh costs up to 1.47 times the best on the sung stress tier (an
+# amateur 30 cents off, a take drifting 100 cents) and up to 1.29 on the synthetic songs;
+# real singers' (Vocadito) all sit within 1.10.
+DOH_MAX_COST_RATIO = 1.5
+# A song's backing gives the doh when its chord key leads the best key with another doh by
+# at least this (``chords.estimate_key``'s confidence).
+CHORD_DOH_MIN_CONFIDENCE = 0.5
+
+
+def _rewrite_in_root(
+    events: list[Event], fit: "vocal.ScaleFit", root: int,
+) -> tuple[list[Event], float] | None:
+    """The voice engine's notes written again in the major scale on ``root``, or None.
+
+    Read from the same sung pitches the engine snapped: ``pyin_midi`` plus the fit's offset
+    is each note's untuned median.  Returns the events, carrying the pitches and the tuned
+    medians of the new scale, and the tuning offset that scale was written at.  None when
+    the voice is plainly not in that scale (``DOH_MAX_COST_RATIO``, ``vocal.root_costs``).
+    """
+    untuned = [float(e.pyin_midi) + fit.offset for e in events]
+    durations = [e.end - e.start for e in events]
+    costs, _offsets = vocal.root_costs(untuned, durations)
+    if costs[root] > DOH_MAX_COST_RATIO * float(costs.min()):
+        return None
+    offset, pitches = vocal.write_in_root(untuned, durations, [e.stability for e in events], root)
+    return [replace(e, pitch=p, pyin_midi=m - offset) for e, p, m in zip(events, pitches, untuned)], offset
 
 
 def _refine_pitches(
@@ -4564,6 +4635,115 @@ def _drop_harmonics(chord: list[Event]) -> list[Event]:
     return kept
 
 
+# A choir's tuning is taken out before Basic Pitch when it is at least this far off the grid
+# (semitones); nearer than that, rounding cannot go wrong on it.
+CHOIR_RETUNE_MIN_SEMITONES = 0.05
+# A note's sung pitch is read off the contour head within this many bins (a third of a
+# semitone each) either side of the semitone Basic Pitch named: far enough to see where in
+# its semitone the note was sung, not so far as to reach a voice a whole tone away.
+CHOIR_CONTOUR_HALF_BINS = 2
+# The bass counts this many times over in a choir's key vote: the harmony's roots are in it,
+# and at a cadence it sits on the tonic while the upper parts are on any note of the chord.
+CHOIR_BASS_KEY_WEIGHT = 2.0
+
+
+def _retuned_basic_pitch(y: np.ndarray, sr: int, run_basic_pitch) -> tuple:
+    """Basic Pitch's ``predict`` on the clip with its tuning taken out, and the time scale.
+
+    ``librosa.estimate_tuning`` gives the clip's offset from the equal-tempered grid; the
+    audio resampled by that ratio and played at the same rate sounds on the grid and lasts
+    ``1 / time_scale`` as long, so ``predict``'s times multiplied by ``time_scale`` are on the
+    clip's own clock again.  A clip already on the grid runs as it is, at time scale 1.
+    """
+    import librosa
+    import soundfile as sf
+
+    tuning = float(librosa.estimate_tuning(y=y, sr=sr))
+    if abs(tuning) < CHOIR_RETUNE_MIN_SEMITONES:
+        return (*run_basic_pitch(), 1.0)
+    time_scale = 2.0 ** (-tuning / 12.0)
+    print(f"[notefusion] choir: tuning {100.0 * tuning:+.0f} cents taken out before Basic Pitch", flush=True)
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        retuned = Path(tmp.name)
+    try:
+        sf.write(str(retuned), librosa.resample(y, orig_sr=sr, target_sr=sr / time_scale), sr)
+        return (*run_basic_pitch(retuned), time_scale)
+    finally:
+        retuned.unlink(missing_ok=True)
+
+
+def _heard_pitch(post: "Posteriorgram | None", e: Event) -> float:
+    """Where in its semitone a note was sung: the contour head's weighted centre around it.
+
+    Basic Pitch names an integer; its contour head, three bins a semitone, still holds where
+    within the semitone the energy was.  The integer itself when there is no posteriorgram
+    or nothing under the note.
+    """
+    if post is None:
+        return float(e.pitch)
+    centre = int(round((e.pitch - POSTERIOR_MIDI_LOW) * CONTOUR_BINS_PER_SEMITONE))
+    lo = max(0, centre - CHOIR_CONTOUR_HALF_BINS)
+    hi = min(post.contour.shape[1], centre + CHOIR_CONTOUR_HALF_BINS + 1)
+    weight = post.contour[post.frame_at(e.start):post.frame_at(e.end) + 1, lo:hi].sum(axis=0)
+    total = float(weight.sum())
+    if total <= 0.0:
+        return float(e.pitch)
+    return POSTERIOR_MIDI_LOW + float(np.dot(weight, np.arange(lo, hi))) / total / CONTOUR_BINS_PER_SEMITONE
+
+
+def _choir_in_scale(
+    voices: dict[str, list[Event]], post: "Posteriorgram | None", doh: int | None = None,
+) -> tuple[dict[str, list[Event]], "vocal.ScaleFit | None"]:
+    """Every part written in one major scale, fitted across all of them, and the fit.
+
+    The voice engine's notation for a choir: each note's sung pitch (``_heard_pitch``), one
+    tuning offset and scale fitted over every voice at once, weighted by duration
+    (``vocal.fit_scale_detail``) — the parts of one piece are in one key, and four voices pin
+    it better than the tune alone — and each note written as its scale tone unless it sits
+    on a chromatic one (``vocal.snap_to_scale``).  A ``doh`` the user gave (sounding pitch)
+    is the scale instead, unless the voices are plainly not in it (``DOH_MAX_COST_RATIO``).
+    The voices come back as they were, with no fit, when there are too few notes to fit.
+    """
+    notes = [(name, e) for name, line in voices.items() for e in line]
+    heard = [_heard_pitch(post, e) for _, e in notes]
+    durations = [e.end - e.start for _, e in notes]
+    fit = vocal.fit_scale_detail(heard, durations)
+    if fit is None:
+        return voices, None
+    if doh is not None and doh != fit.root:
+        costs, offsets = vocal.root_costs(heard, durations)
+        if costs[doh] <= DOH_MAX_COST_RATIO * float(costs.min()):
+            fit = replace(fit, offset=float(offsets[doh]), root=doh)
+        else:
+            print(f"[notefusion] key override: the choir is not in the scale on {doh}; relabelling only", flush=True)
+    pitches = vocal.snap_to_scale([m - fit.offset for m in heard], fit.root)
+    written: dict[str, list[Event]] = {name: [] for name in voices}
+    for (name, e), p in zip(notes, pitches):
+        written[name].append(replace(e, pitch=p))
+    print(f"[notefusion] choir: {len(notes)} notes written in the scale on {fit.root} "
+          f"(offset {100.0 * fit.offset:+.0f} cents, doh confidence {fit.confidence:.2f})", flush=True)
+    return written, fit
+
+
+def _choir_key_stream(voices: dict[str, list[Event]], sec_to_beats: float):
+    """Every part in one stream for the key vote, the bass weighted by ``CHOIR_BASS_KEY_WEIGHT``.
+
+    The tune alone is the wrong evidence for a choir's key: a soprano line can sit on the
+    third and fifth of the key for a whole phrase while the bass walks the roots under it.
+    """
+    from music21 import note as m21note
+    from music21 import stream
+
+    s = stream.Stream()
+    for name, line in voices.items():
+        weight = CHOIR_BASS_KEY_WEIGHT if name == "bass" else 1.0
+        for e in line:
+            n = m21note.Note(e.pitch)
+            n.duration.quarterLength = max((e.end - e.start) * sec_to_beats, 0.25) * weight
+            s.insert(e.start * sec_to_beats, n)
+    return s
+
+
 def _choir_parts(
     voices: dict[str, list[Event]],
     melody_voice: str,
@@ -4747,11 +4927,11 @@ def _transcribe_wav(
     max_freq_hz = 1050.0
     melodia_trick = strategy.melodia_trick()
 
-    def run_basic_pitch():
+    def run_basic_pitch(path: Path = wav_path):
         from basic_pitch.inference import predict
 
         return predict(
-            str(wav_path),
+            str(path),
             get_basic_pitch_model(),
             onset_threshold=onset_thresh,
             frame_threshold=frame_thresh,
@@ -4764,6 +4944,14 @@ def _transcribe_wav(
     y, sr = _load_audio(wav_path, sr=22_050)
     y = _condition_audio(y, sr=sr)
 
+    # Written pitch = sounding pitch + shift (step 6c).  A key the user gives is in written
+    # pitch (see ``transcribe``); its doh in the sounding pitch the audio is read in:
+    shift = -int(keyboard_transpose or 0)
+    override_doh: int | None = None
+    if key_override:
+        written = _parse_key_override(key_override)
+        override_doh = (solfa.doh_pitch_class(written.tonic.pitchClass, written.mode) - shift) % 12
+
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
     # Pitch at all, and skips it when the engine found the line.
     fast_events: list[Event] = []
@@ -4775,8 +4963,17 @@ def _transcribe_wav(
         skip_basic_pitch = bool(fast_events)
     progress(0.15)
 
+    # A choir's tuning comes out before Basic Pitch rounds anything.  Its pitches are integers
+    # with no tuning step behind them, so a choir sitting 30 cents flat rounds to one neighbour
+    # or the other note by note: on a diatonic SATB phrase, 24 of 182 notes in the parts came
+    # out chromatic at -30 cents and 41 of 191 at -45, and the key read E major for C.
+    # Resampling by the tuning's ratio moves every pitch onto the grid and stretches time by
+    # the same ratio, which comes off the events and the posteriorgram's clock below.
+    time_scale = 1.0
     if skip_basic_pitch:
         model_output, midi_data, note_events = None, None, []
+    elif mode == "choir":
+        model_output, midi_data, note_events, time_scale = _retuned_basic_pitch(y, sr, run_basic_pitch)
     else:
         model_output, midi_data, note_events = run_basic_pitch()
 
@@ -4785,6 +4982,10 @@ def _transcribe_wav(
     # discarding them cost more than anything else in this function; ``None`` here means the
     # capture failed and every consumer falls back to its pre-capture behaviour.
     post = Posteriorgram.capture(model_output) if model_output is not None else None
+    if time_scale != 1.0:
+        note_events = [(t0 * time_scale, t1 * time_scale, p, a, b) for t0, t1, p, a, b in note_events]
+        if post is not None:
+            post = replace(post, times=post.times * time_scale)
 
     # Basic Pitch's list before the melody floor narrows it below.  ``midi_data`` was built
     # from exactly this, so step 12 needs it to re-stamp the tempo without also changing
@@ -4802,6 +5003,8 @@ def _transcribe_wav(
     contour_events: list[Event] = list(fast_events)
     melody_floor_midi: float | None = None
     choir_voices: dict[str, list[Event]] | None = None
+    # The scale a choir's parts were written in (``_choir_in_scale``); step 9 keeps the key to it.
+    choir_fit: "vocal.ScaleFit | None" = None
     melody_voice = "soprano"
     # Chords mode: every note Basic Pitch kept, which the chords are read from.
     chord_events: list[Event] | None = None
@@ -4897,7 +5100,7 @@ def _transcribe_wav(
         # The rest of the pipeline (beat grid, key, solfa, engraving) then runs on the top
         # voice as the tune; the other voices rejoin it as ``parts`` in step 10b.
         if mode == "choir" and events:
-            choir_voices = _assign_voices(events)
+            choir_voices, choir_fit = _choir_in_scale(_assign_voices(events), post, override_doh)
             melody_voice = next((n for n in CHOIR_RANGES if choir_voices[n]), "soprano")
             events = choir_voices[melody_voice]
 
@@ -4912,6 +5115,21 @@ def _transcribe_wav(
                 events = _select_melody_path(events)
             events = _resolve_melody_overlaps(events)
 
+    # ── 6a. The key the user gave ─────────────────────────────────────────────
+    # The voice engine snapped the notes into the scale it fitted, so a key with another doh
+    # used to relabel those notes and write every degree that tells the two scales apart as
+    # an accidental: on Vocadito, given the true key, 12.4% of the notes against 8.8% with
+    # no key at all.  The notes are written again in the user's scale instead, from the same
+    # sung pitches (``_rewrite_in_root``), still in sounding pitch.
+    if override_doh is not None and vocal_fit is not None and events and override_doh != vocal_fit.root:
+        rewritten = _rewrite_in_root(events, vocal_fit, override_doh)
+        if rewritten is None:
+            print(f"[notefusion] key override: the voice is not in the scale on {override_doh}; relabelling only",
+                  flush=True)
+        else:
+            events, offset = rewritten
+            vocal_fit = replace(vocal_fit, offset=offset, root=override_doh)
+
     # ── 6b. Sample Basic Pitch's onset posterior ──────────────────────────────
     # After both paths converge and after every stage that can move a boundary, because the
     # reading is taken AT the event's start — a merge, a split or an overlap trim would
@@ -4924,9 +5142,12 @@ def _transcribe_wav(
     # Written pitch = sounding pitch - the keyboard's transpose setting.  Applied here, after
     # every stage that reads the audio, so the key, the solfa and the engraving below all
     # see the written notes.  The chords are read in sounding pitch and moved the same way.
-    shift = -int(keyboard_transpose or 0)
+    # The sung pitch moves with the note, or every note would read as a transpose's width
+    # off its own pitch (``_pitch_confidence``).
     if shift:
-        events = [replace(e, pitch=e.pitch + shift) for e in events]
+        events = [
+            replace(e, pitch=e.pitch + shift, pyin_midi=None if e.pyin_midi is None else e.pyin_midi + shift)
+            for e in events]
         if choir_voices is not None:
             choir_voices = {
                 name: [replace(e, pitch=e.pitch + shift) for e in line] for name, line in choir_voices.items()}
@@ -5002,6 +5223,28 @@ def _transcribe_wav(
             if mode == "chords":
                 raise
             print(f"[notefusion] chords skipped: {exc!r}", flush=True)
+
+    # ── 7c. A song's doh from its backing ─────────────────────────────────────
+    # A band's chords say where the music rests far better than one voice's notes do: on the
+    # synthetic songs the backing's key had the right doh on all 32 where the backing was
+    # clear, and the voice's fit on 25 of them.  The chords' doh is taken when they are sure
+    # of it (``CHORD_DOH_MIN_CONFIDENCE``) and the voice is not plainly in another scale
+    # (``DOH_MAX_COST_RATIO``), and the notes are written again in that scale.  The key is
+    # then reported from the chords, as chords mode reports it, so the chord row is spelled
+    # in the key the tune is in.
+    key_from_chords = False
+    if (vocal_fit is not None and not key_override and chord_key is not None
+            and chord_key_confidence >= CHORD_DOH_MIN_CONFIDENCE):
+        chord_doh = solfa.doh_pitch_class(*chord_key)
+        if chord_doh != vocal_fit.root:
+            # The notes are written pitch by now (step 6c); so is the scale they go in.
+            rewritten = _rewrite_in_root(events, vocal_fit, (chord_doh + shift) % 12)
+            if rewritten is not None:
+                print(f"[notefusion] key: the backing's chords put doh on {chord_doh}, not {vocal_fit.root}",
+                      flush=True)
+                events, offset = rewritten
+                vocal_fit = replace(vocal_fit, offset=offset, root=chord_doh)
+                key_from_chords = True
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
@@ -5101,17 +5344,21 @@ def _transcribe_wav(
     if key_override:
         detected = _parse_key_override(key_override)
         key_confidence = 1.0
-    elif mode == "chords" and chord_key is not None:
+    elif (mode == "chords" or key_from_chords) and chord_key is not None:
         # The chords know the key better than their top line does: a tune can lean on the
-        # fifth for bars while the harmony rests on the tonic.
+        # fifth for bars while the harmony rests on the tonic.  So does a song's backing
+        # once its doh was taken (step 7c).
         detected = m21key.Key(chords.tonic_name(chord_key[0] + shift, chord_key[1]), chord_key[1])
         key_confidence = chord_key_confidence
     elif settings.key_ensemble:
-        # The written pitches carry the keyboard transpose (step 6c); so must the doh.
+        # The written pitches carry the keyboard transpose (step 6c); so must the doh.  A choir
+        # votes with every part, not the tune alone (``_choir_key_stream``).
+        written_in = vocal_fit if vocal_fit is not None else choir_fit
         detected, key_confidence = _detect_key(
-            s, len(events),
-            doh=None if vocal_fit is None else (vocal_fit.root + shift) % 12,
-            doh_confidence=None if vocal_fit is None else vocal_fit.confidence,
+            s if choir_voices is None else _choir_key_stream(choir_voices, sec_to_beats),
+            len(events) if choir_voices is None else sum(len(line) for line in choir_voices.values()),
+            doh=None if written_in is None else (written_in.root + shift) % 12,
+            doh_confidence=None if written_in is None else written_in.confidence,
         )
     else:
         detected = s.analyze("key")
