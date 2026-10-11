@@ -3215,8 +3215,15 @@ def _segment_vocal(
 # key typed for another song) and keeps its own: the key only relabels the notes, as it always
 # did.  Where the voice's own fit is wrong, the right doh costs up to 1.47 times the best on
 # the sung stress tier (an amateur 30 cents off, a take drifting 100 cents) and up to 1.29 on
-# the synthetic songs; real singers' (Vocadito) all sit within 1.10.
+# the synthetic songs; real singers' (Vocadito) all sit within 1.10.  A key inside the guard
+# can still be wrong (a hymnbook key the congregation did not sing in), which is why
+# ``_rewrite_in_root`` moves only the notes the voice left in doubt.
 DOH_MAX_COST_RATIO = 1.5
+# A choir's parts pin the scale with four voices at once and its key usually comes from the
+# director's copy, so the key it was given is kept further out: a tenor's leading note sung
+# 55 cents flat leaves the right key 1.2-1.5 times the best fit, which C, without the F#,
+# would otherwise win.
+CHOIR_DOH_MAX_COST_RATIO = 1.5
 
 
 def _rewrite_in_root(
@@ -3226,7 +3233,8 @@ def _rewrite_in_root(
 
     Read from the same sung pitches the engine snapped: ``pyin_midi`` plus the fit's offset
     is each note's untuned median.  ``minor`` is the mode of the key that named the root, so
-    a la-based key's se is expected.  Returns the events, carrying the pitches and the tuned
+    a la-based key's se is expected.  A note the voice left in no doubt keeps its pitch.
+    Returns the events, carrying the pitches and the tuned
     medians of the new scale, and the tuning offset that scale was written at.  None when
     the voice is plainly not in that scale (``DOH_MAX_COST_RATIO``, ``vocal.root_costs``), or
     when a note has no sung pitch to write from.
@@ -3241,6 +3249,13 @@ def _rewrite_in_root(
     stabilities = [e.stability for e in events]
     offset, pitches = vocal.write_in_root(
         untuned, durations, None if None in stabilities else stabilities, root, minor)
+    if abs(offset - fit.offset) < 0.5:
+        # A note sung within the keep band of the pitch the voice's own scale gave it was
+        # heard as that pitch, and no key moves it: a wrong key then only relabels it, as it
+        # always did.  Only the notes left in doubt are written in the user's scale.  (Across
+        # a quarter-tone twin the offsets differ by a semitone and every note moves with them.)
+        pitches = [e.pitch if abs(m - fit.offset - e.pitch) <= vocal.SCALE_KEEP_CHROMATIC else p
+                   for e, p, m in zip(events, pitches, untuned)]
     return [replace(e, pitch=p, pyin_midi=m - offset) for e, p, m in zip(events, pitches, untuned)], offset
 
 
@@ -4644,6 +4659,8 @@ def _drop_harmonics(chord: list[Event]) -> list[Event]:
 # A choir's tuning is taken out before Basic Pitch when it is at least this far off the grid
 # (semitones); nearer than that, rounding cannot go wrong on it.
 CHOIR_RETUNE_MIN_SEMITONES = 0.05
+# ...and that tuning is read off the clip's first this many seconds.
+CHOIR_TUNING_EXCERPT_SEC = 60.0
 # A note's sung pitch is read off the contour head within this many bins (a third of a
 # semitone each) either side of the semitone Basic Pitch named: far enough to see where in
 # its semitone the note was sung, not so far as to reach a voice a whole tone away.
@@ -4668,7 +4685,9 @@ def _retuned_basic_pitch(y: np.ndarray, sr: int, run_basic_pitch) -> tuple:
     retuned: Path | None = None
     time_scale = 1.0
     try:
-        tuning = float(librosa.estimate_tuning(y=y, sr=sr))
+        # A choir holds its tuning: a minute of it says as much as the whole clip, and on a
+        # six-minute link the whole clip took two seconds and a 460 MB transient.
+        tuning = float(librosa.estimate_tuning(y=y[: int(CHOIR_TUNING_EXCERPT_SEC * sr)], sr=sr))
         if abs(tuning) >= CHOIR_RETUNE_MIN_SEMITONES:
             time_scale = 2.0 ** (-tuning / 12.0)
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
@@ -4710,6 +4729,7 @@ def _heard_pitch(post: "Posteriorgram | None", e: Event) -> float:
 
 def _choir_in_scale(
     voices: dict[str, list[Event]], post: "Posteriorgram | None", doh: int | None = None, minor: bool = False,
+    tuning: float = 0.0,
 ) -> tuple[dict[str, list[Event]], "vocal.ScaleFit | None"]:
     """Every part written in one major scale, fitted across all of them, and the fit.
 
@@ -4721,11 +4741,17 @@ def _choir_in_scale(
     (``vocal.write_in_root``: held, and near it at every offset that fits as well; a chord's
     passing note can be gone in a tenth of a second).  A ``doh`` the user gave (sounding
     pitch; ``minor`` when their key is la-based) is the scale instead, unless the voices are
-    plainly not in it (``DOH_MAX_COST_RATIO``).  The voices come back as they were, with no
+    plainly not in it (``CHOIR_DOH_MAX_COST_RATIO``).  The voices come back as they were, with no
     fit, when there are too few notes to fit.
+
+    ``tuning`` (semitones) is what ``_retuned_basic_pitch`` took out; it is put back so the
+    fit sees the pitches as sung.  Near a quarter tone the retune can round either way, and a
+    choir it pushed a semitone low would sit a whole semitone from the doh the user named,
+    out of the fit's reach: put back, the user's doh and the simpler-signature twin are both
+    within its half-semitone search, as they are for a solo voice.
     """
     notes = [(name, e) for name, line in voices.items() for e in line]
-    heard = [_heard_pitch(post, e) for _, e in notes]
+    heard = [_heard_pitch(post, e) + tuning for _, e in notes]
     durations = [e.end - e.start for _, e in notes]
     fit = vocal.fit_scale_detail(heard, durations)
     if fit is None:
@@ -4733,7 +4759,7 @@ def _choir_in_scale(
     root, mode = fit.root, None  # the mode, unless the user's key says it, is read off the parts
     if doh is not None:
         costs, _offsets = vocal.root_costs(heard, durations)
-        if costs[doh] <= DOH_MAX_COST_RATIO * float(costs.min()):
+        if costs[doh] <= CHOIR_DOH_MAX_COST_RATIO * float(costs.min()):
             root, mode = doh, minor
         else:
             print(f"[notefusion] key override: the choir is not in the scale on {doh}; relabelling only", flush=True)
@@ -5125,7 +5151,9 @@ def _transcribe_wav(
         # The rest of the pipeline (beat grid, key, solfa, engraving) then runs on the top
         # voice as the tune; the other voices rejoin it as ``parts`` in step 10b.
         if mode == "choir" and events:
-            choir_voices, choir_fit = _choir_in_scale(_assign_voices(events), post, override_doh, override_minor)
+            choir_voices, choir_fit = _choir_in_scale(
+                _assign_voices(events), post, override_doh, override_minor,
+                tuning=-12.0 * float(np.log2(time_scale)))
             melody_voice = next((n for n in CHOIR_RANGES if choir_voices[n]), "soprano")
             events = choir_voices[melody_voice]
 
@@ -5145,8 +5173,10 @@ def _transcribe_wav(
     # used to relabel those notes and write every degree that tells the two scales apart as
     # an accidental: on Vocadito, given the true key, 12.4% of the notes against 8.8% with
     # no key at all.  The notes are written again in the user's scale instead, from the same
-    # sung pitches (``_rewrite_in_root``), still in sounding pitch.
-    if override_doh is not None and vocal_fit is not None and events and override_doh != vocal_fit.root:
+    # sung pitches (``_rewrite_in_root``), still in sounding pitch.  A minor key is written in
+    # even when its doh is the fit's: its mode is what lets a held se stand.
+    if (override_doh is not None and vocal_fit is not None and events
+            and (override_doh != vocal_fit.root or override_minor)):
         rewritten = _rewrite_in_root(events, vocal_fit, override_doh, override_minor)
         if rewritten is None:
             print(f"[notefusion] key override: the voice is not in the scale on {override_doh}; relabelling only",

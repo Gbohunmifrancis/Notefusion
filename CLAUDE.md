@@ -22,7 +22,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   the simpler key signature and then roots within `SCALE_FIT_TIE_RATIO` of each other on the tonal
   profile; `snap_to_scale` writes each note as its scale tone unless it is heard as an
   accidental — within 25 cents of it at every offset that fits within 2%, held 0.15 s (or within
-  8 cents) and steady; a la-based tune's se is spared the offset test) — with the Basic Pitch
+  8 cents, or a passing/neighbour tone) and steady; a la-based tune's se is spared the offset test) — with the Basic Pitch
   paths as fallback, which write their pyin medians the same way (`NF_VOCAL_ENGINE=0` restores
   the old decoder). That scale's root is the doh: `transcriber._detect_key` votes only between
   its major and relative minor, and the key confidence is the fit's `ScaleFit.confidence` (the
@@ -30,7 +30,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   chance beyond a 0.4 offset); without a fit the vote keeps to keys whose scale holds the notes as
   well as any does (`_scale_parsimony`). A key given at submit (`key_override`) re-writes the
   sung pitches in its scale (`vocal.write_in_root`; a key the voice fits worse than 1.5x its
-  best only relabels); a song's backing chords are labelled but never move the doh (taking
+  best only relabels, and a note sung within 25 cents of its own scale's pitch is never moved,
+  so a wrong key can only relabel what was heard clearly); a song's backing chords are labelled but never move the doh (taking
   their key was measured wrong on real songs). A melody floor is not handed to a piano when pyin's line moves like a voice
   (`_stillness`). A sung note's confidence is how near its tuned pitch
   sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
@@ -71,8 +72,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `mode="choir"` is the exception: a choir singing in parts is decoded with every voice kept,
   `transcriber._assign_voices` splits each chord into S/A/T/B by pitch order, range and continuity,
   the top voice becomes the tune and the four come back as `parts` with `parts_source="heard"`;
-  the choir's tuning comes out before Basic Pitch, every part is written in one scale fitted
-  across all of them (`_choir_in_scale`), and the key is voted on every part, the bass twice.
+  the choir's tuning (read off its first minute) comes out before Basic Pitch and is put back
+  for the fit, every part is written in one scale fitted across all of them (`_choir_in_scale`;
+  a key given is kept within 1.5x the best fit), and the key is voted on every part, the bass twice.
   `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
   pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
   the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.

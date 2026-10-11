@@ -290,3 +290,16 @@ def test_a_choir_singing_flat_is_written_in_its_key_without_accidentals(tmp_path
     assert result.key == "C major"
     sung = [n["pitch_midi"] for part in result.parts.values() for n in part["notes"]]
     assert sung and all(p % 12 in (0, 2, 4, 5, 7, 9, 11) for p in sung)
+
+
+def test_a_choir_retuned_the_wrong_way_still_reaches_the_users_key():
+    # A C-major hymn sung 50 cents flat that the retune read as 48 cents sharp: Basic Pitch
+    # then heard every part about a semitone low (true - 0.98).  With the tuning put back the
+    # user's C is in reach and the parts are written in it, not relabelled from B.
+    chords = [[72, 67, 64, 48], [72, 69, 65, 53], [71, 67, 62, 55], [72, 67, 64, 48]]
+    sung_as = {(name, p): p - 0.98 for chord in chords for name, p in zip(("soprano", "alto", "tenor", "bass"), chord)}
+    voices, post = _chorale(chords, sung_as)
+    written, fit = transcriber._choir_in_scale(voices, post, doh=0, tuning=0.48)
+    assert fit.root == 0
+    assert [e.pitch for e in written["soprano"]] == [72, 72, 71, 72]
+    assert [e.pitch for e in written["bass"]] == [48, 53, 55, 48]

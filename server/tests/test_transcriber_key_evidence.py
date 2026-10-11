@@ -169,3 +169,19 @@ def test_the_melody_floor_is_declined_when_pyin_follows_a_voice():
     midi = np.where(np.arange(200) < 100, 60.0, 62.0) + 0.1 * rng.integers(-2, 3, 200)
     assert transcriber._stillness(midi) < transcriber.MELODY_FLOOR_MIN_STILLNESS
     assert transcriber._melody_floor_hz(_skyline_events(times, 72), times, midi) is None
+
+
+def test_a_wrong_key_inside_the_guard_leaves_the_notes_the_voice_sang_clearly():
+    # G major, its one C natural a quick note 5 cents sharp; the user typed D major, whose
+    # scale has C# instead.  Too short for an accidental's evidence, the C would be written
+    # as a D-major tone; it was heard as C, though, and stays C: only notes left in doubt move.
+    tune = [67, 69, 71, 72, 74, 71, 67, 66, 67, 69, 71, 74, 76, 74, 71, 69, 67]
+    # An untrained singer's scatter elsewhere, so a scale one tone apart fits nearly as well.
+    sung = [p + (0.05 if p == 72 else (0.2 if i % 2 else -0.2)) for i, p in enumerate(tune)]
+    fit = vocal.ScaleFit(offset=0.0, root=7, cost_margin=0.3, tonal_margin=1.0)
+    events = [Event(i * 0.5, i * 0.5 + (0.1 if p == 72 else 0.45), p, 0.8, pyin_midi=m - fit.offset, stability=1.0)
+              for i, (m, p) in enumerate(zip(sung, tune))]
+    rewritten = transcriber._rewrite_in_root(events, fit, 2, False)
+    assert rewritten is not None  # D fits these notes nearly as well: the guard lets it in
+    assert [e.pitch for e in rewritten[0]] == tune
+

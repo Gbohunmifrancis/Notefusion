@@ -446,8 +446,28 @@ def test_analyse_keeps_a_quick_passing_note_sung_in_tune():
         return [n.pitch for n in result.notes]
 
     assert notes(0.0) == [m for m, _ in _PASSING]
-    # 15 cents sharp, too short to be believed: the notes they lean towards.
-    assert notes(0.15) == [60, 62, 64, 65, 67, 67, 65, 64, 62, 62, 62, 60, 64, 67, 72]
+    # 15 cents sharp, as a run's quick notes are pulled by the glides either side: still a
+    # passing and a neighbour tone, not the notes they lean towards repeated.
+    assert notes(0.15) == [m for m, _ in _PASSING]
+
+
+def test_a_quick_chromatic_that_is_no_passing_or_neighbour_tone_still_needs_its_length():
+    # The same 0.12 s chromatics left by leaps (f fe r, s de r) are no passing or neighbour
+    # tones: 15 cents off they are the scale tones they lean to, as any short accidental is.
+    tune = [(60, 20), (65, 20), (66, 5), (62, 20), (67, 20), (61, 5), (62, 20), (60, 20), (64, 20), (65, 20),
+            (67, 20), (72, 30)]
+    contour = _segments_contour([(m + (0.15 if frames == 5 else 0.0), frames, 0.9, 1.0) for m, frames in tune])
+    pitches = [n.pitch for n in vocal.analyse(np.zeros(1, dtype=np.float32), contour=contour).notes]
+    assert 66 not in pitches and 61 not in pitches
+
+
+def test_chromatic_step_reads_passing_and_neighbour_shapes():
+    assert vocal._chromatic_step([67, 66, 65], 1, 66)  # s fe f
+    assert vocal._chromatic_step([65, 66, 67], 1, 66)  # f fe s
+    assert vocal._chromatic_step([69, 68, 69], 1, 68)  # l se l
+    assert not vocal._chromatic_step([67, 66, 64], 1, 66)  # a leap out
+    assert not vocal._chromatic_step([60, 66, 64], 1, 66)  # a leap in
+    assert not vocal._chromatic_step([66, 64], 0, 66)  # the first note has no shape
 
 
 def test_analyse_asks_each_chromatic_for_its_evidence(monkeypatch):
@@ -496,8 +516,10 @@ def test_write_in_root_takes_the_mode_from_whatever_named_the_root():
     assert vocal.write_in_root(sung, durations, stabilities, 0, True)[1] == _MINOR_TUNE
     assert 68 not in vocal.write_in_root(sung, durations, stabilities, 0, False)[1]
     assert vocal.write_in_root(sung, durations, stabilities, 0)[1] == _MINOR_TUNE
-    # ...and the length and steadiness asked of any accidental.
-    assert 68 not in vocal.write_in_root(sung, [0.1] * len(sung), stabilities, 0, True)[1]
+    # ...and the steadiness asked of any accidental (the se is a neighbour tone, l se l, so
+    # its length is not asked).
+    unsteady = [0.5 if p == 68 else 0.9 for p in _MINOR_TUNE]
+    assert 68 not in vocal.write_in_root(sung, durations, unsteady, 0, True)[1]
 
 
 def test_write_in_scale_drops_a_chromatic_an_equally_good_offset_moves_out_of_the_band():

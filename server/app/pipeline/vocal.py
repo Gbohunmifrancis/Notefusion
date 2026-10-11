@@ -1046,7 +1046,9 @@ def snap_to_scale(
     and, where ``durations`` and ``stabilities`` are given, lasts ``SCALE_KEEP_MIN_SEC`` (or
     sits within ``SCALE_KEEP_IN_TUNE`` of it throughout the slack) and holds
     ``SCALE_KEEP_MIN_STABILITY``; otherwise it is the nearer of its two neighbours that is a
-    scale tone.
+    scale tone.  A passing or neighbour tone (``_chromatic_step``) needs no length: a run's
+    fe or a blues grace is short by nature, and as a scale tone it would repeat the note
+    beside it.
 
     ``minor`` (the tune reads as the relative minor, ``_minor_mode``) excuses se from the
     slack: a minor tune's raised seventh is expected, not an accident, so held and within
@@ -1064,9 +1066,12 @@ def snap_to_scale(
             out.append(n)
             continue
         in_tune = abs(value - low - n) <= SCALE_KEEP_IN_TUNE and abs(value - high - n) <= SCALE_KEEP_IN_TUNE
-        held = (durations is None or in_tune or durations[i] >= SCALE_KEEP_MIN_SEC) and (
-            stabilities is None or stabilities[i] >= SCALE_KEEP_MIN_STABILITY
-        )
+        # A passing or neighbour tone (s fe f, l se l, a run's de) is a semitone from the notes
+        # either side of it: its shape stands in for length, which such a note never has, and
+        # as a scale tone it would only repeat the note beside it.  It must still be steady
+        # and inside the band at every offset that fits.
+        long_enough = durations is None or in_tune or durations[i] >= SCALE_KEEP_MIN_SEC or _chromatic_step(midis, i, n)
+        held = long_enough and (stabilities is None or stabilities[i] >= SCALE_KEEP_MIN_STABILITY)
         if minor and (n - root) % 12 == 8:
             near = abs(value - n) <= keep
         else:
@@ -1079,6 +1084,17 @@ def snap_to_scale(
         neighbours = [p for p in (n - 1, n + 1) if _SCALE_MEMBER[root, p % 12]]
         out.append(min(neighbours, key=lambda p: abs(value - p)) if neighbours else n)
     return out
+
+
+def _chromatic_step(midis: Sequence[float], i: int, n: int) -> bool:
+    """Is note ``i`` (heard as semitone ``n``) a passing tone — a semitone from each neighbour,
+    moving the same way — or a neighbour tone that leaves a note by a semitone and returns?"""
+    if i == 0 or i + 1 >= len(midis):
+        return False
+    before, after = int(round(midis[i - 1])), int(round(midis[i + 1]))
+    if before == after:
+        return abs(before - n) == 1
+    return {before, after} == {n - 1, n + 1}
 
 
 def _scale_costs(midis: np.ndarray, weights: np.ndarray, offset: float) -> np.ndarray:
