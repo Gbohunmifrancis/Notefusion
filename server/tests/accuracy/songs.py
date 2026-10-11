@@ -414,8 +414,11 @@ def real_reference(ref_path: Path) -> tuple[np.ndarray, np.ndarray, list[int]]:
     on = (~np.isnan(midi)).astype(float)
     contour = vocal.Contour(times=grid, midi=midi, voiced_prob=on, rms=on, rms_fast=on)
     analysis = vocal.analyse(np.zeros(16), vocal.SAMPLE_RATE, contour=contour)
-    # sung pitch rounded at the clip's own tuning; no scale snapping on the reference side
-    notes = [int(round(n.midi + analysis.tuning_cents / 100.0)) for n in analysis.notes]
+    # sung pitch (the tuning and any drift the engine took out put back) rounded; no scale
+    # snapping on the reference side
+    t0 = min((n.start for n in analysis.notes), default=0.0)
+    notes = [int(round(n.midi + (analysis.tuning_cents + analysis.drift_cents_per_min * (n.start - t0) / 60.0) / 100.0))
+             for n in analysis.notes]
     return t, f, _collapse(notes)
 
 

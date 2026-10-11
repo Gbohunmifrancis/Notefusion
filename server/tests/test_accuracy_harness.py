@@ -57,6 +57,16 @@ def _boundary_level(audio: np.ndarray, onset_sec: float, held_rms: float) -> flo
     return min(rms(onset_sec + d) for d in np.arange(-0.03, 0.06, 0.0025)) / held_rms
 
 
+def test_the_corpus_fingerprint_moves_only_with_what_a_render_depends_on():
+    # The slice-only options left at their defaults render the corpus as before they existed,
+    # so a baseline recorded then still matches; set, they are part of the render.
+    from tests.accuracy.vocal_corpus import vocal_corpus_fingerprint
+
+    assert vocal_corpus_fingerprint(CASES) == "e09ad8c34b63939a"  # vocal_baseline.json's corpus
+    legato = tuple(replace(c, options=replace(c.options, legato=True)) for c in CASES)
+    assert vocal_corpus_fingerprint(legato) != vocal_corpus_fingerprint(CASES)
+
+
 def test_legato_joins_a_pitch_change_with_no_valley_but_still_rearticulates_a_repeat():
     notes = ((60, 1.0), (64, 1.0), (64, 1.0))  # a step up, then the same pitch again
     levels = {}

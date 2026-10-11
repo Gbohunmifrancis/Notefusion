@@ -12,7 +12,7 @@ whose baseline fingerprint this must never disturb.
 """
 
 import hashlib
-from dataclasses import asdict, dataclass, replace
+from dataclasses import dataclass, fields, replace
 
 from tests.accuracy.vocal_synth import VocalOptions
 
@@ -303,5 +303,15 @@ SLICE_CASES: tuple[VocalCase, ...] = tuple(case for cases in SLICES.values() for
 def vocal_corpus_fingerprint(cases: tuple[VocalCase, ...] = CASES) -> str:
     digest = hashlib.sha256()
     for case in cases:
-        digest.update(repr((case.name, case.key, case.tempo_bpm, case.notes, asdict(case.options))).encode())
+        digest.update(repr((case.name, case.key, case.tempo_bpm, case.notes, _rendered_options(case.options))).encode())
     return digest.hexdigest()[:16]
+
+
+def _rendered_options(options: VocalOptions) -> dict:
+    """The options a render depends on.  A ``repr=False`` option left at its default renders as
+    before it existed, so it stays out and a recorded baseline stays valid when one is added."""
+    return {
+        f.name: getattr(options, f.name)
+        for f in fields(options)
+        if f.repr or getattr(options, f.name) != f.default
+    }

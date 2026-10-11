@@ -55,6 +55,8 @@ import numpy as np
 
 from app.pipeline import vocal
 
+# vocadito (Bittner, Pasalo, Bosch, Meseguer-Brocal and Rubinstein, 2021; doi:10.5281/zenodo.5578807),
+# CC BY 4.0.  vocadito_frozen.json holds notes derived from its annotations.
 ZENODO_URL = "https://zenodo.org/api/records/5578807/files/vocadito.zip/content"
 DEFAULT_DATA = Path.home() / ".cache" / "notefusion" / "vocadito"
 REFERENCE_PATH = Path(__file__).parent / "vocadito_frozen.json"
@@ -143,7 +145,7 @@ def rebuild_reference(data: Path, previous: dict) -> dict:
     return {
         "built_at_head": head.stdout.strip(),
         "keep": vocal.SCALE_KEEP_CHROMATIC,
-        "tie_ratio": vocal.SCALE_FIT_TIE_RATIO,
+        "tie_ratio": getattr(vocal, "SCALE_FIT_TIE_RATIO", None),  # metadata only; the fit may drop it
         "scored_clips": [int(c) for c, entry in clips.items() if entry["consensus"]],
         "clips": clips,
     }
@@ -196,8 +198,8 @@ def main(argv: list[str] | None = None) -> int:
         rows.append(row)
         print(f"vocadito_{clip:<3} solfa_ser {row['solfa_ser']:.2f}  doh {int(row['doh'])}  interval_ser {row['interval_ser']:.2f}  accidentals {row['accidentals']:.2f}", flush=True)
 
-    def mean(table: list[dict], key: str) -> float:
-        return round(float(np.mean([r[key] for r in table])), 3)
+    def mean(table: list[dict], key: str) -> float | None:
+        return round(float(np.mean([r[key] for r in table])), 3) if table else None
 
     def aggregate(table: list[dict]) -> dict:
         keys = ("solfa_ser", "doh", "interval_ser", "accidentals")
