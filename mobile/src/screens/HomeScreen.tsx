@@ -413,15 +413,6 @@ export function HomeScreen({ navigation }: Props) {
               {/* ── The other ways in ─────────────────────────────────── */}
               <View style={styles.chipRow}>
                 <Touchable
-                  onPress={() => rootNav.navigate('Link')}
-                  style={styles.chip}
-                  radius={radii.pill}
-                  accessibilityLabel="Paste a song link"
-                >
-                  <Ionicons name="link-outline" size={17} color={colors.accent} />
-                  <Text style={styles.chipLabel}>Paste link</Text>
-                </Touchable>
-                <Touchable
                   onPress={() => navigation.navigate('Record', { autoPickAudio: true })}
                   style={styles.chip}
                   radius={radii.pill}
@@ -429,6 +420,15 @@ export function HomeScreen({ navigation }: Props) {
                 >
                   <Ionicons name="download-outline" size={17} color={colors.accent} />
                   <Text style={styles.chipLabel}>Import</Text>
+                </Touchable>
+                <Touchable
+                  onPress={() => rootNav.navigate('Link')}
+                  style={styles.chip}
+                  radius={radii.pill}
+                  accessibilityLabel="Paste a song link"
+                >
+                  <Ionicons name="link-outline" size={17} color={colors.accent} />
+                  <Text style={styles.chipLabel}>Paste link</Text>
                 </Touchable>
                 <Touchable
                   onPress={() => rootNav.navigate('Listen')}

@@ -687,3 +687,15 @@ body.auth-only .auth-page .try-free { display: none; }
 .store-badge { display: inline-block; line-height: 0; transition: transform .18s ease; }
 .store-badge img { width: 182px; height: auto; }
 .store-badge:hover { transform: translateY(-2px); text-decoration: none; }
+
+/* Links come last and say up front that they do not always work (YouTube blocks server downloads). */
+.link-more { margin-top: 14px; }
+.link-more summary { cursor: pointer; font-size: 0.9rem; font-weight: 600; color: var(--blue); list-style: none; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; }
+.link-more summary::-webkit-details-marker { display: none; }
+.link-more summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; rotate: 45deg; translate: 0 -2px; transition: rotate 150ms ease-out; }
+.link-more[open] summary::after { rotate: -135deg; translate: 0 2px; }
+.link-more summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+.link-more .link-form { margin-top: 10px; }
+.link-more #try-paste { margin-top: 8px; }
+.link-note { margin-top: 6px; }
+@media (prefers-reduced-motion: reduce) { .link-more summary::after { transition: none; } }

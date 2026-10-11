@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
-<link rel="stylesheet" href="/assets/app.css?v=17">
+<link rel="stylesheet" href="/assets/app.css?v=18">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
 <script>
   // The theme before the first paint, so a dark page never flashes white: the saved choice, else the device's.
@@ -201,17 +201,21 @@
 
     <div class="card try-free" id="try-free">
       <h2><svg class="ic"><use href="#i-sparkle"/></svg>Or try it first — free, no account</h2>
-      <p class="card-lead">A 30-second preview of any song, or a tune you hum right now.</p>
-      <form id="try-form" class="link-form" novalidate>
-        <label class="sr-only" for="try-url">Song link</label>
-        <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
-        <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
-      </form>
-      <div class="row" style="margin-top:12px">
-        <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic"><use href="#i-paste"/></svg>Paste a link</button>
-        <button class="btn btn-ghost btn-sm btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
-        <label class="btn btn-ghost btn-sm try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
+      <p class="card-lead">A 30-second preview of a tune you hum right now, or a recording you have.</p>
+      <div class="row">
+        <button class="btn btn-primary btn-rec" id="try-record" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
+        <label class="btn btn-ghost try-file"><input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*"><svg class="ic"><use href="#i-upload"/></svg>Upload a recording</label>
       </div>
+      <details class="link-more">
+        <summary>Or paste a song link</summary>
+        <form id="try-form" class="link-form" novalidate>
+          <label class="sr-only" for="try-url">Song link</label>
+          <span class="input-wrap"><svg class="ic"><use href="#i-link"/></svg><input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false"></span>
+          <button class="btn btn-primary" id="try-submit" type="submit">Preview</button>
+        </form>
+        <button class="btn btn-ghost btn-sm" id="try-paste" type="button" hidden><svg class="ic"><use href="#i-paste"/></svg>Paste a link</button>
+        <p class="small muted link-note">Links work for many songs, not all — YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
+      </details>
       <div id="try-section"></div>
       <p class="try-status small" id="try-status" aria-live="polite"></p>
     </div>
@@ -339,6 +343,9 @@
       </div>
       <p class="studio-credits hidden" id="studio-credits" aria-live="polite"></p>
       <div class="or studio-or">or</div>
+      <button class="btn btn-dark btn-rec studio-rec" id="rec-btn" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
+      <p id="rec-status" class="small studio-status" aria-live="polite"></p>
+      <div class="or studio-or">or paste a song link</div>
       <form id="form-link" class="link-form studio-link" novalidate>
         <label class="sr-only" for="link-url">Song link</label>
         <span class="input-wrap providers">
@@ -349,10 +356,8 @@
         <button class="btn btn-light" id="link-submit" type="submit">Transcribe</button>
       </form>
       <p class="small studio-status link-hint" id="link-hint" aria-live="polite"></p>
+      <p class="small studio-status link-note">Links work for many songs, not all — YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
       <div id="link-section"></div>
-      <div class="or studio-or">or</div>
-      <button class="btn btn-dark btn-rec studio-rec" id="rec-btn" type="button"><svg class="ic"><use href="#i-mic"/></svg>Record a tune</button>
-      <p id="rec-status" class="small studio-status" aria-live="polite"></p>
     </div>
 
     <div class="card hidden" id="progress">
