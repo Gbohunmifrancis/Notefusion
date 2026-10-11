@@ -393,12 +393,46 @@ def test_fit_scale_settles_a_near_tie_on_the_tonal_profile():
 
 
 def test_a_decisive_fit_is_sure_and_a_tie_is_only_as_sure_as_its_profile():
-    sure = vocal.ScaleFit(0.0, 0, cost_margin=0.2, tonal_margin=1.0)
+    sure = vocal.ScaleFit(0.0, 0, cost_margin=0.3, tonal_margin=1.0)
     tie_clear = vocal.ScaleFit(0.0, 0, cost_margin=0.0, tonal_margin=0.3)
     tie_unclear = vocal.ScaleFit(0.0, 0, cost_margin=0.0, tonal_margin=0.02)
     assert sure.confidence == pytest.approx(1.0)
     assert sure.confidence > tie_clear.confidence > tie_unclear.confidence
     assert tie_unclear.confidence < 0.1
+
+
+def test_a_cost_lead_wrong_dohs_still_reach_is_not_full_confidence():
+    # Under room noise and from detuned singers a wrong doh can lead its runner-up by 0.12-0.24
+    # of the cost; at the old 0.10 those read as certain.
+    assert vocal.ScaleFit(0.0, 0, cost_margin=0.12, tonal_margin=1.0).confidence < 0.5
+    assert vocal.ScaleFit(0.0, 0, cost_margin=0.24, tonal_margin=1.0).confidence < 1.0
+
+
+def test_the_doh_is_at_best_one_of_the_readings_the_cost_barely_separates():
+    assert vocal.ScaleFit(0.0, 0, cost_margin=1.0, tonal_margin=1.0, readings=3).confidence == pytest.approx(1 / 3)
+    # G against D, settled on the profile inside the tie band: two readings in reach, so
+    # however clear the profile, no better than an even chance.
+    sung = [67.05, 69.0, 70.95, 72.1, 73.0, 74.05, 74.0, 72.9, 72.0, 71.05, 69.0, 66.95]
+    fit = vocal.fit_scale_detail(sung, [1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2])
+    assert fit.readings == 2
+    assert fit.confidence <= 0.5
+
+
+def test_scales_the_cost_cannot_tell_apart_at_all_are_one_reading():
+    # A pentatonic tune lies in C, F and G major exactly alike: the profile settles it, and
+    # its margin alone says how surely.
+    fit = vocal.fit_scale_detail([60, 62, 64, 67, 69, 67, 64, 62, 60], [2.0, 1, 1, 1, 1, 1, 1, 1, 3.0])
+    assert fit.root == 0
+    assert fit.readings == 1
+    assert fit.confidence == pytest.approx(0.8 * min(1.0, fit.tonal_margin / vocal.SCALE_FIT_SURE_TONAL_MARGIN))
+
+
+def test_a_singer_near_a_quarter_tone_off_is_an_even_chance_of_the_doh():
+    assert vocal.ScaleFit(0.45, 0, cost_margin=1.0, tonal_margin=1.0).confidence == pytest.approx(0.5)
+    assert vocal.ScaleFit(-0.45, 0, cost_margin=1.0, tonal_margin=1.0).confidence == pytest.approx(0.5)
+    assert vocal.ScaleFit(0.35, 0, cost_margin=1.0, tonal_margin=1.0).confidence == pytest.approx(1.0)
+    sung = [m + 0.5 for m in (70, 72, 74, 75, 77, 79, 81, 82, 81, 79, 77, 75, 74, 72, 70)]
+    assert vocal.fit_scale_detail(sung, [1.0] * len(sung)).confidence == pytest.approx(0.5)
 
 
 def test_a_full_scale_sung_in_tune_fits_with_a_wide_margin():
@@ -461,3 +495,5 @@ def test_quarter_tone_twins_are_settled_on_the_key_signature_before_the_profile(
     fit = vocal.fit_scale_detail(sung, weights)
     assert fit.root == 10
     assert fit.offset == pytest.approx(-0.45, abs=0.03)
+    # The audio could not choose the letter, so the confidence says so.
+    assert fit.confidence == pytest.approx(0.5)

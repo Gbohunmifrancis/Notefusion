@@ -156,10 +156,23 @@ SCALE_FIT_TIE = 1e-6
 SCALE_FIT_TIE_RATIO = 0.02
 # How decisive a fit is before it is believed outright: the runner-up root's cost lead,
 # as a fraction of the best cost, at which ``ScaleFit.confidence`` reaches 1.  Vocadito's
-# wrong dohs all sit under 0.035; half the right ones sit above 0.05.
-SCALE_FIT_SURE_MARGIN = 0.10
+# wrong dohs all sit under 0.035 in a quiet room, but under babble, reverb and the phone
+# chains they reach 0.20, and the sung corpus re-seeded with detuned, drifting and
+# quarter-tone-off singers (132 cases) puts six of its seven decisive wrong dohs under
+# 0.26.  At 0.10 those seven were reported at full confidence; at 0.25, with the caps in
+# ``ScaleFit.confidence``, one is.
+SCALE_FIT_SURE_MARGIN = 0.25
 # ...and for a tie settled on the tonal profile, the correlation lead that counts as sure.
 SCALE_FIT_SURE_TONAL_MARGIN = 0.25
+# Readings whose cost is within this fraction of the best are ones the doh could as well
+# be; with k of them the doh's confidence is at most 1/k.  Measured on Vocadito over five
+# recording conditions: 18 of the 22 wrong dohs had another reading this close (the true
+# doh, on 16), against 67 of the 148 right ones.
+SCALE_FIT_CROWD_RATIO = 0.05
+# A fitted offset beyond this is a singer near a quarter-tone off, whose notes read as
+# well in the scale a semitone over: the key signature chose between the two, not the
+# audio, so the doh is at best an even chance.
+SCALE_FIT_TWIN_OFFSET = 0.4
 SNAP_MIN_NOTES = 5
 SNAP_MIN_KEY_MARGIN = 0.05  # correlation lead the key needs before it is allowed to vote
 
@@ -207,6 +220,9 @@ class ScaleFit:
     # Among roots the cost could not separate, the winner's tonal-profile lead over the
     # next; 1.0 when the cost alone decided.
     tonal_margin: float
+    # Distinct readings within SCALE_FIT_CROWD_RATIO of the best cost, the winner's included
+    # (a quarter-tone singer's twins count once, and so do roots tied exactly).
+    readings: int = 1
 
     @property
     def confidence(self) -> float:
@@ -214,13 +230,21 @@ class ScaleFit:
 
         A decisive cost margin is sure on its own.  A tie is as sure as the profile lead
         that settled it, scaled under what a decisive cost earns: the profile reads a
-        histogram and cannot see which degree the tune avoided.
+        histogram and cannot see which degree the tune avoided.  Either way the doh is at
+        best one of the readings the cost barely separates — so a tie the profile settled
+        against the cost's own choice is at most an even chance — and so is the doh of a
+        singer near a quarter-tone off (``SCALE_FIT_TWIN_OFFSET``).
         """
         by_cost = min(1.0, self.cost_margin / SCALE_FIT_SURE_MARGIN)
         if self.cost_margin > SCALE_FIT_TIE_RATIO:
-            return by_cost
-        by_profile = 0.8 * min(1.0, max(0.0, self.tonal_margin) / SCALE_FIT_SURE_TONAL_MARGIN)
-        return max(by_cost, by_profile)
+            sure = by_cost
+        else:
+            by_profile = 0.8 * min(1.0, max(0.0, self.tonal_margin) / SCALE_FIT_SURE_TONAL_MARGIN)
+            sure = max(by_cost, by_profile)
+        sure = min(sure, 1.0 / max(1, self.readings))
+        if abs(self.offset) > SCALE_FIT_TWIN_OFFSET:
+            sure = min(sure, 0.5)
+        return sure
 
 
 @dataclass(frozen=True)
@@ -906,6 +930,16 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
             return runner_up / low - 1.0
         return 0.0 if runner_up <= SCALE_FIT_TIE else 1.0
 
+    # The readings the cost barely tells apart.  Twins are one reading, and so are roots the
+    # cost cannot tell apart at all (a pentatonic tune's three scales): the profile settles
+    # those, and its own margin says how surely.
+    readings: list[int] = []
+    for r in order:
+        if float(best_cost[r]) > low * (1.0 + SCALE_FIT_CROWD_RATIO) + SCALE_FIT_TIE:
+            break
+        if not any(twins(q, r) or abs(float(best_cost[q] - best_cost[r])) <= SCALE_FIT_TIE for q in readings):
+            readings.append(r)
+
     # Nothing in the audio separates twins, so the key signature does — the reading in the
     # simpler key, which is where choir music is written (G over A-flat, B-flat over B) —
     # and it does so before the profile is asked: the profile reads each twin's histogram
@@ -920,7 +954,7 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     ]
     if len(tied) == 1:
         root = tied[0]
-        return ScaleFit(float(best_theta[root]), root, margin_over(root), 1.0)
+        return ScaleFit(float(best_theta[root]), root, margin_over(root), 1.0, len(readings))
 
     def tonality(root: int) -> float:
         histogram = np.zeros(12)
@@ -934,7 +968,7 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     )
     root = scored[0][3]
     tonal_margin = scored[0][0] - scored[1][0]
-    return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin)
+    return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin, len(readings))
 
 
 def snap_to_scale(midis: Sequence[float], root: int, keep: float = SCALE_KEEP_CHROMATIC) -> list[int]:
