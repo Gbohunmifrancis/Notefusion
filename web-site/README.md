@@ -12,6 +12,7 @@ assets/app.js         the web app's script (API client with token refresh, polli
 assets/preview.js     the home page's try-it-free box: link, file or a 30-second recording → an anonymous preview
 assets/choir.js       movable-do labelling, hymn-book layout, voice ranges and the Web Audio rehearsal player
 assets/sheet.js       the shared-sheet page's script
+tests/                node --test web-site/tests/*.test.mjs (not deployed: .vercelignore)
 privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service
 delete-account/       account/data deletion and email confirmation flow

@@ -172,7 +172,10 @@ export function dohPitchClass(key: ParsedKey): number {
     : (key.tonicPitchClass + 3) % 12;
 }
 
-/** Doh names as key signatures spell them — "Bb", not "A#" — for la-based minor keys. */
+/**
+ * Doh names as key signatures spell them — "Bb", not "A#" (F# kept): a minor key's doh
+ * letter (la-based) and every "Doh is" header, so the tile and the header agree.
+ */
 const DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
 /**
@@ -282,7 +285,7 @@ export function syllable(
 
 /** The "Doh is F" header shown above every solfa sheet. */
 export function dohHeader(dohPc: number): string {
-  return `Doh is ${PITCH_NAMES[dohPc]}`;
+  return `Doh is ${DOH_NAMES[dohPc]}`;
 }
 
 /**

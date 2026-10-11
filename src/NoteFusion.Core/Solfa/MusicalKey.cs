@@ -18,6 +18,14 @@ public sealed record MusicalKey
     private static readonly string[] PitchNames =
         ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
+    /// <summary>
+    /// Doh names spelled as the key signature spells them: each major key takes its spelling
+    /// with fewer accidentals, so a Bb sheet (two flats) reads "Doh is Bb", never "A#" (ten
+    /// sharps). F# and Gb tie at six; F# is kept.
+    /// </summary>
+    private static readonly string[] DohNames =
+        ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
     /// <summary>Pitch class of the tonic, 0 = C … 11 = B.</summary>
     public int TonicPitchClass { get; }
 
@@ -47,7 +55,7 @@ public sealed record MusicalKey
         : new MusicalKey((TonicPitchClass + 3) % 12, KeyMode.Major, Confidence);
 
     /// <summary>The 'Doh is F' header shown on the result screen and exported solfa sheets.</summary>
-    public string DohHeader() => $"Doh is {PitchNames[DohPitchClass]}";
+    public string DohHeader() => $"Doh is {DohNames[DohPitchClass]}";
 
     public override string ToString() =>
         $"{PitchNames[TonicPitchClass]} {(Mode == KeyMode.Major ? "major" : "minor")}";

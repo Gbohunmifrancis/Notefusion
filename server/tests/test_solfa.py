@@ -73,6 +73,12 @@ def test_doh_header_names_the_pitch():
     assert solfa.doh_header(6) == "Doh is F#"
 
 
+def test_doh_header_spells_the_doh_like_the_key_signature():
+    # Bb major is written with two flats; "A#" would be ten sharps no choir reads.
+    assert solfa.doh_header(10) == "Doh is Bb"
+    assert [solfa.doh_header(pc) for pc in (1, 3, 8)] == ["Doh is Db", "Doh is Eb", "Doh is Ab"]
+
+
 # --- ascending_flags: chromatic spelling follows melodic direction -------------
 
 def test_a_rising_chromatic_is_spelled_sharp():
