@@ -29,7 +29,7 @@ instead, and so does this module:
      offset across one semitone and every major scale is tried, and the pair that puts
      the sung notes closest to scale tones (duration-weighted, robust to the odd real
      accidental) wins.  Each note is then written as the nearest scale tone unless it
-     sits within SCALE_KEEP_CHROMATIC of a chromatic pitch — a sung ``se`` or ``fe`` is
+     is held within SCALE_KEEP_CHROMATIC of a chromatic pitch — a sung ``se`` or ``fe`` is
      real music, a note 35 cents off its scale tone is an untrained voice.  Measured on
      Vocadito (40 real solo singers), notes sit a median 25-30 cents off their own
      semitone even after the clip's offset is removed, so rounding each note on its own
@@ -137,6 +137,20 @@ SNAP_AMBIGUOUS = 0.32  # |residual| above this (i.e. within 18 cents of the midp
 # kept on it; anything further is written as its nearest scale tone.  0.25 measured best of
 # 0.15-0.30 on the sung corpus's amateur cases (intended notes known) and on Vocadito.
 SCALE_KEEP_CHROMATIC = 0.25
+# ...and a note near a chromatic pitch must also be heard as one to keep it.  Untrained singers
+# sit a median 20 cents off their notes and four in ten land further off than the keep band,
+# so nearness alone wrote accidentals that said nothing: on Vocadito they were as frequent on
+# the 14 tunes with no accidental (10.0% of notes) as on the 3 with real ones (10.3%), and one
+# in three matched what both annotators heard.  A chromatic stays only when the note is held —
+# SCALE_KEEP_MIN_SEC long, SCALE_KEEP_MIN_STABILITY of its frames inside its own band (a scoop
+# or a glide the segmenter kept is neither) — and when it stays inside the keep band for every
+# tuning offset that fits the scale within SCALE_KEEP_OFFSET_SLACK of the chosen one's cost: an
+# offset the notes cannot pin down must not decide which side of the band a note falls.  With
+# that evidence asked for, Vocadito's diatonic tunes carry 4.7% accidentals, the chromatic ones
+# 5.4%, and half match both annotators; the sung corpus keeps 18 of its 24 real ones.
+SCALE_KEEP_MIN_SEC = 0.15
+SCALE_KEEP_MIN_STABILITY = 0.7
+SCALE_KEEP_OFFSET_SLACK = 0.02
 # Each note's squared distance to the scale is capped here (semitones), so one real
 # accidental costs a bounded amount and cannot drag the offset or the scale with it.
 SCALE_FIT_CAP = 0.5
@@ -232,6 +246,15 @@ class Analysis:
     # too few notes for a fit and fell back to per-note rounding.
     scale_root: int | None = None
     scale_fit: ScaleFit | None = None
+
+
+@dataclass(frozen=True)
+class Written:
+    """Notes written in the scale that fits them (``write_in_scale``)."""
+
+    fit: ScaleFit
+    midis: list[float]  # tuned: the fit's offset removed
+    pitches: list[int]
 
 
 # ── 1. Contour ────────────────────────────────────────────────────────────────
@@ -927,22 +950,113 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin)
 
 
-def snap_to_scale(midis: Sequence[float], root: int, keep: float = SCALE_KEEP_CHROMATIC) -> list[int]:
+def snap_to_scale(
+    midis: Sequence[float],
+    root: int,
+    keep: float = SCALE_KEEP_CHROMATIC,
+    *,
+    durations: Sequence[float] | None = None,
+    stabilities: Sequence[float] | None = None,
+    slack: tuple[float, float] = (0.0, 0.0),
+    minor: bool = False,
+) -> list[int]:
     """Integer pitches for tuned fractional ones, written in the major scale on ``root``.
 
     A note whose nearest semitone is in the scale is that semitone.  One whose nearest
-    semitone is chromatic keeps it only when it sits within ``keep`` of it; otherwise it is
-    the nearer of its two neighbours that is a scale tone.
+    semitone is chromatic keeps it only when it sits within ``keep`` of it at every tuning
+    offset in ``slack`` — (low, high) semitones about the offset the notes were tuned by —
+    and, where ``durations`` and ``stabilities`` are given, lasts ``SCALE_KEEP_MIN_SEC`` and
+    holds ``SCALE_KEEP_MIN_STABILITY``; otherwise it is the nearer of its two neighbours that
+    is a scale tone.
+
+    ``minor`` (the tune reads as the relative minor, ``_minor_mode``) excuses se from the
+    slack: a minor tune's raised seventh is expected, not an accident, so held and within
+    ``keep`` is enough.  Making it a scale tone outright measured worse — Vocadito's natural
+    minor tunes have a sharp soh now and then, and it came back as se (accidentals 4.3% ->
+    5.3% of notes), while Greensleeves' sung se stays either way.
+
+    Without the evidence arguments this is the plain keep test.
     """
+    low, high = slack
     out: list[int] = []
-    for value in midis:
+    for i, value in enumerate(midis):
         n = int(round(value))
-        if _SCALE_MEMBER[root, n % 12] or abs(value - n) <= keep:
+        if _SCALE_MEMBER[root, n % 12]:
+            out.append(n)
+            continue
+        held = (durations is None or durations[i] >= SCALE_KEEP_MIN_SEC) and (
+            stabilities is None or stabilities[i] >= SCALE_KEEP_MIN_STABILITY
+        )
+        if minor and (n - root) % 12 == 8:
+            near = abs(value - n) <= keep
+        else:
+            # At an offset ``delta`` from the chosen one the note reads ``value - delta``; its
+            # distance to ``n`` is largest at one end of the slack.
+            near = abs(value - low - n) <= keep and abs(value - high - n) <= keep
+        if held and near:
             out.append(n)
             continue
         neighbours = [p for p in (n - 1, n + 1) if _SCALE_MEMBER[root, p % 12]]
         out.append(min(neighbours, key=lambda p: abs(value - p)) if neighbours else n)
     return out
+
+
+def _root_cost_curve(midis: np.ndarray, weights: np.ndarray, root: int, offsets: np.ndarray) -> np.ndarray:
+    """``fit_scale_detail``'s cost of the notes in the major scale on ``root``, at each offset."""
+    x = midis[None, :] - offsets[:, None]  # (k, n)
+    candidates = np.floor(x).astype(int)[..., None] + np.arange(-1, 3)  # (k, n, 4)
+    distance = np.abs(x[..., None] - candidates)
+    nearest = np.where(_SCALE_MEMBER[root, candidates % 12], distance, np.inf).min(axis=2)
+    return (weights[None, :] * np.minimum(nearest * nearest, SCALE_FIT_CAP * SCALE_FIT_CAP)).sum(axis=1)
+
+
+def _offset_slack(midis: np.ndarray, weights: np.ndarray, fit: ScaleFit) -> tuple[float, float]:
+    """How far the offset can move either way, with the root held, before the scale fits the
+    notes ``SCALE_KEEP_OFFSET_SLACK`` worse: (low, high) semitones about ``fit.offset``."""
+    steps = int(round(0.5 / SCALE_FIT_STEP))
+    deltas = np.arange(-steps, steps + 1) * SCALE_FIT_STEP
+    costs = _root_cost_curve(midis, weights, fit.root, fit.offset + deltas)
+    within = costs <= costs[steps] * (1.0 + SCALE_KEEP_OFFSET_SLACK) + SCALE_FIT_TIE
+    lo = hi = steps
+    while lo > 0 and within[lo - 1]:
+        lo -= 1
+    while hi + 1 < deltas.size and within[hi + 1]:
+        hi += 1
+    return float(deltas[lo]), float(deltas[hi])
+
+
+def _minor_mode(tuned: np.ndarray, weights: np.ndarray, root: int) -> bool:
+    """Does the tune's profile read as the relative minor (la-based) rather than the major?"""
+    histogram = np.zeros(12)
+    np.add.at(histogram, np.round(tuned).astype(int) % 12, weights)
+    minor = np.corrcoef(np.roll(histogram, -((root + 9) % 12)), _KK_MINOR)[0, 1]
+    return bool(np.nan_to_num(minor, nan=-1.0) > _tonality(histogram, root))
+
+
+def write_in_scale(
+    midis: Sequence[float],
+    durations: Sequence[float],
+    stabilities: Sequence[float] | None = None,
+) -> Written | None:
+    """Fit the scale to sung, untuned note pitches and write every note in it.
+
+    The offset and the scale come from ``fit_scale_detail``; each note is then written by
+    ``snap_to_scale`` with the evidence for its accidentals — its duration, its stability
+    where the caller measured it, the offset's slack and the tune's mode.  ``Written.midis``
+    plus ``fit.offset`` is each note's sung pitch.  None when there are too few notes for a
+    fit.
+    """
+    m = np.asarray(midis, dtype=float)
+    w = np.asarray(durations, dtype=float)
+    fit = fit_scale_detail(m, w)
+    if fit is None:
+        return None
+    tuned = m - fit.offset
+    pitches = snap_to_scale(
+        tuned.tolist(), fit.root, durations=durations, stabilities=stabilities,
+        slack=_offset_slack(m, w, fit), minor=_minor_mode(tuned, w, fit.root),
+    )
+    return Written(fit=fit, midis=tuned.tolist(), pitches=pitches)
 
 
 def notate(midis: Sequence[float], durations: Sequence[float]) -> list[int]:
@@ -986,20 +1100,25 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
         spans = fix_octaves(y, sr, c, spans)
     hop = _hop_sec(c)
     durations = [(b - a) * hop for a, b, _ in spans]
-    fit = fit_scale_detail([m for _, _, m in spans], durations)
-    if fit is not None:
-        tuned_cents = fit.offset * 100.0
-    else:
-        tuned_cents = tuning_offset_cents([m for _, _, m in spans], durations)
-    c = retune(c, tuned_cents)
-    spans = [(a, b, m - tuned_cents / 100.0) for a, b, m in spans]
+    # Read before tuning: the band is relative to the note's own pitch either way.
+    stabilities = [_stability(c.midi[a:b], m) for a, b, m in spans]
     midis = [m for _, _, m in spans]
-    pitches = snap_to_scale(midis, fit.root) if fit is not None else notate(midis, durations)
+    written = write_in_scale(midis, durations, stabilities)
+    if written is not None:
+        fit = written.fit
+        tuned_cents = fit.offset * 100.0
+        midis, pitches = written.midis, written.pitches
+    else:
+        fit = None
+        tuned_cents = tuning_offset_cents(midis, durations)
+        midis = [m - tuned_cents / 100.0 for m in midis]
+        pitches = notate(midis, durations)
+    c = retune(c, tuned_cents)
+    spans = [(a, b, m) for (a, b, _), m in zip(spans, midis)]
 
     amps = [float(np.mean(c.rms[a:b])) if b > a else 0.0 for a, b, _ in spans]
     loudest = max(amps) if amps else 0.0
     vprobs = [float(np.median(c.voiced_prob[a:b])) if b > a else 0.0 for a, b, _ in spans]
-    stabilities = [_stability(c.midi[a:b], m) for a, b, m in spans]
     keep = [
         not (vp < NOISE_MAX_VOICED_PROB and loudest > 0 and amp / loudest < NOISE_MAX_AMP)
         for vp, amp in zip(vprobs, amps)
