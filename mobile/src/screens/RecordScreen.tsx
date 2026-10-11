@@ -281,6 +281,7 @@ export function RecordScreen() {
   useEffect(() => {
     if (state.status === "done" && state.result) {
       const result = state.result;
+      const sourceJobId = state.jobId ?? undefined;
       reset();
       setPhase("ready");
       setElapsed(0);
@@ -290,9 +291,9 @@ export function RecordScreen() {
       refresh();
       // Practised today, so today's reminder has nothing to nag about. Fire-and-forget.
       void markPractisedToday();
-      nav.navigate("Result", { result });
+      nav.navigate("Result", { result, sourceJobId });
     }
-  }, [state.status, state.result, nav, reset, refresh]);
+  }, [state.status, state.result, state.jobId, nav, reset, refresh]);
 
   /**
    * Explains an exhausted trial and offers the way out.
