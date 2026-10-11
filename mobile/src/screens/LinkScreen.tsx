@@ -257,6 +257,10 @@ export function LinkScreen() {
         <>
           <Text style={styles.title} accessibilityRole="header">Song from{"\n"}a link</Text>
           <Text style={styles.lead}>We isolate the lead voice and write it out in solfa and staff.</Text>
+          {/* Said before anyone pastes: YouTube blocks server downloads for many songs, and a recording always works. */}
+          <Text style={styles.lead}>
+            Links work for many songs, not all. If yours fails, record it or import the audio file instead.
+          </Text>
         </>
       ) : null}
 
