@@ -173,23 +173,20 @@ export function dohPitchClass(key: ParsedKey): number {
 }
 
 /**
- * Doh names as key signatures spell them — "Bb", not "A#" (F# kept): a minor key's doh
- * letter (la-based) and every "Doh is" header, so the tile and the header agree.
+ * Doh names as key signatures spell them — "Bb", not "A#" (F# kept): the doh tile, every
+ * "Doh is" header and the listener's notification, so they all agree.
  */
-const DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+export const DOH_NAMES: readonly string[] = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
 
 /**
- * The letter on a sheet's doh tile and DOH figure. A major key keeps its own
- * spelling; a minor key's doh is its relative major's tonic (la-based), so
- * "D minor" reads F. A dash when the key cannot be read.
+ * The letter on a sheet's doh tile and DOH figure, spelled as the key signature spells
+ * it whatever spelling the key arrived in (the API writes "A# major"); a minor key's
+ * doh is its relative major's tonic (la-based), so "D minor" reads F. A dash when the
+ * key cannot be read.
  */
 export function dohLetter(keyText: string): string {
   const parsed = parseKey(keyText);
   if (!parsed) return "–";
-  if (parsed.mode === "major") {
-    const tonic = keyText.trim().match(/^[A-Ga-g][#♯b♭-]*/)?.[0];
-    if (tonic) return tonic[0]!.toUpperCase() + tonic.slice(1).replace(/[♭-]/g, "b").replace(/♯/g, "#");
-  }
   return DOH_NAMES[dohPitchClass(parsed)]!;
 }
 
