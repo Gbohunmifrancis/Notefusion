@@ -861,7 +861,8 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     Roots the cost cannot separate — exactly, when the notes never touch the degrees that
     tell two scales apart, or within ``SCALE_FIT_TIE_RATIO``, when the singer put that
     degree between the two — are settled on the tonal profile of the rounded notes, as
-    ``diatonic_set`` did before this.
+    ``diatonic_set`` did before this, once each quarter-tone singer's two readings among
+    them have been settled on the simpler key signature.
 
     Returns None for fewer than ``SCALE_FIT_MIN_NOTES`` notes.
     """
@@ -905,6 +906,18 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
             return runner_up / low - 1.0
         return 0.0 if runner_up <= SCALE_FIT_TIE else 1.0
 
+    # Nothing in the audio separates twins, so the key signature does — the reading in the
+    # simpler key, which is where choir music is written (G over A-flat, B-flat over B) —
+    # and it does so before the profile is asked: the profile reads each twin's histogram
+    # rounded a semitone apart, so the two score differently for no reason in the notes.
+    # (No two roots a semitone apart have the same signature, so this always decides.)
+    tied = [
+        r
+        for r in tied
+        if not any(
+            twins(q, r) and _KEY_SIGNATURE_ACCIDENTALS[q] < _KEY_SIGNATURE_ACCIDENTALS[r] for q in tied
+        )
+    ]
     if len(tied) == 1:
         root = tied[0]
         return ScaleFit(float(best_theta[root]), root, margin_over(root), 1.0)
@@ -915,15 +928,12 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
             histogram[value % 12] += weight
         return _tonality(histogram, root)
 
-    # Nothing in the audio separates twins, so the key signature does — the reading in the
-    # simpler key, which is where choir music is written (G over A-flat, B-flat over B).
     scored = sorted(
         ((round(tonality(r), 3), -_KEY_SIGNATURE_ACCIDENTALS[r], -i, r) for i, r in enumerate(tied)),
         reverse=True,
     )
     root = scored[0][3]
-    rivals = [tone for tone, _sig, _i, r in scored[1:] if not twins(r, root)]
-    tonal_margin = (scored[0][0] - rivals[0]) if rivals else 1.0
+    tonal_margin = scored[0][0] - scored[1][0]
     return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin)
 
 

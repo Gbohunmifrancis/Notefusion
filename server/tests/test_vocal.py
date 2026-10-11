@@ -447,3 +447,17 @@ def test_a_quarter_tone_singer_is_written_in_the_simpler_key():
     # the same reading.  Nothing in the audio separates them, so the simpler key wins.
     sung = [m + 0.5 for m in (70, 72, 74, 75, 77, 79, 81, 82, 81, 79, 77, 75, 74, 72, 70)]
     assert vocal.fit_scale(sung, [1.0] * len(sung))[1] == 10
+
+
+def test_quarter_tone_twins_are_settled_on_the_key_signature_before_the_profile():
+    # The sung corpus's amateur hum of a fast B-flat run, about 45 cents flat (the fit's own
+    # input).  A major 50 cents sharp is the same reading within 1% of the cost, and the
+    # profile, reading each twin's notes rounded a semitone apart, preferred it: the tune
+    # came back in A at full confidence with a dozen accidentals.  The signature decides.
+    sung = [57.62, 59.4, 61.41, 62.81, 65.11, 65.41, 67.06, 69.02, 69.39, 68.76, 66.41,
+            64.41, 62.18, 59.91, 57.51, 61.3, 64.33, 69.81, 68.35, 66.32, 64.8]
+    weights = [0.255, 0.232, 0.209, 0.232, 0.163, 0.139, 0.186, 0.209, 0.209, 0.209, 0.302,
+               0.163, 0.441, 0.279, 0.697, 0.279, 0.209, 0.441, 0.232, 0.209, 0.511]
+    fit = vocal.fit_scale_detail(sung, weights)
+    assert fit.root == 10
+    assert fit.offset == pytest.approx(-0.45, abs=0.03)
