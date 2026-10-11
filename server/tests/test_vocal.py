@@ -301,6 +301,16 @@ def test_snap_to_scale_keeps_a_chromatic_only_when_it_is_held():
     assert vocal.snap_to_scale([74.1], 7, durations=[0.05], stabilities=[0.1]) == [74]
 
 
+def test_snap_to_scale_keeps_a_short_chromatic_sung_right_on_it():
+    # A quick passing fe in C major, 2 cents off: a keyboard's or a trained voice's, kept
+    # however short.  15 cents off, or wobbling, or pinned only within the slack, it needs the
+    # length the rule asks of any accidental.
+    assert vocal.snap_to_scale([66.02], 0, durations=[0.1], stabilities=[1.0]) == [66]
+    assert vocal.snap_to_scale([66.15], 0, durations=[0.1], stabilities=[1.0]) == [67]
+    assert vocal.snap_to_scale([66.02], 0, durations=[0.1], stabilities=[0.5]) == [67]
+    assert vocal.snap_to_scale([66.02], 0, durations=[0.1], stabilities=[1.0], slack=(-0.1, 0.0)) == [67]
+
+
 def test_snap_to_scale_keeps_a_chromatic_only_if_every_nearly_as_good_offset_does():
     # 15 cents off C#: inside the keep band at the chosen offset...
     assert vocal.snap_to_scale([73.15], 7) == [73]
@@ -330,12 +340,13 @@ def test_minor_mode_reads_a_la_based_tune():
 def test_offset_slack_is_how_far_the_offset_can_move_at_almost_no_cost():
     in_tune = [60.0, 62.0, 64.0, 65.0, 67.0, 69.0, 71.0, 72.0]
     fit = vocal.fit_scale_detail(in_tune, [1.0] * 8)
-    assert vocal._offset_slack(np.array(in_tune), np.ones(8), fit) == (0.0, 0.0)
+    assert vocal._offset_slack(np.array(in_tune), np.ones(8), fit.root, fit.offset) == (0.0, 0.0)
     # The scattered singer of the fit test above: the offset is only pinned to a few cents.
     intended = [60, 62, 64, 65, 67, 69, 71, 72, 67, 64, 60]
     scatter = [0.30, -0.33, 0.20, -0.28, 0.33, -0.30, 0.25, -0.20, 0.30, -0.33, 0.05]
     sung = np.array([p - 0.35 + e for p, e in zip(intended, scatter)])
-    low, high = vocal._offset_slack(sung, np.ones(sung.size), vocal.fit_scale_detail(sung, [1.0] * sung.size))
+    fit = vocal.fit_scale_detail(sung, [1.0] * sung.size)
+    low, high = vocal._offset_slack(sung, np.ones(sung.size), fit.root, fit.offset)
     assert -0.1 < low < 0.0 < high < 0.1
 
 
@@ -422,6 +433,82 @@ def test_analyse_reports_and_removes_a_drift():
     assert result.tuning_cents == pytest.approx(-40.0, abs=5.0)
     assert [n.pitch for n in result.notes] == intended
     assert all(abs(n.midi - n.pitch) < 0.1 for n in result.notes)
+
+
+_PASSING = [(60, 20), (62, 20), (64, 20), (65, 20), (67, 20), (66, 5), (65, 20), (64, 20), (62, 20), (61, 5),
+            (62, 20), (60, 20), (64, 20), (67, 20), (72, 30)]  # s fe f and r de r, the chromatics 0.12 s
+
+
+def test_analyse_keeps_a_quick_passing_note_sung_in_tune():
+    def notes(off):
+        segments = [(m + (off if frames == 5 else 0.0), frames, 0.9, 1.0) for m, frames in _PASSING]
+        result = vocal.analyse(np.zeros(1, dtype=np.float32), contour=_segments_contour(segments))
+        return [n.pitch for n in result.notes]
+
+    assert notes(0.0) == [m for m, _ in _PASSING]
+    # 15 cents sharp, too short to be believed: the notes they lean towards.
+    assert notes(0.15) == [60, 62, 64, 65, 67, 67, 65, 64, 62, 62, 62, 60, 64, 67, 72]
+
+
+def test_analyse_asks_each_chromatic_for_its_evidence(monkeypatch):
+    # A held fe and a held de, both in tune.  Read as unsteady (a glide the segmenter kept),
+    # the de is written as a scale tone; the fe, steady, stays.
+    tune = [(60, 20), (62, 20), (64, 20), (66, 22), (67, 20), (65, 20), (64, 20), (62, 20), (61, 22), (62, 20),
+            (60, 20), (64, 20), (67, 20), (72, 30)]
+    contour = _segments_contour([(m, frames, 0.9, 1.0) for m, frames in tune])
+    held = [n.pitch for n in vocal.analyse(np.zeros(1, dtype=np.float32), contour=contour).notes]
+    assert held == [m for m, _ in tune]
+    steady = vocal._stability
+    monkeypatch.setattr(vocal, "_stability", lambda frames, midi: 0.5 if round(midi) == 61 else steady(frames, midi))
+    unsteady = [n.pitch for n in vocal.analyse(np.zeros(1, dtype=np.float32), contour=contour).notes]
+    assert unsteady[3] == 66 and unsteady[8] in (60, 62)
+
+
+def _write(tune, scatter, stabilities=None):
+    sung = [p + e for p, e in zip(tune, scatter)]
+    return vocal.write_in_scale(sung, [0.5] * len(sung), [float(i) for i in range(len(sung))],
+                                [0.9] * len(sung) if stabilities is None else stabilities)
+
+
+# A minor (doh C) with its raised seventh sung 23.5 cents sharp, every other note within a
+# quarter tone of its own: the offset is pinned only to +-3 cents, and at one end of that the
+# G# reads past the keep band.
+_MINOR_TUNE = [69, 71, 72, 74, 76, 74, 72, 71, 69, 68, 69, 72, 71, 69, 76, 72, 71, 69, 68, 69]
+_MINOR_SCATTER = [0.2, -0.22, 0.18, -0.2, 0.22, -0.18, 0.2, -0.22, 0.05, 0.235, -0.05, 0.22, -0.2, 0.15, -0.2,
+                  0.18, -0.15, 0.1, 0.235, 0.0]
+
+
+def test_write_in_scale_keeps_a_minor_tunes_se_that_the_slack_would_drop():
+    # In a la-based tune se is expected, so held and within the band is enough; unsteady, it
+    # is not.
+    written = _write(_MINOR_TUNE, _MINOR_SCATTER)
+    assert written.fit.root == 0
+    assert written.pitches == _MINOR_TUNE
+    unsteady = _write(_MINOR_TUNE, _MINOR_SCATTER, [0.5 if p == 68 else 0.9 for p in _MINOR_TUNE])
+    assert 68 not in unsteady.pitches
+
+
+def test_write_in_root_takes_the_mode_from_whatever_named_the_root():
+    # The same tune written in C by a key the user gave: "A minor" expects the se, "C major"
+    # asks the slack of it, and with no key the tune's own profile says la-based.
+    sung = [p + e for p, e in zip(_MINOR_TUNE, _MINOR_SCATTER)]
+    durations, stabilities = [0.5] * len(sung), [0.9] * len(sung)
+    assert vocal.write_in_root(sung, durations, stabilities, 0, True)[1] == _MINOR_TUNE
+    assert 68 not in vocal.write_in_root(sung, durations, stabilities, 0, False)[1]
+    assert vocal.write_in_root(sung, durations, stabilities, 0)[1] == _MINOR_TUNE
+    # ...and the length and steadiness asked of any accidental.
+    assert 68 not in vocal.write_in_root(sung, [0.1] * len(sung), stabilities, 0, True)[1]
+
+
+def test_write_in_scale_drops_a_chromatic_an_equally_good_offset_moves_out_of_the_band():
+    # C major with one fe 23.5 cents sharp: inside the band at the chosen offset, outside it
+    # three cents away, which fits the notes as well.
+    tune = [60, 64, 67, 65, 64, 62, 60, 67, 66, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62, 60]
+    scatter = [0.05, 0.2, -0.22, 0.18, -0.2, 0.22, -0.18, 0.2, 0.235, -0.2, 0.18, -0.22, 0.05, 0.2, -0.18,
+               0.22, -0.2, 0.15, -0.2, 0.0]
+    written = _write(tune, scatter)
+    assert written.fit.root == 0
+    assert written.pitches == [67 if p == 66 else p for p in tune]
 
 
 def test_span_pitch_ignores_unvoiced_frames_inside_a_joined_note():
@@ -630,6 +717,20 @@ def test_quarter_tone_twins_are_settled_on_the_key_signature_before_the_profile(
     assert fit.offset == pytest.approx(-0.45, abs=0.03)
     # The audio could not choose the letter, so the confidence says so.
     assert fit.confidence == pytest.approx(0.5)
+
+
+def test_only_a_true_twin_is_settled_on_the_key_signature():
+    # d r f s l in E-flat resting on its doh, sung 50 cents sharp: E-flat at +0.5 and E at
+    # -0.5 are one reading.  D at -0.5 is not E-flat's twin but D-flat's, a whole tone away;
+    # taken for one, its simpler signature struck E-flat out, and the profile then chose A,
+    # the reading a fourth up, with every syllable wrong.
+    tune = [63, 65, 63, 70, 68, 65, 63, 70, 72, 70, 68, 65, 63]
+    weights = [2.0, 1, 2.0, 1, 1, 1, 2.0, 1, 1, 1, 1, 1, 3.0]
+    fit = vocal.fit_scale_detail([p + 0.5 for p in tune], weights)
+    assert (fit.root, fit.offset) == (3, pytest.approx(0.5))
+    # Sung 50 cents flat it is D major's +0.5 reading, the same syllables.
+    fit = vocal.fit_scale_detail([p - 0.5 for p in tune], weights)
+    assert (fit.root, fit.offset) == (2, pytest.approx(0.5))
 
 
 # ── Writing in a root decided elsewhere ──────────────────────────────────────

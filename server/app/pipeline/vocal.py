@@ -165,6 +165,11 @@ SCALE_KEEP_CHROMATIC = 0.25
 SCALE_KEEP_MIN_SEC = 0.15
 SCALE_KEEP_MIN_STABILITY = 0.7
 SCALE_KEEP_OFFSET_SLACK = 0.02
+# ...but a held, steady note sitting this close to a chromatic pitch at every such offset is
+# one however short: a keyboard's or a trained voice's quick passing fe, which the length test
+# alone wrote as the note it passes to.  Untrained singers' short notes are rarely this close,
+# so the measured numbers above are the same with it as without it (0.05-0.08).
+SCALE_KEEP_IN_TUNE = 0.08
 # Each note's squared distance to the scale is capped here (semitones), so one real
 # accidental costs a bounded amount and cannot drag the offset or the scale with it.
 SCALE_FIT_CAP = 0.5
@@ -940,30 +945,23 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
         return None
     if float(w.sum()) <= 0.0:
         w = np.ones_like(m)
-    cap2 = SCALE_FIT_CAP * SCALE_FIT_CAP
-    best_cost = np.full(12, np.inf)
-    best_theta = np.zeros(12)
-    # Both ends of the offset range are searched: at exactly half a semitone the same notes
-    # read as one scale half a semitone flat or the next scale up half a semitone sharp, and
-    # a grid holding only one end would hand that singer to whichever end it kept.
-    for theta in np.arange(-0.5, 0.5 + SCALE_FIT_STEP / 2.0, SCALE_FIT_STEP):
-        x = m - theta
-        candidates = np.floor(x).astype(int)[:, None] + np.arange(-1, 3)[None, :]  # (n, 4)
-        distance = np.abs(x[:, None] - candidates)
-        member = _SCALE_MEMBER[:, candidates % 12]  # (12, n, 4)
-        nearest = np.where(member, distance[None], np.inf).min(axis=2)  # (12, n)
-        costs = (w[None] * np.minimum(nearest * nearest, cap2)).sum(axis=1)  # (12,)
-        better = costs < best_cost - SCALE_FIT_TIE
-        best_cost = np.where(better, costs, best_cost)
-        best_theta = np.where(better, theta, best_theta)
+    best_cost, best_theta = root_costs(m, w)
     order = sorted(range(12), key=lambda r: float(best_cost[r]))
     low = float(best_cost[order[0]])
     tied = [r for r in order if float(best_cost[r]) <= low * (1.0 + SCALE_FIT_TIE_RATIO) + SCALE_FIT_TIE]
 
     def twins(a: int, b: int) -> bool:
         # One reading written twice: the same notes a semitone over, at the wrap of the
-        # offset range (a singer a quarter-tone off either semitone).
-        return (a - b) % 12 in (1, 11) and abs(float(best_theta[a]) - float(best_theta[b])) >= 0.9
+        # offset range (a singer a quarter-tone off either semitone).  The root a semitone up
+        # reads them a semitone lower, so it is the one at the low end of the range; the two
+        # the other way round are a different reading, a whole tone from this one.
+        if (a - b) % 12 == 1:
+            upper, lower = a, b
+        elif (b - a) % 12 == 1:
+            upper, lower = b, a
+        else:
+            return False
+        return float(best_theta[lower]) - float(best_theta[upper]) >= 0.9
 
     def margin_over(root: int) -> float:
         rivals = [float(best_cost[r]) for r in order if r != root and not twins(r, root)]
@@ -1028,9 +1026,10 @@ def snap_to_scale(
     A note whose nearest semitone is in the scale is that semitone.  One whose nearest
     semitone is chromatic keeps it only when it sits within ``keep`` of it at every tuning
     offset in ``slack`` — (low, high) semitones about the offset the notes were tuned by —
-    and, where ``durations`` and ``stabilities`` are given, lasts ``SCALE_KEEP_MIN_SEC`` and
-    holds ``SCALE_KEEP_MIN_STABILITY``; otherwise it is the nearer of its two neighbours that
-    is a scale tone.
+    and, where ``durations`` and ``stabilities`` are given, lasts ``SCALE_KEEP_MIN_SEC`` (or
+    sits within ``SCALE_KEEP_IN_TUNE`` of it throughout the slack) and holds
+    ``SCALE_KEEP_MIN_STABILITY``; otherwise it is the nearer of its two neighbours that is a
+    scale tone.
 
     ``minor`` (the tune reads as the relative minor, ``_minor_mode``) excuses se from the
     slack: a minor tune's raised seventh is expected, not an accident, so held and within
@@ -1047,7 +1046,8 @@ def snap_to_scale(
         if _SCALE_MEMBER[root, n % 12]:
             out.append(n)
             continue
-        held = (durations is None or durations[i] >= SCALE_KEEP_MIN_SEC) and (
+        in_tune = abs(value - low - n) <= SCALE_KEEP_IN_TUNE and abs(value - high - n) <= SCALE_KEEP_IN_TUNE
+        held = (durations is None or in_tune or durations[i] >= SCALE_KEEP_MIN_SEC) and (
             stabilities is None or stabilities[i] >= SCALE_KEEP_MIN_STABILITY
         )
         if minor and (n - root) % 12 == 8:
@@ -1064,25 +1064,54 @@ def snap_to_scale(
     return out
 
 
-def _root_cost_curve(midis: np.ndarray, weights: np.ndarray, root: int, offsets: np.ndarray) -> np.ndarray:
-    """``fit_scale_detail``'s cost of the notes in the major scale on ``root``, at each offset."""
-    x = midis[None, :] - offsets[:, None]  # (k, n)
-    candidates = np.floor(x).astype(int)[..., None] + np.arange(-1, 3)  # (k, n, 4)
-    distance = np.abs(x[..., None] - candidates)
-    nearest = np.where(_SCALE_MEMBER[root, candidates % 12], distance, np.inf).min(axis=2)
-    return (weights[None, :] * np.minimum(nearest * nearest, SCALE_FIT_CAP * SCALE_FIT_CAP)).sum(axis=1)
+def _scale_costs(midis: np.ndarray, weights: np.ndarray, offset: float) -> np.ndarray:
+    """The fit's cost of the notes in every major scale, by root, at one tuning offset: each
+    note's squared distance to the scale's nearest tone, capped at ``SCALE_FIT_CAP``, weighted."""
+    x = midis - offset
+    candidates = np.floor(x).astype(int)[:, None] + np.arange(-1, 3)[None, :]  # (n, 4)
+    distance = np.abs(x[:, None] - candidates)
+    member = _SCALE_MEMBER[:, candidates % 12]  # (12, n, 4)
+    nearest = np.where(member, distance[None], np.inf).min(axis=2)  # (12, n)
+    return (weights[None] * np.minimum(nearest * nearest, SCALE_FIT_CAP * SCALE_FIT_CAP)).sum(axis=1)
 
 
 def _scale_cost(midis: np.ndarray, weights: np.ndarray, fit: ScaleFit) -> float:
-    return float(_root_cost_curve(midis, weights, fit.root, np.array([fit.offset]))[0])
+    return float(_scale_costs(midis, weights, fit.offset)[fit.root])
 
 
-def _offset_slack(midis: np.ndarray, weights: np.ndarray, fit: ScaleFit) -> tuple[float, float]:
+def root_costs(midis: Sequence[float], weights: Sequence[float]) -> tuple[np.ndarray, np.ndarray]:
+    """(cost, offset) per major-scale root: how well the notes fit each scale at its best offset.
+
+    What ``fit_scale_detail`` minimises, kept for every root rather than reduced to a winner,
+    for a caller that has the root from somewhere else — a key the user typed, the chords of
+    a song's backing — and has to know whether the voice agrees with it.  Unvoiced (NaN)
+    notes are left out.
+    """
+    m = np.asarray(midis, dtype=float)
+    w = np.asarray(weights, dtype=float)
+    keep = ~np.isnan(m)
+    m, w = m[keep], w[keep]
+    if float(w.sum()) <= 0.0:
+        w = np.ones_like(m)
+    best_cost = np.full(12, np.inf)
+    best_theta = np.zeros(12)
+    # Both ends of the offset range are searched: at exactly half a semitone the same notes
+    # read as one scale half a semitone flat or the next scale up half a semitone sharp, and
+    # a grid holding only one end would hand that singer to whichever end it kept.
+    for theta in np.arange(-0.5, 0.5 + SCALE_FIT_STEP / 2.0, SCALE_FIT_STEP):
+        costs = _scale_costs(m, w, theta)
+        better = costs < best_cost - SCALE_FIT_TIE
+        best_cost = np.where(better, costs, best_cost)
+        best_theta = np.where(better, theta, best_theta)
+    return best_cost, best_theta
+
+
+def _offset_slack(midis: np.ndarray, weights: np.ndarray, root: int, offset: float) -> tuple[float, float]:
     """How far the offset can move either way, with the root held, before the scale fits the
-    notes ``SCALE_KEEP_OFFSET_SLACK`` worse: (low, high) semitones about ``fit.offset``."""
+    notes ``SCALE_KEEP_OFFSET_SLACK`` worse: (low, high) semitones about ``offset``."""
     steps = int(round(0.5 / SCALE_FIT_STEP))
     deltas = np.arange(-steps, steps + 1) * SCALE_FIT_STEP
-    costs = _root_cost_curve(midis, weights, fit.root, fit.offset + deltas)
+    costs = np.array([_scale_costs(midis, weights, offset + d)[root] for d in deltas])
     within = costs <= costs[steps] * (1.0 + SCALE_KEEP_OFFSET_SLACK) + SCALE_FIT_TIE
     lo = hi = steps
     while lo > 0 and within[lo - 1]:
@@ -1116,6 +1145,25 @@ def _drift_trend(midis: np.ndarray, weights: np.ndarray, starts: np.ndarray) -> 
     return float(np.polyfit(centres, unwrapped, 1)[0])
 
 
+def _write(
+    midis: np.ndarray,
+    weights: np.ndarray,
+    root: int,
+    offset: float,
+    stabilities: Sequence[float] | None,
+    minor: bool | None,
+) -> list[int]:
+    """``snap_to_scale`` with the evidence for each accidental: the note's duration (its
+    weight) and stability, how far the offset can move at almost no cost, and the tune's mode
+    — read off its profile when the caller does not know it."""
+    tuned = midis - offset
+    return snap_to_scale(
+        tuned.tolist(), root, durations=weights.tolist(), stabilities=stabilities,
+        slack=_offset_slack(midis, weights, root, offset),
+        minor=_minor_mode(tuned, weights, root) if minor is None else minor,
+    )
+
+
 def write_in_scale(
     midis: Sequence[float],
     durations: Sequence[float],
@@ -1129,7 +1177,7 @@ def write_in_scale(
     ``snap_to_scale`` with the evidence for its accidentals — its duration, its stability
     where the caller measured it, the offset's slack and the tune's mode.  ``Written.midis``
     plus ``fit.offset`` is each note's sung pitch with the drift removed.  None when there are
-    too few notes for a fit.
+    too few notes for a fit.  The pitches are medians of voiced frames, so never NaN.
     """
     m = np.asarray(midis, dtype=float)
     w = np.asarray(durations, dtype=float)
@@ -1146,52 +1194,32 @@ def write_in_scale(
             refit = fit_scale_detail(level, w)
             if _scale_cost(level, w, refit) < (1.0 - DRIFT_MIN_GAIN) * _scale_cost(m, w, fit):
                 m, fit, drift = level, refit, trend
-    tuned = m - fit.offset
-    pitches = snap_to_scale(
-        tuned.tolist(), fit.root, durations=durations, stabilities=stabilities,
-        slack=_offset_slack(m, w, fit), minor=_minor_mode(tuned, w, fit.root),
-    )
-    return Written(fit=fit, drift=drift, midis=tuned.tolist(), pitches=pitches)
+    pitches = _write(m, w, fit.root, fit.offset, stabilities, None)
+    return Written(fit=fit, drift=drift, midis=(m - fit.offset).tolist(), pitches=pitches)
 
-
-def root_costs(midis: Sequence[float], weights: Sequence[float]) -> tuple[np.ndarray, np.ndarray]:
-    """(cost, offset) per major-scale root: how well the notes fit each scale at its best offset.
-
-    The cost ``fit_scale_detail`` minimises, kept for every root rather than reduced to a
-    winner, for a caller that has the root from somewhere else — a key the user typed, the
-    chords of a song's backing — and has to know whether the voice agrees with it.
-    """
-    m = np.asarray(midis, dtype=float)
-    w = np.asarray(weights, dtype=float)
-    if float(w.sum()) <= 0.0:
-        w = np.ones_like(m)
-    cap2 = SCALE_FIT_CAP * SCALE_FIT_CAP
-    thetas = np.arange(-0.5, 0.5 + SCALE_FIT_STEP / 2.0, SCALE_FIT_STEP)
-    costs = np.empty((thetas.size, 12))
-    for i, theta in enumerate(thetas):
-        x = m - theta
-        candidates = np.floor(x).astype(int)[:, None] + np.arange(-1, 3)[None, :]
-        distance = np.abs(x[:, None] - candidates)
-        nearest = np.where(_SCALE_MEMBER[:, candidates % 12], distance[None], np.inf).min(axis=2)
-        costs[i] = (w[None] * np.minimum(nearest * nearest, cap2)).sum(axis=1)
-    best = costs.argmin(axis=0)
-    return costs[best, np.arange(12)], thetas[best]
 
 
 def write_in_root(
-    midis_untuned: Sequence[float], durations: Sequence[float], stabilities: Sequence[float], root: int,
+    midis_untuned: Sequence[float],
+    durations: Sequence[float],
+    stabilities: Sequence[float] | None,
+    root: int,
+    minor: bool | None = None,
 ) -> tuple[float, list[int]]:
     """(tuning offset, pitches): the notes written in the major scale on ``root``.
 
     For a root decided outside the fit.  The offset is fitted again with the root held,
     because the offset the fit found belongs to the scale it chose: a singer a quarter-tone
     off fits one scale near +0.5 and its semitone twin near -0.5, and snapping into the twin
-    at the first scale's offset would move every note.  ``stabilities`` are the notes'
-    evidence for an accidental, for the snap to weigh; it does not read them yet.
+    at the first scale's offset would move every note.  Each note is then written on the
+    evidence ``write_in_scale`` weighs, with ``minor`` from whatever decided the root (the
+    mode of the user's key, of the chords) when it says one.  The pitches are never NaN.
     """
-    _costs, offsets = root_costs(midis_untuned, durations)
+    m = np.asarray(midis_untuned, dtype=float)
+    w = np.asarray(durations, dtype=float)
+    _costs, offsets = root_costs(m, w)
     offset = float(offsets[root])
-    return offset, snap_to_scale([m - offset for m in midis_untuned], root)
+    return offset, _write(m, w, root, offset, stabilities, minor)
 
 
 def notate(midis: Sequence[float], durations: Sequence[float]) -> list[int]:
@@ -1264,7 +1292,7 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
         tuned_cents = tuning_offset_cents(midis, durations)
         midis = [m - tuned_cents / 100.0 for m in midis]
         pitches = notate(midis, durations)
-    first = float(c.times[spans[0][0]]) if spans else 0.0
+    first = min((float(c.times[a]) for a, _, _ in spans), default=0.0)  # write_in_scale's anchor
     c = retune(c, tuned_cents + 100.0 * drift * (c.times - first))
     spans = [(a, b, m) for (a, b, _), m in zip(spans, midis)]
     notes = [
