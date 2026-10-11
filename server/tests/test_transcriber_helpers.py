@@ -1048,6 +1048,59 @@ class TestRefinePitchesSemitone:
         assert (refined.start, refined.end, refined.amp) == (0.25, 0.55, 0.61)
 
 
+# ── Melody fallbacks write in the scale ───────────────────────────────────────
+
+# C major sung 35 cents sharp, each note up to 18 cents further off: rounding each median on
+# its own puts three of them on the chromatic semitone above.
+_INTENDED = [60, 62, 64, 65, 67, 69, 71, 72]
+_SUNG = [p + 0.35 + e for p, e in zip(_INTENDED, [0.18, -0.10, 0.16, -0.12, 0.17, -0.08, 0.05, 0.16])]
+
+
+class TestRefinePitchesInScale:
+    """In melody mode the inference path's pyin medians are written like the voice engine's
+    notes: in the scale that fits them, not each rounded on its own."""
+
+    def _refine(self, monkeypatch, events, contour, in_scale):
+        monkeypatch.setenv("NF_PYIN_SEMITONE", "1")
+        monkeypatch.setattr(transcriber, "_pyin_contour", lambda path: contour)
+        return transcriber._refine_pitches(events, Path("unused.wav"), in_scale=in_scale)
+
+    def _take(self, sung):
+        frames: list[float] = []
+        for m in sung:
+            frames += [m] * 20 + [np.nan] * 5
+        events = [Event(i * 0.25, i * 0.25 + 0.19, int(round(m)), 0.6) for i, m in enumerate(sung)]
+        return events, _contour(frames)
+
+    def test_a_sharp_singers_medians_are_written_in_the_scale(self, monkeypatch):
+        events, contour = self._take(_SUNG)
+        assert [e.pitch for e in self._refine(monkeypatch, events, contour, in_scale=False)] != _INTENDED
+        refined = self._refine(monkeypatch, events, contour, in_scale=True)
+        assert [e.pitch for e in refined] == _INTENDED
+        # pyin's own reading is still what is carried forward.
+        assert [e.pyin_midi for e in refined] == pytest.approx(_SUNG)
+
+    def test_too_few_notes_for_a_scale_are_rounded(self, monkeypatch):
+        events, contour = self._take(_SUNG[:3])
+        refined = self._refine(monkeypatch, events, contour, in_scale=True)
+        assert [e.pitch for e in refined] == [int(round(m)) for m in _SUNG[:3]]
+
+
+class TestSegmentContourInScale:
+    def test_the_contour_paths_notes_are_written_in_the_scale(self, monkeypatch):
+        hop = 512 / 22_050
+        frames: list[float] = []
+        for m in _SUNG:
+            frames += [m] * 25 + [np.nan] * 8
+        times = np.arange(len(frames)) * hop
+        midi = np.array(frames)
+        monkeypatch.setattr(transcriber, "_pyin_contour", lambda path, fmin=None: (times, midi, np.full(midi.size, 0.9)))
+        events, floor = transcriber._segment_contour(np.zeros(len(frames) * 512, dtype=np.float32))
+        assert floor is None
+        assert [round(e.pyin_midi) for e in events] != _INTENDED
+        assert [e.pitch for e in events] == _INTENDED
+
+
 # ── _refine_pitches carries pyin's evidence forward ───────────────────────────
 
 
