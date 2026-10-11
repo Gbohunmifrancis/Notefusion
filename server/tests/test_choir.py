@@ -142,18 +142,23 @@ def test_a_note_is_heard_where_in_its_semitone_it_was_sung():
     assert transcriber._heard_pitch(None, e) == 60.0
 
 
-def _hymn(sung_tenor_f: float):
-    # C major: I IV V I, S/A/T/B, with the tenor's F sung at ``sung_tenor_f``; Basic Pitch
-    # names each note its nearest semitone.
-    pitches = [[72, 67, 64, 48], [72, 69, 65, 53], [71, 67, 62, 55], [72, 67, 64, 48]]
+def _chorale(pitches: list[list[int]], sung_as: dict[tuple[str, int], float]):
+    # S/A/T/B chords a second apart, each note sung at its pitch unless ``sung_as`` says
+    # otherwise; Basic Pitch names each note its nearest semitone.
     sung, voices = [], {"soprano": [], "alto": [], "tenor": [], "bass": []}
     for i, chord in enumerate(pitches):
         for name, p in zip(voices, chord):
-            heard = sung_tenor_f if (name, p) == ("tenor", 65) else float(p)
+            heard = sung_as.get((name, p), float(p))
             e = Event(i * 1.0, i * 1.0 + 0.9, int(round(heard)), 0.8)
             voices[name].append(e)
             sung.append((e, heard))
     return voices, _posteriorgram(sung)
+
+
+def _hymn(sung_tenor_f: float):
+    # C major: I IV V I, with the tenor's F sung at ``sung_tenor_f``.
+    return _chorale([[72, 67, 64, 48], [72, 69, 65, 53], [71, 67, 62, 55], [72, 67, 64, 48]],
+                    {("tenor", 65): sung_tenor_f})
 
 
 def test_the_parts_are_written_in_one_scale_fitted_across_every_voice():
@@ -173,6 +178,17 @@ def test_a_users_key_the_choir_is_plainly_not_in_leaves_the_fitted_scale():
     assert fit.root == 0
     _written, fit = transcriber._choir_in_scale(voices, post, doh=0)
     assert fit.root == 0
+
+
+def test_a_users_key_the_choir_fits_nearly_as_well_is_the_scale_it_is_written_in():
+    # G major, I V vi I, with the tenor's F# sung 55 cents flat: alone the parts fit C, where
+    # it is F.  G fits them barely worse, so the user's G is the scale.
+    voices, post = _chorale([[74, 71, 67, 55], [74, 69, 66, 50], [71, 67, 64, 52], [71, 67, 62, 55]],
+                            {("tenor", 66): 65.45})
+    alone, fit = transcriber._choir_in_scale(voices, post)
+    assert fit.root == 0 and [e.pitch for e in alone["tenor"]] == [67, 65, 64, 62]
+    given, fit = transcriber._choir_in_scale(voices, post, doh=7)
+    assert fit.root == 7 and [e.pitch for e in given["tenor"]] == [67, 66, 64, 62]
 
 
 def test_the_choirs_key_vote_hears_every_part_and_the_bass_twice():

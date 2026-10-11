@@ -3207,35 +3207,46 @@ def _segment_vocal(
     return events, floor_midi, fit
 
 
-# A doh decided outside the voice — the key the user gave, a song's chords — is written in
-# unless the voice's best fit cost in that doh's scale is more than this many times its best
-# in any.  Then the voice is plainly not in that scale (a key typed for another song) and
-# keeps its own: a user's key only relabels the notes, as it always did.  Where the voice's
-# own fit is wrong, the right doh costs up to 1.47 times the best on the sung stress tier (an
-# amateur 30 cents off, a take drifting 100 cents) and up to 1.29 on the synthetic songs;
-# real singers' (Vocadito) all sit within 1.10.
+# A key the user gave is written in unless the voice's best fit cost in its doh's scale is
+# more than this many times its best in any.  Then the voice is plainly not in that scale (a
+# key typed for another song) and keeps its own: the key only relabels the notes, as it always
+# did.  Where the voice's own fit is wrong, the right doh costs up to 1.47 times the best on
+# the sung stress tier (an amateur 30 cents off, a take drifting 100 cents) and up to 1.29 on
+# the synthetic songs; real singers' (Vocadito) all sit within 1.10.
 DOH_MAX_COST_RATIO = 1.5
 # A song's backing gives the doh when its chord key leads the best key with another doh by
-# at least this (``chords.estimate_key``'s confidence).
+# at least this (``chords.estimate_key``'s confidence)...
 CHORD_DOH_MIN_CONFIDENCE = 0.5
+# ...and the voice fits that doh's scale within this of its best.  Tighter than a user's key:
+# nobody chose this key, and the chord confidence admitting it reads 1.0 on every synthetic
+# backing, so it is unmeasured on real mixes, where a modal vamp, a capo or a backing in
+# another key would hand every syllable to the band.  At 1.5 the synthetic songs gain four
+# more dohs; that trade waits on real songs to judge it.
+CHORD_DOH_MAX_COST_RATIO = 1.10
 
 
 def _rewrite_in_root(
-    events: list[Event], fit: "vocal.ScaleFit", root: int,
+    events: list[Event], fit: "vocal.ScaleFit", root: int, minor: bool, max_cost_ratio: float,
 ) -> tuple[list[Event], float] | None:
     """The voice engine's notes written again in the major scale on ``root``, or None.
 
     Read from the same sung pitches the engine snapped: ``pyin_midi`` plus the fit's offset
-    is each note's untuned median.  Returns the events, carrying the pitches and the tuned
+    is each note's untuned median.  ``minor`` is the mode of the key that named the root, so
+    a la-based key's se is expected.  Returns the events, carrying the pitches and the tuned
     medians of the new scale, and the tuning offset that scale was written at.  None when
-    the voice is plainly not in that scale (``DOH_MAX_COST_RATIO``, ``vocal.root_costs``).
+    the voice's best cost in that scale is more than ``max_cost_ratio`` times its best in any
+    (``vocal.root_costs``), or when a note has no sung pitch to write from.
     """
+    if any(e.pyin_midi is None for e in events):
+        return None
     untuned = [float(e.pyin_midi) + fit.offset for e in events]
     durations = [e.end - e.start for e in events]
     costs, _offsets = vocal.root_costs(untuned, durations)
-    if costs[root] > DOH_MAX_COST_RATIO * float(costs.min()):
+    if costs[root] > max_cost_ratio * float(costs.min()):
         return None
-    offset, pitches = vocal.write_in_root(untuned, durations, [e.stability for e in events], root)
+    stabilities = [e.stability for e in events]
+    offset, pitches = vocal.write_in_root(
+        untuned, durations, None if None in stabilities else stabilities, root, minor)
     return [replace(e, pitch=p, pyin_midi=m - offset) for e, p, m in zip(events, pitches, untuned)], offset
 
 
@@ -4692,17 +4703,20 @@ def _heard_pitch(post: "Posteriorgram | None", e: Event) -> float:
 
 
 def _choir_in_scale(
-    voices: dict[str, list[Event]], post: "Posteriorgram | None", doh: int | None = None,
+    voices: dict[str, list[Event]], post: "Posteriorgram | None", doh: int | None = None, minor: bool = False,
 ) -> tuple[dict[str, list[Event]], "vocal.ScaleFit | None"]:
     """Every part written in one major scale, fitted across all of them, and the fit.
 
     The voice engine's notation for a choir: each note's sung pitch (``_heard_pitch``), one
     tuning offset and scale fitted over every voice at once, weighted by duration
     (``vocal.fit_scale_detail``) — the parts of one piece are in one key, and four voices pin
-    it better than the tune alone — and each note written as its scale tone unless it sits
-    on a chromatic one (``vocal.snap_to_scale``).  A ``doh`` the user gave (sounding pitch)
-    is the scale instead, unless the voices are plainly not in it (``DOH_MAX_COST_RATIO``).
-    The voices come back as they were, with no fit, when there are too few notes to fit.
+    it better than the tune alone — and each note written as its scale tone unless it is
+    heard as a chromatic one, on the evidence the voice engine asks of a sung accidental
+    (``vocal.write_in_root``: held, and near it at every offset that fits as well; a chord's
+    passing note can be gone in a tenth of a second).  A ``doh`` the user gave (sounding
+    pitch; ``minor`` when their key is la-based) is the scale instead, unless the voices are
+    plainly not in it (``DOH_MAX_COST_RATIO``).  The voices come back as they were, with no
+    fit, when there are too few notes to fit.
     """
     notes = [(name, e) for name, line in voices.items() for e in line]
     heard = [_heard_pitch(post, e) for _, e in notes]
@@ -4710,13 +4724,15 @@ def _choir_in_scale(
     fit = vocal.fit_scale_detail(heard, durations)
     if fit is None:
         return voices, None
-    if doh is not None and doh != fit.root:
-        costs, offsets = vocal.root_costs(heard, durations)
+    root, mode = fit.root, None  # the mode, unless the user's key says it, is read off the parts
+    if doh is not None:
+        costs, _offsets = vocal.root_costs(heard, durations)
         if costs[doh] <= DOH_MAX_COST_RATIO * float(costs.min()):
-            fit = replace(fit, offset=float(offsets[doh]), root=doh)
+            root, mode = doh, minor
         else:
             print(f"[notefusion] key override: the choir is not in the scale on {doh}; relabelling only", flush=True)
-    pitches = vocal.snap_to_scale([m - fit.offset for m in heard], fit.root)
+    offset, pitches = vocal.write_in_root(heard, durations, None, root, mode)
+    fit = replace(fit, offset=offset, root=root)
     written: dict[str, list[Event]] = {name: [] for name in voices}
     for (name, e), p in zip(notes, pitches):
         written[name].append(replace(e, pitch=p))
@@ -4945,12 +4961,15 @@ def _transcribe_wav(
     y = _condition_audio(y, sr=sr)
 
     # Written pitch = sounding pitch + shift (step 6c).  A key the user gives is in written
-    # pitch (see ``transcribe``); its doh in the sounding pitch the audio is read in:
+    # pitch (see ``transcribe``); its doh in the sounding pitch the audio is read in, and
+    # whether it is la-based:
     shift = -int(keyboard_transpose or 0)
     override_doh: int | None = None
+    override_minor = False
     if key_override:
         written = _parse_key_override(key_override)
         override_doh = (solfa.doh_pitch_class(written.tonic.pitchClass, written.mode) - shift) % 12
+        override_minor = written.mode == "minor"
 
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
     # Pitch at all, and skips it when the engine found the line.
@@ -5100,7 +5119,7 @@ def _transcribe_wav(
         # The rest of the pipeline (beat grid, key, solfa, engraving) then runs on the top
         # voice as the tune; the other voices rejoin it as ``parts`` in step 10b.
         if mode == "choir" and events:
-            choir_voices, choir_fit = _choir_in_scale(_assign_voices(events), post, override_doh)
+            choir_voices, choir_fit = _choir_in_scale(_assign_voices(events), post, override_doh, override_minor)
             melody_voice = next((n for n in CHOIR_RANGES if choir_voices[n]), "soprano")
             events = choir_voices[melody_voice]
 
@@ -5122,7 +5141,7 @@ def _transcribe_wav(
     # no key at all.  The notes are written again in the user's scale instead, from the same
     # sung pitches (``_rewrite_in_root``), still in sounding pitch.
     if override_doh is not None and vocal_fit is not None and events and override_doh != vocal_fit.root:
-        rewritten = _rewrite_in_root(events, vocal_fit, override_doh)
+        rewritten = _rewrite_in_root(events, vocal_fit, override_doh, override_minor, DOH_MAX_COST_RATIO)
         if rewritten is None:
             print(f"[notefusion] key override: the voice is not in the scale on {override_doh}; relabelling only",
                   flush=True)
@@ -5228,8 +5247,8 @@ def _transcribe_wav(
     # A band's chords say where the music rests far better than one voice's notes do: on the
     # synthetic songs the backing's key had the right doh on all 32 where the backing was
     # clear, and the voice's fit on 25 of them.  The chords' doh is taken when they are sure
-    # of it (``CHORD_DOH_MIN_CONFIDENCE``) and the voice is not plainly in another scale
-    # (``DOH_MAX_COST_RATIO``), and the notes are written again in that scale.  The key is
+    # of it (``CHORD_DOH_MIN_CONFIDENCE``) and the voice fits that scale nearly as well as its
+    # own (``CHORD_DOH_MAX_COST_RATIO``), and the notes are written again in that scale.  The key is
     # then reported from the chords, as chords mode reports it, so the chord row is spelled
     # in the key the tune is in.
     key_from_chords = False
@@ -5238,7 +5257,8 @@ def _transcribe_wav(
         chord_doh = solfa.doh_pitch_class(*chord_key)
         if chord_doh != vocal_fit.root:
             # The notes are written pitch by now (step 6c); so is the scale they go in.
-            rewritten = _rewrite_in_root(events, vocal_fit, (chord_doh + shift) % 12)
+            rewritten = _rewrite_in_root(events, vocal_fit, (chord_doh + shift) % 12, chord_key[1] == "minor",
+                                         CHORD_DOH_MAX_COST_RATIO)
             if rewritten is not None:
                 print(f"[notefusion] key: the backing's chords put doh on {chord_doh}, not {vocal_fit.root}",
                       flush=True)
