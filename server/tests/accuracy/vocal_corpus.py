@@ -12,7 +12,7 @@ whose baseline fingerprint this must never disturb.
 """
 
 import hashlib
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 
 from tests.accuracy.vocal_synth import VocalOptions
 
@@ -205,6 +205,99 @@ CASES: tuple[VocalCase, ...] = tuple(
     for tune, styles in _PLAN.items()
     for style in styles
 )
+
+
+# ── Slices: weak spots the corpus above does not reach ───────────────────────
+#
+# Scored on their own (``report --vocal --slices``), never folded into CASES: each is a
+# stress test of one known weakness, and mixing them in would move every headline number
+# the corpus baseline gates.  Their numbers before any fix are the yardstick for one.
+
+
+def _long_take(tune: str, times: int) -> tuple[str, int, Notes]:
+    """The tune sung ``times`` over, a one-beat breath between: a take of 45-60 seconds."""
+    key, tempo, notes = TUNES[tune]
+    breath: Notes = ((None, 1.0),)
+    return key, tempo, (notes + breath) * (times - 1) + notes
+
+
+def _opening(tune: str, n_notes: int) -> tuple[str, int, Notes]:
+    """Only the tune's first phrase: a handful of notes, often too few to pin the scale down."""
+    key, tempo, notes = TUNES[tune]
+    return key, tempo, notes[:n_notes]
+
+
+_SLICE_STYLES = {
+    # A long take sinking 80 or 120 cents from start to end, past the semitone midpoint, so
+    # one tuning offset cannot serve the whole clip.  Shaped as the stress sweep that found
+    # it (tuning -10, detune 15); over these lengths the slope is 0.8-1.5 semitones a minute.
+    "hum_long_drift80": VocalOptions(
+        style="hum", tuning_cents=-10.0, drift_cents=-80.0, note_detune_cents=15.0, scoop_cents=50.0,
+        jitter_cents=10.0, glide_sec=0.10,
+    ),
+    "hum_long_drift120": VocalOptions(
+        style="hum", tuning_cents=-10.0, drift_cents=-120.0, note_detune_cents=15.0, scoop_cents=50.0,
+        jitter_cents=10.0, glide_sec=0.10,
+    ),
+    # An untrained singer worse than the corpus's amateurs: 40 cents RMS per note, clipped at
+    # 100 instead of 60, so about one note in sixteen lands beyond 75 cents, nearer the
+    # neighbouring semitone than its own.
+    "hum_wide_detune": VocalOptions(
+        style="hum", tuning_cents=-20.0, note_detune_cents=40.0, note_detune_clip_cents=100.0, scoop_cents=50.0,
+        jitter_cents=10.0, glide_sec=0.10,
+    ),
+    "ah_wide_detune": VocalOptions(
+        style="ah", tuning_cents=25.0, note_detune_cents=40.0, note_detune_clip_cents=100.0, vibrato_cents=35.0,
+        scoop_cents=60.0, glide_sec=0.11,
+    ),
+    # The corpus's amateurs sung legato: the same draws (see VocalOptions.legato) with no
+    # amplitude valley between notes, so the pitch glides alone mark the boundaries.
+    "hum_legato": replace(STYLES["hum_amateur"], legato=True),
+    "ah_legato": replace(STYLES["ah_amateur"], legato=True),
+}
+
+# Slice -> (case tune name, (key, tempo, notes), styles).
+_SLICE_PLAN = {
+    "long_drift": [
+        (f"{tune}_x{times}", _long_take(tune, times), ("hum_long_drift80", "hum_long_drift120"))
+        for tune, times in (("twinkle", 5), ("amazing_grace", 3), ("hymn_eflat", 4), ("greensleeves", 3))
+    ],
+    "wide_detune": [
+        (tune, TUNES[tune], ("hum_wide_detune", "ah_wide_detune"))
+        for tune in ("twinkle", "ode_to_joy", "greensleeves", "hymn_eflat", "chromatic_g")
+    ],
+    # The first line of each tune's words, the way a singer tries a tune out.
+    "first_phrase": [
+        (f"{tune}_opening", _opening(tune, n_notes), ("hum_amateur", "ah_amateur"))
+        for tune, n_notes in (
+            ("twinkle", 7), ("amazing_grace", 9), ("ode_to_joy", 8),
+            ("greensleeves", 8), ("hymn_eflat", 7), ("low_hum_cminor", 7),
+        )
+    ],
+    "legato": [
+        (tune, TUNES[tune], ("hum_legato", "ah_legato"))
+        for tune in ("twinkle", "amazing_grace", "ode_to_joy", "greensleeves", "hymn_eflat", "chromatic_g", "fast_run_bflat")
+    ],
+}
+
+_ALL_STYLES = {**STYLES, **_SLICE_STYLES}
+
+SLICES: dict[str, tuple[VocalCase, ...]] = {
+    slice_name: tuple(
+        VocalCase(
+            name=f"{tune}__{style}",
+            key=key,
+            tempo_bpm=tempo,
+            notes=notes,
+            options=_ALL_STYLES[style],
+            tags=("vocal", slice_name, tune, style, _ALL_STYLES[style].style),
+        )
+        for tune, (key, tempo, notes), styles in plan
+        for style in styles
+    )
+    for slice_name, plan in _SLICE_PLAN.items()
+}
+SLICE_CASES: tuple[VocalCase, ...] = tuple(case for cases in SLICES.values() for case in cases)
 
 
 def vocal_corpus_fingerprint(cases: tuple[VocalCase, ...] = CASES) -> str:

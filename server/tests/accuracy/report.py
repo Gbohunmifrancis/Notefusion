@@ -5,6 +5,8 @@ Run from ``server/``:
     python -m tests.accuracy.report                  # table + report.json
     python -m tests.accuracy.report --write-baseline  # also freeze baseline.json
     python -m tests.accuracy.report --filter vibrato  # only cases whose name matches
+    python -m tests.accuracy.report --vocal           # the sung corpus
+    python -m tests.accuracy.report --vocal --slices  # its stress slices, one line each
 
 ``report.json`` is always overwritten; ``baseline.json`` only on ``--write-baseline``,
 because recording a baseline is a deliberate act a human commits.  Once a baseline
@@ -28,7 +30,7 @@ from tests.accuracy.corpus import CASES, corpus_fingerprint
 from tests.accuracy.real_loader import load_real_cases, real_corpus_fingerprint
 from tests.accuracy.runner import METRIC_NAMESPACES, CaseOutcome, aggregate, run_all
 from tests.accuracy.runner import run_real, run_vocal
-from tests.accuracy.vocal_corpus import CASES as VOCAL_CASES, vocal_corpus_fingerprint
+from tests.accuracy.vocal_corpus import CASES as VOCAL_CASES, SLICE_CASES, SLICES, vocal_corpus_fingerprint
 
 from app.config import settings
 
@@ -36,6 +38,8 @@ REPORT_PATH = Path(__file__).parent / "report.json"
 REAL_REPORT_PATH = Path(__file__).parent / "real_report.json"
 VOCAL_REPORT_PATH = Path(__file__).parent / "vocal_report.json"
 VOCAL_BASELINE_PATH = Path(__file__).parent / "vocal_baseline.json"
+VOCAL_SLICES_REPORT_PATH = Path(__file__).parent / "vocal_slices_report.json"
+VOCAL_SLICES_BASELINE_PATH = Path(__file__).parent / "vocal_slices_baseline.json"
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
 
 # Bumped only if the JSON layout changes in a way a reader must notice.
@@ -241,6 +245,20 @@ def _print_aggregate(current: dict[str, float], baseline: dict | None) -> None:
             print(f"{name:<34} {_num(value):>9} {'-':>9} {'-':>9}")
 
 
+_SLICE_COLUMNS = ("key.exact", "solfa.syllable_accuracy", "solfa.chromatic_ghosts", "seq.syllable_error_rate", "notes.f1")
+
+
+def _print_slices(outcomes: list[CaseOutcome]) -> None:
+    """One line per slice: each is a different weakness, so their pooled mean says little."""
+    print()
+    print(f"{'slice':<13} {'n':>3} " + " ".join(f"{column:>24}" for column in _SLICE_COLUMNS))
+    for name in SLICES:
+        mine = [outcome for outcome in outcomes if outcome.tags[1] == name]
+        if mine:
+            means = aggregate(mine)
+            print(f"{name:<13} {len(mine):>3} " + " ".join(f"{_num(means.get(column)):>24}" for column in _SLICE_COLUMNS))
+
+
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 
@@ -261,11 +279,18 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="score the sung/hummed vocal corpus into vocal_report.json (baseline: vocal_baseline.json)",
     )
+    parser.add_argument(
+        "--slices",
+        action="store_true",
+        help="with --vocal: score the stress slices instead (vocal_slices_report.json / vocal_slices_baseline.json)",
+    )
     parser.add_argument("--filter", default="", metavar="SUBSTR", help="only cases whose name contains SUBSTR")
     args = parser.parse_args(argv)
 
     if args.real and args.write_baseline:
         parser.error("--write-baseline is only supported for the synthetic corpus")
+    if args.slices and not args.vocal:
+        parser.error("--slices goes with --vocal")
 
     if args.vocal:
         return _main_vocal(args, parser)
@@ -336,7 +361,10 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def _main_vocal(args, parser) -> int:
-    cases = tuple(case for case in VOCAL_CASES if args.filter in case.name)
+    corpus = SLICE_CASES if args.slices else VOCAL_CASES
+    report_path = VOCAL_SLICES_REPORT_PATH if args.slices else VOCAL_REPORT_PATH
+    baseline_path = VOCAL_SLICES_BASELINE_PATH if args.slices else VOCAL_BASELINE_PATH
+    cases = tuple(case for case in corpus if args.filter in case.name)
     if not cases:
         parser.error(f"no vocal case name contains {args.filter!r}")
     if args.write_baseline and args.filter:
@@ -348,31 +376,29 @@ def _main_vocal(args, parser) -> int:
         "metric_namespaces": list(METRIC_NAMESPACES),
         "flags": _effective_flags(),
         "corpus": {
-            "kind": "vocal",
+            "kind": "vocal_slices" if args.slices else "vocal",
             "n_cases": len(cases),
-            "fingerprint": vocal_corpus_fingerprint(VOCAL_CASES),
+            "fingerprint": vocal_corpus_fingerprint(corpus),
             "sample_rate": synth.SAMPLE_RATE,
             "filter": args.filter,
         },
         "aggregate": aggregate(outcomes),
         "cases": _document(outcomes, args.filter)["cases"],
     }
-    baseline = (
-        json.loads(VOCAL_BASELINE_PATH.read_text(encoding="utf-8"))
-        if VOCAL_BASELINE_PATH.exists()
-        else None
-    )
+    baseline = json.loads(baseline_path.read_text(encoding="utf-8")) if baseline_path.exists() else None
     print()
     if baseline is not None and baseline.get("corpus", {}).get("fingerprint") != document["corpus"]["fingerprint"]:
-        print("WARNING: vocal_baseline.json was recorded against a different vocal corpus; re-record it.")
+        print(f"WARNING: {baseline_path.name} was recorded against a different vocal corpus; re-record it.")
         print()
     _print_cases(outcomes, baseline)
     _print_aggregate(document["aggregate"], baseline)
-    VOCAL_REPORT_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
-    print(f"\nwrote {VOCAL_REPORT_PATH.name}")
+    if args.slices:
+        _print_slices(outcomes)
+    report_path.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+    print(f"\nwrote {report_path.name}")
     if args.write_baseline:
-        VOCAL_BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
-        print(f"wrote {VOCAL_BASELINE_PATH.name}")
+        baseline_path.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+        print(f"wrote {baseline_path.name}")
     failed = [outcome.name for outcome in outcomes if not outcome.ok]
     if failed:
         print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
