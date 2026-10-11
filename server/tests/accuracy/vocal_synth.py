@@ -29,7 +29,7 @@ the render inputs, so the same case always produces the same samples.
 
 import zlib
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 from scipy import signal
@@ -48,7 +48,7 @@ class VocalOptions:
     drift_cents: float = 0.0  # linear drift across the clip (negative = goes flat)
     jitter_cents: float = 8.0  # random-walk micro-intonation, RMS
     # Per-note pitching error, RMS: each note is sung off its target by its own fixed amount,
-    # drawn once per note and clipped at +/-NOTE_DETUNE_CLIP_CENTS. 0 draws nothing, so every
+    # drawn once per note and clipped at +/-note_detune_clip_cents. 0 draws nothing, so every
     # case rendered before this field existed is sample-for-sample unchanged.
     note_detune_cents: float = 0.0
     vibrato_hz: float = 5.5
@@ -65,6 +65,18 @@ class VocalOptions:
     lead_in_sec: float = 0.5
     tail_sec: float = 0.4
     peak: float = 0.85
+    # The two below stay out of repr, which seeds the randomness: every case rendered before
+    # they existed keeps its samples, and a case that differs from another only in them draws
+    # the same noise, jitter and detune, so the pair isolates that one defect.
+    #
+    # How far one note may land off its target.  60 keeps the corpus's amateurs plausible;
+    # a wider clip is the singer who misses by most of a semitone.
+    note_detune_clip_cents: float = field(default=60.0, repr=False)
+    # A note sung on from the one before (no breath) starts at full level instead of ramping
+    # in from silence, so only the pitch glide marks the boundary, as in real legato.  Off,
+    # every note gets the attack ramp, an amplitude valley at each note change that hands
+    # the segmenter a boundary no legato line has.  A repeated pitch keeps its dip.
+    legato: bool = field(default=False, repr=False)
 
 
 # Formant resonances (Hz, bandwidth Hz) and source spectral slope per style.  The hum
@@ -78,7 +90,6 @@ _STYLES = {
 }
 _N_HARMONICS = 24
 _CONSONANT_GAP_SEC = 0.035
-NOTE_DETUNE_CLIP_CENTS = 60.0
 
 
 def _seed(notes, tempo_bpm, options) -> int:
@@ -158,7 +169,8 @@ def render(
             continue
         detune = 0.0
         if options.note_detune_cents > 0.0:
-            detune = float(np.clip(rng.normal(0.0, options.note_detune_cents), -NOTE_DETUNE_CLIP_CENTS, NOTE_DETUNE_CLIP_CENTS))
+            clip = options.note_detune_clip_cents
+            detune = float(np.clip(rng.normal(0.0, options.note_detune_cents), -clip, clip))
         target[start:end] = float(pitch) + detune / 100.0
         onsets.append((start, end, not previous_voiced))
         refs.append(
@@ -187,7 +199,7 @@ def render(
         contour[lo:hi] = prev_pitch + (this_pitch - prev_pitch) * ramp
 
     articulate = options.style == "da"
-    for start, end, after_breath in onsets:
+    for i, (start, end, after_breath) in enumerate(onsets):
         n = end - start
         t = np.arange(n) / sr
         seg = contour[start:end]
@@ -204,7 +216,8 @@ def render(
         env = np.ones(n)
         atk = min(int(options.attack_sec * sr), n // 3)
         rel = min(int(options.release_sec * sr), n // 3)
-        if atk > 0:
+        joined = options.legato and not after_breath
+        if atk > 0 and not joined:
             env[:atk] = _raised_cosine(atk)
         if rel > 0 and (articulate or _is_last(onsets, start)):
             env[-rel:] *= _raised_cosine(rel)[::-1]
@@ -212,6 +225,11 @@ def render(
         # a vowel sung legato re-articulates only a REPEATED pitch — the singer has to,
         # or the two notes would be one — and does it with a softer dip and no gap.
         repeated = not after_breath and target[start - 1] == target[start]
+        if joined:
+            # The targets carry each note's own detune, so with detune on a repeat never
+            # matches above and the attack ramp is what re-articulates it.  Legato has no
+            # ramp, so it compares the notes meant.
+            repeated = refs[i].pitch_midi == refs[i - 1].pitch_midi
         if articulate and not after_breath:
             gap = min(int(_CONSONANT_GAP_SEC * sr), n // 4)
             env[:gap] = 0.0

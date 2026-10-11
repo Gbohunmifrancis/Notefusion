@@ -8,6 +8,9 @@ and an octave ghost on one chord.
 
 from __future__ import annotations
 
+import numpy as np
+import pytest
+
 from app.pipeline import transcriber
 from app.pipeline.transcriber import Event, _assign_voices, _choir_parts
 
@@ -111,3 +114,192 @@ def test_one_pitch_reported_three_times_in_a_chord_is_one_singer():
     voices = _assign_voices(chord)
     assert sum(len(v) for v in voices.values()) == 1
     assert voices["bass"][0].amp == 0.75
+
+
+# ── Tuning and the scale ──────────────────────────────────────────────────────
+
+FRAME_SEC = 0.0116
+
+
+def _posteriorgram(sung: list[tuple[Event, float]]) -> transcriber.Posteriorgram:
+    """A contour head with each note's energy at its sung (fractional) pitch."""
+    frames = int(max(e.end for e, _ in sung) / FRAME_SEC) + 2
+    contour = np.zeros((frames, 264))
+    times = np.arange(frames) * FRAME_SEC
+    for e, pitch in sung:
+        b = (pitch - transcriber.POSTERIOR_MIDI_LOW) * transcriber.CONTOUR_BINS_PER_SEMITONE
+        lo = int(np.floor(b))
+        rows = (times >= e.start) & (times <= e.end)
+        contour[rows, lo] += 1.0 - (b - lo)
+        contour[rows, lo + 1] += b - lo
+    zeros = np.zeros((frames, 88))
+    return transcriber.Posteriorgram(onset=zeros, note=zeros, contour=contour, times=times)
+
+
+def test_a_note_is_heard_where_in_its_semitone_it_was_sung():
+    e = Event(0.0, 0.5, 60, 0.8)
+    assert transcriber._heard_pitch(_posteriorgram([(e, 60.3)]), e) == pytest.approx(60.3, abs=0.01)
+    assert transcriber._heard_pitch(None, e) == 60.0
+
+
+def _chorale(pitches: list[list[int]], sung_as: dict[tuple[str, int], float]):
+    # S/A/T/B chords a second apart, each note sung at its pitch unless ``sung_as`` says
+    # otherwise; Basic Pitch names each note its nearest semitone.
+    sung, voices = [], {"soprano": [], "alto": [], "tenor": [], "bass": []}
+    for i, chord in enumerate(pitches):
+        for name, p in zip(voices, chord):
+            heard = sung_as.get((name, p), float(p))
+            e = Event(i * 1.0, i * 1.0 + 0.9, int(round(heard)), 0.8)
+            voices[name].append(e)
+            sung.append((e, heard))
+    return voices, _posteriorgram(sung)
+
+
+def _hymn(sung_tenor_f: float):
+    # C major: I IV V I, with the tenor's F sung at ``sung_tenor_f``.
+    return _chorale([[72, 67, 64, 48], [72, 69, 65, 53], [71, 67, 62, 55], [72, 67, 64, 48]],
+                    {("tenor", 65): sung_tenor_f})
+
+
+def test_the_parts_are_written_in_one_scale_fitted_across_every_voice():
+    # The tenor's F sung 55 cents sharp: Basic Pitch names it F#, which C major does not have
+    # and which it is not near enough to keep.
+    voices, post = _hymn(65.55)
+    assert voices["tenor"][1].pitch == 66
+    written, fit = transcriber._choir_in_scale(voices, post)
+    assert fit.root == 0
+    assert [e.pitch for e in written["tenor"]] == [64, 65, 62, 64]
+    assert [e.pitch for e in written["bass"]] == [48, 53, 55, 48]
+
+
+def test_a_chromatic_in_a_part_needs_the_evidence_a_sung_one_does():
+    # An F# 15 cents sharp slipped into the alto between two chords: a 0.09 s flick is the G
+    # it leans to, as a solo singer's would be; held half a second, it is an F#.
+    for seconds, written_as in ((0.09, 67), (0.5, 66)):
+        voices, _post = _hymn(65.0)
+        passing = Event(1.91, 1.91 + seconds, 66, 0.8)
+        voices["alto"].insert(2, passing)
+        sung = [(e, 66.15 if e is passing else float(e.pitch)) for line in voices.values() for e in line]
+        written, fit = transcriber._choir_in_scale(voices, _posteriorgram(sung))
+        assert fit.root == 0
+        assert written["alto"][2].pitch == written_as
+
+
+def test_a_users_key_the_choir_is_plainly_not_in_leaves_the_fitted_scale():
+    voices, post = _hymn(65.0)
+    _written, fit = transcriber._choir_in_scale(voices, post, doh=6)
+    assert fit.root == 0
+    _written, fit = transcriber._choir_in_scale(voices, post, doh=0)
+    assert fit.root == 0
+
+
+def test_a_users_key_the_choir_fits_nearly_as_well_is_the_scale_it_is_written_in():
+    # G major, I V vi I, with the tenor's F# sung 55 cents flat: alone the parts fit C, where
+    # it is F.  G fits them barely worse, so the user's G is the scale.
+    voices, post = _chorale([[74, 71, 67, 55], [74, 69, 66, 50], [71, 67, 64, 52], [71, 67, 62, 55]],
+                            {("tenor", 66): 65.45})
+    alone, fit = transcriber._choir_in_scale(voices, post)
+    assert fit.root == 0 and [e.pitch for e in alone["tenor"]] == [67, 65, 64, 62]
+    given, fit = transcriber._choir_in_scale(voices, post, doh=7)
+    assert fit.root == 7 and [e.pitch for e in given["tenor"]] == [67, 66, 64, 62]
+
+
+def test_the_choirs_key_vote_hears_every_part_and_the_bass_twice():
+    voices, _post = _hymn(65.0)
+    s = transcriber._choir_key_stream(voices, sec_to_beats=1.0)
+    assert len(s.notes) == 16
+    bass = [n.duration.quarterLength for n in s.notes if n.pitch.midi in (48, 53, 55)]
+    assert bass == [pytest.approx(0.9 * transcriber.CHOIR_BASS_KEY_WEIGHT)] * 4
+
+
+def test_the_choirs_tuning_comes_out_before_basic_pitch(tmp_path):
+    sr = 22_050
+    t = np.arange(sr * 2) / sr
+    flat = np.sin(2 * np.pi * 440.0 * 2.0 ** (-0.3 / 12.0) * t).astype(np.float32)
+    seen = []
+
+    def fake_predict(path=None):
+        seen.append(path)
+        return "output", "midi", []
+
+    *_, time_scale = transcriber._retuned_basic_pitch(flat, sr, fake_predict)
+    assert time_scale == pytest.approx(2.0 ** (0.3 / 12.0), rel=0.01)
+    assert seen[0] is not None and not seen[0].exists()  # a temporary, removed afterwards
+
+    in_tune = np.sin(2 * np.pi * 440.0 * t).astype(np.float32)
+    *_, time_scale = transcriber._retuned_basic_pitch(in_tune, sr, fake_predict)
+    assert time_scale == 1.0 and seen[1] is None
+
+
+def test_a_failed_retune_still_runs_basic_pitch_on_the_clip(monkeypatch):
+    import librosa
+
+    def broken(**_kwargs):
+        raise RuntimeError("no tuning")
+
+    monkeypatch.setattr(librosa, "estimate_tuning", broken)
+    seen = []
+    *_, time_scale = transcriber._retuned_basic_pitch(
+        np.zeros(22_050, dtype=np.float32), 22_050, lambda path=None: seen.append(path) or ("output", "midi", []))
+    assert time_scale == 1.0 and seen == [None]
+
+
+class _Stop(Exception):
+    pass
+
+
+def test_basic_pitchs_times_on_the_retuned_audio_come_back_on_the_clips_clock(tmp_path, monkeypatch):
+    # The retuned audio played at the clip's rate lasts 1 / time_scale as long; its notes are
+    # stretched back before anything reads them.
+    import soundfile as sf
+
+    path = tmp_path / "choir.wav"
+    sf.write(str(path), np.zeros(22_050 * 4, dtype=np.float32), 22_050)
+    retuned = [(0.5, 1.0, 60, 0.8, None), (1.0, 1.5, 64, 0.8, None), (1.5, 1.9, 67, 0.8, None)]
+    monkeypatch.setattr(transcriber, "_retuned_basic_pitch", lambda y, sr, run: (None, None, retuned, 1.5))
+    seen: list[Event] = []
+
+    def assign(events):
+        seen.extend(events)
+        raise _Stop
+
+    monkeypatch.setattr(transcriber, "_assign_voices", assign)
+    with pytest.raises(_Stop):
+        transcriber.transcribe(path, mode="choir", audio_preview=False)
+    assert [(e.start, e.pitch) for e in seen] == [(pytest.approx(0.75), 60), (pytest.approx(1.5), 64),
+                                                 (pytest.approx(2.25), 67)]
+
+
+def test_a_choir_singing_flat_is_written_in_its_key_without_accidentals(tmp_path):
+    import soundfile as sf
+
+    from tests.accuracy import vocal_synth
+
+    chords = [(64, 60, 55, 48), (65, 60, 57, 53), (67, 64, 60, 48), (67, 62, 59, 55),
+              (69, 64, 60, 57), (65, 60, 57, 53), (62, 59, 55, 43), (60, 55, 52, 48)]
+    mix = None
+    for v in range(4):
+        opts = vocal_synth.VocalOptions(style="ah", tuning_cents=-30.0, vibrato_cents=25.0,
+                                        note_detune_cents=12.0, glide_sec=0.08)
+        audio, _ = vocal_synth.render([(c[v], 1) for c in chords], 80, opts)
+        mix = audio if mix is None else mix[: min(mix.size, audio.size)] + audio[: min(mix.size, audio.size)]
+    path = tmp_path / "choir.wav"
+    sf.write(str(path), (0.8 * mix / np.max(np.abs(mix))).astype(np.float32), 22_050)
+
+    result = transcriber.transcribe(path, mode="choir", audio_preview=False)
+    assert result.key == "C major"
+    sung = [n["pitch_midi"] for part in result.parts.values() for n in part["notes"]]
+    assert sung and all(p % 12 in (0, 2, 4, 5, 7, 9, 11) for p in sung)
+
+
+def test_a_choir_retuned_the_wrong_way_still_reaches_the_users_key():
+    # A C-major hymn sung 50 cents flat that the retune read as 48 cents sharp: Basic Pitch
+    # then heard every part about a semitone low (true - 0.98).  With the tuning put back the
+    # user's C is in reach and the parts are written in it, not relabelled from B.
+    chords = [[72, 67, 64, 48], [72, 69, 65, 53], [71, 67, 62, 55], [72, 67, 64, 48]]
+    sung_as = {(name, p): p - 0.98 for chord in chords for name, p in zip(("soprano", "alto", "tenor", "bass"), chord)}
+    voices, post = _chorale(chords, sung_as)
+    written, fit = transcriber._choir_in_scale(voices, post, doh=0, tuning=0.48)
+    assert fit.root == 0
+    assert [e.pitch for e in written["soprano"]] == [72, 72, 71, 72]
+    assert [e.pitch for e in written["bass"]] == [48, 53, 55, 48]

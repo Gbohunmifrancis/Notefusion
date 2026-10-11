@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { requestRecordingPermissionsAsync } from 'expo-audio';
 import * as Listen from '../../modules/notefusion-listen';
 import { KeyDetector, type KeyStatus } from './keyDetect';
-import { dohPitchClass, KEY_CHOICES } from './solfa';
+import { DOH_NAMES, dohPitchClass, KEY_CHOICES } from './solfa';
 import { isExpoGo } from './env';
 
 /**
@@ -93,7 +93,7 @@ export function useKeyListener() {
 
   const apply = useCallback((status: KeyStatus) => {
     const stable = status.stable;
-    const doh = stable ? pitchNameOf(dohPitchClass({ tonicPitchClass: stable.tonic, mode: stable.mode })) : null;
+    const doh = stable ? DOH_NAMES[dohPitchClass({ tonicPitchClass: stable.tonic, mode: stable.mode })]! : null;
     const keyName = stable ? keyNameOf(stable.tonic, stable.mode) : null;
     if (keyName && doh && keyName !== shown.current) {
       shown.current = keyName;

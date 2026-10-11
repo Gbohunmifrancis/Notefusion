@@ -10,8 +10,15 @@ was *sung*, not the note that was meant, and untrained singers land a median 25-
 off their semitone, so "the right note" needs a definition.  The reference used here is
 the one a musician writing the tune down would use: each annotator's notes are written in
 the major scale that best fits them (``vocal.fit_scale`` / ``snap_to_scale``), and a clip
-is scored only when both annotators' notes fit the *same* scale (32 of the 40) — there
+is scored only when both annotators' notes fit the *same* scale (34 of the 40) — there
 the doh is not in question.  Annotator 2 scored against annotator 1 is the human ceiling.
+
+That reference is frozen in ``vocadito_frozen.json`` (written at b620e85) and every run
+scores against the file.  Derived afresh on each run it would be written by the very
+functions under test, so a change to the scale fit or the snap moved the yardstick along
+with the engine: one tie-ratio change scored 32/34 dohs against its own reference and 30/34
+against the frozen one.  ``--rebuild-reference`` re-derives the file with the current code;
+that is a decision about what "the right note" means, never a way to judge an engine change.
 
 Columns:
   solfa_ser     solfa syllable edit distance / reference length, each side in its own key
@@ -19,6 +26,14 @@ Columns:
                 counts as wrong here although its solfa is identical)
   interval_ser  pitch-interval edit distance: notes heard right regardless of key
   accidentals   share of output syllables that carry an accidental (de, ma, fe, se, ta...)
+  acc_diatonic  the same on the 14 tunes known to have no accidental (Clementine, Frere
+                Jacques, Baa Baa Black Sheep and the like, named by the clips' lyrics files):
+                every accidental there is spurious
+  acc_chromatic the same on the 3 tunes with real ones (19 "Take Me Out to the Ball Game",
+                39 "Hello! Ma Baby", 40 "That Doggie in the Window"): a fix that drives this
+                to 0 is erasing genuine chromatics, not ghosts
+
+The tune classes are knowledge of the songs, not measurements, so a rebuild keeps them.
 
 Measurement only, never run by ``pytest``.  The audio is not committed; it is downloaded to
 ``~/.cache/notefusion/vocadito`` (or ``--data``).
@@ -30,6 +45,7 @@ import argparse
 import csv
 import io
 import json
+import subprocess
 import time
 import urllib.request
 import zipfile
@@ -39,8 +55,11 @@ import numpy as np
 
 from app.pipeline import vocal
 
+# vocadito (Bittner, Pasalo, Bosch, Meseguer-Brocal and Rubinstein, 2021; doi:10.5281/zenodo.5578807),
+# CC BY 4.0.  vocadito_frozen.json holds notes derived from its annotations.
 ZENODO_URL = "https://zenodo.org/api/records/5578807/files/vocadito.zip/content"
 DEFAULT_DATA = Path.home() / ".cache" / "notefusion" / "vocadito"
+REFERENCE_PATH = Path(__file__).parent / "vocadito_frozen.json"
 SYLLABLES = {0: "d", 1: "de", 2: "r", 3: "ma", 4: "m", 5: "f", 6: "fe", 7: "s", 8: "se", 9: "l", 10: "ta", 11: "t"}
 _PITCH_CLASS = {"C": 0, "C#": 1, "Db": 1, "D": 2, "D#": 3, "Eb": 3, "E": 4, "F": 5, "F#": 6, "Gb": 6,
                 "G": 7, "G#": 8, "Ab": 8, "A": 9, "A#": 10, "Bb": 10, "B": 11}
@@ -105,24 +124,61 @@ def score(ref_root: int, ref_pitches: list[int], est_doh: int, est_pitches: list
     }
 
 
+def rebuild_reference(data: Path, previous: dict) -> dict:
+    """The reference re-derived with the current fit and snap, tune classes carried over."""
+    clips = {}
+    for clip in range(1, 41):
+        entry = {}
+        for annotator in ("A1", "A2"):
+            notes = load_notes(data / "Annotations" / "Notes" / f"vocadito_{clip}_notes{annotator}.csv")
+            ref = written(notes)
+            if ref is None:
+                entry[annotator] = None
+                continue
+            offset, _root = vocal.fit_scale([m for *_, m in notes], [b - a for a, b, _ in notes])
+            entry[annotator] = {"root": ref[0], "offset": offset, "written": ref[1]}
+        # Clips whose annotators' notes fit different scales have no doh to score against.
+        entry["consensus"] = bool(entry["A1"] and entry["A2"] and entry["A1"]["root"] == entry["A2"]["root"])
+        entry["tune_class"] = previous["clips"][str(clip)]["tune_class"]
+        clips[str(clip)] = entry
+    head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=Path(__file__).parent)
+    return {
+        "built_at_head": head.stdout.strip(),
+        "keep": vocal.SCALE_KEEP_CHROMATIC,
+        "tie_ratio": getattr(vocal, "SCALE_FIT_TIE_RATIO", None),  # metadata only; the fit may drop it
+        "scored_clips": [int(c) for c, entry in clips.items() if entry["consensus"]],
+        "clips": clips,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m tests.accuracy.vocadito", description=__doc__)
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA)
     parser.add_argument("--decoder", action="store_true", help="score vocal.analyse() only, not the whole pipeline")
     parser.add_argument("--out", type=Path, default=None, help="write per-clip rows and the aggregate as JSON")
+    parser.add_argument(
+        "--rebuild-reference",
+        action="store_true",
+        help=f"re-derive {REFERENCE_PATH.name} with the current fit and snap, then score against it",
+    )
     args = parser.parse_args(argv)
     data = ensure_data(args.data)
 
     import librosa
 
+    reference = json.loads(REFERENCE_PATH.read_text())
+    if args.rebuild_reference:
+        reference = rebuild_reference(data, reference)
+        REFERENCE_PATH.write_text(json.dumps(reference))
+        print(f"wrote {REFERENCE_PATH.name}: {len(reference['scored_clips'])} consensus clips", flush=True)
+    tune_class = {int(c): entry["tune_class"] for c, entry in reference["clips"].items()}
+
     rows, human = [], []
-    for clip in range(1, 41):
-        a1 = written(load_notes(data / "Annotations" / "Notes" / f"vocadito_{clip}_notesA1.csv"))
-        a2 = written(load_notes(data / "Annotations" / "Notes" / f"vocadito_{clip}_notesA2.csv"))
-        if a1 is None or a2 is None or a1[0] != a2[0]:
-            continue  # the annotators' notes do not agree on a scale: no doh to score against
-        root, ref_pitches = a1
-        human.append(score(root, ref_pitches, a2[0], a2[1], [SYLLABLES[(p - a2[0]) % 12] for p in a2[1]]))
+    for clip in reference["scored_clips"]:
+        a1, a2 = reference["clips"][str(clip)]["A1"], reference["clips"][str(clip)]["A2"]
+        root, ref_pitches = a1["root"], a1["written"]
+        human.append({"clip": clip, **score(root, ref_pitches, a2["root"], a2["written"],
+                                            [SYLLABLES[(p - a2["root"]) % 12] for p in a2["written"]])})
         audio = data / "Audio" / f"vocadito_{clip}.wav"
         started = time.time()
         if args.decoder:
@@ -142,11 +198,18 @@ def main(argv: list[str] | None = None) -> int:
         rows.append(row)
         print(f"vocadito_{clip:<3} solfa_ser {row['solfa_ser']:.2f}  doh {int(row['doh'])}  interval_ser {row['interval_ser']:.2f}  accidentals {row['accidentals']:.2f}", flush=True)
 
-    def mean(table: list[dict], key: str) -> float:
-        return round(float(np.mean([r[key] for r in table])), 3)
+    def mean(table: list[dict], key: str) -> float | None:
+        return round(float(np.mean([r[key] for r in table])), 3) if table else None
 
-    keys = ("solfa_ser", "doh", "interval_ser", "accidentals")
-    summary = {"clips": len(rows), "engine": {k: mean(rows, k) for k in keys}, "human_ceiling": {k: mean(human, k) for k in keys}}
+    def aggregate(table: list[dict]) -> dict:
+        keys = ("solfa_ser", "doh", "interval_ser", "accidentals")
+        return {
+            **{k: mean(table, k) for k in keys},
+            "acc_diatonic": mean([r for r in table if tune_class[r["clip"]] == "diatonic_high"], "accidentals"),
+            "acc_chromatic": mean([r for r in table if tune_class[r["clip"]] == "chromatic"], "accidentals"),
+        }
+
+    summary = {"clips": len(rows), "engine": aggregate(rows), "human_ceiling": aggregate(human)}
     print(json.dumps(summary, indent=1))
     if args.out:
         args.out.write_text(json.dumps({"summary": summary, "rows": rows}, indent=1))
