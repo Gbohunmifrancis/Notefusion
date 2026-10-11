@@ -291,6 +291,139 @@ def test_snap_to_scale_keeps_a_clearly_chromatic_note():
     assert vocal.snap_to_scale([73.3], 7) == [74]
 
 
+def test_snap_to_scale_keeps_a_chromatic_only_when_it_is_held():
+    # The same in-tune C# in G major, held: kept...
+    assert vocal.snap_to_scale([73.1], 7, durations=[0.5], stabilities=[0.95]) == [73]
+    # ...but a 0.1 s flick, or a note the voice slid through, is its scale tone.
+    assert vocal.snap_to_scale([73.1], 7, durations=[0.1], stabilities=[0.95]) == [74]
+    assert vocal.snap_to_scale([73.1], 7, durations=[0.5], stabilities=[0.5]) == [74]
+    # Scale tones need no evidence.
+    assert vocal.snap_to_scale([74.1], 7, durations=[0.05], stabilities=[0.1]) == [74]
+
+
+def test_snap_to_scale_keeps_a_chromatic_only_if_every_nearly_as_good_offset_does():
+    # 15 cents off C#: inside the keep band at the chosen offset...
+    assert vocal.snap_to_scale([73.15], 7) == [73]
+    # ...but an offset 15 cents lower fits the notes nearly as well, and there it reads 30
+    # cents off: a coin flip of the offset must not make an accidental.
+    assert vocal.snap_to_scale([73.15], 7, slack=(-0.15, 0.05)) == [74]
+    assert vocal.snap_to_scale([73.15], 7, slack=(-0.05, 0.05)) == [73]
+
+
+def test_a_minor_tunes_raised_seventh_is_spared_the_offset_slack():
+    # C major's relative minor is A minor, whose raised seventh is G# (se).
+    held = dict(durations=[0.5], stabilities=[0.9], slack=(-0.1, 0.1))
+    assert vocal.snap_to_scale([68.2], 0, **held) == [69]
+    assert vocal.snap_to_scale([68.2], 0, minor=True, **held) == [68]
+    # ...it still has to be held, and fe or ta get no such pass.
+    assert vocal.snap_to_scale([68.2], 0, durations=[0.1], stabilities=[0.9], minor=True) == [69]
+    assert vocal.snap_to_scale([66.2], 0, minor=True, **held) == [67]
+
+
+def test_minor_mode_reads_a_la_based_tune():
+    greensleeves = [69, 72, 74, 76, 77, 76, 74, 71, 67, 69, 71, 72, 69, 69, 68, 69, 71, 68, 64]
+    twinkle = [60, 60, 67, 67, 69, 69, 67, 65, 65, 64, 64, 62, 62, 60]
+    assert vocal._minor_mode(np.array(greensleeves, float), np.ones(len(greensleeves)), 0)
+    assert not vocal._minor_mode(np.array(twinkle, float), np.ones(len(twinkle)), 0)
+
+
+def test_offset_slack_is_how_far_the_offset_can_move_at_almost_no_cost():
+    in_tune = [60.0, 62.0, 64.0, 65.0, 67.0, 69.0, 71.0, 72.0]
+    fit = vocal.fit_scale_detail(in_tune, [1.0] * 8)
+    assert vocal._offset_slack(np.array(in_tune), np.ones(8), fit) == (0.0, 0.0)
+    # The scattered singer of the fit test above: the offset is only pinned to a few cents.
+    intended = [60, 62, 64, 65, 67, 69, 71, 72, 67, 64, 60]
+    scatter = [0.30, -0.33, 0.20, -0.28, 0.33, -0.30, 0.25, -0.20, 0.30, -0.33, 0.05]
+    sung = np.array([p - 0.35 + e for p, e in zip(intended, scatter)])
+    low, high = vocal._offset_slack(sung, np.ones(sung.size), vocal.fit_scale_detail(sung, [1.0] * sung.size))
+    assert -0.1 < low < 0.0 < high < 0.1
+
+
+# ── Drift ─────────────────────────────────────────────────────────────────────
+
+_SCALE_TUNE = [60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62]
+
+
+def _drifting_take(cents_per_min: float, start_cents: float, notes: int = 48):
+    """(intended, sung, durations, starts): a scale tune, one note a second, drifting."""
+    intended = [_SCALE_TUNE[i % len(_SCALE_TUNE)] for i in range(notes)]
+    starts = [float(i) for i in range(notes)]
+    sung = [p + (start_cents + cents_per_min * t / 60.0) / 100.0 for p, t in zip(intended, starts)]
+    return intended, sung, [1.0] * notes, starts
+
+
+def test_write_in_scale_takes_out_a_steady_drift_from_the_first_note_on():
+    # 48 s sagging from 30 to 102 cents flat: one offset for the whole take wraps past the
+    # quarter tone and reads the tune in B major, half of it written wrong.
+    intended, sung, durations, starts = _drifting_take(-90.0, -30.0)
+    fit = vocal.fit_scale_detail(sung, durations)
+    assert fit.root == 11
+    assert vocal.snap_to_scale([m - fit.offset for m in sung], fit.root) != intended
+    written = vocal.write_in_scale(sung, durations, starts)
+    assert written.fit.root == 0
+    assert written.drift * 6000.0 == pytest.approx(-90.0, abs=5.0)
+    assert written.fit.offset == pytest.approx(-0.30, abs=0.05)  # the singer's opening tuning
+    assert written.pitches == intended
+    # Tuned pitch plus the offset is the sung pitch with the drift taken out (contract C4).
+    level = np.array(sung) - written.drift * (np.array(starts) - starts[0])
+    assert np.allclose(np.array(written.midis) + written.fit.offset, level)
+
+
+def test_write_in_scale_cuts_a_steeper_drift_to_the_cap():
+    intended, sung, durations, starts = _drifting_take(-150.0, 0.0)
+    written = vocal.write_in_scale(sung, durations, starts)
+    assert written.drift == pytest.approx(-vocal.DRIFT_MAX_ST_PER_MIN / 60.0)
+    assert written.pitches == intended
+
+
+def test_write_in_scale_leaves_a_short_or_steady_take_alone():
+    for take in (_drifting_take(-90.0, -30.0, notes=vocal.DRIFT_MIN_NOTES - 1), _drifting_take(0.0, 20.0)):
+        intended, sung, durations, starts = take
+        written = vocal.write_in_scale(sung, durations, starts)
+        assert written.drift == 0.0
+        assert written.pitches == intended
+
+
+def test_write_in_scale_declines_on_too_few_notes():
+    assert vocal.write_in_scale([60.1, 62.0, 64.2], [1.0] * 3, [0.0, 1.0, 2.0]) is None
+
+
+def _segments_contour(segments, gap: int = 6) -> vocal.Contour:
+    """A contour from (midi, frames, voiced_prob, rms) runs separated by unvoiced gaps."""
+    midi, vprob, rms = [], [], []
+    for m, n, vp, r in segments:
+        midi += [m] * n + [np.nan] * gap
+        vprob += [vp] * n + [0.0] * gap
+        rms += [r] * n + [0.0] * gap
+    n = len(midi)
+    return vocal.Contour(times=np.arange(n) * HOP_SEC, midi=np.array(midi), voiced_prob=np.array(vprob),
+                         rms=np.array(rms), rms_fast=np.array(rms))
+
+
+def test_analyse_fits_the_scale_on_the_notes_it_writes():
+    # A C major scale sung in tune, between longer spans of quiet, unvoiced noise that
+    # happens to be periodic 45 cents off the grid.  The noise is never written, so it must
+    # not pull the tuning offset either (fitted on every span it read 37 cents flat).
+    sung = [(p, 20, 0.9, 1.0) for p in (60, 62, 64, 65, 67, 69, 71, 72)]
+    noise = [(p + 0.45, 40, 0.05, 0.1) for p in (61, 63, 66, 68, 70, 73, 75, 78)]
+    result = vocal.analyse(np.zeros(1, dtype=np.float32), contour=_segments_contour(
+        [x for pair in zip(sung, noise) for x in pair]))
+    assert [n.pitch for n in result.notes] == [60, 62, 64, 65, 67, 69, 71, 72]
+    assert result.tuning_cents == pytest.approx(0.0, abs=2.0)
+
+
+def test_analyse_reports_and_removes_a_drift():
+    intended = [_SCALE_TUNE[i % len(_SCALE_TUNE)] for i in range(48)]
+    note_sec = 26 * HOP_SEC  # 20 voiced frames and the gap
+    segments = [(p - (40.0 + 90.0 * i * note_sec / 60.0) / 100.0, 20, 0.9, 1.0) for i, p in enumerate(intended)]
+    result = vocal.analyse(np.zeros(1, dtype=np.float32), contour=_segments_contour(segments))
+    assert result.scale_root == 0
+    assert result.drift_cents_per_min == pytest.approx(-90.0, abs=10.0)
+    assert result.tuning_cents == pytest.approx(-40.0, abs=5.0)
+    assert [n.pitch for n in result.notes] == intended
+    assert all(abs(n.midi - n.pitch) < 0.1 for n in result.notes)
+
+
 def test_span_pitch_ignores_unvoiced_frames_inside_a_joined_note():
     # Two pieces of one note joined across a gap the bridge did not fill: the NaN frames
     # used to make the note's pitch NaN, and notate() then failed the whole transcription.

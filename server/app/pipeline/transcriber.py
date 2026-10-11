@@ -3074,16 +3074,25 @@ def _segment_contour(
     peak = max(amps) if amps else 0.0
     amps = [a / peak for a in amps] if peak > 0 else [1.0] * len(amps)
 
+    # Written as the voice engine writes its notes, in the scale that fits them: rounding each
+    # median on its own put an untrained singer's notes on either side of the semitone at
+    # random: 68 accidentals in 825 notes on the sung corpus that nobody sang, 12 this way.
+    starts = [float(times[start_i]) for start_i, _e, _m, _vp in segments]
+    ends = [float(times[end_i - 1]) + hop_sec for _s, end_i, _m, _vp in segments]
+    medians = [median_midi for _s, _e, median_midi, _vp in segments]
+    written = vocal.write_in_scale(medians, [b - a for a, b in zip(starts, ends)], starts)
+    pitches = written.pitches if written is not None else [int(round(m)) for m in medians]
+
     events = [
         Event(
-            start=float(times[start_i]),
-            end=float(times[end_i - 1]) + hop_sec,
-            pitch=int(round(median_midi)),
+            start=start,
+            end=end,
+            pitch=pitch,
             amp=amp,
             pyin_midi=median_midi,
             voiced_prob=vp,
         )
-        for (start_i, end_i, median_midi, vp), amp in zip(segments, amps)
+        for start, end, pitch, (_s, _e, median_midi, vp), amp in zip(starts, ends, pitches, segments, amps)
     ]
 
     print(
@@ -3151,6 +3160,7 @@ def _segment_vocal(
     fit = analysis.scale_fit
     print(
         f"[notefusion] vocal engine: {len(events)} notes, tuning {analysis.tuning_cents:+.0f} cents"
+        + (f", drifting {analysis.drift_cents_per_min:+.0f} cents a minute" if analysis.drift_cents_per_min else "")
         + (f", scale root {fit.root} (doh confidence {fit.confidence:.2f})" if fit is not None else "")
         + (f", melody floor midi {floor_midi:.0f}" if floor_midi is not None else ""),
         flush=True,
@@ -3162,6 +3172,7 @@ def _refine_pitches(
     events: list[Event],
     wav_path: Path | np.ndarray,
     contour: tuple[np.ndarray, np.ndarray, np.ndarray] | None = None,
+    in_scale: bool = False,
 ) -> list[Event]:
     """Correct pitch errors against a pyin f0 contour.
 
@@ -3187,28 +3198,50 @@ def _refine_pitches(
     ``voiced_prob``, on every branch — including the ones that decline to correct the
     pitch.  "pyin was unsure here" and "pyin disagreed and was overruled" are both
     signal about how much to trust the note, and this is the only place they exist.
+
+    ``in_scale`` (a sung melody) writes the medians in the scale that fits them
+    (``vocal.write_in_scale``) instead of rounding each one, as the voice engine does: a
+    singer's medians sit anywhere within a quarter tone of their notes.  Not for poly, where
+    pyin follows one voice of several.
     """
     times, midi, voiced_prob = contour if contour is not None else _pyin_contour(wav_path)
     if times.size == 0:
         return events
 
-    refined: list[Event] = []
-    corrected = 0
+    readings: list[tuple[float, float] | None] = []
     for evt in events:
         span = (times >= evt.start) & (times <= evt.end) & ~np.isnan(midi)
         if int(span.sum()) < PYIN_MIN_VOICED_FRAMES:
+            readings.append(None)
+        else:
+            readings.append((float(np.median(midi[span])), float(np.median(voiced_prob[span]))))
+
+    written: dict[int, int] = {}
+    heard = [i for i, r in enumerate(readings) if r is not None and r[1] >= PYIN_MIN_VOICED_PROB]
+    if in_scale and settings.pyin_semitone and heard:
+        scaled = vocal.write_in_scale(
+            [readings[i][0] for i in heard],
+            [events[i].end - events[i].start for i in heard],
+            [events[i].start for i in heard],
+        )
+        if scaled is not None:
+            written = dict(zip(heard, scaled.pitches))
+
+    refined: list[Event] = []
+    corrected = 0
+    for i, (evt, reading) in enumerate(zip(events, readings)):
+        if reading is None:
             refined.append(evt)
             continue
 
-        median_midi = float(np.median(midi[span]))
-        confidence = float(np.median(voiced_prob[span]))
+        median_midi, confidence = reading
         measured = replace(evt, pyin_midi=median_midi, voiced_prob=confidence)
         if confidence < PYIN_MIN_VOICED_PROB:
             refined.append(measured)
             continue
 
         if settings.pyin_semitone:
-            candidate = int(round(median_midi))
+            candidate = written.get(i, int(round(median_midi)))
         else:
             octaves = round((median_midi - evt.pitch) / 12.0)
             offset = median_midi - evt.pitch - 12.0 * octaves
@@ -4846,7 +4879,7 @@ def _transcribe_wav(
         if (settings.pyin_refine or settings.contour_gap_merge) and events and single_line:
             pyin_contour = _pyin_contour(y)
         if settings.pyin_refine and events and single_line:
-            events = _refine_pitches(events, y, contour=pyin_contour)
+            events = _refine_pitches(events, y, contour=pyin_contour, in_scale=mode == "melody")
 
         # ── 4. Onset merging ──────────────────────────────────────────────────
         # Merge before voice-cleaning so the melody overlap resolver sees clean
