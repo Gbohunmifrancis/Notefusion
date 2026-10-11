@@ -482,6 +482,21 @@ MELODY_FLOOR_DISAGREEMENT_SEMITONES = 6.0
 # still runs the pass that produced it.
 MELODY_FLOOR_MIN_DISTINCT_PITCHES = 2
 
+# ...and the gate is declined when the line pyin followed moves like a voice.  A tritone of
+# disagreement says the two engines heard different lines, not which one is the melody: the
+# polyphonic cases gate because pyin locked onto the left hand, but a singer with a piano
+# behind them gates just as surely, because the piano's top line is the strong skyline, and
+# the floor then hands the sheet to the piano (Vocadito's 34 singers over a piano 15 dB down:
+# 30 gated, doh right on 1).  What tells the two apart is how still pyin's pitch sits.  A
+# keyboard holds its pitch, so pyin's contour stays in one 10-cent bin from frame to frame
+# within a note; a voice never quite does.  Measured as the fraction of consecutive voiced
+# frames, within a note, that stay in one bin: the three gated polyphonic cases 0.80-0.94
+# (every steady-pitched instrument case 0.67 and up), the 34 singers 0.23-0.50 alone and
+# 0.31-0.61 over the piano.  The obvious tests do not separate them: pyin's voiced
+# probability is 0.05-0.62 on the gated cases and 0.13-0.69 on the singers, and the harmonic
+# energy at pyin's pitch outweighs the skyline's on both.
+MELODY_FLOOR_MIN_STILLNESS = 0.70
+
 # An event needs at least this many voiced pyin frames before its contour is
 # trusted.  pyin's default hop is 512 samples (23 ms at 22.05 kHz), so three
 # frames is ~70 ms — just under MIN_NOTE_SEC, which means a note long enough to
@@ -2897,6 +2912,18 @@ def _strong_skyline(
     return sky
 
 
+def _stillness(midi: np.ndarray) -> float:
+    """Fraction of a pyin contour's frame-to-frame steps, within a note, that stay in one bin.
+
+    pyin reports pitch on a 10-cent grid, so a step under half a bin is no move at all; a
+    step of half a semitone or more is a new note, not a wobble, and is left out.  1.0, as
+    still as can be, for a contour with no such step: it shows nothing moving.
+    """
+    steps = np.abs(np.diff(midi))
+    within = steps[~np.isnan(steps) & (steps < 0.5)]
+    return float(np.mean(within < 0.05)) if within.size else 1.0
+
+
 def _melody_floor_hz(
     note_events: Sequence[tuple], times: np.ndarray, midi: np.ndarray
 ) -> float | None:
@@ -2906,7 +2933,10 @@ def _melody_floor_hz(
     about the register by more than ``MELODY_FLOOR_DISAGREEMENT_SEMITONES`` — i.e. only when
     there is positive evidence that pyin has locked onto a voice below the melody.  On every
     monophonic clip the two engines agree to within about a semitone and this returns
-    ``None``, which is what keeps the 40 monophonic corpus cases byte-identical.
+    ``None``, which is what keeps the 40 monophonic corpus cases byte-identical.  It also
+    declines when the line pyin locked onto moves like a singing voice
+    (``MELODY_FLOOR_MIN_STILLNESS``): then the skyline above it is an instrument behind the
+    singer, not the melody.
 
     Named an ``fmin`` throughout because that is what it originally was and still is on two
     routes — the posteriorgram-capture fallback in ``_segment_contour`` and the inference
@@ -2925,6 +2955,15 @@ def _melody_floor_hz(
 
     disagreement = float(np.median(sky[both] - midi[both]))
     if disagreement < MELODY_FLOOR_DISAGREEMENT_SEMITONES:
+        return None
+    stillness = _stillness(midi)
+    if stillness < MELODY_FLOOR_MIN_STILLNESS:
+        print(
+            f"[notefusion] melody floor declined: Basic Pitch's skyline sits {disagreement:+.1f} "
+            f"semitones above pyin's contour, but that contour moves like a voice (stillness "
+            f"{stillness:.2f}); the voice is the melody",
+            flush=True,
+        )
         return None
 
     voiced_sky = sky[~np.isnan(sky)]

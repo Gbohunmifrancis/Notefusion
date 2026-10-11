@@ -3,7 +3,8 @@
 The voice engine decides the doh from the sung notes alone and snaps them into that scale.
 When something else knows the key better — the user, who typed it; a song's backing, whose
 chords say where the music rests — the notes are written again in that scale from the same
-sung pitches, unless the voice is plainly not in it.
+sung pitches, unless the voice is plainly not in it.  And the melody-floor gate, which hands a
+mixture's melody to Basic Pitch's top line, is declined when pyin was following a voice.
 
 The sung line throughout is a G major tune whose F#s are sung 55 cents flat, nearer F than
 F#: alone, the voice fits C major and writes them as F (``tests.test_vocal.FLAT_TI_SUNG``).
@@ -133,3 +134,28 @@ def test_a_backing_in_a_scale_the_voice_is_not_in_leaves_the_voices_doh(tmp_path
     assert result.key == "C major"
     assert _pitches(result) == line
     assert result.chords
+
+
+# ── The melody floor ──────────────────────────────────────────────────────────
+
+
+def _skyline_events(times: np.ndarray, pitch: int) -> list[tuple]:
+    return [(float(times[0]), float(times[-1]) + 0.1, pitch, 0.9, None)]
+
+
+def test_the_melody_floor_still_fires_under_a_steady_accompaniment():
+    # pyin on a left hand: dead steady within each note, two octaves under the skyline.
+    times = np.arange(200) * 0.0232
+    midi = np.where(np.arange(200) < 100, 48.0, 50.0)
+    assert transcriber._stillness(midi) == pytest.approx(1.0)
+    assert transcriber._melody_floor_hz(_skyline_events(times, 72), times, midi) is not None
+
+
+def test_the_melody_floor_is_declined_when_pyin_follows_a_voice():
+    # A singer under a piano's top line: the skyline is just as far above, but pyin's pitch
+    # never sits in one 10-cent bin from frame to frame.
+    times = np.arange(200) * 0.0232
+    rng = np.random.default_rng(0)
+    midi = np.where(np.arange(200) < 100, 60.0, 62.0) + 0.1 * rng.integers(-2, 3, 200)
+    assert transcriber._stillness(midi) < transcriber.MELODY_FLOOR_MIN_STILLNESS
+    assert transcriber._melody_floor_hz(_skyline_events(times, 72), times, midi) is None
