@@ -218,6 +218,45 @@ def test_the_choirs_tuning_comes_out_before_basic_pitch(tmp_path):
     assert time_scale == 1.0 and seen[1] is None
 
 
+def test_a_failed_retune_still_runs_basic_pitch_on_the_clip(monkeypatch):
+    import librosa
+
+    def broken(**_kwargs):
+        raise RuntimeError("no tuning")
+
+    monkeypatch.setattr(librosa, "estimate_tuning", broken)
+    seen = []
+    *_, time_scale = transcriber._retuned_basic_pitch(
+        np.zeros(22_050, dtype=np.float32), 22_050, lambda path=None: seen.append(path) or ("output", "midi", []))
+    assert time_scale == 1.0 and seen == [None]
+
+
+class _Stop(Exception):
+    pass
+
+
+def test_basic_pitchs_times_on_the_retuned_audio_come_back_on_the_clips_clock(tmp_path, monkeypatch):
+    # The retuned audio played at the clip's rate lasts 1 / time_scale as long; its notes are
+    # stretched back before anything reads them.
+    import soundfile as sf
+
+    path = tmp_path / "choir.wav"
+    sf.write(str(path), np.zeros(22_050 * 4, dtype=np.float32), 22_050)
+    retuned = [(0.5, 1.0, 60, 0.8, None), (1.0, 1.5, 64, 0.8, None), (1.5, 1.9, 67, 0.8, None)]
+    monkeypatch.setattr(transcriber, "_retuned_basic_pitch", lambda y, sr, run: (None, None, retuned, 1.5))
+    seen: list[Event] = []
+
+    def assign(events):
+        seen.extend(events)
+        raise _Stop
+
+    monkeypatch.setattr(transcriber, "_assign_voices", assign)
+    with pytest.raises(_Stop):
+        transcriber.transcribe(path, mode="choir", audio_preview=False)
+    assert [(e.start, e.pitch) for e in seen] == [(pytest.approx(0.75), 60), (pytest.approx(1.5), 64),
+                                                 (pytest.approx(2.25), 67)]
+
+
 def test_a_choir_singing_flat_is_written_in_its_key_without_accidentals(tmp_path):
     import soundfile as sf
 

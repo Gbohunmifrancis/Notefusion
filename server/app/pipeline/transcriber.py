@@ -4664,20 +4664,31 @@ def _retuned_basic_pitch(y: np.ndarray, sr: int, run_basic_pitch) -> tuple:
     ``librosa.estimate_tuning`` gives the clip's offset from the equal-tempered grid; the
     audio resampled by that ratio and played at the same rate sounds on the grid and lasts
     ``1 / time_scale`` as long, so ``predict``'s times multiplied by ``time_scale`` are on the
-    clip's own clock again.  A clip already on the grid runs as it is, at time scale 1.
+    clip's own clock again.  A clip already on the grid runs as it is, at time scale 1, and so
+    does one whose retune failed: the retune improves the parts, and must not cost the job.
     """
     import librosa
     import soundfile as sf
 
-    tuning = float(librosa.estimate_tuning(y=y, sr=sr))
-    if abs(tuning) < CHOIR_RETUNE_MIN_SEMITONES:
-        return (*run_basic_pitch(), 1.0)
-    time_scale = 2.0 ** (-tuning / 12.0)
-    print(f"[notefusion] choir: tuning {100.0 * tuning:+.0f} cents taken out before Basic Pitch", flush=True)
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        retuned = Path(tmp.name)
+    retuned: Path | None = None
+    time_scale = 1.0
     try:
-        sf.write(str(retuned), librosa.resample(y, orig_sr=sr, target_sr=sr / time_scale), sr)
+        tuning = float(librosa.estimate_tuning(y=y, sr=sr))
+        if abs(tuning) >= CHOIR_RETUNE_MIN_SEMITONES:
+            time_scale = 2.0 ** (-tuning / 12.0)
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                retuned = Path(tmp.name)
+            # Float samples: 16-bit would requantise the audio and clip the resampler's overshoot.
+            sf.write(str(retuned), librosa.resample(y, orig_sr=sr, target_sr=sr / time_scale), sr, subtype="FLOAT")
+            print(f"[notefusion] choir: tuning {100.0 * tuning:+.0f} cents taken out before Basic Pitch", flush=True)
+    except Exception as exc:  # noqa: BLE001 — see the docstring
+        print(f"[notefusion] choir: tuning left in, the retune failed ({exc!r})", flush=True)
+        if retuned is not None:
+            retuned.unlink(missing_ok=True)
+        retuned, time_scale = None, 1.0
+    if retuned is None:
+        return (*run_basic_pitch(), 1.0)
+    try:
         return (*run_basic_pitch(retuned), time_scale)
     finally:
         retuned.unlink(missing_ok=True)
