@@ -3151,6 +3151,7 @@ def _segment_vocal(
     fit = analysis.scale_fit
     print(
         f"[notefusion] vocal engine: {len(events)} notes, tuning {analysis.tuning_cents:+.0f} cents"
+        + (f", drifting {analysis.drift_cents_per_min:+.0f} cents a minute" if analysis.drift_cents_per_min else "")
         + (f", scale root {fit.root} (doh confidence {fit.confidence:.2f})" if fit is not None else "")
         + (f", melody floor midi {floor_midi:.0f}" if floor_midi is not None else ""),
         flush=True,

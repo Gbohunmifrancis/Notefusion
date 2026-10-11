@@ -65,6 +65,20 @@ MEDIAN_FRAMES = 5
 # offset to subtract (the singer wandered rather than sat sharp or flat).
 TUNING_MIN_CONCENTRATION = 0.35
 TUNING_MIN_NOTES = 4
+# A long take sags (or climbs) as it goes, and one offset for the whole clip then writes its
+# end a semitone off its start: four verses hummed while drifting 120 cents flat came back
+# with a third of their syllables wrong and the doh a semitone low on 7 of 9 tunes.  The drift
+# is read off windows of DRIFT_WINDOW_NOTES notes (``_drift_trend``) and taken out from the
+# first note on — the singer's key is the one they started in — on a clip long enough to show
+# one (DRIFT_MIN_NOTES), at no more than DRIFT_MAX_ST_PER_MIN (a steeper reading is cut to
+# it), and only when the scale then fits the notes DRIFT_MIN_GAIN better.  Real clips wander
+# rather than drift: no clean Vocadito clip passes, and with no cap noisy copies of three of
+# them read 2-8 semitones a minute out of the noise and two lost their doh.
+DRIFT_MIN_NOTES = 24
+DRIFT_WINDOW_NOTES = 8
+DRIFT_STEP_NOTES = 4
+DRIFT_MAX_ST_PER_MIN = 1.0
+DRIFT_MIN_GAIN = 0.20
 
 # ── Segmentation ──────────────────────────────────────────────────────────────
 
@@ -246,6 +260,9 @@ class Analysis:
     # too few notes for a fit and fell back to per-note rounding.
     scale_root: int | None = None
     scale_fit: ScaleFit | None = None
+    # The steady drift taken out before the fit, from the first note on (``write_in_scale``);
+    # ``tuning_cents`` is the offset at that first note.
+    drift_cents_per_min: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -253,7 +270,8 @@ class Written:
     """Notes written in the scale that fits them (``write_in_scale``)."""
 
     fit: ScaleFit
-    midis: list[float]  # tuned: the fit's offset removed
+    drift: float  # semitones per second taken out before the fit; 0.0 when the take held its pitch
+    midis: list[float]  # tuned: the fit's offset and the drift removed
     pitches: list[int]
 
 
@@ -403,7 +421,8 @@ def tuning_offset_cents(midis: Sequence[float], weights: Sequence[float]) -> flo
     return float(np.degrees(np.angle(vector)) / 360.0 * 100.0)
 
 
-def retune(c: Contour, cents: float) -> Contour:
+def retune(c: Contour, cents: float | np.ndarray) -> Contour:
+    """``c`` with ``cents`` taken off: one offset, or one per frame for a drifting take."""
     return Contour(
         times=c.times,
         midi=c.midi - cents / 100.0,
@@ -1010,6 +1029,10 @@ def _root_cost_curve(midis: np.ndarray, weights: np.ndarray, root: int, offsets:
     return (weights[None, :] * np.minimum(nearest * nearest, SCALE_FIT_CAP * SCALE_FIT_CAP)).sum(axis=1)
 
 
+def _scale_cost(midis: np.ndarray, weights: np.ndarray, fit: ScaleFit) -> float:
+    return float(_root_cost_curve(midis, weights, fit.root, np.array([fit.offset]))[0])
+
+
 def _offset_slack(midis: np.ndarray, weights: np.ndarray, fit: ScaleFit) -> tuple[float, float]:
     """How far the offset can move either way, with the root held, before the scale fits the
     notes ``SCALE_KEEP_OFFSET_SLACK`` worse: (low, high) semitones about ``fit.offset``."""
@@ -1033,30 +1056,58 @@ def _minor_mode(tuned: np.ndarray, weights: np.ndarray, root: int) -> bool:
     return bool(np.nan_to_num(minor, nan=-1.0) > _tonality(histogram, root))
 
 
+def _drift_trend(midis: np.ndarray, weights: np.ndarray, starts: np.ndarray) -> float:
+    """The take's steady drift in semitones per second: one line through the offsets that
+    windows of ``DRIFT_WINDOW_NOTES`` notes fit on their own, unwrapped across the semitone."""
+    centres: list[float] = []
+    offsets: list[float] = []
+    for s in range(0, midis.size - DRIFT_WINDOW_NOTES + 1, DRIFT_STEP_NOTES):
+        fit = fit_scale_detail(midis[s : s + DRIFT_WINDOW_NOTES], weights[s : s + DRIFT_WINDOW_NOTES])
+        if fit is not None:
+            centres.append(float(np.mean(starts[s : s + DRIFT_WINDOW_NOTES])))
+            offsets.append(fit.offset)
+    if len(offsets) < 2:
+        return 0.0
+    unwrapped = np.unwrap(2.0 * np.pi * np.asarray(offsets)) / (2.0 * np.pi)
+    return float(np.polyfit(centres, unwrapped, 1)[0])
+
+
 def write_in_scale(
     midis: Sequence[float],
     durations: Sequence[float],
+    starts: Sequence[float],
     stabilities: Sequence[float] | None = None,
 ) -> Written | None:
     """Fit the scale to sung, untuned note pitches and write every note in it.
 
-    The offset and the scale come from ``fit_scale_detail``; each note is then written by
+    The offset and the scale come from ``fit_scale_detail``, on the notes with any steady
+    drift taken out first (see DRIFT_MIN_NOTES); each note is then written by
     ``snap_to_scale`` with the evidence for its accidentals — its duration, its stability
     where the caller measured it, the offset's slack and the tune's mode.  ``Written.midis``
-    plus ``fit.offset`` is each note's sung pitch.  None when there are too few notes for a
-    fit.
+    plus ``fit.offset`` is each note's sung pitch with the drift removed.  None when there are
+    too few notes for a fit.
     """
     m = np.asarray(midis, dtype=float)
     w = np.asarray(durations, dtype=float)
+    t = np.asarray(starts, dtype=float)
     fit = fit_scale_detail(m, w)
     if fit is None:
         return None
+    drift = 0.0
+    if m.size >= DRIFT_MIN_NOTES:
+        cap = DRIFT_MAX_ST_PER_MIN / 60.0
+        trend = float(np.clip(_drift_trend(m, w, t), -cap, cap))
+        if trend:
+            level = m - trend * (t - t.min())
+            refit = fit_scale_detail(level, w)
+            if _scale_cost(level, w, refit) < (1.0 - DRIFT_MIN_GAIN) * _scale_cost(m, w, fit):
+                m, fit, drift = level, refit, trend
     tuned = m - fit.offset
     pitches = snap_to_scale(
         tuned.tolist(), fit.root, durations=durations, stabilities=stabilities,
         slack=_offset_slack(m, w, fit), minor=_minor_mode(tuned, w, fit.root),
     )
-    return Written(fit=fit, midis=tuned.tolist(), pitches=pitches)
+    return Written(fit=fit, drift=drift, midis=tuned.tolist(), pitches=pitches)
 
 
 def notate(midis: Sequence[float], durations: Sequence[float]) -> list[int]:
@@ -1119,17 +1170,18 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
     durations = [(b - a) * hop for a, b, _ in spans]
     midis = [m for _, _, m in spans]
 
-    written = write_in_scale(midis, durations, stabilities)
+    written = write_in_scale(midis, durations, [float(c.times[a]) for a, _, _ in spans], stabilities)
     if written is not None:
-        fit = written.fit
+        fit, drift = written.fit, written.drift
         tuned_cents = fit.offset * 100.0
         midis, pitches = written.midis, written.pitches
     else:
-        fit = None
+        fit, drift = None, 0.0
         tuned_cents = tuning_offset_cents(midis, durations)
         midis = [m - tuned_cents / 100.0 for m in midis]
         pitches = notate(midis, durations)
-    c = retune(c, tuned_cents)
+    first = float(c.times[spans[0][0]]) if spans else 0.0
+    c = retune(c, tuned_cents + 100.0 * drift * (c.times - first))
     spans = [(a, b, m) for (a, b, _), m in zip(spans, midis)]
     notes = [
         VocalNote(
@@ -1146,6 +1198,7 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
     return Analysis(
         notes=notes, tuning_cents=tuned_cents, contour=c,
         scale_root=None if fit is None else fit.root, scale_fit=fit,
+        drift_cents_per_min=drift * 6000.0,
     )
 
 

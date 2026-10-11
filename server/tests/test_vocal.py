@@ -339,8 +339,53 @@ def test_offset_slack_is_how_far_the_offset_can_move_at_almost_no_cost():
     assert -0.1 < low < 0.0 < high < 0.1
 
 
+# ── Drift ─────────────────────────────────────────────────────────────────────
+
+_SCALE_TUNE = [60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62]
+
+
+def _drifting_take(cents_per_min: float, start_cents: float, notes: int = 48):
+    """(intended, sung, durations, starts): a scale tune, one note a second, drifting."""
+    intended = [_SCALE_TUNE[i % len(_SCALE_TUNE)] for i in range(notes)]
+    starts = [float(i) for i in range(notes)]
+    sung = [p + (start_cents + cents_per_min * t / 60.0) / 100.0 for p, t in zip(intended, starts)]
+    return intended, sung, [1.0] * notes, starts
+
+
+def test_write_in_scale_takes_out_a_steady_drift_from_the_first_note_on():
+    # 48 s sagging from 30 to 102 cents flat: one offset for the whole take wraps past the
+    # quarter tone and reads the tune in B major, half of it written wrong.
+    intended, sung, durations, starts = _drifting_take(-90.0, -30.0)
+    fit = vocal.fit_scale_detail(sung, durations)
+    assert fit.root == 11
+    assert vocal.snap_to_scale([m - fit.offset for m in sung], fit.root) != intended
+    written = vocal.write_in_scale(sung, durations, starts)
+    assert written.fit.root == 0
+    assert written.drift * 6000.0 == pytest.approx(-90.0, abs=5.0)
+    assert written.fit.offset == pytest.approx(-0.30, abs=0.05)  # the singer's opening tuning
+    assert written.pitches == intended
+    # Tuned pitch plus the offset is the sung pitch with the drift taken out (contract C4).
+    level = np.array(sung) - written.drift * (np.array(starts) - starts[0])
+    assert np.allclose(np.array(written.midis) + written.fit.offset, level)
+
+
+def test_write_in_scale_cuts_a_steeper_drift_to_the_cap():
+    intended, sung, durations, starts = _drifting_take(-150.0, 0.0)
+    written = vocal.write_in_scale(sung, durations, starts)
+    assert written.drift == pytest.approx(-vocal.DRIFT_MAX_ST_PER_MIN / 60.0)
+    assert written.pitches == intended
+
+
+def test_write_in_scale_leaves_a_short_or_steady_take_alone():
+    for take in (_drifting_take(-90.0, -30.0, notes=vocal.DRIFT_MIN_NOTES - 1), _drifting_take(0.0, 20.0)):
+        intended, sung, durations, starts = take
+        written = vocal.write_in_scale(sung, durations, starts)
+        assert written.drift == 0.0
+        assert written.pitches == intended
+
+
 def test_write_in_scale_declines_on_too_few_notes():
-    assert vocal.write_in_scale([60.1, 62.0, 64.2], [1.0] * 3) is None
+    assert vocal.write_in_scale([60.1, 62.0, 64.2], [1.0] * 3, [0.0, 1.0, 2.0]) is None
 
 
 def _segments_contour(segments, gap: int = 6) -> vocal.Contour:
@@ -365,6 +410,18 @@ def test_analyse_fits_the_scale_on_the_notes_it_writes():
         [x for pair in zip(sung, noise) for x in pair]))
     assert [n.pitch for n in result.notes] == [60, 62, 64, 65, 67, 69, 71, 72]
     assert result.tuning_cents == pytest.approx(0.0, abs=2.0)
+
+
+def test_analyse_reports_and_removes_a_drift():
+    intended = [_SCALE_TUNE[i % len(_SCALE_TUNE)] for i in range(48)]
+    note_sec = 26 * HOP_SEC  # 20 voiced frames and the gap
+    segments = [(p - (40.0 + 90.0 * i * note_sec / 60.0) / 100.0, 20, 0.9, 1.0) for i, p in enumerate(intended)]
+    result = vocal.analyse(np.zeros(1, dtype=np.float32), contour=_segments_contour(segments))
+    assert result.scale_root == 0
+    assert result.drift_cents_per_min == pytest.approx(-90.0, abs=10.0)
+    assert result.tuning_cents == pytest.approx(-40.0, abs=5.0)
+    assert [n.pitch for n in result.notes] == intended
+    assert all(abs(n.midi - n.pitch) < 0.1 for n in result.notes)
 
 
 def test_span_pitch_ignores_unvoiced_frames_inside_a_joined_note():
