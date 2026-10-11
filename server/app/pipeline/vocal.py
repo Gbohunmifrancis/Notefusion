@@ -189,12 +189,19 @@ SCALE_FIT_TIE = 1e-6
 SCALE_FIT_TIE_RATIO = 0.02
 # How decisive a fit is before it is believed outright: the runner-up root's cost lead,
 # as a fraction of the best cost, at which ``ScaleFit.confidence`` reaches 1.  Vocadito's
-# wrong dohs all sit under 0.035 in a quiet room, but under babble, reverb and the phone
+# wrong dohs mostly sit under 0.035 in a quiet room (all of them on the clean recording, 15
+# of 22 over five quiet copies, the rest under 0.10), but under babble, reverb and the phone
 # chains they reach 0.20, and the sung corpus re-seeded with detuned, drifting and
 # quarter-tone-off singers (132 cases) puts six of its seven decisive wrong dohs under
 # 0.26.  At 0.10 those seven were reported at full confidence; at 0.25, with the caps in
 # ``ScaleFit.confidence``, one is.
 SCALE_FIT_SURE_MARGIN = 0.25
+# The sheet's headline confidence weighs its notes by the doh's on the scale it was always
+# shown on (``ScaleFit.headline_confidence``): the cost lead over this, with no caps.  The
+# capped confidence ranks right dohs over wrong ones far better, but it sits lower on right
+# ones too (Vocadito mean 0.65 -> 0.41), which would move a fifth of the sheets users see into
+# a lower band; that waits on calibrating it (and on a client that asks about an unsure doh).
+SCALE_FIT_HEADLINE_MARGIN = 0.10
 # ...and for a tie settled on the tonal profile, the correlation lead that counts as sure.
 SCALE_FIT_SURE_TONAL_MARGIN = 0.25
 # Readings whose cost is within this fraction of the best are ones the doh could as well
@@ -202,9 +209,10 @@ SCALE_FIT_SURE_TONAL_MARGIN = 0.25
 # recording conditions: 18 of the 22 wrong dohs had another reading this close (the true
 # doh, on 16), against 67 of the 148 right ones.
 SCALE_FIT_CROWD_RATIO = 0.05
-# A fitted offset beyond this is a singer near a quarter-tone off, whose notes read as
-# well in the scale a semitone over: the key signature chose between the two, not the
-# audio, so the doh is at best an even chance.
+# A fitted offset beyond this is a singer near a quarter-tone off, whose notes read nearly
+# as well in the scale a semitone over: when the two tie the key signature chooses, not the
+# audio, and a little more scatter would have made them tie, so the doh is at best an even
+# chance either way.
 SCALE_FIT_TWIN_OFFSET = 0.4
 SNAP_MIN_NOTES = 5
 SNAP_MIN_KEY_MARGIN = 0.05  # correlation lead the key needs before it is allowed to vote
@@ -278,6 +286,15 @@ class ScaleFit:
         if abs(self.offset) > SCALE_FIT_TWIN_OFFSET:
             sure = min(sure, 0.5)
         return sure
+
+    @property
+    def headline_confidence(self) -> float:
+        """The doh confidence the sheet's headline figure is weighed by: ``confidence`` as it
+        read before the caps, the cost lead over ``SCALE_FIT_HEADLINE_MARGIN``."""
+        by_cost = min(1.0, self.cost_margin / SCALE_FIT_HEADLINE_MARGIN)
+        if self.cost_margin > SCALE_FIT_TIE_RATIO:
+            return by_cost
+        return max(by_cost, 0.8 * min(1.0, max(0.0, self.tonal_margin) / SCALE_FIT_SURE_TONAL_MARGIN))
 
 
 @dataclass(frozen=True)

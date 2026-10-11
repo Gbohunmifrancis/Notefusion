@@ -5388,6 +5388,15 @@ def _transcribe_wav(
         if len(events) < MIN_NOTES_FOR_KEY:
             key_confidence = min(key_confidence, KEY_CONFIDENCE_CAP_LOW)
 
+    # The sheet's headline figure weighs its notes by the doh confidence it was always shown
+    # with (``vocal.ScaleFit.headline_confidence``); the key confidence reported beside it is
+    # the fit's own, which drops where the doh is in doubt.
+    headline_doh = key_confidence
+    if vocal_fit is not None and settings.key_ensemble and not key_override and not key_from_chords:
+        headline_doh = vocal_fit.headline_confidence
+        if len(events) < MIN_NOTES_FOR_KEY:
+            headline_doh = min(headline_doh, KEY_CONFIDENCE_CAP_LOW)
+
     s.insert(0, m21key.Key(detected.tonic.name, detected.mode))
 
     # Spell the notes to the key before engraving them.  Both halves matter and both
@@ -5554,7 +5563,7 @@ def _transcribe_wav(
         midi_base64=midi_base64,
         notes=notes,
         solfa_lines=solfa_lines,
-        overall_confidence=_overall_confidence(notes, key_confidence if vocal_fit is not None else None),
+        overall_confidence=_overall_confidence(notes, headline_doh if vocal_fit is not None else None),
         audio_preview_base64=audio_preview_b64,
         beat_origin_sec=round(float(beat_origin), 4),
         # Read off the events rather than re-testing duration against the cap, so this

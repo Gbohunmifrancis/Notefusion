@@ -655,6 +655,17 @@ def test_a_singer_near_a_quarter_tone_off_is_an_even_chance_of_the_doh():
     assert vocal.fit_scale_detail(sung, [1.0] * len(sung)).confidence == pytest.approx(0.5)
 
 
+def test_the_headline_is_weighed_by_the_doh_confidence_it_always_showed():
+    # The reported confidence drops where the doh is in doubt; the sheet's headline figure is
+    # weighed by the cost lead alone, on its old scale, until that drop is calibrated.
+    crowded = vocal.ScaleFit(0.45, 0, cost_margin=0.12, tonal_margin=1.0, readings=2)
+    assert crowded.confidence <= 0.5
+    assert crowded.headline_confidence == pytest.approx(1.0)
+    assert vocal.ScaleFit(0.0, 0, cost_margin=0.05, tonal_margin=1.0).headline_confidence == pytest.approx(0.5)
+    tie = vocal.ScaleFit(0.0, 0, cost_margin=0.0, tonal_margin=0.125, readings=2)
+    assert tie.headline_confidence == pytest.approx(0.4)
+
+
 def test_a_full_scale_sung_in_tune_fits_with_a_wide_margin():
     sung = [60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62, 60]
     fit = vocal.fit_scale_detail(sung, [1.0] * len(sung))

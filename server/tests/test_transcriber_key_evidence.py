@@ -102,6 +102,17 @@ def test_a_key_the_voice_is_plainly_not_in_only_relabels(flat_ti):
     assert _pitches(wrong) == _pitches(alone)
 
 
+def test_the_headline_keeps_the_doh_confidence_it_always_showed(tmp_path):
+    # A scale sung 45 cents sharp: the cost is sure of the doh, but a singer that near a
+    # quarter tone off reads as well a semitone over, so the key confidence reported is an
+    # even chance.  The sheet's headline figure is weighed by the cost's own certainty.
+    sung = [p + 0.45 for p in (60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62, 60)]
+    result = transcribe(_sing(tmp_path / "sharp.wav", sung), mode="melody", audio_preview=False, fast=True)
+    assert result.key == "C major"
+    assert result.key_confidence == pytest.approx(0.5)
+    assert result.overall_confidence == transcriber._overall_confidence(result.notes, 1.0)
+
+
 # ── A song's backing ─────────────────────────────────────────────────────────
 
 
