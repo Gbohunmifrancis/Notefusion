@@ -74,7 +74,8 @@ export function Button({
       toValue: to,
       useNativeDriver: true,
       speed: 40,
-      bounciness: 6,
+      // No overshoot: the house press settles without a bounce (see `motion` in theme.ts).
+      bounciness: 0,
     }).start();
 
   // ── Label / icon colour per variant ───────────────────────────────────────

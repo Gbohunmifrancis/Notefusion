@@ -46,8 +46,18 @@
   .try-form { display: flex; gap: 10px; }
   .try-form input { flex: 1; min-width: 0; font: inherit; font-size: 16px; padding: 14px 16px; border: 1.5px solid #cfd8e6; border-radius: 12px; background: #fff; color: #0f172a; outline: none; }
   .try-form input:focus { border-color: #2563EB; box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
-  .try-alt { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
-  .try-alt .btn { padding: 11px 16px; font-size: 14px; }
+  .try-main { display: flex; gap: 10px; flex-wrap: wrap; }
+  .try-main .btn { flex: 1 1 0; min-width: 0; justify-content: center; padding: 14px 18px; font-size: 15px; }
+  .try-link { margin-top: 12px; }
+  .try-link summary { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 600; color: #1D4ED8; list-style: none; border-radius: 6px; }
+  .try-link summary::-webkit-details-marker { display: none; }
+  .try-link summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; rotate: 45deg; translate: 0 -2px; transition: rotate 150ms ease-out; }
+  .try-link[open] summary::after { rotate: -135deg; translate: 0 2px; }
+  .try-link summary:focus-visible { outline: 2px solid #2563EB; outline-offset: 3px; }
+  .try-link .try-form { margin-top: 10px; }
+  .try-link .try-paste { margin-top: 8px; padding: 9px 14px; font-size: 13px; }
+  .try-link-note { margin: 8px 0 0; font-size: 13px; color: #7a8aa3; }
+  @media (prefers-reduced-motion: reduce) { .try-link summary::after { transition: none; } }
   .try-file input { display: none; }
   .try-status { min-height: 1.4em; margin: 10px 0 0; font-size: 14px; color: #53647c; }
   .try-status-error { color: #B91C1C; }
@@ -142,24 +152,30 @@
       <div class="hero-content">
         <h1 class="display-title" id="hero-title">Any song, written out in Tonic Solfa.</h1>
         <p class="lead">
-          Paste a link, hum a tune or upload a recording. Get it back as movable-do solfa and staff notation — with alto, tenor and bass for your choir.
+          Hum a tune, record your choir or upload a recording. Get it back as movable-do solfa and staff notation — with alto, tenor and bass for your choir.
         </p>
 
         <!-- Try it here: a 30-second preview with no account, opens in the web app as a guest. -->
         <div class="try-box" id="try">
-          <form id="try-form" class="try-form" novalidate>
-            <label class="sr-only" for="try-url">Song link</label>
-            <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false">
-            <button class="btn btn-primary" id="try-submit" type="submit">Transcribe</button>
-          </form>
-          <div class="try-alt">
-            <button class="btn btn-outline" id="try-paste" type="button" hidden>Paste a link</button>
-            <button class="btn btn-outline" id="try-record" type="button">Record a tune</button>
+          <!-- Recording and uploading are what work every time, so they lead. A link stays one tap
+               away, with an honest note: YouTube blocks downloads from servers for many songs. -->
+          <div class="try-main">
+            <button class="btn btn-primary" id="try-record" type="button">Record a tune</button>
             <label class="btn btn-outline try-file">
               <input id="try-file" type="file" accept=".wav,.mp3,.m4a,.flac,.ogg,.webm,audio/*">
               Upload a recording
             </label>
           </div>
+          <details class="try-link" id="try-link">
+            <summary>Or paste a song link</summary>
+            <form id="try-form" class="try-form" novalidate>
+              <label class="sr-only" for="try-url">Song link</label>
+              <input id="try-url" type="url" placeholder="Paste a YouTube, Spotify or Apple Music link" autocomplete="off" spellcheck="false">
+              <button class="btn btn-primary" id="try-submit" type="submit">Transcribe</button>
+            </form>
+            <button class="btn btn-outline try-paste" id="try-paste" type="button" hidden>Paste a link</button>
+            <p class="try-link-note">Links work for many songs, not all — YouTube sometimes blocks our downloads. If yours fails, upload the audio file instead.</p>
+          </details>
           <div class="try-section" id="try-section"></div>
           <p class="try-status" id="try-status" aria-live="polite"></p>
           <p class="try-note">30-second preview, no account needed. <a class="try-signup" href="/app?signup=1">Create a free account</a> to keep the sheet, hear it in four parts and share it with your choir.</p>
@@ -300,8 +316,8 @@
 </svg>
         </div>
         <div class="nf-step-card__copy">
-          <h2>Paste a link, hum, or upload</h2>
-          <p>A YouTube, Spotify or Apple Music link, a hummed tune on the mic, or a recording from your device.</p>
+          <h2>Hum, record or upload</h2>
+          <p>A tune hummed on the mic, a recording of your choir, or a file from your device. You can paste a song link too.</p>
         </div>
       </div>
       
@@ -461,7 +477,7 @@
       <div class="feature-card">
         <div class="feature-icon-wash"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
         <h3 class="feature-title">Songs from a link</h3>
-        <p class="feature-desc">Paste a YouTube, Spotify or Apple Music link. We fetch the audio, isolate the lead vocal from the band, and write it out — the song is credited on the sheet.</p>
+        <p class="feature-desc">Paste a YouTube, Spotify or Apple Music link. We fetch the audio, isolate the lead vocal from the band, and write it out — the song is credited on the sheet. Links work for many songs but not all; uploading the audio always works.</p>
         <span class="feature-tag">Vocal isolation</span>
       </div>
       <div class="feature-card">

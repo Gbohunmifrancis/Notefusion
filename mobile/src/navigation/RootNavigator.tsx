@@ -22,6 +22,7 @@ import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
 import { AdminUsersScreen } from '../screens/admin/AdminUsersScreen';
 import { AdminWebhooksScreen } from '../screens/admin/AdminWebhooksScreen';
+import { FeedbackProvider } from '../lib/feedback';
 import type { RootStackParams } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
@@ -85,6 +86,8 @@ export function RootNavigator() {
   if (initializing || themeLoading) return <SplashScreen />;
 
   return (
+    // Owns "where did you hear about us?", the rating prompt and the feedback form; signed-in only.
+    <FeedbackProvider enabled={Boolean(user)}>
     <NavigationContainer
       ref={navigationRef}
       theme={navTheme}
@@ -180,5 +183,6 @@ export function RootNavigator() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </FeedbackProvider>
   );
 }

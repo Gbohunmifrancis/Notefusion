@@ -882,3 +882,71 @@ export interface FeedItem {
   userEmail: string | null;
   country: string | null;
 }
+
+/* ── Engagement and feedback ─────────────────────────────────────────────── */
+
+export interface EngagedUser {
+  userId: string;
+  fullName: string;
+  email: string;
+  country: string | null;
+  isPro: boolean;
+  transcriptions: number;
+  saved: number;
+  activeDays: number;
+  webSessions: number;
+  lastActiveUtc: string;
+  /** Transcriptions ×3 + active days ×2 + saved sheets: the leaderboard's order. */
+  score: number;
+}
+
+export interface Engagement {
+  fromUtc: string;
+  toUtc: string;
+  activeUsers: number;
+  newActiveUsers: number;
+  returningActiveUsers: number;
+  dau: number;
+  wau: number;
+  mau: number;
+  averageDau: number;
+  /** Average DAU over MAU, 0–1. */
+  stickiness: number | null;
+  dailyActiveUsers: DailyCount[];
+  topUsers: EngagedUser[];
+  usersByTranscriptions: CategoryCount[];
+  transcriptionsByHour: CategoryCount[];
+  transcriptionsByWeekday: CategoryCount[];
+  transcriptionsByClient: CategoryCount[];
+  transcriptionsByKind: CategoryCount[];
+}
+
+export type FeedbackKind = "feedback" | "rating" | "rating_dismissed" | "heard_about";
+
+export interface FeedbackRow {
+  id: string;
+  createdAtUtc: string;
+  kind: FeedbackKind;
+  rating: number | null;
+  /** A feedback message's category, or the "heard about us" source. */
+  category: string | null;
+  message: string | null;
+  client: string;
+  appVersion: string | null;
+  screen: string | null;
+  userId: string;
+  userName: string | null;
+  userEmail: string | null;
+}
+
+export interface FeedbackSummary {
+  averageRating: number | null;
+  ratings: number;
+  dismissals: number;
+  /** "5" down to "1". */
+  ratingDistribution: CategoryCount[];
+  heardAboutAnswers: number;
+  heardAbout: CategoryCount[];
+  feedbackMessages: number;
+  feedbackByCategory: CategoryCount[];
+}

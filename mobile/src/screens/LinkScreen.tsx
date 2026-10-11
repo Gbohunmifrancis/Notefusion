@@ -156,15 +156,17 @@ export function LinkScreen() {
   useEffect(() => {
     if (state.status === "done" && state.result) {
       const result = state.result;
+      const sourceJobId = state.jobId ?? undefined;
       reset();
       refresh();
       void markPractisedToday();
       nav.replace("Result", {
         result,
+        sourceJobId,
         title: result.source ? result.source.title : undefined,
       });
     }
-  }, [state.status, state.result, nav, reset, refresh]);
+  }, [state.status, state.result, state.jobId, nav, reset, refresh]);
 
   const stageIndex = STAGES.findIndex((s) => s.key === state.stage);
   const barWidth = useMemo(() => new Animated.Value(0), []);
@@ -172,7 +174,9 @@ export function LinkScreen() {
     Animated.timing(barWidth, {
       toValue: busy ? Math.max(0.03, state.progress) : 0,
       duration: 500,
-      useNativeDriver: false,
+      // scaleX rather than width, so the bar fills on the UI thread while the JS thread
+      // is busy polling the job.
+      useNativeDriver: true,
     }).start();
   }, [busy, state.progress, barWidth]);
 
@@ -255,6 +259,10 @@ export function LinkScreen() {
         <>
           <Text style={styles.title} accessibilityRole="header">Song from{"\n"}a link</Text>
           <Text style={styles.lead}>We isolate the lead voice and write it out in solfa and staff.</Text>
+          {/* Said before anyone pastes: YouTube blocks server downloads for many songs, and a recording always works. */}
+          <Text style={styles.lead}>
+            Links work for many songs, not all. If yours fails, record it or import the audio file instead.
+          </Text>
         </>
       ) : null}
 
@@ -457,7 +465,7 @@ export function LinkScreen() {
               <Animated.View
                 style={[
                   styles.barFill,
-                  { width: barWidth.interpolate({ inputRange: [0, 1], outputRange: ["0%", "100%"] }) },
+                  { transformOrigin: "left", transform: [{ scaleX: barWidth }] },
                 ]}
               />
             </View>
@@ -575,7 +583,7 @@ const makeStyles = (c: Palette) =>
     stageTextDone: { color: c.success },
     barRow: { flexDirection: "row", alignItems: "center", gap: spacing.sm, marginTop: spacing.md },
     bar: { flex: 1, height: 6, borderRadius: 3, backgroundColor: c.border, overflow: "hidden" },
-    barFill: { height: "100%", backgroundColor: c.ink },
+    barFill: { width: "100%", height: "100%", backgroundColor: c.ink },
     barPct: { fontFamily: nightFonts.mono, fontSize: 12, color: c.accent, minWidth: 42, textAlign: "right" },
     progressNote: { fontFamily: fonts.regular, fontSize: 12, color: c.textMuted, marginTop: spacing.sm },
     progressWarn: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: c.warning, marginTop: spacing.sm },

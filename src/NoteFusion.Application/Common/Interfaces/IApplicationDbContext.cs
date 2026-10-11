@@ -37,6 +37,9 @@ public interface IApplicationDbContext
     /// <summary>Every transcription asked for, saved or not: what was sent and how it ended; the activity log.</summary>
     DbSet<TranscriptionLog> TranscriptionLogs { get; }
 
+    /// <summary>Feedback messages, ratings and "where did you hear about us?" answers.</summary>
+    DbSet<UserFeedback> UserFeedback { get; }
+
     /// <summary>Public links to a user's folders of saved sheets.</summary>
     DbSet<FolderShare> FolderShares { get; }
 

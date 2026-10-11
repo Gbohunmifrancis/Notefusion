@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { GoogleG } from "../components/night/GoogleG";
 import { NightButton } from "../components/night/NightButton";
 import { NightField } from "../components/night/NightField";
-import { BackButton, ErrorNote, Mark, NightScreen, OrRule, nightText } from "../components/night/NightUI";
+import { BackButton, ErrorNote, Mark, NightScreen, OrRule, nightText, pressedLink } from "../components/night/NightUI";
 import { useAuth } from "../lib/auth";
 import { toApiError } from "../api/client";
 import { tokenStore } from "../lib/tokenStore";
@@ -113,7 +113,7 @@ export function LoginScreen({ navigation }: Props) {
 
       <Pressable
         onPress={() => navigation.navigate("ForgotPassword", { email: email.trim() })}
-        style={styles.forgot}
+        style={({ pressed }) => [styles.forgot, pressed && pressedLink]}
         hitSlop={8}
         accessibilityRole="button"
       >

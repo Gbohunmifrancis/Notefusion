@@ -3,7 +3,6 @@ import {
   Animated,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
  Alert } from "react-native";
 import {
@@ -49,6 +48,7 @@ import {
 } from "../lib/keyboardTranspose";
 import {
   fonts,
+  motion,
   nightFonts,
   radii,
   spacing,
@@ -281,6 +281,7 @@ export function RecordScreen() {
   useEffect(() => {
     if (state.status === "done" && state.result) {
       const result = state.result;
+      const sourceJobId = state.jobId ?? undefined;
       reset();
       setPhase("ready");
       setElapsed(0);
@@ -290,9 +291,9 @@ export function RecordScreen() {
       refresh();
       // Practised today, so today's reminder has nothing to nag about. Fire-and-forget.
       void markPractisedToday();
-      nav.navigate("Result", { result });
+      nav.navigate("Result", { result, sourceJobId });
     }
-  }, [state.status, state.result, nav, reset, refresh]);
+  }, [state.status, state.result, state.jobId, nav, reset, refresh]);
 
   /**
    * Explains an exhausted trial and offers the way out.
@@ -907,16 +908,17 @@ export function RecordScreen() {
               </Text>
             </View>
 
-            {/* Record button. Deliberately still a TouchableOpacity rather than Touchable:
-                it takes the heavier tick, on press-in — starting and stopping a recording is
-                the most consequential tap on the screen. Idle it is the mark on the brand
-                blue; recording, a ring around the red stop square. */}
-            <TouchableOpacity
-              activeOpacity={0.88}
+            {/* Record button. It takes the heavier tick on press-in — starting and stopping
+                a recording is the most consequential tap on the screen — and the large-target
+                press. No ripple: unclipped it paints a square, and clipping would cut off the
+                idle glow. Idle it is the mark on the brand blue; recording, a ring around the
+                red stop square. */}
+            <Touchable
               onPress={handleButtonPress}
-              onPressIn={() => haptics.play("medium")}
+              haptic="medium"
+              scaleTo={motion.scale.large}
+              ripple={false}
               style={isRecording ? styles.recordRing : styles.recordIdle}
-              accessibilityRole="button"
               accessibilityLabel={isRecording ? "Stop and transcribe" : "Start recording"}
             >
               {isRecording ? (
@@ -924,7 +926,7 @@ export function RecordScreen() {
               ) : (
                 <Mark height={38} color={colors.onInk} />
               )}
-            </TouchableOpacity>
+            </Touchable>
 
             {/* Right: done — stop and send the take. Nothing to send before a take starts. */}
             <View style={styles.sideSlot}>

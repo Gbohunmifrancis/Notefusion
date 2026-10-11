@@ -23,6 +23,11 @@ export interface JobState {
   status: TranscriptionStatus | "idle";
   progress: number;
   result: TranscriptionResult | null;
+  /**
+   * The finished job's id. Saving passes it on as `sourceJobId`, which is what ties the sheet to its
+   * job on the server (the activity log's "saved", the completion sweep). Null until a job ends.
+   */
+  jobId: string | null;
   error: string | null;
   errorCode: string | null;
   /** Which step the job is on — the client's own `uploading` first; null once finished. */
@@ -43,6 +48,7 @@ const IDLE: JobState = {
   status: "idle",
   progress: 0,
   result: null,
+  jobId: null,
   error: null,
   errorCode: null,
   stage: null,
@@ -110,6 +116,7 @@ export function useJobPolling() {
       status,
       progress: status === "done" ? 1 : 0,
       result: job.result ?? null,
+      jobId: typeof job.jobId === "string" ? job.jobId : null,
       error: status === "failed" ? safeReason(job.error, fallback) : null,
       source: job.source ?? job.result?.source ?? null,
     });

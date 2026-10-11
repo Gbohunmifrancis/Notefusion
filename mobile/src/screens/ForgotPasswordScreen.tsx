@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Linking, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Linking, Platform, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { NightButton } from "../components/night/NightButton";
+import { Touchable } from "../components/Touchable";
 import { NightField } from "../components/night/NightField";
 import { BackButton, Mark, NightScreen, nightText } from "../components/night/NightUI";
 import { authApi } from "../api/endpoints";
@@ -103,9 +104,9 @@ export function ForgotPasswordScreen({ navigation, route }: Props) {
 
 function Pill({ label, onPress }: { label: string; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={styles.pill} accessibilityRole="button">
+    <Touchable onPress={onPress} style={styles.pill} radius={999}>
       <Text style={styles.pillText}>{label}</Text>
-    </Pressable>
+    </Touchable>
   );
 }
 

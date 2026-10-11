@@ -7,6 +7,7 @@ import {
   Inbox,
   LayoutDashboard,
   LogOut,
+  MessageSquareHeart,
   Moon,
   Music2,
   Scale,
@@ -50,6 +51,7 @@ const PRIMARY_NAV = [
   { to: "/users", label: "Users", icon: Users2 },
   { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
   { to: "/activity", label: "Activity", icon: Activity },
+  { to: "/feedback", label: "Feedback", icon: MessageSquareHeart },
   { to: "/health", label: "System Health", icon: HeartPulse },
   { to: "/audit-log", label: "Settings", icon: Settings },
 ] as const;

@@ -1,8 +1,6 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
   ActivityIndicator,
-  Animated,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -10,6 +8,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { night, nightFonts } from "../../design/theme";
+import { Touchable } from "../Touchable";
 
 type Variant = "white" | "blue" | "ghost";
 
@@ -30,7 +29,10 @@ interface Props {
   style?: StyleProp<ViewStyle>;
 }
 
-/** The 54px pill every night screen uses for its actions. */
+/**
+ * The 54px pill every night screen uses for its actions. It presses through `Touchable`,
+ * so it shares the app's one press spring (no overshoot), haptic tick and ripple.
+ */
 export function NightButton({
   label,
   onPress,
@@ -41,24 +43,21 @@ export function NightButton({
   badge,
   style,
 }: Props) {
-  const scale = useRef(new Animated.Value(1)).current;
   const inactive = disabled || loading;
-  const spring = (to: number) =>
-    Animated.spring(scale, { toValue: to, useNativeDriver: true, speed: 40, bounciness: 6 }).start();
-
   const textColor = variant === "white" ? night.onWhite : night.text;
 
   return (
-    <Animated.View style={[{ transform: [{ scale }] }, inactive && !loading && styles.disabled, style]}>
-      <Pressable
-        onPress={inactive ? undefined : onPress}
-        onPressIn={() => !inactive && spring(0.97)}
-        onPressOut={() => spring(1)}
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        accessibilityState={{ disabled: inactive, busy: loading }}
-        style={[styles.base, styles[variant]]}
-      >
+    <Touchable
+      // Loading keeps full opacity (the spinner is the cue) but takes no presses.
+      onPress={inactive ? undefined : onPress}
+      disabled={disabled}
+      haptic={loading ? "none" : "light"}
+      // The blue pill casts a glow; clipping it for the ripple would cut that off.
+      radius={variant === "blue" ? undefined : 27}
+      accessibilityLabel={label}
+      accessibilityState={{ busy: loading }}
+      style={[styles.base, styles[variant], style]}
+    >
         {loading ? (
           <ActivityIndicator color={textColor} size="small" />
         ) : (
@@ -74,8 +73,7 @@ export function NightButton({
             ) : null}
           </View>
         )}
-      </Pressable>
-    </Animated.View>
+    </Touchable>
   );
 }
 
@@ -101,7 +99,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: night.line2,
   },
-  disabled: { opacity: 0.45 },
   row: { flexDirection: "row", alignItems: "center", gap: 10 },
   label: { fontSize: 15.5, fontFamily: nightFonts.semibold },
   badge: {
