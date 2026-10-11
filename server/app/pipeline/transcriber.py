@@ -3217,19 +3217,10 @@ def _segment_vocal(
 # the sung stress tier (an amateur 30 cents off, a take drifting 100 cents) and up to 1.29 on
 # the synthetic songs; real singers' (Vocadito) all sit within 1.10.
 DOH_MAX_COST_RATIO = 1.5
-# A song's backing gives the doh when its chord key leads the best key with another doh by
-# at least this (``chords.estimate_key``'s confidence)...
-CHORD_DOH_MIN_CONFIDENCE = 0.5
-# ...and the voice fits that doh's scale within this of its best.  Tighter than a user's key:
-# nobody chose this key, and the chord confidence admitting it reads 1.0 on every synthetic
-# backing, so it is unmeasured on real mixes, where a modal vamp, a capo or a backing in
-# another key would hand every syllable to the band.  At 1.5 the synthetic songs gain four
-# more dohs; that trade waits on real songs to judge it.
-CHORD_DOH_MAX_COST_RATIO = 1.10
 
 
 def _rewrite_in_root(
-    events: list[Event], fit: "vocal.ScaleFit", root: int, minor: bool, max_cost_ratio: float,
+    events: list[Event], fit: "vocal.ScaleFit", root: int, minor: bool,
 ) -> tuple[list[Event], float] | None:
     """The voice engine's notes written again in the major scale on ``root``, or None.
 
@@ -3237,15 +3228,15 @@ def _rewrite_in_root(
     is each note's untuned median.  ``minor`` is the mode of the key that named the root, so
     a la-based key's se is expected.  Returns the events, carrying the pitches and the tuned
     medians of the new scale, and the tuning offset that scale was written at.  None when
-    the voice's best cost in that scale is more than ``max_cost_ratio`` times its best in any
-    (``vocal.root_costs``), or when a note has no sung pitch to write from.
+    the voice is plainly not in that scale (``DOH_MAX_COST_RATIO``, ``vocal.root_costs``), or
+    when a note has no sung pitch to write from.
     """
     if any(e.pyin_midi is None for e in events):
         return None
     untuned = [float(e.pyin_midi) + fit.offset for e in events]
     durations = [e.end - e.start for e in events]
     costs, _offsets = vocal.root_costs(untuned, durations)
-    if costs[root] > max_cost_ratio * float(costs.min()):
+    if costs[root] > DOH_MAX_COST_RATIO * float(costs.min()):
         return None
     stabilities = [e.stability for e in events]
     offset, pitches = vocal.write_in_root(
@@ -5156,7 +5147,7 @@ def _transcribe_wav(
     # no key at all.  The notes are written again in the user's scale instead, from the same
     # sung pitches (``_rewrite_in_root``), still in sounding pitch.
     if override_doh is not None and vocal_fit is not None and events and override_doh != vocal_fit.root:
-        rewritten = _rewrite_in_root(events, vocal_fit, override_doh, override_minor, DOH_MAX_COST_RATIO)
+        rewritten = _rewrite_in_root(events, vocal_fit, override_doh, override_minor)
         if rewritten is None:
             print(f"[notefusion] key override: the voice is not in the scale on {override_doh}; relabelling only",
                   flush=True)
@@ -5257,29 +5248,6 @@ def _transcribe_wav(
             if mode == "chords":
                 raise
             print(f"[notefusion] chords skipped: {exc!r}", flush=True)
-
-    # ── 7c. A song's doh from its backing ─────────────────────────────────────
-    # A band's chords say where the music rests far better than one voice's notes do: on the
-    # synthetic songs the backing's key had the right doh on all 32 where the backing was
-    # clear, and the voice's fit on 25 of them.  The chords' doh is taken when they are sure
-    # of it (``CHORD_DOH_MIN_CONFIDENCE``) and the voice fits that scale nearly as well as its
-    # own (``CHORD_DOH_MAX_COST_RATIO``), and the notes are written again in that scale.  The key is
-    # then reported from the chords, as chords mode reports it, so the chord row is spelled
-    # in the key the tune is in.
-    key_from_chords = False
-    if (vocal_fit is not None and not key_override and chord_key is not None
-            and chord_key_confidence >= CHORD_DOH_MIN_CONFIDENCE):
-        chord_doh = solfa.doh_pitch_class(*chord_key)
-        if chord_doh != vocal_fit.root:
-            # The notes are written pitch by now (step 6c); so is the scale they go in.
-            rewritten = _rewrite_in_root(events, vocal_fit, (chord_doh + shift) % 12, chord_key[1] == "minor",
-                                         CHORD_DOH_MAX_COST_RATIO)
-            if rewritten is not None:
-                print(f"[notefusion] key: the backing's chords put doh on {chord_doh}, not {vocal_fit.root}",
-                      flush=True)
-                events, offset = rewritten
-                vocal_fit = replace(vocal_fit, offset=offset, root=chord_doh)
-                key_from_chords = True
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
@@ -5379,10 +5347,9 @@ def _transcribe_wav(
     if key_override:
         detected = _parse_key_override(key_override)
         key_confidence = 1.0
-    elif (mode == "chords" or key_from_chords) and chord_key is not None:
+    elif mode == "chords" and chord_key is not None:
         # The chords know the key better than their top line does: a tune can lean on the
-        # fifth for bars while the harmony rests on the tonic.  So does a song's backing
-        # once its doh was taken (step 7c).
+        # fifth for bars while the harmony rests on the tonic.
         detected = m21key.Key(chords.tonic_name(chord_key[0] + shift, chord_key[1]), chord_key[1])
         key_confidence = chord_key_confidence
     elif settings.key_ensemble:
@@ -5407,7 +5374,7 @@ def _transcribe_wav(
     # with (``vocal.ScaleFit.headline_confidence``); the key confidence reported beside it is
     # the fit's own, which drops where the doh is in doubt.
     headline_doh = key_confidence
-    if vocal_fit is not None and settings.key_ensemble and not key_override and not key_from_chords:
+    if vocal_fit is not None and settings.key_ensemble and not key_override:
         headline_doh = vocal_fit.headline_confidence
         if len(events) < MIN_NOTES_FOR_KEY:
             headline_doh = min(headline_doh, KEY_CONFIDENCE_CAP_LOW)

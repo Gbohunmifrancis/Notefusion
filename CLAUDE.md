@@ -28,10 +28,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   its major and relative minor, and the key confidence is the fit's `ScaleFit.confidence` (the
   cost margin over the runner-up scale, at most 1/k when k readings fit within 5% and an even
   chance beyond a 0.4 offset); without a fit the vote keeps to keys whose scale holds the notes as
-  well as any does (`_scale_parsimony`). A key given at submit (`key_override`) and a song's
-  backing-chord key (when sure and within 1.10 of the voice's best cost) re-write the sung
-  pitches in their scale (`vocal.write_in_root`; a key the voice fits worse than 1.5x its best
-  only relabels). A melody floor is not handed to a piano when pyin's line moves like a voice
+  well as any does (`_scale_parsimony`). A key given at submit (`key_override`) re-writes the
+  sung pitches in its scale (`vocal.write_in_root`; a key the voice fits worse than 1.5x its
+  best only relabels); a song's backing chords are labelled but never move the doh (taking
+  their key was measured wrong on real songs). A melody floor is not handed to a piano when pyin's line moves like a voice
   (`_stillness`). A sung note's confidence is how near its tuned pitch
   sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
   confidence weighs the notes by length and by the doh confidence (the uncapped margin,
