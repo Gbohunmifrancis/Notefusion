@@ -343,6 +343,30 @@ def test_write_in_scale_declines_on_too_few_notes():
     assert vocal.write_in_scale([60.1, 62.0, 64.2], [1.0] * 3) is None
 
 
+def _segments_contour(segments, gap: int = 6) -> vocal.Contour:
+    """A contour from (midi, frames, voiced_prob, rms) runs separated by unvoiced gaps."""
+    midi, vprob, rms = [], [], []
+    for m, n, vp, r in segments:
+        midi += [m] * n + [np.nan] * gap
+        vprob += [vp] * n + [0.0] * gap
+        rms += [r] * n + [0.0] * gap
+    n = len(midi)
+    return vocal.Contour(times=np.arange(n) * HOP_SEC, midi=np.array(midi), voiced_prob=np.array(vprob),
+                         rms=np.array(rms), rms_fast=np.array(rms))
+
+
+def test_analyse_fits_the_scale_on_the_notes_it_writes():
+    # A C major scale sung in tune, between longer spans of quiet, unvoiced noise that
+    # happens to be periodic 45 cents off the grid.  The noise is never written, so it must
+    # not pull the tuning offset either (fitted on every span it read 37 cents flat).
+    sung = [(p, 20, 0.9, 1.0) for p in (60, 62, 64, 65, 67, 69, 71, 72)]
+    noise = [(p + 0.45, 40, 0.05, 0.1) for p in (61, 63, 66, 68, 70, 73, 75, 78)]
+    result = vocal.analyse(np.zeros(1, dtype=np.float32), contour=_segments_contour(
+        [x for pair in zip(sung, noise) for x in pair]))
+    assert [n.pitch for n in result.notes] == [60, 62, 64, 65, 67, 69, 71, 72]
+    assert result.tuning_cents == pytest.approx(0.0, abs=2.0)
+
+
 def test_span_pitch_ignores_unvoiced_frames_inside_a_joined_note():
     # Two pieces of one note joined across a gap the bridge did not fill: the NaN frames
     # used to make the note's pitch NaN, and notate() then failed the whole transcription.

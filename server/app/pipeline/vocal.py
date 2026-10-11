@@ -146,8 +146,8 @@ SCALE_KEEP_CHROMATIC = 0.25
 # or a glide the segmenter kept is neither) — and when it stays inside the keep band for every
 # tuning offset that fits the scale within SCALE_KEEP_OFFSET_SLACK of the chosen one's cost: an
 # offset the notes cannot pin down must not decide which side of the band a note falls.  With
-# that evidence asked for, Vocadito's diatonic tunes carry 4.7% accidentals, the chromatic ones
-# 5.4%, and half match both annotators; the sung corpus keeps 18 of its 24 real ones.
+# that evidence asked for, Vocadito's diatonic tunes carry 4.5% accidentals, the chromatic ones
+# 5.4%, and more than half match both annotators; the sung corpus keeps 18 of its 24 real ones.
 SCALE_KEEP_MIN_SEC = 0.15
 SCALE_KEEP_MIN_STABILITY = 0.7
 SCALE_KEEP_OFFSET_SLACK = 0.02
@@ -1099,10 +1099,26 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
     if contour is None:
         spans = fix_octaves(y, sr, c, spans)
     hop = _hop_sec(c)
-    durations = [(b - a) * hop for a, b, _ in spans]
+
+    # Noise goes before the scale fit: a span too quiet and too unvoiced to be written must not
+    # vote on the scale the others are written in.  Fitted on every span, breath and room noise
+    # moved the doh of two Vocadito clips (18 and 19) that the kept notes alone fit right.
+    amps = [float(np.mean(c.rms[a:b])) if b > a else 0.0 for a, b, _ in spans]
+    loudest = max(amps) if amps else 0.0
+    vprobs = [float(np.median(c.voiced_prob[a:b])) if b > a else 0.0 for a, b, _ in spans]
+    keep = [
+        not (vp < NOISE_MAX_VOICED_PROB and loudest > 0 and amp / loudest < NOISE_MAX_AMP)
+        for vp, amp in zip(vprobs, amps)
+    ]
+    spans = [x for x, k in zip(spans, keep) if k]
+    amps = [x for x, k in zip(amps, keep) if k]
+    vprobs = [x for x, k in zip(vprobs, keep) if k]
+    loudest = max(amps) if amps else 0.0
     # Read before tuning: the band is relative to the note's own pitch either way.
     stabilities = [_stability(c.midi[a:b], m) for a, b, m in spans]
+    durations = [(b - a) * hop for a, b, _ in spans]
     midis = [m for _, _, m in spans]
+
     written = write_in_scale(midis, durations, stabilities)
     if written is not None:
         fit = written.fit
@@ -1115,20 +1131,6 @@ def analyse(y: np.ndarray, sr: int = SAMPLE_RATE, contour: Contour | None = None
         pitches = notate(midis, durations)
     c = retune(c, tuned_cents)
     spans = [(a, b, m) for (a, b, _), m in zip(spans, midis)]
-
-    amps = [float(np.mean(c.rms[a:b])) if b > a else 0.0 for a, b, _ in spans]
-    loudest = max(amps) if amps else 0.0
-    vprobs = [float(np.median(c.voiced_prob[a:b])) if b > a else 0.0 for a, b, _ in spans]
-    keep = [
-        not (vp < NOISE_MAX_VOICED_PROB and loudest > 0 and amp / loudest < NOISE_MAX_AMP)
-        for vp, amp in zip(vprobs, amps)
-    ]
-    spans = [x for x, k in zip(spans, keep) if k]
-    pitches = [x for x, k in zip(pitches, keep) if k]
-    amps = [x for x, k in zip(amps, keep) if k]
-    vprobs = [x for x, k in zip(vprobs, keep) if k]
-    stabilities = [x for x, k in zip(stabilities, keep) if k]
-    loudest = max(amps) if amps else 0.0
     notes = [
         VocalNote(
             start=float(c.times[a]),
