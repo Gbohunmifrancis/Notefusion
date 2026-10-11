@@ -8,6 +8,8 @@
   "use strict";
 
   var PITCH_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  // Doh names as key signatures spell them ("Bb", never "A#"; F# kept), as mobile's DOH_NAMES.
+  var DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
   var ASC = ["d", "de", "r", "re", "m", "f", "fe", "s", "se", "l", "le", "t"];
   var DESC = ["d", "ra", "r", "ma", "m", "f", "sa", "s", "la", "l", "ta", "t"];
   var DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7];
@@ -62,7 +64,7 @@
     var mark = shift > 0 ? new Array(shift + 1).join("'") : new Array(-shift + 1).join(",");
     return { solfa: (ascending ? ASC : DESC)[semis], octaveMark: mark, degree: DEGREE[semis] };
   }
-  function dohHeader(dohPc) { return "Doh is " + PITCH_NAMES[dohPc]; }
+  function dohHeader(dohPc) { return "Doh is " + DOH_NAMES[dohPc]; }
 
   /** Notes labelled for a key. `refPitches` (the melody) sets the unmarked octave for a part. */
   function label(notes, keyText, refPitches) {

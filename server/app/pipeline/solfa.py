@@ -16,7 +16,10 @@ DESCENDING_SYLLABLES = ["d", "ra", "r", "ma", "m", "f", "sa", "s", "la", "l", "t
 # Diatonic degree for each semitone above doh (ascending/sharp convention)
 SEMITONE_TO_DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7]
 
-PITCH_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+# Doh names spelled as the key signature spells them: each major key takes its spelling with
+# fewer accidentals, so a Bb sheet (two flats) reads "Doh is Bb", never "A#" (ten sharps).
+# F# and Gb tie at six; F# is kept.
+DOH_NAMES = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"]
 ChromaticSpelling = Literal["direction", "ascending", "descending"]
 
 
@@ -91,4 +94,4 @@ def syllable(pitch_midi: int, doh_pc: int, ref_doh_midi: int, ascending: bool = 
 
 
 def doh_header(doh_pc: int) -> str:
-    return f"Doh is {PITCH_NAMES[doh_pc]}"
+    return f"Doh is {DOH_NAMES[doh_pc]}"

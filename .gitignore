@@ -547,6 +547,7 @@ src/NoteFusion.Api/appsettings.Development.json
 server/tests/accuracy/report.json
 server/tests/accuracy/real_report.json
 server/tests/accuracy/vocal_report.json
+server/tests/accuracy/vocal_slices_report.json
 
 # ── Scratch tooling: design previews, palette audits, verification scripts ──
 .preview/

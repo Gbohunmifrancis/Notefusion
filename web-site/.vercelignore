@@ -2,6 +2,7 @@
 # here is public. The CLI already skips .env.local and .vercel by default; these
 # are named anyway so the exclusion does not depend on a default that could change.
 README.md
+tests
 .gitignore
 .vercelignore
 .env*
