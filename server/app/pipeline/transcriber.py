@@ -3158,13 +3158,17 @@ def _segment_vocal(
     return events, floor_midi, fit
 
 
-# A key the user gave is written in unless the voice's best fit cost in that key's scale is
-# more than this many times its best in any.  Then the voice is plainly not in that scale (a
-# key typed for another song), and the key only relabels the notes, as it always did.  Where
-# the voice's own fit is wrong, the right doh costs up to 1.47 times the best on the sung
-# stress tier (an amateur 30 cents off, a take drifting 100 cents); real singers' (Vocadito)
-# all sit within 1.10.
+# A doh decided outside the voice — the key the user gave, a song's chords — is written in
+# unless the voice's best fit cost in that doh's scale is more than this many times its best
+# in any.  Then the voice is plainly not in that scale (a key typed for another song) and
+# keeps its own: a user's key only relabels the notes, as it always did.  Where the voice's
+# own fit is wrong, the right doh costs up to 1.47 times the best on the sung stress tier (an
+# amateur 30 cents off, a take drifting 100 cents) and up to 1.29 on the synthetic songs;
+# real singers' (Vocadito) all sit within 1.10.
 DOH_MAX_COST_RATIO = 1.5
+# A song's backing gives the doh when its chord key leads the best key with another doh by
+# at least this (``chords.estimate_key``'s confidence).
+CHORD_DOH_MIN_CONFIDENCE = 0.5
 
 
 def _rewrite_in_root(
@@ -5023,6 +5027,28 @@ def _transcribe_wav(
             if mode == "chords":
                 raise
             print(f"[notefusion] chords skipped: {exc!r}", flush=True)
+
+    # ── 7c. A song's doh from its backing ─────────────────────────────────────
+    # A band's chords say where the music rests far better than one voice's notes do: on the
+    # synthetic songs the backing's key had the right doh on all 32 where the backing was
+    # clear, and the voice's fit on 25 of them.  The chords' doh is taken when they are sure
+    # of it (``CHORD_DOH_MIN_CONFIDENCE``) and the voice is not plainly in another scale
+    # (``DOH_MAX_COST_RATIO``), and the notes are written again in that scale.  The key is
+    # then reported from the chords, as chords mode reports it, so the chord row is spelled
+    # in the key the tune is in.
+    key_from_chords = False
+    if (vocal_fit is not None and not key_override and chord_key is not None
+            and chord_key_confidence >= CHORD_DOH_MIN_CONFIDENCE):
+        chord_doh = solfa.doh_pitch_class(*chord_key)
+        if chord_doh != vocal_fit.root:
+            # The notes are written pitch by now (step 6c); so is the scale they go in.
+            rewritten = _rewrite_in_root(events, vocal_fit, (chord_doh + shift) % 12)
+            if rewritten is not None:
+                print(f"[notefusion] key: the backing's chords put doh on {chord_doh}, not {vocal_fit.root}",
+                      flush=True)
+                events, offset = rewritten
+                vocal_fit = replace(vocal_fit, offset=offset, root=chord_doh)
+                key_from_chords = True
     progress(0.65)
 
     # ── 8. music21 stream, quantized to the configured grid ───────────────────
@@ -5122,9 +5148,10 @@ def _transcribe_wav(
     if key_override:
         detected = _parse_key_override(key_override)
         key_confidence = 1.0
-    elif mode == "chords" and chord_key is not None:
+    elif (mode == "chords" or key_from_chords) and chord_key is not None:
         # The chords know the key better than their top line does: a tune can lean on the
-        # fifth for bars while the harmony rests on the tonic.
+        # fifth for bars while the harmony rests on the tonic.  So does a song's backing
+        # once its doh was taken (step 7c).
         detected = m21key.Key(chords.tonic_name(chord_key[0] + shift, chord_key[1]), chord_key[1])
         key_confidence = chord_key_confidence
     elif settings.key_ensemble:

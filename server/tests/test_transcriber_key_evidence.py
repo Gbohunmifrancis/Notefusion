@@ -1,8 +1,9 @@
-"""The key the user gave reaches the notes.
+"""Key evidence beyond the solo voice's own scale fit.
 
 The voice engine decides the doh from the sung notes alone and snaps them into that scale.
-A user who types the key knows it better: the notes are written again in that scale from the
-same sung pitches, unless the voice is plainly not in it.
+When something else knows the key better — the user, who typed it; a song's backing, whose
+chords say where the music rests — the notes are written again in that scale from the same
+sung pitches, unless the voice is plainly not in it.
 
 The sung line throughout is a G major tune whose F#s are sung 55 cents flat, nearer F than
 F#: alone, the voice fits C major and writes them as F (``tests.test_vocal.FLAT_TI_SUNG``).
@@ -18,6 +19,7 @@ import soundfile as sf
 
 from app.pipeline import transcriber, vocal
 from app.pipeline.transcriber import Event, transcribe
+from tests.accuracy import chords_bench as bench
 from tests.test_vocal import FLAT_TI_SUNG, FLAT_TI_TUNE
 
 SR = vocal.SAMPLE_RATE
@@ -97,3 +99,37 @@ def test_a_key_the_voice_is_plainly_not_in_only_relabels(flat_ti):
     wrong = transcribe(flat_ti, mode="melody", audio_preview=False, fast=True, key_override="F# major")
     assert wrong.key == "F# major"
     assert _pitches(wrong) == _pitches(alone)
+
+
+# ── A song's backing ─────────────────────────────────────────────────────────
+
+
+def _backing(path: Path, case: bench.Case) -> Path:
+    notes, seconds = bench.notes_for(case)
+    sf.write(str(path), bench.render(notes, seconds, use_samples=False), bench.SAMPLE_RATE)
+    return path
+
+
+def test_a_songs_chords_give_the_doh_the_voice_missed(tmp_path):
+    case = bench.Case("song_G", "G major", 90, [("G", 4), ("C", 4), ("D", 4), ("G", 4)], style="bass", lead_in=LEAD_IN)
+    backing = _backing(tmp_path / "backing.wav", case)
+    vocal_path = _sing(tmp_path / "vocal.wav", FLAT_TI_SUNG, seconds=sf.info(str(backing)).duration)
+    result = transcribe(vocal_path, mode="melody", audio_preview=False, fast=True, chord_source=backing)
+    assert result.key == "G major"
+    assert _pitches(result) == FLAT_TI_TUNE
+    assert {n.solfa for n in result.notes} <= DIATONIC
+    # The chord row is spelled in the key the tune is in.
+    assert [c.solfa for c in result.chords] == ["d", "f", "s", "d"]
+
+
+def test_a_backing_in_a_scale_the_voice_is_not_in_leaves_the_voices_doh(tmp_path):
+    # An in-tune C major line over a backing in A-flat: the chords are sure of their key, and
+    # the voice is plainly not in its scale.
+    case = bench.Case("song_Ab", "Ab major", 90, [("Ab", 4), ("Db", 4), ("Eb", 4), ("Ab", 4)], style="bass", lead_in=LEAD_IN)
+    backing = _backing(tmp_path / "backing.wav", case)
+    line = [60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62, 60, 60]
+    vocal_path = _sing(tmp_path / "vocal.wav", line, seconds=sf.info(str(backing)).duration)
+    result = transcribe(vocal_path, mode="melody", audio_preview=False, fast=True, chord_source=backing)
+    assert result.key == "C major"
+    assert _pitches(result) == line
+    assert result.chords

@@ -20,8 +20,8 @@ about a song with a band behind the singer, which is what an uploaded song is.  
 
 Arms:
   song   what a song upload does (``separate=true``): the MDX vocal stem is transcribed
-         on the Pro lane with the beat read from the mix (the free lane writes the same
-         notes, ~1 s slower).
+         on the Pro lane with the beat read from the mix and the chords from the
+         instrumental (the free lane writes the same notes, ~1 s slower).
   mix    the mixture transcribed as it is, which is what a song uploaded as "a tune I
          hummed" got before the worker learned to isolate on its own.
   auto   what that upload gets now: the queue's accompaniment check picks song or mix,
@@ -312,6 +312,9 @@ def transcribe_arm(arm: str, mix: Path, stems: Path, name: str) -> dict:
 
     started = time.time()
     path = arm
+    # The chords are read where the queue reads them: off the instrumental for a song, off the
+    # mixture when a band was heard but the vocal stem came back empty.
+    chord_source = None
     if arm == "auto":
         from app.pipeline import separate
 
@@ -320,11 +323,13 @@ def transcribe_arm(arm: str, mix: Path, stems: Path, name: str) -> dict:
             vocals = vocal_stem(mix, stems, name)
             share = separate.voice_share_db(vocals, stems / f"{name}_backing.wav")
             path = "song" if share >= separate.VOICE_MIN_SHARE_DB else "mix"
+            chord_source = mix
     try:
         if path == "song":
-            r = transcribe(vocal_stem(mix, stems, name), mode="melody", audio_preview=False, fast=True, tempo_source=mix)
+            r = transcribe(vocal_stem(mix, stems, name), mode="melody", audio_preview=False, fast=True, tempo_source=mix,
+                           chord_source=stems / f"{name}_backing.wav")
         else:
-            r = transcribe(mix, mode="melody", audio_preview=False)
+            r = transcribe(mix, mode="melody", audio_preview=False, chord_source=chord_source)
         row = {"key": r.key, "tempo": r.tempo, "beat_origin": r.beat_origin_sec,
                "notes": [[n.pitch_midi, n.start_beat, n.dur_beats] for n in r.notes]}
     except LowConfidenceError as ex:
