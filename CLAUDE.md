@@ -16,24 +16,36 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
-  hysteresis note segmentation, then scale-fit notation (`fit_scale_detail` finds the tuning
-  offset and the major scale together, settling roots within `SCALE_FIT_TIE_RATIO` of each other
-  on the tonal profile and a quarter-tone singer's two readings on the simpler key signature;
-  `snap_to_scale` writes each note as its scale tone unless it sits within 25 cents of an
-  accidental) — with the Basic Pitch paths as fallback (`NF_VOCAL_ENGINE=0` restores the old
-  decoder). That scale's root is the doh: `transcriber._detect_key` votes only between its major
-  and relative minor, and the key confidence is the fit's `ScaleFit.confidence` (the cost margin
-  over the runner-up scale); without a fit the vote keeps to keys whose scale holds the notes as
-  well as any does (`_scale_parsimony`). A sung note's confidence is how near its tuned pitch
+  hysteresis note segmentation, noise spans dropped, then scale-fit notation (`write_in_scale`:
+  a long take's steady drift, at most 1 st/min, is taken out first; `fit_scale_detail` finds the
+  tuning offset and the major scale together, settling a quarter-tone singer's two readings on
+  the simpler key signature and then roots within `SCALE_FIT_TIE_RATIO` of each other on the tonal
+  profile; `snap_to_scale` writes each note as its scale tone unless it is heard as an
+  accidental — within 25 cents of it at every offset that fits within 2%, held 0.15 s (or within
+  8 cents) and steady; a la-based tune's se is spared the offset test) — with the Basic Pitch
+  paths as fallback, which write their pyin medians the same way (`NF_VOCAL_ENGINE=0` restores
+  the old decoder). That scale's root is the doh: `transcriber._detect_key` votes only between
+  its major and relative minor, and the key confidence is the fit's `ScaleFit.confidence` (the
+  cost margin over the runner-up scale, at most 1/k when k readings fit within 5% and an even
+  chance beyond a 0.4 offset); without a fit the vote keeps to keys whose scale holds the notes as
+  well as any does (`_scale_parsimony`). A key given at submit (`key_override`) and a song's
+  backing-chord key (when sure and within 1.10 of the voice's best cost) re-write the sung
+  pitches in their scale (`vocal.write_in_root`; a key the voice fits worse than 1.5x its best
+  only relabels). A melody floor is not handed to a piano when pyin's line moves like a voice
+  (`_stillness`). A sung note's confidence is how near its tuned pitch
   sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
-  confidence weighs the notes by length and by the doh confidence. Tempo level: every candidate
+  confidence weighs the notes by length and by the doh confidence (the uncapped margin,
+  `headline_confidence`, until the capped one is calibrated). Tempo level: every candidate
   is measured at its best nearby tempo and phase before the grid filter (`_level_residual`), and
   a tracked beat anchors beat 0 only within a quarter of a beat of the first note
   (`_beat_origin`). Accuracy is
   measured twice: the sung corpus, intended notes known, including untrained-singer styles
-  (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`),
-  and real singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run; the
-  instrument corpus `python -m tests.accuracy.report` is the control). Linked songs
+  (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`;
+  `--slices` scores the long-drift, wide-detune, first-phrase and legato stress slices), and real
+  singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run, scored against
+  the committed `vocadito_frozen.json` so a change to the fit cannot move its own yardstick;
+  `--rebuild-reference` re-derives it; the instrument corpus `python -m tests.accuracy.report`
+  is the control). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
@@ -58,7 +70,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   A transcription is the one voice that was heard; parts under it are an arrangement on request.
   `mode="choir"` is the exception: a choir singing in parts is decoded with every voice kept,
   `transcriber._assign_voices` splits each chord into S/A/T/B by pitch order, range and continuity,
-  the top voice becomes the tune and the four come back as `parts` with `parts_source="heard"`.
+  the top voice becomes the tune and the four come back as `parts` with `parts_source="heard"`;
+  the choir's tuning comes out before Basic Pitch, every part is written in one scale fitted
+  across all of them (`_choir_in_scale`), and the key is voted on every part, the bass twice.
   `app/pipeline/grade.py` marks a sung take against a part (`POST /v1/grade`, synchronous:
   pyin contour, offset + octave alignment, per-note cents and hit/near/wrong/missed);
   the C# `POST /api/transcriptions/grade` forwards it for Pro accounts and stores nothing.
@@ -81,9 +95,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   Feature folders inside Application, `DependencyInjection.cs` per layer, `Result`/`Error`
   for expected failures, `Guard` for programmer errors.
 - **Solfa engine (`src/NoteFusion.Core/Solfa`) is the product's core IP.** Movable-do: doh
-  derives from the key (la-based for minor). Key change = re-label, never re-transcribe.
-  Every change there needs unit tests. The Python worker mirrors this engine — keep the
-  two in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+  derives from the key (la-based for minor). Key change = re-label, never re-transcribe (a key
+  given at submit is the worker's, which writes the sung pitches in it). The doh header is
+  spelled as the key signature spells it ("Doh is Bb", not A#). Every change there needs unit
+  tests. The Python worker, mobile `lib/solfa.ts` and web `assets/choir.js` mirror this engine —
+  keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
@@ -130,6 +146,9 @@ cd server && python -m tests.accuracy.report --vocal   # sung/hummed corpus (slo
 
 # Mobile — strict type-check
 cd mobile && npm run lint          # tsc --noEmit
+
+# Web — the choir page's solfa mirror
+node --test web-site/tests/*.test.mjs
 
 # Whole backend stack
 docker compose up --build          # api :5080, transcriber :8000, db :5432
