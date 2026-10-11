@@ -3158,6 +3158,34 @@ def _segment_vocal(
     return events, floor_midi, fit
 
 
+# A key the user gave is written in unless the voice's best fit cost in that key's scale is
+# more than this many times its best in any.  Then the voice is plainly not in that scale (a
+# key typed for another song), and the key only relabels the notes, as it always did.  Where
+# the voice's own fit is wrong, the right doh costs up to 1.47 times the best on the sung
+# stress tier (an amateur 30 cents off, a take drifting 100 cents); real singers' (Vocadito)
+# all sit within 1.10.
+DOH_MAX_COST_RATIO = 1.5
+
+
+def _rewrite_in_root(
+    events: list[Event], fit: "vocal.ScaleFit", root: int,
+) -> tuple[list[Event], float] | None:
+    """The voice engine's notes written again in the major scale on ``root``, or None.
+
+    Read from the same sung pitches the engine snapped: ``pyin_midi`` plus the fit's offset
+    is each note's untuned median.  Returns the events, carrying the pitches and the tuned
+    medians of the new scale, and the tuning offset that scale was written at.  None when
+    the voice is plainly not in that scale (``DOH_MAX_COST_RATIO``, ``vocal.root_costs``).
+    """
+    untuned = [float(e.pyin_midi) + fit.offset for e in events]
+    durations = [e.end - e.start for e in events]
+    costs, _offsets = vocal.root_costs(untuned, durations)
+    if costs[root] > DOH_MAX_COST_RATIO * float(costs.min()):
+        return None
+    offset, pitches = vocal.write_in_root(untuned, durations, [e.stability for e in events], root)
+    return [replace(e, pitch=p, pyin_midi=m - offset) for e, p, m in zip(events, pitches, untuned)], offset
+
+
 def _refine_pitches(
     events: list[Event],
     wav_path: Path | np.ndarray,
@@ -4731,6 +4759,14 @@ def _transcribe_wav(
     y, sr = _load_audio(wav_path, sr=22_050)
     y = _condition_audio(y, sr=sr)
 
+    # Written pitch = sounding pitch + shift (step 6c).  A key the user gives is in written
+    # pitch (see ``transcribe``); its doh in the sounding pitch the audio is read in:
+    shift = -int(keyboard_transpose or 0)
+    override_doh: int | None = None
+    if key_override:
+        written = _parse_key_override(key_override)
+        override_doh = (solfa.doh_pitch_class(written.tonic.pitchClass, written.mode) - shift) % 12
+
     # The fast lane (see ``transcribe``) tries the voice engine before paying for Basic
     # Pitch at all, and skips it when the engine found the line.
     fast_events: list[Event] = []
@@ -4879,6 +4915,21 @@ def _transcribe_wav(
                 events = _select_melody_path(events)
             events = _resolve_melody_overlaps(events)
 
+    # ── 6a. The key the user gave ─────────────────────────────────────────────
+    # The voice engine snapped the notes into the scale it fitted, so a key with another doh
+    # used to relabel those notes and write every degree that tells the two scales apart as
+    # an accidental: on Vocadito, given the true key, 12.4% of the notes against 8.8% with
+    # no key at all.  The notes are written again in the user's scale instead, from the same
+    # sung pitches (``_rewrite_in_root``), still in sounding pitch.
+    if override_doh is not None and vocal_fit is not None and events and override_doh != vocal_fit.root:
+        rewritten = _rewrite_in_root(events, vocal_fit, override_doh)
+        if rewritten is None:
+            print(f"[notefusion] key override: the voice is not in the scale on {override_doh}; relabelling only",
+                  flush=True)
+        else:
+            events, offset = rewritten
+            vocal_fit = replace(vocal_fit, offset=offset, root=override_doh)
+
     # ── 6b. Sample Basic Pitch's onset posterior ──────────────────────────────
     # After both paths converge and after every stage that can move a boundary, because the
     # reading is taken AT the event's start — a merge, a split or an overlap trim would
@@ -4891,9 +4942,12 @@ def _transcribe_wav(
     # Written pitch = sounding pitch - the keyboard's transpose setting.  Applied here, after
     # every stage that reads the audio, so the key, the solfa and the engraving below all
     # see the written notes.  The chords are read in sounding pitch and moved the same way.
-    shift = -int(keyboard_transpose or 0)
+    # The sung pitch moves with the note, or every note would read as a transpose's width
+    # off its own pitch (``_pitch_confidence``).
     if shift:
-        events = [replace(e, pitch=e.pitch + shift) for e in events]
+        events = [
+            replace(e, pitch=e.pitch + shift, pyin_midi=None if e.pyin_midi is None else e.pyin_midi + shift)
+            for e in events]
         if choir_voices is not None:
             choir_voices = {
                 name: [replace(e, pitch=e.pitch + shift) for e in line] for name, line in choir_voices.items()}
