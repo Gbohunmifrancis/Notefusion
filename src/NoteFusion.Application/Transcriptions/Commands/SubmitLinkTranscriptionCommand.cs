@@ -107,7 +107,7 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         }
         else
         {
-            var used = await SongCredits.CountPreviewsUsedAsync(_db, userId, fingerprint, ct);
+            var used = await SongCredits.CountPreviewsUsedAsync(_db, userId, fingerprint, _clock.UtcNow, ct);
             if (used >= SongCredits.FreePreviews)
                 return BillingErrors.SongPreviewUsed;
         }

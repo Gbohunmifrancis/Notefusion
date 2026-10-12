@@ -33,7 +33,7 @@ public class AdminDashboardEnhancementTests
         h.Db.TranscriptionJobs.AddRange(job1, job2);
         await h.Db.SaveChangesAsync();
 
-        var usedBefore = await TrialUsage.CountUsedAsync(h.Db, user.Id, null);
+        var usedBefore = await TrialUsage.CountUsedAsync(h.Db, user.Id, null, Now);
         Assert.Equal(2, usedBefore);
 
         var caller = new StubCurrentUser(admin.Id, admin.Role, admin.Email, admin.FullName);
@@ -44,7 +44,7 @@ public class AdminDashboardEnhancementTests
         Assert.True(result.IsSuccess);
         Assert.Equal(2, result.Value);
 
-        var usedAfter = await TrialUsage.CountUsedAsync(h.Db, user.Id, null);
+        var usedAfter = await TrialUsage.CountUsedAsync(h.Db, user.Id, null, Now);
         Assert.Equal(0, usedAfter);
 
         var audit = h.Db.AdminAuditLogs.Single(a => a.TargetUserId == user.Id);

@@ -72,6 +72,9 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
                 // charged, and the thing to do is submit again.
                 if (job is not null && result.Error.Type == ErrorType.NotFound)
                 {
+                    // Closed here, uncharged, so it stops holding a free place (TrialUsage counts open jobs)
+                    // and the sweep has nothing left to say about it: the client is being told now.
+                    job.Settle(null, _clock.UtcNow);
                     await ActivityRecorder.FailAsync(_db, request.JobId, "The transcription service restarted and lost the job.", _clock.UtcNow, cancellationToken);
                     await _db.SaveChangesAsync(cancellationToken);
                     return new TranscriptionJobDto(
@@ -91,7 +94,9 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         // uncharged — breaking an in-flight transcription across a deploy is the worse trade.
         if (job is not null && result.Value.Status == TranscriptionStatus.Failed)
         {
-            // The job row is settled by the completion sweep, which also pushes; the log only needs the reason.
+            // Closed here, as a finished job is below: it stops holding a free place at once, and the sweep
+            // does not push a failure the client is looking at in this very response.
+            job.Settle(null, _clock.UtcNow);
             await ActivityRecorder.FailAsync(_db, request.JobId, result.Value.Error, _clock.UtcNow, cancellationToken);
             await _db.SaveChangesAsync(cancellationToken);
             return result;
