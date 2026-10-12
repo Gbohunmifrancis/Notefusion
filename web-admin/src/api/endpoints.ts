@@ -10,6 +10,7 @@ import type {
   AdminWaitlistRow,
   AdminWebhookEventDetail,
   AdminWebhookEventRow,
+  KeyCorrections,
   AnalyticsOverview,
   CheckoutFunnel,
   Engagement,
@@ -98,6 +99,10 @@ export const getAdminTranscriptions = (
     `/api/admin/transcriptions${query({ page, pageSize, status, search })}`,
     signal ? { signal } : {},
   );
+
+/** Saved sheets' dohs against the engine's: the doh correction rate behind the transcription quality. */
+export const getKeyCorrections = (days = 30, signal?: AbortSignal) =>
+  request<KeyCorrections>(`/api/admin/key-corrections${query({ days })}`, signal ? { signal } : {});
 
 export const getWaitlist = (
   page: number,

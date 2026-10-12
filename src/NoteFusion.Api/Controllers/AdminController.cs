@@ -218,6 +218,18 @@ public sealed class AdminController : ApiControllerBase
         CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetAdminTranscriptionsQuery(page, pageSize, status, search), ct));
 
+    /// <summary>
+    /// Saved sheets' dohs against the engine's, anonymised: the correction rate, how often the "or is
+    /// it…?" prompt held the doh kept, and the rows as training data for the doh chooser.
+    /// </summary>
+    [HttpGet("key-corrections")]
+    public async Task<IActionResult> KeyCorrections(
+        [FromQuery] int days = 30,
+        [FromQuery] int limit = 500,
+        [FromQuery] bool includeRows = false,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetKeyCorrectionsQuery(days, limit, includeRows), ct));
+
     // ------------------------------------------------ payments & reconciliation
 
     /// <summary>

@@ -111,9 +111,22 @@ export interface LinkInfo {
   maxSeconds: number;
 }
 
+/**
+ * Another key the sung notes fit nearly as well, offered when the doh is unsure. `pitches` are the
+ * result's notes written in its scale, index for index. Mirrors the C# KeyAlternativeDto.
+ */
+export interface KeyAlternative {
+  key: string;
+  pitches: number[];
+  /** The sheet engraved in this key (the web uses it; the app engraves its own). */
+  musicXml?: string;
+}
+
 export interface TranscriptionResult {
   key: string;
   keyConfidence: number;
+  /** Only when the doh is unsure: the other keys it could be, nearest first (at most two). */
+  keyAlternatives?: KeyAlternative[] | null;
   tempo: number;
   timeSignature: string;
   musicXml: string;

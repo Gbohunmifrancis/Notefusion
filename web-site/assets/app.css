@@ -257,6 +257,9 @@ textarea { resize: vertical; line-height: 1.5; }
 .alert-info { background: var(--blue-tint); color: var(--blue-dark); }
 .alert-success { background: var(--success-soft); color: var(--success); }
 .alert .btn { margin-left: auto; }
+.doh-ask { flex-wrap: wrap; align-items: center; }
+.doh-ask .doh-choices { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.doh-ask .doh-choices .btn { margin-left: 0; }
 
 /* ── Segmented tabs ──────────────────────────────────────────────────────── */
 .tabs { display: inline-flex; gap: 3px; background: var(--wash); padding: 4px; border-radius: 12px; margin-bottom: 16px; }

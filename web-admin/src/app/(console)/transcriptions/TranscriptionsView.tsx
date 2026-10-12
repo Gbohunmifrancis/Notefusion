@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { getAdminTranscriptions } from "@/api/endpoints";
+import { getAdminTranscriptions, getKeyCorrections } from "@/api/endpoints";
+import type { KeyCorrections } from "@/api/types";
 import { StateView } from "@/components/StateView";
 import { Badge } from "@/components/Badge";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,11 @@ export function TranscriptionsView() {
     placeholderData: keepPreviousData,
   });
 
+  const doh = useQuery({
+    queryKey: ["key-corrections"],
+    queryFn: ({ signal }) => getKeyCorrections(30, signal),
+  });
+
   useClampPage(page, state.data?.totalPages, setPage);
   const offset = getReportingOffset();
 
@@ -63,6 +69,8 @@ export function TranscriptionsView() {
           </p>
         </div>
       </div>
+
+      {doh.data && doh.data.sheets > 0 ? <DohAccuracy data={doh.data} /> : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full max-w-xs">
@@ -203,3 +211,32 @@ export function TranscriptionsView() {
   );
 }
 
+
+/**
+ * How often users change the doh the engine wrote, on sheets they saved in the last 30 days (a
+ * transposition is not a change). The prompt figure is the share of those changes that took a doh the
+ * "or is it…?" prompt had offered.
+ */
+function DohAccuracy({ data }: { data: KeyCorrections }) {
+  const pct = (n: number, of: number) => (of > 0 ? `${Math.round((n / of) * 100)}%` : "—");
+  const tiles = [
+    { label: "Saved sheets", value: String(data.sheets), hint: `last ${data.days} days` },
+    { label: "Doh kept as heard", value: pct(data.sheets - data.dohChanged, data.sheets), hint: `${data.dohChanged} changed by the user` },
+    { label: "Unsure doh, choices offered", value: pct(data.offered, data.sheets), hint: `${data.offered} sheets` },
+    { label: "Changes the prompt held", value: pct(data.changedToAnOfferedDoh, data.dohChanged), hint: `${data.changedToAnOfferedDoh} of ${data.dohChanged}` },
+  ];
+  return (
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {tiles.map((t) => (
+        <div
+          key={t.label}
+          className="rounded-xl border border-slate-200/80 bg-white px-4 py-3 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]"
+        >
+          <div className="text-[11px] font-medium text-slate-500 dark:text-zinc-400">{t.label}</div>
+          <div className="mt-1 text-xl font-semibold tabular-nums text-slate-900 dark:text-white">{t.value}</div>
+          <div className="mt-0.5 text-[11px] text-slate-400 dark:text-zinc-500">{t.hint}</div>
+        </div>
+      ))}
+    </div>
+  );
+}

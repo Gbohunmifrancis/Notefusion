@@ -166,3 +166,35 @@ public sealed record SystemAnnouncementDto(
     DateTime UpdatedAtUtc);
 
 
+
+/// <summary>
+/// Saved sheets' dohs against the engine's (<c>GetKeyCorrectionsQuery</c>): how many sheets, how many had
+/// their doh changed, how many were offered other dohs, and how many of the changed ones kept one of those.
+/// </summary>
+public sealed record KeyCorrectionsDto(
+    int Days,
+    int Sheets,
+    int DohChanged,
+    int Offered,
+    int ChangedToAnOfferedDoh,
+    IReadOnlyList<KeyCorrectionRowDto> Rows);
+
+/// <summary>
+/// One saved sheet, anonymised: the key the engine wrote and the notes it heard, the key and notes the user
+/// kept, the semitones the sheet was transposed by (taken out before the dohs are compared), and whether the
+/// doh kept was one the engine offered.
+/// </summary>
+public sealed record KeyCorrectionRowDto(
+    DateTime SavedOn,
+    string Kind,
+    string DetectedKey,
+    double KeyConfidence,
+    IReadOnlyList<string> OfferedKeys,
+    string KeptKey,
+    int Transposed,
+    bool DohChanged,
+    bool KeptOfferedDoh,
+    IReadOnlyList<KeyCorrectionNoteDto> HeardNotes,
+    IReadOnlyList<KeyCorrectionNoteDto> KeptNotes);
+
+public sealed record KeyCorrectionNoteDto(int Pitch, double Beats);

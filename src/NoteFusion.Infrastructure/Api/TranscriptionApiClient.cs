@@ -454,7 +454,8 @@ internal sealed class TranscriptionApiClient(
             wire.Result.Chords?
                 .Select(c => new ChordSymbolDto(c.StartBeat, c.DurBeats, c.Root, c.Quality, c.Bass, c.Symbol, c.Solfa))
                 .ToList(),
-            wire.Result.ChordsSource);
+            wire.Result.ChordsSource,
+            wire.Result.KeyAlternatives?.Select(k => new KeyAlternativeDto(k.Key, k.Pitches, k.MusicXml ?? "")).ToList());
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source), wire.QueuePosition);
     }

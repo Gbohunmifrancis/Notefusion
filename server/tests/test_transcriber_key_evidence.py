@@ -74,6 +74,58 @@ def test_rewrite_in_root_declines_a_scale_the_voice_is_plainly_not_in():
     assert transcriber._rewrite_in_root(events, fit, 6, False) is None
 
 
+def test_key_alternatives_carry_each_notes_step_in_the_other_scale():
+    fit = vocal.ScaleFit(offset=0.1, root=0, cost_margin=0.0, tonal_margin=0.1, readings=2, alternatives=(7,))
+    snapped = vocal.snap_to_scale([m - fit.offset for m in FLAT_TI_SUNG], fit.root)
+    events = [Event(i * 0.5, i * 0.5 + 0.45, p, 0.8, pyin_midi=m - fit.offset, stability=1.0)
+              for i, (m, p) in enumerate(zip(FLAT_TI_SUNG, snapped))]
+    carried, roots = transcriber._key_alternatives(events, fit)
+    assert roots == [7]
+    assert [e.pitch + e.alt_steps[0] for e in carried] == FLAT_TI_TUNE
+    assert [e.pitch for e in carried] == snapped  # the sheet's own notes are untouched
+
+
+def test_offered_keys_name_the_doh_in_the_sheets_mode_and_drop_the_sheets_own():
+    notes = [transcriber.TranscribedNote(60 + i, float(i), 1.0, 0, "d", "", 1.0) for i in range(3)]
+    steps = [(0, 1), (1, 0), (0, 0)]
+    major = transcriber._offered_keys([7, 0], 0, "major", 0, notes, steps)
+    assert [(k.key, k.pitches) for k in major] == [("G major", [60, 62, 62])]
+    # A la-based sheet is offered la-based keys; the keyboard transpose moves the doh.
+    minor = transcriber._offered_keys([7], -2, "minor", 9, notes, [(1,), (0,), (0,)])
+    assert [k.key for k in minor] == ["D minor"]
+    assert transcriber._offered_keys([0], 0, "major", 0, notes, steps) is None
+
+
+def test_an_unsure_doh_comes_with_the_others_and_their_notes(tmp_path, monkeypatch):
+    # G A B C C# D D | D C# C B A G G: G and D major read it about equally (the near-tie in
+    # test_vocal), an even chance, which is offered once the bar sits just above it.  (At
+    # exactly even the measured trade was 12 more prompts on Vocadito and no wrong doh more.)
+    sung = [67.05, 69.0, 70.95, 72.1, 73.0, 74.05, 74.05, 74.0, 72.9, 72.0, 71.05, 69.0, 66.95, 66.95]
+    monkeypatch.setattr(transcriber, "KEY_ALTERNATIVES_BELOW", 0.51)
+    result = transcribe(_sing(tmp_path / "near_tie.wav", sung), mode="melody", audio_preview=False, fast=True)
+    assert result.key == "G major"
+    offered = {k.key: k.pitches for k in result.key_alternatives or []}
+    # D nearly as well; C exactly as well, since the tune never sings F or F#.  Every note was
+    # sung within the keep band of its own pitch, so none moves: each only relabels.
+    assert offered == {"D major": _pitches(result), "C major": _pitches(result)}
+    # Each comes engraved in its own key signature, for a client that does not engrave.
+    engraved = {k.key: k.musicxml for k in result.key_alternatives}
+    assert "<fifths>2</fifths>" in engraved["D major"] and "<fifths>0</fifths>" in engraved["C major"]
+    assert engraved["D major"].count("<note") == result.musicxml.count("<note")
+
+
+def test_a_sure_doh_offers_nothing(flat_ti):
+    # The flat F#s leave C the best fit by 40%: unsure (0.44) yet nothing else is close.
+    alone = transcribe(flat_ti, mode="melody", audio_preview=False, fast=True)
+    assert alone.key == "C major"
+    assert alone.key_alternatives is None
+
+
+def test_a_given_key_is_never_second_guessed(flat_ti):
+    given = transcribe(flat_ti, mode="melody", audio_preview=False, fast=True, key_override="G major")
+    assert given.key_alternatives is None
+
+
 def test_the_users_key_writes_the_notes_in_its_own_scale(flat_ti):
     alone = transcribe(flat_ti, mode="melody", audio_preview=False, fast=True)
     assert _pitches(alone).count(77) == 3  # the voice alone: C major, the F#s written F
@@ -185,3 +237,16 @@ def test_a_wrong_key_inside_the_guard_leaves_the_notes_the_voice_sang_clearly():
     assert rewritten is not None  # D fits these notes nearly as well: the guard lets it in
     assert [e.pitch for e in rewritten[0]] == tune
 
+
+
+def test_a_failure_writing_the_other_dohs_never_loses_the_sheet(tmp_path, monkeypatch):
+    sung = [67.05, 69.0, 70.95, 72.1, 73.0, 74.05, 74.05, 74.0, 72.9, 72.0, 71.05, 69.0, 66.95, 66.95]
+    monkeypatch.setattr(transcriber, "KEY_ALTERNATIVES_BELOW", 0.51)
+
+    def broken(*_args):
+        raise RuntimeError("engraver down")
+
+    monkeypatch.setattr(transcriber, "_engrave_in", broken)
+    result = transcribe(_sing(tmp_path / "near_tie.wav", sung), mode="melody", audio_preview=False, fast=True)
+    assert result.key == "G major" and result.notes
+    assert result.key_alternatives is None
