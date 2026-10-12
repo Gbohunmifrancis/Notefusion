@@ -20,17 +20,46 @@ public class HarmoniseSheetTests
         [new(60, 0, 1, 1, "d", "", 1), new(60, 1, 1, 1, "d", "", 1), new(67, 2, 1, 5, "s", "", 1), new(67, 3, 1, 5, "s", "", 1)];
 
     [Fact]
-    public async Task A_free_account_is_told_harmony_is_pro()
+    public async Task A_free_account_gets_one_harmony_and_is_then_told_it_is_pro()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var api = new RecordingApi();
 
-        var result = await Handler(h, user, api).Handle(new HarmoniseSheetCommand("C major", 100, "4/4", Twinkle), default);
+        var first = await Handler(h, user, api).Handle(new HarmoniseSheetCommand("C major", 100, "4/4", Twinkle), default);
+        Assert.True(first.IsSuccess);
+        Assert.NotNull(first.Value.Parts);
+        Assert.Equal(Now, h.Db.Users.Single(u => u.Id == user.Id).FreeHarmonyUsedAtUtc);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal("BILLING_PRO_REQUIRED", result.Error.Code);
-        Assert.Null(api.LastKey);
+        api.Reset();
+        var second = await Handler(h, user, api).Handle(new HarmoniseSheetCommand("C major", 100, "4/4", Twinkle), default);
+        Assert.True(second.IsFailure);
+        Assert.Equal("BILLING_PRO_REQUIRED", second.Error.Code);
+        Assert.Null(api.LastKey); // refused before the worker is asked
+    }
+
+    [Fact]
+    public async Task A_harmony_that_writes_no_parts_does_not_spend_the_free_one()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new RecordingApi { NoParts = true };
+
+        await Handler(h, user, api).Handle(new HarmoniseSheetCommand("C major", 100, "4/4", Twinkle), default);
+
+        Assert.Null(h.Db.Users.Single(u => u.Id == user.Id).FreeHarmonyUsedAtUtc);
+    }
+
+    [Fact]
+    public async Task A_pro_account_never_spends_the_free_harmony()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+
+        await Handler(h, user, new RecordingApi()).Handle(new HarmoniseSheetCommand("C major", 100, "4/4", Twinkle), default);
+
+        Assert.Null(h.Db.Users.Single(u => u.Id == user.Id).FreeHarmonyUsedAtUtc);
     }
 
     [Fact]
@@ -107,11 +136,14 @@ public class HarmoniseSheetTests
     {
         public string? LastKey { get; private set; }
         public IReadOnlyList<NoteEventDto>? LastNotes { get; private set; }
+        public bool NoParts { get; init; }
+        public void Reset() { LastKey = null; LastNotes = null; }
 
         public Task<Result<HarmonyDto>> HarmoniseAsync(string key, int tempoBpm, string timeSignature, IReadOnlyList<NoteEventDto> notes, CancellationToken ct = default)
         {
             LastKey = key;
             LastNotes = notes;
+            if (NoParts) return Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(null, null)));
             var parts = new[] { "soprano", "alto", "tenor", "bass" }.ToDictionary(v => v, v => new PartDto(notes, ["Doh is C · " + v]));
             return Task.FromResult(Result<HarmonyDto>.Success(new HarmonyDto(parts, "<satb/>")));
         }

@@ -391,6 +391,8 @@ export interface Subscription {
   songCreditsTotal?: number;
   /** The plan's display name ("NoteFusion Pro (Monthly)"); null without a subscription. */
   planName?: string | null;
+  /** A free account that has not yet used its one four-part harmony. Always false on Pro. */
+  freeHarmonyAvailable?: boolean;
 }
 
 // --- App release --------------------------------------------------------

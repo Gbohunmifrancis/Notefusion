@@ -723,6 +723,8 @@
 
   // ── App view ─────────────────────────────────────────────────────────────
   function isPro() { return !!(sub && sub.isActive); }
+  /** A free account's one four-part harmony, until it is used. The API decides; this mirrors it. */
+  function freeHarmonyLeft() { return !isPro() && !!(sub && sub.freeHarmonyAvailable); }
 
   function renderWho() {
     $("who-name").textContent = me ? (me.fullName || me.email || "") : "";
@@ -1192,14 +1194,15 @@
     // Four parts are written on request, never assumed: the tab appears once they exist (a saved
     // sheet that already carries them, or after "Write the four parts" below).
     hide($("r-parts"));
-    var hasParts = isPro() && !!result.parts;
+    var hasParts = !!result.parts;
     hasParts ? show($("tab-parts")) : hide($("tab-parts"));
     $("tab-parts").textContent = result.partsSource === "heard" ? "Parts as sung" : "Four parts";
     hasParts ? hide($("harmony")) : show($("harmony"));
+    renderHarmonyOffer();
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
       var text = b.textContent.trim();
-      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
+      b.innerHTML = (b.id === "dl-pdf" ? '<svg class="ic"><use href="#i-download"/></svg>' : "") + text + (isPro() || b.id === "dl-pdf" ? "" : ' <svg class="ic lock"><use href="#i-lock"/></svg>');
     });
 
     // A guest reads and rehearses; saving, sharing, transposing, singing and downloads are the account's.
@@ -1332,7 +1335,7 @@
   // ── Rehearsal player ─────────────────────────────────────────────────────
   function rehearsalVoices(result) {
     var voices = [{ name: "soprano", notes: result.notes || [], gain: 1 }];
-    if (isPro() && result.parts) {
+    if (result.parts) { // the parts it has: Pro, or the free harmony
       C.VOICES.forEach(function (v) { if (v !== "soprano" && result.parts[v] && result.parts[v].notes) voices.push({ name: v, notes: result.parts[v].notes, gain: 0.8 }); });
     }
     return voices;
@@ -1553,7 +1556,7 @@
     request("/api/library", { method: "POST", body: {
       title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
-      lyrics: (current.lyrics || "").trim(), parts: (isPro() && r.parts) ? r.parts : null, partsMusicXml: (isPro() && r.partsMusicXml) ? r.partsMusicXml : null,
+      lyrics: (current.lyrics || "").trim(), parts: r.parts || null, partsMusicXml: r.partsMusicXml || null,
       chords: r.chords || null
     } }).then(function (saved) {
       sfx.play("saved");
@@ -1617,10 +1620,17 @@
    * Four-part harmony, only when asked: the transcription is the one voice we heard, and alto,
    * tenor and bass are an arrangement written under it on request. A saved sheet keeps them.
    */
+  /** The harmony card's label and note: "free once" for a free account that still has it. */
+  function renderHarmonyOffer() {
+    var free = freeHarmonyLeft();
+    $("harmony-add").innerHTML = '<svg class="ic"><use href="#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
+    $("harmony-free-note").classList.toggle("hidden", !free);
+  }
   $("harmony-add").addEventListener("click", function () {
-    track("Asked for harmony");
+    var free = freeHarmonyLeft();
+    track("Asked for harmony", free ? "free try" : null);
     if (guest) { openAuth("register"); return; }
-    if (!isPro()) { openUpgrade(); return; }
+    if (!isPro() && !free) { openUpgrade(); return; }
     if (!current || !current.result) return;
     var r = current.result;
     if (r.parts) { revealParts(); return; }
@@ -1630,6 +1640,8 @@
       .then(function (written) {
         if (!written || !written.parts) { alertIn($("app-alert"), "info", "The tune needs a few notes before parts can be written under it."); return; }
         r.parts = written.parts; r.partsMusicXml = written.partsMusicXml || "";
+        // The free one is spent now: the next sheet's button goes to the plans.
+        if (!isPro() && sub) { sub.freeHarmonyAvailable = false; track("Used free harmony"); }
         showParts(r); setupRehearsal(r); setupSing(r);
         revealParts();
         sfx.play("saved");
@@ -1639,17 +1651,18 @@
         }
       })
       .catch(function (err) { alertIn($("app-alert"), "danger", "The parts could not be written: " + (err.message || err)); })
-      .finally(function () { btn.disabled = false; btn.innerHTML = html; });
+      .finally(function () { btn.disabled = false; btn.innerHTML = html; renderHarmonyOffer(); });
   });
 
   /** Four-part harmony: the four solfa blocks and the SATB score, Pro only. */
   function showParts(result) {
     var parts = result.parts;
     $("sheet-parts").innerHTML = "";
-    if (!isPro() || !parts) {
+    if (!parts) {
       show($("r-parts-locked")); hide($("r-parts-body")); hide($("dl-parts"));
       return;
     }
+    // A free account sees the parts it wrote; the SATB MusicXML download stays Pro (gated below).
     hide($("r-parts-locked")); show($("r-parts-body")); show($("dl-parts"));
     var holder = $("r-parts-solfa");
     holder.innerHTML = "";
@@ -1752,20 +1765,37 @@
     if (!r.partsMusicXml) return;
     download(baseName() + "-satb.musicxml", new Blob([r.partsMusicXml], { type: "application/vnd.recordare.musicxml+xml" }));
   }));
-  $("dl-pdf").addEventListener("click", gated(function (r) {
+  // The PDF is free with a NoteFusion mark; Pro removes it. It was the most-clicked locked button
+  // (eleven people, two of them ten times each), so a dead end became the sheet they came for.
+  $("dl-pdf").addEventListener("click", function () {
+    if (!current || !current.result) return;
+    if (guest) { openAuth("register"); return; }
     var btn = $("dl-pdf"); btn.disabled = true;
-    track("Downloaded PDF");
-    renderPdf(r).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
+    track("Downloaded PDF", isPro() ? null : "free, watermarked");
+    renderPdf(current.result, !isPro()).catch(function (err) { alertIn($("app-alert"), "danger", "Could not build the PDF: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; });
-  }));
+  });
 
   /**
    * The sheet as A4 pages. OSMD paginates onto canvases in a hidden stage; each becomes a
    * page image under a header (title, artist, key, tempo) and above a credit line, which is
    * how the song is acknowledged on paper.
    */
-  function renderPdf(result) {
-    if (!window.opensheetmusicdisplay) return ensureOsmd().then(function () { return renderPdf(result); });
+  /** A free sheet's mark: across each page, faint enough to read through, plus a line at the foot. */
+  function watermarkPdf(doc, W, H) {
+    var pages = doc.getNumberOfPages();
+    for (var p = 1; p <= pages; p++) {
+      doc.setPage(p);
+      if (doc.GState) doc.setGState(new doc.GState({ opacity: 0.1 }));
+      doc.setFont("helvetica", "bold"); doc.setFontSize(46); doc.setTextColor(37, 99, 235);
+      doc.text("NoteFusion", W / 2, H / 2, { align: "center", angle: 35 });
+      if (doc.GState) doc.setGState(new doc.GState({ opacity: 1 }));
+      doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(37, 99, 235);
+      doc.text("Made with NoteFusion free · notefusion.studio · Pro removes this mark", W / 2, H - 4, { align: "center" });
+    }
+  }
+  function renderPdf(result, watermark) {
+    if (!window.opensheetmusicdisplay) return ensureOsmd().then(function () { return renderPdf(result, watermark); });
     if (!window.jspdf) return Promise.reject(new Error("the PDF library did not load; check your connection and reload"));
     var stage = $("pdf-stage");
     stage.innerHTML = "";
@@ -1837,6 +1867,7 @@
           doc.text(line, margin, y); y += 6;
         });
       }
+      if (watermark) watermarkPdf(doc, W, H);
       doc.save(baseName() + ".pdf");
       stage.innerHTML = "";
     });

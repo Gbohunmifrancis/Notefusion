@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
@@ -54,11 +55,23 @@ public sealed class HarmoniseSheetCommandHandler : IRequestHandler<HarmoniseShee
     {
         if (_currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
-        if (!await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken))
-            return TranscriptionErrors.HarmonyProRequired;
         if (KeyParser.Parse(request.Key).IsFailure)
             return LibraryErrors.InvalidKey;
 
-        return await _api.HarmoniseAsync(request.Key, request.TempoBpm, request.TimeSignature, request.Notes, cancellationToken);
+        // Pro writes parts as often as it likes; a free account gets one, so the feature that sends
+        // people to the plans is felt before it is priced. Spent only on success: parts the worker
+        // could not write must not use up the one try.
+        var isPro = await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken);
+        var user = isPro ? null : await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (!isPro && (user is null || user.FreeHarmonyUsedAtUtc is not null))
+            return TranscriptionErrors.HarmonyProRequired;
+
+        var written = await _api.HarmoniseAsync(request.Key, request.TempoBpm, request.TimeSignature, request.Notes, cancellationToken);
+        if (written.IsSuccess && user is not null && written.Value.Parts is not null)
+        {
+            user.UseFreeHarmony(_clock.UtcNow);
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+        return written;
     }
 }
