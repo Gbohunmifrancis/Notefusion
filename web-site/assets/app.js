@@ -1175,6 +1175,7 @@
           : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
     } else hide(trunc);
 
+    renderDohAsk(result);
     renderSolfa(result);
     renderChords(result);
     $("lyrics").value = current.lyrics || "";
@@ -1211,6 +1212,55 @@
     engrave(result.musicXml);
     showParts(result);
     $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /**
+   * "Which doh is it?" When the worker was unsure of the doh it sends the other keys the voice fits
+   * nearly as well, each with the notes and the sheet written in its scale: a note the singer left
+   * between two tones becomes that key's tone rather than an accidental. Asked once, before saving,
+   * so the answer is what gets saved; a sheet with parts is written against one key and is not asked.
+   */
+  function renderDohAsk(result) {
+    var box = $("r-doh");
+    var count = (result.notes || []).length;
+    var alts = (result.keyAlternatives || []).filter(function (a) {
+      return a.musicXml && a.pitches && a.pitches.length === count && C.keyHeader(a.key) !== C.keyHeader(result.key);
+    });
+    if (!current || current.savedId || current.dohAnswered || result.parts || !alts.length) { hide(box); return; }
+    box.innerHTML = "";
+    var text = document.createElement("span");
+    text.textContent = "Your tune fits more than one doh about as well. Which one did you sing in?";
+    var row = document.createElement("span");
+    row.className = "doh-choices";
+    function choice(label, primary, onPick) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn btn-sm " + (primary ? "btn-primary" : "btn-ghost");
+      b.textContent = label;
+      b.addEventListener("click", onPick);
+      row.appendChild(b);
+    }
+    choice(C.keyHeader(result.key), true, function () { current.dohAnswered = true; hide(box); track("Kept doh"); });
+    alts.forEach(function (alt) { choice(C.keyHeader(alt.key), false, function () { pickDoh(alt); }); });
+    box.appendChild(text);
+    box.appendChild(row);
+    show(box);
+  }
+
+  function pickDoh(alt) {
+    var r = current.result;
+    var notes = C.label((r.notes || []).map(function (n, i) { return Object.assign({}, n, { pitchMidi: alt.pitches[i] }); }), alt.key);
+    var chords = r.chords ? r.chords.map(function (ch) {
+      return Object.assign({}, ch, { solfa: C.label([{ pitchMidi: 60 + ch.root, startBeat: 0 }], alt.key, [{ pitchMidi: 60 }])[0].solfa });
+    }) : r.chords;
+    current.dohAnswered = true;
+    track("Chose another doh");
+    var next = Object.assign({}, r, {
+      key: alt.key, notes: notes, musicXml: alt.musicXml, chords: chords,
+      solfaLines: C.renderLines(notes, C.keyHeader(alt.key), r.timeSignature)
+    });
+    current.result = next;
+    showResult(next);
   }
 
   function formatSec(s) {

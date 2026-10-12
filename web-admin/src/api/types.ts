@@ -454,6 +454,19 @@ export interface AdminTranscriptionRow {
   createdAtUtc: string;
 }
 
+/**
+ * Saved sheets' dohs against the engine's, over the last `days` (C# KeyCorrectionsDto, counts only):
+ * how many had the doh changed, how many were offered other dohs, and how many of the changed ones
+ * kept one of those.
+ */
+export interface KeyCorrections {
+  days: number;
+  sheets: number;
+  dohChanged: number;
+  offered: number;
+  changedToAnOfferedDoh: number;
+}
+
 /* ── Payments & reconciliation ────────────────────────────────────────────── */
 
 /** `WebhookStatus.ToString()` — the inbox row's processing state, not the payment's. */

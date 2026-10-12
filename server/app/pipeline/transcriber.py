@@ -1261,6 +1261,17 @@ class TranscribedNote:
 
 
 @dataclass
+class KeyAlternative:
+    """Another doh the voice fits nearly as well: its key, named as ``key`` is, and the pitch
+    of every note of ``notes`` written in its scale (most are unchanged)."""
+
+    key: str
+    pitches: list[int]
+    # The sheet engraved in this key with these pitches, for a client that does not engrave its own.
+    musicxml: str = ""
+
+
+@dataclass
 class TranscriptionResult:
     key: str
     key_confidence: float
@@ -1306,6 +1317,8 @@ class TranscriptionResult:
     chords: list | None = None
     # "heard" when ``chords`` were read from the audio; None without chords.
     chords_source: str | None = None
+    # When the doh is unsure, the others it could be (``KEY_ALTERNATIVES_BELOW``); None otherwise.
+    key_alternatives: list[KeyAlternative] | None = None
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
@@ -1983,6 +1996,9 @@ class Event:
     # Fraction of the note's voiced frames within half a semitone of its pitch, from the
     # voice engine (``vocal.VocalNote.stability``); None off that path.
     stability: float | None = None
+    # Per doh in ``KeyAlternative`` order: the semitones this note moves when written in that
+    # doh's scale instead (``_key_alternatives``); empty when none is offered.
+    alt_steps: tuple[int, ...] = ()
 
     @property
     def f0(self) -> float:
@@ -3219,6 +3235,13 @@ def _segment_vocal(
 # can still be wrong (a hymnbook key the congregation did not sing in), which is why
 # ``_rewrite_in_root`` moves only the notes the voice left in doubt.
 DOH_MAX_COST_RATIO = 1.5
+# A doh this unsure (``vocal.ScaleFit.confidence``) comes with the others the voice fits nearly
+# as well (``vocal.ScaleFit.alternatives``), at most this many, each with the notes written in
+# its own scale, so the user can say which it is in one tap.  Measured on Vocadito's real
+# singers over five recording conditions: offered on 77 of 170 takes, it held the true doh on
+# 16 of the 23 the fit got wrong.
+KEY_ALTERNATIVES_BELOW = 0.5
+KEY_ALTERNATIVES_MAX = 2
 # A choir's parts pin the scale with four voices at once and its key usually comes from the
 # director's copy, so the key it was given is kept further out: a tenor's leading note sung
 # 55 cents flat leaves the right key 1.2-1.5 times the best fit, which C, without the F#,
@@ -3257,6 +3280,71 @@ def _rewrite_in_root(
         pitches = [e.pitch if abs(m - fit.offset - e.pitch) <= vocal.SCALE_KEEP_CHROMATIC else p
                    for e, p, m in zip(events, pitches, untuned)]
     return [replace(e, pitch=p, pyin_midi=m - offset) for e, p, m in zip(events, pitches, untuned)], offset
+
+
+def _key_alternatives(events: list[Event], fit: "vocal.ScaleFit") -> tuple[list[Event], list[int]]:
+    """The events carrying how each of the fit's other dohs would write them, and those dohs.
+
+    Each is written as a typed key is (``_rewrite_in_root``): only the notes the voice left in
+    doubt move.  A doh the voice cannot be written in is not offered.
+    """
+    roots: list[int] = []
+    steps: list[list[int]] = [[] for _ in events]
+    for root in fit.alternatives[:KEY_ALTERNATIVES_MAX]:
+        rewritten = _rewrite_in_root(events, fit, root, False)
+        if rewritten is None:
+            continue
+        roots.append(root)
+        for i, (old, new) in enumerate(zip(events, rewritten[0])):
+            steps[i].append(new.pitch - old.pitch)
+    if not roots:
+        return events, []
+    return [replace(e, alt_steps=tuple(st)) for e, st in zip(events, steps)], roots
+
+
+def _offered_keys(
+    roots: list[int], shift: int, mode: str, doh_pc: int,
+    notes: list["TranscribedNote"], steps: list[tuple[int, ...]],
+) -> list[KeyAlternative] | None:
+    """The alternative dohs as keys in the sheet's mode, each with the sheet's notes in its scale.
+
+    ``roots`` are sounding pitch classes, so the keyboard transpose moves them as it moved the
+    notes; a doh that came out the same as the sheet's own is dropped.
+    """
+    offered: list[KeyAlternative] = []
+    for k, root in enumerate(roots):
+        doh = (root + shift) % 12
+        if doh == doh_pc:
+            continue
+        tonic = doh if mode == "major" else (doh + 9) % 12
+        offered.append(KeyAlternative(
+            key=_normalise_key_name(_key_from_identity(tonic, mode).name),
+            pitches=[n.pitch_midi + (st[k] if k < len(st) else 0) for n, st in zip(notes, steps)],
+        ))
+    return offered or None
+
+
+def _engrave_in(score, alt: KeyAlternative, chord_spans, shift: int) -> str:
+    """The measured sheet as MusicXML in ``alt``'s key, its notes at ``alt.pitches``.
+
+    A copy of the sheet as engraved, so bars, ties and rests are the same; only the pitches,
+    their spelling and the key signature change, and the chords are named in the new key.
+    """
+    import copy
+
+    from music21 import key as m21key, stream
+
+    k = _parse_key_override(alt.key)
+    sheet = copy.deepcopy(score)
+    ordered = [n for measure in sheet.getElementsByClass(stream.Measure) for n in measure.notes]
+    for n, pitch in zip(ordered, alt.pitches):
+        n.pitch.midi = pitch
+    for old in list(sheet.recurse().getElementsByClass(m21key.KeySignature)):
+        old.activeSite.replace(old, m21key.Key(k.tonic.name, k.mode))
+    _respell_to_key(sheet, k)
+    sheet.makeAccidentals(inPlace=True, alteredPitches=k.alteredPitches)
+    labels = chords.label(chords.transpose(chord_spans, shift), k.tonic.name, k.mode) if chord_spans is not None else []
+    return chords.add_harmony(export_musicxml(sheet), labels or [])
 
 
 def _refine_pitches(
@@ -5185,6 +5273,14 @@ def _transcribe_wav(
             events, offset = rewritten
             vocal_fit = replace(vocal_fit, offset=offset, root=override_doh)
 
+    # ── 6a'. The dohs it could also be ────────────────────────────────────────
+    # Written now, from the same sung pitches, while the events still carry them; offered
+    # below only if the doh turns out unsure.  A sheet with parts is left alone: they are
+    # written against one key.
+    alternative_roots: list[int] = []
+    if override_doh is None and vocal_fit is not None and events and mode == "melody" and not harmony:
+        events, alternative_roots = _key_alternatives(events, vocal_fit)
+
     # ── 6b. Sample Basic Pitch's onset posterior ──────────────────────────────
     # After both paths converge and after every stage that can move a boundary, because the
     # reading is taken AT the event's start — a merge, a split or an overlap trim would
@@ -5342,6 +5438,7 @@ def _transcribe_wav(
         # grid, so this floor and the quantizer agree.
         n.duration.quarterLength = max((evt.end - evt.start) * sec_to_beats, 0.25)
         n.editorial.confidence = _note_confidence(evt, has_evidence)
+        n.editorial.alt_steps = evt.alt_steps
         # max() is defensive: _beat_origin never returns a value after the first
         # onset, so nothing should clamp here.
         s.insert(max(0.0, (evt.start - beat_origin) * sec_to_beats), n)
@@ -5441,6 +5538,7 @@ def _transcribe_wav(
     ref_doh = solfa.reference_doh([e.pitch for e in events], doh_pc)
 
     notes: list[TranscribedNote] = []
+    alt_steps: list[tuple[int, ...]] = []
     bars: list[str] = []
 
     # Chromatic spelling follows melodic direction, so the whole clip's pitch order has to
@@ -5479,6 +5577,7 @@ def _transcribe_wav(
                     conf=round(float(getattr(n.editorial, "confidence", 1.0)), 3),
                 )
             )
+            alt_steps.append(tuple(getattr(n.editorial, "alt_steps", ())))
         bars.append(" ".join(bar_syllables) if bar_syllables else "-")
 
     if not notes:
@@ -5519,6 +5618,16 @@ def _transcribe_wav(
         chords.label(chords.transpose(chord_spans, shift), detected.tonic.name, detected.mode)
         if chord_spans is not None else None
     )
+
+    key_alternatives = None
+    if alternative_roots and key_confidence < KEY_ALTERNATIVES_BELOW:
+        try:
+            key_alternatives = _offered_keys(alternative_roots, shift, detected.mode, doh_pc, notes, alt_steps)
+            for alt in key_alternatives or []:
+                alt.musicxml = _engrave_in(score, alt, chord_spans, shift)
+        except Exception as exc:  # noqa: BLE001 - the question is optional; the sheet is not
+            print(f"[notefusion] doh alternatives skipped: {exc!r}", flush=True)
+            key_alternatives = None
 
     # ── 11. Normalise key name for C#'s KeyParser ─────────────────────────────
     # music21 returns names like "B- major" or "a minor"; C#'s KeyParser expects
@@ -5589,6 +5698,7 @@ def _transcribe_wav(
         parts_source=parts_source,
         chords=chord_list,
         chords_source="heard" if chord_list else None,
+        key_alternatives=key_alternatives,
     )
 
 

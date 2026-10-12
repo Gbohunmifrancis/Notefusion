@@ -103,7 +103,14 @@ internal sealed record JobResultResponse(
     string BackingAudioBase64 = "",
     string? PartsSource = null,
     IReadOnlyList<WireChord>? Chords = null,
-    string? ChordsSource = null);
+    string? ChordsSource = null,
+    IReadOnlyList<WireKeyAlternative>? KeyAlternatives = null);
+
+/// <summary>Another doh the voice fits nearly as well (<c>app.pipeline.transcriber.KeyAlternative</c>).</summary>
+internal sealed record WireKeyAlternative(
+    string Key,
+    IReadOnlyList<int> Pitches,
+    [property: JsonPropertyName("musicxml")] string MusicXml = "");
 
 /// <summary>One chord heard under the tune, as the worker names it (<c>app.pipeline.chords.Chord</c>).</summary>
 internal sealed record WireChord(

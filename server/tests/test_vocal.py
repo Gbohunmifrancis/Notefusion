@@ -808,3 +808,30 @@ def test_write_in_root_refits_the_offset_for_the_fits_twin():
     offset, pitches = vocal.write_in_root(sung, weights, weights, 11)
     assert offset == pytest.approx(-0.5)
     assert pitches == [m + 1 for m in flat]
+
+
+def test_fit_scale_offers_the_other_dohs_the_voice_fits_nearly_as_well():
+    # The near-tie above: G won, D was nearly as good, and is the doh offered.
+    sung = [67.05, 69.0, 70.95, 72.1, 73.0, 74.05, 74.0, 72.9, 72.0, 71.05, 69.0, 66.95]
+    weights = [1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2]
+    fit = vocal.fit_scale_detail(sung, weights)
+    assert fit.root == 7
+    assert 2 in fit.alternatives and fit.root not in fit.alternatives
+
+
+def test_a_plain_major_scale_offers_no_other_doh():
+    sung = [60, 62, 64, 65, 67, 69, 71, 72, 71, 69, 67, 65, 64, 62, 60]
+    assert vocal.fit_scale_detail(sung, [1.0] * len(sung)).alternatives == ()
+
+
+def test_a_tie_with_the_winner_is_offered_and_a_twin_is_not():
+    # Do-re-mi-sol-la reads alike in C, F and G: the doh is the profile's guess, so the
+    # other two are offered (the notes are the same in each, only the doh moves).
+    sung = [60, 62, 64, 67, 69, 67, 64, 62, 60]
+    fit = vocal.fit_scale_detail(sung, [2.0, 1, 1, 1, 1, 1, 1, 1, 3.0])
+    assert fit.root == 0
+    assert {5, 7} <= set(fit.alternatives)
+    # The same tune a quarter-tone sharp reads in C and in D-flat a semitone over: the
+    # same doh twice, so D-flat is never offered beside C.
+    sharp = vocal.fit_scale_detail([m + 0.48 for m in sung], [2.0, 1, 1, 1, 1, 1, 1, 1, 3.0])
+    assert not any((sharp.root - r) % 12 in (1, 11) for r in sharp.alternatives)

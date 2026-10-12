@@ -28,7 +28,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   its major and relative minor, and the key confidence is the fit's `ScaleFit.confidence` (the
   cost margin over the runner-up scale, at most 1/k when k readings fit within 5% and an even
   chance beyond a 0.4 offset); without a fit the vote keeps to keys whose scale holds the notes as
-  well as any does (`_scale_parsimony`). A key given at submit (`key_override`) re-writes the
+  well as any does (`_scale_parsimony`). An unsure doh (confidence under `KEY_ALTERNATIVES_BELOW`) comes with
+  `key_alternatives`: the fit's other roots within `SCALE_FIT_CROWD_RATIO`, each with the notes written in its scale
+  (as a typed key is) and engraved; the clients ask "which doh is it?" and a choice swaps pitches and key together.
+  The admin `GET /api/admin/key-corrections` reads saved sheets against their jobs' `ResultJson` (anonymised) for
+  the doh correction rate and training rows. A key given at submit (`key_override`) re-writes the
   sung pitches in its scale (`vocal.write_in_root`; a key the voice fits worse than 1.5x its
   best only relabels, and a note sung within 25 cents of its own scale's pitch is never moved,
   so a wrong key can only relabel what was heard clearly); a song's backing chords are labelled but never move the doh (taking

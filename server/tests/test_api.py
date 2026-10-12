@@ -127,6 +127,33 @@ def test_a_skipped_refinement_reaches_the_wire(monkeypatch):
         assert "pitch_refined" not in body["result"]
 
 
+def test_an_unsure_dohs_alternatives_reach_the_wire(monkeypatch):
+    """``keyAlternatives`` is what the clients' "or is it…?" prompt reads: camelCase, with the
+    key and its notes' pitches."""
+    from app.jobs import queue as queue_mod
+    from app.pipeline.transcriber import KeyAlternative, TranscribedNote, TranscriptionResult
+
+    def fake_transcribe(audio_path, mode="melody", **kwargs):
+        return TranscriptionResult(
+            key="C major", key_confidence=0.3, tempo=120, time_signature="4/4", musicxml="<score/>",
+            midi_base64="bWk=", notes=[TranscribedNote(65, 0.0, 1.0, 4, "f", "", 0.9)],
+            solfa_lines=["Doh is C", "| f |"], overall_confidence=0.5,
+            key_alternatives=[KeyAlternative(key="G major", pitches=[66])],
+        )
+
+    monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
+
+    with TestClient(app) as client:
+        r = client.post(
+            "/v1/transcribe",
+            files={"audio": ("clip.wav", BytesIO(_make_wav(duration_sec=0.5)), "audio/wav")},
+            data={"mode": "melody"},
+        )
+        body = _wait_for_status(client, SubmitResponse.model_validate(r.json()).job_id, STATUS_DONE)
+        assert body["result"]["keyAlternatives"] == [{"key": "G major", "pitches": [66], "musicxml": ""}]
+        assert "key_alternatives" not in body["result"]
+
+
 def test_submit_rejects_empty_file():
     with TestClient(app) as client:
         r = client.post(

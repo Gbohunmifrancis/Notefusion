@@ -26,8 +26,9 @@ import { RehearseView } from "../components/result/RehearseView";
 import { usePractice } from "../components/result/usePractice";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { ChordSymbol, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
+import type { ChordSymbol, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
+import { dohChoices, writeInKey } from "../lib/dohChoice";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -196,6 +197,17 @@ export function ResultScreen({ route, navigation }: Props) {
   const [key, setKey] = useState(result.key);
   const [pickingKey, setPickingKey] = useState(false);
   const [rekeying, setRekeying] = useState(false);
+  /**
+   * When the worker was unsure of the doh: the other keys the voice fits nearly as well, each with
+   * the notes written in its scale. Asked once, on the sheet as it came back; answering, re-keying,
+   * transposing or correcting a note puts the question away.
+   */
+  const [doubt, setDoubt] = useState<KeyAlternative[]>(() =>
+    dohChoices(result.key, result.notes, result.keyAlternatives, (k) => {
+      const parsed = parseKey(k);
+      return parsed ? dohPitchClass(parsed) : null;
+    }),
+  );
 
   // ── Transpose for my choir ────────────────────────────────────────────────
   // The one edit that moves the notes. After it, the *baseline* the corrections are
@@ -464,6 +476,7 @@ export function ResultScreen({ route, navigation }: Props) {
 
   async function applyKey(next: string) {
     setPickingKey(false);
+    setDoubt([]);
     if (sameKey(next, key)) return;
 
     const previous = key;
@@ -484,6 +497,39 @@ export function ResultScreen({ route, navigation }: Props) {
     } finally {
       setRekeying(false);
     }
+  }
+
+  /**
+   * The answer to "which doh is it?". Another doh brings its own pitches — a note the singer left
+   * between two scale tones is written as that key's tone — so it is the sheet as heard in that key,
+   * not a correction: the baseline moves with it, as it does for a transposition.
+   */
+  async function chooseDoh(choice: KeyAlternative | null) {
+    if (!choice) {
+      setDoubt([]);
+      return;
+    }
+    const relabelled = deriveSolfa(
+      writeInKey(baseline.notes, choice), choice.key, timeSignature, result.chromaticSpelling ?? "direction");
+    if (savedId) {
+      setRekeying(true);
+      try {
+        await libraryApi.updateNotes(savedId, relabelled.notes);
+        await libraryApi.updateKey(savedId, choice.key);
+      } catch (e) {
+        showDialog({ title: "Could not change the doh", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
+        return;
+      } finally {
+        setRekeying(false);
+      }
+    }
+    setBaseline({ notes: relabelled.notes, key: choice.key, solfaLines: relabelled.solfaLines });
+    setDraft(pristine(relabelled.notes));
+    persisted.current = pristine(relabelled.notes);
+    setKey(choice.key);
+    setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
+    setDoubt([]);
+    haptics.play("success");
   }
 
   async function handleTempoChange(nextTempo: number) {
@@ -740,6 +786,7 @@ export function ResultScreen({ route, navigation }: Props) {
       setPreview(synthesizeMelodyWavBase64(notes, tempo));
       setSemitones(0);
       setPickingKey(false);
+      setDoubt([]);
       haptics.play("success");
     } catch (e) {
       showDialog({ title: "Could not transpose", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
@@ -1270,6 +1317,39 @@ export function ResultScreen({ route, navigation }: Props) {
               accessibilityLabel={`${surePct} percent sure`}
             />
           </View>
+
+          {doubt.length > 0 && !edited && !parts ? (
+            <View style={styles.panel}>
+              <Text style={styles.panelEyebrow}>Which doh is it?</Text>
+              <Text style={styles.panelHint}>
+                Your tune fits more than one doh about as well. Tap the one you sang in — notes you left
+                between two tones are written in its scale.
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
+                <Touchable
+                  style={[styles.chip, styles.chipOn]}
+                  radius={radii.pill}
+                  onPress={() => chooseDoh(null)}
+                  disabled={rekeying}
+                  accessibilityLabel={`Keep doh as ${doh}`}
+                >
+                  <Text style={[styles.chipText, styles.chipTextOn]}>Doh is {doh}</Text>
+                </Touchable>
+                {doubt.map((choice) => (
+                  <Touchable
+                    key={choice.key}
+                    style={styles.chip}
+                    radius={radii.pill}
+                    onPress={() => chooseDoh(choice)}
+                    disabled={rekeying}
+                    accessibilityLabel={`Doh is ${dohLetter(choice.key)}`}
+                  >
+                    <Text style={styles.chipText}>Doh is {dohLetter(choice.key)}</Text>
+                  </Touchable>
+                ))}
+              </ScrollView>
+            </View>
+          ) : null}
 
           {pickingKey ? keyControls : null}
 

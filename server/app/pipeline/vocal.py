@@ -264,6 +264,12 @@ class ScaleFit:
     # Distinct readings within SCALE_FIT_CROWD_RATIO of the best cost, the winner's included
     # (a quarter-tone singer's twins count once, and so do roots tied exactly).
     readings: int = 1
+    # The other roots within SCALE_FIT_CROWD_RATIO, nearest first: the dohs a user is
+    # offered when this one is unsure.  Unlike ``readings`` a root tied exactly with the
+    # winner counts (a pentatonic tune's notes read alike in it, only the doh moves), and a
+    # twin of the winner does not (it is the same doh written a semitone over).  Of a pair
+    # of twins the simpler key signature is offered.
+    alternatives: tuple[int, ...] = ()
 
     @property
     def confidence(self) -> float:
@@ -997,6 +1003,20 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
         if not any(twins(q, r) or abs(float(best_cost[q] - best_cost[r])) <= SCALE_FIT_TIE for q in readings):
             readings.append(r)
 
+    def alternatives_to(root: int) -> tuple[int, ...]:
+        offered: list[int] = []
+        for r in order:
+            if float(best_cost[r]) > low * (1.0 + SCALE_FIT_CROWD_RATIO) + SCALE_FIT_TIE:
+                break
+            if r == root or twins(r, root):
+                continue
+            twin = next((i for i, q in enumerate(offered) if twins(q, r)), None)
+            if twin is None:
+                offered.append(r)
+            elif _KEY_SIGNATURE_ACCIDENTALS[r] < _KEY_SIGNATURE_ACCIDENTALS[offered[twin]]:
+                offered[twin] = r
+        return tuple(offered)
+
     # Nothing in the audio separates twins, so the key signature does — the reading in the
     # simpler key, which is where choir music is written (G over A-flat, B-flat over B) —
     # and it does so before the profile is asked: the profile reads each twin's histogram
@@ -1011,7 +1031,7 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     ]
     if len(tied) == 1:
         root = tied[0]
-        return ScaleFit(float(best_theta[root]), root, margin_over(root), 1.0, len(readings))
+        return ScaleFit(float(best_theta[root]), root, margin_over(root), 1.0, len(readings), alternatives_to(root))
 
     def tonality(root: int) -> float:
         histogram = np.zeros(12)
@@ -1025,7 +1045,8 @@ def fit_scale_detail(midis: Sequence[float], weights: Sequence[float]) -> ScaleF
     )
     root = scored[0][3]
     tonal_margin = scored[0][0] - scored[1][0]
-    return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin, len(readings))
+    return ScaleFit(float(best_theta[root]), root, margin_over(root), tonal_margin, len(readings),
+                    alternatives_to(root))
 
 
 def snap_to_scale(

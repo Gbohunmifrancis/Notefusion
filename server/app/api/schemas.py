@@ -81,6 +81,15 @@ class ChordDto(ApiModel):
     solfa: str
 
 
+class KeyAlternativeDto(ApiModel):
+    """Another doh the voice fits nearly as well, offered when the doh is unsure: its key and
+    the pitch of every note written in its scale, index for index with ``notes``."""
+    key: str
+    pitches: list[int]
+    # The sheet engraved in this key, for a client that does not engrave its own.
+    musicxml: str = ""
+
+
 class ResultDto(ApiModel):
     key: str
     key_confidence: float
@@ -126,6 +135,8 @@ class ResultDto(ApiModel):
     # accompaniment; null otherwise.  ``chords_source`` is "heard" when there are chords.
     chords: list[ChordDto] | None = None
     chords_source: str | None = None
+    # Only when the doh is unsure: the others it could be, nearest first (at most two).
+    key_alternatives: list[KeyAlternativeDto] | None = None
 
 
 class GradeTargetNoteDto(ApiModel):

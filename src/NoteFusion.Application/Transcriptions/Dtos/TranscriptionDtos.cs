@@ -232,7 +232,20 @@ public sealed record TranscriptionResultDto(
     /// </summary>
     IReadOnlyList<ChordSymbolDto>? Chords = null,
     /// <summary>"heard" when <see cref="Chords"/> were read from the audio; null without chords.</summary>
-    string? ChordsSource = null);
+    string? ChordsSource = null,
+    /// <summary>
+    /// Only when the doh is unsure: the other keys the voice fits nearly as well, nearest first (at
+    /// most two), for the "or is it…?" prompt. Null otherwise.
+    /// </summary>
+    IReadOnlyList<KeyAlternativeDto>? KeyAlternatives = null);
+
+/// <summary>
+/// Another key the sung notes fit nearly as well. <c>Pitches</c> are the result's notes written in its
+/// scale, index for index (most are unchanged): choosing it replaces the pitches and the key together,
+/// so the notes the voice left in doubt are written as that key's scale tones, not as accidentals.
+/// <c>MusicXml</c> is the sheet engraved that way, for a client that does not engrave its own (the web).
+/// </summary>
+public sealed record KeyAlternativeDto(string Key, IReadOnlyList<int> Pitches, string MusicXml = "");
 
 /// <summary>
 /// Polling envelope for a transcription job.

@@ -87,6 +87,23 @@ public class WorkerContractTests
     }
 
     [Fact]
+    public async Task An_unsure_dohs_alternatives_come_through_with_their_pitches()
+    {
+        const string payload = """
+            {"status":"done","result":{"key":"C major","keyConfidence":0.3,"tempo":84,"timeSignature":"4/4","musicxml":"<s/>","midiBase64":"",
+             "notes":[],"solfaLines":[],"overallConfidence":0.6,
+             "keyAlternatives":[{"key":"G major","pitches":[67,66,64],"musicxml":"<g/>"},{"key":"F major","pitches":[67,65,64]}]}}
+            """;
+
+        var result = (await Client(StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload)).GetJobAsync("j1")).Value.Result!;
+
+        Assert.Equal(["G major", "F major"], result.KeyAlternatives!.Select(k => k.Key));
+        Assert.Equal([67, 66, 64], result.KeyAlternatives![0].Pitches);
+        Assert.Equal("<g/>", result.KeyAlternatives[0].MusicXml);
+        Assert.Equal("", result.KeyAlternatives[1].MusicXml);
+    }
+
+    [Fact]
     public async Task A_result_without_chords_says_so()
     {
         const string payload = """
@@ -98,6 +115,7 @@ public class WorkerContractTests
 
         Assert.Null(job.Value.Result!.Chords);
         Assert.Null(job.Value.Result.ChordsSource);
+        Assert.Null(job.Value.Result.KeyAlternatives);
     }
 
     [Fact]
