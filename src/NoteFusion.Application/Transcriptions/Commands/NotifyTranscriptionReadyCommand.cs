@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -32,7 +33,7 @@ public sealed record NotifyTranscriptionReadyCommand(Guid JobRowId) : IRequest<R
     /// job TTL and the longest recording it will accept, so reaching this means the job is genuinely
     /// lost — a dyno cycled mid-transcription, most likely — rather than merely slow.
     /// </summary>
-    public static readonly TimeSpan GiveUpAfter = TimeSpan.FromMinutes(30);
+    public static readonly TimeSpan GiveUpAfter = TrialUsage.RunningFor;
 }
 
 public sealed class NotifyTranscriptionReadyCommandHandler

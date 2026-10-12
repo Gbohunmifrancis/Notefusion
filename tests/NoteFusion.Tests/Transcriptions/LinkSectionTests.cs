@@ -101,11 +101,11 @@ public class LinkSectionTests
     {
         using var h = new TestHarness(Now);
         var api = new FakeApi();
-        for (var i = 0; i < PreviewLimits.PerDevicePerDay; i++)
+        for (var i = 0; i < 3; i++)
             Assert.True((await PreviewInfo(h, api).Handle(new GetPreviewLinkInfoQuery(Link), default)).IsSuccess);
         Assert.Empty(h.Db.PreviewJobs);
 
-        for (var i = 0; i < PreviewLimits.PerDevicePerDay; i++)
+        for (var i = 0; i < PreviewLimits.PerDevice; i++)
             h.Db.PreviewJobs.Add(PreviewJob.Record($"p{i}", "link", "browser-a", null, Now));
         h.Db.SaveChanges();
 
