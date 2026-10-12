@@ -11,7 +11,7 @@ using NoteFusion.Tests.Support;
 namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
-/// The website's try-it-free preview: anonymous, thirty seconds, throttled per browser, handed over
+/// The website's try-it-free preview: anonymous, thirty seconds, one per browser, handed over
 /// as a free account would see it, and claimable by the account it turns into.
 /// </summary>
 public class PreviewTests
@@ -36,12 +36,11 @@ public class PreviewTests
     }
 
     [Fact]
-    public async Task A_browser_gets_five_previews_a_day_then_is_asked_to_sign_up()
+    public async Task A_browser_gets_one_preview_ever_then_is_asked_to_sign_up()
     {
         using var h = new TestHarness(Now);
         var api = new FakeApi();
-        for (var i = 0; i < PreviewLimits.PerDevicePerDay; i++)
-            Assert.True((await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default)).IsSuccess);
+        Assert.True((await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default)).IsSuccess);
 
         var refused = await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
         var other = await Upload(h, api, "browser-b").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
@@ -49,9 +48,55 @@ public class PreviewTests
         Assert.Equal("PREVIEW_LIMIT_REACHED", refused.Error.Code);
         Assert.True(other.IsSuccess);
 
-        // Tomorrow the allowance is back.
-        h.Clock.UtcNow = Now.AddDays(1).AddMinutes(1);
-        Assert.True((await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default)).IsSuccess);
+        // It does not come back tomorrow: five a day, renewed daily, was a free tier with no end.
+        h.Clock.UtcNow = Now.AddDays(30);
+        Assert.Equal("PREVIEW_LIMIT_REACHED",
+            (await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default)).Error.Code);
+    }
+
+    [Fact]
+    public async Task A_request_with_no_browser_id_is_refused()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+
+        // The website always sends one; without it the only ceiling left was the address's.
+        var result = await new SubmitPreviewCommandHandler(api, h.Db, h.Clock, new StubDeviceFingerprint(null), h.ClientIp, h.Activity())
+            .Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
+
+        Assert.Equal("PREVIEW_LIMIT_REACHED", result.Error.Code);
+        Assert.Null(api.LastOptions);
+    }
+
+    [Fact]
+    public async Task Signing_out_is_not_a_way_back_to_free_previews()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+        var user = User.Create("Ada", "ada@example.com", h.Hasher.Hash("password123"), Now);
+        h.Db.Users.Add(user);
+        h.Db.TranscriptionJobs.Add(TranscriptionJob.Record("account-job", user.Id, Now.AddDays(-1), "browser-a"));
+        h.Db.SaveChanges();
+
+        var result = await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
+
+        Assert.Equal("PREVIEW_LIMIT_REACHED", result.Error.Code);
+        Assert.Contains("Sign in", result.Error.Message);
+    }
+
+    [Fact]
+    public async Task An_address_is_capped_for_the_day_whatever_browsers_it_claims()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+        h.ClientIp.Current = "102.89.1.1";
+        for (var i = 0; i < PreviewLimits.PerAddressPerDay; i++)
+            Assert.True((await Upload(h, api, $"browser-{i}").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default)).IsSuccess);
+
+        // A cleared browser id is a new browser; the address it comes from is not.
+        var refused = await Upload(h, api, "browser-new").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
+
+        Assert.Equal("PREVIEW_LIMIT_REACHED", refused.Error.Code);
     }
 
     [Fact]
@@ -126,12 +171,12 @@ public class PreviewTests
         Assert.Equal(-4, api.LastOptions.KeyboardTranspose);
         Assert.Equal(PreviewLimits.Seconds, api.LastOptions.MaxSeconds);
 
-        var link = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ", KeyboardTranspose: 3), default);
+        var link = await Link(h, api, "browser-b").Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ", KeyboardTranspose: 3), default);
         Assert.True(link.IsSuccess);
         Assert.Equal(3, api.LastOptions!.KeyboardTranspose);
 
         // A plain hum sends the defaults the worker already assumes.
-        await Upload(h, api, "browser-b").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
+        await Upload(h, api, "browser-c").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
         Assert.Equal(TranscriptionMode.Melody, api.LastOptions!.Mode);
         Assert.Equal(0, api.LastOptions.KeyboardTranspose);
     }
@@ -154,8 +199,8 @@ public class PreviewTests
     private static SubmitPreviewCommandHandler Upload(TestHarness h, FakeApi api, string device)
         => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity());
 
-    private static SubmitPreviewLinkCommandHandler Link(TestHarness h, FakeApi api)
-        => new(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp, h.Activity());
+    private static SubmitPreviewLinkCommandHandler Link(TestHarness h, FakeApi api, string device = "browser-a")
+        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity());
 
     private sealed class FakeApi : ITranscriptionApi
     {

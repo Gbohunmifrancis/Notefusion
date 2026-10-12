@@ -77,6 +77,20 @@ public class LinkTranscriptionTests
     }
 
     [Fact]
+    public async Task Two_links_sent_at_once_are_not_both_the_free_preview()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+
+        // The first is still running, so not yet charged; it holds the one preview all the same.
+        Assert.True((await SubmitLink(h, user)).IsSuccess);
+        var second = await SubmitLink(h, user);
+
+        Assert.Equal("BILLING_SONG_PREVIEW_USED", second.Error.Code);
+        Assert.Equal(0, (await Shown(h, user)).SongCreditsRemaining);
+    }
+
+    [Fact]
     public async Task A_preview_that_fails_costs_nothing()
     {
         using var h = new TestHarness(Now);

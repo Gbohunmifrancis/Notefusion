@@ -38,17 +38,23 @@ public sealed record SubmitPreviewLinkCommand(
 
 internal static class PreviewThrottle
 {
+    /// <summary>
+    /// Refuses a preview the visitor has no claim to: a browser that sent no id (the website always sends
+    /// one, so this is a script), one that has had its preview, one an account has already transcribed on
+    /// (signing out is not a way back to free use), or an address past its day's ceiling.
+    /// </summary>
     public static async Task<Error?> CheckAsync(
         IApplicationDbContext db, string? device, string? ip, DateTime utcNow, CancellationToken ct)
     {
-        var since = utcNow.AddDays(-1);
-        if (device is not null)
-        {
-            var used = await db.PreviewJobs.CountAsync(p => p.DeviceFingerprint == device && p.CreatedAtUtc >= since, ct);
-            if (used >= PreviewLimits.PerDevicePerDay) return TranscriptionErrors.PreviewLimitReached;
-        }
+        if (device is null)
+            return TranscriptionErrors.PreviewLimitReached;
+        if (await db.PreviewJobs.CountAsync(p => p.DeviceFingerprint == device, ct) >= PreviewLimits.PerDevice)
+            return TranscriptionErrors.PreviewLimitReached;
+        if (await db.TranscriptionJobs.AnyAsync(j => j.DeviceFingerprint == device, ct))
+            return TranscriptionErrors.PreviewLimitReached;
         if (ip is not null)
         {
+            var since = utcNow.AddDays(-1);
             var used = await db.PreviewJobs.CountAsync(p => p.Ip == ip && p.CreatedAtUtc >= since, ct);
             if (used >= PreviewLimits.PerAddressPerDay) return TranscriptionErrors.PreviewLimitReached;
         }

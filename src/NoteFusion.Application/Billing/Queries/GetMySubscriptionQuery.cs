@@ -39,10 +39,7 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         if (_currentUser.UserId is not { } userId)
             return BillingErrors.NotAuthenticated;
 
-        // The ceiling is regional — Nigeria's allowance is smaller than the rest of the world's — so it is
-        // resolved here once and fed to both halves of what the app displays. Read straight off the account
-        // rather than looked up afresh: the country is recorded at sign-up and first observation wins, so a
-        // user who travels keeps the allowance they were shown, and a VPN cannot buy a bigger trial.
+        // The ceiling is resolved once and fed to both halves of what the app displays.
         var country = await _db.Users
             .Where(u => u.Id == userId)
             .Select(u => u.Country)
@@ -52,8 +49,9 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
 
         // Counted by the same helper the submit gate uses, against the same country, so the number the
         // app shows and the number that triggers the paywall cannot drift apart. That includes the
-        // device half: a second account on a spent handset must see 0 left, not 5 followed by a refusal.
-        var remaining = await TrialUsage.CountRemainingAsync(_db, userId, _device.Current, country, ct);
+        // device half (a second account on a spent handset sees 0 left, not 3 followed by a refusal) and
+        // the transcriptions still running, which hold their place until they settle.
+        var remaining = await TrialUsage.CountRemainingAsync(_db, userId, _device.Current, country, _clock.UtcNow, ct);
 
         var sub = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
@@ -64,7 +62,7 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
         var songsTotal = isPro ? SongCredits.ProMonthlyAllowance : SongCredits.FreePreviews;
         var songsUsed = isPro
             ? await SongCredits.CountUsedThisMonthAsync(_db, userId, _clock.UtcNow, ct)
-            : await SongCredits.CountPreviewsUsedAsync(_db, userId, _device.Current, ct);
+            : await SongCredits.CountPreviewsUsedAsync(_db, userId, _device.Current, _clock.UtcNow, ct);
         var songsRemaining = Math.Max(0, songsTotal - songsUsed);
 
         if (sub is null)

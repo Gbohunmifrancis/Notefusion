@@ -76,7 +76,7 @@ public static class TranscriptionErrors
             "Keyboard transpose must be a whole number of semitones from -11 to 11.");
 
     public static readonly Error PreviewLimitReached =
-        Error.Validation("PREVIEW_LIMIT_REACHED", "You've used today's free previews. Create a free account to keep transcribing.");
+        Error.Validation("PREVIEW_LIMIT_REACHED", "You've had your free preview. Sign in or create a free account to keep transcribing.");
 
     public static readonly Error ProRequired =
         Error.Forbidden("BILLING_PRO_REQUIRED", "Sing-along grading is a Pro feature. Upgrade to have your takes marked note by note.");

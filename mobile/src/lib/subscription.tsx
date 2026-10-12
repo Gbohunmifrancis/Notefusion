@@ -90,13 +90,11 @@ const SubscriptionContext = createContext<SubscriptionState | undefined>(undefin
 
 /**
  * Only used before the server has answered. The real number always comes from the
- * server (`FreeTier.TrialGenerationsFor`), and it is regional — 5 in Nigeria, 10
- * elsewhere — so no single value here can be right for everyone. Deliberately the
- * smaller one: this placeholder exists to keep a dropped request from looking like an
- * exhausted trial, and under-promising corrects upward, which reads as a bonus rather
- * than as a trial that shrank.
+ * server (`FreeTier.TrialGenerationsFor`, three everywhere); this matches it so the
+ * pill does not change under the user when the answer lands, and keeps a dropped
+ * request from looking like an exhausted trial.
  */
-const DEFAULT_TRIAL_TOTAL = 5;
+const DEFAULT_TRIAL_TOTAL = 3;
 
 /**
  * Where the last successful answer is kept, per account, so a cold start can paint Pro before the

@@ -109,6 +109,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   spelled as the key signature spells it ("Doh is Bb", not A#). Every change there needs unit
   tests. The Python worker, mobile `lib/solfa.ts` and web `assets/choir.js` mirror this engine —
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+- A free account gets 3 transcriptions, ever (`FreeTier`), counted per account and per device from
+  `TranscriptionJob` rows (`TrialUsage`): charged when a job finishes, and a job still running holds its
+  place until it settles, so starting several at once cannot pass the gate.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
@@ -121,7 +124,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
-  30-second preview (throttled per `X-Device-Id` and per address via `PreviewJob` rows), polled at
+  30-second preview (one per `X-Device-Id`, ever, none without one or on a device an account has used, and
+  10 a day per address, via `PreviewJob` rows), polled at
   `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
   a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
   turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions

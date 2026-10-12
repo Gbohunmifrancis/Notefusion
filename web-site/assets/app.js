@@ -790,7 +790,7 @@
     guest = true;
     hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
     document.body.classList.add("guest"); show($("topbar-signin"));
-    $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Try another tune while it comes.";
+    $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");
   }
 

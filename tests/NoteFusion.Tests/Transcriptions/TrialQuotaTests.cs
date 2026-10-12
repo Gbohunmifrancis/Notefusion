@@ -14,8 +14,7 @@ namespace NoteFusion.Tests.Transcriptions;
 
 /// <summary>
 /// The free transcriptions: what spends one, what does not, who is metered at all, and how many they get —
-/// five in Nigeria, ten everywhere else, so the fixtures here state a country rather than leaving it to
-/// chance.
+/// three, everywhere.
 /// <para>
 /// The count is kept on <c>TranscriptionJobs</c> rather than on saved <c>Transcriptions</c>, and that is
 /// the regression these tests exist to pin. Counting saved rows meant deleting a transcription handed the
@@ -35,11 +34,11 @@ public class TrialQuotaTests
     // ---------------------------------------------------------------- the gate on submit
 
     [Fact]
-    public async Task A_free_account_is_blocked_once_all_five_are_spent()
+    public async Task A_free_account_is_blocked_once_all_three_are_spent()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        Spend(h, user, 5);
+        Spend(h, user, 3);
 
         var result = await Submit(h, user);
 
@@ -52,7 +51,7 @@ public class TrialQuotaTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        Spend(h, user, 4);
+        Spend(h, user, 2);
 
         var result = await Submit(h, user);
 
@@ -65,9 +64,9 @@ public class TrialQuotaTests
         using var h = new TestHarness(Now);
         var user = Seed(h);
 
-        // Five successful generations, nothing left in the Library: exactly the state a user reaches by
-        // transcribing five times and then deleting all five. Under the old saved-row count this was 0 used.
-        Spend(h, user, 5);
+        // Three successful generations, nothing left in the Library: exactly the state a user reaches by
+        // transcribing three times and then deleting all three. Under the old saved-row count this was 0 used.
+        Spend(h, user, 3);
         Assert.Empty(h.Db.Transcriptions);
 
         var result = await Submit(h, user);
@@ -103,79 +102,86 @@ public class TrialQuotaTests
         Assert.Null(job.TrialConsumedAtUtc); // the audio has not been transcribed yet
     }
 
-    // ---------------------------------------------------------------- the ceiling is regional
+    // ---------------------------------------------------------------- one number everywhere
 
-    [Fact]
-    public async Task An_account_outside_Nigeria_is_not_capped_at_the_Nigerian_five()
+    [Theory]
+    [InlineData("NG")]
+    [InlineData("GB")]
+    [InlineData(null)]
+    public async Task Every_country_gets_the_same_three(string? country)
     {
         using var h = new TestHarness(Now);
-        var user = SeedAbroad(h);
-        Spend(h, user, 5);
-
-        // Where the Nigerian account above is finished, this one is half way. The naira tier is priced to
-        // local purchasing power and its trial is sized to match; the dollar tier's is not.
-        Assert.True((await Submit(h, user)).IsSuccess);
-        Assert.Equal(5, await Remaining(h, user));
-        Assert.Equal(10, await Total(h, user));
-    }
-
-    [Fact]
-    public async Task An_account_outside_Nigeria_is_blocked_once_all_ten_are_spent()
-    {
-        using var h = new TestHarness(Now);
-        var user = SeedAbroad(h);
-        Spend(h, user, 10);
+        var user = SeedAbroad(h, country: country);
+        Assert.Equal(3, await Total(h, user));
+        Spend(h, user, 3);
 
         var result = await Submit(h, user);
 
-        Assert.True(result.IsFailure);
+        // The refusal names the number the pill had been showing: a different one would read as a billing bug.
         Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
-
-        // And it says ten, not five. A refusal quoting a different number than the pill had been showing is
-        // indistinguishable from a billing bug, which is the worst place to look buggy.
-        Assert.Contains("10", result.Error.Message);
+        Assert.Contains("3", result.Error.Message);
         Assert.Equal(0, await Remaining(h, user));
     }
 
-    [Fact]
-    public async Task An_account_whose_country_is_unknown_gets_the_larger_allowance()
-    {
-        using var h = new TestHarness(Now);
-        var user = SeedAbroad(h, country: null);
-        Spend(h, user, 5);
-
-        // Fail open, the same way the paywall does: a null country is offered every tier rather than a
-        // guessed one, so an unresolved country here means "not known to be Nigeria", not "assume Nigeria".
-        Assert.True((await Submit(h, user)).IsSuccess);
-        Assert.Equal(10, await Total(h, user));
-    }
+    // ---------------------------------------------------------------- a running job holds its place
 
     [Fact]
-    public async Task A_Nigerian_refusal_names_the_Nigerian_five()
+    public async Task Starting_several_at_once_cannot_get_past_the_three()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        Spend(h, user, 5);
+        var api = new FakeTranscriptionApi(); // shared, so each submission gets its own job id
 
-        var result = await Submit(h, user);
+        // None has finished, so none is charged yet. Counting finished jobs alone let all of these through.
+        for (var i = 0; i < 3; i++)
+            Assert.True((await Submit(h, user, api)).IsSuccess);
+        var fourth = await Submit(h, user, api);
 
-        Assert.Contains("5", result.Error.Message);
-        Assert.Equal(5, await Total(h, user));
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", fourth.Error.Code);
+        Assert.Equal(0, await Remaining(h, user)); // and the pill says so while they run
     }
 
     [Fact]
-    public async Task A_shared_handset_is_capped_by_whoever_is_asking()
+    public async Task A_job_that_settles_without_a_result_frees_its_place()
     {
         using var h = new TestHarness(Now);
-        var nigerian = Seed(h);
-        var abroad = SeedAbroad(h);
-        Spend(h, nigerian, 6, "phone-a");
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+        for (var i = 0; i < 3; i++)
+            await Submit(h, user, api);
 
-        // The device half of the count is shared; the ceiling it is measured against is not. Six generations
-        // on this handset has already finished the Nigerian account and leaves the other four.
-        Assert.True((await Submit(h, nigerian, device: "phone-a")).IsFailure);
-        Assert.True((await Submit(h, abroad, device: "phone-a")).IsSuccess);
-        Assert.Equal(4, await Remaining(h, abroad, "phone-a"));
+        // The sweep closes a failed job with no result; that costs nothing and gives the place back.
+        h.Db.TranscriptionJobs.First().Settle(null, Now.AddMinutes(1));
+        h.Db.SaveChanges();
+
+        Assert.Equal(1, await Remaining(h, user));
+        Assert.True((await Submit(h, user, api)).IsSuccess);
+    }
+
+    [Fact]
+    public async Task A_job_the_worker_lost_stops_holding_a_place_when_the_sweep_gives_up_on_it()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        h.Db.TranscriptionJobs.Add(TranscriptionJob.Record("lost", user.Id, Now - TrialUsage.RunningFor - TimeSpan.FromMinutes(1)));
+        h.Db.SaveChanges();
+
+        Assert.Equal(3, await Remaining(h, user));
+    }
+
+    [Fact]
+    public async Task A_finished_job_is_counted_once_not_as_running_and_charged()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+        var jobId = (await Submit(h, user, api)).Value;
+        Assert.Equal(2, await Remaining(h, user));
+
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, user, jobId, api);
+
+        Assert.Equal(2, await Remaining(h, user));
     }
 
     // ---------------------------------------------------------------- the charge on poll
@@ -242,7 +248,7 @@ public class TrialQuotaTests
         await Poll(h, user, jobId, api);
 
         // Left unspent on purpose: if this subscription lapses next year, these jobs must not already
-        // have eaten the five free ones.
+        // have eaten the three free ones.
         Assert.Null(h.Db.TranscriptionJobs.Single().TrialConsumedAtUtc);
     }
 
@@ -287,12 +293,12 @@ public class TrialQuotaTests
         using var h = new TestHarness(Now);
         var first = Seed(h);
         var second = Seed(h, "second@example.com");
-        Spend(h, first, 5, "phone-a");
+        Spend(h, first, 3, "phone-a");
 
         var result = await Submit(h, second, device: "phone-a");
 
-        // Adding a second Google account to an Android phone is four taps, and used to be worth five more
-        // free generations. The five are now shared by every account on the handset.
+        // Adding a second Google account to an Android phone is four taps, and used to be worth a fresh
+        // trial. The three are shared by every account on the handset.
         Assert.True(result.IsFailure);
         Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
     }
@@ -303,25 +309,25 @@ public class TrialQuotaTests
         using var h = new TestHarness(Now);
         var first = Seed(h);
         var second = Seed(h, "second@example.com");
-        Spend(h, first, 3, "phone-a");
+        Spend(h, first, 1, "phone-a");
 
         // FreeTier's doc forbids these two from disagreeing, and the device half is where they would: a
-        // pill reading "5 free left" above a paywall that refuses on the third is the bug this pins.
+        // pill reading "3 free left" above a paywall that refuses on the second is the bug this pins.
         Assert.Equal(2, await Remaining(h, second, "phone-a"));
         Assert.True((await Submit(h, second, device: "phone-a")).IsSuccess);
     }
 
     [Fact]
-    public async Task An_install_that_sends_no_device_keeps_its_own_five()
+    public async Task An_install_that_sends_no_device_keeps_its_own_three()
     {
         using var h = new TestHarness(Now);
         var first = Seed(h);
         var second = Seed(h, "second@example.com");
-        Spend(h, first, 5); // unstamped: jobs from before the header existed
+        Spend(h, first, 3); // unstamped: jobs from before the header existed
 
         // Fail open. Pooling every header-less install into one bucket would refuse a genuine first-time
         // user their first transcription — a silent failure, and worse than the farming it would stop.
-        Assert.Equal(5, await Remaining(h, second));
+        Assert.Equal(3, await Remaining(h, second));
         Assert.True((await Submit(h, second)).IsSuccess);
     }
 
@@ -330,7 +336,7 @@ public class TrialQuotaTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        Spend(h, user, 5, "phone-a");
+        Spend(h, user, 3, "phone-a");
 
         var result = await Submit(h, user, device: "phone-b");
 
@@ -346,7 +352,7 @@ public class TrialQuotaTests
         var free = Seed(h);
         var paid = Seed(h, "paid@example.com");
         GoPro(h, paid);
-        Spend(h, free, 5, "phone-a");
+        Spend(h, free, 3, "phone-a");
 
         // Someone who pays does not inherit a flatmate's exhausted trial.
         Assert.True((await Submit(h, paid, device: "phone-a")).IsSuccess);
@@ -406,16 +412,13 @@ public class TrialQuotaTests
     {
         var user = User.Create("Free User", email, h.Hasher.Hash("password123"), Now.AddDays(-30));
 
-        // Nigerian on purpose, because the allowance is regional and these cases assert on the number 5.
-        // Left country-less they would silently be testing the rest-of-world ceiling of 10 while still
-        // reading "five" — the boundaries would pass and mean nothing. The 10 is pinned separately below.
         user.RecordCountry("NG");
         h.Db.Users.Add(user);
         h.Db.SaveChanges();
         return user;
     }
 
-    /// <summary>An account outside Nigeria, which gets the larger allowance.</summary>
+    /// <summary>An account in <paramref name="country"/>, or with none recorded.</summary>
     private static User SeedAbroad(TestHarness h, string email = "abroad@example.com", string? country = "GB")
     {
         var user = User.Create("Abroad User", email, h.Hasher.Hash("password123"), Now.AddDays(-30));
@@ -500,7 +503,7 @@ public class TrialQuotaTests
         Assert.True(poll.IsSuccess, poll.IsFailure ? poll.Error.Message : "");
         Assert.Equal(TranscriptionStatus.Failed, poll.Value.Status);
         Assert.Contains("restarted", poll.Value.Error);
-        Assert.Equal(0, await TrialUsage.CountUsedAsync(h.Db, user.Id, null, CancellationToken.None));
+        Assert.Equal(0, await TrialUsage.CountUsedAsync(h.Db, user.Id, null, Now, CancellationToken.None));
     }
 
     /// <summary>

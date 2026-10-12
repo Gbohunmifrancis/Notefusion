@@ -104,11 +104,10 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // Successful generations, not saved rows. Counting Transcriptions meant deleting one
                 // handed the free slot back, so the limit was avoidable by anyone who noticed. And counted
                 // per device as well as per account, because adding a second Google account to an Android
-                // phone is four taps and used to be worth five more free generations.
-                var used = await TrialUsage.CountUsedAsync(_db, userId, fingerprint, cancellationToken);
+                // phone is four taps and used to be worth a fresh trial. Running jobs count too: they are
+                // charged when they finish, so without them any number could be started at once.
+                var used = await TrialUsage.CountUsedAsync(_db, userId, fingerprint, _clock.UtcNow, cancellationToken);
 
-                // The ceiling is regional: Nigeria's allowance is smaller than the rest of the world's, keyed
-                // on the same country code the paywall's currency rule uses.
                 var country = await _db.Users
                     .Where(u => u.Id == userId)
                     .Select(u => u.Country)

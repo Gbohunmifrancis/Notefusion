@@ -6,9 +6,9 @@ import * as SecureStore from 'expo-secure-store';
  * Which handset this is, for the free-trial ceiling.
  *
  * ── Why the app sends this at all ─────────────────────────────────────────────
- * The five free transcriptions used to be counted per *account*. Adding a second
+ * The free transcriptions used to be counted per *account*. Adding a second
  * Google account to an Android phone is four taps, so the free tier was effectively
- * unlimited for anyone who noticed. The server now shares the five across every
+ * unlimited for anyone who noticed. The server now shares them across every
  * account seen on one device, and this is the value it keys that on.
  *
  * It is a claim, not an attestation: anyone who unpacks the APK can forge the header.

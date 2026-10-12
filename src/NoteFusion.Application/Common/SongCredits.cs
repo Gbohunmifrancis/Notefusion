@@ -46,15 +46,31 @@ public static class SongCredits
             ct);
     }
 
-    /// <summary>Previews ever charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/> under any account.</summary>
-    public static Task<int> CountPreviewsUsedAsync(
-        IApplicationDbContext db, Guid userId, string? deviceFingerprint, CancellationToken ct = default)
+    /// <summary>
+    /// Previews ever charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/> under
+    /// any account, plus the account's own free previews still running — held like a running trial
+    /// generation (<see cref="TrialUsage.CountUsedAsync"/>), or two links sent at once would both be the
+    /// one free preview.
+    /// </summary>
+    public static async Task<int> CountPreviewsUsedAsync(
+        IApplicationDbContext db, Guid userId, string? deviceFingerprint, DateTime utcNow, CancellationToken ct = default)
     {
         var spent = db.TranscriptionJobs.Where(
             j => j.Kind == TranscriptionJobKind.Link && j.SongCreditConsumedAtUtc != null && !j.WasPro);
+        var charged = deviceFingerprint is null
+            ? await spent.CountAsync(j => j.UserId == userId, ct)
+            : await spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
 
-        return deviceFingerprint is null
-            ? spent.CountAsync(j => j.UserId == userId, ct)
-            : spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
+        var since = utcNow - TrialUsage.RunningFor;
+        var running = await db.TranscriptionJobs.CountAsync(
+            j => j.UserId == userId
+                 && j.Kind == TranscriptionJobKind.Link
+                 && !j.WasPro
+                 && j.SettledAtUtc == null
+                 && j.SongCreditConsumedAtUtc == null
+                 && j.CreatedAtUtc >= since,
+            ct);
+
+        return charged + running;
     }
 }

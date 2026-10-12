@@ -500,7 +500,7 @@ public class SubscriptionOperationsTests
         var detail = await Detail(h, target.Id);
 
         Assert.Equal(2, detail.TrialGenerationsUsed);
-        Assert.Equal(10, detail.TrialGenerationsTotal); // Pat has no country recorded, so the wider allowance
+        Assert.Equal(3, detail.TrialGenerationsTotal); // the same three everywhere
         Assert.Equal(0, detail.TranscriptionCount);
     }
 
