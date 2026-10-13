@@ -82,9 +82,13 @@ export const getUsers = (
   isActive?: boolean,
   isOnline?: boolean,
   signal?: AbortSignal,
+  /** "online" | "today" | "week" | "month" | "inactive". */
+  lastSeen?: string,
+  /** "lastSeen" lists the most recently seen first. */
+  sort?: string,
 ) =>
   request<PagedResult<AdminUserRow>>(
-    `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline })}`,
+    `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline, lastSeen, sort })}`,
     signal ? { signal } : {},
   );
 

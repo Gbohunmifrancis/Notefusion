@@ -647,6 +647,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("AutoSavedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -865,6 +868,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("CheckoutReminderSentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Country")
                         .HasMaxLength(2)
                         .HasColumnType("character(2)")
@@ -913,6 +919,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastSeenAtUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("LockoutEndAt")
@@ -978,6 +987,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("JobId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
 
                     b.Property<string>("Kind")
                         .IsRequired()

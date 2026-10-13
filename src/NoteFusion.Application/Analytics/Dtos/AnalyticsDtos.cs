@@ -324,7 +324,11 @@ public sealed record AdminUserRowDto(
     /// <summary>Sheets in the library now. <c>TranscriptionCount</c> counts every transcription that produced a result.</summary>
     int SavedTranscriptionCount = 0,
     /// <summary>Transcriptions that ended without a result.</summary>
-    int FailedTranscriptionCount = 0);
+    int FailedTranscriptionCount = 0,
+    /// <summary>The account's last signed-in request (or, before presence was recorded, its last sign-in).</summary>
+    DateTime? LastSeenAtUtc = null,
+    /// <summary>Seen within <c>LastSeen.OnlineWindow</c>.</summary>
+    bool IsOnline = false);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

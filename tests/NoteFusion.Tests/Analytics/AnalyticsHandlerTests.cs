@@ -283,6 +283,44 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
+    public async Task The_user_list_filters_and_sorts_by_last_seen_and_marks_who_is_online()
+    {
+        using var h = new TestHarness(Now);
+        await SeedUser(h, "online@example.com", Now.AddDays(-40));
+        await SeedUser(h, "today@example.com", Now.AddDays(-30));
+        await SeedUser(h, "month@example.com", Now.AddDays(-20));
+        await SeedUser(h, "never@example.com", Now.AddDays(-50));
+        var users = h.Db.Users.ToDictionary(u => u.Email);
+        users["online@example.com"].MarkSeen(Now.AddMinutes(-2));
+        users["today@example.com"].MarkSeen(Now.AddHours(-6));
+        users["month@example.com"].RecordSuccessfulLogin(Now.AddDays(-12)); // seen only by its last sign-in
+        await h.Db.SaveChangesAsync();
+
+        async Task<List<string>> Emails(string? within, string? sort = null)
+            => (await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+                    .Handle(new GetAdminUsersQuery(LastSeenWithin: within, Sort: sort), default))
+                .Value.Items.Select(i => i.Email).ToList();
+
+        Assert.Equal(["online@example.com"], await Emails("online"));
+        Assert.Equal(["online@example.com", "today@example.com"], (await Emails("today")).Order().ToList());
+        Assert.Equal(3, (await Emails("month")).Count);
+        Assert.Equal(["never@example.com"], await Emails("inactive"));
+        Assert.Equal(["online@example.com", "today@example.com", "month@example.com", "never@example.com"], await Emails(null, "lastSeen"));
+
+        var rows = (await new GetAdminUsersQueryHandler(h.Db, h.Clock).Handle(new GetAdminUsersQuery(), default))
+            .Value.Items.ToDictionary(r => r.Email);
+        Assert.True(rows["online@example.com"].IsOnline);
+        Assert.False(rows["today@example.com"].IsOnline);
+        Assert.Equal(Now.AddHours(-6), rows["today@example.com"].LastSeenAtUtc);
+        Assert.Equal(Now.AddDays(-12), rows["month@example.com"].LastSeenAtUtc);
+        Assert.Null(rows["never@example.com"].LastSeenAtUtc);
+
+        // The old isOnline flag is the same filter.
+        var legacy = await new GetAdminUsersQueryHandler(h.Db, h.Clock).Handle(new GetAdminUsersQuery(IsOnline: true), default);
+        Assert.Equal("online@example.com", Assert.Single(legacy.Value.Items).Email);
+    }
+
+    [Fact]
     public async Task The_user_list_reports_each_users_transcription_count()
     {
         using var h = new TestHarness(Now);

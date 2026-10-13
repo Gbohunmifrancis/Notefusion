@@ -119,6 +119,26 @@ public class User : BaseEntity
     /// </summary>
     public string? SignupSource { get; private set; }
 
+    /// <summary>
+    /// When we last emailed this account about a Pro checkout it started and did not finish. Null if
+    /// never. Throttles the reminder to one per abandoned attempt and at most one a week.
+    /// </summary>
+    public DateTime? CheckoutReminderSentAtUtc { get; private set; }
+
+    /// <summary>
+    /// When this account last made any signed-in request, to the minute. Null if never seen since
+    /// presence was recorded. Written by the API's LastSeenMiddleware with a guarded UPDATE rather than
+    /// through this entity; <see cref="MarkSeen"/> is for code that already holds the row.
+    /// </summary>
+    public DateTime? LastSeenAtUtc { get; private set; }
+
+    public void MarkSeen(DateTime utcNow)
+    {
+        if (LastSeenAtUtc is null || utcNow > LastSeenAtUtc) LastSeenAtUtc = utcNow;
+    }
+
+    public void RecordCheckoutReminder(DateTime utcNow) => CheckoutReminderSentAtUtc = utcNow;
+
     /// <summary>First value wins, like <see cref="RecordCountry"/>: the source is where the account was born.</summary>
     public void RecordSignupSource(string? source)
     {

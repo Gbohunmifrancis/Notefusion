@@ -266,6 +266,10 @@ export interface AdminUserRow {
   hasPassword: boolean;
   createdAt: string;
   lastLoginAt: string | null;
+  /** The last signed-in request (or the last sign-in, for accounts not seen since presence was recorded). */
+  lastSeenAtUtc?: string | null;
+  /** Seen within the last five minutes, decided by the API. */
+  isOnline?: boolean;
   country: string | null;
   /** Every transcription that produced a result, saved or not (finished jobs, claimed previews, older saved sheets). */
   transcriptionCount: number;
@@ -934,14 +938,14 @@ export interface Engagement {
   transcriptionsByKind: CategoryCount[];
 }
 
-export type FeedbackKind = "feedback" | "rating" | "rating_dismissed" | "heard_about";
+export type FeedbackKind = "feedback" | "rating" | "rating_dismissed" | "heard_about" | "transcription";
 
 export interface FeedbackRow {
   id: string;
   createdAtUtc: string;
   kind: FeedbackKind;
   rating: number | null;
-  /** A feedback message's category, or the "heard about us" source. */
+  /** A feedback message's category, what was off about a transcription, or the "heard about us" source. */
   category: string | null;
   message: string | null;
   client: string;
@@ -950,6 +954,8 @@ export interface FeedbackRow {
   userId: string;
   userName: string | null;
   userEmail: string | null;
+  /** The transcription job a "transcription" verdict is about. */
+  jobId?: string | null;
 }
 
 export interface FeedbackSummary {
@@ -962,4 +968,9 @@ export interface FeedbackSummary {
   heardAbout: CategoryCount[];
   feedbackMessages: number;
   feedbackByCategory: CategoryCount[];
+  /** Verdicts asked under every result: "spot on", "close", "off". */
+  transcriptionVerdicts?: number;
+  transcriptionDistribution?: CategoryCount[] | null;
+  /** What was off, for "close" and "off" verdicts that said. */
+  transcriptionIssues?: CategoryCount[] | null;
 }

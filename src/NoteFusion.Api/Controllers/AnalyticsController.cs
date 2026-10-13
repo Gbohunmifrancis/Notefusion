@@ -61,6 +61,8 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] string? search = null,
         [FromQuery] bool? isActive = null,
         [FromQuery] bool? isOnline = null,
+        [FromQuery] string? lastSeen = null,
+        [FromQuery] string? sort = null,
         CancellationToken ct = default)
-        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline), ct));
+        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline, lastSeen, sort), ct));
 }

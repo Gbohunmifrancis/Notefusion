@@ -30,28 +30,37 @@ const STATUS_OPTIONS = [
   { value: "all", label: "All status" },
   { value: "active", label: "Active" },
   { value: "suspended", label: "Suspended" },
-  { value: "online", label: "Online" },
 ] as const;
 
 type StatusFilter = (typeof STATUS_OPTIONS)[number]["value"];
 
 const IS_ACTIVE: Record<StatusFilter, boolean | undefined> = {
   all: undefined,
-  online: undefined,
   active: true,
   suspended: false,
 };
 
-const IS_ONLINE: Record<StatusFilter, boolean | undefined> = {
-  all: undefined,
-  online: true,
-  active: undefined,
-  suspended: undefined,
-};
+/** "Last seen" is the account's last signed-in request — a page, a job poll, the app opening. */
+const LAST_SEEN_OPTIONS = [
+  { value: "all", label: "Last seen: any time" },
+  { value: "online", label: "Online now" },
+  { value: "today", label: "Seen today" },
+  { value: "week", label: "Seen this week" },
+  { value: "month", label: "Seen this month" },
+  { value: "inactive", label: "Not seen in 30+ days" },
+] as const;
+type LastSeenFilter = (typeof LAST_SEEN_OPTIONS)[number]["value"];
 
-function isUserOnline(lastLoginAt: string | null): boolean {
-  if (!lastLoginAt) return false;
-  const time = new Date(lastLoginAt).getTime();
+/** When the account was last seen: the API's presence stamp, else its last sign-in. */
+function seenAt(user: AdminUserRow): string | null {
+  return user.lastSeenAtUtc ?? user.lastLoginAt;
+}
+
+function isUserOnline(user: AdminUserRow): boolean {
+  if (user.isOnline !== undefined) return user.isOnline;
+  const at = seenAt(user);
+  if (!at) return false;
+  const time = new Date(at).getTime();
   if (Number.isNaN(time)) return false;
   const diff = Date.now() - time;
   return diff >= 0 && diff < 5 * 60 * 1000;
@@ -154,6 +163,8 @@ export function UsersView() {
   useEffect(() => setSearch(incoming), [incoming]);
 
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [lastSeen, setLastSeen] = useState<LastSeenFilter>("all");
+  const [sort, setSort] = useState<"newest" | "lastSeen">("newest");
   const [planFilter, setPlanFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -161,14 +172,31 @@ export function UsersView() {
   const [emailTarget, setEmailTarget] = useState<SendEmailTarget | null>(null);
   const debouncedSearch = useDebounced(search);
 
-  useEffect(() => setPage(1), [debouncedSearch, status, planFilter]);
+  useEffect(() => setPage(1), [debouncedSearch, status, planFilter, lastSeen, sort]);
 
   const term = debouncedSearch.trim();
   const state = useQuery({
-    queryKey: ["users", page, term, status],
+    queryKey: ["users", page, term, status, lastSeen, sort],
     queryFn: ({ signal }) =>
-      getUsers(page, PAGE_SIZE, term, IS_ACTIVE[status], IS_ONLINE[status], signal),
+      getUsers(
+        page,
+        PAGE_SIZE,
+        term,
+        IS_ACTIVE[status],
+        undefined,
+        signal,
+        lastSeen === "all" ? undefined : lastSeen,
+        sort === "lastSeen" ? "lastSeen" : undefined,
+      ),
     placeholderData: keepPreviousData,
+    // Presence goes stale fast: the online list refreshes itself.
+    refetchInterval: lastSeen === "online" ? 30_000 : 120_000,
+  });
+  // How many are online right now, for the header; a one-row page carries the total.
+  const onlineNow = useQuery({
+    queryKey: ["users-online-count"],
+    queryFn: ({ signal }) => getUsers(1, 1, undefined, undefined, undefined, signal, "online"),
+    refetchInterval: 30_000,
   });
 
   useClampPage(page, state.data?.totalPages, setPage);
@@ -201,11 +229,11 @@ export function UsersView() {
 
   function handleExport() {
     if (!items || items.length === 0) return;
-    const header = "ID,Name,Email,Role,Active,Joined,LastLogin\n";
+    const header = "ID,Name,Email,Role,Active,Joined,LastLogin,LastSeen\n";
     const rows = items
       .map(
         (u) =>
-          `"${u.id}","${u.fullName.replace(/"/g, '""')}","${u.email}","${u.role}",${u.isActive},"${u.createdAt}","${u.lastLoginAt ?? ""}"`,
+          `"${u.id}","${u.fullName.replace(/"/g, '""')}","${u.email}","${u.role}",${u.isActive},"${u.createdAt}","${u.lastLoginAt ?? ""}","${seenAt(u) ?? ""}"`,
       )
       .join("\n");
     const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
@@ -237,8 +265,17 @@ export function UsersView() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Users</h1>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             Manage your users, plans and account status.
+            <button
+              type="button"
+              onClick={() => setLastSeen("online")}
+              className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400"
+              title="Show who is online now"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              {onlineNow.data ? `${onlineNow.data.totalCount} online now` : "Online now"}
+            </button>
           </p>
         </div>
 
@@ -304,7 +341,29 @@ export function UsersView() {
             <option value="all">All status</option>
             <option value="active">Active</option>
             <option value="suspended">Suspended</option>
-            <option value="online">Online</option>
+          </select>
+
+          <select
+            value={lastSeen}
+            onChange={(e) => setLastSeen(e.target.value as LastSeenFilter)}
+            aria-label="Filter by last seen"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+          >
+            {LAST_SEEN_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={sort}
+            onChange={(e) => setSort(e.target.value as "newest" | "lastSeen")}
+            aria-label="Sort users"
+            className="h-9 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs outline-none dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200"
+          >
+            <option value="newest">Newest accounts</option>
+            <option value="lastSeen">Recently seen</option>
           </select>
         </div>
       </div>
@@ -317,9 +376,11 @@ export function UsersView() {
           emptyMessage={
             term
               ? "No accounts match that search"
-              : status === "online"
+              : lastSeen === "online"
                 ? "No users currently online on the app"
-                : status === "suspended"
+                : lastSeen !== "all"
+                  ? "No accounts were last seen in that window"
+                  : status === "suspended"
                   ? "No suspended accounts"
                   : "No accounts yet"
           }
@@ -345,13 +406,15 @@ export function UsersView() {
                       <th className="px-4 py-3 font-medium" title="Transcriptions that produced a result, saved or not">
                         Transcriptions
                       </th>
-                      <th className="px-4 py-3 font-medium">Last active</th>
+                      <th className="px-4 py-3 font-medium" title="Last signed-in request: a page, a job poll, the app opening">
+                        Last seen
+                      </th>
                       <th className="w-12 px-4 py-3 text-right"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
                     {items.map((user) => {
-                      const online = isUserOnline(user.lastLoginAt);
+                      const online = isUserOnline(user);
                       const isSelected = selectedIds.has(user.id);
                       return (
                         <tr
@@ -397,7 +460,7 @@ export function UsersView() {
                             </span>
                           </td>
                           <td className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                            <LastSeenCell lastLoginAt={user.lastLoginAt} offset={offset} />
+                            <LastSeenCell lastLoginAt={seenAt(user)} offset={offset} />
                           </td>
                           <td className="px-4 py-3 text-right">
                             <div className="flex items-center justify-end gap-1">
