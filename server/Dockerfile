@@ -46,7 +46,25 @@ import urllib.request
 url = "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models/UVR-MDX-NET-Voc_FT.onnx"
 urllib.request.urlretrieve(url, "/app/models/UVR-MDX-NET-Voc_FT.onnx")
 PY
+# A release asset can be replaced under the same URL; the build fails unless it is the file
+# that was reviewed.  A deliberate model change updates this hash with it.
+RUN echo "534b2070fcc7df514b13ef660dc8cbb328679c2374d04354a5c42bb14ecce111  /app/models/UVR-MDX-NET-Voc_FT.onnx" | sha256sum -c -
+
+# The worker runs as an unprivileged user.  The entrypoint starts as root only to make the
+# job-data volume (root-owned on servers that predate this user) and the root-only cookies
+# file usable by it, then drops to it with setpriv (util-linux, in the base image).
+# /var/lib/notefusion is created here so a fresh named volume starts out owned by nf.
+# The code and models stay root-owned and read-only to nf; it writes only to /tmp, the job
+# directory and its home (yt-dlp, Deno and numba caches).
+RUN groupadd --system --gid 10001 nf \
+    && useradd --system --uid 10001 --gid nf --home-dir /home/nf --create-home --shell /usr/sbin/nologin nf \
+    && mkdir -p /var/lib/notefusion/jobs \
+    && chown -R nf:nf /var/lib/notefusion
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 0755 /usr/local/bin/docker-entrypoint.sh
 
 COPY app ./app
 
-CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# exec: uvicorn replaces the shell, so it is the process the stop signal reaches.
+CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
