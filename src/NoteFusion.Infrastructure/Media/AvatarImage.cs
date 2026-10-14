@@ -20,6 +20,12 @@ internal static class AvatarImage
     private const int JpegQuality = 80;
 
     /// <summary>
+    /// The largest picture decoded, in pixels: 40 MP, room for the square crop the app takes of a 48 MP
+    /// phone photo (about 37 MP), and 160 MB of pixels at most once decoded.
+    /// </summary>
+    internal const long MaxPixels = 40_000_000;
+
+    /// <summary>
     /// Decodes <paramref name="source"/>, turns it upright, centre-crops it to a square, scales that to
     /// 512×512 and re-encodes as JPEG on white. The returned stream is positioned at 0 and owned by
     /// the caller.
@@ -39,6 +45,15 @@ internal static class AvatarImage
         // Decode is the real format check: bytes that aren't an image fail here regardless of the
         // Content-Type the client declared, which is the one thing the controller cannot verify.
         using var codec = SKCodec.Create(source);
+
+        // The header's size, read before a pixel is decoded. A few kilobytes of PNG can declare a picture of
+        // hundreds of megapixels, and decoding it would allocate four bytes for each — one upload, one
+        // exhausted server.
+        if (codec is not null && (long)codec.Info.Width * codec.Info.Height > MaxPixels)
+        {
+            return UserErrors.PictureUnsupportedType;
+        }
+
         using var stored = codec is null ? null : SKBitmap.Decode(codec);
         if (codec is null || stored is null || stored.Width == 0 || stored.Height == 0)
         {

@@ -25,5 +25,20 @@ public sealed class AuthSettings
     public string DeleteAccountUrl { get; set; } = "https://notefusion.studio/delete-account";
 
     /// <summary>Server-side cryptographic pepper mixed into account deletion tokens to prevent offline forgery.</summary>
-    public string DeletionSecret { get; set; } = "nf-deletion-pepper-v1-static-salt";
+    /// <remarks>
+    /// Override with <c>Auth__DeletionSecret</c>. Left empty — or set to <see cref="PublishedDeletionSecret"/>,
+    /// which is in the public repository and so protects nothing — the composition root derives one from the
+    /// JWT signing key instead, which is server-only and already configured on every deploy.
+    /// </remarks>
+    public string DeletionSecret { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The value <see cref="DeletionSecret"/> used to default to. It shipped in source, so anyone could mint a
+    /// deletion link with it; it is kept only to be recognised as "not set".
+    /// </summary>
+    public const string PublishedDeletionSecret = "nf-deletion-pepper-v1-static-salt";
+
+    /// <summary>True when <see cref="DeletionSecret"/> holds something a caller could not know.</summary>
+    public bool HasOwnDeletionSecret
+        => !string.IsNullOrWhiteSpace(DeletionSecret) && DeletionSecret != PublishedDeletionSecret;
 }

@@ -1,8 +1,12 @@
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Auth.Commands;
+using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
 using NoteFusion.Core.Solfa;
+using NoteFusion.Infrastructure.Security;
 using NoteFusion.Tests.Support;
 
 namespace NoteFusion.Tests.Auth;
@@ -74,13 +78,107 @@ public class DeleteAccountRequestTests
         var result = await handler.Handle(
             new DeleteAccountRequestCommand(user.Email, Password: "WrongPassword!"),
             CancellationToken.None);
+        var unknown = await handler.Handle(
+            new DeleteAccountRequestCommand("nobody@example.com", Password: "WrongPassword!"),
+            CancellationToken.None);
 
-        Assert.True(result.IsFailure);
-        Assert.Equal("auth.invalid_credentials", result.Error.Code);
+        // Nothing deleted, and told in exactly the words an unknown address gets, so this anonymous page
+        // cannot be used to find out which addresses have accounts.
+        Assert.True(result.IsSuccess);
+        Assert.False(result.Value.Confirmed);
+        Assert.Equal(unknown.Value, result.Value);
 
         // User is still intact in DB
         Assert.NotNull(h.Db.Users.Find(user.Id));
         Assert.Empty(h.Email.CustomEmails);
+    }
+
+    [Fact]
+    public async Task Repeated_wrong_passwords_lock_the_account_like_login_does()
+    {
+        using var h = new TestHarness(Now);
+        var user = CreateUser(h, "frank@example.com", "Password123!");
+        var handler = CreateHandler(h);
+
+        for (var i = 0; i < User.MaxFailedLoginAttempts; i++)
+            await handler.Handle(new DeleteAccountRequestCommand(user.Email, Password: "WrongPassword!"), CancellationToken.None);
+
+        // Locked: even the right password deletes nothing, and the answer is the same neutral one.
+        var locked = await handler.Handle(
+            new DeleteAccountRequestCommand(user.Email, Password: "Password123!"), CancellationToken.None);
+
+        Assert.True(locked.IsSuccess);
+        Assert.False(locked.Value.Confirmed);
+        Assert.Equal(DeleteAccountRequestCommandHandler.NotDeletedMessage, locked.Value.Message);
+        Assert.NotNull(h.Db.Users.Find(user.Id));
+    }
+
+    [Fact]
+    public async Task Asking_for_a_link_reads_the_same_whether_or_not_the_address_has_an_account()
+    {
+        using var h = new TestHarness(Now);
+        var user = CreateUser(h, "gina@example.com", "Password123!");
+        var handler = CreateHandler(h);
+
+        var known = await handler.Handle(new DeleteAccountRequestCommand(user.Email), CancellationToken.None);
+        var unknown = await handler.Handle(new DeleteAccountRequestCommand("nobody@example.com"), CancellationToken.None);
+
+        Assert.Equal(unknown.Value, known.Value);
+        Assert.Single(h.Email.CustomEmails); // only the real account is mailed
+    }
+
+    [Fact]
+    public async Task A_link_signed_with_the_published_default_secret_no_longer_deletes()
+    {
+        using var h = new TestHarness(Now);
+        var user = CreateUser(h, "mallory-target@example.com", "Password123!");
+        var handler = CreateHandler(h);
+
+        // Exactly what anyone could compute from the old source: the HMAC keyed by the constant that used to
+        // be the default, over fields that are not secret.
+        var forged = LegacyToken(user, Now.AddHours(24), AuthSettings.PublishedDeletionSecret);
+
+        var result = await handler.Handle(
+            new DeleteAccountRequestCommand(user.Email, Token: forged), CancellationToken.None);
+
+        Assert.True(result.IsFailure);
+        Assert.Equal("auth.invalid_token", result.Error.Code);
+        Assert.NotNull(h.Db.Users.Find(user.Id));
+    }
+
+    [Fact]
+    public void The_published_default_and_an_empty_secret_are_replaced_but_an_own_secret_is_kept()
+    {
+        using var keys = new RsaKeyProvider(new JwtSettings());
+
+        var published = new AuthSettings { DeletionSecret = AuthSettings.PublishedDeletionSecret };
+        var empty = new AuthSettings();
+        var own = new AuthSettings { DeletionSecret = "configured-by-the-deploy" };
+
+        Assert.True(DeletionSecretFallback.Apply(published, keys));
+        Assert.True(DeletionSecretFallback.Apply(empty, keys));
+        Assert.False(DeletionSecretFallback.Apply(own, keys));
+
+        Assert.NotEqual(AuthSettings.PublishedDeletionSecret, published.DeletionSecret);
+        Assert.Equal(published.DeletionSecret, empty.DeletionSecret); // stable for one key
+        Assert.Equal("configured-by-the-deploy", own.DeletionSecret);
+
+        // A different signing key derives a different secret.
+        using var otherKeys = new RsaKeyProvider(new JwtSettings());
+        var other = new AuthSettings();
+        DeletionSecretFallback.Apply(other, otherKeys);
+        Assert.NotEqual(empty.DeletionSecret, other.DeletionSecret);
+    }
+
+    private static string LegacyToken(User user, DateTime expiryUtc, string secret)
+    {
+        var expiryTicks = expiryUtc.Ticks;
+        var raw = $"{user.Id}:{user.Email.ToLowerInvariant()}:{expiryTicks}";
+        var keyBytes = Encoding.UTF8.GetBytes(secret + ":" + user.CreatedAt.Ticks + ":" + (user.PasswordHash ?? "oauth") + ":" + user.Id);
+        using var hmac = new HMACSHA256(keyBytes);
+        var hashString = Convert.ToHexString(hmac.ComputeHash(Encoding.UTF8.GetBytes(raw)));
+        return Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user.Id}:{expiryTicks}:{hashString}"))
+            .Replace('+', '-').Replace('/', '_').TrimEnd('=');
     }
 
     [Fact]

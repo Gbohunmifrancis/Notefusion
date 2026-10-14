@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Infrastructure.Api;
@@ -63,7 +64,22 @@ public static class DependencyInjection
     private static void AddSecurity(this IServiceCollection services, IConfiguration configuration)
     {
         var auth = configuration.GetSection("Auth").Get<AuthSettings>() ?? new AuthSettings();
-        services.AddSingleton(auth);
+
+        // A factory rather than the instance, because a deploy without Auth__DeletionSecret gets one derived
+        // from the signing key, and the key only exists once the container builds it. Resolved once at
+        // startup (Program.cs), so the warning is the first screen of logs rather than the first deletion.
+        services.AddSingleton(sp =>
+        {
+            if (DeletionSecretFallback.Apply(auth, sp.GetRequiredService<RsaKeyProvider>()))
+            {
+                sp.GetRequiredService<ILoggerFactory>()
+                    .CreateLogger(typeof(DeletionSecretFallback))
+                    .LogWarning(
+                        "Auth__DeletionSecret is not set (or is the published default); account-deletion links are " +
+                        "signed with a secret derived from the JWT signing key. Set Auth__DeletionSecret to keep them independent.");
+            }
+            return auth;
+        });
 
         var jwt = configuration.GetSection("Jwt").Get<JwtSettings>() ?? new JwtSettings();
         services.AddSingleton(jwt);

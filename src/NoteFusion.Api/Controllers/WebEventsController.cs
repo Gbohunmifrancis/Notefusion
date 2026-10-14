@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using NoteFusion.Api.Common;
+using NoteFusion.Api.RateLimiting;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Web.Commands;
 
@@ -25,8 +27,13 @@ public sealed class WebEventsController : ApiControllerBase
 
     public WebEventsController(ISender sender) => _sender = sender;
 
-    /// <summary>Records a batch of events. Always 204: the tracker has nobody to show an error to.</summary>
+    /// <summary>
+    /// Records a batch of events. 204 whatever was in it: the tracker has nobody to show an error to. The one
+    /// exception is a 429 for an address posting faster than any reader's tabs would, since every event is
+    /// a row and this route is open to anyone.
+    /// </summary>
     [HttpPost("events")]
+    [EnableRateLimiting(AuthRateLimiting.WebEvents)]
     [RequestSizeLimit(MaxBodyBytes)]
     public async Task<IActionResult> Record(
         [FromBody] WebEventsRequest request, [FromServices] IDeviceFingerprint device, CancellationToken ct)

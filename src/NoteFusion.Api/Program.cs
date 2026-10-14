@@ -164,7 +164,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(AdminDashboardCorsPolicy, policy =>
     {
-        policy.AllowAnyOrigin()
+        // The list above, plus any https *.vercel.app origin: Vercel gives every preview deploy its own
+        // hostname, and those are where web changes are checked before they ship. Credentials are not
+        // allowed, so a matching origin can call the API only with a token it already holds.
+        policy.SetIsOriginAllowed(origin => IsAllowedOrigin(origin, allowedOrigins))
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -202,6 +205,10 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+// Resolved now rather than on the first sign-in, so a deploy without its own Auth__DeletionSecret says so
+// in the startup logs (see DeletionSecretFallback).
+app.Services.GetRequiredService<NoteFusion.Application.Common.Settings.AuthSettings>();
 
 // Before anything reads the scheme — HSTS, the HTTPS redirect, any absolute URL. Rewrites
 // Request.Scheme from X-Forwarded-Proto (see the options above for what it deliberately does not touch).
@@ -281,4 +288,19 @@ public partial class Program
 {
     /// <summary>Name of the CORS policy applied to the whole app for the admin dashboard's origin.</summary>
     public const string AdminDashboardCorsPolicy = "AdminDashboard";
+
+    /// <summary>
+    /// Whether a browser on <paramref name="origin"/> may call the API: one of <paramref name="allowedOrigins"/>
+    /// exactly, or an https origin on a <c>.vercel.app</c> subdomain (preview deploys).
+    /// </summary>
+    internal static bool IsAllowedOrigin(string origin, IReadOnlyCollection<string> allowedOrigins)
+    {
+        if (allowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+            return true;
+
+        return Uri.TryCreate(origin, UriKind.Absolute, out var uri)
+            && uri.Scheme == Uri.UriSchemeHttps
+            && uri.IsDefaultPort
+            && uri.Host.EndsWith(".vercel.app", StringComparison.OrdinalIgnoreCase);
+    }
 }

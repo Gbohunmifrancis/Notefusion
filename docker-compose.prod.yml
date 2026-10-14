@@ -106,7 +106,7 @@ services:
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
       Push__UseExpo: "false"
       Security__RequireHttps: "false"
-      Swagger__Enabled: "true"
+      Swagger__Enabled: "false"
       RateLimit__TrustedProxyHops: "1" 
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-https://admin.notefusion.studio}
       # The public site's signed-in web app (web-site/app) calls the API from the browser.

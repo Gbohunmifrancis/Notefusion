@@ -172,6 +172,22 @@ public class WorkerContractTests
         Assert.DoesNotContain("detail", result.Error.Message);
     }
 
+    [Fact]
+    public async Task A_worker_error_comes_back_as_a_plain_sentence_not_the_workers_text()
+    {
+        const string body = """Traceback (most recent call last): File "/app/app/main.py", line 42, in transcribe""";
+
+        var submitted = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.InternalServerError, body))
+            .SubmitAsync(new MemoryStream([1, 2, 3]), "hum.wav", new TranscribeOptions());
+        var linked = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.BadRequest, body))
+            .SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions());
+
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, submitted.Error);
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, linked.Error);
+        Assert.DoesNotContain("Traceback", submitted.Error.Message);
+        Assert.DoesNotContain("500", submitted.Error.Message);
+    }
+
     [Theory]
     [InlineData("live", "TRANS_LINK_LIVE")]
     [InlineData("not_found", "TRANS_LINK_NOT_FOUND")]

@@ -78,12 +78,14 @@ public sealed class AuthController : ApiControllerBase
 
     /// <summary>Rotates the refresh token and issues a fresh access token.</summary>
     /// <remarks>
-    /// Deliberately not limited. Every signed-in client calls this on a schedule and again on any 401, so a
-    /// limit tight enough to matter would sign real users out of their own session, and the token it takes
-    /// is long random material that brute force does not reach. Rotation is the control here: a presented
-    /// token is spent whether or not it was the right one.
+    /// Limited, but loosely and on its own bucket (<see cref="AuthRateLimiting.TokenRefresh"/>). Every
+    /// signed-in client calls this on a schedule and again on any 401, so a limit as tight as login's would
+    /// sign real users out of their own session; the token is long random material brute force does not
+    /// reach, so the limit is there to cap the bcrypt work an anonymous caller can make us do. Rotation is
+    /// the main control: a token is spent once, and a spent one coming back revokes the user's others.
     /// </remarks>
     [AllowAnonymous]
+    [EnableRateLimiting(AuthRateLimiting.TokenRefresh)]
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(RefreshTokenCommand command, CancellationToken ct)
         => HandleResult(await _sender.Send(command, ct));
