@@ -181,6 +181,14 @@ public sealed class AdminController : ApiControllerBase
     /// Promotes an account to Admin or demotes it back. Refused for your own account, and refused when it
     /// would leave the system with no active admin.
     /// </summary>
+    /// <summary>
+    /// Marks an account as the team's own or a test account (left out of every analytics figure and list),
+    /// or back to a customer.
+    /// </summary>
+    [HttpPost("users/{id:guid}/internal")]
+    public async Task<IActionResult> Internal(Guid id, InternalBody body, CancellationToken ct)
+        => HandleNoContent(await _sender.Send(new SetInternalAccountCommand(id, body.IsInternal, body.Note), ct));
+
     [HttpPost("users/{id:guid}/role")]
     public async Task<IActionResult> Role(Guid id, RoleBody body, CancellationToken ct)
         => HandleNoContent(await _sender.Send(new SetUserRoleCommand(id, body.Role, body.Note), ct));
@@ -399,6 +407,7 @@ public sealed class AdminController : ApiControllerBase
 
     /// <summary>The role to leave the account in — not a direction, so the call is unambiguous on retry.</summary>
     public sealed record RoleBody(UserRole Role, string? Note);
+    public sealed record InternalBody(bool IsInternal, string? Note);
 
     /// <summary>Details for a custom email message drafted by an administrator.</summary>
     public sealed record SendEmailBody(

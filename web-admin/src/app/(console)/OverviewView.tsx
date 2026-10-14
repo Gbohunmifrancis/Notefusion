@@ -2,27 +2,21 @@
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import {
+  Activity,
+  ArrowDownRight,
   ArrowUpRight,
   CalendarDays,
   ChevronDown,
   CreditCard,
   Info,
   MailCheck,
+  MessageSquareHeart,
   Music2,
+  Share2,
+  TriangleAlert,
   UserRound,
   UserRoundPlus,
   Zap,
-  LogIn,
-  Globe,
-  Share2,
-  Eye,
-  Crown,
-  Bookmark,
-  MousePointerClick,
-  Wallet,
-  TrendingUp,
-  UserRoundMinus,
-  Gauge,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -39,6 +33,8 @@ import {
 import { getOverview } from "@/api/endpoints";
 import type { AnalyticsOverview, CategoryCount, DailyCount } from "@/api/types";
 import { DailyChart } from "@/components/DailyChart";
+import { ChartCard, DataTable, FunnelBars, MetricRow, RankedBars } from "@/components/insights/Charts";
+import { Segmented } from "@/components/Segmented";
 import { DonutCard } from "@/components/DonutCard";
 import type { DonutSlice } from "@/components/DonutCard";
 import { MostActiveUsersCard } from "@/components/activity/Engagement";
@@ -145,6 +141,8 @@ interface StatItem {
   title: string;
   value: string;
   change?: string | null;
+  /** Direction of the change: a fall is shown falling, in red, not with the rising arrow. */
+  up?: boolean | undefined;
   description?: string | null;
   hint?: string;
   icon: typeof UserRound;
@@ -155,7 +153,7 @@ function StatCard({ stat }: { stat: StatItem }) {
   const Icon = stat.icon;
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm dark:border-zinc-800 dark:bg-[#09090b]">
+    <div className="h-full rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs transition-shadow duration-200 hover:shadow-sm dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="flex items-center justify-between">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-zinc-900 dark:text-slate-300">
           <Icon size={18} strokeWidth={1.75} />
@@ -176,17 +174,21 @@ function StatCard({ stat }: { stat: StatItem }) {
           {stat.value}
         </div>
 
-        {stat.change && (
-          <div className="mt-2 flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-            <ArrowUpRight size={13} />
+        {stat.change ? (
+          <div
+            className={`mt-2 flex flex-wrap items-center gap-1 text-xs font-medium ${
+              stat.up === false ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"
+            }`}
+          >
+            {stat.up === false ? <ArrowDownRight size={13} /> : <ArrowUpRight size={13} />}
             <span>{stat.change}</span>
             {stat.description && (
-              <span className="font-normal text-slate-400 dark:text-slate-500">
-                {stat.description}
-              </span>
+              <span className="font-normal text-slate-400 dark:text-slate-500">{stat.description}</span>
             )}
           </div>
-        )}
+        ) : stat.description ? (
+          <div className="mt-2 text-xs text-slate-400 dark:text-slate-500">{stat.description}</div>
+        ) : null}
       </div>
     </div>
   );
@@ -202,7 +204,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
   }, [data, bucket]);
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
+    <div className="flex h-full flex-col rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Signups</h2>
 
@@ -243,7 +245,7 @@ function SignupChart({ data }: { data: DailyCount[] }) {
         </div>
       </div>
 
-      <div className="h-64 w-full">
+      <div className="min-h-64 w-full flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
@@ -298,9 +300,8 @@ function SignupChart({ data }: { data: DailyCount[] }) {
 }
 
 /**
- * The website's funnel: previews at the top, Pro at the bottom. Each stage names what it counts,
- * and the rates are computed here from the counts the API returned rather than returned as rates,
- * so a reader can check the arithmetic against the tiles above.
+ * The website's funnel: the figures in one row, then the previews per day beside the path from a preview
+ * to Pro as one chart. Rates are computed here from the counts, so they can be checked against them.
  */
 function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) {
   const chart = useChartPalette();
@@ -308,141 +309,108 @@ function WebFunnelPanel({ funnel }: { funnel: AnalyticsOverview["webFunnel"] }) 
   const signupChange = changeAgainst(funnel.webSignups, funnel.webSignupsPrevious);
   const rate = (num: number, den: number) => (den > 0 ? formatPercent(num / den, 0) : UNKNOWN);
 
-  const stages = [
-    { label: "Previews", value: funnel.previews, hint: "Anonymous 30-second transcriptions started from the website" },
-    { label: "Sign-ups from a preview", value: funnel.signupsFromPreview, hint: "Web accounts created after a preview, attributed by the claim the app makes on sign-in" },
-    { label: "Saved a sheet", value: funnel.webSignupsWhoSaved, hint: "Of this window's web sign-ups, those with at least one sheet in their library" },
-    { label: "Went Pro", value: funnel.webProConversions, hint: "Subscriptions started in the window by accounts that signed up on the web" },
-  ];
-  const top = stages[0]?.value ?? 0;
-
-  const tiles: StatItem[] = [
-    { title: "Previews", value: formatCount(funnel.previews), change: previewChange?.label ?? null, description: previewChange ? "vs. previous period" : null, icon: Globe, hint: `${formatCount(funnel.previewDevices)} browsers · ${formatCount(funnel.previewsSucceeded)} reached a result` },
-    { title: "Web sign-ups", value: formatCount(funnel.webSignups), change: signupChange?.label ?? null, description: signupChange ? "vs. previous period" : null, icon: UserRoundPlus, hint: "Accounts created on the website in this window" },
-    { title: "Preview → sign-up", value: rate(funnel.signupsFromPreview, funnel.previews), icon: Bookmark, hint: "Sign-ups that claimed a preview, over previews started" },
-    { title: "Shares", value: formatCount(funnel.sharesCreated), icon: Share2, hint: `Sheets put behind a public link in this window · ${formatCount(funnel.shareViews)} link opens all time` },
-    { title: "Link opens", value: formatCount(funnel.shareViews), icon: Eye, hint: "Opens of public sheet links, all time" },
-    { title: "Web → Pro", value: rate(funnel.webProConversions, funnel.webSignups), icon: Crown, hint: "Pro subscriptions started by this window's web sign-ups, over web sign-ups" },
-  ];
-
   return (
     <div className="space-y-5">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-        Web funnel
-      </h3>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {tiles.map((stat) => (
-          <StatCard key={stat.title} stat={stat} />
-        ))}
-      </div>
-      <div className="grid gap-6 lg:grid-cols-12">
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Web funnel</h3>
+      <MetricRow
+        items={[
+          { label: "Previews", value: formatCount(funnel.previews), note: previewChange?.label, tone: previewChange ? (previewChange.up ? "up" : "down") : undefined, hint: `${formatCount(funnel.previewDevices)} browsers · ${formatCount(funnel.previewsSucceeded)} reached a result` },
+          { label: "Web sign-ups", value: formatCount(funnel.webSignups), note: signupChange?.label, tone: signupChange ? (signupChange.up ? "up" : "down") : undefined },
+          { label: "Preview → sign-up", value: rate(funnel.signupsFromPreview, funnel.previews), hint: "Sign-ups that claimed a preview, over previews started" },
+          { label: "Shares", value: formatCount(funnel.sharesCreated), note: `${formatCount(funnel.shareViews)} link opens, all time` },
+          { label: "Kept a sheet", value: rate(funnel.webSignupsWhoSaved, funnel.webSignups), note: `${formatCount(funnel.webSignupsWhoSaved)} of web sign-ups` },
+          { label: "Web → Pro", value: rate(funnel.webProConversions, funnel.webSignups), note: `${formatCount(funnel.webProConversions)} paid`, hint: "Paid Pro started in this window by web sign-ups. Gifts are not counted." },
+        ]}
+      />
+      <div className="grid gap-5 lg:grid-cols-12">
         <div className="lg:col-span-7 xl:col-span-8">
-          <DailyChart title="Previews" info="Anonymous try-it-free transcriptions per day" data={funnel.previewsPerDay} unit="previews" color={chart.series} />
+          <DailyChart className="h-full" title="Previews" info="Anonymous try-it-free transcriptions per day" data={funnel.previewsPerDay} unit="previews" color={chart.series} />
         </div>
-        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:col-span-5 xl:col-span-4">
-          <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">Preview to Pro</h4>
-          <div className="space-y-3">
-            {stages.map((stage) => {
-              const share = top > 0 ? Math.min(100, Math.round((stage.value / top) * 100)) : 0;
-              return (
-                <div key={stage.label} title={stage.hint}>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-700 dark:text-slate-200">{stage.label}</span>
-                    <span className="font-semibold text-slate-900 dark:text-white">
-                      {formatCount(stage.value)}
-                      <span className="ml-2 font-normal text-slate-400">{top > 0 ? `${share}%` : UNKNOWN}</span>
-                    </span>
-                  </div>
-                  <div className="mt-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-zinc-800">
-                    <div className="h-full rounded-full bg-blue-600 transition-all duration-500" style={{ width: `${share}%` }} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <p className="mt-4 text-[11px] leading-relaxed text-slate-400">
-            Shares of the window&apos;s previews. &ldquo;Saved&rdquo; and &ldquo;Pro&rdquo; count the window&apos;s web sign-ups, who may have previewed earlier.
-          </p>
+        <div className="lg:col-span-5 xl:col-span-4">
+          <ChartCard
+            title="Preview to Pro"
+            info="Shares of the window's previews. Kept and Pro count the window's web sign-ups, who may have previewed earlier."
+            table={<DataTable head={["Step", "Count"]} rows={[["Previews", funnel.previews], ["Signed up", funnel.signupsFromPreview], ["Kept a sheet", funnel.webSignupsWhoSaved], ["Paid Pro", funnel.webProConversions]]} />}
+          >
+            <FunnelBars
+              steps={[
+                { step: "Previews", count: funnel.previews },
+                { step: "Signed up", count: funnel.signupsFromPreview },
+                { step: "Kept a sheet", count: funnel.webSignupsWhoSaved },
+                { step: "Paid Pro", count: funnel.webProConversions },
+              ]}
+            />
+          </ChartCard>
         </div>
       </div>
     </div>
   );
 }
 
-/** One ranked list on the traffic panel: label, count and share of the list's total. */
-function RankedList({ title, rows, empty }: { title: string; rows: CategoryCount[]; empty: string }) {
-  const total = rows.reduce((sum, row) => sum + row.count, 0);
+/** A ranked list in a card of its own (used where one list stands alone). */
+function RankedList({ title, rows, empty, className = "" }: { title: string; rows: CategoryCount[]; empty: string; className?: string }) {
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
+    <div className={`h-full min-w-0 rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] ${className}`}>
       <h4 className="mb-3 text-sm font-semibold text-slate-800 dark:text-slate-200">{title}</h4>
-      {rows.length === 0 ? (
-        <p className="py-6 text-center text-xs text-slate-400">{empty}</p>
-      ) : (
-        <ul className="space-y-2">
-          {rows.map((row) => {
-            const share = total > 0 ? Math.round((row.count / total) * 100) : 0;
-            return (
-              <li key={row.label} className="text-xs" title={row.label}>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="truncate font-medium text-slate-700 dark:text-slate-200">{row.label}</span>
-                  <span className="shrink-0 font-semibold tabular-nums text-slate-900 dark:text-white">
-                    {formatCount(row.count)}
-                    <span className="ml-2 font-normal text-slate-400">{share}%</span>
-                  </span>
-                </div>
-                <div className="mt-1 h-1 rounded-full bg-slate-100 dark:bg-zinc-800">
-                  <div className="h-full rounded-full bg-blue-600/80" style={{ width: `${share}%` }} />
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      <RankedBars rows={rows} empty={empty} />
     </div>
   );
 }
+
+const TRAFFIC_VIEWS = [
+  { value: "pages", label: "Pages" },
+  { value: "sources", label: "Sources" },
+  { value: "clicks", label: "Clicks" },
+  { value: "actions", label: "Actions" },
+  { value: "devices", label: "Devices" },
+] as const;
+type TrafficView = (typeof TRAFFIC_VIEWS)[number]["value"];
 
 /**
- * What the website's own tracker saw: visits, visitors, clicks, where they came from, and what
- * signed-in accounts did in the web app. Every figure is a count over events the browser posted,
- * so a quiet window is zeros, not an outage.
+ * What the website's tracker saw: the figures in one row, page views beside what signed-in people did,
+ * and one chart for where visits go — pages, sources, clicks, actions or devices, switched in place
+ * instead of five cards side by side.
  */
 function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"] }) {
   const chart = useChartPalette();
   const now = Date.now();
+  const [view, setView] = useState<TrafficView>("pages");
   const viewChange = changeAgainst(traffic.pageviews, traffic.pageviewsPrevious);
   const visitorChange = changeAgainst(traffic.visitors, traffic.visitorsPrevious);
   const rate = (num: number, den: number) => (den > 0 ? formatPercent(num / den, 0) : UNKNOWN);
-
-  const tiles: StatItem[] = [
-    { title: "Page views", value: formatCount(traffic.pageviews), change: viewChange?.label ?? null, description: viewChange ? "vs. previous period" : null, icon: Eye, hint: "Pages viewed on the website and in the web app in this window" },
-    { title: "Visitors", value: formatCount(traffic.visitors), change: visitorChange?.label ?? null, description: visitorChange ? "vs. previous period" : null, icon: Globe, hint: `Distinct browsers · ${formatCount(traffic.sessions)} sessions` },
-    { title: "Clicks", value: formatCount(traffic.clicks), icon: MousePointerClick, hint: "Links and buttons clicked anywhere on the site" },
-    { title: "Sign-up clicks", value: formatCount(traffic.signupClicks), description: traffic.visitors > 0 ? `${rate(traffic.signupClicks, traffic.visitors)} of visitors` : null, icon: UserRoundPlus, hint: "Clicks on anything that leads to the sign-up form" },
-    { title: "App actions", value: formatCount(traffic.actions), icon: Zap, hint: "Named actions in the web app: previews, uploads, recordings, saves, shares, checkouts" },
-    { title: "Active web accounts", value: formatCount(traffic.activeWebUsers), icon: UserRound, hint: "Signed-in accounts that took at least one action in the web app" },
-  ];
+  const lists: Record<TrafficView, { rows: CategoryCount[]; empty: string; color: number }> = {
+    pages: { rows: traffic.topPages, empty: "No page views yet", color: 0 },
+    sources: { rows: traffic.topReferrers, empty: "No referrers yet", color: 1 },
+    clicks: { rows: traffic.topClicks, empty: "No clicks yet", color: 2 },
+    actions: { rows: traffic.topActions, empty: "No actions yet", color: 3 },
+    devices: { rows: traffic.devices, empty: "No page views yet", color: 4 },
+  };
+  const current = lists[view];
 
   return (
     <div className="space-y-5">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-        Website traffic
-      </h3>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {tiles.map((stat) => (
-          <StatCard key={stat.title} stat={stat} />
-        ))}
-      </div>
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Website traffic</h3>
+      <MetricRow
+        items={[
+          { label: "Page views", value: formatCount(traffic.pageviews), note: viewChange?.label, tone: viewChange ? (viewChange.up ? "up" : "down") : undefined, hint: "Pages viewed on the website and in the web app" },
+          { label: "Visitors", value: formatCount(traffic.visitors), note: visitorChange?.label ?? `${formatCount(traffic.sessions)} sessions`, tone: visitorChange ? (visitorChange.up ? "up" : "down") : undefined },
+          { label: "Clicks", value: formatCount(traffic.clicks) },
+          { label: "Sign-up clicks", value: formatCount(traffic.signupClicks), note: traffic.visitors > 0 ? `${rate(traffic.signupClicks, traffic.visitors)} of visitors` : null },
+          { label: "App actions", value: formatCount(traffic.actions), hint: "Previews, uploads, recordings, saves, shares, checkouts" },
+          { label: "Active web accounts", value: formatCount(traffic.activeWebUsers), hint: "Signed-in accounts that did something in the web app" },
+        ]}
+      />
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-7 xl:col-span-8">
-          <DailyChart title="Page views" info="Pages viewed per day, website and web app together" data={traffic.pageviewsPerDay} unit="views" color={chart.series} />
+          <DailyChart className="h-full" title="Page views" info="Pages viewed per day, website and web app together" data={traffic.pageviewsPerDay} unit="views" color={chart.series} />
         </div>
-        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:col-span-5 xl:col-span-4">
+        {/* The feed scrolls inside a card the height of the chart beside it, instead of running on below it. */}
+        <div className="flex min-h-0 flex-col rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:col-span-5 lg:h-[22.5rem] xl:col-span-4">
           <h4 className="mb-4 text-sm font-semibold text-slate-800 dark:text-slate-200">What web users do</h4>
           {traffic.recentActions.length === 0 ? (
             <p className="py-10 text-center text-xs text-slate-400">No signed-in actions in this window yet</p>
           ) : (
-            <ul className="divide-y divide-slate-100 dark:divide-zinc-800">
+            <ul className="-mr-2 min-h-0 flex-1 divide-y divide-slate-100 overflow-y-auto overscroll-contain pr-2 dark:divide-zinc-800">
               {traffic.recentActions.map((item, i) => (
                 <li key={`${item.userId}-${item.occurredAtUtc}-${i}`} className="flex items-center gap-3 py-2.5 first:pt-0 last:pb-0">
                   <div className="min-w-0 flex-1">
@@ -462,13 +430,14 @@ function WebTrafficPanel({ traffic }: { traffic: AnalyticsOverview["webTraffic"]
           )}
         </div>
       </div>
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-        <RankedList title="Pages" rows={traffic.topPages} empty="No page views yet" />
-        <RankedList title="Came from" rows={traffic.topReferrers} empty="No referrers yet" />
-        <RankedList title="Most clicked" rows={traffic.topClicks} empty="No clicks yet" />
-        <RankedList title="Actions" rows={traffic.topActions} empty="No actions yet" />
-        <RankedList title="Devices" rows={traffic.devices} empty="No page views yet" />
-      </div>
+      <ChartCard
+        title="Where visits go"
+        info="The top eight of each, with each one's share of the total."
+        extra={<Segmented label="Breakdown" options={TRAFFIC_VIEWS} value={view} onChange={setView} />}
+        table={<DataTable head={[TRAFFIC_VIEWS.find((v) => v.value === view)!.label, "Count"]} rows={current.rows.map((r) => [r.label, r.count])} />}
+      >
+        <RankedBars rows={current.rows} colorIndex={current.color} empty={current.empty} />
+      </ChartCard>
     </div>
   );
 }
@@ -479,32 +448,28 @@ function moneyList(amounts: { currency: string; amountMinor: number }[]): string
 }
 
 /**
- * Pro membership: who has it now, who joined and who lapsed in the window, the money collected, and
- * how the monthly song allowance is being used. Nothing renews by itself, so lapsed members are the
- * ones to win back and the run-rate is what would recur if every member bought again.
+ * Pro membership: who has it, who joined and lapsed in the window, the money, and the song allowance, as
+ * one row of figures beside how members split across plans. Nothing renews by itself, so lapsed members
+ * are the ones to win back and the run-rate is what would recur if every member bought again.
  */
 function MembershipPanel({ membership }: { membership: AnalyticsOverview["membership"] }) {
   const m = membership;
   const lapseRate = m.activeMembers + m.lapsedMembers > 0 ? formatPercent(m.lapsedMembers / (m.activeMembers + m.lapsedMembers), 0) : UNKNOWN;
-  const tiles: StatItem[] = [
-    { title: "Pro members", value: formatCount(m.activeMembers), description: `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted${m.lifetimeMembers ? ` · ${formatCount(m.lifetimeMembers)} lifetime` : ""}`, icon: Crown, hint: "Accounts with Pro right now, each counted once" },
-    { title: "New members", value: formatCount(m.newMembers), icon: UserRoundPlus, hint: "Accounts whose first Pro period started in this window" },
-    { title: "Lapsed", value: formatCount(m.lapsedMembers), description: `${lapseRate} of members in this window`, icon: UserRoundMinus, hint: "Paid time ran out in this window with no new payment: the people to win back" },
-    { title: "Revenue collected", value: moneyList(m.revenue), icon: Wallet, hint: "Payments received in this window, per currency, from the ledger" },
-    { title: "Monthly run-rate", value: moneyList(m.monthlyRunRate), icon: TrendingUp, hint: "Running paid memberships per month (yearly at a twelfth). Nothing renews by itself, so this recurs only if members buy again" },
-    { title: "Songs this month", value: formatCount(m.songsUsedThisMonth), description: m.membersOutOfSongs ? `${formatCount(m.membersOutOfSongs)} members used all 20` : "No one has run out", icon: Gauge, hint: "Song credits spent since the first of the month (UTC)" },
-  ];
   return (
     <div className="space-y-5">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-        Pro membership
-      </h3>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {tiles.map((stat) => (
-          <StatCard key={stat.title} stat={stat} />
-        ))}
-      </div>
-      <div className="grid gap-5 md:grid-cols-2">
+      <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pro membership</h3>
+      <div className="grid gap-5 xl:grid-cols-3">
+        <MetricRow
+          className="xl:col-span-2"
+          items={[
+            { label: "Pro members", value: formatCount(m.activeMembers), note: `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted`, hint: "Customers with Pro right now, each counted once" },
+            { label: "New members", value: formatCount(m.newMembers), hint: "First Pro period started in this window" },
+            { label: "Lapsed", value: formatCount(m.lapsedMembers), note: `${lapseRate} of members`, hint: "Paid time ran out with no new payment: the people to win back" },
+            { label: "Revenue collected", value: moneyList(m.revenue), hint: "Payments received in this window, per currency" },
+            { label: "Monthly run-rate", value: moneyList(m.monthlyRunRate), hint: "Paid memberships per month (yearly at a twelfth)" },
+            { label: "Songs this month", value: formatCount(m.songsUsedThisMonth), note: m.membersOutOfSongs ? `${formatCount(m.membersOutOfSongs)} used all 20` : "No one has run out" },
+          ]}
+        />
         <RankedList title="Members by plan" rows={m.membersByPlan} empty="No Pro members yet" />
       </div>
     </div>
@@ -512,73 +477,14 @@ function MembershipPanel({ membership }: { membership: AnalyticsOverview["member
 }
 
 function MostTranscribedKeys({ keys }: { keys: { label: string; count: number }[] }) {
-  const topKeys = keys.slice(0, 5);
-  const total = keys.reduce((sum, k) => sum + k.count, 0);
-
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-            Most transcribed keys
-          </h2>
-          <Info size={13} className="text-slate-400" />
-        </div>
-
-        <Link href="/transcriptions" className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
-          View all
-        </Link>
-      </div>
-
-      {topKeys.length === 0 ? (
-        <div className="py-8 text-center text-xs text-slate-400">
-          No transcriptions saved yet
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {topKeys.map((key, index) => {
-            const percentage = total > 0 ? Math.round((key.count / total) * 100) : 0;
-            return (
-              <div
-                key={key.label}
-                className="rounded-lg bg-slate-50 px-3 py-2 transition hover:bg-slate-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-800/70"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-slate-500 shadow-xs dark:bg-zinc-800 dark:text-slate-300">
-                    {index + 1}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <span className="truncate text-xs font-medium text-slate-700 dark:text-slate-200">
-                        {key.label}
-                      </span>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs font-semibold text-slate-800 dark:text-white">
-                          {key.count}
-                        </span>
-
-                        <span className="w-7 text-right text-[11px] text-slate-400">
-                          {percentage}%
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-1.5 h-1 rounded-full bg-slate-200 dark:bg-zinc-800">
-                      <div
-                        className="h-full rounded-full bg-blue-600 transition-all duration-500"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
+    <ChartCard
+      title="Most transcribed keys"
+      info="Keys of the sheets kept in this period. Every finished transcription is kept, so these are the transcribed keys."
+      table={<DataTable head={["Key", "Sheets"]} rows={keys.map((k) => [k.label, k.count])} />}
+    >
+      <RankedBars rows={keys.slice(0, 8)} colorIndex={0} empty="No sheets in this period" />
+    </ChartCard>
   );
 }
 
@@ -591,92 +497,123 @@ function getFlagEmoji(countryCode: string | null | undefined): string {
   return String.fromCodePoint(...codePoints);
 }
 
+const ACTIVITY_FILTERS = [
+  { value: "all", label: "All" },
+  { value: "transcriptions", label: "Transcriptions" },
+  { value: "signups", label: "Sign-ups" },
+  { value: "money", label: "Payments" },
+  { value: "feedback", label: "Feedback" },
+] as const;
+type ActivityFilter = (typeof ACTIVITY_FILTERS)[number]["value"];
+
+const ACTIVITY_KINDS: Record<string, { icon: typeof UserRound; style: string; group: ActivityFilter }> = {
+  signup: { icon: UserRoundPlus, style: "bg-blue-50 text-[#2563EB] dark:bg-blue-950/60 dark:text-blue-400", group: "signups" },
+  transcription: { icon: Music2, style: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400", group: "transcriptions" },
+  transcription_failed: { icon: TriangleAlert, style: "bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400", group: "transcriptions" },
+  payment: { icon: CreditCard, style: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", group: "money" },
+  feedback: { icon: MessageSquareHeart, style: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", group: "feedback" },
+  share: { icon: Share2, style: "bg-sky-50 text-sky-600 dark:bg-sky-950/60 dark:text-sky-400", group: "transcriptions" },
+};
+
+function regionName(code: string | null | undefined): string {
+  if (!code) return "";
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" }).of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
+/**
+ * The newest things customers did, each as a sentence: who, what, where, when. Sign-ins are not here
+ * (the API no longer sends them: one stored time per account could not say when anyone signed in).
+ * The list scrolls inside a card the height of the chart beside it; a row opens that person's journey.
+ */
 function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivity"] }) {
   const now = Date.now();
-  const displayItems = items.length > 0 ? items.slice(0, 5) : [];
+  const [filter, setFilter] = useState<ActivityFilter>("all");
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [emailTarget, setEmailTarget] = useState<{ email: string; fullName: string; id: string } | null>(null);
+  const shown = items.filter((i) => filter === "all" || (ACTIVITY_KINDS[i.kind]?.group ?? "all") === filter);
 
   return (
-    <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex h-full min-h-0 flex-col rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] lg:max-h-[24.5rem]">
+      <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Recent activity</h2>
-
         <Link href="/activity?tab=feed" className="text-xs font-medium text-[#2563EB] hover:underline dark:text-blue-400">
           View all
         </Link>
       </div>
+      <div className="mb-3 flex flex-wrap gap-1.5" role="group" aria-label="Show">
+        {ACTIVITY_FILTERS.map((f) => (
+          <button
+            key={f.value}
+            type="button"
+            onClick={() => setFilter(f.value)}
+            aria-pressed={filter === f.value}
+            className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+              filter === f.value
+                ? "bg-[#2563EB] text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-zinc-900 dark:text-slate-300 dark:hover:bg-zinc-800"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
 
-      {displayItems.length === 0 ? (
-        <div className="py-12 text-center text-xs text-slate-400">
-          No activity recorded yet
-        </div>
+      {shown.length === 0 ? (
+        <div className="py-10 text-center text-xs text-slate-400">Nothing of this kind yet</div>
       ) : (
-        <div className="space-y-4">
-          {displayItems.map((item, index) => {
-            const isSignup = item.kind === "signup";
-            const isTranscription = item.kind === "transcription";
-            const isLogin = item.kind === "login";
-
-            const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : isLogin ? LogIn : CreditCard;
-            const iconStyle = isSignup
-              ? "bg-blue-50 text-[#2563EB] dark:bg-blue-950/60 dark:text-blue-400"
-              : isTranscription
-                ? "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                : isLogin
-                  ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
-                  : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
-
-            const verb = isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : isLogin ? "User signed in" : "Payment received";
+        <ul className="-mr-2 min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-2">
+          {shown.map((item, index) => {
+            const kind = ACTIVITY_KINDS[item.kind] ?? ACTIVITY_KINDS.transcription!;
+            const Icon = kind.icon;
             const flag = getFlagEmoji(item.country);
-            
+            const at = item.occurredAtUtc;
+            const exact = new Date(at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
             return (
-              <div key={`${item.kind}-${item.occurredAtUtc}-${index}`} className="flex items-center justify-between gap-3 group">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconStyle}`}>
-                    <Icon size={16} />
-                  </div>
-
-                  <div className="min-w-0">
-                    <div className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
-                      {verb}
-                    </div>
-                    <div className="truncate text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1">
-                      {item.title}{flag && <span className="ml-1 leading-none">{flag}</span>}{item.subtitle ? ` • ${item.subtitle}` : ""}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  {item.email && item.userId && (
-                    <button 
-                      onClick={() => {
-                        setEmailTarget({ email: item.email!, fullName: item.title, id: item.userId! });
-                        setEmailDialogOpen(true);
-                      }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-blue-600 p-1 rounded-md hover:bg-blue-50 dark:hover:bg-zinc-800"
-                      title="Send email"
-                    >
-                      <MailCheck size={14} />
-                    </button>
-                  )}
-                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                    {formatRelative(item.occurredAtUtc.endsWith('Z') ? item.occurredAtUtc : `${item.occurredAtUtc}Z`, now)}
+              <li key={`${item.kind}-${at}-${index}`} className="group relative">
+                <Link
+                  href={item.userId ? `/activity/journey?userId=${item.userId}` : "/activity?tab=feed"}
+                  className="flex items-start gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-slate-50 dark:hover:bg-zinc-900/60"
+                >
+                  <span className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${kind.style}`}>
+                    <Icon size={14} />
                   </span>
-                </div>
-              </div>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[12.5px] leading-snug text-slate-800 dark:text-slate-100">
+                      <span className="font-semibold">{item.title}</span> {item.detail ?? item.kind}
+                    </span>
+                    <span className="mt-0.5 block truncate text-[11px] text-slate-400 dark:text-slate-500">
+                      {flag && <span className="mr-1">{flag}</span>}
+                      {regionName(item.country)}
+                      {item.country ? " · " : ""}
+                      <time dateTime={at} title={exact}>{formatRelative(at, now)}</time>
+                    </span>
+                  </span>
+                </Link>
+                {item.email && item.userId && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEmailTarget({ email: item.email!, fullName: item.title, id: item.userId! });
+                      setEmailDialogOpen(true);
+                    }}
+                    className="absolute right-1 top-2 rounded-md p-1 text-slate-400 opacity-0 transition-opacity hover:bg-blue-50 hover:text-blue-600 focus:opacity-100 group-hover:opacity-100 dark:hover:bg-zinc-800"
+                    title={`Email ${item.title}`}
+                    aria-label={`Email ${item.title}`}
+                  >
+                    <MailCheck size={14} />
+                  </button>
+                )}
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
-      
-      {emailTarget && (
-        <SendEmailDialog
-          open={emailDialogOpen}
-          onOpenChange={setEmailDialogOpen}
-          targetUser={emailTarget}
-        />
-      )}
+
+      {emailTarget && <SendEmailDialog open={emailDialogOpen} onOpenChange={setEmailDialogOpen} targetUser={emailTarget} />}
     </div>
   );
 }
@@ -805,38 +742,46 @@ export function OverviewView() {
 
       <StateView state={state} loadingLabel="Loading analytics">
         {(data) => {
-          const userChange = changeAgainst(data.users.newUsers, data.users.newUsersPrevious);
           const activeChange = changeAgainst(data.users.activeUsers, data.users.activeUsersPrevious);
           const txChange = changeAgainst(data.transcriptions.totalTranscribed, data.transcriptions.totalTranscribedPrevious);
 
           const topStats: StatItem[] = [
             {
+              // The total is all time; what moves with the window is how many joined, said as such.
               title: "Total users",
               value: formatCount(data.users.totalUsers),
-              change: userChange?.label ?? null,
-              description: userChange ? "vs. previous period" : null,
+              description: `${formatCount(data.users.newUsers)} new in this period`,
               icon: UserRound,
               hint: "Every account, all time",
             },
             {
               title: "Active today",
+              value: formatCount(data.users.activeToday ?? 0),
+              description: "Seen since midnight",
+              icon: Zap,
+              hint: "Accounts that used the app or the website today (reporting time): any signed-in visit, a transcription, or a sign-in",
+            },
+            {
+              title: "Active this period",
               value: formatCount(data.users.activeUsers),
               change: activeChange?.label ?? null,
+              up: activeChange?.up,
               description: activeChange ? "vs. previous period" : null,
-              icon: Zap,
-              hint: "Signed in recently",
+              icon: Activity,
+              hint: "Accounts that did something in the selected dates: transcribed, used the web app, signed up, or were seen",
             },
             {
               title: "Transcriptions",
               value: formatCount(data.transcriptions.totalTranscribed),
               change: txChange?.label ?? null,
-              description: `${formatCount(data.transcriptions.totalSaved)} saved${txChange ? " · vs. previous period" : ""}`,
+              up: txChange?.up,
+              description: `${formatCount(data.transcriptions.totalSaved)} kept${txChange ? " · vs. previous period" : ""}`,
               icon: Music2,
-              hint: "Transcriptions that produced a result in this window, saved or not, including free previews",
+              hint: "Transcriptions that produced a result in this window, including free previews",
             },
           ];
 
-          const ended = data.transcriptions.succeededCount + data.transcriptions.failedCount;
+          const started = data.transcriptions.succeededCount + data.transcriptions.failedCount + data.transcriptions.inFlightCount;
           const outcomes: DonutSlice[] = [
             {
               label: "Succeeded",
@@ -844,6 +789,7 @@ export function OverviewView() {
               color: chart.success,
             },
             { label: "Failed", value: data.transcriptions.failedCount, color: chart.danger },
+            { label: "Still running", value: data.transcriptions.inFlightCount, color: chart.faint },
           ];
 
           const methods: DonutSlice[] = data.signupMethods.map((method, i) => ({
@@ -856,7 +802,7 @@ export function OverviewView() {
           return (
             <div className="space-y-6">
               {/* TOP KPI CARDS */}
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {topStats.map((stat) => (
                   <StatCard key={stat.title} stat={stat} />
                 ))}
@@ -895,19 +841,26 @@ export function OverviewView() {
               {/* SECONDARY DEEP DIVE: KEYS & OUTCOMES */}
               <div className="grid gap-6 xl:grid-cols-2">
                 <MostTranscribedKeys keys={data.topKeys} />
-                <div className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
+                <div className="flex h-full flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs dark:border-zinc-800 dark:bg-[#09090b]">
                   <div className="mb-4 flex items-center justify-between">
                     <h4 className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                       Transcription outcomes
                     </h4>
-                    <span className="text-xs text-slate-400">Ended jobs</span>
+                    <span
+                      className="text-xs text-slate-400"
+                      title="Every transcription started in this period, account jobs and free previews"
+                    >
+                      {data.transcriptions.successRate != null
+                        ? `${formatPercent(data.transcriptions.successRate, 0)} succeeded`
+                        : "Started in this period"}
+                    </span>
                   </div>
                   <DonutCard
                     slices={outcomes}
-                    centerLabel="Ended jobs"
-                    centerValue={formatCount(ended)}
+                    centerLabel="Started"
+                    centerValue={formatCount(started)}
                     meters
-                    emptyMessage="Nothing reached a final state in this window"
+                    emptyMessage="No transcriptions started in this period"
                   />
                 </div>
               </div>
@@ -955,7 +908,7 @@ export function OverviewView() {
                         Weekly cohorts
                       </h4>
                       <p className="mt-0.5 text-xs text-slate-400">
-                        Share of each signup week that has ever signed in on a later day
+                        Share of each signup week that came back on a later day: seen, signed in, or transcribed
                       </p>
                     </div>
                     {data.retention.length === 0 ? (

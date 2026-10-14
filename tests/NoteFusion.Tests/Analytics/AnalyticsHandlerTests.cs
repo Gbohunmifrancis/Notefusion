@@ -55,7 +55,7 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
-    public async Task Saved_transcriptions_report_a_full_success_rate_and_mean_confidence()
+    public async Task Outcomes_count_jobs_not_saved_sheets_and_confidence_comes_from_the_sheets()
     {
         // Anchored on real time, not on Now: Transcription stamps its own CreatedAtUtc from
         // DateTime.UtcNow rather than taking the injected clock, so a fixed window in the past
@@ -64,14 +64,25 @@ public class AnalyticsHandlerTests
         var userId = await SeedUser(h, "user@example.com", h.Clock.UtcNow.AddDays(-2));
         await SaveTranscription(h, userId);
         await SaveTranscription(h, userId);
+        // Three jobs: two finished (the saved ones, and one more nobody saved), one that failed, one running.
+        var at = h.Clock.UtcNow.AddHours(-1);
+        foreach (var (id, outcome) in new[] { ("j1", "done"), ("j2", "done"), ("j3", "done"), ("j4", "failed"), ("j5", "running") })
+        {
+            var job = TranscriptionJob.Record(id, userId, at);
+            if (outcome == "done") job.Settle("{}", at);
+            if (outcome == "failed") job.Settle(null, at);
+            h.Db.TranscriptionJobs.Add(job);
+        }
+        await h.Db.SaveChangesAsync();
 
         var result = await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default);
 
         var t = result.Value.Transcriptions;
         Assert.Equal(2, t.TotalSaved);
-        Assert.Equal(2, t.SucceededCount);
-        Assert.Equal(0, t.FailedCount);
-        Assert.Equal(1.0, t.SuccessRate);
+        Assert.Equal(3, t.SucceededCount);
+        Assert.Equal(1, t.FailedCount);
+        Assert.Equal(1, t.InFlightCount);
+        Assert.Equal(0.75, t.SuccessRate);
         Assert.Equal(0.95, t.AverageConfidence);
 
         // The key breakdown groups on the owned value object's flattened columns.
@@ -198,18 +209,22 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
-    public async Task Recent_activity_interleaves_signups_and_saves_newest_first()
+    public async Task Recent_activity_interleaves_signups_and_finished_transcriptions_newest_first()
     {
         using var h = new TestHarness(DateTime.UtcNow.AddMinutes(1));
         var userId = await SeedUser(h, "author@example.com", h.Clock.UtcNow.AddDays(-3));
-        await SaveTranscription(h, userId); // stamps CreatedAtUtc = now, the newest event
+        // A finished job is the transcription event (saved or not), the newest thing that happened.
+        var job = TranscriptionJob.Record("job-recent", userId, h.Clock.UtcNow.AddMinutes(-5));
+        job.Settle("{}", h.Clock.UtcNow.AddMinutes(-4));
+        h.Db.TranscriptionJobs.Add(job);
+        await h.Db.SaveChangesAsync();
 
         var result = await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default);
 
         var feed = result.Value.RecentActivity;
         Assert.NotEmpty(feed);
 
-        // The save happened after the signup, so it leads the feed.
+        // The transcription finished after the signup, so it leads the feed.
         Assert.Equal("transcription", feed[0].Kind);
         Assert.Contains(feed, a => a.Kind == "signup" && a.Subtitle == "author@example.com");
 
@@ -220,19 +235,24 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
-    public async Task Recent_activity_reports_a_return_visit_as_a_login_event()
+    public async Task Recent_activity_leaves_out_sign_ins_and_says_what_happened_in_utc()
     {
         using var h = new TestHarness(Now);
         var user = User.Create("Returner", "return@example.com", h.Hasher.Hash("password123"), Now.AddDays(-3));
         user.RecordSuccessfulLogin(Now.AddDays(-1));
         h.Db.Users.Add(user);
+        var failed = TranscriptionJob.RecordLink("j-failed", user.Id, Now.AddHours(-2), null, false);
+        failed.Settle(null, Now.AddHours(-2));
+        h.Db.TranscriptionJobs.Add(failed);
         await h.Db.SaveChangesAsync();
 
-        var result = await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default);
+        var feed = (await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default)).Value.RecentActivity;
 
-        var login = Assert.Single(result.Value.RecentActivity, a => a.Kind == "login");
-        Assert.Equal("Returner", login.Title);
-        Assert.Equal(Now.AddDays(-1), login.OccurredAtUtc);
+        // A sign-in is not something someone did; a single LastLoginAt cannot place it in history anyway.
+        Assert.DoesNotContain(feed, a => a.Kind == "login");
+        Assert.Equal(("transcription_failed", "had a song link fail to transcribe"), (feed[0].Kind, feed[0].Detail));
+        Assert.Equal(("signup", "signed up"), (feed[1].Kind, feed[1].Detail));
+        Assert.All(feed, a => Assert.Equal(DateTimeKind.Utc, a.OccurredAtUtc.Kind));
     }
 
     [Fact]
@@ -280,6 +300,44 @@ public class AnalyticsHandlerTests
         var byEmail = await new GetAdminUsersQueryHandler(h.Db, h.Clock)
             .Handle(new GetAdminUsersQuery(Search: "grace@"), default);
         Assert.Equal("grace@example.com", Assert.Single(byEmail.Value.Items).Email);
+    }
+
+    [Fact]
+    public async Task The_user_list_filters_and_sorts_by_last_seen_and_marks_who_is_online()
+    {
+        using var h = new TestHarness(Now);
+        await SeedUser(h, "online@example.com", Now.AddDays(-40));
+        await SeedUser(h, "today@example.com", Now.AddDays(-30));
+        await SeedUser(h, "month@example.com", Now.AddDays(-20));
+        await SeedUser(h, "never@example.com", Now.AddDays(-50));
+        var users = h.Db.Users.ToDictionary(u => u.Email);
+        users["online@example.com"].MarkSeen(Now.AddMinutes(-2));
+        users["today@example.com"].MarkSeen(Now.AddHours(-6));
+        users["month@example.com"].RecordSuccessfulLogin(Now.AddDays(-12)); // seen only by its last sign-in
+        await h.Db.SaveChangesAsync();
+
+        async Task<List<string>> Emails(string? within, string? sort = null)
+            => (await new GetAdminUsersQueryHandler(h.Db, h.Clock)
+                    .Handle(new GetAdminUsersQuery(LastSeenWithin: within, Sort: sort), default))
+                .Value.Items.Select(i => i.Email).ToList();
+
+        Assert.Equal(["online@example.com"], await Emails("online"));
+        Assert.Equal(["online@example.com", "today@example.com"], (await Emails("today")).Order().ToList());
+        Assert.Equal(3, (await Emails("month")).Count);
+        Assert.Equal(["never@example.com"], await Emails("inactive"));
+        Assert.Equal(["online@example.com", "today@example.com", "month@example.com", "never@example.com"], await Emails(null, "lastSeen"));
+
+        var rows = (await new GetAdminUsersQueryHandler(h.Db, h.Clock).Handle(new GetAdminUsersQuery(), default))
+            .Value.Items.ToDictionary(r => r.Email);
+        Assert.True(rows["online@example.com"].IsOnline);
+        Assert.False(rows["today@example.com"].IsOnline);
+        Assert.Equal(Now.AddHours(-6), rows["today@example.com"].LastSeenAtUtc);
+        Assert.Equal(Now.AddDays(-12), rows["month@example.com"].LastSeenAtUtc);
+        Assert.Null(rows["never@example.com"].LastSeenAtUtc);
+
+        // The old isOnline flag is the same filter.
+        var legacy = await new GetAdminUsersQueryHandler(h.Db, h.Clock).Handle(new GetAdminUsersQuery(IsOnline: true), default);
+        Assert.Equal("online@example.com", Assert.Single(legacy.Value.Items).Email);
     }
 
     [Fact]

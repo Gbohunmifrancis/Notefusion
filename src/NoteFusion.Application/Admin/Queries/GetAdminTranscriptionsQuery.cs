@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Admin.Dtos;
 using NoteFusion.Application.Analytics.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
@@ -36,8 +37,8 @@ public sealed class GetAdminTranscriptionsQueryHandler
         var page = Math.Max(1, request.Page);
         var pageSize = Math.Clamp(request.PageSize, 1, GetAdminTranscriptionsQuery.MaxPageSize);
 
-        var query = from t in _db.Transcriptions.AsNoTracking()
-                    join u in _db.Users.AsNoTracking() on t.UserId equals u.Id
+        var query = from t in _db.RealSheets().AsNoTracking()
+                    join u in _db.RealUsers().AsNoTracking() on t.UserId equals u.Id
                     select new
                     {
                         Transcription = t,

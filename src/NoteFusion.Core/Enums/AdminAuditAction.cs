@@ -39,5 +39,8 @@ public enum AdminAuditAction
     SetAnnouncement = 13,
 
     /// <summary>An operator executed a pre-production purge of test users and data.</summary>
-    PurgeTestData = 14
+    PurgeTestData = 14,
+
+    /// <summary>An operator marked an account as the team's own or a test account, or back to a customer.</summary>
+    SetInternalAccount = 15
 }

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Activity.Dtos;
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -51,7 +52,7 @@ public sealed class GetCheckoutFunnelQueryHandler : IRequestHandler<GetCheckoutF
             return rangeResult.Error;
         var range = rangeResult.Value;
 
-        var actions = _db.WebEvents.AsNoTracking()
+        var actions = _db.RealWebEvents().AsNoTracking()
             .Where(e => e.Kind == WebEvent.Action && e.OccurredAtUtc >= range.FromUtc && e.OccurredAtUtc < range.ToUtc);
 
         // Sessions per step, the funnel's unit: one person retrying three times is one session that got stuck.
@@ -86,7 +87,7 @@ public sealed class GetCheckoutFunnelQueryHandler : IRequestHandler<GetCheckoutF
         var pageErrors = await Ranked(actions.Where(e => e.Name == CheckoutSteps.PageError).GroupBy(e => e.Detail ?? "unknown"), ct);
 
         // Payment rows are small and their enums are folded in memory, the same reason the overview does it.
-        var payments = await _db.PaymentTransactions.AsNoTracking()
+        var payments = await _db.RealPayments().AsNoTracking()
             .Where(p => p.CreatedAtUtc >= range.FromUtc && p.CreatedAtUtc < range.ToUtc)
             .Select(p => new { p.Status, p.Provider, p.FailureReason, p.CreatedAtUtc, p.UpdatedAtUtc, p.UserId, p.Reference })
             .ToListAsync(ct);
@@ -107,7 +108,7 @@ public sealed class GetCheckoutFunnelQueryHandler : IRequestHandler<GetCheckoutF
 
         var problemUserIds = browserProblems.Select(p => p.UserId).OfType<Guid>()
             .Concat(failedPayments.Select(p => p.UserId)).Distinct().ToList();
-        var users = await _db.Users.AsNoTracking()
+        var users = await _db.RealUsers().AsNoTracking()
             .Where(u => problemUserIds.Contains(u.Id))
             .Select(u => new { u.Id, u.FullName, u.Email })
             .ToDictionaryAsync(u => u.Id, ct);

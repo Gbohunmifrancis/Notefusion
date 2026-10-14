@@ -38,6 +38,17 @@ export interface ChartPalette {
    * possible labels; a fifth would wrap and reuse the first.
    */
   categorical: readonly string[];
+  /**
+   * The five-series palette for the Insights charts (stacked series, multi-line), checked with the
+   * dataviz validator: lightness band, chroma floor, colour-blind separation and normal-vision floor all
+   * pass in both modes. In light mode slots 3–5 sit under 3:1 against white, so every chart using them
+   * carries a legend and a table view. Assigned in order, never cycled.
+   */
+  series5: readonly string[];
+  /** One-hue ramp for magnitude (heatmap cells, retention), light to dark. */
+  ramp: readonly string[];
+  /** The card surface: the 2px gap between stacked segments is drawn in it. */
+  surface: string;
 }
 
 export const CHART: Record<ThemeMode, ChartPalette> = {
@@ -51,6 +62,9 @@ export const CHART: Record<ThemeMode, ChartPalette> = {
     danger: "#dc2626",
     faint: "#94a3b8",
     categorical: ["#2563eb", "#0ea5e9", "#6366f1", "#94a3b8"],
+    series5: ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4"],
+    ramp: ["#eef4fc", "#cfe0f7", "#9fc2ef", "#5f9be3", "#2a78d6", "#1a56a3"],
+    surface: "#ffffff",
   },
   dark: {
     grid: "#18181b",
@@ -62,6 +76,9 @@ export const CHART: Record<ThemeMode, ChartPalette> = {
     danger: "#f87171",
     faint: "#71717a",
     categorical: ["#3b82f6", "#38bdf8", "#818cf8", "#71717a"],
+    series5: ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181"],
+    ramp: ["#141a24", "#1b2b45", "#21416d", "#2a5c9c", "#3987e5", "#8fbaf2"],
+    surface: "#09090b",
   },
 };
 

@@ -39,6 +39,20 @@ const CATEGORIES: Record<string, string> = {
   other: "Other",
 };
 
+/** What was off, for a transcription that was close or off. */
+const ISSUES: Record<string, string> = {
+  notes: "Wrong notes",
+  key: "Wrong doh (key)",
+  rhythm: "Rhythm or timing",
+  missing: "Notes missing",
+  other: "Something else",
+};
+const VERDICTS: Record<number, { label: string; tone: "success" | "warning" | "danger" }> = {
+  5: { label: "Spot on", tone: "success" },
+  3: { label: "Close", tone: "warning" },
+  1: { label: "Off", tone: "danger" },
+};
+
 function Stars({ value }: { value: number }) {
   return (
     <span className="inline-flex gap-0.5" aria-label={`${value} of 5 stars`}>
@@ -85,6 +99,19 @@ function What({ row }: { row: FeedbackRow }) {
           {row.message && <p className="mt-1 text-[13px] text-foreground [overflow-wrap:anywhere]">{row.message}</p>}
         </div>
       );
+    case "transcription": {
+      const v = VERDICTS[row.rating ?? 0] ?? { label: "Close", tone: "warning" as const };
+      return (
+        <div>
+          <span className="inline-flex flex-wrap items-center gap-1.5">
+            <Badge tone={v.tone}>{v.label}</Badge>
+            {row.category && <span className="text-[13px] text-foreground">{ISSUES[row.category] ?? row.category}</span>}
+            {row.jobId && <span className="font-mono text-[11px] text-muted-foreground">{row.jobId}</span>}
+          </span>
+          {row.message && <p className="mt-1 text-[13px] text-foreground [overflow-wrap:anywhere]">{row.message}</p>}
+        </div>
+      );
+    }
     case "rating_dismissed":
       return <span className="text-muted-foreground">Chose &ldquo;Not now&rdquo; on the rating prompt</span>;
     case "heard_about":
@@ -109,10 +136,11 @@ const FILTERS = [
   { value: "all", label: "Everything" },
   { value: "feedback", label: "Feedback" },
   { value: "rating", label: "Ratings" },
+  { value: "transcription", label: "Transcriptions" },
   { value: "heard_about", label: "Heard about us" },
 ] as const satisfies readonly { value: Filter; label: string }[];
 
-/** What users told us: ratings from the app, where they heard about us, and feedback messages. */
+/** What users told us: ratings from the app, verdicts on single transcriptions, where they heard about us, and feedback messages. */
 export function FeedbackView() {
   const [filter, setFilter] = useState<Filter>("all");
   const [page, setPage] = useState(1);
@@ -157,6 +185,18 @@ export function FeedbackView() {
             </Card>
             <Bars title="Where they heard about us" rows={s.heardAbout} labels={SOURCES} total={s.heardAboutAnswers} />
             <Bars title="Feedback by topic" rows={s.feedbackByCategory} labels={CATEGORIES} total={s.feedbackMessages} />
+            <Bars
+              title="How transcriptions came out"
+              rows={s.transcriptionDistribution ?? []}
+              total={s.transcriptionVerdicts ?? 0}
+              labels={{ "spot on": "Spot on", close: "Close", off: "Off" }}
+            />
+            <Bars
+              title="What was off"
+              rows={s.transcriptionIssues ?? []}
+              labels={ISSUES}
+              total={(s.transcriptionIssues ?? []).reduce((n, r) => n + r.count, 0)}
+            />
           </div>
         )}
       </StateView>

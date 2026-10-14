@@ -38,14 +38,16 @@ public sealed record UserMetricsDto(
     int GoogleVerifiedUsers,
     int PasswordOnlyUsers,
     int LockedOutUsers,
-    int DeactivatedUsers);
+    int DeactivatedUsers,
+    /// <summary>Accounts seen since local midnight (reporting time): any signed-in request, else the last sign-in.</summary>
+    int ActiveToday = 0);
 
 /// <summary>Transcription throughput and reliability for one window.</summary>
 /// <param name="TotalSaved">Transcriptions saved to a library inside the window.</param>
 /// <param name="TotalSavedPrevious">The same count over the preceding window.</param>
-/// <param name="SucceededCount">Saved transcriptions in a terminal <c>Done</c> state.</param>
-/// <param name="FailedCount">Saved transcriptions in a <c>Failed</c> state.</param>
-/// <param name="InFlightCount">Still <c>Pending</c> or <c>Processing</c>.</param>
+/// <param name="SucceededCount">Jobs started in the window that produced a result: account transcriptions and free previews.</param>
+/// <param name="FailedCount">Jobs started in the window that ended without a result.</param>
+/// <param name="InFlightCount">Jobs started in the window still running.</param>
 /// <param name="SuccessRate">
 /// Succeeded over all terminal outcomes, 0 to 1, rounded to four places. Null when nothing has
 /// reached a terminal state, because a rate over an empty denominator is undefined and 0 would
@@ -102,7 +104,9 @@ public sealed record ActivityItemDto(
     DateTime OccurredAtUtc,
     Guid? UserId,
     string? Email,
-    string? Country);
+    string? Country,
+    /// <summary>What happened, as a phrase after the name: "transcribed a song link", "paid ₦7,500 for Pro".</summary>
+    string? Detail = null);
 
 /// <summary>
 /// Signup-cohort retention: of the users who joined in a period, how many later came back.
@@ -324,7 +328,13 @@ public sealed record AdminUserRowDto(
     /// <summary>Sheets in the library now. <c>TranscriptionCount</c> counts every transcription that produced a result.</summary>
     int SavedTranscriptionCount = 0,
     /// <summary>Transcriptions that ended without a result.</summary>
-    int FailedTranscriptionCount = 0);
+    int FailedTranscriptionCount = 0,
+    /// <summary>The account's last signed-in request (or, before presence was recorded, its last sign-in).</summary>
+    DateTime? LastSeenAtUtc = null,
+    /// <summary>Seen within <c>LastSeen.OnlineWindow</c>.</summary>
+    bool IsOnline = false,
+    /// <summary>An admin or an account flagged internal: shown only when the list asks for the team.</summary>
+    bool IsInternal = false);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

@@ -64,6 +64,18 @@ public class TranscriptionJob : BaseEntity
     /// </remarks>
     public DateTime? SettledAtUtc { get; private set; }
 
+    /// <summary>
+    /// When the library sweep dealt with this finished job: kept it as a sheet for someone who never
+    /// pressed Save, or found it already saved. Null until then. Set once, so a sheet the user deletes
+    /// afterwards is not put back.
+    /// </summary>
+    /// <remarks>
+    /// Nine in ten finished transcriptions were never saved, and an unsaved one is gone the moment the
+    /// screen closes — nothing in the library to come back to. The sweep waits a while before keeping
+    /// it, so the result screen's own choices (which doh, the title, Save itself) still come first.
+    /// </remarks>
+    public DateTime? AutoSavedAtUtc { get; private set; }
+
     /// <summary>Upload (a recording), Link (a song fetched from a streaming platform) or Song (an uploaded song the voice is isolated from).</summary>
     public TranscriptionJobKind Kind { get; private set; } = TranscriptionJobKind.Upload;
 
@@ -122,6 +134,9 @@ public class TranscriptionJob : BaseEntity
             Kind = TranscriptionJobKind.Song,
             WasPro = true
         };
+
+    /// <summary>Records that the library sweep has dealt with this job. Idempotent.</summary>
+    public void MarkAutoSaved(DateTime utcNow) => AutoSavedAtUtc ??= utcNow;
 
     /// <summary>
     /// Charges one song credit to this link or song job. Returns false for a plain upload, and when it

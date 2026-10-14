@@ -69,11 +69,12 @@ public static class TranscriptionCounts
     /// </summary>
     public static async Task<int> InWindowAsync(IApplicationDbContext db, DateTime fromUtc, DateTime toUtc, CancellationToken ct)
     {
-        var jobs = await db.TranscriptionJobs
+        // Site-wide figures are customers only (AnalyticsScope); the per-user counts above are not scoped.
+        var jobs = await db.RealJobs()
             .CountAsync(j => j.CreatedAtUtc >= fromUtc && j.CreatedAtUtc < toUtc && j.ResultJson != null, ct);
-        var previews = await db.PreviewJobs
+        var previews = await db.RealPreviews()
             .CountAsync(p => p.CreatedAtUtc >= fromUtc && p.CreatedAtUtc < toUtc && p.Succeeded, ct);
-        var untracked = await db.Transcriptions
+        var untracked = await db.RealSheets()
             .CountAsync(t => t.CreatedAtUtc >= fromUtc && t.CreatedAtUtc < toUtc
                 && (t.SourceJobId == null
                     || (!db.TranscriptionJobs.Any(j => j.JobId == t.SourceJobId)

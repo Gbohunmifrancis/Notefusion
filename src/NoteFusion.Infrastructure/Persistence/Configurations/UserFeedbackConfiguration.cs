@@ -18,6 +18,7 @@ public sealed class UserFeedbackConfiguration : IEntityTypeConfiguration<UserFee
         builder.Property(f => f.Client).HasMaxLength(10).IsRequired();
         builder.Property(f => f.AppVersion).HasMaxLength(UserFeedback.ShortMaxLength);
         builder.Property(f => f.Screen).HasMaxLength(UserFeedback.ShortMaxLength);
+        builder.Property(f => f.JobId).HasMaxLength(UserFeedback.JobIdMaxLength);
         builder.HasIndex(f => new { f.UserId, f.Kind, f.CreatedAtUtc });
         builder.HasIndex(f => new { f.Kind, f.CreatedAtUtc });
     }

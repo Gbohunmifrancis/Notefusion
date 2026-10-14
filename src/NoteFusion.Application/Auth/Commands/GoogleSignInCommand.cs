@@ -33,6 +33,7 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
     private readonly ICountryResolver _country;
+    private readonly IClientApp? _clientApp;
 
     public GoogleSignInCommandHandler(
         IApplicationDbContext db,
@@ -40,8 +41,10 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
         ITokenIssuer tokenIssuer,
         IDateTimeProvider clock,
         IEmailSender email,
-        ICountryResolver country)
+        ICountryResolver country,
+        IClientApp? clientApp = null)
     {
+        _clientApp = clientApp;
         _db = db;
         _googleTokenValidator = googleTokenValidator;
         _tokenIssuer = tokenIssuer;
@@ -82,6 +85,10 @@ public sealed class GoogleSignInCommandHandler : IRequestHandler<GoogleSignInCom
                 googleId: identity.SubjectId,
                 profilePictureUrl: identity.PictureUrl,
                 utcNow: now);
+            // Where the account came from, as the password sign-up records it: the web app sends a browser
+            // user agent, the phone app does not. Google sign-ups left this empty, so the console's
+            // "signed up from" could not place them.
+            user.RecordSignupSource(_clientApp?.Current switch { "web" => "web", "app" => "mobile", _ => null });
             _db.Users.Add(user);
         }
         else

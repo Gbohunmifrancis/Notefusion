@@ -76,6 +76,34 @@ public class FeedbackAndEngagementTests
     }
 
     [Fact]
+    public async Task A_transcription_verdict_is_one_per_job_and_stays_out_of_the_app_rating()
+    {
+        using var h = new TestHarness(Now);
+        var ada = Signup(h, "ada@example.com", "Ada");
+        await Submit(h, ada, new SubmitFeedbackCommand("rating", Rating: 4));
+
+        await Submit(h, ada, new SubmitFeedbackCommand("transcription", Rating: 3, Category: "key", JobId: "job-1"));
+        await Submit(h, ada, new SubmitFeedbackCommand("transcription", Rating: 1, Category: "rhythm", Message: "Too fast", JobId: "job-1"));
+        await Submit(h, ada, new SubmitFeedbackCommand("transcription", Rating: 5, Category: "key", JobId: "job-2"));
+
+        var verdicts = h.Db.UserFeedback.Where(f => f.Kind == "transcription").OrderBy(f => f.JobId).ToList();
+        Assert.Equal(2, verdicts.Count);
+        Assert.Equal(("job-1", 1, "rhythm", "Too fast"), (verdicts[0].JobId, verdicts[0].Rating!.Value, verdicts[0].Category, verdicts[0].Message));
+        Assert.Null(verdicts[1].Category); // "spot on" has nothing off
+
+        var summary = (await new GetFeedbackSummaryQueryHandler(h.Db).Handle(new GetFeedbackSummaryQuery(), default)).Value;
+        Assert.Equal((4.0, 1), (summary.AverageRating, summary.Ratings));
+        Assert.Equal(2, summary.TranscriptionVerdicts);
+        Assert.Equal([("spot on", 1), ("close", 0), ("off", 1)], summary.TranscriptionDistribution!.Select(d => (d.Label, d.Count)));
+        Assert.Equal("rhythm", Assert.Single(summary.TranscriptionIssues!).Label);
+
+        var validator = new SubmitFeedbackCommandValidator();
+        Assert.False(validator.Validate(new SubmitFeedbackCommand("transcription", Rating: 4, JobId: "job-3")).IsValid);
+        Assert.False(validator.Validate(new SubmitFeedbackCommand("transcription", Rating: 5)).IsValid);
+        Assert.True(validator.Validate(new SubmitFeedbackCommand("transcription", Rating: 5, JobId: "job-3")).IsValid);
+    }
+
+    [Fact]
     public async Task Engagement_ranks_the_most_active_users_and_counts_active_users()
     {
         using var h = new TestHarness(Now.AddDays(-3));

@@ -181,6 +181,9 @@ public static class DependencyInjection
 
         // Deletes web events and the transcription activity log after 180 days.
         services.AddHostedService<Activity.ActivityRetentionWorker>();
+
+        // Keeps finished-but-unsaved sheets in the library and emails unfinished Pro checkouts.
+        services.AddHostedService<Activity.RetentionSweepWorker>();
     }
 
     private static void AddGeo(this IServiceCollection services, IConfiguration configuration)

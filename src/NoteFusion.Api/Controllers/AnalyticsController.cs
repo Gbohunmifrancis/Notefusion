@@ -54,6 +54,25 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] int top = 20, CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetEngagementQuery(from, to, top), ct));
 
+    /// <summary>
+    /// The Insights page: customer behaviour for a window, cut by country, platform ("web"/"app") and plan
+    /// ("pro"/"free"). Dates are inclusive reporting-local days, as on the overview.
+    /// </summary>
+    [HttpGet("insights")]
+    public async Task<IActionResult> Insights(
+        [FromQuery] DateTime? from = null,
+        [FromQuery] DateTime? to = null,
+        [FromQuery] string? country = null,
+        [FromQuery] string? platform = null,
+        [FromQuery] string? plan = null,
+        CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetInsightsQuery(from, to, country, platform, plan), ct));
+
+    /// <summary>Who is online now and which transcriptions just started, for the console's live notices.</summary>
+    [HttpGet("live")]
+    public async Task<IActionResult> Live(CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetLiveActivityQuery(), ct));
+
     [HttpGet("users")]
     public async Task<IActionResult> Users(
         [FromQuery] int page = 1,
@@ -61,6 +80,9 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] string? search = null,
         [FromQuery] bool? isActive = null,
         [FromQuery] bool? isOnline = null,
+        [FromQuery] string? lastSeen = null,
+        [FromQuery] string? sort = null,
+        [FromQuery] bool includeInternal = false,
         CancellationToken ct = default)
-        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline), ct));
+        => HandleResult(await _sender.Send(new GetAdminUsersQuery(page, pageSize, search, isActive, isOnline, lastSeen, sort, includeInternal), ct));
 }

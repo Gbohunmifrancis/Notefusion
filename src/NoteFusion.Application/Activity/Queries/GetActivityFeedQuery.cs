@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Activity.Dtos;
 using NoteFusion.Application.Analytics.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -45,8 +46,8 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
 
         if (Wants("signup"))
         {
-            total += await _db.Users.CountAsync(ct);
-            rows.AddRange((await _db.Users.AsNoTracking().OrderByDescending(u => u.CreatedAt).Take(depth)
+            total += await _db.RealUsers().CountAsync(ct);
+            rows.AddRange((await _db.RealUsers().AsNoTracking().OrderByDescending(u => u.CreatedAt).Take(depth)
                     .Select(u => new { u.CreatedAt, u.Id, u.SignupSource }).ToListAsync(ct))
                 .Select(u => (u.CreatedAt, "signup", (Guid?)u.Id, "Signed up",
                     u.SignupSource == null ? null : $"from the {u.SignupSource}", "ok")));
@@ -55,16 +56,16 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
         if (Wants("login"))
         {
             // The schema keeps each account's latest sign-in only, so an account appears here once.
-            total += await _db.Users.CountAsync(u => u.LastLoginAt != null, ct);
-            rows.AddRange((await _db.Users.AsNoTracking().Where(u => u.LastLoginAt != null).OrderByDescending(u => u.LastLoginAt).Take(depth)
+            total += await _db.RealUsers().CountAsync(u => u.LastLoginAt != null, ct);
+            rows.AddRange((await _db.RealUsers().AsNoTracking().Where(u => u.LastLoginAt != null).OrderByDescending(u => u.LastLoginAt).Take(depth)
                     .Select(u => new { At = u.LastLoginAt!.Value, u.Id }).ToListAsync(ct))
                 .Select(u => (u.At, "login", (Guid?)u.Id, "Signed in (latest)", (string?)null, "ok")));
         }
 
         if (Wants("transcription"))
         {
-            total += await _db.TranscriptionLogs.CountAsync(ct);
-            rows.AddRange((await _db.TranscriptionLogs.AsNoTracking().OrderByDescending(l => l.CreatedAtUtc).Take(depth).ToListAsync(ct))
+            total += await _db.RealLogs().CountAsync(ct);
+            rows.AddRange((await _db.RealLogs().AsNoTracking().OrderByDescending(l => l.CreatedAtUtc).Take(depth).ToListAsync(ct))
                 .Select(l => (l.CreatedAtUtc, "transcription", l.UserId,
                     (l.Origin == TranscriptionLog.PreviewOrigin ? "Free preview: " : "Transcribed ")
                         + (l.Kind == "link" ? l.SongTitle ?? l.LinkUrl ?? "a song link" : l.FileName ?? "a recording"),
@@ -80,15 +81,15 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
 
         if (Wants("saved"))
         {
-            total += await _db.Transcriptions.CountAsync(ct);
-            rows.AddRange((await _db.Transcriptions.AsNoTracking().OrderByDescending(t => t.CreatedAtUtc).Take(depth)
+            total += await _db.RealSheets().CountAsync(ct);
+            rows.AddRange((await _db.RealSheets().AsNoTracking().OrderByDescending(t => t.CreatedAtUtc).Take(depth)
                     .Select(t => new { t.CreatedAtUtc, t.UserId, t.Title }).ToListAsync(ct))
                 .Select(t => (t.CreatedAtUtc, "saved", (Guid?)t.UserId, $"Saved “{t.Title}”", (string?)null, "ok")));
         }
 
         if (Wants("payment"))
         {
-            var payments = _db.PaymentTransactions.Where(p => p.Status == PaymentStatus.Completed || p.Status == PaymentStatus.Failed);
+            var payments = _db.RealPayments().Where(p => p.Status == PaymentStatus.Completed || p.Status == PaymentStatus.Failed);
             total += await payments.CountAsync(ct);
             rows.AddRange((await payments.AsNoTracking().OrderByDescending(p => p.UpdatedAtUtc).Take(depth)
                     .Select(p => new { p.UpdatedAtUtc, p.UserId, p.Status, p.AmountMinor, p.Currency, p.Provider, p.FailureReason }).ToListAsync(ct))
@@ -101,7 +102,7 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
 
         if (Wants("action"))
         {
-            var actions = _db.WebEvents.Where(e => e.Kind == WebEvent.Action && e.UserId != null);
+            var actions = _db.RealWebEvents().Where(e => e.Kind == WebEvent.Action && e.UserId != null);
             total += await actions.CountAsync(ct);
             rows.AddRange((await actions.AsNoTracking().OrderByDescending(e => e.OccurredAtUtc).Take(depth)
                     .Select(e => new { e.OccurredAtUtc, e.UserId, e.Name, e.Detail, e.Path }).ToListAsync(ct))
@@ -112,7 +113,7 @@ public sealed class GetActivityFeedQueryHandler : IRequestHandler<GetActivityFee
         var pageRows = rows.OrderByDescending(r => r.At).Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
         var userIds = pageRows.Select(r => r.UserId).OfType<Guid>().Distinct().ToList();
-        var users = await _db.Users.AsNoTracking().Where(u => userIds.Contains(u.Id))
+        var users = await _db.RealUsers().AsNoTracking().Where(u => userIds.Contains(u.Id))
             .Select(u => new { u.Id, u.FullName, u.Email, u.Country }).ToDictionaryAsync(u => u.Id, ct);
 
         var items = pageRows.Select(r =>
