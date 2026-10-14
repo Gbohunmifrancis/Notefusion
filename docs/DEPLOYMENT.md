@@ -485,7 +485,10 @@ every provider is affected. The worker has four layers against that, in order:
    writes `/opt/notefusion/ytdlp-cookies.txt`, the compose file mounts it read-only into the
    transcriber, and `NF_YTDLP_COOKIES_FILE` points the worker at it. yt-dlp writes its
    cookie jar back on exit, so the worker hands each job a private copy and deletes it
-   afterwards; the mounted file is never written.
+   afterwards; the mounted file is never written. The worker runs as the unprivileged `nf`
+   user (uid 10001) and the file is `chmod 600`, so the image's entrypoint, while still root,
+   copies it to `/run/nf/ytdlp-cookies.txt` (0600, owned by `nf`) and points
+   `NF_YTDLP_COOKIES_FILE` there before dropping privileges.
 
 ### Links that are refused outright
 
@@ -506,7 +509,9 @@ journal on startup under the same job ids, so the API's rows, the clients' polli
 single song charge are untouched by a deploy or an out-of-memory kill. A job that was started
 `NF_JOB_MAX_ATTEMPTS` (2) times without finishing is failed with a plain message instead, and
 the API is told through the completion webhook, which is itself retried twice while the API
-restarts. Audio is still deleted the moment the job ends, journal entry and all.
+restarts. Audio is still deleted the moment the job ends, journal entry and all. The volume
+predates the worker's non-root user, so the entrypoint creates `NF_JOB_DIR` if needed and
+`chown -R`s it to `nf` on every start.
 
 **Rotation.** Cookies expire, and YouTube rotates or revokes them (sooner when the account
 is used from a server). When link jobs start coming back as previews or with "This song
@@ -514,3 +519,40 @@ could not be fetched right now", export a fresh file, replace the `YTDLP_COOKIES
 and redeploy. Expect to do this every few weeks. Keep yt-dlp current too
 (`server/requirements.txt` pins a minimum; the image is rebuilt on every deploy, so a
 redeploy picks up a newer release).
+
+## Logs (Dozzle at `/logs`)
+
+Dozzle reads the Docker socket, so anyone who reaches `/logs` reaches what it can do with that
+socket (its read-only mount does not limit the Docker API). Give it a sign-in:
+
+1. Make a bcrypt hash of the password (it never leaves your machine in clear):
+   `docker run --rm amir20/dozzle:v11.3.2 generate --password 'a-long-password' admin`
+   prints a users file; copy the `password:` value (`$2a$…`). `htpasswd -nbBC 11 admin
+   'a-long-password' | cut -d: -f2` gives an equivalent hash.
+2. Set the repository secrets `DOZZLE_USER` (letters, digits, `.`, `_`, `-`) and
+   `DOZZLE_PASSWORD_HASH` (the hash, not the password).
+3. Redeploy. The deploy writes `/opt/notefusion/dozzle-users.yml` (0600), mounts it at
+   `/data/users.yml` and sets `DOZZLE_AUTH_PROVIDER=simple`. With either secret unset or
+   malformed, the deploy warns and Dozzle is served without a sign-in, as before.
+
+The Dozzle image is pinned (`amir20/dozzle:v11.3.2` in `docker-compose.prod.yml`); bump the tag
+deliberately to upgrade.
+
+**Or at the proxy.** The Caddyfile lives only on the server. To guard `/logs` there as well
+(or instead), put `basic_auth` in front of the Dozzle route and reload Caddy
+(`docker compose -f docker-compose.prod.yml exec caddy caddy reload --config /etc/caddy/Caddyfile`):
+
+```caddyfile
+{$DOMAIN_NAME} {
+	handle /logs* {
+		basic_auth {
+			# caddy hash-password: docker run --rm caddy:2-alpine caddy hash-password --plaintext 'a-long-password'
+			admin $2a$14$REPLACE_WITH_THE_HASH
+		}
+		reverse_proxy dozzle:8080
+	}
+	# … the existing API routes stay as they are
+}
+```
+
+Using both asks for two passwords; one is enough.
