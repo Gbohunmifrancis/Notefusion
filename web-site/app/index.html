@@ -18,16 +18,8 @@
 <link rel="stylesheet" href="/assets/app.css?v=21">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
 <link rel="stylesheet" href="/assets/night.css?v=5">
-<script>
-  // The theme before the first paint, so the page never flashes the wrong one. Light is the default;
-  // Dark, or following the device (System), is the saved choice of someone who switched.
-  (function () {
-    var p = null;
-    try { p = localStorage.getItem("nf.web.theme"); } catch (e) { /* private mode */ }
-    var dark = p === "dark" || (p === "system" && !!window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  })();
-</script>
+<!-- The theme before the first paint: blocking on purpose (no async/defer). -->
+<script src="/assets/theme-boot.js?v=1"></script>
 </head>
 <body class="guest">
 
@@ -860,17 +852,18 @@
 <!-- Hidden engraving surface for the PDF export: OSMD paginates to A4 on canvas here. -->
 <div id="pdf-stage" aria-hidden="true" style="position:absolute; left:-10000px; top:0; width:794px;"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
-<!-- Sign in with Google. app.js renders the button once this has loaded; without it the forms still work. -->
-<script src="https://accounts.google.com/gsi/client" async defer onload="window.nfGoogleReady && window.nfGoogleReady()"></script>
-<!-- The engraver is loaded by app.js, which falls back to a second CDN if the first is unreachable. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous" defer></script>
+<!-- Sign in with Google. app.js renders the button once this has loaded (it listens for this tag's load
+     event); without it the forms still work. Google serves it unversioned, so it cannot carry an integrity hash. -->
+<script src="https://accounts.google.com/gsi/client" id="gsi-client" async defer></script>
+<!-- The engraver is loaded by app.js from one pinned, integrity-checked CDN URL. -->
 <script src="/assets/choir.js?v=3" defer></script>
 <script src="/assets/chords.js?v=1" defer></script>
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
 <script src="/assets/preview.js?v=10" defer></script>
-<script src="/assets/app.js?v=27" defer></script>
+<script src="/assets/app.js?v=28" defer></script>
 <script src="/assets/track.js?v=4" defer></script>
 </body>
 </html>
