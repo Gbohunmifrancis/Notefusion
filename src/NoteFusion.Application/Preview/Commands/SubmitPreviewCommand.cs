@@ -62,6 +62,16 @@ internal static class PreviewThrottle
     }
 
     public static TranscribeOptions Options => new() { MaxSeconds = PreviewLimits.Seconds };
+
+    /// <summary>
+    /// Locks the browser and the address for the length of one preview submit, from the check to the
+    /// recorded <see cref="PreviewJob"/> row, so parallel requests cannot all pass the count before any
+    /// of them is recorded (see <see cref="IQuotaGate"/>). Both keys, in a fixed order: one browser
+    /// cycling addresses and one address cycling browsers are each serialised.
+    /// </summary>
+    public static Task<IAsyncDisposable> LockAsync(IQuotaGate gate, string? device, string? ip, CancellationToken ct)
+        => gate.AcquireAllAsync(
+            [device is null ? null : "device:" + device, ip is null ? null : "ip:" + ip], ct);
 }
 
 public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewCommand, Result<string>>
@@ -72,8 +82,9 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
     private readonly IDeviceFingerprint _device;
     private readonly IClientIpAddress _ip;
     private readonly Activity.ActivityRecorder _activity;
+    private readonly IQuotaGate _gate;
 
-    public SubmitPreviewCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip, Activity.ActivityRecorder activity)
+    public SubmitPreviewCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip, Activity.ActivityRecorder activity, IQuotaGate gate)
     {
         _api = api;
         _db = db;
@@ -81,6 +92,7 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
         _device = device;
         _ip = ip;
         _activity = activity;
+        _gate = gate;
     }
 
     public async Task<Result<string>> Handle(SubmitPreviewCommand request, CancellationToken cancellationToken)
@@ -105,6 +117,7 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
 
         var device = _device.Current;
         var ip = _ip.Current;
+        await using var lease = await PreviewThrottle.LockAsync(_gate, device, ip, cancellationToken);
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 
@@ -133,8 +146,9 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
     private readonly IDeviceFingerprint _device;
     private readonly IClientIpAddress _ip;
     private readonly Activity.ActivityRecorder _activity;
+    private readonly IQuotaGate _gate;
 
-    public SubmitPreviewLinkCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip, Activity.ActivityRecorder activity)
+    public SubmitPreviewLinkCommandHandler(ITranscriptionApi api, IApplicationDbContext db, IDateTimeProvider clock, IDeviceFingerprint device, IClientIpAddress ip, Activity.ActivityRecorder activity, IQuotaGate gate)
     {
         _api = api;
         _db = db;
@@ -142,6 +156,7 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
         _device = device;
         _ip = ip;
         _activity = activity;
+        _gate = gate;
     }
 
     public async Task<Result<string>> Handle(SubmitPreviewLinkCommand request, CancellationToken cancellationToken)
@@ -170,6 +185,7 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
 
         var device = _device.Current;
         var ip = _ip.Current;
+        await using var lease = await PreviewThrottle.LockAsync(_gate, device, ip, cancellationToken);
         if (await PreviewThrottle.CheckAsync(_db, device, ip, _clock.UtcNow, cancellationToken) is { } refused)
             return refused;
 

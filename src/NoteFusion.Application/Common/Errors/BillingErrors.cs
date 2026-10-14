@@ -73,6 +73,14 @@ public static class BillingErrors
         Error.Forbidden("BILLING_SONG_CREDITS_EXHAUSTED",
             $"You have transcribed all {allowance} of this month's songs. Your allowance resets next month.");
 
+    /// <summary>
+    /// A Pro account already has <paramref name="max"/> songs running. Songs take the worker's fast lane, so
+    /// one account starting many at once would hold every other subscriber up behind it.
+    /// </summary>
+    public static Error SongsInProgress(int max) =>
+        Error.Conflict("BILLING_SONGS_IN_PROGRESS",
+            $"You have {max} songs in progress. Wait for one to finish, then try again.");
+
     /// <summary>A free account has had its one song preview; full songs are a Pro feature.</summary>
     public static readonly Error SongPreviewUsed =
         Error.Forbidden("BILLING_SONG_PREVIEW_USED",

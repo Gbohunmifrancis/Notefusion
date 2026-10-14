@@ -47,6 +47,7 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
     private readonly IDateTimeProvider _clock;
     private readonly IDeviceFingerprint _device;
     private readonly Activity.ActivityRecorder _activity;
+    private readonly IQuotaGate _gate;
 
     public SubmitLinkTranscriptionCommandHandler(
         ITranscriptionApi api,
@@ -54,7 +55,8 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         ICurrentUser currentUser,
         IDateTimeProvider clock,
         IDeviceFingerprint device,
-        Activity.ActivityRecorder activity)
+        Activity.ActivityRecorder activity,
+        IQuotaGate gate)
     {
         _api = api;
         _db = db;
@@ -62,6 +64,7 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         _clock = clock;
         _device = device;
         _activity = activity;
+        _gate = gate;
     }
 
     public async Task<Result<string>> Handle(SubmitLinkTranscriptionCommand request, CancellationToken ct)
@@ -99,11 +102,14 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         var fingerprint = _device.Current;
         var isPro = await ProStatus.IsProAsync(_db, _clock, userId, ct);
 
+        // Held from the count to the recorded job, so parallel links from one account are counted one
+        // after another rather than all against the same rows (see IQuotaGate).
+        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.UserKey(userId), ct);
+
         if (isPro)
         {
-            var used = await SongCredits.CountUsedThisMonthAsync(_db, userId, _clock.UtcNow, ct);
-            if (used >= SongCredits.ProMonthlyAllowance)
-                return BillingErrors.SongCreditsExhausted(SongCredits.ProMonthlyAllowance);
+            if (await SongGate.CheckAsync(_db, userId, _clock.UtcNow, ct) is { } refused)
+                return Result.Failure<string>(refused);
         }
         else
         {

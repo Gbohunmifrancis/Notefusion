@@ -50,8 +50,12 @@ public sealed record SharedSheetDto(
 /// <summary>The public link for a saved transcription.</summary>
 public sealed record ShareLinkDto(string Token);
 
-/// <summary>One song in a shared folder: enough to list it and open it as its own shared sheet.</summary>
-public sealed record SharedFolderItemDto(string Title, string Key, string Token);
+/// <summary>
+/// One song in a shared folder: enough to list it and open it through the folder's link
+/// (<c>GET api/shared/folders/{token}/sheets/{id}</c>). <paramref name="Token"/> is the sheet's own public
+/// link, present only when the sheet is shared in its own right; the folder never mints one.
+/// </summary>
+public sealed record SharedFolderItemDto(string Title, string Key, Guid Id, string? Token);
 
 /// <summary>A shared folder as anyone with the link sees it: its name, who shared it, and its songs.</summary>
 public sealed record SharedFolderDto(string Folder, string SharedBy, IReadOnlyList<SharedFolderItemDto> Items);

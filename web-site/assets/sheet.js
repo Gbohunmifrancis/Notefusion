@@ -1,5 +1,6 @@
 /* A shared NoteFusion sheet: anonymous, read-only, with a rehearsal player.
- * Fetches /api/shared/{token}; the link is the credential. */
+ * Fetches /api/shared/{token}, or /api/shared/folders/{folder}/sheets/{id} for a song opened from a
+ * shared folder; the link is the credential. */
 (function () {
   "use strict";
   var API = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5080" : "https://api.notefusion.studio";
@@ -10,11 +11,11 @@
   function hide(el) { el.classList.add("hidden"); }
 
   var params = new URLSearchParams(location.search);
-  var token = params.get("s"), folderToken = params.get("f");
+  var token = params.get("s"), folderToken = params.get("f"), folderItem = params.get("i");
   var sheet = null, melody = [], parts = null, player = null, cells = [];
 
-  // A shared folder: the list of its songs, each opening as its own shared sheet.
-  if (!token && folderToken) {
+  // A shared folder: the list of its songs, each opened through the folder's own link.
+  if (!token && folderToken && !folderItem) {
     fetch(API + "/api/shared/folders/" + encodeURIComponent(folderToken)).then(function (r) {
       if (r.status === 404) throw new Error("This folder is no longer shared.");
       if (!r.ok) throw new Error("The folder could not be opened right now. Please try again in a moment.");
@@ -26,7 +27,7 @@
       var list = $("f-list");
       (data.items || []).forEach(function (it) {
         var li = document.createElement("li"), a = document.createElement("a");
-        a.href = "?s=" + encodeURIComponent(it.token) + "&f=" + encodeURIComponent(folderToken);
+        a.href = "?f=" + encodeURIComponent(folderToken) + "&i=" + encodeURIComponent(it.id);
         var t = document.createElement("span"); t.textContent = it.title || "Untitled";
         var k = document.createElement("span"); k.className = "key"; k.textContent = it.key || "";
         a.appendChild(t); a.appendChild(k); li.appendChild(a); list.appendChild(li);
@@ -37,8 +38,11 @@
     return;
   }
 
-  if (!token) return fail("This link is missing its sheet. Ask whoever shared it to send it again.");
-  fetch(API + "/api/shared/" + encodeURIComponent(token)).then(function (r) {
+  if (!token && !(folderToken && folderItem)) return fail("This link is missing its sheet. Ask whoever shared it to send it again.");
+  var sheetUrl = token
+    ? API + "/api/shared/" + encodeURIComponent(token)
+    : API + "/api/shared/folders/" + encodeURIComponent(folderToken) + "/sheets/" + encodeURIComponent(folderItem);
+  fetch(sheetUrl).then(function (r) {
     if (r.status === 404) throw new Error("This sheet is no longer shared.");
     if (!r.ok) throw new Error("The sheet could not be opened right now. Please try again in a moment.");
     return r.json();
