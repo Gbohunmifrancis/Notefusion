@@ -26,6 +26,13 @@ import type {
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
+/**
+ * Put ahead of an inbound email's HTML: nothing in it may load from the network (no tracking
+ * pixels, remote fonts or stylesheets); inline styles and embedded data: images still show.
+ */
+const EMAIL_CSP =
+  `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'">`;
+
 function formatRelative(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60_000);
@@ -264,11 +271,11 @@ function EmailDetailPanel({
               </div>
             )}
 
-            {/* HTML body in sandboxed iframe */}
+            {/* HTML body in a fully sandboxed iframe: no scripts, no same-origin, no remote loads */}
             {detail.htmlBody ? (
               <iframe
-                srcDoc={detail.htmlBody}
-                sandbox="allow-same-origin"
+                srcDoc={EMAIL_CSP + detail.htmlBody}
+                sandbox=""
                 title="Email body"
                 className="h-[480px] w-full rounded-xl border border-slate-200 bg-white dark:border-white/10"
                 style={{ colorScheme: "light" }}
