@@ -226,11 +226,11 @@ public sealed class RateLimitSettings
     public int RegistrationWindowSeconds { get; set; } = 3600;
 
     /// <summary>
-    /// Token refresh. A client refreshes about once an access-token lifetime and again on a 401, so thirty a
-    /// minute leaves a crowded shared address plenty of room while capping how fast stolen or guessed tokens
-    /// can be tried — each attempt is a bcrypt verify on our side.
+    /// Token refresh. A client refreshes about once an access-token lifetime and again on a 401, but a mobile
+    /// carrier puts many phones behind one address, so 120 a minute leaves a crowded address plenty of room
+    /// while still capping how fast stolen or guessed tokens can be tried — each attempt is a bcrypt verify.
     /// </summary>
-    public int RefreshPermits { get; set; } = 30;
+    public int RefreshPermits { get; set; } = 120;
 
     public int RefreshWindowSeconds { get; set; } = 60;
 

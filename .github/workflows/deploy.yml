@@ -186,6 +186,8 @@ jobs:
             PUSH__USEEXPO,AUTH__RESETPASSWORDURL,YTDLP_COOKIES
           script: |
             set -euo pipefail
+            # The transcriber refuses to start without its key; stop here rather than crash-loop it.
+            : "${TRANSCRIPTION_API_KEY:?TRANSCRIPTION_API_KEY secret is not set}"
             cd /opt/notefusion
 
             echo "─── Disk before deploy ───"

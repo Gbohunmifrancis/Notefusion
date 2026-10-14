@@ -25,9 +25,10 @@ public sealed class RefreshTokenCommandValidator : AbstractValidator<RefreshToke
 /// <para>
 /// A token that was already rotated coming back is either a client that sent the same refresh twice — two
 /// tabs, a retry on a dropped response — or somebody else holding a copy. The two are told apart by how
-/// long ago it was rotated: within <see cref="ReuseGrace"/> it is taken for the benign race and simply
-/// refused; later than that it is treated as theft and every token the user holds is revoked, which signs
-/// the thief out along with the user (who signs back in with their password).
+/// long ago it was rotated and whether its successor has been used: within <see cref="ReuseGrace"/>, or
+/// while the successor is still unused (the rotation's answer was lost), it is simply refused; a later
+/// replay of a chain that has moved on is treated as theft and every token the user holds is revoked,
+/// which signs the thief out along with the user (who signs back in with their password).
 /// </para>
 /// </remarks>
 public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, Result<TokenPairResponse>>
@@ -66,8 +67,17 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
         {
             // Only a token spent by rotation counts: one revoked by logout or a password change was never
             // handed a successor, and presenting it again says nothing about a copy.
-            if (stored.ReplacedByTokenId is not null && stored.RevokedAt is { } revokedAt && now - revokedAt > ReuseGrace)
-                await RefreshTokenRevocation.RevokeAllAsync(_db, stored.UserId, now, cancellationToken);
+            if (stored.ReplacedByTokenId is { } successorId && stored.RevokedAt is { } revokedAt && now - revokedAt > ReuseGrace)
+            {
+                // A successor nobody has used yet means the answer to that rotation never arrived (a timeout
+                // on a weak connection, the app killed mid-save): the client is replaying its last good token.
+                // Refusing is enough. Only once the successor has itself been spent are two parties holding
+                // the chain, and that is theft.
+                var successorSpent = await _db.RefreshTokens
+                    .AnyAsync(t => t.Id == successorId && t.IsRevoked, cancellationToken);
+                if (successorSpent)
+                    await RefreshTokenRevocation.RevokeAllAsync(_db, stored.UserId, now, cancellationToken);
+            }
 
             return AuthErrors.InvalidRefreshToken;
         }

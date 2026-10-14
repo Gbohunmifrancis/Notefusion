@@ -94,15 +94,42 @@ public class RefreshTokenSecurityTests
         Assert.True(rotated.IsSuccess);
         h.Db.ChangeTracker.Clear();
 
+        // The chain moves on: its owner spends the successor, so two parties now hold it.
+        var moved = await Refresh(h).Handle(new RefreshTokenCommand(rotated.Value.RefreshToken), default);
+        Assert.True(moved.IsSuccess);
+        h.Db.ChangeTracker.Clear();
+
         h.Clock.UtcNow = h.Clock.UtcNow.AddSeconds(31);
         var replay = await Refresh(h).Handle(new RefreshTokenCommand(stolen), default);
         Assert.True(replay.IsFailure);
         h.Db.ChangeTracker.Clear();
 
         Assert.False(await h.Db.RefreshTokens.AnyAsync(t => t.UserId == user.Id && !t.IsRevoked));
-        Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(rotated.Value.RefreshToken), default)).IsFailure);
+        Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(moved.Value.RefreshToken), default)).IsFailure);
         h.Db.ChangeTracker.Clear();
         Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(otherDevice), default)).IsFailure);
+    }
+
+    [Fact]
+    public async Task A_replay_after_a_lost_rotation_answer_is_refused_but_signs_nobody_out()
+    {
+        using var h = new TestHarness();
+        var user = await Seed(h);
+        var token = await IssueAsync(h, user);
+        var otherDevice = await IssueAsync(h, user);
+        h.Db.ChangeTracker.Clear();
+
+        // The server rotates, but the answer never reaches the phone (a timeout on a weak connection).
+        var lost = await Refresh(h).Handle(new RefreshTokenCommand(token), default);
+        Assert.True(lost.IsSuccess);
+        h.Db.ChangeTracker.Clear();
+
+        h.Clock.UtcNow = h.Clock.UtcNow.AddMinutes(5);
+        Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(token), default)).IsFailure);
+        h.Db.ChangeTracker.Clear();
+
+        // Only that one phone has to sign in again; every other session is untouched.
+        Assert.True((await Refresh(h).Handle(new RefreshTokenCommand(otherDevice), default)).IsSuccess);
     }
 
     [Fact]
