@@ -202,6 +202,8 @@ export interface PdfMeta {
   hymn?: HymnCell[][][];
   /** The four parts' solfa, one block per voice. */
   parts?: readonly { name: string; lines: readonly string[] }[];
+  /** A free account's copy: a faint NoteFusion mark across every page, which Pro removes. */
+  watermark?: boolean;
 }
 
 function hymnHtml(rows: HymnCell[][][]): string {
@@ -264,13 +266,18 @@ export async function exportPdf(svg: string, meta: PdfMeta): Promise<ExportOutco
   .cell b { display: block; font-weight: 700; font-size: 13px; }
   .cell i { display: block; font-style: normal; font-family: -apple-system, Roboto, sans-serif; font-size: 10px; color: #334155; min-height: 12px; }
   .foot { position: fixed; bottom: 0; left: 0; right: 0; font-size: 9px; color: #94A3B8; }
+  .mark { position: fixed; top: 42%; left: 0; right: 0; text-align: center; font-size: 72px; font-weight: 800; color: rgba(37, 99, 235, 0.1); transform: rotate(-35deg); pointer-events: none; }
+  .foot.free { color: #2563EB; }
 </style></head><body>
+${meta.watermark ? '<div class="mark">NoteFusion</div>' : ""}
 <h1>${escapeHtml(meta.title)}</h1>
 <p class="sub">${escapeHtml(meta.key)} · ${meta.tempoBpm} BPM · ${escapeHtml(meta.timeSignature)}</p>
 ${credit ? `<p class="credit">${credit}</p>` : ""}
 <div class="sheet">${scaled}</div>
 ${solfa ? `<div class="solfa"><h2>Tonic Solfa</h2>${solfa}${parts}</div>` : ""}
-<div class="foot">${credit ? credit + " · " : ""}Transcribed with NoteFusion · notefusion.studio</div>
+${meta.watermark
+  ? '<div class="foot free">Made with NoteFusion free · notefusion.studio · Pro removes this mark</div>'
+  : `<div class="foot">${credit ? credit + " · " : ""}Transcribed with NoteFusion · notefusion.studio</div>`}
 </body></html>`;
 
   try {

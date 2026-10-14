@@ -156,6 +156,20 @@ public class User : BaseEntity
         if (s is "web" or "mobile") SignupSource = s;
     }
 
+    /// <summary>
+    /// When this free account used its one four-part harmony: the taste of the Pro feature that most
+    /// often sends people to the plans. Null while it is still available. Pro accounts never spend it.
+    /// </summary>
+    public DateTime? FreeHarmonyUsedAtUtc { get; private set; }
+
+    /// <summary>Spends the free harmony; false when it was already spent, so it is used exactly once.</summary>
+    public bool UseFreeHarmony(DateTime utcNow)
+    {
+        if (FreeHarmonyUsedAtUtc is not null) return false;
+        FreeHarmonyUsedAtUtc = utcNow;
+        return true;
+    }
+
     public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     public IReadOnlyCollection<DeviceToken> DeviceTokens => _deviceTokens.AsReadOnly();
 

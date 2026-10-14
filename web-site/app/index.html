@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
 <link rel="stylesheet" href="/assets/app.css?v=19">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
-<link rel="stylesheet" href="/assets/night.css?v=2">
+<link rel="stylesheet" href="/assets/night.css?v=3">
 <script>
   // The theme before the first paint, so the page never flashes the wrong one. Night is the default, as
   // on the phone app; Day is the saved choice of someone who switched.
@@ -585,6 +585,7 @@
         <h2><svg class="ic"><use href="#i-choir"/></svg>Four-part harmony <span class="pill pill-pro gate">Pro</span></h2>
         <p class="card-lead">The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.</p>
         <button class="btn btn-primary" id="harmony-add" type="button"><svg class="ic"><use href="#i-plus"/></svg>Write the four parts</button>
+        <p class="small muted hidden" id="harmony-free-note">Free accounts can try this once. Pro writes parts for every sheet.</p>
       </div>
 
       <div class="section" id="sing">
@@ -651,7 +652,7 @@
 
       <div class="section" id="downloads-section">
         <h2><svg class="ic"><use href="#i-download"/></svg>Download</h2>
-        <p class="card-lead dl-pro-note" id="dl-pro-note">The solfa text is free. PDF, MusicXML and MIDI come with Pro — no watermark, ready to print or open in MuseScore.</p>
+        <p class="card-lead dl-pro-note" id="dl-pro-note">Your PDF is free, with a NoteFusion mark, and so is the solfa text. Pro removes the mark and adds MusicXML and MIDI, ready to open in MuseScore or Sibelius.</p>
         <div class="downloads">
           <button class="btn btn-primary" id="dl-pdf" type="button"><svg class="ic"><use href="#i-download"/></svg>Download PDF</button>
           <button class="btn btn-ghost" id="dl-xml" type="button">MusicXML</button>
@@ -789,7 +790,7 @@
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
 <script src="/assets/preview.js?v=10" defer></script>
-<script src="/assets/app.js?v=24" defer></script>
+<script src="/assets/app.js?v=25" defer></script>
 <script src="/assets/track.js?v=3" defer></script>
 </body>
 </html>

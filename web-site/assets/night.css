@@ -551,3 +551,7 @@ body.is-pro .dl-pro-note { display: none; }
   .result-top { margin-bottom: 6px; }
   .song .title { font-size: 1.15rem; }
 }
+
+/* A free account's one four-part harmony: no lock on that action until it is used. */
+body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
+body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }

@@ -171,7 +171,9 @@ export function ResultScreen({ route, navigation }: Props) {
 
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { isPro } = useSubscription();
+  const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
+  /** A free account's one four-part harmony, until it is used; the API decides, this mirrors it. */
+  const freeHarmony = !isPro && !!subscription?.freeHarmonyAvailable;
 
   const [title, setTitle] = useState(
     initialTitle ?? `${result.key} · ${new Date().toLocaleDateString()}`,
@@ -325,7 +327,7 @@ export function ResultScreen({ route, navigation }: Props) {
   }, [parts, view.notes, key, timeSignature]);
 
   const barCount = useMemo(() => barCountOf(view.notes, timeSignature), [view.notes, timeSignature]);
-  const hasParts = isPro && !!partsView;
+  const hasParts = !!partsView;
 
   /** The syllable each note carries, for the sheet and for Rehearse's line of words. */
   const lyricsUnder = useMemo(
@@ -740,6 +742,8 @@ export function ResultScreen({ route, navigation }: Props) {
       setParts(written.parts as Parts);
       setPartsMusicXml(written.partsMusicXml ?? "");
       haptics.play("success");
+      // The free one is spent: re-read so the next sheet offers the plans instead.
+      if (!isPro) void refreshSubscription(false);
     } catch (e) {
       showDialog({ title: "Could not write the parts", message: toApiError(e).message, icon: "alert-circle-outline", tone: "danger" });
     } finally {
@@ -909,8 +913,8 @@ export function ResultScreen({ route, navigation }: Props) {
     return false;
   }
 
+  /** Free accounts get the PDF with a NoteFusion mark; it was the most-tapped locked button. */
   async function handleExportPdf() {
-    if (!requirePro()) return;
     setExportingType("pdf");
     try {
       const svg = await scoreRef.current?.getSvg();
@@ -931,6 +935,7 @@ export function ResultScreen({ route, navigation }: Props) {
         solfaLines: activeSolfaLines,
         hymn: hasLyrics ? hymn : undefined,
         parts: partsView?.filter((p) => p.name !== "soprano").map((p) => ({ name: p.name, lines: p.lines })),
+        watermark: !isPro,
       });
       if (!outcome.ok) {
         showDialog({ title: "Could not export PDF", message: outcome.message, icon: "alert-circle-outline", tone: "danger" });
@@ -1583,9 +1588,9 @@ export function ResultScreen({ route, navigation }: Props) {
                 <Text style={styles.panelTitle}>
                   {result.partsSource === "heard" ? "The four parts, as sung" : "Four-part harmony"}
                 </Text>
-                {!isPro ? <ProTag /> : null}
+                {!isPro && !partsView && !freeHarmony ? <ProTag /> : null}
               </View>
-              {isPro && partsView ? (
+              {partsView ? (
                 partsView.map(({ name, lines }) => (
                   <View key={name} style={styles.voice}>
                     <Text style={styles.voiceName}>{name.charAt(0).toUpperCase() + name.slice(1)}</Text>
@@ -1594,13 +1599,15 @@ export function ResultScreen({ route, navigation }: Props) {
                     </ScrollView>
                   </View>
                 ))
-              ) : isPro ? (
+              ) : isPro || freeHarmony ? (
                 <>
                   <Text style={styles.panelHint}>
-                    The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.
+                    {freeHarmony
+                      ? "Try it once, free: alto, tenor and bass written under this tune the way a hymn arranger would. Pro writes parts for every sheet."
+                      : "The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would."}
                   </Text>
                   <Button
-                    label="Write alto, tenor and bass"
+                    label={freeHarmony ? "Write alto, tenor and bass · 1 free" : "Write alto, tenor and bass"}
                     variant="secondary"
                     icon="people-outline"
                     loading={harmonising}
@@ -1645,7 +1652,7 @@ export function ResultScreen({ route, navigation }: Props) {
               <Text style={styles.panelHint}>
                 {isPro
                   ? "Share the solfa to your choir group, or download the sheet as PDF, MusicXML or MIDI."
-                  : "Sharing the solfa is free. PDF, MusicXML and MIDI downloads come with Pro."}
+                  : "Sharing the solfa and the PDF are free; the PDF carries a NoteFusion mark. MusicXML, MIDI and an unmarked PDF come with Pro."}
               </Text>
               <ExportRow
                 icon="link-outline"
@@ -1670,8 +1677,7 @@ export function ResultScreen({ route, navigation }: Props) {
               />
               <ExportRow
                 icon="document-outline"
-                label="Download PDF"
-                pro={!isPro}
+                label={isPro ? "Download PDF" : "Download PDF (free, marked)"}
                 onPress={() => void handleExportPdf()}
                 busy={exportingType === "pdf"}
                 disabled={!hasScore}

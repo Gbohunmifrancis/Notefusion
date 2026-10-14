@@ -40,10 +40,11 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             return BillingErrors.NotAuthenticated;
 
         // The ceiling is resolved once and fed to both halves of what the app displays.
-        var country = await _db.Users
+        var account = await _db.Users
             .Where(u => u.Id == userId)
-            .Select(u => u.Country)
+            .Select(u => new { u.Country, u.FreeHarmonyUsedAtUtc })
             .FirstOrDefaultAsync(ct);
+        var country = account?.Country;
 
         var total = FreeTier.TrialGenerationsFor(country);
 
@@ -70,13 +71,15 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 IsActive: false, PlanCode: null, Status: null, CurrentPeriodEndUtc: null,
                 TrialGenerationsRemaining: remaining, TrialGenerationsTotal: total,
                 IsLifetime: false, IsGift: false,
-                SongCreditsRemaining: songsRemaining, SongCreditsTotal: songsTotal);
+                SongCreditsRemaining: songsRemaining, SongCreditsTotal: songsTotal,
+                FreeHarmonyAvailable: account is { FreeHarmonyUsedAtUtc: null });
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
         return new SubscriptionDto(
             isPro, plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
             remaining, total, sub.IsLifetime, sub.IsGift,
-            songsRemaining, songsTotal, plan?.Name);
+            songsRemaining, songsTotal, plan?.Name,
+            FreeHarmonyAvailable: !isPro && account is { FreeHarmonyUsedAtUtc: null });
     }
 }
