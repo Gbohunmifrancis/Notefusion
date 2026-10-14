@@ -1,14 +1,37 @@
 name: CI
 
+# Runs on the self-hosted runner when the repository variable CI_RUNNER names it (e.g.
+# "notefusion-pc", see docs/self-hosted-runner.md); without it, on GitHub's Linux runners, which
+# cost half what Windows ones do against the private-repo minute allowance.
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "design/**"
+      - "web-site/**"
+      - "web-admin/**"
+      - "mobile/**"
   pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "design/**"
+      - "web-site/**"
+      - "web-admin/**"
+      - "mobile/**"
+
+# A new push to the same PR or branch replaces the run in progress instead of queuing behind it.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   dotnet:
     name: .NET build & tests
-    runs-on: windows-latest # mirrors the Windows dev environment
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +51,8 @@ jobs:
 
   python:
     name: Python transcription API
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: server
