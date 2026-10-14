@@ -6,7 +6,7 @@
 <title>NoteFusion Web — paste a song, get the Tonic Solfa</title>
 <meta name="description" content="Sign in to NoteFusion on the web. Paste a YouTube, Spotify or Apple Music link, hum a tune or upload a recording and get Tonic Solfa and staff notation; rehearse, transpose and share it with your choir.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#07090E">
+<meta name="theme-color" content="#F4F7FC">
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" href="/assets/icon-192.png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -15,17 +15,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
-<link rel="stylesheet" href="/assets/app.css?v=19">
+<link rel="stylesheet" href="/assets/app.css?v=20">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
-<link rel="stylesheet" href="/assets/night.css?v=3">
+<link rel="stylesheet" href="/assets/night.css?v=4">
 <script>
-  // The theme before the first paint, so the page never flashes the wrong one. Night is the default, as
-  // on the phone app; Day is the saved choice of someone who switched.
+  // The theme before the first paint, so the page never flashes the wrong one. Light is the default;
+  // Dark, or following the device (System), is the saved choice of someone who switched.
   (function () {
-    var t = null;
-    try { t = localStorage.getItem("nf.web.theme"); } catch (e) { /* private mode */ }
-    if (t !== "light" && t !== "dark") t = "dark";
-    document.documentElement.setAttribute("data-theme", t);
+    var p = null;
+    try { p = localStorage.getItem("nf.web.theme"); } catch (e) { /* private mode */ }
+    var dark = p === "dark" || (p === "system" && !!window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
   })();
 </script>
 </head>
@@ -69,6 +69,12 @@
   <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5.5a9 9 0 0 1 0 13"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-chev-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-choir" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
   <symbol id="i-crown" viewBox="0 0 24 24"><path d="m3 8 4 9h10l4-9-5 4-4-6-4 6z"/><path d="M7 21h10"/></symbol>
   <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
@@ -88,24 +94,25 @@
 <div class="shell">
   <!-- Phone top bar (and the only bar when signed out) -->
   <header class="topbar">
-    <button class="btn btn-ghost btn-icon drawer-toggle" id="drawer-toggle" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="ic"><use href="#i-panel"/></svg></button>
+    <button class="btn btn-ghost btn-icon drawer-toggle" id="drawer-toggle" type="button" aria-label="Open menu" aria-controls="side" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
     <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion <small>Web</small></a>
     <span class="side-spacer"></span>
-    <a class="side-help" href="/#how" id="how-link"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <a class="side-help how-link" href="/#how" id="how-link"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
     <button class="btn btn-ghost btn-sm hidden" id="topbar-signin" type="button">Sign in</button>
+    <button class="avatar-btn account-trigger hidden" id="topbar-avatar" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu" aria-label="Your account"><span class="who-avatar" id="topbar-avatar-img" aria-hidden="true"></span></button>
   </header>
   <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
 
   <aside class="side" id="side">
     <div class="side-head">
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion</a>
-      <button class="btn btn-ghost btn-icon drawer-close" id="drawer-close" type="button" aria-label="Close menu"><svg class="ic"><use href="#i-panel"/></svg></button>
+      <button class="btn btn-ghost btn-icon drawer-close" id="drawer-close" type="button" aria-label="Close menu"><svg class="ic"><use href="#i-x"/></svg></button>
     </div>
     <nav class="side-nav top-nav hidden" id="top-nav" aria-label="App sections">
       <button class="nav-item nav-new top-link on" type="button" data-view="transcribe"><svg class="ic"><use href="#i-plus"/></svg><span>New transcription</span></button>
       <button class="nav-item top-link" type="button" data-view="library"><svg class="ic"><use href="#i-music"/></svg><span>Transcriptions</span></button>
       <button class="nav-item top-link" type="button" data-view="search"><svg class="ic"><use href="#i-search"/></svg><span>Search</span></button>
-      <button class="nav-item top-link" type="button" data-view="account"><svg class="ic"><use href="#i-user"/></svg><span>Account</span></button>
+      <button class="nav-item top-link" type="button" data-view="account"><svg class="ic"><use href="#i-gear"/></svg><span>Account &amp; settings</span></button>
     </nav>
     <div class="recents hidden" id="recents">
       <div class="recents-title">Recents</div>
@@ -113,26 +120,51 @@
       <button class="btn-link recents-all" id="recents-all" type="button">View all</button>
     </div>
     <span class="side-spacer"></span>
-    <div class="user-menu hidden" id="user-menu" role="menu">
-      <div class="user-menu-head"><strong id="menu-name"></strong><span id="menu-email"></span></div>
-      <button class="user-menu-item" type="button" data-view="account" role="menuitem"><svg class="ic"><use href="#i-user"/></svg>Account settings</button>
-      <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="#i-crown"/></svg><span id="menu-plans-label">View all plans</span></button>
-      <a class="user-menu-item" href="/#how" id="menu-how" role="menuitem"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
-      <button class="user-menu-item" type="button" id="menu-sounds" role="menuitemcheckbox" aria-checked="true"><svg class="ic"><use href="#i-volume"/></svg><span>Sounds on</span></button>
-      <button class="user-menu-item" type="button" id="menu-theme" role="menuitemcheckbox" aria-checked="false"><svg class="ic"><use href="#i-moon"/></svg><span>Dark mode</span></button>
-      <button class="user-menu-item danger" type="button" id="signout" role="menuitem"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+    <div class="side-foot hidden" id="side-foot">
+      <div class="usage">
+        <div class="usage-row"><span id="usage-plan">Free</span><span id="usage-left"></span></div>
+        <div class="usage-bar"><i id="usage-fill"></i></div>
+      </div>
+      <div class="theme-row"><span>Theme</span>
+        <div class="theme-switch" role="radiogroup" aria-label="Theme">
+          <button type="button" role="radio" data-theme-pref="light" aria-label="Light" title="Light"><svg class="ic"><use href="#i-sun"/></svg></button>
+          <button type="button" role="radio" data-theme-pref="dark" aria-label="Dark" title="Dark"><svg class="ic"><use href="#i-moon"/></svg></button>
+          <button type="button" role="radio" data-theme-pref="system" aria-label="Same as this device" title="Same as this device"><svg class="ic"><use href="#i-monitor"/></svg></button>
+        </div>
+      </div>
     </div>
-    <button class="who hidden" id="who" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
-      <span class="who-avatar" id="who-avatar" aria-hidden="true"></span>
-      <span class="who-text">
-        <span class="name" id="who-name"></span>
-        <span class="who-meta"><span class="pill" id="who-plan"></span><span class="pill pill-credits" id="who-credits"></span></span>
-      </span>
-      <svg class="ic who-caret"><use href="#i-shift"/></svg>
-    </button>
   </aside>
 
+  <div class="user-menu hidden" id="user-menu" role="menu">
+    <div class="user-menu-head">
+      <span class="who-avatar" id="menu-avatar" aria-hidden="true"></span>
+      <div class="user-menu-id"><strong id="menu-name"></strong><span id="menu-email"></span></div>
+      <span class="pill pill-free" id="menu-plan">Free</span>
+    </div>
+    <button class="user-menu-item" type="button" data-view="account" role="menuitem"><svg class="ic"><use href="#i-gear"/></svg>Account settings</button>
+    <button class="user-menu-item" type="button" id="menu-plans" role="menuitem"><svg class="ic"><use href="#i-crown"/></svg><span id="menu-plans-label">View all plans</span></button>
+    <a class="user-menu-item" href="/#how" id="menu-how" role="menuitem"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <div class="user-menu-sep" role="separator"></div>
+    <div class="user-menu-row"><svg class="ic"><use href="#i-sun"/></svg><span>Theme</span>
+      <div class="theme-switch" role="radiogroup" aria-label="Theme">
+        <button type="button" role="radio" data-theme-pref="light" aria-label="Light" title="Light"><svg class="ic"><use href="#i-sun"/></svg></button>
+        <button type="button" role="radio" data-theme-pref="dark" aria-label="Dark" title="Dark"><svg class="ic"><use href="#i-moon"/></svg></button>
+        <button type="button" role="radio" data-theme-pref="system" aria-label="Same as this device" title="Same as this device"><svg class="ic"><use href="#i-monitor"/></svg></button>
+      </div>
+    </div>
+    <button class="user-menu-item" type="button" id="menu-sounds" role="menuitemcheckbox" aria-checked="true"><svg class="ic"><use href="#i-volume"/></svg>Sounds<span class="switch" aria-hidden="true"></span></button>
+    <div class="user-menu-sep" role="separator"></div>
+    <button class="user-menu-item danger" type="button" id="signout" role="menuitem"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
+  </div>
+
   <div class="content">
+  <!-- Wide screens: help and the account, top right. -->
+  <div class="app-head hidden" id="app-head">
+    <a class="btn btn-ghost btn-sm how-link" href="/#how"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
+    <button class="acct-chip account-trigger" id="acct-chip" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
+      <span class="who-avatar" id="chip-avatar" aria-hidden="true"></span><span class="acct-chip-name" id="chip-name"></span><svg class="ic"><use href="#i-chev-down"/></svg>
+    </button>
+  </div>
   <main>
   <!-- Shown while the account and the first result load, so the page is never blank. -->
   <section id="boot-skel" aria-hidden="true">
@@ -150,54 +182,87 @@
 
   <!-- ── Signed out: sign in or create an account, then try it first ──── -->
   <section id="view-auth" class="auth-page hidden">
-    <div class="auth-card">
-      <button class="btn-link auth-back hidden" id="auth-back" type="button"><svg class="ic"><use href="#i-back"/></svg>Back to your preview</button>
-      <div class="auth-brand"><span class="auth-mark" aria-hidden="true"></span><span class="auth-wordmark">NoteFusion</span></div>
-      <h1 class="auth-title" id="auth-title">Welcome back!</h1>
-      <p class="auth-sub" id="auth-sub">Sign in to continue</p>
-      <div id="auth-alert" class="alert alert-danger hidden" role="alert"></div>
-
-      <form id="form-login" class="auth-form" novalidate>
-        <label class="sr-only" for="login-email">Email</label>
-        <input id="login-email" class="pill-input" type="email" placeholder="Email" autocomplete="email" required>
-        <div class="pw-wrap">
-          <label class="sr-only" for="login-password">Password</label>
-          <input id="login-password" class="pill-input" type="password" placeholder="Password" autocomplete="current-password" required>
-          <button class="pw-eye" type="button" data-eye="login-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button>
+    <!-- Wide screens: what NoteFusion does, beside the form. -->
+    <aside class="auth-aside" aria-hidden="true">
+      <span class="brand"><span class="brand-mark"></span>NoteFusion</span>
+      <div class="auth-pitch">
+        <p class="auth-pitch-title">Hum it. Read it.<br>Sing it with your choir.</p>
+        <p class="auth-pitch-sub">Any tune, a recording or a song link becomes Tonic Solfa and staff notation in about a minute.</p>
+        <div class="auth-sample">
+          <div class="auth-sample-head"><span>Amazing Grace</span><span>Doh is G · 3/4</span></div>
+          <div class="auth-sample-solfa">s₁ | d : – m d | m : – r | d : – l₁ | s₁</div>
+          <svg class="auth-sample-staff" viewBox="0 0 400 64"><g stroke="currentColor" stroke-width="1" opacity="0.45"><path d="M0 8h400M0 20h400M0 32h400M0 44h400M0 56h400"/></g><g fill="currentColor"><ellipse cx="34" cy="56" rx="6" ry="4.5"/><ellipse cx="84" cy="38" rx="6" ry="4.5"/><ellipse cx="134" cy="26" rx="6" ry="4.5"/><ellipse cx="170" cy="38" rx="6" ry="4.5"/><ellipse cx="220" cy="26" rx="6" ry="4.5"/><ellipse cx="270" cy="32" rx="6" ry="4.5"/><ellipse cx="320" cy="38" rx="6" ry="4.5"/><ellipse cx="366" cy="50" rx="6" ry="4.5"/></g></svg>
         </div>
-        <div class="auth-row-right"><button class="btn-link" id="forgot" type="button">Forgot password?</button></div>
-        <button class="btn btn-primary btn-pill" type="submit">Sign in</button>
-        <div class="or">or</div>
-        <div class="google-slot" id="google-btn-login"></div>
-        <p class="auth-switch">Don't have an account? <button class="btn-link" type="button" data-tab="register">Sign up</button></p>
-      </form>
+      </div>
+      <p class="auth-aside-foot">One account across the web and the Android app.</p>
+    </aside>
 
-      <form id="form-verify" class="auth-form hidden" novalidate>
-        <p class="small muted" style="text-align:center">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
-        <label class="sr-only" for="verify-code">Code</label>
-        <input id="verify-code" class="pill-input code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" required>
-        <button class="btn btn-primary btn-pill" type="submit">Confirm and sign in</button>
-        <p class="auth-switch">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
-      </form>
+    <div class="auth-main">
+      <div class="auth-top">
+        <a class="brand auth-top-brand" href="/"><span class="brand-mark" aria-hidden="true"></span>NoteFusion</a>
+        <button class="btn btn-ghost btn-icon theme-toggle" id="auth-theme" type="button" aria-label="Switch to dark mode"><svg class="ic"><use href="#i-moon"/></svg></button>
+      </div>
 
-      <form id="form-register" class="auth-form hidden" novalidate>
-        <label class="sr-only" for="reg-name">Full name</label>
-        <input id="reg-name" class="pill-input" type="text" placeholder="Full name" autocomplete="name" required>
-        <label class="sr-only" for="reg-email">Email</label>
-        <input id="reg-email" class="pill-input" type="email" placeholder="Email" autocomplete="email" required>
-        <div class="pw-wrap">
-          <label class="sr-only" for="reg-password">Password</label>
-          <input id="reg-password" class="pill-input" type="password" placeholder="Password (8 or more characters)" autocomplete="new-password" minlength="8" required>
-          <button class="pw-eye" type="button" data-eye="reg-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button>
+      <div class="auth-card">
+        <button class="btn-link auth-back hidden" id="auth-back" type="button"><svg class="ic"><use href="#i-back"/></svg>Back to your preview</button>
+        <h1 class="auth-title" id="auth-title">Welcome back</h1>
+        <p class="auth-sub" id="auth-sub">Sign in to open your sheets on any device.</p>
+        <div class="tabs fill auth-tabs" id="auth-tabs" role="tablist" aria-label="Sign in or create an account">
+          <button class="tab" type="button" role="tab" data-tab="login" aria-selected="true">Sign in</button>
+          <button class="tab" type="button" role="tab" data-tab="register" aria-selected="false">Create account</button>
         </div>
-        <button class="btn btn-primary btn-pill" type="submit">Sign up</button>
-        <div class="or">or</div>
-        <div class="google-slot" id="google-btn-register"></div>
-        <p class="auth-switch">Already have an account? <button class="btn-link" type="button" data-tab="login">Sign in</button></p>
-      </form>
-    </div>
+        <div id="auth-alert" class="alert alert-danger hidden" role="alert"></div>
 
-    <div class="card try-free" id="try-free">
+        <form id="form-login" class="auth-form" novalidate>
+          <div class="google-slot" id="google-btn-login"></div>
+          <div class="or">or with email</div>
+          <div class="field">
+            <label for="login-email">Email</label>
+            <span class="input-wrap"><svg class="ic"><use href="#i-mail"/></svg><input id="login-email" type="email" placeholder="you@example.com" autocomplete="email" required></span>
+          </div>
+          <div class="field">
+            <div class="label-row"><label for="login-password">Password</label><button class="btn-link" id="forgot" type="button">Forgot password?</button></div>
+            <span class="input-wrap pw-wrap"><svg class="ic"><use href="#i-lock"/></svg><input id="login-password" type="password" placeholder="Your password" autocomplete="current-password" required><button class="pw-eye" type="button" data-eye="login-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button></span>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+
+        <form id="form-verify" class="auth-form hidden" novalidate>
+          <p class="auth-note">We emailed a six-digit code to <strong id="verify-email-label"></strong>. Enter it to finish creating your account.</p>
+          <div class="field">
+            <label for="verify-code">Code</label>
+            <input id="verify-code" class="code-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" required>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Confirm and sign in</button>
+          <p class="auth-switch">Didn't get it? <button class="btn-link" id="verify-resend" type="button">Send it again</button></p>
+        </form>
+
+        <form id="form-register" class="auth-form hidden" novalidate>
+          <div class="google-slot" id="google-btn-register"></div>
+          <div class="or">or with email</div>
+          <div class="field">
+            <label for="reg-name">Full name</label>
+            <span class="input-wrap"><svg class="ic"><use href="#i-user"/></svg><input id="reg-name" type="text" placeholder="Your name" autocomplete="name" required></span>
+          </div>
+          <div class="field">
+            <label for="reg-email">Email</label>
+            <span class="input-wrap"><svg class="ic"><use href="#i-mail"/></svg><input id="reg-email" type="email" placeholder="you@example.com" autocomplete="email" required></span>
+          </div>
+          <div class="field">
+            <label for="reg-password">Password</label>
+            <span class="input-wrap pw-wrap"><svg class="ic"><use href="#i-lock"/></svg><input id="reg-password" type="password" placeholder="Choose a password" autocomplete="new-password" minlength="8" required aria-describedby="reg-password-hint"><button class="pw-eye" type="button" data-eye="reg-password" aria-label="Show password"><svg class="ic"><use href="#i-eye"/></svg></button></span>
+            <p class="pw-hint" id="reg-password-hint"><svg class="ic"><use href="#i-check"/></svg>At least 8 characters</p>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Create account</button>
+        </form>
+      </div>
+
+      <button class="try-row" id="try-open" type="button" aria-controls="try-free" aria-expanded="false">
+        <span class="try-row-ic" aria-hidden="true"><svg class="ic"><use href="#i-mic"/></svg></span>
+        <span class="try-row-text"><b>Just trying it out?</b><small>Hum 30 seconds — no account needed</small></span>
+        <svg class="ic try-row-chev"><use href="#i-chev"/></svg>
+      </button>
+    <div class="card try-free hidden" id="try-free">
       <h2><svg class="ic"><use href="#i-sparkle"/></svg>Or try it first — free, no account</h2>
       <p class="card-lead">A 30-second preview of a tune you hum right now, or a recording you have.</p>
       <div class="row">
@@ -216,6 +281,8 @@
       </details>
       <div id="try-section"></div>
       <p class="try-status small" id="try-status" aria-live="polite"></p>
+    </div>
+      <p class="auth-fine">By continuing you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy</a>.</p>
     </div>
   </section>
 
@@ -331,7 +398,8 @@
       <div class="source-panel" id="src-record" role="tabpanel" aria-labelledby="src-tab-record">
         <div class="studio-rec-stage">
           <button class="btn btn-rec studio-rec" id="rec-btn" type="button" aria-label="Record a tune"><svg class="ic"><use href="#i-mic"/></svg></button>
-          <span class="studio-rec-label">Hum, sing or play — then stop</span>
+          <span class="studio-rec-label">Tap to record</span>
+          <span class="studio-rec-hint">Hum, sing or play — then stop</span>
           <p id="rec-status" class="small studio-status" aria-live="polite"></p>
         </div>
       </div>
@@ -716,58 +784,70 @@
     <!-- ── Account ──────────────────────────────────────────────────── -->
     <div id="view-account" class="hidden">
       <div class="page-head">
-        <h1>Account settings</h1>
+        <h1>Account &amp; settings</h1>
+        <p>Your profile, your plan, and how NoteFusion looks on this browser.</p>
       </div>
-      <div class="card">
-        <h2><svg class="ic"><use href="#i-user"/></svg>Account information <span class="pill pill-free" id="acct-badge">Free</span></h2>
-        <div class="profile">
+      <div class="acct-grid">
+        <div class="card acct-profile">
           <label class="avatar-edit" title="Change photo">
             <span class="who-avatar" id="acct-avatar" aria-hidden="true"></span>
             <span class="avatar-badge"><svg class="ic"><use href="#i-camera"/></svg></span>
             <input id="acct-photo" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
           </label>
-          <div style="min-width:0">
-            <div class="name" id="acct-name">—</div>
-            <div class="email" id="acct-email">—</div>
-            <div class="row" style="gap:8px;margin-top:6px">
-              <label class="btn-link small" for="acct-photo" style="cursor:pointer">Change photo</label>
-              <button class="btn-link small hidden" id="acct-photo-remove" type="button">Remove</button>
-              <span class="small muted" id="acct-photo-status"></span>
-            </div>
+          <div class="name" id="acct-name">—</div>
+          <div class="email" id="acct-email">—</div>
+          <div class="acct-tags">
+            <span class="pill pill-free" id="acct-badge">Free</span>
+            <span class="tag">Member since <span id="acct-since">—</span></span>
+            <span class="tag"><span id="acct-saved">—</span> saved sheets</span>
           </div>
+          <label class="btn btn-ghost btn-sm acct-photo-btn" for="acct-photo"><svg class="ic"><use href="#i-camera"/></svg>Change photo</label>
+          <button class="btn-link small hidden" id="acct-photo-remove" type="button">Remove photo</button>
+          <span class="small muted" id="acct-photo-status" aria-live="polite"></span>
         </div>
-        <dl class="acct-rows">
-          <div><dt><svg class="ic"><use href="#i-calendar"/></svg>Member since</dt><dd id="acct-since">—</dd></div>
-          <div><dt><svg class="ic"><use href="#i-library"/></svg>Saved sheets</dt><dd id="acct-saved">—</dd></div>
-        </dl>
-        <div class="player" style="margin-top:16px">
-          <button class="btn btn-ghost btn-sm" id="acct-signout" type="button"><svg class="ic"><use href="#i-logout"/></svg>Sign out</button>
-          <a class="btn btn-ghost btn-sm btn-danger" href="/delete-account">Delete my account</a>
+
+        <div class="acct-groups">
+          <section aria-labelledby="acct-plan-title">
+            <h2 class="group-title" id="acct-plan-title">Plan &amp; usage</h2>
+            <div class="list-card">
+              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-crown"/></svg><span id="acct-plan">Free</span></span><span class="v"><span class="pill pill-active hidden" id="acct-active">Active</span></span></div>
+              <div class="lrow lrow-block">
+                <div class="usage-row"><span id="acct-usage-label">Free transcriptions</span><span id="acct-credits">—</span></div>
+                <div class="usage-bar"><i id="acct-usage-fill"></i></div>
+                <p class="lrow-note" id="acct-sub-note"></p>
+              </div>
+              <button class="lrow lrow-btn" id="acct-upgrade" type="button"><span class="k link" id="acct-upgrade-label">See the plans</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+            </div>
+          </section>
+
+          <section aria-labelledby="acct-look-title">
+            <h2 class="group-title" id="acct-look-title">Appearance</h2>
+            <div class="list-card">
+              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-sun"/></svg>Theme</span>
+                <span class="v"><span class="theme-seg" role="radiogroup" aria-label="Theme">
+                  <button type="button" role="radio" data-theme-pref="light">Light</button>
+                  <button type="button" role="radio" data-theme-pref="dark">Dark</button>
+                  <button type="button" role="radio" data-theme-pref="system">System</button>
+                </span></span></div>
+              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-volume"/></svg>Sounds</span><span class="v"><button class="switch" id="acct-sounds" type="button" role="switch" aria-checked="true" aria-label="Sounds"></button></span></div>
+            </div>
+          </section>
+
+          <section aria-labelledby="acct-app-title">
+            <h2 class="group-title" id="acct-app-title">Get the app</h2>
+            <div class="list-card">
+              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-phone"/></svg>Record at rehearsal, keep your library offline and get practice reminders. The web and the app share one account.</span></div>
+              <div class="lrow"><a class="store-badge" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="app_panel"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a></div>
+            </div>
+          </section>
+
+          <section aria-label="Sign out or delete your account">
+            <div class="list-card">
+              <button class="lrow lrow-btn" id="acct-signout" type="button"><span class="k"><svg class="ic"><use href="#i-logout"/></svg>Sign out</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+              <a class="lrow lrow-btn danger" href="/delete-account"><span class="k"><svg class="ic"><use href="#i-trash"/></svg>Delete my account</span></a>
+            </div>
+          </section>
         </div>
-      </div>
-      <div class="card card-upsell" id="acct-upsell">
-        <h2><svg class="ic"><use href="#i-sparkle"/></svg>Go Pro</h2>
-        <p class="card-lead">Full songs up to six minutes, twenty a month, four-part harmony, every download format, and the queue skipped.</p>
-        <button class="btn btn-primary" id="acct-upgrade" type="button"><svg class="ic"><use href="#i-crown"/></svg>See the plans</button>
-      </div>
-      <div class="card">
-        <h2><svg class="ic"><use href="#i-card"/></svg>Subscription</h2>
-        <p class="card-lead">Your plan and this month's usage.</p>
-        <dl class="acct-rows">
-          <div><dt><svg class="ic"><use href="#i-crown"/></svg>Plan</dt><dd id="acct-plan">—</dd></div>
-          <div><dt><svg class="ic"><use href="#i-clock"/></svg>This month</dt><dd id="acct-credits">—</dd></div>
-        </dl>
-        <p class="muted small" id="acct-sub-note" style="margin:12px 0 0"></p>
-      </div>
-      <div class="card">
-        <h2><svg class="ic"><use href="#i-phone"/></svg>Only in the app</h2>
-        <p class="card-lead">The web and the app share one account and one library. A few things need a phone in the room:</p>
-        <ul class="only-app">
-          <li><svg class="ic"><use href="#i-mic"/></svg>Record straight from rehearsal, with the key set before you sing</li>
-          <li><svg class="ic"><use href="#i-wifi-off"/></svg>Your library offline, for churches and halls with no signal</li>
-          <li><svg class="ic"><use href="#i-bell"/></svg>Practice reminders and a note when a long transcription is ready</li>
-        </ul>
-        <p style="margin-top:14px"><a class="store-badge" href="https://play.google.com/store/apps/details?id=com.notefusion.com" target="_blank" rel="noopener" data-download-source="app_panel"><img src="/assets/google-play-badge.png" width="646" height="250" alt="Get it on Google Play"></a></p>
       </div>
     </div>
   </section>
@@ -790,7 +870,7 @@
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
 <script src="/assets/preview.js?v=10" defer></script>
-<script src="/assets/app.js?v=25" defer></script>
+<script src="/assets/app.js?v=26" defer></script>
 <script src="/assets/track.js?v=3" defer></script>
 </body>
 </html>
