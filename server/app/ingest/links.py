@@ -37,6 +37,7 @@ import os
 import re
 import shlex
 import shutil
+import signal
 import subprocess
 import tempfile
 import threading
@@ -44,6 +45,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import OrderedDict
 from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass, replace
@@ -410,8 +412,32 @@ class _Cached:
     expires: float = 0.0
 
 
-_cache: dict[str, _Cached] = {}
+#: Most addresses remembered at once; the least recently used goes first. Every pasted link
+#: lands here, and a caller pasting thousands of them must not grow the worker's memory.
+RESOLVE_CACHE_MAX_KEYS = 256
+
+_cache: "OrderedDict[str, _Cached]" = OrderedDict()
 _cache_lock = threading.Lock()
+
+#: Parts of yt-dlp's ``-J`` output that neither the refusal checks nor the download read, and
+#: that make up most of it (every caption track in every language, every thumbnail size).
+_UNUSED_INFO_KEYS = ("automatic_captions", "subtitles", "thumbnails", "heatmap")
+
+
+def _slim_info(info_json: str | None) -> str | None:
+    """``info_json`` without ``_UNUSED_INFO_KEYS``, to be remembered; as it was when it is not
+    a JSON object."""
+    if not info_json:
+        return info_json
+    try:
+        info = json.loads(info_json)
+    except ValueError:
+        return info_json
+    if not isinstance(info, dict):
+        return info_json
+    for key in _UNUSED_INFO_KEYS:
+        info.pop(key, None)
+    return json.dumps(info)
 
 
 def _cache_get(key: str | None) -> _Cached | None:
@@ -422,18 +448,24 @@ def _cache_get(key: str | None) -> _Cached | None:
         if entry is not None and entry.expires <= time.monotonic():
             del _cache[key]
             return None
+        if entry is not None:
+            _cache.move_to_end(key)
         return entry
 
 
 def _cache_put(entry: _Cached, *keys: str | None) -> None:
     now = time.monotonic()
     entry.expires = now + RESOLVE_CACHE_SECONDS
+    entry.info_json = _slim_info(entry.info_json)
     with _cache_lock:
         for stale in [k for k, e in _cache.items() if e.expires <= now]:
             del _cache[stale]
         for key in keys:
             if key:
                 _cache[key] = entry
+                _cache.move_to_end(key)
+        while len(_cache) > RESOLVE_CACHE_MAX_KEYS:
+            _cache.popitem(last=False)
 
 
 def resolve_source(text: str) -> Source:
@@ -559,9 +591,27 @@ def _log_tail(stderr: str) -> str:
     return " | ".join(kept)[:600] or "no output"
 
 
+def _run_group(args: list[str], timeout: float) -> subprocess.CompletedProcess:
+    """``subprocess.run`` for yt-dlp, in a session of its own: yt-dlp starts ffmpeg for a
+    section download, and on a timeout the whole process group is killed — killing yt-dlp
+    alone left its ffmpeg running, holding the half-downloaded file and a core."""
+    with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                          start_new_session=True) as proc:
+        try:
+            stdout, stderr = proc.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except (ProcessLookupError, PermissionError):
+                pass
+            proc.communicate()
+            raise
+    return subprocess.CompletedProcess(args, proc.returncode, stdout, stderr)
+
+
 def _run_ytdlp(args: list[str], timeout: float, provider: str) -> subprocess.CompletedProcess:
     try:
-        result = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+        result = _run_group(args, timeout)
     except subprocess.TimeoutExpired:
         logger.warning("yt-dlp timed out (%s) after %.0fs", provider, timeout)
         raise _YtdlpFailed(_explain("", provider), "timed out", timed_out=True) from None
@@ -936,7 +986,7 @@ def resolve_link(text: str) -> Source:
     if source.provider != "youtube" or source.duration is not None or entry is None or entry.info_json is not None:
         return source
     info_json = _youtube_info(source.audio_url or source.url)
-    entry.info_json = info_json or ""
+    entry.info_json = _slim_info(info_json) or ""
     entry.refusal = _video_refusal(info_json)
     if entry.refusal is not None:
         raise entry.refusal

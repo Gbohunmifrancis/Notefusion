@@ -16,14 +16,19 @@ always was, and the journal entry with it.  A journal that cannot be written is 
 and the job runs anyway — without durability, never without service.
 """
 
+import glob
 import json
 import logging
 import os
+import re
 import shutil
 import tempfile
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+#: A job id as the queue makes them (``uuid4().hex``).
+_JOB_ID = re.compile(r"[0-9a-f]{32}")
 
 
 class JobJournal:
@@ -72,7 +77,30 @@ class JobJournal:
         self.write(job_id, record)
 
     def delete(self, job_id: str) -> None:
+        """The entry and every file kept under the job's id (its audio or score): a job whose
+        audio was kept in the journal but never run (failed on replay) would leave it here."""
         self._path(job_id).unlink(missing_ok=True)
+        for path in self.dir.glob(f"{glob.escape(job_id)}.*"):
+            path.unlink(missing_ok=True)
+
+    def sweep(self, known_ids: set[str]) -> int:
+        """Remove what belongs to no entry: audio moved in for a submit whose entry was never
+        written (a crash between the two), and ``.tmp`` files from a write cut short.  Called
+        once at startup, before any job runs; the number of files removed."""
+        removed = 0
+        for path in self.dir.iterdir():
+            if not path.is_file():
+                continue
+            # Only names this journal writes: ``<job id>.<ext>`` and ``.<job id>.<random>.tmp``.
+            # Anything else in the directory is not ours to judge.
+            owner = path.name.split(".", 1)[0]
+            half_written = path.name.startswith(".") and path.name.endswith(".tmp")
+            if half_written or (_JOB_ID.fullmatch(owner) and owner not in known_ids):
+                path.unlink(missing_ok=True)
+                removed += 1
+        if removed:
+            logger.info("Journal: %d stray files removed", removed)
+        return removed
 
     def entries(self) -> list[dict]:
         """Every journaled job, oldest first.  An entry that cannot be read is logged and dropped."""
