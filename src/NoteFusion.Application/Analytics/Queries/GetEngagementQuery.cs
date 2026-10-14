@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -80,21 +81,21 @@ public sealed class GetEngagementQueryHandler : IRequestHandler<GetEngagementQue
 
         // Each source pulls only (user, time) for the bounded window; everything else is folded in memory,
         // the same way the overview's series are, so it reads the same on Npgsql and the tests' SQLite.
-        var jobs = await _db.TranscriptionJobs.AsNoTracking()
+        var jobs = await _db.RealJobs().AsNoTracking()
             .Where(j => j.CreatedAtUtc >= since && j.CreatedAtUtc < until)
             .Select(j => new { j.UserId, j.CreatedAtUtc, j.JobId, Done = j.ResultJson != null })
             .ToListAsync(ct);
-        var saves = await _db.Transcriptions.AsNoTracking()
+        var saves = await _db.RealSheets().AsNoTracking()
             .Where(t => t.CreatedAtUtc >= since && t.CreatedAtUtc < until)
             .Select(t => new Signal(t.UserId, t.CreatedAtUtc))
             .ToListAsync(ct);
-        var web = await _db.WebEvents.AsNoTracking()
+        var web = await _db.RealWebEvents().AsNoTracking()
             .Where(e => e.UserId != null && e.OccurredAtUtc >= since && e.OccurredAtUtc < until)
             .Select(e => new { UserId = e.UserId!.Value, e.OccurredAtUtc, e.SessionId })
             .ToListAsync(ct);
         // The last time each account was seen (any signed-in request), or, before presence was recorded,
         // its last sign-in.
-        var logins = await _db.Users.AsNoTracking()
+        var logins = await _db.RealUsers().AsNoTracking()
             .Where(u => (u.LastSeenAtUtc ?? u.LastLoginAt) != null
                         && (u.LastSeenAtUtc ?? u.LastLoginAt) >= since && (u.LastSeenAtUtc ?? u.LastLoginAt) < until)
             .Select(u => new Signal(u.Id, (u.LastSeenAtUtc ?? u.LastLoginAt)!.Value))
@@ -124,12 +125,12 @@ public sealed class GetEngagementQueryHandler : IRequestHandler<GetEngagementQue
         var averageDau = daily.Count == 0 ? 0 : Math.Round(daily.Average(d => d.Count), 2);
 
         var activeIds = windowSignals.Select(s => s.UserId).Distinct().ToList();
-        var accounts = await _db.Users.AsNoTracking()
+        var accounts = await _db.RealUsers().AsNoTracking()
             .Where(u => activeIds.Contains(u.Id))
             .Select(u => new { u.Id, u.FullName, u.Email, u.Country, u.CreatedAt })
             .ToListAsync(ct);
         var now = _clock.UtcNow;
-        var pro = (await _db.Subscriptions.AsNoTracking()
+        var pro = (await _db.RealSubscriptions().AsNoTracking()
                 .Where(s => activeIds.Contains(s.UserId)
                     && (s.Status == SubscriptionStatus.Active || s.Status == SubscriptionStatus.Canceled)
                     && s.CurrentPeriodEndUtc > now)
@@ -159,7 +160,7 @@ public sealed class GetEngagementQueryHandler : IRequestHandler<GetEngagementQue
         var localTimes = windowJobs.Select(j => j.CreatedAtUtc + AnalyticsRange.ReportingOffset).ToList();
         string[] weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-        var logs = await _db.TranscriptionLogs.AsNoTracking()
+        var logs = await _db.RealLogs().AsNoTracking()
             .Where(l => l.CreatedAtUtc >= range.FromUtc && l.CreatedAtUtc < range.ToUtc)
             .Select(l => new { l.Client, l.Kind })
             .ToListAsync(ct);

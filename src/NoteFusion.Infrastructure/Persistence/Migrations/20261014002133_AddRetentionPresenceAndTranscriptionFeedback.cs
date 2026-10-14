@@ -17,6 +17,13 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 type: "timestamp with time zone",
                 nullable: true);
 
+            migrationBuilder.AddColumn<bool>(
+                name: "IsInternal",
+                table: "users",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.AddColumn<DateTime>(
                 name: "LastSeenAtUtc",
                 table: "users",
@@ -42,6 +49,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "CheckoutReminderSentAtUtc",
+                table: "users");
+
+            migrationBuilder.DropColumn(
+                name: "IsInternal",
                 table: "users");
 
             migrationBuilder.DropColumn(

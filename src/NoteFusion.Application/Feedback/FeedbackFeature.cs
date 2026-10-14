@@ -194,7 +194,7 @@ public sealed class GetFeedbackSummaryQueryHandler : IRequestHandler<GetFeedback
 
     public async Task<Result<FeedbackSummaryDto>> Handle(GetFeedbackSummaryQuery request, CancellationToken ct)
     {
-        var rows = await _db.UserFeedback.AsNoTracking()
+        var rows = await _db.RealFeedback().AsNoTracking()
             .Select(f => new { f.Kind, f.Rating, f.Category })
             .ToListAsync(ct);
 
@@ -239,7 +239,7 @@ public sealed class GetFeedbackListQueryHandler : IRequestHandler<GetFeedbackLis
     {
         var page = Math.Max(1, request.Page);
         var pageSize = Math.Clamp(request.PageSize, 1, 100);
-        var query = _db.UserFeedback.AsNoTracking().AsQueryable();
+        var query = _db.RealFeedback().AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(request.Kind))
             query = query.Where(f => f.Kind == request.Kind);
         if (request.UserId is { } userId)

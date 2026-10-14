@@ -48,14 +48,14 @@ public sealed class GetLiveActivityQueryHandler : IRequestHandler<GetLiveActivit
         var onlineSince = now - LastSeen.OnlineWindow;
         var jobsSince = now - GetLiveActivityQuery.RecentJobs;
 
-        var online = await _db.Users.AsNoTracking()
+        var online = await _db.RealUsers().AsNoTracking()
             .Where(u => u.LastSeenAtUtc != null && u.LastSeenAtUtc >= onlineSince)
             .OrderByDescending(u => u.LastSeenAtUtc)
             .Take(GetLiveActivityQuery.MaxRows)
             .Select(u => new LiveUserDto(u.Id, u.FullName, u.Email, u.Country, u.LastSeenAtUtc!.Value))
             .ToListAsync(ct);
 
-        var jobs = await _db.TranscriptionJobs.AsNoTracking()
+        var jobs = await _db.RealJobs().AsNoTracking()
             .Where(j => j.CreatedAtUtc >= jobsSince)
             .OrderByDescending(j => j.CreatedAtUtc)
             .Take(GetLiveActivityQuery.MaxRows)
@@ -65,7 +65,7 @@ public sealed class GetLiveActivityQueryHandler : IRequestHandler<GetLiveActivit
                 User = _db.Users.Where(u => u.Id == j.UserId).Select(u => new { u.FullName, u.Email }).FirstOrDefault()
             })
             .ToListAsync(ct);
-        var previews = await _db.PreviewJobs.AsNoTracking()
+        var previews = await _db.RealPreviews().AsNoTracking()
             .Where(p => p.CreatedAtUtc >= jobsSince)
             .OrderByDescending(p => p.CreatedAtUtc)
             .Take(GetLiveActivityQuery.MaxRows)

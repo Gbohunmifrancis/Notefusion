@@ -175,6 +175,8 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             recentActions,
             recentTranscriptions,
             counts.Saved,
-            counts.Failed);
+            counts.Failed,
+            user.IsInternal,
+            user.LastSeenAtUtc);
     }
 }

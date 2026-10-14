@@ -918,6 +918,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsFirstLogin")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsInternal")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime?>("LastLoginAt")
                         .HasColumnType("timestamp with time zone");
 

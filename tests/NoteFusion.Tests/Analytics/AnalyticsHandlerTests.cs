@@ -235,19 +235,24 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
-    public async Task Recent_activity_reports_a_return_visit_as_a_login_event()
+    public async Task Recent_activity_leaves_out_sign_ins_and_says_what_happened_in_utc()
     {
         using var h = new TestHarness(Now);
         var user = User.Create("Returner", "return@example.com", h.Hasher.Hash("password123"), Now.AddDays(-3));
         user.RecordSuccessfulLogin(Now.AddDays(-1));
         h.Db.Users.Add(user);
+        var failed = TranscriptionJob.RecordLink("j-failed", user.Id, Now.AddHours(-2), null, false);
+        failed.Settle(null, Now.AddHours(-2));
+        h.Db.TranscriptionJobs.Add(failed);
         await h.Db.SaveChangesAsync();
 
-        var result = await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default);
+        var feed = (await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default)).Value.RecentActivity;
 
-        var login = Assert.Single(result.Value.RecentActivity, a => a.Kind == "login");
-        Assert.Equal("Returner", login.Title);
-        Assert.Equal(Now.AddDays(-1), login.OccurredAtUtc);
+        // A sign-in is not something someone did; a single LastLoginAt cannot place it in history anyway.
+        Assert.DoesNotContain(feed, a => a.Kind == "login");
+        Assert.Equal(("transcription_failed", "a song link failed to transcribe"), (feed[0].Kind, feed[0].Detail));
+        Assert.Equal(("signup", "signed up"), (feed[1].Kind, feed[1].Detail));
+        Assert.All(feed, a => Assert.Equal(DateTimeKind.Utc, a.OccurredAtUtc.Kind));
     }
 
     [Fact]

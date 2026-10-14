@@ -165,6 +165,8 @@ export function UsersView() {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [lastSeen, setLastSeen] = useState<LastSeenFilter>("all");
   const [sort, setSort] = useState<"newest" | "lastSeen">("newest");
+  // Customers only by default: admins and team/test accounts are the team, not users to count.
+  const [showTeam, setShowTeam] = useState(false);
   const [planFilter, setPlanFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -172,11 +174,11 @@ export function UsersView() {
   const [emailTarget, setEmailTarget] = useState<SendEmailTarget | null>(null);
   const debouncedSearch = useDebounced(search);
 
-  useEffect(() => setPage(1), [debouncedSearch, status, planFilter, lastSeen, sort]);
+  useEffect(() => setPage(1), [debouncedSearch, status, planFilter, lastSeen, sort, showTeam]);
 
   const term = debouncedSearch.trim();
   const state = useQuery({
-    queryKey: ["users", page, term, status, lastSeen, sort],
+    queryKey: ["users", page, term, status, lastSeen, sort, showTeam],
     queryFn: ({ signal }) =>
       getUsers(
         page,
@@ -187,6 +189,7 @@ export function UsersView() {
         signal,
         lastSeen === "all" ? undefined : lastSeen,
         sort === "lastSeen" ? "lastSeen" : undefined,
+        showTeam || undefined,
       ),
     placeholderData: keepPreviousData,
     // Presence goes stale fast: the online list refreshes itself.
@@ -365,6 +368,16 @@ export function UsersView() {
             <option value="newest">Newest accounts</option>
             <option value="lastSeen">Recently seen</option>
           </select>
+
+          <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border border-slate-200/90 bg-white px-3 text-xs font-medium text-slate-700 shadow-xs dark:border-zinc-800 dark:bg-[#09090b] dark:text-zinc-200">
+            <input
+              type="checkbox"
+              checked={showTeam}
+              onChange={(e) => setShowTeam(e.target.checked)}
+              className="h-3.5 w-3.5 accent-[#2563EB]"
+            />
+            Show team accounts
+          </label>
         </div>
       </div>
 
@@ -447,7 +460,7 @@ export function UsersView() {
                             {user.email}
                           </td>
                           <td className="px-4 py-3">
-                            <PlanBadge user={user} />
+                            <span className="inline-flex items-center gap-1.5"><PlanBadge user={user} />{user.isInternal && <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:bg-amber-950/50 dark:text-amber-400" title="Admin or team/test account: left out of analytics">Team</span>}</span>
                           </td>
                           <td className="px-4 py-3">
                             <StatusBadge user={user} online={online} />

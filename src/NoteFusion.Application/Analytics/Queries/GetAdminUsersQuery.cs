@@ -29,6 +29,10 @@ namespace NoteFusion.Application.Analytics.Queries;
 /// last sign-in for accounts not seen since presence was recorded.
 /// </param>
 /// <param name="Sort">"lastSeen" lists the most recently seen first; anything else is newest account first.</param>
+/// <param name="IncludeInternal">
+/// The list is customers only by default: admins and internal accounts are the team (AnalyticsScope).
+/// True lists everyone, for finding a team account to manage.
+/// </param>
 public sealed record GetAdminUsersQuery(
     int Page = 1,
     int PageSize = 25,
@@ -36,7 +40,8 @@ public sealed record GetAdminUsersQuery(
     bool? IsActive = null,
     bool? IsOnline = null,
     string? LastSeenWithin = null,
-    string? Sort = null)
+    string? Sort = null,
+    bool IncludeInternal = false)
     : IRequest<Result<PagedResultDto<AdminUserRowDto>>>
 {
     public const int MaxPageSize = 100;
@@ -62,7 +67,7 @@ public sealed class GetAdminUsersQueryHandler
         var page = Math.Max(1, request.Page);
         var pageSize = Math.Clamp(request.PageSize, 1, GetAdminUsersQuery.MaxPageSize);
 
-        var query = _db.Users.AsNoTracking();
+        var query = (request.IncludeInternal ? _db.Users : _db.RealUsers()).AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(request.Search))
         {
@@ -134,7 +139,8 @@ public sealed class GetAdminUsersQueryHandler
                 0,
                 0,
                 u.LastSeenAtUtc ?? u.LastLoginAt,
-                (u.LastSeenAtUtc ?? u.LastLoginAt) >= onlineSince))
+                (u.LastSeenAtUtc ?? u.LastLoginAt) >= onlineSince,
+                u.Role == UserRole.Admin || u.IsInternal))
             .ToListAsync(cancellationToken);
 
         var counts = await TranscriptionCounts.ForUsersAsync(_db, items.Select(i => i.Id).ToList(), cancellationToken);

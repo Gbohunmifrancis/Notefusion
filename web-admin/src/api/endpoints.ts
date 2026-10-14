@@ -1,6 +1,7 @@
 import { query, request } from "@/api/client";
 import type {
   AdminLedgerRow,
+  Insights,
   LiveActivity,
   AdminPaymentDetail,
   AdminPaymentRow,
@@ -69,6 +70,16 @@ export const getMyProfile = (signal?: AbortSignal) =>
   request<MyProfile>("/api/me", signal ? { signal } : {});
 
 /** `from` and `to` are inclusive reporting-local dates, "YYYY-MM-DD". */
+export interface InsightsFilter {
+  from?: string | undefined;
+  to?: string | undefined;
+  country?: string | undefined;
+  platform?: string | undefined;
+  plan?: string | undefined;
+}
+export const getInsights = (f: InsightsFilter, signal?: AbortSignal) =>
+  request<Insights>(`/api/admin/analytics/insights${query({ ...f })}`, signal ? { signal } : {});
+
 export const getLiveActivity = (signal?: AbortSignal) =>
   request<LiveActivity>("/api/admin/analytics/live", signal ? { signal } : {});
 
@@ -90,9 +101,11 @@ export const getUsers = (
   lastSeen?: string,
   /** "lastSeen" lists the most recently seen first. */
   sort?: string,
+  /** The list is customers only; true adds admins and team/test accounts. */
+  includeInternal?: boolean,
 ) =>
   request<PagedResult<AdminUserRow>>(
-    `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline, lastSeen, sort })}`,
+    `/api/admin/analytics/users${query({ page, pageSize, search, isActive, isOnline, lastSeen, sort, includeInternal })}`,
     signal ? { signal } : {},
   );
 
@@ -268,6 +281,10 @@ export const endSubscription = (id: string, note?: string) =>
 export const suspendUser = (id: string, note?: string) => act(id, "suspend", { note });
 
 export const reactivateUser = (id: string, note?: string) => act(id, "reactivate", { note });
+
+/** A team or test account is left out of every analytics figure and list (admins always are). */
+export const setInternalAccount = (id: string, isInternal: boolean, note?: string) =>
+  act(id, "internal", { isInternal, note });
 
 /** Takes effect on the target's next access token, not immediately. */
 export const setUserRole = (id: string, role: RoleName, note?: string) =>

@@ -627,7 +627,7 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
         <div className="space-y-4">
           {displayItems.map((item, index) => {
             const isSignup = item.kind === "signup";
-            const isTranscription = item.kind === "transcription";
+            const isTranscription = item.kind === "transcription" || item.kind === "transcription_failed";
             const isLogin = item.kind === "login";
 
             const Icon = isSignup ? UserRoundPlus : isTranscription ? Music2 : isLogin ? LogIn : CreditCard;
@@ -639,7 +639,10 @@ function RecentActivityPanel({ items }: { items: AnalyticsOverview["recentActivi
                   ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400"
                   : "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400";
 
-            const verb = isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : isLogin ? "User signed in" : "Payment received";
+            // The API says what happened ("transcribed a song link"); the old fixed verbs are the fallback.
+            const verb = item.detail
+              ? `${item.title} ${item.detail}`
+              : isSignup ? "New user signed up" : isTranscription ? "Transcription completed" : isLogin ? "User signed in" : "Payment received";
             const flag = getFlagEmoji(item.country);
             
             return (

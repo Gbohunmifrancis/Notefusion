@@ -104,7 +104,9 @@ public sealed record ActivityItemDto(
     DateTime OccurredAtUtc,
     Guid? UserId,
     string? Email,
-    string? Country);
+    string? Country,
+    /// <summary>What happened, as a phrase after the name: "transcribed a song link", "paid ₦7,500 for Pro".</summary>
+    string? Detail = null);
 
 /// <summary>
 /// Signup-cohort retention: of the users who joined in a period, how many later came back.
@@ -330,7 +332,9 @@ public sealed record AdminUserRowDto(
     /// <summary>The account's last signed-in request (or, before presence was recorded, its last sign-in).</summary>
     DateTime? LastSeenAtUtc = null,
     /// <summary>Seen within <c>LastSeen.OnlineWindow</c>.</summary>
-    bool IsOnline = false);
+    bool IsOnline = false,
+    /// <summary>An admin or an account flagged internal: shown only when the list asks for the team.</summary>
+    bool IsInternal = false);
 
 /// <summary>A page of results plus the total, so the client can render "showing 1-25 of 340".</summary>
 public sealed record PagedResultDto<T>(IReadOnlyList<T> Items, int Page, int PageSize, int TotalCount)

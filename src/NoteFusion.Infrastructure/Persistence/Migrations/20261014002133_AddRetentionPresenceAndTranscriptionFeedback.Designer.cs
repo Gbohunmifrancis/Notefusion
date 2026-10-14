@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NoteFusion.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261013232635_AddRetentionPresenceAndTranscriptionFeedback")]
+    [Migration("20261014002133_AddRetentionPresenceAndTranscriptionFeedback")]
     partial class AddRetentionPresenceAndTranscriptionFeedback
     {
         /// <inheritdoc />
@@ -919,6 +919,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsFirstLogin")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsInternal")
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("LastLoginAt")

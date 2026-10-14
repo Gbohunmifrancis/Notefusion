@@ -132,6 +132,15 @@ public class User : BaseEntity
     /// </summary>
     public DateTime? LastSeenAtUtc { get; private set; }
 
+    /// <summary>
+    /// A team or test account: kept out of every analytics figure, count and list in the console, like
+    /// an admin. For the founders' own accounts and test sign-ups, which are not admins but would
+    /// otherwise top the leaderboard and inflate Pro and active counts.
+    /// </summary>
+    public bool IsInternal { get; private set; }
+
+    public void SetInternal(bool isInternal) => IsInternal = isInternal;
+
     public void MarkSeen(DateTime utcNow)
     {
         if (LastSeenAtUtc is null || utcNow > LastSeenAtUtc) LastSeenAtUtc = utcNow;

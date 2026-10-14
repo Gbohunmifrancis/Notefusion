@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Analytics.Dtos;
 using NoteFusion.Application.Common.Errors;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -30,7 +31,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
     private const int RetentionWeeks = 12;
 
     /// <summary>Entries in the recent-activity feed. Enough to fill the rail without a scrollbar.</summary>
-    private const int RecentActivityCount = 12;
+    private const int RecentActivityCount = 20;
 
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
@@ -60,12 +61,12 @@ public sealed class GetAnalyticsOverviewQueryHandler
         // the tests run against, and a divergence there would only show up in production. The
         // window is bounded by AnalyticsRange.MaxDays, so the row count is bounded too.
         var signupsPerDay = await DailySeries(
-            _db.Users.Where(u => u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc)
+            _db.RealUsers().Where(u => u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc)
                      .Select(u => u.CreatedAt),
             range, cancellationToken);
 
         var transcriptionsPerDay = await DailySeries(
-            _db.Transcriptions.Where(t => t.CreatedAtUtc >= range.FromUtc && t.CreatedAtUtc < range.ToUtc)
+            _db.RealSheets().Where(t => t.CreatedAtUtc >= range.FromUtc && t.CreatedAtUtc < range.ToUtc)
                               .Select(t => t.CreatedAtUtc),
             range, cancellationToken);
 
@@ -100,13 +101,13 @@ public sealed class GetAnalyticsOverviewQueryHandler
 
     private async Task<IReadOnlyList<CategoryCountDto>> BuildSignupSources(CancellationToken ct)
     {
-        var web = await _db.Users.CountAsync(u => u.SignupSource == "web", ct);
-        var mobile = await _db.Users.CountAsync(u => u.SignupSource == "mobile", ct);
+        var web = await _db.RealUsers().CountAsync(u => u.SignupSource == "web", ct);
+        var mobile = await _db.RealUsers().CountAsync(u => u.SignupSource == "mobile", ct);
         // Accounts from before the stamp (and Google sign-ups, which did not set it): an account that ever
         // registered a phone for push came from the app; one seen only in the web tracker, from the web.
-        var unstamped = await _db.Users.Where(u => u.SignupSource == null).Select(u => u.Id).ToListAsync(ct);
-        var phones = (await _db.DeviceTokens.Where(d => unstamped.Contains(d.UserId)).Select(d => d.UserId).Distinct().ToListAsync(ct)).ToHashSet();
-        var browsers = (await _db.WebEvents.Where(e => e.UserId != null && unstamped.Contains(e.UserId.Value))
+        var unstamped = await _db.RealUsers().Where(u => u.SignupSource == null).Select(u => u.Id).ToListAsync(ct);
+        var phones = (await _db.RealDeviceTokens().Where(d => unstamped.Contains(d.UserId)).Select(d => d.UserId).Distinct().ToListAsync(ct)).ToHashSet();
+        var browsers = (await _db.RealWebEvents().Where(e => e.UserId != null && unstamped.Contains(e.UserId.Value))
             .Select(e => e.UserId!.Value).Distinct().ToListAsync(ct)).ToHashSet();
         var inferredMobile = unstamped.Count(id => phones.Contains(id));
         var inferredWeb = unstamped.Count(id => !phones.Contains(id) && browsers.Contains(id));
@@ -125,22 +126,22 @@ public sealed class GetAnalyticsOverviewQueryHandler
     /// </summary>
     private async Task<WebFunnelDto> BuildWebFunnel(AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
     {
-        var previews = _db.PreviewJobs.Where(p => p.CreatedAtUtc >= range.FromUtc && p.CreatedAtUtc < range.ToUtc);
-        var webUsers = _db.Users.Where(u => u.SignupSource == "web" && u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc);
+        var previews = _db.RealPreviews().Where(p => p.CreatedAtUtc >= range.FromUtc && p.CreatedAtUtc < range.ToUtc);
+        var webUsers = _db.RealUsers().Where(u => u.SignupSource == "web" && u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc);
 
         var webUserIds = await webUsers.Select(u => u.Id).ToListAsync(ct);
-        var claimedBy = await _db.PreviewJobs
+        var claimedBy = await _db.RealPreviews()
             .Where(p => p.ClaimedByUserId != null)
             .Select(p => p.ClaimedByUserId!.Value)
             .Distinct()
             .ToListAsync(ct);
-        var savers = await _db.Transcriptions
+        var savers = await _db.RealSheets()
             .Where(t => webUserIds.Contains(t.UserId))
             .Select(t => t.UserId)
             .Distinct()
             .CountAsync(ct);
-        var allWebIds = await _db.Users.Where(u => u.SignupSource == "web").Select(u => u.Id).ToListAsync(ct);
-        var proConversions = await _db.Subscriptions
+        var allWebIds = await _db.RealUsers().Where(u => u.SignupSource == "web").Select(u => u.Id).ToListAsync(ct);
+        var proConversions = await _db.RealSubscriptions()
             // Paid only: a gift from the console is not a conversion.
             .Where(s => s.CreatedAtUtc >= range.FromUtc && s.CreatedAtUtc < range.ToUtc && s.Provider != null && allWebIds.Contains(s.UserId))
             .Select(s => s.UserId)
@@ -151,15 +152,15 @@ public sealed class GetAnalyticsOverviewQueryHandler
 
         return new WebFunnelDto(
             Previews: await previews.CountAsync(ct),
-            PreviewsPrevious: await _db.PreviewJobs.CountAsync(p => p.CreatedAtUtc >= previous.FromUtc && p.CreatedAtUtc < previous.ToUtc, ct),
+            PreviewsPrevious: await _db.RealPreviews().CountAsync(p => p.CreatedAtUtc >= previous.FromUtc && p.CreatedAtUtc < previous.ToUtc, ct),
             PreviewDevices: await previews.Where(p => p.DeviceFingerprint != null).Select(p => p.DeviceFingerprint).Distinct().CountAsync(ct),
             PreviewsSucceeded: await previews.CountAsync(p => p.Succeeded, ct),
             WebSignups: webUserIds.Count,
-            WebSignupsPrevious: await _db.Users.CountAsync(u => u.SignupSource == "web" && u.CreatedAt >= previous.FromUtc && u.CreatedAt < previous.ToUtc, ct),
+            WebSignupsPrevious: await _db.RealUsers().CountAsync(u => u.SignupSource == "web" && u.CreatedAt >= previous.FromUtc && u.CreatedAt < previous.ToUtc, ct),
             SignupsFromPreview: webUserIds.Count(id => claimedBy.Contains(id)),
             WebSignupsWhoSaved: savers,
-            SharesCreated: await _db.Transcriptions.CountAsync(t => t.SharedAtUtc != null && t.SharedAtUtc >= range.FromUtc && t.SharedAtUtc < range.ToUtc, ct),
-            ShareViews: await _db.Transcriptions.SumAsync(t => (long?)t.ShareViews, ct) ?? 0L,
+            SharesCreated: await _db.RealSheets().CountAsync(t => t.SharedAtUtc != null && t.SharedAtUtc >= range.FromUtc && t.SharedAtUtc < range.ToUtc, ct),
+            ShareViews: await _db.RealSheets().SumAsync(t => (long?)t.ShareViews, ct) ?? 0L,
             WebProConversions: proConversions,
             PreviewsPerDay: previewsPerDay);
     }
@@ -187,7 +188,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
     /// </summary>
     private async Task<MembershipDto> BuildMembership(AnalyticsRange range, DateTime utcNow, CancellationToken ct)
     {
-        var rows = await _db.Subscriptions
+        var rows = await _db.RealSubscriptions()
             .Select(s => new { s.UserId, s.PlanId, s.Provider, s.Status, s.CurrentPeriodEndUtc, s.CreatedAtUtc })
             .ToListAsync(ct);
         var plans = await _db.Plans
@@ -229,7 +230,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
             .OrderByDescending(c => c.Count)
             .ToList();
 
-        var charges = await _db.LedgerEntries
+        var charges = await _db.RealLedger()
             .Where(e => e.Reason == LedgerEntryReason.SubscriptionCharge
                         && e.Direction == LedgerDirection.Credit
                         && e.CreatedAtUtc >= range.FromUtc && e.CreatedAtUtc < range.ToUtc)
@@ -242,7 +243,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
             .ToList();
 
         var monthStart = new DateTime(utcNow.Year, utcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-        var spent = await _db.TranscriptionJobs
+        var spent = await _db.RealJobs()
             .Where(j => j.SongCreditConsumedAtUtc != null && j.SongCreditConsumedAtUtc >= monthStart)
             .Select(j => j.UserId)
             .ToListAsync(ct);
@@ -257,8 +258,8 @@ public sealed class GetAnalyticsOverviewQueryHandler
 
     private async Task<WebTrafficDto> BuildWebTraffic(AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
     {
-        var inRange = _db.WebEvents.Where(e => e.OccurredAtUtc >= range.FromUtc && e.OccurredAtUtc < range.ToUtc);
-        var inPrevious = _db.WebEvents.Where(e => e.OccurredAtUtc >= previous.FromUtc && e.OccurredAtUtc < previous.ToUtc);
+        var inRange = _db.RealWebEvents().Where(e => e.OccurredAtUtc >= range.FromUtc && e.OccurredAtUtc < range.ToUtc);
+        var inPrevious = _db.RealWebEvents().Where(e => e.OccurredAtUtc >= previous.FromUtc && e.OccurredAtUtc < previous.ToUtc);
         var views = inRange.Where(e => e.Kind == WebEvent.Pageview);
         var clicks = inRange.Where(e => e.Kind == WebEvent.Click);
         var actions = inRange.Where(e => e.Kind == WebEvent.Action);
@@ -316,16 +317,16 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var utcNow = _clock.UtcNow;
 
         return new UserMetricsDto(
-            TotalUsers: await _db.Users.CountAsync(ct),
-            NewUsers: await _db.Users.CountAsync(u => u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc, ct),
-            NewUsersPrevious: await _db.Users.CountAsync(u => u.CreatedAt >= previous.FromUtc && u.CreatedAt < previous.ToUtc, ct),
+            TotalUsers: await _db.RealUsers().CountAsync(ct),
+            NewUsers: await _db.RealUsers().CountAsync(u => u.CreatedAt >= range.FromUtc && u.CreatedAt < range.ToUtc, ct),
+            NewUsersPrevious: await _db.RealUsers().CountAsync(u => u.CreatedAt >= previous.FromUtc && u.CreatedAt < previous.ToUtc, ct),
             ActiveUsers: await ActiveInAsync(range.FromUtc, range.ToUtc, ct),
             ActiveUsersPrevious: await ActiveInAsync(previous.FromUtc, previous.ToUtc, ct),
-            GoogleVerifiedUsers: await _db.Users.CountAsync(u => u.GoogleId != null, ct),
-            PasswordOnlyUsers: await _db.Users.CountAsync(u => u.GoogleId == null && u.PasswordHash != null, ct),
-            LockedOutUsers: await _db.Users.CountAsync(u => u.LockoutEndAt != null && u.LockoutEndAt > utcNow, ct),
-            DeactivatedUsers: await _db.Users.CountAsync(u => !u.IsActive, ct),
-            ActiveToday: await _db.Users.CountAsync(u => (u.LastSeenAtUtc ?? u.LastLoginAt) >= LocalMidnightUtc(utcNow), ct));
+            GoogleVerifiedUsers: await _db.RealUsers().CountAsync(u => u.GoogleId != null, ct),
+            PasswordOnlyUsers: await _db.RealUsers().CountAsync(u => u.GoogleId == null && u.PasswordHash != null, ct),
+            LockedOutUsers: await _db.RealUsers().CountAsync(u => u.LockoutEndAt != null && u.LockoutEndAt > utcNow, ct),
+            DeactivatedUsers: await _db.RealUsers().CountAsync(u => !u.IsActive, ct),
+            ActiveToday: await _db.RealUsers().CountAsync(u => (u.LastSeenAtUtc ?? u.LastLoginAt) >= LocalMidnightUtc(utcNow), ct));
     }
 
     /// <summary>The instant local (reporting-time) midnight began today.</summary>
@@ -340,11 +341,11 @@ public sealed class GetAnalyticsOverviewQueryHandler
     private async Task<int> ActiveInAsync(DateTime fromUtc, DateTime toUtc, CancellationToken ct)
     {
         var ids = new HashSet<Guid>();
-        ids.UnionWith(await _db.TranscriptionJobs.Where(j => j.CreatedAtUtc >= fromUtc && j.CreatedAtUtc < toUtc)
+        ids.UnionWith(await _db.RealJobs().Where(j => j.CreatedAtUtc >= fromUtc && j.CreatedAtUtc < toUtc)
             .Select(j => j.UserId).Distinct().ToListAsync(ct));
-        ids.UnionWith(await _db.WebEvents.Where(e => e.UserId != null && e.OccurredAtUtc >= fromUtc && e.OccurredAtUtc < toUtc)
+        ids.UnionWith(await _db.RealWebEvents().Where(e => e.UserId != null && e.OccurredAtUtc >= fromUtc && e.OccurredAtUtc < toUtc)
             .Select(e => e.UserId!.Value).Distinct().ToListAsync(ct));
-        ids.UnionWith(await _db.Users.Where(u =>
+        ids.UnionWith(await _db.RealUsers().Where(u =>
                 (u.CreatedAt >= fromUtc && u.CreatedAt < toUtc)
                 || ((u.LastSeenAtUtc ?? u.LastLoginAt) >= fromUtc && (u.LastSeenAtUtc ?? u.LastLoginAt) < toUtc))
             .Select(u => u.Id).ToListAsync(ct));
@@ -354,13 +355,13 @@ public sealed class GetAnalyticsOverviewQueryHandler
     private async Task<TranscriptionMetricsDto> BuildTranscriptionMetrics(
         AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
     {
-        var inRange = _db.Transcriptions.Where(t => t.CreatedAtUtc >= range.FromUtc && t.CreatedAtUtc < range.ToUtc);
+        var inRange = _db.RealSheets().Where(t => t.CreatedAtUtc >= range.FromUtc && t.CreatedAtUtc < range.ToUtc);
 
         // Outcomes come from the jobs themselves — account transcriptions and free previews — not from
         // saved sheets: a sheet only exists for a job that worked, so counting sheets could never show a
         // failure and stopped at however many people pressed Save.
-        var jobs = _db.TranscriptionJobs.Where(j => j.CreatedAtUtc >= range.FromUtc && j.CreatedAtUtc < range.ToUtc);
-        var previews = _db.PreviewJobs.Where(p => p.CreatedAtUtc >= range.FromUtc && p.CreatedAtUtc < range.ToUtc);
+        var jobs = _db.RealJobs().Where(j => j.CreatedAtUtc >= range.FromUtc && j.CreatedAtUtc < range.ToUtc);
+        var previews = _db.RealPreviews().Where(p => p.CreatedAtUtc >= range.FromUtc && p.CreatedAtUtc < range.ToUtc);
         var succeeded = await jobs.CountAsync(j => j.ResultJson != null, ct)
             + await previews.CountAsync(p => p.Succeeded, ct);
         var failed = await jobs.CountAsync(j => j.ResultJson == null && j.SettledAtUtc != null, ct)
@@ -380,12 +381,12 @@ public sealed class GetAnalyticsOverviewQueryHandler
         // Storage is an all-time figure, not windowed: it answers "how much are we holding right
         // now". Summed in the database as the MusicXml character length; audio is deleted per job,
         // so this is the complete stored footprint. Sum over no rows is null on Npgsql, hence ?? 0.
-        var storedBytes = await _db.Transcriptions
+        var storedBytes = await _db.RealSheets()
             .SumAsync(t => (long?)t.MusicXml.Length, ct) ?? 0L;
 
         return new TranscriptionMetricsDto(
             TotalSaved: await inRange.CountAsync(ct),
-            TotalSavedPrevious: await _db.Transcriptions.CountAsync(
+            TotalSavedPrevious: await _db.RealSheets().CountAsync(
                 t => t.CreatedAtUtc >= previous.FromUtc && t.CreatedAtUtc < previous.ToUtc, ct),
             SucceededCount: succeeded,
             FailedCount: failed,
@@ -420,9 +421,9 @@ public sealed class GetAnalyticsOverviewQueryHandler
     /// </summary>
     private async Task<IReadOnlyList<CategoryCountDto>> BuildSignupMethods(CancellationToken ct)
     {
-        var googleOnly = await _db.Users.CountAsync(u => u.GoogleId != null && u.PasswordHash == null, ct);
-        var passwordOnly = await _db.Users.CountAsync(u => u.GoogleId == null && u.PasswordHash != null, ct);
-        var both = await _db.Users.CountAsync(u => u.GoogleId != null && u.PasswordHash != null, ct);
+        var googleOnly = await _db.RealUsers().CountAsync(u => u.GoogleId != null && u.PasswordHash == null, ct);
+        var passwordOnly = await _db.RealUsers().CountAsync(u => u.GoogleId == null && u.PasswordHash != null, ct);
+        var both = await _db.RealUsers().CountAsync(u => u.GoogleId != null && u.PasswordHash != null, ct);
 
         return
         [
@@ -434,7 +435,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
 
     private async Task<IReadOnlyList<CategoryCountDto>> BuildDevicePlatforms(CancellationToken ct)
     {
-        var rows = await _db.DeviceTokens
+        var rows = await _db.RealDeviceTokens()
             .GroupBy(d => d.Platform)
             .Select(g => new { Platform = g.Key, Count = g.Count() })
             .ToListAsync(ct);
@@ -457,7 +458,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
     {
         // The window's sheets, like every other card on the page (it was all-time, so the date picker
         // never moved it). Every finished transcription is now kept, so these are the transcribed keys.
-        var rows = await _db.Transcriptions
+        var rows = await _db.RealSheets()
             .Where(t => t.CreatedAtUtc >= range.FromUtc && t.CreatedAtUtc < range.ToUtc)
             .GroupBy(t => new { t.Key.TonicPitchClass, t.Key.Mode })
             .Select(g => new { g.Key.TonicPitchClass, g.Key.Mode, Count = g.Count() })
@@ -484,14 +485,14 @@ public sealed class GetAnalyticsOverviewQueryHandler
     {
         var since = utcNow.AddDays(-7 * RetentionWeeks);
 
-        var rows = await _db.Users
+        var rows = await _db.RealUsers()
             .Where(u => u.CreatedAt >= since)
             .Select(u => new { u.Id, u.CreatedAt, Last = u.LastSeenAtUtc ?? u.LastLoginAt })
             .ToListAsync(ct);
         // The latest transcription per account counts as coming back too: someone who stays signed in
         // and transcribes the next day never signs in again, so a sign-in-only rule missed them.
         var ids = rows.Select(r => r.Id).ToList();
-        var lastJob = (await _db.TranscriptionJobs.Where(j => ids.Contains(j.UserId))
+        var lastJob = (await _db.RealJobs().Where(j => ids.Contains(j.UserId))
                 .Select(j => new { j.UserId, j.CreatedAtUtc }).ToListAsync(ct))
             .GroupBy(j => j.UserId).ToDictionary(g => g.Key, g => g.Max(j => j.CreatedAtUtc));
 
@@ -527,61 +528,90 @@ public sealed class GetAnalyticsOverviewQueryHandler
     }
 
     /// <summary>
-    /// The newest real events across the platform, interleaved into one feed for the dashboard.
+    /// The newest things customers did, as one feed: sign-ups, transcriptions that finished or failed,
+    /// payments, feedback and sheets shared. Each is a real event with its own timestamp.
     /// </summary>
     /// <remarks>
-    /// Three sources — new accounts, saved transcriptions, and latest sign-ins — are each capped at
-    /// the feed length in the database, then merged and re-capped in memory. Pulling only the top
-    /// N per source keeps the query bounded regardless of table size; the final sort across the
-    /// (at most 3N) rows is what produces the true chronological order. A login item uses the
-    /// account's stored <c>LastLoginAt</c>, so an account appears as a login at most once — the
-    /// schema keeps no earlier sign-ins to show.
+    /// It used to mix in "signed in", read from each account's single <c>LastLoginAt</c>: one row per
+    /// account at most, its time moving whenever they signed in again, and no trace of the sign-ins before,
+    /// so the feed reordered history and repeated the same people. Sign-ins are left out; what people did
+    /// is what the feed shows. Each source is capped in the database, then merged and re-capped. Times are
+    /// stamped UTC so the console never has to guess the zone.
     /// </remarks>
     private async Task<IReadOnlyList<ActivityItemDto>> BuildRecentActivity(CancellationToken ct)
     {
-        var signups = await _db.Users
+        static DateTime Utc(DateTime at) => DateTime.SpecifyKind(at, DateTimeKind.Utc);
+        static string KindName(TranscriptionJobKind kind)
+            => kind == TranscriptionJobKind.Link ? "a song link" : kind == TranscriptionJobKind.Song ? "a song upload" : "a recording";
+
+        var signups = await _db.RealUsers()
             .OrderByDescending(u => u.CreatedAt)
             .Take(RecentActivityCount)
-            .Select(u => new ActivityItemDto("signup", u.FullName, u.Email, u.CreatedAt, u.Id, u.Email, u.Country))
+            .Select(u => new { u.Id, u.FullName, u.Email, u.Country, u.CreatedAt, u.SignupSource, Google = u.GoogleId != null })
             .ToListAsync(ct);
 
-        // Finished transcriptions, from the jobs: a saved sheet is not the moment a transcription finished,
-        // and most were never saved.
-        var finished = await _db.TranscriptionJobs
-            .Where(j => j.ResultJson != null && j.SettledAtUtc != null)
+        var jobs = await _db.RealJobs()
+            .Where(j => j.SettledAtUtc != null)
             .OrderByDescending(j => j.SettledAtUtc)
             .Take(RecentActivityCount)
-            .Select(j => new { j.Kind, At = j.SettledAtUtc!.Value, User = _db.Users.FirstOrDefault(u => u.Id == j.UserId) })
+            .Select(j => new { j.UserId, j.Kind, At = j.SettledAtUtc!.Value, Done = j.ResultJson != null })
             .ToListAsync(ct);
 
-        var saveDtos = finished.Where(s => s.User != null).Select(s => new ActivityItemDto("transcription", s.User!.FullName,
-            $"{s.User.Email} • {(s.Kind == TranscriptionJobKind.Link ? "Song link" : s.Kind == TranscriptionJobKind.Song ? "Song upload" : "Recording")}",
-            s.At, s.User.Id, s.User.Email, s.User.Country)).ToList();
-
-        var logins = await _db.Users
-            .Where(u => u.LastLoginAt != null)
-            .OrderByDescending(u => u.LastLoginAt)
+        var payments = await _db.RealPayments()
+            .Where(p => p.Status == PaymentStatus.Completed)
+            .OrderByDescending(p => p.UpdatedAtUtc)
             .Take(RecentActivityCount)
-            .Select(u => new ActivityItemDto("login", u.FullName, u.Email, u.LastLoginAt!.Value, u.Id, u.Email, u.Country))
+            .Select(p => new { p.UserId, At = p.UpdatedAtUtc, p.AmountMinor, p.Currency })
             .ToListAsync(ct);
 
-        var payments = await _db.PaymentTransactions
-            .Where(p => p.Status == NoteFusion.Core.Enums.PaymentStatus.Completed)
-            .OrderByDescending(p => p.CreatedAtUtc)
+        var feedback = await _db.RealFeedback()
+            .Where(f => f.Kind == UserFeedback.RatingKind || f.Kind == UserFeedback.FeedbackKind || f.Kind == UserFeedback.TranscriptionKind)
+            .OrderByDescending(f => f.CreatedAtUtc)
             .Take(RecentActivityCount)
-            .Select(p => new { p.CreatedAtUtc, User = _db.Users.FirstOrDefault(u => u.Id == p.UserId) })
+            .Select(f => new { f.UserId, f.Kind, f.Rating, f.Category, At = f.CreatedAtUtc })
             .ToListAsync(ct);
 
-        var paymentDtos = payments.Where(p => p.User != null).Select(p => new ActivityItemDto("payment", p.User!.FullName, p.User.Email, p.CreatedAtUtc, p.User.Id, p.User.Email, p.User.Country)).ToList();
+        var shares = await _db.RealSheets()
+            .Where(t => t.SharedAtUtc != null)
+            .OrderByDescending(t => t.SharedAtUtc)
+            .Take(RecentActivityCount)
+            .Select(t => new { t.UserId, t.Title, At = t.SharedAtUtc!.Value })
+            .ToListAsync(ct);
 
-        return
-        [
-            .. signups
-                .Concat(saveDtos)
-                .Concat(logins)
-                .Concat(paymentDtos)
-                .OrderByDescending(a => a.OccurredAtUtc)
-                .Take(RecentActivityCount)
-        ];
+        var ids = jobs.Select(j => j.UserId).Concat(payments.Select(p => p.UserId)).Concat(feedback.Select(f => f.UserId))
+            .Concat(shares.Select(s => s.UserId)).Distinct().ToList();
+        var people = await _db.RealUsers().Where(u => ids.Contains(u.Id))
+            .Select(u => new { u.Id, u.FullName, u.Email, u.Country })
+            .ToDictionaryAsync(u => u.Id, ct);
+
+        ActivityItemDto? For(Guid userId, string kind, DateTime at, string detail)
+            => people.TryGetValue(userId, out var u)
+                ? new ActivityItemDto(kind, u.FullName, u.Email, Utc(at), u.Id, u.Email, u.Country, detail)
+                : null;
+
+        var items = new List<ActivityItemDto?>();
+        items.AddRange(signups.Select(u => new ActivityItemDto("signup", u.FullName, u.Email, Utc(u.CreatedAt), u.Id, u.Email, u.Country,
+            $"signed up{(u.SignupSource == "mobile" ? " in the app" : u.SignupSource == "web" ? " on the web" : "")}{(u.Google ? " with Google" : "")}")));
+        items.AddRange(jobs.Select(j => j.Done
+            ? For(j.UserId, "transcription", j.At, $"transcribed {KindName(j.Kind)}")
+            : For(j.UserId, "transcription_failed", j.At, $"{KindName(j.Kind)} failed to transcribe")));
+        items.AddRange(payments.Select(p => For(p.UserId, "payment", p.At, $"paid {FormatMoney(p.AmountMinor, p.Currency)} for Pro")));
+        items.AddRange(feedback.Select(f => For(f.UserId, "feedback", f.At, f.Kind switch
+        {
+            UserFeedback.RatingKind => $"rated the app {f.Rating}★",
+            UserFeedback.TranscriptionKind => f.Rating == 5 ? "said a transcription was spot on"
+                : $"said a transcription was {(f.Rating == 3 ? "close" : "off")}{(f.Category is { } c ? $" ({c})" : "")}",
+            _ => "sent feedback"
+        })));
+        items.AddRange(shares.Select(s => For(s.UserId, "share", s.At, $"shared “{s.Title}” with a link")));
+
+        return [.. items.OfType<ActivityItemDto>().OrderByDescending(a => a.OccurredAtUtc).Take(RecentActivityCount)];
+    }
+
+    private static string FormatMoney(long amountMinor, string currency)
+    {
+        var symbol = currency.ToUpperInvariant() switch { "NGN" => "₦", "USD" => "$", "GBP" => "£", "EUR" => "€", _ => currency + " " };
+        var major = amountMinor / 100m;
+        return symbol + major.ToString(major % 1 == 0 ? "#,0" : "#,0.00", System.Globalization.CultureInfo.InvariantCulture);
     }
 }

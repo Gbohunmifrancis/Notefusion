@@ -152,7 +152,7 @@ export interface RetentionCohort {
  * ones are stored.
  */
 export interface ActivityItem {
-  /** "signup" | "transcription" | "login" | "payment" — the client maps this to an icon. */
+  /** "signup" | "transcription" | "transcription_failed" | "payment" | "feedback" | "share". */
   kind: string;
   title: string;
   subtitle: string | null;
@@ -161,6 +161,8 @@ export interface ActivityItem {
   userId?: string | null;
   email?: string | null;
   country?: string | null;
+  /** What happened, as a phrase after the name: "transcribed a song link". */
+  detail?: string | null;
 }
 
 /**
@@ -298,6 +300,8 @@ export interface AdminUserRow {
   lastSeenAtUtc?: string | null;
   /** Seen within the last five minutes, decided by the API. */
   isOnline?: boolean;
+  /** An admin or a team/test account; listed only when the team is asked for. */
+  isInternal?: boolean;
   country: string | null;
   /** Every transcription that produced a result, saved or not (finished jobs, claimed previews, older saved sheets). */
   transcriptionCount: number;
@@ -430,6 +434,9 @@ export interface AdminLedgerEntry {
  * newest first — a support view, not an export.
  */
 export interface AdminUserDetail {
+  /** A team or test account, left out of analytics (admins always are). */
+  isInternal?: boolean;
+  lastSeenAtUtc?: string | null;
   id: string;
   fullName: string;
   email: string;
@@ -1001,4 +1008,41 @@ export interface FeedbackSummary {
   transcriptionDistribution?: CategoryCount[] | null;
   /** What was off, for "close" and "off" verdicts that said. */
   transcriptionIssues?: CategoryCount[] | null;
+}
+
+/* ── Insights (GET /api/admin/analytics/insights) ───────────────────────── */
+export interface InsightsKpis {
+  accounts: number;
+  newAccounts: number;
+  activeAccounts: number;
+  transcriptions: number;
+  paidConversions: number;
+  medianSessionMinutes: number | null;
+  medianMinutesToFirstTranscription: number | null;
+  successRate: number | null;
+}
+export interface DailyActive { date: string; new: number; returning: number }
+export interface DailySignups { date: string; web: number; app: number }
+export interface DailyTranscriptions { date: string; recording: number; songLink: number; songUpload: number; preview: number; failed: number }
+export interface CountryRow { country: string; accounts: number; active: number; transcriptions: number; pro: number }
+export interface FunnelStep { step: string; count: number }
+export interface HeatCell { weekday: number; hour: number; count: number }
+export interface RetentionRow { cohortStart: string; size: number; weeks: (number | null)[] }
+export interface JobDuration { kind: string; count: number; medianSeconds: number | null; p90Seconds: number | null }
+export interface Insights {
+  fromUtc: string;
+  toUtc: string;
+  reportingOffsetMinutes: number;
+  filters: { countries: CategoryCount[]; country: string | null; platform: string | null; plan: string | null };
+  kpis: InsightsKpis;
+  dailyActive: DailyActive[];
+  dailySignups: DailySignups[];
+  dailyTranscriptions: DailyTranscriptions[];
+  countries: CountryRow[];
+  funnel: FunnelStep[];
+  sessionLengths: CategoryCount[];
+  timeToFirstTranscription: CategoryCount[];
+  heatmap: HeatCell[];
+  retention: RetentionRow[];
+  jobDurations: JobDuration[];
 }
