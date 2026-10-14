@@ -66,8 +66,9 @@ class _Posts:
     def __exit__(self, *exc):
         return False
 
-    def post(self, url, json=None):
+    def post(self, url, json=None, headers=None):
         self.posted.append((url, json))
+        self.headers = headers
         answer = self.answers.pop(0) if self.answers else 200
         if isinstance(answer, Exception):
             raise answer

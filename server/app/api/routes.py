@@ -11,13 +11,14 @@ from pathlib import Path
 
 import librosa
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, status
+from starlette.concurrency import run_in_threadpool
 
 from app.api.schemas import (
     GradeResponse, GradeTargetDto, HarmoniseRequest, HarmoniseResponse, JobResponse, LinkInfoRequest, LinkInfoResponse,
     ResultDto, SubmitResponse,
 )
-from app.config import settings
-from app.jobs.queue import JobQueue
+from app.config import TEMP_PREFIX, settings
+from app.jobs.queue import JobQueue, QueueFull
 
 router = APIRouter(prefix="/v1")
 logger = logging.getLogger(__name__)
@@ -58,6 +59,22 @@ def _refused_link(error: Exception) -> HTTPException:
     if getattr(error, "limit_seconds", None) is not None:
         detail["limit_seconds"] = error.limit_seconds
     return HTTPException(422, detail)
+
+
+#: Seconds a caller turned away by a full queue is told to wait (``Retry-After``).
+QUEUE_FULL_RETRY_SECONDS = 30
+QUEUE_FULL_MESSAGE = "The transcription service is busy right now. Please try again in a minute."
+
+
+def _queue_full() -> HTTPException:
+    return HTTPException(503, QUEUE_FULL_MESSAGE, headers={"Retry-After": str(QUEUE_FULL_RETRY_SECONDS)})
+
+
+def _refuse_when_full(queue: JobQueue) -> None:
+    """Turn a submit away before its upload is read when the line is already full; the
+    queue checks again when the job is added, which is the check that counts."""
+    if queue.is_full():
+        raise _queue_full()
 
 
 def _get_queue(request: Request) -> JobQueue:
@@ -147,9 +164,11 @@ async def submit_transcription(
     if suffix not in ACCEPTED_SUFFIXES:
         raise HTTPException(415, f"Unsupported audio format '{suffix}'. "
                                  f"Accepted: {', '.join(sorted(ACCEPTED_SUFFIXES))}")
+    queue = _get_queue(request)
+    _refuse_when_full(queue)
 
     # Stream to a temp file with a hard size cap
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=suffix, delete=False) as tmp:
         tmp_path = Path(tmp.name)
         written = 0
         while chunk := await audio.read(1024 * 1024):
@@ -164,36 +183,59 @@ async def submit_transcription(
         tmp_path.unlink(missing_ok=True)
         raise HTTPException(422, "Empty audio upload.")
 
-    try:
-        duration = _clip_duration_seconds(tmp_path)
-    except Exception as ex:
-        tmp_path.unlink(missing_ok=True)
-        raise HTTPException(422, f"Could not read audio duration: {ex}")
-
-    # A capped submission (the website's try-it-free preview) keeps only the head of the
-    # clip, and so does a clip longer than the worker transcribes — a whole song uploaded
-    # as a file is cut to its first three minutes the way a linked one is, not refused.
-    # The result says how long the whole clip was and that it was cut; the byte limit
-    # above still bounds what is accepted at all.
-    song_seconds: float | None = None
+    # Decoding is CPU and a subprocess: off the event loop, so other requests (the API's
+    # polls, the health check) are answered meanwhile.
     cap = settings.max_clip_seconds if max_seconds is None else max_seconds
-    if duration > cap + 0.5:
-        try:
-            tmp_path = _trim_head(tmp_path, cap)
-        except Exception as ex:  # noqa: BLE001 - a clip we cannot decode is a client input error
-            tmp_path.unlink(missing_ok=True)
-            logger.warning("Trimming a %.0fs upload failed: %s", duration, ex)
-            raise HTTPException(422, "This audio file could not be read. Try saving it as an MP3 or WAV and upload it again.")
-        song_seconds = duration
+    tmp_path, song_seconds = await run_in_threadpool(_working_audio, tmp_path, cap)
 
-    queue = _get_queue(request)
-    job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
-                          time_signature=time_signature,
-                          correlation_id=_correlation_id(request),
-                          callback_url=callback_url, priority=priority,
-                          song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
-                          harmony=harmony, keyboard_transpose=keyboard_transpose)
+    try:
+        job_id = queue.submit(tmp_path, mode=mode, key=key, tempo=tempo,
+                              time_signature=time_signature,
+                              correlation_id=_correlation_id(request),
+                              callback_url=callback_url, priority=priority,
+                              song_seconds=song_seconds, separate=separate, audio_preview=audio_preview,
+                              harmony=harmony, keyboard_transpose=keyboard_transpose)
+    except QueueFull:
+        tmp_path.unlink(missing_ok=True)
+        raise _queue_full()
     return SubmitResponse(job_id=job_id)
+
+
+def _working_audio(path: Path, cap: float) -> tuple[Path, float | None]:
+    """The upload as the WAV the job reads — never more than ``cap`` seconds of it — and the
+    whole clip's length when it was cut (None when it was not); the upload is deleted.
+
+    A capped submission (the website's try-it-free preview) keeps only the head of the
+    clip, and so does a clip longer than the worker transcribes — a whole song uploaded as a
+    file is cut to its first three minutes the way a linked one is, not refused. The cut is
+    made whatever the measured length says: a browser's streamed WebM/Opus carries no length
+    in its header and measured 0 s, so it used to pass uncut, however long it was. When the
+    length is unknown and the cut came out at the cap, the clip is reported as cut at that
+    length (it was at least that long). The byte limit still bounds what is accepted at all.
+    """
+    duration = 0.0
+    try:
+        duration = _clip_duration_seconds(path)
+    except Exception:  # noqa: BLE001 - the length is only for the report; the cut below is what counts
+        pass
+    try:
+        out = _trim_head(path, cap)
+    except Exception as ex:  # noqa: BLE001 - a clip we cannot decode is a client input error
+        path.unlink(missing_ok=True)
+        logger.warning("Decoding a %.0fs upload failed: %s", duration, ex)
+        raise HTTPException(422, "This audio file could not be read. Try saving it as an MP3 or WAV and upload it again.")
+    if duration > cap + 0.5:
+        return out, duration
+    try:
+        import soundfile as sf
+        kept = float(sf.info(str(out)).duration)
+    except Exception:  # noqa: BLE001 - our own WAV; unreadable only if the disk failed
+        kept = 0.0
+    # The measurement said less than was actually there (0 s for a streamed WebM, or the
+    # size estimate), so it is no evidence the clip ended within the cap.
+    if kept >= cap - 0.05 and duration < kept - 0.5:
+        return out, kept
+    return out, None
 
 
 def _trim_head(path: Path, seconds: float) -> Path:
@@ -209,7 +251,7 @@ def _trim_head(path: Path, seconds: float) -> Path:
 
     import soundfile as sf
 
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as out:
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=".wav", delete=False) as out:
         out_path = Path(out.name)
     try:
         ffmpeg = shutil.which("ffmpeg")
@@ -331,13 +373,16 @@ async def submit_link_transcription(
         raise HTTPException(422, "end_seconds must be later than start_seconds.")
 
     queue = _get_queue(request)
-    job_id = queue.submit_link(url, mode=mode, key=key, tempo=tempo,
-                               time_signature=time_signature,
-                               correlation_id=_correlation_id(request),
-                               callback_url=callback_url, priority=priority,
-                               max_seconds=cap, audio_preview=audio_preview, harmony=harmony,
-                               keyboard_transpose=keyboard_transpose,
-                               start_seconds=start_seconds, end_seconds=end_seconds)
+    try:
+        job_id = queue.submit_link(url, mode=mode, key=key, tempo=tempo,
+                                   time_signature=time_signature,
+                                   correlation_id=_correlation_id(request),
+                                   callback_url=callback_url, priority=priority,
+                                   max_seconds=cap, audio_preview=audio_preview, harmony=harmony,
+                                   keyboard_transpose=keyboard_transpose,
+                                   start_seconds=start_seconds, end_seconds=end_seconds)
+    except QueueFull:
+        raise _queue_full()
     return SubmitResponse(job_id=job_id)
 
 
@@ -365,6 +410,29 @@ def resolve_link_info(body: LinkInfoRequest) -> LinkInfoResponse:
 # are bounded here before any work starts (the C# validator refuses the same shapes earlier).
 HARMONISE_MAX_BEATS = 2400.0
 HARMONISE_MAX_NOTES = 5000
+#: The shortest note either endpoint takes: a sixty-fourth note, in quarter-note beats.
+MIN_NOTE_BEATS = 1.0 / 16.0
+
+#: The plain sentences a malformed note list is answered with. Fixed text, never an
+#: exception's: a parser's message echoes the input and names the internals.
+_NOTES_INVALID = ("Every note needs a pitch from 0 to 127, a start at or after beat 0, a length of at "
+                  f"least 1/16 of a beat, and must end by beat {HARMONISE_MAX_BEATS:g}.")
+
+
+def _notes_are_valid(notes) -> bool:
+    """Finite numbers in range for every note (JSON lets NaN and Infinity through as floats)."""
+    for n in notes:
+        start, dur = float(n.start_beat), float(n.dur_beats)
+        if not (math.isfinite(start) and math.isfinite(dur)):
+            return False
+        if not 0 <= n.pitch_midi <= 127 or start < 0 or dur < MIN_NOTE_BEATS:
+            return False
+        if start + dur > HARMONISE_MAX_BEATS:
+            return False
+        conf = getattr(n, "conf", None)
+        if conf is not None and not math.isfinite(float(conf)):
+            return False
+    return True
 
 
 @router.post("/harmonise", response_model=HarmoniseResponse, response_model_exclude_none=True,
@@ -382,20 +450,23 @@ def harmonise(body: HarmoniseRequest) -> HarmoniseResponse:
         raise HTTPException(422, f"At most {HARMONISE_MAX_NOTES} notes can be harmonised at once.")
     if not 20 <= body.tempo_bpm <= 400:
         raise HTTPException(422, "tempoBpm must be between 20 and 400.")
-    for n in body.notes:
-        if n.start_beat < 0 or n.dur_beats <= 0 or n.start_beat + n.dur_beats > HARMONISE_MAX_BEATS:
-            raise HTTPException(422, f"Notes must start at or after beat 0, last longer than nothing and end by beat {HARMONISE_MAX_BEATS:g}.")
+    if not _notes_are_valid(body.notes):
+        raise HTTPException(422, _NOTES_INVALID)
     time_signature = _clean_time_signature(body.time_signature)
     try:
         parts, parts_musicxml = harmonise_sheet(
             body.key, body.tempo_bpm, time_signature, [n.model_dump() for n in body.notes])
     except ValueError as ex:
-        raise HTTPException(422, str(ex))
+        logger.info("Harmonise refused: %s", ex)
+        raise HTTPException(422, "The key could not be read. Send one such as 'C major' or 'A minor'.")
     return HarmoniseResponse(parts=parts, parts_musicxml=parts_musicxml)
 
 
 GRADE_SUFFIXES = ACCEPTED_SUFFIXES
 GRADE_MAX_SECONDS = 120.0
+GRADE_MAX_NOTES = 2000
+#: The longest count-in a take may start with.
+GRADE_MAX_LEAD_IN_SECONDS = 30.0
 
 
 @router.post("/grade", response_model=GradeResponse,
@@ -406,21 +477,29 @@ async def grade_take(
     target: str = Form(..., description="GradeTargetDto as JSON: the part in beats, tempo, count-in"),
 ):
     """Synchronous: a take is a minute or two and pyin on it takes seconds, so it is
-    answered in the request rather than queued like a transcription. The audio is
-    deleted before the response is sent."""
+    answered in the request rather than queued like a transcription — but in the threadpool
+    (``_grade_file``), so the event loop keeps answering everyone else meanwhile. The audio
+    is deleted before the response is sent."""
     try:
         spec = GradeTargetDto.model_validate_json(target)
     except Exception as ex:  # noqa: BLE001 - any parse failure is a client input error
-        raise HTTPException(422, f"Invalid target: {ex}")
+        logger.info("Grade target refused: %s", type(ex).__name__)
+        raise HTTPException(422, "The target part could not be read.")
     if not spec.notes:
         raise HTTPException(422, "The target has no notes.")
+    if len(spec.notes) > GRADE_MAX_NOTES:
+        raise HTTPException(422, f"A target part has at most {GRADE_MAX_NOTES} notes.")
     if not 20 <= spec.tempo_bpm <= 300:
         raise HTTPException(422, "tempoBpm must be between 20 and 300.")
+    if not (math.isfinite(spec.lead_in_sec) and 0 <= spec.lead_in_sec <= GRADE_MAX_LEAD_IN_SECONDS):
+        raise HTTPException(422, f"leadInSec must be between 0 and {GRADE_MAX_LEAD_IN_SECONDS:g}.")
+    if not _notes_are_valid(spec.notes):
+        raise HTTPException(422, _NOTES_INVALID)
 
     suffix = Path(audio.filename or "take.wav").suffix.lower()
     if suffix not in GRADE_SUFFIXES:
         raise HTTPException(415, f"Unsupported audio format '{suffix}'.")
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=suffix, delete=False) as tmp:
         tmp_path = Path(tmp.name)
         written = 0
         while chunk := await audio.read(1024 * 1024):
@@ -434,33 +513,43 @@ async def grade_take(
         tmp_path.unlink(missing_ok=True)
         raise HTTPException(422, "Empty audio upload.")
 
-    wav_path, converted = tmp_path, False
     try:
-        from app.pipeline import grade as grading
-        from app.pipeline.transcriber import _ensure_wav_path
-
-        try:
-            wav_path, converted = _ensure_wav_path(tmp_path)
-            duration = _clip_duration_seconds(wav_path)
-        except Exception as ex:
-            raise HTTPException(422, f"Could not read the take: {ex}")
-        if duration > GRADE_MAX_SECONDS:
-            raise HTTPException(413, f"A take is at most {GRADE_MAX_SECONDS:.0f}s long.")
-        y, sr = librosa.load(str(wav_path), sr=grading.vocal.SAMPLE_RATE, mono=True)
-        result = grading.grade(
-            y, sr,
-            [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats) for n in spec.notes],
-            spec.tempo_bpm, spec.lead_in_sec,
-        )
+        result = await run_in_threadpool(_grade_file, tmp_path, spec)
     finally:
         tmp_path.unlink(missing_ok=True)
-        if converted:
-            wav_path.unlink(missing_ok=True)
     return GradeResponse(
         score=result.score, hits=result.hits, near=result.near, wrong=result.wrong, missed=result.missed,
         tuning_cents=result.tuning_cents, offset_sec=result.offset_sec, octave_shift=result.octave_shift,
         summary=result.summary, notes=[asdict(n) for n in result.notes],
     )
+
+
+def _grade_file(path: Path, spec: GradeTargetDto):
+    """Decode a take (at most a second past ``GRADE_MAX_SECONDS`` of it, so a take too long
+    is told so without the rest ever being read) and grade it against ``spec``."""
+    from app.pipeline import grade as grading
+    from app.pipeline.transcriber import _ensure_wav_path
+
+    bound = GRADE_MAX_SECONDS + 1.0
+    wav_path, converted = path, False
+    try:
+        try:
+            wav_path, converted = _ensure_wav_path(path, max_seconds=bound)
+            duration = _clip_duration_seconds(wav_path)
+        except Exception as ex:  # noqa: BLE001 - an undecodable take is a client input error
+            logger.info("Grade take unreadable: %s", ex)
+            raise HTTPException(422, "The take could not be read. Record it again and resend it.")
+        if duration > GRADE_MAX_SECONDS:
+            raise HTTPException(413, f"A take is at most {GRADE_MAX_SECONDS:.0f}s long.")
+        y, sr = librosa.load(str(wav_path), sr=grading.vocal.SAMPLE_RATE, mono=True, duration=bound)
+        return grading.grade(
+            y, sr,
+            [grading.TargetNote(n.pitch_midi, n.start_beat, n.dur_beats) for n in spec.notes],
+            spec.tempo_bpm, spec.lead_in_sec,
+        )
+    finally:
+        if converted:
+            wav_path.unlink(missing_ok=True)
 
 
 @router.get("/jobs/{job_id}", response_model=JobResponse,
@@ -524,7 +613,9 @@ async def submit_score_transcription(
         raise HTTPException(415, f"Unsupported score format '{suffix}'. "
                                  f"Accepted: {', '.join(sorted(ACCEPTED_SCORE_SUFFIXES))}")
 
-    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+    queue = _get_queue(request)
+    _refuse_when_full(queue)
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=suffix, delete=False) as tmp:
         tmp_path = Path(tmp.name)
         written = 0
         while chunk := await score.read(1024 * 1024):
@@ -539,9 +630,12 @@ async def submit_score_transcription(
         tmp_path.unlink(missing_ok=True)
         raise HTTPException(422, "Empty score upload.")
 
-    queue = _get_queue(request)
-    job_id = queue.submit_score(tmp_path, key=key, tempo=tempo,
-                                time_signature=time_signature,
-                                correlation_id=_correlation_id(request),
-                                callback_url=callback_url, priority=_priority(priority))
+    try:
+        job_id = queue.submit_score(tmp_path, key=key, tempo=tempo,
+                                    time_signature=time_signature,
+                                    correlation_id=_correlation_id(request),
+                                    callback_url=callback_url, priority=_priority(priority))
+    except QueueFull:
+        tmp_path.unlink(missing_ok=True)
+        raise _queue_full()
     return SubmitResponse(job_id=job_id)
