@@ -92,9 +92,12 @@ public sealed class GetEngagementQueryHandler : IRequestHandler<GetEngagementQue
             .Where(e => e.UserId != null && e.OccurredAtUtc >= since && e.OccurredAtUtc < until)
             .Select(e => new { UserId = e.UserId!.Value, e.OccurredAtUtc, e.SessionId })
             .ToListAsync(ct);
+        // The last time each account was seen (any signed-in request), or, before presence was recorded,
+        // its last sign-in.
         var logins = await _db.Users.AsNoTracking()
-            .Where(u => u.LastLoginAt != null && u.LastLoginAt >= since && u.LastLoginAt < until)
-            .Select(u => new Signal(u.Id, u.LastLoginAt!.Value))
+            .Where(u => (u.LastSeenAtUtc ?? u.LastLoginAt) != null
+                        && (u.LastSeenAtUtc ?? u.LastLoginAt) >= since && (u.LastSeenAtUtc ?? u.LastLoginAt) < until)
+            .Select(u => new Signal(u.Id, (u.LastSeenAtUtc ?? u.LastLoginAt)!.Value))
             .ToListAsync(ct);
 
         var signals = jobs.Select(j => new Signal(j.UserId, j.CreatedAtUtc))

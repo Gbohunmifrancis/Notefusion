@@ -75,6 +75,34 @@ export interface UserMetrics {
   passwordOnlyUsers: number;
   lockedOutUsers: number;
   deactivatedUsers: number;
+  /** Accounts seen since local midnight (reporting time). */
+  activeToday?: number;
+}
+
+/** Who is online now and which transcriptions just started (GET /api/admin/analytics/live). */
+export interface LiveUser {
+  id: string;
+  fullName: string;
+  email: string;
+  country: string | null;
+  seenAtUtc: string;
+}
+export interface LiveJob {
+  jobId: string;
+  userId: string | null;
+  fullName: string | null;
+  email: string | null;
+  /** "recording" | "song link" | "song upload" */
+  kind: string;
+  /** A free preview on the website: no account, so no name. */
+  preview: boolean;
+  finished: boolean;
+  startedAtUtc: string;
+}
+export interface LiveActivity {
+  serverTimeUtc: string;
+  online: LiveUser[];
+  transcribing: LiveJob[];
 }
 
 export interface TranscriptionMetrics {

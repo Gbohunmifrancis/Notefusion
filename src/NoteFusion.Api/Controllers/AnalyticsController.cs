@@ -54,6 +54,11 @@ public sealed class AnalyticsController : ApiControllerBase
         [FromQuery] DateTime? from, [FromQuery] DateTime? to, [FromQuery] int top = 20, CancellationToken ct = default)
         => HandleResult(await _sender.Send(new GetEngagementQuery(from, to, top), ct));
 
+    /// <summary>Who is online now and which transcriptions just started, for the console's live notices.</summary>
+    [HttpGet("live")]
+    public async Task<IActionResult> Live(CancellationToken ct = default)
+        => HandleResult(await _sender.Send(new GetLiveActivityQuery(), ct));
+
     [HttpGet("users")]
     public async Task<IActionResult> Users(
         [FromQuery] int page = 1,

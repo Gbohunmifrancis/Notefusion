@@ -72,8 +72,14 @@ export function changeAgainst(
   previous: number,
 ): { label: string; up: boolean } | null {
   if (previous === 0) {
-    // A jump from nothing is not "+∞%", and calling it "+100%" would be a lie.
-    return current === 0 ? null : { label: `+${formatCount(current)} vs none`, up: true };
+    // A jump from nothing is not "+∞%", "+100%" would be a lie, and "+122 vs none" read as a
+    // comparison when there was nothing to compare with. No previous figure: no comparison.
+    return null;
+  }
+  // Off a handful, a percentage is noise ("+5550%" from 2 to 113): say the difference itself.
+  if (previous < 10) {
+    const diff = current - previous;
+    return { label: `${diff >= 0 ? "+" : "−"}${formatCount(Math.abs(diff))} vs previous`, up: diff >= 0 };
   }
   const delta = (current - previous) / previous;
   const sign = delta >= 0 ? "+" : "";

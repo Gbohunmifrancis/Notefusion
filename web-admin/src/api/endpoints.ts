@@ -1,6 +1,7 @@
 import { query, request } from "@/api/client";
 import type {
   AdminLedgerRow,
+  LiveActivity,
   AdminPaymentDetail,
   AdminPaymentRow,
   AdminReconcileResult,
@@ -68,6 +69,9 @@ export const getMyProfile = (signal?: AbortSignal) =>
   request<MyProfile>("/api/me", signal ? { signal } : {});
 
 /** `from` and `to` are inclusive reporting-local dates, "YYYY-MM-DD". */
+export const getLiveActivity = (signal?: AbortSignal) =>
+  request<LiveActivity>("/api/admin/analytics/live", signal ? { signal } : {});
+
 export const getOverview = (from?: string, to?: string, signal?: AbortSignal) =>
   request<AnalyticsOverview>(
     `/api/admin/analytics/overview${query({ from, to })}`,

@@ -27,6 +27,7 @@ import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
 import { BrandMark } from "@/components/BrandMark";
+import { LiveNotices } from "@/components/LiveNotices";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
 import {
@@ -146,6 +147,8 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             </form>
 
             <div className="ml-auto flex items-center gap-3">
+              <LiveNotices />
+
               <ThemeToggle />
 
               <NotificationBell />

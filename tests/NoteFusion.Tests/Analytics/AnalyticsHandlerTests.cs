@@ -55,7 +55,7 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
-    public async Task Saved_transcriptions_report_a_full_success_rate_and_mean_confidence()
+    public async Task Outcomes_count_jobs_not_saved_sheets_and_confidence_comes_from_the_sheets()
     {
         // Anchored on real time, not on Now: Transcription stamps its own CreatedAtUtc from
         // DateTime.UtcNow rather than taking the injected clock, so a fixed window in the past
@@ -64,14 +64,25 @@ public class AnalyticsHandlerTests
         var userId = await SeedUser(h, "user@example.com", h.Clock.UtcNow.AddDays(-2));
         await SaveTranscription(h, userId);
         await SaveTranscription(h, userId);
+        // Three jobs: two finished (the saved ones, and one more nobody saved), one that failed, one running.
+        var at = h.Clock.UtcNow.AddHours(-1);
+        foreach (var (id, outcome) in new[] { ("j1", "done"), ("j2", "done"), ("j3", "done"), ("j4", "failed"), ("j5", "running") })
+        {
+            var job = TranscriptionJob.Record(id, userId, at);
+            if (outcome == "done") job.Settle("{}", at);
+            if (outcome == "failed") job.Settle(null, at);
+            h.Db.TranscriptionJobs.Add(job);
+        }
+        await h.Db.SaveChangesAsync();
 
         var result = await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default);
 
         var t = result.Value.Transcriptions;
         Assert.Equal(2, t.TotalSaved);
-        Assert.Equal(2, t.SucceededCount);
-        Assert.Equal(0, t.FailedCount);
-        Assert.Equal(1.0, t.SuccessRate);
+        Assert.Equal(3, t.SucceededCount);
+        Assert.Equal(1, t.FailedCount);
+        Assert.Equal(1, t.InFlightCount);
+        Assert.Equal(0.75, t.SuccessRate);
         Assert.Equal(0.95, t.AverageConfidence);
 
         // The key breakdown groups on the owned value object's flattened columns.
@@ -198,18 +209,22 @@ public class AnalyticsHandlerTests
     }
 
     [Fact]
-    public async Task Recent_activity_interleaves_signups_and_saves_newest_first()
+    public async Task Recent_activity_interleaves_signups_and_finished_transcriptions_newest_first()
     {
         using var h = new TestHarness(DateTime.UtcNow.AddMinutes(1));
         var userId = await SeedUser(h, "author@example.com", h.Clock.UtcNow.AddDays(-3));
-        await SaveTranscription(h, userId); // stamps CreatedAtUtc = now, the newest event
+        // A finished job is the transcription event (saved or not), the newest thing that happened.
+        var job = TranscriptionJob.Record("job-recent", userId, h.Clock.UtcNow.AddMinutes(-5));
+        job.Settle("{}", h.Clock.UtcNow.AddMinutes(-4));
+        h.Db.TranscriptionJobs.Add(job);
+        await h.Db.SaveChangesAsync();
 
         var result = await Handler(h).Handle(new GetAnalyticsOverviewQuery(), default);
 
         var feed = result.Value.RecentActivity;
         Assert.NotEmpty(feed);
 
-        // The save happened after the signup, so it leads the feed.
+        // The transcription finished after the signup, so it leads the feed.
         Assert.Equal("transcription", feed[0].Kind);
         Assert.Contains(feed, a => a.Kind == "signup" && a.Subtitle == "author@example.com");
 
