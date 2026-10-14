@@ -13,21 +13,22 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#07090E">
+<meta name="theme-color" content="#F4F7FC">
 <link rel="icon" href="/assets/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
-<link rel="stylesheet" href="/assets/app.css?v=16">
-<link rel="stylesheet" href="/assets/night.css?v=3">
+<link rel="stylesheet" href="/assets/app.css?v=20">
+<link rel="stylesheet" href="/assets/night.css?v=4">
 <script>
   (function () {
-    var t = null;
-    try { t = localStorage.getItem("nf.web.theme"); } catch (e) { /* private mode */ }
-    if (t !== "light" && t !== "dark") t = "dark"; // night by default, as in the app
-    document.documentElement.setAttribute("data-theme", t);
+    var p = null;
+    try { p = localStorage.getItem("nf.web.theme"); } catch (e) { /* private mode */ }
+    // Light by default, as in the web app; Dark, or the device's own setting (System), when chosen there.
+    var dark = p === "dark" || (p === "system" && !!window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
   })();
 </script>
 <style>

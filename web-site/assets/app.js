@@ -236,34 +236,64 @@
       } catch (e) { /* a sound is a nicety */ }
     }
   };
+  /** The account menu's switch and the settings page's switch say the same thing. */
   function renderSoundsMenu() {
-    var on = sfx.enabled(), b = $("menu-sounds");
-    b.setAttribute("aria-checked", String(on)); b.querySelector("span").textContent = on ? "Sounds on" : "Sounds off";
+    var on = String(sfx.enabled());
+    $("menu-sounds").setAttribute("aria-checked", on);
+    $("acct-sounds").setAttribute("aria-checked", on);
   }
-  $("menu-sounds").addEventListener("click", function () { sfx.set(!sfx.enabled()); if (sfx.enabled()) sfx.play("saved"); });
+  function toggleSounds() { sfx.set(!sfx.enabled()); if (sfx.enabled()) sfx.play("saved"); }
+  $("menu-sounds").addEventListener("click", toggleSounds);
+  $("acct-sounds").addEventListener("click", toggleSounds);
 
-  // ── Theme: Night (the default, as on the phone) or Day, remembered on this browser ──
+  // ── Theme: Light (the default), Dark, or the same as the device, remembered on this browser ──
   // (the page head applies it before paint)
-  function isDark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
-  function renderThemeMenu() {
-    var b = $("menu-theme"), dark = isDark();
-    b.setAttribute("aria-checked", String(dark)); b.querySelector("span").textContent = dark ? "Night mode on" : "Night mode";
-    var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dark ? "#07090E" : "#F4F7FC");
+  var THEME_KEY = "nf.web.theme";
+  var darkQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  function themePref() {
+    var p = null;
+    try { p = localStorage.getItem(THEME_KEY); } catch (e) { /* private mode */ }
+    return p === "dark" || p === "system" ? p : "light";
   }
-  $("menu-theme").addEventListener("click", function () {
-    var next = isDark() ? "light" : "dark";
-    // Every colour transition would fire at once and smear the switch: off for the swap, back after a frame.
-    var root = document.documentElement, stop = document.createElement("style");
-    stop.textContent = "*,*::before,*::after{transition:none!important}";
-    document.head.appendChild(stop);
-    root.setAttribute("data-theme", next);
-    void root.offsetHeight;
-    requestAnimationFrame(function () { requestAnimationFrame(function () { stop.remove(); }); });
-    try { localStorage.setItem("nf.web.theme", next); } catch (e) { /* private mode */ }
-    renderThemeMenu();
-    track(next === "dark" ? "Dark mode on" : "Dark mode off");
+  function isDark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
+  function applyTheme() {
+    var pref = themePref(), next = pref === "system" ? (darkQuery && darkQuery.matches ? "dark" : "light") : pref;
+    var root = document.documentElement;
+    if (root.getAttribute("data-theme") !== next) {
+      // Every colour transition would fire at once and smear the switch: off for the swap, back after a frame.
+      var stop = document.createElement("style");
+      stop.textContent = "*,*::before,*::after{transition:none!important}";
+      document.head.appendChild(stop);
+      root.setAttribute("data-theme", next);
+      void root.offsetHeight;
+      requestAnimationFrame(function () { requestAnimationFrame(function () { stop.remove(); }); });
+    }
+    var dark = next === "dark";
+    var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dark ? "#07090E" : "#F4F7FC");
+    document.querySelectorAll("[data-theme-pref]").forEach(function (b) {
+      var on = b.dataset.themePref === pref;
+      b.classList.toggle("on", on); b.setAttribute("aria-checked", String(on));
+    });
+    var t = $("auth-theme");
+    t.innerHTML = '<svg class="ic"><use href="#i-' + (dark ? "sun" : "moon") + '"/></svg>';
+    t.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+  }
+  function setThemePref(pref) {
+    var wasDark = isDark();
+    try { localStorage.setItem(THEME_KEY, pref); } catch (e) { /* private mode */ }
+    applyTheme();
+    if (isDark() !== wasDark) track(isDark() ? "Dark mode on" : "Dark mode off");
+  }
+  document.querySelectorAll("[data-theme-pref]").forEach(function (b) {
+    b.addEventListener("click", function (e) { e.stopPropagation(); setThemePref(b.dataset.themePref); });
   });
-  renderThemeMenu();
+  $("auth-theme").addEventListener("click", function () { setThemePref(isDark() ? "light" : "dark"); });
+  // Following the device: a change there (sunset, a settings switch) follows here too.
+  if (darkQuery) {
+    var onDeviceTheme = function () { if (themePref() === "system") applyTheme(); };
+    darkQuery.addEventListener ? darkQuery.addEventListener("change", onDeviceTheme) : darkQuery.addListener(onDeviceTheme);
+  }
+  applyTheme();
   renderSoundsMenu();
 
   // ── State ────────────────────────────────────────────────────────────────
@@ -282,18 +312,31 @@
   // ── Auth view ────────────────────────────────────────────────────────────
   /** Signing in is a screen of its own: the card and nothing else around it. */
   function showAuth() {
-    hide($("boot-skel")); hide($("view-app")); hide($("who")); show($("view-auth")); hide($("auth-back"));
+    hide($("boot-skel")); hide($("view-app")); showAccountUi(false); show($("view-auth")); hide($("auth-back"));
     document.body.classList.add("guest", "auth-only"); hide($("topbar-signin")); closeDrawer(); hide($("onb"));
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
     window.scrollTo(0, 0);
   }
   function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
-  var AUTH_COPY = { login: ["Welcome back!", "Sign in to continue"], register: ["Create your account", "Start your musical journey"], verify: ["Check your email", "One code and you're in"] };
+  var AUTH_COPY = {
+    login: ["Welcome back", "Sign in to open your sheets on any device."],
+    register: ["Create your account", "Free to start — 3 transcriptions on us."],
+    verify: ["Check your email", "One code and you're in."]
+  };
   function showAuthForm(name) {
     ["login", "register", "verify"].forEach(function (f) { name === f ? show($("form-" + f)) : hide($("form-" + f)); });
     $("auth-title").textContent = AUTH_COPY[name][0]; $("auth-sub").textContent = AUTH_COPY[name][1];
+    // Sign in and Create account are one choice; the code step is neither, so the tabs step aside.
+    name === "verify" ? hide($("auth-tabs")) : show($("auth-tabs"));
+    document.querySelectorAll("#auth-tabs [data-tab]").forEach(function (t) { t.setAttribute("aria-selected", String(t.dataset.tab === name)); });
     hide($("auth-alert"));
   }
+  /** "Just trying it out?": the 30-second preview, opened under the form. */
+  function openTry() {
+    show($("try-free")); hide($("try-open")); $("try-open").setAttribute("aria-expanded", "true");
+    $("try-free").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  $("try-open").addEventListener("click", openTry);
   function selectAuthTab(name) { showAuthForm(name); }
 
   // ── Onboarding: three cards on the first visit, and from "How it works" ──
@@ -326,7 +369,7 @@
   function closeOnb(toTry) {
     onbMark(); hide($("onb"));
     var tryUrl = $("try-url");
-    if (toTry && !me && tryUrl && !$("view-auth").classList.contains("hidden")) { tryUrl.focus(); tryUrl.scrollIntoView({ behavior: "smooth", block: "center" }); }
+    if (toTry && !me && tryUrl && !$("view-auth").classList.contains("hidden")) openTry();
   }
   /** First visit, signed out, no preview in the URL: show the cards once. */
   function maybeOnboard() { if (!onbSeen() && !previewId) openOnb(); }
@@ -335,7 +378,7 @@
   $("onb-skip").addEventListener("click", function () { closeOnb(false); });
   $("onb").addEventListener("click", function (e) { if (e.target === $("onb")) closeOnb(false); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !$("onb").classList.contains("hidden")) closeOnb(false); });
-  $("how-link").addEventListener("click", function (e) { e.preventDefault(); openOnb(); });
+  document.querySelectorAll(".how-link").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); openOnb(); }); });
 
   document.querySelectorAll("[data-tab]").forEach(function (b) { b.addEventListener("click", function () { showAuthForm(b.dataset.tab); }); });
   document.querySelectorAll("[data-eye]").forEach(function (b) {
@@ -346,6 +389,8 @@
       b.setAttribute("aria-label", showing ? "Show password" : "Hide password");
     });
   });
+  // The password rule, ticked off as it is met rather than refused after the fact.
+  $("reg-password").addEventListener("input", function () { $("reg-password-hint").classList.toggle("ok", $("reg-password").value.length >= 8); });
   $("forgot").addEventListener("click", function () {
     var email = $("login-email").value.trim();
     if (!email) { alertIn($("auth-alert"), "info", "Type your email above, then press Forgot password."); $("login-email").focus(); return; }
@@ -370,9 +415,11 @@
     if (!window.google || !google.accounts || !google.accounts.id) return;
     try {
       google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: onGoogleCredential, ux_mode: "popup", itp_support: true });
-      [["google-btn-login", "signin_with"], ["google-btn-register", "signup_with"]].forEach(function (pair) {
-        var slot = $(pair[0]); slot.innerHTML = "";
-        google.accounts.id.renderButton(slot, { theme: "outline", size: "large", shape: "pill", text: pair[1], width: 360, logo_alignment: "center" });
+      ["google-btn-login", "google-btn-register"].forEach(function (id) {
+        var slot = $(id); slot.innerHTML = "";
+        // Google draws its own button at a fixed pixel width: the form's width on a phone, at most 400.
+        var width = Math.max(240, Math.min(400, window.innerWidth - 48));
+        google.accounts.id.renderButton(slot, { theme: "outline", size: "large", shape: "rectangular", text: "continue_with", width: width, logo_alignment: "center" });
         slot.closest("form").classList.add("has-google");
       });
     } catch (e) { /* the forms work without it */ }
@@ -475,15 +522,24 @@
   $("drawer-close").addEventListener("click", closeDrawer);
   $("drawer-backdrop").addEventListener("click", closeDrawer);
 
-  // The account chip opens a small menu.
-  function closeUserMenu() { hide($("user-menu")); $("who").setAttribute("aria-expanded", "false"); }
-  $("who").addEventListener("click", function (e) {
-    e.stopPropagation();
-    var open = $("user-menu").classList.contains("hidden");
-    open ? show($("user-menu")) : hide($("user-menu"));
-    $("who").setAttribute("aria-expanded", String(open));
+  // The photo in the top bar (phones) and the account chip (wide screens) open the same small menu.
+  var accountTriggers = document.querySelectorAll(".account-trigger");
+  function closeUserMenu() { hide($("user-menu")); accountTriggers.forEach(function (t) { t.setAttribute("aria-expanded", "false"); }); }
+  accountTriggers.forEach(function (t) {
+    t.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = $("user-menu").classList.contains("hidden");
+      closeUserMenu();
+      if (open) { show($("user-menu")); t.setAttribute("aria-expanded", "true"); }
+    });
   });
   document.addEventListener("click", function (e) { if (!$("user-menu").contains(e.target)) closeUserMenu(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeUserMenu(); });
+  /** The account's way in (photo, chip, sidebar foot): there only while someone is signed in. */
+  function showAccountUi(on) {
+    ["topbar-avatar", "app-head", "side-foot"].forEach(function (id) { on ? show($(id)) : hide($(id)); });
+    if (!on) closeUserMenu();
+  }
   $("menu-plans").addEventListener("click", function () { closeUserMenu(); openUpgrade(); });
   $("menu-how").addEventListener("click", function (e) { e.preventDefault(); closeUserMenu(); closeDrawer(); openOnb(); });
   $("topbar-signin").addEventListener("click", function () { openAuth("login"); });
@@ -647,15 +703,19 @@
     setAvatar($("acct-avatar"), me);
     (me && me.profilePictureUrl) ? show($("acct-photo-remove")) : hide($("acct-photo-remove"));
     $("acct-email").textContent = me ? (me.email || "—") : "—";
-    $("acct-plan").textContent = isPro() ? planLabel() : "Free";
+    $("acct-plan").textContent = isPro() ? planLabel() : "Free plan";
+    isPro() ? show($("acct-active")) : hide($("acct-active"));
     var badge = $("acct-badge"); badge.textContent = isPro() ? "Pro" : "Free"; badge.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
-    isPro() ? hide($("acct-upsell")) : show($("acct-upsell"));
+    var u = usage();
+    $("acct-usage-label").textContent = u ? u.label : "This month";
+    $("acct-credits").textContent = u ? u.left + " of " + u.total + " left" : "—";
+    fillMeter($("acct-usage-fill"), u);
     $("acct-sub-note").textContent = isPro()
-      ? "Thank you for supporting NoteFusion. " + periodLine() + " Receipts come by email."
-      : "You don't have an active subscription. The free plan has unlimited hummed tunes and one 30-second song preview.";
-    $("acct-credits").textContent = sub ? (isPro() ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left" : (sub.songCreditsRemaining > 0 ? "1 free song preview" : "Preview used")) : "—";
+      ? periodLine() + (sub && (sub.isLifetime || sub.isGift) ? "" : " Nothing renews by itself; add time whenever you like.")
+      : "Pro adds 20 songs a month, full songs up to six minutes, four-part harmony and every download format.";
+    $("acct-upgrade-label").textContent = isPro() ? (sub && (sub.isLifetime || sub.isGift) ? "My membership" : "Add another month") : "See the plans";
     var since = me && (me.createdAtUtc || me.createdAt);
-    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "long" }) : "—";
+    $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
   }
   $("acct-upgrade").addEventListener("click", openUpgrade);
@@ -739,28 +799,34 @@
   /** A free account's one four-part harmony, until it is used. The API decides; this mirrors it. */
   function freeHarmonyLeft() { return !isPro() && !!(sub && sub.freeHarmonyAvailable); }
 
+  /** What this month (Pro) or this account (free) has left, as numbers for the meters. */
+  function usage() {
+    if (!sub) return null;
+    return isPro()
+      ? { label: "Songs this month", left: sub.songCreditsRemaining, total: sub.songCreditsTotal, unit: "left" }
+      : { label: "Free transcriptions", left: sub.trialGenerationsRemaining, total: sub.trialGenerationsTotal, unit: "left" };
+  }
+  function fillMeter(el, u) { el.style.width = u && u.total > 0 ? Math.max(0, Math.min(100, (u.left / u.total) * 100)) + "%" : "0%"; }
+
   function renderWho() {
-    $("who-name").textContent = me ? (me.fullName || me.email || "") : "";
-    setAvatar($("who-avatar"), me);
+    ["topbar-avatar-img", "chip-avatar", "menu-avatar"].forEach(function (id) { setAvatar($(id), me); });
+    $("chip-name").textContent = me ? ((me.fullName || "").trim().split(/\s+/)[0] || me.email || "") : "";
     $("greeting").textContent = greeting(me && me.fullName);
     $("home-sub").textContent = isPro() ? "Thanks for being a Pro member. What are we writing out today?" : "What are we writing out today?";
     document.body.classList.toggle("is-pro", isPro());
     isPro() ? show($("greeting-pro")) : hide($("greeting-pro"));
-    $("menu-plans-label").textContent = isPro() ? "My membership" : "View all plans";
+    $("menu-plans-label").textContent = isPro() ? "My membership" : "Plans & billing";
     renderStudioCredits();
     $("menu-name").textContent = me ? (me.fullName || "") : "";
     $("menu-email").textContent = me ? (me.email || "") : "";
-    var plan = $("who-plan");
+    var plan = $("menu-plan");
     plan.className = "pill " + (isPro() ? "pill-pro" : "pill-free");
     plan.textContent = isPro() ? "Pro" : "Free";
-    var credits = $("who-credits");
-    if (sub) {
-      credits.textContent = isPro()
-        ? sub.songCreditsRemaining + " of " + sub.songCreditsTotal + " songs left this month"
-        : (sub.songCreditsRemaining > 0 ? "1 free song preview" : "Preview used");
-      show(credits);
-    } else hide(credits);
-    show($("who"));
+    // The sidebar's foot: one quiet line and a bar, not a card.
+    var u = usage();
+    $("usage-plan").textContent = isPro() ? "Pro · this month" : "Free plan";
+    $("usage-left").textContent = u ? u.left + " of " + u.total + " left" : "";
+    fillMeter($("usage-fill"), u);
   }
 
   function loadAccount() {
@@ -779,7 +845,7 @@
     return loadAccount().then(function () {
       var wasGuest = guest;
       guest = false;
-      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); setView("transcribe"); libraryCache = null;
+      hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
@@ -803,7 +869,7 @@
   /** A visitor with a preview and no account: the app, read-only, with the sign-up card ready. */
   function startGuest() {
     guest = true;
-    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); setView("transcribe");
+    hide($("boot-skel")); leaveAuth(); show($("view-app")); show($("guest-bar")); hide($("upgrade-panel")); hide($("top-nav")); showAccountUi(false); setView("transcribe");
     document.body.classList.add("guest"); show($("topbar-signin"));
     $("greeting").textContent = greeting(""); $("home-sub").textContent = "Your free preview is on its way. Create a free account to keep transcribing.";
     startJob({ jobId: previewId, stage: "transcribing" }, "preview");

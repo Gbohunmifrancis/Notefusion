@@ -3,8 +3,9 @@
  * Loaded after theme.css and app.css on /app and /app/sheet only (the marketing pages keep their own
  * look). It carries the mobile app's palette (mobile/src/design/theme.ts: `darkColors` / `night` for
  * Night, `colors` for Day), its type (Geist for the interface, JetBrains Mono for solfa) and its
- * shapes (pill buttons and fields, 20px cards), and the house press: a control under the finger
- * scales to 0.97 in 150ms and never bounces. Night is the default; Day is one switch away. */
+ * shapes (12px buttons and fields, 20px cards), and the house press: a control under the finger
+ * scales to 0.97 in 150ms and never bounces. Day is the default; Night is one switch away. Blue is
+ * flat — no gradients, no glows — so the music, not the chrome, is what catches the eye. */
 
 /* ── Tokens ──────────────────────────────────────────────────────────────── */
 :root {
@@ -31,8 +32,8 @@
   --blue-dark: #1D4ED8;     /* blue as text and icons on a surface */
   --blue-soft: rgba(37, 99, 235, 0.10);
   --blue-tint: rgba(37, 99, 235, 0.07);
-  --brand-gradient: linear-gradient(180deg, #3A84FF 0%, #2F7BFF 100%);
-  --glow: 0 10px 24px rgba(47, 123, 255, 0.28);
+  --brand-gradient: linear-gradient(#2563EB, #2563EB);
+  --glow: none;
   --premium: #F59E0B;
   --premium-ink: #3B2A00;
   --premium-soft: rgba(245, 158, 11, 0.12);
@@ -75,7 +76,8 @@
   --blue-deep: #1B5FE0;
   --blue-soft: rgba(47, 123, 255, 0.14);
   --blue-tint: rgba(47, 123, 255, 0.10);
-  --glow: 0 10px 24px rgba(47, 123, 255, 0.40);
+  --brand-gradient: linear-gradient(#2F7BFF, #2F7BFF);
+  --glow: none;
   --premium: #F5B544;
   --premium-ink: #1F1600;
   --premium-soft: rgba(245, 181, 68, 0.12);
@@ -96,12 +98,6 @@
 }
 
 body { font-family: var(--font-sans); background: var(--bg); }
-:root[data-theme="dark"] body {
-  /* The bloom behind the phone's Home, kept faint and fixed so it never moves with the page. */
-  background:
-    radial-gradient(900px 520px at 70% -120px, rgba(47, 123, 255, 0.13), transparent 70%),
-    var(--bg) fixed;
-}
 h1, h2, h3 { letter-spacing: -0.025em; }
 h1 { font-weight: 700; letter-spacing: -0.035em; }
 ::selection { background: rgba(47, 123, 255, 0.35); }
@@ -120,33 +116,33 @@ h1 { font-weight: 700; letter-spacing: -0.035em; }
 .btn:active:not(:disabled) { transform: none; }
 @media (prefers-reduced-motion: no-preference) { .btn:active:not(:disabled) { transform: scale(var(--press)); } }
 
-/* ── Buttons: pills ──────────────────────────────────────────────────────── */
-.btn { border-radius: 999px; min-height: 46px; padding: 10px 20px; font-weight: 600; }
-.btn-sm { border-radius: 999px; min-height: 38px; padding: 6px 15px; }
-.btn-icon { border-radius: 50%; width: 40px; min-height: 40px; }
-.btn-primary { background: var(--brand-gradient); color: #fff; box-shadow: var(--glow); }
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn { border-radius: 12px; min-height: 46px; padding: 10px 20px; font-weight: 600; }
+.btn-sm { border-radius: 10px; min-height: 38px; padding: 6px 14px; }
+/* An icon button is all icon: the .btn padding above would squeeze the icon to nothing. */
+.btn-icon { border-radius: 10px; width: 40px; min-height: 40px; padding: 0; }
+.btn-primary { background: var(--blue); color: #fff; box-shadow: none; }
 @media (hover: hover) {
-  .btn-primary:hover:not(:disabled) { transform: none; box-shadow: 0 14px 30px rgba(47, 123, 255, 0.45); filter: brightness(1.06); }
+  .btn-primary:hover:not(:disabled) { transform: none; box-shadow: none; background: var(--color-brand-600); }
   .btn-ghost:hover:not(:disabled) { background: var(--wash); border-color: var(--line-strong); }
 }
 .btn-ghost { background: var(--wash); border-color: var(--line); color: var(--ink); }
 :root[data-theme="dark"] .btn-ghost { background: rgba(255, 255, 255, 0.06); border-color: rgba(255, 255, 255, 0.12); }
-.btn-pill { min-height: 54px; font-size: 1rem; }
+.btn-pill { min-height: 48px; font-size: 1rem; }
 .btn-white { background: #fff; color: #0A0D14; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); }
 :root:not([data-theme="dark"]) .btn-white { background: var(--ink); color: #fff; }
-.btn-pro { border-radius: 999px; background: linear-gradient(135deg, #FBD27A, var(--premium)); color: var(--premium-ink); box-shadow: 0 10px 24px rgba(245, 181, 68, 0.30); }
+.btn-pro { background: linear-gradient(135deg, #FBD27A, var(--premium)); color: var(--premium-ink); box-shadow: none; }
+@media (hover: hover) { .btn-pro:hover:not(:disabled) { box-shadow: none; transform: none; filter: brightness(0.97); } }
 .btn-link { color: var(--blue-dark); }
 
 /* ── Fields ──────────────────────────────────────────────────────────────── */
 input[type=text], input[type=url], input[type=email], input[type=password], textarea, select {
-  border-radius: 16px; min-height: 50px; background: var(--wash); border-color: var(--line);
+  border-radius: 12px; min-height: 48px; background: var(--surface); border-color: var(--line-strong);
 }
 :root[data-theme="dark"] :is(input[type=text], input[type=url], input[type=email], input[type=password], textarea, select) {
   background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.10); color: var(--ink);
 }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
-.pill-input { border-radius: 999px; min-height: 54px; padding: 14px 22px; }
-:root[data-theme="dark"] .pill-input { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.10); }
 
 /* ── Surfaces ────────────────────────────────────────────────────────────── */
 .card { border-radius: var(--radius); box-shadow: var(--shadow-card); }
@@ -156,12 +152,12 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .chip { border-radius: 999px; background: var(--wash); color: var(--copy); font-weight: 500; }
 :root[data-theme="dark"] .chip { background: rgba(255, 255, 255, 0.06); }
 .pill-free { background: var(--blue-soft); color: var(--blue-dark); }
-.pill-pro { background: linear-gradient(135deg, #FBD27A, var(--premium)); color: var(--premium-ink); }
+.pill-pro { background: none; color: var(--blue-dark); box-shadow: inset 0 0 0 1px var(--blue-soft); }
 
-/* Tabs: a segmented pill. */
-.tabs { border-radius: 999px; padding: 4px; background: var(--wash); }
+/* Tabs: a segmented control. */
+.tabs { border-radius: 12px; padding: 4px; background: var(--wash); }
 :root[data-theme="dark"] .tabs { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.07); }
-.tab { border-radius: 999px; }
+.tab { border-radius: 9px; }
 .tab[aria-selected=true] { background: var(--surface); box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12); }
 :root[data-theme="dark"] .tab[aria-selected=true] { background: rgba(255, 255, 255, 0.10); box-shadow: none; color: var(--ink); }
 
@@ -170,12 +166,13 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 :root[data-theme="dark"] .side { background: rgba(10, 13, 19, 0.92); border-right-color: rgba(255, 255, 255, 0.06); }
 .topbar { background: var(--glass); -webkit-backdrop-filter: saturate(140%) blur(14px); backdrop-filter: saturate(140%) blur(14px); }
 :root[data-theme="dark"] .topbar { border-bottom-color: rgba(255, 255, 255, 0.06); }
-.nav-item { border-radius: 14px; }
+.nav-item { border-radius: 10px; }
 .nav-item.on { background: var(--blue-soft); color: var(--blue-dark); }
-.nav-new, .nav-new.on { background: var(--brand-gradient); color: #fff; box-shadow: var(--glow); border-radius: 999px; }
-.who { border-radius: 18px; }
-:root[data-theme="dark"] .who { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.08); }
-.user-menu { border-radius: 18px; }
+.nav-new, .nav-new.on { background: var(--blue); color: #fff; box-shadow: none; border-radius: 10px; }
+@media (hover: hover) { .nav-new:hover { background: var(--color-brand-600); box-shadow: none; } }
+:root[data-theme="dark"] .theme-switch, :root[data-theme="dark"] .theme-seg { background: rgba(255, 255, 255, 0.06); }
+:root[data-theme="dark"] .theme-switch button.on, :root[data-theme="dark"] .theme-seg button.on { background: rgba(255, 255, 255, 0.12); box-shadow: none; }
+:root[data-theme="dark"] .user-menu { box-shadow: var(--shadow-elevated); }
 .brand { font-weight: 700; letter-spacing: -0.03em; }
 .brand-mark, .home-mark, .auth-mark { background: var(--brand-gradient); }
 
@@ -186,20 +183,16 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
   background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 24px;
   box-shadow: none; padding: 18px;
 }
-:root[data-theme="dark"] .studio {
-  background:
-    radial-gradient(520px 260px at 50% -60px, rgba(47, 123, 255, 0.16), transparent 72%),
-    rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.08);
-}
+:root[data-theme="dark"] .studio { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.08); }
 .studio::before { display: none; }
 
 /* Where the music comes from: one choice at a time, so the page asks one thing. */
-.source-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 5px; border-radius: 999px; background: var(--wash); margin: 0 0 16px; }
+.source-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 12px; background: var(--wash); margin: 0 0 16px; }
 :root[data-theme="dark"] .source-tabs { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.07); }
-.source-tab { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 10px; border: 0; border-radius: 999px; background: none; color: var(--muted); font: inherit; font-weight: 600; font-size: 0.92rem; cursor: pointer; white-space: nowrap; }
+.source-tab { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 8px 10px; border: 0; border-radius: 9px; background: none; color: var(--muted); font: inherit; font-weight: 600; font-size: 0.92rem; cursor: pointer; white-space: nowrap; }
 .source-tab .ic { width: 18px; height: 18px; }
-.source-tab[aria-selected=true] { background: var(--brand-gradient); color: #fff; box-shadow: var(--glow); }
+.source-tab[aria-selected=true] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12); }
+:root[data-theme="dark"] .source-tab[aria-selected=true] { background: rgba(255, 255, 255, 0.10); box-shadow: none; }
 @media (hover: hover) { .source-tab:not([aria-selected=true]):hover { color: var(--ink); } }
 .source-panel[hidden] { display: none !important; }
 .source-lead { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 2px 0 14px; }
@@ -211,8 +204,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio .drop:hover, .studio .drop.is-over { border-color: var(--blue); background: var(--blue-tint); }
 .studio .drop-ic { color: var(--blue-dark); }
 .studio .drop-hint { color: var(--muted); }
-.btn.btn-light { background: var(--brand-gradient); color: #fff; box-shadow: var(--glow); }
-@media (hover: hover) { .btn.btn-light:hover:not(:disabled) { background: var(--brand-gradient); filter: brightness(1.06); transform: none; } }
+.btn.btn-light { background: var(--blue); color: #fff; box-shadow: none; }
+@media (hover: hover) { .btn.btn-light:hover:not(:disabled) { background: var(--color-brand-600); transform: none; } }
 
 /* What is in the recording: wraps instead of running off the card. */
 .studio .studio-kind { display: flex; flex-wrap: wrap; gap: 6px; background: none; padding: 0; margin: 14px 0 0; justify-content: center; }
@@ -226,14 +219,17 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio-opt select option { color: initial; background: initial; }
 .studio-credits, .studio-status { color: var(--muted); }
 
-/* Record: the phone's big round mark. */
-.studio-rec-stage { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 0 6px; }
+/* Record: one round button, flat blue, a hairline ring around it, the microphone sized to fill it. */
+.studio-rec-stage { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 0 8px; }
 .studio-rec {
-  width: 112px; height: 112px; min-height: 112px; padding: 0; border-radius: 50%;
-  background: var(--brand-gradient); color: #fff; border: 0; box-shadow: 0 0 0 10px var(--blue-tint), 0 18px 40px rgba(47, 123, 255, 0.45);
+  position: relative; width: 84px; height: 84px; min-height: 84px; padding: 0; margin: 0 0 14px; border-radius: 50%;
+  background: var(--blue); color: #fff; border: 0; box-shadow: none;
 }
-.studio-rec .ic { width: 38px; height: 38px; }
+.studio-rec::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1px solid var(--line-strong); pointer-events: none; }
+@media (hover: hover) { .studio-rec:hover:not(:disabled) { background: var(--color-brand-600); } }
+.studio-rec .ic { width: 30px; height: 30px; stroke-width: 1.8; }
 .studio-rec-label { font-weight: 600; color: var(--ink); }
+.studio-rec-hint { font-size: 0.85rem; color: var(--muted); }
 @media (prefers-reduced-motion: no-preference) { .studio-rec:active { transform: scale(0.94); } }
 .studio .btn-rec, .studio .btn-rec .ic { color: #fff; }
 
@@ -326,10 +322,8 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 @media (hover: hover) { .lib-item:hover { transform: none; border-color: rgba(47, 123, 255, 0.45); } }
 
 /* ── Sign in: the night auth screen ──────────────────────────────────────── */
-.auth-card { border-radius: 28px; padding: 34px 26px 26px; }
-:root[data-theme="dark"] .auth-card { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.08); box-shadow: none; }
-.auth-wordmark { color: var(--ink); font-weight: 700; letter-spacing: -0.04em; }
-.auth-title { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.04em; }
+:root[data-theme="dark"] .try-row:hover { background: rgba(255, 255, 255, 0.03); }
+:root[data-theme="dark"] .auth-aside { background: linear-gradient(160deg, #10244F 0%, #0B1838 55%, #070F24 100%); }
 
 /* ── Dialogs ─────────────────────────────────────────────────────────────── */
 .onb, .modal { background: var(--scrim); }
