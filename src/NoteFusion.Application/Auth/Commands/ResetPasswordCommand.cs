@@ -3,6 +3,7 @@ using System.Text;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Shared.Results;
@@ -11,7 +12,9 @@ namespace NoteFusion.Application.Auth.Commands;
 
 /// <summary>
 /// Completes the password-reset flow initiated by <see cref="ForgotPasswordCommand"/>.
-/// Consumes the one-time token and replaces the stored password hash.
+/// Consumes the one-time token, replaces the stored password hash and signs the account out of every
+/// session: a reset is how someone takes an account back, so a session opened with the old password
+/// must not outlive it.
 /// </summary>
 public sealed record ResetPasswordCommand(
     string Email,
@@ -61,6 +64,7 @@ public sealed class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordC
         if (!user.ConsumePasswordResetToken(tokenHash, newPasswordHash, _clock.UtcNow))
             return AuthErrors.InvalidResetToken;
 
+        await RefreshTokenRevocation.RevokeAllAsync(_db, user.Id, _clock.UtcNow, cancellationToken);
         await _db.SaveChangesAsync(cancellationToken);
 
         await _email.SendPasswordChangedAsync(new EmailRecipient(user.Email, user.FullName), cancellationToken);

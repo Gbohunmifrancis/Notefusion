@@ -32,6 +32,7 @@
     <ProjectReference Include="..\..\src\NoteFusion.Core\NoteFusion.Core.csproj" />
     <ProjectReference Include="..\..\src\NoteFusion.Application\NoteFusion.Application.csproj" />
     <ProjectReference Include="..\..\src\NoteFusion.Infrastructure\NoteFusion.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\NoteFusion.Api\NoteFusion.Api.csproj" />
   </ItemGroup>
 
 </Project>

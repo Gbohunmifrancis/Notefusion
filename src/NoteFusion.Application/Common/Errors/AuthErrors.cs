@@ -11,10 +11,6 @@ public static class AuthErrors
     public static readonly Error AccountInactive =
         Error.Forbidden("AUTH_ACCOUNT_INACTIVE", "This account has been deactivated. Contact support.");
 
-    public static Error AccountLocked(DateTime untilUtc) =>
-        Error.Forbidden("AUTH_ACCOUNT_LOCKED",
-            $"Account locked due to repeated failed attempts. Try again after {untilUtc:u}.");
-
     public static readonly Error InvalidRefreshToken =
         Error.Unauthorized("AUTH_INVALID_REFRESH_TOKEN", "The refresh token is invalid or has expired.");
 

@@ -48,26 +48,30 @@ public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, Result<L
     {
         var email = request.Email.Trim().ToLowerInvariant();
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-        if (user is null)
+
+        // Every refusal below is the same error after the same amount of work, so a caller cannot tell an
+        // unknown address, a Google-only account, a locked one and a wrong password apart — by message or by
+        // how long the answer took. Google-created accounts have no password; a distinct PasswordNotSet here
+        // would confirm the address is registered to someone who has not proved anything yet.
+        if (user?.PasswordHash is null)
+        {
+            DummyPasswordCheck.Verify(_hasher, request.Password);
             return AuthErrors.InvalidCredentials;
+        }
 
         var now = _clock.UtcNow;
-        if (user.IsLockedOut(now))
-            return AuthErrors.AccountLocked(user.LockoutEndAt!.Value);
+        var passwordMatches = _hasher.Verify(request.Password, user.PasswordHash);
 
-        // Google-created accounts have no password. Report the generic credential error
-        // rather than PasswordNotSet: at this point the caller is unauthenticated, and a
-        // distinct message would confirm the address is registered.
-        if (user.PasswordHash is null)
+        // Locked accounts are still refused even with the right password; they just are not announced as
+        // locked, because "locked" only ever happens to an address that exists.
+        if (user.IsLockedOut(now))
             return AuthErrors.InvalidCredentials;
 
-        if (!_hasher.Verify(request.Password, user.PasswordHash))
+        if (!passwordMatches)
         {
             user.RecordFailedLogin(now);
             await _db.SaveChangesAsync(cancellationToken);
-            return user.IsLockedOut(now)
-                ? AuthErrors.AccountLocked(user.LockoutEndAt!.Value)
-                : AuthErrors.InvalidCredentials;
+            return AuthErrors.InvalidCredentials;
         }
 
         if (!user.IsActive)

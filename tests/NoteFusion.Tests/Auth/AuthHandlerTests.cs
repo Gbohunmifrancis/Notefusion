@@ -85,7 +85,15 @@ public class AuthHandlerTests
         var afterLock = await handler.Handle(new LoginCommand("grace@example.com", "s3cretpw!"), default);
 
         Assert.True(afterLock.IsFailure);
-        Assert.Equal("AUTH_ACCOUNT_LOCKED", afterLock.Error.Code);
+        Assert.True(Assert.Single(h.Db.Users).IsLockedOut(h.Clock.UtcNow));
+
+        // ...with the same answer a wrong password or an unknown address gets: "locked" only ever happens to
+        // an address that exists, so naming it would confirm one.
+        Assert.Equal("AUTH_INVALID_CREDENTIALS", afterLock.Error.Code);
+
+        // And the lock lifts on its own.
+        h.Clock.UtcNow = h.Clock.UtcNow.Add(User.LockoutDuration).AddSeconds(1);
+        Assert.True((await handler.Handle(new LoginCommand("grace@example.com", "s3cretpw!"), default)).IsSuccess);
     }
 
     [Fact]

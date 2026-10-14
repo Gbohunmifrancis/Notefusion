@@ -42,6 +42,8 @@ public sealed class TestHarness : IDisposable
         Tokens = new SecureTokenGenerator();
         var jwt = new JwtSettings();
         Keys = new RsaKeyProvider(jwt);
+        // As the composition root does for a deploy with no Auth__DeletionSecret of its own.
+        DeletionSecretFallback.Apply(Auth, Keys);
         Jwt = new JwtTokenService(Keys, jwt, Auth);
         TokenIssuer = new TokenIssuer(Jwt, Tokens, Hasher, Db, Clock, Auth);
         Email = new RecordingEmailSender();

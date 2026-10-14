@@ -4,6 +4,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Entities;
@@ -64,30 +65,58 @@ public sealed class DeleteAccountRequestCommandHandler
         _logger = logger;
     }
 
+    /// <summary>
+    /// What a password attempt that deleted nothing is told — the same words whether the address is unknown,
+    /// the password wrong, or the account locked, because on this anonymous page any difference between those
+    /// is an answer to "is this address registered?".
+    /// </summary>
+    public const string NotDeletedMessage =
+        "We couldn't delete an account with those details. Check the email and password, or leave the password blank and we'll email a confirmation link if an account exists.";
+
+    /// <summary>What a request for an emailed link is told, whether or not there was anyone to email.</summary>
+    public const string LinkSentMessage =
+        "If an account exists for this email address, a deletion confirmation link has been sent to it. Click the link within 24 hours to complete deletion. You can also delete your account anytime from within the NoteFusion mobile app.";
+
+    private static readonly Error InvalidToken = Error.Validation(
+        "auth.invalid_token",
+        "The deletion link is invalid or has expired. Please submit a new deletion request.");
+
+    private static DeleteAccountResponse NotDeleted => new(Success: true, Confirmed: false, Message: NotDeletedMessage);
+
+    private static DeleteAccountResponse LinkSent => new(Success: true, Confirmed: false, Message: LinkSentMessage);
+
     public async Task<Result<DeleteAccountResponse>> Handle(
         DeleteAccountRequestCommand request, CancellationToken cancellationToken)
     {
+        // Set at composition (DeletionSecretFallback) whenever the deploy has none; reaching here without one
+        // means a host skipped that, and signing with an empty or published key would make links forgeable.
+        if (!_authSettings.HasOwnDeletionSecret)
+            throw new InvalidOperationException("AuthSettings.DeletionSecret was not resolved before use.");
+
         var normalizedEmail = request.Email.Trim().ToLowerInvariant();
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == normalizedEmail, cancellationToken);
 
-        // Security: Avoid disclosing whether the email exists when no credentials are provided
+        // Security: answer an unknown address exactly as a known one with the wrong proof is answered.
         if (user is null)
         {
-            return Result<DeleteAccountResponse>.Success(new DeleteAccountResponse(
-                Success: true,
-                Confirmed: false,
-                Message: "If an account exists for this email address, a confirmation has been processed. You can also delete your account anytime from within the NoteFusion mobile app."));
+            if (!string.IsNullOrWhiteSpace(request.Token))
+                return Result.Failure<DeleteAccountResponse>(InvalidToken);
+
+            if (!string.IsNullOrWhiteSpace(request.Password))
+            {
+                // The same bcrypt work a real account costs, so the answer's timing says nothing either.
+                DummyPasswordCheck.Verify(_hasher, request.Password);
+                return Result.Success(NotDeleted);
+            }
+
+            return Result.Success(LinkSent);
         }
 
         // Case 1: Token confirmation via emailed link
         if (!string.IsNullOrWhiteSpace(request.Token))
         {
             if (!ValidateDeletionToken(user, request.Token, _clock.UtcNow, _authSettings.DeletionSecret))
-            {
-                return Result.Failure<DeleteAccountResponse>(Error.Validation(
-                    "auth.invalid_token",
-                    "The deletion link is invalid or has expired. Please submit a new deletion request."));
-            }
+                return Result.Failure<DeleteAccountResponse>(InvalidToken);
 
             await ExecuteAccountDeletionAsync(user, request.Reason, cancellationToken);
 
@@ -97,14 +126,26 @@ public sealed class DeleteAccountRequestCommandHandler
                 Message: "Your NoteFusion account, profile, and all saved transcriptions have been permanently deleted."));
         }
 
-        // Case 2: Direct password verification
+        // Case 2: Direct password verification. A password check anyone can reach without signing in, so it
+        // carries login's lockout — without it this page was an unthrottled way around that lockout.
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
-            if (user.PasswordHash is null || !_hasher.Verify(request.Password, user.PasswordHash))
+            var now = _clock.UtcNow;
+            if (user.PasswordHash is null)
             {
-                return Result.Failure<DeleteAccountResponse>(Error.Validation(
-                    "auth.invalid_credentials",
-                    "The password you entered is incorrect. If you signed in with Google or forgot your password, leave password blank to receive an email confirmation link."));
+                DummyPasswordCheck.Verify(_hasher, request.Password);
+                return Result.Success(NotDeleted);
+            }
+
+            var passwordMatches = _hasher.Verify(request.Password, user.PasswordHash);
+            if (user.IsLockedOut(now))
+                return Result.Success(NotDeleted);
+
+            if (!passwordMatches)
+            {
+                user.RecordFailedLogin(now);
+                await _db.SaveChangesAsync(cancellationToken);
+                return Result.Success(NotDeleted);
             }
 
             await ExecuteAccountDeletionAsync(user, request.Reason, cancellationToken);
@@ -139,10 +180,7 @@ public sealed class DeleteAccountRequestCommandHandler
             _logger.LogWarning(ex, "Failed to send account deletion confirmation email to {Email}", user.Email);
         }
 
-        return Result<DeleteAccountResponse>.Success(new DeleteAccountResponse(
-            Success: true,
-            Confirmed: false,
-            Message: "A deletion confirmation link has been sent to your email. Please check your inbox and click the link within 24 hours to complete deletion."));
+        return Result.Success(LinkSent);
     }
 
     private async Task ExecuteAccountDeletionAsync(User user, string? reason, CancellationToken ct)
