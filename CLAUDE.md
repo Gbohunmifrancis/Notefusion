@@ -15,6 +15,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   rotating refresh tokens.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
+  It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
+  unless `NF_ENABLE_DOCS=1`. Every upload is cut to its cap with ffmpeg `-t` whatever its header says;
+  pending jobs are capped (`NF_MAX_PENDING_JOBS`, 503 past it); completion webhooks go only to
+  `NF_CALLBACK_HOSTS` (default `api,localhost,127.0.0.1`) and carry `X-Api-Key`, which the API requires.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
   hysteresis note segmentation, noise spans dropped, then scale-fit notation (`write_in_scale`:
   a long take's steady drift, at most 1 st/min, is taken out first; `fit_scale_detail` finds the
