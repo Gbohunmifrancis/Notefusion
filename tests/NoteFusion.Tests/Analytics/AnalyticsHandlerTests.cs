@@ -250,7 +250,7 @@ public class AnalyticsHandlerTests
 
         // A sign-in is not something someone did; a single LastLoginAt cannot place it in history anyway.
         Assert.DoesNotContain(feed, a => a.Kind == "login");
-        Assert.Equal(("transcription_failed", "a song link failed to transcribe"), (feed[0].Kind, feed[0].Detail));
+        Assert.Equal(("transcription_failed", "had a song link fail to transcribe"), (feed[0].Kind, feed[0].Detail));
         Assert.Equal(("signup", "signed up"), (feed[1].Kind, feed[1].Detail));
         Assert.All(feed, a => Assert.Equal(DateTimeKind.Utc, a.OccurredAtUtc.Kind));
     }

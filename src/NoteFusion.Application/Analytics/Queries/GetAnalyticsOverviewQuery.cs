@@ -594,7 +594,7 @@ public sealed class GetAnalyticsOverviewQueryHandler
             $"signed up{(u.SignupSource == "mobile" ? " in the app" : u.SignupSource == "web" ? " on the web" : "")}{(u.Google ? " with Google" : "")}")));
         items.AddRange(jobs.Select(j => j.Done
             ? For(j.UserId, "transcription", j.At, $"transcribed {KindName(j.Kind)}")
-            : For(j.UserId, "transcription_failed", j.At, $"{KindName(j.Kind)} failed to transcribe")));
+            : For(j.UserId, "transcription_failed", j.At, $"had {KindName(j.Kind)} fail to transcribe")));
         items.AddRange(payments.Select(p => For(p.UserId, "payment", p.At, $"paid {FormatMoney(p.AmountMinor, p.Currency)} for Pro")));
         items.AddRange(feedback.Select(f => For(f.UserId, "feedback", f.At, f.Kind switch
         {
