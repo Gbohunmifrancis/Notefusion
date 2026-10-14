@@ -57,6 +57,12 @@ services:
       # A linked video longer than this is refused when the link is pasted (default two hours).
       NF_LINK_MAX_VIDEO_SECONDS: ${NF_LINK_MAX_VIDEO_SECONDS:-7200}
     mem_limit: ${NF_TRANSCRIBER_MEM_LIMIT:-3g}
+    # A real PID 1 reaps the yt-dlp, ffmpeg and separation children a timeout kills. /tmp is
+    # deliberately not a tmpfs: a linked song's working files reach ~250 MB per job (the
+    # download, 44.1 kHz stereo WAVs of up to six minutes, the stems), tmpfs pages count
+    # against mem_limit, and separation already peaks near 1.6 GB of it. The worker sweeps
+    # its own leftovers from /tmp at startup instead (app.main._sweep_stale_temp_files).
+    init: true
     volumes:
       - ${YTDLP_COOKIES_HOST:-/dev/null}:/run/ytdlp-cookies.txt:ro
       - job-data:/var/lib/notefusion
@@ -106,7 +112,7 @@ services:
       Seed__AdminPassword: ${SEED_ADMIN_PASSWORD}
       Push__UseExpo: "false"
       Security__RequireHttps: "false"
-      Swagger__Enabled: "true"
+      Swagger__Enabled: "false"
       RateLimit__TrustedProxyHops: "1" 
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-https://admin.notefusion.studio}
       # The public site's signed-in web app (web-site/app) calls the API from the browser.

@@ -89,8 +89,9 @@ public sealed class RenameFolderCommandHandler(IApplicationDbContext db, ICurren
 }
 
 /// <summary>
-/// One public link for a whole folder. Every sheet in it is shared as well, since the link opens each
-/// song as its own shared sheet; sheets filed later are shared when the link is next opened.
+/// One public link for a whole folder. The link opens every sheet filed in it, now or later, through the
+/// folder (<c>GET api/shared/folders/{token}/sheets/{id}</c>); no sheet gets a link of its own, so one the
+/// owner keeps private is reachable only while it is filed in the shared folder.
 /// </summary>
 public sealed record ShareFolderCommand(string Folder) : IRequest<Result<ShareLinkDto>>;
 
@@ -107,14 +108,10 @@ public sealed class ShareFolderCommandHandler(IApplicationDbContext db, ICurrent
         if (currentUser.UserId is not { } userId)
             return UserErrors.NotFound;
         var folder = request.Folder.Trim();
-        var sheets = await db.Transcriptions.Where(t => t.UserId == userId && t.Folder == folder).ToListAsync(ct);
-        if (sheets.Count == 0)
+        if (!await db.Transcriptions.AnyAsync(t => t.UserId == userId && t.Folder == folder, ct))
             return LibraryErrors.EmptyFolder;
 
         var now = clock.UtcNow;
-        foreach (var sheet in sheets.Where(s => s.ShareToken is null))
-            sheet.Share(ShareTokens.New(), now);
-
         var share = await db.FolderShares.FirstOrDefaultAsync(f => f.UserId == userId && f.Folder == folder, ct);
         if (share is null)
         {
@@ -126,7 +123,11 @@ public sealed class ShareFolderCommandHandler(IApplicationDbContext db, ICurrent
     }
 }
 
-/// <summary>Stops a folder's link. The sheets keep their own links until each is stopped.</summary>
+/// <summary>
+/// Stops a folder's link, and with it every sheet it opened. A sheet shared in its own right keeps its
+/// link. Folder links made before folder sharing stopped minting per-sheet tokens did give each sheet its
+/// own; those cannot be told apart from links the owner made, so they are left until each is stopped.
+/// </summary>
 public sealed record UnshareFolderCommand(string Folder) : IRequest<Result>;
 
 public sealed class UnshareFolderCommandHandler(IApplicationDbContext db, ICurrentUser currentUser)

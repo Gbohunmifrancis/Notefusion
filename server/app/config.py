@@ -40,12 +40,47 @@ class Settings:
     #: How many times a journaled job may be started before it is failed rather than replayed:
     #: a job that kills the worker twice would otherwise kill it forever.
     job_max_attempts: int = int(os.getenv("NF_JOB_MAX_ATTEMPTS", "2"))
+    #: Jobs that may wait for a worker at once; a submit beyond this is a 503 with Retry-After.
+    #: One worker gets through a few jobs a minute, so fifty waiting is already a long line.
+    max_pending_jobs: int = int(os.getenv("NF_MAX_PENDING_JOBS", "50"))
+    #: Finished results hold their audio (the piano preview WAV, a song's backing MP3) as base64
+    #: in memory until the TTL. Past this many megabytes of it, the oldest results the API has
+    #: already been told about (and banked) lose those two fields; the notes and scores stay.
+    result_audio_budget_mb: float = float(os.getenv("NF_RESULT_AUDIO_BUDGET_MB", "256"))
+
+    @property
+    def audio_limit_seconds(self) -> float:
+        """The most audio any job decodes: the longer of an upload's and a linked song's cap, and
+        a second for rounding.  The route and the link fetch already cut to their caps; every
+        decode of user audio is bounded by this as well, so a file that slipped past them (a
+        stream with no length in its header) can never be read whole into memory."""
+        return max(self.max_clip_seconds, self.link_max_seconds) + 1.0
 
     @property
     def api_key(self) -> str | None:
-        """Shared secret key required to access transcription endpoints. None disables auth (dev)."""
+        """Shared secret key required to access transcription endpoints. None only with
+        ``allow_no_auth``: the app refuses to start without one otherwise (``app.main``)."""
         key = os.getenv("NF_API_KEY", "").strip()
         return key if key else None
+
+    @property
+    def allow_no_auth(self) -> bool:
+        """``NF_ALLOW_NO_AUTH=1`` lets the worker run with no API key (local runs, tests). An
+        empty key used to switch auth off silently; now it has to be asked for by name."""
+        return os.getenv("NF_ALLOW_NO_AUTH", "").strip().lower() in ("1", "true", "yes")
+
+    @property
+    def enable_docs(self) -> bool:
+        """``NF_ENABLE_DOCS=1`` serves /docs, /redoc and /openapi.json; off by default, since
+        nothing but the C# API should be learning this service's shape."""
+        return os.getenv("NF_ENABLE_DOCS", "").strip().lower() in ("1", "true", "yes")
+
+    @property
+    def callback_hosts(self) -> frozenset[str]:
+        """The hosts a completion webhook may be POSTed to (``NF_CALLBACK_HOSTS``, comma separated):
+        the API's compose name and loopback. A callback_url anywhere else is ignored."""
+        raw = os.getenv("NF_CALLBACK_HOSTS", "api,localhost,127.0.0.1")
+        return frozenset(h.strip().lower() for h in raw.split(",") if h.strip())
 
     # ── Transcription accuracy flags ──────────────────────────────────────────
     # These exist to isolate one measured effect at a time in tests/accuracy, and
@@ -600,3 +635,8 @@ class Settings:
 
 
 settings = Settings()
+
+#: The prefixes of every temporary file and directory this app makes in the system temp
+#: directory, so the startup sweep (``app.main``) can remove what a killed process left there.
+TEMP_PREFIX = "nf-tmp-"
+TEMP_PREFIXES = (TEMP_PREFIX, "nf_link_", "nf-upload-", "nf_cookies_")

@@ -15,6 +15,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   rotating refresh tokens.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
+  It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
+  unless `NF_ENABLE_DOCS=1`. Every upload is cut to its cap with ffmpeg `-t` whatever its header says;
+  pending jobs are capped (`NF_MAX_PENDING_JOBS`, 503 past it); completion webhooks go only to
+  `NF_CALLBACK_HOSTS` (default `api,localhost,127.0.0.1`) and carry `X-Api-Key`, which the API requires.
   Melody mode (hummed/sung clips) is decoded by `app/pipeline/vocal.py` — pyin f0 contour,
   hysteresis note segmentation, noise spans dropped, then scale-fit notation (`write_in_scale`:
   a long take's steady drift, at most 1 st/min, is taken out first; `fit_scale_detail` finds the
@@ -111,16 +115,22 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
 - A free account gets 3 transcriptions, ever (`FreeTier`), counted per account and per device from
   `TranscriptionJob` rows (`TrialUsage`): charged when a job finishes, and a job still running holds its
-  place until it settles, so starting several at once cannot pass the gate.
+  place until it settles, so starting several at once cannot pass the gate. Every metered submit (uploads,
+  links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
+  (`IQuotaGate`: `user:{id}`, or `device:`/`ip:` for previews); the in-process one assumes a single API
+  instance — scaling out needs a Postgres advisory lock instead.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
-  vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. Pro clients show the
+  vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A song still running holds its
+  credit in the gate and in the displayed count (`SongCredits.CountHeldThisMonthAsync`), and an account may
+  have at most 3 running at once (`SongCredits.ProMaxSongsInProgress`). Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and
   an optional public share token (`GET /api/shared/{token}`, anonymous). A `FolderShare` is one public
   link for a whole folder (`GET /api/shared/folders/{token}`), which lists every sheet filed in it,
-  sharing ones filed later on read. "Transpose for my
+  opened through the folder link (`GET /api/shared/folders/{token}/sheets/{id}`, only while filed in it); a
+  folder share never gives a sheet a token of its own. "Transpose for my
   choir" is the one edit that moves the notes: `Transcription.Transpose` shifts melody, parts
   and key and respells both scores with `Core/Notation/MusicXmlTransposer`.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous

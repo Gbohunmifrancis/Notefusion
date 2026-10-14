@@ -61,7 +61,7 @@ public class PreviewTests
         var api = new FakeApi();
 
         // The website always sends one; without it the only ceiling left was the address's.
-        var result = await new SubmitPreviewCommandHandler(api, h.Db, h.Clock, new StubDeviceFingerprint(null), h.ClientIp, h.Activity())
+        var result = await new SubmitPreviewCommandHandler(api, h.Db, h.Clock, new StubDeviceFingerprint(null), h.ClientIp, h.Activity(), h.QuotaGate)
             .Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default);
 
         Assert.Equal("PREVIEW_LIMIT_REACHED", result.Error.Code);
@@ -197,10 +197,10 @@ public class PreviewTests
     }
 
     private static SubmitPreviewCommandHandler Upload(TestHarness h, FakeApi api, string device)
-        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity());
+        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity(), h.QuotaGate);
 
     private static SubmitPreviewLinkCommandHandler Link(TestHarness h, FakeApi api, string device = "browser-a")
-        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity());
+        => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity(), h.QuotaGate);
 
     private sealed class FakeApi : ITranscriptionApi
     {

@@ -16,7 +16,9 @@ namespace NoteFusion.Api.RateLimiting;
 /// (<see cref="Credentials"/>), making us send mail to somebody (<see cref="EmailDispatch"/>), and
 /// minting accounts for the free transcription grant each one carries (<see cref="Registration"/>). A
 /// single shared limit would have to be as loose as the most chatty of the three, which is login, and
-/// that is the one where volume is the attack.
+/// that is the one where volume is the attack. Two looser ones sit beside them: token refresh
+/// (<see cref="TokenRefresh"/>), which every signed-in client calls, and the site's analytics beacon
+/// (<see cref="WebEvents"/>), which writes a row per event for anyone who calls it.
 /// </para>
 /// <para>
 /// Every limit is per-address and configurable (<c>RateLimit__*</c>), because the right number depends on
@@ -35,12 +37,18 @@ public static class AuthRateLimiting
     /// <summary>Account creation, which hands out the free transcription grant.</summary>
     public const string Registration = "auth-registration";
 
+    /// <summary>Refresh-token rotation, which every signed-in client calls on a schedule.</summary>
+    public const string TokenRefresh = "auth-refresh";
+
+    /// <summary>The website's anonymous analytics beacon, which writes a row per event.</summary>
+    public const string WebEvents = "web-events";
+
     public static IServiceCollection AddNoteFusionRateLimiting(
         this IServiceCollection services, IConfiguration configuration)
     {
         var configured = configuration.GetSection("RateLimit").Get<RateLimitSettings>() ?? new RateLimitSettings();
 
-        // Turning it off still registers all three policies: an [EnableRateLimiting] attribute naming a
+        // Turning it off still registers every policy: an [EnableRateLimiting] attribute naming a
         // policy that does not exist throws at the first request, so removing the limiter has to leave the
         // names resolvable. An unreachable permit count is what "off" looks like.
         var settings = configured.Enabled ? configured : configured.Disabled();
@@ -56,6 +64,12 @@ public static class AuthRateLimiting
 
             options.AddPolicy(Registration, context => SlidingWindow(
                 context, settings, settings.RegistrationPermits, settings.RegistrationWindowSeconds));
+
+            options.AddPolicy(TokenRefresh, context => SlidingWindow(
+                context, settings, settings.RefreshPermits, settings.RefreshWindowSeconds));
+
+            options.AddPolicy(WebEvents, context => SlidingWindow(
+                context, settings, settings.WebEventsPermits, settings.WebEventsWindowSeconds));
 
             options.OnRejected = async (context, cancellationToken) =>
             {
@@ -74,7 +88,7 @@ public static class AuthRateLimiting
                 // Same envelope as every other failure this API returns, so a client that already knows
                 // how to read an error does not need a second code path for this one. Wording is
                 // deliberately incurious about which limit was hit: naming the policy would tell an
-                // attacker which of the three they tripped.
+                // attacker which of the policies they tripped.
                 await context.HttpContext.Response.WriteAsJsonAsync(
                     new ApiError(
                         "RATE_LIMITED",
@@ -211,6 +225,23 @@ public sealed class RateLimitSettings
 
     public int RegistrationWindowSeconds { get; set; } = 3600;
 
+    /// <summary>
+    /// Token refresh. A client refreshes about once an access-token lifetime and again on a 401, but a mobile
+    /// carrier puts many phones behind one address, so 120 a minute leaves a crowded address plenty of room
+    /// while still capping how fast stolen or guessed tokens can be tried — each attempt is a bcrypt verify.
+    /// </summary>
+    public int RefreshPermits { get; set; } = 120;
+
+    public int RefreshWindowSeconds { get; set; } = 60;
+
+    /// <summary>
+    /// The site's analytics beacon. The tracker batches, so a busy reader sends a handful a minute; sixty is
+    /// room for several tabs and a shared address, and a ceiling on how fast anyone can fill the table.
+    /// </summary>
+    public int WebEventsPermits { get; set; } = 60;
+
+    public int WebEventsWindowSeconds { get; set; } = 60;
+
     /// <summary>A copy with every limit effectively removed, used when <see cref="Enabled"/> is false.</summary>
     internal RateLimitSettings Disabled() => new()
     {
@@ -219,5 +250,7 @@ public sealed class RateLimitSettings
         CredentialsPermits = int.MaxValue,
         EmailPermits = int.MaxValue,
         RegistrationPermits = int.MaxValue,
+        RefreshPermits = int.MaxValue,
+        WebEventsPermits = int.MaxValue,
     };
 }

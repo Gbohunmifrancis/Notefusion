@@ -194,6 +194,37 @@
     errorBox.hidden = false;
   }
 
+  /**
+   * What a failed call shows. The API's own words for an expected failure (a 4xx with its
+   * {code, message, details?} envelope) pass through; no network, a 429, a 5xx or a reply that is
+   * not the API's JSON becomes a plain sentence, so no server or browser error text reaches the page.
+   */
+  function problemLines(err, fallback) {
+    var status = err && typeof err.status === "number" ? err.status : -1;
+    var body = err && err.body;
+    if (status === 0) return ["We couldn't reach NoteFusion. Check your connection and try again."];
+    if (status === 429) return ["That's a lot of requests at once. Wait a moment and try again."];
+    if (status < 400 || status >= 500 || !body || typeof body.message !== "string" || !body.message) return [fallback];
+    var lines = [body.message];
+    if (body.details && typeof body.details === "object") {
+      // The validation envelope's details are field -> [messages].
+      Object.keys(body.details).forEach(function (field) {
+        (body.details[field] || []).forEach(function (line) { if (line) lines.push(String(line)); });
+      });
+    }
+    return lines;
+  }
+  /** Fills a notice with one paragraph per line, as text. */
+  function showLines(box, lines) {
+    box.innerHTML = "";
+    lines.forEach(function (line) {
+      var p = document.createElement("p");
+      p.textContent = line;
+      box.appendChild(p);
+    });
+    box.hidden = false;
+  }
+
   var params = new URLSearchParams(window.location.search);
   var token = params.get("token") || "";
   var email = params.get("email") || "";
@@ -248,47 +279,28 @@
       body: JSON.stringify({ email: email, token: token, newPassword: pw.value })
     }).then(function (response) {
       // 204 is the success contract. Anything else carries an ApiError envelope
-      // {code, message, details?}, so the message shown is the API's own wording
-      // rather than a guess made here from the status code.
+      // {code, message, details?}; problemLines decides what of it is shown.
       if (response.status === 204) return null;
-      return response.json().then(function (body) { throw body; },
-                                  function () { throw { message: null }; });
-    }).then(function () {
+      return response.json().then(function (body) { throw { status: response.status, body: body }; },
+                                  function () { throw { status: response.status, body: null }; });
+    }, function () { throw { status: 0, body: null }; }).then(function () {
       form.hidden = true;
       doneBox.innerHTML = "<p><strong>Your password is set.</strong></p>";
       doneBox.hidden = false;
       closing.hidden = false;
-    }).catch(function (body) {
+    }).catch(function (err) {
       submit.disabled = false;
       submit.textContent = "Set new password";
-
-      var message = (body && body.message) ||
-        "Something went wrong setting your password. Try again in a moment.";
-      var detail = "";
-      if (body && body.details) {
-        // The validation envelope's details are field -> [messages].
-        Object.keys(body.details).forEach(function (field) {
-          (body.details[field] || []).forEach(function (line) {
-            detail += "<p>" + escapeHtml(line) + "</p>";
-          });
-        });
-      }
-      fail("<p>" + escapeHtml(message) + "</p>" + detail);
+      showLines(errorBox, problemLines(err, "Something went wrong setting your password. Try again in a moment."));
     });
   });
-
-  function escapeHtml(text) {
-    var div = document.createElement("div");
-    div.textContent = String(text);
-    return div.innerHTML;
-  }
 })();
 </script>
 
 
 <!-- Page Pulse Tracking Script -->
 <!-- End Page Pulse Tracking Script -->
-<script src="/assets/track.js?v=2" defer></script>
+<script src="/assets/track.js?v=4" defer></script>
 </body>
 
 </html>

@@ -154,6 +154,53 @@ public class LinkTranscriptionTests
     }
 
     [Fact]
+    public async Task A_song_still_running_holds_its_place_in_the_month()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        SpendSongs(h, user, SongCredits.ProMonthlyAllowance - 1, pro: true);
+        var api = new FakeTranscriptionApi();
+
+        Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+        // Charged only when it finishes, but counted while it runs, or the twentieth could be started
+        // any number of times before the first of them finished.
+        var second = await SubmitLink(h, user, api);
+
+        Assert.Equal("BILLING_SONG_CREDITS_EXHAUSTED", second.Error.Code);
+        Assert.Equal(0, (await Shown(h, user)).SongCreditsRemaining);
+        Assert.Equal("BILLING_SONG_CREDITS_EXHAUSTED", (await SubmitUpload(h, user, api, separate: true)).Error.Code);
+    }
+
+    [Fact]
+    public async Task Three_songs_in_progress_refuse_a_fourth_until_one_settles()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+        Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+        Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+        Assert.True((await SubmitUpload(h, user, api, separate: true)).IsSuccess); // a song upload is a song too
+
+        var fourth = await SubmitLink(h, user, api);
+        Assert.Equal("BILLING_SONGS_IN_PROGRESS", fourth.Error.Code);
+        Assert.Equal("You have 3 songs in progress. Wait for one to finish, then try again.", fourth.Error.Message);
+        Assert.Equal("BILLING_SONGS_IN_PROGRESS", (await SubmitUpload(h, user, api, separate: true)).Error.Code);
+        // A plain recording is not a song, and is not held up by them.
+        Assert.True((await SubmitUpload(h, user, api, separate: false)).IsSuccess);
+
+        // One fails: it settles uncharged and frees its place.
+        h.Db.TranscriptionJobs.First(j => j.Kind == TranscriptionJobKind.Link).Settle(null, Now.AddMinutes(2));
+        h.Db.SaveChanges();
+        Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+
+        // One the worker lost stops holding a place when the sweep would give up on it.
+        h.Clock.UtcNow = Now + TrialUsage.RunningFor + TimeSpan.FromMinutes(1);
+        Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+    }
+
+    [Fact]
     public async Task Last_months_songs_do_not_count_against_this_month()
     {
         using var h = new TestHarness(Now);
@@ -163,7 +210,8 @@ public class LinkTranscriptionTests
 
         Assert.True((await SubmitLink(h, user)).IsSuccess);
         Assert.Equal(SongCredits.ProMonthlyAllowance, (await Shown(h, user)).SongCreditsTotal);
-        Assert.Equal(SongCredits.ProMonthlyAllowance, (await Shown(h, user)).SongCreditsRemaining);
+        // Only this month: the song just started holds one place, last month's twenty none.
+        Assert.Equal(SongCredits.ProMonthlyAllowance - 1, (await Shown(h, user)).SongCreditsRemaining);
     }
 
     [Fact]
@@ -194,7 +242,7 @@ public class LinkTranscriptionTests
         var api = new FakeTranscriptionApi();
 
         await new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id))
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null),
                 CancellationToken.None);
 
@@ -218,7 +266,8 @@ public class LinkTranscriptionTests
         Assert.Equal(TranscriptionJobKind.Song, job.Kind);
         Assert.True(job.WasPro);
         Assert.Null(job.SongCreditConsumedAtUtc);
-        Assert.Equal(20, (await Shown(h, user)).SongCreditsRemaining);
+        // Not charged yet, but it holds its place while it runs, as the gate counts it.
+        Assert.Equal(19, (await Shown(h, user)).SongCreditsRemaining);
 
         api.Status = TranscriptionStatus.Done;
         await Poll(h, user, submitted.Value, api);
@@ -363,7 +412,7 @@ public class LinkTranscriptionTests
         await SubmitUpload(h, user, api, separate: false, keyboardTranspose: transpose);
         Assert.Equal(transpose, api.LastOptions!.KeyboardTranspose);
 
-        await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
+        await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Chords, null, null, KeyboardTranspose: transpose), CancellationToken.None);
         Assert.Equal(transpose, api.LastOptions!.KeyboardTranspose);
         Assert.Equal(TranscriptionMode.Chords, api.LastOptions.Mode);
@@ -380,7 +429,7 @@ public class LinkTranscriptionTests
         var api = new FakeTranscriptionApi();
 
         var upload = await SubmitUpload(h, user, api, separate: false, keyboardTranspose: transpose);
-        var link = await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
+        var link = await new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Melody, null, null, KeyboardTranspose: transpose), CancellationToken.None);
 
         Assert.Equal("TRANS_INVALID_KEYBOARD_TRANSPOSE", upload.Error.Code);
@@ -401,7 +450,7 @@ public class LinkTranscriptionTests
         var api = new FakeTranscriptionApi();
 
         await new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id))
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "keys.m4a", TranscriptionMode.Chords, null, null, Separate: separate),
                 CancellationToken.None);
 
@@ -464,12 +513,12 @@ public class LinkTranscriptionTests
     private static Task<Result<string>> SubmitLink(
         TestHarness h, User user, FakeTranscriptionApi? api = null, string url = Link)
         => new SubmitLinkTranscriptionCommandHandler(
-                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id))
+                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitLinkTranscriptionCommand(url, TranscriptionMode.Melody, null, null), CancellationToken.None);
 
     private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeTranscriptionApi api, bool separate, int keyboardTranspose = 0)
         => new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id))
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "song.m4a", TranscriptionMode.Melody, null, null, Separate: separate, KeyboardTranspose: keyboardTranspose),
                 CancellationToken.None);
 

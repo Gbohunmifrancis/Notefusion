@@ -22,8 +22,13 @@ public sealed class SharedController : ApiControllerBase
     public async Task<IActionResult> Get(string token, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetSharedTranscriptionQuery(token), ct));
 
-    /// <summary>A shared folder: its name, who shared it, and the token of each sheet in it.</summary>
+    /// <summary>A shared folder: its name, who shared it, and the id of each sheet in it.</summary>
     [HttpGet("folders/{token}")]
     public async Task<IActionResult> GetFolder(string token, CancellationToken ct)
         => HandleResult(await _sender.Send(new GetSharedFolderQuery(token), ct));
+
+    /// <summary>One sheet of a shared folder, through the folder's link; the same body as <see cref="Get"/>.</summary>
+    [HttpGet("folders/{token}/sheets/{sheetId:guid}")]
+    public async Task<IActionResult> GetFolderSheet(string token, Guid sheetId, CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetSharedFolderSheetQuery(token, sheetId), ct));
 }

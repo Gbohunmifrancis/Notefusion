@@ -59,6 +59,10 @@ public sealed class ChangePasswordCommandHandler : IRequestHandler<ChangePasswor
             return AuthErrors.CurrentPasswordIncorrect;
 
         user.ChangePassword(_hasher.Hash(request.NewPassword), _clock.UtcNow);
+
+        // Every other session ends with the old password. Revoked before the fresh pair is issued, so the
+        // one this caller gets back is the only one left standing.
+        await RefreshTokenRevocation.RevokeAllAsync(_db, user.Id, _clock.UtcNow, cancellationToken);
         var tokens = _tokenIssuer.Issue(user);
         await _db.SaveChangesAsync(cancellationToken);
 

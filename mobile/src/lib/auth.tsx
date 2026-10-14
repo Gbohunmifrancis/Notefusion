@@ -2,7 +2,8 @@ import React, { createContext, useContext, useEffect, useMemo, useRef, useState 
 import { onSessionExpired } from '../api/client';
 import { authApi, meApi } from '../api/endpoints';
 import { tokenStore } from '../lib/tokenStore';
-import { registerForPushAsync } from '../lib/push';
+import { registerForPushAsync, unregisterPushAsync } from '../lib/push';
+import * as Listen from '../../modules/notefusion-listen';
 import { googleAuthConfigured } from '../lib/env';
 import { getGoogleIdToken } from '../lib/googleSignin';
 import {
@@ -111,6 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => onSessionExpired(() => {
+    // The server has already refused the refresh token and the pair is cleared, so the push token
+    // cannot be unregistered from here: that authenticated call would only 401 into this handler
+    // again. The microphone, at least, belongs to the session that just ended.
+    Listen.stop();
     void setAnalyticsUserId(null);
     setUserState(null);
   }), []);
@@ -193,6 +198,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return promptGoogleIdToken(true);
       },
       async signOut() {
+        // Both before the tokens go: the listener belongs to this session, and unregistering the
+        // push token is an authenticated call. Neither failure stops the sign-out.
+        Listen.stop();
+        await unregisterPushAsync();
         const refresh = await tokenStore.getRefresh();
         if (refresh) await authApi.logout(refresh).catch(() => undefined);
         await tokenStore.clear();

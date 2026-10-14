@@ -5,13 +5,15 @@ with zero transcription error, bypassing acoustic ML inference completely.
 """
 
 import base64
+import logging
 import tempfile
+import zipfile
 from pathlib import Path
 
 import numpy as np
 from music21 import converter, key as m21key, meter, note as m21note, stream, tempo as m21tempo
 
-from app.config import settings
+from app.config import TEMP_PREFIX, settings
 from app.pipeline import solfa, solfa_render
 from app.pipeline.transcriber import (
     LowConfidenceError,
@@ -26,6 +28,41 @@ from app.pipeline.transcriber import (
 )
 
 ACCEPTED_SCORE_SUFFIXES = {".musicxml", ".xml", ".mxl", ".mid", ".midi", ".abc"}
+
+logger = logging.getLogger(__name__)
+
+#: The most a compressed MusicXML (.mxl) may unpack to: a whole choral work is a few MB of
+#: XML, and a zip is small on the wire however large it unpacks (a "zip bomb").
+MXL_MAX_UNCOMPRESSED_BYTES = 20 * 1024 * 1024
+MXL_MAX_ENTRIES = 256
+
+#: What the user is told about a score that cannot be read: fixed words, the detail is logged.
+UNREADABLE_SCORE = ("This score file could not be read. Check it opens in your notation app, "
+                    "or export it again as MusicXML or MIDI.")
+
+
+def _check_xml(data: bytes) -> None:
+    """Parse with defusedxml, which refuses entity expansion and external entities; raises on
+    anything unsafe or malformed."""
+    import defusedxml.ElementTree as defused_et
+
+    defused_et.fromstring(data)
+
+
+def _check_mxl(path: Path) -> None:
+    """A compressed MusicXML is a zip: its unpacked size is bounded before anything is read,
+    and every XML inside it is parsed with defusedxml before music21 sees it."""
+    with zipfile.ZipFile(path) as archive:
+        members = archive.infolist()
+        if len(members) > MXL_MAX_ENTRIES:
+            raise ValueError(f"{len(members)} entries in the archive")
+        total = sum(m.file_size for m in members)
+        if total > MXL_MAX_UNCOMPRESSED_BYTES:
+            raise ValueError(f"archive unpacks to {total} bytes")
+        for member in members:
+            if member.filename.lower().endswith((".xml", ".musicxml")):
+                # ZipExtFile stops at the size the header declared, so the check above holds.
+                _check_xml(archive.read(member))
 
 
 def _extract_part_notes_and_solfa(
@@ -100,20 +137,18 @@ def transcribe_score(
 ) -> TranscriptionResult:
     """Parse a symbolic score file and produce tonic sol-fa + staff notation."""
     try:
-        if score_path.suffix.lower() in (".xml", ".musicxml"):
-            try:
-                import defusedxml.ElementTree as defused_et
-                defused_et.parse(str(score_path))
-            except ImportError:
-                pass
-            except Exception as xml_exc:
-                raise LowConfidenceError(f"Invalid or unsafe XML in score file: {xml_exc}") from xml_exc
+        suffix = score_path.suffix.lower()
+        if suffix in (".xml", ".musicxml"):
+            _check_xml(score_path.read_bytes())
+        elif suffix == ".mxl":
+            _check_mxl(score_path)
 
         score = converter.parse(str(score_path))
-    except LowConfidenceError:
-        raise
     except Exception as exc:
-        raise LowConfidenceError(f"Could not parse score file: {exc}") from exc
+        # The parser's words name the file's internals and echo its content; the user gets
+        # the plain sentence and the log the detail.
+        logger.warning("Score file %s not parsed: %s: %s", suffix, type(exc).__name__, exc)
+        raise LowConfidenceError(UNREADABLE_SCORE) from exc
 
     # Select the primary melodic part (soprano / melody line or requested part index)
     if score.hasPartLikeStreams():
@@ -181,7 +216,7 @@ def transcribe_score(
     # ── 6. Exports & Preview ─────────────────────────────────────────────────
     musicxml = export_musicxml(score_measures)
 
-    with tempfile.NamedTemporaryFile(suffix=".mid", delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=".mid", delete=False) as tmp:
         midi_path = Path(tmp.name)
     try:
         score_measures.write("midi", fp=str(midi_path))

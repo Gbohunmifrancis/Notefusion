@@ -46,7 +46,23 @@ export const api: AxiosInstance = axios.create({
 
 // Endpoints that must never carry a (possibly stale) Bearer token or trigger the
 // refresh dance — they ARE the auth flow.
-const AUTH_FREE = ['/api/auth/login', '/api/auth/register', '/api/auth/refresh'];
+const AUTH_FREE = [
+  '/api/auth/login',
+  '/api/auth/register',
+  '/api/auth/refresh',
+  '/api/auth/google',
+  '/api/auth/verify-email',
+  '/api/auth/resend-verification',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password',
+];
+
+/**
+ * 401 codes the API returns for a wrong password on an authenticated route (delete-account's
+ * re-authentication, change-password's current password). The access token was fine, so a refresh
+ * would only rotate the pair and replay the request — a replayed DELETE, at that.
+ */
+const BUSINESS_401 = new Set(['AUTH_REAUTHENTICATION_REQUIRED', 'AUTH_INVALID_CREDENTIALS']);
 
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   if (config.data instanceof FormData) {
@@ -65,30 +81,45 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-let refreshInFlight: Promise<string | null> | null = null;
+let refreshInFlight: Promise<RefreshOutcome> | null = null;
+
+/**
+ * - `fresh`: rotated; replay with the new access token.
+ * - `expired`: the server refused the refresh token (400/401), or there is none — the session is over.
+ * - `unreachable`: network error, timeout, 429 or 5xx — the session may be fine, so tokens are kept
+ *   and the original request fails as a connection error.
+ */
+type RefreshOutcome =
+  | { kind: 'fresh'; accessToken: string }
+  | { kind: 'expired' }
+  | { kind: 'unreachable' };
 
 /** Rotate the token pair exactly once even under concurrent 401s. */
-async function refreshAccessToken(): Promise<string | null> {
+function refreshAccessToken(): Promise<RefreshOutcome> {
   if (refreshInFlight) return refreshInFlight;
 
-  refreshInFlight = (async () => {
-    const refreshToken = await tokenStore.getRefresh();
-    if (!refreshToken) return null;
+  refreshInFlight = (async (): Promise<RefreshOutcome> => {
     try {
+      const refreshToken = await tokenStore.getRefresh();
+      if (!refreshToken) return { kind: 'expired' };
       const { data } = await axios.post<TokenPairResponse>(
         `${baseURL}/api/auth/refresh`,
         { refreshToken },
-        { headers: { 'Content-Type': 'application/json' } },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 25_000 },
       );
       await tokenStore.save(data.accessToken, data.refreshToken);
-      return data.accessToken;
-    } catch {
-      await tokenStore.clear();
-      return null;
-    } finally {
-      refreshInFlight = null;
+      return { kind: 'fresh', accessToken: data.accessToken };
+    } catch (e) {
+      const status = (e as AxiosError)?.response?.status;
+      if (status === 400 || status === 401) {
+        await tokenStore.clear().catch(() => undefined);
+        return { kind: 'expired' };
+      }
+      return { kind: 'unreachable' };
     }
-  })();
+  })().finally(() => {
+    refreshInFlight = null;
+  });
 
   return refreshInFlight;
 }
@@ -111,16 +142,23 @@ api.interceptors.response.use(
       status === 401 &&
       original &&
       !original._retried &&
-      !AUTH_FREE.some((p) => original.url?.startsWith(p));
+      !AUTH_FREE.some((p) => original.url?.startsWith(p)) &&
+      !BUSINESS_401.has(error.response?.data?.code ?? '');
 
     if (isRetryableAuth) {
       original!._retried = true;
-      const fresh = await refreshAccessToken();
-      if (fresh) {
-        original!.headers.set('Authorization', `Bearer ${fresh}`);
+      const outcome = await refreshAccessToken();
+      if (outcome.kind === 'fresh') {
+        original!.headers.set('Authorization', `Bearer ${outcome.accessToken}`);
         return api(original!);
       }
-      sessionExpiredListeners.forEach((fn) => fn());
+      if (outcome.kind === 'expired') {
+        sessionExpiredListeners.forEach((fn) => fn());
+      } else {
+        // The refresh never got an answer: report the original call as a connection failure
+        // (toApiError reads a response-less error as offline), not as a 401 to sign out over.
+        return Promise.reject(Object.assign(error, { response: undefined }));
+      }
     }
 
     return Promise.reject(error);

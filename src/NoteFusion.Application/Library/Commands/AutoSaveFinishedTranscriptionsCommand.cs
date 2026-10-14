@@ -1,6 +1,7 @@
 using System.Globalization;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
@@ -72,6 +73,16 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
         var saved = alreadySaved.Select(t => (t.UserId, t.SourceJobId!)).ToHashSet();
         var liveUsers = (await _db.Users.Where(u => userIds.Contains(u.Id)).Select(u => u.Id).ToListAsync(ct)).ToHashSet();
 
+        // The cached result is the worker's whole answer, parts and MIDI included. A free owner is kept
+        // what the poll hands them (ProGate.ForFree), never more: the four-part harmony is Pro, and a
+        // sheet saved behind their back must not be the way round that.
+        var proUsers = new HashSet<Guid>();
+        foreach (var userId in liveUsers)
+        {
+            if (await ProStatus.IsProAsync(_db, _clock, userId, ct))
+                proUsers.Add(userId);
+        }
+
         var kept = 0;
         foreach (var job in jobs)
         {
@@ -81,6 +92,8 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
                 continue;
             if (TranscriptionResultCache.Deserialize(job.ResultJson!) is not { } result)
                 continue;
+            if (!proUsers.Contains(job.UserId))
+                result = ProGate.ForFree(result);
             if (ToSheet(job, result) is not { } sheet)
                 continue;
 

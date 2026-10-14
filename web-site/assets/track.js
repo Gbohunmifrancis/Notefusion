@@ -81,11 +81,14 @@
   document.addEventListener("click", function (e) {
     var el = e.target && e.target.closest ? e.target.closest("a,button,[role='button'],input[type='submit']") : null;
     if (!el) return;
-    var name = el.getAttribute("data-track") || el.getAttribute("aria-label") || (el.innerText || el.value || "").replace(/\s+/g, " ").trim();
+    // A list of the user's own things (sheet titles, folder names) names its items with
+    // data-track-items on the list, so what they wrote never becomes the label.
+    var group = el.closest("[data-track-items]");
+    var name = el.getAttribute("data-track") || (group && group.getAttribute("data-track-items")) || el.getAttribute("aria-label") || (el.innerText || el.value || "").replace(/\s+/g, " ").trim();
     if (!name) return;
     var target = null;
     if (el.tagName === "A" && el.getAttribute("href")) {
-      try { var u = new URL(el.getAttribute("href"), location.href); target = u.hostname === location.hostname ? u.pathname + u.search : u.hostname; } catch (err) { target = null; }
+      try { var u = new URL(el.getAttribute("href"), location.href); target = u.hostname === location.hostname ? u.pathname : u.hostname; } catch (err) { target = null; }
     }
     push("click", name.slice(0, 120), target);
   }, true);

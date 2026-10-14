@@ -20,7 +20,7 @@
   --color-brand-050: rgba(37, 99, 235, 0.06);
   --color-ink-950: #0F172A;
   --color-ink-700: #334155;
-  --color-ink-500: #64748B;
+  --color-ink-500: #5B6B82;  /* muted text: 4.5:1 and more on every light surface, #EEF3FB included */
   --color-ink-300: #94A3B8;
   --color-surface-canvas: #F4F7FC;
   --color-surface-base: #FFFFFF;
@@ -30,6 +30,9 @@
 
   --blue: #2563EB;          /* the fill blue: buttons, selected chips */
   --blue-dark: #1D4ED8;     /* blue as text and icons on a surface */
+  --blue-fill: #2563EB;     /* blue under white text: buttons, the selected chip */
+  --blue-fill-hover: #1D4ED8;
+  --input-line: #7B889D;    /* a field's edge: 3:1 and more against the page and the field, so the box is seen */
   --blue-soft: rgba(37, 99, 235, 0.10);
   --blue-tint: rgba(37, 99, 235, 0.07);
   --brand-gradient: linear-gradient(#2563EB, #2563EB);
@@ -64,7 +67,7 @@
   --color-ink-950: #F3F6FB;
   --color-ink-700: #C9D1DF;
   --color-ink-500: #8B95AA;
-  --color-ink-300: #5A6478;
+  --color-ink-300: #7C879C;
   --color-surface-canvas: #07090E;
   --color-surface-base: #0E121A;
   --color-surface-subtle: #151A24;
@@ -74,6 +77,9 @@
   --blue: #2F7BFF;
   --blue-dark: #9CC2FF;     /* "ice": blue as text on the dark canvas, where the fill weight goes muddy */
   --blue-deep: #1B5FE0;
+  --blue-fill: #1B5FE0;     /* white on #2F7BFF is under 4.5:1; the deeper blue carries white text */
+  --blue-fill-hover: #1650C4;
+  --input-line: rgba(255, 255, 255, 0.38);
   --blue-soft: rgba(47, 123, 255, 0.14);
   --blue-tint: rgba(47, 123, 255, 0.10);
   --brand-gradient: linear-gradient(#2F7BFF, #2F7BFF);
@@ -121,9 +127,9 @@ h1 { font-weight: 700; letter-spacing: -0.035em; }
 .btn-sm { border-radius: 10px; min-height: 38px; padding: 6px 14px; }
 /* An icon button is all icon: the .btn padding above would squeeze the icon to nothing. */
 .btn-icon { border-radius: 10px; width: 40px; min-height: 40px; padding: 0; }
-.btn-primary { background: var(--blue); color: #fff; box-shadow: none; }
+.btn-primary { background: var(--blue-fill); color: #fff; box-shadow: none; }
 @media (hover: hover) {
-  .btn-primary:hover:not(:disabled) { transform: none; box-shadow: none; background: var(--color-brand-600); }
+  .btn-primary:hover:not(:disabled) { transform: none; box-shadow: none; background: var(--blue-fill-hover); }
   .btn-ghost:hover:not(:disabled) { background: var(--wash); border-color: var(--line-strong); }
 }
 .btn-ghost { background: var(--wash); border-color: var(--line); color: var(--ink); }
@@ -137,10 +143,10 @@ h1 { font-weight: 700; letter-spacing: -0.035em; }
 
 /* ── Fields ──────────────────────────────────────────────────────────────── */
 input[type=text], input[type=url], input[type=email], input[type=password], textarea, select {
-  border-radius: 12px; min-height: 48px; background: var(--surface); border-color: var(--line-strong);
+  border-radius: 12px; min-height: 48px; background: var(--surface); border-color: var(--input-line);
 }
 :root[data-theme="dark"] :is(input[type=text], input[type=url], input[type=email], input[type=password], textarea, select) {
-  background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.10); color: var(--ink);
+  background: rgba(255, 255, 255, 0.05); border-color: var(--input-line); color: var(--ink);
 }
 input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shadow: var(--ring); }
 
@@ -168,8 +174,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 :root[data-theme="dark"] .topbar { border-bottom-color: rgba(255, 255, 255, 0.06); }
 .nav-item { border-radius: 10px; }
 .nav-item.on { background: var(--blue-soft); color: var(--blue-dark); }
-.nav-new, .nav-new.on { background: var(--blue); color: #fff; box-shadow: none; border-radius: 10px; }
-@media (hover: hover) { .nav-new:hover { background: var(--color-brand-600); box-shadow: none; } }
+.nav-new, .nav-new.on { background: var(--blue-fill); color: #fff; box-shadow: none; border-radius: 10px; }
+@media (hover: hover) { .nav-new:hover { background: var(--blue-fill-hover); box-shadow: none; } }
 :root[data-theme="dark"] .theme-switch, :root[data-theme="dark"] .theme-seg { background: rgba(255, 255, 255, 0.06); }
 :root[data-theme="dark"] .theme-switch button.on, :root[data-theme="dark"] .theme-seg button.on { background: rgba(255, 255, 255, 0.12); box-shadow: none; }
 :root[data-theme="dark"] .user-menu { box-shadow: var(--shadow-elevated); }
@@ -204,8 +210,8 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio .drop:hover, .studio .drop.is-over { border-color: var(--blue); background: var(--blue-tint); }
 .studio .drop-ic { color: var(--blue-dark); }
 .studio .drop-hint { color: var(--muted); }
-.btn.btn-light { background: var(--blue); color: #fff; box-shadow: none; }
-@media (hover: hover) { .btn.btn-light:hover:not(:disabled) { background: var(--color-brand-600); transform: none; } }
+.btn.btn-light { background: var(--blue-fill); color: #fff; box-shadow: none; }
+@media (hover: hover) { .btn.btn-light:hover:not(:disabled) { background: var(--blue-fill-hover); transform: none; } }
 
 /* What is in the recording: wraps instead of running off the card. */
 .studio .studio-kind { display: flex; flex-wrap: wrap; gap: 6px; background: none; padding: 0; margin: 14px 0 0; justify-content: center; }
@@ -215,7 +221,7 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio .studio-kind label:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
 .studio-opt { color: var(--copy); }
 .studio-opt input[type=checkbox] { accent-color: var(--blue); }
-.studio-opt select { color: var(--ink); border-color: var(--line-strong); background-color: var(--wash); }
+.studio-opt select { color: var(--ink); border-color: var(--input-line); background-color: var(--wash); }
 .studio-opt select option { color: initial; background: initial; }
 .studio-credits, .studio-status { color: var(--muted); }
 
@@ -223,10 +229,10 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio-rec-stage { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 22px 0 8px; }
 .studio-rec {
   position: relative; width: 84px; height: 84px; min-height: 84px; padding: 0; margin: 0 0 14px; border-radius: 50%;
-  background: var(--blue); color: #fff; border: 0; box-shadow: none;
+  background: var(--blue-fill); color: #fff; border: 0; box-shadow: none;
 }
 .studio-rec::before { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 1px solid var(--line-strong); pointer-events: none; }
-@media (hover: hover) { .studio-rec:hover:not(:disabled) { background: var(--color-brand-600); } }
+@media (hover: hover) { .studio-rec:hover:not(:disabled) { background: var(--blue-fill-hover); } }
 .studio-rec .ic { width: 30px; height: 30px; stroke-width: 1.8; }
 .studio-rec-label { font-weight: 600; color: var(--ink); }
 .studio-rec-hint { font-size: 0.85rem; color: var(--muted); }
@@ -234,9 +240,9 @@ input:focus, textarea:focus, select:focus { border-color: var(--blue); box-shado
 .studio .btn-rec, .studio .btn-rec .ic { color: #fff; }
 
 /* Link: one field, the button inside the same row. */
-.studio-link .input-wrap input { background: var(--wash); border-color: var(--line-strong); color: var(--ink); padding-left: 104px; border-radius: 999px; min-height: 54px; }
-:root[data-theme="dark"] .studio-link .input-wrap input { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); }
-.studio-link .input-wrap input::placeholder { color: var(--faint); }
+.studio-link .input-wrap input { background: var(--wash); border-color: var(--input-line); color: var(--ink); padding-left: 104px; border-radius: 999px; min-height: 54px; }
+:root[data-theme="dark"] .studio-link .input-wrap input { background: rgba(255, 255, 255, 0.05); border-color: var(--input-line); }
+.studio-link .input-wrap input::placeholder { color: var(--muted); }
 .studio-link .input-wrap input:focus { border-color: var(--blue); box-shadow: var(--ring); background: var(--wash); }
 :root[data-theme="dark"] .studio-link .input-wrap input:focus { background: rgba(255, 255, 255, 0.07); }
 .provider-marks { color: var(--muted); left: 18px; }
@@ -318,7 +324,7 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 :root[data-theme="dark"] .lib-item { background: rgba(255, 255, 255, 0.03); }
 .lib-key { border-radius: 14px; background: var(--blue-soft); color: var(--blue-dark); font-family: var(--font-mono); }
 .lib-chip { border-radius: 999px; }
-.lib-chip.on { background: var(--blue); border-color: var(--blue); }
+.lib-chip.on { background: var(--blue-fill); border-color: var(--blue-fill); }
 @media (hover: hover) { .lib-item:hover { transform: none; border-color: rgba(47, 123, 255, 0.45); } }
 
 /* ── Sign in: the night auth screen ──────────────────────────────────────── */
@@ -336,6 +342,10 @@ table.hymn, .chord-chip em, .sing-live, .mark { font-family: var(--font-mono); }
 .nf-rec-card, .nf-rec-heading, .nf-rec .nf-rec-btn { font-family: var(--font-sans); }
 .nf-rec .nf-rec-btn { border-radius: 999px; }
 :root[data-theme="dark"] .nf-rec-card { background: #0E121A; border: 1px solid rgba(255, 255, 255, 0.08); }
+
+/* Tap targets: the menu button and the account photo in the top bar are at least 44px square. */
+.topbar .drawer-toggle { width: 44px; min-height: 44px; }
+.avatar-btn { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
 
 @media (max-width: 640px) {
   .studio { padding: 14px; border-radius: 22px; }

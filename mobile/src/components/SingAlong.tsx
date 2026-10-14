@@ -68,6 +68,7 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
   const [grade, setGrade] = useState<GradeResult | null>(null);
   const leadIn = useRef(0);
   const player = useRef<AudioPlayer | null>(null);
+  const leadFile = useRef<File | null>(null);
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
   const stopAt = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startedAt = useRef(0);
@@ -81,6 +82,9 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
     stopAt.current = null;
     try { player.current?.remove(); } catch { /* already released */ }
     player.current = null;
+    // The count-in WAV is written fresh for every take; once its player is gone it has no use.
+    try { if (leadFile.current?.exists) leadFile.current.delete(); } catch { /* already gone */ }
+    leadFile.current = null;
   }
 
   async function start() {
@@ -96,6 +100,7 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
       leadIn.current = lead.seconds;
       const file = new File(Paths.cache, `notefusion-leadin-${Date.now()}.wav`);
       file.write(lead.wavBase64, { encoding: "base64" });
+      leadFile.current = file;
       await recorder.prepareToRecordAsync();
       recorder.record();
       startedAt.current = Date.now();
@@ -113,7 +118,8 @@ export function SingAlong({ melody, parts, tempoBpm, timeSignature, isPro, onReq
     } catch (e) {
       cleanup();
       setPhase("idle");
-      setError(e instanceof Error ? e.message : "Could not start recording.");
+      if (__DEV__) console.warn("[sing-along] start failed", e);
+      setError("Could not start recording. Please try again.");
     }
   }
 
@@ -241,7 +247,7 @@ const makeStyles = (c: Palette) =>
     proTagText: { ...typography.caption, color: c.premiumDeep, fontFamily: fonts.semibold, fontSize: 10 },
     voiceRow: { flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" },
     voiceChip: { paddingVertical: 6, paddingHorizontal: spacing.md, borderRadius: radii.pill, backgroundColor: c.surface, borderWidth: 1, borderColor: c.border },
-    voiceChipOn: { backgroundColor: c.accent, borderColor: c.accent },
+    voiceChipOn: { backgroundColor: c.ink, borderColor: c.ink },
     voiceChipText: { ...typography.caption, color: c.text, fontFamily: fonts.semibold },
     voiceChipTextOn: { color: c.onAccent },
     live: { alignItems: "center", gap: spacing.sm, paddingVertical: spacing.sm },

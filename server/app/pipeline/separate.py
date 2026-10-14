@@ -300,7 +300,9 @@ def _separate_here(wav_path: Path, out_path: Path, progress=lambda f: None,
     import librosa
     import soundfile as sf
 
-    y, sr = librosa.load(str(wav_path), sr=SAMPLE_RATE, mono=False)
+    from app.config import settings
+
+    y, sr = librosa.load(str(wav_path), sr=SAMPLE_RATE, mono=False, duration=settings.audio_limit_seconds)
     if y.ndim == 1:
         y = np.stack([y, y])
     vocals = separate_vocals(y, SAMPLE_RATE, progress=progress)

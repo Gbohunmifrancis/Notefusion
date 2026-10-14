@@ -19,6 +19,7 @@ import { Touchable } from "../components/Touchable";
 import { TextField } from "../components/TextField";
 import { useAuth } from "../lib/auth";
 import { showDialog } from "../lib/dialog";
+import { siteUrls } from "../lib/env";
 import * as haptics from "../lib/haptics";
 import {
   disablePush,
@@ -509,7 +510,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
           <Touchable
             style={styles.linkRow}
-            onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")}
+            onPress={() => WebBrowser.openBrowserAsync(siteUrls.privacy)}
             scaleTo={motion.scale.row}
             accessibilityLabel="Privacy Policy"
           >
@@ -522,7 +523,7 @@ export function SettingsScreen({ navigation, route }: Props) {
 
           <Touchable
             style={styles.linkRow}
-            onPress={() => WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")}
+            onPress={() => WebBrowser.openBrowserAsync(siteUrls.terms)}
             scaleTo={motion.scale.row}
             accessibilityLabel="Terms of Service"
           >

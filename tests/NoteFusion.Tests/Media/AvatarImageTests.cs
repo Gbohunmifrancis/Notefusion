@@ -137,6 +137,47 @@ public class AvatarImageTests
         return new MemoryStream([.. jpeg[..2], .. app1, .. jpeg[2..]]);
     }
 
+    [Fact]
+    public void A_header_declaring_a_huge_picture_is_rejected_before_decoding()
+    {
+        // A real 8x8 PNG whose header has been rewritten to claim 10000x10000 (100 MP): a few hundred bytes
+        // that would ask the decoder for 400 MB.
+        using var small = PngOf(8, 8);
+        var bytes = small.ToArray();
+        WriteBigEndian(bytes, 16, 10_000);
+        WriteBigEndian(bytes, 20, 10_000);
+        WriteBigEndian(bytes, 29, Crc32(bytes.AsSpan(12, 17))); // IHDR type + data, so the header still reads
+
+        using var codec = SKCodec.Create(new MemoryStream(bytes));
+        Assert.NotNull(codec); // the forged header is accepted by the codec; it is the cap that refuses it
+        Assert.Equal(10_000, codec.Info.Width);
+
+        var result = AvatarImage.ToAvatarJpeg(new MemoryStream(bytes));
+
+        Assert.True(result.IsFailure);
+        Assert.Equal(UserErrors.PictureUnsupportedType, result.Error);
+    }
+
+    private static void WriteBigEndian(byte[] buffer, int offset, uint value)
+    {
+        buffer[offset] = (byte)(value >> 24);
+        buffer[offset + 1] = (byte)(value >> 16);
+        buffer[offset + 2] = (byte)(value >> 8);
+        buffer[offset + 3] = (byte)value;
+    }
+
+    private static uint Crc32(ReadOnlySpan<byte> data)
+    {
+        var crc = 0xFFFFFFFFu;
+        foreach (var b in data)
+        {
+            crc ^= b;
+            for (var k = 0; k < 8; k++)
+                crc = (crc & 1) != 0 ? (crc >> 1) ^ 0xEDB88320u : crc >> 1;
+        }
+        return ~crc;
+    }
+
     private static MemoryStream PngOf(int width, int height, SKColor? fill = null)
     {
         using var bitmap = new SKBitmap(width, height);

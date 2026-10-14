@@ -6,9 +6,12 @@ namespace NoteFusion.Application.Common.Interfaces;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <b>Stages, does not save</b> — same contract as <see cref="IAuditLogger"/>. The row joins the same
-/// change tracker as the job it accompanies, so the submit handler's single <c>SaveChangesAsync</c>
-/// commits both or neither, and a device can never be registered for a submission that failed.
+/// <b>Stages updates; saves a first sighting.</b> Changes to a known device join the same change tracker
+/// as the job they accompany, so the submit handler's <c>SaveChangesAsync</c> commits both. A device seen
+/// for the first time is inserted at once, in its own save, so that two accounts registering one handset
+/// at the same moment are resolved here (the unique index refuses one; it re-reads the winner) rather
+/// than failing the submit. Call it after the worker has accepted the job and <em>before</em> staging the
+/// job row, or that save would commit the job early too.
 /// </para>
 /// <para>
 /// This is bookkeeping, not enforcement. The ceiling is counted by <c>TrialUsage.CountUsedAsync</c> from

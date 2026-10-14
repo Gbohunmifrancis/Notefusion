@@ -42,13 +42,15 @@ public sealed class HarmoniseSheetCommandHandler : IRequestHandler<HarmoniseShee
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IDateTimeProvider _clock;
+    private readonly IQuotaGate _gate;
 
-    public HarmoniseSheetCommandHandler(ITranscriptionApi api, IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock)
+    public HarmoniseSheetCommandHandler(ITranscriptionApi api, IApplicationDbContext db, ICurrentUser currentUser, IDateTimeProvider clock, IQuotaGate gate)
     {
         _api = api;
         _db = db;
         _currentUser = currentUser;
         _clock = clock;
+        _gate = gate;
     }
 
     public async Task<Result<HarmonyDto>> Handle(HarmoniseSheetCommand request, CancellationToken cancellationToken)
@@ -62,6 +64,10 @@ public sealed class HarmoniseSheetCommandHandler : IRequestHandler<HarmoniseShee
         // people to the plans is felt before it is priced. Spent only on success: parts the worker
         // could not write must not use up the one try.
         var isPro = await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken);
+
+        // A free account's one try is read here and spent after the worker answers, so two requests at
+        // once would both find it unspent. Held until the spend is saved (see IQuotaGate).
+        await using var lease = isPro ? null : await _gate.AcquireAsync(QuotaGateExtensions.UserKey(userId), cancellationToken);
         var user = isPro ? null : await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         if (!isPro && (user is null || user.FreeHarmonyUsedAtUtc is not null))
             return TranscriptionErrors.HarmonyProRequired;

@@ -152,6 +152,32 @@ public class RetentionSweepTests
         Assert.Empty(h.Email.Sent);
     }
 
+    [Fact]
+    public async Task A_free_owners_kept_sheet_has_only_what_the_poll_gave_them()
+    {
+        using var h = new TestHarness(Now);
+        var free = Signup(h, "free@example.com", "Free");
+        var pro = Signup(h, "pro@example.com", "Pro");
+        var plan = AddPlan(h);
+        h.Db.Subscriptions.Add(Subscription.Start(pro, plan.Id, PaymentProvider.Paystack, Now.AddDays(-3), Now.AddDays(27), "prov-sub-1", Now.AddDays(-3)));
+        h.Db.SaveChanges();
+        var parts = new Dictionary<string, PartDto> { ["bass"] = new PartDto([new NoteEventDto(43, 0, 2, 1, "d", "", 0.9)], ["Doh is G · Bass"]) };
+        var freeJob = FinishedJob(h, free, Now.AddHours(-1), parts: parts);
+        var proJob = FinishedJob(h, pro, Now.AddHours(-1), parts: parts);
+
+        Assert.Equal(2, await AutoSave(h));
+
+        // The cached result is the worker's whole answer; the four-part harmony in it is Pro, and the poll
+        // withholds it from a free account (ProGate.ForFree). Keeping the sheet must not hand it over.
+        var freeSheet = h.Db.Transcriptions.Single(t => t.SourceJobId == freeJob.JobId);
+        Assert.Null(freeSheet.Parts);
+        Assert.Null(freeSheet.PartsMusicXml);
+        Assert.Equal(2, freeSheet.Notes.Count); // the tune itself is theirs
+        var proSheet = h.Db.Transcriptions.Single(t => t.SourceJobId == proJob.JobId);
+        Assert.NotNull(proSheet.Parts);
+        Assert.Equal("<satb/>", proSheet.PartsMusicXml);
+    }
+
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static Task<int> AutoSave(TestHarness h)
@@ -172,15 +198,16 @@ public class RetentionSweepTests
         Assert.True(saved.IsSuccess);
     }
 
-    private static TranscriptionResultDto Result(SourceDto? source = null)
+    private static TranscriptionResultDto Result(SourceDto? source = null, Dictionary<string, PartDto>? parts = null)
         => new("G major", 0.9, 96, "4/4", "<score/>", "",
             [new NoteEventDto(67, 0, 1, 1, "d", "", 0.9), new NoteEventDto(69, 1, 1, 2, "r", "", 0.9)],
-            ["d r"], 0.8, Source: source);
+            ["d r"], 0.8, Source: source, Parts: parts, PartsMusicXml: parts is null ? "" : "<satb/>");
 
-    private static TranscriptionJob FinishedJob(TestHarness h, Guid userId, DateTime createdAt, SourceDto? source = null)
+    private static TranscriptionJob FinishedJob(
+        TestHarness h, Guid userId, DateTime createdAt, SourceDto? source = null, Dictionary<string, PartDto>? parts = null)
     {
         var job = TranscriptionJob.Record($"job-{Guid.NewGuid():N}", userId, createdAt);
-        job.Settle(TranscriptionResultCache.Serialize(Result(source)), createdAt.AddMinutes(1));
+        job.Settle(TranscriptionResultCache.Serialize(Result(source, parts)), createdAt.AddMinutes(1));
         h.Db.TranscriptionJobs.Add(job);
         h.Db.SaveChanges();
         return job;

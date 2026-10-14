@@ -31,6 +31,7 @@ import shutil
 import tempfile
 import threading
 import time
+import urllib.parse
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -63,6 +64,10 @@ _LOST_ERROR = ("The transcription service had to restart while working on this a
                "Nothing was charged — please submit it again.")
 
 
+class QueueFull(Exception):
+    """More jobs are waiting than ``settings.max_pending_jobs``; the route answers 503."""
+
+
 @dataclass
 class Job:
     id: str
@@ -87,6 +92,9 @@ class Job:
     #: Title/artist of a linked song, known as soon as the link resolves — before the
     #: result exists — so a client can show what is being transcribed while it waits.
     source: dict | None = None
+    #: When the completion webhook was answered 2xx: the API has banked the result by then,
+    #: so this job's audio fields are the first to go when results outgrow their budget.
+    delivered_at: float | None = None
 
 
 #: Rank of the shutdown sentinel: below every real job, so a draining worker of either
@@ -96,6 +104,23 @@ _RANK_STOP = -1
 #: Seconds before each delivery attempt of the completion webhook: at once, then after
 #: five and twenty seconds, which covers the API's own restart in a deploy.
 _WEBHOOK_DELAYS = (0.0, 5.0, 20.0)
+
+#: A delivered result keeps its audio at least this long whatever the budget says: the
+#: client that was pushed "done" fetches it within seconds.
+_RESULT_AUDIO_GRACE_SECONDS = 120.0
+#: The result fields that hold audio as base64: the bulk of a finished job's memory.
+_AUDIO_FIELDS = ("audio_preview_base64", "backing_audio_base64")
+
+
+def _callback_allowed(url: str) -> bool:
+    """Only http(s) to a host in ``settings.callback_hosts``: the URL comes in on the submit,
+    and the worker must not be made to POST results (or its API key) anywhere else."""
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        host = (parsed.hostname or "").lower()
+    except ValueError:
+        return False
+    return parsed.scheme in ("http", "https") and host in settings.callback_hosts
 
 
 class JobQueue:
@@ -195,8 +220,18 @@ class JobQueue:
 
     # ── Internals ─────────────────────────────────────────────────────────────
 
+    def is_full(self) -> bool:
+        """Whether ``settings.max_pending_jobs`` jobs are already waiting for a worker."""
+        with self._lock:
+            return self._pending_count() >= settings.max_pending_jobs
+
+    def _pending_count(self) -> int:
+        return sum(1 for j in self._jobs.values() if j.status == STATUS_PENDING)
+
     def _new_job(self, correlation_id: str | None, callback_url: str | None, priority: str,
-                 job_id: str | None = None) -> Job:
+                 job_id: str | None = None, recovered: bool = False) -> Job:
+        """A new pending job; raises ``QueueFull`` when the line is full, except for a job the
+        journal hands back after a restart, which was accepted once already."""
         job_id = job_id or uuid.uuid4().hex
         if callback_url:
             callback_url = callback_url.replace("{job_id}", job_id)
@@ -205,6 +240,8 @@ class JobQueue:
         job = Job(id=job_id, correlation_id=correlation_id, callback_url=callback_url, priority=priority)
         with self._lock:
             self._purge_expired()
+            if not recovered and self._pending_count() >= settings.max_pending_jobs:
+                raise QueueFull()
             self._jobs[job.id] = job
         return job
 
@@ -235,9 +272,12 @@ class JobQueue:
         if self._journal is None:
             return 0
         requeued = failed = 0
-        for record in self._journal.entries():
+        entries = self._journal.entries()
+        # Audio whose entry never got written (a crash between the two), and half-written entries.
+        self._journal.sweep({str(r["id"]) for r in entries})
+        for record in entries:
             job = self._new_job(record.get("correlation_id"), record.get("callback_url"),
-                                record.get("priority") or PRIORITY_NORMAL, job_id=str(record["id"]))
+                                record.get("priority") or PRIORITY_NORMAL, job_id=str(record["id"]), recovered=True)
             attempts = int(record.get("attempts") or 0)
             fn = self._replay(job, record)
             if fn is None or attempts >= settings.job_max_attempts:
@@ -549,6 +589,10 @@ class JobQueue:
     def _trigger_webhook(self, job: Job) -> None:
         if not job.callback_url:
             return
+        if not _callback_allowed(job.callback_url):
+            logger.warning("Webhook for job %s not sent: callback host is not in NF_CALLBACK_HOSTS%s",
+                           job.id[:8], self._trail(job))
+            return
 
         from dataclasses import asdict
 
@@ -564,6 +608,8 @@ class JobQueue:
                          source=job.source, result=result_payload, error=job.error)
 
         payload = jr.model_dump(by_alias=True, exclude_none=True)
+        # The key the API sends this service, so the API can tell the webhook came from here.
+        headers = {"X-Api-Key": settings.api_key} if settings.api_key else {}
 
         def fire():
             # An API that is restarting (a deploy swaps it after the worker) is tried again
@@ -573,8 +619,9 @@ class JobQueue:
                     time.sleep(delay)
                 try:
                     with httpx.Client(timeout=10.0) as client:
-                        resp = client.post(job.callback_url, json=payload)
+                        resp = client.post(job.callback_url, json=payload, headers=headers)
                         resp.raise_for_status()
+                    job.delivered_at = time.monotonic()
                     logger.info("Webhook for job %s delivered to %s", job.id[:8], job.callback_url)
                     return
                 except Exception as e:  # noqa: BLE001 - delivery is best effort; the API's sweep is the net
@@ -607,6 +654,36 @@ class JobQueue:
                    if j.finished_at and now - j.finished_at > settings.job_ttl_seconds]
         for jid in expired:
             del self._jobs[jid]
+        self._shed_result_audio(now)
+
+    def _shed_result_audio(self, now: float) -> None:
+        """Keep the audio held by finished results within ``settings.result_audio_budget_mb``.
+
+        Over budget, the oldest results whose webhook the API answered (it banks the result
+        then) more than ``_RESULT_AUDIO_GRACE_SECONDS`` ago lose their audio fields, one at a
+        time until the rest fit; their notes, scores and key stay until the TTL. A result the
+        API has not banked — a website preview, a webhook that failed — is never touched, so a
+        poll can still fetch everything. The API never banked the audio anyway
+        (``TranscriptionResultCache`` drops both fields), and clients synthesise their own
+        playback from the notes.
+        """
+        held = [j for j in self._jobs.values() if j.result is not None]
+        total = sum(len(getattr(j.result, f, "") or "") for j in held for f in _AUDIO_FIELDS)
+        budget = settings.result_audio_budget_mb * 1024 * 1024
+        if total <= budget:
+            return
+        sheddable = sorted((j for j in held if j.delivered_at is not None
+                            and now - j.delivered_at > _RESULT_AUDIO_GRACE_SECONDS),
+                           key=lambda j: j.delivered_at)
+        for job in sheddable:
+            for f in _AUDIO_FIELDS:
+                value = getattr(job.result, f, "") or ""
+                if value:
+                    total -= len(value)
+                    setattr(job.result, f, "")
+            logger.info("Job %s: audio dropped from its delivered result to keep memory in budget", job.id[:8])
+            if total <= budget:
+                return
 
 
 def _sounds_like_a_song(job: Job, audio_path: Path, mode: str) -> bool:

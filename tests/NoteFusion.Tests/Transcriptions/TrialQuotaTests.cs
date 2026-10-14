@@ -271,18 +271,19 @@ public class TrialQuotaTests
     }
 
     [Fact]
-    public async Task A_job_with_no_row_is_let_through_unspent()
+    public async Task A_job_with_no_row_is_not_found_and_the_worker_is_not_asked()
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var api = new FakeTranscriptionApi { Status = TranscriptionStatus.Done };
 
-        // Submitted before this table existed — in flight across the deploy. Breaking it would be the
-        // worse trade than letting one transcription through free.
-        var result = await Poll(h, user, "job-from-before", api);
+        // An anonymous preview's id, or one made up. Passing the worker's answer through handed any
+        // signed-in caller a result that was never theirs, uncharged and unredacted.
+        var result = await Poll(h, user, "preview-job-id", api);
 
-        Assert.True(result.IsSuccess);
-        Assert.Empty(h.Db.TranscriptionJobs);
+        Assert.True(result.IsFailure);
+        Assert.Equal("TRANS_JOB_NOT_FOUND", result.Error.Code);
+        Assert.Equal(0, api.PollCount);
     }
 
     // ---------------------------------------------------------------- the ceiling is per handset too
@@ -456,7 +457,7 @@ public class TrialQuotaTests
         TestHarness h, User user, FakeTranscriptionApi? api = null, string? device = null)
         => new SubmitTranscriptionCommandHandler(
                 api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock,
-                new StubDeviceFingerprint(device), h.DeviceRegister, h.Activity(user.Id))
+                new StubDeviceFingerprint(device), h.DeviceRegister, h.Activity(user.Id), h.QuotaGate)
             .Handle(
                 new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null),
                 CancellationToken.None);

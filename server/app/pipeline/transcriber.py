@@ -41,7 +41,7 @@ from pathlib import Path
 
 import numpy as np
 
-from app.config import settings
+from app.config import TEMP_PREFIX, settings
 from app.pipeline import chords
 from app.pipeline import solfa
 from app.pipeline import solfa_render
@@ -2609,7 +2609,7 @@ def _load_audio(audio_path: Path | str, sr: int = 22_050) -> tuple[np.ndarray, i
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        y, file_sr = librosa.load(str(audio_path), sr=sr, mono=True)
+        y, file_sr = librosa.load(str(audio_path), sr=sr, mono=True, duration=settings.audio_limit_seconds)
     return y.astype(np.float32), sr
 
 
@@ -2643,7 +2643,7 @@ def _pyin_contour(
         if isinstance(audio_input, (str, Path)):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                y, sr = librosa.load(str(audio_input), sr=22_050, mono=True)
+                y, sr = librosa.load(str(audio_input), sr=22_050, mono=True, duration=settings.audio_limit_seconds)
         else:
             y = np.asarray(audio_input, dtype=np.float32)
             sr = 22_050
@@ -3117,7 +3117,7 @@ def _segment_contour(
         else:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
-                y, sr = librosa.load(str(wav_path), sr=22_050, mono=True)
+                y, sr = librosa.load(str(wav_path), sr=22_050, mono=True, duration=settings.audio_limit_seconds)
             rms = librosa.feature.rms(y=y, hop_length=512)[0]
     except Exception:
         rms = np.empty(0)
@@ -3662,12 +3662,14 @@ def _find_ffmpeg_cmd() -> str:
     return "ffmpeg"
 
 
-def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
+def _ensure_wav_path(audio_path: Path, max_seconds: float | None = None) -> tuple[Path, bool]:
     """Ensure audio_path is a valid PCM WAV file before AMT inference.
 
     If audio_path is already a .wav file, returns (audio_path, False).
     If audio_path is .m4a, .aac, .mp3, etc., converts to a temporary 22 050 Hz PCM .wav file
     via ffmpeg (or soundfile/librosa fallback) and returns (tmp_wav_path, True).
+    The conversion keeps at most ``max_seconds`` (``settings.audio_limit_seconds`` when None): a
+    compressed upload can hold hours of audio, and nothing downstream reads past the cap.
     """
     if audio_path.suffix.lower() == ".wav":
         return audio_path, False
@@ -3675,7 +3677,8 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
     import subprocess
     import tempfile
 
-    tmp_wav = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+    cap = settings.audio_limit_seconds if max_seconds is None else float(max_seconds)
+    tmp_wav = tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=".wav", delete=False)
     tmp_wav_path = Path(tmp_wav.name)
     tmp_wav.close()
 
@@ -3689,6 +3692,8 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
                 "-y",
                 "-i",
                 str(audio_path),
+                "-t",
+                f"{cap:.3f}",
                 "-ar",
                 "22050",
                 "-ac",
@@ -3725,7 +3730,7 @@ def _ensure_wav_path(audio_path: Path) -> tuple[Path, bool]:
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
+            y, sr = librosa.load(str(audio_path), sr=22050, mono=True, duration=cap)
         sf.write(str(tmp_wav_path), y, sr, format="WAV", subtype="PCM_16")
         print(f"[notefusion] librosa fallback OK -> {tmp_wav_path.stat().st_size} bytes", flush=True)
         return tmp_wav_path, True
@@ -4778,7 +4783,7 @@ def _retuned_basic_pitch(y: np.ndarray, sr: int, run_basic_pitch) -> tuple:
         tuning = float(librosa.estimate_tuning(y=y[: int(CHOIR_TUNING_EXCERPT_SEC * sr)], sr=sr))
         if abs(tuning) >= CHOIR_RETUNE_MIN_SEMITONES:
             time_scale = 2.0 ** (-tuning / 12.0)
-            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+            with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=".wav", delete=False) as tmp:
                 retuned = Path(tmp.name)
             # Float samples: 16-bit would requantise the audio and clip the resampler's overshoot.
             sf.write(str(retuned), librosa.resample(y, orig_sr=sr, target_sr=sr / time_scale), sr, subtype="FLOAT")
@@ -5654,7 +5659,7 @@ def _transcribe_wav(
             midi_data = note_events_to_midi(list(all_note_events), False, float(round(bpm)))
         except Exception as exc:  # pragma: no cover - export must survive a basic-pitch change
             print(f"[notefusion] midi tempo re-stamp skipped: {exc!r}", flush=True)
-    with tempfile.NamedTemporaryFile(suffix=".mid", delete=False) as tmp:
+    with tempfile.NamedTemporaryFile(prefix=TEMP_PREFIX, suffix=".mid", delete=False) as tmp:
         midi_path = Path(tmp.name)
     try:
         if midi_data is not None:

@@ -5,7 +5,13 @@
  */
 
 import type { ApiErrorBody, TokenPairResponse } from "@/api/types";
-import { clearSession, getAccessToken, getRefreshToken, setTokens } from "@/lib/session";
+import {
+  clearSession,
+  getAccessToken,
+  getRefreshToken,
+  isRemembered,
+  setTokens,
+} from "@/lib/session";
 
 /**
  * Required, with no fallback.
@@ -75,30 +81,48 @@ async function send(path: string, options: RequestOptions): Promise<Response> {
 }
 
 /**
+ * What a refresh came to. Only the server saying no (400/401) ends the session; a network
+ * failure, a 5xx or a 429 says nothing about the refresh token, so it is kept for the next try.
+ */
+type RefreshOutcome = "refreshed" | "rejected" | "unavailable";
+
+/**
  * Refresh is serialised through this promise. Without it, a dashboard that fires five
  * requests on mount would send five refreshes, and since refresh tokens are single-use
  * and rotating, four of them would fail and log the admin out mid-load.
  */
-let refreshInFlight: Promise<boolean> | null = null;
+let refreshInFlight: Promise<RefreshOutcome> | null = null;
 
-function refreshTokens(): Promise<boolean> {
-  refreshInFlight ??= (async () => {
+function refreshTokens(): Promise<RefreshOutcome> {
+  refreshInFlight ??= (async (): Promise<RefreshOutcome> => {
     try {
       const refreshToken = getRefreshToken();
-      if (!refreshToken) return false;
+      if (!refreshToken) return "rejected";
 
-      const response = await send("/api/auth/refresh", {
-        method: "POST",
-        body: { refreshToken },
-        anonymous: true,
-      });
-      if (!response.ok) return false;
+      let response: Response;
+      try {
+        response = await send("/api/auth/refresh", {
+          method: "POST",
+          body: { refreshToken },
+          anonymous: true,
+        });
+      } catch {
+        return "unavailable";
+      }
+      if (response.status === 400 || response.status === 401) {
+        // Another tab may have rotated the token while this one was asking: its new pair is
+        // already in storage, and the request can go again with it instead of signing out.
+        const latest = getRefreshToken();
+        return latest && latest !== refreshToken ? "refreshed" : "rejected";
+      }
+      if (!response.ok) return "unavailable";
 
       const pair = (await response.json()) as TokenPairResponse;
-      setTokens(pair.accessToken, pair.refreshToken);
-      return true;
+      // Keep the store the admin chose at sign-in ("Remember me" or this tab only).
+      setTokens(pair.accessToken, pair.refreshToken, isRemembered());
+      return "refreshed";
     } catch {
-      return false;
+      return "unavailable";
     } finally {
       refreshInFlight = null;
     }
@@ -111,8 +135,14 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   let response = await send(path, options);
 
   if (response.status === 401 && !options.anonymous) {
-    if (await refreshTokens()) {
+    const outcome = await refreshTokens();
+    if (outcome === "refreshed") {
       response = await send(path, options);
+    } else if (outcome === "unavailable") {
+      throw new ApiError(0, {
+        code: "NETWORK",
+        message: "We couldn't reach the server. Check your connection and try again.",
+      });
     } else {
       clearSession();
       onSessionExpired();

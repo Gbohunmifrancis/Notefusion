@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 
@@ -47,8 +48,7 @@ internal sealed class TranscriptionApiClient(
             using var response = await http.PostAsync("v1/transcribe", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
-                return Error.Failure("Api.Submit", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+                return await RejectedAsync("Api.Submit", response, cancellationToken);
             }
 
             var payload = await response.Content.ReadFromJsonAsync(
@@ -92,8 +92,7 @@ internal sealed class TranscriptionApiClient(
             using var response = await http.PostAsync("v1/transcribe/score", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
-                return Error.Failure("Api.SubmitScore", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+                return await RejectedAsync("Api.SubmitScore", response, cancellationToken);
             }
 
             var payload = await response.Content.ReadFromJsonAsync(
@@ -130,8 +129,7 @@ internal sealed class TranscriptionApiClient(
             using var response = await http.PostAsync("v1/grade", form, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
-                return Error.Failure("Api.Grade", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+                return await RejectedAsync("Api.Grade", response, cancellationToken);
             }
             var payload = await response.Content.ReadFromJsonAsync(ApiJsonContext.Default.GradeResponse, cancellationToken);
             if (payload is null)
@@ -165,8 +163,7 @@ internal sealed class TranscriptionApiClient(
             using var response = await http.PostAsync("v1/harmonise", body, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
-                return Error.Failure("Api.Harmonise", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+                return await RejectedAsync("Api.Harmonise", response, cancellationToken);
             }
             var payload = await response.Content.ReadFromJsonAsync(ApiJsonContext.Default.HarmoniseResponse, cancellationToken);
             if (payload is null)
@@ -208,8 +205,7 @@ internal sealed class TranscriptionApiClient(
                 return await RefusedLinkAsync(response, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                var errText = await response.Content.ReadAsStringAsync(cancellationToken);
-                return Error.Failure("Api.SubmitLink", $"Transcription service returned {(int)response.StatusCode}: {errText}");
+                return await RejectedAsync("Api.SubmitLink", response, cancellationToken);
             }
 
             var payload = await response.Content.ReadFromJsonAsync(
@@ -380,6 +376,46 @@ internal sealed class TranscriptionApiClient(
     {
         logger.LogWarning(ex, "Transcription service unreachable ({Code}).", code);
         return Error.Network(code, "The transcription service is unavailable. Try again shortly.");
+    }
+
+    /// <summary>
+    /// The worker answered with an error. Its body is the worker's own text — stack traces, file paths,
+    /// library messages — so it goes to the log, and the caller gets this API's plain sentence instead.
+    /// </summary>
+    private async Task<Error> RejectedAsync(string code, HttpResponseMessage response, CancellationToken ct)
+    {
+        var errText = await response.Content.ReadAsStringAsync(ct);
+        logger.LogWarning(
+            "Transcription service returned {Status} ({Code}): {Body}", (int)response.StatusCode, code, errText);
+
+        // A refusal of the input itself (too long, unreadable, malformed) will fail the same way every time,
+        // so "try again shortly" would be wrong: the worker's own sentence, which it keeps plain, says why.
+        // Anything else — 5xx, a full queue — is the service, not the file.
+        var status = (int)response.StatusCode;
+        if (status is 413 or 415 or 422 && ReadableDetail(errText) is { } sentence)
+            return Error.Validation("TRANS_INPUT_REJECTED", sentence);
+        return TranscriptionErrors.ServiceUnavailable;
+    }
+
+    /// <summary>The worker's <c>detail</c> as one short sentence: a string, or an object's <c>message</c>.</summary>
+    private static string? ReadableDetail(string body)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(body);
+            if (!doc.RootElement.TryGetProperty("detail", out var detail)) return null;
+            var text = detail.ValueKind switch
+            {
+                JsonValueKind.String => detail.GetString(),
+                JsonValueKind.Object when detail.TryGetProperty("message", out var m) && m.ValueKind == JsonValueKind.String => m.GetString(),
+                _ => null,
+            };
+            return string.IsNullOrWhiteSpace(text) || text.Length > 300 ? null : text.Trim();
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     public async Task<Result<int>> PingAsync(CancellationToken cancellationToken = default)

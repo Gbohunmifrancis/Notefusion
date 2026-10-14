@@ -69,11 +69,11 @@ export function LoginView() {
   /*
    * Where the guard sent them from, if anywhere. It arrives in the query string because a client
    * navigation carries no state of its own under Next, which means it is reader-supplied and gets
-   * checked: a path only, so `?next=https://elsewhere` cannot turn sign-in into an open redirect.
+   * checked: it must resolve to this origin, so `?next=https://elsewhere` (or `/\\elsewhere`, which
+   * browsers read as `//elsewhere`) cannot turn sign-in into an open redirect.
    */
   const requested = params.get("next");
-  const from =
-    requested && requested.startsWith("/") && !requested.startsWith("//") ? requested : "/";
+  const from = requested && isSameOriginPath(requested) ? requested : "/";
 
   // Already signed in: leaving them on the form would be a dead end. This also carries a
   // successful sign-in through, since it is the same condition a moment later.
@@ -282,4 +282,16 @@ export function LoginView() {
       </main>
     </div>
   );
+}
+
+/** A `next` value is followed only when it stays on this origin: no backslashes, no control characters. */
+function isSameOriginPath(next: string): boolean {
+  // eslint-disable-next-line no-control-regex
+  if (/[\\\u0000-\u001f\u007f]/.test(next)) return false;
+  if (typeof window === "undefined") return false;
+  try {
+    return new URL(next, window.location.origin).origin === window.location.origin;
+  } catch {
+    return false;
+  }
 }

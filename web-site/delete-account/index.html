@@ -336,6 +336,12 @@
   var urlToken = params.get("token") || "";
   var urlEmail = params.get("email") || "";
 
+  // Strip the token from the address bar at once, as reset-password does: it is a single-use
+  // credential, and the URL leaks into history, shared screenshots and whatever the browser syncs.
+  if (window.history.replaceState && (urlToken || urlEmail)) {
+    window.history.replaceState(null, "", window.location.pathname);
+  }
+
   var tokenCard = document.getElementById("token-card");
   var tokenPrompt = document.getElementById("token-prompt");
   var tokenEmailDisplay = document.getElementById("token-email-display");
@@ -360,6 +366,51 @@
     return div.innerHTML;
   }
 
+  /**
+   * What a failed call shows. The API's own words for an expected failure (a 4xx with its
+   * {code, message, details?} envelope) pass through; no network, a 429, a 5xx or a reply that is
+   * not the API's JSON becomes a plain sentence, so no server or browser error text reaches the page.
+   */
+  function problemLines(err, fallback) {
+    var status = err && typeof err.status === "number" ? err.status : -1;
+    var body = err && err.body;
+    if (status === 0) return ["We couldn't reach NoteFusion. Check your connection and try again."];
+    if (status === 429) return ["That's a lot of requests at once. Wait a moment and try again."];
+    if (status < 400 || status >= 500 || !body || typeof body.message !== "string" || !body.message) return [fallback];
+    var lines = [body.message];
+    if (body.details && typeof body.details === "object") {
+      // The validation envelope's details are field -> [messages].
+      Object.keys(body.details).forEach(function (field) {
+        (body.details[field] || []).forEach(function (line) { if (line) lines.push(String(line)); });
+      });
+    }
+    return lines;
+  }
+  /** Fills a notice with one paragraph per line, as text. */
+  function showLines(box, lines) {
+    box.innerHTML = "";
+    lines.forEach(function (line) {
+      var p = document.createElement("p");
+      p.textContent = line;
+      box.appendChild(p);
+    });
+    box.hidden = false;
+  }
+
+  /** POSTs JSON; resolves with the reply, or rejects with {status, body} (status 0: no network). */
+  function post(path, payload) {
+    return fetch(API + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      return res.json().catch(function () { return null; }).then(function (data) {
+        if (!res.ok || !data) throw { status: res.ok ? 502 : res.status, body: data };
+        return data;
+      });
+    }, function () { throw { status: 0, body: null }; });
+  }
+
   // Case 1: User arrived via email confirmation link
   if (urlToken && urlEmail) {
     formCard.hidden = true;
@@ -371,32 +422,18 @@
       btnTokenConfirm.textContent = "Deleting account…";
       tokenError.hidden = true;
 
-      fetch(API + "/api/account/delete/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: urlEmail.trim(),
-          token: urlToken.trim(),
-          reason: "Confirmed via web email link"
-        })
-      }).then(function (res) {
-        return res.json().then(function (data) {
-          if (!res.ok) throw data;
-          return data;
-        });
+      post("/api/account/delete/confirm", {
+        email: urlEmail.trim(),
+        token: urlToken.trim(),
+        reason: "Confirmed via web email link"
       }).then(function (res) {
         tokenPrompt.hidden = true;
         tokenDone.innerHTML = "<p><strong>Account Deleted Successfully</strong></p><p>" + escapeHtml(res.message || "Your NoteFusion account and all associated data have been permanently deleted.") + "</p>";
         tokenDone.hidden = false;
-        if (window.history.replaceState) {
-          window.history.replaceState(null, "", window.location.pathname);
-        }
       }).catch(function (err) {
         btnTokenConfirm.disabled = false;
         btnTokenConfirm.textContent = "Confirm Permanent Deletion";
-        var msg = (err && (err.message || (err.details && JSON.stringify(err.details)))) || "Failed to confirm account deletion. The link may have expired or is invalid. Please request a new link.";
-        tokenError.innerHTML = "<p>" + escapeHtml(msg) + "</p>";
-        tokenError.hidden = false;
+        showLines(tokenError, problemLines(err, "Failed to confirm account deletion. The link may have expired or is invalid. Please request a new link."));
       });
     });
 
@@ -431,43 +468,26 @@
     submitBtn.disabled = true;
     submitBtn.textContent = password ? "Deleting account…" : "Sending request…";
 
-    fetch(API + "/api/account/delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: email,
-        password: password ? password : null,
-        reason: reason ? reason : null
-      })
-    }).then(function (res) {
-      return res.json().then(function (data) {
-        if (!res.ok) throw data;
-        return data;
-      });
+    post("/api/account/delete", {
+      email: email,
+      password: password ? password : null,
+      reason: reason ? reason : null
     }).then(function (data) {
       form.hidden = true;
       if (data.confirmed) {
         successBox.innerHTML = "<p><strong>Account Successfully Deleted</strong></p><p>" + escapeHtml(data.message) + "</p>";
         successBox.hidden = false;
       } else {
-        infoBox.innerHTML = "<p><strong>Verification Email Sent</strong></p><p>" + escapeHtml(data.message) + "</p>";
+        // With a password the server answers "not deleted" in the same words whether the account exists
+        // or not; without one it has emailed a link if there is an account. The heading follows the request.
+        var heading = password ? "Account Not Deleted" : "Check Your Email";
+        infoBox.innerHTML = "<p><strong>" + heading + "</strong></p><p>" + escapeHtml(data.message) + "</p>";
         infoBox.hidden = false;
       }
     }).catch(function (err) {
       submitBtn.disabled = false;
       submitBtn.textContent = "Request Account Deletion";
-      var msg = (err && err.message) || "Unable to process deletion request. Please check your details and try again.";
-      if (err && err.details) {
-        var detailList = "";
-        Object.keys(err.details).forEach(function (k) {
-          (err.details[k] || []).forEach(function (m) {
-            detailList += "<p>" + escapeHtml(m) + "</p>";
-          });
-        });
-        if (detailList) msg += detailList;
-      }
-      errorBox.innerHTML = "<p>" + escapeHtml(msg) + "</p>";
-      errorBox.hidden = false;
+      showLines(errorBox, problemLines(err, "Unable to process deletion request. Please check your details and try again."));
     });
   });
 })();
@@ -476,7 +496,7 @@
 
 <!-- Page Pulse Tracking Script -->
 <!-- End Page Pulse Tracking Script -->
-<script src="/assets/track.js?v=2" defer></script>
+<script src="/assets/track.js?v=4" defer></script>
 </body>
 
 </html>

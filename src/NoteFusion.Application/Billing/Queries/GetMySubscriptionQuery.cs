@@ -59,10 +59,12 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             .FirstOrDefaultAsync(s => s.UserId == userId, ct);
         var isPro = sub is not null && sub.IsActiveAt(_clock.UtcNow);
 
-        // The song allowance, by the same counts the link submit gate enforces.
+        // The song allowance, by the same counts the link submit gate enforces — songs still running
+        // included, as the trial pill includes running transcriptions, so the count never shows a song
+        // left that the gate would refuse.
         var songsTotal = isPro ? SongCredits.ProMonthlyAllowance : SongCredits.FreePreviews;
         var songsUsed = isPro
-            ? await SongCredits.CountUsedThisMonthAsync(_db, userId, _clock.UtcNow, ct)
+            ? await SongCredits.CountHeldThisMonthAsync(_db, userId, _clock.UtcNow, ct)
             : await SongCredits.CountPreviewsUsedAsync(_db, userId, _device.Current, _clock.UtcNow, ct);
         var songsRemaining = Math.Max(0, songsTotal - songsUsed);
 

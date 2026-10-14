@@ -22,6 +22,10 @@ DETAILS = {"id": "dQw4w9WgXcQ", "duration": 213, "title": "Rick Astley - Never G
            "uploader": "Rick Astley", "thumbnail": "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxres.jpg"}
 
 
+# yt-dlp is faked as subprocess.run here (see conftest).
+pytestmark = pytest.mark.usefixtures("ytdlp_via_subprocess_run")
+
+
 @pytest.fixture(autouse=True)
 def _fresh(monkeypatch):
     links._cache.clear()

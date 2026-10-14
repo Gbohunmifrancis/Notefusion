@@ -63,21 +63,38 @@
   }
 
   var refreshing = null;
+  /**
+   * Swaps the refresh token for a new pair. Only the API saying no (400/401) ends the session, and
+   * then only if no other tab has rotated the token meanwhile: that tab's new pair is used instead.
+   * A network failure, a 5xx or a 429 says nothing about the token, so it is kept for the next try
+   * and the request fails with a plain connection line. Rejects with status 401 when the session is over.
+   */
   function refresh() {
     if (refreshing) return refreshing;
     var t = tokens();
     if (!t || !t.refreshToken) return Promise.reject(new ApiError(401, null));
+    var sent = t.refreshToken;
     refreshing = fetch(API + "/api/auth/refresh", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: t.refreshToken })
-    }).then(function (r) {
-      if (!r.ok) throw new ApiError(r.status, null);
-      return r.json();
-    }).then(function (pair) {
-      saveTokens({ accessToken: pair.accessToken, refreshToken: pair.refreshToken });
-      return pair;
+      body: JSON.stringify({ refreshToken: sent })
+    }).catch(function () { throw new ApiError(0, null); }).then(function (r) {
+      if (r.status === 400 || r.status === 401) {
+        var latest = tokens();
+        if (latest && latest.refreshToken && latest.refreshToken !== sent) return latest;
+        throw new ApiError(401, null);
+      }
+      if (!r.ok) throw new ApiError(r.status === 429 ? 429 : 0, null);
+      return r.json().catch(function () { throw new ApiError(0, null); }).then(function (pair) {
+        saveTokens({ accessToken: pair.accessToken, refreshToken: pair.refreshToken });
+        return pair;
+      });
     }).finally(function () { refreshing = null; });
     return refreshing;
+  }
+  /** After a refresh that failed: the session ends only when the API refused the token. */
+  function refreshFailed(err) {
+    if (err && err.status === 401) sessionEnded();
+    throw err instanceof ApiError ? err : new ApiError(0, null);
   }
 
   function request(path, opts) {
@@ -96,7 +113,7 @@
     }
     return send().then(function (r) {
       if (r.status === 401 && !opts.anonymous) {
-        return refresh().then(send, function () { clearTokens(); showAuth(); throw new ApiError(401, null); });
+        return refresh().then(send, refreshFailed);
       }
       return r;
     }).then(function (r) {
@@ -137,7 +154,7 @@
     }
     return send().then(function (r) {
       if (r.status === 401 && !opts.anonymous) {
-        return refresh().then(send, function () { clearTokens(); showAuth(); throw new ApiError(401, null); });
+        return refresh().then(send, refreshFailed);
       }
       return r;
     }).then(function (r) {
@@ -308,10 +325,39 @@
   var previewId = new URLSearchParams(location.search).get("preview");
   var player = null;      // the rehearsal player, made once the first result shows
   var hymnCells = [];     // solfa cells of the hymn layout, for the playback cursor
+  var epoch = 0;          // bumped when the work on screen is dropped, so late replies are ignored
+  var submitting = false; // an upload is on its way: a second drop or take waits for it
+  var transposing = false;
 
   // ── Auth view ────────────────────────────────────────────────────────────
+  /**
+   * Drops the sheet, the job being followed and anything playing or recording, so the next person
+   * to sign in on this browser sees none of it, and a reply still on its way renders nothing.
+   */
+  function resetWork() {
+    epoch++;
+    stopPolling();
+    current = null; keepPreviewJob = null; submitting = false; transposing = false;
+    if (player) player.stop();
+    cancelSinging();
+    closeTool(); closeFull();
+    hide($("result")); hide($("progress"));
+    ["lyrics", "save-title", "share-url"].forEach(function (id) { $(id).value = ""; });
+    $("sheet").innerHTML = ""; $("sheet-parts").innerHTML = ""; osmd = null;
+    hide($("app-alert"));
+  }
+  /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
+  function forgetAccount() {
+    me = null; sub = null; libraryCache = null; libFolder = null;
+    stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
+    $("recents-list").innerHTML = "";
+  }
+  /** The API refused the refresh token: back to the sign-in screen. */
+  function sessionEnded() { clearTokens(); forgetAccount(); showAuth(); }
+
   /** Signing in is a screen of its own: the card and nothing else around it. */
   function showAuth() {
+    resetWork();
     hide($("boot-skel")); hide($("view-app")); showAccountUi(false); show($("view-auth")); hide($("auth-back"));
     document.body.classList.add("guest", "auth-only"); hide($("topbar-signin")); closeDrawer(); hide($("onb"));
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
@@ -496,10 +542,29 @@
   ["guest-signup", "guest-cta-signup"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("register"); }); });
   ["guest-signin", "guest-cta-signin"].forEach(function (id) { $(id).addEventListener("click", function () { openAuth("login"); }); });
 
+  // The API is told first, while the tokens are still here to say whose session ends; its answer
+  // (or none, after a few seconds) does not hold the sign-out up.
+  var signingOut = false;
   $("signout").addEventListener("click", function () {
+    if (signingOut) return;
+    signingOut = true;
     var t = tokens();
-    if (t && t.refreshToken) request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ });
-    clearTokens(); me = null; sub = null; libraryCache = null; stopPolling(); stopPaymentWatch(); clearCheckout(); hide($("top-nav")); document.body.classList.remove("is-pro"); showAuth();
+    var told = t && t.refreshToken
+      ? Promise.race([
+          request("/api/auth/logout", { method: "POST", body: { refreshToken: t.refreshToken } }).catch(function () { /* best effort */ }),
+          new Promise(function (resolve) { setTimeout(resolve, 3000); })
+        ])
+      : Promise.resolve();
+    told.then(function () {
+      signingOut = false;
+      clearTokens(); forgetAccount(); clearCheckout(); showAuth();
+    });
+  });
+  // Signed out in another tab: this one follows rather than carrying on with a session that is gone.
+  window.addEventListener("storage", function (e) {
+    if (e.key !== TOKENS_KEY && e.key !== null) return;
+    if (tokens() || guest || document.body.classList.contains("auth-only")) return;
+    forgetAccount(); showAuth();
   });
 
   // ── Views: transcribe / library / account ───────────────────────────────
@@ -553,7 +618,7 @@
   function renderRecents(items) {
     var list = $("recents-list"); list.innerHTML = "";
     (items || []).slice(0, 6).forEach(function (it) {
-      var b = document.createElement("button"); b.type = "button"; b.className = "recent-item"; b.textContent = it.title || "Untitled"; b.title = it.title || "Untitled";
+      var b = document.createElement("button"); b.type = "button"; b.className = "recent-item"; b.setAttribute("data-track", "Recent sheet"); b.textContent = it.title || "Untitled"; b.title = it.title || "Untitled";
       b.addEventListener("click", function () { openSaved(it.id); });
       list.appendChild(b);
     });
@@ -575,7 +640,7 @@
     if (!folders.length) { hide(box); hide($("lib-folder-bar")); return; }
     [{ name: null, count: items.length }].concat(folders).forEach(function (f) {
       var chip = document.createElement("button"); chip.type = "button"; chip.className = "lib-chip" + (f.name === libFolder ? " on" : "");
-      chip.setAttribute("role", "tab"); chip.setAttribute("aria-selected", String(f.name === libFolder));
+      chip.setAttribute("role", "tab"); chip.setAttribute("aria-selected", String(f.name === libFolder)); chip.setAttribute("data-track", f.name ? "Folder chip" : "All folders chip");
       chip.textContent = (f.name || "All") + " · " + f.count;
       chip.addEventListener("click", function () { libFolder = f.name; renderFolders(libraryCache || []); filterLibrary(); });
       box.appendChild(chip);
@@ -682,7 +747,9 @@
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
     stopPolling();
+    var at = epoch;
     request("/api/library/" + id).then(function (t) {
+      if (at !== epoch) return; // signed out while it loaded
       var result = {
         key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
         overallConfidence: t.overallConfidence || 0, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
@@ -695,7 +762,7 @@
       $("sheet-parts").innerHTML = "";
       showResult(result);
       $("result").scrollIntoView({ behavior: "smooth", block: "start" });
-    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
+    }).catch(function (err) { if (at === epoch) alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
   }
 
   function renderAccount() {
@@ -843,6 +910,8 @@
     }
     show($("boot-skel"));
     return loadAccount().then(function () {
+      // The API refused the session while the account loaded: the sign-in screen is already up.
+      if (!tokens()) { showAuth(); return; }
       var wasGuest = guest;
       guest = false;
       hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
@@ -1011,6 +1080,8 @@
     show(el);
   }
   function submitAudio(file, name, fromMic, again) {
+    // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
+    if (submitting) return Promise.resolve();
     var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
     var form = new FormData();
     form.append("audio", file, name);
@@ -1036,12 +1107,18 @@
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
       else setPercent(fraction);
     }
+    submitting = true;
+    var at = epoch;
     return upload(guest ? "/api/preview" : "/api/transcriptions", form, { anonymous: guest, onProgress: onProgress })
       .then(function (job) {
+        if (at !== epoch) return; // signed out while it went up
+        submitting = false;
         if (again && doneMeanwhile(before)) return;
         startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true); });
       })
       .catch(function (err) {
+        if (at !== epoch) return;
+        submitting = false;
         if (following) resetRetry();
         else { hide($("progress")); if (current && current.result) show($("result")); }
         explain(err);
@@ -1212,9 +1289,11 @@
 
   function poll() {
     if (!current) return;
-    var jobId = current.jobId;
+    var jobId = current.jobId, at = epoch;
+    /** The reply is still wanted: nobody signed out meanwhile and this is still the job on the card. */
+    function wanted() { return at === epoch && (guest || !!tokens()) && !!current && current.jobId === jobId; }
     request((current.preview ? "/api/preview/jobs/" : "/api/transcriptions/jobs/") + encodeURIComponent(jobId), { anonymous: current.preview && guest }).then(function (job) {
-      if (!current || current.jobId !== jobId) return;
+      if (!wanted()) return;
       current.failures = 0; hide($("p-offline"));
       if (job.source) {
         current.source = job.source;
@@ -1251,7 +1330,7 @@
       pollTimer = setTimeout(poll, POLL_MS);
     }).catch(function (err) {
       if (err.status === 401) { stopPolling(); return; }
-      if (!current || current.jobId !== jobId) return;
+      if (!wanted()) return;
       // Whatever the API or the network said stays in the console; the card gets one plain line.
       current.failures++;
       if (current.failures >= OFFLINE_AFTER) show($("p-offline"));
@@ -1265,7 +1344,7 @@
 
   function showResult(result) {
     var src = result.source || current.source;
-    $("r-title").textContent = src ? (src.title || "Untitled") : "Your recording";
+    $("r-title").textContent = src ? (src.title || "Untitled") : (current.title || "Your recording");
     $("r-artist").textContent = src ? (src.artist || "") : "";
     if (src && src.thumbnailUrl) { $("r-thumb").src = src.thumbnailUrl; show($("r-thumb")); } else hide($("r-thumb"));
     $("r-credit").textContent = src
@@ -1546,7 +1625,9 @@
     var r = current.result, notes = singNotes();
     if (!notes.length) return;
     hide($("sing-result"));
+    var at = epoch;
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: true } }).then(function (stream) {
+      if (at !== epoch) { stream.getTracks().forEach(function (t) { t.stop(); }); return; } // signed out meanwhile
       sing.stream = stream; sing.notes = notes;
       sing.ctx = new (window.AudioContext || window.webkitAudioContext)();
       var mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
@@ -1555,6 +1636,7 @@
       sing.recorder.addEventListener("dataavailable", function (e) { if (e.data && e.data.size) chunks.push(e.data); });
       sing.recorder.addEventListener("stop", function () {
         stream.getTracks().forEach(function (t) { t.stop(); });
+        if (at !== epoch) return; // a take cancelled by signing out is not sent
         var type = sing.recorder.mimeType || mime || "audio/webm";
         var blob = new Blob(chunks, { type: type });
         gradeTake(blob, type.indexOf("mp4") >= 0 ? "take.mp4" : "take.webm", notes, r.tempo, sing.leadIn);
@@ -1582,13 +1664,21 @@
     if (sing.recorder && sing.recorder.state !== "inactive") { $("sing-status").textContent = "Marking your take…"; sing.recorder.stop(); }
     if (sing.ctx) { sing.ctx.close().catch(function () {}); sing.ctx = null; }
   }
+  /** Signing out mid-take: the microphone is released and nothing is marked (resetWork bumps epoch first). */
+  function cancelSinging() {
+    stopSinging();
+    $("sing-status").textContent = "";
+    hide($("sing-result"));
+  }
   $("sing-stop").addEventListener("click", stopSinging);
   function gradeTake(blob, name, notes, tempo, leadIn) {
+    var at = epoch;
     var form = new FormData();
     form.append("audio", blob, name);
     form.append("target", JSON.stringify({ notes: notes.map(function (n) { return { pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats }; }), tempoBpm: tempo, leadInSec: leadIn }));
     track("Sang along");
     request("/api/transcriptions/grade", { method: "POST", form: form }).then(function (g) {
+      if (at !== epoch) return;
       $("sing-status").textContent = "";
       $("sing-score").textContent = g.score; $("sing-score").style.color = g.score >= 80 ? "var(--success)" : g.score >= 50 ? "#B45309" : "var(--danger)";
       $("sing-summary").textContent = g.summary + (g.octaveShift ? " Sung " + (g.octaveShift > 0 ? "an octave up" : "an octave down") + " — that's fine." : "");
@@ -1600,7 +1690,7 @@
         marks.appendChild(el);
       });
       show($("sing-result"));
-    }).catch(function (err) { $("sing-status").textContent = "Could not mark the take: " + (err.message || err); });
+    }).catch(function (err) { if (at === epoch) $("sing-status").textContent = "Could not mark the take: " + (err.message || err); });
   }
 
   // ── Transpose for my choir ───────────────────────────────────────────────
@@ -1608,7 +1698,9 @@
     var r = current.result, n = current.semitones || 0;
     $("tr-value").textContent = n > 0 ? "+" + n : String(n);
     $("tr-key").textContent = n === 0 ? r.key : r.key + " → " + C.shiftKeyName(r.key, n);
-    $("tr-apply").disabled = n === 0;
+    // While a shift is on its way the button stays as it is, and so do the arrows.
+    $("tr-apply").disabled = n === 0 || transposing;
+    $("tr-down").disabled = $("tr-up").disabled = transposing;
     $("tr-apply").textContent = n === 0 ? "Choose a shift" : "Transpose to " + C.shiftKeyName(r.key, n);
     var table = $("ranges"); table.innerHTML = "";
     C.rangeReport(r.notes || [], isPro() ? r.parts : null, n).forEach(function (row) {
@@ -1621,17 +1713,21 @@
       tr.appendChild(a); tr.appendChild(b); tr.appendChild(c); table.appendChild(tr);
     });
   }
-  $("tr-down").addEventListener("click", function () { if (!current) return; current.semitones = Math.max(-12, (current.semitones || 0) - 1); renderTranspose(); });
-  $("tr-up").addEventListener("click", function () { if (!current) return; current.semitones = Math.min(12, (current.semitones || 0) + 1); renderTranspose(); });
+  $("tr-down").addEventListener("click", function () { if (!current || transposing) return; current.semitones = Math.max(-12, (current.semitones || 0) - 1); renderTranspose(); });
+  $("tr-up").addEventListener("click", function () { if (!current || transposing) return; current.semitones = Math.min(12, (current.semitones || 0) + 1); renderTranspose(); });
   $("tr-apply").addEventListener("click", function () {
-    if (!current || !current.result || !current.semitones) return;
-    var r = current.result, n = current.semitones, btn = $("tr-apply");
-    btn.disabled = true;
+    if (!current || !current.result || !current.semitones || transposing) return;
+    var r = current.result, n = current.semitones, owner = current, at = epoch;
+    transposing = true;
+    renderTranspose();
     var req = current.savedId
       ? request("/api/library/" + current.savedId + "/transpose", { method: "POST", body: { semitones: n } })
       : request("/api/transcriptions/transpose", { method: "POST", body: { key: r.key, semitones: n, notes: r.notes, musicXml: r.musicXml, parts: r.parts || null, partsMusicXml: r.partsMusicXml || null, chords: r.chords || null } });
     track("Transposed");
     req.then(function (moved) {
+      if (at !== epoch) return; // signed out meanwhile
+      transposing = false;
+      if (current !== owner) { if (current && current.result) renderTranspose(); return; } // another sheet opened meanwhile
       current.semitones = 0;
       var next = Object.assign({}, r, {
         key: moved.key, notes: moved.notes || [], musicXml: moved.musicXml || "",
@@ -1641,7 +1737,12 @@
       current.result = next;
       $("sheet-parts").innerHTML = "";
       showResult(next);
-    }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err)); btn.disabled = false; });
+    }).catch(function (err) {
+      if (at !== epoch) return;
+      transposing = false;
+      if (current && current.result) renderTranspose();
+      alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err));
+    });
   });
 
   // ── One screen at a time: focus mode, the framed sheet, the tools in pop-ups ──
@@ -2276,11 +2377,19 @@
    * to /app?paid=1 rather than to the app's deep link. What the membership was before leaving is kept,
    * so the return can tell a payment that landed from Pro that was already there.
    */
+  /** Only the providers' hosted checkouts are followed: https on Paystack or Bachs, nothing else. */
+  function trustedCheckout(url) {
+    try {
+      var u = new URL(url);
+      return u.protocol === "https:" && /(^|\.)(paystack\.com|paystack\.co|bachs\.io)$/i.test(u.hostname);
+    } catch (e) { return false; }
+  }
   function checkout(plan, btn) {
     btn.disabled = true;
     track("Checkout started", plan.id);
     request("/api/billing/checkout", { method: "POST", body: { planId: plan.id, client: "web" } })
       .then(function (session) {
+        if (!session || !trustedCheckout(session.checkoutUrl)) throw new ApiError(502, { code: "BILLING_CHECKOUT_URL" });
         var provider = "";
         try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
         saveCheckout({

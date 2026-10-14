@@ -52,3 +52,31 @@ jobs:
 
       - name: Test
         run: python -m pytest -q
+
+  clients:
+    name: Web, admin & mobile checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # The web app's solfa mirror and helpers: plain JS, no install needed.
+      - name: Web tests
+        run: node --test web-site/tests/*.test.mjs
+
+      - name: Admin console type-check
+        working-directory: web-admin
+        run: |
+          npm ci
+          npm run lint
+
+      - name: Mobile type-check and tests
+        working-directory: mobile
+        run: |
+          npm ci
+          npm run lint
+          npm test

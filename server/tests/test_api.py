@@ -480,6 +480,8 @@ def test_browser_recordings_are_accepted(monkeypatch):
 
     monkeypatch.setattr(queue_mod.JobQueue, "submit", lambda self, audio_path, **kw: (audio_path.unlink(missing_ok=True), "job")[1])
     monkeypatch.setattr("app.api.routes._clip_duration_seconds", lambda path: 2.0)
+    # The bytes are a stand-in, not audio: what is checked is that the suffix is let in.
+    monkeypatch.setattr("app.api.routes._trim_head", lambda path, seconds: path)
     with TestClient(app) as client:
         for name in ("hum.webm", "hum.mp4"):
             r = client.post("/v1/transcribe", files={"audio": (name, BytesIO(b"\x1a\x45\xdf\xa3" + b"\0" * 64), "audio/webm")})

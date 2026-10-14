@@ -41,6 +41,13 @@
    * else is sent to the web app to create an account or sign in, and the plan id rides along so
    * the checkout opens by itself once they are in.
    */
+  function trustedCheckout(url) {
+    try {
+      var u = new URL(url);
+      return u.protocol === "https:" && /(^|\.)(paystack\.com|paystack\.co|bachs\.io)$/i.test(u.hostname);
+    } catch (e) { return false; }
+  }
+
   function startCheckout(plan, button) {
     var token = accessToken();
     var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id);
@@ -66,6 +73,8 @@
       .then(function (session) {
         if (session === null) return;
         if (!session || !session.checkoutUrl) throw new Error("No checkout URL in the response");
+        // Only the providers' hosted checkouts are followed: https on Paystack or Bachs, nothing else.
+        if (!trustedCheckout(session.checkoutUrl)) throw new Error("Unexpected checkout host");
         // What /app compares against when the browser comes back (only non-members are offered a plan here).
         try {
           localStorage.setItem("nf.checkout", JSON.stringify({

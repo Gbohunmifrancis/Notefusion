@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AppState, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import { navigationRef } from './notificationLink';
 
 /**
@@ -15,10 +15,12 @@ export function isListenUrl(url: string | null | undefined): boolean {
 }
 
 /**
- * Routes a shortcut tap to the Listen screen with `autoStart`. Held until the authenticated stack
- * exists, like a notification tap, and auto-starts only while the app is on screen: the microphone
- * foreground service may only start under a visible activity (Android 14+), and a cold start that the
- * user leaves within a second or two would otherwise be refused by the system.
+ * Routes a shortcut tap to the Listen screen. Held until the authenticated stack exists, like a
+ * notification tap.
+ *
+ * It never starts the microphone: any app or web page can open notefusion://listen, and the
+ * `src` the tile, widget and notification add is just as forgeable, so a link cannot tell a real
+ * shortcut from an imitation without native help. The screen opens and the user taps Start.
  */
 export function useListenDeepLink(ready: boolean): void {
   const [pending, setPending] = useState<string | null>(null);
@@ -38,6 +40,6 @@ export function useListenDeepLink(ready: boolean): void {
   useEffect(() => {
     if (!ready || !pending || !navigationRef.isReady()) return;
     setPending(null);
-    navigationRef.navigate('Listen', { autoStart: AppState.currentState === 'active' });
+    navigationRef.navigate('Listen');
   }, [ready, pending]);
 }

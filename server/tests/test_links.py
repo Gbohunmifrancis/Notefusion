@@ -14,6 +14,10 @@ from app.jobs import queue as queue_mod
 from app.jobs.queue import PRIORITY_HIGH, PRIORITY_NORMAL, STATUS_DONE, STATUS_FAILED, JobQueue
 
 
+# yt-dlp is faked as subprocess.run here (see conftest).
+pytestmark = pytest.mark.usefixtures("ytdlp_via_subprocess_run")
+
+
 @pytest.fixture(autouse=True)
 def _fresh_cache():
     """Resolved links are remembered for ten minutes; one test's link must not answer another's."""

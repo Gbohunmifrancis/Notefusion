@@ -172,6 +172,40 @@ public class WorkerContractTests
         Assert.DoesNotContain("detail", result.Error.Message);
     }
 
+    [Fact]
+    public async Task A_worker_error_comes_back_as_a_plain_sentence_not_the_workers_text()
+    {
+        const string body = """Traceback (most recent call last): File "/app/app/main.py", line 42, in transcribe""";
+
+        var submitted = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.InternalServerError, body))
+            .SubmitAsync(new MemoryStream([1, 2, 3]), "hum.wav", new TranscribeOptions());
+        var linked = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.BadRequest, body))
+            .SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions());
+
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, submitted.Error);
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, linked.Error);
+        Assert.DoesNotContain("Traceback", submitted.Error.Message);
+        Assert.DoesNotContain("500", submitted.Error.Message);
+    }
+
+    [Fact]
+    public async Task A_file_the_worker_cannot_read_is_told_plainly_not_as_an_outage()
+    {
+        const string sentence = "This audio file could not be read. Try saving it as an MP3 or WAV and upload it again.";
+
+        var unreadable = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity, $$"""{"detail":"{{sentence}}"}"""))
+            .SubmitAsync(new MemoryStream([1, 2, 3]), "broken.m4a", new TranscribeOptions());
+        var notJson = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.UnprocessableEntity, "<html>bad gateway</html>"))
+            .SubmitAsync(new MemoryStream([1, 2, 3]), "broken.m4a", new TranscribeOptions());
+        var full = await Client(StubHttpMessageHandler.Returning(HttpStatusCode.ServiceUnavailable, """{"detail":"The queue is full."}"""))
+            .SubmitAsync(new MemoryStream([1, 2, 3]), "hum.wav", new TranscribeOptions());
+
+        Assert.Equal(ErrorType.Validation, unreadable.Error.Type);
+        Assert.Equal(sentence, unreadable.Error.Message);
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, notJson.Error);
+        Assert.Equal(TranscriptionErrors.ServiceUnavailable, full.Error);
+    }
+
     [Theory]
     [InlineData("live", "TRANS_LINK_LIVE")]
     [InlineData("not_found", "TRANS_LINK_NOT_FOUND")]
