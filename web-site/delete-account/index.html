@@ -478,7 +478,10 @@
         successBox.innerHTML = "<p><strong>Account Successfully Deleted</strong></p><p>" + escapeHtml(data.message) + "</p>";
         successBox.hidden = false;
       } else {
-        infoBox.innerHTML = "<p><strong>Verification Email Sent</strong></p><p>" + escapeHtml(data.message) + "</p>";
+        // With a password the server answers "not deleted" in the same words whether the account exists
+        // or not; without one it has emailed a link if there is an account. The heading follows the request.
+        var heading = password ? "Account Not Deleted" : "Check Your Email";
+        infoBox.innerHTML = "<p><strong>" + heading + "</strong></p><p>" + escapeHtml(data.message) + "</p>";
         infoBox.hidden = false;
       }
     }).catch(function (err) {
