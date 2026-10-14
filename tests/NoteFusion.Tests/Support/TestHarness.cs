@@ -8,6 +8,7 @@ using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Application.Transcriptions.Services;
 using NoteFusion.Core.Entities;
+using NoteFusion.Infrastructure.Common;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Security;
 
@@ -93,6 +94,9 @@ public sealed class TestHarness : IDisposable
     public TrialDeviceRecorder DeviceRegister { get; }
 
     public StubClientApp ClientApp { get; } = new();
+
+    /// <summary>The submit handlers' per-subject lock, the same in-process one production registers.</summary>
+    public InProcessQuotaGate QuotaGate { get; } = new();
 
     /// <summary>The activity log's writer, as a request from <paramref name="userId"/> on <paramref name="device"/> would see it.</summary>
     public ActivityRecorder Activity(Guid? userId = null, string? device = null)

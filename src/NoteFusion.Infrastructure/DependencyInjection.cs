@@ -26,6 +26,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.AddSingleton<IWorkerHeartbeatTracker, NoteFusion.Infrastructure.Common.WorkerHeartbeatTracker>();
+        // One per process: the lock table must be shared by every request (see InProcessQuotaGate on scale-out).
+        services.AddSingleton<IQuotaGate, NoteFusion.Infrastructure.Common.InProcessQuotaGate>();
         services.AddPersistence(configuration);
         services.AddSecurity(configuration);
         services.AddPush(configuration);

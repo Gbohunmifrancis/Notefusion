@@ -114,7 +114,7 @@ public class HarmoniseSheetTests
     }
 
     private static HarmoniseSheetCommandHandler Handler(TestHarness h, User user, ITranscriptionApi api)
-        => new(api, h.Db, new StubCurrentUser(user.Id), h.Clock);
+        => new(api, h.Db, new StubCurrentUser(user.Id), h.Clock, h.QuotaGate);
 
     private static User Seed(TestHarness h)
     {

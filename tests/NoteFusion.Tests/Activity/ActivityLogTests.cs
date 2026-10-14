@@ -99,7 +99,7 @@ public class ActivityLogTests
     {
         using var h = new TestHarness(Now);
         var api = new FakeApi();
-        var preview = new SubmitPreviewCommandHandler(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp, h.Activity(device: "browser-a"));
+        var preview = new SubmitPreviewCommandHandler(api, h.Db, h.Clock, new StubDeviceFingerprint("browser-a"), h.ClientIp, h.Activity(device: "browser-a"), h.QuotaGate);
 
         var job = (await preview.Handle(new SubmitPreviewCommand(new MemoryStream([1]), "hum.webm", ContentType: "audio/webm", SizeBytes: 9000), default)).Value;
         api.Outcomes[job] = TranscriptionStatus.Done;
@@ -303,7 +303,7 @@ public class ActivityLogTests
     private static Task<Result<string>> Upload(
         TestHarness h, Guid user, FakeApi api, string fileName, string? contentType = "audio/mp4", long? size = 1234, string? device = null)
         => new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user), h.Clock, new StubDeviceFingerprint(device), h.DeviceRegister, h.Activity(user, device))
+                api, h.Db, new StubCurrentUser(user), h.Clock, new StubDeviceFingerprint(device), h.DeviceRegister, h.Activity(user, device), h.QuotaGate)
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), fileName, TranscriptionMode.Melody, null, null,
                 ContentType: contentType, SizeBytes: size), default);
 

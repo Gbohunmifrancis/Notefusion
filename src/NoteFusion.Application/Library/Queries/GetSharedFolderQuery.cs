@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
-using NoteFusion.Application.Library.Commands;
 using NoteFusion.Application.Library.Dtos;
 using NoteFusion.Shared.Results;
 
@@ -10,12 +9,14 @@ namespace NoteFusion.Application.Library.Queries;
 
 /// <summary>
 /// A shared folder, opened by anyone with its link: the folder's name, who shared it, and every sheet
-/// filed in it now, newest last. A sheet filed after the link was made is shared on this read, since
-/// sharing the folder is sharing what is in it.
+/// filed in it now, newest last, each opened through the folder's own link
+/// (<see cref="GetSharedFolderSheetQuery"/>). Reading the folder gives no sheet a link of its own: a sheet
+/// the owner stopped sharing stays private everywhere but here, and leaves here when it leaves the folder
+/// or the folder's link is stopped.
 /// </summary>
 public sealed record GetSharedFolderQuery(string Token) : IRequest<Result<SharedFolderDto>>;
 
-public sealed class GetSharedFolderQueryHandler(IApplicationDbContext db, IDateTimeProvider clock)
+public sealed class GetSharedFolderQueryHandler(IApplicationDbContext db)
     : IRequestHandler<GetSharedFolderQuery, Result<SharedFolderDto>>
 {
     public async Task<Result<SharedFolderDto>> Handle(GetSharedFolderQuery request, CancellationToken ct)
@@ -26,13 +27,11 @@ public sealed class GetSharedFolderQueryHandler(IApplicationDbContext db, IDateT
         if (share is null)
             return LibraryErrors.ShareNotFound;
 
-        var sheets = await db.Transcriptions
+        var sheets = await db.Transcriptions.AsNoTracking()
             .Where(t => t.UserId == share.UserId && t.Folder == share.Folder)
             .OrderBy(t => t.CreatedAtUtc)
+            .Select(t => new { t.Id, t.Title, t.Key, t.ShareToken })
             .ToListAsync(ct);
-        var now = clock.UtcNow;
-        foreach (var sheet in sheets.Where(s => s.ShareToken is null))
-            sheet.Share(ShareTokens.New(), now);
         share.RecordView();
         await db.SaveChangesAsync(ct);
 
@@ -41,6 +40,6 @@ public sealed class GetSharedFolderQueryHandler(IApplicationDbContext db, IDateT
         return new SharedFolderDto(
             share.Folder,
             sharedBy,
-            sheets.Select(s => new SharedFolderItemDto(s.Title, s.Key.ToString(), s.ShareToken!)).ToList());
+            sheets.Select(s => new SharedFolderItemDto(s.Title, s.Key.ToString(), s.Id, s.ShareToken)).ToList());
     }
 }

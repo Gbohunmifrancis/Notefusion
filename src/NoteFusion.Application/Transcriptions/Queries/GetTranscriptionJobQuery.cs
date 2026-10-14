@@ -50,9 +50,10 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         var job = await _db.TranscriptionJobs
             .FirstOrDefaultAsync(j => j.JobId == request.JobId, cancellationToken);
 
-        // NotFound rather than Forbidden: confirming a stranger's job id exists is itself a leak.
-        // Until this row existed, any signed-in caller could poll any job id and read the result.
-        if (job is not null && _currentUser.UserId is { } caller && job.UserId != caller)
+        // NotFound rather than Forbidden: confirming a stranger's job id exists is itself a leak. A job
+        // with no row is not one of the caller's either — an anonymous preview, polled on its own route,
+        // or an id made up — and the worker's answer for it would be someone else's result, uncharged.
+        if (job is null || _currentUser.UserId is not { } caller || job.UserId != caller)
         {
             return TranscriptionErrors.JobNotFound;
         }
@@ -63,14 +64,14 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             // The ML service keeps jobs in memory with a TTL, on a dyno that cycles daily, so a poll
             // arriving late — after a completion push, typically — gets nothing back. Our own copy is
             // the authority once it exists.
-            if (job?.SettledAtUtc is null)
+            if (job.SettledAtUtc is null)
             {
                 // A job we recorded, never settled, and the worker has forgotten: the worker restarted
                 // under it (the queue is in memory; an out-of-memory kill is the usual cause). The
                 // client was polling a job that will never finish and used to be shown a bare
                 // "service returned 404"; it is told plainly that the job is lost, nothing was
                 // charged, and the thing to do is submit again.
-                if (job is not null && result.Error.Type == ErrorType.NotFound)
+                if (result.Error.Type == ErrorType.NotFound)
                 {
                     // Closed here, uncharged, so it stops holding a free place (TrialUsage counts open jobs)
                     // and the sweep has nothing left to say about it: the client is being told now.
@@ -90,9 +91,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
                 : settled with { Result = ProGate.ForFree(settled.Result) };
         }
 
-        // A job with no row was submitted before this table existed, or anonymously. Let it through
-        // uncharged — breaking an in-flight transcription across a deploy is the worse trade.
-        if (job is not null && result.Value.Status == TranscriptionStatus.Failed)
+        if (result.Value.Status == TranscriptionStatus.Failed)
         {
             // Closed here, as a finished job is below: it stops holding a free place at once, and the sweep
             // does not push a failure the client is looking at in this very response.
@@ -102,7 +101,7 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             return result;
         }
 
-        if (job is null || result.Value.Status != TranscriptionStatus.Done)
+        if (result.Value.Status != TranscriptionStatus.Done)
         {
             return result;
         }

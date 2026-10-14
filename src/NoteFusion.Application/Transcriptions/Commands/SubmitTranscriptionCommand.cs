@@ -44,6 +44,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
     private readonly IDeviceFingerprint _device;
     private readonly ITrialDeviceRecorder _devices;
     private readonly ActivityRecorder _activity;
+    private readonly IQuotaGate _gate;
 
     public SubmitTranscriptionCommandHandler(
         ITranscriptionApi api,
@@ -52,7 +53,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         IDateTimeProvider clock,
         IDeviceFingerprint device,
         ITrialDeviceRecorder devices,
-        ActivityRecorder activity)
+        ActivityRecorder activity,
+        IQuotaGate gate)
     {
         _api = api;
         _db = db;
@@ -61,6 +63,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         _device = device;
         _devices = devices;
         _activity = activity;
+        _gate = gate;
     }
 
     public async Task<Result<string>> Handle(SubmitTranscriptionCommand request, CancellationToken cancellationToken)
@@ -93,6 +96,13 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
         var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
         var isPro = false;
+
+        // One submit per account at a time, from the count to the recorded job: the job row is what the
+        // next count sees, and it is written only after the worker answers, so parallel submits would all
+        // count the same rows and all pass.
+        await using var lease = _currentUser.UserId is { } signedIn
+            ? await _gate.AcquireAsync(QuotaGateExtensions.UserKey(signedIn), cancellationToken)
+            : null;
 
         if (_currentUser.UserId is { } userId)
         {
@@ -128,9 +138,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // arrived as a link or as a file. Same gate as the link submit, so "N of 20 songs" counts
                 // every song and the twenty-first is refused the same way. A score file has no voice to
                 // isolate, so it is neither gated nor charged as a song whatever the form said.
-                var used = await SongCredits.CountUsedThisMonthAsync(_db, userId, _clock.UtcNow, cancellationToken);
-                if (used >= SongCredits.ProMonthlyAllowance)
-                    return BillingErrors.SongCreditsExhausted(SongCredits.ProMonthlyAllowance);
+                if (await SongGate.CheckAsync(_db, userId, _clock.UtcNow, cancellationToken) is { } refused)
+                    return Result.Failure<string>(refused);
             }
         }
         // Normalise the optional key override:
@@ -169,17 +178,18 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         // on a timer with no request behind it and so no header to read.
         if (submitted.IsSuccess && _currentUser.UserId is { } owner)
         {
-            _db.TranscriptionJobs.Add(
-                isPro && request.Separate && !isScore
-                    ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint)
-                    : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint));
-
             // Only for accounts the allowance applies to: a Pro subscriber's handset is not part of the
-            // trial ledger, and registering it would spend a geo lookup to learn nothing.
+            // trial ledger, and registering it would spend a geo lookup to learn nothing. Before the job is
+            // staged, because a first sighting is saved on its own (see ITrialDeviceRecorder).
             if (metered && fingerprint is not null)
             {
                 await _devices.RecordAsync(fingerprint, owner, cancellationToken);
             }
+
+            _db.TranscriptionJobs.Add(
+                isPro && request.Separate && !isScore
+                    ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint)
+                    : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint));
 
             await _db.SaveChangesAsync(cancellationToken);
         }

@@ -60,8 +60,7 @@ public sealed class TrialDeviceRecorder : ITrialDeviceRecorder
 
         if (device is null)
         {
-            device = TrialDevice.Register(fingerprint, await ResolveCountryAsync(ct), _clientIp.Current, now);
-            _db.TrialDevices.Add(device);
+            device = await RegisterAsync(fingerprint, now, ct);
         }
         else if (accountIsNewHere)
         {
@@ -89,6 +88,32 @@ public sealed class TrialDeviceRecorder : ITrialDeviceRecorder
                 + "for {OtherAccountCount} other account(s). First seen {FirstSeenAtUtc:O} from {Country}. "
                 + "The free-tier ceiling is shared across all of them.",
                 fingerprint, userId, otherAccounts, device.FirstSeenAtUtc, device.FirstSeenCountry ?? "an unknown country");
+        }
+    }
+
+    /// <summary>
+    /// Inserts the handset's row at once, in its own save. Two accounts on one handset submitting together
+    /// can both find no row; the unique index on the fingerprint refuses the second insert, and that used
+    /// to surface as a 500 from the submit's own save. Here the loser detaches its row, reads the winner's
+    /// and carries on as a returning device, so a submit never fails over bookkeeping.
+    /// </summary>
+    private async Task<TrialDevice> RegisterAsync(string fingerprint, DateTime now, CancellationToken ct)
+    {
+        var device = TrialDevice.Register(fingerprint, await ResolveCountryAsync(ct), _clientIp.Current, now);
+        _db.TrialDevices.Add(device);
+        try
+        {
+            await _db.SaveChangesAsync(ct);
+            return device;
+        }
+        catch (DbUpdateException)
+        {
+            _db.TrialDevices.Entry(device).State = EntityState.Detached;
+            var winner = await _db.TrialDevices.FirstOrDefaultAsync(d => d.Fingerprint == fingerprint, ct);
+            if (winner is null)
+                throw; // not the race: something else refused the row
+            winner.ObserveCountry(device.FirstSeenCountry, now);
+            return winner;
         }
     }
 
