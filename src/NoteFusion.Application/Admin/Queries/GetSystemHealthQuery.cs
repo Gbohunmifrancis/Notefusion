@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Admin.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
@@ -158,7 +159,8 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
         // Active in the sense the app uses — the status and the period window together — rather than
         // Status == Active alone, which would count a cancelled-but-still-paid customer as gone and an
         // expired-but-never-swept row as present.
-        var live = _db.Subscriptions.Where(s =>
+        // Customers only: a gift to the team is not a subscriber (AnalyticsScope).
+        var live = _db.RealSubscriptions().Where(s =>
             (s.Status == SubscriptionStatus.Active || s.Status == SubscriptionStatus.Canceled)
             && s.CurrentPeriodEndUtc > now);
 
@@ -170,7 +172,7 @@ public sealed class GetSystemHealthQueryHandler : IRequestHandler<GetSystemHealt
             // Lifetime excluded by the upper bound itself — the sentinel is centuries away — so no extra
             // filter is needed, and one would only invite a "simplification" that breaks it.
             ExpiringWithinSevenDays: await live.CountAsync(s => s.CurrentPeriodEndUtc <= sevenDays, ct),
-            PastDueCount: await _db.Subscriptions.CountAsync(s => s.Status == SubscriptionStatus.PastDue, ct));
+            PastDueCount: await _db.RealSubscriptions().CountAsync(s => s.Status == SubscriptionStatus.PastDue, ct));
     }
 
     private static HealthPanelDto Unavailable(string name)

@@ -5,6 +5,7 @@ import {
   ChevronDown,
   HeartPulse,
   Inbox,
+  ChartNoAxesCombined,
   LayoutDashboard,
   LogOut,
   MessageSquareHeart,
@@ -27,6 +28,7 @@ import type { FormEvent, ReactNode } from "react";
 
 import { Avatar } from "@/components/Avatar";
 import { BrandMark } from "@/components/BrandMark";
+import { LiveNotices } from "@/components/LiveNotices";
 import { NotificationBell } from "@/components/NotificationBell";
 import { Button } from "@/components/ui/button";
 import {
@@ -48,6 +50,7 @@ import { useAuth } from "@/lib/auth";
 
 const PRIMARY_NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard },
+  { to: "/insights", label: "Insights", icon: ChartNoAxesCombined },
   { to: "/users", label: "Users", icon: Users2 },
   { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
   { to: "/activity", label: "Activity", icon: Activity },
@@ -146,6 +149,8 @@ export function ConsoleShell({ children }: { children: ReactNode }) {
             </form>
 
             <div className="ml-auto flex items-center gap-3">
+              <LiveNotices />
+
               <ThemeToggle />
 
               <NotificationBell />

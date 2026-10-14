@@ -260,6 +260,9 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// After authorization, so it sees who is signed in; it stamps last-seen once the response is done.
+app.UseMiddleware<LastSeenMiddleware>();
+
 app.MapControllers();
 app.MapHub<NoteFusion.Api.Hubs.TranscriptionHub>("/hubs/transcription");
 

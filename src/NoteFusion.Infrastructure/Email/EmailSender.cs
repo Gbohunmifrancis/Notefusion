@@ -44,6 +44,9 @@ public sealed class EmailSender : IEmailSender
     public Task SendPaymentFailedAsync(EmailRecipient to, string planName, CancellationToken ct = default)
         => TrySendAsync(_template.PaymentFailed(to, planName), ct);
 
+    public Task SendCheckoutAbandonedAsync(EmailRecipient to, string planName, CancellationToken ct = default)
+        => TrySendAsync(_template.CheckoutAbandoned(to, planName), ct);
+
     public Task SendSubscriptionExpiringAsync(
         EmailRecipient to, SubscriptionExpiry expiry, CancellationToken ct = default)
         => TrySendAsync(_template.SubscriptionExpiring(to, expiry), ct);

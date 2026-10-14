@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Library.Dtos;
@@ -85,6 +86,17 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
         transcription.SetLyrics(request.Lyrics ?? string.Empty);
         transcription.SetParts(PartNotes.FromDtos(request.Parts), request.PartsMusicXml);
         transcription.SetChords(SheetChords.FromDtos(request.Chords));
+
+        // One sheet per job. The library sweep keeps a finished job nobody saved
+        // (AutoSaveFinishedTranscriptionsCommand); a Save pressed after that is the user's own version —
+        // their title, their doh — so it replaces the kept copy rather than standing beside it.
+        if (!string.IsNullOrWhiteSpace(request.SourceJobId))
+        {
+            var kept = await _db.Transcriptions
+                .Where(t => t.UserId == userId && t.SourceJobId == request.SourceJobId)
+                .ToListAsync(cancellationToken);
+            _db.Transcriptions.RemoveRange(kept);
+        }
 
         _db.Transcriptions.Add(transcription);
         await _db.SaveChangesAsync(cancellationToken);

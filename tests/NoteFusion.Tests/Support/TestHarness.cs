@@ -177,6 +177,12 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    public Task SendCheckoutAbandonedAsync(EmailRecipient to, string planName, CancellationToken ct = default)
+    {
+        Sent.Add(("checkout-abandoned", to));
+        return Task.CompletedTask;
+    }
+
     public Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default)
     {
         Sent.Add(("password-reset", to));

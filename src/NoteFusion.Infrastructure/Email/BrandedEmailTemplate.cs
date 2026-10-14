@@ -279,6 +279,42 @@ public sealed class BrandedEmailTemplate
                 _settings.AppUrl));
     }
 
+    public EmailMessage CheckoutAbandoned(EmailRecipient to, string planName)
+    {
+        // Opens the plans in the web app; the account's own sign-in brings them straight back to it.
+        var plansUrl = _settings.AppUrl.TrimEnd('/') + "/app?upgrade=1";
+        var body = Paragraphs(
+            $"You started checking out <strong>{Encode(planName)}</strong> but the payment didn't finish, "
+                + "so nothing was charged.",
+            "Pro gives you whole songs instead of the first minute, alto, tenor and bass under the tune, "
+                + "and the PDF, MusicXML and MIDI downloads for your choir.")
+            + Callout(
+                "If something went wrong — a declined card, a bank block on online payments, a page that "
+                    + "wouldn't load — write to <a href=\"mailto:hello@notefusion.studio\" style=\"color:" + Blue
+                    + ";text-decoration:underline\">hello@notefusion.studio</a> and tell us. A person reads "
+                    + "every message and will help you finish.",
+                Blue);
+
+        return Compose(
+            to,
+            subject: "Your NoteFusion Pro checkout didn't finish",
+            preheader: "Nothing was charged. Pick up where you left off, or tell us what went wrong.",
+            heading: "Still want Pro?",
+            bodyHtml: body,
+            cta: new CallToAction("Finish upgrading", plansUrl),
+            textBody: Text(
+                $"You started checking out {planName} but the payment didn't finish, so nothing was charged.",
+                "",
+                "Pro gives you whole songs instead of the first minute, alto, tenor and bass under the",
+                "tune, and the PDF, MusicXML and MIDI downloads for your choir.",
+                "",
+                "If something went wrong (a declined card, a bank block on online payments, a page that",
+                "wouldn't load), write to hello@notefusion.studio and tell us. A person reads every",
+                "message and will help you finish.",
+                "",
+                "Finish upgrading: " + plansUrl));
+    }
+
     public EmailMessage SubscriptionExpiring(EmailRecipient to, SubscriptionExpiry expiry)
     {
         var ends = expiry.ExpiresAtUtc.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);

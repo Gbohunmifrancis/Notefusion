@@ -15,7 +15,9 @@ namespace NoteFusion.Application.Feedback;
 /// <summary>
 /// What the app or the web app sends: a feedback message (<c>Kind</c> "feedback", with a category and a
 /// message), a rating ("rating", 1–5 stars and an optional comment), "not now" to the rating prompt
-/// ("rating_dismissed"), or where the user heard about us ("heard_about", a source and optional detail).
+/// ("rating_dismissed"), the verdict on one transcription ("transcription", 5 spot on / 3 close / 1 off,
+/// what was off as the category, an optional comment and the <c>JobId</c>), or where the user heard
+/// about us ("heard_about", a source and optional detail).
 /// </summary>
 public sealed record SubmitFeedbackCommand(
     string Kind,
@@ -25,20 +27,25 @@ public sealed record SubmitFeedbackCommand(
     string? Source = null,
     string? Client = null,
     string? AppVersion = null,
-    string? Screen = null) : IRequest<Result>;
+    string? Screen = null,
+    string? JobId = null) : IRequest<Result>;
 
 public sealed class SubmitFeedbackCommandValidator : AbstractValidator<SubmitFeedbackCommand>
 {
     public SubmitFeedbackCommandValidator()
     {
         RuleFor(x => x.Kind).Must(k => k is UserFeedback.FeedbackKind or UserFeedback.RatingKind
-            or UserFeedback.RatingDismissedKind or UserFeedback.HeardAboutKind)
+            or UserFeedback.RatingDismissedKind or UserFeedback.HeardAboutKind or UserFeedback.TranscriptionKind)
             .WithMessage("Unknown feedback kind.");
         RuleFor(x => x.Message).NotEmpty().When(x => x.Kind == UserFeedback.FeedbackKind)
             .WithMessage("Tell us what's on your mind.");
         RuleFor(x => x.Message).MaximumLength(UserFeedback.MessageMaxLength);
         RuleFor(x => x.Rating).NotNull().InclusiveBetween(1, 5).When(x => x.Kind == UserFeedback.RatingKind);
         RuleFor(x => x.Source).NotEmpty().When(x => x.Kind == UserFeedback.HeardAboutKind);
+        RuleFor(x => x.Rating).Must(r => r is not null && UserFeedback.TranscriptionVerdicts.Contains(r.Value))
+            .When(x => x.Kind == UserFeedback.TranscriptionKind).WithMessage("Choose spot on, close or off.");
+        RuleFor(x => x.JobId).NotEmpty().MaximumLength(UserFeedback.JobIdMaxLength)
+            .When(x => x.Kind == UserFeedback.TranscriptionKind);
     }
 }
 
@@ -71,10 +78,21 @@ public sealed class SubmitFeedbackCommandHandler : IRequestHandler<SubmitFeedbac
             return Result.Success(); // answered already (two tabs, a retry): the first answer stands
         }
 
+        if (request.Kind == UserFeedback.TranscriptionKind)
+        {
+            // One verdict per transcription: a changed mind ("close" then "off, the key") replaces the first.
+            var earlier = await _db.UserFeedback
+                .Where(f => f.UserId == userId && f.Kind == UserFeedback.TranscriptionKind && f.JobId == request.JobId)
+                .ToListAsync(ct);
+            _db.UserFeedback.RemoveRange(earlier);
+        }
+
         _db.UserFeedback.Add(request.Kind switch
         {
             UserFeedback.RatingKind => UserFeedback.Rate(userId, request.Rating!.Value, request.Message, client, request.AppVersion, request.Screen, now),
             UserFeedback.RatingDismissedKind => UserFeedback.DismissRating(userId, client, request.AppVersion, request.Screen, now),
+            UserFeedback.TranscriptionKind => UserFeedback.JudgeTranscription(
+                userId, request.JobId!, request.Rating!.Value, request.Category, request.Message, client, request.AppVersion, now),
             UserFeedback.HeardAboutKind => UserFeedback.HeardAbout(userId, request.Source!, request.Message, client, request.AppVersion, now),
             _ => UserFeedback.Feedback(userId, request.Category, request.Message!, client, request.AppVersion, request.Screen, now)
         });
@@ -147,7 +165,8 @@ public sealed class GetFeedbackPromptsQueryHandler : IRequestHandler<GetFeedback
 
 public sealed record FeedbackRowDto(
     Guid Id, DateTime CreatedAtUtc, string Kind, int? Rating, string? Category, string? Message,
-    string Client, string? AppVersion, string? Screen, Guid UserId, string? UserName, string? UserEmail);
+    string Client, string? AppVersion, string? Screen, Guid UserId, string? UserName, string? UserEmail,
+    string? JobId = null);
 
 /// <summary>Ratings, where people heard about us and the feedback categories, over everything recorded.</summary>
 public sealed record FeedbackSummaryDto(
@@ -158,7 +177,12 @@ public sealed record FeedbackSummaryDto(
     int HeardAboutAnswers,
     IReadOnlyList<CategoryCountDto> HeardAbout,
     int FeedbackMessages,
-    IReadOnlyList<CategoryCountDto> FeedbackByCategory);
+    IReadOnlyList<CategoryCountDto> FeedbackByCategory,
+    /// <summary>Verdicts on single transcriptions, and how they split: "spot on", "close", "off".</summary>
+    int TranscriptionVerdicts = 0,
+    IReadOnlyList<CategoryCountDto>? TranscriptionDistribution = null,
+    /// <summary>What was off, for the "close" and "off" verdicts that said.</summary>
+    IReadOnlyList<CategoryCountDto>? TranscriptionIssues = null);
 
 public sealed record GetFeedbackSummaryQuery : IRequest<Result<FeedbackSummaryDto>>;
 
@@ -170,13 +194,14 @@ public sealed class GetFeedbackSummaryQueryHandler : IRequestHandler<GetFeedback
 
     public async Task<Result<FeedbackSummaryDto>> Handle(GetFeedbackSummaryQuery request, CancellationToken ct)
     {
-        var rows = await _db.UserFeedback.AsNoTracking()
+        var rows = await _db.RealFeedback().AsNoTracking()
             .Select(f => new { f.Kind, f.Rating, f.Category })
             .ToListAsync(ct);
 
         var ratings = rows.Where(r => r.Kind == UserFeedback.RatingKind && r.Rating != null).Select(r => r.Rating!.Value).ToList();
         var heard = rows.Where(r => r.Kind == UserFeedback.HeardAboutKind).ToList();
         var feedback = rows.Where(r => r.Kind == UserFeedback.FeedbackKind).ToList();
+        var verdicts = rows.Where(r => r.Kind == UserFeedback.TranscriptionKind && r.Rating != null).ToList();
 
         static IReadOnlyList<CategoryCountDto> Ranked(IEnumerable<string?> labels) => [.. labels
             .GroupBy(l => l ?? "other")
@@ -191,7 +216,12 @@ public sealed class GetFeedbackSummaryQueryHandler : IRequestHandler<GetFeedback
             heard.Count,
             Ranked(heard.Select(h => h.Category)),
             feedback.Count,
-            Ranked(feedback.Select(f => f.Category)));
+            Ranked(feedback.Select(f => f.Category)),
+            verdicts.Count,
+            [new CategoryCountDto("spot on", verdicts.Count(v => v.Rating == 5)),
+             new CategoryCountDto("close", verdicts.Count(v => v.Rating == 3)),
+             new CategoryCountDto("off", verdicts.Count(v => v.Rating == 1))],
+            Ranked(verdicts.Where(v => v.Category != null).Select(v => v.Category)));
     }
 }
 
@@ -209,7 +239,7 @@ public sealed class GetFeedbackListQueryHandler : IRequestHandler<GetFeedbackLis
     {
         var page = Math.Max(1, request.Page);
         var pageSize = Math.Clamp(request.PageSize, 1, 100);
-        var query = _db.UserFeedback.AsNoTracking().AsQueryable();
+        var query = _db.RealFeedback().AsNoTracking().AsQueryable();
         if (!string.IsNullOrWhiteSpace(request.Kind))
             query = query.Where(f => f.Kind == request.Kind);
         if (request.UserId is { } userId)
@@ -222,7 +252,8 @@ public sealed class GetFeedbackListQueryHandler : IRequestHandler<GetFeedbackLis
             .Select(f => new FeedbackRowDto(
                 f.Id, f.CreatedAtUtc, f.Kind, f.Rating, f.Category, f.Message, f.Client, f.AppVersion, f.Screen, f.UserId,
                 _db.Users.Where(u => u.Id == f.UserId).Select(u => u.FullName).FirstOrDefault(),
-                _db.Users.Where(u => u.Id == f.UserId).Select(u => u.Email).FirstOrDefault()))
+                _db.Users.Where(u => u.Id == f.UserId).Select(u => u.Email).FirstOrDefault(),
+                f.JobId))
             .ToListAsync(ct);
 
         return new PagedResultDto<FeedbackRowDto>(items, page, pageSize, total);

@@ -16,6 +16,8 @@ import {
   UserX,
   XCircle,
   type LucideIcon,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
@@ -33,6 +35,7 @@ import {
   resetTrialQuota,
   revokePro,
   sendPasswordReset,
+  setInternalAccount,
   setUserRole,
   suspendUser,
 } from "@/api/endpoints";
@@ -669,6 +672,39 @@ function LifecyclePanel({
                 onConfirm: perform("Trial quota reset.", async (note) => {
                   await resetTrialQuota(user.id, note);
                 }),
+              })
+            }
+          />
+        )}
+
+        {/* Team and test accounts stay out of the numbers; an admin always does, so the toggle is for the rest. */}
+        {!isAdmin && (
+          <ActionButton
+            label={user.isInternal ? "Count in analytics" : "Mark as team/test account"}
+            icon={user.isInternal ? Eye : EyeOff}
+            tone="quiet"
+            onClick={() =>
+              ask({
+                title: user.isInternal ? "Count this account in analytics" : "Leave this account out of analytics",
+                body: user.isInternal ? (
+                  <p>
+                    <span className="font-semibold text-foreground">{user.email}</span> will be counted as a customer again:
+                    in the overview, Insights, the Users list, the live notices and every chart.
+                  </p>
+                ) : (
+                  <p>
+                    <span className="font-semibold text-foreground">{user.email}</span> is the team&apos;s own or a test
+                    account. It disappears from the overview, Insights, the Users list (unless you show the team), the
+                    live notices and every chart, along with its browser&apos;s website visits. The account itself is not
+                    touched.
+                  </p>
+                ),
+                confirmLabel: user.isInternal ? "Count it" : "Leave it out",
+                noteLabel: "Why (optional)",
+                onConfirm: perform(
+                  user.isInternal ? "Counted in analytics again." : "Left out of analytics.",
+                  (note) => setInternalAccount(user.id, !user.isInternal, note),
+                ),
               })
             }
           />

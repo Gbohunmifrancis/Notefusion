@@ -16,6 +16,12 @@
 
   /** Checkout funnel steps for the dashboard; the names match CheckoutSteps in the API. */
   function track(name, detail) { try { if (window.nfTrack) window.nfTrack(name, detail); } catch (e) { /* ignore */ } }
+  /** Records the step and only then leaves: a step queued just before a navigation is often lost. */
+  function trackThenGo(name, detail, url) {
+    var sent;
+    try { sent = window.nfTrackNow ? window.nfTrackNow(name, detail) : null; } catch (e) { sent = null; }
+    (sent || Promise.resolve()).then(function () { window.location.href = url; });
+  }
 
   // The top of the funnel: the plans scrolled into view, once per page.
   if ("IntersectionObserver" in window) {
@@ -37,9 +43,9 @@
    */
   function startCheckout(plan, button) {
     var token = accessToken();
-    track(token ? "Checkout started" : "Chose a plan signed out", plan.id);
     var fallback = "/app?signup=1&upgrade=" + encodeURIComponent(plan.id);
-    if (!token) { window.location.href = fallback; return; }
+    if (!token) { trackThenGo("Chose a plan signed out", plan.id, fallback); return; }
+    track("Checkout started", plan.id);
     button.disabled = true;
     var label = button.textContent;
     button.textContent = "Opening checkout…";
@@ -68,13 +74,12 @@
         } catch (e) { /* private mode: the ?paid=1 return still confirms */ }
         var provider = "";
         try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
-        track("Checkout opened", provider);
-        window.location.href = session.checkoutUrl;
+        trackThenGo("Checkout opened", provider, session.checkoutUrl);
       })
       .catch(function (err) {
-        track("Checkout failed", (err && err.message ? err.message : "Network error") + " · home");
         // An expired session, a plan the account cannot buy, or a provider hiccup: the app sorts it out.
-        window.location.href = "/app?upgrade=" + encodeURIComponent(plan.id);
+        trackThenGo("Checkout failed", (err && err.message ? err.message : "Network error") + " · home",
+          "/app?upgrade=" + encodeURIComponent(plan.id));
       })
       .finally(function () { button.disabled = false; button.textContent = label; });
   }

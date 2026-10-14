@@ -133,7 +133,10 @@ public sealed record AdminUserDetailDto(
     /// <summary>Sheets in the library now. <c>TranscriptionCount</c> counts every transcription that produced a result.</summary>
     int SavedTranscriptionCount = 0,
     /// <summary>Transcriptions that ended without a result.</summary>
-    int FailedTranscriptionCount = 0);
+    int FailedTranscriptionCount = 0,
+    /// <summary>A team or test account, left out of analytics (an admin always is).</summary>
+    bool IsInternal = false,
+    DateTime? LastSeenAtUtc = null);
 
 public sealed record AdminTranscriptionSummaryDto(
     Guid Id,

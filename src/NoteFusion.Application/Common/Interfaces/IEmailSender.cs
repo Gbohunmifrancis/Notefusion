@@ -63,6 +63,12 @@ public interface IEmailSender
     Task SendPaymentFailedAsync(EmailRecipient to, string planName, CancellationToken ct = default);
 
     /// <summary>
+    /// Sent a couple of hours after a Pro checkout was opened and not finished: nothing was charged,
+    /// here is the way back, and write to us if something went wrong.
+    /// </summary>
+    Task SendCheckoutAbandonedAsync(EmailRecipient to, string planName, CancellationToken ct = default);
+
+    /// <summary>
     /// Sent once per billing period, shortly before it ends, so a renewal charge is never a surprise
     /// and a lapse is never a silent one.
     /// </summary>

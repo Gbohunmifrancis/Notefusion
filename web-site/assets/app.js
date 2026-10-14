@@ -31,6 +31,11 @@
   function saveTokens(t) { try { localStorage.setItem(TOKENS_KEY, JSON.stringify(t)); } catch (e) { /* private mode */ } }
   /** First-party analytics (assets/track.js): the action shows on the admin dashboard against this account. */
   function track(name, detail) { try { if (window.nfTrack) window.nfTrack(name, detail); } catch (e) { /* never in the way */ } }
+  /** For the step right before leaving the page: sent at once, and waited on briefly (see track.js). */
+  function trackNow(name, detail) {
+    try { if (window.nfTrackNow) return window.nfTrackNow(name, detail); } catch (e) { /* never in the way */ }
+    return Promise.resolve();
+  }
   function clearTokens() { try { localStorage.removeItem(TOKENS_KEY); } catch (e) { /* ignore */ } }
 
   function ApiError(status, body) {
@@ -237,16 +242,23 @@
   }
   $("menu-sounds").addEventListener("click", function () { sfx.set(!sfx.enabled()); if (sfx.enabled()) sfx.play("saved"); });
 
-  // ── Theme: light or dark, remembered on this browser (the page head applies it before paint) ──
+  // ── Theme: Night (the default, as on the phone) or Day, remembered on this browser ──
+  // (the page head applies it before paint)
   function isDark() { return document.documentElement.getAttribute("data-theme") === "dark"; }
   function renderThemeMenu() {
     var b = $("menu-theme"), dark = isDark();
-    b.setAttribute("aria-checked", String(dark)); b.querySelector("span").textContent = dark ? "Dark mode on" : "Dark mode";
-    var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dark ? "#08090C" : "#FFFFFF");
+    b.setAttribute("aria-checked", String(dark)); b.querySelector("span").textContent = dark ? "Night mode on" : "Night mode";
+    var meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.setAttribute("content", dark ? "#07090E" : "#F4F7FC");
   }
   $("menu-theme").addEventListener("click", function () {
     var next = isDark() ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
+    // Every colour transition would fire at once and smear the switch: off for the swap, back after a frame.
+    var root = document.documentElement, stop = document.createElement("style");
+    stop.textContent = "*,*::before,*::after{transition:none!important}";
+    document.head.appendChild(stop);
+    root.setAttribute("data-theme", next);
+    void root.offsetHeight;
+    requestAnimationFrame(function () { requestAnimationFrame(function () { stop.remove(); }); });
     try { localStorage.setItem("nf.web.theme", next); } catch (e) { /* private mode */ }
     renderThemeMenu();
     track(next === "dark" ? "Dark mode on" : "Dark mode off");
@@ -386,7 +398,8 @@
     e.preventDefault();
     var btn = e.target.querySelector("button[type=submit]");
     btn.disabled = true; hide($("auth-alert"));
-    if ($("reg-password").value !== $("reg-confirm").value) { alertIn($("auth-alert"), "danger", "The two passwords don't match."); btn.disabled = false; return; }
+    // One password field: the eye shows what was typed, so a second copy only slowed sign-up down.
+    if ($("reg-password").value.length < 8) { alertIn($("auth-alert"), "danger", "Use at least 8 characters for the password."); btn.disabled = false; return; }
     request("/api/auth/register", { method: "POST", anonymous: true, body: { fullName: $("reg-name").value.trim(), email: $("reg-email").value.trim(), password: $("reg-password").value, source: "web" } })
       .then(function (res) {
         pendingEmail = (res && res.email) || $("reg-email").value.trim();
@@ -608,7 +621,7 @@
       filterLibrary();
     }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); });
   }
-  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); $("link-url").focus(); });
+  $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("link"); $("link-url").focus(); });
   $("lib-search").addEventListener("input", filterLibrary);
   /** A saved sheet, opened into the same result view a fresh transcription uses. */
   function openSaved(id) {
@@ -952,7 +965,6 @@
     if (!following) {
       openProgress("Uploading your recording");
       setStage("uploading", "upload", null);
-      $("progress").scrollIntoView({ behavior: "smooth", block: "center" });
     }
     function onProgress(fraction) {
       if (following) $("p-retry-btn").textContent = "Sending again… " + Math.round(fraction * 100) + "%";
@@ -975,6 +987,39 @@
     submitAudio(file, file.name);
     e.target.value = "";
   });
+  // ── Where the music comes from: Record, Upload or a Song link, one panel at a time ──
+  // The three used to stack in one block with the recording options between them; asking one thing
+  // at a time is calmer, and the last choice is kept for the next visit.
+  var SOURCE_KEY = "nf.web.source", SOURCES = ["record", "upload", "link"];
+  function selectSource(name, focus) {
+    if (SOURCES.indexOf(name) < 0) name = "record";
+    SOURCES.forEach(function (s) {
+      var tab = $("src-tab-" + s), on = s === name;
+      tab.setAttribute("aria-selected", String(on));
+      tab.tabIndex = on ? 0 : -1;
+      $("src-" + s).hidden = !on;
+    });
+    // What is in the recording matters for a recording or a file, not for a link.
+    $("kind-block").hidden = name === "link";
+    try { localStorage.setItem(SOURCE_KEY, name); } catch (e) { /* private mode */ }
+    if (focus) $("src-tab-" + name).focus();
+  }
+  document.querySelectorAll(".source-tab").forEach(function (tab) {
+    tab.addEventListener("click", function () { selectSource(tab.getAttribute("data-source")); track("Source: " + tab.getAttribute("data-source")); });
+    tab.addEventListener("keydown", function (e) {
+      var i = SOURCES.indexOf(tab.getAttribute("data-source"));
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        selectSource(SOURCES[(i + (e.key === "ArrowRight" ? 1 : SOURCES.length - 1)) % SOURCES.length], true);
+      }
+    });
+  });
+  selectSource((function () { try { return localStorage.getItem(SOURCE_KEY); } catch (e) { return null; } })() || "record");
+  // A file dragged over the studio is an upload, whichever tab is showing.
+  $("studio").addEventListener("dragenter", function (e) {
+    if (e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], "Files") >= 0) selectSource("upload");
+  });
+
   (function () {
     var drop = $("drop");
     ["dragenter", "dragover"].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("is-over"); }); });
@@ -1024,8 +1069,10 @@
   /** The progress card, blank: a title, no song art, the bar at zero and none of the warnings. */
   function openProgress(title) {
     $("save-title").value = "";
+    closeTool(); closeFull();
     hide($("result"));
     show($("progress"));
+    rise($("progress"));
     $("p-title").textContent = title;
     $("p-artist").textContent = "";
     hide($("p-thumb"));
@@ -1062,7 +1109,6 @@
     current.preview = kind === "preview";
     if (current.preview) previewId = job.jobId;
     setStage(stageOf(job, kind === "link" ? "fetching" : "transcribing"), current.from, job.queuePosition);
-    $("progress").scrollIntoView({ behavior: "smooth", block: "center" });
     poll();
   }
   function stopPolling() { if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; } }
@@ -1189,7 +1235,8 @@
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
     // One set of plans on the page at a time: the note under the downloads carries them while a
     // result is showing; the standalone panel is for the empty state and the Account view.
-    isPro() ? hide($("r-upgrade")) : (show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
+    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
+    renderVerdict();
     hide($("upgrade-panel"));
     // Four parts are written on request, never assumed: the tab appears once they exist (a saved
     // sheet that already carries them, or after "Write the four parts" below).
@@ -1212,9 +1259,11 @@
     if (guest) { hide($("r-upgrade")); show($("r-watermark")); }
 
     show($("result"));
+    rise($("result"));
     engrave(result.musicXml);
     showParts(result);
-    $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    syncActions();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   /**
@@ -1426,7 +1475,7 @@
   }
   $("sing-start").addEventListener("click", function () {
     if (!current || !current.result) return;
-    if (!isPro()) { show($("r-upgrade")); $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!isPro()) { pitchPro(); return; }
     if (!navigator.mediaDevices || !window.MediaRecorder) { $("sing-status").textContent = "This browser cannot record audio."; return; }
     var r = current.result, notes = singNotes();
     if (!notes.length) return;
@@ -1529,6 +1578,214 @@
     }).catch(function (err) { alertIn($("app-alert"), "danger", "Could not transpose: " + (err.message || err)); btn.disabled = false; });
   });
 
+  // ── One screen at a time: focus mode, the framed sheet, the tools in pop-ups ──
+  /** Restarts the one-off entrance on an element that is shown again (CSS .rise, reduced-motion aware). */
+  function rise(el) { el.classList.remove("rise"); void el.offsetWidth; el.classList.add("rise"); }
+  // While a job runs or a sheet is showing, the greeting and the studio fold away: the work is the page.
+  function syncFocus() {
+    var on = !$("progress").classList.contains("hidden") || !$("result").classList.contains("hidden");
+    document.body.classList.toggle("is-focus", on);
+  }
+  new MutationObserver(syncFocus).observe($("progress"), { attributes: true, attributeFilter: ["class"] });
+  new MutationObserver(syncFocus).observe($("result"), { attributes: true, attributeFilter: ["class"] });
+  /** Back to the studio for another one. The sheet is kept in the library (or is the guest's preview). */
+  function newTranscription() {
+    if (pollTimer) return; // a job still running keeps its card
+    closeTool(); closeFull();
+    hide($("result")); hide($("progress"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    track("New transcription");
+  }
+  $("r-new").addEventListener("click", newTranscription);
+  document.querySelectorAll(".nav-new").forEach(function (b) {
+    b.addEventListener("click", function () { if (!$("result").classList.contains("hidden")) newTranscription(); });
+  });
+
+  // The sheet full screen: a long song reads top to bottom without the page around it.
+  function openFull() {
+    $("sheet-stage").classList.add("is-full"); document.body.classList.add("sheet-full");
+    $("r-expand").setAttribute("aria-pressed", "true"); $("r-collapse").focus();
+    track("Sheet full screen");
+  }
+  function closeFull() {
+    if (!$("sheet-stage").classList.contains("is-full")) return;
+    $("sheet-stage").classList.remove("is-full"); document.body.classList.remove("sheet-full");
+    $("r-expand").setAttribute("aria-pressed", "false"); $("r-expand").focus();
+  }
+  $("r-expand").addEventListener("click", function () { $("sheet-stage").classList.contains("is-full") ? closeFull() : openFull(); });
+  $("r-collapse").addEventListener("click", closeFull);
+
+  // The tools, one at a time. A tool's panel is moved into the pop-up and back again, so everything
+  // already wired to it (ids, handlers, state) keeps working unchanged.
+  var TOOL_LOCKS = {
+    harmony: ["Alto, tenor and bass, with Pro", "Pro writes all four parts under your tune the way a hymn arranger would, ready for your choir to rehearse."],
+    sing: ["Sing it, with Pro", "Sing your part into the microphone and see every note come back marked: in tune, close, or off."]
+  };
+  var openToolId = null, toolReturn = null;
+  function openTool(id, opener) {
+    var panel = $(id); if (!panel) return;
+    closeTool();
+    openToolId = id; toolReturn = opener || null;
+    $("tool-body").appendChild(panel);
+    // The one free four-part harmony opens the real tool, not the locked preview.
+    var locked = !!TOOL_LOCKS[id] && !guest && !isPro() && !(id === "harmony" && freeHarmonyLeft());
+    $("tool-modal").querySelector(".tool-card").classList.toggle("is-locked", locked);
+    if (locked) { $("tool-lock-title").textContent = TOOL_LOCKS[id][0]; $("tool-lock-text").textContent = TOOL_LOCKS[id][1]; show($("tool-lock")); }
+    else hide($("tool-lock"));
+    var h = panel.querySelector("h2");
+    $("tool-modal").setAttribute("aria-label", h ? h.textContent.replace(/\s*Pro\s*$/, "").trim() : "Tool");
+    show($("tool-modal"));
+    var first = locked ? $("tool-unlock") : panel.querySelector("button:not([disabled]), input, select, textarea");
+    (first || $("tool-close")).focus();
+    track("Tool: " + id + (locked ? " (locked)" : ""));
+  }
+  function closeTool() {
+    if (!openToolId) return;
+    var panel = $(openToolId);
+    if (panel) $("tool-dock").appendChild(panel);
+    openToolId = null;
+    hide($("tool-modal"));
+    if (toolReturn && toolReturn.focus) toolReturn.focus();
+    toolReturn = null;
+  }
+  document.querySelectorAll(".result-actions .act[data-tool]").forEach(function (b) {
+    b.addEventListener("click", function () { openTool(b.getAttribute("data-tool"), b); });
+  });
+  $("tool-close").addEventListener("click", closeTool);
+  $("tool-modal").addEventListener("click", function (e) { if (e.target === $("tool-modal")) closeTool(); });
+  $("tool-unlock").addEventListener("click", function () { closeTool(); openUpgrade(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (openToolId) { closeTool(); return; }
+    closeFull();
+  });
+  /** A tool shows in the row only when its panel applies to this sheet (the result logic hides the rest). */
+  function syncActions() {
+    document.querySelectorAll(".result-actions .act[data-tool]").forEach(function (b) {
+      var panel = $(b.getAttribute("data-tool"));
+      b.hidden = !panel || panel.classList.contains("hidden");
+    });
+  }
+  /** A Pro-only action, from anywhere: close the pop-up and bring the Pro card into view. */
+  function pitchPro() {
+    closeTool(); closeFull();
+    if (guest) { openAuth("register"); return; }
+    show($("r-upgrade"));
+    $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "start" });
+    rise($("r-upgrade"));
+  }
+  document.querySelectorAll(".pro-tile").forEach(function (t) {
+    t.addEventListener("click", function () { track("Pro preview: " + t.getAttribute("data-upgrade")); openUpgrade(); });
+  });
+
+  /** The frosted four-part preview, written from this sheet's own opening so it looks like theirs. */
+  var SCALE = ["d", "r", "m", "f", "s", "l", "t"];
+  function previewParts(result) {
+    var notes = (result.notes || []).slice(0, 8);
+    if (notes.length < 4) return;
+    function step(sol, by) {
+      var i = SCALE.indexOf(String(sol || "").charAt(0)); if (i < 0) return sol || "d";
+      var j = i + by, mark = j < 0 ? "," : j > 6 ? "'" : "";
+      return SCALE[((j % 7) + 7) % 7] + mark;
+    }
+    function row(by) { return notes.map(function (n, k) { return (by === 0 ? (n.solfa || "d") + (n.octaveMark || "") : step(n.solfa, by)) + (k % 2 ? " |" : " :"); }).join(" ").replace(/ [:|]$/, ""); }
+    var rows = $("pro-satb").children;
+    [0, -2, 2, -4].forEach(function (by, i) {
+      if (!rows[i]) return;
+      rows[i].innerHTML = "<em>" + "SATB".charAt(i) + "</em>";
+      rows[i].appendChild(document.createTextNode(row(by)));
+    });
+  }
+
+  // ── Pro, under the sheet: what this song is missing, in its own words ────
+  // The plans used to sit under the downloads at the very bottom, past every tool, so most people never
+  // saw them. They now follow the sheet, and a free preview of a longer song says how much is locked.
+  function renderUnlock(result) {
+    previewParts(result);
+    var dur = result.songDurationSec || 0, heard = 60;
+    var cut = !!result.truncated && dur > heard;
+    cut ? show($("r-unlock-rest")) : hide($("r-unlock-rest"));
+    if (cut) {
+      // The Pro card below says what is locked, so the long notice above the sheet becomes one chip.
+      hide($("r-truncated"));
+      var chip = document.createElement("span"); chip.className = "chip chip-preview";
+      chip.textContent = "Preview · 1:00 of " + formatSec(dur);
+      $("r-chips").appendChild(chip);
+      $("r-unlock-left").textContent = formatSec(dur - heard) + " more of this song";
+      $("r-unlock-title").textContent = "Unlock the rest of this song";
+      $("r-unlock-lead").textContent = "You've seen the first minute of " + formatSec(dur) + ". Pro writes out the whole song — every bar, with the alto, tenor and bass under it and a PDF without the mark.";
+    } else {
+      $("r-unlock-title").textContent = "Take this sheet to your choir";
+      $("r-unlock-lead").textContent = "Pro adds the alto, tenor and bass under the tune, the PDF, MusicXML and MIDI with no watermark, and whole songs up to six minutes.";
+    }
+  }
+
+  // ── How did it come out? Asked under every fresh transcription ──────────
+  // One tap; "close" or "off" then asks what was off. The answer goes to the API as a "transcription"
+  // verdict with the job id, so the engine's misses can be found again. Answered jobs are remembered on
+  // this browser and not asked twice.
+  var VERDICT_KEY = "nf.web.verdicts";
+  function verdictsGiven() { try { return JSON.parse(localStorage.getItem(VERDICT_KEY) || "{}") || {}; } catch (e) { return {}; } }
+  function rememberVerdict(jobId, verdict) {
+    var all = verdictsGiven(); all[jobId] = verdict;
+    var ids = Object.keys(all); if (ids.length > 200) delete all[ids[0]];
+    try { localStorage.setItem(VERDICT_KEY, JSON.stringify(all)); } catch (e) { /* private mode */ }
+  }
+  var verdictPick = null, issuePick = null;
+  function renderVerdict() {
+    var box = $("r-verdict");
+    // Only a fresh job of a signed-in account: a guest cannot send it, and a saved sheet was judged already.
+    if (guest || !current || !current.jobId || current.kind === "library") { hide(box); return; }
+    verdictPick = null; issuePick = null;
+    $("verdict-more").hidden = true; $("verdict-note").value = "";
+    hide($("verdict-thanks"));
+    box.querySelectorAll(".verdict, .issue").forEach(function (b) { b.setAttribute("aria-pressed", "false"); b.disabled = false; });
+    var given = verdictsGiven()[current.jobId];
+    if (given) {
+      box.querySelector('.verdict[data-verdict="' + given + '"]').setAttribute("aria-pressed", "true");
+      thankVerdict(given);
+    }
+    show(box);
+  }
+  function thankVerdict(v) {
+    $("verdict-more").hidden = true;
+    $("verdict-thanks").textContent = String(v) === "5"
+      ? "Thank you — glad it came out right."
+      : "Thank you. We use every one of these to make the next transcription better.";
+    show($("verdict-thanks"));
+  }
+  function sendVerdict() {
+    if (!current || !current.jobId || !verdictPick) return;
+    var jobId = current.jobId, v = verdictPick, issue = issuePick, note = $("verdict-note").value.trim();
+    $("verdict-send").disabled = true;
+    request("/api/feedback", { method: "POST", body: {
+      kind: "transcription", rating: Number(v), category: v === "5" ? null : issue, message: note || null,
+      jobId: jobId, client: "web", screen: "Result"
+    } }).then(function () {
+      rememberVerdict(jobId, v);
+      track("Transcription verdict", (v === "5" ? "spot on" : v === "3" ? "close" : "off") + (issue ? " · " + issue : ""));
+      if (current && current.jobId === jobId) thankVerdict(v);
+    }).catch(function () {
+      alertIn($("app-alert"), "danger", "Couldn't send that just now. Please try again in a moment.");
+    }).finally(function () { $("verdict-send").disabled = false; });
+  }
+  document.querySelectorAll("#r-verdict .verdict").forEach(function (b) {
+    b.addEventListener("click", function () {
+      verdictPick = b.getAttribute("data-verdict");
+      document.querySelectorAll("#r-verdict .verdict").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+      hide($("verdict-thanks"));
+      if (verdictPick === "5") { sendVerdict(); return; }
+      $("verdict-more").hidden = false;
+    });
+  });
+  document.querySelectorAll("#r-verdict .issue").forEach(function (b) {
+    b.addEventListener("click", function () {
+      issuePick = b.getAttribute("aria-pressed") === "true" ? null : b.getAttribute("data-issue");
+      document.querySelectorAll("#r-verdict .issue").forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-issue") === issuePick)); });
+    });
+  });
+  $("verdict-send").addEventListener("click", sendVerdict);
+
   // ── Save & share ─────────────────────────────────────────────────────────
   function renderSave() {
     if (current.savedId) { hide($("save-form")); show($("saved")); $("saved-title").textContent = current.title || ""; renderShare(); }
@@ -1625,6 +1882,8 @@
     var free = freeHarmonyLeft();
     $("harmony-add").innerHTML = '<svg class="ic"><use href="#i-plus"/></svg>' + (free ? "Write the four parts (1 free)" : "Write the four parts");
     $("harmony-free-note").classList.toggle("hidden", !free);
+    // The "Four parts" action shows no lock while the free one is left.
+    document.body.classList.toggle("has-free-harmony", free);
   }
   $("harmony-add").addEventListener("click", function () {
     var free = freeHarmonyLeft();
@@ -1734,7 +1993,7 @@
     return function () {
       if (!current || !current.result) return;
       if (guest) { openAuth("register"); return; }
-      if (!isPro()) { show($("r-upgrade")); $("r-upgrade").scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+      if (!isPro()) { pitchPro(); return; }
       fn(current.result);
     };
   }
@@ -1890,7 +2149,13 @@
       grid.classList.add("plan-picker");
       if (!plans.length) { grid.textContent = "No plan is available for your region yet."; return; }
       var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });
-      var ordered = plans.slice().sort(function (a, b) { return (isYearly(b) ? 1 : 0) - (isYearly(a) ? 1 : 0); });
+      // Naira opens on the monthly plan: ₦60,000 as the first price anyone sees reads as a wall, while
+      // ₦7,500 a month is a decision. Elsewhere the yearly saving leads, as before.
+      var monthlyFirst = !!monthly && String(monthly.currency).toUpperCase() === "NGN";
+      var ordered = plans.slice().sort(function (a, b) {
+        var ya = isYearly(a) ? 1 : 0, yb = isYearly(b) ? 1 : 0;
+        return monthlyFirst ? ya - yb : yb - ya;
+      });
       var chosen = ordered[0];
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
@@ -1935,7 +2200,8 @@
 
   function money(plan) {
     var amount = plan.amountMinor / 100;
-    try { return new Intl.NumberFormat(undefined, { style: "currency", currency: plan.currency, maximumFractionDigits: amount % 1 ? 2 : 0 }).format(amount); }
+    // narrowSymbol: "₦7,500", not "NGN 7,500", whatever the browser's own locale is.
+    try { return new Intl.NumberFormat(undefined, { style: "currency", currency: plan.currency, currencyDisplay: "narrowSymbol", maximumFractionDigits: amount % 1 ? 2 : 0 }).format(amount); }
     catch (e) { return plan.currency + " " + amount.toFixed(2); }
   }
 
@@ -1951,12 +2217,11 @@
       .then(function (session) {
         var provider = "";
         try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
-        track("Checkout opened", provider);
         saveCheckout({
           planId: plan.id, startedAt: Date.now(), wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null,
           lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null, userId: (me && me.id) || null
         });
-        location.assign(session.checkoutUrl);
+        return trackNow("Checkout opened", provider).then(function () { location.assign(session.checkoutUrl); });
       })
       .catch(function (err) {
         // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
