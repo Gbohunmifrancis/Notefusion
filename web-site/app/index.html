@@ -15,9 +15,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
-<link rel="stylesheet" href="/assets/app.css?v=20">
+<link rel="stylesheet" href="/assets/app.css?v=21">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
-<link rel="stylesheet" href="/assets/night.css?v=4">
+<link rel="stylesheet" href="/assets/night.css?v=5">
 <script>
   // The theme before the first paint, so the page never flashes the wrong one. Light is the default;
   // Dark, or following the device (System), is the saved choice of someone who switched.
@@ -161,7 +161,7 @@
   <!-- Wide screens: help and the account, top right. -->
   <div class="app-head hidden" id="app-head">
     <a class="btn btn-ghost btn-sm how-link" href="/#how"><svg class="ic"><use href="#i-help"/></svg>How it works</a>
-    <button class="acct-chip account-trigger" id="acct-chip" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
+    <button class="acct-chip account-trigger" id="acct-chip" type="button" data-track="Account menu" aria-haspopup="menu" aria-expanded="false" aria-controls="user-menu">
       <span class="who-avatar" id="chip-avatar" aria-hidden="true"></span><span class="acct-chip-name" id="chip-name"></span><svg class="ic"><use href="#i-chev-down"/></svg>
     </button>
   </div>
@@ -755,7 +755,7 @@
       </div>
       <div class="card">
         <div class="input-wrap lib-search"><svg class="ic"><use href="#i-search"/></svg><input id="lib-search" type="text" placeholder="Search your transcriptions" autocomplete="off" aria-label="Search your transcriptions"></div>
-        <div class="lib-folders hidden" id="lib-folders" role="tablist" aria-label="Folders"></div>
+        <div class="lib-folders hidden" id="lib-folders" role="tablist" aria-label="Folders" data-track-items="Folder chip"></div>
         <div class="lib-folder-bar hidden" id="lib-folder-bar">
           <div class="lib-folder-head">
             <strong id="lib-folder-name"></strong>
@@ -870,7 +870,7 @@
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
 <script src="/assets/preview.js?v=10" defer></script>
-<script src="/assets/app.js?v=26" defer></script>
-<script src="/assets/track.js?v=3" defer></script>
+<script src="/assets/app.js?v=27" defer></script>
+<script src="/assets/track.js?v=4" defer></script>
 </body>
 </html>

@@ -48,6 +48,12 @@ function read(key: string): string | null {
 export const getAccessToken = () => read(ACCESS);
 export const getRefreshToken = () => read(REFRESH);
 
+/** True unless the admin signed in without "Remember me" (the tokens then live in sessionStorage). */
+export function isRemembered(): boolean {
+  if (typeof window === "undefined") return true;
+  return localStorage.getItem(PERSIST) !== "0";
+}
+
 /** `remember` defaults to true so `setTokens(a, r)` keeps its old persist-forever behaviour. */
 export function setTokens(access: string, refresh: string, remember = true) {
   if (typeof window === "undefined") return;
