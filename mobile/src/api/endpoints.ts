@@ -29,6 +29,7 @@ import type {
   Subscription,
   SystemAnnouncement,
   SystemHealth,
+  TokenPairResponse,
   TranscriptionJob,
   TranscriptionPart,
   TransposedSheet,
@@ -84,9 +85,10 @@ export const authApi = {
   logout: (refreshToken: string) =>
     api.post("/api/auth/logout", { refreshToken }).then(() => undefined),
 
+  /** Returns a fresh pair: the server revokes every other session, this one's refresh token included. */
   changePassword: (currentPassword: string, newPassword: string) =>
     api
-      .post("/api/auth/change-password", { currentPassword, newPassword })
+      .post<TokenPairResponse>("/api/auth/change-password", { currentPassword, newPassword })
       .then((r) => r.data),
 
   forgotPassword: (email: string) =>
