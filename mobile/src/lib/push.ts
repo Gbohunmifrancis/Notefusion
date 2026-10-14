@@ -186,6 +186,26 @@ export async function disablePush(): Promise<void> {
 }
 
 /**
+ * Drops this device's push token on the server without touching the local switch. It is an
+ * authenticated call, so sign-out runs it before the tokens go. Best-effort and bounded: it never
+ * throws, and gives up after a few seconds so a slow network cannot hold a sign-out hostage.
+ */
+export async function unregisterPushAsync(): Promise<void> {
+  if (isExpoGo || !Device.isDevice) return;
+  const attempt = (async () => {
+    const Notifications = require('expo-notifications') as typeof import('expo-notifications');
+    if ((await Notifications.getPermissionsAsync()).status !== 'granted') return;
+    const projectId =
+      Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+    const { data: token } = await Notifications.getExpoPushTokenAsync(
+      projectId ? { projectId } : undefined,
+    );
+    await devicesApi.unregister(token);
+  })().catch(() => undefined);
+  await Promise.race([attempt, new Promise<void>((resolve) => setTimeout(resolve, 5000))]);
+}
+
+/**
  * Registers this device for push. Entirely best-effort: a denied permission or a
  * simulator (no push hardware) just returns null without throwing.
  *

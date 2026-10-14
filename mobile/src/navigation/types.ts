@@ -42,10 +42,9 @@ export type RootStackParams = {
   Link: undefined;
   /**
    * "Find the key": listens through the microphone and names the doh while another app plays.
-   * `autoStart` comes from a tile, widget or notification tap (notefusion://listen) and is only
-   * true when the app was on screen at the time — a microphone service cannot start otherwise.
+   * Opened by notefusion://listen too, which never starts listening by itself.
    */
-  Listen: { autoStart?: boolean } | undefined;
+  Listen: undefined;
   // Result can arrive fresh from a job or be opened from the library.
   Result: {
     result: TranscriptionResult;

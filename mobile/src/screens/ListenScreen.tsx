@@ -6,13 +6,12 @@
  * microphone foreground service in modules/notefusion-listen). The key is worked out on the phone by
  * `lib/keyDetect`; nothing is uploaded and no credit is spent.
  *
- * Reached from Home, from the Quick Settings tile and the home-screen widget (notefusion://listen —
- * `useListenDeepLink` passes `autoStart` only when the app is on screen, because Android 14+ refuses a
- * microphone service started from the background), and from the notification itself.
+ * Reached from Home, from the Quick Settings tile and the home-screen widget, and from the notification
+ * itself (notefusion://listen — `useListenDeepLink` only opens the screen; the user taps Start).
  */
 
 import React, { useEffect } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { AppState, Platform, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -31,20 +30,20 @@ type Props = NativeStackScreenProps<RootStackParams, "Listen">;
 
 const CAN_ADD_TILE = Platform.OS === "android" && Number(Platform.Version) >= 33;
 
-export function ListenScreen({ route, navigation }: Props) {
+export function ListenScreen({ navigation }: Props) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const listener = useKeyListener();
   const { available, running, starting, hearing, silenced, doh, keyName, confidence, chord, error, start, stop } = listener;
 
-  // A tile or widget tap starts listening the moment the screen is up, and only when the link handler
-  // saw the app on screen (that is what `autoStart` means). The param is cleared as it is consumed, so
-  // each tap starts once — and a later tap, after Stop, starts again.
-  useEffect(() => {
-    if (!route.params?.autoStart) return;
-    navigation.setParams({ autoStart: undefined });
-    if (!running && !starting) void start();
-  }, [route.params?.autoStart, running, starting, start, navigation]);
+  // Leaving the screen ends listening. Backgrounding the app does not unmount it — that is the case
+  // the service exists for — so the check only guards an unmount while the app is not in front.
+  useEffect(
+    () => () => {
+      if (AppState.currentState === "active") stop();
+    },
+    [stop],
+  );
 
   async function addTile() {
     const result = await requestAddTile();

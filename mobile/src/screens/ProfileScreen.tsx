@@ -27,6 +27,8 @@ import { rating } from "../lib/rating";
 import { useSubscription } from "../lib/subscription";
 import { meApi, authApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
+import { tokenStore } from "../lib/tokenStore";
+import { siteUrls } from "../lib/env";
 import { pickProfileImage } from "../lib/imagePicker";
 import {
   fonts,
@@ -134,7 +136,9 @@ export function ProfileScreen() {
   async function changePassword() {
     setPwBusy(true);
     try {
-      await authApi.changePassword(current, next);
+      // The server revoked every other session, ours included; the pair it returns is the live one.
+      const pair = await authApi.changePassword(current, next);
+      await tokenStore.save(pair.accessToken, pair.refreshToken);
       setCurrent("");
       setNext("");
       showDialog({
@@ -461,7 +465,7 @@ export function ProfileScreen() {
               <Ionicons name="document-text-outline" size={18} color={colors.textMuted} />
               <Touchable
                 onPress={() =>
-                  WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/privacy")
+                  WebBrowser.openBrowserAsync(siteUrls.privacy)
                 }
                 ripple={false}
                 accessibilityLabel="Privacy Policy"
@@ -474,7 +478,7 @@ export function ProfileScreen() {
               <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} />
               <Touchable
                 onPress={() =>
-                  WebBrowser.openBrowserAsync("https://notefusion-admin.vercel.app/terms")
+                  WebBrowser.openBrowserAsync(siteUrls.terms)
                 }
                 ripple={false}
                 accessibilityLabel="Terms of Service"

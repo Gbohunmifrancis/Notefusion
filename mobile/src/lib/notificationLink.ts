@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createNavigationContainerRef } from '@react-navigation/native';
 import { transcriptionsApi } from '../api/endpoints';
-import { toApiError } from '../api/client';
+import { safeReason, toApiError } from '../api/client';
 import { openStoreListing } from './appUpdate';
 import { showDialog } from './dialog';
 import { synthesizeMelodyWavBase64 } from './synth';
@@ -34,8 +34,10 @@ export async function openTranscriptionFromNotification(jobId: string): Promise<
     if (!job.result) {
       showDialog({
         title: "That recording didn't finish",
-        message:
-          job.error ?? 'Something went wrong while transcribing it. Try recording it again.',
+        message: safeReason(
+          job.error,
+          'Something went wrong while transcribing it. Try recording it again.',
+        ),
         icon: 'alert-circle-outline',
         tone: 'danger',
       });

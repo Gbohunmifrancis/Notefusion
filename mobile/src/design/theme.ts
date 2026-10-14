@@ -78,7 +78,7 @@ export const colors = {
   // ── Typography ──────────────────────────────────────────────────────────
   text: "#0F172A", // Ink Navy   — primary text
   textMuted: "#64748B", // Slate      — secondary / subtitles
-  textFaint: "#94A3B8", // Light Slate — placeholder / tertiary
+  textFaint: "#64748B", // Slate — placeholder / tertiary; 4.76:1 on white (#94A3B8 was 2.6:1)
 
   // ── Semantic signals ────────────────────────────────────────────────────
   success: "#16A34A",
@@ -152,7 +152,7 @@ export const darkColors: Palette = {
 
   text: "#F3F6FB",
   textMuted: "#8B95AA",
-  textFaint: "#5A6478",
+  textFaint: "#8089A0", // ≥4.98:1 on bg, surface and surfaceAlt (#5A6478 was 3.3:1)
 
   success: "#3DDC97",
   warning: "#F5B544",

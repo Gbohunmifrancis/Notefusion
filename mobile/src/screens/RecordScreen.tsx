@@ -15,6 +15,7 @@ import {
 } from "expo-audio";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
+import { File } from "expo-file-system";
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -191,6 +192,16 @@ function meteringToColor(dbfs: number, c: Palette): string {
   return c.danger; // too quiet / far from the mic
 }
 
+/** Removes a local take or imported cache copy; one that is already gone is nothing to report. */
+function deleteQuietly(uri: string): void {
+  try {
+    const file = new File(uri);
+    if (file.exists) file.delete();
+  } catch {
+    // Already gone or locked.
+  }
+}
+
 /**
  * Offers notifications the first time a transcription is submitted — the one
  * moment where the ask explains itself.
@@ -268,7 +279,15 @@ export function RecordScreen() {
   const recorderState = useAudioRecorderState(recorder, 150);
 
   const tick = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** True from a Start tap until the recorder is running (or has failed to). */
+  const startingRef = useRef(false);
   const lastSubmitArgs = useRef<{uri: string, name: string, opts: any} | null>(null);
+  /** Replaces the remembered submit, deleting the file it pointed at unless it is the same one. */
+  const rememberSubmit = useCallback((next: {uri: string, name: string, opts: any} | null) => {
+    const prev = lastSubmitArgs.current;
+    if (prev && prev.uri !== next?.uri) deleteQuietly(prev.uri);
+    lastSubmitArgs.current = next;
+  }, []);
 
   // ── Voice-level guidance state ────────────────────────────────────────────
   const [showQuietGuidance, setShowQuietGuidance] = useState(false);
@@ -282,6 +301,9 @@ export function RecordScreen() {
     if (state.status === "done" && state.result) {
       const result = state.result;
       const sourceJobId = state.jobId ?? undefined;
+      // The transcription is in; the audio it came from has no further use on the phone. Kept
+      // until now (not dropped at upload) because "Retry Upload" re-sends it after a failed job.
+      rememberSubmit(null);
       reset();
       setPhase("ready");
       setElapsed(0);
@@ -293,7 +315,7 @@ export function RecordScreen() {
       void markPractisedToday();
       nav.navigate("Result", { result, sourceJobId });
     }
-  }, [state.status, state.result, state.jobId, nav, reset, refresh]);
+  }, [state.status, state.result, state.jobId, nav, reset, refresh, rememberSubmit]);
 
   /**
    * Explains an exhausted trial and offers the way out.
@@ -429,8 +451,12 @@ export function RecordScreen() {
   // ── Recording controls ────────────────────────────────────────────────────
 
   async function startRecording() {
+    // Closed before the first await: a second tap during the permission prompt or the recorder's
+    // prepare would otherwise start a second take and a second clock.
+    if (startingRef.current) return;
     setPermError(null);
     if (blockedByTrialLimit()) return;
+    startingRef.current = true;
     try {
       const perm = await requestRecordingPermissionsAsync();
       if (!perm.granted) {
@@ -447,9 +473,12 @@ export function RecordScreen() {
       recorder.record();
       setPhase("recording");
       setElapsed(0);
+      if (tick.current) clearInterval(tick.current);
       tick.current = setInterval(() => setElapsed((e) => e + 1), 1000);
     } catch {
       setPermError("Could not start recording. Please try again.");
+    } finally {
+      startingRef.current = false;
     }
   }
 
@@ -528,7 +557,7 @@ export function RecordScreen() {
       setPhase("uploading");
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
       const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined };
-      lastSubmitArgs.current = { uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }; const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
+      rememberSubmit({ uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }); const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
       // Only once the job is really queued — a quota refusal has no completion
       // to notify about.
       if (jobId) void offerBackgroundAlerts();
@@ -565,7 +594,7 @@ export function RecordScreen() {
       // same remembered answer, and no cancel because the take is already made.
       const separate = mode === "chords" ? false : ((await askIfSong(false)) ?? false);
       const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined };
-      lastSubmitArgs.current = { uri, name: `clip-${elapsed}s.m4a`, opts }; const jobId = await start(uri, `clip-${elapsed}s.m4a`, opts);
+      rememberSubmit({ uri, name: `clip-${elapsed}s.m4a`, opts }); const jobId = await start(uri, `clip-${elapsed}s.m4a`, opts);
       if (jobId) void offerBackgroundAlerts();
     } catch {
       setPhase("ready");

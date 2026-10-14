@@ -98,7 +98,11 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
   const [ready, setReady] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [height, setHeight] = useState(MIN_HEIGHT);
+  /** The engraver's own words — logged in development, never shown. */
   const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    if (__DEV__ && error !== null) console.warn("[score]", error);
+  }, [error]);
 
   useEffect(() => {
     let live = true;
@@ -257,7 +261,7 @@ const ScoreView = forwardRef<ScoreViewHandle, Props>(function ScoreView({
           androidLayerType="hardware"
         />
       )}
-      {error !== null && <Text style={styles.error}>Could not draw the stave: {error}</Text>}
+      {error !== null && <Text style={styles.error}>Could not draw the stave. Please try again.</Text>}
     </View>
   );
 });
