@@ -1,0 +1,24 @@
+{
+  "title": "Good King Wenceslas",
+  "tune": "tempus-adest-floridum",
+  "text": [
+    { "name": "John Mason Neale", "born": 1818, "died": 1866, "role": "Words (1853)" }
+  ],
+  "textPublished": 1853,
+  "description": "Good King Wenceslas in Tonic Solfa (doh is G): the solfa with the words, staff notation, all five verses and a piano, for carol services.",
+  "about": [
+    "John Mason Neale wrote these words in 1853 to a spring carol melody, TEMPUS ADEST FLORIDUM, from the Finnish-Swedish song book Piae Cantiones (1582). The story is about Wenceslas, a tenth-century Duke of Bohemia, and his page going out in the snow to help a poor man on the feast of Stephen, the day after Christmas.",
+    "The verses are written as a conversation, so many choirs give the king's lines to the men and the page's lines to the women."
+  ],
+  "underlay": "Good King Wen-ces-las looked out On the feast of Ste-phen, When the snow lay round a-bout, Deep and crisp and e-ven; Bright-ly shone the moon that night, Though the frost was cru-el, When a poor man came in sight, Gath-’ring win-ter fu_-el.",
+  "verses": [
+    { "lines": ["Good King Wenceslas looked out", "On the feast of Stephen,", "When the snow lay round about,", "Deep and crisp and even;", "Brightly shone the moon that night,", "Though the frost was cruel,", "When a poor man came in sight,", "Gathering winter fuel."] },
+    { "lines": ["“Hither, page, and stand by me,", "If thou know’st it, telling,", "Yonder peasant, who is he?", "Where and what his dwelling?”", "“Sire, he lives a good league hence,", "Underneath the mountain,", "Right against the forest fence,", "By Saint Agnes’ fountain.”"] },
+    { "lines": ["“Bring me flesh, and bring me wine,", "Bring me pine logs hither:", "Thou and I will see him dine,", "When we bear them thither.”", "Page and monarch, forth they went,", "Forth they went together;", "Through the rude wind’s wild lament", "And the bitter weather."] },
+    { "lines": ["“Sire, the night is darker now,", "And the wind blows stronger;", "Fails my heart, I know not how;", "I can go no longer.”", "“Mark my footsteps, good my page;", "Tread thou in them boldly:", "Thou shalt find the winter’s rage", "Freeze thy blood less coldly.”"] },
+    { "lines": ["In his master’s steps he trod,", "Where the snow lay dinted;", "Heat was in the very sod", "Which the saint had printed.", "Therefore, Christian men, be sure,", "Wealth or rank possessing,", "Ye who now will bless the poor", "Shall yourselves find blessing."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}

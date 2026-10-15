@@ -1,0 +1,23 @@
+{
+  "title": "All People That on Earth Do Dwell",
+  "tune": "old-hundredth",
+  "text": [
+    { "name": "William Kethe", "died": 1594, "role": "Words, a paraphrase of Psalm 100 (1561)" }
+  ],
+  "textPublished": 1561,
+  "description": "All People That on Earth Do Dwell (Psalm 100) in Tonic Solfa, doh is G: the solfa with the words, staff notation, all five verses and a piano.",
+  "about": [
+    "William Kethe's paraphrase of Psalm 100 was printed in the Anglo-Genevan psalter of 1561, and it has been sung to this tune ever since — the reason the melody is called OLD HUNDREDTH. It is the same tune as the Doxology, so a choir that can sing one can sing the other."
+  ],
+  "underlay": "All peo-ple that on earth do dwell, Sing to the Lord with cheer-ful voice; Him serve with mirth, his praise forth tell, Come ye be-fore him and re-joice.",
+  "verses": [
+    { "lines": ["All people that on earth do dwell,", "Sing to the Lord with cheerful voice;", "Him serve with mirth, his praise forth tell,", "Come ye before him and rejoice."] },
+    { "lines": ["The Lord, ye know, is God indeed;", "Without our aid he did us make;", "We are his folk, he doth us feed,", "And for his sheep he doth us take."] },
+    { "lines": ["O enter then his gates with praise,", "Approach with joy his courts unto;", "Praise, laud, and bless his name always,", "For it is seemly so to do."] },
+    { "lines": ["For why? the Lord our God is good;", "His mercy is for ever sure;", "His truth at all times firmly stood,", "And shall from age to age endure."] },
+    { "label": "Doxology", "note": "A closing doxology added in later psalters.", "lines": ["To Father, Son and Holy Ghost,", "The God whom heaven and earth adore,", "From men and from the angel host", "Be praise and glory evermore."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}

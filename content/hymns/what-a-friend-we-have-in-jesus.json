@@ -1,0 +1,21 @@
+{
+  "title": "What a Friend We Have in Jesus",
+  "tune": "converse",
+  "text": [
+    { "name": "Joseph M. Scriven", "born": 1819, "died": 1886, "role": "Words (written c. 1855)" }
+  ],
+  "textPublished": 1865,
+  "description": "What a Friend We Have in Jesus in Tonic Solfa to CONVERSE: the solfa with the words, staff notation, all three verses and a piano.",
+  "about": [
+    "Joseph Scriven, an Irish-born teacher who settled in Canada, wrote the words as a poem around 1855. Charles Crozat Converse set them to the tune most churches now use in 1868."
+  ],
+  "underlay": "",
+  "verses": [
+    { "lines": ["What a friend we have in Jesus,", "All our sins and griefs to bear!", "What a privilege to carry", "Everything to God in prayer!", "O what peace we often forfeit,", "O what needless pain we bear,", "All because we do not carry", "Everything to God in prayer!"] },
+    { "lines": ["Have we trials and temptations?", "Is there trouble anywhere?", "We should never be discouraged;", "Take it to the Lord in prayer.", "Can we find a friend so faithful", "Who will all our sorrows share?", "Jesus knows our every weakness;", "Take it to the Lord in prayer."] },
+    { "lines": ["Are we weak and heavy laden,", "Cumbered with a load of care?", "Precious Saviour, still our refuge;", "Take it to the Lord in prayer.", "Do thy friends despise, forsake thee?", "Take it to the Lord in prayer!", "In His arms He’ll take and shield thee;", "Thou wilt find a solace there."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": true
+}

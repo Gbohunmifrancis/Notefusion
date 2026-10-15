@@ -1,0 +1,23 @@
+{
+  "title": "Silent Night",
+  "tune": "stille-nacht",
+  "text": [
+    { "name": "Joseph Mohr", "born": 1792, "died": 1848, "role": "German words, Stille Nacht (1816)" },
+    { "name": "John Freeman Young", "born": 1820, "died": 1885, "role": "English translation (1859)" }
+  ],
+  "textPublished": 1859,
+  "description": "Silent Night in Tonic Solfa (doh is Bb): the solfa line by line with the words, staff notation, all three verses and a piano to sing along with.",
+  "about": [
+    "Joseph Mohr, a young priest in Austria, wrote the German words; Franz Xaver Gruber, the local schoolmaster and organist, set them to music, and the carol was first sung at Christmas 1818 in Oberndorf. The English words most churches sing are John Freeman Young's translation of three of Mohr's verses.",
+    "The tune is in 6/8: count two beats in a bar, each beat split into three. In the solfa grid every cell is half a crotchet, so a bar has six cells."
+  ],
+  "underlay": "Si-lent night,_ ho-ly night,_ All is calm, all is bright, Round yon vir-gin moth-er and child._ Ho-ly in-fant so ten-der and mild, Sleep in heav-en-ly peace,_ Sleep in heav-en-ly peace._",
+  "verses": [
+    { "lines": ["Silent night, holy night,", "All is calm, all is bright", "Round yon Virgin Mother and Child.", "Holy Infant, so tender and mild,", "Sleep in heavenly peace,", "Sleep in heavenly peace."] },
+    { "lines": ["Silent night, holy night,", "Shepherds quake at the sight;", "Glories stream from heaven afar,", "Heavenly hosts sing Alleluia!", "Christ the Saviour is born,", "Christ the Saviour is born!"] },
+    { "lines": ["Silent night, holy night,", "Son of God, love’s pure light;", "Radiant beams from Thy holy face", "With the dawn of redeeming grace,", "Jesus, Lord, at Thy birth,", "Jesus, Lord, at Thy birth."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Amazing Grace",
+  "tune": "new-britain",
+  "text": [
+    { "name": "John Newton", "born": 1725, "died": 1807, "role": "Words, Olney Hymns (1779)" }
+  ],
+  "textPublished": 1779,
+  "description": "Amazing Grace in Tonic Solfa (doh is G): the solfa line by line with the words, staff notation, all verses, and a piano you can sing along with.",
+  "about": [
+    "John Newton wrote the words for his parish in Olney, England, and they were printed in Olney Hymns in 1779. The tune most churches sing them to, NEW BRITAIN, is an anonymous American melody first printed in 1829; Edwin O. Excell's arrangement of 1900 fixed the form found in most hymn books today."
+  ],
+  "underlay": "A-maz-ing_ grace! how sweet the sound, That saved a_ wretch like me! I once was_ lost, but now am found; Was blind, but_ now I see.",
+  "verses": [
+    { "lines": ["Amazing grace! how sweet the sound", "That saved a wretch like me!", "I once was lost, but now am found;", "Was blind, but now I see."] },
+    { "lines": ["’Twas grace that taught my heart to fear,", "And grace my fears relieved;", "How precious did that grace appear", "The hour I first believed!"] },
+    { "lines": ["Through many dangers, toils and snares,", "I have already come;", "’Tis grace hath brought me safe thus far,", "And grace will lead me home."] },
+    { "lines": ["The Lord has promised good to me,", "His word my hope secures;", "He will my shield and portion be,", "As long as life endures."] },
+    { "lines": ["Yea, when this flesh and heart shall fail,", "And mortal life shall cease,", "I shall possess, within the veil,", "A life of joy and peace."] },
+    { "lines": ["The earth shall soon dissolve like snow,", "The sun forbear to shine;", "But God, who called me here below,", "Will be for ever mine."] },
+    { "label": "Often added", "note": "Not by Newton: an anonymous stanza in print by 1852 and added to the hymn in later books.", "lines": ["When we’ve been there ten thousand years,", "Bright shining as the sun,", "We’ve no less days to sing God’s praise", "Than when we’d first begun."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}
