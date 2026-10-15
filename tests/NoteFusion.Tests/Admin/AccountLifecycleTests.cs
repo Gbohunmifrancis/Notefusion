@@ -193,6 +193,36 @@ public class AccountLifecycleTests
     }
 
     [Fact]
+    public async Task Demoting_an_admin_signs_out_every_session_it_holds()
+    {
+        using var h = new TestHarness(Now);
+        var (admin, target) = Seed(h);
+        Assert.True((await SetRole(h, admin, target.Id, UserRole.Admin)).IsSuccess);
+
+        // Signed in as an admin: a refresh would mint a new access token that still says Admin.
+        Assert.True((await Login(h, target.Email)).IsSuccess);
+        Assert.Contains(h.Db.RefreshTokens.AsNoTracking().ToList(), t => t.UserId == target.Id && !t.IsRevoked);
+
+        Assert.True((await SetRole(h, admin, target.Id, UserRole.User)).IsSuccess);
+
+        Assert.All(
+            h.Db.RefreshTokens.AsNoTracking().Where(t => t.UserId == target.Id).ToList(),
+            t => Assert.True(t.IsRevoked));
+    }
+
+    [Fact]
+    public async Task Promoting_leaves_the_accounts_sessions_alone()
+    {
+        using var h = new TestHarness(Now);
+        var (admin, target) = Seed(h);
+        Assert.True((await Login(h, target.Email)).IsSuccess);
+
+        Assert.True((await SetRole(h, admin, target.Id, UserRole.Admin)).IsSuccess);
+
+        Assert.All(h.Db.RefreshTokens.AsNoTracking().ToList(), t => Assert.False(t.IsRevoked));
+    }
+
+    [Fact]
     public async Task Setting_the_role_an_account_already_has_writes_nothing()
     {
         using var h = new TestHarness(Now);
@@ -230,7 +260,7 @@ public class AccountLifecycleTests
         // hour-long window where the JWT still says Admin and the database disagrees. If Pat demotes Ada in
         // that window, the console has no one left who can sign in, and only psql can undo it. So the guard
         // counts *active* admins from the database rather than trusting the claim in front of it.
-        var result = await new SetUserRoleCommandHandler(h.Db, Caller(target), h.AuditAs(target))
+        var result = await new SetUserRoleCommandHandler(h.Db, Caller(target), h.AuditAs(target), h.Clock)
             .Handle(new SetUserRoleCommand(admin.Id, UserRole.User), CancellationToken.None);
 
         Assert.True(result.IsFailure);
@@ -309,7 +339,7 @@ public class AccountLifecycleTests
             .Handle(new SuspendUserCommand(targetId, note), CancellationToken.None);
 
     private static Task<Result> SetRole(TestHarness h, User admin, Guid targetId, UserRole role)
-        => new SetUserRoleCommandHandler(h.Db, Caller(admin), h.AuditAs(admin))
+        => new SetUserRoleCommandHandler(h.Db, Caller(admin), h.AuditAs(admin), h.Clock)
             .Handle(new SetUserRoleCommand(targetId, role), CancellationToken.None);
 
     private static Task<Result<Application.Auth.Dtos.LoginResponse>> Login(TestHarness h, string email)

@@ -207,7 +207,7 @@ public class ChoirSheetTests
     private static async Task<Application.Library.Dtos.SavedTranscriptionDto> Save(
         TestHarness h, Guid userId, string lyrics = "", IReadOnlyDictionary<string, PartDto>? parts = null, string? partsXml = null)
     {
-        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(new SaveTranscriptionCommand("My Song", "C", 120, "4/4", Score, Tune, 0.95, SourceJobId: null, lyrics, parts, partsXml), default);
         Assert.True(result.IsSuccess, result.IsFailure ? result.Error.Message : "");
         return result.Value;

@@ -108,13 +108,11 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
             // Paystack marks a settled charge with data.status == "success"; amount is in minor units.
             var status = ReadString(raw, "data", "status");
             var succeeded = string.Equals(status, "success", StringComparison.OrdinalIgnoreCase);
-            var totalAmountMinor = ReadLong(raw, "data", "amount") ?? 0;
-            var requestedAmountMinor = ReadLong(raw, "data", "requested_amount");
-            // If the merchant configured Paystack to pass fees to customer, data.amount is gross (amount + fee)
-            // while data.requested_amount is the merchant's net price.
-            var amountMinor = (requestedAmountMinor.HasValue && requestedAmountMinor.Value > 0)
-                ? requestedAmountMinor.Value
-                : totalAmountMinor;
+            // data.amount is what was actually settled. data.requested_amount is only what the checkout asked
+            // for, so trusting it would let a part-paid charge read as paid in full. With fees passed to the
+            // customer the settled amount is the price plus the fee, which still clears the caller's
+            // "at least our price" check, so nothing is lost by reading the settled figure.
+            var amountMinor = ReadLong(raw, "data", "amount") ?? 0;
             var currency = ReadString(raw, "data", "currency") ?? string.Empty;
             var providerRef = ReadString(raw, "data", "id") ?? reference;
             var subscriptionRef = ReadString(raw, "data", "authorization", "authorization_code");

@@ -32,6 +32,10 @@ public sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscri
         builder.Property(s => s.CreatedAtUtc).IsRequired();
         builder.Property(s => s.UpdatedAtUtc).IsRequired();
 
+        // Optimistic concurrency: every save checks the row still has the version it was read at, so two
+        // fulfilments extending one membership at once cannot both write from the same period end.
+        builder.Property(s => s.Version).IsRequired().IsConcurrencyToken();
+
         builder.HasIndex(s => s.UserId).IsUnique();
 
         // The expiry sweep filters on status and period end together.

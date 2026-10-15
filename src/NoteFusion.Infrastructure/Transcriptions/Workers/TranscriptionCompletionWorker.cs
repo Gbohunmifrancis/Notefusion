@@ -39,6 +39,16 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
     /// </summary>
     private static readonly TimeSpan Interval = TimeSpan.FromMinutes(5);
 
+    /// <summary>
+    /// How long a job whose follow-up failed is left out of the sweep. Oldest-first with a fixed batch means
+    /// a job that fails every time would otherwise hold its slot forever, and a batch of them would starve
+    /// every job behind. Such a job is still closed at the command's age cutoff once it is retried.
+    /// </summary>
+    internal static readonly TimeSpan FailedBackoff = TimeSpan.FromMinutes(30);
+
+    /// <summary>Jobs left out of the sweep until the time given. In memory: a restart simply retries them.</summary>
+    private readonly Dictionary<Guid, DateTime> _backoff = [];
+
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<TranscriptionCompletionWorker> _logger;
 
@@ -77,17 +87,22 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
         }
     }
 
-    private async Task SweepAsync(CancellationToken ct)
+    internal async Task SweepAsync(CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         var sender = scope.ServiceProvider.GetRequiredService<ISender>();
 
+        var now = DateTime.UtcNow;
+        foreach (var expired in _backoff.Where(kv => kv.Value <= now).Select(kv => kv.Key).ToList())
+            _backoff.Remove(expired);
+        var skipped = _backoff.Keys.ToList();
+
         // No age filter here on purpose: a job too old to finish still has to be closed, or it stays in
         // this result set forever. The command applies the cutoff and stamps those rows shut. Oldest
         // first so nothing can be starved by a steady stream of new work.
         var open = await db.TranscriptionJobs
-            .Where(j => j.SettledAtUtc == null)
+            .Where(j => j.SettledAtUtc == null && !skipped.Contains(j.Id))
             .OrderBy(j => j.CreatedAtUtc)
             .Take(BatchSize)
             .Select(j => j.Id)
@@ -95,9 +110,30 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
 
         foreach (var id in open)
         {
-            var result = await sender.Send(new NotifyTranscriptionReadyCommand(id), ct);
-            if (result.IsFailure)
-                _logger.LogWarning("Transcription follow-up for {Id} failed: {Error}", id, result.Error.Message);
+            // Each job on its own: one that throws is logged, its staged changes are dropped so the next
+            // job's save cannot commit them, and it sits out a few sweeps so it cannot block the batch.
+            try
+            {
+                var result = await sender.Send(new NotifyTranscriptionReadyCommand(id), ct);
+                if (result.IsFailure)
+                {
+                    _backoff[id] = now + FailedBackoff;
+                    _logger.LogWarning("Transcription follow-up for {Id} failed: {Error}", id, result.Error.Message);
+                }
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _backoff[id] = now + FailedBackoff;
+                _logger.LogError(ex, "Transcription follow-up for {Id} threw; skipping it for a while.", id);
+            }
+            finally
+            {
+                db.ChangeTracker.Clear();
+            }
         }
     }
 }

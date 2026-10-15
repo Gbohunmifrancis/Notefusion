@@ -43,7 +43,7 @@ public sealed class NotifySubscriptionExpiringCommandHandler
 
     public async Task<Result> Handle(NotifySubscriptionExpiringCommand request, CancellationToken ct)
     {
-        var sub = await _db.Subscriptions.FirstOrDefaultAsync(s => s.Id == request.SubscriptionId, ct);
+        var sub = await _db.Subscriptions.AsNoTracking().FirstOrDefaultAsync(s => s.Id == request.SubscriptionId, ct);
         if (sub is null)
             return BillingErrors.SubscriptionNotFound;
 
@@ -59,7 +59,7 @@ public sealed class NotifySubscriptionExpiringCommandHandler
         if (sub.CurrentPeriodEndUtc <= now || sub.CurrentPeriodEndUtc > now + NotifySubscriptionExpiringCommand.NoticeWindow)
             return Result.Success();
 
-        if (!sub.MarkExpiryNoticeSent(now))
+        if (sub.ExpiryNoticeSentForPeriodEndUtc == sub.CurrentPeriodEndUtc)
             return Result.Success();
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == sub.UserId, ct);
@@ -69,9 +69,21 @@ public sealed class NotifySubscriptionExpiringCommandHandler
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
         var planName = plan?.Name ?? "NoteFusion Pro";
 
-        // Committed before either send, matching the receipt path: delivery is best-effort and cannot
-        // throw, so the alternative — send first, mark after — buys nothing and risks mailing twice.
-        await _db.SaveChangesAsync(ct);
+        // Claimed in the database before either send, and only by whoever's update lands: the row must
+        // still end where we read it ending and must not already be marked for that end. Two sweeps (two
+        // instances, or a slow one overlapping the next) can both get this far, but only one of them
+        // changes the row, and only that one sends. Delivery is best-effort and cannot throw, so marking
+        // first and sending after buys nothing worse than a missed notice, never a doubled one. The
+        // concurrency version is left alone on purpose: this touches only the notice column, which no
+        // fulfilment writes, so there is nothing for a fulfilment holding the row to lose.
+        var periodEnd = sub.CurrentPeriodEndUtc;
+        var claimed = await _db.Subscriptions
+            .Where(s => s.Id == sub.Id
+                        && s.CurrentPeriodEndUtc == periodEnd
+                        && (s.ExpiryNoticeSentForPeriodEndUtc == null || s.ExpiryNoticeSentForPeriodEndUtc != periodEnd))
+            .ExecuteUpdateAsync(s => s.SetProperty(x => x.ExpiryNoticeSentForPeriodEndUtc, periodEnd), ct);
+        if (claimed != 1)
+            return Result.Success();
 
         // Ceiling, and never below 1: "in 0 days" is not a thing to tell someone.
         var daysLeft = Math.Max(1, (int)Math.Ceiling((sub.CurrentPeriodEndUtc - now).TotalDays));

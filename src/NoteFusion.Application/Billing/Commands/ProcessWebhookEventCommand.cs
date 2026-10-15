@@ -95,14 +95,14 @@ public sealed class ProcessWebhookEventCommandHandler : IRequestHandler<ProcessW
         }
 
         // ---- Fulfilment: a single unit of work. Every write below commits together or not at all. ----
-        var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
+        var fulfillment = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
         e.MarkProcessed(now);
-        await _db.SaveChangesAsync(ct);
+        await PaymentFulfillment.SaveAsync(_db, fulfillment, ct);
 
         // After the commit: a receipt sent for a fulfilment that then failed to save would be a lie.
         // The send is best-effort (IEmailSender never throws), so a mail outage cannot fail the webhook
         // and make the provider retry a payment we have already fulfilled.
-        if (receipt is not null)
+        if (fulfillment?.Receipt is { } receipt)
             await _email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
 
         return Result.Success();

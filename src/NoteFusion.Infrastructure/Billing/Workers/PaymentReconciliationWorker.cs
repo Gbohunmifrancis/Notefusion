@@ -82,7 +82,7 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
         }
     }
 
-    private async Task SweepAsync(CancellationToken ct)
+    internal async Task SweepAsync(CancellationToken ct)
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
         try
@@ -101,11 +101,30 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
             var failedReconcile = 0;
             foreach (var id in due)
             {
-                var result = await sender.Send(new ReconcilePaymentCommand(id), ct);
-                if (result.IsFailure)
+                // One payment that throws (a provider answer we cannot parse, a constraint violation) must not
+                // stop the rest of the sweep, and must not leave its half-staged changes in the shared context
+                // for the next payment's save to commit.
+                try
+                {
+                    var result = await sender.Send(new ReconcilePaymentCommand(id), ct);
+                    if (result.IsFailure)
+                    {
+                        failedReconcile++;
+                        _logger.LogWarning("Reconciliation of {Id} failed: {Error}", id, result.Error.Message);
+                    }
+                }
+                catch (OperationCanceledException) when (ct.IsCancellationRequested)
+                {
+                    throw;
+                }
+                catch (Exception ex)
                 {
                     failedReconcile++;
-                    _logger.LogWarning("Reconciliation of {Id} failed: {Error}", id, result.Error.Message);
+                    _logger.LogError(ex, "Reconciliation of {Id} threw; moving on to the next payment.", id);
+                }
+                finally
+                {
+                    db.ChangeTracker.Clear();
                 }
             }
 

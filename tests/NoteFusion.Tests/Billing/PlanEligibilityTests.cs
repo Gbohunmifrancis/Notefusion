@@ -35,8 +35,10 @@ public class PlanEligibilityTests
     [InlineData("US", "USD", true)]
     [InlineData("GB", "NGN", false)]  // the incentive to lie about your country
     [InlineData("ng", "ngn", true)]   // case is a storage detail, not a rule
-    [InlineData(null, "USD", true)]   // unknown country sees everything
-    [InlineData(null, "NGN", true)]
+    [InlineData(null, "USD", true)]   // unknown country is offered the dollar tier
+    [InlineData("", "USD", true)]
+    [InlineData(null, "NGN", false)]  // and not naira, which has to be earned by a known NG
+    [InlineData("", "NGN", false)]
     public void Region_decides_which_currency_is_on_offer(string? country, string currency, bool offered)
     {
         Assert.Equal(offered, PlanEligibility.IsOffered(currency, country));
@@ -70,14 +72,17 @@ public class PlanEligibilityTests
     }
 
     [Fact]
-    public async Task An_account_with_no_known_country_is_shown_both()
+    public async Task An_account_with_no_known_country_is_shown_the_dollar_tier_only()
     {
-        // Every account that predates country resolution, and anyone whose lookup failed. Guessing a tier
-        // for them would mis-price people who are already paying us; showing both only costs a decision.
+        // Every account that predates country resolution, and anyone whose lookup failed. Showing them both
+        // tiers handed the regional naira price to anyone who could make the lookup fail.
         using var h = new TestHarness(Now);
         var user = SeedPlansAndUser(h, null);
 
-        Assert.Equal(3, (await Plans(h, user)).Count);
+        var plans = await Plans(h, user);
+
+        Assert.All(plans, p => Assert.Equal("USD", p.Currency));
+        Assert.Single(plans);
     }
 
     [Fact]
@@ -190,16 +195,20 @@ public class PlanEligibilityTests
     }
 
     [Fact]
-    public async Task An_account_with_no_known_country_can_buy_either_tier()
+    public async Task An_account_with_no_known_country_can_buy_dollars_but_not_naira()
     {
         using var h = new TestHarness(Now);
         var user = SeedPlansAndUser(h, null);
         var lifetime = h.Db.Plans.Single(p => p.Code == "pro_lifetime_v2");
+        var naira = h.Db.Plans.Single(p => p.Code == "pro_monthly_ngn");
 
-        var result = await Checkout(h, user, new CountingGateway())
+        var dollars = await Checkout(h, user, new CountingGateway())
             .Handle(new InitiateCheckoutCommand(lifetime.Id), default);
+        var refused = await Checkout(h, user, new CountingGateway())
+            .Handle(new InitiateCheckoutCommand(naira.Id), default);
 
-        Assert.True(result.IsSuccess);
+        Assert.True(dollars.IsSuccess);
+        Assert.Equal("BILLING_PLAN_NOT_AVAILABLE_IN_REGION", refused.Error.Code);
     }
 
     // ---------------------------------------------------------------- fixtures

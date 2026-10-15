@@ -75,7 +75,7 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
                         && s.CurrentPeriodEndUtc > now)
             .Select(s => s.UserId)
             .ToListAsync(ct)).ToHashSet();
-        var users = await _db.Users.Where(u => userIds.Contains(u.Id) && u.IsActive).ToDictionaryAsync(u => u.Id, ct);
+        var users = await _db.Users.AsNoTracking().Where(u => userIds.Contains(u.Id) && u.IsActive).ToDictionaryAsync(u => u.Id, ct);
         var planIds = abandoned.Select(t => t.PlanId).Distinct().ToList();
         var planNames = await _db.Plans.Where(p => planIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, p => p.Name, ct);
 
@@ -88,18 +88,28 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
             .ToList();
 
         // Recorded before sending: a reminder that fails to send is not retried every sweep, which is
-        // the better failure for an unsolicited email.
-        foreach (var t in due)
-            users[t.UserId].RecordCheckoutReminder(now);
-        await _db.SaveChangesAsync(ct);
-
+        // the better failure for an unsolicited email. Each one is claimed by a conditional update that
+        // repeats the throttle in the database, and sent only by the sweep whose update changed the row:
+        // two overlapping sweeps (two instances, or one slow run meeting the next) can both pick the same
+        // account, but only one of them gets the row.
+        var sent = 0;
         foreach (var t in due)
         {
+            var createdAt = t.CreatedAtUtc;
+            var claimed = await _db.Users
+                .Where(u => u.Id == t.UserId
+                            && (u.CheckoutReminderSentAtUtc == null
+                                || (u.CheckoutReminderSentAtUtc < createdAt && u.CheckoutReminderSentAtUtc < weekAgo)))
+                .ExecuteUpdateAsync(s => s.SetProperty(u => u.CheckoutReminderSentAtUtc, now), ct);
+            if (claimed != 1)
+                continue;
+
             var user = users[t.UserId];
             var plan = planNames.GetValueOrDefault(t.PlanId, "NoteFusion Pro");
             await _email.SendCheckoutAbandonedAsync(new EmailRecipient(user.Email, user.FullName), plan, ct);
+            sent++;
         }
 
-        return due.Count;
+        return sent;
     }
 }

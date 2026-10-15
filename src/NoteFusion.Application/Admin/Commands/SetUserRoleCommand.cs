@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Auth.Services;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
@@ -12,9 +13,10 @@ namespace NoteFusion.Application.Admin.Commands;
 /// </summary>
 /// <remarks>
 /// One command for both directions, because the guards are the same in both and the interesting state is
-/// the target role, not the verb. The new role takes effect on the target's next access token: the role
-/// is a JWT claim, so a demoted admin keeps console access until their current token expires — the same
-/// window suspension has, for the same reason.
+/// the target role, not the verb. The role is a JWT claim, so a demotion also revokes the account's refresh
+/// tokens (no session can mint a fresh token that still says Admin), and the Admin policy re-reads the role
+/// from the database on every admin request, so the access token already issued stops opening the console
+/// within that check's short cache.
 /// <para>Idempotent — setting the role an account already has succeeds and writes nothing.</para>
 /// </remarks>
 public sealed record SetUserRoleCommand(Guid UserId, UserRole Role, string? Note = null) : IRequest<Result>;
@@ -24,12 +26,15 @@ public sealed class SetUserRoleCommandHandler : IRequestHandler<SetUserRoleComma
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
     private readonly IAuditLogger _audit;
+    private readonly IDateTimeProvider _clock;
 
-    public SetUserRoleCommandHandler(IApplicationDbContext db, ICurrentUser currentUser, IAuditLogger audit)
+    public SetUserRoleCommandHandler(
+        IApplicationDbContext db, ICurrentUser currentUser, IAuditLogger audit, IDateTimeProvider clock)
     {
         _db = db;
         _currentUser = currentUser;
         _audit = audit;
+        _clock = clock;
     }
 
     public async Task<Result> Handle(SetUserRoleCommand request, CancellationToken ct)
@@ -52,6 +57,11 @@ public sealed class SetUserRoleCommandHandler : IRequestHandler<SetUserRoleComma
         var changed = request.Role == UserRole.Admin ? user.PromoteToAdmin() : user.DemoteFromAdmin();
         if (!changed)
             return Result.Success();
+
+        // Every session the account holds was issued as an admin, and a refresh would hand it a new access
+        // token with the role it no longer has. Signing it out everywhere is the simple, certain answer.
+        if (request.Role != UserRole.Admin)
+            await RefreshTokenRevocation.RevokeAllAsync(_db, user.Id, _clock.UtcNow, ct);
 
         _audit.Record(
             AdminAuditAction.ChangeRole,

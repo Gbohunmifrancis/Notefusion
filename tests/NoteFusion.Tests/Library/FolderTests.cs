@@ -182,7 +182,7 @@ public class FolderTests
 
     private static async Task<Guid> Save(TestHarness h, Guid userId, string title)
     {
-        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(new SaveTranscriptionCommand(title, "C", 120, "4/4", Score, Tune, 0.95, SourceJobId: null), default);
         Assert.True(result.IsSuccess, result.IsFailure ? result.Error.Message : "");
         h.Clock.UtcNow = h.Clock.UtcNow.AddMinutes(1);

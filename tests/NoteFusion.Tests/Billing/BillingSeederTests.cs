@@ -179,7 +179,7 @@ public class BillingSeederTests
     [InlineData("NG", 2)]  // monthly and yearly, in naira
     [InlineData("GB", 2)]  // monthly and yearly, in dollars
     [InlineData("US", 2)]
-    [InlineData(null, 4)]  // no country known: every tier, rather than a guessed one
+    [InlineData(null, 2)]  // no country known: the dollar tier only
     public async Task What_a_region_is_actually_offered_after_seeding(string? country, int expected)
     {
         // The two halves of the feature meet here. PlanEligibilityTests proves the rule against hand-made

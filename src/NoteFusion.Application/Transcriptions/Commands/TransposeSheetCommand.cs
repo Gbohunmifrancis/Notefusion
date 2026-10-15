@@ -40,8 +40,10 @@ public sealed class TransposeSheetCommandValidator : AbstractValidator<Transpose
     {
         RuleFor(x => x.Key).NotEmpty();
         RuleFor(x => x.Semitones).InclusiveBetween(-12, 12);
-        RuleFor(x => x.Notes).NotNull();
-        RuleFor(x => x.MusicXml).NotNull();
+        RuleFor(x => x.Notes).NotNull().WithinNoteCount();
+        RuleFor(x => x.MusicXml).NotNull().WithinScoreSize();
+        RuleFor(x => x.Parts).WithinPartsSize();
+        RuleFor(x => x.PartsMusicXml).WithinScoreSize();
         RuleForEach(x => x.Chords).SetValidator(new ChordSymbolDtoValidator()).When(x => x.Chords is not null);
     }
 }

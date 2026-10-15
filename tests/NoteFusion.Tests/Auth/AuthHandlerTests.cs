@@ -31,18 +31,45 @@ public class AuthHandlerTests
     }
 
     [Fact]
-    public async Task Register_rejects_a_duplicate_email_case_insensitively()
+    public async Task Register_answers_a_taken_address_exactly_as_a_new_one_and_tells_the_owner_instead()
+    {
+        using var h = new TestHarness();
+        var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.Tokens, h.Clock, h.Email, h.Country);
+        var first = await handler.Handle(new RegisterCommand("Ada", "ada@example.com", "password123"), default);
+        var originalHash = await h.Db.Users.AsNoTracking().Select(u => u.PasswordHash).SingleAsync();
+
+        var duplicate = await handler.Handle(new RegisterCommand("Ada Two", "ADA@example.com", "another-password"), default);
+
+        // Same status, same shape, same normalised address: nothing a caller can tell apart.
+        Assert.True(duplicate.IsSuccess);
+        Assert.Equal(first.Value, duplicate.Value);
+
+        // No second account, no second code, and the account itself is untouched.
+        Assert.Single(h.Db.Users);
+        Assert.Single(h.Email.Sent, s => s.Kind == "email-verification");
+        Assert.Equal(originalHash, await h.Db.Users.AsNoTracking().Select(u => u.PasswordHash).SingleAsync());
+
+        // The owner is the one told, by mail.
+        var notice = Assert.Single(h.Email.Sent, s => s.Kind == "account-exists");
+        Assert.Equal("ada@example.com", notice.To.Email);
+    }
+
+    [Fact]
+    public async Task Register_tells_the_owner_of_a_taken_address_at_most_once_per_cooldown()
     {
         using var h = new TestHarness();
         var handler = new RegisterCommandHandler(h.Db, h.Hasher, h.Tokens, h.Clock, h.Email, h.Country);
         await handler.Handle(new RegisterCommand("Ada", "ada@example.com", "password123"), default);
 
-        var duplicate = await handler.Handle(new RegisterCommand("Ada Two", "ADA@example.com", "password123"), default);
+        await handler.Handle(new RegisterCommand("X", "ada@example.com", "password123"), default);
+        await handler.Handle(new RegisterCommand("X", "ada@example.com", "password123"), default);
+        Assert.Single(h.Email.Sent, s => s.Kind == "account-exists");
 
-        Assert.True(duplicate.IsFailure);
-        Assert.Equal("USER_EMAIL_EXISTS", duplicate.Error.Code);
-        // The rejected sign-up must not mail a code: exactly one, for the account that was created.
-        Assert.Single(h.Email.Sent, s => s.Kind == "email-verification");
+        h.Clock.UtcNow += User.AccountExistsNoticeCooldown + TimeSpan.FromSeconds(1);
+        var later = await handler.Handle(new RegisterCommand("X", "ada@example.com", "password123"), default);
+
+        Assert.True(later.IsSuccess);
+        Assert.Equal(2, h.Email.Sent.Count(s => s.Kind == "account-exists"));
     }
 
     [Fact]

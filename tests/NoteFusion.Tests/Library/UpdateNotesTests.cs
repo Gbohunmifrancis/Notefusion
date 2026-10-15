@@ -149,7 +149,7 @@ public class UpdateNotesTests
 
     private static async Task<Application.Library.Dtos.SavedTranscriptionDto> Save(TestHarness h, Guid userId)
     {
-        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(new SaveTranscriptionCommand(
                 "My Song", "C", 120, "4/4", "<score/>", SampleNotes, 0.95, SourceJobId: "job-1"), default);
         return result.Value;

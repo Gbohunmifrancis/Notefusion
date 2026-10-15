@@ -37,9 +37,12 @@ public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTr
         RuleFor(x => x.Key).NotEmpty();
         RuleFor(x => x.TempoBpm).InclusiveBetween(20, 300);
         RuleFor(x => x.TimeSignature).NotEmpty();
-        RuleFor(x => x.MusicXml).NotEmpty();
+        RuleFor(x => x.MusicXml).NotEmpty().WithinScoreSize();
         RuleFor(x => x.OverallConfidence).InclusiveBetween(0.0, 1.0);
         RuleFor(x => x.Lyrics).MaximumLength(20_000);
+        RuleFor(x => x.Notes).NotNull().WithinNoteCount();
+        RuleFor(x => x.Parts).WithinPartsSize();
+        RuleFor(x => x.PartsMusicXml).WithinScoreSize();
         RuleForEach(x => x.Chords).SetValidator(new ChordSymbolDtoValidator()).When(x => x.Chords is not null);
     }
 }
@@ -48,11 +51,13 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
 {
     private readonly IApplicationDbContext _db;
     private readonly ICurrentUser _currentUser;
+    private readonly IQuotaGate _gate;
 
-    public SaveTranscriptionCommandHandler(IApplicationDbContext db, ICurrentUser currentUser)
+    public SaveTranscriptionCommandHandler(IApplicationDbContext db, ICurrentUser currentUser, IQuotaGate gate)
     {
         _db = db;
         _currentUser = currentUser;
+        _gate = gate;
     }
 
     public async Task<Result<SavedTranscriptionDto>> Handle(SaveTranscriptionCommand request, CancellationToken cancellationToken)
@@ -89,7 +94,11 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
 
         // One sheet per job. The library sweep keeps a finished job nobody saved
         // (AutoSaveFinishedTranscriptionsCommand); a Save pressed after that is the user's own version —
-        // their title, their doh — so it replaces the kept copy rather than standing beside it.
+        // their title, their doh — so it replaces the kept copy rather than standing beside it. The
+        // replace-and-insert runs under the account's save lock, which the sweep takes too: a double tap, or
+        // a save landing while the sweep keeps the same job, would otherwise both see "nothing saved yet"
+        // and leave two sheets for one job.
+        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.SaveKey(userId), cancellationToken);
         if (!string.IsNullOrWhiteSpace(request.SourceJobId))
         {
             var kept = await _db.Transcriptions
