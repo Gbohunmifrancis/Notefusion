@@ -29,11 +29,18 @@ namespace NoteFusion.Application.Transcriptions.Commands;
 public sealed record NotifyTranscriptionReadyCommand(Guid JobRowId) : IRequest<Result>
 {
     /// <summary>
-    /// How long a job may stay open before we stop waiting. Comfortably past both the ML service's own
-    /// job TTL and the longest recording it will accept, so reaching this means the job is genuinely
-    /// lost — a dyno cycled mid-transcription, most likely — rather than merely slow.
+    /// How long a job may go without an answer before we stop waiting. Comfortably past both the ML
+    /// service's own job TTL and the longest recording it will accept, so no answer by then means the job is
+    /// genuinely lost — a dyno cycled mid-transcription, most likely — rather than merely slow.
     /// </summary>
     public static readonly TimeSpan GiveUpAfter = TrialUsage.RunningFor;
+
+    /// <summary>
+    /// How long a job the worker still reports as queued or running is waited for. Such a job is in a busy
+    /// queue, not lost: closing it at <see cref="GiveUpAfter"/> made its result free when it came, and freed
+    /// its place in the allowance while it was still on its way.
+    /// </summary>
+    public static readonly TimeSpan GiveUpOnRunningAfter = TrialUsage.HeldFor;
 
     /// <summary>A job older than this is closed without a push when it fails: the user has long moved on.</summary>
     public static readonly TimeSpan TooOldToMention = TimeSpan.FromDays(1);
@@ -108,9 +115,15 @@ public sealed class NotifyTranscriptionReadyCommandHandler
             TranscriptionStatus.Failed
                 => await CloseAsFailedAsync(job, poll.Value.Error, now, ct),
 
-            // Still running — or, for a Done with no result attached, malformed enough that the age
-            // cutoff is the only honest way to end it.
-            _ => expired ? await CloseAsFailedAsync(job, null, now, ct) : Result.Success()
+            // A Done with no result attached: malformed enough that the age cutoff is the only honest way to end it.
+            TranscriptionStatus.Done
+                => expired ? await CloseAsFailedAsync(job, null, now, ct) : Result.Success(),
+
+            // Still queued or running: the worker has it, so it is waited for (and keeps holding its place)
+            // until it finishes, or for GiveUpOnRunningAfter at most.
+            _ => now - job.CreatedAtUtc > NotifyTranscriptionReadyCommand.GiveUpOnRunningAfter
+                ? await CloseAsFailedAsync(job, null, now, ct)
+                : Result.Success()
         };
     }
 
@@ -164,7 +177,7 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         // No result cached, which is how a tap on this notification knows it has nothing to show.
         job.Settle(null, now);
         await Activity.ActivityRecorder.FailAsync(
-            _db, job.JobId, reason ?? "No result after 30 minutes; the job was lost.", now, ct);
+            _db, job.JobId, reason ?? "No result by the deadline; the job was lost.", now, ct);
         await _db.SaveChangesAsync(ct);
 
         // A job from days ago that a sweep is only now clearing (a backlog the sweep could not close before)

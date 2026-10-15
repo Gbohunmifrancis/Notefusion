@@ -272,20 +272,46 @@ public class OneSongPurchaseTests
         h.Db.Plans.AddRange(single, monthly);
         h.Db.SaveChanges();
 
-        // Free: offered, next to Pro.
-        Assert.Contains(await Plans(h, user), p => p.Interval == BillingInterval.Single);
+        // Free: offered, at its own list beside Pro.
+        Assert.Contains(await Plans(h, user, single: true), p => p.Interval == BillingInterval.Single);
 
         h.Db.Subscriptions.Add(Subscription.Start(
             user.Id, monthly.Id, PaymentProvider.Paystack, Now.AddDays(-1), Now.AddDays(29), null, Now.AddDays(-1)));
         h.Db.SaveChanges();
 
-        Assert.DoesNotContain(await Plans(h, user), p => p.Interval == BillingInterval.Single);
+        Assert.Empty(await Plans(h, user, single: true));
         var gateway = new FakeGateway();
         var result = await new InitiateCheckoutCommandHandler(
                 h.Db, new StubCurrentUser(user.Id), gateway, h.Clock, new BillingSettings(), h.Email)
             .Handle(new InitiateCheckoutCommand(single.Id), default);
         Assert.Equal("BILLING_SINGLE_NOT_NEEDED", result.Error.Code);
         Assert.Empty(h.Db.PaymentTransactions);
+    }
+
+    [Fact]
+    public async Task The_one_song_purchase_is_listed_apart_from_the_pro_plans()
+    {
+        // Older web pages and app builds label every plan in the main list that is not yearly "Monthly … a
+        // month": a one-song purchase there was shown as ₦1,500 a month of Pro. Only its own list carries it.
+        using var h = new TestHarness(Now);
+        var user = SeedUser(h);
+        h.Country.Country = "NG";
+        h.Db.Plans.AddRange(
+            Plan.Create(Guid.NewGuid(), "one_song_ngn", "One song", 150_000, "NGN", BillingInterval.Single),
+            Plan.Create(Guid.NewGuid(), "pro_monthly_ngn", "NoteFusion Pro (Monthly)", 750_000, "NGN", BillingInterval.Monthly),
+            Plan.Create(Guid.NewGuid(), "pro_yearly_ngn", "NoteFusion Pro (Yearly)", 6_000_000, "NGN", BillingInterval.Yearly));
+        h.Db.SaveChanges();
+
+        var main = await Plans(h, user);
+        var single = await Plans(h, user, single: true);
+        var choir = (await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock)
+            .Handle(new GetPlansQuery(Choir: true, Single: true), default)).Value;
+        var pub = (await new GetPublicPricingQueryHandler(h.Db, h.Country).Handle(new GetPublicPricingQuery(), default)).Value;
+
+        Assert.Equal(new[] { "pro_monthly_ngn", "pro_yearly_ngn" }, main.Select(p => p.Code).Order().ToArray());
+        Assert.Equal("one_song_ngn", Assert.Single(single).Code);
+        Assert.Empty(choir);
+        Assert.DoesNotContain(pub.Plans, p => p.Interval == BillingInterval.Single);
     }
 
     [Fact]
@@ -420,8 +446,8 @@ public class OneSongPurchaseTests
         => (await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(device))
             .Handle(new GetMySubscriptionQuery(), default)).Value;
 
-    private static async Task<IReadOnlyList<PlanDto>> Plans(TestHarness h, User user)
-        => (await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock).Handle(new GetPlansQuery(), default)).Value;
+    private static async Task<IReadOnlyList<PlanDto>> Plans(TestHarness h, User user, bool single = false)
+        => (await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock).Handle(new GetPlansQuery(Single: single), default)).Value;
 
     /// <summary>A gateway that opens every checkout and confirms every payment with the given answer.</summary>
     private sealed class FakeGateway : IPaymentGatewayFactory, IPaymentGateway

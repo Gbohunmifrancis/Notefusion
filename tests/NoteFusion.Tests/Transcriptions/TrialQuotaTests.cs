@@ -142,6 +142,24 @@ public class TrialQuotaTests
     }
 
     [Fact]
+    public async Task A_job_still_queued_past_half_an_hour_keeps_holding_its_place()
+    {
+        // The worker runs one job at a time and queues up to fifty, so on a busy evening a free account's
+        // last transcription can wait well past thirty minutes. It used to stop holding its place then:
+        // the account started another, both finished, both were charged: four of three.
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        Spend(h, user, 2);
+        var api = new FakeTranscriptionApi();
+        Assert.True((await Submit(h, user, api)).IsSuccess);
+
+        h.Clock.UtcNow = Now + TrialUsage.RunningFor + TimeSpan.FromMinutes(10);
+
+        Assert.Equal(0, await Remaining(h, user));
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", (await Submit(h, user, api)).Error.Code);
+    }
+
+    [Fact]
     public async Task A_job_that_settles_without_a_result_frees_its_place()
     {
         using var h = new TestHarness(Now);
@@ -163,7 +181,7 @@ public class TrialQuotaTests
     {
         using var h = new TestHarness(Now);
         var user = Seed(h);
-        h.Db.TranscriptionJobs.Add(TranscriptionJob.Record("lost", user.Id, Now - TrialUsage.RunningFor - TimeSpan.FromMinutes(1)));
+        h.Db.TranscriptionJobs.Add(TranscriptionJob.Record("lost", user.Id, Now - TrialUsage.HeldFor - TimeSpan.FromMinutes(1)));
         h.Db.SaveChanges();
 
         Assert.Equal(3, await Remaining(h, user));
@@ -302,6 +320,23 @@ public class TrialQuotaTests
         // trial. The three are shared by every account on the handset.
         Assert.True(result.IsFailure);
         Assert.Equal("BILLING_FREE_TIER_LIMIT", result.Error.Code);
+    }
+
+    [Fact]
+    public async Task A_second_account_on_the_handset_waits_for_the_first_accounts_running_job()
+    {
+        // The handset's third free one is still running under the first account. The count shared charged
+        // jobs across the handset but held running ones per account only, so switching account while it ran
+        // was a fourth free transcription on the same phone.
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var second = Seed(h, "second@example.com");
+        Spend(h, first, 2, "phone-a");
+        var api = new FakeTranscriptionApi();
+        Assert.True((await Submit(h, first, api, device: "phone-a")).IsSuccess);
+
+        Assert.Equal(0, await Remaining(h, second, "phone-a"));
+        Assert.Equal("BILLING_FREE_TIER_LIMIT", (await Submit(h, second, api, device: "phone-a")).Error.Code);
     }
 
     [Fact]

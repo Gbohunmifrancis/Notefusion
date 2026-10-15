@@ -352,7 +352,7 @@
     container.className = "plans reveal is-visible" + (isNigeria ? " plans--nigeria" : "");
     container.setAttribute("aria-busy", "false");
     container.replaceChildren();
-    container.appendChild(freeCard(isNigeria ? 5 : 10));
+    container.appendChild(freeCard(3));
     if (monthly) container.appendChild(paidCard(monthly, !yearly, saving));
     if (yearly) container.appendChild(paidCard(yearly, true, saving));
 

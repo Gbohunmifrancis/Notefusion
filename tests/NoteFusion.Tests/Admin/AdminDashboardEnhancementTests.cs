@@ -24,10 +24,13 @@ public class AdminDashboardEnhancementTests
         var user = User.Create("Free User", "free@example.com", h.Hasher.Hash("pass"), Now);
         h.Db.Users.AddRange(admin, user);
 
+        // Finished and charged, as the poll and the sweep leave them: settled with a result.
         var job1 = TranscriptionJob.Record("job-1", user.Id, Now.AddHours(-3));
+        job1.Settle("{}", Now.AddHours(-2));
         job1.ConsumeTrial(Now.AddHours(-2));
 
         var job2 = TranscriptionJob.Record("job-2", user.Id, Now.AddHours(-2));
+        job2.Settle("{}", Now.AddHours(-1));
         job2.ConsumeTrial(Now.AddHours(-1));
 
         h.Db.TranscriptionJobs.AddRange(job1, job2);

@@ -65,7 +65,7 @@ public static class SongCredits
         IApplicationDbContext db, Guid choirId, DateTime utcNow, CancellationToken ct = default)
     {
         var (monthStart, monthEnd) = Month(utcNow);
-        var since = utcNow - TrialUsage.RunningFor;
+        var since = utcNow - TrialUsage.HeldFor;
 
         var charged = await db.TranscriptionJobs.CountAsync(
             j => j.ChoirId == choirId
@@ -98,7 +98,8 @@ public static class SongCredits
     /// account's songs still running, held like a running trial generation
     /// (<see cref="TrialUsage.CountUsedAsync"/>). Charging only on completion meant a subscriber with one
     /// song left could start several and every one would pass. A song that fails settles uncharged and
-    /// frees its place; one the worker lost stops counting after <see cref="TrialUsage.RunningFor"/>.
+    /// frees its place, and so does one the sweep finds lost; one never settled stops counting after
+    /// <see cref="TrialUsage.HeldFor"/>.
     /// </summary>
     /// <remarks>The account's own allowance only; a choir's pool is <see cref="CountChoirHeldThisMonthAsync"/>.</remarks>
     public static async Task<int> CountHeldThisMonthAsync(
@@ -106,7 +107,7 @@ public static class SongCredits
         => await CountUsedThisMonthAsync(db, userId, utcNow, ct) + await CountInProgressAsync(db, userId, utcNow, ownOnly: true, ct);
 
     /// <summary>
-    /// The account's songs (linked or isolated from an upload) submitted within <see cref="TrialUsage.RunningFor"/>
+    /// The account's songs (linked or isolated from an upload) submitted within <see cref="TrialUsage.HeldFor"/>
     /// and not yet settled or charged — on any pool, which is what the per-person
     /// <see cref="ProMaxSongsInProgress"/> limit counts.
     /// </summary>
@@ -117,7 +118,7 @@ public static class SongCredits
     private static Task<int> CountInProgressAsync(
         IApplicationDbContext db, Guid userId, DateTime utcNow, bool ownOnly, CancellationToken ct)
     {
-        var since = utcNow - TrialUsage.RunningFor;
+        var since = utcNow - TrialUsage.HeldFor;
         var running = db.TranscriptionJobs.Where(
             j => j.UserId == userId
                  && (j.Kind == TranscriptionJobKind.Link || j.Kind == TranscriptionJobKind.Song)
@@ -130,9 +131,9 @@ public static class SongCredits
 
     /// <summary>
     /// Previews ever charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/> under
-    /// any account, plus the account's own free previews still running — held like a running trial
-    /// generation (<see cref="TrialUsage.CountUsedAsync"/>), or two links sent at once would both be the
-    /// one free preview.
+    /// any account, plus the free previews still running on either — held like a running trial generation
+    /// (<see cref="TrialUsage.CountUsedAsync"/>), or two links sent at once, or from two accounts on one
+    /// phone, would both be the one free preview.
     /// </summary>
     public static async Task<int> CountPreviewsUsedAsync(
         IApplicationDbContext db, Guid userId, string? deviceFingerprint, DateTime utcNow, CancellationToken ct = default)
@@ -143,16 +144,17 @@ public static class SongCredits
             ? await spent.CountAsync(j => j.UserId == userId, ct)
             : await spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
 
-        var since = utcNow - TrialUsage.RunningFor;
-        var running = await db.TranscriptionJobs.CountAsync(
-            j => j.UserId == userId
-                 && j.Kind == TranscriptionJobKind.Link
+        var since = utcNow - TrialUsage.HeldFor;
+        var open = db.TranscriptionJobs.Where(
+            j => j.Kind == TranscriptionJobKind.Link
                  && !j.WasPro
                  && !j.PaidByCredit // a bought song holds a bought transcription, not the preview
                  && j.SettledAtUtc == null
                  && j.SongCreditConsumedAtUtc == null
-                 && j.CreatedAtUtc >= since,
-            ct);
+                 && j.CreatedAtUtc >= since);
+        var running = deviceFingerprint is null
+            ? await open.CountAsync(j => j.UserId == userId, ct)
+            : await open.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
 
         return charged + running;
     }

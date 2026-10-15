@@ -26,7 +26,7 @@ public static class TrialUsage
 {
     /// <summary>
     /// Free generations charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/>
-    /// under any account, plus the account's own free transcriptions still running. Transcriptions paid
+    /// under any account, plus the free transcriptions still running on either. Transcriptions paid
     /// for with a bought one (<see cref="Core.Entities.TranscriptionJob.PaidByCredit"/>) are not free ones
     /// and are counted per account by <see cref="CountBoughtSpentAsync"/> instead.
     /// </summary>
@@ -38,8 +38,10 @@ public static class TrialUsage
     /// <remarks>
     /// A running job is held against the allowance until it settles: it is charged only when it finishes,
     /// so counting finished jobs alone let an account with one left start any number at once and have
-    /// every one pass the gate. A job that fails settles uncharged and frees its place; one the worker
-    /// lost stops counting after <see cref="RunningFor"/>, when the sweep gives up on it.
+    /// every one pass the gate. A job that fails settles uncharged and frees its place, and so does one the
+    /// sweep finds lost; one never settled at all stops counting after <see cref="HeldFor"/>. Held on the
+    /// handset as well as the account, like the charged ones: otherwise a second account on the phone could
+    /// start while the first one's last free transcription was still running.
     /// </remarks>
     public static async Task<int> CountUsedAsync(
         IApplicationDbContext db, Guid userId, string? deviceFingerprint, DateTime utcNow, CancellationToken ct = default)
@@ -51,24 +53,36 @@ public static class TrialUsage
             ? await spent.CountAsync(j => j.UserId == userId, ct)
             : await spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
 
-        var since = utcNow - RunningFor;
-        var running = await db.TranscriptionJobs.CountAsync(
-            j => j.UserId == userId
-                 && j.Kind == TranscriptionJobKind.Upload
+        var since = utcNow - HeldFor;
+        var open = db.TranscriptionJobs.Where(
+            j => j.Kind == TranscriptionJobKind.Upload
                  && !j.PaidByCredit
                  && j.SettledAtUtc == null
                  && j.TrialConsumedAtUtc == null
-                 && j.CreatedAtUtc >= since,
-            ct);
+                 && j.CreatedAtUtc >= since);
+        var running = deviceFingerprint is null
+            ? await open.CountAsync(j => j.UserId == userId, ct)
+            : await open.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
 
         return charged + running;
     }
 
     /// <summary>
-    /// How long an unsettled job is held against the allowance: the sweep's own give-up age, after which
-    /// the job is closed as lost (<c>NotifyTranscriptionReadyCommand.GiveUpAfter</c>).
+    /// How long a job may go without an answer from the worker before the sweep closes it as lost
+    /// (<c>NotifyTranscriptionReadyCommand.GiveUpAfter</c>). Not how long a job is held: one the worker says
+    /// is still queued or running is waited for, and held, up to <see cref="HeldFor"/>.
     /// </summary>
     public static readonly TimeSpan RunningFor = TimeSpan.FromMinutes(30);
+
+    /// <summary>
+    /// The longest an unsettled job holds its place in an allowance, and the longest the sweep waits for one
+    /// the worker still reports as queued or running (<c>NotifyTranscriptionReadyCommand.GiveUpOnRunningAfter</c>).
+    /// Hours, not minutes: the worker runs one job at a time and queues up to fifty, so on a busy evening a
+    /// normal-lane job waits well past half an hour. Holding it for only that long let the account start
+    /// another, and both were charged when they finished. A job the worker has lost is settled by the sweep
+    /// long before this (at once on a 404, after <see cref="RunningFor"/> without an answer).
+    /// </summary>
+    public static readonly TimeSpan HeldFor = TimeSpan.FromHours(4);
 
     /// <summary>What is left of the allowance, bought transcriptions included, floored at zero.</summary>
     /// <param name="country">The account's country, passed to <see cref="FreeTier.TrialGenerationsFor"/>.</param>
@@ -91,14 +105,14 @@ public static class TrialUsage
 
     /// <summary>
     /// Bought transcriptions <paramref name="userId"/> has spent or is holding: its own jobs paid for with
-    /// one, charged, or still running within <see cref="RunningFor"/> (a failed one settles uncharged and
+    /// one, charged, or still running within <see cref="HeldFor"/> (a failed one settles uncharged and
     /// gives it back). Per account only, unlike the free count: a purchase is never used up by another
     /// account on the same phone.
     /// </summary>
     public static Task<int> CountBoughtSpentAsync(
         IApplicationDbContext db, Guid userId, DateTime utcNow, CancellationToken ct = default)
     {
-        var since = utcNow - RunningFor;
+        var since = utcNow - HeldFor;
         return db.TranscriptionJobs.CountAsync(
             j => j.UserId == userId
                  && j.PaidByCredit

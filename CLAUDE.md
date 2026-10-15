@@ -119,12 +119,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
 - A free account gets 3 transcriptions, ever (`FreeTier`), counted per account and per device from
   `TranscriptionJob` rows (`TrialUsage`): charged when a job finishes, and a job still running holds its
-  place until it settles, so starting several at once cannot pass the gate. The completion sweep
-  (`TranscriptionCompletionWorker`, every 5 min) closes uncharged a job the worker answers 404 for
-  (lost in a restart) and one still open past `TrialUsage.RunningFor`, and then emails a failed job's
+  place (on the account and the device) until it settles, so starting several at once cannot pass the gate.
+  The completion sweep (`TranscriptionCompletionWorker`, every 5 min) closes uncharged a job the worker answers
+  404 for (lost in a restart), one with no answer past `TrialUsage.RunningFor`, and one the worker still reports
+  queued/running past `TrialUsage.HeldFor` (hours: a busy queue is not a lost job, and closing it early made its
+  result free), and then emails a failed job's
   owner tips at most once a day (`EmailFailedTranscriptionTipsCommand`). Every metered submit (uploads,
   links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
-  (`IQuotaGate`: `user:{id}`, or `device:`/`ip:` for previews); the in-process one assumes a single API
+  (`IQuotaGate`: `user:{id}` plus `device:` for a free account, or `device:`/`ip:` for previews); the in-process one assumes a single API
   instance — scaling out needs a Postgres advisory lock instead. The allowance is 3 plus every transcription
   bought one at a time (the one-song purchase, a `BillingInterval.Single` plan): fulfilment writes a
   `LedgerEntryReason.TranscriptionPurchase` ledger credit and nothing else (no subscription), the unique
@@ -184,7 +186,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   $4.99/$39.99, one song $0.99); everyone else the standard dollar set; an unknown country sees naira and
   standard dollars, never the regional set. Checkout refuses a plan from another set
   (`BILLING_PLAN_NOT_AVAILABLE_IN_REGION`). Each set has a one-song purchase (₦1,500 / $1.99 / $0.99) listed
-  beside Pro for free accounts only (hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
+  beside Pro for free accounts only (served apart at `GET /api/billing/plans/single`, never in `/plans` or
+  `public-plans`, which older clients label as Pro; hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
   clients offer it first wherever the free limit is hit. It is revenue collected on the dashboard, never
   run-rate/MRR (those read memberships, and a single purchase starts none).
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server

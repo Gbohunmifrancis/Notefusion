@@ -107,7 +107,9 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         // Held from the count to the recorded job, so parallel links from one account — or from one choir,
         // whose song pool its singers share — are counted one after another rather than all against the
         // same rows (see IQuotaGate).
-        await using var lease = await _gate.AcquireAllAsync(access.GateKeys(userId), ct);
+        // A free account also holds its handset, whose one preview every account on it shares.
+        await using var lease = await _gate.AcquireAllAsync(
+            access.GateKeys(userId).Append(isPro ? null : QuotaGateExtensions.DeviceKey(fingerprint)), ct);
 
         var paidByCredit = false;
         Guid? choirPool = null;

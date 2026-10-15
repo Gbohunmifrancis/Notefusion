@@ -269,8 +269,18 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
             {user.failedTranscriptionCount > 0 && ` · ${formatCount(user.failedTranscriptionCount)} failed`}
           </span>
         </Field>
+        <Field label="Charged">
+          <span title="Jobs that spent an allowance: a free one, a bought one, a Pro song or the free link preview. Compare this, not Transcriptions, with the quota">
+            {formatCount(user.chargedTranscriptionCount ?? 0)}
+          </span>
+        </Field>
         <Field label="Free generations used">
           {formatCount(user.trialGenerationsUsed)} of {formatCount(user.trialGenerationsTotal)}
+          <span className="ml-1.5 text-xs text-muted-foreground">
+            {formatCount(user.boughtTranscriptionsUsed ?? 0)} of {formatCount(user.boughtTranscriptionsTotal ?? 0)} bought
+            {" · "}
+            {formatCount(user.songPreviewsUsed ?? 0)} link preview
+          </span>
         </Field>
       </dl>
     </Card>

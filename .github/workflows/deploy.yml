@@ -33,6 +33,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Re-running an old push run deploys that old commit. The database may already hold rows a
+      # newer build wrote (e.g. a plan interval the old code cannot read), so an old API crashes on
+      # start. Only the tip of main ships on a push or a re-run; roll back with "Run workflow" instead.
+      - name: Refuse to deploy an outdated commit
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          head=$(git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" refs/heads/main | cut -f1)
+          if [ "$head" != "${{ github.sha }}" ]; then
+            echo "::error::This run is for ${{ github.sha }}, but main is now at $head. Re-running an old deploy would roll production back. Use 'Run workflow' on main instead."
+            exit 1
+          fi
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
