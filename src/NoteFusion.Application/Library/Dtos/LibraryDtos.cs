@@ -15,6 +15,7 @@ namespace NoteFusion.Application.Library.Dtos;
 /// song starts ("d r m f │ s") so a sheet is recognisable at a glance, at a fraction of
 /// the full note list.
 /// </param>
+/// <param name="SharedWithChoir">The sheet is in its owner's choir library ("Share with my choir").</param>
 public sealed record SavedTranscriptionDto(
     Guid Id,
     string Title,
@@ -31,7 +32,8 @@ public sealed record SavedTranscriptionDto(
     string? ShareToken = null,
     string? Folder = null,
     IReadOnlyList<ChordSymbolDto>? Chords = null,
-    IReadOnlyList<NoteEventDto>? Preview = null);
+    IReadOnlyList<NoteEventDto>? Preview = null,
+    bool SharedWithChoir = false);
 
 /// <summary>A sheet behind a public link: what a chorister who follows it sees, with no account.</summary>
 public sealed record SharedSheetDto(
@@ -82,7 +84,8 @@ public static class SavedTranscriptionMapper
             t.ShareToken,
             t.Folder,
             includeNotes ? ChordLabels.Label(t.Chords, t.Key) : null,
-            SolfaLabels.Label(t.Notes.Take(PreviewNotes).ToList(), t.Key));
+            SolfaLabels.Label(t.Notes.Take(PreviewNotes).ToList(), t.Key),
+            t.ChoirId is not null);
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(

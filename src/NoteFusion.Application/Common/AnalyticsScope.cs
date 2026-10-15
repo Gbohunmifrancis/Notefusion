@@ -43,6 +43,13 @@ public static class AnalyticsScope
         return db.Subscriptions.Where(s => !internalIds.Contains(s.UserId));
     }
 
+    /// <summary>Choirs whose director is a customer.</summary>
+    public static IQueryable<Choir> RealChoirs(this IApplicationDbContext db)
+    {
+        var internalIds = db.InternalUserIds();
+        return db.Choirs.Where(c => !internalIds.Contains(c.OwnerId));
+    }
+
     public static IQueryable<PaymentTransaction> RealPayments(this IApplicationDbContext db)
     {
         var internalIds = db.InternalUserIds();

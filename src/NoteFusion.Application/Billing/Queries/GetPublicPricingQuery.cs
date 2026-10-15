@@ -34,7 +34,8 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
 
         var plans = await _db.Plans
             .AsNoTracking()
-            .Where(p => p.IsActive)
+            // The choir plans are not on the public page: it renders each plan as Pro Monthly or Pro Yearly.
+            .Where(p => p.IsActive && p.ChoirSeats == null)
             .OrderBy(p => p.AmountMinor)
             .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval))
             .ToListAsync(ct);

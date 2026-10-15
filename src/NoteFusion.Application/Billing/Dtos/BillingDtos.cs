@@ -3,7 +3,9 @@ using NoteFusion.Core.Enums;
 namespace NoteFusion.Application.Billing.Dtos;
 
 /// <summary>A plan as shown on the mobile paywall. Amount is in the currency's minor units.</summary>
-public sealed record PlanDto(Guid Id, string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval);
+/// <param name="ChoirSeats">Singers a choir plan seats besides the director; null for every other plan.</param>
+public sealed record PlanDto(
+    Guid Id, string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval, int? ChoirSeats = null);
 
 /// <summary>
 /// The region-aware offer for an anonymous marketing-site visitor. A null country means the geo lookup did
@@ -52,7 +54,14 @@ public sealed record SubscriptionDto(
     /// </summary>
     int BoughtTranscriptionsRemaining = 0,
     /// <summary>Transcriptions this account has ever bought. Rises by one when a one-song payment lands.</summary>
-    int BoughtTranscriptionsTotal = 0);
+    int BoughtTranscriptionsTotal = 0,
+    /// <summary>
+    /// The choir this account is Pro through (as its director or a singer) while that choir's plan runs; null
+    /// otherwise. When the account has no Pro of its own, the plan and period above are the choir's.
+    /// </summary>
+    string? ChoirName = null,
+    /// <summary><c>"director"</c> or <c>"member"</c> alongside <see cref="ChoirName"/>; null without one.</summary>
+    string? ChoirRole = null);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

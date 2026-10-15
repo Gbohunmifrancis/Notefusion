@@ -90,8 +90,18 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         var current = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
             .FirstOrDefaultAsync(s => s.UserId == userId, ct);
-        if (current is not null && current.IsLifetime && current.IsActiveAt(_clock.UtcNow))
+        if (!plan.IsChoir && current is not null && current.IsLifetime && current.IsActiveAt(_clock.UtcNow))
             return BillingErrors.AlreadyLifetime;
+
+        // A choir plan is the director's: it extends a choir they lead, or starts one. An account sings in one
+        // choir, so a singer in someone else's running choir leaves it before starting their own.
+        if (plan.IsChoir
+            && await _db.ChoirMembers.AnyAsync(
+                m => m.UserId == userId
+                     && _db.Choirs.Any(c => c.Id == m.ChoirId && c.CurrentPeriodEndUtc > _clock.UtcNow), ct))
+        {
+            return ChoirErrors.MemberOfAnotherChoir;
+        }
 
         // Retry-safe: an existing in-flight checkout for this user+plan is reused, so tapping "Upgrade"
         // twice returns the same session instead of opening a second charge.
@@ -126,6 +136,8 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
                     .FirstOrDefaultAsync(s => s.UserId == userId, ct);
                 if (isSingle)
                     return EarlierSingleLanded;
+                if (plan.IsChoir)
+                    return EarlierPaymentLanded;
                 return updated is not null && updated.IsLifetime && updated.IsActiveAt(_clock.UtcNow)
                     ? BillingErrors.AlreadyLifetime
                     : EarlierPaymentLanded;

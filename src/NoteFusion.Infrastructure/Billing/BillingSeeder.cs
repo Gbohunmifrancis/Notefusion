@@ -39,18 +39,31 @@ public sealed class BillingSeeder : IHostedService
     //
     // One song (BillingInterval.Single) is one more transcription for a free account, bought once with no
     // membership: PaymentFulfillment records it as a ledger credit the free-tier gate counts.
-    private static readonly (string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval)[] Plans =
+    //
+    // The choir plans (Seats set) are bought by a choir director: the payment opens or extends the director's
+    // Choir, whose members — up to Seats singers besides the director — are Pro while it runs and share one
+    // monthly song pool (SongCredits.ChoirMonthlyPool). Same three tiers and the same marker convention.
+    private static readonly (string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval, int? Seats)[] Plans =
     [
-        ("pro_monthly_ngn",          "NoteFusion Pro (Monthly)", 750_000,   "NGN", BillingInterval.Monthly),
-        ("pro_yearly_ngn_v2",        "NoteFusion Pro (Yearly)",  6_000_000, "NGN", BillingInterval.Yearly),
-        ("pro_monthly_usd",          "NoteFusion Pro (Monthly)", 999,       "USD", BillingInterval.Monthly),
-        ("pro_yearly_usd",           "NoteFusion Pro (Yearly)",  7_900,     "USD", BillingInterval.Yearly),
-        ("pro_monthly_usd_regional", "NoteFusion Pro (Monthly)", 499,       "USD", BillingInterval.Monthly),
-        ("pro_yearly_usd_regional",  "NoteFusion Pro (Yearly)",  3_999,     "USD", BillingInterval.Yearly),
-        ("one_song_ngn",             "One song",                 150_000,   "NGN", BillingInterval.Single),
-        ("one_song_usd",             "One song",                 199,       "USD", BillingInterval.Single),
-        ("one_song_usd_regional",    "One song",                 99,        "USD", BillingInterval.Single),
+        ("pro_monthly_ngn",          "NoteFusion Pro (Monthly)", 750_000,   "NGN", BillingInterval.Monthly, null),
+        ("pro_yearly_ngn_v2",        "NoteFusion Pro (Yearly)",  6_000_000, "NGN", BillingInterval.Yearly, null),
+        ("pro_monthly_usd",          "NoteFusion Pro (Monthly)", 999,       "USD", BillingInterval.Monthly, null),
+        ("pro_yearly_usd",           "NoteFusion Pro (Yearly)",  7_900,     "USD", BillingInterval.Yearly, null),
+        ("pro_monthly_usd_regional", "NoteFusion Pro (Monthly)", 499,       "USD", BillingInterval.Monthly, null),
+        ("pro_yearly_usd_regional",  "NoteFusion Pro (Yearly)",  3_999,     "USD", BillingInterval.Yearly, null),
+        ("one_song_ngn",             "One song",                 150_000,   "NGN", BillingInterval.Single, null),
+        ("one_song_usd",             "One song",                 199,       "USD", BillingInterval.Single, null),
+        ("one_song_usd_regional",    "One song",                 99,        "USD", BillingInterval.Single, null),
+        ("choir_monthly_ngn",          "NoteFusion Choir (Monthly)", 2_500_000,  "NGN", BillingInterval.Monthly, ChoirSeats),
+        ("choir_yearly_ngn",           "NoteFusion Choir (Yearly)",  25_000_000, "NGN", BillingInterval.Yearly,  ChoirSeats),
+        ("choir_monthly_usd",          "NoteFusion Choir (Monthly)", 1_999,      "USD", BillingInterval.Monthly, ChoirSeats),
+        ("choir_yearly_usd",           "NoteFusion Choir (Yearly)",  19_900,     "USD", BillingInterval.Yearly,  ChoirSeats),
+        ("choir_monthly_usd_regional", "NoteFusion Choir (Monthly)", 999,        "USD", BillingInterval.Monthly, ChoirSeats),
+        ("choir_yearly_usd_regional",  "NoteFusion Choir (Yearly)",  9_900,      "USD", BillingInterval.Yearly,  ChoirSeats),
     ];
+
+    /// <summary>Singers a choir plan seats besides the director.</summary>
+    private const int ChoirSeats = 25;
 
     // Codes that must no longer be sold, for two different reasons. The two USD subscriptions are not merely
     // superseded, they are unpayable: Bachs subscriptions are card-only, this account has no USD card rail,
@@ -85,13 +98,13 @@ public sealed class BillingSeeder : IHostedService
         // Runs after DatabaseSeeder has applied migrations (hosted services start in registration
         // order), so the schema is in place — same assumption the admin seeder makes.
         var seeded = 0;
-        foreach (var (code, name, amountMinor, currency, interval) in Plans)
+        foreach (var (code, name, amountMinor, currency, interval, seats) in Plans)
         {
             var id = DeterministicId(code);
             if (await db.Plans.AnyAsync(p => p.Id == id, cancellationToken))
                 continue;
 
-            db.Plans.Add(Plan.Create(id, code, name, amountMinor, currency, interval));
+            db.Plans.Add(Plan.Create(id, code, name, amountMinor, currency, interval, seats));
             seeded++;
         }
 

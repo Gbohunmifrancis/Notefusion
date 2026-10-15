@@ -20,6 +20,7 @@ public sealed class PlanConfiguration : IEntityTypeConfiguration<Plan>
         builder.Property(p => p.Currency).HasMaxLength(3).IsRequired();
         builder.Property(p => p.Interval).HasConversion<string>().HasMaxLength(10).IsRequired();
         builder.Property(p => p.IsActive).IsRequired();
+        builder.Property(p => p.ChoirSeats); // null for every plan that is not a choir plan
 
         builder.HasIndex(p => p.Code).IsUnique();
     }
