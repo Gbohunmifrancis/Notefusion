@@ -29,6 +29,14 @@ export interface CheckoutSnapshot {
   periodEnd: string | null;
   lifetime: boolean;
   planCode: string | null;
+  /** A one-song purchase: it lands as one more bought transcription, never as Pro. */
+  single?: boolean;
+  /** `boughtTranscriptionsTotal` when the checkout opened, for a one-song purchase. */
+  bought?: number;
+  /** A choir plan: it lands as the choir's period end moving on, whatever the account's own Pro does. */
+  choir?: boolean;
+  /** `choirPeriodEndUtc` when the checkout opened, for a choir plan. */
+  choirPeriodEnd?: string | null;
 }
 
 /** `confirming` while polling hard just after checkout; `delayed` once that window passed unanswered. */
@@ -63,15 +71,23 @@ interface SubscriptionState {
    * not read as "0 left" and block the microphone. Gates pair it with `known`.
    */
   trialRemaining: number;
-  /** The free allowance, so copy can say "2 of 5" without repeating the 5. */
+  /** The free allowance plus any bought, so copy can say "2 of 5" without repeating the 5. */
   trialTotal: number;
+  /** Bought transcriptions not yet used (0 on Pro): each can be a whole linked song. */
+  boughtRemaining: number;
+  /** Transcriptions ever bought, so copy can tell the free ones from the bought ones. */
+  boughtTotal: number;
   /** Re-reads the server. If reconcilePending is true (default for manual refresh), verifies any in-flight payment first. */
   refresh: (reconcilePending?: boolean) => Promise<void>;
   /** The checkout this device opened and has not yet seen land, or null. */
   pendingCheckout: CheckoutSnapshot | null;
   paymentCheck: PaymentCheck;
-  /** Records the state a checkout starts from. Call before the provider's page opens. */
-  beginCheckout: (planId: string, current: Subscription | null) => void;
+  /**
+   * Records the state a checkout starts from. Call before the provider's page opens.
+   * `single` for the one-song purchase, which lands as a bought transcription, not Pro;
+   * `choir` for a choir plan, which lands as the choir's period moving on.
+   */
+  beginCheckout: (planId: string, current: Subscription | null, single?: boolean, choir?: boolean) => void;
   /**
    * Polls until the pending checkout lands, then shows the one welcome pop-up. Safe to call again
    * while it runs. Returns false when there is nothing pending to watch. The paywall calls it once
@@ -140,6 +156,13 @@ function lapsed(sub: Subscription): boolean {
  * lifetime to arrive — otherwise a cancelled checkout would read as a purchase.
  */
 function landed(from: CheckoutSnapshot, sub: Subscription): boolean {
+  // One song bought: the bought count moves on; Pro does not change.
+  if (from.single) return (sub.boughtTranscriptionsTotal ?? 0) > (from.bought ?? 0);
+  // A choir plan: the choir's own period moves on (a director may hold Pro of their own beside it).
+  if (from.choir) {
+    if (!sub.choirPeriodEndUtc) return false;
+    return !from.choirPeriodEnd || Date.parse(sub.choirPeriodEndUtc) > Date.parse(from.choirPeriodEnd);
+  }
   if (!sub.isActive) return false;
   if (!from.wasActive) return true;
   if (sub.isLifetime && !from.lifetime) return true;
@@ -231,12 +254,14 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
    * The poll, a foreground re-read and a pull-to-refresh can all see the same payment land.
    * Whichever sees it first is the only one that speaks.
    */
-  const celebrate = useCallback((sub: Subscription, extended: boolean) => {
-    const key = `${sub.planCode}|${sub.currentPeriodEndUtc}|${sub.isLifetime}`;
+  const celebrate = useCallback((sub: Subscription, extended: boolean, song: boolean = false) => {
+    const key = song
+      ? `song|${sub.boughtTranscriptionsTotal ?? 0}`
+      : `${sub.planCode}|${sub.currentPeriodEndUtc}|${sub.isLifetime}|${sub.choirPeriodEndUtc ?? ''}`;
     if (celebratedRef.current === key) return;
     celebratedRef.current = key;
     haptics.play('success');
-    setWelcome({ subscription: sub, extended });
+    setWelcome({ subscription: sub, extended, kind: song ? 'song' : 'pro' });
   }, []);
 
   /** Takes a fresh answer from the server: state, transitions, and the cache. */
@@ -256,7 +281,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         // The payment this device started. Judged against the snapshot rather than the last
         // state seen, so a member adding time is celebrated too.
         setPending(null);
-        celebrate(sub, pending.wasActive);
+        celebrate(sub, pending.wasActive, Boolean(pending.single));
       } else if (prev !== null) {
         // Only check state transitions when we have an existing known baseline
         if (!prev.isActive && currentIsActive) {
@@ -376,7 +401,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [apply, setPending, setPaymentCheck]);
 
   const beginCheckout = useCallback(
-    (planId: string, current: Subscription | null) => {
+    (planId: string, current: Subscription | null, single: boolean = false, choir: boolean = false) => {
       setPending({
         planId,
         startedAt: Date.now(),
@@ -384,6 +409,10 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         periodEnd: current?.currentPeriodEndUtc ?? null,
         lifetime: current?.isLifetime ?? false,
         planCode: current?.planCode ?? null,
+        single,
+        bought: current?.boughtTranscriptionsTotal ?? 0,
+        choir,
+        choirPeriodEnd: current?.choirPeriodEndUtc ?? null,
       });
       // Nothing confirms behind the sheet, an earlier checkout's slow poll included: the watch
       // starts again from the browser's return.
@@ -507,6 +536,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       loading,
       trialRemaining: subscription?.trialGenerationsRemaining ?? DEFAULT_TRIAL_TOTAL,
       trialTotal: subscription?.trialGenerationsTotal ?? DEFAULT_TRIAL_TOTAL,
+      boughtRemaining: subscription?.isActive ? 0 : subscription?.boughtTranscriptionsRemaining ?? 0,
+      boughtTotal: subscription?.boughtTranscriptionsTotal ?? 0,
       refresh: (reconcile = true) => load(reconcile),
       pendingCheckout,
       paymentCheck,

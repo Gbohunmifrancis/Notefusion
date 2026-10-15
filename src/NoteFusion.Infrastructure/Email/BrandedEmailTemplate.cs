@@ -24,7 +24,7 @@ namespace NoteFusion.Infrastructure.Email;
 /// and is not ours to trust.
 /// </para>
 /// </remarks>
-public sealed class BrandedEmailTemplate
+public sealed partial class BrandedEmailTemplate
 {
     // ── Design tokens ────────────────────────────────────────────────────────────
     private const string Blue = "#2563eb";
@@ -236,6 +236,10 @@ public sealed class BrandedEmailTemplate
     {
         var amount = FormatAmount(receipt.AmountMinor, receipt.Currency);
 
+        // One transcription bought, not Pro time: a different receipt with nothing about a membership.
+        if (receipt.OneTranscription)
+            return OneTranscriptionReceipt(to, receipt, amount);
+
         // A one-off purchase has no next charge, so every line that would name one says so instead. The
         // two shapes are built together rather than in separate methods because they are the same
         // receipt — only the renewal fact differs.
@@ -280,6 +284,37 @@ public sealed class BrandedEmailTemplate
                 renews is null
                     ? "and nothing to cancel."
                     : "add more time from the app whenever you like."));
+    }
+
+    private EmailMessage OneTranscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt, string amount)
+    {
+        const string lead = "Payment received — one more transcription has been added to your NoteFusion account.";
+        const string closing = "Use it on any recording or song link; it never expires. "
+            + "Keep this email as your receipt. There is no subscription and nothing will be charged again.";
+
+        var body = Paragraphs(lead)
+            + FactTable(
+                ("Bought", Encode(receipt.PlanName)),
+                ("Amount paid", Encode(amount)),
+                ("Reference", $"<span style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace\">{Encode(receipt.Reference)}</span>"))
+            + Paragraphs(closing);
+
+        return Compose(
+            to,
+            subject: $"Your NoteFusion receipt — {amount}",
+            preheader: "One more transcription is ready to use.",
+            heading: "Your song is paid for",
+            bodyHtml: body,
+            cta: new CallToAction("Open NoteFusion", _settings.AppUrl),
+            textBody: Text(
+                lead,
+                "",
+                $"Bought:      {receipt.PlanName}",
+                $"Amount paid: {amount}",
+                $"Reference:   {receipt.Reference}",
+                "",
+                "Use it on any recording or song link; it never expires.",
+                "Keep this email as your receipt. There is no subscription and nothing will be charged again."));
     }
 
     public EmailMessage PaymentFailed(EmailRecipient to, string planName)
@@ -347,6 +382,44 @@ public sealed class BrandedEmailTemplate
                 "message and will help you finish.",
                 "",
                 "Finish upgrading: " + plansUrl));
+    }
+
+    public EmailMessage TranscriptionFailed(EmailRecipient to, bool onPro)
+    {
+        var appUrl = _settings.AppUrl.TrimEnd('/') + "/app";
+        var cost = onPro
+            ? "It didn't use anything from your Pro allowance."
+            : "It didn't count against your free tries.";
+        string[] tips =
+        [
+            "Record close to the voice or instrument, about an arm's length away, somewhere quiet.",
+            "One voice or one instrument at a time. A band or a crowd blurs the notes together.",
+            "Keep it under about two minutes. For a song, pick just the section you need.",
+        ];
+        var list = $"<ol style=\"margin:0 0 14px;padding-left:22px;font-family:{FontStack};font-size:16px;line-height:1.65;color:{Muted}\">"
+            + string.Concat(tips.Select(t => $"<li style=\"margin:0 0 6px\">{Encode(t)}</li>"))
+            + "</ol>";
+        var body = Paragraphs(
+                "Your last transcription couldn't be finished. " + Encode(cost),
+                "Three things that make the next one work:")
+            + list;
+
+        return Compose(
+            to,
+            subject: "Your transcription didn't come through",
+            preheader: cost + " Three tips for the next one.",
+            heading: "Let's try that again",
+            bodyHtml: body,
+            cta: new CallToAction("Open NoteFusion", appUrl),
+            textBody: Text(
+                "Your last transcription couldn't be finished. " + cost,
+                "",
+                "Three things that make the next one work:",
+                "1. " + tips[0],
+                "2. " + tips[1],
+                "3. " + tips[2],
+                "",
+                "Open NoteFusion: " + appUrl));
     }
 
     public EmailMessage SubscriptionExpiring(EmailRecipient to, SubscriptionExpiry expiry)
@@ -455,7 +528,8 @@ public sealed class BrandedEmailTemplate
         string textBody)
         => new(to.Email, to.Name, subject, Layout(subject, preheader, heading, bodyHtml, cta), Footer(textBody));
 
-    private string Layout(string title, string preheader, string heading, string bodyHtml, CallToAction? cta)
+    private string Layout(
+        string title, string preheader, string heading, string bodyHtml, CallToAction? cta, string? unsubscribeUrl = null)
     {
         var logo = LogoUrl();
         // Images off is the default in plenty of clients, so the wordmark is live text either way and
@@ -547,7 +621,7 @@ public sealed class BrandedEmailTemplate
                           <p style="margin:0;font-family:{{FontStack}};font-size:12px;line-height:1.6;color:{{Faint}}">
                             <a href="{{Encode(_settings.AppUrl)}}" style="color:{{Faint}};text-decoration:underline">{{Encode(site)}}</a>
                             &nbsp;·&nbsp; Tonic Solfa and staff notation from any melody.
-                          </p>
+                          </p>{{UnsubscribeLine(unsubscribeUrl)}}
                         </td>
                       </tr>
 

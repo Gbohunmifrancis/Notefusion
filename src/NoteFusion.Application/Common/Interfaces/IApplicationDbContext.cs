@@ -43,6 +43,12 @@ public interface IApplicationDbContext
     /// <summary>Public links to a user's folders of saved sheets.</summary>
     DbSet<FolderShare> FolderShares { get; }
 
+    /// <summary>Choirs on the choir plan: the director pays, the members are Pro (see <see cref="Choir"/>).</summary>
+    DbSet<Choir> Choirs { get; }
+
+    /// <summary>The singers in each choir; one row per account at most.</summary>
+    DbSet<ChoirMember> ChoirMembers { get; }
+
     // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }
@@ -62,6 +68,12 @@ public interface IApplicationDbContext
 
     /// <summary>Global system announcement banner.</summary>
     DbSet<SystemAnnouncement> SystemAnnouncements { get; }
+
+    /// <summary>Every customer-research message sent (or tried); the outreach sweep's claim and audit trail.</summary>
+    DbSet<OutreachMessage> OutreachMessages { get; }
+
+    /// <summary>Accounts that unsubscribed from non-essential email.</summary>
+    DbSet<EmailOptOut> EmailOptOuts { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

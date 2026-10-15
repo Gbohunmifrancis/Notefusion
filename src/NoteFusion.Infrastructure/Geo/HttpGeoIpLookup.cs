@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Infrastructure.Http;
 
 namespace NoteFusion.Infrastructure.Geo;
 
@@ -64,10 +65,11 @@ internal sealed class HttpGeoIpLookup : IGeoIpLookup
             // rather than reporting "unknown country" for a request that no longer exists.
             throw;
         }
-        catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException)
+        catch (Exception ex) when (ex is HttpRequestException || OutboundFailure.IsUnanswered(ex, ct))
         {
-            // A timeout or a DNS failure must never fail a sign-up. Unknown country means every tier is
-            // offered, which errs toward the customer.
+            // A timeout, a DNS failure or an open breaker (the service has been failing; it is not asked at
+            // all for a while) must never fail a sign-up. Unknown country means every tier is offered, which
+            // errs toward the customer.
             _logger.LogWarning(ex, "Geo lookup for {Ip} failed; country left unknown.", ipAddress);
             return null;
         }

@@ -205,6 +205,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<long>("AmountMinor")
                         .HasColumnType("bigint");
 
+                    b.Property<int?>("ChoirSeats")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -351,6 +354,85 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("webhook_events", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Choir", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CurrentPeriodEndUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CurrentPeriodStartUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("InviteCode")
+                        .IsRequired()
+                        .HasMaxLength(8)
+                        .HasColumnType("character varying(8)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PlanId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Provider")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int>("Seats")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InviteCode")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerId")
+                        .IsUnique();
+
+                    b.ToTable("choirs", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.ChoirMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChoirId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("JoinedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChoirId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("choir_members", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.DeviceToken", b =>
                 {
                     b.Property<Guid>("Id")
@@ -391,6 +473,25 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("device_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.EmailOptOut", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("OptedOutAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("email_opt_outs", (string)null);
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.FolderShare", b =>
                 {
                     b.Property<Guid>("Id")
@@ -424,6 +525,52 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("folder_shares", (string)null);
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.OutreachMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Segment")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTime?>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("UserId", "Segment", "Channel")
+                        .IsUnique();
+
+                    b.ToTable("outreach_messages", (string)null);
                 });
 
             modelBuilder.Entity("NoteFusion.Core.Entities.PreviewJob", b =>
@@ -560,6 +707,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("ChoirId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("choir_id");
+
                     b.Property<string>("Chords")
                         .HasColumnType("text")
                         .HasColumnName("chords_json");
@@ -636,6 +787,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ChoirId");
+
                     b.HasIndex("ShareToken")
                         .IsUnique();
 
@@ -654,6 +807,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("AutoSavedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("ChoirId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -670,6 +826,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasDefaultValue(0);
+
+                    b.Property<bool>("PaidByCredit")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ResultJson")
                         .HasColumnType("text");
@@ -698,6 +859,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("JobId")
                         .IsUnique();
+
+                    b.HasIndex("ChoirId", "SongCreditConsumedAtUtc");
 
                     b.HasIndex("DeviceFingerprint", "TrialConsumedAtUtc");
 
@@ -909,6 +1072,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime?>("FailedTranscriptionEmailSentAtUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("FreeHarmonyUsedAtUtc")
                         .HasColumnType("timestamp with time zone");
@@ -1145,10 +1311,52 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.ToTable("web_events", (string)null);
                 });
 
+            modelBuilder.Entity("NoteFusion.Core.Entities.Choir", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.ChoirMember", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.Choir", null)
+                        .WithMany()
+                        .HasForeignKey("ChoirId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("NoteFusion.Core.Entities.DeviceToken", b =>
                 {
                     b.HasOne("NoteFusion.Core.Entities.User", null)
                         .WithMany("DeviceTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.EmailOptOut", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("NoteFusion.Core.Entities.OutreachMessage", b =>
+                {
+                    b.HasOne("NoteFusion.Core.Entities.User", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1165,6 +1373,11 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("NoteFusion.Core.Entities.Transcription", b =>
                 {
+                    b.HasOne("NoteFusion.Core.Entities.Choir", null)
+                        .WithMany()
+                        .HasForeignKey("ChoirId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.OwnsMany("NoteFusion.Core.Entities.NoteEvent", "Notes", b1 =>
                         {
                             b1.Property<int>("Id")

@@ -34,6 +34,7 @@ import { useThemedStyles, useColors } from '../lib/theme';
 import type { SavedTranscription } from '../api/types';
 import type { RootStackParams, TabParams } from '../navigation/types';
 import { solfaOpening } from '../lib/solfaOpening';
+import { confidenceA11y, confidenceLevel } from '../lib/confidence';
 
 type Props = BottomTabScreenProps<TabParams, 'Home'>;
 
@@ -459,6 +460,8 @@ export function HomeScreen({ navigation }: Props) {
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => {
           const opening = solfaOpening(item.notes ?? item.preview, item.timeSignature);
+          // No percentage on a row: a tone dot, and only when the sheet is worth a second look.
+          const doubtful = confidenceLevel(item.overallConfidence) !== 'clear';
           const tone = confidenceColor(item.overallConfidence, colors);
           return (
             <Touchable
@@ -490,15 +493,11 @@ export function HomeScreen({ navigation }: Props) {
                 )}
               </View>
 
-              <View
-                style={styles.score}
-                accessibilityLabel={`${Math.round(item.overallConfidence * 100)} percent sure`}
-              >
-                <View style={[styles.scoreDot, { backgroundColor: tone }]} />
-                <Text style={[styles.scoreText, { color: tone }]}>
-                  {Math.round(item.overallConfidence * 100)}
-                </Text>
-              </View>
+              {doubtful ? (
+                <View style={styles.score} accessibilityLabel={confidenceA11y(item.overallConfidence)}>
+                  <View style={[styles.scoreDot, { backgroundColor: tone }]} />
+                </View>
+              ) : null}
             </Touchable>
           );
         }}
@@ -800,10 +799,6 @@ const makeStyles = (c: Palette, s: Shadows) =>
       width: 6,
       height: 6,
       borderRadius: 3,
-    },
-    scoreText: {
-      fontSize: 12.5,
-      fontFamily: fonts.medium,
     },
     skeletonTitle: {
       marginBottom: 6,

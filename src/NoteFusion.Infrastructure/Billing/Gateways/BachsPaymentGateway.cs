@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Http;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Billing.Gateways;
@@ -216,6 +217,10 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
             // may exist and the user may already be looking at it.
             return Error.Network("Bachs.Initiate", $"Bachs did not respond in time: {ex.Message}");
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
+        {
+            return OutboundFailure.ToError(ex, "Bachs.Initiate", "Bachs");
+        }
     }
 
     public async Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
@@ -391,6 +396,10 @@ internal sealed class BachsPaymentGateway : IPaymentGateway
         catch (TaskCanceledException ex) when (!ct.IsCancellationRequested)
         {
             return Error.Network("Bachs.Verify", $"Bachs did not respond in time: {ex.Message}");
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
+        {
+            return OutboundFailure.ToError(ex, "Bachs.Verify", "Bachs");
         }
     }
 

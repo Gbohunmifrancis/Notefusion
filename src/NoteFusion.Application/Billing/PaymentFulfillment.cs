@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Choirs;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Core.Entities;
 using NoteFusion.Core.Entities.Billing;
 using NoteFusion.Core.Enums;
 
@@ -7,7 +9,8 @@ namespace NoteFusion.Application.Billing;
 
 /// <summary>
 /// The single place that turns a verified payment into its business effects: the completed status, the
-/// immutable ledger credit, and the started-or-renewed subscription. Both the webhook worker and the
+/// immutable ledger credit, and the started-or-renewed subscription — or, for a one-song purchase
+/// (<see cref="BillingInterval.Single"/>), the ledger credit alone, which is the bought transcription. Both the webhook worker and the
 /// reconciliation job call this, so a payment is fulfilled identically whether we heard about it by
 /// push (webhook) or by poll (reconciliation). It stages entity changes only — the caller commits them
 /// through <see cref="SaveAsync(IApplicationDbContext, IReadOnlyList{Fulfillment}, CancellationToken)"/>
@@ -50,9 +53,31 @@ internal static class PaymentFulfillment
 
         var plan = await db.Plans.FirstOrDefaultAsync(p => p.Id == tx.PlanId, ct);
 
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);
+
+        // One transcription bought: the ledger row is the whole effect. It records the money and is the credit
+        // the free-tier gate counts (TrialUsage.CountBoughtAsync), so the unique (transaction, reason) index
+        // that stops a double credit also stops a double grant. No membership is started or extended.
+        if (plan?.Interval == BillingInterval.Single)
+        {
+            db.LedgerEntries.Add(LedgerEntry.Create(
+                tx.UserId, tx.Id, LedgerDirection.Credit, LedgerEntryReason.TranscriptionPurchase,
+                tx.AmountMinor, tx.Currency, plan.Name, now));
+
+            return new Fulfillment(tx, verification, BillingInterval.Single, plan.Name, now)
+            {
+                Recipient = user is null ? null : new EmailRecipient(user.Email, user.FullName)
+            };
+        }
+
         db.LedgerEntries.Add(LedgerEntry.Create(
             tx.UserId, tx.Id, LedgerDirection.Credit, LedgerEntryReason.SubscriptionCharge,
             tx.AmountMinor, tx.Currency, plan?.Name ?? "Subscription charge", now));
+
+        // A choir plan opens or extends the payer's choir, never their own Pro row: the two are bought and run
+        // separately, so time paid for one is never converted into the other.
+        if (plan?.ChoirSeats is { } seats)
+            return await ApplyChoirAsync(db, tx, verification, plan, seats, user, now, ct);
 
         var fulfillment = new Fulfillment(tx, verification, plan?.Interval ?? BillingInterval.Monthly, plan?.Name, now);
 
@@ -76,11 +101,56 @@ internal static class PaymentFulfillment
             fulfillment.Extend();
         }
 
-        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);
         if (user is not null)
             fulfillment.Recipient = new EmailRecipient(user.Email, user.FullName);
 
         return fulfillment;
+    }
+
+    /// <summary>
+    /// A choir plan paid for: the director's choir starts (named after them, with a fresh invite code) or its
+    /// period stacks after the time it has left, exactly as a Pro renewal does. A director is in one choir:
+    /// a seat they held in someone else's choir is given up, since they now lead their own.
+    /// </summary>
+    private static async Task<Fulfillment> ApplyChoirAsync(
+        IApplicationDbContext db, PaymentTransaction tx, GatewayVerification verification, Plan plan, int seats,
+        Core.Entities.User? user, DateTime now, CancellationToken ct)
+    {
+        var fulfillment = new Fulfillment(tx, verification, plan.Interval, plan.Name, now, seats)
+        {
+            Recipient = user is null ? null : new EmailRecipient(user.Email, user.FullName)
+        };
+
+        // The change tracker first, for two payments from one director in one sweep (see the Pro path).
+        var choir = db.Choirs.Local.FirstOrDefault(c => c.OwnerId == tx.UserId)
+                    ?? await db.Choirs.FirstOrDefaultAsync(c => c.OwnerId == tx.UserId, ct);
+        if (choir is null)
+        {
+            var endsAtUtc = BillingPeriod.Advance(now, plan.Interval);
+            choir = Choir.Start(
+                tx.UserId, DefaultChoirName(user?.FullName), ChoirAccess.NewInviteCode(), plan.Id, seats, tx.Provider,
+                now, endsAtUtc, now);
+            db.Choirs.Add(choir);
+            fulfillment.Choir = choir;
+            fulfillment.RenewsAtUtc = endsAtUtc;
+        }
+        else
+        {
+            fulfillment.Choir = choir;
+            fulfillment.Extend();
+        }
+
+        var seat = await db.ChoirMembers.FirstOrDefaultAsync(m => m.UserId == tx.UserId, ct);
+        if (seat is not null)
+            await ChoirAccess.DetachAsync(db, seat, ct);
+
+        return fulfillment;
+    }
+
+    private static string DefaultChoirName(string? directorName)
+    {
+        var first = ChoirAccess.FirstName(directorName);
+        return string.IsNullOrWhiteSpace(directorName) ? "My choir" : $"{first}'s choir";
     }
 
     /// <summary>
@@ -107,9 +177,9 @@ internal static class PaymentFulfillment
                 return;
             }
             catch (DbUpdateConcurrencyException ex)
-                when (attempt < MaxSaveAttempts && ex.Entries.Count > 0 && ex.Entries.All(e => e.Entity is Subscription))
+                when (attempt < MaxSaveAttempts && ex.Entries.Count > 0 && ex.Entries.All(e => e.Entity is Subscription or Choir))
             {
-                var reloaded = new HashSet<Subscription>();
+                var reloaded = new HashSet<object>();
                 foreach (var entry in ex.Entries)
                 {
                     await entry.ReloadAsync(ct);
@@ -118,13 +188,14 @@ internal static class PaymentFulfillment
                     if (entry.State == EntityState.Detached)
                         throw;
 
-                    reloaded.Add((Subscription)entry.Entity);
+                    reloaded.Add(entry.Entity);
                 }
 
                 // In the order they were staged, so two payments in one sweep still stack one after the other.
                 foreach (var f in fulfillments)
                 {
-                    if (f.Subscription is not null && reloaded.Contains(f.Subscription))
+                    if ((f.Subscription is not null && reloaded.Contains(f.Subscription))
+                        || (f.Choir is not null && reloaded.Contains(f.Choir)))
                         f.Extend();
                 }
             }
@@ -144,18 +215,25 @@ internal sealed class Fulfillment
     private readonly string? _planName;
     private readonly DateTime _now;
 
+    private readonly int _choirSeats;
+
     internal Fulfillment(
-        PaymentTransaction tx, GatewayVerification verification, BillingInterval interval, string? planName, DateTime now)
+        PaymentTransaction tx, GatewayVerification verification, BillingInterval interval, string? planName, DateTime now,
+        int choirSeats = 0)
     {
         _tx = tx;
         _verification = verification;
         Interval = interval;
         _planName = planName;
         _now = now;
+        _choirSeats = choirSeats;
     }
 
     internal BillingInterval Interval { get; }
     internal Subscription? Subscription { get; set; }
+
+    /// <summary>The choir a choir-plan payment opened or extended; null for every other payment.</summary>
+    internal Choir? Choir { get; set; }
     internal DateTime RenewsAtUtc { get; set; }
     internal EmailRecipient? Recipient { get; set; }
 
@@ -165,18 +243,34 @@ internal sealed class Fulfillment
     /// </summary>
     public FulfillmentReceipt? Receipt => Recipient is null
         ? null
-        : new FulfillmentReceipt(
-            Recipient,
-            new SubscriptionReceipt(
-                _planName ?? "NoteFusion Pro", _tx.AmountMinor, _tx.Currency,
-                // Null, not the sentinel: a lifetime purchase has no renewal date, and the receipt must
-                // not print 31 December 9999 at the customer who paid the most.
-                RenewsAtUtc >= Subscription.LifetimeEndUtc ? null : RenewsAtUtc,
-                _tx.Reference));
+        : Interval == BillingInterval.Single
+            // One transcription bought: no period to state, and nothing about Pro.
+            ? new FulfillmentReceipt(
+                Recipient,
+                new SubscriptionReceipt(
+                    _planName ?? "One song", _tx.AmountMinor, _tx.Currency, null, _tx.Reference,
+                    OneTranscription: true))
+            : new FulfillmentReceipt(
+                Recipient,
+                new SubscriptionReceipt(
+                    _planName ?? "NoteFusion Pro", _tx.AmountMinor, _tx.Currency,
+                    // Null, not the sentinel: a lifetime purchase has no renewal date, and the receipt must
+                    // not print 31 December 9999 at the customer who paid the most.
+                    RenewsAtUtc >= Subscription.LifetimeEndUtc ? null : RenewsAtUtc,
+                    _tx.Reference));
 
     /// <summary>Applies this payment's period to the existing membership row, from its current period end.</summary>
     internal void Extend()
     {
+        if (Choir is { } choir)
+        {
+            // As a Pro renewal: from the later of now and the current period end, on the plan just bought.
+            var from = choir.CurrentPeriodEndUtc > _now ? choir.CurrentPeriodEndUtc : _now;
+            RenewsAtUtc = BillingPeriod.Advance(from, Interval);
+            choir.Renew(from, RenewsAtUtc, _tx.PlanId, _choirSeats, _tx.Provider, _now);
+            return;
+        }
+
         var sub = Subscription!;
         if (sub.IsLifetime)
         {

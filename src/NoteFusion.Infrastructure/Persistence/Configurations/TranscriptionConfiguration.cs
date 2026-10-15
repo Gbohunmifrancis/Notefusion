@@ -41,6 +41,12 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
         builder.Property(t => t.Folder).HasColumnName("folder").HasMaxLength(Transcription.FolderMaxLength);
         builder.HasIndex(t => new { t.UserId, t.Folder });
 
+        // The choir's shared library. A choir that goes (its director's account deleted) takes the sheets out
+        // of its library, never the sheets themselves.
+        builder.Property(t => t.ChoirId).HasColumnName("choir_id");
+        builder.HasOne<Choir>().WithMany().HasForeignKey(t => t.ChoirId).OnDelete(DeleteBehavior.SetNull);
+        builder.HasIndex(t => t.ChoirId);
+
         // The four parts are read and written whole, never queried into, so one JSON column
         // beats four more owned tables.
         builder.Property(t => t.Parts)

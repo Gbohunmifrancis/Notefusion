@@ -18,8 +18,9 @@ namespace NoteFusion.Application.Transcriptions.Commands;
 /// </summary>
 /// <remarks>
 /// Pro: up to <see cref="SongCredits.ProMaxSeconds"/> of the song, in the high-priority lane, up to
-/// <see cref="SongCredits.ProMonthlyAllowance"/> songs a month. Free: one <see cref="SongCredits.FreePreviewSeconds"/>
-/// preview, ever, in the normal lane. Either takes the first of the song unless the user chose a section
+/// <see cref="SongCredits.ProMonthlyAllowance"/> songs a month. Free with a bought transcription left: the same
+/// length, in the normal lane, spending that transcription (<see cref="TranscriptionJob.PaidByCredit"/>). Free
+/// otherwise: one <see cref="SongCredits.FreePreviewSeconds"/> preview, ever, in the normal lane. Either takes the first of the song unless the user chose a section
 /// (<see cref="SongSections"/>). Nothing is charged here — a song is charged when it finishes
 /// (<see cref="Queries.GetTranscriptionJobQueryHandler"/>, <see cref="NotifyTranscriptionReadyCommandHandler"/>),
 /// so a link the platform refuses costs nothing.
@@ -100,25 +101,37 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             return TranscriptionErrors.InvalidKey;
 
         var fingerprint = _device.Current;
-        var isPro = await ProStatus.IsProAsync(_db, _clock, userId, ct);
+        var access = await ProStatus.ReadAsync(_db, _clock, userId, ct);
+        var isPro = access.IsPro;
 
-        // Held from the count to the recorded job, so parallel links from one account are counted one
-        // after another rather than all against the same rows (see IQuotaGate).
-        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.UserKey(userId), ct);
+        // Held from the count to the recorded job, so parallel links from one account — or from one choir,
+        // whose song pool its singers share — are counted one after another rather than all against the
+        // same rows (see IQuotaGate).
+        await using var lease = await _gate.AcquireAllAsync(access.GateKeys(userId), ct);
 
+        var paidByCredit = false;
+        Guid? choirPool = null;
         if (isPro)
         {
-            if (await SongGate.CheckAsync(_db, userId, _clock.UtcNow, ct) is { } refused)
-                return Result.Failure<string>(refused);
+            var pool = await SongGate.CheckAsync(_db, access, userId, _clock.UtcNow, ct);
+            if (pool.IsFailure)
+                return Result.Failure<string>(pool.Error);
+            choirPool = pool.Value.ChoirId;
         }
         else
         {
-            var used = await SongCredits.CountPreviewsUsedAsync(_db, userId, fingerprint, _clock.UtcNow, ct);
-            if (used >= SongCredits.FreePreviews)
-                return BillingErrors.SongPreviewUsed;
+            // A bought transcription pays for the whole song — the reason most people buy one — and is used
+            // ahead of the free preview, which stays for later. Without one, the preview as before.
+            paidByCredit = await HasBoughtTranscriptionAsync(userId, fingerprint, ct);
+            if (!paidByCredit)
+            {
+                var used = await SongCredits.CountPreviewsUsedAsync(_db, userId, fingerprint, _clock.UtcNow, ct);
+                if (used >= SongCredits.FreePreviews)
+                    return BillingErrors.SongPreviewUsed;
+            }
         }
 
-        var maxSeconds = isPro ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds;
+        var maxSeconds = isPro || paidByCredit ? SongCredits.ProMaxSeconds : SongCredits.FreePreviewSeconds;
         var section = await SongSections.ChooseAsync(_api, url, request.StartSeconds, request.EndSeconds, maxSeconds, ct);
         if (section.IsFailure)
             return Result.Failure<string>(section.Error);
@@ -145,9 +158,17 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         // stamped with whether it was a Pro job: the free preview count must not include songs a
         // subscriber ran before their plan lapsed, and a lapsed subscriber's past songs must not be
         // re-read as previews.
-        _db.TranscriptionJobs.Add(TranscriptionJob.RecordLink(submitted.Value, userId, _clock.UtcNow, fingerprint, isPro));
+        _db.TranscriptionJobs.Add(
+            TranscriptionJob.RecordLink(submitted.Value, userId, _clock.UtcNow, fingerprint, isPro, paidByCredit, choirPool));
         await _db.SaveChangesAsync(ct);
 
         return submitted;
+    }
+
+    private async Task<bool> HasBoughtTranscriptionAsync(Guid userId, string? fingerprint, CancellationToken ct)
+    {
+        var country = await _db.Users.Where(u => u.Id == userId).Select(u => u.Country).FirstOrDefaultAsync(ct);
+        var allowance = await TrialUsage.ReadAsync(_db, userId, fingerprint, country, _clock.UtcNow, ct);
+        return allowance.BoughtRemaining > 0;
     }
 }

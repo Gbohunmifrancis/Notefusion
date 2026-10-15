@@ -233,6 +233,12 @@ public sealed class RecordingEmailSender : IEmailSender
 
     public List<(EmailRecipient To, string Subject, string Heading, string BodyHtml, string? CtaText, string? CtaUrl)> CustomEmails { get; } = [];
 
+    public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default)
+    {
+        Sent.Add((onPro ? "transcription-failed-pro" : "transcription-failed", to));
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     /// The expiry payloads, kept apart from <see cref="Sent"/> because the renew-vs-lapse wording and the
     /// day count are the part worth asserting on — the recipient alone does not distinguish them.
@@ -257,6 +263,27 @@ public sealed class RecordingEmailSender : IEmailSender
     /// in production, and exactly why a test that wants to enter the right code has to read it here.
     /// </summary>
     public List<string> VerificationCodes { get; } = [];
+
+    /// <summary>The founder's outreach notes, with what each said; <see cref="OutreachFails"/> makes delivery fail.</summary>
+    public List<(EmailRecipient To, NoteFusion.Application.Outreach.OutreachEmail Email)> Outreach { get; } = [];
+
+    /// <summary>When set, outreach sends report this failure instead of success (and are still recorded).</summary>
+    public string? OutreachFails { get; set; }
+
+    /// <summary>When set, outreach sends report exactly this error (e.g. the provider-unavailable one).</summary>
+    public NoteFusion.Shared.Results.Error? OutreachError { get; set; }
+
+    public Task<NoteFusion.Shared.Results.Result> SendOutreachAsync(
+        EmailRecipient to, NoteFusion.Application.Outreach.OutreachEmail email, CancellationToken ct = default)
+    {
+        Sent.Add(("outreach", to));
+        Outreach.Add((to, email));
+        if (OutreachError is { } refused)
+            return Task.FromResult(NoteFusion.Shared.Results.Result.Failure(refused));
+        return Task.FromResult(OutreachFails is { } error
+            ? NoteFusion.Shared.Results.Result.Failure(NoteFusion.Shared.Results.Error.Failure("EMAIL_DELIVERY_FAILED", error))
+            : NoteFusion.Shared.Results.Result.Success());
+    }
 }
 
 /// <summary>

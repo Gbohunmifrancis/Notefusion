@@ -31,7 +31,13 @@ public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<Tra
         // Song credits are counted per account per month, over link jobs only.
         builder.Property(j => j.Kind).HasDefaultValue(Core.Enums.TranscriptionJobKind.Upload);
         builder.Property(j => j.WasPro).HasDefaultValue(false);
+        // A free-tier job run on a bought transcription (TrialUsage counts those per account, apart from free ones).
+        builder.Property(j => j.PaidByCredit).HasDefaultValue(false);
         builder.HasIndex(j => new { j.UserId, j.Kind, j.SongCreditConsumedAtUtc });
+
+        // The choir song pool is counted per choir per month. No foreign key: a job is a ledger row and keeps
+        // its pool after the choir is gone.
+        builder.HasIndex(j => new { j.ChoirId, j.SongCreditConsumedAtUtc });
 
         // 64 exactly: SHA-256 hex out of RequestDeviceFingerprint. Indexed alongside the trial column for
         // the same reason the pair above is — the submit gate counts by device on every free submission.

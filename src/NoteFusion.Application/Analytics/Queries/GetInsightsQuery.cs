@@ -58,6 +58,9 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
     private const int TopCountries = 10;
     private const int RetentionWeeks = 8;
 
+    /// <summary>The funnel step for accounts that spent every free transcription and so met the paywall.</summary>
+    public const string ReachedFreeLimitStep = "Reached the free limit";
+
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
 
@@ -107,10 +110,14 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
         var lastSeen = users.Where(u => ids.Contains(u.Id) && u.Seen != null).ToDictionary(u => u.Id, u => u.Seen!.Value);
 
         // ── What they did: jobs, web events, payments (only the columns needed, within the window) ──
-        var jobs = (await _db.RealJobs().AsNoTracking()
-                .Select(j => new { j.UserId, j.Kind, j.CreatedAtUtc, j.SettledAtUtc, Done = j.ResultJson != null })
-                .ToListAsync(ct))
-            .Where(j => ids.Contains(j.UserId)).ToList();
+        var allJobs = await _db.RealJobs().AsNoTracking()
+            .Select(j => new
+            {
+                j.UserId, j.Kind, j.CreatedAtUtc, j.SettledAtUtc, Done = j.ResultJson != null,
+                Charged = j.TrialConsumedAtUtc != null, j.DeviceFingerprint
+            })
+            .ToListAsync(ct);
+        var jobs = allJobs.Where(j => ids.Contains(j.UserId)).ToList();
         var windowJobs = jobs.Where(j => In(j.CreatedAtUtc)).ToList();
 
         var events = await _db.RealWebEvents().AsNoTracking()
@@ -186,6 +193,20 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
                 new CountryRowDto("Other", rest.Sum(r => r.Accounts), rest.Sum(r => r.Active), rest.Sum(r => r.Transcriptions), rest.Sum(r => r.Pro))];
         }
 
+        // Met the paywall: every free transcription spent, counted as TrialUsage counts them — charged jobs on
+        // the account, or on a handset the account submitted from (the gate refuses either). Ever, not only in
+        // the window, like every other step.
+        var charged = allJobs.Where(j => j.Charged).ToList();
+        var devicesOf = allJobs.Where(j => j.DeviceFingerprint != null)
+            .GroupBy(j => j.UserId)
+            .ToDictionary(g => g.Key, g => g.Select(j => j.DeviceFingerprint!).ToHashSet(StringComparer.Ordinal));
+        bool ReachedFreeLimit(Guid id)
+        {
+            var devices = devicesOf.GetValueOrDefault(id);
+            var used = charged.Count(j => j.UserId == id || (j.DeviceFingerprint != null && devices?.Contains(j.DeviceFingerprint) == true));
+            return used >= FreeTier.TrialGenerations;
+        }
+
         // The path to paying, for the accounts that signed up in the window.
         var cohort = people.Values.Where(p => In(p.CreatedAt)).Select(p => p.Id).ToHashSet();
         var funnel = new List<FunnelStepDto>
@@ -194,6 +215,7 @@ public sealed class GetInsightsQueryHandler : IRequestHandler<GetInsightsQuery, 
             new("Transcribed", jobs.Where(j => j.Done && cohort.Contains(j.UserId)).Select(j => j.UserId).Distinct().Count()),
             new("Transcribed twice", jobs.Where(j => j.Done && cohort.Contains(j.UserId)).GroupBy(j => j.UserId).Count(g => g.Count() >= 2)),
             new("Kept a sheet", sheets.Where(t => cohort.Contains(t.UserId)).Select(t => t.UserId).Distinct().Count()),
+            new(ReachedFreeLimitStep, cohort.Count(ReachedFreeLimit)),
             new("Opened checkout", payments.Where(p => p.Opened && cohort.Contains(p.UserId)).Select(p => p.UserId).Distinct().Count()),
             new("Paid", paidSubs.Where(s => cohort.Contains(s.UserId)).Select(s => s.UserId).Distinct().Count()),
         };

@@ -9,7 +9,9 @@ using NoteFusion.Infrastructure.Api;
 using NoteFusion.Infrastructure.Billing;
 using NoteFusion.Infrastructure.Email;
 using NoteFusion.Infrastructure.Geo;
+using NoteFusion.Infrastructure.Http;
 using NoteFusion.Infrastructure.Media;
+using NoteFusion.Infrastructure.Outreach;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Push.Workers;
@@ -28,6 +30,8 @@ public static class DependencyInjection
         services.AddSingleton<IWorkerHeartbeatTracker, NoteFusion.Infrastructure.Common.WorkerHeartbeatTracker>();
         // One per process: the lock table must be shared by every request (see InProcessQuotaGate on scale-out).
         services.AddSingleton<IQuotaGate, NoteFusion.Infrastructure.Common.InProcessQuotaGate>();
+        // Every outside HTTP client gets OutboundResilience; this is the breaker state the batches read.
+        services.AddProviderHealth();
         services.AddPersistence(configuration);
         services.AddSecurity(configuration);
         services.AddPush(configuration);
@@ -36,6 +40,7 @@ public static class DependencyInjection
         services.AddTranscriptionApi(configuration);
         services.AddBilling(configuration);
         services.AddGeo(configuration);
+        services.AddOutreach(configuration);
 
         return services;
     }
@@ -116,8 +121,8 @@ public static class DependencyInjection
         var useExpo = configuration.GetValue<bool?>("Push:UseExpo");
         if (useExpo == true)
         {
-            services.AddHttpClient<IPushSender, ExpoPushSender>(client =>
-                client.Timeout = TimeSpan.FromSeconds(10));
+            services.AddHttpClient<IPushSender, ExpoPushSender>()
+                .AddOutboundResilience(OutboundResilience.Push);
         }
         else
         {
@@ -140,8 +145,8 @@ public static class DependencyInjection
         // but UseResend still false stays in the log — turning it on is the deliberate step.
         if (email.UseResend)
         {
-            services.AddHttpClient<IEmailTransport, ResendEmailTransport>(client =>
-                client.Timeout = TimeSpan.FromSeconds(15));
+            services.AddHttpClient<IEmailTransport, ResendEmailTransport>()
+                .AddOutboundResilience(OutboundResilience.Email);
         }
         else
         {
@@ -150,8 +155,8 @@ public static class DependencyInjection
 
         // Inbound email inbox — always registered; returns an empty list when no inbound route
         // is configured in Resend (so the page renders gracefully without crashing).
-        services.AddHttpClient<IResendInboxService, ResendInboxService>(client =>
-            client.Timeout = TimeSpan.FromSeconds(15));
+        services.AddHttpClient<IResendInboxService, ResendInboxService>()
+            .AddOutboundResilience(OutboundResilience.EmailInbox);
     }
 
     private static void AddMedia(this IServiceCollection services, IConfiguration configuration)
@@ -186,13 +191,13 @@ public static class DependencyInjection
         services.AddHttpClient<ITranscriptionApi, TranscriptionApiClient>(client =>
         {
             client.BaseAddress = new Uri(baseUrl);
-            client.Timeout = TimeSpan.FromSeconds(100);
             if (!string.IsNullOrWhiteSpace(apiKey))
             {
                 client.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
             }
         })
-        .AddHttpMessageHandler<CorrelationIdHandler>();
+        .AddHttpMessageHandler<CorrelationIdHandler>()
+        .AddOutboundResilience(OutboundResilience.Transcription);
 
         // Watches jobs through to completion so a recording finishes whether or not the app is open.
         services.AddHostedService<TranscriptionCompletionWorker>();
@@ -212,11 +217,11 @@ public static class DependencyInjection
         // Same switch as email, push and media. The timeout is short by design: this runs inline on
         // sign-up, and a slow geolocation service must cost a new user three seconds at most — after
         // which they get an unknown country and every tier, which is a worse price for us and no worse
-        // an experience for them.
+        // an experience for them. Its breaker stops even those three seconds while it is down.
         if (geo.IsConfigured)
         {
-            services.AddHttpClient<IGeoIpLookup, HttpGeoIpLookup>(client =>
-                client.Timeout = TimeSpan.FromSeconds(3));
+            services.AddHttpClient<IGeoIpLookup, HttpGeoIpLookup>()
+                .AddOutboundResilience(OutboundResilience.GeoIp);
         }
         else
         {

@@ -70,4 +70,6 @@ export const siteUrls = {
   home: SITE_ORIGIN,
   privacy: `${SITE_ORIGIN}/privacy`,
   terms: `${SITE_ORIGIN}/terms`,
+  /** A choir's invite link: the web app signs the singer in (or up) and joins them. */
+  choirJoin: (code: string) => `${SITE_ORIGIN}/app?join=${encodeURIComponent(code)}`,
 } as const;

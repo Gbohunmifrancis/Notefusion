@@ -1,6 +1,8 @@
+using NoteFusion.Application.Choirs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Outreach;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
@@ -32,12 +34,15 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly IProviderHealth _health;
 
-    public RemindAbandonedCheckoutsCommandHandler(IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email)
+    public RemindAbandonedCheckoutsCommandHandler(
+        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null)
     {
         _db = db;
         _clock = clock;
         _email = email;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
 
     public async Task<Result<int>> Handle(RemindAbandonedCheckoutsCommand request, CancellationToken ct)
@@ -60,7 +65,11 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
         // Only checkouts whose payment page opened: one the provider refused outright has already had
         // its "payment didn't go through" email from InitiateCheckoutCommand, and two about one attempt
         // is one too many.
+        // Nor a one-song checkout: the reminder sells Pro, and someone who wanted one song does not need
+        // a week of emails about a membership they never asked for.
+        var singlePlans = await _db.Plans.Where(p => p.Interval == BillingInterval.Single).Select(p => p.Id).ToListAsync(ct);
         var abandoned = latest
+            .Where(t => !singlePlans.Contains(t.PlanId))
             .Where(t => t.CreatedAtUtc < quietSince
                         && t.ReachedCheckout
                         && t.Status is not (PaymentStatus.Verified or PaymentStatus.Completed))
@@ -75,12 +84,21 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
                         && s.CurrentPeriodEndUtc > now)
             .Select(s => s.UserId)
             .ToListAsync(ct)).ToHashSet();
+        withPro.UnionWith(await ChoirAccess.ActiveChoirUserIdsAsync(_db, now, ct));
         var users = await _db.Users.AsNoTracking().Where(u => userIds.Contains(u.Id) && u.IsActive).ToDictionaryAsync(u => u.Id, ct);
+        // Never the same day as the founder's outreach note (OutreachRules): an account written to in the
+        // last day waits, and is picked up by a later sweep while its checkout is still in the window.
+        var outreachSince = now - OutreachRules.ReminderHoldAfterOutreach;
+        var justWritten = (await _db.OutreachMessages
+            .Where(m => userIds.Contains(m.UserId) && m.CreatedAtUtc > outreachSince)
+            .Select(m => m.UserId)
+            .ToListAsync(ct)).ToHashSet();
         var planIds = abandoned.Select(t => t.PlanId).Distinct().ToList();
         var planNames = await _db.Plans.Where(p => planIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, p => p.Name, ct);
 
         var due = abandoned
             .Where(t => !withPro.Contains(t.UserId)
+                        && !justWritten.Contains(t.UserId)
                         && users.TryGetValue(t.UserId, out var u)
                         && (u.CheckoutReminderSentAtUtc is not { } last || (last < t.CreatedAtUtc && last < weekAgo)))
             .OrderBy(t => t.CreatedAtUtc)
@@ -95,6 +113,10 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
         var sent = 0;
         foreach (var t in due)
         {
+            // The email provider is refusing calls: the rest stay due for the next sweep, unclaimed.
+            if (_health.IsUnavailable(OutboundProviders.Email))
+                break;
+
             var createdAt = t.CreatedAtUtc;
             var claimed = await _db.Users
                 .Where(u => u.Id == t.UserId

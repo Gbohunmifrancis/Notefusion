@@ -273,6 +273,14 @@ public sealed record CurrencyAmountDto(string Currency, long AmountMinor);
 /// <param name="MembersByPlan">Active members by plan name; gifts are labelled as such.</param>
 /// <param name="SongsUsedThisMonth">Song credits spent since the first of this month (UTC), by every account.</param>
 /// <param name="MembersOutOfSongs">Accounts that have spent the whole monthly allowance this month.</param>
+/// <param name="ActiveChoirs">
+/// Choirs whose plan is running. Each is one paid membership — its director's — and is counted once in
+/// <paramref name="ActiveMembers"/>, <paramref name="PaidMembers"/>, <paramref name="MembersByPlan"/> (under
+/// the choir plan's name) and <paramref name="MonthlyRunRate"/> (the choir plan's price, once).
+/// </param>
+/// <param name="ChoirSingers">
+/// Singers in those choirs: Pro through a seat they did not pay for, so kept out of the member counts.
+/// </param>
 public sealed record MembershipDto(
     int ActiveMembers,
     int PaidMembers,
@@ -284,7 +292,9 @@ public sealed record MembershipDto(
     IReadOnlyList<CurrencyAmountDto> MonthlyRunRate,
     IReadOnlyList<CategoryCountDto> MembersByPlan,
     int SongsUsedThisMonth,
-    int MembersOutOfSongs);
+    int MembersOutOfSongs,
+    int ActiveChoirs = 0,
+    int ChoirSingers = 0);
 
 /// <summary>
 /// One row of the admin user table. Deliberately narrow: enough to support the table and a

@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Http;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Billing.Gateways;
@@ -89,6 +90,10 @@ internal sealed class FlutterwavePaymentGateway : IPaymentGateway
         {
             return Error.Network("Flutterwave.Initiate", $"Could not reach Flutterwave: {ex.Message}");
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
+        {
+            return OutboundFailure.ToError(ex, "Flutterwave.Initiate", "Flutterwave");
+        }
     }
 
     public async Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
@@ -157,6 +162,10 @@ internal sealed class FlutterwavePaymentGateway : IPaymentGateway
         catch (HttpRequestException ex)
         {
             return Error.Network("Flutterwave.Verify", $"Could not reach Flutterwave: {ex.Message}");
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
+        {
+            return OutboundFailure.ToError(ex, "Flutterwave.Verify", "Flutterwave");
         }
         catch (JsonException ex)
         {

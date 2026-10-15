@@ -1,13 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Billing.Gateways;
 using NoteFusion.Infrastructure.Billing.Webhooks;
 using NoteFusion.Infrastructure.Billing.Workers;
-using Polly;
+using NoteFusion.Infrastructure.Http;
 
 namespace NoteFusion.Infrastructure.Billing;
 
@@ -40,11 +39,10 @@ public static class BillingDependencyInjection
             services.AddHttpClient<IPaymentGateway, PaystackPaymentGateway>("paystack", client =>
                 {
                     client.BaseAddress = new Uri(paystack.BaseUrl.TrimEnd('/'));
-                    client.Timeout = TimeSpan.FromSeconds(30);
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", paystack.SecretKey);
                 })
-                .AddResilienceHandler("paystack", BuildResiliencePipeline);
+                .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.Paystack));
 
             services.AddSingleton<IPaymentWebhookValidator>(new PaystackWebhookValidator(paystack));
         }
@@ -65,11 +63,10 @@ public static class BillingDependencyInjection
             services.AddHttpClient<IPaymentGateway, BachsPaymentGateway>("bachs", client =>
                 {
                     client.BaseAddress = new Uri(bachs.BaseUrl.TrimEnd('/'));
-                    client.Timeout = TimeSpan.FromSeconds(30);
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", bachs.SecretKey);
                 })
-                .AddResilienceHandler("bachs", BuildResiliencePipeline);
+                .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.Bachs));
 
             // Resolved from the container rather than constructed here: the validator needs the clock for
             // its replay window, and the clock is registered by the persistence/common module.
@@ -92,11 +89,10 @@ public static class BillingDependencyInjection
             services.AddHttpClient<IPaymentGateway, FlutterwavePaymentGateway>("flutterwave", client =>
                 {
                     client.BaseAddress = new Uri(flutterwave.BaseUrl.TrimEnd('/'));
-                    client.Timeout = TimeSpan.FromSeconds(30);
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", flutterwave.SecretKey);
                 })
-                .AddResilienceHandler("flutterwave", BuildResiliencePipeline);
+                .AddOutboundResilience(OutboundResilience.Payment(PaymentProvider.Flutterwave));
 
             services.AddSingleton<IPaymentWebhookValidator>(new FlutterwaveWebhookValidator(flutterwave));
         }
@@ -129,36 +125,5 @@ public static class BillingDependencyInjection
         var options = configuration.GetSection(section).Get<PaymentProviderOptions>() ?? new PaymentProviderOptions();
         services.AddSingleton<IPaymentGateway>(new StubPaymentGateway(provider, options.Currencies));
         services.AddSingleton<IPaymentWebhookValidator>(new StubWebhookValidator(provider));
-    }
-
-    /// <summary>
-    /// Retry (transient failures only) with the spec's fixed backoff 2s/5s/10s/20s, then a circuit
-    /// breaker so a sustained provider outage stops hammering it. Applied to the provider HttpClient,
-    /// so gateway code stays about mapping, not resilience.
-    /// </summary>
-    private static void BuildResiliencePipeline(ResiliencePipelineBuilder<HttpResponseMessage> builder)
-    {
-        var delays = new[]
-        {
-            TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5),
-            TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(20),
-        };
-
-        builder.AddRetry(new HttpRetryStrategyOptions
-        {
-            MaxRetryAttempts = delays.Length,
-            // Only 5xx, 408, and network exceptions are retried — a 4xx (e.g. bad request) is not
-            // transient and must not be retried. This is the default HttpRetryStrategyOptions predicate.
-            DelayGenerator = args => ValueTask.FromResult<TimeSpan?>(
-                args.AttemptNumber < delays.Length ? delays[args.AttemptNumber] : delays[^1]),
-        });
-
-        builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
-        {
-            FailureRatio = 0.5,
-            MinimumThroughput = 10,
-            SamplingDuration = TimeSpan.FromSeconds(30),
-            BreakDuration = TimeSpan.FromSeconds(30),
-        });
     }
 }

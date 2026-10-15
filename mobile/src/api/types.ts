@@ -308,6 +308,72 @@ export interface SavedTranscription {
   chords?: ChordSymbol[] | null;
   /** The opening notes (up to eight), labelled, on every read: a list row's "d r m f │ s". */
   preview?: NoteEvent[] | null;
+  /** The sheet is in its owner's choir library ("Share with my choir"). */
+  sharedWithChoir?: boolean;
+}
+
+// --- Choirs -------------------------------------------------------------
+// Mirrors src/NoteFusion.Application/Choirs/Dtos/ChoirDtos.cs.
+
+export type ChoirRole = "director" | "member";
+
+/** The caller's choir (`GET /api/choirs/mine`; 404 `CHOIR_NOT_FOUND` when in none). */
+export interface Choir {
+  id: string;
+  name: string;
+  role: ChoirRole;
+  /** The choir's plan is running: its singers are Pro and its library is open. */
+  isActive: boolean;
+  currentPeriodEndUtc: string;
+  planCode: string | null;
+  planName: string | null;
+  /** The director's first name. */
+  directorName: string;
+  /** The code singers join with; the director's alone, null for a singer. */
+  inviteCode: string | null;
+  /** Singers in the choir, the director not counted. */
+  seatsUsed: number;
+  seatsTotal: number;
+  /** Songs left this month in the choir's shared pool. */
+  songCreditsRemaining: number;
+  songCreditsTotal: number;
+}
+
+/** A singer, as the director's member list shows them. */
+export interface ChoirMember {
+  userId: string;
+  name: string;
+  joinedAtUtc: string;
+}
+
+/** One row of the choir's shared library. */
+export interface ChoirSheet {
+  id: string;
+  title: string;
+  key: string;
+  /** First name of the singer who shared it. */
+  sharedBy: string;
+  /** The caller shared it. */
+  mine: boolean;
+  /** The caller may take it out: their own, or any for the director. */
+  canUnshare: boolean;
+  createdAtUtc: string;
+  preview: NoteEvent[];
+}
+
+/** A sheet opened read-only through the choir library (the shared-sheet body). Mirrors `SharedSheetDto`. */
+export interface SharedSheet {
+  title: string;
+  sharedBy: string;
+  key: string;
+  tempoBpm: number;
+  timeSignature: string;
+  lyrics: string;
+  notes: NoteEvent[];
+  musicXml: string;
+  parts: Record<string, TranscriptionPart> | null;
+  partsMusicXml: string | null;
+  chords?: ChordSymbol[] | null;
 }
 
 // --- Billing ------------------------------------------------------------
@@ -320,7 +386,11 @@ export interface SavedTranscription {
  * server-side from the country on their account, so the app renders whatever it is sent
  * rather than choosing.
  */
-export type BillingInterval = "monthly" | "yearly" | "lifetime";
+/**
+ * `single` is the one-song purchase: one more transcription for a free account, bought once,
+ * with no period and no membership (C# `BillingInterval.Single`).
+ */
+export type BillingInterval = "monthly" | "yearly" | "lifetime" | "single";
 
 export type PaymentProvider = "paystack" | "flutterwave" | "bachs" | "squad";
 
@@ -334,6 +404,8 @@ export interface Plan {
   amountMinor: number;
   currency: string;
   interval: BillingInterval;
+  /** Singers a choir plan seats besides the director; null for every other plan. */
+  choirSeats?: number | null;
 }
 
 /** Anonymous, location-resolved pricing used by the public website. */
@@ -370,12 +442,12 @@ export interface Subscription {
   status: SubscriptionStatus | null;
   currentPeriodEndUtc: string | null;
   /**
-   * Free transcriptions left. Server-authoritative and counted from successful
-   * generations, so it does not go back up when a transcription is deleted.
-   * Meaningless while `isActive` — Pro is unmetered.
+   * Free-tier transcriptions left, bought ones included. Server-authoritative and
+   * counted from successful generations, so it does not go back up when a
+   * transcription is deleted. Meaningless while `isActive` — Pro is unmetered.
    */
   trialGenerationsRemaining: number;
-  /** The free allowance, so the UI can say "3 of 5" without hardcoding 5. */
+  /** The free allowance plus every transcription bought, so the UI can say "2 of 4". */
   trialGenerationsTotal: number;
   /**
    * Bought outright — there is no renewal date to show and nothing to cancel.
@@ -393,6 +465,23 @@ export interface Subscription {
   planName?: string | null;
   /** A free account that has not yet used its one four-part harmony. Always false on Pro. */
   freeHarmonyAvailable?: boolean;
+  /**
+   * Bought transcriptions (one-song purchases) not yet used; they never expire. Already
+   * counted in `trialGenerationsRemaining`. On a free account each one can be a whole
+   * linked song.
+   */
+  boughtTranscriptionsRemaining?: number;
+  /** Transcriptions ever bought; rises by one when a one-song payment lands. */
+  boughtTranscriptionsTotal?: number;
+  /**
+   * The choir this account is Pro through while its plan runs, or null. Without Pro of its
+   * own, the plan and period above are the choir's.
+   */
+  choirName?: string | null;
+  /** "director" or "member" alongside `choirName`. */
+  choirRole?: ChoirRole | null;
+  /** The choir's period end, running or lapsed; null without a choir. */
+  choirPeriodEndUtc?: string | null;
 }
 
 // --- App release --------------------------------------------------------

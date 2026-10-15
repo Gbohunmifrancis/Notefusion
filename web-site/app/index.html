@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/theme.css?v=6">
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
-<link rel="stylesheet" href="/assets/app.css?v=21">
+<link rel="stylesheet" href="/assets/app.css?v=22">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
 <link rel="stylesheet" href="/assets/night.css?v=5">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
@@ -204,6 +204,8 @@
           <button class="tab" type="button" role="tab" data-tab="register" aria-selected="false">Create account</button>
         </div>
         <div id="auth-alert" class="alert alert-danger hidden" role="alert"></div>
+        <!-- Opened from a choir invite (/app?join=CODE): the join happens once signed in. -->
+        <div id="auth-join" class="alert alert-info hidden" role="status"></div>
 
         <form id="form-login" class="auth-form" novalidate>
           <div class="google-slot" id="google-btn-login"></div>
@@ -352,7 +354,7 @@
       <span class="pro-welcome-mark" aria-hidden="true"><svg class="ic"><use href="#i-crown"/></svg></span>
       <h2 id="pro-welcome-title">Welcome to NoteFusion Pro</h2>
       <p class="pro-welcome-plan" id="pro-welcome-plan"></p>
-      <ul class="perks pro-welcome-perks">
+      <ul class="perks pro-welcome-perks" id="pro-welcome-perks">
         <li><svg class="ic"><use href="#i-check"/></svg>Whole songs up to six minutes, twenty a month</li>
         <li><svg class="ic"><use href="#i-check"/></svg>Alto, tenor and bass written under any tune, when you ask</li>
         <li><svg class="ic"><use href="#i-check"/></svg>PDF, MusicXML and MIDI downloads, no watermark</li>
@@ -497,6 +499,7 @@
         </div>
       </div>
       <div id="r-truncated" class="alert alert-info hidden"></div>
+      <div id="r-confidence" class="alert alert-info hidden"></div>
       <div id="r-doh" class="alert alert-info doh-ask hidden" role="group" aria-label="Which doh is it?"></div>
 
       <!-- The music, in a frame of its own: a long song scrolls inside it, never the whole page. -->
@@ -771,6 +774,13 @@
           <button class="btn btn-primary btn-sm" id="lib-empty-go" type="button"><svg class="ic"><use href="#i-plus"/></svg>New transcription</button>
         </div>
       </div>
+      <!-- The choir's shared library, for someone in a choir whose plan is running. -->
+      <div class="card choir-lib hidden" id="choir-lib">
+        <h2 class="group-title"><svg class="ic"><use href="#i-choir"/></svg>Choir library · <span id="choir-lib-name"></span></h2>
+        <p class="muted small" style="margin:0 0 10px">Sheets your choir shared. Open one to rehearse; save it to keep a copy of your own.</p>
+        <div class="lib-list" id="choir-lib-list"></div>
+        <p class="muted small hidden" id="choir-lib-empty" style="margin:0">Nothing shared yet. Press <strong>Share with choir</strong> on any of your sheets above.</p>
+      </div>
     </div>
 
     <!-- ── Account ──────────────────────────────────────────────────── -->
@@ -809,6 +819,49 @@
                 <p class="lrow-note" id="acct-sub-note"></p>
               </div>
               <button class="lrow lrow-btn" id="acct-upgrade" type="button"><span class="k link" id="acct-upgrade-label">See the plans</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+            </div>
+          </section>
+
+          <section aria-labelledby="acct-choir-title">
+            <h2 class="group-title" id="acct-choir-title">My choir</h2>
+            <!-- In no choir: the code field, and the way to the choir plan. -->
+            <div class="list-card" id="choir-none">
+              <div class="lrow lrow-block">
+                <p class="lrow-note" style="margin:0 0 8px">Your director's choir code gives you Pro and the choir's shared sheets while the choir's plan runs.</p>
+                <form class="choir-join" id="choir-join-form" novalidate>
+                  <input id="choir-join-code" type="text" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Choir code" aria-label="Choir code">
+                  <button class="btn btn-primary btn-sm" type="submit" id="choir-join-btn">Join choir</button>
+                </form>
+                <p class="small muted" id="choir-join-status" aria-live="polite" style="margin:6px 0 0"></p>
+              </div>
+              <button class="lrow lrow-btn" id="choir-plan-open" type="button"><span class="k link">Lead a choir? See the choir plan</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+            </div>
+            <!-- In a choir: the director manages it here; a singer sees it and can leave. -->
+            <div class="list-card hidden" id="choir-card">
+              <div class="lrow"><span class="k"><svg class="ic"><use href="#i-choir"/></svg><span id="choir-title">—</span></span><span class="v"><span class="pill" id="choir-status">Active</span></span></div>
+              <div class="lrow lrow-block hidden" id="choir-rename-row">
+                <form class="choir-join" id="choir-rename-form" novalidate>
+                  <input id="choir-name" type="text" maxlength="80" autocomplete="off" aria-label="Choir name">
+                  <button class="btn btn-ghost btn-sm" type="submit" id="choir-name-save">Rename</button>
+                </form>
+              </div>
+              <div class="lrow lrow-block">
+                <div class="usage-row"><span>Singers</span><span id="choir-seats">—</span></div>
+                <div class="usage-bar"><i id="choir-seats-fill"></i></div>
+                <p class="lrow-note" id="choir-note"></p>
+              </div>
+              <div class="lrow lrow-block hidden" id="choir-invite-row">
+                <div class="share-row">
+                  <input id="choir-invite-url" type="text" readonly aria-label="Choir invite link">
+                  <button class="btn btn-ghost btn-sm" id="choir-invite-copy" type="button">Copy link</button>
+                </div>
+                <p class="small muted" style="margin:6px 0 0">Choir code <strong id="choir-invite-code"></strong> · <button class="btn-link small" id="choir-invite-new" type="button">Make a new code</button></p>
+              </div>
+              <div class="lrow lrow-block hidden" id="choir-members-row">
+                <ul class="choir-members" id="choir-members" aria-label="Singers in your choir"></ul>
+              </div>
+              <button class="lrow lrow-btn hidden" id="choir-renew" type="button"><span class="k link">Renew the choir plan</span><span class="v"><svg class="ic"><use href="#i-chev"/></svg></span></button>
+              <button class="lrow lrow-btn danger hidden" id="choir-leave" type="button"><span class="k"><svg class="ic"><use href="#i-logout"/></svg>Leave the choir</span></button>
             </div>
           </section>
 
@@ -863,7 +916,8 @@
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
 <script src="/assets/preview.js?v=10" defer></script>
-<script src="/assets/app.js?v=28" defer></script>
+<script src="/assets/confidence.js?v=1" defer></script>
+<script src="/assets/app.js?v=30" defer></script>
 <script src="/assets/track.js?v=4" defer></script>
 </body>
 </html>

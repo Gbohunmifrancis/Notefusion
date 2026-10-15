@@ -28,6 +28,11 @@ public sealed class BillingController : ApiControllerBase
     public async Task<IActionResult> Plans(CancellationToken ct)
         => HandleResult(await _sender.Send(new GetPlansQuery(), ct));
 
+    /// <summary>The choir plans this account may buy (one director pays, the singers are Pro), cheapest first.</summary>
+    [HttpGet("plans/choir")]
+    public async Task<IActionResult> ChoirPlans(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPlansQuery(Choir: true), ct));
+
     /// <summary>
     /// The anonymous marketing-site offer. It resolves the request location and returns only that region's
     /// plans; if location cannot be trusted, the response contains no paid plans rather than both prices.

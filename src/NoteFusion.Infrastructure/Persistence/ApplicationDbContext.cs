@@ -24,6 +24,8 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<TranscriptionLog> TranscriptionLogs => Set<TranscriptionLog>();
     public DbSet<UserFeedback> UserFeedback => Set<UserFeedback>();
     public DbSet<FolderShare> FolderShares => Set<FolderShare>();
+    public DbSet<Choir> Choirs => Set<Choir>();
+    public DbSet<ChoirMember> ChoirMembers => Set<ChoirMember>();
 
     public DbSet<Plan> Plans => Set<Plan>();
     public DbSet<PaymentTransaction> PaymentTransactions => Set<PaymentTransaction>();
@@ -34,6 +36,9 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<AdminAuditLog> AdminAuditLogs => Set<AdminAuditLog>();
     public DbSet<WaitlistEntry> WaitlistEntries => Set<WaitlistEntry>();
     public DbSet<SystemAnnouncement> SystemAnnouncements => Set<SystemAnnouncement>();
+
+    public DbSet<OutreachMessage> OutreachMessages => Set<OutreachMessage>();
+    public DbSet<EmailOptOut> EmailOptOuts => Set<EmailOptOut>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

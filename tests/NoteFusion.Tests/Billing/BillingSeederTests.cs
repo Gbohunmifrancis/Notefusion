@@ -35,7 +35,13 @@ public class BillingSeederTests
         await Seed(h);
 
         var plans = await h.Db.Plans.OrderBy(p => p.Code).ToListAsync();
-        Assert.Equal(["pro_monthly_ngn", "pro_monthly_usd", "pro_yearly_ngn_v2", "pro_yearly_usd"], plans.Select(p => p.Code));
+        Assert.Equal(
+            ["choir_monthly_ngn", "choir_monthly_usd", "choir_monthly_usd_regional",
+             "choir_yearly_ngn", "choir_yearly_usd", "choir_yearly_usd_regional",
+             "one_song_ngn", "one_song_usd", "one_song_usd_regional",
+             "pro_monthly_ngn", "pro_monthly_usd", "pro_monthly_usd_regional",
+             "pro_yearly_ngn_v2", "pro_yearly_usd", "pro_yearly_usd_regional"],
+            plans.Select(p => p.Code));
         Assert.All(plans, p => Assert.True(p.IsActive));
     }
 
@@ -48,11 +54,13 @@ public class BillingSeederTests
 
         await Seed(h);
 
-        var naira = await h.Db.Plans.Where(p => p.Currency == "NGN").OrderBy(p => p.AmountMinor).ToListAsync();
+        var naira = await h.Db.Plans.Where(p => p.Currency == "NGN" && p.Interval != BillingInterval.Single && p.ChoirSeats == null).OrderBy(p => p.AmountMinor).ToListAsync();
         Assert.Equal([BillingInterval.Monthly, BillingInterval.Yearly], naira.Select(p => p.Interval));
         Assert.Equal([750_000L, 6_000_000L], naira.Select(p => p.AmountMinor)); // ₦7,500 and ₦60,000, in kobo
 
-        var dollars = await h.Db.Plans.Where(p => p.Currency == "USD").OrderBy(p => p.AmountMinor).ToListAsync();
+        var dollars = (await h.Db.Plans.Where(p => p.Currency == "USD" && p.Interval != BillingInterval.Single && p.ChoirSeats == null).OrderBy(p => p.AmountMinor).ToListAsync())
+            .Where(p => PlanEligibility.TierOf(p.Code, p.Currency) == PlanEligibility.Tier.StandardDollar)
+            .ToList();
         Assert.Equal([BillingInterval.Monthly, BillingInterval.Yearly], dollars.Select(p => p.Interval));
         Assert.Equal([999L, 7_900L], dollars.Select(p => p.AmountMinor)); // $9.99 and $79, in cents
 
@@ -68,7 +76,7 @@ public class BillingSeederTests
         await Seed(h);
         await Seed(h);
 
-        Assert.Equal(4, await h.Db.Plans.CountAsync());
+        Assert.Equal(15, await h.Db.Plans.CountAsync());
     }
 
     // ---------------------------------------------------------------- what gets retired
@@ -152,9 +160,9 @@ public class BillingSeederTests
 
         // And only one yearly is on the naira paywall, or the buyer picks their own price.
         var offered = (await h.Db.Plans.Where(p => p.IsActive).ToListAsync())
-            .Where(p => PlanEligibility.IsOffered(p.Currency, "NG"))
+            .Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, "NG"))
             .ToList();
-        Assert.Equal("pro_yearly_ngn_v2", Assert.Single(offered, p => p.Interval == BillingInterval.Yearly).Code);
+        Assert.Equal("pro_yearly_ngn_v2", Assert.Single(offered, p => p.Interval == BillingInterval.Yearly && !p.IsChoir).Code);
     }
 
     [Fact]
@@ -176,10 +184,12 @@ public class BillingSeederTests
     // ---------------------------------------------------------------- the seeder against the rule
 
     [Theory]
-    [InlineData("NG", 2)]  // monthly and yearly, in naira
-    [InlineData("GB", 2)]  // monthly and yearly, in dollars
-    [InlineData("US", 2)]
-    [InlineData(null, 4)]  // no country known: every tier, rather than a guessed one
+    [InlineData("NG", 5)]  // monthly, yearly, one song and the two choir plans, in naira
+    [InlineData("GB", 5)]  // the same in dollars
+    [InlineData("US", 5)]
+    [InlineData("KE", 5)]  // the regional dollar set
+    [InlineData("IN", 5)]
+    [InlineData(null, 10)] // no country known: naira and standard dollars, rather than a guessed one
     public async Task What_a_region_is_actually_offered_after_seeding(string? country, int expected)
     {
         // The two halves of the feature meet here. PlanEligibilityTests proves the rule against hand-made
@@ -188,10 +198,53 @@ public class BillingSeederTests
         await Seed(h);
 
         var offered = (await h.Db.Plans.Where(p => p.IsActive).ToListAsync())
-            .Where(p => PlanEligibility.IsOffered(p.Currency, country))
+            .Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, country))
             .ToList();
 
         Assert.Equal(expected, offered.Count);
+        if (country is not null) // one tier per known country, never two prices for the same thing
+        {
+            Assert.Single(offered, p => p.Interval == BillingInterval.Single);
+            Assert.Single(offered.Select(p => PlanEligibility.TierOf(p.Code, p.Currency)).Distinct());
+        }
+        else
+        {
+            Assert.DoesNotContain(offered, p => PlanEligibility.TierOf(p.Code, p.Currency) == PlanEligibility.Tier.RegionalDollar);
+        }
+    }
+
+    [Fact]
+    public async Task The_regional_and_one_song_prices_are_the_ones_agreed()
+    {
+        using var h = new TestHarness(Now);
+        await Seed(h);
+
+        var plans = await h.Db.Plans.ToDictionaryAsync(p => p.Code);
+        Assert.Equal(499, plans["pro_monthly_usd_regional"].AmountMinor);  // $4.99
+        Assert.Equal(3_999, plans["pro_yearly_usd_regional"].AmountMinor); // $39.99
+        Assert.Equal(150_000, plans["one_song_ngn"].AmountMinor);          // ₦1,500, in kobo
+        Assert.Equal(199, plans["one_song_usd"].AmountMinor);              // $1.99
+        Assert.Equal(99, plans["one_song_usd_regional"].AmountMinor);      // $0.99
+        Assert.All(plans.Values.Where(p => p.Code.StartsWith("one_song")), p => Assert.Equal(BillingInterval.Single, p.Interval));
+    }
+
+    [Fact]
+    public async Task The_choir_prices_and_seats_are_the_ones_agreed()
+    {
+        using var h = new TestHarness(Now);
+        await Seed(h);
+
+        var plans = await h.Db.Plans.ToDictionaryAsync(p => p.Code);
+        Assert.Equal(2_500_000, plans["choir_monthly_ngn"].AmountMinor);        // ₦25,000, in kobo
+        Assert.Equal(25_000_000, plans["choir_yearly_ngn"].AmountMinor);        // ₦250,000
+        Assert.Equal(1_999, plans["choir_monthly_usd"].AmountMinor);            // $19.99
+        Assert.Equal(19_900, plans["choir_yearly_usd"].AmountMinor);            // $199
+        Assert.Equal(999, plans["choir_monthly_usd_regional"].AmountMinor);     // $9.99
+        Assert.Equal(9_900, plans["choir_yearly_usd_regional"].AmountMinor);    // $99
+        var choirPlans = plans.Values.Where(p => p.Code.StartsWith("choir_")).ToList();
+        Assert.Equal(6, choirPlans.Count);
+        Assert.All(choirPlans, p => Assert.Equal(25, p.ChoirSeats));
+        Assert.All(plans.Values.Where(p => !p.Code.StartsWith("choir_")), p => Assert.Null(p.ChoirSeats));
     }
 
     // ---------------------------------------------------------------- fixtures

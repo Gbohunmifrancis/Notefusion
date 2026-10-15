@@ -1,3 +1,6 @@
+using NoteFusion.Application.Outreach;
+using NoteFusion.Shared.Results;
+
 namespace NoteFusion.Application.Common.Interfaces;
 
 /// <summary>An email recipient. The name is optional — Google accounts can arrive without one.</summary>
@@ -13,12 +16,17 @@ public sealed record EmailRecipient(string Email, string? Name = null);
 /// a lifetime receipt reading "renews on 31 December 9999" would look like a bug to the one person
 /// who just paid us the most.
 /// </param>
+/// <param name="OneTranscription">
+/// A one-song purchase rather than Pro time: the receipt says one transcription was added, and nothing about
+/// a membership.
+/// </param>
 public sealed record SubscriptionReceipt(
     string PlanName,
     long AmountMinor,
     string Currency,
     DateTime? RenewsAtUtc,
-    string Reference);
+    string Reference,
+    bool OneTranscription = false);
 
 /// <summary>
 /// The facts an "expiring soon" notice states. <paramref name="WillRenew"/> is the difference between
@@ -114,4 +122,18 @@ public interface IEmailSender
     /// Sends a branded confirmation email to a newly registered waitlist subscriber.
     /// </summary>
     Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sent after a transcription of theirs failed (at most once a day): it cost nothing, three things that
+    /// make the next one work, and the way back to the app.
+    /// </summary>
+    /// <param name="onPro">Pro accounts are told their allowance is untouched rather than their free tries.</param>
+    Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default);
+
+    /// <summary>
+    /// A personal customer-research note from the founder (<c>SendOutreach</c>), with replies going to
+    /// <see cref="OutreachEmail.ReplyTo"/> and a one-click unsubscribe link. The one send here that reports
+    /// how it went: the outreach audit trail records a failed delivery, and tries it once more. Never throws.
+    /// </summary>
+    Task<Result> SendOutreachAsync(EmailRecipient to, OutreachEmail email, CancellationToken ct = default);
 }

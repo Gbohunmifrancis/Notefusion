@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Http;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Billing.Gateways;
@@ -13,8 +14,8 @@ namespace NoteFusion.Infrastructure.Billing.Gateways;
 /// plan's own currency and nothing else: which currencies that means is a property of the integration,
 /// declared per deployment in <c>Paystack__SupportedCurrencies</c>, and an integration that has not been
 /// enabled for a currency refuses it with <c>403 Currency not supported by merchant</c>. Resilience
-/// (retry-with-backoff on transient failures + circuit breaker) is attached to this adapter's
-/// <see cref="HttpClient"/> in DI, so the methods here stay about mapping, not retrying. This adapter
+/// (timeouts, retry of verification only, circuit breaker: <c>OutboundResilience.Payment</c>) is attached to
+/// this adapter's <see cref="HttpClient"/> in DI, so the methods here stay about mapping, not retrying. This adapter
 /// applies NO business effect: it only opens a checkout and reports, authoritatively, what Paystack says
 /// about a payment.
 /// </summary>
@@ -88,6 +89,10 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
         {
             return Error.Network("Paystack.Initiate", $"Could not reach Paystack: {ex.Message}");
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
+        {
+            return OutboundFailure.ToError(ex, "Paystack.Initiate", "Paystack");
+        }
     }
 
     public async Task<Result<GatewayVerification>> VerifyAsync(GatewayVerificationRequest request, CancellationToken ct)
@@ -124,6 +129,10 @@ internal sealed class PaystackPaymentGateway : IPaymentGateway
         catch (HttpRequestException ex)
         {
             return Error.Network("Paystack.Verify", $"Could not reach Paystack: {ex.Message}");
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, ct))
+        {
+            return OutboundFailure.ToError(ex, "Paystack.Verify", "Paystack");
         }
     }
 

@@ -79,8 +79,21 @@ public class TranscriptionJob : BaseEntity
     /// <summary>Upload (a recording), Link (a song fetched from a streaming platform) or Song (an uploaded song the voice is isolated from).</summary>
     public TranscriptionJobKind Kind { get; private set; } = TranscriptionJobKind.Upload;
 
-    /// <summary>A link or a song upload: the kinds that take a song credit rather than a trial generation.</summary>
-    public bool IsSong => Kind is TranscriptionJobKind.Link or TranscriptionJobKind.Song;
+    /// <summary>
+    /// A link or a song upload: the kinds that take a song credit rather than a trial generation. A link a
+    /// free account ran on a transcription it bought (<see cref="PaidByCredit"/>) is not one: it is charged
+    /// on the trial ledger like any other free-tier transcription, against the bought one.
+    /// </summary>
+    public bool IsSong => (Kind is TranscriptionJobKind.Link or TranscriptionJobKind.Song) && !PaidByCredit;
+
+    /// <summary>
+    /// True when a free account ran this job on a transcription it bought (a one-song purchase) rather than
+    /// on one of its free ones — a recording once the free ones are gone, or a whole linked song rather than
+    /// the free preview. Stamped at submit, like <see cref="WasPro"/>, because it decides which pool the job
+    /// holds while it runs and spends when it finishes (<see cref="TrialConsumedAtUtc"/>, either way): the
+    /// bought pool is the account's own, while the free one is shared with every account on the device.
+    /// </summary>
+    public bool PaidByCredit { get; private set; }
 
     /// <summary>
     /// Whether the submitter was on Pro when a link job was submitted. Stamped up front, unlike the trial
@@ -95,18 +108,35 @@ public class TranscriptionJob : BaseEntity
     /// </summary>
     public DateTime? SongCreditConsumedAtUtc { get; private set; }
 
-    public static TranscriptionJob Record(string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint = null)
+    /// <summary>
+    /// The choir whose shared monthly song pool this song draws on, or null when it is the submitter's own
+    /// (their Pro allowance, a preview, a bought transcription). Stamped at submit, like <see cref="WasPro"/>,
+    /// so the pool a song held while running is the pool it is charged to — and stays counted there after the
+    /// singer leaves the choir.
+    /// </summary>
+    public Guid? ChoirId { get; private set; }
+
+    /// <param name="paidByCredit">A free account spending a bought transcription on it (see <see cref="PaidByCredit"/>).</param>
+    public static TranscriptionJob Record(
+        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint = null, bool paidByCredit = false)
         => new()
         {
             Id = Guid.NewGuid(),
             JobId = Guard.NotNullOrWhiteSpace(jobId),
             UserId = Guard.AgainstEmpty(userId),
             CreatedAtUtc = utcNow,
-            DeviceFingerprint = deviceFingerprint
+            DeviceFingerprint = deviceFingerprint,
+            PaidByCredit = paidByCredit
         };
 
+    /// <param name="paidByCredit">
+    /// A free account spending a bought transcription on the whole song (see <see cref="PaidByCredit"/>).
+    /// Never with <paramref name="wasPro"/>: Pro songs have their own monthly allowance.
+    /// </param>
+    /// <param name="choirId">The choir pool a Pro song draws on (see <see cref="ChoirId"/>); only with <paramref name="wasPro"/>.</param>
     public static TranscriptionJob RecordLink(
-        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, bool wasPro)
+        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, bool wasPro, bool paidByCredit = false,
+        Guid? choirId = null)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -115,7 +145,9 @@ public class TranscriptionJob : BaseEntity
             CreatedAtUtc = utcNow,
             DeviceFingerprint = deviceFingerprint,
             Kind = TranscriptionJobKind.Link,
-            WasPro = wasPro
+            WasPro = wasPro,
+            PaidByCredit = !wasPro && paidByCredit,
+            ChoirId = wasPro ? choirId : null
         };
 
     /// <summary>
@@ -123,7 +155,8 @@ public class TranscriptionJob : BaseEntity
     /// which is the work a song credit pays for, so it is metered with the links. A free account's song
     /// upload stays a plain upload and spends a trial generation, as it always has.
     /// </summary>
-    public static TranscriptionJob RecordSong(string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint)
+    public static TranscriptionJob RecordSong(
+        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, Guid? choirId = null)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -132,7 +165,8 @@ public class TranscriptionJob : BaseEntity
             CreatedAtUtc = utcNow,
             DeviceFingerprint = deviceFingerprint,
             Kind = TranscriptionJobKind.Song,
-            WasPro = true
+            WasPro = true,
+            ChoirId = choirId
         };
 
     /// <summary>Records that the library sweep has dealt with this job. Idempotent.</summary>

@@ -274,6 +274,45 @@ and the refusal is in the API log as a warning.
 > **Rotate the Resend key that was shared during development before using it** — treat it
 > as burned. Create a new key in the Resend dashboard and set only that value above.
 
+### 3.1 Outreach (the founder's customer-research emails)
+
+A background job (`OutreachWorker`, hourly) writes to customers on the founder's behalf, once per
+segment per account, ever: an unpaid checkout ("what stopped you?"), an active free user (a
+10-minute chat), someone who transcribed once and went quiet ("did the sheet come out right?") and
+someone who never transcribed ("was something in the way?"). Each is an email from
+"Francis from NoteFusion" with `Reply-To` the founder's address, plus a one-line push when the
+account has a registered device. At most one message per account a week, only 09:00–19:00 West
+Africa Time, at most `BatchSize` accounts per run. Every send is a row in `outreach_messages`
+(admin: `GET /api/admin/outreach`, and the dashboard's recent activity). Each email carries a
+one-click unsubscribe link (`/api/email/unsubscribe?token=…`, signed with a key derived from the
+JWT signing key, so there is nothing extra to set).
+
+**Production needs nothing set by hand.** On the EC2 stack the deploy writes these defaults into
+`.env` and `docker-compose.prod.yml` repeats them, so outreach is on, from Francis, replying to
+`hello@notefusion.studio`. Any of them can be overridden by a GitHub Actions **repository variable**
+or **secret** of the name in the first column (a variable wins over a secret). The code default for
+`Outreach__Enabled` is `false`, so a local run, compose in dev and the tests never send.
+
+| GitHub var/secret | Container var | Production default | Notes |
+|-------------------|---------------|--------------------|-------|
+| `OUTREACH_ENABLED` | `Outreach__Enabled` | `true` | Set `false` to stop all outreach. The API logs one line at startup saying whether outreach is on, and why not when it is off. |
+| `OUTREACH_FOUNDER_NAME` | `Outreach__FounderName` | `Francis` | Who the emails are from and signed by. Blank turns outreach off. |
+| `OUTREACH_REPLY_TO` | `Outreach__ReplyTo` | `hello@notefusion.studio` | Where replies land. Blank turns outreach off. |
+| `OUTREACH_BATCH_SIZE` | `Outreach__BatchSize` | `50` | Most accounts written to per run, so the backlog after the first deploy trickles out. |
+| `OUTREACH_INTERVAL_MINUTES` | `Outreach__IntervalMinutes` | `60` | Minutes between runs. |
+| — | `Outreach__ApiBaseUrl` | `https://api.notefusion.studio` | Public API origin the unsubscribe link points at (code default; not passed by the deploy). |
+
+On Heroku (or anywhere without the deploy's defaults) set them yourself:
+
+```bash
+heroku config:set Outreach__Enabled='true' Outreach__FounderName='Francis' \
+  Outreach__ReplyTo='hello@notefusion.studio' --app <your-heroku-app>
+```
+
+Push goes out through Expo in production (`Push__UseExpo` defaults to `true` in the prod compose and
+the deploy; set the `PUSH__USEEXPO` secret to `false` to only log). With it off, every notification,
+outreach included, is only logged, and outreach pushes are still recorded as sent.
+
 ---
 
 ## 4. Profile pictures (Cloudflare R2)

@@ -12,7 +12,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`src/` — C# .NET 10 Web API** (main backend): modular monolith, clean architecture,
   headless (same image serves mobile now, web later). Layers point inward:
   `Shared ← Core ← Application ← Infrastructure ← Api`. Postgres via EF Core; JWT access +
-  rotating refresh tokens.
+  rotating refresh tokens. Every outside HTTP client goes through `Infrastructure/Http/OutboundResilience`
+  (total + per-attempt timeout, retry only GETs or Idempotency-Key sends, circuit breaker); an open breaker or
+  timeout is the client's "unavailable" result, and batches ask `IProviderHealth` and stop for the run.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off
@@ -44,7 +46,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`_stillness`). A sung note's confidence is how near its tuned pitch
   sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
   confidence weighs the notes by length and by the doh confidence (the uncapped margin,
-  `headline_confidence`, until the capped one is calibrated). Tempo level: every candidate
+  `headline_confidence`, until the capped one is calibrated); users never see that number — the
+  clients show a plain note only below "clear" (`web-site/assets/confidence.js`, mobile
+  `lib/confidence.ts`), the admin console keeps it. Tempo level: every candidate
   is measured at its best nearby tempo and phase before the grid filter (`_level_residual`), and
   a tracked beat anchors beat 0 only within a quarter of a beat of the first note
   (`_beat_origin`). Accuracy is
@@ -115,15 +119,39 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
 - A free account gets 3 transcriptions, ever (`FreeTier`), counted per account and per device from
   `TranscriptionJob` rows (`TrialUsage`): charged when a job finishes, and a job still running holds its
-  place until it settles, so starting several at once cannot pass the gate. Every metered submit (uploads,
+  place until it settles, so starting several at once cannot pass the gate. The completion sweep
+  (`TranscriptionCompletionWorker`, every 5 min) closes uncharged a job the worker answers 404 for
+  (lost in a restart) and one still open past `TrialUsage.RunningFor`, and then emails a failed job's
+  owner tips at most once a day (`EmailFailedTranscriptionTipsCommand`). Every metered submit (uploads,
   links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
   (`IQuotaGate`: `user:{id}`, or `device:`/`ip:` for previews); the in-process one assumes a single API
-  instance — scaling out needs a Postgres advisory lock instead.
+  instance — scaling out needs a Postgres advisory lock instead. The allowance is 3 plus every transcription
+  bought one at a time (the one-song purchase, a `BillingInterval.Single` plan): fulfilment writes a
+  `LedgerEntryReason.TranscriptionPurchase` ledger credit and nothing else (no subscription), the unique
+  (transaction, reason) index makes it once per payment, and `TrialUsage.ReadAsync` counts those rows into the
+  allowance (`TrialAllowance`: two pools, the free three per account and device, the bought ones per account
+  only, so another account on the same phone never uses up a purchase; never expires, spent like a free one, a
+  failed job costs nothing). A submit spends a free one while any is left, then a bought one, and marks the job
+  `TranscriptionJob.PaidByCredit`. A bought transcription covers anything a free one does — a song upload with
+  isolation included — and is the only thing that pays for a whole linked song on a free account (up to Pro's
+  six minutes, normal lane, charged to the trial ledger and never as the one free preview).
+  `SubscriptionDto` carries `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A song still running holds its
   credit in the gate and in the displayed count (`SongCredits.CountHeldThisMonthAsync`), and an account may
   have at most 3 running at once (`SongCredits.ProMaxSongsInProgress`). Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
+- The choir plan (`choir_*` codes, `Plan.ChoirSeats` = 25; same regions and `_regional` marker as Pro) is a
+  director's purchase: `PaymentFulfillment` opens or stacks the director's `Choir` (its own period and
+  `Version`, never their `Subscription`, so no time converts between the two). While it runs, the director and
+  every `ChoirMember` (one choir per account, unique index; 25 seats; join with a revocable 8-character invite
+  code, `POST /api/choirs/join`) are Pro through `ProStatus` — the one place every Pro check reads. Songs: the
+  account's own Pro allowance first, then the choir's pool of `SongCredits.ChoirMonthlyPool` (60) a month, held
+  like the own count (`TranscriptionJob.ChoirId` names the pool); still 3 running per person. A sheet shared
+  with the choir (`Transcription.ChoirId`) is read by its members at `GET /api/choirs/mine/sheets[/{id}]`; it
+  leaves the library when its owner leaves or is removed. Choir plans are listed only at
+  `GET /api/billing/plans/choir` (shipped apps render every plan in the main list as Pro); the admin overview
+  counts a choir as one paid member at its plan price and its singers apart.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and
@@ -136,7 +164,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
   30-second preview (one per `X-Device-Id`, ever, none without one or on a device an account has used, and
   10 a day per address, via `PreviewJob` rows), polled at
-  `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
+  `GET /api/preview/jobs/{id}` (and settled by the worker's webhook and the completion sweep,
+  `SettlePreviewJobCommand`, so a closed tab does not leave one running) and claimed by the account that signs up (`POST …/claim`). Users carry
   a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
   turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
@@ -149,11 +178,27 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   needed and a price change is a new plan code in `BillingSeeder`. Nothing renews by itself: a member
   buys again to add a period, which stacks after the time left (`PaymentFulfillment`), on either plan;
   two payments landing at once both stack (`Subscription.Version` is a concurrency token and the save is
-  retried). Plans are offered by the account's stored country (`PlanEligibility`): Nigeria gets naira,
-  everyone else dollars, and an unknown country sees both.
+  retried). Plans are offered by the account's stored country (`PlanEligibility`), one set per known country:
+  Nigeria gets naira; the lower-income markets in `PlanEligibility.RegionalCountries` (every African country but
+  Nigeria, and IN PK BD LK NP ID PH VN MM KH LA) get the regional dollar set (codes carrying `_regional`: Pro
+  $4.99/$39.99, one song $0.99); everyone else the standard dollar set; an unknown country sees naira and
+  standard dollars, never the regional set. Checkout refuses a plan from another set
+  (`BILLING_PLAN_NOT_AVAILABLE_IN_REGION`). Each set has a one-song purchase (₦1,500 / $1.99 / $0.99) listed
+  beside Pro for free accounts only (hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
+  clients offer it first wherever the free limit is hit. It is revenue collected on the dashboard, never
+  run-rate/MRR (those read memberships, and a single purchase starts none).
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
   error text never reaches a screen: the API returns plain sentences for checkout failures, and the
   web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.
+- Founder outreach (`Application/Outreach`, `Infrastructure/Outreach`): an hourly worker writes customer-research
+  notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
+  segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in
+  turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
+  2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` per run.
+  `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
+  a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`);
+  push respects the app's switch (it unregisters the device). Off unless `Outreach__Enabled` + `FounderName` +
+  `ReplyTo` are set (prod defaults them on; the code default is off).
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

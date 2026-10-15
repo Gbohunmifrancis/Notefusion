@@ -1,5 +1,8 @@
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Outreach;
+using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Email;
 
@@ -60,6 +63,9 @@ public sealed class EmailSender : IEmailSender
     public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
         => TrySendAsync(_template.VerifyEmail(to, code), ct);
 
+    public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default)
+        => TrySendAsync(_template.TranscriptionFailed(to, onPro), ct);
+
     public Task SendCustomEmailAsync(
         EmailRecipient to,
         string subject,
@@ -69,6 +75,28 @@ public sealed class EmailSender : IEmailSender
         string? ctaUrl = null,
         CancellationToken ct = default)
         => TrySendAsync(_template.Custom(to, subject, heading, bodyHtml, ctaText, ctaUrl), ct);
+
+    public async Task<Result> SendOutreachAsync(EmailRecipient to, OutreachEmail email, CancellationToken ct = default)
+    {
+        var message = _template.Outreach(to, email);
+        try
+        {
+            await _transport.SendAsync(message, ct);
+            return Result.Success();
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Could not send outreach \"{Subject}\" to {Recipient}.", message.Subject, message.ToEmail);
+            // Not sent at all, so the outreach keeps the message for a later run instead of spending a try.
+            if (ex is EmailDeliveryException { ProviderUnavailable: true })
+                return Result.Failure(ProviderErrors.Unavailable);
+            return Result.Failure(Error.Failure("EMAIL_DELIVERY_FAILED", ex.Message));
+        }
+    }
 
     private async Task TrySendAsync(EmailMessage message, CancellationToken ct)
     {

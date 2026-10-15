@@ -79,7 +79,10 @@ public class InsightsAndScopeTests
 
         var all = await Insights(h);
         Assert.Equal(3, all.Kpis.Accounts);
-        Assert.Equal([3, 2, 1, 0, 0, 1], all.Funnel.Select(f => f.Count));
+        Assert.Equal(
+            ["Signed up", "Transcribed", "Transcribed twice", "Kept a sheet", "Reached the free limit", "Opened checkout", "Paid"],
+            all.Funnel.Select(f => f.Step));
+        Assert.Equal([3, 2, 1, 0, 0, 0, 1], all.Funnel.Select(f => f.Count));
         Assert.Equal(1, all.Kpis.PaidConversions);
         Assert.Equal(("NG", 2), (all.Countries[0].Country, all.Countries[0].Accounts));
         Assert.Equal(3, all.Kpis.Transcriptions);
@@ -90,6 +93,40 @@ public class InsightsAndScopeTests
         var pro = await Insights(h, plan: "pro");
         Assert.Equal((1, 2), (pro.Kpis.Accounts, pro.Kpis.Transcriptions));
         Assert.Contains(all.Filters.Countries, c => c.Label == "US");
+    }
+
+    [Fact]
+    public async Task Reaching_the_free_limit_counts_charged_jobs_on_the_account_and_its_handsets()
+    {
+        using var h = new TestHarness(Now);
+        var used = Signup(h, "used@example.com", "NG", "mobile", Now.AddDays(-5));
+        var shared = Signup(h, "shared@example.com", "NG", "mobile", Now.AddDays(-4));
+        var other = Signup(h, "other@example.com", "NG", "mobile", Now.AddDays(-50)); // signed up before the window
+        var short1 = Signup(h, "short@example.com", "NG", "mobile", Now.AddDays(-3));
+
+        void Job(Guid user, string device, bool charged, bool finished = true)
+        {
+            var job = TranscriptionJob.Record("j-" + Guid.NewGuid().ToString("N"), user, Now.AddDays(-2), device);
+            if (finished) job.Settle("{}", Now.AddDays(-2).AddMinutes(1));
+            else job.Settle(null, Now.AddDays(-2).AddMinutes(1));
+            if (charged) job.ConsumeTrial(Now.AddDays(-2).AddMinutes(1));
+            h.Db.TranscriptionJobs.Add(job);
+        }
+
+        // Three charged on the account: the paywall.
+        for (var i = 0; i < 3; i++) Job(used, "phone-a", charged: true);
+        // Two of their own, and a third spent on the same handset under another account: refused all the same.
+        Job(shared, "phone-b", charged: true);
+        Job(shared, "phone-b", charged: true);
+        Job(other, "phone-b", charged: true);
+        // Two charged and a failure, which costs nothing: one left.
+        Job(short1, "phone-c", charged: true);
+        Job(short1, "phone-c", charged: true);
+        Job(short1, "phone-c", charged: false, finished: false);
+        h.Db.SaveChanges();
+
+        var step = Assert.Single((await Insights(h)).Funnel, f => f.Step == GetInsightsQueryHandler.ReachedFreeLimitStep);
+        Assert.Equal(2, step.Count);
     }
 
     private static async Task<InsightsDto> Insights(TestHarness h, string? country = null, string? platform = null, string? plan = null)

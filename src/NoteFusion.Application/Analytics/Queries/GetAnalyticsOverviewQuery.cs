@@ -213,9 +213,22 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var lapseUntil = range.ToUtc < utcNow ? range.ToUtc : utcNow;
         var lapsed = latest.Count(s => s.CurrentPeriodEndUtc >= range.FromUtc && s.CurrentPeriodEndUtc < lapseUntil);
 
+        // Choirs whose plan runs: one paid membership each (the director's), at the choir plan's price, once.
+        // Their singers are Pro through a seat nobody paid for separately, so they are reported apart.
+        var choirs = await _db.RealChoirs()
+            .Where(c => c.CurrentPeriodEndUtc > utcNow)
+            .Select(c => new { c.Id, c.PlanId, c.Provider })
+            .ToListAsync(ct);
+        var choirIds = choirs.Select(c => c.Id).ToList();
+        var choirSingers = choirIds.Count == 0
+            ? 0
+            : await _db.ChoirMembers.CountAsync(m => choirIds.Contains(m.ChoirId), ct);
+        var paidChoirs = choirs.Where(c => c.Provider is not null).ToList();
+
         var runRate = active
             .Where(s => s.Provider is not null && s.CurrentPeriodEndUtc < NoteFusion.Core.Entities.Billing.Subscription.LifetimeEndUtc)
             .Select(s => planById.GetValueOrDefault(s.PlanId))
+            .Concat(paidChoirs.Select(c => planById.GetValueOrDefault(c.PlanId)))
             .Where(p => p is not null && p.Interval != BillingInterval.Lifetime)
             .GroupBy(p => p!.Currency)
             .Select(g => new CurrencyAmountDto(g.Key, g.Sum(p => p!.Interval == BillingInterval.Yearly ? p.AmountMinor / 12 : p.AmountMinor)))
@@ -226,12 +239,19 @@ public sealed class GetAnalyticsOverviewQueryHandler
             .GroupBy(s => s.Provider is null
                 ? "Gift"
                 : planById.GetValueOrDefault(s.PlanId)?.Name ?? "Unknown plan")
-            .Select(g => new CategoryCountDto(g.Key, g.Count()))
+            .Select(g => (g.Key, Count: g.Count()))
+            .Concat(choirs
+                .GroupBy(c => planById.GetValueOrDefault(c.PlanId)?.Name ?? "Choir")
+                .Select(g => (g.Key, Count: g.Count())))
+            .GroupBy(g => g.Key)
+            .Select(g => new CategoryCountDto(g.Key, g.Sum(x => x.Count)))
             .OrderByDescending(c => c.Count)
             .ToList();
 
+        // Revenue collected counts one-song purchases too (money in is money in); the run-rate above does not,
+        // because it is read from memberships and a one-off purchase never starts one.
         var charges = await _db.RealLedger()
-            .Where(e => e.Reason == LedgerEntryReason.SubscriptionCharge
+            .Where(e => (e.Reason == LedgerEntryReason.SubscriptionCharge || e.Reason == LedgerEntryReason.TranscriptionPurchase)
                         && e.Direction == LedgerDirection.Credit
                         && e.CreatedAtUtc >= range.FromUtc && e.CreatedAtUtc < range.ToUtc)
             .Select(e => new { e.Currency, e.AmountMinor })
@@ -245,15 +265,18 @@ public sealed class GetAnalyticsOverviewQueryHandler
         var monthStart = new DateTime(utcNow.Year, utcNow.Month, 1, 0, 0, 0, DateTimeKind.Utc);
         var spent = await _db.RealJobs()
             .Where(j => j.SongCreditConsumedAtUtc != null && j.SongCreditConsumedAtUtc >= monthStart)
-            .Select(j => j.UserId)
+            .Select(j => new { j.UserId, j.ChoirId })
             .ToListAsync(ct);
+        // Out of their own twenty; songs drawn from a choir's pool are the choir's, not the singer's.
         var outOfSongs = spent
-            .GroupBy(u => u)
+            .Where(j => j.ChoirId == null)
+            .GroupBy(j => j.UserId)
             .Count(g => g.Count() >= NoteFusion.Application.Common.SongCredits.ProMonthlyAllowance);
 
         return new MembershipDto(
-            active.Count, active.Count - gifted, gifted, lifetime,
-            newMembers, lapsed, revenue, runRate, byPlan, spent.Count, outOfSongs);
+            active.Count + choirs.Count, active.Count - gifted + choirs.Count, gifted, lifetime,
+            newMembers, lapsed, revenue, runRate, byPlan, spent.Count, outOfSongs,
+            ActiveChoirs: choirs.Count, ChoirSingers: choirSingers);
     }
 
     private async Task<WebTrafficDto> BuildWebTraffic(AnalyticsRange range, AnalyticsRange previous, CancellationToken ct)
@@ -604,6 +627,24 @@ public sealed class GetAnalyticsOverviewQueryHandler
             _ => "sent feedback"
         })));
         items.AddRange(shares.Select(s => For(s.UserId, "share", s.At, $"shared “{s.Title}” with a link")));
+
+        // The founder's outreach emails (OutreachService), joined to their accounts here so the sources above
+        // are left as they are.
+        var outreach = await _db.OutreachMessages
+            .Where(m => m.Channel == OutreachChannel.Email && m.Status == OutreachStatus.Sent)
+            .OrderByDescending(m => m.CreatedAtUtc)
+            .Take(RecentActivityCount)
+            .Join(_db.RealUsers(), m => m.UserId, u => u.Id,
+                (m, u) => new { u.Id, u.FullName, u.Email, u.Country, m.Segment, At = m.CreatedAtUtc })
+            .ToListAsync(ct);
+        items.AddRange(outreach.Select(o => new ActivityItemDto("outreach", o.FullName, o.Email, Utc(o.At), o.Id, o.Email, o.Country,
+            o.Segment switch
+            {
+                OutreachSegment.CheckoutAbandoned => "was asked what stopped them getting Pro",
+                OutreachSegment.ActiveUser => "was invited to a 10-minute chat",
+                OutreachSegment.TriedOnce => "was asked whether their sheet came out right",
+                _ => "was asked what's in the way of a first song",
+            })));
 
         return [.. items.OfType<ActivityItemDto>().OrderByDescending(a => a.OccurredAtUtc).Take(RecentActivityCount)];
     }

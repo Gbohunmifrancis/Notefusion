@@ -103,7 +103,7 @@ function formatPrice(amountMinor: number, currency: string): string {
  */
 function ctaPrice(plan: Plan): string {
   const price = formatPrice(plan.amountMinor, plan.currency);
-  return plan.interval === "lifetime"
+  return plan.interval === "lifetime" || plan.interval === "single"
     ? `${price} once`
     : `${price}/${plan.interval === "yearly" ? "yr" : "mo"}`;
 }
@@ -133,7 +133,9 @@ function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
  *
  * If the caller is already Pro, the paywall is replaced by a status card.
  */
-export function UpgradeScreen({ navigation }: Props) {
+export function UpgradeScreen({ navigation, route }: Props) {
+  // Opened from a refusal for having nothing left: one more song is what was just asked for.
+  const forLimit = route?.params?.reason === "limit";
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const {
@@ -143,12 +145,15 @@ export function UpgradeScreen({ navigation }: Props) {
     abandonCheckout,
     paymentCheck,
     pendingCheckout,
+    subscription: liveSubscription,
   } = useSubscription();
   const { user } = useAuth();
   const [profile, setProfile] = useState<MyProfile | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [plans, setPlans] = useState<Plan[]>([]);
+  // The choir plans, listed apart (a director buys one for the whole choir); empty if the list fails.
+  const [choirPlans, setChoirPlans] = useState<Plan[]>([]);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false); // opening checkout
@@ -164,24 +169,31 @@ export function UpgradeScreen({ navigation }: Props) {
 
   const load = useCallback(async () => {
     try {
-      const [planList, sub, prof] = await Promise.all([
+      const [planList, sub, prof, choirList] = await Promise.all([
         billingApi.plans(),
         billingApi.mySubscription(),
         meApi.get().catch(() => null),
+        billingApi.choirPlans().catch(() => [] as Plan[]),
       ]);
       if (!mounted.current) return;
       setPlans(planList);
+      setChoirPlans(choirList);
       setSubscription(sub);
       if (prof) setProfile(prof);
-      // Default to the best-value (highest) plan so the recommended choice is preselected.
-      const best = [...planList].sort((a, b) => b.amountMinor - a.amountMinor)[0];
-      setSelectedId((cur) => cur ?? best?.id ?? null);
+      // Default to the best-value (highest) plan so the recommended choice is preselected — or, when
+      // the free allowance has just run out, to the one-song purchase.
+      const single = sub.isActive ? undefined : planList.find((p) => p.interval === "single");
+      const best = [...planList]
+        .filter((p) => p.interval !== "single")
+        .sort((a, b) => b.amountMinor - a.amountMinor)[0];
+      const preferred = forLimit && single ? single : best ?? single;
+      setSelectedId((cur) => cur ?? preferred?.id ?? null);
     } catch {
       // A failed load leaves the empty state; the retry button re-runs this.
     } finally {
       if (mounted.current) setLoading(false);
     }
-  }, []);
+  }, [forLimit]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -210,6 +222,8 @@ export function UpgradeScreen({ navigation }: Props) {
 
   async function handleUpgrade() {
     if (!selectedId) return;
+    const single = plans.find((p) => p.id === selectedId)?.interval === "single";
+    const choir = choirPlans.some((p) => p.id === selectedId);
     setBusy(true);
     try {
       const session = await billingApi.checkout(selectedId);
@@ -226,7 +240,7 @@ export function UpgradeScreen({ navigation }: Props) {
 
       // Before the browser opens: what the provider compares the server's answer against, so a
       // member adding time is told apart from one whose checkout simply closed.
-      beginCheckout(selectedId, subscription);
+      beginCheckout(selectedId, subscription, single, choir);
 
       // Open Paystack hosted checkout in the in-app browser sheet. Every outcome —
       // returned via the deep link, dismissed, or the sheet failing to open — falls
@@ -260,7 +274,17 @@ export function UpgradeScreen({ navigation }: Props) {
       setBusy(false);
       // An earlier checkout turned out to be paid: nothing to buy, so the welcome, not an error.
       if (toApiError(e).code === "BILLING_PAYMENT_ALREADY_RECEIVED" && selectedId) {
-        beginCheckout(selectedId, subscription);
+        // For one song the snapshot's count is lowered by one, so the purchase already made reads as landed.
+        beginCheckout(
+          selectedId,
+          single && subscription
+            ? { ...subscription, boughtTranscriptionsTotal: (subscription.boughtTranscriptionsTotal ?? 1) - 1 }
+            : choir && subscription
+              ? { ...subscription, choirPeriodEndUtc: null } // the choir's period as it is now reads as landed
+              : subscription,
+          single,
+          choir,
+        );
         watchPayment();
         return;
       }
@@ -276,24 +300,46 @@ export function UpgradeScreen({ navigation }: Props) {
   const monthly = plans.find((p) => p.interval === "monthly");
   const yearly = plans.find((p) => p.interval === "yearly");
   const saving = savingsPercent(monthly, yearly);
-  const selected = plans.find((p) => p.id === selectedId);
+  const selected = plans.find((p) => p.id === selectedId) ?? choirPlans.find((p) => p.id === selectedId);
+  const buyingChoir = choirPlans.some((p) => p.id === selectedId);
   // A member who chose "Add more Pro time" sees the plans: each payment covers one period, and a
   // new one starts when the current time ends.
   const [extending, setExtending] = useState(false);
   const isActive = (subscription?.isActive ?? false) && !extending;
+  // The one-song purchase, for a free account only (the server hides it from members too); listed
+  // first, beside Pro, as the smallest thing to buy.
+  const singlePlan =
+    subscription?.isActive || extending ? undefined : plans.find((p) => p.interval === "single");
+  const proPlans = plans.filter((p) => p.interval !== "single");
+  const buyingSong = selected?.interval === "single";
 
   // The provider drops its checkout snapshot when the payment lands (it shows the welcome
-  // itself): back to the member hub, re-read so it carries the new dates.
-  const hadPending = useRef(false);
+  // itself): back to the member hub, re-read so it carries the new dates. One song bought goes
+  // back to where the person was (the recorder, or the link still in its field) to use it.
+  const hadPending = useRef<{ single: boolean; bought: number; choir: boolean } | null>(null);
   useEffect(() => {
     if (pendingCheckout) {
-      hadPending.current = true;
+      hadPending.current = {
+        single: Boolean(pendingCheckout.single),
+        bought: pendingCheckout.bought ?? 0,
+        choir: Boolean(pendingCheckout.choir),
+      };
     } else if (hadPending.current) {
-      hadPending.current = false;
+      const was = hadPending.current;
+      hadPending.current = null;
       setExtending(false);
+      if (was.single && (liveSubscription?.boughtTranscriptionsTotal ?? 0) > was.bought && navigation.canGoBack()) {
+        navigation.goBack();
+        return;
+      }
+      // A choir bought: on to the choir, where the invite link is.
+      if (was.choir && liveSubscription?.choirPeriodEndUtc) {
+        navigation.replace("Choir");
+        return;
+      }
       load();
     }
-  }, [pendingCheckout, load]);
+  }, [pendingCheckout, load, liveSubscription, navigation]);
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
@@ -367,7 +413,9 @@ export function UpgradeScreen({ navigation }: Props) {
         <View style={styles.confirmNote}>
           <Ionicons name="time-outline" size={18} color={colors.accent} />
           <Text style={styles.confirmNoteText}>
-            Your payment is still being confirmed. Pro unlocks automatically the moment it lands.
+            {pendingCheckout?.single
+              ? "Your payment is still being confirmed. Your song unlocks automatically the moment it lands."
+              : "Your payment is still being confirmed. Pro unlocks automatically the moment it lands."}
           </Text>
         </View>
       )}
@@ -392,6 +440,7 @@ export function UpgradeScreen({ navigation }: Props) {
           profile={profile}
           user={user}
           onExtend={() => setExtending(true)}
+          onOpenChoir={() => navigation.navigate("Choir")}
           onChanged={() => {
             load();
             // The shared provider drives the tab label and the gold ring, so it has to
@@ -429,7 +478,18 @@ export function UpgradeScreen({ navigation }: Props) {
             <Text style={styles.sectionTitle}>Choose a plan</Text>
           </View>
 
-          {plans
+          {singlePlan ? (
+            <PlanOption
+              plan={singlePlan}
+              title="Just this song"
+              note="One more transcription, any recording or song link. No subscription."
+              selected={singlePlan.id === selectedId}
+              badge="No subscription"
+              onSelect={() => setSelectedId(singlePlan.id)}
+            />
+          ) : null}
+
+          {proPlans
             .slice()
             .sort((a, b) => a.amountMinor - b.amountMinor)
             .map((plan) => (
@@ -446,10 +506,42 @@ export function UpgradeScreen({ navigation }: Props) {
               />
             ))}
 
+          {/* ── The choir plan: one director pays, the whole choir is Pro ───── */}
+          {choirPlans.length > 0 ? (
+            <>
+              <View style={styles.sectionHeader}>
+                <Ionicons name="people-outline" size={14} color={colors.purple} />
+                <Text style={styles.sectionTitle}>For choir directors</Text>
+              </View>
+              {choirPlans
+                .slice()
+                .sort((a, b) => a.amountMinor - b.amountMinor)
+                .map((plan) => (
+                  <PlanOption
+                    key={plan.id}
+                    plan={plan}
+                    title={plan.interval === "yearly" ? "Choir · Yearly" : "Choir · Monthly"}
+                    note={`Pro for you and up to ${plan.choirSeats ?? 25} singers, one shared library.`}
+                    selected={plan.id === selectedId}
+                    badge={plan.interval === "yearly" ? "Whole choir" : undefined}
+                    onSelect={() => setSelectedId(plan.id)}
+                  />
+                ))}
+            </>
+          ) : null}
+
           {/* ── CTA ──────────────────────────────────────────────────────── */}
           <Button
-            label={selected ? `Upgrade — ${ctaPrice(selected)}` : "Upgrade"}
-            icon="lock-open-outline"
+            label={
+              selected
+                ? buyingSong
+                  ? `Buy this song — ${formatPrice(selected.amountMinor, selected.currency)}`
+                  : buyingChoir
+                    ? `${subscription?.choirRole === "director" ? "Add choir time" : "Start your choir"} — ${ctaPrice(selected)}`
+                    : `Upgrade — ${ctaPrice(selected)}`
+                : "Upgrade"
+            }
+            icon={buyingSong ? "musical-note-outline" : buyingChoir ? "people-outline" : "lock-open-outline"}
             onPress={handleUpgrade}
             loading={busy}
             disabled={!selectedId}
@@ -457,7 +549,9 @@ export function UpgradeScreen({ navigation }: Props) {
           />
 
           <Text style={styles.finePrint}>
-            Secure checkout opens in your browser. You'll return here automatically.
+            {buyingSong
+              ? "One payment, one transcription that never expires. Secure checkout opens in your browser; you'll come back to your song."
+              : "Secure checkout opens in your browser. You'll return here automatically."}
           </Text>
         </>
       )}
@@ -477,12 +571,14 @@ function ActiveState({
   user,
   onChanged,
   onExtend,
+  onOpenChoir,
 }: {
   subscription: Subscription;
   profile: MyProfile | null;
   user: AuthUser | null;
   onChanged: () => void;
   onExtend: () => void;
+  onOpenChoir: () => void;
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
@@ -500,6 +596,8 @@ function ActiveState({
   const canceled = subscription.status === "canceled";
   const lifetime = subscription.isLifetime;
   const isGift = subscription.isGift ?? false;
+  // Pro through a choir alone: the plan shown is the choir's, and there is no membership of one's own to cancel.
+  const viaChoir = Boolean(subscription.choirRole) && (subscription.planCode ?? "").startsWith("choir_");
 
   const displayName = user?.fullName || profile?.fullName || "NoteFusion Member";
   const displayEmail = user?.email || profile?.email || "";
@@ -566,6 +664,8 @@ function ActiveState({
               <Text style={styles.memberBadgeText}>
                 {lifetime
                   ? "Lifetime Member"
+                  : viaChoir
+                    ? subscription.choirName ?? "Choir"
                   : isGift
                     ? "Complimentary Access"
                     : "Pro Subscriber"}
@@ -693,16 +793,35 @@ function ActiveState({
           </View>
         )}
 
-        {!lifetime && (
+        {/* A singer's Pro is the choir's: their director renews it, so there is nothing for them to add. */}
+        {!lifetime && !(viaChoir && subscription.choirRole === "member") && (
           <Button
-            label="Add more Pro time"
+            label={viaChoir ? "Add choir time" : "Add more Pro time"}
             icon="add-circle-outline"
             onPress={onExtend}
             style={styles.cancelBtn}
           />
         )}
 
-        {!lifetime && !isGift && !canceled && (
+        {subscription.choirRole ? (
+          <Button
+            label="My choir"
+            variant="secondary"
+            icon="people-outline"
+            onPress={onOpenChoir}
+            style={styles.cancelBtn}
+          />
+        ) : (
+          <Button
+            label="Start a choir"
+            variant="secondary"
+            icon="people-outline"
+            onPress={onExtend}
+            style={styles.cancelBtn}
+          />
+        )}
+
+        {!lifetime && !isGift && !canceled && !viaChoir && (
           <Button
             label="Cancel subscription"
             variant="secondary"
@@ -716,6 +835,10 @@ function ActiveState({
         <Text style={styles.billingHint}>
           {lifetime
             ? "Lifetime access — there is nothing to renew or cancel. Invoices and receipts were sent to your email."
+            : viaChoir
+              ? subscription.choirRole === "member"
+                ? `You have Pro through ${subscription.choirName}. Your choir director renews the choir's plan.`
+                : "Your singers are Pro while the choir's plan runs. Each payment adds one period after the time left."
             : isGift
               ? "Complimentary access granted by the NoteFusion team. No payment method is linked or billed."
               : canceled
@@ -856,11 +979,17 @@ function PlanOption({
   plan,
   selected,
   badge,
+  title,
+  note,
   onSelect,
 }: {
   plan: Plan;
   selected: boolean;
   badge?: string;
+  /** Overrides the plan's own name, as "Just this song" does for the one-song purchase. */
+  title?: string;
+  /** A plain line under the price. */
+  note?: string;
   onSelect: () => void;
 }) {
   const colors = useColors();
@@ -868,7 +997,7 @@ function PlanOption({
   // A noun for the lifetime tier, not a rate: "/ month" would be wrong and "/ lifetime" still reads
   // like one. The slash is part of the string so it can be dropped along with the period.
   const period =
-    plan.interval === "lifetime"
+    plan.interval === "lifetime" || plan.interval === "single"
       ? "one-time"
       : plan.interval === "yearly"
         ? "/ year"
@@ -883,7 +1012,7 @@ function PlanOption({
       radius={radii.lg}
       accessibilityRole="radio"
       accessibilityState={{ selected }}
-      accessibilityLabel={`${plan.name}, ${formatPrice(plan.amountMinor, plan.currency)} ${period}`}
+      accessibilityLabel={`${title ?? plan.name}, ${formatPrice(plan.amountMinor, plan.currency)} ${period}`}
     >
       <View
         style={[styles.radio, selected && styles.radioSelected]}
@@ -893,7 +1022,7 @@ function PlanOption({
 
       <View style={styles.planInfo}>
         <View style={styles.planTitleRow}>
-          <Text style={styles.planName}>{plan.name}</Text>
+          <Text style={styles.planName}>{title ?? plan.name}</Text>
           {badge && (
             <View style={styles.saveBadge}>
               <Text style={styles.saveBadgeText}>{badge}</Text>
@@ -904,6 +1033,7 @@ function PlanOption({
           {formatPrice(plan.amountMinor, plan.currency)}
           <Text style={styles.planPeriod}> {period}</Text>
         </Text>
+        {note ? <Text style={styles.planNote}>{note}</Text> : null}
       </View>
 
       {selected && (
@@ -1123,6 +1253,11 @@ const makeStyles = (c: Palette, s: Shadows) =>
       ...typography.body,
       color: c.textMuted,
       fontSize: 13,
+    },
+    planNote: {
+      ...typography.caption,
+      color: c.textMuted,
+      marginTop: 2,
     },
 
     // ── CTA ─────────────────────────────────────────────────────────────────

@@ -462,7 +462,14 @@ function MembershipPanel({ membership }: { membership: AnalyticsOverview["member
         <MetricRow
           className="xl:col-span-2"
           items={[
-            { label: "Pro members", value: formatCount(m.activeMembers), note: `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted`, hint: "Customers with Pro right now, each counted once" },
+            {
+              label: "Pro members",
+              value: formatCount(m.activeMembers),
+              note:
+                `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted` +
+                (m.activeChoirs ? ` · ${formatCount(m.activeChoirs)} choirs, +${formatCount(m.choirSingers)} singers` : ""),
+              hint: "Memberships with Pro right now, each counted once. A choir counts once, for its director; its singers are Pro through a seat and shown apart",
+            },
             { label: "New members", value: formatCount(m.newMembers), hint: "First Pro period started in this window" },
             { label: "Lapsed", value: formatCount(m.lapsedMembers), note: `${lapseRate} of members`, hint: "Paid time ran out with no new payment: the people to win back" },
             { label: "Revenue collected", value: moneyList(m.revenue), hint: "Payments received in this window, per currency" },
@@ -513,6 +520,8 @@ const ACTIVITY_KINDS: Record<string, { icon: typeof UserRound; style: string; gr
   payment: { icon: CreditCard, style: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", group: "money" },
   feedback: { icon: MessageSquareHeart, style: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", group: "feedback" },
   share: { icon: Share2, style: "bg-sky-50 text-sky-600 dark:bg-sky-950/60 dark:text-sky-400", group: "transcriptions" },
+  /** The founder's customer-research emails (GET /api/admin/outreach lists them all). */
+  outreach: { icon: MailCheck, style: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", group: "feedback" },
 };
 
 function regionName(code: string | null | undefined): string {
