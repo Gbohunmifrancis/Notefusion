@@ -80,6 +80,20 @@ public class StuckJobTests
     }
 
     [Fact]
+    public async Task A_backlog_job_from_days_ago_is_closed_without_a_push()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+        h.Clock.UtcNow = Now.AddDays(10);
+
+        await Notify(h, job, new Worker { NotFound = true });
+
+        Assert.NotNull(h.Db.TranscriptionJobs.Single().SettledAtUtc);
+        Assert.Empty(h.Push.Sent);
+    }
+
+    [Fact]
     public async Task A_job_still_running_at_the_deadline_is_closed_uncharged()
     {
         using var h = new TestHarness(Now);

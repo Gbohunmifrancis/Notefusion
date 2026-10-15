@@ -52,10 +52,11 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
         var quietSince = now - EmailFailedTranscriptionTipsCommand.QuietFor;
         var dayAgo = now - EmailFailedTranscriptionTipsCommand.AtMostEvery;
 
-        // Each account's latest failure in the window: closed with no result. A job that finished, or is
-        // still running, is not a failure.
+        // Each account's latest failure in the window: closed with no result, and started in the window too,
+        // so an old job a sweep only now closes is not news. A job that finished, or is still running, is not
+        // a failure.
         var failures = await _db.TranscriptionJobs
-            .Where(j => j.ResultJson == null && j.SettledAtUtc != null && j.SettledAtUtc >= since)
+            .Where(j => j.ResultJson == null && j.SettledAtUtc != null && j.SettledAtUtc >= since && j.CreatedAtUtc >= since)
             .GroupBy(j => j.UserId)
             .Select(g => new { UserId = g.Key, FailedAt = g.Max(j => j.SettledAtUtc!.Value) })
             .ToListAsync(ct);

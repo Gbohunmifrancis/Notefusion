@@ -34,6 +34,9 @@ public sealed record NotifyTranscriptionReadyCommand(Guid JobRowId) : IRequest<R
     /// lost — a dyno cycled mid-transcription, most likely — rather than merely slow.
     /// </summary>
     public static readonly TimeSpan GiveUpAfter = TrialUsage.RunningFor;
+
+    /// <summary>A job older than this is closed without a push when it fails: the user has long moved on.</summary>
+    public static readonly TimeSpan TooOldToMention = TimeSpan.FromDays(1);
 }
 
 public sealed class NotifyTranscriptionReadyCommandHandler
@@ -163,6 +166,11 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         await Activity.ActivityRecorder.FailAsync(
             _db, job.JobId, reason ?? "No result after 30 minutes; the job was lost.", now, ct);
         await _db.SaveChangesAsync(ct);
+
+        // A job from days ago that a sweep is only now clearing (a backlog the sweep could not close before)
+        // is closed quietly: "your transcription failed" about something the user has long forgotten is noise.
+        if (now - job.CreatedAtUtc > NotifyTranscriptionReadyCommand.TooOldToMention)
+            return Result.Success();
 
         var dto = new TranscriptionJobDto(job.JobId, TranscriptionStatus.Failed, 1, null, reason);
         await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);

@@ -82,6 +82,11 @@ public class FailedTranscriptionEmailTests
         Job(h, suspended, Now, failed: true);
         var old = Seed(h, "old@example.com");
         Job(h, old, Now.AddDays(-2), failed: true);
+        // A job started weeks ago that a sweep has only just closed: not news either.
+        var backlog = Seed(h, "backlog@example.com");
+        var stuck = TranscriptionJob.Record("job-stuck", backlog.Id, Now.AddDays(-20));
+        stuck.Settle(null, Now);
+        h.Db.TranscriptionJobs.Add(stuck);
         h.Db.SaveChanges();
 
         h.Clock.UtcNow = Now.AddHours(1);
