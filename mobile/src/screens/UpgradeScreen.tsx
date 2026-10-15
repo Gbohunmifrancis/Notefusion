@@ -108,6 +108,16 @@ function ctaPrice(plan: Plan): string {
     : `${price}/${plan.interval === "yearly" ? "yr" : "mo"}`;
 }
 
+/**
+ * The Pro plans with the one-song purchase beside them. The server lists the purchase apart
+ * (`plans/single`), so a build that labels everything in the main list as Pro never shows it.
+ */
+function withSingle(pro: Plan[], single: Plan[]): Plan[] {
+  // An API from before the split still lists it in the main list.
+  const songs = single.length > 0 ? single : pro;
+  return [...pro.filter((p) => p.interval !== "single"), ...songs.filter((p) => p.interval === "single")];
+}
+
 /** Percentage a yearly plan saves over paying monthly for a year, or null. */
 function savingsPercent(monthly?: Plan, yearly?: Plan): number | null {
   if (!monthly || !yearly) return null;
@@ -169,13 +179,16 @@ export function UpgradeScreen({ navigation, route }: Props) {
 
   const load = useCallback(async () => {
     try {
-      const [planList, sub, prof, choirList] = await Promise.all([
+      const [proList, sub, prof, choirList, singleList] = await Promise.all([
         billingApi.plans(),
         billingApi.mySubscription(),
         meApi.get().catch(() => null),
         billingApi.choirPlans().catch(() => [] as Plan[]),
+        // The one-song purchase is listed apart; a failure there leaves Pro on sale.
+        billingApi.singlePlans().catch(() => [] as Plan[]),
       ]);
       if (!mounted.current) return;
+      const planList = withSingle(proList, singleList);
       setPlans(planList);
       setChoirPlans(choirList);
       setSubscription(sub);
@@ -201,7 +214,9 @@ export function UpgradeScreen({ navigation, route }: Props) {
       // Reconcile and confirm any in-flight checkout with the provider, and refresh plans/profile
       const [sub] = await Promise.all([
         billingApi.confirm().catch(() => billingApi.mySubscription()),
-        billingApi.plans().then((planList) => setPlans(planList)).catch(() => undefined),
+        Promise.all([billingApi.plans(), billingApi.singlePlans().catch(() => [] as Plan[])])
+          .then(([proList, singleList]) => setPlans(withSingle(proList, singleList)))
+          .catch(() => undefined),
         meApi.get().then((p) => setProfile(p)).catch(() => null),
       ]);
       if (!mounted.current) return;

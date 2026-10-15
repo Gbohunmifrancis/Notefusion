@@ -184,7 +184,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   $4.99/$39.99, one song $0.99); everyone else the standard dollar set; an unknown country sees naira and
   standard dollars, never the regional set. Checkout refuses a plan from another set
   (`BILLING_PLAN_NOT_AVAILABLE_IN_REGION`). Each set has a one-song purchase (₦1,500 / $1.99 / $0.99) listed
-  beside Pro for free accounts only (hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
+  beside Pro for free accounts only (served apart at `GET /api/billing/plans/single`, never in `/plans` or
+  `public-plans`, which older clients label as Pro; hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
   clients offer it first wherever the free limit is hit. It is revenue collected on the dashboard, never
   run-rate/MRR (those read memberships, and a single purchase starts none).
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server

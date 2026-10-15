@@ -418,6 +418,12 @@ export const billingApi = {
   choirPlans: () => api.get<Plan[]>("/api/billing/plans/choir").then((r) => r.data),
 
   /**
+   * The one-song purchase this account may buy (empty for a Pro member). Listed apart from `plans`
+   * because older app builds render every plan in that list as a month or year of Pro.
+   */
+  singlePlans: () => api.get<Plan[]>("/api/billing/plans/single").then((r) => r.data),
+
+  /**
    * Starts a hosted-checkout session for a plan. Returns the provider URL the app
    * opens in an external browser. Idempotent server-side: an in-flight checkout is
    * reused, so tapping "Upgrade" twice never opens a second charge.

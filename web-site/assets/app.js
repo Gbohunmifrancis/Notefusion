@@ -2551,13 +2551,17 @@
   // ── Upgrade ──────────────────────────────────────────────────────────────
   var plansCache = null;
   var choirPlansCache = null;
+  var singlePlansCache = null;
   /** A choir plan (a director's, seating singers): listed apart, at /api/billing/plans/choir. */
   function isChoirPlan(plan) { return !!(plan && plan.choirSeats); }
   /** The account directs a choir, running or lapsed: buying a choir plan adds time to it. */
   function leadsChoir() { return !!((sub && sub.choirRole === "director") || (choir && choir.role === "director")); }
   function isYearly(plan) { return plan.interval === "yearly" || plan.interval === 1; }
   function isLifetimePlan(plan) { return plan.interval === "lifetime" || plan.interval === 2; }
-  /** The one-song purchase: one more transcription, no membership (BillingInterval.Single). */
+  /**
+   * The one-song purchase: one more transcription, no membership (BillingInterval.Single). Listed apart, at
+   * /api/billing/plans/single: an older copy of this page labels every plan in the main list "Monthly".
+   */
   function isSinglePlan(plan) { return plan.interval === "single"; }
   /**
    * The plan picker: one tile per plan, the yearly one chosen to start with, and a single button that
@@ -2574,11 +2578,16 @@
     var pc = !opts.choir ? Promise.resolve([])
       : choirPlansCache ? Promise.resolve(choirPlansCache)
       : request("/api/billing/plans/choir").then(function (list) { choirPlansCache = list || []; return choirPlansCache; }, function () { return []; });
-    Promise.all([p, pc]).then(function (both) {
-      var plans = both[0], choirPlans = (both[1] || []).slice().sort(function (a, b) { return a.amountMinor - b.amountMinor; });
+    // The one-song purchase, for a free account only; a failure there leaves Pro on sale.
+    var ps = !(opts.single && !isPro()) ? Promise.resolve([])
+      : singlePlansCache ? Promise.resolve(singlePlansCache)
+      : request("/api/billing/plans/single").then(function (list) { singlePlansCache = list || []; return singlePlansCache; }, function () { return []; });
+    Promise.all([p, pc, ps]).then(function (all) {
+      var plans = all[0], choirPlans = (all[1] || []).slice().sort(function (a, b) { return a.amountMinor - b.amountMinor; });
       grid.innerHTML = "";
       grid.classList.add("plan-picker");
-      var single = opts.single && !isPro() ? plans.find(isSinglePlan) : null;
+      // An API from before the split still lists it in the main list; either way it is shown as one song.
+      var single = opts.single && !isPro() ? ((all[2] || []).find(isSinglePlan) || plans.find(isSinglePlan) || null) : null;
       plans = plans.filter(function (x) { return !isSinglePlan(x); });
       if (!plans.length && !single && !choirPlans.length) { grid.textContent = "No plan is available for your region yet."; return; }
       var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });

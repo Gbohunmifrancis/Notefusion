@@ -125,7 +125,8 @@ public class RegionalPricingTests
 
         var result = (await new GetPublicPricingQueryHandler(h.Db, h.Country).Handle(new GetPublicPricingQuery(), default)).Value;
 
-        Assert.Equal(Regional, result.Plans.Select(p => p.Code).Order().ToArray());
+        // The one-song purchase is not on the public page: it shows Pro Monthly and Pro Yearly.
+        Assert.Equal(Regional.Where(c => !c.StartsWith("one_song")).ToArray(), result.Plans.Select(p => p.Code).Order().ToArray());
     }
 
     [Fact]
@@ -163,8 +164,14 @@ public class RegionalPricingTests
         return user;
     }
 
+    /// <summary>Everything the account is offered: the Pro list and the one-song purchase, listed apart.</summary>
     private static async Task<IReadOnlyList<PlanDto>> Plans(TestHarness h, User user)
-        => (await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock).Handle(new GetPlansQuery(), default)).Value;
+    {
+        var handler = new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock);
+        var pro = (await handler.Handle(new GetPlansQuery(), default)).Value;
+        var single = (await handler.Handle(new GetPlansQuery(Single: true), default)).Value;
+        return pro.Concat(single).ToList();
+    }
 
     private static InitiateCheckoutCommandHandler Checkout(TestHarness h, User user)
         => new(h.Db, new StubCurrentUser(user.Id), new OpenGateway(), h.Clock, new BillingSettings(), h.Email);

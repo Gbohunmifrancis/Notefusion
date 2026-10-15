@@ -34,6 +34,14 @@ public sealed class BillingController : ApiControllerBase
         => HandleResult(await _sender.Send(new GetPlansQuery(Choir: true), ct));
 
     /// <summary>
+    /// The one-song purchase this account may buy (one transcription, no membership); empty for a Pro member.
+    /// Listed apart from <c>plans</c> because older clients label every plan there as a month or year of Pro.
+    /// </summary>
+    [HttpGet("plans/single")]
+    public async Task<IActionResult> SinglePlans(CancellationToken ct)
+        => HandleResult(await _sender.Send(new GetPlansQuery(Single: true), ct));
+
+    /// <summary>
     /// The anonymous marketing-site offer. It resolves the request location and returns only that region's
     /// plans; if location cannot be trusted, the response contains no paid plans rather than both prices.
     /// </summary>
