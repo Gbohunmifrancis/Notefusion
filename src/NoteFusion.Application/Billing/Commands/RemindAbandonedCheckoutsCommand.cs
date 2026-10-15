@@ -33,12 +33,15 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly IProviderHealth _health;
 
-    public RemindAbandonedCheckoutsCommandHandler(IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email)
+    public RemindAbandonedCheckoutsCommandHandler(
+        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null)
     {
         _db = db;
         _clock = clock;
         _email = email;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
 
     public async Task<Result<int>> Handle(RemindAbandonedCheckoutsCommand request, CancellationToken ct)
@@ -108,6 +111,10 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
         var sent = 0;
         foreach (var t in due)
         {
+            // The email provider is refusing calls: the rest stay due for the next sweep, unclaimed.
+            if (_health.IsUnavailable(OutboundProviders.Email))
+                break;
+
             var createdAt = t.CreatedAtUtc;
             var claimed = await _db.Users
                 .Where(u => u.Id == t.UserId

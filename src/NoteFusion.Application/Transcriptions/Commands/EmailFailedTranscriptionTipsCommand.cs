@@ -37,12 +37,15 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
+    private readonly IProviderHealth _health;
 
-    public EmailFailedTranscriptionTipsCommandHandler(IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email)
+    public EmailFailedTranscriptionTipsCommandHandler(
+        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IProviderHealth? health = null)
     {
         _db = db;
         _clock = clock;
         _email = email;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
 
     public async Task<Result<int>> Handle(EmailFailedTranscriptionTipsCommand request, CancellationToken ct)
@@ -91,6 +94,11 @@ public sealed class EmailFailedTranscriptionTipsCommandHandler
         var sent = 0;
         foreach (var f in due)
         {
+            // The email provider is refusing calls: claiming the rest would mark them sent with nothing sent.
+            // They stay due, and the next sweep sends them.
+            if (_health.IsUnavailable(OutboundProviders.Email))
+                break;
+
             var failedAt = f.FailedAt;
             var claimed = await _db.Users
                 .Where(u => u.Id == f.UserId

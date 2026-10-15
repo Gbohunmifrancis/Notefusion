@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Outreach;
 using NoteFusion.Shared.Results;
@@ -90,6 +91,9 @@ public sealed class EmailSender : IEmailSender
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Could not send outreach \"{Subject}\" to {Recipient}.", message.Subject, message.ToEmail);
+            // Not sent at all, so the outreach keeps the message for a later run instead of spending a try.
+            if (ex is EmailDeliveryException { ProviderUnavailable: true })
+                return Result.Failure(ProviderErrors.Unavailable);
             return Result.Failure(Error.Failure("EMAIL_DELIVERY_FAILED", ex.Message));
         }
     }

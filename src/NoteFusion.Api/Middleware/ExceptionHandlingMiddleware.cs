@@ -1,5 +1,6 @@
 using System.Text.Json;
 using NoteFusion.Api.Common;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Exceptions;
 
 namespace NoteFusion.Api.Middleware;
@@ -34,6 +35,16 @@ public sealed class ExceptionHandlingMiddleware
                 context,
                 StatusCodes.Status422UnprocessableEntity,
                 new ApiError("Validation.Failed", "One or more validation errors occurred.", ex.Errors));
+        }
+        catch (Polly.ExecutionRejectedException ex)
+        {
+            // An outside provider's open breaker or timeout that a client did not turn into its own result
+            // (the clients do; this is the backstop). The provider is down, not us: a 503 and a plain sentence.
+            _logger.LogWarning(ex, "Outside provider unavailable during {Method} {Path}", context.Request.Method, context.Request.Path);
+            await WriteAsync(
+                context,
+                StatusCodes.Status503ServiceUnavailable,
+                new ApiError(ProviderErrors.UnavailableCode, ProviderErrors.Unavailable.Message));
         }
         catch (Exception ex)
         {

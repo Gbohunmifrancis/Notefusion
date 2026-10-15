@@ -31,14 +31,17 @@ public sealed class NotifySubscriptionExpiringCommandHandler
     private readonly IDateTimeProvider _clock;
     private readonly IEmailSender _email;
     private readonly IPushSender _push;
+    private readonly IProviderHealth _health;
 
     public NotifySubscriptionExpiringCommandHandler(
-        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IPushSender push)
+        IApplicationDbContext db, IDateTimeProvider clock, IEmailSender email, IPushSender push,
+        IProviderHealth? health = null)
     {
         _db = db;
         _clock = clock;
         _email = email;
         _push = push;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
 
     public async Task<Result> Handle(NotifySubscriptionExpiringCommand request, CancellationToken ct)
@@ -76,6 +79,11 @@ public sealed class NotifySubscriptionExpiringCommandHandler
         // first and sending after buys nothing worse than a missed notice, never a doubled one. The
         // concurrency version is left alone on purpose: this touches only the notice column, which no
         // fulfilment writes, so there is nothing for a fulfilment holding the row to lose.
+        // Not claimed while email or push is refusing calls: the notice would be marked sent and never arrive.
+        // Left unclaimed, the next sweep sends it.
+        if (_health.IsUnavailable(OutboundProviders.Email) || _health.IsUnavailable(OutboundProviders.Push))
+            return ProviderErrors.Unavailable;
+
         var periodEnd = sub.CurrentPeriodEndUtc;
         var claimed = await _db.Subscriptions
             .Where(s => s.Id == sub.Id

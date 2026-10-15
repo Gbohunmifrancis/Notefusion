@@ -39,17 +39,20 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
     private readonly BillingSettings _settings;
     private readonly IWorkerHeartbeatTracker? _heartbeatTracker;
     private readonly ILogger<PaymentReconciliationWorker> _logger;
+    private readonly IProviderHealth _health;
 
     public PaymentReconciliationWorker(
         IServiceScopeFactory scopeFactory,
         BillingSettings settings,
         ILogger<PaymentReconciliationWorker> logger,
-        IWorkerHeartbeatTracker? heartbeatTracker = null)
+        IWorkerHeartbeatTracker? heartbeatTracker = null,
+        IProviderHealth? health = null)
     {
         _scopeFactory = scopeFactory;
         _settings = settings;
         _logger = logger;
         _heartbeatTracker = heartbeatTracker;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -98,9 +101,25 @@ internal sealed class PaymentReconciliationWorker : BackgroundService
             if (includeFailed)
                 _nextFailedRecheckUtc = now + FailedRecheckInterval;
 
+            // A provider whose breaker is open would refuse every verification unsent, so its payments sit
+            // this sweep out (they stay due) while the other providers' are still asked about.
+            var providerOf = await db.PaymentTransactions
+                .Where(t => due.Contains(t.Id))
+                .Select(t => new { t.Id, t.Provider })
+                .ToDictionaryAsync(t => t.Id, t => t.Provider, ct);
+            var paused = new HashSet<PaymentProvider>();
+
             var failedReconcile = 0;
             foreach (var id in due)
             {
+                if (providerOf.TryGetValue(id, out var provider)
+                    && _health.IsUnavailable(OutboundProviders.Payment(provider)))
+                {
+                    if (paused.Add(provider))
+                        _logger.LogWarning("{Provider} is unavailable; its payments wait for the next reconciliation sweep.", provider);
+                    continue;
+                }
+
                 // One payment that throws (a provider answer we cannot parse, a constraint violation) must not
                 // stop the rest of the sweep, and must not leave its half-staged changes in the shared context
                 // for the next payment's save to commit.

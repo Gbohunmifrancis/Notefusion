@@ -12,7 +12,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **`src/` — C# .NET 10 Web API** (main backend): modular monolith, clean architecture,
   headless (same image serves mobile now, web later). Layers point inward:
   `Shared ← Core ← Application ← Infrastructure ← Api`. Postgres via EF Core; JWT access +
-  rotating refresh tokens.
+  rotating refresh tokens. Every outside HTTP client goes through `Infrastructure/Http/OutboundResilience`
+  (total + per-attempt timeout, retry only GETs or Idempotency-Key sends, circuit breaker); an open breaker or
+  timeout is the client's "unavailable" result, and batches ask `IProviderHealth` and stop for the run.
 - **`server/` — Python FastAPI ML worker**: Basic Pitch / ONNX CPU inference, single-worker
   job queue. Internal only — never called by a client. Audio deleted after each job.
   It will not start without `NF_API_KEY` (`NF_ALLOW_NO_AUTH=1` for local runs only); `/docs` is off

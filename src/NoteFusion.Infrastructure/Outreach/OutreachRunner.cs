@@ -44,6 +44,8 @@ public sealed class OutreachRunner
 
         foreach (var id in await _outreach.FindRetriesAsync(budget, ct))
         {
+            if (StopForOutage())
+                return sent;
             if (await IsolatedAsync(() => _outreach.RetryAsync(id, ct), "retry", id, ct))
                 sent++;
         }
@@ -54,11 +56,25 @@ public sealed class OutreachRunner
 
         foreach (var candidate in await _outreach.FindDueAsync(left, ct))
         {
+            if (StopForOutage())
+                return sent;
             if (await IsolatedAsync(() => _outreach.SendAsync(candidate, ct), candidate.Segment.ToString(), candidate.UserId, ct))
                 sent++;
         }
 
         return sent;
+    }
+
+    /// <summary>
+    /// Email or push is refusing calls (its breaker is open): the rest of the run would be claimed and not
+    /// sent, so it waits for the next run. Asked before every account, so one that opens mid-run stops it too.
+    /// </summary>
+    private bool StopForOutage()
+    {
+        if (!_outreach.ProvidersUnavailable)
+            return false;
+        _logger.LogWarning("Outreach paused for this run: the email or push provider is unavailable.");
+        return true;
     }
 
     private async Task<bool> IsolatedAsync(Func<Task<bool>> work, string what, Guid id, CancellationToken ct)

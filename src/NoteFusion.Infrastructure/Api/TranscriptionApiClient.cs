@@ -6,6 +6,7 @@ using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
+using NoteFusion.Infrastructure.Http;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Api;
@@ -62,6 +63,10 @@ internal sealed class TranscriptionApiClient(
         {
             return Unreachable("Api.Submit", ex);
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
+        {
+            return Unreachable("Api.Submit", ex);
+        }
     }
 
     public async Task<Result<string>> SubmitScoreAsync(
@@ -106,6 +111,10 @@ internal sealed class TranscriptionApiClient(
         {
             return Unreachable("Api.SubmitScore", ex);
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
+        {
+            return Unreachable("Api.SubmitScore", ex);
+        }
     }
 
     public async Task<Result<GradeResultDto>> GradeAsync(
@@ -140,6 +149,10 @@ internal sealed class TranscriptionApiClient(
                 payload.Notes.Select(n => new GradeNoteDto(n.Index, n.TargetMidi, n.SungMidi, n.Cents, n.Status)).ToList());
         }
         catch (HttpRequestException ex)
+        {
+            return Unreachable("Api.Grade", ex);
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
         {
             return Unreachable("Api.Grade", ex);
         }
@@ -180,6 +193,10 @@ internal sealed class TranscriptionApiClient(
         {
             return Unreachable("Api.Harmonise", ex);
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
+        {
+            return Unreachable("Api.Harmonise", ex);
+        }
     }
 
     public async Task<Result<string>> SubmitLinkAsync(
@@ -216,6 +233,10 @@ internal sealed class TranscriptionApiClient(
                 : payload.JobId;
         }
         catch (HttpRequestException ex)
+        {
+            return Unreachable("Api.SubmitLink", ex);
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
         {
             return Unreachable("Api.SubmitLink", ex);
         }
@@ -261,8 +282,10 @@ internal sealed class TranscriptionApiClient(
         {
             return TranscriptionErrors.ServiceUnavailable;
         }
-        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
         {
+            // Our own twenty seconds, the pipeline's timeout, or an open breaker.
+            logger.LogWarning(ex, "Transcription service did not resolve a link.");
             return TranscriptionErrors.ServiceUnavailable;
         }
     }
@@ -366,14 +389,20 @@ internal sealed class TranscriptionApiClient(
         {
             return Unreachable("Api.Job", ex);
         }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
+        {
+            return Unreachable("Api.Job", ex);
+        }
     }
 
     /// <summary>
     /// The worker could not be reached. The client gets a plain sentence (host names and DNS text are
     /// not for a screen); the detail goes to the log.
     /// </summary>
-    private Error Unreachable(string code, HttpRequestException ex)
+    private Error Unreachable(string code, Exception ex)
     {
+        // Also an open breaker (the worker failed often enough lately that it is not asked for a while) and
+        // a call that ran out of time: to the person waiting, all three are the same "try again shortly".
         logger.LogWarning(ex, "Transcription service unreachable ({Code}).", code);
         return Error.Network(code, "The transcription service is unavailable. Try again shortly.");
     }
@@ -445,6 +474,10 @@ internal sealed class TranscriptionApiClient(
             // handler is one that cannot take a job either, so it is reported as unreachable rather than
             // as a latency figure.
             return Error.Network("Api.Ping", "The transcription service did not answer within 5 seconds.");
+        }
+        catch (Exception ex) when (OutboundFailure.IsUnanswered(ex, cancellationToken))
+        {
+            return Unreachable("Api.Ping", ex);
         }
     }
 

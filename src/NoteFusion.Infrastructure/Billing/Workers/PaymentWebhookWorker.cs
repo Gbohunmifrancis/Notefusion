@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NoteFusion.Application.Billing.Commands;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Core.Entities.Billing;
@@ -105,6 +106,13 @@ internal sealed class PaymentWebhookWorker : BackgroundService
                 var result = await sender.Send(new ProcessWebhookEventCommand(id), ct);
                 if (result.IsSuccess)
                     continue;
+                if (ProviderErrors.IsUnavailable(result.Error))
+                {
+                    // The provider's breaker refused the verification unsent: not a failed try, so no attempt
+                    // is recorded and the event is simply processed on a later drain.
+                    _logger.LogWarning("Webhook {Id} waits: its payment provider is unavailable.", id);
+                    continue;
+                }
                 error = result.Error.Message;
             }
             catch (OperationCanceledException) when (ct.IsCancellationRequested)

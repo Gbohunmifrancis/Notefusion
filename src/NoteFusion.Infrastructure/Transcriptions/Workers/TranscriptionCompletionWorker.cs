@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Infrastructure.Persistence;
@@ -55,12 +56,14 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<TranscriptionCompletionWorker> _logger;
+    private readonly IProviderHealth _health;
 
     public TranscriptionCompletionWorker(
-        IServiceScopeFactory scopeFactory, ILogger<TranscriptionCompletionWorker> logger)
+        IServiceScopeFactory scopeFactory, ILogger<TranscriptionCompletionWorker> logger, IProviderHealth? health = null)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -109,11 +112,16 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
             .Where(j => j.SettledAtUtc == null && !skipped.Contains(j.Id))
             .OrderBy(j => j.CreatedAtUtc)
             .Take(BatchSize)
-            .Select(j => j.Id)
+            .Select(j => new { j.Id, j.CreatedAtUtc })
             .ToListAsync(ct);
 
-        foreach (var id in open)
+        foreach (var job in open)
+        {
+            if (WorkerUnavailableFor(job.CreatedAtUtc, now, "jobs"))
+                break;
+            var id = job.Id;
             await FollowUpAsync(db, id, () => sender.Send(new NotifyTranscriptionReadyCommand(id), ct), now, ct);
+        }
 
         // Website previews, the same way: until the sweep looked at them only the visitor's own poll ever
         // finished one, so a closed tab left a preview "still running" for good.
@@ -121,11 +129,16 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
             .Where(p => p.CompletedAtUtc == null && !skipped.Contains(p.Id))
             .OrderBy(p => p.CreatedAtUtc)
             .Take(BatchSize)
-            .Select(p => p.Id)
+            .Select(p => new { p.Id, p.CreatedAtUtc })
             .ToListAsync(ct);
 
-        foreach (var id in previews)
+        foreach (var preview in previews)
+        {
+            if (WorkerUnavailableFor(preview.CreatedAtUtc, now, "previews"))
+                break;
+            var id = preview.Id;
             await FollowUpAsync(db, id, () => sender.Send(new SettlePreviewJobCommand(id), ct), now, ct);
+        }
 
         // Then a word to anyone whose transcription failed, once the jobs above are closed.
         try
@@ -146,6 +159,21 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
         {
             db.ChangeTracker.Clear();
         }
+    }
+
+    /// <summary>
+    /// The worker's breaker is open and this job is still young enough to finish: asking would be refused
+    /// unsent, so the sweep stops here and asks next time. A job past the deadline is still followed up, because
+    /// "no answer at the deadline" is exactly how it gets closed. Oldest first, so once one young job is
+    /// reached every job after it is young too.
+    /// </summary>
+    private bool WorkerUnavailableFor(DateTime createdAtUtc, DateTime now, string what)
+    {
+        if (now - createdAtUtc > NotifyTranscriptionReadyCommand.GiveUpAfter
+            || !_health.IsUnavailable(OutboundProviders.Transcription))
+            return false;
+        _logger.LogWarning("Transcription service unavailable; the rest of the open {What} wait for the next sweep.", what);
+        return true;
     }
 
     /// <summary>

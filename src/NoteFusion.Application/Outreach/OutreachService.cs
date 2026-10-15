@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -47,6 +48,7 @@ public sealed class OutreachService
     private readonly IPushSender _push;
     private readonly OutreachSettings _settings;
     private readonly IEmailUnsubscribeTokens _tokens;
+    private readonly IProviderHealth _health;
 
     public OutreachService(
         IApplicationDbContext db,
@@ -54,7 +56,8 @@ public sealed class OutreachService
         IEmailSender email,
         IPushSender push,
         OutreachSettings settings,
-        IEmailUnsubscribeTokens tokens)
+        IEmailUnsubscribeTokens tokens,
+        IProviderHealth? health = null)
     {
         _db = db;
         _clock = clock;
@@ -62,7 +65,15 @@ public sealed class OutreachService
         _push = push;
         _settings = settings;
         _tokens = tokens;
+        _health = health ?? ProviderHealth.AlwaysAvailable;
     }
+
+    /// <summary>
+    /// True while the email or push provider's breaker is open: a send now would be refused unsent, so the
+    /// runner stops for this run rather than claiming messages it cannot deliver.
+    /// </summary>
+    public bool ProvidersUnavailable
+        => _health.IsUnavailable(OutboundProviders.Email) || _health.IsUnavailable(OutboundProviders.Push);
 
     /// <summary>Up to <paramref name="limit"/> accounts due a message, highest priority and oldest first.</summary>
     public async Task<IReadOnlyList<OutreachCandidate>> FindDueAsync(int limit, CancellationToken ct)
@@ -229,9 +240,11 @@ public sealed class OutreachService
 
         foreach (var claim in claims)
         {
-            var error = await DeliverAsync(userId, claim.Segment, claim.Channel, user.Email, user.FullName, ct);
+            var (error, notAttempted) = await DeliverAsync(userId, claim.Segment, claim.Channel, user.Email, user.FullName, ct);
             if (error is null)
                 claim.MarkSent(_clock.UtcNow);
+            else if (notAttempted)
+                claim.MarkNotAttempted(error);
             else
                 claim.MarkFailed(error);
         }
@@ -280,18 +293,22 @@ public sealed class OutreachService
             .FirstOrDefaultAsync(ct);
         var channels = user is null ? new List<OutreachChannel>() : await ChannelsAsync(message.UserId, user.EmailVerified, ct);
 
-        var error = user is null || !channels.Contains(message.Channel)
-            ? "Not retried: the account can no longer be reached on this channel."
+        var (error, notAttempted) = user is null || !channels.Contains(message.Channel)
+            ? ("Not retried: the account can no longer be reached on this channel.", false)
             : await DeliverAsync(message.UserId, message.Segment, message.Channel, user.Email, user.FullName, ct);
         var now = _clock.UtcNow;
         var stored = error is null ? null : OutreachMessage.TrimError(error);
+        // Refused unsent by an open breaker: the attempt claimed above is handed back, so the message keeps
+        // its retry for a run when the provider is answering.
+        var giveBack = notAttempted ? 1 : 0;
         await _db.OutreachMessages
             .Where(m => m.Id == messageId)
             .ExecuteUpdateAsync(s => s
                 .SetProperty(m => m.Status, error is null ? OutreachStatus.Sent : OutreachStatus.Failed)
                 .SetProperty(m => m.SentAtUtc, error is null ? now : (DateTime?)null)
+                .SetProperty(m => m.Attempts, m => m.Attempts - giveBack)
                 .SetProperty(m => m.Error, stored), ct);
-        return user is not null && channels.Contains(message.Channel);
+        return user is not null && channels.Contains(message.Channel) && !notAttempted;
     }
 
     private async Task<List<OutreachChannel>> ChannelsAsync(Guid userId, bool emailVerified, CancellationToken ct)
@@ -304,10 +321,17 @@ public sealed class OutreachService
         return channels;
     }
 
-    /// <summary>Sends one message on one channel. Null when the provider took it, else why not.</summary>
-    private async Task<string?> DeliverAsync(
+    /// <summary>
+    /// Sends one message on one channel. Error null when the provider took it, else why not; NotAttempted when
+    /// the provider's breaker refused it unsent, which is not a failed try.
+    /// </summary>
+    private async Task<(string? Error, bool NotAttempted)> DeliverAsync(
         Guid userId, OutreachSegment segment, OutreachChannel channel, string email, string fullName, CancellationToken ct)
     {
+        var provider = channel == OutreachChannel.Email ? OutboundProviders.Email : OutboundProviders.Push;
+        if (_health.IsUnavailable(provider))
+            return (ProviderErrors.Unavailable.Message, true);
+
         if (channel == OutreachChannel.Email)
         {
             DateTime? triedOn = segment == OutreachSegment.TriedOnce
@@ -322,18 +346,20 @@ public sealed class OutreachService
                 new EmailRecipient(email, fullName),
                 new OutreachEmail(segment, _settings.FounderName, _settings.ReplyTo, unsubscribeUrl, triedOn),
                 ct);
-            return result.IsSuccess ? null : result.Error.Message;
+            return result.IsSuccess
+                ? (null, false)
+                : (result.Error.Message, ProviderErrors.IsUnavailable(result.Error));
         }
 
         try
         {
             await _push.SendAsync([userId], OutreachPushCopy.For(segment), ct);
-            return null;
+            return (null, false);
         }
         catch (Exception ex) when (!ct.IsCancellationRequested)
         {
             // A provider timeout arrives as a TaskCanceledException too; only our own shutdown is not a failure.
-            return ex.Message;
+            return (ex.Message, false);
         }
     }
 }

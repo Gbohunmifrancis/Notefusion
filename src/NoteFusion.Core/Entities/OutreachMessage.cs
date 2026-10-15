@@ -59,6 +59,17 @@ public class OutreachMessage : BaseEntity
         Error = TrimError(error);
     }
 
+    /// <summary>
+    /// The provider refused the send unsent (its breaker was open), so this claim's try does not count:
+    /// left Failed with no attempt spent, the retry sweep sends it as its first real try.
+    /// </summary>
+    public void MarkNotAttempted(string? reason)
+    {
+        Status = OutreachStatus.Failed;
+        Attempts = Math.Max(0, Attempts - 1);
+        Error = TrimError(reason);
+    }
+
     /// <summary>The error as stored: never blank, at most <see cref="ErrorMaxLength"/> characters.</summary>
     public static string TrimError(string? error)
         => string.IsNullOrWhiteSpace(error)

@@ -270,11 +270,16 @@ public sealed class RecordingEmailSender : IEmailSender
     /// <summary>When set, outreach sends report this failure instead of success (and are still recorded).</summary>
     public string? OutreachFails { get; set; }
 
+    /// <summary>When set, outreach sends report exactly this error (e.g. the provider-unavailable one).</summary>
+    public NoteFusion.Shared.Results.Error? OutreachError { get; set; }
+
     public Task<NoteFusion.Shared.Results.Result> SendOutreachAsync(
         EmailRecipient to, NoteFusion.Application.Outreach.OutreachEmail email, CancellationToken ct = default)
     {
         Sent.Add(("outreach", to));
         Outreach.Add((to, email));
+        if (OutreachError is { } refused)
+            return Task.FromResult(NoteFusion.Shared.Results.Result.Failure(refused));
         return Task.FromResult(OutreachFails is { } error
             ? NoteFusion.Shared.Results.Result.Failure(NoteFusion.Shared.Results.Error.Failure("EMAIL_DELIVERY_FAILED", error))
             : NoteFusion.Shared.Results.Result.Success());
