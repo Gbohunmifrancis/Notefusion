@@ -96,6 +96,11 @@ public sealed class ExpoPushSender : IPushSender
             // Network is expected to be flaky; the job-completion pipeline must survive it.
             _logger.LogWarning(ex, "Could not reach the Expo push service.");
         }
+        catch (TaskCanceledException ex) when (!ct.IsCancellationRequested)
+        {
+            // The client's timeout, not the caller cancelling: a slow Expo is as survivable as an absent one.
+            _logger.LogWarning(ex, "The Expo push service did not answer in time.");
+        }
     }
 }
 

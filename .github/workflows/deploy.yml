@@ -303,7 +303,7 @@ jobs:
             R2__BucketName="${R2__BUCKETNAME}"
             R2__PublicBaseUrl="${R2__PUBLICBASEURL}"
             R2__UseR2="${R2__USER2}"
-            Push__UseExpo="${PUSH__USEEXPO}"
+            Push__UseExpo="${PUSH__USEEXPO:-true}"
             Auth__ResetPasswordUrl="${AUTH__RESETPASSWORDURL}"
             Outreach__Enabled="${OUTREACH_ENABLED:-true}"
             Outreach__FounderName="${OUTREACH_FOUNDER_NAME:-Francis}"

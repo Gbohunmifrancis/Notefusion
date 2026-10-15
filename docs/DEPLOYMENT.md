@@ -309,8 +309,9 @@ heroku config:set Outreach__Enabled='true' Outreach__FounderName='Francis' \
   Outreach__ReplyTo='hello@notefusion.studio' --app <your-heroku-app>
 ```
 
-Push only leaves the server when `Push__UseExpo=true`; with it off the outreach pushes are logged,
-like every other notification, and still recorded as sent.
+Push goes out through Expo in production (`Push__UseExpo` defaults to `true` in the prod compose and
+the deploy; set the `PUSH__USEEXPO` secret to `false` to only log). With it off, every notification,
+outreach included, is only logged, and outreach pushes are still recorded as sent.
 
 ---
 
