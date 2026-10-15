@@ -17,11 +17,17 @@ public sealed record LiveUserDto(Guid Id, string FullName, string Email, string?
 public sealed record LiveJobDto(
     string JobId, Guid? UserId, string? FullName, string? Email, string Kind, bool Preview, bool Finished, DateTime StartedAtUtc);
 
-public sealed record LiveActivityDto(DateTime ServerTimeUtc, IReadOnlyList<LiveUserDto> Online, IReadOnlyList<LiveJobDto> Transcribing);
+/// <summary>A payment that went through in the last few minutes: money in, for the console's cash-register alert.</summary>
+public sealed record LivePaymentDto(
+    Guid Id, Guid UserId, string? FullName, string? Email, long AmountMinor, string Currency, string PlanName, DateTime PaidAtUtc);
+
+public sealed record LiveActivityDto(
+    DateTime ServerTimeUtc, IReadOnlyList<LiveUserDto> Online, IReadOnlyList<LiveJobDto> Transcribing,
+    IReadOnlyList<LivePaymentDto> Payments);
 
 /// <summary>
-/// What is happening right now, for the console's live notices: who is online and which transcriptions
-/// have just started. The console polls it and announces what is new since its last look, so this only
+/// What is happening right now, for the console's live notices: who is online, which transcriptions
+/// have just started and which payments have just gone through. The console polls it and announces what is new since its last look, so this only
 /// has to be cheap and current, not a history.
 /// </summary>
 public sealed record GetLiveActivityQuery : IRequest<Result<LiveActivityDto>>
@@ -82,6 +88,22 @@ public sealed class GetLiveActivityQueryHandler : IRequestHandler<GetLiveActivit
             .Take(GetLiveActivityQuery.MaxRows)
             .ToList();
 
-        return new LiveActivityDto(now, online, transcribing);
+        // Every account's money counts here, an internal test purchase included: the alert is "a payment
+        // went through", and the founder's own test payment is how the sound gets checked.
+        var payments = await _db.PaymentTransactions.AsNoTracking()
+            .Where(t => (t.Status == PaymentStatus.Verified || t.Status == PaymentStatus.Completed)
+                        && t.UpdatedAtUtc >= jobsSince)
+            .OrderByDescending(t => t.UpdatedAtUtc)
+            .Take(GetLiveActivityQuery.MaxRows)
+            .Select(t => new LivePaymentDto(
+                t.Id, t.UserId,
+                _db.Users.Where(u => u.Id == t.UserId).Select(u => u.FullName).FirstOrDefault(),
+                _db.Users.Where(u => u.Id == t.UserId).Select(u => u.Email).FirstOrDefault(),
+                t.AmountMinor, t.Currency,
+                _db.Plans.Where(p => p.Id == t.PlanId).Select(p => p.Name).FirstOrDefault() ?? "",
+                t.UpdatedAtUtc))
+            .ToListAsync(ct);
+
+        return new LiveActivityDto(now, online, transcribing, payments);
     }
 }

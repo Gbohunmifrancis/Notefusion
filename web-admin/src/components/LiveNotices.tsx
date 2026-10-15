@@ -1,20 +1,21 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Music2, Radio, Volume2, VolumeX } from "lucide-react";
+import { Banknote, Music2, Radio, Volume2, VolumeX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { getLiveActivity } from "@/api/endpoints";
 import type { LiveActivity } from "@/api/types";
+import { formatMoney } from "@/lib/format";
 
 const SOUND_KEY = "notefusion_admin_live_sound";
 const POLL_MS = 15_000;
 
 /**
  * Live notices for the console: a pop-up and a short chime when someone comes online or starts a
- * transcription. It polls the live endpoint and announces only what is new since its last look; the
+ * transcription, and a loud cash-register "ka-ching" when a payment goes through. It polls the live endpoint and announces only what is new since its last look; the
  * first look of a session is taken quietly, so opening the console does not ring for everyone who
  * was already there. The speaker button mutes the sound (remembered on this browser); the pop-ups stay.
  */
@@ -23,6 +24,7 @@ export function LiveNotices() {
   const [soundOn, setSoundOn] = useState(true);
   const seenOnline = useRef<Set<string> | null>(null);
   const seenJobs = useRef<Set<string> | null>(null);
+  const seenPayments = useRef<Set<string> | null>(null);
   const audio = useRef<AudioContext | null>(null);
 
   useEffect(() => {
@@ -80,16 +82,82 @@ export function LiveNotices() {
     });
   }
 
+  /**
+   * A cash register, made here so there is no sound file to ship: the drawer's short metallic rattle,
+   * then two bright bell strikes ("ka-ching"), loud on purpose. A compressor keeps it from clipping.
+   */
+  function kaChing() {
+    if (!soundOn || !audio.current || audio.current.state !== "running") return;
+    const ctx = audio.current;
+    const out = ctx.createDynamicsCompressor();
+    out.threshold.value = -6;
+    out.ratio.value = 4;
+    const master = ctx.createGain();
+    master.gain.value = 0.6; // peaks just under full scale: as loud as it gets without clipping
+    out.connect(master).connect(ctx.destination);
+    const t0 = ctx.currentTime;
+
+    // "Ka": a burst of filtered noise, the drawer and the key.
+    const noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.09), ctx.sampleRate);
+    const samples = noise.getChannelData(0);
+    for (let i = 0; i < samples.length; i++) samples[i] = (Math.random() * 2 - 1) * (1 - i / samples.length);
+    const rattle = ctx.createBufferSource();
+    rattle.buffer = noise;
+    const band = ctx.createBiquadFilter();
+    band.type = "bandpass";
+    band.frequency.value = 3200;
+    band.Q.value = 0.9;
+    const rattleGain = ctx.createGain();
+    rattleGain.gain.value = 0.9;
+    rattle.connect(band).connect(rattleGain).connect(out);
+    rattle.start(t0);
+
+    // "Ching": two bell strikes, each a few inharmonic partials that ring out.
+    const strike = (at: number, base: number, level: number) => {
+      [1, 2.76, 5.4, 8.93].forEach((ratio, k) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = base * ratio;
+        const peak = level / (k + 1);
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(peak, at + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + 1.4 / (k + 1));
+        osc.connect(gain).connect(out);
+        osc.start(at);
+        osc.stop(at + 1.5);
+      });
+    };
+    strike(t0 + 0.07, 1568, 0.8); // G6
+    strike(t0 + 0.19, 2093, 0.9); // C7
+  }
+
   function announce(data: LiveActivity) {
     const onlineIds = new Set(data.online.map((u) => u.id));
     const jobIds = new Set(data.transcribing.map((j) => j.jobId));
+    const payments = data.payments ?? [];
+    const paymentIds = new Set(payments.map((p) => p.id));
 
     // First look: remember, say nothing.
-    if (seenOnline.current === null || seenJobs.current === null) {
+    if (seenOnline.current === null || seenJobs.current === null || seenPayments.current === null) {
       seenOnline.current = onlineIds;
       seenJobs.current = jobIds;
+      seenPayments.current = paymentIds;
       return;
     }
+
+    // Money first: it is the one alert that should never be lost in a burst.
+    const paid = payments.filter((p) => !seenPayments.current!.has(p.id));
+    for (const id of paymentIds) seenPayments.current.add(id);
+    for (const p of paid) {
+      toast.success(`${p.fullName || p.email || "Someone"} paid ${formatMoney(p.amountMinor, p.currency)}`, {
+        description: p.planName,
+        duration: 15_000,
+        icon: <Banknote size={16} className="text-emerald-600" />,
+        action: { label: "View", onClick: () => router.push(`/users/${p.userId}`) },
+      });
+    }
+    if (paid.length) kaChing();
 
     const arrived = data.online.filter((u) => !seenOnline.current!.has(u.id));
     const started = data.transcribing.filter((j) => !seenJobs.current!.has(j.jobId) && !j.finished);
