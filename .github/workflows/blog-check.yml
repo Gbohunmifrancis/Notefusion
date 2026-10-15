@@ -1,0 +1,53 @@
+name: Blog & hymn pages
+
+# The blog and hymn pages under web-site/blog and web-site/hymns are generated from content/ by
+# tools/blog/build.mjs and committed. This fails a pull request when the committed pages are stale
+# (someone edited content/ without rebuilding, or edited a generated page by hand), when a link is
+# broken, or when JSON-LD, the sitemap or the feed is malformed. It also runs the web tests, which
+# the main CI skips for web-site/ changes. See docs/BLOG.md.
+on:
+  pull_request:
+    paths:
+      - "content/**"
+      - "tools/blog/**"
+      - "web-site/**"
+      - ".github/workflows/blog-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - "tools/blog/**"
+      - "web-site/**"
+      - ".github/workflows/blog-check.yml"
+
+concurrency:
+  group: blog-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Generated pages up to date
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/blog/package-lock.json
+
+      - name: Install the generator
+        working-directory: tools/blog
+        run: npm ci
+
+      - name: Generator tests
+        working-directory: tools/blog
+        run: npm test
+
+      - name: Committed output is current; links, JSON-LD, sitemap and feed are valid
+        run: node tools/blog/check.mjs
+
+      - name: Web tests (the solfa mirror)
+        run: node --test web-site/tests/*.test.mjs

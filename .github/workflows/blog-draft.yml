@@ -1,0 +1,104 @@
+name: Draft a blog post
+
+# Twice a week (Monday and Thursday at 06:30 in Lagos, 05:30 UTC) this drafts the next topic from
+# content/blog/topics.yml with the Gemini API, builds the pages, and opens a pull request on the
+# branch blog/<slug>. Nothing is published until the founder reviews and merges it: this workflow
+# never pushes to main. See docs/BLOG.md.
+#
+# Needs:
+#   secret   GEMINI_API_KEY   (Settings → Secrets and variables → Actions)
+#   variable GEMINI_MODEL     optional; defaults to gemini-3.8-flash
+#   Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
+on:
+  schedule:
+    - cron: "30 5 * * 1,4"
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic slug from content/blog/topics.yml (leave empty for the next one)"
+        required: false
+        default: ""
+      model:
+        description: "Gemini model id (leave empty for the GEMINI_MODEL variable, else gemini-3.8-flash)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: blog-draft
+  cancel-in-progress: false
+
+jobs:
+  draft:
+    name: Draft and open a pull request
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Check the API key
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "::error::GEMINI_API_KEY is not set. Add it under Settings → Secrets and variables → Actions → New repository secret (see docs/BLOG.md). No draft was made."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/blog/package-lock.json
+
+      - name: Install the generator
+        working-directory: tools/blog
+        run: npm ci
+
+      # A topic with an open draft branch is skipped, so Thursday does not redraft Monday's topic.
+      - name: Find drafts still in review
+        id: open
+        run: |
+          list=$(git ls-remote --heads origin 'refs/heads/blog/*' | sed 's#.*refs/heads/blog/##' | paste -sd, -)
+          echo "Drafts in review: ${list:-none}"
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+
+      - name: Draft the post (Gemini API)
+        id: draft
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ inputs.model || vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+          TOPIC: ${{ inputs.topic }}
+          SKIP: ${{ steps.open.outputs.list }}
+        run: |
+          args=(--skip "$SKIP" --summary "$RUNNER_TEMP/draft.json" --pr-body "$RUNNER_TEMP/pr.md")
+          if [ -n "$TOPIC" ]; then args+=(--topic "$TOPIC"); fi
+          node tools/blog/draft.mjs "${args[@]}"
+          if [ -f "$RUNNER_TEMP/draft.json" ]; then echo "drafted=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Build and check the pages
+        if: steps.draft.outputs.drafted == 'true'
+        run: |
+          node tools/blog/build.mjs
+          node tools/blog/check.mjs
+
+      - name: Open the pull request
+        if: steps.draft.outputs.drafted == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          slug=$(node -p "require(process.env.RUNNER_TEMP + '/draft.json').slug")
+          title=$(node -p "require(process.env.RUNNER_TEMP + '/draft.json').title")
+          branch="blog/$slug"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add content/blog web-site
+          git commit -m "Blog draft: $title" -m "Drafted by the blog-draft workflow for review. Merging publishes it."
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title "Blog draft: $title" --body-file "$RUNNER_TEMP/pr.md"

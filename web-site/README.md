@@ -17,8 +17,12 @@ privacy/index.html    privacy policy (unchanged from when it was hosted alone)
 terms/index.html      terms of service
 delete-account/       account/data deletion and email confirmation flow
 reset-password/       single-use password-reset flow
+blog/, hymns/         GENERATED from ../content by ../tools/blog/build.mjs — never edit; see ../docs/BLOG.md
+assets/blog.css       styles for the generated blog and hymn pages
+assets/hymn.js        a hymn page's staff (OSMD, lazy) and piano player
+<key>.txt             the IndexNow key file (written by the build)
 robots.txt            declares sitemap.xml
-sitemap.xml           the three public URLs
+sitemap.xml           the public URLs; blog and hymn entries rewritten by the build, others kept
 assets/theme.css      website-wide color, type, and spacing tokens
 assets/landing.css    landing page structure and interactions
 assets/site-refresh.css   approved blue-white landing page theme and responsive layout
