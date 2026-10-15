@@ -349,6 +349,44 @@ public sealed class BrandedEmailTemplate
                 "Finish upgrading: " + plansUrl));
     }
 
+    public EmailMessage TranscriptionFailed(EmailRecipient to, bool onPro)
+    {
+        var appUrl = _settings.AppUrl.TrimEnd('/') + "/app";
+        var cost = onPro
+            ? "It didn't use anything from your Pro allowance."
+            : "It didn't count against your free tries.";
+        string[] tips =
+        [
+            "Record close to the voice or instrument, about an arm's length away, somewhere quiet.",
+            "One voice or one instrument at a time. A band or a crowd blurs the notes together.",
+            "Keep it under about two minutes. For a song, pick just the section you need.",
+        ];
+        var list = $"<ol style=\"margin:0 0 14px;padding-left:22px;font-family:{FontStack};font-size:16px;line-height:1.65;color:{Muted}\">"
+            + string.Concat(tips.Select(t => $"<li style=\"margin:0 0 6px\">{Encode(t)}</li>"))
+            + "</ol>";
+        var body = Paragraphs(
+                "Your last transcription couldn't be finished. " + Encode(cost),
+                "Three things that make the next one work:")
+            + list;
+
+        return Compose(
+            to,
+            subject: "Your transcription didn't come through",
+            preheader: cost + " Three tips for the next one.",
+            heading: "Let's try that again",
+            bodyHtml: body,
+            cta: new CallToAction("Open NoteFusion", appUrl),
+            textBody: Text(
+                "Your last transcription couldn't be finished. " + cost,
+                "",
+                "Three things that make the next one work:",
+                "1. " + tips[0],
+                "2. " + tips[1],
+                "3. " + tips[2],
+                "",
+                "Open NoteFusion: " + appUrl));
+    }
+
     public EmailMessage SubscriptionExpiring(EmailRecipient to, SubscriptionExpiry expiry)
     {
         var ends = expiry.ExpiresAtUtc.ToString("d MMMM yyyy", CultureInfo.InvariantCulture);

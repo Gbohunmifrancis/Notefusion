@@ -106,6 +106,8 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
             return result;
         }
 
+        var closedWithoutResult = job.SettledAtUtc is not null && job.ResultJson is null;
+
         // Bank the result and close the job. Two consequences: this poll's answer survives the ML
         // service forgetting the job, and the completion sweep will not push about a transcription the
         // client is being handed in this very response.
@@ -113,6 +115,15 @@ public sealed class GetTranscriptionJobQueryHandler : IRequestHandler<GetTranscr
         {
             job.Settle(TranscriptionResultCache.Serialize(finished), _clock.UtcNow);
             await ActivityRecorder.FinishAsync(_db, request.JobId, finished, _clock.UtcNow, cancellationToken);
+        }
+
+        // A job the sweep already closed as failed or lost (the worker finished after the deadline) stays
+        // free, as the user was told it was. The late result is still handed over.
+        if (closedWithoutResult)
+        {
+            return result.Value.Result is null || await IsProAsync(job.UserId, cancellationToken)
+                ? result
+                : result.Value with { Result = ProGate.ForFree(result.Value.Result) };
         }
 
         // Pro at the moment of success, so nothing to charge. Asked here rather than recorded at submit

@@ -35,6 +35,10 @@ const COUNTRY_METRICS = [
 ] as const;
 type CountryMetric = (typeof COUNTRY_METRICS)[number]["value"];
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+/** What a path-to-paying step counts, on hover, where the name alone leaves a question. */
+const FUNNEL_HINTS: Record<string, string> = {
+  "Reached the free limit": "Spent every free transcription (on the account or its phone), so met the paywall",
+};
 
 function countryName(code: string): string {
   if (code === "??") return "Unknown";
@@ -231,7 +235,7 @@ function InsightsBody({
             info="Of the accounts that signed up in this window, how many reached each step, ever."
             table={<DataTable head={["Step", "Accounts"]} rows={d.funnel.map((s) => [s.step, s.count])} />}
           >
-            <FunnelBars steps={d.funnel} />
+            <FunnelBars steps={d.funnel.map((s) => (FUNNEL_HINTS[s.step] ? { ...s, hint: FUNNEL_HINTS[s.step]! } : s))} />
             {drop && drop.lost > 0 && (
               <Takeaway>
                 Biggest drop: <span className="text-foreground">{drop.from} → {drop.to}</span>, losing {formatPercent(drop.lost, 0)}. Fix this step first.

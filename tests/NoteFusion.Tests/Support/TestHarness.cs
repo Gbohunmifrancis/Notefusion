@@ -233,6 +233,12 @@ public sealed class RecordingEmailSender : IEmailSender
 
     public List<(EmailRecipient To, string Subject, string Heading, string BodyHtml, string? CtaText, string? CtaUrl)> CustomEmails { get; } = [];
 
+    public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default)
+    {
+        Sent.Add((onPro ? "transcription-failed-pro" : "transcription-failed", to));
+        return Task.CompletedTask;
+    }
+
     /// <summary>
     /// The expiry payloads, kept apart from <see cref="Sent"/> because the renew-vs-lapse wording and the
     /// day count are the part worth asserting on — the recipient alone does not distinguish them.

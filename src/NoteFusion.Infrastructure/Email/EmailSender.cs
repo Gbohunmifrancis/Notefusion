@@ -60,6 +60,9 @@ public sealed class EmailSender : IEmailSender
     public Task SendEmailVerificationAsync(EmailRecipient to, string code, CancellationToken ct = default)
         => TrySendAsync(_template.VerifyEmail(to, code), ct);
 
+    public Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default)
+        => TrySendAsync(_template.TranscriptionFailed(to, onPro), ct);
+
     public Task SendCustomEmailAsync(
         EmailRecipient to,
         string subject,
