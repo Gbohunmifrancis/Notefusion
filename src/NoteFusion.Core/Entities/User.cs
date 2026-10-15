@@ -34,6 +34,13 @@ public class User : BaseEntity
     /// </summary>
     public static readonly TimeSpan EmailVerificationResendCooldown = TimeSpan.FromSeconds(60);
 
+    /// <summary>
+    /// The wait between "you already have an account" notices to one address. Registration answers a
+    /// taken address exactly as it answers a new one and mails the owner instead, so this is what stops
+    /// the sign-up form being used to fill somebody's inbox.
+    /// </summary>
+    public static readonly TimeSpan AccountExistsNoticeCooldown = TimeSpan.FromMinutes(15);
+
     private readonly List<RefreshToken> _refreshTokens = [];
     private readonly List<DeviceToken> _deviceTokens = [];
 
@@ -126,6 +133,13 @@ public class User : BaseEntity
     public DateTime? CheckoutReminderSentAtUtc { get; private set; }
 
     /// <summary>
+    /// When this address was last told that somebody tried to register it again. Null if never. Claimed
+    /// with a conditional update by <c>RegisterCommand</c>, which sends at most one per
+    /// <see cref="AccountExistsNoticeCooldown"/>.
+    /// </summary>
+    public DateTime? AccountExistsNoticeSentAtUtc { get; private set; }
+
+    /// <summary>
     /// When this account last made any signed-in request, to the minute. Null if never seen since
     /// presence was recorded. Written by the API's LastSeenMiddleware with a guarded UPDATE rather than
     /// through this entity; <see cref="MarkSeen"/> is for code that already holds the row.
@@ -146,7 +160,6 @@ public class User : BaseEntity
         if (LastSeenAtUtc is null || utcNow > LastSeenAtUtc) LastSeenAtUtc = utcNow;
     }
 
-    public void RecordCheckoutReminder(DateTime utcNow) => CheckoutReminderSentAtUtc = utcNow;
 
     /// <summary>First value wins, like <see cref="RecordCountry"/>: the source is where the account was born.</summary>
     public void RecordSignupSource(string? source)

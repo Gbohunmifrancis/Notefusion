@@ -154,15 +154,23 @@ services:
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 
+  # Container logs at /logs (Caddy proxies it). Pinned: an image with the Docker socket must
+  # not change under a restart. The socket mount is :ro, but that only stops the socket file
+  # being replaced: Docker still answers every API call over it, so whoever reaches Dozzle
+  # reaches what it can do with the socket. Hence the sign-in below.
+  # Sign-in: the deploy sets DOZZLE_AUTH_PROVIDER=simple and writes the users file when the
+  # DOZZLE_USER / DOZZLE_PASSWORD_HASH secrets are set (docs/DEPLOYMENT.md, "Logs").
   dozzle:
-    image: amir20/dozzle:latest
+    image: amir20/dozzle:v11.3.2
     restart: always
     logging: *default-logging
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - dozzle-data:/data
+      - ${DOZZLE_USERS_HOST:-/dev/null}:/data/users.yml:ro
     environment:
       DOZZLE_BASE: /logs
+      DOZZLE_AUTH_PROVIDER: ${DOZZLE_AUTH_PROVIDER:-none}
 
   caddy:
     image: caddy:2-alpine

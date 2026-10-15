@@ -181,7 +181,7 @@ public class RetentionSweepTests
     // ── Helpers ──────────────────────────────────────────────────────────────
 
     private static Task<int> AutoSave(TestHarness h)
-        => new AutoSaveFinishedTranscriptionsCommandHandler(h.Db, h.Clock)
+        => new AutoSaveFinishedTranscriptionsCommandHandler(h.Db, h.Clock, h.QuotaGate)
             .Handle(new AutoSaveFinishedTranscriptionsCommand(), default)
             .ContinueWith(t => t.Result.Value);
 
@@ -193,7 +193,7 @@ public class RetentionSweepTests
     private static async Task Save(TestHarness h, Guid userId, string jobId, string title)
     {
         var r = Result();
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(new SaveTranscriptionCommand(title, r.Key, r.Tempo, r.TimeSignature, r.MusicXml, r.Notes, r.OverallConfidence, jobId), default);
         Assert.True(saved.IsSuccess);
     }

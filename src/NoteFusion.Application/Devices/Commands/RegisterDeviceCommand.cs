@@ -53,6 +53,13 @@ public sealed class RegisterDeviceCommandHandler : IRequestHandler<RegisterDevic
         if (user is null)
             return UserErrors.NotFound;
 
+        // A push token names a handset, not a person. On a shared phone the previous account's row would
+        // otherwise keep sending its notifications (and its sheets' titles) to whoever is signed in now, so
+        // the token belongs to the account registering it and nobody else.
+        await _db.DeviceTokens
+            .Where(t => t.Token == request.Token && t.UserId != userId)
+            .ExecuteDeleteAsync(cancellationToken);
+
         user.RegisterDeviceToken(request.Token, request.Platform, request.AppBuild, _clock.UtcNow);
         await _db.SaveChangesAsync(cancellationToken);
 

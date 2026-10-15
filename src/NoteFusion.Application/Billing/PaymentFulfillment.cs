@@ -9,23 +9,27 @@ namespace NoteFusion.Application.Billing;
 /// The single place that turns a verified payment into its business effects: the completed status, the
 /// immutable ledger credit, and the started-or-renewed subscription. Both the webhook worker and the
 /// reconciliation job call this, so a payment is fulfilled identically whether we heard about it by
-/// push (webhook) or by poll (reconciliation). It stages entity changes only — the caller owns the
-/// <c>SaveChangesAsync</c> so every write, plus the caller's own bookkeeping, commits in ONE
-/// transaction. A verified success on a row we had already failed reopens it first, so every path can
-/// rescue it. Fulfilling an already-completed payment is a safe no-op (it returns null); a truly
-/// concurrent double-apply is prevented by a unique (PaymentTransactionId, Reason) index on the ledger.
+/// push (webhook) or by poll (reconciliation). It stages entity changes only — the caller commits them
+/// through <see cref="SaveAsync(IApplicationDbContext, IReadOnlyList{Fulfillment}, CancellationToken)"/>
+/// so every write, plus the caller's own bookkeeping, commits in ONE transaction. A verified success on a
+/// row we had already failed reopens it first, so every path can rescue it. Fulfilling an
+/// already-completed payment is a safe no-op (it returns null); a truly concurrent double-apply is
+/// prevented by a unique (PaymentTransactionId, Reason) index on the ledger, and two different payments
+/// extending one membership at once are serialised by the subscription's concurrency token.
 /// </summary>
 internal static class PaymentFulfillment
 {
+    /// <summary>How many times a save that lost a race on a subscription row is attempted in all.</summary>
+    internal const int MaxSaveAttempts = 4;
+
     /// <summary>
-    /// Stages the fulfilment and returns the receipt to email once the caller commits. Building it here,
-    /// where the plan and the computed renewal date already live, keeps both fulfilment paths sending the
-    /// same receipt. Null only if the paying user cannot be found — there is then no one to email, and a
-    /// missing user for a settled payment is itself the caller's problem to notice, not this method's.
-    /// The send itself is the caller's job, deliberately after <c>SaveChangesAsync</c>: a receipt must
-    /// never be sent for a fulfilment that failed to commit.
+    /// Stages the fulfilment and returns it, for the caller to commit through <see cref="SaveAsync"/> and
+    /// read the receipt from afterwards. Building the receipt here, where the plan and the computed renewal
+    /// date already live, keeps every fulfilment path sending the same one. Null when the payment was
+    /// already fulfilled. The send itself is the caller's job, deliberately after the commit: a receipt
+    /// must never be sent for a fulfilment that failed to commit.
     /// </summary>
-    public static async Task<FulfillmentReceipt?> ApplyAsync(
+    public static async Task<Fulfillment?> ApplyAsync(
         IApplicationDbContext db, PaymentTransaction tx, GatewayVerification verification, DateTime now, CancellationToken ct)
     {
         // Idempotent by contract: an already-completed payment was fulfilled by an earlier call (a
@@ -50,54 +54,156 @@ internal static class PaymentFulfillment
             tx.UserId, tx.Id, LedgerDirection.Credit, LedgerEntryReason.SubscriptionCharge,
             tx.AmountMinor, tx.Currency, plan?.Name ?? "Subscription charge", now));
 
-        var interval = plan?.Interval ?? BillingInterval.Monthly;
-        var sub = await db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == tx.UserId, ct);
-        DateTime renewsAtUtc;
+        var fulfillment = new Fulfillment(tx, verification, plan?.Interval ?? BillingInterval.Monthly, plan?.Name, now);
+
+        // A row this unit of work has already started (two payments for one member in one sweep) is not in
+        // the database yet, so the change tracker is asked first; otherwise a second Start would trip the
+        // unique index on UserId.
+        var sub = db.Subscriptions.Local.FirstOrDefault(s => s.UserId == tx.UserId)
+                  ?? await db.Subscriptions.FirstOrDefaultAsync(s => s.UserId == tx.UserId, ct);
         if (sub is null)
         {
-            renewsAtUtc = BillingPeriod.Advance(now, interval);
-            db.Subscriptions.Add(Subscription.Start(
-                tx.UserId, tx.PlanId, tx.Provider, now, renewsAtUtc, verification.ProviderSubscriptionRef, now));
-        }
-        else if (sub.IsLifetime)
-        {
-            // Already sold outright. No later purchase can extend "forever", and advancing from the
-            // sentinel would overflow DateTime, so leave the window alone and let the payment record
-            // itself in the ledger above. Once lifetime, always lifetime — a subsequent monthly charge
-            // must never shorten access that was already paid for in full.
-            renewsAtUtc = sub.CurrentPeriodEndUtc;
-            sub.AttachPayment(tx.Provider, verification.ProviderSubscriptionRef, now);
+            var renewsAtUtc = BillingPeriod.Advance(now, fulfillment.Interval);
+            sub = Subscription.Start(
+                tx.UserId, tx.PlanId, tx.Provider, now, renewsAtUtc, verification.ProviderSubscriptionRef, now);
+            db.Subscriptions.Add(sub);
+            fulfillment.Subscription = sub;
+            fulfillment.RenewsAtUtc = renewsAtUtc;
         }
         else
         {
-            // Renew from the later of "now" and the current period end, so an early renewal stacks the
-            // remaining time instead of discarding it.
-            var start = sub.CurrentPeriodEndUtc > now ? sub.CurrentPeriodEndUtc : now;
-            renewsAtUtc = BillingPeriod.Advance(start, interval);
-            sub.Renew(start, renewsAtUtc, now);
-            // Switching monthly to yearly (or back): the new period is the new plan's, so the
-            // membership is on that plan from here, and the remaining time stacks as above.
-            if (sub.PlanId != tx.PlanId)
-                sub.SwitchPlan(tx.PlanId, now);
-
-            // Whoever this row belonged to before, it is paid for now. Matters for the account that was
-            // comped from the admin console and then bought: leaving the provider null would keep calling a
-            // paying customer's subscription a gift.
-            sub.AttachPayment(tx.Provider, verification.ProviderSubscriptionRef, now);
+            fulfillment.Subscription = sub;
+            fulfillment.Extend();
         }
 
         var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);
-        if (user is null)
-            return null;
+        if (user is not null)
+            fulfillment.Recipient = new EmailRecipient(user.Email, user.FullName);
 
-        return new FulfillmentReceipt(
-            new EmailRecipient(user.Email, user.FullName),
+        return fulfillment;
+    }
+
+    /// <summary>
+    /// Commits the caller's unit of work, fulfilment included. See the list overload.
+    /// </summary>
+    public static Task SaveAsync(IApplicationDbContext db, Fulfillment? fulfillment, CancellationToken ct)
+        => SaveAsync(db, fulfillment is null ? [] : [fulfillment], ct);
+
+    /// <summary>
+    /// Commits the caller's unit of work, fulfilments included. When the save loses a race on a
+    /// subscription row — another payment for the same member committed after this one read the row — the
+    /// row is reloaded, every fulfilment staged on it is applied again from the fresh period end, and the
+    /// save is retried, a bounded number of times. Nothing else is re-run: the transaction and ledger
+    /// changes are still staged, and the ledger's unique index still refuses a second credit for one
+    /// payment, so a retry can never fulfil the same payment twice.
+    /// </summary>
+    public static async Task SaveAsync(IApplicationDbContext db, IReadOnlyList<Fulfillment> fulfillments, CancellationToken ct)
+    {
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                await db.SaveChangesAsync(ct);
+                return;
+            }
+            catch (DbUpdateConcurrencyException ex)
+                when (attempt < MaxSaveAttempts && ex.Entries.Count > 0 && ex.Entries.All(e => e.Entity is Subscription))
+            {
+                var reloaded = new HashSet<Subscription>();
+                foreach (var entry in ex.Entries)
+                {
+                    await entry.ReloadAsync(ct);
+
+                    // Deleted under us: there is no row left to extend, so this is not a race to retry.
+                    if (entry.State == EntityState.Detached)
+                        throw;
+
+                    reloaded.Add((Subscription)entry.Entity);
+                }
+
+                // In the order they were staged, so two payments in one sweep still stack one after the other.
+                foreach (var f in fulfillments)
+                {
+                    if (f.Subscription is not null && reloaded.Contains(f.Subscription))
+                        f.Extend();
+                }
+            }
+        }
+    }
+}
+
+/// <summary>
+/// One staged fulfilment: what was paid for, the membership row it extends, and the receipt to send once
+/// the caller has committed. An object rather than a finished receipt because the renewal date can still
+/// move — a save that lost a race applies <see cref="Extend"/> again on the reloaded row.
+/// </summary>
+internal sealed class Fulfillment
+{
+    private readonly PaymentTransaction _tx;
+    private readonly GatewayVerification _verification;
+    private readonly string? _planName;
+    private readonly DateTime _now;
+
+    internal Fulfillment(
+        PaymentTransaction tx, GatewayVerification verification, BillingInterval interval, string? planName, DateTime now)
+    {
+        _tx = tx;
+        _verification = verification;
+        Interval = interval;
+        _planName = planName;
+        _now = now;
+    }
+
+    internal BillingInterval Interval { get; }
+    internal Subscription? Subscription { get; set; }
+    internal DateTime RenewsAtUtc { get; set; }
+    internal EmailRecipient? Recipient { get; set; }
+
+    /// <summary>
+    /// Who to thank and what to tell them. Null only if the paying user cannot be found — there is then no
+    /// one to email, and a missing user for a settled payment is itself the caller's problem to notice.
+    /// </summary>
+    public FulfillmentReceipt? Receipt => Recipient is null
+        ? null
+        : new FulfillmentReceipt(
+            Recipient,
             new SubscriptionReceipt(
-                plan?.Name ?? "NoteFusion Pro", tx.AmountMinor, tx.Currency,
+                _planName ?? "NoteFusion Pro", _tx.AmountMinor, _tx.Currency,
                 // Null, not the sentinel: a lifetime purchase has no renewal date, and the receipt must
                 // not print 31 December 9999 at the customer who paid the most.
-                renewsAtUtc >= Subscription.LifetimeEndUtc ? null : renewsAtUtc,
-                tx.Reference));
+                RenewsAtUtc >= Subscription.LifetimeEndUtc ? null : RenewsAtUtc,
+                _tx.Reference));
+
+    /// <summary>Applies this payment's period to the existing membership row, from its current period end.</summary>
+    internal void Extend()
+    {
+        var sub = Subscription!;
+        if (sub.IsLifetime)
+        {
+            // Already sold outright. No later purchase can extend "forever", and advancing from the
+            // sentinel would overflow DateTime, so leave the window alone and let the payment record
+            // itself in the ledger. Once lifetime, always lifetime — a subsequent monthly charge
+            // must never shorten access that was already paid for in full.
+            RenewsAtUtc = sub.CurrentPeriodEndUtc;
+            sub.AttachPayment(_tx.Provider, _verification.ProviderSubscriptionRef, _now);
+            return;
+        }
+
+        // Renew from the later of "now" and the current period end, so an early renewal stacks the
+        // remaining time instead of discarding it.
+        var start = sub.CurrentPeriodEndUtc > _now ? sub.CurrentPeriodEndUtc : _now;
+        RenewsAtUtc = BillingPeriod.Advance(start, Interval);
+        sub.Renew(start, RenewsAtUtc, _now);
+
+        // Switching monthly to yearly (or back): the new period is the new plan's, so the
+        // membership is on that plan from here, and the remaining time stacks as above.
+        if (sub.PlanId != _tx.PlanId)
+            sub.SwitchPlan(_tx.PlanId, _now);
+
+        // Whoever this row belonged to before, it is paid for now. Matters for the account that was
+        // comped from the admin console and then bought: leaving the provider null would keep calling a
+        // paying customer's subscription a gift.
+        sub.AttachPayment(_tx.Provider, _verification.ProviderSubscriptionRef, _now);
     }
 }
 

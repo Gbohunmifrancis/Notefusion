@@ -51,6 +51,9 @@ public sealed class EmailSender : IEmailSender
         EmailRecipient to, SubscriptionExpiry expiry, CancellationToken ct = default)
         => TrySendAsync(_template.SubscriptionExpiring(to, expiry), ct);
 
+    public Task SendAccountAlreadyExistsAsync(EmailRecipient to, CancellationToken ct = default)
+        => TrySendAsync(_template.AccountAlreadyExists(to), ct);
+
     public Task SendPasswordResetAsync(EmailRecipient to, string resetUrl, CancellationToken ct = default)
         => TrySendAsync(_template.PasswordReset(to, resetUrl), ct);
 

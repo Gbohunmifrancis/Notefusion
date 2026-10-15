@@ -9,7 +9,10 @@ namespace NoteFusion.Api.Auth;
 /// </summary>
 public static class AuthorizationPolicies
 {
-    /// <summary>Requires an authenticated caller holding the Admin role claim.</summary>
+    /// <summary>
+    /// Requires an authenticated caller holding the Admin role claim who is, according to the database
+    /// (<see cref="CurrentAdminRequirement"/>), still an active administrator.
+    /// </summary>
     public const string Admin = "Admin";
 
     public static AuthorizationOptions AddNoteFusionPolicies(this AuthorizationOptions options)
@@ -18,7 +21,8 @@ public static class AuthorizationPolicies
         // is taken from the enum rather than a literal — the two cannot drift.
         options.AddPolicy(Admin, policy => policy
             .RequireAuthenticatedUser()
-            .RequireRole(nameof(UserRole.Admin)));
+            .RequireRole(nameof(UserRole.Admin))
+            .AddRequirements(new CurrentAdminRequirement()));
 
         return options;
     }

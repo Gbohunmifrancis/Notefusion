@@ -470,7 +470,10 @@
       });
     } catch (e) { /* the forms work without it */ }
   }
-  window.nfGoogleReady = initGoogle;
+  // The GSI tag is async: it either ran before this file (then google.accounts is here already) or its
+  // load event is still to come. A listener, not an onload="" attribute, so the CSP needs no inline script.
+  var gsiTag = document.getElementById("gsi-client");
+  if (gsiTag) gsiTag.addEventListener("load", initGoogle);
   if (window.google && google.accounts) initGoogle();
 
   $("form-login").addEventListener("submit", function (e) {
@@ -2105,25 +2108,21 @@
     });
   }
 
-  /** OpenSheetMusicDisplay, from the first CDN that answers; the same bundle the app's engraver inlines. */
-  var OSMD_URLS = [
-    "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js",
-    "https://unpkg.com/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js"
-  ];
+  /** OpenSheetMusicDisplay 2.1.2, the same bundle the app's engraver inlines. One pinned URL with its
+   *  SRI hash (the CSP allows no other script CDN); a changed file is refused rather than run. */
+  var OSMD_URL = "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js";
+  var OSMD_SRI = "sha384-12lItsNRZQLTAONzjzkiAB2oOKC7L9JPNqWBHro/ug0hLJZTmGxbr0V2JRt8KwC2";
   var osmdLoading = null;
   function ensureOsmd() {
     if (window.opensheetmusicdisplay) return Promise.resolve();
     if (osmdLoading) return osmdLoading;
-    osmdLoading = OSMD_URLS.reduce(function (chain, url) {
-      return chain.catch(function () {
-        return new Promise(function (resolve, reject) {
-          var tag = document.createElement("script");
-          tag.src = url; tag.async = true;
-          tag.onload = resolve; tag.onerror = function () { tag.remove(); reject(new Error("failed " + url)); };
-          document.head.appendChild(tag);
-        });
-      });
-    }, Promise.reject()).catch(function (err) { osmdLoading = null; throw err; });
+    osmdLoading = new Promise(function (resolve, reject) {
+      var tag = document.createElement("script");
+      tag.src = OSMD_URL; tag.async = true;
+      tag.integrity = OSMD_SRI; tag.crossOrigin = "anonymous";
+      tag.onload = resolve; tag.onerror = function () { tag.remove(); reject(new Error("failed " + OSMD_URL)); };
+      document.head.appendChild(tag);
+    }).catch(function (err) { osmdLoading = null; throw err; });
     return osmdLoading;
   }
   ensureOsmd().catch(function () { /* reported where the sheet is drawn */ });

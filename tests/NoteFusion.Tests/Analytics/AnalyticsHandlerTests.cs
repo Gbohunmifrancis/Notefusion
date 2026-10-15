@@ -482,7 +482,7 @@ public class AnalyticsHandlerTests
         await h.Db.SaveChangesAsync();
 
         // One sheet saved from a finished job, and one from before jobs were recorded.
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId)).Handle(
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate).Handle(
             new SaveTranscriptionCommand("Kept", "C", 120, "4/4", "<score/>", SampleNotes, 0.9, SourceJobId: "j-saved"), default);
         await SaveTranscription(h, userId);
 
@@ -530,7 +530,7 @@ public class AnalyticsHandlerTests
     }
 
     private static async Task SaveTranscription(TestHarness h, Guid userId)
-        => await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        => await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(new SaveTranscriptionCommand(
                 "Song", "C", 120, "4/4", "<score/>", SampleNotes, 0.95, SourceJobId: null), default);
 }

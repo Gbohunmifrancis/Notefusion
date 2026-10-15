@@ -113,6 +113,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer();
 builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtBearerOptions>();
 builder.Services.AddAuthorization(options => options.AddNoteFusionPolicies());
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<UserAccessCache>();
+builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, CurrentAdminHandler>();
 
 // CORS for the browser clients on their own origins: the admin dashboard and, since the password-reset
 // page moved onto the marketing site, notefusion.studio. Origins come from config
@@ -217,6 +220,9 @@ app.UseForwardedHeaders();
 // Outside the error boundary on purpose: the 500 that boundary logs is the line most worth being able to
 // find, and a scope opened downstream of it would not cover it.
 app.UseMiddleware<CorrelationIdMiddleware>();
+
+// Hardening headers on every response, error responses included, so it sits outside the error boundary.
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 // Terminal error boundary — wraps everything below.
 app.UseMiddleware<ExceptionHandlingMiddleware>();

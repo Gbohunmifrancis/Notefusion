@@ -25,6 +25,12 @@ public static class QuotaGateExtensions
     public static string UserKey(Guid userId) => $"user:{userId}";
 
     /// <summary>
+    /// The key a library save for one account holds: a Save and the auto-save sweep both take it, so the
+    /// "replace whatever this job already has" step cannot interleave and leave two sheets for one job.
+    /// </summary>
+    public static string SaveKey(Guid userId) => $"save:{userId}";
+
+    /// <summary>
     /// Takes every non-null key in ordinal order, so overlapping sets cannot deadlock, and hands back one
     /// lease that releases them all.
     /// </summary>

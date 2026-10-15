@@ -114,7 +114,7 @@ public sealed class ClearStalePaymentsCommandHandler
             if (staleProcessing.Count == 0)
                 break;
 
-            var receipts = new List<FulfillmentReceipt>();
+            var fulfillments = new List<Fulfillment>();
             foreach (var tx in staleProcessing)
             {
                 seen.Add(tx.Id);
@@ -138,9 +138,9 @@ public sealed class ClearStalePaymentsCommandHandler
                     if (string.Equals(v.Currency, tx.Currency, StringComparison.OrdinalIgnoreCase)
                         && v.AmountMinor >= tx.AmountMinor)
                     {
-                        var receipt = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
-                        if (receipt is not null)
-                            receipts.Add(receipt);
+                        var fulfillment = await PaymentFulfillment.ApplyAsync(_db, tx, v, now, ct);
+                        if (fulfillment is not null)
+                            fulfillments.Add(fulfillment);
                         fulfilled++;
                     }
                     else
@@ -168,10 +168,10 @@ public sealed class ClearStalePaymentsCommandHandler
                 }
             }
 
-            await _db.SaveChangesAsync(ct);
+            await PaymentFulfillment.SaveAsync(_db, fulfillments, ct);
 
             // Only after the commit: a receipt for a fulfilment that failed to save would be a lie.
-            foreach (var receipt in receipts)
+            foreach (var receipt in fulfillments.Select(f => f.Receipt).OfType<FulfillmentReceipt>())
                 await _email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
 
             if (staleProcessing.Count < BatchSize)

@@ -278,6 +278,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
@@ -867,6 +871,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("AccountExistsNoticeSentAtUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("CheckoutReminderSentAtUtc")
                         .HasColumnType("timestamp with time zone");

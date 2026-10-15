@@ -130,6 +130,40 @@ public sealed class BrandedEmailTemplate
                 "Signing in again on every device is expected: the change signs the old sessions out."));
     }
 
+    public EmailMessage AccountAlreadyExists(EmailRecipient to)
+    {
+        var name = FirstName(to);
+        var greeting = name is null ? "Hi there," : $"Hi {Encode(name)},";
+        var body = Paragraphs(greeting,
+            "Someone just tried to create a NoteFusion account with this email address. You already have one, "
+                + "so nothing was created and nothing about your account has changed.",
+            "If that was you, sign in instead. If you have forgotten your password, use "
+                + "<strong>Forgot password</strong> on the sign-in screen to choose a new one.")
+            + Callout(
+                "If it wasn't you, you can ignore this email — nobody can get into your account without your password.",
+                Blue);
+
+        return Compose(
+            to,
+            subject: "You already have a NoteFusion account",
+            preheader: "Sign in, or reset your password if you have forgotten it.",
+            heading: "You already have an account",
+            bodyHtml: body,
+            cta: new CallToAction("Sign in to NoteFusion", _settings.AppUrl),
+            textBody: Text(
+                greeting,
+                "",
+                "Someone just tried to create a NoteFusion account with this email address. You already have one, "
+                    + "so nothing was created and nothing about your account has changed.",
+                "",
+                "If that was you, sign in instead. If you have forgotten your password, use Forgot password on "
+                    + "the sign-in screen to choose a new one.",
+                "",
+                "If it wasn't you, you can ignore this email — nobody can get into your account without your password.",
+                "",
+                _settings.AppUrl));
+    }
+
     public EmailMessage PasswordReset(EmailRecipient to, string resetUrl)
     {
         var name = FirstName(to);

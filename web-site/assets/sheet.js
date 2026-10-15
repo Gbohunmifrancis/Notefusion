@@ -4,7 +4,9 @@
 (function () {
   "use strict";
   var API = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "http://localhost:5080" : "https://api.notefusion.studio";
-  var OSMD = ["https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js", "https://unpkg.com/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js"];
+  // One pinned engraver URL with its SRI hash (the same file app.js loads; the CSP allows no other CDN).
+  var OSMD_URL = "https://cdn.jsdelivr.net/npm/opensheetmusicdisplay@2.1.2/build/opensheetmusicdisplay.min.js";
+  var OSMD_SRI = "sha384-12lItsNRZQLTAONzjzkiAB2oOKC7L9JPNqWBHro/ug0hLJZTmGxbr0V2JRt8KwC2";
   var C = window.NfChoir, N = window.NfChords;
   function $(id) { return document.getElementById(id); }
   function show(el) { el.classList.remove("hidden"); }
@@ -162,9 +164,11 @@
 
   function ensureOsmd() {
     if (window.opensheetmusicdisplay) return Promise.resolve();
-    return OSMD.reduce(function (p, url) {
-      return p.catch(function () { return new Promise(function (res, rej) { var s = document.createElement("script"); s.src = url; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); });
-    }, Promise.reject()).then(function () { if (!window.opensheetmusicdisplay) throw new Error("engraver"); });
+    return new Promise(function (res, rej) {
+      var s = document.createElement("script");
+      s.src = OSMD_URL; s.integrity = OSMD_SRI; s.crossOrigin = "anonymous";
+      s.onload = res; s.onerror = rej; document.head.appendChild(s);
+    }).then(function () { if (!window.opensheetmusicdisplay) throw new Error("engraver"); });
   }
   function engrave(container, xml, partNames) {
     container.innerHTML = "";

@@ -29,7 +29,8 @@ public sealed class UpdateTranscriptionNotesCommandValidator : AbstractValidator
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.Notes)
             .NotEmpty()
-            .WithMessage("A transcription must keep at least one note.");
+            .WithMessage("A transcription must keep at least one note.")
+            .WithinNoteCount();
 
         RuleForEach(x => x.Notes).ChildRules(note =>
         {

@@ -86,12 +86,12 @@ public sealed class ReconcilePaymentCommandHandler : IRequestHandler<ReconcilePa
             return BillingErrors.VerificationMismatchDetail(tx.AmountMinor, tx.Currency, v.AmountMinor, v.Currency, v.Raw);
         }
 
-        var receipt = await PaymentFulfillment.ApplyAsync(db, tx, v, clock.UtcNow, ct);
-        await db.SaveChangesAsync(ct);
+        var fulfillment = await PaymentFulfillment.ApplyAsync(db, tx, v, clock.UtcNow, ct);
+        await PaymentFulfillment.SaveAsync(db, fulfillment, ct);
 
         // The webhook we never received would have sent this; reconciliation is that path's stand-in,
         // so it owes the same receipt. Best-effort and post-commit, for the same reasons as there.
-        if (receipt is not null)
+        if (fulfillment?.Receipt is { } receipt)
             await email.SendSubscriptionReceiptAsync(receipt.Recipient, receipt.Receipt, ct);
 
         return Result.Success();
