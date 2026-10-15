@@ -3,15 +3,19 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Infrastructure.Persistence;
+using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Infrastructure.Transcriptions.Workers;
 
 /// <summary>
 /// Sweeps transcription jobs that have not reached a terminal state and hands each to
 /// <see cref="NotifyTranscriptionReadyCommand"/>, which asks the ML service where it got to and owns
-/// the caching, trial-charging and push.
+/// the caching, trial-charging and push; does the same for open website previews
+/// (<see cref="SettlePreviewJobCommand"/>); then sends the failed-transcription tips email
+/// (<see cref="EmailFailedTranscriptionTipsCommand"/>).
 /// </summary>
 /// <remarks>
 /// <para>
@@ -109,31 +113,69 @@ internal sealed class TranscriptionCompletionWorker : BackgroundService
             .ToListAsync(ct);
 
         foreach (var id in open)
+            await FollowUpAsync(db, id, () => sender.Send(new NotifyTranscriptionReadyCommand(id), ct), now, ct);
+
+        // Website previews, the same way: until the sweep looked at them only the visitor's own poll ever
+        // finished one, so a closed tab left a preview "still running" for good.
+        var previews = await db.PreviewJobs
+            .Where(p => p.CompletedAtUtc == null && !skipped.Contains(p.Id))
+            .OrderBy(p => p.CreatedAtUtc)
+            .Take(BatchSize)
+            .Select(p => p.Id)
+            .ToListAsync(ct);
+
+        foreach (var id in previews)
+            await FollowUpAsync(db, id, () => sender.Send(new SettlePreviewJobCommand(id), ct), now, ct);
+
+        // Then a word to anyone whose transcription failed, once the jobs above are closed.
+        try
         {
-            // Each job on its own: one that throws is logged, its staged changes are dropped so the next
-            // job's save cannot commit them, and it sits out a few sweeps so it cannot block the batch.
-            try
-            {
-                var result = await sender.Send(new NotifyTranscriptionReadyCommand(id), ct);
-                if (result.IsFailure)
-                {
-                    _backoff[id] = now + FailedBackoff;
-                    _logger.LogWarning("Transcription follow-up for {Id} failed: {Error}", id, result.Error.Message);
-                }
-            }
-            catch (OperationCanceledException) when (ct.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception ex)
+            var emailed = await sender.Send(new EmailFailedTranscriptionTipsCommand(), ct);
+            if (emailed.IsSuccess && emailed.Value > 0)
+                _logger.LogInformation("Emailed {Count} account(s) tips after a failed transcription.", emailed.Value);
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed-transcription emails threw.");
+        }
+        finally
+        {
+            db.ChangeTracker.Clear();
+        }
+    }
+
+    /// <summary>
+    /// One job on its own: one that throws is logged, its staged changes are dropped so the next job's save
+    /// cannot commit them, and it sits out a few sweeps so it cannot block the batch.
+    /// </summary>
+    private async Task FollowUpAsync(
+        ApplicationDbContext db, Guid id, Func<Task<Result>> send, DateTime now, CancellationToken ct)
+    {
+        try
+        {
+            var result = await send();
+            if (result.IsFailure)
             {
                 _backoff[id] = now + FailedBackoff;
-                _logger.LogError(ex, "Transcription follow-up for {Id} threw; skipping it for a while.", id);
+                _logger.LogWarning("Transcription follow-up for {Id} failed: {Error}", id, result.Error.Message);
             }
-            finally
-            {
-                db.ChangeTracker.Clear();
-            }
+        }
+        catch (OperationCanceledException) when (ct.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _backoff[id] = now + FailedBackoff;
+            _logger.LogError(ex, "Transcription follow-up for {Id} threw; skipping it for a while.", id);
+        }
+        finally
+        {
+            db.ChangeTracker.Clear();
         }
     }
 }

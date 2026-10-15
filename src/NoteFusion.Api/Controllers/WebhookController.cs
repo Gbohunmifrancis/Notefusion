@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Transcriptions.Commands;
 using NoteFusion.Infrastructure.Persistence;
 
@@ -42,7 +43,15 @@ public sealed class WebhookController : ControllerBase
 
         var job = await _db.TranscriptionJobs.FirstOrDefaultAsync(j => j.JobId == jobId, ct);
         if (job is null)
-            return NotFound();
+        {
+            // A website preview has no account job row. It used to be answered 404 here, so a preview whose
+            // visitor had closed the tab was never recorded as finished and showed as running for good.
+            var previewId = await _db.PreviewJobs.Where(p => p.JobId == jobId).Select(p => (Guid?)p.Id).FirstOrDefaultAsync(ct);
+            if (previewId is null)
+                return NotFound();
+            var settled = await _sender.Send(new SettlePreviewJobCommand(previewId.Value), ct);
+            return settled.IsSuccess ? Ok() : BadRequest(settled.Error);
+        }
 
         // Fire the command! It will poll the ML service for the actual result and push it to the user.
         var result = await _sender.Send(new NotifyTranscriptionReadyCommand(job.Id), ct);

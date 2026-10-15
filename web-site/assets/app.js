@@ -1363,9 +1363,13 @@
       : "Transcribed with NoteFusion.";
     var chips = $("r-chips");
     chips.innerHTML = "";
-    [result.key, result.tempo + " BPM", result.timeSignature, Math.round((result.overallConfidence || 0) * 100) + "% confidence"].forEach(function (text) {
+    [result.key, result.tempo + " BPM", result.timeSignature].forEach(function (text) {
       var c = document.createElement("span"); c.className = "chip"; c.textContent = text; chips.appendChild(c);
     });
+    // No percentage: a plain note, and only when there is something to do (assets/confidence.js).
+    // This page does not mark individual notes, so the note never points at highlights.
+    var confNote = window.NfConfidence ? window.NfConfidence.note(result.overallConfidence, false) : null;
+    if (confNote) alertIn($("r-confidence"), "info", confNote); else hide($("r-confidence"));
     var trunc = $("r-truncated");
     if (result.source && result.source.preview && result.source.notice) {
       alertIn(trunc, "info", result.source.notice);

@@ -26,6 +26,8 @@
  * brand hex into a screen, reach for `useColors()` instead.
  */
 
+import { CONFIDENCE } from "../lib/confidence";
+
 // ─── Colours ────────────────────────────────────────────────────────────────
 
 export const colors = {
@@ -435,8 +437,8 @@ export const motion = {
  * Pass the active palette in dark mode — the light hues lose contrast on navy.
  */
 export function confidenceColor(conf: number, palette: Palette = colors): string {
-  if (conf >= 0.75) return palette.confHigh;
-  if (conf >= 0.5) return palette.confMed;
+  if (conf >= CONFIDENCE.clear) return palette.confHigh;
+  if (conf >= CONFIDENCE.hard) return palette.confMed;
   return palette.confLow;
 }
 
@@ -445,8 +447,8 @@ export function confidenceColor(conf: number, palette: Palette = colors): string
  * PRD requirement: explicit wording so users know when to double-check.
  */
 export function confidenceLabel(conf: number): string {
-  if (conf >= 0.75) return "High confidence";
-  if (conf >= 0.5) return "Fair — worth a review";
+  if (conf >= CONFIDENCE.clear) return "High confidence";
+  if (conf >= CONFIDENCE.hard) return "Fair — worth a review";
   return "Low — please double-check";
 }
 

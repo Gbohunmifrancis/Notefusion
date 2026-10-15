@@ -119,4 +119,11 @@ public interface IEmailSender
     /// Sends a branded confirmation email to a newly registered waitlist subscriber.
     /// </summary>
     Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default);
+
+    /// <summary>
+    /// Sent after a transcription of theirs failed (at most once a day): it cost nothing, three things that
+    /// make the next one work, and the way back to the app.
+    /// </summary>
+    /// <param name="onPro">Pro accounts are told their allowance is untouched rather than their free tries.</param>
+    Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default);
 }

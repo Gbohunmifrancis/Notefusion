@@ -133,6 +133,12 @@ public class User : BaseEntity
     public DateTime? CheckoutReminderSentAtUtc { get; private set; }
 
     /// <summary>
+    /// When we last emailed this account tips after a transcription of theirs failed. Null if never. Claimed by
+    /// a conditional update before the send, so the email goes out at most once a day however many fail.
+    /// </summary>
+    public DateTime? FailedTranscriptionEmailSentAtUtc { get; private set; }
+
+    /// <summary>
     /// When this address was last told that somebody tried to register it again. Null if never. Claimed
     /// with a conditional update by <c>RegisterCommand</c>, which sends at most one per
     /// <see cref="AccountExistsNoticeCooldown"/>.

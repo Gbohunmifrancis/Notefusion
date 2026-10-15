@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Preview.Commands;
 using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Enums;
@@ -37,20 +38,21 @@ public sealed class GetPreviewJobQueryHandler : IRequestHandler<GetPreviewJobQue
 
         var result = await _api.GetJobAsync(request.JobId, cancellationToken);
         if (result.IsFailure)
+        {
+            // The worker does not know a preview that never ended: it restarted under it. Recorded as failed,
+            // so it stops counting as running, and the browser is told plainly instead of polling a 404.
+            if (result.Error.Type == ErrorType.NotFound && preview.CompletedAtUtc is null)
+            {
+                await PreviewOutcome.RecordAsync(_db, preview, null, PreviewOutcome.LostReason, _clock.UtcNow, cancellationToken);
+                return new TranscriptionJobDto(request.JobId, TranscriptionStatus.Failed, 0, null,
+                    "The transcription service restarted while working on this, so the preview was lost. Create a free account to try it again.");
+            }
             return result;
+        }
 
         var job = result.Value;
         if (job.Status is TranscriptionStatus.Done or TranscriptionStatus.Failed)
-        {
-            if (preview.Complete(job.Status == TranscriptionStatus.Done, job.Result?.Source?.Title ?? job.Source?.Title, _clock.UtcNow))
-            {
-                if (job.Result is { } finished)
-                    await Activity.ActivityRecorder.FinishAsync(_db, request.JobId, finished, _clock.UtcNow, cancellationToken);
-                else
-                    await Activity.ActivityRecorder.FailAsync(_db, request.JobId, job.Error, _clock.UtcNow, cancellationToken);
-                await _db.SaveChangesAsync(cancellationToken);
-            }
-        }
+            await PreviewOutcome.RecordAsync(_db, preview, job, job.Error, _clock.UtcNow, cancellationToken);
         return job.Result is null ? job : job with { Result = ProGate.ForFree(job.Result) };
     }
 }

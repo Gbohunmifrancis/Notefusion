@@ -34,11 +34,18 @@ public sealed record NotifyTranscriptionReadyCommand(Guid JobRowId) : IRequest<R
     /// lost — a dyno cycled mid-transcription, most likely — rather than merely slow.
     /// </summary>
     public static readonly TimeSpan GiveUpAfter = TrialUsage.RunningFor;
+
+    /// <summary>A job older than this is closed without a push when it fails: the user has long moved on.</summary>
+    public static readonly TimeSpan TooOldToMention = TimeSpan.FromDays(1);
 }
 
 public sealed class NotifyTranscriptionReadyCommandHandler
     : IRequestHandler<NotifyTranscriptionReadyCommand, Result>
 {
+    /// <summary>What the user is told about a job the worker no longer knows.</summary>
+    internal const string LostReason =
+        "The transcription service restarted while working on this, so it was lost. Nothing was charged — please try it again.";
+
     private readonly IApplicationDbContext _db;
     private readonly ITranscriptionApi _api;
     private readonly IDateTimeProvider _clock;
@@ -68,14 +75,30 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         var now = _clock.UtcNow;
         var expired = now - job.CreatedAtUtc > NotifyTranscriptionReadyCommand.GiveUpAfter;
 
-        var poll = await _api.GetJobAsync(job.JobId, ct);
+        Result<TranscriptionJobDto> poll;
+        try
+        {
+            poll = await _api.GetJobAsync(job.JobId, ct);
+        }
+        catch (Exception) when (expired && !ct.IsCancellationRequested)
+        {
+            // The last ask of a job past its deadline timed out (the HTTP client throws rather than answers).
+            // No answer at the deadline is the same as a lost job: closing it here is what stops a worker
+            // that hangs from keeping the job open — and holding a free place or a song credit — forever.
+            return await CloseAsFailedAsync(job, null, now, ct);
+        }
 
-        // Deliberately not reading anything into *which* failure this is. The API client cannot tell a
-        // 404 from a 502 — both come back as ErrorType.Failure with a status code in the message — so
-        // inferring "the job is gone" from an error string would break the day that string changes.
-        // Either the job is young enough to try again next tick, or it is old enough to be lost.
         if (poll.IsFailure)
+        {
+            // A 404 is the worker saying it does not know the job: it restarted under it without a journal
+            // (the queue is in memory) and a journaled restart replays before it answers anything, so the
+            // job is not coming back. Closed now, as the client's poll closes it, rather than holding the
+            // user's place for the rest of the deadline. Any other failure (unreachable, a 5xx) proves
+            // nothing: a young job is tried again next tick, one past the deadline is given up on.
+            if (poll.Error.Type == ErrorType.NotFound)
+                return await CloseAsFailedAsync(job, LostReason, now, ct);
             return expired ? await CloseAsFailedAsync(job, null, now, ct) : Result.Success();
+        }
 
         return poll.Value.Status switch
         {
@@ -143,6 +166,11 @@ public sealed class NotifyTranscriptionReadyCommandHandler
         await Activity.ActivityRecorder.FailAsync(
             _db, job.JobId, reason ?? "No result after 30 minutes; the job was lost.", now, ct);
         await _db.SaveChangesAsync(ct);
+
+        // A job from days ago that a sweep is only now clearing (a backlog the sweep could not close before)
+        // is closed quietly: "your transcription failed" about something the user has long forgotten is noise.
+        if (now - job.CreatedAtUtc > NotifyTranscriptionReadyCommand.TooOldToMention)
+            return Result.Success();
 
         var dto = new TranscriptionJobDto(job.JobId, TranscriptionStatus.Failed, 1, null, reason);
         await _notifier.NotifyJobCompletedAsync(job.UserId, dto, ct);

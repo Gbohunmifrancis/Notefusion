@@ -915,6 +915,9 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<int>("FailedLoginAttempts")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("FailedTranscriptionEmailSentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime?>("FreeHarmonyUsedAtUtc")
                         .HasColumnType("timestamp with time zone");
 

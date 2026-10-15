@@ -44,7 +44,9 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (`_stillness`). A sung note's confidence is how near its tuned pitch
   sits to the note written (`_pitch_confidence`), never loudness, and the sheet's overall
   confidence weighs the notes by length and by the doh confidence (the uncapped margin,
-  `headline_confidence`, until the capped one is calibrated). Tempo level: every candidate
+  `headline_confidence`, until the capped one is calibrated); users never see that number — the
+  clients show a plain note only below "clear" (`web-site/assets/confidence.js`, mobile
+  `lib/confidence.ts`), the admin console keeps it. Tempo level: every candidate
   is measured at its best nearby tempo and phase before the grid filter (`_level_residual`), and
   a tracked beat anchors beat 0 only within a quarter of a beat of the first note
   (`_beat_origin`). Accuracy is
@@ -115,7 +117,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
 - A free account gets 3 transcriptions, ever (`FreeTier`), counted per account and per device from
   `TranscriptionJob` rows (`TrialUsage`): charged when a job finishes, and a job still running holds its
-  place until it settles, so starting several at once cannot pass the gate. Every metered submit (uploads,
+  place until it settles, so starting several at once cannot pass the gate. The completion sweep
+  (`TranscriptionCompletionWorker`, every 5 min) closes uncharged a job the worker answers 404 for
+  (lost in a restart) and one still open past `TrialUsage.RunningFor`, and then emails a failed job's
+  owner tips at most once a day (`EmailFailedTranscriptionTipsCommand`). Every metered submit (uploads,
   links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
   (`IQuotaGate`: `user:{id}`, or `device:`/`ip:` for previews); the in-process one assumes a single API
   instance — scaling out needs a Postgres advisory lock instead. The allowance is 3 plus every transcription
@@ -146,7 +151,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - The website is the top of the funnel: `POST /api/preview` / `/api/preview/link` make an anonymous
   30-second preview (one per `X-Device-Id`, ever, none without one or on a device an account has used, and
   10 a day per address, via `PreviewJob` rows), polled at
-  `GET /api/preview/jobs/{id}` and claimed by the account that signs up (`POST …/claim`). Users carry
+  `GET /api/preview/jobs/{id}` (and settled by the worker's webhook and the completion sweep,
+  `SettlePreviewJobCommand`, so a closed tab does not leave one running) and claimed by the account that signs up (`POST …/claim`). Users carry
   a `SignupSource` ("web"/"mobile"), sheets count `ShareViews`, and `GetAnalyticsOverviewQuery`
   turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
