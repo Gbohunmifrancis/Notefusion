@@ -328,6 +328,25 @@
   var epoch = 0;          // bumped when the work on screen is dropped, so late replies are ignored
   var submitting = false; // an upload is on its way: a second drop or take waits for it
   var transposing = false;
+  var choir = null;       // ChoirDto: the choir this account directs or sings in, once asked for
+
+  // ── A choir invite: /app?join=CODE ───────────────────────────────────────
+  // Kept across the sign-in (or the sign-up and its emailed code) so the join happens once signed in.
+  var JOIN_KEY = "nf.web.join", JOIN_TTL = 24 * 60 * 60 * 1000;
+  (function rememberInvite() {
+    var code = new URLSearchParams(location.search).get("join");
+    if (!code) return;
+    try { localStorage.setItem(JOIN_KEY, JSON.stringify({ code: code.slice(0, 40), at: Date.now() })); } catch (e) { /* private mode: the join field still works */ }
+  })();
+  function pendingJoin() {
+    try {
+      var p = JSON.parse(localStorage.getItem(JOIN_KEY) || "null");
+      return p && p.code && Date.now() - p.at < JOIN_TTL ? String(p.code) : null;
+    } catch (e) { return null; }
+  }
+  function clearJoin() { try { localStorage.removeItem(JOIN_KEY); } catch (e) { /* ignore */ } }
+  /** The address a director shares: the web app signs the singer in (or up), then joins them. */
+  function inviteUrl(code) { return "https://notefusion.studio/app?join=" + encodeURIComponent(code); }
 
   // ── Auth view ────────────────────────────────────────────────────────────
   /**
@@ -348,7 +367,7 @@
   }
   /** Signed out here or in another tab, or the session ran out: nothing of the account stays on screen. */
   function forgetAccount() {
-    me = null; sub = null; libraryCache = null; libFolder = null;
+    me = null; sub = null; libraryCache = null; libFolder = null; choir = null;
     stopPaymentWatch(); hide($("top-nav")); document.body.classList.remove("is-pro");
     $("recents-list").innerHTML = "";
   }
@@ -361,6 +380,11 @@
     hide($("boot-skel")); hide($("view-app")); showAccountUi(false); show($("view-auth")); hide($("auth-back"));
     document.body.classList.add("guest", "auth-only"); hide($("topbar-signin")); closeDrawer(); hide($("onb"));
     if (new URLSearchParams(location.search).get("signup")) selectAuthTab("register");
+    // Opened from a choir invite: say what happens after signing in, so the form is not a dead end.
+    if (pendingJoin()) {
+      $("auth-join").textContent = "You're invited to join a choir on NoteFusion. Sign in, or create a free account, and you'll join it straight after.";
+      show($("auth-join"));
+    } else hide($("auth-join"));
     window.scrollTo(0, 0);
   }
   function leaveAuth() { document.body.classList.remove("auth-only"); hide($("view-auth")); }
@@ -720,7 +744,7 @@
         var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
         var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
         var m = document.createElement("div"); m.className = "meta";
-        m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "");
+        m.textContent = [it.key, it.tempoBpm ? it.tempoBpm + " BPM" : "", it.timeSignature, new Date(it.createdAtUtc).toLocaleDateString()].filter(Boolean).join(" · ") + (it.shareToken ? " · shared" : "") + (it.sharedWithChoir ? " · in the choir library" : "");
         card.appendChild(m);
         if (it.folder) { var tag = document.createElement("span"); tag.className = "lib-folder-tag"; tag.textContent = it.folder; card.appendChild(tag); }
         var a = document.createElement("div"); a.className = "actions";
@@ -739,11 +763,91 @@
           request("/api/library/" + it.id, { method: "DELETE" }).then(function () { libraryCache = null; loadLibrary(true); })
             .catch(function (err) { alertIn($("app-alert"), "danger", "Could not delete: " + (err.message || err)); del.disabled = false; });
         });
-        a.appendChild(open); a.appendChild(file); a.appendChild(del); card.appendChild(a);
+        a.appendChild(open); a.appendChild(file);
+        if (sub && sub.choirName) a.appendChild(choirShareButton(it));
+        a.appendChild(del); card.appendChild(a);
         list.appendChild(card);
       });
       filterLibrary();
-    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); });
+    }).catch(function (err) { hide(skel); show(empty); $("lib-empty-text").textContent = "Your library could not be loaded: " + (err.message || err); })
+      .then(renderChoirLibrary);
+  }
+
+  // ── The choir's shared library ──────────────────────────────────────────
+  /** "Share with choir" on one of the account's own sheets, or "In choir library" to take it out again. */
+  function choirShareButton(it) {
+    var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm";
+    function paint() { b.textContent = it.sharedWithChoir ? "In choir library ✓" : "Share with choir"; b.title = it.sharedWithChoir ? "Take it out of the choir library" : "Share it with everyone in " + sub.choirName; }
+    paint();
+    b.addEventListener("click", function () {
+      var on = !it.sharedWithChoir;
+      b.disabled = true;
+      request("/api/choirs/mine/sheets/" + encodeURIComponent(it.id), { method: on ? "PUT" : "DELETE" })
+        .then(function () { it.sharedWithChoir = on; paint(); track(on ? "Shared with choir" : "Unshared from choir"); if (on) sfx.play("saved"); renderChoirLibrary(); })
+        .catch(function (err) { alertIn($("app-alert"), "danger", "Could not share with your choir: " + (err.message || err)); })
+        .finally(function () { b.disabled = false; });
+    });
+    return b;
+  }
+  /** The sheets the choir shared, under the account's own; only while the choir's plan runs. */
+  function renderChoirLibrary() {
+    var box = $("choir-lib");
+    if (!sub || !sub.choirName) { hide(box); return; }
+    $("choir-lib-name").textContent = sub.choirName;
+    return request("/api/choirs/mine/sheets").then(function (items) {
+      var list = $("choir-lib-list"); list.textContent = "";
+      items = items || [];
+      if (items.length) { hide($("choir-lib-empty")); show(list); } else { show($("choir-lib-empty")); hide(list); }
+      items.forEach(function (it) {
+        var card = document.createElement("div"); card.className = "lib-item";
+        var badge = document.createElement("span"); badge.className = "lib-key"; badge.textContent = String(it.key || "♪").replace(/\s*(major|minor)$/i, function (m) { return /minor/i.test(m) ? "m" : ""; }); card.appendChild(badge);
+        var h = document.createElement("h3"); h.textContent = it.title || "Untitled"; card.appendChild(h);
+        var m = document.createElement("div"); m.className = "meta";
+        var opening = (it.preview || []).map(function (n) { return (n.solfa || "") + (n.octaveMark || ""); }).join(" ");
+        m.textContent = [it.mine ? "Shared by you" : "Shared by " + it.sharedBy, it.key, opening].filter(Boolean).join(" · ");
+        card.appendChild(m);
+        var a = document.createElement("div"); a.className = "actions";
+        var open = document.createElement("button"); open.className = "btn btn-primary btn-sm"; open.type = "button"; open.textContent = "Open";
+        open.addEventListener("click", function () { openChoirSheet(it.id); });
+        a.appendChild(open);
+        if (it.canUnshare) {
+          var out = document.createElement("button"); out.className = "btn btn-ghost btn-sm"; out.type = "button"; out.textContent = "Take out";
+          out.title = it.mine ? "It stays in your own library" : "It stays in " + it.sharedBy + "'s own library";
+          out.addEventListener("click", function () {
+            out.disabled = true;
+            request("/api/choirs/mine/sheets/" + encodeURIComponent(it.id), { method: "DELETE" })
+              .then(function () { track("Unshared from choir"); if (it.mine) libraryCache = null; return it.mine ? loadLibrary(true) : renderChoirLibrary(); })
+              .catch(function (err) { alertIn($("app-alert"), "danger", "Could not take it out: " + (err.message || err)); out.disabled = false; });
+          });
+          a.appendChild(out);
+        }
+        card.appendChild(a);
+        list.appendChild(card);
+      });
+      show(box);
+    }).catch(function () { hide(box); });
+  }
+  /** A choir sheet, read-only, in the result view: saving it makes the singer's own copy, never touches the original. */
+  function openChoirSheet(id) {
+    stopPolling();
+    var at = epoch;
+    request("/api/choirs/mine/sheets/" + encodeURIComponent(id)).then(function (t) {
+      if (at !== epoch) return;
+      var result = {
+        key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
+        overallConfidence: 1, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
+        chords: t.chords || null, chordsSource: t.chords && t.chords.length ? "heard" : null,
+        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null
+      };
+      current = { jobId: null, kind: "choir", source: null, result: result, startedAt: Date.now(), savedId: null, title: t.title, shareToken: null, lyrics: t.lyrics || "", semitones: 0 };
+      setView("transcribe");
+      hide($("progress"));
+      $("sheet-parts").innerHTML = "";
+      $("save-title").value = t.title || "";
+      track("Opened choir sheet");
+      showResult(result);
+      $("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    }).catch(function (err) { if (at === epoch) alertIn($("app-alert"), "danger", "Could not open that sheet: " + (err.message || err)); });
   }
   $("lib-empty-go").addEventListener("click", function () { setView("transcribe"); selectSource("link"); $("link-url").focus(); });
   $("lib-search").addEventListener("input", filterLibrary);
@@ -787,8 +891,134 @@
     var since = me && (me.createdAtUtc || me.createdAt);
     $("acct-since").textContent = since ? new Date(since).toLocaleDateString(undefined, { year: "numeric", month: "short" }) : "—";
     fetchLibrary().then(function (items) { $("acct-saved").textContent = String(items.length); }, function () { $("acct-saved").textContent = "—"; });
+    renderChoirPanel();
   }
   $("acct-upgrade").addEventListener("click", openUpgrade);
+
+  // ── My choir (Account & settings) ───────────────────────────────────────
+  /** The account's choir, as director or singer; null when it is in none (the API answers 404). */
+  function fetchChoir() {
+    return request("/api/choirs/mine").then(function (c) { choir = c; return c; }, function (err) {
+      if (err && err.status === 404) { choir = null; return null; }
+      throw err;
+    });
+  }
+  function longDate(iso) { return iso ? new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : ""; }
+  function renderChoirPanel() {
+    return fetchChoir().then(function (c) {
+      if (!c) { show($("choir-none")); hide($("choir-card")); return; }
+      hide($("choir-none")); show($("choir-card"));
+      var director = c.role === "director";
+      $("choir-title").textContent = director ? c.name + " · you direct it" : c.name + " · directed by " + c.directorName;
+      var st = $("choir-status"); st.textContent = c.isActive ? "Active" : "Ended"; st.className = "pill " + (c.isActive ? "pill-active" : "pill-ended");
+      if (director) { show($("choir-rename-row")); if (document.activeElement !== $("choir-name")) $("choir-name").value = c.name; }
+      else hide($("choir-rename-row"));
+      $("choir-seats").textContent = c.seatsUsed + " of " + c.seatsTotal;
+      fillMeter($("choir-seats-fill"), { left: c.seatsUsed, total: c.seatsTotal });
+      $("choir-note").textContent = c.isActive
+        ? "Pro for " + (director ? "you and " : "") + "every singer until " + longDate(c.currentPeriodEndUtc) + ". " + c.songCreditsRemaining + " of " + c.songCreditsTotal + " choir songs left this month."
+        : "The choir's plan ended on " + longDate(c.currentPeriodEndUtc) + "." + (director ? " Renew it to give your singers Pro again." : " Ask your director to renew it.");
+      if (director && c.inviteCode) {
+        $("choir-invite-url").value = inviteUrl(c.inviteCode);
+        $("choir-invite-code").textContent = c.inviteCode;
+        show($("choir-invite-row"));
+      } else hide($("choir-invite-row"));
+      director && !c.isActive ? show($("choir-renew")) : hide($("choir-renew"));
+      director ? hide($("choir-leave")) : show($("choir-leave"));
+      if (director) loadChoirMembers(); else hide($("choir-members-row"));
+    }).catch(function () { /* the panel keeps what it showed; the next visit asks again */ });
+  }
+  function loadChoirMembers() {
+    request("/api/choirs/mine/members").then(function (list) {
+      var ul = $("choir-members"); ul.textContent = "";
+      (list || []).forEach(function (m) {
+        var li = document.createElement("li");
+        var name = document.createElement("span"); name.textContent = m.name || "A singer";
+        var rm = document.createElement("button"); rm.type = "button"; rm.className = "btn btn-ghost btn-sm btn-danger"; rm.textContent = "Remove";
+        rm.setAttribute("aria-label", "Remove " + (m.name || "this singer") + " from the choir");
+        rm.addEventListener("click", function () {
+          if (!confirm("Remove " + (m.name || "this singer") + " from the choir? They lose Pro through it, and the sheets they shared leave the choir library.")) return;
+          rm.disabled = true;
+          request("/api/choirs/mine/members/" + encodeURIComponent(m.userId), { method: "DELETE" })
+            .then(function () { track("Removed choir singer"); renderChoirPanel(); })
+            .catch(function (err) { alertIn($("app-alert"), "danger", "Could not remove the singer: " + (err.message || err)); rm.disabled = false; });
+        });
+        li.appendChild(name); li.appendChild(rm); ul.appendChild(li);
+      });
+      if (!list || !list.length) {
+        var none = document.createElement("li"); none.className = "muted"; none.textContent = "No one has joined yet. Send your singers the invite link.";
+        ul.appendChild(none);
+      }
+      show($("choir-members-row"));
+    }).catch(function () { hide($("choir-members-row")); });
+  }
+  /** Joins with a code; once in, the account is Pro, so everything that shows the plan is read again. */
+  function joinChoir(code) {
+    $("choir-join-status").textContent = "";
+    return request("/api/choirs/join", { method: "POST", body: { code: code } }).then(function (c) {
+      choir = c;
+      track("Joined choir");
+      $("choir-join-code").value = "";
+      return loadAccount().then(function () {
+        setView("account");
+        alertIn($("app-alert"), "success", "Welcome to " + c.name + ". You have Pro while the choir's plan runs, and its shared sheets are under Transcriptions.");
+        sfx.play("saved");
+      });
+    }).catch(function (err) {
+      var text = (err && err.message) || "We couldn't join that choir just now.";
+      $("choir-join-status").textContent = text;
+      alertIn($("app-alert"), "danger", "Could not join the choir: " + text);
+    });
+  }
+  /** After signing in from an invite link: asked once, because an account sings in one choir. */
+  function maybeJoinFromInvite() {
+    var code = pendingJoin();
+    dropParam("join");
+    if (!code) return;
+    clearJoin();
+    if (!confirm("Join the choir with code " + code + "? You'll have Pro while its plan runs. An account can be in one choir at a time.")) return;
+    joinChoir(code);
+  }
+  $("choir-join-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var code = $("choir-join-code").value.trim();
+    // A pasted invite link works as well as the bare code.
+    var fromLink = /[?&]join=([^&#\s]+)/.exec(code);
+    if (fromLink) code = decodeURIComponent(fromLink[1]);
+    if (!code) { $("choir-join-status").textContent = "Enter the code your choir director gave you."; return; }
+    var btn = $("choir-join-btn"); btn.disabled = true;
+    joinChoir(code).finally(function () { btn.disabled = false; });
+  });
+  $("choir-rename-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = $("choir-name").value.trim();
+    if (!name || (choir && name === choir.name)) return;
+    var btn = $("choir-name-save"); btn.disabled = true;
+    request("/api/choirs/mine", { method: "PUT", body: { name: name } })
+      .then(function (c) { choir = c; track("Renamed choir"); return loadAccount().then(renderChoirPanel); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not rename the choir: " + (err.message || err)); })
+      .finally(function () { btn.disabled = false; });
+  });
+  $("choir-invite-copy").addEventListener("click", function () {
+    var url = $("choir-invite-url").value, btn = $("choir-invite-copy");
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () {
+      track("Copied choir invite"); btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy link"; }, 1500);
+    }, function () { $("choir-invite-url").select(); });
+  });
+  $("choir-invite-new").addEventListener("click", function () {
+    if (!confirm("Make a new invite code? The old code and link stop working at once. Singers already in the choir stay in.")) return;
+    request("/api/choirs/mine/invite", { method: "POST" })
+      .then(function (c) { choir = c; track("New choir invite code"); renderChoirPanel(); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not make a new code: " + (err.message || err)); });
+  });
+  $("choir-leave").addEventListener("click", function () {
+    if (!confirm("Leave the choir? You lose Pro through it, and the sheets you shared leave its library. They stay in yours.")) return;
+    request("/api/choirs/leave", { method: "POST" })
+      .then(function () { choir = null; track("Left choir"); libraryCache = null; return loadAccount().then(renderAccount); })
+      .catch(function (err) { alertIn($("app-alert"), "danger", "Could not leave the choir: " + (err.message || err)); });
+  });
+  $("choir-plan-open").addEventListener("click", function () { openUpgrade(); });
+  $("choir-renew").addEventListener("click", function () { openUpgrade(); });
   $("acct-photo").addEventListener("change", function (e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -818,8 +1048,10 @@
     if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
-    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit" });
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit", choir: true });
   }
+  /** Pro through a choir alone: the plan shown is the choir's, renewed by its director. */
+  function proViaChoir() { return !!(sub && sub.choirRole && String(sub.planCode || "").indexOf("choir_") === 0); }
   /** What a member's plan is called: the server's plan name, or the kind of access when nothing was bought. */
   function planLabel() {
     if (!sub) return "NoteFusion Pro";
@@ -844,6 +1076,10 @@
     $("upgrade-pro-plan").textContent = planLabel();
     $("upgrade-pro-period").textContent = periodLine();
     $("upgrade-pro-credits").textContent = creditsLine();
+    // A singer's Pro is the choir's: the director renews it, so a singer is shown it rather than offered more of it.
+    var singer = proViaChoir() && sub.choirRole === "member";
+    if (singer) $("upgrade-pro-period").textContent = "Pro through " + sub.choirName + ". " + periodLine() + " Your choir director renews it.";
+    label($("upgrade-extend"), "plus", proViaChoir() ? (singer ? "Get Pro of my own" : "Add choir time") : "Add more Pro time");
     sub && sub.isLifetime ? hide($("upgrade-extend")) : show($("upgrade-extend"));
     hide($("plans-extend"));
   }
@@ -851,7 +1087,7 @@
     track("Opened plans to extend");
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
-    loadPlans($("upgrade-panel"), $("plans-extend"), {});
+    loadPlans($("upgrade-panel"), $("plans-extend"), { choir: true });
     $("plans-extend").scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
@@ -927,6 +1163,8 @@
       hide($("boot-skel")); leaveAuth(); hide($("guest-bar")); show($("view-app")); show($("top-nav")); showAccountUi(true); setView("transcribe"); libraryCache = null;
       document.body.classList.remove("guest"); hide($("topbar-signin")); show($("recents"));
       fetchLibrary().catch(function () { return []; });
+      // Signed in from a choir invite (or already signed in when it was opened): join now.
+      maybeJoinFromInvite();
       var upgradeTo = new URLSearchParams(location.search).get("upgrade");
       // Handled once: the checkout leaves this tab, and Back must not land on a page that starts it again.
       if (upgradeTo) dropParam("upgrade");
@@ -2312,6 +2550,11 @@
 
   // ── Upgrade ──────────────────────────────────────────────────────────────
   var plansCache = null;
+  var choirPlansCache = null;
+  /** A choir plan (a director's, seating singers): listed apart, at /api/billing/plans/choir. */
+  function isChoirPlan(plan) { return !!(plan && plan.choirSeats); }
+  /** The account directs a choir, running or lapsed: buying a choir plan adds time to it. */
+  function leadsChoir() { return !!((sub && sub.choirRole === "director") || (choir && choir.role === "director")); }
   function isYearly(plan) { return plan.interval === "yearly" || plan.interval === 1; }
   function isLifetimePlan(plan) { return plan.interval === "lifetime" || plan.interval === 2; }
   /** The one-song purchase: one more transcription, no membership (BillingInterval.Single). */
@@ -2327,12 +2570,17 @@
     show(panel);
     if (!plansCache) { grid.innerHTML = ""; for (var i = 0; i < 2; i++) { var sk = document.createElement("div"); sk.className = "skel skel-plan"; grid.appendChild(sk); } }
     var p = plansCache ? Promise.resolve(plansCache) : request("/api/billing/plans").then(function (list) { plansCache = list; return list; });
-    p.then(function (plans) {
+    // The choir plans are listed apart by the API; a failure there leaves the Pro plans on sale.
+    var pc = !opts.choir ? Promise.resolve([])
+      : choirPlansCache ? Promise.resolve(choirPlansCache)
+      : request("/api/billing/plans/choir").then(function (list) { choirPlansCache = list || []; return choirPlansCache; }, function () { return []; });
+    Promise.all([p, pc]).then(function (both) {
+      var plans = both[0], choirPlans = (both[1] || []).slice().sort(function (a, b) { return a.amountMinor - b.amountMinor; });
       grid.innerHTML = "";
       grid.classList.add("plan-picker");
       var single = opts.single && !isPro() ? plans.find(isSinglePlan) : null;
       plans = plans.filter(function (x) { return !isSinglePlan(x); });
-      if (!plans.length && !single) { grid.textContent = "No plan is available for your region yet."; return; }
+      if (!plans.length && !single && !choirPlans.length) { grid.textContent = "No plan is available for your region yet."; return; }
       var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });
       // Naira opens on the monthly plan: ₦60,000 as the first price anyone sees reads as a wall, while
       // ₦7,500 a month is a decision. Elsewhere the yearly saving leads, as before.
@@ -2344,27 +2592,42 @@
       // Just this song goes first: the smallest, simplest thing to buy, next to Pro.
       if (single) ordered.unshift(single);
       var chosen = single && (opts.singleFirst || !plans.length) ? single : ordered[single ? 1 : 0];
+      // The choir plans come last, as the third option: one director pays and the whole choir is Pro.
+      var choirMonthly = choirPlans.find(function (x) { return !isYearly(x); });
+      ordered = ordered.concat(choirPlans);
+      // A director renewing their choir starts on the choir plan; anyone else on what they would buy for themselves.
+      if (!chosen || (choirPlans.length && leadsChoir())) chosen = choirPlans[0] || chosen;
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
-      function label(plan) { return isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
+      function label(plan) { return isChoirPlan(plan) ? (isYearly(plan) ? "Choir · Yearly" : "Choir · Monthly") : isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
       function per(plan) { return isSinglePlan(plan) || isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
       var fine = document.createElement("p"); fine.className = "pay-fine";
       function renderCta() {
         cta.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
         cta.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Buy this song — " + money(chosen)
-          : "Continue — " + money(chosen) + " " + per(chosen)));
+          : isChoirPlan(chosen)
+            ? (leadsChoir() ? "Add choir time — " : "Start your choir — ") + money(chosen) + " " + per(chosen)
+            : "Continue — " + money(chosen) + " " + per(chosen)));
         fine.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
         fine.appendChild(document.createTextNode(isSinglePlan(chosen)
           ? "Secure checkout. One payment, one transcription that never expires. No subscription."
-          : "Secure checkout. One payment covers the whole period; nothing renews without you."));
+          : isChoirPlan(chosen)
+            ? "Secure checkout. One payment covers the whole choir for the period; nothing renews without you. You'll get an invite link for your singers."
+            : "Secure checkout. One payment covers the whole period; nothing renews without you."));
       }
-      ordered.forEach(function (plan) {
+      ordered.forEach(function (plan, index) {
+        if (isChoirPlan(plan) && (index === 0 || !isChoirPlan(ordered[index - 1]))) {
+          var head = document.createElement("p"); head.className = "plan-group muted small"; head.setAttribute("role", "presentation");
+          head.textContent = "For choir directors — Pro for you and up to " + (plan.choirSeats || 25) + " singers, one shared library";
+          options.appendChild(head);
+        }
         var opt = document.createElement("button"); opt.type = "button"; opt.className = "plan-opt"; opt.setAttribute("role", "radio");
         var top = document.createElement("span"); top.className = "plan-opt-top";
         var name = document.createElement("span"); name.className = "plan-opt-name"; name.textContent = label(plan);
         top.appendChild(name);
-        var saving = isYearly(plan) && monthly ? Math.round(100 - (plan.amountMinor / (monthly.amountMinor * 12)) * 100) : 0;
+        var base = isChoirPlan(plan) ? choirMonthly : monthly;
+        var saving = isYearly(plan) && base ? Math.round(100 - (plan.amountMinor / (base.amountMinor * 12)) * 100) : 0;
         if (saving > 0) { var tag = document.createElement("span"); tag.className = "plan-opt-tag"; tag.textContent = "Save " + saving + "%"; top.appendChild(tag); }
         var price = document.createElement("span"); price.className = "plan-opt-price"; price.textContent = money(plan);
         var small = document.createElement("small"); small.textContent = isSinglePlan(plan) ? " once" : " / " + (isLifetimePlan(plan) ? "once" : isYearly(plan) ? "year" : "month"); price.appendChild(small);
@@ -2372,6 +2635,8 @@
         var note = document.createElement("span"); note.className = "plan-opt-note";
         note.textContent = isSinglePlan(plan)
           ? "One more transcription, any recording or song link. No subscription."
+          : isChoirPlan(plan)
+            ? "Pro for you and up to " + (plan.choirSeats || 25) + " singers, 60 songs a month shared, one library" + (isYearly(plan) ? ", paid once a year" : "")
           : isYearly(plan)
             ? money({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year"
             : isLifetimePlan(plan) ? "Pay once, Pro for good" : "Pay month by month";
@@ -2425,14 +2690,16 @@
           // A one-song purchase lands as one more bought transcription, not as Pro; and the song link that
           // was refused is put back in the box on the way back, so the person carries on where they were.
           single: isSinglePlan(plan), bought: (sub && sub.boughtTranscriptionsTotal) || 0,
-          link: isSinglePlan(plan) ? ($("link-url").value || "").trim() : ""
+          link: isSinglePlan(plan) ? ($("link-url").value || "").trim() : "",
+          // A choir plan lands as the choir's own period moving on, whatever the account's own Pro does.
+          choir: isChoirPlan(plan), choirPeriodEnd: (sub && sub.choirPeriodEndUtc) || null
         });
         return trackNow("Checkout opened", provider).then(function () { location.assign(session.checkoutUrl); });
       })
       .catch(function (err) {
         // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
         if (err instanceof ApiError && err.code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
-          var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null, single: isSinglePlan(plan) };
+          var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null, single: isSinglePlan(plan), choir: isChoirPlan(plan) };
           return request("/api/billing/my-subscription").then(function (s) { paymentDone(s, before); })
             .catch(function () { alertIn($("app-alert"), "success", err.message); });
         }
@@ -2472,6 +2739,11 @@
   function paymentLanded(s, snap) {
     // One song bought: the account's bought count moves on; Pro does not change.
     if (s && snap && snap.single) return (s.boughtTranscriptionsTotal || 0) > (snap.bought || 0);
+    // A choir plan: the choir's period end moves on (a director may hold Pro of their own beside it).
+    if (s && snap && snap.choir) {
+      var choirEnd = s.choirPeriodEndUtc ? Date.parse(s.choirPeriodEndUtc) : 0, choirBefore = snap.choirPeriodEnd ? Date.parse(snap.choirPeriodEnd) : 0;
+      return choirEnd > choirBefore;
+    }
     if (!s || !s.isActive) return false;
     if (!snap || !snap.wasActive) return true;
     var end = s.currentPeriodEndUtc ? Date.parse(s.currentPeriodEndUtc) : 0, before = snap.periodEnd ? Date.parse(snap.periodEnd) : 0;
@@ -2526,6 +2798,7 @@
   /** The payment landed: the account shows Pro everywhere it shows the plan, then the welcome. */
   function paymentDone(s, snap) {
     if (snap && snap.single) { songBought(s, snap); return; }
+    if (snap && snap.choir) { choirBought(s, snap); return; }
     stopPaymentWatch(); clearCheckout();
     sub = s;
     track(snap && snap.wasActive ? "Added Pro time" : "Went Pro");
@@ -2560,6 +2833,25 @@
     hide($("pro-welcome-perks"));
     $("pro-welcome-go").textContent = "Transcribe it";
     welcomeReturn = document.activeElement;
+    show($("pro-welcome"));
+    $("pro-welcome-go").focus();
+    sfx.play("saved");
+  }
+  /** A choir plan paid for: on to My choir, where the invite link for the singers is. */
+  function choirBought(s, snap) {
+    stopPaymentWatch(); clearCheckout();
+    sub = s; choir = null;
+    track(snap && snap.choirPeriodEnd ? "Added choir time" : "Started a choir");
+    track("Payment confirmed", snap && snap.planId ? String(snap.planId) : null);
+    renderWho();
+    hide($("upgrade-panel"));
+    setView("account");
+    if (current && current.result) showResult(current.result);
+    show($("pro-welcome-perks")); $("pro-welcome-go").textContent = "Invite your singers";
+    $("pro-welcome-title").textContent = snap && snap.choirPeriodEnd ? "More choir time added" : "Your choir is ready";
+    var when = s.choirPeriodEndUtc ? new Date(s.choirPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
+    $("pro-welcome-plan").textContent = "Copy the invite link under My choir and send it to your singers." + (when ? " Pro for the whole choir until " + when + "." : "");
+    welcomeReturn = $("choir-invite-copy");
     show($("pro-welcome"));
     $("pro-welcome-go").focus();
     sfx.play("saved");
