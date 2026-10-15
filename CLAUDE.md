@@ -141,6 +141,17 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   credit in the gate and in the displayed count (`SongCredits.CountHeldThisMonthAsync`), and an account may
   have at most 3 running at once (`SongCredits.ProMaxSongsInProgress`). Pro clients show the
   membership (plan name, period, credits) wherever a free account would see prices.
+- The choir plan (`choir_*` codes, `Plan.ChoirSeats` = 25; same regions and `_regional` marker as Pro) is a
+  director's purchase: `PaymentFulfillment` opens or stacks the director's `Choir` (its own period and
+  `Version`, never their `Subscription`, so no time converts between the two). While it runs, the director and
+  every `ChoirMember` (one choir per account, unique index; 25 seats; join with a revocable 8-character invite
+  code, `POST /api/choirs/join`) are Pro through `ProStatus` — the one place every Pro check reads. Songs: the
+  account's own Pro allowance first, then the choir's pool of `SongCredits.ChoirMonthlyPool` (60) a month, held
+  like the own count (`TranscriptionJob.ChoirId` names the pool); still 3 running per person. A sheet shared
+  with the choir (`Transcription.ChoirId`) is read by its members at `GET /api/choirs/mine/sheets[/{id}]`; it
+  leaves the library when its owner leaves or is removed. Choir plans are listed only at
+  `GET /api/billing/plans/choir` (shipped apps render every plan in the main list as Pro); the admin overview
+  counts a choir as one paid member at its plan price and its singers apart.
 - Saved transcriptions carry lyrics, the SATB parts (JSON column, solfa derived on read),
   the opening eight notes as `preview` on every read (list rows show them in solfa), an
   optional folder name (`PUT /api/library/{id}/folder`; a folder is just the name its sheets share) and

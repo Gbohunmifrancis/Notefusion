@@ -59,7 +59,7 @@ import type { RootStackParams } from "../navigation/types";
  */
 export function ProfileScreen() {
   const { user, setUser, signOut, isAdmin } = useAuth();
-  const { isPro, refresh: refreshSubscription } = useSubscription();
+  const { isPro, subscription, refresh: refreshSubscription } = useSubscription();
   const { mode, setMode } = useTheme();
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
@@ -285,6 +285,13 @@ export function ProfileScreen() {
           icon="person-outline"
           label="Account"
           onPress={() => setAccountModal(true)}
+        />
+        {/* The choir plan: a director's invite and singers, a singer's choir, or the code field. */}
+        <ListRow
+          icon="people-outline"
+          label="My choir"
+          value={subscription?.choirName ?? "Enter choir code"}
+          onPress={() => nav.navigate("Choir")}
         />
         <ListRow
           icon="contrast-outline"

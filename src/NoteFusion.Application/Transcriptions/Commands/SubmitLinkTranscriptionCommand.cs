@@ -101,17 +101,22 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             return TranscriptionErrors.InvalidKey;
 
         var fingerprint = _device.Current;
-        var isPro = await ProStatus.IsProAsync(_db, _clock, userId, ct);
+        var access = await ProStatus.ReadAsync(_db, _clock, userId, ct);
+        var isPro = access.IsPro;
 
-        // Held from the count to the recorded job, so parallel links from one account are counted one
-        // after another rather than all against the same rows (see IQuotaGate).
-        await using var lease = await _gate.AcquireAsync(QuotaGateExtensions.UserKey(userId), ct);
+        // Held from the count to the recorded job, so parallel links from one account — or from one choir,
+        // whose song pool its singers share — are counted one after another rather than all against the
+        // same rows (see IQuotaGate).
+        await using var lease = await _gate.AcquireAllAsync(access.GateKeys(userId), ct);
 
         var paidByCredit = false;
+        Guid? choirPool = null;
         if (isPro)
         {
-            if (await SongGate.CheckAsync(_db, userId, _clock.UtcNow, ct) is { } refused)
-                return Result.Failure<string>(refused);
+            var pool = await SongGate.CheckAsync(_db, access, userId, _clock.UtcNow, ct);
+            if (pool.IsFailure)
+                return Result.Failure<string>(pool.Error);
+            choirPool = pool.Value.ChoirId;
         }
         else
         {
@@ -154,7 +159,7 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
         // subscriber ran before their plan lapsed, and a lapsed subscriber's past songs must not be
         // re-read as previews.
         _db.TranscriptionJobs.Add(
-            TranscriptionJob.RecordLink(submitted.Value, userId, _clock.UtcNow, fingerprint, isPro, paidByCredit));
+            TranscriptionJob.RecordLink(submitted.Value, userId, _clock.UtcNow, fingerprint, isPro, paidByCredit, choirPool));
         await _db.SaveChangesAsync(ct);
 
         return submitted;

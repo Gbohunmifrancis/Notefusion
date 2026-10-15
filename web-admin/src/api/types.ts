@@ -282,6 +282,13 @@ export interface Membership {
   songsUsedThisMonth: number;
   /** Accounts that have used the whole monthly song allowance. */
   membersOutOfSongs: number;
+  /**
+   * Choirs whose plan is running. Each is one paid member (its director) in the counts above, in
+   * `membersByPlan` under the choir plan's name, and in the run-rate at the choir plan's price, once.
+   */
+  activeChoirs: number;
+  /** Singers in those choirs: Pro through a seat, so not counted as members above. */
+  choirSingers: number;
 }
 
 export interface AdminUserRow {

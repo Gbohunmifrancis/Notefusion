@@ -97,17 +97,24 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
         var isPro = false;
         var paidByCredit = false;
+        Guid? choirPool = null;
+
+        // Where this account's Pro comes from, read before the lease because it names the choir whose song
+        // pool the lease must also cover.
+        var access = _currentUser.UserId is { } member
+            ? await ProStatus.ReadAsync(_db, _clock, member, cancellationToken)
+            : null;
 
         // One submit per account at a time, from the count to the recorded job: the job row is what the
         // next count sees, and it is written only after the worker answers, so parallel submits would all
-        // count the same rows and all pass.
+        // count the same rows and all pass. With a choir, one song submit per choir at a time as well.
         await using var lease = _currentUser.UserId is { } signedIn
-            ? await _gate.AcquireAsync(QuotaGateExtensions.UserKey(signedIn), cancellationToken)
+            ? await _gate.AcquireAllAsync(access!.GateKeys(signedIn), cancellationToken)
             : null;
 
         if (_currentUser.UserId is { } userId)
         {
-            isPro = await ProStatus.IsProAsync(_db, _clock, userId, cancellationToken);
+            isPro = access!.IsPro;
             metered = !isPro;
 
             if (metered)
@@ -142,8 +149,10 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // arrived as a link or as a file. Same gate as the link submit, so "N of 20 songs" counts
                 // every song and the twenty-first is refused the same way. A score file has no voice to
                 // isolate, so it is neither gated nor charged as a song whatever the form said.
-                if (await SongGate.CheckAsync(_db, userId, _clock.UtcNow, cancellationToken) is { } refused)
-                    return Result.Failure<string>(refused);
+                var pool = await SongGate.CheckAsync(_db, access, userId, _clock.UtcNow, cancellationToken);
+                if (pool.IsFailure)
+                    return Result.Failure<string>(pool.Error);
+                choirPool = pool.Value.ChoirId;
             }
         }
         // Normalise the optional key override:
@@ -192,7 +201,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
 
             _db.TranscriptionJobs.Add(
                 isPro && request.Separate && !isScore
-                    ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint)
+                    ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint, choirPool)
                     : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint, paidByCredit));
 
             await _db.SaveChangesAsync(cancellationToken);

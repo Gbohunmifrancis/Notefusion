@@ -462,7 +462,14 @@ function MembershipPanel({ membership }: { membership: AnalyticsOverview["member
         <MetricRow
           className="xl:col-span-2"
           items={[
-            { label: "Pro members", value: formatCount(m.activeMembers), note: `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted`, hint: "Customers with Pro right now, each counted once" },
+            {
+              label: "Pro members",
+              value: formatCount(m.activeMembers),
+              note:
+                `${formatCount(m.paidMembers)} paid · ${formatCount(m.giftedMembers)} gifted` +
+                (m.activeChoirs ? ` · ${formatCount(m.activeChoirs)} choirs, +${formatCount(m.choirSingers)} singers` : ""),
+              hint: "Memberships with Pro right now, each counted once. A choir counts once, for its director; its singers are Pro through a seat and shown apart",
+            },
             { label: "New members", value: formatCount(m.newMembers), hint: "First Pro period started in this window" },
             { label: "Lapsed", value: formatCount(m.lapsedMembers), note: `${lapseRate} of members`, hint: "Paid time ran out with no new payment: the people to win back" },
             { label: "Revenue collected", value: moneyList(m.revenue), hint: "Payments received in this window, per currency" },

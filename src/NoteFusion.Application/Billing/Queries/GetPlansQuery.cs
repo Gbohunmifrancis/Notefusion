@@ -15,7 +15,11 @@ namespace NoteFusion.Application.Billing.Queries;
 /// The one-song purchase (<see cref="BillingInterval.Single"/>) is listed with them, except to a Pro member. Hiding is only half of it; <see cref="Commands.InitiateCheckoutCommandHandler"/> re-checks the same
 /// rule, because this list is advice and the checkout is the decision.
 /// </summary>
-public sealed record GetPlansQuery : IRequest<Result<IReadOnlyList<PlanDto>>>;
+/// <param name="Choir">
+/// The choir plans instead of the individual ones. Listed apart (<c>GET api/billing/plans/choir</c>) because
+/// app builds already in people's hands render every non-single plan in this list as a Pro option.
+/// </param>
+public sealed record GetPlansQuery(bool Choir = false) : IRequest<Result<IReadOnlyList<PlanDto>>>;
 
 public sealed class GetPlansQueryHandler : IRequestHandler<GetPlansQuery, Result<IReadOnlyList<PlanDto>>>
 {
@@ -43,9 +47,9 @@ public sealed class GetPlansQueryHandler : IRequestHandler<GetPlansQuery, Result
         var isPro = _currentUser.UserId is { } member && await ProStatus.IsProAsync(_db, _clock, member, ct);
 
         var plans = await _db.Plans
-            .Where(p => p.IsActive)
+            .Where(p => p.IsActive && (p.ChoirSeats != null) == request.Choir)
             .OrderBy(p => p.AmountMinor)
-            .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval))
+            .Select(p => new PlanDto(p.Id, p.Code, p.Name, p.AmountMinor, p.Currency, p.Interval, p.ChoirSeats))
             .ToListAsync(ct);
 
         // Filtered here rather than in the query: the rule is a shared predicate the checkout handler also

@@ -43,6 +43,12 @@ public interface IApplicationDbContext
     /// <summary>Public links to a user's folders of saved sheets.</summary>
     DbSet<FolderShare> FolderShares { get; }
 
+    /// <summary>Choirs on the choir plan: the director pays, the members are Pro (see <see cref="Choir"/>).</summary>
+    DbSet<Choir> Choirs { get; }
+
+    /// <summary>The singers in each choir; one row per account at most.</summary>
+    DbSet<ChoirMember> ChoirMembers { get; }
+
     // Billing (F-monetization). The immutable ledger is the source of truth for money held; there is
     // no balance column anywhere, so a balance is always summed from LedgerEntries.
     DbSet<Plan> Plans { get; }

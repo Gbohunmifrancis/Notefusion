@@ -11,6 +11,9 @@ import type {
   AppVersionInfo,
   BillingInterval,
   CheckoutSession,
+  Choir,
+  ChoirMember,
+  ChoirSheet,
   ChordSymbol,
   ClearStalePaymentsResult,
   GradeResult,
@@ -26,6 +29,7 @@ import type {
   RegistrationResponse,
   SavedTranscription,
   ShareLink,
+  SharedSheet,
   Subscription,
   SystemAnnouncement,
   SystemHealth,
@@ -410,6 +414,9 @@ export const billingApi = {
   /** Plans shown on the paywall, cheapest first. */
   plans: () => api.get<Plan[]>("/api/billing/plans").then((r) => r.data),
 
+  /** The choir plans this account may buy (one director pays, the singers are Pro), cheapest first. */
+  choirPlans: () => api.get<Plan[]>("/api/billing/plans/choir").then((r) => r.data),
+
   /**
    * Starts a hosted-checkout session for a plan. Returns the provider URL the app
    * opens in an external browser. Idempotent server-side: an in-flight checkout is
@@ -443,6 +450,47 @@ export const billingApi = {
    * assume the account just went Free. Idempotent server-side (204 either way).
    */
   cancel: () => api.post<void>("/api/billing/cancel").then(() => undefined),
+};
+
+/**
+ * The choir plan. `mine` is the caller's choir as director or singer; 404 `CHOIR_NOT_FOUND`
+ * when they are in none. Managing it (rename, members, invite) is the director's alone.
+ */
+export const choirApi = {
+  /** The caller's choir, or null when they are in none. */
+  mine: () =>
+    api
+      .get<Choir>("/api/choirs/mine")
+      .then((r) => r.data as Choir | null)
+      .catch((e: { response?: { status?: number } }) => {
+        if (e?.response?.status === 404) return null;
+        throw e;
+      }),
+
+  rename: (name: string) => api.put<Choir>("/api/choirs/mine", { name }).then((r) => r.data),
+
+  members: () => api.get<ChoirMember[]>("/api/choirs/mine/members").then((r) => r.data),
+
+  removeMember: (userId: string) => api.delete(`/api/choirs/mine/members/${userId}`).then(() => undefined),
+
+  /** A new invite code; the old one stops working. */
+  regenerateInvite: () => api.post<Choir>("/api/choirs/mine/invite").then((r) => r.data),
+
+  join: (code: string) => api.post<Choir>("/api/choirs/join", { code }).then((r) => r.data),
+
+  leave: () => api.post("/api/choirs/leave").then(() => undefined),
+
+  /** The choir's shared library. */
+  sheets: () => api.get<ChoirSheet[]>("/api/choirs/mine/sheets").then((r) => r.data),
+
+  /** One sheet of the choir's library, read-only. */
+  sheet: (id: string) => api.get<SharedSheet>(`/api/choirs/mine/sheets/${id}`).then((r) => r.data),
+
+  /** Shares one of the caller's own sheets with their choir. */
+  share: (id: string) => api.put(`/api/choirs/mine/sheets/${id}`).then(() => undefined),
+
+  /** Takes a sheet out of the choir's library. */
+  unshare: (id: string) => api.delete(`/api/choirs/mine/sheets/${id}`).then(() => undefined),
 };
 
 /**

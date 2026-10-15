@@ -81,6 +81,16 @@ public class Transcription : BaseEntity
     public void RecordShareView() => ShareViews++;
 
     /// <summary>
+    /// The choir whose shared library this sheet is in, or null. Set by its owner ("Share with my choir");
+    /// cleared when they unshare it, when the director takes it out, or when the owner leaves the choir.
+    /// </summary>
+    public Guid? ChoirId { get; private set; }
+
+    public void ShareWithChoir(Guid choirId) => ChoirId = Guard.AgainstEmpty(choirId);
+
+    public void UnshareFromChoir() => ChoirId = null;
+
+    /// <summary>
     /// The folder this sheet is filed in ("Sunday choir", "Easter service"), or null when it is not filed.
     /// A folder is nothing more than the name its sheets share, so it needs no row of its own.
     /// </summary>

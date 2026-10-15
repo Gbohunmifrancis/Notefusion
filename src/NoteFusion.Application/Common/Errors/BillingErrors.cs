@@ -74,6 +74,14 @@ public static class BillingErrors
             $"You have transcribed all {allowance} of this month's songs. Your allowance resets next month.");
 
     /// <summary>
+    /// A choir's shared monthly pool is spent (or held by songs still running). Same code as
+    /// <see cref="SongCreditsExhausted"/>, so the clients treat it the same way.
+    /// </summary>
+    public static Error ChoirSongsExhausted(int pool) =>
+        Error.Forbidden("BILLING_SONG_CREDITS_EXHAUSTED",
+            $"Your choir has transcribed all {pool} of this month's songs. The choir's songs reset next month.");
+
+    /// <summary>
     /// A Pro account already has <paramref name="max"/> songs running. Songs take the worker's fast lane, so
     /// one account starting many at once would hold every other subscriber up behind it.
     /// </summary>

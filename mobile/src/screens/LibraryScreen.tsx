@@ -24,7 +24,7 @@ import { Mark } from "../components/night/NightUI";
 import { LibraryRow, LibraryRowSkeleton } from "../components/library/LibraryRow";
 import { SelectionBar } from "../components/library/SelectionBar";
 import { useColors, useThemedStyles } from "../lib/theme";
-import { libraryApi } from "../api/endpoints";
+import { choirApi, libraryApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
 import { showDialog } from "../lib/dialog";
 import * as haptics from "../lib/haptics";
@@ -48,7 +48,9 @@ export function LibraryScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParams>>();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const { refresh: refreshSubscription } = useSubscription();
+  const { refresh: refreshSubscription, subscription } = useSubscription();
+  // The choir this account is in while its plan runs: sheets can be shared with it, and its library is a tap away.
+  const choirName = subscription?.choirName ?? null;
 
   const [items, setItems] = useState<SavedTranscription[]>([]);
   const [loading, setLoading] = useState(true);
@@ -289,6 +291,41 @@ export function LibraryScreen() {
     }
   }
 
+  /** In a choir, the share button asks where: the choir's library, or public links as before. */
+  function chooseShare(targets: SavedTranscription[]) {
+    if (targets.length === 0) return;
+    if (!choirName) {
+      void shareSelected(targets);
+      return;
+    }
+    const allShared = targets.every((t) => t.sharedWithChoir);
+    showDialog({
+      title: targets.length === 1 ? "Share this sheet" : `Share ${targets.length} sheets`,
+      icon: "share-outline",
+      actions: [
+        allShared
+          ? { label: "Take out of choir library", onPress: () => void shareWithChoir(targets, false) }
+          : { label: `Share with ${choirName}`, onPress: () => void shareWithChoir(targets, true) },
+        { label: "Send links", onPress: () => void shareSelected(targets) },
+        { label: "Cancel", style: "cancel" },
+      ],
+    });
+  }
+
+  /** Puts the sheets in the choir's shared library, or takes them out of it. */
+  async function shareWithChoir(targets: SavedTranscription[], share: boolean) {
+    const results = await Promise.allSettled(targets.map((t) => (share ? choirApi.share(t.id) : choirApi.unshare(t.id))));
+    const done = new Set(targets.filter((_, i) => results[i]!.status === "fulfilled").map((t) => t.id));
+    setItems((prev) => prev.map((t) => (done.has(t.id) ? { ...t, sharedWithChoir: share } : t)));
+    setSelected(new Set());
+    const failure = results.find((r): r is PromiseRejectedResult => r.status === "rejected");
+    if (failure) {
+      showDialog({ title: "Could not share with your choir", message: toApiError(failure.reason).message, icon: "alert-circle-outline", tone: "danger" });
+    } else if (share) {
+      haptics.play("success");
+    }
+  }
+
   function confirmDelete(targets: SavedTranscription[]) {
     if (targets.length === 0) return;
     // The bar's trash is one tap from losing work, so the dialog leads with the warning buzz.
@@ -429,6 +466,27 @@ export function LibraryScreen() {
         </Touchable>
       </View>
 
+      {/* ── The choir's shared library, on "All", for someone in a running choir ─── */}
+      {folder === null && choirName && (
+        <Touchable
+          onPress={() => nav.navigate("Choir")}
+          style={styles.banner}
+          radius={18}
+          accessibilityLabel={`Open the choir library of ${choirName}`}
+        >
+          <Ionicons name="people" size={20} color={colors.accent} />
+          <View style={styles.bannerText}>
+            <Text style={styles.bannerTitle} numberOfLines={1}>
+              Choir library
+            </Text>
+            <Text style={styles.bannerSub} numberOfLines={1}>
+              {choirName} · sheets shared with the whole choir
+            </Text>
+          </View>
+          <Text style={styles.bannerAction}>Open</Text>
+        </Touchable>
+      )}
+
       {/* ── The open folder's one public link ─────────────────────────────────── */}
       {folder !== null && (
         <Touchable
@@ -537,7 +595,7 @@ export function LibraryScreen() {
           onClose={() => setSelected(new Set())}
           onDelete={() => confirmDelete(selectedItems)}
           onMove={() => chooseFolder(selectedItems)}
-          onShare={() => void shareSelected(selectedItems)}
+          onShare={() => chooseShare(selectedItems)}
         />
       )}
       <Modal visible={naming !== null} transparent animationType="fade" onRequestClose={() => setNaming(null)}>

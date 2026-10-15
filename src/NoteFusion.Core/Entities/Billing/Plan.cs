@@ -20,8 +20,18 @@ public class Plan : BaseEntity
     public BillingInterval Interval { get; private set; }
     public bool IsActive { get; private set; }
 
+    /// <summary>
+    /// Singers a choir plan seats besides the director; null for every plan that is not a choir plan. A choir
+    /// plan's payment opens or extends the payer's <see cref="Choir"/> rather than their own Pro membership.
+    /// </summary>
+    public int? ChoirSeats { get; private set; }
+
+    /// <summary>True for a choir plan (see <see cref="ChoirSeats"/>).</summary>
+    public bool IsChoir => ChoirSeats is not null;
+
     public static Plan Create(
-        Guid id, string code, string name, long amountMinor, string currency, BillingInterval interval)
+        Guid id, string code, string name, long amountMinor, string currency, BillingInterval interval,
+        int? choirSeats = null)
         => new()
         {
             Id = id == Guid.Empty ? Guid.NewGuid() : id,
@@ -32,7 +42,10 @@ public class Plan : BaseEntity
                 : throw new ArgumentOutOfRangeException(nameof(amountMinor), amountMinor, "Amount must be positive."),
             Currency = Guard.NotNullOrWhiteSpace(currency).ToUpperInvariant(),
             Interval = interval,
-            IsActive = true
+            IsActive = true,
+            ChoirSeats = choirSeats is null or > 0
+                ? choirSeats
+                : throw new ArgumentOutOfRangeException(nameof(choirSeats), choirSeats, "A choir plan seats at least one singer.")
         };
 
     /// <summary>
