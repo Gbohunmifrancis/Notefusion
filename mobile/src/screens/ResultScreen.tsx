@@ -52,7 +52,6 @@ import { sectionOf } from "../lib/clipRange";
 import { rating } from "../lib/rating";
 import { exportMidi, exportMusicXml, exportPdf, exportSolfa } from "../lib/export";
 import {
-  confidenceColor,
   fonts,
   motion,
   radii,
@@ -61,6 +60,7 @@ import {
   type Palette,
 } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
+import { confidenceNote } from "../lib/confidence";
 import * as haptics from "../lib/haptics";
 import type { RootStackParams } from "../navigation/types";
 
@@ -987,7 +987,7 @@ export function ResultScreen({ route, navigation }: Props) {
   const insets = useSafeAreaInsets();
   const shownTitle = committedTitle || title;
   const doh = dohLetter(key);
-  const surePct = Math.round(overallConfidence * 100);
+  const confNote = confidenceNote(overallConfidence, lowCount > 0);
   const subtitle = [result.source ? result.source.artist || provider : null, section, key]
     .filter(Boolean)
     .join(" · ");
@@ -1314,14 +1314,11 @@ export function ResultScreen({ route, navigation }: Props) {
               active={pickingMeter}
               accessibilityLabel={`Time signature ${timeSignature}. Change meter`}
             />
-            <Stat
-              value={String(surePct)}
-              unit="%"
-              caption="Sure"
-              color={confidenceColor(overallConfidence, colors)}
-              accessibilityLabel={`${surePct} percent sure`}
-            />
           </View>
+
+          {/* No percentage: a plain note, and only when there is something to do. The
+              doubtful notes are tinted on the sheet, so a middling one points at them. */}
+          {confNote ? <Text style={styles.notice}>{confNote}</Text> : null}
 
           {doubt.length > 0 && !edited && !parts ? (
             <View style={styles.panel}>
@@ -1799,17 +1796,13 @@ function IconButton({
 /** One figure in the stats row: big value, tiny uppercase caption. */
 function Stat({
   value,
-  unit,
   caption,
-  color,
   onPress,
   active,
   accessibilityLabel,
 }: {
   value: string;
-  unit?: string;
   caption: string;
-  color?: string;
   onPress?: () => void;
   active?: boolean;
   accessibilityLabel: string;
@@ -1817,15 +1810,14 @@ function Stat({
   const styles = useThemedStyles(makeStyles);
   const body = (
     <>
-      <Text style={[styles.statValue, color ? { color } : null]} numberOfLines={1} adjustsFontSizeToFit>
+      <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit>
         {value}
-        {unit ? <Text style={styles.statUnit}>{unit}</Text> : null}
       </Text>
       <Text style={[styles.statCaption, active && styles.statCaptionActive]}>{caption}</Text>
     </>
   );
-  // Only the stats that change something get a touch target, so SURE doesn't
-  // advertise an affordance it doesn't have.
+  // Only the stats that change something get a touch target, so a read-only one
+  // doesn't advertise an affordance it doesn't have.
   return onPress ? (
     <Touchable
       style={styles.stat}
@@ -2005,7 +1997,6 @@ const makeStyles = (c: Palette) =>
       letterSpacing: -1.2,
       color: c.text,
     },
-    statUnit: { fontSize: 16, letterSpacing: 0 },
     statCaption: {
       fontFamily: fonts.medium,
       fontSize: 10.5,

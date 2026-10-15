@@ -8,6 +8,7 @@ import { dohLetter } from "../../lib/solfa";
 import { confidenceColor, fonts, motion, radii, spacing, typography, type Palette } from "../../design/theme";
 import type { SavedTranscription } from "../../api/types";
 import { solfaOpening } from "../../lib/solfaOpening";
+import { confidenceA11y, confidenceLevel } from "../../lib/confidence";
 
 export function LibraryRow({
   item,
@@ -26,7 +27,8 @@ export function LibraryRow({
 }) {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
-  const pct = Math.round(item.overallConfidence * 100);
+  // No percentage on a row: a tone dot, and only when the sheet is worth a second look.
+  const doubtful = confidenceLevel(item.overallConfidence) !== "clear";
   const tone = confidenceColor(item.overallConfidence, colors);
   const doh = dohLetter(item.key);
   const opening = solfaOpening(item.preview ?? item.notes, item.timeSignature);
@@ -41,7 +43,7 @@ export function LibraryRow({
       accessibilityRole={selecting ? "checkbox" : "button"}
       accessibilityState={selecting ? { checked: selected } : undefined}
       accessibilityLabel={
-        `${item.title}, doh is ${doh}, ${pct} percent sure${item.folder ? `, in ${item.folder}` : ""}.` +
+        `${item.title}, doh is ${doh}${doubtful ? `, ${confidenceA11y(item.overallConfidence)}` : ""}${item.folder ? `, in ${item.folder}` : ""}.` +
         (selecting ? "" : " Long press to select.")
       }
     >
@@ -73,10 +75,11 @@ export function LibraryRow({
           </Text>
         )}
       </View>
-      <View style={styles.score}>
-        <View style={[styles.scoreDot, { backgroundColor: tone }]} />
-        <Text style={[styles.scoreText, { color: tone }]}>{pct}</Text>
-      </View>
+      {doubtful ? (
+        <View style={styles.score}>
+          <View style={[styles.scoreDot, { backgroundColor: tone }]} />
+        </View>
+      ) : null}
     </Touchable>
   );
 }
@@ -168,10 +171,5 @@ const makeStyles = (c: Palette) =>
       paddingLeft: spacing.xs,
     },
     scoreDot: { width: 6, height: 6, borderRadius: 3 },
-    scoreText: {
-      fontFamily: fonts.medium,
-      fontSize: 12.5,
-      fontVariant: ["tabular-nums"],
-    },
     skeletonGap: { marginTop: 7 },
   });
