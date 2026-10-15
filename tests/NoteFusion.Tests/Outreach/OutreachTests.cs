@@ -423,6 +423,43 @@ public class OutreachTests
     // ── Beside the abandoned-checkout reminder ───────────────────────────────
 
     [Fact]
+    public async Task A_choir_director_and_singer_are_Pro_so_never_asked_why_they_did_not_buy_it()
+    {
+        using var h = new TestHarness(Now);
+        var plan = AddPlan(h);
+        var director = Account(h, "director@example.com", "Director", Now.AddDays(-10));
+        var singer = Account(h, "singer@example.com", "Singer", Now.AddDays(-10));
+        var choir = Choir.Start(director, "St Mary's", "ABCDEFGH", plan.Id, 25, PaymentProvider.Paystack,
+            Now.AddDays(-5), Now.AddDays(25), Now.AddDays(-5));
+        h.Db.Choirs.Add(choir);
+        h.Db.ChoirMembers.Add(ChoirMember.Create(choir.Id, singer, Now.AddDays(-4)));
+        h.Db.SaveChanges();
+        Checkout(h, director, Now.AddDays(-4), plan);
+        Checkout(h, singer, Now.AddDays(-4), plan);
+
+        await Run(h);
+
+        Assert.DoesNotContain(h.Email.Outreach, o => o.Email.Segment == OutreachSegment.CheckoutAbandoned);
+    }
+
+    [Fact]
+    public async Task A_choir_singer_gets_no_checkout_reminder()
+    {
+        using var h = new TestHarness(Now.AddDays(-1));
+        var plan = AddPlan(h);
+        var director = Account(h, "director@example.com", "Director", Now.AddDays(-20));
+        var singer = Account(h, "singer@example.com", "Singer", Now.AddDays(-20));
+        var choir = Choir.Start(director, "St Mary's", "ABCDEFGH", plan.Id, 25, PaymentProvider.Paystack,
+            Now.AddDays(-5), Now.AddDays(25), Now.AddDays(-5));
+        h.Db.Choirs.Add(choir);
+        h.Db.ChoirMembers.Add(ChoirMember.Create(choir.Id, singer, Now.AddDays(-4)));
+        h.Db.SaveChanges();
+        Checkout(h, singer, Now.AddDays(-3.5), plan);
+
+        Assert.Equal(0, await Remind(h));
+    }
+
+    [Fact]
     public async Task The_outreach_waits_two_days_after_the_checkout_reminder()
     {
         using var h = new TestHarness(Now.AddDays(-1));

@@ -28,6 +28,26 @@ public static class ChoirAccess
     /// indexed lookups (owner, then membership), no cache, like the subscription read beside it in
     /// <see cref="ProStatus"/>.
     /// </summary>
+    /// <summary>
+    /// Every account that is Pro through a running choir (its director and its singers), for the sweeps that
+    /// must not offer Pro to someone who already has it.
+    /// </summary>
+    public static async Task<HashSet<Guid>> ActiveChoirUserIdsAsync(
+        IApplicationDbContext db, DateTime utcNow, CancellationToken ct = default)
+    {
+        var directors = await db.Choirs
+            .Where(c => c.CurrentPeriodEndUtc > utcNow)
+            .Select(c => c.OwnerId)
+            .ToListAsync(ct);
+        var singers = await (
+                from m in db.ChoirMembers
+                join c in db.Choirs on m.ChoirId equals c.Id
+                where c.CurrentPeriodEndUtc > utcNow
+                select m.UserId)
+            .ToListAsync(ct);
+        return [.. directors, .. singers];
+    }
+
     public static async Task<Guid?> ActiveChoirIdAsync(
         IApplicationDbContext db, Guid userId, DateTime utcNow, CancellationToken ct = default)
     {

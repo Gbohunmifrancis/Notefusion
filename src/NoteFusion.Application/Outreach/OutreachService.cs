@@ -1,3 +1,4 @@
+using NoteFusion.Application.Choirs;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
@@ -111,6 +112,7 @@ public sealed class OutreachService
                             && s.CurrentPeriodEndUtc > now)
                 .Select(s => s.UserId).ToListAsync(ct))
             .ToHashSet();
+        pro.UnionWith(await ChoirAccess.ActiveChoirUserIdsAsync(_db, now, ct));
         var paid = (await _db.PaymentTransactions
                 .Where(t => t.Status == PaymentStatus.Verified || t.Status == PaymentStatus.Completed)
                 .Select(t => t.UserId).Distinct().ToListAsync(ct))

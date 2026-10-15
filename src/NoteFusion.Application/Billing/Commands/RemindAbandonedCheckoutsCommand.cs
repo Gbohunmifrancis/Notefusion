@@ -1,3 +1,4 @@
+using NoteFusion.Application.Choirs;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Interfaces;
@@ -83,6 +84,7 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
                         && s.CurrentPeriodEndUtc > now)
             .Select(s => s.UserId)
             .ToListAsync(ct)).ToHashSet();
+        withPro.UnionWith(await ChoirAccess.ActiveChoirUserIdsAsync(_db, now, ct));
         var users = await _db.Users.AsNoTracking().Where(u => userIds.Contains(u.Id) && u.IsActive).ToDictionaryAsync(u => u.Id, ct);
         // Never the same day as the founder's outreach note (OutreachRules): an account written to in the
         // last day waits, and is picked up by a later sweep while its checkout is still in the window.
