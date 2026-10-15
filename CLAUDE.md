@@ -150,7 +150,7 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   buys again to add a period, which stacks after the time left (`PaymentFulfillment`), on either plan;
   two payments landing at once both stack (`Subscription.Version` is a concurrency token and the save is
   retried). Plans are offered by the account's stored country (`PlanEligibility`): Nigeria gets naira,
-  everyone else, an unknown country included, gets dollars.
+  everyone else dollars, and an unknown country sees both.
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
   error text never reaches a screen: the API returns plain sentences for checkout failures, and the
   web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.

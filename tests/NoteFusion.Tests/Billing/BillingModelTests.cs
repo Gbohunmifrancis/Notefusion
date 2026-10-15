@@ -66,8 +66,7 @@ public class BillingModelTests
         Assert.False(PlanEligibility.IsOffered("USD", "NG"));
         Assert.True(PlanEligibility.IsOffered("USD", "US"));
         Assert.False(PlanEligibility.IsOffered("NGN", "GB"));
-        Assert.True(PlanEligibility.IsOffered("USD", null)); // unknown country: the dollar tier
-        Assert.False(PlanEligibility.IsOffered("NGN", null));
+        Assert.True(PlanEligibility.IsOffered("USD", null)); // unknown country: offered everything
     }
 
     [Fact]

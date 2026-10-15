@@ -21,15 +21,14 @@ public static class PlanEligibility
     /// </summary>
     public static bool IsOffered(string currency, string? country)
     {
-        var isNaira = string.Equals(currency, NairaCurrency, StringComparison.OrdinalIgnoreCase);
-
-        // Unknown country is offered the international (dollar) tier only. Offering every tier let anyone
-        // whose lookup failed — or who arranged for it to fail — buy the cheaper naira plan, so "unknown"
-        // has to land on one side, and the regional discount is the side that needs proving.
-        if (string.IsNullOrWhiteSpace(country))
-            return !isNaira;
+        // Unknown country shows every tier. Every account created before countries were resolved is in that
+        // state, along with anyone whose lookup failed, and guessing a tier for them would mis-price real
+        // people who are already paying us.
+        if (country is null)
+            return true;
 
         var isNigerian = string.Equals(country, NairaCountry, StringComparison.OrdinalIgnoreCase);
+        var isNaira = string.Equals(currency, NairaCurrency, StringComparison.OrdinalIgnoreCase);
 
         // Symmetric on purpose, in both directions: a Nigerian account is not offered the dollar lifetime,
         // and an international one is not offered naira. Barring only the second half would leave the
