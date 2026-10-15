@@ -467,8 +467,16 @@ export interface AdminUserDetail {
   savedTranscriptionCount: number;
   /** Transcriptions that ended without a result. */
   failedTranscriptionCount: number;
+  /** Free ones this account was charged (bought ones are counted apart). */
   trialGenerationsUsed: number;
   trialGenerationsTotal: number;
+  /** One-song purchases spent or held by a running job, and fulfilled ever. */
+  boughtTranscriptionsUsed: number;
+  boughtTranscriptionsTotal: number;
+  /** The free one-minute link preview, if this account was charged it. */
+  songPreviewsUsed: number;
+  /** Jobs that spent an allowance (free, bought, Pro song or the link preview): the number to compare with the quota. */
+  chargedTranscriptionCount: number;
   /** Null when the account has never had one, gifted or paid. */
   subscription: AdminSubscription | null;
   payments: AdminPayment[];
@@ -957,6 +965,8 @@ export interface EngagedUser {
   lastActiveUtc: string;
   /** Transcriptions ×3 + active days ×2 + saved sheets: the leaderboard's order. */
   score: number;
+  /** Of those transcriptions, the ones that spent an allowance (free, bought, Pro song or the link preview). */
+  charged: number;
 }
 
 export interface Engagement {

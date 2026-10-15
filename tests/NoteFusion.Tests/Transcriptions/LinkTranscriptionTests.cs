@@ -91,6 +91,22 @@ public class LinkTranscriptionTests
     }
 
     [Fact]
+    public async Task A_second_account_on_the_handset_cannot_take_the_preview_the_first_is_running()
+    {
+        // The handset's one preview is still running under the first account: it holds the preview for the
+        // phone, not only for the account, or switching account while it ran was a second free song.
+        using var h = new TestHarness(Now);
+        var first = Seed(h);
+        var second = Seed(h, "second@example.com");
+        var api = new FakeTranscriptionApi();
+        Assert.True((await SubmitLink(h, first, api, device: "phone-a")).IsSuccess);
+
+        var result = await SubmitLink(h, second, api, device: "phone-a");
+
+        Assert.Equal("BILLING_SONG_PREVIEW_USED", result.Error.Code);
+    }
+
+    [Fact]
     public async Task A_preview_that_fails_costs_nothing()
     {
         using var h = new TestHarness(Now);
@@ -195,9 +211,27 @@ public class LinkTranscriptionTests
         h.Db.SaveChanges();
         Assert.True((await SubmitLink(h, user, api)).IsSuccess);
 
-        // One the worker lost stops holding a place when the sweep would give up on it.
-        h.Clock.UtcNow = Now + TrialUsage.RunningFor + TimeSpan.FromMinutes(1);
+        // One never settled stops holding a place when the sweep would give up on it.
+        h.Clock.UtcNow = Now + TrialUsage.HeldFor + TimeSpan.FromMinutes(1);
         Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+    }
+
+    [Fact]
+    public async Task A_song_still_queued_past_half_an_hour_keeps_holding_its_credit()
+    {
+        // Pro's twentieth song, waiting in a busy queue. Its hold used to lapse at thirty minutes, so a
+        // twenty-first could start, and both were charged when they finished: twenty-one of twenty.
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        SpendSongs(h, user, SongCredits.ProMonthlyAllowance - 1, pro: true);
+        var api = new FakeTranscriptionApi();
+        Assert.True((await SubmitLink(h, user, api)).IsSuccess);
+
+        h.Clock.UtcNow = Now + TrialUsage.RunningFor + TimeSpan.FromMinutes(10);
+
+        Assert.Equal("BILLING_SONG_CREDITS_EXHAUSTED", (await SubmitLink(h, user, api)).Error.Code);
+        Assert.Equal(0, (await Shown(h, user)).SongCreditsRemaining);
     }
 
     [Fact]
@@ -511,9 +545,9 @@ public class LinkTranscriptionTests
     }
 
     private static Task<Result<string>> SubmitLink(
-        TestHarness h, User user, FakeTranscriptionApi? api = null, string url = Link)
+        TestHarness h, User user, FakeTranscriptionApi? api = null, string url = Link, string? device = null)
         => new SubmitLinkTranscriptionCommandHandler(
-                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id), h.QuotaGate)
+                api ?? new FakeTranscriptionApi(), h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(device), h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitLinkTranscriptionCommand(url, TranscriptionMode.Melody, null, null), CancellationToken.None);
 
     private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeTranscriptionApi api, bool separate, int keyboardTranspose = 0)

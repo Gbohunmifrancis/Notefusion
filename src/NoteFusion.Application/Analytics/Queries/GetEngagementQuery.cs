@@ -11,7 +11,12 @@ using NoteFusion.Shared.Results;
 namespace NoteFusion.Application.Analytics.Queries;
 
 /// <summary>One of the most active accounts in a window.</summary>
+/// <param name="Transcriptions">The account's jobs started in the window that produced a result, whatever paid for them.</param>
 /// <param name="Score">Transcriptions ×3 + active days ×2 + saved sheets: the leaderboard's order.</param>
+/// <param name="Charged">
+/// Of those jobs, the ones that spent an allowance: a free one, a bought one, a Pro song credit or the free
+/// link preview. Work on Pro (recordings are unmetered there) is in <paramref name="Transcriptions"/> only.
+/// </param>
 public sealed record EngagedUserDto(
     Guid UserId,
     string FullName,
@@ -23,7 +28,8 @@ public sealed record EngagedUserDto(
     int ActiveDays,
     int WebSessions,
     DateTime LastActiveUtc,
-    int Score);
+    int Score,
+    int Charged = 0);
 
 /// <summary>How engaged accounts were in a window: who, how often, how much and when.</summary>
 public sealed record EngagementDto(
@@ -83,7 +89,11 @@ public sealed class GetEngagementQueryHandler : IRequestHandler<GetEngagementQue
         // the same way the overview's series are, so it reads the same on Npgsql and the tests' SQLite.
         var jobs = await _db.RealJobs().AsNoTracking()
             .Where(j => j.CreatedAtUtc >= since && j.CreatedAtUtc < until)
-            .Select(j => new { j.UserId, j.CreatedAtUtc, j.JobId, Done = j.ResultJson != null })
+            .Select(j => new
+            {
+                j.UserId, j.CreatedAtUtc, j.JobId, Done = j.ResultJson != null,
+                Charged = j.TrialConsumedAtUtc != null || j.SongCreditConsumedAtUtc != null
+            })
             .ToListAsync(ct);
         var saves = await _db.RealSheets().AsNoTracking()
             .Where(t => t.CreatedAtUtc >= since && t.CreatedAtUtc < until)
@@ -143,12 +153,13 @@ public sealed class GetEngagementQueryHandler : IRequestHandler<GetEngagementQue
             .Select(a =>
             {
                 var transcriptions = windowJobs.Count(j => j.UserId == a.Id && j.Done);
+                var charged = windowJobs.Count(j => j.UserId == a.Id && j.Charged);
                 var saved = saves.Count(s => s.UserId == a.Id && InWindow(s.AtUtc));
                 var days = windowSignals.Where(s => s.UserId == a.Id).Select(s => AnalyticsRange.LocalDateOf(s.AtUtc)).Distinct().Count();
                 var sessions = web.Where(w => w.UserId == a.Id && InWindow(w.OccurredAtUtc)).Select(w => w.SessionId).Distinct().Count();
                 var last = windowSignals.Where(s => s.UserId == a.Id).Max(s => s.AtUtc);
                 return new EngagedUserDto(a.Id, a.FullName, a.Email, a.Country, pro.Contains(a.Id),
-                    transcriptions, saved, days, sessions, last, transcriptions * 3 + days * 2 + saved);
+                    transcriptions, saved, days, sessions, last, transcriptions * 3 + days * 2 + saved, charged);
             })
             .ToList();
 

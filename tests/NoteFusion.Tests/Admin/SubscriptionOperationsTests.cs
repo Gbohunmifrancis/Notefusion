@@ -505,6 +505,42 @@ public class SubscriptionOperationsTests
     }
 
     [Fact]
+    public async Task The_detail_page_tells_free_bought_and_charged_transcriptions_apart()
+    {
+        // A free account that used its three, bought two songs and spent both, and ran the free link
+        // preview. "Free generations used" read 5 of 3 (the bought ones counted as free), which looks
+        // exactly like the quota leaking.
+        using var h = new TestHarness(Now);
+        var (_, target) = Seed(h);
+        for (var i = 0; i < 2; i++)
+        {
+            var tx = PaymentTransaction.Create(target.Id, Guid.NewGuid(), PaymentProvider.Paystack, $"checkout:song-{i}", $"song-{i}", 150_000, "NGN", Now.AddDays(-5));
+            h.Db.PaymentTransactions.Add(tx);
+            h.Db.LedgerEntries.Add(LedgerEntry.Create(
+                target.Id, tx.Id, LedgerDirection.Credit, LedgerEntryReason.TranscriptionPurchase, 150_000, "NGN", "One song", Now.AddDays(-5)));
+        }
+        foreach (var i in Enumerable.Range(0, 5))
+        {
+            var job = TranscriptionJob.Record($"job-{i}", target.Id, Now.AddDays(-4), paidByCredit: i >= 3);
+            job.ConsumeTrial(Now.AddDays(-4));
+            h.Db.TranscriptionJobs.Add(job);
+        }
+        var preview = TranscriptionJob.RecordLink("preview", target.Id, Now.AddDays(-3), null, wasPro: false);
+        preview.ConsumeSongCredit(Now.AddDays(-3));
+        h.Db.TranscriptionJobs.Add(preview);
+        h.Db.TranscriptionJobs.Add(TranscriptionJob.Record("failed", target.Id, Now.AddDays(-2))); // nothing spent
+        await h.Db.SaveChangesAsync();
+
+        var detail = await Detail(h, target.Id);
+
+        Assert.Equal(3, detail.TrialGenerationsUsed);
+        Assert.Equal(3, detail.TrialGenerationsTotal);
+        Assert.Equal((2, 2), (detail.BoughtTranscriptionsUsed, detail.BoughtTranscriptionsTotal));
+        Assert.Equal(1, detail.SongPreviewsUsed);
+        Assert.Equal(6, detail.ChargedTranscriptionCount);
+    }
+
+    [Fact]
     public async Task The_detail_page_names_the_gift_and_the_plan_behind_it()
     {
         using var h = new TestHarness(Now);

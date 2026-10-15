@@ -61,7 +61,8 @@ function Leaderboard({ users, compact = false }: { users: EngagedUser[]; compact
           <tr>
             <th className="px-4 py-2.5 font-medium">#</th>
             <th className="px-4 py-2.5 font-medium">User</th>
-            <th className="px-4 py-2.5 text-right font-medium" title="Transcriptions that produced a result">Transcribed</th>
+            <th className="px-4 py-2.5 text-right font-medium" title="Transcriptions started in this window that produced a result, whatever paid for them (Pro recordings included)">Transcribed</th>
+            <th className="px-4 py-2.5 text-right font-medium" title="Of those, the ones that spent an allowance: a free one, a bought one, a Pro song or the free link preview">Charged</th>
             <th className="px-4 py-2.5 text-right font-medium" title="Days with any activity">Active days</th>
             {!compact && <th className="px-4 py-2.5 text-right font-medium">Saved</th>}
             {!compact && <th className="px-4 py-2.5 text-right font-medium" title="Visits to the web app">Web visits</th>}
@@ -83,6 +84,7 @@ function Leaderboard({ users, compact = false }: { users: EngagedUser[]; compact
                 {!compact && <div className="truncate text-[11px] text-muted-foreground">{u.email}</div>}
               </td>
               <td className="px-4 py-2.5 text-right font-semibold tabular-nums text-foreground">{u.transcriptions}</td>
+              <td className="px-4 py-2.5 text-right tabular-nums">{u.charged ?? 0}</td>
               <td className="px-4 py-2.5 text-right tabular-nums">{u.activeDays}</td>
               {!compact && <td className="px-4 py-2.5 text-right tabular-nums">{u.saved}</td>}
               {!compact && <td className="px-4 py-2.5 text-right tabular-nums">{u.webSessions}</td>}

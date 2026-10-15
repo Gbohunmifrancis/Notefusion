@@ -4,6 +4,7 @@ using NoteFusion.Application.Admin.Dtos;
 using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Admin.Queries;
@@ -47,8 +48,19 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
         // Counted from the jobs, not from saved transcriptions, and from the same constant the paywall
         // reads — deleting a transcription does not hand the free generation back, and the number the
         // console shows must be the number that gates the user.
+        // Free ones only: a job paid for with a bought transcription is charged on the same column, and
+        // counting it here read as "5 of 3" for someone who bought two.
         var trialUsed = await _db.TranscriptionJobs.AsNoTracking()
-            .CountAsync(j => j.UserId == request.UserId && j.TrialConsumedAtUtc != null, ct);
+            .CountAsync(j => j.UserId == request.UserId && j.TrialConsumedAtUtc != null && !j.PaidByCredit, ct);
+        var boughtTotal = await TrialUsage.CountBoughtAsync(_db, request.UserId, ct);
+        var boughtUsed = await TrialUsage.CountBoughtSpentAsync(_db, request.UserId, _clock.UtcNow, ct);
+        var previewsUsed = await _db.TranscriptionJobs.AsNoTracking()
+            .CountAsync(j => j.UserId == request.UserId && j.Kind == TranscriptionJobKind.Link
+                             && !j.WasPro && j.SongCreditConsumedAtUtc != null, ct);
+        // What the allowances were actually charged, next to the raw count of results below.
+        var charged = await _db.TranscriptionJobs.AsNoTracking()
+            .CountAsync(j => j.UserId == request.UserId
+                             && (j.TrialConsumedAtUtc != null || j.SongCreditConsumedAtUtc != null), ct);
 
         // Every transcription that produced a result, saved or not: counting saved sheets alone missed
         // everyone who transcribes without saving. See TranscriptionCounts for what is included.
@@ -177,6 +189,10 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             counts.Saved,
             counts.Failed,
             user.IsInternal,
-            user.LastSeenAtUtc);
+            user.LastSeenAtUtc,
+            boughtUsed,
+            boughtTotal,
+            previewsUsed,
+            charged);
     }
 }

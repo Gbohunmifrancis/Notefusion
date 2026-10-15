@@ -116,6 +116,10 @@ public class FeedbackAndEngagementTests
         await new RecordWebEventsCommandHandler(h.Db, new StubCurrentUser(quiet), h.Clock).Handle(new RecordWebEventsCommand("v", "s",
             [new WebEventInput("action", "Opened plans", "/app", null, null, "desktop", null)]), default);
 
+        foreach (var job in h.Db.TranscriptionJobs.Where(j => j.UserId == busy).OrderBy(j => j.JobId).Take(2).ToList())
+            job.ConsumeTrial(job.CreatedAtUtc);
+        h.Db.SaveChanges();
+
         h.Clock.UtcNow = Now;
         var e = (await new GetEngagementQueryHandler(h.Db, h.Clock).Handle(new GetEngagementQuery(), default)).Value;
 
@@ -125,6 +129,8 @@ public class FeedbackAndEngagementTests
         Assert.Equal(["Busy", "Quiet"], e.TopUsers.Select(u => u.FullName));
         var top = e.TopUsers[0];
         Assert.Equal((6, 2), (top.Transcriptions, top.ActiveDays));
+        // Six finished, two of them charged (the rest ran on Pro, say): the raw count is not the quota.
+        Assert.Equal(2, top.Charged);
         Assert.Equal(1, e.TopUsers[1].WebSessions);
         Assert.Equal(1, e.UsersByTranscriptions.Single(b => b.Label == "6–10").Count);
         Assert.Equal(1, e.UsersByTranscriptions.Single(b => b.Label == "0").Count);

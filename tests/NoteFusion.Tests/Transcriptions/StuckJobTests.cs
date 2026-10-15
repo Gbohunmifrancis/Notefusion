@@ -94,18 +94,45 @@ public class StuckJobTests
     }
 
     [Fact]
-    public async Task A_job_still_running_at_the_deadline_is_closed_uncharged()
+    public async Task A_job_the_worker_still_has_at_the_deadline_stays_open_and_is_charged_when_it_finishes()
     {
+        // A busy queue, not a lost job: the worker answers that it is still waiting or working on it. Closing
+        // it here used to make it free (the late result is handed over uncharged), on a free account and
+        // for a Pro song alike.
         using var h = new TestHarness(Now);
         var user = Seed(h);
         var job = Open(h, user);
         h.Clock.UtcNow = Now + PastDeadline;
+
+        await Notify(h, job, new Worker { Status = TranscriptionStatus.Pending });
+        await Notify(h, job, new Worker { Status = TranscriptionStatus.Processing });
+
+        var row = h.Db.TranscriptionJobs.Single();
+        Assert.Null(row.SettledAtUtc);
+        Assert.Empty(h.Push.Sent);
+
+        h.Clock.UtcNow = Now + PastDeadline + TimeSpan.FromMinutes(40);
+        await Notify(h, job, new Worker { Status = TranscriptionStatus.Done });
+
+        Assert.NotNull(row.SettledAtUtc);
+        Assert.NotNull(row.ResultJson);
+        Assert.NotNull(row.TrialConsumedAtUtc);
+    }
+
+    [Fact]
+    public async Task A_job_the_worker_reports_running_for_hours_is_closed_uncharged()
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var job = Open(h, user);
+        h.Clock.UtcNow = Now + NotifyTranscriptionReadyCommand.GiveUpOnRunningAfter + TimeSpan.FromMinutes(1);
 
         await Notify(h, job, new Worker { Status = TranscriptionStatus.Processing });
 
         var row = h.Db.TranscriptionJobs.Single();
         Assert.NotNull(row.SettledAtUtc);
         Assert.Null(row.TrialConsumedAtUtc);
+        Assert.Equal(0, await TrialUsage.CountUsedAsync(h.Db, user.Id, null, h.Clock.UtcNow));
     }
 
     [Fact]
@@ -115,7 +142,7 @@ public class StuckJobTests
         var user = Seed(h);
         var job = Open(h, user);
         h.Clock.UtcNow = Now + PastDeadline;
-        await Notify(h, job, new Worker { Status = TranscriptionStatus.Processing });
+        await Notify(h, job, new Worker { Throws = true }); // no answer at the deadline: given up on
 
         // The worker finishes after all, and the record screen is still polling.
         h.Clock.UtcNow = Now + PastDeadline + TimeSpan.FromMinutes(2);
@@ -138,7 +165,7 @@ public class StuckJobTests
         h.Db.SaveChanges();
         h.Clock.UtcNow = Now + PastDeadline;
 
-        await Notify(h, job, new Worker { Status = TranscriptionStatus.Pending });
+        await Notify(h, job, new Worker { Throws = true });
 
         var row = h.Db.TranscriptionJobs.Single();
         Assert.NotNull(row.SettledAtUtc);

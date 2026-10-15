@@ -25,6 +25,13 @@ public static class QuotaGateExtensions
     public static string UserKey(Guid userId) => $"user:{userId}";
 
     /// <summary>
+    /// The key for a handset's free allowances, which every account on it shares: a free submit holds it
+    /// beside the account's, so two accounts on one phone are counted one after the other. Null without a
+    /// device, which <see cref="AcquireAllAsync"/> skips.
+    /// </summary>
+    public static string? DeviceKey(string? fingerprint) => fingerprint is null ? null : $"device:{fingerprint}";
+
+    /// <summary>
     /// The key a library save for one account holds: a Save and the auto-save sweep both take it, so the
     /// "replace whatever this job already has" step cannot interleave and leave two sheets for one job.
     /// </summary>

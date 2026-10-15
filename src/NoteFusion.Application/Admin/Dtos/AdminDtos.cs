@@ -104,8 +104,18 @@ public sealed record AdminLedgerEntryDto(
 /// log in" is usually this and nothing to do with suspension, and the two are fixed differently.
 /// </param>
 /// <param name="TrialGenerationsUsed">
-/// Free transcriptions consumed, counted from the jobs that consumed them rather than from saved
-/// transcriptions — deleting a transcription does not hand the trial back.
+/// Free transcriptions consumed by this account, counted from the jobs that consumed them rather than from
+/// saved transcriptions — deleting a transcription does not hand the trial back. Bought ones are counted
+/// apart (<paramref name="BoughtTranscriptionsUsed"/>). Per account: the paywall also counts other accounts
+/// on the same handset.
+/// </param>
+/// <param name="BoughtTranscriptionsUsed">One-song purchases spent or held by a running job.</param>
+/// <param name="BoughtTranscriptionsTotal">One-song purchases fulfilled, ever.</param>
+/// <param name="SongPreviewsUsed">The free one-minute link previews this account was charged (one at most, by design).</param>
+/// <param name="ChargedTranscriptionCount">
+/// Jobs that spent an allowance: a free one, a bought one, a Pro song credit or the free link preview. Unlike
+/// <paramref name="TranscriptionCount"/>, it leaves out work done on Pro (recordings cost nothing there), claimed
+/// website previews and sheets from before jobs were recorded — compare this, not that, with the allowance.
 /// </param>
 /// <param name="Subscription">Null when the account has never had one, gifted or paid.</param>
 public sealed record AdminUserDetailDto(
@@ -136,7 +146,11 @@ public sealed record AdminUserDetailDto(
     int FailedTranscriptionCount = 0,
     /// <summary>A team or test account, left out of analytics (an admin always is).</summary>
     bool IsInternal = false,
-    DateTime? LastSeenAtUtc = null);
+    DateTime? LastSeenAtUtc = null,
+    int BoughtTranscriptionsUsed = 0,
+    int BoughtTranscriptionsTotal = 0,
+    int SongPreviewsUsed = 0,
+    int ChargedTranscriptionCount = 0);
 
 public sealed record AdminTranscriptionSummaryDto(
     Guid Id,
