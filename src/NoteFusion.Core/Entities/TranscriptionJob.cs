@@ -79,8 +79,20 @@ public class TranscriptionJob : BaseEntity
     /// <summary>Upload (a recording), Link (a song fetched from a streaming platform) or Song (an uploaded song the voice is isolated from).</summary>
     public TranscriptionJobKind Kind { get; private set; } = TranscriptionJobKind.Upload;
 
-    /// <summary>A link or a song upload: the kinds that take a song credit rather than a trial generation.</summary>
-    public bool IsSong => Kind is TranscriptionJobKind.Link or TranscriptionJobKind.Song;
+    /// <summary>
+    /// A link or a song upload: the kinds that take a song credit rather than a trial generation. A link a
+    /// free account ran on a transcription it bought (<see cref="PaidByCredit"/>) is not one: it is charged
+    /// like any other free-tier transcription, against the allowance the purchase raised.
+    /// </summary>
+    public bool IsSong => (Kind is TranscriptionJobKind.Link or TranscriptionJobKind.Song) && !PaidByCredit;
+
+    /// <summary>
+    /// True for a free account's linked song run on a transcription it bought, rather than as the one free
+    /// preview. Stamped at submit, like <see cref="WasPro"/>, because it decides which allowance the job
+    /// holds while it runs and which one it spends when it finishes: the trial ledger
+    /// (<see cref="TrialConsumedAtUtc"/>), never the preview.
+    /// </summary>
+    public bool PaidByCredit { get; private set; }
 
     /// <summary>
     /// Whether the submitter was on Pro when a link job was submitted. Stamped up front, unlike the trial
@@ -105,8 +117,12 @@ public class TranscriptionJob : BaseEntity
             DeviceFingerprint = deviceFingerprint
         };
 
+    /// <param name="paidByCredit">
+    /// A free account spending a bought transcription on the whole song (see <see cref="PaidByCredit"/>).
+    /// Never with <paramref name="wasPro"/>: Pro songs have their own monthly allowance.
+    /// </param>
     public static TranscriptionJob RecordLink(
-        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, bool wasPro)
+        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint, bool wasPro, bool paidByCredit = false)
         => new()
         {
             Id = Guid.NewGuid(),
@@ -115,7 +131,8 @@ public class TranscriptionJob : BaseEntity
             CreatedAtUtc = utcNow,
             DeviceFingerprint = deviceFingerprint,
             Kind = TranscriptionJobKind.Link,
-            WasPro = wasPro
+            WasPro = wasPro,
+            PaidByCredit = !wasPro && paidByCredit
         };
 
     /// <summary>

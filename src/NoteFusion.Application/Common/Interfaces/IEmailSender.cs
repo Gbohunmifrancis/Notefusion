@@ -13,12 +13,17 @@ public sealed record EmailRecipient(string Email, string? Name = null);
 /// a lifetime receipt reading "renews on 31 December 9999" would look like a bug to the one person
 /// who just paid us the most.
 /// </param>
+/// <param name="OneTranscription">
+/// A one-song purchase rather than Pro time: the receipt says one transcription was added, and nothing about
+/// a membership.
+/// </param>
 public sealed record SubscriptionReceipt(
     string PlanName,
     long AmountMinor,
     string Currency,
     DateTime? RenewsAtUtc,
-    string Reference);
+    string Reference,
+    bool OneTranscription = false);
 
 /// <summary>
 /// The facts an "expiring soon" notice states. <paramref name="WillRenew"/> is the difference between

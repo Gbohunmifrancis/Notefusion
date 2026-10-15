@@ -116,20 +116,20 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // per device as well as per account, because adding a second Google account to an Android
                 // phone is four taps and used to be worth a fresh trial. Running jobs count too: they are
                 // charged when they finish, so without them any number could be started at once.
-                var used = await TrialUsage.CountUsedAsync(_db, userId, fingerprint, _clock.UtcNow, cancellationToken);
-
+                // Bought transcriptions raise the ceiling one each and are spent the same way, a song with
+                // the voice isolated included: it is a plain upload on the free tier.
                 var country = await _db.Users
                     .Where(u => u.Id == userId)
                     .Select(u => u.Country)
                     .FirstOrDefaultAsync(cancellationToken);
 
-                var allowance = FreeTier.TrialGenerationsFor(country);
+                var allowance = await TrialUsage.ReadAsync(_db, userId, fingerprint, country, _clock.UtcNow, cancellationToken);
 
-                if (used >= allowance)
+                if (allowance.Remaining <= 0)
                 {
-                    // Told the number that actually applied to them, not a global one: a refusal that names
+                    // Told the numbers that actually applied to them, not a global one: a refusal that names
                     // a different count than the trial pill did is indistinguishable from a billing bug.
-                    return BillingErrors.FreeTierLimitReached(allowance);
+                    return BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought);
                 }
             }
             else if (request.Separate && !isScore)

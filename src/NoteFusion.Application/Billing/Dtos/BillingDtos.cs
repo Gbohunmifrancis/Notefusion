@@ -19,7 +19,8 @@ public sealed record CheckoutSessionDto(string Reference, string CheckoutUrl, Pa
 
 /// <summary>The caller's subscription state, enough for the app to gate Pro features.</summary>
 /// <param name="TrialGenerationsRemaining">
-/// Free transcriptions still available, floored at zero. Meaningless while <paramref name="IsActive"/>
+/// Free-tier transcriptions still available, bought ones included, floored at zero; measured against
+/// <c>TrialGenerationsTotal</c>, which is the free three plus every transcription bought. Meaningless while <paramref name="IsActive"/>
 /// is true — Pro is unlimited — and reported anyway so the app has one shape to read.
 /// </param>
 /// <param name="IsLifetime">
@@ -43,7 +44,15 @@ public sealed record SubscriptionDto(
     /// <summary>The plan's display name ("NoteFusion Pro (Monthly)"); null without a subscription.</summary>
     string? PlanName = null,
     /// <summary>A free account that has not yet used its one four-part harmony. Always false on Pro.</summary>
-    bool FreeHarmonyAvailable = false);
+    bool FreeHarmonyAvailable = false,
+    /// <summary>
+    /// Bought transcriptions not yet spent (one-song purchases; they never expire). Already counted in
+    /// <c>TrialGenerationsRemaining</c>; reported on its own so the app can say "1 bought song left" and so a
+    /// free account knows a whole linked song is open to it.
+    /// </summary>
+    int BoughtTranscriptionsRemaining = 0,
+    /// <summary>Transcriptions this account has ever bought. Rises by one when a one-song payment lands.</summary>
+    int BoughtTranscriptionsTotal = 0);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

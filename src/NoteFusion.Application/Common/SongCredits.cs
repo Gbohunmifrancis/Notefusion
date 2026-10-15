@@ -98,6 +98,7 @@ public static class SongCredits
             j => j.UserId == userId
                  && j.Kind == TranscriptionJobKind.Link
                  && !j.WasPro
+                 && !j.PaidByCredit // a bought song holds a bought transcription, not the preview
                  && j.SettledAtUtc == null
                  && j.SongCreditConsumedAtUtc == null
                  && j.CreatedAtUtc >= since,

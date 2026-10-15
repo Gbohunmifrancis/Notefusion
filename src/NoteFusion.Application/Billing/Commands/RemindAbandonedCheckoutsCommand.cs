@@ -60,7 +60,11 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
         // Only checkouts whose payment page opened: one the provider refused outright has already had
         // its "payment didn't go through" email from InitiateCheckoutCommand, and two about one attempt
         // is one too many.
+        // Nor a one-song checkout: the reminder sells Pro, and someone who wanted one song does not need
+        // a week of emails about a membership they never asked for.
+        var singlePlans = await _db.Plans.Where(p => p.Interval == BillingInterval.Single).Select(p => p.Id).ToListAsync(ct);
         var abandoned = latest
+            .Where(t => !singlePlans.Contains(t.PlanId))
             .Where(t => t.CreatedAtUtc < quietSince
                         && t.ReachedCheckout
                         && t.Status is not (PaymentStatus.Verified or PaymentStatus.Completed))

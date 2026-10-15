@@ -230,8 +230,10 @@ public sealed class GetAnalyticsOverviewQueryHandler
             .OrderByDescending(c => c.Count)
             .ToList();
 
+        // Revenue collected counts one-song purchases too (money in is money in); the run-rate above does not,
+        // because it is read from memberships and a one-off purchase never starts one.
         var charges = await _db.RealLedger()
-            .Where(e => e.Reason == LedgerEntryReason.SubscriptionCharge
+            .Where(e => (e.Reason == LedgerEntryReason.SubscriptionCharge || e.Reason == LedgerEntryReason.TranscriptionPurchase)
                         && e.Direction == LedgerDirection.Credit
                         && e.CreatedAtUtc >= range.FromUtc && e.CreatedAtUtc < range.ToUtc)
             .Select(e => new { e.Currency, e.AmountMinor })

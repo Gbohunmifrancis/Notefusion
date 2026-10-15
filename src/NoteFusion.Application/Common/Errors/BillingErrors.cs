@@ -81,13 +81,30 @@ public static class BillingErrors
         Error.Conflict("BILLING_SONGS_IN_PROGRESS",
             $"You have {max} songs in progress. Wait for one to finish, then try again.");
 
-    /// <summary>A free account has had its one song preview; full songs are a Pro feature.</summary>
+    /// <summary>
+    /// A free account has had its one song preview and has no bought transcription left; a whole song takes
+    /// one bought transcription, or Pro.
+    /// </summary>
     public static readonly Error SongPreviewUsed =
         Error.Forbidden("BILLING_SONG_PREVIEW_USED",
-            "You have used your free song preview. Upgrade to Pro to transcribe full songs from a link.");
+            "You have used your free song preview. Buy just this song, or upgrade to Pro to transcribe full songs from a link.");
 
-    public static Error FreeTierLimitReached(int allowance) =>
+    /// <summary>
+    /// The free tier is spent, bought transcriptions included. Takes both numbers that were actually
+    /// enforced, so the refusal agrees with the count the app had been showing.
+    /// </summary>
+    public static Error FreeTierLimitReached(int free, int bought = 0) =>
         Error.Forbidden("BILLING_FREE_TIER_LIMIT",
-            $"You have used all {allowance} of your free transcriptions. "
-            + "Upgrade to Pro for unlimited transcriptions.");
+            (bought > 0
+                ? $"You have used all {free} of your free transcriptions and the {bought} you bought. "
+                : $"You have used all {free} of your free transcriptions. ")
+            + "Buy just this song, or upgrade to Pro for unlimited transcriptions.");
+
+    /// <summary>
+    /// A Pro member asked for a one-song purchase. Pro already includes every transcription, so the
+    /// purchase would be money for nothing; the paywall hides the product from members and this holds it.
+    /// </summary>
+    public static readonly Error SingleNotNeededOnPro =
+        Error.Conflict("BILLING_SINGLE_NOT_NEEDED",
+            "You're on Pro, so every transcription is already included. There is nothing more to buy.");
 }

@@ -236,6 +236,10 @@ public sealed class BrandedEmailTemplate
     {
         var amount = FormatAmount(receipt.AmountMinor, receipt.Currency);
 
+        // One transcription bought, not Pro time: a different receipt with nothing about a membership.
+        if (receipt.OneTranscription)
+            return OneTranscriptionReceipt(to, receipt, amount);
+
         // A one-off purchase has no next charge, so every line that would name one says so instead. The
         // two shapes are built together rather than in separate methods because they are the same
         // receipt — only the renewal fact differs.
@@ -280,6 +284,37 @@ public sealed class BrandedEmailTemplate
                 renews is null
                     ? "and nothing to cancel."
                     : "add more time from the app whenever you like."));
+    }
+
+    private EmailMessage OneTranscriptionReceipt(EmailRecipient to, SubscriptionReceipt receipt, string amount)
+    {
+        const string lead = "Payment received — one more transcription has been added to your NoteFusion account.";
+        const string closing = "Use it on any recording or song link; it never expires. "
+            + "Keep this email as your receipt. There is no subscription and nothing will be charged again.";
+
+        var body = Paragraphs(lead)
+            + FactTable(
+                ("Bought", Encode(receipt.PlanName)),
+                ("Amount paid", Encode(amount)),
+                ("Reference", $"<span style=\"font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace\">{Encode(receipt.Reference)}</span>"))
+            + Paragraphs(closing);
+
+        return Compose(
+            to,
+            subject: $"Your NoteFusion receipt — {amount}",
+            preheader: "One more transcription is ready to use.",
+            heading: "Your song is paid for",
+            bodyHtml: body,
+            cta: new CallToAction("Open NoteFusion", _settings.AppUrl),
+            textBody: Text(
+                lead,
+                "",
+                $"Bought:      {receipt.PlanName}",
+                $"Amount paid: {amount}",
+                $"Reference:   {receipt.Reference}",
+                "",
+                "Use it on any recording or song link; it never expires.",
+                "Keep this email as your receipt. There is no subscription and nothing will be charged again."));
     }
 
     public EmailMessage PaymentFailed(EmailRecipient to, string planName)

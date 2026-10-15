@@ -29,17 +29,26 @@ public class PlanEligibilityTests
     // ---------------------------------------------------------------- the rule itself
 
     [Theory]
-    [InlineData("NG", "NGN", true)]   // the naira tier, to the market it was priced for
-    [InlineData("NG", "USD", false)]  // barred both ways: a lifetime sale undercuts the recurring tier
-    [InlineData("GB", "USD", true)]
-    [InlineData("US", "USD", true)]
-    [InlineData("GB", "NGN", false)]  // the incentive to lie about your country
-    [InlineData("ng", "ngn", true)]   // case is a storage detail, not a rule
-    [InlineData(null, "USD", true)]   // unknown country sees everything
-    [InlineData(null, "NGN", true)]
-    public void Region_decides_which_currency_is_on_offer(string? country, string currency, bool offered)
+    [InlineData("NG", "pro_monthly_ngn", "NGN", true)]   // the naira tier, to the market it was priced for
+    [InlineData("NG", "pro_monthly_usd", "USD", false)]  // barred both ways: a lifetime sale undercuts the recurring tier
+    [InlineData("NG", "pro_monthly_usd_regional", "USD", false)]
+    [InlineData("GB", "pro_monthly_usd", "USD", true)]
+    [InlineData("US", "pro_monthly_usd", "USD", true)]
+    [InlineData("GB", "pro_monthly_ngn", "NGN", false)]  // the incentive to lie about your country
+    [InlineData("GB", "pro_monthly_usd_regional", "USD", false)] // nor the regional dollar price
+    [InlineData("ng", "pro_monthly_ngn", "ngn", true)]   // case is a storage detail, not a rule
+    [InlineData(null, "pro_monthly_usd", "USD", true)]   // unknown country keeps naira and standard dollars
+    [InlineData(null, "pro_monthly_ngn", "NGN", true)]
+    [InlineData(null, "pro_monthly_usd_regional", "USD", false)] // but a failed lookup is not a discount
+    [InlineData("KE", "pro_monthly_usd_regional", "USD", true)]  // Africa outside Nigeria
+    [InlineData("KE", "pro_monthly_usd", "USD", false)]
+    [InlineData("KE", "pro_monthly_ngn", "NGN", false)]
+    [InlineData("IN", "one_song_usd_regional", "USD", true)]     // South Asia
+    [InlineData("PH", "one_song_usd_regional", "USD", true)]     // Southeast Asia
+    [InlineData("IN", "one_song_usd", "USD", false)]
+    public void Region_decides_which_tier_is_on_offer(string? country, string code, string currency, bool offered)
     {
-        Assert.Equal(offered, PlanEligibility.IsOffered(currency, country));
+        Assert.Equal(offered, PlanEligibility.IsOffered(code, currency, country));
     }
 
     // ---------------------------------------------------------------- the list
@@ -225,7 +234,7 @@ public class PlanEligibilityTests
 
     private static async Task<IReadOnlyList<PlanDto>> Plans(TestHarness h, User user)
     {
-        var result = await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id))
+        var result = await new GetPlansQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock)
             .Handle(new GetPlansQuery(), default);
 
         Assert.True(result.IsSuccess);

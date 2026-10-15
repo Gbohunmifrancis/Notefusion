@@ -62,11 +62,12 @@ public class BillingModelTests
     [Fact]
     public void A_nigerian_account_sees_naira_plans_and_everyone_else_sees_dollars()
     {
-        Assert.True(PlanEligibility.IsOffered("NGN", "NG"));
-        Assert.False(PlanEligibility.IsOffered("USD", "NG"));
-        Assert.True(PlanEligibility.IsOffered("USD", "US"));
-        Assert.False(PlanEligibility.IsOffered("NGN", "GB"));
-        Assert.True(PlanEligibility.IsOffered("USD", null)); // unknown country: offered everything
+        Assert.True(PlanEligibility.IsOffered("pro_monthly_ngn", "NGN", "NG"));
+        Assert.False(PlanEligibility.IsOffered("pro_monthly_usd", "USD", "NG"));
+        Assert.True(PlanEligibility.IsOffered("pro_monthly_usd", "USD", "US"));
+        Assert.False(PlanEligibility.IsOffered("pro_monthly_ngn", "NGN", "GB"));
+        Assert.True(PlanEligibility.IsOffered("pro_monthly_usd", "USD", null)); // unknown country: naira and standard dollars
+        Assert.False(PlanEligibility.IsOffered("pro_monthly_usd_regional", "USD", null)); // but not the regional set
     }
 
     [Fact]

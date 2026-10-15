@@ -7,7 +7,8 @@ namespace NoteFusion.Application.Billing;
 
 /// <summary>
 /// The single place that turns a verified payment into its business effects: the completed status, the
-/// immutable ledger credit, and the started-or-renewed subscription. Both the webhook worker and the
+/// immutable ledger credit, and the started-or-renewed subscription — or, for a one-song purchase
+/// (<see cref="BillingInterval.Single"/>), the ledger credit alone, which is the bought transcription. Both the webhook worker and the
 /// reconciliation job call this, so a payment is fulfilled identically whether we heard about it by
 /// push (webhook) or by poll (reconciliation). It stages entity changes only — the caller commits them
 /// through <see cref="SaveAsync(IApplicationDbContext, IReadOnlyList{Fulfillment}, CancellationToken)"/>
@@ -50,6 +51,23 @@ internal static class PaymentFulfillment
 
         var plan = await db.Plans.FirstOrDefaultAsync(p => p.Id == tx.PlanId, ct);
 
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);
+
+        // One transcription bought: the ledger row is the whole effect. It records the money and is the credit
+        // the free-tier gate counts (TrialUsage.CountBoughtAsync), so the unique (transaction, reason) index
+        // that stops a double credit also stops a double grant. No membership is started or extended.
+        if (plan?.Interval == BillingInterval.Single)
+        {
+            db.LedgerEntries.Add(LedgerEntry.Create(
+                tx.UserId, tx.Id, LedgerDirection.Credit, LedgerEntryReason.TranscriptionPurchase,
+                tx.AmountMinor, tx.Currency, plan.Name, now));
+
+            return new Fulfillment(tx, verification, BillingInterval.Single, plan.Name, now)
+            {
+                Recipient = user is null ? null : new EmailRecipient(user.Email, user.FullName)
+            };
+        }
+
         db.LedgerEntries.Add(LedgerEntry.Create(
             tx.UserId, tx.Id, LedgerDirection.Credit, LedgerEntryReason.SubscriptionCharge,
             tx.AmountMinor, tx.Currency, plan?.Name ?? "Subscription charge", now));
@@ -76,7 +94,6 @@ internal static class PaymentFulfillment
             fulfillment.Extend();
         }
 
-        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == tx.UserId, ct);
         if (user is not null)
             fulfillment.Recipient = new EmailRecipient(user.Email, user.FullName);
 
@@ -165,14 +182,21 @@ internal sealed class Fulfillment
     /// </summary>
     public FulfillmentReceipt? Receipt => Recipient is null
         ? null
-        : new FulfillmentReceipt(
-            Recipient,
-            new SubscriptionReceipt(
-                _planName ?? "NoteFusion Pro", _tx.AmountMinor, _tx.Currency,
-                // Null, not the sentinel: a lifetime purchase has no renewal date, and the receipt must
-                // not print 31 December 9999 at the customer who paid the most.
-                RenewsAtUtc >= Subscription.LifetimeEndUtc ? null : RenewsAtUtc,
-                _tx.Reference));
+        : Interval == BillingInterval.Single
+            // One transcription bought: no period to state, and nothing about Pro.
+            ? new FulfillmentReceipt(
+                Recipient,
+                new SubscriptionReceipt(
+                    _planName ?? "One song", _tx.AmountMinor, _tx.Currency, null, _tx.Reference,
+                    OneTranscription: true))
+            : new FulfillmentReceipt(
+                Recipient,
+                new SubscriptionReceipt(
+                    _planName ?? "NoteFusion Pro", _tx.AmountMinor, _tx.Currency,
+                    // Null, not the sentinel: a lifetime purchase has no renewal date, and the receipt must
+                    // not print 31 December 9999 at the customer who paid the most.
+                    RenewsAtUtc >= Subscription.LifetimeEndUtc ? null : RenewsAtUtc,
+                    _tx.Reference));
 
     /// <summary>Applies this payment's period to the existing membership row, from its current period end.</summary>
     internal void Extend()

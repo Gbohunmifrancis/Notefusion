@@ -46,13 +46,13 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             .FirstOrDefaultAsync(ct);
         var country = account?.Country;
 
-        var total = FreeTier.TrialGenerationsFor(country);
-
         // Counted by the same helper the submit gate uses, against the same country, so the number the
         // app shows and the number that triggers the paywall cannot drift apart. That includes the
-        // device half (a second account on a spent handset sees 0 left, not 3 followed by a refusal) and
-        // the transcriptions still running, which hold their place until they settle.
-        var remaining = await TrialUsage.CountRemainingAsync(_db, userId, _device.Current, country, _clock.UtcNow, ct);
+        // device half (a second account on a spent handset sees 0 left, not 3 followed by a refusal), the
+        // transcriptions still running, which hold their place until they settle, and the ones bought.
+        var allowance = await TrialUsage.ReadAsync(_db, userId, _device.Current, country, _clock.UtcNow, ct);
+        var total = allowance.Total;
+        var remaining = allowance.Remaining;
 
         var sub = await _db.Subscriptions
             .OrderByDescending(s => s.CurrentPeriodEndUtc)
@@ -74,7 +74,9 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 TrialGenerationsRemaining: remaining, TrialGenerationsTotal: total,
                 IsLifetime: false, IsGift: false,
                 SongCreditsRemaining: songsRemaining, SongCreditsTotal: songsTotal,
-                FreeHarmonyAvailable: account is { FreeHarmonyUsedAtUtc: null });
+                FreeHarmonyAvailable: account is { FreeHarmonyUsedAtUtc: null },
+                BoughtTranscriptionsRemaining: allowance.BoughtRemaining,
+                BoughtTranscriptionsTotal: allowance.Bought);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
@@ -82,6 +84,8 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             isPro, plan?.Code, sub.Status, sub.CurrentPeriodEndUtc,
             remaining, total, sub.IsLifetime, sub.IsGift,
             songsRemaining, songsTotal, plan?.Name,
-            FreeHarmonyAvailable: !isPro && account is { FreeHarmonyUsedAtUtc: null });
+            FreeHarmonyAvailable: !isPro && account is { FreeHarmonyUsedAtUtc: null },
+            BoughtTranscriptionsRemaining: allowance.BoughtRemaining,
+            BoughtTranscriptionsTotal: allowance.Bought);
     }
 }

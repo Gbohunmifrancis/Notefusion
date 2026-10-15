@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Billing.Dtos;
+using NoteFusion.Application.Common;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
@@ -73,8 +74,14 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
         // PlanId, so any signed-in caller can post the id of a plan they were never shown. This is the check
         // that actually holds — before the transaction row, so a refused attempt leaves no audit trail to
         // reconcile later.
-        if (!PlanEligibility.IsOffered(plan.Currency, user.Country))
+        if (!PlanEligibility.IsOffered(plan.Code, plan.Currency, user.Country))
             return BillingErrors.PlanNotAvailableInRegion;
+
+        // One transcription is worth nothing to a member, whose plan already includes every one. Hidden from
+        // their paywall, and refused here for the same reason the region is: the list is advice.
+        var isSingle = plan.Interval == BillingInterval.Single;
+        if (isSingle && await ProStatus.IsProAsync(_db, _clock, userId, ct))
+            return BillingErrors.SingleNotNeededOnPro;
 
         // Nothing bills off-session, so a member buying again is how Pro continues: the payment adds a
         // period after the one already paid for (PaymentFulfillment stacks it), on whichever plan they
@@ -117,6 +124,8 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
                 var updated = await _db.Subscriptions
                     .OrderByDescending(s => s.CurrentPeriodEndUtc)
                     .FirstOrDefaultAsync(s => s.UserId == userId, ct);
+                if (isSingle)
+                    return EarlierSingleLanded;
                 return updated is not null && updated.IsLifetime && updated.IsActiveAt(_clock.UtcNow)
                     ? BillingErrors.AlreadyLifetime
                     : EarlierPaymentLanded;
@@ -225,6 +234,14 @@ public sealed class InitiateCheckoutCommandHandler : IRequestHandler<InitiateChe
     private static readonly Error EarlierPaymentLanded =
         Error.Conflict("BILLING_PAYMENT_ALREADY_RECEIVED",
             "Good news: your earlier payment has gone through and Pro is now active. There is nothing more to pay.");
+
+    /// <summary>
+    /// The same, for a one-song purchase: the transcription it bought is already on the account. Same code,
+    /// so the clients treat it as they do the Pro one — read the account again and say the payment landed.
+    /// </summary>
+    private static readonly Error EarlierSingleLanded =
+        Error.Conflict("BILLING_PAYMENT_ALREADY_RECEIVED",
+            "Good news: your earlier payment has gone through, so your song is paid for. There is nothing more to pay.");
 
     /// <summary>Ends the idempotency key of a checkout the website started; app keys carry no suffix.</summary>
     private const string WebKeySuffix = ":web";

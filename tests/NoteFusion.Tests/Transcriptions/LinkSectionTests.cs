@@ -307,7 +307,7 @@ public class LinkSectionTests
     }
 
     private static GetLinkInfoQueryHandler Info(TestHarness h, User user, FakeApi api)
-        => new(api, h.Db, new StubCurrentUser(user.Id), h.Clock);
+        => new(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null));
 
     private static GetPreviewLinkInfoQueryHandler PreviewInfo(TestHarness h, FakeApi api, string device = "browser-a")
         => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp);

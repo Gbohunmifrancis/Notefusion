@@ -11,7 +11,7 @@ using NoteFusion.Infrastructure.Persistence;
 namespace NoteFusion.Infrastructure.Billing;
 
 /// <summary>
-/// Seeds the fixed Pro plans at startup. Plans are product-defined (not user- or config-created), so
+/// Seeds the fixed plans (Pro, and the one-song purchase) at startup. Plans are product-defined (not user- or config-created), so
 /// they live in code with deterministic ids derived from their code — re-running never duplicates a
 /// plan, and an existing plan is left untouched (price changes ship as new plan codes, so historical
 /// charges stay traceable to the price the user actually agreed to).
@@ -30,12 +30,26 @@ public sealed class BillingSeeder : IHostedService
     // needs Bachs__ProductMap__<code> (a bare pro_monthly / pro_yearly mapping is honoured too). What
     // this table cannot check — that the Bachs account can bill USD cards on a schedule — is the one
     // thing to confirm in the Bachs dashboard before the dollar tier goes on sale.
+    //
+    // Three tiers (PlanEligibility): naira for Nigeria, the regional dollar set for the lower-income markets
+    // PlanEligibility.RegionalCountries lists (the rest of Africa, South and Southeast Asia), and the standard
+    // dollar set for everyone else. A regional code carries PlanEligibility.RegionalCodeMarker ("_regional"),
+    // which is what keeps it out of every other region's list and checkout — so a regional price change must
+    // ship as a new code that keeps the marker.
+    //
+    // One song (BillingInterval.Single) is one more transcription for a free account, bought once with no
+    // membership: PaymentFulfillment records it as a ledger credit the free-tier gate counts.
     private static readonly (string Code, string Name, long AmountMinor, string Currency, BillingInterval Interval)[] Plans =
     [
-        ("pro_monthly_ngn",    "NoteFusion Pro (Monthly)", 750_000,   "NGN", BillingInterval.Monthly),
-        ("pro_yearly_ngn_v2",  "NoteFusion Pro (Yearly)",  6_000_000, "NGN", BillingInterval.Yearly),
-        ("pro_monthly_usd",    "NoteFusion Pro (Monthly)", 999,       "USD", BillingInterval.Monthly),
-        ("pro_yearly_usd",     "NoteFusion Pro (Yearly)",  7_900,     "USD", BillingInterval.Yearly),
+        ("pro_monthly_ngn",          "NoteFusion Pro (Monthly)", 750_000,   "NGN", BillingInterval.Monthly),
+        ("pro_yearly_ngn_v2",        "NoteFusion Pro (Yearly)",  6_000_000, "NGN", BillingInterval.Yearly),
+        ("pro_monthly_usd",          "NoteFusion Pro (Monthly)", 999,       "USD", BillingInterval.Monthly),
+        ("pro_yearly_usd",           "NoteFusion Pro (Yearly)",  7_900,     "USD", BillingInterval.Yearly),
+        ("pro_monthly_usd_regional", "NoteFusion Pro (Monthly)", 499,       "USD", BillingInterval.Monthly),
+        ("pro_yearly_usd_regional",  "NoteFusion Pro (Yearly)",  3_999,     "USD", BillingInterval.Yearly),
+        ("one_song_ngn",             "One song",                 150_000,   "NGN", BillingInterval.Single),
+        ("one_song_usd",             "One song",                 199,       "USD", BillingInterval.Single),
+        ("one_song_usd_regional",    "One song",                 99,        "USD", BillingInterval.Single),
     ];
 
     // Codes that must no longer be sold, for two different reasons. The two USD subscriptions are not merely

@@ -31,6 +31,8 @@ public sealed class TranscriptionJobConfiguration : IEntityTypeConfiguration<Tra
         // Song credits are counted per account per month, over link jobs only.
         builder.Property(j => j.Kind).HasDefaultValue(Core.Enums.TranscriptionJobKind.Upload);
         builder.Property(j => j.WasPro).HasDefaultValue(false);
+        // A free account's linked song run on a bought transcription (TrialUsage counts it as one).
+        builder.Property(j => j.PaidByCredit).HasDefaultValue(false);
         builder.HasIndex(j => new { j.UserId, j.Kind, j.SongCreditConsumedAtUtc });
 
         // 64 exactly: SHA-256 hex out of RequestDeviceFingerprint. Indexed alongside the trial column for

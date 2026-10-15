@@ -41,6 +41,6 @@ public sealed class GetPublicPricingQueryHandler : IRequestHandler<GetPublicPric
 
         return new PublicPricingDto(
             country,
-            plans.Where(p => PlanEligibility.IsOffered(p.Currency, country)).ToList());
+            plans.Where(p => PlanEligibility.IsOffered(p.Code, p.Currency, country)).ToList());
     }
 }

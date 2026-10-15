@@ -118,7 +118,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   place until it settles, so starting several at once cannot pass the gate. Every metered submit (uploads,
   links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
   (`IQuotaGate`: `user:{id}`, or `device:`/`ip:` for previews); the in-process one assumes a single API
-  instance — scaling out needs a Postgres advisory lock instead.
+  instance — scaling out needs a Postgres advisory lock instead. The allowance is 3 plus every transcription
+  bought one at a time (the one-song purchase, a `BillingInterval.Single` plan): fulfilment writes a
+  `LedgerEntryReason.TranscriptionPurchase` ledger credit and nothing else (no subscription), the unique
+  (transaction, reason) index makes it once per payment, and `TrialUsage.ReadAsync` counts those rows into the
+  allowance (`TrialAllowance`; never expires, spent like a free one, a failed job costs nothing). A bought
+  transcription covers anything a free one does — a song upload with isolation included — and is the only thing
+  that pays for a whole linked song on a free account (`TranscriptionJob.PaidByCredit`, up to Pro's six minutes,
+  normal lane, charged to the trial ledger and never as the one free preview); the free three never do.
+  `SubscriptionDto` carries `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A song still running holds its
   credit in the gate and in the displayed count (`SongCredits.CountHeldThisMonthAsync`), and an account may
@@ -149,8 +157,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   needed and a price change is a new plan code in `BillingSeeder`. Nothing renews by itself: a member
   buys again to add a period, which stacks after the time left (`PaymentFulfillment`), on either plan;
   two payments landing at once both stack (`Subscription.Version` is a concurrency token and the save is
-  retried). Plans are offered by the account's stored country (`PlanEligibility`): Nigeria gets naira,
-  everyone else dollars, and an unknown country sees both.
+  retried). Plans are offered by the account's stored country (`PlanEligibility`), one set per known country:
+  Nigeria gets naira; the lower-income markets in `PlanEligibility.RegionalCountries` (every African country but
+  Nigeria, and IN PK BD LK NP ID PH VN MM KH LA) get the regional dollar set (codes carrying `_regional`: Pro
+  $4.99/$39.99, one song $0.99); everyone else the standard dollar set; an unknown country sees naira and
+  standard dollars, never the regional set. Checkout refuses a plan from another set
+  (`BILLING_PLAN_NOT_AVAILABLE_IN_REGION`). Each set has a one-song purchase (₦1,500 / $1.99 / $0.99) listed
+  beside Pro for free accounts only (hidden for Pro, refused at checkout with `BILLING_SINGLE_NOT_NEEDED`); the
+  clients offer it first wherever the free limit is hit. It is revenue collected on the dashboard, never
+  run-rate/MRR (those read memberships, and a single purchase starts none).
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
   error text never reaches a screen: the API returns plain sentences for checkout failures, and the
   web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.
