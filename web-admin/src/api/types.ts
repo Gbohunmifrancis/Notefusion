@@ -99,10 +99,23 @@ export interface LiveJob {
   finished: boolean;
   startedAtUtc: string;
 }
+/** A payment that went through in the last few minutes (Verified or Completed). */
+export interface LivePayment {
+  id: string;
+  userId: string;
+  fullName: string | null;
+  email: string | null;
+  amountMinor: number;
+  currency: string;
+  planName: string;
+  paidAtUtc: string;
+}
 export interface LiveActivity {
   serverTimeUtc: string;
   online: LiveUser[];
   transcribing: LiveJob[];
+  /** Absent from an API older than the cash-register alert. */
+  payments?: LivePayment[];
 }
 
 export interface TranscriptionMetrics {
