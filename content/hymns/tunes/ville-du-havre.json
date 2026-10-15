@@ -1,0 +1,15 @@
+{
+  "name": "VILLE DU HAVRE",
+  "music": [
+    { "name": "Philip Paul Bliss", "born": 1838, "died": 1876, "role": "Melody (1876)" }
+  ],
+  "musicPublished": 1876,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": null,
+  "reviewed": false,
+  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false."
+}

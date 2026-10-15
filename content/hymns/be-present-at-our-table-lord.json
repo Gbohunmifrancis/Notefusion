@@ -1,0 +1,20 @@
+{
+  "title": "Be Present at Our Table, Lord",
+  "tune": "old-hundredth",
+  "text": [
+    { "name": "John Cennick", "born": 1718, "died": 1755, "role": "Words (1741)" }
+  ],
+  "textPublished": 1741,
+  "description": "Be Present at Our Table, Lord — the sung grace before meals — in Tonic Solfa (doh is G) to OLD HUNDREDTH, with staff notation and a piano.",
+  "about": [
+    "John Cennick, an English evangelist, published this grace in 1741, with a second verse for after the meal. It is sung to OLD HUNDREDTH, the tune of the Doxology, which is why so many families and fellowships already know it by heart."
+  ],
+  "underlay": "Be pres-ent at our ta-ble, Lord; Be here and ev-’ry-where a-dored; These mer-cies bless, and grant that we May feast in fel-low-ship with thee.",
+  "verses": [
+    { "label": "Before the meal", "lines": ["Be present at our table, Lord;", "Be here and everywhere adored;", "These mercies bless, and grant that we", "May feast in fellowship with thee."] },
+    { "label": "After the meal", "lines": ["We thank thee, Lord, for this our food,", "But more because of Jesus’ blood;", "Let manna to our souls be given,", "The bread of life sent down from heaven."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}

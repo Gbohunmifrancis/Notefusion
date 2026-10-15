@@ -1,0 +1,16 @@
+{
+  "name": "NEW BRITAIN",
+  "music": [
+    { "name": "Traditional American melody", "traditional": true, "role": "Melody, first printed in Columbian Harmony (1829)" },
+    { "name": "Edwin O. Excell", "born": 1851, "died": 1921, "role": "Arranged the familiar form (1900)" }
+  ],
+  "musicPublished": 1829,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 76,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1 | G4:2 E4:1 | D4:2 D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1 | D5:3~ | D5:2 B4:1 | D5:2 B4:.5 G4:.5 | B4:2 A4:1 | G4:2 E4:1 | D4:2 D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1 | G4:3~ | G4:2",
+  "reviewed": false,
+  "reviewNotes": "The common hymn-book form (as Excell). Some books hold 'me' for a dotted half and start 'I' on the next bar's last beat; this one holds it five beats, as most do."
+}

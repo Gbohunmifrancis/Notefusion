@@ -1,0 +1,22 @@
+{
+  "title": "Blessed Assurance",
+  "tune": "assurance",
+  "text": [
+    { "name": "Fanny Crosby", "born": 1820, "died": 1915, "role": "Words (1873)" }
+  ],
+  "textPublished": 1873,
+  "description": "Blessed Assurance, Jesus Is Mine in Tonic Solfa to ASSURANCE: the solfa with the words, staff notation, all verses and the refrain, and a piano.",
+  "about": [
+    "Phoebe Palmer Knapp played her new tune to her friend Fanny Crosby, who wrote these words for it; the hymn was published in 1873."
+  ],
+  "underlay": "",
+  "verses": [
+    { "lines": ["Blessed assurance, Jesus is mine!", "O what a foretaste of glory divine!", "Heir of salvation, purchase of God,", "Born of His Spirit, washed in His blood."] },
+    { "label": "Refrain", "lines": ["This is my story, this is my song,", "Praising my Saviour all the day long;", "This is my story, this is my song,", "Praising my Saviour all the day long."] },
+    { "lines": ["Perfect submission, perfect delight,", "Visions of rapture now burst on my sight;", "Angels descending bring from above", "Echoes of mercy, whispers of love."] },
+    { "lines": ["Perfect submission, all is at rest;", "I in my Saviour am happy and blest,", "Watching and waiting, looking above,", "Filled with His goodness, lost in His love."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": true
+}

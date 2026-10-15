@@ -1,0 +1,23 @@
+{
+  "title": "Abide with Me",
+  "tune": "eventide",
+  "text": [
+    { "name": "Henry Francis Lyte", "born": 1793, "died": 1847, "role": "Words (1847)" }
+  ],
+  "textPublished": 1850,
+  "description": "Abide with Me in Tonic Solfa to EVENTIDE: the solfa with the words, staff notation, the verses most hymn books print, and a piano.",
+  "about": [
+    "Henry Francis Lyte wrote Abide with Me in 1847, weeks before he died; it was published after his death. William Henry Monk wrote the tune EVENTIDE for it in 1861."
+  ],
+  "underlay": "",
+  "verses": [
+    { "lines": ["Abide with me; fast falls the eventide;", "The darkness deepens; Lord, with me abide:", "When other helpers fail and comforts flee,", "Help of the helpless, O abide with me."] },
+    { "lines": ["Swift to its close ebbs out life’s little day;", "Earth’s joys grow dim, its glories pass away;", "Change and decay in all around I see;", "O Thou who changest not, abide with me."] },
+    { "lines": ["I need Thy presence every passing hour;", "What but Thy grace can foil the tempter’s power?", "Who, like Thyself, my guide and stay can be?", "Through cloud and sunshine, Lord, abide with me."] },
+    { "lines": ["I fear no foe, with Thee at hand to bless;", "Ills have no weight, and tears no bitterness.", "Where is death’s sting? Where, grave, thy victory?", "I triumph still, if Thou abide with me."] },
+    { "lines": ["Hold Thou Thy cross before my closing eyes;", "Shine through the gloom and point me to the skies:", "Heaven’s morning breaks, and earth’s vain shadows flee;", "In life, in death, O Lord, abide with me."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": true
+}

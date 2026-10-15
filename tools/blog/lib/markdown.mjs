@@ -1,0 +1,63 @@
+// Markdown → HTML for posts: heading ids and a table of contents, solfa blocks rendered by the
+// engine, lazy images with their size, and a record of every internal link and hymn used.
+import { Marked } from "marked";
+import { escapeHtml, slugify } from "./util.mjs";
+import { renderSolfaBlock } from "./grid-html.mjs";
+import { ORIGIN } from "./site.mjs";
+
+export function renderMarkdown(src, { hymnsBySlug, file = "post" }) {
+  const toc = [], ids = new Set(), hymnsUsed = new Set(), links = [], errors = [];
+  const marked = new Marked({
+    gfm: true,
+    renderer: {
+      heading({ tokens, depth }) {
+        const inner = this.parser.parseInline(tokens);
+        const text = inner.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+        if (depth === 1) errors.push(`"${text}" is a top-level heading (#); the title is the page's only h1, so start sections at ##`);
+        let id = slugify(text) || "section", n = 2;
+        while (ids.has(id)) id = `${slugify(text)}-${n++}`;
+        ids.add(id);
+        if (depth === 2 || depth === 3) toc.push({ depth, id, text });
+        return `<h${depth} id="${id}">${inner}</h${depth}>\n`;
+      },
+      code({ text, lang }) {
+        if ((lang || "").trim() === "solfa") {
+          try {
+            const r = renderSolfaBlock(text, { hymnsBySlug });
+            if (r.hymn) hymnsUsed.add(r.hymn);
+            return r.html + "\n";
+          } catch (e) { errors.push(e.message); return ""; }
+        }
+        return `<pre><code>${escapeHtml(text)}</code></pre>\n`;
+      },
+      link({ href, title, tokens }) {
+        const inner = this.parser.parseInline(tokens);
+        let h = href;
+        if (h.startsWith(ORIGIN)) h = h.slice(ORIGIN.length) || "/";
+        const internal = h.startsWith("/") || h.startsWith("#");
+        links.push(h);
+        const t = title ? ` title="${escapeHtml(title)}"` : "";
+        return `<a href="${escapeHtml(h)}"${t}${internal ? "" : ' rel="noopener"'}>${inner}</a>`;
+      },
+      image({ href, title, text }) {
+        // ![alt](/assets/blog/x.jpg "1200x675") — the size keeps the layout from shifting as it loads.
+        const m = /^(\d+)x(\d+)$/.exec(title || "");
+        if (!m) errors.push(`image ${href}: give its size as the title, e.g. ![alt](${href} "1200x675")`);
+        const size = m ? ` width="${m[1]}" height="${m[2]}"` : "";
+        return `<img src="${escapeHtml(href)}" alt="${escapeHtml(text)}"${size} loading="lazy" decoding="async">`;
+      },
+      table(token) {
+        const html = this.constructor.prototype.table.call(this, token);
+        return `<div class="table-wrap">${html}</div>\n`;
+      },
+    },
+  });
+  const html = marked.parse(src);
+  if (errors.length) throw new Error(`${file}:\n  - ${errors.join("\n  - ")}`);
+  return { html, toc, hymnsUsed: [...hymnsUsed], links };
+}
+
+/** Inline markdown (FAQ answers): links and emphasis, no blocks. */
+export function renderInline(src) {
+  return new Marked({ gfm: true }).parseInline(src);
+}
