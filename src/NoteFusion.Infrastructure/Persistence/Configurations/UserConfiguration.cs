@@ -39,6 +39,11 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(u => u.Email).IsUnique();
 
+        // The inbox the address delivers to, which the free allowance is shared across. Deliberately NOT
+        // unique: accounts made before it existed may already share an inbox, and both must keep working.
+        builder.Property(u => u.CanonicalEmail).HasMaxLength(254);
+        builder.HasIndex(u => u.CanonicalEmail);
+
         // Filtered unique index: one account per Google subject, while the many
         // password-only users (all null) stay exempt from the uniqueness rule.
         builder.HasIndex(u => u.GoogleId)

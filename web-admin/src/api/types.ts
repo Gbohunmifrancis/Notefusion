@@ -477,6 +477,10 @@ export interface AdminUserDetail {
   songPreviewsUsed: number;
   /** Jobs that spent an allowance (free, bought, Pro song or the link preview): the number to compare with the quota. */
   chargedTranscriptionCount: number;
+  /** The inbox the address delivers to (aliases such as you+1@gmail.com share one). Absent from older APIs. */
+  canonicalEmail?: string | null;
+  /** Other accounts on the same inbox, which share this account's free transcriptions. */
+  sharedMailboxAccounts?: number;
   /** Null when the account has never had one, gifted or paid. */
   subscription: AdminSubscription | null;
   payments: AdminPayment[];

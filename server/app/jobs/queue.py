@@ -371,9 +371,11 @@ class JobQueue:
              time_signature: str = "4/4", song_seconds: float | None = None,
              separate_vocals: bool = False, audio_preview: bool = True,
              harmony: bool = False, keyboard_transpose: int = 0) -> None:
+        # The attempt is on disk before the job is seen as processing, so anyone who sees it running
+        # (a poll, a test) also sees the attempt counted.
+        self._journal_started(job)
         job.status = STATUS_PROCESSING
         job.stage = STAGE_TRANSCRIBING  # listening for a band is part of the work, not the wait
-        self._journal_started(job)
         work_dir: Path | None = None
         try:
             try:
@@ -490,8 +492,8 @@ class JobQueue:
                   start_seconds: float = 0.0, end_seconds: float | None = None) -> None:
         from app.ingest.links import PREVIEW_NOTICE, LinkError, fetch_audio, resolve_source
 
-        job.status = STATUS_PROCESSING
         self._journal_started(job)
+        job.status = STATUS_PROCESSING
         work_dir: Path | None = None
         try:
             try:
@@ -536,9 +538,9 @@ class JobQueue:
     def _run_score(self, job: Job, score_path: Path,
                    key: str | None, tempo: int | None,
                    time_signature: str | None) -> None:
+        self._journal_started(job)
         job.status = STATUS_PROCESSING
         job.stage = STAGE_TRANSCRIBING
-        self._journal_started(job)
         try:
             try:
                 from app.pipeline.score_transcriber import transcribe_score

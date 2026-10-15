@@ -215,7 +215,9 @@ def test_recovery_sweeps_files_no_entry_owns(monkeypatch, tmp_path):
     try:
         assert queue.recover() == 1
         names = sorted(p.name for p in journal.dir.iterdir())
-        assert f"{JOB_B}.webm" not in names and not any(n.endswith(".tmp") for n in names)
+        # Job C's write cut short is swept. Job A, replayed, may already be running and mid-way
+        # through journaling its attempt, so a temp file of its own is a live write, not debris.
+        assert f"{JOB_B}.webm" not in names and f".{JOB_C}.x1y2.tmp" not in names
         assert "README" in names and f"{JOB_A}.wav" in names
     finally:
         gate.set()

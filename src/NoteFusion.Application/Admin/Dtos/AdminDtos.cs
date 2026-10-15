@@ -150,7 +150,11 @@ public sealed record AdminUserDetailDto(
     int BoughtTranscriptionsUsed = 0,
     int BoughtTranscriptionsTotal = 0,
     int SongPreviewsUsed = 0,
-    int ChargedTranscriptionCount = 0);
+    int ChargedTranscriptionCount = 0,
+    /// <summary>The inbox the address delivers to (aliases share one), whose free allowance every account on it shares.</summary>
+    string? CanonicalEmail = null,
+    /// <summary>Other accounts on the same inbox: they and this one share the free transcriptions.</summary>
+    int SharedMailboxAccounts = 0);
 
 public sealed record AdminTranscriptionSummaryDto(
     Guid Id,

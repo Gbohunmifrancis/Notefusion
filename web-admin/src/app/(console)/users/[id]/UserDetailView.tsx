@@ -247,6 +247,20 @@ function IdentityCard({ user, offset }: { user: AdminUserDetail; offset: number 
         </Field>
         <Field label="Phone">{user.phoneNumber ?? UNKNOWN}</Field>
         <Field label="Country">{user.country ?? UNKNOWN}</Field>
+        <Field label="Inbox">
+          <span
+            className="break-all"
+            title="The mailbox this address delivers to. Every account on one inbox shares the free transcriptions"
+          >
+            {user.canonicalEmail ?? UNKNOWN}
+          </span>
+          {(user.sharedMailboxAccounts ?? 0) > 0 && (
+            <span className="ml-1.5 text-xs text-muted-foreground">
+              shared with {formatCount(user.sharedMailboxAccounts ?? 0)} other{" "}
+              {user.sharedMailboxAccounts === 1 ? "account" : "accounts"}
+            </span>
+          )}
+        </Field>
         <Field label="Joined">{formatInstantDate(user.createdAt, offset)}</Field>
         <Field label="Last sign-in">{formatInstantDateTime(user.lastLoginAt, offset)}</Field>
         <Field label="Lockout">

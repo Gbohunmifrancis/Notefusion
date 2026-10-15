@@ -45,6 +45,19 @@ public sealed class DatabaseSeeder : IHostedService
         }
 
         await SeedAdminAsync(context, hasher, clock, cancellationToken);
+
+        // Not fatal: until a row has its inbox, that account's free allowance is shared per account and
+        // device only, as it was before the column existed. Failing the start over it would be worse.
+        try
+        {
+            var filled = await CanonicalEmailBackfill.RunAsync(context, cancellationToken);
+            if (filled > 0)
+                _logger.LogInformation("Filled the canonical inbox on {Count} accounts.", filled);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogError(ex, "Could not fill the canonical inbox on existing accounts; will retry at next start.");
+        }
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

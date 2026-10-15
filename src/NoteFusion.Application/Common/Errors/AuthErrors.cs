@@ -21,6 +21,15 @@ public static class AuthErrors
         Error.Validation("AUTH_PASSWORD_WEAK",
             "Password must be at least 8 characters and contain a letter and a number.");
 
+    /// <summary>
+    /// Sign-up with a throwaway inbox (<see cref="Auth.Services.DisposableEmailDomains"/>). Such an inbox
+    /// passes the emailed code and is gone minutes later, taking the account's receipts and reset links
+    /// with it — and each one was a fresh set of free transcriptions.
+    /// </summary>
+    public static readonly Error DisposableEmail =
+        Error.Validation("AUTH_DISPOSABLE_EMAIL",
+            "Please use a permanent email address. Temporary inboxes can't receive your NoteFusion sheets.");
+
     public static readonly Error InvalidGoogleToken =
         Error.Unauthorized("AUTH_INVALID_GOOGLE_TOKEN", "The Google sign-in token is invalid or has expired.");
 

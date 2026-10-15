@@ -65,6 +65,31 @@ public sealed class ConcurrentQuotaTests : IDisposable
     }
 
     [Fact]
+    public async Task Aliases_of_one_inbox_submitting_at_once_from_different_devices_get_the_three_between_them()
+    {
+        // Each request is its own alias of one Gmail inbox on its own device, so neither the account key nor
+        // the device key serialises them: only the inbox's does.
+        var aliases = Enumerable.Range(0, Parallel).Select(i => SeedUser(email: $"sam+{i}@gmail.com")).ToArray();
+        var next = -1;
+
+        var results = await Together(async () =>
+        {
+            var i = Interlocked.Increment(ref next);
+            await using var db = Open();
+            return await new SubmitTranscriptionCommandHandler(
+                    _api, db, new StubCurrentUser(aliases[i]), _clock, new StubDeviceFingerprint($"window-{i}"),
+                    Recorder(db), Activity(db, aliases[i]), _gate)
+                .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "clip.m4a", TranscriptionMode.Melody, null, null), default);
+        });
+
+        Assert.Equal(3, results.Count(r => r.IsSuccess));
+        Assert.All(results.Where(r => r.IsFailure), r => Assert.Equal("BILLING_FREE_TIER_LIMIT", r.Error.Code));
+        await using var check = Open();
+        Assert.Equal(3, await check.TranscriptionJobs.CountAsync());
+        Assert.Equal(0, _gate.ActiveKeys);
+    }
+
+    [Fact]
     public async Task Eight_pro_songs_at_once_are_capped_at_three_in_progress()
     {
         var user = SeedUser(pro: true);
@@ -199,10 +224,10 @@ public sealed class ConcurrentQuotaTests : IDisposable
     private ActivityRecorder Activity(ApplicationDbContext db, Guid? user)
         => new(db, _clock, new StubDeviceFingerprint(null), new StubClientApp(), new StubCurrentUser(user));
 
-    private Guid SeedUser(bool pro = false)
+    private Guid SeedUser(bool pro = false, string? email = null)
     {
         using var db = Open();
-        var user = User.Create("Free User", $"u-{Guid.NewGuid():N}@example.com", "hash", Now.AddDays(-30));
+        var user = User.Create("Free User", email ?? $"u-{Guid.NewGuid():N}@example.com", "hash", Now.AddDays(-30));
         user.RecordCountry("NG");
         db.Users.Add(user);
         if (pro)
