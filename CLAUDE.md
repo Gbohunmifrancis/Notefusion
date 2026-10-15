@@ -147,7 +147,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this
   account offers none for USD (`CHECKOUT_CANNOT_SAVE_PAYMENT_METHOD`), so no catalog product is
   needed and a price change is a new plan code in `BillingSeeder`. Nothing renews by itself: a member
-  buys again to add a period, which stacks after the time left (`PaymentFulfillment`), on either plan.
+  buys again to add a period, which stacks after the time left (`PaymentFulfillment`), on either plan;
+  two payments landing at once both stack (`Subscription.Version` is a concurrency token and the save is
+  retried). Plans are offered by the account's stored country (`PlanEligibility`): Nigeria gets naira,
+  everyone else, an unknown country included, gets dollars.
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
   error text never reaches a screen: the API returns plain sentences for checkout failures, and the
   web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.
