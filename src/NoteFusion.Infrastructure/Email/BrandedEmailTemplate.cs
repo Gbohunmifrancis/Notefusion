@@ -24,7 +24,7 @@ namespace NoteFusion.Infrastructure.Email;
 /// and is not ours to trust.
 /// </para>
 /// </remarks>
-public sealed class BrandedEmailTemplate
+public sealed partial class BrandedEmailTemplate
 {
     // ── Design tokens ────────────────────────────────────────────────────────────
     private const string Blue = "#2563eb";
@@ -528,7 +528,8 @@ public sealed class BrandedEmailTemplate
         string textBody)
         => new(to.Email, to.Name, subject, Layout(subject, preheader, heading, bodyHtml, cta), Footer(textBody));
 
-    private string Layout(string title, string preheader, string heading, string bodyHtml, CallToAction? cta)
+    private string Layout(
+        string title, string preheader, string heading, string bodyHtml, CallToAction? cta, string? unsubscribeUrl = null)
     {
         var logo = LogoUrl();
         // Images off is the default in plenty of clients, so the wordmark is live text either way and
@@ -620,7 +621,7 @@ public sealed class BrandedEmailTemplate
                           <p style="margin:0;font-family:{{FontStack}};font-size:12px;line-height:1.6;color:{{Faint}}">
                             <a href="{{Encode(_settings.AppUrl)}}" style="color:{{Faint}};text-decoration:underline">{{Encode(site)}}</a>
                             &nbsp;·&nbsp; Tonic Solfa and staff notation from any melody.
-                          </p>
+                          </p>{{UnsubscribeLine(unsubscribeUrl)}}
                         </td>
                       </tr>
 

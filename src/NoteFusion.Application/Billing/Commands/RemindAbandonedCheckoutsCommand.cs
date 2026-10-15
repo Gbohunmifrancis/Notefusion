@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Interfaces;
+using NoteFusion.Application.Outreach;
 using NoteFusion.Core.Enums;
 using NoteFusion.Shared.Results;
 
@@ -80,11 +81,19 @@ public sealed class RemindAbandonedCheckoutsCommandHandler
             .Select(s => s.UserId)
             .ToListAsync(ct)).ToHashSet();
         var users = await _db.Users.AsNoTracking().Where(u => userIds.Contains(u.Id) && u.IsActive).ToDictionaryAsync(u => u.Id, ct);
+        // Never the same day as the founder's outreach note (OutreachRules): an account written to in the
+        // last day waits, and is picked up by a later sweep while its checkout is still in the window.
+        var outreachSince = now - OutreachRules.ReminderHoldAfterOutreach;
+        var justWritten = (await _db.OutreachMessages
+            .Where(m => userIds.Contains(m.UserId) && m.CreatedAtUtc > outreachSince)
+            .Select(m => m.UserId)
+            .ToListAsync(ct)).ToHashSet();
         var planIds = abandoned.Select(t => t.PlanId).Distinct().ToList();
         var planNames = await _db.Plans.Where(p => planIds.Contains(p.Id)).ToDictionaryAsync(p => p.Id, p => p.Name, ct);
 
         var due = abandoned
             .Where(t => !withPro.Contains(t.UserId)
+                        && !justWritten.Contains(t.UserId)
                         && users.TryGetValue(t.UserId, out var u)
                         && (u.CheckoutReminderSentAtUtc is not { } last || (last < t.CreatedAtUtc && last < weekAgo)))
             .OrderBy(t => t.CreatedAtUtc)

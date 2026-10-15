@@ -10,6 +10,7 @@ using NoteFusion.Infrastructure.Billing;
 using NoteFusion.Infrastructure.Email;
 using NoteFusion.Infrastructure.Geo;
 using NoteFusion.Infrastructure.Media;
+using NoteFusion.Infrastructure.Outreach;
 using NoteFusion.Infrastructure.Persistence;
 using NoteFusion.Infrastructure.Push;
 using NoteFusion.Infrastructure.Push.Workers;
@@ -36,6 +37,7 @@ public static class DependencyInjection
         services.AddTranscriptionApi(configuration);
         services.AddBilling(configuration);
         services.AddGeo(configuration);
+        services.AddOutreach(configuration);
 
         return services;
     }

@@ -15,7 +15,8 @@ internal sealed record ResendRequest(
     string Subject,
     string Html,
     string Text,
-    [property: JsonPropertyName("reply_to")] string? ReplyTo);
+    [property: JsonPropertyName("reply_to")] string? ReplyTo,
+    IReadOnlyDictionary<string, string>? Headers = null);
 
 internal sealed record ResendResponse(string? Id);
 
@@ -51,12 +52,13 @@ public sealed class ResendEmailTransport : IEmailTransport
         }
 
         var payload = new ResendRequest(
-            From: FormatFrom(),
+            From: FormatFrom(message),
             To: [FormatTo(message)],
             Subject: message.Subject,
             Html: message.HtmlBody,
             Text: message.TextBody,
-            ReplyTo: _settings.ReplyTo);
+            ReplyTo: message.ReplyTo ?? _settings.ReplyTo,
+            Headers: message.Headers);
 
         using var request = new HttpRequestMessage(HttpMethod.Post, SendUrl)
         {
@@ -84,10 +86,13 @@ public sealed class ResendEmailTransport : IEmailTransport
     }
 
     /// <summary>RFC 5322 display-name form, so inboxes show "NoteFusion", not the raw address.</summary>
-    private string FormatFrom()
-        => string.IsNullOrWhiteSpace(_settings.FromName)
+    private string FormatFrom(EmailMessage message)
+    {
+        var name = string.IsNullOrWhiteSpace(message.FromName) ? _settings.FromName : message.FromName;
+        return string.IsNullOrWhiteSpace(name)
             ? _settings.FromAddress
-            : $"{Quote(_settings.FromName)} <{_settings.FromAddress}>";
+            : $"{Quote(name)} <{_settings.FromAddress}>";
+    }
 
     private static string FormatTo(EmailMessage message)
         => string.IsNullOrWhiteSpace(message.ToName)

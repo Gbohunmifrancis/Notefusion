@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<IAuditLogger, AuditLogger>();
         services.AddScoped<ITrialDeviceRecorder, TrialDeviceRecorder>();
         services.AddScoped<Activity.ActivityRecorder>();
+        services.AddScoped<Outreach.OutreachService>();
 
         return services;
     }

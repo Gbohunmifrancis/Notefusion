@@ -151,6 +151,13 @@ services:
       R2__SecretAccessKey: ${R2__SecretAccessKey}
       R2__BucketName: ${R2__BucketName}
       R2__PublicBaseUrl: ${R2__PublicBaseUrl}
+      # The founder's customer-research emails and pushes (docs/DEPLOYMENT.md, "Outreach"). On in production
+      # by default; the code default is off, so dev and tests send nothing. A blank value takes the default.
+      Outreach__Enabled: ${Outreach__Enabled:-true}
+      Outreach__FounderName: ${Outreach__FounderName:-Francis}
+      Outreach__ReplyTo: ${Outreach__ReplyTo:-hello@notefusion.studio}
+      Outreach__BatchSize: ${Outreach__BatchSize:-50}
+      Outreach__IntervalMinutes: ${Outreach__IntervalMinutes:-60}
     volumes:
       - ./jwt_private_key.pem:/run/secrets/jwt_private_key.pem:ro
 

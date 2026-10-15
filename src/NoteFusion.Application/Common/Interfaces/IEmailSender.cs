@@ -1,3 +1,6 @@
+using NoteFusion.Application.Outreach;
+using NoteFusion.Shared.Results;
+
 namespace NoteFusion.Application.Common.Interfaces;
 
 /// <summary>An email recipient. The name is optional — Google accounts can arrive without one.</summary>
@@ -126,4 +129,11 @@ public interface IEmailSender
     /// </summary>
     /// <param name="onPro">Pro accounts are told their allowance is untouched rather than their free tries.</param>
     Task SendTranscriptionFailedAsync(EmailRecipient to, bool onPro, CancellationToken ct = default);
+
+    /// <summary>
+    /// A personal customer-research note from the founder (<c>SendOutreach</c>), with replies going to
+    /// <see cref="OutreachEmail.ReplyTo"/> and a one-click unsubscribe link. The one send here that reports
+    /// how it went: the outreach audit trail records a failed delivery, and tries it once more. Never throws.
+    /// </summary>
+    Task<Result> SendOutreachAsync(EmailRecipient to, OutreachEmail email, CancellationToken ct = default);
 }
