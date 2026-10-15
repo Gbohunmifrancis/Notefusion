@@ -117,21 +117,27 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   spelled as the key signature spells it ("Doh is Bb", not A#). Every change there needs unit
   tests. The Python worker, mobile `lib/solfa.ts` and web `assets/choir.js` mirror this engine —
   keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
-- A free account gets 3 transcriptions, ever (`FreeTier`), counted per account and per device from
-  `TranscriptionJob` rows (`TrialUsage`): charged when a job finishes, and a job still running holds its
-  place (on the account and the device) until it settles, so starting several at once cannot pass the gate.
+- A free account gets 3 transcriptions, ever (`FreeTier`), counted per account, per inbox and per device from
+  `TranscriptionJob` rows (`TrialUsage`). The inbox is `users.CanonicalEmail` (`Core/ValueObjects/Mailbox`:
+  lowercase, `+tag` dropped, and for gmail/googlemail dots dropped too; non-unique, filled at startup for old
+  rows): every account on one inbox, like every account on one phone, shares the free three and the one link
+  preview — never bought ones. Aliases still sign up and sign in; they just find the free ones gone. Password
+  sign-up refuses throwaway-inbox domains (`AUTH_DISPOSABLE_EMAIL`, list in
+  `Application/Auth/Services/disposable_email_domains.txt`); Google sign-in and existing accounts are untouched.
+  A job is charged when it finishes, and a job still running holds its
+  place (on the account, the inbox and the device) until it settles, so starting several at once cannot pass the gate.
   The completion sweep (`TranscriptionCompletionWorker`, every 5 min) closes uncharged a job the worker answers
   404 for (lost in a restart), one with no answer past `TrialUsage.RunningFor`, and one the worker still reports
   queued/running past `TrialUsage.HeldFor` (hours: a busy queue is not a lost job, and closing it early made its
   result free), and then emails a failed job's
   owner tips at most once a day (`EmailFailedTranscriptionTipsCommand`). Every metered submit (uploads,
   links, previews, the free harmony) runs count → worker submit → job row under a per-subject lock
-  (`IQuotaGate`: `user:{id}` plus `device:` for a free account, or `device:`/`ip:` for previews); the in-process one assumes a single API
+  (`IQuotaGate`: `user:{id}` plus `device:` and `mailbox:` for a free account, or `device:`/`ip:` for previews); the in-process one assumes a single API
   instance — scaling out needs a Postgres advisory lock instead. The allowance is 3 plus every transcription
   bought one at a time (the one-song purchase, a `BillingInterval.Single` plan): fulfilment writes a
   `LedgerEntryReason.TranscriptionPurchase` ledger credit and nothing else (no subscription), the unique
   (transaction, reason) index makes it once per payment, and `TrialUsage.ReadAsync` counts those rows into the
-  allowance (`TrialAllowance`: two pools, the free three per account and device, the bought ones per account
+  allowance (`TrialAllowance`: two pools, the free three per account, inbox and device, the bought ones per account
   only, so another account on the same phone never uses up a purchase; never expires, spent like a free one, a
   failed job costs nothing). A submit spends a free one while any is left, then a bought one, and marks the job
   `TranscriptionJob.PaidByCredit`. A bought transcription covers anything a free one does — a song upload with

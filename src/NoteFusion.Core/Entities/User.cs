@@ -1,5 +1,6 @@
 using NoteFusion.Core.Enums;
 using NoteFusion.Core.Seedwork;
+using NoteFusion.Core.ValueObjects;
 using NoteFusion.Shared.Guards;
 
 namespace NoteFusion.Core.Entities;
@@ -48,6 +49,14 @@ public class User : BaseEntity
 
     public string FullName { get; private set; } = string.Empty;
     public string Email { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// The inbox <see cref="Email"/> delivers to (<see cref="Mailbox.Canonical"/>): aliases such as
+    /// <c>you+1@gmail.com</c> and <c>y.o.u@gmail.com</c> share one. The free transcriptions are counted per
+    /// inbox, so a new alias is not a new allowance. Not unique: accounts made before it existed may share
+    /// one, and every one of them keeps working. Null only on rows the startup backfill has not reached yet.
+    /// </summary>
+    public string? CanonicalEmail { get; private set; }
     public string? PhoneNumber { get; private set; }
 
     /// <summary>
@@ -208,6 +217,7 @@ public class User : BaseEntity
             Id = GenerateDeterministicId(email),
             FullName = Guard.NotNullOrWhiteSpace(fullName),
             Email = NormalizeEmail(email),
+            CanonicalEmail = Mailbox.Canonical(NormalizeEmail(email)),
             PasswordHash = Guard.NotNullOrWhiteSpace(passwordHash),
             Role = UserRole.Admin,
             IsActive = true,
@@ -225,6 +235,7 @@ public class User : BaseEntity
             Id = GenerateDeterministicId(email),
             FullName = Guard.NotNullOrWhiteSpace(fullName),
             Email = NormalizeEmail(email),
+            CanonicalEmail = Mailbox.Canonical(NormalizeEmail(email)),
             PasswordHash = Guard.NotNullOrWhiteSpace(passwordHash),
             Role = UserRole.User,
             IsActive = true,
@@ -246,6 +257,7 @@ public class User : BaseEntity
             Id = GenerateDeterministicId(email),
             FullName = Guard.NotNullOrWhiteSpace(fullName),
             Email = NormalizeEmail(email),
+            CanonicalEmail = Mailbox.Canonical(NormalizeEmail(email)),
             GoogleId = Guard.NotNullOrWhiteSpace(googleId),
             ProfilePictureUrl = profilePictureUrl,
             Role = UserRole.User,
@@ -510,6 +522,18 @@ public class User : BaseEntity
     {
         FullName = Guard.NotNullOrWhiteSpace(fullName);
         PhoneNumber = phoneNumber;
+    }
+
+    /// <summary>
+    /// Sets <see cref="CanonicalEmail"/> from <see cref="Email"/>, for rows made before the column existed.
+    /// Returns false when it already held that value, so a backfill can skip the write.
+    /// </summary>
+    public bool RefreshCanonicalEmail()
+    {
+        var canonical = Mailbox.Canonical(Email);
+        if (CanonicalEmail == canonical) return false;
+        CanonicalEmail = canonical;
+        return true;
     }
 
     public void AddRefreshToken(RefreshToken token) => _refreshTokens.Add(token);

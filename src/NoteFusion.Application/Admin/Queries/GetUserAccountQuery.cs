@@ -62,6 +62,12 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             .CountAsync(j => j.UserId == request.UserId
                              && (j.TrialConsumedAtUtc != null || j.SongCreditConsumedAtUtc != null), ct);
 
+        // The inbox, worked out from the address as the gate does, so a row the backfill has not reached
+        // still shows the accounts it shares the free ones with.
+        var mailbox = Core.ValueObjects.Mailbox.Canonical(user.Email);
+        var sharedMailboxAccounts = await _db.Users.AsNoTracking()
+            .CountAsync(u => u.Id != user.Id && u.CanonicalEmail == mailbox, ct);
+
         // Every transcription that produced a result, saved or not: counting saved sheets alone missed
         // everyone who transcribes without saving. See TranscriptionCounts for what is included.
         var counts = (await TranscriptionCounts.ForUsersAsync(_db, [request.UserId], ct))
@@ -193,6 +199,8 @@ public sealed class GetUserAccountQueryHandler : IRequestHandler<GetUserAccountQ
             boughtUsed,
             boughtTotal,
             previewsUsed,
-            charged);
+            charged,
+            mailbox,
+            sharedMailboxAccounts);
     }
 }

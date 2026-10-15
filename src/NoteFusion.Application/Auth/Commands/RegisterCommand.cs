@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Auth.Dtos;
 using NoteFusion.Application.Auth.Services;
+using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Shared.Results;
@@ -65,6 +66,11 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
     public async Task<Result<RegistrationResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var email = request.Email.Trim().ToLowerInvariant();
+
+        // Refused on the domain alone, before anything is looked up, so the answer says nothing about
+        // whether the address has an account. Existing accounts on such a domain are not touched.
+        if (DisposableEmailDomains.IsDisposable(email))
+            return AuthErrors.DisposableEmail;
 
         // Hashed whether or not the address is taken, so the two answers below also take the same time.
         var passwordHash = _hasher.Hash(request.Password);

@@ -108,10 +108,15 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         // One submit per account at a time, from the count to the recorded job: the job row is what the
         // next count sees, and it is written only after the worker answers, so parallel submits would all
         // count the same rows and all pass. With a choir, one song submit per choir at a time as well.
-        // A free account also holds its handset, whose free ones every account on it shares.
+        // A free account also holds its handset and its inbox, whose free ones every account on them shares.
+        var mailbox = _currentUser.UserId is { } holder && access is { IsPro: false }
+            ? await TrialUsage.MailboxOfAsync(_db, holder, cancellationToken)
+            : null;
         await using var lease = _currentUser.UserId is { } signedIn
             ? await _gate.AcquireAllAsync(
-                access!.GateKeys(signedIn).Append(access.IsPro ? null : QuotaGateExtensions.DeviceKey(fingerprint)),
+                access!.GateKeys(signedIn).Concat(access.IsPro
+                    ? []
+                    : [QuotaGateExtensions.DeviceKey(fingerprint), QuotaGateExtensions.MailboxKey(mailbox)]),
                 cancellationToken)
             : null;
 

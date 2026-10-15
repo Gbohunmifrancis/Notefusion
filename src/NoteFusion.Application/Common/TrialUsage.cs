@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Enums;
+using NoteFusion.Core.ValueObjects;
 
 namespace NoteFusion.Application.Common;
 
@@ -17,6 +18,10 @@ namespace NoteFusion.Application.Common;
 /// signal that survives that, since both accounts share an address and a country.
 /// </para>
 /// <para>
+/// And per inbox: every account whose address delivers to the same mailbox (<see cref="MailboxAccountsAsync"/>)
+/// shares one free pool, since <c>you+1@gmail.com</c> and a private window was otherwise a fresh three.
+/// </para>
+/// <para>
 /// Counted from the job rows rather than kept in a column, because a derived count cannot drift from the
 /// ledger it is derived from. Jobs are stamped with the device at submit and charged at poll, so this
 /// counts what a device actually generated, never what an account merely asked for.
@@ -25,8 +30,10 @@ namespace NoteFusion.Application.Common;
 public static class TrialUsage
 {
     /// <summary>
-    /// Free generations charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/>
-    /// under any account, plus the free transcriptions still running on either. Transcriptions paid
+    /// Free generations charged to <paramref name="userId"/> or any account on its inbox
+    /// (<see cref="MailboxAccountsAsync"/>), or to <paramref name="deviceFingerprint"/> under any account,
+    /// plus the free transcriptions still running on any of them. One predicate, so a job that matches two
+    /// ways (the same alias on the same phone) is counted once. Transcriptions paid
     /// for with a bought one (<see cref="Core.Entities.TranscriptionJob.PaidByCredit"/>) are not free ones
     /// and are counted per account by <see cref="CountBoughtSpentAsync"/> instead.
     /// </summary>
@@ -49,9 +56,10 @@ public static class TrialUsage
         // Successful generations, not saved rows. Counting Transcriptions meant deleting one handed the
         // free slot back, so the limit was avoidable by anyone who noticed.
         var spent = db.TranscriptionJobs.Where(j => j.TrialConsumedAtUtc != null && !j.PaidByCredit);
+        var accounts = await MailboxAccountsAsync(db, userId, ct);
         var charged = deviceFingerprint is null
-            ? await spent.CountAsync(j => j.UserId == userId, ct)
-            : await spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
+            ? await spent.CountAsync(j => accounts.Contains(j.UserId), ct)
+            : await spent.CountAsync(j => accounts.Contains(j.UserId) || j.DeviceFingerprint == deviceFingerprint, ct);
 
         var since = utcNow - HeldFor;
         var open = db.TranscriptionJobs.Where(
@@ -61,10 +69,41 @@ public static class TrialUsage
                  && j.TrialConsumedAtUtc == null
                  && j.CreatedAtUtc >= since);
         var running = deviceFingerprint is null
-            ? await open.CountAsync(j => j.UserId == userId, ct)
-            : await open.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
+            ? await open.CountAsync(j => accounts.Contains(j.UserId), ct)
+            : await open.CountAsync(j => accounts.Contains(j.UserId) || j.DeviceFingerprint == deviceFingerprint, ct);
 
         return charged + running;
+    }
+
+    /// <summary>
+    /// The inbox <paramref name="userId"/>'s address delivers to (<see cref="Mailbox.Canonical"/>), or null
+    /// for an account that does not exist. Worked out from the address rather than read from the column,
+    /// so a row the startup backfill has not reached yet still finds the accounts that have one.
+    /// </summary>
+    public static async Task<string?> MailboxOfAsync(IApplicationDbContext db, Guid userId, CancellationToken ct = default)
+    {
+        var email = await db.Users.Where(u => u.Id == userId).Select(u => u.Email).FirstOrDefaultAsync(ct);
+        return email is null ? null : Mailbox.Canonical(email);
+    }
+
+    /// <summary>
+    /// <paramref name="userId"/> and every other account on the same inbox (<see cref="Core.Entities.User.CanonicalEmail"/>):
+    /// the accounts whose free transcriptions are one pool, the way every account on a handset shares one.
+    /// <c>you+2@gmail.com</c> passes verification through the same inbox as <c>you@gmail.com</c>, so a new
+    /// alias is not a new allowance. Always holds <paramref name="userId"/> itself.
+    /// </summary>
+    public static async Task<List<Guid>> MailboxAccountsAsync(IApplicationDbContext db, Guid userId, CancellationToken ct = default)
+    {
+        var mailbox = await MailboxOfAsync(db, userId, ct);
+        if (mailbox is null)
+            return [userId];
+
+        var ids = await db.Users
+            .Where(u => u.Id != userId && u.CanonicalEmail == mailbox)
+            .Select(u => u.Id)
+            .ToListAsync(ct);
+        ids.Add(userId);
+        return ids;
     }
 
     /// <summary>
@@ -121,7 +160,7 @@ public static class TrialUsage
     }
 
     /// <summary>
-    /// The whole allowance as one account on one handset sees it: the free ones (per account and device)
+    /// The whole allowance as one account on one handset sees it: the free ones (per account, inbox and device)
     /// and the bought ones (per account), each with what is spent or held. One read for the submit gates,
     /// the link lookup and the app's count, so none of them can disagree about what is left.
     /// </summary>
@@ -139,7 +178,7 @@ public static class TrialUsage
 
 /// <summary>
 /// One account's free-tier allowance, in two pools: <see cref="Free"/> transcriptions to start, metered per
-/// account and per device as they always were, and one for every transcription bought (a <c>Single</c>
+/// account, per inbox and per device, and one for every transcription bought (a <c>Single</c>
 /// plan), metered per account. Bought ones never expire and are spent like free ones — charged when a
 /// transcription finishes, nothing for one that fails. The submit spends a free one while any is left
 /// and a bought one after that, except that only a bought one pays for a whole linked song.

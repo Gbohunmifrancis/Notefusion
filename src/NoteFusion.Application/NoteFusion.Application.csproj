@@ -12,6 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The throwaway-inbox blocklist sign-up refuses (Auth/Services/DisposableEmailDomains). -->
+    <EmbeddedResource Include="Auth\Services\disposable_email_domains.txt"
+                      LogicalName="NoteFusion.Application.Auth.Services.disposable_email_domains.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />

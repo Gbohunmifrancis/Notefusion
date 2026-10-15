@@ -130,19 +130,20 @@ public static class SongCredits
     }
 
     /// <summary>
-    /// Previews ever charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/> under
-    /// any account, plus the free previews still running on either — held like a running trial generation
-    /// (<see cref="TrialUsage.CountUsedAsync"/>), or two links sent at once, or from two accounts on one
-    /// phone, would both be the one free preview.
+    /// Previews ever charged to <paramref name="userId"/> or any account on its inbox, or to
+    /// <paramref name="deviceFingerprint"/> under any account, plus the free previews still running on any
+    /// of them — held like a running trial generation (<see cref="TrialUsage.CountUsedAsync"/>), or two links
+    /// sent at once, or from two accounts on one phone or one inbox, would both be the one free preview.
     /// </summary>
     public static async Task<int> CountPreviewsUsedAsync(
         IApplicationDbContext db, Guid userId, string? deviceFingerprint, DateTime utcNow, CancellationToken ct = default)
     {
         var spent = db.TranscriptionJobs.Where(
             j => j.Kind == TranscriptionJobKind.Link && j.SongCreditConsumedAtUtc != null && !j.WasPro);
+        var accounts = await TrialUsage.MailboxAccountsAsync(db, userId, ct);
         var charged = deviceFingerprint is null
-            ? await spent.CountAsync(j => j.UserId == userId, ct)
-            : await spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
+            ? await spent.CountAsync(j => accounts.Contains(j.UserId), ct)
+            : await spent.CountAsync(j => accounts.Contains(j.UserId) || j.DeviceFingerprint == deviceFingerprint, ct);
 
         var since = utcNow - TrialUsage.HeldFor;
         var open = db.TranscriptionJobs.Where(
@@ -153,8 +154,8 @@ public static class SongCredits
                  && j.SongCreditConsumedAtUtc == null
                  && j.CreatedAtUtc >= since);
         var running = deviceFingerprint is null
-            ? await open.CountAsync(j => j.UserId == userId, ct)
-            : await open.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
+            ? await open.CountAsync(j => accounts.Contains(j.UserId), ct)
+            : await open.CountAsync(j => accounts.Contains(j.UserId) || j.DeviceFingerprint == deviceFingerprint, ct);
 
         return charged + running;
     }
