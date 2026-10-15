@@ -61,7 +61,13 @@ public sealed record SubscriptionDto(
     /// </summary>
     string? ChoirName = null,
     /// <summary><c>"director"</c> or <c>"member"</c> alongside <see cref="ChoirName"/>; null without one.</summary>
-    string? ChoirRole = null);
+    string? ChoirRole = null,
+    /// <summary>
+    /// When the period of the choir this account directs or sings in ends, running or lapsed; null without a
+    /// choir. Reported apart from <see cref="CurrentPeriodEndUtc"/> so a client watching a choir payment land
+    /// sees it move even for a director who also has Pro of their own.
+    /// </summary>
+    DateTime? ChoirPeriodEndUtc = null);
 
 /// <summary>A balance derived by summing the immutable ledger — never read from a stored column.</summary>
 public sealed record LedgerBalanceDto(long BalanceMinor, string Currency);

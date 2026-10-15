@@ -65,6 +65,12 @@ export type RootStackParams = {
    * the one-song purchase is then the option already chosen.
    */
   Upgrade: { reason?: 'limit' } | undefined;
+  /**
+   * My choir: the choir plan's home — the director's invite link and singers, a singer's
+   * choir, the shared library, and "Enter choir code" for someone in none. `code` fills the
+   * join field (notefusion://join/CODE); joining is still a tap.
+   */
+  Choir: { code?: string } | undefined;
 
   /**
    * Admin-only screens, reached from the side bar's Admin row and nowhere else.

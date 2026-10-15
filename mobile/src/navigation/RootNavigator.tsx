@@ -7,6 +7,7 @@ import { useAppUpdatePrompt } from '../lib/appUpdate';
 import { useReminderWindow } from '../lib/practiceReminder';
 import { navigationRef, useNotificationDeepLink } from '../lib/notificationLink';
 import { useListenDeepLink } from '../lib/listenLink';
+import { useChoirDeepLink } from '../lib/choirLink';
 import { logScreenView } from '../lib/analytics';
 import { SplashScreen } from '../screens/SplashScreen';
 import { AuthNavigator } from './AuthNavigator';
@@ -17,6 +18,7 @@ import { HelpScreen } from '../screens/HelpScreen';
 import { UpgradeScreen } from '../screens/UpgradeScreen';
 import { LinkScreen } from '../screens/LinkScreen';
 import { ListenScreen } from '../screens/ListenScreen';
+import { ChoirScreen } from '../screens/ChoirScreen';
 import { AdminHomeScreen } from '../screens/admin/AdminHomeScreen';
 import { AdminPaymentsScreen } from '../screens/admin/AdminPaymentsScreen';
 import { AdminUserScreen } from '../screens/admin/AdminUserScreen';
@@ -63,6 +65,9 @@ export function RootNavigator() {
   // until the container below is mounted: a link that drained while the splash still showed would
   // find no navigator and be lost.
   useListenDeepLink(Boolean(user) && !initializing && !themeLoading);
+
+  // A choir invite, notefusion://join/CODE: same hold, to the My choir screen with the code filled in.
+  useChoirDeepLink(Boolean(user) && !initializing && !themeLoading);
 
   // "There's a newer version in the store" — checked here rather than on a screen because it has
   // to reach whichever screen the user happens to be on, and because the blocking case must not
@@ -136,6 +141,11 @@ export function RootNavigator() {
               name="Upgrade"
               component={UpgradeScreen}
               options={{ presentation: 'card', animation: 'slide_from_bottom' }}
+            />
+            <Stack.Screen
+              name="Choir"
+              component={ChoirScreen}
+              options={{ animation: 'slide_from_right' }}
             />
             <Stack.Screen
               name="Link"

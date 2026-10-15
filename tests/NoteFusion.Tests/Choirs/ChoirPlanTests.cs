@@ -162,6 +162,12 @@ public class ChoirPlanTests
 
         Assert.Equal(Now.AddMonths(1), h.Db.Subscriptions.Single().CurrentPeriodEndUtc);
         Assert.Equal(Now.AddMonths(1), h.Db.Choirs.Single().CurrentPeriodEndUtc);
+
+        // The app sees the choir payment land by the choir's own period end, beside the Pro one.
+        var shown = await Shown(h, director);
+        Assert.Equal("pro_monthly_ngn", shown.PlanCode);
+        Assert.Equal("director", shown.ChoirRole);
+        Assert.Equal(Now.AddMonths(1), shown.ChoirPeriodEndUtc);
     }
 
     // ---------------------------------------------------------------- singers are Pro

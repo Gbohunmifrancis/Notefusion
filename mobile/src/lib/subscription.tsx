@@ -33,6 +33,10 @@ export interface CheckoutSnapshot {
   single?: boolean;
   /** `boughtTranscriptionsTotal` when the checkout opened, for a one-song purchase. */
   bought?: number;
+  /** A choir plan: it lands as the choir's period end moving on, whatever the account's own Pro does. */
+  choir?: boolean;
+  /** `choirPeriodEndUtc` when the checkout opened, for a choir plan. */
+  choirPeriodEnd?: string | null;
 }
 
 /** `confirming` while polling hard just after checkout; `delayed` once that window passed unanswered. */
@@ -80,9 +84,10 @@ interface SubscriptionState {
   paymentCheck: PaymentCheck;
   /**
    * Records the state a checkout starts from. Call before the provider's page opens.
-   * `single` for the one-song purchase, which lands as a bought transcription, not Pro.
+   * `single` for the one-song purchase, which lands as a bought transcription, not Pro;
+   * `choir` for a choir plan, which lands as the choir's period moving on.
    */
-  beginCheckout: (planId: string, current: Subscription | null, single?: boolean) => void;
+  beginCheckout: (planId: string, current: Subscription | null, single?: boolean, choir?: boolean) => void;
   /**
    * Polls until the pending checkout lands, then shows the one welcome pop-up. Safe to call again
    * while it runs. Returns false when there is nothing pending to watch. The paywall calls it once
@@ -153,6 +158,11 @@ function lapsed(sub: Subscription): boolean {
 function landed(from: CheckoutSnapshot, sub: Subscription): boolean {
   // One song bought: the bought count moves on; Pro does not change.
   if (from.single) return (sub.boughtTranscriptionsTotal ?? 0) > (from.bought ?? 0);
+  // A choir plan: the choir's own period moves on (a director may hold Pro of their own beside it).
+  if (from.choir) {
+    if (!sub.choirPeriodEndUtc) return false;
+    return !from.choirPeriodEnd || Date.parse(sub.choirPeriodEndUtc) > Date.parse(from.choirPeriodEnd);
+  }
   if (!sub.isActive) return false;
   if (!from.wasActive) return true;
   if (sub.isLifetime && !from.lifetime) return true;
@@ -247,7 +257,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   const celebrate = useCallback((sub: Subscription, extended: boolean, song: boolean = false) => {
     const key = song
       ? `song|${sub.boughtTranscriptionsTotal ?? 0}`
-      : `${sub.planCode}|${sub.currentPeriodEndUtc}|${sub.isLifetime}`;
+      : `${sub.planCode}|${sub.currentPeriodEndUtc}|${sub.isLifetime}|${sub.choirPeriodEndUtc ?? ''}`;
     if (celebratedRef.current === key) return;
     celebratedRef.current = key;
     haptics.play('success');
@@ -391,7 +401,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }, [apply, setPending, setPaymentCheck]);
 
   const beginCheckout = useCallback(
-    (planId: string, current: Subscription | null, single: boolean = false) => {
+    (planId: string, current: Subscription | null, single: boolean = false, choir: boolean = false) => {
       setPending({
         planId,
         startedAt: Date.now(),
@@ -401,6 +411,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
         planCode: current?.planCode ?? null,
         single,
         bought: current?.boughtTranscriptionsTotal ?? 0,
+        choir,
+        choirPeriodEnd: current?.choirPeriodEndUtc ?? null,
       });
       // Nothing confirms behind the sheet, an earlier checkout's slow poll included: the watch
       // starts again from the browser's return.

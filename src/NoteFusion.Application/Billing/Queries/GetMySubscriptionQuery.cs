@@ -103,7 +103,8 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 BoughtTranscriptionsRemaining: allowance.BoughtRemaining,
                 BoughtTranscriptionsTotal: allowance.Bought,
                 ChoirName: choirName,
-                ChoirRole: choirRole);
+                ChoirRole: choirRole,
+                ChoirPeriodEndUtc: choir!.Choir.CurrentPeriodEndUtc);
         }
 
         if (sub is null)
@@ -114,7 +115,8 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
                 SongCreditsRemaining: songsRemaining, SongCreditsTotal: songsTotal,
                 FreeHarmonyAvailable: account is { FreeHarmonyUsedAtUtc: null },
                 BoughtTranscriptionsRemaining: allowance.BoughtRemaining,
-                BoughtTranscriptionsTotal: allowance.Bought);
+                BoughtTranscriptionsTotal: allowance.Bought,
+                ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc);
 
         var plan = await _db.Plans.FirstOrDefaultAsync(p => p.Id == sub.PlanId, ct);
 
@@ -126,6 +128,7 @@ public sealed class GetMySubscriptionQueryHandler : IRequestHandler<GetMySubscri
             BoughtTranscriptionsRemaining: allowance.BoughtRemaining,
             BoughtTranscriptionsTotal: allowance.Bought,
             ChoirName: choirName,
-            ChoirRole: choirRole);
+            ChoirRole: choirRole,
+            ChoirPeriodEndUtc: choir?.Choir.CurrentPeriodEndUtc);
     }
 }
