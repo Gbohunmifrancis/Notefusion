@@ -163,6 +163,13 @@ jobs:
           PUSH__USEEXPO: ${{ secrets.PUSH__USEEXPO }}
           # ── Auth ──────────────────────────────────────────────────────────────
           AUTH__RESETPASSWORDURL: ${{ secrets.AUTH__RESETPASSWORDURL }}
+          # ── Founder outreach (docs/DEPLOYMENT.md, "Outreach"): all optional; a repository variable or a
+          # secret overrides the production default (on, from Francis, replies to hello@notefusion.studio) ──
+          OUTREACH_ENABLED: ${{ vars.OUTREACH_ENABLED || secrets.OUTREACH_ENABLED }}
+          OUTREACH_FOUNDER_NAME: ${{ vars.OUTREACH_FOUNDER_NAME || secrets.OUTREACH_FOUNDER_NAME }}
+          OUTREACH_REPLY_TO: ${{ vars.OUTREACH_REPLY_TO || secrets.OUTREACH_REPLY_TO }}
+          OUTREACH_BATCH_SIZE: ${{ vars.OUTREACH_BATCH_SIZE || secrets.OUTREACH_BATCH_SIZE }}
+          OUTREACH_INTERVAL_MINUTES: ${{ vars.OUTREACH_INTERVAL_MINUTES || secrets.OUTREACH_INTERVAL_MINUTES }}
           # ── YouTube ───────────────────────────────────────────────────────────
           # Netscape cookies.txt from a signed-in browser (see docs/DEPLOYMENT.md, "YouTube").
           YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
@@ -187,6 +194,7 @@ jobs:
             FLUTTERWAVE__BASEURL,SQUAD__BASEURL,
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
             PUSH__USEEXPO,AUTH__RESETPASSWORDURL,YTDLP_COOKIES,
+            OUTREACH_ENABLED,OUTREACH_FOUNDER_NAME,OUTREACH_REPLY_TO,OUTREACH_BATCH_SIZE,OUTREACH_INTERVAL_MINUTES,
             DOZZLE_USER,DOZZLE_PASSWORD_HASH
           script: |
             set -euo pipefail
@@ -297,6 +305,11 @@ jobs:
             R2__UseR2="${R2__USER2}"
             Push__UseExpo="${PUSH__USEEXPO}"
             Auth__ResetPasswordUrl="${AUTH__RESETPASSWORDURL}"
+            Outreach__Enabled="${OUTREACH_ENABLED:-true}"
+            Outreach__FounderName="${OUTREACH_FOUNDER_NAME:-Francis}"
+            Outreach__ReplyTo="${OUTREACH_REPLY_TO:-hello@notefusion.studio}"
+            Outreach__BatchSize="${OUTREACH_BATCH_SIZE:-50}"
+            Outreach__IntervalMinutes="${OUTREACH_INTERVAL_MINUTES:-60}"
             EOF
             chmod 600 .env
 

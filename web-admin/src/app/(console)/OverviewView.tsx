@@ -513,6 +513,8 @@ const ACTIVITY_KINDS: Record<string, { icon: typeof UserRound; style: string; gr
   payment: { icon: CreditCard, style: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", group: "money" },
   feedback: { icon: MessageSquareHeart, style: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", group: "feedback" },
   share: { icon: Share2, style: "bg-sky-50 text-sky-600 dark:bg-sky-950/60 dark:text-sky-400", group: "transcriptions" },
+  /** The founder's customer-research emails (GET /api/admin/outreach lists them all). */
+  outreach: { icon: MailCheck, style: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", group: "feedback" },
 };
 
 function regionName(code: string | null | undefined): string {

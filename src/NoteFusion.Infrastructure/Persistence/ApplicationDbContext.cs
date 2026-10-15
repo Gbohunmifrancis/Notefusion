@@ -35,6 +35,9 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<WaitlistEntry> WaitlistEntries => Set<WaitlistEntry>();
     public DbSet<SystemAnnouncement> SystemAnnouncements => Set<SystemAnnouncement>();
 
+    public DbSet<OutreachMessage> OutreachMessages => Set<OutreachMessage>();
+    public DbSet<EmailOptOut> EmailOptOuts => Set<EmailOptOut>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

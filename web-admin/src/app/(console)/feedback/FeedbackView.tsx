@@ -9,6 +9,7 @@ import { getFeedbackList, getFeedbackSummary } from "@/api/endpoints";
 import type { CategoryCount, FeedbackKind, FeedbackRow } from "@/api/types";
 import { Badge } from "@/components/Badge";
 import { Card } from "@/components/Card";
+import { OutreachCard } from "@/components/OutreachCard";
 import { PageHeader } from "@/components/PageHeader";
 import { Pager } from "@/components/Pager";
 import { Segmented } from "@/components/Segmented";
@@ -240,6 +241,8 @@ export function FeedbackView() {
           )}
         </StateView>
       </Card>
+
+      <OutreachCard />
     </div>
   );
 }

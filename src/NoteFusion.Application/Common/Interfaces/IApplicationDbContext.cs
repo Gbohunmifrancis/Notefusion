@@ -63,5 +63,11 @@ public interface IApplicationDbContext
     /// <summary>Global system announcement banner.</summary>
     DbSet<SystemAnnouncement> SystemAnnouncements { get; }
 
+    /// <summary>Every customer-research message sent (or tried); the outreach sweep's claim and audit trail.</summary>
+    DbSet<OutreachMessage> OutreachMessages { get; }
+
+    /// <summary>Accounts that unsubscribed from non-essential email.</summary>
+    DbSet<EmailOptOut> EmailOptOuts { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

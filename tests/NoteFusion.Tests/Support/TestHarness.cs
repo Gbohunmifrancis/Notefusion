@@ -257,6 +257,22 @@ public sealed class RecordingEmailSender : IEmailSender
     /// in production, and exactly why a test that wants to enter the right code has to read it here.
     /// </summary>
     public List<string> VerificationCodes { get; } = [];
+
+    /// <summary>The founder's outreach notes, with what each said; <see cref="OutreachFails"/> makes delivery fail.</summary>
+    public List<(EmailRecipient To, NoteFusion.Application.Outreach.OutreachEmail Email)> Outreach { get; } = [];
+
+    /// <summary>When set, outreach sends report this failure instead of success (and are still recorded).</summary>
+    public string? OutreachFails { get; set; }
+
+    public Task<NoteFusion.Shared.Results.Result> SendOutreachAsync(
+        EmailRecipient to, NoteFusion.Application.Outreach.OutreachEmail email, CancellationToken ct = default)
+    {
+        Sent.Add(("outreach", to));
+        Outreach.Add((to, email));
+        return Task.FromResult(OutreachFails is { } error
+            ? NoteFusion.Shared.Results.Result.Failure(NoteFusion.Shared.Results.Error.Failure("EMAIL_DELIVERY_FAILED", error))
+            : NoteFusion.Shared.Results.Result.Success());
+    }
 }
 
 /// <summary>

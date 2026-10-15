@@ -154,6 +154,15 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `BillingReadiness` logs at startup if a plan on sale has no live provider. Provider and server
   error text never reaches a screen: the API returns plain sentences for checkout failures, and the
   web (`friendlyMessage`) and mobile (`toApiError`, `safeReason`) clients replace anything technical.
+- Founder outreach (`Application/Outreach`, `Infrastructure/Outreach`): an hourly worker writes customer-research
+  notes from the founder (email with Reply-To the founder + a one-line push when a device is registered) to four
+  segments in priority order — unpaid checkout ≥3 days old (and ≥2 days after `RemindAbandonedCheckouts`, which in
+  turn holds off a day after any outreach), active free user, tried once then quiet 5 days, never transcribed after
+  2 days — once per segment per account ever, at most one a week, 09:00–19:00 WAT, `Outreach__BatchSize` per run.
+  `OutreachMessage` rows are the claim (unique user+segment+channel) and the audit trail (`GET /api/admin/outreach`);
+  a failed send is retried once. Email respects `EmailOptOut` (signed one-click `GET/POST /api/email/unsubscribe`);
+  push respects the app's switch (it unregisters the device). Off unless `Outreach__Enabled` + `FounderName` +
+  `ReplyTo` are set (prod defaults them on; the code default is off).
 - Wire contract is **camelCase**; the C# `ApiError` envelope is `{code, message, details?}`.
   The mobile `src/api/types.ts` mirrors the C# DTOs exactly — change both together.
 - Config is env-driven: nested keys use `__` (e.g. `Database__Host`, `TranscriptionApi__BaseUrl`).

@@ -605,6 +605,24 @@ public sealed class GetAnalyticsOverviewQueryHandler
         })));
         items.AddRange(shares.Select(s => For(s.UserId, "share", s.At, $"shared “{s.Title}” with a link")));
 
+        // The founder's outreach emails (OutreachService), joined to their accounts here so the sources above
+        // are left as they are.
+        var outreach = await _db.OutreachMessages
+            .Where(m => m.Channel == OutreachChannel.Email && m.Status == OutreachStatus.Sent)
+            .OrderByDescending(m => m.CreatedAtUtc)
+            .Take(RecentActivityCount)
+            .Join(_db.RealUsers(), m => m.UserId, u => u.Id,
+                (m, u) => new { u.Id, u.FullName, u.Email, u.Country, m.Segment, At = m.CreatedAtUtc })
+            .ToListAsync(ct);
+        items.AddRange(outreach.Select(o => new ActivityItemDto("outreach", o.FullName, o.Email, Utc(o.At), o.Id, o.Email, o.Country,
+            o.Segment switch
+            {
+                OutreachSegment.CheckoutAbandoned => "was asked what stopped them getting Pro",
+                OutreachSegment.ActiveUser => "was invited to a 10-minute chat",
+                OutreachSegment.TriedOnce => "was asked whether their sheet came out right",
+                _ => "was asked what's in the way of a first song",
+            })));
+
         return [.. items.OfType<ActivityItemDto>().OrderByDescending(a => a.OccurredAtUtc).Take(RecentActivityCount)];
     }
 
