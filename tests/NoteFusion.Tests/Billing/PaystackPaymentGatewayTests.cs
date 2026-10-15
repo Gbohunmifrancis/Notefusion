@@ -215,6 +215,34 @@ public class PaystackPaymentGatewayTests
     }
 
     [Theory]
+    // Fees passed to the customer: settled is price plus fee, and that is what is reported.
+    [InlineData(520, 499, 520)]
+    // A part payment: what was asked for is not what was paid, and only the settled figure can show it.
+    [InlineData(300, 499, 300)]
+    public async Task Verification_reports_the_settled_amount_not_the_requested_one(
+        long settled, long requested, long reported)
+    {
+        var handler = StubHttpMessageHandler.Returning(HttpStatusCode.OK, JsonSerializer.Serialize(new
+        {
+            status = true,
+            data = new
+            {
+                status = "success",
+                amount = settled,
+                requested_amount = requested,
+                currency = "NGN",
+                id = 302961,
+            },
+        }));
+
+        var result = await Gateway(handler).VerifyAsync(
+            new GatewayVerificationRequest(Reference, ProviderReference: null), CancellationToken.None);
+
+        Assert.True(result.IsSuccess);
+        Assert.Equal(reported, result.Value.AmountMinor);
+    }
+
+    [Theory]
     [InlineData("failed")]
     [InlineData("abandoned")]
     [InlineData("reversed")]

@@ -57,7 +57,7 @@ public sealed class BillingController : ApiControllerBase
     [AllowAnonymous]
     [HttpGet("return")]
     [Produces("text/html")]
-    public IActionResult Return() => Content(ReturnPage, "text/html; charset=utf-8");
+    public IActionResult Return() => Page(ReturnPage, AppReturnScript);
 
     /// <summary>
     /// The same hop for a checkout started on the website (<c>client: "web"</c>): back to the site's app
@@ -66,7 +66,7 @@ public sealed class BillingController : ApiControllerBase
     [AllowAnonymous]
     [HttpGet("return/web")]
     [Produces("text/html")]
-    public IActionResult ReturnWeb() => Content(WebReturnPage, "text/html; charset=utf-8");
+    public IActionResult ReturnWeb() => Page(WebReturnPage, WebReturnScript);
 
     /// <summary>The caller's subscription state — the app gates Pro features on this.</summary>
     [HttpGet("my-subscription")]
@@ -114,6 +114,26 @@ public sealed class BillingController : ApiControllerBase
     /// <summary>Where a checkout started from the website (web-site/app) lands; the page confirms the payment on load.</summary>
     private const string WebReturnLink = "https://notefusion.studio/app?paid=1";
 
+    /// <summary>The return pages' only scripts, kept apart so their hashes can go in the pages' policy.</summary>
+    private const string AppReturnScript = $"location.replace(\"{AppReturnLink}\");";
+    private const string WebReturnScript = $"location.replace(\"{WebReturnLink}\");";
+
+    /// <summary>
+    /// The return pages' own Content-Security-Policy, in place of the API's "nothing may run" one: the inline
+    /// style is allowed, and the inline script only by its hash, so nothing else could run on the page even
+    /// if something were ever injected into it.
+    /// </summary>
+    internal static string ReturnPagePolicy(string script)
+        => "default-src 'none'; style-src 'unsafe-inline'; "
+           + $"script-src 'sha256-{Convert.ToBase64String(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(script)))}'; "
+           + "base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+
+    private ContentResult Page(string html, string script)
+    {
+        Response.Headers.ContentSecurityPolicy = ReturnPagePolicy(script);
+        return Content(html, "text/html; charset=utf-8");
+    }
+
     /// <summary>
     /// Self-contained markup rather than a static file, so the hop cannot break on a missing asset in a
     /// build that ships without the dashboard bundle. The script handles the normal case; the button is
@@ -142,7 +162,7 @@ public sealed class BillingController : ApiControllerBase
           <p>We're confirming your payment. You can close this tab once the app reopens.</p>
           <a href="{{AppReturnLink}}">Open NoteFusion</a>
           <p style="margin-top:.5rem"><a href="{{WebReturnLink}}" style="background:none;color:#9AA7BF;padding:0;font-weight:500;text-decoration:underline">Paid on the website? Go back to NoteFusion Web</a></p>
-          <script>location.replace("{{AppReturnLink}}");</script>
+          <script>{{AppReturnScript}}</script>
         </body>
         </html>
         """;
@@ -173,7 +193,7 @@ public sealed class BillingController : ApiControllerBase
           <h1>Returning to NoteFusion…</h1>
           <p>We're confirming your payment.</p>
           <a href="{{WebReturnLink}}">Back to NoteFusion</a>
-          <script>location.replace("{{WebReturnLink}}");</script>
+          <script>{{WebReturnScript}}</script>
         </body>
         </html>
         """;

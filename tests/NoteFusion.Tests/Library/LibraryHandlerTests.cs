@@ -24,7 +24,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var handler = new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId));
+        var handler = new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate);
 
         var result = await handler.Handle(SaveCommand(), default);
 
@@ -38,7 +38,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var ownerId = await SeedUser(h, "owner@example.com");
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(ownerId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(ownerId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var otherId = await SeedUser(h, "intruder@example.com");
@@ -57,7 +57,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(key: "C"), default);
         var notesBefore = saved.Value.Notes!.Select(n => n.PitchMidi).ToArray();
 
@@ -81,7 +81,7 @@ public class LibraryHandlerTests
         using var h = new TestHarness();
         var userId = await SeedUser(h);
 
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(key: "C"), default);
 
         var notes = saved.Value.Notes!;
@@ -95,7 +95,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(key: "C"), default);
 
         var result = await new UpdateTranscriptionKeyCommandHandler(h.Db, new StubCurrentUser(userId))
@@ -114,7 +114,7 @@ public class LibraryHandlerTests
         using var h = new TestHarness();
         var userId = await SeedUser(h);
 
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(key: "A minor"), default);
 
         // La-based minor: A minor's doh is C, so the labels match C major's.
@@ -128,7 +128,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var result = await new NoteFusion.Application.Library.Queries.GetTranscriptionQueryHandler(
@@ -143,7 +143,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var result = await new NoteFusion.Application.Library.Queries.GetLibraryQueryHandler(
@@ -158,7 +158,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var result = await new NoteFusion.Application.Library.Queries.GetLibraryQueryHandler(
@@ -177,7 +177,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var handler = new UpdateTranscriptionKeyCommandHandler(h.Db, new StubCurrentUser(userId));
@@ -192,7 +192,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var handler = new UpdateTranscriptionTempoCommandHandler(h.Db, new StubCurrentUser(userId));
@@ -207,7 +207,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var handler = new UpdateTranscriptionTempoCommandHandler(h.Db, new StubCurrentUser(userId));
@@ -222,7 +222,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var handler = new UpdateTranscriptionTimeSignatureCommandHandler(h.Db, new StubCurrentUser(userId));
@@ -237,7 +237,7 @@ public class LibraryHandlerTests
     {
         using var h = new TestHarness();
         var userId = await SeedUser(h);
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var handler = new UpdateTranscriptionTimeSignatureCommandHandler(h.Db, new StubCurrentUser(userId));

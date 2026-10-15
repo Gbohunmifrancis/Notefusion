@@ -39,11 +39,13 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
 {
     private readonly IApplicationDbContext _db;
     private readonly IDateTimeProvider _clock;
+    private readonly IQuotaGate _gate;
 
-    public AutoSaveFinishedTranscriptionsCommandHandler(IApplicationDbContext db, IDateTimeProvider clock)
+    public AutoSaveFinishedTranscriptionsCommandHandler(IApplicationDbContext db, IDateTimeProvider clock, IQuotaGate gate)
     {
         _db = db;
         _clock = clock;
+        _gate = gate;
     }
 
     public async Task<Result<int>> Handle(AutoSaveFinishedTranscriptionsCommand request, CancellationToken ct)
@@ -66,6 +68,11 @@ public sealed class AutoSaveFinishedTranscriptionsCommandHandler
 
         var jobIds = jobs.Select(j => j.JobId).ToList();
         var userIds = jobs.Select(j => j.UserId).Distinct().ToList();
+
+        // Every owner's save lock, before reading what they have already saved: a Save for one of these
+        // jobs landing between that read and this sweep's insert would otherwise leave two sheets for it.
+        // AcquireAllAsync takes them in one fixed order, so this cannot deadlock against anything.
+        await using var leases = await _gate.AcquireAllAsync(userIds.Select(QuotaGateExtensions.SaveKey), ct);
         var alreadySaved = await _db.Transcriptions
             .Where(t => t.SourceJobId != null && jobIds.Contains(t.SourceJobId))
             .Select(t => new { t.UserId, t.SourceJobId })

@@ -24,6 +24,8 @@ public sealed class UpdateTranscriptionPartsCommandValidator : AbstractValidator
     public UpdateTranscriptionPartsCommandValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
+        RuleFor(x => x.Parts).WithinPartsSize();
+        RuleFor(x => x.PartsMusicXml).WithinScoreSize();
     }
 }
 

@@ -101,15 +101,39 @@ public class RegisterDeviceTests
         var mine = await SeedUser(h);
         var theirs = await SeedUser(h, "other@example.com");
 
-        // The same physical device signed into two accounts in turn: both rows carry this
-        // token, and only the caller's may go.
+        // The same physical device signed into two accounts in turn: the token now belongs to the
+        // second, and the first signing out from an old session must not take it away from them.
         await RegisterHandler(h, mine.Id).Handle(new RegisterDeviceCommand(Token, "android"), default);
+        h.Db.ChangeTracker.Clear(); // each call is its own request in production
         await RegisterHandler(h, theirs.Id).Handle(new RegisterDeviceCommand(Token, "android"), default);
+        h.Db.ChangeTracker.Clear();
 
         await UnregisterHandler(h, mine.Id).Handle(new UnregisterDeviceCommand(Token), default);
 
         Assert.False(await h.Db.DeviceTokens.AnyAsync(t => t.UserId == mine.Id));
         Assert.True(await h.Db.DeviceTokens.AnyAsync(t => t.UserId == theirs.Id));
+    }
+
+    [Fact]
+    public async Task A_shared_phone_only_gets_the_notifications_of_the_account_signed_in_now()
+    {
+        using var h = new TestHarness();
+        var first = await SeedUser(h);
+        var second = await SeedUser(h, "second@example.com");
+        const string otherPhone = "ExponentPushToken[first-users-other-phone]";
+
+        await RegisterHandler(h, first.Id).Handle(new RegisterDeviceCommand(Token, "android"), default);
+        await RegisterHandler(h, first.Id).Handle(new RegisterDeviceCommand(otherPhone, "ios"), default);
+        h.Db.ChangeTracker.Clear();
+
+        var result = await RegisterHandler(h, second.Id).Handle(new RegisterDeviceCommand(Token, "android"), default);
+
+        Assert.True(result.IsSuccess);
+        var rows = await h.Db.DeviceTokens.AsNoTracking().Where(t => t.Token == Token).ToListAsync();
+        Assert.Equal(second.Id, Assert.Single(rows).UserId);
+
+        // The first account's own other phone is untouched.
+        Assert.True(await h.Db.DeviceTokens.AnyAsync(t => t.UserId == first.Id && t.Token == otherPhone));
     }
 
     [Fact]

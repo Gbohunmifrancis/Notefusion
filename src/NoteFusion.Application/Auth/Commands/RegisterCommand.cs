@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Auth.Dtos;
 using NoteFusion.Application.Auth.Services;
-using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Shared.Results;
@@ -19,6 +18,11 @@ namespace NoteFusion.Application.Auth.Commands;
 /// nobody has proved is one we would still be mailing receipts and reset links to. The cost is one extra
 /// screen at sign-up; the benefit is that every password account in the database has a reachable mailbox
 /// behind it.
+/// <para>
+/// An address that already has an account gets the identical answer, so the form cannot be used to find
+/// out who has one; its owner is emailed instead (at most once per
+/// <see cref="User.AccountExistsNoticeCooldown"/>), telling them to sign in or reset their password.
+/// </para>
 /// </remarks>
 public sealed record RegisterCommand(
     string FullName,
@@ -61,10 +65,36 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
     public async Task<Result<RegistrationResponse>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var email = request.Email.Trim().ToLowerInvariant();
-        if (await _db.Users.AnyAsync(u => u.Email == email, cancellationToken))
-            return UserErrors.EmailAlreadyExists;
 
-        var user = User.Create(request.FullName.Trim(), email, _hasher.Hash(request.Password), _clock.UtcNow);
+        // Hashed whether or not the address is taken, so the two answers below also take the same time.
+        var passwordHash = _hasher.Hash(request.Password);
+
+        var existing = await _db.Users
+            .Where(u => u.Email == email)
+            .Select(u => new { u.Id, u.Email, u.FullName })
+            .FirstOrDefaultAsync(cancellationToken);
+        if (existing is not null)
+        {
+            // A taken address gets the same answer as a new one: "already exists" told anyone who asked
+            // whether a given person has an account. The owner hears about it by email instead, and only the
+            // owner can act on it. Nothing about the account changes — in particular not its password, or
+            // an unverified sign-up could be taken over by whoever registers the address next.
+            var now = _clock.UtcNow;
+            var quietSince = now - User.AccountExistsNoticeCooldown;
+            var claimed = await _db.Users
+                .Where(u => u.Id == existing.Id
+                            && (u.AccountExistsNoticeSentAtUtc == null || u.AccountExistsNoticeSentAtUtc < quietSince))
+                .ExecuteUpdateAsync(s => s.SetProperty(u => u.AccountExistsNoticeSentAtUtc, now), cancellationToken);
+            if (claimed == 1)
+            {
+                await _email.SendAccountAlreadyExistsAsync(
+                    new EmailRecipient(existing.Email, existing.FullName), cancellationToken);
+            }
+
+            return new RegistrationResponse(email);
+        }
+
+        var user = User.Create(request.FullName.Trim(), email, passwordHash, _clock.UtcNow);
 
         // Before the insert, so the country rides the same commit as the account. Which tier this person
         // is offered follows from it, and a resolver that never throws means a geolocation outage costs us

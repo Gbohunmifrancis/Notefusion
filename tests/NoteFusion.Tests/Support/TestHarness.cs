@@ -164,6 +164,12 @@ public sealed class RecordingEmailSender : IEmailSender
         return Task.CompletedTask;
     }
 
+    public Task SendAccountAlreadyExistsAsync(EmailRecipient to, CancellationToken ct = default)
+    {
+        Sent.Add(("account-exists", to));
+        return Task.CompletedTask;
+    }
+
     public Task SendWaitlistConfirmationAsync(EmailRecipient to, CancellationToken ct = default)
     {
         Sent.Add(("waitlist-confirmation", to));

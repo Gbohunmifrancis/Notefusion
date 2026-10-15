@@ -52,6 +52,12 @@ public interface IEmailSender
     /// </summary>
     Task SendPasswordChangedAsync(EmailRecipient to, CancellationToken ct = default);
 
+    /// <summary>
+    /// Tells the owner of an address that somebody tried to register it again, in place of the "already
+    /// exists" answer registration no longer gives (that answer told anyone who asked who has an account).
+    /// </summary>
+    Task SendAccountAlreadyExistsAsync(EmailRecipient to, CancellationToken ct = default);
+
     /// <summary>Receipt for a payment that has been verified and fulfilled.</summary>
     Task SendSubscriptionReceiptAsync(
         EmailRecipient to, SubscriptionReceipt receipt, CancellationToken ct = default);

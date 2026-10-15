@@ -27,7 +27,7 @@ public class DeleteMyAccountTests
         h.TokenIssuer.Issue(user); // adds a refresh token
         await h.Db.SaveChangesAsync();
 
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(user.Id))
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(user.Id), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var result = await Handler(h, user.Id).Handle(new DeleteMyAccountCommand(Password, null), default);
@@ -46,7 +46,7 @@ public class DeleteMyAccountTests
     {
         using var h = new TestHarness();
         var user = await SeedUser(h);
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(user.Id))
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(user.Id), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var result = await Handler(h, user.Id).Handle(new DeleteMyAccountCommand("not-my-password", null), default);
@@ -110,9 +110,9 @@ public class DeleteMyAccountTests
         var mine = await SeedUser(h);
         var theirs = await SeedUser(h, "other@example.com");
 
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(mine.Id))
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(mine.Id), h.QuotaGate)
             .Handle(SaveCommand(), default);
-        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(theirs.Id))
+        await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(theirs.Id), h.QuotaGate)
             .Handle(SaveCommand(), default);
 
         var result = await Handler(h, mine.Id).Handle(new DeleteMyAccountCommand(Password, null), default);

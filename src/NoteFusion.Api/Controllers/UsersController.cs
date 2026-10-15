@@ -1,14 +1,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NoteFusion.Api.Auth;
 using NoteFusion.Api.Common;
 using NoteFusion.Application.Users.Commands;
-using NoteFusion.Core.Enums;
 
 namespace NoteFusion.Api.Controllers;
 
 /// <summary>Admin-only user administration.</summary>
-[Authorize(Roles = nameof(UserRole.Admin))]
+[Authorize(Policy = AuthorizationPolicies.Admin)]
 public sealed class UsersController : ApiControllerBase
 {
     private readonly ISender _sender;

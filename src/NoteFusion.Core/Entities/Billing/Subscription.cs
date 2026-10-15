@@ -46,6 +46,15 @@ public class Subscription : BaseEntity
     public DateTime? ExpiryNoticeSentForPeriodEndUtc { get; private set; }
 
     /// <summary>
+    /// Bumped by every change to this row, and checked by the database on every save (a concurrency
+    /// token). Two payments for one member fulfilled at once both read the same period end; without this
+    /// the second save would silently overwrite the first and a paid period would vanish. With it the
+    /// second save fails, and <c>PaymentFulfillment</c> reloads the row and stacks its period again.
+    /// A plain counter rather than Postgres <c>xmin</c>, so the same rule holds on SQLite in the tests.
+    /// </summary>
+    public int Version { get; private set; }
+
+    /// <summary>
     /// The period end used by a plan that never renews. A far-future sentinel rather than a nullable
     /// end, so <see cref="IsActiveAt"/> and every query that filters on the period window keep working
     /// untouched — the alternative was a null check in each of them, where one omission silently locks a
@@ -226,23 +235,11 @@ public class Subscription : BaseEntity
         Touch(utcNow);
     }
 
-    /// <summary>
-    /// Records that the user has been warned about the period now ending. Returns false when they
-    /// already have, so a sweep running twice inside the notice window cannot mail them twice.
-    /// </summary>
-    public bool MarkExpiryNoticeSent(DateTime utcNow)
+    private void Touch(DateTime utcNow)
     {
-        if (ExpiryNoticeSentForPeriodEndUtc == CurrentPeriodEndUtc)
-        {
-            return false;
-        }
-
-        ExpiryNoticeSentForPeriodEndUtc = CurrentPeriodEndUtc;
-        Touch(utcNow);
-        return true;
+        UpdatedAtUtc = utcNow;
+        Version++;
     }
-
-    private void Touch(DateTime utcNow) => UpdatedAtUtc = utcNow;
 
     private static DateTime RequireAfter(DateTime end, DateTime start)
         => end > start ? end : throw new ArgumentException("Period end must be after start.", nameof(end));

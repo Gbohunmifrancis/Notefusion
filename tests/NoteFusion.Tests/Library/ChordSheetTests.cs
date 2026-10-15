@@ -156,7 +156,7 @@ public class ChordSheetTests
     private static async Task<Application.Library.Dtos.SavedTranscriptionDto> Save(
         TestHarness h, Guid userId, IReadOnlyList<ChordSymbolDto>? chords)
     {
-        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId)).Handle(Command(chords), default);
+        var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate).Handle(Command(chords), default);
         Assert.True(result.IsSuccess, result.IsFailure ? result.Error.Message : "");
         return result.Value;
     }

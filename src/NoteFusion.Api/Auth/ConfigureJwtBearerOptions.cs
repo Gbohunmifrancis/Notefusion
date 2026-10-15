@@ -39,5 +39,12 @@ public sealed class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearer
             RoleClaimType = System.Security.Claims.ClaimTypes.Role,
             NameClaimType = "sub"
         };
+
+        // A token that verifies is not enough on its own: the account it names may have been suspended or
+        // deleted since it was issued, and an access token lives for up to an hour.
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = ActiveAccountChecks.RejectInactiveAccountAsync
+        };
     }
 }

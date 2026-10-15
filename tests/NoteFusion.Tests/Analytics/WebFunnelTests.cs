@@ -36,7 +36,7 @@ public class WebFunnelTests
         done.Claim(web1, Now.AddDays(-1));
         h.Db.SaveChanges();
 
-        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(web1))
+        var saved = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(web1), h.QuotaGate)
             .Handle(new SaveTranscriptionCommand("Way Maker", "C", 100, "4/4", "<score/>", [new NoteEventDto(60, 0, 1, 1, "", "", 1)], 0.9, null), default);
         // The window ends at "now" exclusive, so the share is made a little earlier than the query runs.
         h.Clock.UtcNow = Now.AddMinutes(-30);
