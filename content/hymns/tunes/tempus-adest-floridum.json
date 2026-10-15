@@ -1,0 +1,15 @@
+{
+  "name": "TEMPUS ADEST FLORIDUM",
+  "music": [
+    { "name": "Traditional spring carol", "traditional": true, "role": "Melody, from Piae Cantiones (1582)" }
+  ],
+  "musicPublished": 1582,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 104,
+  "pickup": 0,
+  "lineBars": [2, 2, 2, 2, 2, 2, 2, 3],
+  "melody": "G4:1 G4:1 G4:1 A4:1 | G4:1 G4:1 D4:2 | E4:1 D4:1 E4:1 F#4:1 | G4:2 G4:2 | G4:1 G4:1 G4:1 A4:1 | G4:1 G4:1 D4:2 | E4:1 D4:1 E4:1 F#4:1 | G4:2 G4:2 | D5:1 C5:1 B4:1 A4:1 | B4:1 A4:1 G4:2 | E4:1 D4:1 E4:1 F#4:1 | G4:2 G4:2 | D4:1 D4:1 E4:1 F#4:1 | G4:1 G4:1 A4:2 | D5:1 C5:1 B4:1 A4:1 | G4:2 C5:2 | G4:4",
+  "reviewed": false,
+  "reviewNotes": "Check the last word: 'fu-' is written over soh then fah (G to C), with '-el' on the closing doh; some books put '-el' on the fah."
+}

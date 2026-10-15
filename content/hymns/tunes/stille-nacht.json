@@ -1,0 +1,15 @@
+{
+  "name": "STILLE NACHT",
+  "music": [
+    { "name": "Franz Xaver Gruber", "born": 1787, "died": 1863, "role": "Melody (1818)" }
+  ],
+  "musicPublished": 1818,
+  "key": "Bb major",
+  "time": "6/8",
+  "tempo": 78,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:1.5 G4:.5 F4:1 | D4:3 | F4:1.5 G4:.5 F4:1 | D4:3 | C5:2 C5:1 | A4:3 | Bb4:2 Bb4:1 | F4:3 | G4:2 G4:1 | Bb4:1.5 A4:.5 G4:1 | F4:1.5 G4:.5 F4:1 | D4:3 | G4:2 G4:1 | Bb4:1.5 A4:.5 G4:1 | F4:1.5 G4:.5 F4:1 | D4:3 | C5:2 C5:1 | Eb5:1.5 C5:.5 A4:1 | Bb4:3 | D5:3 | Bb4:1 F4:1 D4:1 | F4:1.5 Eb4:.5 C4:1 | Bb3:3",
+  "reviewed": false,
+  "reviewNotes": "Check the underlay of the last two lines: 'peace' is sung over the rise from doh to the high me, and the final 'peace' over ray-doh, as most English books print it."
+}

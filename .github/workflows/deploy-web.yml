@@ -68,8 +68,20 @@ jobs:
         working-directory: .
         run: |
           sleep 10
-          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js; do
+          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js /blog /hymns /sitemap.xml; do
             code=$(curl -sS -o /dev/null -w "%{http_code}" "https://notefusion.studio${path}")
             echo "${code}  ${path}"
             case "$code" in 200|308) ;; *) echo "::error::${path} returned ${code}"; exit 1;; esac
           done
+
+      # Search engines that take part in IndexNow (Bing and others; not Google) are told which blog
+      # and hymn pages this push added, changed or removed. Best effort: it never fails the deploy.
+      # The key file it relies on, web-site/<key>.txt, is written by tools/blog/build.mjs.
+      - name: Ping IndexNow with the changed blog and hymn pages
+        if: github.event_name == 'push'
+        working-directory: .
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BEFORE" || echo "Could not fetch $BEFORE"
+          node tools/blog/indexnow.mjs "$BEFORE" "$GITHUB_SHA"

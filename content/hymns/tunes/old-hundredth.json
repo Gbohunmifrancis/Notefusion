@@ -1,0 +1,15 @@
+{
+  "name": "OLD HUNDREDTH",
+  "music": [
+    { "name": "Louis Bourgeois", "born": 1510, "died": 1560, "role": "Melody, Genevan Psalter (1551)" }
+  ],
+  "musicPublished": 1551,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 84,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 F#4:1 | E4:1 D4:1 G4:1 A4:1 | B4:2 B4:2 | B4:1 B4:1 A4:1 G4:1 | C5:1 B4:1 A4:2 | G4:2 A4:1 B4:1 | A4:1 G4:1 E4:1 F#4:1 | G4:2 D5:2 | B4:1 G4:1 A4:1 C5:1 | B4:1 A4:1 G4:2",
+  "reviewed": false,
+  "reviewNotes": "The even-note form most hymn books print, each line starting and ending on a half note. Bourgeois' original has a livelier rhythm; the notes are the same. Born/died years for Bourgeois are approximate (c. 1510 – c. 1560)."
+}

@@ -1,0 +1,253 @@
+# Blog topics, highest priority first. Twice a week the blog-draft workflow takes the first topic
+# that has no post (content/blog/<slug>.md) and no open draft branch (blog/<slug>), drafts it with
+# the Gemini API and opens a pull request. See docs/BLOG.md.
+#
+#   slug     the post's URL: /blog/<slug> (never change it once the post is published)
+#   keyword  the search phrase the post is written to answer
+#   intent   what the searcher wants
+#   angle    what makes our post worth reading over the others
+#   links    site paths the post must link to (pages that exist; /app is always required)
+#   skip     true to leave a topic in the list without drafting it
+#
+# No search-volume numbers here on purpose: check them in Search Console once the blog has data.
+
+topics:
+  - slug: tonic-solfa-vs-staff-notation
+    keyword: "tonic solfa vs staff notation"
+    intent: "Informational — a singer or director deciding which notation to learn or teach."
+    angle: "Honest comparison for church choirs; what each is best at, why many choirs use both, and how to move between them."
+    links: [/blog/how-to-read-tonic-solfa, /hymns]
+
+  - slug: how-to-transcribe-a-song-into-tonic-solfa
+    keyword: "how to transcribe a song into tonic solfa"
+    intent: "How-to — a director who has a recording and needs the solfa for the choir."
+    angle: "The manual method step by step (find doh, the rhythm grid, checking octaves), its common mistakes, and where software saves time."
+    links: [/blog/how-to-find-the-doh-of-a-song, /blog/how-to-read-tonic-solfa]
+
+  - slug: how-to-teach-a-choir-a-new-song
+    keyword: "how to teach a choir a new song fast"
+    intent: "How-to — a choir director with one or two rehearsals before Sunday."
+    angle: "A rehearsal plan using solfa: pitch, sections, phrase by phrase, recordings for home practice."
+    links: [/blog/how-to-read-tonic-solfa, /hymns/praise-god-from-whom-all-blessings-flow]
+
+  - slug: choir-rehearsal-tips
+    keyword: "choir rehearsal tips for church choirs"
+    intent: "Informational — directors looking to make weekly rehearsals more productive."
+    angle: "Practical structure for a 90-minute Nigerian church choir rehearsal: warm-up, new music, polishing, notes for next week."
+    links: [/blog/how-to-read-tonic-solfa]
+
+  - slug: satb-parts-explained
+    keyword: "SATB parts explained"
+    intent: "Informational — new choristers unsure which part they sing and what each part does."
+    angle: "Soprano, alto, tenor and bass in plain words, typical ranges, how parts fit under a hymn tune, how to find your part."
+    links: [/hymns/amazing-grace, /blog/how-to-read-tonic-solfa]
+
+  - slug: la-based-minor-explained
+    keyword: "la-based minor in tonic solfa"
+    intent: "Informational — singers confused by minor keys in solfa."
+    angle: "Why choirs read minor keys la-based, how doh relates to the minor key note, the raised seventh (se), with scales from the engine."
+    links: [/blog/how-to-find-the-doh-of-a-song, /blog/how-to-read-tonic-solfa]
+
+  - slug: how-to-read-rhythm-in-tonic-solfa
+    keyword: "tonic solfa rhythm"
+    intent: "How-to — readers who know the syllables but struggle with timing."
+    angle: "Beats, half beats, dashes, rests and pickups, explained with real hymn lines; counting aloud; common time signatures."
+    links: [/hymns/joyful-joyful-we-adore-thee, /hymns/silent-night, /blog/how-to-read-tonic-solfa]
+
+  - slug: how-to-choose-the-right-key-for-your-choir
+    keyword: "how to choose the right key for a choir"
+    intent: "How-to — directors whose sopranos strain or basses disappear."
+    angle: "Check each part's highest and lowest notes, move doh rather than relearn, and test before Sunday."
+    links: [/blog/how-to-find-the-doh-of-a-song, /hymns/amazing-grace]
+
+  - slug: chromatic-notes-in-tonic-solfa
+    keyword: "fe se ta in tonic solfa"
+    intent: "Informational — readers meeting sharpened and flattened syllables."
+    angle: "How raised and lowered notes are named (de re fe se le / ra ma sa la ta), how to sing them in tune, where they appear."
+    links: [/blog/how-to-read-tonic-solfa]
+
+  - slug: how-to-read-hymn-book-solfa
+    keyword: "how to read solfa in a hymn book"
+    intent: "How-to — singers facing older printed solfa with colons and dots."
+    angle: "The traditional printed layout (colons between beats, dots for half beats, key marks) related to the cell layout NoteFusion uses."
+    links: [/blog/how-to-read-tonic-solfa, /hymns]
+
+  - slug: what-is-movable-doh
+    keyword: "movable doh vs fixed do"
+    intent: "Informational — musicians who learnt fixed do or letter names."
+    angle: "The difference, why choirs prefer movable doh, how instrumentalists can work alongside solfa singers."
+    links: [/blog/how-to-read-tonic-solfa, /blog/how-to-find-the-doh-of-a-song]
+
+  - slug: how-to-give-a-choir-the-starting-note
+    keyword: "how to pitch a song for a choir without an instrument"
+    intent: "How-to — directors without a keyboard at hand."
+    angle: "Using a phone tuner or a reference note, singing doh and the first note for each part, checking the key holds."
+    links: [/blog/how-to-find-the-doh-of-a-song]
+
+  - slug: tonic-solfa-for-keyboard-players
+    keyword: "tonic solfa for keyboard players"
+    intent: "How-to — church keyboardists who play by ear and want to read the choir's solfa."
+    angle: "Mapping doh to the keyboard in common keys, playing the tune from solfa, accompanying a choir that reads solfa."
+    links: [/blog/how-to-find-the-doh-of-a-song, /hymns]
+
+  - slug: tonic-solfa-for-guitar
+    keyword: "tonic solfa for guitar"
+    intent: "How-to — guitarists in praise teams."
+    angle: "Finding doh on the fretboard, playing a melody from solfa, capo and key changes."
+    links: [/blog/how-to-find-the-doh-of-a-song]
+
+  - slug: tonic-solfa-for-saxophone-and-trumpet
+    keyword: "tonic solfa for saxophone and trumpet"
+    intent: "How-to — church horn players working from the choir's solfa."
+    angle: "Transposing instruments explained simply: why doh on the sheet is not the written note, with worked keys."
+    links: [/blog/how-to-find-the-doh-of-a-song, /blog/what-is-movable-doh]
+
+  - slug: easy-hymns-for-a-new-choir
+    keyword: "easy hymns for a new choir"
+    intent: "Commercial-informational — directors starting out or teaching beginners."
+    angle: "Hymns with small ranges and stepwise tunes, why they are easy, and how to use them to teach solfa."
+    links: [/hymns, /hymns/praise-god-from-whom-all-blessings-flow, /hymns/amazing-grace]
+
+  - slug: christmas-carols-in-tonic-solfa
+    keyword: "christmas carols in tonic solfa"
+    intent: "Seasonal — carol service preparation."
+    angle: "Planning a carol service with public-domain carols, rehearsal order, the solfa for carols on the site."
+    links: [/hymns/silent-night, /hymns/good-king-wenceslas, /hymns]
+
+  - slug: amazing-grace-tonic-solfa-guide
+    keyword: "amazing grace tonic solfa"
+    intent: "Informational — singers learning this hymn specifically."
+    angle: "The story of the hymn, its pentatonic tune, how to teach it line by line, choosing a key for your choir."
+    links: [/hymns/amazing-grace, /blog/how-to-find-the-doh-of-a-song]
+
+  - slug: the-doxology-history-and-solfa
+    keyword: "doxology praise god from whom all blessings flow solfa"
+    intent: "Informational — churches that sing the Doxology every Sunday."
+    angle: "Where the words and the tune came from, other texts sung to OLD HUNDREDTH, singing it well."
+    links: [/hymns/praise-god-from-whom-all-blessings-flow, /hymns/all-people-that-on-earth-do-dwell, /hymns/be-present-at-our-table-lord]
+
+  - slug: vocal-warm-ups-for-choirs
+    keyword: "vocal warm ups for choir"
+    intent: "How-to — directors wanting a short routine."
+    angle: "A ten-minute warm-up built on solfa (scales, intervals, breath), which doubles as ear training."
+    links: [/blog/how-to-read-tonic-solfa]
+
+  - slug: how-to-sing-in-tune-in-a-choir
+    keyword: "how to sing in tune in a choir"
+    intent: "How-to — choristers who are told they are flat or sharp."
+    angle: "Listening, breath support, vowel shapes, practising intervals with solfa."
+    links: [/blog/how-to-read-tonic-solfa]
+
+  - slug: intervals-in-tonic-solfa
+    keyword: "how to sing intervals in tonic solfa"
+    intent: "How-to — ear training for choristers."
+    angle: "The common leaps (d–m, d–s, s,–d, d–d') and how hymns use them, practised with real tunes."
+    links: [/hymns/amazing-grace, /blog/how-to-read-tonic-solfa]
+
+  - slug: how-to-learn-your-choir-part-at-home
+    keyword: "how to learn your choir part at home"
+    intent: "How-to — choristers who want to arrive prepared."
+    angle: "A home practice routine: solfa first, slow playback, loop the hard bars, then the words."
+    links: [/blog/how-to-read-tonic-solfa, /hymns]
+
+  - slug: how-to-start-a-church-choir
+    keyword: "how to start a church choir"
+    intent: "How-to — someone asked to form a choir from scratch."
+    angle: "Recruiting, sorting voices, a first repertoire, teaching solfa from week one."
+    links: [/blog/satb-parts-explained, /blog/easy-hymns-for-a-new-choir]
+
+  - slug: what-is-a-pickup-note
+    keyword: "pickup note anacrusis explained"
+    intent: "Informational — singers who come in on the wrong beat."
+    angle: "What a pickup is, how it shows in solfa and on the staff, examples from hymns that start before the bar line."
+    links: [/hymns/amazing-grace, /blog/how-to-read-rhythm-in-tonic-solfa]
+
+  - slug: time-signatures-for-choir-singers
+    keyword: "time signatures explained for singers"
+    intent: "Informational — choristers puzzled by 3/4 and 6/8."
+    angle: "What the numbers mean, how each feels, how the solfa grid shows them, hymns in each."
+    links: [/hymns/silent-night, /hymns/amazing-grace]
+
+  - slug: how-to-read-staff-notation-if-you-know-solfa
+    keyword: "how to read staff notation from solfa"
+    intent: "How-to — solfa readers wanting to read the staff."
+    angle: "Using what you know: find doh on the staff from the key signature, read shapes as solfa, rhythm values."
+    links: [/blog/how-to-find-the-doh-of-a-song, /blog/tonic-solfa-vs-staff-notation]
+
+  - slug: key-signatures-explained-for-singers
+    keyword: "key signatures explained"
+    intent: "Informational — singers who see sharps and flats and freeze."
+    angle: "Key signatures as a doh finder; why \"Doh is Bb\" not A#; a full table."
+    links: [/blog/how-to-find-the-doh-of-a-song]
+
+  - slug: curwen-hand-signs
+    keyword: "tonic solfa hand signs"
+    intent: "Informational — teachers looking for a visual aid."
+    angle: "The hand sign for each syllable, how to use them in rehearsal and with children."
+    links: [/blog/how-to-read-tonic-solfa]
+
+  - slug: tonic-solfa-for-children
+    keyword: "teaching tonic solfa to children"
+    intent: "How-to — Sunday school and school music teachers."
+    angle: "Games, hand signs, short songs and a lesson-by-lesson progression."
+    links: [/blog/how-to-read-tonic-solfa, /blog/curwen-hand-signs]
+
+  - slug: how-to-run-sectional-rehearsals
+    keyword: "how to run sectional rehearsals"
+    intent: "How-to — directors with section leaders."
+    angle: "When to split, what each section does, how to bring parts back together, using recordings of each part."
+    links: [/blog/satb-parts-explained]
+
+  - slug: how-to-sing-a-descant
+    keyword: "how to sing a descant"
+    intent: "How-to — sopranos asked to sing a descant on a last verse."
+    angle: "What a descant is, choosing singers, learning it from solfa against the tune."
+    links: [/blog/satb-parts-explained]
+
+  - slug: breathing-for-choir-singers
+    keyword: "breathing exercises for choir singers"
+    intent: "How-to — choristers who run out of breath in long phrases."
+    angle: "Where to breathe in a hymn line, staggered breathing, simple daily exercises."
+    links: [/hymns/joyful-joyful-we-adore-thee]
+
+  - slug: how-to-transpose-a-song
+    keyword: "how to transpose a song for a choir"
+    intent: "How-to — directors moving a song to another key."
+    angle: "Why solfa makes transposing easy, what changes for instruments, checking every part's range."
+    links: [/blog/how-to-find-the-doh-of-a-song, /blog/how-to-choose-the-right-key-for-your-choir]
+
+  - slug: choir-director-checklist
+    keyword: "choir director checklist before sunday service"
+    intent: "How-to — directors preparing the week's music."
+    angle: "A practical checklist from choosing songs to final run-through, including keys, parts and copies."
+    links: [/blog/how-to-teach-a-choir-a-new-song]
+
+  - slug: how-to-write-solfa-for-praise-and-worship-songs
+    keyword: "solfa for praise and worship songs"
+    intent: "How-to — praise teams working from recordings of contemporary songs."
+    angle: "Repeated choruses, syncopation and key changes in modern songs and how to write them clearly for a choir."
+    links: [/blog/how-to-transcribe-a-song-into-tonic-solfa, /blog/how-to-find-the-doh-of-a-song]
+
+  - slug: sight-singing-with-tonic-solfa
+    keyword: "sight singing with tonic solfa"
+    intent: "How-to — choristers who want to sing new music at first sight."
+    angle: "A practice plan from stepwise tunes to leaps and rhythms, using public-domain hymns."
+    links: [/hymns, /blog/intervals-in-tonic-solfa]
+
+  - slug: history-of-tonic-solfa
+    keyword: "history of tonic solfa"
+    intent: "Informational — readers curious where solfa came from."
+    angle: "Sarah Glover and John Curwen, how it spread through churches and schools, why it remains strong in West African choirs (no invented dates or numbers)."
+    links: [/blog/how-to-read-tonic-solfa]
+
+  - slug: hymns-for-funerals-in-tonic-solfa
+    keyword: "funeral hymns tonic solfa"
+    intent: "Commercial-informational — choirs preparing a service of songs."
+    angle: "Choosing appropriate public-domain hymns, preparing at short notice, singing with feeling."
+    links: [/hymns, /hymns/amazing-grace]
+
+  - slug: how-to-use-recordings-in-choir-practice
+    keyword: "using recordings to learn choir songs"
+    intent: "How-to — choirs that share songs on WhatsApp."
+    angle: "Getting the most from a recording: slowing down, looping, separating the melody, turning it into solfa."
+    links: [/blog/how-to-learn-your-choir-part-at-home, /blog/how-to-transcribe-a-song-into-tonic-solfa]

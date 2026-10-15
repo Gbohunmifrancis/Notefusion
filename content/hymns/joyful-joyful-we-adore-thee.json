@@ -1,0 +1,23 @@
+{
+  "title": "Joyful, Joyful, We Adore Thee",
+  "tune": "hymn-to-joy",
+  "text": [
+    { "name": "Henry van Dyke", "born": 1852, "died": 1933, "role": "Words (written 1907, published 1911)" }
+  ],
+  "textPublished": 1911,
+  "description": "Joyful, Joyful, We Adore Thee in Tonic Solfa (doh is G), to Beethoven's HYMN TO JOY: solfa with the words, staff notation, all four verses and a piano.",
+  "about": [
+    "Henry van Dyke, an American minister and writer, wrote these words in 1907 to fit the great tune from the last movement of Beethoven's Ninth Symphony (1824). The hymn-book version of the melody was adapted by Edward Hodges.",
+    "Most of the tune moves by step between d and s, with one drop to the low s, at the end of the third line — the note to watch when you teach it."
+  ],
+  "underlay": "Joy-ful, joy-ful, we a-dore thee, God of glo-ry, Lord of love; Hearts un-fold like flowers be-fore thee, Op’-ning to the sun a-bove. Melt the clouds of sin and_ sad-ness; Drive the_ dark of doubt a-way; Giv-er of im-mor-tal glad-ness, Fill us with the light of day!",
+  "verses": [
+    { "lines": ["Joyful, joyful, we adore Thee,", "God of glory, Lord of love;", "Hearts unfold like flowers before Thee,", "Opening to the sun above.", "Melt the clouds of sin and sadness;", "Drive the dark of doubt away;", "Giver of immortal gladness,", "Fill us with the light of day!"] },
+    { "lines": ["All Thy works with joy surround Thee,", "Earth and heaven reflect Thy rays,", "Stars and angels sing around Thee,", "Center of unbroken praise.", "Field and forest, vale and mountain,", "Flowery meadow, flashing sea,", "Singing bird and flowing fountain", "Call us to rejoice in Thee."] },
+    { "lines": ["Thou art giving and forgiving,", "Ever blessing, ever blest,", "Wellspring of the joy of living,", "Ocean depth of happy rest!", "Thou our Father, Christ our Brother,", "All who live in love are Thine;", "Teach us how to love each other,", "Lift us to the joy divine."] },
+    { "lines": ["Mortals, join the happy chorus,", "Which the morning stars began;", "Father love is reigning o’er us,", "Brother love binds man to man.", "Ever singing, march we onward,", "Victors in the midst of strife,", "Joyful music leads us sunward", "In the triumph song of life."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}

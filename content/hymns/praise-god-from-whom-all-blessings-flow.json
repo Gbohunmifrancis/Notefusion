@@ -1,0 +1,21 @@
+{
+  "title": "Praise God, from Whom All Blessings Flow (Doxology)",
+  "shortTitle": "The Doxology",
+  "tune": "old-hundredth",
+  "text": [
+    { "name": "Thomas Ken", "born": 1637, "died": 1711, "role": "Words (1709 form)" }
+  ],
+  "textPublished": 1709,
+  "description": "The Doxology, Praise God from Whom All Blessings Flow, in Tonic Solfa (doh is G) to OLD HUNDREDTH: solfa with the words, staff and a sing-along piano.",
+  "about": [
+    "Thomas Ken, an English bishop, wrote these four lines as the closing verse of his morning and evening hymns. Sung on their own they became the Doxology that many churches sing every Sunday, usually to OLD HUNDREDTH — the melody Louis Bourgeois set to Psalm 134 in the Genevan Psalter of 1551.",
+    "Every line of the tune starts and ends on a long note, and it moves mostly by step, so it is a good first hymn for a choir learning to sing from solfa."
+  ],
+  "underlay": "Praise God, from whom all bless-ings flow; Praise Him, all crea-tures here be-low; Praise Him a-bove, ye heav’n-ly host; Praise Fa-ther, Son, and Ho-ly Ghost.",
+  "verses": [
+    { "lines": ["Praise God, from whom all blessings flow;", "Praise Him, all creatures here below;", "Praise Him above, ye heavenly host;", "Praise Father, Son, and Holy Ghost."] }
+  ],
+  "updated": "2026-10-15",
+  "reviewed": false,
+  "draft": false
+}

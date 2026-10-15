@@ -1,6 +1,6 @@
-# notefusion.studio — a three-page public site. Nothing here is private, so
-# nothing is disallowed; the file exists to declare the sitemap, which is the
-# only part crawlers cannot infer.
+# notefusion.studio — the public site, blog (/blog) and hymns (/hymns). Nothing
+# here is private, so nothing is disallowed; the file exists to declare the
+# sitemap (rebuilt by tools/blog/build.mjs), which crawlers cannot infer.
 
 User-agent: *
 Allow: /

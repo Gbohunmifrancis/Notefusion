@@ -1,0 +1,16 @@
+{
+  "name": "HYMN TO JOY",
+  "music": [
+    { "name": "Ludwig van Beethoven", "born": 1770, "died": 1827, "role": "Melody, from the finale of the Ninth Symphony (1824)" },
+    { "name": "Edward Hodges", "born": 1796, "died": 1867, "role": "Adapted as a hymn tune (1864)" }
+  ],
+  "musicPublished": 1824,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B4:1 B4:1 C5:1 D5:1 | D5:1 C5:1 B4:1 A4:1 | G4:1 G4:1 A4:1 B4:1 | B4:1.5 A4:.5 A4:2 | B4:1 B4:1 C5:1 D5:1 | D5:1 C5:1 B4:1 A4:1 | G4:1 G4:1 A4:1 B4:1 | A4:1.5 G4:.5 G4:2 | A4:1 A4:1 B4:1 G4:1 | A4:1 B4:.5 C5:.5 B4:1 G4:1 | A4:1 B4:.5 C5:.5 B4:1 A4:1 | G4:1 A4:1 D4:2 | B4:1 B4:1 C5:1 D5:1 | D5:1 C5:1 B4:1 A4:1 | G4:1 G4:1 A4:1 B4:1 | A4:1.5 G4:.5 G4:2",
+  "reviewed": false,
+  "reviewNotes": "The hymn-book form, with the last line starting on the beat (Beethoven anticipates it by a beat)."
+}
