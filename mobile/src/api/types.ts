@@ -320,7 +320,11 @@ export interface SavedTranscription {
  * server-side from the country on their account, so the app renders whatever it is sent
  * rather than choosing.
  */
-export type BillingInterval = "monthly" | "yearly" | "lifetime";
+/**
+ * `single` is the one-song purchase: one more transcription for a free account, bought once,
+ * with no period and no membership (C# `BillingInterval.Single`).
+ */
+export type BillingInterval = "monthly" | "yearly" | "lifetime" | "single";
 
 export type PaymentProvider = "paystack" | "flutterwave" | "bachs" | "squad";
 
@@ -370,12 +374,12 @@ export interface Subscription {
   status: SubscriptionStatus | null;
   currentPeriodEndUtc: string | null;
   /**
-   * Free transcriptions left. Server-authoritative and counted from successful
-   * generations, so it does not go back up when a transcription is deleted.
-   * Meaningless while `isActive` — Pro is unmetered.
+   * Free-tier transcriptions left, bought ones included. Server-authoritative and
+   * counted from successful generations, so it does not go back up when a
+   * transcription is deleted. Meaningless while `isActive` — Pro is unmetered.
    */
   trialGenerationsRemaining: number;
-  /** The free allowance, so the UI can say "3 of 5" without hardcoding 5. */
+  /** The free allowance plus every transcription bought, so the UI can say "2 of 4". */
   trialGenerationsTotal: number;
   /**
    * Bought outright — there is no renewal date to show and nothing to cancel.
@@ -393,6 +397,14 @@ export interface Subscription {
   planName?: string | null;
   /** A free account that has not yet used its one four-part harmony. Always false on Pro. */
   freeHarmonyAvailable?: boolean;
+  /**
+   * Bought transcriptions (one-song purchases) not yet used; they never expire. Already
+   * counted in `trialGenerationsRemaining`. On a free account each one can be a whole
+   * linked song.
+   */
+  boughtTranscriptionsRemaining?: number;
+  /** Transcriptions ever bought; rises by one when a one-song payment lands. */
+  boughtTranscriptionsTotal?: number;
 }
 
 // --- App release --------------------------------------------------------

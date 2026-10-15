@@ -84,7 +84,7 @@ export function LinkScreen() {
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
   const { state, startLink, retry, reset } = useJobPolling();
-  const { isPro, known, subscription, refresh } = useSubscription();
+  const { isPro, known, subscription, refresh, boughtRemaining } = useSubscription();
 
   const [url, setUrl] = useState("");
   const [focused, setFocused] = useState(false);
@@ -138,7 +138,8 @@ export function LinkScreen() {
       }
     }, INFO_DEBOUNCE_MS);
     return () => clearTimeout(timer);
-  }, [foundUrl]);
+    // Looked up again when a bought song arrives or is spent: it decides how much of the song is allowed.
+  }, [foundUrl, boughtRemaining]);
 
   const song = info && info.url === foundUrl ? info.data : null;
   const duration = song ? knownLength(song.durationSeconds) : null;
@@ -203,6 +204,14 @@ export function LinkScreen() {
 
   const upgradeCodes = new Set(["BILLING_SONG_PREVIEW_USED", "BILLING_FREE_TIER_LIMIT"]);
   const wantsUpgrade = state.status === "failed" && state.errorCode !== null && upgradeCodes.has(state.errorCode);
+
+  // Back from buying this song: the refusal no longer holds, so the link (still in the field) is ready to
+  // send again without another tap on Try again.
+  const boughtBefore = useRef(boughtRemaining);
+  useEffect(() => {
+    if (boughtRemaining > boughtBefore.current && wantsUpgrade) reset();
+    boughtBefore.current = boughtRemaining;
+  }, [boughtRemaining, wantsUpgrade, reset]);
 
   // Ready: nothing we can read yet, so the screen introduces itself and the services.
   const ready = !provider;
@@ -404,9 +413,11 @@ export function LinkScreen() {
                     : credits > 0
                       ? `Uses 1 of your ${credits} songs left this month`
                       : `All ${creditsTotal ?? 20} of this month's songs are used.`
-                  : credits === 0
-                    ? "Your free preview is used. Upgrade to Pro for full songs and downloads."
-                    : "Free preview: the first 60 seconds of one song. Upgrade for full songs and the PDF."}
+                  : boughtRemaining > 0
+                    ? "Uses the song you bought: the whole song, up to six minutes."
+                    : credits === 0
+                      ? "Your free preview is used. Buy just this song, or go Pro for full songs and downloads."
+                      : "Free preview: the first 60 seconds of one song. Buy the whole song, or go Pro."}
               </Text>
             </View>
           ) : null}
@@ -493,11 +504,18 @@ export function LinkScreen() {
       {state.status === "failed" && state.error ? (
         <NoticeCard
           icon={wantsUpgrade ? "star-outline" : "alert-circle-outline"}
-          title={wantsUpgrade ? "That's a Pro feature" : "Couldn't transcribe that"}
+          title={wantsUpgrade ? "Your free songs are used" : "Couldn't transcribe that"}
           message={state.error}
         >
           {wantsUpgrade ? (
-            <PillAction label="See Pro plans" tone="solid" onPress={() => nav.navigate("Upgrade")} />
+            <>
+              <PillAction
+                label="Just this song"
+                tone="solid"
+                onPress={() => nav.navigate("Upgrade", { reason: "limit" })}
+              />
+              <PillAction label="See Pro plans" onPress={() => nav.navigate("Upgrade")} />
+            </>
           ) : (
             <PillAction label="Upload the audio instead" tone="solid" onPress={uploadInstead} />
           )}

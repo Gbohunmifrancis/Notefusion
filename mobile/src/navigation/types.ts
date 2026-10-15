@@ -60,7 +60,11 @@ export type RootStackParams = {
    */
   Settings: { focus?: 'notifications' | 'about' } | undefined;
   Help: undefined;
-  Upgrade: undefined;
+  /**
+   * `reason: "limit"` when a free account has just been refused for having nothing left:
+   * the one-song purchase is then the option already chosen.
+   */
+  Upgrade: { reason?: 'limit' } | undefined;
 
   /**
    * Admin-only screens, reached from the side bar's Admin row and nowhere else.

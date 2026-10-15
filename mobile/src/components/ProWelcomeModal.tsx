@@ -25,6 +25,8 @@ export interface ProWelcome {
   subscription: Subscription;
   /** The account was already Pro and this payment added time to it. */
   extended: boolean;
+  /** `song` for a one-song purchase: one more transcription, nothing about Pro. Default `pro`. */
+  kind?: "pro" | "song";
 }
 
 /** The same entrance as AppDialog's card. `withSpring` follows the system reduce-motion setting. */
@@ -81,7 +83,8 @@ export function ProWelcomeModal({
   }));
 
   const sub = shown?.subscription;
-  const until = sub ? untilLine(sub) : null;
+  const song = shown?.kind === "song";
+  const until = sub && !song ? untilLine(sub) : null;
 
   return (
     <Modal
@@ -101,32 +104,47 @@ export function ProWelcomeModal({
               end={{ x: 1, y: 1 }}
               style={styles.medallion}
             >
-              <Ionicons name="star" size={30} color={c.onAccent} />
+              <Ionicons name={song ? "musical-note" : "star"} size={30} color={c.onAccent} />
             </LinearGradient>
 
             <Text style={styles.title} accessibilityRole="header">
-              {shown?.extended ? "More Pro time added" : "Welcome to NoteFusion Pro"}
+              {song
+                ? "Your song is paid for"
+                : shown?.extended
+                  ? "More Pro time added"
+                  : "Welcome to NoteFusion Pro"}
             </Text>
 
-            <View style={styles.planBox}>
-              <Text style={styles.planName}>{sub?.planName || "NoteFusion Pro"}</Text>
-              {until ? <Text style={styles.until}>{until}</Text> : null}
-            </View>
-
-            <View style={styles.perks}>
-              {PRO_FEATURES.map((f) => (
-                <View key={f.text} style={styles.perkRow}>
-                  <View style={styles.perkIcon}>
-                    <Ionicons name={f.icon} size={14} color={c.premiumDeep} />
-                  </View>
-                  <Text style={styles.perkText}>{f.text}</Text>
+            {song ? (
+              <View style={styles.planBox}>
+                <Text style={styles.planName}>One more transcription</Text>
+                <Text style={styles.until}>
+                  Record, upload, or paste a song link. It never expires.
+                </Text>
+              </View>
+            ) : (
+              <>
+                <View style={styles.planBox}>
+                  <Text style={styles.planName}>{sub?.planName || "NoteFusion Pro"}</Text>
+                  {until ? <Text style={styles.until}>{until}</Text> : null}
                 </View>
-              ))}
-            </View>
+
+                <View style={styles.perks}>
+                  {PRO_FEATURES.map((f) => (
+                    <View key={f.text} style={styles.perkRow}>
+                      <View style={styles.perkIcon}>
+                        <Ionicons name={f.icon} size={14} color={c.premiumDeep} />
+                      </View>
+                      <Text style={styles.perkText}>{f.text}</Text>
+                    </View>
+                  ))}
+                </View>
+              </>
+            )}
 
             <View style={styles.actions}>
               <Button
-                label="Start using Pro"
+                label={song ? "Transcribe it" : "Start using Pro"}
                 icon="arrow-forward"
                 iconPosition="right"
                 onPress={onClose}

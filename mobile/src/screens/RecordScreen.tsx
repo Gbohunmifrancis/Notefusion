@@ -256,7 +256,7 @@ export function RecordScreen() {
   const route = useRoute<RouteProp<TabParams, "Record">>();
   const tabNav = useNavigation<BottomTabNavigationProp<TabParams, "Record">>();
   const { state, start, retry, reset } = useJobPolling();
-  const { isPro, known, trialRemaining, trialTotal, refresh, subscription } = useSubscription();
+  const { isPro, known, trialRemaining, trialTotal, boughtTotal, refresh, subscription } = useSubscription();
   const colors = useColors();
   const styles = useThemedStyles(makeStyles);
 
@@ -324,14 +324,24 @@ export function RecordScreen() {
    * of the old behaviour and read as the app refusing to record for no stated reason.
    */
   const showTrialExhausted = useCallback(() => {
+    // The total counts the bought ones too, so the free number is what is left once they are taken out.
+    const free = trialTotal - boughtTotal;
     showDialog({
       title: "Free trial used up",
       message:
-        `You've used all ${trialTotal} free transcriptions. Upgrade to Pro for unlimited ` +
-        `transcriptions — everything you've already transcribed stays in your library.`,
+        (boughtTotal > 0
+          ? `You've used your ${free} free transcriptions and the ${boughtTotal} you bought. `
+          : `You've used all ${free} free transcriptions. `) +
+        `Buy just this song — one more transcription, no subscription — or upgrade to Pro for ` +
+        `unlimited. Everything you've already transcribed stays in your library.`,
       icon: "sparkles",
       tone: "premium",
       actions: [
+        {
+          label: "Just this song",
+          icon: "musical-note",
+          onPress: () => nav.navigate("Upgrade", { reason: "limit" }),
+        },
         {
           label: "See Pro plans",
           icon: "arrow-forward",
@@ -340,7 +350,7 @@ export function RecordScreen() {
         { label: "Not now", style: "cancel" },
       ],
     });
-  }, [trialTotal, nav]);
+  }, [trialTotal, boughtTotal, nav]);
 
   /**
    * Stops a free account that has nothing left, and says so. Returns true when the
@@ -842,7 +852,7 @@ export function RecordScreen() {
                     ]}
                   >
                     {trialRemaining > 0
-                      ? `${trialRemaining} of ${trialTotal} free transcriptions left`
+                      ? `${trialRemaining} of ${trialTotal} ${boughtTotal > 0 ? "" : "free "}transcriptions left`
                       : "Free trial used up — see Pro plans"}
                   </Text>
                 </Touchable>
