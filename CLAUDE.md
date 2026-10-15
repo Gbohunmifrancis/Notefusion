@@ -122,10 +122,12 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   bought one at a time (the one-song purchase, a `BillingInterval.Single` plan): fulfilment writes a
   `LedgerEntryReason.TranscriptionPurchase` ledger credit and nothing else (no subscription), the unique
   (transaction, reason) index makes it once per payment, and `TrialUsage.ReadAsync` counts those rows into the
-  allowance (`TrialAllowance`; never expires, spent like a free one, a failed job costs nothing). A bought
-  transcription covers anything a free one does — a song upload with isolation included — and is the only thing
-  that pays for a whole linked song on a free account (`TranscriptionJob.PaidByCredit`, up to Pro's six minutes,
-  normal lane, charged to the trial ledger and never as the one free preview); the free three never do.
+  allowance (`TrialAllowance`: two pools, the free three per account and device, the bought ones per account
+  only, so another account on the same phone never uses up a purchase; never expires, spent like a free one, a
+  failed job costs nothing). A submit spends a free one while any is left, then a bought one, and marks the job
+  `TranscriptionJob.PaidByCredit`. A bought transcription covers anything a free one does — a song upload with
+  isolation included — and is the only thing that pays for a whole linked song on a free account (up to Pro's
+  six minutes, normal lane, charged to the trial ledger and never as the one free preview).
   `SubscriptionDto` carries `boughtTranscriptionsRemaining`/`boughtTranscriptionsTotal`.
 - Song credits (20 a month on Pro) are spent on completion by linked songs and by uploads with
   vocal isolation (`TranscriptionJobKind.Song`); hummed tunes cost nothing. A song still running holds its

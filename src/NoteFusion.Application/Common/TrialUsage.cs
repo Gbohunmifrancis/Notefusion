@@ -26,7 +26,9 @@ public static class TrialUsage
 {
     /// <summary>
     /// Free generations charged to <paramref name="userId"/>, or to <paramref name="deviceFingerprint"/>
-    /// under any account, plus the account's own transcriptions still running.
+    /// under any account, plus the account's own free transcriptions still running. Transcriptions paid
+    /// for with a bought one (<see cref="Core.Entities.TranscriptionJob.PaidByCredit"/>) are not free ones
+    /// and are counted per account by <see cref="CountBoughtSpentAsync"/> instead.
     /// </summary>
     /// <param name="deviceFingerprint">
     /// The caller's device, or null when the client sent none. Null falls back to the per-account count —
@@ -44,17 +46,16 @@ public static class TrialUsage
     {
         // Successful generations, not saved rows. Counting Transcriptions meant deleting one handed the
         // free slot back, so the limit was avoidable by anyone who noticed.
-        var spent = db.TranscriptionJobs.Where(j => j.TrialConsumedAtUtc != null);
+        var spent = db.TranscriptionJobs.Where(j => j.TrialConsumedAtUtc != null && !j.PaidByCredit);
         var charged = deviceFingerprint is null
             ? await spent.CountAsync(j => j.UserId == userId, ct)
             : await spent.CountAsync(j => j.UserId == userId || j.DeviceFingerprint == deviceFingerprint, ct);
 
-        // A linked song run on a bought transcription holds its place the same way: it is charged to this
-        // ledger when it finishes, not to the free preview.
         var since = utcNow - RunningFor;
         var running = await db.TranscriptionJobs.CountAsync(
             j => j.UserId == userId
-                 && (j.Kind == TranscriptionJobKind.Upload || j.PaidByCredit)
+                 && j.Kind == TranscriptionJobKind.Upload
+                 && !j.PaidByCredit
                  && j.SettledAtUtc == null
                  && j.TrialConsumedAtUtc == null
                  && j.CreatedAtUtc >= since,
@@ -89,51 +90,59 @@ public static class TrialUsage
             ct);
 
     /// <summary>
-    /// The whole allowance as one account on one handset sees it: the free ones, the bought ones, what is
-    /// spent or held, and how many bought ones went on whole songs. One read for the submit gates, the link
-    /// lookup and the app's count, so none of them can disagree about what is left.
+    /// Bought transcriptions <paramref name="userId"/> has spent or is holding: its own jobs paid for with
+    /// one, charged, or still running within <see cref="RunningFor"/> (a failed one settles uncharged and
+    /// gives it back). Per account only, unlike the free count: a purchase is never used up by another
+    /// account on the same phone.
+    /// </summary>
+    public static Task<int> CountBoughtSpentAsync(
+        IApplicationDbContext db, Guid userId, DateTime utcNow, CancellationToken ct = default)
+    {
+        var since = utcNow - RunningFor;
+        return db.TranscriptionJobs.CountAsync(
+            j => j.UserId == userId
+                 && j.PaidByCredit
+                 && (j.TrialConsumedAtUtc != null || (j.SettledAtUtc == null && j.CreatedAtUtc >= since)),
+            ct);
+    }
+
+    /// <summary>
+    /// The whole allowance as one account on one handset sees it: the free ones (per account and device)
+    /// and the bought ones (per account), each with what is spent or held. One read for the submit gates,
+    /// the link lookup and the app's count, so none of them can disagree about what is left.
     /// </summary>
     public static async Task<TrialAllowance> ReadAsync(
         IApplicationDbContext db, Guid userId, string? deviceFingerprint, string? country, DateTime utcNow,
         CancellationToken ct = default)
     {
-        var since = utcNow - RunningFor;
         var used = await CountUsedAsync(db, userId, deviceFingerprint, utcNow, ct);
         var bought = await CountBoughtAsync(db, userId, ct);
-        var songs = bought == 0
-            ? 0
-            : await db.TranscriptionJobs.CountAsync(
-                j => j.UserId == userId
-                     && j.PaidByCredit
-                     && (j.TrialConsumedAtUtc != null || (j.SettledAtUtc == null && j.CreatedAtUtc >= since)),
-                ct);
+        var boughtSpent = bought == 0 ? 0 : await CountBoughtSpentAsync(db, userId, utcNow, ct);
 
-        return new TrialAllowance(FreeTier.TrialGenerationsFor(country), bought, used, songs);
+        return new TrialAllowance(FreeTier.TrialGenerationsFor(country), used, bought, boughtSpent);
     }
 }
 
 /// <summary>
-/// One account's free-tier allowance: <see cref="Free"/> transcriptions to start, plus one for every
-/// transcription bought (a <c>Single</c> plan). Bought ones never expire and are spent exactly like free
-/// ones — charged when a transcription finishes, nothing for one that fails.
+/// One account's free-tier allowance, in two pools: <see cref="Free"/> transcriptions to start, metered per
+/// account and per device as they always were, and one for every transcription bought (a <c>Single</c>
+/// plan), metered per account. Bought ones never expire and are spent like free ones — charged when a
+/// transcription finishes, nothing for one that fails. The submit spends a free one while any is left
+/// and a bought one after that, except that only a bought one pays for a whole linked song.
 /// </summary>
-/// <param name="Used">Charged or still running, per account and per device (<see cref="TrialUsage.CountUsedAsync"/>).</param>
-/// <param name="BoughtSpentOnSongs">
-/// Linked songs run on a bought transcription, charged or running. Free transcriptions are spent first by
-/// everything else, but only a bought one can pay for a whole linked song, so these come off the bought
-/// ones directly.
-/// </param>
-public sealed record TrialAllowance(int Free, int Bought, int Used, int BoughtSpentOnSongs)
+/// <param name="FreeUsed">Free ones charged or running (<see cref="TrialUsage.CountUsedAsync"/>).</param>
+/// <param name="BoughtUsed">Bought ones charged or running (<see cref="TrialUsage.CountBoughtSpentAsync"/>).</param>
+public sealed record TrialAllowance(int Free, int FreeUsed, int Bought, int BoughtUsed)
 {
     /// <summary>Everything this account may transcribe on the free tier, bought ones included.</summary>
     public int Total => Free + Bought;
 
-    /// <summary>What is left of <see cref="Total"/>, floored at zero.</summary>
-    public int Remaining => Math.Max(0, Total - Used);
+    /// <summary>Free ones left, floored at zero.</summary>
+    public int FreeRemaining => Math.Max(0, Free - FreeUsed);
 
-    /// <summary>
-    /// Bought transcriptions not yet spent: the free ones go first, so these are what remains once they are
-    /// gone, less any already spent on a whole song. What pays for a whole linked song on a free account.
-    /// </summary>
-    public int BoughtRemaining => Math.Max(0, Math.Min(Bought - BoughtSpentOnSongs, Remaining));
+    /// <summary>Bought ones left, floored at zero. What pays for a whole linked song on a free account.</summary>
+    public int BoughtRemaining => Math.Max(0, Bought - BoughtUsed);
+
+    /// <summary>What is left of <see cref="Total"/>: both pools.</summary>
+    public int Remaining => FreeRemaining + BoughtRemaining;
 }

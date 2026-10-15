@@ -95,6 +95,57 @@ public class OneSongPurchaseTests
     }
 
     [Fact]
+    public async Task Free_ones_go_first_and_only_the_job_after_them_spends_the_bought_one()
+    {
+        using var h = new TestHarness(Now);
+        var user = SeedUser(h);
+        Spend(h, user, 2);
+        Buy(h, user);
+        var api = new FakeApi();
+
+        await SubmitUpload(h, user, api);
+        Assert.False(h.Db.TranscriptionJobs.Single(j => j.JobId == "job-1").PaidByCredit);
+        Assert.Equal(1, (await Shown(h, user)).BoughtTranscriptionsRemaining);
+
+        await SubmitUpload(h, user, api);
+        Assert.True(h.Db.TranscriptionJobs.Single(j => j.JobId == "job-2").PaidByCredit);
+        Assert.Equal(0, (await Shown(h, user)).BoughtTranscriptionsRemaining);
+    }
+
+    [Fact]
+    public async Task A_purchase_is_never_used_up_by_another_account_on_the_same_phone()
+    {
+        // Two accounts on one handset share the free three (that is the device rule), but each one's
+        // purchases are its own: the second account buying and using a song must not spend the first's.
+        using var h = new TestHarness(Now);
+        var first = SeedUser(h);
+        var second = User.Create("Ben Singer", "ben@example.com", h.Hasher.Hash("password123"), Now.AddDays(-3));
+        second.RecordCountry("NG");
+        h.Db.Users.Add(second);
+        h.Db.SaveChanges();
+        const string phone = "shared-phone";
+        for (var i = 0; i < 3; i++)
+        {
+            var job = TranscriptionJob.Record($"first-{i}", first.Id, Now.AddDays(-10), phone);
+            job.ConsumeTrial(Now.AddDays(-10));
+            h.Db.TranscriptionJobs.Add(job);
+        }
+        h.Db.SaveChanges();
+
+        Buy(h, second);
+        var api = new FakeApi();
+        var secondsJob = await SubmitUpload(h, second, api, device: phone);
+        Assert.True(secondsJob.IsSuccess);
+        api.Status = TranscriptionStatus.Done;
+        await Poll(h, second, secondsJob.Value, api);
+
+        Buy(h, first);
+        api.Status = TranscriptionStatus.Pending;
+        Assert.Equal(1, (await Shown(h, first, phone)).BoughtTranscriptionsRemaining);
+        Assert.True((await SubmitUpload(h, first, api, device: phone)).IsSuccess);
+    }
+
+    [Fact]
     public async Task A_bought_transcription_that_fails_costs_nothing()
     {
         using var h = new TestHarness(Now);
@@ -344,9 +395,10 @@ public class OneSongPurchaseTests
         h.Db.SaveChanges();
     }
 
-    private static Task<Result<string>> SubmitUpload(TestHarness h, User user, FakeApi api, bool separate = false)
+    private static Task<Result<string>> SubmitUpload(
+        TestHarness h, User user, FakeApi api, bool separate = false, string? device = null)
         => new SubmitTranscriptionCommandHandler(
-                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister,
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(device), h.DeviceRegister,
                 h.Activity(user.Id), h.QuotaGate)
             .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "song.m4a", TranscriptionMode.Melody, null, null, Separate: separate),
                 default);
@@ -364,8 +416,8 @@ public class OneSongPurchaseTests
         => new GetTranscriptionJobQueryHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock)
             .Handle(new GetTranscriptionJobQuery(jobId), default);
 
-    private static async Task<SubscriptionDto> Shown(TestHarness h, User user)
-        => (await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null))
+    private static async Task<SubscriptionDto> Shown(TestHarness h, User user, string? device = null)
+        => (await new GetMySubscriptionQueryHandler(h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(device))
             .Handle(new GetMySubscriptionQuery(), default)).Value;
 
     private static async Task<IReadOnlyList<PlanDto>> Plans(TestHarness h, User user)

@@ -96,6 +96,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
         var ext = Path.GetExtension(request.FileName).ToLowerInvariant();
         var isScore = ext is ".musicxml" or ".xml" or ".mxl" or ".mid" or ".midi" or ".abc";
         var isPro = false;
+        var paidByCredit = false;
 
         // One submit per account at a time, from the count to the recorded job: the job row is what the
         // next count sees, and it is written only after the worker answers, so parallel submits would all
@@ -116,8 +117,9 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                 // per device as well as per account, because adding a second Google account to an Android
                 // phone is four taps and used to be worth a fresh trial. Running jobs count too: they are
                 // charged when they finish, so without them any number could be started at once.
-                // Bought transcriptions raise the ceiling one each and are spent the same way, a song with
-                // the voice isolated included: it is a plain upload on the free tier.
+                // A free one while any is left, then a bought one (a song with the voice isolated included:
+                // it is a plain upload on the free tier). Each bought one is the account's own, so it is
+                // marked on the job and never spent by another account on the same phone.
                 var country = await _db.Users
                     .Where(u => u.Id == userId)
                     .Select(u => u.Country)
@@ -131,6 +133,8 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
                     // a different count than the trial pill did is indistinguishable from a billing bug.
                     return BillingErrors.FreeTierLimitReached(allowance.Free, allowance.Bought);
                 }
+
+                paidByCredit = allowance.FreeRemaining == 0;
             }
             else if (request.Separate && !isScore)
             {
@@ -189,7 +193,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             _db.TranscriptionJobs.Add(
                 isPro && request.Separate && !isScore
                     ? TranscriptionJob.RecordSong(submitted.Value, owner, _clock.UtcNow, fingerprint)
-                    : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint));
+                    : TranscriptionJob.Record(submitted.Value, owner, _clock.UtcNow, fingerprint, paidByCredit));
 
             await _db.SaveChangesAsync(cancellationToken);
         }

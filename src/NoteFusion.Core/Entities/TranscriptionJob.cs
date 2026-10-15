@@ -82,15 +82,16 @@ public class TranscriptionJob : BaseEntity
     /// <summary>
     /// A link or a song upload: the kinds that take a song credit rather than a trial generation. A link a
     /// free account ran on a transcription it bought (<see cref="PaidByCredit"/>) is not one: it is charged
-    /// like any other free-tier transcription, against the allowance the purchase raised.
+    /// on the trial ledger like any other free-tier transcription, against the bought one.
     /// </summary>
     public bool IsSong => (Kind is TranscriptionJobKind.Link or TranscriptionJobKind.Song) && !PaidByCredit;
 
     /// <summary>
-    /// True for a free account's linked song run on a transcription it bought, rather than as the one free
-    /// preview. Stamped at submit, like <see cref="WasPro"/>, because it decides which allowance the job
-    /// holds while it runs and which one it spends when it finishes: the trial ledger
-    /// (<see cref="TrialConsumedAtUtc"/>), never the preview.
+    /// True when a free account ran this job on a transcription it bought (a one-song purchase) rather than
+    /// on one of its free ones — a recording once the free ones are gone, or a whole linked song rather than
+    /// the free preview. Stamped at submit, like <see cref="WasPro"/>, because it decides which pool the job
+    /// holds while it runs and spends when it finishes (<see cref="TrialConsumedAtUtc"/>, either way): the
+    /// bought pool is the account's own, while the free one is shared with every account on the device.
     /// </summary>
     public bool PaidByCredit { get; private set; }
 
@@ -107,14 +108,17 @@ public class TranscriptionJob : BaseEntity
     /// </summary>
     public DateTime? SongCreditConsumedAtUtc { get; private set; }
 
-    public static TranscriptionJob Record(string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint = null)
+    /// <param name="paidByCredit">A free account spending a bought transcription on it (see <see cref="PaidByCredit"/>).</param>
+    public static TranscriptionJob Record(
+        string jobId, Guid userId, DateTime utcNow, string? deviceFingerprint = null, bool paidByCredit = false)
         => new()
         {
             Id = Guid.NewGuid(),
             JobId = Guard.NotNullOrWhiteSpace(jobId),
             UserId = Guard.AgainstEmpty(userId),
             CreatedAtUtc = utcNow,
-            DeviceFingerprint = deviceFingerprint
+            DeviceFingerprint = deviceFingerprint,
+            PaidByCredit = paidByCredit
         };
 
     /// <param name="paidByCredit">
