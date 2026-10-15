@@ -9,7 +9,8 @@ namespace NoteFusion.Application.Common.Interfaces;
 /// <remarks>
 /// Hold the lease across the count, the worker submit and the <c>SaveChangesAsync</c> that records the
 /// job; nothing outside that window is protected. Keys name the subject being metered:
-/// <c>user:{id}</c> for a signed-in account, <c>device:{fingerprint}</c> and <c>ip:{address}</c> for an
+/// <c>user:{id}</c> for a signed-in account (plus <c>device:{fingerprint}</c> and <c>mailbox:{inbox}</c> on a
+/// free submit, whose allowance those share), <c>device:{fingerprint}</c> and <c>ip:{address}</c> for an
 /// anonymous preview. Take several keys with <see cref="QuotaGateExtensions.AcquireAllAsync"/>, which
 /// orders them, so two requests can never each hold a key the other is waiting on.
 /// </remarks>
@@ -30,6 +31,13 @@ public static class QuotaGateExtensions
     /// device, which <see cref="AcquireAllAsync"/> skips.
     /// </summary>
     public static string? DeviceKey(string? fingerprint) => fingerprint is null ? null : $"device:{fingerprint}";
+
+    /// <summary>
+    /// The key for an inbox's free allowances, which every account on it shares (<c>TrialUsage.MailboxAccountsAsync</c>):
+    /// a free submit holds it beside the account's, so two aliases of one inbox are counted one after the
+    /// other. Null without an inbox, which <see cref="AcquireAllAsync"/> skips.
+    /// </summary>
+    public static string? MailboxKey(string? canonicalEmail) => canonicalEmail is null ? null : $"mailbox:{canonicalEmail}";
 
     /// <summary>
     /// The key a library save for one account holds: a Save and the auto-save sweep both take it, so the

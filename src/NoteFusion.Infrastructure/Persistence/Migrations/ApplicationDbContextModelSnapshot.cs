@@ -1038,6 +1038,10 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("AccountExistsNoticeSentAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CanonicalEmail")
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
                     b.Property<DateTime?>("CheckoutReminderSentAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -1135,6 +1139,8 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnName("signup_source");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CanonicalEmail");
 
                     b.HasIndex("Email")
                         .IsUnique();
