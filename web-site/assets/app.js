@@ -808,13 +808,17 @@
   });
 
   // ── Upgrade dialog ──────────────────────────────────────────────────────
-  function openUpgrade() {
+  /**
+   * The plans dialog. reason "limit" is the free allowance running out (the refusal after the last one):
+   * the one-song purchase is then the option already chosen, since one more song is what was just asked for.
+   */
+  function openUpgrade(reason) {
     track("Opened plans");
     track("Plans viewed", "app"); // the checkout funnel's top step (CheckoutSteps in the API)
     if (isPro()) { renderMembership(); show($("upgrade-panel")); return; }
     $("upgrade-title-text").textContent = "Do more with NoteFusion";
     show($("upgrade-free")); hide($("upgrade-pro"));
-    loadPlans($("upgrade-panel"), $("plans-standalone"));
+    loadPlans($("upgrade-panel"), $("plans-standalone"), { single: true, singleFirst: reason === "limit" });
   }
   /** What a member's plan is called: the server's plan name, or the kind of access when nothing was bought. */
   function planLabel() {
@@ -847,7 +851,7 @@
     track("Opened plans to extend");
     track("Plans viewed", "app · extend");
     show($("plans-extend"));
-    loadPlans($("upgrade-panel"), $("plans-extend"));
+    loadPlans($("upgrade-panel"), $("plans-extend"), {});
     $("plans-extend").scrollIntoView({ behavior: "smooth", block: "nearest" });
   });
   $("upgrade-account").addEventListener("click", function () { hide($("upgrade-panel")); setView("account"); });
@@ -874,8 +878,11 @@
     if (!sub) return null;
     return isPro()
       ? { label: "Songs this month", left: sub.songCreditsRemaining, total: sub.songCreditsTotal, unit: "left" }
-      : { label: "Free transcriptions", left: sub.trialGenerationsRemaining, total: sub.trialGenerationsTotal, unit: "left" };
+      // The total includes every song bought, so once one is bought the count is no longer only "free".
+      : { label: sub.boughtTranscriptionsTotal > 0 ? "Transcriptions" : "Free transcriptions", left: sub.trialGenerationsRemaining, total: sub.trialGenerationsTotal, unit: "left" };
   }
+  /** A free account's bought songs not yet used: each one can be a whole linked song. */
+  function boughtLeft() { return !isPro() && sub ? (sub.boughtTranscriptionsRemaining || 0) : 0; }
   function fillMeter(el, u) { el.style.width = u && u.total > 0 ? Math.max(0, Math.min(100, (u.left / u.total) * 100)) + "%" : "0%"; }
 
   function renderWho() {
@@ -966,6 +973,7 @@
   function allowanceLine(maxSeconds) {
     var fmt = window.NfRangePicker.formatTime;
     if (guest) return maxSeconds + " s preview — sign up for a minute, Pro for six";
+    if (!isPro() && maxSeconds > 60 && boughtLeft() > 0) return "up to " + fmt(maxSeconds) + " — uses the song you bought";
     return isPro() || maxSeconds > 60 ? "up to " + fmt(maxSeconds) + " on Pro" : "up to " + fmt(maxSeconds) + " on a free account — Pro gets six minutes";
   }
   function lookupLink(now) {
@@ -1195,7 +1203,7 @@
     var text = err.message || "Something went wrong.";
     if (err.code === "BILLING_SONG_PREVIEW_USED" || err.code === "BILLING_FREE_TIER_LIMIT") {
       alertIn($("app-alert"), "info", text);
-      openUpgrade();
+      openUpgrade("limit");
       return;
     }
     if (err.code === "BILLING_SONG_CREDITS_EXHAUSTED") { alertIn($("app-alert"), "info", text); return; }
@@ -1383,7 +1391,7 @@
     isPro() ? hide($("r-watermark")) : show($("r-watermark"));
     // One set of plans on the page at a time: the note under the downloads carries them while a
     // result is showing; the standalone panel is for the empty state and the Account view.
-    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans")));
+    isPro() ? hide($("r-upgrade")) : (renderUnlock(result), show($("r-upgrade")), loadPlans($("r-upgrade"), $("plans"), {}));
     renderVerdict();
     hide($("upgrade-panel"));
     // Four parts are written on request, never assumed: the tab appears once they exist (a saved
@@ -2302,18 +2310,25 @@
   var plansCache = null;
   function isYearly(plan) { return plan.interval === "yearly" || plan.interval === 1; }
   function isLifetimePlan(plan) { return plan.interval === "lifetime" || plan.interval === 2; }
+  /** The one-song purchase: one more transcription, no membership (BillingInterval.Single). */
+  function isSinglePlan(plan) { return plan.interval === "single"; }
   /**
    * The plan picker: one tile per plan, the yearly one chosen to start with, and a single button that
    * says what will be charged. One payment covers one period, so the copy never promises a renewal.
+   * opts.single lists the one-song purchase first, beside Pro (the plans dialog for a free account; never
+   * the result page, whose offer is what Pro unlocks on that sheet); opts.singleFirst chooses it to start with.
    */
-  function loadPlans(panel, grid) {
+  function loadPlans(panel, grid, opts) {
+    opts = opts || {};
     show(panel);
     if (!plansCache) { grid.innerHTML = ""; for (var i = 0; i < 2; i++) { var sk = document.createElement("div"); sk.className = "skel skel-plan"; grid.appendChild(sk); } }
     var p = plansCache ? Promise.resolve(plansCache) : request("/api/billing/plans").then(function (list) { plansCache = list; return list; });
     p.then(function (plans) {
       grid.innerHTML = "";
       grid.classList.add("plan-picker");
-      if (!plans.length) { grid.textContent = "No plan is available for your region yet."; return; }
+      var single = opts.single && !isPro() ? plans.find(isSinglePlan) : null;
+      plans = plans.filter(function (x) { return !isSinglePlan(x); });
+      if (!plans.length && !single) { grid.textContent = "No plan is available for your region yet."; return; }
       var monthly = plans.find(function (x) { return !isYearly(x) && !isLifetimePlan(x); });
       // Naira opens on the monthly plan: ₦60,000 as the first price anyone sees reads as a wall, while
       // ₦7,500 a month is a decision. Elsewhere the yearly saving leads, as before.
@@ -2322,14 +2337,23 @@
         var ya = isYearly(a) ? 1 : 0, yb = isYearly(b) ? 1 : 0;
         return monthlyFirst ? ya - yb : yb - ya;
       });
-      var chosen = ordered[0];
+      // Just this song goes first: the smallest, simplest thing to buy, next to Pro.
+      if (single) ordered.unshift(single);
+      var chosen = single && (opts.singleFirst || !plans.length) ? single : ordered[single ? 1 : 0];
       var options = document.createElement("div"); options.className = "plan-options"; options.setAttribute("role", "radiogroup"); options.setAttribute("aria-label", "Choose a plan");
       var cta = document.createElement("button"); cta.type = "button"; cta.className = "btn btn-primary btn-pay";
-      function label(plan) { return isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
-      function per(plan) { return isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
+      function label(plan) { return isSinglePlan(plan) ? "Just this song" : isLifetimePlan(plan) ? "Lifetime" : isYearly(plan) ? "Yearly" : "Monthly"; }
+      function per(plan) { return isSinglePlan(plan) || isLifetimePlan(plan) ? "once" : isYearly(plan) ? "a year" : "a month"; }
+      var fine = document.createElement("p"); fine.className = "pay-fine";
       function renderCta() {
         cta.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
-        cta.appendChild(document.createTextNode("Continue — " + money(chosen) + " " + per(chosen)));
+        cta.appendChild(document.createTextNode(isSinglePlan(chosen)
+          ? "Buy this song — " + money(chosen)
+          : "Continue — " + money(chosen) + " " + per(chosen)));
+        fine.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
+        fine.appendChild(document.createTextNode(isSinglePlan(chosen)
+          ? "Secure checkout. One payment, one transcription that never expires. No subscription."
+          : "Secure checkout. One payment covers the whole period; nothing renews without you."));
       }
       ordered.forEach(function (plan) {
         var opt = document.createElement("button"); opt.type = "button"; opt.className = "plan-opt"; opt.setAttribute("role", "radio");
@@ -2339,11 +2363,14 @@
         var saving = isYearly(plan) && monthly ? Math.round(100 - (plan.amountMinor / (monthly.amountMinor * 12)) * 100) : 0;
         if (saving > 0) { var tag = document.createElement("span"); tag.className = "plan-opt-tag"; tag.textContent = "Save " + saving + "%"; top.appendChild(tag); }
         var price = document.createElement("span"); price.className = "plan-opt-price"; price.textContent = money(plan);
-        var small = document.createElement("small"); small.textContent = " / " + (isLifetimePlan(plan) ? "once" : isYearly(plan) ? "year" : "month"); price.appendChild(small);
+        var small = document.createElement("small"); small.textContent = isSinglePlan(plan) ? " once" : " / " + (isLifetimePlan(plan) ? "once" : isYearly(plan) ? "year" : "month"); price.appendChild(small);
+        if (isSinglePlan(plan)) { var noSub = document.createElement("span"); noSub.className = "plan-opt-tag"; noSub.textContent = "No subscription"; top.appendChild(noSub); }
         var note = document.createElement("span"); note.className = "plan-opt-note";
-        note.textContent = isYearly(plan)
-          ? money({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year"
-          : isLifetimePlan(plan) ? "Pay once, Pro for good" : "Pay month by month";
+        note.textContent = isSinglePlan(plan)
+          ? "One more transcription, any recording or song link. No subscription."
+          : isYearly(plan)
+            ? money({ amountMinor: Math.round(plan.amountMinor / 12), currency: plan.currency }) + " a month, paid once a year"
+            : isLifetimePlan(plan) ? "Pay once, Pro for good" : "Pay month by month";
         var dot = document.createElement("span"); dot.className = "plan-opt-dot"; dot.setAttribute("aria-hidden", "true");
         opt.appendChild(dot); opt.appendChild(top); opt.appendChild(price); opt.appendChild(note);
         function select() {
@@ -2357,9 +2384,6 @@
       });
       renderCta();
       cta.addEventListener("click", function () { checkout(chosen, cta); });
-      var fine = document.createElement("p"); fine.className = "pay-fine";
-      fine.innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
-      fine.appendChild(document.createTextNode("Secure checkout. One payment covers the whole period; nothing renews without you."));
       grid.appendChild(options); grid.appendChild(cta); grid.appendChild(fine);
     }).catch(function () { grid.textContent = "Plans could not be loaded right now. Please try again in a moment."; });
   }
@@ -2393,14 +2417,18 @@
         try { provider = new URL(session.checkoutUrl).hostname; } catch (e) { /* ignore */ }
         saveCheckout({
           planId: plan.id, startedAt: Date.now(), wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null,
-          lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null, userId: (me && me.id) || null
+          lifetime: !!(sub && sub.isLifetime), planCode: (sub && sub.planCode) || null, userId: (me && me.id) || null,
+          // A one-song purchase lands as one more bought transcription, not as Pro; and the song link that
+          // was refused is put back in the box on the way back, so the person carries on where they were.
+          single: isSinglePlan(plan), bought: (sub && sub.boughtTranscriptionsTotal) || 0,
+          link: isSinglePlan(plan) ? ($("link-url").value || "").trim() : ""
         });
         return trackNow("Checkout opened", provider).then(function () { location.assign(session.checkoutUrl); });
       })
       .catch(function (err) {
         // An earlier checkout turned out to be paid: nothing to buy, so this is the welcome, not an error.
         if (err instanceof ApiError && err.code === "BILLING_PAYMENT_ALREADY_RECEIVED") {
-          var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null };
+          var before = { wasActive: isPro(), periodEnd: (sub && sub.currentPeriodEndUtc) || null, single: isSinglePlan(plan) };
           return request("/api/billing/my-subscription").then(function (s) { paymentDone(s, before); })
             .catch(function () { alertIn($("app-alert"), "success", err.message); });
         }
@@ -2438,6 +2466,8 @@
   }
   /** Active, and for someone who was already on Pro, something bought since the snapshot: more time, life, or a new plan. */
   function paymentLanded(s, snap) {
+    // One song bought: the account's bought count moves on; Pro does not change.
+    if (s && snap && snap.single) return (s.boughtTranscriptionsTotal || 0) > (snap.bought || 0);
     if (!s || !s.isActive) return false;
     if (!snap || !snap.wasActive) return true;
     var end = s.currentPeriodEndUtc ? Date.parse(s.currentPeriodEndUtc) : 0, before = snap.periodEnd ? Date.parse(snap.periodEnd) : 0;
@@ -2447,7 +2477,10 @@
     var toast = $("pay-toast");
     toast.classList.toggle("is-slow", slow);
     $("pay-toast-title").textContent = slow ? "Your payment is still being confirmed." : "Confirming your payment…";
-    $("pay-toast-sub").textContent = slow ? "Pro unlocks automatically the moment it lands — you can keep working." : "This usually takes a few seconds.";
+    var single = !!(payWatch && payWatch.snap && payWatch.snap.single);
+    $("pay-toast-sub").textContent = slow
+      ? (single ? "Your song unlocks automatically the moment it lands — you can keep working." : "Pro unlocks automatically the moment it lands — you can keep working.")
+      : "This usually takes a few seconds.";
     show(toast);
   }
   /** quiet: no "Confirming…" note, because nothing says a payment was made (Back from the provider, a later visit). */
@@ -2488,6 +2521,7 @@
   }
   /** The payment landed: the account shows Pro everywhere it shows the plan, then the welcome. */
   function paymentDone(s, snap) {
+    if (snap && snap.single) { songBought(s, snap); return; }
     stopPaymentWatch(); clearCheckout();
     sub = s;
     track(snap && snap.wasActive ? "Added Pro time" : "Went Pro");
@@ -2498,7 +2532,36 @@
     if (current && current.result) showResult(current.result);
     openProWelcome(snap);
   }
+  /**
+   * One song paid for: the counts move on everywhere they show, the link that was refused goes back in the
+   * box, and the same pop-up says so in a sentence — nothing about Pro, which was not bought.
+   */
+  function songBought(s, snap) {
+    stopPaymentWatch(); clearCheckout();
+    sub = s;
+    track("Bought one song");
+    track("Payment confirmed", snap && snap.planId ? String(snap.planId) : null);
+    renderWho();
+    if (!$("view-account").classList.contains("hidden")) renderAccount();
+    hide($("upgrade-panel")); hide($("app-alert"));
+    var relink = !!(snap && snap.link && !$("link-url").value.trim());
+    if (relink) {
+      setView("transcribe"); selectSource("link");
+      $("link-url").value = snap.link; lookupLink(true);
+    }
+    $("pro-welcome-title").textContent = "Your song is paid for";
+    $("pro-welcome-plan").textContent = relink
+      ? "Your link is back in the box. Press Transcribe to write out the whole song."
+      : "One more transcription is ready: record, upload, or paste a song link.";
+    hide($("pro-welcome-perks"));
+    $("pro-welcome-go").textContent = "Transcribe it";
+    welcomeReturn = document.activeElement;
+    show($("pro-welcome"));
+    $("pro-welcome-go").focus();
+    sfx.play("saved");
+  }
   function openProWelcome(snap) {
+    show($("pro-welcome-perks")); $("pro-welcome-go").textContent = "Start using Pro";
     $("pro-welcome-title").textContent = snap && snap.wasActive ? "More Pro time added" : "Welcome to NoteFusion Pro";
     var when = sub.currentPeriodEndUtc ? new Date(sub.currentPeriodEndUtc).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : "";
     $("pro-welcome-plan").textContent = planLabel() + (sub.isLifetime ? " · Pro for life" : when ? " · Pro until " + when : "");
