@@ -19,16 +19,24 @@ a partial take (one verse, the refrain, a start mid-hymn, or several verses):
 * A prefilter scores every entry by the rarer interval trigrams it shares with the take
   (idf-weighted, one sparse product), so only the best ``CANDIDATES`` are aligned —
   fast with ten thousand entries.
-* Smith-Waterman local alignment over the intervals, vectorised across the candidates: an
-  exact interval scores 1 (plus a little when the rhythm agrees too), a semitone off
-  ``SEMITONE``, anything else ``MISMATCH``, a gap ``GAP``.  A score entry's melody is
-  tiled so a take of several verses aligns as one run.
-* A match is offered only when it is long (``MIN_MATCHED`` exact intervals), dense
-  (score per aligned interval), covers most of the take, and clearly beats the best entry
-  with a *different* tune (two hymns sung to one tune are the same melody, not rivals).
-  ``kind="incipit"`` entries (recognition only: an opening phrase, a title and a link)
-  must have their whole opening matched from its first note and clear a stricter margin;
-  they name the tune and never carry a score.
+* Smith-Waterman local alignment in two stages, vectorised across the candidates.  First
+  over the intervals (no key needed), to rank them; then the best ``FINE`` over pitch
+  classes under the few transpositions whose pitch-class profile fits the take, which is
+  the score judged: a wrong note costs one mismatch there where it costs two intervals.
+  An exact note scores ``MATCH`` (plus ``RHYTHM_BONUS`` when its length ratio to the note
+  before agrees too), a semitone off ``SEMITONE``, anything else ``MISMATCH``, a gap
+  ``GAP``.  A score entry's melody is tiled so a take of several verses aligns as one run.
+* A match is offered only when it is long (``MIN_MATCHED`` exact notes), dense (score per
+  aligned note), covers most of the take, and clearly beats the best entry with a
+  *different* tune (``MARGIN_RATIO``; two hymns sung to one tune are one melody, not
+  rivals).  ``kind="incipit"`` entries (recognition only: an opening phrase, a title and
+  a link) must have their whole opening matched from its first note and clear stricter
+  bars; they name the tune and never carry a score.
+
+The thresholds were set on perturbed renditions of every hymn in the library against
+non-hymn melodies (the accuracy corpora, Vocadito's real singers, folk and fiddle tunes,
+and random melodies drawn from the library's own interval statistics); see
+``tests/test_hymn_match.py`` for what is pinned.
 
 The transposition is the median pitch difference over the matched notes, so the
 hymnbook version comes back in the key the take was sung in, whatever the transcription
@@ -38,15 +46,12 @@ decided its doh was.  Pure symbolic work on the note list: milliseconds, never t
 from __future__ import annotations
 
 import json
-import logging
 import math
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
-
-logger = logging.getLogger(__name__)
 
 INDEX_PATH = Path(__file__).resolve().parent.parent / "data" / "hymn_index.json"
 
@@ -59,19 +64,20 @@ RHYTHM_BONUS = 0.3       # an exact interval whose note-length ratio agrees too
 RHYTHM_TOLERANCE = 0.45  # |log2 ratio| difference that counts as agreeing (about 1.37x)
 INTERVAL_CLIP = 12       # an interval past an octave is a glitch, not a leap to match
 
-# ── Acceptance (measured: see tests/test_hymn_match.py and the hand-back) ─────
-MIN_MATCHED = 10         # exact intervals in the alignment: eleven notes of the tune
-MIN_DENSITY = 0.62       # alignment score per aligned interval (take or hymn side, the longer)
-MIN_COVERAGE = 0.45      # share of the take's intervals inside the alignment
-MARGIN_RATIO = 1.3       # best / best of another tune
-INCIPIT_MIN_MATCHED = 9
-INCIPIT_MIN_DENSITY = 0.8
-INCIPIT_MIN_COVER = 0.85  # share of the incipit's intervals inside the alignment
-INCIPIT_MARGIN_RATIO = 1.6
+# ── Acceptance (measured; see the module docstring) ───────────────────────────
+MIN_MATCHED = 10         # notes matched exactly (pitch class) in the alignment
+MIN_DENSITY = 0.65       # alignment score per aligned note (take or hymn side, the longer)
+MIN_COVERAGE = 0.5       # share of the take's notes inside the alignment
+MARGIN_RATIO = 1.5       # best score / the best score of another tune
+INCIPIT_MIN_MATCHED = 10
+INCIPIT_MIN_DENSITY = 0.9  # near note-perfect: an opening phrase is short
+INCIPIT_MIN_COVER = 0.85  # share of the incipit's notes inside the alignment, from its first note
+INCIPIT_MARGIN_RATIO = 1.6  # against the other tunes on the same notes of the take
 SAME_TUNE_SHARE = 0.6    # two entries whose melodies align this well are one tune
 
 CANDIDATES = 40          # aligned by intervals after the prefilter
-FINE = 8                 # of those, aligned by pitch class under all twelve transpositions
+FINE = 8                 # of those, aligned by pitch class ...
+SHIFTS = 4               # ... under the transpositions whose pitch-class profile fits the take best
 GRAM = 3                 # interval n-gram length for the prefilter
 MAX_TILES = 4            # verses a take may run through in one alignment
 
@@ -154,7 +160,8 @@ class HymnIndex:
             ivs = c.intervals
             if e.kind == "score" and len(c.pitches) > 1:
                 # A take running from the last line into the next verse crosses the join.
-                ivs = np.concatenate([ivs, [c.pitches[0] - c.pitches[-1]], ivs[:GRAM]])
+                join = int(np.clip(c.pitches[0] - c.pitches[-1], -INTERVAL_CLIP, INTERVAL_CLIP))
+                ivs = np.concatenate([ivs, [join], ivs[:GRAM]])
             for g in _grams(ivs):
                 rows.append(i)
                 cols.append(vocab.setdefault(g, len(vocab)))
@@ -233,15 +240,24 @@ def _substitution(qv: float, qr: float, t: np.ndarray, tr: np.ndarray, valid: np
 
     ``circular`` compares pitch classes (a semitone either side of the octave too).
     """
+    base, exact = _base(qv, t, valid, circular)
+    return _with_rhythm(base, exact, qr, tr)
+
+
+def _base(qv: float, t: np.ndarray, valid: np.ndarray, circular: bool) -> tuple[np.ndarray, np.ndarray]:
     d = np.abs(t - qv)
     if circular:
         d = np.minimum(d % 12, 12 - d % 12)
-    s = np.where(d == 0, MATCH, np.where(d == 1, SEMITONE, MISMATCH))
-    if not math.isnan(qr):
-        with np.errstate(invalid="ignore"):
-            agree = (d == 0) & (np.abs(tr - qr) <= RHYTHM_TOLERANCE)
-        s = s + np.where(agree, RHYTHM_BONUS, 0.0)
-    return np.where(valid, s, MISMATCH)
+    s = np.where(valid, np.where(d == 0, MATCH, np.where(d == 1, SEMITONE, MISMATCH)), MISMATCH)
+    return s.astype(np.float32), (d == 0) & valid
+
+
+def _with_rhythm(base: np.ndarray, exact: np.ndarray, qr: float, tr: np.ndarray) -> np.ndarray:
+    if math.isnan(qr):
+        return base
+    with np.errstate(invalid="ignore"):
+        agree = exact & (np.abs(tr - qr) <= RHYTHM_TOLERANCE)
+    return base + np.float32(RHYTHM_BONUS) * agree
 
 
 def _sw_scores(q, qr, targets, trhythm, circular: bool = False) -> np.ndarray:
@@ -249,24 +265,48 @@ def _sw_scores(q, qr, targets, trhythm, circular: bool = False) -> np.ndarray:
 
     Each row of the matrix is computed with numpy for every target together: the diagonal and
     the gap from above need only the previous row, and the gap from the left is a running maximum
-    (H[j] = max over k <= j of E[k] - GAP * (j - k)), so no cell loop is needed.
+    (H[j] = max over k <= j of E[k] - GAP * (j - k)), so no cell loop is needed. The take has few
+    distinct symbols, so each one's substitution row is worked out once.
     """
     t, valid = _pad(targets, 0.0)
     tr, _ = _pad(trhythm, np.nan)
     k, m = t.shape
     if k == 0 or m == 0:
         return np.zeros(k)
-    j = GAP * np.arange(1, m + 1)
-    prev = np.zeros((k, m + 1))
-    best = np.zeros(k)
+    tr = tr.astype(np.float32)
+    j = (GAP * np.arange(1, m + 1)).astype(np.float32)
+    prev = np.zeros((k, m + 1), np.float32)
+    cur = np.zeros((k, m + 1), np.float32)
+    e = np.empty((k, m), np.float32)
+    best = np.zeros(k, np.float32)
+    cache: dict[float, tuple[np.ndarray, np.ndarray]] = {}
+    gap = np.float32(GAP)
     for i in range(len(q)):
-        s = _substitution(float(q[i]), float(qr[i]), t, tr, valid, circular)
-        e = np.maximum(np.maximum(prev[:, :-1] + s, prev[:, 1:] - GAP), 0.0)
-        cur = np.zeros((k, m + 1))
-        cur[:, 1:] = np.maximum.accumulate(e + j, axis=1) - j
-        best = np.maximum(best, cur.max(axis=1))
-        prev = cur
-    return best
+        sym = float(q[i])
+        if sym not in cache:
+            cache[sym] = _base(sym, t, valid, circular)
+        s = _with_rhythm(*cache[sym], float(qr[i]), tr)
+        np.add(prev[:, :-1], s, out=e)
+        np.maximum(e, prev[:, 1:] - gap, out=e)
+        np.maximum(e, 0.0, out=e)
+        e += j
+        np.maximum.accumulate(e, axis=1, out=cur[:, 1:])
+        cur[:, 1:] -= j
+        np.maximum(best, cur.max(axis=1), out=best)
+        prev, cur = cur, prev
+    return best.astype(float)
+
+
+def _shifts(take: Contour, c: Contour, keep: int) -> list[int]:
+    """The transpositions worth aligning: those whose pitch-class profile fits the take's best."""
+    def profile(x: Contour) -> np.ndarray:
+        w = np.nan_to_num(np.diff(np.append(x.starts, x.starts[-1] + 1.0)), nan=1.0)
+        w = np.where(w > 0, w, 1.0)
+        h = np.bincount(x.pitches % 12, weights=w / w.sum(), minlength=12)
+        return h
+    hq, hc = profile(take), profile(c)
+    fit = [float(np.dot(np.roll(hc, shift), hq)) for shift in range(12)]
+    return [int(s) for s in np.argsort(fit)[::-1][:keep]]
 
 
 @dataclass
@@ -326,6 +366,33 @@ def _tiled_intervals(c: Contour, copies: int) -> tuple[np.ndarray, np.ndarray]:
 # ── Matching ──────────────────────────────────────────────────────────────────
 
 
+def _fine(q: Contour, ids: list[int], index: HymnIndex) -> dict[int, tuple[float, int]]:
+    """Each entry's best pitch-class alignment score against ``q``, with the transposition that gave it."""
+    rows, rhythms, owners = [], [], []
+    for i in ids:
+        c = index.contours[i]
+        copies = _copies(index.entries[i], c, q)
+        rhy = np.tile(c.rhythm, copies)
+        for shift in _shifts(q, c, SHIFTS):
+            rows.append(np.tile((c.pitches + shift) % 12, copies).astype(float))
+            rhythms.append(rhy)
+            owners.append((i, shift))
+    fine = _sw_scores(q.pitches % 12, q.rhythm, rows, rhythms, circular=True)
+    per_entry: dict[int, tuple[float, int]] = {}
+    for (i, shift), score in zip(owners, fine):
+        if i not in per_entry or score > per_entry[i][0] + 1e-9:
+            per_entry[i] = (float(score), shift)
+    return per_entry
+
+
+def _window(q: Contour, start: int, end: int) -> Contour:
+    """The take's notes [start, end) as a contour of their own."""
+    rhythm = q.rhythm[start:end].copy()
+    if len(rhythm):
+        rhythm[0] = np.nan
+    return Contour(q.pitches[start:end], q.starts[start:end], q.intervals[start:max(start, end - 1)], rhythm)
+
+
 @dataclass
 class Match:
     entry: Entry
@@ -362,22 +429,9 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
     coarse = _sw_scores(q.intervals, q.interval_rhythm, [t for t, _ in tiled], [r for _, r in tiled])
     ranked = [ids[k] for k in np.argsort(-coarse, kind="stable")[:FINE]]
 
-    # Stage 2: pitch classes under each of the twelve transpositions. A wrong note costs one
-    # mismatch here where it costs two intervals above, so this is the score that is judged.
-    rows, rhythms, owners = [], [], []
-    for i in ranked:
-        c = index.contours[i]
-        copies = _copies(entries[i], c, q)
-        rhy = np.tile(c.rhythm, copies)
-        for shift in range(12):
-            rows.append(np.tile((c.pitches + shift) % 12, copies).astype(float))
-            rhythms.append(rhy)
-            owners.append((i, shift))
-    fine = _sw_scores(q.pitches % 12, q.rhythm, rows, rhythms, circular=True)
-    per_entry: dict[int, tuple[float, int]] = {}
-    for (i, shift), score in zip(owners, fine):
-        if i not in per_entry or score > per_entry[i][0] + 1e-9:
-            per_entry[i] = (float(score), shift)
+    # Stage 2: pitch classes under the likeliest transpositions. A wrong note costs one mismatch
+    # here where it costs two intervals above, so this is the score that is judged.
+    per_entry = _fine(q, ranked, index)
     order = sorted(per_entry, key=lambda i: (-round(per_entry[i][0], 6), not entries[i].checked,
                                              entries[i].kind != "score", entries[i].slug))
     best_id = order[0]
@@ -401,8 +455,17 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
     margin = aln.score / max(runner_score, 1e-9)
     figures = {"slug": best.slug, "score": round(aln.score, 2), "density": round(density, 3),
                "coverage": round(coverage, 3), "matched": matched, "margin": round(margin, 2),
-               "runner_up": runner, "runner_up_score": round(runner_score, 2)}
+               "runner_up": runner, "runner_up_score": round(runner_score, 2), "notes": len(q.pitches),
+               "hymn_notes": len(c.pitches), "t_len": t_len, "q_len": q_len}
     if best.kind == "incipit":
+        # An incipit is short, so it is judged against the other tunes on the same notes of the take:
+        # a whole tune aligned to the whole take would out-score any opening phrase.
+        window = _window(q, *aln.q_span)
+        rivals = [i for i in ranked if i != best_id and not index.same_tune(best_id, i)]
+        local = _fine(window, rivals, index) if rivals else {}
+        runner_score = max((v[0] for v in local.values()), default=0.0)
+        margin = aln.score / max(runner_score, 1e-9)
+        figures.update(margin=round(margin, 2), runner_up_score=round(runner_score, 2))
         own = len(c.pitches)
         ok = (own >= INCIPIT_MIN_MATCHED + 1 and matched >= INCIPIT_MIN_MATCHED
               and density >= INCIPIT_MIN_DENSITY and aln.t_span[0] <= 1
@@ -494,7 +557,9 @@ def _engrave(notes: list[tuple[int, float, float]], key_name: str, time_signatur
         for i, m in enumerate(measures[1:], start=1):
             m.number = i
     score.makeAccidentals(inPlace=True, alteredPitches=k.alteredPitches)
-    return export_musicxml(score)
+    xml = export_musicxml(score)
+    # music21 numbers the pickup bar 0 but still calls it explicit; an engraver should not count it.
+    return xml.replace('<measure implicit="no" number="0">', '<measure implicit="yes" number="0">', 1)
 
 
 def _label(notes: list[tuple[int, float, float]], key_name: str, time_signature: str):
