@@ -94,6 +94,13 @@ export function loadPosts({ authors, hymnSlugs, dir = path.join(CONTENT_DIR, "bl
 export const PD_DIED_BEFORE = 1955, PD_PUBLISHED_BEFORE = 1929;
 
 /**
+ * Someone with no known death year whose work was in print before 1850 is taken to have died before 1955:
+ * they would have been over 105. Recorded as "activeBy" (the earliest year a source credits them with), never
+ * as a made-up death year. The founder's rule for imported tunes (2026-10-16).
+ */
+export const PD_ACTIVE_BEFORE = 1850;
+
+/**
  * Why a hymn is not (provably) in the public domain, as a list of reasons; empty when it is. Everyone
  * named (composer, arranger, author, translator) must have a death year before 1955 — or be an
  * anonymous or traditional source ("traditional": true) — and the words and the music must have been
@@ -104,7 +111,9 @@ export function publicDomainProblems({ text = [], music = [], textPublished, mus
   const out = [];
   for (const p of [...text, ...music]) {
     if (!p || p.traditional) continue;
-    if (!(Number.isInteger(p.died) && p.died < PD_DIED_BEFORE)) out.push(`${p.name}: public domain needs a death year before ${PD_DIED_BEFORE} (or "traditional": true for an anonymous source)`);
+    const died = Number.isInteger(p.died) && p.died < PD_DIED_BEFORE;
+    const activeEarly = !Number.isInteger(p.died) && Number.isInteger(p.activeBy) && p.activeBy < PD_ACTIVE_BEFORE;
+    if (!died && !activeEarly) out.push(`${p.name}: public domain needs a death year before ${PD_DIED_BEFORE}, work in print before ${PD_ACTIVE_BEFORE} ("activeBy"), or "traditional": true for an anonymous source`);
   }
   if (!(Number.isInteger(textPublished) && textPublished < PD_PUBLISHED_BEFORE)) out.push(`"textPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
   if (!(Number.isInteger(musicPublished) && musicPublished < PD_PUBLISHED_BEFORE)) out.push(`"musicPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);

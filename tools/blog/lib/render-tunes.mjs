@@ -20,7 +20,7 @@ const METRE_NAMES = { "8 6 8 6": "Common Metre (C.M.)", "8 8 8 8": "Long Metre (
 /** The page's data block on one line: a tune page is mostly this data, and there are many tune pages. */
 const compactJson = (data) => JSON.stringify(data).replace(/</g, "\\u003c");
 
-function years(p) { return p.traditional || !p.died ? "" : p.lived ? ` (${p.lived})` : p.born ? ` (${p.born}–${p.died})` : ` (died ${p.died})`; }
+function years(p) { return p.traditional ? "" : !p.died ? (p.activeBy ? ` (fl. ${p.activeBy})` : "") : p.lived ? ` (${p.lived})` : p.born ? ` (${p.born}–${p.died})` : ` (died ${p.died})`; }
 function peopleText(people) {
   const ps = people.map((p) => `${p.name}${years(p)}`);
   return ps.length > 1 ? `${ps.slice(0, -1).join(", ")} and ${ps[ps.length - 1]}` : ps[0] || "";
@@ -88,7 +88,7 @@ function faqFor(t, fits) {
     { q: `What note does ${v.title} start on?`, a: `It starts on ${v.first.solfa} (${v.first.letter} in ${v.key})${t.pickup ? ", a pickup before the first full bar" : ""}. Find doh first, then sing up or down to ${v.first.solfa}.` },
   ];
   if (t.metre && t.metre !== "Irregular") out.push({ q: `What words can be sung to ${v.title}?`, a: `${v.title} is in the metre ${metreLabel(t.metre)}: lines of ${t.metre.replace(/ \+ /g, ", then ").replace(/ /g, ", ")} syllables. Words written in the same metre fit it${fits.length ? `, such as ${fits.slice(0, 3).map((h) => h.title).join(", ")}` : ""}; check where the stresses fall before you sing them together.` });
-  out.push({ q: `Is ${v.title} in the public domain?`, a: `Yes. ${pd.length ? `${pd.map((p) => (p.lived ? `${p.name} lived in the ${p.lived}` : `${p.name} died in ${p.died}`)).join(", ")}; ` : ""}the tune was first published in ${t.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and it was published before ${PD_PUBLISHED_BEFORE}, so the tune is out of copyright in Nigeria, the UK, the EU and the United States. Modern arrangements of it can still be under copyright.` });
+  out.push({ q: `Is ${v.title} in the public domain?`, a: `Yes. ${pd.length ? `${pd.map((p) => (p.lived ? `${p.name} lived in the ${p.lived}` : !p.died && p.activeBy ? `${p.name}'s work dates from ${p.activeBy}` : `${p.name} died in ${p.died}`)).join(", ")}; ` : ""}the tune was first published in ${t.musicPublished}. Everyone named died before ${PD_DIED_BEFORE} and it was published before ${PD_PUBLISHED_BEFORE}, so the tune is out of copyright in Nigeria, the UK, the EU and the United States. Modern arrangements of it can still be under copyright.` });
   return out;
 }
 
@@ -179,7 +179,7 @@ ${ctaBox("tune")}
 <p class="back-link"><a href="/hymns">← All hymns and tunes in Tonic Solfa</a></p>
 <script type="application/json" id="hymn-data">${compactJson({ key: v.key, time: v.time, tempo: v.tempo, notes: v.notes, musicXml: v.musicXml.replace(/>\s+</g, "><"), osmd: OSMD })}</script>`;
 
-  const composers = makers.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }) }));
+  const composers = makers.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived || !p.died ? {} : { deathDate: String(p.died) }) }));
   const ld = [
     {
       "@context": "https://schema.org",

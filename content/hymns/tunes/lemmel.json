@@ -1,0 +1,30 @@
+{
+  "name": "LEMMEL",
+  "title": "Lemmel",
+  "music": [
+    {
+      "name": "Helem H. Lemmel",
+      "role": "Music (1922)"
+    }
+  ],
+  "musicPublished": 1922,
+  "metre": "9 8 9 8 + i",
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "A4:1 | A4:1 Ab4:1 A4:1 | C5:1 Bb4:1 A4:1 | A4:3 | G4:2 D4:1 | F4:1 E4:1 F4:1 | A4:1 G4:1 C4:1 | A4:3~ | A4:2 A4:.5 A4:.5 | A4:1 Ab4:1 A4:1 | D5:1 C5:1 A4:1 | A4:3 | G4:2 G4:1 | A4:1 B4:1 C5:1 | E4:1 F4:1 D4:1 | C4:3~ | C4:3 | A4:2 A4:1 | C5:1.5 A4:.5 G4:1 | F4:3 | F4:2 F4:1 | Bb4:1 Bb4:1 Bb4:1 | D5:1 Bb4:1 A4:1 | G4:3~ | G4:2 A4:.5 Bb4:.5 | C5:2 C5:1 | C5:1 A4:1 G4:1 | F4:2 F4:1 | F4:2 F4:.5 G4:.5 | A4:1.5 G4:.5 A4:1 | Bb4:1 A4:1 G4:1 | F4:3~ | F4:2",
+  "incipit": "mmrmsfmmr|ldtdmrsm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000198.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000198a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000198; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Helem H. Lemmel: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000198 (the melody read from 000198a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000198a.nwc).",
+  "importedFrom": "cceh:000198",
+  "updated": "2026-10-16"
+}

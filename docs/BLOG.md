@@ -333,7 +333,8 @@ For each tune the importer (`tools/blog/import/cceh*.mjs`; the files are data, r
 - **Refused** (nothing copied): a © on the page or in the MIDI file, anyone named who died in 1955 or
   later (from the page's dates, or `KNOWN_IN_COPYRIGHT` in `import/cceh.mjs` for composers CCEH
   names without dates), a year of 1929 or later for the tune or an arrangement of it.
-- **Draft**: anyone named (composer, arranger, harmoniser) without a death year. The importer uses
+- **Pre-1850 rule** (founder's decision, 2026-10-16): someone with no death year whose work CCEH dates before 1850 is taken to have died before 1955 (they would have been over 105). It is recorded as `"activeBy": <year>` on the person, never as a death year, and the page credits them as "(fl. <year>)".
+- **Draft**: anyone named (composer, arranger, harmoniser) without a death year and with no work dated before 1850. The importer uses
   the page's own dates, else the dates our other pages already give the same person (hand-made hymns,
   the Open Hymnal import, other CCEH pages) — nothing is guessed. `tools/blog/import/cceh-dates.json`
   takes dates checked by hand, each with its source (`{"John Zundel": {"born": 1815, "died": 1882,

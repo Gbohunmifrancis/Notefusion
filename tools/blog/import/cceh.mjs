@@ -17,7 +17,7 @@ import { parseTunePage } from "./cceh-page.mjs";
 import { chooseMelody, incipitDegrees, oxfordDegrees, lineToMelody } from "./cceh-melody.mjs";
 import { scoreBars } from "./nwc.mjs";
 import { parseMelody, loadEngine } from "../lib/solfa.mjs";
-import { tunePublicDomainProblems, PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "../lib/content.mjs";
+import { tunePublicDomainProblems, PD_DIED_BEFORE, PD_PUBLISHED_BEFORE, PD_ACTIVE_BEFORE } from "../lib/content.mjs";
 import { slugify } from "../lib/util.mjs";
 import { RANGE } from "./ohp.mjs";
 
@@ -159,6 +159,10 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
         if (d.lived) person.lived = d.lived;
         notes.push(`${nm}'s dates (${d.born ? `${d.born}–` : "died "}${d.died}) are from ${d.from || "our other pages"}; CCEH's page gives ${c.year ? `only the year ${c.year}` : "none"}.`);
       }
+    }
+    if (!Number.isInteger(person.died) && Number.isInteger(c.year) && c.year < PD_ACTIVE_BEFORE) {
+      person.activeBy = c.year;
+      notes.push(`${nm} has no death year on CCEH's page or ours; their work is dated ${c.year}, before ${PD_ACTIVE_BEFORE}, so they died before ${PD_DIED_BEFORE} (they would have been over 105).`);
     }
     if (Number.isInteger(person.died) && person.died >= PD_DIED_BEFORE) refuse(`${nm} died in ${person.died}, so ${ROLE(c) === "Music" ? "the tune" : "the arrangement"} is still in copyright in Nigeria, the UK and the EU`);
     person.role = c.book ? `${ROLE(c)} (${c.book}${c.year ? `, ${c.year}` : ""})` : c.year ? `${ROLE(c)} (${c.year})` : ROLE(c);

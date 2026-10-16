@@ -4,6 +4,7 @@
   "music": [
     {
       "name": "Thomas Este",
+      "activeBy": 1592,
       "role": "Music (Whole Book of Psalmes, 1592)"
     },
     {
@@ -28,7 +29,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0000/000096a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000096; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Thomas Este: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: tenor-lead arr., George Kirbye: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000096 (the melody read from 000096a.mid, checked against the page's do-re-mi incipit, 1 note off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000096a.nwc).",
+  "reviewNotes": "Held back: not provably public domain: tenor-lead arr., George Kirbye: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000096 (the melody read from 000096a.mid, checked against the page's do-re-mi incipit, 1 note off in 14); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Thomas Este has no death year on CCEH's page or ours; their work is dated 1592, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000096a.nwc).",
   "importedFrom": "cceh:000096",
   "updated": "2026-10-16"
 }

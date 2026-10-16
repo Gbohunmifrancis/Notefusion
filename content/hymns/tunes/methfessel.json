@@ -4,6 +4,7 @@
   "music": [
     {
       "name": "Albert G. Methfessel",
+      "activeBy": 1840,
       "role": "Music (1840)"
     }
   ],
@@ -18,13 +19,13 @@
   "incipit": "sddmddsdsdmd|mrmfsrmrdtls",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0001/x000116.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0001/000116a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000116; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Albert G. Methfessel: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000116 (the melody read from 000116a.mid, checked against the page's do-re-mi incipit, 1 note off in 24); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000116a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000116 (the melody read from 000116a.mid, checked against the page's do-re-mi incipit, 1 note off in 24); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Albert G. Methfessel has no death year on CCEH's page or ours; their work is dated 1840, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000116a.nwc).",
   "importedFrom": "cceh:000116",
   "updated": "2026-10-16"
 }

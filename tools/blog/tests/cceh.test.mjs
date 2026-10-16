@@ -166,13 +166,24 @@ test("gate: a dated composer and a year before 1929 publish, credited to CCEH wi
 });
 
 test("gate: a composer without a death year is a draft that says so; no year for the tune too", () => {
-  const r = ital(ITALIAN.page, datesTable());
+  // Dated 1869: too late for the pre-1850 rule, so without a death year the tune waits.
+  const r = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "Felice de Giardini, 1869"), datesTable());
   assert.equal(r.refused, null);
   assert.equal(r.tune.draft, true);
   assert.ok(r.problems.some((p) => /Felice de Giardini: public domain needs a death year before 1955/.test(p)), r.problems.join(" | "));
   assert.match(r.tune.reviewNotes, /^Held back: /);
   const noYear = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "Felice de Giardini"));
   assert.ok(noYear.problems.includes("the page gives no year for the tune"));
+});
+
+test("gate: work in print before 1850 counts as a death before 1955 (activeBy), never as a made-up death year", () => {
+  const r = ital(ITALIAN.page, datesTable());
+  assert.equal(r.refused, null);
+  assert.ok(!r.problems.some((p) => /Felice de Giardini/.test(p)), r.problems.join(" | "));
+  const giardini = r.tune.music.find((p) => p.name === "Felice de Giardini");
+  assert.equal(giardini.activeBy, 1769);
+  assert.equal(giardini.died, undefined);
+  assert.match(JSON.stringify(r.tune), /dated 1769, before 1850/, "the tune records why");
 });
 
 test("gate: Vaughan Williams, a death in 1955 or later, a © or a year after 1928 — refused, nothing copied", () => {

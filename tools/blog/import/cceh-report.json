@@ -5,12 +5,28 @@
   "rule": "Our public-domain rule (lib/content.mjs): everyone named died before 1955 and the tune was first published before 1929; missing dates make a draft; a © or anyone who died in 1955 or later means not imported.",
   "published": [
     {
+      "slug": "gloria-patria-meineke",
+      "number": "000004"
+    },
+    {
       "slug": "mit-freuden-zart",
       "number": "000022"
     },
     {
+      "slug": "old-hundred-thirty-fourth",
+      "number": "000026"
+    },
+    {
       "slug": "lyons",
       "number": "000030"
+    },
+    {
+      "slug": "diadem",
+      "number": "000041"
+    },
+    {
+      "slug": "miles-lane",
+      "number": "000042"
     },
     {
       "slug": "laudes-domini",
@@ -21,8 +37,20 @@
       "number": "000047"
     },
     {
+      "slug": "hendon",
+      "number": "000060"
+    },
+    {
       "slug": "ellers",
       "number": "000065"
+    },
+    {
+      "slug": "arlington",
+      "number": "000068"
+    },
+    {
+      "slug": "rathbun",
+      "number": "000070"
     },
     {
       "slug": "quebec",
@@ -41,8 +69,20 @@
       "number": "000099"
     },
     {
+      "slug": "avon",
+      "number": "000113"
+    },
+    {
+      "slug": "methfessel",
+      "number": "000116"
+    },
+    {
       "slug": "gelobt-sei-gott",
       "number": "000123"
+    },
+    {
+      "slug": "st-magnus-clark",
+      "number": "000125"
     },
     {
       "slug": "colchester-purcell",
@@ -55,6 +95,10 @@
     {
       "slug": "noel",
       "number": "000133"
+    },
+    {
+      "slug": "mear",
+      "number": "000134"
     },
     {
       "slug": "aletta",
@@ -81,12 +125,24 @@
       "number": "000161"
     },
     {
+      "slug": "martyn",
+      "number": "000172"
+    },
+    {
       "slug": "coming-home",
       "number": "000174"
     },
     {
       "slug": "whosoever",
       "number": "000184"
+    },
+    {
+      "slug": "thompson",
+      "number": "000190"
+    },
+    {
+      "slug": "neumark",
+      "number": "000203"
     }
   ],
   "drafts": [
@@ -94,21 +150,14 @@
       "slug": "beecher",
       "number": "000003",
       "reasons": [
-        "not provably public domain: John Zundel: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "gloria-patria-meineke",
-      "number": "000004",
-      "reasons": [
-        "not provably public domain: Charles Meineke: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John Zundel: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "gloria-patria-greatorex",
       "number": "000005",
       "reasons": [
-        "not provably public domain: Henry W. Greatorex: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Henry W. Greatorex: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -122,38 +171,29 @@
       "slug": "amsterdam",
       "number": "000023",
       "reasons": [
-        "not provably public domain: James Nares: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "old-hundred-thirty-fourth",
-      "number": "000026",
-      "reasons": [
-        "not provably public domain: William Crotch: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: James Nares: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "monkland",
       "number": "000027",
       "reasons": [
-        "not provably public domain: John Antes: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: John Bernard Wilkes: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John Bernard Wilkes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "spanish-hymn",
       "number": "000029",
       "reasons": [
-        "not provably public domain: Benjamin Carr: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: David Evans: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: David Evans: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "stuttgart",
       "number": "000034",
       "reasons": [
-        "not provably public domain: Christian F. Witt: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: Johann G. C. Storl: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Christian F. Witt: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "not provably public domain: Johann G. C. Storl: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -161,29 +201,15 @@
       "number": "000036",
       "reasons": [
         "the page gives no year for the tune",
-        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
+        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
         "the score has a bar of another length (bar 13), which the solfa grid does not draw"
-      ]
-    },
-    {
-      "slug": "diadem",
-      "number": "000041",
-      "reasons": [
-        "not provably public domain: James Ellor: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "miles-lane",
-      "number": "000042",
-      "reasons": [
-        "not provably public domain: William Shrubsole: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
       ]
     },
     {
       "slug": "blessed-name",
       "number": "000050",
       "reasons": [
-        "not provably public domain: Ralph E. Hudson: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Ralph E. Hudson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -198,13 +224,6 @@
       "number": "000058",
       "reasons": [
         "the page gives no year for the tune"
-      ]
-    },
-    {
-      "slug": "hendon",
-      "number": "000060",
-      "reasons": [
-        "not provably public domain: Henri A. Cesar Malan: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
       ]
     },
     {
@@ -225,29 +244,14 @@
       "slug": "joyful-song",
       "number": "000067",
       "reasons": [
-        "not provably public domain: Chester G. Allen: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "arlington",
-      "number": "000068",
-      "reasons": [
-        "not provably public domain: Thomas Augustine Arne: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: Ralph Harrison: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "rathbun",
-      "number": "000070",
-      "reasons": [
-        "not provably public domain: Ithamar Conkey: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Chester G. Allen: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "gordon",
       "number": "000076",
       "reasons": [
-        "not provably public domain: Adoniram Judson Gordon: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Adoniram Judson Gordon: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -261,15 +265,14 @@
       "slug": "in-dulci-jubilo",
       "number": "000090",
       "reasons": [
-        "not provably public domain: Winfred Douglas: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Winfred Douglas: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "winchester-old",
       "number": "000096",
       "reasons": [
-        "not provably public domain: Thomas Este: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: tenor-lead arr., George Kirbye: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: tenor-lead arr., George Kirbye: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -277,14 +280,14 @@
       "number": "000097",
       "reasons": [
         "the page gives no year for the tune",
-        "not provably public domain: John Robson Sweney: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John Robson Sweney: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "great-physician",
       "number": "000102",
       "reasons": [
-        "not provably public domain: John H. Stockton: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John H. Stockton: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -305,29 +308,15 @@
       "slug": "were-you-there-108",
       "number": "000108",
       "reasons": [
-        "not provably public domain: John W. Work, Jr.: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: Frederick J. Work: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John W. Work, Jr.: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "not provably public domain: Frederick J. Work: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "redeemer-loes",
       "number": "000109",
       "reasons": [
-        "not provably public domain: Harry Dixon Loes: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "avon",
-      "number": "000113",
-      "reasons": [
-        "not provably public domain: Hugh Wilson: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "methfessel",
-      "number": "000116",
-      "reasons": [
-        "not provably public domain: Albert G. Methfessel: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Harry Dixon Loes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -341,7 +330,7 @@
       "slug": "hannah",
       "number": "000122",
       "reasons": [
-        "not provably public domain: James H. Fillmore: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: James H. Fillmore: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -349,71 +338,57 @@
       "number": "000124",
       "reasons": [
         "the page gives no year for the tune",
-        "not provably public domain: Geoffrey Shaw: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "st-magnus-clark",
-      "number": "000125",
-      "reasons": [
-        "not provably public domain: Jeremiah Clarke: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Geoffrey Shaw: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "nativity-lahee",
       "number": "000126",
       "reasons": [
-        "not provably public domain: Henry Lahee: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Henry Lahee: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "chapman",
       "number": "000127",
       "reasons": [
-        "not provably public domain: Charles H. Marsh: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Charles H. Marsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "second-coming",
       "number": "000129",
       "reasons": [
-        "not provably public domain: Lelia Naylor (Mrs. Charles H.) Morris: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Lelia Naylor (Mrs. Charles H.) Morris: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "morecambe",
       "number": "000132",
       "reasons": [
-        "not provably public domain: Frederick C. Atkinson: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "mear",
-      "number": "000134",
-      "reasons": [
-        "not provably public domain: William Knapp: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Frederick C. Atkinson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "mercy",
       "number": "000135",
       "reasons": [
-        "not provably public domain: Louis M. Gottschalk: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: Edwin P. Parker: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Louis M. Gottschalk: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "not provably public domain: Edwin P. Parker: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "det-ar-ett-fast-ord",
       "number": "000137",
       "reasons": [
-        "not provably public domain: Joel Blomquist: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Joel Blomquist: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "bread-of-life",
       "number": "000138",
       "reasons": [
-        "not provably public domain: William F. Sherman: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: William F. Sherman: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -434,14 +409,14 @@
       "slug": "national-hymn",
       "number": "000149",
       "reasons": [
-        "not provably public domain: George William Warren: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: George William Warren: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "sawley",
       "number": "000150",
       "reasons": [
-        "not provably public domain: James Walch: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: James Walch: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -449,56 +424,56 @@
       "number": "000151",
       "reasons": [
         "the page gives no year for the tune",
-        "not provably public domain: A. P. Bland: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: A. P. Bland: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "terra-patris",
       "number": "000155",
       "reasons": [
-        "not provably public domain: Franklin L. Sheppard: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Franklin L. Sheppard: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "all-to-christ",
       "number": "000156",
       "reasons": [
-        "not provably public domain: John T. Grape: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John T. Grape: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "hudson",
       "number": "000157",
       "reasons": [
-        "not provably public domain: Ralph E. Hudson: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Ralph E. Hudson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "power-in-the-blood",
       "number": "000159",
       "reasons": [
-        "not provably public domain: Lewis E. Jones: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Lewis E. Jones: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "washed-in-the-blood",
       "number": "000162",
       "reasons": [
-        "not provably public domain: Elisha A. Hoffman: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Elisha A. Hoffman: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "moody",
       "number": "000164",
       "reasons": [
-        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "at-calvary",
       "number": "000166",
       "reasons": [
-        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -512,91 +487,133 @@
       "slug": "mcconnell",
       "number": "000169",
       "reasons": [
-        "not provably public domain: J. Edwin McConnell: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: J. Edwin McConnell: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "sewell",
       "number": "000170",
       "reasons": [
-        "not provably public domain: Hampton H. Sewell: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Hampton H. Sewell: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "wellesley",
       "number": "000171",
       "reasons": [
-        "not provably public domain: Lizzie S. Tourjee: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
-      ]
-    },
-    {
-      "slug": "martyn",
-      "number": "000172",
-      "reasons": [
-        "not provably public domain: Simeon B. Marsh: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Lizzie S. Tourjee: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "kedron-spratt",
       "number": "000173",
       "reasons": [
-        "not provably public domain: Ann B. Spratt: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Ann B. Spratt: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "welcome-voice",
       "number": "000175",
       "reasons": [
-        "not provably public domain: Lewis Hartsough: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Lewis Hartsough: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "resolution",
       "number": "000177",
       "reasons": [
-        "not provably public domain: James H. Fillmore: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: James H. Fillmore: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "jesus-i-come",
       "number": "000178",
       "reasons": [
-        "not provably public domain: George C. Stebbins: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: George C. Stebbins: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "mcconnelsville",
       "number": "000179",
       "reasons": [
-        "not provably public domain: Lelia Naylor (Mrs. Charles H.) Morris: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Lelia Naylor (Mrs. Charles H.) Morris: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "everett",
       "number": "000181",
       "reasons": [
-        "not provably public domain: Asa Brooks Everett: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: Asa Brooks Everett: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "stockton",
       "number": "000183",
       "reasons": [
-        "not provably public domain: John H. Stockton: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: John H. Stockton: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "calling-today",
       "number": "000188",
       "reasons": [
-        "not provably public domain: George C. Stebbins: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: George C. Stebbins: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
       "slug": "dunbar",
       "number": "000189",
       "reasons": [
-        "not provably public domain: C. R. Dunbar: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: C. R. Dunbar: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "sheltering-rock",
+      "number": "000195",
+      "reasons": [
+        "not provably public domain: W. E. Penn: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "lemmel",
+      "number": "000198",
+      "reasons": [
+        "not provably public domain: Helem H. Lemmel: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "irondale",
+      "number": "000199",
+      "reasons": [
+        "not provably public domain: Isham E. Reynolds: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "vigil",
+      "number": "000201",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "balm-in-gilead",
+      "number": "000205",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "alstone",
+      "number": "000206",
+      "reasons": [
+        "not provably public domain: Christopher Edwin Willing: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "tryggare-kan-ingen-vara",
+      "number": "000207",
+      "reasons": [
+        "the page gives no year for the tune"
       ]
     }
   ],
@@ -1059,6 +1076,15 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "just-as-i-am-without-one-plea",
       "edits": 0
+    },
+    {
+      "number": "000202",
+      "name": "Cwm Rhondda",
+      "url": "https://www.ccel.org/cceh/0002/x000202.htm",
+      "ours": "cwm-rhondda",
+      "oursSource": "Open Hymnal Project ABC score (The Methodist Hymn Book, 1933); every note agrees with the score on Wikipedia's Cwm Rhondda article (printed there in 4/2 in A flat) and the opening with hymnary.org's incipit.",
+      "hymn": "guide-me-o-thou-great-jehovah",
+      "edits": 0
     }
   ],
   "refused": [
@@ -1283,6 +1309,48 @@
       "name": "Tabernacle (Landgrave)",
       "url": "https://www.ccel.org/cceh/0001/x000186.htm",
       "reason": "the page marks Phillip Landgrave's tune as copyright (“Phillip Landgrave, ©1968”)"
+    },
+    {
+      "number": "000191",
+      "name": "Assam",
+      "url": "https://www.ccel.org/cceh/0001/x000191.htm",
+      "reason": "the page marks William J. Reynolds's arrangement as copyright (“arr., William J. Reynolds, ©1959”)"
+    },
+    {
+      "number": "000192",
+      "name": "Lubbock",
+      "url": "https://www.ccel.org/cceh/0001/x000192.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1924”)"
+    },
+    {
+      "number": "000193",
+      "name": "Benson",
+      "url": "https://www.ccel.org/cceh/0001/x000193.htm",
+      "reason": "the page marks John T. Benson's tune as copyright (“John T. Benson, ©1967”)"
+    },
+    {
+      "number": "000194",
+      "name": "Stanphill",
+      "url": "https://www.ccel.org/cceh/0001/x000194.htm",
+      "reason": "the page marks Ira F. Stanphill's tune as copyright (“Ira F. Stanphill, ©1946”)"
+    },
+    {
+      "number": "000196",
+      "name": "Beach Spring",
+      "url": "https://www.ccel.org/cceh/0001/x000196.htm",
+      "reason": "the page marks Harm., James H. Wood's tune as copyright (“Harm., James H. Wood, ©1958”)"
+    },
+    {
+      "number": "000200",
+      "name": "Without Him",
+      "url": "https://www.ccel.org/cceh/0002/x000200.htm",
+      "reason": "the page marks Mylon R. LeFevre's tune as copyright (“Mylon R. LeFevre, ©1963”)"
+    },
+    {
+      "number": "000204",
+      "name": "Nyland",
+      "url": "https://www.ccel.org/cceh/0002/x000204.htm",
+      "reason": "the page marks David Evans's arrangement as copyright (“arr., David Evans, ©1927”)"
     }
   ],
   "rejected": [
@@ -1339,6 +1407,12 @@
       "name": "Born Again",
       "url": "https://www.ccel.org/cceh/0001/x000180.htm",
       "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 22)"
+    },
+    {
+      "number": "000197",
+      "name": "Arise",
+      "url": "https://www.ccel.org/cceh/0001/x000197.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 20)"
     }
   ],
   "sameNameDifferentTune": [],
@@ -1396,12 +1470,6 @@
       "earliestYear": 1876
     },
     {
-      "name": "Albert G. Methfessel",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1840
-    },
-    {
       "name": "Ann B. Spratt",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -1412,12 +1480,6 @@
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": 1875
-    },
-    {
-      "name": "Benjamin Carr",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1822
     },
     {
       "name": "C. R. Dunbar",
@@ -1432,12 +1494,6 @@
       "earliestYear": 1909
     },
     {
-      "name": "Charles Meineke",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1844
-    },
-    {
       "name": "Chester G. Allen",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -1448,6 +1504,12 @@
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": null
+    },
+    {
+      "name": "Christopher Edwin Willing",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1868
     },
     {
       "name": "David Evans",
@@ -1504,10 +1566,10 @@
       "earliestYear": 1920
     },
     {
-      "name": "Henri A. Cesar Malan",
+      "name": "Helem H. Lemmel",
       "tunes": 1,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1823
+      "earliestYear": 1922
     },
     {
       "name": "Henry Lahee",
@@ -1522,28 +1584,16 @@
       "earliestYear": 1851
     },
     {
-      "name": "Hugh Wilson",
+      "name": "Isham E. Reynolds",
       "tunes": 1,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1824
-    },
-    {
-      "name": "Ithamar Conkey",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1849
+      "earliestYear": 1920
     },
     {
       "name": "J. Edwin McConnell",
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": 1914
-    },
-    {
-      "name": "James Ellor",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1838
     },
     {
       "name": "James Nares",
@@ -1558,12 +1608,6 @@
       "earliestYear": 1860
     },
     {
-      "name": "Jeremiah Clarke",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1707
-    },
-    {
       "name": "Joel Blomquist",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -1574,12 +1618,6 @@
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": null
-    },
-    {
-      "name": "John Antes",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1790
     },
     {
       "name": "John Bernard Wilkes",
@@ -1630,58 +1668,22 @@
       "earliestYear": 1854
     },
     {
-      "name": "Ralph Harrison",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1784
-    },
-    {
-      "name": "Simeon B. Marsh",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1834
-    },
-    {
       "name": "tenor-lead arr., George Kirbye",
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": null
     },
     {
-      "name": "Thomas Augustine Arne",
+      "name": "W. E. Penn",
       "tunes": 1,
       "onlyForWantOfDates": 1,
-      "earliestYear": 1762
-    },
-    {
-      "name": "Thomas Este",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1592
-    },
-    {
-      "name": "William Crotch",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1836
+      "earliestYear": 1887
     },
     {
       "name": "William F. Sherman",
       "tunes": 1,
       "onlyForWantOfDates": 1,
       "earliestYear": 1877
-    },
-    {
-      "name": "William Knapp",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1738
-    },
-    {
-      "name": "William Shrubsole",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1779
     },
     {
       "name": "Winfred Douglas",
@@ -1709,13 +1711,13 @@
     }
   ],
   "counts": {
-    "published": 21,
-    "drafts": 71,
-    "duplicates": 51,
-    "refused": 37,
-    "rejected": 9,
-    "pages": 189,
-    "notYetCrawled": 1209,
+    "published": 35,
+    "drafts": 66,
+    "duplicates": 52,
+    "refused": 44,
+    "rejected": 10,
+    "pages": 207,
+    "notYetCrawled": 1191,
     "tunesInIndex": 1398
   }
 }
