@@ -1,0 +1,25 @@
+{
+  "title": "O God, Our Help in Ages Past",
+  "tune": "st-anne",
+  "text": [
+    {"name": "Isaac Watts", "born": 1674, "died": 1748, "role": "Words, a paraphrase of Psalm 90 (1719)"},
+    {"name": "John Wesley", "born": 1703, "died": 1791, "role": "Changed 'Our God' to 'O God' (1738)"}
+  ],
+  "textPublished": 1719,
+  "description": "O God, Our Help in Ages Past in Tonic Solfa to ST ANNE, doh is C: the solfa with the words, staff notation, six verses and a piano.",
+  "about": [
+    "Isaac Watts paraphrased Psalm 90 in The Psalms of David Imitated (1719), beginning 'Our God, our help'; John Wesley changed the first word to 'O' in 1738. The tune ST ANNE, by William Croft, organist at St Anne's Church, Soho, was first printed in 1708."
+  ],
+  "underlay": "O God, our help in a-ges past, Our hope for years to come, Our shel-ter from the storm-y blast, And our e-ter-nal home.",
+  "verses": [
+    {"lines": ["O God, our help in ages past,", "Our hope for years to come,", "Our shelter from the stormy blast,", "And our eternal home:"]},
+    {"lines": ["Under the shadow of Thy throne", "Thy saints have dwelt secure;", "Sufficient is Thine arm alone,", "And our defence is sure."]},
+    {"lines": ["Before the hills in order stood,", "Or earth received her frame,", "From everlasting Thou art God,", "To endless years the same."]},
+    {"lines": ["A thousand ages in Thy sight", "Are like an evening gone;", "Short as the watch that ends the night", "Before the rising sun."]},
+    {"lines": ["Time, like an ever-rolling stream,", "Bears all its sons away;", "They fly forgotten, as a dream", "Dies at the opening day."]},
+    {"lines": ["O God, our help in ages past,", "Our hope for years to come,", "Be Thou our guard while troubles last,", "And our eternal home."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

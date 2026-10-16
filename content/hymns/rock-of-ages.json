@@ -1,0 +1,23 @@
+{
+  "title": "Rock of Ages, Cleft for Me",
+  "shortTitle": "Rock of Ages",
+  "tune": "toplady",
+  "text": [
+    {"name": "Augustus Montague Toplady", "born": 1740, "died": 1778, "role": "Words (1776)"}
+  ],
+  "textPublished": 1776,
+  "description": "Rock of Ages, Cleft for Me in Tonic Solfa to TOPLADY: the solfa with the words, staff notation, all four verses and a piano.",
+  "about": [
+    "Augustus Toplady, an Anglican clergyman, published Rock of Ages in The Gospel Magazine in 1776. Thomas Hastings wrote the tune TOPLADY for it in 1830; in Britain the words are also sung to PETRA (Redhead)."
+  ],
+  "underlay": "Rock of A-ges, cleft for me, Let me hide my-self in Thee; Let the wa-ter and the blood, From Thy wound-ed side which flowed, Be of sin the dou-ble cure; Save from wrath and make me pure.",
+  "verses": [
+    {"lines": ["Rock of Ages, cleft for me,", "Let me hide myself in Thee;", "Let the water and the blood,", "From Thy wounded side which flowed,", "Be of sin the double cure;", "Save from wrath and make me pure."]},
+    {"lines": ["Not the labour of my hands", "Can fulfil Thy law’s demands;", "Could my zeal no respite know,", "Could my tears for ever flow,", "All for sin could not atone;", "Thou must save, and Thou alone."]},
+    {"lines": ["Nothing in my hand I bring,", "Simply to Thy cross I cling;", "Naked, come to Thee for dress;", "Helpless, look to Thee for grace;", "Foul, I to the fountain fly;", "Wash me, Saviour, or I die."]},
+    {"lines": ["While I draw this fleeting breath,", "When mine eyes shall close in death,", "When I soar to worlds unknown,", "See Thee on Thy judgment throne,", "Rock of Ages, cleft for me,", "Let me hide myself in Thee."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true
+}

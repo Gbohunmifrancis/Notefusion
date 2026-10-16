@@ -1,0 +1,23 @@
+{
+  "title": "Guide Me, O Thou Great Jehovah",
+  "tune": "cwm-rhondda",
+  "text": [
+    {"name": "William Williams", "born": 1717, "died": 1791, "role": "Welsh words (1745); English verses 2 and 3 (1772)"},
+    {"name": "Peter Williams", "born": 1723, "died": 1796, "role": "English translation of verse 1 (1771)"}
+  ],
+  "textPublished": 1771,
+  "description": "Guide Me, O Thou Great Jehovah in Tonic Solfa to CWM RHONDDA, doh is G: the solfa with the words, staff notation, three verses and a piano.",
+  "about": [
+    "William Williams of Pantycelyn, the great hymn writer of the Welsh revival, wrote the hymn in Welsh. Peter Williams translated the first verse into English in 1771, and William Williams himself wrote the English verses that follow.",
+    "The tune CWM RHONDDA was written by John Hughes in 1907 for a singing festival in Pontypridd, Wales; it is the tune most churches now sing these words to. The last line of every verse is sung twice."
+  ],
+  "underlay": "Guide me, O Thou great_ Je_-ho-vah, Pil-grim through this bar-ren land; I am weak, but Thou_ art_ might-y; Hold me with Thy_ pow’r-ful hand: Bread of heav-en, bread of heav-en, Feed me till I want no more; Feed me till_ I_ want no more.",
+  "verses": [
+    {"lines": ["Guide me, O Thou great Jehovah,", "Pilgrim through this barren land;", "I am weak, but Thou art mighty;", "Hold me with Thy powerful hand:", "Bread of heaven, bread of heaven,", "Feed me till I want no more;", "Feed me till I want no more."]},
+    {"lines": ["Open now the crystal fountain,", "Whence the healing stream doth flow;", "Let the fire and cloudy pillar", "Lead me all my journey through:", "Strong Deliverer, strong Deliverer,", "Be Thou still my strength and shield;", "Be Thou still my strength and shield."]},
+    {"lines": ["When I tread the verge of Jordan,", "Bid my anxious fears subside;", "Death of death, and hell’s destruction,", "Land me safe on Canaan’s side:", "Songs of praises, songs of praises,", "I will ever give to Thee;", "I will ever give to Thee."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

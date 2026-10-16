@@ -1,0 +1,24 @@
+{
+  "title": "All Hail the Power of Jesus’ Name",
+  "tune": "coronation",
+  "text": [
+    {"name": "Edward Perronet", "born": 1726, "died": 1792, "role": "Words (1779)"},
+    {"name": "John Rippon", "born": 1751, "died": 1836, "role": "Altered and added verses (1787)"}
+  ],
+  "textPublished": 1779,
+  "description": "All Hail the Power of Jesus’ Name in Tonic Solfa to CORONATION, doh is G: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "Edward Perronet, who worked with John and Charles Wesley, published the hymn in 1779 and 1780; John Rippon reworked it in his selection of 1787, and most books print a mix of the two. Oliver Holden, an American carpenter and singing teacher, published the tune CORONATION in 1793.",
+    "With CORONATION the last two lines of every verse are sung twice. In Britain the words are also sung to MILES LANE or DIADEM."
+  ],
+  "underlay": "All hail the pow’r of Je-sus’ name! Let an-gels pros-trate fall; Bring forth the roy-al di_-a_-dem, And crown Him Lord of_ all. Bring forth the roy-al di_-a_-dem, And crown Him Lord__ of all.",
+  "verses": [
+    {"lines": ["All hail the power of Jesus’ name!", "Let angels prostrate fall;", "Bring forth the royal diadem,", "And crown Him Lord of all."], "note": "With this tune the last two lines of every verse are sung twice."},
+    {"lines": ["Ye chosen seed of Israel’s race,", "Ye ransomed from the fall,", "Hail Him who saves you by His grace,", "And crown Him Lord of all."]},
+    {"lines": ["Let every kindred, every tribe,", "On this terrestrial ball,", "To Him all majesty ascribe,", "And crown Him Lord of all."]},
+    {"lines": ["O that with yonder sacred throng", "We at His feet may fall!", "We’ll join the everlasting song,", "And crown Him Lord of all."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}
