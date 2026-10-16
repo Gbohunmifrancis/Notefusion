@@ -7,6 +7,8 @@
 //   3. Pages the build writes: one <h1>, a <title>, a description of at most 160 characters, a
 //      canonical URL; every JSON-LD block and the hymn data parse as JSON; the MusicXML,
 //      sitemap.xml and feed.xml are well-formed XML; every sitemap URL exists.
+// The committed output is built from content/ alone (posts come from the API at deploy time); the deploy
+// runs `node check.mjs --deployed` on what `build.mjs --api` wrote, as warnings.
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -141,7 +143,20 @@ export function staleFiles(freshDir, siteDir) {
   return stale;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+/**
+ * `--deployed`: the deploy's check, after `build.mjs --api` has written the live posts into web-site/. The
+ * posts were checked by the API before they were published, so a problem here (a link to a post unpublished
+ * since) is a warning in the deploy log, never a failed deploy: the rest of the site still ships.
+ */
+function checkDeployed() {
+  const errors = checkSite(SITE_DIR);
+  for (const e of errors) console.log(`::warning::${e}`);
+  console.log(errors.length ? `${errors.length} problem${errors.length === 1 ? "" : "s"} in the built site (warnings above).` : "The built site's links, JSON-LD, sitemap and feed check out.");
+}
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href && process.argv.includes("--deployed")) {
+  checkDeployed();
+} else if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "nf-site-"));
   let failed = false;
   try {

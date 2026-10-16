@@ -1,5 +1,6 @@
-// Builds the real content into a throwaway copy of web-site/ and checks what search engines and
-// feed readers will see.
+// Builds the real content, with the posts as the API serves them (tests/fixtures/published.json, the two
+// launch posts in the shape of GET /api/blog/published), into a throwaway copy of web-site/ and checks what
+// search engines and feed readers will see — the deploy's build, without the network.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -12,17 +13,30 @@ import { handWrittenEntries } from "../lib/sitemap-feed.mjs";
 import { melodyToMusicXml } from "../lib/musicxml.mjs";
 import { parseMelody } from "../lib/solfa.mjs";
 
-let dir;
+const API = JSON.parse(fs.readFileSync(new URL("./fixtures/published.json", import.meta.url), "utf8"));
+
+let dir, offline;
 const read = (rel) => fs.readFileSync(path.join(dir, rel), "utf8");
 before(() => {
   dir = fs.mkdtempSync(path.join(os.tmpdir(), "nf-build-"));
   fs.cpSync(SITE_DIR, dir, { recursive: true });
-  writeSite({ siteDir: dir });
+  writeSite({ siteDir: dir, api: API });
+  offline = fs.mkdtempSync(path.join(os.tmpdir(), "nf-build-offline-"));
+  fs.cpSync(SITE_DIR, offline, { recursive: true });
+  writeSite({ siteDir: offline });
 });
-after(() => fs.rmSync(dir, { recursive: true, force: true }));
+after(() => {
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.rmSync(offline, { recursive: true, force: true });
+});
 
-test("the committed site is what the build writes (the CI staleness check)", () => {
-  assert.deepEqual(staleFiles(dir, SITE_DIR), []);
+test("the committed site is what the build writes from content/ alone (the CI staleness check)", () => {
+  assert.deepEqual(staleFiles(offline, SITE_DIR), []);
+  assert.ok(!fs.existsSync(path.join(SITE_DIR, "blog", "catalogue.json")), "the catalogue is written at deploy time only");
+});
+
+test("the build from content/ alone passes the checks too (no link to a post that only the API has)", () => {
+  assert.deepEqual(checkSite(offline), []);
 });
 
 test("the built site passes the link, SEO and JSON-LD checks", () => {
@@ -45,7 +59,7 @@ test("the feed is RSS 2.0 with one item per post, absolute links inside", () => 
   assert.equal(xmlError(xml), null);
   assert.match(xml, /<rss version="2.0"/);
   const items = [...xml.matchAll(/<item>/g)].length;
-  assert.equal(items, fs.readdirSync(path.join(dir, "blog")).filter((d) => !["tag", "author", "page", "feed.xml", "index.html"].includes(d)).length);
+  assert.equal(items, fs.readdirSync(path.join(dir, "blog")).filter((d) => !["tag", "author", "page", "feed.xml", "index.html", "catalogue.json"].includes(d)).length);
   assert.match(xml, /<pubDate>\w{3}, \d{2} \w{3} \d{4} 12:00:00 \+0000<\/pubDate>/);
   assert.ok(!/href="\/[^/]/.test(xml), "links in content:encoded are absolute");
 });

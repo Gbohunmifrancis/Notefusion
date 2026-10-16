@@ -1,15 +1,22 @@
 #!/usr/bin/env node
-// Builds the blog and hymn pages into web-site/ from content/:
+// Builds the blog and hymn pages into web-site/ from content/ and, with --api, from the API's posts:
 //   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time)
 //   web-site/sitemap.xml                  (blog and hymn entries rebuilt, hand-written ones kept)
 //   web-site/index.html                   (only the "Latest from the blog" block between its markers)
 //   web-site/<IndexNow key>.txt
-// The output is committed, so Vercel stays a plain static deploy and a pull request shows exactly
-// what will go live. `node check.mjs` fails CI when the committed output is stale.
+//   web-site/blog/catalogue.json          (--api only: hymns, pages and authors for the API's checks)
 //
-//   node tools/blog/build.mjs                 build into web-site/
-//   node tools/blog/build.mjs --site DIR      build into a copy of web-site/ (check.mjs does)
-//   node tools/blog/build.mjs --drafts        include draft posts and hymns (for a local preview only)
+// Blog posts live in the API's database and are written and published in the admin console. The deploy
+// workflow runs this with --api, so the posts are rendered at deploy time and never committed. Without
+// --api the build reads content/ alone (hymns, authors, and any post still kept as a file): that output is
+// what is committed, and `node check.mjs` fails CI when it is stale.
+//
+//   node tools/blog/build.mjs                       build content/ into web-site/ (what is committed)
+//   node tools/blog/build.mjs --api [URL]           also the live posts from URL (default $BLOG_API_URL,
+//                                                   else https://api.notefusion.studio); the deploy does this
+//   node tools/blog/build.mjs --api --api-wait 900  keep asking an API that is not answering for up to 900 s
+//   node tools/blog/build.mjs --site DIR            build into a copy of web-site/ (check.mjs does)
+//   node tools/blog/build.mjs --drafts              include draft posts and hymns (for a local preview only)
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -19,12 +26,28 @@ import { writeFile } from "./lib/util.mjs";
 import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, renderHomeStrip, blogPagePath, HOME_START, HOME_END } from "./lib/render-blog.mjs";
 import { prepareHymn, renderHymn, renderHymnIndex } from "./lib/render-hymns.mjs";
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
+import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
+import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
 
-/** Builds every page in memory: { files: Map(relativePath → content), summary }. */
-export function buildSite({ siteDir = SITE_DIR, includeDrafts = false } = {}) {
-  const { authors, hymns, posts } = loadAll({ includeDrafts });
+/** Newest first; a tie goes to the slug, so the order never depends on where a post came from. */
+function byDate(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug.localeCompare(b.slug); }
+
+/**
+ * Builds every page in memory: { files: Map(relativePath → content), summary }. `api` is the answer of
+ * GET /api/blog/published (or null for content/ alone): its posts join any kept in content/blog, and win
+ * on a slug or title they share.
+ */
+export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = null } = {}) {
+  const { authors, hymns, posts: filePosts } = loadAll({ includeDrafts });
   hymns.forEach(prepareHymn);
   const hymnsBySlug = new Map(hymns.map((h) => [h.slug, h]));
+  let posts = filePosts, skipped = [];
+  if (api) {
+    const fromApi = postsFromApi(api, { authors, hymnsBySlug });
+    skipped = fromApi.skipped;
+    const taken = new Set(fromApi.posts.flatMap((p) => [p.slug, "title:" + p.title.trim().toLowerCase()]));
+    posts = [...fromApi.posts, ...filePosts.filter((p) => !taken.has(p.slug) && !taken.has("title:" + p.title.trim().toLowerCase()))].sort(byDate);
+  }
   preparePosts(posts, { hymnsBySlug, authors });
 
   const files = new Map();
@@ -64,18 +87,19 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false } = {}) {
   files.set("index.html", home.slice(0, a) + renderHomeStrip(posts) + home.slice(b + HOME_END.length));
 
   files.set(`${INDEXNOW_KEY}.txt`, INDEXNOW_KEY + "\n");
-  return { files, summary: { posts: posts.length, hymns: hymns.length, tags: tags.length, pages: files.size } };
+  if (api) files.set("blog/catalogue.json", catalogueJson({ hymns, authors, pages: sitePages(siteDir, [...files.keys()]) }));
+  return { files, summary: { posts: posts.length, hymns: hymns.length, tags: tags.length, pages: files.size, skipped } };
 }
 
 /** Writes a build into `siteDir`, clearing the generated folders first so a deleted post disappears. */
-export function writeSite({ siteDir = SITE_DIR, includeDrafts = false } = {}) {
-  const { files, summary } = buildSite({ siteDir, includeDrafts });
+export function writeSite({ siteDir = SITE_DIR, includeDrafts = false, api = null } = {}) {
+  const { files, summary } = buildSite({ siteDir, includeDrafts, api });
   for (const dir of ["blog", "hymns"]) fs.rmSync(path.join(siteDir, dir), { recursive: true, force: true });
   for (const [rel, content] of files) writeFile(path.join(siteDir, rel), content);
   return summary;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+async function main() {
   const args = process.argv.slice(2);
   const i = args.indexOf("--site");
   const siteDir = i >= 0 ? path.resolve(args[i + 1]) : SITE_DIR;
@@ -84,11 +108,23 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     console.error("--drafts is for a local preview: build into a copy with --site DIR, never into web-site/ itself.");
     process.exit(2);
   }
+  const a = args.indexOf("--api");
+  const w = args.indexOf("--api-wait");
   try {
-    const s = writeSite({ siteDir, includeDrafts });
+    let api = null;
+    if (a >= 0) {
+      const next = args[a + 1];
+      const apiUrl = next && !next.startsWith("--") ? next : process.env.BLOG_API_URL || DEFAULT_API_URL;
+      api = await fetchPublished({ apiUrl, waitSeconds: w >= 0 ? Number(args[w + 1]) || 0 : 0, log: (m) => console.log(m) });
+      console.log(`Read ${api.posts.length} live post${api.posts.length === 1 ? "" : "s"} from ${apiUrl} (version ${api.version || "?"}).`);
+    }
+    const s = writeSite({ siteDir, includeDrafts, api });
+    for (const k of s.skipped) console.log(`::warning::Left out /blog/${k.slug}: ${k.reason.replace(/\n/g, " ")}`);
     console.log(`Built ${s.posts} posts, ${s.hymns} hymns and ${s.tags} tag pages (${s.pages} files) into ${path.relative(process.cwd(), siteDir) || "."}`);
   } catch (e) {
     console.error(`Build failed: ${e.message}`);
     process.exit(1);
   }
 }
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href) main();
