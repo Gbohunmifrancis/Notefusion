@@ -1,0 +1,38 @@
+{
+  "name": "QUEBEC",
+  "title": "Quebec",
+  "alsoKnownAs": [
+    "Hesperus",
+    "Elim",
+    "Venn",
+    "Whitburn"
+  ],
+  "music": [
+    {
+      "name": "Henry Baker",
+      "born": 1821,
+      "died": 1877,
+      "role": "Music (1866)"
+    }
+  ],
+  "musicPublished": 1866,
+  "metre": "8 8 8 8",
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "G4:1 G4:1 G4:1 | Bb4:2 Eb4:1 | F4:2 F4:1 | G4:3 | Bb4:1 Bb4:1 Bb4:1 | Ab4:2 F4:1 | G4:2 Ab4:1 | F4:3 | F4:1 F4:1 F4:1 | F4:2 F4:1 | A4:2 F4:1 | Bb4:3 | G4:1 G4:1 G4:1 | G4:1 F4:1 Eb4:1 | Eb4:2 D4:1 | Eb4:3",
+  "incipit": "mmmsdrrm|sssfsmfr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000072.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000072a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000072; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000072 (the melody read from 000072a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Henry Baker's dates (1821–1877) are from our page for the tune HOLY MATRIMONY (content/hymns/tunes/holy-matrimony.json); CCEH's page gives only the year 1866. The bar lines are those of CCEH's Noteworthy score (000072a.nwc).",
+  "importedFrom": "cceh:000072",
+  "updated": "2026-10-16"
+}

@@ -8,20 +8,22 @@ import path from "node:path";
 import { loadAll } from "../lib/content.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 import { hymnIndexJson, loadIncipits, HYMN_INDEX_PATH } from "../lib/hymn-index.mjs";
+import { buildSite } from "../build.mjs";
 
 const { hymns, allHymns } = loadAll();
 hymns.forEach(prepareHymn);
-const index = JSON.parse(hymnIndexJson(hymns));
+const built = buildSite().hymnIndex;
+const index = JSON.parse(built);
 
 test("the committed index is what the build writes (the CI staleness check covers it too)", () => {
-  assert.equal(fs.readFileSync(HYMN_INDEX_PATH, "utf8"), hymnIndexJson(hymns));
+  assert.equal(fs.readFileSync(HYMN_INDEX_PATH, "utf8"), built);
 });
 
 test("every published hymn is a score entry, and no draft is", () => {
   const slugs = new Set(index.entries.map((e) => e.slug));
   for (const h of hymns) assert.ok(slugs.has(h.slug), h.slug);
   for (const h of allHymns.filter((x) => x.draft)) assert.ok(!slugs.has(h.slug), `draft ${h.slug} is in the index`);
-  assert.equal(index.entries.filter((e) => e.kind === "score").length, hymns.length);
+  assert.equal(index.entries.filter((e) => e.kind === "score" && !e.slug.startsWith("tune-")).length, hymns.length);
 });
 
 test("every entry says where it came from, under what licence, with the credit line its page shows", () => {
@@ -41,10 +43,28 @@ test("a score entry carries the tune exactly: notes, key, time, pickup and the f
   // D4 on beat 2 (the pickup at the end of the first bar), then G4 held two beats on the bar line.
   assert.deepEqual(ag.notes.slice(0, 3), [[62, 2, 1], [67, 3, 2], [71, 5, 0.5]]);
   assert.match(ag.lyrics, /^A-maz-ing/);
-  for (const e of index.entries.filter((x) => x.kind === "score")) {
+  for (const e of index.entries.filter((x) => x.kind === "score" && !x.slug.startsWith("tune-"))) {
     const h = hymns.find((x) => x.slug === e.slug);
     assert.equal(e.notes.length, h.tuneData.parsed.notes.length, e.slug);
   }
+});
+
+test("published tune pages (tunes without words) are score entries too, credited to their source, never drafts", () => {
+  const tunes = index.entries.filter((e) => e.slug.startsWith("tune-"));
+  assert.ok(tunes.length > 0, "the imported tunes reach the worker's index");
+  for (const e of tunes) {
+    assert.equal(e.kind, "score");
+    assert.match(e.url, /^https:\/\/notefusion\.studio\/hymns\/tunes\//);
+    assert.equal(e.lyrics, "");
+    assert.ok(e.notes.length >= 8, e.slug);
+  }
+  const dir = path.join(import.meta.dirname, "..", "..", "..", "content", "hymns", "tunes");
+  const drafts = fs.readdirSync(dir).filter((f) => f.endsWith(".json"))
+    .filter((f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")).draft === true)
+    .map((f) => "tune-" + f.replace(/\.json$/, ""));
+  const slugs = new Set(tunes.map((e) => e.slug));
+  assert.ok(drafts.length > 0);
+  for (const d of drafts) assert.ok(!slugs.has(d), `draft ${d} is in the index`);
 });
 
 test("recognition-only incipits load from their own folder and need a source, a link and eight notes", () => {

@@ -1,0 +1,31 @@
+{
+  "name": "DIADEM",
+  "title": "Diadem",
+  "music": [
+    {
+      "name": "James Ellor",
+      "activeBy": 1838,
+      "role": "Music (1838)"
+    }
+  ],
+  "musicPublished": 1838,
+  "metre": "8 6 8 6 + i",
+  "key": "Bb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F4:1 | Bb4:2 C5:1 | D5:.75 Eb5:.25 F5:1 Bb4:1 | C5:1 Bb4:1 A4:1 | Bb4:2 A4:.5 G4:.5 | F4:1.5 F4:.5 G4:.5 G4:.5 | F4:1 Bb4:1 Bb4:1 | G4:1 Eb5:1 Eb5:1 | D5:2 C5:1 | Bb4:2 Bb4:.5 C5:.5 | D5:2 D5:1 | D5:1 C5:1 Bb4:1 | C5:1 Bb4:1 A4:1 | Bb4:.75 C5:.25 D5:1 F5:1 | Eb5:1.5 D5:.5 C5:.5 Eb5:.5 | D5:1.5 C5:.5 Bb4:.5 D5:.5 | C5:1.5 Bb4:.5 A4:.5 C5:.5 | Bb4:1 Bb4:1 Eb4:.5 D4:.5 | Eb5:1 Eb5:1 Eb4:.5 D4:.5 | C5:1 C5:1 r:1 | D5:1 D5:1 F5:1 | Bb4:.75 C5:.25 D5:1 Eb5:1 | D5:2 C5:1 | Bb4:2",
+  "incipit": "sdrmfsdrdtd|tlssllsd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000041.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000041a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000041; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000041 (the melody read from 000041a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. James Ellor has no death year on CCEH's page or ours; their work is dated 1838, before 1850, so they died before 1955 (they would have been over 105). The bar lines are those of CCEH's Noteworthy score (000041a.nwc).",
+  "importedFrom": "cceh:000041",
+  "updated": "2026-10-16"
+}

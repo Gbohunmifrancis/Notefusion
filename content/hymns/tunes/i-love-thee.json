@@ -1,0 +1,36 @@
+{
+  "name": "I LOVE THEE",
+  "title": "I Love Thee",
+  "music": [
+    {
+      "name": "Anon.",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Christian Harmony (published by Jeremiah Ingalls)",
+      "traditional": true,
+      "role": "Melody (1805)"
+    }
+  ],
+  "musicPublished": 1805,
+  "metre": "11 11 11 11",
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "Bb3:1 | Eb4:1 Eb4:1 G4:1 | Bb4:1 Bb4:1 C5:.5 Bb4:.5 | G4:1 Eb4:1 F4:1 | G4:2 Bb3:1 | Eb4:1 Eb4:1 G4:1 | Bb4:1 Bb4:1 C5:.5 Bb4:.5 | G4:1 Eb4:1 F4:1 | Eb4:2 Bb4:1 | Bb4:1 G4:1 Bb4:1 | Eb5:1 C5:1 C5:1 | Bb4:1 G4:1 Eb4:1 | Bb4:2 Bb3:1 | Eb4:1 Eb4:1 G4:1 | Bb4:1 Bb4:1 C5:.5 Bb4:.5 | G4:1 Eb4:1 F4:1 | Eb4:2",
+  "incipit": "sddmsslsmdrm|sddmsslsmdrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000075.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000075a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000075; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000075 (the melody read from 000075a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000075a.nwc).",
+  "importedFrom": "cceh:000075",
+  "updated": "2026-10-16"
+}

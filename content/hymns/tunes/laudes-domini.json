@@ -1,0 +1,32 @@
+{
+  "name": "LAUDES DOMINI",
+  "title": "Laudes Domini",
+  "music": [
+    {
+      "name": "Joseph Barnby",
+      "born": 1838,
+      "died": 1896,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1868,
+  "metre": "6 6 6 6 6 6",
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | Eb4:1 F4:1 G4:1 Bb4:1 | A4:2 G4:1 F4:1 | G4:1 A4:1 Bb4:1 D5:1 | C5:3 Bb4:1 | A4:1 Bb4:1 G4:1.5 F4:.5 | F4:3 F4:1 | F4:1 Bb4:1 A4:1 Bb4:1 | F4:3 F4:1 | F4:1 Bb4:1 A4:1 Bb4:1 | F4:3 F4:1 | F4:2 Bb4:2 | Bb4:2 C5:2 | Bb4:3",
+  "incipit": "mfsldtl|sltdmr|dtdlss",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000044.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000044a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000044; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000044 (the melody read from 000044a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Joseph Barnby's dates (1838–1896) are from our page for the tune GALILEAN (content/hymns/tunes/galilean.json); CCEH's page gives only the year 1868. The bar lines are those of CCEH's Noteworthy score (000044a.nwc).",
+  "importedFrom": "cceh:000044",
+  "updated": "2026-10-16"
+}

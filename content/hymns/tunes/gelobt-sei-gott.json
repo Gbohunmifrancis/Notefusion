@@ -1,0 +1,35 @@
+{
+  "name": "GELOBT SEI GOTT",
+  "title": "Gelobt Sei Gott",
+  "alsoKnownAs": [
+    "Vulpius"
+  ],
+  "music": [
+    {
+      "name": "Melchior Vulpius",
+      "born": 1560,
+      "died": 1615,
+      "role": "Music (1609)"
+    }
+  ],
+  "musicPublished": 1609,
+  "metre": "8 8 8 + 4 4 4",
+  "key": "C major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "C5:1 B4:1 A4:1 | G4:2 G4:1 | A4:2 B4:1 | C5:3 | C5:1 C5:1 D5:1 | G4:2 C5:1 | B4:1 A4:2 | G4:3 | G4:1 E4:1 A4:1 | G4:2 F4:1 | E4:1 D4:2 | C4:3 | C5:1 C5:1 B4:1 | C5:1.5 B4:.5 A4:1 | G4:1 G4:1 F#4:1 | G4:1.5 F4:.5 E4:1 | D4:1 C4:1 B3:1 | C4:3",
+  "incipit": "dtlssltd|ddrsdtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000123.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000123a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000123; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000123 (the melody read from 000123a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Melchior Vulpius's dates (1560–1615) are from our page for the tune CHRISTUS DER IST MEIN LEBEN (content/hymns/tunes/christus-der-ist-mein-leben.json); CCEH's page gives only the year 1609. The bar lines are those of CCEH's Noteworthy score (000123a.nwc).",
+  "importedFrom": "cceh:000123",
+  "updated": "2026-10-16"
+}

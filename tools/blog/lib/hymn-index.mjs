@@ -16,6 +16,7 @@ import path from "node:path";
 import { ORIGIN, REPO_ROOT, CONTENT_DIR } from "./site.mjs";
 import { parsePitch } from "./solfa.mjs";
 import { creditLine, OHP } from "./render-hymns.mjs";
+import { tuneMatcherEntry } from "./render-tunes.mjs";
 
 export const HYMN_INDEX_PATH = path.join(REPO_ROOT, "server", "app", "data", "hymn_index.json");
 export const INCIPITS_DIR = path.join(CONTENT_DIR, "hymns", "incipits");
@@ -76,12 +77,12 @@ export function loadIncipits(dir = INCIPITS_DIR) {
 }
 
 /** The index as committed: one entry a line, sorted by slug, so a change to one hymn is a one-line diff. */
-export function hymnIndexJson(hymns, incipits = loadIncipits()) {
-  const entries = [...hymns.filter((h) => !h.draft).map(scoreEntry), ...incipits].sort((a, b) => a.slug.localeCompare(b.slug));
+export function hymnIndexJson(hymns, incipits = loadIncipits(), tunes = []) {
+  const entries = [...hymns.filter((h) => !h.draft).map(scoreEntry), ...tunes.map(tuneMatcherEntry), ...incipits].sort((a, b) => a.slug.localeCompare(b.slug));
   const slugs = new Set();
   for (const e of entries) {
     if (slugs.has(e.slug)) throw new Error(`hymn index: two entries are called "${e.slug}"`);
     slugs.add(e.slug);
   }
-  return `{"version": 1, "generatedBy": "tools/blog/build.mjs from content/hymns (published hymns only); do not edit by hand",\n"entries": [\n${entries.map((e) => JSON.stringify(e)).join(",\n")}\n]}\n`;
+  return `{"version": 1, "generatedBy": "tools/blog/build.mjs from content/hymns (published hymns and tune pages only); do not edit by hand",\n"entries": [\n${entries.map((e) => JSON.stringify(e)).join(",\n")}\n]}\n`;
 }

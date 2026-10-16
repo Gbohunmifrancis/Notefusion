@@ -1,0 +1,32 @@
+{
+  "name": "ONCE FOR ALL",
+  "title": "Once for All",
+  "music": [
+    {
+      "name": "Philip P. Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "10 10 9 8 + 9 9 9 8",
+  "key": "Eb major",
+  "time": "9/8",
+  "tempo": 96,
+  "pickup": 1.5,
+  "lineBars": 2,
+  "melody": "Eb4:.5 G4:.5 C5:.5 | Bb4:1.5 G4:1.5 G4:.5 F4:.5 Eb4:.5 | G4:1.5 F4:1.5 F4:.5 E4:.5 F4:.5 | Ab4:1.5 C5:1.5 C5:.5 Bb4:.5 Ab4:.5 | Ab4:1.5 G4:1.5 Eb4:.5 G4:.5 Bb4:.5 | Eb5:1.5 Bb4:1.5 Bb4:.5 Ab4:.5 G4:.5 | C5:3 C5:.5 Ab4:.5 C5:.5 | Bb4:1.5 G4:1.5 G4:1 F4:.5 | Eb4:3 Bb4:.5 C5:.5 D5:.5 | Eb5:1.5 Eb5:1.5 Eb5:.5 D5:.5 C5:.5 | C5:1.5 Bb4:1.5 Bb4:.5 C5:.5 D5:.5 | Eb5:1.5 Eb5:1.5 Eb5:.5 D5:.5 C5:.5 | C5:1.5 Bb4:1.5 Eb4:.5 G4:.5 C5:.5 | Bb4:1.5 G4:1.5 G4:.5 F4:.5 Eb4:.5 | C5:3 C5:.5 Ab4:.5 C5:.5 | Bb4:1.5 G4:1.5 G4:1 F4:.5 | Eb4:3",
+  "incipit": "dmlsmmrdmr|rdrfllsffm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000168.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000168a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000168; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000168 (the melody read from 000168a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Philip P. Bliss's dates (1838–1876) are from our page for the tune BLANDY (content/hymns/tunes/blandy.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000168a.nwc).",
+  "importedFrom": "cceh:000168",
+  "updated": "2026-10-16"
+}

@@ -94,6 +94,13 @@ export function loadPosts({ authors, hymnSlugs, dir = path.join(CONTENT_DIR, "bl
 export const PD_DIED_BEFORE = 1955, PD_PUBLISHED_BEFORE = 1929;
 
 /**
+ * Someone with no known death year whose work was in print before 1850 is taken to have died before 1955:
+ * they would have been over 105. Recorded as "activeBy" (the earliest year a source credits them with), never
+ * as a made-up death year. The founder's rule for imported tunes (2026-10-16).
+ */
+export const PD_ACTIVE_BEFORE = 1850;
+
+/**
  * Why a hymn is not (provably) in the public domain, as a list of reasons; empty when it is. Everyone
  * named (composer, arranger, author, translator) must have a death year before 1955 — or be an
  * anonymous or traditional source ("traditional": true) — and the words and the music must have been
@@ -104,11 +111,21 @@ export function publicDomainProblems({ text = [], music = [], textPublished, mus
   const out = [];
   for (const p of [...text, ...music]) {
     if (!p || p.traditional) continue;
-    if (!(Number.isInteger(p.died) && p.died < PD_DIED_BEFORE)) out.push(`${p.name}: public domain needs a death year before ${PD_DIED_BEFORE} (or "traditional": true for an anonymous source)`);
+    const died = Number.isInteger(p.died) && p.died < PD_DIED_BEFORE;
+    const activeEarly = !Number.isInteger(p.died) && Number.isInteger(p.activeBy) && p.activeBy < PD_ACTIVE_BEFORE;
+    if (!died && !activeEarly) out.push(`${p.name}: public domain needs a death year before ${PD_DIED_BEFORE}, work in print before ${PD_ACTIVE_BEFORE} ("activeBy"), or "traditional": true for an anonymous source`);
   }
   if (!(Number.isInteger(textPublished) && textPublished < PD_PUBLISHED_BEFORE)) out.push(`"textPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
   if (!(Number.isInteger(musicPublished) && musicPublished < PD_PUBLISHED_BEFORE)) out.push(`"musicPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
   return out;
+}
+
+/**
+ * The same test for a tune on its own (a tune page, with no words): everyone named in its music died
+ * before 1955 (or is an anonymous or traditional source), and it was first published before 1929.
+ */
+export function tunePublicDomainProblems({ music = [], musicPublished }) {
+  return publicDomainProblems({ music, musicPublished, textPublished: 0 });
 }
 
 function checkNames(file, people, what) {
@@ -144,6 +161,18 @@ export function loadTunes(dir = path.join(CONTENT_DIR, "hymns", "tunes")) {
       if (!(t.tempo > 0)) fail(file, `"tempo" (crotchets a minute) is required`);
       try { t.parsed = parseMelody(t.melody, { time: t.time, pickup: t.pickup || 0 }); }
       catch (e) { fail(file, `melody: ${e.message}`); }
+    }
+    // A tune with "draft" is a tune page of its own (/hymns/tunes/<slug>: a tune without words, e.g. from
+    // CCEH); "draft": false publishes it, which needs its melody and the public-domain test for its music.
+    if (t.draft != null) {
+      if (typeof t.draft !== "boolean" || typeof t.reviewed !== "boolean") fail(file, `"draft" and "reviewed" must be true or false`);
+      if (!isIsoDate(t.updated)) fail(file, `"updated" must be YYYY-MM-DD`);
+      if (t.alsoKnownAs != null && (!Array.isArray(t.alsoKnownAs) || t.alsoKnownAs.some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"alsoKnownAs" must be a list of text`);
+      if (!t.draft) {
+        if (!t.parsed) fail(file, `a published tune page needs its melody; keep it a draft until it has one`);
+        const pd = tunePublicDomainProblems(t);
+        if (pd.length) fail(file, pd[0]);
+      }
     }
     tunes[t.slug] = t;
   }

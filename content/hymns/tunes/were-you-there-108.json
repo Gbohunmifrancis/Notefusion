@@ -1,0 +1,39 @@
+{
+  "name": "WERE YOU THERE",
+  "title": "Were You There",
+  "music": [
+    {
+      "name": "Negro Spiritual",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "John W. Work, Jr.",
+      "role": "Music (1907)"
+    },
+    {
+      "name": "Frederick J. Work",
+      "role": "Music (1907)"
+    }
+  ],
+  "musicPublished": 1907,
+  "metre": "Irregular",
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Bb3:1 Eb4:1 | G4:2 G4:1 G4:1 | F4:1 Eb4:1 G4:1.5 F4:.5 | Eb4:4~ | Eb4:2 Eb4:1 G4:1 | Bb4:2 Bb4:1 Bb4:1 | C5:1 Bb4:1 Bb4:1.5 G4:.5 | F4:4 | Bb4:2 Eb5:1.5 C5:.5 | Bb4:4 | C5:1 Bb4:2 G4:1 | G4:1.5 F4:.5 Eb4:1 Eb4:1 | F4:1 Eb4:2 r:1 | Eb4:1 Eb4:2 r:1 | C4:1 Bb3:3~ | Bb3:2 Eb4:1 Ab4:1 | G4:2 G4:1 G4:1 | F4:1 Eb4:1 G4:1.5 F4:.5 | Eb4:4~ | Eb4:2",
+  "incipit": "sdmmmrdmrd|dmssslssmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000108.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000108a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000108; public domain.",
+  "reviewNotes": "Held back: not provably public domain: John W. Work, Jr.: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; not provably public domain: Frederick J. Work: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000108 (the melody read from 000108a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000108a.nwc).",
+  "importedFrom": "cceh:000108",
+  "updated": "2026-10-16"
+}
