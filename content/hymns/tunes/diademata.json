@@ -13,5 +13,5 @@
   "reviewed": false,
   "confidence": "high; see the note on bars 6 and 11",
   "source": "Open Hymnal Project ABC score (Appendix to Hymns Ancient and Modern, 1869); the opening agrees with hymnary.org's incipit.",
-  "reviewNotes": "High. The tune turns towards A major twice: G sharp on 'an-' (bar 6) and on 'who' (bar 11). Solfa books print it 'fe' (or change key); the engine names it by direction and prints 'sa' — same pitch."
+  "reviewNotes": "High. The tune turns towards A major twice: G sharp on 'an-' (bar 6) and on 'who' (bar 11). Some books change key there instead of printing 'fe'."
 }

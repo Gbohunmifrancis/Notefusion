@@ -13,5 +13,5 @@
   "reviewed": false,
   "confidence": "high",
   "source": "Open Hymnal Project ABC score (The Lutheran Hymnary, 1913); the opening agrees with hymnary.org's incipit.",
-  "reviewNotes": "High: the even-crotchet form most books print. The F sharp on 'to' in 'years to come' is 'fe' in solfa books; the engine names it by direction ('sa')."
+  "reviewNotes": "High: the even-crotchet form most books print."
 }

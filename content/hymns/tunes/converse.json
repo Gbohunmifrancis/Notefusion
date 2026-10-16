@@ -13,5 +13,5 @@
   "reviewed": false,
   "confidence": "high; see the note on bar 9",
   "source": "Open Hymnal Project ABC score (Presbyterian Book of Hymns and Tunes, 1874); the opening agrees with hymnary.org's incipit.",
-  "reviewNotes": "High for the notes and rhythm. Bar 9 ('O what peace'): the F sharp after G is a chromatic lower neighbour that tonic solfa books print as 'de' (r de r); the engine names a note by the direction it is approached from, so it prints 'ra'. Same pitch, different spelling: decide whether that is acceptable or change the engine."
+  "reviewNotes": "High for the notes and rhythm."
 }

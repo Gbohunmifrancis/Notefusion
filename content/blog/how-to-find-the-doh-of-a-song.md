@@ -9,7 +9,7 @@ keyword: how to find the doh of a song
 hymns: [amazing-grace, silent-night]
 faq:
   - q: "Is doh always the first note of a song?"
-    a: "No. Many songs start somewhere else: Amazing Grace starts on s, (the soh below doh) and Silent Night starts on s, too. Find doh first, then work out the starting note from it."
+    a: "No. Many songs start somewhere else: Amazing Grace starts on s, (the soh below doh) and Silent Night on s (the soh above it). Find doh first, then work out the starting note from it."
   - q: "Is doh always the last note?"
     a: "In most hymns and songs in a major key, yes — the last note is doh. In a minor key the last note is usually lah, and doh is three semitones (a minor third) above it. A few songs end elsewhere, so check by singing the first phrase from your doh."
   - q: "What is the doh of a song in A minor?"
@@ -89,7 +89,7 @@ hymn: silent-night
 bars: 1-2
 ```
 
-The doh is Bb, but the song starts on s, — the soh below doh. Amazing Grace does the same. [Joyful, Joyful](/hymns/joyful-joyful-we-adore-thee) starts on m. So find doh first, then work out the starting note from it, and give your choir the doh *and* the first note before you begin.
+The doh is Bb, but the song starts on s — the soh above doh. Amazing Grace starts on soh too, the one below doh (s,). [Joyful, Joyful](/hymns/joyful-joyful-we-adore-thee) starts on m. So find doh first, then work out the starting note from it, and give your choir the doh *and* the first note before you begin.
 
 ## Moving the doh for your choir
 
