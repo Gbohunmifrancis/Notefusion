@@ -1,0 +1,17 @@
+{
+  "name": "CRIMOND",
+  "music": [
+    {"name": "Jessie Seymour Irvine", "born": 1836, "died": 1887, "role": "Melody (1872)"}
+  ],
+  "musicPublished": 1872,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "not encoded",
+  "source": "hymnary.org incipit only (5 3 4 2 5 4 2 1 7 1 3 3 2 2 4).",
+  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: no full score of CRIMOND was available (the Open Hymnal sets these words to a different tune, BROTHER JAMES' AIR), and the rhythm could not be checked."
+}

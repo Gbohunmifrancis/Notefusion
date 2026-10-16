@@ -14,13 +14,14 @@ import pytest
 
 from app.jobs.queue import (PRIORITY_HIGH, STAGE_QUEUED, STAGE_TRANSCRIBING, STATUS_DONE, STATUS_FAILED,
                             STATUS_PROCESSING, JobQueue)
-from app.pipeline.transcriber import LowConfidenceError, TranscriptionResult
+from app.pipeline.transcriber import LowConfidenceError, TranscribedNote, TranscriptionResult
 
 
-def _result() -> TranscriptionResult:
+def _result(n_notes: int = 0) -> TranscriptionResult:
     return TranscriptionResult(
         key="C", key_confidence=1.0, tempo=120, time_signature="4/4",
-        musicxml="<score/>", midi_base64="bWk=", notes=[],
+        musicxml="<score/>", midi_base64="bWk=",
+        notes=[TranscribedNote(60, float(i), 1.0, 1, "d", "", 1.0) for i in range(n_notes)],
         solfa_lines=[], overall_confidence=1.0)
 
 
@@ -267,7 +268,7 @@ def _fake_separation(monkeypatch, peaks: float, voice_db: float) -> list:
     monkeypatch.setattr(separate, "separate_file", fake_separate_file)
     monkeypatch.setattr("app.jobs.queue._encode_backing", lambda path: "")
     monkeypatch.setattr("app.jobs.queue.transcribe",
-                        lambda path, **kw: calls.append((Path(path).name, kw.get("tempo_source"))) or _result())
+                        lambda path, **kw: calls.append((Path(path).name, kw.get("tempo_source"))) or _result(8))
     return calls
 
 
@@ -315,16 +316,61 @@ def test_a_band_with_no_voice_in_it_is_transcribed_as_the_mixture(monkeypatch):
         queue.shutdown(wait=True)
 
 
-def test_an_explicit_song_upload_keeps_its_stem_however_quiet(monkeypatch):
-    """separate=true is the user's call: the voice check only guards the automatic path."""
-    calls = _fake_separation(monkeypatch, peaks=0.0, voice_db=-40.0)
+@pytest.mark.parametrize("voice_db, isolated", [(-3.0, True), (-40.0, False)])
+def test_an_explicit_song_upload_keeps_its_stem_only_when_a_voice_is_in_it(monkeypatch, voice_db, isolated):
+    """separate=true ("a song with instruments") on instruments recorded alone: the stem is
+    empty and used to come back as one or two notes, so the mixture is transcribed instead."""
+    calls = _fake_separation(monkeypatch, peaks=0.0, voice_db=voice_db)
     queue = JobQueue(workers=1)
     try:
         audio = _temp_audio()
         job = _await_status(queue, queue.submit(audio, mode="melody", key=None, tempo=None, separate=True),
                             STATUS_DONE)
-        assert calls == [("vocals.wav", audio)]
-        assert job.result.separated is True
+        assert calls == ([("vocals.wav", audio)] if isolated else [(audio.name, None)])
+        assert job.result.separated is isolated
+    finally:
+        queue.shutdown(wait=True)
+
+
+@pytest.mark.parametrize("voice_db, fast", [(-3.0, True), (-40.0, False)])
+def test_the_pro_lane_keeps_the_mixture_guard_when_the_mixture_is_transcribed(monkeypatch, voice_db, fast):
+    """The fast lane skips Basic Pitch and with it the melody floor; on a mixture with chords
+    in it that wrote the bass line, so a mixture is always read on the normal lane."""
+    _fake_separation(monkeypatch, peaks=7.5, voice_db=voice_db)
+    seen = []
+    monkeypatch.setattr("app.jobs.queue.transcribe", lambda path, **kw: seen.append(kw["fast"]) or _result(8))
+    queue = JobQueue(workers=1)
+    try:
+        _await_status(queue, queue.submit(_temp_audio(), mode="melody", key=None, tempo=None,
+                                          priority=PRIORITY_HIGH), STATUS_DONE)
+        assert seen == [fast]
+    finally:
+        queue.shutdown(wait=True)
+
+
+@pytest.mark.parametrize("stem_notes, mix_notes, kept", [(1, 14, "mix"), (1, 0, "stem"), (8, 14, "stem")])
+def test_a_stem_with_no_tune_in_it_gives_way_to_the_mixture(monkeypatch, stem_notes, mix_notes, kept):
+    """A strummed chord the separator took for a voice passes the voice check, and the stem
+    then gives a note or two: the mixture is read as well and the sheet with more notes kept."""
+    _fake_separation(monkeypatch, peaks=7.5, voice_db=-3.0)
+    calls = []
+
+    def fake_transcribe(path, **kw):
+        calls.append(Path(path).name)
+        n = stem_notes if Path(path).name == "vocals.wav" else mix_notes
+        if n == 0:
+            raise LowConfidenceError("nothing")
+        return _result(n)
+
+    monkeypatch.setattr("app.jobs.queue.transcribe", fake_transcribe)
+    queue = JobQueue(workers=1)
+    try:
+        audio = _temp_audio()
+        job = _await_status(queue, queue.submit(audio, mode="melody", key=None, tempo=None, separate=True),
+                            STATUS_DONE)
+        assert calls == (["vocals.wav"] if stem_notes >= 4 else ["vocals.wav", audio.name])
+        assert job.result.separated is (kept == "stem")
+        assert len(job.result.notes) == (stem_notes if kept == "stem" else mix_notes)
     finally:
         queue.shutdown(wait=True)
 

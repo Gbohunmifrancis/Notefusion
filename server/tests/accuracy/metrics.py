@@ -494,8 +494,8 @@ def _match_by_pitch_then_time(
 
 # The five semitones above doh that fall outside the diatonic scale, so a note on one of
 # them is written with an accidental: indices 1, 3, 6, 8 and 10 — de/re/fe/se/le rising,
-# ra/ma/sa/la/ta falling.  Which of the two a note gets is a function of melodic
-# direction (``solfa.ascending_flags``), not of the note, so the ground truth below has
+# ra/ma/sa/la/ta falling.  Which of the two a note gets is a function of where the
+# melody goes next (``solfa.ascending_flags``), not of the note alone, so the ground truth below has
 # to derive it the same way the pipeline does; the two tables are identical on the seven
 # diatonic degrees, so nothing outside this set can be affected either way.
 CHROMATIC_SEMITONES = frozenset({1, 3, 6, 8, 10})
@@ -580,11 +580,11 @@ def solfa_metrics(
         doh_pc = solfa.doh_pitch_class(key_obj.tonic.pitchClass, key_obj.mode)
         # reference_doh takes the median of the whole list, so it must never be handed
         # an empty one: np.median([]) is nan and every comparison in it silently fails.
-        ref_doh = solfa.reference_doh([r.pitch_midi for r in ref], doh_pc)
+        ref_doh = solfa.reference_doh([r.pitch_midi for r in ref], doh_pc, key_obj.mode)
         # Same pitch class, estimated pitch list: this is the anchor the pipeline's own
         # marks are relative to, and the only thing that differs is the median.  Both
         # sides use the reference doh pitch class so a key error cannot leak in here.
-        est_doh = solfa.reference_doh([n.pitch_midi for n in est], doh_pc)
+        est_doh = solfa.reference_doh([n.pitch_midi for n in est], doh_pc, key_obj.mode)
     except (ValueError, AttributeError, IndexError):
         return zeros
 
@@ -623,16 +623,16 @@ def solfa_metrics(
         return {**zeros, "anchor_matches_reference": est_doh == ref_doh, **chromatic}
 
     degree_hits = syllable_hits = octave_misses = 0
-    # Chromatic spelling is a function of melodic direction, so ground truth needs the
-    # direction of the *reference* melody — the only non-circular choice, since deriving
-    # it from the estimate would make the spelling agree by construction.  The
+    # Chromatic spelling is a function of where the melody goes next, so ground truth
+    # needs the *reference* melody's next notes — the only non-circular choice, since
+    # deriving it from the estimate would make the spelling agree by construction.  The
     # consequence is stated rather than hidden: if the pipeline drops a note, the
-    # surviving neighbour can arrive from a different pitch than it does in the
+    # surviving neighbour can move on to a different pitch than it does in the
     # reference, and a chromatic note there is then spelled from the other table and
     # scored wrong.  That is the same conflation ``degree_accuracy`` already makes for a
     # mis-detected key — the syllable the user sees is wrong for the music, and the
     # detection failure is what made it wrong.  Bounded to chromatic notes only.
-    ref_spelling = solfa.ascending_flags([r.pitch_midi for r in ref])
+    ref_spelling = solfa.ascending_flags([r.pitch_midi for r in ref], doh_pc)
     for ref_idx, est_idx in pairs:
         gt_syllable, gt_mark, gt_degree = solfa.syllable(
             ref[ref_idx].pitch_midi, doh_pc, ref_doh, ref_spelling[ref_idx]
@@ -766,10 +766,10 @@ def sequence_metrics(ref: Sequence[RefNote], est: Sequence[TranscribedNote], ref
     except ValueError:
         return zeros
     doh_pc = solfa.doh_pitch_class(key_obj.tonic.pitchClass, key_obj.mode)
-    ref_doh = solfa.reference_doh([r.pitch_midi for r in ref], doh_pc)
+    ref_doh = solfa.reference_doh([r.pitch_midi for r in ref], doh_pc, key_obj.mode)
 
     def labels(pitches: Sequence[int]) -> tuple[list[str], list[int]]:
-        flags = solfa.ascending_flags(list(pitches))
+        flags = solfa.ascending_flags(list(pitches), doh_pc)
         syllables, degrees = [], []
         for pitch, flag in zip(pitches, flags):
             syl, mark, degree = solfa.syllable(pitch, doh_pc, ref_doh, flag)

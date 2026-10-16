@@ -93,8 +93,8 @@ def _labelled(events: list[tuple[int, float, float]], key_name: str) -> list[Tra
     """
     key_obj = _parse_key_override(key_name)
     doh_pc = solfa.doh_pitch_class(key_obj.tonic.pitchClass, key_obj.mode)
-    ref_doh = solfa.reference_doh([pitch for pitch, _, _ in events], doh_pc)
-    spelling = solfa.ascending_flags([pitch for pitch, _, _ in events])
+    ref_doh = solfa.reference_doh([pitch for pitch, _, _ in events], doh_pc, key_obj.mode)
+    spelling = solfa.ascending_flags([pitch for pitch, _, _ in events], doh_pc)
 
     notes = []
     for i, (pitch, start_beat, dur_beats) in enumerate(events):
@@ -578,9 +578,9 @@ def test_the_wobble_fuse_leaves_a_genuine_legato_semitone_step_alone():
 # ── Accidentals — the user-visible face of defect 6 ───────────────────────────
 
 # A minor harmonic, whose raised 7th (G#) is a chromatic syllable under la-based minor:
-# doh is C, so G# is 8 semitones above it — "se" rising, "la" falling.  It occurs twice
-# here, once approached from below and once from above, which is what makes it the
-# fixture for the directional-spelling trade recorded further down.  This phrase is also
+# doh is C, so G# is 8 semitones above it — "se", the hymn-book name, whether it rises to
+# lah or leaps away.  It occurs twice here, once approached from below and once from
+# above, which is what makes it the fixture for the spelling test further down.  This phrase is also
 # the reason the accidentals column counts excess and not total.
 HARMONIC_MINOR_PHRASE = (69, 71, 72, 74, 76, 77, 80, 81, 80, 77, 76)
 
@@ -724,10 +724,10 @@ def test_naming_the_reference_level_does_not_disturb_the_gated_octave_flag():
     assert metrics.tempo_metrics(96, 0)["metrical_factor"] == 0.0
 
 
-# ── Chromatic spelling — directional, and what that costs ─────────────────────
+# ── Chromatic spelling — named for where the note goes ────────────────────────
 
-# A chromatic descent: E Eb D Db C.  Both Eb and Db are approached from above, so both
-# take flat-side syllables.  Spelled from the ascending table the same clip reads
+# A chromatic descent: E Eb D Db C.  Both Eb and Db fall a semitone to the next note, so
+# both take flat-side syllables.  Spelled from the ascending table the same clip reads
 # "m re r de d" — the sharp names for pitches the music is falling through, which is the
 # defect this section pins.
 CHROMATIC_DESCENT = (64, 63, 62, 61, 60)
@@ -767,7 +767,7 @@ def test_ground_truth_moved_with_the_pipeline():
 
     # The pre-Phase-2 labelling, reconstructed by forcing the ascending table.
     doh_pc = solfa.doh_pitch_class(_parse_key_override("C major").tonic.pitchClass, "major")
-    ref_doh = solfa.reference_doh(list(CHROMATIC_DESCENT), doh_pc)
+    ref_doh = solfa.reference_doh(list(CHROMATIC_DESCENT), doh_pc, "major")
     old = [
         replace(n, solfa=solfa.syllable(n.pitch_midi, doh_pc, ref_doh, True)[0])
         for n in correct
@@ -810,31 +810,22 @@ def test_accidental_counts_are_blind_to_which_table_was_used():
     assert down["ref_chromatic_count"] == up["ref_chromatic_count"] == 2
 
 
-def test_the_harmonic_minor_leading_tone_is_respelled_on_a_descent():
-    """The accepted cost of "directional, always", recorded rather than discovered later.
+def test_the_harmonic_minor_leading_tone_keeps_its_name_on_a_descent():
+    """The trade the old approach rule recorded here is gone.
 
-    In A minor the raised 7th G# is the leading tone, and conventional tonic sol-fa
-    writes it ``se`` wherever it appears, because its *function* is a sharpened soh
-    however the melody reaches it.  A purely directional rule cannot know that: the
-    second G# in this phrase is approached from A above, so it prints ``la`` — the
-    flattened-la name for the same pitch.  Both names are legitimate for the pitch class
-    and neither moves the degree, so nothing measurable regresses, which is precisely why
-    this needs an assertion to stay visible.
-
-    The narrow exception ("semitone 8 above doh, in a minor key, is always se") is a
-    one-line change to ``ascending_flags`` if the spelling is judged wrong in use.  It is
-    not made here because it would need a mode argument in all three tiers, and
-    "directional, always" was chosen deliberately.
+    In A minor the raised 7th G# is the leading tone, and tonic sol-fa hymn books write it
+    ``se`` wherever it appears, because its *function* is a sharpened soh however the melody
+    reaches it.  The old rule named a chromatic by the side it was approached from, so the
+    second G# in this phrase — reached from A above — printed ``la``.  The hymn-book rule
+    names it by where it goes: it leaps down to F, which is no semitone step, so it takes the
+    key's usual name for that pitch, ``se``.
     """
     labelled = _syllables(_perfect(HARMONIC_MINOR_PHRASE, "A minor"))
     rising_leading_tone = labelled[6]
     falling_leading_tone = labelled[8]
 
     assert rising_leading_tone == "se", "the rising leading tone must keep the conventional name"
-    assert falling_leading_tone == "la", (
-        "directional spelling renames the falling leading tone; if this fails the rule "
-        "changed, and the trade recorded in this docstring changed with it"
-    )
+    assert falling_leading_tone == "se", "the leading tone leaping down keeps the hymn-book name"
     # And it costs nothing the gate can see, which is the other half of the trade.
     scored = metrics.solfa_metrics(
         _refs(HARMONIC_MINOR_PHRASE),
@@ -858,8 +849,8 @@ def test_direction_is_read_from_melodic_order_not_storage_order():
     Shuffling the input here shows what those two are protecting against: the same music
     in a different list order gets different syllables.
     """
-    in_order = solfa.ascending_flags(list(CHROMATIC_DESCENT))
-    shuffled = solfa.ascending_flags([60, 61, 62, 63, 64])  # the same pitches, ascending
+    in_order = solfa.ascending_flags(list(CHROMATIC_DESCENT), 0)
+    shuffled = solfa.ascending_flags([60, 61, 62, 63, 64], 0)  # the same pitches, ascending
     assert in_order != shuffled
 
 

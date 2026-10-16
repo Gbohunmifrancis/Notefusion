@@ -11,5 +11,6 @@
   "lineBars": 4,
   "melody": null,
   "reviewed": false,
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false."
+  "confidence": "not encoded",
+  "reviewNotes": "No melody yet, on purpose: the last line ('all the day long') has a dotted quaver and semiquaver (in 9/8), which the half-beat solfa grid cannot show. The Open Hymnal score (The Lesser Hymnal, 1875) and the score on Wikipedia agree on it. Everything else fits: 9/8, a pickup of three quavers, doh D, opening m r d | s . . s . . f s l. Encode it once the grid can show quarter-beat notes."
 }

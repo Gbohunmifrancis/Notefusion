@@ -1,0 +1,22 @@
+{
+  "title": "Come, Ye Thankful People, Come",
+  "tune": "st-georges-windsor",
+  "text": [
+    {"name": "Henry Alford", "born": 1810, "died": 1871, "role": "Words (1844), as altered in Hymns Ancient and Modern (1861)"}
+  ],
+  "textPublished": 1844,
+  "description": "Come, Ye Thankful People, Come in Tonic Solfa to ST GEORGE’S WINDSOR, doh is F: the harvest hymn with the words, staff notation, four verses and a piano.",
+  "about": [
+    "Henry Alford, later Dean of Canterbury, wrote this harvest hymn in 1844; most books print the version altered for Hymns Ancient and Modern in 1861. George Job Elvey, organist of St George's Chapel, Windsor, wrote the tune in 1858. It is a favourite at harvest thanksgiving services."
+  ],
+  "underlay": "Come, ye thank-ful peo-ple, come, Raise the song of har-vest home: All is safe-ly gath-ered in, Ere the win-ter storms be-gin; God, our Mak-er, doth pro-vide For our wants to be sup-plied: Come to God’s own tem-ple, come, Raise the song of har-vest home.",
+  "verses": [
+    {"lines": ["Come, ye thankful people, come,", "Raise the song of harvest home:", "All is safely gathered in,", "Ere the winter storms begin;", "God, our Maker, doth provide", "For our wants to be supplied:", "Come to God’s own temple, come,", "Raise the song of harvest home."]},
+    {"lines": ["All the world is God’s own field,", "Fruit unto His praise to yield;", "Wheat and tares together sown,", "Unto joy or sorrow grown:", "First the blade, and then the ear,", "Then the full corn shall appear:", "Lord of harvest, grant that we", "Wholesome grain and pure may be."]},
+    {"lines": ["For the Lord our God shall come,", "And shall take His harvest home;", "From His field shall in that day", "All offences purge away;", "Give His angels charge at last", "In the fire the tares to cast,", "But the fruitful ears to store", "In His garner evermore."]},
+    {"lines": ["Even so, Lord, quickly come", "To Thy final harvest home:", "Gather Thou Thy people in,", "Free from sorrow, free from sin;", "There, for ever purified,", "In Thy garner to abide:", "Come, with all Thine angels, come,", "Raise the glorious harvest home."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

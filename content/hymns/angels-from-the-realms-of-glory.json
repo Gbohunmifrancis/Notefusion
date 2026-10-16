@@ -1,0 +1,23 @@
+{
+  "title": "Angels from the Realms of Glory",
+  "tune": "regent-square",
+  "text": [
+    {"name": "James Montgomery", "born": 1771, "died": 1854, "role": "Words (1816)"}
+  ],
+  "textPublished": 1816,
+  "description": "Angels from the Realms of Glory in Tonic Solfa to REGENT SQUARE, doh is C: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "James Montgomery, a newspaper editor in Sheffield, England, first printed this carol in his paper, The Iris, on Christmas Eve 1816. Henry Smart wrote the tune REGENT SQUARE, named after a London church, and first published it in 1867."
+  ],
+  "underlay": "An-gels from the realms of glo-ry, Wing your flight o’er all the earth; Ye who sang cre-a-tion’s sto-ry Now pro-claim Mes_-si-ah’s birth: Come and wor-ship, come and wor-ship, Wor-ship Christ, the new-born King.",
+  "verses": [
+    {"lines": ["Angels from the realms of glory,", "Wing your flight o’er all the earth;", "Ye who sang creation’s story", "Now proclaim Messiah’s birth:"]},
+    {"label": "Refrain", "lines": ["Come and worship, come and worship,", "Worship Christ, the newborn King."]},
+    {"lines": ["Shepherds, in the field abiding,", "Watching o’er your flocks by night,", "God with man is now residing;", "Yonder shines the infant light:"]},
+    {"lines": ["Sages, leave your contemplations,", "Brighter visions beam afar;", "Seek the great Desire of nations;", "Ye have seen His natal star:"]},
+    {"lines": ["Saints, before the altar bending,", "Watching long in hope and fear,", "Suddenly the Lord, descending,", "In His temple shall appear:"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

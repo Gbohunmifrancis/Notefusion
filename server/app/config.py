@@ -625,8 +625,9 @@ class Settings:
     def chromatic_spelling(self) -> str:
         """Chromatic solfa convention shared with clients.
 
-        ``direction`` preserves the historical behaviour: rising notes use the
-        sharpened table and falling notes use the flattened table.  The explicit
+        ``direction`` is the tonic solfa hymn-book rule (``solfa.ascending_flags``): a
+        chromatic rising a semitone to the next note uses the sharpened table, one falling
+        a semitone the flattened table, and anything else the key's usual name.  The explicit
         modes are useful for regional notation preferences and are deliberately
         constrained to a small wire-safe vocabulary.
         """

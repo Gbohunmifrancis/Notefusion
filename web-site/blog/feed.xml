@@ -196,7 +196,8 @@
       <description>Three reliable ways to find the doh of a song: from the key signature, by ear, and by checking the tune. Plus minor keys, starting notes and key changes.</description>
       <content:encoded><![CDATA[<p>&quot;What&#39;s the doh?&quot; is one of the first questions in any rehearsal. Until you know where doh is, the solfa on the board is just letters. Once you know it, everyone can find their first note and the song comes together.</p>
 <p>Doh is the key note of a song — its home. This guide gives you three reliable ways to find it: from the key signature on printed music, by ear from a recording, and by checking your answer against the tune. It also covers minor keys, songs that do not start on doh, and how to move doh when a song is too high or too low for your choir.</p>
-<p>If you are new to solfa altogether, start with <a href="https://notefusion.studio/blog/how-to-read-tonic-solfa">how to read Tonic Solfa</a> and come back.</p>
+<aside class="callout callout-tip"><p class="callout-label">Tip</p><p>If you are new to solfa altogether, start with <a href="https://notefusion.studio/blog/how-to-read-tonic-solfa">how to read Tonic Solfa</a> and come back.</p>
+</aside>
 <h2 id="what-the-doh-means">What &quot;the doh&quot; means</h2>
 <p>In movable-doh Tonic Solfa, doh is the first note of the major scale the song is built on. In the key of G, doh is G; in the key of Bb, doh is Bb. Every other syllable is measured from it, so the doh is the one fact you need to turn solfa into real pitches.</p>
 <p>For songs in a minor key, most choirs in Nigeria and West Africa read <strong>la-based minor</strong>. The song keeps the doh of its relative major and treats <strong>lah</strong> as home. A song in A minor is written with doh on C, and it ends on l. This makes one thing much easier, as you will see next: the key signature alone tells you doh, whether the song is major or minor.</p>
@@ -310,11 +311,11 @@
 <figure class="solfa-example" aria-label="Silent Night in Tonic Solfa">
 <div class="solfa-head"><span class="doh">Doh is Bb</span><span class="time">6/8</span></div>
 <div class="hymn-grid">
-<table class="hymn"><tr><td><span class="cell"><b>s,</b><i>Si-</i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell"><b>l,</b><i>lent</i></span><span class="cell"><b>s,</b><i>night,</i></span><span class="cell hold"><b>-</b><i></i></span></td><td><span class="cell"><b>m,</b><i>_</i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span></td></tr></table>
+<table class="hymn"><tr><td><span class="cell"><b>s</b><i>Si-</i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell"><b>l</b><i>lent</i></span><span class="cell"><b>s</b><i>night,</i></span><span class="cell hold"><b>-</b><i></i></span></td><td><span class="cell"><b>m</b><i>_</i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span><span class="cell hold"><b>-</b><i></i></span></td></tr></table>
 </div>
 <figcaption>Silent Night, bars 1-2, in Bb major. <a href="https://notefusion.studio/hymns/silent-night">See the whole hymn</a>. <span class="by-engine">Solfa written by NoteFusion’s engine.</span></figcaption>
 </figure>
-<p>The doh is Bb, but the song starts on s, — the soh below doh. Amazing Grace does the same. <a href="https://notefusion.studio/hymns/joyful-joyful-we-adore-thee">Joyful, Joyful</a> starts on m. So find doh first, then work out the starting note from it, and give your choir the doh <em>and</em> the first note before you begin.</p>
+<p>The doh is Bb, but the song starts on s — the soh above doh. Amazing Grace starts on soh too, the one below doh (s,). <a href="https://notefusion.studio/hymns/joyful-joyful-we-adore-thee">Joyful, Joyful</a> starts on m. So find doh first, then work out the starting note from it, and give your choir the doh <em>and</em> the first note before you begin.</p>
 <h2 id="moving-the-doh-for-your-choir">Moving the doh for your choir</h2>
 <p>Sometimes you know the doh perfectly well, and the song is still uncomfortable: the sopranos strain at the top, or the basses disappear at the bottom. The answer is to move doh. Because solfa is movable, the syllables stay exactly the same — only the &quot;Doh is&quot; line changes.</p>
 <p>Here is the opening of Amazing Grace in G:</p>

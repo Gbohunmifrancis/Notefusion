@@ -43,6 +43,9 @@ public static class AuthRateLimiting
     /// <summary>The website's anonymous analytics beacon, which writes a row per event.</summary>
     public const string WebEvents = "web-events";
 
+    /// <summary>The blog's read counts: a database count anyone can ask for, cached per page.</summary>
+    public const string BlogReads = "blog-reads";
+
     public static IServiceCollection AddNoteFusionRateLimiting(
         this IServiceCollection services, IConfiguration configuration)
     {
@@ -70,6 +73,9 @@ public static class AuthRateLimiting
 
             options.AddPolicy(WebEvents, context => SlidingWindow(
                 context, settings, settings.WebEventsPermits, settings.WebEventsWindowSeconds));
+
+            options.AddPolicy(BlogReads, context => SlidingWindow(
+                context, settings, settings.BlogReadsPermits, settings.BlogReadsWindowSeconds));
 
             options.OnRejected = async (context, cancellationToken) =>
             {
@@ -242,6 +248,14 @@ public sealed class RateLimitSettings
 
     public int WebEventsWindowSeconds { get; set; } = 60;
 
+    /// <summary>
+    /// The blog's read counts. A page asks once as it loads, so a reader sends one a page; a hundred and twenty
+    /// a minute is room for a mobile carrier's shared address and a ceiling on anyone polling the counts.
+    /// </summary>
+    public int BlogReadsPermits { get; set; } = 120;
+
+    public int BlogReadsWindowSeconds { get; set; } = 60;
+
     /// <summary>A copy with every limit effectively removed, used when <see cref="Enabled"/> is false.</summary>
     internal RateLimitSettings Disabled() => new()
     {
@@ -252,5 +266,6 @@ public sealed class RateLimitSettings
         RegistrationPermits = int.MaxValue,
         RefreshPermits = int.MaxValue,
         WebEventsPermits = int.MaxValue,
+        BlogReadsPermits = int.MaxValue,
     };
 }

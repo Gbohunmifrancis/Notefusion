@@ -1,0 +1,17 @@
+{
+  "name": "BETHANY",
+  "music": [
+    {"name": "Lowell Mason", "born": 1792, "died": 1872, "role": "Melody (1856)"}
+  ],
+  "musicPublished": 1856,
+  "key": "G major",
+  "time": "6/4",
+  "tempo": 108,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B4:3 A4:2 G4:1 | G4:2 E4:1 E4:3 | D4:3 G4:2 B4:1 | A4:3~ A4:2 r:1 | B4:3 A4:2 G4:1 | G4:2 E4:1 E4:3 | D4:2 G4:1 F#4:2 A4:1 | G4:3~ G4:2 r:1 | D5:3 E5:2 D5:1 | D5:2 B4:1 D5:3 | D5:3 E5:2 D5:1 | D5:2 B4:1 A4:3 | B4:3 A4:2 G4:1 | G4:2 E4:1 E4:3 | D4:2 G4:1 F#4:2 A4:1 | G4:3~ G4:2 r:1",
+  "reviewed": false,
+  "confidence": "high for the notes; check the underlay of bars 7 and 15",
+  "source": "Open Hymnal Project ABC score (Lowell Mason's setting, 1859).",
+  "reviewNotes": "High for the notes and rhythm, which match the tune as sung. Check bars 7 and 15: 'that' (and the last 'near-') is sung over soh-doh before 'rais-eth' / '-er to', as this source prints it. British books often use Dykes's HORBURY for these words instead."
+}

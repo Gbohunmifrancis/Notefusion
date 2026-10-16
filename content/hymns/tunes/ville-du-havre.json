@@ -1,15 +1,17 @@
 {
   "name": "VILLE DU HAVRE",
   "music": [
-    { "name": "Philip Paul Bliss", "born": 1838, "died": 1876, "role": "Melody (1876)" }
+    {"name": "Philip Paul Bliss", "born": 1838, "died": 1876, "role": "Melody (1876)"}
   ],
   "musicPublished": 1876,
-  "key": null,
-  "time": null,
-  "tempo": null,
-  "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "key": "Db major",
+  "time": "4/4",
+  "tempo": 76,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Ab4:1 | Ab4:2 Gb4:1 F4:1 | F4:2 Eb4:1 F4:1 | Gb4:1 Bb4:1 Ab4:1 Gb4:1 | F4:3 Ab4:1 | Db5:2 C5:1 Bb4:1 | Bb4:2 Ab4:1 G4:1 | Ab4:3 Ab4:1 | Db5:2 Db5:1 C5:1 | Bb4:2 Bb4:1 Bb4:1 | Eb5:2 Eb5:1 Db5:1 | C5:2 Bb4:1 Ab4:1 | Db5:2 Db5:1 Db5:1 | Db5:2 C5:1.5 Db5:.5 | Db5:2 Ab4:1 Ab4:1 | Ab4:4~ | Ab4:2 Ab4:1 Ab4:1 | Ab4:4~ | Ab4:2 F4:1 Ab4:1 | Bb4:2 Bb4:1 Db5:1 | Db5:2 C5:1.5 Db5:.5 | Db5:3",
   "reviewed": false,
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false."
+  "confidence": "high; see the notes on bar 7 and the refrain",
+  "source": "Open Hymnal Project ABC score (The Evangelical Hymnal, 1921); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "High for the notes. The refrain is the soprano line only (the men's echo 'it is well' is not shown); 'well' and 'soul' in the refrain are held six beats. Many books print the tune in C; this source has Db, with the same solfa."
 }

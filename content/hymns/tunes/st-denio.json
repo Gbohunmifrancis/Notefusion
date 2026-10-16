@@ -1,0 +1,17 @@
+{
+  "name": "ST DENIO",
+  "music": [
+    {"name": "Welsh melody", "traditional": true, "role": "Melody, printed in John Roberts's Caniadau y Cyssegr (1839)"}
+  ],
+  "musicPublished": 1839,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 112,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:1 | E4:1 C4:1 A4:1 | F#4:1 D4:1 G4:1 | B4:1 B4:1 A4:1 | G4:2 G4:1 | E4:1 C4:1 A4:1 | F#4:1 D4:1 G4:1 | B4:1 B4:1 A4:1 | G4:2 G4:1 | B4:1 B4:1 D5:1 | B4:1 G4:1 G4:1 | B4:1 B4:1 D5:1 | A4:2 B4:1 | G4:1 E4:1 A4:1 | F#4:1 D4:1 G4:1 | B4:1 B4:1 A4:1 | G4:2",
+  "reviewed": false,
+  "confidence": "high; check bars 2–3",
+  "source": "Open Hymnal Project ABC score (The Hymnal 1940); the harmony in the same source confirms each melody note.",
+  "reviewNotes": "High, from one source. Check bars 2–3: the falling thirds with leaps up (doh | lah, fah, ray | te, soh, doh), which sit low at the start (down to ray, D above middle C)."
+}

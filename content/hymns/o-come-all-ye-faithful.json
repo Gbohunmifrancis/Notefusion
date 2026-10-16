@@ -1,0 +1,24 @@
+{
+  "title": "O Come, All Ye Faithful",
+  "tune": "adeste-fideles",
+  "text": [
+    {"name": "John Francis Wade", "died": 1786, "role": "Latin words, Adeste fideles (c. 1743)"},
+    {"name": "Frederick Oakeley", "born": 1802, "died": 1880, "role": "English translation (1841)"}
+  ],
+  "textPublished": 1852,
+  "description": "O Come, All Ye Faithful (Adeste Fideles) in Tonic Solfa, doh is G: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "The Latin carol Adeste fideles and its tune survive in manuscripts copied by John Francis Wade, an English Catholic music copyist living in France, in the 1740s. Frederick Oakeley's English translation, made in 1841, was published in 1852 and is the one most churches sing."
+  ],
+  "underlay": "O come, all ye faith-ful, joy-ful and tri-um-phant, O come ye, O come_ ye to Beth_-le-hem; Come and be-hold Him, born the King of an_-gels: O come, let us a-dore Him, O come, let us a-dore Him, O come, let us a-dore Him,_ Christ_ the Lord.",
+  "verses": [
+    {"lines": ["O come, all ye faithful,", "Joyful and triumphant,", "O come ye, O come ye to Bethlehem;", "Come and behold Him,", "Born the King of angels:"]},
+    {"label": "Refrain", "lines": ["O come, let us adore Him,", "O come, let us adore Him,", "O come, let us adore Him,", "Christ the Lord."]},
+    {"lines": ["God of God,", "Light of Light,", "Lo, He abhors not the Virgin’s womb;", "Very God,", "Begotten, not created:"]},
+    {"lines": ["Sing, choirs of angels,", "Sing in exultation,", "Sing, all ye citizens of heaven above;", "Glory to God", "In the highest:"]},
+    {"lines": ["Yea, Lord, we greet Thee,", "Born this happy morning;", "Jesu, to Thee be glory given;", "Word of the Father,", "Now in flesh appearing:"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

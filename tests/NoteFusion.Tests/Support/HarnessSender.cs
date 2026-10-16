@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Auth.Commands;
 using NoteFusion.Application.Billing.Commands;
 using NoteFusion.Application.Billing.Queries;
+using NoteFusion.Application.Blog.Queries;
 using NoteFusion.Application.Common.Interfaces;
 
 namespace NoteFusion.Tests.Support;
@@ -50,6 +51,8 @@ public sealed class HarnessSender : ISender
             GetMySubscriptionQuery mine => (Task<TResponse>)(object)new GetMySubscriptionQueryHandler(
                     _h.Db, Require(_currentUser, "currentUser"), _h.Clock, _h.Device)
                 .Handle(mine, cancellationToken),
+            GetBlogReadsQuery reads => (Task<TResponse>)(object)new GetBlogReadsQueryHandler(_h.Db)
+                .Handle(reads, cancellationToken),
             _ => throw new NotSupportedException($"{request.GetType().Name} is not wired into the test sender.")
         };
 

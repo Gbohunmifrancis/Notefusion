@@ -1,0 +1,17 @@
+{
+  "name": "LOBE DEN HERREN",
+  "music": [
+    {"name": "Stralsund Gesangbuch", "traditional": true, "role": "Melody, Erneuerten Gesangbuch, Stralsund (1665)"}
+  ],
+  "musicPublished": 1665,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "G4:1 G4:1 D5:1 | B4:1.5 A4:.5 G4:1 | F#4:1 E4:1 D4:1 | E4:1 F#4:1 G4:1 | A4:3 | G4:3 | G4:1 G4:1 D5:1 | B4:1.5 A4:.5 G4:1 | F#4:1 E4:1 D4:1 | E4:1 F#4:1 G4:1 | A4:3 | G4:3 | D5:1 D5:1 D5:1 | E5:3 | B4:1.5 C5:.5 D5:1 | D5:1.5 C5:.5 B4:1 | A4:3 | D4:1 E4:1 F#4:1 | G4:1 A4:1 B4:1 | A4:3 | G4:3",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score; every note and rhythm agrees with the score on Wikipedia's article.",
+  "reviewNotes": "High: two independent sources agree note for note. Check verse 4's wording, which varies between books."
+}

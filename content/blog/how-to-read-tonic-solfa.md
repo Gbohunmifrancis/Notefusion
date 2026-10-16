@@ -1,6 +1,7 @@
 ---
 title: "How to Read Tonic Solfa: A Complete Beginner's Guide"
 description: "Learn to read Tonic Solfa: the seven syllables, doh and keys, octave marks, rhythm, la-based minor and chromatic notes, with hymns to practise."
+dek: "Everything a new singer needs to sing from a solfa sheet: the seven syllables, where doh sits, octave marks, rhythm and minor keys, with real hymns to practise on."
 date: "2026-10-15"
 author: francis
 tags: [tonic-solfa, beginners, choir]

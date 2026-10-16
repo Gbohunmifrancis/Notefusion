@@ -1,0 +1,18 @@
+{
+  "name": "DIX",
+  "music": [
+    {"name": "Conrad Kocher", "born": 1786, "died": 1872, "role": "Melody (1838)"},
+    {"name": "William Henry Monk", "born": 1823, "died": 1889, "role": "Adapted (1861)"}
+  ],
+  "musicPublished": 1838,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 F#4:.5 G4:.5 A4:1 G4:1 | C5:1 C5:1 B4:2 | E4:1 F#4:1 G4:1 E4:1 | D4:1 D4:1 D4:2 | G4:1 F#4:.5 G4:.5 A4:1 G4:1 | C5:1 C5:1 B4:2 | E4:1 F#4:1 G4:1 E4:1 | D4:1 D4:1 D4:2 | B4:1 A4:1 G4:1 B4:1 | D5:1.5 C5:.5 B4:2 | E4:1 F#4:1 G4:1 C5:1 | B4:1 A4:1 G4:2",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score; every note and the underlay agree with the score on Wikipedia's article, and the opening with hymnary.org's incipit.",
+  "reviewNotes": "High: two independent sources agree note for note. The refrain's wording varies between books (the original reads 'Christ, our God, to Thee we raise / This our sacrifice of praise')."
+}

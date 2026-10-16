@@ -1,0 +1,17 @@
+{
+  "name": "MACCABAEUS",
+  "music": [
+    {"name": "George Frideric Handel", "born": 1685, "died": 1759, "role": "Melody, the chorus 'See, the conqu'ring hero comes' (1747)"}
+  ],
+  "musicPublished": 1747,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:2 F#4:1.5 G4:.5 | A4:2 D4:2 | E4:.5 F#4:.5 G4:.5 A4:.5 G4:1 F#4:1 | E4:4 | F#4:.5 G4:.5 A4:.5 B4:.5 A4:1 A4:1 | D5:2 A4:2 | G4:1 F#4:.5 E4:.5 E4:1.5 D4:.5 | D4:4 | F#4:.5 E4:.5 F#4:.5 G4:.5 F#4:1 F#4:1 | E4:2 D4:2 | G4:1 F#4:1 E4:1 D4:1 | C#4:4 | D4:.5 C#4:.5 D4:.5 E4:.5 D4:1 D4:1 | B4:2 G#4:2 | A4:1 B4:.5 A4:.5 G#4:1.5 A4:.5 | A4:4 | A4:2 F#4:1.5 G4:.5 | A4:2 D4:2 | E4:.5 F#4:.5 G4:.5 A4:.5 G4:1 F#4:1 | E4:4 | F#4:.5 G4:.5 A4:.5 B4:.5 A4:1 A4:1 | D5:2 A4:2 | G4:1 F#4:.5 E4:.5 E4:1.5 D4:.5 | D4:4",
+  "reviewed": false,
+  "confidence": "high for the notes; one written source",
+  "source": "the score on the tune's Wikipedia article (melody and underlay), which matches the tune as it is sung; not in the Open Hymnal.",
+  "reviewNotes": "Notes and rhythm match the Wikipedia score and the tune as commonly sung; only one written source was available, so compare with your book."
+}

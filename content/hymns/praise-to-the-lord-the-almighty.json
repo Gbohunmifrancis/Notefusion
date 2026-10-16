@@ -1,0 +1,24 @@
+{
+  "title": "Praise to the Lord, the Almighty",
+  "tune": "lobe-den-herren",
+  "text": [
+    {"name": "Joachim Neander", "born": 1650, "died": 1680, "role": "German words, Lobe den Herren (1680)"},
+    {"name": "Catherine Winkworth", "born": 1827, "died": 1878, "role": "English translation (1863)"}
+  ],
+  "textPublished": 1680,
+  "description": "Praise to the Lord, the Almighty in Tonic Solfa to LOBE DEN HERREN, doh is G: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "Joachim Neander, a German Reformed teacher and pastor, wrote Lobe den Herren in 1680, the year he died. Catherine Winkworth's English translation appeared in The Chorale Book for England in 1863. The tune comes from a Stralsund hymn book of 1665.",
+    "The first two lines of music are sung twice, so the tune has fewer lines to learn than the words suggest."
+  ],
+  "underlay": "Praise to the Lord, the Al-might-y, the King of cre-a-tion! O my soul, praise Him, for He is thy health and sal-va-tion! All ye who hear, Now to His tem-ple draw near; Praise Him in glad a-dor-a-tion.",
+  "verses": [
+    {"lines": ["Praise to the Lord, the Almighty, the King of creation!", "O my soul, praise Him, for He is thy health and salvation!", "All ye who hear,", "Now to His temple draw near;", "Praise Him in glad adoration."]},
+    {"lines": ["Praise to the Lord, who o’er all things so wondrously reigneth,", "Shelters thee under His wings, yea, so gently sustaineth!", "Hast thou not seen", "How thy desires have been", "Granted in what He ordaineth?"]},
+    {"lines": ["Praise to the Lord, who doth prosper thy work and defend thee;", "Surely His goodness and mercy here daily attend thee.", "Ponder anew", "What the Almighty can do,", "If with His love He befriend thee."]},
+    {"lines": ["Praise to the Lord! O let all that is in me adore Him!", "All that hath life and breath, come now with praises before Him!", "Let the Amen", "Sound from His people again:", "Gladly for aye we adore Him."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

@@ -341,7 +341,12 @@ ACCOMPANIMENT_MIN_PEAKS = 5.0
 _CQT_BINS_PER_OCTAVE = 36
 # A vocal stem this far under the mix holds no voice: the upload was instruments only (an
 # instrumental lead measured -36 to -60 dB, a sung song -0.3 to -12 dB), and the melody is
-# then in the mixture, not in an empty stem.
+# then in the mixture, not in an empty stem.  The share is over the whole clip, so a burst the
+# model takes for a voice can carry an instrumental over the line (ADC2004's jazz1 sax lead
+# -21 dB, a strummed guitar sent as browser Opus -16 dB on two seconds of "voice"); the queue
+# then also reads the mixture when the stem gives almost no notes (``queue._stem_min_notes``).
+# A windowed share does not separate them: those bursts cover a fifth of the clip, as much
+# voice as a "da" singer under a loud band leaves in the stem (whose stem is still the better read).
 VOICE_MIN_SHARE_DB = -25.0
 
 

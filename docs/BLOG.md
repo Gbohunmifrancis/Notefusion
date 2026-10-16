@@ -16,7 +16,8 @@ tools/blog/
   check.mjs                 CI: fails if the committed pages are stale, a link is broken, JSON-LD is invalid…
   draft.mjs                 drafts the next topic with the Gemini API
   indexnow.mjs              pings IndexNow after a deploy
-web-site/assets/blog.css    styles for the generated pages
+web-site/assets/blog.css    styles for the generated pages (light and dark)
+web-site/assets/blog.js     read counts from the API and "Copy link" on blog pages
 web-site/assets/hymn.js     staff (OSMD) and piano on hymn pages; the solfa itself needs no JavaScript
 ```
 
@@ -136,6 +137,7 @@ Create `content/blog/<slug>.md` (the file name is the URL — never change it af
 ---
 title: "How to Find the Doh of Any Song"          # ≤ 60 characters is best for Google
 description: "Three reliable ways to find…"        # ≤ 160 characters (aim for 120–155)
+dek: "Doh is the one fact a choir needs…"          # optional, ≤ 240: the standfirst under the title (else the description)
 date: "2026-10-14"
 updated: "2026-11-02"                              # optional; shown and used as lastmod
 author: francis                                    # content/authors/<id>.md
@@ -152,7 +154,16 @@ Markdown body. Start sections at ## (the title is the page's only h1).
 ```
 
 Images: `![alt text](/assets/blog/picture.jpg "1200x675")` — the size in the title is required so
-the page does not jump as the image loads; images are lazy-loaded.
+the page does not jump as the image loads; images are lazy-loaded. An image on a line of its own is
+a figure; `"1200x675 | A caption"` gives it a caption.
+
+A quote block is a **pull quote** (a line from the post set large; never words put in someone
+else's mouth). A quote block that starts with `[!TIP]` or `[!NOTE]` is a **callout** box:
+
+```markdown
+> [!TIP]
+> If you are new to solfa altogether, start with [how to read Tonic Solfa](/blog/how-to-read-tonic-solfa).
+```
 
 Solfa examples are ` ```solfa ` blocks, rendered by NoteFusion's engine:
 
@@ -170,8 +181,10 @@ harmonic: true          # optional: the raised seventh (se)
 ```
 ````
 
-Each post gets: a table of contents (from four sections up), reading time, the byline and author
-box, related posts by tag, the hymns it cites, the "Transcribe your own song" call to action,
+Each post gets: a header with a kicker (its first tag), the title, the dek and the byline (the
+author's photo or initials, the date, reading time and the number of reads); an "In this article"
+box (from four sections up); share links (WhatsApp, X, Facebook, copy link: plain links, no
+third-party script); the author card; related posts by tag ("Keep reading"), the hymns it cites, the "Transcribe your own song" call to action,
 canonical URL, Open Graph and Twitter cards (the default card unless the post has a `cover`),
 `BlogPosting`, `BreadcrumbList` and `FAQPage` JSON-LD, and an entry in the sitemap and the RSS feed
 (`/blog/feed.xml`). Tag pages are `noindex` (they only repeat summaries) and stay out of the sitemap.
@@ -331,8 +344,33 @@ ping is a warning in the deploy log, never a failed deploy.
   `frame-ancestors`, so the JSON-LD and JSON data blocks (which are data, not executed) and the
   scripts load as on the other public pages. The Report-Only policy now also lists the pinned OSMD
   URL, so drawing the staff on hymn pages does not produce reports.
-- **Speed.** Pages are static HTML with the site's existing Inter font and stylesheets; the solfa
-  is text; the only scripts are the first-party tracker, AdSense (as on the other public pages),
+- **Look.** Headlines and reading text are set in Source Serif 4 (Google Fonts, already allowed by
+  the CSP), the interface in Inter; the reading column is about 68 characters wide. Hairline rules
+  rather than cards, one accent colour, no gradients or shadows. Every colour is a custom property
+  (`site-pages.css` for the shell, `blog.css` for the pages) with a dark value beside the light one.
+- **Light, dark and System.** Every public page (home, policies, blog, hymns) loads
+  `assets/theme-boot.js` as a blocking `<script src>` in `<head>` with `data-default="system"`, so
+  the page is drawn in the right theme from the first paint and follows the device until the reader
+  chooses. The header's toggle (`assets/site-theme.js`) cycles Light → Dark → System and saves the
+  choice under `nf.web.theme`, the same key the web app's own switch uses, so it carries between
+  the site and `/app` (where no choice still means Light). No inline script is involved. The staff
+  on hymn pages is engraved on a light "paper" card in both themes; AdSense slots that come back
+  empty are hidden, and in dark mode a filled one sits in a light frame of its own.
+- **Phones.** The solfa grid and the line-by-line text wrap at bar lines on a narrow screen: a bar
+  (its notes with their words under them) is never split and never scrolls out of its box. The
+  staff is drawn smaller on a narrow box (OSMD zoom 0.5–0.85 below 760px, so a phone gets two to
+  three bars a line) and is redrawn when the window is resized or the phone turned.
+- **Number of reads.** `assets/blog.js` fills every `[data-reads-path]` (the byline, the front page,
+  "Keep reading") from the API's `GET /api/blog/reads?paths=/blog/a,/blog/b` in one request. A read
+  is one browser (the tracker's visitor id) that viewed the page, counted from the first-party page
+  views `track.js` records, leaving out every browser that was ever signed in as an admin or
+  internal account; web events are kept 180 days, so it is readers over that window. Fewer than
+  five shows "New"; "0 reads" is never shown; if the API cannot be reached the count stays hidden
+  (its room is kept, so nothing moves). The API caches each page's count for five minutes and
+  limits each address to 120 requests a minute. The count is never written into the HTML, so it
+  never makes the committed pages stale.
+- **Speed.** Pages are static HTML; the solfa is text; the only scripts are the theme boot, the
+  header toggle, `blog.js` on blog pages, the first-party tracker, AdSense (as on the other public pages),
   and on hymn pages `choir.js` + `hymn.js` (deferred), which load OSMD only when the staff scrolls
   into view and create the audio context only when Play is pressed. Images need a width and height.
   To keep ads off the blog and hymn pages, set `ADSENSE_CLIENT` to `null` in
@@ -342,4 +380,10 @@ ping is a warning in the deploy log, never a failed deploy.
   ("CTA: blog", "CTA: hymn"), and playing a hymn records the action "Hymn played".
 - **Updating the shared assets.** `vercel.json` makes browsers revalidate `/assets/*.css` and
   `*.js` on every load, but follow the site's convention anyway: bump the `?v=` numbers in
-  `ASSET_VERSION` (`tools/blog/lib/site.mjs`) and rebuild when you change `blog.css` or `hymn.js`.
+  `ASSET_VERSION` (`tools/blog/lib/site.mjs`) and rebuild when you change `blog.css`, `blog.js`,
+  `site-pages.css`, `site-theme.js`, `theme-boot.js` or `hymn.js` (the hand-written pages carry the
+  same numbers by hand).
+- **Author photo.** `content/authors/<id>.md` takes an optional `photo: /assets/authors/<id>.jpg`
+  (square, at least 192×192). It is shown in the byline, the author card and the author page, and
+  added to the `BlogPosting` and `ProfilePage` JSON-LD; without one the pages show the author's
+  initials.

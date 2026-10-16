@@ -4926,7 +4926,7 @@ def _choir_parts(
         quantised = sorted(s.notes, key=lambda n: n.offset)
         flags = [
             solfa.resolve_ascending(flag, settings.chromatic_spelling)
-            for flag in solfa.ascending_flags([n.pitch.midi for n in quantised])
+            for flag in solfa.ascending_flags([n.pitch.midi for n in quantised], doh_pc)
         ]
         out: list[TranscribedNote] = []
         for n, evt, flag in zip(quantised, line, flags):
@@ -5540,14 +5540,14 @@ def _transcribe_wav(
     # ── 10. Solfa mapping ─────────────────────────────────────────────────────
     # Derived from the same note list — re-labelling, never re-transcription.
     doh_pc = solfa.doh_pitch_class(detected.tonic.pitchClass, detected.mode)
-    ref_doh = solfa.reference_doh([e.pitch for e in events], doh_pc)
+    ref_doh = solfa.reference_doh([e.pitch for e in events], doh_pc, detected.mode)
 
     notes: list[TranscribedNote] = []
     alt_steps: list[tuple[int, ...]] = []
     bars: list[str] = []
 
-    # Chromatic spelling follows melodic direction, so the whole clip's pitch order has to
-    # be settled before any one note is labelled — a note cannot be spelled from itself.
+    # A chromatic is spelled from the note it moves to, so the whole clip's pitch order has
+    # to be settled before any one note is labelled — a note cannot be spelled from itself.
     # The stream is walked twice in the same order (measures in offset order, notes in
     # offset order within each), so ``spelling`` indexes the loop below by position.
     spelling = solfa.ascending_flags(
@@ -5555,7 +5555,8 @@ def _transcribe_wav(
             n.pitch.midi
             for measure in score.getElementsByClass(stream.Measure)
             for n in measure.notes
-        ]
+        ],
+        doh_pc,
     )
     spelling = [
         solfa.resolve_ascending(flag, settings.chromatic_spelling)
@@ -5758,8 +5759,8 @@ def harmonise_sheet(
     if not pitches:
         return None, ""
     doh_pc = solfa.doh_pitch_class(detected.tonic.pitchClass, detected.mode)
-    ref_doh = solfa.reference_doh(pitches, doh_pc)
-    flags = solfa.ascending_flags(pitches)
+    ref_doh = solfa.reference_doh(pitches, doh_pc, detected.mode)
+    flags = solfa.ascending_flags(pitches, doh_pc)
     melody: list[TranscribedNote] = []
     for n, flag in zip(notes, flags):
         pitch = int(n["pitch_midi"])

@@ -1,0 +1,23 @@
+{
+  "title": "A Mighty Fortress Is Our God",
+  "tune": "ein-feste-burg",
+  "text": [
+    {"name": "Martin Luther", "born": 1483, "died": 1546, "role": "German words, Ein feste Burg ist unser Gott (1529)"},
+    {"name": "Frederic Henry Hedge", "born": 1805, "died": 1890, "role": "English translation (1853)"}
+  ],
+  "textPublished": 1529,
+  "description": "A Mighty Fortress Is Our God in Tonic Solfa to EIN FESTE BURG: the solfa with the words, staff notation, all four verses and a piano.",
+  "about": [
+    "Martin Luther wrote Ein feste Burg ist unser Gott, a paraphrase of Psalm 46, and its tune by 1529. Frederic Henry Hedge, an American Unitarian minister, made the English translation sung here in 1853."
+  ],
+  "underlay": "",
+  "verses": [
+    {"lines": ["A mighty fortress is our God,", "A bulwark never failing;", "Our helper He amid the flood", "Of mortal ills prevailing:", "For still our ancient foe", "Doth seek to work us woe;", "His craft and power are great,", "And, armed with cruel hate,", "On earth is not his equal."]},
+    {"lines": ["Did we in our own strength confide,", "Our striving would be losing;", "Were not the right Man on our side,", "The Man of God’s own choosing:", "Dost ask who that may be?", "Christ Jesus, it is He;", "Lord Sabaoth His name,", "From age to age the same,", "And He must win the battle."]},
+    {"lines": ["And though this world, with devils filled,", "Should threaten to undo us,", "We will not fear, for God hath willed", "His truth to triumph through us:", "The prince of darkness grim,", "We tremble not for him;", "His rage we can endure,", "For lo! his doom is sure,", "One little word shall fell him."]},
+    {"lines": ["That word above all earthly powers,", "No thanks to them, abideth;", "The Spirit and the gifts are ours", "Through Him who with us sideth:", "Let goods and kindred go,", "This mortal life also;", "The body they may kill:", "God’s truth abideth still,", "His kingdom is for ever."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true
+}

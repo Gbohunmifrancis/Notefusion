@@ -1,6 +1,7 @@
 /* NoteFusion choir helpers for the web: movable-do labelling, the hymn-book layout,
  * voice ranges, and a Web Audio rehearsal player. Mirrors mobile/src/lib/solfa.ts and
- * mobile/src/lib/choir.ts — keep the three in lock-step.
+ * mobile/src/lib/choir.ts (and the engine in src/NoteFusion.Core/Solfa and the worker's
+ * solfa.py) — keep them in lock-step; tests/choir.test.mjs holds the shared table.
  *
  * Plain script, no build step. Exposes window.NfChoir.
  */
@@ -13,6 +14,9 @@
   var ASC = ["d", "de", "r", "re", "m", "f", "fe", "s", "se", "l", "le", "t"];
   var DESC = ["d", "ra", "r", "ma", "m", "f", "sa", "s", "la", "l", "ta", "t"];
   var DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7];
+  // The hymn-book name for each semitone above doh when the note does not move on by a
+  // semitone: de, ma, fe, se, ta (true = sharpened). Reasons are in SolfaMapper.cs.
+  var DEFAULT_SHARP = [true, true, true, false, true, true, true, true, true, true, false, true];
   var NATURAL = { c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11 };
   var MODES = [["minor", "minor"], ["min", "minor"], ["maj", "major"], ["major", "major"], ["m", "minor"]];
 
@@ -37,22 +41,38 @@
     return { tonicPitchClass: ((pc % 12) + 12) % 12, mode: mode };
   }
   function dohPitchClass(key) { return key.mode === "major" ? key.tonicPitchClass : (key.tonicPitchClass + 3) % 12; }
-  function referenceDoh(pitches, dohPc) {
-    if (!pitches.length) return Math.round((60 - dohPc) / 12) * 12 + dohPc;
-    var sorted = pitches.slice().sort(function (a, b) { return a - b; });
-    var mid = sorted.length >> 1;
-    var median = sorted.length % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-    var best = dohPc;
-    for (var p = dohPc; p < 128; p += 12) if (Math.abs(p - median) < Math.abs(best - median)) best = p;
-    return best;
+  /**
+   * The unmarked doh, as a tonic solfa hymn book sets it: the doh at or below the middle
+   * (median) note; in a la-based minor key the middle note is first raised a minor third, so
+   * a tune centred on its lah keeps that lah under doh (l, t, d). Empty reads as middle C.
+   */
+  function referenceDoh(pitches, dohPc, mode) {
+    var middle = 60;
+    if (pitches.length) {
+      var sorted = pitches.slice().sort(function (a, b) { return a - b; });
+      var mid = sorted.length >> 1;
+      middle = sorted.length % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+    if (mode === "minor") middle += 3;
+    var ref = Math.floor((middle - dohPc) / 12) * 12 + dohPc;
+    while (ref > 127) ref -= 12;
+    while (ref < 0) ref += 12;
+    return ref;
   }
-  function ascendingFlags(pitches) {
+  /**
+   * The hymn-book rule: a chromatic is named for where it goes — rising a semitone to the
+   * next note it is sharpened (de re fe se le), falling a semitone flattened (ra ma sa la ta),
+   * anything else (a tone, a leap, the last note) takes DEFAULT_SHARP. A run of one pitch
+   * shares a name, read from the next differing pitch.
+   */
+  function ascendingFlags(pitches, dohPc) {
     var flags = [], start = 0;
     for (var k = 0; k < pitches.length; k++) flags.push(true);
     while (start < pitches.length) {
       var end = start;
       while (end + 1 < pitches.length && pitches[end + 1] === pitches[start]) end++;
-      var flag = start > 0 ? pitches[start - 1] < pitches[start] : (end + 1 >= pitches.length || pitches[end + 1] > pitches[start]);
+      var step = end + 1 < pitches.length ? pitches[end + 1] - pitches[start] : 0;
+      var flag = step === 1 ? true : step === -1 ? false : DEFAULT_SHARP[(((pitches[start] - dohPc) % 12) + 12) % 12];
       for (var i = start; i <= end; i++) flags[i] = flag;
       start = end + 1;
     }
@@ -71,9 +91,9 @@
     var key = parseKey(keyText);
     if (!key || !notes.length) return notes.slice();
     var dohPc = dohPitchClass(key);
-    var refDoh = referenceDoh((refPitches || notes).map(function (n) { return n.pitchMidi; }), dohPc);
+    var refDoh = referenceDoh((refPitches || notes).map(function (n) { return n.pitchMidi; }), dohPc, key.mode);
     var order = notes.map(function (_, i) { return i; }).sort(function (a, b) { return notes[a].startBeat - notes[b].startBeat; });
-    var inOrder = ascendingFlags(order.map(function (i) { return notes[i].pitchMidi; }));
+    var inOrder = ascendingFlags(order.map(function (i) { return notes[i].pitchMidi; }), dohPc);
     var asc = [];
     order.forEach(function (idx, k) { asc[idx] = inOrder[k]; });
     return notes.map(function (n, i) {

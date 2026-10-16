@@ -91,8 +91,8 @@ def _extract_part_notes_and_solfa(
     score_measures = measures_stream.makeMeasures()
     score_measures.makeAccidentals(inPlace=True, alteredPitches=detected.alteredPitches)
 
-    ref_doh = solfa.reference_doh([n.pitch.midi for n in score_notes], doh_pc)
-    spelling_flags = solfa.ascending_flags([n.pitch.midi for n in score_notes])
+    ref_doh = solfa.reference_doh([n.pitch.midi for n in score_notes], doh_pc, detected.mode)
+    spelling_flags = solfa.ascending_flags([n.pitch.midi for n in score_notes], doh_pc)
     spelling = [
         solfa.resolve_ascending(f, settings.chromatic_spelling)
         for f in spelling_flags

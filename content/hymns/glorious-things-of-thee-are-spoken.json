@@ -1,0 +1,22 @@
+{
+  "title": "Glorious Things of Thee Are Spoken",
+  "tune": "austria",
+  "text": [
+    {"name": "John Newton", "born": 1725, "died": 1807, "role": "Words, Olney Hymns (1779)"}
+  ],
+  "textPublished": 1779,
+  "description": "Glorious Things of Thee Are Spoken in Tonic Solfa to AUSTRIA, doh is F: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "John Newton, who also wrote Amazing Grace, published this hymn on Isaiah 33:20–21 in Olney Hymns (1779). The tune AUSTRIA is Joseph Haydn's melody of 1797, written as the Austrian emperor's anthem."
+  ],
+  "underlay": "Glo-rious things of thee are spo_-ken, Zi-on, cit-y of our_ God; He whose word can-not be bro_-ken Formed thee for His own a_-bode: On the Rock_ of A-ges found_-ed, What can shake thy sure re-pose? With sal-va-tion’s walls sur-round_-ed, Thou may’st_ smile_ at_ all thy_ foes.",
+  "verses": [
+    {"lines": ["Glorious things of thee are spoken,", "Zion, city of our God;", "He whose word cannot be broken", "Formed thee for His own abode:", "On the Rock of Ages founded,", "What can shake thy sure repose?", "With salvation’s walls surrounded,", "Thou may’st smile at all thy foes."]},
+    {"lines": ["See, the streams of living waters,", "Springing from eternal love,", "Well supply thy sons and daughters,", "And all fear of want remove:", "Who can faint while such a river", "Ever flows their thirst to assuage?", "Grace which, like the Lord, the giver,", "Never fails from age to age."]},
+    {"lines": ["Round each habitation hovering,", "See the cloud and fire appear", "For a glory and a covering,", "Showing that the Lord is near:", "Thus deriving from their banner", "Light by night and shade by day,", "Safe they feed upon the manna", "Which He gives them when they pray."]},
+    {"lines": ["Saviour, if of Zion’s city", "I through grace a member am,", "Let the world deride or pity,", "I will glory in Thy name:", "Fading is the worldling’s pleasure,", "All his boasted pomp and show;", "Solid joys and lasting treasure", "None but Zion’s children know."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

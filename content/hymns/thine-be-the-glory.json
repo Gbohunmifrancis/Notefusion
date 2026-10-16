@@ -1,0 +1,23 @@
+{
+  "title": "Thine Be the Glory",
+  "tune": "maccabaeus",
+  "text": [
+    {"name": "Edmond Louis Budry", "born": 1854, "died": 1932, "role": "French words, À toi la gloire (1884)"},
+    {"name": "Richard Birch Hoyle", "born": 1875, "died": 1939, "role": "English translation (1923)"}
+  ],
+  "textPublished": 1884,
+  "description": "Thine Be the Glory, Risen, Conquering Son in Tonic Solfa to MACCABAEUS, doh is D: the solfa with the words, staff notation, three verses and a piano.",
+  "about": [
+    "Edmond Budry, a Swiss pastor, wrote the French Easter hymn À toi la gloire in 1884. Richard Birch Hoyle's English translation dates from 1923. The tune is Handel's chorus 'See, the conqu'ring hero comes', written in 1747 and later added to his oratorio Judas Maccabaeus."
+  ],
+  "underlay": "Thine be the glo-ry, ri_-sen,_ con-qu’ring Son; End_-less_ is the vic-t’ry Thou o’er_ death hast won. An_-gels_ in bright rai-ment rolled the stone a-way, Kept_ the_ fold-ed grave-clothes where Thy_ bo-dy lay. Thine be the glo-ry, ri_-sen,_ con-qu’ring Son; End_-less_ is the vic-t’ry Thou o’er_ death hast won.",
+  "verses": [
+    {"lines": ["Thine be the glory, risen, conquering Son;", "Endless is the victory Thou o’er death hast won.", "Angels in bright raiment rolled the stone away,", "Kept the folded grave-clothes where Thy body lay."]},
+    {"label": "Refrain", "lines": ["Thine be the glory, risen, conquering Son;", "Endless is the victory Thou o’er death hast won."]},
+    {"lines": ["Lo! Jesus meets us, risen from the tomb;", "Lovingly He greets us, scatters fear and gloom;", "Let the Church with gladness hymns of triumph sing,", "For her Lord now liveth; death hath lost its sting."]},
+    {"lines": ["No more we doubt Thee, glorious Prince of Life;", "Life is nought without Thee: aid us in our strife;", "Make us more than conquerors through Thy deathless love;", "Bring us safe through Jordan to Thy home above."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

@@ -7,8 +7,8 @@
  * and the display updates with no round-trip. The server still owns the
  * durable override (PUT /api/library/{id}/key) — this module owns the render.
  *
- * Keep all three implementations in sync: same syllable tables, la-based
- * minor, reference-doh octave marks. Octave marks follow the Python wire
+ * Keep all four implementations in sync (with web-site/assets/choir.js): same
+ * syllable tables, la-based minor, the hymn-book chromatic rule and octave reference. Octave marks follow the Python wire
  * format (' above, , below) because stored notes already carry those strings.
  *
  * The primitives below (parseKey, dohPitchClass, referenceDoh, ascendingFlags,
@@ -94,6 +94,13 @@ export const CHROMATIC_SETS = {
 
 /** Diatonic degree for each semitone above doh (ascending/sharp convention). */
 const SEMITONE_TO_DEGREE = [1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 7] as const;
+
+/**
+ * The name a tonic solfa hymn book gives each semitone above doh when the note does not
+ * move on by a semitone (a leap, a tone, the last note): de, ma, fe, se, ta. true is the
+ * sharpened name; diatonic entries are unobservable. Reasons are in SolfaMapper.cs.
+ */
+const DEFAULT_SHARP = [true, true, true, false, true, true, true, true, true, true, false, true] as const;
 
 export type ChromaticSpelling = "direction" | "ascending" | "descending";
 
@@ -190,37 +197,37 @@ export function dohLetter(keyText: string): string {
   return DOH_NAMES[dohPitchClass(parsed)]!;
 }
 
-/** The doh octave nearest the melody's median — the unmarked register. */
-export function referenceDoh(pitches: readonly number[], dohPc: number): number {
-  // No pitches to centre on — fall back to the doh nearest middle C.
-  if (pitches.length === 0) return Math.round((60 - dohPc) / 12) * 12 + dohPc;
-
-  const sorted = [...pitches].sort((a, b) => a - b);
-  const mid = sorted.length >> 1;
-  const median =
-    sorted.length % 2 === 1
-      ? sorted[mid]!
-      : (sorted[mid - 1]! + sorted[mid]!) / 2;
-
-  let best = dohPc;
-  for (let p = dohPc; p < 128; p += 12) {
-    if (Math.abs(p - median) < Math.abs(best - median)) best = p;
+/**
+ * The unmarked doh, as a tonic solfa hymn book sets it: the doh at or below the melody's
+ * middle (median) note, so a tune between doh and soh prints with no marks. In a la-based
+ * minor key the middle note is first raised a minor third, so a tune centred on its lah keeps
+ * that lah under an unmarked doh (l, t, d). An empty list reads as a middle note of middle C.
+ * Mirrors SolfaMapper.ReferenceDoh and solfa.py's reference_doh.
+ */
+export function referenceDoh(pitches: readonly number[], dohPc: number, mode: KeyMode): number {
+  let middle = 60;
+  if (pitches.length > 0) {
+    const sorted = [...pitches].sort((a, b) => a - b);
+    const mid = sorted.length >> 1;
+    middle = sorted.length % 2 === 1 ? sorted[mid]! : (sorted[mid - 1]! + sorted[mid]!) / 2;
   }
-  return best;
+  if (mode === "minor") middle += 3;
+  let ref = Math.floor((middle - dohPc) / 12) * 12 + dohPc;
+  while (ref > 127) ref -= 12;
+  while (ref < 0) ref += 12;
+  return ref;
 }
 
 /**
- * Which chromatic table each note is spelled from, decided by melodic direction.
+ * Which chromatic table each note is spelled from — the tonic solfa hymn-book rule.
  * Mirrors solfa.py's `ascending_flags` and SolfaMapper.cs's `AscendingFlags`.
  *
- * A rising chromatic is a sharpened degree (de re fe se le); a falling one is a
- * flattened degree (ra ma sa la ta). Direction is taken from the pitch the melody
- * arrived from; on the opening run, where there is nothing to arrive from, it is
- * taken from the pitch the melody leaves for instead; a clip holding one single
- * pitch is ascending by convention.
+ * A chromatic note is named for where it goes, not where it came from: one that rises a
+ * semitone to the next note is a sharpened degree (de re fe se le); one that falls a
+ * semitone is a flattened degree (ra ma sa la ta). Anything else — a tone, a leap, the
+ * last note — takes the name hymn books print for that pitch in the key (de ma fe se ta).
  *
- * Equal neighbours are one run and share a flag, which is why the previous
- * *differing* pitch is what counts rather than the literal previous note: a
+ * Equal neighbours are one run and share a flag, read from the next *differing* pitch: a
  * chromatic sung twice must not be spelled `ra` then `de`.
  *
  * Only the five chromatic semitones {1, 3, 6, 8, 10} can be affected — the two
@@ -230,7 +237,7 @@ export function referenceDoh(pitches: readonly number[], dohPc: number): number 
  * `pitches` must be in melodic (time) order; this is a statement about a note's
  * position in the tune, not about the note in isolation.
  */
-export function ascendingFlags(pitches: readonly number[]): boolean[] {
+export function ascendingFlags(pitches: readonly number[], dohPc: number): boolean[] {
   const flags: boolean[] = new Array(pitches.length).fill(true);
   let start = 0;
   while (start < pitches.length) {
@@ -238,11 +245,9 @@ export function ascendingFlags(pitches: readonly number[]): boolean[] {
     let end = start;
     while (end + 1 < pitches.length && pitches[end + 1] === pitches[start]) end++;
 
+    const step = end + 1 < pitches.length ? pitches[end + 1]! - pitches[start]! : 0;
     const flag =
-      start > 0
-        ? // The previous run's pitch, which differs from this one by construction.
-          pitches[start - 1]! < pitches[start]!
-        : end + 1 >= pitches.length || pitches[end + 1]! > pitches[start]!;
+      step === 1 ? true : step === -1 ? false : DEFAULT_SHARP[(((pitches[start]! - dohPc) % 12) + 12) % 12]!;
 
     for (let i = start; i <= end; i++) flags[i] = flag;
     start = end + 1;
@@ -459,9 +464,10 @@ export function deriveSolfa(
   const refDoh = referenceDoh(
     notes.map((n) => n.pitchMidi),
     dohPc,
+    key.mode,
   );
 
-  // Direction is a property of a note's position in the tune, and this list arrives in
+  // A chromatic's spelling is a property of its position in the tune, and this list arrives in
   // whatever order the API sent it — not necessarily start-beat order. So the flags are
   // computed over a time-ordered view and scattered back, exactly as LibraryDtos.cs does,
   // because the two must agree character for character: the server labels a saved
@@ -470,7 +476,7 @@ export function deriveSolfa(
   const melodic = notes
     .map((_, i) => i)
     .sort((a, b) => notes[a]!.startBeat - notes[b]!.startBeat);
-  const inMelodicOrder = ascendingFlags(melodic.map((i) => notes[i]!.pitchMidi));
+  const inMelodicOrder = ascendingFlags(melodic.map((i) => notes[i]!.pitchMidi), dohPc);
   const ascending: boolean[] = new Array(notes.length).fill(true);
   melodic.forEach((storageIndex, k) => {
     ascending[storageIndex] = resolveAscending(inMelodicOrder[k]!, chromaticSpelling);

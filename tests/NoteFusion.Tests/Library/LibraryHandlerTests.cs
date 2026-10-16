@@ -101,11 +101,12 @@ public class LibraryHandlerTests
         var result = await new UpdateTranscriptionKeyCommandHandler(h.Db, new StubCurrentUser(userId))
             .Handle(new UpdateTranscriptionKeyCommand(saved.Value.Id, "G major"), default);
 
-        // Doh moves to G, so the reference doh becomes G4 (67) and C4/E4 drop below it.
+        // Doh moves to G, so the reference doh becomes G3 (55), the G at or below the middle
+        // note E4: C4/E4 sit in its octave and G4 is the doh above.
         var notes = result.Value.Notes!;
         Assert.Equal(["f", "l", "d"], notes.Select(n => n.Solfa));
         Assert.Equal([4, 6, 1], notes.Select(n => n.Degree));
-        Assert.Equal([",", ",", ""], notes.Select(n => n.OctaveMark));
+        Assert.Equal(["", "", "'"], notes.Select(n => n.OctaveMark));
     }
 
     [Fact]

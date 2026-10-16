@@ -1,0 +1,23 @@
+{
+  "title": "Nearer, My God, to Thee",
+  "tune": "bethany",
+  "text": [
+    {"name": "Sarah Flower Adams", "born": 1805, "died": 1848, "role": "Words (1841)"}
+  ],
+  "textPublished": 1841,
+  "description": "Nearer, My God, to Thee in Tonic Solfa to BETHANY, doh is G: the solfa with the words, staff notation, all five verses and a piano.",
+  "about": [
+    "Sarah Flower Adams, an English poet, wrote the hymn in 1841, taking her picture from Jacob's dream of a ladder to heaven at Bethel (Genesis 28). Lowell Mason wrote the tune BETHANY for it in 1856."
+  ],
+  "underlay": "Near-er, my God, to Thee, near-er to Thee! E’en though it be a cross that_ rais-eth me, Still all my song shall be, near-er, my God, to Thee, Near-er, my God, to Thee, near_-er to Thee!",
+  "verses": [
+    {"lines": ["Nearer, my God, to Thee, nearer to Thee!", "E’en though it be a cross that raiseth me;", "Still all my song shall be,", "Nearer, my God, to Thee,", "Nearer, my God, to Thee, nearer to Thee!"]},
+    {"lines": ["Though like the wanderer, the sun gone down,", "Darkness be over me, my rest a stone;", "Yet in my dreams I’d be", "Nearer, my God, to Thee,", "Nearer, my God, to Thee, nearer to Thee!"]},
+    {"lines": ["There let the way appear, steps unto heaven;", "All that Thou sendest me, in mercy given;", "Angels to beckon me", "Nearer, my God, to Thee,", "Nearer, my God, to Thee, nearer to Thee!"]},
+    {"lines": ["Then, with my waking thoughts bright with Thy praise,", "Out of my stony griefs Bethel I’ll raise;", "So by my woes to be", "Nearer, my God, to Thee,", "Nearer, my God, to Thee, nearer to Thee!"]},
+    {"lines": ["Or if, on joyful wing cleaving the sky,", "Sun, moon, and stars forgot, upward I fly,", "Still all my song shall be,", "Nearer, my God, to Thee,", "Nearer, my God, to Thee, nearer to Thee!"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

@@ -63,7 +63,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
   so the model runs in a child process that hands the memory back — `NF_SEPARATE_IN_PROCESS=1` restores
-  the in-process run), then transcribed. Before submitting, clients ask `POST /v1/links/resolve` (via the C# `…/link/info`
+  the in-process run), then transcribed. Every separation (a link, `separate=true`, or a band the queue heard in a
+  melody upload) checks the stem for a voice (`separate.voice_share_db`): a stem with none gives way to the mixture, and
+  one whose sheet has fewer than max(4, seconds/10) notes to the mixture's sheet when that has more; a mixture is
+  read on the normal lane (the fast lane has no melody floor). Instruments recorded alone used to come back as
+  one or two notes. Before submitting, clients ask `POST /v1/links/resolve` (via the C# `…/link/info`
   routes, which add the caller's allowance as `maxSeconds`) for the song's length and let the user pick the
   section; `/v1/transcribe/link` takes `start_seconds`/`end_seconds` and cuts that window. A job waiting for a worker reports `stage="queued"` with `queue_position` (jobs ahead); clients show
   the place in line rather than a stage that has not begun. The queue has two lanes:
@@ -114,9 +118,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **Solfa engine (`src/NoteFusion.Core/Solfa`) is the product's core IP.** Movable-do: doh
   derives from the key (la-based for minor). Key change = re-label, never re-transcribe (a key
   given at submit is the worker's, which writes the sung pitches in it). The doh header is
-  spelled as the key signature spells it ("Doh is Bb", not A#). Every change there needs unit
+  spelled as the key signature spells it ("Doh is Bb", not A#). It follows tonic solfa hymn-book
+  conventions: a chromatic is named for where it goes (a semitone up de re fe se le, a semitone
+  down ra ma sa la ta, anything else de ma fe se ta), and the unmarked octave starts at the doh at
+  or below the tune's middle note (a minor third higher for la-based minor; parts are marked from
+  the melody's doh). Every change there needs unit
   tests. The Python worker, mobile `lib/solfa.ts` and web `assets/choir.js` mirror this engine —
-  keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+  keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`; the shared
+  table is `HymnBookSolfaTests` and its copies in each language's tests).
 - A free account gets 3 transcriptions, ever (`FreeTier`), counted per account, per inbox and per device from
   `TranscriptionJob` rows (`TrialUsage`). The inbox is `users.CanonicalEmail` (`Core/ValueObjects/Mailbox`:
   lowercase, `+tag` dropped, and for gmail/googlemail dots dropped too; non-unique, filled at startup for old

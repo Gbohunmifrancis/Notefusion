@@ -1,0 +1,17 @@
+{
+  "name": "AUSTRIA",
+  "music": [
+    {"name": "Joseph Haydn", "born": 1732, "died": 1809, "role": "Melody (1797)"}
+  ],
+  "musicPublished": 1797,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 92,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1.5 G4:.5 A4:1 G4:1 | Bb4:1 A4:1 G4:.5 E4:.5 F4:1 | D5:1 C5:1 Bb4:1 A4:1 | G4:1 A4:.5 F4:.5 C5:2 | F4:1.5 G4:.5 A4:1 G4:1 | Bb4:1 A4:1 G4:.5 E4:.5 F4:1 | D5:1 C5:1 Bb4:1 A4:1 | G4:1 A4:.5 F4:.5 C5:2 | G4:1 A4:1 G4:.5 E4:.5 C4:1 | Bb4:1 A4:1 G4:.5 E4:.5 C4:1 | C5:1 Bb4:1 A4:1.5 A4:.5 | B4:1.5 B4:.5 C5:2 | F5:1.5 E5:.5 D5:1 C5:1 | D5:1.5 C5:.5 C5:.5 Bb4:.5 A4:1 | G4:1 A4:.5 Bb4:.5 C5:.5 D5:.5 Bb4:.5 G4:.5 | F4:1 A4:.5 G4:.5 F4:2",
+  "reviewed": false,
+  "confidence": "high; check bar 12",
+  "source": "Open Hymnal Project ABC score and the score on Wikipedia's article, which agree on every note and on the underlay.",
+  "reviewNotes": "The sources differ only in the rhythm of bar 12 ('sure re-pose'): this follows Wikipedia's B. B C (dotted crotchet, quaver, minim); the Open Hymnal has B B C C with 're-' over two quavers. The B natural is the sharpened fah (fe)."
+}

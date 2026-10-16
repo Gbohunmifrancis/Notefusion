@@ -1,0 +1,25 @@
+{
+  "title": "I Need Thee Every Hour",
+  "tune": "need",
+  "text": [
+    {"name": "Annie Sherwood Hawks", "born": 1835, "died": 1918, "role": "Words (1872)"},
+    {"name": "Robert Lowry", "born": 1826, "died": 1899, "role": "Refrain (1872)"}
+  ],
+  "textPublished": 1872,
+  "description": "I Need Thee Every Hour in Tonic Solfa, doh is Ab: the solfa with the words, staff notation, all five verses with the refrain, and a piano.",
+  "about": [
+    "Annie Sherwood Hawks, a homemaker in Brooklyn, New York, wrote these words in 1872. Her pastor, Robert Lowry, set them to music and added the refrain."
+  ],
+  "underlay": "I need Thee ev-’ry hour, Most gra_-cious_ Lord; No ten-der voice like Thine Can peace_ af_-ford. I need Thee, O I need Thee; Ev-’ry hour I need Thee; O bless me now, my Sav-iour, I come_ to Thee!",
+  "verses": [
+    {"lines": ["I need Thee every hour,", "Most gracious Lord;", "No tender voice like Thine", "Can peace afford."]},
+    {"label": "Refrain", "lines": ["I need Thee, O I need Thee;", "Every hour I need Thee;", "O bless me now, my Saviour,", "I come to Thee!"]},
+    {"lines": ["I need Thee every hour,", "Stay Thou nearby;", "Temptations lose their power", "When Thou art nigh."]},
+    {"lines": ["I need Thee every hour,", "In joy or pain;", "Come quickly and abide,", "Or life is vain."]},
+    {"lines": ["I need Thee every hour;", "Teach me Thy will;", "And Thy rich promises", "In me fulfil."]},
+    {"lines": ["I need Thee every hour,", "Most Holy One;", "O make me Thine indeed,", "Thou blessed Son!"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}
