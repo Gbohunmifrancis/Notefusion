@@ -342,10 +342,12 @@ def motion(line: list[tuple[int, float, float]]) -> dict[str, float]:
         "leap": sum(1 for s in steps if abs(s) > 5) / len(steps),
         "range": max(ps) - min(ps),
         "contour": turns / len(ps),
+        # A leap and straight back (x y x, a third or more away): an arpeggio, not a line.
+        "zigzag": sum(1 for x, y, z in zip(ps, ps[1:], ps[2:]) if x == z and abs(y - x) >= 3) / len(ps),
     }
 
 
-def errors(parts: dict[str, list[tuple[int, float, float]]]) -> dict[str, float]:
+def errors(parts: dict[str, list[tuple[int, float, float]]], tonic: int, mode: str) -> dict[str, float]:
     from app.pipeline import harmony
 
     rows = _sonorities(parts)
@@ -368,9 +370,20 @@ def errors(parts: dict[str, list[tuple[int, float, float]]]) -> dict[str, float]
         space += (x[0] - x[1] > 12) + (x[1] - x[2] > 12)
     ranges = {"alto": harmony.ALTO_RANGE, "tenor": harmony.TENOR_RANGE, "bass": harmony.BASS_RANGE}
     out_of = sum(1 for v, (lo, hi) in ranges.items() for p, _s, _d in parts[v] if not lo <= p <= hi)
+    # Texture, read the same way off both: the triad each sonority spells (``book_chord``),
+    # how often its fifth is in the bass (a six-four), and lower-voice notes outside it.
+    six_four = nct = 0
+    for x in rows:
+        spelled = book_chord([p % 12 for p in x], x[3], tonic, mode)
+        if spelled is None:
+            continue
+        root = (tonic + spelled[0]) % 12
+        tones = {(root + i) % 12 for i in _QUALITY[spelled[1]]}
+        six_four += (x[3] - root) % 12 in (6, 7)
+        nct += sum(1 for p in x[1:] if p % 12 not in tones)
     per = 100.0 / n
     return {"parallels": par * per, "hidden": hid * per, "crossing": cross * per, "overlap": over * per,
-            "spacing": space * per, "range": out_of * per}
+            "spacing": space * per, "range": out_of * per, "six_four": six_four * per, "nct": nct * per}
 
 
 _TRIADS = {
@@ -395,10 +408,13 @@ def book_chord(pcs: list[int], bass: int, tonic: int, mode: str) -> tuple[int, s
     return arg
 
 
-def chord_agreement(book: BookTune, chords: list) -> float:
-    """Share of beats (with a note in every voice) where our chord's root and quality are the book's."""
+def chord_agreement(book: BookTune, chords: list) -> tuple[float, float, float]:
+    """On the beats with a note in every voice: the share where our chord's root and quality
+    are the book's, and how often ours and the book's change chord from one beat to the next."""
     end = max(s + d for s, d, _c in chords)
     same = total = 0
+    changes = {"ours": 0, "book": 0}
+    last: dict[str, object] = {"ours": None, "book": None}
     beat = 0.0
     while beat < end - 1e-6:
         sounding = []
@@ -410,35 +426,44 @@ def chord_agreement(book: BookTune, chords: list) -> float:
             theirs = book_chord([p % 12 for p in sounding], sounding[3], book.tonic, book.mode)
             total += 1
             same += _TRIADS[book.mode].get(mine) == theirs
+            for who, c in (("ours", _TRIADS[book.mode].get(mine)), ("book", theirs)):
+                changes[who] += last[who] is not None and c != last[who]
+                last[who] = c
         beat += 1.0
-    return same / total if total else 0.0
+    if not total:
+        return 0.0, 0.0, 0.0
+    return same / total, changes["ours"] / total, changes["book"] / total
 
 
 # ── Report ────────────────────────────────────────────────────────────────────
 
-MOTION_KEYS = ("distinct", "repeat", "longest", "mean_int", "leap", "range", "contour")
-ERROR_KEYS = ("parallels", "hidden", "crossing", "overlap", "spacing", "range")
+MOTION_KEYS = ("distinct", "repeat", "longest", "mean_int", "leap", "range", "contour", "zigzag")
+ERROR_KEYS = ("parallels", "hidden", "crossing", "overlap", "spacing", "range", "six_four", "nct")
 
 
 def measure(tunes: list[BookTune]) -> dict:
     """Mean motion per voice (ours, book), mean error rates (ours, book), chord agreement."""
     acc = {who: {v: {k: [] for k in MOTION_KEYS} for v in LOWER} for who in ("ours", "book")}
     err = {who: {k: [] for k in ERROR_KEYS} for who in ("ours", "book")}
-    agree = []
+    agree, change_ours, change_book = [], [], []
     for t in tunes:
         mine, chords, _s = ours(t)
         for who, parts in (("ours", mine), ("book", t.parts)):
             for v in LOWER:
                 for k, x in motion(parts[v]).items():
                     acc[who][v][k].append(x)
-            for k, x in errors(parts).items():
+            for k, x in errors(parts, t.tonic, t.mode).items():
                 err[who][k].append(x)
-        agree.append(chord_agreement(t, chords))
+        same, ch_ours, ch_book = chord_agreement(t, chords)
+        agree.append(same)
+        change_ours.append(ch_ours)
+        change_book.append(ch_book)
     mean = lambda xs: statistics.mean(xs) if xs else 0.0  # noqa: E731
     return {
         "motion": {who: {v: {k: mean(xs) for k, xs in d.items()} for v, d in vs.items()} for who, vs in acc.items()},
         "errors": {who: {k: mean(xs) for k, xs in d.items()} for who, d in err.items()},
         "chords": mean(agree),
+        "changes": {"ours": mean(change_ours), "book": mean(change_book)},
         "n": len(tunes),
     }
 
@@ -454,7 +479,8 @@ def _table(m: dict) -> str:
     for who in ("ours", "book"):
         row = m["errors"][who]
         lines.append(f"  {who:10s}" + "".join(f"{row[k]:10.2f}" for k in ERROR_KEYS))
-    lines.append(f"  chord agreement with the book: {m['chords']:.3f}")
+    lines.append(f"  chord agreement with the book: {m['chords']:.3f}; chord changes a beat: ours "
+                 f"{m['changes']['ours']:.2f}, book {m['changes']['book']:.2f}")
     return "\n".join(lines)
 
 
@@ -490,15 +516,46 @@ def main() -> None:
             "tenor_ours": " ".join(sol["tenor"][:24]),
             "tenor_book": " ".join(book_solfa(t, "tenor")[:24]),
         }
+    pages = {slug: page_parts(slug) for slug in NAMED if page_parts(slug)}
     if args.json:
-        print(json.dumps({"splits": report, "named": named}, indent=1))
+        print(json.dumps({"splits": report, "named": named, "pages": pages}, indent=1))
         return
-    print("── named hymns " + "─" * 40)
+    print("── named hymns, under CCEH's soprano " + "─" * 20)
     for slug, row in named.items():
         print(f"  {slug}: tenor {row['tenor_distinct_ours']} pitches (book {row['tenor_distinct_book']}), "
               f"alto {row['alto_distinct_ours']} (book {row['alto_distinct_book']})")
         print(f"    ours  {row['tenor_ours']}")
         print(f"    book  {row['tenor_book']}")
+    print("── named hymns, under our hymn page's melody " + "─" * 12)
+    for slug, row in pages.items():
+        print(f"  {slug}: distinct pitches alto {row['alto_distinct']}, tenor {row['tenor_distinct']}, "
+              f"bass {row['bass_distinct']}")
+        print(f"    tenor  {row['tenor']}")
+
+
+def page_parts(slug: str) -> dict | None:
+    """Our parts under the melody of our own hymn page for ``slug`` (key, meter and pickup as
+    published), or None when the page is not there."""
+    from app.pipeline import harmony, solfa
+    from app.pipeline.transcriber import TranscribedNote
+    from tests.accuracy.hymn_corpus import TUNES_DIR, _parse_key, parse_melody
+
+    path = TUNES_DIR / f"{slug}.json"
+    if not path.is_file():
+        return None
+    tune = json.loads(path.read_text(encoding="utf-8"))
+    melody = parse_melody(tune["melody"], tune["time"], tune.get("pickup") or 0)
+    tonic, mode = _parse_key(tune["key"])
+    doh = solfa.doh_pitch_class(tonic, mode)
+    ref = solfa.reference_doh([n.pitch_midi for n in melody.notes], doh, mode)
+    notes = []
+    for n in melody.notes:
+        syl, mark, degree = solfa.syllable(n.pitch_midi, doh, ref)
+        notes.append(TranscribedNote(n.pitch_midi, n.start_beat, n.dur_beats, degree, syl, mark, 1.0))
+    res = harmony.harmonise(notes, tonic, mode, doh_pc=doh, ref_doh=ref, time_signature=tune["time"])
+    out = {f"{v}_distinct": len({n.pitch_midi for n in res.parts[v]}) for v in LOWER}
+    out["tenor"] = " ".join(n.solfa + n.octave_mark for n in res.parts["tenor"][:28])
+    return out
 
 
 if __name__ == "__main__":

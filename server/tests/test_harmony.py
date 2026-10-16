@@ -1,5 +1,8 @@
 """The SATB harmoniser: chord choice, voice leading, and the shape of what it returns."""
 
+import json
+
+import numpy as np
 import pytest
 
 from app.pipeline import harmony, solfa
@@ -215,3 +218,126 @@ def test_harmonise_sheet_refuses_a_key_it_cannot_read():
     with pytest.raises(ValueError):
         harmonise_sheet("H sharp mixolydian", 100, "4/4", [{"pitch_midi": 60, "start_beat": 0, "dur_beats": 1}])
     assert harmonise_sheet("C major", 100, "4/4", []) == (None, "")
+
+
+# ── Lines that move: the hymn book's four parts as the yardstick ────────────────
+# ``tests/accuracy/harmony_bench.py`` measures the written parts against CCEH's own
+# harmonisations (``harmony_book.json``); these hold the line on what it showed.
+
+
+@pytest.fixture
+def no_engraving(monkeypatch):
+    monkeypatch.setattr(harmony, "build_musicxml", lambda *a, **k: "")
+
+
+@pytest.fixture(scope="module")
+def book():
+    """[(book tune, our parts, our chord spans)] for every tune in the bench's fixture."""
+    from tests.accuracy import harmony_bench as hb
+
+    engrave, harmony.build_musicxml = harmony.build_musicxml, lambda *a, **k: ""
+    try:
+        return [(tune, *hb.ours(tune)[:2]) for tune in hb.load()]
+    finally:
+        harmony.build_musicxml = engrave
+
+
+def _longest_run(pitches):
+    best = run = 1
+    for a, b in zip(pitches, pitches[1:]):
+        run = run + 1 if a == b else 1
+        best = max(best, run)
+    return best
+
+
+@pytest.mark.parametrize("slug", ["new-britain", "azmon", "belmont"])
+def test_the_tenor_is_a_line_not_one_note(slug, no_engraving):
+    # Under our own hymn page's melody (Amazing Grace is NEW BRITAIN): its tenor used to sit
+    # on doh with a dip to ti, two pitches for the whole verse.
+    from tests.accuracy.hymn_corpus import TUNES_DIR, _parse_key, parse_melody
+
+    path = TUNES_DIR / f"{slug}.json"
+    if not path.is_file():
+        pytest.skip("content/hymns is not beside server/")
+    tune = json.loads(path.read_text(encoding="utf-8"))
+    melody = parse_melody(tune["melody"], tune["time"], tune.get("pickup") or 0)
+    tonic, mode = _parse_key(tune["key"])
+    ref = solfa.reference_doh([n.pitch_midi for n in melody.notes], tonic, mode)
+    notes = [TranscribedNote(n.pitch_midi, n.start_beat, n.dur_beats, 0, "", "", 1.0) for n in melody.notes]
+    result = harmonise(notes, tonic, mode, doh_pc=tonic, ref_doh=ref, time_signature=tune["time"])
+    tenor = [n.pitch_midi for n in result.parts["tenor"]]
+    assert len(set(tenor)) >= 4, tenor
+    assert _longest_run(tenor) <= 4, tenor
+    moves = sum(1 for a, b in zip(tenor, tenor[1:]) if a != b) / (len(tenor) - 1)
+    assert moves >= 0.5, moves
+    # The alto may hold the dominant through I-V-I as the books do (CCEH's Azmon holds it for
+    # most of the verse), but it is still a line.
+    assert len({n.pitch_midi for n in result.parts["alto"]}) >= 3
+
+
+def test_written_parts_keep_the_rules_on_the_hymn_book_corpus(book):
+    from tests.accuracy import harmony_bench as hb
+
+    for tune, parts, _chords in book:
+        rows = hb._sonorities(parts)
+        for prev, cur in zip(rows, rows[1:]):
+            for i in range(4):
+                for j in range(i + 1, 4):
+                    assert not harmony._parallel((prev[i], prev[j]), (cur[i], cur[j])), (tune.slug, prev, cur)
+        for row in rows:
+            assert row[0] >= row[1] >= row[2] >= row[3], (tune.slug, row)  # no crossing
+            assert row[0] - row[1] <= harmony.MAX_UPPER_SPACING and row[1] - row[2] <= harmony.MAX_UPPER_SPACING
+        for name, (lo, hi) in (("alto", harmony.ALTO_RANGE), ("tenor", harmony.TENOR_RANGE),
+                               ("bass", harmony.BASS_RANGE)):
+            assert all(lo <= p <= hi for p, _s, _d in parts[name]), (tune.slug, name)
+
+
+def test_inner_voices_move_like_the_hymn_books(book):
+    # Over the whole fixture the written alto and tenor repeat about as often as CCEH's
+    # (0.40 of their notes) and run on one pitch about as long (6 notes); they used to repeat
+    # two notes in three, for runs of nine.
+    from tests.accuracy import harmony_bench as hb
+
+    for name in ("alto", "tenor"):
+        stats = [hb.motion(parts[name]) for _tune, parts, _chords in book]
+        mean = {k: sum(s[k] for s in stats) / len(stats) for k in ("repeat", "longest", "distinct")}
+        assert mean["repeat"] < 0.5, (name, mean)
+        assert mean["longest"] < 7.5, (name, mean)
+        assert mean["distinct"] >= 5.5, (name, mean)
+
+
+def test_a_passing_note_is_reached_and_left_by_step(book):
+    chords_by_name = {c.name: c for c in harmony.MINOR_CHORDS + harmony.MAJOR_CHORDS}
+    count = 0
+    for tune, parts, chords in book:
+        for name in ("alto", "tenor"):
+            line = parts[name]
+            for i, (p, s, _d) in enumerate(line):
+                chord = next(c for cs, cd, c in chords if cs <= s + 1e-6 < cs + cd)
+                if p % 12 in chords_by_name[chord].pitch_classes(tune.tonic):
+                    continue
+                count += 1
+                assert 0 < i < len(line) - 1, (tune.slug, name, i)
+                assert 1 <= abs(p - line[i - 1][0]) <= 2 and 1 <= abs(line[i + 1][0] - p) <= 2, (tune.slug, name, i)
+    assert count > 0  # the corpus does get passing notes
+
+
+def test_the_line_search_scores_moves_as_the_single_step_does():
+    scale = (0, 2, 4, 5, 7, 9, 11)
+    for c1, c2, s1, s2, same in [(0, 4, 72, 74, False), (3, 3, 69, 67, True), (5, 0, 71, 72, False)]:
+        a, b = harmony.MAJOR_CHORDS[c1], harmony.MAJOR_CHORDS[c2]
+        prev = harmony._voicings(a, C, s1, False, tuple(p for p in scale if p not in a.pitch_classes(C)))
+        cur = harmony._voicings(b, C, s2, False, tuple(p for p in scale if p not in b.pitch_classes(C)))
+        matrix = harmony._transition_matrix(
+            s1, s2, np.array([v for _c, v, _m in prev]), np.array([m for _c, _v, m in prev]),
+            np.array([v for _c, v, _m in cur]), np.array([m for _c, _v, m in cur]), same)
+        for i, (_c, pv, pm) in enumerate(prev):
+            for j, (_c2, cv, cm) in enumerate(cur):
+                assert matrix[i, j] == pytest.approx(harmony._transition((s1, *pv), (s2, *cv), same, pm, cm))
+
+
+def test_harmonise_is_deterministic(no_engraving):
+    first = harmonise(_tune(TWINKLE), C, "major", doh_pc=C, ref_doh=60)
+    again = harmonise(_tune(TWINKLE), C, "major", doh_pc=C, ref_doh=60)
+    for name in harmony.PART_NAMES:
+        assert first.parts[name] == again.parts[name]
