@@ -6,6 +6,7 @@ import { Button } from "../Button";
 import { Touchable } from "../Touchable";
 import { fonts, radii, spacing, typography, type Palette } from "../../design/theme";
 import { useColors, useThemedStyles } from "../../lib/theme";
+import { METER_CHOICES, meterLabel, type Meter } from "../../lib/meter";
 
 export type RecordMode = "melody" | "poly" | "choir" | "chords";
 
@@ -19,8 +20,8 @@ export interface ModeOption {
 }
 
 /**
- * Everything the record screen asks before a take — what is being recorded, the key, and the
- * keyboard's transpose — in one bottom sheet behind the mode pill, so the screen itself keeps to
+ * Everything the record screen asks before a take — what is being recorded, the key, the beats in
+ * a bar, and the keyboard's transpose — in one bottom sheet behind the mode pill, so the screen itself keeps to
  * the timer, the line and the button.
  */
 export function RecordOptionsSheet({
@@ -32,6 +33,8 @@ export function RecordOptionsSheet({
   keys,
   selectedKey,
   onKey,
+  meter,
+  onMeter,
   showTranspose,
   transposeChoices,
   transpose,
@@ -46,6 +49,9 @@ export function RecordOptionsSheet({
   keys: readonly string[];
   selectedKey: string;
   onKey: (k: string) => void;
+  /** Beats in a bar; null is Not sure, which sends nothing. */
+  meter: Meter | null;
+  onMeter: (m: Meter | null) => void;
   /** Shown for chords, and whenever a transpose is set, because it rides along with every submit. */
   showTranspose: boolean;
   transposeChoices: readonly number[];
@@ -109,6 +115,26 @@ export function RecordOptionsSheet({
                 );
               })}
             </ScrollView>
+
+            <Text style={[styles.eyebrow, styles.eyebrowGap]}>Beats in a bar</Text>
+            <View style={styles.chipsWrap}>
+              {METER_CHOICES.map((m) => {
+                const active = meter === m.value;
+                return (
+                  <Touchable
+                    key={m.short}
+                    onPress={() => onMeter(m.value)}
+                    radius={radii.pill}
+                    style={[styles.chip, styles.meterChip, active && styles.chipOn]}
+                    accessibilityLabel={`Beats in a bar: ${m.label}`}
+                    accessibilityState={{ selected: active }}
+                  >
+                    <Text style={[styles.chipText, active && styles.chipTextOn]}>{m.short}</Text>
+                  </Touchable>
+                );
+              })}
+            </View>
+            <Text style={styles.meterHint}>{meterLabel(meter)}</Text>
 
             {showTranspose ? (
               <>
@@ -234,6 +260,20 @@ const makeStyles = (c: Palette) =>
     chips: {
       gap: spacing.xs + 2,
       paddingRight: spacing.lg,
+    },
+    chipsWrap: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      gap: spacing.xs + 2,
+    },
+    meterChip: {
+      minWidth: 48,
+    },
+    meterHint: {
+      ...typography.caption,
+      letterSpacing: 0,
+      color: c.textMuted,
+      marginTop: spacing.sm,
     },
     chip: {
       height: 36,

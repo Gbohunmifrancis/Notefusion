@@ -65,6 +65,12 @@ public sealed record TranscribeOptions
 
     /// <summary>The furthest a keyboard's transpose setting goes either way, in semitones.</summary>
     public const int MaxKeyboardTranspose = 11;
+
+    /// <summary>The tempo range the worker takes, in beats a minute (<c>server/app/api/routes.py</c>).</summary>
+    public const int MinTempo = 20;
+
+    /// <summary>See <see cref="MinTempo"/>.</summary>
+    public const int MaxTempo = 400;
 }
 
 /// <summary>The worker's two queue lanes; wire values "normal" / "high".</summary>

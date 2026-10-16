@@ -47,6 +47,8 @@ import {
   loadKeyboardTranspose,
   setKeyboardTranspose,
 } from "../lib/keyboardTranspose";
+import { meterEventValue, type Meter } from "../lib/meter";
+import { logAnalyticsEvent } from "../lib/analytics";
 import {
   fonts,
   motion,
@@ -264,6 +266,8 @@ export function RecordScreen() {
   const [mode, setMode] = useState<Mode>("melody");
   const [selectedKey, setSelectedKey] = useState<string>("Auto");
   const [optionsOpen, setOptionsOpen] = useState(false);
+  /** Beats in a bar for the next take or file; null is Not sure. Back to Not sure once one is sent (lib/meter). */
+  const [meter, setMeter] = useState<Meter | null>(null);
   /** The player's keyboard transpose, mirrored from the module cache so the chips repaint. */
   const [kbTranspose, setKbTranspose] = useState(keyboardTranspose());
   useEffect(() => {
@@ -566,11 +570,15 @@ export function RecordScreen() {
       if (separate === null) return;
       setPhase("uploading");
       const keyOpt = selectedKey === "Auto" ? undefined : selectedKey;
-      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined };
+      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
+      void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "file" });
       rememberSubmit({ uri: asset.uri, name: asset.name || "imported-audio.m4a", opts }); const jobId = await start(asset.uri, asset.name || "imported-audio.m4a", opts);
       // Only once the job is really queued — a quota refusal has no completion
       // to notify about.
-      if (jobId) void offerBackgroundAlerts();
+      if (jobId) {
+        setMeter(null);
+        void offerBackgroundAlerts();
+      }
     } catch {
       setPhase("ready");
       setPermError("Could not import audio file. Please try again.");
@@ -603,9 +611,13 @@ export function RecordScreen() {
       // transcribed whole comes back as a scatter of wrong notes — so the same question, with the
       // same remembered answer, and no cancel because the take is already made.
       const separate = mode === "chords" ? false : ((await askIfSong(false)) ?? false);
-      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined };
+      const opts = { mode, key: keyOpt, separate, keyboardTranspose: kbTranspose || undefined, timeSignature: meter ?? undefined };
+      void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "mic" });
       rememberSubmit({ uri, name: `clip-${elapsed}s.m4a`, opts }); const jobId = await start(uri, `clip-${elapsed}s.m4a`, opts);
-      if (jobId) void offerBackgroundAlerts();
+      if (jobId) {
+        setMeter(null);
+        void offerBackgroundAlerts();
+      }
     } catch {
       setPhase("ready");
     }
@@ -688,7 +700,7 @@ export function RecordScreen() {
   const uploadStages = separating ? UPLOAD_STAGES : UPLOAD_STAGES.filter((s) => s.key !== "separating");
   const uploadStageIndex = uploadStages.findIndex((s) => s.key === state.stage);
 
-  const pillLabel = MODE_TITLE[mode] + (selectedKey === "Auto" ? "" : ` · ${selectedKey}`);
+  const pillLabel = MODE_TITLE[mode] + (selectedKey === "Auto" ? "" : ` · ${selectedKey}`) + (meter ? ` · ${meter}` : "");
 
   return (
     // Scrolls only when it has to. `container` grows to fill the viewport, so at the default text
@@ -998,6 +1010,8 @@ export function RecordScreen() {
         keys={KEYS}
         selectedKey={selectedKey}
         onKey={setSelectedKey}
+        meter={meter}
+        onMeter={setMeter}
         showTranspose={mode === "chords" || kbTranspose !== 0}
         transposeChoices={KEYBOARD_TRANSPOSE_CHOICES}
         transpose={kbTranspose}

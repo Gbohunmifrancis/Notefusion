@@ -18,6 +18,7 @@
   var form = $("try-form");
   if (!form) return;
   var urlInput = $("try-url"), submit = $("try-submit"), file = $("try-file"), record = $("try-record"), status = $("try-status");
+  var meterBox = $("try-meter");
   var links = window.NfSongLink;
 
   function say(text, kind) { status.textContent = text || ""; status.className = "try-status" + (kind ? " try-status-" + kind : ""); }
@@ -135,21 +136,36 @@
     if (info.url !== found.url || info.pending) { info.wanted = found.url; if (info.url !== found.url) lookup(true); return; }
     submitLink(found.url);
   });
+  // "Beats in a bar" (assets/meter.js), when the box has one: sent only when the visitor names a meter.
+  function chosenMeter() { return window.NfMeter ? window.NfMeter.chosen(meterBox) : null; }
+  function trackMeter(meter) { if (window.NfMeter) track(window.NfMeter.eventName(meter)); }
+  /** A recording or file as the preview's form, with the meter when one was named. */
+  function audioForm(blob, name) {
+    var fd = new FormData(); fd.append("audio", blob, name); fd.append("audioPreview", "false");
+    var meter = chosenMeter();
+    if (meter) fd.append("timeSignature", meter);
+    trackMeter(meter);
+    return fd;
+  }
+
   function submitLink(url) {
     var body = { url: url, audioPreview: false };
     var picked = info.card && info.url === url ? info.card.selection() : null;
     if (picked) { body.startSeconds = picked.startSeconds; body.endSeconds = picked.endSeconds; }
+    var meter = chosenMeter();
+    if (meter) body.timeSignature = meter;
     busy(true); say("Reading the link…");
     track("Preview started (link)");
+    trackMeter(meter);
     send("/api/preview/link", { json: body }).then(open).catch(function (err) { busy(false); explain(err); });
   }
 
   file.addEventListener("change", function () {
     var f = file.files && file.files[0];
     if (!f) return;
-    var fd = new FormData(); fd.append("audio", f, f.name); fd.append("audioPreview", "false");
     busy(true); sayUpload(0);
     track("Preview started (audio)");
+    var fd = audioForm(f, f.name);
     upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); file.value = ""; });
   });
 
@@ -164,7 +180,7 @@
       track: track,
       onError: function (text, kind) { say(kind === "short" ? text : text + " Paste a link or pick a file instead.", "error"); },
       onTake: function (blob, name) {
-        var fd = new FormData(); fd.append("audio", blob, name); fd.append("audioPreview", "false");
+        var fd = audioForm(blob, name);
         busy(true); sayUpload(0);
         upload("/api/preview", fd, sayUpload).then(open).catch(function (err) { busy(false); explain(err); });
       }

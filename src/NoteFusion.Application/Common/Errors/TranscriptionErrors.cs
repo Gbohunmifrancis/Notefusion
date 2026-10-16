@@ -1,4 +1,5 @@
 using NoteFusion.Application.Transcriptions;
+using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Shared.Results;
 
 namespace NoteFusion.Application.Common.Errors;
@@ -74,6 +75,14 @@ public static class TranscriptionErrors
     public static readonly Error InvalidKeyboardTranspose =
         Error.Validation("TRANS_INVALID_KEYBOARD_TRANSPOSE",
             "Keyboard transpose must be a whole number of semitones from -11 to 11.");
+
+    public static readonly Error InvalidTimeSignature =
+        Error.Validation("TRANS_INVALID_TIME_SIGNATURE",
+            $"Beats in a bar must be {string.Join(", ", Meters.Supported.SkipLast(1))} or {Meters.Supported[^1]}, or left as Not sure.");
+
+    public static readonly Error InvalidTempo =
+        Error.Validation("TRANS_INVALID_TEMPO",
+            $"Tempo must be between {TranscribeOptions.MinTempo} and {TranscribeOptions.MaxTempo} beats a minute, or left out.");
 
     public static readonly Error PreviewLimitReached =
         Error.Validation("PREVIEW_LIMIT_REACHED", "You've had your free preview. Sign in or create a free account to keep transcribing.");

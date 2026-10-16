@@ -1301,17 +1301,20 @@
     if (section) { body.startSeconds = section.startSeconds; body.endSeconds = section.endSeconds; }
     // Only when set: the sheet is then written in the keys pressed on a transposed keyboard.
     if (kbTranspose() !== 0) body.keyboardTranspose = kbTranspose();
+    var meter = chosenMeter();
+    if (meter) body.timeSignature = meter;
     sendLink(body);
   }
   /** The link as it was sent, kept so "Try again" on a job that never finishes can send the same again (`again`). */
   function sendLink(body, again) {
     linkInfo.sending = true; syncLinkSubmit(); hide($("app-alert"));
     track(guest ? "Preview started (link)" : "Song link transcribed");
+    if (!again && window.NfMeter) track(window.NfMeter.eventName(body.timeSignature));
     var following = !!pollTimer, before = current;
     request(guest ? "/api/preview/link" : "/api/transcriptions/link", { method: "POST", anonymous: guest, body: body })
       .then(function (job) {
         if (again && doneMeanwhile(before)) return;
-        if (!again) { clearLinkCard(); $("link-url").value = ""; }
+        if (!again) { clearLinkCard(); $("link-url").value = ""; resetMeter(); }
         startJob(job, guest ? "preview" : "link", "link", function () { sendLink(body, true); });
       })
       .catch(function (err) {
@@ -1335,6 +1338,9 @@
   function selectKind(kind) { var el = document.querySelector('input[name="upload-kind"][value="' + kind + '"]'); if (el) el.checked = true; renderKindOptions(); }
   /** The kind a submission goes as: the person's choice, else the default for where the audio came from. */
   function uploadKind(fromMic) { var k = chosenKind() || (fromMic ? "hum" : "song"); selectKind(k); return k; }
+  /** "Beats in a bar" (assets/meter.js): the meter to send, or null for Not sure. Not kept between songs. */
+  function chosenMeter() { return window.NfMeter ? window.NfMeter.chosen($("meter")) : null; }
+  function resetMeter() { if (window.NfMeter) window.NfMeter.reset($("meter")); }
   /** The keyboard's transpose setting, −11 to +11; 0 when it is off. */
   function kbTranspose() { var n = parseInt(stored(KB_KEY), 10); return n >= -11 && n <= 11 ? n : 0; }
   /** A choir with instruments behind it, and the keyboard's transpose, only where they apply (or are set). */
@@ -1412,9 +1418,11 @@
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && !$("cost-pop").hidden) { setCostInfo(false); $("cost-info").focus(); }
   });
-  function submitAudio(file, name, fromMic, again) {
+  function submitAudio(file, name, fromMic, again, meter) {
     // One recording goes up at a time: a second drop or take while the first is uploading is ignored.
     if (submitting) return Promise.resolve();
+    // Read once: "Try again" sends the meter this recording went with, not what the box says now.
+    if (!again) meter = chosenMeter();
     var kind = uploadKind(fromMic), song = kind === "song" || (kind === "choir" && $("choir-band").checked);
     var form = new FormData();
     form.append("audio", file, name);
@@ -1424,11 +1432,13 @@
     form.append("separate", song ? "true" : "false");
     // The sheet in the keys pressed on a transposed keyboard: always sent for chords, otherwise only when set.
     if (kind === "chords" || kbTranspose() !== 0) form.append("keyboardTranspose", String(kbTranspose()));
+    if (meter) form.append("timeSignature", meter);
     // The browser renders its own playback from the notes: the server's piano WAV (about
     // 10 MB and nine seconds of synthesis for a three-minute song) is not wanted here.
     form.append("audioPreview", "false");
     hide($("app-alert"));
     track(guest ? "Preview started (audio)" : song ? "Song uploaded" : kind === "choir" ? "Choir uploaded" : kind === "chords" ? "Chords uploaded" : "Tune uploaded");
+    if (!again && window.NfMeter) track(window.NfMeter.eventName(meter));
     // The recording's own journey up is the first stage on the card, with a real percentage. When a
     // job is still being followed (Try again), that card is left alone and the button carries the count.
     var following = !!pollTimer, before = current;
@@ -1447,7 +1457,8 @@
         if (at !== epoch) return; // signed out while it went up
         submitting = false;
         if (again && doneMeanwhile(before)) return;
-        startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true); });
+        if (!again) resetMeter();
+        startJob(Object.assign({}, job, { stage: job.stage || "queued" }), guest ? "preview" : "upload", "upload", function () { submitAudio(file, name, fromMic, true, meter); });
       })
       .catch(function (err) {
         if (at !== epoch) return;

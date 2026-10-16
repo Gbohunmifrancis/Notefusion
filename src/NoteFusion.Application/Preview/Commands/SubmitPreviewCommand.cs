@@ -27,14 +27,18 @@ public sealed record SubmitPreviewCommand(
     /// <summary>The upload's media type as the browser declared it; for the activity log only.</summary>
     string? ContentType = null,
     /// <summary>The upload's size in bytes; for the activity log only.</summary>
-    long? SizeBytes = null) : IRequest<Result<string>>;
+    long? SizeBytes = null,
+    /// <summary>The meter the visitor named, one of <see cref="Meters.Supported"/>; null leaves it to the worker.</summary>
+    string? TimeSignature = null) : IRequest<Result<string>>;
 
 /// <summary>The same preview for a song behind a YouTube, Spotify or Apple Music link.</summary>
 /// <param name="KeyboardTranspose">The player's keyboard transpose setting. See <see cref="TranscribeOptions.KeyboardTranspose"/>.</param>
 /// <param name="StartSeconds">Where in the song to start, in seconds; null is the start. See <see cref="TranscribeOptions.StartSeconds"/>.</param>
 /// <param name="EndSeconds">Where in the song to stop, in seconds; null runs to the thirty seconds. See <see cref="TranscribeOptions.EndSeconds"/>.</param>
+/// <param name="TimeSignature">The meter the visitor named, one of <see cref="Meters.Supported"/>; null leaves it to the worker.</param>
 public sealed record SubmitPreviewLinkCommand(
-    string Url, bool AudioPreview = true, int KeyboardTranspose = 0, double? StartSeconds = null, double? EndSeconds = null) : IRequest<Result<string>>;
+    string Url, bool AudioPreview = true, int KeyboardTranspose = 0, double? StartSeconds = null, double? EndSeconds = null,
+    string? TimeSignature = null) : IRequest<Result<string>>;
 
 internal static class PreviewThrottle
 {
@@ -101,7 +105,7 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
 
         var log = _activity.Describe(
             TranscriptionLog.PreviewOrigin, request.Separate ? "song" : "upload", request.Mode,
-            request.FileName, request.ContentType, request.SizeBytes);
+            request.FileName, request.ContentType, request.SizeBytes, timeSignature: request.TimeSignature);
         if (submitted.IsSuccess)
             await _activity.AcceptedAsync(submitted.Value, log, cancellationToken);
         else
@@ -114,6 +118,8 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
     {
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
             return TranscriptionErrors.InvalidKeyboardTranspose;
+        if (!Meters.TryRead(request.TimeSignature, out var meter))
+            return TranscriptionErrors.InvalidTimeSignature;
 
         var device = _device.Current;
         var ip = _ip.Current;
@@ -126,7 +132,8 @@ public sealed class SubmitPreviewCommandHandler : IRequestHandler<SubmitPreviewC
             Mode = request.Mode,
             Separate = request.Separate,
             AudioPreview = request.AudioPreview,
-            KeyboardTranspose = request.KeyboardTranspose
+            KeyboardTranspose = request.KeyboardTranspose,
+            TimeSignature = meter
         };
         var submitted = await _api.SubmitAsync(request.Audio, request.FileName, options, cancellationToken);
         if (submitted.IsFailure)
@@ -166,7 +173,7 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
         var log = _activity.Describe(
             TranscriptionLog.PreviewOrigin, "link", TranscriptionMode.Melody,
             linkUrl: SongLinks.TryExtract(request.Url, out var url) ? url : request.Url,
-            startSeconds: request.StartSeconds, endSeconds: request.EndSeconds);
+            timeSignature: request.TimeSignature, startSeconds: request.StartSeconds, endSeconds: request.EndSeconds);
         if (submitted.IsSuccess)
             await _activity.AcceptedAsync(submitted.Value, log, cancellationToken);
         else
@@ -182,6 +189,8 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
             return TranscriptionErrors.InvalidLink;
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
             return TranscriptionErrors.InvalidKeyboardTranspose;
+        if (!Meters.TryRead(request.TimeSignature, out var meter))
+            return TranscriptionErrors.InvalidTimeSignature;
 
         var device = _device.Current;
         var ip = _ip.Current;
@@ -197,6 +206,7 @@ public sealed class SubmitPreviewLinkCommandHandler : IRequestHandler<SubmitPrev
         {
             AudioPreview = request.AudioPreview,
             KeyboardTranspose = request.KeyboardTranspose,
+            TimeSignature = meter,
             StartSeconds = section.Value.StartSeconds,
             EndSeconds = section.Value.EndSeconds
         };

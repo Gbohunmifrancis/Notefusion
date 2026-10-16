@@ -42,7 +42,7 @@ public sealed class SubmitTranscriptionRequest
     /// <summary>Optional tempo in BPM (20 to 400).</summary>
     public int? Tempo { get; init; }
 
-    /// <summary>Optional time signature override (e.g. '4/4', '3/4', '6/8').</summary>
+    /// <summary>Optional beats in a bar: "2/4", "3/4", "4/4" or "6/8" (<c>Meters.Supported</c>). Omit to leave it to the worker.</summary>
     public string? TimeSignature { get; init; }
 
     /// <summary>The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</summary>
@@ -58,6 +58,8 @@ public sealed class SubmitLinkRequest
     public TranscriptionMode Mode { get; init; } = TranscriptionMode.Melody;
     public string? Key { get; init; }
     public int? Tempo { get; init; }
+
+    /// <summary>Optional beats in a bar: "2/4", "3/4", "4/4" or "6/8" (<c>Meters.Supported</c>). Omit to leave it to the worker.</summary>
     public string? TimeSignature { get; init; }
 
     /// <summary>False when the client renders its own playback and does not want the synthesised preview WAV.</summary>

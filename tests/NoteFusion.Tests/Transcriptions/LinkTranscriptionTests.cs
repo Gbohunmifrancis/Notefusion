@@ -473,6 +473,123 @@ public class LinkTranscriptionTests
         Assert.Empty(h.Db.TranscriptionJobs);
     }
 
+    // ---------------------------------------------------------------- beats in a bar and tempo
+
+    [Theory]
+    [InlineData("2/4")]
+    [InlineData("3/4")]
+    [InlineData("4/4")]
+    [InlineData(" 6/8 ")]
+    public async Task A_meter_the_user_names_reaches_the_worker_with_an_upload_a_link_and_a_chosen_section(string given)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        Assert.True((await Submit(h, user, api, timeSignature: given)).IsSuccess);
+        Assert.Equal(given.Trim(), api.LastOptions!.TimeSignature);
+
+        Assert.True((await LinkWith(h, user, api, timeSignature: given)).IsSuccess);
+        Assert.Equal(given.Trim(), api.LastOptions!.TimeSignature);
+
+        // The resolve-first flow submits the same route with the section the user picked.
+        Assert.True((await LinkWith(h, user, api, timeSignature: given, start: 30, end: 90)).IsSuccess);
+        Assert.Equal(given.Trim(), api.LastOptions!.TimeSignature);
+        Assert.Equal(30, api.LastOptions.StartSeconds);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("  ")]
+    [InlineData("Auto")]
+    public async Task Not_sure_sends_no_meter_so_the_worker_keeps_its_own(string? given)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        Assert.True((await Submit(h, user, api, timeSignature: given)).IsSuccess);
+        Assert.Null(api.LastOptions!.TimeSignature);
+        Assert.True((await LinkWith(h, user, api, timeSignature: given)).IsSuccess);
+        Assert.Null(api.LastOptions!.TimeSignature);
+    }
+
+    [Theory]
+    [InlineData("5/4")]
+    [InlineData("12/8")]
+    [InlineData("3/3")]
+    [InlineData("0/4")]
+    [InlineData("three")]
+    [InlineData("3/4; drop")]
+    public async Task A_meter_outside_the_list_is_refused_in_a_plain_sentence_before_anything_is_spent(string given)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        var upload = await Submit(h, user, api, timeSignature: given);
+        var link = await LinkWith(h, user, api, timeSignature: given);
+
+        Assert.Equal("TRANS_INVALID_TIME_SIGNATURE", upload.Error.Code);
+        Assert.Equal("TRANS_INVALID_TIME_SIGNATURE", link.Error.Code);
+        Assert.Equal(ErrorType.Validation, upload.Error.Type);
+        Assert.Equal("Beats in a bar must be 2/4, 3/4, 4/4 or 6/8, or left as Not sure.", upload.Error.Message);
+        Assert.Null(api.LastOptions);
+        Assert.Empty(h.Db.TranscriptionJobs);
+    }
+
+    [Theory]
+    [InlineData(19)]
+    [InlineData(401)]
+    [InlineData(-90)]
+    public async Task A_tempo_the_worker_would_refuse_is_refused_here_in_our_own_words(int tempo)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        var api = new FakeTranscriptionApi();
+
+        var upload = await Submit(h, user, api, tempo: tempo);
+        var link = await LinkWith(h, user, api, tempo: tempo);
+
+        // A link's 422 from the worker would otherwise read as "paste a link to a YouTube video".
+        Assert.Equal("TRANS_INVALID_TEMPO", upload.Error.Code);
+        Assert.Equal("TRANS_INVALID_TEMPO", link.Error.Code);
+        Assert.Equal("Tempo must be between 20 and 400 beats a minute, or left out.", link.Error.Message);
+        Assert.Null(api.LastOptions);
+    }
+
+    [Theory]
+    [InlineData(20)]
+    [InlineData(96)]
+    [InlineData(400)]
+    public async Task A_tempo_in_range_reaches_the_worker(int tempo)
+    {
+        using var h = new TestHarness(Now);
+        var user = Seed(h);
+        GoPro(h, user);
+        var api = new FakeTranscriptionApi();
+
+        Assert.True((await Submit(h, user, api, tempo: tempo)).IsSuccess);
+        Assert.Equal(tempo, api.LastOptions!.Tempo);
+        Assert.True((await LinkWith(h, user, api, tempo: tempo)).IsSuccess);
+        Assert.Equal(tempo, api.LastOptions!.Tempo);
+    }
+
+    private static Task<Result<string>> Submit(TestHarness h, User user, FakeTranscriptionApi api, string? timeSignature = null, int? tempo = null)
+        => new SubmitTranscriptionCommandHandler(
+                api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.DeviceRegister, h.Activity(user.Id), h.QuotaGate)
+            .Handle(new SubmitTranscriptionCommand(new MemoryStream([1, 2, 3]), "hymn.m4a", TranscriptionMode.Melody, null, tempo, timeSignature),
+                CancellationToken.None);
+
+    private static Task<Result<string>> LinkWith(
+        TestHarness h, User user, FakeTranscriptionApi api, string? timeSignature = null, int? tempo = null, double? start = null, double? end = null)
+        => new SubmitLinkTranscriptionCommandHandler(api, h.Db, new StubCurrentUser(user.Id), h.Clock, new StubDeviceFingerprint(null), h.Activity(user.Id), h.QuotaGate)
+            .Handle(new SubmitLinkTranscriptionCommand(Link, TranscriptionMode.Melody, null, tempo, timeSignature, StartSeconds: start, EndSeconds: end),
+                CancellationToken.None);
+
     [Theory]
     [InlineData(false, TranscriptionJobKind.Upload)]
     [InlineData(true, TranscriptionJobKind.Song)]

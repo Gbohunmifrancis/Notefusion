@@ -197,6 +197,7 @@ body.guest .topbar { display: flex; }
 .studio-opt select { width: auto; min-height: 32px; padding: 4px 28px 4px 10px; font-size: 0.85rem; font-weight: 600; border-radius: 8px; color: #fff; border: 1px solid rgba(255, 255, 255, 0.45); appearance: none; -webkit-appearance: none; background: rgba(255, 255, 255, 0.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 8px center no-repeat; }
 .studio-opt select:focus { border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18); }
 .studio-opt select option { color: #0f172a; background: #fff; }
+.studio-meter { justify-content: center; }
 .btn.btn-glass { background: rgba(255, 255, 255, 0.14); color: #fff; border-color: rgba(255, 255, 255, 0.45); }
 .btn.btn-glass:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
 .studio-status.link-hint { margin-top: 8px; font-weight: 500; }
@@ -465,6 +466,8 @@ table.ranges .bad { color: var(--danger); font-weight: 600; }
 .try-free .try-status a { font-weight: 600; }
 .try-file input { display: none; }
 #try-status { min-height: 1.3em; margin-top: 10px; }
+.try-meter { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; font-weight: 600; color: var(--muted); }
+.try-meter select { width: auto; min-height: 34px; padding: 4px 10px; font-size: 0.85rem; font-weight: 600; }
 
 /* ── Skeletons ───────────────────────────────────────────────────────────── */
 .skel { position: relative; overflow: hidden; background: #e9eef6; border-radius: 8px; }
