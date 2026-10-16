@@ -28,6 +28,7 @@ Three details come straight from how the pipeline actually behaves:
                          baseline always runs with both unset.
 """
 
+import json
 import os
 import tempfile
 from collections.abc import Sequence
@@ -328,6 +329,14 @@ def run_hymn_case(case: HymnCase) -> CaseOutcome:
         result.notes, result.time_signature, result.tempo, result.beat_origin_sec,
     ))
     flat["key.confidence"] = float(result.key_confidence)
+    dump = os.environ.get("NF_HYMN_DUMP")
+    if dump:
+        # The sheet as written, for studying a meter or bar rule offline without re-running inference.
+        Path(dump).mkdir(parents=True, exist_ok=True)
+        (Path(dump) / f"{case.name}.json").write_text(json.dumps({
+            "tempo": result.tempo, "time_signature": result.time_signature, "beat_origin_sec": result.beat_origin_sec,
+            "notes": [[n.pitch_midi, n.start_beat, n.dur_beats] for n in result.notes],
+        }), encoding="utf-8")
     return CaseOutcome(
         name=case.name, tags=case.tags + (f"est:{result.time_signature}",), ok=True, error="", ref_key=case.key,
         est_key=result.key, ref_tempo=case.tempo_bpm, est_tempo=result.tempo,
