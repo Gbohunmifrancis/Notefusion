@@ -61,6 +61,10 @@ function seconds(s: number | null): string {
 function pageName(path: string): string {
   if (path === "/blog") return "Blog front page";
   if (path === "/hymns") return "Hymn list";
+  const parts = path.split("/").filter(Boolean);
+  if (parts.length === 3 && parts[1] === "tag") return `Topic: ${parts[2]!.replace(/-/g, " ")}`;
+  if (parts.length === 3 && parts[1] === "author") return `Author: ${parts[2]}`;
+  if (parts.length === 3 && parts[1] === "page") return `Blog, page ${parts[2]}`;
   const slug = path.split("/").filter(Boolean).pop() ?? path;
   const words = slug.replace(/-/g, " ");
   return words.charAt(0).toUpperCase() + words.slice(1);
