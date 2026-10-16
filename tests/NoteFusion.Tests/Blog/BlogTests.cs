@@ -496,6 +496,10 @@ public class BlogTests
         // The founder edits one draft by hand; that one is theirs to publish.
         var edited = f.H.Db.BlogPosts.Single(p => p.Slug == "choir-rehearsal-tips");
         edited.ClearReviewNotes(Now);
+        // Another fell short of a check that has since been relaxed: its stored note is stale, today's checks pass.
+        var stale = f.H.Db.BlogPosts.Single(p => p.Slug == "how-to-teach-a-choir-a-new-song");
+        stale.RecordGeneration(stale.TopicId, stale.GenerationModel ?? "gemini", stale.GenerationUsage,
+            ["The body is 1040 words; it must be 1200–2200 (not counting solfa blocks)."]);
         f.H.Db.SaveChanges();
 
         var settings = new BlogSettings { GeminiRetryDelays = [TimeSpan.Zero] }; // auto-publish is the default
@@ -506,6 +510,7 @@ public class BlogTests
 
         var status = f.H.Db.BlogPosts.AsNoTracking().ToDictionary(p => p.Slug, p => p.Status);
         Assert.Equal(BlogPostStatus.Published, status["how-to-teach-a-choir-a-new-song"]);
+        Assert.Empty(f.H.Db.BlogPosts.AsNoTracking().Single(p => p.Slug == "how-to-teach-a-choir-a-new-song").ReviewNotes);
         Assert.Equal(BlogPostStatus.Draft, status["choir-rehearsal-tips"]);
         Assert.Equal(BlogPostStatus.Draft, status["left-for-the-founder"]);
         Assert.Equal(1, f.PendingRebuilds);
