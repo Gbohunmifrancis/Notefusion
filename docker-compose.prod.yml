@@ -50,7 +50,7 @@ services:
       NF_YTDLP_FALLBACK_CLIENTS: ${NF_YTDLP_FALLBACK_CLIENTS-mweb,android_vr,web_embedded}
       # Optional and off: a residential proxy for YouTube alone, tried only after YouTube refused
       # this server directly and with the fallback clients. The deploy writes it from the
-      # YTDLP_PROXY secret (docs/DEPLOYMENT.md, "A residential proxy (optional)").
+      # YTDLP_PROXY secret (docs/DEPLOYMENT.md, "A residential proxy (optional, a later step)").
       NF_YTDLP_PROXY: ${NF_YTDLP_PROXY:-}
       # The worker installs the newest yt-dlp at startup and daily (app/ingest/ytdlp_update.py);
       # "stable" instead of the nightly channel if a nightly ever misbehaves.
