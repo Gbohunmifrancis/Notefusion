@@ -154,6 +154,8 @@ ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
 :root[data-theme="dark"] .try-link summary, :root[data-theme="dark"] .try-status-info, :root[data-theme="dark"] .try-status a { color: var(--nf-link); }
 :root[data-theme="dark"] .try-link-note, :root[data-theme="dark"] .try-note, :root[data-theme="dark"] .try-status { color: var(--nf-muted); }
 :root[data-theme="dark"] .try-status-error { color: #fca5a5; }
+:root[data-theme="dark"] .try-meter { color: var(--nf-muted); }
+:root[data-theme="dark"] .try-meter select { background: var(--nf-canvas); border-color: #6b778b; color: var(--nf-ink); }
 :root[data-theme="dark"] .nf-rec { background: rgba(3, 5, 8, .75); }
 :root[data-theme="dark"] .nf-rec-orb { background: radial-gradient(circle at 50% 40%, #1c2a44, #121722 72%); }
 :root[data-theme="dark"] .nf-rec .nf-rec-primary, :root[data-theme="dark"] .nf-rec-mark, :root[data-theme="dark"] .nf-rec-orb.done { background: #1b5fe0; box-shadow: none; }
