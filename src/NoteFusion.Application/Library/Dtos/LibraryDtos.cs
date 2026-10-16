@@ -124,12 +124,12 @@ public static class ChordLabels
 /// Labels stored notes with solfa for a key. Solfa is never persisted (a key override is a
 /// re-label, F-03), so every read derives it — which is why the octave marks come from the whole
 /// note list's reference doh rather than from each note in isolation, and the chromatic spelling
-/// from the whole list's melodic direction.
+/// from where each note goes next in the tune.
 /// </summary>
 public static class SolfaLabels
 {
     public static List<NoteEventDto> Label(IReadOnlyList<NoteEvent> notes, MusicalKey key)
-        => Label(notes, key, SolfaMapper.ReferenceDoh([.. notes.Select(n => n.PitchMidi)], key.DohPitchClass));
+        => Label(notes, key, SolfaMapper.ReferenceDoh([.. notes.Select(n => n.PitchMidi)], key.DohPitchClass, key.Mode));
 
     /// <summary>
     /// The parts, each labelled against the melody's reference doh so a bass "d," sits where the
@@ -139,7 +139,7 @@ public static class SolfaLabels
         IReadOnlyDictionary<string, List<NoteEvent>>? parts, MusicalKey key, IReadOnlyList<NoteEvent> melody)
     {
         if (parts is null || parts.Count == 0) return null;
-        int referenceDoh = SolfaMapper.ReferenceDoh([.. melody.Select(n => n.PitchMidi)], key.DohPitchClass);
+        int referenceDoh = SolfaMapper.ReferenceDoh([.. melody.Select(n => n.PitchMidi)], key.DohPitchClass, key.Mode);
         return parts.ToDictionary(kv => kv.Key, kv => new PartDto(Label(kv.Value, key, referenceDoh), []));
     }
 
@@ -147,13 +147,13 @@ public static class SolfaLabels
     {
         NoteEvent[] notes = [.. source];
 
-        // Direction is a property of a note's position in the tune, and this list arrives in
-        // whatever order the database returned the owned collection in — not necessarily
-        // start-beat order. So the flags are computed over a time-ordered view and scattered
+        // A chromatic's spelling is a property of its position in the tune (the note it moves
+        // to), and this list arrives in whatever order the database returned the owned
+        // collection in — not necessarily start-beat order. So the flags are computed over a time-ordered view and scattered
         // back to storage position; the DTO's own order is part of the contract and stays put.
         // OrderBy is stable, so notes sharing a start beat keep their relative order.
         int[] melodic = [.. Enumerable.Range(0, notes.Length).OrderBy(i => notes[i].StartBeat)];
-        bool[] inMelodicOrder = SolfaMapper.AscendingFlags([.. melodic.Select(i => notes[i].PitchMidi)]);
+        bool[] inMelodicOrder = SolfaMapper.AscendingFlags([.. melodic.Select(i => notes[i].PitchMidi)], key.DohPitchClass);
         bool[] ascending = new bool[notes.Length];
         for (int k = 0; k < melodic.Length; k++)
             ascending[melodic[k]] = inMelodicOrder[k];

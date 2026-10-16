@@ -99,27 +99,44 @@ public class SolfaMapperTests
     }
 
     // ── ReferenceDoh ──────────────────────────────────────────────────────────
-    // Expected values taken from solfa.reference_doh in server/app/pipeline/solfa.py.
+    // The same cases are asserted in server/tests/test_solfa.py.
 
     [Theory]
     [InlineData(new[] { 60, 64, 67 }, 0, 60)]
     [InlineData(new[] { 48, 55, 60, 67, 72, 79 }, 0, 60)]
     [InlineData(new[] { 36, 38, 40 }, 0, 36)]
     [InlineData(new[] { 84, 86, 88 }, 0, 84)]
-    [InlineData(new[] { 60 }, 5, 65)] // 65 is nearer to 60 than 53 is
-    public void Reference_doh_matches_the_python_engine(int[] pitches, int dohPitchClass, int expected)
+    [InlineData(new[] { 60 }, 5, 53)]                 // F3: the doh at or below, not the nearer F4
+    [InlineData(new[] { 62, 66, 69, 71 }, 2, 62)]     // a tune around soh keeps its doh below it
+    [InlineData(new[] { 64, 67, 69, 71, 72 }, 0, 60)] // middle note t: still the doh below
+    public void Reference_doh_is_the_doh_at_or_below_the_middle_note(int[] pitches, int dohPitchClass, int expected)
     {
-        Assert.Equal(expected, SolfaMapper.ReferenceDoh(pitches, dohPitchClass));
+        Assert.Equal(expected, SolfaMapper.ReferenceDoh(pitches, dohPitchClass, KeyMode.Major));
+    }
+
+    [Theory]
+    [InlineData(new[] { 57, 59, 60, 59, 57, 56, 57 }, 60)] // centred on lah: l, t, d under doh C4
+    [InlineData(new[] { 60, 62, 64, 62, 60 }, 60)]         // centred on doh: as in major
+    [InlineData(new[] { 69, 71, 72, 74, 76 }, 72)]         // l, t, d r m an octave up
+    public void A_minor_tune_centred_on_its_lah_keeps_the_lah_under_doh(int[] pitches, int expected)
+    {
+        Assert.Equal(expected, SolfaMapper.ReferenceDoh(pitches, 0, KeyMode.Minor)); // A minor, doh C
     }
 
     [Fact]
-    public void Reference_doh_falls_back_to_the_doh_nearest_middle_c_when_there_are_no_pitches()
+    public void Reference_doh_reads_an_empty_tune_as_middle_c()
     {
-        // Python takes a NaN median here and returns the first candidate by accident;
-        // an empty note list never reaches its solfa stage. This path does get hit —
-        // an empty saved transcription is mapped on every read — so it is defined.
-        Assert.Equal(60, SolfaMapper.ReferenceDoh([], 0));
-        Assert.Equal(65, SolfaMapper.ReferenceDoh([], 5));
+        // An empty saved transcription is mapped on every read, so this path is defined.
+        Assert.Equal(60, SolfaMapper.ReferenceDoh([], 0, KeyMode.Major));
+        Assert.Equal(53, SolfaMapper.ReferenceDoh([], 5, KeyMode.Major));
+        Assert.Equal(60, SolfaMapper.ReferenceDoh([], 0, KeyMode.Minor));
+    }
+
+    [Fact]
+    public void Reference_doh_stays_on_the_midi_range()
+    {
+        Assert.Equal(120, SolfaMapper.ReferenceDoh([127], 0, KeyMode.Minor)); // 132 would be off the top
+        Assert.Equal(10, SolfaMapper.ReferenceDoh([3], 10, KeyMode.Major));   // -2 would be off the bottom
     }
 
     // ── Degree ────────────────────────────────────────────────────────────────
@@ -149,75 +166,90 @@ public class SolfaMapperTests
         Assert.Equal(1, SolfaMapper.Degree(60, aMinor)); // C4 is doh
     }
 
-    // ── AscendingFlags — mirrors solfa.py's ascending_flags, case for case ──────
+    // ── AscendingFlags — the hymn-book rule, mirrored case for case ────────────
     // Every case below is asserted with the same pitches and the same expectation in
     // server/tests/test_solfa.py. A divergence here means a saved transcription reads
     // one way from the worker and another from the library endpoint.
 
     [Fact]
-    public void A_rising_chromatic_is_spelled_sharp()
+    public void A_chromatic_rising_a_semitone_is_spelled_sharp()
     {
-        bool[] flags = SolfaMapper.AscendingFlags([60, 61, 62]); // C C# D
+        bool[] flags = SolfaMapper.AscendingFlags([60, 61, 62], 0); // C C# D
 
         Assert.True(flags[1]);
         Assert.Equal("de", SolfaMapper.Map(61, CMajor, MiddleCDoh, ChromaticSpelling.Ascending).Text);
     }
 
     [Fact]
-    public void A_falling_chromatic_is_spelled_flat()
+    public void A_chromatic_falling_a_semitone_is_spelled_flat()
     {
-        bool[] flags = SolfaMapper.AscendingFlags([62, 61, 60]); // D C# C
+        bool[] flags = SolfaMapper.AscendingFlags([62, 61, 60], 0); // D Db C
 
         Assert.False(flags[1]);
         Assert.Equal("ra", SolfaMapper.Map(61, CMajor, MiddleCDoh, ChromaticSpelling.Descending).Text);
     }
 
     [Fact]
-    public void Direction_comes_from_where_the_melody_arrived_from()
+    public void The_spelling_comes_from_where_the_note_goes_not_where_it_came_from()
     {
-        // C C# C — rising in, falling out. The approach wins, so this is an upper
-        // neighbour of doh (de) rather than a lower neighbour of re.
-        Assert.True(SolfaMapper.AscendingFlags([60, 61, 60])[1]);
-        // E D# E — falling in, rising out. Still the approach.
-        Assert.False(SolfaMapper.AscendingFlags([64, 63, 64])[1]);
+        // C Db C — an upper neighbour of doh falls back to it, so it is a lowered ray (ra).
+        Assert.False(SolfaMapper.AscendingFlags([60, 61, 60], 0)[1]);
+        // E D# E — a lower neighbour of me rises back, so it is a raised ray (re).
+        Assert.True(SolfaMapper.AscendingFlags([64, 63, 64], 0)[1]);
+        // What a Friend bar 9 (F major, G F# G): reached from above, rising back to ray — de,
+        // as the book prints, where the old approach rule printed ra.
+        Assert.True(SolfaMapper.AscendingFlags([67, 66, 67], 5)[1]);
+    }
+
+    [Theory]
+    [InlineData(61, true)]  // de, not ra
+    [InlineData(63, false)] // ma, not re
+    [InlineData(66, true)]  // fe, not sa
+    [InlineData(68, true)]  // se, not la
+    [InlineData(70, false)] // ta, not le
+    public void A_note_that_does_not_move_a_semitone_takes_the_hymn_book_default(int pitch, bool sharp)
+    {
+        Assert.Equal([sharp], SolfaMapper.AscendingFlags([pitch], 0));                   // the last note
+        Assert.Equal([sharp, sharp], SolfaMapper.AscendingFlags([pitch, pitch], 0));     // repeated, then nothing
+        Assert.Equal(sharp, SolfaMapper.AscendingFlags([pitch, pitch + 5], 0)[0]);       // a leap up
+        Assert.Equal(sharp, SolfaMapper.AscendingFlags([pitch, pitch - 4], 0)[0]);       // a leap down
+    }
+
+    [Theory]
+    [InlineData(63, 65, "ma")] // up a tone to fah: Eb-F, a step, where D#-F would be a third
+    [InlineData(70, 72, "ta")] // up a tone to doh: Bb-C
+    [InlineData(61, 59, "de")] // down a tone to te: C#-B
+    [InlineData(66, 64, "fe")] // down a tone to me: F#-E (Crown Him bars 6 and 11)
+    public void A_tone_step_to_a_scale_note_keeps_the_default_which_keeps_it_a_step(int pitch, int next, string expected)
+    {
+        bool flag = SolfaMapper.AscendingFlags([pitch, next], 0)[0];
+
+        Assert.Equal(expected, SolfaMapper.Map(pitch, CMajor, MiddleCDoh,
+            flag ? ChromaticSpelling.Ascending : ChromaticSpelling.Descending).Text);
     }
 
     [Fact]
-    public void The_first_note_looks_ahead_because_nothing_precedes_it()
+    public void The_defaults_are_read_from_doh_not_from_c()
     {
-        Assert.True(SolfaMapper.AscendingFlags([61, 62])[0]);
-        Assert.False(SolfaMapper.AscendingFlags([61, 60])[0]);
-    }
-
-    [Fact]
-    public void A_single_pitch_is_ascending_by_convention()
-    {
-        Assert.Equal([true], SolfaMapper.AscendingFlags([61]));
-        Assert.Equal([true, true, true], SolfaMapper.AscendingFlags([61, 61, 61]));
+        // In G major (doh G) F natural is the flattened te: ta, the default for that degree.
+        Assert.False(SolfaMapper.AscendingFlags([65], 7)[0]);
+        // And C# is the raised fah: fe.
+        Assert.True(SolfaMapper.AscendingFlags([61], 7)[0]);
     }
 
     [Fact]
     public void An_empty_melody_has_no_flags()
     {
-        Assert.Empty(SolfaMapper.AscendingFlags([]));
+        Assert.Empty(SolfaMapper.AscendingFlags([], 0));
     }
 
     [Fact]
     public void A_repeated_chromatic_keeps_one_spelling()
     {
-        // D C# C# E. Taking the literal previous note would make the second C# look
-        // ahead to E and flip it, printing "ra de" on one sung pitch.
-        bool[] flags = SolfaMapper.AscendingFlags([62, 61, 61, 64]);
-
-        Assert.False(flags[1]);
-        Assert.False(flags[2]);
-    }
-
-    [Fact]
-    public void A_repeat_at_the_head_looks_past_itself()
-    {
-        Assert.Equal([true, true, true], SolfaMapper.AscendingFlags([61, 61, 62]));
-        Assert.Equal([false, false, false], SolfaMapper.AscendingFlags([61, 61, 60]));
+        // D Db Db C and D C# C# D: the run reads the note after it, so one sung pitch is
+        // never printed "ra de".
+        Assert.Equal([false, false], SolfaMapper.AscendingFlags([62, 61, 61, 60], 0)[1..3]);
+        Assert.Equal([true, true], SolfaMapper.AscendingFlags([62, 61, 61, 62], 0)[1..3]);
     }
 
     [Theory]
