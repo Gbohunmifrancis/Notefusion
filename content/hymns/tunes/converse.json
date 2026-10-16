@@ -1,15 +1,17 @@
 {
   "name": "CONVERSE",
   "music": [
-    { "name": "Charles Crozat Converse", "born": 1832, "died": 1918, "role": "Melody (1868)" }
+    {"name": "Charles Crozat Converse", "born": 1832, "died": 1918, "role": "Melody (1868)"}
   ],
   "musicPublished": 1868,
-  "key": null,
-  "time": null,
-  "tempo": null,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 92,
   "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "lineBars": 2,
+  "melody": "C5:1.5 C5:.5 D5:.5 C5:.5 A4:.5 F4:.5 | F4:2 D4:2 | C4:1.5 F4:.5 A4:.5 F4:.5 C5:.5 A4:.5 | G4:3 r:1 | C5:1.5 C5:.5 D5:.5 C5:.5 A4:.5 F4:.5 | F4:2 D4:2 | C4:1.5 F4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | F4:3 r:1 | G4:1.5 Gb4:.5 G4:.5 A4:.5 Bb4:.5 G4:.5 | A4:2 C5:2 | D5:1.5 D5:.5 C5:.5 A4:.5 Bb4:.5 A4:.5 | G4:3 r:1 | C5:1.5 C5:.5 D5:.5 C5:.5 A4:.5 F4:.5 | F4:2 D4:2 | C4:1.5 F4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | F4:3 r:1",
   "reviewed": false,
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false."
+  "confidence": "high; see the note on bar 9",
+  "source": "Open Hymnal Project ABC score (Presbyterian Book of Hymns and Tunes, 1874); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "High for the notes and rhythm. Bar 9 ('O what peace'): the F sharp after G is a chromatic lower neighbour that tonic solfa books print as 'de' (r de r); the engine names a note by the direction it is approached from, so it prints 'ra'. Same pitch, different spelling: decide whether that is acceptable or change the engine."
 }
