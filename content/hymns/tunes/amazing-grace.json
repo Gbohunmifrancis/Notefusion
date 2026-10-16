@@ -1,0 +1,41 @@
+{
+  "name": "AMAZING GRACE",
+  "title": "Amazing Grace",
+  "alsoKnownAs": [
+    "New Britain",
+    "McIntosh"
+  ],
+  "music": [
+    {
+      "name": "Virginia Harmony",
+      "traditional": true,
+      "role": "Melody (1831)"
+    },
+    {
+      "name": "Edwin O. Excell",
+      "born": 1851,
+      "died": 1921,
+      "role": "Arranged (1900)"
+    }
+  ],
+  "musicPublished": 1831,
+  "metre": "8 6 8 6",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1 | G4:2 E4:1 | D4:2 D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1 | D5:3~ | D5:2 B4:1 | D5:1.5 B4:.5 D5:.5 B4:.5 | G4:2 D4:1 | E4:1.5 G4:.5 G4:.5 E4:.5 | D4:2 D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1 | G4:3~ | G4:2",
+  "incipit": "sldmdmrdls|sdmdmrs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000165.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000165a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000165; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000165 (the melody read from 000165a.mid, checked against the page's do-re-mi incipit, 2 notes off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Edwin O. Excell's dates (1851–1921) are from our page for the tune NEW BRITAIN (content/hymns/tunes/new-britain.json); CCEH's page gives only the year 1900. The bar lines are those of CCEH's Noteworthy score (000165a.nwc).",
+  "importedFrom": "cceh:000165",
+  "updated": "2026-10-16"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "BREAD OF LIFE",
+  "title": "Bread of Life",
+  "music": [
+    {
+      "name": "William F. Sherman",
+      "role": "Music (1877)"
+    }
+  ],
+  "musicPublished": 1877,
+  "metre": "10 10 10 10",
+  "key": "Eb major",
+  "time": "2/2",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 Eb4:1 G4:1 | Bb4:1 C5:1 Bb4:2 | G4:2 Eb4:1 G4:1 | F4:4 | G4:2 Eb4:1 G4:1 | Bb4:1 C5:1 Bb4:1 C5:1 | D5:2 C5:2 | Bb4:4 | F4:2 G4:1 Ab4:1 | C5:1 Bb4:1 G4:2 | Bb4:2 C5:1 C5:1 | D5:4 | Eb5:2 Bb4:1 G4:1 | F4:1 Ab4:1 C5:1 Ab4:1 | F4:2 Bb4:2 | Eb4:4",
+  "incipit": "mdmsls|mdmr|mdmsls|ltls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000138.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000138a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000138; public domain.",
+  "reviewNotes": "Held back: not provably public domain: William F. Sherman: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000138 (the melody read from 000138a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000138a.nwc).",
+  "importedFrom": "cceh:000138",
+  "updated": "2026-10-16"
+}

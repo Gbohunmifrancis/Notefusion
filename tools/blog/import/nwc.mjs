@@ -5,6 +5,8 @@
 // bytes are read here and never handed to anything that runs it. Anything this reader does not recognise
 // makes it give up (null), and the importer falls back on the rhythm (cceh-melody.mjs inferBarLines).
 
+import { inflateSync } from "node:zlib";
+
 const HEADER = "[NoteWorthy ArtWare]";
 /** Fixed record sizes (bytes, with the 2-byte type) of the objects a hymn score holds; a chord adds 12 a note. */
 const SIZE = { 0: 6, 1: 12, 2: 4, 3: 4, 5: 8, 6: 10, 7: 10, 8: 12, 9: 8, 10: 16, 12: 4, 14: 6 };
@@ -25,9 +27,16 @@ function length(b, p) {
  * is not a score this reader knows.
  */
 export function readNwc(bytes) {
-  const b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  let b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  // A compressed score: "[NWZ]\0", then the same file deflated.
+  if (String.fromCharCode(...b.subarray(0, 5)) === "[NWZ]") {
+    try { b = new Uint8Array(inflateSync(b.subarray(6))); } catch { return null; }
+  }
   const ascii = (p, n) => String.fromCharCode(...b.subarray(p, p + n));
   if (ascii(0, HEADER.length) !== HEADER) return null;
+  // The record layout read here is NWC 1.50's ("[NoteWorthy Composer]\0" then minor 50, major 1), which
+  // nearly every CCEH score uses; a later version lays its records out differently and is not read.
+  if (ascii(23, 22) !== "[NoteWorthy Composer]\0" || b[46] !== 1 || b[45] < 50 || b[45] >= 70) return null;
   const staves = [];
   // A staff starts with its name and its group ("Standard"), NUL-terminated, 32 bytes of layout, then the
   // number of objects. Find each by its group name and check that its objects read to the end.

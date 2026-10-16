@@ -73,13 +73,16 @@ export function parseCredit(item) {
     if (descr) out.description = descr;
   } else {
     const name = parts.join(", ").trim();
-    if (name) out.name = name;
+    // A role on its own ("arr.") names nobody: an unnamed arrangement, whose harmony is not used here.
+    if (name && /^[a-z]/.test(name) && ROLE_WORD.test(name)) out.role = name;
+    else if (name) out.name = name;
   }
   if (out.name) {
     // "James Leith Bain (James MacBeth)": the other name the person is known by.
     const alias = /^(.*?)\s*\(([^)\d]+)\)\s*$/.exec(out.name);
     if (alias) { out.name = alias[1]; out.alias = alias[2]; }
-    if (!book && TRADITIONAL.test(out.name) && !isPersonName(out.name)) out.traditional = true;
+    // (Never someone the page gives a life to: "Anon Composer, 1880-1960" is a person.)
+    if (!book && TRADITIONAL.test(out.name) && !isPersonName(out.name) && !out.died && !out.living) out.traditional = true;
   }
   return out;
 }
@@ -87,7 +90,7 @@ export function parseCredit(item) {
 /** The words of a role before a name: "arr.", "harm.", "ad.", "attr. to", "rec.", "pub.", "from", "desc.". */
 const ROLE_WORD = /^(arr|harm|attr|adapt|ad|alt|rec|desc|melody|tune|music|setting|from|by|after|based|transcr|ed|coll|comp|vers|para|pub|alt|rev|abr|abridged|composed|written|source)\b[^,]*$/i;
 /** An anonymous or traditional source: "Traditional", "Welsh Hymn Tune", "Netherlands folk song", "Swedish". */
-const TRADITIONAL = /^(traditional|anonymous|unknown|trad\.?|ancient|medieval|mediaeval|plainsong|plain ?chant|gregorian|sarum)\b|\s(traditional|folk|melody|hymn tune|chant|carol|air|spiritual|song)\b|^(old )?(english|irish|welsh|scottish|scots|german|french|dutch|netherlands|swedish|norwegian|danish|finnish|american|spanish|italian|russian|polish|czech|bohemian|silesian|hebrew|jewish|greek|basque|cornish|manx|flemish|negro|african|catalan|latvian|appalachian|moravian|swiss|austrian|hungarian|slovak|lithuanian|estonian|icelandic|breton|provençal|portuguese|chinese|japanese|indian|korean)\b/i;
+const TRADITIONAL = /^anon\.$|^(traditional|anonymous|unknown|trad\.?|ancient|medieval|mediaeval|plainsong|plain ?chant|gregorian|sarum)\b|\s(traditional|folk|melody|hymn tune|chant|carol|air|spiritual|song)\b|^(old )?(english|irish|welsh|scottish|scots|german|french|dutch|netherlands|swedish|norwegian|danish|finnish|american|spanish|italian|russian|polish|czech|bohemian|silesian|hebrew|jewish|greek|basque|cornish|manx|flemish|negro|african|catalan|latvian|appalachian|moravian|swiss|austrian|hungarian|slovak|lithuanian|estonian|icelandic|breton|provençal|portuguese|chinese|japanese|indian|korean)\b/i;
 /** A person's name: two or more capitalised words ("John Wyeth", "C. Winfred Douglas"), not a description or a book. */
 function isPersonName(s) {
   const t = String(s).replace(/\s*\([^)]*\)\s*$/, "").trim();

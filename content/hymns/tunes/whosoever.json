@@ -1,0 +1,32 @@
+{
+  "name": "WHOSOEVER",
+  "title": "Whosoever",
+  "music": [
+    {
+      "name": "Philip P. Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Music (1869)"
+    }
+  ],
+  "musicPublished": 1869,
+  "metre": "11 11 11 7 + 5 5 11 11 7",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:.75 A4:.25 G4:.5 E4:.5 C4:1 C5:1 | A4:1 C5:.75 A4:.25 G4:2 | G4:.75 A4:.25 G4:.5 E4:.5 C4:1 E4:1 | D4:.75 C4:.25 D4:.5 E4:.5 D4:2 | G4:.75 A4:.25 G4:.5 E4:.5 C4:1 C5:1 | A4:.75 A4:.25 C5:.75 A4:.25 G4:2 | G4:.75 A4:.25 B4:.5 C5:.5 D5:1 B4:1 | C5:4 | B4:.75 B4:.25 B4:.5 C5:.5 D5:2 | C5:.75 C5:.25 C5:.5 A4:.5 G4:2 | E4:.75 E4:.25 E4:.5 G4:.5 A4:.5 G4:.5 A4:.5 C5:.5 | D5:1 C5:1 B4:2 | C5:.75 B4:.25 C5:.5 A4:.5 G4:1 E4:1 | F4:.75 E4:.25 F4:.5 G4:.5 A4:2 | G4:.75 A4:.25 B4:.5 C5:.5 D5:1 B4:1 | C5:4",
+  "incipit": "slsmddldls|slsmdmrdrmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000184.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000184a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000184; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000184 (the melody read from 000184a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Philip P. Bliss's dates (1838–1876) are from our page for the tune BLANDY (content/hymns/tunes/blandy.json); CCEH's page gives only the year 1869. The bar lines are those of CCEH's Noteworthy score (000184a.nwc).",
+  "importedFrom": "cceh:000184",
+  "updated": "2026-10-16"
+}

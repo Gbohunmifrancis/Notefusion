@@ -1,0 +1,30 @@
+{
+  "name": "JESUS, I COME",
+  "title": "Jesus, I Come",
+  "music": [
+    {
+      "name": "George C. Stebbins",
+      "role": "Music (1887)"
+    }
+  ],
+  "musicPublished": 1887,
+  "metre": "9 8 9 6 9 9 9 6",
+  "key": "Ab major",
+  "time": "6/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:1.5 D4:.5 Eb4:1 C5:2 Bb4:1 | Ab4:1.5 G4:.5 F4:1 Eb4:3 | Ab4:1.5 G4:.5 Ab4:1 Bb4:3 | Bb4:1.5 Ab4:.5 Bb4:1 C5:3 | Eb4:1.5 D4:.5 Eb4:1 C5:2 Bb4:1 | Ab4:1.5 G4:.5 F4:1 Eb4:3 | Ab4:1.5 G4:.5 Ab4:1 C5:2 Bb4:1 | Ab4:6 | Ab4:1.5 G4:.5 Ab4:1 C#5:2 F4:1 | Eb4:1.5 D4:.5 Eb4:1 C5:3 | Bb4:1.5 A4:.5 Bb4:1 Eb5:2 G4:1 | Bb4:1.5 Ab4:.5 F4:1 Eb4:3 | Eb4:1.5 D4:.5 Eb4:1 C5:2 Bb4:1 | Ab4:1.5 G4:.5 F4:1 Eb4:3 | Ab4:1.5 G4:.5 Ab4:1 C5:2 Bb4:1 | Ab4:6",
+  "incipit": "sfsmrdtls|dtdrrdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000178.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000178a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000178; public domain.",
+  "reviewNotes": "Held back: not provably public domain: George C. Stebbins: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000178 (the melody read from 000178a.mid, checked against the page's do-re-mi incipit, 1 note off in 17); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000178a.nwc).",
+  "importedFrom": "cceh:000178",
+  "updated": "2026-10-16"
+}

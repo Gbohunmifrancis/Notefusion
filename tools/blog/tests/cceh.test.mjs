@@ -75,6 +75,14 @@ test("page: the tune's names, metre, incipits, credits and files are read as the
   ]);
   assert.deepEqual(parseCredit({ text: "Mark Andrews, ©1931", html: "Mark Andrews, &copy;1931" }), { raw: "Mark Andrews, ©1931", copyright: true, name: "Mark Andrews", year: 1931 });
   assert.equal(parseCredit({ text: "Traditional", html: "Traditional" }).traditional, true);
+  assert.equal(parseCredit({ text: "Anon.", html: "Anon." }).traditional, true);
+  assert.equal(parseCredit({ text: "Netherlands folk song", html: "Netherlands folk song" }).traditional, true);
+  assert.equal(parseCredit({ text: "Anon Composer, 1880-1960", html: "Anon Composer, 1880-1960" }).traditional, undefined, "a person with a life is never anonymous");
+  assert.deepEqual(parseCredit({ text: "arr.", html: "arr." }), { raw: "arr.", role: "arr." });
+  assert.deepEqual(parseCredit({ text: "harm., ad., David Evans, 1927", html: "harm., ad., David Evans, 1927" }), { raw: "harm., ad., David Evans, 1927", role: "harm., ad.", year: 1927, name: "David Evans" });
+  // A person beside a book: the tune's composer (or its publisher), the book where it was printed.
+  assert.deepEqual(parseCredit({ text: "Joachim Neander, Glaub-und-Liebesubung, 1680", html: "Joachim Neander, <i>Glaub-und-Liebesubung</i>, 1680" }), { raw: "Joachim Neander, Glaub-und-Liebesubung, 1680", year: 1680, book: "Glaub-und-Liebesubung", name: "Joachim Neander" });
+  assert.equal(parseCredit({ text: "Geistliche Kirchengesang, Cologne, 1623", html: "<i>Geistliche Kirchengesang</i>, Cologne, 1623" }).place, "Cologne");
 });
 
 // ── The melody voice ────────────────────────────────────────────────────────
