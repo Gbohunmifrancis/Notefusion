@@ -73,6 +73,8 @@ MARGIN_RATIO = 1.5       # best score / the best score of another tune ...
 SHORT_MARGIN = (2.2, 0.04)  # ... and more for a short match: max(1.5, 2.2 - 0.04 * notes matched)
 CLEAR_DENSITY = 0.8      # below this density a match needs CLEAR_MARGIN: a stepwise folk tune
 CLEAR_MARGIN = 1.8       # half-matching a stepwise hymn is common, a clear win over every other tune is not
+NEAR_EXACT = 0.9         # a take this exact (see _exact_share) may win by less than the margin ...
+NEAR_EXACT_LEAD = 0.1    # ... when every tune within the margin is this much less exact on the same notes
 INCIPIT_MIN_MATCHED = 10
 INCIPIT_MIN_DENSITY = 0.9  # near note-perfect: an opening phrase is short
 INCIPIT_MIN_COVER = 0.85  # share of the incipit's notes inside the alignment, from its first note
@@ -326,6 +328,12 @@ class Alignment:
     pairs: list[tuple[int, int]]   # (take note, target note), exact matches only
     q_span: tuple[int, int]        # take notes [start, end)
     t_span: tuple[int, int]        # target notes [start, end)
+    steps: int = 0                 # columns of the alignment: matches, wrong notes and gaps
+
+    @property
+    def identity(self) -> float:
+        """The share of the alignment's columns that are exact notes (1.0: note for note, no gap)."""
+        return len(self.pairs) / max(1, self.steps)
 
 
 def _sw_align(q, qr, t, tr, circular: bool) -> Alignment:
@@ -344,7 +352,9 @@ def _sw_align(q, qr, t, tr, circular: bool) -> Alignment:
     score = float(h[i, jj])
     end = (i, jj)
     pairs: list[tuple[int, int]] = []
+    steps = 0
     while i > 0 and jj > 0 and h[i, jj] > 1e-9:
+        steps += 1
         here = h[i, jj]
         if abs(here - (h[i - 1, jj - 1] + subs[i - 1, jj - 1])) < 1e-9:
             if subs[i - 1, jj - 1] >= MATCH - 1e-9:
@@ -355,7 +365,7 @@ def _sw_align(q, qr, t, tr, circular: bool) -> Alignment:
         else:
             jj -= 1
     pairs.reverse()
-    return Alignment(score, pairs, (i, end[0]), (jj, end[1]))
+    return Alignment(score, pairs, (i, end[0]), (jj, end[1]), steps)
 
 
 def _copies(entry: Entry, c: Contour, take: Contour) -> int:
@@ -394,6 +404,32 @@ def _fine(q: Contour, ids: list[int], index: HymnIndex) -> dict[int, tuple[float
         if i not in per_entry or score > per_entry[i][0] + 1e-9:
             per_entry[i] = (float(score), shift)
     return per_entry
+
+
+def _exact_share(aln: Alignment, notes: int) -> float:
+    """Exact notes over the alignment's columns or the take's notes, whichever is more: 1.0 is a
+    note-for-note rendition of the whole take; a wrong, missed or extra note, or a take running past
+    the tune, each lowers it."""
+    return len(aln.pairs) / max(1, aln.steps, notes)
+
+
+def _rival_exact(q: Contour, aln: Alignment, best_id: int, ranked: list[int],
+                 per_entry: dict[int, tuple[float, int]], index: HymnIndex) -> float:
+    """The best exact share any other tune within the margin reaches on the notes the best one matched."""
+    window = _window(q, *aln.q_span)
+    best = 0.0
+    for i in ranked:
+        if i == best_id or per_entry[i][0] * MARGIN_RATIO < aln.score or index.same_tune(best_id, i):
+            continue
+        c = index.contours[i]
+        copies = _copies(index.entries[i], c, window)
+        shares = []
+        for shift in {per_entry[i][1], *_shifts(window, c, SHIFTS)}:
+            other = _sw_align(window.pitches % 12, window.rhythm, np.tile((c.pitches + shift) % 12, copies).astype(float),
+                              np.tile(c.rhythm, copies), circular=True)
+            shares.append(_exact_share(other, len(window.pitches)))
+        best = max(best, *shares)
+    return best
 
 
 def _window(q: Contour, start: int, end: int) -> Contour:
@@ -482,9 +518,17 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
               and density >= INCIPIT_MIN_DENSITY and aln.t_span[0] <= 1
               and t_len >= INCIPIT_MIN_COVER * own and margin >= INCIPIT_MARGIN_RATIO)
     else:
-        ok = (matched >= MIN_MATCHED and density >= MIN_DENSITY and coverage >= MIN_COVERAGE
-              and margin >= max(MARGIN_RATIO, SHORT_MARGIN[0] - SHORT_MARGIN[1] * matched)
-              and (density >= CLEAR_DENSITY or margin >= CLEAR_MARGIN))
+        clear = (margin >= max(MARGIN_RATIO, SHORT_MARGIN[0] - SHORT_MARGIN[1] * matched)
+                 and (density >= CLEAR_DENSITY or margin >= CLEAR_MARGIN))
+        exact = _exact_share(aln, len(q.pitches))
+        figures["exact"] = round(exact, 3)
+        if not clear and margin > 1.0 and exact >= NEAR_EXACT:
+            # A note-for-note rendition of one tune wins over a related tune that shares its phrases,
+            # unless that tune is (nearly) as exact on the same notes: then the take is ambiguous.
+            rival = _rival_exact(q, aln, best_id, ranked, per_entry, index)
+            figures["rival_exact"] = round(rival, 3)
+            clear = rival <= exact - NEAR_EXACT_LEAD
+        ok = (matched >= MIN_MATCHED and density >= MIN_DENSITY and coverage >= MIN_COVERAGE and clear)
     if not ok:
         return (None, figures) if explain else None
 
