@@ -110,6 +110,7 @@ internal sealed class BlogDraftWorker : BackgroundService
                 if (first)
                 {
                     await runner.CloseInterruptedAsync(stoppingToken);
+                    await runner.PublishWaitingDraftsAsync(stoppingToken);
                     first = false;
                 }
                 await runner.QueueScheduledIfDueAsync(stoppingToken);

@@ -52,7 +52,12 @@ web-admin/src/app/(console)/blog   the console: posts, editor, topics, "Generate
    the home-page strip and the hymn pages' "On the blog" lists, checks the result (warnings only), deploys
    to Vercel and pings IndexNow. A post is live a few minutes after you press Publish.
 
-**Nothing is published by itself.** Gemini only ever makes Drafts.
+**A clean Gemini draft publishes itself.** A draft that passes every check — no blockers and no advice
+left after its one revision — goes live as soon as it is written, and the site is rebuilt; one with
+problems left stays a Draft with its notes. At start-up the API also publishes any Gemini draft written
+while drafts were kept, if nobody has touched it and it still passes. `Blog__AutoPublishDrafts=false`
+(the `BLOG_AUTOPUBLISH_DRAFTS` variable) keeps every draft for review. Hand-written posts are never
+published without you.
 
 If the deploy cannot read the posts from the API (after waiting up to 15 minutes, which covers an API
 deploy racing the website's), it **fails**, and Vercel keeps serving the previous deployment: a site

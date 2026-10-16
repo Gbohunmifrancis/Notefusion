@@ -188,6 +188,6 @@ public sealed class GetBlogSiteStatusQueryHandler : IRequestHandler<GetBlogSiteS
             : null;
         return new BlogSiteStatusDto(
             _github.IsConfigured, _github.IsConfigured ? _github.Target : null, _gemini.IsConfigured, _settings.GeminiModel,
-            _settings.SiteUrl, pending, last?.RequestedAtUtc, lastDispatched, last?.Error, deploy, schedule);
+            _settings.SiteUrl, pending, last?.RequestedAtUtc, lastDispatched, last?.Error, deploy, schedule, _settings.AutoPublishDrafts);
     }
 }

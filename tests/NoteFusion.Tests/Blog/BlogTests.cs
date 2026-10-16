@@ -24,11 +24,12 @@ public class BlogTests
         public FakeCatalogue Catalogue { get; } = new();
         public FakeGitHub GitHub { get; } = new();
         public FakeGemini Gemini { get; } = new();
-        public BlogSettings Settings { get; } = new() { GeminiRetryDelays = [TimeSpan.Zero] };
+        public BlogSettings Settings { get; }
         public User Admin { get; }
 
-        public Fixture()
+        public Fixture(bool autoPublish = true)
         {
+            Settings = new() { GeminiRetryDelays = [TimeSpan.Zero], AutoPublishDrafts = autoPublish };
             Admin = User.CreateAdmin("Ada Admin", "ada@notefusion.studio", "hash", Now);
             H.Db.Users.Add(Admin);
             H.Db.SaveChanges();
@@ -437,7 +438,8 @@ public class BlogTests
 
         var drafts = f.H.Db.BlogPosts.AsNoTracking().Where(p => p.Source == BlogPostSource.Gemini).OrderBy(p => p.Slug).ToList();
         Assert.Equal(["choir-rehearsal-tips", "how-to-teach-a-choir-a-new-song"], drafts.Select(p => p.Slug));
-        Assert.All(drafts, p => Assert.Equal(BlogPostStatus.Draft, p.Status)); // never published by itself
+        Assert.All(drafts, p => Assert.Equal(BlogPostStatus.Published, p.Status)); // both passed every check
+        Assert.Equal(2, f.PendingRebuilds);
         var teach = drafts.Single(p => p.Slug == "how-to-teach-a-choir-a-new-song");
         Assert.Equal(BlogSettings.DefaultModel, teach.GenerationModel);
         Assert.Equal(BlogSettings.DefaultModel, run.Model);
@@ -461,6 +463,53 @@ public class BlogTests
         Assert.Contains("/blog/how-to-read-tonic-solfa", user);
         Assert.DoesNotContain("not-published-yet", user);
         Assert.Contains("gemini", prompt.Model);
+    }
+
+    [Fact]
+    public async Task With_auto_publish_off_every_draft_waits_for_the_founder()
+    {
+        using var f = new Fixture(autoPublish: false);
+        await Topic(f, "how-to-teach-a-choir-a-new-song", 10);
+        f.Gemini.Answer(BlogSamples.GoodDraft());
+
+        await Generate(f, 1);
+        await f.Runner().RunNextAsync(default);
+
+        Assert.Equal(BlogPostStatus.Draft, f.H.Db.BlogPosts.AsNoTracking().Single().Status);
+        Assert.Equal(0, f.PendingRebuilds);
+        Assert.Equal(0, await f.Runner().PublishWaitingDraftsAsync(default));
+    }
+
+    [Fact]
+    public async Task At_start_up_an_untouched_clean_gemini_draft_goes_live_but_edited_or_flagged_ones_do_not()
+    {
+        using var f = new Fixture(autoPublish: false);
+        await Topic(f, "how-to-teach-a-choir-a-new-song", 10);
+        await Topic(f, "choir-rehearsal-tips", 20);
+        await Topic(f, "left-for-the-founder", 30);
+        var weak = new { title = "How to Teach a Choir a New Song Before Sunday", description = "Short.", slug = "s", tags = new[] { "choir" }, faq = Array.Empty<object>(), body = "## One\n\nToo short." };
+        f.Gemini.Answer(BlogSamples.GoodDraft("how-to-teach-a-choir-a-new-song"))
+            .Answer(BlogSamples.GoodDraft("choir-rehearsal-tips", title: "Choir Rehearsal Tips for Church Choirs That Work"))
+            .Answer(weak).Answer(weak);
+        await Generate(f, 3);
+        await f.Runner().RunNextAsync(default);
+        // The founder edits one draft by hand; that one is theirs to publish.
+        var edited = f.H.Db.BlogPosts.Single(p => p.Slug == "choir-rehearsal-tips");
+        edited.ClearReviewNotes(Now);
+        f.H.Db.SaveChanges();
+
+        var settings = new BlogSettings { GeminiRetryDelays = [TimeSpan.Zero] }; // auto-publish is the default
+        var runner = new BlogGenerationRunner(f.H.Db, f.Gemini, f.Catalogue,
+            new BlogDraftWriter(f.Gemini, settings, NullLogger<BlogDraftWriter>.Instance), settings, f.H.Clock,
+            NullLogger<BlogGenerationRunner>.Instance);
+        Assert.Equal(1, await runner.PublishWaitingDraftsAsync(default));
+
+        var status = f.H.Db.BlogPosts.AsNoTracking().ToDictionary(p => p.Slug, p => p.Status);
+        Assert.Equal(BlogPostStatus.Published, status["how-to-teach-a-choir-a-new-song"]);
+        Assert.Equal(BlogPostStatus.Draft, status["choir-rehearsal-tips"]);
+        Assert.Equal(BlogPostStatus.Draft, status["left-for-the-founder"]);
+        Assert.Equal(1, f.PendingRebuilds);
+        Assert.Equal(0, await runner.PublishWaitingDraftsAsync(default));
     }
 
     [Fact]

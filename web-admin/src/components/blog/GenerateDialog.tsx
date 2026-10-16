@@ -122,16 +122,19 @@ export function RunProgress({ runId }: { runId: string }) {
 /**
  * "Generate with Gemini": how many drafts, and on what — the next topics in the queue, one chosen topic, or a
  * topic in the founder's own words. The API queues the batch and a worker writes it; this panel shows the
- * drafts arriving and their token use. Drafts are never published by themselves.
+ * drafts arriving and their token use. With auto-publish on (the default) a draft that passes every check goes
+ * live by itself; one with problems left stays a draft.
  */
 export function GenerateDialog({
   open,
   onOpenChange,
   model,
+  autoPublish,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   model: string | undefined;
+  autoPublish: boolean;
 }) {
   const [mode, setMode] = useState<Mode>("queue");
   const [count, setCount] = useState(3);
@@ -184,7 +187,10 @@ export function GenerateDialog({
           </SheetTitle>
           <SheetDescription>
             Drafts are written with {model ?? "Gemini"} under the blog&apos;s rules (no invented facts, solfa only from the
-            engine, links only to the site), checked, revised once if needed, and saved as Drafts for you to edit and publish.
+            engine, links only to the site), checked and revised once if needed.{" "}
+            {autoPublish
+              ? "A draft that passes every check is published straight away; one with problems left is saved as a Draft for you to fix."
+              : "Each is saved as a Draft for you to edit and publish."}
           </SheetDescription>
         </SheetHeader>
 
