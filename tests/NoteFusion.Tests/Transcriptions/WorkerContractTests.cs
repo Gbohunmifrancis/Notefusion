@@ -134,6 +134,22 @@ public class WorkerContractTests
     }
 
     [Fact]
+    public async Task A_named_meter_reaches_the_worker_on_every_route_and_none_is_sent_when_it_is_not_named()
+    {
+        var handler = new CapturingHandler();
+        var client = Client(handler);
+
+        await client.SubmitAsync(new MemoryStream([1, 2, 3]), "hymn.wav", new TranscribeOptions { TimeSignature = "3/4" });
+        Assert.Equal("3/4", FormField(handler.Body, "time_signature"));
+
+        await client.SubmitLinkAsync("https://youtu.be/dQw4w9WgXcQ", new TranscribeOptions { TimeSignature = "6/8", StartSeconds = 30, EndSeconds = 90 });
+        Assert.Equal("6/8", FormField(handler.Body, "time_signature"));
+
+        await client.SubmitAsync(new MemoryStream([1, 2, 3]), "hum.wav", new TranscribeOptions());
+        Assert.DoesNotContain("time_signature", handler.Body);
+    }
+
+    [Fact]
     public async Task No_keyboard_transpose_is_sent_when_it_is_off_or_for_a_score()
     {
         var handler = new CapturingHandler();

@@ -77,7 +77,7 @@ The API checks a post the way the site's build will read it (`src/NoteFusion.App
   raw script/iframe/style/form HTML; a title another live post has; an internal link to a page that
   does not exist.
 - **Advice** (the old drafter's quality checks, sentence for sentence): title 20–60 characters,
-  description 110–155, 1,200–2,200 words, at least four `##` sections, 3–8 FAQ answers of 12+ words
+  description 110–155, 800–2,200 words (the drafter asks for 1,400–1,900), at least four `##` sections, 3–8 FAQ answers of 12+ words
   each ending in a question mark, no FAQ section in the body, the topic's required links and a link to
   `/app`, no external links, no stock AI phrases ("as an AI", "delve"…), no placeholders (TODO,
   lorem…), no percentages, "studies show", attributed quotes or testimonials, and no solfa written by

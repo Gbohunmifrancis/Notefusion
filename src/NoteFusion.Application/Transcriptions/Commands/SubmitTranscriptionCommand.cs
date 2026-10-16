@@ -88,6 +88,10 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
     {
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
             return TranscriptionErrors.InvalidKeyboardTranspose;
+        if (!Meters.TryRead(request.TimeSignature, out var meter))
+            return TranscriptionErrors.InvalidTimeSignature;
+        if (request.Tempo is < TranscribeOptions.MinTempo or > TranscribeOptions.MaxTempo)
+            return TranscriptionErrors.InvalidTempo;
 
         // Read once: the header cannot change mid-request, and the gate below and the stamp further down
         // must agree about which handset this is or the two would count different things.
@@ -180,7 +184,7 @@ public sealed class SubmitTranscriptionCommandHandler : IRequestHandler<SubmitTr
             Mode = request.Mode,
             Key = key,
             Tempo = request.Tempo,
-            TimeSignature = request.TimeSignature,
+            TimeSignature = meter,
             Separate = request.Separate,
             AudioPreview = request.AudioPreview,
             KeyboardTranspose = request.KeyboardTranspose,

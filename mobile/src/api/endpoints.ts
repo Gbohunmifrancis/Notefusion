@@ -189,6 +189,7 @@ export interface SubmitOptions {
   mode: "melody" | "poly" | "choir" | "chords";
   key?: string;
   tempo?: number;
+  /** "Beats in a bar", one of `METERS` (lib/meter.ts); left out when the user is not sure. */
   timeSignature?: string;
   /**
    * The file is a whole song with instruments behind the voice, not a hummed or sung
@@ -312,7 +313,7 @@ export const transcriptionsApi = {
    */
   submitLink: (
     url: string,
-    opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "keyboardTranspose"> & { startSeconds?: number; endSeconds?: number },
+    opts: Pick<SubmitOptions, "mode" | "key" | "tempo" | "timeSignature" | "keyboardTranspose"> & { startSeconds?: number; endSeconds?: number },
   ) =>
     api
       .post<TranscriptionJob>(
@@ -322,6 +323,7 @@ export const transcriptionsApi = {
           mode: opts.mode,
           key: opts.key,
           tempo: opts.tempo,
+          timeSignature: opts.timeSignature || undefined,
           keyboardTranspose: opts.keyboardTranspose || undefined,
           audioPreview: false,
           startSeconds: opts.startSeconds,

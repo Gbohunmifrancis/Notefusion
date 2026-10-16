@@ -105,7 +105,7 @@ Visit https://example.com for more.
     {
         var input = Post("## Only\n\nShort.") with { Faq = [new BlogFaqItem("No question mark", "Too short.")] };
         var r = BlogChecks.Check(input, Ctx with { RequiredLinks = ["/hymns"] });
-        Assert.Contains("The body is 2 words; it must be 1200–2200 (not counting solfa blocks).", r.Advice);
+        Assert.Contains("The body is 2 words; it must be 800–2200 (not counting solfa blocks).", r.Advice);
         Assert.Contains("The body has 1 sections (## headings); it needs at least 4.", r.Advice);
         Assert.Contains("The FAQ has 1 questions; it needs 3–8.", r.Advice);
         Assert.Contains("FAQ 1: the question must end with a question mark.", r.Advice);

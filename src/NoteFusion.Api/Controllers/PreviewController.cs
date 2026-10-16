@@ -35,7 +35,7 @@ public sealed class PreviewController : ApiControllerBase
             return HandleResult(Result.Failure<TranscriptionJobDto>(Application.Common.Errors.TranscriptionErrors.InvalidAudio));
         await using var stream = request.Audio.OpenReadStream();
         var result = await _sender.Send(
-            new SubmitPreviewCommand(stream, request.Audio.FileName, request.Separate, request.AudioPreview, request.Mode, request.KeyboardTranspose, request.Audio.ContentType, request.Audio.Length), ct);
+            new SubmitPreviewCommand(stream, request.Audio.FileName, request.Separate, request.AudioPreview, request.Mode, request.KeyboardTranspose, request.Audio.ContentType, request.Audio.Length, request.TimeSignature), ct);
         return result.IsFailure
             ? HandleResult(Result.Failure<TranscriptionJobDto>(result.Error))
             : HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null)));
@@ -46,7 +46,7 @@ public sealed class PreviewController : ApiControllerBase
     public async Task<IActionResult> SubmitLink([FromBody] PreviewLinkRequest request, CancellationToken ct)
     {
         var result = await _sender.Send(
-            new SubmitPreviewLinkCommand(request.Url ?? string.Empty, request.AudioPreview, request.KeyboardTranspose, request.StartSeconds, request.EndSeconds), ct);
+            new SubmitPreviewLinkCommand(request.Url ?? string.Empty, request.AudioPreview, request.KeyboardTranspose, request.StartSeconds, request.EndSeconds, request.TimeSignature), ct);
         return result.IsFailure
             ? HandleResult(Result.Failure<TranscriptionJobDto>(result.Error))
             : HandleResult(Result.Success(new TranscriptionJobDto(result.Value, TranscriptionStatus.Pending, 0.0, null, null, "fetching")));
@@ -86,13 +86,18 @@ public sealed class PreviewController : ApiControllerBase
 
         /// <summary>The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</summary>
         public int KeyboardTranspose { get; set; }
+
+        /// <summary>Optional beats in a bar: "2/4", "3/4", "4/4" or "6/8". Omit to leave it to the worker.</summary>
+        public string? TimeSignature { get; set; }
     }
 
     /// <param name="KeyboardTranspose">The transpose setting on the player's keyboard, -11 to 11 semitones; 0 when it is off.</param>
     /// <param name="StartSeconds">Where in the song to start, in seconds. Omit both for the first thirty seconds.</param>
     /// <param name="EndSeconds">Where in the song to stop, in seconds; the section may not exceed thirty seconds.</param>
+    /// <param name="TimeSignature">Optional beats in a bar: "2/4", "3/4", "4/4" or "6/8". Omit to leave it to the worker.</param>
     public sealed record PreviewLinkRequest(
-        string? Url, bool AudioPreview = true, int KeyboardTranspose = 0, double? StartSeconds = null, double? EndSeconds = null);
+        string? Url, bool AudioPreview = true, int KeyboardTranspose = 0, double? StartSeconds = null, double? EndSeconds = null,
+        string? TimeSignature = null);
 
     public sealed record PreviewLinkInfoRequest(string? Url);
 }

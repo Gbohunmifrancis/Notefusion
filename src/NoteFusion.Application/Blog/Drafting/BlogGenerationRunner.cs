@@ -58,8 +58,9 @@ public sealed class BlogGenerationRunner
 
     /// <summary>
     /// At start-up, with <see cref="BlogSettings.AutoPublishDrafts"/>: a Gemini draft written while drafts were
-    /// kept for review, that nobody has touched since (its first <see cref="BlogPost.Version"/>), with no review
-    /// notes and nothing the checks flag today, goes live. A draft the founder edited or took off the site is left alone.
+    /// kept for review (or that fell short of a check since relaxed), that nobody has touched since (its first
+    /// <see cref="BlogPost.Version"/>), goes live when today's checks flag nothing — its stored review notes are
+    /// from the day it was written and are cleared. A draft the founder edited or took off the site is left alone.
     /// Returns how many went live.
     /// </summary>
     public async Task<int> PublishWaitingDraftsAsync(CancellationToken ct)
@@ -70,12 +71,14 @@ public sealed class BlogGenerationRunner
             .Where(p => p.Source == BlogPostSource.Gemini && p.Status == BlogPostStatus.Draft && p.Version == 1)
             .ToListAsync(ct);
         var published = 0;
-        foreach (var post in waiting.Where(p => p.ReviewNotes.Count == 0))
+        foreach (var post in waiting)
         {
             // Held to the same bar as a fresh draft: read against the live site, nothing to fix and no advice left.
             var check = await BlogPostChecking.CheckAsync(_db, _catalogue, post, ct);
             if (!check.CheckedAgainstSite || check.Blockers.Count > 0 || check.Advice.Count > 0)
                 continue;
+            if (post.ReviewNotes.Count > 0)
+                post.ClearReviewNotes(_clock.UtcNow);
             PublishDraft(post, _clock.UtcNow);
             published++;
         }

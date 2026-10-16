@@ -27,6 +27,10 @@ jobs:
             # stored result of the newest finished jobs (key, tempo, meter, confidence, the first notes
             # as pitch@beat x length, the solfa lines). Metadata only: no audio, no names, no addresses.
             cd /opt/notefusion
+            echo "== blog: drafting runs and posts (newest first)"
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Count\" AS n, \"Status\" AS status, \"Model\" AS model, left(\"Error\",160) AS error, jsonb_array_length(items_json::jsonb) AS items FROM blog_generation_runs ORDER BY \"CreatedAtUtc\" DESC LIMIT 6;" || true
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT i->>'slug' AS slug, i->>'passedChecks' AS ok, left(coalesce(i->>'error',''),80) AS error, left(coalesce(i->'problems'->>0,''),120) AS first_problem FROM (SELECT jsonb_array_elements(items_json::jsonb) AS i FROM blog_generation_runs ORDER BY \"CreatedAtUtc\" DESC LIMIT 3) x;" || true
+            docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT \"Slug\" AS slug, \"Status\" AS status, \"Source\" AS source, left(review_notes_json,140) AS notes FROM blog_posts ORDER BY \"CreatedAtUtc\" DESC LIMIT 25;" || true
             echo "== recent transcription logs (newest first)"
             docker compose -f docker-compose.prod.yml exec -T db psql -U notefusion -d notefusion -P pager=off -c "SELECT to_char(\"CreatedAtUtc\",'MM-DD HH24:MI') AS at, \"Client\" AS client, \"Kind\" AS kind, \"Mode\" AS mode, \"Status\" AS status, round(\"AudioSeconds\"::numeric,1) AS secs, \"TimeSignatureRequested\" AS meter_req, \"TempoRequested\" AS tempo_req, \"KeyRequested\" AS key_req, \"DetectedKey\" AS key, \"DetectedTempo\" AS tempo, \"NoteCount\" AS notes, round(\"Confidence\"::numeric,2) AS conf, left(\"FailureReason\",60) AS failure FROM transcription_logs ORDER BY \"CreatedAtUtc\" DESC LIMIT 8;" || true
             echo "== newest finished jobs: what the sheet says"

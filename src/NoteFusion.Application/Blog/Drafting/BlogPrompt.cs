@@ -33,7 +33,7 @@ You may name a single syllable in prose (doh, soh, s,) and the bare scale "d r m
 WHAT NOTEFUSION DOES (the only product facts you may use): you hum or sing a tune, upload a recording, or paste a YouTube, Spotify or Apple Music link; it writes the melody in movable-doh Tonic Solfa (la-based for minor keys) with staff notation; when a melody could sit in two keys it asks "Which doh is it?"; it plays the tune back on a piano, slower or looped; "Transpose for my choir" moves the doh and shows whether each part sits comfortably; sheets can be saved and shared with a link. It works in the browser at /app and as an Android app.
 
 FORMAT:
-- body: Markdown. No title and no # heading (the page adds the title). Open with two or three short paragraphs that state the problem and what the reader will get. Then 5 to 8 sections with ## headings (### for sub-sections), using numbered steps, lists or a table where they make things clearer. 1,300 to 1,900 words, not counting solfa blocks. Do not add an FAQ section to the body.
+- body: Markdown. No title and no # heading (the page adds the title). Open with two or three short paragraphs that state the problem and what the reader will get. Then 5 to 8 sections with ## headings (### for sub-sections), using numbered steps, lists or a table where they make things clearer. 1,400 to 1,900 words, not counting solfa blocks; never fewer than 1,200. Do not add an FAQ section to the body.
 - faq: 4 to 6 questions people actually search for on this topic, each answered in one to three plain sentences.
 - title: at most 60 characters, containing the target keyword naturally. description: 120 to 155 characters.
 - tags: 2 to 4, lowercase words joined by hyphens; prefer existing tags.

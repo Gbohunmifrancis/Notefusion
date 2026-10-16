@@ -40,7 +40,7 @@
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
 <link rel="stylesheet" href="/assets/site-refresh.css?v=5">
 <link rel="stylesheet" href="/assets/mockup-layout.css?v=2">
-<link rel="stylesheet" href="/assets/home-theme.css?v=1">
+<link rel="stylesheet" href="/assets/home-theme.css?v=2">
 
 <script>document.documentElement.classList.add("js");</script>
 <style>
@@ -66,6 +66,8 @@
   .try-status-info { color: #1D4ED8; }
   .try-status a { color: #1D4ED8; font-weight: 600; }
   .try-note { margin: 6px 0 0; font-size: 13px; color: #7a8aa3; }
+  .try-meter { display: inline-flex; align-items: center; gap: 8px; margin: 12px 0 0; font-size: 14px; font-weight: 600; color: #53647c; }
+  .try-meter select { font: inherit; font-size: 14px; padding: 7px 10px; border: 1.5px solid #cfd8e6; border-radius: 10px; background: #fff; color: #0f172a; }
   .hero-ctas--apps { gap: 10px; }
   .hero-ctas--apps .btn { padding: 10px 14px; font-size: 13px; box-shadow: none; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -173,6 +175,7 @@
               Upload a recording
             </label>
           </div>
+          <label class="try-meter" for="try-meter">Beats in a bar <select id="try-meter" data-meter></select></label>
           <details class="try-link" id="try-link">
             <summary>Or paste a song link</summary>
             <form id="try-form" class="try-form" novalidate>
@@ -748,7 +751,8 @@
 <script src="/assets/songlink.js?v=2" defer></script>
 <script src="/assets/rangepicker.js?v=1" defer></script>
 <script src="/assets/recorder.js?v=1" defer></script>
-<script src="/assets/preview.js?v=10" defer></script>
+<script src="/assets/meter.js?v=1" defer></script>
+<script src="/assets/preview.js?v=11" defer></script>
 <script src="/assets/pricing.js?v=11" defer></script>
 <script src="/assets/landing.js?v=7" defer></script>
 

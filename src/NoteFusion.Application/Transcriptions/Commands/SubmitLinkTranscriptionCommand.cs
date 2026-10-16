@@ -95,6 +95,10 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             return TranscriptionErrors.InvalidLink;
         if (Math.Abs(request.KeyboardTranspose) > TranscribeOptions.MaxKeyboardTranspose)
             return TranscriptionErrors.InvalidKeyboardTranspose;
+        if (!Meters.TryRead(request.TimeSignature, out var meter))
+            return TranscriptionErrors.InvalidTimeSignature;
+        if (request.Tempo is < TranscribeOptions.MinTempo or > TranscribeOptions.MaxTempo)
+            return TranscriptionErrors.InvalidTempo;
 
         var key = SubmitTranscriptionCommandHandler.SanitiseKey(request.Key);
         if (key is not null && KeyParser.Parse(key).IsFailure)
@@ -146,7 +150,7 @@ public sealed class SubmitLinkTranscriptionCommandHandler : IRequestHandler<Subm
             Mode = request.Mode,
             Key = key,
             Tempo = request.Tempo,
-            TimeSignature = request.TimeSignature,
+            TimeSignature = meter,
             Priority = isPro ? TranscribePriority.High : TranscribePriority.Normal,
             MaxSeconds = maxSeconds,
             StartSeconds = section.Value.StartSeconds,

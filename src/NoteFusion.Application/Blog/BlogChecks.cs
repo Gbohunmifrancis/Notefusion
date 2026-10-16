@@ -67,7 +67,7 @@ public sealed record BlogCheckResult(IReadOnlyList<string> Blockers, IReadOnlyLi
 /// </summary>
 public static partial class BlogChecks
 {
-    public const int TitleMin = 20, TitleMax = 60, DescMin = 110, DescMax = 155, WordsMin = 1200, WordsMax = 2200,
+    public const int TitleMin = 20, TitleMax = 60, DescMin = 110, DescMax = 155, WordsMin = 800, WordsMax = 2200,
         H2Min = 4, FaqMin = 3, FaqMax = 8, DraftTagsMax = 4;
 
     public static BlogCheckResult Check(BlogCheckInput post, BlogCheckContext ctx)
