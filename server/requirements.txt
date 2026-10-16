@@ -39,13 +39,15 @@ setuptools==80.9.0
 # Unpinned on purpose, unlike the rest: a pinned yt-dlp stops extracting
 # within weeks of a YouTube player change, and the fix is always "the newest release".
 # The trade is that each build takes whatever yt-dlp (and yt-dlp-ejs) PyPI serves that day;
-# it runs only in the worker, unprivileged, behind the API.
+# it runs only in the worker, unprivileged, behind the API.  (This layer is cached between
+# builds, so the Dockerfile upgrades yt-dlp again in a layer of its own that every deploy
+# re-runs, and the worker updates itself at run time: app/ingest/ytdlp_update.py.)
 # [default] brings yt-dlp-ejs, which solves YouTube's JavaScript challenges with the Deno
 # runtime the Dockerfile installs; without it formats go missing.
 yt-dlp[default]>=2026.8.19
 # Proof-of-origin tokens from the bgutil-provider sidecar (docker-compose.prod.yml), which
 # YouTube asks datacenter addresses for.  Pinned to the sidecar image's version.
-bgutil-ytdlp-pot-provider==2.0.1
+bgutil-ytdlp-pot-provider==2.0.2
 
 # Development / test
 pytest==8.3.4

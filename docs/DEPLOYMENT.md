@@ -477,32 +477,59 @@ heroku logs --tail --app <your-heroku-app>      # watch the seeder + provider wi
 ## YouTube links ("YouTube is refusing automated downloads")
 
 YouTube blocks anonymous downloads from datacenter addresses — every EC2 instance — with
-"Sign in to confirm you're not a bot", often after only a handful of requests. Spotify and
-Apple Music links are found on YouTube by title, artist and length, so when YouTube refuses,
-every provider is affected. The worker has four layers against that, in order:
+"Sign in to confirm you're not a bot", rate limits them ("This content isn't available, try
+again later"), withholds formats from clients that bring no proof-of-origin (PO) token, and
+changes its player every few weeks so that an outdated yt-dlp stops working. Spotify and Apple
+Music links are found on YouTube by title, artist and length, so when YouTube refuses, every
+provider is affected. **The address is the root cause**, and no setting makes a datacenter
+address look like a home connection; what follows makes the worker get through as often as it
+can and fail plainly when it cannot.
 
-1. **A JavaScript runtime.** The image ships Deno and `yt-dlp[default]` (which brings
+**Terms.** Downloading from YouTube other than through its player is against YouTube's Terms of
+Service, whatever tool or proxy does it. NoteFusion fetches only the section a user asks for,
+audio only, and deletes it with the job; that limits what is taken but does not make it
+permitted. The store-preview fallback (layer 6) is the licensed route.
+
+The worker's layers, in order:
+
+1. **Always-current yt-dlp.** Three ways, so no single cache or schedule can leave it stale:
+   - every image build installs the newest stable yt-dlp in a layer of its own
+     (`server/Dockerfile`; the deploy passes a new `YTDLP_REFRESH` build argument each run,
+     because the `requirements.txt` layer is cached and used to keep an old yt-dlp for months);
+   - **Deploy to EC2** also runs every Monday at 03:23 UTC (`schedule:` in `deploy.yml`), so the
+     image is rebuilt at least weekly with no push;
+   - the worker installs the newest **nightly** yt-dlp (the channel yt-dlp's README recommends,
+     where YouTube fixes land first) beside the image's at startup and every 24 hours
+     (`app/ingest/ytdlp_update.py`, into `/home/nf/.local/share/nf-ytdlp`, about 25 MB). An
+     update is used only once it installs, starts and is newer; a failed one (no network, a bad
+     release) is logged as `yt-dlp update failed (…); staying on …` and changes nothing. The log
+     says which version is in use at startup and after each update.
+
+   Knobs (`.env` on the server): `NF_YTDLP_UPDATE_CHANNEL=stable` if a nightly ever misbehaves;
+   `NF_YTDLP_UPDATE_HOURS` (default 24; 0 = startup only); `NF_YTDLP_UPDATE_DIR=` (empty) turns
+   self-update off.
+2. **A JavaScript runtime.** The image ships Deno and `yt-dlp[default]` (which brings
    `yt-dlp-ejs`) so yt-dlp can solve YouTube's player challenges. Nothing to configure.
-2. **Proof-of-origin tokens.** The `bgutil-provider` service in `docker-compose.prod.yml`
-   (`brainicism/bgutil-ytdlp-pot-provider`, no published port) mints the tokens YouTube asks
-   datacenter clients for, and the `bgutil-ytdlp-pot-provider` plugin in the image fetches
-   them. The transcriber's `NF_YTDLP_EXTRA_ARGS` defaults to
-   `--extractor-args "youtubepot-bgutilhttp:base_url=http://bgutil-provider:4416"`. Keep the
-   sidecar image tag and the plugin pin in `server/requirements.txt` on the same version.
-   Setting `NF_YTDLP_EXTRA_ARGS` in `.env` *replaces* that default, so an override (a
-   residential proxy: `--proxy http://user:pass@host:port`, the paid last resort) must
-   repeat the `--extractor-args …` part to keep the tokens. Check the sidecar with
-   `docker compose -f docker-compose.prod.yml logs bgutil-provider`. A token helps but does
-   not guarantee getting past a bot check.
-3. **A second player client.** YouTube's bot check is given per player client, and the
-   `tv_embedded` client (which asks for no proof-of-origin token) is often let through where
-   the web clients are not. A refused extraction, and a refused download, is tried once more
-   with it (`NF_YTDLP_FALLBACK_CLIENTS`, default `tv_embedded`; empty switches the retry off).
-   Both refusals are in the worker's log in yt-dlp's own words. The **Check EC2 Status**
-   workflow probes YouTube from inside the worker with the default clients, the fallback client
-   and the cookies, so a refusal can be told from a broken deploy without touching a user's job.
-4. **Cookies of a signed-in account** (see below).
-5. **The store's 30-second preview.** When YouTube still refuses, a Spotify link uses the
+3. **Proof-of-origin tokens.** The `bgutil-provider` service in `docker-compose.prod.yml`
+   (`brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno`, the provider the yt-dlp wiki's PO Token
+   Guide lists first; no published port, compose network only) mints the tokens, and the
+   `bgutil-ytdlp-pot-provider` plugin in the image (pinned in `server/requirements.txt` to the
+   same version — bump both together) fetches them from `NF_YTDLP_POT_URL`
+   (`http://bgutil-provider:4416`, set in the compose file, apart from `NF_YTDLP_EXTRA_ARGS` so
+   an override there can no longer drop the tokens). Memory: the sidecar's V8 heap is capped at
+   160 MB (`NF_BGUTIL_HEAP_MB`) under a 320 MB container limit (`NF_BGUTIL_MEM_LIMIT`); it holds
+   no state, so an out-of-memory restart only costs the tokens it had cached. Check it with
+   `docker compose -f docker-compose.prod.yml logs bgutil-provider` and the **Check EC2 Status**
+   workflow's `docker stats`. A token helps but does not get past an IP-based block by itself.
+4. **Other player clients.** YouTube's bot check is given per player client. A refused
+   extraction, and a refused download, is tried again with `NF_YTDLP_FALLBACK_CLIENTS` (default
+   `mweb,android_vr,web_embedded`: `mweb` is the PO Token Guide's recommended client, with its
+   token from the sidecar; `android_vr` and `web_embedded` need none; yt-dlp tries each within
+   that one call). Empty switches the second try off. The old default, `tv_embedded`, no longer
+   exists in yt-dlp, which skips a client it does not know — so that "second try" had quietly
+   become a re-run of the defaults. Check the PO Token Guide when yt-dlp changes its clients.
+5. **Cookies of a signed-in throwaway account** (see below). Optional.
+6. **The store's 30-second preview.** When YouTube still refuses, a Spotify link uses the
    preview on its track page, an Apple Music link the one from the iTunes lookup, and a
    YouTube link the iTunes preview of the same title and artist. The job then comes back
    `truncated`, with `source.preview = true` and the notice "Only a 30-second preview was
@@ -511,9 +538,71 @@ every provider is affected. The worker has four layers against that, in order:
    the song, so keep the song's store link visible next to a preview result. A private or
    removed YouTube video never falls back to someone else's recording.
 
+A store link (Spotify, Apple Music) also tries the next-best YouTube upload (up to three clean
+uploads of the right length, within four minutes) when the best one is gone, region-locked,
+refused or turns out to be a live take; a later one starts on the rung the refusals reached.
+
+How the worker tells failures apart (`links.classify`, from yt-dlp's ERROR lines): **blocked**
+(bot check, rate limit, captcha, 403/429, missing PO token or formats, network) is worth
+another rung and maps to the API's `refused` sentence; **unavailable** (private, removed,
+members-only, region-locked) and **age-restricted** are never retried, because no client makes
+a private video public.
+
+### Watching the block rate
+
+Every resolve that asks yt-dlp and every link job writes one line, with no URL, video id or
+proxy in it:
+
+```
+link_attempt stage=fetch provider=spotify outcome=blocked route=clients ytdlp_calls=4 seconds=31.2 preview=yes totals=success:41,blocked:6,unavailable:2,other:0 block_rate=12%
+```
+
+`outcome` is `success`, `blocked`, `unavailable` or `other`; `route` is the rung that answered
+(or refused last): `direct`, `clients` or `proxy`; `totals` and `block_rate` count since the
+worker started, per stage. Filter Dozzle (`/logs`, transcriber) on `link_attempt`; the **Check
+EC2 Status** workflow prints them with the other link lines and probes YouTube from inside the
+worker with the yt-dlp in use. A block rate that jumps after a quiet spell usually means YouTube
+changed something: wait for the daily update or run **Deploy to EC2**. If it stays high for
+days, it is the address, and the proxy below is the lever left.
+
+### A residential proxy (optional, a later step)
+
+Not set up, and nothing needs one: with `YTDLP_PROXY` unset the ladder simply has no proxy rung.
+It is the strongest lever there is, because it changes the one thing YouTube judges most — the
+address — and it costs money, so it is kept for when the block rate says the free layers are
+not enough.
+
+- **What it does.** With the repository secret `YTDLP_PROXY` set to a proxy URL
+  (`http://user:pass@host:port`, or `socks5://…`; URL-encode special characters in the
+  password, and avoid `"` and `$`), the deploy writes it to `.env` as `NF_YTDLP_PROXY`. yt-dlp
+  then goes through it **only after** YouTube refused this server directly and with the
+  fallback clients, and only for YouTube: the stores' metadata, previews and everything else go
+  out directly. A video whose details were read through the proxy is downloaded through it too
+  (YouTube binds the media addresses to the address that asked). The proxy's password is
+  masked in the worker's log.
+- **What to buy.** A *residential* or *ISP* (static residential) proxy, not a datacenter one —
+  a datacenter proxy is the same problem again. Residential proxies are billed per gigabyte,
+  cheaper per GB on bigger plans and noticeably dearer on small pay-as-you-go ones; ISP proxies
+  are usually billed per address per month. Compare current prices; they change often.
+- **How much traffic.** Very little: audio only, and only the section asked for. A six-minute
+  song is a few megabytes (about 5–6 MB of m4a at 128 kb/s) plus well under a megabyte of page
+  and API calls, and the proxy carries only what was refused directly. A thousand proxied songs
+  is on the order of 5–10 GB.
+- **A free thing to try first**, if it ever comes to that: Cloudflare WARP run as a small SOCKS
+  proxy sidecar (then `YTDLP_PROXY=socks5://warp:1080`) is reported to get past some blocks;
+  its addresses are Cloudflare's, not residential, so expect it to help less, and for less long.
+- **To switch it off**, delete the secret and redeploy.
+
 ### Cookies
 
-1. On a desktop browser signed in to a Google account (a throwaway one is sensible), export
+Optional, and a trade: a signed-in session gets past the bot check more often, but YouTube can
+flag or suspend an account used from a server, and cookies expire or are rotated within weeks.
+**Use a throwaway Google account made for this, never a personal or company one.** When the
+cookies stop working the worker says so in its log, at most every 15 minutes:
+`ytdlp_cookies_rejected: YouTube says the cookies are no longer valid (rotated or expired)` (or
+"asked for a sign-in although cookies were sent"). Export fresh ones then.
+
+1. On a desktop browser signed in to the throwaway Google account, export
    the YouTube cookies in Netscape `cookies.txt` format — the "Get cookies.txt LOCALLY"
    extension, or `yt-dlp --cookies-from-browser chrome --cookies cookies.txt
    "https://www.youtube.com/watch?v=dQw4w9WgXcQ"` on that machine, which writes the file.
@@ -553,11 +642,9 @@ predates the worker's non-root user, so the entrypoint creates `NF_JOB_DIR` if n
 `chown -R`s it to `nf` on every start.
 
 **Rotation.** Cookies expire, and YouTube rotates or revokes them (sooner when the account
-is used from a server). When link jobs start coming back as previews or with "This song
-could not be fetched right now", export a fresh file, replace the `YTDLP_COOKIES` secret
-and redeploy. Expect to do this every few weeks. Keep yt-dlp current too
-(`server/requirements.txt` pins a minimum; the image is rebuilt on every deploy, so a
-redeploy picks up a newer release).
+is used from a server). When the log shows `ytdlp_cookies_rejected`, or link jobs start coming
+back as previews, export a fresh file, replace the `YTDLP_COOKIES` secret and redeploy. Expect
+to do this every few weeks. yt-dlp keeps itself current (layer 1 above).
 
 ## Logs (Dozzle at `/logs`)
 

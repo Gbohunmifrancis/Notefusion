@@ -124,14 +124,20 @@ test("Gemini: a JSON request with the schema, the key in a header, the answer pa
   assert.equal(usageLine(r.usage), "prompt 1200 (cached 0), output 3000, thinking 800, total 5000");
 });
 
-test("Gemini: one retry on 429, 5xx or a dropped connection, then a clear error", async () => {
+test("Gemini: retries 429, 5xx or a dropped connection with a growing wait, then a clear error", async () => {
   const waits = [];
   const sleep = async (ms) => { waits.push(ms); };
   const ok = await generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: fakeFetch([{ status: 429, headers: { "retry-after": "3" }, body: {} }, { status: 200, body: OK_BODY }]), sleep });
   assert.deepEqual(ok.data, { title: "T" });
   assert.deepEqual(waits, [3000]);
-  await assert.rejects(generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: fakeFetch([{ status: 503, body: {} }, { status: 503, body: { error: { message: "overloaded" } } }]), sleep }), /Gemini API error 503: overloaded/);
-  await assert.rejects(generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: fakeFetch([new Error("ECONNRESET"), new Error("ECONNRESET")]), sleep }), /Could not reach the Gemini API/);
+  waits.length = 0;
+  const busy = fakeFetch([{ status: 503, body: {} }, { status: 503, body: {} }, { status: 503, body: {} }, { status: 503, body: {} }, { status: 503, body: { error: { message: "overloaded" } } }]);
+  await assert.rejects(generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: busy, sleep }), /Gemini API error 503: overloaded/);
+  assert.equal(busy.calls.length, 5);
+  assert.deepEqual(waits, [15_000, 30_000, 60_000, 60_000]);
+  const recovers = await generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: fakeFetch([{ status: 503, body: {} }, { status: 503, body: {} }, { status: 200, body: OK_BODY }]), sleep });
+  assert.deepEqual(recovers.data, { title: "T" });
+  await assert.rejects(generateJson({ apiKey: "k", system: "s", contents: [], attempts: 2, fetchImpl: fakeFetch([new Error("ECONNRESET"), new Error("ECONNRESET")]), sleep }), /Could not reach the Gemini API/);
   const f = fakeFetch([{ status: 400, body: { error: { message: "bad model" } } }]);
   await assert.rejects(generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: f, sleep }), /400: bad model .*GEMINI_MODEL/);
   assert.equal(f.calls.length, 1, "a 400 is not retried");

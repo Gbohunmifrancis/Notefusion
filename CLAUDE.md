@@ -74,9 +74,18 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `priority=high` jobs (Pro) run first and skip Basic Pitch in melody mode. The queue is in memory, but
   with `NF_JOB_DIR` set (the prod compose's `job-data` volume) every submit is journaled first
   (`app/jobs/journal.py`) and `JobQueue.recover()` replays the journal at startup under the same job ids;
-  a job started `NF_JOB_MAX_ATTEMPTS` times is failed with a plain message instead. A refused YouTube
-  extraction or download is tried once more with the `tv_embedded` player client
-  (`NF_YTDLP_FALLBACK_CLIENTS`); a nonexistent, private, live or over-long (`NF_LINK_MAX_VIDEO_SECONDS`)
+  a job started `NF_JOB_MAX_ATTEMPTS` times is failed with a plain message instead. Every yt-dlp call climbs
+  a ladder, one rung per refusal (`links._routes`; `links.classify` reads yt-dlp's ERROR lines as
+  blocked/unavailable/age_restricted/other, and only "blocked" climbs): yt-dlp's default clients with
+  proof-of-origin tokens from the `bgutil-provider` sidecar (`NF_YTDLP_POT_URL`; plugin pin = sidecar tag),
+  then `NF_YTDLP_FALLBACK_CLIENTS` (`mweb,android_vr,web_embedded`; `tv_embedded` is gone from yt-dlp), then
+  `NF_YTDLP_PROXY` — optional and off, YouTube only, from the `YTDLP_PROXY` secret; a download keeps the rung
+  its details were read on. A store link tries up to three clean search matches. yt-dlp stays current three
+  ways: a cache-busted Dockerfile layer every build, a weekly scheduled deploy, and the worker installing the
+  newest nightly beside the image's at startup and daily (`app/ingest/ytdlp_update.py`, `NF_YTDLP_UPDATE_*`).
+  Each resolve that asks yt-dlp and each link job logs one `link_attempt` line (outcome, rung, running
+  totals, block rate; no URL), and expired cookies log `ytdlp_cookies_rejected`. A nonexistent, private,
+  live or over-long (`NF_LINK_MAX_VIDEO_SECONDS`)
   video is refused at `/v1/links/resolve` with a `LinkError.code` the C# `TranscriptionErrors.ForLink`
   turns into its own sentence, and the refusal is remembered so the submit is refused at once. Sections
   are cut as a copy (no `--force-keyframes-at-cuts`); ffmpeg cuts the exact window while decoding.
