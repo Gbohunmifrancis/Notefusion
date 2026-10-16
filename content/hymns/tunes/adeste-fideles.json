@@ -1,0 +1,17 @@
+{
+  "name": "ADESTE FIDELES",
+  "music": [
+    {"name": "John Francis Wade", "died": 1786, "role": "Melody, from his manuscripts (c. 1743)"}
+  ],
+  "musicPublished": 1782,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | G4:2 D4:1 G4:1 | A4:2 D4:2 | B4:1 A4:1 B4:1 C5:1 | B4:2 A4:1 G4:1 | G4:2 F#4:1 E4:1 | F#4:1 G4:1 A4:1 B4:1 | F#4:2 E4:1.5 D4:.5 | D4:3 r:1 | D5:2 C5:1 B4:1 | C5:2 B4:2 | A4:1 B4:1 G4:1 A4:1 | F#4:1.5 E4:.5 D4:1 G4:1 | G4:1 F#4:1 G4:1 A4:1 | G4:2 D4:1 B4:1 | B4:1 A4:1 B4:1 C5:1 | B4:2 A4:1 B4:1 | C5:1 B4:1 A4:1 G4:1 | F#4:2 G4:1 C5:1 | B4:2 A4:1.5 G4:.5 | G4:3",
+  "reviewed": false,
+  "confidence": "high for the notes; check bars 8 and 12",
+  "source": "Open Hymnal Project ABC score (The Hymnal, Episcopal, 1916); checked against the score on Wikipedia's article.",
+  "reviewNotes": "The two sources agree on every pitch and on the underlay of the ending ('Him' over soh-doh, 'Christ' over te-lah). They differ in two places: bar 8 (here 'Beth-le-hem' ends with a crotchet rest; Wikipedia holds 'hem' a whole bar) and bar 12 (here 'an-gels' is fah. me ray; Wikipedia fah - ray, without the passing me). Check both against your book. musicPublished is the first printing of the tune (1782); Wade's manuscripts are older."
+}

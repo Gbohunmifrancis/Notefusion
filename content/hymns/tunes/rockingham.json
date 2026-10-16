@@ -1,0 +1,17 @@
+{
+  "name": "ROCKINGHAM",
+  "music": [
+    {"name": "Edward Miller", "born": 1735, "died": 1807, "role": "Adapted the melody (1790)"}
+  ],
+  "musicPublished": 1790,
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 92,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | F#4:1 G4:1 E4:1 | D4:2 F#4:1 | A4:2 B4:1 | A4:2 A4:1 | D5:2 C#5:1 | B4:2 A4:1 | A4:1 G4:1 F#4:1 | F#4:1 E4:1 E4:1 | A4:2 B4:1 | C#5:2 A4:1 | D5:1 F#4:1 G#4:1 | A4:2 D4:1 | G4:2 F#4:1 | E4:2 D4:1 | D4:.5 E4:.5 F#4:1 E4:1 | D4:2",
+  "reviewed": false,
+  "confidence": "high for the notes; check bars 12 and 16",
+  "source": "Open Hymnal Project ABC score (Hymns Ancient and Modern, 1869, 'Rockingham Old') and the score on Wikipedia's article; the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "The two sources agree except in two bars, where this follows the modern form on Wikipedia: bar 12 'but' is the sharpened fah (G sharp, fe) leading to 'loss', and bar 16 'all' is a three-note run doh-ray-me. The 1869 'Rockingham Old' has G natural and 'all' on doh-me only. Check both against your book."
+}

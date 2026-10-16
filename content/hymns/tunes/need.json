@@ -1,0 +1,17 @@
+{
+  "name": "NEED",
+  "music": [
+    {"name": "Robert Lowry", "born": 1826, "died": 1899, "role": "Melody (1872)"}
+  ],
+  "musicPublished": 1872,
+  "key": "Ab major",
+  "time": "3/4",
+  "tempo": 80,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "Ab4:1 | C5:1.5 Bb4:.5 Ab4:.5 G4:.5 | Ab4:2 Ab4:1 | Ab4:1.5 Bb4:.5 Ab4:.5 F4:.5 | Eb4:2 Eb4:1 | Bb4:1.5 C5:.5 Bb4:.5 Eb4:.5 | C5:2 Ab4:1 | G4:1.5 Ab4:.5 G4:.5 F4:.5 | Eb4:2 C5:1 | C5:1.5 Ab4:.5 Db5:.5 C5:.5 | C5:1 Bb4:2 | Bb4:1.5 Ab4:.5 C5:.5 Bb4:.5 | Bb4:1 Ab4:1 Ab4:1 | Ab4:1.5 Bb4:.5 Ab4:.5 F4:.5 | Eb4:1 Ab4:1 Bb4:1 | C5:1.5 Ab4:.5 Bb4:1 | Ab4:2",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (Pentecostal Hymns No. 2, 1898); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "High. 'gra-', 'cious', 'peace', 'af-' and 'come' each take two notes, as printed."
+}

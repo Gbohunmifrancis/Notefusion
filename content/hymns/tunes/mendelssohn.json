@@ -1,0 +1,18 @@
+{
+  "name": "MENDELSSOHN",
+  "music": [
+    {"name": "Felix Mendelssohn", "born": 1809, "died": 1847, "role": "Melody, from his Festgesang (1840)"},
+    {"name": "William Hayman Cummings", "born": 1831, "died": 1915, "role": "Adapted to these words (1850s)"}
+  ],
+  "musicPublished": 1840,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 104,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C4:1 F4:1 F4:1.5 E4:.5 | F4:1 A4:1 A4:1 G4:1 | C5:1 C5:1 C5:1.5 Bb4:.5 | A4:1 G4:1 A4:2 | C4:1 F4:1 F4:1.5 E4:.5 | F4:1 A4:1 A4:1 G4:1 | C5:1 G4:1 G4:1.5 E4:.5 | E4:1 D4:1 C4:2 | C5:1 C5:1 C5:1 F4:1 | Bb4:1 A4:1 A4:1 G4:1 | C5:1 C5:1 C5:1 F4:1 | Bb4:1 A4:1 A4:1 G4:1 | D5:1 D5:1 D5:1 C5:1 | Bb4:1 A4:1 Bb4:2 | G4:1 A4:.5 Bb4:.5 C5:1.5 F4:.5 | F4:1 G4:1 A4:2 | D5:1.5 D5:.5 D5:1 C5:1 | Bb4:1 A4:1 Bb4:2 | G4:1 A4:.5 Bb4:.5 C5:1.5 F4:.5 | F4:1 G4:1 F4:2",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (Cummings's setting, 1857); every note agrees with the score on Wikipedia's article and the opening with hymnary.org's incipit.",
+  "reviewNotes": "High: two independent sources agree note for note."
+}

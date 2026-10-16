@@ -1,0 +1,23 @@
+{
+  "title": "The Church’s One Foundation",
+  "tune": "aurelia",
+  "text": [
+    {"name": "Samuel John Stone", "born": 1839, "died": 1900, "role": "Words (1866)"}
+  ],
+  "textPublished": 1866,
+  "description": "The Church’s One Foundation in Tonic Solfa to AURELIA, doh is D: the solfa with the words, staff notation, five verses and a piano.",
+  "about": [
+    "Samuel John Stone, an English curate, wrote this hymn in 1866 as one of a set on the articles of the Apostles' Creed; this one is on 'the holy catholic Church'. The tune AURELIA was written by Samuel Sebastian Wesley, grandson of Charles Wesley, and first printed in 1864."
+  ],
+  "underlay": "The Church-’s one foun-da-tion Is Je-sus Christ her Lord; She is His new cre-a-tion By wa-ter and the Word: From heav’n He came and sought her To be His ho-ly bride; With His own blood He bought her, And for her life He died.",
+  "verses": [
+    {"lines": ["The Church’s one foundation", "Is Jesus Christ her Lord;", "She is His new creation", "By water and the Word:", "From heaven He came and sought her", "To be His holy bride;", "With His own blood He bought her,", "And for her life He died."]},
+    {"lines": ["Elect from every nation,", "Yet one o’er all the earth,", "Her charter of salvation", "One Lord, one faith, one birth;", "One holy name she blesses,", "Partakes one holy food,", "And to one hope she presses,", "With every grace endued."]},
+    {"lines": ["Though with a scornful wonder", "Men see her sore oppressed,", "By schisms rent asunder,", "By heresies distressed,", "Yet saints their watch are keeping,", "Their cry goes up, ‘How long?’", "And soon the night of weeping", "Shall be the morn of song."]},
+    {"lines": ["’Mid toil and tribulation,", "And tumult of her war,", "She waits the consummation", "Of peace for evermore;", "Till with the vision glorious", "Her longing eyes are blest,", "And the great Church victorious", "Shall be the Church at rest."]},
+    {"lines": ["Yet she on earth hath union", "With God the Three in One,", "And mystic sweet communion", "With those whose rest is won:", "O happy ones and holy!", "Lord, give us grace that we,", "Like them, the meek and lowly,", "On high may dwell with Thee."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

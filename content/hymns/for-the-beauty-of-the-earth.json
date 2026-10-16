@@ -1,0 +1,24 @@
+{
+  "title": "For the Beauty of the Earth",
+  "tune": "dix",
+  "text": [
+    {"name": "Folliott Sandford Pierpoint", "born": 1835, "died": 1917, "role": "Words (1864)"}
+  ],
+  "textPublished": 1864,
+  "description": "For the Beauty of the Earth in Tonic Solfa to DIX, doh is G: the solfa with the words, staff notation, five verses and a piano.",
+  "about": [
+    "Folliott Pierpoint, an English schoolteacher and poet, wrote this hymn of thanksgiving in 1864. The tune DIX is Conrad Kocher's melody of 1838, shortened by William Henry Monk for Hymns Ancient and Modern in 1861."
+  ],
+  "underlay": "For the_ beau-ty of the earth, For the glo-ry of the skies, For the_ love which from our birth O-ver and a-round us lies: Lord of all, to Thee we raise This our hymn of grate-ful praise.",
+  "verses": [
+    {"lines": ["For the beauty of the earth,", "For the glory of the skies,", "For the love which from our birth", "Over and around us lies:"]},
+    {"label": "Refrain", "lines": ["Lord of all, to Thee we raise", "This our hymn of grateful praise."]},
+    {"lines": ["For the beauty of each hour", "Of the day and of the night,", "Hill and vale, and tree and flower,", "Sun and moon, and stars of light:"]},
+    {"lines": ["For the joy of ear and eye,", "For the heart and mind’s delight,", "For the mystic harmony", "Linking sense to sound and sight:"]},
+    {"lines": ["For the joy of human love,", "Brother, sister, parent, child,", "Friends on earth, and friends above,", "For all gentle thoughts and mild:"]},
+    {"lines": ["For Thy Church, that evermore", "Lifteth holy hands above,", "Offering up on every shore", "Her pure sacrifice of love:"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

@@ -1,0 +1,17 @@
+{
+  "name": "EASTER HYMN",
+  "music": [
+    {"name": "Lyra Davidica", "traditional": true, "role": "Melody, from Lyra Davidica (1708)"}
+  ],
+  "musicPublished": 1708,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C4:1 E4:1 G4:1 C4:1 | F4:1 A4:1 A4:1 G4:1 | E4:.5 F4:.5 G4:.5 C4:.5 F4:1 E4:.5 F4:.5 | E4:1 D4:1 C4:2 | F4:1 G4:1 A4:1 G4:1 | F4:1 E4:1 E4:1 D4:1 | E4:.5 F4:.5 G4:.5 C4:.5 F4:1 E4:.5 F4:.5 | E4:1 D4:1 C4:2 | B4:1 C5:1 D5:1 G4:1 | C5:1 D5:1 E5:2 | B4:.5 C5:.5 D5:.5 G4:.5 C5:1 B4:.5 C5:.5 | B4:1 A4:1 G4:2 | G4:.5 A4:.5 B4:.5 G4:.5 C5:1 E4:1 | F4:1 A4:1 A4:1 G4:1 | C5:.5 B4:.5 C5:.5 G4:.5 A4:.5 B4:.5 C5:.5 D5:.5 | C5:1 B4:1 C5:2",
+  "reviewed": false,
+  "confidence": "high; check bar 1",
+  "source": "Open Hymnal Project ABC score (after Church Praise, 1885); the harmony in the same source confirms each melody note.",
+  "reviewNotes": "High. Check bar 1: 'is' drops back to the low doh (C E G C, then up to F for 'ris'n'), as in this source and its harmony. The Alleluia melismas: 'Al-' five notes (seven in the last line), 'le-' two, 'lu-' two."
+}
