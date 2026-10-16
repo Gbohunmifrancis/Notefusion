@@ -18,7 +18,8 @@ const SYLLABLE_PC = { d: 0, r: 2, m: 4, f: 5, s: 7, l: 9, t: 11 };
  */
 export function incipitDegrees(doremi) {
   const out = [];
-  for (const ch of String(doremi || "").replace(/\s+/g, "")) {
+  // A ";" marks where the tune goes back to repeat a phrase; what follows it is not the opening run on.
+  for (const ch of String(doremi || "").replace(/\s+/g, "").split(";")[0]) {
     if (ch === "|") continue;
     if (ch in SYLLABLE_PC) out.push(SYLLABLE_PC[ch]);
     else out.push(null);
@@ -113,8 +114,8 @@ export function incipitMatch(line, degrees) {
   return best;
 }
 
-/** The most an opening may differ from the incipit and still be the tune: one edit in eight notes, at least one. */
-export const allowedDistance = (n) => Math.max(1, Math.floor(n / 8));
+/** The most an opening may differ from the incipit and still be the tune: about one edit in seven notes, at least one. */
+export const allowedDistance = (n) => Math.max(1, Math.round(n / 7));
 
 /**
  * The melody line: the candidate that matches the incipit (the fewest edits; on a tie the higher staff's

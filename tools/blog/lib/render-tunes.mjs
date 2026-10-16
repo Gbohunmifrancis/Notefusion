@@ -17,6 +17,9 @@ const SPAN_WORDS = { 12: "an octave", 11: "a seventh", 10: "a seventh", 9: "a si
 /** Common names of hymn metres, as hymn books print them. */
 const METRE_NAMES = { "8 6 8 6": "Common Metre (C.M.)", "8 8 8 8": "Long Metre (L.M.)", "6 6 8 6": "Short Metre (S.M.)", "8 6 8 6 8 6 8 6": "Common Metre Double (D.C.M.)", "8 8 8 8 8 8 8 8": "Long Metre Double (D.L.M.)", "6 6 8 6 6 6 8 6": "Short Metre Double (D.S.M.)" };
 
+/** The page's data block on one line: a tune page is mostly this data, and there are many tune pages. */
+const compactJson = (data) => JSON.stringify(data).replace(/</g, "\\u003c");
+
 function years(p) { return p.traditional || !p.died ? "" : p.lived ? ` (${p.lived})` : p.born ? ` (${p.born}–${p.died})` : ` (died ${p.died})`; }
 function peopleText(people) {
   const ps = people.map((p) => `${p.name}${years(p)}`);
@@ -174,7 +177,7 @@ ${faq.map((f) => `  <h3>${escapeHtml(f.q)}</h3>\n  <p>${escapeHtml(f.a)}</p>`).j
 ${ctaBox("tune")}
 </article>
 <p class="back-link"><a href="/hymns">← All hymns and tunes in Tonic Solfa</a></p>
-<script type="application/json" id="hymn-data">${jsonForScript({ key: v.key, time: v.time, tempo: v.tempo, notes: v.notes, musicXml: v.musicXml, osmd: OSMD })}</script>`;
+<script type="application/json" id="hymn-data">${compactJson({ key: v.key, time: v.time, tempo: v.tempo, notes: v.notes, musicXml: v.musicXml.replace(/>\s+</g, "><"), osmd: OSMD })}</script>`;
 
   const composers = makers.filter((p) => !p.traditional).map((p) => ({ "@type": "Person", name: p.name, ...(p.born && !p.lived ? { birthDate: String(p.born) } : {}), ...(p.lived ? {} : { deathDate: String(p.died) }) }));
   const ld = [
