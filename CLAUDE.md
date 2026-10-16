@@ -188,6 +188,16 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
   action) and the overview's `WebTraffic` section reads them back. No third-party analytics.
+- The blog (`docs/BLOG.md`): posts live in the database (`BlogPost`; `Application/Blog`), written, checked and
+  published in the admin console's Blog section — no post files in the repo. Publishing, unpublishing, archiving,
+  a live edit or a scheduled post going live stages a `BlogSiteRebuild`; the `BlogSiteWorker` coalesces them into
+  one GitHub `workflow_dispatch` of `deploy-web.yml` (20 s quiet, at most one per 2 min; `GitHub__Token`), whose
+  `tools/blog/build.mjs --api` renders the live posts from the public `GET /api/blog/published` at deploy time
+  (the committed `web-site/` is built from `content/` alone; the deploy fails rather than ship without the blog).
+  `BlogChecks` mirror the build: blockers (what would break it, incl. ```solfa blocks checked against the site's
+  `/blog/catalogue.json`) stop publishing; advice is the old drafter's quality checks. Gemini (`Gemini__ApiKey`,
+  through `OutboundResilience`) drafts from the `BlogTopic` queue on demand (1–10, a `BlogGenerationRun` the
+  `BlogDraftWorker` writes) and Mon/Thu 05:30 UTC, one revision round, tokens recorded; drafts never publish.
 - Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
   charge (`PaymentGatewayFactory.SelectForCurrency`). Every checkout is a one-off priced from the
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this
