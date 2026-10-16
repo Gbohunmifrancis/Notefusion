@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NoteFusion.Application.Blog;
 using NoteFusion.Application.Blog.Drafting;
 using NoteFusion.Core.Entities;
+using NoteFusion.Core.Enums;
 using NoteFusion.Infrastructure.Blog;
 using NoteFusion.Tests.Support;
 
@@ -230,10 +231,22 @@ Visit https://example.com for more.
     public void The_seeded_launch_posts_and_topics_load_and_would_publish()
     {
         var seed = NoteFusion.Infrastructure.Persistence.Seed.BlogSeed.Load();
-        Assert.Equal(["how-to-find-the-doh-of-a-song", "how-to-read-tonic-solfa"], seed.Posts.Select(p => p.Slug));
+        Assert.Equal(["how-to-find-the-doh-of-a-song", "how-to-read-tonic-solfa"], seed.Posts.Where(p => !p.Draft).Select(p => p.Slug));
         Assert.Equal(40, seed.Topics.Count);
-        Assert.Equal(2, NoteFusion.Infrastructure.Persistence.Seed.BlogSeed.PostRows(seed).GetLength(0));
-        foreach (var p in seed.Posts)
+        var rows = NoteFusion.Infrastructure.Persistence.Seed.BlogSeed.PostRows(seed);
+        Assert.Equal(3, rows.GetLength(0));
+
+        // The first Gemini draft (written by the old PR drafter) arrives as a draft for review, never live.
+        var draft = Assert.Single(seed.Posts, p => p.Draft);
+        Assert.Equal("tonic-solfa-vs-staff-notation", draft.Slug);
+        var columns = NoteFusion.Infrastructure.Persistence.Seed.BlogSeed.PostColumns;
+        var i = seed.Posts.IndexOf(draft);
+        Assert.Equal(nameof(BlogPostStatus.Draft), rows[i, Array.IndexOf(columns, "Status")]);
+        Assert.Equal(nameof(BlogPostSource.Gemini), rows[i, Array.IndexOf(columns, "Source")]);
+        Assert.Null(rows[i, Array.IndexOf(columns, "PublishedAtUtc")]);
+        Assert.Equal("gemini-3.8-flash", rows[i, Array.IndexOf(columns, "GenerationModel")]);
+
+        foreach (var p in seed.Posts.Where(p => !p.Draft))
         {
             var input = new BlogCheckInput(p.Slug, p.Title, p.Description, p.Dek, p.Tags,
                 (p.Faq ?? []).Select(f => new BlogFaqItem(f.Question, f.Answer)).ToList(), p.Body, p.Author, null, null, null, null);

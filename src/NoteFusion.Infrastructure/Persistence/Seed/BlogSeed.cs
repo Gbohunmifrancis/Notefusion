@@ -26,7 +26,8 @@ internal static class BlogSeed
 
     public sealed record SeedPost(
         string Slug, string Title, string? Dek, string Description, string Date, string? Updated, string Author,
-        List<string> Tags, string? Keyword, List<SeedFaq>? Faq, SeedCover? Cover, string Body);
+        List<string> Tags, string? Keyword, List<SeedFaq>? Faq, SeedCover? Cover, string Body,
+        bool Draft = false, string? DraftedWith = null);
 
     public sealed record SeedTopic(string Slug, string Keyword, string Intent, string Angle, List<string> Links, bool Skip, int Position);
 
@@ -62,15 +63,18 @@ internal static class BlogSeed
         for (var i = 0; i < seed.Posts.Count; i++)
         {
             var p = seed.Posts[i];
-            var published = Utc(p.Date);
+            var dated = Utc(p.Date);
+            DateTime? published = p.Draft ? null : dated;
             DateTime? revised = p.Updated is { } u ? Utc(u) : null;
             var faq = (p.Faq ?? []).Select(f => new BlogFaqItem(f.Question, f.Answer)).ToList();
             object?[] row =
             [
                 IdFor("post", p.Slug), p.Slug, p.Title, p.Dek, p.Description, p.Body, JsonSerializer.Serialize(p.Tags, Json),
                 p.Keyword, p.Cover?.Src, p.Cover?.Alt, p.Cover?.Width, p.Cover?.Height, JsonSerializer.Serialize(faq, Json),
-                null, null, p.Author, BlogPostStatus.Published.ToString(), BlogPostSource.Imported.ToString(), null,
-                published, revised, published, revised ?? published, null, null, "[]", "[]", 1,
+                null, null, p.Author,
+                (p.Draft ? BlogPostStatus.Draft : BlogPostStatus.Published).ToString(),
+                (p.Draft ? BlogPostSource.Gemini : BlogPostSource.Imported).ToString(), null,
+                published, revised, dated, revised ?? dated, null, p.DraftedWith, "[]", "[]", 1,
             ];
             for (var c = 0; c < row.Length; c++)
                 rows[i, c] = row[c];
