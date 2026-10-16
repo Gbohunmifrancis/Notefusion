@@ -420,7 +420,7 @@ def harmonise(
 
     def to_notes(raw: list[tuple[int, float, float]], confs: list[float] | None = None) -> list[TranscribedNote]:
         ordered = sorted(raw, key=lambda x: x[1])
-        flags = [solfa.resolve_ascending(f, chromatic_spelling) for f in solfa.ascending_flags([p for p, _s, _d in ordered])]
+        flags = [solfa.resolve_ascending(f, chromatic_spelling) for f in solfa.ascending_flags([p for p, _s, _d in ordered], doh_pc)]
         out = []
         for i, (p, s, d) in enumerate(ordered):
             syl, mark, degree = solfa.syllable(p, doh_pc, ref_doh, flags[i])

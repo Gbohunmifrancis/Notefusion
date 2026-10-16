@@ -47,16 +47,19 @@ export function dohPitchClass(key) {
   return key.mode === "major" ? key.tonicPitchClass : (key.tonicPitchClass + 3) % 12;
 }
 
-export function referenceDoh(pitches, dohPc) {
-  if (pitches.length === 0) return Math.round((60 - dohPc) / 12) * 12 + dohPc;
-  const sorted = [...pitches].sort((a, b) => a - b);
-  const mid = sorted.length >> 1;
-  const median = sorted.length % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-  let best = dohPc;
-  for (let p = dohPc; p < 128; p += 12) {
-    if (Math.abs(p - median) < Math.abs(best - median)) best = p;
+/** The doh at or below the middle note (a minor third higher for la-based minor), as src/lib/solfa.ts. */
+export function referenceDoh(pitches, dohPc, mode) {
+  let middle = 60;
+  if (pitches.length > 0) {
+    const sorted = [...pitches].sort((a, b) => a - b);
+    const mid = sorted.length >> 1;
+    middle = sorted.length % 2 === 1 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
   }
-  return best;
+  if (mode === "minor") middle += 3;
+  let ref = Math.floor((middle - dohPc) / 12) * 12 + dohPc;
+  while (ref > 127) ref -= 12;
+  while (ref < 0) ref += 12;
+  return ref;
 }
 
 export function syllable(pitchMidi, dohPc, refDohMidi) {
@@ -84,7 +87,7 @@ export function deriveSolfa(notes, keyText, timeSignature) {
   if (!key || notes.length === 0) return { notes: [...notes], solfaLines: [] };
 
   const dohPc = dohPitchClass(key);
-  const refDoh = referenceDoh(notes.map((n) => n.pitchMidi), dohPc);
+  const refDoh = referenceDoh(notes.map((n) => n.pitchMidi), dohPc, key.mode);
   const labelled = notes.map((n) => ({ ...n, ...syllable(n.pitchMidi, dohPc, refDoh) }));
 
   const perBar = beatsPerBar(timeSignature);

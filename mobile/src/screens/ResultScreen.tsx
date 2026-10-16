@@ -120,8 +120,8 @@ function partLines(
   const key = parseKey(keyText);
   if (!key || part.notes.length === 0) return [];
   const dohPc = dohPitchClass(key);
-  const refDoh = referenceDoh(melody.map((n) => n.pitchMidi), dohPc);
-  const flags = ascendingFlags(part.notes.map((n) => n.pitchMidi));
+  const refDoh = referenceDoh(melody.map((n) => n.pitchMidi), dohPc, key.mode);
+  const flags = ascendingFlags(part.notes.map((n) => n.pitchMidi), dohPc);
   const labelled = part.notes.map((n, i) => ({ ...n, ...syllable(n.pitchMidi, dohPc, refDoh, flags[i]!) }));
   return renderSolfaLines(labelled, `${dohHeader(dohPc)} · ${name[0]!.toUpperCase()}${name.slice(1)}`, timeSignature);
 }
