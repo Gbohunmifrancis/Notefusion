@@ -40,11 +40,28 @@ export function renderMarkdown(src, { hymnsBySlug, file = "post" }) {
         return `<a href="${escapeHtml(h)}"${t}${internal ? "" : ' rel="noopener"'}>${inner}</a>`;
       },
       image({ href, title, text }) {
-        // ![alt](/assets/blog/x.jpg "1200x675") — the size keeps the layout from shifting as it loads.
-        const m = /^(\d+)x(\d+)$/.exec(title || "");
-        if (!m) errors.push(`image ${href}: give its size as the title, e.g. ![alt](${href} "1200x675")`);
-        const size = m ? ` width="${m[1]}" height="${m[2]}"` : "";
-        return `<img src="${escapeHtml(href)}" alt="${escapeHtml(text)}"${size} loading="lazy" decoding="async">`;
+        return img(href, title, text);
+      },
+      paragraph({ tokens }) {
+        // An image on a line of its own is a figure; "1200x675 | A caption" as its title gives it a caption.
+        if (tokens.length === 1 && tokens[0].type === "image") {
+          const t = tokens[0];
+          const caption = /\|\s*(.+)$/.exec(t.title || "");
+          return `<figure class="post-figure">${img(t.href, t.title, t.text)}${caption ? `<figcaption>${escapeHtml(caption[1].trim())}</figcaption>` : ""}</figure>\n`;
+        }
+        return `<p>${this.parser.parseInline(tokens)}</p>\n`;
+      },
+      blockquote({ tokens }) {
+        // "> [!NOTE]" or "> [!TIP]" on the first line makes a callout box. Any other quote is a pull quote: a
+        // line from the post itself, set large (never words put in someone else's mouth).
+        const inner = this.parser.parse(tokens);
+        const m = /^<p>\[!(NOTE|TIP)\]\s*/.exec(inner);
+        if (m) {
+          const label = m[1] === "TIP" ? "Tip" : "Note";
+          const rest = inner.slice(m[0].length);
+          return `<aside class="callout callout-${label.toLowerCase()}"><p class="callout-label">${label}</p>${rest.startsWith("</p>") ? rest.slice(4) : "<p>" + rest}</aside>\n`;
+        }
+        return `<blockquote class="pull-quote">${inner}</blockquote>\n`;
       },
       table(token) {
         const html = this.constructor.prototype.table.call(this, token);
@@ -52,6 +69,13 @@ export function renderMarkdown(src, { hymnsBySlug, file = "post" }) {
       },
     },
   });
+  function img(href, title, text) {
+    // ![alt](/assets/blog/x.jpg "1200x675") — the size keeps the layout from shifting as it loads.
+    const m = /^(\d+)x(\d+)(?:\s*\||$)/.exec(title || "");
+    if (!m) errors.push(`image ${href}: give its size as the title, e.g. ![alt](${href} "1200x675")`);
+    const size = m ? ` width="${m[1]}" height="${m[2]}"` : "";
+    return `<img src="${escapeHtml(href)}" alt="${escapeHtml(text)}"${size} loading="lazy" decoding="async">`;
+  }
   const html = marked.parse(src);
   if (errors.length) throw new Error(`${file}:\n  - ${errors.join("\n  - ")}`);
   return { html, toc, hymnsUsed: [...hymnsUsed], links };

@@ -94,7 +94,7 @@ export function renderHymn(h, { hymns, posts }) {
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page">
 <header class="post-header">
-  <p class="site-page-kicker">Hymn · Tonic Solfa</p>
+  <p class="kicker"><a href="/hymns">Hymns in Tonic Solfa</a></p>
   <h1>${escapeHtml(h.title)} in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(h.description)}</p>
 </header>
@@ -193,15 +193,15 @@ export function renderHymnIndex(hymns) {
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"]];
   const items = hymns.map((h) => `  <li class="hymn-item">
     <h2><a href="/hymns/${h.slug}">${escapeHtml(h.title)}</a></h2>
-    <p class="post-meta">${escapeHtml(h.view.header)} · ${escapeHtml(h.view.time)} · Tune: ${escapeHtml(h.tuneData.name)}</p>
     <p class="first-line">${escapeHtml(h.verses[0].lines[0])}</p>
+    <p class="story-meta"><span>${escapeHtml(h.view.header)}</span><span>${escapeHtml(h.view.time)}</span><span>Tune: ${escapeHtml(h.tuneData.name)}</span></p>
   </li>`).join("\n");
   const body = `${breadcrumbs(crumbs)}
-<section class="site-page-intro">
-  <p class="site-page-kicker">Hymns</p>
+<header class="masthead">
+  <p class="kicker">The hymnal</p>
   <h1>Hymns in Tonic Solfa</h1>
-  <p>Public-domain hymns with the solfa written out under the words, the staff notation, and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
-</section>
+  <p class="masthead-dek">Public-domain hymns with the solfa written out under the words, the staff notation, and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+</header>
 <ul class="hymn-list">
 ${items}
 </ul>

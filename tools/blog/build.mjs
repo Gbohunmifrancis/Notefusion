@@ -25,7 +25,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false } = {}) {
   const { authors, hymns, posts } = loadAll({ includeDrafts });
   hymns.forEach(prepareHymn);
   const hymnsBySlug = new Map(hymns.map((h) => [h.slug, h]));
-  preparePosts(posts, { hymnsBySlug });
+  preparePosts(posts, { hymnsBySlug, authors });
 
   const files = new Map();
   const put = (urlPath, html) => files.set(urlPath === "/" ? "index.html" : urlPath.replace(/^\//, "") + "/index.html", html);
@@ -35,7 +35,7 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false } = {}) {
   for (let n = 1; n <= pages; n++) put(blogPagePath(n), renderBlogIndex(posts, { pageNo: n, pages, hymns }));
   for (const p of posts) put(p.url, renderPost(p, { posts, authors, hymnsBySlug }));
   const tags = [...new Set(posts.flatMap((p) => p.tags))].sort();
-  for (const t of tags) put(`/blog/tag/${t}`, renderTag(t, posts.filter((p) => p.tags.includes(t))));
+  for (const t of tags) put(`/blog/tag/${t}`, renderTag(t, posts.filter((p) => p.tags.includes(t)), { allPosts: posts }));
   for (const a of Object.values(authors)) put(a.url, renderAuthor(a, posts.filter((p) => p.author === a.id)));
   files.set("blog/feed.xml", feedXml(posts, authors));
 
