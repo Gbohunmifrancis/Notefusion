@@ -1,0 +1,98 @@
+{
+  "title": "O Wondrous Type, O Vision Fair",
+  "tune": "deo-gracias",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words (1495)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1851)"
+    }
+  ],
+  "textPublished": 1851,
+  "description": "O Wondrous Type, O Vision Fair in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1495. The English translation is by John Mason Neale (1851). The tune, DEO GRACIAS, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O won-drous type! O vi-sion fair Of glo_-ry that_ the_ Church may share, Which Christ up-on_ the moun-tain shows, where bright-er than the sun He glows!",
+  "verses": [
+    {
+      "lines": [
+        "O wondrous type! O vision fair",
+        "Of glory that the Church may share,",
+        "Which Christ upon the mountain shows,",
+        "where brighter than the sun He glows!"
+      ]
+    },
+    {
+      "lines": [
+        "From age to age the tale declare,",
+        "How with the three disciples there,",
+        "Where Moses and Elijah meet,",
+        "The Lord holds converse high and sweet."
+      ]
+    },
+    {
+      "lines": [
+        "The law and prophets there have place,",
+        "Two chosen witnesses of grace;",
+        "The Father's voice from out the cloud",
+        "proclaims His only Son aloud."
+      ]
+    },
+    {
+      "lines": [
+        "With shining face and bright array,",
+        "Christ deigns to manifest today",
+        "What glory shall be theirs above",
+        "who joy in God with perfect love."
+      ]
+    },
+    {
+      "lines": [
+        "And faithful hearts are raised on high",
+        "by this great vision's mystery;",
+        "For which in joyful strains we raise",
+        "the voice of prayer, the hymn of praise."
+      ]
+    },
+    {
+      "lines": [
+        "D O Father, with th'Eternal Son,",
+        "and Holy Spirit, ever One,",
+        "Vouchsafe to bring us by Thy grace",
+        "to see Thy glory face to face."
+      ]
+    }
+  ],
+  "category": "Transfiguration",
+  "topics": [
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Cloud",
+    "Courage in Affliction",
+    "Eternal Life",
+    "Father",
+    "God, Eternity of",
+    "Heaven",
+    "Holy Spirit",
+    "Jesus",
+    "Light",
+    "Miracles",
+    "Presence",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Wondrous_Type_O_Vision_Fair-Deo_Gracias-Agincourt.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Wondrous_Type_O_Vision_Fair-Deo_Gracias-Agincourt"
+}

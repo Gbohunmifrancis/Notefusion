@@ -1,0 +1,24 @@
+{
+  "name": "CHRIST RETURNETH",
+  "music": [
+    {
+      "name": "James McGranahan",
+      "born": 1840,
+      "died": 1907,
+      "role": "Music (1891)"
+    }
+  ],
+  "musicPublished": 1891,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Christ_Returneth-Christ_Returneth.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 2 does not add up to 4 beats; bar 3 does not add up to 4 beats; bar 4 does not add up to 4 beats; bar 5 does not add up to 4 beats; bar 6 does not add up to 4 beats; bar 7 does not add up to 4 beats; bar 8 does not add up to 4 beats; bar 9 does not add up to 4 beats; bar 10 does not add up to 4 beats; bar 11 does not add up to 4 beats; bar 12 does not add up to 4 beats; bar 13 does not add up to 4 beats; bar 14 does not add up to 4 beats. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: Gospel hymns no. 6: For use in gospel meetings and other religious services By James McGranahan, Ira David Sankey, George Coles Stebbins 1891 Hymn 185 text checked against the same source"
+}

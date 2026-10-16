@@ -1,0 +1,23 @@
+{
+  "name": "AU MEINES HERZENS GRUNDE",
+  "music": [
+    {
+      "name": "David Wolder",
+      "died": 1604,
+      "role": "Music (1598)"
+    }
+  ],
+  "musicPublished": 1598,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | F4:1 C5:1 A4:1 F4:1 | F4:1 A4:1 G4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:2 r:1 F4:1 | F4:1 C5:1 A4:1 F4:1 | F4:1 A4:1 G4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:2 r:1 A4:1 | A4:1 C5:1 C5:1 A4:1 | G4:2 r:1 F4:1 | A4:1 Bb4:1 C5:1 G4:1 | A4:2 F4:1 A4:1 | C5:1 Bb4:1 A4:1 F4:1 | F4:1 A4:1 G4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:2 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Kingdom_Satan_Founded-Au_Meines_Herzens_Grunde-I_Doden_Jesus_Blunded-Jeg_Vil_Din_Pris_Udsjunge.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"The Lutheran Hymnary\", 1913 Hymn 280 Note that this tune has at least two variants, wherein not only the setting but the melody changes a bit. This seems to be the more typical version of the tune."
+}

@@ -2,21 +2,57 @@
   "title": "To God Be the Glory",
   "tune": "to-god-be-the-glory",
   "text": [
-    {"name": "Fanny Crosby", "born": 1820, "died": 1915, "role": "Words (1875)"}
+    {
+      "name": "Fanny Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1875)"
+    }
   ],
   "textPublished": 1875,
   "description": "To God Be the Glory in Tonic Solfa: the solfa with the words, staff notation, all three verses with the refrain, and a piano.",
   "about": [
     "Fanny Crosby wrote these words and William Howard Doane the tune; the hymn was published in their collection Brightest and Best in 1875."
   ],
-  "underlay": "",
+  "underlay": "To God be the glor-y, great things He hath done! So loved He the world that He gave us His Son, Who yield-ed His life an a-tone-ment for sin, And o-pened the life gate that all may go in. Praise the Lord, praise the Lord, Let the earth hear His voice! Praise the Lord, praise the Lord, Let the peo-ple re-joice! O come to the Fa-ther, through Je-sus the Son, And give Him the glor-y, great things He hath done!",
   "verses": [
-    {"lines": ["To God be the glory, great things He hath done!", "So loved He the world that He gave us His Son,", "Who yielded His life an atonement for sin,", "And opened the life-gate that all may go in."]},
-    {"label": "Refrain", "lines": ["Praise the Lord, praise the Lord,", "Let the earth hear His voice!", "Praise the Lord, praise the Lord,", "Let the people rejoice!", "O come to the Father, through Jesus the Son,", "And give Him the glory, great things He hath done!"]},
-    {"lines": ["O perfect redemption, the purchase of blood,", "To every believer the promise of God;", "The vilest offender who truly believes,", "That moment from Jesus a pardon receives."]},
-    {"lines": ["Great things He hath taught us, great things He hath done,", "And great our rejoicing through Jesus the Son;", "But purer, and higher, and greater will be", "Our wonder, our transport, when Jesus we see."]}
+    {
+      "lines": [
+        "To God be the glory, great things He hath done!",
+        "So loved He the world that He gave us His Son,",
+        "Who yielded His life an atonement for sin,",
+        "And opened the life-gate that all may go in."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Praise the Lord, praise the Lord,",
+        "Let the earth hear His voice!",
+        "Praise the Lord, praise the Lord,",
+        "Let the people rejoice!",
+        "O come to the Father, through Jesus the Son,",
+        "And give Him the glory, great things He hath done!"
+      ]
+    },
+    {
+      "lines": [
+        "O perfect redemption, the purchase of blood,",
+        "To every believer the promise of God;",
+        "The vilest offender who truly believes,",
+        "That moment from Jesus a pardon receives."
+      ]
+    },
+    {
+      "lines": [
+        "Great things He hath taught us, great things He hath done,",
+        "And great our rejoicing through Jesus the Son;",
+        "But purer, and higher, and greater will be",
+        "Our wonder, our transport, when Jesus we see."
+      ]
+    }
   ],
   "updated": "2026-10-16",
   "reviewed": false,
-  "draft": true
+  "draft": false
 }

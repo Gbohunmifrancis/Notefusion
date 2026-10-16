@@ -1,0 +1,129 @@
+{
+  "title": "Lo, How a Rose E'er Blooming",
+  "tune": "es-ist-ein-ros-entsprungen-rhythmic-lo-how-a-rose-eer-blooming",
+  "text": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Words (1500)"
+    },
+    {
+      "name": "Fridrich Layriz",
+      "born": 1808,
+      "died": 1859,
+      "role": "Words (1500)"
+    },
+    {
+      "name": "Theodore Baker",
+      "born": 1851,
+      "died": 1934,
+      "role": "Translated (1894)"
+    },
+    {
+      "name": "Harriet Reynolds Krauth",
+      "born": 1845,
+      "died": 1925,
+      "role": "Translated (1894)"
+    },
+    {
+      "name": "Harriet Reynolds Spaeth",
+      "born": 1845,
+      "died": 1925,
+      "role": "Translated (1894)"
+    },
+    {
+      "name": "John Casper Mattes",
+      "born": 1876,
+      "died": 1948,
+      "role": "Translated (1894)"
+    }
+  ],
+  "textPublished": 1894,
+  "description": "Lo, How a Rose E'er Blooming in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Fridrich Layriz, first published in 1500. The English translation is by Theodore Baker and Harriet Reynolds Krauth and Harriet Reynolds Spaeth and John Casper Mattes (1894). The tune, ES IST EIN ROS ENTSPRUNGEN (RHYTHMIC), is from Altes Catholische Geistliche Kirchengeseng, Köln, 1599. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lo, how a Rose e'er bloom-ing from ten-der stem hath sprung! Of Jes-se's lin-eage com-ing, as men of old have sung. It came, a flow'r-et bright, a-mid the cold of win-ter, When half spent was the night.",
+  "verses": [
+    {
+      "lines": [
+        "Lo, how a Rose e'er blooming",
+        "from tender stem hath sprung!",
+        "Of Jesse's lineage coming,",
+        "as men of old have sung.",
+        "It came, a flow'ret bright,",
+        "amid the cold of winter,",
+        "When half spent was the night."
+      ]
+    },
+    {
+      "lines": [
+        "Isaiah 'twas foretold it,",
+        "the Rose I have in mind;",
+        "With Mary we behold it,",
+        "the virgin mother kind.",
+        "To show God's love aright,",
+        "she bore to men a Savior,",
+        "When half spent was the night."
+      ]
+    },
+    {
+      "lines": [
+        "The shepherds heard the story",
+        "proclaimed by angels bright,",
+        "How Christ, the Lord of glory",
+        "was born on earth this night.",
+        "To Bethlehem they sped",
+        "and in the manger found Him,",
+        "As angel heralds said."
+      ]
+    },
+    {
+      "lines": [
+        "This Flow'r, whose fragrance tender",
+        "with sweetness fills the air,",
+        "Dispels with glorious splendor",
+        "the darkness everywhere;",
+        "True Man, yet very God,",
+        "from sin and death He saves us,",
+        "And lightens ev'ry load."
+      ]
+    },
+    {
+      "lines": [
+        "O Savior, Child of Mary,",
+        "who felt our human woe,",
+        "O Savior, King of glory,",
+        "who dost our weakness know;",
+        "Bring us at length we pray,",
+        "to the bright courts of Heaven,",
+        "And to the endless day!"
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Comfort",
+    "Darkness, Spiritual",
+    "Evening",
+    "God, Faithfulness of",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Reverence"
+  ],
+  "metre": "7 6 7 6 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lo_How_A_Rose_Eer_Blooming-Es_Ist_Ein_Ros_Entsprungen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Lo_How_A_Rose_Eer_Blooming-Es_Ist_Ein_Ros_Entsprungen",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 3 has 6 beats, more than 4; bar 4 has 6 beats, more than 4; bar 5 has 5 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 6 beats, more than 4; bar 13 has 6 beats, more than 4; bar 14 has 6 beats, more than 4."
+}

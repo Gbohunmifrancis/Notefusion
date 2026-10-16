@@ -1,0 +1,24 @@
+{
+  "name": "CANTERBURY",
+  "music": [
+    {
+      "name": "Orlando Gibbons",
+      "born": 1583,
+      "died": 1625,
+      "role": "Music (1623)"
+    }
+  ],
+  "musicPublished": 1623,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 Ab4:1 Bb4:1 C5:1 | F4:1 F4:1 G4:2 | Bb4:1 C5:1 D5:1 Eb5:1 | C5:1 C5:1 Bb4:2 | G4:1 Ab4:1 Bb4:1 C5:1 | Ab4:1 G4:1 F4:2 | Bb4:1 Ab4:.5 G4:.5 F4:1 Eb4:1 | F4:1 F4:1 Eb4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Holy_Ghost_With_Light_Divine-Canterbury-Song_13.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 8 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: 'Common Service Book With Hymnal' ULCA, 1917 Hymn 156."
+}

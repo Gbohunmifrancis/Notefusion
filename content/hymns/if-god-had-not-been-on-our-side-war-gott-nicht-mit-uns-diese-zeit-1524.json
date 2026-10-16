@@ -1,0 +1,84 @@
+{
+  "title": "If God Had Not Been on Our Side (Wär Gott Nicht Mit Uns Diese Zeit, 1524)",
+  "alsoKnownAs": [
+    "Had God Not Come, May Israel Say",
+    "Were God Not with Us at This Time"
+  ],
+  "tune": "war-gott-nicht-mit-uns-diese-zeit-1524",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "If God Had Not Been on Our Side in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The tune, WÄR GOTT NICHT MIT UNS DIESE ZEIT (1524), is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "If God had not been on our side And had not come to aid__ us, The foes with all their pow'r and pride Would sure-ly have dis-mayed__ us; For we, His flock, would have to fear The threat of men both far and near Who rise in might a-gainst__ us.",
+  "verses": [
+    {
+      "lines": [
+        "If God had not been on our side",
+        "And had not come to aid us,",
+        "The foes with all their pow'r and pride",
+        "Would surely have dismayed us;",
+        "For we, His flock, would have to fear",
+        "The threat of men both far and near",
+        "Who rise in might against us."
+      ]
+    },
+    {
+      "lines": [
+        "Their furious wrath, did God permit,",
+        "Would surely have consumed us",
+        "And as a deep and yawning pit",
+        "With life and limb entombed us.",
+        "Like men o'er whom dark waters roll",
+        "Their wrath would have engulfed our soul",
+        "And, like a flood, o'erwhelmed us."
+      ]
+    },
+    {
+      "lines": [
+        "Blest be the Lord, who foiled their threat",
+        "That they could not devour us;",
+        "Our souls, like birds, escaped their net,",
+        "They could not overpow'r us.",
+        "The snare is broken we are free!",
+        "Our help is ever, Lord, in Thee,",
+        "Who madest earth and heaven."
+      ]
+    }
+  ],
+  "category": "Reformation",
+  "topics": [
+    "Christian Life",
+    "Courage in Affliction",
+    "Faithfulness",
+    "God, Care of",
+    "God, Creator",
+    "Gratitude",
+    "Loyalty",
+    "Security",
+    "Trust",
+    "Victory"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/If_God_Had_Not_Been_On_Our_Side-Waer_Gott_nicht_mit_ans_Diese_Zeit_1524.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "If_God_Had_Not_Been_On_Our_Side-Waer_Gott_nicht_mit_ans_Diese_Zeit_1524",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

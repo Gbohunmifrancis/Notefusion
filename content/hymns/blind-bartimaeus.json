@@ -1,0 +1,85 @@
+{
+  "title": "Blind Bartimaeus",
+  "tune": "fillmore",
+  "text": [
+    {
+      "name": "Henry Wadsworth Longfellow",
+      "born": 1807,
+      "died": 1882,
+      "role": "Words (1842)"
+    }
+  ],
+  "textPublished": 1842,
+  "description": "Blind Bartimaeus in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Henry Wadsworth Longfellow, first published in 1842. The tune, FILLMORE, is by Jeremiah Ingalls. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Blind Bar_-ti-mae-us at the gates Of Jer-i-cho_ in dark-ness waits: He hears the crowd;_ he hears a breath say \"It is Christ_ of Naz-a-reth!\"_ And calls_ in tones of a-go-ny, \"O Je-sus, Je_-sus pi-ty me!\"",
+  "verses": [
+    {
+      "lines": [
+        "Blind Bartimaeus at the gates",
+        "Of Jericho in darkness waits:",
+        "He hears the crowd; he hears a breath",
+        "say \"It is Christ of Nazareth!\"",
+        "And calls in tones of agony,",
+        "\"O Jesus, Jesus pity me!\""
+      ]
+    },
+    {
+      "lines": [
+        "The thronging multitudes increase",
+        "\"Blind Bartimaeus, hold thy peace!\"",
+        "But still, above the noisy crowd,",
+        "The blind man's cry is shrill and loud:",
+        "Until they say, \"He calleth thee;",
+        "Courage! arise! He calleth thee!\""
+      ]
+    },
+    {
+      "lines": [
+        "Then saith the Christ, as silent stands",
+        "The crowd, \"What wilt thou at My hands?\"",
+        "And he replies, \"O give me light!",
+        "Rabbi, restore the blind man's sight.\"",
+        "And Jesus answers, \"Go thy way,",
+        "Thy faith, thy faith hath savèd thee.\""
+      ]
+    },
+    {
+      "lines": [
+        "Ye that hath eyes and cannot see,",
+        "In darkness and in misery,",
+        "Recall those mighty voices three-\"O Jesus,",
+        "Jesus pity me!\"",
+        "\"Courage! arise!",
+        "He calleth thee!\"",
+        "\"Thy faith, thy faith hath savèd thee.\""
+      ]
+    }
+  ],
+  "category": "Cross and Comfort",
+  "topics": [
+    "Compassion",
+    "Darkness, Spiritual",
+    "Faith",
+    "God, Care of",
+    "God, Mercy of",
+    "Healing",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Kindness, God's",
+    "Miracles",
+    "Prayer",
+    "Trust"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Blind_Bartimaeus-Fillmore.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Blind_Bartimaeus-Fillmore"
+}

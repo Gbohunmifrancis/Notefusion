@@ -1,0 +1,121 @@
+{
+  "title": "Jesus, King of Glory",
+  "tune": "st-alban",
+  "text": [
+    {
+      "name": "W. Hope Davison",
+      "born": 1827,
+      "died": 1894,
+      "role": "Words (1880)"
+    }
+  ],
+  "textPublished": 1880,
+  "description": "Jesus, King of Glory in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by W. Hope Davison, first published in 1880. The tune, ST. ALBAN, is by Franz Joseph Haydn (1774). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus, King of glo-ry, throned a-bove the sky, Je-sus, ten-der Sa-vior, hear Thy child-ren cry. Par-don our trans-gres-sions, cleanse us from our sin,_ By Thy Spi-rit help us heav'n-ly life to win. Je-sus, King of glo-ry, throned a-bove the sky, Je-sus, ten-der Sa-vior, hear Thy child-ren cry.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, King of glory, throned above the sky,",
+        "Jesus, tender Savior, hear Thy children cry.",
+        "Pardon our transgressions, cleanse us from our sin,",
+        "By Thy Spirit help us heav'nly life to win.",
+        "Jesus, King of"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "glory, throned above the sky,",
+        "Jesus, tender Savior, hear Thy children cry."
+      ]
+    },
+    {
+      "lines": [
+        "On this day of gladness,",
+        "Bending low the knee In thine earthly temple,",
+        "Lord, we worship thee;",
+        "Celebrate thy goodness,",
+        "Mercy, grace, and truth,",
+        "All thy loving guidance",
+        "Of our heedless youth."
+      ]
+    },
+    {
+      "lines": [
+        "For the little children Who have come to thee;",
+        "For the glad, bright spirits Who thy glory see;",
+        "For the loved ones resting",
+        "In thy dear embrace;",
+        "For the pure and holy Who behold thy face,"
+      ]
+    },
+    {
+      "lines": [
+        "Help us ever steadfast in the faith to be:",
+        "In Thy Church's conflicts fighting valiantly.",
+        "Loving Savior, strengthen these weak hearts of ours,",
+        "Through Thy cross to conquer crafty evil powers."
+      ]
+    },
+    {
+      "lines": [
+        "When the shadows lengthen, show us,",
+        "Lord, Thy way; Through the darkness lead us to the heav'nly day;",
+        "When our course is finished, ended all the strife,",
+        "Grant us, with the faithful, palms and crowns of life."
+      ]
+    },
+    {
+      "lines": [
+        "For thy faithful servants Who have entered in;",
+        "For thy fearless soldiers Who have conquered sin;",
+        "For the countless legions Who have followed thee,",
+        "Heedless of the danger, On to victory,"
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Aspiration",
+    "Brotherhood",
+    "Children (see also God's Children - the Faithful)",
+    "Church on Earth (Church Militant)",
+    "Conscience",
+    "Cross",
+    "Crown",
+    "Darkness, Spiritual",
+    "Discipleship",
+    "Duty (see also Law)",
+    "Eternal Life",
+    "Example, Christ's",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "Forgiveness",
+    "God, As King",
+    "God, Mercy of",
+    "Grace",
+    "Guidance",
+    "Heaven",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Leadership",
+    "Obedience",
+    "Repentance",
+    "Sinners",
+    "Throne (also see God - As King)",
+    "Truth",
+    "Victory"
+  ],
+  "metre": "6 5 6 5 6 5 6 5 6 5 6 5",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_King_Of_Glory-St_Alban.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_King_Of_Glory-St_Alban"
+}

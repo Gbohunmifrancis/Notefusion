@@ -1,0 +1,24 @@
+{
+  "name": "NOX PRAECESSIT",
+  "music": [
+    {
+      "name": "John Baptiste Calkin",
+      "born": 1827,
+      "died": 1905,
+      "role": "Music (1873)"
+    }
+  ],
+  "musicPublished": 1873,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "B4:1 B4:.5 B4:.5 G4:1 A4:1 | B4:1 B4:1 C5:1 A4:1 | G4:1 B4:1 D5:1.5 C5:.5 | B4:3 G4:1 | E5:1.5 D5:.5 C5:1 B4:1 | A4:1 B4:1 C5:1 E4:1 | F#4:1 G4:1 B4:1.5 A4:.5 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_While_For_All_Mankind_We_Pray-Nox_Praecessit.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"Evangelical Lutheran Hymn-Book\", 1931 Hymn 302"
+}

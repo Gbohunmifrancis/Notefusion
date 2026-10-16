@@ -1,0 +1,159 @@
+{
+  "title": "By Grace I'm Saved",
+  "tune": "o-dass-ich-tansend-zungen",
+  "text": [
+    {
+      "name": "Christian Ludwig Scheidt",
+      "born": 1709,
+      "died": 1761,
+      "role": "Words (1742)"
+    },
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "By Grace I'm Saved in Tonic Solfa: the solfa line by line with the words, staff notation, all 10 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christian Ludwig Scheidt, first published in 1742. The English translation is by Matthias Loy. The tune, O DASS ICH TANSEND ZUNGEN, is by Johann Balthasar König (1738). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "By grace I'm saved‑ grace free and bound-less! My heart, be-liev'st thou this or not? Why tremb-lest thou with ter-ror ground-less? Has ev-er God a false-hood taught? His Word is true-then this must be: By grace there is a crown for thee.",
+  "verses": [
+    {
+      "lines": [
+        "By grace I'm saved—grace free and boundless!",
+        "My heart, believ'st thou this or not?",
+        "Why tremblest thou with terror groundless?",
+        "Has ever God a falsehood taught?",
+        "His Word is truethen this must be:",
+        "By grace there is a crown for thee."
+      ]
+    },
+    {
+      "lines": [
+        "By grace! our works are all rejected,",
+        "All claims of merit pass for naught;",
+        "The mighty Savior, long expected,",
+        "To us this blissful truth has brought,",
+        "That He by death redeems our race,",
+        "And we are saved alone by grace."
+      ]
+    },
+    {
+      "lines": [
+        "By grace! mark well this phrase's meaning,",
+        "When sin rolls sorrows o'er thy breast,",
+        "When Satan threats with pride o'erweening,",
+        "When troubled conscience sighs for rest:",
+        "What reason ne'er can comprehend",
+        "It pleases God by grace to send."
+      ]
+    },
+    {
+      "lines": [
+        "By grace His Son, on earth appearing,",
+        "Vouchsafed beneath thy woe to bend;",
+        "Hadst thou, damnation justly fearing,",
+        "Done aught to render Him thy friend?",
+        "Was't not that He thy welfare sought,",
+        "And but by grace deliv'rance wrought?"
+      ]
+    },
+    {
+      "lines": [
+        "By grace! this ground of our salvation",
+        "As long as God is true endures:",
+        "What saints have penned by inspiration,",
+        "What God to our poor soul secures,",
+        "What all our faith must rest upon,",
+        "Is grace, free grace through His dear Son."
+      ]
+    },
+    {
+      "lines": [
+        "By grace! but think not, thou who livest",
+        "Securely on in godless ways,",
+        "That thou, though all are called, receivest",
+        "The promised rest that wakes our praise:",
+        "By grace none find in heaven a place",
+        "Who live in sin in hope of grace."
+      ]
+    },
+    {
+      "lines": [
+        "By grace! They who have heard this sentence",
+        "Must bid hypocrisy farewell;",
+        "For only after deep repentance",
+        "The soul what grace imports can tell;",
+        "To sin while grace a trifle seems,",
+        "To faith it bright with glory beams."
+      ]
+    },
+    {
+      "lines": [
+        "By grace the timid hearts that languish,",
+        "Find access to the Father's heart,",
+        "When conflicts fierce and bitter anguish",
+        "Bid all their joy and hopes depart.",
+        "Where, oftimes, should I strength obtain,",
+        "Bid grace my anchor not remain!"
+      ]
+    },
+    {
+      "lines": [
+        "By grace! on this in death I'll rest me,",
+        "Rejoicing e'en though feeling naught;",
+        "I know my sin it oft oppressed me",
+        "But Him, too, who my soul hath bought:",
+        "My heart exults grief flees apace",
+        "Because my soul is saved by grace."
+      ]
+    },
+    {
+      "lines": [
+        "By grace! O sin and Satan hear it!",
+        "I bear my flag of faith in hand,",
+        "And pass, in spite of doubts, nor fear it,",
+        "The Red Sea to the promised land;",
+        "I hold the word my Savior taught",
+        "As certain, whether felt or not."
+      ]
+    }
+  ],
+  "category": "Justification",
+  "topics": [
+    "Activity",
+    "Assurance",
+    "Atonement",
+    "Comfort",
+    "Conscience",
+    "Fear of the Lord",
+    "God, Faithfulness of",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Judgment",
+    "Pride (see also Humility)",
+    "Promises (see also Gospel)",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Scripture",
+    "Security",
+    "Sinners",
+    "Truth",
+    "Victory"
+  ],
+  "metre": "9 8 9 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/By_Grace_Im_Saved-O_Dass_Ich_Tansend_Zungen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "By_Grace_Im_Saved-O_Dass_Ich_Tansend_Zungen",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929; the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 4 does not add up to 4 beats; bar 5 does not add up to 4 beats; bar 8 does not add up to 4 beats; bar 9 does not add up to 4 beats; bar 11 does not add up to 4 beats."
+}

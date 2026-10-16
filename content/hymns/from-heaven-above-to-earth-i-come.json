@@ -1,0 +1,176 @@
+{
+  "title": "From Heaven Above to Earth I Come",
+  "tune": "vom-himmel-hoch",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1535)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1855)"
+    }
+  ],
+  "textPublished": 1855,
+  "description": "From Heaven Above to Earth I Come in Tonic Solfa: the solfa line by line with the words, staff notation, all 15 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1535. The English translation is by Catherine Winkworth (1855). The tune, VOM HIMMEL HOCH, is from Schumann's Geistliche Lieder, Leipzig, 1539. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "From Heaven a-bove to earth I come, To bear good news to ev-ery home; Glad ti-dings of great joy I bring, Where-of I now will say_ and sing.",
+  "verses": [
+    {
+      "lines": [
+        "From Heaven above to earth I come,",
+        "To bear good news to every home;",
+        "Glad tidings of great joy I bring,",
+        "Whereof I now will say and sing."
+      ]
+    },
+    {
+      "lines": [
+        "To you, this night, is born a Child",
+        "Of Mary, chosen mother mild;",
+        "This tender Child of lowly birth,",
+        "Shall be the joy of all your earth."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis Christ our God, Who far on high",
+        "Had heard your sad and bitter cry;",
+        "Himself will your Salvation be,",
+        "Himself from sin will make you free."
+      ]
+    },
+    {
+      "lines": [
+        "He brings those blessings long ago",
+        "Prepared by God for all below;",
+        "That in His heavenly kingdom blest",
+        "You may with us forever rest."
+      ]
+    },
+    {
+      "lines": [
+        "These are the tokens ye shall mark,",
+        "The swaddling clothes and manger dark;",
+        "There shall ye find the young Child laid,",
+        "By Whom the heav'ns and earth were made."
+      ]
+    },
+    {
+      "lines": [
+        "Now let us all, with gladsome cheer,",
+        "Follow the shepherds, and draw near",
+        "To see this wondrous Gift of God,",
+        "Who hath His own dear Son bestowed."
+      ]
+    },
+    {
+      "lines": [
+        "Give heed, my heart, lift up thine eyes!",
+        "What is it in yon manger lies?",
+        "Who is this Child, so young and fair?",
+        "The blessèd Christ Child lieth there!"
+      ]
+    },
+    {
+      "lines": [
+        "Welcome to earth, Thou noble Guest,",
+        "Through Whom e'en wicked men are blest!",
+        "Thou com'st to share our misery,",
+        "What can we render, Lord, to Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "Ah, Lord, Who hast created all,",
+        "How hast Thou made Thee weak and small,",
+        "To lie upon the coarse dry grass,",
+        "The food of humble ox and ass."
+      ]
+    },
+    {
+      "lines": [
+        "Were earth a thousand times as fair,",
+        "Beset with gold and jewels rare,",
+        "She yet were far too poor to be",
+        "A narrow cradle, Lord, for Thee."
+      ]
+    },
+    {
+      "lines": [
+        "For velvets soft and silken stuff",
+        "Thou hast but hay and straw so rough,",
+        "Whereon Thou King, so rich and great,",
+        "As 'twere Thy heaven, art throned in state."
+      ]
+    },
+    {
+      "lines": [
+        "Thus hath it pleased Thee to make plain",
+        "The truth to us, poor fools and vain,",
+        "That this world's honor, wealth and might",
+        "Are naught and worthless in Thy sight."
+      ]
+    },
+    {
+      "lines": [
+        "Ah, dearest Jesus, holy Child,",
+        "Make Thee a bed, soft, undefiled,",
+        "Here in my poor heart's inmost shrine,",
+        "That I may evermore be Thine."
+      ]
+    },
+    {
+      "lines": [
+        "My heart for very joy doth leap,",
+        "My lips no more can silence keep,",
+        "I too must sing, with joyful tongue,",
+        "That sweetest ancient cradle song."
+      ]
+    },
+    {
+      "lines": [
+        "Glory to God in highest Heaven,",
+        "Who unto man His Son hath given,",
+        "While angels sing, with pious mirth,",
+        "A glad New Year to all the earth."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Assurance",
+    "Atonement",
+    "Christmas/Advent",
+    "Commitment",
+    "Eternal Life",
+    "God, As King",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Majesty &amp; Power of",
+    "Gospel",
+    "Gratitude",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Joy",
+    "Presence",
+    "Salvation",
+    "Sinners"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/From_Heaven_Above-Vom_Himmel_Hoch.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "From_Heaven_Above-Vom_Himmel_Hoch"
+}

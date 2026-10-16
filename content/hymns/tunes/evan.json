@@ -1,0 +1,24 @@
+{
+  "name": "EVAN",
+  "music": [
+    {
+      "name": "William Henry Havergal",
+      "born": 1793,
+      "died": 1870,
+      "role": "Music (1847)"
+    }
+  ],
+  "musicPublished": 1847,
+  "key": "Ab major",
+  "time": "3/2",
+  "tempo": 130,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:2 | Eb4:1 Ab4:1 C5:2 Bb4:2 | Ab4:1 F4:1 Eb4:2 Eb4:2 | Eb4:1 Ab4:1 C5:2 Ab4:2 | Bb4:4 Db5:2 | C5:1 Bb4:1 Ab4:2 Bb4:2 | C5:1 Ab4:1 F4:2 Eb4:2 | Eb4:1 Ab4:1 C5:2 Bb4:2 | Ab4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_That_The_Lord_Would_Guide_My_Ways-Evan-Eva.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: from \"New Carmina Sacra\" 1850 arr. Lowel Mason page 99 text checked against \"The Psalms of David\" (1817 reprint by Timothy Dwight) pages 274-275 Ps CXIX text altered in verse 5 per \"Sunday School Hymnal\", 1901 English Evangelical Lutheran Synod of Missouri and Other States hymn #348 page 336"
+}

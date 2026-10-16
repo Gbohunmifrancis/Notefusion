@@ -1,0 +1,123 @@
+{
+  "title": "My Soul, Now Praise Thy Maker",
+  "alsoKnownAs": [
+    "My Soul, Now Bless Thy Maker"
+  ],
+  "tune": "nun-lob-mein-seel",
+  "text": [
+    {
+      "name": "Johann Graumann",
+      "born": 1487,
+      "died": 1541,
+      "role": "Words (1525)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "My Soul, Now Praise Thy Maker in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Johann Graumann, first published in 1525. The English translation is by Catherine Winkworth (1863). The tune, NUN LOB, MEIN SEEL, is from Johannes Kugelmann's Concentus Novi, Augsburg, 1540. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "My soul, now praise thy ma_-ker! Let all with-in me bless His name Who mak-eth thee par-ta_-ker Of mer-cies more than thou dar'st claim. For-get Him not whose meek_-ness Still bears with all_ thy sin, Who heal-eth all thy weak-ness, Re-news thy life with-in. Whose grace and care are end-less And saved thee through the past; Who leaves no suf-f'rer friend-less, But rights the wronged_ at last.",
+  "verses": [
+    {
+      "lines": [
+        "My soul, now praise thy maker!",
+        "Let all within me bless His name",
+        "Who maketh thee partaker",
+        "Of mercies more than thou dar'st claim.",
+        "Forget Him not whose meekness",
+        "Still bears with all thy sin,",
+        "Who healeth all thy weakness,",
+        "Renews thy life within.",
+        "Whose grace and care are endless",
+        "And saved thee through the past;",
+        "Who leaves no suff'rer friendless,",
+        "But rights the wronged at last."
+      ]
+    },
+    {
+      "lines": [
+        "He shows to man His treasure",
+        "Of judgment, truth, and righteousness,",
+        "His love beyond all measure,",
+        "His yearning pity o'er distress,",
+        "Nor treats us as we merit,",
+        "But lays His anger by.",
+        "The humble, contrite spirit",
+        "Finds His compassion nigh;",
+        "And high as Heav'n above us,",
+        "As break from close of day,",
+        "So far, since He doth love us,",
+        "He puts our sins away."
+      ]
+    },
+    {
+      "lines": [
+        "For as a tender father",
+        "Hath pity on his children here,",
+        "He in His arms will gather",
+        "All who are His in childlike fear.",
+        "He knows how frail our powers",
+        "Who but from dust are made;",
+        "We flourish like the flowers,",
+        "And even so we fade;",
+        "The wind but o'er them passes,",
+        "And all their bloom is o'er—",
+        "We wither like the grasses,",
+        "Our place knows us no more."
+      ]
+    },
+    {
+      "lines": [
+        "God's grace alone endureth,",
+        "And children's children yet shall prove",
+        "How He with strength assureth",
+        "The hearts of all that seek His love.",
+        "In Heav'n is fixed His dwelling,",
+        "His rule is over all;",
+        "Angels, in might excelling,",
+        "Bright hosts, before Him fall.",
+        "Praise Him who ever reigneth,",
+        "All ye who hear His Word,",
+        "Nor our poor hymns disdaineth—",
+        "My soul, O praise the Lord!"
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Angels",
+    "Assurance",
+    "Atonement",
+    "Brevity of Life",
+    "Children (see also God's Children - the Faithful)",
+    "Father",
+    "Fear of the Lord",
+    "God, Goodness of",
+    "God, Mercy of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Gratitude",
+    "Healing",
+    "Joy",
+    "Kindness, God's",
+    "Patience",
+    "Praise, Father",
+    "Sinners",
+    "Worship"
+  ],
+  "metre": "7 8 7 8 7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Soul_Now_Praise_Thy_Maker-Non_Lob_Mein_Seel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "My_Soul_Now_Praise_Thy_Maker-Non_Lob_Mein_Seel"
+}

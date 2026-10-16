@@ -1,0 +1,83 @@
+{
+  "title": "Hallelujah, What a Savior!",
+  "alsoKnownAs": [
+    "Man of Sorrows"
+  ],
+  "tune": "hallelujah-what-a-savior",
+  "text": [
+    {
+      "name": "Philip Paul Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Words (1875)"
+    }
+  ],
+  "textPublished": 1875,
+  "description": "Hallelujah, What a Savior! in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Philip Paul Bliss, first published in 1875. The tune, HALLELUJAH WHAT A SAVIOR, is by Philip Paul Bliss (1875). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Man of Sor-rows! what a name For the Son of God, who came Ru-ined sin-ners to re-claim. Hal-le-lu-jah! What a Sa-vior!",
+  "verses": [
+    {
+      "lines": [
+        "Man of Sorrows! what a name",
+        "For the Son of God, who came",
+        "Ruined sinners to reclaim.",
+        "Hallelujah! What a Savior!"
+      ]
+    },
+    {
+      "lines": [
+        "Bearing shame and scoffing rude,",
+        "In my place condemned He stood;",
+        "Sealed my pardon with His blood."
+      ]
+    },
+    {
+      "lines": [
+        "Guilty, vile, and helpless we;",
+        "Spotless Lamb of God was He;",
+        "\"Full atonement!\" can it be?"
+      ]
+    },
+    {
+      "lines": [
+        "Lifted up was He to die;",
+        "\"It is finished!\" was His cry;",
+        "Now in Heav'n exalted high."
+      ]
+    },
+    {
+      "lines": [
+        "When He comes, our glorious King,",
+        "All His ransomed home to bring,",
+        "Then anew His song we'll sing:"
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Anticipation",
+    "Atonement",
+    "Blood",
+    "God, Goodness of",
+    "God, Love of",
+    "Gospel",
+    "Gratitude",
+    "Jesus",
+    "Praise, Son",
+    "Salvation",
+    "Shepherd/Lamb",
+    "Worship"
+  ],
+  "metre": "7 7 7 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Hallelujah_What_a_Savior-Hallelujah_What_a_Savior.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Hallelujah_What_a_Savior-Hallelujah_What_a_Savior"
+}

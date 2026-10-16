@@ -1,0 +1,72 @@
+{
+  "title": "There's a Great Day Coming",
+  "tune": "theres-a-great-day-coming",
+  "text": [
+    {
+      "name": "Will Lamartine Thompson",
+      "born": 1847,
+      "died": 1909,
+      "role": "Words (1886)"
+    }
+  ],
+  "textPublished": 1886,
+  "description": "There's a Great Day Coming in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Will Lamartine Thompson, first published in 1886. The tune, THERES A GREAT DAY COMING, is by Will Lamartine Thompson (1886). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "There's a great day com-ing, A great day com-ing, There's a great day com-ing by and by; When the saints and the sin-ners shall be par-ted right and left, Are you rea-dy for that day to come? Are you rea-dy? Are you rea-dy? Are you rea-dy for the judg-ment day? Are you rea-dy? Are you rea-dy? For the judg-ment day?",
+  "verses": [
+    {
+      "lines": [
+        "There's a great day coming, A great day coming,",
+        "There's a great day coming by and by;",
+        "When the saints and the sinners shall be parted right and left,"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Are you ready for that day to come? Are you ready?",
+        "Are you ready? Are you ready for the judgment day?",
+        "Are you ready? Are you ready? For the judgment day?"
+      ]
+    },
+    {
+      "lines": [
+        "There's a bright day coming, A bright day coming,",
+        "There's a bright day coming by and by;",
+        "But its brightness shall only come to them that love the Lord,"
+      ]
+    },
+    {
+      "lines": [
+        "There's a sad day coming, A sad day coming,",
+        "There's a sad day coming by and by;",
+        "When the sinner shall hear his doom, \"Depart, I know ye not,\""
+      ]
+    }
+  ],
+  "category": "End Times",
+  "topics": [
+    "Anticipation",
+    "Brevity of Life",
+    "Fear of the Lord",
+    "Humility",
+    "Judgment",
+    "Parables",
+    "Preparedness",
+    "Presence",
+    "Saints (all Faithful)",
+    "Second Coming",
+    "Sinners"
+  ],
+  "metre": "11 9 14 13 13 13",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Theres_A_Great_Day_Coming-Theres_A_Great_Day_Coming.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Theres_A_Great_Day_Coming-Theres_A_Great_Day_Coming"
+}

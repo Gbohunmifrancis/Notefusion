@@ -1,0 +1,24 @@
+{
+  "name": "NUN DANKET",
+  "music": [
+    {
+      "name": "Johann Crüger",
+      "born": 1598,
+      "died": 1662,
+      "role": "Music (1647)"
+    }
+  ],
+  "musicPublished": 1647,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_Thank_We_All_Our_God-Nun_Danket.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 6 does not add up to 4 beats; bar 10 does not add up to 4 beats. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'Evangelical Lutheran Hymn-Book', Edition of 1931 Hymn 64."
+}

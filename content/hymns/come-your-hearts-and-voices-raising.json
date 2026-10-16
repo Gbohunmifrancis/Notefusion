@@ -1,0 +1,117 @@
+{
+  "title": "Come, Your Hearts and Voices Raising",
+  "tune": "quem-pastores",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words (1667)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Come, Your Hearts and Voices Raising in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Paul Gerhardt, first published in 1667. The tune, QUEM PASTORES, is Traditional German. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Come, your hearts and voi_-ces rais-ing, Christ_ the Lord_ with glad-ness prais-ing; Loud-ly sing His love a-ma-zing, Wor-thy folk_ of Chris_-ten-dom.",
+  "verses": [
+    {
+      "lines": [
+        "Come, your hearts and voices raising,",
+        "Christ the Lord with gladness praising;",
+        "Loudly sing His love amazing,",
+        "Worthy folk of Christendom."
+      ]
+    },
+    {
+      "lines": [
+        "Sin and death may well be groaning,",
+        "Satan now may well be moaning;",
+        "We, our full salvation owning,",
+        "Cast our every care away."
+      ]
+    },
+    {
+      "lines": [
+        "See how God, for us providing,",
+        "Gave His Son and life abiding;",
+        "He our weary steps is guiding",
+        "From earth's woe to heav'nly joy."
+      ]
+    },
+    {
+      "lines": [
+        "Christ, from heav'n to us descending",
+        "And in love our race befriending,",
+        "In our need His help extending,",
+        "Saved us from the wily Foe."
+      ]
+    },
+    {
+      "lines": [
+        "Jacob's Star in all its splendor",
+        "Beams with comfort sweet and tender,",
+        "Forcing Satan to surrender,",
+        "Breaking all the pow'rs of hell."
+      ]
+    },
+    {
+      "lines": [
+        "From the bondage that oppressed us,",
+        "From sin's fetters that possessed us,",
+        "From the grief that sore distressed us,",
+        "We, the captives, now are free."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, the joy beyond expressing",
+        "When by faith we grasp this blessing",
+        "And to Thee we come confessing,",
+        "That our freedom thou hast wrought!"
+      ]
+    },
+    {
+      "lines": [
+        "Gracious Child, we pray Thee, hear us,",
+        "From Thy lowly manger cheer us,",
+        "Gently lead us and be near us",
+        "Till we join the angelic choir."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Atonement",
+    "Christian Life",
+    "Christmas/Advent",
+    "Comfort",
+    "God, Care of",
+    "God, Love of",
+    "Gratitude",
+    "Jesus",
+    "Joy",
+    "Kindness, God's",
+    "Love",
+    "Praise, Son",
+    "Presence",
+    "Salvation",
+    "Sinners",
+    "Testimony"
+  ],
+  "metre": "8 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Your_Heart_and_Voices_Raising-Quem_Pastores.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Come_Your_Heart_and_Voices_Raising-Quem_Pastores",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

@@ -1,0 +1,81 @@
+{
+  "title": "Now the Light Has Gone Away",
+  "tune": "mude-bin-ich-geh-zur-ruh",
+  "text": [
+    {
+      "name": "Frances Ridley Havergal",
+      "born": 1836,
+      "died": 1879,
+      "role": "Words (1869)"
+    }
+  ],
+  "textPublished": 1869,
+  "description": "Now the Light Has Gone Away in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Frances Ridley Havergal, first published in 1869. The tune, MÜDE BIN ICH, GEH ZUR RUH, is from Liederbuch für Kleinkinder-Schulen, 1842. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Now the light has gone a-way; Fa-ther, lis-ten while I pray, Ask-ing Thee to watch and keep And to send me qui-et sleep.",
+  "verses": [
+    {
+      "lines": [
+        "Now the light has gone away;",
+        "Father, listen while I pray,",
+        "Asking Thee to watch and keep",
+        "And to send me quiet sleep."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, Savior, wash away",
+        "All that has been wrong today;",
+        "Help me every day to be",
+        "Good and gentle, more like Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Let my near and dear ones be",
+        "Always near and dear to Thee.",
+        "Oh, bring me and all I love",
+        "To Thy happy home above."
+      ]
+    },
+    {
+      "lines": [
+        "Now my evening praise I give;",
+        "Thou didst die that I might live.",
+        "All my blessings come from Thee;",
+        "Oh, how good Thou art to me!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou, my best and kindest Friend,",
+        "Thou wilt love me to the end.",
+        "Let me love Thee more and more,",
+        "Always better than before."
+      ]
+    }
+  ],
+  "category": "Evening",
+  "topics": [
+    "Anticipation",
+    "Evening",
+    "Father",
+    "Friendship",
+    "Heaven",
+    "Jesus",
+    "Light",
+    "Presence",
+    "Trust"
+  ],
+  "metre": "7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_The_Light_Has_Gone_Away-Mude_Bin_Ich_Geh_Zur_Ruh.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Now_The_Light_Has_Gone_Away-Mude_Bin_Ich_Geh_Zur_Ruh"
+}

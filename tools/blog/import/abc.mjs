@@ -223,7 +223,8 @@ export function lyricTokens(text) {
   const out = [];
   let cur = "";
   const flush = (joins) => { if (cur) { out.push({ text: cur, joins }); cur = ""; return true; } return false; };
-  const src = String(text).replace(/\$\d/g, "");
+  // "$1D$2" sets a letter in another font (a doxology's "D"): a mark, not a word.
+  const src = String(text).replace(/\$\d[^$\s]*\$\d~?/g, "").replace(/\$\d/g, "");
   for (let i = 0; i < src.length; i++) {
     const c = src[i];
     if (c === "\\" && src[i + 1] === "-") { cur += "\u2011"; i++; continue; } // a non-breaking hyphen: part of the syllable

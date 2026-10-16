@@ -1,0 +1,115 @@
+{
+  "title": "O Day of Rest and Gladness",
+  "tune": "woodbird",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "O Day of Rest and Gladness in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1862. The tune, WOODBIRD, is Traditional German. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O day of rest and glad_-ness, o day of joy and light, O balm of care and sad_-ness, most beau-ti-ful, most bright: On thee, the high_ and low-ly, through a-ges joined in tune, Sing ho-ly, ho-ly, h_-oly, to the great God Tri-une.",
+  "verses": [
+    {
+      "lines": [
+        "O day of rest and gladness,",
+        "o day of joy and light,",
+        "O balm of care and sadness,",
+        "most beautiful, most bright:",
+        "On thee, the high and lowly,",
+        "through ages joined in tune,",
+        "Sing holy, holy, holy,",
+        "to the great God Triune."
+      ]
+    },
+    {
+      "lines": [
+        "On thee, at the creation,",
+        "the light first had its birth;",
+        "On thee, for our salvation,",
+        "Christ rose from depths of earth;",
+        "On thee, our Lord, victorious,",
+        "the Spirit sent from heaven,",
+        "And thus on thee, most glorious,",
+        "a triple light was given."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art a port, protected",
+        "from storms that round us rise;",
+        "A garden, intersected",
+        "with streams of paradise;",
+        "Thou art a cooling fountain",
+        "in life's dry, dreary sand;",
+        "From thee, like Pisgah's mountain,",
+        "we view our promised land."
+      ]
+    },
+    {
+      "lines": [
+        "Thou art a holy ladder,",
+        "where angels go and come;",
+        "Each Sunday finds us gladder,",
+        "nearer to heaven, our home;",
+        "A day of sweet refection,",
+        "thou art a day of love,",
+        "A day of resurrection",
+        "from earth to things above."
+      ]
+    },
+    {
+      "lines": [
+        "Today on weary nations",
+        "the heavenly manna falls;",
+        "To holy convocations",
+        "the silver trumpet calls,",
+        "Where Gospel light is glowing",
+        "with pure and radiant beams,",
+        "And living water flowing,",
+        "with soul refreshing streams."
+      ]
+    },
+    {
+      "lines": [
+        "D New graces ever gaining from this our day of rest,",
+        "We reach the rest remaining to spirits of the blessed.",
+        "To Holy Ghost be praises, to Father, and to Son;",
+        "The church her voice upraises to Thee, blessed Three in One."
+      ]
+    }
+  ],
+  "category": "Thanksgiving",
+  "topics": [
+    "Anticipation",
+    "Calmness",
+    "Church on Earth (Church Militant)",
+    "Day",
+    "Gratitude",
+    "Heaven",
+    "Law",
+    "Light",
+    "Opening Songs",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Rest",
+    "Sabbath",
+    "Trinity"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Day_Of_Rest_And_Gladness-Woodbird.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Day_Of_Rest_And_Gladness-Woodbird"
+}

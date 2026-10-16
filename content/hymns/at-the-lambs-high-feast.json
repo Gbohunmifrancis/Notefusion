@@ -1,0 +1,134 @@
+{
+  "title": "At the Lamb's High Feast",
+  "tune": "sonne-der-gerechtigkeit",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words (600)"
+    },
+    {
+      "name": "Robert Campbell",
+      "born": 1814,
+      "died": 1868,
+      "role": "Translated (1849)"
+    }
+  ],
+  "textPublished": 1849,
+  "description": "At the Lamb's High Feast in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 600. The English translation is by Robert Campbell (1849). The tune, SONNE DER GERECHTIGKEIT, is Traditional Czech, Kirchengeseng, 1566. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "At the Lamb's high feast___ we sing, Praise to our vic-tor__-ious King, Who has washed us in the tide Flow-ing from his pierc-èd side; A-lle-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "At the Lamb's high feast we sing,",
+        "Praise to our victorious King,",
+        "Who has washed us in the tide",
+        "Flowing from his piercèd side;",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Praise we Him, whose love divine",
+        "Gives His sacred blood for wine,",
+        "Gives His body for the feast,",
+        "Christ the Victim,",
+        "Christ the Priest. Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Where the Paschal blood is poured,",
+        "Death's dark angel sheathes his sword;",
+        "Israel's hosts triumphant go",
+        "Through the wave that drowns the foe.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Praise we Christ, whose blood was shed,",
+        "Paschal Victim,",
+        "Paschal Bread; With sincerity and love",
+        "Eat we Manna from above.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Mighty Victim from the sky,",
+        "Hell's fierce pow'rs beneath Thee lie;",
+        "Thou hast conquered in the fight,",
+        "Thou hast brought us life and light;",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Now no more can death appall,",
+        "Now no more the grave enthrall;",
+        "Thou hast opened Paradise,",
+        "And in Thee Thy saints shall rise."
+      ]
+    },
+    {
+      "lines": [
+        "Paschal triumph, Easter joy,",
+        "This alone can sin destroy;",
+        "From sin's death do Thou set free",
+        "Souls reborn, O Lord, in Thee."
+      ]
+    },
+    {
+      "lines": [
+        "D Hymns of glory and of praise,",
+        "Father, to Thee we raise;",
+        "Risen Lord, all praise to Thee,",
+        "Ever with the Spirit be."
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Easter",
+    "Forgiveness",
+    "God, As King",
+    "God, Love of",
+    "God, Mercy of",
+    "Gratitude",
+    "Israel",
+    "Jesus",
+    "Joy",
+    "Kindness, God's",
+    "Light",
+    "Lord's Supper",
+    "Love",
+    "Praise, Son",
+    "Presence",
+    "Priest/Priestly Roles",
+    "Resurrection",
+    "Sacrifice",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Second Coming",
+    "Shepherd/Lamb",
+    "Victory"
+  ],
+  "metre": "7 7 7 7 Alleluia4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/At_The_Lambs_High_Feast-Sonne_Der_Gerechtigkeit.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "At_The_Lambs_High_Feast-Sonne_Der_Gerechtigkeit"
+}

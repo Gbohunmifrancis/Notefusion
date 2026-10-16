@@ -1,0 +1,24 @@
+{
+  "name": "WERDE MUNTER",
+  "music": [
+    {
+      "name": "Johann Schop",
+      "born": 1590,
+      "died": 1664,
+      "role": "Music (1642)"
+    }
+  ],
+  "musicPublished": 1642,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 Bb4:1 C5:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:1.5 Bb4:.5 C5:1 A4:1 | G4:1 G4:1 F4:1.5 r:.5 | A4:1 Bb4:1 C5:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:1.5 Bb4:.5 C5:1 A4:1 | G4:1 G4:1 F4:1.5 r:.5 | G4:1 A4:1 Bb4:1 Bb4:1 | A4:1 A4:1 G4:1.5 r:.5 | Bb4:1.5 C5:.5 D5:1 D5:1 | C5:1 C5:1 Bb4:1.5 r:.5 | A4:1 Bb4:1 C5:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:1 Bb4:1 C5:1 A4:1 | G4:1 G4:1 F4:1 F4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Like_The_Golden_Sun_Ascending-Werde_Munter.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"Hymnal for Church and Home\" (Danish Evangelical Lutheran Synods), 1927 Hymn 115 and \"The Lutheran Hymnary\", 1913 Hymn 325"
+}

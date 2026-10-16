@@ -1,0 +1,90 @@
+{
+  "title": "Faith of Our Fathers",
+  "tune": "st-catherine",
+  "text": [
+    {
+      "name": "Frederick William Faber",
+      "born": 1814,
+      "died": 1863,
+      "role": "Words (1849)"
+    },
+    {
+      "name": "James George Walton",
+      "born": 1821,
+      "died": 1905,
+      "role": "Words (1849)"
+    }
+  ],
+  "textPublished": 1849,
+  "description": "Faith of Our Fathers in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Frederick William Faber and James George Walton, first published in 1849. The tune, ST. CATHERINE, is by Henri Frederick Hemy. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Faith of our fa_-thers, liv_-ing still, In spite of dun-geon, fi-re and sword; O how our hearts_ beat high_ with joy When-e'er we hear that glo_-rious Word! Faith of our fa-thers, ho-ly faith! We will be true to thee till death.",
+  "verses": [
+    {
+      "lines": [
+        "Faith of our fathers, living still,",
+        "In spite of dungeon, fire and sword;",
+        "O how our hearts beat high with joy",
+        "Whene'er we hear that glorious Word!",
+        "Faith of our"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "fathers, holy faith!",
+        "We will be true to thee till death."
+      ]
+    },
+    {
+      "lines": [
+        "Faith of our fathers, we will strive",
+        "To win all nations unto Thee;",
+        "And through the truth that comes from God,",
+        "We all shall then be truly free."
+      ]
+    },
+    {
+      "lines": [
+        "Faith of our fathers, we will love",
+        "Both friend and foe in all our strife;",
+        "And preach Thee, too, as love knows how",
+        "By kindly words and virtuous life."
+      ]
+    }
+  ],
+  "category": "Communion of Saints",
+  "topics": [
+    "Activity",
+    "Calmness",
+    "Church on Earth (Church Militant)",
+    "Commitment",
+    "Compassion",
+    "Courage in Affliction",
+    "Example, Of Other People",
+    "Faith",
+    "Faithfulness",
+    "Fellowship",
+    "Integrity",
+    "Joy",
+    "Kindness, Ours",
+    "Loyalty",
+    "Missions",
+    "Self Control (see also Law)",
+    "Speech",
+    "Terrorism",
+    "Truth",
+    "Zeal"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Faith_Of_Our_Fathers-St_Catherine.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Faith_Of_Our_Fathers-St_Catherine"
+}

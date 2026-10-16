@@ -1,0 +1,120 @@
+{
+  "title": "The Strife Is O'er, the Battle Done",
+  "tune": "victory",
+  "text": [
+    {
+      "name": "From Symphonia Sirenum Selectarum, Köln, 1695",
+      "traditional": true,
+      "role": "Words (1695)"
+    },
+    {
+      "name": "Francis Pott",
+      "born": 1832,
+      "died": 1909,
+      "role": "Translated (1861)"
+    }
+  ],
+  "textPublished": 1861,
+  "description": "The Strife Is O'er, the Battle Done in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1695. The English translation is by Francis Pott (1861). The tune, VICTORY, is by Giovanni Pierluigi da Palestrina (1591). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Al-le-lu-ia, Al-le-lu-ia, Al-le-lu-ia. The strife is o'er, the bat_-tle done; The tri-umph of the Lord_ is won; O Let the song of praise_ be sung: Al-le-lu-ia! Al-le-lu-ia, Al-le-lu-ia, Al-le-lu-ia.",
+  "verses": [
+    {
+      "lines": [
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia.",
+        "The strife is o'er, the battle done;",
+        "The triumph of the Lord is won;",
+        "O Let the song of praise be sung:",
+        "Alleluia!",
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia."
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia.",
+        "The pow'rs of death have done their worst;",
+        "and Jesus hath His foes dispersed;",
+        "Let shouts of praise and joy outburst:",
+        "Alleluia!",
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia."
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia.",
+        "On that third morn He rose again",
+        "In glorious majesty to reign;",
+        "O let us swell the joyful strain.",
+        "Alleluia!",
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia."
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia.",
+        "He closed the yawning gates of hell;",
+        "The bars from heav'ns high portals fell;",
+        "Let songs of joy His triumphs tell.",
+        "Alleluia!",
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia."
+      ]
+    },
+    {
+      "lines": [
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia.",
+        "Lord, by the stripes which wounded Thee,",
+        "From death's dread sting Thy servants free,",
+        "That we may live, and sing to Thee.",
+        "Alleluia!",
+        "Alleluia,",
+        "Alleluia,",
+        "Alleluia."
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Atonement",
+    "Easter",
+    "Eternal Life",
+    "God, Majesty &amp; Power of",
+    "Heaven",
+    "Jesus",
+    "Joy",
+    "Miracles",
+    "Praise, Son",
+    "Resurrection",
+    "Salvation",
+    "Victory"
+  ],
+  "metre": "8 8 8 with Alleluias",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Strife_Is_Oer_The_Battle_Done-Victory-Palestrina.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "The_Strife_Is_Oer_The_Battle_Done-Victory-Palestrina",
+  "reviewNotes": "Held back: the score has repeat signs, which the importer does not render."
+}

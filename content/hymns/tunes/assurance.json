@@ -1,16 +1,24 @@
 {
   "name": "ASSURANCE",
   "music": [
-    { "name": "Phoebe Palmer Knapp", "born": 1839, "died": 1908, "role": "Melody (1873)" }
+    {
+      "name": "Phoebe Palmer Knapp",
+      "born": 1839,
+      "died": 1908,
+      "role": "Melody (1873)"
+    }
   ],
   "musicPublished": 1873,
-  "key": null,
-  "time": null,
-  "tempo": null,
-  "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "key": "D major",
+  "time": "9/8",
+  "tempo": 100,
+  "pickup": 1.5,
+  "lineBars": 2,
+  "melody": "F#4:.5 E4:.5 D4:.5 | A4:1.5 A4:1.5 G4:.5 A4:.5 B4:.5 | A4:3 A4:.5 F#4:.5 A4:.5 | D5:1.5 C#5:1 C#5:.5 B4:.5 A4:.5 G#4:.5 | A4:3 F#4:.5 E4:.5 D4:.5 | A4:1.5 A4:1.5 G4:.5 A4:.5 B4:.5 | A4:3 D4:.5 E4:.5 F#4:.5 | G4:1.5 E4:1.5 D4:.5 E4:.5 C#4:.5 | D4:3 A4:.5 A4:.5 A4:.5 | D5:1.5 A4:1.5 B4:.5 B4:.5 B4:.5 | A4:3 A4:.5 A4:.5 A4:.5 | B4:1.5 D5:1.5 C#5:.5 C#5:.5 B4:.5 | C#5:3 C#5:.5 D5:.5 E5:.5 | D5:1.5 A4:1.5 B4:.5 A4:.5 B4:.5 | A4:3 D4:.5 E4:.5 F#4:.5 | G4:1.5 E4:1.5 D4:.75 E4:.25 C#4:.5 | D4:3",
   "reviewed": false,
-  "confidence": "not encoded",
-  "reviewNotes": "No melody yet, on purpose: the last line ('all the day long') has a dotted quaver and semiquaver (in 9/8), which the half-beat solfa grid cannot show. The Open Hymnal score (The Lesser Hymnal, 1875) and the score on Wikipedia agree on it. Everything else fits: 9/8, a pickup of three quavers, doh D, opening m r d | s . . s . . f s l. Encode it once the grid can show quarter-beat notes."
+  "confidence": "imported, unchecked: every automatic check passed",
+  "reviewNotes": "Melody filled in from the Open Hymnal Project's ABC score (Blessed_Assurance-Blessed_Assurance-Assurance); the words under the notes are this page's first verse, fitted to the score's syllables. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Lesser Hymnal\", 1875 hymn 323. Most of hymnal does not contain 4 part music. This does, attr. to Mrs. Joseph Knapp.",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Blessed_Assurance-Blessed_Assurance-Assurance.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain."
 }

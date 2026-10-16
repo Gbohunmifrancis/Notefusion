@@ -1,0 +1,78 @@
+{
+  "title": "What Child Is This?",
+  "tune": "greensleeves",
+  "text": [
+    {
+      "name": "William Chatterton Dix",
+      "born": 1837,
+      "died": 1865,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "What Child Is This? in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Chatterton Dix, first published in 1865. The tune, GREENSLEEVES, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "What Child is this_ who, laid to rest_ On Ma-ry's lap_ is sleep-ing? Whom an-gels greet_ with an-thems sweet,_ While shep_-herds watch_ are keep-ing? This, this_ is Christ the King,_ Whom shep-herds guard_ and an-gels sing; Haste, haste,_ to bring Him laud,_ The Babe,_ the Son_ of Ma-ry.",
+  "verses": [
+    {
+      "lines": [
+        "What Child is this who, laid to rest",
+        "On Mary's lap is sleeping?",
+        "Whom angels greet with anthems sweet,",
+        "While shepherds watch are keeping?",
+        "This, this is Christ the King,",
+        "Whom shepherds guard and angels sing;",
+        "Haste, haste, to bring Him laud,",
+        "The Babe, the Son of Mary."
+      ]
+    },
+    {
+      "lines": [
+        "Why lies He in such mean estate,",
+        "Where ox and ass are feeding?",
+        "Good Christians, fear, for sinners here",
+        "The silent Word is pleading.",
+        "Nails, spear shall pierce Him through,",
+        "The cross be borne for me, for you.",
+        "Hail, hail the Word made flesh,",
+        "The Babe, the Son of Mary."
+      ]
+    },
+    {
+      "lines": [
+        "So bring Him incense, gold and myrrh,",
+        "Come peasant, king to own Him;",
+        "The King of kings salvation brings,",
+        "Let loving hearts enthrone Him.",
+        "Raise, raise a song on high,",
+        "The virgin sings her lullaby.",
+        "Joy, joy for Christ is born,",
+        "The Babe, the Son of Mary."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Cross",
+    "Fear of the Lord",
+    "God, As King",
+    "Gospel",
+    "Jesus",
+    "Joy",
+    "Presence",
+    "Throne (also see God - As King)"
+  ],
+  "metre": "8 7 8 7 6 8 6 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/What_Child_Is_This-Greensleeves.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "What_Child_Is_This-Greensleeves"
+}

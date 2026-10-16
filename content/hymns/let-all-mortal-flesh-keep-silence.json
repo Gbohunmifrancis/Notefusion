@@ -1,0 +1,89 @@
+{
+  "title": "Let All Mortal Flesh Keep Silence",
+  "tune": "picardy",
+  "text": [
+    {
+      "name": "From Liturgy of St. James",
+      "traditional": true,
+      "role": "Words (400)"
+    },
+    {
+      "name": "Gerard Moultrie",
+      "born": 1829,
+      "died": 1885,
+      "role": "Translated (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "Let All Mortal Flesh Keep Silence in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 400. The English translation is by Gerard Moultrie (1864). The tune, PICARDY, is Traditional French. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Let all mor-tal flesh keep_ si-lence, And with fear and trem-bling_ stand; Pon-der no-thing earth-ly_ mind-ed, For with bles-sing in His_ hand, Christ our God to earth de-scend___-eth, Our full hom-age to de_-mand.",
+  "verses": [
+    {
+      "lines": [
+        "Let all mortal flesh keep silence,",
+        "And with fear and trembling stand;",
+        "Ponder nothing earthly minded,",
+        "For with blessing in His hand,",
+        "Christ our God to earth descendeth,",
+        "Our full homage to demand."
+      ]
+    },
+    {
+      "lines": [
+        "King of kings, yet born of Mary,",
+        "As of old on earth He stood,",
+        "Lord of lords, in human vesture,",
+        "In the body and the blood;",
+        "He will give to all the faithful",
+        "His own self for heav'nly food."
+      ]
+    },
+    {
+      "lines": [
+        "Rank on rank the host of heaven",
+        "Spreads its vanguard on the way,",
+        "As the Light of light descendeth",
+        "From the realms of endless day,",
+        "That the pow'rs of hell may vanish",
+        "As the darkness clears away."
+      ]
+    },
+    {
+      "lines": [
+        "At His feet the six wingèd seraph,",
+        "Cherubim with sleepless eye,",
+        "Veil their faces to the presence,",
+        "As with ceaseless voice they cry:",
+        "Alleluia, Alleluia",
+        "Alleluia, Lord Most High!"
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Angels",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Christmas/Advent",
+    "Fear of the Lord",
+    "God, Majesty &amp; Power of",
+    "Jesus",
+    "Light",
+    "Lord's Supper",
+    "Presence",
+    "Reverence",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Let_All_Mortal_Flesh_Keep_Silence-Picardy.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Let_All_Mortal_Flesh_Keep_Silence-Picardy"
+}

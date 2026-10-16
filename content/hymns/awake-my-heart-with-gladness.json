@@ -1,0 +1,114 @@
+{
+  "title": "Awake, My Heart, with Gladness",
+  "tune": "auf-auf-mein-herz-mit-freuden",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words (1648)"
+    },
+    {
+      "name": "John Kelly",
+      "born": 1833,
+      "died": 1890,
+      "role": "Translated (1867)"
+    }
+  ],
+  "textPublished": 1867,
+  "description": "Awake, My Heart, with Gladness in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Paul Gerhardt, first published in 1648. The English translation is by John Kelly (1867). The tune, AUF, AUF, MEIN HERZ MIT FREUDEN, is by Johann Crüger (1648). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "A-wake, my heart, with glad-ness, See what_ to-day_ is done; How af-ter gloom and sad-ness, Comes forth_ the glo_-rious Sun. My Sa-vior there_ was laid Where our bed must_ be made When to_ the realms_ of light Our spi_-rit wings_ its flight.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my heart, with gladness,",
+        "See what today is done;",
+        "How after gloom and sadness,",
+        "Comes forth the glorious Sun.",
+        "My Savior there was laid",
+        "Where our bed must be made",
+        "When to the realms of light",
+        "Our spirit wings its flight."
+      ]
+    },
+    {
+      "lines": [
+        "They in the grave did sink Him,",
+        "The foe held jubilee;",
+        "Before he can bethink him,",
+        "Lo! Christ again is free.",
+        "And \"Victory\" He cries,",
+        "And waving tow'rds the skies",
+        "His banner, while the field",
+        "Is by the Hero held!"
+      ]
+    },
+    {
+      "lines": [
+        "Upon the grave is standing",
+        "The Hero looking round;",
+        "The foe, no more withstanding,",
+        "His weapons on the ground",
+        "Throws down, his hellish pow'r",
+        "To Christ must he give o'er,",
+        "And to the Victor's bands",
+        "Must yield his feet and hands."
+      ]
+    },
+    {
+      "lines": [
+        "A sight it is to gladden;",
+        "And fill the heart with glee,",
+        "No more affright or sadden",
+        "Shall aught, or take from me",
+        "My trust or fortitude,",
+        "Or any precious good",
+        "The Savior bought for me",
+        "In sov'reign love and free."
+      ]
+    },
+    {
+      "lines": [
+        "Hell and its prince, the devil,",
+        "Of all their pow'rs are shorn;",
+        "Now I am safe from evil,",
+        "And sin I laugh to scorn.",
+        "Grim Death with all his might",
+        "Cannot my soul affright;",
+        "He is a pow'rless form,",
+        "Howe'er he rage and storm."
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Brevity of Life",
+    "Comfort",
+    "Day",
+    "Easter",
+    "Eternal Life",
+    "Following Jesus, In Faith",
+    "Heaven",
+    "Jesus",
+    "Joy",
+    "Miracles",
+    "Praise, Son",
+    "Resurrection",
+    "Scripture",
+    "Victory"
+  ],
+  "metre": "7 6 7 6 6 6 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Awake_My_Heart_With_Gladness-Auf_Auf_Mein_Herz_mit_Freuden.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Awake_My_Heart_With_Gladness-Auf_Auf_Mein_Herz_mit_Freuden"
+}

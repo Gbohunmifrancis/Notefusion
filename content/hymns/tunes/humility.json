@@ -1,0 +1,24 @@
+{
+  "name": "HUMILITY",
+  "music": [
+    {
+      "name": "John Goss",
+      "born": 1800,
+      "died": 1880,
+      "role": "Music (1870)"
+    }
+  ],
+  "musicPublished": 1870,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1.5 A4:.5 G4:1 F#4:1 | E4:1.5 D4:.5 D4:2 | G4:1 A4:1 C5:1 B4:1 | B4:1.5 A4:.5 A4:2 | G4:1.5 A4:.5 G4:1 F#4:1 | E4:1.5 D4:.5 D4:2 | G4:1 A4:1 B4:1 C5:1 | A4:1.5 G4:.5 G4:2 | D5:1.5 D5:.5 C5:1 B4:1 | A4:1 G4:1 F#4:2 | D5:1.5 D5:.5 C5:1 B4:1 | A4:1 G4:1 F#4:2 | G4:1.5 A4:.5 G4:1 F#4:1 | E4:1.5 D4:.5 D4:2 | D5:1.5 B4:.5 G4:1 C5:1 | B4:1 A4:1 G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/See_Amid_The_Winters_Snow-Humility.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Children's Hymnal, with Tunes\", 1875 Hymn 233. Ed. John Ireland Tucker, but marked as being an older arrangement."
+}

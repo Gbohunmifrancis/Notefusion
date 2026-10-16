@@ -1,0 +1,94 @@
+{
+  "title": "Today Thy Mercy Calls Me",
+  "alsoKnownAs": [
+    "Today Your Mercy Calls Us"
+  ],
+  "tune": "anthes",
+  "text": [
+    {
+      "name": "Oswald Allen",
+      "born": 1816,
+      "died": 1878,
+      "role": "Words (1861)"
+    }
+  ],
+  "textPublished": 1861,
+  "description": "Today Thy Mercy Calls Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Oswald Allen, first published in 1861. The tune, ANTHES, is by Friedrich Konrad Anthes (1847). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "To-day Thy mer-cy calls me to wash a-way my sin; How-ev-er great my tres-pass, wha-te'er I may have been; How-ev-er long from mer-cy I may have turned a-way, Thy blood, O Christ, can wash me, and make me clean to-day.",
+  "verses": [
+    {
+      "lines": [
+        "Today Thy mercy calls me",
+        "to wash away my sin;",
+        "However great my trespass,",
+        "whate'er I may have been;",
+        "However long from mercy",
+        "I may have turned away,",
+        "Thy blood, O Christ, can wash me,",
+        "and make me clean today."
+      ]
+    },
+    {
+      "lines": [
+        "Today Thy gate is open,",
+        "and all who enter in",
+        "Shall find a Father's welcome,",
+        "and pardon for their sin;",
+        "The past shall be forgotten,",
+        "a present joy be given;",
+        "A future grace be promised,",
+        "a glorious crown in Heav'n."
+      ]
+    },
+    {
+      "lines": [
+        "Today the Father calls me,",
+        "the Holy Spirit waits,",
+        "The blessèd angels gather",
+        "around the heav'nly gates;",
+        "No question will be asked me,",
+        "how often I have come;",
+        "Although I oft have wandered,",
+        "it is my Father's home."
+      ]
+    },
+    {
+      "lines": [
+        "O all embracing mercy,",
+        "thou ever open door,",
+        "What shall I do without thee",
+        "when heart and eyes run o'er?",
+        "When all things seem against me,",
+        "to drive me to despair,",
+        "I know one gate is open,",
+        "one ear will hear my prayer."
+      ]
+    }
+  ],
+  "category": "Justification",
+  "topics": [
+    "Angels",
+    "Anticipation",
+    "Blood",
+    "Comfort",
+    "Contrition",
+    "Father",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Jesus",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Salvation"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Today_Thy_Mercy_Calls_Me-Anthes.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Today_Thy_Mercy_Calls_Me-Anthes"
+}

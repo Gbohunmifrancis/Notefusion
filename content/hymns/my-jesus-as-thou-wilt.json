@@ -1,0 +1,97 @@
+{
+  "title": "My Jesus, as Thou Wilt",
+  "tune": "jewett",
+  "text": [
+    {
+      "name": "Benjamin Schmolck",
+      "born": 1672,
+      "died": 1737,
+      "role": "Words (1704)"
+    },
+    {
+      "name": "Jane Laurie Borthwick",
+      "born": 1813,
+      "died": 1897,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "My Jesus, as Thou Wilt in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Benjamin Schmolck, first published in 1704. The English translation is by Jane Laurie Borthwick (1854). The tune, JEWETT, is by Carl Maria Friedrich Ernst von Weber (1821). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "My Je-sus,_ as Thou_ wilt! Oh, may Thy_ will be mine! In-to Thy_ hand of love I_ would_ my all_ re-sign;_ Through sor-row,_ or through_ joy, con-duct me_ as Thine own, And help me_ still to say, my_ Lord, Thy will be done!",
+  "verses": [
+    {
+      "lines": [
+        "My Jesus, as Thou wilt!",
+        "Oh, may Thy will be mine!",
+        "Into Thy hand of love",
+        "I would my all resign;",
+        "Through sorrow, or through joy,",
+        "conduct me as Thine own,",
+        "And help me still to say,",
+        "my Lord, Thy will be done!"
+      ]
+    },
+    {
+      "lines": [
+        "My Jesus, as Thou wilt!",
+        "If needy here and poor,",
+        "Give me Thy people's bread,",
+        "their portion rich and sure.",
+        "The manna of Thy Word",
+        "Let my soul feed upon;",
+        "And if all else should fail,",
+        "my Lord, thy will be done!"
+      ]
+    },
+    {
+      "lines": [
+        "My Jesus, as Thou wilt!",
+        "Though seen through many'a tear,",
+        "Let not my star of hope",
+        "grow dim or disappear;",
+        "Since Thou on earth hast wept,",
+        "and sorrowed oft alone,",
+        "If I must weep with Thee,",
+        "my Lord, Thy will be done!"
+      ]
+    },
+    {
+      "lines": [
+        "My Jesus, as Thou wilt!",
+        "All shall be well for me;",
+        "Each changing future scene",
+        "I gladly trust with Thee:",
+        "Straight to my home above",
+        "I travel calmly on,",
+        "And sing, in life or death,",
+        "my Lord, Thy will be done!"
+      ]
+    }
+  ],
+  "category": "New Obedience",
+  "topics": [
+    "Assurance",
+    "Bread (of Life/Daily Bread)",
+    "Christian Life",
+    "Commitment",
+    "Faith",
+    "Following Jesus, In Faith",
+    "God, Care of",
+    "Guidance",
+    "Jesus",
+    "Obedience",
+    "Patience"
+  ],
+  "metre": "6 6 6 6 6 6 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Jesus_As_Thou_Wilt-Jewett-Weber.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "My_Jesus_As_Thou_Wilt-Jewett-Weber"
+}

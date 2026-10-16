@@ -1,0 +1,84 @@
+{
+  "title": "A Child of the King",
+  "alsoKnownAs": [
+    "My Father Is Rich in Houses and Lands"
+  ],
+  "tune": "binghamton",
+  "text": [
+    {
+      "name": "Harriet Eugenia Peck Buell",
+      "born": 1834,
+      "died": 1910,
+      "role": "Words (1877)"
+    }
+  ],
+  "textPublished": 1877,
+  "description": "A Child of the King in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Harriet Eugenia Peck Buell, first published in 1877. The tune, BINGHAMTON, is by John Bunnell Sumner (1877). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "My Fath-er is rich in hous-es and lands, He hold-eth the wealth of the world in His hands! Of ru-bies and dia-monds of sil-ver and gold His_ cof-fers are full,‑ He has rich-es un-told. I'm a child of the King, a child of the King: With Je-sus my Sav-ior I'm a child of the King.",
+  "verses": [
+    {
+      "lines": [
+        "My Father is rich in houses and lands,",
+        "He holdeth the wealth of the world in His hands!",
+        "Of rubies and diamonds of silver and gold",
+        "His coffers are full— He has riches untold."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "I'm a child of the King, a child of the King:",
+        "With Jesus my Savior I'm a child of the King."
+      ]
+    },
+    {
+      "lines": [
+        "My Father's own Son, the Savior of men,",
+        "Once wander'd o'er earth as the poorest of men,",
+        "But now He is reigning forever on high,",
+        "And will give me a home in heaven by and by."
+      ]
+    },
+    {
+      "lines": [
+        "I once was an outcast stranger on earth,",
+        "A sinner by choice, and an alien by birth!",
+        "But I've been adopted, my name's written down—",
+        "An heir to a mansion, a robe, and a crown."
+      ]
+    },
+    {
+      "lines": [
+        "A tent or a cottage, why should I care?",
+        "They're building a palace for me over there!",
+        "Tho' exiled from home, yet, still I may sing:",
+        "All glory to God, I'm the child of a King."
+      ]
+    }
+  ],
+  "category": "Justification",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Children (see also God's Children - the Faithful)",
+    "Christian Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Gospel",
+    "Heaven"
+  ],
+  "metre": "10 11 11 11 11 12",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/A_Child_of_The_King-Binghamton.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "A_Child_of_The_King-Binghamton"
+}

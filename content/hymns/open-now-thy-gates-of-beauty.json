@@ -1,0 +1,99 @@
+{
+  "title": "Open Now Thy Gates of Beauty",
+  "tune": "unser-herrscher",
+  "text": [
+    {
+      "name": "Benjamin Schmolck",
+      "born": 1672,
+      "died": 1737,
+      "role": "Words (1730)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "Open Now Thy Gates of Beauty in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Benjamin Schmolck, first published in 1730. The English translation is by Catherine Winkworth (1863). The tune, UNSER HERRSCHER, is by Joachim Neander (1680). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Op-en now thy gates of beau-ty, Zi-on,_ let me en-ter there, Where my soul in joy-ful du-ty Waits for_ Him Who an-swers prayer. Oh, how bless-èd is this place, Filled with so-lace, light and grace!",
+  "verses": [
+    {
+      "lines": [
+        "Open now thy gates of beauty,",
+        "Zion, let me enter there,",
+        "Where my soul in joyful duty",
+        "Waits for Him Who answers prayer.",
+        "Oh, how blessèd is this place,",
+        "Filled with solace, light and grace!"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, my God, I come before Thee,",
+        "Come Thou also unto me;",
+        "Where we find Thee and adore Thee,",
+        "There a heav'n on earth must be.",
+        "To my heart, oh, enter Thou,",
+        "Let it be Thy temple now!"
+      ]
+    },
+    {
+      "lines": [
+        "Here Thy praise is gladly chanted,",
+        "Here Thy seed is duly sown;",
+        "Let my soul, where it is planted,",
+        "Bring forth precious sheaves alone,",
+        "So that all I hear may be",
+        "Fruitful unto life in me."
+      ]
+    },
+    {
+      "lines": [
+        "Thou my faith increase and quicken,",
+        "Let me keep Thy gift divine,",
+        "Howsoe'er temptations thicken;",
+        "May Thy Word still o'er me shine",
+        "As my guiding star through life,",
+        "As my comfort in my strife."
+      ]
+    },
+    {
+      "lines": [
+        "Speak, O God, and I will hear Thee,",
+        "Let Thy will be done indeed;",
+        "May I undisturbed draw near Thee",
+        "While Thou dost Thy people feed.",
+        "Here of life the fountain flows,",
+        "Here is balm for all our woes."
+      ]
+    }
+  ],
+  "category": "Opening Songs",
+  "topics": [
+    "Anticipation",
+    "Discipleship",
+    "Faith",
+    "Harvest",
+    "Heaven",
+    "Joy",
+    "Light",
+    "Presence",
+    "Sowing &amp; Reaping",
+    "Temptation",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Open_Now_Thy_Gates_Of_Beauty-Unser_Herrscher-Neander.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Open_Now_Thy_Gates_Of_Beauty-Unser_Herrscher-Neander"
+}

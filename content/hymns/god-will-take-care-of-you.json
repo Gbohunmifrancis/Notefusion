@@ -1,0 +1,80 @@
+{
+  "title": "God Will Take Care of You",
+  "tune": "martin",
+  "text": [
+    {
+      "name": "Civilla Durfee Martin",
+      "born": 1866,
+      "died": 1948,
+      "role": "Words (1905)"
+    }
+  ],
+  "textPublished": 1905,
+  "description": "God Will Take Care of You in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Civilla Durfee Martin, first published in 1905. The tune, MARTIN, is by Walter Stillman Martin (1905). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Be not dis-mayed_ what-e'er be-tide, God will take care of you;_ Be-neath His wings_ of love a-bide, God will take care of you. God will take care of you, through ev-'ry day, o'er all the way; He will take care_ of you, God will take care_ of you.",
+  "verses": [
+    {
+      "lines": [
+        "Be not dismayed whate'er betide,",
+        "God will take care of you;",
+        "Beneath His wings of love abide,",
+        "God will take care of you."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "God will take care of you,",
+        "through ev'ry day, o'er all the way;",
+        "He will take care of you,",
+        "God will take care of you."
+      ]
+    },
+    {
+      "lines": [
+        "Through days of toil when heart doth fail,",
+        "God will take care of you;",
+        "When dangers fierce your path assail,",
+        "God will take care of you."
+      ]
+    },
+    {
+      "lines": [
+        "All you may need He will provide,",
+        "God will take care of you;",
+        "Nothing you ask will be denied,",
+        "God will take care of you."
+      ]
+    },
+    {
+      "lines": [
+        "No matter what may be the test,",
+        "God will take care of you;",
+        "Lean, weary one, upon His breast,",
+        "God will take care of you."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Calmness",
+    "Comfort",
+    "Courage in Affliction",
+    "God, Care of",
+    "Kindness, God's",
+    "Trust"
+  ],
+  "metre": "8 6 8 6 6 8 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_Will_Take_Care_Of_You-Martin.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "God_Will_Take_Care_Of_You-Martin"
+}

@@ -1,0 +1,92 @@
+{
+  "title": "Jesus Shall Reign",
+  "tune": "duke-street-jesus-shall-reign",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Jesus Shall Reign in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1719. The tune, DUKE STREET, is by John Hatton (1793). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus shall reign wher_-e'er the_ sun Does his suc-ces-sive jour-neys run; His king-dom stretch_ from_ shore_ to_ shore Till moons shall wax and wane no more.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus shall reign where'er the sun",
+        "Does his successive journeys run;",
+        "His kingdom stretch from shore to shore",
+        "Till moons shall wax and wane no more."
+      ]
+    },
+    {
+      "lines": [
+        "For Him shall endless prayer be made,",
+        "And praises throng to crown His head;",
+        "His Name, like sweet perfume shall rise",
+        "With every morning sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "People and realms of every tongue",
+        "Dwell on His love with sweetest song;",
+        "And infant voices shall proclaim",
+        "Their early blessings on His Name."
+      ]
+    },
+    {
+      "lines": [
+        "Blessings abound where'er He reigns;",
+        "The prisoner leaps to lose his chains,",
+        "The weary find eternal rest,",
+        "And all the sons of want are blest."
+      ]
+    },
+    {
+      "lines": [
+        "Where He displays His healing power",
+        "Death and the curse are known no more;",
+        "In Him the tribes of Adam boast",
+        "More blessings than their father lost."
+      ]
+    },
+    {
+      "lines": [
+        "Let every creature rise and bring",
+        "Peculiar honors to our King,",
+        "Angels descend with songs again,",
+        "And earth repeat the loud Amen."
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Angels",
+    "Children (see also God's Children - the Faithful)",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Crown",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Heaven",
+    "Jesus",
+    "Praise, Son",
+    "Prayer",
+    "Victory",
+    "Worship"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Shall_Reign-Duke_Street.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_Shall_Reign-Duke_Street"
+}

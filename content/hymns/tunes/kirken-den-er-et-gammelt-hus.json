@@ -1,0 +1,24 @@
+{
+  "name": "KIRKEN DEN ER ET GAMMELT HUS",
+  "music": [
+    {
+      "name": "Ludvig Mathias Lindeman",
+      "born": 1812,
+      "died": 1887,
+      "role": "Music (1840)"
+    }
+  ],
+  "musicPublished": 1840,
+  "key": "D minor",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "D4:1 D4:1 A4:1 | F4:2 D4:1 | F4:2 G4:1 | A4:3 | A4:1 B4:1 C5:1 | A4:1 F4:1 G4:1 | E4:3 | D4:3 | D4:1 D4:1 A4:1 | F4:2 D4:1 | F4:2 G4:1 | A4:3 | A4:1 B4:1 C5:1 | A4:1 F4:1 G4:1 | E4:3 | D4:3 | D5:1 C5:1 B4:1 | C5:2 A4:1 | A4:2 G4:1 | F4:3 | A4:1 D5:1 F5:1 | E5:2 D5:1 | C5:2 B4:1 | A4:3 | A4:1 A4:1 G4:1 | F4:1 G4:1 F4:1 | E4:3 | D4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Built_On_The_Rock-Kirken_Den_Er_Et_Gammelt_Hus.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: The Lutheran Hymnary, 1913 Hymn 132."
+}

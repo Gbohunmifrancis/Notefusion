@@ -1,0 +1,24 @@
+{
+  "name": "JEWETT",
+  "music": [
+    {
+      "name": "Carl Maria Friedrich Ernst von Weber",
+      "born": 1786,
+      "died": 1826,
+      "role": "Music (1821)"
+    }
+  ],
+  "musicPublished": 1821,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:2 G4:1 Eb4:.5 G4:.5 | F4:1.5 Ab4:.25 G4:.25 F4:2 | G4:2 Eb4:1 G4:.5 Bb4:.5 | Bb4:1.5 Ab4:.5 G4:2 | Eb5:2 C5:1 Ab4:.5 C5:.5 | Bb4:1.5 Bb4:.5 G4:1 Eb4:.5 G4:.5 | Bb4:.5 Ab4:.5 F4:1 Ab4:.5 G4:.5 Eb4:1 | F4:2 Bb4:1 r:1 | Bb4:2 G4:1 Eb4:.5 G4:.5 | F4:1.5 Ab4:.25 G4:.25 F4:2 | G4:2 Eb4:1 G4:.5 Bb4:.5 | Bb4:1.5 B4:.5 C5:2 | Eb5:2 C5:1 Ab4:.5 C5:.5 | Bb4:1.5 Bb4:.5 G4:1 Eb4:.5 G4:.5 | Bb4:.75 Eb4:.25 G4:2 F4:1 | Eb4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Jesus_As_Thou_Wilt-Jewett-Weber.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: The Evangelical Lutheran Hymnal, 1931."
+}

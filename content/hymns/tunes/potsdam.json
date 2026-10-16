@@ -1,0 +1,24 @@
+{
+  "name": "POTSDAM",
+  "music": [
+    {
+      "name": "Johann Sebastian Bach",
+      "born": 1685,
+      "died": 1750,
+      "role": "Music (1750)"
+    }
+  ],
+  "musicPublished": 1750,
+  "key": "E major",
+  "time": "2/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:1 | F#4:1 A4:1 | G#4:1 F#4:1 | E4:1 B4:1 | C#5:1 E5:1 | D#5:1 C#5:1 | B4:1 G#4:1 | A4:1 C#5:1 | B4:1 A4:1 | G#4:1 A#4:1 | B4:1 E4:1 | F#4:1 A4:1 | G#4:1 F#4:1 | E4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Tis_Good_Lord_To_Be_Here-Potsdam.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Church Psalter and Hymn Book\", 1863 hymns 212-214 (rev. from 1854 edition). Mus. Dir and arrangements by John Goss. Words match those in \"Hymns Ancient And Modern\", 1904, Hymn 251"
+}

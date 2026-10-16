@@ -1,0 +1,92 @@
+{
+  "title": "Were You There?",
+  "tune": "were-you-there",
+  "text": [
+    {
+      "name": "Traditional African-American",
+      "traditional": true,
+      "role": "Words (1899)"
+    }
+  ],
+  "textPublished": 1899,
+  "description": "Were You There? in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1899. The tune, WERE YOU THERE, is Traditional African-American. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Were you there when they cru-ci-fied my Lord? Were you there when they cru-ci-fied my Lord?____ Some-times it caus-es me to trem-ble, trem-ble, trem-ble. Were you there when they cru-ci-fied my Lord?",
+  "verses": [
+    {
+      "lines": [
+        "Were you there when they crucified my Lord?",
+        "Were you there when they crucified my Lord?",
+        "Sometimes it causes me to tremble, tremble, tremble.",
+        "Were you there when they crucified my Lord?"
+      ]
+    },
+    {
+      "lines": [
+        "Were you there when they nailed Him to the tree?",
+        "Were you there when they nailed Him to the tree?",
+        "Sometimes it causes me to tremble, tremble, tremble.",
+        "Were you there when they nailed Him to the tree?"
+      ]
+    },
+    {
+      "lines": [
+        "Were you there when they pierced Him in the side?",
+        "Were you there when they pierced Him in the side?",
+        "Oh! Sometimes it causes me to tremble, tremble, tremble.",
+        "Were you there when they pierced Him in the side?"
+      ]
+    },
+    {
+      "lines": [
+        "Were you there when the sun refused to shine?",
+        "Were you there when the sun refused to shine?",
+        "Sometimes it causes me to tremble, tremble, tremble.",
+        "Were you there when the sun refused to shine?"
+      ]
+    },
+    {
+      "lines": [
+        "Were you there when they laid Him in the tomb?",
+        "Were you there when they laid Him in the tomb?",
+        "Sometimes it causes me to tremble, tremble, tremble.",
+        "Were you there when they laid Him in the tomb?"
+      ]
+    },
+    {
+      "lines": [
+        "Were you there when God raised Him from the tomb?",
+        "Were you there when God raised Him from the tomb?",
+        "Oh! Sometimes it causes me to tremble, tremble, tremble.",
+        "Were you there when God raised Him from the tomb?"
+      ]
+    }
+  ],
+  "category": "Good Friday",
+  "topics": [
+    "Atonement",
+    "Contrition",
+    "Cross",
+    "Fear of the Lord",
+    "Gratitude",
+    "Jesus",
+    "Miracles",
+    "Presence",
+    "Resurrection",
+    "Sacrifice",
+    "Testimony",
+    "Truth"
+  ],
+  "metre": "10 10 14 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Were_You_There-Were_You_There.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Were_You_There-Were_You_There",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 12 does not add up to 4 beats; bar 14 does not add up to 4 beats."
+}

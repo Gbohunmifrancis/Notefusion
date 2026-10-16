@@ -1,0 +1,62 @@
+{
+  "title": "'Tis Midnight and on Olive's Brow",
+  "tune": "st-cross",
+  "text": [
+    {
+      "name": "William Bingham Tappan",
+      "born": 1794,
+      "died": 1849,
+      "role": "Words (1822)"
+    }
+  ],
+  "textPublished": 1822,
+  "description": "'Tis Midnight and on Olive's Brow in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Bingham Tappan, first published in 1822. The tune, ST. CROSS, is by John Bacchus Dykes (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "'Tis mid-night, and on Ol-ive's brow The star is dimmed that late-ly shone; 'Tis mid-night, in the gar-den now The suff-'ring Sa-vior prays a-lone.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis midnight, and on Olive's brow",
+        "The star is dimmed that lately shone;",
+        "'Tis midnight, in the garden now",
+        "The suff'ring Savior prays alone."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis midnight, and from all removed",
+        "Immanuel wrestles, lone, with fears;",
+        "E'en the disciple whom He loved",
+        "Heeds not his Master's grief and tears."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis midnight, from the heav'nly plains",
+        "Are borne the songs that angels know;",
+        "Unheard by mortals are the strains",
+        "That sweetly soothe the Savior's woe."
+      ]
+    }
+  ],
+  "category": "Good Thursday",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Easter Week / Passion",
+    "Humility",
+    "Jesus",
+    "Prayer"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Tis_Midnight_and_On_Olives_Brow-St_Cross.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Tis_Midnight_and_On_Olives_Brow-St_Cross"
+}

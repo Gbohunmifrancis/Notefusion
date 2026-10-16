@@ -1,0 +1,89 @@
+{
+  "title": "Beautiful Savior",
+  "alsoKnownAs": [
+    "Fairest Lord Jesus"
+  ],
+  "tune": "crusader",
+  "text": [
+    {
+      "name": "Traditional German Jesuits",
+      "traditional": true,
+      "role": "Words (1677)"
+    },
+    {
+      "name": "Joseph August Seiss",
+      "born": 1823,
+      "died": 1904,
+      "role": "Translated (1873)"
+    }
+  ],
+  "textPublished": 1873,
+  "description": "Beautiful Savior in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1677. The English translation is by Joseph August Seiss (1873). The tune, CRUSADER, is Traditional Silesian. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Beau-ti-ful Sa_-vior, King of Cre-a_-tion Son of_ God and_ Son of Man! Tru-ly I'd love_ Thee, tru-ly I'd serve_ Thee, Light of my soul, my joy, my crown.",
+  "verses": [
+    {
+      "lines": [
+        "Beautiful Savior,",
+        "King of Creation",
+        "Son of God and Son of Man!",
+        "Truly I'd love Thee,",
+        "truly I'd serve Thee,",
+        "Light of my soul, my joy, my crown."
+      ]
+    },
+    {
+      "lines": [
+        "Fair are the meadows,",
+        "Fair are the woodlands,",
+        "Robed in the flow'rs of blooming spring;",
+        "Jesus is fairer,",
+        "Jesus is purer,",
+        "He makes our sorr'wing spirit sing."
+      ]
+    },
+    {
+      "lines": [
+        "Fair is the sunshine,",
+        "Fair is the moonlight,",
+        "Bright the sparkling stars on high;",
+        "Jesus shines brighter,",
+        "Jesus shines purer",
+        "Than all the angels in the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Beautiful Savior,",
+        "Lord of the nations,",
+        "Son of God and Son of Man!",
+        "Glory and honor,",
+        "Praise, adoration",
+        "Now and forevermore be Thine!"
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Crown",
+    "God, As King",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Nature",
+    "Praise, Son",
+    "Seasons",
+    "Worship"
+  ],
+  "metre": "5 5 7 5 5 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Beautiful_Savior-Crusaders_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Beautiful_Savior-Crusaders_Hymn"
+}

@@ -1,0 +1,86 @@
+{
+  "title": "My Hope Is Built",
+  "alsoKnownAs": [
+    "The Solid Rock"
+  ],
+  "tune": "melita",
+  "text": [
+    {
+      "name": "Edward Mote",
+      "born": 1797,
+      "died": 1874,
+      "role": "Words (1834)"
+    }
+  ],
+  "textPublished": 1834,
+  "description": "My Hope Is Built in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edward Mote, first published in 1834. The tune, MELITA, is by John Bacchus Dykes (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "My hope is built on no-thing less Than Je-sus' blood and right-eous-ness. I dare not trust the sweet-est frame, But whol-ly trust in Je-sus' Name. On Christ the so-lid Rock I stand, All o-ther ground is sink-ing sand.",
+  "verses": [
+    {
+      "lines": [
+        "My hope is built on nothing less",
+        "Than Jesus' blood and righteousness.",
+        "I dare not trust the sweetest frame,",
+        "But wholly trust in Jesus' Name.",
+        "On Christ the solid"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Rock I stand, All other ground is sinking sand."
+      ]
+    },
+    {
+      "lines": [
+        "When darkness veils His lovely face,",
+        "I rest on His unchanging grace.",
+        "In every high and stormy gale,",
+        "My anchor holds within the veil."
+      ]
+    },
+    {
+      "lines": [
+        "His oath, His covenant,",
+        "His blood, Support me in the whelming flood.",
+        "When all around my soul gives way,",
+        "He then is all my hope and stay."
+      ]
+    },
+    {
+      "lines": [
+        "When He shall come with trumpet sound,",
+        "Oh may I then in Him be found.",
+        "Dressed in His righteousness alone,",
+        "Faultless to stand before the throne."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Comfort",
+    "Cornerstone",
+    "Courage in Affliction",
+    "God, Faithfulness of",
+    "Grace",
+    "Jesus",
+    "Peace",
+    "Rest",
+    "Trust"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Hope_Is_Built-Melita.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "My_Hope_Is_Built-Melita"
+}

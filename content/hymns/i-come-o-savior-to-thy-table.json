@@ -1,0 +1,110 @@
+{
+  "title": "I Come, O Savior, to Thy Table",
+  "tune": "ich-sterbe-taglich",
+  "text": [
+    {
+      "name": "Friedrich Christian Heyder",
+      "born": 1677,
+      "died": 1754,
+      "role": "Words (1710)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "I Come, O Savior, to Thy Table in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Friedrich Christian Heyder, first published in 1710. The tune, ICH STERBE TÄGLICH, is from Emskirchner Choralbuch, 1756. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I come, O Sa-vior, to Thy ta_-ble, For weak and wear-y is my soul; Thou, Bread of Life, a-lone art ab_-le To sa-tis-fy and make me whole: Lord, may Thy bo-dy and Thy blood Be for my soul the high-est good!",
+  "verses": [
+    {
+      "lines": [
+        "I come, O Savior, to Thy table,",
+        "For weak and weary is my soul;",
+        "Thou, Bread of Life, alone art able",
+        "To satisfy and make me whole:"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Lord, may Thy body and Thy blood",
+        "Be for my soul the highest good!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh, grant that I in manner worthy",
+        "May now approach Thy heav'nly board",
+        "And, as I lowly bow before Thee,",
+        "Look only unto Thee, O Lord!"
+      ]
+    },
+    {
+      "lines": [
+        "Unworthy though I am, O Savior,",
+        "Because I have a sinful heart,",
+        "Yet Thou Thy lamb wilt banish never,",
+        "For Thou my faithful Shepherd art:"
+      ]
+    },
+    {
+      "lines": [
+        "Oh, let me loathe all sin forever",
+        "As death and poison to my soul",
+        "That I through willful sinning never",
+        "May see Thy judgment take its toll!"
+      ]
+    },
+    {
+      "lines": [
+        "Thy heart is filled with fervent yearning",
+        "That sinners may salvation see",
+        "Who, Lord, to Thee in faith are turning;",
+        "So I, a sinner, come to Thee."
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Angels",
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Brevity of Life",
+    "Comfort",
+    "Contrition",
+    "Eternal Life",
+    "Faith",
+    "Faithfulness",
+    "Forgiveness",
+    "God, Faithfulness of",
+    "God, Mercy of",
+    "Grace",
+    "Gratitude",
+    "Heaven",
+    "Humility",
+    "Jesus",
+    "Joy",
+    "Lord's Supper",
+    "Repentance",
+    "Reverence",
+    "Salvation",
+    "Sinners",
+    "Trinity"
+  ],
+  "metre": "9 8 9 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Come_O_Savior_To_Thy_Table-Ich_Sterbe_Taglich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "I_Come_O_Savior_To_Thy_Table-Ich_Sterbe_Taglich",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

@@ -1,0 +1,24 @@
+{
+  "name": "ANGEL VOICES (MONK)",
+  "music": [
+    {
+      "name": "Edwin George Monk",
+      "born": 1819,
+      "died": 1900,
+      "role": "Music (1861)"
+    }
+  ],
+  "musicPublished": 1861,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "E4:1 G4:1 A4:1 G4:1 | C5:1 A4:1 G4:1 E4:1 | C4:1 D4:1 E4:1 F4:1 | D4:4 | E4:1 G4:1 C5:1 A4:1 | D5:1.5 C5:.5 B4:1 G4:1 | A4:1 E4:1 G4:1 F#4:1 | G4:4 | G4:1 G4:1 G4:1 A4:1 | F4:1 F4:1 F4:1 G4:1 | E4:1 G4:1 A4:1 C5:1 | D5:3 B4:1 | C5:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Angel_Voices_Ever_Singing-Angel_Voices_Monk.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'The Hymnal, Revised' The Presbyterian Board of Publication, 1911 Hymn 98. published in Pott's \"Hymns fitted to the Order of Common Prayer\", 2nd edition, 1866 tune and lyrics written for the same event arrangement rather similar (not exact) to that in multiple 1890's sources; almost definitely Monk's arrangement."
+}

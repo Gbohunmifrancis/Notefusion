@@ -1,0 +1,115 @@
+{
+  "title": "Rejoice, O Pilgrim Throng",
+  "alsoKnownAs": [
+    "Rejoice Ye Pure in Heart"
+  ],
+  "tune": "marion",
+  "text": [
+    {
+      "name": "Edward Hayes Plumptre",
+      "born": 1821,
+      "died": 1891,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "Rejoice, O Pilgrim Throng in Tonic Solfa: the solfa line by line with the words, staff notation, all 9 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edward Hayes Plumptre, first published in 1865. The tune, MARION, is by Arthur Henry Messiter (1883). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Re-joice, O_ pil-grim throng! Re-joice, give_ thanks, and sing; Your fest-al_ ban-ner wave_ on_ high, The cross of Christ your King. Re-joice, re-joice, re-joice, Give_ thanks and sing.",
+  "verses": [
+    {
+      "lines": [
+        "Rejoice, O pilgrim throng!",
+        "Rejoice, give thanks, and sing;",
+        "Your festal banner wave on high,",
+        "The cross of Christ your King."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Rejoice, rejoice, rejoice, Give thanks and sing."
+      ]
+    },
+    {
+      "lines": [
+        "With all the angel choirs,",
+        "With all the saints on earth,",
+        "Pour out the strains of joy and bliss,",
+        "True rapture, noblest mirth."
+      ]
+    },
+    {
+      "lines": [
+        "With voice as full and strong",
+        "As ocean's surging praise,",
+        "Send forth the hymns our fathers loved,",
+        "The psalms of ancient days."
+      ]
+    },
+    {
+      "lines": [
+        "Still lift your standard high,",
+        "Still march in firm array,",
+        "As warriors through the darkness toil,",
+        "Till dawns the golden day."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, on through life's long path,",
+        "Still chanting as ye go;",
+        "From youth to age, by night and day,",
+        "In gladness and in woe."
+      ]
+    },
+    {
+      "lines": [
+        "Yes onward, onward still With hymn, and chant and song,",
+        "Through gate, and porch and columned aisle, The hallowed pathways throng."
+      ]
+    },
+    {
+      "lines": [
+        "At last the march shall end; The wearied ones shall rest;",
+        "The pilgrims find their Father's house, Jerusalem the bless'd."
+      ]
+    },
+    {
+      "lines": [
+        "Then on, ye pure in heart! Rejoice, give thanks and sing!",
+        "Your festal banner wave on high, The cross of Christ your King."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Angels",
+    "Anticipation",
+    "Art and Music",
+    "Christian Life",
+    "Church on Earth (Church Militant)",
+    "Courage in Affliction",
+    "Discipleship",
+    "Eternal Life",
+    "Fellowship",
+    "Gratitude",
+    "Hope",
+    "Joy",
+    "Patience",
+    "Praise, Son",
+    "Saints (all Faithful)",
+    "Worship"
+  ],
+  "metre": "6 6 8 6 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Rejoice_O_Pilgrim_Throng-Marion.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Rejoice_O_Pilgrim_Throng-Marion"
+}

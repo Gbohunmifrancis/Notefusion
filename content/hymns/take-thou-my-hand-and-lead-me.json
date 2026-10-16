@@ -1,0 +1,82 @@
+{
+  "title": "Take Thou My Hand and Lead Me",
+  "alsoKnownAs": [
+    "O Take My Hand, Dear Father",
+    "Lord Take My Hand and Lead Me"
+  ],
+  "tune": "so-nimm-denn-meine-hande",
+  "text": [
+    {
+      "name": "Julie Katharina von Hausmann",
+      "born": 1826,
+      "died": 1901,
+      "role": "Words (1862)"
+    },
+    {
+      "name": "Julius Herman Edward Horstmann",
+      "born": 1869,
+      "died": 1954,
+      "role": "Translated (1901)"
+    }
+  ],
+  "textPublished": 1901,
+  "description": "Take Thou My Hand and Lead Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Julie Katharina von Hausmann, first published in 1862. The English translation is by Julius Herman Edward Horstmann (1901). The tune, SO NIMM DENN MEINE HÄNDE, is by Friedrich Silcher (1842). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Take Thou my hand, and lead me o'er life's rough way, with Heav'n-ly Man-na feed me from day to day. A-lone my foot-steps fal_-ter and strag-gle wide, Lord who my_ life canst al-ter be Thou_ my guide.",
+  "verses": [
+    {
+      "lines": [
+        "Take Thou my hand, and lead me o'er life's rough way,",
+        "with Heav'nly Manna feed me from day to day.",
+        "Alone my footsteps falter and straggle wide,",
+        "Lord who my life canst alter be Thou my guide."
+      ]
+    },
+    {
+      "lines": [
+        "Take Thou my heart and hide it in folds of grace",
+        "Though pain or woe betide it to know Thy face",
+        "Draw, Lord, of Thy good pleasure Thy child to Thee,",
+        "And grant me faith's full measure though naught I see."
+      ]
+    },
+    {
+      "lines": [
+        "Though oft I think Thou hidest Thy wondrous might,",
+        "Still to my goal Thou guidest me through dark night,",
+        "Take, then, my hands and lead me till life is o'er,",
+        "With heav'nly manna feed me forevermore."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Bread (of Life/Daily Bread)",
+    "Calmness",
+    "Children (see also God's Children - the Faithful)",
+    "Christian Life",
+    "Comfort",
+    "Discipleship",
+    "God, Care of",
+    "God, Majesty &amp; Power of",
+    "Grace",
+    "Guidance",
+    "Humility",
+    "Invitation (Faithful's to God)",
+    "Kindness, God's",
+    "Peace",
+    "Presence",
+    "Trust"
+  ],
+  "metre": "11 11 11 11",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Take_Thou_My_Hand-So_Nimm_Denn_Meine_Hande.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Take_Thou_My_Hand-So_Nimm_Denn_Meine_Hande"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "THE COMFORTER HAS COME",
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1890)"
+    }
+  ],
+  "musicPublished": 1890,
+  "key": "C major",
+  "time": "3/4",
+  "tempo": 95,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:1 | G4:1.5 A4:.5 G4:.5 E4:.5 | G4:2 C5:1 | C5:1.5 D5:.5 C5:.5 A4:.5 | C5:2 A4:1 | G4:1.5 A4:.5 G4:.5 E4:.5 | G4:2 E4:1 | E4:1.5 E4:.5 D4:.5 C4:.5 | D4:2 G4:1 | G4:1.5 A4:.5 G4:.5 E4:.5 | G4:2 C5:1 | C5:1.5 D5:.5 C5:.5 A4:.5 | C5:2 A4:1 | G4:2 C5:1 | E5:2 D5:1 | C5:2 C5:1 | E5:1.5 D5:.5 C5:.5 D5:.5 | E5:2 C5:1 | C5:1.5 D5:.5 C5:.5 A4:.5 | C5:2 A4:1 | G4:1.5 A4:.5 G4:.5 E4:.5 | G4:2 E4:1 | E4:1.5 E4:.5 D4:.5 C4:.5 | D4:2 G4:1 | G4:1.5 A4:.5 G4:.5 E4:.5 | G4:2 C5:1 | C5:1.5 D5:.5 C5:.5 A4:.5 | C5:2 A4:1 | G4:2 C5:1 | E5:2 D5:1 | C5:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Comforter_Has_Come-The_Comforter_Has_Come.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Pentecostal Hymns, No. 2\" 1898 page 5. ABC file contributed to the Open Hymnal by Samuel Cantrell, 18 Jan 2012."
+}

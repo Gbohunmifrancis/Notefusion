@@ -1,0 +1,98 @@
+{
+  "title": "Be Thou My Vision",
+  "tune": "slane",
+  "text": [
+    {
+      "name": "Dallan Forgaill",
+      "died": 800,
+      "lived": "8th century",
+      "role": "Words (800)"
+    },
+    {
+      "name": "Mary Elizabeth Byrne",
+      "born": 1880,
+      "died": 1931,
+      "role": "Translated (1905)"
+    },
+    {
+      "name": "Eleanor Henrietta Hull",
+      "born": 1860,
+      "died": 1935,
+      "role": "Translated (1905)"
+    }
+  ],
+  "textPublished": 1905,
+  "description": "Be Thou My Vision in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Dallan Forgaill, first published in 800. The English translation is by Mary Elizabeth Byrne and Eleanor Henrietta Hull (1905). The tune, SLANE, is Traditional Irish. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Be Thou my_ Vi-sion, O_ Lord of my heart; Naught be all else to me, save that Thou art. Thou my___ best Thought, by day or by night,_ Wa-king or sleep_-ing, Thy_ pre-sence my light.",
+  "verses": [
+    {
+      "lines": [
+        "Be Thou my Vision,",
+        "O Lord of my heart;",
+        "Naught be all else to me, save that Thou art.",
+        "Thou my best Thought, by day or by night,",
+        "Waking or sleeping,",
+        "Thy presence my light."
+      ]
+    },
+    {
+      "lines": [
+        "Be Thou my Wisdom, and Thou my true Word;",
+        "I ever with Thee and Thou with me, Lord;",
+        "Thou my great Father, and I Thy true son;",
+        "Thou in me dwelling, and I with Thee one."
+      ]
+    },
+    {
+      "lines": [
+        "Be Thou my battle Shield, Sword for the fight;",
+        "Be Thou my Dignity, Thou my Delight;",
+        "Thou my soul's Shelter, Thou my high Tower:",
+        "Raise Thou me heav'nward, O Pow'r of my pow'r."
+      ]
+    },
+    {
+      "lines": [
+        "Riches I heed not, nor man's empty praise,",
+        "Thou mine Inheritance, now and always:",
+        "Thou and Thou only, be first in my heart,",
+        "High King of Heaven, my Treasure Thou art."
+      ]
+    },
+    {
+      "lines": [
+        "High King of Heaven, my victory won,",
+        "May I reach Heav'ns joys, O bright Heaven's Sun!",
+        "Heart of my own heart, whatever befall,",
+        "Still be my Vision, O Ruler of all."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Christian Life",
+    "Closing Songs",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "God, Love of",
+    "God, Providence of",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Light",
+    "Presence",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "10 10 10 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Be_Thou_My_Vision-Slane.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Be_Thou_My_Vision-Slane",
+  "reviewNotes": "Held back: the score gives no year for the tune; not provably public domain: \"musicPublished\" must be a year before 1929."
+}

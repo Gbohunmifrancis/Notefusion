@@ -1,0 +1,24 @@
+{
+  "name": "EBELING",
+  "music": [
+    {
+      "name": "Johann Georg Ebeling",
+      "born": 1637,
+      "died": 1676,
+      "role": "Music (1666)"
+    }
+  ],
+  "musicPublished": 1666,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 G4:2 | A4:3 G4:1 | A4:1 C5:1 D5:2 | C5:4 | C5:1 D5:1 Bb4:2 | Bb4:1 C5:1 A4:2 | A4:1 C5:1 Bb4:1 A4:1 | G4:2 F4:2 | C5:2 Bb4:2 | A4:3 G4:1 | F4:1 E4:1 D4:2 | C4:4 | C5:1 D5:1 Bb4:2 | Bb4:1 C5:1 A4:2 | A4:1 G4:1 Bb4:1 A4:1 | G4:2 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Why_Should_Cross_and_Trial_Grieve_Me-Ebeling-Bonn-Warum_Sollt_Ich-All_My_Heart_This_Night.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Mehrstimmiges Choralbuch, 1906 Hymn 172 Lyrics source: Composite from Paul Gerhardt's Spiritual Songs, 1867 and The Handbook to the Lutheran Hymnal, 1942 with a few tweaks by Brian J Dumont. Note that the text from the Handbook to the Lutheran Hymnal is available on Project Wittenberg, operated by the Walther Library of Concordia Theological Seminary Fort Wayne and the text is listed as public domain. https://www.projectwittenberg.org/etext/gerhardt_p/trial.txt Any changes by Brian Dumont are released to the public domain."
+}

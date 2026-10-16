@@ -1,0 +1,145 @@
+{
+  "title": "How Blest the Hearts",
+  "alsoKnownAs": [
+    "How Blest Are Hearts"
+  ],
+  "tune": "holy-matrimony",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "How Blest the Hearts in Tonic Solfa: the solfa line by line with the words, staff notation, all 10 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1865. The tune, HOLY MATRIMONY, is by Henry Williams Baker (1865). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "How blest are hearts, which Christ the Lord Cou-ples as with a sil-ver cord, In nu-ptial u-ni-ty: That a-ni-ma-ted are by love And a-spi-ra-tions from a-bove, O Ho-ly Ghost, by Thee!",
+  "verses": [
+    {
+      "lines": [
+        "How blest are hearts, which Christ the Lord",
+        "Couples as with a silver cord,",
+        "In nuptial unity:",
+        "That animated are by love",
+        "And aspirations from above,",
+        "O Holy Ghost, by Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "When angels sang Creation's birth,",
+        "Man, fashioned from the dust of earth.",
+        "In Eden was alone;",
+        "But God made Eve from Adam's side",
+        "And brought her to him as a Bride,",
+        "And willed them to be one."
+      ]
+    },
+    {
+      "lines": [
+        "O holy wedlock ratified",
+        "In Heav'n a knot for life is tied",
+        "By God in Paradise!",
+        "O happiness beyond compare!",
+        "What tongues of Angels to declare",
+        "The blessedness sufice?"
+      ]
+    },
+    {
+      "lines": [
+        "Anthems angelical were heard,",
+        "When Christ, the everlasting Word",
+        "To wed His Bride did come,",
+        "And take that consecrated Bride,",
+        "Cleansed by the lifeblood from His side,",
+        "Unto Her heav'nly home."
+      ]
+    },
+    {
+      "lines": [
+        "At Cana's feast that Heav'nly Guest",
+        "Did first His Godhead manifest,",
+        "And water change to wine;",
+        "In wedlock tears of sorr'wring earth",
+        "Are changed to wine of heav'nly mirth,",
+        "By pow'r and love divine."
+      ]
+    },
+    {
+      "lines": [
+        "Mirrored in nuptial purity",
+        "The marriage of the Church we see",
+        "And Christ the Bridegroom's Love;",
+        "Angels look down, and anthems sing,",
+        "The Holy Dove, the golden wing,",
+        "Sheds blessings from above."
+      ]
+    },
+    {
+      "lines": [
+        "Bless these Thy servants, gracious Lord,",
+        "Whom Thou dost join in sweet accord,",
+        "The bridegroom and the bride;",
+        "In sorrow, sickness, and in health",
+        "In tribulation and in wealth,",
+        "Be Thou their Help and Guide!"
+      ]
+    },
+    {
+      "lines": [
+        "Be with them, Lord, as day by day",
+        "They with one heart together pray,",
+        "Thy Word together read,",
+        "Together at Thine altar kneel,",
+        "And with Thy Blood their union seal,",
+        "On Thee together feed."
+      ]
+    },
+    {
+      "lines": [
+        "May they forever have Thee near,",
+        "Making them to Thyself more dear,",
+        "And each to each in Thee;",
+        "So, when from earthly cares released,",
+        "May they at Thine own marriage feast",
+        "Be blest eternally!"
+      ]
+    },
+    {
+      "lines": [
+        "D To Father, whose paternal Love",
+        "Sends benedictions from above,",
+        "Eternal praises be;",
+        "And God the Son, Incarnate Word,",
+        "With Holy Spirit be adored;",
+        "One God and Persons Three!"
+      ]
+    }
+  ],
+  "category": "Christian Home",
+  "topics": [
+    "Angels",
+    "Art and Music",
+    "Brevity of Life",
+    "Bride/Bridegroom",
+    "Christian Home/Family",
+    "Consecration",
+    "Eternal Life",
+    "God, Care of",
+    "Holiness",
+    "Love"
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/How_Blest_the_Hearts-Holy_Matrimony.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "How_Blest_the_Hearts-Holy_Matrimony"
+}

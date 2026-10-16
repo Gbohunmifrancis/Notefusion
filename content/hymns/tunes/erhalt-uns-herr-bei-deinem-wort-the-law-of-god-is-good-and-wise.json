@@ -1,0 +1,23 @@
+{
+  "name": "ERHALT UNS, HERR, BEI DEINEM WORT",
+  "music": [
+    {
+      "name": "From Klug's Geistliche Lieder auffs new gebessert, Wittenberg, 1543",
+      "traditional": true,
+      "role": "Melody (1543)"
+    }
+  ],
+  "musicPublished": 1543,
+  "key": "E minor",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "E4:2 G4:1 E4:1 | D4:1 E4:1 G4:1 F#4:1 | E4:2 G4:2 | A4:1 A4:1 B4:1 G4:1 | A4:1 A4:1 B4:2 | B4:2 C5:1 B4:1 | D5:1 B4:1 A4:1 A4:1 | G4:2 B4:2 | G4:1 A4:1 G4:1 F#4:1 | E4:1 D#4:1 E4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Law_Of_God_Is_Good_And_Wise-Erhalt_Uns_Herr.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music Souce: Music source: Concordia Kinderchöre, 1908 Hymn 117 page 141."
+}

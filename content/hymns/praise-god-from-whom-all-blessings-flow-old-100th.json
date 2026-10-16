@@ -1,0 +1,47 @@
+{
+  "title": "Praise God from Whom All Blessings Flow (Old 100th)",
+  "tune": "old-100th-praise-god-from-whom-all-blessings-flow-old-100th",
+  "text": [
+    {
+      "name": "Thomas Ken",
+      "born": 1637,
+      "died": 1711,
+      "role": "Words (1674)"
+    }
+  ],
+  "textPublished": 1674,
+  "description": "Praise God from Whom All Blessings Flow in Tonic Solfa: the solfa line by line with the words, staff notation, the words, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Ken, first published in 1674. The tune, OLD 100TH, is by Louis Bourgeois (1551). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Praise God, from Whom all bles-sings flow; Praise Him, all crea-tures here be-low; Praise Him a-bove, ye heav'n-ly host; Praise Fa-ther, Son, and Ho-ly Ghost.",
+  "verses": [
+    {
+      "lines": [
+        "Praise God, from Whom all blessings flow;",
+        "Praise Him, all creatures here below;",
+        "Praise Him above, ye heav'nly host;",
+        "Praise Father, Son, and Holy Ghost."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "God, Care of",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Praise_God_From_Whom_All_Blessings_Flow-Old_100th.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Praise_God_From_Whom_All_Blessings_Flow-Old_100th",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 6 beats, more than 4; bar 2 has 7 beats, more than 4; bar 3 has 6 beats, more than 4; bar 4 has 7 beats, more than 4; bar 5 has 6 beats, more than 4; bar 6 has 7 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 7 beats, more than 4."
+}

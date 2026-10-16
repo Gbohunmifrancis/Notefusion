@@ -1,0 +1,93 @@
+{
+  "title": "Wilt Thou, O Man, Live Happily",
+  "alsoKnownAs": [
+    "Man, Wouldst Thou Live All Blissfully"
+  ],
+  "tune": "mensch-willt-du-leben-seligich",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Wilt Thou, O Man, Live Happily in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, MENSCH, WILLT DU LEBEN SELIGICH, is by Martin Luther (1524). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Wilt thou, O man, live hap-pi-ly, And dwell with God e-ter___-nal-ly, The ten com-mand-ments keep, for thus Our God Him-self_ bid-deth us._ Kyr' e-lei-son!",
+  "verses": [
+    {
+      "lines": [
+        "Wilt thou, O man, live happily,",
+        "And dwell with God eternally,",
+        "The ten commandments keep, for thus",
+        "Our God Himself biddeth us.",
+        "Kyr' eleison!"
+      ]
+    },
+    {
+      "lines": [
+        "I am the Lord and God!",
+        "take heed No other god doth thee mislead;",
+        "Thy heart shall trust alone in",
+        "Me, My kingdom then thou shalt be."
+      ]
+    },
+    {
+      "lines": [
+        "Honor My Name in word and deed,",
+        "And call on Me in time of need:",
+        "Hallow the Sabbath, that I may",
+        "Work in thy heart on that day."
+      ]
+    },
+    {
+      "lines": [
+        "Obedient always, next to",
+        "Me, To father and to mother be;",
+        "Kill no man: even anger dread;",
+        "Keep sacred thy marriage bed."
+      ]
+    },
+    {
+      "lines": [
+        "Steal not, nor do thy neighbor wrong",
+        "By bearing witness with false tongue;",
+        "Thy neighbor's wife desire thou not,",
+        "Nor grudge him aught he hath got."
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Duty (see also Law)",
+    "Fear of the Lord",
+    "God, Justness of",
+    "Integrity",
+    "Law",
+    "Leadership",
+    "Morality (see also Law)",
+    "Obedience",
+    "Presence",
+    "Temperance &amp; Moral Reform (see also Law)",
+    "Trust"
+  ],
+  "metre": "8 8 8 7 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Wilt_Thou_O_Man_Live_Happily-Mensch_Willt_du_Leben_seligich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Wilt_Thou_O_Man_Live_Happily-Mensch_Willt_du_Leben_seligich"
+}

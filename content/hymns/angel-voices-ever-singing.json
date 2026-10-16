@@ -1,0 +1,97 @@
+{
+  "title": "Angel Voices, Ever Singing",
+  "tune": "angel-voices-monk",
+  "text": [
+    {
+      "name": "Francis Pott",
+      "born": 1832,
+      "died": 1909,
+      "role": "Words (1861)"
+    }
+  ],
+  "textPublished": 1861,
+  "description": "Angel Voices, Ever Singing in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Francis Pott, first published in 1861. The tune, ANGEL VOICES (MONK), is by Edwin George Monk (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "An-gel voi-ces, e-ver sing-ing, round Thy throne of light, An-gel harps, for-e-ver ring-ing, rest not day or night; Thou-sands on-ly live to bless Thee, and con-fess Thee Lord of might.",
+  "verses": [
+    {
+      "lines": [
+        "Angel voices, ever singing,",
+        "round Thy throne of light,",
+        "Angel harps, forever ringing,",
+        "rest not day or night;",
+        "Thousands only live to bless Thee,",
+        "and confess Thee Lord of might."
+      ]
+    },
+    {
+      "lines": [
+        "Thou Who art beyond the farthest",
+        "mortal eye can scan,",
+        "Can it be that Thou regardest",
+        "songs of sinful man?",
+        "Can we feel that Thou art near us",
+        "and wilt hear us? Yea, we can."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, we know Thy love rejoices",
+        "o'er each work of Thine;",
+        "Thou didst ears and hands and voices",
+        "for Thy praise combine;",
+        "Craftsman's art and music's measure",
+        "for Thy pleasure didst design."
+      ]
+    },
+    {
+      "lines": [
+        "Here, great God, today we offer",
+        "of Thine own to Thee;",
+        "And for Thine acceptance proffer,",
+        "all unworthily,",
+        "Hearts and minds, and hands and voices,",
+        "in our choicest melody."
+      ]
+    },
+    {
+      "lines": [
+        "Honor, glory, might and merit,",
+        "Thine shall ever be,",
+        "Father, Son, and Holy Spirit,",
+        "blessed Trinity;",
+        "Of the best that Thou hast given",
+        "Earth and Heaven render Thee."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Angels",
+    "Art and Music",
+    "Day",
+    "Evening",
+    "God, Eternity of",
+    "God, Love of",
+    "Humility",
+    "Light",
+    "Love",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Sinners",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "8 5 8 5 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Angel_Voices_Ever_Singing-Angel_Voices_Monk.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Angel_Voices_Ever_Singing-Angel_Voices_Monk"
+}

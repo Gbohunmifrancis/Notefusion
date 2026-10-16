@@ -1,0 +1,23 @@
+{
+  "name": "DEO GRACIAS",
+  "music": [
+    {
+      "name": "Traditional English",
+      "traditional": true,
+      "role": "Melody (1415)"
+    }
+  ],
+  "musicPublished": 1415,
+  "key": "C# minor",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "C#5:1 | C#5:2 B4:1 | C#5:2 B4:1 | B4:1 A4:2 | G#4:2 C#5:1 | C#5:1 B4:1 G#4:1 | F#4:1 G#4:1 F#4:.5 C#4:.5 | E4:1 D#4:2 | C#4:2 G#4:1 | B4:2 B4:1 | C#5:1 B4:1 A4:1 | G#4:1 F#4:2 | E4:2 E4:1 | G#4:2 G#4:1 | F#4:2 E4:1 | E4:1 D#4:2 | C#4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Love_How_Deep-Deo_Gracias-Agincourt.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 3 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"A Hymnal\" (Episcopal), 1918 Hymn 439, alt by BJD 21 Mar 2011. Translation from \"The Hymnal, Noted\", 1854 (UK), hymn 73. Verse 5 altered."
+}

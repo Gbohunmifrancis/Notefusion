@@ -1,0 +1,24 @@
+{
+  "name": "AZMON",
+  "music": [
+    {
+      "name": "Carl Gotthelf Gläser",
+      "born": 1784,
+      "died": 1829,
+      "role": "Music (1828)"
+    }
+  ],
+  "musicPublished": 1828,
+  "key": "Ab major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:2 | Ab4:1 Ab4:1 Bb4:2 Bb4:2 | C5:1 Bb4:1 Ab4:2 Bb4:2 | C5:1 C5:1 Db5:2 C5:2 | Bb4:4 Eb5:2 | Eb5:1 C5:1 C5:2 Ab4:2 | Ab4:1 F4:1 F4:2 Ab4:1 F4:1 | Eb4:1 Ab4:1 Ab4:2 Bb4:2 | Ab4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_For_A_Thousand_Tongues-Azmon.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 14 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Methodist Hymnal\", 1905. Hymn 1."
+}

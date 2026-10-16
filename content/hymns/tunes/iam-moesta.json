@@ -1,0 +1,24 @@
+{
+  "name": "IAM MOESTA",
+  "music": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Music (1542)"
+    }
+  ],
+  "musicPublished": 1542,
+  "key": "F major",
+  "time": "2/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F4:1 | Bb4:1 G4:.5 G4:.5 | A4:1 G4:.5 F4:.5 | G4:2 | F4:1 F4:1 | G4:1 A4:.5 A4:.5 | C5:1 Bb4:.5 A4:.5 | G4:2 | A4:1 F4:1 | A4:1 G4:.5 G4:.5 | F4:1 E4:.5 C4:.5 | D4:2 | C4:1 C5:1 | D5:1 Bb4:.5 Bb4:.5 | C5:1 Bb4:.5 A4:.5 | G4:2 | F4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Despair_Not_O_Heart-Med_Sorgen_Og_Klagen-Despair_Not_O_Heart-Jam_Moesta-Iam_Moesta.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The last 4 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: 'The Wartburg Hymnal', 1918 Hymn 125. translation source: The Lutheran Hymnary, 1913 #595."
+}

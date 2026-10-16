@@ -1,0 +1,104 @@
+{
+  "title": "Songs of Thankfulness and Praise",
+  "tune": "st-george",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "Songs of Thankfulness and Praise in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1862. The tune, ST. GEORGE, is by George Job Elvey (1858). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Songs of thank-ful-ness and praise, Je-sus, Lord, to Thee we raise, Man-i-fest-ed by the star To the sa-ges from a-far; Branch of ro-yal Da-vid's stem In Thy birth at Beth-le-hem; An-thems be to Thee add-ressed, God in man made man-i-fest.",
+  "verses": [
+    {
+      "lines": [
+        "Songs of thankfulness and praise,",
+        "Jesus, Lord, to Thee we raise,",
+        "Manifested by the star",
+        "To the sages from afar;",
+        "Branch of royal David's stem",
+        "In Thy birth at Bethlehem;",
+        "Anthems be to Thee addressed,",
+        "God in man made manifest."
+      ]
+    },
+    {
+      "lines": [
+        "Manifest at Jordan's stream,",
+        "Prophet, Priest, and King supreme;",
+        "And at Cana, wedding guest,",
+        "In Thy Godhead manifest;",
+        "Manifest in pow'r divine,",
+        "Changing water into wine;",
+        "Anthems be to Thee addressed,",
+        "God in man made manifest."
+      ]
+    },
+    {
+      "lines": [
+        "Manifest in making whole",
+        "Palsied limbs and fainting soul;",
+        "Manifest in valiant fight,",
+        "Quelling all the devil's might;",
+        "Manifest in gracious will,",
+        "Ever bringing good from ill;",
+        "Anthems be to Thee addressed,",
+        "God in man made manifest."
+      ]
+    },
+    {
+      "lines": [
+        "Sun and moon shall darkened be,",
+        "Stars shall fall, the heav'ns shall flee,",
+        "Christ will then like lightning shine,",
+        "All will see His glorious sign:",
+        "All will then the trumpet hear;",
+        "All will see the Judge appear;",
+        "Thou by all wilt be confessed,",
+        "God in man made manifest."
+      ]
+    },
+    {
+      "lines": [
+        "Grant us grace to see Thee, Lord,",
+        "Mirrored in Thy holy Word;",
+        "May we imitate Thee now,",
+        "And be pure, as pure art Thou;",
+        "That we like to Thee may be",
+        "At Thy great Epiphany;",
+        "And may praise Thee, ever blest,",
+        "God in man made manifest."
+      ]
+    }
+  ],
+  "category": "Epiphany",
+  "topics": [
+    "Art and Music",
+    "Aspiration",
+    "Baptism",
+    "Following Jesus, In Action",
+    "Gratitude",
+    "Jesus",
+    "Magi",
+    "Miracles",
+    "Praise, Son",
+    "Presence",
+    "Second Coming",
+    "Worship"
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Songs_Of_Thankfulness_And_Praise-St_Georges_Windsor.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Songs_Of_Thankfulness_And_Praise-St_Georges_Windsor"
+}

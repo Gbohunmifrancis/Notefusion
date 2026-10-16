@@ -1,0 +1,88 @@
+{
+  "title": "Almighty God Your Word Is Cast",
+  "tune": "st-anne",
+  "text": [
+    {
+      "name": "John Cawood",
+      "born": 1775,
+      "died": 1852,
+      "role": "Words (1816)"
+    }
+  ],
+  "textPublished": 1816,
+  "description": "Almighty God Your Word Is Cast in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Cawood, first published in 1816. The tune, ST. ANNE, is by William Croft (1708). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Al-might-y God, Your Word is cast Like seed in-to the ground; Now let the dew of Heav'n de-scend, And right-eous fruits a-bound.",
+  "verses": [
+    {
+      "lines": [
+        "Almighty God, Your Word is cast",
+        "Like seed into the ground;",
+        "Now let the dew of Heav'n descend,",
+        "And righteous fruits abound."
+      ]
+    },
+    {
+      "lines": [
+        "Let not the foe of Christ and man",
+        "This holy seed remove,",
+        "But give it root in ev'ry heart",
+        "To bring forth fruits of love."
+      ]
+    },
+    {
+      "lines": [
+        "Let not the world's deceitful cares",
+        "The rising plant destroy.",
+        "But let it yield a hundredfold",
+        "The fruits of peace and joy."
+      ]
+    },
+    {
+      "lines": [
+        "Nor let Your Word so kindly sent",
+        "To raise us to Your throne",
+        "Return to You, and sadly tell",
+        "That we reject Your Son."
+      ]
+    },
+    {
+      "lines": [
+        "Oft as the precious seed is sown,",
+        "Your quick'ning grace bestow,",
+        "That all whose souls the truth receive,",
+        "Its saving power may know."
+      ]
+    },
+    {
+      "lines": [
+        "Great God, come down and on Your Word",
+        "Your mighty power bestow,",
+        "That all who hear the joyful sound,",
+        "Your saving grace may know."
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Conversion",
+    "Faith",
+    "God, Providence of",
+    "Gospel",
+    "Grace",
+    "Jesus",
+    "Parables",
+    "Sowing &amp; Reaping"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Almighty_God_Your_Word_Is_Cast-St_Anne.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Almighty_God_Your_Word_Is_Cast-St_Anne"
+}

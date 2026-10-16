@@ -1,0 +1,96 @@
+{
+  "title": "O Holy, Blessed Trinity",
+  "tune": "o-heilige-dreifaltigkeit",
+  "text": [
+    {
+      "name": "Martin Behm",
+      "born": 1557,
+      "died": 1622,
+      "role": "Words (1608)"
+    },
+    {
+      "name": "Conrad Herman Louis Schuette",
+      "born": 1843,
+      "died": 1926,
+      "role": "Translated (1880)"
+    }
+  ],
+  "textPublished": 1880,
+  "description": "O Holy, Blessed Trinity in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Behm, first published in 1608. The English translation is by Conrad Herman Louis Schuette (1880). The tune, O HEILIGE DREIFALTIGKEIT, is by Nikolaus Hermann (1558). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O Ho-ly, Bless-ed Trin-i-ty, Di-vine, Es-sen-tial U-ni-ty, God Fa-ther, Son, and Ho-ly Ghost, Be Thou this day my Guide and Host.",
+  "verses": [
+    {
+      "lines": [
+        "O Holy, Blessed Trinity,",
+        "Divine, Essential Unity,",
+        "God Father, Son, and Holy Ghost,",
+        "Be Thou this day my Guide and Host."
+      ]
+    },
+    {
+      "lines": [
+        "My soul and body keep from harm,",
+        "O'er all I have extend Thine arm,",
+        "That Satan may not cause distress",
+        "Nor bring me shame or wretchedness."
+      ]
+    },
+    {
+      "lines": [
+        "The Father's might shield me this day,",
+        "The Son's pure wisdom cheer my way,",
+        "The Holy Spirit's light divine",
+        "Illume my heart's benighted shrine."
+      ]
+    },
+    {
+      "lines": [
+        "My Maker, strengthen Thou my heart,",
+        "O my Redeemer, help impart,",
+        "Blest Comforter, keep at my side",
+        "That faith and love in me abide."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, bless and keep Thou me as Thine;",
+        "Lord, make Thy face upon me shine;",
+        "Lord, lift Thy countenance on me",
+        "And give me peace—sweet peace, from Thee."
+      ]
+    }
+  ],
+  "category": "Morning",
+  "topics": [
+    "Christian Life",
+    "Consecration",
+    "Father",
+    "God, Care of",
+    "God, Goodness of",
+    "Guidance",
+    "Inner Life",
+    "Invitation (Faithful's to God)",
+    "Holy Spirit",
+    "Jesus",
+    "Kindness, God's",
+    "Light",
+    "Morning",
+    "Praise, Father",
+    "Praise, Holy Spirit",
+    "Praise, Son",
+    "Presence",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Holy_Blessed_Trinity-O_Heilige_Dreifaltigkeit-Steht_Auf_Ihr_Lieben_Kinderlein.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Holy_Blessed_Trinity-O_Heilige_Dreifaltigkeit-Steht_Auf_Ihr_Lieben_Kinderlein"
+}

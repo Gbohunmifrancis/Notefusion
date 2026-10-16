@@ -1,0 +1,122 @@
+{
+  "title": "Baptized into Thy Name Most Holy",
+  "tune": "o-dass-ich-tausend-zungen-hatte-dretzel",
+  "text": [
+    {
+      "name": "Johann Jakob Rambach",
+      "born": 1693,
+      "died": 1735,
+      "role": "Words (1734)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1863)"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "Baptized into Thy Name Most Holy in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Johann Jakob Rambach, first published in 1734. The English translation is by Catherine Winkworth and August Crull (1863). The tune, O DASS ICH TAUSEND ZUNGEN HÄTTE (DRETZEL), is by Kornelius Heinrich Dretzel (1731). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Bap-tized in-to Thy Name most ho-ly, O Fa-ther, Son, and Ho-ly Ghost, I claim a place, though weak and low-ly, A-mong Thy seed, Thy cho-sen host. Bur-ied with Christ and dead to sin, Thy Spi-rit now shall live with-in.",
+  "verses": [
+    {
+      "lines": [
+        "Baptized into Thy Name most holy,",
+        "O Father, Son, and Holy Ghost,",
+        "I claim a place, though weak and lowly,",
+        "Among Thy seed, Thy chosen host.",
+        "Buried with Christ and dead to sin,",
+        "Thy Spirit now shall live within."
+      ]
+    },
+    {
+      "lines": [
+        "My loving Father, here doth take me",
+        "To be henceforth His child and heir;",
+        "My faithful Savior, now doth make me",
+        "The fruit of all His sorrows share;",
+        "My Comforter will comfort me",
+        "When darkest clouds around I see."
+      ]
+    },
+    {
+      "lines": [
+        "And I have vowed to fear and love Thee",
+        "And to obey Thee, Lord, alone;",
+        "I felt Thy Holy Spirit move me,",
+        "I dared to pledge myself Thine own,",
+        "Renouncing sin to keep the faith",
+        "And war with evil unto death."
+      ]
+    },
+    {
+      "lines": [
+        "My faithful God, Thou failest never,",
+        "Thy cov'nant surely will abide;",
+        "Oh, cast me not away forever",
+        "Should I transgress it on my side!",
+        "But if I fall hide not Thy face,",
+        "Restore Thy child, Lord, by Thy Grace."
+      ]
+    },
+    {
+      "lines": [
+        "Yes, all I am and love most dearly,",
+        "To Thee I offer now the whole;",
+        "O let me make my vows sincerely,",
+        "Take full possession of my soul!",
+        "Let naught within me, naught I own,",
+        "Serve any will save Thine alone."
+      ]
+    }
+  ],
+  "category": "Baptismal Life",
+  "topics": [
+    "Atonement",
+    "Baptism",
+    "Blood",
+    "Christian Life",
+    "Commitment",
+    "Conversion",
+    "Discipleship",
+    "Faithfulness",
+    "Father",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "Forgiveness",
+    "God, Faithfulness of",
+    "God, Mercy of",
+    "Guidance",
+    "Holiness",
+    "Holy Spirit",
+    "Invitation (Faithful's to God)",
+    "Invitation (God's to Us)",
+    "Jesus",
+    "Joy",
+    "Obedience",
+    "Promises (see also Gospel)",
+    "Salvation",
+    "Security",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trinity",
+    "Trust"
+  ],
+  "metre": "9 8 9 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Baptized_Into_Your_Name_Most_Holy-O_Dass_Ich_Tausend_Zungen_Hatte_Dretzel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Baptized_Into_Your_Name_Most_Holy-O_Dass_Ich_Tausend_Zungen_Hatte_Dretzel"
+}

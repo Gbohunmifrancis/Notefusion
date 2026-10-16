@@ -1,0 +1,24 @@
+{
+  "name": "BURFORD (PURCELL)",
+  "music": [
+    {
+      "name": "Henry Purcell",
+      "born": 1659,
+      "died": 1695,
+      "role": "Music (1718)"
+    }
+  ],
+  "musicPublished": 1718,
+  "key": "G minor",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "G4:1 | G4:2 A4:1 | Bb4:2 C5:1 | D5:1 C5:1 Bb4:1 | A4:2 F#4:1 | G4:2 A4:1 | Bb4:2 C5:1 | D5:2 D5:1 | C5:1 Bb4:1 A4:1 | Bb4:2 C5:1 | D5:1 C5:1 Bb4:1 | A4:2 F#4:1 | G4:1.5 A4:.5 Bb4:1 | A4:1 G4:1 F#4:1 | G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Almighty_Lord_Before_Thy_Throne-Burford_Purcell.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyricssource: \"Evangelical Lutheran Hymn-Book\", 1931 Hymn 303"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "BELMONT",
+  "music": [
+    {
+      "name": "William Gardiner",
+      "born": 1770,
+      "died": 1853,
+      "role": "Music (1812)"
+    }
+  ],
+  "musicPublished": 1812,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | B4:2 A4:1 | G4:2 F#4:1 | F#4:1 E4:1 G4:1 | D4:2 D5:1 | D5:1 C5:1 B4:1 | B4:1 A4:1 G4:1 | G4:3 | F#4:2 D4:1 | B4:2 A4:1 | G4:2 F#4:1 | F#4:1 E4:1 G4:1 | D4:2 D5:1 | D5:1 C5:1 A4:1 | G4:1 B4:1 A4:1 | G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Grave_Itself_A_Garden_Is-Belmont.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"The New Hymnal (Episcopal)\", 1916 Hymn 166. This hymn is essentially verses 6, 8-12 of the original. The original was intended as an Easter hymn (and could certainly still be used as such)"
+}

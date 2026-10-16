@@ -1,0 +1,102 @@
+{
+  "title": "O Come O Come Emmanuel",
+  "tune": "veni-emmanuel",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (1200)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1851)"
+    }
+  ],
+  "textPublished": 1851,
+  "description": "O Come O Come Emmanuel in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1200. The English translation is by John Mason Neale (1851). The tune, VENI EMMANUEL, is Traditional French. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O come, O come, Em-man__-u-el, And ran-som cap-tive Is__-ra-el, That mourns in lone-ly e_-xile here Un-til the Son of God__ ap-pear. Re-joice! Re-joice! Em-man__-u-el shall come to thee, O I__-sra-el.",
+  "verses": [
+    {
+      "lines": [
+        "O come, O come, Emmanuel,",
+        "And ransom captive Israel,",
+        "That mourns in lonely exile here",
+        "Until the Son of God appear."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Rejoice! Rejoice! Emmanuel",
+        "shall come to thee, O Israel."
+      ]
+    },
+    {
+      "lines": [
+        "O come, Thou Wisdom from on high,",
+        "Who orderest all things mightily;",
+        "To us the path of knowledge show,",
+        "And teach us in her ways to go."
+      ]
+    },
+    {
+      "lines": [
+        "O come, Thou Rod of Jesse, free",
+        "Thine own from Satan's tyranny;",
+        "From depths of hell Thy people save,",
+        "And give them vict'ry ov'r the grave."
+      ]
+    },
+    {
+      "lines": [
+        "O come, Thou Dayspring, come and cheer",
+        "Our spirits by Thine advent here;",
+        "Disperse the gloomy clouds of night,",
+        "And death's dark shadows put to flight."
+      ]
+    },
+    {
+      "lines": [
+        "O come, Thou Key of David, come,",
+        "And open wide our heav'nly home;",
+        "Make safe the way that leads on high,",
+        "And close the path to misery."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Christmas/Advent",
+    "Cloud",
+    "Darkness, Spiritual",
+    "Education",
+    "God, As King",
+    "God, Providence of",
+    "Hope",
+    "Invitation (Faithful's to God)",
+    "Israel",
+    "Jesus",
+    "Knowledge",
+    "Law",
+    "Presence",
+    "Second Coming",
+    "Security",
+    "Victory",
+    "Wisdom"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Come_O_Come_Emmanuel-Veni_Emmanuel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Come_O_Come_Emmanuel-Veni_Emmanuel"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "WESTMINSTER ABBEY",
+  "music": [
+    {
+      "name": "Henry Purcell",
+      "born": 1659,
+      "died": 1695,
+      "role": "Music (1692)"
+    }
+  ],
+  "musicPublished": 1692,
+  "key": "G major",
+  "time": "6/8",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/In_His_Temple_Now_Behold_Him-Westminster_Abbey.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: bar 1 has 6 beats, more than 3; bar 2 has 6 beats, more than 3; bar 3 has 6 beats, more than 3; bar 4 has 6 beats, more than 3; bar 5 has 6 beats, more than 3; bar 6 has 6 beats, more than 3; bar 7 has 6 beats, more than 3; bar 8 has 6 beats, more than 3; bar 9 has 6 beats, more than 3; bar 10 has 6 beats, more than 3; bar 11 has 6 beats, more than 3; bar 12 has 6 beats, more than 3; the melody does not parse: bar 1 has 6 beats, not 3. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: With One Voice, Hymn 747"
+}

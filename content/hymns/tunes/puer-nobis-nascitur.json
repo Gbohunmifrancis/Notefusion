@@ -1,0 +1,24 @@
+{
+  "name": "PUER NOBIS NASCITUR",
+  "music": [
+    {
+      "name": "Michael Praetorius",
+      "born": 1571,
+      "died": 1621,
+      "role": "Music (1609)"
+    }
+  ],
+  "musicPublished": 1609,
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:1 | D4:2 E4:1 | F#4:2 G4:1 | F#4:2 E4:1 | D4:2 D4:1 | A4:2 A4:1 | A4:1 B4:1 C#5:1 | D5:2 D5:1 | D5:2 A4:1 | D5:2 D5:1 | C#5:2 A4:1 | B4:2 B4:1 | A4:2 G4:1 | A4:2 F#4:1 | E4:2 F#4:1 | D4:2 C#4:1 | D4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/From_Nazareth-Puer_Nobis_Nascitur.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'The English Hymnal', 1906 Hymn 14. Lyric source: \"A Little Book of Homespun Verse\" by Margaret Sangster, 1911. page 21-22."
+}

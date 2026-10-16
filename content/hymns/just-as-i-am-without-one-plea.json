@@ -1,0 +1,99 @@
+{
+  "title": "Just as I Am Without One Plea",
+  "tune": "woodworth",
+  "text": [
+    {
+      "name": "Charlotte Elliott",
+      "born": 1789,
+      "died": 1871,
+      "role": "Words (1835)"
+    }
+  ],
+  "textPublished": 1835,
+  "description": "Just as I Am Without One Plea in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charlotte Elliott, first published in 1835. The tune, WOODWORTH, is by William Batchelder Bradbury (1849). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Just_ as I am,_ wi-thout_ one plea, But that_ Thy blood was shed for me, And_ that Thou bid-dest me come to Thee,_ O Lamb of God,_ I come, I come.",
+  "verses": [
+    {
+      "lines": [
+        "Just as I am, without one plea,",
+        "But that Thy blood was shed for me,",
+        "And that Thou biddest me come to Thee,",
+        "O Lamb of God,",
+        "I come, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Just as I am, and waiting not",
+        "To rid my soul of one dark blot,",
+        "To Thee, Whose blood can cleanse each spot,",
+        "O Lamb of God,",
+        "I come, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Just as I am, though tossed about",
+        "With many'a conflict, many'a doubt,",
+        "Fightings and fears within, without,",
+        "O Lamb of God,",
+        "I come, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Just as I am, poor, wretched, blind;",
+        "Sight riches healing of the mind,",
+        "Yea, all I need, in Thee to find,",
+        "O Lamb of God,",
+        "I come, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Just as I am,",
+        "Thou wilt receive,",
+        "Wilt welcome, pardon, cleanse, relieve,",
+        "Because Thy promise I believe,",
+        "O Lamb of God,",
+        "I come, I come."
+      ]
+    },
+    {
+      "lines": [
+        "Just as I am, Thy love unknown",
+        "Has broken every barrier down;",
+        "Now to be Thine, yea Thine alone,",
+        "O Lamb of God, I come, I come."
+      ]
+    }
+  ],
+  "category": "Lent",
+  "topics": [
+    "Assurance",
+    "Blood",
+    "Contrition",
+    "Cross",
+    "Faith",
+    "Following Jesus, In Faith",
+    "Humility",
+    "Jesus",
+    "Judgment",
+    "Law",
+    "Repentance",
+    "Shepherd/Lamb",
+    "Trust"
+  ],
+  "metre": "8 8 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Just_As_I_Am_Without_One_Plea-Woodworth.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Just_As_I_Am_Without_One_Plea-Woodworth"
+}

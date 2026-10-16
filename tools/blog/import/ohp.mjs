@@ -28,13 +28,13 @@ export const SOURCE_CREDIT = `Melody and words from the ${SOURCE_NAME} (openhymn
 export const sourceUrl = (base) => `http://openhymnal.org/Lyrics/${encodeURIComponent(base).replace(/%2C/g, ",")}.html`;
 export const abcUrl = (base) => `http://openhymnal.org/Abc/${encodeURIComponent(base).replace(/%2C/g, ",")}.abc`;
 
-const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "but", "by", "for", "from", "in", "into", "nor", "of", "on", "or", "the", "to", "with", "o'er", "unto", "upon"]);
+const SMALL_WORDS = new Set(["a", "an", "and", "as", "at", "but", "by", "for", "from", "in", "into", "nor", "of", "on", "or", "the", "to", "with", "unto", "upon"]);
 /** "Come Thou Fount Of Every Blessing" → "Come Thou Fount of Every Blessing" (hymn-book title case). */
 export function titleCase(t) {
   return String(t).trim().split(/\s+/).map((w, i) => {
     const lower = w.toLowerCase();
     if (i > 0 && SMALL_WORDS.has(lower.replace(/[^a-z']/g, ""))) return lower;
-    return w[0].toUpperCase() + w.slice(1);
+    return w.replace(/^([^\p{L}\p{N}]*)(\p{L})/u, (_, a, c) => a + c.toUpperCase());
   }).join(" ");
 }
 
@@ -51,9 +51,11 @@ export function normalizeTitle(t) {
  */
 export function retextUnderlay(underlay, ourText) {
   const theirs = underlay.trim().split(/\s+/);
-  const ours = String(ourText).trim().split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w));
+  let ours = String(ourText).trim().split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w));
+  // A word the score prints as two ("life gate") may be hyphenated in ours ("life-gate").
+  if (ours.length < theirs.length) ours = ours.flatMap((w) => w.split(/(?<=\p{L})-(?=\p{L})/u));
   if (theirs.length !== ours.length) throw new Error(`${ours.length} words against the score's ${theirs.length}`);
-  const letters = (w) => w.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
+  const letters = (w) => w.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "").replace(/our/g, "or");
   return theirs.map((word, i) => {
     const pieces = word.split("-").map((p) => { const m = /^(.*?)(_*)$/.exec(p); return { text: m[1], holds: m[2] }; });
     const mine = ours[i].replace(/_/g, "").replace(/-/g, "‑");
@@ -126,9 +128,13 @@ export function parsePeople(value) {
 export function firstYear(clause) {
   if (!clause) return null;
   const text = clause.replace(/\(\s*\d{3,4}\s*-\s*\d{0,4}\s*\)/g, "");
+  // A book the tune or words are taken "from" is their publication: "…traditional German circa 1400
+  // from Etlich Christlich Lider, Wittenberg, 1524" was published in 1524.
+  const book = /\bfrom\b[^.;]*?(?<!\d)(1[0-9]{3})(?!\d)/i.exec(text);
+  if (book && /circa|century/i.test(text.slice(0, book.index))) return Number(book[1]);
   const y = /(?<!\d)(1[0-9]{3}|[4-9][0-9]{2})(?!\d)/.exec(text);
-  if (y) return Number(y[1]);
   const c = /(\d{1,2})(?:st|nd|rd|th)\s+century/i.exec(text);
+  if (y && (!c || y.index < c.index)) return Number(y[1]);
   return c ? Number(c[1]) * 100 : null;
 }
 
@@ -167,11 +173,22 @@ function toWords(syls) {
   let cur = null;
   for (const s of syls) {
     if (!cur) { cur = { text: "", syllables: 0 }; words.push(cur); }
-    cur.text += s.text.replace(/\u2011/g, "-");
+    cur.text += s.text;
     cur.syllables++;
     if (!s.joins) cur = null;
   }
-  return words.map((w) => ({ ...w, text: w.text.replace(/\u203f/g, " ") }));
+  // A typed hyphen at a word's end before a space ("full,\- He", "saved\- grace") is a dash, printed
+  // as one and run on into the next word ("saved—grace"). The odd compound split this way
+  // ("life\- imparting") reads the same.
+  const out = [];
+  for (const w of words) {
+    const prev = out[out.length - 1];
+    const text = w.text.replace(/\u203f/g, " ");
+    // (A capital after the dash starts a new line of the verse: the words stay apart there.)
+    if (prev && prev.joinNext && !/^\p{Lu}/u.test(text)) { prev.text += text; prev.syllables += w.syllables; prev.joinNext = /\u2011$/u.test(text); continue; }
+    out.push({ text, syllables: w.syllables, joinNext: /\u2011$/u.test(text) });
+  }
+  return out.map((w) => ({ text: w.text.replace(/[,;:]?\u2011+(?=\p{L}|$)/gu, "—").replace(/\u2011/g, "-"), syllables: w.syllables }));
 }
 
 /**
@@ -197,11 +214,15 @@ export function toLines(words, metre) {
   words.forEach((w, i) => {
     cur.push(w.text); n += w.syllables;
     const next = words[i + 1];
-    const end = !next || (/[,;:.!?]["’”')]*$/.test(w.text) && /^["‘“(]*[A-Z]/.test(next.text) && n >= 4) || (/[;:.!?]["’”')]*$/.test(w.text) && n >= 6);
+    const end = !next || (/[,;:.!?]["’”')]*$/.test(w.text) && /^["‘“(]*[A-Z]/.test(next.text) && n >= 4) || (/[;:.!?]["’”')]*$/.test(w.text) && n >= 6)
+      || (n >= 6 && /^["‘“(]*[A-Z]/.test(next.text) && !CAPITALISED.test(next.text.replace(/[^A-Za-z']/g, "")));
     if (end) { lines.push(cur.join(" ")); cur = []; n = 0; }
   });
   return { lines, byMetre: false };
 }
+
+/** Words a hymn capitalises in mid-line: names and words for God. A line may still start with one. */
+const CAPITALISED = /^(I|O|God|God's|Lord|Lord's|Jesus|Jesus'|Christ|Christ's|Spirit|Ghost|Father|Son|Savior|Saviour|Lamb|King|Name|Word|He|His|Him|Thy|Thee|Thou|Thine|Who|Whom|Whose|Holy|Heaven|Heav'n|Zion|Israel|Bethlehem|Jerusalem|Calvary|Emmanuel|Immanuel|Redeemer|Shepherd|Friend|Master|Creator|Trinity|Church|Gospel|Cross|Hallelujah|Alleluia|Amen|Mary|David|Jordan|Satan|Christmas|Easter|Galilee|Nazareth)$/;
 
 /** The metre's syllable counts, when it is all numbers ("8 6 8 6"); else null. */
 function metreCounts(text) {
@@ -270,8 +291,8 @@ export function convertScore(text, { base, today }) {
   authors.forEach((p) => { if (wordsYear && !p.traditional) p.role = `Words (${wordsYear})`; });
   translators.forEach((p) => { if (translationYear) p.role = `Translated (${translationYear})`; });
   composers.forEach((p) => { if (musicYear && !p.traditional) p.role = `Music (${musicYear})`; });
-  for (const p of composers) if (p.traditional) p.role = musicYear ? `Melody, in print by ${musicYear}` : "Melody";
-  for (const p of authors) if (p.traditional) p.role = wordsYear ? `Words, in print by ${wordsYear}` : "Words";
+  for (const p of composers) if (p.traditional) p.role = musicYear ? `Melody (${musicYear})` : "Melody";
+  for (const p of authors) if (p.traditional) p.role = wordsYear ? `Words (${wordsYear})` : "Words";
   const textPeople = [...authors, ...translators];
   // The words on the page are the translation when there is one: their first publication is the later of the two
   // (an anonymous original needs no year of its own).
@@ -446,6 +467,7 @@ export function convertScore(text, { base, today }) {
     }
   }
   for (const w of abc.words) verses.push({ lines: w.lines });
+  if (verses.some((v) => v.lines.some((l) => /\d|insert|\[|\]/i.test(l)))) problems.push("the words contain verse numbers or editor's notes");
   if (estimated) notes.push("Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book.");
   if (abc.words.length) notes.push(`The last ${abc.words.length === 1 ? "verse is" : `${abc.words.length} verses are`} printed after the score in the source, not under the notes.`);
 
@@ -537,7 +559,9 @@ export function convertScore(text, { base, today }) {
     reviewed: false,
     draft: problems.length > 0,
   };
-  return { base, title, slug, tune, hymn, problems, copyright, notes, firstLine, parsed };
+  // Every name the score gives the tune ('Stockbridge' or 'Did You Think To Pray'), and the file name's.
+  const tuneAliases = [...new Set([...(clauses.music || "").matchAll(/['"`]([^'"`]+)['"`]/g)].map((m) => m[1]).concat(base.split("-").slice(1).map((x) => x.replace(/_/g, " "))).map(normalizeTitle).filter((x) => x && x !== "untitled"))];
+  return { base, title, slug, tune, hymn, problems, copyright, notes, firstLine, parsed, tuneAliases };
 }
 
 function describe(title, nVerses) {

@@ -1,0 +1,24 @@
+{
+  "name": "MAROSA",
+  "music": [
+    {
+      "name": "James Leith Macbeth Bain",
+      "born": 1860,
+      "died": 1925,
+      "role": "Music (1915)"
+    }
+  ],
+  "musicPublished": 1915,
+  "key": "D major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "D4:2 | F#4:1 A4:1 D5:2 A4:2 | B4:1 D5:1 A4:2 G4:2 | F#4:1 D4:1 D4:2 C#4:2 | D4:4 D4:2 | F#4:1 A4:1 D5:2 A4:2 | B4:1 D5:1 A4:2 G4:2 | F#4:1 D4:1 D4:2 C#4:2 | D4:4 E4:2 | F#4:1 D4:1 D4:2 E4:2 | F#4:1 D4:1 D4:2 E4:2 | F#4:1 A4:1 D5:2 D5:2 | D5:4 D4:2 | F#4:1 A4:1 D5:2 A4:2 | B4:1 D5:1 A4:2 G4:2 | F#4:1 D4:1 D4:2 C#4:2 | D4:6",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Lords_My_Shepherd-Marosa-Brother_James_Air.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and lyrics source: \"The Great Peace\" 1915."
+}

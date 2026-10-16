@@ -1,0 +1,24 @@
+{
+  "name": "HE LEADETH ME",
+  "music": [
+    {
+      "name": "William Batchelder Bradbury",
+      "born": 1816,
+      "died": 1868,
+      "role": "Music (1864)"
+    }
+  ],
+  "musicPublished": 1864,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | F#4:1.5 E4:.5 D4:1 A4:1 | B4:1 G4:1 G4:1 B4:1 | A4:1.5 F#4:.5 F#4:1 E4:.5 D4:.5 | F#4:1 F#4:1 E4:1 A4:1 | F#4:1.5 E4:.5 D4:1 A4:1 | B4:1 G4:1 D5:1 C#5:.5 B4:.5 | A4:1 F#4:1 F#4:.5 E4:.5 D4:.5 E4:.5 | F#4:1.5 E4:.5 D4:1 A4:1 | A4:1 D5:1 C#5:1 D5:1 | D5:1 C#5:.5 B4:.5 A4:1 B4:1 | A4:1 F#4:1 F#4:.5 E4:.5 D4:.5 E4:.5 | F#4:1 F#4:1 E4:1 A4:1 | A4:1 D5:1 C#5:1 E5:1 | D5:1 C#5:.5 B4:.5 A4:1 B4:1 | A4:1 F#4:1 F#4:.5 E4:.5 D4:.5 E4:.5 | F#4:1.5 E4:.5 D4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/He_Leadeth_Me-He_Leadeth_Me.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Golden Censer\", 1864 Hymn 105. Ed. William B. Bradbury"
+}

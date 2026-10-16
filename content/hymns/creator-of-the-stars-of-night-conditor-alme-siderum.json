@@ -1,0 +1,93 @@
+{
+  "title": "Creator of the Stars of Night (Conditor Alme Siderum)",
+  "tune": "conditor-alme-siderum",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (700)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1852)"
+    }
+  ],
+  "textPublished": 1852,
+  "description": "Creator of the Stars of Night in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 700. The English translation is by John Mason Neale (1852). The tune, CONDITOR ALME SIDERUM, is Traditional Proper Sarum Melody. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Cre-a-tor of the stars of night, Thy peo-ple's ev-er-las-ting light, Je-su, Re-dee-mer, save us all, And hear Thy ser-vants when they call.",
+  "verses": [
+    {
+      "lines": [
+        "Creator of the stars of night,",
+        "Thy people's everlasting light,",
+        "Jesu, Redeemer, save us all,",
+        "And hear Thy servants when they call."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, grieving that the ancient curse",
+        "Should doom to death a universe,",
+        "Hast found the med'cine, full of grace,",
+        "To save and heal a ruined race."
+      ]
+    },
+    {
+      "lines": [
+        "Thou cam'st the Bridegroom of the bride,",
+        "As drew the world to ev'ning tide;",
+        "Proceeding from a virgin shrine,",
+        "The spotless Victim all divine."
+      ]
+    },
+    {
+      "lines": [
+        "At whose dread name, majestic now,",
+        "All knees must bend, all hearts must bow;",
+        "All things celestial Thee shall own,",
+        "And things terrestrial, Lord alone."
+      ]
+    },
+    {
+      "lines": [
+        "O Thou whose coming is with dread",
+        "To judge and doom the quick and dead,",
+        "Preserve us while we dwell below,",
+        "From every insult of the foe."
+      ]
+    },
+    {
+      "lines": [
+        "D To God the Father, God the Son,",
+        "And God the Spirit, Three in One,",
+        "Laud, honor, might, and glory be,",
+        "From age to age eternally."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Bride/Bridegroom",
+    "Christmas/Advent",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Judgment"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Creator_of_the_Stars_of_Night-Conditor_Alme_Siderum.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Creator_of_the_Stars_of_Night-Conditor_Alme_Siderum"
+}

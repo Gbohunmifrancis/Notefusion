@@ -1,0 +1,24 @@
+{
+  "name": "DUKE STREET",
+  "music": [
+    {
+      "name": "John Hatton",
+      "born": 1710,
+      "died": 1793,
+      "role": "Music (1793)"
+    }
+  ],
+  "musicPublished": 1793,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 F#4:1 G4:1 | A4:2 B4:1 C#5:1 | D5:2 C#5:1 B4:1 | A4:4 | A4:2 A4:1 A4:1 | B4:2 A4:2 | G4:2 F#4:2 | E4:4 | F#4:2 F#4:1 E4:1 | D4:1 F#4:1 A4:1 D5:1 | B4:1 A4:1 G4:1 F#4:1 | E4:4 | A4:2 B4:1 C#5:1 | D5:3 G4:1 | F#4:2 E4:2 | D4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Know_That_My_Redeemer_Lives-Duke_Street.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 3 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Church Hymnal, Revised and Enlarged\" (Episcopal), 1905. Hymn 132. Setting quite similar to \"Songs of Pilgrimage\" 1888 hymns 76-79"
+}

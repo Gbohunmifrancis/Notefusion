@@ -1,0 +1,91 @@
+{
+  "title": "I'm but a Stranger Here",
+  "tune": "st-edmund-sullivan",
+  "text": [
+    {
+      "name": "Thomas Rawson Taylor",
+      "born": 1807,
+      "died": 1835,
+      "role": "Words (1836)"
+    }
+  ],
+  "textPublished": 1836,
+  "description": "I'm but a Stranger Here in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Rawson Taylor, first published in 1836. The tune, ST. EDMUND (SULLIVAN), is by Arthur Seymour Sullivan (1872). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I'm but a stran-ger here, Heav'n is my home; Earth is a des-ert drear, Heav'n is my home. Dan-ger and sor-row stand round me on ev-ery hand; Heav'n is my fa-ther-land,_ Heav'n is my home.",
+  "verses": [
+    {
+      "lines": [
+        "I'm but a stranger here,",
+        "Heav'n is my home;",
+        "Earth is a desert drear,",
+        "Heav'n is my home.",
+        "Danger and sorrow stand",
+        "round me on every hand;",
+        "Heav'n is my fatherland,",
+        "Heav'n is my home."
+      ]
+    },
+    {
+      "lines": [
+        "What though the tempest rage,",
+        "Heav'n is my home;",
+        "Short is my pilgrimage,",
+        "Heav'n is my home;",
+        "Time's wild and wintry blast",
+        "soon shall be over past;",
+        "I shall reach home at last,",
+        "Heav'n is my home."
+      ]
+    },
+    {
+      "lines": [
+        "There at my Savior's side",
+        "Heav'n is my home;",
+        "I shall be glorified,",
+        "Heav'n is my home.",
+        "There are the good and blest,",
+        "those I loved most and best;",
+        "There, too, I soon shall rest,",
+        "Heav'n is my home."
+      ]
+    },
+    {
+      "lines": [
+        "Therefore I murmur not,",
+        "Heav'n is my home;",
+        "Whate'er my earthly lot,",
+        "Heav'n is my home;",
+        "And I shall surely stand",
+        "there at my Lord's right hand.",
+        "Heav'n is my fatherland,",
+        "Heav'n is my home."
+      ]
+    }
+  ],
+  "category": "Heaven",
+  "topics": [
+    "Assurance",
+    "Brevity of Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Comfort",
+    "Eternal Life",
+    "Fellowship",
+    "Heaven",
+    "Hope",
+    "Patience",
+    "Rest",
+    "Trust"
+  ],
+  "metre": "6 4 6 4 6 6 6 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Im_But_A_Stranger_Here-St_Edmund_Sullivan.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Im_But_A_Stranger_Here-St_Edmund_Sullivan"
+}

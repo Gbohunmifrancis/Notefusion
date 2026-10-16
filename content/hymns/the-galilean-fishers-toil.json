@@ -1,0 +1,115 @@
+{
+  "title": "The Galilean Fishers Toil",
+  "alsoKnownAs": [
+    "Come Blessed Jesu Come"
+  ],
+  "tune": "old-137th",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "The Galilean Fishers Toil in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1865. The tune, OLD 137TH, is from Day's Psalter, 1563. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The Ga-li-le-an fish-ers toil all night, and no-thing take; But Je-sus comes,‑ a won-drous spoil is lift-ed from the lake. Lord, when our la-bors are in vain and vain the help of men, When fruit-less is our care and pain, Come bless-ed Je-sus then!",
+  "verses": [
+    {
+      "lines": [
+        "The Galilean fishers toil",
+        "all night, and nothing take;",
+        "But Jesus comes—a wondrous spoil",
+        "is lifted from the lake.",
+        "Lord, when our labors are in vain",
+        "and vain the help of men,",
+        "When fruitless is our care and pain,",
+        "Come blessed Jesus then!"
+      ]
+    },
+    {
+      "lines": [
+        "The night is dark, the surges fill the bark, the wild winds roar;",
+        "But Jesus comes and all is still—the ship is at the shore.",
+        "O Lord, when storms around us howl, and all is dark and drear,",
+        "In all the tempests of the soul,",
+        "O blessed Jesus hear."
+      ]
+    },
+    {
+      "lines": [
+        "A frail one, thrice denying Thee",
+        "saw mercy in Thine eyes,",
+        "The penitent upon the tree",
+        "was borne to Paradise.",
+        "In hours of sin and deep distress",
+        "o show us, Lord, Thy Face,",
+        "In penitential loneliness,",
+        "O give us Jesus grace!"
+      ]
+    },
+    {
+      "lines": [
+        "The faithful few retire in fear",
+        "to their closed upper room;",
+        "But suddenly with joyful cheer",
+        "they see their Master come.",
+        "Lord come to us, unloose our bands",
+        "and bid our terrors cease,",
+        "Lift over us Thy blessed hands,",
+        "Speak, holy Jesus Peace!"
+      ]
+    },
+    {
+      "lines": [
+        "In days, when faith will scarce be found,",
+        "and wolves be in the fold,",
+        "When sin and sorrow will abound",
+        "and charity wax cold,",
+        "Then hear Thy saints, who to Thee pray",
+        "to bring them to their home,",
+        "Hear when the Bride and Spirit say,",
+        "\"Come, Blessed Jesus, Come!\""
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Comfort",
+    "Compassion",
+    "Contrition",
+    "Courage in Affliction",
+    "Darkness, Spiritual",
+    "Forgiveness",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Love of",
+    "God, Providence of",
+    "Grace",
+    "Humility",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Joy",
+    "Miracles",
+    "Nature",
+    "Peace",
+    "Presence",
+    "Salvation",
+    "Second Coming",
+    "Solitude (with God even when alone)",
+    "Trust"
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Galilean_Fishers_Toil-Old_137th.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Galilean_Fishers_Toil-Old_137th"
+}

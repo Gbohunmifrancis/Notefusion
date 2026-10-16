@@ -1,0 +1,125 @@
+{
+  "title": "I Know That My Redeemer Lives",
+  "tune": "duke-street",
+  "text": [
+    {
+      "name": "Samuel Medley",
+      "born": 1738,
+      "died": 1799,
+      "role": "Words (1775)"
+    }
+  ],
+  "textPublished": 1775,
+  "description": "I Know That My Redeemer Lives in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Samuel Medley, first published in 1775. The tune, DUKE STREET, is by John Hatton (1793). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I know that my Re_-deem-er_ lives; What com-fort this sweet sen-tence gives! He lives, He lives,_ who_ once_ was_ dead; He lives, my ev-er liv-ing Head.",
+  "verses": [
+    {
+      "lines": [
+        "I know that my Redeemer lives;",
+        "What comfort this sweet sentence gives!",
+        "He lives, He lives, who once was dead;",
+        "He lives, my ever living Head."
+      ]
+    },
+    {
+      "lines": [
+        "He lives to bless me with His love,",
+        "He lives to plead for me above.",
+        "He lives my hungry soul to feed,",
+        "He lives to help in time of need."
+      ]
+    },
+    {
+      "lines": [
+        "He lives triumphant from the grave,",
+        "He lives eternally to save,",
+        "He lives all glorious in the sky,",
+        "He lives exalted there on high."
+      ]
+    },
+    {
+      "lines": [
+        "He lives to grant me rich supply,",
+        "He lives to guide me with His eye,",
+        "He lives to comfort me when faint,",
+        "He lives to hear my soul's complaint."
+      ]
+    },
+    {
+      "lines": [
+        "He lives to silence all my fears,",
+        "He lives to wipe away my tears",
+        "He lives to calm my troubled heart,",
+        "He lives all blessings to impart."
+      ]
+    },
+    {
+      "lines": [
+        "He lives, my kind, wise, heavenly Friend,",
+        "He lives and loves me to the end;",
+        "He lives, and while He lives, Ill sing;",
+        "He lives, my Prophet, Priest, and King."
+      ]
+    },
+    {
+      "lines": [
+        "He lives and grants me daily breath;",
+        "He lives, and I shall conquer death:",
+        "He lives my mansion to prepare;",
+        "He lives to bring me safely there."
+      ]
+    },
+    {
+      "lines": [
+        "He lives, all glory to His Name!",
+        "He lives, my Jesus, still the same.",
+        "Oh, the sweet joy this sentence gives,",
+        "I know that my Redeemer lives!"
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Anticipation",
+    "Assurance",
+    "Calmness",
+    "Comfort",
+    "Courage in Affliction",
+    "Easter",
+    "Easter Week / Passion",
+    "Eternal Life",
+    "Faith",
+    "Friendship",
+    "God, As King",
+    "God, Care of",
+    "God, Goodness of",
+    "Gospel",
+    "Gratitude",
+    "Jesus",
+    "Joy",
+    "Kindness, God's",
+    "Knowledge",
+    "Leadership",
+    "Priest/Priestly Roles",
+    "Resurrection",
+    "Salvation",
+    "Security",
+    "Terrorism",
+    "Testimony",
+    "Trust",
+    "Victory",
+    "Wisdom"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Know_That_My_Redeemer_Lives-Duke_Street.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "I_Know_That_My_Redeemer_Lives-Duke_Street"
+}

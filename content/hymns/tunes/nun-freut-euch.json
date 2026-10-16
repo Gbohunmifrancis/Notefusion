@@ -1,0 +1,24 @@
+{
+  "name": "NUN FREUT EUCH",
+  "music": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Music (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 D4:1 | G4:1 C5:1 B4:1 A4:1 | G4:2 r:1 G4:1 | A4:1 C5:1 B4:1 A4:1 | E4:1 F#4:1 G4:2 | G4:2 G4:1 D4:1 | G4:1 C5:1 B4:1 A4:1 | G4:2 r:1 G4:1 | A4:1 C5:1 B4:1 A4:1 | E4:1 F#4:1 G4:2 | r:1 G4:1 C5:1 B4:1 | C5:1 D5:1 D5:1 C#5:1 | D5:2 r:1 D5:1 | E5:1 C5:1 D5:1.5 C5:.5 | B4:1 A4:1 G4:2 | r:1 B4:1 A4:1 D4:1 | G4:1 A4:1 B4:1 A4:1 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Dear_Christians_One_And_All_Rejoice-Nun-Freut-Euch.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Hymns of Martin Luther\" by Bacon, 1883. Setting originally from \"Cantional oder Gesangbuch Augburgischer Konfession\" by Johann Hermann Schein."
+}

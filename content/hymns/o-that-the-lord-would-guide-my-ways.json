@@ -1,0 +1,90 @@
+{
+  "title": "O That the Lord Would Guide My Ways",
+  "tune": "evan",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "O That the Lord Would Guide My Ways in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1719. The tune, EVAN, is by William Henry Havergal (1847). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O that the Lord would guide my ways To keep His sta-tutes still! O that my God would grant me grace To know and do His will!",
+  "verses": [
+    {
+      "lines": [
+        "O that the Lord would guide my ways",
+        "To keep His statutes still!",
+        "O that my God would grant me grace",
+        "To know and do His will!"
+      ]
+    },
+    {
+      "lines": [
+        "O send Thy Spirit down to write",
+        "Thy law upon my heart!",
+        "Nor let my tongue indulge deceit,",
+        "Nor act the liar's part."
+      ]
+    },
+    {
+      "lines": [
+        "From vanity turn off mine eyes;",
+        "Let no corrupt design,",
+        "Nor covetous desires arise",
+        "Within this soul of mine."
+      ]
+    },
+    {
+      "lines": [
+        "Order my footsteps by Thy Word,",
+        "And make my heart sincere;",
+        "Let sin have no dominion, Lord,",
+        "But keep my conscience clear."
+      ]
+    },
+    {
+      "lines": [
+        "Assist my soul, too apt to stray,",
+        "A stricter watch to keep;",
+        "And should I e'er forget Thy way,",
+        "Restore Thy wand'ring sheep."
+      ]
+    },
+    {
+      "lines": [
+        "Make me to walk in Thy commands, 'Tis a delightful road;",
+        "Nor let my head, or heart, or hands, Offend against my God."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Consecration",
+    "Discipleship",
+    "Duty (see also Law)",
+    "Following Jesus, Sanctification",
+    "Guidance",
+    "Holy Spirit",
+    "Inner Life",
+    "Invitation (Faithful's to God)",
+    "Law",
+    "Obedience",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trust"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_That_The_Lord_Would_Guide_My_Ways-Evan-Eva.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_That_The_Lord_Would_Guide_My_Ways-Evan-Eva"
+}

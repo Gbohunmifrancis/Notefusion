@@ -1,0 +1,92 @@
+{
+  "title": "The Comforter Has Come",
+  "tune": "the-comforter-has-come",
+  "text": [
+    {
+      "name": "Frank Bottome",
+      "born": 1823,
+      "died": 1894,
+      "role": "Words (1890)"
+    }
+  ],
+  "textPublished": 1890,
+  "description": "The Comforter Has Come in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Frank Bottome, first published in 1890. The tune, THE COMFORTER HAS COME, is by William James Kirkpatrick (1890). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O spread the ti-dings 'round, wher-ev-er man is found, Wher-ev-er hu-man hearts and hu-man woes a-bound; Let ev-'ry Chris-tian tongue pro-claim the joy-ful sound: The Com-fort-er has come! The Com-fort-er has come, The Com-fort-er has come! The Ho-ly Ghost from heav'n, The Fa-ther's pro-mise giv'n; O spread the ti-dings 'round, Wher-ev-er man is found: The Com-fort-er has come!",
+  "verses": [
+    {
+      "lines": [
+        "O spread the tidings 'round, wherever man is found,",
+        "Wherever human hearts and human woes abound;",
+        "Let ev'ry Christian tongue proclaim the joyful sound:",
+        "The Comforter has come!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "The Comforter has come, The Comforter has come!",
+        "The Holy Ghost from heav'n, The Father's promise giv'n;",
+        "O spread the tidings 'round, Wherever man is found:",
+        "The Comforter has come!"
+      ]
+    },
+    {
+      "lines": [
+        "The long, long night is past, the morning breaks at last,",
+        "And hush'd the dreadful wail and fury of the blast,",
+        "As o'er the golden hills the day advances fast!",
+        "The Comforter has come!"
+      ]
+    },
+    {
+      "lines": [
+        "Lo, the great King of kings, with healing in His wings,",
+        "To ev'ry captive soul a full deliv'rance brings;",
+        "And thro' the vacant cells the song of triumph rings;",
+        "The Comforter has come!"
+      ]
+    },
+    {
+      "lines": [
+        "O boundless love divine! how shall this tongue of mine",
+        "To wond'ring mortals tell the matchless grace divine;",
+        "That I, a child of hell, should in His image shine!",
+        "The Comforter has come!"
+      ]
+    },
+    {
+      "lines": [
+        "Sing, till the echoes fly above the vaulted sky,",
+        "And all the saints above to all below reply,",
+        "In strains of endless love the song that ne'er will die:",
+        "The Comforter has come!"
+      ]
+    }
+  ],
+  "category": "Pentecost",
+  "topics": [
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Church on Earth (Church Militant)",
+    "Grace",
+    "Healing",
+    "Holy Spirit",
+    "Joy",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Sinners",
+    "Worship"
+  ],
+  "metre": "12 12 12 6 12 12 12 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Comforter_Has_Come-The_Comforter_Has_Come.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Comforter_Has_Come-The_Comforter_Has_Come"
+}

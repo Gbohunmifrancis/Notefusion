@@ -1,0 +1,91 @@
+{
+  "title": "How Can I Keep from Singing?",
+  "alsoKnownAs": [
+    "My Life Flows on in Endless Song"
+  ],
+  "tune": "how-can-i-keep-from-singing",
+  "text": [
+    {
+      "name": "F. J. Hartley",
+      "born": 1845,
+      "died": 1922,
+      "role": "Words (1869)"
+    },
+    {
+      "name": "Robert Lowry",
+      "born": 1826,
+      "died": 1899,
+      "role": "Words (1869)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (1869)"
+    }
+  ],
+  "textPublished": 1869,
+  "description": "How Can I Keep from Singing? in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by F. J. Hartley and Robert Lowry, first published in 1869. The tune, HOW CAN I KEEP FROM SINGING, is by Robert Lowry (1869). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "My life flows on in end-less song; A-bove earth's la-men-ta-tion. I catch the sweet, though far-off hymn that hails a new cre-a-tion; Through all the tu-mult and the strife, I hear that mu-sic ring-ing; It finds an e-cho in my soul... How can I keep from sing-ing?",
+  "verses": [
+    {
+      "lines": [
+        "My life flows on in endless song;",
+        "Above earth's lamentation.",
+        "I catch the sweet, though faroff hymn",
+        "that hails a new creation;",
+        "Through all the tumult and the strife,",
+        "I hear that music ringing;",
+        "It finds an echo in my soul...",
+        "How can I keep from singing?"
+      ]
+    },
+    {
+      "lines": [
+        "What though my joys and comforts die?",
+        "The Lord my Savior liveth;",
+        "What though the darkness gather round?",
+        "Songs in the night he giveth;",
+        "No storm can shake my inmost calm,",
+        "While to that refuge clinging;",
+        "Since Christ is Lord of heav'n and earth,",
+        "How can I keep from singing?"
+      ]
+    },
+    {
+      "lines": [
+        "I lift my eyes; the cloud grows thin;",
+        "I see the blue above it;",
+        "And day by day this pathway smooths,",
+        "since first I learned to love it;",
+        "The peace of Christ makes fresh my heart,",
+        "a fountain ever springing;",
+        "All things are mine since I am His...",
+        "How can I keep from singing?"
+      ]
+    }
+  ],
+  "category": "Thanksgiving",
+  "topics": [
+    "Art and Music",
+    "Assurance",
+    "Calmness",
+    "Christian Life",
+    "Courage in Affliction",
+    "Gratitude",
+    "Joy",
+    "Peace",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/How_Can_I_Keep_from_Singing-How_Can_I_Keep_from_Singing-Endless_Song-Singing-My_Life_Flows_On.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "How_Can_I_Keep_from_Singing-How_Can_I_Keep_from_Singing-Endless_Song-Singing-My_Life_Flows_On"
+}

@@ -21,7 +21,8 @@ import path from "node:path";
 import { CONTENT_DIR } from "../lib/site.mjs";
 import { slugify } from "../lib/util.mjs";
 import { decodeAbc } from "./abc.mjs";
-import { convertScore, normalizeTitle, retextUnderlay, SOURCE_NAME } from "./ohp.mjs";
+import { convertScore, normalizeTitle, retextUnderlay, titleCase, SOURCE_NAME } from "./ohp.mjs";
+import { parseMelody } from "../lib/solfa.mjs";
 
 const HYMNS_DIR = path.join(CONTENT_DIR, "hymns");
 const TUNES_DIR = path.join(HYMNS_DIR, "tunes");
@@ -37,14 +38,38 @@ function loadDir(dir) {
   return out;
 }
 
-/** The first line of a hymn's words, normalised, as a matching key. */
-const firstLineKey = (h) => (h.verses && h.verses[0] ? normalizeTitle(h.verses[0].lines[0]).split(" ").slice(0, 6).join(" ") : "");
+/** A tune's name for a title: "AUS TIEFER NOT (LUTHER)" → "Aus Tiefer Not, Luther". */
+const tuneLabel = (name) => titleCase(name.toLowerCase().replace(/\s*\(([^)]*)\)/g, ", $1"));
+
+/**
+ * Whether our tune and the score's are the same tune: the same opening (the first ten notes' steps,
+ * so a change of key does not matter) when ours has a melody, else the same name.
+ */
+export function sameTune(ourTune, r, title = "") {
+  if (!ourTune) return false;
+  if (ourTune.melody && r.parsed) {
+    // The pitches with repeated notes run together (one book ties a note another repeats), the first ten steps.
+    const steps = (notes) => notes.map((n) => n.pitchMidi).filter((p, i, a) => !i || p !== a[i - 1]).slice(0, 11).map((p, i, a) => (i ? p - a[i - 1] : 0)).slice(1).join(",");
+    try { return steps(parseMelody(ourTune.melody, { time: ourTune.time, pickup: ourTune.pickup || 0 }).notes) === steps(r.parsed.notes); }
+    catch { return false; }
+  }
+  // Ours has no notes yet: the same name, or a tune named after the song itself (a gospel song's own tune).
+  const ours = normalizeTitle(ourTune.name);
+  return r.tuneAliases.some((a) => a === ours || a.includes(ours) || ours.includes(a) || a === normalizeTitle(title) || a === normalizeTitle(r.title));
+}
+
+/** The opening words of a hymn, normalised, as matching keys: the first five, and the five after the first ("O God, our help…" / "Our God, our help…"). */
+const firstLineKeys = (h) => {
+  if (!h.verses || !h.verses[0]) return [];
+  const w = normalizeTitle(h.verses[0].lines.join(" ")).split(" ");
+  return [w.slice(0, 5).join(" "), "~" + w.slice(1, 6).join(" ")];
+};
 
 export function runImport({ src, today, dryRun = false, hymnsDir = HYMNS_DIR, tunesDir = TUNES_DIR, log = console.log }) {
   const hymns = loadDir(hymnsDir), tunes = loadDir(tunesDir);
   const hand = [...hymns].filter(([, h]) => !h.importedFrom);
   const handKeys = new Map();
-  for (const [slug, h] of hand) for (const k of [normalizeTitle(h.title), ...(h.alsoKnownAs || []).map(normalizeTitle), firstLineKey(h)]) if (k) handKeys.set(k, slug);
+  for (const [slug, h] of hand) for (const k of [normalizeTitle(h.title), ...(h.alsoKnownAs || []).map(normalizeTitle), ...firstLineKeys(h)]) if (k && k !== "~") handKeys.set(k, slug);
   const handTunes = new Set([...tunes].filter(([s, t]) => t.source !== SOURCE_NAME || hand.some(([, h]) => h.tune === s)).map(([s]) => s));
 
   const report = { source: SOURCE_NAME, date: today, published: [], drafts: [], filled: [], alreadyOnSite: [], notImported: [], unreadable: [] };
@@ -52,53 +77,73 @@ export function runImport({ src, today, dryRun = false, hymnsDir = HYMNS_DIR, tu
   const usedSlugs = new Set(hand.map(([s]) => s));
   const files = fs.readdirSync(src).filter((f) => f.toLowerCase().endsWith(".abc")).sort();
 
+  // First pass: convert every score.
+  const converted = [];
   for (const f of files) {
     const base = f.replace(/\.abc$/i, "");
     let r;
     try { r = convertScore(decodeAbc(fs.readFileSync(path.join(src, f))), { base, today }); }
     catch (e) { report.unreadable.push({ score: base, reason: e.message }); continue; }
     if (r.copyright) { report.notImported.push({ score: base, title: r.title, reason: r.copyright }); continue; }
+    converted.push(r);
+  }
 
-    const keys = [normalizeTitle(r.title), ...(r.hymn.alsoKnownAs || []).map(normalizeTitle), firstLineKey(r.hymn)];
+  // Second pass: match against the site, then against each other.
+  const fresh = [];
+  for (const r of converted) {
+    const base = r.base;
+    const keys = [normalizeTitle(r.title), ...(r.hymn.alsoKnownAs || []).map(normalizeTitle), ...firstLineKeys(r.hymn)];
     const dupSlug = keys.map((k) => handKeys.get(k)).find(Boolean);
-    if (dupSlug) {
-      const ours = outHymns.get(dupSlug) || hymns.get(dupSlug);
-      const ourTune = outTunes.get(ours.tune) || tunes.get(ours.tune);
-      const wordsOnly = ourTune && (!ourTune.melody || ourTune.source === SOURCE_NAME);
-      if (!wordsOnly || r.problems.length || !r.tune.melody) {
-        report.alreadyOnSite.push({ score: base, slug: dupSlug, ...(wordsOnly ? { reason: `ours has no melody, but the score did not pass: ${r.problems.join("; ")}` } : {}) });
-        continue;
-      }
-      // Fill our words-only draft with the score's melody, the words under the notes re-spelt as our verse prints them.
-      const tune = { ...ourTune, key: r.tune.key, time: r.tune.time, tempo: r.tune.tempo, pickup: r.tune.pickup, lineBars: r.tune.lineBars, melody: r.tune.melody, reviewed: false, confidence: r.tune.confidence, source: SOURCE_NAME, sourceUrl: r.tune.sourceUrl, licence: r.tune.licence };
-      const hymn = { ...ours };
-      const ourWords = [ours.verses[0], ...(ours.verses[1] && /refrain|chorus/i.test(ours.verses[1].label || "") ? [ours.verses[1]] : [])].flatMap((v) => v.lines).join(" ");
-      let held = null;
-      try { hymn.underlay = retextUnderlay(r.hymn.underlay, ourWords); }
-      catch (e) { held = e.message; hymn.underlay = r.hymn.underlay; }
-      hymn.draft = !!held;
-      hymn.updated = today;
-      tune.reviewNotes = [
-        held ? `Held back: the Open Hymnal's first verse does not match the verse printed on this page (${held}); fit the underlay to our words, then publish.` : "",
-        `Melody filled in from the Open Hymnal Project's ABC score (${base}); the words under the notes are this page's first verse, fitted to the score's syllables.`,
-        r.tune.reviewNotes,
-      ].filter(Boolean).join(" ");
-      outTunes.set(ours.tune, tune);
-      outHymns.set(dupSlug, hymn);
-      report.filled.push({ score: base, slug: dupSlug, ...(held ? { draft: held } : {}) });
+    if (!dupSlug) { fresh.push(r); continue; }
+    const ours = outHymns.get(dupSlug) || hymns.get(dupSlug);
+    const ourTune = outTunes.get(ours.tune) || tunes.get(ours.tune);
+    if (!sameTune(ourTune, r, ours.title)) {
+      // The same words to another tune (WHEN I SURVEY to HAMBURG as well as ROCKINGHAM): a page of its own.
+      r.variantOf = dupSlug;
+      fresh.push(r);
       continue;
     }
+    const wordsOnly = ourTune && (!ourTune.melody || ourTune.source === SOURCE_NAME);
+    if (!wordsOnly || r.problems.length || !r.tune.melody) {
+      report.alreadyOnSite.push({ score: base, slug: dupSlug, ...(wordsOnly ? { reason: `ours has no melody, but the score did not pass: ${r.problems.join("; ")}` } : {}) });
+      continue;
+    }
+    // Fill our words-only draft with the score's melody, the words under the notes re-spelt as our verse prints them.
+    const tune = { ...ourTune, key: r.tune.key, time: r.tune.time, tempo: r.tune.tempo, pickup: r.tune.pickup, lineBars: r.tune.lineBars, melody: r.tune.melody, reviewed: false, confidence: r.tune.confidence, source: SOURCE_NAME, sourceUrl: r.tune.sourceUrl, licence: r.tune.licence };
+    const hymn = { ...ours };
+    const ourWords = [ours.verses[0], ...(ours.verses[1] && /refrain|chorus/i.test(ours.verses[1].label || "") ? [ours.verses[1]] : [])].flatMap((v) => v.lines).join(" ");
+    let held = null;
+    try { hymn.underlay = retextUnderlay(r.hymn.underlay, ourWords); }
+    catch (e) { held = e.message; hymn.underlay = r.hymn.underlay; }
+    hymn.draft = !!held;
+    hymn.updated = today;
+    tune.reviewNotes = [
+      held ? `Held back: the Open Hymnal's first verse does not match the verse printed on this page (${held}); fit the underlay to our words, then publish.` : "",
+      `Melody filled in from the Open Hymnal Project's ABC score (${base}); the words under the notes are this page's first verse, fitted to the score's syllables.`,
+      r.tune.reviewNotes,
+    ].filter(Boolean).join(" ");
+    outTunes.set(ours.tune, tune);
+    outHymns.set(dupSlug, hymn);
+    report.filled.push({ score: base, slug: dupSlug, ...(held ? { draft: held } : {}) });
+  }
 
-    // A new hymn. Its slug is the title's; a second hymn of the same title adds its tune's name.
-    let slug = r.slug;
-    if (usedSlugs.has(slug)) slug = `${r.slug}-${slugify(r.tune.name)}`;
-    for (let n = 2; usedSlugs.has(slug); n++) slug = `${r.slug}-${n}`;
+  // Titles shared by more than one new page (or with a page already on the site) carry their tune's name.
+  const titleCount = new Map(hand.map(([, h]) => [normalizeTitle(h.title), 1]));
+  for (const r of fresh) titleCount.set(normalizeTitle(r.title), (titleCount.get(normalizeTitle(r.title)) || 0) + 1);
+  for (const r of fresh) {
+    const base = r.base;
+    if (r.variantOf || titleCount.get(normalizeTitle(r.title)) > 1) {
+      r.hymn.title = `${r.title.replace(/\s*\([^)]*\)$/, "")} (${tuneLabel(r.tune.name)})`;
+      r.hymn.description = r.hymn.description.replace(r.title, r.hymn.title).length <= 155 ? r.hymn.description.replace(r.title, r.hymn.title) : r.hymn.description;
+    }
+    let slug = slugify(r.hymn.title);
+    for (let n = 2; usedSlugs.has(slug); n++) slug = `${slugify(r.hymn.title)}-${n}`;
     usedSlugs.add(slug);
     // Its tune: the same tune file when the melody is note for note the same, else one of its own.
     const tuneBase = slugify(r.tune.name) || slug;
     const same = (t) => t && t.melody && r.tune.melody && t.melody === r.tune.melody && t.key === r.tune.key && t.time === r.tune.time && (t.pickup || 0) === r.tune.pickup;
     let tuneSlug = tuneBase;
-    const existing = outTunes.get(tuneBase) || (handTunes.has(tuneBase) ? tunes.get(tuneBase) : null);
+    const existing = outTunes.get(tuneBase) || (tunes.has(tuneBase) && handTunes.has(tuneBase) ? tunes.get(tuneBase) : null);
     if (existing && !same(existing)) tuneSlug = `${tuneBase}-${slug}`;
     if (!existing || !same(existing)) outTunes.set(tuneSlug, { ...r.tune });
     const hymn = { ...r.hymn, tune: tuneSlug, importedFrom: base };

@@ -1,0 +1,98 @@
+{
+  "title": "I Know Whom I Have Believed",
+  "tune": "i-know-whom-i-have-believed",
+  "text": [
+    {
+      "name": "Daniel Webster Whittle",
+      "born": 1840,
+      "died": 1901,
+      "role": "Words (1883)"
+    },
+    {
+      "name": "Elias Nathan",
+      "born": 1840,
+      "died": 1901,
+      "role": "Words (1883)"
+    }
+  ],
+  "textPublished": 1883,
+  "description": "I Know Whom I Have Believed in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Daniel Webster Whittle and Elias Nathan, first published in 1883. The tune, I KNOW WHOM I HAVE BELIEVED, is by James McGranahan (1892). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I know not why_ God's_ won-drous grace To me He hath_ made_ known, Nor why, un-wor_-thy,_ Christ in love Re-deemed me for_ His_ own. But I know Whom I have be-liev-èd, And am per-sua-ded that He is ab-le To keep that which I've com-mit-ted Un-to Him a-gainst that day.",
+  "verses": [
+    {
+      "lines": [
+        "I know not why God's wondrous grace",
+        "To me He hath made known,",
+        "Nor why, unworthy, Christ in love",
+        "Redeemed me for His own."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "But I know Whom I have believèd,",
+        "And am persuaded that He is able",
+        "To keep that which I've committed",
+        "Unto Him against that day."
+      ]
+    },
+    {
+      "lines": [
+        "I know not how this saving faith",
+        "To me He did impart,",
+        "Nor how believing in His Word",
+        "Wrought peace within my heart."
+      ]
+    },
+    {
+      "lines": [
+        "I know not how the Spirit moves,",
+        "Convincing us of sin,",
+        "Revealing Jesus through the Word,",
+        "Creating faith in Him."
+      ]
+    },
+    {
+      "lines": [
+        "I know not what of good or ill",
+        "May be reserved for me,",
+        "Of weary ways or golden days,",
+        "Before His face I see."
+      ]
+    },
+    {
+      "lines": [
+        "I know not when my Lord may come,",
+        "At night or noonday fair,",
+        "Nor if I walk the vale with Him,",
+        "Or meet Him in the air."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Calmness",
+    "Discipleship",
+    "Faith",
+    "God, Goodness of",
+    "Gospel",
+    "Gratitude",
+    "Humility",
+    "Knowledge",
+    "Peace",
+    "Salvation"
+  ],
+  "metre": "8 6 8 6 9 10 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Know_Whom_I_Have_Believed-I_Know_Whom_I_Have_Believed.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "I_Know_Whom_I_Have_Believed-I_Know_Whom_I_Have_Believed"
+}

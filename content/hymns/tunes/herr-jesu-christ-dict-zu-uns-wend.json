@@ -1,0 +1,23 @@
+{
+  "name": "HERR JESU CHRIST, DICT ZU UNS WEND",
+  "music": [
+    {
+      "name": "From Cantionale Germanicum, Dresden, 1628",
+      "traditional": true,
+      "role": "Melody (1628)"
+    }
+  ],
+  "musicPublished": 1628,
+  "key": "F major",
+  "time": "6/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "F4:2 | A4:2 C5:1 A4:2 G4:1 | A4:1 B4:1 C5:2 D5:2 | C5:2 A4:1 G4:2 F4:1 | F4:1 E4:1 F4:2 G4:2 | A4:2 A4:1 G4:2 C5:1 | C5:1 B4:1 C5:2 A4:2 | Bb4:2 A4:1 G4:2 F4:1 | F4:1 E4:1 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Gospel_Shows_The_Fathers_Grace-Herr_Jesu_Christ_Dich_Zu_Uns_Wend.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906 Hymn #74, page 57 Ed. Karl Brauer. slightly altered."
+}

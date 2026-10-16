@@ -1,0 +1,75 @@
+{
+  "title": "Savior, Who Thy Flock Art Feeding",
+  "tune": "batty",
+  "text": [
+    {
+      "name": "William Augustus Mühlenberg",
+      "born": 1796,
+      "died": 1877,
+      "role": "Words (1826)"
+    }
+  ],
+  "textPublished": 1826,
+  "description": "Savior, Who Thy Flock Art Feeding in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Augustus Mühlenberg, first published in 1826. The tune, BATTY, is from Johann Thommen's Musicalischer Christenschatz, Basel, 1745. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Sa-vior, who Thy flock art feed-ing With the Shep-herd's kind-est care, All the fee-ble_ gent-ly_ lead-ing, While the lambs Thy bos-om share.",
+  "verses": [
+    {
+      "lines": [
+        "Savior, who Thy flock art feeding",
+        "With the Shepherd's kindest care,",
+        "All the feeble gently leading,",
+        "While the lambs Thy bosom share."
+      ]
+    },
+    {
+      "lines": [
+        "Now, these little ones receiving,",
+        "Fold them in Thy gracious arm;",
+        "There, we know, Thy Word believing,",
+        "Only there secure from harm."
+      ]
+    },
+    {
+      "lines": [
+        "Never, from Thy pasture roving,",
+        "Let them be the lion's prey;",
+        "Let Thy tenderness, so loving,",
+        "Keep them through life's dang'rous way."
+      ]
+    },
+    {
+      "lines": [
+        "Then within Thy fold eternal",
+        "Let them find a resting place,",
+        "Feed in pastures ever vernal,",
+        "Drink the rivers of Thy grace."
+      ]
+    }
+  ],
+  "category": "Christian Home",
+  "topics": [
+    "Children (see also God's Children - the Faithful)",
+    "Christian Home/Family",
+    "Christian Life",
+    "Eternal Life",
+    "God, Care of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Jesus",
+    "Rest",
+    "Shepherd/Lamb",
+    "Trust"
+  ],
+  "metre": "8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Savior_Who_Thy_Flock_Art_Feeding-Batty-Ringe_Recht.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Savior_Who_Thy_Flock_Art_Feeding-Batty-Ringe_Recht",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 2 has 6 beats, more than 4; bar 4 has 6 beats, more than 4; bar 6 has 6 beats, more than 4; bar 8 has 6 beats, more than 4."
+}

@@ -1,0 +1,68 @@
+{
+  "title": "God Bless Our Native Land",
+  "tune": "america",
+  "text": [
+    {
+      "name": "Siegfried August Mahlmann",
+      "born": 1771,
+      "died": 1826,
+      "role": "Words (1815)"
+    },
+    {
+      "name": "Charles Timothy Brooks",
+      "born": 1813,
+      "died": 1883,
+      "role": "Translated (1833)"
+    },
+    {
+      "name": "John Sullivan Dwight",
+      "born": 1813,
+      "died": 1893,
+      "role": "Translated (1833)"
+    }
+  ],
+  "textPublished": 1833,
+  "description": "God Bless Our Native Land in Tonic Solfa: the solfa line by line with the words, staff notation, all 2 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Siegfried August Mahlmann, first published in 1815. The English translation is by Charles Timothy Brooks and John Sullivan Dwight (1833). The tune, AMERICA, is from Harmonia Anglicana, 1742. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "God bless our na-tive land! Firm may she e-ver stand Through storm and night; When the wild tem-pests rave, Ru-ler of wind and wave, Do Thou_ our_ coun-try save By_ Thy great might.",
+  "verses": [
+    {
+      "lines": [
+        "God bless our native land!",
+        "Firm may she ever stand",
+        "Through storm and night;",
+        "When the wild tempests rave,",
+        "Ruler of wind and wave,",
+        "Do Thou our country save",
+        "By Thy great might."
+      ]
+    },
+    {
+      "lines": [
+        "For her our prayer shall rise",
+        "To God above the skies;",
+        "On Him we wait;",
+        "Thou who art ever nigh,",
+        "Guarding with watchful eye,",
+        "To Thee aloud we cry,",
+        "God save the state!"
+      ]
+    }
+  ],
+  "category": "National Prayer",
+  "topics": [
+    "God, Care of",
+    "God, Providence of"
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_Bless_Our_Native_Land-America-National_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "God_Bless_Our_Native_Land-America-National_Hymn"
+}

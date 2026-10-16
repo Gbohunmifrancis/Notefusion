@@ -1,0 +1,23 @@
+{
+  "name": "VON GOTT WILL ICH NICHT LASSEN",
+  "music": [
+    {
+      "name": "Traditional French",
+      "traditional": true,
+      "role": "Melody (1557)"
+    }
+  ],
+  "musicPublished": 1557,
+  "key": "G minor",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | G4:1 A4:1 Bb4:1 C5:1 | A4:2 F4:1 F4:1 | G4:1 G4:1 A4:1 A4:1 | D4:2 r:1 G4:1 | G4:1 A4:1 Bb4:1 C5:1 | A4:2 F4:1 F4:1 | G4:1 G4:1 A4:1 A4:1 | D4:2 r:1 D5:1 | C5:1 Bb4:1 A4:1 G4:1 | A4:2 r:1 A4:1 | Bb4:1 C5:1 D5:1 D5:1 | C5:2 A4:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:2 F4:1 Eb4:1 | D4:1 G4:1 G4:1 F#4:1 | G4:2 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/From_God_Shall_Naught_Divide_Me-Von_Gott_Will_Ich_Nicht_Lassen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"The Lutheran Hymnary\", 1913 Hymn 349"
+}

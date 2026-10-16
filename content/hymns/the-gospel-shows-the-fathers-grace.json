@@ -1,0 +1,92 @@
+{
+  "title": "The Gospel Shows the Father's Grace",
+  "tune": "herr-jesu-christ-dict-zu-uns-wend",
+  "text": [
+    {
+      "name": "Matthias Loy",
+      "born": 1828,
+      "died": 1915,
+      "role": "Words (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "The Gospel Shows the Father's Grace in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Matthias Loy, first published in 1863. The tune, HERR JESU CHRIST, DICT ZU UNS WEND, is from Cantionale Germanicum, Dresden, 1628. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The Gos-pel shows the Fa-ther's grace, Who sent his Son to save our race, Pro-claims how Je-sus lived and died That man might thus be jus-ti-fied.",
+  "verses": [
+    {
+      "lines": [
+        "The Gospel shows the Father's grace,",
+        "Who sent his Son to save our race,",
+        "Proclaims how Jesus lived and died",
+        "That man might thus be justified."
+      ]
+    },
+    {
+      "lines": [
+        "It sets the Lamb before our eyes,",
+        "Who made th'atoning sacrifice,",
+        "And calls the souls with guilt oppressed",
+        "To come and find eternal rest."
+      ]
+    },
+    {
+      "lines": [
+        "It brings the Savior's righteousness",
+        "Our souls to robe in royal dress;",
+        "From all our guilt it brings release",
+        "And gives the troubled conscience peace."
+      ]
+    },
+    {
+      "lines": [
+        "It is the pow'r of God to save",
+        "From sin and Satan and the grave;",
+        "It works the faith, which firmly clings",
+        "To all the treasures which it brings."
+      ]
+    },
+    {
+      "lines": [
+        "It bears to all the tidings glad",
+        "And bids their hearts no more be sad;",
+        "The heavy laden souls it cheers",
+        "And banishes their guilty fears."
+      ]
+    },
+    {
+      "lines": [
+        "May we in faith its tidings learn",
+        "Nor thanklessly its blessings spurn;",
+        "May we in faith its truth confess",
+        "And praise the Lord our Righteousness!"
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Consolation",
+    "Faith",
+    "Father",
+    "Fear of the Lord",
+    "Gospel",
+    "Grace",
+    "Jesus",
+    "Sacrifice",
+    "Salvation",
+    "Shepherd/Lamb"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Gospel_Shows_The_Fathers_Grace-Herr_Jesu_Christ_Dich_Zu_Uns_Wend.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Gospel_Shows_The_Fathers_Grace-Herr_Jesu_Christ_Dich_Zu_Uns_Wend"
+}

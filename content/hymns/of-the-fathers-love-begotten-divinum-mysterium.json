@@ -1,0 +1,149 @@
+{
+  "title": "Of the Father's Love Begotten (Divinum Mysterium)",
+  "tune": "divinum-mysterium",
+  "text": [
+    {
+      "name": "Aurelius Clemens Prudentius",
+      "born": 348,
+      "died": 413,
+      "role": "Words (500)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1854)"
+    },
+    {
+      "name": "Henry Williams Baker",
+      "born": 1821,
+      "died": 1877,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Of the Father's Love Begotten in Tonic Solfa: the solfa line by line with the words, staff notation, all 9 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Aurelius Clemens Prudentius, first published in 500. The English translation is by John Mason Neale and Henry Williams Baker (1854). The tune, DIVINUM MYSTERIUM, is Traditional Latin. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Of the Fa-ther's love be-got_-ten Ere the worlds be-gan_ to be, He is Al-pha and O-me_-ga, He the source, the end_-ing He, Of the things that are, that have been, And_ that fu_-ture years shall see,__ Ev-er-more and ev-er-more!_",
+  "verses": [
+    {
+      "lines": [
+        "Of the Father's love begotten",
+        "Ere the worlds began to be,",
+        "He is Alpha and Omega,",
+        "He the source, the ending He,",
+        "Of the things that are, that have been,",
+        "And that future years shall see,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "At His Word they were created;",
+        "He commanded; it was done:",
+        "Heav'n and earth and depths of ocean",
+        "In their threefold order one;",
+        "All that grows beneath the shining",
+        "Of the moon and burning sun,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "He is found in human fashion,",
+        "Death and sorrow here to know,",
+        "That the race of Adam's children,",
+        "Doomed by law to endless woe,",
+        "May not henceforth die and perish",
+        "In the dreadful gulf below,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "Oh that birth forever blessèd!",
+        "When the virgin, full of grace,",
+        "By the Holy Ghost conceiving,",
+        "Bare the Savior of our race;",
+        "And the Babe, the world's Redeemer,",
+        "First revealed His sacred face,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "O ye heights of heav'n adore Him;",
+        "Angel hosts, His praises sing;",
+        "Pow'rs, dominions, bow before Him,",
+        "and extol our God and King:",
+        "Let no tongue on earth be silent,",
+        "Every voice in concert ring,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "He is here, Whom seers in old time Chanted of, while ages ran;",
+        "Whom the writings of the prophets Promised since the world began:",
+        "Then foretold, now manifested, to receive the praise of man,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "Righteous Judge of souls departed, Righteous King of them that live,",
+        "On the Father's throne exalted None in might with Thee may strive;",
+        "Who at last in vengeance coming Sinners from Thy face shalt drive,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "Thee let old men, Thee let young men, Thee let choirs of infants sing;",
+        "Thee the matrons and the virgins, And the children answering:",
+        "Let their guileless songs re-echo, And the heart its music bring,",
+        "Evermore and evermore!"
+      ]
+    },
+    {
+      "lines": [
+        "D Christ, to Thee with God the Father, And, O Holy Ghost, to Thee,",
+        "Hymn and chant with high thanksgiving, And unwearied praises be:",
+        "Honor, glory, and dominion, And eternal victory,",
+        "Evermore and evermore!"
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Adam (first/second - see also Guidance, Invitation [ours to God], Repentance)",
+    "Angels",
+    "Art and Music",
+    "Atonement",
+    "Children (see also God's Children - the Faithful)",
+    "Christmas/Advent",
+    "God, As King",
+    "God, Creator",
+    "God, Eternity of",
+    "God, Justness of",
+    "God, Mercy of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Jesus",
+    "People of the World",
+    "Praise, Son",
+    "Presence",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Of_The_Fathers_Love_Begotten-Divinum_Mysterium-Corde_Natus.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Of_The_Fathers_Love_Begotten-Divinum_Mysterium-Corde_Natus",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 6 beats, more than 4; bar 2 has 6 beats, more than 4; bar 3 has 7 beats, more than 4; bar 5 has 6 beats, more than 4; bar 6 has 6 beats, more than 4; bar 7 has 7 beats, more than 4; bar 9 has 6 beats, more than 4; bar 10 has 6 beats, more than 4; bar 11 has 8 beats, more than 4; bar 12 has 6 beats, more than 4; bar 13 has 6 beats, more than 4; bar 14 has 6 beats, more than 4."
+}

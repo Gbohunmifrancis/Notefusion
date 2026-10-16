@@ -1,0 +1,24 @@
+{
+  "name": "CHRIST, UNSER HERR",
+  "music": [
+    {
+      "name": "Johann Walther",
+      "born": 1496,
+      "died": 1570,
+      "role": "Music (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "A minor",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 F4:1 G4:1 | A4:1 G4:1 C5:1 B4:1 | A4:3 A4:1 | C5:1 B4:1 A4:1 G4:1 | F4:1 E4:1 D4:2 | D4:2 F4:1 G4:1 | A4:1 G4:1 C5:1 B4:1 | A4:3 A4:1 | C5:1 B4:1 A4:1 G4:1 | F4:1 E4:1 D4:2 | r:1 D4:1 G4:1 G4:1 | E4:1 A4:1 A4:1 G4:1 | A4:3 A4:1 | D5:1 D5:1 E5:1.5 C5:.5 | D5:.5 C5:.5 B4:1 A4:2 | r:1 A4:1 C5:1 B4:1 | A4:1 G4:1 A4:1 F4:1 | E4:3 D4:1 | F4:1 G4:1 A4:1.5 F4:.5 | G4:.5 F4:.5 E4:1 D4:2 | r:1 D5:1 D5:1 D5:1 | E5:1 D5:1 C5:1 B4:1 | A4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/To_Jordan_Came_Our_Lord_The_Christ-Christ_Unser_Herr.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'Evangelical Lutheran Hymn Book' Edition of 1931 Hymn 401. Arrangement composite from \"Kern des Deutschen Kirchengesangs\", 1855 ed. Dr. Fridrich Layriz hymn 18 and \"Mehrstimmiges ChoralBuch\", 1906 Hymn #31, page 22 Ed. Karl Brauer."
+}

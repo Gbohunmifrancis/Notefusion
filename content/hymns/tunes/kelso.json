@@ -1,0 +1,24 @@
+{
+  "name": "KELSO",
+  "music": [
+    {
+      "name": "Edward John Hopkins",
+      "born": 1818,
+      "died": 1901,
+      "role": "Music (1872)"
+    }
+  ],
+  "musicPublished": 1872,
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:1 Bb4:1 Bb4:1 Eb5:1 | D5:1.5 C5:.5 Bb4:2 | Bb4:1 G4:1 F4:1 Bb4:1 | D5:1.5 C5:.5 C5:2 | Bb4:1 Bb4:1 Bb4:1 Eb5:1 | D5:1.5 C5:.5 Bb4:2 | G4:1 A4:.5 Bb4:.5 D5:1.5 C5:.5 | Bb4:1 G4:1 F4:2 | Eb5:1 Eb5:1 D5:1 Bb4:1 | D5:1.5 C5:.5 Bb4:2 | A4:1.5 G4:.5 F4:1 Bb4:1 | G4:1.5 A4:.5 Bb4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Every_Morning_Mercies_New-Kelso.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"Sunday School Hymnal\", 1901, English District LCMS, Hymn 35 page 29"
+}

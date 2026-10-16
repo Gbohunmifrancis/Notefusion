@@ -1,0 +1,23 @@
+{
+  "name": "WO GOTT ZUM HAUS (WALTER)",
+  "music": [
+    {
+      "name": "From Walter's Geistliche Gesangbüchlein, 1524",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 A4:1 A4:1 | F#4:1 A4:1 B4:.5 D5:1 C#5:.5 | D5:2 r:1 D5:1 | B4:1 A4:1 B4:1 A4:1 | G4:.5 F#4:.5 E4:1 D4:2 | r:1 A4:1 A4:1 G4:1 | F#4:1 E4:.5 B4:1 A4:.5 G4:1 | F#4:2 r:.5 B4:.5 D5:1~ | D5:.5 C#5:.5 B4:1 E5:1 D5:.5 E5:.5~ | E5:.5 D5:.25 C#5:.25 B4:.5 B4:.5 A4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Happy_The_Man_Who_Feareth_God-Wo_Gott_Zum_Haus_1524.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The tune ends on A, not on the key note: it may be modal."
+}

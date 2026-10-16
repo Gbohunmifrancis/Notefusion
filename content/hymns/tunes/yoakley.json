@@ -1,0 +1,22 @@
+{
+  "name": "YOAKLEY",
+  "music": [
+    {
+      "name": "William Yoakley",
+      "role": "Music (1820)"
+    }
+  ],
+  "musicPublished": 1820,
+  "key": "E major",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:.75 F#4:.25 | G#4:2 G#4:.75 A4:.25 | B4:1 G#4:1 E4:1 | F#4:1.5 G#4:.5 A4:1 | A4:1 G#4:1 E4:.75 G#4:.25 | B4:2 C#5:1 | B4:2 G#4:1 | G#4:2 F#4:1 | F#4:2 E4:.75 F#4:.25 | G#4:2 G#4:.75 A4:.25 | B4:1 G#4:1 E4:1 | F#4:1.5 G#4:.5 A4:1 | A4:1 G#4:1 E4:.75 G#4:.25 | B4:2 C#5:1 | B4:2 G#4:1 | G#4:2 F#4:1 | F#4:2 G#4:1 | A4:2 B4:1 | C#5:2 B4:1 | B4:1 G#4:1 E4:1 | G#4:1 F#4:1 B4:1 | E5:1 B4:1 B4:.5 E5:.5 | E5:1 C#5:1 A4:1 | G#4:2 F#4:1 | E4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Thy_Boundless_Love_To_Me-Yoakley.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: not provably public domain: William Yoakley: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Hymns and songs of praise for public and social worship\" By Roswell Dwight Hitchcock, Philip Schaff, Zachary Eddy, 1874 Hymn 570 page 223. Music source: \"The lute of Zion\", 1853 page 151."
+}

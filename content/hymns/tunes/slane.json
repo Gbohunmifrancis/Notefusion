@@ -1,0 +1,23 @@
+{
+  "name": "SLANE",
+  "music": [
+    {
+      "name": "Traditional Irish",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "Eb4:1 Eb4:1 F4:.5 Eb4:.5 | C4:1 Bb3:1 Bb3:.5 C4:.5 | Eb4:1 Eb4:1 F4:1 | G4:3 | F4:1 F4:1 F4:1 | F4:1 G4:1 Bb4:1 | C5:1 Bb4:1 G4:1 | Bb4:3 | C5:1 C5:.5 D5:.5 Eb5:.5 D5:.5 | C5:1 Bb4:1 G4:1 | Bb4:1 Eb4:1 D4:1 | C4:2 Bb3:1 | Eb4:1 G4:1 Bb4:1 | C5:.5 Bb4:.5 G4:1 Eb4:.5 G4:.5 | F4:1 Eb4:1 Eb4:1 | Eb4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Be_Thou_My_Vision-Slane.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the tune; not provably public domain: \"musicPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book."
+}

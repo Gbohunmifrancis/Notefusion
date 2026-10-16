@@ -1,0 +1,24 @@
+{
+  "name": "MENSCH, WILLT DU LEBEN SELIGICH",
+  "music": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Music (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "E4:2 G4:1 G4:1 | A4:1 B4:1 C5:1 B4:1 | A4:2 B4:2 | C5:1 G4:1 A4:1 E4:1 | G4:2 E4:1 C4:1 | G4:1 F4:1 E4:2 | B4:2 C5:1 D5:1 | C5:1 A4:1 G#4:1 A4:1 | B4:2 E4:2 | B4:1 C5:1 B4:1 G4:1 | A4:1 F4:1 E4:1 C4:1 | G4:1.5 F4:.5 E4:2 | E4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Wilt_Thou_O_Man_Live_Happily-Mensch_Willt_du_Leben_seligich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The tune ends on E, not on the key note: it may be modal."
+}

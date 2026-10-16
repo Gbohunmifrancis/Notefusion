@@ -1,0 +1,23 @@
+{
+  "name": "AU MEINES HERZENS GRUNDE",
+  "music": [
+    {
+      "name": "David Wolder",
+      "died": 1604,
+      "role": "Music (1598)"
+    }
+  ],
+  "musicPublished": 1598,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | F4:1 C5:1 A4:1 F4:.5 G4:.5 | A4:2 G4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:2 r:1 F4:1 | F4:1 C5:1 A4:1 F4:.5 G4:.5 | A4:2 G4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:2 r:1 A4:1 | A4:1 C5:1 C5:1 A4:1 | G4:2 r:1 F4:.5 G4:.5 | A4:1 Bb4:1 C5:1 G4:1 | A4:2 F4:1 A4:1 | C5:1 C5:1 A4:1 F4:1 | A4:2 G4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:2 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_Sin_with_Reign_Unbroken-Au_Meines_Herzens_Grunde-I_Doden_Jesus_Blunded-Jeg_Vil_Din_Pris_Udsjunge.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"Hymnal for Church and Home\", Danish Evangelical Lutheran Synods, 1927 Hymn 157. Tune first published in David Wolder's Neu Catechismus Gesangbüchlein, Hamburg, 1598 Note that this arrangement actually tweaks the original melody here and there, but without changing the meter. Thus the soprano line does not fully match the same tune for different texts in different hymnals. I assume that both those changes and the arrangement are probably the work of the hymnal team of 1927."
+}

@@ -1,0 +1,81 @@
+{
+  "title": "Tis Good, Lord, to Be Here",
+  "tune": "potsdam",
+  "text": [
+    {
+      "name": "Joseph Armitage Robinson",
+      "born": 1858,
+      "died": 1933,
+      "role": "Words (1888)"
+    }
+  ],
+  "textPublished": 1888,
+  "description": "Tis Good, Lord, to Be Here in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Joseph Armitage Robinson, first published in 1888. The tune, POTSDAM, is by Johann Sebastian Bach (1750). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "'Tis good, Lord, to be here, Thy glo-ry fills the night; Thy face and gar-ments, like the sun, Shine with un-bor-rowed light.",
+  "verses": [
+    {
+      "lines": [
+        "'Tis good, Lord, to be here,",
+        "Thy glory fills the night;",
+        "Thy face and garments, like the sun,",
+        "Shine with unborrowed light."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis good, Lord, to be here,",
+        "Thy beauty to behold",
+        "Where Moses and Elijah stand,",
+        "Thy messengers of old."
+      ]
+    },
+    {
+      "lines": [
+        "Fulfiller of the past,",
+        "Promise of things to be,",
+        "We hail Thy body glorified",
+        "And our redemption see."
+      ]
+    },
+    {
+      "lines": [
+        "Before we taste of death,",
+        "We see Thy Kingdom come;",
+        "We fain would hold the vision bright",
+        "And make this hill our home."
+      ]
+    },
+    {
+      "lines": [
+        "'Tis good, Lord, to be here.",
+        "Yet we may not remain;",
+        "But since Thou bidst us leave the mount,",
+        "Come with us to the plain."
+      ]
+    }
+  ],
+  "category": "Transfiguration",
+  "topics": [
+    "Brevity of Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Eternal Life",
+    "Heaven",
+    "Jesus",
+    "Light",
+    "Miracles",
+    "Presence",
+    "Salvation"
+  ],
+  "metre": "6 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Tis_Good_Lord_To_Be_Here-Potsdam.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Tis_Good_Lord_To_Be_Here-Potsdam"
+}

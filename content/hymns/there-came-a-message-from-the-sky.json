@@ -1,0 +1,98 @@
+{
+  "title": "There Came a Message from the Sky",
+  "tune": "esbjerg",
+  "text": [
+    {
+      "name": "Thomas Hansen Kingo",
+      "born": 1634,
+      "died": 1703,
+      "role": "Words (1689)"
+    },
+    {
+      "name": "Paul Christian Paulsen",
+      "born": 1881,
+      "died": 1948,
+      "role": "Translated (1927)"
+    }
+  ],
+  "textPublished": 1927,
+  "description": "There Came a Message from the Sky in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Hansen Kingo, first published in 1689. The English translation is by Paul Christian Paulsen (1927). The tune, ESBJERG, is by Hartnack Otto Conrad Zinck (1801). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "There came a mes-sage from the sky: God has the earth be-frien-ded, His Son who dwells in hea-ven high, By an-gel hosts at-ten-ded, Will now your flesh and blood put on As Da-vid's Son; Your wret-ched state is en-ded.",
+  "verses": [
+    {
+      "lines": [
+        "There came a message from the sky:",
+        "God has the earth befriended,",
+        "His Son who dwells in heaven high,",
+        "By angel hosts attended,",
+        "Will now your flesh and blood put on",
+        "As David's Son;",
+        "Your wretched state is ended."
+      ]
+    },
+    {
+      "lines": [
+        "It first to Nazareth did come",
+        "By Gabriel expounded;",
+        "To Mary, in her humble home,",
+        "So wonderful it sounded:",
+        "O Mary, hail, thou shalt not fear,",
+        "The Lord is near,",
+        "To thee hath grace abounded!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou shalt a Son conceive and bear,",
+        "Who is the Prince of heaven,",
+        "Who shall to David's throne be heir",
+        "And Jacob's house be given;",
+        "He shall extend to ev'ry race",
+        "His reign of grace,",
+        "His kingdom, like a leaven."
+      ]
+    },
+    {
+      "lines": [
+        "The Holy Spirit shall to thee",
+        "His boundless power render,",
+        "Abundant shall the mercy be",
+        "From Him, thy strong Defender;",
+        "This child is therefore from above,",
+        "Whom thou shalt love",
+        "As mother kind and tender."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Christmas Child, and be my guest,",
+        "Give me Thy Holy Spirit,",
+        "Prepare my heart and make it blest",
+        "Forever through Thy merit,",
+        "That I at last may dwell with Thee,",
+        "Thy kingdom see,",
+        "And all its gifts inherit."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Gospel",
+    "Grace",
+    "Jesus"
+  ],
+  "metre": "8 7 8 7 8 4 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/There_Came_A_Message_From_the_Sky-Esbjerg.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "There_Came_A_Message_From_the_Sky-Esbjerg"
+}

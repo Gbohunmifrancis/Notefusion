@@ -1,0 +1,80 @@
+{
+  "title": "Lo He Comes! Whom Every Nation",
+  "tune": "rex-gloriae",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1865)"
+    }
+  ],
+  "textPublished": 1865,
+  "description": "Lo He Comes! Whom Every Nation in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1865. The tune, REX GLORIAE, is by Henry Thomas Smart (1868). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lo He comes! whom e-very na-tion, Taught of God, de_-sired to see, Filled with hope and ex-pec-ta-tion That He would their Sa-vior be. Sing, o sing with e-xul-ta-tion, Lo! He calls_ us to our home; Peace, re-demp-tion, joy, sal-va-tion, Now from Heav'n to earth are come.",
+  "verses": [
+    {
+      "lines": [
+        "Lo He comes! whom every nation,",
+        "Taught of God, desired to see,",
+        "Filled with hope and expectation",
+        "That He would their Savior be.",
+        "Sing, o sing with exultation,",
+        "Lo! He calls us to our home;",
+        "Peace, redemption, joy, salvation,",
+        "Now from Heav'n to earth are come."
+      ]
+    },
+    {
+      "lines": [
+        "See He comes! Whom kings and sages,",
+        "Prophets, patriarchs of old,",
+        "Disant climes and countless ages,",
+        "Waited eager to behold.",
+        "Sing, o sing with exultation,",
+        "Haste we to our Father's home;",
+        "Peace, redemption, joy, salvation,",
+        "Now from Heav'n to earth are come."
+      ]
+    },
+    {
+      "lines": [
+        "See the Lamb of God appearing,",
+        "God of God, from Heav'n above;",
+        "See the Heav'nly Bridegroom cheering",
+        "His dear Bride with words of love!",
+        "Glory to th'Eternal Father,",
+        "Glory to th'Incarnate Son",
+        "Glory to the Holy Spirit,",
+        "Glory to the Three in One!"
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Art and Music",
+    "Bride/Bridegroom",
+    "Christmas/Advent",
+    "Church on Earth (Church Militant)",
+    "Heaven",
+    "Jesus",
+    "Joy",
+    "Love",
+    "Peace",
+    "Presence",
+    "Salvation"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lo_He_Comes_Whom_Every_Nation-Rex_Gloriae.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lo_He_Comes_Whom_Every_Nation-Rex_Gloriae"
+}

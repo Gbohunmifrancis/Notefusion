@@ -1,0 +1,24 @@
+{
+  "name": "MY SAVIOR",
+  "music": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Music (1905)"
+    }
+  ],
+  "musicPublished": 1905,
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | Eb4:1 C4:1 Eb4:1 Ab4:.75 Bb4:.25 | C5:2 Ab4:1 Ab4:1 | G4:1 G4:.75 G4:.25 Ab4:1 Bb4:1 | Ab4:3 Eb4:1 | F4:1 F4:1 Ab4:1 G4:.75 F4:.25 | Eb4:2 Ab4:1 Bb4:1 | C5:1 C5:.75 C5:.25 Bb4:1 Bb4:1 | Ab4:3 r:1 | C5:2 C5:.75 Bb4:.25 Ab4:1 | Eb5:2 Eb5:.75 Db5:.25 C5:1 | Bb4:1 Bb4:1 Bb4:1.5 C5:.5 | Db5:1 C5:1 Bb4:2 | C5:2 C5:.75 Bb4:.25 Ab4:1 | Eb5:2 Eb5:.75 Db5:.25 C5:1 | Bb4:1 C5:.5 Db5:.5 C5:1.5 Bb4:.5 | Ab4:1 G4:1 Ab4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Saviors_Love-My_Saviors_Love-I_Stand_Amazed_in_the_Presence.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Alexander's Gospel Songs #1, 1908 Hymn 1. ABC file contributed to the Open Hymnal by Tobin Strong, 10 Feb 2014."
+}

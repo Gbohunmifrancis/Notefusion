@@ -1,0 +1,24 @@
+{
+  "name": "NUN LASST UNS DEN LEIB BEGRABEN",
+  "music": [
+    {
+      "name": "George Rhau",
+      "born": 1488,
+      "died": 1548,
+      "role": "Music (1544)"
+    }
+  ],
+  "musicPublished": 1544,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 A4:1 G4:1 | F#4:1 G4:1 A4:1 B4:1 | G4:3 G4:1 | A4:1 B4:1 C5:1 B4:1 | G4:1 A4:1 B4:2 | G4:2 A4:1 A4:1 | B4:1 A4:1 G4:1 F#4:1 | E4:3 A4:1 | B4:1 A4:1 G4:1 E4:1 | G4:1 A4:1 G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Take_Up_Thy_Cross_The_Savior_Said-Nun_Lasst_Uns_Den_Leib_Begraben.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: 'Evangelical Lutheran Hymn Book' Edition of 1931, Hymn 538."
+}

@@ -1,0 +1,23 @@
+{
+  "name": "AUS TIEFER NOT (STRASSBURG)",
+  "music": [
+    {
+      "name": "From Köpfel's Gesangbuch, Strassburg, 1525",
+      "traditional": true,
+      "role": "Melody (1525)"
+    }
+  ],
+  "musicPublished": 1525,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | F4:1 G4:1 A4:1 A4:1 | G4:1 A4:1 B4:1 C5:1 | B4:1 A4:1 G4:1 G4:1 | A4:2 G4:1 G4:1 | F4:1 G4:1 A4:1 A4:1 | G4:1 A4:1 B4:1 C5:1 | B4:1 A4:1 G4:1 G4:1 | A4:2 G4:1 G4:1 | A4:1 C5:1 B4:1 G4:1 | A4:1 F4:1 E4:1 F4:1 | D4:1 D4:1 A4:1 B4:1 | C5:1 A4:1 G4:1 D5:1 | B4:1 A4:1 G4:1 G4:1 | A4:2 G4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Out_Of_The_Deep_I_Cry_To_Thee-Aus_Tiefer_Not_Strassburg.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The tune ends on G, not on the key note: it may be modal. The Open Hymnal's own source: \"The Hymns of Martin Luther\" by Bacon, 1883."
+}

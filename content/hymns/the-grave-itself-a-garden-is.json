@@ -1,0 +1,87 @@
+{
+  "title": "The Grave Itself a Garden Is",
+  "alsoKnownAs": [
+    "Upon the Sixth Day of the Week"
+  ],
+  "tune": "belmont",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1862)"
+    }
+  ],
+  "textPublished": 1862,
+  "description": "The Grave Itself a Garden Is in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1862. The tune, BELMONT, is by William Gardiner (1812). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The grave it-self a gar_-den is, Where love_-liest flow'rs_ a-bound;_ Since Christ, our ne-ver fa_-ding Life, Sprang from_ that ho_-ly ground.",
+  "verses": [
+    {
+      "lines": [
+        "The grave itself a garden is,",
+        "Where loveliest flow'rs abound;",
+        "Since Christ, our never fading Life,",
+        "Sprang from that holy ground."
+      ]
+    },
+    {
+      "lines": [
+        "O give us grace to die to sin,",
+        "That we, O Lord, may have",
+        "A holy, happy rest in Thee,",
+        "A Sabbath in the grave."
+      ]
+    },
+    {
+      "lines": [
+        "Thou, Lord, baptized in Thine own blood,",
+        "And buried in the grave,",
+        "Didst raise Thyself to endless life,",
+        "Omnipotent to save."
+      ]
+    },
+    {
+      "lines": [
+        "Baptized into Thy death we died,",
+        "And buried were with Thee,",
+        "That we might live with Thee to God,",
+        "And ever blest might be."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, through the grave and gate of death",
+        "May we, with Thee, arise",
+        "To an eternal Easter day",
+        "Of glory in the skies!"
+      ]
+    }
+  ],
+  "category": "Funeral",
+  "topics": [
+    "Baptism",
+    "Blood",
+    "Comfort",
+    "Consolation",
+    "Easter",
+    "Eternal Life",
+    "Heaven",
+    "Jesus",
+    "Rest",
+    "Resurrection",
+    "Sabbath",
+    "Salvation"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Grave_Itself_A_Garden_Is-Belmont.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Grave_Itself_A_Garden_Is-Belmont"
+}

@@ -1,17 +1,23 @@
 {
   "name": "NETTLETON",
   "music": [
-    {"name": "American folk hymn", "traditional": true, "role": "Melody, from John Wyeth's Repository of Sacred Music, Part Second (1813)"}
+    {
+      "name": "American folk hymn",
+      "traditional": true,
+      "role": "Melody, from John Wyeth's Repository of Sacred Music, Part Second (1813)"
+    }
   ],
   "musicPublished": 1813,
-  "key": null,
-  "time": null,
-  "tempo": null,
-  "pickup": 0,
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 90,
+  "pickup": 1,
   "lineBars": 4,
-  "melody": null,
+  "melody": "G4:.5 F4:.5 | Eb4:1 Eb4:1 G4:.5 Bb4:.5 | F4:1 F4:1 G4:.5 Bb4:.5 | C5:1 Bb4:1 G4:.5 F4:.5 | Eb4:2 G4:.5 F4:.5 | Eb4:1 Eb4:1 G4:.5 Bb4:.5 | F4:1 F4:1 G4:.5 Bb4:.5 | C5:1 Bb4:1 G4:.5 F4:.5 | Eb4:2 Bb4:.5 C5:.25 D5:.25 | Eb5:1 D5:1 C5:.5 Bb4:.5 | C5:.5 Bb4:.5 G4:1 Bb4:.5 C5:.25 D5:.25 | Eb5:1 D5:1 C5:.5 Bb4:.5 | Eb5:2 G4:.5 F4:.5 | Eb4:1 Eb4:1 G4:.5 Bb4:.5 | F4:1 F4:1 G4:.5 Bb4:.5 | C5:1 Bb4:1 G4:.5 F4:.5 | Eb4:2",
   "reviewed": false,
-  "confidence": "not encoded",
-  "source": "Open Hymnal Project ABC score (The Evangelical Hymnal, 1921) consulted.",
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: 'Teach me some' and 'Sung by' are a quaver and two semiquavers, which the half-beat solfa grid cannot show. Check the year the words were first printed (1759 here)."
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "reviewNotes": "Melody filled in from the Open Hymnal Project's ABC score (Come_Thou_Fount-Nettleton); the words under the notes are this page's first verse, fitted to the score's syllables. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: The Evangelical Hymnal, 1921, Hymn 256. Almost the same as The Presbyterian Hymnal, 1874 Hymn 94.",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Thou_Fount-Nettleton.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain."
 }
