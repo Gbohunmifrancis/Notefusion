@@ -226,6 +226,21 @@ def test_the_offer_is_the_published_score_in_the_sung_key():
     assert wire["hymnMatch"]["musicxml"] == xml
 
 
+def test_a_man_singing_the_hymn_is_offered_the_book_at_its_own_octave_in_his_key():
+    ag = BY_SLUG["amazing-grace"]
+    # Sung a tone above the book's G, an octave down: the take sits around D3-D4.
+    take = _sing(ag.notes, random.Random(4), transpose=2 - 12, tempo=1.3)
+    offer = hm.offer(_result(take, key="A major"))
+    assert offer is not None and offer["slug"] == "amazing-grace" and offer["key"] == "A major"
+    # The book's pitches moved to A (up a tone), not the octave he sang them in.
+    assert [n["pitch_midi"] for n in offer["notes"]] == [p + 2 for p, _s, _d in ag.notes]
+    assert [n["solfa"] + n["octave_mark"] for n in offer["notes"][:4]] == ["s,", "d", "m", "d"]
+    # A key a fifth up is reached the nearer way, a fourth down: still the book's octave.
+    offer = hm.offer(_result(_sing(ag.notes, random.Random(4), transpose=7 - 12, tempo=1.3), key="D major"))
+    assert offer["key"] == "D major"
+    assert [n["pitch_midi"] for n in offer["notes"]] == [p - 5 for p, _s, _d in ag.notes]
+
+
 def test_the_sung_key_keeps_the_transcriptions_spelling_or_takes_the_plainer_signature():
     assert hm.sung_key("G major", 2, "A major") == "A major"
     assert hm.sung_key("G major", -6, "C# major") == "C# major"  # the same doh, as it was named
