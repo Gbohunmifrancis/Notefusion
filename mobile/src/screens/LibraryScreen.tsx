@@ -193,6 +193,7 @@ export function LibraryScreen() {
           partsMusicXml: full.partsMusicXml ?? "",
           shareToken: full.shareToken ?? null,
           chords: full.chords ?? null,
+          hymn: full.hymn ?? null,
         },
         savedId: full.id,
         title: full.title,
