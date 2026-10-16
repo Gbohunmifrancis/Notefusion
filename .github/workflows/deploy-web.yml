@@ -4,10 +4,22 @@ name: Deploy website to Vercel
 # hand with `cd web-site && vercel --prod` from a working tree, which is how the live site fell
 # behind main. This deploys the committed folder on every merge that touches it.
 #
+# The blog's posts are not committed: they live in the API's database and are published from the
+# admin console. Before deploying, `tools/blog/build.mjs --api` reads every live post from
+# GET /api/blog/published and renders the blog, the hymn pages that cite posts, the sitemap, the
+# feed and the home page's latest-posts strip into the staged copy. If the API cannot be read (after
+# waiting up to 15 minutes for an API deploy that is racing this one), the deploy FAILS and the live
+# site stays as it was — a site without its blog is never published. See docs/BLOG.md.
+#
+# The API runs this workflow itself (workflow_dispatch on main) when a post is published, unpublished,
+# edited while live, or goes live on its schedule; GitHub keeps one run going and one waiting, so a
+# burst of publishes is one or two deploys.
+#
 # Needs three repository secrets, all from the Vercel dashboard / `vercel link` in web-site/:
 #   VERCEL_TOKEN       an account token (Settings → Tokens)
 #   VERCEL_ORG_ID      .vercel/project.json → orgId      (team_0ghJL5LGBgeSs8b2UEYo3ynj)
 #   VERCEL_PROJECT_ID  .vercel/project.json → projectId  (prj_LkfxRv0q0HiDtj8KlE2v5zTBsd4W, the "notefusion" project)
+# Optional repository variable BLOG_API_URL (default https://api.notefusion.studio).
 
 on:
   workflow_dispatch:
@@ -15,6 +27,8 @@ on:
     branches: [main]
     paths:
       - "web-site/**"
+      - "content/**"
+      - "tools/blog/**"
       - ".github/workflows/deploy-web.yml"
 
 concurrency:
@@ -25,12 +39,14 @@ jobs:
   vercel:
     name: Vercel production deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: web-site
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      BLOG_API_URL: ${{ vars.BLOG_API_URL || 'https://api.notefusion.studio' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -44,6 +60,27 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
+          cache-dependency-path: tools/blog/package-lock.json
+
+      - name: Install the blog generator
+        working-directory: tools/blog
+        run: npm ci
+
+      # Kept to tell IndexNow afterwards which blog and hymn pages are new, changed or gone.
+      - name: Save the live sitemap
+        working-directory: .
+        run: curl -fsS --max-time 20 https://notefusion.studio/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml" || echo "No live sitemap; IndexNow will be told about every page."
+
+      # The live posts from the API into web-site/ (blog, hymn pages, sitemap, feed, home-page strip,
+      # /blog/catalogue.json). Fails the deploy when the API cannot be read.
+      - name: Build the blog from the API
+        working-directory: .
+        run: node tools/blog/build.mjs --api "$BLOG_API_URL" --api-wait 900
+
+      - name: Check the built pages (warnings only)
+        working-directory: .
+        run: node tools/blog/check.mjs --deployed
 
       # Deployed from a copy of the folder outside the checkout. Vercel reads the git
       # metadata it finds next to the files and attributes the deployment to that
@@ -68,20 +105,20 @@ jobs:
         working-directory: .
         run: |
           sleep 10
-          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js /blog /hymns /sitemap.xml; do
+          for path in / /app /app/sheet /assets/app.js /assets/choir.js /assets/preview.js /blog /blog/feed.xml /blog/catalogue.json /hymns /sitemap.xml; do
             code=$(curl -sS -o /dev/null -w "%{http_code}" "https://notefusion.studio${path}")
             echo "${code}  ${path}"
             case "$code" in 200|308) ;; *) echo "::error::${path} returned ${code}"; exit 1;; esac
           done
 
       # Search engines that take part in IndexNow (Bing and others; not Google) are told which blog
-      # and hymn pages this push added, changed or removed. Best effort: it never fails the deploy.
-      # The key file it relies on, web-site/<key>.txt, is written by tools/blog/build.mjs.
+      # and hymn pages this deploy added, changed or removed: from the sitemaps (posts published in the
+      # console) and, on a push, from the commits. Best effort: it never fails the deploy. The key
+      # file it relies on, web-site/<key>.txt, is written by tools/blog/build.mjs.
       - name: Ping IndexNow with the changed blog and hymn pages
-        if: github.event_name == 'push'
         working-directory: .
         env:
-          BEFORE: ${{ github.event.before }}
+          BEFORE: ${{ github.event_name == 'push' && github.event.before || '' }}
         run: |
-          git fetch --no-tags --depth=1 origin "$BEFORE" || echo "Could not fetch $BEFORE"
-          node tools/blog/indexnow.mjs "$BEFORE" "$GITHUB_SHA"
+          if [ -n "$BEFORE" ]; then git fetch --no-tags --depth=1 origin "$BEFORE" || echo "Could not fetch $BEFORE"; fi
+          node tools/blog/indexnow.mjs --sitemaps "$RUNNER_TEMP/live-sitemap.xml" web-site/sitemap.xml $BEFORE ${BEFORE:+$GITHUB_SHA}

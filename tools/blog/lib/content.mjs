@@ -69,7 +69,9 @@ export function validatePost(post, { file, authors, hymnSlugs }) {
 
 export function loadPosts({ authors, hymnSlugs, dir = path.join(CONTENT_DIR, "blog"), includeDrafts = false }) {
   const posts = [];
-  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".md")).sort()) {
+  // Posts live in the API's database now (lib/api-posts.mjs); content/blog only holds a post kept as a file.
+  const names = fs.existsSync(dir) ? fs.readdirSync(dir) : [];
+  for (const f of names.filter((f) => f.endsWith(".md")).sort()) {
     const file = path.join(dir, f);
     const { data, body } = parseFrontMatter(fs.readFileSync(file, "utf8"), file);
     const post = { draft: false, faq: null, ...data, slug: f.replace(/\.md$/, ""), body, file };

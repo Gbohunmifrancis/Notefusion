@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The blog posts and topics that were files in the repository; the AddBlog migration inserts them once. -->
+    <EmbeddedResource Include="Persistence\Seed\blog-seed.json" LogicalName="NoteFusion.BlogSeed.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="4.0.102.2" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />

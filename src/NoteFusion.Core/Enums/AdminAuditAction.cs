@@ -42,5 +42,20 @@ public enum AdminAuditAction
     PurgeTestData = 14,
 
     /// <summary>An operator marked an account as the team's own or a test account, or back to a customer.</summary>
-    SetInternalAccount = 15
+    SetInternalAccount = 15,
+
+    /// <summary>An operator put a blog post on the site (now or on a schedule).</summary>
+    PublishBlogPost = 16,
+
+    /// <summary>An operator took a blog post off the site, or cancelled its schedule.</summary>
+    UnpublishBlogPost = 17,
+
+    /// <summary>An operator archived a blog post.</summary>
+    ArchiveBlogPost = 18,
+
+    /// <summary>An operator deleted a blog post.</summary>
+    DeleteBlogPost = 19,
+
+    /// <summary>An operator asked the Gemini API for blog drafts.</summary>
+    GenerateBlogDrafts = 20
 }

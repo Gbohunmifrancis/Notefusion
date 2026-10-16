@@ -202,7 +202,8 @@ ${relHtml}`;
   });
 
   return page({
-    path: post.url, title: `${post.title} | NoteFusion`, description: post.description, ogType: "article", image, jsonLd: ld, body, active: "/blog",
+    // A post written in the admin console may set its own <title> and meta description for search results.
+    path: post.url, title: post.seoTitle || `${post.title} | NoteFusion`, description: post.seoDescription || post.description, ogType: "article", image, jsonLd: ld, body, active: "/blog",
     article: { published: post.date, modified: post.modified, tags: post.tags }, scripts: blogScripts(), bodyClass: "is-post",
   });
 }

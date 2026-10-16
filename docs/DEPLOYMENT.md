@@ -313,6 +313,38 @@ Push goes out through Expo in production (`Push__UseExpo` defaults to `true` in 
 the deploy; set the `PUSH__USEEXPO` secret to `false` to only log). With it off, every notification,
 outreach included, is only logged, and outreach pushes are still recorded as sent.
 
+### 3.2 The blog (Gemini drafts, publishing from the admin console)
+
+Blog posts live in the database and are written, drafted and published in the admin console's
+**Blog** section (full story in `docs/BLOG.md`). Two outside services are involved, both optional —
+without either, that half is off and the console says so:
+
+- **Gemini** drafts posts (on "Generate with Gemini", and twice a week on its own). Never publishes.
+- **GitHub** runs the website's deploy workflow (`deploy-web.yml`, `workflow_dispatch` on `main`) when a
+  post is published, unpublished, archived, edited while live, or goes live on its schedule. The
+  workflow builds the blog from `GET /api/blog/published` and deploys it to Vercel.
+
+| GitHub secret/var | Container var | Default | Notes |
+|-------------------|---------------|---------|-------|
+| `GEMINI_API_KEY` (secret, **already exists** — the old PR drafter used it) | `Gemini__ApiKey` | — | From [Google AI Studio](https://aistudio.google.com/apikey). Without it drafting is off. |
+| `GEMINI_MODEL` (variable, optional) | `Gemini__Model` | `gemini-3.8-flash` | A Pro model drafts better and costs more. |
+| `GEMINI_FALLBACK_MODELS` (variable, optional) | `Gemini__FallbackModels` | `gemini-flash-latest,gemini-flash-lite-latest` | Tried in order (two tries each) when the chosen model stays overloaded (429/5xx after five tries, 15/30/60/60 s apart) or its id is gone (404). `none` turns fallback off. Never used for a refused key. |
+| — | `Gemini__MaxOutputTokens` | `16384` | Thinking tokens count against it. |
+| `GH_DEPLOY_TOKEN` (secret, **new**) | `GitHub__Token` | — | A **fine-grained personal access token**: Resource owner = the repository's owner, Repository access = *Only select repositories* → this repository, Permissions → **Actions: Read and write** (Metadata: read is added automatically). Nothing else. Without it, published posts reach the site only at the next deploy of `web-site/`. |
+| — (the deploy passes `github.repository`) | `GitHub__Repo` | `Gbohunmifrancis/Notefusion` | `owner/name`. |
+| — | `GitHub__Workflow`, `GitHub__Ref` | `deploy-web.yml`, `main` | |
+| `BLOG_AUTODRAFT_ENABLED` (variable) | `Blog__AutoDraftEnabled` | `true` | The twice-weekly drafts. Set `false` to stop them. |
+| `BLOG_AUTODRAFT_DAYS` (variable) | `Blog__AutoDraftDays` | `Mon,Thu` | Day names, comma-separated; `none` for no days. |
+| `BLOG_AUTODRAFT_TIME_UTC` (variable) | `Blog__AutoDraftTimeUtc` | `05:30` | 06:30 in Lagos. |
+| `BLOG_AUTODRAFT_COUNT` (variable) | `Blog__AutoDraftCount` | `1` | Drafts per slot (1–10). |
+| — | `Blog__SiteUrl` | `https://notefusion.studio` | Where the API reads `/blog/catalogue.json` (the hymns and pages posts are checked against). |
+| `BLOG_API_URL` (variable, read by `deploy-web.yml`) | — | `https://api.notefusion.studio` | Where the website's build reads the posts. |
+
+The website's deploy fails (and the live site stays as it was) if it cannot read the posts from the
+API within 15 minutes, so a site without its blog is never published.
+
+On Heroku: `heroku config:set Gemini__ApiKey='…' GitHub__Token='github_pat_…' --app <your-heroku-app>`.
+
 ---
 
 ## 4. Profile pictures (Cloudflare R2)

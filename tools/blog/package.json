@@ -1,13 +1,12 @@
 {
   "name": "notefusion-blog",
   "private": true,
-  "description": "Builds the static blog and hymn pages into web-site/, and drafts blog posts for review.",
+  "description": "Builds the static blog and hymn pages into web-site/ (the posts from the API at deploy time).",
   "type": "module",
   "engines": { "node": ">=22" },
   "scripts": {
     "build": "node build.mjs",
     "check": "node check.mjs",
-    "draft": "node draft.mjs",
     "test": "node --test tests/*.test.mjs"
   },
   "devDependencies": {

@@ -26,6 +26,11 @@ export const AUDIT_ACTIONS: readonly { value: AuditAction; label: string; tone: 
   // one row here that can hand out access, so it reads as a change rather than as neutral.
   { value: "ReconcilePayment", label: "Reconcile payment", tone: "blue" },
   { value: "SendEmail", label: "Send email", tone: "blue" },
+  { value: "PublishBlogPost", label: "Publish blog post", tone: "success" },
+  { value: "UnpublishBlogPost", label: "Unpublish blog post", tone: "warning" },
+  { value: "ArchiveBlogPost", label: "Archive blog post", tone: "neutral" },
+  { value: "DeleteBlogPost", label: "Delete blog post", tone: "danger" },
+  { value: "GenerateBlogDrafts", label: "Generate blog drafts", tone: "blue" },
 ];
 
 const BY_VALUE = new Map(AUDIT_ACTIONS.map((entry) => [entry.value, entry]));

@@ -75,5 +75,17 @@ public interface IApplicationDbContext
     /// <summary>Accounts that unsubscribed from non-essential email.</summary>
     DbSet<EmailOptOut> EmailOptOuts { get; }
 
+    /// <summary>The blog's posts: the one source of what notefusion.studio/blog shows (see <see cref="BlogPost"/>).</summary>
+    DbSet<BlogPost> BlogPosts { get; }
+
+    /// <summary>The queue of topics the Gemini drafter works through.</summary>
+    DbSet<BlogTopic> BlogTopics { get; }
+
+    /// <summary>Batches of drafts asked of the Gemini API, with each draft's outcome and tokens.</summary>
+    DbSet<BlogGenerationRun> BlogGenerationRuns { get; }
+
+    /// <summary>Requests to rebuild the website after a blog change, and the dispatch that covered them.</summary>
+    DbSet<BlogSiteRebuild> BlogSiteRebuilds { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

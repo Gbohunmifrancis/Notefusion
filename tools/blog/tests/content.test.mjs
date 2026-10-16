@@ -71,7 +71,8 @@ test("the committed content loads and every published hymn has a melody that fit
   const { hymns, posts, allHymns } = loadAll();
   assert.ok(hymns.length >= 7);
   assert.ok(allHymns.length >= 12, "at least twelve hymns seeded (drafts included)");
-  assert.ok(posts.length >= 2);
+  // Posts live in the API's database and are built at deploy time (lib/api-posts.mjs); content/blog may keep none.
+  assert.ok(Array.isArray(posts));
   for (const h of hymns) {
     prepareHymn(h);
     assert.ok(h.view.lines.length > 0, h.slug);

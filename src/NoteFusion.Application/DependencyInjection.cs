@@ -28,6 +28,9 @@ public static class DependencyInjection
         services.AddScoped<ITrialDeviceRecorder, TrialDeviceRecorder>();
         services.AddScoped<Activity.ActivityRecorder>();
         services.AddScoped<Outreach.OutreachService>();
+        services.AddScoped<Blog.Drafting.BlogDraftWriter>();
+        services.AddScoped<Blog.Drafting.BlogGenerationRunner>();
+        services.AddScoped<Blog.Publishing.BlogSitePublisher>();
 
         return services;
     }

@@ -126,6 +126,42 @@ internal static class OutboundResilience
         TotalTimeout = TimeSpan.FromSeconds(3),
     };
 
+    /// <summary>
+    /// The Gemini API (blog drafts). A draft is one slow POST — a thinking model can take a couple of minutes —
+    /// never repeated here: the drafter paces its own retries (up to five tries, 15/30/60/60 s apart, then the
+    /// fallback models), so the total timeout is one attempt's. Gemini's "high demand" 503s and its 429s are it
+    /// being busy, not broken: they do not count against the breaker (as with the transcriber), so a bad spell
+    /// of 503s cannot lock the next minutes' drafts out. Timeouts, dropped connections and other 5xx do count;
+    /// when the breaker opens, the batch stops and says so in its row.
+    /// </summary>
+    public static readonly OutboundResilienceOptions Gemini = new()
+    {
+        Provider = OutboundProviders.Gemini,
+        AttemptTimeout = TimeSpan.FromSeconds(240),
+        TotalTimeout = TimeSpan.FromSeconds(250),
+        MinimumThroughput = 3,
+        BreakDuration = TimeSpan.FromMinutes(2),
+        BusyCountsAsFailure = false,
+    };
+
+    /// <summary>GitHub's REST API: the deploy workflow's dispatch (a POST, not repeated) and its latest run (a GET).</summary>
+    public static readonly OutboundResilienceOptions GitHub = new()
+    {
+        Provider = OutboundProviders.GitHub,
+        AttemptTimeout = TimeSpan.FromSeconds(10),
+        TotalTimeout = TimeSpan.FromSeconds(25),
+        MaxRetryAttempts = 2,
+    };
+
+    /// <summary>The public website's own files (the blog catalogue): reads only.</summary>
+    public static readonly OutboundResilienceOptions Website = new()
+    {
+        Provider = OutboundProviders.Website,
+        AttemptTimeout = TimeSpan.FromSeconds(10),
+        TotalTimeout = TimeSpan.FromSeconds(25),
+        MaxRetryAttempts = 2,
+    };
+
     /// <summary>Registers the shared breaker-state tracker (idempotent).</summary>
     public static IServiceCollection AddProviderHealth(this IServiceCollection services)
     {

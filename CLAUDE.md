@@ -204,6 +204,20 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   first touch, 30 days, over browsers whose first blog page is in the window; a browser is tied to an account by its
   token-carrying events or its device id on a job/preview (floors: the phone app and other devices are missed).
   No third-party analytics.
+- The blog (`docs/BLOG.md`): posts live in the database (`BlogPost`; `Application/Blog`), written, checked and
+  published in the admin console's Blog section — no post files in the repo. Publishing, unpublishing, archiving,
+  a live edit or a scheduled post going live stages a `BlogSiteRebuild`; the `BlogSiteWorker` coalesces them into
+  one GitHub `workflow_dispatch` of `deploy-web.yml` (20 s quiet, at most one per 2 min; `GitHub__Token`), whose
+  `tools/blog/build.mjs --api` renders the live posts from the public `GET /api/blog/published` at deploy time
+  (the committed `web-site/` is built from `content/` alone; the deploy fails rather than ship without the blog).
+  `BlogChecks` mirror the build: blockers (what would break it, incl. ```solfa blocks checked against the site's
+  `/blog/catalogue.json`) stop publishing; advice is the old drafter's quality checks. Gemini (`Gemini__ApiKey`,
+  through `OutboundResilience`) drafts from the `BlogTopic` queue on demand (1–10, a `BlogGenerationRun` the
+  `BlogDraftWorker` writes) and Mon/Thu 05:30 UTC, one revision round, tokens recorded; drafts never publish. A 429/5xx
+  or dropped call is tried 5 times (15/30/60/60 s, `Retry-After` wins), then `Gemini__FallbackModels`
+  (`gemini-flash-latest`, `gemini-flash-lite-latest`, 2 tries each; never on 401/403 or a block); the revision uses
+  the model that wrote the draft. The prompt spells out bars only for hand-made hymns (catalogue `imported: false`)
+  and hymns the topic must link to; every hymn page stays linkable.
 - Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
   charge (`PaymentGatewayFactory.SelectForCurrency`). Every checkout is a one-off priced from the
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this

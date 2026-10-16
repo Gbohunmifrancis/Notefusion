@@ -183,7 +183,7 @@ ${verses.join("\n")}
   <ul class="tips">
 ${tips.join("\n")}
   </ul>
-  <p>New to solfa? Read <a href="/blog/how-to-read-tonic-solfa">how to read Tonic Solfa</a> and <a href="/blog/how-to-find-the-doh-of-a-song">how to find the doh of a song</a>.</p>
+${guideLine(posts)}
 </section>
 
 <section aria-labelledby="about-title">
@@ -358,4 +358,15 @@ ${table(hymns)}
       breadcrumbLd(crumbs),
     ],
   });
+}
+
+/**
+ * "New to solfa? Read …" with the beginner guides that are live. Posts come from the API at deploy time, so a
+ * guide that is unpublished (or a build without the API's posts) leaves its link out rather than breaking it.
+ */
+const GUIDES = [["how-to-read-tonic-solfa", "how to read Tonic Solfa"], ["how-to-find-the-doh-of-a-song", "how to find the doh of a song"]];
+function guideLine(posts) {
+  const live = GUIDES.filter(([slug]) => posts.some((p) => p.slug === slug));
+  if (!live.length) return "";
+  return `  <p>New to solfa? Read ${live.map(([slug, text]) => `<a href="/blog/${slug}">${text}</a>`).join(" and ")}.</p>`;
 }

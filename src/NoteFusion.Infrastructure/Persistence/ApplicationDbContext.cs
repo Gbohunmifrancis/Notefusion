@@ -40,6 +40,11 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<OutreachMessage> OutreachMessages => Set<OutreachMessage>();
     public DbSet<EmailOptOut> EmailOptOuts => Set<EmailOptOut>();
 
+    public DbSet<BlogPost> BlogPosts => Set<BlogPost>();
+    public DbSet<BlogTopic> BlogTopics => Set<BlogTopic>();
+    public DbSet<BlogGenerationRun> BlogGenerationRuns => Set<BlogGenerationRun>();
+    public DbSet<BlogSiteRebuild> BlogSiteRebuilds => Set<BlogSiteRebuild>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
