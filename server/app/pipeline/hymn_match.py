@@ -641,7 +641,8 @@ def _label(notes: list[tuple[int, float, float]], key_name: str, time_signature:
 def offer(result, index: HymnIndex | None = None) -> dict | None:
     """``hymn_match`` for a finished transcription, or None when no hymn matches clearly.
 
-    For a score entry it carries the hymnbook version in the key the take was sung in: ``key``,
+    For a score entry it carries the hymnbook version in the key the take was sung in, at the
+    book's own octave (within a tritone of the published pitch, whatever octave was sung): ``key``,
     ``time_signature``, ``tempo`` (the take's pace), ``pickup``, ``notes`` (labelled like a
     transcription's), ``solfa_lines``, ``musicxml`` and ``lyrics`` (the first verse, one syllable a
     note). An incipit entry names the tune and links to it, and carries none of those.
@@ -659,7 +660,9 @@ def offer(result, index: HymnIndex | None = None) -> dict | None:
     if e.kind != "score":
         return out
     key_name = sung_key(e.key, m.transpose, result.key)
-    moved = [(p + m.transpose, s, d) for p, s, d in e.notes]
+    # The sung key at the published octave: a man sings a hymn an octave under the book, and the
+    # version on offer is the book's, so only the key moves (the nearest way, at most a tritone).
+    moved = [(p + (m.transpose + 6) % 12 - 6, s, d) for p, s, d in e.notes]
     labelled, lines = _label(moved, key_name, e.time)
     bpm = int(round(60.0 / m.seconds_per_beat)) if m.seconds_per_beat else e.tempo
     bpm = max(30, min(240, bpm or e.tempo or 80))

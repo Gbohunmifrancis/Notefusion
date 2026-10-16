@@ -1,6 +1,10 @@
 """Four-part (SATB) harmonisation of a transcribed melody, hymn style.
 
-The melody is the soprano.  Underneath it this module writes alto, tenor and bass in
+The melody is the soprano, in a soprano's octave as a hymn book prints the tune: a man
+sings it an octave lower and the transcription keeps what he sang, but the parts are
+written against the tune moved by whole octaves to where a soprano sings it
+(``soprano_octave_shift``), so alto, tenor and bass have their own ranges to sit in and
+the solfa reads as the hymn book's.  Underneath it this module writes alto, tenor and bass in
 the way a choir arranger does for a hymn or a worship song: one chord per beat drawn
 from the key's own triads, chosen for how well it fits the tune and how naturally it
 follows the chord before it, then voiced with the smallest movement that keeps the
@@ -99,6 +103,7 @@ FINAL_PENALTY = 2.5  # the last slot on anything but I
 PHRASE_END_BEATS = 2.0  # a melody note at least this long ends a phrase
 
 # Voice ranges (MIDI, inclusive) for a mixed choir.
+SOPRANO_RANGE = (60, 76)  # C4 – E5: where a hymn book's tune sits; the tune is moved to its middle
 BASS_RANGE = (40, 60)   # E2 – C4
 TENOR_RANGE = (48, 67)  # C3 – G4
 ALTO_RANGE = (53, 74)   # F3 – D5
@@ -263,6 +268,23 @@ def choose_chords(
 # ── 2. Voices ─────────────────────────────────────────────────────────────────
 
 
+def soprano_octave_shift(pitches: list[int]) -> int:
+    """Whole octaves (in semitones) that put a tune where a soprano sings it.
+
+    The shift that brings the tune's middle (median) note nearest the middle of
+    ``SOPRANO_RANGE`` (G#4), no shift on a tie: a man's tune (middle note under D4) goes up
+    an octave, one whistled far above the staff comes down, and a tune a woman sang, even
+    in a low key, stays where it is.
+    """
+    if not pitches:
+        return 0
+    ordered = sorted(pitches)
+    n = len(ordered)
+    middle = (ordered[(n - 1) // 2] + ordered[n // 2]) / 2.0
+    target = (SOPRANO_RANGE[0] + SOPRANO_RANGE[1]) / 2.0
+    return 12 * min(range(-4, 5), key=lambda k: (abs(middle + 12 * k - target), abs(k)))
+
+
 def _candidates(pcs: tuple[int, ...], lo: int, hi: int) -> list[int]:
     return [p for p in range(lo, hi + 1) if p % 12 in pcs]
 
@@ -373,7 +395,12 @@ def harmonise(
     chromatic_spelling: str = "direction",
     divisions_per_beat: int = 2,
 ) -> Harmonisation | None:
-    """SATB from a list of ``TranscribedNote``-shaped melody notes.  None for an empty tune."""
+    """SATB from a list of ``TranscribedNote``-shaped melody notes.  None for an empty tune.
+
+    The soprano is the tune moved into a soprano's octave (``soprano_octave_shift``), and
+    every part is marked from the soprano's doh: ``ref_doh`` (the tune's) moved the same
+    whole octaves, so the soprano's solfa reads exactly as the tune's.
+    """
     from app.pipeline.transcriber import TranscribedNote
 
     melody = [
@@ -383,6 +410,10 @@ def harmonise(
     ]
     if not melody:
         return None
+    shift = soprano_octave_shift([n.pitch for n in melody])
+    if shift:
+        melody = [MelodyNote(n.pitch + shift, n.start, n.dur, n.conf) for n in melody]
+        ref_doh += shift
     mode = "minor" if mode == "minor" else "major"
     spans = choose_chords(melody, tonic_pc, mode, solfa_render._beats_per_bar(time_signature))
 
@@ -443,7 +474,7 @@ def harmonise(
         for name, notes in parts.items()
     }
     chords_out = [(s, d, c.name) for s, d, c in spans]
-    result = Harmonisation(parts=parts, solfa_lines=lines, chords=chords_out)
+    result = Harmonisation(parts=parts, solfa_lines=lines, chords=chords_out, extra={"octave_shift": shift})
     try:
         result.musicxml = build_musicxml(parts, tonic_pc, mode, time_signature, tempo_bpm)
     except Exception as exc:  # noqa: BLE001 - the parts are still useful without the engraving

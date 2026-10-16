@@ -132,6 +132,83 @@ def test_harmonise_sheet_writes_parts_for_a_clients_note_list():
     assert "<score-partwise" in musicxml
 
 
+@pytest.mark.parametrize("middle, shift", [
+    (52.5, 12),   # a man's Twinkle in C (C3-A3)
+    (55, 12),     # a man's hymn in G (D3-D4)
+    (61, 12),     # a man singing high, middle note C#4
+    (62, 0),      # a woman's low key (A3-A4), as a hymn book in D prints it: left alone
+    (64.5, 0),    # Twinkle in C as printed
+    (74, 0),      # a tune sitting high in the soprano range
+    (82, -12),    # whistled an octave up (Bb5)
+    (40, 24),     # a bass two octaves down
+])
+def test_the_tune_is_moved_by_whole_octaves_to_a_sopranos_middle(middle, shift):
+    pitches = [int(middle - 0.5), int(middle + 0.5)] if middle % 1 else [int(middle)]
+    assert harmony.soprano_octave_shift(pitches) == shift
+
+
+def _labelled(pairs, tonic, octaves=0):
+    """``pairs`` moved ``octaves``, labelled as the transcription labels them; and their reference doh."""
+    pitches = [p + 12 * octaves for p, _ in pairs]
+    ref = solfa.reference_doh(pitches, tonic, "major")
+    notes, t = [], 0.0
+    for p, (_q, d) in zip(pitches, pairs):
+        syl, mark, degree = solfa.syllable(p, tonic, ref)
+        notes.append(TranscribedNote(p, t, d, degree, syl, mark, 1.0))
+        t += d
+    return notes, ref
+
+
+G = 7
+# The first two lines in G, as the book prints them (D4-D5): s, d m d m r d l, s, / s, d m d m r s.
+AMAZING_GRACE_G = [
+    (62, 1), (67, 2), (71, 0.5), (67, 0.5), (71, 2), (69, 1), (67, 2), (64, 1), (62, 2), (62, 1),
+    (67, 2), (71, 0.5), (67, 0.5), (71, 2), (69, 1), (74, 3), (74, 2),
+]
+
+
+@pytest.mark.parametrize("tune, tonic", [(TWINKLE, C), (AMAZING_GRACE_G, G)], ids=["twinkle", "amazing-grace"])
+def test_a_tune_sung_an_octave_low_gets_parts_in_their_own_ranges(tune, tonic):
+    low, ref = _labelled(tune, tonic, octaves=-1)  # as a man sings it
+    before = [(n.pitch_midi, n.solfa, n.octave_mark) for n in low]
+    result = harmonise(low, tonic, "major", doh_pc=tonic, ref_doh=ref)
+    assert result is not None and result.extra["octave_shift"] == 12
+    # The transcription is what was heard: the harmoniser never touches it.
+    assert [(n.pitch_midi, n.solfa, n.octave_mark) for n in low] == before
+    # The soprano is the tune at the book's octave, and reads exactly as the tune does.
+    soprano = result.parts["soprano"]
+    assert [n.pitch_midi for n in soprano] == [p for p, _ in tune]
+    lo, hi = harmony.SOPRANO_RANGE
+    assert all(lo <= n.pitch_midi <= hi for n in soprano)
+    assert [(n.solfa, n.octave_mark) for n in soprano] == [(syl, mark) for _p, syl, mark in before]
+    # Each lower voice sings in its own range, and the alto is a line, not one note.
+    for name, (lo, hi) in (("alto", harmony.ALTO_RANGE), ("tenor", harmony.TENOR_RANGE), ("bass", harmony.BASS_RANGE)):
+        pitches = [n.pitch_midi for n in result.parts[name]]
+        assert lo <= min(pitches) and max(pitches) <= hi, (name, min(pitches), max(pitches))
+    assert len({n.pitch_midi for n in result.parts["alto"]}) >= 3
+    # Written exactly as the same tune sung where a soprano sings it.
+    book, book_ref = _labelled(tune, tonic)
+    written = harmonise(book, tonic, "major", doh_pc=tonic, ref_doh=book_ref)
+    for name in harmony.PART_NAMES:
+        assert [(n.pitch_midi, n.solfa, n.octave_mark) for n in result.parts[name]] == \
+            [(n.pitch_midi, n.solfa, n.octave_mark) for n in written.parts[name]], name
+    assert written.extra["octave_shift"] == 0
+
+
+def test_harmonise_sheet_writes_a_mans_tune_in_the_sopranos_octave():
+    from app.pipeline.transcriber import harmonise_sheet
+
+    notes, t = [], 0.0
+    for p, d in TWINKLE:
+        notes.append({"pitch_midi": p - 12, "start_beat": t, "dur_beats": d})
+        t += d
+    parts, _musicxml = harmonise_sheet("C major", 100, "4/4", notes)
+    assert [n["pitch_midi"] for n in parts["soprano"]["notes"]] == [p for p, _ in TWINKLE]
+    assert [n["pitch_midi"] for n in notes] == [p - 12 for p, _ in TWINKLE]
+    assert [n["solfa"] + n["octave_mark"] for n in parts["soprano"]["notes"][:4]] == ["d", "d", "s", "s"]
+    assert min(n["pitch_midi"] for n in parts["bass"]["notes"]) >= harmony.BASS_RANGE[0]
+
+
 def test_harmonise_sheet_refuses_a_key_it_cannot_read():
     from app.pipeline.transcriber import harmonise_sheet
 

@@ -466,10 +466,15 @@ body:not(.is-pro):not(.guest) .act-pro .act-lock { display: inline-block; }
 body:not(.is-pro):not(.guest) .act-pro { border-color: var(--premium-line); }
 .act[hidden] { display: none; }
 @media (max-width: 640px) {
-  /* A phone gets a row that scrolls sideways, not three wrapped rows. */
-  .result-actions { flex-wrap: nowrap; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; margin-left: -14px; margin-right: -14px; padding: 2px 14px 4px; }
-  .result-actions::-webkit-scrollbar { display: none; }
-  .result-actions > * { flex: none; }
+  /* A phone sees every action at once: Play across the top, the tools in a four-up grid of
+     icon-over-label tiles under it. Nothing sits off-screen behind a sideways scroll. */
+  .result-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+  .result-actions #play { grid-column: 1 / -1; min-width: 0; width: 100%; }
+  .result-actions .act { flex-direction: column; justify-content: center; gap: 4px; min-height: 60px; min-width: 0; padding: 8px 2px;
+    border-radius: 14px; font-size: 0.72rem; line-height: 1.15; text-align: center; }
+  .result-actions .act .ic { width: 19px; height: 19px; flex: none; }
+  .result-actions .act .act-lock { position: absolute; top: 6px; right: 6px; width: 11px; height: 11px; }
+  @media (max-width: 374px) { .result-actions { gap: 6px; } .result-actions .act { font-size: 0.68rem; } }
   .result-head { gap: 10px; }
   .result-views { width: 100%; }
   .result-views .tabs { flex: 1; }
