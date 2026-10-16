@@ -45,11 +45,10 @@ export function parseCredit(item) {
   const out = { raw };
   if (/©|\(c\)|copyright/i.test(raw)) out.copyright = true;
   let parts = raw.split(/\s*,\s*/).filter(Boolean);
-  // A leading role: "arr.", "harm.", "attr. to", "arr. for tenor lead", "rec.", "adapt.", "alt.", "from".
-  if (parts.length > 1 && /^(arr|harm|attr|adapt|alt|rec|desc|melody|tune|music|setting|from|by|after|based|transcr|ed|coll|comp|vers|para|desc)\b[^,]*$/i.test(parts[0]) && /^[a-z]/.test(parts[0])) {
-    out.role = parts[0];
-    parts = parts.slice(1);
-  }
+  // Leading roles: "arr.", "harm.", "attr. to", "arr. for tenor lead", "rec.", "pub.", "from", "harm., ad.".
+  const roles = [];
+  while (parts.length > 1 && /^[a-z]/.test(parts[0]) && ROLE_WORD.test(parts[0])) roles.push(parts.shift());
+  if (roles.length) out.role = roles.join(", ");
   // A trailing date: "1861", "1562-1626", "©1931", "c. 1600", "1840?", "(1823-1876)", "fl. 1750".
   const last = parts[parts.length - 1] || "";
   const dates = /^(?:©\s*)?(?:(c\.|ca\.|circa|fl\.)\s*)?(\d{3,4})(?:\s*[-–]\s*(\d{3,4})?)?\??$/i.exec(last.replace(/[()]/g, "").trim());
@@ -59,19 +58,42 @@ export function parseCredit(item) {
     else if (/-|–/.test(last) && !dates[3]) { out.born = Number(dates[2]); out.living = true; }
     else { out.year = Number(dates[2]); if (dates[1]) out.circa = true; }
   }
-  // An italic title is a book (a psalter, a hymnal, a song collection): an anonymous source.
+  // An italic title is a book (a psalter, a hymnal, a song collection). The line may also name the person
+  // whose tune it printed or who published it ("Joachim Neander, <i>Glaub- und Liebesübung</i>, 1680",
+  // "pub., John Wyeth, <i>Repository of Sacred Music</i>, 1813"), and a place ("Cologne").
   const book = /<i>([\s\S]*?)<\/i>/i.exec(item.html);
   if (book) {
     out.book = text(book[1]);
-    out.place = parts.filter((p) => p !== out.book && !p.includes(out.book)).join(", ") || undefined;
-    if (!out.place) delete out.place;
+    const rest = parts.filter((p) => p !== out.book && !p.includes(out.book));
+    const person = rest.find((p) => isPersonName(p));
+    if (person) out.name = person;
+    const place = rest.filter((p) => p !== person && !TRADITIONAL.test(p)).join(", ");
+    if (place) out.place = place;
+    const descr = rest.find((p) => TRADITIONAL.test(p));
+    if (descr) out.description = descr;
   } else {
     const name = parts.join(", ").trim();
-    if (name) out.name = name.replace(/\s*\(([^)]*)\)\s*$/, (m, alias) => (/\d/.test(alias) ? "" : m)).trim();
+    if (name) out.name = name;
   }
-  if (out.name && /^(traditional|anonymous|unknown|trad\.?)\b/i.test(out.name)) out.traditional = true;
-  if (out.name && /^(traditional|old|ancient|medieval|plainsong|folk|(old )?(english|irish|welsh|scottish|german|french|dutch|swedish|norwegian|danish|finnish|american|spanish|italian|russian|polish|czech|bohemian|silesian|hebrew|greek|basque|cornish|manx|flemish|negro|african|catalan|latvian|appalachian)\b)/i.test(out.name) && !/,/.test(out.name)) out.traditional = true;
+  if (out.name) {
+    // "James Leith Bain (James MacBeth)": the other name the person is known by.
+    const alias = /^(.*?)\s*\(([^)\d]+)\)\s*$/.exec(out.name);
+    if (alias) { out.name = alias[1]; out.alias = alias[2]; }
+    if (!book && TRADITIONAL.test(out.name) && !isPersonName(out.name)) out.traditional = true;
+  }
   return out;
+}
+
+/** The words of a role before a name: "arr.", "harm.", "ad.", "attr. to", "rec.", "pub.", "from", "desc.". */
+const ROLE_WORD = /^(arr|harm|attr|adapt|ad|alt|rec|desc|melody|tune|music|setting|from|by|after|based|transcr|ed|coll|comp|vers|para|pub|alt|rev|abr|abridged|composed|written|source)\b[^,]*$/i;
+/** An anonymous or traditional source: "Traditional", "Welsh Hymn Tune", "Netherlands folk song", "Swedish". */
+const TRADITIONAL = /^(traditional|anonymous|unknown|trad\.?|ancient|medieval|mediaeval|plainsong|plain ?chant|gregorian|sarum)\b|\s(traditional|folk|melody|hymn tune|chant|carol|air|spiritual|song)\b|^(old )?(english|irish|welsh|scottish|scots|german|french|dutch|netherlands|swedish|norwegian|danish|finnish|american|spanish|italian|russian|polish|czech|bohemian|silesian|hebrew|jewish|greek|basque|cornish|manx|flemish|negro|african|catalan|latvian|appalachian|moravian|swiss|austrian|hungarian|slovak|lithuanian|estonian|icelandic|breton|provençal|portuguese|chinese|japanese|indian|korean)\b/i;
+/** A person's name: two or more capitalised words ("John Wyeth", "C. Winfred Douglas"), not a description or a book. */
+function isPersonName(s) {
+  const t = String(s).replace(/\s*\([^)]*\)\s*$/, "").trim();
+  if (!/^[A-Z]/.test(t) || TRADITIONAL.test(t)) return false;
+  const words = t.split(/\s+/);
+  return words.length >= 2 && words.length <= 6 && words.every((w) => /^([A-Z][\p{L}'’.-]*|[a-z]{1,3}|von|van|de|der|den|la|le|du|di|da)$/u.test(w)) && words.some((w) => /^[A-Z][\p{L}'’-]{2,}$/u.test(w));
 }
 
 /** Everything the importer reads off a tune page. */

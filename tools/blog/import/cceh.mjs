@@ -134,8 +134,10 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
   for (const c of p.credits) {
     if (c.copyright) refuse(`the page marks ${c.name ? `${c.name}'s ${c.role ? "arrangement" : "tune"}` : "an arrangement"} as copyright (“${c.raw}”)`);
     if (c.year) years.push({ year: c.year, source: isTuneSource(c) });
-    if (c.book) {
-      music.push({ name: c.place ? `${c.book} (${c.place})` : c.book, traditional: true, role: c.year ? `Melody (${c.year})` : "Melody" });
+    if (c.book && (!c.name || /^pub/i.test(c.role || ""))) {
+      // An anonymous tune from a book ("Genevan Psalter, 1551"; "pub., John Wyeth, Repository of Sacred Music, 1813").
+      const name = [c.description, c.book, c.place].filter(Boolean).join(", ") + (c.name ? ` (published by ${c.name})` : "");
+      music.push({ name, traditional: true, role: c.year ? `Melody (${c.year})` : "Melody" });
       continue;
     }
     if (!c.name) continue;
@@ -159,7 +161,7 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
       }
     }
     if (Number.isInteger(person.died) && person.died >= PD_DIED_BEFORE) refuse(`${nm} died in ${person.died}, so ${ROLE(c) === "Music" ? "the tune" : "the arrangement"} is still in copyright in Nigeria, the UK and the EU`);
-    person.role = c.year ? `${ROLE(c)} (${c.year})` : ROLE(c);
+    person.role = c.book ? `${ROLE(c)} (${c.book}${c.year ? `, ${c.year}` : ""})` : c.year ? `${ROLE(c)} (${c.year})` : ROLE(c);
     if (/^Arranged|^Harmony/.test(person.role) && c.year && c.year >= PD_PUBLISHED_BEFORE) refuse(`${nm}'s arrangement is dated ${c.year}, after ${PD_PUBLISHED_BEFORE - 1}`);
     music.push(person);
   }
@@ -176,7 +178,10 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
     const meta = (midiFile.copyright || []).join(" ").trim();
     if (meta && !/public\s+domain/i.test(meta)) refuse(`the MIDI file carries a copyright notice (“${meta}”)`);
   }
-  for (const pr of tunePublicDomainProblems({ music, musicPublished })) if (!problems.some((q) => pr.includes(q))) problems.push(`not provably public domain: ${pr}`);
+  for (const pr of tunePublicDomainProblems({ music, musicPublished })) {
+    if (musicPublished == null && /musicPublished/.test(pr)) continue; // already "the page gives no year for the tune"
+    if (!problems.some((q) => pr.includes(q))) problems.push(`not provably public domain: ${pr}`);
+  }
 
   // ── The melody: the voice that matches the incipit ──
   let degrees = incipitDegrees(p.incipit.doremi);

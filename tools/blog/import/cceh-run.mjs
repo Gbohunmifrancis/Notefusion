@@ -174,12 +174,21 @@ export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, 
     imported.push({ slug, parsed: r.parsed, number: e.number });
     if (tune.draft) report.drafts.push({ slug, number: e.number, reasons: r.problems });
     else report.published.push({ slug, number: e.number });
+    // Who is missing a death year, how many tunes they hold back, and how many only for want of dates.
+    const deathYear = /^not provably public domain: (.+?): public domain needs a death year/;
+    const onlyDates = r.problems.every((pr) => deathYear.test(pr));
     for (const pr of r.problems) {
-      const m = /^not provably public domain: (.+?): public domain needs a death year/.exec(pr);
-      if (m) undated.set(m[1], (undated.get(m[1]) || 0) + 1);
+      const m = deathYear.exec(pr);
+      if (!m) continue;
+      const u = undated.get(m[1]) || { name: m[1], tunes: 0, onlyForWantOfDates: 0, earliestYear: null };
+      u.tunes++;
+      if (onlyDates) u.onlyForWantOfDates++;
+      const y = r.page.credits.filter((c) => c.name === m[1] && c.year).map((c) => c.year);
+      if (y.length) u.earliestYear = Math.min(u.earliestYear ?? Infinity, ...y);
+      undated.set(m[1], u);
     }
   }
-  report.undatedPeople = [...undated].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name, tunes]) => ({ name, tunes }));
+  report.undatedPeople = [...undated.values()].sort((a, b) => b.onlyForWantOfDates - a.onlyForWantOfDates || b.tunes - a.tunes || a.name.localeCompare(b.name));
 
   // Write: new and changed files; a file whose only change is the date keeps its old date.
   let written = 0, removed = 0;
