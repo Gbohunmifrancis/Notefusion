@@ -1,0 +1,81 @@
+{
+  "title": "From Nazareth",
+  "tune": "puer-nobis-nascitur",
+  "text": [
+    {
+      "name": "Margaret Elizabeth Munson Sangster",
+      "born": 1838,
+      "died": 1912,
+      "role": "Words (1911)"
+    }
+  ],
+  "textPublished": 1911,
+  "description": "From Nazareth in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Margaret Elizabeth Munson Sangster, first published in 1911. The tune, PUER NOBIS NASCITUR, is by Michael Praetorius (1609). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Comes a-ny good from Na-za-reth? The scorn-ful cha_-llenge as of old Is flung on man-y'a jeer-ing breath From cloi-stered cells and marts of gold.",
+  "verses": [
+    {
+      "lines": [
+        "Comes any good from Nazareth?",
+        "The scornful challenge as of old",
+        "Is flung on many'a jeering breath",
+        "From cloistered cells and marts of gold."
+      ]
+    },
+    {
+      "lines": [
+        "Comes any good from Nazareth?",
+        "Behold, the mighty Nazarene,",
+        "The Lord of life, the Lord of death,",
+        "Through warring ages walks serene."
+      ]
+    },
+    {
+      "lines": [
+        "One touch upon His garment's fringe",
+        "Still heals the hurt of bitter years.",
+        "Before Him yet the demons cringe,",
+        "He gives the wine of joy for tears."
+      ]
+    },
+    {
+      "lines": [
+        "O city of the Carpenter,",
+        "Upon the hill slope old and gray,",
+        "The world among its pain and stir",
+        "Turns yearning eyes on thee today."
+      ]
+    },
+    {
+      "lines": [
+        "For He who dwelt in Nazareth,",
+        "And wrought with toil of hand and brain,",
+        "Alone gives victory to faith",
+        "Until the day He come again."
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "God, Goodness of",
+    "God, Majesty &amp; Power of",
+    "God, Mercy of",
+    "Healing",
+    "Holiness",
+    "Jesus",
+    "Praise, Son",
+    "Presence",
+    "Victory"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/From_Nazareth-Puer_Nobis_Nascitur.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "From_Nazareth-Puer_Nobis_Nascitur"
+}

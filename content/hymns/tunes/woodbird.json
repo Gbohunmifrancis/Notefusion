@@ -1,0 +1,23 @@
+{
+  "name": "WOODBIRD",
+  "music": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Melody (1700)"
+    }
+  ],
+  "musicPublished": 1700,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | G4:1 D5:1 B4:1 G4:1 | F#4:1.5 G4:.5 A4:1 D4:1 | E4:1 G4:1 G4:1 F#4:1 | G4:3 G4:1 | G4:1 D5:1 B4:1 G4:1 | F#4:1.5 G4:.5 A4:1 D4:1 | E4:1 G4:1 G4:1 F#4:1 | G4:3 B4:1 | G4:1 D5:1 D5:.5 C5:.5 B4:1 | A4:2 A4:1 C5:1 | B4:1 A4:1 B4:1 G4:1 | A4:3 D5:1 | C5:1 B4:1 A4:1 G4:1 | F#4:1.5 G4:.5 A4:1 D4:1 | E4:1 G4:1 G4:1 F#4:1 | G4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/If_God_Himself_Be_For_Me-Woodbird-Es_Flog_Ein_Kleins_Waldvogelein.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 10 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: Music can be found in \"AltDeutsches Liederbuch\", 1877 page 232 song 134. (no arrangement, melody only) Music source: Episcopal Hymnal, 1940, Hymn 474. arrangement is from George Ratcliffe Woodward's \"Songs of Syon\", 1904 or 1910 per CCEH and other sites translation (from TLH 1941) is very close to that in the Evangelical Hymn Book of 1931. Original Massie translation found in \"The Church Psalter and Hymn Book\" (UK), 1863. Translation is public domain per Project Wittenberg: : http://www.iclnet.org/pub/resources/text/wittenberg/hymns/ifgodbe.txt"
+}

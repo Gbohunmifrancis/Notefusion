@@ -1,0 +1,24 @@
+{
+  "name": "EVENING PRAYER",
+  "music": [
+    {
+      "name": "John Stainer",
+      "born": 1840,
+      "died": 1901,
+      "role": "Music (1898)"
+    }
+  ],
+  "musicPublished": 1898,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C5:1 C5:1 C5:1 Bb4:1 | A4:1 A4:1 A4:1 G4:1 | F4:1 G4:1 A4:1 A4:1 | C5:.5 Bb4:.5 A4:1 G4:2 | C5:1 C5:1 C5:1 Bb4:1 | A4:1 A4:1 A4:1 G4:1 | F4:1 G4:1 A4:1 A4:1 | Bb4:1 E4:1 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Tender_Shepherd_Hear_Me-Evening_Prayer.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: \"The Church Hymnary\" (Scotland), 1902 Hymn 601. Ed. John Stainer."
+}

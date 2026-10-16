@@ -1,0 +1,98 @@
+{
+  "title": "O Little Town of Bethlehem",
+  "tune": "st-louis",
+  "text": [
+    {
+      "name": "Phillips Brooks",
+      "born": 1835,
+      "died": 1893,
+      "role": "Words (1867)"
+    }
+  ],
+  "textPublished": 1867,
+  "description": "O Little Town of Bethlehem in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Phillips Brooks, first published in 1867. The tune, ST. LOUIS, is by Lewis Henry Redner (1868). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O lit-tle town of Beth-le-hem, how still we_ see thee lie! A-bove thy deep and dream-less sleep the si-lent_ stars go by. Yet in thy dark streets shin-eth the ev-er-last-ing Light; The hopes and fears of all the years are met in thee to-night.",
+  "verses": [
+    {
+      "lines": [
+        "O little town of Bethlehem,",
+        "how still we see thee lie!",
+        "Above thy deep and dreamless sleep",
+        "the silent stars go by.",
+        "Yet in thy dark streets shineth",
+        "the everlasting Light;",
+        "The hopes and fears of all the years",
+        "are met in thee tonight."
+      ]
+    },
+    {
+      "lines": [
+        "For Christ is born of Mary, and gathered all above,",
+        "While mortals sleep, the angels keep their watch of wond'ring love.",
+        "O morning stars together, proclaim the holy birth,",
+        "And praises sing to God the King, and peace to men on earth!"
+      ]
+    },
+    {
+      "lines": [
+        "How silently, how silently,",
+        "the wondrous Gift is giv'n;",
+        "So God imparts to human hearts",
+        "the blessings of His Heav'n.",
+        "No ear may hear His coming,",
+        "but in this world of sin,",
+        "Where meek souls will receive Him still,",
+        "the dear Christ enters in."
+      ]
+    },
+    {
+      "lines": [
+        "Where children pure and happy pray to the blessèd",
+        "Child, Where misery cries out to Thee,",
+        "Son of the mother mild;",
+        "Where charity stands watching and faith holds wide the door,",
+        "The dark night wakes, the glory breaks, and Christmas comes once more."
+      ]
+    },
+    {
+      "lines": [
+        "O holy Child of Bethlehem,",
+        "descend to us, we pray;",
+        "Cast out our sin, and enter in,",
+        "be born in us today.",
+        "We hear the Christmas angels",
+        "the great glad tidings tell;",
+        "O come to us, abide with us,",
+        "our Lord Emmanuel!"
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Calmness",
+    "Christmas/Advent",
+    "Consecration",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "God, As King",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Light",
+    "Peace",
+    "Presence"
+  ],
+  "metre": "8 6 8 6 7 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Little_Town_Of_Bethlehem-St_Louis.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Little_Town_Of_Bethlehem-St_Louis"
+}

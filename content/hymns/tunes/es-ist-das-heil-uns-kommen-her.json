@@ -1,0 +1,23 @@
+{
+  "name": "ES IST DAS HEIL UNS KOMMEN HER",
+  "music": [
+    {
+      "name": "From Etlich Christlich Lider, Wittenberg, 1524",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0.5,
+  "lineBars": 2,
+  "melody": "Bb4:.5 | Bb4:1 Bb4:1 Bb4:1 Db5:1 | C5:1 Bb4:1 Ab4:1.5 Bb4:.5 | G4:1 Eb4:1 G4:1 Ab4:1 | Bb4:1 C5:1 Bb4:1.5 Bb4:.5 | Bb4:1 Bb4:1 Bb4:1 Db5:1 | C5:1 Bb4:1 Ab4:1.5 Bb4:.5 | G4:1 Eb4:1 G4:1 Ab4:1 | Bb4:1 C5:1 Bb4:1.5 Bb4:.5 | Eb5:1.5 Db5:.5 C5:1 Bb4:1 | Eb5:1 C5:1 Bb4:1.5 Bb4:.5 | Eb5:1.5 Bb4:.5 Bb4:1 Eb4:1 | G4:1 Bb4:1 G4:1.5 Eb4:.5 | F4:1 Ab4:1 G4:1 F4:1 | Eb4:1 F4:1 Eb4:1.5",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Who_Believe_And_Are_Baptized-Es_ist_das_Heil_uns_Kommen_her.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906 Hymn #206, page 162 Ed. Karl Brauer. Translation found in The Lutheran Hymnary, 1913."
+}

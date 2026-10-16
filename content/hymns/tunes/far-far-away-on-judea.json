@@ -1,0 +1,24 @@
+{
+  "name": "FAR, FAR AWAY ON JUDEA",
+  "music": [
+    {
+      "name": "John Menzies MacFarlane",
+      "born": 1833,
+      "died": 1892,
+      "role": "Music (1869)"
+    }
+  ],
+  "musicPublished": 1869,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 F4:.75 G4:.25 A4:1 A4:.75 Bb4:.25 | C5:1 C5:.75 Bb4:.25 A4:2 | G4:1 G4:.75 A4:.25 Bb4:1 A4:.5 C5:.5 | D5:.5 C5:.5 Bb4:.5 A4:.5 A4:1 G4:1 | F4:1 F4:.75 G4:.25 A4:2 | C5:1 C5:.75 Bb4:.25 A4:2 | D5:1 D5:.75 D5:.25 C5:1 F4:.5 F4:.5 | Bb4:1 A4:1 G4:2 | F4:1 C4:1 D4:1 E4:1 | F4:1 G4:1 A4:2 | C5:1.5 C5:.5 C5:1.5 Bb4:.5 | A4:1 G4:1 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Far_Far_Away_on_Judeas_Plains-Far_Far_Away_on_Judeas_Plains.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: 'The Songs of Zion', 1908 Hymn 81."
+}

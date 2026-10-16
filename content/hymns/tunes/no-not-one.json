@@ -1,0 +1,24 @@
+{
+  "name": "NO, NOT ONE",
+  "music": [
+    {
+      "name": "George Crawford Hugg",
+      "born": 1848,
+      "died": 1907,
+      "role": "Music (1894)"
+    }
+  ],
+  "musicPublished": 1894,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 95,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 A4:.75 G4:.25 F4:1 F4:.75 E4:.25 | D4:1 F4:1 D4:.5 C4:.5 r:1 | A4:1 A4:1 G4:1 r:1 | A4:1 G4:1 F4:1 r:1 | A4:1 A4:.75 G4:.25 F4:1 F4:.75 E4:.25 | D4:1 F4:1 D4:.5 C4:.5 r:1 | A4:1 A4:1 G4:1 r:1 | A4:1 G4:1 F4:1 r:1 | A4:1 C5:1 C5:1 D5:.75 C5:.25 | A4:1 A4:1 G4:.5 F4:.5 r:1 | A4:1 C5:1 C5:1 D5:.75 C5:.25 | A4:1 A4:1 G4:2 | A4:1 A4:.75 G4:.25 F4:1 F4:.75 E4:.25 | D4:1 F4:1 D4:.5 C4:.5 r:1 | A4:1 A4:1 G4:1 r:1 | A4:1 G4:1 F4:1 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/No_Not_One-No_Not_One.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Pentecostal Hymns, No. 2\" 1898 page 1. Setting and hymn identical to that found in \"Pentecostal Hymns, Nos. 1 and 2 combined\", 1894 Hymn 305. ABC file contributed to the Open Hymnal by Samuel Cantrell, 18 Jan 2012. not sure about first printing of this hymn; 1894 is earliest verifiable source. Hugg owned the copyright. Hugg printed hymnals in 1862, 1879, and 1892. Suspect hymn is found in one of them."
+}

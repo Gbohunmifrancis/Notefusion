@@ -1,0 +1,24 @@
+{
+  "name": "OVER KEDRON JESUS TRAEDER",
+  "music": [
+    {
+      "name": "Ludvig Mathias Lindeman",
+      "born": 1812,
+      "died": 1887,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": 1913,
+  "key": "F minor",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C5:1 Bb4:1 Ab4:1 F4:1 | Ab4:1 G4:1 E4:1 C4:1 | F4:1.5 G4:.5 Ab4:1 G4:1 | C5:1 Bb4:1 Ab4:1.5 r:.5 | C5:1 Bb4:1 Ab4:1 F4:1 | Ab4:1 G4:1 E4:1 C4:1 | F4:1.5 G4:.5 Ab4:1 G4:1 | C5:1 Bb4:1 Ab4:1.5 r:.5 | Bb4:1 Bb4:1 C5:1 Ab4:1 | Db5:1 C5:1 Bb4:1.5 r:.5 | C5:1 C5:1 Db5:1 Bb4:1 | Eb5:1 Db5:1 C5:1.5 r:.5 | Db5:1 C5:1 Bb4:1 C5:1 | Ab4:1 G4:1 F4:1 Db4:1 | C4:1.5 E4:.5 F4:1 Ab4:1 | C5:2 Bb4:1 Ab4:1 | G4:4 | F4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Over_Kidron_Jesus_Treadeth-Over_Kedron_Jesus_Treadaer.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1913, the year of the setting the Open Hymnal copied. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Lutheran Hymnary\", 1913 Hymn 302. Most sources give translation date of 1880, but translation found in \"The Living Age\" Fourth Series Vol. 1, Page 746, 1866, referenced as trans. by Rev. J. Jeffrey."
+}

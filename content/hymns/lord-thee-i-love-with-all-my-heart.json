@@ -1,0 +1,106 @@
+{
+  "title": "Lord, Thee I Love with All My Heart",
+  "tune": "herzlich-lieb-hab-ich-dich-o-herr",
+  "text": [
+    {
+      "name": "Martin Schalling",
+      "born": 1532,
+      "died": 1608,
+      "role": "Words (1571)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "Lord, Thee I Love with All My Heart in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Schalling, first published in 1571. The English translation is by Catherine Winkworth (1858). The tune, HERZLICH LIEB HAB ICH DICH O HERR, is from Strassburg, 1577. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, Thee I love with_ all my heart; I pray Thee, ne'er from_ me de-part; With ten-der mer_-cy cheer_ me. Earth has no plea-sure_ I would share, Yea, Heav'n it-self were_ void and bare If Thou, Lord, wert_ not near_ me. And should my heart for sor-row break, My trust in Thee can no-thing shake. Thou art the por-tion I have sought; Thy pre-cious blood my soul has bought. Lord Je-sus Christ, My God and Lord, my God and Lord, For-sake me not! I trust Thy Word.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, Thee I love with all my heart;",
+        "I pray Thee, ne'er from me depart;",
+        "With tender mercy cheer me.",
+        "Earth has no pleasure I would share,",
+        "Yea, Heav'n itself were void and bare",
+        "If Thou, Lord, wert not near me.",
+        "And should my heart for sorrow break,",
+        "My trust in Thee can nothing shake.",
+        "Thou art the portion I have sought;",
+        "Thy precious blood my soul has bought.",
+        "Lord Jesus Christ, My God and Lord,",
+        "my God and Lord,",
+        "Forsake me not! I trust Thy Word."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, Lord, 'twas Thy rich bounty gave",
+        "My body, soul, and all I have",
+        "In this poor life of labor.",
+        "Lord, grant that I in every place",
+        "May glorify Thy lavish grace",
+        "And serve and help my neighbor.",
+        "Let no false doctrine me beguile,",
+        "Let Satan not my soul defile.",
+        "Give strength and patience unto me",
+        "To bear my cross and follow Thee.",
+        "Lord Jesus Christ, My God and Lord,",
+        "my God and Lord,",
+        "In death Thy comfort still afford."
+      ]
+    },
+    {
+      "lines": [
+        "Lord, let at last Thine angels come,",
+        "To Abr'am's bosom bear me home,",
+        "That I may die unfearing;",
+        "And in its narrow chamber keep",
+        "My body safe in peaceful sleep",
+        "Until Thy reappearing.",
+        "And then from death awaken me,",
+        "That these mine eyes with joy may see,",
+        "O Son of God, Thy glorious face,",
+        "My Savior and my fount of grace.",
+        "Lord Jesus Christ, My prayer attend,",
+        "my prayer attend,",
+        "And I will praise Thee without end!"
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Angels",
+    "Anticipation",
+    "Atonement",
+    "Blood",
+    "Following Jesus, In Faith",
+    "Following Jesus, In Action",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Mercy of",
+    "God, Providence of",
+    "Gratitude",
+    "Guidance",
+    "Jesus",
+    "Peace",
+    "Presence",
+    "Trust"
+  ],
+  "metre": "8 8 7 8 8 7 8 8 8 8 8 4 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_Thee_I_Love_With_All_My_Heart-Herzlich_Lieb_Hab_ich_Dich_O_Herr.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_Thee_I_Love_With_All_My_Heart-Herzlich_Lieb_Hab_ich_Dich_O_Herr"
+}

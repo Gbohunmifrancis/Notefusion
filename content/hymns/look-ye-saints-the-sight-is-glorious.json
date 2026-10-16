@@ -1,0 +1,96 @@
+{
+  "title": "Look, Ye Saints, the Sight Is Glorious",
+  "tune": "bryn-calfaria",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words (1809)"
+    }
+  ],
+  "textPublished": 1809,
+  "description": "Look, Ye Saints, the Sight Is Glorious in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Kelly, first published in 1809. The tune, BRYN CALFARIA, is by William Owen (1852). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Look, ye saints; the sight is glo-rious: see the Man of_ Sor-rows now; From the fight re-turned vic-to-rious, E-very knee to_ Him shall bow: Crown__ Him! Crown__ Him! Crown__ Him!_ Crowns_ be-come_ the Vic_-tor's_ brow. Crowns be-come the_ Vic-tor's brow.",
+  "verses": [
+    {
+      "lines": [
+        "Look, ye saints; the sight is glorious:",
+        "see the Man of Sorrows now;",
+        "From the fight returned victorious,",
+        "Every knee to Him shall bow:",
+        "Crown Him!",
+        "Crown Him!",
+        "Crown Him!",
+        "Crowns become the Victor's brow.",
+        "Crowns become the Victor's brow."
+      ]
+    },
+    {
+      "lines": [
+        "Crown the Savior, angels, crown Him;",
+        "Rich the trophies Jesus brings;",
+        "In the seat of pow'r enthrone Him,",
+        "While the vault of heaven rings:",
+        "Crown Him!",
+        "Crown Him!",
+        "Crown Him!",
+        "Crown the Savior King of kings.",
+        "Crown the Savior King of kings."
+      ]
+    },
+    {
+      "lines": [
+        "Sinners in derision crowned Him,",
+        "Mocking thus the Savior's claim;",
+        "Saints and angels crowd around Him,",
+        "Own His title, praise His Name:",
+        "Crown Him!",
+        "Crown Him!",
+        "Crown Him!",
+        "Spread abroad the Victor's fame.",
+        "Spread abroad the Victor's fame."
+      ]
+    },
+    {
+      "lines": [
+        "Hark, those bursts of acclamation!",
+        "Hark those loud triumphant chords!",
+        "Jesus takes the highest station;",
+        "O what joy the sight affords!",
+        "Crown Him!",
+        "Crown Him!",
+        "Crown Him!",
+        "King of kings, and Lord of lords!",
+        "King of kings, and Lord of lords!"
+      ]
+    }
+  ],
+  "category": "Ascension",
+  "topics": [
+    "Angels",
+    "Art and Music",
+    "Crown",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Gratitude",
+    "Heaven",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Victory",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 2 2 2 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Look_Ye_Saints_the_Sight_Is_Glorious-Bryn_Calfaria.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Look_Ye_Saints_the_Sight_Is_Glorious-Bryn_Calfaria"
+}

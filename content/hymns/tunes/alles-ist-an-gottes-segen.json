@@ -1,0 +1,24 @@
+{
+  "name": "ALLES IST AN GOTTES SEGEN",
+  "music": [
+    {
+      "name": "Johann Balthasar König",
+      "born": 1691,
+      "died": 1758,
+      "role": "Music (1738)"
+    }
+  ],
+  "musicPublished": 1738,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 F4:1 C5:1 C5:1 | Bb4:1 C5:1 A4:1 F4:1 | A4:1 A4:1 G4:1 G4:1 | F4:1 G4:1 E4:1 C4:1 | G4:1 G4:1 F4:1 E4:1 | D4:1 D4:1 C4:2 | G4:1 G4:1 C5:1 A4:1 | Bb4:1 C5:1 A4:1 F4:1 | A4:1 A4:1 G4:1 G4:1 | F4:1 G4:1 E4:1 C4:1 | F4:1 F4:1 Bb4:1 A4:1 | G4:1 G4:1 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Depends_On_Our_Possessing-Alles_ist_an_Gottes_Segen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: \"Chorale Book for England\", 1863 Hymn 130."
+}

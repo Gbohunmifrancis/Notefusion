@@ -1,0 +1,101 @@
+{
+  "title": "Rejoice, My Heart, Be Glad and Sing",
+  "alsoKnownAs": [
+    "O Lord I Sing with Lips and Heart"
+  ],
+  "tune": "ich-singe-dir-mit-herz",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words (1653)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Rejoice, My Heart, Be Glad and Sing in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Paul Gerhardt, first published in 1653. The tune, ICH SINGE DIR MIT HERZ, is by Johann Balthasar König (1738). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Re-joice, my heart, be glad and sing, A cheer-ful trust main-tain; For God, the Source of ev-ery-thing, Thy Por-tion shall re-main.",
+  "verses": [
+    {
+      "lines": [
+        "Rejoice, my heart, be glad and sing,",
+        "A cheerful trust maintain;",
+        "For God, the Source of everything,",
+        "Thy Portion shall remain."
+      ]
+    },
+    {
+      "lines": [
+        "He is thy Treasure, He thy Joy,",
+        "Thy Life and Light and Lord,",
+        "Thy Counselor when doubts annoy,",
+        "Thy Shield and great Reward."
+      ]
+    },
+    {
+      "lines": [
+        "Why spend the day in blank despair,",
+        "In restless thought the night?",
+        "On thy Creator cast thy care;",
+        "He makes thy burdens light."
+      ]
+    },
+    {
+      "lines": [
+        "Did not His love and truth and pow'r",
+        "Watch o'er thy childhood day?",
+        "Has He not oft in threat'ning hour",
+        "Turned dreaded ills away?"
+      ]
+    },
+    {
+      "lines": [
+        "His wisdom never plans in vain,",
+        "Ne'er falters or mistakes;",
+        "All that His counsels did ordain",
+        "A happy ending makes."
+      ]
+    }
+  ],
+  "category": "Cross and Comfort",
+  "topics": [
+    "Assurance",
+    "Christian Life",
+    "Comfort",
+    "Courage in Affliction",
+    "God, Care of",
+    "God, Creator",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Love of",
+    "Gratitude",
+    "Guidance",
+    "Hope",
+    "Joy",
+    "Kindness, God's",
+    "Light",
+    "Missions",
+    "Patience",
+    "Peace",
+    "Security",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Testimony"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Rejoice_My_Heart_Be_Glad_and_Sing-Ich_Singe_dir_mit_Herz.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Rejoice_My_Heart_Be_Glad_and_Sing-Ich_Singe_dir_mit_Herz",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

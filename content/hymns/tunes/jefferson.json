@@ -1,0 +1,23 @@
+{
+  "name": "JEFFERSON",
+  "music": [
+    {
+      "name": "From Southern Harmony, 1835",
+      "traditional": true,
+      "role": "Melody (1835)"
+    }
+  ],
+  "musicPublished": 1835,
+  "key": "A minor",
+  "time": "2/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "A4:1 A4:.5 G4:.5 | E4:1 G4:.5 A4:.5 | C5:1 B4:.5 A4:.5 | B4:1 A4:1 | A4:.5 G4:.5 E4:.5 D4:.5 | E4:1 G4:.5 A4:.5 | C5:1 B4:1 | A4:2 | A4:1 A4:.5 G4:.5 | E4:1 G4:.5 A4:.5 | C5:1 B4:.5 A4:.5 | B4:1 A4:1 | A4:.5 G4:.5 E4:.5 D4:.5 | E4:1 G4:.5 A4:.5 | C5:1 B4:1 | A4:2 | C5:1 D5:1 | E5:1 E5:1 | C5:1 B4:.5 A4:.5 | B4:1 A4:1 | C5:1 D5:1 | E5:1 E5:.5 D5:.5 | C5:1 B4:.5 A4:.5 | B4:2 | A4:1 C5:.5 D5:.5 | E5:1 E5:1 | C5:1 B4:.5 A4:.5 | B4:1 A4:1 | A4:.5 G4:.5 E4:.5 D4:.5 | E4:1 G4:.5 A4:.5 | C5:1 B4:1 | A4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Thou_Long_Expected_Jesus-Jefferson.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Southern Harmony, 1835, Hymn 42. Setting heavily altered for congregational use."
+}

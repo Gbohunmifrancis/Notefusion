@@ -1,0 +1,104 @@
+{
+  "title": "'Take Up Thy Cross', the Savior Said",
+  "tune": "nun-lasst-uns-den-leib-begraben",
+  "text": [
+    {
+      "name": "Charles William Everest",
+      "born": 1814,
+      "died": 1877,
+      "role": "Words (1833)"
+    }
+  ],
+  "textPublished": 1833,
+  "description": "'Take Up Thy Cross', the Savior Said in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles William Everest, first published in 1833. The tune, NUN LASST UNS DEN LEIB BEGRABEN, is by George Rhau (1544). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "\"Take up thy cross,\" the Sa-vior said, \"If thou wouldst My dis-ci-ple be; De-ny thy-self, the world for-sake, And hum-bly fol-low af-ter Me.\"",
+  "verses": [
+    {
+      "lines": [
+        "\"Take up thy cross,\" the Savior said,",
+        "\"If thou wouldst My disciple be;",
+        "Deny thyself, the world forsake,",
+        "And humbly follow after Me.\""
+      ]
+    },
+    {
+      "lines": [
+        "Take up thy cross, let not its weight",
+        "Fill thy weak spirit with alarm;",
+        "His strength shall bear thy spirit up,",
+        "And brace thy heart and nerve thine arm."
+      ]
+    },
+    {
+      "lines": [
+        "Take up thy cross, nor heed the shame,",
+        "Nor let thy foolish pride rebel;",
+        "Thy Lord for thee the cross endured,",
+        "And saved thy soul from death and hell."
+      ]
+    },
+    {
+      "lines": [
+        "Take up thy cross then in His strength,",
+        "And calmly sin's wild deluge brave,",
+        "'Twill guide thee to a better home,",
+        "It points to glory o'er the grave."
+      ]
+    },
+    {
+      "lines": [
+        "Take up thy cross and follow Christ,",
+        "Nor think til death to lay it down;",
+        "For only those who bear the cross",
+        "May hope to wear the glorious crown."
+      ]
+    },
+    {
+      "lines": [
+        "D To Thee, great Lord, the One in Three,",
+        "All praise forevermore ascend:",
+        "O grant us in our home to see",
+        "The heavenly life that knows no end."
+      ]
+    }
+  ],
+  "category": "Missions",
+  "topics": [
+    "Anticipation",
+    "Atonement",
+    "Calmness",
+    "Christian Life",
+    "Closing Songs",
+    "Comfort",
+    "Commitment",
+    "Courage in Affliction",
+    "Cross",
+    "Crown",
+    "Discipleship",
+    "Duty (see also Law)",
+    "Eternal Life",
+    "Example, Christ's",
+    "Following Jesus, In Faith",
+    "Following Jesus, In Action",
+    "Humility",
+    "Jesus",
+    "Obedience",
+    "Pride (see also Humility)",
+    "Sacrifice",
+    "Salvation",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Take_Up_Thy_Cross_The_Savior_Said-Nun_Lasst_Uns_Den_Leib_Begraben.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Take_Up_Thy_Cross_The_Savior_Said-Nun_Lasst_Uns_Den_Leib_Begraben"
+}

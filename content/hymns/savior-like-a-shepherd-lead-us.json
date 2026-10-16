@@ -1,0 +1,94 @@
+{
+  "title": "Savior, Like a Shepherd Lead Us",
+  "tune": "bradbury",
+  "text": [
+    {
+      "name": "Dorothy Ann Thrupp",
+      "born": 1779,
+      "died": 1847,
+      "role": "Words (1836)"
+    }
+  ],
+  "textPublished": 1836,
+  "description": "Savior, Like a Shepherd Lead Us in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Dorothy Ann Thrupp, first published in 1836. The tune, BRADBURY, is by William Batchelder Bradbury (1859). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Sa-vior, like a shep-herd lead_ us,_ much we need Thy ten-der care; In Thy plea-sant pas-tures feed_ us,_ for our use Thy folds pre-pare. Bless-èd Je-sus, bless-èd Je-sus! Thou hast bought us, Thine we are. Bless-èd Je-sus, bless-èd Je-sus! Thou hast bought us, Thine we are.",
+  "verses": [
+    {
+      "lines": [
+        "Savior, like a shepherd lead us,",
+        "much we need Thy tender care;",
+        "In Thy pleasant pastures feed us,",
+        "for our use Thy folds prepare.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "Thou hast bought us, Thine we are.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "Thou hast bought us, Thine we are."
+      ]
+    },
+    {
+      "lines": [
+        "We are Thine, Thou dost befriend us,",
+        "be the guardian of our way;",
+        "Keep Thy flock, from sin defend us,",
+        "seek us when we go astray.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "Hear, O hear us when we pray.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "Hear, O hear us when we pray."
+      ]
+    },
+    {
+      "lines": [
+        "Thou hast promised to receive us,",
+        "poor and sinful though we be;",
+        "Thou hast mercy to relieve us,",
+        "grace to cleanse and pow'r to free.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "We will early turn to Thee.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "We will early turn to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Early let us seek Thy favor,",
+        "early let us do Thy will;",
+        "Blessèd Lord and only Savior,",
+        "with Thy love our bosoms fill.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "Thou hast loved us, love us still.",
+        "Blessèd Jesus, blessèd Jesus!",
+        "Thou hast loved us, love us still."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Consecration",
+    "Discipleship",
+    "Following Jesus, Sanctification",
+    "Friendship",
+    "God, Care of",
+    "Guidance",
+    "Jesus",
+    "Leadership",
+    "Love",
+    "Promises (see also Gospel)",
+    "Shepherd/Lamb",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Savior_Like_A_Shepherd_Lead_Us-Bradbury.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Savior_Like_A_Shepherd_Lead_Us-Bradbury"
+}

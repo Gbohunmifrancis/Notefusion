@@ -1,0 +1,97 @@
+{
+  "title": "The Lily of the Valley",
+  "alsoKnownAs": [
+    "I've Found a Friend in Jesus"
+  ],
+  "tune": "salvation",
+  "text": [
+    {
+      "name": "Charles William Fry",
+      "born": 1838,
+      "died": 1882,
+      "role": "Words (1881)"
+    }
+  ],
+  "textPublished": 1881,
+  "description": "The Lily of the Valley in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles William Fry, first published in 1881. The tune, SALVATION, is by William Shakespeare Hays (1881). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I've_ found a friend in Je-sus, He's ev-ery-thing to me, He's the fair-est of ten thou-sand to my soul; The_ Li-ly of the Val-ley, in Him a-lone I see All I need to cleanse and make me ful-ly whole. In sor-row He's my com-fort, in trou-ble He's my stay; He_ tells me ev-ery care on Him to roll. He's the Li-ly of the Val-ley, the Bright and Morn-ing Star, He's the fair-est of ten thou-sand to my soul.",
+  "verses": [
+    {
+      "lines": [
+        "I've found a friend in Jesus,",
+        "He's everything to me,",
+        "He's the fairest of ten thousand to my soul;",
+        "The Lily of the Valley, in Him alone I see",
+        "All I need to cleanse and make me fully whole.",
+        "In sorrow He's my comfort, in trouble",
+        "He's my stay; He tells me every care on Him to roll.",
+        "He's the Lily"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "of the Valley, the Bright and",
+        "Morning Star, He's the fairest of ten thousand to my soul."
+      ]
+    },
+    {
+      "lines": [
+        "He all my grief has taken, and all my sorrows borne;",
+        "In temptation He's my strong and mighty tow'r;",
+        "I'll all for Him forsake now,",
+        "I'll all my idols tear",
+        "From my heart for now He keeps me by His pow'r.",
+        "Though all the world forsake me, and Satan tempt me sore,",
+        "Through Jesus I shall safely reach the goal.",
+        "He's the Lily"
+      ]
+    },
+    {
+      "lines": [
+        "He'll never, never leave me, nor yet forsake me here,",
+        "So I live by faith and do His blessed will;",
+        "A wall of fire about me,",
+        "I've nothing now to fear,",
+        "With His manna He my hungry soul shall fill.",
+        "When crown'd at last in glory,",
+        "I'll see His blessed face,",
+        "Where rivers of delight shall ever roll.",
+        "He's the Lily"
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Atonement",
+    "Calmness",
+    "Christian Life",
+    "Consecration",
+    "Discipleship",
+    "Faith",
+    "Faithfulness",
+    "Following Jesus, In Faith",
+    "Friendship",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "Gratitude",
+    "Healing",
+    "Jesus",
+    "Joy",
+    "Promises (see also Gospel)",
+    "Testimony",
+    "Zeal"
+  ],
+  "metre": "7 6 11 7 6 11 7 6 10 8 6 11",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Lily_of_the_Valley-Salvation-The_Lily_of_the_Valley.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Lily_of_the_Valley-Salvation-The_Lily_of_the_Valley"
+}

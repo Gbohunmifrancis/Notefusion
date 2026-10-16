@@ -1,0 +1,23 @@
+{
+  "name": "PANGE LINGUA",
+  "music": [
+    {
+      "name": "Traditional Proper Sarum Melody",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": 1898,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Sing_My_Tongue_the_Glorious_Battle-Pange_Lingua.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 6 does not add up to 4 beats; bar 9 does not add up to 4 beats. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1898, the year of the setting the Open Hymnal copied. The last 6 verses are printed after the score in the source, not under the notes. The tune ends on E, not on the key note: it may be modal. The Open Hymnal's own source: \"The Church Hymnal, Revised and Enlarged\" (Episcopal), 1898 Hymn 98, alt. Alterations by Brian Dumont, 03 Nov 2025. All alterations released into the public domain. Lyrics Source: \"Mediæval Hymns\" by John Mason Neale, 1851 pg 1-4"
+}

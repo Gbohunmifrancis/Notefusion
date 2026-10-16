@@ -1,0 +1,84 @@
+{
+  "title": "Praise the Lord, Ye Heavens Adore Him",
+  "tune": "austria-haydn",
+  "text": [
+    {
+      "name": "Edward Osler",
+      "born": 1798,
+      "died": 1863,
+      "role": "Words (1796)"
+    }
+  ],
+  "textPublished": 1796,
+  "description": "Praise the Lord, Ye Heavens Adore Him in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edward Osler, first published in 1796. The tune, AUSTRIA (HAYDN), is by Franz Joseph Haydn (1797). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Praise the Lord, ye heav'ns, a-dore_ Him; Praise Him, an-gels in the_ height. Sun and moon, re-joice be-fore_ Him; Praise Him, all ye stars of_ light. Praise the Lord,_ for He hath spo_-ken; Worlds His might-y voice o_-beyed. Laws which ne-ver shall be bro_-ken For their_ gui_-dance_ He hath_ made.",
+  "verses": [
+    {
+      "lines": [
+        "Praise the Lord, ye heav'ns, adore Him;",
+        "Praise Him, angels in the height.",
+        "Sun and moon, rejoice before Him;",
+        "Praise Him, all ye stars of light.",
+        "Praise the Lord, for He hath spoken;",
+        "Worlds His mighty voice obeyed.",
+        "Laws which never shall be broken",
+        "For their guidance He hath made."
+      ]
+    },
+    {
+      "lines": [
+        "Praise the Lord, for He is glorious;",
+        "Never shall His promise fail.",
+        "God hath made His saints victorious;",
+        "Sin and death shall not prevail.",
+        "Praise the God of our salvation;",
+        "Hosts on high, His pow'r proclaim.",
+        "Heav'n and earth and all creation,",
+        "Laud and magnify His name."
+      ]
+    },
+    {
+      "lines": [
+        "Worship, honor, glory, blessing,",
+        "Lord, we offer unto Thee.",
+        "Young and old, Thy praise expressing,",
+        "In glad homage bend the knee.",
+        "All the saints in Heav'n adore Thee;",
+        "We would bow before Thy throne.",
+        "As Thine angels serve before Thee,",
+        "So on earth Thy will be done."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Angels",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "God, As King",
+    "God, Care of",
+    "God, Creator",
+    "God, Goodness of",
+    "God, Majesty &amp; Power of",
+    "Gratitude",
+    "Heaven",
+    "Praise, Father",
+    "Praise, Son",
+    "Promises (see also Gospel)",
+    "Saints (all Faithful)",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Throne (also see God - As King)",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Praise_The_Lord_Ye_Heavens_Adore_Him-Austria_Haydn-Austrian_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Praise_The_Lord_Ye_Heavens_Adore_Him-Austria_Haydn-Austrian_Hymn"
+}

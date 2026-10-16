@@ -1,0 +1,93 @@
+{
+  "title": "Take My Life and Let It Be",
+  "tune": "mozart",
+  "text": [
+    {
+      "name": "Frances Ridley Havergal",
+      "born": 1836,
+      "died": 1879,
+      "role": "Words (1874)"
+    }
+  ],
+  "textPublished": 1874,
+  "description": "Take My Life and Let It Be in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Frances Ridley Havergal, first published in 1874. The tune, MOZART, is by Wolfgang Amadeus Mozart. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Take my life, and let it be con-se-cra_-ted, Lord, to_ Thee. Take my mo_-ments and my days; let them flow_ in cease-less praise.",
+  "verses": [
+    {
+      "lines": [
+        "Take my life, and let it be",
+        "consecrated, Lord, to Thee.",
+        "Take my moments and my days;",
+        "let them flow in ceaseless praise."
+      ]
+    },
+    {
+      "lines": [
+        "Take my hands, and let them move",
+        "at the impulse of Thy love.",
+        "Take my feet, and let them be",
+        "swift and beautiful for Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Take my voice, and let me sing",
+        "always, only, for my King.",
+        "Take my lips, and let them be",
+        "filled with messages from Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Take my silver and my gold;",
+        "not a mite would I withhold.",
+        "Take my intellect, and use",
+        "every pow'r as Thou shalt choose."
+      ]
+    },
+    {
+      "lines": [
+        "Take my will, and make it Thine;",
+        "it shall be no longer mine.",
+        "Take my heart, it is Thine own;",
+        "it shall be Thy royal throne."
+      ]
+    },
+    {
+      "lines": [
+        "Take my love, my Lord, I pour at Thy feet its treasure store.",
+        "Take myself, and I will be ever, only, all for Thee."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Activity",
+    "Charity (see also Tithing)",
+    "Commitment",
+    "Consecration",
+    "Discipleship",
+    "Following Jesus, In Action",
+    "Following Jesus, Sanctification",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Love",
+    "Obedience",
+    "Stewardship",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Throne (also see God - As King)",
+    "Tithing"
+  ],
+  "metre": "7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Take_My_Life_And_Let_It_Be-Mozart.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Take_My_Life_And_Let_It_Be-Mozart"
+}

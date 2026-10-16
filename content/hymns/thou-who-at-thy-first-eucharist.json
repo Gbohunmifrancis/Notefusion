@@ -1,0 +1,89 @@
+{
+  "title": "Thou, Who at Thy First Eucharist",
+  "alsoKnownAs": [
+    "Lord, Who the Night You Were Betrayed",
+    "At That First Eucharist"
+  ],
+  "tune": "unde-et-memores",
+  "text": [
+    {
+      "name": "William H. Turton",
+      "born": 1856,
+      "died": 1938,
+      "role": "Words (1881)"
+    }
+  ],
+  "textPublished": 1881,
+  "description": "Thou, Who at Thy First Eucharist in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William H. Turton, first published in 1881. The tune, UNDE ET MEMORES, is by William Henry Monk (1875). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Thou, who at Thy first Eu-cha-rist didst pray That all Thy Church might be for-ev-er one, Grant us at ev-'ry Eu-cha-rist to say With long-ing heart and soul, \"Thy will be done.\" O may we all one bread, one bo-dy be, Through this blest sac-ra-ment of un-i-ty.",
+  "verses": [
+    {
+      "lines": [
+        "Thou, who at Thy first Eucharist didst pray",
+        "That all Thy Church might be forever one,",
+        "Grant us at ev'ry Eucharist to say",
+        "With longing heart and soul, \"Thy will be done.\"",
+        "O may we all one bread, one body be,",
+        "Through this blest sacrament of unity."
+      ]
+    },
+    {
+      "lines": [
+        "For all Thy Church, O Lord, we intercede;",
+        "Make Thou our sad divisions soon to cease;",
+        "Draw us the nearer each to each, we plead,",
+        "By drawing all to Thee, O Prince of Peace;",
+        "Thus may we all one bread, one body be,",
+        "Through this blest sacrament of unity."
+      ]
+    },
+    {
+      "lines": [
+        "We pray Thee too for wand'rers from Thy fold;",
+        "O bring them back, good Shepherd of the sheep,",
+        "Back to the faith which saints believed of old,",
+        "Back to the Church which still that faith doth keep;",
+        "Soon may we all one bread, one body be,",
+        "Through this blest sacrament of unity."
+      ]
+    },
+    {
+      "lines": [
+        "So, Lord, at length when sacraments shall cease,",
+        "May we be one with all Thy Church above,",
+        "One with Thy saints in one unbroken peace,",
+        "One with Thy saints in one unbounded love;",
+        "More blessèd still, in peace and love to be",
+        "One with the Trinity in unity."
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Bread (of Life/Daily Bread)",
+    "Brotherhood",
+    "Church on Earth (Church Militant)",
+    "Faithfulness",
+    "Fellowship",
+    "God, Providence of",
+    "Guidance",
+    "Lord's Supper",
+    "Obedience",
+    "Patience",
+    "Saints (all Faithful)",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trust"
+  ],
+  "metre": "10 10 10 10 10 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Thou_Who_At_Thy_First_Eucharist-Unde_Et_Memores.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Thou_Who_At_Thy_First_Eucharist-Unde_Et_Memores"
+}

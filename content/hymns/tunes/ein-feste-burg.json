@@ -1,17 +1,24 @@
 {
   "name": "EIN FESTE BURG",
   "music": [
-    {"name": "Martin Luther", "born": 1483, "died": 1546, "role": "Melody (1529)"}
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Melody (1529)"
+    }
   ],
   "musicPublished": 1529,
-  "key": null,
-  "time": null,
-  "tempo": null,
-  "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D5:1 | D5:1 D5:1 A4:.5 B4:.5 C#5:1 | D5:.5 C#5:.5 B4:1 A4:1 D5:1 | C#5:1 B4:1 A4:1 B4:1 | G4:.5 F#4:.5 E4:1 D4:1 D5:1 | D5:1 D5:1 A4:.5 B4:.5 C#5:1 | D5:.5 C#5:.5 B4:1 A4:1 D5:1 | C#5:1 B4:1 A4:1 B4:1 | G4:.5 F#4:.5 E4:1 D4:1 D4:1 | F#4:1 A4:1 B4:1 G#4:1 | A4:1 D4:1 A4:1 A4:1 | B4:1 C#5:1 D5:1 C#5:1 | D5:1 C#5:1 B4:1 B4:1 | A4:1 B4:1 B4:1 A4:1 | B4:1 G4:1 F#4:1 D5:1 | C#5:1 B4:1 A4:1 B4:1 | G4:.5 F#4:.5 E4:1 D4:1",
   "reviewed": false,
-  "confidence": "not encoded",
-  "source": "Open Hymnal Project ABC scores (rhythmic and isometric forms) consulted; hymnary.org incipit 1 1 1 5 6 7 1 7 6 5.",
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: the tune is printed in two different rhythms (Luther's rhythmic form, unbarred, and the even-note isometric form), and the Open Hymnal's isometric version is altered to fit Hedge's words. Encode the form your choir's book uses."
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "reviewNotes": "Melody filled in from the Open Hymnal Project's ABC score (A_Mighty_Fortress_Is_Our_God-Ein_Feste_Burg_Isorhythmic); the words under the notes are this page's first verse, fitted to the score's syllables. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: 'Common Service Book with Hymnal', ULCA 1918 Hymn 195, alt. to match syncopation of Hedge translation Lyric source: Presbyterian Hymnal, Revised, 1911 Hymn 122.",
+  "sourceUrl": "http://openhymnal.org/Lyrics/A_Mighty_Fortress_Is_Our_God-Ein_Feste_Burg_Isorhythmic.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain."
 }

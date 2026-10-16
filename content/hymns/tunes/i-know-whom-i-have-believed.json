@@ -1,0 +1,24 @@
+{
+  "name": "I KNOW WHOM I HAVE BELIEVED",
+  "music": [
+    {
+      "name": "James McGranahan",
+      "born": 1840,
+      "died": 1907,
+      "role": "Music (1892)"
+    }
+  ],
+  "musicPublished": 1892,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | G4:1.5 G4:.5 Ab4:.5 G4:.5 F4:.5 Eb4:.5 | C5:1 Bb4:1 Bb4:1 G4:1 | Bb4:1.5 Bb4:.5 C5:.5 Bb4:.5 Ab4:.5 G4:.5 | F4:3 Ab4:1 | G4:1.5 G4:.5 Ab4:.5 G4:.5 F4:.5 Eb4:.5 | C5:1 Bb4:1 Bb4:1 G4:1 | Bb4:1.5 Bb4:.5 C5:.5 Bb4:.5 Ab4:.5 F4:.5 | Eb4:3 Eb4:.5 Eb4:.5 | Eb5:1 Eb5:1.5 Eb5:.5 D5:.5 C5:.5 | C5:1 Bb4:1.5 Bb4:.5 C5:.5 Bb4:.5 | Bb4:1 Ab4:1.5 Ab4:.5 Bb4:.5 Ab4:.5 | Ab4:1 G4:2 Eb4:1 | Eb5:1 Eb5:1.5 Eb5:.5 D5:.5 C5:.5 | C5:1 Bb4:2 Bb4:.5 Bb4:.5 | D5:1.5 C5:.5 D5:1 Bb4:1 | Eb5:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Know_Whom_I_Have_Believed-I_Know_Whom_I_Have_Believed.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Gospel Hymns, nos. 5 and 6 combined, 1892, Hymn 5."
+}

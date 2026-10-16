@@ -1,0 +1,131 @@
+{
+  "title": "A Hymn of Glory Let Us Sing",
+  "alsoKnownAs": [
+    "Sing We Triumphant Hymns of Praise"
+  ],
+  "tune": "lasst-uns-erfreuen",
+  "text": [
+    {
+      "name": "The Venerable Bede",
+      "born": 673,
+      "died": 735,
+      "role": "Words (735)"
+    },
+    {
+      "name": "Benjamin Webb",
+      "born": 1819,
+      "died": 1885,
+      "role": "Translated (1858)"
+    },
+    {
+      "name": "Elizabeth Rundle Charles",
+      "born": 1828,
+      "died": 1896,
+      "role": "Translated (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "A Hymn of Glory Let Us Sing in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by The Venerable Bede, first published in 735. The English translation is by Benjamin Webb and Elizabeth Rundle Charles (1858). The tune, LASST UNS ERFREUEN, is from Geistliche Kirchengesäng, Köln, 1623. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "A hymn of glo-ry let us sing! New hymns through-out the world shall ring: A-lle-lu-ia! A-lle-lu-ia! Christ by a way none e-ver trod, A-scends un-to the throne of God. A-lle-lu-ia! A-lle-lu-ia! A-lle-lu-ia! A-lle-lu-ia! A-lle-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "A hymn of glory let us sing!",
+        "New hymns throughout the world shall ring:",
+        "Alleluia!",
+        "Alleluia!",
+        "Christ by a way none ever trod,",
+        "Ascends unto the throne of God.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "The angels say to the elev'n,",
+        "\"Why stand ye gazing into heav'n?\"",
+        "Alleluia!",
+        "Alleluia!",
+        "This is the Savior This is He!",
+        "Jesus has triumphed gloriously.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Again shall ye behold Him so",
+        "As ye today have seen Him go;",
+        "Alleluia!",
+        "Alleluia!",
+        "Calm soaring through the radiant sky,",
+        "Mounting its dazzling summits high.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "May our affections there do tend,",
+        "And with unwearied hearts ascend,",
+        "Alleluia!",
+        "Alleluia!",
+        "Toward Thy kingdom's throne where Thou",
+        "As in our faith are seated now.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Be Thou our present joy O Lord!",
+        "Who will be ever our reward,",
+        "Alleluia!",
+        "Alleluia!",
+        "And, as the countless ages flee,",
+        "May all our glory be in Thee!",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "D O risen Christ ascended Lord.",
+        "All praise to Thee let earth accord,",
+        "Alleluia! Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Who are while endless ages run,",
+        "With Father and with Spirit One.  Alleluia!",
+        "Alleluia! Alleluia! Alleluia! Alleluia!"
+      ]
+    }
+  ],
+  "category": "Ascension",
+  "topics": [
+    "Angels",
+    "Art and Music",
+    "Heaven",
+    "Jesus",
+    "Praise, Son",
+    "Throne (also see God - As King)"
+  ],
+  "metre": "8 8 8 8 with Alleluias",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/A_Hymn_of_Glory_Let_Us_Sing-Lasst_Uns_Erfreuen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "A_Hymn_of_Glory_Let_Us_Sing-Lasst_Uns_Erfreuen"
+}

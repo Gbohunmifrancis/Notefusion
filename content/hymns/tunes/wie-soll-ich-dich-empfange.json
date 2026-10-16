@@ -1,0 +1,24 @@
+{
+  "name": "WIE SOLL ICH DICH EMPFANGE",
+  "music": [
+    {
+      "name": "Johann Crüger",
+      "born": 1598,
+      "died": 1662,
+      "role": "Music (1653)"
+    }
+  ],
+  "musicPublished": 1653,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:2 | G4:1 Ab4:1 Bb4:1 Bb4:1 | Ab4:2 G4:1 Ab4:1 | G4:1 Eb4:1 F4:1 F4:1 | Eb4:2 Eb4:2 | G4:1 Ab4:1 Bb4:1 Bb4:1 | Ab4:2 G4:1 Ab4:1 | G4:1 Eb4:1 F4:1 F4:1 | Eb4:2 Bb4:2 | C5:1 D5:1 Eb5:1 D5:1 | C5:2 Bb4:1 G4:1 | C5:1 Bb4:1 Ab4:1 G4:1 | F4:2 G4:2 | Eb4:1 F4:1 G4:1 Bb4:1 | Ab4:2 G4:1 Bb4:1 | Ab4:1 G4:1 F4:1 F4:1 | Eb4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_How_Shall_I_Meet_Thee-Wie_Soll_Ich_Dich_Empfange.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score's notes give the translation as in print by 1884. The Open Hymnal's own source: Evangelical Lutheran Hymn Book (LCMS), Edition of 1931 Hymn 136. Translation found in \"Hymn book for the use of Evangelical Lutheran schools and congregations\" By August Crull, 1884"
+}

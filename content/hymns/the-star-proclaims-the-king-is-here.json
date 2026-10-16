@@ -1,0 +1,92 @@
+{
+  "title": "The Star Proclaims the King Is Here",
+  "tune": "wo-gott-zum-haus",
+  "text": [
+    {
+      "name": "Coelius Sedulius",
+      "died": 500,
+      "lived": "5th century",
+      "role": "Words (450)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1852)"
+    }
+  ],
+  "textPublished": 1852,
+  "description": "The Star Proclaims the King Is Here in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Coelius Sedulius, first published in 450. The English translation is by John Mason Neale (1852). The tune, WO GOTT ZUM HAUS, is from Klug's Geistliche Lieder, Wittenberg, 1533. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The star pro-claims the King is here; But, Her-od, why this sense-less fear? He takes no realms of earth a-way Who gives the realms of heav'n_-ly day.",
+  "verses": [
+    {
+      "lines": [
+        "The star proclaims the King is here;",
+        "But, Herod, why this senseless fear?",
+        "He takes no realms of earth away",
+        "Who gives the realms of heav'nly day."
+      ]
+    },
+    {
+      "lines": [
+        "The wiser Magi see from far",
+        "And follow on His guiding star;",
+        "And led by light, to light they press",
+        "And by their gifts their God confess."
+      ]
+    },
+    {
+      "lines": [
+        "Within the Jordan's crystal flood",
+        "In meekness stands the Lamb of God",
+        "And, sinless, sanctifies the wave,",
+        "Mankind from sin to cleanse and save."
+      ]
+    },
+    {
+      "lines": [
+        "At Cana first His pow'r is shown;",
+        "His might the blushing waters own",
+        "And, changing as He speaks the word,",
+        "Flow wine, obedient to their Lord."
+      ]
+    },
+    {
+      "lines": [
+        "All glory, Jesus, be to Thee",
+        "For this Thy glad epiphany;",
+        "Whom with the Father we adore",
+        "And Holy Ghost forevermore."
+      ]
+    }
+  ],
+  "category": "Epiphany",
+  "topics": [
+    "Baptism",
+    "Christmas/Advent",
+    "Darkness, Spiritual",
+    "God, Creator",
+    "Guidance",
+    "Jesus",
+    "Light",
+    "Magi",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Shepherd/Lamb",
+    "Worship"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Star_Proclaims_the_King_Is_Here-Wo_Gott_Zum_Haus_1533.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Star_Proclaims_the_King_Is_Here-Wo_Gott_Zum_Haus_1533"
+}

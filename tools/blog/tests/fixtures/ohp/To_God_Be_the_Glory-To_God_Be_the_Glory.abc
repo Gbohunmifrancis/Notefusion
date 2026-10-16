@@ -1,0 +1,49 @@
+%OHSCRIP Job 5:9, Jn 3:16, Ps 40:5, 72:18, 86:10, Rom 11:33, Jn 10:7-9, 1Cor 7:23
+%OHTOPICS {Atonement}, {Blood [2]}, {Forgiveness}, {God, Mercy of}, {Gospel}, {Jesus}, {Joy}, {Kindness, God's}, {Love}, {Praise, Father}, {Praise, Son}, {Salvation}, {Worship}
+%OHCATEGORY PRAISE
+%OHMETRICAL 11 11 11 11 12 12 11 11
+%OHCOMPLEXITY 2
+%OHCOMPOSER Doane, William Howard (1832-1915)
+%OHARRANGER Doane, William Howard (1832-1915)
+%OHAUTHOR Crosby, Fanny Jane (1820-1915)
+%OHTRANSLATOR none
+
+X: 1
+T: To God Be The Glory
+C: Words: Fanny Crosby, 1875. Music and Setting: 'To God Be The Glory' William Howard Doane, 1875. 
+C: copyright: public domain.  This score is a part of the Open Hymnal Project, 2013 Revision.
+S: Music source: Brightest and Best, by W. H. Doane & Robert Lowry, 1875 hymn 118
+M: 3/4 % time signature
+L: 1/4 % default length
+%%staves (S1V1 S1V2) | (S2V1 S2V2) 
+V: S1V1 clef=treble 
+V: S1V2 
+V: S2V1 clef=bass 
+V: S2V2 
+K: Ab % key signature
+%
+%
+% 1
+[V: S1V1] [Q:1/4=120] E | E2 F/ G/  | A E A | B E B | c2 c | d F
+w: 1.~To God be the glor- y, great things He has done; So loved He 
+w: 2.~O per- fect re- demp- tion, the pur- chase of blood, To ev- ery 
+w: 3.~Great things He has taught us, great things He has done, And great our 
+% 1
+[V: S1V1] d | c A c | c B F | B2 E | E2 F/ G/ | A E A |
+w: the world that He gave us His Son Who yield- ed His life an a- 
+w: be- lie- ver the pro- mise of God; The vil- est o- ffend- er who 
+w: re- joic- ing through Je- sus the Son; But pur- er, and high- er, and 
+% 2
+[V: S1V1] B E B | c2 c | e d B | A G A | c c B | A2
+w: tone- ment for sin, And o- pened the life gate that all may go in.
+w: tru- ly be- lieves, That mo- ment from Je- sus a par- don re- ceives.
+w: great- er will be Our won- der, our trans- port, when Je- sus we see.
+% 2
+[V: S1V1] c3/4 d/4 | e2 c3/4 d/4 | e2 e3/4 c/4 | A B c | B2 B3/4 c/4 | d2
+w: Praise the Lord, praise the Lord, Let the earth hear His voice! Praise the Lord, 
+% 2
+[V: S1V1] B3/4 c/4 | d2 d/ A/ | e e d | c2 E | E2 F/ G/ | A E A |
+w: praise the Lord, Let the peo- ple re- joice! O come to the Fa- ther, through 
+% 2
+[V: S1V1] B E B | c2 !sintro!c | e d B | A G A | c c B | A2 !eintro!|]
+w: Je- sus the Son, And give Him the glor- y, great things He has done. 

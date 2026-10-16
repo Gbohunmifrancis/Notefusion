@@ -1,0 +1,72 @@
+{
+  "title": "Under His Wings",
+  "tune": "under-his-wings",
+  "text": [
+    {
+      "name": "William Orcutt Cushing",
+      "born": 1823,
+      "died": 1902,
+      "role": "Words (1896)"
+    }
+  ],
+  "textPublished": 1896,
+  "description": "Under His Wings in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Orcutt Cushing, first published in 1896. The tune, UNDER HIS WINGS, is by Ira David Sankey (1898). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Un-der His wings I am safe-ly a-bid-ing, Though the night deep-ens and temp-ests are wild, Still I can trust Him; I know He will keep me, He has re-deemed me, and I am His child. Un-der His wings, un-der His wings, Who from His love_ can sev-er? Un-der His wings my soul shall a-bide, Safe-ly a-bide_ for-ev-er.",
+  "verses": [
+    {
+      "lines": [
+        "Under His wings I am safely abiding,",
+        "Though the night deepens and tempests are wild,",
+        "Still I can trust Him; I know He will keep me,",
+        "He has redeemed me, and I am His child."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Under His wings, under His wings,",
+        "Who from His love can sever?",
+        "Under His wings my soul shall abide,",
+        "Safely abide forever."
+      ]
+    },
+    {
+      "lines": [
+        "Under His wings, what a refuge in sorrow!",
+        "How the heart yearningly turns to His rest!",
+        "Often when earth has no balm for my healing,",
+        "There I find comfort, and there I am blessed."
+      ]
+    },
+    {
+      "lines": [
+        "Under His wings, oh, what precious enjoyment!",
+        "There will I hide till life's trials are o'er;",
+        "Sheltered, protected, no evil can harm me,",
+        "Resting in Jesus, I'm safe evermore."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Calmness",
+    "Courage in Affliction",
+    "God, Care of",
+    "Peace",
+    "Rest",
+    "Trust"
+  ],
+  "metre": "11 10 11 10 8 7 9 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Under_His_Wings-Under_His_Wings.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Under_His_Wings-Under_His_Wings"
+}

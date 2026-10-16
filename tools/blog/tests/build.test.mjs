@@ -103,8 +103,9 @@ test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the sco
   // The plain-text solfa is one unit per bar (so a phone wraps it at bar lines), its words under it;
   // read in order the bars are the line's text exactly.
   const firstLine = /<div class="solfa-line">([\s\S]*?)<\/div>/.exec(html)[1];
-  assert.equal([...firstLine.matchAll(/<code>([^<]*)<\/code>/g)].map((m) => m[1]).join(""), "| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |");
-  assert.match(firstLine, /^<span class="solfa-bar"><code>\| s, - <\/code><span class="solfa-words">A-<\/span><\/span><span class="solfa-bar"><code>\| d - - - m d <\/code><span class="solfa-words">mazing<\/span>/);
+  // Octave marks sit in a span (drawn small and low, apart from any quarter-beat mark); the text is the engine's.
+  assert.equal([...firstLine.matchAll(/<code>(.*?)<\/code>/g)].map((m) => m[1].replace(/<[^>]*>/g, "")).join(""), "| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |");
+  assert.match(firstLine, /^<span class="solfa-bar"><code>\| s<span class="om om-low">,<\/span> - <\/code><span class="solfa-words">A-<\/span><\/span><span class="solfa-bar"><code>\| d - - - m d <\/code><span class="solfa-words">mazing<\/span>/);
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
   const comp = ld.find((d) => d["@type"] === "MusicComposition");
   assert.equal(comp.musicalKey, "G major");

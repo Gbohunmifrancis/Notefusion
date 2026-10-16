@@ -1,0 +1,95 @@
+{
+  "title": "Lord of Glory, Who Hast Bought Us",
+  "tune": "hyfrydol",
+  "text": [
+    {
+      "name": "Eliza Sibbald Dykes Alderson",
+      "born": 1818,
+      "died": 1889,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "Lord of Glory, Who Hast Bought Us in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Eliza Sibbald Dykes Alderson, first published in 1864. The tune, HYFRYDOL, is by Rowland H. Prichard (1830). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord of Glo_-ry, who hast bought_ us with Thy life-blood as_ the price, Nev-er grud_-ging for the lost_ ones that tre-men-dous sac_-ri-fice; And with that_ hast free-ly giv_-en bless-ings count_-less as_ the sand, To_ th'un-thank_-ful and_ the ev___-il with Thine own_ un-spar-ing hand.",
+  "verses": [
+    {
+      "lines": [
+        "Lord of Glory, who hast bought us",
+        "with Thy lifeblood as the price,",
+        "Never grudging for the lost ones",
+        "that tremendous sacrifice;",
+        "And with that hast freely given",
+        "blessings countless as the sand,",
+        "To th'unthankful and the evil",
+        "with Thine own unsparing hand."
+      ]
+    },
+    {
+      "lines": [
+        "Grant us hearts, dear Lord, to yield Thee",
+        "gladly, freely, of Thine own.",
+        "With the sunshine of Thy goodness",
+        "melt our thankless hearts of stone.",
+        "Till our cold and selfish natures,",
+        "warmed by Thee, at length believe",
+        "That more happy and more blessed",
+        "'tis to give than to receive."
+      ]
+    },
+    {
+      "lines": [
+        "Wondrous honor hast Thou given",
+        "to our humblest charity.",
+        "In Thine own mysterious sentence,",
+        "\"Ye have done it unto Me.\"",
+        "Can it be, O gracious Master,",
+        "Thou dost deign for alms to sue,",
+        "Saying by Thy poor and needy,",
+        "\"Give as I have given you\""
+      ]
+    },
+    {
+      "lines": [
+        "Lord of Glory, who hast bought us",
+        "with Thy lifeblood as the price,",
+        "Never grudging for the lost ones",
+        "that tremendous sacrifice;",
+        "Give us faith, to trust Thee boldly;",
+        "hope, to stay our souls on Thee;",
+        "But O, best of all Thy graces,",
+        "give us Thine own charity."
+      ]
+    }
+  ],
+  "category": "Stewardship",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Charity (see also Tithing)",
+    "Conscience",
+    "Faithfulness",
+    "Following Jesus, In Action",
+    "God, Faithfulness of",
+    "God, Mercy of",
+    "Grace",
+    "Gratitude",
+    "Humility",
+    "Jesus",
+    "Kindness, God's",
+    "Salvation",
+    "Sinners"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_of_Glory_Who_Hast_Bought_Us-Hyfrydol.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_of_Glory_Who_Hast_Bought_Us-Hyfrydol"
+}

@@ -1,0 +1,74 @@
+{
+  "title": "Isaiah, Mighty Seer, in Days of Old",
+  "alsoKnownAs": [
+    "These Things the Seer Isaiah Did Befall",
+    "Isaiah 'Twas the Prophet"
+  ],
+  "tune": "jesaia-dem-propheten-das-geschah",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1526)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Isaiah, Mighty Seer, in Days of Old in Tonic Solfa: the solfa line by line with the words, staff notation, the words, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1526. The tune, JESAIA DEM PROPHETEN DAS GESCHAH, is by Martin Luther (1526). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Is-ai-ah, might-y seer, in days of old The Lord of all in Spir-it did be-hold High on a loft-y throne, in splen-dor bright, With flow-ing train that filled the Tem-ple quite. A-bove the throne were state-ly ser-a-phim, Six wings had they, these mess-en-gers of Him. With twain they veiled their fa-ces, as was meet, With twain in rev-erent awe they hid their feet, And with the o-ther twain a-loft they soared, One to the o-ther called and praised the Lord: \"Ho-ly is God, the Lord of Sa-ba-oth! Ho-ly is God, the Lord of Sa-ba-oth! Ho-ly is God, the Lord of Sa-ba-oth! Be-hold, His glo-ry fill-eth all the earth!\" The beams and lin-tels trem-bled at the cry, And clouds of smoke en-wrapped the throne on high.",
+  "verses": [
+    {
+      "lines": [
+        "Isaiah, mighty seer, in days of old",
+        "The Lord of all in Spirit did behold",
+        "High on a lofty throne, in splendor bright,",
+        "With flowing train that filled the Temple quite.",
+        "Above the throne were stately seraphim,",
+        "Six wings had they, these messengers of Him.",
+        "With twain they veiled their faces, as was meet,",
+        "With twain in reverent awe they hid their feet,",
+        "And with the other twain aloft they soared,",
+        "One to the other called and praised the Lord:",
+        "\"Holy is God, the Lord of Sabaoth!",
+        "Holy is God, the Lord of Sabaoth!",
+        "Holy is God, the Lord of Sabaoth!",
+        "Behold, His glory filleth all the earth!\"",
+        "The beams and lintels trembled at the cry,",
+        "And clouds of smoke enwrapped the throne on high."
+      ]
+    }
+  ],
+  "category": "Trinity",
+  "topics": [
+    "Angels",
+    "Cloud",
+    "Father",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Heaven",
+    "Holiness",
+    "Praise, Father",
+    "Presence",
+    "Reverence",
+    "Throne (also see God - As King)",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Isaiah_Mighty_Seer_In_Days_Of_Old-Jesaia_Dem_Propheten_das_Geschah.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Isaiah_Mighty_Seer_In_Days_Of_Old-Jesaia_Dem_Propheten_das_Geschah",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

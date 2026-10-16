@@ -1,0 +1,23 @@
+{
+  "name": "WONDROUS LOVE",
+  "music": [
+    {
+      "name": "Traditional American",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": 1916,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 D4:1 C4:1 | E4:1 G4:1 A4:2 | G4:1 E4:1 D4:2 | D4:1 C4:1 E4:2 | A4:2 C5:1 B4:1 | A4:1 G4:1 A4:2 | G4:1 E4:1 D4:2 | G4:2 A4:1 G4:1 | A4:1 C5:1 D5:2 | D5:2 C5:1 A4:1 | A4:.5 G4:.5 E4:1 D4:2 | D4:2 D4:1 C4:1 | E4:1 G4:1 A4:2 | G4:1 E4:1 D4:2 | D4:1 C4:1 E4:2 | A4:2 C5:1 B4:1 | A4:1 G4:1 A4:2 | G4:1 E4:1 D4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/What_Wondrous_Love_Is_This-Wondrous_Love_Southern_Harmony.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1916, the year of the setting the Open Hymnal copied. The tune ends on D, not on the key note: it may be modal. The Open Hymnal's own source: \"Songs of the Cross\", 1924 Hymn 208 Lyrics source: \"The Choice: in two parts; Part I, containing Psalms and hymns, Part II, containing spiritual songs; designed for public and private worship\" (6th ed.) (1856), p.348 Hymn 40 setting alterations/key change by Brian Dumont, 11 March 2026 and released into the public domain"
+}

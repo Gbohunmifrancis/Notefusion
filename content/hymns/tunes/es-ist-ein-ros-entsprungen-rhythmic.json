@@ -1,0 +1,23 @@
+{
+  "name": "ES IST EIN ROS ENTSPRUNGEN (RHYTHMIC)",
+  "music": [
+    {
+      "name": "From Altes Catholische Geistliche Kirchengeseng, Köln, 1599",
+      "traditional": true,
+      "role": "Melody (1599)"
+    }
+  ],
+  "musicPublished": 1599,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/A_Great_And_Mighty_Wonder-Es_Ist_Ein_Ros_Entsprungen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929; the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 3 has 6 beats, more than 4; bar 4 has 6 beats, more than 4; bar 5 has 5 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 6 beats, more than 4; bar 13 has 6 beats, more than 4; bar 14 has 6 beats, more than 4. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: The English Hymnal, 1906. Hymn 19"
+}

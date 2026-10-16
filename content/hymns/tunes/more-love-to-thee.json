@@ -1,0 +1,24 @@
+{
+  "name": "MORE LOVE TO THEE",
+  "music": [
+    {
+      "name": "William Howard Doane",
+      "born": 1832,
+      "died": 1915,
+      "role": "Music (1870)"
+    }
+  ],
+  "musicPublished": 1870,
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 75,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:2 F4:1 Eb4:1 | Ab4:1.5 Bb4:.5 C5:2 | C5:2 Bb4:1 Ab4:1 | Bb4:3 r:1 | Eb4:2 F4:1 Eb4:1 | Ab4:1.5 Bb4:.5 C5:2 | Bb4:2 Ab4:1 G4:1 | Ab4:3 r:1 | Db5:2 Db5:1 Db5:1 | Db5:1.5 C5:.5 C5:2 | Bb4:2 Bb4:1 Bb4:1 | Bb4:1.5 Ab4:.5 Ab4:2 | F4:2 F4:1 F4:1 | Ab4:3 r:1 | Bb4:2 Ab4:1 G4:1 | Ab4:3 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/More_Love_To_Thee-More_Love_To_Thee.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Pentecostal Hymns, No. 2\" 1898 page 69. Setting has only miniscule differences fom \"Songs of Devotion\", 1870 hymn 379 page 151 by Doane. ABC file contributed to the Open Hymnal by Samuel Cantrell, 18 Jan 2012."
+}

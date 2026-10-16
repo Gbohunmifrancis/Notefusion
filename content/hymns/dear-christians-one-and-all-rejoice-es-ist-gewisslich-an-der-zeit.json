@@ -1,0 +1,118 @@
+{
+  "title": "Dear Christians, One and All Rejoice (Es Ist Gewisslich an Der Zeit)",
+  "tune": "es-ist-gewisslich-an-der-zeit",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1523)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Dear Christians, One and All Rejoice in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1523. The English translation is by Richard Massie (1854). The tune, ES IST GEWISSLICH AN DER ZEIT, is from Klug's Geistliche Lieder, Wittenberg, 1533. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Dear Christ-ians, one and all re-joice, With ex-ul-ta-tion spring-ing, And with u-ni-ted heart and voice And ho-ly rap-ture sing-ing, Pro-claim the won-ders God hath done, How his right arm the vic-t'ry won; Right dear-ly it hath cost him.",
+  "verses": [
+    {
+      "lines": [
+        "Dear Christians, one and all rejoice,",
+        "With exultation springing,",
+        "And with united heart and voice",
+        "And holy rapture singing,",
+        "Proclaim the wonders God hath done,",
+        "How his right arm the vict'ry won;",
+        "Right dearly it hath cost him."
+      ]
+    },
+    {
+      "lines": [
+        "Fast bound in Satan's chains I lay.",
+        "Death brooded darkly o'er me;",
+        "Sin was my torment night and day,",
+        "Therein my mother bore me.",
+        "Deeper and deeper still I fell,",
+        "Life was become a living hell,",
+        "So firmly sin possessed me."
+      ]
+    },
+    {
+      "lines": [
+        "My good works could avail me naught,",
+        "For they with sin were stainéd;",
+        "Freewill against God's judgment fought,",
+        "And dead to good remainéd.",
+        "Grief drove me to despair, and I",
+        "Had nothing left me but to die,",
+        "To hell I fast was sinking."
+      ]
+    },
+    {
+      "lines": [
+        "God saw, in his eternal grace,",
+        "My sorrow out of measure;",
+        "He thought upon his tenderness",
+        "To save was his good pleasure.",
+        "He turn'd to me a Father's heart—",
+        "Not small the cost to heal my smart",
+        "He gave his best and dearest."
+      ]
+    },
+    {
+      "lines": [
+        "He spake to his beloved Son:",
+        "'Tis time to take compassion;",
+        "Then go, bright jewel of my crown,",
+        "And bring to man salvation;",
+        "From sin and sorrow set him free,",
+        "Slay bitter death for him, that he",
+        "May live with thee forever."
+      ]
+    }
+  ],
+  "category": "Justification",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Brotherhood",
+    "Christian Life",
+    "Comfort",
+    "Compassion",
+    "Crown",
+    "Father",
+    "God, As King",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Healing",
+    "Holy Spirit",
+    "Jesus",
+    "Joy",
+    "Judgment",
+    "Kindness, God's",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Sinners"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Dear_Christians_One_And_All_Rejoice-Es_ist_Gewisslich_an_der_Zeit.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Dear_Christians_One_And_All_Rejoice-Es_ist_Gewisslich_an_der_Zeit"
+}

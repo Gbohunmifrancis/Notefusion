@@ -1,0 +1,108 @@
+{
+  "title": "What Is the World to Me?",
+  "tune": "was-frag-ich-nach-der-welt",
+  "text": [
+    {
+      "name": "Georg Michael Pfefferkorn",
+      "born": 1645,
+      "died": 1731,
+      "role": "Words (1667)"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated (1893)"
+    }
+  ],
+  "textPublished": 1893,
+  "description": "What Is the World to Me? in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Georg Michael Pfefferkorn, first published in 1667. The English translation is by August Crull (1893). The tune, WAS FRAG ICH NACH DER WELT, is by Ahasverus Fritsch (1679). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "What is the world to me With all its vaun-ted plea_-sure When Thou, and Thou a-lone, Lord Je-sus, art my Trea_-sure! Thou o-nly, dea-rest Lord, My soul's De-light shalt be; Thou art my Peace, my Rest, What is the world to me!",
+  "verses": [
+    {
+      "lines": [
+        "What is the world to me",
+        "With all its vaunted pleasure",
+        "When Thou, and Thou alone,",
+        "Lord Jesus, art my Treasure!",
+        "Thou only, dearest Lord,",
+        "My soul's Delight shalt be;",
+        "Thou art my Peace, my Rest,",
+        "What is the world to me!"
+      ]
+    },
+    {
+      "lines": [
+        "The world is like a cloud",
+        "And like a vapor fleeting,",
+        "A shadow that declines,",
+        "Swift to its end retreating.",
+        "My Jesus doth abide,",
+        "Though all things fade and flee;",
+        "My everlasting Rock,",
+        "What is the world to me!"
+      ]
+    },
+    {
+      "lines": [
+        "The world seeks to be praised",
+        "And honored by the mighty,",
+        "Yet never once reflects",
+        "That they are frail and flighty.",
+        "But what I truly prize",
+        "Above all things is He,",
+        "My Jesus, He alone,",
+        "What is the world to me!"
+      ]
+    },
+    {
+      "lines": [
+        "The world seeks after wealth",
+        "And all that mammon offers,",
+        "Yet never is content",
+        "Though gold should fill its coffers.",
+        "I have a higher good,",
+        "Content with it I'll be:",
+        "My Jesus is my Wealth,",
+        "What is the world to me!"
+      ]
+    },
+    {
+      "lines": [
+        "The world is sorely grieved",
+        "Whenever it is slighted",
+        "Or when its hollow fame",
+        "And honor have been blighted.",
+        "Christ, Thy reproach I bear",
+        "Long as it pleaseth Thee;",
+        "I'm honored by my Lord,",
+        "What is the world to me!"
+      ]
+    }
+  ],
+  "category": "Stewardship",
+  "topics": [
+    "Brevity of Life",
+    "Christian Life",
+    "Discipleship",
+    "Eternal Life",
+    "Gratitude",
+    "Jesus",
+    "Kindness, God's",
+    "Promises (see also Gospel)",
+    "Stewardship",
+    "Trust"
+  ],
+  "metre": "6 7 6 7 6 6 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/What_Is_the_World_to_Me-Was_Frag_Ich_Nach_Der_Welt.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "What_Is_the_World_to_Me-Was_Frag_Ich_Nach_Der_Welt"
+}

@@ -1,0 +1,71 @@
+{
+  "title": "Come, Thou Long-Expected Jesus",
+  "alsoKnownAs": [
+    "Hail, Thou Long-Expected Jesus"
+  ],
+  "tune": "jefferson",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1745)"
+    }
+  ],
+  "textPublished": 1745,
+  "description": "Come, Thou Long-Expected Jesus in Tonic Solfa: the solfa line by line with the words, staff notation, all 2 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles Wesley, first published in 1745. The tune, JEFFERSON, is from Southern Harmony, 1835. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Come, Thou_ long ex_-pect-ed_ Je-sus Born_ to_ set Thy_ peo-ple free; From our_ fears and_ sins re_-lease us, Let_ us_ find our_ rest in Thee. Is-rael's Strength and Con-sol_-a-tion, Hope of all the_ earth Thou_ art; Dear De_-sire of ev-ery_ na-tion, Joy_ of_ ev-ery_ long-ing heart.",
+  "verses": [
+    {
+      "lines": [
+        "Come, Thou long expected Jesus",
+        "Born to set Thy people free;",
+        "From our fears and sins release us,",
+        "Let us find our rest in Thee.",
+        "Israel's Strength and Consolation,",
+        "Hope of all the earth Thou art;",
+        "Dear Desire of every nation,",
+        "Joy of every longing heart."
+      ]
+    },
+    {
+      "lines": [
+        "Born Thy people to de liver,",
+        "Born a child and yet a King,",
+        "Born to reign in us forever,",
+        "Now Thy gracious kingdom bring.",
+        "By Thine own eternal Spirit",
+        "Rule in all our hearts alone;",
+        "By Thine all sufficient merit,",
+        "Raise us to Thy glorious throne."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Atonement",
+    "Christmas/Advent",
+    "God, As King",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Hope",
+    "Invitation (Faithful's to God)",
+    "Israel",
+    "Jesus",
+    "Joy",
+    "Presence",
+    "Throne (also see God - As King)"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Thou_Long_Expected_Jesus-Jefferson.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Come_Thou_Long_Expected_Jesus-Jefferson"
+}

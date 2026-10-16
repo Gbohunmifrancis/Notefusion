@@ -1,0 +1,90 @@
+{
+  "title": "Now Thank We All Our God",
+  "tune": "nun-danket",
+  "text": [
+    {
+      "name": "Martin Rinkart",
+      "born": 1586,
+      "died": 1649,
+      "role": "Words (1636)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1856)"
+    }
+  ],
+  "textPublished": 1856,
+  "description": "Now Thank We All Our God in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Rinkart, first published in 1636. The English translation is by Catherine Winkworth (1856). The tune, NUN DANKET, is by Johann Crüger (1647). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Now thank we all our God, with heart and hands and voi-ces, Who won-drous things has done, in Whom this world re-joi-ces; Who from our mo-thers' arms has blessed us on our way With count-less gifts of love, and still is ours to-day.",
+  "verses": [
+    {
+      "lines": [
+        "Now thank we all our God,",
+        "with heart and hands and voices,",
+        "Who wondrous things has done,",
+        "in Whom this world rejoices;",
+        "Who from our mothers' arms",
+        "has blessed us on our way",
+        "With countless gifts of love,",
+        "and still is ours today."
+      ]
+    },
+    {
+      "lines": [
+        "O may this bounteous God",
+        "through all our life be near us,",
+        "With ever joyful hearts",
+        "and blessed peace to cheer us;",
+        "And keep us in His grace,",
+        "and guide us when perplexed;",
+        "And free us from all ills,",
+        "in this world and the next!"
+      ]
+    },
+    {
+      "lines": [
+        "All praise and thanks to God",
+        "the Father now be given;",
+        "The Son and Him Who reigns",
+        "with Them in highest Heaven;",
+        "The one eternal God,",
+        "Whom earth and Heav'n adore;",
+        "For thus it was, is now,",
+        "and shall be evermore."
+      ]
+    }
+  ],
+  "category": "Thanksgiving",
+  "topics": [
+    "Fellowship",
+    "God, Care of",
+    "God, Creator",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Love of",
+    "Gratitude",
+    "Guidance",
+    "Harvest",
+    "Invitation (Faithful's to God)",
+    "Joy",
+    "Love",
+    "Loyalty",
+    "Presence",
+    "Trinity"
+  ],
+  "metre": "6 7 6 7 6 6 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_Thank_We_All_Our_God-Nun_Danket.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Now_Thank_We_All_Our_God-Nun_Danket",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 6 does not add up to 4 beats; bar 10 does not add up to 4 beats."
+}

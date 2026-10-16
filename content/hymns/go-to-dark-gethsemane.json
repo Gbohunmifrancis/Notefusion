@@ -1,0 +1,86 @@
+{
+  "title": "Go to Dark Gethsemane",
+  "tune": "gethsemane",
+  "text": [
+    {
+      "name": "James Montgomery",
+      "born": 1771,
+      "died": 1854,
+      "role": "Words (1820)"
+    }
+  ],
+  "textPublished": 1820,
+  "description": "Go to Dark Gethsemane in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by James Montgomery, first published in 1820. The tune, GETHSEMANE, is by Richard Redhead (1853). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Go to dark Geth-se-ma-ne, ye that feel the temp-ter's pow'r; Your Re-deem-er's con-flict see, watch with Him one bit-ter hour, Turn not from His griefs a-way; learn from Je-sus Christ to pray.",
+  "verses": [
+    {
+      "lines": [
+        "Go to dark Gethsemane,",
+        "ye that feel the tempter's pow'r;",
+        "Your Redeemer's conflict see,",
+        "watch with Him one bitter hour,",
+        "Turn not from His griefs away;",
+        "learn from Jesus Christ to pray."
+      ]
+    },
+    {
+      "lines": [
+        "Follow to the judgment hall,",
+        "view the Lord of Life arraigned;",
+        "O the wormwood and the gall!",
+        "O the pangs His soul sustained!",
+        "Shun not suff'ring, shame, or loss;",
+        "learn from Christ to bear the cross."
+      ]
+    },
+    {
+      "lines": [
+        "Calv'ry's mournful mountain climb;",
+        "there, adoring at His feet,",
+        "Mark that miracle of time,",
+        "God's own sacrifice complete.",
+        "\"It is finished!\" hear Him cry;",
+        "learn from Jesus Christ to die."
+      ]
+    },
+    {
+      "lines": [
+        "Early hasten to the tomb",
+        "where they laid His breathless clay;",
+        "All is solitude and gloom.",
+        "Who has taken Him away?",
+        "Christ is ris'n! He meets our eyes;",
+        "Savior, teach us so to rise."
+      ]
+    }
+  ],
+  "category": "Good Thursday",
+  "topics": [
+    "Atonement",
+    "Christian Life",
+    "Cross",
+    "Darkness, Spiritual",
+    "Discipleship",
+    "Easter",
+    "Easter Week / Passion",
+    "Example, Christ's",
+    "Following Jesus, In Faith",
+    "God, Goodness of",
+    "Gospel",
+    "Jesus",
+    "Kindness, God's",
+    "Resurrection"
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Go_to_Dark_Gethsemane-Gethsemane-Petra.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Go_to_Dark_Gethsemane-Gethsemane-Petra"
+}

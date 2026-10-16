@@ -1,0 +1,101 @@
+{
+  "title": "Now Sin, with Reign Unbroken",
+  "tune": "au-meines-herzens-grunde",
+  "text": [
+    {
+      "name": "Thomas Hansen Kingo",
+      "born": 1634,
+      "died": 1703,
+      "role": "Words (1699)"
+    },
+    {
+      "name": "Paul Christian Paulsen",
+      "born": 1881,
+      "died": 1948,
+      "role": "Translated (1927)"
+    }
+  ],
+  "textPublished": 1927,
+  "description": "Now Sin, with Reign Unbroken in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Hansen Kingo, first published in 1699. The English translation is by Paul Christian Paulsen (1927). The tune, AU MEINES HERZENS GRUNDE, is by David Wolder (1598). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Now sin with reign un_-bro-ken, no more can rule my life, Since God the Word hath_ spo-ken, That wins for me the strife; Bap-tized, re-born by grace I_ am re-deem'd from e-vil, And have re-nounced the de-vil and all his works and ways.",
+  "verses": [
+    {
+      "lines": [
+        "Now sin with reign unbroken,",
+        "no more can rule my life,",
+        "Since God the Word hath spoken,",
+        "That wins for me the strife;",
+        "Baptized, reborn by grace",
+        "I am redeem'd from evil,",
+        "And have renounced the devil",
+        "and all his works and ways."
+      ]
+    },
+    {
+      "lines": [
+        "How can I rightly treasure",
+        "My Savior's death for me,",
+        "When seeking worldly pleasure,",
+        "I turn to that in glee?",
+        "Oh, lest I go astray",
+        "And unto sin surrender,",
+        "Dear Lord, be my Defender,",
+        "My Life, my Light, my Way."
+      ]
+    },
+    {
+      "lines": [
+        "What profits Easter morning,",
+        "The temple curtain rent,",
+        "When I neglect God's warning",
+        "To pray and to repent,",
+        "When wandering abroad",
+        "And yeilding to temptation,",
+        "I lose my soul's salvation,",
+        "My home, my hope, my God."
+      ]
+    },
+    {
+      "lines": [
+        "My Jesus and my Savior,",
+        "My Friend, my soul's delight",
+        "Oh help me not to waver,",
+        "Though Adam offers fight!",
+        "Help me to hate all sin,",
+        "And with the utmost candor",
+        "My heart to Thee Surrender,",
+        "The crown of life to win."
+      ]
+    }
+  ],
+  "category": "New Obedience",
+  "topics": [
+    "Adam (first/second - see also Guidance, Invitation [ours to God], Repentance)",
+    "Atonement",
+    "Baptism",
+    "Christian Life",
+    "Conscience",
+    "Contrition",
+    "Crown",
+    "Discipleship",
+    "Fear of the Lord",
+    "Following Jesus, In Action",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "Obedience",
+    "Repentance",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "7 6 7 6 6 7 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Now_Sin_with_Reign_Unbroken-Au_Meines_Herzens_Grunde-I_Doden_Jesus_Blunded-Jeg_Vil_Din_Pris_Udsjunge.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Now_Sin_with_Reign_Unbroken-Au_Meines_Herzens_Grunde-I_Doden_Jesus_Blunded-Jeg_Vil_Din_Pris_Udsjunge"
+}

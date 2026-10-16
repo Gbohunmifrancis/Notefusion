@@ -1,0 +1,108 @@
+{
+  "title": "O Lord of Heav'n and Earth and Sea",
+  "tune": "es-ist-kein-tag",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "O Lord of Heav'n and Earth and Sea in Tonic Solfa: the solfa line by line with the words, staff notation, all 8 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1863. The tune, ES IST KEIN TAG, is by Johann David Meyer (1692). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O Lord of_ Heav'n and_ earth_ and sea, To_ Thee all praise and glo-ry_ be; How_ shall we show our love to Thee, Who_ giv-est all?",
+  "verses": [
+    {
+      "lines": [
+        "O Lord of Heav'n and earth and sea,",
+        "To Thee all praise and glory be;",
+        "How shall we show our love to Thee,",
+        "Who givest all?"
+      ]
+    },
+    {
+      "lines": [
+        "The golden sunshine, vernal air,",
+        "Sweet flow'rs and fruits, Thy love declare;",
+        "Where harvests ripen, Thou art there,",
+        "Who givest all."
+      ]
+    },
+    {
+      "lines": [
+        "For peaceful homes and healthful days,",
+        "For all the blessings earth displays,",
+        "We owe Thee thankfulness and praise,",
+        "Who givest all."
+      ]
+    },
+    {
+      "lines": [
+        "Thou didst not spare Thine only Son,",
+        "But gav'st Him for a world undone,",
+        "And freely, with that blessèd One,",
+        "Thou givest all."
+      ]
+    },
+    {
+      "lines": [
+        "Thou giv'st the Spirit's blessèd dow'r,",
+        "Spirit of life and love and pow'r,",
+        "And dost His sev'nfold graces show'r",
+        "Upon us all."
+      ]
+    },
+    {
+      "lines": [
+        "For souls redeemed, for sins forgiv'n,",
+        "For means of grace and hopes of Heav'n,",
+        "Father, all praise to Thee be giv'n,",
+        "Who givest all."
+      ]
+    },
+    {
+      "lines": [
+        "We lose what on ourselves we spend,",
+        "We have as treasure without end",
+        "Whatever, Lord, to Thee we lend,",
+        "Who givest all."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee, from Whom we all derive",
+        "Our life, our gifts, our power to give:",
+        "O may we ever with Thee live,",
+        "Who givest all."
+      ]
+    }
+  ],
+  "category": "Thanksgiving",
+  "topics": [
+    "Atonement",
+    "Forgiveness",
+    "God, Care of",
+    "God, Creator",
+    "God, Goodness of",
+    "Gratitude",
+    "Harvest",
+    "Heaven",
+    "Kindness, God's",
+    "Love",
+    "Nature",
+    "Praise, Father"
+  ],
+  "metre": "8 8 8 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_Of_Heaven_and_Earth_and_Sea-Es_Ist_Kein_Tag.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Lord_Of_Heaven_and_Earth_and_Sea-Es_Ist_Kein_Tag"
+}

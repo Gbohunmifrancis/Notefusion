@@ -1,0 +1,24 @@
+{
+  "name": "MILWAUKEE",
+  "music": [
+    {
+      "name": "August Lemke",
+      "born": 1820,
+      "died": 1913,
+      "role": "Music (1849)"
+    }
+  ],
+  "musicPublished": 1849,
+  "key": "A major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:1 | C#5:2 A4:1 | A4:1 G#4:1 A4:1 | B4:2 G#4:1 | E4:2 E4:1 | E4:1 F#4:1 G#4:1 | A4:2 F#4:1 | E4:2 D4:1 | C#4:2 C#4:1 | E4:1 A4:1 C#5:1 | B4:1 G#4:1 E4:1 | A4:1 F#4:1 D#4:1 | E4:2 E4:1 | A4:2 B4:1 | C#5:2 A4:1 | G#4:2 F#4:1 | E4:2 A4:1 | G#4:2 B4:1 | A4:2 C#5:1 | B4:2 D5:1 | C#5:2 E4:1 | D5:1 C#5:1 B4:1 | A4:1 G#4:1 F#4:1 | E4:2 E4:1 | E4:2 E5:1 | E5:2 C#5:1 | D5:2 E5:1 | C#5:2 E4:1 | F#4:1 D5:1 B4:1 | A4:2 G#4:1 | A4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lift_Up_Your_Heads_Ye_Mighty_Gates-Milwaukee-Macht_Hoch_die_Tuer_Lemke.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Concordia Kinderchöre\", 1908 Hymn 6 page 10. Lyrics source: The Chorale Book for England, 1865, Hymn 25. noted Arr. v. S.F.G."
+}

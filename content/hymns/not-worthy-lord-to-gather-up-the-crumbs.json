@@ -1,0 +1,91 @@
+{
+  "title": "Not Worthy, Lord, to Gather Up the Crumbs",
+  "tune": "eventide",
+  "text": [
+    {
+      "name": "Edward Henry Jr. Bickersteth",
+      "born": 1825,
+      "died": 1906,
+      "role": "Words (1872)"
+    }
+  ],
+  "textPublished": 1872,
+  "description": "Not Worthy, Lord, to Gather Up the Crumbs in Tonic Solfa: the solfa with the words, staff notation, all 6 verses and a piano.",
+  "about": [
+    "The words are by Edward Henry Jr. Bickersteth, first published in 1872. The tune, EVENTIDE, is by William Henry Monk (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Not wor-thy, Lord, to ga-ther up the crumbs With trem-bling hand that from Thy ta-ble fall, A wea-ry, hea-vy la-den sin-ner comes To plead Thy pro-mise and o-bey Thy call.",
+  "verses": [
+    {
+      "lines": [
+        "Not worthy, Lord, to gather up the crumbs",
+        "With trembling hand that from Thy table fall,",
+        "A weary, heavy laden sinner comes",
+        "To plead Thy promise and obey Thy call."
+      ]
+    },
+    {
+      "lines": [
+        "I am not worthy to be thought Thy child,",
+        "Nor sit the last and lowest at Thy board;",
+        "Too long a wanderer and too oft beguiled;",
+        "I only ask one reconciling word."
+      ]
+    },
+    {
+      "lines": [
+        "One word from Thee, my Lord, one smile, one look,",
+        "And I could face the cold, rough world again;",
+        "And with that treasure in my heart could brook",
+        "The wrath of devils and the scorn of men."
+      ]
+    },
+    {
+      "lines": [
+        "And is not mercy Thy prerogative—",
+        "Free mercy, boundless, fathomless, divine?",
+        "Me, Lord, the chief of sinners, me forgive,",
+        "And Thine the greater glory, only Thine."
+      ]
+    },
+    {
+      "lines": [
+        "I hear Thy voice; Thou bid'st me come and rest;",
+        "I come, I kneel, I clasp Thy piercèd feet;",
+        "Thou bid'st me take my place, a welcome guest",
+        "Among Thy saints, and of Thy banquet eat."
+      ]
+    },
+    {
+      "lines": [
+        "My praise can only breathe itself in prayer,",
+        "My prayer can only lose itself in Thee;",
+        "Dwell Thou forever in my heart, and there,",
+        "Lord, let me sup with Thee; sup Thou with me."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Conscience",
+    "Contrition",
+    "Fear of the Lord",
+    "God, Mercy of",
+    "Grace",
+    "Gratitude",
+    "Holiness",
+    "Humility",
+    "Invitation (God's to Us)",
+    "Kindness, God's",
+    "Sinners"
+  ],
+  "metre": "10 10 10 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Not_Worthy_Lord_To_Gather_Up_The_Crumbs-Eventide.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Not_Worthy_Lord_To_Gather_Up_The_Crumbs-Eventide"
+}

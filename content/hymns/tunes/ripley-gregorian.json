@@ -1,0 +1,23 @@
+{
+  "name": "RIPLEY (GREGORIAN)",
+  "music": [
+    {
+      "name": "From Gregorian Chant",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": 1839,
+  "key": "Eb major",
+  "time": "3/2",
+  "tempo": 120,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:1 G4:1 | Bb4:3 G4:1 Ab4:1 C5:1 | Bb4:2 G4:2 Bb4:1 Eb4:1 | Ab4:1 G4:1 F4:2 F4:2 | Eb4:4 Eb4:1 G4:1 | Bb4:3 G4:1 Ab4:1 C5:1 | Bb4:2 G4:2 Bb4:1 Eb4:1 | Ab4:1 G4:1 F4:2 F4:2 | Eb4:4 Eb5:1 D5:1 | Eb5:3 Bb4:1 C5:1 C5:1 | Bb4:2 Bb4:2 Eb5:1 D5:1 | Eb5:3 Bb4:1 C5:1 C5:1 | Bb4:4 Eb4:1 G4:1 | Bb4:3 G4:1 Ab4:1 C5:1 | Bb4:2 G4:2 Bb4:1 Eb4:1 | Ab4:1 Bb4:1 F4:2 F4:2 | Eb4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Hallelujah_Praise_Jehovah_Psalter-Ripley_Gregorian.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: not provably public domain: 1909 United Presbyterian Board of Publication: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1839, the year of the setting the Open Hymnal copied. The Open Hymnal's own source: \"The Lutheran Hymnary\", 1913 Hymn 578 Lyrics source: \"The Psalter with Responsive Readings\" 1912 Hymn 400."
+}

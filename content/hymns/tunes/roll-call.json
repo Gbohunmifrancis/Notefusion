@@ -1,17 +1,24 @@
 {
   "name": "ROLL CALL",
   "music": [
-    {"name": "James Milton Black", "born": 1856, "died": 1938, "role": "Melody (1893)"}
+    {
+      "name": "James Milton Black",
+      "born": 1856,
+      "died": 1938,
+      "role": "Melody (1893)"
+    }
   ],
   "musicPublished": 1893,
-  "key": null,
-  "time": null,
-  "tempo": null,
-  "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Ab4:.75 Bb4:.25 | C5:.75 C5:.25 C5:.75 C5:.25 C5:.75 Bb4:.25 Ab4:.75 Ab4:.25 | Bb4:.75 Ab4:.25 Ab4:.75 F4:.25 Eb4:1 Ab4:.75 Bb4:.25 | C5:.75 C5:.25 C5:.75 C5:.25 C5:.75 C5:.25 Bb4:.75 Ab4:.25 | Bb4:3 Ab4:.75 Bb4:.25 | C5:.75 C5:.25 C5:.75 C5:.25 C5:.75 Bb4:.25 Ab4:.75 Ab4:.25 | Bb4:.75 Ab4:.25 Ab4:.75 F4:.25 Eb4:1 Ab4:.75 Bb4:.25 | C5:.75 C5:.25 C5:.75 Ab4:.25 Bb4:.75 Bb4:.25 Bb4:.75 G4:.25 | Ab4:3 C5:.75 Db5:.25 | Eb5:2~ Eb5:.75 Db5:.25 C5:.75 Db5:.25 | Eb5:2 C5:1 C5:.75 C5:.25 | Db5:2~ Db5:.75 C5:.25 Bb4:.75 C5:.25 | Db5:2 Bb4:1 C5:.75 Db5:.25 | Eb5:2~ Eb5:.75 C5:.25 Bb4:.75 Ab4:.25 | Ab4:2 Db5:1 Db5:.75 Bb4:.25 | C5:.75 C5:.25 C5:.75 Ab4:.25 Bb4:.75 Bb4:.25 Bb4:.75 G4:.25 | Ab4:3",
   "reviewed": false,
-  "confidence": "not encoded",
-  "source": "Open Hymnal Project ABC score consulted.",
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: almost every bar has a dotted quaver and semiquaver, which the half-beat solfa grid cannot show."
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "reviewNotes": "Melody filled in from the Open Hymnal Project's ABC score (When_the_Roll_is_Called_Up_Yonder-When_the_Roll_is_Called_Up_Yonder); the words under the notes are this page's first verse, fitted to the score's syllables. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: \"Epworth Songs\", 1893 Hymn 57.",
+  "sourceUrl": "http://openhymnal.org/Lyrics/When_the_Roll_is_Called_Up_Yonder-When_the_Roll_is_Called_Up_Yonder.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain."
 }

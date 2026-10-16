@@ -1,0 +1,123 @@
+{
+  "title": "Christ Jesus Lay in Death's Strong Bands",
+  "alsoKnownAs": [
+    "In Death's Strong Bands"
+  ],
+  "tune": "christ-lag-in-tobes-banden",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Christ Jesus Lay in Death's Strong Bands in Tonic Solfa: the solfa with the words, staff notation, all 5 verses and a piano.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, CHRIST LAG IN TOBES BANDEN, is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Christ Je-sus lay in death's strong bands, For our of-fen-ses_ giv-en; But now at God's right hand He stands, And brings us life from_ Hea-ven. Where-fore let us joy-ful be, And sing to God right thank-ful-ly Loud songs of Al-le-lu__-ia! Al-le_-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "Christ Jesus lay in death's strong bands,",
+        "For our offenses given;",
+        "But now at God's right hand He stands,",
+        "And brings us life from Heaven.",
+        "Wherefore let us joyful be,",
+        "And sing to God right thankfully",
+        "Loud songs of Alleluia!",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "No son of man could conquer",
+        "Death, Such mischief sin had wrought us,",
+        "For innocence dwelt not on earth,",
+        "And therefore Death had brought us",
+        "Into thralldom from of old",
+        "And ever grew more strong and bold",
+        "And kept us in his bondage.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "But Jesus Christ,",
+        "God's only Son,",
+        "To our low state descended,",
+        "The cause of Death He has undone,",
+        "His power forever ended,",
+        "Ruined all his right and claim",
+        "And left him nothing but the name,",
+        "His sting is lost forever.",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "It was a strange and dreadful strife",
+        "When life and death contended;",
+        "The victory remained with life;",
+        "The reign of death was ended.",
+        "Stripped of power, no more it reigns,",
+        "An empty form alone remains",
+        "Death's sting is lost forever!",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Here the true Paschal Lamb we see,",
+        "Whom God so freely gave us;",
+        "He died on the accursed tree",
+        "So strong His love! to save us.",
+        "See, His blood doth mark our door;",
+        "Faith points to it,",
+        "Death passes o'er,",
+        "And Satan cannot harm us.",
+        "Alleluia!"
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Cross",
+    "Darkness, Spiritual",
+    "Easter",
+    "Easter Week / Passion",
+    "Eternal Life",
+    "Forgiveness",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Heaven",
+    "Jesus",
+    "Light",
+    "Priest/Priestly Roles",
+    "Sacrifice",
+    "Salvation",
+    "Sinners"
+  ],
+  "metre": "8 7 8 7 7 8 7 Alleluia4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Christ_Jesus_Lay_In_Deaths_Strong_Bands-Christ_Lag_in_Todes_Banden-Torgau.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Christ_Jesus_Lay_In_Deaths_Strong_Bands-Christ_Lag_in_Todes_Banden-Torgau"
+}

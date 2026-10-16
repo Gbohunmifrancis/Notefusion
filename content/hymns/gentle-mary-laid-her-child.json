@@ -1,0 +1,76 @@
+{
+  "title": "Gentle Mary Laid Her Child",
+  "tune": "tempus-adest-floridum-gentle-mary-laid-her-child",
+  "text": [
+    {
+      "name": "Joseph Simpson Cook",
+      "born": 1859,
+      "died": 1933,
+      "role": "Words (1919)"
+    }
+  ],
+  "textPublished": 1919,
+  "description": "Gentle Mary Laid Her Child in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Joseph Simpson Cook, first published in 1919. The tune, TEMPUS ADEST FLORIDUM, is from Swedish Piae Cantones, 1582. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Gen-tle Ma-ry laid her Child low-ly in a man-ger; There He lay, the un-de-filed, to the world a Stran-ger: Such a Babe in such a place, can He be the Sa-vior? Ask the saved of all the race who have found His fa_-vor.",
+  "verses": [
+    {
+      "lines": [
+        "Gentle Mary laid her Child",
+        "lowly in a manger;",
+        "There He lay, the undefiled,",
+        "to the world a Stranger:",
+        "Such a Babe in such a place,",
+        "can He be the Savior?",
+        "Ask the saved of all the race",
+        "who have found His favor."
+      ]
+    },
+    {
+      "lines": [
+        "Angels sang about His birth;",
+        "wise men sought and found Him;",
+        "Heaven's star shone brightly forth,",
+        "glory all around Him:",
+        "Shepherds saw the wondrous sight,",
+        "heard the angels singing;",
+        "All the plains were lit that night,",
+        "all the hills were ringing."
+      ]
+    },
+    {
+      "lines": [
+        "Gentle Mary laid her Child",
+        "lowly in a manger;",
+        "He is still the undefiled,",
+        "but no more a stranger:",
+        "Son of God, of humble birth,",
+        "beautiful the story;",
+        "Praise His Name in all the earth,",
+        "hail the King of glory!"
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Jesus",
+    "Joy",
+    "Magi",
+    "Praise, Son",
+    "Presence",
+    "Salvation"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Gentle_Mary_Laid_Her_Child-Tempus_Adest_Floridum.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Gentle_Mary_Laid_Her_Child-Tempus_Adest_Floridum"
+}

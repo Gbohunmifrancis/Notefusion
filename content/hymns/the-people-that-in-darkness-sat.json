@@ -1,0 +1,109 @@
+{
+  "title": "The People That in Darkness Sat",
+  "tune": "lobt-gott-ihr-christen-allzugleich",
+  "text": [
+    {
+      "name": "John Morison",
+      "born": 1746,
+      "died": 1798,
+      "role": "Words (1781)"
+    }
+  ],
+  "textPublished": 1781,
+  "description": "The People That in Darkness Sat in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Morison, first published in 1781. The tune, LOBT GOTT, IHR CHRISTEN ALLZUGLEICH, is by Nikolaus Hermann (1554). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The peo-ple that in dark-ness_ sat A glo-rious light have seen; The light has shined on them who_ long In shades of death have been. In shades of death have been.",
+  "verses": [
+    {
+      "lines": [
+        "The people that in darkness sat",
+        "A glorious light have seen;",
+        "The light has shined on them who long",
+        "In shades of death have been.",
+        "In shades of death have been."
+      ]
+    },
+    {
+      "lines": [
+        "To hail Thee, Sun of Righteousness,",
+        "The gath'ring nations come;",
+        "They joy as when the reapers bear",
+        "Their harvest treasures home.",
+        "Their harvest treasures home."
+      ]
+    },
+    {
+      "lines": [
+        "For Thou their burden dost remove",
+        "And break the tyrant's rod",
+        "As in the day when Midian fell",
+        "Before the sword of God.",
+        "Before the sword of God."
+      ]
+    },
+    {
+      "lines": [
+        "To us a Child of hope is born,",
+        "To us a Son is giv'n,",
+        "And on His shoulder ever rests",
+        "All pow'r in earth and heav'n.",
+        "All pow'r in earth and heav'n."
+      ]
+    },
+    {
+      "lines": [
+        "His name shall be the Prince of Peace,",
+        "The Everlasting Lord,",
+        "The Wonderful, the Counselor.",
+        "The God by all adored.",
+        "The God by all adored."
+      ]
+    },
+    {
+      "lines": [
+        "His righteous government and power",
+        "Shall over all extend;",
+        "On judgment and on justice based,",
+        "His reign shall have no end."
+      ]
+    },
+    {
+      "lines": [
+        "D Lord Jesus, reign in us, we pray,",
+        "And make us Thine alone,",
+        "Who with the Father ever art",
+        "And Holy Spirit, one."
+      ]
+    }
+  ],
+  "category": "Epiphany",
+  "topics": [
+    "Christmas/Advent",
+    "Courage in Affliction",
+    "Darkness, Spiritual",
+    "God, As King",
+    "God, Goodness of",
+    "God, Majesty &amp; Power of",
+    "Jesus",
+    "Kindness, God's",
+    "Leadership",
+    "Light",
+    "Peace",
+    "Praise, Son",
+    "Presence",
+    "Salvation",
+    "Victory",
+    "Worship"
+  ],
+  "metre": "8 6 8 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_People_That_in_Darkness_Sat-Lobt_Gott_Ihr_Christen_Allzugleich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_People_That_in_Darkness_Sat-Lobt_Gott_Ihr_Christen_Allzugleich"
+}

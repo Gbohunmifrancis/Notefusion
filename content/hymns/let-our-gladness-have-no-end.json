@@ -1,0 +1,73 @@
+{
+  "title": "Let Our Gladness Have No End",
+  "tune": "narodil-se-kristus-pan",
+  "text": [
+    {
+      "name": "Tobias Zavorka",
+      "role": "Words (1602)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Let Our Gladness Have No End in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Tobias Zavorka, first published in 1602. The tune, NARODIL SE KRISTUS PÁN, is Traditional Bohemian. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Let our glad-ness have no end, Hal-le-lu-jah! For to earth did Christ de-scend. Hal-le-lu-jah! On this day God gave_ us Christ, His Son, to save_ us; Christ, His Son, to save us.",
+  "verses": [
+    {
+      "lines": [
+        "Let our gladness have no end,",
+        "Hallelujah!",
+        "For to earth did Christ descend.",
+        "Hallelujah!",
+        "On this day God"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "gave us Christ, His Son, to save us;",
+        "Christ, His Son, to save us."
+      ]
+    },
+    {
+      "lines": [
+        "See, the loveliest blooming rose,",
+        "Hallelujah!",
+        "From the branch of Jesse grows.",
+        "Hallelujah!"
+      ]
+    },
+    {
+      "lines": [
+        "Into flesh is made the Word.",
+        "Hallelujah!",
+        "He, our refuge and our Lord.",
+        "Hallelujah!"
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Christmas/Advent",
+    "Jesus",
+    "Joy",
+    "Presence",
+    "Salvation"
+  ],
+  "metre": "7 7 6 6 6 with Alleluias",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Let_Our_Gladness_Have_No_End-Narodil_Se_Kristus_Pan-Salvator_Natus.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Let_Our_Gladness_Have_No_End-Narodil_Se_Kristus_Pan-Salvator_Natus",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Tobias Zavorka: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

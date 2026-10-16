@@ -1,0 +1,103 @@
+{
+  "title": "God the Father Be Our Stay",
+  "alsoKnownAs": [
+    "God the Father with Us Stay",
+    "God the Father with Us Be"
+  ],
+  "tune": "gott-der-vater-wohn-uns-bei",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1500)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "God the Father Be Our Stay in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1500. The English translation is by Richard Massie (1854). The tune, GOTT DER VATER, WOHN UNS BEI, is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "God the Fa-ther, be our Stay, When hell's dread pow'rs as-sail_ us; Cleanse us from our sins, we pray, Nor in our last hour fail_ us. Keep us from the E-vil One; Firm in the faith a-bid_-ing, In Christ our Sa-vior hid__-ing, And heart-i-ly con-fid_-ing. Let us put God's ar-mor on: With all true Christ-ians run_-ning Our heav'n-ly race and shun__-ning The de-vil's wiles and cun_-ning. A-men, A-men, this be done, So sing we, Hal-le-lu_-jah!",
+  "verses": [
+    {
+      "lines": [
+        "God the Father, be our Stay,",
+        "When hell's dread pow'rs assail us;"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Cleanse us from our sins, we pray,",
+        "Nor in our last hour fail us.",
+        "Keep us from the Evil One;",
+        "Firm in the faith abiding,",
+        "In Christ our Savior hiding,",
+        "And heartily confiding.",
+        "Let us put God's armor on:",
+        "With all true Christians running",
+        "Our heav'nly race and shunning",
+        "The devil's wiles and cunning.",
+        "Amen, Amen, this be done,",
+        "So sing we, Hallelujah!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus Christ be Thou our",
+        "Stay,"
+      ]
+    },
+    {
+      "lines": [
+        "Holy Ghost, be Thou our",
+        "Stay,"
+      ]
+    },
+    {
+      "lines": [
+        "1(alt). Triune God, be Thou our",
+        "Stay,"
+      ]
+    }
+  ],
+  "category": "Trinity",
+  "topics": [
+    "Aspiration",
+    "Christian Life",
+    "Faith",
+    "Father",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Leadership",
+    "Loyalty",
+    "Obedience",
+    "Salvation",
+    "Security",
+    "Temptation",
+    "Trinity",
+    "Trust",
+    "Victory"
+  ],
+  "metre": "7 7 7 7 7 7 7 7 7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_The_Father_Be_Our_Stay-Gott_Der_Vater_Wohn_uns_bei.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "God_The_Father_Be_Our_Stay-Gott_Der_Vater_Wohn_uns_bei",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; the score has a change of metre, which the importer does not render; bar 10 has 6 beats, more than 4; bar 11 has 6 beats, more than 4; bar 13 has 6 beats, more than 4; bar 15 does not add up to 4 beats; bar 16 has 6 beats, more than 4; bar 17 has 6 beats, more than 4; bar 19 has 6 beats, more than 4; bar 21 does not add up to 4 beats; bar 22 has 6 beats, more than 4; the words contain verse numbers or editor's notes."
+}

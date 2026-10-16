@@ -1,0 +1,24 @@
+{
+  "name": "ESBJERG",
+  "music": [
+    {
+      "name": "Hartnack Otto Conrad Zinck",
+      "born": 1746,
+      "died": 1832,
+      "role": "Music (1801)"
+    }
+  ],
+  "musicPublished": 1801,
+  "key": "A major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "E4:1 | A4:1 B4:1 C#5:1 A4:1 | D5:1 C#5:1 B4:1 E4:1 | F#4:1 G#4:1 A4:1 C#5:1 | B4:2 A4:1 E4:1 | A4:1 B4:1 C#5:1 A4:1 | D5:1 C#5:1 B4:1 E4:1 | F#4:1 G#4:1 A4:1 C#5:1 | B4:2 A4:1 C#5:1 | C#5:1 C#5:1 C#5:1 B4:1 | A4:1 G#4:1 F#4:1 B4:1 | G#4:1 F#4:1 E4:1 E4:1 | A4:1 A4:1 D5:1 C#5:1 | B4:2 A4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/There_Came_A_Message_From_the_Sky-Esbjerg.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"Hymnal for Church and Home\", Danish Evangelical Lutheran Synods, 1927 Hymn 84."
+}

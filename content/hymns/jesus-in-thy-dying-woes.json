@@ -1,0 +1,70 @@
+{
+  "title": "Jesus, in Thy Dying Woes",
+  "tune": "words-on-the-cross-the-litany",
+  "text": [
+    {
+      "name": "Thomas Benson Pollock",
+      "born": 1836,
+      "died": 1896,
+      "role": "Words (1870)"
+    }
+  ],
+  "textPublished": 1870,
+  "description": "Jesus, in Thy Dying Woes in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Benson Pollock, first published in 1870. The tune, WORDS ON THE CROSS - THE LITANY, is by William Henry Monk (1889). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus, in Thy dy-ing woes, E-ven while Thy life-blood flows, Cra-ving par-don for Thy foes; Hear us, ho-ly Je-sus.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, in Thy dying woes,",
+        "Even while Thy lifeblood flows,",
+        "Craving pardon for Thy foes;",
+        "Hear us, holy Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "Savior, for our pardon sue,",
+        "When our sins Thy pangs renew,",
+        "For we know not what we do:",
+        "Hear us, holy Jesus."
+      ]
+    },
+    {
+      "lines": [
+        "O may we, who mercy need,",
+        "Be like Thee in heart and deed,",
+        "When with wrong our spirits bleed:",
+        "Hear us, holy Jesus."
+      ]
+    }
+  ],
+  "category": "Good Friday",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Commitment",
+    "Easter Week / Passion",
+    "Example, Christ's",
+    "God, Love of",
+    "Gratitude",
+    "Humility",
+    "Jesus",
+    "Kindness, God's",
+    "Love",
+    "Priest/Priestly Roles",
+    "Sacrifice",
+    "Sinners"
+  ],
+  "metre": "7 7 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_In_Thy_Dying_Woes-Words_On_The_Cross_The_Litany.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_In_Thy_Dying_Woes-Words_On_The_Cross_The_Litany"
+}

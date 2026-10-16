@@ -1,0 +1,88 @@
+{
+  "title": "Almighty Lord, Before Thy Throne",
+  "alsoKnownAs": [
+    "For a Public Fast"
+  ],
+  "tune": "burford-purcell",
+  "text": [
+    {
+      "name": "Anne Steele",
+      "born": 1717,
+      "died": 1778,
+      "role": "Words (1756)"
+    }
+  ],
+  "textPublished": 1756,
+  "description": "Almighty Lord, Before Thy Throne in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Anne Steele, first published in 1756. The tune, BURFORD (PURCELL), is by Henry Purcell (1718). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Al-migh-ty Lord Be-fore_ Thy throne Thy mour-ning peo-ple bend: Tis on_ Thy grace in Christ_ a-lone Our fai_-ling hopes_ de-pend.",
+  "verses": [
+    {
+      "lines": [
+        "Almighty Lord Before Thy throne",
+        "Thy mourning people bend:",
+        "Tis on Thy grace in Christ alone",
+        "Our failing hopes depend."
+      ]
+    },
+    {
+      "lines": [
+        "Dark judgments, from Thy heavy hand,",
+        "Thy dreadful pow'r display;",
+        "Yet mercy spares our guilty land,",
+        "And still we live to pray."
+      ]
+    },
+    {
+      "lines": [
+        "How changed, alas! are truths divine",
+        "For error guilt and shame!",
+        "What imp'ous numbers, bold in sin,",
+        "Disgrace the Christian name!"
+      ]
+    },
+    {
+      "lines": [
+        "O turn us, turn us, mighty Lord!",
+        "Convert us by Thy grace;",
+        "Then shall our hearts obey Thy Word,",
+        "And see again Thy face."
+      ]
+    },
+    {
+      "lines": [
+        "Then, should oppressing foes invade,",
+        "We will not yield to fear,",
+        "Secure of all sufficient aid,",
+        "When God in Christ is near."
+      ]
+    }
+  ],
+  "category": "National Prayer",
+  "topics": [
+    "Assurance",
+    "Commitment",
+    "Contrition",
+    "Conversion",
+    "Courage in Affliction",
+    "Fear of the Lord",
+    "God, Mercy of",
+    "Grace",
+    "Judgment",
+    "Obedience",
+    "People of the World",
+    "Repentance",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Almighty_Lord_Before_Thy_Throne-Burford_Purcell.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Almighty_Lord_Before_Thy_Throne-Burford_Purcell"
+}

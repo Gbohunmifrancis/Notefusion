@@ -1,0 +1,74 @@
+{
+  "title": "Far, Far Away on Judea's Plains",
+  "tune": "far-far-away-on-judea",
+  "text": [
+    {
+      "name": "John Menzies MacFarlane",
+      "born": 1833,
+      "died": 1892,
+      "role": "Words (1869)"
+    }
+  ],
+  "textPublished": 1869,
+  "description": "Far, Far Away on Judea's Plains in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Menzies MacFarlane, first published in 1869. The tune, FAR, FAR AWAY ON JUDEA, is by John Menzies MacFarlane (1869). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Far, far a-way on Ju-de-a's_ plains, Shep-herds of old heard the joy_-ous_ strains:_ Glo-ry to God, glo-ry to God, Glo-ry to God in the high_-est; Peace on earth, good will to men; Peace on earth, good will to men.",
+  "verses": [
+    {
+      "lines": [
+        "Far, far away on Judea's plains,",
+        "Shepherds of old heard the joyous strains:",
+        "Glory to God, glory to God,",
+        "Glory to God in the"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "highest; Peace on earth, good will to men;",
+        "Peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "Sweet are these strains of redeeming love,",
+        "Message of mercy from heaven above:"
+      ]
+    },
+    {
+      "lines": [
+        "Lord, with the angels we too would rejoice;",
+        "Help us to sing with the heart and voice:"
+      ]
+    },
+    {
+      "lines": [
+        "Hasten the time when, from every clime,",
+        "Men shall unite in the strains sublime:"
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Anticipation",
+    "Christmas/Advent",
+    "God, Mercy of",
+    "Joy",
+    "Love",
+    "Peace",
+    "Shepherd/Lamb",
+    "Worship"
+  ],
+  "metre": "9 9 8 8 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Far_Far_Away_on_Judeas_Plains-Far_Far_Away_on_Judeas_Plains.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Far_Far_Away_on_Judeas_Plains-Far_Far_Away_on_Judeas_Plains"
+}

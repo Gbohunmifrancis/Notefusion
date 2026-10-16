@@ -1,0 +1,23 @@
+{
+  "name": "DIVINUM MYSTERIUM (ISORYTHMIC)",
+  "music": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Melody (1300)"
+    }
+  ],
+  "musicPublished": 1300,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Eb4:1 F4:1 G4:1 Bb4:1 | Ab4:1 C5:1 C5:1 Bb4:1 | Eb5:1 Bb4:1 G4:1 Ab4:1 | Bb4:1 C5:1 F4:2 | G4:1 Eb4:1 Bb4:1 Bb4:1 | C5:1 Eb5:1 Eb5:1 D5:1 | C5:1 D5:1 Bb4:1 C5:1 | F4:1 A4:1 Bb4:2 | Bb4:1.5 C5:.5 C5:1 Bb4:1 | Eb4:1 F4:1 Ab4:1 G4:1 | Ab4:1 Bb4:1 C5:1 Eb5:1 | Db5:1 Db5:1 C5:2 | D5:2 Eb5:2 | Ab4:2 G4:2 | F4:2 F4:2 | Eb4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Of_The_Fathers_Love_Begotten-Divinum_Mysterium_Isorhythmic-Corde_Natus_Isorhythmic-Corde_Natus_No._2.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 4 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"In Excelsius\", 1900 Hymn 205. Arrangement year noted in \"The Evangelical Hymnal with Tunes\" 1880 Hymn 539 Lyrics source: \"Hymns Ancient and Modern\", 1904 Hymn 58 except verse 6 kept Neale's original instead of Baker's altered: from \"Collected Hymns, Sequences and Carols of John Mason Neale\" By John Mason Neale"
+}

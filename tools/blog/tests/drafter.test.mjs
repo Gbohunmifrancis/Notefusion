@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { loadAll, parseFrontMatter } from "../lib/content.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 import { checkDraft } from "../lib/quality.mjs";
-import { SYSTEM, buildUserPrompt, catalogue } from "../lib/prompt.mjs";
+import { SYSTEM, buildUserPrompt, catalogue, catalogueHymns } from "../lib/prompt.mjs";
 import { generateJson, usageLine, GeminiError, DRAFT_SCHEMA, DEFAULT_MODEL } from "../lib/gemini.mjs";
 import { loadTopics, pickTopic, toPost, prBody } from "../draft.mjs";
 import { resolveSitePath } from "../check.mjs";
@@ -79,6 +79,19 @@ test("the prompt carries the guardrails, the engine's own solfa, and the pages t
   assert.ok(user.includes(topic.keyword));
   assert.ok(user.includes("- /hymns/amazing-grace — Amazing Grace in Tonic Solfa"));
   assert.ok(user.includes("- /blog/how-to-read-tonic-solfa — "));
+});
+
+test("the solfa catalogue spells out the hand-made hymns and only the imported ones the topic links to", () => {
+  const imported = hymns.filter((h) => h.importedFrom);
+  assert.ok(imported.length > 0, "the imported library is loaded");
+  const linkedOne = imported[0];
+  const shown = catalogueHymns(hymns, [`/hymns/${linkedOne.slug}`, "/blog/how-to-read-tonic-solfa"]);
+  assert.ok(shown.some((h) => h.slug === "amazing-grace"));
+  assert.ok(shown.includes(linkedOne));
+  assert.equal(shown.filter((h) => h.importedFrom).length, 1);
+  const user = buildUserPrompt({ topic: { slug: "x", keyword: "k", intent: "i", angle: "a", links: [] }, posts, hymns, tags: [] });
+  assert.ok(user.includes(`- /hymns/${linkedOne.slug} — `), "every hymn page can still be linked");
+  assert.ok(!user.includes(`- hymn: ${linkedOne.slug} — `), "an unlinked imported hymn's bars are not spelled out");
 });
 
 test("the model's JSON becomes a post with valid front matter", () => {

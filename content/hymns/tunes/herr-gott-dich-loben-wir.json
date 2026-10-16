@@ -1,0 +1,29 @@
+{
+  "name": "HERR GOTT, DICH LOBEN WIR",
+  "music": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Melody (1535)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Music (1535)"
+    }
+  ],
+  "musicPublished": 1535,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_God_Thy_Praise_We_Sing-Herr_Gott_dich_Loben_Wir.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; the score has repeat signs, which the importer does not render; bar 1 has 8 beats, more than 4; bar 2 has 8 beats, more than 4; bar 3 has 8 beats, more than 4; bar 4 has 8 beats, more than 4; bar 5 has 8 beats, more than 4; bar 6 has 8 beats, more than 4; bar 7 has 10 beats, more than 4; bar 8 has 12 beats, more than 4; bar 9 has 8 beats, more than 4; bar 10 has 8 beats, more than 4; bar 11 has 16 beats, more than 4; bar 12 has 10 beats, more than 4; bar 13 has 12 beats, more than 4; bar 14 has 10 beats, more than 4; bar 15 has 12 beats, more than 4; bar 16 has 10 beats, more than 4; bar 17 has 12 beats, more than 4; bar 18 has 10 beats, more than 4; bar 19 has 12 beats, more than 4; bar 20 has 10 beats, more than 4; bar 21 has 12 beats, more than 4; bar 22 has 10 beats, more than 4; bar 23 has 12 beats, more than 4; bar 24 has 18 beats, more than 4; bar 25 has 18 beats, more than 4; bar 26 has 10 beats, more than 4; bar 27 has 12 beats, more than 4; bar 28 has 10 beats, more than 4; bar 29 has 12 beats, more than 4; bar 30 has 10 beats, more than 4; bar 31 has 12 beats, more than 4; bar 32 has 10 beats, more than 4; bar 33 has 12 beats, more than 4; bar 34 has 10 beats, more than 4; bar 35 has 12 beats, more than 4; bar 36 has 16 beats, more than 4; bar 37 has 18 beats, more than 4; bar 38 has 16 beats, more than 4; some lines of music carry words for only some of the verses. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The tune ends on E, not on the key note: it may be modal."
+}

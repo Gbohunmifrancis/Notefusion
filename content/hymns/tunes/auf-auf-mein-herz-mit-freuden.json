@@ -1,0 +1,24 @@
+{
+  "name": "AUF, AUF, MEIN HERZ MIT FREUDEN",
+  "music": [
+    {
+      "name": "Johann Crüger",
+      "born": 1598,
+      "died": 1662,
+      "role": "Music (1648)"
+    }
+  ],
+  "musicPublished": 1648,
+  "key": "Eb major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "Bb4:1 G4:1 Bb4:1 | Ab4:2 G4:1 | F4:3 | Eb4:2 Bb4:1 | C5:1.5 D5:.5 Eb5:1 | D5:1.5 C5:.5 D5:1 | C5:3 | Bb4:1 G4:1 Bb4:1 | Ab4:2 G4:1 | F4:3 | Eb4:2 Bb4:1 | C5:1.5 D5:.5 Eb5:1 | D5:1.5 C5:.5 D5:1 | C5:3 | G4:1 Bb4:1 Eb4:1 | D4:1.5 Eb4:.5 F4:1 | Eb4:3 | Ab4:1 C5:1 F4:1 | E4:1.5 F4:.5 G4:1 | F4:2 F4:1 | G4:1.5 Ab4:.5 Bb4:1 | A4:1.5 Bb4:.5 C5:1 | Bb4:2 Bb4:1 | C5:1.5 D5:.5 Eb5:1 | D5:1.5 C5:.5 D5:1 | Eb5:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Awake_My_Heart_With_Gladness-Auf_Auf_Mein_Herz_mit_Freuden.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906 Hymn #14 Ed. Karl Brauer. translation blended between \"Paul Gerhardt's Spiritual Songs\" by John Kelly, 1867 page 71-74 and ELHB, 1931."
+}

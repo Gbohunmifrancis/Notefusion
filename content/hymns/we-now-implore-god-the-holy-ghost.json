@@ -1,0 +1,87 @@
+{
+  "title": "We Now Implore God the Holy Ghost",
+  "tune": "nun-bitten-wir-den-heiligen-geist",
+  "text": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "We Now Implore God the Holy Ghost in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The tune, NUN BITTEN WIR DEN HEILIGEN GEIST, is Traditional German. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "We now im-plore God the Ho-ly Ghost For the true faith, which we need the most, That in our last mo-ments He may be-friend us And, as home-ward we jour-ney, at-tend_ us. Lord, have mer-cy.",
+  "verses": [
+    {
+      "lines": [
+        "We now implore God the Holy Ghost",
+        "For the true faith, which we need the most,",
+        "That in our last moments He may befriend us",
+        "And, as homeward we journey, attend us.",
+        "Lord, have mercy."
+      ]
+    },
+    {
+      "lines": [
+        "Shine in our hearts, O most precious Light,",
+        "That we Jesus Christ may know aright,",
+        "Clinging to our Savior, whose blood hath bought us.",
+        "Who again to our homeland hath brought us.",
+        "Lord, have mercy."
+      ]
+    },
+    {
+      "lines": [
+        "Thou sacred Love, grace on us bestow,",
+        "Set our hearts with heav'nly fire aglow",
+        "That with hearts united we love each other,",
+        "Of one mind, in peace with ev'ry brother.",
+        "Lord, have mercy!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou highest Comfort in ev'ry need,",
+        "Grant that neither shame nor death we heed,",
+        "That e'en then our courage may never fail us",
+        "When the Foe shall accuse and assail us.",
+        "Lord, have mercy!"
+      ]
+    }
+  ],
+  "category": "Prayer",
+  "topics": [
+    "Blood",
+    "Comfort",
+    "Faith",
+    "Fire",
+    "Guidance",
+    "Holy Spirit",
+    "Knowledge",
+    "Leadership",
+    "Light"
+  ],
+  "metre": "9 9 11 10 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/We_Now_Implore_God_The_Holy_Ghost-Nun_Bitten_Wir_Den_Heiligen_Geist.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "We_Now_Implore_God_The_Holy_Ghost-Nun_Bitten_Wir_Den_Heiligen_Geist",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

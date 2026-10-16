@@ -1,0 +1,24 @@
+{
+  "name": "OLIVET",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music (1832)"
+    }
+  ],
+  "musicPublished": 1832,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 F#4:1 A4:1 | A4:1.5 G4:.5 F#4:2 | E4:2 E4:1 G4:1 | G4:1.5 F#4:.5 E4:2 | F#4:2 E4:1 B4:1 | A4:4 | A4:2 F#4:1 G4:1 | A4:1.5 B4:.5 A4:2 | A4:2 F#4:1 G4:1 | A4:1.5 B4:.5 A4:2 | D5:2 C#5:1 B4:1 | A4:1.5 G4:.5 F#4:1 D4:1 | E4:2 A4:2 | D4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Faith_Looks_Up_To_Thee-Olivet.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Sabbath Hymn and Tune Book\", 1859 page 355. Ed. Lowell Mason. Music source: bits from \"Hymnal of the Presbyterian Church\", 1867 Hymn 358 page 286. Ed. C. C. Converse"
+}

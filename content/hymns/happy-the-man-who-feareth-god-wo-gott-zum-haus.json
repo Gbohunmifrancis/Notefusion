@@ -1,0 +1,90 @@
+{
+  "title": "Happy the Man Who Feareth God (Wo Gott Zum Haus)",
+  "alsoKnownAs": [
+    "Happy Who in God's Fear Doth Stay"
+  ],
+  "tune": "wo-gott-zum-haus",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "Happy the Man Who Feareth God in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, WO GOTT ZUM HAUS, is from Klug's Geistliche Lieder, Wittenberg, 1533. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Hap-py the man who fear-eth God, Whose feet His ho-ly ways have trod; Thine own good hand shall nour-ish thee, And well and hap-py shalt_ thou be.",
+  "verses": [
+    {
+      "lines": [
+        "Happy the man who feareth God,",
+        "Whose feet His holy ways have trod;",
+        "Thine own good hand shall nourish thee,",
+        "And well and happy shalt thou be."
+      ]
+    },
+    {
+      "lines": [
+        "Thy wife shall, like a fruitful vine,",
+        "Fill all thy house with clusters fine;",
+        "Thy children all be fresh and sound,",
+        "Like olive—plants thy table round."
+      ]
+    },
+    {
+      "lines": [
+        "Lo! to the man these blessings cleave",
+        "Who in God's holy fear doth live;",
+        "From him the ancient curse hath fled",
+        "By Adam's race inherited."
+      ]
+    },
+    {
+      "lines": [
+        "Out of Mount Zion God shall send,",
+        "And crown with joy thy latter end;",
+        "That thou Jerusalem mayst see,",
+        "In favor and prosperity."
+      ]
+    },
+    {
+      "lines": [
+        "He shall be with thee in thy ways,",
+        "And give thee health and length of days",
+        "Yea, thou shalt children's children see,",
+        "And peace on Israel shall be."
+      ]
+    }
+  ],
+  "category": "New Obedience",
+  "topics": [
+    "Adam (first/second - see also Guidance, Invitation [ours to God], Repentance)",
+    "Children (see also God's Children - the Faithful)",
+    "Christian Home/Family",
+    "Christian Life",
+    "Discipleship",
+    "Fear of the Lord",
+    "God, Care of",
+    "Israel",
+    "Obedience"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Happy_The_Man_Who_Feareth_God-Wo_Gott_Zum_Haus_1533.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Happy_The_Man_Who_Feareth_God-Wo_Gott_Zum_Haus_1533"
+}

@@ -1,0 +1,107 @@
+{
+  "title": "The Lord's My Shepherd (Marosa)",
+  "tune": "marosa",
+  "text": [
+    {
+      "name": "From the Scottish Psalter, 1650",
+      "traditional": true,
+      "role": "Words (1650)"
+    }
+  ],
+  "textPublished": 1650,
+  "description": "The Lord's My Shepherd (Marosa) in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1650. The tune, MAROSA, is by James Leith Macbeth Bain (1915). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The Lord's my shep-herd I'll not want, He makes me down to lie In pas-tures green He lead-eth me The qui-et wa-ters by. He lead-eth me, He lead-eth me, The qui-et wa-ters by, In pas-tures green He lead-eth me The qui-et wa-ters by.",
+  "verses": [
+    {
+      "lines": [
+        "The Lord's my shepherd I'll not want,",
+        "He makes me down to lie",
+        "In pastures green He leadeth me",
+        "The quiet waters by.",
+        "He leadeth me, He leadeth me,",
+        "The quiet waters by,",
+        "In pastures green He leadeth me",
+        "The quiet waters by."
+      ]
+    },
+    {
+      "lines": [
+        "My soul He doth restore again,",
+        "And me to walk doth make.",
+        "Within the paths of blessedness,",
+        "E'en for His Own Name's sake;",
+        "His Own Name's sake, His Own Name's sake,",
+        "E'en for His Own Name's sake;",
+        "Within the paths of blessedness,",
+        "E'en for His Own Name's sake."
+      ]
+    },
+    {
+      "lines": [
+        "Yea, though I walk in death's dark vale,",
+        "Yet will I fear no ill,",
+        "For Thou art with me, and Thy rod",
+        "And staff me comfort still;",
+        "I'll fear no ill, I'll fear no ill,",
+        "Yet will I fear no ill,",
+        "For Thou art with me, and Thy rod",
+        "And staff me comfort still."
+      ]
+    },
+    {
+      "lines": [
+        "My table Thou hast furnished well",
+        "In presence of my foes;",
+        "My head Thou dost with oil anoint,",
+        "And my cup overflows;",
+        "It overflows, It overflows,",
+        "And my cup overflows;",
+        "My head Thou dost with oil anoint,",
+        "And my cup overflows."
+      ]
+    },
+    {
+      "lines": [
+        "Goodness and mercy all my days",
+        "Will surely follow me:",
+        "And in my Father's heart always",
+        "My dwelling place shall be;",
+        "My dwelling place, My dwelling place,",
+        "My dwelling place shall be,",
+        "And in my Father's heart always",
+        "My dwelling place shall be."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Calmness",
+    "Comfort",
+    "Courage in Affliction",
+    "Darkness, Spiritual",
+    "Faithfulness",
+    "Father",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Mercy of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Joy",
+    "Kindness, God's",
+    "Rest",
+    "Shepherd/Lamb",
+    "Trust"
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Lords_My_Shepherd-Marosa-Brother_James_Air.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Lords_My_Shepherd-Marosa-Brother_James_Air"
+}

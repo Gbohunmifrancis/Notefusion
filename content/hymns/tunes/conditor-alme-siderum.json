@@ -1,0 +1,23 @@
+{
+  "name": "CONDITOR ALME SIDERUM",
+  "music": [
+    {
+      "name": "Traditional Proper Sarum Melody",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": 1906,
+  "key": "Eb major",
+  "time": "8/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "G4:1 Eb4:1 G4:1 Bb4:1 C5:1 C5:1 Ab4:1 Bb4:1 | Bb4:1 C5:1 Ab4:1 Bb4:1 Ab4:1 G4:1 F4:1 G4:1 | Bb4:1 Ab4:1 F4:1 G4:1 Ab4:1 G4:1 F4:1 Eb4:1 | Eb4:1 G4:1 Ab4:1 Bb4:1 Ab4:1 G4:1 F4:1 G4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Creator_of_the_Stars_of_Night-Conditor_Alme_Siderum.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1906, the year of the setting the Open Hymnal copied. The last verse is printed after the score in the source, not under the notes. The tune ends on G, not on the key note: it may be modal. The Open Hymnal's own source: Music and Lyrics source: \"The English Hymnal\", 1906 Hymn 1"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "EBELING",
+  "music": [
+    {
+      "name": "Johann Georg Ebeling",
+      "born": 1637,
+      "died": 1676,
+      "role": "Music (1666)"
+    }
+  ],
+  "musicPublished": 1666,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 A4:2 | B4:3 A4:1 | B4:1 D5:1 E5:2 | D5:4 | D5:1 E5:1 C5:2 | C5:1 D5:1 B4:2 | B4:1 D5:1 C5:1 B4:1 | A4:2 G4:2 | D5:2 C5:2 | B4:3 A4:1 | G4:1 F#4:1 E4:2 | D4:4 | D5:1 E5:1 C5:2 | C5:1 D5:1 B4:2 | B4:1 A4:1 C5:1 B4:1 | A4:2 G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_My_Heart_This_Night_Rejoices-Ebeling-Bonn-Warum_Sollt_Ich-All_My_Heart_This_Night.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 5 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Chorale book for England\" 1863 Hymn 31. Lyric source: Lyra Germanica, 1872 Hymn I. page 13"
+}

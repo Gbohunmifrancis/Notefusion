@@ -1,0 +1,23 @@
+{
+  "name": "PICARDY",
+  "music": [
+    {
+      "name": "Traditional French",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": 1906,
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:1 E4:1 F4:1 G4:1 | A4:2 A4:1 G4:1 | A4:2 A4:2 | A4:1 A4:1 Bb4:1 C5:1 | Bb4:2 A4:1 G4:1 | A4:4 | D4:1 E4:1 F4:1 G4:1 | A4:2 A4:1 G4:1 | A4:2 A4:2 | A4:1 A4:1 Bb4:1 C5:1 | Bb4:2 A4:1 G4:1 | A4:4 | A4:1 A4:1 D5:1 A4:1 | G4:3 F4:1 | D4:1 F4:1 A4:1 F4:1 | E4:4 | A4:1 A4:1 D5:1 A4:1 | G4:2 E4:1 F4:1 | D4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Let_All_Mortal_Flesh_Keep_Silence-Picardy.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1906, the year of the setting the Open Hymnal copied. The Open Hymnal's own source: The Episcopal Hymnal, 191x Hymn 339 and English Hymnal 1906 Hymn 318."
+}

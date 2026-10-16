@@ -1,0 +1,149 @@
+{
+  "title": "Our Father Thou in Heaven Above",
+  "alsoKnownAs": [
+    "Our Father, Who from Heaven Above",
+    "Our Father in the Heaven Who Art"
+  ],
+  "tune": "vater-unser-im-himmelreich",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1539)"
+    },
+    {
+      "name": "Several translators (composite)",
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Our Father Thou in Heaven Above in Tonic Solfa: the solfa line by line with the words, staff notation, all 9 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1539. The tune, VATER UNSER IM HIMMELREICH, is by Martin Luther (1539). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Our Fa-ther, Thou in heav'n a-bove, Who bid-dest us to dwell in love, As bre-thren of one fa-mi-ly, To cry in ev-'ry need to Thee, Teach us no thought-less word to say, But from our in-most heart to pray.",
+  "verses": [
+    {
+      "lines": [
+        "Our Father, Thou in heav'n above,",
+        "Who biddest us to dwell in love,",
+        "As brethren of one family,",
+        "To cry in ev'ry need to Thee,",
+        "Teach us no thoughtless word to say,",
+        "But from our inmost heart to pray."
+      ]
+    },
+    {
+      "lines": [
+        "Thy name be hallowed. Help us, Lord,",
+        "In purity to keep Thy Word,",
+        "That to the glory of Thy Name",
+        "We walk before Thee free from blame.",
+        "Let no false doctrine us pervert;",
+        "All poor, deluded souls convert."
+      ]
+    },
+    {
+      "lines": [
+        "Thy kingdom come. Thine let it be",
+        "In time and in eternity.",
+        "Let Thy good Spirit e'er be nigh",
+        "Our hearts with graces to supply.",
+        "Break Satan's pow'r, defeat his rage;",
+        "Preserve Thy Church from age to age."
+      ]
+    },
+    {
+      "lines": [
+        "Thy gracious will on earth be done",
+        "As 'tis in heav'n before Thy throne;",
+        "Obedience in our weal and woe",
+        "And patience in all grief bestow.",
+        "Curb flesh and blood and ev'ry ill",
+        "That sets itself against Thy will."
+      ]
+    },
+    {
+      "lines": [
+        "Give us this day our daily bread",
+        "And let us all be clothed and fed.",
+        "From war and strife be our Defense,",
+        "From famine and from pestilence,",
+        "That we may live in godly peace,",
+        "Free from all care and avarice."
+      ]
+    },
+    {
+      "lines": [
+        "Forgive our sins, Lord, we implore,",
+        "Remove from us their burden sore,",
+        "As we their trespasses forgive",
+        "Who by offenses us do grieve.",
+        "Thus let us dwell in charity",
+        "And serve our brother willingly."
+      ]
+    },
+    {
+      "lines": [
+        "Into temptation lead us not.",
+        "When evil foes against us plot",
+        "And vex our souls on every hand,",
+        "Oh, give us strength that we may stand",
+        "Firm in the faith, a well-armed host,",
+        "Through comfort of the Holy Ghost!"
+      ]
+    },
+    {
+      "lines": [
+        "From evil, Lord, deliver us;",
+        "The times and days are perilous.",
+        "Redeem us from eternal death,",
+        "And when we yield our dying breath,",
+        "Console us, grant us calm release,",
+        "And take our souls to Thee in peace."
+      ]
+    },
+    {
+      "lines": [
+        "Amen, that is, So shall it be.",
+        "Confirm our faith and hope in Thee",
+        "That we may doubt not, but believe",
+        "What here we ask we shall receive.",
+        "Thus in Thy name and at Thy word",
+        "We say: Amen. Oh, hear us, Lord! Amen."
+      ]
+    }
+  ],
+  "category": "Prayer",
+  "topics": [
+    "Brotherhood",
+    "Christmas/Advent",
+    "Comfort",
+    "Courage in Affliction",
+    "Faith",
+    "Father",
+    "Fellowship",
+    "Forgiveness",
+    "God, Providence of",
+    "Guidance",
+    "Heaven",
+    "Leadership",
+    "Obedience",
+    "Peace",
+    "Prayer",
+    "Security",
+    "Service",
+    "Temptation"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Our_Father_Thou_In_Heaven_Above-Vater_Unser_im_Himmelreich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Our_Father_Thou_In_Heaven_Above-Vater_Unser_im_Himmelreich",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929."
+}

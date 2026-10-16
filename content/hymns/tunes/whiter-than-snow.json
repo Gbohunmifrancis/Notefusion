@@ -1,0 +1,24 @@
+{
+  "name": "WHITER THAN SNOW",
+  "music": [
+    {
+      "name": "William Gustavus Fischer",
+      "born": 1835,
+      "died": 1912,
+      "role": "Music (1872)"
+    }
+  ],
+  "musicPublished": 1872,
+  "key": "A major",
+  "time": "3/4",
+  "tempo": 80,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:1 | E4:1 A4:1 B4:1 | C#5:1.5 B4:.5 A4:1 | B4:1 C#5:1 B4:1 | A4:2 E4:1 | E4:1 A4:1 B4:1 | C#5:1.5 B4:.5 A4:1 | B4:1 C#5:1 B4:1 | A4:2 C#5:1 | E5:1 C#5:1 A4:1 | F#4:.5 A4:.5 A4:1 A4:1 | D5:1 D5:1 D5:1 | C#5:2 E4:1 | E4:1 A4:1 C#5:1 | C#5:1.5 B4:.5 A4:1 | B4:1.5 A4:.5 B4:1 | A4:3 | B4:1 B4:1 B4:1 | B4:2 A4:1 | C#5:1 A4:1 F#4:1 | E4:2 E4:1 | F#4:1 A4:1 D5:1 | C#5:1.5 B4:.5 A4:1 | B4:1.5 A4:.5 B4:1 | A4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Whiter_Than_Snow-Whiter_Than_Snow.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Pentecostal Hymns, No. 2\" 1898 page 42. ABC file contributed to the Open Hymnal by Samuel Cantrell, 18 Jan 2012."
+}

@@ -47,6 +47,16 @@ Scales (any major or minor key):
 - scale: A minor + harmonic: true → the same with the raised seventh, se`;
 }
 
+/**
+ * The hymns whose bars the prompt spells out: the ones encoded by hand, plus any the topic links to.
+ * The imported library (hundreds of hymns) is still linkable, but spelling out every first line would
+ * multiply each drafting call's prompt for no gain.
+ */
+export function catalogueHymns(hymns, requiredLinks = []) {
+  const linked = new Set(requiredLinks.map((l) => (l.match(/^\/hymns\/([a-z0-9-]+)/) || [])[1]).filter(Boolean));
+  return hymns.filter((h) => !h.importedFrom || linked.has(h.slug));
+}
+
 export function buildUserPrompt({ topic, posts, hymns, tags }) {
   const pages = [
     ["/app", "NoteFusion web app (transcribe a song)"],
@@ -70,7 +80,7 @@ ${pages.map(([u, t]) => `- ${u} — ${t}`).join("\n")}
 Existing tags: ${tags.join(", ") || "(none yet)"}
 
 Solfa catalogue — the only solfa you may show, as \`\`\`solfa blocks:
-${catalogue(hymns)}
+${catalogue(catalogueHymns(hymns, required))}
 
 Use one to three solfa blocks where they make the explanation concrete. Return the JSON object described by the schema.`;
 }

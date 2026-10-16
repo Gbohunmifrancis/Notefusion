@@ -1,0 +1,23 @@
+{
+  "name": "THE FIRST NOEL",
+  "music": [
+    {
+      "name": "Traditional English",
+      "traditional": true,
+      "role": "Melody (1300)"
+    }
+  ],
+  "musicPublished": 1300,
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "F#4:.5 E4:.5 | D4:1.5 E4:.5 F#4:.5 G4:.5 | A4:2 B4:.5 C#5:.5 | D5:1 C#5:1 B4:1 | A4:2 B4:.5 C#5:.5 | D5:1 C#5:1 B4:1 | A4:1 B4:1 C#5:1 | D5:1 A4:1 G4:1 | F#4:2 F#4:.5 E4:.5 | D4:1.5 E4:.5 F#4:.5 G4:.5 | A4:2 B4:.5 C#5:.5 | D5:1 C#5:1 B4:1 | A4:2 B4:.5 C#5:.5 | D5:1 C#5:1 B4:1 | A4:1 B4:1 C#5:1 | D5:1 A4:1 G4:1 | F#4:2 F#4:.5 E4:.5 | D4:1.5 E4:.5 F#4:.5 G4:.5 | A4:2 D5:.5 C#5:.5 | B4:2 B4:1 | A4:2 A4:1 | D5:1 C#5:1 B4:1 | A4:1 B4:1 C#5:1 | D5:1 A4:1 G4:1 | F#4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_First_Noel-The_First_Noel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The tune ends on F#, not on the key note: it may be modal. The Open Hymnal's own source: The Methodist Sunday School Hymnal, 1911 Hymn 66."
+}

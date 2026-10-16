@@ -1,0 +1,24 @@
+{
+  "name": "LLANFAIR",
+  "music": [
+    {
+      "name": "Robert Williams",
+      "born": 1782,
+      "died": 1818,
+      "role": "Music (1817)"
+    }
+  ],
+  "musicPublished": 1817,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 F4:1 A4:1 A4:1 | C5:1 Bb4:.5 A4:.5 G4:2 | C5:1.5 Bb4:.5 A4:1 Bb4:.5 A4:.5 | G4:2 F4:2 | F4:1 F4:1 A4:1 A4:1 | C5:1 Bb4:.5 A4:.5 G4:2 | C5:1.5 Bb4:.5 A4:1 Bb4:.5 A4:.5 | G4:2 F4:2 | A4:1 A4:1 C5:1 C5:1 | D5:.5 C5:.5 Bb4:.5 A4:.5 G4:2 | A4:1.5 G4:.5 A4:1 B4:1 | C5:2 C5:2 | F4:1 F4:1 A4:1 A4:1 | C5:1 Bb4:.5 A4:.5 G4:2 | C5:1.5 Bb4:.5 A4:1 Bb4:.5 A4:.5 | G4:2 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Christ_The_Lord_Is_Risen_Today-Llanfair.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: Lutheran Worship, 1982, Hymn 137 (later modified to more closely match John Robert's original setting)."
+}

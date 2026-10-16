@@ -1,0 +1,108 @@
+{
+  "title": "The King Shall Come",
+  "tune": "consolation",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "John Brownlie",
+      "born": 1857,
+      "died": 1925,
+      "role": "Translated (1907)"
+    }
+  ],
+  "textPublished": 1907,
+  "description": "The King Shall Come in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous. The English translation is by John Brownlie (1907). The tune, CONSOLATION, is by John Wyeth (1813). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The King shall come when_ morn-ing_ dawns, And light tri-um-phant breaks; When_ beau-ty_ gilds the east-ern_ hills, And life to joy_ a-wakes.",
+  "verses": [
+    {
+      "lines": [
+        "The King shall come when morning dawns,",
+        "And light triumphant breaks;",
+        "When beauty gilds the eastern hills,",
+        "And life to joy awakes."
+      ]
+    },
+    {
+      "lines": [
+        "Not as of old a little child",
+        "To bear, and fight, and die,",
+        "But crowned with glory like the sun",
+        "That lights the morning sky."
+      ]
+    },
+    {
+      "lines": [
+        "O brighter than the rising morn",
+        "When He, victorious, rose,",
+        "And left the lonesome place of death,",
+        "Despite the rage of foes."
+      ]
+    },
+    {
+      "lines": [
+        "O brighter than that glorious morn",
+        "Shall this fair morning be,",
+        "When Christ, our King, in beauty comes,",
+        "And we His face shall see."
+      ]
+    },
+    {
+      "lines": [
+        "The King shall come when morning dawns,",
+        "And earth's dark night is past;",
+        "O haste the rising of that morn,",
+        "The day that aye shall last."
+      ]
+    },
+    {
+      "lines": [
+        "And let the endless bliss begin,",
+        "By weary saints foretold,",
+        "When right shall triumph over wrong,",
+        "And truth shall be extolled."
+      ]
+    },
+    {
+      "lines": [
+        "The King shall come when morning dawns,",
+        "And light and beauty brings:",
+        "Hail, Christ the Lord! Thy people pray,",
+        "Come quickly, King of kings."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Christmas/Advent",
+    "Crown",
+    "Darkness, Spiritual",
+    "Easter",
+    "God, As King",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Presence",
+    "Resurrection",
+    "Saints (all Faithful)",
+    "Second Coming",
+    "Truth",
+    "Victory"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_King_Shall_Come-Consolation-Morning_Song.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_King_Shall_Come-Consolation-Morning_Song"
+}

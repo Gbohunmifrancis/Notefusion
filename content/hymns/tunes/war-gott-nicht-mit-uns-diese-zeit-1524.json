@@ -1,0 +1,23 @@
+{
+  "name": "WÄR GOTT NICHT MIT UNS DIESE ZEIT (1524)",
+  "music": [
+    {
+      "name": "From Walter's Geistliche Gesangbüchlein, 1524",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "F# minor",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F#4:2 A4:1 A4:1 | B4:1 C#5:1 B4:1 A#4:1 | B4:2 r:1 B4:1 | A4:1 F#4:1 B4:1 C#5:1 | B4:.5 A4:.5 B4:1 A4:2 | F#4:2 A4:1 A4:1 | B4:1 C#5:1 B4:1 A#4:1 | B4:2 r:1 B4:1 | A4:1 F#4:1 B4:1 C#5:1 | B4:.5 A4:.5 B4:1 A4:2 | r:1 B4:1 C#5:1 B4:1 | G#4:1 A4:1 B4:1 A4:1 | F#4:2 r:1 F#4:1 | B4:1 A4:1 B4:1 C#5:1 | A4:1 G#4:1 E4:2 | r:1 F#4:1 A4:1 B4:1 | C#5:1 A4:1 G#4:.5 F#4:.5 G#4:1 | F#4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/If_God_Had_Not_Been_On_Our_Side-Waer_Gott_nicht_mit_ans_Diese_Zeit_1524.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Translation is public domain per Project Wittenberg: http://www.iclnet.org/pub/resources/text/wittenberg/hymns/ourside.txt"
+}

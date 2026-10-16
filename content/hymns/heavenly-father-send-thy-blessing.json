@@ -1,0 +1,78 @@
+{
+  "title": "Heavenly Father Send Thy Blessing",
+  "tune": "ripley-gregorian",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "Heavenly Father Send Thy Blessing in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1863. The tune, RIPLEY (GREGORIAN), is from Gregorian Chant. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Heav'n-ly Fa-ther, send Thy bles-sing On Thy chil-dren ga-thered here, May they all, Thy Name con-fes-sing, Be to Thee fo-re-ver dear; May they be, like Jo-seph, lo-ving, Du-ti-ful, and chaste, and pure; And their faith, like Da-vid, pro-ving, Stead-fast un-to death en-dure.",
+  "verses": [
+    {
+      "lines": [
+        "Heav'nly Father, send Thy blessing",
+        "On Thy children gathered here,",
+        "May they all, Thy Name confessing,",
+        "Be to Thee forever dear;",
+        "May they be, like Joseph, loving,",
+        "Dutiful, and chaste, and pure;",
+        "And their faith, like David, proving,",
+        "Steadfast unto death endure."
+      ]
+    },
+    {
+      "lines": [
+        "Holy Savior, who in meekness",
+        "Didst vouchsafe a child to be,",
+        "Guide their steps, and help their weakness,",
+        "Bless and make them like to Thee;",
+        "Bear Thy lambs, when they are weary,",
+        "In Thine arms and at Thy breast;",
+        "Through life's desert, dry and dreary,",
+        "Bring them to Thy heav'nly rest."
+      ]
+    },
+    {
+      "lines": [
+        "Spread Thy golden pinions o'er them,",
+        "Holy Spirit, from above,",
+        "Guide them, lead them, go before them,",
+        "Give them peace, and joy, and love;",
+        "Thy true temples, Holy Spirit,",
+        "May they with Thy glory shine,",
+        "And immortal bliss inherit,",
+        "And for evermore be Thine."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Children (see also God's Children - the Faithful)",
+    "Christian Life",
+    "Consecration",
+    "Discipleship",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Guidance",
+    "Holiness",
+    "Invitation (Faithful's to God)"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Heavenly_Father_Send_Thy_Blessing-Ripley_Gregorian.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Heavenly_Father_Send_Thy_Blessing-Ripley_Gregorian"
+}

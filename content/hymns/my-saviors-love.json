@@ -1,0 +1,90 @@
+{
+  "title": "My Savior's Love",
+  "alsoKnownAs": [
+    "I Stand Amazed in the Presence"
+  ],
+  "tune": "my-savior",
+  "text": [
+    {
+      "name": "Charles Hutchinson Gabriel",
+      "born": 1856,
+      "died": 1932,
+      "role": "Words (1905)"
+    }
+  ],
+  "textPublished": 1905,
+  "description": "My Savior's Love in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles Hutchinson Gabriel, first published in 1905. The tune, MY SAVIOR, is by Charles Hutchinson Gabriel (1905). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I stand a-mazed in the pres-ence Of Je-sus the Naz-a-rene, And won-der how He could love me, A sin-ner, con-demn'd, un-clean. How mar-vel-ous! how won-der-ful! And my song shall ev-er be: How mar-vel-ous! how won-der-ful! Is my_ Sav-ior's love for me!",
+  "verses": [
+    {
+      "lines": [
+        "I stand amazed in the presence",
+        "Of Jesus the Nazarene,",
+        "And wonder how He could love me,",
+        "A sinner, condemn'd, unclean."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "How marvelous!",
+        "how wonderful!",
+        "And my song shall ever be:",
+        "How marvelous!",
+        "how wonderful!",
+        "Is my Savior's love for me!"
+      ]
+    },
+    {
+      "lines": [
+        "For me it was in the garden",
+        "He pray'd \"Not my will, but Thine;\"",
+        "He had no tears for His own griefs,",
+        "But sweat drops of blood for mine."
+      ]
+    },
+    {
+      "lines": [
+        "In pity angels beheld Him,",
+        "And came from the world of light",
+        "To comfort Him in the sorrows,",
+        "He bore for my soul that night."
+      ]
+    },
+    {
+      "lines": [
+        "When with the ransomed in glory",
+        "His face I at last shall see,",
+        "'Twill be my joy thro' the ages,",
+        "To sing of His love for me."
+      ]
+    }
+  ],
+  "category": "Good Thursday",
+  "topics": [
+    "Anticipation",
+    "Atonement",
+    "Blood",
+    "Compassion",
+    "Eternal Life",
+    "God, Love of",
+    "Gratitude",
+    "Jesus",
+    "Love",
+    "Praise, Son",
+    "Presence",
+    "Sinners"
+  ],
+  "metre": "8 7 8 7 4 4 7 4 4 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Saviors_Love-My_Saviors_Love-I_Stand_Amazed_in_the_Presence.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "My_Saviors_Love-My_Saviors_Love-I_Stand_Amazed_in_the_Presence"
+}

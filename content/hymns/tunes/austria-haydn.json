@@ -1,0 +1,24 @@
+{
+  "name": "AUSTRIA (HAYDN)",
+  "music": [
+    {
+      "name": "Franz Joseph Haydn",
+      "born": 1732,
+      "died": 1809,
+      "role": "Music (1797)"
+    }
+  ],
+  "musicPublished": 1797,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1.5 G4:.5 A4:1 G4:1 | Bb4:1 A4:1 G4:.5 E4:.5 F4:1 | D5:1 C5:1 Bb4:1 A4:1 | G4:1 A4:.5 F4:.5 C5:2 | F4:1.5 G4:.5 A4:1 G4:1 | Bb4:1 A4:1 G4:.5 E4:.5 F4:1 | D5:1 C5:1 Bb4:1 A4:1 | G4:1 A4:.5 F4:.5 C5:2 | G4:1 A4:1 G4:.5 E4:.5 C4:1 | Bb4:1 A4:1 G4:.5 E4:.5 C4:1 | C5:1 Bb4:1 A4:1.5 A4:.5 | B4:1 B4:.5 C5:.5 C5:2 | F5:1.5 E5:.5 D5:1 C5:1 | D5:1.5 C5:.5 C5:.5 Bb4:.5 A4:1 | G4:1 A4:.5 Bb4:.5 C5:.5 D5:.5 Bb4:.5 G4:.5 | F4:1 A4:.5 G4:.5 F4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Praise_The_Lord_Ye_Heavens_Adore_Him-Austria_Haydn-Austrian_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Evangelical Hymnal with Tunes\", 1880 Hymn 527 page 463. Lyrics: \"The Century Hymnal\", 1921 hymn 41. ABC file contributed to the Open Hymnal by Tobin Strong, 10 Feb 2014."
+}

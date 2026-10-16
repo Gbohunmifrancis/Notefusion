@@ -1,0 +1,24 @@
+{
+  "name": "TALLIS",
+  "music": [
+    {
+      "name": "Thomas Tallis",
+      "born": 1505,
+      "died": 1585,
+      "role": "Music (1567)"
+    }
+  ],
+  "musicPublished": 1567,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "G4:1 | G4:1 F#4:1 G4:1 G4:1 | A4:1 A4:1 B4:1 G4:1 | C5:1 C5:1 B4:1 B4:1 | A4:1 A4:1 G4:1 D5:1 | C5:1 A4:1 B4:1 B4:1 | A4:1 A4:1 G4:1 D4:1 | E4:1 F#4:1 G4:1 B4:1 | A4:1 A4:1 G4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Praise_To_Thee_My_God_This_Night-Tallis_Canon.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 2 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: Episcopal Hymnal, 1916 Hymn 25."
+}

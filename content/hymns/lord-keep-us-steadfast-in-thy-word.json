@@ -1,0 +1,78 @@
+{
+  "title": "Lord, Keep Us Steadfast in Thy Word",
+  "tune": "erhalt-uns-herr-bei-deinem-wort",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1541)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "Lord, Keep Us Steadfast in Thy Word in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1541. The English translation is by Catherine Winkworth (1863). The tune, ERHALT UNS, HERR, BEI DEINEM WORT, is from Klug's Geistliche Lieder auffs new gebessert, Wittenberg, 1543. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, keep us stead-fast in Thy Word; Curb those who fain by craft and sword Would wrest the king-dom from Thy Son And set at naught all He hath done.",
+  "verses": [
+    {
+      "lines": [
+        "Lord, keep us steadfast in Thy Word;",
+        "Curb those who fain by craft and sword",
+        "Would wrest the kingdom from Thy Son",
+        "And set at naught all He hath done."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus Christ, Thy pow'r make known,",
+        "For Thou art Lord of lords alone;",
+        "Defend Thy Christendom that we",
+        "May evermore sing praise to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "O Comforter of priceless worth,",
+        "Send peace and unity on earth.",
+        "Support us in our final strife",
+        "And lead us out of death to life."
+      ]
+    }
+  ],
+  "category": "Reformation",
+  "topics": [
+    "Discipleship",
+    "God, As King",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Majesty &amp; Power of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Peace",
+    "Saints (all Faithful)",
+    "Scripture",
+    "Security",
+    "Social Justice",
+    "Terrorism",
+    "Trust"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_Keep_Us_Steadfast_In_Thy_Word-Erhalt_Uns_Herr_bei_Deinem_Wort.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Lord_Keep_Us_Steadfast_In_Thy_Word-Erhalt_Uns_Herr_bei_Deinem_Wort",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 2 has 6 beats, more than 4; bar 4 has 6 beats, more than 4; bar 6 has 6 beats, more than 4; bar 8 has 6 beats, more than 4."
+}

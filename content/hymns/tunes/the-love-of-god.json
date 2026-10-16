@@ -1,0 +1,24 @@
+{
+  "name": "THE LOVE OF GOD",
+  "music": [
+    {
+      "name": "Frederick Martin Lehman",
+      "born": 1868,
+      "died": 1953,
+      "role": "Music (1917)"
+    }
+  ],
+  "musicPublished": 1917,
+  "key": "Db major",
+  "time": "3/4",
+  "tempo": 90,
+  "pickup": 1.5,
+  "lineBars": 4,
+  "melody": "Db4:.5 Db4:.75 Eb4:.25 | F4:1.5 Ab4:.5 Bb4:.75 Ab4:.25 | Ab4:1 F4:.5 Ab4:.5 Ab4:.75 F4:.25 | Eb4:1.5 Gb4:.5 F4:.75 Eb4:.25 | F4:1.5 Db4:.5 Db4:.75 Eb4:.25 | F4:1.5 Ab4:.5 Bb4:.75 Ab4:.25 | Ab4:1 F4:.5 Ab4:.5 Ab4:.75 F4:.25 | Eb4:1.5 Gb4:.5 F4:.75 Eb4:.25 | Db4:1.5 Db5:.5 Db5:.75 Db5:.25 | Bb4:1.5 Db5:.5 Db5:.75 Db5:.25 | Ab4:1 F4:.5 Ab4:.5 Ab4:.75 Bb4:.25 | Ab4:1 Eb4:1 Gb4:1 | F4:1.5 Db5:.5 Db5:.75 Db5:.25 | Bb4:1.5 Db5:.5 Db5:.75 Db5:.25 | Ab4:1 F4:.5 Ab4:.5 Ab4:.75 Bb4:.25 | Ab4:1 Eb4:1 F4:1 | Db4:1.5 Db5:.5 Db5:.75 Db5:.25 | Db5:1.5 Db5:.5 C5:.75 Bb4:.25 | Ab4:1 F4:.5 Ab4:.5 Ab4:.75 Bb4:.25 | Ab4:1 Eb4:1 Bb4:1 | Ab4:1.5 Db5:.5 Db5:.75 Db5:.25 | Db5:1.5 Db5:.5 C5:.75 Bb4:.25 | Ab4:1 F4:.5 Ab4:.5 Ab4:.75 Bb4:.25 | Ab4:1 Eb4:1 F4:1 | Db4:1.5",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Love_Of_God-The_Love_Of_God.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: Music and Lyrics source: Hymns of Faith, 1980, hymn 286 denoted copyright 1917, thus expired. ABC file contributed to the Open Hymnal by Tobin Strong, 10 Jan 2014."
+}

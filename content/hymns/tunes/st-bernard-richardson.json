@@ -1,0 +1,23 @@
+{
+  "name": "ST. BERNARD (RICHARDSON)",
+  "music": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Melody (1741)"
+    }
+  ],
+  "musicPublished": 1741,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Bb4:1 | Eb4:1 F4:1 G4:1 F4:.5 Eb4:.5 | Ab4:1 G4:1 F4:1 Bb4:1 | G4:1 C5:1 A4:1.5 A4:.5 | Bb4:3 Bb4:1 | Eb5:1 C5:1 Bb4:1 C5:1 | Ab4:1 Ab4:1 G4:1 Eb4:1 | Ab4:1 G4:1 F4:1 F4:1 | Eb4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_As_To_Thy_Dear_Cross-St_Bernard_Richardson.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"The New Hymnal (Episcopal)\", 1916 Hymn 125 the oldest copy of this arrangement that I can find is in \"Church Hymnal\", 1877 hymn 345 attributed to W. Richardson. It's then in the Scottish Hymnal of 1892 as John Richardson. I think the first was a misprint. I can't find a composer named W. Richardson in that era."
+}

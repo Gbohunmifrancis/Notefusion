@@ -1,0 +1,82 @@
+{
+  "title": "Come, Ye Disconsolate",
+  "tune": "consolator-webbe",
+  "text": [
+    {
+      "name": "Thomas Moore",
+      "born": 1779,
+      "died": 1852,
+      "role": "Words (1816)"
+    },
+    {
+      "name": "Thomas Hastings",
+      "born": 1784,
+      "died": 1872,
+      "role": "Words (1816)"
+    }
+  ],
+  "textPublished": 1816,
+  "description": "Come, Ye Disconsolate in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Moore and Thomas Hastings, first published in 1816. The tune, CONSOLATOR (WEBBE), is by Samuel Webbe (1792). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Come, ye dis-con-so-late, wher_-'er ye lan-guish; Come to the mer-cy seat, fer-vent-ly kneel. Here bring your woun-ded hearts, here tell_ your_ an-guish; Earth_ has no sor-row that Heav'n can-not heal.",
+  "verses": [
+    {
+      "lines": [
+        "Come, ye disconsolate, wher'er ye languish;",
+        "Come to the mercy seat, fervently kneel.",
+        "Here bring your wounded hearts, here tell your anguish;",
+        "Earth has no sorrow that Heav'n cannot heal."
+      ]
+    },
+    {
+      "lines": [
+        "Joy of the desolate, light of the straying,",
+        "Hope of the penitent, fadeless and pure,",
+        "Here speaks the Comforter, tenderly saying,",
+        "\"Earth has no sorrow that Heav'n cannot cure.\""
+      ]
+    },
+    {
+      "lines": [
+        "Here see the Bread of Life; see waters flowing",
+        "Forth from the throne of God, pure from above;",
+        "Come to the feast of love; come, ever knowing",
+        "Earth has no sorrow but Heav'n can remove."
+      ]
+    }
+  ],
+  "category": "Cross and Comfort",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Bread (of Life/Daily Bread)",
+    "Comfort",
+    "Compassion",
+    "Contrition",
+    "Forgiveness",
+    "God, As King",
+    "God, Mercy of",
+    "Grace",
+    "Healing",
+    "Heaven",
+    "Humility",
+    "Invitation (God's to Us)",
+    "Kindness, God's",
+    "Light",
+    "Lord's Supper",
+    "Peace",
+    "Presence",
+    "Repentance"
+  ],
+  "metre": "11 10 11 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Ye_Disconsolate-Consolator_Webbe.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Come_Ye_Disconsolate-Consolator_Webbe"
+}

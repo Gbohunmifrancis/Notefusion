@@ -1,0 +1,90 @@
+{
+  "title": "God Rest Ye Merry Gentlemen",
+  "tune": "god-rest-ye-merry-gentlemen",
+  "text": [
+    {
+      "name": "Traditional English",
+      "traditional": true,
+      "role": "Words"
+    }
+  ],
+  "textPublished": null,
+  "description": "God Rest Ye Merry Gentlemen in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous. The tune, GOD REST YE MERRY GENTLEMEN, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "God rest ye mer-ry, gen-tle-men, let no-thing you dis-may, Re-mem-ber Christ our Sa_-vior was born on Christ-mas Day; To save us all from Sa-tan's pow'r when we were gone a-stray. O_ ti-dings of com_-fort and joy, com-fort and joy; O_ ti_-dings of com_-fort and joy.",
+  "verses": [
+    {
+      "lines": [
+        "God rest ye merry, gentlemen,",
+        "let nothing you dismay,",
+        "Remember Christ our Savior",
+        "was born on Christmas Day;",
+        "To save us all from Satan's pow'r",
+        "when we were gone astray."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "O tidings of comfort and joy,",
+        "comfort and joy;",
+        "O tidings of comfort and joy."
+      ]
+    },
+    {
+      "lines": [
+        "In Bethlehem, in Israel, this blessèd",
+        "Babe was born, And laid within a manger upon this blessèd morn;",
+        "The which His mother Mary did nothing take in scorn."
+      ]
+    },
+    {
+      "lines": [
+        "From God our heav'nly Father a blessèd angel came;",
+        "And unto certain shepherds brought tidings of the same;",
+        "How that in Bethlehem was born the Son of God by name."
+      ]
+    },
+    {
+      "lines": [
+        "\"Fear not, then,\" said the angel,",
+        "\"Let nothing you afright",
+        "This day is born a Savior of a pure",
+        "Virgin bright, To free all those who trust in Him from",
+        "Satan's pow'r and might.\""
+      ]
+    },
+    {
+      "lines": [
+        "The shepherds at those tidings rejoiced much in mind,",
+        "And left their flocks afeeding in tempest, storm and wind,",
+        "And went to Bethl'em straightaway this blessèd",
+        "Babe to find."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Assurance",
+    "Calmness",
+    "Christmas/Advent",
+    "Comfort",
+    "Israel",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Rest"
+  ],
+  "metre": "8 6 7 6 8 6 8 4 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/God_Rest_Ye_Merry_Gentlemen-God_Rest_Ye_Merry_Gentlemen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "God_Rest_Ye_Merry_Gentlemen-God_Rest_Ye_Merry_Gentlemen",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

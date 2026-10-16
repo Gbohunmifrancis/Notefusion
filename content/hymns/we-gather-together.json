@@ -1,0 +1,79 @@
+{
+  "title": "We Gather Together",
+  "tune": "kremser",
+  "text": [
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (1597)"
+    },
+    {
+      "name": "Theodore Baker",
+      "born": 1851,
+      "died": 1934,
+      "role": "Translated (1894)"
+    }
+  ],
+  "textPublished": 1894,
+  "description": "We Gather Together in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1597. The English translation is by Theodore Baker (1894). The tune, KREMSER, is Traditional Dutch. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "We ga-ther to-ge-ther to ask the Lord's bless-ing; He cha-stens and ha-stens His will to make known. The wi-cked op-pres-sing now cease_ from dis-tres-sing. Sing prai-ses to His Name;_ He for-gets not His own.",
+  "verses": [
+    {
+      "lines": [
+        "We gather together to ask the Lord's blessing;",
+        "He chastens and hastens His will to make known.",
+        "The wicked oppressing now cease from distressing.",
+        "Sing praises to His Name;",
+        "He forgets not His own."
+      ]
+    },
+    {
+      "lines": [
+        "Beside us to guide us,",
+        "our God with us joining,",
+        "Ordaining, maintaining",
+        "His kingdom divine;",
+        "So from the beginning",
+        "the fight we were winning;",
+        "Thou, Lord, were at our side,",
+        "all glory be Thine!"
+      ]
+    },
+    {
+      "lines": [
+        "We all do extol Thee,",
+        "Thou Leader triumphant,",
+        "And pray that Thou still our",
+        "Defender will be.",
+        "Let Thy congregation",
+        "escape tribulation;",
+        "Thy Name be ever praised!",
+        "O Lord, make us free!"
+      ]
+    }
+  ],
+  "category": "Opening Songs",
+  "topics": [
+    "Brotherhood",
+    "Church on Earth (Church Militant)",
+    "God, Care of",
+    "God, Providence of",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Leadership",
+    "Opening Songs",
+    "Presence"
+  ],
+  "metre": "6 6 6 5 6 6 6 5",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/We_Gather_Together-Kremser.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "We_Gather_Together-Kremser"
+}

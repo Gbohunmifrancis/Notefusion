@@ -1,0 +1,24 @@
+{
+  "name": "MARION",
+  "music": [
+    {
+      "name": "Arthur Henry Messiter",
+      "born": 1834,
+      "died": 1916,
+      "role": "Music (1883)"
+    }
+  ],
+  "musicPublished": 1883,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | C5:1 A4:.5 G4:.5 F4:1 G4:1 | A4:3 A4:1 | A4:1 F4:.5 G4:.5 A4:1 B4:1 | C5:3 C5:1 | D5:1 C5:.5 Bb4:.5 A4:1 A4:1 | A4:.5 G4:.5 F4:.5 G4:.5 A4:1 D4:1 | G4:1 A4:1 Bb4:1 A4:1 | G4:3 C5:1 | C5:3 C5:1 | C5:3 C5:1 | Bb4:1 A4:.5 G4:.5 A4:1 G4:1 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Rejoice_O_Pilgrim_Throng-Marion.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 3 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Church Hymnal, Revised and Enlarged\" (Episcopal), 1893 Ed. Messiter Hymn 520. Lyrics source: verses mixed from \"The Hymnal\" (Presbyterian) 1919, Hymn 583 alt. and from \"Frank Leslie's Sunday Magazine, Volume 25\" 1889 page 223."
+}

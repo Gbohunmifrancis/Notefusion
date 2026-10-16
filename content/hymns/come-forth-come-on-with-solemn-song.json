@@ -1,0 +1,109 @@
+{
+  "title": "Come Forth! Come on, with Solemn Song!",
+  "tune": "jeg-har-min-sag-til-gud-hjemstilt",
+  "text": [
+    {
+      "name": "Christian Friedrich Heinrich Sachse",
+      "born": 1785,
+      "died": 1860,
+      "role": "Words (1849)"
+    },
+    {
+      "name": "Jane Laurie Borthwick",
+      "born": 1813,
+      "died": 1897,
+      "role": "Translated (1855)"
+    }
+  ],
+  "textPublished": 1855,
+  "description": "Come Forth! Come on, with Solemn Song! in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christian Friedrich Heinrich Sachse, first published in 1849. The English translation is by Jane Laurie Borthwick (1855). The tune, JEG HAR MIN SAG TIL GUD HJEMSTILT, is by Ludvig Mathias Lindeman. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Come forth! come on, with sol-emn song! The road is short, the rest is long! The Lord brought here, He calls a-way: Make no de-lay, This home was for a pas-sing day.",
+  "verses": [
+    {
+      "lines": [
+        "Come forth! come on, with solemn song!",
+        "The road is short, the rest is long!",
+        "The Lord brought here, He calls away:",
+        "Make no delay,",
+        "This home was for a passing day."
+      ]
+    },
+    {
+      "lines": [
+        "Here in an inn a stranger dwelt,",
+        "Here joy and grief by turns he felt;",
+        "Poor dwelling, now we close thy door!",
+        "The task is o'er,",
+        "The sojourner returns no more,"
+      ]
+    },
+    {
+      "lines": [
+        "Now of a lasting home possest,",
+        "He goes to seek a deeper rest",
+        "Goodnight! the day was sultry here,",
+        "In toil and fear;",
+        "Goodnight! the night is cool and clear."
+      ]
+    },
+    {
+      "lines": [
+        "Chime on, ye bells! again begin,",
+        "And ring the Sabbath morning in,",
+        "The lab'rer's weekday work is done,",
+        "The rest begun,",
+        "Which Christ hath for His people won!"
+      ]
+    },
+    {
+      "lines": [
+        "Now open to us, gates of peace!",
+        "Here let the pilgrim's journey cease.",
+        "Ye quiet slumberers, make room",
+        "In your still home,",
+        "For the new stranger who has come!"
+      ]
+    },
+    {
+      "lines": [
+        "How many graves around us lie!",
+        "How many homes are in the sky!",
+        "Yes, for each saint doth Christ prepare",
+        "A place with care:",
+        "Thy home is waiting, brother, there!"
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, Thou reignest, Lord alone,",
+        "Thou wilt return and claim Thine own,",
+        "Come quickly, Lord! return again!",
+        "Amen! Amen!",
+        "Thine seal us ever, now and then!"
+      ]
+    }
+  ],
+  "category": "Funeral",
+  "topics": [
+    "Assurance",
+    "Brevity of Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Comfort",
+    "Consolation",
+    "Heaven",
+    "Jesus",
+    "Rest"
+  ],
+  "metre": "8 8 8 4 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Forth_Come_On_With_Solemn_Song-Jeg_Har_Min_Sag_Til_Gud_Hjemstilt-My_All_I_To_My_God_Commend.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Come_Forth_Come_On_With_Solemn_Song-Jeg_Har_Min_Sag_Til_Gud_Hjemstilt-My_All_I_To_My_God_Commend"
+}

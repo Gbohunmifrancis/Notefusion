@@ -1,0 +1,88 @@
+{
+  "title": "I Heard the Bells on Christmas Day",
+  "tune": "waltham-calkin",
+  "text": [
+    {
+      "name": "Henry Wadsworth Longfellow",
+      "born": 1807,
+      "died": 1882,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "I Heard the Bells on Christmas Day in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Henry Wadsworth Longfellow, first published in 1864. The tune, WALTHAM (CALKIN), is by John Baptiste Calkin (1872). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I heard the bells on Christ-mas day Their old fa-mil-iar car-ols play, And wild and sweet the words re-peat Of peace on earth, good will to men.",
+  "verses": [
+    {
+      "lines": [
+        "I heard the bells on Christmas day",
+        "Their old familiar carols play,",
+        "And wild and sweet the words repeat",
+        "Of peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "And thought how, as the day had come,",
+        "The belfries of all Christendom",
+        "Had rolled along th'unbroken song",
+        "Of peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "Till ringing, singing on its way",
+        "The world revolved from night to day,",
+        "A voice, a chime, a chant sublime",
+        "Of peace on earth, good will to men."
+      ]
+    },
+    {
+      "lines": [
+        "And in despair I bowed my head",
+        "\"There is no peace on earth,\" I said,",
+        "\"For hate is strong and mocks the song",
+        "Of peace on earth, good will to men.\""
+      ]
+    },
+    {
+      "lines": [
+        "Then pealed the bells more loud and deep:",
+        "\"God is not dead, nor doth He sleep;",
+        "The wrong shall fail, the right prevail",
+        "With peace on earth, good will to men.\""
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Assurance",
+    "Christmas/Advent",
+    "Comfort",
+    "Courage in Affliction",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Justness of",
+    "God, Love of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Hope",
+    "Peace",
+    "People of the World",
+    "Social Justice",
+    "Speech",
+    "Trust"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/I_Heard_The_Bells_On_Christmas_Day-Waltham_Calkin.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "I_Heard_The_Bells_On_Christmas_Day-Waltham_Calkin"
+}

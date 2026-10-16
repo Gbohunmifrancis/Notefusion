@@ -1,0 +1,59 @@
+{
+  "title": "Lord, Be Thy Word My Rule",
+  "tune": "eden-feilden",
+  "text": [
+    {
+      "name": "Christopher Wordsworth",
+      "born": 1807,
+      "died": 1885,
+      "role": "Words (1872)"
+    }
+  ],
+  "textPublished": 1872,
+  "description": "Lord, Be Thy Word My Rule in Tonic Solfa: the solfa line by line with the words, staff notation, all 2 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Christopher Wordsworth, first published in 1872. The tune, EDEN (FEILDEN), is by Oswald Mosley Feilden (1863). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord, be Thy Word my rule, In it may I re-joice; Thy glo-ry be my aim, Thy ho-ly will my choice;",
+  "verses": [
+    {
+      "lines": [
+        "Lord, be Thy Word my rule,",
+        "In it may I rejoice;",
+        "Thy glory be my aim,",
+        "Thy holy will my choice;"
+      ]
+    },
+    {
+      "lines": [
+        "Thy promises my hope;",
+        "Thy providence my guard;",
+        "Thine arm my strong support;",
+        "Thyself my great reward."
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Aspiration",
+    "Commitment",
+    "Discipleship",
+    "Faithfulness",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "Guidance",
+    "Humility",
+    "Obedience",
+    "Promises (see also Gospel)",
+    "Scripture"
+  ],
+  "metre": "6 6 6 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lord_Be_Thy_Word_My_Rule-Eden_Feilden.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lord_Be_Thy_Word_My_Rule-Eden_Feilden"
+}

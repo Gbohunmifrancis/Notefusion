@@ -1,0 +1,92 @@
+{
+  "title": "As with Gladness Men of Old",
+  "tune": "dix",
+  "text": [
+    {
+      "name": "William Chatterton Dix",
+      "born": 1837,
+      "died": 1865,
+      "role": "Words (1860)"
+    }
+  ],
+  "textPublished": 1860,
+  "description": "As with Gladness Men of Old in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Chatterton Dix, first published in 1860. The tune, DIX, is by Conrad Kocher and William Henry Monk (1838). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "As with_ glad-ness, men of old Did the guid-ing star be-hold As with_ joy they hailed its light Lead-ing on-ward, beam-ing bright So, most glor-ious Lord, may we Ev-er-more be led to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "As with gladness, men of old",
+        "Did the guiding star behold",
+        "As with joy they hailed its light",
+        "Leading onward, beaming bright",
+        "So, most glorious Lord, may we",
+        "Evermore be led to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "As with joyful steps they sped",
+        "To that lowly manger bed",
+        "There to bend the knee before",
+        "Him whom Heav'n and earth adore;",
+        "So may we with willing feet",
+        "Ever seek Thy mercy seat."
+      ]
+    },
+    {
+      "lines": [
+        "As they offered gifts most rare",
+        "At that manger rude and bare;",
+        "So may we with holy joy,",
+        "Pure and free from sin's alloy,",
+        "All our costliest treasures bring,",
+        "Christ, to Thee, our heav'nly King."
+      ]
+    },
+    {
+      "lines": [
+        "Holy Jesus, ev'ry day",
+        "Keep us in the narrow way;",
+        "And, when earthly things are past,",
+        "Bring our ransomed souls at last",
+        "Where they need no star to guide,",
+        "Where no clouds Thy glory hide."
+      ]
+    },
+    {
+      "lines": [
+        "In the heav'nly country bright,",
+        "Need they no created light;",
+        "Thou its Light, its Joy, its Crown,",
+        "Thou its Sun which goes not down;",
+        "There forever may we sing",
+        "Alleluias to our King!"
+      ]
+    }
+  ],
+  "category": "Epiphany",
+  "topics": [
+    "Christmas/Advent",
+    "God, As King",
+    "Guidance",
+    "Holiness",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Magi",
+    "Praise, Son",
+    "Presence"
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/As_With_Gladness_Men_Of_Old-Dix.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "As_With_Gladness_Men_Of_Old-Dix"
+}

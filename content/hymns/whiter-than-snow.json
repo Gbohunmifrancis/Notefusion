@@ -1,0 +1,88 @@
+{
+  "title": "Whiter Than Snow",
+  "tune": "whiter-than-snow",
+  "text": [
+    {
+      "name": "James L. Nicholson",
+      "born": 1828,
+      "died": 1876,
+      "role": "Words (1872)"
+    }
+  ],
+  "textPublished": 1872,
+  "description": "Whiter Than Snow in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by James L. Nicholson, first published in 1872. The tune, WHITER THAN SNOW, is by William Gustavus Fischer (1872). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lord Je-sus, I long to be per-fect-ly whole; I want Thee for-ev-er to live in my soul, Break down ev-'ry i_-dol, cast out ev-'ry foe; Now wash me and I shall be whit-er than snow. Whit-er than snow, yes, whit-er than snow; Now wash me, and I shall be whit-er than snow.",
+  "verses": [
+    {
+      "lines": [
+        "Lord Jesus, I long to be perfectly whole;",
+        "I want Thee forever to live in my soul,",
+        "Break down ev'ry idol, cast out ev'ry foe;",
+        "Now wash me and I shall be whiter than snow."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Whiter than snow, yes, whiter than snow;",
+        "Now wash me, and I shall be whiter than snow."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, look down from Thy throne in the skies,",
+        "And help me to make a complete sacrifice;",
+        "I give up myself, and whatever I know,",
+        "Now wash me and I shall be whiter than snow."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, for this I most humbly entreat,",
+        "I wait, blessed Lord, at Thy crucified feet,",
+        "By faith, for my cleansing, I see Thy blood flow,",
+        "Now wash me and I shall be whiter than snow."
+      ]
+    },
+    {
+      "lines": [
+        "Lord Jesus, Thou seest I patiently wait,",
+        "Come now, and within me a new heart create;",
+        "To those who have sought Thee, Thou never said'st ``No,''",
+        "Now wash me and I shall be whiter than snow."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Commitment",
+    "Consecration",
+    "Contrition",
+    "Following Jesus, Sanctification",
+    "God, As King",
+    "God, Goodness of",
+    "Grace",
+    "Healing",
+    "Holiness",
+    "Humility",
+    "Inner Life",
+    "Invitation (Faithful's to God)",
+    "Sacrifice",
+    "Throne (also see God - As King)",
+    "Trust"
+  ],
+  "metre": "11 11 11 11 9 11",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Whiter_Than_Snow-Whiter_Than_Snow.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Whiter_Than_Snow-Whiter_Than_Snow"
+}

@@ -1,0 +1,95 @@
+{
+  "title": "Blessed Jesus at Thy Word",
+  "tune": "liebster-jesu-wir-sind-hier",
+  "text": [
+    {
+      "name": "Tobias Clausnitzer",
+      "born": 1619,
+      "died": 1684,
+      "role": "Words (1663)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "Blessed Jesus at Thy Word in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Tobias Clausnitzer, first published in 1663. The English translation is by Catherine Winkworth (1858). The tune, LIEBSTER JESU WIR SIND HIER, is by Johann Rudolph Ahle (1664). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Bles-sed Je-sus, at Thy Word We are ga-thered all to hear Thee; Let our hearts and souls be stirred Now to seek and love and fear Thee, By Thy teach-ings sweet and ho-ly, Drawn from earth to love Thee sole-ly.",
+  "verses": [
+    {
+      "lines": [
+        "Blessed Jesus, at Thy Word",
+        "We are gathered all to hear Thee;",
+        "Let our hearts and souls be stirred",
+        "Now to seek and love and fear Thee,",
+        "By Thy teachings sweet and holy,",
+        "Drawn from earth to love Thee solely."
+      ]
+    },
+    {
+      "lines": [
+        "All our knowledge, sense, and sight",
+        "Lie in deepest darkness shrouded,",
+        "Til Thy Spirit breaks our night",
+        "With the beams of truth unclouded;",
+        "Thou alone to God canst win us;",
+        "Thou must work all good within us."
+      ]
+    },
+    {
+      "lines": [
+        "Glorious Lord, Thyself impart!",
+        "Light of light, from God proceeding,",
+        "Open Thou our ears and heart;",
+        "Help us by Thy Spirit's pleading;",
+        "Hear the cry Thy people raises;",
+        "Hear and bless our prayers and praises."
+      ]
+    },
+    {
+      "lines": [
+        "Father, Son, and Holy Ghost,",
+        "Praise to Thee and adoration!",
+        "Grant that we Thy Word may trust",
+        "And obtain true consolation,",
+        "While we here below must wander,",
+        "Till we sing Thy praises yonder."
+      ]
+    }
+  ],
+  "category": "Opening Songs",
+  "topics": [
+    "Church on Earth (Church Militant)",
+    "Consolation",
+    "Darkness, Spiritual",
+    "Education",
+    "Father",
+    "Guidance",
+    "Holiness",
+    "Holy Spirit",
+    "Invitation (Faithful's to God)",
+    "Invitation (God's to Us)",
+    "Jesus",
+    "Knowledge",
+    "Light",
+    "Love",
+    "Opening Songs",
+    "Presence",
+    "Trinity"
+  ],
+  "metre": "7 8 7 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Blessed_Jesus_At_Thy_Word-Liebster_Jesu_wir_Sind_Hier.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Blessed_Jesus_At_Thy_Word-Liebster_Jesu_wir_Sind_Hier"
+}

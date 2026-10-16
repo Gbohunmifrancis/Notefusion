@@ -1,0 +1,23 @@
+{
+  "name": "AYLESBURY",
+  "music": [
+    {
+      "name": "From John Chetham's Psalmody, 1718",
+      "traditional": true,
+      "role": "Melody (1718)"
+    }
+  ],
+  "musicPublished": 1718,
+  "key": "F minor",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 C5:1 Bb4:1 | Ab4:1 G4:1 F4:2 | C5:2 Eb5:1 Db5:1 | C5:1 Bb4:1 C5:2 | r:1 Ab4:1 G4:1 F4:1 | C5:1 Ab4:1 Bb4:1 Ab4:1 | G4:1 F4:1 C5:1 Bb4:1 | Ab4:2 G4:2 | F4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Breathe_On_Me_Breath_Of_God-Aylesbury-Wirksworth.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Hymns Ancient and Modern, 1904 Hymn 449. (not in 1875 ed.; can't get hands on 1889 supplement) 1904 edition is UNSIGNED"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "KOMMT HER ZU MIR, SPRICHT GOTTES SOHN",
+  "music": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Melody (1490)"
+    }
+  ],
+  "musicPublished": 1490,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 G4:1 | D5:3 C5:1 | D5:1 Bb4:1 A4:2 | r:1 G4:1 Bb4:1 A4:1 | Bb4:3 D5:1 | C5:1 Bb4:1 A4:2 | r:1 A4:1 C5:2~ | C5:1 Bb4:1 A4:1 Bb4:1 | G4:2 F4:2 | r:1 F4:1 Bb4:1 A4:1 | Bb4:3 D5:1 | C5:1 Bb4:1 A4:2 | r:1 G4:1 Bb4:1 A4:1 | Bb4:3 D5:1 | C5:1 Bb4:1 A4:2 | r:1 G4:1 D5:2~ | D5:1 C5:1 Bb4:1 C5:1 | A4:2 G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Fear_Not_O_Little_Flock-Kommt_her_zu_mir_spricht_Gottes_Sohn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The tune ends on G, not on the key note: it may be modal. The Open Hymnal's own source: \"Mehrstimmiges Choralbuch\", 1906 Hymn 110. Translation from \"Lyra Germanica\", 1855 for St. Stephen's Day."
+}

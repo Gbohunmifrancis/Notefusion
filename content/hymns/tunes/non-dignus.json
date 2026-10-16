@@ -1,0 +1,23 @@
+{
+  "name": "NON DIGNUS",
+  "music": [
+    {
+      "name": "Traditional",
+      "traditional": true,
+      "role": "Melody (1871)"
+    }
+  ],
+  "musicPublished": 1871,
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:.5 Eb4:.5 | F4:1 G4:1 F4:1 Bb4:1 | Bb4:1 A4:2 A4:.5 Bb4:.5 | C5:1 Eb4:1 G4:1 F4:1 | D4:3 D4:.5 Eb4:.5 | F4:1 F4:1 Bb4:1 A4:1 | A4:1 G4:2 G4:1 | F4:1 Bb4:1 A4:1 C5:1 | Bb4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_I_Am_Not_Worthy-O_Lord_I_Am_Not_Worthy.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"American Catholic Hymnal\", 1913 page 114 hymn 87. Text also from this source. original source in 1777 per Vatican II hymnal: http://www.ccwatershed.org/vatican/ This hymn is found as early as \"Children's Hymn Book and Sodality Manual\" 1869 #49. I can find a printed copy of the hymn in the \"Catholic Youth's Hymnal\", 1871."
+}

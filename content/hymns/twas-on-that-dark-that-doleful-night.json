@@ -1,0 +1,99 @@
+{
+  "title": "'Twas on That Dark, That Doleful Night",
+  "tune": "st-cross",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1709)"
+    }
+  ],
+  "textPublished": 1709,
+  "description": "'Twas on That Dark, That Doleful Night in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1709. The tune, ST. CROSS, is by John Bacchus Dykes (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "'Twas on that dark, that dole-ful night When pow'rs of earth and hell a-rose A-gainst the Son of God's de-light, And friends be-trayed Him to His foes:",
+  "verses": [
+    {
+      "lines": [
+        "'Twas on that dark, that doleful night",
+        "When pow'rs of earth and hell arose",
+        "Against the Son of God's delight,",
+        "And friends betrayed Him to His foes:"
+      ]
+    },
+    {
+      "lines": [
+        "Before the mournful scene began,",
+        "He took the bread, and blessed, and brake:",
+        "What love through all His actions ran!",
+        "What wondrous words of grace He spake!"
+      ]
+    },
+    {
+      "lines": [
+        "\"This is My body, broke for sin;",
+        "Receive and eat the living food:\"",
+        "Then took the cup, and blessed the wine;",
+        "\"'Tis the new cov'nant in My blood.\""
+      ]
+    },
+    {
+      "lines": [
+        "For us His flesh with nails was torn,",
+        "He bore the scourge, He felt the thorn;",
+        "And justice poured upon His head",
+        "Its heavy vengeance in our stead."
+      ]
+    },
+    {
+      "lines": [
+        "For us His vital blood was spilt,",
+        "To buy the pardon of our guilt,",
+        "When, for black crimes of biggest size,",
+        "He gave His soul a sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "\"Do this,\" He cried, \"till time shall end,",
+        "In memory of your dying friend;",
+        "Meet at My table, and record",
+        "The love of your departed Lord.\""
+      ]
+    },
+    {
+      "lines": [
+        "Jesus, Thy feast we celebrate,",
+        "We show Thy death, we sing Thy name,",
+        "Till Thou return, and we shall eat",
+        "The marriage supper of the Lamb."
+      ]
+    }
+  ],
+  "category": "Good Thursday",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Easter Week / Passion",
+    "God, Love of",
+    "Grace",
+    "Jesus",
+    "Lord's Supper",
+    "Presence",
+    "Sacrifice",
+    "Sinners"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Twas_On_That_Dark_That_Doleful_Night-St_Cross.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Twas_On_That_Dark_That_Doleful_Night-St_Cross"
+}

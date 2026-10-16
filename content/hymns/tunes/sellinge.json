@@ -1,0 +1,24 @@
+{
+  "name": "SELLINGE",
+  "music": [
+    {
+      "name": "John Pyke Hullah",
+      "born": 1812,
+      "died": 1884,
+      "role": "Music (1868)"
+    }
+  ],
+  "musicPublished": 1868,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | B4:1 A4:1 C#5:1 D5:1 | G4:3 F#4:1 | E4:1 B4:1 A4:1 B4:1 | E4:3 F#4:1 | F#4:1 E4:1 D4:1 D5:1 | C#5:1 B4:1 A4:1 D4:1 | G4:1 F#4:1 E4:1 E4:1 | D4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/We_Know_Thee_Who_Thou_Art-Sellinge.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Hymns Ancient and Modern\", 1904 hymn 486. Lyrics source \"Hymns and Other Poems\" by Bright, 1866 p.65"
+}

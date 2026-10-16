@@ -1,0 +1,24 @@
+{
+  "name": "ICH SINGE DIR MIT HERZ",
+  "music": [
+    {
+      "name": "Johann Balthasar König",
+      "born": 1691,
+      "died": 1758,
+      "role": "Music (1738)"
+    }
+  ],
+  "musicPublished": 1738,
+  "key": "Bb major",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "F4:1 | F4:1 F4:1 F4:1 Bb4:1 | C5:1 A4:1 Bb4:1 C5:1 | G4:1 A4:1 G4:1 G4:1 | F4:3 F4:1 | Bb4:1 C5:1 D5:1 Bb4:1 | Eb5:1 D5:1 C5:1 Bb4:1 | C5:1 D5:1 C5:1 C5:1 | Bb4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Rejoice_My_Heart_Be_Glad_and_Sing-Ich_Singe_dir_mit_Herz.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: Several translators (composite): public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: lyrics from ELHB 1931 Hymn 292 as \"O Lord, I sing with lips and Heart\""
+}

@@ -1,0 +1,83 @@
+{
+  "title": "Ride on! Ride on in Majesty",
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "Henry Hart Milman",
+      "born": 1791,
+      "died": 1868,
+      "role": "Words (1827)"
+    }
+  ],
+  "textPublished": 1827,
+  "description": "Ride on! Ride on in Majesty in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Henry Hart Milman, first published in 1827. The tune, WINCHESTER NEW, is from \"Musikalisches Handbuch\", Hamburg, 1690. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Ride on! Ride on in ma-jes-ty! Hark! all the tribes ho-san-na cry; O Sa-vior meek pur-sue Thy road With palms and scat-tered gar-ments strewed.",
+  "verses": [
+    {
+      "lines": [
+        "Ride on! Ride on in majesty!",
+        "Hark! all the tribes hosanna cry;",
+        "O Savior meek pursue Thy road",
+        "With palms and scattered garments strewed."
+      ]
+    },
+    {
+      "lines": [
+        "Ride on! Ride on in majesty!",
+        "In lowly pomp ride on to die:",
+        "O Christ Thy triumphs now begin",
+        "O'er captive death and conquered sin."
+      ]
+    },
+    {
+      "lines": [
+        "Ride on! Ride on in majesty!",
+        "The angel armies of the sky",
+        "Look down with sad and wond'ring eyes",
+        "Too see th'aproaching sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Ride on! Ride on in majesty!",
+        "Thy last and fiercest strife is nigh;",
+        "The Father on His sapphire throne",
+        "Expects His own anointed Son."
+      ]
+    },
+    {
+      "lines": [
+        "Ride on! Ride on in majesty!",
+        "In lowly pomp ride on to die:",
+        "Bow Thy meek head to mortal pain,",
+        "Then take, O God, Thy pow'r and reign."
+      ]
+    }
+  ],
+  "category": "Palm Sunday",
+  "topics": [
+    "Angels",
+    "Anticipation",
+    "Atonement",
+    "Cross",
+    "Easter Week / Passion",
+    "Father",
+    "God, As King",
+    "Jesus",
+    "Priest/Priestly Roles",
+    "Sacrifice",
+    "Victory"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Ride_On_Ride_On_In_Majesty-Winchester_New.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Ride_On_Ride_On_In_Majesty-Winchester_New"
+}
