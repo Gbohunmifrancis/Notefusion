@@ -5531,44 +5531,6 @@ def _transcribe_wav(
     has_evidence = any(e.onset_post is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
-    # The meter is a constant, and both routes to detecting it have been measured and
-    # STRUCK.  Do not re-attempt either without new evidence; the post-mortem:
-    #
-    #   Acoustic (librosa.feature.tempogram_ratio, duple {3,9} vs triple {2,5,8,10}).
-    #     Anti-correlated on this corpus.  A true 3/4 waltz and a true 6/8 clip both
-    #     read DUPLE at the tempo this function actually has (-0.062 and -0.019),
-    #     while 12 of the 38 known-4/4 cases read TRIPLE.  No threshold separates
-    #     them: the candidates rank 13th of 40.  The statistic's sign flips on a 3 BPM
-    #     perturbation of the bpm handed in (waltz TRIPLE at 102, duple at 105, TRIPLE
-    #     at 108), so it measures whether bpm sits on a tempogram peak, not meter.
-    #     The largest false "triple" is triplets_eighth_c_major — 4/4 with eighth
-    #     triplets — which is a permanent musical confound, not a corpus artifact.
-    #     Robust to norm and aggregation: all 9 combinations agree in sign.
-    #
-    #   Symbolic (bar-start coverage + phrase wholeness + long-note contrast over the
-    #     quantized events).  On perfect reference notes it picks the right bar length
-    #     for the two triple candidates by margins of only 0.167 and 0.100 — and gets
-    #     0 of 38 4/4 cases right, picking 2 over 4 by a *wider* 0.712 margin on the
-    #     18 cases sharing the major template and 0.267 on the 15 sharing the
-    #     diagnostic phrase.  On real output at its own tolerance it declines on 5 of
-    #     5 cases: the margins never come into existence.  One tolerance step looser
-    #     it answers the 6/8 case DUPLE on a tie-break and calls drift_1_semitone 3/4.
-    #     A one-line "modal gap between the longest notes" matches every case it gets
-    #     right and declines where it is confidently wrong, so the rule earns none of
-    #     its complexity.
-    #
-    # And the gate that would have scored a detector is a tautology: every corpus case
-    # is 4/4 and this value is constant, so an always-4/4 detector and a perfect one
-    # both score meter.exact 1.000.  Adding a 3/4 and a 6/8 case lifts the honest
-    # headroom to one case (0.025) — below the 1/31 = 0.032 ceiling the struck vibrato
-    # fix was rejected on — because the 6/8 clip's tempo comes back 45 against a true
-    # 132 (librosa found the BAR rate) and a correct "6/8" there still engraves a bar
-    # 2.9x too long while scoring exact=True.  6/8-vs-3/4 is a subdivision question
-    # anyway: both are 3 quarter-beats per bar, so no bar-length cue can answer it.
-    #
-    # The real defect the measurement exposed is upstream and is NOT meter: this
-    # function is not told which metrical level ``bpm`` is on.  See
-    # tests/accuracy/metrics.py TEMPO_METRICAL_FACTORS.
     for evt in events:
         n = m21note.Note(evt.pitch)
         # Clamp to a sixteenth minimum so tiny surviving fragments still have a
@@ -5589,9 +5551,33 @@ def _transcribe_wav(
         _one_note_per_slot(s, 1.0 / settings.quantize_divisors[0], heard_at)
 
     # ── 8b. Meter and bar lines ───────────────────────────────────────────────
-    # A time signature given is kept; the bar phase (where the first bar line falls, so a
-    # tune that starts on an upbeat starts on it) is read either way.  Melody mode only: it
-    # is what the hymn corpus measures.  See ``_meter_and_pickup``.
+    # A time signature given always wins; without one the meter is read off the quantized
+    # line (3/4 or 4/4, nothing else), and the bar phase — where the first bar line falls, so
+    # a tune that starts on an upbeat starts on it — is read either way.  Melody mode only:
+    # it is what the hymn corpus measures.  See ``_meter_and_pickup``.
+    #
+    # History, because the meter was a constant for a measured reason.  Two detectors were
+    # built and STRUCK on the old corpora, which were 4/4 from the first bar line, so a
+    # constant 4/4 scored perfect there and no detector could show a gain:
+    #
+    #   Acoustic (librosa.feature.tempogram_ratio, duple {3,9} vs triple {2,5,8,10}).
+    #     Anti-correlated: a true 3/4 waltz and 6/8 clip read DUPLE, 12 of 38 4/4 cases read
+    #     TRIPLE, and the sign flipped on a 3 BPM perturbation of the bpm handed in — it
+    #     measured whether bpm sat on a tempogram peak, not meter.  Still struck.
+    #   Symbolic (bar-start coverage + phrase wholeness + long-note contrast).  Picked 2 over
+    #     4 on every 4/4 case, and declined on real output.  The rule here is its narrower
+    #     heir: it never offers 2 (nor 6), only 3 against 4, each against its own chance, and
+    #     it answers 3/4 only on a clear margin (``TRIPLE_LIFT``).
+    #
+    # The hymn corpus (tests/accuracy/hymn_corpus.py: the 224 tunes of the website's published
+    # hymns, played and sung, scored against their own scores) is what finally had 3/4, 6/8 and
+    # 3/2 in it, and pickups on half the tunes.  The constants were set on its dev half; on
+    # the held-out half (``report --hymns --split test``, see hymn_baseline.json):
+    #   HELD_OUT_TABLE
+    # A 4/4 tune is written 3/4 on 2 of 152 held-out takes.  What it cannot do: 6/4 and 3/2
+    # (six beats a bar) come out 3/4 or 4/4, 6/8 only as 3/4, and 2/2 as 4/4 (the same bars).
+    # The tempo's metrical level is upstream of all of it (``_PLAIN_NOTE_BEATS``): a bar of
+    # three beats read at 1.5x the tempo is four and a half.
     pickup = 0.0
     if mode == "melody" and settings.meter_detect:
         time_signature, pickup = _meter_and_pickup(

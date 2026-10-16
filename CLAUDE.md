@@ -51,14 +51,24 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `lib/confidence.ts`), the admin console keeps it. Tempo level: every candidate
   is measured at its best nearby tempo and phase before the grid filter (`_level_residual`), and
   a tracked beat anchors beat 0 only within a quarter of a beat of the first note
-  (`_beat_origin`). Accuracy is
-  measured twice: the sung corpus, intended notes known, including untrained-singer styles
+  (`_beat_origin`); of readings that fit alike the one nearest 100 BPM wins, unless it writes the
+  commonest note dotted and one a dotted ratio away writes it plain (`_PLAIN_NOTE_BEATS`). Bars
+  (melody mode, `_meter_and_pickup`): a time signature given always wins (the API passes None for
+  "auto"); otherwise 3/4 only when a three-beat bar puts clearly more of the held length on its
+  downbeats than four does (`TRIPLE_LIFT`), else 4/4 — never 2, 6 or compound — and the first bar
+  line is placed by the same durational accent, so an upbeat is written as a pickup
+  (`TranscriptionResult.pickup_beats`, not on the wire; `beat_origin_sec` moves with it). Accuracy is
+  measured three times: the sung corpus, intended notes known, including untrained-singer styles
   (`python -m tests.accuracy.report --vocal`, baseline in `tests/accuracy/vocal_baseline.json`;
   `--slices` scores the long-drift, wide-detune, first-phrase and legato stress slices), and real
   singers (`python -m tests.accuracy.vocadito`, Vocadito downloaded on first run, scored against
   the committed `vocadito_frozen.json` so a change to the fit cannot move its own yardstick;
   `--rebuild-reference` re-derives it; the instrument corpus `python -m tests.accuracy.report`
-  is the control). Linked songs
+  is the control), and the bars: the hymn corpus (`python -m tests.accuracy.report --hymns`, the
+  published tunes of the website's hymn pages, `content/hymns`, each played and sung at a varied
+  tempo and key and scored against its own score — meter, notes in the right bar, pickup, written
+  rhythm, tempo level as well as the notes; tune on `--split dev`, report the held-out
+  `--split test`; baseline `hymn_baseline.json`, five tunes in pytest). Linked songs
   (`POST /v1/transcribe/link`: YouTube, Spotify, Apple Music) are fetched by `app/ingest/links.py`
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
