@@ -8,7 +8,7 @@ import vm from "node:vm";
 
 const window = {};
 vm.runInNewContext(readFileSync(new URL("../assets/choir.js", import.meta.url), "utf8"), { window });
-const { keyHeader, label } = window.NfChoir;
+const { keyHeader, label, partReference } = window.NfChoir;
 
 test("the doh header is spelled like the key signature", () => {
   assert.equal(keyHeader("A# major"), "Doh is Bb"); // doh 10, however the key was typed
@@ -82,4 +82,18 @@ test("a part is marked from the melody's doh, not its own", () => {
   const tune = notesOf([62, 62, 66, 66, 69, 69]);
   const bass = notesOf([50, 50, 47, 47, 45, 45]);
   assert.equal(read(label(bass, "D major", tune)), "d, d, l,, l,, s,, s,,");
+});
+
+test("written parts under a man's tune are marked from the soprano, which reads as the tune does", () => {
+  // He sang D3 F#3 A3; the parts were written with the tune at a soprano's D4 F#4 A4.
+  const tune = notesOf([50, 50, 54, 54, 57, 57]);
+  const parts = { soprano: { notes: notesOf([62, 62, 66, 66, 69, 69]) }, bass: { notes: notesOf([50, 50, 47, 47, 45, 45]) } };
+  const ref = partReference(parts, tune);
+  assert.equal(read(label(tune, "D major")), "d d m m s s");
+  assert.equal(read(label(parts.soprano.notes, "D major", ref)), "d d m m s s");
+  assert.equal(read(label(parts.bass.notes, "D major", ref)), "d, d, l,, l,, s,, s,,");
+  // No soprano (a choir heard without one, or no parts): the melody, as before.
+  assert.equal(partReference({ bass: parts.bass }, tune), tune);
+  assert.equal(partReference(null, tune), tune);
+  assert.equal(partReference(null, undefined).length, 0);
 });

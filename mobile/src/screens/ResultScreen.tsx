@@ -41,6 +41,7 @@ import {
   dohPitchClass,
   KEY_CHOICES,
   parseKey,
+  partReference,
   referenceDoh,
   renderSolfaLines,
   sameKey,
@@ -108,13 +109,13 @@ type Parts = NonNullable<TranscriptionResult["parts"]>;
 /**
  * A part's solfa lines for a key. The worker labels the parts it returns; a saved sheet
  * (and a transposed one) comes back with pitches only, so the lines are made here. The
- * octave marks are relative to the *melody's* reference doh, as the worker does it, so a
- * bass "d," sits where the tune's "d" does.
+ * octave marks are relative to the soprano's reference doh (`partReference`: the melody's
+ * when there is no soprano), as the worker does it, so a bass "d," sits where the tune's "d" does.
  */
 function partLines(
   name: VoiceName,
   part: TranscriptionPart,
-  melody: readonly NoteEvent[],
+  reference: readonly NoteEvent[],
   keyText: string,
   timeSignature: string,
 ): string[] {
@@ -122,7 +123,7 @@ function partLines(
   const key = parseKey(keyText);
   if (!key || part.notes.length === 0) return [];
   const dohPc = dohPitchClass(key);
-  const refDoh = referenceDoh(melody.map((n) => n.pitchMidi), dohPc, key.mode);
+  const refDoh = referenceDoh(reference.map((n) => n.pitchMidi), dohPc, key.mode);
   const flags = ascendingFlags(part.notes.map((n) => n.pitchMidi), dohPc);
   const labelled = part.notes.map((n, i) => ({ ...n, ...syllable(n.pitchMidi, dohPc, refDoh, flags[i]!) }));
   return renderSolfaLines(labelled, `${dohHeader(dohPc)} · ${name[0]!.toUpperCase()}${name.slice(1)}`, timeSignature);
@@ -332,9 +333,10 @@ export function ResultScreen({ route, navigation }: Props) {
   const partsView = useMemo(() => {
     if (!parts) return null;
     const out: { name: VoiceName; part: TranscriptionPart; lines: string[] }[] = [];
+    const reference = partReference(parts, view.notes);
     for (const name of VOICES) {
       const part = parts[name];
-      if (part) out.push({ name, part, lines: partLines(name, part, view.notes, key, timeSignature) });
+      if (part) out.push({ name, part, lines: partLines(name, part, reference, key, timeSignature) });
     }
     return out.length > 0 ? out : null;
   }, [parts, view.notes, key, timeSignature]);
@@ -359,7 +361,9 @@ export function ResultScreen({ route, navigation }: Props) {
   // any of them changes. Without parts the player keeps the melody preview above.
   useEffect(() => {
     if (!hasParts || !parts) return;
-    const voices = [{ notes: voiceOn.soprano ? view.notes : [], gain: 1 }];
+    // The tune is the soprano: the parts' own when written (a man's tune sits an octave up there,
+    // over the alto, tenor and bass written for it), the melody otherwise.
+    const voices = [{ notes: voiceOn.soprano ? partReference(parts, view.notes) : [], gain: 1 }];
     for (const name of VOICES) {
       if (name === "soprano" || !voiceOn[name] || !parts[name]) continue;
       voices.push({ notes: parts[name].notes, gain: 0.8 });

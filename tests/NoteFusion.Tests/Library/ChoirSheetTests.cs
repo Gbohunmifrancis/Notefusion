@@ -57,6 +57,27 @@ public class ChoirSheetTests
     }
 
     [Fact]
+    public async Task Written_parts_under_a_mans_tune_are_marked_from_the_soprano_so_it_reads_as_the_tune()
+    {
+        using var h = new TestHarness();
+        var userId = await SeedUser(h);
+        // He sang C3 E3 G3; the parts were written with the tune moved up to a soprano's C4 E4 G4.
+        IReadOnlyList<NoteEventDto> low = [.. Tune.Select(n => n with { PitchMidi = n.PitchMidi - 12 })];
+        var parts = new Dictionary<string, PartDto>
+        {
+            ["soprano"] = new PartDto([.. Tune], []),
+            ["bass"] = new PartDto([new(48, 0.0, 1.0, 0, "", "", 1.0), new(43, 1.0, 1.0, 0, "", "", 1.0), new(48, 2.0, 1.0, 0, "", "", 1.0)], [])
+        };
+
+        var saved = await Save(h, userId, parts: parts, tune: low);
+
+        var tune = saved.Notes!.Select(n => n.Solfa + n.OctaveMark).ToArray();
+        Assert.Equal(["d", "m", "s"], tune);
+        Assert.Equal(tune, saved.Parts!["soprano"].Notes.Select(n => n.Solfa + n.OctaveMark));
+        Assert.Equal(["d,", "s,,", "d,"], saved.Parts["bass"].Notes.Select(n => n.Solfa + n.OctaveMark));
+    }
+
+    [Fact]
     public async Task Lyrics_can_be_set_later_and_are_trimmed()
     {
         using var h = new TestHarness();
@@ -205,10 +226,11 @@ public class ChoirSheetTests
     }
 
     private static async Task<Application.Library.Dtos.SavedTranscriptionDto> Save(
-        TestHarness h, Guid userId, string lyrics = "", IReadOnlyDictionary<string, PartDto>? parts = null, string? partsXml = null)
+        TestHarness h, Guid userId, string lyrics = "", IReadOnlyDictionary<string, PartDto>? parts = null, string? partsXml = null,
+        IReadOnlyList<NoteEventDto>? tune = null)
     {
         var result = await new SaveTranscriptionCommandHandler(h.Db, new StubCurrentUser(userId), h.QuotaGate)
-            .Handle(new SaveTranscriptionCommand("My Song", "C", 120, "4/4", Score, Tune, 0.95, SourceJobId: null, lyrics, parts, partsXml), default);
+            .Handle(new SaveTranscriptionCommand("My Song", "C", 120, "4/4", Score, tune ?? Tune, 0.95, SourceJobId: null, lyrics, parts, partsXml), default);
         Assert.True(result.IsSuccess, result.IsFailure ? result.Error.Message : "");
         return result.Value;
     }

@@ -1958,7 +1958,9 @@
 
   // ── Rehearsal player ─────────────────────────────────────────────────────
   function rehearsalVoices(result) {
-    var voices = [{ name: "soprano", notes: result.notes || [], gain: 1 }];
+    // The tune is the soprano: the parts' own soprano when written (a man's tune sits an octave up
+    // there, over the alto, tenor and bass written for it), the melody otherwise.
+    var voices = [{ name: "soprano", notes: C.partReference(result.parts, result.notes), gain: 1 }];
     if (result.parts) { // the parts it has: Pro, or the free harmony
       C.VOICES.forEach(function (v) { if (v !== "soprano" && result.parts[v] && result.parts[v].notes) voices.push({ name: v, notes: result.parts[v].notes, gain: 0.8 }); });
     }
@@ -2584,7 +2586,7 @@
       var block = document.createElement("div"); block.className = "part";
       var h = document.createElement("h3"); h.textContent = name; block.appendChild(h);
       var pre = document.createElement("div"); pre.className = "solfa";
-      var lines = part.solfaLines && part.solfaLines.length > 1 ? part.solfaLines : C.renderLines(C.label(part.notes || [], result.key, result.notes || []), "", result.timeSignature);
+      var lines = part.solfaLines && part.solfaLines.length > 1 ? part.solfaLines : C.renderLines(C.label(part.notes || [], result.key, C.partReference(parts, result.notes)), "", result.timeSignature);
       lines.slice(1).forEach(function (line) { var d = document.createElement("div"); d.textContent = line; pre.appendChild(d); });
       block.appendChild(pre);
       holder.appendChild(block);

@@ -146,14 +146,18 @@ public static class SolfaLabels
         => Label(notes, key, SolfaMapper.ReferenceDoh([.. notes.Select(n => n.PitchMidi)], key.DohPitchClass, key.Mode));
 
     /// <summary>
-    /// The parts, each labelled against the melody's reference doh so a bass "d," sits where the
-    /// tune's "d" does — the same convention the worker's harmoniser uses.
+    /// The parts, each labelled against the soprano's reference doh (the melody's when there is no
+    /// soprano) so a bass "d," sits where the tune's "d" does — the same convention the worker uses.
+    /// The soprano is the tune as the parts write it: for written parts a man's tune is moved up to
+    /// a soprano's octave, and marking from it keeps the soprano reading exactly as the tune does.
+    /// Heard choir parts carry the tune itself as their soprano, so nothing changes for them.
     /// </summary>
     public static IReadOnlyDictionary<string, PartDto>? LabelParts(
         IReadOnlyDictionary<string, List<NoteEvent>>? parts, MusicalKey key, IReadOnlyList<NoteEvent> melody)
     {
         if (parts is null || parts.Count == 0) return null;
-        int referenceDoh = SolfaMapper.ReferenceDoh([.. melody.Select(n => n.PitchMidi)], key.DohPitchClass, key.Mode);
+        IReadOnlyList<NoteEvent> reference = parts.TryGetValue("soprano", out var soprano) && soprano.Count > 0 ? soprano : melody;
+        int referenceDoh = SolfaMapper.ReferenceDoh([.. reference.Select(n => n.PitchMidi)], key.DohPitchClass, key.Mode);
         return parts.ToDictionary(kv => kv.Key, kv => new PartDto(Label(kv.Value, key, referenceDoh), []));
     }
 
