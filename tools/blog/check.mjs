@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // CI check for the generated blog and hymn pages:
 //   1. Stale output: rebuilds into a temporary copy of web-site/ and fails if anything the build
-//      owns differs from what is committed (run `node tools/blog/build.mjs` and commit).
+//      owns differs from what is committed (run `node tools/blog/build.mjs` and commit) — the pages and
+//      the worker's hymn index, server/app/data/hymn_index.json.
 //   2. Links: every internal href/src (and canonical, og:image) on every page resolves to a file,
 //      and every #fragment to an id on its page.
 //   3. Pages the build writes: one <h1>, a <title>, a description of at most 160 characters, a
@@ -16,6 +17,7 @@ import { pathToFileURL } from "node:url";
 import { SITE_DIR, ORIGIN } from "./lib/site.mjs";
 import { writeSite } from "./build.mjs";
 import { GENERATED_NOTE } from "./lib/layout.mjs";
+import { HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 
 /** A small well-formedness check: tags balance, attributes are quoted, entities are known. Returns an error or null. */
 export function xmlError(xml) {
@@ -161,8 +163,11 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href && process.argv.incl
   let failed = false;
   try {
     fs.cpSync(SITE_DIR, tmp, { recursive: true });
-    const summary = writeSite({ siteDir: tmp });
+    const freshIndex = path.join(tmp, ".hymn_index.json");
+    const summary = writeSite({ siteDir: tmp, indexPath: freshIndex });
     const stale = staleFiles(tmp, SITE_DIR);
+    if (!fs.existsSync(HYMN_INDEX_PATH)) stale.push("server/app/data/hymn_index.json (missing — not committed)");
+    else if (!fs.readFileSync(freshIndex).equals(fs.readFileSync(HYMN_INDEX_PATH))) stale.push("server/app/data/hymn_index.json (differs)");
     if (stale.length) {
       failed = true;
       console.error(`The committed pages are out of date. Run \`node tools/blog/build.mjs\` and commit the result:\n  - ${stale.join("\n  - ")}`);
