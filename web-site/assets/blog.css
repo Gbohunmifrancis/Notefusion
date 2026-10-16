@@ -233,10 +233,14 @@
 .blog-page .solfa-head { display: flex; gap: 14px; align-items: baseline; margin-bottom: 4px; font-family: var(--sans); font-size: 14px; }
 .blog-page .solfa-head .doh { color: var(--accent); font-weight: 700; }
 .blog-page .solfa-head .time { color: var(--muted); }
-.blog-page .hymn-grid { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.blog-page table.hymn { border-collapse: collapse; margin: 8px 0 10px; font-family: var(--mono); }
-.blog-page table.hymn td { border-left: 2px solid var(--ink); padding: 2px 8px; vertical-align: top; white-space: nowrap; }
-.blog-page table.hymn td:last-child { border-right: 2px solid var(--ink); }
+/* A line of bars wraps at the bar lines when the screen is narrow, never inside a bar and never behind a
+   scroll bar: each bar (a <td>) is one unit with its words under its notes, drawn with both bar lines so
+   every row starts and ends on one (the -2px folds two neighbours' lines into one). */
+.blog-page .hymn-grid { overflow: visible; }
+.blog-page table.hymn, .blog-page table.hymn > tbody { display: block; }
+.blog-page table.hymn { margin: 8px 0 10px; font-family: var(--mono); }
+.blog-page table.hymn tr { display: flex; flex-wrap: wrap; row-gap: 10px; }
+.blog-page table.hymn td { display: block; flex: 0 0 auto; margin-right: -2px; border-left: 2px solid var(--ink); border-right: 2px solid var(--ink); padding: 2px 8px; white-space: nowrap; }
 .blog-page .cell { display: inline-block; min-width: 1.9em; margin-right: 2px; text-align: center; vertical-align: top; }
 .blog-page .cell.hold { min-width: 1.1em; }
 .blog-page .cell b { display: block; color: var(--ink); font-size: 1rem; line-height: 1.5; }
@@ -264,14 +268,19 @@
 .blog-page .player label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
 .blog-page .player select { min-height: 40px; padding: 0 8px; border: 1px solid var(--page-input-line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; }
 .blog-page .hymn-page .player-note { font-family: var(--sans); color: var(--muted); font-size: 13px; }
-.blog-page .solfa-text { padding: 16px 18px; border: 1px solid var(--tint-line); border-radius: 4px; background: var(--tint); overflow-x: auto; }
+.blog-page .solfa-text { padding: 16px 18px; border: 1px solid var(--tint-line); border-radius: 4px; background: var(--tint); }
 .blog-page .hymn-page .solfa-text .doh { margin: 0 0 8px; font-family: var(--sans); color: var(--accent); font-weight: 700; font-size: 15px; }
-.blog-page .solfa-line { margin: 0 0 12px; }
-.blog-page .solfa-line code { display: block; width: max-content; padding: 0 !important; border: 0 !important; background: none !important; color: var(--ink); font-size: 15px; white-space: pre; }
-.blog-page .solfa-words { display: block; font-family: var(--sans); color: var(--muted); font-size: 14px; }
+/* The plain-text lines wrap the same way: a bar (its solfa, its words under it) is one unit. The words
+   take the bar's width rather than widen it (contain: inline-size), wrapping under it if they must. */
+.blog-page .solfa-line { display: flex; flex-wrap: wrap; row-gap: 8px; margin: 0 0 14px; }
+.blog-page .solfa-bar { display: inline-block; vertical-align: top; }
+.blog-page .solfa-bar code { display: block; padding: 0 !important; border: 0 !important; background: none !important; color: var(--ink); font-size: 15px; white-space: pre; }
+.blog-page .solfa-words { display: block; font-family: var(--sans); color: var(--muted); font-size: 13.5px; line-height: 1.45; }
+.blog-page .solfa-bar .solfa-words { contain: inline-size; padding-left: 1.2ch; padding-right: 1ch; overflow-wrap: anywhere; }
+.blog-page .hymn-page .solfa-words { font-family: var(--sans); font-size: 13.5px; line-height: 1.45; color: var(--muted); }
 /* The staff is engraved black on a paper card in both themes: OSMD draws in black on transparent, and
    paper keeps every symbol (ties, accidentals, lyrics) legible without recolouring the SVG. */
-.blog-page .staff { position: relative; min-height: 320px; overflow-x: auto; border: 1px solid var(--paper-line); border-radius: 4px; background: var(--paper); color: var(--paper-ink); color-scheme: light; }
+.blog-page .staff { position: relative; min-height: 320px; overflow: hidden; border: 1px solid var(--paper-line); border-radius: 4px; background: var(--paper); color: var(--paper-ink); color-scheme: light; }
 .blog-page .hymn-page .staff-wait { margin: 0; padding: 24px; font-family: var(--sans); color: #5b5547; font-size: 14px; }
 .blog-page .verses { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px 30px; counter-reset: verse; }
 .blog-page .hymn-page .verse p { margin: 0 0 4px; font-size: 17.5px; line-height: 1.6; }
@@ -316,6 +325,12 @@
   .blog-page .profile .avatar-96 { width: 72px; height: 72px; font-size: 30px; }
   .blog-page .hymnal-list li { flex-direction: column; gap: 4px; }
   .blog-page .feature.has-cover { grid-template-columns: 1fr; }
+  /* Narrower bars, so a 4/4 bar with its words fits a phone in one piece. */
+  .blog-page table.hymn td { padding: 2px 5px; }
+  .blog-page .cell { min-width: 1.7em; margin-right: 1px; }
+  .blog-page .cell.hold { min-width: .95em; }
+  .blog-page .hymn-page .card, .blog-page .solfa-example, .blog-page .solfa-text { padding-left: 12px; padding-right: 12px; }
+  .blog-page .solfa-bar code { font-size: 14px; }
 }
 @media print {
   .blog-page .site-header, .blog-page footer, .blog-page .cta-box, .blog-page .player, .blog-page .crumbs, .blog-page .related, .blog-page .side-list, .blog-page .share, .blog-page .theme-toggle { display: none !important; }

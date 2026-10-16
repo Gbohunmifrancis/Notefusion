@@ -98,7 +98,11 @@ test("the blog's front page: the newest post set large, the rest beside it, topi
 test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the score as data", () => {
   const html = read("hymns/amazing-grace/index.html");
   assert.match(html, /<title>Amazing Grace — Tonic Solfa &amp; Sheet Music \(Doh is G\)<\/title>/);
-  assert.match(html, /<code>\| s, - \| d - - - m d \| m - - - r - \| d - - - l, - \| s, - - - s, - \|<\/code>/);
+  // The plain-text solfa is one unit per bar (so a phone wraps it at bar lines), its words under it;
+  // read in order the bars are the line's text exactly.
+  const firstLine = /<div class="solfa-line">([\s\S]*?)<\/div>/.exec(html)[1];
+  assert.equal([...firstLine.matchAll(/<code>([^<]*)<\/code>/g)].map((m) => m[1]).join(""), "| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |");
+  assert.match(firstLine, /^<span class="solfa-bar"><code>\| s, - <\/code><span class="solfa-words">A-<\/span><\/span><span class="solfa-bar"><code>\| d - - - m d <\/code><span class="solfa-words">mazing<\/span>/);
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
   const comp = ld.find((d) => d["@type"] === "MusicComposition");
   assert.equal(comp.musicalKey, "G major");

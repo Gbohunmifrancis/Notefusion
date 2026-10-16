@@ -356,6 +356,10 @@ ping is a warning in the deploy log, never a failed deploy.
   the site and `/app` (where no choice still means Light). No inline script is involved. The staff
   on hymn pages is engraved on a light "paper" card in both themes; AdSense slots that come back
   empty are hidden, and in dark mode a filled one sits in a light frame of its own.
+- **Phones.** The solfa grid and the line-by-line text wrap at bar lines on a narrow screen: a bar
+  (its notes with their words under them) is never split and never scrolls out of its box. The
+  staff is drawn smaller on a narrow box (OSMD zoom 0.5–0.85 below 760px, so a phone gets two to
+  three bars a line) and is redrawn when the window is resized or the phone turned.
 - **Number of reads.** `assets/blog.js` fills every `[data-reads-path]` (the byline, the front page,
   "Keep reading") from the API's `GET /api/blog/reads?paths=/blog/a,/blog/b` in one request. A read
   is one browser (the tracker's visitor id) that viewed the page, counted from the first-party page

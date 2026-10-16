@@ -2,7 +2,7 @@
 // (web-site/assets/sheet.js) builds in the browser, here written out as static, crawlable text.
 import { escapeHtml } from "./util.mjs";
 import YAML from "yaml";
-import { engineGrid, toLines, lineText, lineWords, scaleMelody, transposeInterval, loadEngine } from "./solfa.mjs";
+import { engineGrid, toLines, scaleMelody, transposeInterval, loadEngine } from "./solfa.mjs";
 
 /** Lines of bars as tables. With `beats`, each syllable carries its beat for the page's player. */
 export function gridHtml(lines, { beats = false, words = true } = {}) {
@@ -18,11 +18,31 @@ export function gridHtml(lines, { beats = false, words = true } = {}) {
   }).join("\n");
 }
 
-/** Plain-text solfa, line by line, each with the words sung on it. */
+/** The words sung in one bar; a word that runs on into the next bar keeps its hyphen ("A-"). */
+function barWords(bar) {
+  let out = "";
+  for (const c of bar) {
+    const s = c.lyric;
+    if (!s || s === "_") continue;
+    if (out && !out.endsWith("-")) out += " ";
+    out += s;
+  }
+  return out.replace(/-(?=\S)/g, "");
+}
+
+/**
+ * Plain-text solfa, line by line, as bars: each bar is one unit (its solfa, then the words sung in it), so
+ * on a narrow screen a line wraps at a bar line and never inside a bar. Read in order, the solfa is the
+ * line's text exactly (lineText): "| s, - | d - - - m d | … |".
+ */
 export function textLinesHtml(lines, { words = true } = {}) {
   return lines.map((line) => {
-    const w = words ? lineWords(line) : "";
-    return `<div class="solfa-line"><code>${escapeHtml(lineText(line))}</code>${w ? `<span class="solfa-words">${escapeHtml(w)}</span>` : ""}</div>`;
+    const bars = line.map((bar, i) => {
+      const text = "| " + bar.map((c) => c.solfa).join(" ") + (i === line.length - 1 ? " |" : " ");
+      const w = words ? barWords(bar) : "";
+      return `<span class="solfa-bar"><code>${escapeHtml(text)}</code>${words ? `<span class="solfa-words">${escapeHtml(w)}</span>` : ""}</span>`;
+    }).join("");
+    return `<div class="solfa-line">${bars}</div>`;
   }).join("\n");
 }
 
