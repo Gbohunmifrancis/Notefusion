@@ -47,6 +47,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 from dataclasses import asdict, dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -171,7 +172,10 @@ class HymnIndex:
         presence.data[:] = 1.0
         df = np.asarray(presence.sum(axis=0)).ravel()
         idf = np.log((len(entries) + 1) / (df + 1)) + 0.1
-        self.weighted = presence.multiply(idf[None, :]).tocsr()
+        weighted = presence.multiply(idf[None, :]).tocsr()
+        # Cosine, not a plain sum: a long tune shares more trigrams with anything by chance alone.
+        norms = np.sqrt(np.asarray(weighted.multiply(weighted).sum(axis=1)).ravel())
+        self.weighted = sparse.diags(1.0 / np.where(norms > 0, norms, 1.0)) @ weighted
         self.idf = idf
         self._same: dict[tuple[int, int], bool] = {}
 
@@ -192,6 +196,10 @@ class HymnIndex:
         """Whether two entries carry one melody (one tune, two hymns; or a variant of it)."""
         key = (min(a, b), max(a, b))
         if key not in self._same:
+            ta, tb = (re.sub(r"[^a-z0-9]+", " ", self.entries[i].tune.lower()).strip() for i in (a, b))
+            if ta and ta == tb:  # one named tune, perhaps in two versions
+                self._same[key] = True
+                return True
             ca, cb = self.contours[a], self.contours[b]
             short = min(len(ca.intervals), len(cb.intervals))
             if short < GRAM:
