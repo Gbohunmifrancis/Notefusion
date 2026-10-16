@@ -1,0 +1,17 @@
+{
+  "name": "MUELLER",
+  "music": [
+    {"name": "James Ramsey Murray", "born": 1841, "died": 1905, "role": "Melody (1887)"}
+  ],
+  "musicPublished": 1887,
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "C5:1 | C5:1.5 Bb4:.5 A4:1 | A4:1.5 G4:.5 F4:1 | F4:1 E4:1 D4:1 | C4:2 C4:1 | C4:1.5 D4:.5 C4:1 | C4:1 G4:1 E4:1 | D4:1 C4:1 F4:1 | A4:2 C5:1 | C5:1.5 Bb4:.5 A4:1 | A4:1.5 G4:.5 F4:1 | F4:1 E4:1 D4:1 | C4:2 C4:1 | Bb4:1.5 A4:.5 G4:1 | A4:1 G4:1 F4:1 | G4:1 D4:1 E4:1 | F4:2",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (Hymnal for American Youth, 1919) and the score on the tune's Wikipedia article, which agree note for note.",
+  "reviewNotes": "High: two independent sources agree on every note and on 'sky' being held over two notes."
+}

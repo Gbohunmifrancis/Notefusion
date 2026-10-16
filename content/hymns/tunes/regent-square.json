@@ -1,0 +1,17 @@
+{
+  "name": "REGENT SQUARE",
+  "music": [
+    {"name": "Henry Smart", "born": 1813, "died": 1879, "role": "Melody (1867)"}
+  ],
+  "musicPublished": 1867,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "G4:1 E4:1 | C5:1 G4:1 E5:1.5 D5:.5 | C5:1 G4:1 A4:1 A4:1 | G4:1 C5:1 G4:1 F4:1 | E4:2 G4:1 E4:1 | C5:1 G4:1 E5:1.5 D5:.5 | C5:1 B4:1 C5:1 B4:1 | A4:1 B4:.5 C5:.5 B4:1 A4:1 | G4:2 D5:1.5 D5:.5 | B4:1 G4:1 E5:1.5 D5:.5 | C5:1 A4:1 F5:1 E5:1 | D5:1 C5:1 C5:1 B4:1 | C5:2",
+  "reviewed": false,
+  "confidence": "high for the notes; check the barring",
+  "source": "Open Hymnal Project ABC score (Psalms and Hymns for Divine Worship, 1867, where the tune first appeared); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "Notes and rhythm high. The barring follows the 1867 source: each line starts with two crotchets before the bar line ('An-gels | from the realms of | glo-ry'). Some books bar it from the first note instead; the solfa and the rhythm are the same either way."
+}

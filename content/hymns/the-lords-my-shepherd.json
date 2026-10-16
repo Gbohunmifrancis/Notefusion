@@ -1,0 +1,24 @@
+{
+  "title": "The Lord’s My Shepherd, I’ll Not Want",
+  "shortTitle": "The Lord’s My Shepherd",
+  "tune": "crimond",
+  "text": [
+    {"name": "Scottish Psalter", "traditional": true, "role": "Words, Psalm 23 in metre (1650)"}
+  ],
+  "textPublished": 1650,
+  "description": "The Lord’s My Shepherd (Psalm 23) in Tonic Solfa to CRIMOND: the solfa with the words, staff notation, all five verses and a piano.",
+  "about": [
+    "This metrical Psalm 23 comes from the Scottish Psalter of 1650. The tune CRIMOND, named after a village in Aberdeenshire, was first published in 1872 and is credited to Jessie Seymour Irvine, the daughter of the parish minister."
+  ],
+  "underlay": "",
+  "verses": [
+    {"lines": ["The Lord’s my shepherd, I’ll not want;", "He makes me down to lie", "In pastures green; He leadeth me", "The quiet waters by."]},
+    {"lines": ["My soul He doth restore again,", "And me to walk doth make", "Within the paths of righteousness,", "E’en for His own name’s sake."]},
+    {"lines": ["Yea, though I walk in death’s dark vale,", "Yet will I fear none ill;", "For Thou art with me, and Thy rod", "And staff me comfort still."]},
+    {"lines": ["My table Thou hast furnishèd", "In presence of my foes;", "My head Thou dost with oil anoint,", "And my cup overflows."]},
+    {"lines": ["Goodness and mercy all my life", "Shall surely follow me;", "And in God’s house for evermore", "My dwelling-place shall be."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true
+}

@@ -1,0 +1,17 @@
+{
+  "name": "EIN FESTE BURG",
+  "music": [
+    {"name": "Martin Luther", "born": 1483, "died": 1546, "role": "Melody (1529)"}
+  ],
+  "musicPublished": 1529,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "not encoded",
+  "source": "Open Hymnal Project ABC scores (rhythmic and isometric forms) consulted; hymnary.org incipit 1 1 1 5 6 7 1 7 6 5.",
+  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: the tune is printed in two different rhythms (Luther's rhythmic form, unbarred, and the even-note isometric form), and the Open Hymnal's isometric version is altered to fit Hedge's words. Encode the form your choir's book uses."
+}

@@ -1,0 +1,17 @@
+{
+  "name": "TO GOD BE THE GLORY",
+  "music": [
+    {"name": "William Howard Doane", "born": 1832, "died": 1915, "role": "Melody (1875)"}
+  ],
+  "musicPublished": 1875,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "not encoded",
+  "source": "Open Hymnal Project ABC score (Brightest and Best, 1875) consulted.",
+  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: the refrain's 'Praise the Lord' is a dotted quaver and semiquaver, which the half-beat solfa grid cannot show. The 1875 source prints the tune in 3/4, doh A flat; the verse itself fits the grid."
+}

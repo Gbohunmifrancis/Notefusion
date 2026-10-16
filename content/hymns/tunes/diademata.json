@@ -1,0 +1,17 @@
+{
+  "name": "DIADEMATA",
+  "music": [
+    {"name": "George Job Elvey", "born": 1816, "died": 1893, "role": "Melody (1868)"}
+  ],
+  "musicPublished": 1868,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:1 D4:.5 D4:.5 F#4:1 F#4:1 | B4:3 B4:1 | A4:1 D4:1 G4:1 F#4:1 | E4:3 E4:1 | F#4:1 A4:1 B4:1 A4:1 | G#4:1 F#4:.5 E4:.5 A4:1 D5:1 | C#5:1 D5:1 B4:1 B4:1 | A4:3 A4:1 | A4:1 F#4:1 E4:1 D4:1 | B4:3 B4:1 | B4:1 G#4:1 F#4:1 E4:1 | C#5:3 C#5:1 | D5:1.5 C#5:.5 B4:1 A4:1 | G4:1 E4:1 F#4:1 A4:1 | G4:1 F#4:1 E4:1 E4:1 | D4:4",
+  "reviewed": false,
+  "confidence": "high; see the note on bars 6 and 11",
+  "source": "Open Hymnal Project ABC score (Appendix to Hymns Ancient and Modern, 1869); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "High. The tune turns towards A major twice: G sharp on 'an-' (bar 6) and on 'who' (bar 11). Solfa books print it 'fe' (or change key); the engine names it by direction and prints 'sa' — same pitch."
+}

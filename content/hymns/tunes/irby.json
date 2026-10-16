@@ -1,0 +1,17 @@
+{
+  "name": "IRBY",
+  "music": [
+    {"name": "Henry John Gauntlett", "born": 1805, "died": 1876, "role": "Melody (1849)"}
+  ],
+  "musicPublished": 1849,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 84,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "C4:1 E4:1 | F4:1.5 F4:.5 F4:.5 E4:.5 F4:.5 G4:.5 | G4:1 F4:1 F4:1 A4:1 | C5:1.5 A4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | F4:2 C4:1 E4:1 | F4:1.5 F4:.5 F4:.5 E4:.5 F4:.5 G4:.5 | G4:1 F4:1 F4:1 A4:1 | C5:1.5 A4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | F4:2 D5:1 D5:1 | C5:1.5 F4:.5 Bb4:1 Bb4:1 | A4:2 D5:1 D5:1 | C5:1.5 A4:.5 A4:.5 G4:.5 F4:.5 E4:.5 | F4:2",
+  "reviewed": false,
+  "confidence": "high for the notes; one written source",
+  "source": "the score on the tune's Wikipedia article (A. H. Mann's arrangement), with the first two lines written out instead of repeated; not in the Open Hymnal.",
+  "reviewNotes": "Notes and rhythm match the Wikipedia score and the carol as commonly sung; only one written source, so compare with your book. The first two lines of music are repeated for lines 3–4, written out in full here."
+}

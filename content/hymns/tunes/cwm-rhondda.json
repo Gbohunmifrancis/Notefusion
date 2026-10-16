@@ -1,0 +1,17 @@
+{
+  "name": "CWM RHONDDA",
+  "music": [
+    {"name": "John Hughes", "born": 1873, "died": 1932, "role": "Melody (1907)"}
+  ],
+  "musicPublished": 1907,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 84,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:1 E4:1 D4:1.5 G4:.5 | G4:.5 F#4:.5 G4:.5 A4:.5 B4:1 A4:1 | B4:1 G4:1 E4:1 C5:1 | B4:1 A4:1 G4:2 | D4:1 E4:1 D4:1.5 G4:.5 | G4:.5 F#4:.5 G4:.5 A4:.5 B4:1 A4:1 | B4:1 C5:1 D5:1 C5:.5 A4:.5 | G4:1 F#4:1 G4:2 | A4:1.5 B4:.5 C5:1 A4:1 | B4:1.5 C5:.5 D5:1 B4:1 | D5:1.5 D5:.5 D5:.5 D5:.5 D5:.5 D5:.5 | D5:4 | D5:1.5 C5:.5 B4:.5 D5:.5 C5:.5 A4:.5 | G4:1 F#4:1 G4:2",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (The Methodist Hymn Book, 1933); every note agrees with the score on Wikipedia's Cwm Rhondda article (printed there in 4/2 in A flat) and the opening with hymnary.org's incipit.",
+  "reviewNotes": "High. Notes and rhythm agree in both sources. The sopranos hold 'more' a whole bar while the lower voices echo 'want no more' (only the melody is shown). Many books print it in A flat; the solfa is the same."
+}

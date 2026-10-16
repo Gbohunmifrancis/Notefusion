@@ -2,21 +2,21 @@
   "title": "Holy, Holy, Holy! Lord God Almighty",
   "tune": "nicaea",
   "text": [
-    { "name": "Reginald Heber", "born": 1783, "died": 1826, "role": "Words (1826)" }
+    {"name": "Reginald Heber", "born": 1783, "died": 1826, "role": "Words (1826)"}
   ],
   "textPublished": 1826,
-  "description": "Holy, Holy, Holy! Lord God Almighty in Tonic Solfa to NICAEA: the solfa with the words, staff notation, all four verses and a piano.",
+  "description": "Holy, Holy, Holy! Lord God Almighty in Tonic Solfa, doh is D: the solfa with the words, staff notation, all four verses and a piano.",
   "about": [
     "Reginald Heber, Bishop of Calcutta, wrote this hymn for Trinity Sunday; it was printed in 1826, the year he died. John Bacchus Dykes composed the tune NICAEA for it in 1861, named after the Council of Nicaea."
   ],
-  "underlay": "",
+  "underlay": "Ho-ly, ho-ly, ho-ly! Lord God Al-might-y! Ear-ly in the morn-ing our song shall rise to Thee; Ho-ly, ho-ly, ho-ly! mer-ci-ful and might-y, God in three Per-sons, bless-ed Trin-i-ty!",
   "verses": [
-    { "lines": ["Holy, holy, holy! Lord God Almighty!", "Early in the morning our song shall rise to Thee;", "Holy, holy, holy! merciful and mighty,", "God in three Persons, blessed Trinity!"] },
-    { "lines": ["Holy, holy, holy! all the saints adore Thee,", "Casting down their golden crowns around the glassy sea;", "Cherubim and seraphim falling down before Thee,", "Which wert, and art, and evermore shalt be."] },
-    { "lines": ["Holy, holy, holy! though the darkness hide Thee,", "Though the eye of sinful man Thy glory may not see,", "Only Thou art holy; there is none beside Thee,", "Perfect in power, in love, and purity."] },
-    { "lines": ["Holy, holy, holy! Lord God Almighty!", "All Thy works shall praise Thy name, in earth, and sky, and sea;", "Holy, holy, holy! merciful and mighty,", "God in three Persons, blessed Trinity!"] }
+    {"lines": ["Holy, holy, holy! Lord God Almighty!", "Early in the morning our song shall rise to Thee;", "Holy, holy, holy! merciful and mighty,", "God in three Persons, blessed Trinity!"]},
+    {"lines": ["Holy, holy, holy! all the saints adore Thee,", "Casting down their golden crowns around the glassy sea;", "Cherubim and seraphim falling down before Thee,", "Which wert, and art, and evermore shalt be."]},
+    {"lines": ["Holy, holy, holy! though the darkness hide Thee,", "Though the eye of sinful man Thy glory may not see,", "Only Thou art holy; there is none beside Thee,", "Perfect in power, in love, and purity."]},
+    {"lines": ["Holy, holy, holy! Lord God Almighty!", "All Thy works shall praise Thy name, in earth, and sky, and sea;", "Holy, holy, holy! merciful and mighty,", "God in three Persons, blessed Trinity!"]}
   ],
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "reviewed": false,
-  "draft": true
+  "draft": false
 }

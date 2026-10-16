@@ -1,0 +1,17 @@
+{
+  "name": "JESUS LOVES ME",
+  "music": [
+    {"name": "William Batchelder Bradbury", "born": 1816, "died": 1868, "role": "Melody (1862)"}
+  ],
+  "musicPublished": 1862,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "Bb4:1 G4:1 G4:1 F4:1 | G4:1 Bb4:1 Bb4:2 | C5:1 C5:1 Eb5:1 C5:1 | C5:1 Bb4:1 Bb4:2 | Bb4:1 G4:1 G4:1 F4:1 | G4:1 Bb4:1 Bb4:2 | C5:1 C5:1 Bb4:1 Eb4:1 | G4:1 F4:1 Eb4:2 | Bb4:2 G4:1 Bb4:1 | C5:1 Eb5:3 | Bb4:2 G4:1 Eb4:1 | G4:1 F4:3 | Bb4:2 G4:1 Bb4:1 | C5:1 Eb5:2 C5:1 | Bb4:1 Eb4:1 G4:1.5 F4:.5 | Eb4:4",
+  "reviewed": false,
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (Bradbury's Golden Chain and Shower, 1866); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "High. Even crotchets as Bradbury printed it; some modern books swing the verse in dotted rhythm. Check the wording of verses 3 and 4, which vary between books."
+}

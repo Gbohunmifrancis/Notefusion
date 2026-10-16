@@ -1,0 +1,21 @@
+{
+  "title": "Love Divine, All Loves Excelling",
+  "tune": "blaenwern",
+  "text": [
+    {"name": "Charles Wesley", "born": 1707, "died": 1788, "role": "Words (1747)"}
+  ],
+  "textPublished": 1747,
+  "description": "Love Divine, All Loves Excelling in Tonic Solfa to BLAENWERN: the solfa with the words, staff notation, three verses and a piano.",
+  "about": [
+    "Charles Wesley published Love Divine, All Loves Excelling in 1747, in Hymns for Those that Seek and Those that Have Redemption. In Britain and Nigeria it is usually sung to BLAENWERN, the Welsh tune William Penfro Rowlands wrote around 1905; in America to HYFRYDOL or BEECHER."
+  ],
+  "underlay": "",
+  "verses": [
+    {"lines": ["Love divine, all loves excelling,", "Joy of heaven, to earth come down;", "Fix in us Thy humble dwelling;", "All Thy faithful mercies crown!", "Jesu, Thou art all compassion,", "Pure, unbounded love Thou art;", "Visit us with Thy salvation;", "Enter every trembling heart."]},
+    {"lines": ["Come, Almighty to deliver,", "Let us all Thy life receive;", "Suddenly return, and never,", "Never more Thy temples leave.", "Thee we would be always blessing,", "Serve Thee as Thy hosts above,", "Pray, and praise Thee without ceasing,", "Glory in Thy perfect love."]},
+    {"lines": ["Finish, then, Thy new creation;", "Pure and spotless let us be;", "Let us see Thy great salvation", "Perfectly restored in Thee;", "Changed from glory into glory,", "Till in heaven we take our place,", "Till we cast our crowns before Thee,", "Lost in wonder, love, and praise."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true
+}

@@ -1,15 +1,17 @@
 {
   "name": "EVENTIDE",
   "music": [
-    { "name": "William Henry Monk", "born": 1823, "died": 1889, "role": "Melody (1861)" }
+    {"name": "William Henry Monk", "born": 1823, "died": 1889, "role": "Melody (1861)"}
   ],
   "musicPublished": 1861,
-  "key": null,
-  "time": null,
-  "tempo": null,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 72,
   "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 F4:1 | Eb4:2 Bb4:2 | C5:1 Bb4:1 Bb4:1 Ab4:1 | G4:4 | G4:2 Ab4:1 Bb4:1 | C5:2 Bb4:2 | Ab4:1 F4:1 G4:1 A4:1 | Bb4:4 | G4:2 G4:1 F4:1 | Eb4:2 Bb4:2 | Bb4:1 Ab4:1 Ab4:1 G4:1 | F4:4 | F4:2 G4:1 Ab4:1 | G4:1 F4:1 Eb4:1 Ab4:1 | G4:2 F4:2 | Eb4:4",
   "reviewed": false,
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false."
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (Hymns Ancient and Modern, 1869, ed. Monk); the opening agrees with hymnary.org's incipit.",
+  "reviewNotes": "High. The only chromatic note is the raised fah (A natural, fe) on 'a-' of 'abide' in the second line."
 }

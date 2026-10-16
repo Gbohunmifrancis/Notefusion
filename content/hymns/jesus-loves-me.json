@@ -1,0 +1,25 @@
+{
+  "title": "Jesus Loves Me",
+  "tune": "jesus-loves-me",
+  "text": [
+    {"name": "Anna Bartlett Warner", "born": 1827, "died": 1915, "role": "Words (1860)"},
+    {"name": "William Batchelder Bradbury", "born": 1816, "died": 1868, "role": "Refrain (1862)"}
+  ],
+  "textPublished": 1860,
+  "description": "Jesus Loves Me in Tonic Solfa, doh is Eb: the solfa with the words, staff notation, the verses and refrain, and a piano. A first song for children's choirs.",
+  "about": [
+    "Anna Bartlett Warner wrote the words as a poem in Say and Seal (1860), a novel she wrote with her sister Susan. William Bradbury set it to music and added the refrain 'Yes, Jesus loves me' in 1862.",
+    "The tune uses only five different solfa notes (d r m s l) and moves mostly by step, which makes it a good first song for children learning to sing from solfa."
+  ],
+  "underlay": "Je-sus loves me! this I know, For the Bi-ble tells me so; Lit-tle ones to Him be-long; They are weak, but He is strong. Yes, Je-sus loves me! Yes, Je-sus loves me! Yes, Je-sus loves me! The Bi-ble tells me so.",
+  "verses": [
+    {"lines": ["Jesus loves me! this I know,", "For the Bible tells me so;", "Little ones to Him belong;", "They are weak, but He is strong."]},
+    {"label": "Refrain", "lines": ["Yes, Jesus loves me!", "Yes, Jesus loves me!", "Yes, Jesus loves me!", "The Bible tells me so."]},
+    {"lines": ["Jesus loves me! He who died", "Heaven’s gate to open wide;", "He will wash away my sin,", "Let His little child come in."]},
+    {"lines": ["Jesus loves me! loves me still,", "Though I’m very weak and ill;", "From His shining throne on high", "Comes to watch me where I lie."]},
+    {"lines": ["Jesus loves me! He will stay", "Close beside me all the way;", "If I love Him, when I die", "He will take me home on high."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

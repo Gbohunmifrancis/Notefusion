@@ -1,0 +1,25 @@
+{
+  "title": "Jesus Christ Is Risen Today",
+  "tune": "easter-hymn",
+  "text": [
+    {"name": "Latin Easter carol", "traditional": true, "role": "Words, Surrexit Christus hodie (14th century)"},
+    {"name": "Lyra Davidica", "traditional": true, "role": "Anonymous English translation (1708); verses 2 and 3 from John Arnold's Compleat Psalmodist (1749)"},
+    {"name": "Charles Wesley", "born": 1707, "died": 1788, "role": "Verse 4 (1740)"}
+  ],
+  "textPublished": 1708,
+  "description": "Jesus Christ Is Risen Today in Tonic Solfa to EASTER HYMN, doh is C: the solfa with the words and alleluias, staff notation, four verses and a piano.",
+  "about": [
+    "The first verse is an anonymous translation of a medieval Latin Easter carol, printed with this tune in Lyra Davidica (London, 1708). Later verses came from John Arnold's Compleat Psalmodist (1749) and Charles Wesley (1740).",
+    "Every line ends with a long Alleluia: the first syllable is sung over five quick notes, so it is worth practising the Alleluia on its own before the verses."
+  ],
+  "underlay": "Je-sus Christ is ris’n to-day,_ Al____-le_-lu_-ia! Our tri-um-phant ho-ly day,_ Al____-le_-lu_-ia! Who did once up-on the cross Al____-le_-lu_-ia! Suf_-fer_ to re-deem our loss._ Al_____-le_-lu_-ia!",
+  "verses": [
+    {"lines": ["Jesus Christ is risen today, Alleluia!", "Our triumphant holy day, Alleluia!", "Who did once upon the cross, Alleluia!", "Suffer to redeem our loss. Alleluia!"]},
+    {"lines": ["Hymns of praise then let us sing, Alleluia!", "Unto Christ, our heavenly King, Alleluia!", "Who endured the cross and grave, Alleluia!", "Sinners to redeem and save. Alleluia!"]},
+    {"lines": ["But the pains which He endured, Alleluia!", "Our salvation have procured; Alleluia!", "Now above the sky He’s King, Alleluia!", "Where the angels ever sing. Alleluia!"]},
+    {"lines": ["Sing we to our God above, Alleluia!", "Praise eternal as His love; Alleluia!", "Praise Him, all ye heavenly host, Alleluia!", "Father, Son, and Holy Ghost. Alleluia!"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

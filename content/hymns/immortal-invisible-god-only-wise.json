@@ -1,0 +1,22 @@
+{
+  "title": "Immortal, Invisible, God Only Wise",
+  "tune": "st-denio",
+  "text": [
+    {"name": "Walter Chalmers Smith", "born": 1824, "died": 1908, "role": "Words (1867)"}
+  ],
+  "textPublished": 1867,
+  "description": "Immortal, Invisible, God Only Wise in Tonic Solfa to ST DENIO, doh is G: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "Walter Chalmers Smith, a minister of the Free Church of Scotland, published this hymn on 1 Timothy 1:17 in Hymns of Christ and the Christian Life (1867). ST DENIO is a Welsh folk melody printed in John Roberts's Caniadau y Cyssegr in 1839."
+  ],
+  "underlay": "Im-mor-tal, in-vis-i-ble, God on-ly wise, In light in-ac-ces-si-ble hid from our eyes, Most bless-ed, most glo-rious, the An-cient of Days, Al-might-y, vic-to-rious, Thy great name we praise.",
+  "verses": [
+    {"lines": ["Immortal, invisible, God only wise,", "In light inaccessible hid from our eyes,", "Most blessed, most glorious, the Ancient of Days,", "Almighty, victorious, Thy great name we praise."]},
+    {"lines": ["Unresting, unhasting, and silent as light,", "Nor wanting, nor wasting, Thou rulest in might;", "Thy justice like mountains high soaring above", "Thy clouds which are fountains of goodness and love."]},
+    {"lines": ["To all life Thou givest, to both great and small;", "In all life Thou livest, the true life of all;", "We blossom and flourish as leaves on the tree,", "And wither and perish; but nought changeth Thee."]},
+    {"lines": ["Great Father of glory, pure Father of light,", "Thine angels adore Thee, all veiling their sight;", "All laud we would render: O help us to see", "’Tis only the splendour of light hideth Thee."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}

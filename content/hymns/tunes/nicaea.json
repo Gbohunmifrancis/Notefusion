@@ -1,15 +1,17 @@
 {
   "name": "NICAEA",
   "music": [
-    { "name": "John Bacchus Dykes", "born": 1823, "died": 1876, "role": "Melody (1861)" }
+    {"name": "John Bacchus Dykes", "born": 1823, "died": 1876, "role": "Melody (1861)"}
   ],
   "musicPublished": 1861,
-  "key": null,
-  "time": null,
-  "tempo": null,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 92,
   "pickup": 0,
-  "lineBars": 4,
-  "melody": null,
+  "lineBars": 2,
+  "melody": "D4:1 D4:1 F#4:1 F#4:1 | A4:2 A4:2 | B4:1~ B4:1 B4:1 B4:1 | A4:2 F#4:2 | A4:1.5 A4:.5 A4:1 A4:1 | D5:1~ D5:1 C#5:1 A4:1 | E4:1 A4:1 B4:1.5 A4:.5 | A4:4 | D4:1 D4:1 F#4:1 F#4:1 | A4:1~ A4:1 A4:2 | B4:1.5 B4:.5 B4:1 B4:1 | A4:2 A4:2 | D5:2 A4:1 A4:1 | B4:2 F#4:2 | G4:1 E4:1 E4:1.5 D4:.5 | D4:4",
   "reviewed": false,
-  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false."
+  "confidence": "high",
+  "source": "Open Hymnal Project ABC score (Hymns Ancient and Modern, 1861/1869); every note agrees with the score on Wikipedia's article and the opening with hymnary.org's incipit.",
+  "reviewNotes": "High. 'Lord', 'morn-' and the third 'ho-' are each held two beats (books that fit other verses' extra syllables print them as two tied crotchets). Hymns A&M has it in D; many American books in Eb, with the same solfa."
 }

@@ -1,0 +1,22 @@
+{
+  "title": "When I Survey the Wondrous Cross",
+  "tune": "rockingham",
+  "text": [
+    {"name": "Isaac Watts", "born": 1674, "died": 1748, "role": "Words (1707)"}
+  ],
+  "textPublished": 1707,
+  "description": "When I Survey the Wondrous Cross in Tonic Solfa to ROCKINGHAM, doh is D: the solfa with the words, staff notation, four verses and a piano.",
+  "about": [
+    "Isaac Watts published this hymn in Hymns and Spiritual Songs (1707), as a meditation on Galatians 6:14. Edward Miller adapted the tune ROCKINGHAM in 1790 from an older melody; in America the words are also sung to Lowell Mason's HAMBURG."
+  ],
+  "underlay": "When I_ sur-vey the won-drous cross On which the Prince of glo_-ry died,_ My rich-est gain I count_ but loss, And pour con-tempt on all__ my pride.",
+  "verses": [
+    {"lines": ["When I survey the wondrous cross", "On which the Prince of glory died,", "My richest gain I count but loss,", "And pour contempt on all my pride."]},
+    {"lines": ["Forbid it, Lord, that I should boast,", "Save in the death of Christ my God:", "All the vain things that charm me most,", "I sacrifice them to His blood."]},
+    {"lines": ["See from His head, His hands, His feet,", "Sorrow and love flow mingled down:", "Did e’er such love and sorrow meet,", "Or thorns compose so rich a crown?"]},
+    {"lines": ["Were the whole realm of nature mine,", "That were a present far too small;", "Love so amazing, so divine,", "Demands my soul, my life, my all."]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false
+}
