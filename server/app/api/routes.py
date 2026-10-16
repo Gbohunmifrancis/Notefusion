@@ -138,16 +138,7 @@ async def submit_transcription(
     if tempo is not None and not (20 <= tempo <= 400):
         raise HTTPException(422, "tempo must be between 20 and 400 BPM.")
 
-    if time_signature is not None:
-        time_signature = time_signature.strip()
-        if not time_signature or time_signature.lower() in ("auto", "null", "none"):
-            time_signature = "4/4"
-        else:
-            import re
-            if not re.match(r"^\d{1,2}/\d{1,2}$", time_signature):
-                raise HTTPException(422, f"Invalid time signature format: {time_signature!r}. Expected e.g. '4/4', '3/4', '6/8'.")
-    else:
-        time_signature = "4/4"
+    time_signature = _clean_time_signature(time_signature)
 
     if key is not None:
         key = key.strip()
@@ -292,12 +283,13 @@ def _priority(value: str) -> str:
     return value
 
 
-def _clean_time_signature(time_signature: str | None) -> str:
+def _clean_time_signature(time_signature: str | None) -> str | None:
+    """The meter the caller gave, or None for none ("auto"): the worker then reads it off the notes."""
     if time_signature is None:
-        return "4/4"
+        return None
     time_signature = time_signature.strip()
     if not time_signature or time_signature.lower() in ("auto", "null", "none"):
-        return "4/4"
+        return None
     import re
     if not re.match(r"^\d{1,2}/\d{1,2}$", time_signature):
         raise HTTPException(422, f"Invalid time signature format: {time_signature!r}. Expected e.g. '4/4', '3/4', '6/8'.")
@@ -452,7 +444,7 @@ def harmonise(body: HarmoniseRequest) -> HarmoniseResponse:
         raise HTTPException(422, "tempoBpm must be between 20 and 400.")
     if not _notes_are_valid(body.notes):
         raise HTTPException(422, _NOTES_INVALID)
-    time_signature = _clean_time_signature(body.time_signature)
+    time_signature = _clean_time_signature(body.time_signature) or "4/4"
     try:
         parts, parts_musicxml = harmonise_sheet(
             body.key, body.tempo_bpm, time_signature, [n.model_dump() for n in body.notes])

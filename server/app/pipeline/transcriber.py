@@ -1309,6 +1309,12 @@ class TranscriptionResult:
     # it is what lets a client play the notated melody over the song's own backing in
     # time: audio time of beat b is ``beat_origin_sec + b * 60 / tempo``.
     beat_origin_sec: float = 0.0
+    # How far step 8b moved every note into the first bar, in beats, so a tune that starts
+    # on an upbeat starts on it: 0.0 when the first bar line is at the first note.  The notes'
+    # ``start_beat`` already carry it (and ``beat_origin_sec`` is that much earlier); this
+    # says the gap before the first note is the bar's, not silence the recording began with.
+    # Not sent to clients.
+    pickup_beats: float = 0.0
     # Separated jobs only: the instrumental (mix minus the isolated vocal) as a small
     # mono MP3, so the sheet can be rehearsed over the real song rather than a piano.
     backing_audio_base64: str = ""
@@ -3750,7 +3756,7 @@ def _transcribe_inner(
     mode: str = "melody",
     key_override: str | None = None,
     tempo_override: int | None = None,
-    time_signature: str = "4/4",
+    time_signature: str | None = None,
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
@@ -3796,7 +3802,7 @@ def transcribe(
     mode: str = "melody",
     key_override: str | None = None,
     tempo_override: int | None = None,
-    time_signature: str = "4/4",
+    time_signature: str | None = None,
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
@@ -3932,6 +3938,22 @@ _DEFAULT_BPM = 100.0
 # grid is in real time.  A run of sixteenths at 88 does not fit an eighth grid at all;
 # the same music read as eighths at 176 fits it exactly.
 _TEMPO_PREFERENCE_BPM = 100.0
+
+# Of two readings that fit alike, the nearer 100 wins (above) — unless it writes the commonest
+# note dotted or as a triplet, and a reading a dotted ratio away (3/2 or 2/3 of it) fits as well
+# and writes it plain: a beat, a half or quarter of one, or two or four.  A line of crotchets
+# and minims at 76 fits the half-beat grid just as well at 114, where every crotchet is a dotted
+# crotchet (1.5 beats), and 114 is nearer 100: the sung corpus's low hum was written so, and
+# New Britain sung at 65 came out at 97 in 4.5-beat bars.  Only that swap, and only between
+# readings in the same fit bucket (a dotted reading that fits better still wins): a rank key "dotted
+# loses every tie" was measured first and moved a 1.5x vibrato-fragmented instrument case to
+# 2x (``vibrato_rate_k20``, 148 -> 195 for 96), which the instrument gate counts as an octave
+# error.  See ``settings.tempo_plain_level`` for what the swap measured.
+_PLAIN_NOTE_BEATS = (0.25, 0.5, 1.0, 2.0, 4.0)
+# 0.04 missed the sung Amazing Grace's median interval (a mix of crotchets and minims sung a
+# little loosely) and called it dotted; 0.08 is a third of the way to the nearest dotted value.
+_PLAIN_NOTE_TOLERANCE = 0.08
+_DOTTED_RATIOS = (1.5, 2.0 / 3.0)
 
 # The range a beat can be *notated* in, which is narrower than the ``_MIN_BPM``..
 # ``_MAX_BPM`` range librosa is trusted to report inside: those bound what a tracker
@@ -4316,7 +4338,26 @@ def _grid_bpm(
             abs(float(np.log(bpm / _TEMPO_PREFERENCE_BPM))),
         )
 
-    return min(on_grid, key=rank)[2]
+    best = min(on_grid, key=rank)
+    if not settings.tempo_plain_level:
+        return best[2]
+
+    # A winner that writes the commonest note dotted gives way to a reading a dotted ratio
+    # away that fits as well and writes it plain; see ``_PLAIN_NOTE_BEATS``.
+    commonest = float(np.median(usable))
+
+    def plain(bpm: float) -> bool:
+        beats = commonest * bpm / 60.0
+        return any(abs(beats / value - 1.0) <= _PLAIN_NOTE_TOLERANCE for value in _PLAIN_NOTE_BEATS)
+
+    if plain(best[0]):
+        return best[2]
+    swaps = [
+        entry for entry in on_grid
+        if rank(entry)[0] == rank(best)[0] and plain(entry[0])
+        and any(abs(entry[0] / best[0] / ratio - 1.0) <= _OCTAVE_ADMIT_TOLERANCE for ratio in _DOTTED_RATIOS)
+    ]
+    return min(swaps, key=rank)[2] if swaps else best[2]
 
 
 def _estimate_tempo_and_beats(
@@ -4960,6 +5001,106 @@ def _choir_parts(
     return parts, parts_musicxml
 
 
+# ── Meter and bar phase (``_meter_and_pickup``) ───────────────────────────────
+# Read off the quantized line, in beats, after the tempo and the beat phase are settled.
+# The cue is durational accent: a note held longer than its neighbours (counting the breath
+# after it) falls on a strong beat.  Measured on the hymn corpus (tests/accuracy/hymn_corpus.py,
+# the published tunes' own scores), tuned on its dev half and reported on the held-out half.
+
+# Positional weights for the bar phase: the downbeat, then the bar's other strong beat, then
+# the remaining beats; an off-beat counts nothing.
+_BAR_WEIGHTS = {3: (1.0, 0.25, 0.25), 4: (1.0, 0.25, 0.5, 0.25)}
+
+# What a bar line at the first note is worth before the evidence: most tunes start on the
+# downbeat, and with nothing to say otherwise the first note is where the bar starts.  Swept on
+# the dev half (0, 0.05, 0.1, 0.15 of the line's held length): 0.05 placed the most notes in the
+# right bar (0.752, against 0.693 with no prior and 0.708 at 0.15).
+PICKUP_PRIOR = 0.05
+
+# How much more of the line's held weight must fall on the downbeats of a three-beat bar than
+# chance allows (``_meter_and_pickup``) before the sheet is written in 3/4 rather than 4/4.
+# On the dev half, at the right tempo level, every 4/4 take measured at most 1.03 and every 3/4
+# take at least 1.08; 1.2 leaves the 4/4s a margin and still finds 29 of 38 3/4 takes (1.1
+# found 34).  A take read at a dotted tempo level can measure 1.7-2.8 whatever its meter,
+# which is why the level is settled first (``_PLAIN_NOTE_BEATS``).
+TRIPLE_LIFT = 1.2
+
+# Fewer notes than this and the bar is not ours to move.
+METER_MIN_NOTES = 12
+
+
+def _iois(starts: Sequence[float], durs: Sequence[float]) -> list[float]:
+    """Each note's span to the next onset (its length plus any rest after it); the last its own length."""
+    return [
+        (starts[i + 1] - starts[i]) if i + 1 < len(starts) else max(float(durs[i]), 0.0)
+        for i in range(len(starts))
+    ]
+
+
+def _on_beat(x: float, period: float) -> bool:
+    r = x % period
+    return r < 1e-6 or period - r < 1e-6
+
+
+def _downbeat_share(starts: Sequence[float], iois: Sequence[float], beats: int) -> float:
+    """The most of the line's held length (the last note's left out) that one phase of a
+    ``beats``-beat bar puts on its downbeats, as a share of the whole."""
+    total = float(sum(iois[:-1]))
+    if total <= 0.0:
+        return 0.0
+    return max(
+        sum(x for s, x in zip(starts[:-1], iois[:-1]) if _on_beat(s + k / 2.0, beats)) / total
+        for k in range(2 * beats)
+    )
+
+
+def _bar_phase(starts: Sequence[float], iois: Sequence[float], beats: int) -> float:
+    """The offset, in beats (a multiple of a half), that puts the bar lines where the held notes
+    say they go: ``start + offset`` is each note's place on a grid whose bars start at 0."""
+    weights = _BAR_WEIGHTS[beats]
+    total = float(sum(iois[:-1])) or 1.0
+
+    def score(offset: float) -> float:
+        acc = 0.0
+        for s, x in zip(starts[:-1], iois[:-1]):
+            p = (s + offset) % beats
+            if abs(p - round(p)) < 1e-6:
+                acc += x * weights[int(round(p)) % beats]
+        return acc / total + (PICKUP_PRIOR if offset == 0.0 else 0.0)
+
+    return max((k / 2.0 for k in range(2 * beats)), key=lambda o: (score(o), -o))
+
+
+def _meter_and_pickup(
+    starts: Sequence[float], durs: Sequence[float], time_signature: str | None
+) -> tuple[str, float]:
+    """(time signature, pickup offset in beats) for a line already on the beat grid.
+
+    ``time_signature`` given is kept; only the bar phase is read then.  Otherwise 3/4 is
+    written when a three-beat bar puts clearly more of the held length on its downbeats than a
+    four-beat bar does, each against what chance gives it (``TRIPLE_LIFT``), and 4/4 when not.
+    """
+    order = sorted(range(len(starts)), key=lambda i: starts[i])
+    starts = [float(starts[i]) for i in order]
+    durs = [float(durs[i]) for i in order]
+    if len(starts) < METER_MIN_NOTES:
+        return time_signature or "4/4", 0.0
+    iois = _iois(starts, durs)
+    chosen = time_signature
+    if chosen is None:
+        triple = 3.0 * _downbeat_share(starts, iois, 3)
+        quadruple = 4.0 * _downbeat_share(starts, iois, 4)
+        chosen = "3/4" if triple > TRIPLE_LIFT * quadruple else "4/4"
+    try:
+        num, den = (int(x) for x in chosen.split("/"))
+    except ValueError:
+        return chosen, 0.0
+    beats = num * 4.0 / den
+    if beats not in (3.0, 4.0):
+        return chosen, 0.0
+    return chosen, _bar_phase(starts, iois, int(beats))
+
+
 def _one_note_per_slot(s, step: float, heard_at: dict[int, float]) -> None:
     """A tune is one voice: after quantizing, no two of its notes may start together.
 
@@ -5045,7 +5186,7 @@ def _transcribe_wav(
     mode: str,
     key_override: str | None,
     tempo_override: int | None,
-    time_signature: str = "4/4",
+    time_signature: str | None = None,
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
@@ -5400,45 +5541,6 @@ def _transcribe_wav(
     has_evidence = any(e.onset_post is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
-    s.insert(0, meter.TimeSignature(time_signature))
-    # The meter is a constant, and both routes to detecting it have been measured and
-    # STRUCK.  Do not re-attempt either without new evidence; the post-mortem:
-    #
-    #   Acoustic (librosa.feature.tempogram_ratio, duple {3,9} vs triple {2,5,8,10}).
-    #     Anti-correlated on this corpus.  A true 3/4 waltz and a true 6/8 clip both
-    #     read DUPLE at the tempo this function actually has (-0.062 and -0.019),
-    #     while 12 of the 38 known-4/4 cases read TRIPLE.  No threshold separates
-    #     them: the candidates rank 13th of 40.  The statistic's sign flips on a 3 BPM
-    #     perturbation of the bpm handed in (waltz TRIPLE at 102, duple at 105, TRIPLE
-    #     at 108), so it measures whether bpm sits on a tempogram peak, not meter.
-    #     The largest false "triple" is triplets_eighth_c_major — 4/4 with eighth
-    #     triplets — which is a permanent musical confound, not a corpus artifact.
-    #     Robust to norm and aggregation: all 9 combinations agree in sign.
-    #
-    #   Symbolic (bar-start coverage + phrase wholeness + long-note contrast over the
-    #     quantized events).  On perfect reference notes it picks the right bar length
-    #     for the two triple candidates by margins of only 0.167 and 0.100 — and gets
-    #     0 of 38 4/4 cases right, picking 2 over 4 by a *wider* 0.712 margin on the
-    #     18 cases sharing the major template and 0.267 on the 15 sharing the
-    #     diagnostic phrase.  On real output at its own tolerance it declines on 5 of
-    #     5 cases: the margins never come into existence.  One tolerance step looser
-    #     it answers the 6/8 case DUPLE on a tie-break and calls drift_1_semitone 3/4.
-    #     A one-line "modal gap between the longest notes" matches every case it gets
-    #     right and declines where it is confidently wrong, so the rule earns none of
-    #     its complexity.
-    #
-    # And the gate that would have scored a detector is a tautology: every corpus case
-    # is 4/4 and this value is constant, so an always-4/4 detector and a perfect one
-    # both score meter.exact 1.000.  Adding a 3/4 and a 6/8 case lifts the honest
-    # headroom to one case (0.025) — below the 1/31 = 0.032 ceiling the struck vibrato
-    # fix was rejected on — because the 6/8 clip's tempo comes back 45 against a true
-    # 132 (librosa found the BAR rate) and a correct "6/8" there still engraves a bar
-    # 2.9x too long while scoring exact=True.  6/8-vs-3/4 is a subdivision question
-    # anyway: both are 3 quarter-beats per bar, so no bar-length cue can answer it.
-    #
-    # The real defect the measurement exposed is upstream and is NOT meter: this
-    # function is not told which metrical level ``bpm`` is on.  See
-    # tests/accuracy/metrics.py TEMPO_METRICAL_FACTORS.
     for evt in events:
         n = m21note.Note(evt.pitch)
         # Clamp to a sixteenth minimum so tiny surviving fragments still have a
@@ -5457,6 +5559,54 @@ def _transcribe_wav(
         _one_line(s)
     elif mode != "poly":
         _one_note_per_slot(s, 1.0 / settings.quantize_divisors[0], heard_at)
+
+    # ── 8b. Meter and bar lines ───────────────────────────────────────────────
+    # A time signature given always wins; without one the meter is read off the quantized
+    # line (3/4 or 4/4, nothing else), and the bar phase — where the first bar line falls, so
+    # a tune that starts on an upbeat starts on it — is read either way.  Melody mode only:
+    # it is what the hymn corpus measures.  See ``_meter_and_pickup``.
+    #
+    # History, because the meter was a constant for a measured reason.  Two detectors were
+    # built and STRUCK on the old corpora, which were 4/4 from the first bar line, so a
+    # constant 4/4 scored perfect there and no detector could show a gain:
+    #
+    #   Acoustic (librosa.feature.tempogram_ratio, duple {3,9} vs triple {2,5,8,10}).
+    #     Anti-correlated: a true 3/4 waltz and 6/8 clip read DUPLE, 12 of 38 4/4 cases read
+    #     TRIPLE, and the sign flipped on a 3 BPM perturbation of the bpm handed in — it
+    #     measured whether bpm sat on a tempogram peak, not meter.  Still struck.
+    #   Symbolic (bar-start coverage + phrase wholeness + long-note contrast).  Picked 2 over
+    #     4 on every 4/4 case, and declined on real output.  The rule here is its narrower
+    #     heir: it never offers 2 (nor 6), only 3 against 4, each against its own chance, and
+    #     it answers 3/4 only on a clear margin (``TRIPLE_LIFT``).
+    #
+    # The hymn corpus (tests/accuracy/hymn_corpus.py: the 224 tunes of the website's published
+    # hymns, played and sung, scored against their own scores) is what finally had 3/4, 6/8 and
+    # 3/2 in it, and pickups on half the tunes.  The constants were set on its dev half; on
+    # the held-out half (``report --hymns --split test``, see hymn_baseline.json):
+    #                     before  after          before  after
+    #     meter.exact      0.724  0.814   bars.in_right_bar  0.656  0.786
+    #     pickup.exact     0.476  0.719   bars.placed_exact  0.388  0.678
+    #     bars.all_right   0.376  0.676   tempo.level_right  0.924  0.933
+    # (210 takes; with this step and ``_PLAIN_NOTE_BEATS``.)  3/4 is written 3/4 on 19 of 34
+    # held-out takes (0 before), 4/4 stays 4/4 on all 152; notes, key and syllables are
+    # unchanged but for two tunes whose tempo the dotted swap put right.  On dev a 4/4 tune
+    # read at the wrong level came out 3/4 once in 166.  What it cannot do: 6/4 and 3/2 (six
+    # beats a bar) come out 3/4 or 4/4, 6/8 only as 3/4, and 2/2 as 4/4 (the same bars); 4/4
+    # can be read half a bar out (chorales of even crotchets carry little durational accent).
+    # The tempo's metrical level is upstream of all of it (``_PLAIN_NOTE_BEATS``): a bar of
+    # three beats read at 1.5x the tempo is four and a half.
+    pickup = 0.0
+    if mode == "melody" and settings.meter_detect:
+        time_signature, pickup = _meter_and_pickup(
+            [float(n.offset) for n in s.notes], [float(n.duration.quarterLength) for n in s.notes], time_signature)
+        if pickup:
+            s.shiftElements(pickup, classFilterList=[m21note.Note])
+            # Beat 0 is where the first bar starts, a pickup's length before the first note.
+            beat_origin -= pickup / sec_to_beats
+            if chord_spans is not None:
+                chord_spans = [replace(c, start_beat=c.start_beat + pickup) for c in chord_spans]
+    time_signature = time_signature or "4/4"
+    s.insert(0, meter.TimeSignature(time_signature))
 
     # ── 9. Key detection ──────────────────────────────────────────────────────
     # Manual override always wins (TRD par. 4.1).
@@ -5696,6 +5846,7 @@ def _transcribe_wav(
         overall_confidence=_overall_confidence(notes, headline_doh if vocal_fit is not None else None),
         audio_preview_base64=audio_preview_b64,
         beat_origin_sec=round(float(beat_origin), 4),
+        pickup_beats=pickup,
         # Read off the events rather than re-testing duration against the cap, so this
         # cannot drift from what _pyin_track actually did: _refine_pitches sets
         # pyin_midi on every event pyin could speak about, on every branch, so an

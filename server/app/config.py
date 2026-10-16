@@ -483,6 +483,37 @@ class Settings:
         return os.getenv("NF_KEY_ENSEMBLE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def tempo_plain_level(self) -> bool:
+        """Among tempi that fit the onsets alike, prefer one that writes the commonest note plain.
+
+        See ``transcriber._PLAIN_NOTE_BEATS``.  Off, the reading nearest 100 BPM wins the tie
+        even when it writes the commonest note dotted.
+
+        Measured, replaying the tempo choice on every corpus's captured onsets and then end to
+        end: the sung corpus 60 -> 61 of 61 at the reference level (``low_hum_cminor`` at 76,
+        not 113), the hymn corpus dev 0.878 -> 0.895 and held-out 0.924 -> 0.933, the
+        instrument corpus unchanged (every number), Vocadito unchanged.  Two wider rules were
+        measured and not shipped: "dotted loses every tie" moved ``vibrato_rate_k20`` from 1.5x
+        to 2x, an octave error the instrument gate rejects; and preferring the level whose beat
+        is the commonest note inside 60-160 BPM (for hymns read at half tempo above 141)
+        reached 0.950 on dev but 0.929 held out, where it read three more tunes at double tempo:
+        it fitted the dev half, so it stayed out.
+        """
+        return os.getenv("NF_TEMPO_PLAIN_LEVEL", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
+    def meter_detect(self) -> bool:
+        """Read the time signature (when none is given) and the bar phase off the notes.
+
+        Off writes every sheet in the given meter, or 4/4, with its first bar line at the first
+        note, as before.  See ``transcriber._meter_and_pickup`` for what it reads, and step 8b of
+        ``_transcribe_wav`` for what it measured on the hymn corpus (held out: notes in the right
+        bar 0.656 -> 0.786, every bar line right 0.376 -> 0.676; the sung, instrument and
+        Vocadito numbers unchanged).
+        """
+        return os.getenv("NF_METER_DETECT", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def tempo_grid(self) -> bool:
         """Pick the tempo that puts the detected onsets on the quantizer's grid.
 
