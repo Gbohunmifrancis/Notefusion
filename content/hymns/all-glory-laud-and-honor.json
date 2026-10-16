@@ -1,0 +1,106 @@
+{
+  "title": "All Glory, Laud, and Honor",
+  "tune": "valet-will-ich-dir-geben",
+  "text": [
+    {
+      "name": "Theodulf of Orleans",
+      "born": 760,
+      "died": 821,
+      "role": "Words (820)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1851)"
+    }
+  ],
+  "textPublished": 1851,
+  "description": "All Glory, Laud, and Honor in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Theodulf of Orleans, first published in 820. The English translation is by John Mason Neale (1851). The tune, VALET WILL ICH DIR GEBEN, is by Melchior Teschner (1615). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All glo-ry, laud and hon-or, To Thee, Re-deem-er, King, To Whom the lips of child-ren Made sweet ho-san-nas ring. Thou art the King of Is-rael, Thou Da-vid's ro-yal Son, Who in the Lord's Name com_-est, The King and Bless-ed One.",
+  "verses": [
+    {
+      "lines": [
+        "All glory, laud and honor,",
+        "To Thee, Redeemer, King,",
+        "To Whom the lips of children",
+        "Made sweet hosannas ring.",
+        "Thou art the King of Israel,",
+        "Thou David's royal Son,",
+        "Who in the Lord's Name comest,",
+        "The King and Blessed One."
+      ]
+    },
+    {
+      "lines": [
+        "All glory, laud and honor,",
+        "To Thee, Redeemer, King,",
+        "To Whom the lips of children",
+        "Made sweet hosannas ring.",
+        "The company of angels",
+        "Are praising Thee on High,",
+        "And mortal men and all things",
+        "Created make reply."
+      ]
+    },
+    {
+      "lines": [
+        "All glory, laud and honor,",
+        "To Thee, Redeemer, King,",
+        "To Whom the lips of children",
+        "Made sweet hosannas ring.",
+        "The people of the Hebrews",
+        "With palms before Thee went;",
+        "Our prayer and praise and anthems",
+        "Before Thee we present."
+      ]
+    },
+    {
+      "lines": [
+        "All glory, laud and honor,",
+        "To Thee, Redeemer, King,",
+        "To Whom the lips of children",
+        "Made sweet hosannas ring.",
+        "To Thee, before Thy passion,",
+        "They sang their hymns of praise;",
+        "To Thee, now high exalted,",
+        "Our melody we raise."
+      ]
+    },
+    {
+      "lines": [
+        "All glory, laud and honor,",
+        "To Thee, Redeemer, King,",
+        "To Whom the lips of children",
+        "Made sweet hosannas ring.",
+        "Thou didst accept their praises;",
+        "Accept the prayers we bring,",
+        "Who in all good delightest,",
+        "Thou good and gracious King."
+      ]
+    }
+  ],
+  "category": "Palm Sunday",
+  "topics": [
+    "Children (see also God's Children - the Faithful)",
+    "Easter Week / Passion",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Israel",
+    "Jesus",
+    "Praise, Son",
+    "Worship"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Glory_Laud_And_Honor-Valet_Will_Ich_Dir_Geben-St_Theodulph.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "All_Glory_Laud_And_Honor-Valet_Will_Ich_Dir_Geben-St_Theodulph"
+}

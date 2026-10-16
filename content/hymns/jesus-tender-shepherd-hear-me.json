@@ -1,0 +1,67 @@
+{
+  "title": "Jesus, Tender Shepherd, Hear Me",
+  "tune": "evening-prayer",
+  "text": [
+    {
+      "name": "Mary Lundie Duncan",
+      "born": 1814,
+      "died": 1840,
+      "role": "Words (1839)"
+    }
+  ],
+  "textPublished": 1839,
+  "description": "Jesus, Tender Shepherd, Hear Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Mary Lundie Duncan, first published in 1839. The tune, EVENING PRAYER, is by John Stainer (1898). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus, ten-der Shep-herd, hear me; Bless Thy lit-tle la-mb to-night; Through the dark-ness be Thou near me; Watch my sleep till morn-ing light.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, tender Shepherd, hear me;",
+        "Bless Thy little lamb tonight;",
+        "Through the darkness be Thou near me;",
+        "Watch my sleep till morning light."
+      ]
+    },
+    {
+      "lines": [
+        "All this day thy hand has led me,",
+        "And I thank Thee for Thy care;",
+        "Thou hast clothed me, warmed and fed me,",
+        "Listen to my evening prayer."
+      ]
+    },
+    {
+      "lines": [
+        "Let my sins be all forgiven;",
+        "Bless the friends I love so well;",
+        "Take me, when I die, to heaven,",
+        "Happy there with Thee to dwell."
+      ]
+    }
+  ],
+  "category": "Evening",
+  "topics": [
+    "Contrition",
+    "Darkness, Spiritual",
+    "Evening",
+    "Following Jesus, In Faith",
+    "Friendship",
+    "God, Care of",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Prayer",
+    "Shepherd/Lamb"
+  ],
+  "metre": "8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Tender_Shepherd_Hear_Me-Evening_Prayer.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_Tender_Shepherd_Hear_Me-Evening_Prayer"
+}

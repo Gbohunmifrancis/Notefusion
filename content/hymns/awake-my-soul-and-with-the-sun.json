@@ -1,0 +1,101 @@
+{
+  "title": "Awake, My Soul, and with the Sun",
+  "tune": "old-100th-awake-my-soul-and-with-the-sun",
+  "text": [
+    {
+      "name": "Thomas Ken",
+      "born": 1637,
+      "died": 1711,
+      "role": "Words (1674)"
+    }
+  ],
+  "textPublished": 1674,
+  "description": "Awake, My Soul, and with the Sun in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Ken, first published in 1674. The tune, OLD 100TH, is by Louis Bourgeois (1551). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "A-wake, my soul, and with the sun Thy dail-y stage of du-ty run; Shake off dull sloth, and joy-ful rise, To pay thy morn-ing sac-ri-fice.",
+  "verses": [
+    {
+      "lines": [
+        "Awake, my soul, and with the sun",
+        "Thy daily stage of duty run;",
+        "Shake off dull sloth, and joyful rise,",
+        "To pay thy morning sacrifice."
+      ]
+    },
+    {
+      "lines": [
+        "Thy precious time misspent, redeem,",
+        "Each present day thy last esteem,",
+        "Improve thy talent with due care;",
+        "For the great day thyself prepare."
+      ]
+    },
+    {
+      "lines": [
+        "By influence of Light divine",
+        "Let thy own light to others shine.",
+        "Reflect all Heaven's propitious ways",
+        "In ardent love, and cheerful praise."
+      ]
+    },
+    {
+      "lines": [
+        "In conversation be sincere;",
+        "Keep conscience as the noontide clear;",
+        "Think how all seeing God thy ways",
+        "And all thy secret thoughts surveys."
+      ]
+    },
+    {
+      "lines": [
+        "Wake, and lift up thyself, my heart,",
+        "And with the angels bear thy part,",
+        "Who all night long unwearied sing",
+        "High praise to the eternal King."
+      ]
+    }
+  ],
+  "category": "Morning",
+  "topics": [
+    "Activity",
+    "Aspiration",
+    "Christian Life",
+    "Commitment",
+    "Conscience",
+    "Day",
+    "Duty (see also Law)",
+    "Following Jesus, In Faith",
+    "Following Jesus, In Action",
+    "Following Jesus, Sanctification",
+    "God, As King",
+    "God, Providence of",
+    "Guidance",
+    "Heaven",
+    "Inner Life",
+    "Invitation (Faithful's to God)",
+    "Light",
+    "Morality (see also Law)",
+    "Morning",
+    "Obedience",
+    "Opening Songs",
+    "Presence",
+    "Sacrifice",
+    "Security",
+    "Self Control (see also Law)",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Temperance &amp; Moral Reform (see also Law)",
+    "Zeal"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Awake_My_Soul_And_With_The_Sun-Old_100th.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Awake_My_Soul_And_With_The_Sun-Old_100th",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 6 beats, more than 4; bar 2 has 7 beats, more than 4; bar 3 has 6 beats, more than 4; bar 4 has 7 beats, more than 4; bar 5 has 6 beats, more than 4; bar 6 has 7 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 7 beats, more than 4."
+}

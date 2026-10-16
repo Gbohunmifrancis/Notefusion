@@ -91,13 +91,38 @@ export function loadPosts({ authors, hymnSlugs, dir = path.join(CONTENT_DIR, "bl
 /** Public domain, strictly: everyone named died before 1955, and words and music were first published before 1929. */
 export const PD_DIED_BEFORE = 1955, PD_PUBLISHED_BEFORE = 1929;
 
-function checkPeople(file, people, what) {
+/**
+ * Why a hymn is not (provably) in the public domain, as a list of reasons; empty when it is. Everyone
+ * named (composer, arranger, author, translator) must have a death year before 1955 — or be an
+ * anonymous or traditional source ("traditional": true) — and the words and the music must have been
+ * first published before 1929. The build refuses to publish a hymn with any reason; the importer
+ * uses the same test to keep a hymn as a draft.
+ */
+export function publicDomainProblems({ text = [], music = [], textPublished, musicPublished }) {
+  const out = [];
+  for (const p of [...text, ...music]) {
+    if (!p || p.traditional) continue;
+    if (!(Number.isInteger(p.died) && p.died < PD_DIED_BEFORE)) out.push(`${p.name}: public domain needs a death year before ${PD_DIED_BEFORE} (or "traditional": true for an anonymous source)`);
+  }
+  if (!(Number.isInteger(textPublished) && textPublished < PD_PUBLISHED_BEFORE)) out.push(`"textPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
+  if (!(Number.isInteger(musicPublished) && musicPublished < PD_PUBLISHED_BEFORE)) out.push(`"musicPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
+  return out;
+}
+
+function checkNames(file, people, what) {
   if (!Array.isArray(people) || !people.length) fail(file, `"${what}" must list who wrote it`);
   for (const p of people) {
     if (!p.name || !p.role) fail(file, `everyone in "${what}" needs a name and a role`);
-    if (p.traditional) continue;
-    if (!(Number.isInteger(p.died) && p.died < PD_DIED_BEFORE)) fail(file, `${p.name}: public domain needs a death year before ${PD_DIED_BEFORE} (or "traditional": true for an anonymous source)`);
+    if (p.lived != null && typeof p.lived !== "string") fail(file, `${p.name}: "lived" is text, e.g. "5th century"`);
   }
+}
+
+/** The optional source fields of a hymn or tune taken from a published collection. */
+function checkSource(file, x) {
+  if (x.source == null) return;
+  if (typeof x.source !== "string" || !x.source.trim()) fail(file, `"source" must name where the hymn comes from`);
+  if (x.sourceUrl != null && !/^https?:\/\/\S+$/.test(x.sourceUrl)) fail(file, `"sourceUrl" must be a web address`);
+  for (const k of ["licence", "credits"]) if (x[k] != null && (typeof x[k] !== "string" || !x[k].trim())) fail(file, `"${k}" must be text`);
 }
 
 export function loadTunes(dir = path.join(CONTENT_DIR, "hymns", "tunes")) {
@@ -108,8 +133,8 @@ export function loadTunes(dir = path.join(CONTENT_DIR, "hymns", "tunes")) {
     t.slug = f.replace(/\.json$/, "");
     t.file = file;
     if (!t.name) fail(file, `"name" is required`);
-    checkPeople(file, t.music, "music");
-    if (!(Number.isInteger(t.musicPublished) && t.musicPublished < PD_PUBLISHED_BEFORE)) fail(file, `"musicPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
+    checkNames(file, t.music, "music");
+    checkSource(file, t);
     if (t.melody) {
       const N = loadEngine();
       if (!N.parseKey(t.key)) fail(file, `"key" must be a key like "G major" or "A minor"`);
@@ -137,10 +162,15 @@ export function loadHymns({ tunes, dir = path.join(CONTENT_DIR, "hymns"), includ
     if (typeof h.draft !== "boolean" || typeof h.reviewed !== "boolean") fail(file, `"draft" and "reviewed" must be true or false`);
     const tune = tunes[h.tune];
     if (!tune) fail(file, `no tune "${h.tune}" in content/hymns/tunes`);
-    checkPeople(file, h.text, "text");
-    if (!(Number.isInteger(h.textPublished) && h.textPublished < PD_PUBLISHED_BEFORE)) fail(file, `"textPublished" must be a year before ${PD_PUBLISHED_BEFORE}`);
+    checkNames(file, h.text, "text");
+    checkSource(file, h);
+    for (const k of ["alsoKnownAs", "topics"]) if (h[k] != null && (!Array.isArray(h[k]) || h[k].some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"${k}" must be a list of text`);
+    if (h.category != null && (typeof h.category !== "string" || !h.category.trim())) fail(file, `"category" must be text`);
     if (!Array.isArray(h.verses) || !h.verses.length || h.verses.some((v) => !Array.isArray(v.lines) || !v.lines.length)) fail(file, `"verses" must be a list of {lines: [...]}`);
     if (!h.draft) {
+      // Public domain, strictly, for everything published; a draft may still be waiting for its facts.
+      const pd = publicDomainProblems({ text: h.text, music: tune.music, textPublished: h.textPublished, musicPublished: tune.musicPublished });
+      if (pd.length) fail(file, pd[0]);
       if (!tune.parsed) fail(file, `the tune ${tune.name} has no melody yet; keep the hymn a draft until it has one`);
       const syllables = N.syllabify(h.underlay || "").length;
       if (syllables !== tune.parsed.notes.length) fail(file, `"underlay" has ${syllables} syllables (counting each "_") but ${tune.name} has ${tune.parsed.notes.length} notes`);

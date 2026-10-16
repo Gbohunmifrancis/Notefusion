@@ -1,0 +1,24 @@
+{
+  "name": "O DASS ICH TAUSEND ZUNGEN HÄTTE (DRETZEL)",
+  "music": [
+    {
+      "name": "Kornelius Heinrich Dretzel",
+      "born": 1697,
+      "died": 1775,
+      "role": "Music (1731)"
+    }
+  ],
+  "musicPublished": 1731,
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:1 A4:1 F4:1 | G4:2 C5:1 | Bb4:2 A4:1 | G4:1 F4:2 | G4:1 G4:1 G4:1 | A4:2 C5:1 | C5:2 B4:1 | C5:3 | F4:1 A4:1 F4:1 | G4:2 C5:1 | Bb4:2 A4:1 | G4:1 F4:2 | G4:1 G4:1 G4:1 | A4:2 C5:1 | C5:2 B4:1 | C5:3 | G4:1 G4:1 G4:1 | A4:2 F4:1 | Bb4:2 A4:1 | G4:3 | C5:1 C5:1 C5:1 | Bb4:2 A4:1 | G4:1 G4:2 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Baptized_Into_Your_Name_Most_Holy-O_Dass_Ich_Tausend_Zungen_Hatte_Dretzel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906, Hymn 142. Translation composite from \"Chorale Book for England\", 1863 and \"Hymn book for the use of Evangelical Lutheran schools and congregations\", 1884 Hymn 59 by August Crull."
+}

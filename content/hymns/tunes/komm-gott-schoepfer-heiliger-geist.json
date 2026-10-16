@@ -1,0 +1,23 @@
+{
+  "name": "KOMM, GOTT SCHOEPFER HEILIGER GEIST",
+  "music": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 A4:1 G4:1 | F4:1 G4:1 C5:1 D5:1 | C5:2 r:1 C5:1 | G4:1 A4:1 C5:1 D5:1 | E5:1 E5:1 D5:2 | r:1 D5:1 E5:1 C5:1 | A4:1 G4:1 B4:1 C5:1 | D5:2 r:1 G4:1 | C5:1 A4:1 F4:1 A4:1~ | A4:1 G4:1 G4:2~ | G4:2 G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_God_Creator_Holy_Ghost-Komm_Gott_Schoepfer.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 2 verses are printed after the score in the source, not under the notes. The tune ends on G, not on the key note: it may be modal."
+}

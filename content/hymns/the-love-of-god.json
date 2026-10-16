@@ -1,0 +1,88 @@
+{
+  "title": "The Love of God",
+  "tune": "the-love-of-god",
+  "text": [
+    {
+      "name": "Frederick Martin Lehman",
+      "born": 1868,
+      "died": 1953,
+      "role": "Words (1917)"
+    }
+  ],
+  "textPublished": 1917,
+  "description": "The Love of God in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Frederick Martin Lehman, first published in 1917. The tune, THE LOVE OF GOD, is by Frederick Martin Lehman (1917). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The love of God is great-er far_ Than tongue or pen can ev-er tell, It goes be-yond the high-est star,_ And reach-es to the low-est hell; The guilt-y pair, bowed down with care,_ God gave His Son_ to win; His err-ing child, He rec-on-ciled,_ And par-doned from_ his sin. Oh love of God, how rich and pure!_ How meas-ure-less_ and strong! It shall for-ev-er-more en-dure,_ The saints' and an_-gels' song.",
+  "verses": [
+    {
+      "lines": [
+        "The love of God is greater far",
+        "Than tongue or pen can ever tell,",
+        "It goes beyond the highest star,",
+        "And reaches to the lowest hell;",
+        "The guilty pair, bowed down with care,",
+        "God gave His Son to win;",
+        "His erring child,",
+        "He reconciled,",
+        "And pardoned from his sin."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Oh love of God, how rich and pure!",
+        "How measureless and strong!",
+        "It shall forevermore endure,",
+        "The saints' and angels' song."
+      ]
+    },
+    {
+      "lines": [
+        "When hoary time shall pass away,",
+        "And earthly thrones and kingdoms fall;",
+        "When men who here refuse to pray,",
+        "On rocks and hills and mountains call;",
+        "God's love, so sure, shall still endure,",
+        "All measureless and strong;",
+        "Redeeming grace to Adam's race—",
+        "The saints' and angels' song."
+      ]
+    },
+    {
+      "lines": [
+        "Could we with ink the ocean fill,",
+        "And were the skies of parchment made,",
+        "Were every stalk on earth a quill",
+        "And every man a scribe by trade;",
+        "To write the love of God above",
+        "Would drain the ocean dry;",
+        "Nor could the scroll contain the whole,",
+        "Tho' stretched from sky to sky."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Atonement",
+    "Children (see also God's Children - the Faithful)",
+    "God, Eternity of",
+    "God, Love of",
+    "God, Mercy of",
+    "Grace",
+    "Love",
+    "Praise, Father",
+    "Praise, Son",
+    "Salvation"
+  ],
+  "metre": "8 8 8 8 8 8 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Love_Of_God-The_Love_Of_God.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Love_Of_God-The_Love_Of_God"
+}

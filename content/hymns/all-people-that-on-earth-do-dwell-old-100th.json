@@ -1,0 +1,73 @@
+{
+  "title": "All People That on Earth Do Dwell (Old 100th)",
+  "tune": "old-100th",
+  "text": [
+    {
+      "name": "William Kethe",
+      "died": 1594,
+      "role": "Words (1561)"
+    }
+  ],
+  "textPublished": 1561,
+  "description": "All People That on Earth Do Dwell in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by William Kethe, first published in 1561. The tune, OLD 100TH, is by Louis Bourgeois (1551). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All peo-ple that on earth do dwell, sing to the Lord with cheer-ful voice. Serve him with fear, his praise forth tell, come ye be-fore him and re-joice!",
+  "verses": [
+    {
+      "lines": [
+        "All people that on earth do dwell,",
+        "sing to the Lord with cheerful voice.",
+        "Serve him with fear, his praise forth tell,",
+        "come ye before him and rejoice!"
+      ]
+    },
+    {
+      "lines": [
+        "Know that the Lord is God indeed;",
+        "Without our aid he did us make;",
+        "We are His flock, he doth us feed,",
+        "And for His sheep He doth us take."
+      ]
+    },
+    {
+      "lines": [
+        "O enter then his gates with praise,",
+        "Approach with joy his courts unto:",
+        "Praise, laud, and bless his Name always,",
+        "For it is seemly so to do."
+      ]
+    },
+    {
+      "lines": [
+        "For why? The Lord our God is good,",
+        "His mercy is forever sure:",
+        "His truth at all times firmly stood,",
+        "And shall from age to age endure."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Art and Music",
+    "God, Creator",
+    "God, Goodness of",
+    "God, Mercy of",
+    "Praise, Father",
+    "Praise, Holy Spirit",
+    "Praise, Son",
+    "Shepherd/Lamb",
+    "Truth"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_People_That_On_Earth_Do_Dwell-Old_100th.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "All_People_That_On_Earth_Do_Dwell-Old_100th",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 6 beats, more than 4; bar 2 has 7 beats, more than 4; bar 3 has 6 beats, more than 4; bar 4 has 7 beats, more than 4; bar 5 has 6 beats, more than 4; bar 6 has 7 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 7 beats, more than 4."
+}

@@ -1,0 +1,115 @@
+{
+  "title": "Jesus, Thy Boundless Love to Me",
+  "tune": "yoakley",
+  "text": [
+    {
+      "name": "Paul Gerhardt",
+      "born": 1607,
+      "died": 1676,
+      "role": "Words (1653)"
+    },
+    {
+      "name": "John Wesley",
+      "born": 1703,
+      "died": 1791,
+      "role": "Translated (1739)"
+    }
+  ],
+  "textPublished": 1739,
+  "description": "Jesus, Thy Boundless Love to Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Paul Gerhardt, first published in 1653. The English translation is by John Wesley (1739). The tune, YOAKLEY, is by William Yoakley (1820). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je_-sus, Thy_ bound_-less love_ to me_ No_ thought can reach, no tongue de-clare; U_-nite my_ thank_-ful heart_ with Thee_ And_ reign with-out a ri-val there. To Thee a-lone, dear Lord,_ I live;_ My-self_ to_ Thee,_ dear Lord, I give.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Thy boundless love to me",
+        "No thought can reach, no tongue declare;",
+        "Unite my thankful heart with Thee",
+        "And reign without a rival there.",
+        "To Thee alone, dear Lord, I live;",
+        "Myself to Thee, dear Lord, I give."
+      ]
+    },
+    {
+      "lines": [
+        "O, grant that nothing in my soul",
+        "May dwell but Thy pure love alone!",
+        "Oh, may Thy love possess me whole,",
+        "My joy, my treasure, and my crown!",
+        "All coldness from my heart remove;",
+        "My every act, word, thought, be love."
+      ]
+    },
+    {
+      "lines": [
+        "O love, how cheering is thy ray!",
+        "All pain before thy presence flies;",
+        "Care, anguish, sorrow, melt away",
+        "Where'er thy healing beams arise.",
+        "O Jesus, nothing may I see,",
+        "Nothing desire or seek, but Thee!"
+      ]
+    },
+    {
+      "lines": [
+        "This love unwearied I pursue",
+        "And dauntlessly to Thee aspire.",
+        "Oh, may Thy love my hope renew",
+        "Burn in my soul like heav'nly fire!",
+        "And day and night be all my care",
+        "To guard this sacred treasure there."
+      ]
+    },
+    {
+      "lines": [
+        "My Savior, Thou Thy love to me",
+        "In shame, in want, in pain, hast showed;",
+        "For me, on the accursed tree,",
+        "Thou pourest forth Thy guiltless blood;",
+        "Thy wounds upon my heart impress,",
+        "Nor aught shall the lov'd stamp efface."
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Aspiration",
+    "Blood",
+    "Christian Life",
+    "Commitment",
+    "Conscience",
+    "Consecration",
+    "Contrition",
+    "Crown",
+    "Discipleship",
+    "Fire",
+    "Following Jesus, In Faith",
+    "Following Jesus, Sanctification",
+    "God, Love of",
+    "Healing",
+    "Inspiration",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Joy",
+    "Leadership",
+    "Love",
+    "Presence",
+    "Repentance",
+    "Sacrifice",
+    "Sinners",
+    "Speech",
+    "Trust"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Thy_Boundless_Love_To_Me-Yoakley.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Jesus_Thy_Boundless_Love_To_Me-Yoakley",
+  "reviewNotes": "Held back: not provably public domain: William Yoakley: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)."
+}

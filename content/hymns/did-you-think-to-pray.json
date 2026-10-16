@@ -1,0 +1,90 @@
+{
+  "title": "Did You Think to Pray?",
+  "tune": "stockbridge",
+  "text": [
+    {
+      "name": "Mary Ann Pepper Kidder",
+      "born": 1820,
+      "died": 1905,
+      "role": "Words (1876)"
+    }
+  ],
+  "textPublished": 1876,
+  "description": "Did You Think to Pray? in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Mary Ann Pepper Kidder, first published in 1876. The tune, STOCKBRIDGE, is by William Oscar Perkins (1876). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Ere you left your room this morn-ing, Did you think to pray? In the name of Christ our Sa-vior, Did you sue for lov-ing fa-vor, As a shield to-day? O how pray-ing rests the wea-ry! Prayer will change the night to day; So when life seems dark and drea-ry, Don't for-get to pray.",
+  "verses": [
+    {
+      "lines": [
+        "Ere you left your room this morning,",
+        "Did you think to pray?",
+        "In the name of Christ our Savior,",
+        "Did you sue for loving favor,",
+        "As a shield today?",
+        "O how praying rests the weary!",
+        "Prayer will"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "change the night to day;",
+        "So when life seems dark and dreary,",
+        "Don't forget to pray."
+      ]
+    },
+    {
+      "lines": [
+        "When you met with great temptation,",
+        "Did you think to pray?",
+        "By His dying love and merit,",
+        "Did you claim the Holy Spirit",
+        "As your guide and stay?"
+      ]
+    },
+    {
+      "lines": [
+        "When your heart was filled with anger,",
+        "Did you think to pray?",
+        "Did you plead for grace, my brother,",
+        "That you might forgive another Who had crossed your way?"
+      ]
+    },
+    {
+      "lines": [
+        "When sore trials came upon you,",
+        "Did you think to pray?",
+        "When your soul was bowed in sorrow,",
+        "Balm of Gilead did you borrow",
+        "At the gates of day?"
+      ]
+    }
+  ],
+  "category": "Prayer",
+  "topics": [
+    "Christian Life",
+    "Comfort",
+    "Conscience",
+    "Darkness, Spiritual",
+    "Holy Spirit",
+    "Inner Life",
+    "Judging",
+    "Prayer",
+    "Rest",
+    "Self Control (see also Law)",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Temperance &amp; Moral Reform (see also Law)",
+    "Temptation"
+  ],
+  "metre": "8 5 8 8 5 8 7 8 5",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Did_You_Think_To_Pray-Stockbridge.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Did_You_Think_To_Pray-Stockbridge"
+}

@@ -1,0 +1,98 @@
+{
+  "title": "Abide, O Dearest Jesus",
+  "tune": "christus-der-ist-mein-leben",
+  "text": [
+    {
+      "name": "Joshua Stegmann",
+      "born": 1588,
+      "died": 1632,
+      "role": "Words (1628)"
+    },
+    {
+      "name": "August Crull",
+      "born": 1845,
+      "died": 1923,
+      "role": "Translated (1892)"
+    }
+  ],
+  "textPublished": 1892,
+  "description": "Abide, O Dearest Jesus in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Joshua Stegmann, first published in 1628. The English translation is by August Crull (1892). The tune, CHRISTUS DER IST MEIN LEBEN, is by Melchior Vulpius (1609). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "A-bide, O dear-est Je-sus, A-mong us with Thy grace, That Sa-tan may not harm us, Nor we to sin give place.",
+  "verses": [
+    {
+      "lines": [
+        "Abide, O dearest Jesus,",
+        "Among us with Thy grace,",
+        "That Satan may not harm us,",
+        "Nor we to sin give place."
+      ]
+    },
+    {
+      "lines": [
+        "Abide, O dear Redeemer,",
+        "Among us with Thy Word,",
+        "And thus now and hereafter",
+        "True peace and joy afford."
+      ]
+    },
+    {
+      "lines": [
+        "Abide with heav'nly brightness",
+        "Among us, precious Light;",
+        "Thy truth direct, and keep us",
+        "From error's gloomy night."
+      ]
+    },
+    {
+      "lines": [
+        "Abide with richest blessings",
+        "Among us, bounteous Lord;",
+        "Let us in grace and wisdom",
+        "Grow daily through Thy Word."
+      ]
+    },
+    {
+      "lines": [
+        "Abide with Thy protection",
+        "Among us, Lord, our Strength,",
+        "Lest world and Satan fell us",
+        "And overcome at length."
+      ]
+    },
+    {
+      "lines": [
+        "Abide, O faithful Savior, Among us with Thy love;",
+        "Grant steadfastness, and help us To reach our home above."
+      ]
+    }
+  ],
+  "category": "Closing Songs",
+  "topics": [
+    "Closing Songs",
+    "Darkness, Spiritual",
+    "Following Jesus, Sanctification",
+    "God, Care of",
+    "Grace",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Love",
+    "Peace",
+    "Presence",
+    "Security",
+    "Wisdom"
+  ],
+  "metre": "7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Abide_O_Dearest_Jesus-Christus_Der_Ist_Mein_Leben.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Abide_O_Dearest_Jesus-Christus_Der_Ist_Mein_Leben"
+}

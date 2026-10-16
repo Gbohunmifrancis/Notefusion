@@ -1,0 +1,88 @@
+{
+  "title": "Rescue the Perishing",
+  "tune": "rescue-the-perishing",
+  "text": [
+    {
+      "name": "Fanny Jane Crosby",
+      "born": 1820,
+      "died": 1915,
+      "role": "Words (1869)"
+    }
+  ],
+  "textPublished": 1869,
+  "description": "Rescue the Perishing in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Fanny Jane Crosby, first published in 1869. The tune, RESCUE THE PERISHING, is by William Howard Doane (1870). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Res-cue the per-ish-ing, care for the dy-ing, Snatch them in pi-ty from sin and the grave; Weep o'er the err-ing one, lift up the fall-en, Tell them of Je-sus, the might-y to save. Res-cue the per-ish-ing, care for the dy-ing, Je-sus is mer-ci-ful, Je-sus will save.",
+  "verses": [
+    {
+      "lines": [
+        "Rescue the perishing, care for the dying,",
+        "Snatch them in pity from sin and the grave;",
+        "Weep o'er the erring one, lift up the fallen,",
+        "Tell them of Jesus, the mighty to save.",
+        "Rescue the perishing,"
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "care for the dying,",
+        "Jesus is merciful,",
+        "Jesus will save."
+      ]
+    },
+    {
+      "lines": [
+        "Though they are slighting Him, still He is waiting,",
+        "Waiting the penitent child to receive;",
+        "Plead with them earnestly, plead with them gently;",
+        "He will forgive they should only believe."
+      ]
+    },
+    {
+      "lines": [
+        "Down in the human heart, crushed by the tempter,",
+        "Feelings lie buried that grace can restore;",
+        "Touched by a loving heart, wakened by kindness,",
+        "Chords that were broken will vibrate once more."
+      ]
+    },
+    {
+      "lines": [
+        "Rescue the perishing, duty demands it;",
+        "Strength for thy labor the Lord will provide;",
+        "Back to the narrow way patiently win them;",
+        "Tell the poor wand'rer a Savior has died."
+      ]
+    }
+  ],
+  "category": "Missions",
+  "topics": [
+    "Activity",
+    "Assurance",
+    "Atonement",
+    "Compassion",
+    "Contrition",
+    "Conversion",
+    "Discipleship",
+    "God, Mercy of",
+    "Grace",
+    "Jesus",
+    "Love",
+    "Missions",
+    "People of the World",
+    "Salvation",
+    "Sinners"
+  ],
+  "metre": "11 10 11 10 11 10",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Rescue_the_Perishing-Rescue_the_Perishing.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Rescue_the_Perishing-Rescue_the_Perishing"
+}

@@ -1,0 +1,109 @@
+{
+  "title": "All Praise to Jesus' Hallowed Name",
+  "tune": "gelobet-seist-du",
+  "text": [
+    {
+      "name": "Traditional German",
+      "traditional": true,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "All Praise to Jesus' Hallowed Name in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, GELOBET SEIST DU, is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "All praise to Je-sus' hal-lowed Name Who of vir-gin pure be-came True man for us! The an-gels sing As the glad news to earth they bring.___ Hal-le-lu-jah!",
+  "verses": [
+    {
+      "lines": [
+        "All praise to Jesus' hallowed Name Who of virgin pure became",
+        "True man for us!",
+        "The angels sing As the glad news to earth they bring.",
+        "Hallelujah!"
+      ]
+    },
+    {
+      "lines": [
+        "Th'Eternal Father's only Son",
+        "For a manger leaves His throne",
+        "Disguised in our poor flesh and blood",
+        "See now the everlasting",
+        "Good."
+      ]
+    },
+    {
+      "lines": [
+        "He whom the world could not inwrap",
+        "Yonder lies in Mary's lap;",
+        "He is become an infant small,",
+        "Who by His might upholdeth all."
+      ]
+    },
+    {
+      "lines": [
+        "Th'Eternal Light, come down from heav'n,",
+        "Hath to us new sunshine giv'n;",
+        "It shineth in the midst of night,",
+        "And maketh us the sons of light."
+      ]
+    },
+    {
+      "lines": [
+        "The Father's Son,",
+        "God ever—blest,",
+        "In the world became a guest;",
+        "He leads us from this vale of tears,",
+        "And makes us in his kingdom heirs."
+      ]
+    },
+    {
+      "lines": [
+        "He came to earth so mean and poor, Man to pity and restore,",
+        "And make us rich in heaven above, Equal with angels through his love."
+      ]
+    },
+    {
+      "lines": [
+        "All this He did to show His grace To our poor and sinful race;",
+        "For this let Christendom adore And praise His name for evermore."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Compassion",
+    "God, Care of",
+    "God, Goodness of",
+    "God, Love of",
+    "Grace",
+    "Jesus",
+    "Kindness, God's",
+    "Light",
+    "Praise, Son",
+    "Presence"
+  ],
+  "metre": "8 7 8 8 Alleluia4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/All_Praise_to_Jesus_Hallowed_Name-Gelobet_Seist_Du.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "All_Praise_to_Jesus_Hallowed_Name-Gelobet_Seist_Du"
+}

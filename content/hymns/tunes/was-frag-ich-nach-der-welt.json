@@ -1,0 +1,24 @@
+{
+  "name": "WAS FRAG ICH NACH DER WELT",
+  "music": [
+    {
+      "name": "Ahasverus Fritsch",
+      "born": 1629,
+      "died": 1701,
+      "role": "Music (1679)"
+    }
+  ],
+  "musicPublished": 1679,
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | F#4:1 D4:1 A4:1 A4:1 | B4:3 B4:1 | E4:1 E4:1 A4:1 G4:1 | F#4:1 E4:1 D4:1 A4:1 | B4:1 B4:1 A4:1 G4:1 | F#4:3 E4:1 | F#4:1 G#4:1 A4:1 B4:1 | C#5:1 B4:1 A4:1 A4:1 | A4:1 A4:1 D5:1 C5:1 | B4:3 B4:1 | B4:1 B4:1 E5:1 D5:1 | C#5:3 A4:1 | B4:1 A4:1 B4:1 C#5:1 | D5:3 A4:1 | A4:1 F#4:1 E4:1 E4:1 | D4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/What_Is_the_World_to_Me-Was_Frag_Ich_Nach_Der_Welt.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Selah Song Book\", 1926 Hymn 329. Lyrics source: The Handbook to the Lutheran Hymnal, 1942 Hymn 430 http://www.projectwittenberg.org/etext/hymnals/tlh/world.txt Note that the text of this hymn from the Handbook to the Lutheran Hymnal is available on Project Wittenberg, operated by the Walther Library of Concordia Theological Seminary Fort Wayne and the text is listed as public domain. Note that there is confusion about the translation date for this hymn as it is wrong in the usually-reliable TLH. I find this in the \"Evangelical Lutheran Hymn-book\" by Lutheran Publication Board, Baltimore, 1893 Hymn 282 The mistake probably happened because it was translated well before the LCMS made an English language hymnal so it was not published by CPH Also note that the tune Darmstadt (Fritsch) or O Gott du Frommer Gott is an adaptation of this which affects both the tune and setting. The adaptation was J. S. Bach. But this is the original. Some hymnals still label the modified tune as Was Frag Ich Nach Der Welt"
+}

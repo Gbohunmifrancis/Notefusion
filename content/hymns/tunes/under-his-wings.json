@@ -1,0 +1,24 @@
+{
+  "name": "UNDER HIS WINGS",
+  "music": [
+    {
+      "name": "Ira David Sankey",
+      "born": 1840,
+      "died": 1908,
+      "role": "Music (1898)"
+    }
+  ],
+  "musicPublished": 1898,
+  "key": "Db major",
+  "time": "6/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 Gb4:1 G4:1 Ab4:2 Ab4:.5 Ab4:.5 | Ab4:1 Bb4:1 F4:1 Ab4:1 Gb4:2 | Eb4:1 F4:1 Gb4:1 Bb4:1 Ab4:1 Ab4:1 | Ab4:1 Eb4:1 E4:1 F4:3 | F4:1 Gb4:1 G4:1 Ab4:1 Ab4:1 Db5:1 | Eb5:1 Db5:1 Bb4:1 Bb4:1 Ab4:2 | Bb4:1 C5:1 Db5:1 Db5:1 Ab4:1 F4:1 | Ab4:1 Gb4:1 Eb4:1 Db4:3 | Ab4:1 F4:1 Ab4:1 Db5:3 | C5:1 Bb4:1 C5:1 Db5:3 | Db5:1 Ab4:1 F4:1 Bb4:1 Ab4:1 F4:1 | F4:1 Eb4:4 r:1 | Db4:1 F4:1 Ab4:1 Db5:2 C5:1 | Eb5:1 Db5:1 Bb4:1 Ab4:3 | Bb4:1 C5:1 Db5:1 Ab4:1 F4:1 Db4:1 | Eb4:3 Db4:2 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Under_His_Wings-Under_His_Wings.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Church Hymns and Gospel Songs, 1898 Hymn 265. Ed. Ira D. Sankey."
+}

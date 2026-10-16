@@ -1,0 +1,87 @@
+{
+  "title": "When I Survey the Wondrous Cross (Hamburg)",
+  "tune": "hamburg",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1707)"
+    }
+  ],
+  "textPublished": 1707,
+  "description": "When I Survey the Wondrous Cross in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1707. The tune, HAMBURG, is by Lowell Mason (1824). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "When I sur-vey the_ won-drous_ cross On which the Prince of_ Glo-ry_ died, My rich-est gain I_ count but_ loss, And pour con-tempt on all my_ pride.",
+  "verses": [
+    {
+      "lines": [
+        "When I survey the wondrous cross",
+        "On which the Prince of Glory died,",
+        "My richest gain I count but loss,",
+        "And pour contempt on all my pride."
+      ]
+    },
+    {
+      "lines": [
+        "Forbid it, Lord, that I should boast,",
+        "Save in the death of Christ my God!",
+        "All the vain things that charm me most,",
+        "I sacrifice them to His blood."
+      ]
+    },
+    {
+      "lines": [
+        "See from His head, His hands, His feet,",
+        "Sorrow and love flow mingled down!",
+        "Did e'er such love and sorrow meet,",
+        "Or thorns compose so rich a crown?"
+      ]
+    },
+    {
+      "lines": [
+        "His dying crimson, like a robe,",
+        "Spreads o'er His body on the tree;",
+        "Then I am dead to all the globe,",
+        "And all the globe is dead to me."
+      ]
+    },
+    {
+      "lines": [
+        "Were the whole realm of nature mine,",
+        "That were a present far too small;",
+        "Love so amazing, so divine,",
+        "Demands my soul, my life, my all."
+      ]
+    }
+  ],
+  "category": "Lent",
+  "topics": [
+    "Atonement",
+    "Blood",
+    "Conscience",
+    "Contrition",
+    "Cross",
+    "Crown",
+    "Easter Week / Passion",
+    "Gratitude",
+    "Inner Life",
+    "Jesus",
+    "Pride (see also Humility)",
+    "Repentance",
+    "Reverence",
+    "Sacrifice",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/When_I_Survey_The_Wondrous_Cross-Hamburg.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "When_I_Survey_The_Wondrous_Cross-Hamburg"
+}

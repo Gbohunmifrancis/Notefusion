@@ -1,0 +1,24 @@
+{
+  "name": "HAMBURG",
+  "music": [
+    {
+      "name": "Lowell Mason",
+      "born": 1792,
+      "died": 1872,
+      "role": "Music (1824)"
+    }
+  ],
+  "musicPublished": 1824,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:2 F4:1 G4:1 | A4:2 G4:1 A4:1 | Bb4:2 A4:1 G4:1 | A4:4 | A4:2 A4:1 A4:1 | Bb4:2 A4:1 G4:1 | F4:2 E4:1 F4:1 | G4:4 | F4:2 F4:1 G4:1 | A4:2 G4:1 A4:1 | Bb4:2 A4:1 G4:1 | A4:4 | A4:2 A4:1 A4:1 | G4:2 F4:2 | G4:2 A4:1 F4:1 | F4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/When_I_Survey_The_Wondrous_Cross-Hamburg.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Northfield Hymnal\", 1904 Hymn 210. ABC file contributed to the Open Hymnal by Tobin Strong, 20 Dec 2013. composite from \"The Anglican hymn Book\", 1871 hymn 127 and \"Hymns Ancient and Modern\", 1869 Hymn 101."
+}

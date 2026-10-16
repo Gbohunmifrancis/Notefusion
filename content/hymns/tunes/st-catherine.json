@@ -1,0 +1,24 @@
+{
+  "name": "ST. CATHERINE",
+  "music": [
+    {
+      "name": "Henri Frederick Hemy",
+      "born": 1818,
+      "died": 1888,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": 1874,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "B4:1 A4:1 G4:1 | G4:1 F#4:1 G4:1 | A4:1 E4:1 F#4:1 | G4:3 | G4:1 F#4:1 E4:1 | D4:2 G4:1 | G4:1 F#4:1 G4:1 | A4:3 | B4:1 A4:1 G4:1 | G4:1 F#4:1 G4:1 | A4:1 E4:1 F#4:1 | G4:3 | G4:1 F#4:1 E4:1 | D4:2 B4:1 | A4:1 B4:1 A4:1 | G4:3 | C5:1 C5:1 C5:1 | B4:2 B4:1 | A4:2 A4:1 | B4:3 | B4:1 A4:1 G4:1 | E4:2 G4:1 | A4:2 A4:1 | G4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Faith_Of_Our_Fathers-St_Catherine.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1874, the year of the setting the Open Hymnal copied. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: The Evangelical Hymnal, 1921 Hymn 408."
+}

@@ -1,0 +1,60 @@
+{
+  "title": "More Love to Thee",
+  "tune": "more-love-to-thee",
+  "text": [
+    {
+      "name": "Elizabeth Payson Prentis",
+      "born": 1818,
+      "died": 1878,
+      "role": "Words (1856)"
+    }
+  ],
+  "textPublished": 1856,
+  "description": "More Love to Thee in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Elizabeth Payson Prentis, first published in 1856. The tune, MORE LOVE TO THEE, is by William Howard Doane (1870). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "More love to Thee, O Christ; More love to Thee; Hear Thou the pray'r I make On bend-ed knee; This is my ear-nest plea, More love, O Christ, to Thee, More love to Thee; More love to Thee.",
+  "verses": [
+    {
+      "lines": [
+        "More love to Thee, O Christ; More love to Thee;",
+        "Hear Thou the pray'r I make On bended knee;",
+        "This is my earnest plea, More love, O Christ, to Thee,",
+        "More love to Thee; More love to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Once earthly joy I craved, Sought peace and rest;",
+        "Now thee alone I seek, Give what is best;",
+        "This all my pray'r shall be, More love, O Christ, to Thee,",
+        "More love to Thee; More love to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Then shall my latest breath, Whisper Thy praise,",
+        "This be the parting cry My heart shall raise;",
+        "This still its pray'r shall be, More love, O Christ, to Thee,",
+        "More love to Thee; More love to Thee."
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Consecration",
+    "Invitation (Faithful's to God)",
+    "Love",
+    "Prayer"
+  ],
+  "metre": "10 10 12 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/More_Love_To_Thee-More_Love_To_Thee.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "More_Love_To_Thee-More_Love_To_Thee"
+}

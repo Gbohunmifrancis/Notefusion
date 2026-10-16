@@ -1,0 +1,117 @@
+{
+  "title": "Christ the Lord Is Risen Today (Llanfair)",
+  "tune": "llanfair",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1739)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (1739)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Christ the Lord Is Risen Today (Lyra) in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles Wesley, first published in 1739. The tune, LLANFAIR, is by Robert Williams (1817). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Christ, the Lord, is risen to_-day, Al__-le_-lu-ia! Sons of men and an-gels_ say, Al__-le_-lu-ia! Raise your joys and tri_-umphs_ high, Al__-le-lu-ia! Sing, ye heavens, and earth, re_-ply, Al__-le_-lu-ia!",
+  "verses": [
+    {
+      "lines": [
+        "Christ, the Lord, is risen today,",
+        "Alleluia!",
+        "Sons of men and angels say,",
+        "Alleluia!",
+        "Raise your joys and triumphs high,",
+        "Alleluia!",
+        "Sing, ye heavens, and earth, reply,",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Love's redeeming work is done,",
+        "Alleluia!",
+        "Fought the fight, the battle won,",
+        "Alleluia!",
+        "Lo! the Sun's eclipse is o'er,",
+        "Alleluia!",
+        "Lo! He sets in blood no more,",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Vain the stone, the watch, the seal,",
+        "Alleluia!",
+        "Christ hath burst the gates of hell,",
+        "Alleluia!",
+        "Death in vain forbids His rise,",
+        "Alleluia!",
+        "Christ hath opened paradise,",
+        "Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Lives again our glorious King,",
+        "Alleluia!",
+        "Where, O death, is now thy sting?",
+        "Alleluia!",
+        "Once He died our souls to save,",
+        "Alleluia!",
+        "Where thy victory,",
+        "O grave? Alleluia!"
+      ]
+    },
+    {
+      "lines": [
+        "Soar we now where Christ hath led,",
+        "Alleluia!",
+        "Following our exalted",
+        "Head, Alleluia!",
+        "Made like Him, like Him we rise,",
+        "Alleluia!",
+        "Ours the cross, the grave, the skies,",
+        "Alleluia!"
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Blood",
+    "Cross",
+    "Easter",
+    "Eternal Life",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Gospel",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Salvation",
+    "Victory"
+  ],
+  "metre": "7 7 7 7 with Alleluias",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Christ_The_Lord_Is_Risen_Today-Llanfair.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Christ_The_Lord_Is_Risen_Today-Llanfair",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

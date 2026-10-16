@@ -1,0 +1,23 @@
+{
+  "name": "O WALY WALY",
+  "music": [
+    {
+      "name": "Traditional English",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 130,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "D4:1 G4:1 A4:1 | B4:4~ | B4:1 A4:1 G4:1 E4:1 | D4:4~ | D4:1 D4:1 G4:1 F#4:1 | G4:4~ | G4:1 A4:1 B4:1 C5:.5 B4:.5 | A4:4~ | A4:1 A4:1 B4:1 C5:1 | D5:4~ | D5:1 C5:.5 B4:.5 A4:1 G4:1 | B4:4~ | B4:1 A4:1 G4:1 E4:1 | D4:4~ | D4:1 D4:1 E4:1 G4:1 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/When_I_Survey_The_Wondrous_Cross-O_Waly_Waly.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the tune; not provably public domain: \"musicPublished\" must be a year before 1929. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Tobin Strong, 20 Dec 2013 via email. ABC file contributed to the Open Hymnal by Tobin Strong, 20 Dec 2013. composite from \"The Anglican hymn Book\", 1871 hymn 127 and \"Hymns Ancient and Modern\", 1869 Hymn 101."
+}

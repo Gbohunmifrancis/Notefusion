@@ -1,0 +1,24 @@
+{
+  "name": "CHRISTUS DER IST MEIN LEBEN",
+  "music": [
+    {
+      "name": "Melchior Vulpius",
+      "born": 1560,
+      "died": 1615,
+      "role": "Music (1609)"
+    }
+  ],
+  "musicPublished": 1609,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "Eb4:1 | G4:1 F4:1 G4:1 Ab4:1 | Bb4:2 G4:1 C5:1 | Bb4:1.5 Ab4:.5 G4:1 F4:1 | G4:2 r:1 Bb4:1 | C5:1 C5:1 D5:1 Eb5:1 | C5:2 Bb4:1 G4:1 | F4:1 Eb4:1 Eb4:1 D4:1 | Eb4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Abide_O_Dearest_Jesus-Christus_Der_Ist_Mein_Leben.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906 Hymn #32, page 23 Ed. Karl Brauer."
+}

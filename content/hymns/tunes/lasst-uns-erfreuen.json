@@ -1,0 +1,23 @@
+{
+  "name": "LASST UNS ERFREUEN",
+  "music": [
+    {
+      "name": "From Geistliche Kirchengesäng, Köln, 1623",
+      "traditional": true,
+      "role": "Melody (1623)"
+    }
+  ],
+  "musicPublished": 1623,
+  "key": "D major",
+  "time": "6/4",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "D4:2 | D4:1 E4:1 F#4:1 D4:1 F#4:1 G4:1 | A4:4 D4:2 | D4:1 E4:1 F#4:1 D4:1 F#4:1 G4:1 | A4:4 D5:1 C#5:1 | B4:2 A4:2 D5:1 C#5:1 | B4:2 A4:2 D5:2 | D5:1 A4:1 A4:1 G4:1 F#4:1 G4:1 | A4:4 D5:2 | D5:1 A4:1 A4:1 G4:1 F#4:1 G4:1 | A4:4 G4:1 F#4:1 | E4:2 D4:2 G4:1 F#4:1 | E4:2 D4:2 D5:1 C#5:1 | B4:2 A4:2 D5:1 C#5:1 | B4:2 A4:2 G4:1 F#4:1 | E4:6 | D4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/A_Hymn_of_Glory_Let_Us_Sing-Lasst_Uns_Erfreuen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The last 2 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: 'Lutheran Worship' Hymnal, 1982 Hymn 436. Lyrics source: Composite from \"A Collection of Hymns: Supplementary to the Psalms and Hymns of Dr. Watts\", 1859 hymn 85 and \"The English Hymnal\", 1906 hymn 146"
+}

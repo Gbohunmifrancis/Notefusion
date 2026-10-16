@@ -1,0 +1,97 @@
+{
+  "title": "Christ the Lord Is Risen Today (Orientis Partibus)",
+  "tune": "orientis-partibus",
+  "text": [
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1739)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Words (1739)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Christ the Lord Is Risen Today (Lyra) in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles Wesley, first published in 1739. The tune, ORIENTIS PARTIBUS, is Traditional French. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "\"Christ, the Lord, is risen to-day!\" Sons of men and_ an-gels say, Raise your joys and tri-umphs_ high, Sing, ye heavens, and earth, re-ply!",
+  "verses": [
+    {
+      "lines": [
+        "\"Christ, the Lord, is risen today!\"",
+        "Sons of men and angels say,",
+        "Raise your joys and triumphs high,",
+        "Sing, ye heavens, and earth, reply!"
+      ]
+    },
+    {
+      "lines": [
+        "Love's redeeming work is done,",
+        "Fought the fight, the battle won,",
+        "Lo! the Sun's eclipse is o'er,",
+        "Lo! He sets in blood no more."
+      ]
+    },
+    {
+      "lines": [
+        "Vain the stone, the watch, the seal,",
+        "Christ hath burst the gates of hell!",
+        "Death in vain forbids His rise,",
+        "Christ hath opened paradise!"
+      ]
+    },
+    {
+      "lines": [
+        "Lives again our glorious King",
+        "Where, O death, is now thy sting?",
+        "Once He died our souls to save,",
+        "Where thy victory, O grave?"
+      ]
+    },
+    {
+      "lines": [
+        "Soar we now where Christ hath led",
+        "Following our exalted Head;",
+        "Made like Him, like Him we rise,",
+        "Ours the cross, the grave, the skies."
+      ]
+    }
+  ],
+  "category": "Easter",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Blood",
+    "Cross",
+    "Easter",
+    "Eternal Life",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Gospel",
+    "Jesus",
+    "Joy",
+    "Praise, Son",
+    "Salvation",
+    "Victory"
+  ],
+  "metre": "7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Christ_The_Lord_Is_Risen_Today-Orientis_Partibus-Redhead_45.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Christ_The_Lord_Is_Risen_Today-Orientis_Partibus-Redhead_45",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

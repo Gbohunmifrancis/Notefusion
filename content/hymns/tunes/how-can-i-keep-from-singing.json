@@ -1,0 +1,24 @@
+{
+  "name": "HOW CAN I KEEP FROM SINGING",
+  "music": [
+    {
+      "name": "Robert Lowry",
+      "born": 1826,
+      "died": 1899,
+      "role": "Music (1869)"
+    }
+  ],
+  "musicPublished": 1869,
+  "key": "G major",
+  "time": "3/2",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | G4:1 A4:1 B4:3 G4:1 | A4:1 G4:1 E4:3 D4:1 | G4:1 B4:1 D5:3 B4:1 | B4:1 A4:3 r:1 D4:1 | G4:1 A4:1 B4:3 G4:1 | A4:1 G4:1 E4:3 E4:1 | D4:1 G4:1 B4:3 A4:1 | A4:1 G4:3 r:1 B4:1 | D5:1.5 D5:.5 D5:3 B4:1 | A4:1 B4:1 G4:3 A4:1 | B4:1.5 B4:.5 B4:3 A4:1 | B4:1 D5:3 r:1 B4:1 | D5:1.5 D5:.5 D5:3 B4:1 | G4:1 E4:1 D4:3 D4:1 | G4:1 A4:1 B4:3 A4:1 | A4:1 G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/How_Can_I_Keep_from_Singing-How_Can_I_Keep_from_Singing-Endless_Song-Singing-My_Life_Flows_On.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: Music and Lyrics source: \"Bright Jewels For the Sunday School\", 1869 Hymn 16"
+}

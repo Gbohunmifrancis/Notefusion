@@ -81,6 +81,8 @@ test("a post's header: kicker, title, dek, then the byline with the read-count s
   // Theme before paint, read counts and the tracker after; no inline script that runs.
   assert.match(html, /<meta name="viewport"[^>]*>\n<script src="\/assets\/theme-boot\.js\?v=\d+" data-default="system"><\/script>/);
   assert.match(html, /<script src="\/assets\/blog\.js\?v=\d+" defer><\/script>/);
+  // The reading analytics run on track.js, so they load right after it.
+  assert.match(html, /<script src="\/assets\/track\.js\?v=\d+" defer><\/script>\n<script src="\/assets\/blog-track\.js\?v=\d+" defer><\/script>/);
   assert.equal([...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type="application\/(?:ld\+)?json")[^>]*>/g)].length, 0);
   const posting = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((d) => d["@type"] === "BlogPosting");
   assert.deepEqual(posting.author, { "@type": "Person", name: "Francis", jobTitle: "founder of NoteFusion", url: "https://notefusion.studio/blog/author/francis" });
@@ -101,8 +103,9 @@ test("a hymn page: the engine's solfa as text, MusicComposition JSON-LD, the sco
   // The plain-text solfa is one unit per bar (so a phone wraps it at bar lines), its words under it;
   // read in order the bars are the line's text exactly.
   const firstLine = /<div class="solfa-line">([\s\S]*?)<\/div>/.exec(html)[1];
-  assert.equal([...firstLine.matchAll(/<code>([^<]*)<\/code>/g)].map((m) => m[1]).join(""), "| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |");
-  assert.match(firstLine, /^<span class="solfa-bar"><code>\| s, - <\/code><span class="solfa-words">A-<\/span><\/span><span class="solfa-bar"><code>\| d - - - m d <\/code><span class="solfa-words">mazing<\/span>/);
+  // Octave marks sit in a span (drawn small and low, apart from any quarter-beat mark); the text is the engine's.
+  assert.equal([...firstLine.matchAll(/<code>(.*?)<\/code>/g)].map((m) => m[1].replace(/<[^>]*>/g, "")).join(""), "| s, - | d - - - m d | m - - - r - | d - - - l, - | s, - - - s, - |");
+  assert.match(firstLine, /^<span class="solfa-bar"><code>\| s<span class="om om-low">,<\/span> - <\/code><span class="solfa-words">A-<\/span><\/span><span class="solfa-bar"><code>\| d - - - m d <\/code><span class="solfa-words">mazing<\/span>/);
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
   const comp = ld.find((d) => d["@type"] === "MusicComposition");
   assert.equal(comp.musicalKey, "G major");

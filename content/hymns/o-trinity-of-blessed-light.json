@@ -1,0 +1,78 @@
+{
+  "title": "O Trinity of Blessed Light",
+  "alsoKnownAs": [
+    "Thou Who Art Three in Unity"
+  ],
+  "tune": "o-lux-beata-trinitas",
+  "text": [
+    {
+      "name": "Ambrose of Milan",
+      "born": 340,
+      "died": 397,
+      "role": "Words (400)"
+    },
+    {
+      "name": "John Mason Neale",
+      "born": 1818,
+      "died": 1866,
+      "role": "Translated (1852)"
+    }
+  ],
+  "textPublished": 1852,
+  "description": "O Trinity of Blessed Light in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Ambrose of Milan, first published in 400. The English translation is by John Mason Neale (1852). The tune, O LUX BEATA TRINITAS, is Traditional Latin. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O_ Trin___-i-ty of bless_-èd_ light, O_ U___-ni-ty of prince_-ly_ might, The_ fie-ry_ sun now_ goes_ his__ way; Shed_ Thou___ with-in our hearts_ a_ ray.",
+  "verses": [
+    {
+      "lines": [
+        "O Trinity of blessèd light,",
+        "O Unity of princely might,",
+        "The fiery sun now goes his way;",
+        "Shed Thou within our hearts a ray."
+      ]
+    },
+    {
+      "lines": [
+        "To Thee our morning song of praise,",
+        "To Thee our evening prayer we raise;",
+        "O grant us with Thy saints on high",
+        "To praise Thee through eternity."
+      ]
+    },
+    {
+      "lines": [
+        "All laud to God the Father be,",
+        "All praise, eternal Son, to Thee,",
+        "All glory, as is ever meet,",
+        "To God the holy Paraclete."
+      ]
+    }
+  ],
+  "category": "Evening",
+  "topics": [
+    "Evening",
+    "Father",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Jesus",
+    "Light",
+    "Morning",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Trinity",
+    "Worship"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Trinity_Most_Blessed_Light-O_Lux_Beata_Trinitas.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "O_Trinity_Most_Blessed_Light-O_Lux_Beata_Trinitas",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 7.5 beats, more than 4; bar 2 has 7.5 beats, more than 4; bar 3 has 7.5 beats, more than 4; bar 4 has 7.5 beats, more than 4."
+}

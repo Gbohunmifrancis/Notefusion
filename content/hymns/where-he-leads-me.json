@@ -1,0 +1,83 @@
+{
+  "title": "Where He Leads Me",
+  "alsoKnownAs": [
+    "I Can Hear My Savior Calling",
+    "Follow All the Way"
+  ],
+  "tune": "blandy",
+  "text": [
+    {
+      "name": "Edward William Blandy",
+      "role": "Words (1890)"
+    }
+  ],
+  "textPublished": 1890,
+  "description": "Where He Leads Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edward William Blandy, first published in 1890. The tune, BLANDY, is by John Samuel Norris and Philip Paul Bliss. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "I can hear my Sa-vior call-ing, I can hear my Sa-vior call-ing, I can hear my Sa-vior call-ing, \"Take thy cross and fol-low, fol-low Me.\" Where He leads me I will fol-low, Where He leads me I will fol-low, Where He leads me I will fol-low; I'll go with Him, with Him, all the way.",
+  "verses": [
+    {
+      "lines": [
+        "I can hear my Savior calling,",
+        "I can hear my Savior calling,",
+        "I can hear my Savior calling,",
+        "\"Take thy cross and follow, follow Me.\""
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Where He leads me I will follow,",
+        "Where He leads me I will follow,",
+        "Where He leads me I will follow;",
+        "I'll go with Him, with Him, all the way."
+      ]
+    },
+    {
+      "lines": [
+        "I'll go with Him through the garden,",
+        "I'll go with Him through the garden,",
+        "I'll go with Him through the garden,",
+        "I'll go with Him, with Him all the way."
+      ]
+    },
+    {
+      "lines": [
+        "I'll go with Him through the judgment,",
+        "I'll go with Him through the judgment,",
+        "I'll go with Him through the judgment,",
+        "I'll go with Him, with Him all the way."
+      ]
+    },
+    {
+      "lines": [
+        "He will give me grace and glory,",
+        "He will give me grace and glory,",
+        "He will give me grace and glory,",
+        "And go with me, with me all the way."
+      ]
+    }
+  ],
+  "category": "New Obedience",
+  "topics": [
+    "Commitment",
+    "Discipleship",
+    "Following Jesus, In Faith",
+    "Guidance",
+    "Jesus",
+    "Obedience",
+    "Shepherd/Lamb"
+  ],
+  "metre": "8 8 8 9 8 8 8 9",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Where_He_Leads_Me-Where_He_Leads_Me.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Where_He_Leads_Me-Where_He_Leads_Me",
+  "reviewNotes": "Held back: not provably public domain: Edward William Blandy: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)."
+}

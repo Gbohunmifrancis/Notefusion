@@ -1,0 +1,117 @@
+{
+  "title": "Savior of the Nations Come",
+  "tune": "nun-komm-der-heiden-heiland",
+  "text": [
+    {
+      "name": "Ambrose of Milan",
+      "born": 340,
+      "died": 397,
+      "role": "Words"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Translated (1524)"
+    },
+    {
+      "name": "William Morton Reynolds",
+      "born": 1812,
+      "died": 1876,
+      "role": "Translated (1524)"
+    }
+  ],
+  "textPublished": null,
+  "description": "Savior of the Nations Come in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Ambrose of Milan. The English translation is by Martin Luther and William Morton Reynolds (1524). The tune, NUN KOMM, DER HEIDEN HEILAND, is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Sa-vior of the na_-tions, come; Vir-gin's Son, here make Thy home! Mar-vel now, O heav'n and_ earth, That the Lord chose such_ a birth.",
+  "verses": [
+    {
+      "lines": [
+        "Savior of the nations, come;",
+        "Virgin's Son, here make Thy home!",
+        "Marvel now, O heav'n and earth,",
+        "That the Lord chose such a birth."
+      ]
+    },
+    {
+      "lines": [
+        "Not by human flesh and blood;",
+        "By the Spirit of our God",
+        "Was the Word of God made flesh,",
+        "Woman's offspring, pure and fresh."
+      ]
+    },
+    {
+      "lines": [
+        "Wondrous birth! O wondrous",
+        "Child Of the virgin undefiled!",
+        "Though by all the world disowned,",
+        "Still to be in heaven enthroned."
+      ]
+    },
+    {
+      "lines": [
+        "From the Father forth He came",
+        "And returneth to the same,",
+        "Captive leading death and hell",
+        "High the song of triumph swell!"
+      ]
+    },
+    {
+      "lines": [
+        "Thou, the Father's only Son,",
+        "Hast o'er sin the vict'ry won.",
+        "Boundless shall Thy kingdom be;",
+        "When shall we its glories see?"
+      ]
+    },
+    {
+      "lines": [
+        "Brightly doth Thy manger shine,",
+        "Glorious is its light divine.",
+        "Let not sin o'ercloud this light;",
+        "Ever be our faith thus bright."
+      ]
+    },
+    {
+      "lines": [
+        "D Praise to God the Father sing,",
+        "Praise to God the Son, our King,",
+        "Praise to God the Spirit be",
+        "Ever and eternally."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Atonement",
+    "Christmas/Advent",
+    "Faith",
+    "God, As King",
+    "God, Majesty &amp; Power of",
+    "Holiness",
+    "Jesus",
+    "Light",
+    "Praise, Father",
+    "Praise, Son",
+    "Praise, Holy Spirit",
+    "Presence",
+    "Salvation",
+    "Throne (also see God - As King)",
+    "Victory"
+  ],
+  "metre": "7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Savior_Of_The_Nations_Come-Nun_Komm_Der_Heiden_Heiland.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Savior_Of_The_Nations_Come-Nun_Komm_Der_Heiden_Heiland",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

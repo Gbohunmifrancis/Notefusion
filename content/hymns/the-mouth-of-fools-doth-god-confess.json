@@ -1,0 +1,118 @@
+{
+  "title": "The Mouth of Fools Doth God Confess",
+  "alsoKnownAs": [
+    "Although the Fools Say with Their Mouth"
+  ],
+  "tune": "es-spricht-der-unweisen-mund",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "The Mouth of Fools Doth God Confess in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, ES SPRICHT DER UNWEISEN MUND, is from Walter's Geistliche Gesangbüchlein, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The mouth of fools doth God con-fess, But while their lips draw nigh Him, Their heart is full of wick-ed-ness, And all their deeds de-ny Him. Co-rrupt are they, and ev-ery one A-bom-in-ab-le works hath done; There is not one well-do__-er.",
+  "verses": [
+    {
+      "lines": [
+        "The mouth of fools doth God confess,",
+        "But while their lips draw nigh Him,",
+        "Their heart is full of wickedness,",
+        "And all their deeds deny Him.",
+        "Corrupt are they, and every one",
+        "Abominable works hath done;",
+        "There is not one welldoer."
+      ]
+    },
+    {
+      "lines": [
+        "The Lord looked down from his high tow'r",
+        "On all mankind below Him,",
+        "To see if any owned His pow'r,",
+        "And truly sought to know Him;",
+        "Who all their understanding bent",
+        "To search His holy Word, intent",
+        "To do his will in earnest."
+      ]
+    },
+    {
+      "lines": [
+        "But none there was who walked with God,",
+        "For all aside had slidden,",
+        "Delusive paths of folly trod,",
+        "And followed lusts forbidden;",
+        "Not one there was who practiced good,",
+        "And yet they deemed, in haughty mood,",
+        "Their deeds must surely please Him."
+      ]
+    },
+    {
+      "lines": [
+        "How long, by folly blindly led,",
+        "Will ye oppress the needy,",
+        "And eat my people up like bread?",
+        "So fierce are ye, and greedy!",
+        "In God they put no trust at all,",
+        "Nor will on Him in trouble call,",
+        "But be their own providers."
+      ]
+    },
+    {
+      "lines": [
+        "Therefore their heart is never still,",
+        "A falling leaf dismays them;",
+        "God is with him who doth His will,",
+        "Who trusts him and obeys Him;",
+        "But ye the poor man's hope despise,",
+        "And laugh at him, e'en when he cries,",
+        "That God is his sure comfort."
+      ]
+    },
+    {
+      "lines": [
+        "Who shall to Israel's outcast race From Zion bring salvation?",
+        "God will himself at length show grace, And loose the captive nation;",
+        "That will he do by Christ their King; Let Jacob then be",
+        "glad and sing, And Israel be joyful."
+      ]
+    }
+  ],
+  "category": "Reformation",
+  "topics": [
+    "Anticipation",
+    "Charity (see also Tithing)",
+    "Duty (see also Law)",
+    "Following Jesus, In Action",
+    "Israel",
+    "Jesus",
+    "Law",
+    "Morality (see also Law)",
+    "Obedience",
+    "Salvation",
+    "Service",
+    "Sinners",
+    "Social Justice",
+    "Testimony"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Mouth_of_Fools_Doth_God_Confess-Es_spricht_der_Unweisen_Mund.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Mouth_of_Fools_Doth_God_Confess-Es_spricht_der_Unweisen_Mund"
+}

@@ -1,0 +1,128 @@
+{
+  "title": "Despair Not, O Heart",
+  "tune": "iam-moesta",
+  "text": [
+    {
+      "name": "Aurelius Clemens Prudentius",
+      "born": 348,
+      "died": 413,
+      "role": "Words"
+    },
+    {
+      "name": "O. T. Sanden",
+      "born": 1853,
+      "died": 1917,
+      "role": "Translated (1909)"
+    }
+  ],
+  "textPublished": null,
+  "description": "Despair Not, O Heart in Tonic Solfa: the solfa line by line with the words, staff notation, all 9 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Aurelius Clemens Prudentius. The English translation is by O. T. Sanden (1909). The tune, IAM MOESTA, is by Martin Luther (1542). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "De-spair not, O heart, in thy sor-row, But hope from God's pro-mis-es bor-row Be-ware in thy sor-row, of sin-ning For death is of life the be-ginn-ing.",
+  "verses": [
+    {
+      "lines": [
+        "Despair not, O heart, in thy sorrow,",
+        "But hope from God's promises borrow",
+        "Beware in thy sorrow, of sinning",
+        "For death is of life the beginning."
+      ]
+    },
+    {
+      "lines": [
+        "The body is shrouded in mourning;",
+        "The garlands, the casket adorning,",
+        "Are emblems of hope that betoken,",
+        "O Death, that thy power is broken."
+      ]
+    },
+    {
+      "lines": [
+        "A dearly belov'd one hath left us;",
+        "God hath in His Wisdom bereft us;",
+        "But He will not leave us forsaken,We know that the dead shall awaken."
+      ]
+    },
+    {
+      "lines": [
+        "When dawneth the glorious morrow,",
+        "This body that we view with sorrow,",
+        "A glorified form shall be given,",
+        "Restored to its spirit in heaven."
+      ]
+    },
+    {
+      "lines": [
+        "The seed that in springtime is planted,",
+        "Is hid in the ground, but if granted",
+        "A measure of sunshine and showers,",
+        "Will spring into fruitage and flowers;"
+      ]
+    },
+    {
+      "lines": [
+        "A gift to the churchyard we tender,",
+        "As dust to the dust we surrender;",
+        "Returning the clay to its Maker,",
+        "We lay it to rest in God's acre."
+      ]
+    },
+    {
+      "lines": [
+        "A soul in that body abided,",
+        "A soul that in Jesus confided,",
+        "A soul that hath longed for salvation,",
+        "And now hath found hope's consummation."
+      ]
+    },
+    {
+      "lines": [
+        "O earth, we consign to thy keeping",
+        "This body with sorrow and weeping;",
+        "In peace to await resurrection,",
+        "When it shall arise in perfection."
+      ]
+    },
+    {
+      "lines": [
+        "O Christ, our soul's Maker and Lover;",
+        "When time and earth's travail are over,",
+        "Thou closest the grave's mournful story,",
+        "And callest Thine own to Thy glory."
+      ]
+    }
+  ],
+  "category": "Funeral",
+  "topics": [
+    "Anticipation",
+    "Assurance",
+    "Calmness",
+    "Comfort",
+    "Consolation",
+    "Courage in Affliction",
+    "Eternal Life",
+    "Faithfulness",
+    "Gospel",
+    "Hope",
+    "Jesus",
+    "Nature",
+    "Parables",
+    "Patience",
+    "Promises (see also Gospel)",
+    "Resurrection",
+    "Seasons",
+    "Second Coming"
+  ],
+  "metre": "9 9 9 9",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Despair_Not_O_Heart-Med_Sorgen_Og_Klagen-Despair_Not_O_Heart-Jam_Moesta-Iam_Moesta.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Despair_Not_O_Heart-Med_Sorgen_Og_Klagen-Despair_Not_O_Heart-Jam_Moesta-Iam_Moesta",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

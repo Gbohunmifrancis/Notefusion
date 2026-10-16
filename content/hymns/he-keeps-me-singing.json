@@ -1,0 +1,92 @@
+{
+  "title": "He Keeps Me Singing",
+  "tune": "he-keeps-me-singing",
+  "text": [
+    {
+      "name": "Luther Burgess Bridgers",
+      "born": 1884,
+      "died": 1948,
+      "role": "Words (1910)"
+    }
+  ],
+  "textPublished": 1910,
+  "description": "He Keeps Me Singing in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Luther Burgess Bridgers, first published in 1910. The tune, HE KEEPS ME SINGING, is by Hans Engelmann (1903). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "There's with-in my heart a mel-o-dy Je-sus whis-pers sweet and low,_ \"Fear not, I am with thee, peace, be still,\" In all of life's ebb and flow. Je-sus, Je-sus, Je-sus,‑ Sweet-est name I know, Fills my ev-'ry long-ing, Keeps me sing-ing as I go.",
+  "verses": [
+    {
+      "lines": [
+        "There's within my heart a melody",
+        "Jesus whispers sweet and low,",
+        "\"Fear not, I am with thee, peace, be still,\"",
+        "In all of life's ebb and flow."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Jesus, Jesus, Jesus—",
+        "Sweetest name I know,",
+        "Fills my ev'ry longing,",
+        "Keeps me singing as I go."
+      ]
+    },
+    {
+      "lines": [
+        "All my life was wrecked by sin and strife,",
+        "Discord filled my heart with pain,",
+        "Jesus swept across the broken strings,",
+        "Stirred the slumb'ring chords again."
+      ]
+    },
+    {
+      "lines": [
+        "Feasting on the riches of His grace,",
+        "Resting 'neath His shelt'ring wing,",
+        "Always looking on His smiling face,",
+        "That is why I shout and sing."
+      ]
+    },
+    {
+      "lines": [
+        "Though sometimes He leads through waters deep,",
+        "Trials fall across the way,",
+        "Though sometimes the path seems rough and steep,",
+        "See His footprints all the way."
+      ]
+    },
+    {
+      "lines": [
+        "Soon He's coming back to welcome me,",
+        "Far beyond the starry sky;",
+        "I shall wing my flight to worlds unknown,",
+        "I shall reign with Him on high."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Art and Music",
+    "Atonement",
+    "Faithfulness",
+    "Following Jesus, In Faith",
+    "God, Care of",
+    "God, Faithfulness of",
+    "Grace",
+    "Jesus",
+    "Kindness, God's",
+    "Praise, Son",
+    "Sinners"
+  ],
+  "metre": "9 7 9 7 6 5 6 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/He_Keeps_Me_Singing-He_Keeps_Me_Singing-Melody_of_Love.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "He_Keeps_Me_Singing-He_Keeps_Me_Singing-Melody_of_Love"
+}

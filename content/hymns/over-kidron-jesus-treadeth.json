@@ -1,0 +1,130 @@
+{
+  "title": "Over Kidron Jesus Treadeth",
+  "alsoKnownAs": [
+    "Over Kedron Jesus Treadeth",
+    "Over Cedron Jesus Treadeth"
+  ],
+  "tune": "over-kedron-jesus-traeder",
+  "text": [
+    {
+      "name": "Thomas Hansen Kingo",
+      "born": 1634,
+      "died": 1703,
+      "role": "Words (1689)"
+    },
+    {
+      "name": "J. Jeffrey",
+      "died": 1900,
+      "lived": "19th century",
+      "role": "Translated (1866)"
+    }
+  ],
+  "textPublished": 1866,
+  "description": "Over Kidron Jesus Treadeth in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Hansen Kingo, first published in 1689. The English translation is by J. Jeffrey (1866). The tune, OVER KEDRON JESUS TRAEDER, is by Ludvig Mathias Lindeman. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O-ver Kid-ron Je-sus tread-eth To His pas-sion for us all; Ev-ery hu-man eye be weep-ing, Tears of bit-ter grief let fall! Round His Spi-rit flock the foes, Place their shafts and bend their bows, Aim-ing at the Sav-ior sole-ly, While the world for-sakes Him_ whol-ly.",
+  "verses": [
+    {
+      "lines": [
+        "Over Kidron Jesus treadeth",
+        "To His passion for us all;",
+        "Every human eye be weeping,",
+        "Tears of bitter grief let fall!",
+        "Round His Spirit flock the foes,",
+        "Place their shafts and bend their bows,",
+        "Aiming at the Savior solely,",
+        "While the world forsakes Him wholly."
+      ]
+    },
+    {
+      "lines": [
+        "David once, with heart afflicted,",
+        "Crossed the Kidron's narrow strand,",
+        "Clouds of gloom and grief about him",
+        "When an exile from his land.",
+        "But, O Jesus, blacker now",
+        "Bends the cloud above Thy brow,",
+        "Hasting to death's dreary portals",
+        "For the shame and sin of mortals."
+      ]
+    },
+    {
+      "lines": [
+        "See how, anguish struck, He falleth",
+        "Prostrate, and with struggling breath,",
+        "Three times on His God He calleth,",
+        "Praying that the bitter death",
+        "And the cup of doom may go,",
+        "Still He cries, in all His woe:",
+        "\"Not My will, but Thine, O Father!\"",
+        "And the angels round Him gather."
+      ]
+    },
+    {
+      "lines": [
+        "See how, in that hour of darkness,",
+        "Battling with the evil pow'r,",
+        "Agonies untold assail Him,",
+        "On His soul the arrows show'r;",
+        "All the garden flow'rs are wet",
+        "With the drops of bloody sweat,",
+        "From His anguished frame distilling—",
+        "World's redemption thus fulfilling!"
+      ]
+    },
+    {
+      "lines": [
+        "But, O flow'rs, so sadly watered",
+        "By this pure and precious dew,",
+        "In some blessed hour your blossoms",
+        "'Neath the olive shadows grew!",
+        "Eden's garden did not bear",
+        "Aught that can with you compare,",
+        "For the blood, thus freely given,",
+        "Makes my soul the heir of heaven."
+      ]
+    },
+    {
+      "lines": [
+        "When as flow'rs themselves I wither, When I droop and fade like grass,",
+        "When the life-streams through my pulses Dull and ever duller pass,",
+        "When at last they cease to roll, Then, to cheer my sinking soul,",
+        "Grace of Jesus, be Thou given- Source of triumph! pledge of heaven!"
+      ]
+    }
+  ],
+  "category": "Good Thursday",
+  "topics": [
+    "Angels",
+    "Atonement",
+    "Blood",
+    "Comfort",
+    "Darkness, Spiritual",
+    "Easter Week / Passion",
+    "Father",
+    "God, Faithfulness of",
+    "God, Love of",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Heaven",
+    "Jesus",
+    "Judgment",
+    "Obedience",
+    "Sacrifice",
+    "Salvation",
+    "Submission (see also Following Jesus, God - Providence of, Trust)"
+  ],
+  "metre": "8 7 8 7 7 7 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Over_Kidron_Jesus_Treadeth-Over_Kedron_Jesus_Treadaer.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Over_Kidron_Jesus_Treadeth-Over_Kedron_Jesus_Treadaer"
+}

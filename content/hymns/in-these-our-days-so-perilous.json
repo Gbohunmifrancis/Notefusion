@@ -1,0 +1,70 @@
+{
+  "title": "In These Our Days So Perilous",
+  "alsoKnownAs": [
+    "Grant Peace, We Pray, in Mercy, Lord",
+    "Grant Peace in Mercy, Lord, We Pray"
+  ],
+  "tune": "verleih-uns-frieden-gnadiglich",
+  "text": [
+    {
+      "name": "Traditional Latin",
+      "traditional": true,
+      "role": "Words (600)"
+    },
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (600)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "In These Our Days So Perilous in Tonic Solfa: the solfa line by line with the words, staff notation, the words, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 600. The English translation is by Richard Massie (1854). The tune, VERLEIH UNS FRIEDEN GNÄDIGLICH, is by Martin Luther (1533). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "In these our days so per-il-ous, Lord, peace in mer-cy send us; No God but Thee can fight for_ us, No God but Thee_ de-fend_ us; Thou our_ on-ly God and_ Sa_-vior.",
+  "verses": [
+    {
+      "lines": [
+        "In these our days so perilous,",
+        "Lord, peace in mercy send us;",
+        "No God but Thee can fight for us,",
+        "No God but Thee defend us;",
+        "Thou our only God and Savior."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Christian Life",
+    "Church on Earth (Church Militant)",
+    "Courage in Affliction",
+    "God, Majesty &amp; Power of",
+    "God, Mercy of",
+    "Hope",
+    "Humility",
+    "Invitation (Faithful's to God)",
+    "Opening Songs",
+    "Peace",
+    "Salvation",
+    "Security",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trust"
+  ],
+  "metre": "8 7 8 7 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/In_These_Our_Days_So_Perilous-Verleih_uns_Frieden_Gnaediglich.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "In_These_Our_Days_So_Perilous-Verleih_uns_Frieden_Gnaediglich"
+}

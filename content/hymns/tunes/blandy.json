@@ -1,0 +1,30 @@
+{
+  "name": "BLANDY",
+  "music": [
+    {
+      "name": "John Samuel Norris",
+      "born": 1844,
+      "died": 1907,
+      "role": "Music"
+    },
+    {
+      "name": "Philip Paul Bliss",
+      "born": 1838,
+      "died": 1876,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": 1907,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C4:.75 F4:.25 | A4:1.5 A4:.5 Bb4:1.5 A4:.5 | A4:.5 G4:2 r:.5 C4:.75 E4:.25 | G4:1.5 F4:.5 A4:1.5 G4:.5 | G4:.5 F4:2 r:.5 F4:.75 A4:.25 | C5:1.5 C5:.5 D5:1.5 C5:.5 | C5:.5 Bb4:2 r:.5 F4:.5 G4:.5 | A4:.25 C4:.75 A4:.25 C4:.75 G4:1.5 F4:.5 | F4:3 C4:.75 F4:.25 | A4:1.5 A4:.5 Bb4:1.5 A4:.5 | A4:.5 G4:2 r:.5 C4:.75 E4:.25 | G4:1.5 F4:.5 A4:1.5 G4:.5 | G4:.5 F4:2 r:.5 F4:.75 A4:.25 | C5:1.5 C5:.5 D5:1.5 C5:.5 | C5:.5 Bb4:2 r:.5 F4:.5 G4:.5 | A4:.25 C4:.75 A4:.25 C4:.75 G4:1.5 F4:.5 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Where_He_Leads_Me-Where_He_Leads_Me.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: not provably public domain: Edward William Blandy: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1907, the year of the setting the Open Hymnal copied. The Open Hymnal's own source: Best Endeavor Hymns, 1907 Hymn 148"
+}

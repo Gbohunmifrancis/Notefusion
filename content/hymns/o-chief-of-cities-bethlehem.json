@@ -1,0 +1,100 @@
+{
+  "title": "O Chief of Cities Bethlehem",
+  "tune": "puer-nobis-nascitur",
+  "text": [
+    {
+      "name": "Aurelius Clemens Prudentius",
+      "born": 348,
+      "died": 413,
+      "role": "Words"
+    },
+    {
+      "name": "Nathaniel Barratt Smithers",
+      "born": 1818,
+      "died": 1896,
+      "role": "Translated (1879)"
+    },
+    {
+      "name": "Charles Winfred Douglas",
+      "born": 1867,
+      "died": 1944,
+      "role": "Translated (1879)"
+    },
+    {
+      "name": "John Patrick Crichton-Stuart Marquess of Bute",
+      "born": 1847,
+      "died": 1900,
+      "role": "Translated (1879)"
+    }
+  ],
+  "textPublished": null,
+  "description": "O Chief of Cities Bethlehem in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Aurelius Clemens Prudentius. The English translation is by Nathaniel Barratt Smithers and Charles Winfred Douglas and John Patrick Crichton-Stuart Marquess of Bute (1879). The tune, PUER NOBIS NASCITUR, is by Michael Praetorius (1609). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O chief of ci-ties, Beth-le-hem, Of Da-vid's crown_ the fair-est gem, But more to us than Da-vid's name, In you, as man, the Sa-vior came.",
+  "verses": [
+    {
+      "lines": [
+        "O chief of cities, Bethlehem,",
+        "Of David's crown the fairest gem,",
+        "But more to us than David's name,",
+        "In you, as man, the Savior came."
+      ]
+    },
+    {
+      "lines": [
+        "Beyond the sun in splendor bright,",
+        "Above you stands a wondrous light",
+        "Proclaiming from the conscious skies",
+        "That here, in flesh, the Godhead lies."
+      ]
+    },
+    {
+      "lines": [
+        "The wise men, seeing Him so fair,",
+        "Bow low before Him, and with prayer",
+        "Their treasured eastern gifts unfold",
+        "Of incense, myrrh, and royal gold."
+      ]
+    },
+    {
+      "lines": [
+        "The golden tribute owns Him King,",
+        "But frankincense to God they bring,",
+        "And last, prophetic sign, with myrrh,",
+        "They shadow forth His sepulcher."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, whom the Gentiles see,",
+        "With Father, Spirit, One in Three:",
+        "To You, O God, be glory giv'n",
+        "By saints on earth and saints in Heav'n."
+      ]
+    }
+  ],
+  "category": "Epiphany",
+  "topics": [
+    "Christmas/Advent",
+    "Crown",
+    "God, As King",
+    "Jesus",
+    "Light",
+    "Magi",
+    "Presence",
+    "Saints (all Faithful)",
+    "Trinity"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Chief_Of_Cities_Bethlehem-Puer_Nobis_Nascitur.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "O_Chief_Of_Cities_Bethlehem-Puer_Nobis_Nascitur",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

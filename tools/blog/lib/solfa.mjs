@@ -95,9 +95,10 @@ export function pitchLabel(midi, keyText) {
 /**
  * Parses a melody written as `PITCH:BEATS` tokens with `|` between bars, e.g.
  * "D4:1 | G4:2 B4:.5 G4:.5 | B4:2 A4:1". Beats are quarter notes; `r:1` is a rest; a trailing `~`
- * ties a note into the next one of the same pitch. Durations must sit on the half-beat grid the
- * engine's hymn layout uses. A pickup (`pickup` beats) is placed at the end of the first grid bar,
- * so every bar line falls where the engine draws one.
+ * ties a note into the next one of the same pitch. Durations are whole quarter beats (a semiquaver
+ * is .25, a dotted quaver .75): the grid shows a half-beat cell that holds two quarter-beat notes as
+ * a split cell (see engineGrid). A pickup (`pickup` beats) is placed at the end of the first grid
+ * bar, so every bar line falls where the engine draws one.
  */
 export function parseMelody(text, { time, pickup = 0 }) {
   const N = loadEngine();
@@ -112,7 +113,7 @@ export function parseMelody(text, { time, pickup = 0 }) {
       const m = /^([^:]+):(\d*\.?\d+)(~?)$/.exec(tok);
       if (!m) throw new Error(`bar ${bi + 1}: cannot read "${tok}" (write PITCH:BEATS, e.g. G4:1 or r:1)`);
       const dur = Number(m[2]);
-      if (!(dur > 0) || Math.abs(dur * 2 - Math.round(dur * 2)) > 1e-9) throw new Error(`bar ${bi + 1}: "${tok}" is not a whole number of half beats`);
+      if (!(dur > 0) || Math.abs(dur * 4 - Math.round(dur * 4)) > 1e-9) throw new Error(`bar ${bi + 1}: "${tok}" is not a whole number of quarter beats (semiquavers)`);
       const rest = m[1].toLowerCase() === "r";
       events.push({ pitchMidi: rest ? null : parsePitch(m[1]), dur, tie: m[3] === "~", bar: bi });
       sum += dur;
@@ -150,19 +151,75 @@ export function transposeInterval(fromKey, toKey) {
 }
 
 // ── The engine's grid, laid out ─────────────────────────────────────────────
+/** True when every note starts and ends on the half-beat grid (no semiquavers, no dotted quavers). */
+export function onHalfBeatGrid(notes) {
+  const half = (x) => Math.abs(x * 2 - Math.round(x * 2)) < 1e-9;
+  return notes.every((n) => half(n.startBeat) && half(n.durBeats));
+}
+
+/**
+ * The quarter-beat character between the two halves of a split cell. It is the tonic solfa
+ * quarter-beat mark (`d .,r` in a hymn book), here inside one half-beat cell: "-,r" is the last
+ * quarter of a dotted quaver, then a semiquaver. It never touches an octave mark's comma, which
+ * always follows a syllable letter (s,) and is drawn small and low on the page (see gridHtml).
+ */
+export const QUARTER_MARK = ",";
+
+/**
+ * The hymn grid at quarter-beat resolution, for a tune with semiquavers or dotted quavers that the
+ * engine's half-beat hymnRows cannot hold. The syllables are the engine's (`labelled` comes from
+ * its `label`, the words from its `lyricsUnderNotes`); only the cells are laid out here, in the
+ * engine's half-beat cells: a cell whose second quarter starts a note (or a rest) is split into its
+ * two quarters, {solfa: "d,r", parts: [{solfa: "d"…}, {solfa: "r"…}]}; every other cell is exactly
+ * what hymnRows writes. For a tune on the half-beat grid it returns hymnRows' own cells (tested).
+ */
+export function quarterBars(labelled, underlay, time) {
+  const N = loadEngine();
+  const bpb = N.beatsPerBar(time);
+  const nBars = N.barCount(labelled, time);
+  const under = Array.from(N.lyricsUnderNotes(labelled, underlay || ""));
+  const slotsPerBar = Math.round(bpb * 4);
+  const slots = [];
+  for (let k = 0; k < nBars * slotsPerBar; k++) {
+    const start = k * 0.25, end = start + 0.25;
+    const starts = labelled.map((n, i) => ({ n, i })).filter(({ n }) => Math.abs(n.startBeat - start) < 1e-9);
+    const active = labelled.some((n) => n.startBeat < end - 1e-9 && n.startBeat + Math.max(0, n.durBeats) > start + 1e-9);
+    if (starts.length) slots.push({ solfa: starts.map(({ n }) => n.solfa + n.octaveMark).join("+"), lyric: starts.map(({ i }) => under[i] || "").filter(Boolean).join(" "), beat: start, note: true });
+    else slots.push({ solfa: active ? "-" : "_", lyric: "", beat: start, note: false });
+  }
+  const bars = [];
+  for (let b = 0; b < nBars; b++) {
+    const cells = [];
+    for (let c = 0; c < bpb * 2; c++) {
+      const a = slots[b * slotsPerBar + c * 2], z = slots[b * slotsPerBar + c * 2 + 1];
+      const plainSecond = a.solfa === "_" ? "_" : "-";
+      const strip = ({ solfa, lyric, beat }) => ({ solfa, lyric, beat });
+      if (z.note || z.solfa !== plainSecond) cells.push({ solfa: a.solfa + QUARTER_MARK + z.solfa, lyric: [a.lyric, z.lyric].filter(Boolean).join(" "), beat: a.beat, parts: [strip(a), strip(z)] });
+      else cells.push(strip(a));
+    }
+    bars.push(cells);
+  }
+  return bars;
+}
+
 /**
  * The engine's labelling and hymn grid for a melody: `label` names every note in the key,
- * `hymnRows` lays them in half-beat cells with the words under them. Returns the bars (each a list
- * of {solfa, lyric, beat} cells), the doh header, and the labelled notes.
+ * `hymnRows` lays them in half-beat cells with the words under them (or, for a tune with
+ * quarter-beat notes, quarterBars does, with the engine's syllables). Returns the bars (each a list
+ * of {solfa, lyric, beat} cells, a split cell also carrying its two `parts`), the doh header, and
+ * the labelled notes.
  */
 export function engineGrid(melody, { key, underlay = "", transpose = 0 }) {
   const N = loadEngine();
   const notes = melody.notes.map((n) => ({ pitchMidi: n.pitchMidi + transpose, startBeat: n.startBeat, durBeats: n.durBeats }));
   // The engine runs in its own VM realm; its arrays are copied into this one at the boundary.
   const labelled = Array.from(N.label(notes, key), (n) => ({ ...n }));
-  const rows = N.hymnRows(labelled, underlay, melody.time, 1e6);
   const bpb = N.beatsPerBar(melody.time);
-  const bars = Array.from(rows[0] || [], (bar, b) => Array.from(bar, (cell, c) => ({ solfa: cell.solfa, lyric: cell.lyric, beat: b * bpb + c * 0.5 })));
+  let bars;
+  if (onHalfBeatGrid(notes)) {
+    const rows = N.hymnRows(labelled, underlay, melody.time, 1e6);
+    bars = Array.from(rows[0] || [], (bar, b) => Array.from(bar, (cell, c) => ({ solfa: cell.solfa, lyric: cell.lyric, beat: b * bpb + c * 0.5 })));
+  } else bars = quarterBars(labelled, underlay, melody.time);
   // A pickup sits at the end of the first bar and the last bar is short by as much: the empty
   // cells either side are not part of the tune, so a hymn book leaves them out.
   if (bars.length && melody.pickup) while (bars[0].length && bars[0][0].solfa === "_") bars[0].shift();
@@ -195,7 +252,7 @@ export function lineText(line) {
 /** The words sung in a line, syllables joined back into words. */
 export function lineWords(line) {
   let out = "";
-  for (const bar of line) for (const c of bar) {
+  for (const bar of line) for (const c of bar.flatMap((cell) => cell.parts || [cell])) {
     const s = c.lyric;
     if (!s || s === "_") continue;
     if (out && !out.endsWith("-")) out += " ";

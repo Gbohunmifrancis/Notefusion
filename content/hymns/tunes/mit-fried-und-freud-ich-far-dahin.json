@@ -1,0 +1,23 @@
+{
+  "name": "MIT FRIED UND FREUD ICH FAR DAHIN",
+  "music": [
+    {
+      "name": "From Walter's Geistliche Gesangbüchlein, 1524",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "D4:2 A4:1 A4:1 | G4:1 D5:1 C5:1 B4:1 | A4:2 C5:2 | A4:1 C5:1 B4:.5 A4:.5 B4:1 | A4:1 r:.5 A4:.5 C5:1.5 B4:.5 | C5:1 A4:.5 G4:1 F4:.5 E4:1 | D4:2 A4:1.5 G4:.5 | F4:1 D4:1 C4:2 | A4:1.5 G4:.5 F4:1 C5:1~ | C5:.5 Bb4:.5 A4:1 G4:.5 F4:.5 G4:1 | A4:1 r:.5 G4:.5 F4:1 D4:1 | C4:1 F4:1 E4:.5 D4:.5 E4:1 | D4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/In_Peace_And_Joy_I_Now_Depart-Mit_Fried_Und_Freud_ich_Far_Dahin.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The tune ends on D, not on the key note: it may be modal."
+}

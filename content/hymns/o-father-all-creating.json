@@ -1,0 +1,98 @@
+{
+  "title": "O Father, All Creating",
+  "tune": "aurelia",
+  "text": [
+    {
+      "name": "John Ellerton",
+      "born": 1826,
+      "died": 1893,
+      "role": "Words (1876)"
+    }
+  ],
+  "textPublished": 1876,
+  "description": "O Father, All Creating in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Ellerton, first published in 1876. The tune, AURELIA, is by Samuel Sebastian Wesley (1864). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O Fa-ther, all cre-a-ting, Whose wis-dom, love, and pow'r First bound two lives to-ge-ther In E-den's pri-mal hour, To-day to these Thy child-ren Thy ear-liest gifts re-new: A home by Thee made hap-py, A love by Thee kept true.",
+  "verses": [
+    {
+      "lines": [
+        "O Father, all creating,",
+        "Whose wisdom, love, and pow'r",
+        "First bound two lives together",
+        "In Eden's primal hour,",
+        "Today to these Thy children",
+        "Thy earliest gifts renew:",
+        "A home by Thee made happy,",
+        "A love by Thee kept true."
+      ]
+    },
+    {
+      "lines": [
+        "O Savior, Guest most bounteous",
+        "Of old in Galilee,",
+        "Vouchsafe today Thy presence",
+        "With these who call on Thee;",
+        "Their store of earthly gladness",
+        "Transform to heav'nly wine,",
+        "And teach them, in the tasting",
+        "To know the gift is Thine."
+      ]
+    },
+    {
+      "lines": [
+        "O Spirit of the Father,",
+        "Breathe on them from above,",
+        "So mighty in Thy pureness,",
+        "So tender in Thy love;",
+        "That, guarded by Thy presence,",
+        "From sin and strife kept free,",
+        "Their lives may own Thy guidance,",
+        "Their hearts be rul'd by Thee."
+      ]
+    },
+    {
+      "lines": [
+        "Except Thou build it, Father,",
+        "The house is built in vain;",
+        "Except Thou, Savior, bless it,",
+        "The joy will turn to pain;",
+        "But naught can break the union",
+        "Of hearts in Thee made one,",
+        "And love Thy Spirit hallow'd",
+        "Is endless love begun."
+      ]
+    }
+  ],
+  "category": "Christian Home",
+  "topics": [
+    "Christian Home/Family",
+    "Christian Life",
+    "Consecration",
+    "Father",
+    "Fellowship",
+    "God, Care of",
+    "God, Providence of",
+    "Guidance",
+    "Holiness",
+    "Holy Spirit",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Joy",
+    "Leadership",
+    "Love",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Security"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Father_All_Creating-Aurelia.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Father_All_Creating-Aurelia"
+}

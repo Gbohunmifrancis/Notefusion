@@ -1,0 +1,111 @@
+{
+  "title": "The Day Is Surely Drawing Near",
+  "tune": "es-ist-gewisslich-an-der-zeit-the-day-is-surely-drawing-near",
+  "text": [
+    {
+      "name": "Bartholomäus Ringwaldt",
+      "born": 1532,
+      "died": 1599,
+      "role": "Words (1565)"
+    },
+    {
+      "name": "Phillip Adam Peter",
+      "born": 1832,
+      "died": 1919,
+      "role": "Translated (1872)"
+    }
+  ],
+  "textPublished": 1872,
+  "description": "The Day Is Surely Drawing Near in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Bartholomäus Ringwaldt, first published in 1565. The English translation is by Phillip Adam Peter (1872). The tune, ES IST GEWISSLICH AN DER ZEIT, is from Klug's Geistliche Lieder, Wittenberg, 1533. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The day is sure-ly draw-ing near, When God's Son, the A-noint-ed, Shall with great maj-es-ty ap-pear, As Judge of all ap-point-ed. All mirth and laugh-ter then shall cease When flames on flames will still in-crease, As Scrip-ture tru-ly teach-eth.",
+  "verses": [
+    {
+      "lines": [
+        "The day is surely drawing near,",
+        "When God's Son, the Anointed,",
+        "Shall with great majesty appear,",
+        "As Judge of all appointed.",
+        "All mirth and laughter then shall cease",
+        "When flames on flames will still increase,",
+        "As Scripture truly teacheth."
+      ]
+    },
+    {
+      "lines": [
+        "A trumpet loud shall then resound,",
+        "And all the earth be shaken;",
+        "Then all who in their graves are found",
+        "Shall from their sleep awaken.",
+        "But all that live shall in that hour,",
+        "By the Almighty's boundless pow'r",
+        "Be changed at His commanding."
+      ]
+    },
+    {
+      "lines": [
+        "A book is opened then to all,",
+        "A record truly telling",
+        "What each hath done, both great and small,",
+        "When he on earth was dwelling;",
+        "And every heart be clearly seen,",
+        "And all be known as they have been,",
+        "In thoughts and words and actions."
+      ]
+    },
+    {
+      "lines": [
+        "Then woe to those who scorned the Lord,",
+        "And sought but carnal pleasures,",
+        "Who here despised His precious Word,",
+        "And loved their earthly treasures!",
+        "With shame and trembling they will stand,",
+        "And at the Judge's stern command",
+        "To Satan be delivered."
+      ]
+    },
+    {
+      "lines": [
+        "O Jesus, who my debt didst pay",
+        "And for my sin wast smitten",
+        "Within the Book of Life, oh, may",
+        "My name be also written!",
+        "I will not doubt; I trust in Thee,",
+        "From Satan Thou hast made me free",
+        "And from all condemnation."
+      ]
+    }
+  ],
+  "category": "End Times",
+  "topics": [
+    "Anticipation",
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Brevity of Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Conscience",
+    "Eternal Life",
+    "Faith",
+    "Fear of the Lord",
+    "God, Justness of",
+    "Judgment",
+    "Law",
+    "Presence",
+    "Saints (all Faithful)",
+    "Scripture",
+    "Second Coming",
+    "Sinners"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Day_Is_Surely_Drawing_Near-Es_ist_Gewisslich_an_der_Zett.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Day_Is_Surely_Drawing_Near-Es_ist_Gewisslich_an_der_Zett"
+}

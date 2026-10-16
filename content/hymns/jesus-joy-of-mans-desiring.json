@@ -1,0 +1,66 @@
+{
+  "title": "Jesus, Joy of Man's Desiring",
+  "tune": "jesus-bleibet-meine-freude",
+  "text": [
+    {
+      "name": "Martin Janus",
+      "born": 1620,
+      "died": 1682,
+      "role": "Words (1661)"
+    },
+    {
+      "name": "Robert Seymour Bridges",
+      "born": 1844,
+      "died": 1930,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Jesus, Joy of Man's Desiring in Tonic Solfa: the solfa line by line with the words, staff notation, the words, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Janus, first published in 1661. The English translation is by Robert Seymour Bridges. The tune, JESUS BLEIBET MEINE FREUDE, is by Johann Schop (1641). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "",
+  "verses": [
+    {
+      "lines": [
+        "Jesus, Joy of Man's Desiring"
+      ]
+    }
+  ],
+  "category": "Choral",
+  "topics": [
+    "Anticipation",
+    "Art and Music",
+    "Aspiration",
+    "Assurance",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Consecration",
+    "Eternal Life",
+    "Fellowship",
+    "God, As King",
+    "God, Creator",
+    "God, Eternity of",
+    "God, Goodness of",
+    "God, Love of",
+    "Heaven",
+    "Holiness",
+    "Hope",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Praise, Son",
+    "Throne (also see God - As King)",
+    "Worship"
+  ],
+  "metre": "CHORAL",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/JesuJoyOfMansDesiring.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "JesuJoyOfMansDesiring",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929; the score has repeat signs, which the importer does not render; the score has no words under the melody; the first note has no word under it; the first verse has 0 syllables (counting each “_”) for 441 notes."
+}

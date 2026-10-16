@@ -2,17 +2,39 @@
 // (web-site/assets/sheet.js) builds in the browser, here written out as static, crawlable text.
 import { escapeHtml } from "./util.mjs";
 import YAML from "yaml";
-import { engineGrid, toLines, scaleMelody, transposeInterval, loadEngine } from "./solfa.mjs";
+import { engineGrid, toLines, scaleMelody, transposeInterval, loadEngine, QUARTER_MARK } from "./solfa.mjs";
+
+/**
+ * A syllable as HTML: the engine's text exactly ("s,", "d'", "fe"), with the octave mark set apart in
+ * a span so the page can draw it small, low (,) or high ('), as hymn books print their octave
+ * figures. That keeps it visibly different from the quarter-beat mark between a split cell's halves,
+ * which sits on the line between two syllables. Copied text is unchanged.
+ */
+export function syllableHtml(solfa) {
+  return String(solfa).split("+").map((one) => {
+    const m = /^(.*?)([,']+)$/.exec(one);
+    if (!m || !m[1] || m[1] === "-" || m[1] === "_") return escapeHtml(one);
+    const low = m[2].startsWith(",");
+    return `${escapeHtml(m[1])}<span class="om ${low ? "om-low" : "om-high"}">${escapeHtml(m[2])}</span>`;
+  }).join("+");
+}
+
+/** The quarter-beat mark between the two halves of a split cell. */
+const QUARTER_HTML = `<span class="qm">${QUARTER_MARK}</span>`;
 
 /** Lines of bars as tables. With `beats`, each syllable carries its beat for the page's player. */
 export function gridHtml(lines, { beats = false, words = true } = {}) {
+  const slot = (c) => {
+    const b = beats ? ` data-beat="${c.beat}"` : "";
+    return `<b${b}>${syllableHtml(c.solfa)}</b>${words ? `<i>${escapeHtml(c.lyric || "")}</i>` : ""}`;
+  };
   return lines.map((line) => {
     const tds = line.map((bar) => "<td>" + bar.map((c) => {
-      const b = beats ? ` data-beat="${c.beat}"` : "";
-      const lyric = words ? `<i>${escapeHtml(c.lyric || "")}</i>` : "";
+      // A half beat split into two quarter beats: its two syllables side by side, the quarter-beat mark between them.
+      if (c.parts) return `<span class="cell split" title="Two quarter beats">${c.parts.map((p) => `<span class="q">${slot(p)}</span>`).join(QUARTER_HTML)}</span>`;
       // A held or silent half beat with no word under it is drawn narrow, so a line of four bars fits a page.
       const hold = (c.solfa === "-" || c.solfa === "_") && !c.lyric ? " hold" : "";
-      return `<span class="cell${hold}"><b${b}>${escapeHtml(c.solfa)}</b>${lyric}</span>`;
+      return `<span class="cell${hold}">${slot(c)}</span>`;
     }).join("") + "</td>").join("");
     return `<table class="hymn"><tr>${tds}</tr></table>`;
   }).join("\n");
@@ -21,7 +43,7 @@ export function gridHtml(lines, { beats = false, words = true } = {}) {
 /** The words sung in one bar; a word that runs on into the next bar keeps its hyphen ("A-"). */
 function barWords(bar) {
   let out = "";
-  for (const c of bar) {
+  for (const c of bar.flatMap((cell) => cell.parts || [cell])) {
     const s = c.lyric;
     if (!s || s === "_") continue;
     if (out && !out.endsWith("-")) out += " ";
@@ -30,17 +52,22 @@ function barWords(bar) {
   return out.replace(/-(?=\S)/g, "");
 }
 
+/** A cell's text for the plain-text lines: its syllables, a split cell's two halves joined by the quarter-beat mark. */
+function cellTextHtml(c) {
+  return c.parts ? c.parts.map((p) => syllableHtml(p.solfa)).join(QUARTER_HTML) : syllableHtml(c.solfa);
+}
+
 /**
  * Plain-text solfa, line by line, as bars: each bar is one unit (its solfa, then the words sung in it), so
  * on a narrow screen a line wraps at a bar line and never inside a bar. Read in order, the solfa is the
- * line's text exactly (lineText): "| s, - | d - - - m d | … |".
+ * line's text exactly (lineText): "| s, - | d - - - m d | … |", a split cell as "-,r".
  */
 export function textLinesHtml(lines, { words = true } = {}) {
   return lines.map((line) => {
     const bars = line.map((bar, i) => {
-      const text = "| " + bar.map((c) => c.solfa).join(" ") + (i === line.length - 1 ? " |" : " ");
+      const text = "| " + bar.map(cellTextHtml).join(" ") + (i === line.length - 1 ? " |" : " ");
       const w = words ? barWords(bar) : "";
-      return `<span class="solfa-bar"><code>${escapeHtml(text)}</code>${words ? `<span class="solfa-words">${escapeHtml(w)}</span>` : ""}</span>`;
+      return `<span class="solfa-bar"><code>${text}</code>${words ? `<span class="solfa-words">${escapeHtml(w)}</span>` : ""}</span>`;
     }).join("");
     return `<div class="solfa-line">${bars}</div>`;
   }).join("\n");

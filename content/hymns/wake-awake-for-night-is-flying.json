@@ -1,0 +1,98 @@
+{
+  "title": "Wake, Awake, for Night Is Flying",
+  "tune": "wachet-auf",
+  "text": [
+    {
+      "name": "Phillipp Nicolai",
+      "born": 1556,
+      "died": 1608,
+      "role": "Words (1599)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1858)"
+    }
+  ],
+  "textPublished": 1858,
+  "description": "Wake, Awake, for Night Is Flying in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Phillipp Nicolai, first published in 1599. The English translation is by Catherine Winkworth (1858). The tune, WACHET AUF, is by Phillipp Nicolai (1599). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Wake, a-wake, for night is fly__-ing; The watch-men on the heights are cry-ing: A-wake, Je-ru-sa-lem, at last! Mid-night hears the wel-come voi__-ces And at the thril-ling cry re-joi-ces; Come forth, ye vir-gins, night is past; The Bride-groom comes, a-wake; Your lamps with glad-ness take; A-lle-lu-ia! And for His mar-riage feast pre-pare For ye must go and meet Him there.",
+  "verses": [
+    {
+      "lines": [
+        "Wake, awake, for night is flying;",
+        "The watchmen on the heights are crying:",
+        "Awake, Jerusalem, at last!",
+        "Midnight hears the welcome voices",
+        "And at the thrilling cry rejoices;",
+        "Come forth, ye virgins, night is past;",
+        "The Bridegroom comes, awake;",
+        "Your lamps with gladness take;",
+        "Alleluia!",
+        "And for His marriage feast prepare",
+        "For ye must go and meet Him there."
+      ]
+    },
+    {
+      "lines": [
+        "Zion hears the watchmen singing,",
+        "And all her heart with joy is springing;",
+        "She wakes, she rises from her gloom;",
+        "For her Lord comes down all glorious,",
+        "The strong in grace, in truth victorious.",
+        "Her Star is ris'n, her Light is come.",
+        "Ah come, Thou blessed One,",
+        "God's own beloved Son:",
+        "Alleluia!",
+        "We follow till the halls we see",
+        "Where Thou hast bid us sup with Thee"
+      ]
+    },
+    {
+      "lines": [
+        "Now let all the heav'ns adore Thee,",
+        "And saints and angels sing before Thee,",
+        "With harp and cymbal's clearest tone;",
+        "Of one pearl each shining portal,",
+        "Where we are with the choir immortal",
+        "Of angels round Thy dazzling throne;",
+        "Nor eye hath seen, nor ear",
+        "hath yet attained to hear",
+        "What there is ours,",
+        "but we rejoice and sing to Thee",
+        "Our hymn of joy eternally."
+      ]
+    }
+  ],
+  "category": "End Times",
+  "topics": [
+    "Anticipation",
+    "Bride/Bridegroom",
+    "Heaven",
+    "Jesus",
+    "Joy",
+    "Light",
+    "Lord's Supper",
+    "Opening Songs",
+    "Parables",
+    "Preparedness",
+    "Presence",
+    "Saints (all Faithful)",
+    "Salvation",
+    "Second Coming"
+  ],
+  "metre": "8 9 8 8 9 8 6 6 4 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Wake_Awake_For_Night_Is_Flying-Wachet_Auf.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Wake_Awake_For_Night_Is_Flying-Wachet_Auf",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 16 beats, more than 4; bar 2 has 11.5 beats, more than 4; bar 3 has 11.5 beats, more than 4; bar 4 has 16 beats, more than 4; bar 5 has 11.5 beats, more than 4; bar 6 has 9.5 beats, more than 4; bar 7 has 9.5 beats, more than 4; bar 8 has 9.5 beats, more than 4; bar 9 has 6 beats, more than 4; bar 10 has 12 beats, more than 4; bar 11 has 12 beats, more than 4."
+}

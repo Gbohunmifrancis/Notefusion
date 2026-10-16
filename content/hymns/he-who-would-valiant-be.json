@@ -1,0 +1,78 @@
+{
+  "title": "He Who Would Valiant Be",
+  "tune": "monks-gate",
+  "text": [
+    {
+      "name": "John Bunyan",
+      "born": 1628,
+      "died": 1688,
+      "role": "Words (1684)"
+    },
+    {
+      "name": "Percy Dearmer",
+      "born": 1867,
+      "died": 1936,
+      "role": "Words (1684)"
+    }
+  ],
+  "textPublished": 1684,
+  "description": "He Who Would Valiant Be in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Bunyan and Percy Dearmer, first published in 1684. The tune, MONKS GATE, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "He_ who would val_-iant be 'gainst all dis-a-ster, Let_ him in con_-stan-cy fol-low the Mas-ter. There's no dis-cour-age_-ment shall make_ him once re-lent His first a-vowed_ in_-tent to be a pil-grim.",
+  "verses": [
+    {
+      "lines": [
+        "He who would valiant be 'gainst all disaster,",
+        "Let him in constancy follow the Master.",
+        "There's no discouragement shall make him once relent",
+        "His first avowed intent to be a pilgrim."
+      ]
+    },
+    {
+      "lines": [
+        "Who so beset him round with dismal stories",
+        "Do but themselves confound his strength the more is.",
+        "No foes shall stay his might; though he with giants fight,",
+        "He will make good his right to be a pilgrim."
+      ]
+    },
+    {
+      "lines": [
+        "Since, Lord, Thou dost defend us with Thy Spirit,",
+        "We know we at the end, shall life inherit.",
+        "Then fancies flee away! I'll fear not what men say,",
+        "I'll labor night and day to be a pilgrim."
+      ]
+    }
+  ],
+  "category": "New Obedience",
+  "topics": [
+    "Anticipation",
+    "Aspiration",
+    "Christian Life",
+    "Commitment",
+    "Courage in Affliction",
+    "Discipleship",
+    "Eternal Life",
+    "Faithfulness",
+    "Following Jesus, In Faith",
+    "Following Jesus, In Action",
+    "Following Jesus, Sanctification",
+    "Holy Spirit",
+    "Loyalty",
+    "Sacrifice",
+    "Victory",
+    "Zeal"
+  ],
+  "metre": "11 11 12 11",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/He_Who_Would_Valiant_Be-Monks_Gate.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "He_Who_Would_Valiant_Be-Monks_Gate"
+}

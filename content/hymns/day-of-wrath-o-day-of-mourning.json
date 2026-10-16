@@ -1,0 +1,106 @@
+{
+  "title": "Day of Wrath, O Day of Mourning",
+  "tune": "dies-irae-dykes",
+  "text": [
+    {
+      "name": "Thomas of Celano",
+      "died": 1300,
+      "lived": "13th century",
+      "role": "Words (1300)"
+    },
+    {
+      "name": "William Josiah Irons",
+      "born": 1812,
+      "died": 1883,
+      "role": "Translated (1848)"
+    }
+  ],
+  "textPublished": 1848,
+  "description": "Day of Wrath, O Day of Mourning in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas of Celano, first published in 1300. The English translation is by William Josiah Irons (1848). The tune, DIES IRAE (DYKES), is by John Bacchus Dykes (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Day of wrath, O day of mourn-ing! See ful-filled the pro-phet's warn-ing, Heav'n and earth in ash-es burn-ing. Oh, what fear man's bo-som rend-eth When from Heav'n the Judge de-scend-eth On whose sen-tence all de-pend_-eth!",
+  "verses": [
+    {
+      "lines": [
+        "Day of wrath, O day of mourning!",
+        "See fulfilled the prophet's warning,",
+        "Heav'n and earth in ashes burning.",
+        "Oh, what fear man's bosom rendeth",
+        "When from Heav'n the Judge descendeth",
+        "On whose sentence all dependeth!"
+      ]
+    },
+    {
+      "lines": [
+        "Wondrous sound the trumpet flingeth,",
+        "Through earth's sepulchers it ringeth,",
+        "All before the throne it bringeth.",
+        "Death is struck and nature quaking;",
+        "All creation is awaking,",
+        "To its Judge an answer making."
+      ]
+    },
+    {
+      "lines": [
+        "Lo, the book, exactly worded,",
+        "Wherein all hath been recorded;",
+        "Thence shall judgment be awarded.",
+        "When the Judge His seat attaineth",
+        "And each hidden deed arraigneth,",
+        "Nothing unavenged remaineth."
+      ]
+    },
+    {
+      "lines": [
+        "What shall I, frail man, be pleading?",
+        "Who for me be interceding",
+        "When the just are mercy needing?",
+        "King of majesty tremendous,",
+        "Who dost free salvation send us,",
+        "Fount of pity, then befriend us."
+      ]
+    },
+    {
+      "lines": [
+        "Think, good Jesus, my salvation",
+        "Caused Thy wondrous incarnation;",
+        "Leave me not to reprobation!",
+        "Faint and weary Thou hast sought me,",
+        "On the cross of suff'ring bought me;",
+        "Shall such grace be vainly brought me?"
+      ]
+    }
+  ],
+  "category": "End Times",
+  "topics": [
+    "Anticipation",
+    "Atonement",
+    "Brevity of Life",
+    "Conscience",
+    "Contrition",
+    "Cross",
+    "Fear of the Lord",
+    "Forgiveness",
+    "God, Justness of",
+    "God, Majesty &amp; Power of",
+    "Grace",
+    "Humility",
+    "Jesus",
+    "Judgment",
+    "Law",
+    "Presence",
+    "Repentance",
+    "Shepherd/Lamb"
+  ],
+  "metre": "8 8 8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Day_of_Wrath_O_Day_of_Mourning-Dies_Irae_Dykes.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Day_of_Wrath_O_Day_of_Mourning-Dies_Irae_Dykes"
+}

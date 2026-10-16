@@ -1,0 +1,107 @@
+{
+  "title": "My Faith Looks Up to Thee",
+  "alsoKnownAs": [
+    "My Faith Looks Trustingly"
+  ],
+  "tune": "olivet",
+  "text": [
+    {
+      "name": "Ray Palmer",
+      "born": 1808,
+      "died": 1887,
+      "role": "Words (1830)"
+    }
+  ],
+  "textPublished": 1830,
+  "description": "My Faith Looks Up to Thee in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Ray Palmer, first published in 1830. The tune, OLIVET, is by Lowell Mason (1832). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "My faith looks up to Thee, Thou Lamb of Cal-va-ry, Sa-vior di-vine! Now hear me while I pray, take all my guilt a-way, O let me from this day be whol-ly Thine!",
+  "verses": [
+    {
+      "lines": [
+        "My faith looks up to Thee,",
+        "Thou Lamb of Calvary,",
+        "Savior divine!",
+        "Now hear me while I pray,",
+        "take all my guilt away,",
+        "O let me from this day",
+        "be wholly Thine!"
+      ]
+    },
+    {
+      "lines": [
+        "May Thy rich grace impart",
+        "Strength to my fainting heart,",
+        "my zeal inspire!",
+        "As Thou hast died for me,",
+        "O may my love to Thee,",
+        "Pure warm, and changeless be,",
+        "a living fire!"
+      ]
+    },
+    {
+      "lines": [
+        "While life's dark maze I tread,",
+        "And griefs around me spread,",
+        "be Thou my Guide;",
+        "Bid darkness turn to day,",
+        "wipe sorrow's tears away,",
+        "Nor let me ever stray",
+        "from Thee aside."
+      ]
+    },
+    {
+      "lines": [
+        "When ends life's transient dream,",
+        "When death's cold sullen stream",
+        "over me roll;",
+        "Blest Savior, then in love,",
+        "fear and distrust remove;",
+        "O bear me safe above,",
+        "a ransomed soul!"
+      ]
+    }
+  ],
+  "category": "Consecration",
+  "topics": [
+    "Atonement",
+    "Brevity of Life",
+    "Calmness",
+    "Christian Life",
+    "Comfort",
+    "Commitment",
+    "Consecration",
+    "Courage in Affliction",
+    "Darkness, Spiritual",
+    "Discipleship",
+    "Faith",
+    "Fire",
+    "Following Jesus, In Faith",
+    "Forgiveness",
+    "God, Faithfulness of",
+    "Gratitude",
+    "Guidance",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Leadership",
+    "Loyalty",
+    "Promises (see also Gospel)",
+    "Salvation",
+    "Shepherd/Lamb",
+    "Sinners",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Trust",
+    "Zeal"
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Faith_Looks_Up_To_Thee-Olivet.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "My_Faith_Looks_Up_To_Thee-Olivet"
+}

@@ -1,0 +1,108 @@
+{
+  "title": "Shepherd of Tender Youth",
+  "alsoKnownAs": [
+    "Shepherd of Eager Youth"
+  ],
+  "tune": "italian-hymn",
+  "text": [
+    {
+      "name": "Clement of Alexandria",
+      "born": 150,
+      "died": 215,
+      "role": "Words"
+    },
+    {
+      "name": "Henry Martyn Dexter",
+      "born": 1821,
+      "died": 1890,
+      "role": "Translated (1846)"
+    }
+  ],
+  "textPublished": null,
+  "description": "Shepherd of Tender Youth in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Clement of Alexandria. The English translation is by Henry Martyn Dexter (1846). The tune, ITALIAN HYMN, is by Felice de Giardini (1769). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Shep-herd of ten_-der youth, Gui-ding in love__ and truth, Through de-vious ways! Christ, our tri-um-phant King! We come your Name to sing, And here our chil-dren bring, To shout your praise.",
+  "verses": [
+    {
+      "lines": [
+        "Shepherd of tender youth,",
+        "Guiding in love and truth,",
+        "Through devious ways!",
+        "Christ, our triumphant King!",
+        "We come your Name to sing,",
+        "And here our children bring,",
+        "To shout your praise."
+      ]
+    },
+    {
+      "lines": [
+        "You are our holy Lord!",
+        "The all subduing Word!",
+        "Healer of strife!",
+        "You did yourself abase,",
+        "That from sin's deep disgrace",
+        "You might now save our race,",
+        "And give us life."
+      ]
+    },
+    {
+      "lines": [
+        "You are our soul's High Priest!",
+        "You have prepared the feast",
+        "Of holy love,",
+        "And in our mortal pain",
+        "None calls on you in vain,",
+        "Our plea do not disdain,",
+        "Help from above."
+      ]
+    },
+    {
+      "lines": [
+        "O ever be our guide,",
+        "Our Shepherd and our pride,",
+        "Our staff and song!",
+        "Jesus! O Christ of God!",
+        "By your perennial Word",
+        "Lead us where you have trod,",
+        "Make our faith strong."
+      ]
+    },
+    {
+      "lines": [
+        "So now, and till we die,",
+        "Sound we your praises high,",
+        "And joyful sing;",
+        "Infants and the glad throng",
+        "Who to your Church belong,",
+        "Unite to swell the song",
+        "To Christ, our King."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Children (see also God's Children - the Faithful)",
+    "God, Care of",
+    "Guidance",
+    "Healing",
+    "Holiness",
+    "Humility",
+    "Jesus",
+    "Kindness, God's",
+    "Praise, Son",
+    "Shepherd/Lamb",
+    "Worship"
+  ],
+  "metre": "6 6 4 6 6 6 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Shepherd_of_Tender_Youth-Italian_Hymn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Shepherd_of_Tender_Youth-Italian_Hymn",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

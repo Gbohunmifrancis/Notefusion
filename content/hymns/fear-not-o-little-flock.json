@@ -1,0 +1,102 @@
+{
+  "title": "Fear Not, O Little Flock",
+  "tune": "kommt-her-zu-mir-spricht-gottes-sohn",
+  "text": [
+    {
+      "name": "King Gustavus Adolphus",
+      "born": 1594,
+      "died": 1632,
+      "role": "Words"
+    },
+    {
+      "name": "Jacob Fabricius",
+      "born": 1593,
+      "died": 1654,
+      "role": "Words"
+    },
+    {
+      "name": "Johann M. Altenburg",
+      "born": 1584,
+      "died": 1640,
+      "role": "Words"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1855)"
+    }
+  ],
+  "textPublished": null,
+  "description": "Fear Not, O Little Flock in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by King Gustavus Adolphus and Jacob Fabricius and Johann M. Altenburg. The English translation is by Catherine Winkworth (1855). The tune, KOMMT HER ZU MIR, SPRICHT GOTTES SOHN, is Traditional German. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Fear not, O lit-tle flock, the foe Who mad-ly seeks your ov-er-throw; Dread not his rage and pow'r;_ What though your cou-rage some-times faints, His seem-ing tri-umph o'er God's saints Lasts but one lit-tle hour._",
+  "verses": [
+    {
+      "lines": [
+        "Fear not, O little flock, the foe",
+        "Who madly seeks your overthrow;",
+        "Dread not his rage and pow'r;",
+        "What though your courage sometimes faints,",
+        "His seeming triumph o'er God's saints",
+        "Lasts but one little hour."
+      ]
+    },
+    {
+      "lines": [
+        "Be of good cheer; your cause belongs",
+        "To Him who can avenge your wrongs;",
+        "Leave it to Him our Lord.",
+        "Though hidden yet from all our eyes,",
+        "He sees the Gideon who shall rise;",
+        "To save us, and His word."
+      ]
+    },
+    {
+      "lines": [
+        "As true as God's own word is true,",
+        "Not earth nor hell with all their crew",
+        "Against us shall prevail.",
+        "A jest and by—word are they grown;",
+        "God is with us, we are His own,",
+        "Our vict'ry cannot fail."
+      ]
+    },
+    {
+      "lines": [
+        "Amen, Lord Jesus, grant our prayer!",
+        "Great Captain, now Thine arm make bare;",
+        "Fight for us once again.",
+        "So shall thy saints and martyrs raise",
+        "A mighty chorus to Thy praise,",
+        "World without end. Amen."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Assurance",
+    "Brotherhood",
+    "Calmness",
+    "Christian Life",
+    "Church on Earth (Church Militant)",
+    "Courage in Affliction",
+    "God, Care of",
+    "Martyrs",
+    "Security",
+    "Terrorism",
+    "Victory"
+  ],
+  "metre": "8 8 6 8 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Fear_Not_O_Little_Flock-Kommt_her_zu_mir_spricht_Gottes_Sohn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Fear_Not_O_Little_Flock-Kommt_her_zu_mir_spricht_Gottes_Sohn",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

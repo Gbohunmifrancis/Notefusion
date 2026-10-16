@@ -1,0 +1,23 @@
+{
+  "name": "ROSSETTI",
+  "music": [
+    {
+      "name": "William Jeater",
+      "born": 1858,
+      "role": "Music (1907)"
+    }
+  ],
+  "musicPublished": 1907,
+  "key": "D major",
+  "time": "3/2",
+  "tempo": 110,
+  "pickup": 3,
+  "lineBars": 2,
+  "melody": "A4:1 G4:1 G4:1 | F#4:3 A4:1 G4:1 G4:1 | F#4:3 F#4:1 F#4:1 A4:1 | D5:1.5 C#5:.5 B4:1 A4:1 F#4:1 G#4:1 | A4:3 C#5:1 B4:1 A4:1 | B4:1.5 A4:.5 A4:1 B4:1 A4:1 G4:1 | F#4:6 | E4:2 F#4:2 G4:2 | F#4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/None_Other_Lamb-Rossetti.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: not provably public domain: William Jeater: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The tune ends on F#, not on the key note: it may be modal. The Open Hymnal's own source: \"The Hymnal\" (Presbyterian), 1911 Hymn 478. Words: same source"
+}

@@ -1,0 +1,98 @@
+{
+  "title": "To Shepherds as They Watched by Night",
+  "tune": "vom-himmel-hoch",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1543)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "To Shepherds as They Watched by Night in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1543. The English translation is by Richard Massie (1854). The tune, VOM HIMMEL HOCH, is from Schumann's Geistliche Lieder, Leipzig, 1539. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "To shep-herds as they watched by night Ap-peared a host of an-gels bright; Be-hold the ten-der Babe, they said, In yon-der low-ly man_-ger laid.",
+  "verses": [
+    {
+      "lines": [
+        "To shepherds as they watched by night",
+        "Appeared a host of angels bright;",
+        "Behold the tender Babe, they said,",
+        "In yonder lowly manger laid."
+      ]
+    },
+    {
+      "lines": [
+        "At Bethlehem, in David's town,",
+        "As Micah did of old make known;",
+        "'Tis Jesus Christ, your Lord and King,",
+        "Who doth to all salvation bring."
+      ]
+    },
+    {
+      "lines": [
+        "Oh, then rejoice that through His Son",
+        "God is with sinners now at one;",
+        "Made like yourselves of flesh and blood,",
+        "Your Brother is th'eternal God."
+      ]
+    },
+    {
+      "lines": [
+        "What harm can sin and death then do?",
+        "The true God now abides with you.",
+        "Let hell and Satan rage and chafe,",
+        "Christ is your Brother ye are safe."
+      ]
+    },
+    {
+      "lines": [
+        "Not one He will or can forsake",
+        "Who Him his confidence doth make.",
+        "Let all his wiles the Tempter try,",
+        "You may his utmost pow'rs defy."
+      ]
+    },
+    {
+      "lines": [
+        "Ye shall and must at last prevail;",
+        "God's own ye are, ye cannot fail.",
+        "To God forever sing your praise",
+        "With joy and patience all your days."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Assurance",
+    "Blood",
+    "Brotherhood",
+    "Christmas/Advent",
+    "Comfort",
+    "Jesus",
+    "Presence",
+    "Security",
+    "Shepherd/Lamb",
+    "Sinners",
+    "Victory"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/To_Shepherds_as_They_Watched_By_Night-Vom_Himmel_Hoch.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "To_Shepherds_as_They_Watched_By_Night-Vom_Himmel_Hoch"
+}

@@ -1,0 +1,101 @@
+{
+  "title": "See Amid the Winter's Snow",
+  "tune": "humility",
+  "text": [
+    {
+      "name": "Edward Caswall",
+      "born": 1814,
+      "died": 1878,
+      "role": "Words (1851)"
+    }
+  ],
+  "textPublished": 1851,
+  "description": "See Amid the Winter's Snow in Tonic Solfa: the solfa line by line with the words, staff notation, all 7 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edward Caswall, first published in 1851. The tune, HUMILITY, is by John Goss (1870). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "See a-mid the win-ter's snow, Born for us on earth be-low, See, the gen-tle Lamb ap-pears, Pro-mised from e-ter-nal years. Hail that ev-er bles-sèd morn, Hail re-demp-tion's hap-py dawn, Sing through all Jer-u-sa-lem: Christ is born in Beth-le-hem.",
+  "verses": [
+    {
+      "lines": [
+        "See amid the winter's snow,",
+        "Born for us on earth below,",
+        "See, the gentle Lamb appears,",
+        "Promised from eternal years."
+      ]
+    },
+    {
+      "label": "Refrain",
+      "lines": [
+        "Hail that ever blessèd morn,",
+        "Hail redemption's happy dawn,",
+        "Sing through all Jerusalem:",
+        "Christ is born in Bethlehem."
+      ]
+    },
+    {
+      "lines": [
+        "Lo, within a manger lies",
+        "He Who built the starry skies;",
+        "He Who, thronèd in height sublime,",
+        "Sits amid the cherubim."
+      ]
+    },
+    {
+      "lines": [
+        "Say, you holy shepherds, say,",
+        "Tell your joyful news today.",
+        "Why have you now left your sheep",
+        "On the lonely mountain steep?"
+      ]
+    },
+    {
+      "lines": [
+        "\"As we watched at dead of night,",
+        "Lo, we saw a wondrous light;",
+        "Angels singing 'Peace on earth'",
+        "Told us of the Savior's birth.\""
+      ]
+    },
+    {
+      "lines": [
+        "Sacred Infant, all divine,",
+        "What a tender love was Thine,",
+        "Thus to come from highest bliss",
+        "Down to such a world as this."
+      ]
+    },
+    {
+      "lines": [
+        "Teach, O teach us, holy Child,",
+        "By Thy face so meek and mild,",
+        "Teach us to resemble Thee,",
+        "In Thy sweet humility."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Christmas/Advent",
+    "Humility",
+    "Jesus",
+    "Light",
+    "Love",
+    "Peace",
+    "Presence",
+    "Promises (see also Gospel)",
+    "Reverence",
+    "Shepherd/Lamb",
+    "Throne (also see God - As King)"
+  ],
+  "metre": "7 7 7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/See_Amid_The_Winters_Snow-Humility.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "See_Amid_The_Winters_Snow-Humility"
+}

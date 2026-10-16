@@ -4,6 +4,8 @@
 // header and is never logged.
 
 export const DEFAULT_MODEL = "gemini-3.8-flash";
+/** Tried in order when the chosen model stays overloaded (Google's own "latest" aliases, so they do not go stale). */
+export const FALLBACK_MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest"];
 export const ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models";
 
 /** The post the model returns. OpenAPI-style schema, as generateContent's responseSchema takes it. */
@@ -25,7 +27,14 @@ export const DRAFT_SCHEMA = {
   propertyOrdering: ["title", "description", "slug", "tags", "faq", "body"],
 };
 
-export class GeminiError extends Error {}
+export class GeminiError extends Error {
+  constructor(message, status = null) { super(message); this.status = status; }
+}
+
+/** An error worth trying another model for: still overloaded or rate-limited after the retries, or a model id that is gone. */
+export function isModelUnavailable(e) {
+  return e instanceof GeminiError && (e.status === 429 || e.status === 404 || (e.status != null && e.status >= 500));
+}
 
 function defaultSleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
@@ -66,7 +75,7 @@ export async function generateJson({ apiKey, model = DEFAULT_MODEL, system, cont
     if (!res.ok) {
       const msg = json && json.error && json.error.message ? json.error.message : res.statusText;
       const hint = res.status === 400 || res.status === 404 ? ` (is GEMINI_MODEL "${model}" a current model id?)` : res.status === 401 || res.status === 403 ? " (check the GEMINI_API_KEY secret)" : res.status === 429 ? " (rate limit or quota: try again later)" : "";
-      throw new GeminiError(`Gemini API error ${res.status}: ${msg}${hint}`);
+      throw new GeminiError(`Gemini API error ${res.status}: ${msg}${hint}`, res.status);
     }
     break;
   }
@@ -82,6 +91,27 @@ export async function generateJson({ apiKey, model = DEFAULT_MODEL, system, cont
   let data;
   try { data = JSON.parse(text); } catch (e) { throw new GeminiError(`Gemini's answer is not the JSON that was asked for (${e.message}).`); }
   return { data, usage: json.usageMetadata || {}, modelVersion: json.modelVersion || model, content: { role: "model", parts: cand.content.parts } };
+}
+
+/**
+ * generateJson on the first of `models` that answers. A model still overloaded or rate-limited after its
+ * retries, or one whose id is gone, hands over to the next (fallbacks get two attempts each, so a bad day
+ * costs minutes, not the job's whole timeout). Returns the result with the `model` that wrote it.
+ */
+export async function generateJsonWithFallback({ models, log = () => {}, ...opts }) {
+  const list = [...new Set(models.filter(Boolean))];
+  let last;
+  for (let i = 0; i < list.length; i++) {
+    try {
+      const r = await generateJson({ ...opts, model: list[i], log, attempts: i === 0 ? opts.attempts : 2 });
+      return { ...r, model: list[i] };
+    } catch (e) {
+      last = e;
+      if (!isModelUnavailable(e) || i === list.length - 1) throw e;
+      log(`${list[i]} is unavailable (${e.message}); trying ${list[i + 1]}.`);
+    }
+  }
+  throw last;
 }
 
 /** A one-line account of a call's tokens, for the job log and the pull request. */

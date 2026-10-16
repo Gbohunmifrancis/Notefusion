@@ -1,0 +1,24 @@
+{
+  "name": "JEG HAR MIN SAG TIL GUD HJEMSTILT",
+  "music": [
+    {
+      "name": "Ludvig Mathias Lindeman",
+      "born": 1812,
+      "died": 1887,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": 1913,
+  "key": "D minor",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "D4:1 | A4:1 A4:1 F4:1 D4:1 | D5:1 D5:1 C#5:1 A4:1 | D5:1.5 C5:.5 Bb4:1 A4:1 | G4:1 G4:1 A4:1 A4:1 | C5:1 Bb4:1 A4:1 G4:1 | F4:1.5 G4:.5 A4:1 G4:1 | F4:1.5 G4:.5 A4:1 Bb4:1 | A4:1 G4:1 F4:1 G4:1 | F4:2 E4:2 | D4:2 r:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Come_Forth_Come_On_With_Solemn_Song-Jeg_Har_Min_Sag_Til_Gud_Hjemstilt-My_All_I_To_My_God_Commend.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1913, the year of the setting the Open Hymnal copied. The last 2 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"The Lutheran Hymnary\", 1913 Hymn 481 Lyrics source: \"Hymns from the Land of Luther\", 1858 Hymn 54"
+}

@@ -1,0 +1,24 @@
+{
+  "name": "DENNIS",
+  "music": [
+    {
+      "name": "Hans Georg Nägeli",
+      "born": 1773,
+      "died": 1836,
+      "role": "Music (1828)"
+    }
+  ],
+  "musicPublished": 1828,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 110,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "B4:1 | B4:1 G4:1 B4:1 | A4:1 F#4:1 A4:1 | G4:2 G4:1 | G4:1 E4:1 G4:1 | G4:1 D4:1 G4:1 | F#4:2 A4:1 | A4:1 F#4:1 A4:1 | G4:1 B4:1 D5:1 | D5:1 A4:1 C5:1 | B4:1 D5:1 E5:1 | D5:1 B4:1 C5:1 | B4:1 G4:1 A4:1 | G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Blest_Be_The_Tie_That_Binds-Dennis.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The Open Hymnal's own source: St Paul Music Library, Royal Oak, MI. Donna Snell, a former congregant, wrote many of the arrangements in the library. This setting is transposed down 3 semitones to make it more acceptable for congregational use (it was written in TTBB for a Men's Chorus). Fermatas added to mimic that way it is actually sung (although not notated that way) Lyrics from \"A collection of hymns for the use of the tabernacles in Scotland\" 1800 Hymn 140 page 127"
+}

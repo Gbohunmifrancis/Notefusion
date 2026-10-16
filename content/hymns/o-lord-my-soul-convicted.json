@@ -1,0 +1,90 @@
+{
+  "title": "O Lord My Soul Convicted",
+  "alsoKnownAs": [
+    "Here Lord My Soul Convicted"
+  ],
+  "tune": "winchester-new",
+  "text": [
+    {
+      "name": "James Maxwell",
+      "role": "Words (1759)"
+    }
+  ],
+  "textPublished": 1759,
+  "description": "O Lord My Soul Convicted in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by James Maxwell, first published in 1759. The tune, WINCHESTER NEW, is from \"Musikalisches Handbuch\", Hamburg, 1690. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O Lord, my soul con-vic-ted stands Of break-ing all Thy ten com-mands: And on me just-ly might'st Thou pour Thy wrath in one e-ter-nal show'r.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, my soul convicted stands",
+        "Of breaking all Thy ten commands:",
+        "And on me justly might'st Thou pour",
+        "Thy wrath in one eternal show'r."
+      ]
+    },
+    {
+      "lines": [
+        "But thanks to God, its loud alarms",
+        "Have warn'd me of approaching harms;",
+        "And now, O Lord, my wants I see,",
+        "Lost and undone, I come to Thee."
+      ]
+    },
+    {
+      "lines": [
+        "I know my fig leaf righteousness",
+        "Can ne'er Thy broken law redress;",
+        "Yet in the gospel plan I see,",
+        "There's hope of pardon e'en for me."
+      ]
+    },
+    {
+      "lines": [
+        "There, I behold with wonder, Lord!",
+        "That Christ hath to Thy law restor'd",
+        "Those honors on th'atoning day,",
+        "Which guilty sinners took away."
+      ]
+    },
+    {
+      "lines": [
+        "Amazing wisdom, pow'r and love,",
+        "Display'd to rebels from above!",
+        "Do Thou, O Lord, my faith increase",
+        "To love and trust Thy plan of grace."
+      ]
+    }
+  ],
+  "category": "Confession/absolution",
+  "topics": [
+    "Atonement",
+    "Conscience",
+    "Contrition",
+    "Faith",
+    "Forgiveness",
+    "God, Majesty &amp; Power of",
+    "God, Mercy of",
+    "Gospel",
+    "Grace",
+    "Gratitude",
+    "Hope",
+    "Judgment",
+    "Law",
+    "Repentance",
+    "Reverence",
+    "Sinners"
+  ],
+  "metre": "8 8 8 8",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_My_Soul_Convicted-Winchester_New.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "O_Lord_My_Soul_Convicted-Winchester_New",
+  "reviewNotes": "Held back: not provably public domain: James Maxwell: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)."
+}

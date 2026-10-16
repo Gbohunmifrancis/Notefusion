@@ -1,0 +1,24 @@
+{
+  "name": "DIE GÜLDNE SONNE",
+  "music": [
+    {
+      "name": "Johann Georg Ebeling",
+      "born": 1637,
+      "died": 1676,
+      "role": "Music (1660)"
+    }
+  ],
+  "musicPublished": 1660,
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "C5:1 C5:1 D5:1 | C5:1.5 Bb4:.5 A4:1 | C5:1 Bb4:1 G4:1 | A4:1.5 G4:.5 F4:1 | A4:1 Bb4:1 C5:1 | D5:2 D5:1 | G4:1 A4:1 Bb4:1 | C5:2 C5:1 | F4:1 F4:1 G4:1 | A4:1.5 Bb4:.5 C5:1 | G4:1 F4:1 E4:1 | F4:3 | C5:1 C5:1 Bb4:1 | A4:1 A4:1 G4:1 | F4:1.5 E4:.5 D4:1 | E4:1 C4:2 | F4:1 F4:1 G4:1 | A4:1 A4:1 G4:1 | A4:1 A4:1 B4:1 | C5:1 C5:2 | A4:1 F4:1 G4:1 | A4:1.5 Bb4:.5 C5:1 | G4:1 F4:1 E4:1 | F4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Evening_and_Morning-Die_Guldne_Sonne-Franconia_Ebeling-Philippi.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Parish School Hymnal\", 1925 Hymn 70 Lyrics source: \"The Church Psalter and Hymn Book\", 1858 Hymn 500 for vs. 1, 5-9 Lyrics source: \"The Selah Songbook\", 1926 Hymn 153 for vs. 2-4"
+}

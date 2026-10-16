@@ -1,0 +1,23 @@
+{
+  "name": "KREMSER",
+  "music": [
+    {
+      "name": "Traditional Dutch",
+      "traditional": true,
+      "role": "Melody (1597)"
+    }
+  ],
+  "musicPublished": 1597,
+  "key": "D major",
+  "time": "3/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "A4:1 | A4:1.5 B4:.5 A4:1 | F#4:1 G4:1 A4:1 | G4:1.5 F#4:.5 E4:1 | F#4:1 D4:1 A4:1 | A4:1.5 B4:.5 C#5:1 | D5:1.5 E5:.5 C#5:1 | B4:1.5 A4:.5 B4:1 | A4:2 A4:1 | A4:1.5 B4:.5 C#5:1 | D5:1 A4:1 A4:1 | A4:1.5 B4:.5 G4:.5 A4:.5 | F#4:1 D4:1 D4:1 | G4:1.5 A4:.5 B4:.5 G4:.5 | A4:1.5 G4:.5 F#4:.5 F#4:.5 | G4:1 E4:1.5 D4:.5 | D4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/We_Gather_Together-Kremser.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book. The Open Hymnal's own source: 'The Hymnal of the Protestant Episcopal Church', 1940 Hymn 315."
+}

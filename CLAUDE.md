@@ -196,7 +196,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   turns those rows into the admin dashboard's web funnel. Page views, clicks and web-app actions
   are first-party: `web-site/assets/track.js` batches them to the anonymous `POST /api/web/events`
   (`WebEvent` rows, account-linked when a token is sent; `window.nfTrack("Saved sheet")` names an
-  action) and the overview's `WebTraffic` section reads them back. No third-party analytics.
+  action) and the overview's `WebTraffic` section reads them back; a hidden or left page's anonymous batch goes by
+  `sendBeacon` to `POST /api/web/events/beacon` (text/plain JSON, device id in the body). Blog and hymn pages add
+  `assets/blog-track.js` (`blog_view` with source/UTM, `blog_read` = ≥50% of the article AND ≥30 s visible,
+  `blog_read_complete`, `blog_engagement`, `blog_cta_click`, `blog_share`, `hymn_play`; details `k=v;…` with a `pv`
+  page-load id), read by the console's Blog analytics (`GetBlogAnalyticsQuery`, `GET /api/admin/analytics/blog`):
+  first touch, 30 days, over browsers whose first blog page is in the window; a browser is tied to an account by its
+  token-carrying events or its device id on a job/preview (floors: the phone app and other devices are missed).
+  No third-party analytics.
 - Billing: naira plans are charged through Paystack, dollar plans through Bachs; currency routes the
   charge (`PaymentGatewayFactory.SelectForCurrency`). Every checkout is a one-off priced from the
   `Plan` row (`Recurring: false`): Bachs subscription checkouts need a card it can save and this

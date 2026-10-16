@@ -1,0 +1,24 @@
+{
+  "name": "FOUNDATION (FUNK)",
+  "music": [
+    {
+      "name": "Joseph Funk",
+      "born": 1778,
+      "died": 1862,
+      "role": "Music (1832)"
+    }
+  ],
+  "musicPublished": 1832,
+  "key": "Ab major",
+  "time": "2/2",
+  "tempo": 125,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:1 F4:1 | Ab4:2 F4:1 Ab4:1 | Eb4:2 Ab4:1 Bb4:1 | C5:2 Bb4:1 C5:1 | Eb4:2 Eb4:2 | Ab4:2 F4:1 Ab4:1 | Eb4:2 Ab4:1 Bb4:1 | C5:2 Bb4:1 Bb4:1 | Ab4:2 C5:2 | Eb5:2 C5:1 Eb5:1 | Ab4:2 Ab4:1 Bb4:1 | C5:2 Bb4:1 C5:1 | Eb4:2 Eb4:2 | Ab4:2 F4:1 Ab4:1 | Eb4:2 Ab4:1 Bb4:1 | C5:2 Bb4:1 Bb4:1 | Ab4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/How_Firm_A_Foundation-Foundation-Protection.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last 2 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: CCEL"
+}

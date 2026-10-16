@@ -1,0 +1,98 @@
+{
+  "title": "Hallelujah, Praise Jehovah, O My Soul",
+  "alsoKnownAs": [
+    "Hallelujah, Praise Jehovah [Psalm 146]"
+  ],
+  "tune": "ripley-gregorian",
+  "text": [
+    {
+      "name": "Psalm 146",
+      "traditional": true,
+      "role": "Words"
+    },
+    {
+      "name": "1909 United Presbyterian Board of Publication",
+      "role": "Translated (1909)"
+    }
+  ],
+  "textPublished": 1909,
+  "description": "Hallelujah, Praise Jehovah, O My Soul in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous. The English translation is by 1909 United Presbyterian Board of Publication (1909). The tune, RIPLEY (GREGORIAN), is from Gregorian Chant. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Hal-le-lu-jah, praise Je-ho-vah, O my soul, Je-ho-vah praise; I will sing the glo-rious prai-ses Of my God through all my days. Put no con-fi-dence in prin-ces, Nor for help on man de-pend; He shall die, to dust re-tur-ning, And his pur-po-ses shall end.",
+  "verses": [
+    {
+      "lines": [
+        "Hallelujah, praise Jehovah,",
+        "O my soul, Jehovah praise;",
+        "I will sing the glorious praises",
+        "Of my God through all my days.",
+        "Put no confidence in princes,",
+        "Nor for help on man depend;",
+        "He shall die, to dust returning,",
+        "And his purposes shall end."
+      ]
+    },
+    {
+      "lines": [
+        "Happy is the man that chooses",
+        "Israel's God to be his aid;",
+        "He is blest whose hope of blessing",
+        "On the Lord his God is stayed.",
+        "Heav'n and earth the Lord created,",
+        "Seas and all that they contain;",
+        "He delivers from oppression,",
+        "Righteousness He will maintain."
+      ]
+    },
+    {
+      "lines": [
+        "Food He daily gives the hungry,",
+        "Sets the mourning pris'ner free,",
+        "Raises those bowed down with anguish,",
+        "Makes the sightless eye to see.",
+        "Well Jehovah loves the righteous,",
+        "And the stranger He befriends,",
+        "Helps the fatherless and widow,",
+        "Judgment on the wicked sends."
+      ]
+    },
+    {
+      "lines": [
+        "Hallelujah, praise Jehovah,",
+        "O my soul, Jehovah praise;",
+        "I will sing the glorious praises",
+        "Of my God through all my days.",
+        "Over all God reigns forever,",
+        "Through all ages He is King;",
+        "Unto Him, your God, O Zion,",
+        "Joyful hallelujahs sing."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Art and Music",
+    "Fear of the Lord",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Justness of",
+    "God, Majesty &amp; Power of",
+    "God, Mercy of",
+    "God, Providence of",
+    "Kindness, God's",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Hallelujah_Praise_Jehovah_Psalter-Ripley_Gregorian.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Hallelujah_Praise_Jehovah_Psalter-Ripley_Gregorian",
+  "reviewNotes": "Held back: not provably public domain: 1909 United Presbyterian Board of Publication: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)."
+}

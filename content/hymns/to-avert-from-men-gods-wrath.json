@@ -1,0 +1,107 @@
+{
+  "title": "To Avert from Men God's Wrath",
+  "tune": "gethsemane",
+  "text": [
+    {
+      "name": "John Hus",
+      "born": 1369,
+      "died": 1415,
+      "role": "Words (1400)"
+    },
+    {
+      "name": "Christian Ignatius Latrobe",
+      "born": 1758,
+      "died": 1836,
+      "role": "Translated (1789)"
+    }
+  ],
+  "textPublished": 1789,
+  "description": "To Avert from Men God's Wrath in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Hus, first published in 1400. The English translation is by Christian Ignatius Latrobe (1789). The tune, GETHSEMANE, is by Richard Redhead (1853). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "To a-vert from men God's wrath Je-sus suf-fered in our stead; By an ig-no-min-ious death He a full a-tone-ment made; And by His most pre-cious blood, Brought us, sin-ners, nigh to God.",
+  "verses": [
+    {
+      "lines": [
+        "To avert from men God's wrath",
+        "Jesus suffered in our stead;",
+        "By an ignominious death",
+        "He a full atonement made;",
+        "And by His most precious blood,",
+        "Brought us, sinners, nigh to God."
+      ]
+    },
+    {
+      "lines": [
+        "That we never should forget",
+        "This great Love on us bestowed,",
+        "He gave us His flesh to eat,",
+        "and to drink His precious blood;",
+        "All who sick and needy are",
+        "May receive in Him a share."
+      ]
+    },
+    {
+      "lines": [
+        "Hither each afflicted soul",
+        "May repair, though filled with grief;",
+        "To the sick, not to the whole,",
+        "the Physician brings relief;",
+        "Fear not, therefore, but draw nigh,",
+        "Christ will all your wants supply."
+      ]
+    },
+    {
+      "lines": [
+        "He who in self—righteousness",
+        "Fixes any hope or stay,",
+        "Has not on a wedding dress,",
+        "And with shame is sent away;",
+        "To the hungry, weary heart,",
+        "He will food and rest impart."
+      ]
+    },
+    {
+      "lines": [
+        "But examine first your case,",
+        "Whether you be in the faith;",
+        "Do you long for pard'ning grace?",
+        "Is your only hope His death?",
+        "Then, howe'er your soul's oppressed,",
+        "Come, you are a worthy guest."
+      ]
+    },
+    {
+      "lines": [
+        "He who Jesus' mercy knows, Is from wrath and envy freed;",
+        "Love unto our neighbor shows That we are His flock indeed;",
+        "Thus we may in all our ways Show forth our Redeemer's praise."
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Assurance",
+    "Atonement",
+    "Blood",
+    "Bread (of Life/Daily Bread)",
+    "Comfort",
+    "God, Care of",
+    "Faith",
+    "Healing",
+    "Jesus",
+    "Lord's Supper",
+    "Presence",
+    "Sinners"
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/To_Avert_from_Men_Gods_Wrath-Gethsemane-Petra.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "To_Avert_from_Men_Gods_Wrath-Gethsemane-Petra"
+}

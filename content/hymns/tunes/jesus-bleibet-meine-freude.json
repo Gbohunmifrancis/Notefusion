@@ -1,0 +1,24 @@
+{
+  "name": "JESUS BLEIBET MEINE FREUDE",
+  "music": [
+    {
+      "name": "Johann Schop",
+      "born": 1590,
+      "died": 1664,
+      "role": "Music (1641)"
+    }
+  ],
+  "musicPublished": 1641,
+  "key": "G major",
+  "time": "9/4",
+  "tempo": 132,
+  "pickup": 8,
+  "lineBars": 1,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/JesuJoyOfMansDesiring.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929; the score has repeat signs, which the importer does not render; the score has no words under the melody; the first note has no word under it; the first verse has 0 syllables (counting each “_”) for 441 notes. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: composite from numerous sources"
+}

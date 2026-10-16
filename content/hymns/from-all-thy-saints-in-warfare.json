@@ -1,0 +1,102 @@
+{
+  "title": "From All Thy Saints in Warfare",
+  "alsoKnownAs": [
+    "By All Your Saints in Warfare"
+  ],
+  "tune": "kings-lynn",
+  "text": [
+    {
+      "name": "Horatio Bolton Nelson",
+      "born": 1823,
+      "died": 1913,
+      "role": "Words (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "From All Thy Saints in Warfare in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Horatio Bolton Nelson, first published in 1864. The tune, KINGS LYNN, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "From all Thy saints in war_-fare, for_ all Thy saints at rest To_ Thee O bless-ed_ Je-sus, all prais-es be ad-dressed. Thou,_ Lord didst win the_ bat-tle that they might con-querors be; Their crowns of liv-ing glo_-ry are_ lit with rays from Thee.",
+  "verses": [
+    {
+      "lines": [
+        "From all Thy saints in warfare,",
+        "for all Thy saints at rest",
+        "To Thee O blessed Jesus,",
+        "all praises be addressed.",
+        "Thou, Lord didst win the battle",
+        "that they might conquerors be;",
+        "Their crowns of living glory",
+        "are lit with rays from Thee."
+      ]
+    },
+    {
+      "lines": [
+        "2-18. Insert appropriate verse      "
+      ]
+    },
+    {
+      "lines": [
+        "Apostles, prophets, martyrs,",
+        "and all the sacred throng,",
+        "Who wear the spotless raiment,",
+        "who raise the ceaseless song;",
+        "For these, passed on before us,",
+        "Savior, we Thee adore,",
+        "And, walking in their footsteps,",
+        "would serve Thee more and more."
+      ]
+    },
+    {
+      "lines": [
+        "Then praise we God the Father,",
+        "and praise we God the Son,",
+        "And God the Holy Spirit,",
+        "eternal Three in One;",
+        "Till all the ransomed number",
+        "fall down before the throne,",
+        "And honor, pow'r, and glory",
+        "ascribe to God alone."
+      ]
+    }
+  ],
+  "category": "Communion of Saints",
+  "topics": [
+    "Activity",
+    "Anticipation",
+    "Aspiration",
+    "Assurance",
+    "Atonement",
+    "Brotherhood",
+    "Christian Life",
+    "Church in Heaven (Church Victorious/Church Triumphant)",
+    "Church on Earth (Church Militant)",
+    "Courage in Affliction",
+    "Discipleship",
+    "Eternal Life",
+    "Example, Of Other People",
+    "Faithfulness",
+    "Fellowship",
+    "Following Jesus, In Action",
+    "Following Jesus, In Faith",
+    "Gratitude",
+    "Heaven",
+    "Martyrs",
+    "Praise, Father",
+    "Praise, Holy Spirit",
+    "Praise, Son",
+    "Saints (all Faithful)",
+    "Worship"
+  ],
+  "metre": "7 6 7 6 7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/From_All_Thy_Saints_in_Warfare-Kings_Lynn.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "From_All_Thy_Saints_in_Warfare-Kings_Lynn",
+  "reviewNotes": "Held back: the words contain verse numbers or editor's notes."
+}

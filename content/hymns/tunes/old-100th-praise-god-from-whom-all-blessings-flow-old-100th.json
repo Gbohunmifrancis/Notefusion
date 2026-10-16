@@ -1,0 +1,29 @@
+{
+  "name": "OLD 100TH",
+  "music": [
+    {
+      "name": "Genevan Psalter",
+      "traditional": true,
+      "role": "Melody (1551)"
+    },
+    {
+      "name": "Louis Bourgeois",
+      "born": 1510,
+      "died": 1561,
+      "role": "Music (1551)"
+    }
+  ],
+  "musicPublished": 1551,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Praise_God_From_Whom_All_Blessings_Flow-Old_100th.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has no time signature (a chant or free rhythm), which the solfa grid cannot bar; bar 1 has 6 beats, more than 4; bar 2 has 7 beats, more than 4; bar 3 has 6 beats, more than 4; bar 4 has 7 beats, more than 4; bar 5 has 6 beats, more than 4; bar 6 has 7 beats, more than 4; bar 7 has 6 beats, more than 4; bar 8 has 7 beats, more than 4. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: ccel from Sternhold and Hopkins' Psalter 1561."
+}

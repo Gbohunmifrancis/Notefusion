@@ -1,0 +1,104 @@
+{
+  "title": "Lo! He Comes with Clouds Descending",
+  "tune": "helmsley",
+  "text": [
+    {
+      "name": "John Cennick",
+      "born": 1718,
+      "died": 1755,
+      "role": "Words (1752)"
+    },
+    {
+      "name": "Charles Wesley",
+      "born": 1707,
+      "died": 1788,
+      "role": "Words (1752)"
+    }
+  ],
+  "textPublished": 1752,
+  "description": "Lo! He Comes with Clouds Descending in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by John Cennick and Charles Wesley, first published in 1752. The tune, HELMSLEY, is by Thomas Olivers (1765). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lo! He_ comes_ with_ clouds__ de_-scend_-ing, Once for ev-'ry sin_-ner_ slain;_ Thou-sand_ thou_-sand_ saints__ at_-tend_-ing, Swell the tri-umph of_ His_ train:_ Hal__-le-lu-jah! Hal__-le-lu_-jah! Hal__-le-lu_-jah! God ap_-pears on earth to reign.",
+  "verses": [
+    {
+      "lines": [
+        "Lo! He comes with clouds descending,",
+        "Once for ev'ry sinner slain;",
+        "Thousand thousand saints attending,",
+        "Swell the triumph of His train:",
+        "Hallelujah! Hallelujah! Hallelujah!",
+        "God appears on earth to reign."
+      ]
+    },
+    {
+      "lines": [
+        "Ev'ry eye shall now behold Him",
+        "Robed in dreadful majesty;",
+        "Those who set at naught and sold Him,",
+        "Pierced and nailed Him to the tree,",
+        "Deeply wailing, deeply wailing, deeply wailing,",
+        "Shall the true Messiah see."
+      ]
+    },
+    {
+      "lines": [
+        "Ev'ry island, sea, and mountain,",
+        "Heav'n and earth, shall flee away;",
+        "All who hate Him must, confounded,",
+        "Hear the trump proclaim the day:",
+        "Come to judgment! Come to judgment! Come to judgment!",
+        "Come to judgment! Come away!"
+      ]
+    },
+    {
+      "lines": [
+        "Now redemption, long expected,",
+        "See in solemn pomp appear;",
+        "All His saints, by man rejected,",
+        "Now shall meet Him in the air:",
+        "Hallelujah! Hallelujah! Hallelujah!",
+        "See the day of God appear!"
+      ]
+    },
+    {
+      "lines": [
+        "Answer Thine own bride and Spirit,",
+        "Hasten, Lord, the gen'ral doom!",
+        "The new Heav'n and earth inherit,",
+        "Take Thy pining exiles home:",
+        "All creation, all creation, all creation,",
+        "Travails! groans! and bids Thee come!"
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Bride/Bridegroom",
+    "Cloud",
+    "Fear of the Lord",
+    "God, As King",
+    "God, Eternity of",
+    "God, Majesty &amp; Power of",
+    "Jesus",
+    "Judgment",
+    "Praise, Son",
+    "Presence",
+    "Saints (all Faithful)",
+    "Second Coming",
+    "Sinners",
+    "Throne (also see God - As King)",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 12 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lo_He_Comes_On_Clouds_Descending-Helmsley.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lo_He_Comes_On_Clouds_Descending-Helmsley"
+}

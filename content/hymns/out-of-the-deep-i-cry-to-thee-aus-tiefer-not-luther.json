@@ -1,0 +1,116 @@
+{
+  "title": "Out of the Deep I Cry to Thee (Aus Tiefer Not, Luther)",
+  "alsoKnownAs": [
+    "From Depths of Woe I Cry to Thee"
+  ],
+  "tune": "aus-tiefer-not-luther",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Arthur Tozel Russell",
+      "born": 1806,
+      "died": 1874,
+      "role": "Translated"
+    }
+  ],
+  "textPublished": null,
+  "description": "Out of the Deep I Cry to Thee in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Arthur Tozel Russell. The tune, AUS TIEFER NOT (LUTHER), is by Martin Luther (1524). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Out of the deep I_ cry to Thee; O Lord God, hear_ my cry_-ing: In-cline Thy gra-cious_ ear to me, With prayer to Thee_ ap-ply_-ing. For if Thou fix Thy search_-ing eye On all sin and in-iq-ui-ty, Who, Lord, can stand be-fore_ Thee?",
+  "verses": [
+    {
+      "lines": [
+        "Out of the deep I cry to Thee;",
+        "O Lord God, hear my crying:",
+        "Incline Thy gracious ear to me,",
+        "With prayer to Thee applying.",
+        "For if Thou fix Thy searching eye",
+        "On all sin and iniquity,",
+        "Who, Lord, can stand before Thee?"
+      ]
+    },
+    {
+      "lines": [
+        "But love and grace with Thee prevail,",
+        "O God, our sins forgiving;",
+        "The holiest deeds can naught avail",
+        "Of all before Thee living.",
+        "Before Thee none can boast him clear;",
+        "Therefore must each Thy judgment fear,",
+        "And live on Thy compassion."
+      ]
+    },
+    {
+      "lines": [
+        "For this, my hope in God shall rest,",
+        "Naught building on my merit;",
+        "My heart confides, of Him possest,",
+        "His goodness stays my spirit.",
+        "His precious word assureth me;",
+        "My solace, my sure Rock is he,",
+        "Whereon my soul abideth."
+      ]
+    },
+    {
+      "lines": [
+        "And though I wait the livelong night",
+        "And till the morn returneth,",
+        "My heart undoubting trusts His might",
+        "Nor in impatience mourneth.",
+        "Born of His Spirit, Israel",
+        "In the right Way thus fareth well,",
+        "And on his God reposeth"
+      ]
+    },
+    {
+      "lines": [
+        "What though our sins are manifold?",
+        "Supreme His mercy reigneth;",
+        "No limit can His hand withhold,",
+        "Where evil most obtaineth.",
+        "He the good Shepherd is alone,",
+        "Who Israel will redeem and own,",
+        "Forgiving all transgression."
+      ]
+    }
+  ],
+  "category": "Confession/absolution",
+  "topics": [
+    "Contrition",
+    "Cornerstone",
+    "Duty (see also Law)",
+    "Fear of the Lord",
+    "God, Love of",
+    "God, Mercy of",
+    "Grace",
+    "Gratitude",
+    "Holiness",
+    "Holy Spirit",
+    "Hope",
+    "Humility",
+    "Israel",
+    "Judgment",
+    "Kindness, God's",
+    "Salvation",
+    "Sinners",
+    "Testimony",
+    "Trust"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Out_Of_The_Deep_I_Cry_To_Thee-Aus_Tiefer_Not_Luther.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Out_Of_The_Deep_I_Cry_To_Thee-Aus_Tiefer_Not_Luther",
+  "reviewNotes": "Held back: the score gives no year for the translation; not provably public domain: \"textPublished\" must be a year before 1929."
+}

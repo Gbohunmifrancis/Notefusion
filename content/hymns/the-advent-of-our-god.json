@@ -1,0 +1,100 @@
+{
+  "title": "The Advent of Our God",
+  "tune": "st-thomas",
+  "text": [
+    {
+      "name": "Charles (or Carolo or Carolus) Coffin",
+      "born": 1676,
+      "died": 1749,
+      "role": "Words (1736)"
+    },
+    {
+      "name": "John Chandler",
+      "born": 1806,
+      "died": 1876,
+      "role": "Translated (1837)"
+    }
+  ],
+  "textPublished": 1837,
+  "description": "The Advent of Our God in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Charles (or Carolo or Carolus) Coffin, first published in 1736. The English translation is by John Chandler (1837). The tune, ST. THOMAS, is by Aaron Williams (1770). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "The ad-vent of our_ God Shall_ be our_ theme for prayer Come, let us meet him on_ the_ road And place for_ Him pre-pare.",
+  "verses": [
+    {
+      "lines": [
+        "The advent of our God",
+        "Shall be our theme for prayer",
+        "Come, let us meet him on the road",
+        "And place for Him prepare."
+      ]
+    },
+    {
+      "lines": [
+        "The everlasting Son",
+        "Incarnate stoops to be,",
+        "Himself the servant's form puts on",
+        "To set His people free."
+      ]
+    },
+    {
+      "lines": [
+        "Come, Zion's daughter, rise",
+        "To meet your lowly King,",
+        "Nor let your faithless heart despise",
+        "The peace He comes to bring."
+      ]
+    },
+    {
+      "lines": [
+        "As judge, on clouds of light,",
+        "He soon will come again",
+        "And all His scattered saints unite",
+        "With Him on high to reign."
+      ]
+    },
+    {
+      "lines": [
+        "Before the dawning day",
+        "Let sin be put to flight;",
+        "No longer let the law hold sway,",
+        "But walk in freedom's light."
+      ]
+    },
+    {
+      "lines": [
+        "D All glory to the Son",
+        "Who comes to set us free,",
+        "With Father, Spirit, ever One,",
+        "Through all eternity."
+      ]
+    }
+  ],
+  "category": "Advent",
+  "topics": [
+    "Anticipation",
+    "Christmas/Advent",
+    "Cloud",
+    "God, As King",
+    "Gospel",
+    "Humility",
+    "Jesus",
+    "Judgment",
+    "Law",
+    "Light",
+    "Presence",
+    "Second Coming",
+    "Service",
+    "Trinity"
+  ],
+  "metre": "6 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/The_Advent_of_Our_God-St_Thomas.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "The_Advent_of_Our_God-St_Thomas"
+}

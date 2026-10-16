@@ -1,0 +1,101 @@
+{
+  "title": "It Came upon a Midnight Clear",
+  "tune": "carol",
+  "text": [
+    {
+      "name": "Edmund Hamilton Sears",
+      "born": 1810,
+      "died": 1876,
+      "role": "Words (1849)"
+    }
+  ],
+  "textPublished": 1849,
+  "description": "It Came upon a Midnight Clear in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edmund Hamilton Sears, first published in 1849. The tune, CAROL, is by Richard Storrs Willis (1861). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "It came up-on_ the mid-night clear, That glor_-ious song_ of old, From an-gels bend_-ing near the earth, To touch their harps_ of gold; \"Peace on the earth,_ good will to men, From Heav-en's all gra_-cious King.\" The world in so_-lemn still-ness lay, To hear the an_-gels sing.",
+  "verses": [
+    {
+      "lines": [
+        "It came upon the midnight clear,",
+        "That glorious song of old,",
+        "From angels bending near the earth,",
+        "To touch their harps of gold;",
+        "\"Peace on the earth, good will to men,",
+        "From Heaven's all gracious King.\"",
+        "The world in solemn stillness lay,",
+        "To hear the angels sing."
+      ]
+    },
+    {
+      "lines": [
+        "Still through the cloven skies they come",
+        "With peaceful wings unfurled,",
+        "And still their heavenly music floats",
+        "O'er all the weary world;",
+        "Above its sad and lowly plains,",
+        "They bend on hov'ring wing,",
+        "And ever over its",
+        "Babel sounds The blessèd angels sing."
+      ]
+    },
+    {
+      "lines": [
+        "Yet with the woes of sin and strife",
+        "The world has suffered long;",
+        "Beneath the angel strain have rolled",
+        "Two thousand years of wrong;",
+        "And man, at war with man, hears not",
+        "The love—song which they bring;",
+        "O hush the noise, ye men of strife",
+        "And hear the angels sing."
+      ]
+    },
+    {
+      "lines": [
+        "And ye, beneath life's crushing load,",
+        "Whose forms are bending low,",
+        "Who toil along the climbing way",
+        "With painful steps and slow,",
+        "Look now! for glad and golden hours",
+        "Come swiftly on the wing.",
+        "O rest beside the weary road,",
+        "And hear the angels sing!"
+      ]
+    },
+    {
+      "lines": [
+        "For lo! the days are hast'ning on,",
+        "By prophet—bards foretold,",
+        "When with the ever circling years",
+        "Comes round the age of gold;",
+        "When peace shall over all the earth",
+        "Its ancient splendors fling,",
+        "And the whole world send back the song",
+        "Which now the angels sing."
+      ]
+    }
+  ],
+  "category": "Christmas",
+  "topics": [
+    "Angels",
+    "Calmness",
+    "Christmas/Advent",
+    "Comfort",
+    "God, As King",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Peace",
+    "People of the World",
+    "Reverence"
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/It_Came_Upon_A_Midnight_Clear-Carol.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "It_Came_Upon_A_Midnight_Clear-Carol"
+}

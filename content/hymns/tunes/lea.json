@@ -1,0 +1,24 @@
+{
+  "name": "LEA",
+  "music": [
+    {
+      "name": "James Lea Summers",
+      "born": 1837,
+      "died": 1881,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": 1908,
+  "key": "A major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "E4:1 | C#5:1 A4:1 F#4:1 E4:1 | A4:1 B4:1 C#5:1 E5:1 | C#5:1 A4:1 F#4:1 F#4:1 | E4:3 B4:.5 C#5:.5 | D5:1 D5:1 C#5:1 A4:1 | F#4:1 B4:1 G#4:1 E5:.5 D5:.5 | C#5:1 C#5:1 B4:1 G#4:1 | A4:3",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Let_Children_Hear_The_Mighty_Deeds-Lea.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1908, the year of the setting the Open Hymnal copied. The Open Hymnal's own source: 'The Evangelical Lutheran Hymnal' (Ohio Synod), 1908 Hymn 202."
+}

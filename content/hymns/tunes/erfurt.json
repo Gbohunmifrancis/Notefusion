@@ -1,0 +1,24 @@
+{
+  "name": "ERFURT",
+  "music": [
+    {
+      "name": "Ludwig Herman Ilse",
+      "born": 1845,
+      "died": 1931,
+      "role": "Music (1910)"
+    }
+  ],
+  "musicPublished": 1910,
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "Eb4:2 | F4:1 G4:1 Ab4:1 Bb4:1 | C5:1 Bb4:1 Ab4:1 C5:1 | Eb5:1 Db5:1 C5:1 Ab4:1 | Bb4:2 Eb4:2 | F4:1 G4:1 Ab4:1 Bb4:1 | C5:1 Bb4:1 Ab4:1 C5:1 | Eb5:1 Db5:1 C5:1 Ab4:1 | Bb4:2 Bb4:2 | Bb4:1 G4:1 Ab4:1 Bb4:1 | C5:1 D5:1 Eb5:1 Db5:1 | C5:1 Eb5:1 G4:1 Ab4:1 | Bb4:2 Bb4:2 | Ab4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Grieve_Not_So_Nor_So_Lament-Erfurt-Ilse.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"The Evangelical Lutheran Hymn-Book\" (LCMS), 1930 Hymn 254 Lyrics source: \"Hymns from the Land of Luther\", 1866 edition Hymn 17. Alterations by Brian Dumont 25 Nov 2025, released into the public domain"
+}

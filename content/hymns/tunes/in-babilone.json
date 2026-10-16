@@ -1,0 +1,23 @@
+{
+  "name": "IN BABILONE",
+  "music": [
+    {
+      "name": "Traditional Dutch",
+      "traditional": true,
+      "role": "Melody (1710)"
+    }
+  ],
+  "musicPublished": 1710,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:1 F#4:.5 E4:.5 D4:1 G4:1 | A4:1 G4:.5 A4:.5 B4:1 G4:1 | C5:1 B4:.5 A4:.5 B4:1 A4:.5 G4:.5 | F#4:.5 G4:.5 A4:.5 F#4:.5 G4:2 | G4:1 F#4:.5 E4:.5 D4:1 G4:1 | A4:1 G4:.5 A4:.5 B4:1 G4:1 | C5:1 B4:.5 A4:.5 B4:1 A4:.5 G4:.5 | F#4:.5 G4:.5 A4:.5 F#4:.5 G4:2 | G4:1 A4:.5 B4:.5 C5:1 B4:1 | A4:1 G#4:1 A4:1 A4:1 | A4:1 B4:.5 C5:.5 D5:1 G4:1 | A4:1 G4:.5 F#4:.5 E4:1 D4:1 | G4:1 F#4:.5 E4:.5 D4:1 G4:1 | A4:1 G4:.5 A4:.5 B4:1 G4:1 | C5:1 B4:.5 A4:.5 B4:1 A4:.5 G4:.5 | F#4:.5 G4:.5 A4:.5 F#4:.5 G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Souls_of_Men_Why_Will_Ye_Scatter-In_Babilone.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: the English Hymnal, 1906 hymn 145 Lyrics from \"Faber's Hymns\", 1894 page 117. BJD altered verse 1b (slightly), 3a, 3b, 5a, 5b"
+}

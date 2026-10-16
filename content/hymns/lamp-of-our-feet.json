@@ -1,0 +1,132 @@
+{
+  "title": "Lamp of Our Feet",
+  "tune": "st-agnes",
+  "text": [
+    {
+      "name": "Bernard Barton",
+      "born": 1784,
+      "died": 1849,
+      "role": "Words (1826)"
+    }
+  ],
+  "textPublished": 1826,
+  "description": "Lamp of Our Feet in Tonic Solfa: the solfa line by line with the words, staff notation, all 11 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Bernard Barton, first published in 1826. The tune, ST. AGNES, is by John Bacchus Dykes (1866). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Lamp of our feet! where-by we trace Our path, when wont to stray; Stream from the fount of heav'n-ly grace! Brook by the trav-'ler's way!",
+  "verses": [
+    {
+      "lines": [
+        "Lamp of our feet! whereby we trace",
+        "Our path, when wont to stray;",
+        "Stream from the fount of heav'nly grace!",
+        "Brook by the trav'ler's way!"
+      ]
+    },
+    {
+      "lines": [
+        "Bread of our souls! whereon we feed;",
+        "True manna from on high!",
+        "Our guide, and chart wherein we read",
+        "Of realms beyond the sky."
+      ]
+    },
+    {
+      "lines": [
+        "Pillar of fire—through watches dark!",
+        "Or radiant cloud by day!",
+        "When waves would whelm our tossing bark—",
+        "Our anchor and our stay!"
+      ]
+    },
+    {
+      "lines": [
+        "Pole—star on life's tempestuous deep!",
+        "Beacon! when doubts surround;",
+        "Compass! by which our course we keep;",
+        "Our deep sea—lead, to sound!"
+      ]
+    },
+    {
+      "lines": [
+        "Riches in poverty! our aid",
+        "In every needful hour!",
+        "Unshaken rock! the pilgrim's shade;",
+        "The soldier's fortress tow'r."
+      ]
+    },
+    {
+      "lines": [
+        "Our shield and buckler in the fight!",
+        "Vict'ry's triumphant palm!",
+        "Comfort in grief! in weakness, might!",
+        "In sickness, Gilead's balm."
+      ]
+    },
+    {
+      "lines": [
+        "Childhood's preceptor! manhood's trust!",
+        "Old age's firm ally!",
+        "Our hope\\-when we go down to dust,",
+        "Of immortality."
+      ]
+    },
+    {
+      "lines": [
+        "Pure oracles of truth divine!",
+        "Unlike each fabled dream",
+        "Given forth from Delphos' mystic shrine",
+        "Or groves of Academe!"
+      ]
+    },
+    {
+      "lines": [
+        "Word of the ever-living God!",
+        "Will of His glorious Son!",
+        "Without Thee, how could earth be trod?",
+        "Or Heaven itself be won?"
+      ]
+    },
+    {
+      "lines": [
+        "Yet to unfold thy hidden worth,",
+        "Thy mysteries to reveal,",
+        "That Spirit which first gave thee forth,",
+        "Thy volume must unseal!"
+      ]
+    },
+    {
+      "lines": [
+        "And we, if we aright would learn",
+        "The wisdom it imparts,",
+        "Must to its heavenly teaching turn",
+        "With simple, child-like hearts!"
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Bread (of Life/Daily Bread)",
+    "Gospel",
+    "Gratitude",
+    "Guidance",
+    "Holy Spirit",
+    "Jesus",
+    "Leadership",
+    "Light",
+    "Scripture",
+    "Trust",
+    "Truth",
+    "Wisdom"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Lamp_of_Our_Feet-St_Agnes.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Lamp_of_Our_Feet-St_Agnes"
+}

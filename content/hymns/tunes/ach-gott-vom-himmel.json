@@ -1,0 +1,23 @@
+{
+  "name": "ACH GOTT VOM HIMMEL",
+  "music": [
+    {
+      "name": "From Erfurt Enchiridion, 1524",
+      "traditional": true,
+      "role": "Melody (1524)"
+    }
+  ],
+  "musicPublished": 1524,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 100,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "A4:1 | Bb4:1 A4:1 G4:1 D5:1 | D5:1 Bb4:1 A4:1 C5:1 | Bb4:1 A4:1 G4:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | Bb4:1 A4:1 G4:1 D5:1 | D5:1 Bb4:1 A4:1 C5:1 | Bb4:1 A4:1 G4:1 C5:1 | Bb4:1 A4:1 G4:1 G4:1 | A4:1 F4:1 E4:1 D4:1 | F4:1 G4:1 A4:1 F4:1 | G4:1 Bb4:1 A4:1 Bb4:1 | G4:1 F#4:1 G4:1 G4:1 | D5:1 Bb4:1 C5:1 D5:1 | C5:1 Bb4:1 A4:1",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Look_Down_O_Lord_From_Heaven_Behold-Ach_Gott_vom_Himmel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The last verse is printed after the score in the source, not under the notes. The tune ends on A, not on the key note: it may be modal. The Open Hymnal's own source: \"The Hymns of Martin Luther\" by Bacon, 1883."
+}

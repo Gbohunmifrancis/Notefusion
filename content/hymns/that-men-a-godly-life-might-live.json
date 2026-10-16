@@ -1,0 +1,98 @@
+{
+  "title": "That Men a Godly Life Might Live",
+  "alsoKnownAs": [
+    "These Are the Holy Ten Commands"
+  ],
+  "tune": "dies-sind-die-heil",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Richard Massie",
+      "born": 1800,
+      "died": 1887,
+      "role": "Translated (1854)"
+    }
+  ],
+  "textPublished": 1854,
+  "description": "That Men a Godly Life Might Live in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Richard Massie (1854). The tune, DIES SIND DIE HEIL, is from Erfurt Enchiridion, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "That man a god-ly life_ might live, God did these ten com-mand-ments give By His true ser-vant Mo-ses, high Up-on the mount Si-na-i. Have mer-cy, Lord.",
+  "verses": [
+    {
+      "lines": [
+        "That man a godly life might live,",
+        "God did these ten commandments give",
+        "By His true servant Moses, high",
+        "Upon the mount Sinai.",
+        "Have mercy, Lord."
+      ]
+    },
+    {
+      "lines": [
+        "I am thy God and Lord alone,",
+        "No other God besides",
+        "Me own; On My great mercy venture thee,",
+        "With all thy heart love thou",
+        "Me."
+      ]
+    },
+    {
+      "lines": [
+        "By idle word and speech profane",
+        "Take not My holy Name in vain;",
+        "And praise not aught as good and true",
+        "But what God doth say and do."
+      ]
+    },
+    {
+      "lines": [
+        "Hallow the day which God hath blest,",
+        "That thou and all thy house may rest;",
+        "Keep hand and heart from labor free,",
+        "That God may so work in thee."
+      ]
+    },
+    {
+      "lines": [
+        "Give to thy parents honor due,",
+        "Be dutiful and loving too;",
+        "And help them when their strength decays",
+        "So shalt thou have length of days."
+      ]
+    }
+  ],
+  "category": "Word of God",
+  "topics": [
+    "Charity (see also Tithing)",
+    "Christian Home/Family",
+    "Christmas/Advent",
+    "God, Justness of",
+    "Guidance",
+    "Jesus",
+    "Law",
+    "Morality (see also Law)",
+    "Obedience",
+    "Priest/Priestly Roles",
+    "Rest",
+    "Social Justice",
+    "Speech",
+    "Submission (see also Following Jesus, God - Providence of, Trust)",
+    "Temperance &amp; Moral Reform (see also Law)"
+  ],
+  "metre": "8 8 8 7 4",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/That_Men_A_Godly_Life_Might_Live-Dies_sind_die_heilgen_zehu_Gebot.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "That_Men_A_Godly_Life_Might_Live-Dies_sind_die_heilgen_zehu_Gebot"
+}

@@ -1,0 +1,88 @@
+{
+  "title": "O Lord, I Am Not Worthy",
+  "tune": "non-dignus",
+  "text": [
+    {
+      "name": "From Landshuter Gesangbuch, 1777",
+      "traditional": true,
+      "role": "Words (1777)"
+    },
+    {
+      "name": "Anonymous",
+      "traditional": true,
+      "role": "Translated (1913)"
+    }
+  ],
+  "textPublished": 1913,
+  "description": "O Lord, I Am Not Worthy in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are anonymous, in print by 1777. The tune, NON DIGNUS, is Traditional. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "O_ Lord, I am not wor-thy That_ Thou should'st come to me, But_ speak the words of com-fort, My spir-it healed shall be.",
+  "verses": [
+    {
+      "lines": [
+        "O Lord, I am not worthy",
+        "That Thou should'st come to me,",
+        "But speak the words of comfort,",
+        "My spirit healed shall be."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, Thou art all holy,",
+        "The angels Thee adore;",
+        "How, then, ought I sincerely",
+        "My wrongs and sins deplore!"
+      ]
+    },
+    {
+      "lines": [
+        "But when Thou soon wilt enter",
+        "My heart, my sinful heart,",
+        "Then heal me, be my shelter,",
+        "For Thou my Savior art."
+      ]
+    },
+    {
+      "lines": [
+        "O Lord, how can I thank Thee",
+        "For such a gift as this?",
+        "A gift which truly filleth",
+        "My soul with heav'nly bliss!"
+      ]
+    },
+    {
+      "lines": [
+        "I praise Thee, I extol Thee,",
+        "I love Thee O my Sire,",
+        "Till once in joy and glory,",
+        "In heav'n I Thee admire."
+      ]
+    }
+  ],
+  "category": "Lord’s Supper",
+  "topics": [
+    "Angels",
+    "God, Mercy of",
+    "Gratitude",
+    "Healing",
+    "Heaven",
+    "Invitation (Faithful's to God)",
+    "Kindness, God's",
+    "Lord's Supper",
+    "Presence",
+    "Reverence",
+    "Trust",
+    "Worship"
+  ],
+  "metre": "7 6 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/O_Lord_I_Am_Not_Worthy-O_Lord_I_Am_Not_Worthy.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "O_Lord_I_Am_Not_Worthy-O_Lord_I_Am_Not_Worthy"
+}

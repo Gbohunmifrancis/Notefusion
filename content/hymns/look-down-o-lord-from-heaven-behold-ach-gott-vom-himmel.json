@@ -1,0 +1,113 @@
+{
+  "title": "Look Down, O Lord, from Heaven Behold (Ach Gott Vom Himmel)",
+  "alsoKnownAs": [
+    "O God, from Heaven Look Down",
+    "O God, Look Down from Heaven and See"
+  ],
+  "tune": "ach-gott-vom-himmel",
+  "text": [
+    {
+      "name": "Martin Luther",
+      "born": 1483,
+      "died": 1546,
+      "role": "Words (1524)"
+    },
+    {
+      "name": "Frances Elizabeth Cox",
+      "born": 1812,
+      "died": 1897,
+      "role": "Translated (1864)"
+    }
+  ],
+  "textPublished": 1864,
+  "description": "Look Down, O Lord, from Heaven Behold in Tonic Solfa: the solfa line by line with the words, staff notation, all 6 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Martin Luther, first published in 1524. The English translation is by Frances Elizabeth Cox (1864). The tune, ACH GOTT VOM HIMMEL, is from Erfurt Enchiridion, 1524. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Look down, O Lord, from heav'n be-hold, And let thy pit-y wa_-ken! How few the flock with-in thy fold, Ne-glec-ted and for-sa_-ken! Al-most thou'lt seek for faith in vain, And those who should thy truth main-tain Thy Word from us have ta_-ken.",
+  "verses": [
+    {
+      "lines": [
+        "Look down, O Lord, from heav'n behold,",
+        "And let thy pity waken!",
+        "How few the flock within thy fold,",
+        "Neglected and forsaken!",
+        "Almost thou'lt seek for faith in vain,",
+        "And those who should thy truth maintain",
+        "Thy Word from us have taken."
+      ]
+    },
+    {
+      "lines": [
+        "With frauds which they themselves invent",
+        "Thy truth they have confounded;",
+        "Their hearts are not with one consent",
+        "On thy pure doctrine grounded;",
+        "And, whilst they gleam with outward show,",
+        "They lead thy people to and fro,",
+        "In error's maze astounded."
+      ]
+    },
+    {
+      "lines": [
+        "God surely will uproot all those",
+        "With vain deceits who store us,",
+        "With haughty tongue who God oppose,",
+        "And say, \"Who'll stand before us?",
+        "By right or might we will prevail;",
+        "What we determine cannot fail,",
+        "For who can lord it o'er us?\""
+      ]
+    },
+    {
+      "lines": [
+        "For this, saith God, I will arise,",
+        "These wolves my flock are rending;",
+        "I've heard my people's bitter sighs",
+        "To heav'n my throne ascending:",
+        "Now will I up, and set at rest",
+        "Each weary soul by fraud opprest,",
+        "The poor with might defending."
+      ]
+    },
+    {
+      "lines": [
+        "The silver sev'n times tried is pure",
+        "From all adulteration;",
+        "So, through God's word, shall men endure",
+        "Each trial and temptation:",
+        "Its worth gleams brighter through the cross,",
+        "And, purified from human dross,",
+        "It shines through every nation."
+      ]
+    },
+    {
+      "lines": [
+        "Thy truth thou wilt preserve, O Lord, From this vile generation;",
+        "Make us to lean upon thy word, With calm anticipation.",
+        "The wicked walk on every side When, 'mid thy flock, the vile abide In pow'r and exaltation."
+      ]
+    }
+  ],
+  "category": "Reformation",
+  "topics": [
+    "Anticipation",
+    "Calmness",
+    "Church on Earth (Church Militant)",
+    "Compassion",
+    "Courage in Affliction",
+    "Darkness, Spiritual",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "People of the World",
+    "Shepherd/Lamb"
+  ],
+  "metre": "8 7 8 7 8 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Look_Down_O_Lord_From_Heaven_Behold-Ach_Gott_vom_Himmel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Look_Down_O_Lord_From_Heaven_Behold-Ach_Gott_vom_Himmel"
+}

@@ -1,0 +1,84 @@
+{
+  "title": "Every Morning Mercies New",
+  "tune": "kelso",
+  "text": [
+    {
+      "name": "Greville Phillimore",
+      "born": 1821,
+      "died": 1884,
+      "role": "Words (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "Every Morning Mercies New in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Greville Phillimore, first published in 1863. The tune, KELSO, is by Edward John Hopkins (1872). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Ev-'ry morn-ing mer-cies new Fall as fresh as morn-ing dew; Ev-'ry morn-ing let us pay Tri-bute_ with the ear-ly day: For Thy mer-cies, Lord, are sure; Thy com-pas-sion doth en-dure.",
+  "verses": [
+    {
+      "lines": [
+        "Ev'ry morning mercies new",
+        "Fall as fresh as morning dew;",
+        "Ev'ry morning let us pay",
+        "Tribute with the early day:",
+        "For Thy mercies, Lord, are sure;",
+        "Thy compassion doth endure."
+      ]
+    },
+    {
+      "lines": [
+        "Still the greatness of Thy love",
+        "Daily doth our sins remove;",
+        "Daily, far as east from west,",
+        "Lifts the burden from the breast;",
+        "Gives unbought to those who pray",
+        "Strength to stand in evil day."
+      ]
+    },
+    {
+      "lines": [
+        "Let our prayers each morn prevail,",
+        "That these gifts may never fail;",
+        "And, as we confess the sin",
+        "And the tempter's pow'r within,",
+        "Feed us with the Bread of Life,",
+        "Fit us for our daily strife."
+      ]
+    },
+    {
+      "lines": [
+        "As the morning light returns,",
+        "As the sun with splendor burns,",
+        "Teach us still to turn to Thee,",
+        "Ever blessed Trinity,",
+        "With our hands our hearts to raise,",
+        "In unfailing prayer and praise."
+      ]
+    }
+  ],
+  "category": "Morning",
+  "topics": [
+    "Bread (of Life/Daily Bread)",
+    "Comfort",
+    "Compassion",
+    "Day",
+    "Forgiveness",
+    "God, Care of",
+    "God, Love of",
+    "Light",
+    "Love",
+    "Morning",
+    "Prayer",
+    "Repentance"
+  ],
+  "metre": "7 7 7 7 7 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Every_Morning_Mercies_New-Kelso.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Every_Morning_Mercies_New-Kelso"
+}

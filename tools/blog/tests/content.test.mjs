@@ -42,7 +42,15 @@ test("public domain is strict: everyone died before 1955 and both were published
   const published = tmpContent(TUNE, { ...HYMN, textPublished: 1931 });
   assert.throws(() => loadHymns({ tunes: loadTunes(path.join(published, "tunes")), dir: published }), /before 1929/);
   const tuneLate = tmpContent({ ...TUNE, music: [{ name: "C", born: 1890, died: 1958, role: "Melody" }] }, HYMN);
-  assert.throws(() => loadTunes(path.join(tuneLate, "tunes")), /death year before 1955/);
+  assert.throws(() => loadHymns({ tunes: loadTunes(path.join(tuneLate, "tunes")), dir: tuneLate }), /death year before 1955/);
+  const musicLate = tmpContent({ ...TUNE, musicPublished: 1930 }, HYMN);
+  assert.throws(() => loadHymns({ tunes: loadTunes(path.join(musicLate, "tunes")), dir: musicLate }), /"musicPublished" must be a year before 1929/);
+  // A draft may wait for its facts (an imported hymn whose dates the source does not give); it is never built.
+  const waiting = tmpContent({ ...TUNE, music: [{ name: "C", role: "Melody" }] }, { ...HYMN, textPublished: null, draft: true });
+  assert.equal(loadHymns({ tunes: loadTunes(path.join(waiting, "tunes")), dir: waiting }).length, 0);
+  assert.equal(loadHymns({ tunes: loadTunes(path.join(waiting, "tunes")), dir: waiting, includeDrafts: true }).length, 1);
+  const undated = tmpContent({ ...TUNE, music: [{ name: "C", role: "Melody" }] }, HYMN);
+  assert.throws(() => loadHymns({ tunes: loadTunes(path.join(undated, "tunes")), dir: undated }), /C: public domain needs a death year/);
   const anon = tmpContent({ ...TUNE, music: [{ name: "Traditional", traditional: true, role: "Melody" }] }, HYMN);
   assert.equal(loadTunes(path.join(anon, "tunes")).t.music[0].traditional, true);
 });
@@ -79,7 +87,7 @@ test("markdown: one h1 per page (none in the body), heading ids, solfa blocks fr
   assert.match(r.html, /<h2 id="two-words">/);
   assert.match(r.html, /<h2 id="two-words-2">/);
   assert.match(r.html, /<span class="doh">Doh is G<\/span>/);
-  assert.match(r.html, /<b>s,<\/b><i>A-<\/i>/);
+  assert.match(r.html, /<b>s<span class="om om-low">,<\/span><\/b><i>A-<\/i>/);
   assert.deepEqual(r.hymnsUsed, ["amazing-grace"]);
   assert.deepEqual(r.links, ["/app"]);
   assert.throws(() => renderMarkdown("# Title in body", { hymnsBySlug }), /only h1/);

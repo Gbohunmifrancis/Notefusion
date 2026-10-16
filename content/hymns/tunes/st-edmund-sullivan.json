@@ -1,0 +1,24 @@
+{
+  "name": "ST. EDMUND (SULLIVAN)",
+  "music": [
+    {
+      "name": "Arthur Seymour Sullivan",
+      "born": 1842,
+      "died": 1900,
+      "role": "Music (1872)"
+    }
+  ],
+  "musicPublished": 1872,
+  "key": "G major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "G4:2 G4:1 G4:1 | G4:1 F#4:1 A4:2 | D4:2 D4:1 E4:1 | D4:4 | D4:2 B4:1 B4:1 | B4:1 A4:1 D5:2 | A4:2 F#4:1 E4:1 | D4:4 | A4:2 B4:1 A4:1 | A4:1 G4:1 D4:2 | C5:2 B4:1 A4:1 | A4:1 G4:1 D4:2 | B4:2 E5:1 D5:1 | D5:1 C5:1 B4:1 A4:1 | G4:2 A4:1 F#4:1 | G4:4",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Im_But_A_Stranger_Here-St_Edmund_Sullivan.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Church Praise, with Tunes\", 1885 Hymn 391. Words found there, too."
+}

@@ -1,0 +1,73 @@
+{
+  "title": "Let Children Hear the Mighty Deeds",
+  "tune": "lea",
+  "text": [
+    {
+      "name": "Isaac Watts",
+      "born": 1674,
+      "died": 1748,
+      "role": "Words (1719)"
+    }
+  ],
+  "textPublished": 1719,
+  "description": "Let Children Hear the Mighty Deeds in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Isaac Watts, first published in 1719. The tune, LEA, is by James Lea Summers. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Let child-ren hear the might-y deeds Which God per-formed of old; Which_ in our young-er years we saw, And_ which our fa-thers told.",
+  "verses": [
+    {
+      "lines": [
+        "Let children hear the mighty deeds",
+        "Which God performed of old;",
+        "Which in our younger years we saw,",
+        "And which our fathers told."
+      ]
+    },
+    {
+      "lines": [
+        "He bids us make His glories known,",
+        "His works of pow'r and grace;",
+        "And we'll convey His wonders down",
+        "Through every rising race."
+      ]
+    },
+    {
+      "lines": [
+        "Our lips shall tell them to our sons,",
+        "And they again to theirs;",
+        "That generations yet unborn",
+        "May teach them to their heirs."
+      ]
+    },
+    {
+      "lines": [
+        "Thus shall they learn in God alone",
+        "Their hope securely stands,",
+        "That they may ne'er forget His work",
+        "But practice His commands."
+      ]
+    }
+  ],
+  "category": "Christian Home",
+  "topics": [
+    "Activity",
+    "Children (see also God's Children - the Faithful)",
+    "Christian Home/Family",
+    "Education",
+    "God, Majesty &amp; Power of",
+    "God's Children - the Faithful (see also Saints, People of the World)",
+    "Hope",
+    "People of the World",
+    "Speech"
+  ],
+  "metre": "8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Let_Children_Hear_The_Mighty_Deeds-Lea.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Let_Children_Hear_The_Mighty_Deeds-Lea"
+}

@@ -1,0 +1,85 @@
+{
+  "title": "Thine Arm, O Lord, in Days of Old",
+  "alsoKnownAs": [
+    "Your Hand, O Lord, in Days of Old"
+  ],
+  "tune": "kingsfold",
+  "text": [
+    {
+      "name": "Edward Hayes Plumptre",
+      "born": 1821,
+      "died": 1891,
+      "role": "Words"
+    }
+  ],
+  "textPublished": null,
+  "description": "Thine Arm, O Lord, in Days of Old in Tonic Solfa: the solfa line by line with the words, staff notation, all 3 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Edward Hayes Plumptre. The tune, KINGSFOLD, is Traditional English. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Thine_ arm, O Lord, in days of old, was_ strong to heal and_ save; It_ tri-umphed o'er di-sease and death, o'er_ dark-ness and_ the grave. To_ Thee they went,_ the blind, the dumb, the_ pal-sied_ and the lame, The_ le-per with_ his_ taint-ed life, the_ sick with fe_-vered frame.",
+  "verses": [
+    {
+      "lines": [
+        "Thine arm, O Lord, in days of old,",
+        "was strong to heal and save;",
+        "It triumphed o'er disease and death,",
+        "o'er darkness and the grave.",
+        "To Thee they went, the blind, the dumb,",
+        "the palsied and the lame,",
+        "The leper with his tainted life,",
+        "the sick with fevered frame."
+      ]
+    },
+    {
+      "lines": [
+        "And lo! Thy touch brought life and health,",
+        "gave speech, and strength and sight;",
+        "And youth renewed and fear relieved",
+        "owned Thee, the Lord of light;",
+        "And now, O Lord, be near to bless,",
+        "Almighty as of yore,",
+        "In crowded street, by restless couch,",
+        "as by Gennesaret's shore."
+      ]
+    },
+    {
+      "lines": [
+        "Be Thou our great Deliverer still,",
+        "Thou Lord of life and death;",
+        "Restore and quicken, soothe and bless,",
+        "with Thine almighty breath.",
+        "To hands that work and eyes that see,",
+        "give wisdom's heavenly lore,",
+        "That whole and sick, and weak and strong,",
+        "may praise Thee evermore."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Courage in Affliction",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Majesty &amp; Power of",
+    "Healing",
+    "Invitation (Faithful's to God)",
+    "Jesus",
+    "Kindness, God's",
+    "Light",
+    "Miracles",
+    "Presence",
+    "Wisdom"
+  ],
+  "metre": "8 6 8 6 8 6 8 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Thine_Arm_O_Lord_In_Days_Of_Old-Kingsfold.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true,
+  "importedFrom": "Thine_Arm_O_Lord_In_Days_Of_Old-Kingsfold",
+  "reviewNotes": "Held back: the score gives no year for the words; not provably public domain: \"textPublished\" must be a year before 1929."
+}

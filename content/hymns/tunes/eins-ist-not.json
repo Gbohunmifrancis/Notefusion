@@ -1,0 +1,24 @@
+{
+  "name": "EINS IST NOT",
+  "music": [
+    {
+      "name": "Adam Krieger",
+      "born": 1634,
+      "died": 1666,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": 1853,
+  "key": "Eb major",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "imported, unchecked: held back as a draft",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/One_Things_Needful-Eins_Ist_Not.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Held back: the score has a change of metre, which the importer does not render; bar 10 does not add up to 4 beats; bar 11 does not add up to 4 beats; bar 12 does not add up to 4 beats; bar 13 does not add up to 4 beats; bar 14 does not add up to 4 beats; bar 15 does not add up to 4 beats; bar 16 does not add up to 4 beats; the melody does not parse: bar 10 has 6 beats, not 4. Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The score gives no year for the tune; it was in print by 1853, the year of the setting the Open Hymnal copied. The last 5 verses are printed after the score in the source, not under the notes. The Open Hymnal's own source: \"Kern des Deutschen Kirchengesangs zum Gebrauch Evangelisch-Lutherischer Gemeinden und Familien\", 1853 by Fridrich Layriz Hymn 603 page 138 Lyrics source: Original Lyrics from Sacred Hymns from the German (London: 1841); very minor alterations as in ELHB 1931"
+}

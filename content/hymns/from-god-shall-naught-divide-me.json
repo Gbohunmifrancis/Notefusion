@@ -1,0 +1,118 @@
+{
+  "title": "From God Shall Naught Divide Me",
+  "alsoKnownAs": [
+    "From God Can Nothing Move Me"
+  ],
+  "tune": "von-gott-will-ich-nicht-lassen",
+  "text": [
+    {
+      "name": "Ludwig Helmbold",
+      "born": 1532,
+      "died": 1598,
+      "role": "Words (1563)"
+    },
+    {
+      "name": "Catherine Winkworth",
+      "born": 1827,
+      "died": 1878,
+      "role": "Translated (1863)"
+    }
+  ],
+  "textPublished": 1863,
+  "description": "From God Shall Naught Divide Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Ludwig Helmbold, first published in 1563. The English translation is by Catherine Winkworth (1863). The tune, VON GOTT WILL ICH NICHT LASSEN, is Traditional French. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "From God shall naught di-vide me, For He is true for aye, And on my path will guide me, Who else should of-ten stray; His e-ver boun-teous hand By night and day is heed-ful And gives me what is need-ful, Wher-e'er I go or stand.",
+  "verses": [
+    {
+      "lines": [
+        "From God shall naught divide me,",
+        "For He is true for aye,",
+        "And on my path will guide me,",
+        "Who else should often stray;",
+        "His ever bounteous hand",
+        "By night and day is heedful",
+        "And gives me what is needful,",
+        "Where'er I go or stand."
+      ]
+    },
+    {
+      "lines": [
+        "If sorrow comes, He sent it",
+        "In Him I put my trust;",
+        "I never shall repent it,",
+        "For He is true and just,",
+        "And loves to bless us still;",
+        "My life and soul I owe them",
+        "To Him who doth bestow them,",
+        "Let Him do as He will."
+      ]
+    },
+    {
+      "lines": [
+        "Whate'er shall be His pleasure",
+        "Is surely best for me;",
+        "He gave His dearest treasure,",
+        "That our weak hearts might see",
+        "How good His will toward us;",
+        "And in His Son He gave us",
+        "Whate'er could bless and save us;",
+        "Praise Him who loveth thus!"
+      ]
+    },
+    {
+      "lines": [
+        "O praise Him, for He never",
+        "Forgets our daily need;",
+        "O blest the hour whenever",
+        "To Him our thoughts can speed;",
+        "Yea, all the time we spend",
+        "Without Him is but wasted,",
+        "Till we His joy have tasted,",
+        "The joy that hath no end."
+      ]
+    },
+    {
+      "lines": [
+        "For when the world is passing",
+        "With all its pomp and pride,",
+        "All we were here amassing",
+        "No longer may abide;",
+        "But in our earthly bed,",
+        "Where softly we are sleeping,",
+        "God hath us in His keeping,",
+        "To wake us from the dead."
+      ]
+    }
+  ],
+  "category": "Trust",
+  "topics": [
+    "Anticipation",
+    "Assurance",
+    "Christian Life",
+    "Comfort",
+    "Consecration",
+    "Courage in Affliction",
+    "Discipleship",
+    "Faithfulness",
+    "God, Care of",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Love of",
+    "Inner Life",
+    "Patience",
+    "Promises (see also Gospel)",
+    "Security",
+    "Trust"
+  ],
+  "metre": "7 6 7 6 6 7 7 6",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/From_God_Shall_Naught_Divide_Me-Von_Gott_Will_Ich_Nicht_Lassen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "From_God_Shall_Naught_Divide_Me-Von_Gott_Will_Ich_Nicht_Lassen"
+}

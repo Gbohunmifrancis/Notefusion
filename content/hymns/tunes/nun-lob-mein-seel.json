@@ -1,0 +1,23 @@
+{
+  "name": "NUN LOB, MEIN SEEL",
+  "music": [
+    {
+      "name": "From Johannes Kugelmann's Concentus Novi, Augsburg, 1540",
+      "traditional": true,
+      "role": "Melody (1540)"
+    }
+  ],
+  "musicPublished": 1540,
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "E4:1 | G4:2 F#4:1 | E4:2 D4:1 | G4:2 A4:1 | B4:2 B4:1 | B4:2 B4:1 | B4:2 A4:1 | G4:2 F#4:1 | G4:2 E4:1 | G4:2 F#4:1 | E4:2 D4:1 | G4:2 A4:1 | B4:2 B4:1 | B4:2 B4:1 | B4:2 A4:1 | G4:2 F#4:1 | G4:2 G4:1 | G4:2 B4:1 | A4:2 B4:1 | G4:1 F#4:2 | E4:2 E4:1 | A4:2 A4:1 | F#4:1 G4:1 E4:1 | D4:2 D4:1 | G4:2 G4:1 | A4:2 A4:1 | B4:3 | G4:2 G4:1 | C5:2 C5:1 | B4:2 B4:1 | A4:2 A4:1 | B4:2 B4:1 | C5:2 C5:1 | D5:3 | G4:2 B4:1 | A4:2 D4:1 | F#4:1 E4:2 | D4:2 D4:1 | G4:2 G4:1 | F#4:2 E4:1 | A4:3 | A4:2 B4:1 | C5:2 B4:1 | G4:1 B4:1 A4:1 | G4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/My_Soul_Now_Praise_Thy_Maker-Non_Lob_Mein_Seel.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. The Open Hymnal's own source: \"Mehrstimmiges ChoralBuch\", 1906 Hymn #137, page 110-1 Ed. Karl Brauer. slightly altered."
+}

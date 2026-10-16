@@ -1,0 +1,99 @@
+{
+  "title": "Praise My Soul the King of Heaven",
+  "tune": "praise-my-soul",
+  "text": [
+    {
+      "name": "Henry F. Lyte",
+      "born": 1793,
+      "died": 1847,
+      "role": "Words (1834)"
+    }
+  ],
+  "textPublished": 1834,
+  "description": "Praise My Soul the King of Heaven in Tonic Solfa: the solfa line by line with the words, staff notation, all 5 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Henry F. Lyte, first published in 1834. The tune, PRAISE MY SOUL, is by John Goss (1869). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Praise, my soul, the King of hea-ven; To His feet thy tri-bute bring. Ran-somed, healed, re-stored, for-giv-en, Ev-er-more His pra-ises sing: A-lle-lu-ia! A-lle-lu-ia! Praise the ev-er-last-ing King.",
+  "verses": [
+    {
+      "lines": [
+        "Praise, my soul, the King of heaven;",
+        "To His feet thy tribute bring.",
+        "Ransomed, healed, restored, forgiven,",
+        "Evermore His praises sing:",
+        "Alleluia! Alleluia!",
+        "Praise the everlasting King."
+      ]
+    },
+    {
+      "lines": [
+        "Praise Him for His grace and favor",
+        "To our fathers in distress.",
+        "Praise Him still the same as ever,",
+        "Slow to chide, and swift to bless.",
+        "Alleluia! Alleluia!",
+        "Glorious in His faithfulness."
+      ]
+    },
+    {
+      "lines": [
+        "Father like He tends and spares us;",
+        "Well our feeble frame He knows.",
+        "In His hands He gently bears us,",
+        "Rescues us from all our foes.",
+        "Alleluia! Alleluia!",
+        "Widely yet His mercy flows."
+      ]
+    },
+    {
+      "lines": [
+        "Frail as summer's flower we flourish,",
+        "Blows the wind and it is gone;",
+        "But while mortals rise and perish",
+        "Our God lives unchanging on,",
+        "Praise Him, Praise Him, Hallelujah",
+        "Praise the High Eternal One!"
+      ]
+    },
+    {
+      "lines": [
+        "Angels, help us to adore Him;",
+        "Ye behold Him face to face;",
+        "Sun and moon, bow down before Him,",
+        "Dwellers all in time and space.",
+        "Alleluia! Alleluia!",
+        "Praise with us the God of grace."
+      ]
+    }
+  ],
+  "category": "Redeemer",
+  "topics": [
+    "Atonement",
+    "Faithfulness",
+    "Father",
+    "God, As King",
+    "God, Eternity of",
+    "God, Faithfulness of",
+    "God, Goodness of",
+    "God, Love of",
+    "God, Mercy of",
+    "God, Providence of",
+    "Grace",
+    "Gratitude",
+    "Healing",
+    "Praise, Father",
+    "Praise, Son",
+    "Reverence",
+    "Worship"
+  ],
+  "metre": "8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Praise_My_Soul_The_King_Of_Heaven-Praise_My_Soul-Lauda_Anima.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Praise_My_Soul_The_King_Of_Heaven-Praise_My_Soul-Lauda_Anima"
+}

@@ -1,0 +1,100 @@
+{
+  "title": "Stricken, Smitten, and Afflicted",
+  "tune": "o-mein-jesu-ich-muss-sterben",
+  "text": [
+    {
+      "name": "Thomas Kelly",
+      "born": 1769,
+      "died": 1855,
+      "role": "Words (1804)"
+    }
+  ],
+  "textPublished": 1804,
+  "description": "Stricken, Smitten, and Afflicted in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Thomas Kelly, first published in 1804. The tune, O MEIN JESU, ICH MUSS STERBEN, is from Geistliches Volkslied, 1850. This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Strick-en, smitt-en, and a-fflic-ted, See Him dy-ing on the tree! 'Tis the Christ by man re-ject-ed; Yes, my soul, 'tis He, 'tis He! 'Tis the long ex-pec-ted pro-phet, Da-vid's Son, yet Da-vid's Lord; Proofs I see su-ffic-ient of it: 'Tis a true and faith-ful Word.",
+  "verses": [
+    {
+      "lines": [
+        "Stricken, smitten, and afflicted,",
+        "See Him dying on the tree!",
+        "'Tis the Christ by man rejected;",
+        "Yes, my soul, 'tis He, 'tis He!",
+        "'Tis the long expected prophet,",
+        "David's Son, yet David's Lord;",
+        "Proofs I see sufficient of it:",
+        "'Tis a true and faithful Word."
+      ]
+    },
+    {
+      "lines": [
+        "Tell me, ye who hear Him groaning,",
+        "Was there ever grief like His?",
+        "Friends through fear His cause disowning,",
+        "Foes insulting his distress:",
+        "Many hands were raised to wound Him,",
+        "None would interpose to save;",
+        "But the deepest stroke that pierced Him",
+        "Was the stroke that Justice gave."
+      ]
+    },
+    {
+      "lines": [
+        "Ye who think of sin but lightly,",
+        "Nor suppose the evil great,",
+        "Here may view its nature rightly,",
+        "Here its guilt may estimate.",
+        "Mark the Sacrifice appointed!",
+        "See Who bears the awful load!",
+        "'Tis the Word, the Lord's Anointed,",
+        "Son of Man, and Son of God."
+      ]
+    },
+    {
+      "lines": [
+        "Here we have a firm foundation,",
+        "Here the refuge of the lost.",
+        "Christ the Rock of our salvation,",
+        "Christ the Name of which we boast.",
+        "Lamb of God for sinners wounded!",
+        "Sacrifice to cancel guilt!",
+        "None shall ever be confounded",
+        "Who on Him their hope have built."
+      ]
+    }
+  ],
+  "category": "Good Friday",
+  "topics": [
+    "Atonement",
+    "Christian Life",
+    "Contrition",
+    "Cross",
+    "Easter Week / Passion",
+    "Faithfulness",
+    "God, Faithfulness of",
+    "God, Love of",
+    "Gratitude",
+    "Humility",
+    "Jesus",
+    "Judgment",
+    "Knowledge",
+    "Law",
+    "Love",
+    "Obedience",
+    "Sacrifice",
+    "Salvation",
+    "Sinners",
+    "Truth"
+  ],
+  "metre": "8 7 8 7 8 7 8 7",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Stricken_Smitten_And_Afflicted-O_Mein_Jesu_Ich_Muss_Sterben-Wo_Ist_Jesus_Mein_Verlangen.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Stricken_Smitten_And_Afflicted-O_Mein_Jesu_Ich_Muss_Sterben-Wo_Ist_Jesus_Mein_Verlangen"
+}

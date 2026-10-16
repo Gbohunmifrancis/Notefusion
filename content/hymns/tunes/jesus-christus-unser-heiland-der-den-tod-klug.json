@@ -1,0 +1,23 @@
+{
+  "name": "JESUS CHRISTUS UNSER HEILAND, DER DEN TOD (KLUG)",
+  "music": [
+    {
+      "name": "From Klug's Geistliche Lieder, Wittenberg, 1533",
+      "traditional": true,
+      "role": "Melody (1533)"
+    }
+  ],
+  "musicPublished": 1533,
+  "key": "A minor",
+  "time": "4/4",
+  "tempo": 120,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 A4:1 G4:1 A4:1 | B4:1 A4:1 G4:1 F#4:1 | E4:1 G4:1 A4:1 B4:1 | A4:1 G#4:1 A4:1 D5:1 | A4:.5 B4:.5 C5:1 B4:1 A4:1 | B4:1 A4:1 A4:1 A4:1 | B4:1 A4:1 G4:1 F#4:1 | E4:1 G4:1 A4:1 B4:1 | A4:1 G#4:1 A4:2",
+  "reviewed": false,
+  "confidence": "imported, unchecked: every automatic check passed",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Christ_Who_Came_To_Save-Jesus_Christus_Unser_Heiland_Der_Den_Tod_Klug_1535.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "reviewNotes": "Imported from the Open Hymnal Project's ABC score; check the notes and the words against a hymn book you trust, then set \"reviewed\": true. Line breaks in the words are worked out from the syllables and punctuation; check them against a hymn book."
+}

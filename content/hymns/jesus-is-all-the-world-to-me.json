@@ -1,0 +1,86 @@
+{
+  "title": "Jesus Is All the World to Me",
+  "tune": "jesus-is-all-the-world-to-me",
+  "text": [
+    {
+      "name": "Will Lamartine Thompson",
+      "born": 1847,
+      "died": 1909,
+      "role": "Words (1904)"
+    }
+  ],
+  "textPublished": 1904,
+  "description": "Jesus Is All the World to Me in Tonic Solfa: the solfa line by line with the words, staff notation, all 4 verses, and a piano to sing along with.",
+  "about": [
+    "The words are by Will Lamartine Thompson, first published in 1904. The tune, JESUS IS ALL THE WORLD TO ME, is by Will Lamartine Thompson (1904). This version of the melody and the words comes from the Open Hymnal Project."
+  ],
+  "underlay": "Je-sus is all the world to me, My life, my joy, my all; He is my strength from day to day, With-out Him I_ would fall. When I am sad, to Him I go, No o-ther one can cheer me so; When I am sad, He makes me glad, He's my friend.",
+  "verses": [
+    {
+      "lines": [
+        "Jesus is all the world to me,",
+        "My life, my joy, my all;",
+        "He is my strength from day to day,",
+        "Without Him I would fall.",
+        "When I am sad, to Him I go,",
+        "No other one can cheer me so;",
+        "When I am sad, He makes me glad,",
+        "He's my friend."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus is all the world to me,",
+        "my friend in trials sore;",
+        "I go to Him for blessings and",
+        "He gives them ov'r and o'er.",
+        "He sends the sunshine and the rain,",
+        "He sends the harvest's golden grain;",
+        "Sunshine and rain, harvest of grain,",
+        "He's my friend."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus is all the world to me,",
+        "and true to Him I'll be;",
+        "O how could I this friend deny,",
+        "when He's so true to me?",
+        "Following Him I know I'm right,",
+        "He watches o'er me day and night;",
+        "Following Him, by day and night,",
+        "He's my friend."
+      ]
+    },
+    {
+      "lines": [
+        "Jesus is all the world to me,",
+        "I want no better friend;",
+        "I trust Him now, I'll trust Him when",
+        "Life's fleeting days shall end.",
+        "Beautiful life with such a friend;",
+        "beautiful life that has no end;",
+        "Eternal life, eternal joy,",
+        "He's my friend."
+      ]
+    }
+  ],
+  "category": "Praise",
+  "topics": [
+    "Commitment",
+    "Following Jesus, Sanctification",
+    "Friendship",
+    "Gratitude",
+    "Jesus",
+    "Loyalty"
+  ],
+  "metre": "8 6 8 6 8 8 8 3",
+  "source": "Open Hymnal Project",
+  "sourceUrl": "http://openhymnal.org/Lyrics/Jesus_Is_All_The_World_to_Me-Jesus_Is_All_The_World_to_Me.html",
+  "licence": "Public domain. The Open Hymnal Project marks this hymn “copyright: public domain” (words, music and setting), and places its own editing, indexes and data files in the public domain.",
+  "credits": "Melody and words from the Open Hymnal Project (openhymnal.org), edited by Brian J. Dumont; public domain.",
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": false,
+  "importedFrom": "Jesus_Is_All_The_World_to_Me-Jesus_Is_All_The_World_to_Me"
+}
