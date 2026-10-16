@@ -543,3 +543,23 @@ def test_harmonise_endpoint_writes_four_parts_for_a_melody():
         assert r.status_code == 422
         r = client.post("/v1/harmonise", json={**body, "notes": []})
         assert r.status_code == 422
+
+
+@pytest.mark.parametrize("meter", ["3/4", "6/8", "6/4", "3/2"])
+def test_harmonise_writes_parts_under_a_sheet_with_a_meter_and_a_pickup(meter):
+    """The worker reads the meter now: a sung hymn (Belmont) comes back in 3/4 with its two-beat pickup
+    moved into the first bar, so the tune starts on beat 2. These are that take's own notes, as the web
+    posts them back; the hymnbook version brings its own meter (6/8, 6/4, 3/2)."""
+    belmont = [(54, 2.0, 1.0), (63, 3.0, 2.0), (61, 5.0, 1.0), (59, 6.0, 2.0), (58, 8.0, 1.0), (58, 9.0, 1.0),
+               (56, 10.0, 1.0), (59, 11.0, 1.0), (54, 12.0, 1.5), (66, 14.0, 1.0), (66, 15.0, 1.0), (64, 16.0, 1.0)]
+    body = {
+        "key": "B major", "tempoBpm": 100, "timeSignature": meter,
+        "notes": [{"pitchMidi": p, "startBeat": s, "durBeats": d, "conf": 0.94} for p, s, d in belmont],
+    }
+    with TestClient(app) as client:
+        r = client.post("/v1/harmonise", json=body)
+    assert r.status_code == 200, r.text
+    parts = r.json()["parts"]
+    assert set(parts) == {"soprano", "alto", "tenor", "bass"}
+    assert [n["startBeat"] for n in parts["soprano"]["notes"]][:2] == [2.0, 3.0]
+    assert min(n["startBeat"] for p in parts.values() for n in p["notes"]) == 2.0
