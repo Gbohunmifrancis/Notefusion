@@ -1,0 +1,17 @@
+{
+  "name": "ST GEORGE’S WINDSOR",
+  "music": [
+    {"name": "George Job Elvey", "born": 1816, "died": 1893, "role": "Melody (1858)"}
+  ],
+  "musicPublished": 1858,
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 108,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1.5 A4:.5 C5:1 A4:1 | F4:1 G4:1 A4:2 | A4:1.5 A4:.5 C5:1 A4:1 | F4:1 G4:1 A4:2 | A4:1.5 A4:.5 Bb4:1 Bb4:1 | G4:1.5 G4:.5 A4:2 | A4:1 B4:1 C5:1 F4:1 | E4:1 D4:1 C4:2 | E4:1.5 E4:.5 G4:1 E4:1 | F4:1 G4:1 A4:2 | A4:1.5 A4:.5 C5:1 A4:1 | Bb4:1 C5:1 D5:2 | D5:1.5 D5:.5 Bb4:1 G4:1 | C5:1.5 C5:.5 A4:2 | Bb4:1 D5:1 C5:1 F4:1 | A4:1 G4:1 F4:2",
+  "reviewed": false,
+  "confidence": "high for the notes; one written source",
+  "source": "the score on the tune's Wikipedia article (melody and underlay), which matches the tune as it is sung; not in the Open Hymnal.",
+  "reviewNotes": "Notes and rhythm match the Wikipedia score and the tune as commonly sung; only one written source, so compare with your book. Verse wording follows Hymns Ancient and Modern; Alford's original verse 2 begins 'We ourselves are God's own field'."
+}
