@@ -69,6 +69,13 @@
       $("s-title").parentNode.insertBefore(back, $("s-title"));
     }
     $("s-by").textContent = "Shared by " + (data.sharedBy || "a NoteFusion user") + " · " + C.keyHeader(data.key);
+    if (data.hymn) {
+      // A hymnbook version credits where its melody and words came from, as the hymn's page does.
+      var credit = document.createElement("p"); credit.className = "muted small"; credit.style.margin = "4px 0 0";
+      credit.textContent = "Hymnbook version of “" + data.hymn.title + "”. " + (data.hymn.credit || "") + " ";
+      if (data.hymn.url) { var a = document.createElement("a"); a.href = data.hymn.url; a.rel = "noopener"; a.textContent = "See the hymn"; credit.appendChild(a); }
+      $("s-by").parentNode.insertBefore(credit, $("s-chips"));
+    }
     [data.key, data.tempoBpm + " BPM", data.timeSignature].forEach(function (t) { var c = document.createElement("span"); c.className = "chip"; c.textContent = t; $("s-chips").appendChild(c); });
 
     renderSolfa();
