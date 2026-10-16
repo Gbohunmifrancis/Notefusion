@@ -545,7 +545,7 @@ _AGE_GATE = re.compile(r"confirm your age|age[- ]restricted|inappropriate for so
 _BOT_CHECK = re.compile(r"not a bot|confirm you(?:'|’)re not|rate-limited|try again later|captcha", re.I)
 _GONE = re.compile(
     r"private|unavailable|removed|no longer available|terminated|does not exist|members|copyright"
-    r"|not available in your country", re.I)
+    r"|available in your country", re.I)
 _TURNED_AWAY = re.compile(
     r"http error 403|http error 429|too many requests|po token|sabr|requested format is not available"
     r"|only images are available|unable to download (?:webpage|api)|unable to extract|unable to connect to proxy"

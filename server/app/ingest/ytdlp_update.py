@@ -22,6 +22,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from pathlib import Path
@@ -153,9 +154,14 @@ def update() -> str | None:
     root = Path(settings.ytdlp_update_dir)
     channel = "stable" if settings.ytdlp_update_channel == "stable" else "nightly"
     in_use = active_version()
-    fresh = root / f"v{time.strftime('%Y%m%d%H%M%S')}-{os.getpid()}"
     try:
         root.mkdir(parents=True, exist_ok=True)
+        # Its own name, even for two updates in one second: a failed one deletes only itself.
+        fresh = Path(tempfile.mkdtemp(prefix=f"v{time.strftime('%Y%m%d%H%M%S')}-", dir=root))
+    except OSError as exc:
+        logger.warning("yt-dlp update failed (%s); staying on %s", exc, in_use or "the image's copy")
+        return None
+    try:
         _pip(fresh, *(["--pre"] if channel == "nightly" else []), "yt-dlp")
         version = version_at(fresh)
         if version is None:
