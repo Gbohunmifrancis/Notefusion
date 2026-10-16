@@ -16,10 +16,13 @@ function defaultSleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
  */
 export async function fetchPublished({ apiUrl = DEFAULT_API_URL, waitSeconds = 0, fetchImpl = fetch, sleep = defaultSleep, log = () => {} } = {}) {
   const url = `${apiUrl.replace(/\/+$/, "")}/api/blog/published`;
+  // Bounded twice: by count (each wait is 20 s) and by the clock, so slow attempts cannot stretch it past waitSeconds.
   const attempts = 1 + Math.floor(Math.max(0, waitSeconds) / 20);
+  const deadline = Date.now() + Math.max(0, waitSeconds) * 1000;
   for (let attempt = 1; ; attempt++) {
     let res = null, problem;
-    try { res = await fetchImpl(url, { headers: { accept: "application/json", "user-agent": "notefusion-blog-build" } }); }
+    // 30 s an attempt, so a hanging connection cannot outlast the wait (and the deploy job's own timeout).
+    try { res = await fetchImpl(url, { headers: { accept: "application/json", "user-agent": "notefusion-blog-build" }, signal: AbortSignal.timeout(30_000) }); }
     catch (e) { problem = `${url}: ${e.message}`; }
     if (res) {
       if (res.ok) {
@@ -32,7 +35,7 @@ export async function fetchPublished({ apiUrl = DEFAULT_API_URL, waitSeconds = 0
       const retryable = res.status === 404 || res.status === 408 || res.status === 429 || res.status >= 500;
       if (!retryable) throw new Error(`Could not read the blog posts: ${problem}`);
     }
-    if (attempt >= attempts) throw new Error(`Could not read the blog posts: ${problem}`);
+    if (attempt >= attempts || Date.now() + 20_000 > deadline) throw new Error(`Could not read the blog posts: ${problem}`);
     log(`${problem}; asking again in 20 s (attempt ${attempt} of ${attempts}).`);
     await sleep(20_000);
   }
