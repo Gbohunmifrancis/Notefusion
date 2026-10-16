@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Frederick C. Atkinson",
+      "born": 1841,
+      "died": 1896,
       "role": "Music (1870)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "mmmfmlsffm|dtlsltslls",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0001/x000132.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0001/000132a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000132; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Frederick C. Atkinson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000132 (the melody read from 000132a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000132a.nwc). The tune ends on G, neither doh nor lah: it may be modal; the doh is the key signature's.",
+  "reviewNotes": "Imported from CCEH tune 000132 (the melody read from 000132a.mid, checked against the page's do-re-mi incipit, 2 notes off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Frederick C. Atkinson's dates (1841–1896) are from https://praise.org.uk/?p=28315 (b. Norwich 1841, d. East Dereham 1896); https://cpdl.org/wiki/index.php/Frederick_C._Atkinson; CCEH's page gives only the year 1870. The bar lines are those of CCEH's Noteworthy score (000132a.nwc). The tune ends on G, neither doh nor lah: it may be modal; the doh is the key signature's.",
   "importedFrom": "cceh:000132",
   "updated": "2026-10-16"
 }

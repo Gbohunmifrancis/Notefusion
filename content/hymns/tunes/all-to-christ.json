@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "John T. Grape",
+      "born": 1835,
+      "died": 1915,
       "role": "Music (1868)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "dmslsmd|drrdrm|dmslsmd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0001/x000156.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0001/000156a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000156; public domain.",
-  "reviewNotes": "Held back: not provably public domain: John T. Grape: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000156 (the melody read from 000156a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000156a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000156 (the melody read from 000156a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. John T. Grape's dates (1835–1915) are from https://en.wikipedia.org/wiki/Jesus_Paid_It_All; https://hymndex.com/john-t-grape/; CCEH's page gives only the year 1868. The bar lines are those of CCEH's Noteworthy score (000156a.nwc).",
   "importedFrom": "cceh:000156",
   "updated": "2026-10-16"
 }

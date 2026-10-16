@@ -9,10 +9,12 @@
     },
     {
       "name": "Christian F. Witt",
+      "died": 1716,
       "role": "Music, attributed"
     },
     {
       "name": "Johann G. C. Storl",
+      "died": 1719,
       "role": "Music, attributed"
     },
     {
@@ -33,13 +35,13 @@
   "incipit": "ssddrrmd|sslfrsm",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0000/x000034.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0000/000034a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000034; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Christian F. Witt: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source; not provably public domain: Johann G. C. Storl: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000034 (the melody read from 000034a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Henry John Gauntlett's dates (1805–1876) are from our page for the tune IRBY (content/hymns/tunes/irby.json); CCEH's page gives only the year 1861. The bar lines are those of CCEH's Noteworthy score (000034a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000034 (the melody read from 000034a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Christian F. Witt's dates (died 1716) are from https://en.wikipedia.org/wiki/Christian_Friedrich_Witt (c. 1660 - 13 April 1716; editor of Psalmodia sacra, Gotha 1715); CCEH's page gives none. Johann G. C. Storl's dates (died 1719) are from https://www.deutsche-biographie.de/sfz81607.html (Störl, Johann Georg Christian, um 1676 - 1719); CCEH's page gives none. Henry John Gauntlett's dates (1805–1876) are from our page for the tune IRBY (content/hymns/tunes/irby.json); CCEH's page gives only the year 1861. The bar lines are those of CCEH's Noteworthy score (000034a.nwc).",
   "importedFrom": "cceh:000034",
   "updated": "2026-10-16"
 }
