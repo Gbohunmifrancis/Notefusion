@@ -182,6 +182,13 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                 table: "blog_topics",
                 columns: Seed.BlogSeed.TopicColumns,
                 values: Seed.BlogSeed.TopicRows(seed, new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc)));
+
+            // One rebuild once this API is up: the website deploy that shipped with this change may have given
+            // up waiting for the API's /api/blog/published while the API was still deploying.
+            migrationBuilder.InsertData(
+                table: "blog_site_rebuilds",
+                columns: new[] { "Id", "Reason", "RequestedAtUtc", "DispatchedAtUtc", "LastAttemptAtUtc", "Attempts", "Error" },
+                values: new object[] { Seed.BlogSeed.IdFor("rebuild", "add-blog"), "The blog moved into the database", new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc), null, null, 0, null });
         }
 
         /// <inheritdoc />
