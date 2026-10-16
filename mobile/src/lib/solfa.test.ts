@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ascendingFlags, deriveSolfa, referenceDoh } from "./solfa.ts";
+import { ascendingFlags, deriveSolfa, partReference, referenceDoh } from "./solfa.ts";
 
 // The hymn-book table: the lock-step contract. The same rows, with the same expected strings,
 // are in tests/NoteFusion.Tests/Solfa/HymnBookSolfaTests.cs, server/tests/test_solfa.py and
@@ -74,6 +74,21 @@ test("the unmarked doh is the doh at or below the middle note", () => {
   assert.equal(referenceDoh([], 5, "major"), 53);
   assert.equal(referenceDoh([127], 0, "minor"), 120);
   assert.equal(referenceDoh([3], 10, "major"), 10);
+});
+
+test("written parts under a man's tune are marked from the soprano, which reads as the tune does", () => {
+  const notesOf = (pitches: number[]) =>
+    pitches.map((pitchMidi, i) => ({ pitchMidi, startBeat: i, durBeats: 1, degree: 0, solfa: "", octaveMark: "", conf: 1 }));
+  // He sang D3 F#3 A3; the parts were written with the tune at a soprano's D4 F#4 A4.
+  const tune = notesOf([50, 50, 54, 54, 57, 57]);
+  const soprano = notesOf([62, 62, 66, 66, 69, 69]);
+  const parts = { soprano: { notes: soprano, solfaLines: [] }, bass: { notes: notesOf([50, 47, 45]), solfaLines: [] } };
+  assert.equal(partReference(parts, tune), soprano);
+  assert.equal(referenceDoh(partReference(parts, tune).map((n) => n.pitchMidi), 2, "major"), 62);
+  assert.equal(referenceDoh(tune.map((n) => n.pitchMidi), 2, "major"), 50); // the tune's own doh, an octave under
+  // No soprano (a choir heard without one, or no parts): the melody, as before.
+  assert.equal(partReference({ bass: parts.bass }, tune), tune);
+  assert.equal(partReference(null, tune), tune);
 });
 
 test("a chromatic is named for where it goes, otherwise the hymn-book default", () => {

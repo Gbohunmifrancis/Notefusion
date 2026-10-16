@@ -59,7 +59,7 @@
     if (data.parts) {
       parts = {};
       C.VOICES.forEach(function (v) {
-        if (data.parts[v] && data.parts[v].notes) parts[v] = { notes: C.label(data.parts[v].notes, data.key, data.notes || []) };
+        if (data.parts[v] && data.parts[v].notes) parts[v] = { notes: C.label(data.parts[v].notes, data.key, C.partReference(data.parts, data.notes)) };
       });
     }
     document.title = (data.title || "Shared sheet") + " — NoteFusion";

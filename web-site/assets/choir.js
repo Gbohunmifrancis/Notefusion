@@ -101,6 +101,15 @@
       return { pitchMidi: n.pitchMidi, startBeat: n.startBeat, durBeats: n.durBeats, conf: n.conf == null ? 1 : n.conf, solfa: s.solfa, octaveMark: s.octaveMark, degree: s.degree };
     });
   }
+  /**
+   * The notes a part's octave marks are measured from (label's `refPitches`): the soprano, which is
+   * the tune as the parts write it (a man's tune moved up to a soprano's octave, so it reads exactly
+   * as the tune does), or the melody when there is no soprano. Mirrors SolfaLabels.LabelParts.
+   */
+  function partReference(parts, melody) {
+    var soprano = parts && parts.soprano && parts.soprano.notes;
+    return soprano && soprano.length ? soprano : (melody || []);
+  }
   function keyHeader(keyText) { var key = parseKey(keyText); return key ? dohHeader(dohPitchClass(key)) : ""; }
 
   // ── Grid ─────────────────────────────────────────────────────────────────
@@ -482,7 +491,7 @@
   }
 
   window.NfChoir = {
-    parseKey: parseKey, label: label, keyHeader: keyHeader, renderLines: renderLines, hymnRows: hymnRows,
+    parseKey: parseKey, label: label, partReference: partReference, keyHeader: keyHeader, renderLines: renderLines, hymnRows: hymnRows,
     syllabify: syllabify, lyricsUnderNotes: lyricsUnderNotes, barCount: barCount, beatsPerBar: beatsPerBar,
     VOICES: VOICES, rangeReport: rangeReport, pitchName: pitchName, shiftKeyName: shiftKeyName,
     createPlayer: createPlayer, createPianoOutput: createPianoOutput, loadPiano: loadPiano, pianoNote: pianoNote

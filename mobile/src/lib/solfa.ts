@@ -219,6 +219,19 @@ export function referenceDoh(pitches: readonly number[], dohPc: number, mode: Ke
 }
 
 /**
+ * The notes a part's octave marks are measured from: the soprano, which is the tune as the parts
+ * write it (a man's tune moved up to a soprano's octave, so it reads exactly as the tune does), or
+ * the melody when there is no soprano. Mirrors SolfaLabels.LabelParts and choir.js `partReference`.
+ */
+export function partReference(
+  parts: Readonly<Record<string, { notes: readonly NoteEvent[] } | undefined>> | null | undefined,
+  melody: readonly NoteEvent[],
+): readonly NoteEvent[] {
+  const soprano = parts?.soprano?.notes;
+  return soprano && soprano.length > 0 ? soprano : melody;
+}
+
+/**
  * Which chromatic table each note is spelled from — the tonic solfa hymn-book rule.
  * Mirrors solfa.py's `ascending_flags` and SolfaMapper.cs's `AscendingFlags`.
  *
