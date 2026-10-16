@@ -157,7 +157,10 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
         if (d.born) person.born = d.born;
         person.died = d.died;
         if (d.lived) person.lived = d.lived;
-        notes.push(`${nm}'s dates (${d.born ? `${d.born}–` : "died "}${d.died}) are from ${d.from || "our other pages"}; CCEH's page gives ${c.year ? `only the year ${c.year}` : "none"}.`);
+        if (d.correctName) { person.name = d.correctName; notes.push(`CCEH's page spells ${d.correctName} as “${nm}”; the name is printed as the sources spell it.`); }
+        notes.push(d.lived
+          ? `${person.name}'s identity is disputed, so the page says only that they lived in the ${d.lived}; every candidate died by ${d.died} (${d.from}). CCEH's page gives ${c.year ? `only the year ${c.year}` : "no dates"}.`
+          : `${person.name}'s dates (${d.born ? `${d.born}–` : "died "}${d.died}) are from ${d.from || "our other pages"}; CCEH's page gives ${c.year ? `only the year ${c.year}` : "none"}.`);
       }
     }
     if (!Number.isInteger(person.died) && Number.isInteger(c.year) && c.year < PD_ACTIVE_BEFORE) {
@@ -175,6 +178,15 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
   const anyYears = years.map((y) => y.year);
   const musicPublished = tuneYears.length ? Math.min(...tuneYears) : anyYears.length ? Math.min(...anyYears) : null;
   if (!tuneYears.length && anyYears.length) notes.push(`The page gives no year for the tune itself; it was in print by ${musicPublished}, the year of the arrangement.`);
+  // A composer credited without a year of their own ("attr., William Moore" above "Columbian Harmony, 1825") wrote a
+  // tune that was in print by the page's year for it, so the pre-1850 rule reads that year as theirs.
+  if (tuneYears.length && musicPublished < PD_ACTIVE_BEFORE) {
+    for (const p of music) {
+      if (p.traditional || Number.isInteger(p.died) || p.activeBy != null || !/^Music/.test(p.role)) continue;
+      p.activeBy = musicPublished;
+      notes.push(`${p.name} has no death year on CCEH's page or ours; the tune was in print by ${musicPublished}, before ${PD_ACTIVE_BEFORE}, so they died before ${PD_DIED_BEFORE} (they would have been over 105).`);
+    }
+  }
   if (musicPublished == null) problems.push("the page gives no year for the tune");
   else if (musicPublished >= PD_PUBLISHED_BEFORE && tuneYears.length) refuse(`first published in ${musicPublished}, after ${PD_PUBLISHED_BEFORE - 1}`);
   if (midiFile) {

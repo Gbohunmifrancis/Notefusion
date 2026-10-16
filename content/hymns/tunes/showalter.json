@@ -1,0 +1,32 @@
+{
+  "name": "SHOWALTER",
+  "title": "Showalter",
+  "music": [
+    {
+      "name": "Anthony J. Showalter",
+      "born": 1858,
+      "died": 1924,
+      "role": "Music (1887)"
+    }
+  ],
+  "musicPublished": 1887,
+  "metre": "10 9 10 9 + i",
+  "key": "Ab major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "C5:1 C5:1 C5:.75 Bb4:.25 Ab4:1 | Bb4:1 Bb4:1 Bb4:.75 Ab4:.25 F4:1 | Eb4:1 Eb4:1 Ab4:.75 G4:.25 Ab4:.5 Bb4:.5 | C5:1 C5:1 Bb4:2 | C5:1 C5:1 C5:.75 Bb4:.25 Ab4:1 | Bb4:1 Bb4:1 Bb4:.75 Ab4:.25 F4:1 | Eb4:1 Eb4:1 Ab4:.75 G4:.25 Ab4:.5 Bb4:.5 | C5:1 Bb4:1 Ab4:2 | C5:2 Ab4:2 | Ab4:2 F4:2 | Eb4:1 Ab4:.75 G4:.25 Ab4:1 Bb4:1 | C5:1 C5:1 Bb4:2 | C5:2 Ab4:2 | Ab4:2 F4:2 | Eb4:1 Eb4:1 Ab4:.75 G4:.25 Ab4:.5 Bb4:.5 | C5:1 Bb4:1 Ab4:2",
+  "incipit": "mmmrdrrrdl|ssdtdrmmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000254.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000254a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000254; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000254 (the melody read from 000254a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Anthony J. Showalter's dates (1858–1924) are from https://en.wikipedia.org/wiki/Anthony_Johnson_Showalter (b. 1 May 1858, d. 1924; composer of SHOWALTER, 'Leaning on the Everlasting Arms', 1887); https://hymnary.org/tune/showalter_showalter; CCEH's page gives only the year 1887. The bar lines are those of CCEH's Noteworthy score (000254a.nwc).",
+  "importedFrom": "cceh:000254",
+  "updated": "2026-10-16"
+}

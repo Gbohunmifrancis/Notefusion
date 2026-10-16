@@ -29,6 +29,10 @@
       "number": "000026"
     },
     {
+      "slug": "monkland",
+      "number": "000027"
+    },
+    {
       "slug": "spanish-hymn",
       "number": "000029"
     },
@@ -339,6 +343,82 @@
     {
       "slug": "nun-danket-234",
       "number": "000234"
+    },
+    {
+      "slug": "lancashire",
+      "number": "000237"
+    },
+    {
+      "slug": "morning-light",
+      "number": "000238"
+    },
+    {
+      "slug": "maryton",
+      "number": "000242"
+    },
+    {
+      "slug": "just-as-i-am",
+      "number": "000243"
+    },
+    {
+      "slug": "retreat",
+      "number": "000244"
+    },
+    {
+      "slug": "federal-street",
+      "number": "000245"
+    },
+    {
+      "slug": "st-peter",
+      "number": "000249"
+    },
+    {
+      "slug": "showalter",
+      "number": "000254"
+    },
+    {
+      "slug": "holy-manna",
+      "number": "000260"
+    },
+    {
+      "slug": "god-be-with-you",
+      "number": "000261"
+    },
+    {
+      "slug": "euclid",
+      "number": "000262"
+    },
+    {
+      "slug": "revive-us-again",
+      "number": "000263"
+    },
+    {
+      "slug": "yorkshire",
+      "number": "000264"
+    },
+    {
+      "slug": "ortonville",
+      "number": "000267"
+    },
+    {
+      "slug": "rest-elton",
+      "number": "000270"
+    },
+    {
+      "slug": "showers-of-blessing",
+      "number": "000273"
+    },
+    {
+      "slug": "canonbury",
+      "number": "000276"
+    },
+    {
+      "slug": "jesus-saves",
+      "number": "000277"
+    },
+    {
+      "slug": "limpsfield",
+      "number": "000278"
     }
   ],
   "drafts": [
@@ -347,13 +427,6 @@
       "number": "000012",
       "reasons": [
         "the score has a bar of another length (bar 5), which the solfa grid does not draw"
-      ]
-    },
-    {
-      "slug": "monkland",
-      "number": "000027",
-      "reasons": [
-        "not provably public domain: John Bernard Wilkes: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
       ]
     },
     {
@@ -516,8 +589,45 @@
       "slug": "psalm-eighty-four",
       "number": "000230",
       "reasons": [
-        "not provably public domain: Alexander Galloway: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
         "the score has bars of another length (bar 10, 13), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "eagley",
+      "number": "000246",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: James Walsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "daugava",
+      "number": "000247",
+      "reasons": [
+        "the page gives no year for the tune"
+      ]
+    },
+    {
+      "slug": "christmas-eve",
+      "number": "000266",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Peder Knudsen: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "christmas-brings-joy",
+      "number": "000268",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Christopher E. F. Weyse: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "university-college",
+      "number": "000275",
+      "reasons": [
+        "the page gives no year for the tune"
       ]
     }
   ],
@@ -1061,6 +1171,68 @@
       "oursSource": "Open Hymnal Project ABC score; every note and rhythm agrees with the score on Wikipedia's article (printed there in E flat) and the opening with hymnary.org's incipit.",
       "hymn": "o-father-all-creating",
       "edits": 0
+    },
+    {
+      "number": "000240",
+      "name": "St. Thomas (Williams)",
+      "url": "https://www.ccel.org/cceh/0002/x000240.htm",
+      "ours": "st-thomas",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-advent-of-our-god",
+      "edits": 3
+    },
+    {
+      "number": "000241",
+      "name": "Song Thirteen",
+      "url": "https://www.ccel.org/cceh/0002/x000241.htm",
+      "ours": "canterbury",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "holy-ghost-with-light-divine",
+      "edits": 0
+    },
+    {
+      "number": "000253",
+      "name": "Cassell",
+      "url": "https://www.ccel.org/cceh/0002/x000253.htm",
+      "ours": "o-du-liebe-meiner-liebe",
+      "oursSource": "CCEH",
+      "edits": 0
+    },
+    {
+      "number": "000256",
+      "name": "Dennis",
+      "url": "https://www.ccel.org/cceh/0002/x000256.htm",
+      "ours": "dennis",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "blest-be-the-tie-that-binds-dennis",
+      "edits": 0
+    },
+    {
+      "number": "000274",
+      "name": "Darmstadt (Fritsch)",
+      "url": "https://www.ccel.org/cceh/0002/x000274.htm",
+      "ours": "was-frag-ich-nach-der-welt",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "what-is-the-world-to-me",
+      "edits": 2
+    },
+    {
+      "number": "000282",
+      "name": "Duke Street",
+      "url": "https://www.ccel.org/cceh/0002/x000282.htm",
+      "ours": "duke-street-jesus-shall-reign",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "jesus-shall-reign",
+      "edits": 0
+    },
+    {
+      "number": "000283",
+      "name": "Rescue",
+      "url": "https://www.ccel.org/cceh/0002/x000283.htm",
+      "ours": "rescue-the-perishing",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "rescue-the-perishing",
+      "edits": 0
     }
   ],
   "refused": [
@@ -1399,6 +1571,84 @@
       "name": "Northaven",
       "url": "https://www.ccel.org/cceh/0002/x000232.htm",
       "reason": "the page marks Jane M. Marshall's tune as copyright (“Jane M. Marshall, ©1960”)"
+    },
+    {
+      "number": "000239",
+      "name": "Seventh and James",
+      "url": "https://www.ccel.org/cceh/0002/x000239.htm",
+      "reason": "the page marks Charles F. Brown's tune as copyright (“Charles F. Brown, ©1975”)"
+    },
+    {
+      "number": "000248",
+      "name": "Reynolds",
+      "url": "https://www.ccel.org/cceh/0002/x000248.htm",
+      "reason": "the page marks Irving Wolfe's tune as copyright (“Irving Wolfe, ©1961”)"
+    },
+    {
+      "number": "000250",
+      "name": "Sheng En",
+      "url": "https://www.ccel.org/cceh/0002/x000250.htm",
+      "reason": "first published in 1934, after 1928"
+    },
+    {
+      "number": "000251",
+      "name": "North Phoenix",
+      "url": "https://www.ccel.org/cceh/0002/x000251.htm",
+      "reason": "the page marks Mark Blankenshiup's tune as copyright (“Mark Blankenshiup, ©1975”)"
+    },
+    {
+      "number": "000255",
+      "name": "Manna",
+      "url": "https://www.ccel.org/cceh/0002/x000255.htm",
+      "reason": "the page marks Doris Akers's tune as copyright (“Doris Akers, ©1965”)"
+    },
+    {
+      "number": "000257",
+      "name": "Christian Love",
+      "url": "https://www.ccel.org/cceh/0002/x000257.htm",
+      "reason": "the page marks Paul Benoit's tune as copyright (“Paul Benoit, ©1959”)"
+    },
+    {
+      "number": "000258",
+      "name": "McKee",
+      "url": "https://www.ccel.org/cceh/0002/x000258.htm",
+      "reason": "Harry T. Burleigh's arrangement is dated 1939, after 1928"
+    },
+    {
+      "number": "000259",
+      "name": "Skillings",
+      "url": "https://www.ccel.org/cceh/0002/x000259.htm",
+      "reason": "the page marks Otis Skillings's tune as copyright (“Otis Skillings, ©1971”)"
+    },
+    {
+      "number": "000269",
+      "name": "Madill",
+      "url": "https://www.ccel.org/cceh/0002/x000269.htm",
+      "reason": "the page marks A. L. Butler's tune as copyright (“A. L. Butler, ©1971”)"
+    },
+    {
+      "number": "000271",
+      "name": "Travis Avenue",
+      "url": "https://www.ccel.org/cceh/0002/x000271.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1925”)"
+    },
+    {
+      "number": "000272",
+      "name": "Matthews",
+      "url": "https://www.ccel.org/cceh/0002/x000272.htm",
+      "reason": "the page marks B. B. McKinney's tune as copyright (“B. B. McKinney, ©1927”)"
+    },
+    {
+      "number": "000279",
+      "name": "McClard",
+      "url": "https://www.ccel.org/cceh/0002/x000279.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1965”)"
+    },
+    {
+      "number": "000280",
+      "name": "Toronto",
+      "url": "https://www.ccel.org/cceh/0002/x000280.htm",
+      "reason": "the page marks John W. Peterson's tune as copyright (“John W. Peterson, ©1954”)"
     }
   ],
   "rejected": [
@@ -1467,6 +1717,24 @@
       "name": "Gabriel",
       "url": "https://www.ccel.org/cceh/0002/x000220.htm",
       "reason": "the time signature changes (9/8, 6/8), which the solfa grid does not bar"
+    },
+    {
+      "number": "000252",
+      "name": "Break Bread",
+      "url": "https://www.ccel.org/cceh/0002/x000252.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 2 notes off in 10)"
+    },
+    {
+      "number": "000265",
+      "name": "Christum Wir Sollen Loben Schon",
+      "url": "https://www.ccel.org/cceh/0002/x000265.htm",
+      "reason": "the MIDI file has no time signature"
+    },
+    {
+      "number": "000281",
+      "name": "Message",
+      "url": "https://www.ccel.org/cceh/0002/x000281.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 19)"
     }
   ],
   "sameNameDifferentTune": [],
@@ -1514,32 +1782,38 @@
       "earliestYear": 1914
     },
     {
-      "name": "John Bernard Wilkes",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1861
-    },
-    {
       "name": "A. P. Bland",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
     },
     {
-      "name": "Alexander Galloway",
+      "name": "Christopher E. F. Weyse",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "James Walsh",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Peder Knudsen",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
     }
   ],
   "counts": {
-    "published": 84,
-    "drafts": 25,
-    "duplicates": 60,
-    "refused": 56,
-    "rejected": 11,
-    "pages": 236,
-    "notYetCrawled": 1162,
+    "published": 104,
+    "drafts": 29,
+    "duplicates": 67,
+    "refused": 69,
+    "rejected": 14,
+    "pages": 283,
+    "notYetCrawled": 1115,
     "tunesInIndex": 1398
   }
 }

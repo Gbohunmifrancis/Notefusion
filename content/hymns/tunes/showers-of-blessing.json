@@ -1,0 +1,32 @@
+{
+  "name": "SHOWERS OF BLESSING",
+  "title": "Showers of Blessing",
+  "music": [
+    {
+      "name": "James McGranahan",
+      "born": 1840,
+      "died": 1907,
+      "role": "Music (1883)"
+    }
+  ],
+  "musicPublished": 1883,
+  "metre": "8 7 8 7",
+  "key": "Bb major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:.5 F4:.5 F4:.5 F4:.5 G4:.5 A4:.5 | Bb4:1.5 F4:1.5 | A4:.5 A4:.5 A4:.5 A4:.5 Bb4:.5 C5:.5 | Bb4:3 | G4:.5 G4:.5 G4:.5 Bb4:.5 A4:.5 G4:.5 | F4:1.5 Bb4:1.5 | Bb4:.5 Bb4:.5 Bb4:.5 Bb4:.5 A4:.5 Bb4:.5 | C5:3 | D5:2 C#5:.5 D5:.5 | Bb4:1.5 F4:1.5 | D5:.5 C5:.5 Bb4:.5 Bb4:.5 A4:.5 Bb4:.5 | C5:3 | D5:.5 D5:.5 D5:.5 C5:.5 Bb4:.5 G4:.5 | F4:1.5 Bb4:1.5 | A4:.5 A4:.5 A4:.5 A4:.5 Bb4:.5 C5:.5 | Bb4:3",
+  "incipit": "ssssltds|ttttdrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000273.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000273a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000273; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000273 (the melody read from 000273a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. James McGranahan's dates (1840–1907) are from our page for the tune CHRIST RETURNETH (content/hymns/tunes/christ-returneth.json); CCEH's page gives only the year 1883. The bar lines are those of CCEH's Noteworthy score (000273a.nwc).",
+  "importedFrom": "cceh:000273",
+  "updated": "2026-10-16"
+}

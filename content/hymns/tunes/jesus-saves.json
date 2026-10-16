@@ -1,0 +1,32 @@
+{
+  "name": "JESUS SAVES",
+  "title": "Jesus Saves",
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1882)"
+    }
+  ],
+  "musicPublished": 1882,
+  "metre": "7 6 7 6 7 7 7 6",
+  "key": "G major",
+  "time": "3/4",
+  "tempo": 120,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "D4:.75 D4:.25 | G4:1.75 D4:.25 G4:.75 A4:.25 | B4:2 D5:.75 D5:.25 | D5:2 B4:.75 G4:.25 | A4:2 D4:.75 D4:.25 | G4:1.75 D4:.25 G4:.75 A4:.25 | G4:2 D5:.75 D5:.25 | D5:2 A4:.75 B4:.25 | G4:2 G4:.75 G4:.25 | C5:1.75 C5:.25 C5:.75 C5:.25 | C5:2 G4:.75 A4:.25 | B4:1.75 B4:.25 D5:.75 B4:.25 | A4:2 D5:.75 D5:.25 | D5:1.75 B4:.25 C5:.75 D5:.25 | E5:2 D5:.75 D5:.25 | D5:2 A4:.75 B4:.25 | G4:2",
+  "incipit": "ssdsdrm|sssmdr|ssdsdrm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000277.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000277a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000277; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000277 (the melody read from 000277a.mid, checked against the page's do-re-mi incipit, 1 note off in 20); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives only the year 1882. The bar lines are those of CCEH's Noteworthy score (000277a.nwc).",
+  "importedFrom": "cceh:000277",
+  "updated": "2026-10-16"
+}
