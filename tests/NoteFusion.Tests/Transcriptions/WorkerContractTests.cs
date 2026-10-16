@@ -104,6 +104,45 @@ public class WorkerContractTests
     }
 
     [Fact]
+    public async Task A_recognised_hymn_comes_through_with_its_hymnbook_version()
+    {
+        const string payload = """
+            {"status":"done","result":{"key":"A major","keyConfidence":0.8,"tempo":84,"timeSignature":"4/4","musicxml":"<s/>","midiBase64":"",
+             "notes":[],"solfaLines":[],"overallConfidence":0.7,
+             "hymnMatch":{"slug":"amazing-grace","title":"Amazing Grace","tune":"NEW BRITAIN","url":"https://notefusion.studio/hymns/amazing-grace",
+                          "source":"NoteFusion","licence":"Public domain.","credit":"Tune NEW BRITAIN; words by John Newton (1725–1807).",
+                          "kind":"score","confidence":0.71,"key":"A major","timeSignature":"3/4","tempo":72,"pickup":1.0,
+                          "notes":[{"pitchMidi":64,"startBeat":2.0,"durBeats":1.0,"degree":5,"solfa":"s","octaveMark":",","conf":1.0}],
+                          "solfaLines":["Doh is A"],"musicxml":"<hymn/>","lyrics":"A-maz-ing grace"}}}
+            """;
+
+        var hymn = (await Client(StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload)).GetJobAsync("j1")).Value.Result!.HymnMatch!;
+
+        Assert.Equal(("amazing-grace", "score", "3/4", 72, 1.0), (hymn.Slug, hymn.Kind, hymn.TimeSignature, hymn.Tempo, hymn.Pickup));
+        Assert.Equal("<hymn/>", hymn.MusicXml);
+        Assert.Equal(new NoteEventDto(64, 2.0, 1.0, 5, "s", ",", 1.0), hymn.Notes![0]);
+        Assert.StartsWith("Tune NEW BRITAIN", hymn.Credit);
+        Assert.Equal("A-maz-ing grace", hymn.Lyrics);
+    }
+
+    [Fact]
+    public async Task A_recognised_incipit_names_the_hymn_without_a_score()
+    {
+        const string payload = """
+            {"status":"done","result":{"key":"C major","keyConfidence":0.9,"tempo":84,"timeSignature":"4/4","musicxml":"<s/>","midiBase64":"",
+             "notes":[],"solfaLines":[],"overallConfidence":0.9,
+             "hymnMatch":{"slug":"some-tune","title":"Some Tune","url":"https://example.org/some-tune","source":"Example","licence":"CC0",
+                          "credit":"Incipit from Example.","kind":"incipit","confidence":0.6}}}
+            """;
+
+        var hymn = (await Client(StubHttpMessageHandler.Returning(HttpStatusCode.OK, payload)).GetJobAsync("j1")).Value.Result!.HymnMatch!;
+
+        Assert.Equal("incipit", hymn.Kind);
+        Assert.Null(hymn.Notes);
+        Assert.Null(hymn.MusicXml);
+    }
+
+    [Fact]
     public async Task A_result_without_chords_says_so()
     {
         const string payload = """
@@ -116,6 +155,7 @@ public class WorkerContractTests
         Assert.Null(job.Value.Result!.Chords);
         Assert.Null(job.Value.Result.ChordsSource);
         Assert.Null(job.Value.Result.KeyAlternatives);
+        Assert.Null(job.Value.Result.HymnMatch);
     }
 
     [Fact]
