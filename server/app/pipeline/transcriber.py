@@ -3936,14 +3936,20 @@ _DEFAULT_BPM = 100.0
 # the same music read as eighths at 176 fits it exactly.
 _TEMPO_PREFERENCE_BPM = 100.0
 
-# Of two readings that fit alike, the one that writes the commonest note as a plain value — a
-# beat, half or quarter of one, or two or four — goes before one that writes it dotted or as
-# a triplet; only then does the preference above decide.  A 3/4 hymn moving "minim crotchet"
-# at 65 fits the half-beat grid just as well at 97.5, where the crotchet is a dotted quaver
-# and the minim three beats, and 97.5 is nearer 100: so "dotted" is the second key of
-# ``_grid_bpm``'s rank, after the fit.  See ``settings.tempo_plain_level`` for what it measured.
+# Of two readings that fit alike, the nearer 100 wins (above) — unless it writes the commonest
+# note dotted or as a triplet, and a reading a dotted ratio away (3/2 or 2/3 of it) fits as well
+# and writes it plain: a beat, a half or quarter of one, or two or four.  A 3/4 hymn moving
+# "minim crotchet" at 76 fits the half-beat grid just as well at 114, where the crotchet is a
+# dotted quaver (1.5 beats), and 114 is nearer 100; so is a 4/4 hymn of crotchets at 115 read at
+# 172.  Only that swap, and only between readings in the same fit bucket: a rank key "dotted
+# loses every tie" was measured first and moved a 1.5x vibrato-fragmented instrument case to
+# 2x (``vibrato_rate_k20``, 148 -> 195 for 96), which the instrument gate counts as an octave
+# error.  See ``settings.tempo_plain_level`` for what the swap measured.
 _PLAIN_NOTE_BEATS = (0.25, 0.5, 1.0, 2.0, 4.0)
+# 0.04 missed the sung Amazing Grace's median interval (a mix of crotchets and minims sung a
+# little loosely) and called it dotted; 0.08 is a third of the way to the nearest dotted value.
 _PLAIN_NOTE_TOLERANCE = 0.08
+_DOTTED_RATIOS = (1.5, 2.0 / 3.0)
 
 # The range a beat can be *notated* in, which is narrower than the ``_MIN_BPM``..
 # ``_MAX_BPM`` range librosa is trusted to report inside: those bound what a tracker
@@ -4319,24 +4325,35 @@ def _grid_bpm(
                 sec_j = min(sec_j, sec_i)
         on_grid[j] = (bpm_j, sec_j, refined_j)
 
-    commonest = float(np.median(usable))
-
-    def dotted(bpm: float) -> int:
-        """1 when the commonest note would be written dotted or as a triplet at ``bpm``."""
-        beats = commonest * bpm / 60.0
-        return int(not any(abs(beats / plain - 1.0) <= _PLAIN_NOTE_TOLERANCE for plain in _PLAIN_NOTE_BEATS))
-
-    def rank(entry: tuple[float, float, float]) -> tuple[int, int, float]:
+    def rank(entry: tuple[float, float, float]) -> tuple[int, float]:
         bpm, seconds, _refined = entry
         # Ratio, not difference, for the preference: 80 and 125 BPM are equally far
         # from 100.
         return (
             round(seconds / _GRID_FIT_BAND_SEC),
-            dotted(bpm) if settings.tempo_plain_level else 0,
             abs(float(np.log(bpm / _TEMPO_PREFERENCE_BPM))),
         )
 
-    return min(on_grid, key=rank)[2]
+    best = min(on_grid, key=rank)
+    if not settings.tempo_plain_level:
+        return best[2]
+
+    # A winner that writes the commonest note dotted gives way to a reading a dotted ratio
+    # away that fits as well and writes it plain; see ``_PLAIN_NOTE_BEATS``.
+    commonest = float(np.median(usable))
+
+    def plain(bpm: float) -> bool:
+        beats = commonest * bpm / 60.0
+        return any(abs(beats / value - 1.0) <= _PLAIN_NOTE_TOLERANCE for value in _PLAIN_NOTE_BEATS)
+
+    if plain(best[0]):
+        return best[2]
+    swaps = [
+        entry for entry in on_grid
+        if rank(entry)[0] == rank(best)[0] and plain(entry[0])
+        and any(abs(entry[0] / best[0] / ratio - 1.0) <= _OCTAVE_ADMIT_TOLERANCE for ratio in _DOTTED_RATIOS)
+    ]
+    return min(swaps, key=rank)[2] if swaps else best[2]
 
 
 def _estimate_tempo_and_beats(

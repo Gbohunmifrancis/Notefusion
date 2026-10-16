@@ -81,6 +81,8 @@ def _effective_flags() -> dict:
         "contour_first": settings.contour_first,
         "key_ensemble": settings.key_ensemble,
         "tempo_grid": settings.tempo_grid,
+        "tempo_plain_level": settings.tempo_plain_level,
+        "meter_detect": settings.meter_detect,
         "grid_refine": settings.grid_refine,
         "f0_merge": settings.f0_merge,
         "quantize_divisors": list(settings.quantize_divisors),
