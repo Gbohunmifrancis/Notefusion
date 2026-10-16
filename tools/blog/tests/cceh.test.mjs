@@ -79,6 +79,7 @@ test("page: the tune's names, metre, incipits, credits and files are read as the
   assert.equal(parseCredit({ text: "Netherlands folk song", html: "Netherlands folk song" }).traditional, true);
   assert.equal(parseCredit({ text: "Anon Composer, 1880-1960", html: "Anon Composer, 1880-1960" }).traditional, undefined, "a person with a life is never anonymous");
   assert.deepEqual(parseCredit({ text: "arr.", html: "arr." }), { raw: "arr.", role: "arr." });
+  assert.deepEqual(parseCredit({ text: "tenor-lead arr., George Kirbye", html: "tenor-lead arr., George Kirbye" }), { raw: "tenor-lead arr., George Kirbye", role: "arr. for tenor lead", name: "George Kirbye" });
   assert.deepEqual(parseCredit({ text: "harm., ad., David Evans, 1927", html: "harm., ad., David Evans, 1927" }), { raw: "harm., ad., David Evans, 1927", role: "harm., ad.", year: 1927, name: "David Evans" });
   // A person beside a book: the tune's composer (or its publisher), the book where it was printed.
   assert.deepEqual(parseCredit({ text: "Joachim Neander, Glaub-und-Liebesubung, 1680", html: "Joachim Neander, <i>Glaub-und-Liebesubung</i>, 1680" }), { raw: "Joachim Neander, Glaub-und-Liebesubung, 1680", year: 1680, book: "Glaub-und-Liebesubung", name: "Joachim Neander" });
