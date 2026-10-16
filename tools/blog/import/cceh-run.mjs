@@ -49,11 +49,6 @@ export function readIndex(cache) {
   return out;
 }
 
-/** A melody's steps in semitones, repeated notes run together (one book ties what another repeats). */
-export function melodySteps(notes) {
-  const ps = notes.map((n) => n.pitchMidi).filter((p, i, a) => !i || p !== a[i - 1]);
-  return ps.slice(1).map((p, i) => p - ps[i]);
-}
 function editDistance(a, b) {
   let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
   for (let i = 1; i <= a.length; i++) {
@@ -64,15 +59,19 @@ function editDistance(a, b) {
   return prev[b.length];
 }
 /**
- * Whether two melodies are the same tune, whatever their keys: their first 24 steps (or as many as the
- * shorter has, at least 10) differ by at most one edit in eight. Returns the distance, or null when they differ.
+ * Whether two melodies are the same tune, whatever their keys: their first 24 notes (or as many as the
+ * shorter has, at least 10; repeated notes run together), as pitch classes moved into the key that fits
+ * best, differ by at most one note in six — one book's passing note or altered note is the same tune.
+ * Returns the number of differing notes, or null when they are different tunes.
  */
 export function sameMelody(a, b) {
-  const sa = melodySteps(a), sb = melodySteps(b);
-  const n = Math.min(sa.length, sb.length, 24);
+  const pcs = (notes) => notes.map((n) => n.pitchMidi).filter((p, i, arr) => !i || p !== arr[i - 1]).map((p) => ((p % 12) + 12) % 12);
+  const pa = pcs(a), pb = pcs(b);
+  const n = Math.min(pa.length, pb.length, 24);
   if (n < 10) return null;
-  const d = editDistance(sa.slice(0, n), sb.slice(0, n));
-  return d <= Math.max(1, Math.floor(n / 8)) ? d : null;
+  let d = Infinity;
+  for (let t = 0; t < 12; t++) d = Math.min(d, editDistance(pa.slice(0, n), pb.slice(0, n).map((p) => (p + t) % 12)));
+  return d <= Math.round(n / 6) ? d : null;
 }
 
 /**

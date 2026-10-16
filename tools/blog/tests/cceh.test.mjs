@@ -197,6 +197,12 @@ test("dedupe: the same tune in another key is the same tune; another tune is not
   assert.equal(sameMelody(ours["new-britain"].parsed.notes, r.parsed.notes), null);
   const up = r.parsed.notes.map((n) => ({ ...n, pitchMidi: n.pitchMidi + 5 }));
   assert.equal(sameMelody(up, r.parsed.notes), 0);
+  // Another book's version — a passing note added, a note altered — is still the same tune.
+  const variant = [...r.parsed.notes.slice(0, 5), { ...r.parsed.notes[4], pitchMidi: r.parsed.notes[4].pitchMidi + 2 }, ...r.parsed.notes.slice(5, 9), { ...r.parsed.notes[9], pitchMidi: r.parsed.notes[9].pitchMidi - 1 }, ...r.parsed.notes.slice(10)];
+  const dv = sameMelody(variant, r.parsed.notes);
+  assert.ok(dv !== null && dv <= 3, String(dv));
+  // No two different tunes in our library are taken for each other.
+  for (const [a, b] of [["new-britain", "italian-hymn"], ["old-hundredth", "duke-street"], ["nicaea", "hyfrydol"]]) assert.equal(sameMelody(ours[a].parsed.notes, ours[b].parsed.notes), null, `${a} / ${b}`);
 });
 
 // ── The run ─────────────────────────────────────────────────────────────────
