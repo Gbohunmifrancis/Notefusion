@@ -74,7 +74,11 @@ public sealed record TranscriptionMetricsDto(
     long StoredBytes,
     /// <summary>Transcriptions that produced a result in the window, saved or not (see TranscriptionCounts).</summary>
     int TotalTranscribed = 0,
-    int TotalTranscribedPrevious = 0);
+    int TotalTranscribedPrevious = 0,
+    /// <summary>Jobs in the window whose result recognised a hymn in the library (the worker's hymnMatch).</summary>
+    int HymnMatchesOffered = 0,
+    /// <summary>Sheets saved in the window as a hymn's hymnbook version (the user said yes to the offer).</summary>
+    int HymnVersionsSaved = 0);
 
 /// <summary>One day of a time series, bucketed by reporting-local date (WAT, UTC+1).</summary>
 /// <param name="Date">The local calendar date, not an instant.</param>

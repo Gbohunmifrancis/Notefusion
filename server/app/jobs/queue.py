@@ -402,6 +402,7 @@ class JobQueue:
                     # The route kept only the head of a longer clip (a preview).
                     job.result.song_duration_sec = round(song_seconds, 1)
                     job.result.truncated = True
+                _offer_hymn(job, mode)
             finally:
                 # Stamped on every path out of transcribe() and before any terminal
                 # status is written. _purge_expired ignores a job whose finished_at is
@@ -545,6 +546,7 @@ class JobQueue:
                 job.result.source = job.source
                 job.result.song_duration_sec = round(song_seconds, 1)
                 job.result.truncated = fetched.truncated
+                _offer_hymn(job, mode)
             finally:
                 # The fetched audio goes before the job reports done, not after: a client that
                 # sees "done" and looks must find nothing of the song left on disk.
@@ -722,6 +724,30 @@ class JobQueue:
 # left in the song bench (a "da" singer under a band 6 dB louder) still gave 8 in 18 seconds.
 _STEM_MIN_NOTES = 4
 _STEM_SECONDS_PER_NOTE = 10.0
+
+
+def _offer_hymn(job: Job, mode: str) -> None:
+    """Attach ``hymn_match`` when a melody's tune clearly matches a hymn we hold.
+
+    Once, at the end of a melody (or song) transcription: a choir's parts, chords mode and an
+    arrangement written under the tune are read against their own beats, which the hymnbook
+    version would not keep, so they are never offered one. Recognition is an extra on top of the
+    sheet: any failure leaves the result as it was.
+    """
+    if mode != "melody" or job.result is None or job.result.parts or not settings.hymn_match:
+        return
+    from app.pipeline import hymn_match
+
+    try:
+        found = hymn_match.offer(job.result)
+    except Exception as ex:  # noqa: BLE001 - the offer is optional; the sheet is not
+        logger.warning("Job %s: hymn matching skipped: %r", job.id[:8], ex)
+        return
+    job.result.hymn_match = found
+    if found:
+        # One line per offer, for counting how often it fires; the hymn is public, the take is not named.
+        logger.info("hymn_match job=%s hymn=%s kind=%s confidence=%.3f",
+                    job.id[:8], found["slug"], found["kind"], found["confidence"])
 
 
 def _stem_min_notes(wav: Path) -> int:

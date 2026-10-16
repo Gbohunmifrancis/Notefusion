@@ -524,10 +524,18 @@ internal sealed class TranscriptionApiClient(
                 .Select(c => new ChordSymbolDto(c.StartBeat, c.DurBeats, c.Root, c.Quality, c.Bass, c.Symbol, c.Solfa))
                 .ToList(),
             wire.Result.ChordsSource,
-            wire.Result.KeyAlternatives?.Select(k => new KeyAlternativeDto(k.Key, k.Pitches, k.MusicXml ?? "")).ToList());
+            wire.Result.KeyAlternatives?.Select(k => new KeyAlternativeDto(k.Key, k.Pitches, k.MusicXml ?? "")).ToList(),
+            MapHymnMatch(wire.Result.HymnMatch));
 
         return new TranscriptionJobDto(jobId, status, wire.Progress ?? 0, result, wire.Error, wire.Stage, MapSource(wire.Source), wire.QueuePosition);
     }
+
+    private static HymnMatchDto? MapHymnMatch(WireHymnMatch? hymn)
+        => hymn is null ? null : new HymnMatchDto(
+            hymn.Slug, hymn.Title, hymn.Tune ?? "", hymn.Url, hymn.Source, hymn.Licence, hymn.Credit, hymn.Kind, hymn.Confidence,
+            hymn.Key, hymn.TimeSignature, hymn.Tempo, hymn.Pickup,
+            hymn.Notes?.Select(n => new NoteEventDto(n.PitchMidi, n.StartBeat, n.DurBeats, n.Degree, n.Solfa, n.OctaveMark, n.Conf)).ToList(),
+            hymn.SolfaLines, hymn.MusicXml, hymn.Lyrics);
 
     private static SourceDto? MapSource(WireSource? source)
         => source is null ? null : new SourceDto(

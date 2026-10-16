@@ -40,6 +40,10 @@ public sealed class TranscriptionConfiguration : IEntityTypeConfiguration<Transc
         builder.HasIndex(t => t.ShareToken).IsUnique();
         builder.Property(t => t.Folder).HasColumnName("folder").HasMaxLength(Transcription.FolderMaxLength);
         builder.HasIndex(t => new { t.UserId, t.Folder });
+        builder.Property(t => t.HymnSlug).HasColumnName("hymn_slug").HasMaxLength(200);
+        builder.Property(t => t.HymnTitle).HasColumnName("hymn_title").HasMaxLength(300);
+        builder.Property(t => t.HymnUrl).HasColumnName("hymn_url").HasMaxLength(500);
+        builder.Property(t => t.HymnCredit).HasColumnName("hymn_credit").HasMaxLength(Transcription.HymnCreditMaxLength);
 
         // The choir's shared library. A choir that goes (its director's account deleted) takes the sheets out
         // of its library, never the sheets themselves.

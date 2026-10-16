@@ -1002,6 +1002,26 @@ namespace NoteFusion.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(80)")
                         .HasColumnName("folder");
 
+                    b.Property<string>("HymnCredit")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("hymn_credit");
+
+                    b.Property<string>("HymnSlug")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("hymn_slug");
+
+                    b.Property<string>("HymnTitle")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("hymn_title");
+
+                    b.Property<string>("HymnUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("hymn_url");
+
                     b.Property<string>("Lyrics")
                         .IsRequired()
                         .ValueGeneratedOnAdd()

@@ -33,7 +33,18 @@ public sealed record SavedTranscriptionDto(
     string? Folder = null,
     IReadOnlyList<ChordSymbolDto>? Chords = null,
     IReadOnlyList<NoteEventDto>? Preview = null,
-    bool SharedWithChoir = false);
+    bool SharedWithChoir = false,
+    HymnCreditDto? Hymn = null);
+
+/// <summary>
+/// The hymn a sheet is the hymnbook version of: its title, its page and the credit line that page shows
+/// (where the melody and words came from, and who wrote them). Null on a sheet that is a transcription.
+/// </summary>
+public sealed record HymnCreditDto(string Slug, string Title, string Url, string Credit)
+{
+    public static HymnCreditDto? Of(Transcription t)
+        => t.HymnSlug is null ? null : new HymnCreditDto(t.HymnSlug, t.HymnTitle ?? "", t.HymnUrl ?? "", t.HymnCredit ?? "");
+}
 
 /// <summary>A sheet behind a public link: what a chorister who follows it sees, with no account.</summary>
 public sealed record SharedSheetDto(
@@ -47,7 +58,8 @@ public sealed record SharedSheetDto(
     string MusicXml,
     IReadOnlyDictionary<string, PartDto>? Parts,
     string? PartsMusicXml,
-    IReadOnlyList<ChordSymbolDto>? Chords = null);
+    IReadOnlyList<ChordSymbolDto>? Chords = null,
+    HymnCreditDto? Hymn = null);
 
 /// <summary>The public link for a saved transcription.</summary>
 public sealed record ShareLinkDto(string Token);
@@ -85,7 +97,8 @@ public static class SavedTranscriptionMapper
             t.Folder,
             includeNotes ? ChordLabels.Label(t.Chords, t.Key) : null,
             SolfaLabels.Label(t.Notes.Take(PreviewNotes).ToList(), t.Key),
-            t.ChoirId is not null);
+            t.ChoirId is not null,
+            HymnCreditDto.Of(t));
 
     public static SharedSheetDto ToShared(Transcription t, string sharedBy)
         => new(
@@ -99,7 +112,8 @@ public static class SavedTranscriptionMapper
             t.MusicXml,
             SolfaLabels.LabelParts(t.Parts, t.Key, t.Notes),
             t.PartsMusicXml,
-            ChordLabels.Label(t.Chords, t.Key));
+            ChordLabels.Label(t.Chords, t.Key),
+            HymnCreditDto.Of(t));
 }
 
 /// <summary>
