@@ -28,7 +28,7 @@ a partial take (one verse, the refrain, a start mid-hymn, or several verses):
   ``GAP``.  A score entry's melody is tiled so a take of several verses aligns as one run.
 * A match is offered only when it is long (``MIN_MATCHED`` exact notes), dense (score per
   aligned note), covers most of the take, and clearly beats the best entry with a
-  *different* tune (``MARGIN_RATIO``; two hymns sung to one tune are one melody, not
+  *different* tune (``MARGIN_RATIO``, more for a short match; two hymns sung to one tune are one melody, not
   rivals).  ``kind="incipit"`` entries (recognition only: an opening phrase, a title and
   a link) must have their whole opening matched from its first note and clear stricter
   bars; they name the tune and never carry a score.
@@ -69,7 +69,8 @@ INTERVAL_CLIP = 12       # an interval past an octave is a glitch, not a leap to
 MIN_MATCHED = 10         # notes matched exactly (pitch class) in the alignment
 MIN_DENSITY = 0.65       # alignment score per aligned note (take or hymn side, the longer)
 MIN_COVERAGE = 0.5       # share of the take's notes inside the alignment
-MARGIN_RATIO = 1.5       # best score / the best score of another tune
+MARGIN_RATIO = 1.5       # best score / the best score of another tune ...
+SHORT_MARGIN = (2.2, 0.04)  # ... and more for a short match: max(1.5, 2.2 - 0.04 * notes matched)
 INCIPIT_MIN_MATCHED = 10
 INCIPIT_MIN_DENSITY = 0.9  # near note-perfect: an opening phrase is short
 INCIPIT_MIN_COVER = 0.85  # share of the incipit's notes inside the alignment, from its first note
@@ -480,7 +481,7 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
               and t_len >= INCIPIT_MIN_COVER * own and margin >= INCIPIT_MARGIN_RATIO)
     else:
         ok = (matched >= MIN_MATCHED and density >= MIN_DENSITY and coverage >= MIN_COVERAGE
-              and margin >= MARGIN_RATIO)
+              and margin >= max(MARGIN_RATIO, SHORT_MARGIN[0] - SHORT_MARGIN[1] * matched))
     if not ok:
         return (None, figures) if explain else None
 
