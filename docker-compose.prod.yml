@@ -41,10 +41,20 @@ services:
       # signed-in browser gets through; the deploy writes it from the YTDLP_COOKIES secret
       # and mounts it here. With no secret, /dev/null is mounted and yt-dlp runs without.
       NF_YTDLP_COOKIES_FILE: /run/ytdlp-cookies.txt
-      # Extra yt-dlp flags. The default fetches YouTube's proof-of-origin tokens from the
-      # bgutil-provider sidecar below; an override in .env (a --proxy, say) replaces it, so
-      # keep the --extractor-args part in it to keep the tokens.
-      NF_YTDLP_EXTRA_ARGS: '${NF_YTDLP_EXTRA_ARGS:---extractor-args "youtubepot-bgutilhttp:base_url=http://bgutil-provider:4416"}'
+      # YouTube's proof-of-origin tokens come from the bgutil-provider sidecar below. Set apart
+      # from NF_YTDLP_EXTRA_ARGS, so extra flags in .env can no longer drop the tokens.
+      NF_YTDLP_POT_URL: http://bgutil-provider:4416
+      NF_YTDLP_EXTRA_ARGS: ${NF_YTDLP_EXTRA_ARGS:-}
+      # The player clients a refused extraction is tried again with (app/config.py). Empty
+      # in .env switches the second try off; unset keeps the default.
+      NF_YTDLP_FALLBACK_CLIENTS: ${NF_YTDLP_FALLBACK_CLIENTS-mweb,android_vr,web_embedded}
+      # Optional and off: a residential proxy for YouTube alone, tried only after YouTube refused
+      # this server directly and with the fallback clients. The deploy writes it from the
+      # YTDLP_PROXY secret (docs/DEPLOYMENT.md, "A residential proxy (optional)").
+      NF_YTDLP_PROXY: ${NF_YTDLP_PROXY:-}
+      # The worker installs the newest yt-dlp at startup and daily (app/ingest/ytdlp_update.py);
+      # "stable" instead of the nightly channel if a nightly ever misbehaves.
+      NF_YTDLP_UPDATE_CHANNEL: ${NF_YTDLP_UPDATE_CHANNEL:-nightly}
       # Vocal separation is the memory peak (about 1.4 GB per song at the defaults; see
       # app/pipeline/separate.py). The limit keeps a runaway worker from taking the API and
       # the database down with it: the kernel kills this container alone and Docker restarts it.
@@ -75,12 +85,17 @@ services:
 
   # Mints the proof-of-origin tokens YouTube asks datacenter addresses for (bgutil, GPL-3.0;
   # the yt-dlp plugin in the transcriber image is pinned to the same version). Reached only
-  # by the transcriber on the compose network: no published port.
+  # by the transcriber on the compose network: no published port. It holds no state, so a
+  # restart costs nothing; the V8 heap cap keeps it well inside its limit on the small box
+  # (the Check EC2 Status workflow's "docker stats" shows what it uses).
   bgutil-provider:
-    image: brainicism/bgutil-ytdlp-pot-provider:2.0.1-deno
+    image: brainicism/bgutil-ytdlp-pot-provider:2.0.2-deno
     restart: always
     init: true
     logging: *default-logging
+    environment:
+      DENO_V8_FLAGS: --max-old-space-size=${NF_BGUTIL_HEAP_MB:-160}
+    mem_limit: ${NF_BGUTIL_MEM_LIMIT:-320m}
 
   api:
     image: ${API_IMAGE:-ghcr.io/OWNER/notefusion-api:latest}

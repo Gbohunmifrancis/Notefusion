@@ -12,6 +12,14 @@ on:
       - "NoteFusion.slnx"
       - "Directory.Build.props"
       - ".github/workflows/deploy.yml"
+  # Weekly, at a quiet hour (Monday 03:23 UTC, 04:23 in Lagos): rebuild and redeploy main so the
+  # worker image's yt-dlp never goes stale between pushes (YouTube breaks old releases every few
+  # weeks; the worker also updates itself daily, this keeps the baked copy close behind). Both
+  # images are built: main's newest commit may have touched only the website, so no image may be
+  # tagged with it yet. A scheduled run always runs on main's tip, so the outdated-commit guard
+  # below has nothing to refuse.
+  schedule:
+    - cron: "23 3 * * 1"
 
 concurrency:
   group: deploy-production
@@ -98,6 +106,10 @@ jobs:
           labels: ${{ steps.meta-transcriber.outputs.labels }}
           cache-from: type=gha,scope=transcriber
           cache-to: type=gha,mode=max,scope=transcriber
+          # A new value every run re-runs the Dockerfile's yt-dlp layer (and only that), so every
+          # build ships the newest yt-dlp instead of whatever the layer cache held.
+          build-args: |
+            YTDLP_REFRESH=${{ github.run_id }}-${{ github.run_attempt }}
 
   deploy:
     name: Deploy to EC2
@@ -187,6 +199,9 @@ jobs:
           # ── YouTube ───────────────────────────────────────────────────────────
           # Netscape cookies.txt from a signed-in browser (see docs/DEPLOYMENT.md, "YouTube").
           YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
+          # Optional, off when unset: a residential proxy URL (http://user:pass@host:port) that
+          # yt-dlp falls back to after YouTube refuses this server (docs/DEPLOYMENT.md).
+          YTDLP_PROXY: ${{ secrets.YTDLP_PROXY }}
           # ── Dozzle (/logs) sign-in, optional: both or neither (docs/DEPLOYMENT.md, "Logs") ──
           DOZZLE_USER: ${{ secrets.DOZZLE_USER }}
           DOZZLE_PASSWORD_HASH: ${{ secrets.DOZZLE_PASSWORD_HASH }}
@@ -207,7 +222,7 @@ jobs:
             PAYSTACK__SECRETKEY,PAYSTACK__BASEURL,PAYSTACK__SUPPORTEDCURRENCIES,PAYSTACK__WEBHOOKSECRET,
             FLUTTERWAVE__BASEURL,SQUAD__BASEURL,
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
-            PUSH__USEEXPO,AUTH__RESETPASSWORDURL,YTDLP_COOKIES,
+            PUSH__USEEXPO,AUTH__RESETPASSWORDURL,YTDLP_COOKIES,YTDLP_PROXY,
             OUTREACH_ENABLED,OUTREACH_FOUNDER_NAME,OUTREACH_REPLY_TO,OUTREACH_BATCH_SIZE,OUTREACH_INTERVAL_MINUTES,
             DOZZLE_USER,DOZZLE_PASSWORD_HASH
           script: |
@@ -278,6 +293,7 @@ jobs:
             echo "─── Writing .env ───"
             cat > .env <<EOF
             YTDLP_COOKIES_HOST="${YTDLP_COOKIES_HOST}"
+            NF_YTDLP_PROXY="${YTDLP_PROXY:-}"
             DOZZLE_AUTH_PROVIDER="${DOZZLE_AUTH_PROVIDER}"
             DOZZLE_USERS_HOST="${DOZZLE_USERS_HOST}"
             POSTGRES_PASSWORD="${POSTGRES_PASSWORD}"
