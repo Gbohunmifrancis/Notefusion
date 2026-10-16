@@ -121,7 +121,7 @@ export function renderTune(t, { hymns, posts }) {
   const body = `${breadcrumbs(crumbs)}
 <article class="hymn-page tune-page">
 <header class="post-header">
-  <p class="kicker"><a href="/hymns">Hymn tunes in Tonic Solfa</a></p>
+  <p class="kicker"><a href="/hymns?kind=tune">Hymn tunes in Tonic Solfa</a></p>
   <h1>${escapeHtml(v.title)}: hymn tune in Tonic Solfa</h1>
   <p class="post-lede">${escapeHtml(description)}</p>
 </header>

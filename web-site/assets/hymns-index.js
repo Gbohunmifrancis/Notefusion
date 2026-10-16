@@ -51,7 +51,10 @@
     });
   });
   try {
-    var q = new URLSearchParams(window.location.search).get("q");
-    if (q) { input.value = q; apply(); }
+    var params = new URLSearchParams(window.location.search);
+    var q = params.get("q"), k = params.get("kind");
+    if (k) kindButtons.forEach(function (b) { if (b.getAttribute("data-kind") === k) { kind = k; b.setAttribute("aria-pressed", "true"); } });
+    if (q) input.value = q;
+    if (q || kind) apply();
   } catch (e) { /* an old browser: the box still works */ }
 })();
