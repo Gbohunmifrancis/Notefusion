@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "George F. Root",
+      "born": 1820,
+      "died": 1895,
       "role": "Music (1875)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "sslsmdrdltd|tdrdmrftd",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0003/x000300.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0003/000300a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000300; public domain.",
-  "reviewNotes": "Held back: not provably public domain: George F. Root: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000300 (the melody read from 000300a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000300a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000300 (the melody read from 000300a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George F. Root's dates (1820–1895) are from https://en.wikipedia.org/wiki/George_Frederick_Root (30 August 1820 - 6 August 1895; RING THE BELLS, 1875); CCEH's page gives only the year 1875. The bar lines are those of CCEH's Noteworthy score (000300a.nwc).",
   "importedFrom": "cceh:000300",
   "updated": "2026-10-16"
 }

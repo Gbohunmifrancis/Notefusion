@@ -441,8 +441,20 @@
       "number": "000284"
     },
     {
+      "slug": "rotterdam",
+      "number": "000289"
+    },
+    {
       "slug": "innocents",
       "number": "000291"
+    },
+    {
+      "slug": "tidings",
+      "number": "000295"
+    },
+    {
+      "slug": "ring-the-bells",
+      "number": "000300"
     },
     {
       "slug": "germany",
@@ -467,6 +479,10 @@
     {
       "slug": "mendon",
       "number": "000315"
+    },
+    {
+      "slug": "trentham",
+      "number": "000317"
     },
     {
       "slug": "salvation-320",
@@ -495,6 +511,14 @@
     {
       "slug": "sweney",
       "number": "000327"
+    },
+    {
+      "slug": "serenity",
+      "number": "000329"
+    },
+    {
+      "slug": "camacha",
+      "number": "000330"
     }
   ],
   "drafts": [
@@ -644,8 +668,7 @@
       "slug": "eagley",
       "number": "000246",
       "reasons": [
-        "the page gives no year for the tune",
-        "not provably public domain: James Walsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+        "the page gives no year for the tune"
       ]
     },
     {
@@ -679,20 +702,6 @@
       ]
     },
     {
-      "slug": "rotterdam",
-      "number": "000289",
-      "reasons": [
-        "not provably public domain: Berthold Tours: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "schuler",
-      "number": "000290",
-      "reasons": [
-        "not provably public domain: George S. Schuler: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
       "slug": "hanover",
       "number": "000292",
       "reasons": [
@@ -701,38 +710,10 @@
       ]
     },
     {
-      "slug": "tidings",
-      "number": "000295",
+      "slug": "song-of-the-yangtze-boatman",
+      "number": "000332",
       "reasons": [
-        "not provably public domain: James Walsh: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "ring-the-bells",
-      "number": "000300",
-      "reasons": [
-        "not provably public domain: George F. Root: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "trentham",
-      "number": "000317",
-      "reasons": [
-        "not provably public domain: Robert Jackson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "serenity",
-      "number": "000329",
-      "reasons": [
-        "not provably public domain: William Vincent Wallace: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
-      ]
-    },
-    {
-      "slug": "camacha",
-      "number": "000330",
-      "reasons": [
-        "not provably public domain: B. Mansell Ramsey: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+        "the page gives no year for the tune"
       ]
     }
   ],
@@ -1347,6 +1328,24 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "im-but-a-stranger-here",
       "edits": 0
+    },
+    {
+      "number": "000333",
+      "name": "Bethany (Mason)",
+      "url": "https://www.ccel.org/cceh/0003/x000333.htm",
+      "ours": "bethany",
+      "oursSource": "Open Hymnal Project ABC score (Lowell Mason's setting, 1859).",
+      "hymn": "nearer-my-god-to-thee",
+      "edits": 0
+    },
+    {
+      "number": "000334",
+      "name": "Assurance",
+      "url": "https://www.ccel.org/cceh/0003/x000334.htm",
+      "ours": "assurance",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "blessed-assurance",
+      "edits": 0
     }
   ],
   "refused": [
@@ -1789,6 +1788,12 @@
       "reason": "the page marks Gene Bartlett's tune as copyright (“Gene Bartlett, ©1968”)"
     },
     {
+      "number": "000290",
+      "name": "Schuler",
+      "url": "https://www.ccel.org/cceh/0002/x000290.htm",
+      "reason": "George S. Schuler died in 1973, so the tune is still in copyright in Nigeria, the UK and the EU"
+    },
+    {
       "number": "000293",
       "name": "Surabaja",
       "url": "https://www.ccel.org/cceh/0002/x000293.htm",
@@ -2023,48 +2028,6 @@
   ],
   "undatedPeople": [
     {
-      "name": "James Walsh",
-      "tunes": 2,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1875
-    },
-    {
-      "name": "B. Mansell Ramsey",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1919
-    },
-    {
-      "name": "Berthold Tours",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1875
-    },
-    {
-      "name": "George F. Root",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1875
-    },
-    {
-      "name": "George S. Schuler",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1924
-    },
-    {
-      "name": "Robert Jackson",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1888
-    },
-    {
-      "name": "William Vincent Wallace",
-      "tunes": 1,
-      "onlyForWantOfDates": 1,
-      "earliestYear": 1856
-    },
-    {
       "name": "A. P. Bland",
       "tunes": 1,
       "onlyForWantOfDates": 0,
@@ -2090,13 +2053,13 @@
     }
   ],
   "counts": {
-    "published": 123,
-    "drafts": 33,
-    "duplicates": 68,
-    "refused": 91,
+    "published": 129,
+    "drafts": 27,
+    "duplicates": 70,
+    "refused": 92,
     "rejected": 16,
-    "pages": 331,
-    "notYetCrawled": 1067,
+    "pages": 334,
+    "notYetCrawled": 1064,
     "tunesInIndex": 1398
   }
 }

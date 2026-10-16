@@ -1617,6 +1617,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://notefusion.studio/hymns/tunes/camacha</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://notefusion.studio/hymns/tunes/canonbury</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -2091,6 +2097,18 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://notefusion.studio/hymns/tunes/ring-the-bells</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/rotterdam</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://notefusion.studio/hymns/tunes/salvation-320</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
@@ -2110,6 +2128,12 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/tunes/second-coming</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/serenity</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -2194,6 +2218,18 @@
   </url>
   <url>
     <loc>https://notefusion.studio/hymns/tunes/thompson</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/tidings</loc>
+    <lastmod>2026-10-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://notefusion.studio/hymns/tunes/trentham</loc>
     <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>

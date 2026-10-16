@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Robert Jackson",
+      "born": 1840,
+      "died": 1914,
       "role": "Music (1888)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "mmmfmd|sfmrmr",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0003/x000317.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0003/000317a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000317; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Robert Jackson: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000317 (the melody read from 000317a.mid, checked against the page's do-re-mi incipit, 2 notes off in 12); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000317a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000317 (the melody read from 000317a.mid, checked against the page's do-re-mi incipit, 2 notes off in 12); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Robert Jackson's dates (1840–1914) are from https://hymnary.org/tune/trentham_jackson (Robert Jackson, b. Oldham 1840, d. Oldham 1914; the notes there and https://www.musicanet.org/bdd/en/composer/12385-jackson-robert give 1842 for his birth; TRENTHAM, 1888); CCEH's page gives only the year 1888. The bar lines are those of CCEH's Noteworthy score (000317a.nwc).",
   "importedFrom": "cceh:000317",
   "updated": "2026-10-16"
 }
