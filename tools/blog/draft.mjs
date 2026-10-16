@@ -17,7 +17,7 @@ import { loadAll, stringifyFrontMatter } from "./lib/content.mjs";
 import { prepareHymn } from "./lib/render-hymns.mjs";
 import { checkDraft } from "./lib/quality.mjs";
 import { SYSTEM, buildUserPrompt, revisionPrompt } from "./lib/prompt.mjs";
-import { generateJson, usageLine, DEFAULT_MODEL, GeminiError } from "./lib/gemini.mjs";
+import { generateJson, generateJsonWithFallback, usageLine, DEFAULT_MODEL, FALLBACK_MODELS, GeminiError } from "./lib/gemini.mjs";
 import { resolveSitePath } from "./check.mjs";
 import { countWords } from "./lib/util.mjs";
 
@@ -126,7 +126,8 @@ async function main() {
     console.error("GEMINI_API_KEY is not set. Add it as a repository secret (Settings → Secrets and variables → Actions → New repository secret, name GEMINI_API_KEY) — see docs/BLOG.md.");
     process.exit(1);
   }
-  const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+  let model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+  const fallbacks = process.env.GEMINI_FALLBACK_MODELS ? process.env.GEMINI_FALLBACK_MODELS.split(",").map((m) => m.trim()) : FALLBACK_MODELS;
   const maxOutputTokens = Number(process.env.GEMINI_MAX_OUTPUT_TOKENS) || 16384;
   const date = args.date || new Date().toISOString().slice(0, 10);
 
@@ -157,7 +158,10 @@ async function main() {
       calls.push({ usage: r.usage || {} });
       return { data: r.data, usage: r.usage || {}, content: { role: "model", parts: [{ text: JSON.stringify(r.data) }] } };
     }
-    const r = await generateJson({ apiKey, model, system: SYSTEM, contents, maxOutputTokens, log: (m) => console.log(m) });
+    // The draft may fall back to another model; a revision goes to whichever model wrote the draft.
+    const opts = { apiKey, system: SYSTEM, contents, maxOutputTokens, log: (m) => console.log(m) };
+    const r = calls.length === 0 ? await generateJsonWithFallback({ ...opts, models: [model, ...fallbacks] }) : await generateJson({ ...opts, model });
+    if (r.model && r.model !== model) { console.log(`Drafting with ${r.model} instead.`); model = r.model; }
     calls.push({ usage: r.usage });
     console.log(`Gemini usage (${calls.length === 1 ? "draft" : "revision"}): ${usageLine(r.usage)}`);
     return r;

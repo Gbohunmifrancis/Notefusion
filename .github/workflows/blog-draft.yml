@@ -73,6 +73,8 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ inputs.model || vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+          # Tried in order when GEMINI_MODEL stays overloaded; empty uses the drafter's own list.
+          GEMINI_FALLBACK_MODELS: ${{ vars.GEMINI_FALLBACK_MODELS }}
           TOPIC: ${{ inputs.topic }}
           SKIP: ${{ steps.open.outputs.list }}
         run: |

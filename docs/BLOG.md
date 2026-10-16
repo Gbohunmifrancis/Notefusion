@@ -88,7 +88,7 @@ Check the [model list](https://ai.google.dev/gemini-api/docs/models) when you ch
 The call is plain `fetch` to
 `https://generativelanguage.googleapis.com/v1beta/models/<model>:generateContent` with the key in
 the `x-goog-api-key` header, `responseMimeType: application/json` and a `responseSchema`,
-temperature 0.7. A 429, a 5xx or a dropped connection is retried up to four times with a growing pause (15, 30, 60, 60 s: Gemini's "high demand" 503s can last minutes); anything
+temperature 0.7. A 429, a 5xx or a dropped connection is retried up to four times with a growing pause (15, 30, 60, 60 s: Gemini's "high demand" 503s can last minutes); if the model is still overloaded (or rate-limited, or its id is gone) the draft falls back to `gemini-flash-latest`, then `gemini-flash-lite-latest` (two tries each; set the `GEMINI_FALLBACK_MODELS` variable to change the list), and the PR names the model that wrote it; anything
 else fails with the API's own message. Thinking tokens count against the output limit, which is
 why it is 16,384 rather than 8,192; a draft cut off by the limit fails rather than half-writes.
 

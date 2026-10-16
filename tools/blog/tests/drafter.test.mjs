@@ -6,7 +6,7 @@ import { loadAll, parseFrontMatter } from "../lib/content.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 import { checkDraft } from "../lib/quality.mjs";
 import { SYSTEM, buildUserPrompt, catalogue, catalogueHymns } from "../lib/prompt.mjs";
-import { generateJson, usageLine, GeminiError, DRAFT_SCHEMA, DEFAULT_MODEL } from "../lib/gemini.mjs";
+import { generateJson, generateJsonWithFallback, usageLine, GeminiError, DRAFT_SCHEMA, DEFAULT_MODEL } from "../lib/gemini.mjs";
 import { loadTopics, pickTopic, toPost, prBody } from "../draft.mjs";
 import { resolveSitePath } from "../check.mjs";
 import { SITE_DIR } from "../lib/site.mjs";
@@ -154,6 +154,33 @@ test("Gemini: retries 429, 5xx or a dropped connection with a growing wait, then
   const f = fakeFetch([{ status: 400, body: { error: { message: "bad model" } } }]);
   await assert.rejects(generateJson({ apiKey: "k", system: "s", contents: [], fetchImpl: f, sleep }), /400: bad model .*GEMINI_MODEL/);
   assert.equal(f.calls.length, 1, "a 400 is not retried");
+});
+
+test("Gemini: a model still overloaded after its retries hands over to the next; other errors do not", async () => {
+  const sleep = async () => {};
+  const logs = [];
+  const seen = [];
+  const byModel = (answers) => async (url, init) => {
+    const model = decodeURIComponent(url.split("/models/")[1].split(":")[0]);
+    seen.push(model);
+    const r = answers[model];
+    return { ok: r.status === 200, status: r.status, statusText: "", headers: { get: () => null }, json: async () => r.body };
+  };
+  const r = await generateJsonWithFallback({ apiKey: "k", system: "s", contents: [], sleep, log: (m) => logs.push(m),
+    models: ["gemini-3.8-flash", "gemini-gone", "gemini-flash-latest"],
+    fetchImpl: byModel({ "gemini-3.8-flash": { status: 503, body: { error: { message: "high demand" } } }, "gemini-gone": { status: 404, body: { error: { message: "not found" } } }, "gemini-flash-latest": { status: 200, body: OK_BODY } }) });
+  assert.equal(r.model, "gemini-flash-latest");
+  assert.deepEqual(r.data, { title: "T" });
+  assert.deepEqual(seen, ["gemini-3.8-flash", "gemini-3.8-flash", "gemini-3.8-flash", "gemini-3.8-flash", "gemini-3.8-flash", "gemini-gone", "gemini-flash-latest"], "five tries on the chosen model, a 404 is not retried, then the next");
+  assert.ok(logs.some((m) => /gemini-3.8-flash is unavailable .*trying gemini-gone/.test(m)));
+  seen.length = 0;
+  await assert.rejects(generateJsonWithFallback({ apiKey: "k", system: "s", contents: [], sleep, models: ["a", "b"],
+    fetchImpl: byModel({ a: { status: 403, body: { error: { message: "denied" } } }, b: { status: 200, body: OK_BODY } }) }), /403: denied .*GEMINI_API_KEY/);
+  assert.deepEqual(seen, ["a"], "a bad key is not a reason to try another model");
+  seen.length = 0;
+  await assert.rejects(generateJsonWithFallback({ apiKey: "k", system: "s", contents: [], sleep, models: ["a", "b"],
+    fetchImpl: byModel({ a: { status: 503, body: {} }, b: { status: 503, body: { error: { message: "busy too" } } } }) }), /503: busy too/);
+  assert.deepEqual(seen, ["a", "a", "a", "a", "a", "b", "b"], "a fallback gets two tries");
 });
 
 test("Gemini: a cut-off, blocked or non-JSON answer is an error, not a post", async () => {
