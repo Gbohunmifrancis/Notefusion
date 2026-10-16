@@ -4,6 +4,8 @@
   "music": [
     {
       "name": "Lelia Naylor (Mrs. Charles H.) Morris",
+      "born": 1862,
+      "died": 1929,
       "role": "Music (1912)"
     }
   ],
@@ -18,13 +20,13 @@
   "incipit": "mmmssslms|sltdlt",
   "reviewed": false,
   "confidence": "imported, unchecked",
-  "draft": true,
+  "draft": false,
   "source": "CCEH",
   "sourceUrl": "https://www.ccel.org/cceh/0001/x000129.htm",
   "scoreUrl": "https://www.ccel.org/cceh/0001/000129a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000129; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Lelia Naylor (Mrs. Charles H.) Morris: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source. Imported from CCEH tune 000129 (the melody read from 000129a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000129a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000129 (the melody read from 000129a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Lelia Naylor (Mrs. Charles H.) Morris's dates (1862–1929) are from https://en.wikipedia.org/wiki/Lelia_N._Morris; CCEH's page gives only the year 1912. The bar lines are those of CCEH's Noteworthy score (000129a.nwc).",
   "importedFrom": "cceh:000129",
   "updated": "2026-10-16"
 }

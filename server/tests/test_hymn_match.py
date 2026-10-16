@@ -240,6 +240,49 @@ def test_no_offer_for_an_ordinary_song():
     assert hm.offer(_result(take)) is None
 
 
+# ── Related tunes ─────────────────────────────────────────────────────────────
+
+
+def _family(opening, tails):
+    """Tunes that share ``opening`` and then go their own ways, as a hymn tune's relatives do."""
+    entries = []
+    for k, tail in enumerate(tails):
+        notes, t = [], 0.0
+        for p in list(opening) + list(tail):
+            notes.append((p, t, 1.0))
+            t += 1.0
+        entries.append(hm.Entry(kind="score", slug=f"relative-{k}", title=f"Relative {k}", tune=f"RELATIVE {k}",
+                                url="https://example.org", source="test", licence="test", credit="test", notes=tuple(notes)))
+    return entries
+
+
+def test_a_note_for_note_take_wins_over_a_tune_that_shares_its_phrases_but_not_one_as_exact():
+    rng = random.Random(12)
+    opening = [60, 64, 62, 67, 65, 69, 67, 72, 71, 67, 64, 65, 62, 60, 59, 62]  # in no hymn we hold
+    a_tail = [rng.choice([60, 62, 64, 67, 69, 71, 72, 74]) for _ in range(30)]
+    b_tail = [rng.choice([60, 62, 64, 67, 69, 71, 72, 74]) for _ in range(30)]
+    # B sings A's opening with two notes changed: a relative, not a copy.
+    b_open = list(opening)
+    b_open[5], b_open[12] = 71, 69
+    a, b = _family(opening, [a_tail])[0], _family(b_open, [b_tail])[0]
+    b = hm.Entry(**{**b.__dict__, "slug": "relative-b", "tune": "RELATIVE B"})
+    index = hm.HymnIndex(list(INDEX.entries) + [a, b])
+    take = [(p + 3, i * 1.0, 1.0) for i, p in enumerate(opening)]
+    m, figures = hm.match(take, index=index, explain=True)
+    assert m is not None and m.entry.slug == "relative-0", str(figures)
+
+
+def test_a_take_both_relatives_sing_note_for_note_is_ambiguous_and_declined():
+    rng = random.Random(13)
+    opening = [60, 64, 62, 67, 65, 69, 67, 72, 71, 67, 64, 65, 62, 60, 59, 62, 64, 60]  # in no hymn we hold
+    tails = [[rng.choice([60, 62, 64, 67, 69, 71, 72, 74]) for _ in range(40)] for _ in range(2)]
+    index = hm.HymnIndex(list(INDEX.entries) + _family(opening, tails))
+    assert not index.same_tune(len(INDEX.entries), len(INDEX.entries) + 1)
+    take = [(p - 2, i * 1.0, 1.0) for i, p in enumerate(opening)]
+    assert hm.match(take) is None  # the library alone does not know the opening
+    assert hm.match(take, index=index) is None
+
+
 # ── Recognition only ──────────────────────────────────────────────────────────
 
 

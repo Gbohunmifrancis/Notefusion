@@ -1,0 +1,39 @@
+{
+  "name": "SAVANNAH",
+  "title": "Savannah",
+  "alsoKnownAs": [
+    "Herrnhut"
+  ],
+  "music": [
+    {
+      "name": "Herrnhut Manuscript",
+      "traditional": true,
+      "role": "Melody (1740)"
+    },
+    {
+      "name": "Foundery Collection",
+      "traditional": true,
+      "role": "Melody (1742)"
+    }
+  ],
+  "musicPublished": 1740,
+  "metre": "7 7 7 7",
+  "key": "D major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "A4:1 A4:.5 G4:.5 F#4:1 E4:1 | D4:.5 E4:.5 F#4:1 E4:2 | A4:1 A4:.5 G4:.5 F#4:1 E4:1 | D4:.5 E4:.5 F#4:1 E4:2 | A4:1 A4:1 B4:1 A4:.5 G4:.5 | F#4:1 Ab4:1 A4:2 | B4:1 C#5:1 D5:1 F#4:.5 E4:.5 | F#4:1 E4:1 D4:2",
+  "incipit": "ssfmrdrmr|ssfmrdrmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000227.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000227a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000227; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000227 (the melody read from 000227a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000227a.nwc).",
+  "importedFrom": "cceh:000227",
+  "updated": "2026-10-16"
+}

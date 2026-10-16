@@ -47,7 +47,7 @@ export function parseCredit(item) {
   let parts = raw.split(/\s*,\s*/).filter(Boolean);
   // Leading roles: "arr.", "harm.", "attr. to", "arr. for tenor lead", "rec.", "pub.", "from", "harm., ad.".
   const roles = [];
-  while (parts.length > 1 && /^[a-z]/.test(parts[0]) && ROLE_WORD.test(parts[0])) roles.push(parts.shift());
+  while (parts.length > 1 && /^[a-z]/.test(parts[0]) && ROLE_WORD.test(parts[0])) roles.push(parts.shift().replace(/^tenor[- ]lead arr\.?$/i, "arr. for tenor lead"));
   if (roles.length) out.role = roles.join(", ");
   // A trailing date: "1861", "1562-1626", "©1931", "c. 1600", "1840?", "(1823-1876)", "fl. 1750".
   const last = parts[parts.length - 1] || "";
@@ -88,7 +88,7 @@ export function parseCredit(item) {
 }
 
 /** The words of a role before a name: "arr.", "harm.", "ad.", "attr. to", "rec.", "pub.", "from", "desc.". */
-const ROLE_WORD = /^(arr|harm|attr|adapt|ad|alt|rec|desc|melody|tune|music|setting|from|by|after|based|transcr|ed|coll|comp|vers|para|pub|alt|rev|abr|abridged|composed|written|source)\b[^,]*$/i;
+const ROLE_WORD = /^(tenor[- ]lead arr|arr|harm|attr|adapt|ad|alt|rec|desc|melody|tune|music|setting|from|by|after|based|transcr|ed|coll|comp|vers|para|pub|alt|rev|abr|abridged|composed|written|source)\b[^,]*$/i;
 /** An anonymous or traditional source: "Traditional", "Welsh Hymn Tune", "Netherlands folk song", "Swedish". */
 const TRADITIONAL = /^anon\.$|^(traditional|anonymous|unknown|trad\.?|ancient|medieval|mediaeval|plainsong|plain ?chant|gregorian|sarum)\b|\s(traditional|folk|melody|hymn tune|chant|carol|air|spiritual|song)\b|^(old )?(english|irish|welsh|scottish|scots|german|french|dutch|netherlands|swedish|norwegian|danish|finnish|american|spanish|italian|russian|polish|czech|bohemian|silesian|hebrew|jewish|greek|basque|cornish|manx|flemish|negro|african|catalan|latvian|appalachian|moravian|swiss|austrian|hungarian|slovak|lithuanian|estonian|icelandic|breton|provençal|portuguese|chinese|japanese|indian|korean)\b/i;
 /** A person's name: two or more capitalised words ("John Wyeth", "C. Winfred Douglas"), not a description or a book. */
