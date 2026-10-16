@@ -108,6 +108,7 @@ ${body}
 <script src="/assets/site-theme.js?v=${ASSET_VERSION.siteTheme}" defer></script>
 ${scripts}
 <script src="/assets/track.js?v=${ASSET_VERSION.track}" defer></script>
+<script src="/assets/blog-track.js?v=${ASSET_VERSION.blogTrack}" defer></script>
 </body>
 </html>
 `;
