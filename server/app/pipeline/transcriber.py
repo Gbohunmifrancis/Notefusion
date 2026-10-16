@@ -4957,6 +4957,100 @@ def _choir_parts(
     return parts, parts_musicxml
 
 
+# ── Meter and bar phase (``_meter_and_pickup``) ───────────────────────────────
+# Read off the quantized line, in beats, after the tempo and the beat phase are settled.
+# The cue is durational accent: a note held longer than its neighbours (counting the breath
+# after it) falls on a strong beat.  Measured on the hymn corpus (tests/accuracy/hymn_corpus.py,
+# the published tunes' own scores), tuned on its dev half and reported on the held-out half.
+
+# Positional weights for the bar phase: the downbeat, then the bar's other strong beat, then
+# the remaining beats; an off-beat counts nothing.
+_BAR_WEIGHTS = {3: (1.0, 0.25, 0.25), 4: (1.0, 0.25, 0.5, 0.25)}
+
+# What a bar line at the first note is worth before the evidence: most tunes start on the
+# downbeat, and with nothing to say otherwise the first note is where the bar starts.
+PICKUP_PRIOR = 0.05
+
+# How much more of the line's held weight must fall on the downbeats of a three-beat bar than
+# chance allows (``_meter_and_pickup``) before the sheet is written in 3/4 rather than 4/4.
+TRIPLE_LIFT = 1.2
+
+# Fewer notes than this and the bar is not ours to move.
+METER_MIN_NOTES = 12
+
+
+def _iois(starts: Sequence[float], durs: Sequence[float]) -> list[float]:
+    """Each note's span to the next onset (its length plus any rest after it); the last its own length."""
+    return [
+        (starts[i + 1] - starts[i]) if i + 1 < len(starts) else max(float(durs[i]), 0.0)
+        for i in range(len(starts))
+    ]
+
+
+def _on_beat(x: float, period: float) -> bool:
+    r = x % period
+    return r < 1e-6 or period - r < 1e-6
+
+
+def _downbeat_share(starts: Sequence[float], iois: Sequence[float], beats: int) -> float:
+    """The most of the line's held length (the last note's left out) that one phase of a
+    ``beats``-beat bar puts on its downbeats, as a share of the whole."""
+    total = float(sum(iois[:-1]))
+    if total <= 0.0:
+        return 0.0
+    return max(
+        sum(x for s, x in zip(starts[:-1], iois[:-1]) if _on_beat(s + k / 2.0, beats)) / total
+        for k in range(2 * beats)
+    )
+
+
+def _bar_phase(starts: Sequence[float], iois: Sequence[float], beats: int) -> float:
+    """The offset, in beats (a multiple of a half), that puts the bar lines where the held notes
+    say they go: ``start + offset`` is each note's place on a grid whose bars start at 0."""
+    weights = _BAR_WEIGHTS[beats]
+    total = float(sum(iois[:-1])) or 1.0
+
+    def score(offset: float) -> float:
+        acc = 0.0
+        for s, x in zip(starts[:-1], iois[:-1]):
+            p = (s + offset) % beats
+            if abs(p - round(p)) < 1e-6:
+                acc += x * weights[int(round(p)) % beats]
+        return acc / total + (PICKUP_PRIOR if offset == 0.0 else 0.0)
+
+    return max((k / 2.0 for k in range(2 * beats)), key=lambda o: (score(o), -o))
+
+
+def _meter_and_pickup(
+    starts: Sequence[float], durs: Sequence[float], time_signature: str | None
+) -> tuple[str, float]:
+    """(time signature, pickup offset in beats) for a line already on the beat grid.
+
+    ``time_signature`` given is kept; only the bar phase is read then.  Otherwise 3/4 is
+    written when a three-beat bar puts clearly more of the held length on its downbeats than a
+    four-beat bar does, each against what chance gives it (``TRIPLE_LIFT``), and 4/4 when not.
+    """
+    order = sorted(range(len(starts)), key=lambda i: starts[i])
+    starts = [float(starts[i]) for i in order]
+    durs = [float(durs[i]) for i in order]
+    if len(starts) < METER_MIN_NOTES:
+        return time_signature or "4/4", 0.0
+    iois = _iois(starts, durs)
+    chosen = time_signature
+    if chosen is None:
+        triple = 3.0 * _downbeat_share(starts, iois, 3)
+        quadruple = 4.0 * _downbeat_share(starts, iois, 4)
+        chosen = "3/4" if triple > TRIPLE_LIFT * quadruple else "4/4"
+    try:
+        num, den = (int(x) for x in chosen.split("/"))
+    except ValueError:
+        return chosen, 0.0
+    beats = num * 4.0 / den
+    if beats not in (3.0, 4.0):
+        return chosen, 0.0
+    return chosen, _bar_phase(starts, iois, int(beats))
+
+
 def _one_note_per_slot(s, step: float, heard_at: dict[int, float]) -> None:
     """A tune is one voice: after quantizing, no two of its notes may start together.
 
