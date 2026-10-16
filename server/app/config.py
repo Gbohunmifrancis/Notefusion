@@ -483,6 +483,15 @@ class Settings:
         return os.getenv("NF_KEY_ENSEMBLE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def tempo_plain_level(self) -> bool:
+        """Among tempi that fit the onsets alike, prefer one that writes the commonest note plain.
+
+        See ``transcriber._PLAIN_NOTE_BEATS``.  Off, the reading nearest 100 BPM wins the tie
+        even when it writes the commonest note dotted.
+        """
+        return os.getenv("NF_TEMPO_PLAIN_LEVEL", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def meter_detect(self) -> bool:
         """Read the time signature (when none is given) and the bar phase off the notes.
 

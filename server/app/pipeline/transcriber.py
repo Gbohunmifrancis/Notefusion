@@ -3936,6 +3936,15 @@ _DEFAULT_BPM = 100.0
 # the same music read as eighths at 176 fits it exactly.
 _TEMPO_PREFERENCE_BPM = 100.0
 
+# Of two readings that fit alike, the one that writes the commonest note as a plain value — a
+# beat, half or quarter of one, or two or four — goes before one that writes it dotted or as
+# a triplet; only then does the preference above decide.  A 3/4 hymn moving "minim crotchet"
+# at 65 fits the half-beat grid just as well at 97.5, where the crotchet is a dotted quaver
+# and the minim three beats, and 97.5 is nearer 100: so "dotted" is the second key of
+# ``_grid_bpm``'s rank, after the fit.  See ``settings.tempo_plain_level`` for what it measured.
+_PLAIN_NOTE_BEATS = (0.25, 0.5, 1.0, 2.0, 4.0)
+_PLAIN_NOTE_TOLERANCE = 0.04
+
 # The range a beat can be *notated* in, which is narrower than the ``_MIN_BPM``..
 # ``_MAX_BPM`` range librosa is trusted to report inside: those bound what a tracker
 # might plausibly measure, these bound what a tempo mark can plausibly say.  Below and
@@ -4310,12 +4319,20 @@ def _grid_bpm(
                 sec_j = min(sec_j, sec_i)
         on_grid[j] = (bpm_j, sec_j, refined_j)
 
-    def rank(entry: tuple[float, float, float]) -> tuple[int, float]:
+    commonest = float(np.median(usable))
+
+    def dotted(bpm: float) -> int:
+        """1 when the commonest note would be written dotted or as a triplet at ``bpm``."""
+        beats = commonest * bpm / 60.0
+        return int(not any(abs(beats / plain - 1.0) <= _PLAIN_NOTE_TOLERANCE for plain in _PLAIN_NOTE_BEATS))
+
+    def rank(entry: tuple[float, float, float]) -> tuple[int, int, float]:
         bpm, seconds, _refined = entry
         # Ratio, not difference, for the preference: 80 and 125 BPM are equally far
         # from 100.
         return (
             round(seconds / _GRID_FIT_BAND_SEC),
+            dotted(bpm) if settings.tempo_plain_level else 0,
             abs(float(np.log(bpm / _TEMPO_PREFERENCE_BPM))),
         )
 

@@ -640,34 +640,29 @@ def test_accidentals_are_counted_even_when_nothing_matches():
     assert scored["chromatic_ghosts"] > 0
 
 
-# ── Defect 7 — time signature (measured, and the detector STRUCK) ─────────────
+# ── Defect 7 — time signature (scored on the hymn corpus) ──────────────────────
 
 
-def test_defect7_no_metric_depends_on_the_hardcoded_time_signature():
-    """No longer deferred — measured, and this is now a guard rather than a placeholder.
+def test_defect7_the_meter_is_scored_where_it_can_move_and_nowhere_else():
+    """The meter is scored, and only against a yardstick a constant cannot pass.
 
-    Both routes to a meter detector were measured and struck (the post-mortem is at
-    the ``meter.TimeSignature`` site in ``app/pipeline/transcriber.py``): the acoustic
-    ``tempogram_ratio`` cue is anti-correlated on this corpus and its sign flips on a
-    3 BPM step, and the symbolic bar-length cue declines on 5 of 5 real cases while
-    picking the wrong bar length on 0-of-38 4/4 cases by a *wider* margin than the two
-    it gets right.
-
-    What matters here is that the gate was never allowed to pretend otherwise.  With
-    every corpus case at 4/4 and the pipeline returning the constant "4/4", a
-    ``meter.exact`` column would have read 1.000 for an always-4/4 detector and 1.000
-    for a perfect one — a metric that reads the perfect score and cannot move.  Adding
-    a 3/4 and a 6/8 case lifts the honest headroom to a single case (0.025), and one of
-    those two is laundered: the 6/8 clip's tempo comes back 45 against a true 132, so a
-    correct "6/8" engraves a bar 2.9x too long and still scores exact=True.  So the
-    requirement is unchanged and now load-bearing: scoring stays independent of the
-    meter until something can actually be scored.
+    This guard used to forbid any metric reading ``time_signature``: every case here was
+    4/4 and the pipeline returned the constant "4/4", so a ``meter.exact`` column would have
+    read 1.000 for an always-4/4 detector and for a perfect one alike.  The hymn corpus
+    (``tests.accuracy.hymn_corpus``) is the published tunes' own scores, and a fifth of them
+    are not 4/4, so the precondition the guard waited for has arrived: there a constant 4/4
+    scores well under a perfect answer.  ``sheet_metrics`` is the one place that reads the
+    meter; the note metrics the other corpora gate stay blind to it.
     """
-    sources = inspect.getsource(metrics) + inspect.getsource(runner)
-    assert "time_signature" not in sources, (
-        "a metric started reading time_signature; the meter detector is struck, so "
-        "scoring must stay independent of it — see the post-mortem in transcriber.py"
-    )
+    from tests.accuracy.hymn_corpus import CASES as HYMNS
+
+    if not HYMNS:
+        pytest.skip("content/hymns is not beside server/")
+    constant = sum(case.time_signature == "4/4" for case in HYMNS) / len(HYMNS)
+    assert constant < 0.8
+    for scorer in (metrics.note_metrics_seconds, metrics.onset_metrics_beats, metrics.solfa_metrics,
+                   metrics.note_confidence_metrics, metrics.sequence_metrics, metrics.tempo_metrics):
+        assert "time_signature" not in inspect.getsource(scorer), scorer.__name__
 
 
 def test_the_reference_metrical_level_is_distinguishable_from_no_level_at_all():
