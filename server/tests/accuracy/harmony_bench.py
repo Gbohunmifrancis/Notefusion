@@ -10,25 +10,30 @@ CCEH's MIDI files.  Those files are exported from Noteworthy Composer scores, tw
 two voices each (soprano and alto as the treble's chords, tenor and bass as the bass's), so
 each staff is split into its upper and lower voice (``split_staff``); the tune's key, time
 signature and pickup come from our own tune page (``content/hymns/tunes``), and a tune is kept
-only when the MIDI's soprano is that page's melody note for note.  The fixture is the derived
-four parts alone, so the bench runs without the crawl.
+only when the MIDI's soprano is that page's melody note for note (the named hymns our pages hold
+from another source — Amazing Grace, Azmon, Old Hundredth, Nicaea — within one edit in six, in
+CCEH's own rhythm).  The fixture is the derived four parts alone (48 tunes), so the bench runs
+without the crawl.
 
 Our harmoniser is given each book soprano (in the book's key, meter and bar phase) and its
 alto, tenor and bass are measured beside the book's:
 
   motion       per voice: distinct pitches, share of repeated notes, longest run of one
-               pitch, mean |interval| and leap share (more than a fourth), range used, and
-               contour changes (direction reversals, per note).
+               pitch, mean |interval| and leap share (more than a fourth), range used,
+               contour changes (direction reversals, per note) and zigzags (a leap of a third
+               or more and straight back, per note).
   correctness  parallel fifths and octaves between any two voices; hidden fifths and octaves
                on the outer voices (similar motion into one, the soprano leaping); voice
                crossing and overlap; S-A and A-T further apart than an octave; notes outside
-               our ranges.  Counted per 100 sonorities (onsets).
+               our ranges; and texture: six-fours and lower-voice notes outside the triad the
+               sonority spells (``book_chord``, the same reading for both).  Per 100 sonorities.
   chords       the share of beats on which our chord is the book's (root and quality, V7 as V;
-               the book's read off its four parts at the beat).
+               the book's read off its four parts at the beat), and how often each changes chord.
 
 Each tune is ``dev`` or ``test`` by ``hymn_corpus.split_of`` (the hymn corpus's frozen split);
-tune the harmoniser on dev, report test.  Measurement only, never run by ``pytest``;
-``tests/test_harmony.py`` reads the fixture for its checks on the named hymns.
+tune the harmoniser on dev, report test.  Last, the named hymns: the tenor under CCEH's soprano
+beside CCEH's tenor, and our parts under our own hymn pages' melodies (Belmont included).
+Measurement only, never run by ``pytest``; ``tests/test_harmony.py`` reads the fixture.
 """
 
 from __future__ import annotations
