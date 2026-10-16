@@ -3943,7 +3943,7 @@ _TEMPO_PREFERENCE_BPM = 100.0
 # and the minim three beats, and 97.5 is nearer 100: so "dotted" is the second key of
 # ``_grid_bpm``'s rank, after the fit.  See ``settings.tempo_plain_level`` for what it measured.
 _PLAIN_NOTE_BEATS = (0.25, 0.5, 1.0, 2.0, 4.0)
-_PLAIN_NOTE_TOLERANCE = 0.04
+_PLAIN_NOTE_TOLERANCE = 0.08
 
 # The range a beat can be *notated* in, which is narrower than the ``_MIN_BPM``..
 # ``_MAX_BPM`` range librosa is trusted to report inside: those bound what a tracker
