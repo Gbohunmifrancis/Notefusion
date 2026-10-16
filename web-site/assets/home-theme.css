@@ -1,0 +1,160 @@
+/* The home page's colour theme: the header's Light / Dark / System toggle, and the dark palette.
+   Loaded last on web-site/index.html, after theme.css, landing.css, site-refresh.css, mockup-layout.css
+   and walkthrough.css. Light is those files as they are; everything here under [data-theme="dark"]
+   maps their tokens to the same dark palette as the blog and policy pages (site-pages.css) and recolours
+   the few parts they paint with fixed colours. The phone mockup in the hero stays a picture of the app
+   in Day mode, as a screenshot would. theme-boot.js sets data-theme on <html> before the first paint. */
+
+/* ── The toggle ──────────────────────────────────────────────────────────── */
+.theme-toggle { display: none; width: 40px; height: 40px; flex: 0 0 40px; align-items: center; justify-content: center; padding: 0; border: 1px solid var(--color-border-strong, #cbd5e1); border-radius: 10px; background: transparent; color: var(--nf-ink, #0f172a); cursor: pointer; }
+:root[data-theme-choice] .theme-toggle { display: inline-flex; }
+:root[data-theme-choice] .theme-toggle--mobile { display: none; }
+.theme-toggle:hover { border-color: var(--nf-blue, #2563eb); color: var(--nf-link, #1d4ed8); }
+.theme-toggle:focus-visible { outline: 2px solid var(--nf-blue, #2563eb); outline-offset: 2px; }
+.theme-toggle svg { display: none; width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+:root[data-theme-choice="light"] .theme-toggle .tt-light,
+:root[data-theme-choice="dark"] .theme-toggle .tt-dark,
+:root[data-theme-choice="system"] .theme-toggle .tt-system { display: block; }
+@media (max-width: 768px) {
+  :root[data-theme-choice] .theme-toggle--mobile { display: inline-flex; width: 44px; height: 44px; flex-basis: 44px; margin-left: auto; margin-right: 10px; border-radius: 12px; }
+}
+.theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
+
+/* AdSense auto ads: an unfilled slot takes no room; in dark mode a (white) ad sits in a light frame. */
+ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+:root[data-theme="dark"] ins.adsbygoogle[data-ad-status="filled"] { color-scheme: light; background: #f4f5f7; border-radius: 10px; overflow: hidden; outline: 6px solid #f4f5f7; }
+
+:root { --nf-link: #1d4ed8; --nf-muted-text: #5b6b82; }
+
+/* ── Dark: tokens ────────────────────────────────────────────────────────── */
+:root[data-theme="dark"], :root[data-theme="dark"] .nf-walkthrough {
+  color-scheme: dark;
+  --color-brand-500: #2f7bff;
+  --color-brand-600: #1b5fe0;
+  --color-brand-100: rgba(47, 123, 255, .14);
+  --color-brand-050: rgba(47, 123, 255, .08);
+  --color-ink-950: #f1f4f9;
+  --color-ink-700: #cdd4e0;
+  --color-ink-500: #98a2b4;
+  --color-ink-300: #5c667a;
+  --color-surface-canvas: #0b0e14;
+  --color-surface-base: #121722;
+  --color-surface-subtle: #171d29;
+  --color-border-default: #232b38;
+  --color-border-strong: #323c4d;
+  --bg: var(--color-surface-canvas);
+  --surface: var(--color-surface-base);
+  --border: var(--color-border-default);
+  --blue: var(--color-brand-500);
+  --blue-deep: var(--color-brand-600);
+  --blue-soft: var(--color-brand-100);
+  --text: var(--color-ink-950);
+  --text-muted: var(--color-ink-500);
+  --text-faint: var(--color-ink-300);
+  --nf-blue: #2f7bff;
+  --nf-blue-dark: #9cc2ff;      /* blue as text */
+  --nf-blue-bright: #5b97ff;
+  --nf-sky: #38bdf8;
+  --nf-ink: #f1f4f9;
+  --nf-copy: #cdd4e0;
+  --nf-muted: #a3adbf;
+  --nf-canvas: #0b0e14;
+  --nf-surface: #121722;
+  --nf-wash: #171d29;
+  --nf-line: #232b38;
+  --nf-blue-line: #2a3343;
+  --nf-brand-gradient: linear-gradient(#1b5fe0, #1b5fe0);
+  --nf-gradient: linear-gradient(#1b5fe0, #1b5fe0);
+  --nf-link: #9cc2ff;
+  --nf-muted-text: #98a2b4;
+  --shadow-card: none;
+  --shadow-card-hover: 0 14px 32px rgba(0, 0, 0, .45);
+  --shadow-elevated: 0 18px 45px rgba(0, 0, 0, .55);
+}
+:root[data-theme="dark"] body { background: var(--nf-canvas); color: var(--nf-copy); }
+
+/* ── Dark: header and menu ───────────────────────────────────────────────── */
+:root[data-theme="dark"] .site-header,
+:root[data-theme="dark"] .site-header[data-scrolled="true"] { background: rgba(11, 14, 20, .94); border-bottom-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .brand-icon { background: linear-gradient(145deg, #38bdf8 0%, #2f7bff 74%); }
+:root[data-theme="dark"] .nav-link { color: var(--nf-copy); }
+:root[data-theme="dark"] .nav-link:hover, :root[data-theme="dark"] .nav-link:focus-visible { color: var(--nf-link); }
+:root[data-theme="dark"] .hamburger-btn { border-color: var(--color-border-strong); background: transparent; color: var(--nf-ink); }
+:root[data-theme="dark"] .mobile-menu { background: var(--nf-surface); border-color: var(--nf-line); }
+:root[data-theme="dark"] .mobile-menu-links a { color: var(--nf-copy); border-bottom-color: var(--nf-line); }
+
+/* ── Dark: buttons (white text on the deeper blue: 5.2:1) ───────────────── */
+:root[data-theme="dark"] .btn-primary, :root[data-theme="dark"] .btn--primary { background: #1b5fe0; border-color: transparent; color: #fff; box-shadow: none; font-weight: 600; }
+:root[data-theme="dark"] .btn-primary:hover, :root[data-theme="dark"] .btn--primary:hover { background: #1650c4; box-shadow: none; }
+:root[data-theme="dark"] .btn-outline { background: transparent; color: var(--nf-link); border-color: rgba(156, 194, 255, .45); }
+:root[data-theme="dark"] .btn-outline:hover { background: rgba(47, 123, 255, .12); border-color: var(--nf-link); }
+:root[data-theme="dark"] .btn-ghost, :root[data-theme="dark"] .btn--ghost { background: transparent; color: var(--nf-link); border-color: var(--color-border-strong); }
+:root[data-theme="dark"] .btn-ghost:hover, :root[data-theme="dark"] .btn--ghost:hover { color: #c4dbff; background: rgba(47, 123, 255, .1); border-color: var(--nf-link); }
+:root[data-theme="dark"] .nav-actions .btn { box-shadow: none; }
+:root[data-theme="dark"] .btn-play-control, :root[data-theme="dark"] .btn-play-control.is-playing,
+:root[data-theme="dark"] .step-badge, :root[data-theme="dark"] .plan-tag,
+:root[data-theme="dark"] .key-switch-btn.is-active, :root[data-theme="dark"] .key-switch-btn:hover { color: #fff; }
+:root[data-theme="dark"] .key-switch-btn.is-active, :root[data-theme="dark"] .key-switch-btn:hover { background: #1b5fe0; }
+
+/* ── Dark: sections ──────────────────────────────────────────────────────── */
+:root[data-theme="dark"] .hero-section { background-color: var(--nf-canvas); background-image: radial-gradient(50% 60% at 85% 25%, rgba(47, 123, 255, .14), transparent 70%), linear-gradient(180deg, #0b0e14 0%, #0d1119 100%); }
+:root[data-theme="dark"] .hero-content .lead, :root[data-theme="dark"] .lead { color: var(--nf-muted); }
+:root[data-theme="dark"] .hero-floating-bar { background: var(--nf-surface); box-shadow: 0 0 0 1px var(--nf-line), 0 20px 40px rgba(0, 0, 0, .4); }
+:root[data-theme="dark"] .fb-icon { background: rgba(47, 123, 255, .14); color: var(--nf-link); }
+:root[data-theme="dark"] .iphone-frame { box-shadow: 0 0 0 1px #2a3140, -20px 30px 60px rgba(0, 0, 0, .5), inset 0 0 0 2px #333, inset 0 0 0 6px #000; }
+:root[data-theme="dark"] .hero-card { border-color: var(--nf-line); background: var(--nf-surface); box-shadow: none; }
+:root[data-theme="dark"] .transcription-preview-grid { background: var(--nf-wash); border-color: var(--nf-line); }
+:root[data-theme="dark"] .preview-col, :root[data-theme="dark"] .preview-col-solfa, :root[data-theme="dark"] .preview-col-staff { background: var(--nf-surface); }
+:root[data-theme="dark"] .preview-col-title { color: var(--nf-muted); }
+:root[data-theme="dark"] .solfa-tile { background: var(--nf-wash); border-color: var(--nf-line); color: var(--nf-ink); }
+:root[data-theme="dark"] .solfa-tile.is-active-beat { background: #1b5fe0; color: #fff; }
+:root[data-theme="dark"] .confidence-strip { background: var(--nf-wash); border-color: var(--nf-line); }
+:root[data-theme="dark"] .value-strip-grid { background: var(--nf-surface); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .value-item + .value-item { border-color: var(--nf-line); }
+:root[data-theme="dark"] .value-icon-circle, :root[data-theme="dark"] .step-graphic-circle, :root[data-theme="dark"] .feature-icon-wash { background: rgba(47, 123, 255, .14); border-color: transparent; color: var(--nf-link); }
+
+:root[data-theme="dark"] .nf-step-card, :root[data-theme="dark"] .step-card { background: var(--nf-surface); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .nf-step-card:hover, :root[data-theme="dark"] .step-card:hover { border-color: rgba(156, 194, 255, .35); box-shadow: none; }
+:root[data-theme="dark"] .nf-step-card__visual, :root[data-theme="dark"] .step-visual { background: var(--nf-wash); border-color: var(--nf-line); box-shadow: none; }
+
+:root[data-theme="dark"] .spotlight-section { background: var(--nf-surface); border-color: var(--nf-line); }
+:root[data-theme="dark"] .solfa-interactive-card { background: var(--nf-wash); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .solfa-bars-visualizer { background: var(--nf-canvas); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .key-switch-btn { background: var(--nf-surface); border-color: var(--nf-line); color: var(--nf-copy); }
+
+:root[data-theme="dark"] .features-section, :root[data-theme="dark"] .faq-section { background: var(--nf-canvas); }
+:root[data-theme="dark"] .feature-card { background: var(--nf-surface); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .feature-card:hover { border-color: rgba(156, 194, 255, .35); box-shadow: none; }
+:root[data-theme="dark"] .feature-tag { background: rgba(47, 123, 255, .14); color: var(--nf-link); }
+
+:root[data-theme="dark"] .pricing-section { background: var(--nf-surface); border-top-color: var(--nf-line); }
+:root[data-theme="dark"] .plan { background: var(--nf-canvas); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .plan--featured { border-color: #2f7bff; box-shadow: none; }
+:root[data-theme="dark"] .pricing-region { background: var(--nf-canvas); border-color: var(--nf-line); color: var(--nf-muted); }
+
+:root[data-theme="dark"] .faq-item, :root[data-theme="dark"] .faq-item:first-child { background: var(--nf-surface); border-color: var(--nf-line); box-shadow: none; }
+:root[data-theme="dark"] .faq-answer { color: var(--nf-muted); }
+
+:root[data-theme="dark"] .nf-blog-strip { background: var(--nf-canvas); }
+:root[data-theme="dark"] .cta-box { background: #1b4fc4; box-shadow: none; }
+:root[data-theme="dark"] .cta-box::after { opacity: .35; }
+:root[data-theme="dark"] .cta-box .btn-primary { background: #fff; color: #1b4fc4; }
+:root[data-theme="dark"] .cta-box .eyebrow, :root[data-theme="dark"] .cta-box .display-title, :root[data-theme="dark"] .cta-box .lead { color: #fff; }
+
+/* The phone in the hero shows the app in Day mode, whatever the page's theme. */
+:root[data-theme="dark"] .iphone-frame { --nf-blue: #2563eb; --nf-ink: #0f172a; --nf-muted: #64748b; --nf-wash: #eef3fb; color-scheme: light; }
+:root[data-theme="dark"] .cta-box .btn-primary:hover { background: #e8f0ff; }
+
+:root[data-theme="dark"] .site-footer { background: var(--nf-surface); border-top-color: var(--nf-line); }
+:root[data-theme="dark"] .footer-brand-p, :root[data-theme="dark"] .footer-links a, :root[data-theme="dark"] .footer-bottom { color: var(--nf-muted); }
+:root[data-theme="dark"] .footer-bottom { border-top-color: var(--nf-line); }
+
+/* The try-it box (styles in index.html) and the recorder sheet (recorder.css). */
+:root[data-theme="dark"] .try-form input { background: var(--nf-canvas); border-color: #6b778b; color: var(--nf-ink); }
+:root[data-theme="dark"] .try-link summary, :root[data-theme="dark"] .try-status-info, :root[data-theme="dark"] .try-status a { color: var(--nf-link); }
+:root[data-theme="dark"] .try-link-note, :root[data-theme="dark"] .try-note, :root[data-theme="dark"] .try-status { color: var(--nf-muted); }
+:root[data-theme="dark"] .try-status-error { color: #fca5a5; }
+:root[data-theme="dark"] .nf-rec { background: rgba(3, 5, 8, .75); }
+:root[data-theme="dark"] .nf-rec-orb { background: radial-gradient(circle at 50% 40%, #1c2a44, #121722 72%); }
+:root[data-theme="dark"] .nf-rec .nf-rec-primary, :root[data-theme="dark"] .nf-rec-mark, :root[data-theme="dark"] .nf-rec-orb.done { background: #1b5fe0; box-shadow: none; }
+:root[data-theme="dark"] .nf-rec .nf-rec-stop { background: #f1f4f9; color: #0b0e14; border-color: #f1f4f9; }

@@ -1,6 +1,7 @@
 ---
 title: "How to Find the Doh of Any Song"
 description: "Three reliable ways to find the doh of a song: from the key signature, by ear, and by checking the tune. Plus minor keys, starting notes and key changes."
+dek: "Doh is the one fact a choir needs before anyone can sing. Here are three ways to find it: from the key signature, by ear, and by checking the tune."
 date: "2026-10-14"
 author: francis
 tags: [tonic-solfa, keys, choir]
@@ -22,7 +23,8 @@ faq:
 
 Doh is the key note of a song — its home. This guide gives you three reliable ways to find it: from the key signature on printed music, by ear from a recording, and by checking your answer against the tune. It also covers minor keys, songs that do not start on doh, and how to move doh when a song is too high or too low for your choir.
 
-If you are new to solfa altogether, start with [how to read Tonic Solfa](/blog/how-to-read-tonic-solfa) and come back.
+> [!TIP]
+> If you are new to solfa altogether, start with [how to read Tonic Solfa](/blog/how-to-read-tonic-solfa) and come back.
 
 ## What "the doh" means
 

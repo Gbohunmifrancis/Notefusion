@@ -30,6 +30,9 @@ export function loadAuthors(dir = path.join(CONTENT_DIR, "authors")) {
     const file = path.join(dir, f);
     const { data, body } = parseFrontMatter(fs.readFileSync(file, "utf8"), file);
     for (const k of ["name", "role", "short"]) if (!data[k]) fail(file, `"${k}" is required`);
+    // A square photo for the byline and the author page, e.g. /assets/authors/francis.jpg (at least 192×192).
+    // Without one, the pages show the author's initials.
+    if (data.photo != null && (typeof data.photo !== "string" || !/^\/assets\/[\w./-]+\.(jpe?g|png|webp)$/.test(data.photo))) fail(file, `"photo" must be a path under /assets, e.g. /assets/authors/${f.replace(/\.md$/, "")}.jpg`);
     const id = f.replace(/\.md$/, "");
     authors[id] = { id, ...data, bio: body.trim(), url: `/blog/author/${id}` };
   }
@@ -38,6 +41,8 @@ export function loadAuthors(dir = path.join(CONTENT_DIR, "authors")) {
 
 // ── Posts ───────────────────────────────────────────────────────────────────
 export const DESCRIPTION_MAX = 160;
+/** The standfirst under a post's title; optional, the description stands in for it. */
+export const DEK_MAX = 240;
 
 export function validatePost(post, { file, authors, hymnSlugs }) {
   const d = post;
@@ -45,6 +50,7 @@ export function validatePost(post, { file, authors, hymnSlugs }) {
   if (!d.title || typeof d.title !== "string") fail(file, `"title" is required`);
   if (!d.description || typeof d.description !== "string") fail(file, `"description" is required`);
   if (d.description.length > DESCRIPTION_MAX) fail(file, `"description" is ${d.description.length} characters; keep it to ${DESCRIPTION_MAX}`);
+  if (d.dek != null && (typeof d.dek !== "string" || !d.dek.trim() || d.dek.length > DEK_MAX)) fail(file, `"dek" (the line under the title) must be text of at most ${DEK_MAX} characters`);
   if (!isIsoDate(d.date)) fail(file, `"date" must be YYYY-MM-DD`);
   if (d.updated != null && (!isIsoDate(d.updated) || d.updated < d.date)) fail(file, `"updated" must be YYYY-MM-DD, on or after "date"`);
   if (!authors[d.author]) fail(file, `"author" must be one of: ${Object.keys(authors).join(", ")}`);

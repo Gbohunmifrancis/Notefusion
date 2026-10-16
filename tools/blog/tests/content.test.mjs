@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { parseFrontMatter, stringifyFrontMatter, loadTunes, loadHymns, loadAll } from "../lib/content.mjs";
+import { parseFrontMatter, stringifyFrontMatter, loadTunes, loadHymns, loadAll, loadAuthors } from "../lib/content.mjs";
 import { renderMarkdown } from "../lib/markdown.mjs";
 import { prepareHymn } from "../lib/render-hymns.mjs";
 
@@ -86,4 +86,27 @@ test("markdown: one h1 per page (none in the body), heading ids, solfa blocks fr
   assert.throws(() => renderMarkdown("```solfa\nhymn: no-such-hymn\n```", { hymnsBySlug }), /no published hymn/);
   assert.throws(() => renderMarkdown("```solfa\nhymn: amazing-grace\nbars: 1-99\n```", { hymnsBySlug }), /has bars 1-17/);
   assert.throws(() => renderMarkdown("![x](/a.png)", { hymnsBySlug }), /size/);
+});
+
+test("markdown: callouts, pull quotes and captioned figures", () => {
+  const hymnsBySlug = new Map();
+  const callout = renderMarkdown("> [!TIP]\n> Start with [the basics](/blog/x).", { hymnsBySlug }).html;
+  assert.match(callout, /^<aside class="callout callout-tip"><p class="callout-label">Tip<\/p><p>Start with <a href="\/blog\/x">the basics<\/a>.<\/p>\n<\/aside>/);
+  const note = renderMarkdown("> [!NOTE]\n>\n> A whole paragraph.", { hymnsBySlug }).html;
+  assert.match(note, /class="callout callout-note"><p class="callout-label">Note<\/p>\n?<p>A whole paragraph.<\/p>/);
+  assert.match(renderMarkdown("> Solfa is a map of the tune.", { hymnsBySlug }).html, /^<blockquote class="pull-quote"><p>Solfa is a map of the tune.<\/p>/);
+  const fig = renderMarkdown('![A choir](/assets/blog/c.jpg "1200x675 | The choir at practice")', { hymnsBySlug }).html;
+  assert.equal(fig.trim(), '<figure class="post-figure"><img src="/assets/blog/c.jpg" alt="A choir" width="1200" height="675" loading="lazy" decoding="async"><figcaption>The choir at practice</figcaption></figure>');
+  assert.doesNotMatch(renderMarkdown('![A](/a.jpg "10x10")', { hymnsBySlug }).html, /<p>|figcaption/);
+});
+
+test("authors: an optional photo under /assets; posts: an optional dek", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "nf-authors-"));
+  const write = (front) => fs.writeFileSync(path.join(dir, "ada.md"), `---\nname: Ada\nrole: writer\nshort: Ada writes.\n${front}---\nBio.\n`);
+  write("photo: /assets/authors/ada.jpg\n");
+  assert.equal(loadAuthors(dir).ada.photo, "/assets/authors/ada.jpg");
+  write("photo: https://example.com/ada.jpg\n");
+  assert.throws(() => loadAuthors(dir), /"photo" must be a path under \/assets/);
+  fs.rmSync(dir, { recursive: true, force: true });
+  assert.ok(loadAll().posts.every((p) => p.dek == null || (p.dek.length > 0 && p.dek.length <= 240)));
 });

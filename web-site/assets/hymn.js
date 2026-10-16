@@ -20,6 +20,8 @@
     }).then(function () { if (!window.opensheetmusicdisplay) throw new Error("engraver"); });
   }
   var engraved = false;
+  /** Smaller notes on a narrow box, so a phone gets a few bars to a line instead of one. */
+  function zoomFor(width) { return width < 380 ? 0.5 : width < 460 ? 0.55 : width < 600 ? 0.7 : width < 760 ? 0.85 : 1; }
   function engrave() {
     if (engraved || !staff) return;
     engraved = true;
@@ -27,10 +29,25 @@
     loadOsmd().then(function () {
       staff.innerHTML = "";
       var d = new window.opensheetmusicdisplay.OpenSheetMusicDisplay(staff, {
-        backend: "svg", autoResize: true, drawTitle: false, drawSubtitle: false, drawComposer: false,
+        backend: "svg", autoResize: false, drawTitle: false, drawSubtitle: false, drawComposer: false,
         drawLyricist: false, drawPartNames: false, drawMeasureNumbers: true, autoBeam: true
       });
-      return d.load(data.musicXml).then(function () { d.render(); });
+      return d.load(data.musicXml).then(function () {
+        var width = staff.clientWidth;
+        d.zoom = zoomFor(width);
+        d.render();
+        // Re-drawn for the new width after a resize or a turn of the phone, once it settles.
+        var timer = null;
+        window.addEventListener("resize", function () {
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            if (staff.clientWidth === width) return;
+            width = staff.clientWidth;
+            d.zoom = zoomFor(width);
+            try { d.render(); } catch (e) { /* keep the last drawing */ }
+          }, 200);
+        });
+      });
     }).catch(function () {
       staff.innerHTML = '<p class="staff-wait">The staff could not be drawn right now. The solfa above has every note.</p>';
     });

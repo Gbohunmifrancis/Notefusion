@@ -115,6 +115,7 @@ builder.Services.AddSingleton<IConfigureOptions<JwtBearerOptions>, ConfigureJwtB
 builder.Services.AddAuthorization(options => options.AddNoteFusionPolicies());
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<UserAccessCache>();
+builder.Services.AddSingleton<NoteFusion.Api.Blog.BlogReadsCache>();
 builder.Services.AddScoped<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, CurrentAdminHandler>();
 
 // CORS for the browser clients on their own origins: the admin dashboard and, since the password-reset
