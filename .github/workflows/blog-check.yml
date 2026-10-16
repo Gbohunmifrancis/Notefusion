@@ -1,7 +1,8 @@
 name: Blog & hymn pages
 
-# The hymn pages (and the blog's shell) under web-site/ are generated from content/ by
-# tools/blog/build.mjs and committed. This fails a pull request when the committed pages are stale
+# The hymn pages (and the blog's shell) under web-site/, and the worker's hymn index
+# (server/app/data/hymn_index.json, the tunes the hymn matcher recognises), are generated from
+# content/ by tools/blog/build.mjs and committed. This fails a pull request when the committed pages are stale
 # (someone edited content/ without rebuilding, or edited a generated page by hand), when a link is
 # broken, or when JSON-LD, the sitemap or the feed is malformed. It also runs the web tests, which
 # the main CI skips for web-site/ changes. See docs/BLOG.md.
@@ -16,6 +17,7 @@ on:
       - "content/**"
       - "tools/blog/**"
       - "web-site/**"
+      - "server/app/data/hymn_index.json"
       - ".github/workflows/blog-check.yml"
   push:
     branches: [main]
@@ -23,6 +25,7 @@ on:
       - "content/**"
       - "tools/blog/**"
       - "web-site/**"
+      - "server/app/data/hymn_index.json"
       - ".github/workflows/blog-check.yml"
 
 concurrency:

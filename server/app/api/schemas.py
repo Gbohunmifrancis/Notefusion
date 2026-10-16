@@ -90,6 +90,35 @@ class KeyAlternativeDto(ApiModel):
     musicxml: str = ""
 
 
+class HymnMatchDto(ApiModel):
+    """A hymn in our library the tune clearly matches (``app.pipeline.hymn_match``).
+
+    ``kind`` "score": the hymnbook version follows, written in the key that was sung — its key,
+    time signature, the take's pace as ``tempo``, the ``pickup`` in beats, ``notes`` in the same
+    shape as the result's, ``solfa_lines``, ``musicxml`` and the first verse as ``lyrics`` — for
+    the clients' "Use the hymnbook version?" prompt.  ``kind`` "incipit": recognition only; the
+    tune is named and linked, and none of the score fields is set.  ``credit`` is the line the
+    hymn's page shows; ``source`` and ``licence`` say where it came from and on what terms.
+    """
+    slug: str
+    title: str
+    tune: str = ""
+    url: str
+    source: str
+    licence: str
+    credit: str
+    kind: str  # score | incipit
+    confidence: float
+    key: str | None = None
+    time_signature: str | None = None
+    tempo: int | None = None
+    pickup: float | None = None
+    notes: list[NoteEventDto] | None = None
+    solfa_lines: list[str] | None = None
+    musicxml: str | None = None
+    lyrics: str | None = None
+
+
 class ResultDto(ApiModel):
     key: str
     key_confidence: float
@@ -137,6 +166,8 @@ class ResultDto(ApiModel):
     chords_source: str | None = None
     # Only when the doh is unsure: the others it could be, nearest first (at most two).
     key_alternatives: list[KeyAlternativeDto] | None = None
+    # Only when the tune clearly matches a hymn we hold: the hymn, and its hymnbook version.
+    hymn_match: HymnMatchDto | None = None
 
 
 class GradeTargetNoteDto(ApiModel):

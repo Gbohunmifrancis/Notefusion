@@ -71,6 +71,27 @@ public class Transcription : BaseEntity
     /// </summary>
     public List<ChordEvent>? Chords { get; private set; }
 
+    /// <summary>
+    /// The hymn this sheet is the hymnbook version of, when the user took it ("Use the hymnbook version"):
+    /// its slug on the site's hymn pages, title, link and the credit line its page shows, kept so every
+    /// view of the sheet credits the source. All null for a sheet that is a transcription.
+    /// </summary>
+    public string? HymnSlug { get; private set; }
+    public string? HymnTitle { get; private set; }
+    public string? HymnUrl { get; private set; }
+    public string? HymnCredit { get; private set; }
+
+    public const int HymnCreditMaxLength = 1000;
+
+    public void CreditHymn(string slug, string title, string url, string credit)
+    {
+        HymnSlug = Guard.NotNullOrWhiteSpace(slug);
+        HymnTitle = Guard.NotNullOrWhiteSpace(title);
+        HymnUrl = Guard.NotNullOrWhiteSpace(url);
+        var text = Guard.NotNullOrWhiteSpace(credit).Trim();
+        HymnCredit = text.Length > HymnCreditMaxLength ? text[..HymnCreditMaxLength] : text;
+    }
+
     /// <summary>The public link's token; null while the sheet is private.</summary>
     public string? ShareToken { get; private set; }
     public DateTime? SharedAtUtc { get; private set; }

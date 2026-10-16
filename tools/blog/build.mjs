@@ -5,6 +5,8 @@
 //   web-site/index.html                   (only the "Latest from the blog" block between its markers)
 //   web-site/<IndexNow key>.txt
 //   web-site/blog/catalogue.json          (--api only: hymns, pages and authors for the API's checks)
+//   server/app/data/hymn_index.json       (the worker's hymn matcher: every published hymn's melody; only
+//                                          when building web-site/ itself, never a --site copy)
 //
 // Blog posts live in the API's database and are written and published in the admin console. The deploy
 // workflow runs this with --api, so the posts are rendered at deploy time and never committed. Without
@@ -28,12 +30,14 @@ import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits } from "./l
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
+import { hymnIndexJson, HYMN_INDEX_PATH } from "./lib/hymn-index.mjs";
 
 /** Newest first; a tie goes to the slug, so the order never depends on where a post came from. */
 function byDate(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : a.slug.localeCompare(b.slug); }
 
 /**
- * Builds every page in memory: { files: Map(relativePath → content), summary }. `api` is the answer of
+ * Builds every page in memory: { files: Map(relativePath → content), hymnIndex, summary }; `hymnIndex` is
+ * the worker's server/app/data/hymn_index.json (lib/hymn-index.mjs). `api` is the answer of
  * GET /api/blog/published (or null for content/ alone): its posts join any kept in content/blog, and win
  * on a slug or title they share.
  */
@@ -92,14 +96,18 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
 
   files.set(`${INDEXNOW_KEY}.txt`, INDEXNOW_KEY + "\n");
   if (api) files.set("blog/catalogue.json", catalogueJson({ hymns, authors, pages: sitePages(siteDir, [...files.keys()]) }));
-  return { files, summary: { posts: posts.length, hymns: hymns.length, tags: tags.length, pages: files.size, skipped } };
+  return { files, hymnIndex: hymnIndexJson(hymns), summary: { posts: posts.length, hymns: hymns.length, tags: tags.length, pages: files.size, skipped } };
 }
 
-/** Writes a build into `siteDir`, clearing the generated folders first so a deleted post disappears. */
-export function writeSite({ siteDir = SITE_DIR, includeDrafts = false, api = null } = {}) {
-  const { files, summary } = buildSite({ siteDir, includeDrafts, api });
+/**
+ * Writes a build into `siteDir`, clearing the generated folders first so a deleted post disappears, and the
+ * hymn index to `indexPath` (the worker's copy when building web-site/ itself; nowhere for a --site copy).
+ */
+export function writeSite({ siteDir = SITE_DIR, includeDrafts = false, api = null, indexPath = siteDir === SITE_DIR && !includeDrafts ? HYMN_INDEX_PATH : null } = {}) {
+  const { files, hymnIndex, summary } = buildSite({ siteDir, includeDrafts, api });
   for (const dir of ["blog", "hymns"]) fs.rmSync(path.join(siteDir, dir), { recursive: true, force: true });
   for (const [rel, content] of files) writeFile(path.join(siteDir, rel), content);
+  if (indexPath) writeFile(indexPath, hymnIndex);
   return summary;
 }
 

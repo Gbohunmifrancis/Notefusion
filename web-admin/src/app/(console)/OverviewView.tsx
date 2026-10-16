@@ -784,9 +784,10 @@ export function OverviewView() {
               value: formatCount(data.transcriptions.totalTranscribed),
               change: txChange?.label ?? null,
               up: txChange?.up,
-              description: `${formatCount(data.transcriptions.totalSaved)} kept${txChange ? " · vs. previous period" : ""}`,
+              description: `${formatCount(data.transcriptions.totalSaved)} kept${txChange ? " · vs. previous period" : ""}`
+                + ` · ${formatCount(data.transcriptions.hymnMatchesOffered ?? 0)} hymns recognised, ${formatCount(data.transcriptions.hymnVersionsSaved ?? 0)} hymnbook versions kept`,
               icon: Music2,
-              hint: "Transcriptions that produced a result in this window, including free previews",
+              hint: "Transcriptions that produced a result in this window, including free previews. Hymns recognised: results whose tune matched a hymn in the library and offered its hymnbook version; kept: sheets saved as that version",
             },
           ];
 

@@ -236,6 +236,7 @@ export function ChoirScreen({ navigation, route }: Props) {
         partsMusicXml: full.partsMusicXml ?? "",
         shareToken: null,
         chords: full.chords ?? null,
+        hymn: full.hymn ?? null,
       };
       navigation.navigate("Result", { result, title: full.title });
     } catch (e) {

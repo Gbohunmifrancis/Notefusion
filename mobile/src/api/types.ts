@@ -122,11 +122,48 @@ export interface KeyAlternative {
   musicXml?: string;
 }
 
+/**
+ * A hymn in the library the transcribed tune clearly matches (the worker's `hymn_match`). Mirrors the C#
+ * HymnMatchDto. `kind` "score": the hymnbook version follows, written in the key that was sung — the
+ * published notes, rhythm, time signature and pickup, the take's pace as `tempo`, the first verse as
+ * `lyrics` — for the "Use the hymnbook version?" prompt. `kind` "incipit": recognition only; the tune is
+ * named and linked, and none of the score fields is set. `credit` is the line the hymn's page shows.
+ */
+export interface HymnMatch {
+  slug: string;
+  title: string;
+  tune: string;
+  url: string;
+  source: string;
+  licence: string;
+  credit: string;
+  kind: "score" | "incipit" | string;
+  confidence: number;
+  key?: string | null;
+  timeSignature?: string | null;
+  tempo?: number | null;
+  pickup?: number | null;
+  notes?: NoteEvent[] | null;
+  solfaLines?: string[] | null;
+  musicXml?: string | null;
+  lyrics?: string | null;
+}
+
+/** The hymn a saved sheet is the hymnbook version of, with its credit. Mirrors the C# HymnCreditDto. */
+export interface HymnCredit {
+  slug: string;
+  title: string;
+  url: string;
+  credit: string;
+}
+
 export interface TranscriptionResult {
   key: string;
   keyConfidence: number;
   /** Only when the doh is unsure: the other keys it could be, nearest first (at most two). */
   keyAlternatives?: KeyAlternative[] | null;
+  /** Only when the tune clearly matches a hymn in the library: the hymn, and its hymnbook version. */
+  hymnMatch?: HymnMatch | null;
   tempo: number;
   timeSignature: string;
   musicXml: string;
@@ -186,6 +223,8 @@ export interface TranscriptionResult {
   lyrics?: string;
   /** The public link's token when the saved sheet is shared; null or absent otherwise. */
   shareToken?: string | null;
+  /** Saved items only: the hymn the sheet is the hymnbook version of. */
+  hymn?: HymnCredit | null;
 }
 
 /** What the API hands back for a transposed sheet (saved or not): the moved notes, labelled. */
@@ -310,6 +349,8 @@ export interface SavedTranscription {
   preview?: NoteEvent[] | null;
   /** The sheet is in its owner's choir library ("Share with my choir"). */
   sharedWithChoir?: boolean;
+  /** The hymn this sheet is the hymnbook version of, with the credit its page shows; null otherwise. */
+  hymn?: HymnCredit | null;
 }
 
 // --- Choirs -------------------------------------------------------------
@@ -374,6 +415,8 @@ export interface SharedSheet {
   parts: Record<string, TranscriptionPart> | null;
   partsMusicXml: string | null;
   chords?: ChordSymbol[] | null;
+  /** The hymn this sheet is the hymnbook version of; null otherwise. */
+  hymn?: HymnCredit | null;
 }
 
 // --- Billing ------------------------------------------------------------

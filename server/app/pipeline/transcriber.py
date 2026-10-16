@@ -1319,6 +1319,9 @@ class TranscriptionResult:
     chords_source: str | None = None
     # When the doh is unsure, the others it could be (``KEY_ALTERNATIVES_BELOW``); None otherwise.
     key_alternatives: list[KeyAlternative] | None = None
+    # A hymn we hold that the tune clearly matches (``app.pipeline.hymn_match.offer``, set by the
+    # queue after a melody transcription), with its hymnbook version in the sung key; None otherwise.
+    hymn_match: dict | None = None
 
 
 # ── Key name helpers ──────────────────────────────────────────────────────────
