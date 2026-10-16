@@ -99,8 +99,10 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   video is refused at `/v1/links/resolve` with a `LinkError.code` the C# `TranscriptionErrors.ForLink`
   turns into its own sentence, and the refusal is remembered so the submit is refused at once. Sections
   are cut as a copy (no `--force-keyframes-at-cuts`); ffmpeg cuts the exact window while decoding.
-  `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, rule-scored
-  voicing, homorhythmic parts), returned as `parts` / `parts_musicxml` — only when asked:
+  `app/pipeline/harmony.py` writes SATB under the tune (Viterbi chord choice, then Viterbi over each
+  note's voicings so the inner parts move as lines — steps, light passing notes off the beat, no parallels —
+  homorhythmic parts; bench against CCEH's own harmonisations: `python -m tests.accuracy.harmony_bench`,
+  fixture `harmony_book.json`), returned as `parts` / `parts_musicxml` — only when asked:
   `harmony=true` on submit, or `POST /v1/harmonise` (notes + key) behind the Pro-only
   `POST /api/transcriptions/harmonise`; `PUT /api/library/{id}/parts` keeps them on a saved sheet.
   A transcription is the one voice that was heard; parts under it are an arrangement on request,
