@@ -45,6 +45,7 @@ public static class BlogDependencyInjection
             GeminiModel = Text(gemini["Model"]) ?? d.GeminiModel,
             GeminiMaxOutputTokens = int.TryParse(gemini["MaxOutputTokens"], out var max) && max > 0 ? max : d.GeminiMaxOutputTokens,
             GeminiFallbackModels = Models(gemini["FallbackModels"]) ?? d.GeminiFallbackModels,
+            AutoPublishDrafts = bool.TryParse(blog["AutoPublishDrafts"], out var publish) ? publish : d.AutoPublishDrafts,
             AutoDraftEnabled = bool.TryParse(blog["AutoDraftEnabled"], out var on) ? on : d.AutoDraftEnabled,
             AutoDraftDays = Days(blog["AutoDraftDays"]) ?? d.AutoDraftDays,
             AutoDraftTimeUtc = TimeOnly.TryParseExact(Text(blog["AutoDraftTimeUtc"]) ?? string.Empty, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var at)

@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NoteFusion.Application.Blog.Commands;
+using NoteFusion.Application.Blog.Publishing;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Enums;
@@ -8,9 +10,10 @@ namespace NoteFusion.Application.Blog.Drafting;
 
 /// <summary>
 /// Works through the queued batches of drafts, one at a time (the blog draft worker calls it), and queues the
-/// twice-weekly batch. Each draft is saved as a <see cref="BlogPostStatus.Draft"/> the moment it is written —
-/// so the console shows progress and a crash loses at most the draft in hand — with its tokens and whatever
-/// the checks still found. Drafts never publish themselves.
+/// twice-weekly batch. Each draft is saved the moment it is written — so the console shows progress and a crash
+/// loses at most the draft in hand — with its tokens and whatever the checks still found. With
+/// <see cref="BlogSettings.AutoPublishDrafts"/> a draft the checks passed goes live at once (and the site is
+/// rebuilt); one with problems left stays a <see cref="BlogPostStatus.Draft"/> for the founder.
 /// </summary>
 public sealed class BlogGenerationRunner
 {
@@ -51,6 +54,41 @@ public sealed class BlogGenerationRunner
             run.Finish(_clock.UtcNow, "Interrupted by a restart of the API; the drafts saved before it are kept.");
         if (stuck.Count > 0)
             await _db.SaveChangesAsync(ct);
+    }
+
+    /// <summary>
+    /// At start-up, with <see cref="BlogSettings.AutoPublishDrafts"/>: a Gemini draft written while drafts were
+    /// kept for review, that nobody has touched since (its first <see cref="BlogPost.Version"/>), with no review
+    /// notes and nothing the checks flag today, goes live. A draft the founder edited or took off the site is left alone.
+    /// Returns how many went live.
+    /// </summary>
+    public async Task<int> PublishWaitingDraftsAsync(CancellationToken ct)
+    {
+        if (!_settings.AutoPublishDrafts)
+            return 0;
+        var waiting = await _db.BlogPosts
+            .Where(p => p.Source == BlogPostSource.Gemini && p.Status == BlogPostStatus.Draft && p.Version == 1)
+            .ToListAsync(ct);
+        var published = 0;
+        foreach (var post in waiting.Where(p => p.ReviewNotes.Count == 0))
+        {
+            // Held to the same bar as a fresh draft: read against the live site, nothing to fix and no advice left.
+            var check = await BlogPostChecking.CheckAsync(_db, _catalogue, post, ct);
+            if (!check.CheckedAgainstSite || check.Blockers.Count > 0 || check.Advice.Count > 0)
+                continue;
+            PublishDraft(post, _clock.UtcNow);
+            published++;
+        }
+        if (published > 0)
+            await _db.SaveChangesAsync(ct);
+        return published;
+    }
+
+    private void PublishDraft(BlogPost post, DateTime now)
+    {
+        post.Publish(now);
+        BlogSiteChanges.RequestRebuild(_db, $"Gemini draft published: /blog/{post.Slug}", now);
+        _logger.LogInformation("Published the Gemini draft {Slug}.", post.Slug);
     }
 
     /// <summary>
@@ -167,8 +205,11 @@ public sealed class BlogGenerationRunner
 
             var post = SaveDraft(topic, outcome);
             takenSlugs.Add(post.Slug);
+            var passed = outcome.Problems.Count == 0 && outcome.Error is null;
+            if (passed && _settings.AutoPublishDrafts)
+                PublishDraft(post, _clock.UtcNow);
             run.Add(new BlogGenerationItem(topic.Slug, topic.Keyword, topic.TopicId, post.Id, post.Title,
-                outcome.Problems.Count == 0 && outcome.Error is null, outcome.Problems, outcome.Error?.Message, outcome.Usage, outcome.Model));
+                passed, outcome.Problems, outcome.Error?.Message, outcome.Usage, outcome.Model));
             await _db.SaveChangesAsync(ct);
             _logger.LogInformation("Saved blog draft {Slug} ({Problems} problems left, {Tokens} tokens).",
                 post.Slug, outcome.Problems.Count, outcome.Usage.Sum(u => u.Total));

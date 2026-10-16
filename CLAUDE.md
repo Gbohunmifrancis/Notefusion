@@ -213,7 +213,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `BlogChecks` mirror the build: blockers (what would break it, incl. ```solfa blocks checked against the site's
   `/blog/catalogue.json`) stop publishing; advice is the old drafter's quality checks. Gemini (`Gemini__ApiKey`,
   through `OutboundResilience`) drafts from the `BlogTopic` queue on demand (1–10, a `BlogGenerationRun` the
-  `BlogDraftWorker` writes) and Mon/Thu 05:30 UTC, one revision round, tokens recorded; drafts never publish. A 429/5xx
+  `BlogDraftWorker` writes) and Mon/Thu 05:30 UTC, one revision round, tokens recorded; a draft that passes every check publishes itself (`Blog__AutoPublishDrafts`,
+  default on; one with problems stays a Draft). A 429/5xx
   or dropped call is tried 5 times (15/30/60/60 s, `Retry-After` wins), then `Gemini__FallbackModels`
   (`gemini-flash-latest`, `gemini-flash-lite-latest`, 2 tries each; never on 401/403 or a block); the revision uses
   the model that wrote the draft. The prompt spells out bars only for hand-made hymns (catalogue `imported: false`)

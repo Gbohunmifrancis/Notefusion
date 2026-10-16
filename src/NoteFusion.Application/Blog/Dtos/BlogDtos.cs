@@ -102,7 +102,8 @@ public sealed record BlogSiteStatusDto(
     DateTime? LastDispatchedAtUtc,
     string? LastError,
     BlogDeployRunDto? LatestDeploy,
-    string? AutoDraftSchedule);
+    string? AutoDraftSchedule,
+    bool AutoPublishDrafts);
 
 public sealed record BlogDeployRunDto(string Status, string? Conclusion, string Url, DateTime CreatedAtUtc, string Event);
 

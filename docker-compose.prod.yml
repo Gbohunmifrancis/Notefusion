@@ -184,6 +184,7 @@ services:
       GitHub__Repo: ${GitHub__Repo:-Gbohunmifrancis/Notefusion}
       Blog__SiteUrl: ${Blog__SiteUrl:-https://notefusion.studio}
       Blog__AutoDraftEnabled: ${Blog__AutoDraftEnabled:-}
+      Blog__AutoPublishDrafts: ${Blog__AutoPublishDrafts:-}
       Blog__AutoDraftDays: ${Blog__AutoDraftDays:-}
       Blog__AutoDraftTimeUtc: ${Blog__AutoDraftTimeUtc:-}
       Blog__AutoDraftCount: ${Blog__AutoDraftCount:-}

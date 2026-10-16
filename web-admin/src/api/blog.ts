@@ -190,6 +190,8 @@ export interface BlogSiteStatus {
   lastError: string | null;
   latestDeploy: BlogDeployRun | null;
   autoDraftSchedule: string | null;
+  /** A Gemini draft that passes every check goes live by itself; one with problems left waits here. */
+  autoPublishDrafts: boolean;
 }
 
 export const isFinished = (run: BlogGenerationRun) =>

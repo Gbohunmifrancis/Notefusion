@@ -37,7 +37,14 @@ public sealed class BlogSettings
     /// <summary>The longest pause, whatever <c>Retry-After</c> says.</summary>
     public TimeSpan GeminiMaxRetryWait { get; init; } = TimeSpan.FromSeconds(60);
 
-    /// <summary>Drafts one batch on <see cref="AutoDraftDays"/> at <see cref="AutoDraftTimeUtc"/>; never publishes.</summary>
+    /// <summary>
+    /// A Gemini draft that passes every check (what would break the build and the quality advice, after its one
+    /// revision) goes live as soon as it is written, and the site is rebuilt. A draft with problems left stays a
+    /// draft for the founder. <c>Blog__AutoPublishDrafts</c>; false keeps every draft for review.
+    /// </summary>
+    public bool AutoPublishDrafts { get; init; } = true;
+
+    /// <summary>Drafts one batch on <see cref="AutoDraftDays"/> at <see cref="AutoDraftTimeUtc"/>.</summary>
     public bool AutoDraftEnabled { get; init; } = true;
 
     public IReadOnlyList<DayOfWeek> AutoDraftDays { get; init; } = [DayOfWeek.Monday, DayOfWeek.Thursday];

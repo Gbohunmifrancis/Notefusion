@@ -194,7 +194,11 @@ export function BlogView() {
     <div className="animate-fade-in space-y-5">
       <PageHeader
         title="Blog posts"
-        subtitle="Write, check and publish the posts on notefusion.studio/blog. Drafts never go live by themselves."
+        subtitle={
+          site.data?.autoPublishDrafts === false
+            ? "Write, check and publish the posts on notefusion.studio/blog. Gemini drafts wait here for you to publish."
+            : "Write, check and publish the posts on notefusion.studio/blog. A Gemini draft that passes every check goes live by itself; one with problems waits here."
+        }
         breadcrumb={["Dashboard", "Blog posts"]}
         actions={
           <>
@@ -286,7 +290,12 @@ export function BlogView() {
         </StateView>
       </Card>
 
-      <GenerateDialog open={generating} onOpenChange={setGenerating} model={site.data?.model} />
+      <GenerateDialog
+        open={generating}
+        onOpenChange={setGenerating}
+        model={site.data?.model}
+        autoPublish={site.data?.autoPublishDrafts ?? true}
+      />
     </div>
   );
 }
