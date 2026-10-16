@@ -7,6 +7,8 @@ Run from ``server/``:
     python -m tests.accuracy.report --filter vibrato  # only cases whose name matches
     python -m tests.accuracy.report --vocal           # the sung corpus
     python -m tests.accuracy.report --vocal --slices  # its stress slices, one line each
+    python -m tests.accuracy.report --hymns --jobs 4  # the published hymn tunes: meter, bars, rhythm
+    python -m tests.accuracy.report --hymns --split test  # only the held-out half
 
 ``report.json`` is always overwritten; ``baseline.json`` only on ``--write-baseline``,
 because recording a baseline is a deliberate act a human commits.  Once a baseline

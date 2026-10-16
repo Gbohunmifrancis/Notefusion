@@ -3938,10 +3938,11 @@ _TEMPO_PREFERENCE_BPM = 100.0
 
 # Of two readings that fit alike, the nearer 100 wins (above) — unless it writes the commonest
 # note dotted or as a triplet, and a reading a dotted ratio away (3/2 or 2/3 of it) fits as well
-# and writes it plain: a beat, a half or quarter of one, or two or four.  A 3/4 hymn moving
-# "minim crotchet" at 76 fits the half-beat grid just as well at 114, where the crotchet is a
-# dotted quaver (1.5 beats), and 114 is nearer 100; so is a 4/4 hymn of crotchets at 115 read at
-# 172.  Only that swap, and only between readings in the same fit bucket: a rank key "dotted
+# and writes it plain: a beat, a half or quarter of one, or two or four.  A line of crotchets
+# and minims at 76 fits the half-beat grid just as well at 114, where every crotchet is a dotted
+# crotchet (1.5 beats), and 114 is nearer 100: the sung corpus's low hum was written so, and
+# New Britain sung at 65 came out at 97 in 4.5-beat bars.  Only that swap, and only between
+# readings in the same fit bucket (a dotted reading that fits better still wins): a rank key "dotted
 # loses every tie" was measured first and moved a 1.5x vibrato-fragmented instrument case to
 # 2x (``vibrato_rate_k20``, 148 -> 195 for 96), which the instrument gate counts as an octave
 # error.  See ``settings.tempo_plain_level`` for what the swap measured.
@@ -5008,11 +5009,17 @@ def _choir_parts(
 _BAR_WEIGHTS = {3: (1.0, 0.25, 0.25), 4: (1.0, 0.25, 0.5, 0.25)}
 
 # What a bar line at the first note is worth before the evidence: most tunes start on the
-# downbeat, and with nothing to say otherwise the first note is where the bar starts.
+# downbeat, and with nothing to say otherwise the first note is where the bar starts.  Swept on
+# the dev half (0, 0.05, 0.1, 0.15 of the line's held length): 0.05 placed the most notes in the
+# right bar (0.752, against 0.693 with no prior and 0.708 at 0.15).
 PICKUP_PRIOR = 0.05
 
 # How much more of the line's held weight must fall on the downbeats of a three-beat bar than
 # chance allows (``_meter_and_pickup``) before the sheet is written in 3/4 rather than 4/4.
+# On the dev half, at the right tempo level, every 4/4 take measured at most 1.03 and every 3/4
+# take at least 1.08; 1.2 leaves the 4/4s a margin and still finds 29 of 38 3/4 takes (1.1
+# found 34).  A take read at a dotted tempo level can measure 1.7-2.8 whatever its meter,
+# which is why the level is settled first (``_PLAIN_NOTE_BEATS``).
 TRIPLE_LIFT = 1.2
 
 # Fewer notes than this and the bar is not ours to move.
@@ -5573,9 +5580,16 @@ def _transcribe_wav(
     # hymns, played and sung, scored against their own scores) is what finally had 3/4, 6/8 and
     # 3/2 in it, and pickups on half the tunes.  The constants were set on its dev half; on
     # the held-out half (``report --hymns --split test``, see hymn_baseline.json):
-    #   HELD_OUT_TABLE
-    # A 4/4 tune is written 3/4 on 2 of 152 held-out takes.  What it cannot do: 6/4 and 3/2
-    # (six beats a bar) come out 3/4 or 4/4, 6/8 only as 3/4, and 2/2 as 4/4 (the same bars).
+    #                     before  after          before  after
+    #     meter.exact      0.724  0.814   bars.in_right_bar  0.656  0.786
+    #     pickup.exact     0.476  0.719   bars.placed_exact  0.388  0.678
+    #     bars.all_right   0.376  0.676   tempo.level_right  0.924  0.933
+    # (210 takes; with this step and ``_PLAIN_NOTE_BEATS``.)  3/4 is written 3/4 on 19 of 34
+    # held-out takes (0 before), 4/4 stays 4/4 on all 152; notes, key and syllables are
+    # unchanged but for two tunes whose tempo the dotted swap put right.  On dev a 4/4 tune
+    # read at the wrong level came out 3/4 once in 166.  What it cannot do: 6/4 and 3/2 (six
+    # beats a bar) come out 3/4 or 4/4, 6/8 only as 3/4, and 2/2 as 4/4 (the same bars); 4/4
+    # can be read half a bar out (chorales of even crotchets carry little durational accent).
     # The tempo's metrical level is upstream of all of it (``_PLAIN_NOTE_BEATS``): a bar of
     # three beats read at 1.5x the tempo is four and a half.
     pickup = 0.0

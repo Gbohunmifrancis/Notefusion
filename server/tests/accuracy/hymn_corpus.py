@@ -62,7 +62,8 @@ SUNG_STYLES = ("hum_clean", "hum_amateur", "ah_amateur", "da_syllables", "ah_vib
 
 TEMPO_FACTORS = (0.85, 0.92, 1.0, 1.08, 1.15)
 
-# A handful for pytest: two 4/4 with and without a pickup, a 3/4 with one, a 6/8, a 3/2.
+# A handful for pytest (instrument renders): 4/4 from the downbeat twice, 4/4 with a pickup
+# twice, and New Britain, 3/4 with a pickup.
 FAST_SLUGS = ("old-hundredth", "new-britain", "st-anne", "adeste-fideles", "duke-street")
 
 Notes = tuple[tuple[int | None, float], ...]
