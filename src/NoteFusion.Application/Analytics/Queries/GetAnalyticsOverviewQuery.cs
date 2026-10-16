@@ -418,7 +418,11 @@ public sealed class GetAnalyticsOverviewQueryHandler
             AverageConfidence: averageConfidence,
             StoredBytes: storedBytes,
             TotalTranscribed: await Common.TranscriptionCounts.InWindowAsync(_db, range.FromUtc, range.ToUtc, ct),
-            TotalTranscribedPrevious: await Common.TranscriptionCounts.InWindowAsync(_db, previous.FromUtc, previous.ToUtc, ct));
+            TotalTranscribedPrevious: await Common.TranscriptionCounts.InWindowAsync(_db, previous.FromUtc, previous.ToUtc, ct),
+            // How often hymn recognition fires, and how often the hymnbook version is taken. The cached result is
+            // camelCase JSON with nulls written out, so an offer is the one place an object follows the name.
+            HymnMatchesOffered: await jobs.CountAsync(j => j.ResultJson != null && j.ResultJson.Contains("\"hymnMatch\":{"), ct),
+            HymnVersionsSaved: await inRange.CountAsync(t => t.HymnSlug != null, ct));
     }
 
     /// <summary>

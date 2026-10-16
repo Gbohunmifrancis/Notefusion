@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Linking,
   ScrollView,
   Share,
   StyleSheet,
@@ -26,9 +27,10 @@ import { RehearseView } from "../components/result/RehearseView";
 import { usePractice } from "../components/result/usePractice";
 import { libraryApi, transcriptionsApi } from "../api/endpoints";
 import { toApiError } from "../api/client";
-import type { ChordSymbol, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
+import type { ChordSymbol, HymnCredit, KeyAlternative, NoteEvent, TranscriptionPart, TranscriptionResult } from "../api/types";
 import { chordRows } from "../lib/chordRow";
 import { dohChoices, writeInKey } from "../lib/dohChoice";
+import { hymnbookSheet, hymnCreditLine, hymnLabel, hymnOffer } from "../lib/hymnbook";
 import { showDialog, type DialogAction } from "../lib/dialog";
 import { useSubscription } from "../lib/subscription";
 import {
@@ -211,6 +213,14 @@ export function ResultScreen({ route, navigation }: Props) {
     }),
   );
 
+  /**
+   * "Is this Amazing Grace? Use the hymnbook version." The worker recognised a hymn we hold; the match
+   * carries its published score in the key that was sung. Asked once, before saving; taking it makes the
+   * sheet the hymnbook version, and `hymnSource` then credits it (on a saved sheet, from the library).
+   */
+  const [hymnAnswered, setHymnAnswered] = useState(false);
+  const [hymnSource, setHymnSource] = useState<HymnCredit | null>(result.hymn ?? null);
+
   // ── Transpose for my choir ────────────────────────────────────────────────
   // The one edit that moves the notes. After it, the *baseline* the corrections are
   // judged against is the transposed sheet, not the worker's — otherwise every note
@@ -275,6 +285,9 @@ export function ResultScreen({ route, navigation }: Props) {
     [draft, baseline.notes],
   );
   const edited = correctedCount > 0;
+  const hymnAsk = edited
+    ? null
+    : hymnOffer(result.hymnMatch, { saved: !!savedId, answered: hymnAnswered || !!hymnSource, hasParts: !!parts });
 
   const [solfaStyle, setSolfaStyle] = useState<SolfaStyle>("bars");
   const hasLyrics = lyrics.trim().length > 0;
@@ -424,8 +437,10 @@ export function ResultScreen({ route, navigation }: Props) {
               draft.notes.length) *
               1000,
           ) / 1000
-        : result.overallConfidence,
-    [draft.notes, edited, result.overallConfidence],
+        : hymnSource
+          ? 1 // the hymnbook version: published notes, nothing in doubt
+          : result.overallConfidence,
+    [draft.notes, edited, result.overallConfidence, hymnSource],
   );
 
   async function save() {
@@ -444,6 +459,7 @@ export function ResultScreen({ route, navigation }: Props) {
         parts: parts ?? undefined,
         partsMusicXml: partsMusicXml || undefined,
         chords: chords ?? undefined,
+        hymnSlug: hymnSource?.slug ?? null,
       });
       committedLyrics.current = lyrics.trim();
       setSavedId(saved.id);
@@ -531,6 +547,31 @@ export function ResultScreen({ route, navigation }: Props) {
     setKey(choice.key);
     setPreview(synthesizeMelodyWavBase64(relabelled.notes, tempo));
     setDoubt([]);
+    haptics.play("success");
+  }
+
+  /**
+   * The answer to "Use the hymnbook version?". Yes swaps the sheet for the hymn's published score — its
+   * notes, rhythm, time signature and pickup, already in the key that was sung, at the pace it was sung,
+   * with the first verse under it when no words were typed. Like another doh, it is the sheet, not a
+   * correction: the baseline moves with it. What was read against the old beats (the chords) goes.
+   */
+  function chooseHymnbook(take: boolean) {
+    setHymnAnswered(true);
+    const sheet = take && result.hymnMatch ? hymnbookSheet(result.hymnMatch, tempo) : null;
+    if (!sheet) return;
+    const relabelled = deriveSolfa(sheet.notes, sheet.key, sheet.timeSignature, result.chromaticSpelling ?? "direction");
+    setBaseline({ notes: relabelled.notes, key: sheet.key, solfaLines: relabelled.solfaLines });
+    setDraft(pristine(relabelled.notes));
+    persisted.current = pristine(relabelled.notes);
+    setKey(sheet.key);
+    setTimeSignature(sheet.timeSignature);
+    setTempo(sheet.tempo);
+    if (!lyrics.trim() && sheet.lyrics) setLyrics(sheet.lyrics);
+    setChords(null);
+    setPreview(synthesizeMelodyWavBase64(relabelled.notes, sheet.tempo));
+    setDoubt([]);
+    setHymnSource(sheet.hymn);
     haptics.play("success");
   }
 
@@ -928,7 +969,9 @@ export function ResultScreen({ route, navigation }: Props) {
       }
       const outcome = await exportPdf(svg, {
         title: committedTitle || title,
-        credit: credit ? `Lead vocal transcribed from “${credit}” with NoteFusion` : null,
+        credit: hymnSource
+          ? hymnCreditLine(hymnSource)
+          : credit ? `Lead vocal transcribed from “${credit}” with NoteFusion` : null,
         key,
         tempoBpm: tempo,
         timeSignature,
@@ -1271,6 +1314,16 @@ export function ResultScreen({ route, navigation }: Props) {
               </View>
             </View>
           ) : null}
+          {hymnSource ? (
+            <Text style={styles.notice}>
+              {hymnCreditLine(hymnSource)}{" "}
+              {hymnSource.url ? (
+                <Text style={styles.hymnName} onPress={() => Linking.openURL(hymnSource.url).catch(() => undefined)}>
+                  See the hymn
+                </Text>
+              ) : null}
+            </Text>
+          ) : null}
           {result.source?.preview && result.source.notice ? (
             <Text style={styles.notice}>{result.source.notice}</Text>
           ) : result.truncated ? (
@@ -1320,7 +1373,42 @@ export function ResultScreen({ route, navigation }: Props) {
               doubtful notes are tinted on the sheet, so a middling one points at them. */}
           {confNote ? <Text style={styles.notice}>{confNote}</Text> : null}
 
-          {doubt.length > 0 && !edited && !parts ? (
+          {hymnAsk && result.hymnMatch ? (
+            <View style={styles.panel}>
+              <Text style={styles.panelEyebrow}>Is this a hymn?</Text>
+              <Text style={styles.panelHint}>
+                This sounds like{" "}
+                <Text style={styles.hymnName} onPress={() => Linking.openURL(result.hymnMatch!.url).catch(() => undefined)}>
+                  {hymnAsk === "version" ? hymnLabel(result.hymnMatch) : result.hymnMatch.title}
+                </Text>
+                {hymnAsk === "version"
+                  ? ". Use the hymnbook version? Its notes, rhythm and bar lines come from the published score, in the key you sang."
+                  : "."}
+              </Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipScroll}>
+                {hymnAsk === "version" ? (
+                  <Touchable
+                    style={[styles.chip, styles.chipOn]}
+                    radius={radii.pill}
+                    onPress={() => chooseHymnbook(true)}
+                    accessibilityLabel={`Use the hymnbook version of ${result.hymnMatch.title}`}
+                  >
+                    <Text style={[styles.chipText, styles.chipTextOn]}>Yes</Text>
+                  </Touchable>
+                ) : null}
+                <Touchable
+                  style={styles.chip}
+                  radius={radii.pill}
+                  onPress={() => chooseHymnbook(false)}
+                  accessibilityLabel={hymnAsk === "version" ? "Keep the transcription" : "Dismiss"}
+                >
+                  <Text style={styles.chipText}>{hymnAsk === "version" ? "No" : "Dismiss"}</Text>
+                </Touchable>
+              </ScrollView>
+            </View>
+          ) : null}
+
+          {doubt.length > 0 && !edited && !parts && hymnAsk !== "version" ? (
             <View style={styles.panel}>
               <Text style={styles.panelEyebrow}>Which doh is it?</Text>
               <Text style={styles.panelHint}>
@@ -1966,6 +2054,7 @@ const makeStyles = (c: Palette) =>
     creditBody: { flex: 1, minWidth: 0 },
     creditTitle: { fontFamily: fonts.medium, fontSize: 13.5, color: c.text },
     creditLine: { fontFamily: fonts.regular, fontSize: 12, color: c.textFaint, marginTop: 2 },
+    hymnName: { fontFamily: fonts.medium, fontStyle: "italic", color: c.accent, textDecorationLine: "underline" },
     notice: {
       fontFamily: fonts.regular,
       fontSize: 12.5,

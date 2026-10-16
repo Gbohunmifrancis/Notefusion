@@ -104,7 +104,31 @@ internal sealed record JobResultResponse(
     string? PartsSource = null,
     IReadOnlyList<WireChord>? Chords = null,
     string? ChordsSource = null,
-    IReadOnlyList<WireKeyAlternative>? KeyAlternatives = null);
+    IReadOnlyList<WireKeyAlternative>? KeyAlternatives = null,
+    WireHymnMatch? HymnMatch = null);
+
+/// <summary>
+/// A hymn the tune clearly matches (<c>app.pipeline.hymn_match</c>): for <c>kind</c> "score" with its
+/// hymnbook version in the sung key; for "incipit" the hymn's name and link only.
+/// </summary>
+internal sealed record WireHymnMatch(
+    string Slug,
+    string Title,
+    string Url,
+    string Source,
+    string Licence,
+    string Credit,
+    string Kind,
+    double Confidence,
+    string Tune = "",
+    string? Key = null,
+    string? TimeSignature = null,
+    int? Tempo = null,
+    double? Pickup = null,
+    IReadOnlyList<WireNoteEvent>? Notes = null,
+    IReadOnlyList<string>? SolfaLines = null,
+    [property: JsonPropertyName("musicxml")] string? MusicXml = null,
+    string? Lyrics = null);
 
 /// <summary>Another doh the voice fits nearly as well (<c>app.pipeline.transcriber.KeyAlternative</c>).</summary>
 internal sealed record WireKeyAlternative(

@@ -652,6 +652,15 @@ class Settings:
         value = os.getenv("NF_CHROMATIC_SPELLING", "direction").strip().lower()
         return value if value in {"direction", "ascending", "descending"} else "direction"
 
+    @property
+    def hymn_match(self) -> bool:
+        """Look a melody transcription's tune up in the hymn index (``pipeline.hymn_match``).
+
+        On by default; ``NF_HYMN_MATCH=0`` stops the "Use the hymnbook version?" offer without
+        a deploy of the clients, which simply see no ``hymn_match``.
+        """
+        return os.getenv("NF_HYMN_MATCH", "1").strip().lower() not in ("0", "false", "no")
+
 
 settings = Settings()
 

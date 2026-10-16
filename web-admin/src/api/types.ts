@@ -136,6 +136,10 @@ export interface TranscriptionMetrics {
    * so this is the whole stored footprint, not a proxy. Always a number (0 on an empty library).
    */
   storedBytes: number;
+  /** Jobs in the window whose tune was recognised as a hymn in the library. Absent from an older API. */
+  hymnMatchesOffered?: number;
+  /** Sheets saved in the window as a hymn's hymnbook version (the offer taken). Absent from an older API. */
+  hymnVersionsSaved?: number;
 }
 
 export interface DailyCount {

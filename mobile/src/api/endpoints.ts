@@ -353,6 +353,8 @@ export const libraryApi = {
     parts?: Record<string, { notes: NonNullable<SavedTranscription["notes"]>; solfaLines: string[] }>;
     partsMusicXml?: string;
     chords?: ChordSymbol[] | null;
+    /** The hymn whose hymnbook version this is, as the job offered it; the API keeps its credit. */
+    hymnSlug?: string | null;
   }) => api.post<SavedTranscription>("/api/library", body).then((r) => r.data),
 
   rename: (id: string, title: string) =>

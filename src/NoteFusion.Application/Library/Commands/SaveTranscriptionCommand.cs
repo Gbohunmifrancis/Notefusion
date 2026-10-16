@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using NoteFusion.Application.Common.Errors;
 using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Library.Dtos;
+using NoteFusion.Application.Transcriptions;
 using NoteFusion.Application.Transcriptions.Dtos;
 using NoteFusion.Core.Entities;
 using NoteFusion.Core.Solfa;
@@ -15,6 +16,11 @@ namespace NoteFusion.Application.Library.Commands;
 /// Saves a completed transcription result to the current user's library (F-08). The client posts the
 /// result it received from the job-polling endpoint, along with a chosen title.
 /// </summary>
+/// <param name="HymnSlug">
+/// Set when the user took the hymnbook version the job offered (<see cref="HymnMatchDto"/>): the sheet then
+/// keeps that hymn's credit. The credit is read from the job's own result, never from the request, so it
+/// is the line the hymn's page shows; a slug the job did not offer is ignored.
+/// </param>
 public sealed record SaveTranscriptionCommand(
     string Title,
     string Key,
@@ -27,7 +33,8 @@ public sealed record SaveTranscriptionCommand(
     string Lyrics = "",
     IReadOnlyDictionary<string, PartDto>? Parts = null,
     string? PartsMusicXml = null,
-    IReadOnlyList<ChordSymbolDto>? Chords = null) : IRequest<Result<SavedTranscriptionDto>>;
+    IReadOnlyList<ChordSymbolDto>? Chords = null,
+    string? HymnSlug = null) : IRequest<Result<SavedTranscriptionDto>>;
 
 public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTranscriptionCommand>
 {
@@ -44,6 +51,7 @@ public sealed class SaveTranscriptionCommandValidator : AbstractValidator<SaveTr
         RuleFor(x => x.Parts).WithinPartsSize();
         RuleFor(x => x.PartsMusicXml).WithinScoreSize();
         RuleForEach(x => x.Chords).SetValidator(new ChordSymbolDtoValidator()).When(x => x.Chords is not null);
+        RuleFor(x => x.HymnSlug).MaximumLength(200);
     }
 }
 
@@ -91,6 +99,8 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
         transcription.SetLyrics(request.Lyrics ?? string.Empty);
         transcription.SetParts(PartNotes.FromDtos(request.Parts), request.PartsMusicXml);
         transcription.SetChords(SheetChords.FromDtos(request.Chords));
+        if (await OfferedHymnAsync(userId, request, cancellationToken) is { } hymn)
+            transcription.CreditHymn(hymn.Slug, hymn.Title, hymn.Url, hymn.Credit);
 
         // One sheet per job. The library sweep keeps a finished job nobody saved
         // (AutoSaveFinishedTranscriptionsCommand); a Save pressed after that is the user's own version —
@@ -111,5 +121,18 @@ public sealed class SaveTranscriptionCommandHandler : IRequestHandler<SaveTransc
         await _db.SaveChangesAsync(cancellationToken);
 
         return SavedTranscriptionMapper.ToDto(transcription, includeNotes: true);
+    }
+
+    /// <summary>The hymn the request names, when the job it came from offered that hymn's score.</summary>
+    private async Task<HymnMatchDto?> OfferedHymnAsync(Guid userId, SaveTranscriptionCommand request, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(request.HymnSlug) || string.IsNullOrWhiteSpace(request.SourceJobId))
+            return null;
+        var json = await _db.TranscriptionJobs.AsNoTracking()
+            .Where(j => j.JobId == request.SourceJobId && j.UserId == userId && j.ResultJson != null)
+            .Select(j => j.ResultJson)
+            .FirstOrDefaultAsync(ct);
+        var hymn = json is null ? null : TranscriptionResultCache.Deserialize(json)?.HymnMatch;
+        return hymn is { Kind: "score" } && hymn.Slug == request.HymnSlug.Trim() ? hymn : null;
     }
 }

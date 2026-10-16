@@ -321,6 +321,7 @@
   var osmd = null;
   var C = window.NfChoir;
   var N = window.NfChords;
+  var H = window.NfHymnbook;
   var guest = false;      // a visitor with a preview and no account
   var previewId = new URLSearchParams(location.search).get("preview");
   var player = null;      // the rehearsal player, made once the first result shows
@@ -838,7 +839,7 @@
         key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
         overallConfidence: 1, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
         chords: t.chords || null, chordsSource: t.chords && t.chords.length ? "heard" : null,
-        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null
+        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null, hymn: t.hymn || null
       };
       current = { jobId: null, kind: "choir", source: null, result: result, startedAt: Date.now(), savedId: null, title: t.title, shareToken: null, lyrics: t.lyrics || "", semitones: 0 };
       setView("transcribe");
@@ -862,7 +863,7 @@
         key: t.key, tempo: t.tempoBpm, timeSignature: t.timeSignature, notes: t.notes || [], musicXml: t.musicXml || "",
         overallConfidence: t.overallConfidence || 0, parts: t.parts || null, partsMusicXml: t.partsMusicXml || "",
         chords: t.chords || null, chordsSource: t.chords && t.chords.length ? "heard" : null,
-        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null
+        solfaLines: C.renderLines(t.notes || [], C.keyHeader(t.key), t.timeSignature), source: null, hymn: t.hymn || null
       };
       current = { jobId: null, kind: "library", source: null, result: result, startedAt: Date.now(), savedId: t.id, title: t.title, shareToken: t.shareToken || null, lyrics: t.lyrics || "", semitones: 0 };
       setView("transcribe");
@@ -1706,6 +1707,7 @@
     $("r-credit").textContent = src
       ? "Lead vocal transcribed from “" + (src.title || "Untitled") + "”" + (src.artist ? " by " + src.artist : "") + " (" + providerName(src.provider) + ")" + sectionNote(src) + " with NoteFusion."
       : "Transcribed with NoteFusion.";
+    if (result.hymn) creditHymn($("r-credit"), result.hymn);
     var chips = $("r-chips");
     chips.innerHTML = "";
     [result.key, result.tempo + " BPM", result.timeSignature].forEach(function (text) {
@@ -1728,6 +1730,7 @@
           : "Free preview: the first minute of a " + formatSec(result.songDurationSec) + " song. Upgrade to Pro for the whole song and the download.");
     } else hide(trunc);
 
+    renderHymnAsk(result);
     renderDohAsk(result);
     renderSolfa(result);
     renderChords(result);
@@ -1784,6 +1787,8 @@
       return a.musicXml && a.pitches && a.pitches.length === count && C.keyHeader(a.key) !== C.keyHeader(result.key);
     });
     if (!current || current.savedId || current.dohAnswered || result.parts || !alts.length) { hide(box); return; }
+    // A hymn on offer comes first: its version brings its own key, which settles the doh.
+    if (H.ask(result, current) === "version") { hide(box); return; }
     box.innerHTML = "";
     var text = document.createElement("span");
     text.textContent = "Your tune fits more than one doh about as well. Which one did you sing in?";
@@ -1818,6 +1823,69 @@
     });
     current.result = next;
     showResult(next);
+  }
+
+  /**
+   * "This sounds like Amazing Grace (hymnbook, 3/4). Use the hymnbook version?" The worker recognised a
+   * hymn we hold (assets/hymnbook.js decides when to ask); Yes swaps the sheet to the published score in
+   * the key that was sung, and saving then keeps the hymn's credit. A recognition-only match is named and
+   * linked, with nothing to swap. Asked once, before saving, like the doh.
+   */
+  function renderHymnAsk(result) {
+    var box = $("r-hymnbook");
+    var what = current ? H.ask(result, current) : null;
+    if (!what) { hide(box); return; }
+    var m = result.hymnMatch;
+    box.innerHTML = "";
+    var text = document.createElement("span");
+    text.appendChild(document.createTextNode("This sounds like "));
+    var name = document.createElement("a");
+    name.href = m.url; name.target = "_blank"; name.rel = "noopener";
+    name.textContent = what === "version" ? H.label(m) : m.title;
+    var em = document.createElement("em"); em.appendChild(name);
+    text.appendChild(em);
+    text.appendChild(document.createTextNode(what === "version" ? ". Use the hymnbook version?" : "."));
+    var row = document.createElement("span");
+    row.className = "doh-choices";
+    function choice(label, primary, onPick) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn btn-sm " + (primary ? "btn-primary" : "btn-ghost");
+      b.textContent = label;
+      b.addEventListener("click", onPick);
+      row.appendChild(b);
+    }
+    if (what === "version") {
+      choice("Yes", true, function () { pickHymn(m); });
+      choice("No", false, function () { current.hymnAnswered = true; track("Kept transcription over hymnbook", m.slug); showResult(current.result); });
+    } else {
+      choice("Dismiss", false, function () { current.hymnAnswered = true; hide(box); });
+    }
+    box.appendChild(text);
+    box.appendChild(row);
+    show(box);
+    if (!current.hymnShown) { current.hymnShown = true; track("Hymn recognised", m.slug); }
+  }
+
+  function pickHymn(match) {
+    current.hymnAnswered = true;
+    current.dohAnswered = true;
+    // The first verse goes under the notes, unless words were typed already.
+    if (!(current.lyrics || "").trim() && match.lyrics) current.lyrics = match.lyrics;
+    track("Took hymnbook version", match.slug);
+    var next = H.swap(current.result, match);
+    current.result = next;
+    showResult(next);
+  }
+
+  /** "Hymnbook version of “Amazing Grace”. Melody and words from …", with the hymn's page linked. */
+  function creditHymn(el, hymn) {
+    el.textContent = H.credit(hymn) + " ";
+    if (hymn.url) {
+      var a = document.createElement("a");
+      a.href = hymn.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "See the hymn";
+      el.appendChild(a);
+    }
   }
 
   function formatSec(s) {
@@ -2341,7 +2409,7 @@
       title: $("save-title").value.trim() || "My transcription", key: r.key, tempoBpm: r.tempo, timeSignature: r.timeSignature,
       musicXml: r.musicXml, notes: r.notes, overallConfidence: r.overallConfidence, sourceJobId: current.jobId,
       lyrics: (current.lyrics || "").trim(), parts: r.parts || null, partsMusicXml: r.partsMusicXml || null,
-      chords: r.chords || null
+      chords: r.chords || null, hymnSlug: r.hymn ? r.hymn.slug : null
     } }).then(function (saved) {
       sfx.play("saved");
       track("Saved sheet", auto ? "preview kept at sign-up" : null);

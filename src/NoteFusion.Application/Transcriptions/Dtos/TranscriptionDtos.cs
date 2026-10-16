@@ -243,7 +243,39 @@ public sealed record TranscriptionResultDto(
     /// Only when the doh is unsure: the other keys the voice fits nearly as well, nearest first (at
     /// most two), for the "or is it…?" prompt. Null otherwise.
     /// </summary>
-    IReadOnlyList<KeyAlternativeDto>? KeyAlternatives = null);
+    IReadOnlyList<KeyAlternativeDto>? KeyAlternatives = null,
+    /// <summary>
+    /// Only when the tune clearly matches a hymn in the library: the hymn, and (for a whole score) its
+    /// hymnbook version in the key that was sung, for the "Use the hymnbook version?" prompt. Null otherwise.
+    /// </summary>
+    HymnMatchDto? HymnMatch = null);
+
+/// <summary>
+/// A hymn in the library the transcribed tune clearly matches (the worker's <c>hymn_match</c>). <c>Kind</c>
+/// "score": the hymnbook version follows — the published notes, rhythm, bar lines, pickup and time signature,
+/// written in the key that was sung (<c>Key</c>), at the pace it was sung (<c>Tempo</c>), with the first verse
+/// as <c>Lyrics</c> — and a client that takes it saves it with <c>hymnSlug</c> so the sheet keeps the credit.
+/// <c>Kind</c> "incipit": recognition only; the tune is named and linked (<c>Url</c>) and no score is offered.
+/// <c>Credit</c> is the line the hymn's page shows; <c>Source</c> and <c>Licence</c> where it came from.
+/// </summary>
+public sealed record HymnMatchDto(
+    string Slug,
+    string Title,
+    string Tune,
+    string Url,
+    string Source,
+    string Licence,
+    string Credit,
+    string Kind,
+    double Confidence,
+    string? Key = null,
+    string? TimeSignature = null,
+    int? Tempo = null,
+    double? Pickup = null,
+    IReadOnlyList<NoteEventDto>? Notes = null,
+    IReadOnlyList<string>? SolfaLines = null,
+    string? MusicXml = null,
+    string? Lyrics = null);
 
 /// <summary>
 /// Another key the sung notes fit nearly as well. <c>Pitches</c> are the result's notes written in its
