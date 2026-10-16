@@ -119,7 +119,8 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   `app/pipeline/hymn_match.py` recognises a hymn we hold once a melody (or song) job finishes (`queue._offer_hymn`;
   never choir/chords mode or a sheet with parts; `NF_HYMN_MATCH=0` turns it off): interval-trigram prefilter (cosine,
   so it holds at 10k entries), Smith-Waterman on intervals then on pitch classes under the likeliest transpositions,
-  offered only past `MIN_MATCHED`/density/coverage and a margin over the best *other* tune (more for a short match).
+  offered only past `MIN_MATCHED`/density/coverage and a margin over the best *other* tune (more for a short match),
+  or for a note-for-note take (`NEAR_EXACT`) when every related tune within the margin is clearly less exact on the same notes.
   The result's `hymn_match` carries the published score (notes, rhythm, meter, pickup, first verse) in the key that
   was sung; the clients ask "Use the hymnbook version?" (`web-site/assets/hymnbook.js`, mobile `lib/hymnbook.ts`) and
   a save with `hymnSlug` keeps the hymn's credit, read from the job's own result. The index
