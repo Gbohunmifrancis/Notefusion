@@ -57,6 +57,8 @@ import { toApiError } from "../api/client";
 import { transcriptionsApi } from "../api/endpoints";
 import { OFFLINE_LINE, STALLED_LINE, percentLabel, stageLabel } from "../lib/jobProgress";
 import { keyboardTranspose } from "../lib/keyboardTranspose";
+import { METER_CHOICES, meterEventValue, meterLabel, type Meter } from "../lib/meter";
+import { logAnalyticsEvent } from "../lib/analytics";
 import { fonts, nightFonts, radii, spacing, type Palette } from "../design/theme";
 import { useColors, useThemedStyles } from "../lib/theme";
 import type { LinkInfo, TranscriptionStage } from "../api/types";
@@ -88,6 +90,8 @@ export function LinkScreen() {
 
   const [url, setUrl] = useState("");
   const [focused, setFocused] = useState(false);
+  /** Beats in a bar for this song; null is Not sure. Back to Not sure once a song is sent (lib/meter). */
+  const [meter, setMeter] = useState<Meter | null>(null);
   const inputRef = useRef<TextInput>(null);
   // Share text ("Listen to … on Spotify: https://…") is read down to its link, the one rule the
   // worker applies (lib/songLink); only the link itself is sent.
@@ -185,14 +189,17 @@ export function LinkScreen() {
   // anything is transcribed; a lookup that failed leaves it enabled and the server has the final say.
   const canSubmit = found !== null && !busy && !infoBusy;
 
-  function submit() {
+  async function submit() {
     if (!found || !canSubmit) return;
-    void startLink(found.url, {
+    void logAnalyticsEvent("beats_in_a_bar", { meter: meterEventValue(meter), source: "link" });
+    const jobId = await startLink(found.url, {
       mode: "melody",
       keyboardTranspose: keyboardTranspose() || undefined,
+      timeSignature: meter ?? undefined,
       startSeconds: section?.start,
       endSeconds: section?.end,
     });
+    if (jobId) setMeter(null);
   }
 
   function tryAnother() {
@@ -227,14 +234,14 @@ export function LinkScreen() {
           : "pick"
       : null;
 
-  const chip = (label: string, on: boolean, onPress: () => void) => (
+  const chip = (label: string, on: boolean, onPress: () => void, a11y?: string) => (
     <Touchable
       key={label}
       onPress={onPress}
       style={[styles.chip, on && styles.chipOn]}
       radius={radii.pill}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={a11y ?? label}
       accessibilityState={{ selected: on }}
     >
       <Text style={[styles.chipText, on && styles.chipTextOn]}>{label}</Text>
@@ -402,6 +409,14 @@ export function LinkScreen() {
               <Text style={styles.noteText}>{infoError.message}</Text>
             </View>
           ) : null}
+
+          <Text style={[styles.pickTitle, styles.meterTitle]}>Beats in a bar</Text>
+          <View style={styles.chips}>
+            {METER_CHOICES.map((m) =>
+              chip(m.short, meter === m.value, () => setMeter(m.value), `Beats in a bar: ${m.label}`),
+            )}
+          </View>
+          <Text style={styles.hint}>{meterLabel(meter)}</Text>
 
           {known ? (
             <View style={styles.entitlement}>
@@ -571,6 +586,7 @@ const makeStyles = (c: Palette) =>
 
     pickHead: { flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", marginTop: 22 },
     pickTitle: { fontFamily: fonts.semibold, fontSize: 15, color: c.text },
+    meterTitle: { marginTop: 22 },
     pickRange: { fontFamily: nightFonts.mono, fontSize: 12.5, color: c.accent },
     chips: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.md },
     chip: {
