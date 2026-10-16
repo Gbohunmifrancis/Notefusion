@@ -184,6 +184,18 @@ jobs:
           OUTREACH_REPLY_TO: ${{ vars.OUTREACH_REPLY_TO || secrets.OUTREACH_REPLY_TO }}
           OUTREACH_BATCH_SIZE: ${{ vars.OUTREACH_BATCH_SIZE || secrets.OUTREACH_BATCH_SIZE }}
           OUTREACH_INTERVAL_MINUTES: ${{ vars.OUTREACH_INTERVAL_MINUTES || secrets.OUTREACH_INTERVAL_MINUTES }}
+          # ── Blog (docs/BLOG.md): Gemini drafts in the admin console, and site rebuilds on publish ──
+          # GEMINI_API_KEY is the same secret the old PR drafter used. GH_DEPLOY_TOKEN is a fine-grained
+          # token with Actions read & write on this repository (it runs deploy-web.yml). Both optional:
+          # without them drafting, or rebuilding the site on publish, is off and the console says so.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || secrets.GEMINI_MODEL }}
+          GH_DEPLOY_TOKEN: ${{ secrets.GH_DEPLOY_TOKEN }}
+          GH_REPOSITORY: ${{ github.repository }}
+          BLOG_AUTODRAFT_ENABLED: ${{ vars.BLOG_AUTODRAFT_ENABLED }}
+          BLOG_AUTODRAFT_DAYS: ${{ vars.BLOG_AUTODRAFT_DAYS }}
+          BLOG_AUTODRAFT_TIME_UTC: ${{ vars.BLOG_AUTODRAFT_TIME_UTC }}
+          BLOG_AUTODRAFT_COUNT: ${{ vars.BLOG_AUTODRAFT_COUNT }}
           # ── YouTube ───────────────────────────────────────────────────────────
           # Netscape cookies.txt from a signed-in browser (see docs/DEPLOYMENT.md, "YouTube").
           YTDLP_COOKIES: ${{ secrets.YTDLP_COOKIES }}
@@ -209,6 +221,8 @@ jobs:
             R2__ACCOUNTID,R2__ACCESSKEYID,R2__SECRETACCESSKEY,R2__BUCKETNAME,R2__PUBLICBASEURL,R2__USER2,
             PUSH__USEEXPO,AUTH__RESETPASSWORDURL,YTDLP_COOKIES,
             OUTREACH_ENABLED,OUTREACH_FOUNDER_NAME,OUTREACH_REPLY_TO,OUTREACH_BATCH_SIZE,OUTREACH_INTERVAL_MINUTES,
+            GEMINI_API_KEY,GEMINI_MODEL,GH_DEPLOY_TOKEN,GH_REPOSITORY,
+            BLOG_AUTODRAFT_ENABLED,BLOG_AUTODRAFT_DAYS,BLOG_AUTODRAFT_TIME_UTC,BLOG_AUTODRAFT_COUNT,
             DOZZLE_USER,DOZZLE_PASSWORD_HASH
           script: |
             set -euo pipefail
@@ -324,6 +338,14 @@ jobs:
             Outreach__ReplyTo="${OUTREACH_REPLY_TO:-hello@notefusion.studio}"
             Outreach__BatchSize="${OUTREACH_BATCH_SIZE:-50}"
             Outreach__IntervalMinutes="${OUTREACH_INTERVAL_MINUTES:-60}"
+            Gemini__ApiKey="${GEMINI_API_KEY}"
+            Gemini__Model="${GEMINI_MODEL}"
+            GitHub__Token="${GH_DEPLOY_TOKEN}"
+            GitHub__Repo="${GH_REPOSITORY}"
+            Blog__AutoDraftEnabled="${BLOG_AUTODRAFT_ENABLED}"
+            Blog__AutoDraftDays="${BLOG_AUTODRAFT_DAYS}"
+            Blog__AutoDraftTimeUtc="${BLOG_AUTODRAFT_TIME_UTC}"
+            Blog__AutoDraftCount="${BLOG_AUTODRAFT_COUNT}"
             EOF
             chmod 600 .env
 

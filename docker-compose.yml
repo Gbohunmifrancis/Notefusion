@@ -95,6 +95,11 @@ services:
       # added automatically in Development, and this service runs Production, so the dashboard has to
       # be named explicitly; add more as __1, __2, …
       Cors__AllowedOrigins__0: ${ADMIN_DASHBOARD_ORIGIN:-http://localhost:3000}
+      # The blog (docs/BLOG.md): drafting needs a Gemini key, rebuilding the site on publish a GitHub token.
+      # Both off unless set in .env; the twice-weekly drafts stay off locally.
+      Gemini__ApiKey: ${GEMINI_API_KEY:-}
+      GitHub__Token: ${GH_DEPLOY_TOKEN:-}
+      Blog__AutoDraftEnabled: "false"
       # Profile photos go to Cloudflare R2 only when all of these are set in .env; otherwise uploads
       # are refused with a friendly message. UseR2 must default: an empty bool stops startup.
       R2__UseR2: ${R2__UseR2:-false}
