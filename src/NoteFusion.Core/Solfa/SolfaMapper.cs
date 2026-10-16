@@ -67,8 +67,8 @@ public static class SolfaMapper
     /// sharpened name. Diatonic entries are unobservable (both tables agree there).
     /// <para>
     /// de over ra: the raised doh of V/ii and the major tonic chord in a minor key. ma over re:
-    /// the flattened me of a chord borrowed from the minor and of a blue note; a raised re leading to me rises a
-    /// semitone and is named by that. fe over sa: the raised fah of V/V and the melodic minor,
+    /// the flattened me of a chord borrowed from the minor and of a blue note; a raised re
+    /// leading to me rises a semitone and is named by that. fe over sa: the raised fah of V/V and the melodic minor,
     /// by far the commonest accidental in hymns. se over la: the leading note of a minor key
     /// (to lah) and of V/vi. ta over le: the flat seventh of V/IV. Each default is also the
     /// name that keeps a tone step a step: ma–f, ta–d', de–t, fe–m.
