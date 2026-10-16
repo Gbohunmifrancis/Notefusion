@@ -875,7 +875,8 @@ def test_link_route_accepts_a_youtube_url_and_caps_the_length(client):
     assert r.json() == {"jobId": "job123"}
     assert submitted["priority"] == "high"
     assert submitted["max_seconds"] == pytest.approx(360.0)  # the worker's own cap wins
-    assert submitted["mode"] == "melody" and submitted["time_signature"] == "4/4"
+    # No meter given: the worker reads it off the notes (None), as for "auto".
+    assert submitted["mode"] == "melody" and submitted["time_signature"] is None
     assert submitted["start_seconds"] == 0.0 and submitted["end_seconds"] is None  # the whole song, as before
 
 

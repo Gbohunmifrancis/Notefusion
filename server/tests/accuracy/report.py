@@ -7,6 +7,8 @@ Run from ``server/``:
     python -m tests.accuracy.report --filter vibrato  # only cases whose name matches
     python -m tests.accuracy.report --vocal           # the sung corpus
     python -m tests.accuracy.report --vocal --slices  # its stress slices, one line each
+    python -m tests.accuracy.report --hymns --jobs 4  # the published hymn tunes: meter, bars, rhythm
+    python -m tests.accuracy.report --hymns --split test  # only the held-out half
 
 ``report.json`` is always overwritten; ``baseline.json`` only on ``--write-baseline``,
 because recording a baseline is a deliberate act a human commits.  Once a baseline
@@ -41,6 +43,8 @@ VOCAL_BASELINE_PATH = Path(__file__).parent / "vocal_baseline.json"
 VOCAL_SLICES_REPORT_PATH = Path(__file__).parent / "vocal_slices_report.json"
 VOCAL_SLICES_BASELINE_PATH = Path(__file__).parent / "vocal_slices_baseline.json"
 BASELINE_PATH = Path(__file__).parent / "baseline.json"
+HYMN_REPORT_PATH = Path(__file__).parent / "hymn_report.json"
+HYMN_BASELINE_PATH = Path(__file__).parent / "hymn_baseline.json"
 
 # Bumped only if the JSON layout changes in a way a reader must notice.
 SCHEMA_VERSION = 1
@@ -79,6 +83,8 @@ def _effective_flags() -> dict:
         "contour_first": settings.contour_first,
         "key_ensemble": settings.key_ensemble,
         "tempo_grid": settings.tempo_grid,
+        "tempo_plain_level": settings.tempo_plain_level,
+        "meter_detect": settings.meter_detect,
         "grid_refine": settings.grid_refine,
         "f0_merge": settings.f0_merge,
         "quantize_divisors": list(settings.quantize_divisors),
@@ -284,6 +290,19 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="with --vocal: score the stress slices instead (vocal_slices_report.json / vocal_slices_baseline.json)",
     )
+    parser.add_argument(
+        "--hymns",
+        action="store_true",
+        help="score the published hymn tunes, played and sung, against their scores: meter, bar lines, "
+        "pickup, rhythm and tempo level as well as the notes (hymn_report.json / hymn_baseline.json)",
+    )
+    parser.add_argument(
+        "--split",
+        default="",
+        choices=("", "dev", "test"),
+        help="with --hymns: only the dev half (tune on it) or the held-out test half",
+    )
+    parser.add_argument("--jobs", type=int, default=1, help="with --hymns: processes to run cases in")
     parser.add_argument("--filter", default="", metavar="SUBSTR", help="only cases whose name contains SUBSTR")
     args = parser.parse_args(argv)
 
@@ -291,7 +310,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--write-baseline is only supported for the synthetic corpus")
     if args.slices and not args.vocal:
         parser.error("--slices goes with --vocal")
+    if (args.split or args.jobs != 1) and not args.hymns:
+        parser.error("--split and --jobs go with --hymns")
 
+    if args.hymns:
+        return _main_hymns(args, parser)
     if args.vocal:
         return _main_vocal(args, parser)
 
@@ -400,6 +423,122 @@ def _main_vocal(args, parser) -> int:
         baseline_path.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
         print(f"wrote {baseline_path.name}")
     failed = [outcome.name for outcome in outcomes if not outcome.ok]
+    if failed:
+        print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
+        return 1
+    return 0
+
+
+# ── The hymn corpus ───────────────────────────────────────────────────────────
+
+# The columns of the hymn tables: the sheet's (meter, bars, pickup, rhythm, tempo level) and,
+# for comparison with the other corpora, the notes'.
+_HYMN_COLUMNS = (
+    "meter.exact", "meter.bar_length", "pickup.exact", "bars.in_right_bar", "bars.placed_exact", "bars.all_right",
+    "rhythm.ioi_exact", "rhythm.ioi_proportional", "tempo.level_right", "notes.f1", "key.exact",
+    "seq.syllable_error_rate",
+)
+
+
+_HYMN_SHORT = {
+    "meter.exact": "meter", "meter.bar_length": "barlen", "pickup.exact": "pickup", "bars.in_right_bar": "in_bar",
+    "bars.placed_exact": "placed", "bars.all_right": "allbars", "rhythm.ioi_exact": "ioi", "rhythm.ioi_proportional": "ioi_prop",
+    "tempo.level_right": "level", "notes.f1": "notes.f1", "key.exact": "key", "seq.syllable_error_rate": "syl_err",
+}
+
+
+def _meter_group(time_signature: str) -> str:
+    return {"4/4": "4/4", "2/2": "2/2+2/4", "2/4": "2/2+2/4", "3/4": "3/4", "3/2": "3/2+6/4", "6/4": "3/2+6/4",
+            "6/8": "6/8+9/8", "9/8": "6/8+9/8"}.get(time_signature, "other")
+
+
+def _hymn_groups(outcomes: list[CaseOutcome]) -> dict[str, dict[str, float]]:
+    """Aggregates over the splits, the two renders, and the published meters."""
+    groups: dict[str, list[CaseOutcome]] = {"all": list(outcomes)}
+    for o in outcomes:
+        split, render, time_signature, start = o.tags[1], o.tags[2], o.tags[3], o.tags[4]
+        for name in (split, f"{split}/{render}", f"{split}/meter {_meter_group(time_signature)}", f"{split}/{start}"):
+            groups.setdefault(name, []).append(o)
+    return {name: aggregate(members) for name, members in sorted(groups.items())}
+
+
+def _print_hymn_groups(groups: dict[str, dict[str, float]], baseline: dict | None) -> None:
+    base = (baseline or {}).get("groups", {})
+    short = [_HYMN_SHORT[c] for c in _HYMN_COLUMNS]
+    print(f"{'group':<26} {'n':>4} " + " ".join(f"{s:>9}" for s in short))
+    for name, means in groups.items():
+        print(f"{name:<26} {int(means.get('n_cases', 0)):>4} " + " ".join(f"{_num(means.get(c)):>9}" for c in _HYMN_COLUMNS))
+        recorded = base.get(name)
+        if recorded:
+            deltas = []
+            for c in _HYMN_COLUMNS:
+                a, b = means.get(c), recorded.get(c)
+                deltas.append(f"{float(a) - float(b):>+9.3f}" if isinstance(a, (int, float)) and isinstance(b, (int, float)) else f"{'-':>9}")
+            print(f"{'  vs baseline':<26} {'':>4} " + " ".join(deltas))
+
+
+def _main_hymns(args, parser) -> int:
+    from tests.accuracy.hymn_corpus import CASES as HYMN_CASES, hymn_corpus_fingerprint
+    from tests.accuracy.runner import HYMN_METRIC_NAMESPACES, run_hymns
+
+    cases = tuple(c for c in HYMN_CASES if args.filter in c.name and (not args.split or c.split == args.split))
+    if not cases:
+        parser.error("no hymn case matches" if HYMN_CASES else "no hymns found (content/hymns is not beside server/)")
+    if args.write_baseline and (args.filter or args.split):
+        parser.error("--write-baseline needs the full corpus; drop --filter and --split")
+
+    outcomes = run_hymns(cases, jobs=max(1, args.jobs))
+    groups = _hymn_groups(outcomes)
+    document = {
+        "schema": SCHEMA_VERSION,
+        "metric_namespaces": list(HYMN_METRIC_NAMESPACES),
+        "flags": _effective_flags(),
+        "corpus": {
+            "kind": "hymns",
+            "n_cases": len(cases),
+            "fingerprint": hymn_corpus_fingerprint(cases),
+            "sample_rate": synth.SAMPLE_RATE,
+            "filter": args.filter,
+            "split": args.split,
+        },
+        "groups": groups,
+        "cases": {
+            o.name: {
+                "ok": o.ok, "error": o.error, "tags": list(o.tags), "ref_key": o.ref_key, "est_key": o.est_key,
+                "ref_tempo": o.ref_tempo, "est_tempo": o.est_tempo, "n_ref": o.n_ref, "n_est": o.n_est,
+                "metrics": o.metrics,
+            }
+            for o in outcomes
+        },
+    }
+    baseline = json.loads(HYMN_BASELINE_PATH.read_text(encoding="utf-8")) if HYMN_BASELINE_PATH.exists() else None
+    print()
+    if baseline is not None and not args.filter and not args.split and (
+            baseline.get("corpus", {}).get("fingerprint") != document["corpus"]["fingerprint"]):
+        print(f"WARNING: {HYMN_BASELINE_PATH.name} was recorded against a different hymn corpus; re-record it.")
+        print()
+    if baseline is not None:
+        drift = _flag_drift(document["flags"], baseline.get("flags"))
+        if drift:
+            print("flags differ from baseline: " + ", ".join(drift))
+            print()
+    print(f"{'case':<44} {'time ref/est':>13} {'tempo':>8} {'bars':>6} {'ioi':>6} {'notes':>6}")
+    for o in outcomes:
+        if not o.ok:
+            print(f"{o.name:<44} FAILED  {o.error}")
+            continue
+        est_time = next((t[4:] for t in o.tags if t.startswith("est:")), "?")
+        print(f"{o.name:<44} {o.tags[3] + '>' + est_time:>13} {f'{o.ref_tempo}/{o.est_tempo}':>8} "
+              f"{_num(o.metrics.get('bars.in_right_bar')):>6} {_num(o.metrics.get('rhythm.ioi_exact')):>6} "
+              f"{_num(o.metrics.get('notes.f1')):>6}")
+    print()
+    _print_hymn_groups(groups, baseline)
+    HYMN_REPORT_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+    print(f"\nwrote {HYMN_REPORT_PATH.name}")
+    if args.write_baseline:
+        HYMN_BASELINE_PATH.write_text(json.dumps(document, indent=2, sort_keys=False) + "\n", encoding="utf-8")
+        print(f"wrote {HYMN_BASELINE_PATH.name}")
+    failed = [o.name for o in outcomes if not o.ok]
     if failed:
         print(f"\n{len(failed)} case(s) raised: {', '.join(failed)}")
         return 1

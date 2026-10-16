@@ -784,3 +784,156 @@ def sequence_metrics(ref: Sequence[RefNote], est: Sequence[TranscribedNote], ref
         "degree_error_rate": _edit_distance(ref_deg, est_deg) / len(ref),
         "exact": ref_syl == est_syl,
     }
+
+
+# ── Meter, bars and rhythm (the hymn corpus) ──────────────────────────────────
+#
+# The metrics above anchor both sides at the first sounding note and never read the time
+# signature, which is right for what they measure (did it hear the notes) and blind to what a
+# published score adds: the bar lines.  ``sheet_metrics`` reads the sheet as written.  Every
+# position is in quarter beats on the written bar grid — bar k starts at k * bpb — on both
+# sides: the reference's from the published tune (its first note at ``ref_offset``, the
+# pickup's place in bar 0), the estimate's straight from ``start_beat`` and its time signature.
+#
+# Notes are paired by pitch and audio time (``_pair_notes``), not by written position, so a
+# note in the wrong bar is still the same note: the question is where the sheet put it.
+
+# How far apart in the audio two notes of the same pitch may be and still be one note: half a
+# second, plus 1 % of the way in for a tempo reported to the whole BPM.
+_PAIR_WINDOW_SEC = 0.5
+_PAIR_DRIFT = 0.01
+
+# ``rhythm.ioi_proportional``'s tolerance, in reference beats: half a semiquaver, so a note
+# a semiquaver off (or written a dotted level away, where an eighth lands between two) is wrong.
+_IOI_TOLERANCE_BEATS = 0.125
+
+
+def bar_length(time_signature: str) -> float:
+    """Quarter beats in a bar of ``time_signature`` ("6/8" -> 3.0); 4.0 when unreadable."""
+    try:
+        n, d = (int(x) for x in str(time_signature).split("/"))
+    except ValueError:
+        return 4.0
+    return n * 4.0 / d if n > 0 and d > 0 else 4.0
+
+
+def _pair_notes(
+    ref_sec: Sequence[float], ref_pitch: Sequence[int], est_sec: Sequence[float], est_pitch: Sequence[int]
+) -> list[tuple[int, int]]:
+    """The most same-pitch (ref, est) index pairs in order, ties to the least total time apart;
+    each pair within ``_PAIR_WINDOW_SEC`` (+ ``_PAIR_DRIFT`` of the elapsed time) in the audio."""
+    n, m = len(ref_sec), len(est_sec)
+    score = [[(0, 0.0)] * (m + 1) for _ in range(n + 1)]  # (pairs, -distance) over ref[:i], est[:j]
+    move = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            best, how = score[i - 1][j], 1
+            if score[i][j - 1] > best:
+                best, how = score[i][j - 1], 2
+            gap = abs(ref_sec[i - 1] - est_sec[j - 1])
+            if ref_pitch[i - 1] == est_pitch[j - 1] and gap <= _PAIR_WINDOW_SEC + _PAIR_DRIFT * ref_sec[i - 1]:
+                candidate = (score[i - 1][j - 1][0] + 1, score[i - 1][j - 1][1] - gap)
+                if candidate > best:
+                    best, how = candidate, 3
+            score[i][j], move[i][j] = best, how
+    pairs, i, j = [], n, m
+    while i and j:
+        if move[i][j] == 3:
+            pairs.append((i - 1, j - 1))
+            i, j = i - 1, j - 1
+        elif move[i][j] == 1:
+            i -= 1
+        else:
+            j -= 1
+    return pairs[::-1]
+
+
+def sheet_metrics(
+    ref: Sequence[RefNote],
+    ref_written: Sequence[float],
+    ref_time: str,
+    ref_offset: float,
+    ref_tempo_bpm: float,
+    est: Sequence[TranscribedNote],
+    est_time: str,
+    est_tempo_bpm: float,
+    est_origin_sec: float,
+) -> dict:
+    """Meter, bar lines, pickup and written rhythm of the sheet against the published score.
+
+    ``meter.exact``          the time signature written is the published one
+    ``meter.bar_length``     a bar holds as many quarter beats (2/2 for 4/4 counts, and so
+                             does 6/8 for 3/4, which no bar-length cue can tell apart)
+    ``bars.in_right_bar``    reference notes written in the bar the score has them in,
+                             allowing one whole-sheet renumbering (a pickup counted as bar 1
+                             rather than bar 0); a note the transcription missed is wrong
+    ``bars.placed_exact``    ... and on the same beat of that bar in written quarter beats:
+                             the note is where the hymn page has it
+    ``bars.all_right``       every note found is in its right bar: the bar lines are the score's
+    ``bars.found``           share of reference notes paired at all (the denominator's loss)
+    ``pickup.exact``         the sheet's first note sits in its bar where the score's does
+    ``rhythm.ioi_exact``     consecutive reference notes, both found, written the published
+                             distance apart (the note value a reader sees)
+    ``rhythm.ioi_proportional``  ... the published distance at whatever tempo level the
+                             sheet chose (right rhythm, maybe in halved or doubled values)
+    ``rhythm.dur_exact``     found notes written with the published length
+
+    Pairing (``_pair_notes``) uses the audio clock each side states: the reference's
+    ``onset_sec``, the estimate's ``est_origin_sec + start_beat * 60 / est_tempo_bpm``.
+    """
+    est_sorted = sorted(est, key=lambda e: e.start_beat)
+    ref_bpb, est_bpb = bar_length(ref_time), bar_length(est_time)
+    out = {
+        "meter.exact": est_time == ref_time,
+        "meter.bar_length": abs(ref_bpb - est_bpb) < 1e-9,
+        "bars.in_right_bar": 0.0,
+        "bars.placed_exact": 0.0,
+        "bars.all_right": False,
+        "bars.found": 0.0,
+        "pickup.exact": False,
+        "rhythm.ioi_exact": 0.0,
+        "rhythm.ioi_proportional": 0.0,
+        "rhythm.dur_exact": 0.0,
+    }
+    if not ref or not est_sorted or est_tempo_bpm <= 0 or ref_tempo_bpm <= 0:
+        return out
+    eps = 1e-6
+    est_beat_sec = 60.0 / float(est_tempo_bpm)
+    ref_beat_sec = 60.0 / float(ref_tempo_bpm)
+    out["pickup.exact"] = abs(est_sorted[0].start_beat % est_bpb - ref_offset % ref_bpb) < eps
+    pairs = _pair_notes(
+        [r.onset_sec for r in ref], [r.pitch_midi for r in ref],
+        [est_origin_sec + e.start_beat * est_beat_sec for e in est_sorted], [e.pitch_midi for e in est_sorted],
+    )
+    out["bars.found"] = len(pairs) / len(ref)
+    if not pairs:
+        return out
+
+    ref_grid = [ref_offset + r.onset_beat for r in ref]
+    shifts = [
+        int((est_sorted[j].start_beat + eps) // est_bpb) - int((ref_grid[i] + eps) // ref_bpb) for i, j in pairs
+    ]
+    modal = max(set(shifts), key=lambda s: (shifts.count(s), -abs(s)))
+    right = [s == modal for s in shifts]
+    placed = [
+        ok and abs(est_sorted[j].start_beat % est_bpb - ref_grid[i] % ref_bpb) < eps
+        for ok, (i, j) in zip(right, pairs)
+    ]
+    out["bars.in_right_bar"] = sum(right) / len(ref)
+    out["bars.placed_exact"] = sum(placed) / len(ref)
+    out["bars.all_right"] = all(right)
+    out["rhythm.dur_exact"] = sum(abs(est_sorted[j].dur_beats - ref_written[i]) < eps for i, j in pairs) / len(pairs)
+
+    exact = proportional = steps = 0
+    for (i0, j0), (i1, j1) in zip(pairs, pairs[1:]):
+        if i1 != i0 + 1:
+            continue
+        ref_ioi = ref_grid[i1] - ref_grid[i0]
+        est_ioi = est_sorted[j1].start_beat - est_sorted[j0].start_beat
+        steps += 1
+        exact += abs(est_ioi - ref_ioi) < eps
+        proportional += abs(est_ioi * est_beat_sec - ref_ioi * ref_beat_sec) <= _IOI_TOLERANCE_BEATS * ref_beat_sec
+    if steps:
+        out["rhythm.ioi_exact"] = exact / steps
+        out["rhythm.ioi_proportional"] = proportional / steps
+    return out
