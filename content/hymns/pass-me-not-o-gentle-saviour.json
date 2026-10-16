@@ -1,0 +1,23 @@
+{
+  "title": "Pass Me Not, O Gentle Saviour",
+  "tune": "pass-me-not",
+  "text": [
+    {"name": "Fanny Crosby", "born": 1820, "died": 1915, "role": "Words (1868)"}
+  ],
+  "textPublished": 1868,
+  "description": "Pass Me Not, O Gentle Saviour in Tonic Solfa: the solfa with the words, staff notation, all four verses with the refrain, and a piano.",
+  "about": [
+    "Fanny Crosby wrote these words in 1868, and William Howard Doane wrote the tune for them in 1870."
+  ],
+  "underlay": "",
+  "verses": [
+    {"lines": ["Pass me not, O gentle Saviour,", "Hear my humble cry;", "While on others Thou art calling,", "Do not pass me by."]},
+    {"label": "Refrain", "lines": ["Saviour, Saviour,", "Hear my humble cry;", "While on others Thou art calling,", "Do not pass me by."]},
+    {"lines": ["Let me at Thy throne of mercy", "Find a sweet relief;", "Kneeling there in deep contrition,", "Help my unbelief."]},
+    {"lines": ["Trusting only in Thy merit,", "Would I seek Thy face;", "Heal my wounded, broken spirit,", "Save me by Thy grace."]},
+    {"lines": ["Thou the spring of all my comfort,", "More than life to me,", "Whom have I on earth beside Thee?", "Whom in heaven but Thee?"]}
+  ],
+  "updated": "2026-10-16",
+  "reviewed": false,
+  "draft": true
+}

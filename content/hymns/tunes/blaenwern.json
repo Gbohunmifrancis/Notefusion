@@ -1,0 +1,17 @@
+{
+  "name": "BLAENWERN",
+  "music": [
+    {"name": "William Penfro Rowlands", "born": 1860, "died": 1937, "role": "Melody (c. 1905)"}
+  ],
+  "musicPublished": 1916,
+  "key": null,
+  "time": null,
+  "tempo": null,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": null,
+  "reviewed": false,
+  "confidence": "not encoded",
+  "source": "No machine-readable source found for BLAENWERN.",
+  "reviewNotes": "No melody yet: add it from a hymn book you trust (see docs/BLOG.md, \"Adding a hymn\"), then set the hymn's draft to false. Why it is not encoded: no score of BLAENWERN was available to check against. HYFRYDOL (in the Open Hymnal under 'Alleluia! Sing to Jesus') would fit the metre, but the Nigerian and British norm is BLAENWERN. Check musicPublished (1916, Cân a Moliant) against your source."
+}
