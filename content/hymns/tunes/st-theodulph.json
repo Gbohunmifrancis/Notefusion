@@ -1,0 +1,35 @@
+{
+  "name": "ST. THEODULPH",
+  "title": "St. Theodulph",
+  "alsoKnownAs": [
+    "Valet Will Ich Dir Geben"
+  ],
+  "music": [
+    {
+      "name": "Melchior Teschner",
+      "born": 1584,
+      "died": 1635,
+      "role": "Music (1613)"
+    }
+  ],
+  "musicPublished": 1613,
+  "metre": "7 6 7 6",
+  "key": "C major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C4:1 | G4:1 G4:1 A4:1 B4:1 | C5:2 C5:1 E5:1 | D5:1 C5:1 C5:1 B4:1 | C5:3 C4:1 | G4:1 G4:1 A4:1 B4:1 | C5:2 C5:1 E5:1 | D5:1 C5:1 C5:1 B4:1 | C5:3 C5:1 | E5:1 E5:1 D5:1 C5:1 | B4:1 A4:1 G4:1 G4:1 | C5:1 B4:1 A4:1 A4:1 | G4:3 G4:1 | E4:1 G4:1 A4:1 G4:1 | G4:1.5 F4:.5 E4:1 E4:1 | F4:1 E4:1 D4:1 D4:1 | C4:3",
+  "incipit": "dssltdd|mrddtd|dssltdd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000039.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000039a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000039; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000039 (the melody read from 000039a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Melchior Teschner's dates (1584–1635) are from our page for the tune VALET WILL ICH DIR GEBEN (content/hymns/tunes/valet-will-ich-dir-geben.json); CCEH's page gives only the year 1613. The bar lines are those of CCEH's Noteworthy score (000039a.nwc).",
+  "importedFrom": "cceh:000039",
+  "updated": "2026-10-16"
+}

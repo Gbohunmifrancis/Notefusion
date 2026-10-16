@@ -11,6 +11,10 @@
     {
       "slug": "lyons",
       "number": "000030"
+    },
+    {
+      "slug": "st-theodulph",
+      "number": "000039"
     }
   ],
   "drafts": [
@@ -69,7 +73,7 @@
       "number": "000029",
       "reasons": [
         "not provably public domain: Benjamin Carr: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
-        "not provably public domain: ad., David Evans: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+        "not provably public domain: David Evans: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
       ]
     },
     {
@@ -78,6 +82,29 @@
       "reasons": [
         "not provably public domain: Christian F. Witt: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
         "not provably public domain: Johann G. C. Storl: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "saved-by-the-blood",
+      "number": "000036",
+      "reasons": [
+        "the page gives no year for the tune",
+        "not provably public domain: Daniel Brink Towner: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
+        "the score has a bar of another length (bar 13), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "diadem",
+      "number": "000041",
+      "reasons": [
+        "not provably public domain: James Ellor: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "miles-lane",
+      "number": "000042",
+      "reasons": [
+        "not provably public domain: William Shrubsole: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
       ]
     }
   ],
@@ -234,6 +261,24 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "to-god-be-the-glory",
       "edits": 0
+    },
+    {
+      "number": "000037",
+      "name": "Ein Feste Burg",
+      "url": "https://www.ccel.org/cceh/0000/x000037.htm",
+      "ours": "ein-feste-burg",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "a-mighty-fortress-is-our-god",
+      "edits": 0
+    },
+    {
+      "number": "000040",
+      "name": "Coronation",
+      "url": "https://www.ccel.org/cceh/0000/x000040.htm",
+      "ours": "coronation",
+      "oursSource": "Open Hymnal Project ABC score (Episcopal Church Hymnal, 1896); the opening agrees with hymnary.org's incipit.",
+      "hymn": "all-hail-the-power-of-jesus-name",
+      "edits": 0
     }
   ],
   "refused": [
@@ -272,65 +317,124 @@
       "name": "All The World",
       "url": "https://www.ccel.org/cceh/0000/x000024.htm",
       "reason": "the page marks Robert G. McCutchan's tune as copyright (“Robert G. McCutchan, ©1934”)"
+    },
+    {
+      "number": "000035",
+      "name": "O Store Gud",
+      "url": "https://www.ccel.org/cceh/0000/x000035.htm",
+      "reason": "the page marks Stuart K. Hine's arrangement as copyright (“arr., Stuart K. Hine, ©1955”)"
+    },
+    {
+      "number": "000038",
+      "name": "Varndean",
+      "url": "https://www.ccel.org/cceh/0000/x000038.htm",
+      "reason": "the page marks Erik R. Routley's tune as copyright (“Erik R. Routley, ©1950”)"
     }
   ],
   "rejected": [],
-  "sameNameDifferentTune": [],
+  "sameNameDifferentTune": [
+    {
+      "number": "000039",
+      "name": "St. Theodulph",
+      "url": "https://www.ccel.org/cceh/0000/x000039.htm",
+      "ours": "valet-will-ich-dir-geben"
+    }
+  ],
   "fillCandidates": [],
   "undatedPeople": [
     {
-      "name": "ad., David Evans",
-      "tunes": 1
-    },
-    {
       "name": "Benjamin Carr",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1822
     },
     {
       "name": "Charles Meineke",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1844
     },
     {
       "name": "Christian F. Witt",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": null
+    },
+    {
+      "name": "David Evans",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1927
     },
     {
       "name": "Henry W. Greatorex",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1851
+    },
+    {
+      "name": "James Ellor",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1838
     },
     {
       "name": "James Nares",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": null
     },
     {
       "name": "Johann G. C. Storl",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": null
     },
     {
       "name": "John Antes",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1790
     },
     {
       "name": "John Bernard Wilkes",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1861
     },
     {
       "name": "John Zundel",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1870
     },
     {
       "name": "William Crotch",
-      "tunes": 1
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1836
+    },
+    {
+      "name": "William Shrubsole",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1779
+    },
+    {
+      "name": "Daniel Brink Towner",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
     }
   ],
   "counts": {
-    "published": 2,
-    "drafts": 9,
-    "duplicates": 17,
-    "refused": 6,
+    "published": 3,
+    "drafts": 12,
+    "duplicates": 19,
+    "refused": 8,
     "rejected": 0,
-    "pages": 34,
-    "notYetCrawled": 1364,
+    "pages": 42,
+    "notYetCrawled": 1356,
     "tunesInIndex": 1398
   }
 }

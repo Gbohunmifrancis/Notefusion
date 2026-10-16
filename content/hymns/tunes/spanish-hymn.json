@@ -15,7 +15,7 @@
       "role": "Arranged (1822)"
     },
     {
-      "name": "ad., David Evans",
+      "name": "David Evans",
       "role": "Harmony (1927)"
     }
   ],
@@ -36,7 +36,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0000/000029a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000029; public domain.",
-  "reviewNotes": "Held back: not provably public domain: Benjamin Carr: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: ad., David Evans: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000029 (the melody read from 000029a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The page gives no year for the tune itself; it was in print by 1822, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000029a.nwc).",
+  "reviewNotes": "Held back: not provably public domain: Benjamin Carr: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: David Evans: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000029 (the melody read from 000029a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The page gives no year for the tune itself; it was in print by 1822, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000029a.nwc).",
   "importedFrom": "cceh:000029",
   "updated": "2026-10-16"
 }

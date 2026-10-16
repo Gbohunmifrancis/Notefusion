@@ -9,9 +9,10 @@
       "role": "Music"
     },
     {
-      "name": "Sacred Melodies (William Gardiner)",
-      "traditional": true,
-      "role": "Melody (1815)"
+      "name": "William Gardiner",
+      "born": 1770,
+      "died": 1853,
+      "role": "Music (Sacred Melodies, 1815)"
     }
   ],
   "musicPublished": 1815,
@@ -31,7 +32,7 @@
   "scoreUrl": "https://www.ccel.org/cceh/0000/000030a.mid",
   "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
   "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000030; public domain.",
-  "reviewNotes": "Imported from CCEH tune 000030 (the melody read from 000030a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Michael Haydn's dates (1732–1809) are from our page for the tune AUSTRIA (content/hymns/tunes/austria.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000030a.nwc).",
+  "reviewNotes": "Imported from CCEH tune 000030 (the melody read from 000030a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Michael Haydn's dates (1732–1809) are from our page for the tune AUSTRIA (content/hymns/tunes/austria.json); CCEH's page gives none. William Gardiner's dates (1770–1853) are from our page for the tune BELMONT (content/hymns/tunes/belmont.json); CCEH's page gives only the year 1815. The bar lines are those of CCEH's Noteworthy score (000030a.nwc).",
   "importedFrom": "cceh:000030",
   "updated": "2026-10-16"
 }

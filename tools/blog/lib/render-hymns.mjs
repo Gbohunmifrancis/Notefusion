@@ -301,7 +301,8 @@ ${ctaBox("hymns")}`;
     description: `${hymns.length} public-domain hymns in Tonic Solfa: the doh, the solfa line by line under the words, staff notation and a piano to sing along with.`,
     body, active: "/hymns",
     scripts: `<script src="/assets/hymns-index.js?v=${ASSET_VERSION.hymnsIndexJs}" defer></script>`,
-    jsonLd: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Hymns in Tonic Solfa", numberOfItems: hymns.length + tunes.length, itemListElement: [...hymns.map((h) => ({ url: `${ORIGIN}/hymns/${h.slug}`, name: h.title })), ...tunes.map((t) => ({ url: ORIGIN + t.view.url, name: t.view.title }))].map((x, i) => ({ "@type": "ListItem", position: i + 1, ...x })) }, breadcrumbLd(crumbs)],
+        // The hymns only: the tune pages are many, and each is in the sitemap and linked from the list itself.
+    jsonLd: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Hymns in Tonic Solfa", numberOfItems: hymns.length, itemListElement: hymns.map((h, i) => ({ "@type": "ListItem", position: i + 1, url: `${ORIGIN}/hymns/${h.slug}`, name: h.title })) }, breadcrumbLd(crumbs)],
   });
 }
 
