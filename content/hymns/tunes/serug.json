@@ -1,0 +1,32 @@
+{
+  "name": "SERUG",
+  "title": "Serug",
+  "music": [
+    {
+      "name": "Samuel Sebastian Wesley",
+      "born": 1810,
+      "died": 1876,
+      "role": "Music (European Psalmist, 1872)"
+    }
+  ],
+  "musicPublished": 1872,
+  "metre": "6 6 4 6 6 6 4",
+  "key": "A major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "A4:1 Ab4:1 A4:1 | B4:1 A4:1 Ab4:1 | A4:3 | C#5:1 B4:1 A4:1 | D5:2 C#5:1 | B4:3 | A4:1 Ab4:1 F#4:1 | E4:3 | B4:1 Ab4:1 E4:1 | A4:1.5 B4:.5 C#5:1 | B4:1 Ab4:1 E4:1 | A4:1.5 B4:.5 C#5:1 | D5:1 C#5:1 B4:1 | E5:1.5 D5:.5 C#5:1 | B4:1 A4:1 Ab4:1 | A4:3",
+  "incipit": "dtdrdtd|mrdfmr|dtls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000303.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000303a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000303; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000303 (the melody read from 000303a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Samuel Sebastian Wesley's dates (1810–1876) are from our page for the tune AURELIA (content/hymns/tunes/aurelia.json); CCEH's page gives only the year 1872. The bar lines are those of CCEH's Noteworthy score (000303a.nwc).",
+  "importedFrom": "cceh:000303",
+  "updated": "2026-10-16"
+}

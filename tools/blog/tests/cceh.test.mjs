@@ -211,7 +211,7 @@ test("gate: checked dates can correct a misspelt name, and give a disputed perso
   const d = ital(ITALIAN.page.replace("Felice de Giardini, 1769", "Felice de Giardini, 1869"), disputed);
   assert.equal(d.tune.draft, false, d.problems.join(" | "));
   assert.equal(d.tune.music[0].lived, "18th century");
-  assert.match(d.tune.reviewNotes, /identity is disputed/);
+  assert.match(d.tune.reviewNotes, /dates are uncertain/);
 });
 
 test("gate: Vaughan Williams, a death in 1955 or later, a © or a year after 1928 — refused, nothing copied", () => {

@@ -1,0 +1,42 @@
+{
+  "name": "GERMANY",
+  "title": "Germany",
+  "alsoKnownAs": [
+    "Gardiner",
+    "Walton"
+  ],
+  "music": [
+    {
+      "name": "Ludwig von Beethoven",
+      "born": 1770,
+      "died": 1827,
+      "role": "Music, attributed"
+    },
+    {
+      "name": "William Gardiner",
+      "born": 1770,
+      "died": 1853,
+      "role": "Arranged (Sacred Melodies, 1815)"
+    }
+  ],
+  "musicPublished": 1815,
+  "metre": "8 8 8 8",
+  "key": "Bb major",
+  "time": "3/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:1 Bb4:1 A4:1 | Bb4:2 C5:1 | F4:1 G4:1 A4:1 | Bb4:3 | Bb4:1 A4:1 G4:1 | C5:2 A4:1 | A4:.5 G4:.5 F4:1 E4:1 | F4:2 F4:1 | F4:2 Bb4:1 | Bb4:1 A4:1 G4:1 | F4:2 D5:1 | D5:1 C5:1 Bb4:1 | A4:2 Eb5:1 | Eb5:1 D5:1 C5:1 | Bb4:1 C5:1 A4:1 | Bb4:3",
+  "incipit": "sdtdrsltd|dtlmttlsfs",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0003/x000301.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0003/000301a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000301; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000301 (the melody read from 000301a.mid, checked against the page's do-re-mi incipit, 2 notes off in 19); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Ludwig von Beethoven's dates (1770–1827) are from our page for the tune HYMN TO JOY (content/hymns/tunes/hymn-to-joy.json); CCEH's page gives none. William Gardiner's dates (1770–1853) are from our page for the tune BELMONT (content/hymns/tunes/belmont.json); CCEH's page gives only the year 1815. The page gives no year for the tune itself; it was in print by 1815, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000301a.nwc).",
+  "importedFrom": "cceh:000301",
+  "updated": "2026-10-16"
+}

@@ -159,7 +159,7 @@ export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, 
         if (d.lived) person.lived = d.lived;
         if (d.correctName) { person.name = d.correctName; notes.push(`CCEH's page spells ${d.correctName} as “${nm}”; the name is printed as the sources spell it.`); }
         notes.push(d.lived
-          ? `${person.name}'s identity is disputed, so the page says only that they lived in the ${d.lived}; every candidate died by ${d.died} (${d.from}). CCEH's page gives ${c.year ? `only the year ${c.year}` : "no dates"}.`
+          ? `${person.name}'s dates are uncertain, so the page says only that they lived in the ${d.lived}; they died by ${d.died} (${d.from}). CCEH's page gives ${c.year ? `only the year ${c.year}` : "no dates"}.`
           : `${person.name}'s dates (${d.born ? `${d.born}–` : "died "}${d.died}) are from ${d.from || "our other pages"}; CCEH's page gives ${c.year ? `only the year ${c.year}` : "none"}.`);
       }
     }
