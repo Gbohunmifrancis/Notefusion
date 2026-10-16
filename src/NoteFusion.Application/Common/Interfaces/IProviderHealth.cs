@@ -34,6 +34,9 @@ public static class OutboundProviders
     public const string Push = "expo";
     public const string Transcription = "transcriber";
     public const string GeoIp = "geoip";
+    public const string Gemini = "gemini";
+    public const string GitHub = "github";
+    public const string Website = "website";
 
     /// <summary>"paystack", "bachs", "flutterwave": also the name of that provider's HttpClient.</summary>
     public static string Payment(PaymentProvider provider) => provider.ToString().ToLowerInvariant();

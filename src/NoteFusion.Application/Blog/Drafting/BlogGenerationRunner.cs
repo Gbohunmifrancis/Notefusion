@@ -96,7 +96,16 @@ public sealed class BlogGenerationRunner
             .FirstOrDefaultAsync(ct);
         if (run is null)
             return false;
-        await RunAsync(run, ct);
+        try
+        {
+            await RunAsync(run, ct);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            _logger.LogError(ex, "Blog drafting batch {Run} failed.", run.Id);
+            if (!run.IsFinished)
+                await FinishAsync(run, "Something went wrong while drafting; the drafts saved before it are kept.", CancellationToken.None);
+        }
         return true;
     }
 

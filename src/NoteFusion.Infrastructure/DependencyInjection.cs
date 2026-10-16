@@ -7,6 +7,7 @@ using NoteFusion.Application.Common.Interfaces;
 using NoteFusion.Application.Common.Settings;
 using NoteFusion.Infrastructure.Api;
 using NoteFusion.Infrastructure.Billing;
+using NoteFusion.Infrastructure.Blog;
 using NoteFusion.Infrastructure.Email;
 using NoteFusion.Infrastructure.Geo;
 using NoteFusion.Infrastructure.Http;
@@ -41,6 +42,7 @@ public static class DependencyInjection
         services.AddBilling(configuration);
         services.AddGeo(configuration);
         services.AddOutreach(configuration);
+        services.AddBlog(configuration);
 
         return services;
     }
