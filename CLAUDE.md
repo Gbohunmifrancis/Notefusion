@@ -118,9 +118,14 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
 - **Solfa engine (`src/NoteFusion.Core/Solfa`) is the product's core IP.** Movable-do: doh
   derives from the key (la-based for minor). Key change = re-label, never re-transcribe (a key
   given at submit is the worker's, which writes the sung pitches in it). The doh header is
-  spelled as the key signature spells it ("Doh is Bb", not A#). Every change there needs unit
+  spelled as the key signature spells it ("Doh is Bb", not A#). It follows tonic solfa hymn-book
+  conventions: a chromatic is named for where it goes (a semitone up de re fe se le, a semitone
+  down ra ma sa la ta, anything else de ma fe se ta), and the unmarked octave starts at the doh at
+  or below the tune's middle note (a minor third higher for la-based minor; parts are marked from
+  the melody's doh). Every change there needs unit
   tests. The Python worker, mobile `lib/solfa.ts` and web `assets/choir.js` mirror this engine —
-  keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`).
+  keep them in lock-step (see `server/app/pipeline` and its `_parse_key_override`; the shared
+  table is `HymnBookSolfaTests` and its copies in each language's tests).
 - A free account gets 3 transcriptions, ever (`FreeTier`), counted per account, per inbox and per device from
   `TranscriptionJob` rows (`TrialUsage`). The inbox is `users.CanonicalEmail` (`Core/ValueObjects/Mailbox`:
   lowercase, `+tag` dropped, and for gmail/googlemail dots dropped too; non-unique, filled at startup for old
