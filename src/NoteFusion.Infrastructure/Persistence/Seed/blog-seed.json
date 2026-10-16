@@ -1,0 +1,555 @@
+{
+  "posts": [
+    {
+      "slug": "how-to-find-the-doh-of-a-song",
+      "title": "How to Find the Doh of Any Song",
+      "dek": "Doh is the one fact a choir needs before anyone can sing. Here are three ways to find it: from the key signature, by ear, and by checking the tune.",
+      "description": "Three reliable ways to find the doh of a song: from the key signature, by ear, and by checking the tune. Plus minor keys, starting notes and key changes.",
+      "date": "2026-10-14",
+      "updated": null,
+      "author": "francis",
+      "tags": [
+        "tonic-solfa",
+        "keys",
+        "choir"
+      ],
+      "keyword": "how to find the doh of a song",
+      "faq": [
+        {
+          "question": "Is doh always the first note of a song?",
+          "answer": "No. Many songs start somewhere else: Amazing Grace starts on s, (the soh below doh) and Silent Night on s (the soh above it). Find doh first, then work out the starting note from it."
+        },
+        {
+          "question": "Is doh always the last note?",
+          "answer": "In most hymns and songs in a major key, yes — the last note is doh. In a minor key the last note is usually lah, and doh is three semitones (a minor third) above it. A few songs end elsewhere, so check by singing the first phrase from your doh."
+        },
+        {
+          "question": "What is the doh of a song in A minor?",
+          "answer": "C. Choirs that read la-based minor keep the doh of the relative major, so A minor shares its doh with C major and the song's home note is l."
+        },
+        {
+          "question": "Why does the sheet say Doh is Bb and not A#?",
+          "answer": "They are the same key on the piano, but key signatures spell it Bb (two flats), so solfa sheets do too. NoteFusion always spells doh the way the key signature does."
+        },
+        {
+          "question": "Can I change the doh to suit my choir?",
+          "answer": "Yes. Moving doh up or down changes how high the song sits, but the solfa stays exactly the same, so nobody has to relearn anything. Choose the doh that keeps every part in a comfortable range."
+        }
+      ],
+      "cover": null,
+      "body": "\"What's the doh?\" is one of the first questions in any rehearsal. Until you know where doh is, the solfa on the board is just letters. Once you know it, everyone can find their first note and the song comes together.\n\nDoh is the key note of a song — its home. This guide gives you three reliable ways to find it: from the key signature on printed music, by ear from a recording, and by checking your answer against the tune. It also covers minor keys, songs that do not start on doh, and how to move doh when a song is too high or too low for your choir.\n\n> [!TIP]\n> If you are new to solfa altogether, start with [how to read Tonic Solfa](/blog/how-to-read-tonic-solfa) and come back.\n\n## What \"the doh\" means\n\nIn movable-doh Tonic Solfa, doh is the first note of the major scale the song is built on. In the key of G, doh is G; in the key of Bb, doh is Bb. Every other syllable is measured from it, so the doh is the one fact you need to turn solfa into real pitches.\n\nFor songs in a minor key, most choirs in Nigeria and West Africa read **la-based minor**. The song keeps the doh of its relative major and treats **lah** as home. A song in A minor is written with doh on C, and it ends on l. This makes one thing much easier, as you will see next: the key signature alone tells you doh, whether the song is major or minor.\n\n## Method 1: read it from the key signature\n\nIf you have printed music on a staff, the key signature — the sharps or flats at the start of each line — tells you doh straight away:\n\n- **No sharps or flats:** doh is C.\n- **Sharps:** the last sharp (furthest to the right) is te. Doh is the next note up. One sharp (F♯) means doh is G.\n- **Flats:** the last flat is fah. With two or more flats, the second-last flat is doh. One flat (B♭) means doh is F.\n\nHere is the whole table:\n\n| Key signature | Doh | Major key | Minor key (home note lah) |\n|---|---|---|---|\n| none | C | C major | A minor |\n| 1 sharp | G | G major | E minor |\n| 2 sharps | D | D major | B minor |\n| 3 sharps | A | A major | F♯ minor |\n| 4 sharps | E | E major | C♯ minor |\n| 5 sharps | B | B major | G♯ minor |\n| 1 flat | F | F major | D minor |\n| 2 flats | B♭ | B♭ major | G minor |\n| 3 flats | E♭ | E♭ major | C minor |\n| 4 flats | A♭ | A♭ major | F minor |\n| 5 flats | D♭ | D♭ major | B♭ minor |\n\nBecause la-based minor uses the relative major's doh, you do not need to decide whether the song is major or minor to find doh from the key signature. You only need that decision to know where the song's home note is: doh for major, lah for minor.\n\n## Method 2: find it by ear\n\nMost of the time a choir is not working from printed music. Someone has a recording, or a song from church last Sunday, and you need the doh. Here is a method that works for most songs.\n\n1. **Listen to the very end.** Play the last line of the song — or the end of a verse — and hum the final note. Hold it. In most songs this note feels finished, like the music has come home. That is your candidate.\n2. **Ask: does it feel bright or dark?** If the ending feels settled and bright, the song is probably major and that note is doh. If it feels sad, serious or dark, the song is probably minor and that note is lah.\n3. **For a minor song, go up to doh.** From lah, doh is three semitones higher — sing l, t, d upwards from your home note and the last one is doh.\n4. **Pin it to a pitch.** Find the note on a keyboard or a tuner app on your phone, so you can write \"Doh is …\" at the top of the sheet.\n\nHere is the last line of [Amazing Grace](/hymns/amazing-grace). Look at where it ends:\n\n```solfa\nhymn: amazing-grace\nbars: 14-17\n```\n\nIt ends on d. Play a recording of Amazing Grace, hum the last note of \"now I see\", and you are humming doh.\n\nBe careful with songs that fade out, repeat the chorus endlessly, or end on a held chord in the band. In those, use the end of a verse instead, or the note the melody keeps coming back to.\n\n## Method 3: check it against the tune\n\nWhatever method you used, check your answer before you teach the song. Sing *d r m f s* from your doh, then try the first phrase in solfa. If you have the right doh, the tune will fit the syllables naturally. If you keep needing notes that do not belong — a lot of sharpened or flattened syllables — your doh is probably wrong.\n\nA common trap is assuming that the **first** note is doh. Very often it is not. Here is the opening of [Silent Night](/hymns/silent-night):\n\n```solfa\nhymn: silent-night\nbars: 1-2\n```\n\nThe doh is Bb, but the song starts on s — the soh above doh. Amazing Grace starts on soh too, the one below doh (s,). [Joyful, Joyful](/hymns/joyful-joyful-we-adore-thee) starts on m. So find doh first, then work out the starting note from it, and give your choir the doh *and* the first note before you begin.\n\n## Moving the doh for your choir\n\nSometimes you know the doh perfectly well, and the song is still uncomfortable: the sopranos strain at the top, or the basses disappear at the bottom. The answer is to move doh. Because solfa is movable, the syllables stay exactly the same — only the \"Doh is\" line changes.\n\nHere is the opening of Amazing Grace in G:\n\n```solfa\nhymn: amazing-grace\nbars: 1-5\n```\n\nAnd the same line with doh moved down to F:\n\n```solfa\nhymn: amazing-grace\nbars: 1-5\nkey: F major\n```\n\nEvery syllable is identical. Your choir sings what they already know, just a tone lower. When you choose a new doh, think about the highest and lowest notes of each part, not just the melody: a key that suits the sopranos may push the tenors too high.\n\n## When the song changes key\n\nSome songs move to a new key part of the way through — often a final chorus that lifts a step higher. In solfa, doh moves at that point. Hymn books mark the change with a new key at the place it happens, and some show the note that links the two keys with both of its names. When you hear a song lift, find the new home note the same way you found the first one, and mark the change clearly on your sheet so the choir knows where to reset.\n\n## Let NoteFusion find the doh for you\n\nFinding doh by ear gets easier with practice, but it is still the step where mistakes creep in, especially with a recording in a key you rarely sing. NoteFusion does it for you: [hum a tune, upload a recording or paste a song link](/app) and it writes the melody in Tonic Solfa with the doh at the top, spelled the way the key signature spells it. When a melody could reasonably sit in two keys, the app asks you \"Which doh is it?\" and shows both, so you choose.\n\nAnd when you need to move the song for your choir, \"Transpose for my choir\" moves the doh, rewrites the staff, and shows whether each part sits comfortably in the new key.\n"
+    },
+    {
+      "slug": "how-to-read-tonic-solfa",
+      "title": "How to Read Tonic Solfa: A Complete Beginner's Guide",
+      "dek": "Everything a new singer needs to sing from a solfa sheet: the seven syllables, where doh sits, octave marks, rhythm and minor keys, with real hymns to practise on.",
+      "description": "Learn to read Tonic Solfa: the seven syllables, doh and keys, octave marks, rhythm, la-based minor and chromatic notes, with hymns to practise.",
+      "date": "2026-10-15",
+      "updated": null,
+      "author": "francis",
+      "tags": [
+        "tonic-solfa",
+        "beginners",
+        "choir"
+      ],
+      "keyword": "how to read tonic solfa",
+      "faq": [
+        {
+          "question": "Is Tonic Solfa the same as do re mi?",
+          "answer": "It uses the same idea. Tonic Solfa names the notes of the scale d r m f s l t (doh, ray, me, fah, soh, lah, te), and doh is always the key note of the song, wherever that falls on a piano. That is called movable doh."
+        },
+        {
+          "question": "Is doh always C?",
+          "answer": "No. Doh is the key note, so it changes with the key. A song in G has doh on G, a song in Bb has doh on Bb. The line at the top of a solfa sheet, such as \"Doh is G\", tells you where it is."
+        },
+        {
+          "question": "What do the commas and apostrophes after the notes mean?",
+          "answer": "They show the octave. A comma after a note (s,) means the octave below the main one, and an apostrophe (d') means the octave above. Some hymn books print a small number below or above the letter instead; it means the same thing."
+        },
+        {
+          "question": "How long does it take to learn to read Tonic Solfa?",
+          "answer": "The syllables and the octave marks can be learnt in one sitting. Reading new tunes fluently comes from regular practice: a few minutes a day singing tunes you already know from the solfa is the quickest route."
+        },
+        {
+          "question": "How do I read a song in a minor key?",
+          "answer": "Most choirs in Nigeria and West Africa read minor keys la-based: the tune is written as if it were in the relative major, so a song in A minor has doh on C and its home note is l. The syllables keep the same meaning as in major."
+        }
+      ],
+      "cover": null,
+      "body": "Tonic Solfa is how a great many choirs across Nigeria and West Africa learn new music. A director writes the solfa on a board or sends it on WhatsApp, and within a rehearsal the sopranos, altos, tenors and basses are singing it. If you have ever stood in a choir and felt lost when someone said \"start on soh\", this guide is for you.\n\nI built NoteFusion so that any song — a recording, a hummed tune, a link — can be written out in Tonic Solfa in seconds. But the solfa is only useful if you can read it, so let's start there. By the end of this guide you will know the seven syllables, how doh moves from key to key, what the commas and apostrophes mean, how rhythm is written, and how minor keys work. Every solfa example below was written by NoteFusion's own solfa engine from the real melody, so you can trust what you see.\n\n## What Tonic Solfa is\n\nTonic Solfa is a way of writing music with syllables instead of notes on a staff. It was developed in England in the nineteenth century, most famously by John Curwen, as a way to teach congregations and schoolchildren to sing from notation. It travelled with churches and mission schools, and it is still how many choirs read music today.\n\nThe big idea is that every note is named by its place in the key, not by its fixed pitch. The key note is always **doh**. The note above it is always **ray**, and so on up the scale. A tune that goes \"doh, me, soh\" sounds like the same tune whether you sing it high or low, because the syllables describe the shape of the melody, not the piano keys. This is called **movable doh**, and it is why solfa is so quick for singers: once you know how the syllables sound against each other, you can sing in any key.\n\n## The seven syllables\n\nThere are seven notes in a major scale, and each has a syllable. In written solfa we use the first letter of each:\n\n| Letter | Say it | Place in the scale |\n|---|---|---|\n| d | doh | 1st — the key note, home |\n| r | ray | 2nd |\n| m | me | 3rd |\n| f | fah | 4th |\n| s | soh | 5th |\n| l | lah | 6th |\n| t | te | 7th — leads back up to doh |\n\nHere is the scale of G major written the way NoteFusion writes it, with the solfa on top and the letter names underneath:\n\n```solfa\nscale: G major\n```\n\nSing it slowly from bottom to top. Notice how te wants to rise to doh, and how doh at the top feels like coming home. That feeling of \"home\" is the key to everything else in this guide.\n\n## Doh moves with the key\n\nAt the top of every solfa sheet you will see a line like **Doh is G**. That line is the only place the pitch is fixed: it tells you which note on the piano (or which note your director hums) is doh. Everything else is relative to it.\n\nHere is the opening line of [Amazing Grace](/hymns/amazing-grace) in G, the key most hymn books use:\n\n```solfa\nhymn: amazing-grace\nbars: 1-5\n```\n\nAnd here is exactly the same line moved down a tone to F, which suits lower voices:\n\n```solfa\nhymn: amazing-grace\nbars: 1-5\nkey: F major\n```\n\nThe solfa did not change at all. Only the \"Doh is\" line changed. This is the great strength of solfa for choirs: when your director decides a song is too high for the sopranos, nobody has to learn new notes. You find the new doh and sing what you already know. If you are not sure how to find doh, I have written a separate guide on [how to find the doh of any song](/blog/how-to-find-the-doh-of-a-song).\n\n## Octave marks: commas and apostrophes\n\nA tune often goes below doh or above the next doh. Solfa shows this with a small mark after the letter:\n\n- **A comma (s,)** means the octave below. In Amazing Grace above, the first note is s, — the soh *below* doh, not the one above it.\n- **No mark (s)** means the main octave, from doh up to te.\n- **An apostrophe (d')** means the octave above.\n\nSome older hymn books print these as a small number under or over the letter, or as a short line. They mean the same thing: lower octave or upper octave.\n\nGetting the octave right matters more than it looks. If the sopranos miss the comma and sing s instead of s,, they will start a fifth *above* doh when the tune actually starts a fourth *below* it, and the whole line will feel wrong. When you first read a new song, look along the line for commas and apostrophes before you sing.\n\n## Reading rhythm\n\nSolfa shows rhythm with the spacing of the notes inside each bar, not with note shapes. In NoteFusion's layout every bar is split into equal cells, and **each cell is half a beat**:\n\n- A **letter** is a new note starting on that half beat.\n- A **dash (-)** means \"keep holding the note before it\".\n- An **underscore (_)** is silence — a rest.\n- The **vertical lines** are bar lines.\n\nLook at the first line of [Joyful, Joyful, We Adore Thee](/hymns/joyful-joyful-we-adore-thee), which is in 4/4 time, so each bar has four beats and eight cells:\n\n```solfa\nhymn: joyful-joyful-we-adore-thee\nbars: 1-4\n```\n\nThe first bar has four notes, each followed by one dash: four notes of one beat each. In the last bar, the first note is followed by two dashes — it lasts a beat and a half — then a note that lasts only half a beat, then a note held for two beats. Count it out loud, \"one-and-two-and-three-and-four-and\", moving along one cell for each word, and the rhythm reads itself.\n\nOlder printed solfa uses a different style: a colon between beats and a full stop between half beats. It is the same information. Once you can count cells, you can learn that style in a few minutes.\n\nWatch for **pickups**, too. Amazing Grace starts with a single note before the first full bar — \"A-\" — so the first bar line comes after it. Many hymns start like this. Count the pickup as the last beat of an imaginary bar and the stress will fall in the right place on \"maz\".\n\n## Minor keys: la-based minor\n\nSome songs sound darker, sadder or more serious. Most of them are in a **minor key**. The way most choirs in Nigeria and West Africa read a minor key is called **la-based minor**: the song keeps the doh of its relative major, and its home note becomes **lah**.\n\nSo a song in A minor is written with **Doh is C**, and it ends on l, rather than d. Here is the A minor scale:\n\n```solfa\nscale: A minor\n```\n\nThe syllables keep exactly the same meaning they have in major — doh is still doh, me is still me — which means you never have to learn a second set of names for minor keys. Many minor tunes raise the seventh note on the way up to home. In solfa that raised note gets its own name, **se** (from soh, sharpened):\n\n```solfa\nscale: A minor\nharmonic: true\n```\n\n## Sharps and flats inside a key\n\nSometimes a tune uses a note that is not in its key. Solfa changes the vowel of the syllable to show it:\n\n- A note **raised** a semitone takes an **e** sound: fah becomes **fe**, soh becomes **se**, doh becomes **de**.\n- A note **lowered** a semitone takes an **a** sound: te becomes **ta**, me becomes **ma**, lah becomes **la**.\n\nYou will meet fe and ta most often in hymns. When you see one, sing it as a step \"between\" its neighbours, and listen to the piano or your section leader the first few times.\n\n## Practise with a real hymn\n\nThe best way to learn is with a tune you already know. [The Doxology](/hymns/praise-god-from-whom-all-blessings-flow) is perfect: every line starts and ends on a long note, and it moves mostly by step. Here are its first two lines:\n\n```solfa\nhymn: praise-god-from-whom-all-blessings-flow\nbars: 1-5\n```\n\nTry this routine:\n\n1. **Find doh.** The sheet says Doh is G. Play G, or have someone hum it, and sing *d r m f s* up from it.\n2. **Find the first note.** It is d — doh itself — so you can start straight away.\n3. **Sing the solfa slowly, without the words.** Say the syllables in rhythm first, then sing them. Notice that the line walks down from d to s, through t, and l, — commas, so below doh.\n4. **Add the words.** Once the solfa is comfortable, sing the same notes to \"Praise God, from whom all blessings flow\".\n5. **Check yourself.** Each hymn page on NoteFusion has a Play button: listen and compare.\n\nWhen that feels easy, move on to [Amazing Grace](/hymns/amazing-grace) and [Joyful, Joyful](/hymns/joyful-joyful-we-adore-thee), then pick any hymn from the [hymns in Tonic Solfa](/hymns) collection.\n\n## Mistakes almost every beginner makes\n\n- **Treating doh as C.** Doh is wherever the \"Doh is\" line says it is. If you have learnt fixed do in school, this is the habit to unlearn.\n- **Ignoring the octave marks.** s, and s are an octave apart. Read the marks before you sing.\n- **Rushing the dashes.** A dash is part of the note. A note with three dashes after it lasts two full beats, not one.\n- **Starting on the wrong beat.** Check whether the song has a pickup before the first bar line.\n- **Reading minor keys as major.** If the sheet says Doh is C but the tune keeps landing on l, it is la-based minor. Let lah be home.\n\n## Getting solfa for the songs your choir actually sings\n\nHymns are a good place to learn, but most choirs also need solfa for new songs: a chorus from a recording, a song from YouTube, a tune someone hums in rehearsal. Writing those out by ear takes time, and it is easy to get a note or an octave wrong.\n\nThat is the job NoteFusion does. You can [open NoteFusion in your browser](/app), hum a tune, upload a recording or paste a song link, and it writes the melody in movable-doh Tonic Solfa — la-based for minor keys, with octave marks and rhythm laid out exactly like the examples above — together with the staff notation. Then you can play it back, change the key for your choir, and share it.\n"
+    }
+  ],
+  "topics": [
+    {
+      "slug": "tonic-solfa-vs-staff-notation",
+      "keyword": "tonic solfa vs staff notation",
+      "intent": "Informational — a singer or director deciding which notation to learn or teach.",
+      "angle": "Honest comparison for church choirs; what each is best at, why many choirs use both, and how to move between them.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa",
+        "/hymns"
+      ],
+      "skip": false,
+      "position": 10
+    },
+    {
+      "slug": "how-to-transcribe-a-song-into-tonic-solfa",
+      "keyword": "how to transcribe a song into tonic solfa",
+      "intent": "How-to — a director who has a recording and needs the solfa for the choir.",
+      "angle": "The manual method step by step (find doh, the rhythm grid, checking octaves), its common mistakes, and where software saves time.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 20
+    },
+    {
+      "slug": "how-to-teach-a-choir-a-new-song",
+      "keyword": "how to teach a choir a new song fast",
+      "intent": "How-to — a choir director with one or two rehearsals before Sunday.",
+      "angle": "A rehearsal plan using solfa: pitch, sections, phrase by phrase, recordings for home practice.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa",
+        "/hymns/praise-god-from-whom-all-blessings-flow"
+      ],
+      "skip": false,
+      "position": 30
+    },
+    {
+      "slug": "choir-rehearsal-tips",
+      "keyword": "choir rehearsal tips for church choirs",
+      "intent": "Informational — directors looking to make weekly rehearsals more productive.",
+      "angle": "Practical structure for a 90-minute Nigerian church choir rehearsal: warm-up, new music, polishing, notes for next week.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 40
+    },
+    {
+      "slug": "satb-parts-explained",
+      "keyword": "SATB parts explained",
+      "intent": "Informational — new choristers unsure which part they sing and what each part does.",
+      "angle": "Soprano, alto, tenor and bass in plain words, typical ranges, how parts fit under a hymn tune, how to find your part.",
+      "links": [
+        "/hymns/amazing-grace",
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 50
+    },
+    {
+      "slug": "la-based-minor-explained",
+      "keyword": "la-based minor in tonic solfa",
+      "intent": "Informational — singers confused by minor keys in solfa.",
+      "angle": "Why choirs read minor keys la-based, how doh relates to the minor key note, the raised seventh (se), with scales from the engine.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 60
+    },
+    {
+      "slug": "how-to-read-rhythm-in-tonic-solfa",
+      "keyword": "tonic solfa rhythm",
+      "intent": "How-to — readers who know the syllables but struggle with timing.",
+      "angle": "Beats, half beats, dashes, rests and pickups, explained with real hymn lines; counting aloud; common time signatures.",
+      "links": [
+        "/hymns/joyful-joyful-we-adore-thee",
+        "/hymns/silent-night",
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 70
+    },
+    {
+      "slug": "how-to-choose-the-right-key-for-your-choir",
+      "keyword": "how to choose the right key for a choir",
+      "intent": "How-to — directors whose sopranos strain or basses disappear.",
+      "angle": "Check each part's highest and lowest notes, move doh rather than relearn, and test before Sunday.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/hymns/amazing-grace"
+      ],
+      "skip": false,
+      "position": 80
+    },
+    {
+      "slug": "chromatic-notes-in-tonic-solfa",
+      "keyword": "fe se ta in tonic solfa",
+      "intent": "Informational — readers meeting sharpened and flattened syllables.",
+      "angle": "How raised and lowered notes are named (de re fe se le / ra ma sa la ta), how to sing them in tune, where they appear.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 90
+    },
+    {
+      "slug": "how-to-read-hymn-book-solfa",
+      "keyword": "how to read solfa in a hymn book",
+      "intent": "How-to — singers facing older printed solfa with colons and dots.",
+      "angle": "The traditional printed layout (colons between beats, dots for half beats, key marks) related to the cell layout NoteFusion uses.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa",
+        "/hymns"
+      ],
+      "skip": false,
+      "position": 100
+    },
+    {
+      "slug": "what-is-movable-doh",
+      "keyword": "movable doh vs fixed do",
+      "intent": "Informational — musicians who learnt fixed do or letter names.",
+      "angle": "The difference, why choirs prefer movable doh, how instrumentalists can work alongside solfa singers.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa",
+        "/blog/how-to-find-the-doh-of-a-song"
+      ],
+      "skip": false,
+      "position": 110
+    },
+    {
+      "slug": "how-to-give-a-choir-the-starting-note",
+      "keyword": "how to pitch a song for a choir without an instrument",
+      "intent": "How-to — directors without a keyboard at hand.",
+      "angle": "Using a phone tuner or a reference note, singing doh and the first note for each part, checking the key holds.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song"
+      ],
+      "skip": false,
+      "position": 120
+    },
+    {
+      "slug": "tonic-solfa-for-keyboard-players",
+      "keyword": "tonic solfa for keyboard players",
+      "intent": "How-to — church keyboardists who play by ear and want to read the choir's solfa.",
+      "angle": "Mapping doh to the keyboard in common keys, playing the tune from solfa, accompanying a choir that reads solfa.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/hymns"
+      ],
+      "skip": false,
+      "position": 130
+    },
+    {
+      "slug": "tonic-solfa-for-guitar",
+      "keyword": "tonic solfa for guitar",
+      "intent": "How-to — guitarists in praise teams.",
+      "angle": "Finding doh on the fretboard, playing a melody from solfa, capo and key changes.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song"
+      ],
+      "skip": false,
+      "position": 140
+    },
+    {
+      "slug": "tonic-solfa-for-saxophone-and-trumpet",
+      "keyword": "tonic solfa for saxophone and trumpet",
+      "intent": "How-to — church horn players working from the choir's solfa.",
+      "angle": "Transposing instruments explained simply: why doh on the sheet is not the written note, with worked keys.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/blog/what-is-movable-doh"
+      ],
+      "skip": false,
+      "position": 150
+    },
+    {
+      "slug": "easy-hymns-for-a-new-choir",
+      "keyword": "easy hymns for a new choir",
+      "intent": "Commercial-informational — directors starting out or teaching beginners.",
+      "angle": "Hymns with small ranges and stepwise tunes, why they are easy, and how to use them to teach solfa.",
+      "links": [
+        "/hymns",
+        "/hymns/praise-god-from-whom-all-blessings-flow",
+        "/hymns/amazing-grace"
+      ],
+      "skip": false,
+      "position": 160
+    },
+    {
+      "slug": "christmas-carols-in-tonic-solfa",
+      "keyword": "christmas carols in tonic solfa",
+      "intent": "Seasonal — carol service preparation.",
+      "angle": "Planning a carol service with public-domain carols, rehearsal order, the solfa for carols on the site.",
+      "links": [
+        "/hymns/silent-night",
+        "/hymns/good-king-wenceslas",
+        "/hymns"
+      ],
+      "skip": false,
+      "position": 170
+    },
+    {
+      "slug": "amazing-grace-tonic-solfa-guide",
+      "keyword": "amazing grace tonic solfa",
+      "intent": "Informational — singers learning this hymn specifically.",
+      "angle": "The story of the hymn, its pentatonic tune, how to teach it line by line, choosing a key for your choir.",
+      "links": [
+        "/hymns/amazing-grace",
+        "/blog/how-to-find-the-doh-of-a-song"
+      ],
+      "skip": false,
+      "position": 180
+    },
+    {
+      "slug": "the-doxology-history-and-solfa",
+      "keyword": "doxology praise god from whom all blessings flow solfa",
+      "intent": "Informational — churches that sing the Doxology every Sunday.",
+      "angle": "Where the words and the tune came from, other texts sung to OLD HUNDREDTH, singing it well.",
+      "links": [
+        "/hymns/praise-god-from-whom-all-blessings-flow",
+        "/hymns/all-people-that-on-earth-do-dwell",
+        "/hymns/be-present-at-our-table-lord"
+      ],
+      "skip": false,
+      "position": 190
+    },
+    {
+      "slug": "vocal-warm-ups-for-choirs",
+      "keyword": "vocal warm ups for choir",
+      "intent": "How-to — directors wanting a short routine.",
+      "angle": "A ten-minute warm-up built on solfa (scales, intervals, breath), which doubles as ear training.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 200
+    },
+    {
+      "slug": "how-to-sing-in-tune-in-a-choir",
+      "keyword": "how to sing in tune in a choir",
+      "intent": "How-to — choristers who are told they are flat or sharp.",
+      "angle": "Listening, breath support, vowel shapes, practising intervals with solfa.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 210
+    },
+    {
+      "slug": "intervals-in-tonic-solfa",
+      "keyword": "how to sing intervals in tonic solfa",
+      "intent": "How-to — ear training for choristers.",
+      "angle": "The common leaps (d–m, d–s, s,–d, d–d') and how hymns use them, practised with real tunes.",
+      "links": [
+        "/hymns/amazing-grace",
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 220
+    },
+    {
+      "slug": "how-to-learn-your-choir-part-at-home",
+      "keyword": "how to learn your choir part at home",
+      "intent": "How-to — choristers who want to arrive prepared.",
+      "angle": "A home practice routine: solfa first, slow playback, loop the hard bars, then the words.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa",
+        "/hymns"
+      ],
+      "skip": false,
+      "position": 230
+    },
+    {
+      "slug": "how-to-start-a-church-choir",
+      "keyword": "how to start a church choir",
+      "intent": "How-to — someone asked to form a choir from scratch.",
+      "angle": "Recruiting, sorting voices, a first repertoire, teaching solfa from week one.",
+      "links": [
+        "/blog/satb-parts-explained",
+        "/blog/easy-hymns-for-a-new-choir"
+      ],
+      "skip": false,
+      "position": 240
+    },
+    {
+      "slug": "what-is-a-pickup-note",
+      "keyword": "pickup note anacrusis explained",
+      "intent": "Informational — singers who come in on the wrong beat.",
+      "angle": "What a pickup is, how it shows in solfa and on the staff, examples from hymns that start before the bar line.",
+      "links": [
+        "/hymns/amazing-grace",
+        "/blog/how-to-read-rhythm-in-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 250
+    },
+    {
+      "slug": "time-signatures-for-choir-singers",
+      "keyword": "time signatures explained for singers",
+      "intent": "Informational — choristers puzzled by 3/4 and 6/8.",
+      "angle": "What the numbers mean, how each feels, how the solfa grid shows them, hymns in each.",
+      "links": [
+        "/hymns/silent-night",
+        "/hymns/amazing-grace"
+      ],
+      "skip": false,
+      "position": 260
+    },
+    {
+      "slug": "how-to-read-staff-notation-if-you-know-solfa",
+      "keyword": "how to read staff notation from solfa",
+      "intent": "How-to — solfa readers wanting to read the staff.",
+      "angle": "Using what you know: find doh on the staff from the key signature, read shapes as solfa, rhythm values.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/blog/tonic-solfa-vs-staff-notation"
+      ],
+      "skip": false,
+      "position": 270
+    },
+    {
+      "slug": "key-signatures-explained-for-singers",
+      "keyword": "key signatures explained",
+      "intent": "Informational — singers who see sharps and flats and freeze.",
+      "angle": "Key signatures as a doh finder; why \"Doh is Bb\" not A#; a full table.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song"
+      ],
+      "skip": false,
+      "position": 280
+    },
+    {
+      "slug": "curwen-hand-signs",
+      "keyword": "tonic solfa hand signs",
+      "intent": "Informational — teachers looking for a visual aid.",
+      "angle": "The hand sign for each syllable, how to use them in rehearsal and with children.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 290
+    },
+    {
+      "slug": "tonic-solfa-for-children",
+      "keyword": "teaching tonic solfa to children",
+      "intent": "How-to — Sunday school and school music teachers.",
+      "angle": "Games, hand signs, short songs and a lesson-by-lesson progression.",
+      "links": [
+        "/blog/how-to-read-tonic-solfa",
+        "/blog/curwen-hand-signs"
+      ],
+      "skip": false,
+      "position": 300
+    },
+    {
+      "slug": "how-to-run-sectional-rehearsals",
+      "keyword": "how to run sectional rehearsals",
+      "intent": "How-to — directors with section leaders.",
+      "angle": "When to split, what each section does, how to bring parts back together, using recordings of each part.",
+      "links": [
+        "/blog/satb-parts-explained"
+      ],
+      "skip": false,
+      "position": 310
+    },
+    {
+      "slug": "how-to-sing-a-descant",
+      "keyword": "how to sing a descant",
+      "intent": "How-to — sopranos asked to sing a descant on a last verse.",
+      "angle": "What a descant is, choosing singers, learning it from solfa against the tune.",
+      "links": [
+        "/blog/satb-parts-explained"
+      ],
+      "skip": false,
+      "position": 320
+    },
+    {
+      "slug": "breathing-for-choir-singers",
+      "keyword": "breathing exercises for choir singers",
+      "intent": "How-to — choristers who run out of breath in long phrases.",
+      "angle": "Where to breathe in a hymn line, staggered breathing, simple daily exercises.",
+      "links": [
+        "/hymns/joyful-joyful-we-adore-thee"
+      ],
+      "skip": false,
+      "position": 330
+    },
+    {
+      "slug": "how-to-transpose-a-song",
+      "keyword": "how to transpose a song for a choir",
+      "intent": "How-to — directors moving a song to another key.",
+      "angle": "Why solfa makes transposing easy, what changes for instruments, checking every part's range.",
+      "links": [
+        "/blog/how-to-find-the-doh-of-a-song",
+        "/blog/how-to-choose-the-right-key-for-your-choir"
+      ],
+      "skip": false,
+      "position": 340
+    },
+    {
+      "slug": "choir-director-checklist",
+      "keyword": "choir director checklist before sunday service",
+      "intent": "How-to — directors preparing the week's music.",
+      "angle": "A practical checklist from choosing songs to final run-through, including keys, parts and copies.",
+      "links": [
+        "/blog/how-to-teach-a-choir-a-new-song"
+      ],
+      "skip": false,
+      "position": 350
+    },
+    {
+      "slug": "how-to-write-solfa-for-praise-and-worship-songs",
+      "keyword": "solfa for praise and worship songs",
+      "intent": "How-to — praise teams working from recordings of contemporary songs.",
+      "angle": "Repeated choruses, syncopation and key changes in modern songs and how to write them clearly for a choir.",
+      "links": [
+        "/blog/how-to-transcribe-a-song-into-tonic-solfa",
+        "/blog/how-to-find-the-doh-of-a-song"
+      ],
+      "skip": false,
+      "position": 360
+    },
+    {
+      "slug": "sight-singing-with-tonic-solfa",
+      "keyword": "sight singing with tonic solfa",
+      "intent": "How-to — choristers who want to sing new music at first sight.",
+      "angle": "A practice plan from stepwise tunes to leaps and rhythms, using public-domain hymns.",
+      "links": [
+        "/hymns",
+        "/blog/intervals-in-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 370
+    },
+    {
+      "slug": "history-of-tonic-solfa",
+      "keyword": "history of tonic solfa",
+      "intent": "Informational — readers curious where solfa came from.",
+      "angle": "Sarah Glover and John Curwen, how it spread through churches and schools, why it remains strong in West African choirs (no invented dates or numbers).",
+      "links": [
+        "/blog/how-to-read-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 380
+    },
+    {
+      "slug": "hymns-for-funerals-in-tonic-solfa",
+      "keyword": "funeral hymns tonic solfa",
+      "intent": "Commercial-informational — choirs preparing a service of songs.",
+      "angle": "Choosing appropriate public-domain hymns, preparing at short notice, singing with feeling.",
+      "links": [
+        "/hymns",
+        "/hymns/amazing-grace"
+      ],
+      "skip": false,
+      "position": 390
+    },
+    {
+      "slug": "how-to-use-recordings-in-choir-practice",
+      "keyword": "using recordings to learn choir songs",
+      "intent": "How-to — choirs that share songs on WhatsApp.",
+      "angle": "Getting the most from a recording: slowing down, looping, separating the melody, turning it into solfa.",
+      "links": [
+        "/blog/how-to-learn-your-choir-part-at-home",
+        "/blog/how-to-transcribe-a-song-into-tonic-solfa"
+      ],
+      "skip": false,
+      "position": 400
+    }
+  ]
+}
