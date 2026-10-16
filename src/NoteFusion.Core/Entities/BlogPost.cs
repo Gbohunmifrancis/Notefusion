@@ -169,7 +169,7 @@ public partial class BlogPost : BaseEntity
 
     public bool CanPublish => Status != BlogPostStatus.Published;
     public bool CanSchedule => Status is BlogPostStatus.Draft or BlogPostStatus.Scheduled or BlogPostStatus.Archived;
-    public bool CanUnpublish => Status is BlogPostStatus.Published or BlogPostStatus.Scheduled;
+    public bool CanUnpublish => Status != BlogPostStatus.Draft;
     public bool CanArchive => Status != BlogPostStatus.Archived;
 
     /// <summary>A post that is live has to come off the site first; anything else may be deleted.</summary>
@@ -195,11 +195,11 @@ public partial class BlogPost : BaseEntity
         Touch(utcNow);
     }
 
-    /// <summary>Takes it off the site (or cancels its schedule) and back to a draft. Returns whether it was live.</summary>
+    /// <summary>Back to a draft: off the site, its schedule cancelled, or out of the archive. Returns whether it was live.</summary>
     public bool Unpublish(DateTime utcNow)
     {
         if (!CanUnpublish)
-            throw new InvalidOperationException("The post is not published or scheduled.");
+            throw new InvalidOperationException("The post is already a draft.");
         var wasLive = IsLive;
         Status = BlogPostStatus.Draft;
         PublishAtUtc = null;
