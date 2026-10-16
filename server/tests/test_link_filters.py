@@ -31,7 +31,7 @@ def _fresh(monkeypatch):
     links._cache.clear()
     monkeypatch.delenv("NF_YTDLP_COOKIES_FILE", raising=False)
     monkeypatch.delenv("NF_YTDLP_EXTRA_ARGS", raising=False)
-    monkeypatch.setattr(settings, "ytdlp_fallback_clients", "tv_embedded")
+    monkeypatch.setattr(settings, "ytdlp_fallback_clients", "mweb,android_vr")
     monkeypatch.setattr(settings, "link_max_video_seconds", 7200.0)
     yield
     links._cache.clear()
@@ -94,7 +94,7 @@ def test_a_refused_read_is_tried_again_with_the_fallback_client(monkeypatch):
     assert source.duration == 213.0
     first, second = _reads(calls)
     assert not _is_fallback(first)
-    assert second[second.index("--extractor-args") + 1] == "youtube:player_client=tv_embedded"
+    assert second[second.index("--extractor-args") + 1] == "youtube:player_client=mweb,android_vr"
     assert second.index("--extractor-args") < second.index("-f")  # yt-dlp's options before the video
     # The job then downloads from the details the second try read: no third read.
     fetched = links.fetch_audio(source, 60, work_dir=None)
@@ -115,7 +115,7 @@ def test_no_second_try_without_a_fallback_client_and_none_for_a_video_that_is_go
 
     calls.clear()
     links._cache.clear()
-    monkeypatch.setattr(settings, "ytdlp_fallback_clients", "tv_embedded")
+    monkeypatch.setattr(settings, "ytdlp_fallback_clients", "mweb,android_vr")
 
     def private(args, **kwargs):
         calls.append(list(args))
@@ -136,7 +136,7 @@ def test_a_second_refusal_is_the_answer_and_both_are_in_the_log(monkeypatch, cap
     assert len(_reads(calls)) == 2
     messages = [r.getMessage() for r in caplog.records]
     assert sum("yt-dlp failed" in m for m in messages) == 2
-    assert any("trying again with player client tv_embedded" in m for m in messages)
+    assert any("trying again with player client mweb,android_vr" in m for m in messages)
 
 
 def test_the_second_try_needs_time_left_and_never_follows_a_timeout(monkeypatch):
