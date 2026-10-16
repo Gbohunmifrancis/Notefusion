@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="/assets/rangepicker.css?v=1">
 <link rel="stylesheet" href="/assets/app.css?v=24">
 <link rel="stylesheet" href="/assets/recorder.css?v=1">
-<link rel="stylesheet" href="/assets/night.css?v=6">
+<link rel="stylesheet" href="/assets/night.css?v=7">
 <!-- The theme before the first paint: blocking on purpose (no async/defer). -->
 <script src="/assets/theme-boot.js?v=1"></script>
 </head>
@@ -530,6 +530,11 @@
             <strong>Four-part harmony is a Pro feature.</strong> Alto, tenor and bass are written under the tune the way a hymn arranger would — ready for your choir.
           </div>
           <div id="r-parts-body" class="hidden">
+            <!-- Which voices play: mute one, or hear one alone, and sing your own part against the rest. -->
+            <div class="part-mix" id="part-mix" role="group" aria-label="Voices you hear when you press Play">
+              <span class="part-mix-label">Hear</span>
+              <div class="part-mix-voices" id="part-mix-voices"></div>
+            </div>
             <div class="sheet-wrap" style="margin-bottom:12px"><div id="sheet-parts"></div></div>
             <div id="r-parts-solfa"></div>
           </div>
@@ -661,6 +666,7 @@
         <p class="card-lead">The sheet shows the voice we heard. When you want a choir arrangement, alto, tenor and bass are written under it the way a hymn arranger would.</p>
         <button class="btn btn-primary" id="harmony-add" type="button"><svg class="ic"><use href="#i-plus"/></svg>Write the four parts</button>
         <p class="small muted hidden" id="harmony-free-note">Free accounts can try this once. Pro writes parts for every sheet.</p>
+        <div id="harmony-alert" class="alert hidden" role="status"></div>
       </div>
 
       <div class="section" id="sing">
@@ -931,7 +937,8 @@
 <script src="/assets/preview.js?v=11" defer></script>
 <script src="/assets/confidence.js?v=1" defer></script>
 <script src="/assets/hymnbook.js?v=1" defer></script>
-<script src="/assets/app.js?v=34" defer></script>
+<script src="/assets/parts.js?v=1" defer></script>
+<script src="/assets/app.js?v=35" defer></script>
 <script src="/assets/track.js?v=5" defer></script>
 </body>
 </html>
