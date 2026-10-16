@@ -37,7 +37,7 @@
   "@context": "https://schema.org",
   "@type": "ItemList",
   "name": "Hymns in Tonic Solfa",
-  "numberOfItems": 248,
+  "numberOfItems": 250,
   "itemListElement": [
     {
       "@type": "ListItem",
@@ -1526,6 +1526,18 @@
       "position": 248,
       "url": "https://notefusion.studio/hymns/within-the-fathers-house",
       "name": "Within the Father's House"
+    },
+    {
+      "@type": "ListItem",
+      "position": 249,
+      "url": "https://notefusion.studio/hymns/tunes/lyons",
+      "name": "Lyons"
+    },
+    {
+      "@type": "ListItem",
+      "position": 250,
+      "url": "https://notefusion.studio/hymns/tunes/mit-freuden-zart",
+      "name": "Mit Freuden Zart"
     }
   ]
 }
@@ -1580,12 +1592,12 @@
 <header class="masthead">
   <p class="kicker">The hymnal</p>
   <h1>Hymns in Tonic Solfa</h1>
-  <p class="masthead-dek">248 public-domain hymns with the solfa written out under the words with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+  <p class="masthead-dek">248 public-domain hymns with the solfa written out under the words, and 2 more hymn tunes on their own, with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
 </header>
 <div class="hymn-find" id="hymn-find" hidden>
   <label for="hymn-filter">Find a hymn</label>
   <input type="search" id="hymn-filter" placeholder="Title, first line, tune or writer" autocomplete="off" spellcheck="false">
-  
+  <p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>
   <p class="hymn-seasons" aria-label="Seasons and occasions"><button type="button" data-filter="advent">Advent</button><button type="button" data-filter="christmas">Christmas</button><button type="button" data-filter="epiphany">Epiphany</button><button type="button" data-filter="lent">Lent</button><button type="button" data-filter="palm sunday">Palm Sunday</button><button type="button" data-filter="good friday">Good Friday</button><button type="button" data-filter="easter">Easter</button><button type="button" data-filter="ascension">Ascension</button><button type="button" data-filter="pentecost">Pentecost</button><button type="button" data-filter="trinity">Trinity</button><button type="button" data-filter="thanksgiving">Thanksgiving</button><button type="button" data-filter="communion">Communion</button><button type="button" data-filter="evening">Evening</button><button type="button" data-filter="funeral">Funeral</button></p>
   <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
 </div>
@@ -2349,6 +2361,11 @@
       <p class="first-line">Lord, who at Cana's wedding feast</p>
       <p class="story-meta"><span>Doh is G</span><span>4/4</span><span>Tune: ST. URSULA</span><span>Christian Home</span></p>
     </li>
+    <li class="hymn-item" data-kind="tune" data-search="lyons lyons johann michael haydn sacred melodies william gardiner 10 10 11 11 10 10 11 11 doh is ab tune">
+      <h3><a href="/hymns/tunes/lyons">Lyons</a></h3>
+      <p class="first-line">Hymn tune · 10.10.11.11 · Johann Michael Haydn, Sacred Melodies (William Gardiner)</p>
+      <p class="story-meta"><span>Doh is Ab</span><span>3/4</span></p>
+    </li>
   </ul>
 </section>
 <section class="hymn-letter" id="letter-M" aria-labelledby="letter-M-title">
@@ -2358,6 +2375,11 @@
       <h3><a href="/hymns/may-god-bestow-on-us-his-grace">May God Bestow on Us His Grace</a></h3>
       <p class="first-line">May God bestow on us His grace,</p>
       <p class="story-meta"><span>Doh is C</span><span>4/4</span><span>Tune: ES WOLLT UNS GOTT GENÆDIG</span><span>Missions</span></p>
+    </li>
+    <li class="hymn-item" data-kind="tune" data-search="mit freuden zart mit freuden zart bohemian brethren s kirchengesange 8 7 8 7 8 8 7 8 7 8 7 8 8 7 doh is eb tune">
+      <h3><a href="/hymns/tunes/mit-freuden-zart">Mit Freuden Zart</a></h3>
+      <p class="first-line">Hymn tune · 8.7.8.7.8.8.7 · Bohemian Brethren's Kirchengesange</p>
+      <p class="story-meta"><span>Doh is Eb</span><span>3/2</span></p>
     </li>
     <li class="hymn-item" data-kind="hymn" data-search="more love to thee more love to thee o christ more love to thee more love to thee elizabeth payson prentis william howard doane consecration consecration invitation faithful s to god love prayer doh is ab">
       <h3><a href="/hymns/more-love-to-thee">More Love to Thee</a></h3>
@@ -2933,7 +2955,7 @@
 </section>
 </div>
 <p class="hymn-none" id="hymn-none" hidden>No hymn matches that. Try fewer words, or <a href="/app">transcribe the song with NoteFusion</a>.</p>
-<p class="note">Every hymn here is out of copyright: everyone who wrote it died before 1955, and it was first published before 1929. Most come from the Open Hymnal Project; see <a href="/hymns/credits">sources and licences</a>. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
+<p class="note">Every hymn here is out of copyright: everyone who wrote it died before 1955, and it was first published before 1929. Most come from the Open Hymnal Project and the Christian Classics Ethereal Hymnary; see <a href="/hymns/credits">sources and licences</a>. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
 <aside class="cta-box" aria-labelledby="cta-hymns">
   <h2 id="cta-hymns">Transcribe your own song in seconds</h2>
   <p>Hum a tune, upload a recording or paste a song link, and NoteFusion writes it out in Tonic Solfa and staff notation for your choir. Free to try, no card needed.</p>

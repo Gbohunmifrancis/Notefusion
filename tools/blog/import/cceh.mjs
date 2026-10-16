@@ -15,6 +15,7 @@
 import { parseMidi } from "./midi.mjs";
 import { parseTunePage } from "./cceh-page.mjs";
 import { chooseMelody, incipitDegrees, oxfordDegrees, lineToMelody } from "./cceh-melody.mjs";
+import { scoreBars } from "./nwc.mjs";
 import { parseMelody, loadEngine } from "../lib/solfa.mjs";
 import { tunePublicDomainProblems, PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "../lib/content.mjs";
 import { slugify } from "../lib/util.mjs";
@@ -110,7 +111,7 @@ const isTuneSource = (c) => !/^(arr|harm|desc)/i.test(c.role || "");
  *   { number, folder, name, slug, tune, problems: [...], refused: null | reason, parsed, melodyLine, incipit }
  * `problems` keep the tune a draft; `refused` means nothing of it is copied into the repository.
  */
-export function convertTune({ page, midi, midiHref, number: numberIn = null, today, dates = datesTable() }) {
+export function convertTune({ page, midi, midiHref, nwc = null, nwcHref = null, number: numberIn = null, dates = datesTable() }) {
   const p = parseTunePage(page);
   const number = p.number || numberIn;
   const folder = folderOf(number);
@@ -154,7 +155,7 @@ export function convertTune({ page, midi, midiHref, number: numberIn = null, tod
         if (d.born) person.born = d.born;
         person.died = d.died;
         if (d.lived) person.lived = d.lived;
-        notes.push(`${nm}'s dates (${d.born ? `${d.born}–` : "died "}${d.died}) are the ones ${d.from || "our other pages"} give${d.from && /pages$/.test(d.from) ? "" : "s"}; CCEH's page gives ${c.year ? `only the year ${c.year}` : "none"}.`);
+        notes.push(`${nm}'s dates (${d.born ? `${d.born}–` : "died "}${d.died}) are from ${d.from || "our other pages"}; CCEH's page gives ${c.year ? `only the year ${c.year}` : "none"}.`);
       }
     }
     if (Number.isInteger(person.died) && person.died >= PD_DIED_BEFORE) refuse(`${nm} died in ${person.died}, so ${ROLE(c) === "Music" ? "the tune" : "the arrangement"} is still in copyright in Nigeria, the UK and the EU`);
@@ -173,7 +174,7 @@ export function convertTune({ page, midi, midiHref, number: numberIn = null, tod
   if (midiFile) {
     // Noteworthy writes the score's copyright line into the MIDI file: "public domain", or a © to respect.
     const meta = (midiFile.copyright || []).join(" ").trim();
-    if (meta && !/public domain/i.test(meta)) refuse(`the MIDI file carries a copyright notice (“${meta}”)`);
+    if (meta && !/public\s+domain/i.test(meta)) refuse(`the MIDI file carries a copyright notice (“${meta}”)`);
   }
   for (const pr of tunePublicDomainProblems({ music, musicPublished })) if (!problems.some((q) => pr.includes(q))) problems.push(`not provably public domain: ${pr}`);
 
@@ -186,7 +187,9 @@ export function convertTune({ page, midi, midiHref, number: numberIn = null, tod
     choice = chooseMelody(midiFile, degrees);
     if (!choice.line) problems.push(choice.reason);
     else {
-      mel = lineToMelody(choice.line, midiFile, { doh: choice.match.doh });
+      const score = nwc ? scoreBars(nwc) : null;
+      mel = lineToMelody(choice.line, midiFile, { doh: choice.match.doh, allLines: choice.candidates, score });
+      if (mel.barsFrom === "score") notes.push(`The bar lines are those of CCEH's Noteworthy score (${nwcHref}).`);
       for (const pr of mel.problems) problems.push(pr.text);
       notes.push(...(mel.notes || []));
       if (choice.line.staff > 0 || choice.line.part === "bottom") notes.push(`The melody is the ${choice.line.part === "bottom" ? "lower" : "upper"} line of the ${choice.line.staff > 0 ? "lower" : "upper"} staff in CCEH's score (${choice.line.staff > 0 ? "a tenor-lead setting" : "not the top voice"}), chosen because it matches the incipit.`);
@@ -209,6 +212,7 @@ export function convertTune({ page, midi, midiHref, number: numberIn = null, tod
   ].join(" ");
   const tune = {
     name,
+    title: baseName,
     ...(alsoKnownAs.length ? { alsoKnownAs } : {}),
     music,
     musicPublished,

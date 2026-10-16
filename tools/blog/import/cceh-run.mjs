@@ -24,7 +24,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { CONTENT_DIR } from "../lib/site.mjs";
 import { parseMelody } from "../lib/solfa.mjs";
 import { parseTunePage } from "./cceh-page.mjs";
-import { convertTune, datesTable, normName, SOURCE_NAME } from "./cceh.mjs";
+import { convertTune, datesTable, normName, fileUrl, SOURCE_NAME } from "./cceh.mjs";
 
 const HYMNS_DIR = path.join(CONTENT_DIR, "hymns");
 const TUNES_DIR = path.join(HYMNS_DIR, "tunes");
@@ -75,9 +75,25 @@ export function sameMelody(a, b) {
   return d <= Math.max(1, Math.floor(n / 8)) ? d : null;
 }
 
-/** The people our pages already give dates for (hymns and tunes, from their own sources), and CCEH's pages that print a life. */
-export function buildDates({ hymns, tunes, pages }) {
+/**
+ * Dates checked by hand for people CCEH's pages name without them (tools/blog/import/cceh-dates.json):
+ * {"John Bacchus Dykes": {"born": 1823, "died": 1876, "source": "where the dates were checked"}}. Every
+ * entry needs its source; the report's `undatedPeople` lists who would unlock the most tunes.
+ */
+export const DATES_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "cceh-dates.json");
+export function readCheckedDates(file = DATES_PATH) {
+  if (!fs.existsSync(file)) return {};
+  const data = readJson(file);
+  for (const [name, d] of Object.entries(data)) {
+    if (!Number.isInteger(d.died) || typeof d.source !== "string" || !d.source.trim()) throw new Error(`cceh-dates.json: ${name} needs a "died" year and a "source"`);
+  }
+  return data;
+}
+
+/** The people our pages already give dates for (hymns and tunes, from their own sources), CCEH's pages that print a life, and the dates checked by hand. */
+export function buildDates({ hymns, tunes, pages, checked = readCheckedDates() }) {
   const dates = datesTable();
+  for (const [name, d] of Object.entries(checked)) dates.add(name, { born: d.born, died: d.died, from: d.source });
   for (const [slug, t] of tunes) if (t.source !== SOURCE_NAME) for (const p of t.music || []) if (!p.traditional) dates.add(p.name, { born: p.born, died: p.died, lived: p.lived, from: `our page for the tune ${t.name} (content/hymns/tunes/${slug}.json)` });
   for (const [slug, h] of hymns) for (const p of h.text || []) if (!p.traditional) dates.add(p.name, { born: p.born, died: p.died, lived: p.lived, from: `our page for ${h.title} (content/hymns/${slug}.json)` });
   for (const { number, html } of pages) {
@@ -86,7 +102,7 @@ export function buildDates({ hymns, tunes, pages }) {
   return dates;
 }
 
-export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, hymnsDir = HYMNS_DIR, reportPath = REPORT_PATH, log = console.log }) {
+export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, hymnsDir = HYMNS_DIR, reportPath = REPORT_PATH, datesFile = DATES_PATH, log = console.log }) {
   const tunes = loadDir(tunesDir), hymns = loadDir(hymnsDir);
   const index = readIndex(cache);
   const pages = [];
@@ -94,7 +110,10 @@ export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, 
     const f = path.join(cache, "pages", `x${e.number}.htm`);
     if (fs.existsSync(f)) pages.push({ ...e, html: fs.readFileSync(f, "latin1") });
   }
-  const dates = buildDates({ hymns, tunes, pages });
+  const dates = buildDates({ hymns, tunes, pages, checked: readCheckedDates(datesFile) });
+  // Files the crawl gave up on (moved or missing at CCEH): the tune is read without them.
+  const failedPath = path.join(cache, "failed.json");
+  const failed = new Set(fs.existsSync(failedPath) ? Object.keys(JSON.parse(fs.readFileSync(failedPath, "utf8"))) : []);
 
   // Our tunes with a melody, to find the ones CCEH would only repeat (any source but CCEH itself).
   const ours = [];
@@ -117,11 +136,20 @@ export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, 
     const pg = pages.find((x) => x.number === e.number);
     if (!pg) { report.notYetCrawled++; continue; }
     const p = parseTunePage(pg.html);
-    const mid = p.files.find((f) => f.kind === "midi");
+    // The MIDI file the crawl chose (cceh-crawl.py choose_midi), and the Noteworthy score of the same arrangement.
+    const mid = p.files.find((f) => f.kind === "midi" && fs.existsSync(path.join(cache, "files", f.href))) || p.files.find((f) => f.kind === "midi");
     const midPath = mid ? path.join(cache, "files", mid.href) : null;
-    if (mid && !fs.existsSync(midPath)) { report.notYetCrawled++; continue; }
+    if (mid && !fs.existsSync(midPath) && !failed.has(fileUrl(e.folder, mid.href))) { report.notYetCrawled++; continue; }
+    const nwcHref = mid ? mid.href.replace(/\.mid$/i, ".nwc") : null;
+    const nwcPath = nwcHref ? path.join(cache, "nwc", nwcHref) : null;
+    const wantsNwc = nwcHref && p.files.some((f) => f.href === nwcHref) && !p.credits.some((c) => c.copyright);
+    if (wantsNwc && !fs.existsSync(nwcPath) && !failed.has(fileUrl(e.folder, nwcHref))) { report.notYetCrawled++; continue; }
     processed.add(e.number);
-    const r = convertTune({ page: pg.html, midi: midPath ? fs.readFileSync(midPath) : null, midiHref: mid ? mid.href : null, number: e.number, today, dates });
+    const r = convertTune({
+      page: pg.html, number: e.number, dates,
+      midi: midPath && fs.existsSync(midPath) ? fs.readFileSync(midPath) : null, midiHref: mid ? mid.href : null,
+      nwc: nwcPath && fs.existsSync(nwcPath) ? fs.readFileSync(nwcPath) : null, nwcHref,
+    });
     const label = { number: e.number, name: r.baseName, url: r.tune.sourceUrl };
     if (r.refused) { report.refused.push({ ...label, reason: r.refused }); continue; }
     if (!r.parsed) { report.rejected.push({ ...label, reason: r.problems.find((x) => /voice|MIDI|incipit|time signature|grid|parse/.test(x)) || r.problems.join("; ") }); continue; }

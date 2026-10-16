@@ -3,7 +3,16 @@
   "sourceUrl": "https://www.ccel.org/cceh/index.htm",
   "date": "2026-10-16",
   "rule": "Our public-domain rule (lib/content.mjs): everyone named died before 1955 and the tune was first published before 1929; missing dates make a draft; a © or anyone who died in 1955 or later means not imported.",
-  "published": [],
+  "published": [
+    {
+      "slug": "mit-freuden-zart",
+      "number": "000022"
+    },
+    {
+      "slug": "lyons",
+      "number": "000030"
+    }
+  ],
   "drafts": [
     {
       "slug": "beecher",
@@ -30,7 +39,29 @@
       "slug": "warrenton",
       "number": "000012",
       "reasons": [
-        "where the bar lines fall is not clear from the rhythm; check the pickup against the score"
+        "the score has a bar of another length (bar 5), which the solfa grid does not draw"
+      ]
+    },
+    {
+      "slug": "amsterdam",
+      "number": "000023",
+      "reasons": [
+        "not provably public domain: James Nares: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "old-hundred-thirty-fourth",
+      "number": "000026",
+      "reasons": [
+        "not provably public domain: William Crotch: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "monkland",
+      "number": "000027",
+      "reasons": [
+        "not provably public domain: John Antes: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)",
+        "not provably public domain: John Bernard Wilkes: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
       ]
     }
   ],
@@ -88,6 +119,87 @@
       "oursSource": "Open Hymnal Project",
       "hymn": "alleluia-sing-to-jesus",
       "edits": 0
+    },
+    {
+      "number": "000013",
+      "name": "Nettleton",
+      "url": "https://www.ccel.org/cceh/0000/x000013.htm",
+      "ours": "nettleton",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "come-thou-fount-of-every-blessing",
+      "edits": 0
+    },
+    {
+      "number": "000015",
+      "name": "Kremser",
+      "url": "https://www.ccel.org/cceh/0000/x000015.htm",
+      "ours": "kremser",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "we-gather-together",
+      "edits": 0
+    },
+    {
+      "number": "000016",
+      "name": "Arnsberg",
+      "url": "https://www.ccel.org/cceh/0000/x000016.htm",
+      "ours": "wunderbarer-konig",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "god-himself-is-present",
+      "edits": 0
+    },
+    {
+      "number": "000017",
+      "name": "Neander",
+      "url": "https://www.ccel.org/cceh/0000/x000017.htm",
+      "ours": "unser-herrscher",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "open-now-thy-gates-of-beauty",
+      "edits": 0
+    },
+    {
+      "number": "000020",
+      "name": "Aberystwyth",
+      "url": "https://www.ccel.org/cceh/0000/x000020.htm",
+      "ours": "aberystwyth-parry",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "savior-when-in-dust-to-thee",
+      "edits": 0
+    },
+    {
+      "number": "000021",
+      "name": "Herr Jesu Christ, Dich Zu Uns Wend",
+      "url": "https://www.ccel.org/cceh/0000/x000021.htm",
+      "ours": "herr-jesu-christ-dict-zu-uns-wend",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-gospel-shows-the-fathers-grace",
+      "edits": 0
+    },
+    {
+      "number": "000025",
+      "name": "Leoni",
+      "url": "https://www.ccel.org/cceh/0000/x000025.htm",
+      "ours": "yigdal",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "the-god-of-abraham-praise",
+      "edits": 0
+    },
+    {
+      "number": "000028",
+      "name": "Marion",
+      "url": "https://www.ccel.org/cceh/0000/x000028.htm",
+      "ours": "marion",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "rejoice-o-pilgrim-throng",
+      "edits": 2
+    },
+    {
+      "number": "000032",
+      "name": "St. Denio",
+      "url": "https://www.ccel.org/cceh/0000/x000032.htm",
+      "ours": "st-denio",
+      "oursSource": "Open Hymnal Project ABC score (The Hymnal 1940); the harmony in the same source confirms each melody note.",
+      "hymn": "immortal-invisible-god-only-wise",
+      "edits": 2
     }
   ],
   "refused": [
@@ -102,9 +214,46 @@
       "name": "Lauda Anima (Andrews)",
       "url": "https://www.ccel.org/cceh/0000/x000008.htm",
       "reason": "the page marks Mark Andrews's tune as copyright (“Mark Andrews, ©1931”)"
+    },
+    {
+      "number": "000014",
+      "name": "Carpenter",
+      "url": "https://www.ccel.org/cceh/0000/x000014.htm",
+      "reason": "the page marks Heinz Werner Zimmermann's tune as copyright (“Heinz Werner Zimmermann, ©1973”)"
+    },
+    {
+      "number": "000018",
+      "name": "Paschall",
+      "url": "https://www.ccel.org/cceh/0000/x000018.htm",
+      "reason": "the page marks William J. Reynolds's tune as copyright (“William J. Reynolds, ©1970”)"
+    },
+    {
+      "number": "000019",
+      "name": "Acclamation",
+      "url": "https://www.ccel.org/cceh/0000/x000019.htm",
+      "reason": "the page marks Philip M. Young's tune as copyright (“Philip M. Young, ©1966”)"
+    },
+    {
+      "number": "000024",
+      "name": "All The World",
+      "url": "https://www.ccel.org/cceh/0000/x000024.htm",
+      "reason": "the page marks Robert G. McCutchan's tune as copyright (“Robert G. McCutchan, ©1934”)"
     }
   ],
-  "rejected": [],
+  "rejected": [
+    {
+      "number": "000029",
+      "name": "Spanish Hymn",
+      "url": "https://www.ccel.org/cceh/0000/x000029.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 13 notes off in 34)"
+    },
+    {
+      "number": "000031",
+      "name": "Ode to Joy",
+      "url": "https://www.ccel.org/cceh/0000/x000031.htm",
+      "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 2 notes off in 15)"
+    }
+  ],
   "sameNameDifferentTune": [],
   "fillCandidates": [],
   "undatedPeople": [
@@ -117,18 +266,34 @@
       "tunes": 1
     },
     {
+      "name": "James Nares",
+      "tunes": 1
+    },
+    {
+      "name": "John Antes",
+      "tunes": 1
+    },
+    {
+      "name": "John Bernard Wilkes",
+      "tunes": 1
+    },
+    {
       "name": "John Zundel",
+      "tunes": 1
+    },
+    {
+      "name": "William Crotch",
       "tunes": 1
     }
   ],
   "counts": {
-    "published": 0,
-    "drafts": 4,
-    "duplicates": 6,
-    "refused": 2,
-    "rejected": 0,
-    "pages": 12,
-    "notYetCrawled": 1386,
+    "published": 2,
+    "drafts": 7,
+    "duplicates": 15,
+    "refused": 6,
+    "rejected": 2,
+    "pages": 32,
+    "notYetCrawled": 1366,
     "tunesInIndex": 1398
   }
 }

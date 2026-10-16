@@ -160,27 +160,51 @@ export function writtenLength(L) {
 /** The longest a note is cut short when played: a gap longer than this before the next note is a rest. */
 const MAX_CUT = 0.25 + 1e-3;
 
+/** A line's notes as written: on the quarter-beat grid, each with its written length, a gap longer than the playing cut a rest. */
+export function lineEvents(line, division, shift = 0) {
+  const notes = line.notes.map((n) => ({ pitch: n.pitch, s: q4(n.start / division), L: (n.end - n.start) / division }));
+  const events = [];
+  notes.forEach((n, i) => {
+    const next = notes[i + 1];
+    const gap = next ? next.s - n.s : null;
+    const w = writtenLength(n.L);
+    const dur = next ? (gap - n.L <= MAX_CUT ? gap : Math.min(w, gap)) : w;
+    events.push({ pitch: n.pitch + shift, start: n.s, dur });
+    if (next && gap - dur > 1e-9) events.push({ pitch: null, start: n.s + dur, dur: gap - dur });
+  });
+  return events;
+}
+
+/** Inference weights: the melody's own rhythm counts in full, the other voices' (the harmony's rhythm) at `others`. */
+export const BAR_WEIGHTS = { others: 0.5, mid: 0.5, last: 0.5 };
+
 /**
- * Where the first bar line falls (the pickup, in quarter beats), read off the rhythm: the bar line that
- * puts the most held weight on strong beats (a note's length counts on a downbeat, half on the middle of
- * a bar of four or six beats), and the last note on a downbeat. Returns {pickup, margin}: margin is how
- * much better the choice scores than the next best, as a share of the whole (0 = a coin toss).
+ * Where the first bar line falls (the pickup, in quarter beats), read off the rhythm of the melody and of
+ * the other voices: the bar line that puts the most held weight on strong beats (a note's length counts on
+ * a downbeat, half on the middle of a bar of four or six beats), the tune's last note on a downbeat breaking
+ * a tie (a tune of even crotchets says nothing else). Returns {pickup, margin}: how much better the choice
+ * scores than the next best, as a share of the melody's whole length (0 = a coin toss).
  */
-export function inferBarLines(events, bpb) {
+export function inferBarLines(events, bpb, others = [], w = BAR_WEIGHTS) {
   const notes = events.filter((e) => e.pitch != null);
   const first = events[0].start;
   const last = notes[notes.length - 1];
   const mids = bpb === 4 || bpb === 6 || bpb === 8 ? [bpb / 2] : [];
-  const scores = [];
-  for (let off = 0; off < bpb - 1e-9; off += 0.5) {
+  const weigh = (list, off) => {
     let s = 0;
-    for (const n of notes) {
+    for (const n of list) {
+      if (n.pitch == null) continue;
       const pos = (((n.start - off) % bpb) + bpb) % bpb;
       if (pos < 1e-9) s += n.dur;
-      else if (mids.some((m) => Math.abs(pos - m) < 1e-9)) s += n.dur / 2;
+      else if (mids.some((m) => Math.abs(pos - m) < 1e-9)) s += n.dur * w.mid;
     }
-    // The last note on a downbeat breaks a tie (a tune of even crotchets says nothing else).
-    if (((((last.start - off) % bpb) + bpb) % bpb) < 1e-9) s += 0.5;
+    return s;
+  };
+  const scores = [];
+  for (let off = 0; off < bpb - 1e-9; off += 0.5) {
+    let s = weigh(notes, off);
+    for (const o of others) s += (w.others * weigh(o, off)) / others.length;
+    if (((((last.start - off) % bpb) + bpb) % bpb) < 1e-9) s += w.last;
     scores.push({ off, s });
   }
   scores.sort((a, b) => b.s - a.s);
@@ -188,15 +212,17 @@ export function inferBarLines(events, bpb) {
   const off = scores[0].off;
   // The pickup: from the first note to the first bar line at or after it.
   const pickup = (((off - first) % bpb) + bpb) % bpb;
-  return { pickup: q4(pickup), margin: scores.length > 1 ? (scores[0].s - scores[1].s) / total : 1 };
+  return { pickup: q4(pickup), offset: off, margin: scores.length > 1 ? (scores[0].s - scores[1].s) / total : 1 };
 }
 
 /**
- * The chosen line as the tune format's melody: {melody, time, pickup, key, tempo, lo, hi, problems}.
- * `doh` is the pitch class the incipit matched at. Each problem keeps the tune a draft; one marked
+ * The chosen line as the tune format's melody: {melody, time, pickup, key, tempo, lo, hi, problems, barsFrom}.
+ * `doh` is the pitch class the incipit matched at. `score` is the Noteworthy score's bars (nwc.mjs nwcBars,
+ * with its time signature): where they are, the bar lines are the score's; without them they are read off
+ * the rhythm, and the tune is held back to be checked. Each problem keeps the tune a draft; one marked
  * `fatal` leaves the melody out (one time signature, notes on the semiquaver grid).
  */
-export function lineToMelody(line, midi, { doh }) {
+export function lineToMelody(line, midi, { doh, allLines = [], weights = BAR_WEIGHTS, score = null }) {
   const problems = [];
   const d = midi.division;
   const sigs = [...new Map(midi.timeSigs.map((t) => [`${t.num}/${t.den}`, t])).values()];
@@ -209,22 +235,30 @@ export function lineToMelody(line, midi, { doh }) {
   // Notes on the quarter-beat grid, each with its written length; a gap longer than the playing cut is a rest.
   let notes = line.notes.map((n) => ({ pitch: n.pitch, s: n.start / d, L: (n.end - n.start) / d }));
   if (notes.some((n) => !onGrid(n.s))) return { melody: null, problems: [{ text: "a note starts off the semiquaver grid (a triplet or a grace note), which the solfa grid does not draw", fatal: true }] };
-  notes = notes.map((n) => ({ ...n, s: q4(n.s) }));
   // A tenor-lead tune is written an octave above where it sounds in the MIDI file's bass staff.
   const lo0 = Math.min(...notes.map((n) => n.pitch));
   const shift = line.staff > 0 && lo0 < 55 ? 12 : 0;
-  const events = [];
-  notes.forEach((n, i) => {
-    const next = notes[i + 1];
-    const gap = next ? next.s - n.s : null;
-    const w = writtenLength(n.L);
-    const dur = next ? (gap - n.L <= MAX_CUT ? gap : Math.min(w, gap)) : w;
-    events.push({ pitch: n.pitch + shift, start: n.s, dur });
-    if (next && gap - dur > 1e-9) events.push({ pitch: null, start: n.s + dur, dur: gap - dur });
-  });
-
-  const { pickup, margin } = inferBarLines(events, bpb);
-  if (margin < 0.02) problems.push({ text: "where the bar lines fall is not clear from the rhythm; check the pickup against the score" });
+  const events = lineEvents(line, d, shift);
+  // The other voices (each staff's top and bottom line but this one) carry the harmony's rhythm.
+  const others = allLines.filter((l) => l !== line && l.notes.length && l.notes.every((n) => onGrid(n.start / d))).map((l) => lineEvents(l, d));
+  // Where the bar lines fall: the score's (its staff starts where the MIDI file starts, so its first bar
+  // line is at the length of its first bar), else the rhythm's best guess, held back to be checked.
+  let offset, barsFrom;
+  const scoreUsable = score && score.bars && Math.abs((score.num * 4) / score.den - bpb) < 1e-9;
+  if (scoreUsable) {
+    offset = score.pickup ? score.pickup : 0;
+    barsFrom = "score";
+    if (score.irregular.length) problems.push({ text: `the score has ${score.irregular.length === 1 ? "a bar" : "bars"} of another length (bar ${score.irregular.join(", ")}), which the solfa grid does not draw` });
+    if (score.timeChanges) problems.push({ text: "the score changes its time signature, which the solfa grid does not bar", fatal: true });
+  } else {
+    const inferred = inferBarLines(events, bpb, others, weights);
+    offset = inferred.offset;
+    barsFrom = "rhythm";
+    if (score && score.bars) problems.push({ text: `the Noteworthy score is in ${score.num}/${score.den} and the MIDI file in ${time}; the bar lines are read off the rhythm — check them against the score` });
+    else problems.push({ text: inferred.margin < 0.02 ? "where the bar lines fall is not clear from the rhythm, and CCEH's Noteworthy score could not be read; check the pickup against the score" : "the bar lines are read off the rhythm (CCEH's Noteworthy score could not be read); check the pickup against the score" });
+  }
+  if (problems.some((p) => p.fatal)) return { melody: null, problems };
+  const pickup = q4((((offset - events[0].start) % bpb) + bpb) % bpb);
   // Bars: from the first note, the first bar `pickup` beats long; a note across a bar line is tied over it.
   const origin = events[0].start - (pickup ? bpb - pickup : 0); // the (virtual) start of the first bar
   const bars = [];
@@ -267,5 +301,5 @@ export function lineToMelody(line, midi, { doh }) {
   const tempoEv = midi.tempos.find((t) => t.tick === 0) || midi.tempos[0];
   const tempo = Math.max(48, Math.min(132, tempoEv ? Math.round(60e6 / tempoEv.usPerQuarter) : 96));
   const lo = Math.min(...sounding.map((e) => e.pitch)), hi = Math.max(...sounding.map((e) => e.pitch));
-  return { melody, time, pickup, key, tempo, lo, hi, bpb, shift, problems, notes: notes2 };
+  return { melody, time, pickup, key, tempo, lo, hi, bpb, shift, problems, notes: notes2, barsFrom };
 }
