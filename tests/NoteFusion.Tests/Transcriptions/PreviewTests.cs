@@ -196,6 +196,38 @@ public class PreviewTests
         Assert.Empty(h.Db.PreviewJobs);
     }
 
+    [Fact]
+    public async Task A_previews_beats_in_a_bar_reach_the_worker_and_not_sure_sends_none()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+
+        Assert.True((await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hymn.webm", TimeSignature: "3/4"), default)).IsSuccess);
+        Assert.Equal("3/4", api.LastOptions!.TimeSignature);
+
+        Assert.True((await Link(h, api, "browser-b").Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ", StartSeconds: 10, EndSeconds: 40, TimeSignature: "6/8"), default)).IsSuccess);
+        Assert.Equal("6/8", api.LastOptions!.TimeSignature);
+        Assert.Equal(10, api.LastOptions.StartSeconds);
+
+        Assert.True((await Upload(h, api, "browser-c").Handle(new SubmitPreviewCommand(Stream.Null, "hum.webm"), default)).IsSuccess);
+        Assert.Null(api.LastOptions!.TimeSignature);
+    }
+
+    [Fact]
+    public async Task A_preview_with_a_meter_outside_the_list_is_refused_before_it_is_spent()
+    {
+        using var h = new TestHarness(Now);
+        var api = new FakeApi();
+
+        var upload = await Upload(h, api, "browser-a").Handle(new SubmitPreviewCommand(Stream.Null, "hymn.webm", TimeSignature: "7/8"), default);
+        var link = await Link(h, api).Handle(new SubmitPreviewLinkCommand("https://youtu.be/dQw4w9WgXcQ", TimeSignature: "waltz"), default);
+
+        Assert.Equal("TRANS_INVALID_TIME_SIGNATURE", upload.Error.Code);
+        Assert.Equal("TRANS_INVALID_TIME_SIGNATURE", link.Error.Code);
+        Assert.Null(api.LastOptions);
+        Assert.Empty(h.Db.PreviewJobs);
+    }
+
     private static SubmitPreviewCommandHandler Upload(TestHarness h, FakeApi api, string device)
         => new(api, h.Db, h.Clock, new StubDeviceFingerprint(device), h.ClientIp, h.Activity(), h.QuotaGate);
 
