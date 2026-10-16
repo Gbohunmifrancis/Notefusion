@@ -71,6 +71,8 @@ MIN_DENSITY = 0.65       # alignment score per aligned note (take or hymn side, 
 MIN_COVERAGE = 0.5       # share of the take's notes inside the alignment
 MARGIN_RATIO = 1.5       # best score / the best score of another tune ...
 SHORT_MARGIN = (2.2, 0.04)  # ... and more for a short match: max(1.5, 2.2 - 0.04 * notes matched)
+CLEAR_DENSITY = 0.8      # below this density a match needs CLEAR_MARGIN: a stepwise folk tune
+CLEAR_MARGIN = 1.8       # half-matching a stepwise hymn is common, a clear win over every other tune is not
 INCIPIT_MIN_MATCHED = 10
 INCIPIT_MIN_DENSITY = 0.9  # near note-perfect: an opening phrase is short
 INCIPIT_MIN_COVER = 0.85  # share of the incipit's notes inside the alignment, from its first note
@@ -78,7 +80,7 @@ INCIPIT_MARGIN_RATIO = 1.6  # against the other tunes on the same notes of the t
 SAME_TUNE_SHARE = 0.6    # two entries whose melodies align this well are one tune
 
 CANDIDATES = 40          # aligned by intervals after the prefilter
-FINE = 8                 # of those, aligned by pitch class ...
+FINE = 16                # of those, aligned by pitch class ...
 SHIFTS = 4               # ... under the transpositions whose pitch-class profile fits the take best
 GRAM = 3                 # interval n-gram length for the prefilter
 MAX_TILES = 4            # verses a take may run through in one alignment
@@ -481,7 +483,8 @@ def match(notes, seconds_per_unit: float = 1.0, index: HymnIndex | None = None, 
               and t_len >= INCIPIT_MIN_COVER * own and margin >= INCIPIT_MARGIN_RATIO)
     else:
         ok = (matched >= MIN_MATCHED and density >= MIN_DENSITY and coverage >= MIN_COVERAGE
-              and margin >= max(MARGIN_RATIO, SHORT_MARGIN[0] - SHORT_MARGIN[1] * matched))
+              and margin >= max(MARGIN_RATIO, SHORT_MARGIN[0] - SHORT_MARGIN[1] * matched)
+              and (density >= CLEAR_DENSITY or margin >= CLEAR_MARGIN))
     if not ok:
         return (None, figures) if explain else None
 
