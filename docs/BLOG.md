@@ -285,11 +285,11 @@ change it to `true` when you have. Published now (melodies encoded by hand; plea
 | Silent Night | STILLE NACHT | Bb | High for the notes; check the word underlay of the last two lines. |
 | Good King Wenceslas | TEMPUS ADEST FLORIDUM | G | High for the notes; check the underlay of the final "fuel". |
 
-Seeded as **drafts** (words and credits in place, **no melody yet**, so not published):
-Holy, Holy, Holy (NICAEA), Abide with Me (EVENTIDE), What a Friend We Have in Jesus (CONVERSE),
-It Is Well with My Soul (VILLE DU HAVRE), Blessed Assurance (ASSURANCE). Their melodies were not
-encoded because they could not be written down from memory with enough confidence; add them from
-your hymn book as below, then set `"draft": false`.
+The words-only drafts that waited for a quarter-beat grid (To God Be the Glory, Blessed Assurance,
+Pass Me Not, Come Thou Fount, When the Roll Is Called Up Yonder, A Mighty Fortress) now have their
+melodies from the Open Hymnal Project; their tunes' `reviewNotes` say so. Love Divine (BLAENWERN)
+and The Lord's My Shepherd (CRIMOND) are still words-only drafts: the hymnal does not carry those
+tunes.
 
 ### Adding or correcting a hymn
 
