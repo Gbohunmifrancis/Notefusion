@@ -559,3 +559,22 @@ body.is-pro .dl-pro-note { display: none; }
 /* A free account's one four-part harmony: no lock on that action until it is used. */
 body.has-free-harmony .act[data-tool="harmony"] .act-lock { display: none; }
 body.has-free-harmony .act[data-tool="harmony"] { border-color: var(--line); }
+
+/* The four parts: which voices Play sounds. Mute a voice, or Solo to hear one alone; it sits at the top
+   of the parts view and stays there while the parts scroll, so a singer can drop their own line and
+   sing it against the others. Two columns on a phone, a row on a wider screen. */
+.part-mix { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin: 0 0 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+.part-mix-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.part-mix-voices { display: flex; flex-wrap: wrap; gap: 8px; }
+.mix-voice { display: inline-flex; align-items: stretch; min-width: 0; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--wash); }
+.mix-voice button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 12px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.mix-voice .ic { width: 15px; height: 15px; flex: none; }
+.mix-voice .mix-on { flex: 1; justify-content: flex-start; }
+.mix-voice .mix-solo { border-left: 1px solid var(--line); color: var(--muted); font-size: 0.75rem; padding: 0 12px; }
+.mix-voice .mix-solo.on { background: var(--blue-fill); color: #fff; }
+.mix-voice.is-off .mix-on { color: var(--muted); }
+.mix-voice.is-off .mix-on span { text-decoration: line-through; }
+.mix-voice button:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+@media (max-width: 600px) {
+  .part-mix-voices { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+}

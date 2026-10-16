@@ -322,6 +322,7 @@
   var C = window.NfChoir;
   var N = window.NfChords;
   var H = window.NfHymnbook;
+  var P = window.NfParts;
   var guest = false;      // a visitor with a preview and no account
   var previewId = new URLSearchParams(location.search).get("preview");
   var player = null;      // the rehearsal player, made once the first result shows
@@ -1749,10 +1750,11 @@
     // Four parts are written on request, never assumed: the tab appears once they exist (a saved
     // sheet that already carries them, or after "Write the four parts" below).
     hide($("r-parts"));
-    var hasParts = !!result.parts;
+    var hasParts = P.hasParts(result);
     hasParts ? show($("tab-parts")) : hide($("tab-parts"));
     $("tab-parts").textContent = result.partsSource === "heard" ? "Parts as sung" : "Four parts";
     hasParts ? hide($("harmony")) : show($("harmony"));
+    hide($("harmony-alert"));
     renderHarmonyOffer();
     if ($("r-staff").classList.contains("hidden") && $("r-solfa").classList.contains("hidden")) document.querySelector('.result-tabs [data-view="staff"]').click();
     [$("dl-pdf"), $("dl-xml"), $("dl-midi")].forEach(function (b) {
@@ -1989,17 +1991,54 @@
     } else { hide(backing); player.setBacking(null, 0); player.setBackingOn(false); }
     var bars = C.barCount(result.notes || [], result.timeSignature);
     $("loop-from").max = bars; $("loop-to").max = bars; $("loop-to").value = Math.min(4, bars); $("loop-from").value = 1; $("loop-on").checked = false;
-    var box = $("voices");
+    var box = $("voices"), hear = $("part-mix-voices");
     box.querySelectorAll("button").forEach(function (b) { b.remove(); });
+    hear.innerHTML = "";
+    mix = P.mixFor(voices.map(function (v) { return v.name; }));
     if (voices.length > 1) {
-      show(box);
+      show(box); show($("part-mix"));
       voices.forEach(function (v) {
-        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = v.name[0].toUpperCase(); b.title = "Mute " + v.name;
-        b.setAttribute("aria-pressed", "true");
-        b.addEventListener("click", function () { var on = b.classList.toggle("on"); b.setAttribute("aria-pressed", String(on)); player.setVoiceOn(v.name, on); });
+        var name = v.name.charAt(0).toUpperCase() + v.name.slice(1);
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn btn-ghost btn-sm on"; b.textContent = name.charAt(0);
+        b.setAttribute("data-voice", v.name); b.setAttribute("aria-label", name);
+        b.addEventListener("click", function () { mix = P.toggle(mix, v.name); applyMix(); });
         box.appendChild(b);
+        // The same voice on the four-parts view: on/off, and Solo to hear it alone.
+        var item = document.createElement("span"); item.className = "mix-voice"; item.setAttribute("data-voice", v.name);
+        var on = document.createElement("button"); on.type = "button"; on.className = "mix-on"; on.setAttribute("aria-label", name);
+        on.innerHTML = '<svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg><span></span>';
+        on.querySelector("span").textContent = name;
+        on.addEventListener("click", function () { mix = P.toggle(mix, v.name); applyMix(); });
+        var solo = document.createElement("button"); solo.type = "button"; solo.className = "mix-solo"; solo.textContent = "Solo";
+        solo.setAttribute("aria-label", "Hear only " + v.name);
+        solo.addEventListener("click", function () { mix = P.solo(mix, v.name); applyMix(); track("Parts mix: solo"); });
+        item.appendChild(on); item.appendChild(solo);
+        hear.appendChild(item);
       });
-    } else hide(box);
+      applyMix();
+    } else { hide(box); hide($("part-mix")); }
+  }
+  /**
+   * Which voices play (assets/parts.js): one state, drawn twice — the Hear row on the four-parts view
+   * and the Voices group in Rehearse — so a voice muted in one is muted in the other.
+   */
+  var mix = {};
+  function applyMix() {
+    var alone = P.soloed(mix);
+    Object.keys(mix).forEach(function (name) { player.setVoiceOn(name, !!mix[name]); });
+    $("voices").querySelectorAll("button[data-voice]").forEach(function (b) {
+      var on = !!mix[b.getAttribute("data-voice")];
+      b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
+      b.title = (on ? "Mute " : "Hear ") + b.getAttribute("data-voice");
+    });
+    $("part-mix-voices").querySelectorAll(".mix-voice").forEach(function (item) {
+      var name = item.getAttribute("data-voice"), on = !!mix[name];
+      var t = item.querySelector(".mix-on"), s = item.querySelector(".mix-solo");
+      item.classList.toggle("is-off", !on);
+      t.querySelector("use").setAttribute("href", on ? "#i-volume" : "#i-x");
+      t.setAttribute("aria-pressed", String(on)); t.title = on ? "Playing: press to mute " + name : "Muted: press to hear " + name;
+      s.classList.toggle("on", alone === name); s.setAttribute("aria-pressed", String(alone === name));
+    });
   }
   function applyLoop() {
     if (!player) return;
@@ -2244,7 +2283,12 @@
     toolReturn = null;
   }
   document.querySelectorAll(".result-actions .act[data-tool]").forEach(function (b) {
-    b.addEventListener("click", function () { openTool(b.getAttribute("data-tool"), b); });
+    b.addEventListener("click", function () {
+      var id = b.getAttribute("data-tool");
+      // "Four parts" on a sheet that has them goes to the parts; the pop-up is only for writing them.
+      if (id === "harmony" && current && P.action(current.result) === "show") { revealParts(); return; }
+      openTool(id, b);
+    });
   });
   $("tool-close").addEventListener("click", closeTool);
   $("tool-modal").addEventListener("click", function (e) { if (e.target === $("tool-modal")) closeTool(); });
@@ -2254,11 +2298,15 @@
     if (openToolId) { closeTool(); return; }
     closeFull();
   });
-  /** A tool shows in the row only when its panel applies to this sheet (the result logic hides the rest). */
+  /**
+   * A tool shows in the row only when its panel applies to this sheet (the result logic hides the rest).
+   * "Four parts" always applies: it writes the parts, or shows the ones the sheet has.
+   */
   function syncActions() {
     document.querySelectorAll(".result-actions .act[data-tool]").forEach(function (b) {
-      var panel = $(b.getAttribute("data-tool"));
-      b.hidden = !panel || panel.classList.contains("hidden");
+      var id = b.getAttribute("data-tool"), panel = $(id);
+      var showsParts = id === "harmony" && !!current && P.action(current.result) === "show";
+      b.hidden = !showsParts && (!panel || panel.classList.contains("hidden"));
     });
   }
   /** A Pro-only action, from anywhere: close the pop-up and bring the Pro card into view. */
@@ -2463,8 +2511,15 @@
     });
   });
 
+  /**
+   * The parts, on the sheet. The "Write the four parts" panel is in the tool pop-up when this runs from
+   * there: the pop-up closes first, or hiding the panel left an empty card over the parts it had just
+   * written, and the "Four parts" action kept opening that empty card.
+   */
   function revealParts() {
+    closeTool(); closeFull();
     show($("tab-parts")); hide($("harmony"));
+    syncActions();
     document.querySelector('.result-tabs [data-view="parts"]').click();
     $("result").scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -2486,13 +2541,16 @@
     if (guest) { openAuth("register"); return; }
     if (!isPro() && !free) { openUpgrade(); return; }
     if (!current || !current.result) return;
-    var r = current.result;
-    if (r.parts) { revealParts(); return; }
+    var r = current.result, owner = current;
+    if (P.hasParts(r)) { revealParts(); return; }
     var btn = $("harmony-add"), html = btn.innerHTML;
     btn.disabled = true; btn.textContent = "Writing alto, tenor and bass…";
+    hide($("harmony-alert"));
     request("/api/transcriptions/harmonise", { method: "POST", body: { key: r.key, tempoBpm: Math.round(r.tempo || 0), timeSignature: r.timeSignature, notes: r.notes || [] } })
       .then(function (written) {
-        if (!written || !written.parts) { alertIn($("app-alert"), "info", "The tune needs a few notes before parts can be written under it."); return; }
+        if (current !== owner || current.result !== r) return; // another sheet opened meanwhile
+        // Said in the panel: it is in the pop-up, which covers the page's own alert.
+        if (!written || !P.hasParts(written)) { alertIn($("harmony-alert"), "info", "The tune needs a few notes before parts can be written under it."); return; }
         r.parts = written.parts; r.partsMusicXml = written.partsMusicXml || "";
         // The free one is spent now: the next sheet's button goes to the plans.
         if (!isPro() && sub) { sub.freeHarmonyAvailable = false; track("Used free harmony"); }
@@ -2504,7 +2562,7 @@
             .catch(function (err) { alertIn($("app-alert"), "danger", "The parts were written but could not be kept with the saved sheet: " + (err.message || err)); });
         }
       })
-      .catch(function (err) { alertIn($("app-alert"), "danger", "The parts could not be written: " + (err.message || err)); })
+      .catch(function (err) { alertIn($("harmony-alert"), "danger", "The parts could not be written: " + (err.message || err)); })
       .finally(function () { btn.disabled = false; btn.innerHTML = html; renderHarmonyOffer(); });
   });
 

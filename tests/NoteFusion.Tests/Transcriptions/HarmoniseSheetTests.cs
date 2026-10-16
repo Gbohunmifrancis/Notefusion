@@ -107,6 +107,31 @@ public class HarmoniseSheetTests
         Assert.False(validator.Validate(new HarmoniseSheetCommand("C major", 100, "4/4", Enumerable.Repeat(note, 5001).ToList())).IsValid);
     }
 
+    /// <summary>
+    /// What the web sends now that the worker reads the meter: a 3/4 sheet whose notes a pickup moved into
+    /// the first bar (the tune starts on beat 2), dotted lengths, and the hymnbook version's own meters.
+    /// The shapes are the real worker's output for a sung hymn take (Belmont, 3/4 with a two-beat pickup).
+    /// </summary>
+    [Theory]
+    [InlineData("3/4")]
+    [InlineData("6/8")]
+    [InlineData("6/4")]
+    [InlineData("3/2")]
+    [InlineData("2/2")]
+    public void A_sheet_the_worker_wrote_with_a_meter_and_a_pickup_is_accepted(string meter)
+    {
+        var validator = new HarmoniseSheetCommandValidator();
+        List<NoteEventDto> pickup =
+        [
+            new(54, 2, 1, 5, "s", ",", 0.938), new(59, 3, 2, 1, "d", "", 0.95), new(61, 5, 1, 2, "r", "", 0.9),
+            new(63, 6, 1.5, 3, "m", "", 0.9), new(61, 7.5, 0.5, 2, "r", "", 0.9), new(59, 8, 3, 1, "d", "", 0.9),
+        ];
+
+        var verdict = validator.Validate(new HarmoniseSheetCommand("B major", 100, meter, pickup));
+
+        Assert.True(verdict.IsValid, string.Join("; ", verdict.Errors.Select(e => e.ErrorMessage)));
+    }
+
     [Fact]
     public void A_transcription_does_not_ask_for_parts_unless_told_to()
     {
