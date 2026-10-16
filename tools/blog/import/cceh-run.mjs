@@ -1,0 +1,194 @@
+#!/usr/bin/env node
+// Imports the Christian Classics Ethereal Hymnary's tunes into content/hymns/tunes, as tune pages.
+//
+//   node tools/blog/import/cceh-run.mjs --cache DIR [--date YYYY-MM-DD] [--dry-run]
+//
+// DIR is the crawl's cache, downloaded beforehand by tools/blog/import/cceh-crawl.py (politely: one request
+// at a time, ten seconds apart, as CCEL's robots.txt asks):
+//   DIR/idx0000.html … idx0013.html   the tune lists (https://www.ccel.org/cceh/NNNN/index.htm)
+//   DIR/pages/xNNNNNN.htm             each tune's page
+//   DIR/files/NNNNNNa.mid             the MIDI file the crawl chose for it (cceh-crawl.py choose_midi)
+// The files are data: read and parsed here, never run. See docs/BLOG.md, "Importing tunes from the CCEH".
+//
+// For every tune whose page is cached: convert (import/cceh.mjs), then
+//   - copyright on the page or in the file, or anyone named who died in 1955 or later: refused, nothing copied;
+//   - no voice of the MIDI file matches the incipit, or no MIDI file: rejected, nothing copied;
+//   - the same melody as a tune already on the site (compared by its intervals, so the key does not
+//     matter) or as an earlier CCEH tune: a duplicate, ours is kept;
+//   - otherwise a tune page, published when every gate passes, else a draft with the reasons.
+// Tune files this importer wrote before and no longer produces (for a page that is cached) are removed;
+// every other file in content/hymns/tunes is left alone. The run ends with tools/blog/import/cceh-report.json.
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { CONTENT_DIR } from "../lib/site.mjs";
+import { parseMelody } from "../lib/solfa.mjs";
+import { parseTunePage } from "./cceh-page.mjs";
+import { convertTune, datesTable, normName, SOURCE_NAME } from "./cceh.mjs";
+
+const HYMNS_DIR = path.join(CONTENT_DIR, "hymns");
+const TUNES_DIR = path.join(HYMNS_DIR, "tunes");
+export const REPORT_PATH = path.join(path.dirname(fileURLToPath(import.meta.url)), "cceh-report.json");
+
+const readJson = (f) => JSON.parse(fs.readFileSync(f, "utf8"));
+const jsonText = (x) => JSON.stringify(x, null, 2) + "\n";
+const sameExceptDate = (a, b) => jsonText({ ...a, updated: null }) === jsonText({ ...b, updated: null });
+function loadDir(dir) {
+  const out = new Map();
+  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith(".json")).sort()) out.set(f.replace(/\.json$/, ""), readJson(path.join(dir, f)));
+  return out;
+}
+
+/** The tune list, in CCEH's order: [{folder, number, name}] from the cached index pages. */
+export function readIndex(cache) {
+  const out = [];
+  for (const f of fs.readdirSync(cache).filter((f) => /^idx\d{4}\.html$/.test(f)).sort()) {
+    const t = fs.readFileSync(path.join(cache, f), "latin1");
+    for (const m of t.matchAll(/href="x(\d{6})\.htm">([\s\S]*?)<\/a>/g)) out.push({ folder: f.slice(3, 7), number: m[1], name: m[2].trim() });
+  }
+  return out;
+}
+
+/** A melody's steps in semitones, repeated notes run together (one book ties what another repeats). */
+export function melodySteps(notes) {
+  const ps = notes.map((n) => n.pitchMidi).filter((p, i, a) => !i || p !== a[i - 1]);
+  return ps.slice(1).map((p, i) => p - ps[i]);
+}
+function editDistance(a, b) {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+/**
+ * Whether two melodies are the same tune, whatever their keys: their first 24 steps (or as many as the
+ * shorter has, at least 10) differ by at most one edit in eight. Returns the distance, or null when they differ.
+ */
+export function sameMelody(a, b) {
+  const sa = melodySteps(a), sb = melodySteps(b);
+  const n = Math.min(sa.length, sb.length, 24);
+  if (n < 10) return null;
+  const d = editDistance(sa.slice(0, n), sb.slice(0, n));
+  return d <= Math.max(1, Math.floor(n / 8)) ? d : null;
+}
+
+/** The people our pages already give dates for (hymns and tunes, from their own sources), and CCEH's pages that print a life. */
+export function buildDates({ hymns, tunes, pages }) {
+  const dates = datesTable();
+  for (const [slug, t] of tunes) if (t.source !== SOURCE_NAME) for (const p of t.music || []) if (!p.traditional) dates.add(p.name, { born: p.born, died: p.died, lived: p.lived, from: `our page for the tune ${t.name} (content/hymns/tunes/${slug}.json)` });
+  for (const [slug, h] of hymns) for (const p of h.text || []) if (!p.traditional) dates.add(p.name, { born: p.born, died: p.died, lived: p.lived, from: `our page for ${h.title} (content/hymns/${slug}.json)` });
+  for (const { number, html } of pages) {
+    for (const c of parseTunePage(html).credits) if (c.name && Number.isInteger(c.died)) dates.add(c.name.replace(/\s*\([^)]*\)\s*$/, ""), { born: c.born, died: c.died, from: `CCEH's page for tune ${number}` });
+  }
+  return dates;
+}
+
+export function runImport({ cache, today, dryRun = false, tunesDir = TUNES_DIR, hymnsDir = HYMNS_DIR, reportPath = REPORT_PATH, log = console.log }) {
+  const tunes = loadDir(tunesDir), hymns = loadDir(hymnsDir);
+  const index = readIndex(cache);
+  const pages = [];
+  for (const e of index) {
+    const f = path.join(cache, "pages", `x${e.number}.htm`);
+    if (fs.existsSync(f)) pages.push({ ...e, html: fs.readFileSync(f, "latin1") });
+  }
+  const dates = buildDates({ hymns, tunes, pages });
+
+  // Our tunes with a melody, to find the ones CCEH would only repeat (any source but CCEH itself).
+  const ours = [];
+  for (const [slug, t] of tunes) {
+    if (t.source === SOURCE_NAME) continue;
+    let parsed = null;
+    if (t.melody) try { parsed = parseMelody(t.melody, { time: t.time, pickup: t.pickup || 0 }); } catch { /* the build reports it */ }
+    ours.push({ slug, t, parsed, names: [t.name, ...(t.alsoKnownAs || [])].map(normName) });
+  }
+  const hymnFor = (tuneSlug) => [...hymns].find(([, h]) => h.tune === tuneSlug)?.[0] || null;
+
+  const report = { source: "Christian Classics Ethereal Hymnary (CCEH)", sourceUrl: "https://www.ccel.org/cceh/index.htm", date: today, rule: "Our public-domain rule (lib/content.mjs): everyone named died before 1955 and the tune was first published before 1929; missing dates make a draft; a © or anyone who died in 1955 or later means not imported.", published: [], drafts: [], duplicates: [], refused: [], rejected: [], sameNameDifferentTune: [], fillCandidates: [], undatedPeople: [], notYetCrawled: 0 };
+  const out = new Map();
+  const imported = []; // {slug, parsed, number}
+  const taken = new Set([...tunes].filter(([, t]) => t.source !== SOURCE_NAME).map(([s]) => s));
+  const processed = new Set();
+  const undated = new Map();
+
+  for (const e of index) {
+    const pg = pages.find((x) => x.number === e.number);
+    if (!pg) { report.notYetCrawled++; continue; }
+    const p = parseTunePage(pg.html);
+    const mid = p.files.find((f) => f.kind === "midi");
+    const midPath = mid ? path.join(cache, "files", mid.href) : null;
+    if (mid && !fs.existsSync(midPath)) { report.notYetCrawled++; continue; }
+    processed.add(e.number);
+    const r = convertTune({ page: pg.html, midi: midPath ? fs.readFileSync(midPath) : null, midiHref: mid ? mid.href : null, number: e.number, today, dates });
+    const label = { number: e.number, name: r.baseName, url: r.tune.sourceUrl };
+    if (r.refused) { report.refused.push({ ...label, reason: r.refused }); continue; }
+    if (!r.parsed) { report.rejected.push({ ...label, reason: r.problems.find((x) => /voice|MIDI|incipit|time signature|grid|parse/.test(x)) || r.problems.join("; ") }); continue; }
+
+    // The same tune as one of ours (by its melody, in any key), or as a CCEH tune already taken.
+    const dup = ours.map((o) => ({ o, d: o.parsed ? sameMelody(o.parsed.notes, r.parsed.notes) : null })).find((x) => x.d !== null);
+    if (dup) { report.duplicates.push({ ...label, ours: dup.o.slug, oursSource: dup.o.t.source || "NoteFusion", hymn: hymnFor(dup.o.slug), edits: dup.d }); continue; }
+    const dupCceh = imported.find((x) => sameMelody(x.parsed.notes, r.parsed.notes) !== null);
+    if (dupCceh) { report.duplicates.push({ ...label, ours: dupCceh.slug, oursSource: SOURCE_NAME, edits: sameMelody(dupCceh.parsed.notes, r.parsed.notes) }); continue; }
+    const names = [r.baseName, ...(r.tune.alsoKnownAs || [])].map(normName);
+    const sameName = ours.filter((o) => o.names.some((n) => names.includes(n)));
+    for (const o of sameName) {
+      if (o.parsed) report.sameNameDifferentTune.push({ ...label, ours: o.slug });
+      else report.fillCandidates.push({ ...label, ours: o.slug, hymn: hymnFor(o.slug), note: "our tune has no melody yet; this CCEH melody could fill it once its words are fitted" });
+    }
+
+    let slug = r.slug;
+    if (taken.has(slug)) slug = `${r.slug}-${Number(e.number)}`;
+    taken.add(slug);
+    const tune = { ...r.tune, updated: today };
+    out.set(slug, tune);
+    imported.push({ slug, parsed: r.parsed, number: e.number });
+    if (tune.draft) report.drafts.push({ slug, number: e.number, reasons: r.problems });
+    else report.published.push({ slug, number: e.number });
+    for (const pr of r.problems) {
+      const m = /^not provably public domain: (.+?): public domain needs a death year/.exec(pr);
+      if (m) undated.set(m[1], (undated.get(m[1]) || 0) + 1);
+    }
+  }
+  report.undatedPeople = [...undated].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([name, tunes]) => ({ name, tunes }));
+
+  // Write: new and changed files; a file whose only change is the date keeps its old date.
+  let written = 0, removed = 0;
+  for (const [slug, t] of out) {
+    const old = tunes.get(slug);
+    let data = t;
+    if (old && sameExceptDate(old, data)) data = { ...data, updated: old.updated };
+    if (old && jsonText(old) === jsonText(data)) continue;
+    written++;
+    if (!dryRun) fs.writeFileSync(path.join(tunesDir, slug + ".json"), jsonText(data));
+  }
+  // Remove what an earlier run imported for a page this run read, and did not produce now.
+  for (const [slug, t] of tunes) {
+    if (t.source !== SOURCE_NAME || out.has(slug)) continue;
+    const n = String(t.importedFrom || "").replace(/^cceh:/, "");
+    if (!processed.has(n)) continue;
+    if ([...hymns.values()].some((h) => h.tune === slug)) continue; // a hymn uses it now: keep it
+    removed++;
+    if (!dryRun) fs.rmSync(path.join(tunesDir, slug + ".json"));
+  }
+
+  report.counts = Object.fromEntries(["published", "drafts", "duplicates", "refused", "rejected"].map((k) => [k, report[k].length]));
+  report.counts.pages = processed.size;
+  report.counts.notYetCrawled = report.notYetCrawled;
+  report.counts.tunesInIndex = index.length;
+  delete report.notYetCrawled;
+  if (!dryRun) fs.writeFileSync(reportPath, jsonText(report));
+  log(`${processed.size} of ${index.length} CCEH tunes read: ${report.counts.published} published, ${report.counts.drafts} drafts, ${report.counts.duplicates} already on the site, ${report.counts.refused} refused (copyright), ${report.counts.rejected} rejected (no melody we could verify); ${report.counts.notYetCrawled} not crawled yet. ${written} files written, ${removed} removed${dryRun ? " (dry run: nothing written)" : ""}.`);
+  return report;
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const args = process.argv.slice(2);
+  const get = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : null; };
+  const cache = get("--cache");
+  if (!cache || !fs.existsSync(cache)) { console.error("Usage: node tools/blog/import/cceh-run.mjs --cache DIR [--date YYYY-MM-DD] [--dry-run]"); process.exit(2); }
+  const today = get("--date") || new Date().toISOString().slice(0, 10);
+  try { runImport({ cache: path.resolve(cache), today, dryRun: args.includes("--dry-run") }); }
+  catch (e) { console.error(`Import failed: ${e.stack || e.message}`); process.exit(1); }
+}

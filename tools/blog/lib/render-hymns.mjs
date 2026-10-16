@@ -7,6 +7,7 @@ import { engineGrid, toLines, pitchLabel } from "./solfa.mjs";
 import { gridHtml, textLinesHtml } from "./grid-html.mjs";
 import { melodyToMusicXml } from "./musicxml.mjs";
 import { PD_DIED_BEFORE, PD_PUBLISHED_BEFORE } from "./content.mjs";
+import { CCEH, tuneIndexItem } from "./render-tunes.mjs";
 
 const DIATONIC = ["d", "r", "m", "f", "s", "l", "t"];
 const TIME_WORDS = { "2/4": "two crotchet beats", "3/4": "three crotchet beats", "4/4": "four crotchet beats", "6/8": "two dotted-crotchet beats (six quavers)", "3/2": "three minim beats", "9/8": "three dotted-crotchet beats (nine quavers)", "12/8": "four dotted-crotchet beats (twelve quavers)", "2/2": "two minim beats", "6/4": "six crotchet beats (two dotted minims)", "8/4": "eight crotchet beats", "9/4": "nine crotchet beats (three dotted minims)" };
@@ -250,24 +251,27 @@ function searchText(h) {
 /** Seasons and occasions the filter offers as buttons, when some hymn is filed under them. */
 const SEASONS = ["Advent", "Christmas", "Epiphany", "Lent", "Palm Sunday", "Good Friday", "Easter", "Ascension", "Pentecost", "Trinity", "Thanksgiving", "Communion", "Evening", "Funeral"];
 
-export function renderHymnIndex(hymns) {
+export function renderHymnIndex(hymns, tunes = []) {
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"]];
+  // Hymns and tune pages (a tune without words) in one A–Z, each filed under its title.
+  const entries = [...hymns.map((h) => ({ title: h.title, html: () => item(h) })), ...tunes.map((t) => ({ title: t.view.title, html: () => tuneIndexItem(t) }))]
+    .sort((a, b) => a.title.localeCompare(b.title));
   const groups = new Map();
-  for (const h of hymns) {
-    const L = indexLetter(h.title);
+  for (const e of entries) {
+    const L = indexLetter(e.title);
     if (!groups.has(L)) groups.set(L, []);
-    groups.get(L).push(h);
+    groups.get(L).push(e);
   }
   const letters = [...groups.keys()].sort();
-  const item = (h) => `    <li class="hymn-item" data-search="${escapeHtml(searchText(h))}">
+  function item(h) { return `    <li class="hymn-item" data-kind="hymn" data-search="${escapeHtml(searchText(h))}">
       <h3><a href="/hymns/${h.slug}">${escapeHtml(h.title)}</a></h3>
       <p class="first-line">${escapeHtml(h.verses[0].lines[0])}</p>
       <p class="story-meta"><span>${escapeHtml(h.view.header)}</span><span>${escapeHtml(h.view.time)}</span><span>Tune: ${escapeHtml(h.tuneData.name)}</span>${h.category ? `<span>${escapeHtml(h.category)}</span>` : ""}</p>
-    </li>`;
+    </li>`; }
   const sections = letters.map((L) => `<section class="hymn-letter" id="letter-${L}" aria-labelledby="letter-${L}-title">
   <h2 id="letter-${L}-title">${L}</h2>
   <ul class="hymn-list">
-${groups.get(L).map(item).join("\n")}
+${groups.get(L).map((e) => e.html()).join("\n")}
   </ul>
 </section>`).join("\n");
   const present = new Set(hymns.map((h) => (h.category || "").toLowerCase()).concat(hymns.flatMap((h) => (h.topics || []).map((x) => x.toLowerCase()))));
@@ -276,11 +280,12 @@ ${groups.get(L).map(item).join("\n")}
 <header class="masthead">
   <p class="kicker">The hymnal</p>
   <h1>Hymns in Tonic Solfa</h1>
-  <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words, the staff notation, and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
+  <p class="masthead-dek">${hymns.length} public-domain hymns with the solfa written out under the words${tunes.length ? `, and ${tunes.length} more hymn tunes on their own,` : ""} with the staff notation and a piano to sing along with. The solfa is written by the same engine NoteFusion uses for your own songs.</p>
 </header>
 <div class="hymn-find" id="hymn-find" hidden>
   <label for="hymn-filter">Find a hymn</label>
   <input type="search" id="hymn-filter" placeholder="Title, first line, tune or writer" autocomplete="off" spellcheck="false">
+  ${tunes.length ? `<p class="hymn-seasons" aria-label="Hymns or tunes"><button type="button" data-kind="hymn" aria-pressed="false">Hymns</button><button type="button" data-kind="tune" aria-pressed="false">Tunes</button></p>` : ""}
   ${seasons.length ? `<p class="hymn-seasons" aria-label="Seasons and occasions">${seasons.map((x) => `<button type="button" data-filter="${escapeHtml(x.toLowerCase())}">${escapeHtml(x)}</button>`).join("")}</p>` : ""}
   <p class="hymn-count" id="hymn-count" aria-live="polite"></p>
 </div>
@@ -289,19 +294,19 @@ ${groups.get(L).map(item).join("\n")}
 ${sections}
 </div>
 <p class="hymn-none" id="hymn-none" hidden>No hymn matches that. Try fewer words, or <a href="/app">transcribe the song with NoteFusion</a>.</p>
-<p class="note">Every hymn here is out of copyright: everyone who wrote it died before ${PD_DIED_BEFORE}, and it was first published before ${PD_PUBLISHED_BEFORE}. Most come from the ${OHP.name}; see <a href="/hymns/credits">sources and licences</a>. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
+<p class="note">Every hymn here is out of copyright: everyone who wrote it died before ${PD_DIED_BEFORE}, and it was first published before ${PD_PUBLISHED_BEFORE}. Most come from the ${OHP.name}${tunes.length ? ` and the ${CCEH.name}` : ""}; see <a href="/hymns/credits">sources and licences</a>. Want a song that is not here? <a href="/app">Transcribe it with NoteFusion</a>.</p>
 ${ctaBox("hymns")}`;
   return page({
     path: "/hymns", title: "Hymns in Tonic Solfa: solfa, words and staff | NoteFusion",
     description: `${hymns.length} public-domain hymns in Tonic Solfa: the doh, the solfa line by line under the words, staff notation and a piano to sing along with.`,
     body, active: "/hymns",
     scripts: `<script src="/assets/hymns-index.js?v=${ASSET_VERSION.hymnsIndexJs}" defer></script>`,
-    jsonLd: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Hymns in Tonic Solfa", numberOfItems: hymns.length, itemListElement: hymns.map((h, i) => ({ "@type": "ListItem", position: i + 1, url: `${ORIGIN}/hymns/${h.slug}`, name: h.title })) }, breadcrumbLd(crumbs)],
+    jsonLd: [{ "@context": "https://schema.org", "@type": "ItemList", name: "Hymns in Tonic Solfa", numberOfItems: hymns.length + tunes.length, itemListElement: [...hymns.map((h) => ({ url: `${ORIGIN}/hymns/${h.slug}`, name: h.title })), ...tunes.map((t) => ({ url: ORIGIN + t.view.url, name: t.view.title }))].map((x, i) => ({ "@type": "ListItem", position: i + 1, ...x })) }, breadcrumbLd(crumbs)],
   });
 }
 
 /** /hymns/credits: where the hymns come from, under what terms, and who wrote each one. */
-export function renderHymnCredits(hymns) {
+export function renderHymnCredits(hymns, tunes = []) {
   const path = "/hymns/credits";
   const crumbs = [["/", "Home"], ["/hymns", "Hymns"], [path, "Sources and licences"]];
   const fromOhp = hymns.filter((h) => h.source === OHP.name);
@@ -332,7 +337,14 @@ ${list.map(row).join("\n")}
   <p>Imported hymns have not yet been checked note by note against a printed hymn book; each one says so on its page. If you find a wrong note or word, tell us and we will correct it.</p>
 </section>
 
-<section aria-labelledby="rule-title">
+${tunes.length ? `<section aria-labelledby="cceh-title">
+  <h2 id="cceh-title">The Christian Classics Ethereal Hymnary</h2>
+  <p>${tunes.length} hymn tunes on their own (tunes without words) come from the <a href="${CCEH.url}" rel="noopener">${CCEH.name}</a> (CCEH), an archive of public-domain hymn tunes at the Christian Classics Ethereal Library, given as four-part scores. We read each tune's melody from its MIDI file, check it against the incipit (the opening notes in do-re-mi) on the tune's page, and NoteFusion's own solfa engine writes the Tonic Solfa from the notes; each tune page links to the tune's page at the CCEH.</p>
+  <p>The CCEH <a href="${CCEH.terms}" rel="noopener">states</a> that its music is in the public domain and that all its files — sheet music, MIDIs and electronic scores — are free to use in any manner. It judges public domain by the American rule (published before 1923); we apply our own rule below as well, so tunes by composers or arrangers who died in ${PD_DIED_BEFORE} or later are not taken, and tunes whose composer's dates we do not have are held back until they are checked.</p>
+  <p>Imported tunes have not yet been checked note by note against a printed hymn book; each one says so on its page. If you find a wrong note, tell us and we will correct it.</p>
+</section>
+
+` : ""}<section aria-labelledby="rule-title">
   <h2 id="rule-title">Our public-domain rule</h2>
   <p>A hymn is published here only if everyone named — composer, arranger, author and translator — died before ${PD_DIED_BEFORE} (or the source is anonymous or traditional), and both the words and the music were first published before ${PD_PUBLISHED_BEFORE}. That keeps every page out of copyright in Nigeria and the UK and EU (the writer's life plus 70 years) and in the United States (published before ${PD_PUBLISHED_BEFORE}). Hymns whose dates the source does not give are held back until they are checked, and hymns still in copyright anywhere are not copied at all.</p>
   <p>Modern arrangements and translations of old hymns can still be under copyright, so a hymn book's version may differ from the one here.</p>
@@ -346,12 +358,24 @@ ${list.map(row).join("\n")}
 <section aria-labelledby="list-title">
   <h2 id="list-title">Every hymn and its credits</h2>
 ${table(hymns)}
-</section>
+</section>${tunes.length ? `
+
+<section aria-labelledby="tunes-title">
+  <h2 id="tunes-title">Every hymn tune and its credits</h2>
+<table class="credits-table">
+  <thead><tr><th scope="col">Tune</th><th scope="col">Credits</th></tr></thead>
+  <tbody>
+${tunes.map((t) => `    <tr><td><a href="${t.view.url}">${escapeHtml(t.view.title)}</a></td><td>${t.view.credit.html}</td></tr>`).join("\n")}
+  </tbody>
+</table>
+</section>` : ""}
 </article>
 <p class="back-link"><a href="/hymns">← All hymns in Tonic Solfa</a></p>`;
   return page({
     path, title: "Hymn sources and licences | NoteFusion",
-    description: `Where NoteFusion's ${hymns.length} public-domain hymns in Tonic Solfa come from — most from the Open Hymnal Project — and who wrote each one.`,
+    description: tunes.length
+      ? `Where NoteFusion's ${hymns.length} public-domain hymns and ${tunes.length} hymn tunes in Tonic Solfa come from (the Open Hymnal Project, the CCEH) and who wrote each.`
+      : `Where NoteFusion's ${hymns.length} public-domain hymns in Tonic Solfa come from — most from the Open Hymnal Project — and who wrote each one.`,
     body, active: "/hymns",
     jsonLd: [
       { "@context": "https://schema.org", "@type": "WebPage", name: "Hymn sources and licences", url: ORIGIN + path, citation: { "@type": "CreativeWork", name: OHP.name, url: OHP.url, editor: { "@type": "Person", name: OHP.editor } } },

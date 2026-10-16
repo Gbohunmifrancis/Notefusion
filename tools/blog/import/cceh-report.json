@@ -1,0 +1,134 @@
+{
+  "source": "Christian Classics Ethereal Hymnary (CCEH)",
+  "sourceUrl": "https://www.ccel.org/cceh/index.htm",
+  "date": "2026-10-16",
+  "rule": "Our public-domain rule (lib/content.mjs): everyone named died before 1955 and the tune was first published before 1929; missing dates make a draft; a © or anyone who died in 1955 or later means not imported.",
+  "published": [],
+  "drafts": [
+    {
+      "slug": "beecher",
+      "number": "000003",
+      "reasons": [
+        "not provably public domain: John Zundel: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "gloria-patria-meineke",
+      "number": "000004",
+      "reasons": [
+        "not provably public domain: Charles Meineke: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "gloria-patria-greatorex",
+      "number": "000005",
+      "reasons": [
+        "not provably public domain: Henry W. Greatorex: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source)"
+      ]
+    },
+    {
+      "slug": "warrenton",
+      "number": "000012",
+      "reasons": [
+        "where the bar lines fall is not clear from the rhythm; check the pickup against the score"
+      ]
+    }
+  ],
+  "duplicates": [
+    {
+      "number": "000001",
+      "name": "Nicaea",
+      "url": "https://www.ccel.org/cceh/0000/x000001.htm",
+      "ours": "nicaea",
+      "oursSource": "Open Hymnal Project ABC score (Hymns Ancient and Modern, 1861/1869); every note agrees with the score on Wikipedia's article and the opening with hymnary.org's incipit.",
+      "hymn": "holy-holy-holy",
+      "edits": 0
+    },
+    {
+      "number": "000002",
+      "name": "Italian Hymn",
+      "url": "https://www.ccel.org/cceh/0000/x000002.htm",
+      "ours": "italian-hymn",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "god-whose-almighty-word",
+      "edits": 0
+    },
+    {
+      "number": "000006",
+      "name": "Old Hundredth",
+      "url": "https://www.ccel.org/cceh/0000/x000006.htm",
+      "ours": "old-hundredth",
+      "oursSource": "NoteFusion",
+      "hymn": "all-people-that-on-earth-do-dwell",
+      "edits": 0
+    },
+    {
+      "number": "000009",
+      "name": "Lasst Uns Erfreuen",
+      "url": "https://www.ccel.org/cceh/0000/x000009.htm",
+      "ours": "lasst-uns-erfreuen",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "a-hymn-of-glory-let-us-sing",
+      "edits": 0
+    },
+    {
+      "number": "000010",
+      "name": "Lobe den Herren",
+      "url": "https://www.ccel.org/cceh/0000/x000010.htm",
+      "ours": "lobe-den-herren",
+      "oursSource": "Open Hymnal Project ABC score; every note and rhythm agrees with the score on Wikipedia's article.",
+      "hymn": "praise-to-the-lord-the-almighty",
+      "edits": 0
+    },
+    {
+      "number": "000011",
+      "name": "Hyfrydol",
+      "url": "https://www.ccel.org/cceh/0000/x000011.htm",
+      "ours": "hyfrydol",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "alleluia-sing-to-jesus",
+      "edits": 0
+    }
+  ],
+  "refused": [
+    {
+      "number": "000007",
+      "name": "Brother James' Air",
+      "url": "https://www.ccel.org/cceh/0000/x000007.htm",
+      "reason": "the page marks an arrangement as copyright (“arr., ©1926”)"
+    },
+    {
+      "number": "000008",
+      "name": "Lauda Anima (Andrews)",
+      "url": "https://www.ccel.org/cceh/0000/x000008.htm",
+      "reason": "the page marks Mark Andrews's tune as copyright (“Mark Andrews, ©1931”)"
+    }
+  ],
+  "rejected": [],
+  "sameNameDifferentTune": [],
+  "fillCandidates": [],
+  "undatedPeople": [
+    {
+      "name": "Charles Meineke",
+      "tunes": 1
+    },
+    {
+      "name": "Henry W. Greatorex",
+      "tunes": 1
+    },
+    {
+      "name": "John Zundel",
+      "tunes": 1
+    }
+  ],
+  "counts": {
+    "published": 0,
+    "drafts": 4,
+    "duplicates": 6,
+    "refused": 2,
+    "rejected": 0,
+    "pages": 12,
+    "notYetCrawled": 1386,
+    "tunesInIndex": 1398
+  }
+}
