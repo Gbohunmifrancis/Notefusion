@@ -366,7 +366,12 @@ export type AuditAction =
   | "ReconcilePayment"
   | "SendEmail"
   | "ResetTrialQuota"
-  | "SetAnnouncement";
+  | "SetAnnouncement"
+  | "PublishBlogPost"
+  | "UnpublishBlogPost"
+  | "ArchiveBlogPost"
+  | "DeleteBlogPost"
+  | "GenerateBlogDrafts";
 
 /**
  * One line of the audit trail. The emails are stored snapshots rather than joins, so a row still

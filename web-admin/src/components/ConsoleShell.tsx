@@ -11,6 +11,7 @@ import {
   MessageSquareHeart,
   Moon,
   Music2,
+  Newspaper,
   Scale,
   ScrollText,
   Search,
@@ -55,6 +56,7 @@ const PRIMARY_NAV = [
   { to: "/transcriptions", label: "Transcriptions", icon: Music2 },
   { to: "/activity", label: "Activity", icon: Activity },
   { to: "/feedback", label: "Feedback", icon: MessageSquareHeart },
+  { to: "/blog", label: "Blog", icon: Newspaper },
   { to: "/health", label: "System Health", icon: HeartPulse },
   { to: "/audit-log", label: "Settings", icon: Settings },
 ] as const;
