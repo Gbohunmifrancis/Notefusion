@@ -383,19 +383,19 @@ def test_the_submit_takes_chords_mode_and_the_keyboard_transpose(monkeypatch):
 def test_a_song_reads_its_chords_from_the_instrumental_and_a_hum_from_nothing(monkeypatch, tmp_path):
     from app.jobs import queue as queue_mod
     from app.pipeline import separate
-    from app.pipeline.transcriber import TranscriptionResult
+    from app.pipeline.transcriber import TranscribedNote, TranscriptionResult
 
     calls = []
 
     def fake_transcribe(audio_path, mode="melody", **kwargs):
         calls.append((Path(audio_path).name, mode, kwargs.get("chord_source"), kwargs.get("keyboard_transpose")))
         return TranscriptionResult(key="C major", key_confidence=1.0, tempo=100, time_signature="4/4",
-                                   musicxml="<score/>", midi_base64="", notes=[], solfa_lines=[],
-                                   overall_confidence=1.0)
+                                   musicxml="<score/>", midi_base64="", solfa_lines=[], overall_confidence=1.0,
+                                   notes=[TranscribedNote(60, float(i), 1.0, 1, "d", "", 1.0) for i in range(8)])
 
     def fake_separate(wav, out, progress=lambda f: None, backing_path=None):
-        out.write_bytes(b"RIFF")
-        backing_path.write_bytes(b"RIFF")
+        out.write_bytes(_wav_bytes())
+        backing_path.write_bytes(_wav_bytes())
         return out
 
     monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)

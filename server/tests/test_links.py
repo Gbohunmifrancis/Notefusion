@@ -732,7 +732,7 @@ def _fake_wav(path: Path) -> Path:
 
 def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_path):
     from app.pipeline import separate
-    from app.pipeline.transcriber import TranscriptionResult
+    from app.pipeline.transcriber import TranscribedNote, TranscriptionResult
 
     source = Source("youtube", "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "Way Maker", "Sinach", None,
                     audio_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ")
@@ -765,7 +765,8 @@ def test_link_job_resolves_fetches_separates_and_transcribes(monkeypatch, tmp_pa
         # The beat is read from the full mix, not the isolated vocal.
         seen["tempo_source"] = Path(kwargs["tempo_source"]).name if kwargs.get("tempo_source") else None
         return TranscriptionResult(key="C major", key_confidence=1, tempo=100, time_signature="4/4",
-                                   musicxml="<x/>", midi_base64="")
+                                   musicxml="<x/>", midi_base64="",
+                                   notes=[TranscribedNote(60, float(i), 1.0, 1, "d", "", 1.0) for i in range(8)])
 
     monkeypatch.setattr(queue_mod, "transcribe", fake_transcribe)
 

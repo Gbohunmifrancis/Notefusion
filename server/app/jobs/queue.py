@@ -389,8 +389,7 @@ class JobQueue:
                     work_dir = Path(tempfile.mkdtemp(prefix="nf-upload-"))
                     job.result = self._separate_and_transcribe(
                         job, audio_path, work_dir, mode, key, tempo, time_signature, progress_from=0.0,
-                        audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose,
-                        require_voice=heard_band)
+                        audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
                 else:
                     job.stage = STAGE_TRANSCRIBING
                     job.result = transcribe(
@@ -428,17 +427,19 @@ class JobQueue:
     def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
                                  key: str | None, tempo: int | None, time_signature: str,
                                  progress_from: float, audio_preview: bool = True,
-                                 harmony: bool = False, keyboard_transpose: int = 0,
-                                 require_voice: bool = False) -> TranscriptionResult:
+                                 harmony: bool = False, keyboard_transpose: int = 0) -> TranscriptionResult:
         """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
 
         Shared by uploaded songs and linked ones. ``progress_from`` is where the job's
         progress bar already stands (a link job has spent some of it fetching); separation
         takes the bar to 0.55 and transcription the rest. Without a separation model the
         mixture is transcribed as it is, which is what the old upload path always did.
-        ``require_voice`` does the same when the vocal stem comes back empty (the band the
-        queue heard was playing on its own). In melody mode the chords are read from the
-        instrumental, or from the mix when there is no instrumental.
+        So is a vocal stem with no voice in it (``separate.voice_share_db``): instruments
+        recorded on their own, whether the queue heard them as a band or the user called
+        them "a song with instruments" — their tune is in the mixture, and the empty stem
+        used to come back as one or two notes. The mixture is then read on the normal lane,
+        whose Basic Pitch melody floor keeps the tune above the chords. In melody mode the
+        chords are read from the instrumental, or from the mix when there is no instrumental.
         """
         from app.pipeline import separate
 
@@ -451,7 +452,7 @@ class JobQueue:
                     progress=lambda f: setattr(job, "progress", progress_from + span * f),
                     backing_path=work_dir / "backing.wav")
                 separated = True
-                share = separate.voice_share_db(vocals, work_dir / "backing.wav") if require_voice else 0.0
+                share = separate.voice_share_db(vocals, work_dir / "backing.wav")
                 if share < separate.VOICE_MIN_SHARE_DB:
                     logger.info("Job %s: no voice in the vocal stem (%.0f dB); transcribing the mixture",
                                 job.id[:8], share)
@@ -469,17 +470,43 @@ class JobQueue:
 
         job.stage = STAGE_TRANSCRIBING
         backing = work_dir / "backing.wav"
-        chord_source = None
-        if mode == "melody":
-            chord_source = backing if separated and backing.is_file() else wav
-        result = transcribe(
-            vocals, mode=mode, key_override=key, tempo_override=tempo,
-            time_signature=time_signature,
-            progress=lambda fraction: setattr(job, "progress", 0.55 + 0.45 * fraction),
-            fast=job.priority == PRIORITY_HIGH,
-            tempo_source=wav if separated else None,
-            audio_preview=audio_preview, harmony=harmony,
-            keyboard_transpose=keyboard_transpose, chord_source=chord_source)
+
+        def read(path: Path, stem: bool) -> TranscriptionResult:
+            chord_source = None
+            if mode == "melody":
+                chord_source = backing if stem and backing.is_file() else wav
+            return transcribe(
+                path, mode=mode, key_override=key, tempo_override=tempo,
+                time_signature=time_signature,
+                progress=lambda fraction: setattr(job, "progress", 0.55 + 0.45 * fraction),
+                # The fast lane drops the mixture guard, which a mixture with a band in it needs.
+                fast=job.priority == PRIORITY_HIGH and stem,
+                tempo_source=wav if stem else None,
+                audio_preview=audio_preview, harmony=harmony,
+                keyboard_transpose=keyboard_transpose, chord_source=chord_source)
+
+        if not separated:
+            result = read(wav, False)
+        else:
+            # A stem can pass the voice check on a burst the model took for a voice (a
+            # strummed chord) and still hold no tune: one or two notes, which is the sheet
+            # an instrument recording used to get. Then the mixture is read as well, and the
+            # sheet with more notes kept.
+            try:
+                result = read(vocals, True)
+            except LowConfidenceError:
+                result = None
+            if result is None or len(result.notes) < _stem_min_notes(wav):
+                found = 0 if result is None else len(result.notes)
+                logger.info("Job %s: %d notes from the vocal stem; reading the mixture as well", job.id[:8], found)
+                try:
+                    mixture = read(wav, False)
+                except LowConfidenceError:
+                    if result is None:
+                        raise
+                    mixture = None
+                if mixture is not None and (result is None or len(mixture.notes) > found):
+                    result, separated = mixture, False
         result.separated = separated
         if separated:
             result.backing_audio_base64 = _encode_backing(backing)
@@ -686,6 +713,25 @@ class JobQueue:
             logger.info("Job %s: audio dropped from its delivered result to keep memory in budget", job.id[:8])
             if total <= budget:
                 return
+
+
+# Fewer notes than this from a vocal stem is no tune: at least four, and one per ten seconds of
+# the clip (a sung line runs at one to three a second). Measured on instruments recorded alone
+# as a browser sends them: a strummed guitar's stem passed the voice check on a two-second
+# burst and gave one note, where the mixture gives 14 of 16. The quietest stem a real voice
+# left in the song bench (a "da" singer under a band 6 dB louder) still gave 8 in 18 seconds.
+_STEM_MIN_NOTES = 4
+_STEM_SECONDS_PER_NOTE = 10.0
+
+
+def _stem_min_notes(wav: Path) -> int:
+    import soundfile as sf
+
+    try:
+        seconds = float(sf.info(str(wav)).duration)
+    except Exception:  # noqa: BLE001 - our own WAV; the floor still holds
+        seconds = 0.0
+    return max(_STEM_MIN_NOTES, int(seconds / _STEM_SECONDS_PER_NOTE))
 
 
 def _sounds_like_a_song(job: Job, audio_path: Path, mode: str) -> bool:
