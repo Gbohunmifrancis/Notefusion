@@ -79,7 +79,7 @@ test("markdown: one h1 per page (none in the body), heading ids, solfa blocks fr
   assert.match(r.html, /<h2 id="two-words">/);
   assert.match(r.html, /<h2 id="two-words-2">/);
   assert.match(r.html, /<span class="doh">Doh is G<\/span>/);
-  assert.match(r.html, /<b>s,<\/b><i>A-<\/i>/);
+  assert.match(r.html, /<b>s<span class="om om-low">,<\/span><\/b><i>A-<\/i>/);
   assert.deepEqual(r.hymnsUsed, ["amazing-grace"]);
   assert.deepEqual(r.links, ["/app"]);
   assert.throws(() => renderMarkdown("# Title in body", { hymnsBySlug }), /only h1/);

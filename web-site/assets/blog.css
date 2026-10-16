@@ -246,6 +246,17 @@
 .blog-page .cell b { display: block; color: var(--ink); font-size: 1rem; line-height: 1.5; }
 .blog-page .cell b.now { color: var(--now-ink); background: var(--now-bg); border-radius: 3px; }
 .blog-page .cell i { display: block; min-height: 1.1em; color: var(--muted); font-family: var(--sans); font-size: .74rem; font-style: normal; line-height: 1.5; }
+/* Octave marks (s, d') drawn small and set low or high against the letter, as hymn books print their
+   octave figures, so they never read as the quarter-beat mark. A half beat split into two quarter beats
+   (a semiquaver pair, the tail of a dotted quaver) shows both syllables with the quarter-beat mark
+   between them, full size and in the accent colour, on the line. */
+.blog-page .om { font-size: .78em; font-weight: 700; letter-spacing: -.02em; }
+.blog-page .om-low { vertical-align: -.18em; }
+.blog-page .om-high { vertical-align: .32em; line-height: 0; }
+.blog-page .cell.split { display: inline-flex; align-items: flex-start; gap: 0; min-width: 2.6em; }
+.blog-page .cell.split .q { display: inline-block; min-width: 1.1em; text-align: center; }
+.blog-page .qm { color: var(--accent); font-weight: 700; padding: 0 1px; }
+.blog-page .cell .qm { display: inline-block; font-size: 1rem; line-height: 1.5; }
 .blog-page .solfa-example figcaption { margin-top: 2px; }
 .blog-page .by-engine { color: var(--muted); }
 

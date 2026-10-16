@@ -2,11 +2,11 @@
 // Notes are spelled in the key (lib/solfa spellPitch), split at bar lines with ties, and carry the
 // first verse's syllables.
 import { escapeXml } from "./util.mjs";
-import { keyFifths, spellPitch, loadEngine } from "./solfa.mjs";
+import { keyFifths, spellPitch, loadEngine, onHalfBeatGrid } from "./solfa.mjs";
 
-const DIVISIONS = 2; // per quarter: the eighth is the shortest value the hymn grid holds
-// Notatable lengths in quarters, longest first: [quarters, type, dots].
-const VALUES = [[6, "whole", 1], [4, "whole", 0], [3, "half", 1], [2, "half", 0], [1.5, "quarter", 1], [1, "quarter", 0], [0.5, "eighth", 0]];
+// Notatable lengths in quarters, longest first: [quarters, type, dots]. The semiquaver and the dotted
+// quaver are there for tunes with quarter-beat notes; a tune on the half-beat grid never needs them.
+const VALUES = [[6, "whole", 1], [4, "whole", 0], [3, "half", 1], [2, "half", 0], [1.5, "quarter", 1], [1, "quarter", 0], [0.75, "eighth", 1], [0.5, "eighth", 0], [0.25, "16th", 0]];
 
 function pieces(len) {
   const out = [];
@@ -40,6 +40,8 @@ export function melodyToMusicXml(melody, { key, title = "", underlay = "", trans
   const keyInfo = N.parseKey(key);
   const notes = melody.notes.map((n) => ({ ...n, pitchMidi: n.pitchMidi + transpose }));
   const lyrics = lyricParts(notes, underlay);
+  // Divisions per quarter: 2 while the eighth is the shortest value, 4 once a tune has semiquavers.
+  const DIVISIONS = onHalfBeatGrid(notes) ? 2 : 4;
 
   // Events in grid beats, rests filling the gaps, from the pickup's start to the last note's end.
   const events = [];
