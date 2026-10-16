@@ -143,6 +143,38 @@
     {
       "slug": "neumark",
       "number": "000203"
+    },
+    {
+      "slug": "all-the-way",
+      "number": "000214"
+    },
+    {
+      "slug": "dominus-regit-me",
+      "number": "000215"
+    },
+    {
+      "slug": "llanfyllin",
+      "number": "000221"
+    },
+    {
+      "slug": "follow-on",
+      "number": "000226"
+    },
+    {
+      "slug": "savannah",
+      "number": "000227"
+    },
+    {
+      "slug": "o-du-liebe-meiner-liebe",
+      "number": "000229"
+    },
+    {
+      "slug": "blessings",
+      "number": "000231"
+    },
+    {
+      "slug": "nun-danket-234",
+      "number": "000234"
     }
   ],
   "drafts": [
@@ -615,6 +647,35 @@
       "reasons": [
         "the page gives no year for the tune"
       ]
+    },
+    {
+      "slug": "wye-valley",
+      "number": "000208",
+      "reasons": [
+        "not provably public domain: James Mountain: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "faithfulness",
+      "number": "000216",
+      "reasons": [
+        "not provably public domain: William M. Runyan: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "blott-en-dag",
+      "number": "000222",
+      "reasons": [
+        "not provably public domain: Oscar Ahnfelt: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source"
+      ]
+    },
+    {
+      "slug": "psalm-eighty-four",
+      "number": "000230",
+      "reasons": [
+        "not provably public domain: Alexander Galloway: public domain needs a death year before 1955, work in print before 1850 (\"activeBy\"), or \"traditional\": true for an anonymous source",
+        "the score has bars of another length (bar 10, 13), which the solfa grid does not draw"
+      ]
     }
   ],
   "duplicates": [
@@ -1085,6 +1146,87 @@
       "oursSource": "Open Hymnal Project ABC score (The Methodist Hymn Book, 1933); every note agrees with the score on Wikipedia's Cwm Rhondda article (printed there in 4/2 in A flat) and the opening with hymnary.org's incipit.",
       "hymn": "guide-me-o-thou-great-jehovah",
       "edits": 0
+    },
+    {
+      "number": "000211",
+      "name": "Consolator",
+      "url": "https://www.ccel.org/cceh/0002/x000211.htm",
+      "ours": "consolator-webbe",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "come-ye-disconsolate",
+      "edits": 0
+    },
+    {
+      "number": "000213",
+      "name": "Bradbury",
+      "url": "https://www.ccel.org/cceh/0002/x000213.htm",
+      "ours": "bradbury",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "savior-like-a-shepherd-lead-us",
+      "edits": 0
+    },
+    {
+      "number": "000217",
+      "name": "Eventide",
+      "url": "https://www.ccel.org/cceh/0002/x000217.htm",
+      "ours": "eventide",
+      "oursSource": "Open Hymnal Project ABC score (Hymns Ancient and Modern, 1869, ed. Monk); the opening agrees with hymnary.org's incipit.",
+      "hymn": "abide-with-me",
+      "edits": 0
+    },
+    {
+      "number": "000218",
+      "name": "He Leadeth Me",
+      "url": "https://www.ccel.org/cceh/0002/x000218.htm",
+      "ours": "he-leadeth-me",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "he-leadeth-me",
+      "edits": 0
+    },
+    {
+      "number": "000219",
+      "name": "God Cares",
+      "url": "https://www.ccel.org/cceh/0002/x000219.htm",
+      "ours": "martin",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "god-will-take-care-of-you",
+      "edits": 0
+    },
+    {
+      "number": "000223",
+      "name": "St. Anne",
+      "url": "https://www.ccel.org/cceh/0002/x000223.htm",
+      "ours": "st-anne",
+      "oursSource": "Open Hymnal Project ABC score (The Lutheran Hymnary, 1913); the opening agrees with hymnary.org's incipit.",
+      "hymn": "almighty-god-your-word-is-cast",
+      "edits": 0
+    },
+    {
+      "number": "000233",
+      "name": "St. George's Windsor",
+      "url": "https://www.ccel.org/cceh/0002/x000233.htm",
+      "ours": "st-george",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "songs-of-thankfulness-and-praise",
+      "edits": 0
+    },
+    {
+      "number": "000235",
+      "name": "Kirken",
+      "url": "https://www.ccel.org/cceh/0002/x000235.htm",
+      "ours": "kirken-den-er-et-gammelt-hus",
+      "oursSource": "Open Hymnal Project",
+      "hymn": "built-on-the-rock",
+      "edits": 0
+    },
+    {
+      "number": "000236",
+      "name": "Aurelia",
+      "url": "https://www.ccel.org/cceh/0002/x000236.htm",
+      "ours": "aurelia",
+      "oursSource": "Open Hymnal Project ABC score; every note and rhythm agrees with the score on Wikipedia's article (printed there in E flat) and the opening with hymnary.org's incipit.",
+      "hymn": "o-father-all-creating",
+      "edits": 0
     }
   ],
   "refused": [
@@ -1351,6 +1493,48 @@
       "name": "Nyland",
       "url": "https://www.ccel.org/cceh/0002/x000204.htm",
       "reason": "the page marks David Evans's arrangement as copyright (“arr., David Evans, ©1927”)"
+    },
+    {
+      "number": "000209",
+      "name": "Forest Park",
+      "url": "https://www.ccel.org/cceh/0002/x000209.htm",
+      "reason": "the page marks Barbara Fowler Gaultney's tune as copyright (“Barbara Fowler Gaultney, ©1960”)"
+    },
+    {
+      "number": "000210",
+      "name": "All Is Well",
+      "url": "https://www.ccel.org/cceh/0002/x000210.htm",
+      "reason": "the page marks an arrangement as copyright (“ad., ©1960”)"
+    },
+    {
+      "number": "000212",
+      "name": "Slane",
+      "url": "https://www.ccel.org/cceh/0002/x000212.htm",
+      "reason": "the page marks David Evans's arrangement as copyright (“harm., David Evans, ©1927”)"
+    },
+    {
+      "number": "000224",
+      "name": "Stevens",
+      "url": "https://www.ccel.org/cceh/0002/x000224.htm",
+      "reason": "the page marks Buryl Red's tune as copyright (“Buryl Red, ©1975”)"
+    },
+    {
+      "number": "000225",
+      "name": "Little Flock",
+      "url": "https://www.ccel.org/cceh/0002/x000225.htm",
+      "reason": "the page marks Heinz Werner Zimmermann's tune as copyright (“Heinz Werner Zimmermann, ©1973”)"
+    },
+    {
+      "number": "000228",
+      "name": "Goodness",
+      "url": "https://www.ccel.org/cceh/0002/x000228.htm",
+      "reason": "the page marks John W. Peterson's tune as copyright (“John W. Peterson, ©1958”)"
+    },
+    {
+      "number": "000232",
+      "name": "Northaven",
+      "url": "https://www.ccel.org/cceh/0002/x000232.htm",
+      "reason": "the page marks Jane M. Marshall's tune as copyright (“Jane M. Marshall, ©1960”)"
     }
   ],
   "rejected": [
@@ -1413,6 +1597,12 @@
       "name": "Arise",
       "url": "https://www.ccel.org/cceh/0001/x000197.htm",
       "reason": "no voice in the MIDI file matches the incipit (the nearest, the top of staff 1, is 4 notes off in 20)"
+    },
+    {
+      "number": "000220",
+      "name": "Gabriel",
+      "url": "https://www.ccel.org/cceh/0002/x000220.htm",
+      "reason": "the time signature changes (9/8, 6/8), which the solfa grid does not bar"
     }
   ],
   "sameNameDifferentTune": [],
@@ -1423,6 +1613,14 @@
       "url": "https://www.ccel.org/cceh/0001/x000108.htm",
       "ours": "were-you-there",
       "hymn": "were-you-there",
+      "note": "our tune has no melody yet; this CCEH melody could fill it once its words are fitted"
+    },
+    {
+      "number": "000234",
+      "name": "Nun Danket",
+      "url": "https://www.ccel.org/cceh/0002/x000234.htm",
+      "ours": "nun-danket",
+      "hymn": "now-thank-we-all-our-god",
       "note": "our tune has no melody yet; this CCEH melody could fill it once its words are fitted"
     }
   ],
@@ -1596,6 +1794,12 @@
       "earliestYear": 1914
     },
     {
+      "name": "James Mountain",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1876
+    },
+    {
       "name": "James Nares",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -1668,6 +1872,12 @@
       "earliestYear": 1854
     },
     {
+      "name": "Oscar Ahnfelt",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1872
+    },
+    {
       "name": "tenor-lead arr., George Kirbye",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -1686,6 +1896,12 @@
       "earliestYear": 1877
     },
     {
+      "name": "William M. Runyan",
+      "tunes": 1,
+      "onlyForWantOfDates": 1,
+      "earliestYear": 1923
+    },
+    {
       "name": "Winfred Douglas",
       "tunes": 1,
       "onlyForWantOfDates": 1,
@@ -1693,6 +1909,12 @@
     },
     {
       "name": "A. P. Bland",
+      "tunes": 1,
+      "onlyForWantOfDates": 0,
+      "earliestYear": null
+    },
+    {
+      "name": "Alexander Galloway",
       "tunes": 1,
       "onlyForWantOfDates": 0,
       "earliestYear": null
@@ -1711,13 +1933,13 @@
     }
   ],
   "counts": {
-    "published": 35,
-    "drafts": 66,
-    "duplicates": 52,
-    "refused": 44,
-    "rejected": 10,
-    "pages": 207,
-    "notYetCrawled": 1191,
+    "published": 43,
+    "drafts": 70,
+    "duplicates": 61,
+    "refused": 51,
+    "rejected": 11,
+    "pages": 236,
+    "notYetCrawled": 1162,
     "tunesInIndex": 1398
   }
 }

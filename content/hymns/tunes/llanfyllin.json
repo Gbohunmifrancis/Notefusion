@@ -1,0 +1,41 @@
+{
+  "name": "LLANFYLLIN",
+  "title": "Llanfyllin",
+  "music": [
+    {
+      "name": "Welsh Traditional",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Hymnau a Thonau (published by David Evans)",
+      "traditional": true,
+      "role": "Melody (1865)"
+    },
+    {
+      "name": "Book of Common Praise",
+      "traditional": true,
+      "role": "Melody (1938)"
+    }
+  ],
+  "musicPublished": 1865,
+  "metre": "7 6 7 6",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C4:1 | F4:1 F4:1 G4:1 G4:1 | A4:1.5 G4:.5 F4:1 F4:1 | Bb4:1 Bb4:1 A4:1 A4:1 | G4:3 C4:1 | F4:1 F4:1 G4:1 G4:1 | A4:1.5 Bb4:.5 C5:1 Bb4:1 | A4:1 F4:1 G4:1 E4:1 | F4:3 C5:1 | C5:1 A4:1 G4:1 Bb4:1 | A4:2 G4:1 F4:1 | E4:1 F4:1 Bb4:1 A4:1 | G4:3 C4:1 | F4:1 F4:1 G4:1 G4:1 | A4:1.5 Bb4:.5 C5:1 Bb4:1 | A4:1 F4:1 G4:1 E4:1 | F4:3",
+  "incipit": "sddrrmrd|dffmmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000221.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000221a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000221; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000221 (the melody read from 000221a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000221a.nwc).",
+  "importedFrom": "cceh:000221",
+  "updated": "2026-10-16"
+}

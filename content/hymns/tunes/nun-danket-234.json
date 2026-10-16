@@ -1,0 +1,41 @@
+{
+  "name": "NUN DANKET",
+  "title": "Nun Danket",
+  "alsoKnownAs": [
+    "Deo Gratias"
+  ],
+  "music": [
+    {
+      "name": "Johann Cruger",
+      "born": 1598,
+      "died": 1662,
+      "role": "Music (Praxis Pietatis Melica, 1648)"
+    },
+    {
+      "name": "Felix Mendelssohn",
+      "born": 1809,
+      "died": 1847,
+      "role": "Harmony"
+    }
+  ],
+  "musicPublished": 1648,
+  "metre": "6 7 6 7 6 6 6 6",
+  "key": "F major",
+  "time": "4/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 2,
+  "melody": "C5:1 | C5:1 C5:1 D5:1 D5:1 | C5:3 C5:1 | Bb4:1 A4:1 G4:1 A4:1 | G4:2 F4:1 C5:1 | C5:1 C5:1 D5:1 D5:1 | C5:3 C5:1 | Bb4:1 A4:1 G4:1 A4:1 | G4:2 F4:1 G4:1 | G4:1 G4:1 A4:1 A4:1 | G4:3 G4:1 | A4:.5 B4:.5 C5:1 D5:1 B4:1 | C5:3 C5:1 | D5:1 C5:1 Bb4:1 A4:1 | Bb4:3 A4:1 | G4:1 F4:1 F4:1 E4:1 | F4:3",
+  "incipit": "ssslls|sfmrmrd|ssslls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0002/x000234.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0002/000234a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000234; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000234 (the melody read from 000234a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Cruger's dates (1598–1662) are from our page for the tune AUF, AUF, MEIN HERZ MIT FREUDEN (content/hymns/tunes/auf-auf-mein-herz-mit-freuden.json); CCEH's page gives only the year 1648. Felix Mendelssohn's dates (1809–1847) are from our page for the tune MENDELSSOHN (content/hymns/tunes/mendelssohn.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000234a.nwc).",
+  "importedFrom": "cceh:000234",
+  "updated": "2026-10-16"
+}
