@@ -1,0 +1,32 @@
+{
+  "name": "CRADLE SONG",
+  "title": "Cradle Song",
+  "music": [
+    {
+      "name": "William James Kirkpatrick",
+      "born": 1838,
+      "died": 1921,
+      "role": "Music (1895)"
+    }
+  ],
+  "musicPublished": 1895,
+  "metre": "11 11 11 11",
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "C4:1 | F4:1 F4:1 G4:.5 A4:.5 | F4:1 F4:1 A4:.5 Bb4:.5 | C5:1 C5:1 D5:1 | Bb4:2 G4:.5 A4:.5 | Bb4:1 Bb4:1 C5:1 | A4:1 A4:1 F4:.5 A4:.5 | G4:1 D4:1 F4:1 | E4:2 C4:1 | F4:1 F4:1 G4:.5 A4:.5 | F4:1 F4:1 A4:.5 Bb4:.5 | C5:1 C5:1 D5:1 | Bb4:2 G4:.5 A4:.5 | Bb4:1 Bb4:1 C5:1 | A4:1 A4:1 F4:.5 A4:.5 | G4:1 D4:1 E4:1 | F4:2",
+  "incipit": "sddrmddmfsslf|rmffsmmdmrldt",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000079.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000079a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000079; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000079 (the melody read from 000079a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William James Kirkpatrick's dates (1838–1921) are from our page for the tune THE COMFORTER HAS COME (content/hymns/tunes/the-comforter-has-come.json); CCEH's page gives only the year 1895. The bar lines are those of CCEH's Noteworthy score (000079a.nwc).",
+  "importedFrom": "cceh:000079",
+  "updated": "2026-10-16"
+}

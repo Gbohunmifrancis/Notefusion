@@ -1,0 +1,38 @@
+{
+  "name": "LYONS",
+  "title": "Lyons",
+  "music": [
+    {
+      "name": "Johann Michael Haydn",
+      "born": 1732,
+      "died": 1809,
+      "role": "Music"
+    },
+    {
+      "name": "William Gardiner",
+      "born": 1770,
+      "died": 1853,
+      "role": "Music (Sacred Melodies, 1815)"
+    }
+  ],
+  "musicPublished": 1815,
+  "metre": "10 10 11 11",
+  "key": "Ab major",
+  "time": "3/4",
+  "tempo": 130,
+  "pickup": 1,
+  "lineBars": 4,
+  "melody": "Eb4:1 | Ab4:1 Ab4:1 Bb4:1 | C5:2 Ab4:1 | C#5:1 C#5:1 C5:1 | Bb4:2 Eb4:1 | Ab4:1 Ab4:1 Bb4:1 | C5:2 C#5:1 | Eb5:.75 C#5:.25 C5:1 Bb4:1 | Ab4:2 Eb4:1 | Eb4:1 Eb4:1 F4:1 | G4:1 G4:1 Ab4:1 | Bb4:1 Bb4:1 C5:1 | C#5:2 Eb4:1 | Ab4:1 Ab4:1 Bb4:1 | C5:1 C5:1 C#5:1 | Eb5:.75 C#5:.25 C5:1 Bb4:1 | Ab4:2",
+  "incipit": "sddrmdffmr|sddrmfsfmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000030.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000030a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000030; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000030 (the melody read from 000030a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. Johann Michael Haydn's dates (1732–1809) are from our page for the tune AUSTRIA (content/hymns/tunes/austria.json); CCEH's page gives none. William Gardiner's dates (1770–1853) are from our page for the tune BELMONT (content/hymns/tunes/belmont.json); CCEH's page gives only the year 1815. The bar lines are those of CCEH's Noteworthy score (000030a.nwc).",
+  "importedFrom": "cceh:000030",
+  "updated": "2026-10-16"
+}

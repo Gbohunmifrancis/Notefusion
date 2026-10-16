@@ -1,0 +1,30 @@
+{
+  "name": "SEWELL",
+  "title": "Sewell",
+  "music": [
+    {
+      "name": "Hampton H. Sewell",
+      "role": "Music (1909)"
+    }
+  ],
+  "musicPublished": 1909,
+  "metre": "9 9 9 7 + 6 6 13 6 6 13",
+  "key": "Bb major",
+  "time": "6/8",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "F4:.5 D4:.5 Eb4:.5 F4:.5 Bb4:.5 C5:.5 | D5:1 C#5:.5 D5:1.5 | D5:.5 C5:.5 Bb4:.5 A4:.5 Bb4:.5 C5:.5 | Bb4:1 G4:.5 F4:1.5 | F4:.5 D4:.5 Eb4:.5 F4:.5 Bb4:.5 C5:.5 | D5:1 C#5:.5 D5:1.5 | D5:.5 C5:.5 Bb4:.5 G4:.5 A4:.5 Bb4:.5 | C5:3 | D5:1.5 Eb5:1 D5:.5 | D5:.5 C5:1 G4:1.5 | C5:1.5 D5:1 C5:.5 | C5:.5 Bb4:1 F4:1 Bb4:.5 | Bb4:1 Bb4:.5 A4:1 G4:.5 | F4:1 G4:.5 A4:.5 Bb4:1 | C5:1 Bb4:.5 G4:.5 D5:1 | C5:3 | D5:1.5 Eb5:1 D5:.5 | D5:.5 C5:1 G4:1.5 | C5:1.5 D5:1 C5:.5 | C5:.5 Bb4:1 F4:1 Bb4:.5 | Bb4:1 Bb4:.5 A4:1 G4:.5 | F4:1 Bb4:.5 D5:.5 Eb5:1 | D5:1 Bb4:.5 D5:.5 C5:1 | Bb4:3",
+  "incipit": "smfsdrmrm|mrdtdrdls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000170.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000170a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000170; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Hampton H. Sewell: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000170 (the melody read from 000170a.mid, checked against the page's do-re-mi incipit, 1 note off in 18); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000170a.nwc).",
+  "importedFrom": "cceh:000170",
+  "updated": "2026-10-16"
+}

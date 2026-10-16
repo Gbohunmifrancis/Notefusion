@@ -1,0 +1,30 @@
+{
+  "name": "CHAPMAN",
+  "title": "Chapman",
+  "music": [
+    {
+      "name": "Charles H. Marsh",
+      "role": "Music (1909)"
+    }
+  ],
+  "musicPublished": 1909,
+  "metre": "11 10 11 10 + 10 10 11 10",
+  "key": "Db major",
+  "time": "9/4",
+  "tempo": 132,
+  "pickup": 0,
+  "lineBars": 1,
+  "melody": "Ab4:1 F4:1 F#4:1 Ab4:3 Bb4:2 C5:1 | C#5:1 C5:1 Bb4:1 Ab4:3 F4:3 | F#4:1 Eb4:1 F4:1 F#4:3 F4:2 F#4:1 | Ab4:1 Ab4:1 F#4:1 F4:6 | Ab4:1 F4:1 F#4:1 Ab4:3 Bb4:2 C5:1 | C#5:1 C5:1 Bb4:1 Ab4:3 F4:3 | Eb4:1 Ab4:1 Bb4:1 C5:3 Bb4:2 Ab4:1 | Bb4:1 Eb4:1 Bb4:1 Ab4:6 | C#5:1 Bb4:1 C#5:1 C5:3 F#4:3 | Bb4:1 C5:1 Bb4:1 Ab4:3 F4:3 | Ab4:1 F#4:1 F4:1 Bb4:3 Bb4:2 Bb4:1 | C#5:1 C5:1 Bb4:1 Eb5:6 | C#5:1 Bb4:1 C#5:1 C5:2 F#4:1 F#4:3 | Bb4:1 C5:1 Eb5:1 C#5:3 Ab4:3 | Bb4:1 Bb4:1 Bb4:1 Eb5:3 Bb4:2 C#5:1 | C5:1 Ab4:1 Eb5:1 C#5:6",
+  "incipit": "smfsltdtlsm|frmfmfssfm",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000127.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000127a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000127; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Charles H. Marsh: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000127 (the melody read from 000127a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000127a.nwc).",
+  "importedFrom": "cceh:000127",
+  "updated": "2026-10-16"
+}

@@ -1,0 +1,39 @@
+{
+  "name": "ARLINGTON",
+  "title": "Arlington",
+  "alsoKnownAs": [
+    "Prince's Street",
+    "Triumph",
+    "Artixerxes"
+  ],
+  "music": [
+    {
+      "name": "Thomas Augustine Arne",
+      "role": "Music (1762)"
+    },
+    {
+      "name": "Ralph Harrison",
+      "role": "Music (1784)"
+    }
+  ],
+  "musicPublished": 1762,
+  "metre": "8 6 8 6",
+  "key": "F major",
+  "time": "3/2",
+  "tempo": 132,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "F4:2 | A4:1.5 A4:.5 A4:2 G4:2 | F4:1.5 F4:.5 F4:2 G4:2 | A4:1 C5:1 Bb4:2 A4:2 | A4:2 G4:2 Bb4:2 | A4:1.5 A4:.5 A4:2 D5:2 | C5:1.5 C5:.5 C5:2 F4:2 | G4:1 Bb4:1 A4:2 G4:2 | F4:4",
+  "incipit": "dmmmrddd|rmsfmmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000068.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000068a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000068; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Thomas Augustine Arne: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source); not provably public domain: Ralph Harrison: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000068 (the melody read from 000068a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000068a.nwc).",
+  "importedFrom": "cceh:000068",
+  "updated": "2026-10-16"
+}

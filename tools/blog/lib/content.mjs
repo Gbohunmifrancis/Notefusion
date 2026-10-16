@@ -111,6 +111,14 @@ export function publicDomainProblems({ text = [], music = [], textPublished, mus
   return out;
 }
 
+/**
+ * The same test for a tune on its own (a tune page, with no words): everyone named in its music died
+ * before 1955 (or is an anonymous or traditional source), and it was first published before 1929.
+ */
+export function tunePublicDomainProblems({ music = [], musicPublished }) {
+  return publicDomainProblems({ music, musicPublished, textPublished: 0 });
+}
+
 function checkNames(file, people, what) {
   if (!Array.isArray(people) || !people.length) fail(file, `"${what}" must list who wrote it`);
   for (const p of people) {
@@ -144,6 +152,18 @@ export function loadTunes(dir = path.join(CONTENT_DIR, "hymns", "tunes")) {
       if (!(t.tempo > 0)) fail(file, `"tempo" (crotchets a minute) is required`);
       try { t.parsed = parseMelody(t.melody, { time: t.time, pickup: t.pickup || 0 }); }
       catch (e) { fail(file, `melody: ${e.message}`); }
+    }
+    // A tune with "draft" is a tune page of its own (/hymns/tunes/<slug>: a tune without words, e.g. from
+    // CCEH); "draft": false publishes it, which needs its melody and the public-domain test for its music.
+    if (t.draft != null) {
+      if (typeof t.draft !== "boolean" || typeof t.reviewed !== "boolean") fail(file, `"draft" and "reviewed" must be true or false`);
+      if (!isIsoDate(t.updated)) fail(file, `"updated" must be YYYY-MM-DD`);
+      if (t.alsoKnownAs != null && (!Array.isArray(t.alsoKnownAs) || t.alsoKnownAs.some((x) => typeof x !== "string" || !x.trim()))) fail(file, `"alsoKnownAs" must be a list of text`);
+      if (!t.draft) {
+        if (!t.parsed) fail(file, `a published tune page needs its melody; keep it a draft until it has one`);
+        const pd = tunePublicDomainProblems(t);
+        if (pd.length) fail(file, pd[0]);
+      }
     }
     tunes[t.slug] = t;
   }

@@ -1,0 +1,31 @@
+{
+  "name": "MICHAEL",
+  "title": "Michael",
+  "music": [
+    {
+      "name": "Traditional melody",
+      "traditional": true,
+      "role": "Melody"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 4 8 4",
+  "key": "D major",
+  "time": "2/2",
+  "tempo": 96,
+  "pickup": 2,
+  "lineBars": 2,
+  "melody": "D4:1 F#4:1 | A4:1.5 F#4:.5 A4:1 B4:1 | A4:2 F#4:1 A4:1 | B4:4 | A4:2 F#4:1 A4:1 | A4:1.5 F#4:.5 G4:1 F#4:1 | E4:2 D4:1 E4:1 | F#4:2 E4:2 | D4:2",
+  "incipit": "dmsmsls|msls|mssmfmr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000104.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000104a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000104; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000104 (the melody read from 000104a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The bar lines are those of CCEH's Noteworthy score (000104a.nwc).",
+  "importedFrom": "cceh:000104",
+  "updated": "2026-10-16"
+}

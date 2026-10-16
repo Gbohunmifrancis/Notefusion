@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Builds the blog and hymn pages into web-site/ from content/ and, with --api, from the API's posts:
-//   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time)
+//   web-site/blog/**, web-site/hymns/**   (wholly generated: rebuilt from scratch every time; tune pages at /hymns/tunes/<slug>)
 //   web-site/sitemap.xml                  (blog and hymn entries rebuilt, hand-written ones kept)
 //   web-site/index.html                   (only the "Latest from the blog" block between its markers)
 //   web-site/<IndexNow key>.txt
@@ -27,6 +27,7 @@ import { loadAll } from "./lib/content.mjs";
 import { writeFile } from "./lib/util.mjs";
 import { preparePosts, renderPost, renderBlogIndex, renderTag, renderAuthor, renderHomeStrip, blogPagePath, HOME_START, HOME_END } from "./lib/render-blog.mjs";
 import { prepareHymn, renderHymn, renderHymnIndex, renderHymnCredits } from "./lib/render-hymns.mjs";
+import { prepareTune, renderTune } from "./lib/render-tunes.mjs";
 import { handWrittenEntries, sitemapXml, feedXml } from "./lib/sitemap-feed.mjs";
 import { DEFAULT_API_URL, fetchPublished, postsFromApi } from "./lib/api-posts.mjs";
 import { catalogueJson, sitePages } from "./lib/catalogue.mjs";
@@ -42,8 +43,10 @@ function byDate(a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : a.sl
  * on a slug or title they share.
  */
 export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = null } = {}) {
-  const { authors, hymns, posts: filePosts } = loadAll({ includeDrafts });
+  const { authors, hymns, tunes, posts: filePosts } = loadAll({ includeDrafts });
   hymns.forEach(prepareHymn);
+  // Tune pages: tunes without words (CCEH), published when "draft" is false.
+  const tunePages = Object.values(tunes).filter((t) => t.draft != null && t.parsed && (includeDrafts || !t.draft)).map(prepareTune).sort((a, b) => a.view.title.localeCompare(b.view.title));
   const hymnsBySlug = new Map(hymns.map((h) => [h.slug, h]));
   let posts = filePosts, skipped = [];
   if (api) {
@@ -69,9 +72,10 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
   files.set("blog/feed.xml", feedXml(posts, authors));
 
   // Hymns
-  put("/hymns", renderHymnIndex(hymns));
-  put("/hymns/credits", renderHymnCredits(hymns));
+  put("/hymns", renderHymnIndex(hymns, tunePages));
+  put("/hymns/credits", renderHymnCredits(hymns, tunePages));
   for (const h of hymns) put(`/hymns/${h.slug}`, renderHymn(h, { hymns, posts }));
+  for (const t of tunePages) put(t.view.url, renderTune(t, { hymns, posts }));
 
   // Sitemap: what was there by hand, then the blog and the hymns.
   const newest = (dates) => dates.sort().pop();
@@ -79,9 +83,10 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
     ...Array.from({ length: pages }, (_, i) => ({ loc: ORIGIN + blogPagePath(i + 1), lastmod: newest(posts.slice(i * PAGE_SIZE, (i + 1) * PAGE_SIZE).map((p) => p.modified)), changefreq: "weekly", priority: i === 0 ? "0.8" : "0.4" })),
     ...posts.map((p) => ({ loc: ORIGIN + p.url, lastmod: p.modified, changefreq: "monthly", priority: "0.7" })),
     ...Object.values(authors).map((a) => ({ loc: ORIGIN + a.url, lastmod: newest(posts.filter((p) => p.author === a.id).map((p) => p.modified)), changefreq: "monthly", priority: "0.3" })),
-    { loc: ORIGIN + "/hymns", lastmod: newest(hymns.map((h) => h.updated)), changefreq: "weekly", priority: "0.8" },
-    { loc: ORIGIN + "/hymns/credits", lastmod: newest(hymns.map((h) => h.updated)), changefreq: "monthly", priority: "0.3" },
+    { loc: ORIGIN + "/hymns", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "weekly", priority: "0.8" },
+    { loc: ORIGIN + "/hymns/credits", lastmod: newest([...hymns.map((h) => h.updated), ...tunePages.map((t) => t.updated)]), changefreq: "monthly", priority: "0.3" },
     ...hymns.map((h) => ({ loc: `${ORIGIN}/hymns/${h.slug}`, lastmod: h.updated, changefreq: "monthly", priority: "0.7" })),
+    ...tunePages.map((t) => ({ loc: ORIGIN + t.view.url, lastmod: t.updated, changefreq: "monthly", priority: "0.5" })),
   ];
   const sitemapPath = path.join(siteDir, "sitemap.xml");
   const kept = fs.existsSync(sitemapPath) ? handWrittenEntries(fs.readFileSync(sitemapPath, "utf8")) : [];
@@ -96,7 +101,9 @@ export function buildSite({ siteDir = SITE_DIR, includeDrafts = false, api = nul
 
   files.set(`${INDEXNOW_KEY}.txt`, INDEXNOW_KEY + "\n");
   if (api) files.set("blog/catalogue.json", catalogueJson({ hymns, authors, pages: sitePages(siteDir, [...files.keys()]) }));
-  return { files, hymnIndex: hymnIndexJson(hymns), summary: { posts: posts.length, hymns: hymns.length, tags: tags.length, pages: files.size, skipped } };
+  // The worker's hymn index: published hymns, then published tune pages (tunes without words), then incipits.
+  const indexTunes = tunePages.filter((t) => !t.draft);
+  return { files, hymnIndex: hymnIndexJson(hymns, undefined, indexTunes), summary: { posts: posts.length, hymns: hymns.length, tunes: tunePages.length, tags: tags.length, pages: files.size, skipped } };
 }
 
 /**
@@ -132,7 +139,7 @@ async function main() {
     }
     const s = writeSite({ siteDir, includeDrafts, api });
     for (const k of s.skipped) console.log(`::warning::Left out /blog/${k.slug}: ${k.reason.replace(/\n/g, " ")}`);
-    console.log(`Built ${s.posts} posts, ${s.hymns} hymns and ${s.tags} tag pages (${s.pages} files) into ${path.relative(process.cwd(), siteDir) || "."}`);
+    console.log(`Built ${s.posts} posts, ${s.hymns} hymns, ${s.tunes} tune pages and ${s.tags} tag pages (${s.pages} files) into ${path.relative(process.cwd(), siteDir) || "."}`);
   } catch (e) {
     console.error(`Build failed: ${e.message}`);
     process.exit(1);

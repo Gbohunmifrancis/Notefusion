@@ -1,0 +1,35 @@
+{
+  "name": "IN DULCI JUBILO",
+  "title": "In Dulci Jubilo",
+  "music": [
+    {
+      "name": "German Traditional, 14th cent.",
+      "traditional": true,
+      "role": "Melody"
+    },
+    {
+      "name": "Winfred Douglas",
+      "role": "Harmony (1918)"
+    }
+  ],
+  "musicPublished": 1918,
+  "metre": "6 6 7 7 7 8 5 5",
+  "key": "F major",
+  "time": "6/8",
+  "tempo": 90,
+  "pickup": 0.5,
+  "lineBars": 4,
+  "melody": "F4:.5 | F4:1 F4:.5 A4:1 Bb4:.5 | C5:1 D5:.5 C5:1 C5:.5 | F4:1 F4:.5 A4:1 Bb4:.5 | C5:1 D5:.5 C5:1.5 | C5:1 D5:.5 C5:1 Bb4:.5 | A4:1 G4:.5 F4:1.5 | G4:1 G4:.5 A4:1 G4:.5 | F4:1 G4:.5 A4:1.5 | C5:1 D5:.5 C5:1 Bb4:.5 | A4:1 G4:.5 F4:1 F4:.5 | G4:1 G4:.5 A4:1 G4:.5 | F4:1 G4:.5 A4:1.5 | D4:1 D4:.5 E4:1 E4:.5 | F4:1.5 C5:1.5 | A4:1 A4:.5 G4:1 G4:.5 | F4:2 r:.5",
+  "incipit": "dddmfsls|sddmfsls",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000090.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000090a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000090; public domain.",
+  "reviewNotes": "Held back: not provably public domain: Winfred Douglas: public domain needs a death year before 1955 (or \"traditional\": true for an anonymous source). Imported from CCEH tune 000090 (the melody read from 000090a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. The page gives no year for the tune itself; it was in print by 1918, the year of the arrangement. The bar lines are those of CCEH's Noteworthy score (000090a.nwc).",
+  "importedFrom": "cceh:000090",
+  "updated": "2026-10-16"
+}

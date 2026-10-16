@@ -1,0 +1,32 @@
+{
+  "name": "CANNONS",
+  "title": "Cannons",
+  "music": [
+    {
+      "name": "George Frederick Handel",
+      "born": 1685,
+      "died": 1759,
+      "role": "Music"
+    }
+  ],
+  "musicPublished": null,
+  "metre": "8 8 8 8",
+  "key": "F minor",
+  "time": "4/4",
+  "tempo": 110,
+  "pickup": 0,
+  "lineBars": 2,
+  "melody": "F4:1 C4:.75 E4:.25 F4:1 G4:1 | Ab4:1.5 Bb4:.5 G4:2 | Ab4:1 Eb4:.75 G4:.25 Ab4:1 Bb4:1 | C5:1.5 C#5:.5 Bb4:1 C5:1 | C#5:1.5 C5:.5 Bb4:1.5 Ab4:.5 | G4:1 F4:1 E4:1 G4:1 | C5:1 F4:1 Bb4:.5 C5:.5 Ab4:.5 G4:.5 | G4:1.5 F4:.5 F4:2",
+  "incipit": "lmsltdrt|dstdrmfr",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": true,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0000/x000058.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0000/000058a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000058; public domain.",
+  "reviewNotes": "Held back: the page gives no year for the tune. Imported from CCEH tune 000058 (the melody read from 000058a.mid, checked against the page's do-re-mi incipit, 1 note off in 16); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. George Frederick Handel's dates (1685–1759) are from our page for the tune ANTIOCH (content/hymns/tunes/antioch.json); CCEH's page gives none. The bar lines are those of CCEH's Noteworthy score (000058a.nwc).",
+  "importedFrom": "cceh:000058",
+  "updated": "2026-10-16"
+}

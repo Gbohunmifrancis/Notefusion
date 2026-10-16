@@ -1,0 +1,32 @@
+{
+  "name": "ALETTA",
+  "title": "Aletta",
+  "music": [
+    {
+      "name": "William Batchelder Bradbury",
+      "born": 1816,
+      "died": 1868,
+      "role": "Music (1858)"
+    }
+  ],
+  "musicPublished": 1858,
+  "metre": "7 7 7 7",
+  "key": "F major",
+  "time": "3/4",
+  "tempo": 96,
+  "pickup": 0,
+  "lineBars": 4,
+  "melody": "A4:1 C5:1 F4:1 | G4:2 G4:1 | G4:1 F4:1 G4:1 | A4:3 | A4:1 C5:1 F4:1 | G4:2 G4:1 | G4:1 A4:1 G4:1 | F4:3 | Bb4:2 Bb4:1 | A4:2 A4:1 | G4:2 F4:1 | C5:3 | C5:1 A4:1 F4:1 | G4:2 G4:1 | G4:1 A4:1 G4:1 | F4:3",
+  "incipit": "msdrrrdrm|msdrrrmrd",
+  "reviewed": false,
+  "confidence": "imported, unchecked",
+  "draft": false,
+  "source": "CCEH",
+  "sourceUrl": "https://www.ccel.org/cceh/0001/x000139.htm",
+  "scoreUrl": "https://www.ccel.org/cceh/0001/000139a.mid",
+  "licence": "Public domain. The Christian Classics Ethereal Hymnary (ccel.org/cceh) states “This music is in the public domain” and that all its files — sheet music, MIDIs and electronic scores — “are free to use in any manner: download, copy, modify, use, distribute, publish, and perform”.",
+  "credits": "Melody from the Christian Classics Ethereal Hymnary (CCEH), tune 000139; public domain.",
+  "reviewNotes": "Imported from CCEH tune 000139 (the melody read from 000139a.mid, checked against the page's do-re-mi incipit, note for note); check the notes and the bar lines against a hymn book you trust, then set \"reviewed\": true. William Batchelder Bradbury's dates (1816–1868) are from our page for the tune BRADBURY (content/hymns/tunes/bradbury.json); CCEH's page gives only the year 1858. The bar lines are those of CCEH's Noteworthy score (000139a.nwc).",
+  "importedFrom": "cceh:000139",
+  "updated": "2026-10-16"
+}
