@@ -1,0 +1,86 @@
+name: Deploy admin console to Vercel
+
+# The admin console (web-admin/, admin.notefusion.studio) is a Next.js app on its own Vercel project.
+# It used to ship only by hand (`cd web-admin && vercel --prod`), so merged console pages — the Blog
+# posts editor, Blog analytics, the payment alert — never reached it. This deploys it on every merge
+# that touches web-admin/, the same way deploy-web.yml deploys the website.
+#
+# Uses the website's VERCEL_TOKEN and VERCEL_ORG_ID. The project is found by name ("web-admin", or the
+# VERCEL_ADMIN_PROJECT variable); set the VERCEL_ADMIN_PROJECT_ID secret to skip the lookup. Vercel
+# builds it remotely with the project's own environment (NEXT_PUBLIC_API_URL and the rest).
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "web-admin/**"
+      - ".github/workflows/deploy-admin.yml"
+
+concurrency:
+  group: deploy-admin
+  cancel-in-progress: false
+
+jobs:
+  vercel:
+    name: Vercel production deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      PROJECT_NAME: ${{ vars.VERCEL_ADMIN_PROJECT || 'web-admin' }}
+      ADMIN_URL: ${{ vars.ADMIN_URL || 'https://admin.notefusion.studio' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Find the Vercel project
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          GIVEN_ID: ${{ secrets.VERCEL_ADMIN_PROJECT_ID }}
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ]; then
+            echo "::error::Set VERCEL_TOKEN and VERCEL_ORG_ID in the repository secrets (see .github/workflows/deploy-web.yml)."
+            exit 1
+          fi
+          ref="${GIVEN_ID:-$PROJECT_NAME}"
+          body=$(curl -sS -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v9/projects/${ref}?teamId=${VERCEL_ORG_ID}")
+          id=$(echo "$body" | jq -r '.id // empty')
+          if [ -z "$id" ]; then
+            echo "$body" | jq -c '.error // .' || true
+            echo "::error::Could not find the Vercel project \"${ref}\" in this team. Add its Project ID (Vercel → the admin project → Settings → General) as the VERCEL_ADMIN_PROJECT_ID secret."
+            exit 1
+          fi
+          root=$(echo "$body" | jq -r '.rootDirectory // empty')
+          echo "Project $(echo "$body" | jq -r .name) ($id), root directory: ${root:-none}"
+          echo "VERCEL_PROJECT_ID=$id" >> "$GITHUB_ENV"
+          echo "ROOT_DIR=$root" >> "$GITHUB_ENV"
+
+      # Staged outside the checkout (no git metadata, no node_modules), as the website is. A project
+      # whose root directory is web-admin/ is deployed from a folder that contains web-admin/.
+      - name: Stage the console
+        run: |
+          stage="$RUNNER_TEMP/admin"
+          rm -rf "$stage" && mkdir -p "$stage"
+          if [ "$ROOT_DIR" = "web-admin" ]; then dest="$stage/web-admin"; deploy_from="$stage"; else dest="$stage"; deploy_from="$stage"; fi
+          mkdir -p "$dest"
+          tar -C web-admin --exclude=node_modules --exclude=.next --exclude=.vercel -cf - . | tar -C "$dest" -xf -
+          echo "DEPLOY_FROM=$deploy_from" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Pull the project's Vercel settings
+        run: cd "$DEPLOY_FROM" && npx --yes vercel@latest pull --yes --environment=production --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Deploy
+        run: cd "$DEPLOY_FROM" && npx --yes vercel@latest deploy --prod --yes --token="${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Smoke-check the console
+        run: |
+          sleep 10
+          for path in /login /blog /blog-analytics; do
+            code=$(curl -sS -o /dev/null -w "%{http_code}" "${ADMIN_URL}${path}")
+            echo "${code}  ${path}"
+            case "$code" in 200|307|308) ;; *) echo "::error::${path} returned ${code}"; exit 1;; esac
+          done
