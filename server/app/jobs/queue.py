@@ -152,7 +152,7 @@ class JobQueue:
 
     def submit(self, audio_path: Path, mode: str,
                key: str | None, tempo: int | None,
-               time_signature: str = "4/4",
+               time_signature: str | None = None,
                correlation_id: str | None = None,
                callback_url: str | None = None,
                priority: str = PRIORITY_NORMAL,
@@ -168,7 +168,7 @@ class JobQueue:
                             time_signature=time_signature, song_seconds=song_seconds, separate=separate,
                             audio_preview=audio_preview, harmony=harmony, keyboard_transpose=keyboard_transpose)
         logger.info("Job %s queued: mode=%s key=%s tempo=%s meter=%s priority=%s separate=%s harmony=%s transpose=%d%s",
-                    job.id[:8], mode, key or "auto", tempo or "auto", time_signature,
+                    job.id[:8], mode, key or "auto", tempo or "auto", time_signature or "auto",
                     job.priority, separate, harmony, keyboard_transpose, self._trail(job))
         self._enqueue(job, lambda: self._run(job, audio_path, mode, key, tempo, time_signature, song_seconds, separate,
                                              audio_preview, harmony, keyboard_transpose))
@@ -176,7 +176,7 @@ class JobQueue:
 
     def submit_link(self, url: str, mode: str,
                     key: str | None, tempo: int | None,
-                    time_signature: str = "4/4",
+                    time_signature: str | None = None,
                     correlation_id: str | None = None,
                     callback_url: str | None = None,
                     priority: str = PRIORITY_NORMAL,
@@ -303,7 +303,7 @@ class JobQueue:
         if kind == "link":
             return lambda: self._run_link(
                 job, str(record.get("url") or ""), record.get("mode") or "melody", record.get("key"), record.get("tempo"),
-                record.get("time_signature") or "4/4", float(record.get("max_seconds") or settings.link_max_seconds),
+                record.get("time_signature") or None, float(record.get("max_seconds") or settings.link_max_seconds),
                 bool(record.get("audio_preview", True)), bool(record.get("harmony", False)),
                 int(record.get("keyboard_transpose") or 0), float(record.get("start_seconds") or 0.0),
                 record.get("end_seconds"))
@@ -313,7 +313,7 @@ class JobQueue:
                 return None
             return lambda: self._run(
                 job, audio, record.get("mode") or "melody", record.get("key"), record.get("tempo"),
-                record.get("time_signature") or "4/4", record.get("song_seconds"), bool(record.get("separate", False)),
+                record.get("time_signature") or None, record.get("song_seconds"), bool(record.get("separate", False)),
                 bool(record.get("audio_preview", True)), bool(record.get("harmony", False)),
                 int(record.get("keyboard_transpose") or 0))
         if kind == "score":
@@ -368,7 +368,7 @@ class JobQueue:
 
     def _run(self, job: Job, audio_path: Path, mode: str,
              key: str | None, tempo: int | None,
-             time_signature: str = "4/4", song_seconds: float | None = None,
+             time_signature: str | None = None, song_seconds: float | None = None,
              separate_vocals: bool = False, audio_preview: bool = True,
              harmony: bool = False, keyboard_transpose: int = 0) -> None:
         # The attempt is on disk before the job is seen as processing, so anyone who sees it running
@@ -425,7 +425,7 @@ class JobQueue:
             self._trigger_webhook(job)
 
     def _separate_and_transcribe(self, job: Job, wav: Path, work_dir: Path, mode: str,
-                                 key: str | None, tempo: int | None, time_signature: str,
+                                 key: str | None, tempo: int | None, time_signature: str | None,
                                  progress_from: float, audio_preview: bool = True,
                                  harmony: bool = False, keyboard_transpose: int = 0) -> TranscriptionResult:
         """Isolate the vocal, transcribe it with the beat read from the mix, keep the backing.
@@ -514,7 +514,7 @@ class JobQueue:
 
     def _run_link(self, job: Job, url: str, mode: str,
                   key: str | None, tempo: int | None,
-                  time_signature: str, max_seconds: float, audio_preview: bool = True,
+                  time_signature: str | None, max_seconds: float, audio_preview: bool = True,
                   harmony: bool = False, keyboard_transpose: int = 0,
                   start_seconds: float = 0.0, end_seconds: float | None = None) -> None:
         from app.ingest.links import PREVIEW_NOTICE, LinkError, fetch_audio, resolve_source

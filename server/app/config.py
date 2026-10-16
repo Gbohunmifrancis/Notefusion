@@ -483,6 +483,16 @@ class Settings:
         return os.getenv("NF_KEY_ENSEMBLE", "1").strip().lower() not in ("0", "false", "no")
 
     @property
+    def meter_detect(self) -> bool:
+        """Read the time signature (when none is given) and the bar phase off the notes.
+
+        Off writes every sheet in the given meter, or 4/4, with its first bar line at the first
+        note, as before.  See ``transcriber._meter_and_pickup`` for what it reads and what it
+        measured on the hymn corpus.
+        """
+        return os.getenv("NF_METER_DETECT", "1").strip().lower() not in ("0", "false", "no")
+
+    @property
     def tempo_grid(self) -> bool:
         """Pick the tempo that puts the detected onsets on the quantizer's grid.
 

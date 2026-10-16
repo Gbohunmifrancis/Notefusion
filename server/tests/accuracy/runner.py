@@ -32,7 +32,7 @@ import json
 import os
 import tempfile
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 from app.pipeline.transcriber import TranscriptionResult, transcribe
@@ -69,6 +69,22 @@ class CaseOutcome:
 # ── Scoring ───────────────────────────────────────────────────────────────────
 
 
+def _heard(result: TranscriptionResult) -> list:
+    """The notes as these metrics read them: the first at beat 0, as heard.
+
+    The note metrics anchor the first sounding note at beat 0 on both sides, so a sheet that
+    starts on an upbeat (the transcriber moves every note ``pickup_beats`` into the first bar)
+    would read as late by that much.  Taking exactly that amount back out keeps them measuring
+    what they always measured — the notes heard and their places on the grid — while a gap the
+    transcriber does not declare as a pickup (leading silence kept as rests) still counts
+    against it.  Where the bar lines go is ``metrics.sheet_metrics``' question.
+    """
+    if not result.pickup_beats:
+        return result.notes
+    return [replace(n, start_beat=n.start_beat - result.pickup_beats) for n in result.notes]
+
+
+
 def _prefixed(namespace: str, values: dict) -> dict[str, float]:
     """Flatten one metric group under its dotted namespace."""
     return {f"{namespace}.{name}": value for name, value in values.items()}
@@ -87,13 +103,13 @@ def _score(case: Case, ref: list[synth.RefNote], result: TranscriptionResult) ->
     flat.update(
         _prefixed(
             "notes",
-            metrics.note_metrics_seconds(ref, result.notes, result.tempo, case.tempo_bpm),
+            metrics.note_metrics_seconds(ref, _heard(result), result.tempo, case.tempo_bpm),
         )
     )
     flat.update(
         _prefixed(
             "beats",
-            metrics.onset_metrics_beats(ref, result.notes, result.tempo, case.tempo_bpm),
+            metrics.onset_metrics_beats(ref, _heard(result), result.tempo, case.tempo_bpm),
         )
     )
     flat.update(_prefixed("key", metrics.key_metrics(case.key, result.key)))
@@ -101,7 +117,7 @@ def _score(case: Case, ref: list[synth.RefNote], result: TranscriptionResult) ->
     flat.update(
         _prefixed(
             "solfa",
-            metrics.solfa_metrics(ref, result.notes, case.key, result.tempo, case.tempo_bpm),
+            metrics.solfa_metrics(ref, _heard(result), case.key, result.tempo, case.tempo_bpm),
         )
     )
     # Phase 3b replaces amplitude-as-confidence, and no other column can see that: conf
@@ -112,7 +128,7 @@ def _score(case: Case, ref: list[synth.RefNote], result: TranscriptionResult) ->
         _prefixed(
             "conf",
             metrics.note_confidence_metrics(
-                ref, result.notes, result.tempo, case.tempo_bpm
+                ref, _heard(result), result.tempo, case.tempo_bpm
             ),
         )
     )
@@ -212,15 +228,15 @@ def run_real_case(case: RealCase) -> CaseOutcome:
 
     flat: dict[str, float] = {}
     flat.update(_prefixed("notes", metrics.note_metrics_seconds(
-        case.notes, result.notes, result.tempo, case.tempo_bpm)))
+        case.notes, _heard(result), result.tempo, case.tempo_bpm)))
     flat.update(_prefixed("beats", metrics.onset_metrics_beats(
-        case.notes, result.notes, result.tempo, case.tempo_bpm)))
+        case.notes, _heard(result), result.tempo, case.tempo_bpm)))
     flat.update(_prefixed("key", metrics.key_metrics(case.key, result.key)))
     flat.update(_prefixed("tempo", metrics.tempo_metrics(case.tempo_bpm, result.tempo)))
     flat.update(_prefixed("solfa", metrics.solfa_metrics(
-        case.notes, result.notes, case.key, result.tempo, case.tempo_bpm)))
+        case.notes, _heard(result), case.key, result.tempo, case.tempo_bpm)))
     flat.update(_prefixed("conf", metrics.note_confidence_metrics(
-        case.notes, result.notes, result.tempo, case.tempo_bpm)))
+        case.notes, _heard(result), result.tempo, case.tempo_bpm)))
     flat["key.confidence"] = float(result.key_confidence)
     return CaseOutcome(
         name=case.name,
@@ -266,13 +282,13 @@ def run_vocal_case(case: VocalCase) -> CaseOutcome:
         )
 
     flat: dict[str, float] = {}
-    flat.update(_prefixed("notes", metrics.note_metrics_seconds(ref, result.notes, result.tempo, case.tempo_bpm)))
-    flat.update(_prefixed("beats", metrics.onset_metrics_beats(ref, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("notes", metrics.note_metrics_seconds(ref, _heard(result), result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("beats", metrics.onset_metrics_beats(ref, _heard(result), result.tempo, case.tempo_bpm)))
     flat.update(_prefixed("key", metrics.key_metrics(case.key, result.key)))
     flat.update(_prefixed("tempo", metrics.tempo_metrics(case.tempo_bpm, result.tempo)))
-    flat.update(_prefixed("solfa", metrics.solfa_metrics(ref, result.notes, case.key, result.tempo, case.tempo_bpm)))
-    flat.update(_prefixed("conf", metrics.note_confidence_metrics(ref, result.notes, result.tempo, case.tempo_bpm)))
-    flat.update(_prefixed("seq", metrics.sequence_metrics(ref, result.notes, case.key)))
+    flat.update(_prefixed("solfa", metrics.solfa_metrics(ref, _heard(result), case.key, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("conf", metrics.note_confidence_metrics(ref, _heard(result), result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("seq", metrics.sequence_metrics(ref, _heard(result), case.key)))
     flat["key.confidence"] = float(result.key_confidence)
     return CaseOutcome(
         name=case.name, tags=case.tags, ok=True, error="", ref_key=case.key,
@@ -316,14 +332,14 @@ def run_hymn_case(case: HymnCase) -> CaseOutcome:
             est_key="", ref_tempo=case.tempo_bpm, est_tempo=0, n_ref=len(ref), n_est=0, metrics={},
         )
     flat: dict[str, float] = {}
-    flat.update(_prefixed("notes", metrics.note_metrics_seconds(ref, result.notes, result.tempo, case.tempo_bpm)))
-    flat.update(_prefixed("beats", metrics.onset_metrics_beats(ref, result.notes, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("notes", metrics.note_metrics_seconds(ref, _heard(result), result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("beats", metrics.onset_metrics_beats(ref, _heard(result), result.tempo, case.tempo_bpm)))
     flat.update(_prefixed("key", metrics.key_metrics(case.key, result.key)))
     tempo = metrics.tempo_metrics(case.tempo_bpm, result.tempo)
     flat.update(_prefixed("tempo", tempo))
     flat["tempo.level_right"] = tempo["metrical_factor"] == 1.0
-    flat.update(_prefixed("solfa", metrics.solfa_metrics(ref, result.notes, case.key, result.tempo, case.tempo_bpm)))
-    flat.update(_prefixed("seq", metrics.sequence_metrics(ref, result.notes, case.key)))
+    flat.update(_prefixed("solfa", metrics.solfa_metrics(ref, _heard(result), case.key, result.tempo, case.tempo_bpm)))
+    flat.update(_prefixed("seq", metrics.sequence_metrics(ref, _heard(result), case.key)))
     flat.update(metrics.sheet_metrics(
         ref, case.written, case.time_signature, case.bar_offset, case.tempo_bpm,
         result.notes, result.time_signature, result.tempo, result.beat_origin_sec,

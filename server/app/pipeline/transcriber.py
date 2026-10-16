@@ -1309,6 +1309,12 @@ class TranscriptionResult:
     # it is what lets a client play the notated melody over the song's own backing in
     # time: audio time of beat b is ``beat_origin_sec + b * 60 / tempo``.
     beat_origin_sec: float = 0.0
+    # How far step 8b moved every note into the first bar, in beats, so a tune that starts
+    # on an upbeat starts on it: 0.0 when the first bar line is at the first note.  The notes'
+    # ``start_beat`` already carry it (and ``beat_origin_sec`` is that much earlier); this
+    # says the gap before the first note is the bar's, not silence the recording began with.
+    # Not sent to clients.
+    pickup_beats: float = 0.0
     # Separated jobs only: the instrumental (mix minus the isolated vocal) as a small
     # mono MP3, so the sheet can be rehearsed over the real song rather than a piano.
     backing_audio_base64: str = ""
@@ -3747,7 +3753,7 @@ def _transcribe_inner(
     mode: str = "melody",
     key_override: str | None = None,
     tempo_override: int | None = None,
-    time_signature: str = "4/4",
+    time_signature: str | None = None,
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
@@ -3793,7 +3799,7 @@ def transcribe(
     mode: str = "melody",
     key_override: str | None = None,
     tempo_override: int | None = None,
-    time_signature: str = "4/4",
+    time_signature: str | None = None,
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
@@ -5136,7 +5142,7 @@ def _transcribe_wav(
     mode: str,
     key_override: str | None,
     tempo_override: int | None,
-    time_signature: str = "4/4",
+    time_signature: str | None = None,
     progress=lambda fraction: None,
     fast: bool = False,
     tempo_source: Path | None = None,
@@ -5491,7 +5497,6 @@ def _transcribe_wav(
     has_evidence = any(e.onset_post is not None for e in events)
     s = stream.Stream()
     s.insert(0, m21tempo.MetronomeMark(number=round(bpm)))
-    s.insert(0, meter.TimeSignature(time_signature))
     # The meter is a constant, and both routes to detecting it have been measured and
     # STRUCK.  Do not re-attempt either without new evidence; the post-mortem:
     #
@@ -5548,6 +5553,23 @@ def _transcribe_wav(
         _one_line(s)
     elif mode != "poly":
         _one_note_per_slot(s, 1.0 / settings.quantize_divisors[0], heard_at)
+
+    # ── 8b. Meter and bar lines ───────────────────────────────────────────────
+    # A time signature given is kept; the bar phase (where the first bar line falls, so a
+    # tune that starts on an upbeat starts on it) is read either way.  Melody mode only: it
+    # is what the hymn corpus measures.  See ``_meter_and_pickup``.
+    pickup = 0.0
+    if mode == "melody" and settings.meter_detect:
+        time_signature, pickup = _meter_and_pickup(
+            [float(n.offset) for n in s.notes], [float(n.duration.quarterLength) for n in s.notes], time_signature)
+        if pickup:
+            s.shiftElements(pickup, classFilterList=[m21note.Note])
+            # Beat 0 is where the first bar starts, a pickup's length before the first note.
+            beat_origin -= pickup / sec_to_beats
+            if chord_spans is not None:
+                chord_spans = [replace(c, start_beat=c.start_beat + pickup) for c in chord_spans]
+    time_signature = time_signature or "4/4"
+    s.insert(0, meter.TimeSignature(time_signature))
 
     # ── 9. Key detection ──────────────────────────────────────────────────────
     # Manual override always wins (TRD par. 4.1).
@@ -5787,6 +5809,7 @@ def _transcribe_wav(
         overall_confidence=_overall_confidence(notes, headline_doh if vocal_fit is not None else None),
         audio_preview_base64=audio_preview_b64,
         beat_origin_sec=round(float(beat_origin), 4),
+        pickup_beats=pickup,
         # Read off the events rather than re-testing duration against the cap, so this
         # cannot drift from what _pyin_track actually did: _refine_pitches sets
         # pyin_midi on every event pyin could speak about, on every branch, so an
