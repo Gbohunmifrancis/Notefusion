@@ -1,6 +1,6 @@
 // The Gemini API's generateContent over plain fetch (Node 22 has it; no SDK). Asks for JSON that
-// matches a schema, retries once on a rate limit, a server error or a dropped connection, and
-// otherwise fails with a sentence that says what happened. The API key goes in the x-goog-api-key
+// matches a schema, retries a rate limit, a server error or a dropped connection with a growing
+// wait (Gemini's "high demand" 503s can last a few minutes), and otherwise fails with a sentence that says what happened. The API key goes in the x-goog-api-key
 // header and is never logged.
 
 export const DEFAULT_MODEL = "gemini-3.8-flash";
@@ -32,7 +32,7 @@ function defaultSleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 function retryDelayMs(res, attempt) {
   const h = res && res.headers && res.headers.get && res.headers.get("retry-after");
   const s = h && /^\d+$/.test(h) ? Number(h) : null;
-  return Math.min(60_000, s != null ? s * 1000 : 15_000 * attempt);
+  return Math.min(60_000, s != null ? s * 1000 : 15_000 * 2 ** (attempt - 1));
 }
 
 /**
@@ -40,7 +40,7 @@ function retryDelayMs(res, attempt) {
  * { data, usage, modelVersion, content } where `content` is the model's turn exactly as sent back,
  * to append when asking for a revision.
  */
-export async function generateJson({ apiKey, model = DEFAULT_MODEL, system, contents, schema = DRAFT_SCHEMA, temperature = 0.7, maxOutputTokens = 16384, fetchImpl = fetch, sleep = defaultSleep, log = () => {} }) {
+export async function generateJson({ apiKey, model = DEFAULT_MODEL, system, contents, schema = DRAFT_SCHEMA, temperature = 0.7, maxOutputTokens = 16384, attempts = 5, fetchImpl = fetch, sleep = defaultSleep, log = () => {} }) {
   if (!apiKey) throw new GeminiError("GEMINI_API_KEY is not set.");
   const url = `${ENDPOINT}/${encodeURIComponent(model)}:generateContent`;
   const body = JSON.stringify({
@@ -49,15 +49,15 @@ export async function generateJson({ apiKey, model = DEFAULT_MODEL, system, cont
     generationConfig: { responseMimeType: "application/json", responseSchema: schema, temperature, maxOutputTokens },
   });
   let res = null, json = null;
-  for (let attempt = 1; attempt <= 2; attempt++) {
+  for (let attempt = 1; attempt <= attempts; attempt++) {
     let networkError = null;
     try {
       res = await fetchImpl(url, { method: "POST", headers: { "content-type": "application/json", "x-goog-api-key": apiKey }, body });
     } catch (e) { networkError = e; res = null; }
     const retryable = networkError || res.status === 429 || res.status >= 500;
-    if (retryable && attempt === 1) {
+    if (retryable && attempt < attempts) {
       const wait = retryDelayMs(res, attempt);
-      log(`Gemini ${networkError ? `connection failed (${networkError.message})` : `answered ${res.status}`}; trying once more in ${Math.round(wait / 1000)} s.`);
+      log(`Gemini ${networkError ? `connection failed (${networkError.message})` : `answered ${res.status}`}; trying again in ${Math.round(wait / 1000)} s (attempt ${attempt + 1} of ${attempts}).`);
       await sleep(wait);
       continue;
     }
