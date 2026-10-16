@@ -35,6 +35,10 @@ class Settings:
     #: bgutil sidecar); android_vr and web_embedded need no token. (tv_embedded, the old
     #: default, is gone from yt-dlp, which skips a client it no longer knows.) Empty: no retry.
     ytdlp_fallback_clients: str = os.getenv("NF_YTDLP_FALLBACK_CLIENTS", "mweb,android_vr,web_embedded").strip()
+    #: The bgutil proof-of-origin token server (the ``bgutil-provider`` sidecar in production),
+    #: which the bgutil yt-dlp plugin in the image asks for the tokens YouTube wants from
+    #: datacenter addresses. Empty: no tokens (yt-dlp then gets fewer formats, or a refusal).
+    ytdlp_pot_url: str = os.getenv("NF_YTDLP_POT_URL", "").strip()
     #: A proxy (``http://user:pass@host:port``, ``socks5://…``) for YouTube alone: yt-dlp is
     #: sent through it only after YouTube refused this server directly and with the fallback
     #: clients. A residential or ISP address is what gets past a datacenter block. Empty: off.

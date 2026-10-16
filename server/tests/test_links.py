@@ -633,7 +633,7 @@ def test_resolve_link_reads_a_youtube_length_once_and_remembers_it(monkeypatch):
     source = links.resolve_link("Watch: https://youtu.be/dQw4w9WgXcQ?si=abc")
     assert (source.title, source.artist, source.url) == ("Never Gonna Give You Up", "Rick Astley", YOUTUBE)
     assert source.duration == 213.0
-    assert calls == [["yt-dlp", "--no-warnings", "--no-playlist", "--no-progress", "-q",
+    assert calls == [["yt-dlp", "--no-playlist", "--no-progress", "-q",
                       "-f", links._AUDIO_FORMAT, "-J", YOUTUBE]]
     # The same video under another address: nothing is asked again, of YouTube or oEmbed.
     assert links.resolve_link(YOUTUBE) is source
