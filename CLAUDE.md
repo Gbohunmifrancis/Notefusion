@@ -63,7 +63,11 @@ service. Reference coding patterns come from `Model-Carbon/SbzFarms`.
   (oEmbed metadata + yt-dlp), vocal-isolated by `app/pipeline/separate.py` (MDX-Net ONNX, model
   baked into the image at `NF_MDX_MODEL_PATH`; one pass needs ~1.6 GB and the process keeps ~320 MB of it,
   so the model runs in a child process that hands the memory back — `NF_SEPARATE_IN_PROCESS=1` restores
-  the in-process run), then transcribed. Before submitting, clients ask `POST /v1/links/resolve` (via the C# `…/link/info`
+  the in-process run), then transcribed. Every separation (a link, `separate=true`, or a band the queue heard in a
+  melody upload) checks the stem for a voice (`separate.voice_share_db`): a stem with none gives way to the mixture, and
+  one whose sheet has fewer than max(4, seconds/10) notes to the mixture's sheet when that has more; a mixture is
+  read on the normal lane (the fast lane has no melody floor). Instruments recorded alone used to come back as
+  one or two notes. Before submitting, clients ask `POST /v1/links/resolve` (via the C# `…/link/info`
   routes, which add the caller's allowance as `maxSeconds`) for the song's length and let the user pick the
   section; `/v1/transcribe/link` takes `start_seconds`/`end_seconds` and cuts that window. A job waiting for a worker reports `stage="queued"` with `queue_position` (jobs ahead); clients show
   the place in line rather than a stage that has not begun. The queue has two lanes:
